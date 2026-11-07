@@ -1,6 +1,7 @@
 incident_sla:
     title: 'Incident-SLAs'
     subtitle: 'Response-Zeiten pro Severity pro Organisation. Gilt zusätzlich zu regulatorischen Fristen (GDPR 72h / NIS2 24h / DORA 4h — die bleiben fix).'
+    empty: 'Keine SLA-Konfigurationen vorhanden.'
     section:
         list: 'Severity-Liste'
         edit: 'SLA bearbeiten'

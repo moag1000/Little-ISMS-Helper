@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single DPIA table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. #}
 {% trans_default_domain 'privacy' %}
@@ -10,7 +11,7 @@
                data-action="bulk-actions#selectItem" value="{{ dpia.id }}"
                aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ dpia.referenceNumber }}">
     </td>
-    <td><a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link">{{ dpia.referenceNumber }}</a></td>
+    <td><a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link">{{ dpia.referenceNumber }}</a> {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[dpia.id] ?? {}) : workflow_state(dpia)) }}</td>
     <td>{{ dpia.title }}</td>
     <td>{% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}</td>
     <td>
@@ -27,7 +28,7 @@
     </td>
     <td>
         {% if dpia.dpoConsultationDate %}
-            <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'dpia.index.dpo_consulted'|trans({}, 'privacy') }} {{ dpia.dpoConsultationDate|date('Y-m-d') }}"></i>
+            <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'dpia.index.dpo_consulted'|trans({}, 'privacy') }} {{ dpia.dpoConsultationDate|fa_date }}"></i>
         {% else %}
             <i class="fa-icon fa-icon--status-critical" aria-hidden="true" title="{{ 'dpia.index.dpo_not_yet_consulted'|trans({}, 'privacy') }}"></i>
         {% endif %}

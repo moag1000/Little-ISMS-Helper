@@ -127,6 +127,32 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
     }
 
     /**
+     * Running (pending / in progress) instances for many records of one type in
+     * one query, newest first — the list-row workflow pill reads this per page.
+     *
+     * @param list<string> $entityTypes stored type names (short name, some older rows the FQCN)
+     * @param list<int>    $entityIds
+     * @return WorkflowInstance[]
+     */
+    public function findActiveForEntities(array $entityTypes, array $entityIds): array
+    {
+        if ($entityIds === [] || $entityTypes === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('wi')
+            ->where('wi.entityType IN (:entityTypes)')
+            ->andWhere('wi.entityId IN (:ids)')
+            ->andWhere('wi.status IN (:statuses)')
+            ->setParameter('entityTypes', $entityTypes)
+            ->setParameter('ids', $entityIds)
+            ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
+            ->orderBy('wi.startedAt', \SortDirection::Descending)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Get workflow statistics for dashboard reporting.
      *
      * @return array<string, int> Statistics array with counts by status

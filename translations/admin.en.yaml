@@ -376,9 +376,8 @@ admin:
             actions: 'Actions'
         completed: 'completed'
         not_completed: 'not completed'
-        stats:
-            total_users: 'Total users'
-            completion_rate: 'Auto-tour completion rate'
+        summary:
+            completion: 'Auto tour completed: %rate% % (%done%/%total%)'
         filter:
             search_placeholder: 'Search email or name …'
             role_all: 'All roles'
@@ -387,10 +386,14 @@ admin:
         reset_all: 'Reset all tours for this user'
         reset_success: 'Tours reset for %user%.'
         confirm_reset: 'Reset all tour markers for %user%? The user will see the onboarding banner again on next login.'
-        empty: 'No users match the current filters.'
+        empty: 'No users yet.'
         audit_hint: 'This report is usable as <strong>audit evidence</strong> for ISO 27001 Annex A.6.3 (Information Security Awareness, Education and Training). It shows who was onboarded when — each role has its own tour with role-specific content.'
     mapping_quality:
         title: 'Mapping Quality'
+        list: 'Mappings'
+        summary:
+            low_score: '%count% with MQS < 60'
+            published: '%count% published'
         description: 'MQS (Mapping Quality Score 0-100) per cross-framework mapping with breakdown across 6 dimensions: Provenance, Methodology, Confidence, Coverage, Bidirectional Coherence, Lifecycle. Auditable documentation of cross-framework bridges.'
         detail_title: 'Mapping Detail'
         mqs_score: 'MQS Score'
@@ -398,11 +401,6 @@ admin:
         recompute: 'Recompute all MQS'
         recompute_confirm: 'Recompute all MQS scores? May take a few seconds with many mappings.'
         no_results: 'No mappings match the filter.'
-        stats:
-            total: 'Total mappings'
-            avg_mqs: 'Avg. MQS'
-            published: 'In "published" state'
-            low_score_published: 'Published with MQS < 60 (critical)'
         filter:
             state: 'Lifecycle state'
             min_score: 'Min. MQS'

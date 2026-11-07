@@ -20,6 +20,7 @@ use App\Service\DataSubjectRequestService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PersonalDataExportService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -86,17 +87,24 @@ class DataSubjectRequestController extends AbstractController
 
         // Apply type filter in-memory if set
         if ($filterType !== null && $filterType !== '') {
-            $requests = array_filter(
+            $requests = array_values(array_filter(
                 $requests,
                 fn(DataSubjectRequest $r): bool => $r->getRequestType() === $filterType
-            );
+            ));
         }
 
+        $openStatuses = ['received', 'identity_verification', 'in_progress', 'extended'];
         $statistics = $this->dataSubjectRequestService->getStatistics();
 
         return $this->render('data_subject_request/index.html.twig', [
-            'requests' => $requests,
-            'statistics' => $statistics,
+            'page' => ListPage::fromRequest(
+                $requests,
+                $request,
+                static fn(DataSubjectRequest $r): array => [(string) $r->getId(), $r->getDataSubjectName(), $r->getDataSubjectEmail()],
+            ),
+            'open_count' => count(array_filter($requests, static fn(DataSubjectRequest $r): bool => in_array($r->getStatus(), $openStatuses, true))),
+            'overdue_count' => $statistics['overdue_count'],
+            'avg_response_time' => $statistics['avg_response_time'],
             'current_status' => $filterStatus,
             'current_type' => $filterType,
         ]);

@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Repository\SoaSnapshotRepository;
 use App\Service\Soa\SoaSnapshotService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -46,7 +47,7 @@ class SoaSnapshotController extends AbstractController
     }
 
     #[Route('/soa/snapshot', name: 'app_soa_snapshot_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         $snapshots = $tenant !== null
@@ -54,8 +55,12 @@ class SoaSnapshotController extends AbstractController
             : [];
 
         return $this->render('soa_snapshot/index.html.twig', [
-            'snapshots' => $snapshots,
-            'tenant'    => $tenant,
+            'page'   => ListPage::fromRequest(
+                $snapshots,
+                $request,
+                static fn(SoaSnapshot $s): array => [$s->getPurpose(), $s->getCreatedBy()?->getEmail()],
+            ),
+            'tenant' => $tenant,
         ]);
     }
 

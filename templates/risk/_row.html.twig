@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single Risk table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit actions do the
@@ -21,6 +22,7 @@
     </td>
     <td>
         <a href="{{ path('app_risk_show', {id: risk.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ risk.title }}</strong></a>
+        {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[risk.id] ?? {}) : workflow_state(risk)) }}
         {{ inheritance.small_badge(risk, currentTenant) }}
         {% if risk.description %}
         <br><small class="text-muted">{{ risk.description|length > 60 ? risk.description|slice(0, 60) ~ '...' : risk.description }}</small>

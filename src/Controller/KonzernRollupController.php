@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\Voter\PolicyWizardVoter;
+use App\Service\Group\HoldingScope;
 use App\Service\PolicyWizard\Rollup\KonzernOnePagerPdfService;
 use App\Service\PolicyWizard\Rollup\KonzernRollupAggregator;
 use App\Service\PolicyWizard\Rollup\KonzernTrendCalculator;
@@ -43,6 +44,7 @@ final class KonzernRollupController extends AbstractController
         private readonly KonzernRollupAggregator $aggregator,
         private readonly KonzernTrendCalculator $trendCalculator,
         private readonly KonzernOnePagerPdfService $onePagerService,
+        private readonly HoldingScope $holdingScope,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
     ) {
@@ -88,10 +90,12 @@ final class KonzernRollupController extends AbstractController
         // ROLE_SUPER_ADMIN + holding-tree scope.
         $this->denyAccessUnlessGranted(PolicyWizardVoter::KONZERN_DEFAULTS, $konzernRoot);
 
-        $report = $this->aggregator->aggregateForKonzern($konzernRoot);
+        // The request's tenant filter would hide every subsidiary's documents,
+        // acknowledgements and risks: read the subtree explicitly.
+        $report = $this->holdingScope->read(fn () => $this->aggregator->aggregateForKonzern($konzernRoot));
         // CISO — quarterly trend for the Compliance tab
         // sparklines. 8 quarters = two full years.
-        $trend = $this->trendCalculator->calculateQuarterlyTrend($konzernRoot, 8);
+        $trend = $this->holdingScope->read(fn () => $this->trendCalculator->calculateQuarterlyTrend($konzernRoot, 8));
 
         return $this->render('policy_wizard/konzern_rollup/index.html.twig', [
             'report'         => $report,
@@ -141,7 +145,7 @@ final class KonzernRollupController extends AbstractController
             }
         }
 
-        $pdfBinary = $this->onePagerService->exportPdf($konzernRoot, $asOf);
+        $pdfBinary = $this->holdingScope->read(fn (): string => $this->onePagerService->exportPdf($konzernRoot, $asOf));
 
         $filename = sprintf(
             'konzern-one-pager-%s-%s.pdf',

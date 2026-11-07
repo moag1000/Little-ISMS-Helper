@@ -225,22 +225,20 @@ audit:
     scope: Geltungsbereich
     report_date: Berichtsdatum
     status_in_progress: 'In Bearbeitung'
-    status_overview: Status‑Übersicht
     upcoming_audits: 'Bevorstehende Audits'
     upcoming_audits_count: 'Sie haben %count% bevorstehende Audits geplant.'
-    kpi:
-        total: 'Gesamt Audits'
-        upcoming: Bevorstehend
-        in_progress: 'In Bearbeitung'
-        completed: Abgeschlossen
+    status_count:
+        planned: '%count% geplant'
+        in_progress: '%count% in Bearbeitung'
+        completed: '%count% abgeschlossen'
+        reported: '%count% mit Bericht'
     list:
         all: 'Alle Audits'
     filter:
         all_status: 'Alle Status'
         search_placeholder: 'Audits durchsuchen...'
-        no_results: 'Keine Audits gefunden, die den Filterkriterien entsprechen.'
     empty:
-        title: 'Noch keine Audits vorhanden'
+        title: 'Keine Audits vorhanden.'
         description: 'Legen Sie Ihr erstes internes Audit an, um mit der Planung zu beginnen.'
     validation:
         title_required: 'Bitte geben Sie einen Titel für das Audit an'

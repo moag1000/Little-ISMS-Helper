@@ -1,10 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% trans_default_domain 'patches' %}
-{% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'patch.title'|trans({}, 'patches') }}{% endblock %}
 
@@ -29,102 +26,61 @@
     {% endfor %}
 {% endif %}
 
-
-    <main>
-
-    {# View Filter #}
-    {% if currentTenant %}
-    {% embed '_components/_card.html.twig' with {
-        'class': 'mb-3'
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_patch_index'),
+        filter_keys: ['view'],
+        list_title: 'patch.list'|trans({}, 'patches'),
+        empty: { mood: 'sleeping', title: 'patch.empty'|trans({}, 'patches') },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/patch"',
     } %}
-        {% block card_body %}
-            <form method="get" action="{{ path('app_patch_index') }}" class="d-flex align-items-center gap-2">
-                <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
-                </label>
-                <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                        {{ 'corporate.view.own_only'|trans({}, 'messages') }}
-                    </option>
+        {% block list_filters %}
+            {% if currentTenant %}
+            <div class="col-md-4">
+                <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
+                <select class="form-select fa-cyber-input__field" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>{{ 'corporate.view.own_only'|trans({}, 'messages') }}</option>
                     {% if inheritanceInfo.hasParent %}
-                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
-                    </option>
+                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>{{ 'corporate.view.including_inherited'|trans({}, 'messages') }}</option>
                     {% endif %}
                     {% if inheritanceInfo.hasSubsidiaries %}
-                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
-                    </option>
+                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>{{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}</option>
                     {% endif %}
                 </select>
-                <noscript>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
-                </noscript>
-            </form>
+            </div>
+            {% endif %}
+        {% endblock %}
+        {% block list_summary %}
+            {% if pending_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'patch.summary.pending'|trans({'%count%': pending_count}, 'patches') }}</span>{% endif %}
+            {% if deployed_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'patch.summary.deployed'|trans({'%count%': deployed_count}, 'patches') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
+                        <th scope="col">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</th>
+                        <th scope="col">{{ 'patch.field.title'|trans({}, 'patches') }}</th>
+                        <th scope="col">{{ 'patch.field.patch_type'|trans({}, 'patches') }}</th>
+                        <th scope="col">{{ 'patch.field.status'|trans({}, 'patches') }}</th>
+                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="patch-rows"{% endblock %}
+                {% block table_body %}
+                    {% for patch in page %}
+                        {% include 'patch/_row.html.twig' with { patch: patch, currentTenant: currentTenant } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+            {% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete'] } %}
         {% endblock %}
     {% endembed %}
-    {% endif %}
-
-    <div class="row mb-4">
-        <div class="col-md-4">
-            {{ _fa_feature_card.render({ label: 'patch.kpi.pending'|trans({}, 'patches'), value: pending_count, variant: 'warning' }) }}
-        </div>
-        <div class="col-md-4">
-            {{ _fa_feature_card.render({ label: 'patch.kpi.deployed'|trans({}, 'patches'), value: deployment_stats.deployed ?? 0, variant: 'success' }) }}
-        </div>
-        <div class="col-md-4">
-            {% if currentTenant %}
-                {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
-                {{ _fa_feature_card.render({ label: 'patch.kpi.total'|trans({}, 'patches'), value: detailedStats.total, hint: subtitle, variant: 'primary' }) }}
-            {% else %}
-                {{ _fa_feature_card.render({ label: 'patch.kpi.total'|trans({}, 'patches'), value: detailedStats.total, variant: 'primary' }) }}
-            {% endif %}
-        </div>
-    </div>
-
-    {% if patches|length == 0 %}
-        {{ _fa_empty_state.render({
-            mood: 'sleeping',
-            title: 'patch.empty'|trans({}, 'patches')
-        }) }}
-    {% else %}
-        {% embed '_components/_card.html.twig' %}
-            {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/patch"{% endblock %}
-            {% block card_body %}
-                {% embed '_components/_table.html.twig' with {
-                    'noMargin': true
-                } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="bulk-select-column">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       data-action="bulk-actions#selectAll"
-                                       data-bulk-actions-target="selectAllCheckbox"
-                                       aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-                            </th>
-                            <th scope="col">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</th>
-                            <th scope="col">{{ 'patch.field.title'|trans({}, 'patches') }}</th>
-                            <th scope="col">{{ 'patch.field.patch_type'|trans({}, 'patches') }}</th>
-                            <th scope="col">{{ 'patch.field.status'|trans({}, 'patches') }}</th>
-                            <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body_attrs %}id="patch-rows"{% endblock %}
-                    {% block table_body %}
-                        {% for patch in patches %}
-                            {% include 'patch/_row.html.twig' with { patch: patch, currentTenant: currentTenant } %}
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-
-                {# Bulk Action Bar #}
-                {% include '_components/_bulk_action_bar.html.twig' with {
-                    actions: ['export', 'delete']
-                } %}
-            {% endblock %}
-        {% endembed %}
-    {% endif %}
-    </main>
 </div>
 {% endblock %}

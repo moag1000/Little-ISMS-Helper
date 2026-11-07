@@ -3,7 +3,7 @@ group_report:
     root_marker: 'Group root'
     tree:
         title: 'Corporate structure'
-        subtitle: 'Read-only overview of every tenant in the group — ROLE_GROUP_CISO only.'
+        subtitle: 'Every organization below yours, read-only.'
         holding_marker: 'Holding tenant'
         you_are_here: 'Your tenant'
         flash:
@@ -46,19 +46,30 @@ group_report:
             inherent: 'Inherent'
             residual: 'Residual'
             count: 'Count'
-    kpi:
-        title: 'Framework maturity matrix'
-        subtitle: 'NIS2 / DORA / ISO 27001 / ... per organization in %root% — cell = fulfilled / applicable percent.'
-        intro: 'Rows = organizations in the subtree. Columns = available compliance frameworks. Cell value matches the per-organization dashboard (fulfilled / applicable). Empty cell means no applicable requirements for that organization.'
-        holding: 'Holding'
-        requirements: 'requirements'
-        n_a_help: 'No applicable requirements in this organization.'
+    comparison:
+        title: 'Organization comparison'
+        subtitle: '%count% organizations in %root% side by side.'
+        sheet: 'Organization comparison'
         col:
-            tenant: 'Organization'
-        glossary:
-            applicable: 'Number of requirements that apply to the tenant (after scope filter)'
-            fulfilled: 'Number of requirements with status "fulfilled" or "compliant"'
-            percentage: 'fulfilled / applicable * 100, rounded'
+            organisation: 'Organization'
+            code: 'Code'
+        group_row: 'Group'
+        export:
+            excel: 'Excel'
+            pdf: 'PDF'
+        findings:
+            organisations: '%count% organizations compared'
+            danger: '%count% values in the red range'
+            warning: '%count% values in the amber range'
+        kpis:
+            title: 'Key figures'
+            intro: 'Each cell is the value from the organization''s own dashboard, coloured by its KPI thresholds. Empty: module not active there or no data.'
+            empty: 'No key figures available.'
+        frameworks:
+            title: 'Framework fulfilment'
+            intro: 'Fulfilled of applicable requirements per framework. Empty: no applicable requirement in that organization.'
+            empty: 'No applicable frameworks available.'
+        methodology: 'Values from the KPI catalog, computed for each organization with its own modules and KPI thresholds. Group row: rates and scores as the plain mean of the organizations that have a value (Ø, each organization counts once), counts and euro amounts as the sum (Σ). Euro values only for roles allowed to see loss amounts.'
     soa:
         title: 'Group SoA matrix'
         subtitle: 'Annex A controls × organizations — %controls% controls over %tenants% organizations.'

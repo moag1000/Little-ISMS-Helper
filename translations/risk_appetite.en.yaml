@@ -45,12 +45,9 @@ risk_appetite:
         max_acceptable_risk_range: 'Risk value must be between 1 and 25'
         review_buffer_multiplier_range: 'Review buffer multiplier must be between 1.0 and 3.0'
         description_required: 'Please provide a description'
-    stats:
-        total: 'Total entries'
-        global_threshold: 'Global threshold'
-        categories: Categories
-        total_risks: 'Total risks'
-        exceeding: 'Exceeding threshold'
+    summary:
+        active: '%count% active'
+        exceeding: '%count% risks above threshold'
     info:
         iso27005: 'Based on ISO/IEC 27005 – defining acceptable risks to guide treatment.'
     show:
@@ -72,7 +69,7 @@ risk_appetite:
     delete:
         warning: 'This action cannot be undone. Please confirm deletion.'
         confirm: 'Do you really want to delete this entry?'
-    no_appetites: 'No risk appetite defined yet.'
+    no_appetites: 'No risk appetite statements yet.'
     exceeding:
         title: Title
         description: 'Risks that exceed the defined risk appetite'

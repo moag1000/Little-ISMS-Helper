@@ -16,6 +16,7 @@ use App\Repository\AssetSubTypeRepository;
 use App\Service\AssetSubTypeSeeder;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +49,7 @@ final class AssetSubTypeController extends AbstractController
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant instanceof Tenant) {
@@ -64,7 +65,11 @@ final class AssetSubTypeController extends AbstractController
         $counts = $this->repository->countByTopType($tenant);
 
         return $this->render('admin/asset_sub_type/index.html.twig', [
-            'sub_types' => $subTypes,
+            'page' => ListPage::fromRequest(
+                $subTypes,
+                $request,
+                static fn(AssetSubType $st): array => [$st->getName(), $st->getDescription(), $st->getTopType()],
+            ),
             'counts_by_top_type' => $counts,
             'top_types' => AssetSubType::TOP_TYPES,
             'presets' => $this->seeder->availablePresets(),

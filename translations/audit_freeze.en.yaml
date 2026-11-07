@@ -42,7 +42,7 @@ audit_freeze:
     payload:
         title: 'Payload (sealed)'
         show: 'Show payload as JSON'
-    empty: 'No freezes yet. Start with "Create freeze" to prepare your next audit.'
+    empty: 'No freezes yet.'
     field:
         name: 'Freeze name'
         name_help: 'Speaking name, e.g. "Q3 2026 surveillance audit"'

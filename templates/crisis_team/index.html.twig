@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'crisis_team' %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'crisis_team.title'|trans({}, 'crisis_team') }}{% endblock %}
 {% block body %}
@@ -28,62 +27,39 @@
     {% endfor %}
 {% endif %}
 
-    <main>
-    <div class="row mb-4">
-        <div class="col-md-4">
-            {{ _fa_feature_card.render({ label: 'crisis_team.kpi.active'|trans({}, 'crisis_team'), value: active_count, variant: 'success' }) }}
-        </div>
-        <div class="col-md-4">
-            {{ _fa_feature_card.render({ label: 'crisis_team.type.operational'|trans({}, 'crisis_team'), value: operational_count, variant: 'primary' }) }}
-        </div>
-        <div class="col-md-4">
-            {{ _fa_feature_card.render({ label: 'crisis_team.type.strategic'|trans({}, 'crisis_team'), value: strategic_count, variant: 'info' }) }}
-        </div>
-    </div>
-    {% if crisis_teams|length == 0 %}
-        {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_crisis_team_index'),
+        list_title: 'crisis_team.title'|trans({}, 'crisis_team'),
+        empty: {
             mood: 'sleeping',
             title: 'crisis_team.empty'|trans({}, 'crisis_team'),
-            actions: [
-                { label: 'crisis_team.new'|trans({}, 'crisis_team'), variant: 'primary', icon: 'plus', href: path('app_crisis_team_new') }
-            ]
-        }) }}
-    {% else %}
-        {% embed '_components/_card.html.twig' %}
-            {% block card_attrs %}data-controller="filter"{% endblock %}
-            {% block card_header %}
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">{{ 'crisis_team.title'|trans({}, 'crisis_team') }} ({{ crisis_teams|length }})</h2>
-                    <input type="search" class="form-control form-control-sm w-250px fa-cyber-input__field"
-                           data-filter-target="searchInput"
-                           data-action="input->filter#filterRows"
-                           placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
-                </div>
-            {% endblock %}
-            {% block card_body %}
-                {% embed '_components/_table.html.twig' with {
-                    'noMargin': true
-                } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col">{{ 'crisis_team.field.team_name'|trans({}, 'crisis_team') }}</th>
-                            <th scope="col">{{ 'crisis_team.field.team_type'|trans({}, 'crisis_team') }}</th>
-                            <th scope="col">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</th>
-                            <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body %}
-                        <tbody id="crisis-team-rows">
-                        {% for team in crisis_teams %}
-                            {% include 'crisis_team/_row.html.twig' with { team: team } %}
-                        {% endfor %}
-                        </tbody>
-                    {% endblock %}
-                {% endembed %}
-            {% endblock %}
-        {% endembed %}
-    {% endif %}
-    </main>
+            actions: [{ label: 'crisis_team.new'|trans({}, 'crisis_team'), href: path('app_crisis_team_new'), variant: 'primary' }],
+        },
+    } %}
+        {% block list_summary %}
+            {% if active_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'crisis_team.summary.active'|trans({'%count%': active_count}, 'crisis_team') }}</span>{% endif %}
+            {% if operational_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'crisis_team.summary.operational'|trans({'%count%': operational_count}, 'crisis_team') }}</span>{% endif %}
+            {% if strategic_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'crisis_team.summary.strategic'|trans({'%count%': strategic_count}, 'crisis_team') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'crisis_team.field.team_name'|trans({}, 'crisis_team') }}</th>
+                        <th scope="col">{{ 'crisis_team.field.team_type'|trans({}, 'crisis_team') }}</th>
+                        <th scope="col">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</th>
+                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="crisis-team-rows"{% endblock %}
+                {% block table_body %}
+                    {% for team in page %}
+                        {% include 'crisis_team/_row.html.twig' with { team: team } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

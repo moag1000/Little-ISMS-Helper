@@ -15,6 +15,7 @@ use App\Repository\ChangeRequestRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,7 +45,7 @@ class ChangeRequestController extends AbstractController
     ) {}
     #[Route('/change-request', name: 'app_change_request_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         // Change Management — change_requests module (ISO 27001 A.8.32)
         if ($redirect = $this->checkModuleActive('change_requests')) {
@@ -54,14 +55,14 @@ class ChangeRequestController extends AbstractController
         $tenant = $this->tenantContext->getCurrentTenant();
         $changeRequests = $tenant ? $this->changeRequestRepository->findBy(['tenant' => $tenant]) : [];
         $statistics = $this->changeRequestRepository->getStatistics();
-        $pendingApproval = $this->changeRequestRepository->findPendingApproval();
-        $overdue = $this->changeRequestRepository->findOverdue();
 
         return $this->render('change_request/index.html.twig', [
-            'change_requests' => $changeRequests,
+            'page' => ListPage::fromRequest(
+                $changeRequests,
+                $request,
+                static fn(ChangeRequest $c): array => [$c->getChangeNumber(), $c->getTitle(), $c->getChangeType(), $c->getStatus()],
+            ),
             'statistics' => $statistics,
-            'pending_approval' => $pendingApproval,
-            'overdue' => $overdue,
         ]);
     }
     #[Route('/change-request/new', name: 'app_change_request_new', methods: ['GET', 'POST'])]

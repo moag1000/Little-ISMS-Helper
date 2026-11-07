@@ -11,35 +11,39 @@ use App\Entity\InternalAudit;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
-use App\Repository\ComplianceFrameworkRepository;
-use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Repository\SupplierRepository;
+use App\Service\Group\HoldingScope;
+use App\Service\Group\OrganisationComparison;
+use App\Service\Group\OrganisationComparisonExporter;
 use App\Service\GroupAuditProgramService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Group-level read-only reports intended for a
- * Konzern-ISB / Group-CISO sitting at a holding tenant. Access requires
- * ROLE_GROUP_CISO and at least one subsidiary below the current tenant.
+ * Group-level reports for a Konzern-ISB / Group-CISO (and, read-only, the
+ * Konzern-Auditor) sitting at a holding tenant. Deriving audits onto the
+ * subsidiaries is the only write action and needs ROLE_GROUP_CISO.
  *
  * Why a separate controller: the per-tenant views (risk index,
  * incident list, SoA, ...) are driven by the TenantContext of the
  * logged-in user. The group reports instead traverse the subtree
- * explicitly and never mutate data.
+ * explicitly — through {@see HoldingScope}, because the request's tenant
+ * filter would otherwise hide every subsidiary row.
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/group-report', name: 'app_group_report_')]
-#[IsGranted('ROLE_GROUP_CISO')]
+#[IsGranted(new Expression('is_granted("ROLE_GROUP_CISO") or is_granted("ROLE_KONZERN_AUDITOR")'))]
 #[RequiresModule('portfolio_reports')]
 final class GroupReportController extends AbstractController
 {
@@ -47,12 +51,13 @@ final class GroupReportController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly RiskRepository $riskRepository,
         private readonly ControlRepository $controlRepository,
-        private readonly ComplianceFrameworkRepository $frameworkRepository,
-        private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly SupplierRepository $supplierRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly InternalAuditRepository $auditRepository,
         private readonly GroupAuditProgramService $groupAuditProgramService,
+        private readonly HoldingScope $holdingScope,
+        private readonly OrganisationComparison $organisationComparison,
+        private readonly OrganisationComparisonExporter $comparisonExporter,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -139,7 +144,7 @@ final class GroupReportController extends AbstractController
         }
 
         $tree = $this->tenantContext->getAccessibleTenants();
-        $risks = $this->riskRepository->findBy(['tenant' => $tree], ['id' => 'DESC']);
+        $risks = $this->holdingScope->read(fn (): array => $this->riskRepository->findBy(['tenant' => $tree], ['id' => 'DESC']));
 
         usort($risks, static function (Risk $a, Risk $b): int {
             $aScore = $a->getResidualRiskLevel() > 0 ? $a->getResidualRiskLevel() : $a->getInherentRiskLevel();
@@ -164,45 +169,47 @@ final class GroupReportController extends AbstractController
     }
 
     /**
-     * Group-KPI-Matrix: framework compliance per tenant
-     * in the subtree. Rows = tenant, columns = framework, cell =
-     * fulfilled/applicable percentage. Uses the existing
-     * ComplianceRequirementRepository stats helper so the numbers are
-     * identical to the per-tenant compliance dashboards.
+     * Organisationsvergleich: every organisation of the subtree side by side
+     * with the management KPIs and framework compliance of its own dashboard
+     * ({@see OrganisationComparison}, values from the KPI catalog, traffic
+     * lights by each organisation's KPI thresholds). Replaces the former
+     * framework-only KPI matrix; that URL redirects here.
      */
-    #[Route('/kpi-matrix', name: 'kpi_matrix', methods: ['GET'])]
-    public function kpiMatrix(): Response
+    #[Route('/comparison', name: 'comparison', methods: ['GET'])]
+    public function comparison(): Response
     {
         $root = $this->tenantContext->getCurrentTenant();
         if (!$root instanceof Tenant) {
             throw $this->createAccessDeniedException('No active tenant');
         }
 
-        $tree = $this->tenantContext->getAccessibleTenants();
-        $frameworks = $this->frameworkRepository->findBy([], ['name' => 'ASC']);
-
-        $matrix = [];
-        foreach ($tree as $tenant) {
-            $row = [];
-            foreach ($frameworks as $framework) {
-                $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
-                $applicable = (int) ($stats['applicable'] ?? 0);
-                $fulfilled = (int) ($stats['fulfilled'] ?? 0);
-                $row[$framework->getCode()] = [
-                    'applicable' => $applicable,
-                    'fulfilled' => $fulfilled,
-                    'percentage' => $applicable > 0 ? (int) round(($fulfilled / $applicable) * 100) : null,
-                ];
-            }
-            $matrix[$tenant->getCode()] = $row;
-        }
-
-        return $this->render('group_report/kpi_matrix.html.twig', [
+        return $this->render('group_report/comparison.html.twig', [
             'root' => $root,
-            'tenants' => $tree,
-            'frameworks' => $frameworks,
-            'matrix' => $matrix,
+            'comparison' => $this->organisationComparison->build($this->tenantContext->getAccessibleTenants()),
         ]);
+    }
+
+    #[Route('/kpi-matrix', name: 'kpi_matrix', methods: ['GET'])]
+    public function kpiMatrix(): Response
+    {
+        return $this->redirectToRoute('app_group_report_comparison', [], Response::HTTP_MOVED_PERMANENTLY);
+    }
+
+    /** Excel / PDF of the comparison. POST, so the CSRF token stays out of URLs and logs. */
+    #[Route('/comparison/export.{format}', name: 'comparison_export', requirements: ['format' => 'xlsx|pdf'], methods: ['POST'])]
+    #[IsCsrfTokenValid('group_report_comparison_export')]
+    public function exportComparison(Request $request, string $format): Response
+    {
+        $root = $this->tenantContext->getCurrentTenant();
+        if (!$root instanceof Tenant) {
+            throw $this->createAccessDeniedException('No active tenant');
+        }
+        $tenants = $this->tenantContext->getAccessibleTenants();
+        $request->getSession()->save();
+
+        return $format === 'pdf'
+            ? $this->comparisonExporter->pdf($root, $tenants)
+            : $this->comparisonExporter->excel($root, $tenants);
     }
 
     /**
@@ -219,7 +226,7 @@ final class GroupReportController extends AbstractController
         }
 
         $tree = $this->tenantContext->getAccessibleTenants();
-        $controls = $this->controlRepository->findBy(['tenant' => $tree]);
+        $controls = $this->holdingScope->read(fn (): array => $this->controlRepository->findBy(['tenant' => $tree]));
 
         // Build lookup: controlId => tenantCode => Control
         // ISO 27001 Annex A control IDs are shared across tenants, so a
@@ -275,7 +282,16 @@ final class GroupReportController extends AbstractController
         }
 
         $tree = $this->tenantContext->getAccessibleTenants();
-        $grouped = $this->supplierRepository->findGroupedForTenants($tree);
+        // The contact person is a lazy Person of the subsidiary: resolve it while
+        // the filter is lifted, or rendering would hit a filtered-out proxy.
+        $grouped = $this->holdingScope->read(function () use ($tree): array {
+            $grouped = $this->supplierRepository->findGroupedForTenants($tree);
+            foreach ($grouped as $g) {
+                $g['representative']->getEffectiveContactPerson();
+            }
+
+            return $grouped;
+        });
 
         // Sort groups: multi-tenant suppliers first (biggest
         // consolidation opportunity), then by name.
@@ -337,10 +353,10 @@ final class GroupReportController extends AbstractController
         // Pull every incident in the subtree, then filter: incidents
         // from the current tenant are always included (no opt-out
         // against self), cross-tenant rows require visible_to_holding.
-        $all = $this->incidentRepository->findBy(
+        $all = $this->holdingScope->read(fn (): array => $this->incidentRepository->findBy(
             ['tenant' => $tree],
             ['detectedAt' => 'DESC']
-        );
+        ));
         $visible = array_values(array_filter(
             $all,
             static fn(Incident $i): bool =>
@@ -397,18 +413,21 @@ final class GroupReportController extends AbstractController
         ));
 
         // matrix[program_id][subsidiary_code] = derived InternalAudit|null
-        $matrix = [];
-        foreach ($programs as $program) {
-            $row = [];
-            foreach ($subsidiaries as $sub) {
-                $derived = $this->auditRepository->findOneBy([
-                    'parentAudit' => $program,
-                    'tenant' => $sub,
-                ]);
-                $row[$sub->getCode()] = $derived;
+        $matrix = $this->holdingScope->read(function () use ($programs, $subsidiaries): array {
+            $matrix = [];
+            foreach ($programs as $program) {
+                $row = [];
+                foreach ($subsidiaries as $sub) {
+                    $row[$sub->getCode()] = $this->auditRepository->findOneBy([
+                        'parentAudit' => $program,
+                        'tenant' => $sub,
+                    ]);
+                }
+                $matrix[$program->getId()] = $row;
             }
-            $matrix[$program->getId()] = $row;
-        }
+
+            return $matrix;
+        });
 
         return $this->render('group_report/audit_program.html.twig', [
             'root' => $root,
@@ -419,6 +438,7 @@ final class GroupReportController extends AbstractController
     }
 
     #[Route('/audit-program/{id}/derive', name: 'audit_program_derive', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_GROUP_CISO')] // writes into the subsidiaries — not for the read-only Konzern-Auditor
     public function deriveAuditProgram(int $id, Request $request): Response
     {
         $root = $this->tenantContext->getCurrentTenant();
@@ -446,11 +466,12 @@ final class GroupReportController extends AbstractController
 
         /** @var User|null $actor */
         $actor = $this->getUser();
-        $result = $this->groupAuditProgramService->deriveForSubsidiaries(
+        // The duplicate check must see the subsidiaries' audits, not only the holding's.
+        $result = $this->holdingScope->read(fn (): array => $this->groupAuditProgramService->deriveForSubsidiaries(
             $program,
             $subsidiaries,
             $actor instanceof User ? $actor : null
-        );
+        ));
 
         $this->addFlash('success', $this->translator->trans(
             'group_report.audit_program.flash.derived',

@@ -14,6 +14,7 @@ use App\Security\Voter\Notification\NotificationRuleVoter;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,6 +55,7 @@ class NotificationRuleController extends AbstractController
 
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(
+        Request $request,
         #[CurrentUser] User $user,
     ): Response {
         if ($redirect = $this->checkModuleActive('notifications')) {
@@ -67,8 +69,16 @@ class NotificationRuleController extends AbstractController
             ['name' => 'ASC']
         );
 
+        $activeCount = count(array_filter($rules, static fn(NotificationRule $r): bool => $r->isActive()));
+
         return $this->render('admin/notification/rule/index.html.twig', [
-            'rules' => $rules,
+            'page' => ListPage::fromRequest(
+                $rules,
+                $request,
+                static fn(NotificationRule $r): array => [$r->getName(), $r->getEventType()],
+            ),
+            'active_count' => $activeCount,
+            'inactive_count' => count($rules) - $activeCount,
         ]);
     }
 

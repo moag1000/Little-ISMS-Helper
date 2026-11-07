@@ -26,6 +26,7 @@ use App\Service\PreFiller\DpiaPreFiller;
 use App\Service\PreFiller\SectoralDpiaPreFiller;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -94,14 +95,11 @@ class DPIAController extends AbstractController
             default => $this->dataProtectionImpactAssessmentService->findAll(),
         };
 
-        // Get statistics for dashboard
-        $statistics = $this->dataProtectionImpactAssessmentService->getDashboardStatistics();
-        $complianceScore = $this->dataProtectionImpactAssessmentService->calculateComplianceScore();
-
         return $this->render('dpia/index.html.twig', [
+            'page' => ListPage::fromRequest($dpias, $request, static fn(DataProtectionImpactAssessment $d): array => [$d->getReferenceNumber(), $d->getTitle()]),
             'dpias' => $dpias,
-            'statistics' => $statistics,
-            'compliance_score' => $complianceScore,
+            'statistics' => $this->dataProtectionImpactAssessmentService->getDashboardStatistics(),
+            'compliance_score' => $this->dataProtectionImpactAssessmentService->calculateComplianceScore(),
             'current_filter' => $filter,
         ]);
     }

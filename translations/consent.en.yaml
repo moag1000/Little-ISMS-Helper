@@ -18,11 +18,10 @@ consent:
         document_revocation: 'Document Revocation'
 
     # KPIs
-    kpi:
-        total: 'Total'
-        active: 'Active'
-        pending: 'Pending'
-        revoked: 'Revoked'
+    summary:
+        active: '%count% active'
+        pending: '%count% pending'
+        revoked: '%count% revoked'
 
     # Sections
     section:
@@ -69,7 +68,6 @@ consent:
         revoked: Revoked
         expired: Expired
         rejected: Rejected
-        overview: 'Status Overview'
 
     # Identifier types
     identifier_type:
@@ -117,7 +115,7 @@ consent:
 
     # Empty state
     empty:
-        title: 'No Consents Found'
+        title: 'No consents yet.'
         description: 'Record your first consent to start GDPR-compliant documentation.'
 
     # Verification

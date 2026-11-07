@@ -1,5 +1,9 @@
 tags:
     admin:
+        list: 'Tags'
+        summary:
+            global: '%count% global'
+            tenant: '%count% organisationsspezifisch'
         page:
             title: "Tags verwalten"
             lead: "Framework-Tags und Klassifikations-Tags für Assets, Controls, Risiken und Lieferanten."
@@ -16,7 +20,7 @@ tags:
         scope_global: "Global"
         table:
             caption: "Liste aller sichtbaren Tags"
-        empty: "Noch keine Tags vorhanden. Lege einen neuen Tag an, um Bulk-Klassifikation über mehrere Frameworks zu nutzen."
+        empty: 'Keine Tags vorhanden.'
         aria:
             edit: 'Tag "%name%" bearbeiten'
             delete: 'Tag "%name%" löschen'

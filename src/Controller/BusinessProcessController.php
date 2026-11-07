@@ -12,6 +12,7 @@ use App\Form\BusinessProcessType;
 use App\Repository\BusinessProcessRepository;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -78,62 +79,20 @@ class BusinessProcessController extends AbstractController
             ];
         }
 
-        // Calculate statistics
-        $stats = [
-            'total' => count($processes),
-            'critical' => 0,
-            'high' => 0,
-            'medium' => 0,
-            'low' => 0,
-            'avg_rto' => 0,
-            'avg_rpo' => 0,
-            'total_financial_impact' => 0,
-            'processes_with_risks' => 0,
-        ];
-
-        $totalRto = 0;
-        $totalRpo = 0;
-
-        foreach ($processes as $process) {
-            // Count by criticality
-            $criticality = $process->getCriticality();
-            if (isset($stats[$criticality])) {
-                $stats[$criticality]++;
-            }
-
-            // Calculate averages
-            $totalRto += $process->getRto();
-            $totalRpo += $process->getRpo();
-
-            // Financial impact
-            if ($process->getFinancialImpactPerDay()) {
-                $stats['total_financial_impact'] += (float) $process->getFinancialImpactPerDay();
-            }
-
-            // Processes with risks
-            if ($process->getActiveRiskCount() > 0) {
-                $stats['processes_with_risks']++;
-            }
-        }
-
-        if ($stats['total'] > 0) {
-            $stats['avg_rto'] = round($totalRto / $stats['total'], 1);
-            $stats['avg_rpo'] = round($totalRpo / $stats['total'], 1);
-        }
-
-        // Calculate detailed statistics based on origin
-        if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($processes, $tenant);
-        } else {
-            $detailedStats = ['own' => count($processes), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($processes)];
-        }
+        // Summary chips count the list as shown (view applied).
+        $criticalCount = count(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getCriticality() === 'critical'));
+        $withRisksCount = count(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getActiveRiskCount() > 0));
 
         return $this->render('business_process/index.html.twig', [
-            'business_processes' => $processes,
-            'stats' => $stats,
+            'page' => ListPage::fromRequest(
+                $processes,
+                $request,
+                static fn(BusinessProcess $p): array => [$p->getName(), $p->getDescription(), (string) $p->getEffectiveProcessOwner()],
+            ),
+            'critical_count' => $criticalCount,
+            'with_risks_count' => $withRisksCount,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
         ]);
     }
     #[Route('/bcm/business-process/new', name: 'app_business_process_new', methods: ['GET', 'POST'])]
@@ -185,64 +144,6 @@ class BusinessProcessController extends AbstractController
             'business_process' => $businessProcess,
             'form' => $form,
         ], new Response(status: $status));
-    }
-    #[Route('/bcm/business-process/api/stats', name: 'app_business_process_stats_api', methods: ['GET'])]
-    public function statsApi(Request $request, BusinessProcessRepository $businessProcessRepository): Response
-    {
-        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
-
-        $user   = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $processes = $tenant !== null
-            ? $businessProcessRepository->findByTenant($tenant)
-            : $businessProcessRepository->findAll();
-
-        $stats = [
-            'total' => count($processes),
-            'by_criticality' => [
-                'critical' => 0,
-                'high' => 0,
-                'medium' => 0,
-                'low' => 0,
-            ],
-            'avg_rto' => 0,
-            'avg_rpo' => 0,
-            'processes_with_high_risks' => 0,
-        ];
-
-        $totalRto = 0;
-        $totalRpo = 0;
-
-        foreach ($processes as $process) {
-            $criticality = $process->getCriticality();
-            if (isset($stats['by_criticality'][$criticality])) {
-                $stats['by_criticality'][$criticality]++;
-            }
-
-            $totalRto += $process->getRto();
-            $totalRpo += $process->getRpo();
-
-            if ($process->hasUnmitigatedHighRisks()) {
-                $stats['processes_with_high_risks']++;
-            }
-        }
-
-        if ($stats['total'] > 0) {
-            $stats['avg_rto'] = round($totalRto / $stats['total'], 1);
-            $stats['avg_rpo'] = round($totalRpo / $stats['total'], 1);
-        }
-
-        // Turbo Frame requests (Turbo-Frame: bcm-stats) require an HTML fragment
-        // containing a matching <turbo-frame id="bcm-stats"> wrapper.
-        // Direct / API / test requests without the header receive JSON as before.
-        if ($request->headers->has('Turbo-Frame')) {
-            return $this->render('business_process/_stats_frame.html.twig', [
-                'stats' => $stats,
-            ]);
-        }
-
-        return $this->json($stats);
     }
     #[Route('/bcm/business-process/{id}', name: 'app_business_process_show', methods: ['GET'])]
     public function show(Request $request, BusinessProcess $businessProcess): Response
@@ -354,47 +255,5 @@ class BusinessProcessController extends AbstractController
             'business_process' => $businessProcess,
             'is_new' => $isNew,
         ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
-    }
-
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
     }
 }

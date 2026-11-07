@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_table.html.twig' as _fa_table %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'compliance.certificate.index.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -23,38 +21,43 @@
         ]
     }) }}
 
-    {% if certificates|length == 0 %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_compliance_certificate_index', {_locale: app.request.locale}),
+        list_title: 'compliance.certificate.index.title'|trans({}, 'compliance'),
+        empty: {
             mood: 'thinking',
             title: 'compliance.certificate.empty.title'|trans({}, 'compliance'),
             text: 'compliance.certificate.empty.text'|trans({}, 'compliance'),
             actions: [
                 { label: 'compliance.certificate.actions.upload'|trans({}, 'compliance'), href: path('app_compliance_certificate_new', {_locale: app.request.locale}), variant: 'primary' }
             ]
-        }) }}
-    {% else %}
-        {% set rows = [] %}
-        {% for cert in certificates %}
-            {% set rows = rows|merge([[
-                '<a href="' ~ path('app_compliance_certificate_show', {_locale: app.request.locale, id: cert.id}) ~ '">' ~ (cert.certNumber ?? cert.frameworkCode)|e ~ '</a>',
-                cert.frameworkCode|e,
-                cert.certBody|e,
-                (cert.validUntil ? cert.validUntil|date('Y-m-d') : '—'),
-                cert.status|e
-            ]]) %}
-        {% endfor %}
-
-        {{ _fa_table.render({
-            headers: [
-                { label: 'compliance.certificate.field.cert_number'|trans({}, 'compliance') },
-                { label: 'compliance.certificate.field.framework'|trans({}, 'compliance') },
-                { label: 'compliance.certificate.field.cert_body'|trans({}, 'compliance') },
-                { label: 'compliance.certificate.field.valid_until'|trans({}, 'compliance') },
-                { label: 'compliance.certificate.field.status'|trans({}, 'compliance') }
-            ],
-            rows: rows,
-            striped: true
-        }) }}
-    {% endif %}
+        },
+    } %}
+        {% block list_table %}
+            {% embed '_components/_fa_table.html.twig' with { striped: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'compliance.certificate.field.cert_number'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'compliance.certificate.field.framework'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'compliance.certificate.field.cert_body'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'compliance.certificate.field.valid_until'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'compliance.certificate.field.status'|trans({}, 'compliance') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for cert in page %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell"><a href="{{ path('app_compliance_certificate_show', {_locale: app.request.locale, id: cert.id}) }}">{{ cert.certNumber ?? cert.frameworkCode }}</a></td>
+                            <td class="fa-table__cell">{{ cert.frameworkCode }}</td>
+                            <td class="fa-table__cell">{{ cert.certBody }}</td>
+                            <td class="fa-table__cell">{{ cert.validUntil ? cert.validUntil|fa_date : '—' }}</td>
+                            <td class="fa-table__cell">{{ cert.status }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

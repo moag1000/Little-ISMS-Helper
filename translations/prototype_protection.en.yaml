@@ -99,8 +99,11 @@ prototype_protection:
         meta: 'Metadata'
     expiring:
         heading: '%count% assessment(s) expire in the next 60 days:'
+    summary:
+        not_met: '%count% not met'
+        in_review: '%count% in review'
     empty:
-        title: 'No prototype-protection assessments yet'
+        title: 'No prototype-protection assessments yet.'
         message: 'Start with a new assessment once prototypes, test vehicles or events are in your TISAX scope.'
     flash:
         created: 'Prototype-protection assessment created.'

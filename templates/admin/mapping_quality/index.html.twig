@@ -1,11 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'admin' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
-{% import '_components/_status_pill.html.twig' as pill %}
-{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'admin.mapping_quality.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -27,123 +22,88 @@
         subtitle: 'admin.mapping_quality.description'|trans({}, 'admin'),
     }) }}
 
-    {# Aggregate-Statistiken #}
-    <div class="row mb-4">
-        <div class="col-md-3">
-            {{ _fa_kpi_card.render({
-                value: stats.total,
-                label: 'admin.mapping_quality.stats.total'|trans({}, 'admin'),
-            }) }}
-        </div>
-        <div class="col-md-3">
-            {{ _fa_kpi_card.render({
-                value: stats.avg_mqs,
-                label: 'admin.mapping_quality.stats.avg_mqs'|trans({}, 'admin'),
-                valueDanger: stats.avg_mqs < 60,
-            }) }}
-        </div>
-        <div class="col-md-3">
-            {{ _fa_kpi_card.render({
-                value: stats.by_state.published|default(0),
-                label: 'admin.mapping_quality.stats.published'|trans({}, 'admin'),
-            }) }}
-        </div>
-        <div class="col-md-3">
-            {{ _fa_kpi_card.render({
-                value: stats.low_score_published,
-                label: 'admin.mapping_quality.stats.low_score_published'|trans({}, 'admin'),
-                valueDanger: stats.low_score_published > 0,
-            }) }}
-        </div>
+    {# Actions (the POST form needs a CSRF token; header actions only render links) #}
+    <div class="d-flex justify-content-end gap-2 mb-3">
+        <a href="{{ path('admin_mapping_quality_coverage') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+            <i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'admin.mapping_quality.coverage_button'|trans({}, 'admin') }}
+        </a>
+        <form method="post" action="{{ path('admin_mapping_quality_recompute') }}"
+              data-controller="ui-actions"
+              data-action="submit->ui-actions#confirm"
+              data-ui-actions-message-param="{{ 'admin.mapping_quality.recompute_confirm'|trans({}, 'admin') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('mapping_quality_recompute') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'admin.mapping_quality.recompute'|trans({}, 'admin') }}
+            </button>
+        </form>
     </div>
 
-    {# Filter + Recompute #}
-    <div class="d-flex justify-content-between align-items-end mb-3 gap-3 flex-wrap">
-        <form method="get" class="d-flex gap-2 align-items-end flex-wrap">
-            <div>
-                <label class="form-label small mb-1" for="state">{{ 'admin.mapping_quality.filter.state'|trans({}, 'admin') }}</label>
-                <select name="state" id="state" class="form-select form-select-sm fa-cyber-input__field">
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('admin_mapping_quality_index'),
+        filter_keys: ['state', 'min_score'],
+        list_title: 'admin.mapping_quality.list'|trans({}, 'admin'),
+        empty: { mood: 'scanning', title: 'admin.mapping_quality.no_results'|trans({}, 'admin') },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-3">
+                <label class="form-label" for="state">{{ 'admin.mapping_quality.filter.state'|trans({}, 'admin') }}</label>
+                <select name="state" id="state" class="form-select fa-cyber-input__field">
                     <option value="">{{ 'admin.mapping_quality.filter.all'|trans({}, 'admin') }}</option>
                     {% for s in lifecycleStates %}
                         <option value="{{ s }}" {% if filterState == s %}selected{% endif %}>{{ s }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div>
-                {{ _fa_cyber.text('min_score', {
-                    id: 'min_score',
-                    type: 'number',
-                    label: 'admin.mapping_quality.filter.min_score'|trans({}, 'admin'),
-                    value: filterMinScore,
-                    extra_attrs: {'min': '0', 'max': '100'}
-                }) }}
+            <div class="col-md-3">
+                <label class="form-label" for="min_score">{{ 'admin.mapping_quality.filter.min_score'|trans({}, 'admin') }}</label>
+                <input type="number" name="min_score" id="min_score" min="0" max="100"
+                       class="form-control fa-cyber-input__field" value="{{ filterMinScore > 0 ? filterMinScore : '' }}">
             </div>
-            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'common.filter'|trans({}, 'messages')|default('Filter') }}</button>
-        </form>
-        <div class="d-flex gap-2">
-            <a href="{{ path('admin_mapping_quality_coverage') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                <i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'admin.mapping_quality.coverage_button'|trans({}, 'admin') }}
-            </a>
-            <form method="post" action="{{ path('admin_mapping_quality_recompute') }}"
-                  data-controller="ui-actions"
-                  data-action="submit->ui-actions#confirm"
-                  data-ui-actions-message-param="{{ 'admin.mapping_quality.recompute_confirm'|trans({}, 'admin') }}">
-                <input type="hidden" name="_token" value="{{ csrf_token('mapping_quality_recompute') }}">
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'admin.mapping_quality.recompute'|trans({}, 'admin') }}
-                </button>
-            </form>
-        </div>
-    </div>
-
-    {# Liste #}
-    <section class="fa-section">
-        <div class="fa-section__body">
-            {% if mappings|length == 0 %}
-                {{ _fa_empty_state.render({
-                    mood: 'scanning',
-                    title: 'admin.mapping_quality.no_results'|trans({}, 'admin')
-                }) }}
-            {% else %}
-                {% embed '_components/_fa_table.html.twig' %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.source_target'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.relationship'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.confidence'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.lifecycle'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.mapping_quality.col.mqs'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__th fa-table__th--actions"></th>
+        {% endblock %}
+        {% block list_summary %}
+            {% if low_score_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'admin.mapping_quality.summary.low_score'|trans({'%count%': low_score_count}, 'admin') }}</span>{% endif %}
+            {% if published_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'admin.mapping_quality.summary.published'|trans({'%count%': published_count}, 'admin') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.source_target'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.relationship'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.confidence'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.lifecycle'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.mapping_quality.col.mqs'|trans({}, 'admin') }}</th>
+                        <th class="fa-table__th fa-table__th--actions"></th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
+                    {% for m in page %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">
+                                <code class="small">{{ m.sourceRequirement.requirementId }}</code>
+                                <i class="fa-icon fa-icon--util-arrow-right small text-muted" aria-hidden="true"></i>
+                                <code class="small">{{ m.targetRequirement.requirementId }}</code>
+                                <div class="small text-muted">{{ m.sourceRequirement.framework.name }} → {{ m.targetRequirement.framework.name }}</div>
+                            </td>
+                            <td class="fa-table__cell">{% if m.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ m.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</td>
+                            <td class="fa-table__cell">{{ pill.render(m.confidence, m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'neutral'), {size: 'sm'}) }}</td>
+                            <td class="fa-table__cell">{{ pill.render(m.lifecycleState, m.lifecycleBadgeClass in ['info'] ? 'primary' : (m.lifecycleBadgeClass in ['secondary','light','dark'] ? 'neutral' : m.lifecycleBadgeClass), {size: 'sm'}) }}</td>
+                            <td class="fa-table__cell fa-table__cell--num">
+                                {% set scoreClass = m.qualityScore >= 80 ? 'success' : (m.qualityScore >= 60 ? 'warning' : 'danger') %}
+                                <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '–' }}</span>
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--actions">
+                                <a href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                </a>
+                            </td>
                         </tr>
-                    {% endblock %}
-                    {% block table_body %}
-                        {% import '_components/_status_pill.html.twig' as pill %}
-                        {% for m in mappings %}
-                            <tr class="fa-table__row">
-                                <td class="fa-table__cell">
-                                    <code class="small">{{ m.sourceRequirement.requirementId }}</code>
-                                    <i class="fa-icon fa-icon--util-arrow-right small text-muted" aria-hidden="true"></i>
-                                    <code class="small">{{ m.targetRequirement.requirementId }}</code>
-                                    <div class="small text-muted">{{ m.sourceRequirement.framework.name }} → {{ m.targetRequirement.framework.name }}</div>
-                                </td>
-                                <td class="fa-table__cell">{% if m.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ m.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</td>
-                                <td class="fa-table__cell">{{ pill.render(m.confidence, m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'neutral'), {size: 'sm'}) }}</td>
-                                <td class="fa-table__cell">{{ pill.render(m.lifecycleState, m.lifecycleBadgeClass in ['info'] ? 'primary' : (m.lifecycleBadgeClass in ['secondary','light','dark'] ? 'neutral' : m.lifecycleBadgeClass), {size: 'sm'}) }}</td>
-                                <td class="fa-table__cell fa-table__cell--num">
-                                    {% set scoreClass = m.qualityScore >= 80 ? 'success' : (m.qualityScore >= 60 ? 'warning' : 'danger') %}
-                                    <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '–' }}</span>
-                                </td>
-                                <td class="fa-table__cell fa-table__cell--actions">
-                                    <a href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endif %}
-        </div>
-    </section>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

@@ -33,7 +33,7 @@
         } %}
     </td>
     <td class="fa-table__cell">{{ a.tisaxLevel ?? '—' }}</td>
-    <td class="fa-table__cell">{{ a.assessmentDate ? a.assessmentDate|date('d.m.Y') : '—' }}</td>
+    <td class="fa-table__cell">{{ a.assessmentDate|fa_date }}</td>
     <td class="fa-table__cell">
         {% if a.overallResult %}
             {% include '_components/_badge.html.twig' with {
@@ -46,7 +46,7 @@
     </td>
     <td class="fa-table__cell">
         {% if a.nextAssessmentDue %}
-            {{ a.nextAssessmentDue|date('d.m.Y') }}
+            {{ a.nextAssessmentDue|fa_date }}
         {% else %}
             <span class="text-muted">—</span>
         {% endif %}

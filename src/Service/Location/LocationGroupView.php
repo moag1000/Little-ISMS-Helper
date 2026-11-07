@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Location;
 
 use App\Entity\Tenant;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Group\HoldingScope;
 
 /**
  * Group view of the location map (Konzernsicht): the sites of the current
@@ -13,8 +13,8 @@ use Doctrine\ORM\EntityManagerInterface;
  * summary row per organisation. For ROLE_GROUP_CISO and ROLE_KONZERN_AUDITOR
  * at a holding (the caller checks the role).
  *
- * The tenant filter limits every query to the user's own organisation, so it
- * is suspended for the read; the organisations come from the caller's own
+ * The tenant filter limits every query to the user's own organisation, so the
+ * read runs through {@see HoldingScope::read()}; the organisations come from the caller's own
  * subtree (TenantContext::getAccessibleTenants()), never from the request.
  * Rows carry only what the map shows: no owners, no record links.
  */
@@ -27,7 +27,7 @@ class LocationGroupView
     ];
 
     public function __construct(
-        private readonly EntityManagerInterface $em,
+        private readonly HoldingScope $holdingScope,
         private readonly LocationPostureService $posture,
     ) {
     }
@@ -38,14 +38,8 @@ class LocationGroupView
      */
     public function build(array $tenants): array
     {
-        $filters = $this->em->getFilters();
-        $suspend = $filters->isEnabled('tenant_filter');
-        if ($suspend) {
-            $filters->suspend('tenant_filter');
-        }
-
         $sites = $companies = [];
-        try {
+        $this->holdingScope->read(function () use ($tenants, &$sites, &$companies): void {
             foreach ($tenants as $tenant) {
                 $rows = array_values(array_filter(
                     $this->posture->forTenant($tenant),
@@ -70,11 +64,7 @@ class LocationGroupView
                     'critical' => count(array_filter($rows, static fn (array $s): bool => $s['riskBand'] === 'critical')),
                 ];
             }
-        } finally {
-            if ($suspend) {
-                $filters->restore('tenant_filter');
-            }
-        }
+        });
 
         return ['sites' => $sites, 'companies' => $companies];
     }

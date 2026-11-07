@@ -4,8 +4,6 @@
 {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
 {% trans_default_domain 'suppliers' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'supplier.title'|trans({}, 'suppliers') }}{% endblock %}
 
@@ -71,62 +69,7 @@
 {% endif %}
 
 
-<main>
 <div class="container">
-
-    {% if currentTenant %}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
-        {% block card_body %}
-            <div class="py-2">
-                <form method="get" action="{{ path('app_supplier_index') }}" class="d-flex align-items-center gap-2">
-                    <label for="view-filter" class="mb-0 fw-bold">
-                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
-                    </label>
-                    <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                        <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                            {{ 'corporate.view.own_only'|trans({}, 'messages') }}
-                        </option>
-                        {% if inheritanceInfo.hasParent %}
-                        <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                            {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
-                        </option>
-                        {% endif %}
-                        {% if inheritanceInfo.hasSubsidiaries %}
-                        <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                            {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
-                        </option>
-                        {% endif %}
-                    </select>
-                    <noscript>
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
-                    </noscript>
-                </form>
-            </div>
-        {% endblock %}
-    {% endembed %}
-    {% endif %}
-
-    {% if statistics %}
-    <div class="row mb-4">
-        <div class="col-md-3">
-            {% if currentTenant %}
-                {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
-                {{ _fa_feature_card.render({ label: 'supplier.statistics.total'|trans({}, 'suppliers'), value: detailedStats.total, hint: subtitle, variant: 'primary' }) }}
-            {% else %}
-                {{ _fa_feature_card.render({ label: 'supplier.statistics.total'|trans({}, 'suppliers'), value: detailedStats.total, variant: 'primary' }) }}
-            {% endif %}
-        </div>
-        <div class="col-md-3">
-            {{ _fa_feature_card.render({ label: 'supplier.statistics.critical'|trans({}, 'suppliers'), value: statistics.critical, variant: 'danger' }) }}
-        </div>
-        <div class="col-md-3">
-            {{ _fa_feature_card.render({ label: 'supplier.statistics.overdue_assessments'|trans({}, 'suppliers'), value: statistics.overdue_assessments, variant: 'warning' }) }}
-        </div>
-        <div class="col-md-3">
-            {{ _fa_feature_card.render({ label: 'supplier.statistics.non_compliant'|trans({}, 'suppliers'), value: statistics.non_compliant, variant: 'danger' }) }}
-        </div>
-    </div>
-    {% endif %}
 
     {% if overdueAssessments|length > 0 %}
     <div class="fa-alert fa-alert--warning" role="alert">
@@ -136,7 +79,7 @@
             {% for supplier in overdueAssessments %}
             <li>
                 <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
-                - {{ 'supplier.next_assessment'|trans({}, 'suppliers') }}: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.not_scheduled'|trans({}, 'suppliers')) }}
+                - {{ 'supplier.next_assessment'|trans({}, 'suppliers') }}: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|fa_date : ('supplier.not_scheduled'|trans({}, 'suppliers')) }}
             </li>
             {% endfor %}
         </ul>
@@ -161,16 +104,46 @@
     </div>
     {% endif %}
 
-    {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
-    {% embed '_components/_search_filter_form.html.twig' with {
-        action: path('app_supplier_index'),
+    {# WS-5 Bulk tag actions bar (polymorphic) #}
+    {% if is_granted('TAG_APPLY') %}
+        {% include '_components/_bulk_action_bar.html.twig' with {
+            entity_class:   'App\\Entity\\Supplier',
+            action_urls: {
+                tag_add: path('admin_tag_bulk_apply', {entityClass: 'Supplier'}),
+            },
+            available_tags: available_tags(),
+        } only %}
+    {% endif %}
+
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_supplier_index'),
         filter_keys: ['criticality', 'status', 'iso27001', 'lksg_risk', 'dora_relevant', 'view', 'tag'],
-        form_id: 'supplier-filter-form'
+        list_title: 'supplier.list.title'|trans({'%count%': page.total}, 'suppliers'),
+        empty: {
+            mood: 'sleeping',
+            title: 'supplier.empty.message'|trans({}, 'suppliers'),
+            actions: [
+                { label: 'supplier.empty.add_first'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') }
+            ]
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/supplier"',
     } %}
-        {% block filters %}
+        {% block list_filters %}
             {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
-            {% if app.request.query.get('view') %}
-                <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
+            {% if currentTenant %}
+            <div class="col-md-4">
+                <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
+                <select class="form-select fa-cyber-input__field" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>{{ 'corporate.view.own_only'|trans({}, 'messages') }}</option>
+                    {% if inheritanceInfo.hasParent %}
+                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>{{ 'corporate.view.including_inherited'|trans({}, 'messages') }}</option>
+                    {% endif %}
+                    {% if inheritanceInfo.hasSubsidiaries %}
+                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>{{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}</option>
+                    {% endif %}
+                </select>
+            </div>
             {% endif %}
             <div class="col-md-4">
                 <label for="filter-criticality" class="form-label">{{ 'supplier.table.criticality'|trans({}, 'suppliers') }}</label>
@@ -222,30 +195,15 @@
             </div>
             {% endif %}
         {% endblock %}
-    {% endembed %}
-
-    {# WS-5 Bulk tag actions bar (polymorphic) #}
-    {% if is_granted('TAG_APPLY') %}
-        {% include '_components/_bulk_action_bar.html.twig' with {
-            entity_class:   'App\\Entity\\Supplier',
-            action_urls: {
-                tag_add: path('admin_tag_bulk_apply', {entityClass: 'Supplier'}),
-            },
-            available_tags: available_tags(),
-        } only %}
-    {% endif %}
-
-    {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/supplier"{% endblock %}
-        {% block card_header %}
-            <div class="card-header">
-                {%- set supplierCount = suppliers|length -%}
-                <h2>{{ 'supplier.list.title'|trans({'%count%': supplierCount}, 'suppliers') }}</h2>
-            </div>
+        {% block list_summary %}
+            {% set _critical = suppliers|filter(s => s.criticality == 'critical')|length %}
+            {% set _overdue = suppliers|filter(s => s in overdueAssessments)|length %}
+            {% set _non_compliant = suppliers|filter(s => s in nonCompliant)|length %}
+            {% if _critical > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'supplier.summary.critical'|trans({'%count%': _critical}, 'suppliers') }}</span>{% endif %}
+            {% if _overdue > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'supplier.summary.overdue_assessments'|trans({'%count%': _overdue}, 'suppliers') }}</span>{% endif %}
+            {% if _non_compliant > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'supplier.summary.non_compliant'|trans({'%count%': _non_compliant}, 'suppliers') }}</span>{% endif %}
         {% endblock %}
-        {% block card_body %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {% if suppliers|length > 0 %}
+        {% block list_table %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-bulk-selectable',
                 'noMargin': true
@@ -270,61 +228,42 @@
                 {% endblock %}
                 {% block table_body_attrs %}id="supplier-rows"{% endblock %}
                 {% block table_body %}
-                    {% for supplier in suppliers %}
+                    {% set workflowStates = workflow_states(page) %}
+                    {% for supplier in page %}
                         {% include 'supplier/_row.html.twig' with { supplier: supplier, currentTenant: currentTenant } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-            {% else %}
-            {% set _system_templates = system_templates('App\\Entity\\Supplier') %}
-            {{ _fa_empty_state.render({
-                mood: 'sleeping',
-                title: 'supplier.empty.message'|trans({}, 'suppliers'),
-                actions: [
-                    { label: 'supplier.empty.add_first'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') }
-                ]
-            }) }}
-            {# Hyperscaler / SaaS starter set #}
-            {% if _system_templates|length > 0 %}
-                <div class="text-center mt-3">
-                    <button type="button" class="btn btn-outline-primary"
-                            data-controller="fa-modal-dispatcher"
-                            data-action="click->fa-modal-dispatcher#open"
-                            data-fa-modal-id="systemTemplateModalSupplier">
-                        <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
-                        {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
-                    </button>
-                    <div class="form-text small">
-                        {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
-                    </div>
-                </div>
-                {% include '_components/_system_template_selector.html.twig' with {
-                    templates: _system_templates,
-                    entity_class: 'App\\Entity\\Supplier',
-                    redirect_to: 'app_supplier_index',
-                    modal_id: 'systemTemplateModalSupplier'
-                } %}
-            {% endif %}
-            {% endif %}
-
-            {# Bulk Action Bar #}
-            {% if suppliers|length > 0 %}
             {% include '_components/_bulk_action_bar.html.twig' with {
                 actions: ['export', 'delete']
             } %}
-            {% endif %}
         {% endblock %}
     {% endembed %}
+
+    {# Hyperscaler / SaaS starter set — only on a truly empty register #}
+    {% if page.total == 0 and app.request.query.all|length == 0 %}
+        {% set _system_templates = system_templates('App\\Entity\\Supplier') %}
+        {% if _system_templates|length > 0 %}
+            <div class="text-center mt-3">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm"
+                        data-controller="fa-modal-dispatcher"
+                        data-action="click->fa-modal-dispatcher#open"
+                        data-fa-modal-id="systemTemplateModalSupplier">
+                    <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
+                    {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+                </button>
+                <div class="form-text small">
+                    {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
+                </div>
+            </div>
+            {% include '_components/_system_template_selector.html.twig' with {
+                templates: _system_templates,
+                entity_class: 'App\\Entity\\Supplier',
+                redirect_to: 'app_supplier_index',
+                modal_id: 'systemTemplateModalSupplier'
+            } %}
+        {% endif %}
+    {% endif %}
 </div>
 
-<style>
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
-.stat-item { display: flex; flex-direction: column; padding: 1rem; background: var(--bs-tertiary-bg); border-radius: 4px; }
-.stat-label { font-size: 0.875rem; color: var(--bs-secondary-color); }
-.stat-value { font-size: 1.5rem; font-weight: bold; color: var(--bs-body-color); }
-.stat-value.critical { color: var(--danger); }
-.stat-value.warning { color: var(--warning); }
-.stat-value.danger { color: var(--danger); }
-</style>
-</main>
 {% endblock %}

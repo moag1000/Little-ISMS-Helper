@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single DataBreach table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit/pdf actions do the
@@ -36,6 +37,7 @@
         <a href="{{ path('app_data_breach_show', {id: breach.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link">
             <strong>{{ breach.title }}</strong>
         </a>
+        {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[breach.id] ?? {}) : workflow_state(breach)) }}
     </td>
     <td>
         {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
@@ -65,7 +67,7 @@
                 {% include '_components/_badge.html.twig' with { variant: 'info', content: 'data_breach.index.hours_left'|trans({'%hours%': hours|number_format}, 'messages') } %}
             {% endif %}
         {% elseif breach.supervisoryAuthorityNotifiedAt %}
-            <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'data_breach.notified_at'|trans({'%date%': breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i')}, 'privacy') }}"></i>
+            <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'data_breach.notified_at'|trans({'%date%': breach.supervisoryAuthorityNotifiedAt|fa_datetime}, 'privacy') }}"></i>
         {% else %}
             <span class="text-muted">{{ 'data_breach.not_required'|trans({}, 'privacy') }}</span>
         {% endif %}

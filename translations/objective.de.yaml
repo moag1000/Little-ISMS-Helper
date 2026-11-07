@@ -82,13 +82,11 @@ objective:
         kpi_on_map: 'Auf Karte zeigen'
         current: Ist
         target: Ziel
-    stats:
-        total: Gesamt
-        active: Aktiv
-        achieved: Erreicht
-        delayed: Verzögert
+    summary:
+        achieved: '%count% erreicht'
+        delayed: '%count% verzögert'
     list:
-        title: 'Alle Ziele (%count%)'
+        title: 'Alle Ziele'
     table:
         title: Titel
         category: Kategorie
@@ -96,7 +94,7 @@ objective:
         progress: Fortschritt
         status: Status
     message:
-        no_objectives: 'Noch keine Ziele definiert.'
+        no_objectives: 'Keine Ziele vorhanden.'
     status:
         not_started: 'Nicht begonnen'
         in_progress: 'In Bearbeitung'

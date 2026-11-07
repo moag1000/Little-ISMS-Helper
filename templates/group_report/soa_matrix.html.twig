@@ -26,7 +26,7 @@
 
     {% set _soa_rows = [] %}
     {% for cid in control_ids %}
-        {% set _row = [ '<code>' ~ cid ~ '</code>' ] %}
+        {% set _row = [ '<code>' ~ cid|e ~ '</code>' ] %}
         {% for tenant in tenants %}
             {% set control = matrix[cid][tenant.code]|default(null) %}
             {% if control is null %}
@@ -37,7 +37,7 @@
                 {% set status = control.implementationStatus %}
                 {% set _chip = status == 'implemented' ? 'final' : (status == 'in_progress' ? 'draft' : (status == 'planned' ? 'auditor-only' : 'confidential')) %}
                 {% set _sym = status == 'implemented' ? '✓' : (status == 'in_progress' ? '◐' : (status == 'planned' ? '◯' : '–')) %}
-                {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status ~ '">' ~ _sym ~ '</span>' ]) %}
+                {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status|e ~ '">' ~ _sym ~ '</span>' ]) %}
             {% endif %}
         {% endfor %}
         {% set _soa_rows = _soa_rows|merge([_row]) %}
@@ -60,7 +60,7 @@
             kicker:       'group_report.title'|trans({}, 'group_report'),
             status:       'final',
             audience:     'auditor',
-            generated_at: 'now'|date('d.m.Y H:i'),
+            generated_at: 'now'|fa_datetime,
         },
         brand_name: root.name,
         key_findings: [

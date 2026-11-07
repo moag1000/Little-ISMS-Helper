@@ -3,9 +3,9 @@ group_report:
     root_marker: 'Konzern-Wurzel'
     tree:
         title: 'Konzern-Struktur'
-        subtitle: 'Read-only Übersicht aller Organisationen im Konzern — nur für ROLE_GROUP_CISO.'
+        subtitle: 'Alle Organisationen unterhalb Ihrer Organisation, nur lesend.'
         holding_marker: 'Holding-Organisation'
-        you_are_here: 'Deine Organisation'
+        you_are_here: 'Ihre Organisation'
         flash:
             holding_only: 'Konzern-Reports sind nur für Holding-Strukturen verfügbar. Diese Organisation ist keine Holding und hat keine Tochtergesellschaften.'
     nis2:
@@ -46,19 +46,30 @@ group_report:
             inherent: 'Inhärent'
             residual: 'Residual'
             count: 'Anzahl'
-    kpi:
-        title: 'Framework-Reifegrad-Matrix'
-        subtitle: 'NIS2 / DORA / ISO 27001 / ... pro Organisation in %root% — Zelle = erfüllt / anwendbar Prozent.'
-        intro: 'Zeilen = Organisationen im Subtree. Spalten = verfügbare Compliance-Frameworks. Zellenwert ist identisch mit dem Per-Organisations-Dashboard (fulfilled / applicable). Leere Zelle bedeutet: Framework in der Organisation nicht anwendbar markiert.'
-        holding: 'Holding'
-        requirements: 'Anforderungen'
-        n_a_help: 'Keine anwendbaren Anforderungen in dieser Organisation.'
+    comparison:
+        title: 'Organisationsvergleich'
+        subtitle: '%count% Organisationen in %root% nebeneinander.'
+        sheet: 'Organisationsvergleich'
         col:
-            tenant: 'Organisation'
-        glossary:
-            applicable: 'Anzahl Anforderungen, die für den Tenant gelten (nach Scope-Filter)'
-            fulfilled: 'Anzahl Anforderungen mit Status "fulfilled" oder "compliant"'
-            percentage: 'fulfilled / applicable * 100, gerundet'
+            organisation: 'Organisation'
+            code: 'Kürzel'
+        group_row: 'Konzern'
+        export:
+            excel: 'Excel'
+            pdf: 'PDF'
+        findings:
+            organisations: '%count% Organisationen verglichen'
+            danger: '%count% Werte im roten Bereich'
+            warning: '%count% Werte im gelben Bereich'
+        kpis:
+            title: 'Kennzahlen'
+            intro: 'Jede Zelle ist der Wert vom Dashboard der Organisation, eingefärbt nach ihren KPI-Schwellwerten. Leer: Modul dort nicht aktiv oder keine Daten.'
+            empty: 'Keine Kennzahlen vorhanden.'
+        frameworks:
+            title: 'Framework-Erfüllung'
+            intro: 'Erfüllte von anwendbaren Anforderungen je Framework. Leer: in der Organisation keine anwendbare Anforderung.'
+            empty: 'Keine anwendbaren Frameworks vorhanden.'
+        methodology: 'Werte aus dem KPI-Katalog, für jede Organisation mit ihren eigenen Modulen und KPI-Schwellwerten berechnet. Konzern-Zeile: Quoten und Scores als einfacher Mittelwert der Organisationen mit Wert (Ø, jede Organisation zählt gleich), Anzahlen und Eurobeträge als Summe (Σ). Eurowerte nur für Rollen, die Schadenshöhen sehen dürfen.'
     soa:
         title: 'Konzern-SoA-Matrix'
         subtitle: 'Annex-A-Controls × Organisationen — %controls% Controls über %tenants% Organisationen.'

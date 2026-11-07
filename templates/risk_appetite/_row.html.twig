@@ -40,7 +40,7 @@
     </td>
     <td>
         {% if appetite.approvedAt %}
-            {{ appetite.approvedAt|date('Y-m-d') }}
+            {{ appetite.approvedAt|fa_date }}
         {% else %}
             <span class="text-muted">-</span>
         {% endif %}

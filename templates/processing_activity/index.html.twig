@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'processing_activity.title'|trans({}, 'privacy')}}{% endblock %}
@@ -87,175 +86,99 @@
 {% endif %}
 
 
-    <main>
-
-    {# Statistics Cards #}
-    <div class="row mb-4">
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.total'|trans({}, 'privacy')}}</div>
-                        <div class="fs-2 fw-bold mb-0">{{ statistics.total }}</div>
-                        <small class="text-success">{{ statistics.active }} {{ 'processing_activity.stat.active'|trans({}, 'privacy')}}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.compliance_score'|trans({}, 'privacy')}}</div>
-                        <div class="fs-2 fw-bold mb-0
-                            {% if compliance_score.overall_score >= 80 %}text-success
-                            {% elseif compliance_score.overall_score >= 60 %}text-warning
-                            {% else %}text-danger{% endif %}">
-                            {{ compliance_score.overall_score }}%
-                        </div>
-                        <small class="text-muted">{{ compliance_score.complete_activities }}/{{ compliance_score.total_activities }} {{ 'processing_activity.stat.complete'|trans({}, 'privacy')}}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.high_risk'|trans({}, 'privacy')}}</div>
-                        <div class="fs-2 fw-bold mb-0">{{ statistics.high_risk }}</div>
-                        <small class="text-danger">{{ statistics.missing_dpia }} {{ 'processing_activity.stat.missing_dpia'|trans({}, 'privacy')}}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.special_categories'|trans({}, 'privacy')}}</div>
-                        <div class="fs-2 fw-bold mb-0">{{ statistics.special_categories }}</div>
-                        <small class="text-muted">{{ 'processing_activity.stat.art9_data'|trans({}, 'privacy')}}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-
-    {# Filters #}
-    {% embed '_components/_search_filter_form.html.twig' with {
-        action: path('app_processing_activity_index'),
+    <div>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_processing_activity_index'),
         filter_keys: ['filter'],
-        show_search: false,
-        form_id: 'processing-activity-filter-form'
+        list_title: 'processing_activity.table.title'|trans({}, 'privacy'),
+        empty: {
+            mood: 'thinking',
+            title: 'processing_activity.empty.title'|trans({}, 'privacy'),
+            text: 'processing_activity.empty.description'|trans({}, 'privacy'),
+            norm_ref: 'DSGVO Art. 30 · ISO 27701',
+            help_link: path('app_help_glossary') ~ '#glossary-processing-activity',
+            actions: [
+                { label: 'processing_activity.empty.create_first'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new') }
+            ]
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/processing-activity"',
     } %}
-        {% block filters %}
+        {% block list_filters %}
             <div class="col-md-4">
                 <label for="filter-status" class="form-label">{{ 'processing_activity.filter.title'|trans({}, 'privacy') }}</label>
                 <select class="form-select fa-cyber-input__field" id="filter-status" name="filter">
-                    <option value="">{{ 'processing_activity.filter.all'|trans({}, 'privacy') }} ({{ statistics.total }})</option>
-                    <option value="active" {{ current_filter == 'active' ? 'selected' : '' }}>{{ 'processing_activity.filter.active'|trans({}, 'privacy') }} ({{ statistics.active }})</option>
+                    <option value="">{{ 'processing_activity.filter.all'|trans({}, 'privacy') }}</option>
+                    <option value="active" {{ current_filter == 'active' ? 'selected' : '' }}>{{ 'processing_activity.filter.active'|trans({}, 'privacy') }}</option>
                     <option value="incomplete" {{ current_filter == 'incomplete' ? 'selected' : '' }}>{{ 'processing_activity.filter.incomplete'|trans({}, 'privacy') }}</option>
-                    <option value="requiring_dpia" {{ current_filter == 'requiring_dpia' ? 'selected' : '' }}>{{ 'processing_activity.filter.requiring_dpia'|trans({}, 'privacy') }} ({{ statistics.missing_dpia }})</option>
-                    <option value="special_categories" {{ current_filter == 'special_categories' ? 'selected' : '' }}>{{ 'processing_activity.filter.special_categories'|trans({}, 'privacy') }} ({{ statistics.special_categories }})</option>
-                    <option value="third_country_transfers" {{ current_filter == 'third_country_transfers' ? 'selected' : '' }}>{{ 'processing_activity.filter.third_country'|trans({}, 'privacy') }} ({{ statistics.third_country_transfers }})</option>
+                    <option value="requiring_dpia" {{ current_filter == 'requiring_dpia' ? 'selected' : '' }}>{{ 'processing_activity.filter.requiring_dpia'|trans({}, 'privacy') }}</option>
+                    <option value="special_categories" {{ current_filter == 'special_categories' ? 'selected' : '' }}>{{ 'processing_activity.filter.special_categories'|trans({}, 'privacy') }}</option>
+                    <option value="third_country_transfers" {{ current_filter == 'third_country_transfers' ? 'selected' : '' }}>{{ 'processing_activity.filter.third_country'|trans({}, 'privacy') }}</option>
                 </select>
             </div>
         {% endblock %}
+        {% block list_summary %}
+            {% if dpia_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'processing_activity.summary.missing_dpia'|trans({'%count%': dpia_count}, 'privacy') }}</span>{% endif %}
+            {% if special_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'processing_activity.summary.special_categories'|trans({'%count%': special_count}, 'privacy') }}</span>{% endif %}
+            {% if third_country_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'processing_activity.summary.third_country'|trans({'%count%': third_country_count}, 'privacy') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
+                        <th scope="col">{{ 'processing_activity.table.name'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'processing_activity.table.legal_basis'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'processing_activity.table.data_subjects'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'processing_activity.table.risk'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'processing_activity.table.status'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'processing_activity.table.completeness'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'processing_activity.table.actions'|trans({}, 'privacy') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="processing-activity-rows"{% endblock %}
+                {% block table_body %}
+                    {% for pa in page %}
+                        {% include 'processing_activity/_row.html.twig' with { pa: pa } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['export', 'delete', 'status_change']
+            } %}
+        {% endblock %}
     {% endembed %}
 
-    {# Processing Activities Table #}
-    {% embed '_components/_card.html.twig' with {noPadding: true} %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/processing-activity"{% endblock %}
-        {% block card_header %}
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="mb-0 h5"><i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i> {{ 'processing_activity.table.title'|trans({}, 'privacy')}}</h2>
-                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: processing_activities|length ~ ' ' ~ 'processing_activity.table.items'|trans({}, 'privacy') } %}
+    {# Standard-VVT-Set (GDPR Art. 30 starters) — only on a truly empty register #}
+    {% if page.isEmpty and page.search is empty and current_filter in ['all', ''] %}
+        {% set _system_templates = system_templates('App\\Entity\\ProcessingActivity') %}
+        {% if _system_templates|length > 0 %}
+            <div class="text-center mt-3">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm"
+                        data-controller="fa-modal-dispatcher"
+                        data-action="click->fa-modal-dispatcher#open"
+                        data-fa-modal-id="systemTemplateModalVvt">
+                    <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
+                    {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+                </button>
+                <div class="form-text small">
+                    {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
+                </div>
             </div>
-        {% endblock %}
-        {% block card_body %}
-            {% if processing_activities|length > 0 %}
-                {% embed '_components/_table.html.twig' with {
-                    'noMargin': true
-                } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="bulk-select-column">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       data-action="bulk-actions#selectAll"
-                                       data-bulk-actions-target="selectAllCheckbox"
-                                       aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-                            </th>
-                            <th scope="col">{{ 'processing_activity.table.name'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'processing_activity.table.legal_basis'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'processing_activity.table.data_subjects'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'processing_activity.table.risk'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'processing_activity.table.status'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'processing_activity.table.completeness'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'processing_activity.table.actions'|trans({}, 'privacy') }}</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body_attrs %}id="processing-activity-rows"{% endblock %}
-                    {% block table_body %}
-                        {% for pa in processing_activities %}
-                            {% include 'processing_activity/_row.html.twig' with { pa: pa } %}
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-
-                {# Bulk Action Bar #}
-                {% include '_components/_bulk_action_bar.html.twig' with {
-                    actions: ['export', 'delete', 'status_change']
-                } %}
-            {% else %}
-                {% if current_filter is defined and current_filter != 'all' and current_filter is not empty %}
-                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'm-4' } } %}
-                        {% block alert_body %}
-                        <div class="fa-alert__title">{{ 'processing_activity.empty.title'|trans({}, 'privacy')}}</div>
-                        {{ 'processing_activity.empty.filter_hint'|trans({}, 'privacy')}} <a href="{{ path('app_processing_activity_index') }}">{{ 'processing_activity.view_all_activities'|trans({}, 'privacy')}}</a>.
-                        {% endblock %}
-                    {% endembed %}
-                {% else %}
-                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-                    {% set _system_templates = system_templates('App\\Entity\\ProcessingActivity') %}
-                    <div class="m-4">
-                    {{ _fa_empty_state.render({
-                        mood: 'thinking',
-                        title: 'processing_activity.empty.title'|trans({}, 'privacy'),
-                        text: 'processing_activity.empty.description'|trans({}, 'privacy'),
-                        norm_ref: 'DSGVO Art. 30 · ISO 27701',
-                        help_link: path('app_help_glossary') ~ '#glossary-processing-activity',
-                        actions: [
-                            { label: 'processing_activity.empty.create_first'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new') }
-                        ]
-                    }) }}
-                    {# Standard-VVT-Set (GDPR Art. 30 starters) #}
-                    {% if _system_templates|length > 0 %}
-                        <div class="text-center mt-3">
-                            <button type="button" class="btn btn-outline-primary"
-                                    data-controller="fa-modal-dispatcher"
-                                    data-action="click->fa-modal-dispatcher#open"
-                                    data-fa-modal-id="systemTemplateModalVvt">
-                                <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
-                                {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
-                            </button>
-                            <div class="form-text small">
-                                {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
-                            </div>
-                        </div>
-                        {% include '_components/_system_template_selector.html.twig' with {
-                            templates: _system_templates,
-                            entity_class: 'App\\Entity\\ProcessingActivity',
-                            redirect_to: 'app_processing_activity_index',
-                            modal_id: 'systemTemplateModalVvt'
-                        } %}
-                    {% endif %}
-                    </div>
-                {% endif %}
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
-    </main>
+            {% include '_components/_system_template_selector.html.twig' with {
+                templates: _system_templates,
+                entity_class: 'App\\Entity\\ProcessingActivity',
+                redirect_to: 'app_processing_activity_index',
+                modal_id: 'systemTemplateModalVvt'
+            } %}
+        {% endif %}
+    {% endif %}
+    </div>
 </div>
 {% endblock %}

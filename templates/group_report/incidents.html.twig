@@ -24,9 +24,9 @@
         {% set _sev = incident.severity ? incident.severity.value : '' %}
         {% set _sbadge = _sev == 'critical' ? 'confidential' : (_sev == 'high' ? 'draft' : (_sev == 'medium' ? 'auditor-only' : 'final')) %}
         {% set _inc_rows = _inc_rows|merge([[
-            incident.detectedAt|date('Y-m-d H:i'),
-            '<code style="font-size:.7em;">' ~ incident.incidentNumber ~ '</code> <strong>' ~ incident.title ~ '</strong>' ~ (incident.category ? '<br><span style="font-size:.75em;color:var(--fg-3);">' ~ incident.category ~ '</span>' : ''),
-            '<code style="font-size:.75em;">' ~ incident.tenant.code ~ '</code>',
+            incident.detectedAt|fa_datetime,
+            '<code style="font-size:.7em;">' ~ incident.incidentNumber|e ~ '</code> <strong>' ~ incident.title|e ~ '</strong>' ~ (incident.category ? '<br><span style="font-size:.75em;color:var(--fg-3);">' ~ incident.category|e ~ '</span>' : ''),
+            '<code style="font-size:.75em;">' ~ incident.tenant.code|e ~ '</code>',
             '<span class="report-doc__chip report-doc__chip--status-' ~ _sbadge ~ '">' ~ _sev ~ '</span>',
             '<code style="font-size:.75em;">' ~ (incident.status ? incident.status.value : '') ~ '</code>',
         ]]) %}
@@ -39,7 +39,7 @@
             kicker:       'group_report.title'|trans({}, 'group_report'),
             status:       'auditor-only',
             audience:     'auditor',
-            generated_at: 'now'|date('d.m.Y H:i'),
+            generated_at: 'now'|fa_datetime,
         },
         brand_name: root.name,
         key_findings: [

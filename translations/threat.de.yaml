@@ -6,11 +6,10 @@ threat:
         show: Details
     subtitle:
         index: 'Übersicht aller erkannten Bedrohungen und CVEs'
-    kpi:
-        total: Gesamt
-        critical: Kritisch
-        high: Hoch
-        open: Offen
+    summary:
+        critical: '%count% kritisch'
+        high: '%count% hoch'
+        open: '%count% offen'
     label:
         assignee: 'Verantwortlich'
     action:
@@ -34,7 +33,7 @@ threat:
         mitigations: 'Maßnahmen & Empfehlungen'
         audit_metadata: 'Verantwortliche Zuweisung'
     empty:
-        title: Keine Bedrohungen vorhanden
+        title: 'Keine Bedrohungen vorhanden.'
         description: 'Noch keine Bedrohungsinformationen erfasst. Erfassen Sie eine neue Bedrohung, um zu beginnen.'
     confirm:
         delete: 'Möchten Sie diese Bedrohung wirklich unwiderruflich löschen?'

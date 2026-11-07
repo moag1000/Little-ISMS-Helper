@@ -5,10 +5,9 @@ bc_exercises:
     action:
         add_new: 'Neue Übung anlegen'
         edit: 'Übung bearbeiten'
-    stats:
-        total: Gesamtübungen
-        completed: Abgeschlossen
-        planned: Geplant
+    summary:
+        completed: '%count% abgeschlossen'
+        planned: '%count% geplant'
     section:
         upcoming: 'Bevorstehende Übungen'
         incomplete_reports: 'Unvollständige Berichte'
@@ -74,7 +73,7 @@ bc_exercises:
         'yes': Ja
         'no': Nein
     message:
-        no_exercises: Keine BC‑Übungen vorhanden.
+        no_exercises: 'Keine BC-Übungen vorhanden.'
         schedule_first: 'Planen Sie Ihre erste Übung'
         incomplete_reports: 'Unvollständige Berichte'
         upcoming: 'Bevorstehende Übungen'

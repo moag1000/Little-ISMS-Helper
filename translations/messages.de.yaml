@@ -222,8 +222,6 @@ common:
     export: Exportieren
     export_excel: 'Als Excel exportieren'
     filter: Filtern
-    filters: Filter
-    clear: Zurücksetzen
     from: Von
     help_label: Hilfe
     history: Verlauf
@@ -262,7 +260,6 @@ common:
     processing: 'Verarbeite...'
     copy_failed: 'Kopieren fehlgeschlagen'
     apply: Anwenden
-    items: Elemente
     reload: 'Neu laden'
     retry: 'Erneut versuchen'
     select_all: 'Alle auswählen'
@@ -358,11 +355,6 @@ person:
         view_details: 'Personendetails anzeigen'
     actions:
         label: 'Aktionen für Person'
-    stats:
-        total: 'Personen gesamt'
-        employees: Mitarbeiter
-        contractors: Auftragnehmer
-        with_badge: 'Mit Ausweis'
     type:
         employee: Mitarbeiter
         contractor: Auftragnehmer
@@ -555,10 +547,11 @@ permission:
     affected_users: 'Betroffene Benutzer'
     system_permission: System-Berechtigung
     statistics:
-        total: Gesamt
         system: System
         custom: Benutzerdefiniert
-        categories: Kategorien
+    summary:
+        system: '%count% System'
+        custom: '%count% benutzerdefiniert'
     subtitle: 'Verwaltung von Berechtigungen und Zugriffskontrolle'
 data:
     title: Datenverwaltung
@@ -1239,7 +1232,6 @@ corporate:
         own: Eigene
         inherited: Geerbt
         subsidiaries: Tochter
-        breakdown: 'Eigene: %own% | Geerbt: %inherited% | Tochter: %subsidiaries%'
         groups: Konzerngruppen
     view:
         own_only: 'Nur Eigene'
@@ -1349,7 +1341,6 @@ governance:
 accessibility:
     skip_to_content: 'Zum Hauptinhalt springen'
     skip_to_navigation: 'Zur Navigation springen'
-    skip_to_filters: 'Zu den Filtern springen'
 bulk_actions:
     select_all: 'Alle auswählen'
     selected: 'ausgewählt'
@@ -2253,8 +2244,6 @@ reuse:
 # data_breach index table/filter keys (used in data_breach/index.html.twig with messages domain)
 data_breach:
     index:
-        kpi_affected_subjects: 'Betroffene Personen gesamt'
-        kpi_total_count: 'Vorfälle insgesamt'
         filter_title: 'Nach Status filtern'
         filter_all: 'Alle'
         filter_overdue: 'Überfällig'

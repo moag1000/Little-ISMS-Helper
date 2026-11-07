@@ -237,7 +237,8 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 ### Corporate Structure und Multi-Tenancy
 
 - **Holding-/Konzernstruktur** -- Tenant-Hierarchie mit Cycle-Safety und Baseline-Vererbung
-- **Group-CISO-Dashboards** -- 7 Konzern-Uebersichten (NIS2-Matrix, Top-10-Risiken, SoA-Matrix 93xN, Supplier-Dedup, Incident-Cross-Post)
+- **Konzern-Reports** -- Konzern-Uebersichten fuer Group-CISO und (nur lesend) Konzern-Auditor: NIS2-Matrix, Top-10-Risiken, SoA-Matrix 93xN, Supplier-Dedup, Incident-Cross-Post, Audit-Programm; sie lesen die Daten aller Toechter (vorher sah man nur die Holding)
+- **Organisationsvergleich** -- alle Organisationen des Konzerns nebeneinander: Management-KPIs und Framework-Erfuellung aus dem KPI-Katalog, je Organisation mit ihren eigenen Modulen und Schwellwerten berechnet, Konzern-Zeile (Mittelwert bzw. Summe); Export als Excel und PDF, jeder Export im Audit-Log
 - **Policy-Vererbung** -- Mandatory-Policies durchmandatieren oder lokalen Override erlauben
 - **Portfolio-Report** -- Delta-Trends via Snapshots mit Drill-Down auf einzelne Requirements
 
@@ -295,7 +296,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 
 - **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand
 - **Eine Menüstelle pro Seite** -- Persona-Dashboards unter "Mein Cockpit", ein Import-Hub, CI-Gate gegen doppelte Menüeinträge
-- **Ein Listen-Aufbau** -- Suche, Filter, Zusammenfassung, Tabelle, Seitenumbruch und Leerzustand gleich auf allen migrierten Listen
+- **Ein Listen-Aufbau** -- alle 74 Listen mit derselben Reihenfolge: Suche und Filter (teilbare URL), Zusammenfassungs-Chips statt KPI-Kacheln, Tabelle, Seitenumbruch (25/50/100), Leerzustand "Keine X vorhanden."; laufende Freigaben stehen als "In Freigabe" / "Freigabe überfällig" direkt in der Zeile
 - **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder 20/12/6
 - **Ein Detailseiten-Aufbau** -- Statusband, Ankerleiste, Nachweiskette Asset → Risiko → Control → Nachweis → Vorfall → Schwachstelle als erster Block, Historie und Kommentare
 - **Formulare** -- große Formulare zeigen zuerst den Kern (Rest eingeklappt mit Füllstand), Warnung bei ungespeicherten Änderungen, Vorbelegung aus dem Kontext ("Risiko ableiten" am Asset, "Behandlungsplan" am Risiko), alte Freitext-Personenfelder nur noch wenn befüllt

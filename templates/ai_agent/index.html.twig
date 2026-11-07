@@ -24,105 +24,74 @@
         </p>
     </div>
 
-    {# Inventory Stats #}
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
-                {% block card_body %}
-                    <div class="display-4 fw-bold">{{ stats.total }}</div>
-                    <div class="small text-muted">{{ 'mris.ai_agent.index.stat_total'|trans({}, 'mris') }}</div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
-                {% block card_body %}
-                    <div class="display-4 fw-bold text-danger">{{ stats.by_classification.high_risk }}</div>
-                    <div class="small text-muted">{{ 'mris.ai_agent.index.stat_high_risk'|trans({}, 'mris') }}</div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
-                {% block card_body %}
-                    <div class="display-4 fw-bold text-warning">{{ stats.unclassified }}</div>
-                    <div class="small text-muted">{{ 'mris.ai_agent.index.stat_unclassified'|trans({}, 'mris') }}</div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
-                {% block card_body %}
-                    <div class="display-4 fw-bold text-{{ stats.avg_completeness >= 80 ? 'success' : (stats.avg_completeness >= 50 ? 'warning' : 'danger') }}">{{ stats.avg_completeness }}%</div>
-                    <div class="small text-muted">{{ 'mris.ai_agent.index.stat_completeness'|trans({}, 'mris') }}</div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-
     {# High-Risk Warning #}
     {% if high_risk_incomplete|length > 0 %}
         {{ _fa_alert.render({ variant: 'danger', class: 'mb-4', body: 'mris.ai_agent.index.high_risk_incomplete'|trans({'%count%': high_risk_incomplete|length}, 'mris') }) }}
     {% endif %}
 
-    {# Inventory Table #}
-    {% if agents|length == 0 %}
-        {{ _fa_alert.render({ variant: 'info', body: 'mris.ai_agent.index.empty'|trans({}, 'mris') }) }}
-    {% else %}
-        {% embed '_components/_card.html.twig' %}
-            {% block card_body %}
-                {% embed '_components/_fa_table.html.twig' %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.index.col.name'|trans({}, 'mris') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.index.col.provider'|trans({}, 'mris') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.index.col.model'|trans({}, 'mris') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.index.col.classification'|trans({}, 'mris') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'mris.ai_agent.index.col.completeness'|trans({}, 'mris') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--actions"></th>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_ai_agents_index'),
+        list_title: 'mris.ai_agent.index.title'|trans({}, 'mris'),
+        empty: { mood: 'sleeping', title: 'mris.ai_agent.index.empty'|trans({}, 'mris'), text: 'mris.ai_agent.index.empty_hint'|trans({}, 'mris') },
+    } %}
+        {% block list_summary %}
+            {% if stats.by_classification.high_risk > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'mris.ai_agent.index.summary.high_risk'|trans({'%count%': stats.by_classification.high_risk}, 'mris') }}</span>{% endif %}
+            {% if stats.unclassified > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'mris.ai_agent.index.summary.unclassified'|trans({'%count%': stats.unclassified}, 'mris') }}</span>{% endif %}
+            {% if stats.total > 0 %}<span class="fa-status-pill fa-status-pill--{{ stats.avg_completeness >= 80 ? 'success' : (stats.avg_completeness >= 50 ? 'warning' : 'danger') }}">{{ 'mris.ai_agent.index.summary.completeness'|trans({'%pct%': stats.avg_completeness}, 'mris') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.index.col.name'|trans({}, 'mris') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.index.col.provider'|trans({}, 'mris') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.index.col.model'|trans({}, 'mris') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.index.col.classification'|trans({}, 'mris') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'mris.ai_agent.index.col.completeness'|trans({}, 'mris') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions"></th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                    {% for agent in page %}
+                        {% set comp = completeness[agent.id] %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">
+                                <strong>{{ agent.name }}</strong>
+                                {% if agent.aiAgentPurpose %}
+                                    <div class="small text-muted">{{ agent.aiAgentPurpose|slice(0, 60) }}{% if agent.aiAgentPurpose|length > 60 %}…{% endif %}</div>
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell">{{ agent.aiAgentProvider|default('—') }}</td>
+                            <td class="fa-table__cell"><code>{{ agent.aiAgentModelVersion|default('—') }}</code></td>
+                            <td class="fa-table__cell">
+                                {% if agent.aiAgentClassification == 'prohibited' %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'dark', content: 'mris.ai_agent.index.class.prohibited'|trans({}, 'mris') } %}
+                                {% elseif agent.aiAgentClassification == 'high_risk' %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'mris.ai_agent.index.class.high_risk'|trans({}, 'mris') } %}
+                                {% elseif agent.aiAgentClassification == 'limited_risk' %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'mris.ai_agent.index.class.limited_risk'|trans({}, 'mris') } %}
+                                {% elseif agent.aiAgentClassification == 'minimal_risk' %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'mris.ai_agent.index.class.minimal_risk'|trans({}, 'mris') } %}
+                                {% else %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'mris.ai_agent.index.class.unclassified'|trans({}, 'mris') } %}
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--center">
+                                {{ _fa_progress.render({ value: comp.percentage, tone: comp.percentage >= 80 ? 'success' : (comp.percentage >= 50 ? 'warning' : 'danger') }) }}
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--actions">
+                                <a href="{{ path('app_asset_show', {id: agent.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                </a>
+                            </td>
                         </tr>
-                    {% endblock %}
-                    {% block table_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-                        {% for agent in agents %}
-                            {% set comp = completeness[agent.id] %}
-                            <tr class="fa-table__row">
-                                <td class="fa-table__cell">
-                                    <strong>{{ agent.name }}</strong>
-                                    {% if agent.aiAgentPurpose %}
-                                        <div class="small text-muted">{{ agent.aiAgentPurpose|slice(0, 60) }}{% if agent.aiAgentPurpose|length > 60 %}…{% endif %}</div>
-                                    {% endif %}
-                                </td>
-                                <td class="fa-table__cell">{{ agent.aiAgentProvider|default('—') }}</td>
-                                <td class="fa-table__cell"><code>{{ agent.aiAgentModelVersion|default('—') }}</code></td>
-                                <td class="fa-table__cell">
-                                    {% if agent.aiAgentClassification == 'prohibited' %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'dark', content: 'mris.ai_agent.index.class.prohibited'|trans({}, 'mris') } %}
-                                    {% elseif agent.aiAgentClassification == 'high_risk' %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'mris.ai_agent.index.class.high_risk'|trans({}, 'mris') } %}
-                                    {% elseif agent.aiAgentClassification == 'limited_risk' %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'mris.ai_agent.index.class.limited_risk'|trans({}, 'mris') } %}
-                                    {% elseif agent.aiAgentClassification == 'minimal_risk' %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'mris.ai_agent.index.class.minimal_risk'|trans({}, 'mris') } %}
-                                    {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'mris.ai_agent.index.class.unclassified'|trans({}, 'mris') } %}
-                                    {% endif %}
-                                </td>
-                                <td class="fa-table__cell fa-table__cell--center">
-                                    {{ _fa_progress.render({ value: comp.percentage, tone: comp.percentage >= 80 ? 'success' : (comp.percentage >= 50 ? 'warning' : 'danger') }) }}
-                                </td>
-                                <td class="fa-table__cell fa-table__cell--actions">
-                                    <a href="{{ path('app_asset_show', {id: agent.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endblock %}
-        {% endembed %}
-    {% endif %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
 
     {{ _fa_alert.render({ variant: 'info', class: 'mt-4 small', body: 'mris.ai_agent.index.required_fields'|trans({}, 'mris') }) }}
 </div>
