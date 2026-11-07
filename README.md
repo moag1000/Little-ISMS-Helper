@@ -238,7 +238,8 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 ### Corporate Structure und Multi-Tenancy
 
 - **Holding-/Konzernstruktur** -- Tenant-Hierarchie mit Cycle-Safety und Baseline-Vererbung
-- **Group-CISO-Dashboards** -- 7 Konzern-Uebersichten (NIS2-Matrix, Top-10-Risiken, SoA-Matrix 93xN, Supplier-Dedup, Incident-Cross-Post)
+- **Konzern-Reports** -- Konzern-Uebersichten fuer Group-CISO und (nur lesend) Konzern-Auditor: NIS2-Matrix, Top-10-Risiken, SoA-Matrix 93xN, Supplier-Dedup, Incident-Cross-Post, Audit-Programm; sie lesen die Daten aller Toechter (vorher sah man nur die Holding)
+- **Organisationsvergleich** -- alle Organisationen des Konzerns nebeneinander: Management-KPIs und Framework-Erfuellung aus dem KPI-Katalog, je Organisation mit ihren eigenen Modulen und Schwellwerten berechnet, Konzern-Zeile (Mittelwert bzw. Summe); Export als Excel und PDF, jeder Export im Audit-Log
 - **Policy-Vererbung** -- Mandatory-Policies durchmandatieren oder lokalen Override erlauben
 - **Portfolio-Report** -- Delta-Trends via Snapshots mit Drill-Down auf einzelne Requirements
 
@@ -301,6 +302,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 - **Ein Detailseiten-Aufbau** -- Statusband, Ankerleiste, Nachweiskette Asset → Risiko → Control → Nachweis → Vorfall → Schwachstelle als erster Block, Historie und Kommentare
 - **Formulare** -- große Formulare zeigen zuerst den Kern (Rest eingeklappt mit Füllstand), Warnung bei ungespeicherten Änderungen, Vorbelegung aus dem Kontext ("Risiko ableiten" am Asset, "Behandlungsplan" am Risiko), alte Freitext-Personenfelder nur noch wenn befüllt
 - **Mapping-Hub** -- alle Mapping-Werkzeuge hinter vier Tabs: Übersicht, Mappings, Qualität, Vergleich
+- **Review bestätigen** -- Risiken, Controls (SoA), Dokumente und Lieferanten: Chip "Review fällig" filtert die Liste, mehrere Einträge auswählen, ein Klick bestätigt das periodische Review (heutiges Datum, nächster Termin nach dem Prüfintervall des Eintrags, ein Audit-Log-Batch, ab Manager); aus "Mein Tag" führt "In der Liste bestätigen" direkt dorthin
 - **Ein Such- und Befehlsfenster** -- ⌘K, ⌘P und `/` öffnen dasselbe Fenster für Datensätze, Seiten und Befehle; angeboten wird nur, was Modul und Rolle erlauben
 - **Einheitliche Anzeige** -- Datum und Uhrzeit im Format und in der Zeitzone aus den Admin-Einstellungen, ein Status-Vokabular statt lokaler Farbtabellen, ein Hauptbereich und eine Seitenüberschrift pro Seite (CI-Gates 77 und 78)
 - **Ein Baustein pro Interaktion** -- Dialoge über `fa-modal`, Bestätigungen über `ui-actions#confirm`, Mehrfachauswahl über `bulk-actions`, Seitenleisten über `fa-drawer`, Diagramme über `chart`; CI-Gate 79 prüft jede Stimulus-Verdrahtung (Controller, Methode, Target, Wert) und meldet nie angehängte Controller

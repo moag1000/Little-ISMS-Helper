@@ -58,13 +58,9 @@ supplier:
         success: 'Supplier has been duplicated. Re-enter contract data.'
     summary:
         critical: '%count% critical'
-        overdue_assessments: '%count% assessments overdue'
         non_compliant: '%count% non-compliant'
     alert:
-        overdue_assessments: 'Overdue assessments'
         non_compliant: 'Non-compliant suppliers'
-    next_assessment: 'Next assessment'
-    not_scheduled: 'Not scheduled'
     risk_score: 'Risk Score'
     list:
         title: 'Supplier List (%count%)'

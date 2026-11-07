@@ -110,10 +110,9 @@ final class RiskReviewService
     /**
      * Schedule next review date for a risk based on its level
      *
-     * Automatically calculates and sets the next review date based on:
-     * - Current risk score (probability × impact)
-     * - Risk level thresholds
-     * - Review interval configuration
+     * Automatically calculates and sets the next review date based on
+     * {@see getReviewIntervalDays()}: the risk's own interval, else the
+     * level-based schedule (probability × impact, RiskMatrixThresholds).
      *
      * @param bool $flush Whether to persist changes immediately
      * @throws DateMalformedStringException
@@ -121,8 +120,7 @@ final class RiskReviewService
     public function scheduleNextReview(Risk $risk, bool $flush = true): DateTimeInterface
     {
         $riskLevel = $this->getRiskLevel($risk);
-        $schedule = $this->getReviewSchedule();
-        $interval = $schedule[$riskLevel] ?? 365; // Default to 1 year
+        $interval = $this->getReviewIntervalDays($risk);
 
         $nextReview = new DateTime()->modify("+{$interval} days");
         $risk->setReviewDate($nextReview);
@@ -140,6 +138,21 @@ final class RiskReviewService
         ]);
 
         return $nextReview;
+    }
+
+    /**
+     * Review interval of one risk in days: the risk's own interval
+     * (Risk::$reviewIntervalDays) when set, otherwise the level-based
+     * schedule of {@see getReviewSchedule()}.
+     */
+    public function getReviewIntervalDays(Risk $risk): int
+    {
+        $own = $risk->getReviewIntervalDays();
+        if ($own !== null && $own > 0) {
+            return $own;
+        }
+
+        return $this->getReviewSchedule()[$this->getRiskLevel($risk)] ?? 365;
     }
 
     /**

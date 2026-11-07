@@ -181,7 +181,7 @@
 
     {# Portfolio — multi-tenant only; one page (Gruppenbericht), so a direct link instead of a flyout #}
     {% set _is_corporate = app.user and app.user.tenant and app.user.tenant.isPartOfCorporateStructure() %}
-    {% if _is_corporate and is_granted('ROLE_GROUP_CISO') %}
+    {% if _is_corporate and (is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_KONZERN_AUDITOR')) %}
     <a class="sb-link {% if nav_active == 'portfolio' %}is-active{% endif %}"
        href="{{ path('app_group_report_tree') }}"
        role="menuitem"
