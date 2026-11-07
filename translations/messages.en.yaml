@@ -121,8 +121,6 @@ cancel: Cancel
 search: Search
 filter:
     _default: Filter
-    remove_chip: 'Remove filter "%label%"'
-    clear_all: 'Clear all filters'
 export: Export
 import: Import
 view: View
@@ -130,7 +128,6 @@ details: Details
 close: Close
 confirm:
     _default: Confirm
-    typing_hint: 'Type "%keyword%" to confirm:'
 back: Back
 common:
     tenant_required: 'Organisation context required.'
@@ -203,7 +200,6 @@ common:
     skip: Skip
     glossary_link: 'Look up in glossary'
     more: More
-    confirm_delete_entity: 'Do you really want to delete this %entity%?'
     all: All
     selected: Selected
     category: Category
@@ -254,7 +250,6 @@ common:
     roles: Roles
     close: Close
     preview: Preview
-    quick_view_hint: 'on list items opens preview'
     copy: Copy
     copied: Copied.
     verifying: 'Verifying...'
@@ -312,7 +307,6 @@ common:
         owner_user: '-- Select user --'
         owner_person: '-- Select person --'
         owner_legacy: 'Name (legacy, migrated data only)'
-    reset_all_filters: 'Reset all filters'
     time_savings: 'Time savings'
     consistency: 'Consistency'
     audit_evidence: 'Audit evidence'

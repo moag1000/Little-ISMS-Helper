@@ -24,16 +24,18 @@
         }) }}
 
   2) Embed-API (template-driven) — full control over cells / row-attrs:
+     (checkbox columns: wrap the table and `_bulk_action_bar.html.twig` in an element
+      with data-controller="bulk-actions" — see templates/answer_library/index.html.twig)
         {% embed '_components/_fa_table.html.twig' with {
             stickyHead: true,
-            bulkSelect: true,
             sortable: true,
             id: 'asset-list'
         } %}
             {% block table_head %}
                 <tr>
                     <th class="fa-table__th fa-table__th--checkbox">
-                        <input type="checkbox" data-action="fa-bulk-select#selectAll">
+                        <input type="checkbox" data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox">
                     </th>
                     <th class="fa-table__th fa-table__th--sortable" data-sort-key="name">
                         {{ 'field.name'|trans({}, 'field') }}
@@ -45,11 +47,11 @@
             {% endblock %}
             {% block table_body %}
                 {% for asset in assets %}
-                    <tr class="fa-table__row" data-fa-bulk-select-target="row">
+                    <tr class="fa-table__row">
                         <td class="fa-table__cell fa-table__cell--checkbox">
                             <input type="checkbox" value="{{ asset.id }}"
-                                   data-fa-bulk-select-target="item"
-                                   data-action="change->fa-bulk-select#updateBar">
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem">
                         </td>
                         <td class="fa-table__cell">{{ asset.name }}</td>
                         <td class="fa-table__cell fa-table__cell--actions">
@@ -79,7 +81,6 @@
 {% set fa_stickyHead = stickyHead|default(false) %}
 {% set fa_hover     = hover is defined ? hover : true %}
 {% set fa_sortable  = sortable|default(false) %}
-{% set fa_bulkSelect = bulkSelect|default(false) %}
 {# row-click → show is the default since 2026-05-26 — opt out via `rowClick: false` #}
 {% set fa_rowClick  = rowClick is defined ? rowClick : true %}
 
@@ -92,7 +93,6 @@
 
 {% set _ctrls = [] %}
 {% if fa_sortable   %}{% set _ctrls = _ctrls|merge(['fa-table-sort']) %}{% endif %}
-{% if fa_bulkSelect %}{% set _ctrls = _ctrls|merge(['fa-bulk-select']) %}{% endif %}
 {% if fa_rowClick   %}{% set _ctrls = _ctrls|merge(['row-click']) %}{% endif %}
 
 {% if fa_wrap %}<div class="fa-table-wrap"{% if _ctrls|length > 0 %} data-controller="{{ _ctrls|join(' ') }}"{% endif %}{% if fa_rowClick %} data-action="click->row-click#navigate"{% endif %}{% if fa_wrapStyle %} style="{{ fa_wrapStyle }}"{% endif %}>{% endif %}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\Import;
 
 use App\Entity\Tenant;
+use App\Exception\Import\ImportRowInvalidException;
 use App\Service\Import\DeltaCalculator;
 use App\Service\Import\Dto\DeltaConfig;
 use App\Service\Import\Dto\ParsedSpreadsheet;
@@ -234,6 +235,40 @@ final class DeltaCalculatorTest extends TestCase
         self::assertCount(1, $result->errors);
         self::assertSame(3, $result->errors[0]['rowNumber']);
         self::assertStringContainsString('row 1', $result->errors[0]['errors'][0]);
+    }
+
+    #[Test]
+    public function testRowTheMapperRefusesForTheOrganisationBecomesARowError(): void
+    {
+        $rows = [
+            ['name' => 'Server A', 'owner' => 'known@example.test'],
+            ['name' => 'Server B', 'owner' => 'foreign@example.test'],
+        ];
+
+        $this->mapper->method('validate')->willReturn(['errors' => [], 'warnings' => []]);
+        $this->mapper->method('findExisting')->willReturn(null);
+        $this->mapper->method('duplicateKey')->willReturnCallback(
+            static fn (array $row): string => (string) $row['name']
+        );
+        $seenTenants = [];
+        $this->mapper->method('toEntityData')->willReturnCallback(
+            function (array $row, ?array $mapping = null, ?Tenant $tenant = null) use (&$seenTenants): array {
+                $seenTenants[] = $tenant;
+                if ($row['owner'] === 'foreign@example.test') {
+                    throw new ImportRowInvalidException(0, ['Field "Owner": "foreign@example.test" could not be resolved in this organisation.']);
+                }
+
+                return $row;
+            }
+        );
+
+        $result = $this->calculator->calculate($this->makeSheet($rows), $this->makeConfig());
+
+        self::assertCount(1, $result->creates);
+        self::assertCount(1, $result->errors);
+        self::assertSame(2, $result->errors[0]['rowNumber']);
+        self::assertStringContainsString('could not be resolved', $result->errors[0]['errors'][0]);
+        self::assertSame([$this->tenant, $this->tenant], $seenTenants, 'the preview maps with the organisation in scope');
     }
 
     #[Test]

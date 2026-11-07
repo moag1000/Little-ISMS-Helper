@@ -1,9 +1,5 @@
 guided_tour:
     action:
-        next: 'Weiter'
-        previous: 'Zurück'
-        finish: 'Fertig'
-        skip: 'Überspringen'
         restart: 'Tour neu starten'
         choose_role: 'Tour nach Rolle wählen'
 
@@ -24,10 +20,6 @@ guided_tour:
             label: 'MRIS-Modul-Tour'
         mapping:
             label: 'Mapping-Tour'
-
-    mobile:
-        title: 'Tour am Desktop öffnen'
-        body: 'Die geführte Tour ist für Desktop optimiert. Bitte öffnen Sie das Tool auf einem größeren Bildschirm für die volle Erfahrung.'
 
     banner:
         aria_label: 'Empfohlene Einweisungs-Tour'

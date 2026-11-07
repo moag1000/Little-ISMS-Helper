@@ -68,9 +68,9 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {# C5-04 — `conditional-fields` controller toggles the scoped-assets row
-                       when scopeType=asset (ISO 19011 Cl. 5.5.2). The existing
-                       audit-subsidiaries controller continues to manage subsidiaries. #}
+                    {# C5-04 — `conditional-fields` toggles the scoped-assets row when
+                       scopeType=asset (ISO 19011 Cl. 5.5.2); `audit-subsidiaries` shows the
+                       subsidiary picker for group audits. #}
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form', 'data-controller': 'audit-subsidiaries conditional-fields'}}) }}
 
                     {# Basic Information Section #}
@@ -110,9 +110,9 @@
                                     'translation_domain': 'audit'
                                 } %}
                             </div>
-                            <div class="col-md-12 d-none" id="subsidiaries-container">
+                            <div class="col-md-12 d-none" data-audit-subsidiaries-target="container">
                                 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
-                                    {% block alert_body %}<strong>{{ 'audit.corporate_audit_note_title'|trans({}, 'audit') }}:</strong> {{ 'audit.corporate_audit_note'|trans({}, 'audit') }}{% endblock %}
+                                    {% block alert_body %}<strong>{{ 'audit.message.corporate_audit_note_title'|trans({}, 'audit') }}:</strong> {{ 'audit.message.corporate_audit_note'|trans({}, 'audit') }}{% endblock %}
                                 {% endembed %}
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditedSubsidiaries,

@@ -102,7 +102,6 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 'expanded' => true,
                 'attr' => [
                     'class' => 'form-check',
-                    'data-applicability-toggle-target' => 'trigger',
                 ],
                 'help' => 'control.help.applicable_explained',
             ])

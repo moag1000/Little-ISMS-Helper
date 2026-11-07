@@ -123,6 +123,23 @@ final class RestoreDataPurgerTest extends TestCase
         self::assertSame(1, $result[0]['id']);
     }
 
+    #[Test]
+    public function filter_entities_keeps_only_organisation_records_in_scope(): void
+    {
+        // Tenant rows carry no tenant_id — they must be matched on their own id,
+        // otherwise a scoped restore would overwrite a foreign organisation.
+        $tenants = [
+            ['id' => 5, 'code' => 'own'],
+            ['id' => 9, 'code' => 'foreign'],
+        ];
+
+        $result = $this->purger->filterEntitiesByScope($tenants, [5], 'Tenant');
+
+        self::assertCount(1, $result);
+        self::assertSame('own', $result[0]['code']);
+        self::assertSame($tenants, $this->purger->filterEntitiesByScope($tenants, [], 'Tenant'));
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // Helpers
     // ────────────────────────────────────────────────────────────────────────

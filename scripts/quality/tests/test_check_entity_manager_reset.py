@@ -51,6 +51,45 @@ class EntityManagerResetGateTest(unittest.TestCase):
         src = "<?php\n$this->tenantContext->reset();\n$filters->restore('tenant_filter');\n$this->listener->reset();\n"
         self.assertEqual(cemr.scan_text(src), [])
 
+    def test_heredoc_and_nowdoc_bodies_are_ignored(self):
+        src = (
+            "<?php\n$a = <<<EOT\n  call $r->resetManager() here\nEOT;\n"
+            "$b = <<<'RAW'\n$r->resetManager();\nRAW;\n"
+            "$c = <<<\"Q\"\n$r->resetManager();\n    Q);\n"
+        )
+        self.assertEqual(cemr.scan_text(src), [])
+
+    def test_code_after_heredoc_is_still_flagged(self):
+        src = "<?php\n$a = <<<SQL\nSELECT 1\nSQL;\n$r->resetManager();\n"
+        self.assertEqual(cemr.scan_text(src), [5])
+        src = "<?php\nf(<<<X\n  resetManager()\n  X, $r->resetManager());\n"
+        self.assertEqual(cemr.scan_text(src), [4])
+
+    def test_registry_with_unrelated_name_is_flagged(self):
+        promoted = (
+            "<?php\nuse Doctrine\\Persistence\\ManagerRegistry;\nclass A {\n"
+            "  public function __construct(private readonly ManagerRegistry $mr) {}\n"
+            "  function f() { $this->mr->reset(); }\n}\n"
+        )
+        self.assertEqual(cemr.scan_text(promoted), [5])
+        param = "<?php\nfunction f(?\\Doctrine\\Persistence\\ManagerRegistry $x) {\n  $x?->reset();\n}\n"
+        self.assertEqual(cemr.scan_text(param), [3])
+        bundle = (
+            "<?php\nuse Doctrine\\Bundle\\DoctrineBundle\\Registry;\n"
+            "class A { private Registry $db; function f() { $this\n  ->db\n  ->reset(); } }\n"
+        )
+        self.assertEqual(cemr.scan_text(bundle), [3])
+        assigned = "<?php\n$x = $this->getDoctrine();\n$x->reset();\n"
+        self.assertEqual(cemr.scan_text(assigned), [3])
+
+    def test_reset_on_unrelated_typed_object_is_fine(self):
+        src = (
+            "<?php\nuse Symfony\\Component\\Workflow\\Registry;\n"
+            "class A { function __construct(private Foo $svc, private Registry $wf, ManagerRegistry $mr) {}\n"
+            "  function f(Bar $bar) { $this->svc->reset(); $bar->reset(); $this->wf->reset(); } }\n"
+        )
+        self.assertEqual(cemr.scan_text(src), [])
+
     def test_helper_itself_is_allowed_and_repo_is_clean(self):
         self.assertIn("src/Doctrine/EntityManagerRecovery.php", cemr.ALLOWED)
         self.assertEqual(cemr.scan(cemr.ROOT), [], "no bare EntityManager reset in src/")

@@ -325,7 +325,17 @@ class BackupService
                 continue;
             }
 
-            // When a tenant scope is active, skip entities without a tenant association
+            // When a tenant scope is active, skip entities without a tenant association —
+            // except the organisation records of the scope themselves: they carry all
+            // organisation settings (branding, TLP, authorities, on-call, DPO, map, …)
+            // and an organisation backup without them restores an unconfigured tenant.
+            if ($tenantScope !== null && $entityClass === Tenant::class) {
+                $tenants = $this->entityManager->getRepository(Tenant::class)->findBy(['id' => $scopeIds]);
+                $backup['data'][$entityName] = $this->serializeEntities($tenants);
+                $backup['statistics'][$entityName] = count($tenants);
+                continue;
+            }
+
             if ($tenantScope !== null && !$this->entityHasTenantField($entityClass)) {
                 $skippedGlobalEntities[] = $entityName;
                 $this->logger->debug('Skipping global entity (no tenant field) in tenant-scoped backup', [

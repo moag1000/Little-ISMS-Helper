@@ -174,20 +174,44 @@ python3 verify_translations_v2.py
 ### quality/check_unreferenced_ui.py (Gate 69)
 
 **Zweck:** Kein totes UI. Ein Template, das nirgends gerendert, eingebunden,
-eingebettet, erweitert oder importiert wird, und ein Stimulus-Controller, den
-kein Markup anhängt, werden bei jedem Design-System-Durchgang mitgeschleppt und
-täuschen dem nächsten Leser ein lebendes Feature vor (UX-Review 2026-11: 20
-Templates, 2 nie angehängte Controller).
+eingebettet, erweitert oder importiert wird, wird bei jedem Design-System-Durchgang
+mitgeschleppt und täuscht dem nächsten Leser ein lebendes Feature vor
+(UX-Review 2026-11: 20 Templates; 33 weitere, nachdem der eigene
+Verwendungs-Kommentar eines Templates nicht mehr als Referenz zählt).
+Tote Stimulus-Controller prüft Gate 79.
 
 **Verwendung:** `python3 scripts/quality/check_unreferenced_ui.py --baseline scripts/quality/baselines/unreferenced_ui.txt`.
 Ein Template gilt als referenziert, wenn sein Pfad unter `templates/` (mit oder
-ohne `.html.twig`) irgendwo in `src/`, `templates/`, `config/` oder `tests/`
-vorkommt; `bundles/` und `emails/` sind ausgenommen. Ein Controller gilt als
-referenziert, wenn sein Bezeichner (`foo_bar_controller.js` → `foo-bar`) in
-`templates/`, `src/`, `config/` oder einer anderen Datei unter `assets/`
-vorkommt. Dynamisch gebaute Namen gehören mit Begründung in die Baseline.
+ohne `.html.twig`) in `src/`, `templates/`, `config/` oder `tests/` außerhalb
+des Templates selbst vorkommt; `bundles/` und `emails/` sind ausgenommen.
+Dynamisch gebaute Namen gehören mit Begründung in die Baseline.
 
 **CI-Integration:** Gate 69 im `code-quality`-Job.
+
+---
+
+### quality/check_stimulus_wiring.py (Gate 79)
+
+**Zweck:** Stimulus scheitert lautlos: Ein `data-action="click->foo#bar"` ohne
+Controller `foo` oder ohne Methode `bar()` tut einfach nichts. Der Durchgang
+2026-11 fand so einen unbenutzbaren Import-Upload, Löschformulare ohne
+Bestätigung, eine nie erscheinende Konzern-Tochterauswahl im Audit und ein
+leeres Trenddiagramm.
+
+**Prüft** in `templates/` und `src/` (Twig-Markup, Twig-Hashes, PHP-`attr`):
+jeder Bezeichner in `data-controller`, in Aktionen und in `data-foo-target`
+existiert in `assets/controllers/` (oder ist in `stimulus_bootstrap.js` unter
+dem Namen registriert), jede Aktionsmethode existiert, jedes Target steht in
+`static targets`, jedes `data-foo-x-value` in `static values`; kein Controller
+weist `this.scope`/`this.element`/… zu (wirft im Strict Mode, `connect()` stirbt
+unsichtbar); jeder Controller wird irgendwo angehängt. Twig-Ausdrücke und
+`{# … #}`-Kommentare werden übersprungen.
+
+**Verwendung:** `python3 scripts/quality/check_stimulus_wiring.py --baseline scripts/quality/baselines/stimulus_wiring.txt`.
+Baseline-Zeilen: `art  datei  detail  # grund` (Zeilennummer optional), nur für
+zur Laufzeit gebaute Namen.
+
+**CI-Integration:** Gate 79 im `code-quality`-Job.
 
 ---
 
@@ -325,9 +349,15 @@ Operator-Pfaden (Restore, Schema-Wartung, Sample-Purge).
 (einzige erlaubte Stelle ist der Helper selbst). Erkannt werden
 `resetManager(` — auch über Zeilen umbrochen — und `->reset(` auf der
 Doctrine-Registry (Variable/Property/Getter mit `registry`/`doctrine` im Namen
-oder `->get('doctrine')`). String-Literale und Kommentare werden vorher
-ausgeblendet. Grenzen: Heredoc-Inhalte gelten als Code; eine Registry in einer
-Variablen mit fremdem Namen wird nicht erkannt.
+oder `->get('doctrine')`) sowie auf jedem Namen, der in derselben Datei als
+Registry typisiert ist (`ManagerRegistry`, `\Doctrine\Persistence\ManagerRegistry`,
+Doctrine-Bundle-`Registry`, auch nullable und Constructor-Promotion) oder aus
+`->getDoctrine()` / `->get('doctrine')` zugewiesen wird — `$mr->reset(` und
+`$this->mr?->reset(` werden also unabhängig vom Namen gefunden, `->reset(` auf
+anderen Objekten nicht. String-Literale, Kommentare sowie Heredoc-/Nowdoc-Inhalte
+werden vorher ausgeblendet. Grenzen: Die Typisierung wird je Datei aufgelöst;
+eine über untypisierte Variablen/Array-Zugriffe weitergereichte oder per
+`use … as` umbenannte Registry wird nicht erkannt.
 
 **CI-Integration:** Gate 68 im `code-quality`-Job, keine Baseline.
 Selbsttest: `scripts/quality/tests/test_check_entity_manager_reset.py`.

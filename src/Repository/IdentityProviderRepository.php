@@ -128,4 +128,17 @@ class IdentityProviderRepository extends ServiceEntityRepository
     {
         return array_values($this->findBy(['enabled' => true], ['tenant' => 'ASC', 'name' => 'ASC']));
     }
+
+    /**
+     * Every enabled provider of every organisation, regardless of the
+     * request's tenant filter, global ones first. For an administrator binding
+     * an account by hand; the caller keeps only providers allowed for that
+     * account ({@see \App\Service\Sso\SsoAccountLinkPolicy::mayAuthenticateAs()}).
+     *
+     * @return list<IdentityProvider>
+     */
+    public function findAllEnabledUnfiltered(): array
+    {
+        return $this->withoutTenantFilter(fn (): array => $this->findAllEnabled());
+    }
 }

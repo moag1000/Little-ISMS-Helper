@@ -85,6 +85,51 @@ final class OrphanReassignerTest extends KernelTestCase
         self::assertSame(1, $this->auditRows($afterTheFailure));
     }
 
+    #[Test]
+    public function aReassignedEntityLeavesTheUnitOfWork(): void
+    {
+        $reassigner = self::getContainer()->get(OrphanReassigner::class);
+        $tag = $this->orphanTag();
+
+        self::assertTrue($reassigner->reassign($tag, $this->tenant));
+        self::assertFalse($this->em->contains($tag), 'large orphan sets must not keep every handled entity managed');
+    }
+
+    #[Test]
+    public function aFailedRollbackNeverLeavesATransactionLevelBehind(): void
+    {
+        // Deadlock / lock-wait timeout: the server already rolled back, the
+        // client-side rollback throws. The connection is closed (level reset)
+        // instead of leaving the job inside a transaction that no longer exists.
+        $level = 0;
+        $connection = $this->createMock(Connection::class);
+        $connection->method('getTransactionNestingLevel')->willReturnCallback(static function () use (&$level): int {
+            return $level;
+        });
+        $connection->method('rollBack')->willThrowException(new \RuntimeException('Deadlock found'));
+        $connection->expects(self::once())->method('close')->willReturnCallback(static function () use (&$level): void {
+            $level = 0;
+        });
+
+        $metadata = $this->createMock(\Doctrine\ORM\Mapping\ClassMetadata::class);
+        $metadata->method('getName')->willReturn(Tag::class);
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('isOpen')->willReturn(true);
+        $em->method('contains')->willReturn(true);
+        $em->method('getClassMetadata')->willReturn($metadata);
+        $em->method('getConnection')->willReturn($connection);
+        $em->method('beginTransaction')->willReturnCallback(static function () use (&$level): void {
+            $level++;
+        });
+        $em->method('flush')->willThrowException(new \RuntimeException('Lock wait timeout exceeded'));
+
+        $reassigner = new OrphanReassigner($em, $this->createStub(\App\Service\AuditLogger::class));
+        $tenant = $this->createStub(Tenant::class);
+
+        self::assertFalse($reassigner->reassign((new Tag())->setTenant(null), $tenant));
+        self::assertSame(0, $level);
+    }
+
     private function orphanTag(): Tag
     {
         $tag = new Tag();

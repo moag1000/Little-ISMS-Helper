@@ -70,7 +70,7 @@
                 {%- endif -%}
                 <span class="fa-risk-mini-heatmap__cell fa-risk-mini-heatmap__cell--{{ _tone }}"
                       data-risk-mini-heatmap-target="cell"
-                      data-risk-mini-heatmap-cell-value="{{ p }}_{{ i }}"
+                      data-cell="{{ p }}_{{ i }}"
                       data-score="{{ _score }}"
                       title="P{{ p }} × I{{ i }} = {{ _score }}">{{ _score }}</span>
             {%- endfor -%}

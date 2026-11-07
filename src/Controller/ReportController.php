@@ -10,6 +10,7 @@ use App\Entity\Risk;
 use App\Entity\Control;
 use App\Enum\IncidentStatus;
 use App\Repository\AssetRepository;
+use App\Risk\RiskMatrixThresholds;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\TrainingRepository;
@@ -17,6 +18,7 @@ use App\Repository\ControlRepository;
 use App\Repository\ManagementReviewRepository;
 use App\Repository\ISMSObjectiveRepository;
 use App\Service\PdfExportService;
+use App\Service\TenantRecords;
 use App\Service\ExcelExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +39,8 @@ class ReportController extends AbstractController
         private readonly TrainingRepository $trainingRepository,
         private readonly ControlRepository $controlRepository,
         private readonly ManagementReviewRepository $managementReviewRepository,
-        private readonly ISMSObjectiveRepository $ismsObjectiveRepository
+        private readonly ISMSObjectiveRepository $ismsObjectiveRepository,
+        private readonly TenantRecords $tenantRecords,
     ) {}
 
     #[Route('/reports', name: 'app_reports_index', methods: ['GET'])]
@@ -119,7 +122,7 @@ class ReportController extends AbstractController
     #[Route('/reports/risks/pdf', name: 'app_reports_risks_pdf', methods: ['GET'])]
     public function risksPdf(Request $request): Response
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->tenantRecords->all($this->riskRepository, null);
 
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
@@ -150,7 +153,7 @@ class ReportController extends AbstractController
     #[Route('/reports/risks/excel', name: 'app_reports_risks_excel', methods: ['GET'])]
     public function risksExcel(Request $request): Response
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->tenantRecords->all($this->riskRepository, null);
 
         // Close session to prevent blocking other requests during Excel generation
         $request->getSession()->save();
@@ -186,7 +189,7 @@ class ReportController extends AbstractController
     #[Route('/reports/controls/pdf', name: 'app_reports_controls_pdf', methods: ['GET'])]
     public function controlsPdf(Request $request): Response
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->tenantRecords->all($this->controlRepository, null);
 
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
@@ -217,7 +220,7 @@ class ReportController extends AbstractController
     #[Route('/reports/controls/excel', name: 'app_reports_controls_excel', methods: ['GET'])]
     public function controlsExcel(Request $request): Response
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->tenantRecords->all($this->controlRepository, null);
 
         // Close session to prevent blocking other requests during Excel generation
         $request->getSession()->save();
@@ -253,7 +256,7 @@ class ReportController extends AbstractController
     #[Route('/reports/incidents/pdf', name: 'app_reports_incidents_pdf', methods: ['GET'])]
     public function incidentsPdf(Request $request): Response
     {
-        $incidents = $this->incidentRepository->findAll();
+        $incidents = $this->tenantRecords->all($this->incidentRepository, null);
 
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
@@ -284,7 +287,7 @@ class ReportController extends AbstractController
     #[Route('/reports/incidents/excel', name: 'app_reports_incidents_excel', methods: ['GET'])]
     public function incidentsExcel(Request $request): Response
     {
-        $incidents = $this->incidentRepository->findAll();
+        $incidents = $this->tenantRecords->all($this->incidentRepository, null);
 
         // Close session to prevent blocking other requests during Excel generation
         $request->getSession()->save();
@@ -320,7 +323,7 @@ class ReportController extends AbstractController
     #[RequiresModule('training')]
     public function trainingsPdf(Request $request): Response
     {
-        $trainings = $this->trainingRepository->findAll();
+        $trainings = $this->tenantRecords->all($this->trainingRepository, null);
 
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
@@ -352,7 +355,7 @@ class ReportController extends AbstractController
     #[RequiresModule('training')]
     public function trainingsExcel(Request $request): Response
     {
-        $trainings = $this->trainingRepository->findAll();
+        $trainings = $this->tenantRecords->all($this->trainingRepository, null);
 
         // Close session to prevent blocking other requests during Excel generation
         $request->getSession()->save();
@@ -388,22 +391,27 @@ class ReportController extends AbstractController
 
     private function getDashboardData(): array
     {
-        $risks = $this->riskRepository->findAll();
-        $highRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 12);
+        // One organisation only (TenantRecords rule): no tenant, no figures.
+        $tenant = $this->tenantRecords->resolve(null);
+        $risks = $this->tenantRecords->all($this->riskRepository, $tenant);
+        $highRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= RiskMatrixThresholds::HIGH_MIN);
 
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->tenantRecords->all($this->controlRepository, $tenant);
         $implementedControls = array_filter($controls, fn(Control $control): bool => $control->getImplementationStatus() === 'implemented');
         $applicableControls = array_filter($controls, fn(Control $control): bool => $control->isApplicable());
+        $openIncidentStatuses = [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution];
 
         return [
-            'assets_count' => $this->assetRepository->count([]),
+            'assets_count' => $tenant ? $this->assetRepository->count(['tenant' => $tenant]) : 0,
             'risks_count' => count($risks),
             'high_risks' => count($highRisks),
             'controls_count' => count($controls),
             'implemented_controls' => count($implementedControls),
             'compliance_percentage' => count($applicableControls) > 0 ? round((count($implementedControls) / count($applicableControls)) * 100) : 0,
-            'open_incidents' => count($this->incidentRepository->findBy(['status' => [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution]])),
-            'total_trainings' => $this->trainingRepository->count([]),
+            'open_incidents' => $tenant
+                ? $this->incidentRepository->count(['tenant' => $tenant, 'status' => $openIncidentStatuses])
+                : 0,
+            'total_trainings' => $tenant ? $this->trainingRepository->count(['tenant' => $tenant]) : 0,
             'audits_this_year' => \App\Service\Audit\AuditProgramFigures::completedInYear($this->dashboardStatisticsService->auditsFor(null)),
         ];
     }
