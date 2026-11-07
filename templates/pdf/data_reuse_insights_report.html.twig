@@ -106,7 +106,7 @@
     {% set _top_reuse_rows = _top_reuse_rows|merge([[
         '<strong>' ~ req.requirementId ~ '</strong>',
         req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title,
-        '<span class="badge badge-info">' ~ (req.category ?? '-') ~ '</span>',
+        '<span class="badge badge-info">' ~ (req.category ?? '—') ~ '</span>',
         (analysis.reusable_data ?? [])|length,
         _reuse_badge,
         value.estimated_hours_saved|round(1),
@@ -123,7 +123,7 @@
     {% set sources = [] %}
     {% if analysis.reusable_data is not empty %}
         {% for data in analysis.reusable_data %}
-            {% set sources = sources|merge([data.source ?? 'Unknown']) %}
+            {% set sources = sources|merge([data.source ?? '—']) %}
         {% endfor %}
     {% endif %}
     {% set _qw_rows = _qw_rows|merge([[
@@ -233,7 +233,7 @@
         kicker:       'Compliance · Data Reuse Analysis',
         status:       'final',
         audience:     'auditor',
-        generated_at: pdf_generation_date|date('d.m.Y H:i'),
+        generated_at: pdf_generation_date|fa_datetime,
     },
     brand_name: 'Little ISMS Helper',
     key_findings: [

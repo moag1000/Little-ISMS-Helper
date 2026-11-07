@@ -35,7 +35,7 @@
                 {% for exercise in upcoming %}
                 <li>
                     <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a>
-                    - {{ exercise.exerciseDate|locale_date }} ({{ ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') }})
+                    - {{ exercise.exerciseDate|fa_date }} ({{ ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') }})
                 </li>
                 {% endfor %}
             </ul>

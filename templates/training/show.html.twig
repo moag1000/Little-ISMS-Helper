@@ -100,7 +100,7 @@
                                 {% if training.deliveryMethod %}
                                 {% include '_components/_badge.html.twig' with { variant: 'info', content: ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') } %}
                                 {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted">—</span>
                                 {% endif %}
                             </p>
                         </div>
@@ -117,7 +117,7 @@
                             <div class="text-muted mb-2 fw-semibold">
                                 <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i> {{ 'training.duration'|trans({}, 'training')}}
                             </div>
-                            <p class="fs-5">{{ training.durationMinutes ?? '-' }} {{ 'training.minutes'|trans({}, 'training')}}</p>
+                            <p class="fs-5">{{ training.durationMinutes ?? '—' }} {{ 'training.minutes'|trans({}, 'training')}}</p>
                         </div>
                     </div>
 
@@ -308,7 +308,7 @@
                     <p class="small text-muted mb-2">{{ 'training.compliance_coverage_info'|trans({}, 'training') }}</p>
                     <div class="d-flex flex-wrap gap-2">
                         {% for requirement in training.complianceRequirements %}
-                            {% include '_components/_badge.html.twig' with { variant: 'info', content: (requirement.framework ? requirement.framework.name : 'N/A') ~ ' ' ~ requirement.requirementId } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: (requirement.framework ? requirement.framework.name : '—') ~ ' ' ~ requirement.requirementId } %}
                         {% endfor %}
                     </div>
                 {% endblock %}

@@ -114,11 +114,11 @@
                 </div>
                 <div class="col-md-3">
                     <strong>{{ 'audit_finding.field.nc_correction_due_date'|trans({}, 'audits') }}</strong>
-                    <p class="mb-0">{{ finding.ncCorrectionDueDate ? finding.ncCorrectionDueDate|fa_date : '—' }}</p>
+                    <p class="mb-0">{{ finding.ncCorrectionDueDate|fa_date }}</p>
                 </div>
                 <div class="col-md-3">
                     <strong>{{ 'audit_finding.field.nc_verified_at'|trans({}, 'audits') }}</strong>
-                    <p class="mb-0">{{ finding.ncVerifiedAt ? finding.ncVerifiedAt|fa_datetime : '—' }}</p>
+                    <p class="mb-0">{{ finding.ncVerifiedAt|fa_datetime }}</p>
                 </div>
                 <div class="col-md-6">
                     <strong>{{ 'audit_finding.field.nc_verified_by'|trans({}, 'audits') }}</strong>

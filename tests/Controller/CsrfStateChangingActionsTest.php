@@ -87,7 +87,6 @@ final class CsrfStateChangingActionsTest extends WebTestCase
         yield 'push subscribe' => ['POST', '/en/api/push/subscribe', PushSubscriptionController::CSRF_ID, 'header'];
         yield 'push unsubscribe' => ['POST', '/en/api/push/unsubscribe', PushSubscriptionController::CSRF_ID, 'header'];
         yield 'push test' => ['POST', '/en/api/push/test', PushSubscriptionController::CSRF_ID, 'header'];
-        yield 'license report regenerate' => ['POST', '/en/about/licenses/generate', 'report_regenerate', 'header'];
         yield 'admin license report' => ['POST', '/en/admin/licensing/generate', 'report_regenerate', 'header'];
         yield 'security report regenerate' => ['POST', '/en/about/security/generate', 'report_regenerate', 'header'];
         yield 'audit freeze pdf' => ['POST', '/en/audit-freeze/999999/generate-pdf', 'audit_freeze_generate_pdf_999999', 'body'];

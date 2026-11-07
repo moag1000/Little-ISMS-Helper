@@ -163,13 +163,13 @@
                 {% block card_body %}
                     {% if dpia.riskLevel %}
                         <p><strong>{{ 'dpia.show.field.initial_risk'|trans({}, 'privacy') }}:</strong>
-                            {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.riskLevel] %}
+                            {% set risk_class = pill_tone_severity(dpia.riskLevel|default('')) %}
                             {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('dpia.risk_level.' ~ dpia.riskLevel)|trans({}, 'privacy') } %}
                         </p>
                     {% endif %}
                     {% if dpia.residualRiskLevel %}
                         <p><strong>{{ 'dpia.index.residual_risk'|trans({}, 'privacy') }}:</strong>
-                            {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.residualRiskLevel] %}
+                            {% set risk_class = pill_tone_severity(dpia.residualRiskLevel|default('')) %}
                             {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('dpia.risk_level.' ~ dpia.residualRiskLevel)|trans({}, 'privacy') } %}
                         </p>
                         {% if dpia.isResidualRiskAcceptable %}

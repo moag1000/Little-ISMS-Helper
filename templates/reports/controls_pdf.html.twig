@@ -90,7 +90,7 @@
 <body>
 {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-{%- set generatedDateTime = generated_at|date('d.m.Y H:i') -%}
+{%- set generatedDateTime = generated_at|fa_datetime -%}
 
 {# ── Build table rows with inline HTML for progress bars + applicability ── #}
 {% set _control_rows = [] %}
@@ -107,8 +107,8 @@
         _applicable_html,
         ('soa.status.' ~ control.implementationStatus)|trans({}, 'soa')|default(control.implementationStatus),
         _progress_html,
-        control.justification|length > 35 ? control.justification|slice(0, 35) ~ '...' : control.justification|default('-'),
-        control.targetDate ? control.targetDate|date('Y-m-d') : '-',
+        control.justification|length > 35 ? control.justification|slice(0, 35) ~ '...' : control.justification|default('—'),
+        control.targetDate|fa_date,
     ]]) %}
 {% endfor %}
 

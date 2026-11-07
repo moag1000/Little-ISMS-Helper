@@ -112,3 +112,11 @@ audit_log:
         export: 'Exportiert'
         import: 'Importiert'
         bulk: 'Massenänderung'
+    stats_view:
+        overall: 'Gesamtstatistik'
+        col_action: 'Aktion'
+        col_entity_type: 'Entitätstyp'
+        col_count: 'Anzahl'
+        col_share: 'Anteil'
+        activity_30d: 'Aktivität der letzten 30 Tage'
+        day_entries: '%date%: %count% Einträge'

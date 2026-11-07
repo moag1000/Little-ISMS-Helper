@@ -127,7 +127,7 @@
                 variant: 'info',
                 body: 'document.policy_body.edited_by'|trans({
                     '%name%': document.policyBodyEditedBy ? document.policyBodyEditedBy.fullName : '—',
-                    '%date%': document.policyBodyEditedAt ? document.policyBodyEditedAt|fa_datetime : '—',
+                    '%date%': document.policyBodyEditedAt|fa_datetime,
                 }, 'document'),
             }) }}
         {% endif %}

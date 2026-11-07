@@ -106,9 +106,9 @@
         risk.impact,
         '<span class="score-badge score-' ~ riskLevel ~ '">' ~ risk.riskScore ~ '</span>',
         '<span class="badge ' ~ _level_badge_class ~ '">' ~ riskLevel|upper ~ '</span>',
-        risk.treatmentDescription|length > 25 ? risk.treatmentDescription|slice(0, 25) ~ '...' : risk.treatmentDescription|default('-'),
+        risk.treatmentDescription|length > 25 ? risk.treatmentDescription|slice(0, 25) ~ '...' : risk.treatmentDescription|default('—'),
         risk.status ? risk.status.value : '',
-        (risk.effectiveRiskOwner ?? '-')|slice(0, 20),
+        (risk.effectiveRiskOwner ?? '—')|slice(0, 20),
     ]]) %}
 {% endfor %}
 
@@ -122,7 +122,7 @@
         kicker:       'ISMS · Risk Register',
         status:       'final',
         audience:     'auditor',
-        generated_at: generated_at|date('d.m.Y H:i'),
+        generated_at: generated_at|fa_datetime,
     },
     brand_name: 'Little ISMS Helper',
     sections: [

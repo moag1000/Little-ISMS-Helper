@@ -26,7 +26,7 @@
         @page {
             margin: 2cm;
             @bottom-right {
-                content: "Seite " counter(page) " von " counter(pages);
+                content: "{{ 'pdf.doc_base.page'|trans({}, 'messages') }} " counter(page) " {{ 'pdf.doc_base.of'|trans({}, 'messages') }} " counter(pages);
             }
         }
         body {
@@ -140,8 +140,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>Datenschutz-Folgenabschätzung (DPIA)</h1>
-        <p style="font-size: 11pt; color: var(--fg-2);">Art. 35 GDPR - Data Protection Impact Assessment</p>
+        <h1>{{ 'dpia.pdf_doc.title'|trans({}, 'privacy') }}</h1>
+        <p style="font-size: 11pt; color: var(--fg-2);">{{ 'dpia.pdf_doc.subtitle'|trans({}, 'privacy') }}</p>
         <p style="font-size: 14pt; font-weight: bold; margin-top: 10px;">{{ dpia.title }}</p>
         <p style="font-size: 11pt;">{{ dpia.referenceNumber }} - Version {{ dpia.version }}</p>
     </div>
@@ -149,29 +149,29 @@
     <div class="metadata">
         <strong>Status:</strong> {{ dpia.status|upper }}
         {% if dpia.approvalDate %}
-            | <strong>Approved:</strong> {{ dpia.approvalDate|fa_date }}
+            | <strong>{{ 'dpia.pdf_doc.approved'|trans({}, 'privacy') }}</strong> {{ dpia.approvalDate|fa_date }}
         {% endif %}
-        | <strong>Generated:</strong> {{ "now"|date('Y-m-d H:i:s') }}<br>
+        | <strong>{{ 'dpia.pdf_doc.generated'|trans({}, 'privacy') }}</strong> {{ "now"|date('Y-m-d H:i:s') }}<br>
         {% if dpia.conductor %}
-            <strong>Conductor:</strong> {{ dpia.conductor.firstName }} {{ dpia.conductor.lastName }}<br>
+            <strong>{{ 'dpia.pdf_doc.conductor'|trans({}, 'privacy') }}</strong> {{ dpia.conductor.firstName }} {{ dpia.conductor.lastName }}<br>
         {% endif %}
         {% if dpia.approver %}
-            <strong>Approver:</strong> {{ dpia.approver.firstName }} {{ dpia.approver.lastName }}<br>
+            <strong>{{ 'dpia.pdf_doc.approver'|trans({}, 'privacy') }}</strong> {{ dpia.approver.firstName }} {{ dpia.approver.lastName }}<br>
         {% endif %}
-        <strong>Completeness:</strong> {{ dpia.completenessPercentage }}%
+        <strong>{{ 'dpia.pdf_doc.completeness'|trans({}, 'privacy') }}</strong> {{ dpia.completenessPercentage }}%
     </div>
 
     {# Risk Assessment Summary #}
     <div class="section">
-        <h2>Risk Assessment Summary</h2>
+        <h2>{{ 'dpia.pdf_doc.risk_summary'|trans({}, 'privacy') }}</h2>
         <table>
             <tr>
-                <th scope="col" style="width: 30%;">Assessment</th>
-                <th scope="col">Value</th>
+                <th scope="col" style="width: 30%;">{{ 'dpia.pdf_doc.assessment'|trans({}, 'privacy') }}</th>
+                <th scope="col">{{ 'dpia.pdf_doc.value'|trans({}, 'privacy') }}</th>
             </tr>
             {% if dpia.riskLevel %}
                 <tr>
-                    <td>Initial Risk Level</td>
+                    <td>{{ 'dpia.pdf_doc.initial_risk'|trans({}, 'privacy') }}</td>
                     <td>
                         {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.riskLevel] %}
                         <span class="badge badge-{{ risk_class }}">{{ dpia.riskLevel|upper }}</span>
@@ -180,27 +180,27 @@
             {% endif %}
             {% if dpia.residualRiskLevel %}
                 <tr>
-                    <td>Residual Risk Level</td>
+                    <td>{{ 'dpia.pdf_doc.residual_risk'|trans({}, 'privacy') }}</td>
                     <td>
                         {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.residualRiskLevel] %}
                         <span class="badge badge-{{ risk_class }}">{{ dpia.residualRiskLevel|upper }}</span>
                         {% if dpia.isResidualRiskAcceptable %}
-                            <span class="badge badge-success">ACCEPTABLE</span>
+                            <span class="badge badge-success">{{ 'dpia.pdf_doc.acceptable'|trans({}, 'privacy') }}</span>
                         {% else %}
-                            <span class="badge badge-danger">REQUIRES SUPERVISORY CONSULTATION (Art. 36)</span>
+                            <span class="badge badge-danger">{{ 'dpia.pdf_doc.requires_consultation'|trans({}, 'privacy') }}</span>
                         {% endif %}
                     </td>
                 </tr>
             {% endif %}
             {% if dpia.likelihood %}
                 <tr>
-                    <td>Likelihood</td>
+                    <td>{{ 'dpia.pdf_doc.likelihood'|trans({}, 'privacy') }}</td>
                     <td>{{ dpia.likelihood|upper }}</td>
                 </tr>
             {% endif %}
             {% if dpia.impact %}
                 <tr>
-                    <td>Impact</td>
+                    <td>{{ 'dpia.pdf_doc.impact'|trans({}, 'privacy') }}</td>
                     <td>{{ dpia.impact|upper }}</td>
                 </tr>
             {% endif %}
@@ -211,7 +211,7 @@
     <div class="section">
         <h2>{{ 'dpia.pdf.art_35_7a_description'|trans({}, 'privacy')}}</h2>
 
-        <h3>Processing Description</h3>
+        <h3>{{ 'dpia.pdf_doc.processing_description'|trans({}, 'privacy') }}</h3>
         <p>{{ dpia.processingDescription|nl2br }}</p>
 
         <h3>{{ 'dpia.pdf.purposes_processing'|trans({}, 'privacy')}}</h3>
@@ -219,11 +219,11 @@
 
         <table>
             <tr>
-                <th scope="col" style="width: 30%;">Category</th>
+                <th scope="col" style="width: 30%;">{{ 'dpia.pdf_doc.category'|trans({}, 'privacy') }}</th>
                 <th scope="col">Details</th>
             </tr>
             <tr>
-                <td>Data Categories</td>
+                <td>{{ 'dpia.pdf_doc.data_categories'|trans({}, 'privacy') }}</td>
                 <td>
                     <ul>
                         {% for category in dpia.dataCategories %}
@@ -233,7 +233,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Data Subject Categories</td>
+                <td>{{ 'dpia.pdf_doc.subject_categories'|trans({}, 'privacy') }}</td>
                 <td>
                     <ul>
                         {% for category in dpia.dataSubjectCategories %}
@@ -244,20 +244,20 @@
             </tr>
             {% if dpia.estimatedDataSubjects %}
                 <tr>
-                    <td>Estimated Data Subjects</td>
+                    <td>{{ 'dpia.pdf_doc.estimated_subjects'|trans({}, 'privacy') }}</td>
                     <td>{{ dpia.estimatedDataSubjects }}</td>
                 </tr>
             {% endif %}
             {% if dpia.dataRetentionPeriod %}
                 <tr>
-                    <td>Data Retention Period</td>
+                    <td>{{ 'dpia.pdf_doc.retention_period'|trans({}, 'privacy') }}</td>
                     <td>{{ dpia.dataRetentionPeriod }}</td>
                 </tr>
             {% endif %}
         </table>
 
         {% if dpia.dataFlowDescription %}
-            <h3>Data Flow Description</h3>
+            <h3>{{ 'dpia.pdf_doc.data_flow'|trans({}, 'privacy') }}</h3>
             <p>{{ dpia.dataFlowDescription|nl2br }}</p>
         {% endif %}
     </div>
@@ -266,24 +266,24 @@
     <div class="section">
         <h2>{{ 'dpia.pdf.art_35_7b_assessment'|trans({}, 'privacy')}}</h2>
 
-        <h3>Necessity Assessment</h3>
+        <h3>{{ 'dpia.pdf_doc.necessity'|trans({}, 'privacy') }}</h3>
         <p>{{ dpia.necessityAssessment|nl2br }}</p>
 
-        <h3>Proportionality Assessment</h3>
+        <h3>{{ 'dpia.pdf_doc.proportionality'|trans({}, 'privacy') }}</h3>
         <p>{{ dpia.proportionalityAssessment|nl2br }}</p>
 
         <table>
             <tr>
-                <th scope="col" style="width: 30%;">Legal Compliance</th>
+                <th scope="col" style="width: 30%;">{{ 'dpia.pdf_doc.legal_compliance'|trans({}, 'privacy') }}</th>
                 <th scope="col">Details</th>
             </tr>
             <tr>
-                <td>Legal Basis (Art. 6 GDPR)</td>
+                <td>{{ 'dpia.pdf_doc.legal_basis'|trans({}, 'privacy') }}</td>
                 <td><strong>{{ dpia.legalBasis|replace({'_': ' '})|title }}</strong></td>
             </tr>
             {% if dpia.legislativeCompliance %}
                 <tr>
-                    <td>Legislative Compliance</td>
+                    <td>{{ 'dpia.pdf_doc.legislative_compliance'|trans({}, 'privacy') }}</td>
                     <td>{{ dpia.legislativeCompliance|nl2br }}</td>
                 </tr>
             {% endif %}
@@ -295,11 +295,11 @@
         <h2>{{ 'dpia.pdf.art_35_7c_risks'|trans({}, 'privacy')}}</h2>
 
         {% if dpia.identifiedRisks|length > 0 %}
-            <h3>Identified Risks</h3>
+            <h3>{{ 'dpia.pdf_doc.identified_risks'|trans({}, 'privacy') }}</h3>
             <table>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Risk</th>
+                    <th scope="col">{{ 'dpia.pdf_doc.risk'|trans({}, 'privacy') }}</th>
                 </tr>
                 {% for risk in dpia.identifiedRisks %}
                     <tr>
@@ -312,7 +312,7 @@
                                 {{ risk.description }}<br>
                             {% endif %}
                             {% if risk.likelihood is defined and risk.impact is defined %}
-                                Likelihood: {{ risk.likelihood|upper }} | Impact: {{ risk.impact|upper }}
+                                {{ 'dpia.pdf_doc.likelihood_impact'|trans({'%likelihood%': risk.likelihood|upper, '%impact%': risk.impact|upper}, 'privacy') }}
                             {% endif %}
                         </td>
                     </tr>
@@ -330,14 +330,14 @@
     <div class="section">
         <h2>{{ 'dpia.pdf.art_35_7d_measures'|trans({}, 'privacy')}}</h2>
 
-        <h3>Technical Measures (Art. 32 GDPR)</h3>
+        <h3>{{ 'dpia.pdf_doc.technical_measures'|trans({}, 'privacy') }}</h3>
         <p>{{ dpia.technicalMeasures|nl2br }}</p>
 
-        <h3>Organizational Measures (Art. 32 GDPR)</h3>
+        <h3>{{ 'dpia.pdf_doc.organizational_measures'|trans({}, 'privacy') }}</h3>
         <p>{{ dpia.organizationalMeasures|nl2br }}</p>
 
         {% if dpia.implementedControls|length > 0 %}
-            <h3>ISO 27001 Controls Implemented</h3>
+            <h3>{{ 'dpia.pdf_doc.iso_controls'|trans({}, 'privacy') }}</h3>
             <ul>
                 {% for control in dpia.implementedControls %}
                     <li>{{ control.controlId }} - {{ control.name }}</li>
@@ -346,12 +346,12 @@
         {% endif %}
 
         {% if dpia.complianceMeasures %}
-            <h3>Compliance Measures (Art. 24 GDPR - Accountability)</h3>
+            <h3>{{ 'dpia.pdf_doc.compliance_measures'|trans({}, 'privacy') }}</h3>
             <p>{{ dpia.complianceMeasures|nl2br }}</p>
         {% endif %}
 
         {% if dpia.residualRiskAssessment %}
-            <h3>Residual Risk Assessment</h3>
+            <h3>{{ 'dpia.pdf_doc.residual_assessment'|trans({}, 'privacy') }}</h3>
             <p>{{ dpia.residualRiskAssessment|nl2br }}</p>
         {% endif %}
     </div>
@@ -360,20 +360,20 @@
     {% set sdm = dpia.sdmAssessment ?? {} %}
     {% if sdm|length > 0 or dpia.sdmAssessmentSummary %}
     <div class="section">
-        <h2>Standard-Datenschutzmodell (SDM 3.1)</h2>
+        <h2>{{ 'privacy.sdm.title'|trans({}, 'privacy') }}</h2>
         <p>
-            <strong>Bewertete Ziele:</strong> {{ dpia.sdmCoveragePercent }}%
+            <strong>{{ 'privacy.sdm.coverage'|trans({}, 'privacy') }}:</strong> {{ dpia.sdmCoveragePercent }}%
             {% if dpia.sdmHighestRiskLevel %}
-                · <strong>Höchstes Risiko:</strong>
+                · <strong>{{ 'privacy.sdm.highest_risk'|trans({}, 'privacy') }}:</strong>
                 {% set sdm_risk_class = {'low': 'success', 'medium': 'warning', 'high': 'danger'}[dpia.sdmHighestRiskLevel] ?? 'secondary' %}
                 <span class="badge badge-{{ sdm_risk_class }}">{{ dpia.sdmHighestRiskLevel|upper }}</span>
             {% endif %}
         </p>
         <table>
             <tr>
-                <th scope="col" style="width: 25%;">Gewährleistungsziel</th>
-                <th scope="col" style="width: 12%;">Risiko</th>
-                <th scope="col">Begründung</th>
+                <th scope="col" style="width: 25%;">{{ 'dpia.pdf_doc.goal'|trans({}, 'privacy') }}</th>
+                <th scope="col" style="width: 12%;">{{ 'dpia.pdf_doc.sdm_risk'|trans({}, 'privacy') }}</th>
+                <th scope="col">{{ 'dpia.pdf_doc.sdm_rationale'|trans({}, 'privacy') }}</th>
             </tr>
             {% for goal in [
                 'verfuegbarkeit', 'integritaet', 'vertraulichkeit', 'transparenz',
@@ -395,7 +395,7 @@
             {% endfor %}
         </table>
         {% if dpia.sdmAssessmentSummary %}
-            <h3>Bewertungszusammenfassung</h3>
+            <h3>{{ 'privacy.sdm.summary'|trans({}, 'privacy') }}</h3>
             <p>{{ dpia.sdmAssessmentSummary|nl2br }}</p>
         {% endif %}
     </div>
@@ -403,56 +403,56 @@
 
     {# Stakeholder Consultation #}
     <div class="section">
-        <h2>Stakeholder Consultation</h2>
+        <h2>{{ 'dpia.pdf_doc.stakeholder_consultation'|trans({}, 'privacy') }}</h2>
 
         <table>
             <tr>
-                <th scope="col" style="width: 30%;">Consultation</th>
+                <th scope="col" style="width: 30%;">{{ 'dpia.pdf_doc.consultation'|trans({}, 'privacy') }}</th>
                 <th scope="col">Status</th>
             </tr>
             <tr>
-                <td>DPO Consultation (Art. 35(4))</td>
+                <td>{{ 'dpia.pdf_doc.dpo_consultation'|trans({}, 'privacy') }}</td>
                 <td>
                     {% if dpia.dpoConsultationDate %}
-                        <span class="badge badge-success">COMPLETED</span> {{ dpia.dpoConsultationDate|fa_date }}
+                        <span class="badge badge-success">{{ 'dpia.pdf_doc.completed'|trans({}, 'privacy') }}</span> {{ dpia.dpoConsultationDate|fa_date }}
                         {% if dpia.dataProtectionOfficer %}
                             <br><strong>DPO:</strong> {{ dpia.dataProtectionOfficer.firstName }} {{ dpia.dataProtectionOfficer.lastName }}
                         {% endif %}
                         {% if dpia.dpoAdvice %}
-                            <br><strong>Advice:</strong> {{ dpia.dpoAdvice }}
+                            <br><strong>{{ 'dpia.pdf_doc.advice'|trans({}, 'privacy') }}</strong> {{ dpia.dpoAdvice }}
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-warning">PENDING</span>
+                        <span class="badge badge-warning">{{ 'dpia.pdf_doc.pending'|trans({}, 'privacy') }}</span>
                     {% endif %}
                 </td>
             </tr>
             <tr>
-                <td>Data Subjects Consulted (Art. 35(9))</td>
+                <td>{{ 'dpia.pdf_doc.subjects_consulted'|trans({}, 'privacy') }}</td>
                 <td>
                     {% if dpia.dataSubjectsConsulted %}
-                        <span class="badge badge-success">YES</span>
+                        <span class="badge badge-success">{{ 'dpia.pdf_doc.yes'|trans({}, 'privacy') }}</span>
                         {% if dpia.dataSubjectConsultationDetails %}
                             <br>{{ dpia.dataSubjectConsultationDetails }}
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-info">NO</span>
+                        <span class="badge badge-info">{{ 'dpia.pdf_doc.no'|trans({}, 'privacy') }}</span>
                     {% endif %}
                 </td>
             </tr>
             <tr>
-                <td>Supervisory Authority (Art. 36)</td>
+                <td>{{ 'dpia.pdf_doc.supervisory_authority'|trans({}, 'privacy') }}</td>
                 <td>
                     {% if dpia.requiresSupervisoryConsultation %}
                         {% if dpia.supervisoryConsultationDate %}
-                            <span class="badge badge-success">COMPLETED</span> {{ dpia.supervisoryConsultationDate|fa_date }}
+                            <span class="badge badge-success">{{ 'dpia.pdf_doc.completed'|trans({}, 'privacy') }}</span> {{ dpia.supervisoryConsultationDate|fa_date }}
                             {% if dpia.supervisoryAuthorityFeedback %}
-                                <br><strong>Feedback:</strong> {{ dpia.supervisoryAuthorityFeedback }}
+                                <br><strong>{{ 'dpia.pdf_doc.feedback'|trans({}, 'privacy') }}</strong> {{ dpia.supervisoryAuthorityFeedback }}
                             {% endif %}
                         {% else %}
-                            <span class="badge badge-danger">REQUIRED - PENDING</span>
+                            <span class="badge badge-danger">{{ 'dpia.pdf_doc.required_pending'|trans({}, 'privacy') }}</span>
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-info">NOT REQUIRED</span>
+                        <span class="badge badge-info">{{ 'dpia.pdf_doc.not_required'|trans({}, 'privacy') }}</span>
                     {% endif %}
                 </td>
             </tr>
@@ -462,16 +462,16 @@
     {# Review Information #}
     {% if dpia.lastReviewDate or dpia.nextReviewDate %}
         <div class="section">
-            <h2>Review Information (Art. 35(11))</h2>
+            <h2>{{ 'dpia.pdf_doc.review_information'|trans({}, 'privacy') }}</h2>
 
             <table>
                 <tr>
-                    <th scope="col" style="width: 30%;">Review</th>
-                    <th scope="col">Date</th>
+                    <th scope="col" style="width: 30%;">{{ 'dpia.pdf_doc.review'|trans({}, 'privacy') }}</th>
+                    <th scope="col">{{ 'dpia.pdf_doc.date'|trans({}, 'privacy') }}</th>
                 </tr>
                 {% if dpia.lastReviewDate %}
                     <tr>
-                        <td>Last Review Date</td>
+                        <td>{{ 'dpia.pdf_doc.last_review_date'|trans({}, 'privacy') }}</td>
                         <td>{{ dpia.lastReviewDate|fa_date }}</td>
                     </tr>
                 {% endif %}
@@ -483,8 +483,8 @@
                 {% endif %}
                 {% if dpia.reviewFrequencyMonths %}
                     <tr>
-                        <td>Review Frequency</td>
-                        <td>Every {{ dpia.reviewFrequencyMonths }} months</td>
+                        <td>{{ 'dpia.pdf_doc.review_frequency'|trans({}, 'privacy') }}</td>
+                        <td>{{ 'dpia.pdf_doc.every_months'|trans({'%count%': dpia.reviewFrequencyMonths}, 'privacy') }}</td>
                     </tr>
                 {% endif %}
             </table>
@@ -494,16 +494,16 @@
     {# Approval Information #}
     {% if dpia.status == 'approved' %}
         <div class="section">
-            <h2>Approval Information</h2>
+            <h2>{{ 'dpia.pdf_doc.approval_information'|trans({}, 'privacy') }}</h2>
 
             <table>
                 <tr>
-                    <th scope="col" style="width: 30%;">Field</th>
-                    <th scope="col">Value</th>
+                    <th scope="col" style="width: 30%;">{{ 'dpia.pdf_doc.field'|trans({}, 'privacy') }}</th>
+                    <th scope="col">{{ 'dpia.pdf_doc.value'|trans({}, 'privacy') }}</th>
                 </tr>
                 <tr>
                     <td>Status</td>
-                    <td><span class="badge badge-success">APPROVED</span></td>
+                    <td><span class="badge badge-success">{{ 'dpia.status.approved'|trans({}, 'privacy')|upper }}</span></td>
                 </tr>
                 {% if dpia.approver %}
                     <tr>
@@ -513,13 +513,13 @@
                 {% endif %}
                 {% if dpia.approvalDate %}
                     <tr>
-                        <td>Approval Date</td>
+                        <td>{{ 'dpia.pdf_doc.approval_date'|trans({}, 'privacy') }}</td>
                         <td>{{ dpia.approvalDate|fa_date }}</td>
                     </tr>
                 {% endif %}
                 {% if dpia.approvalComments %}
                     <tr>
-                        <td>Comments</td>
+                        <td>{{ 'dpia.pdf_doc.comments'|trans({}, 'privacy') }}</td>
                         <td>{{ dpia.approvalComments }}</td>
                     </tr>
                 {% endif %}
@@ -529,13 +529,13 @@
 
     <div style="page-break-before: always;"></div>
 
-    <h2>Declaration</h2>
+    <h2>{{ 'dpia.pdf_doc.declaration'|trans({}, 'privacy') }}</h2>
     <p>{{ 'dpia.pdf.footer_text'|trans({}, 'privacy')}}</p>
 
     <p style="margin-top: 40px;">
-        <strong>Signature:</strong> ____________________________<br>
-        <strong>Date:</strong> ____________________________<br>
-        <strong>Name/Position:</strong> ____________________________
+        <strong>{{ 'dpia.pdf_doc.signature'|trans({}, 'privacy') }}</strong> ____________________________<br>
+        <strong>{{ 'dpia.pdf_doc.date_label'|trans({}, 'privacy') }}</strong> ____________________________<br>
+        <strong>{{ 'dpia.pdf_doc.name_position'|trans({}, 'privacy') }}</strong> ____________________________
     </p>
 </body>
 </html>

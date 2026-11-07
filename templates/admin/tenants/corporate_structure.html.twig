@@ -275,9 +275,8 @@
                 <strong>{{ subsidiary.name }}</strong>
                 <code class="text-muted ms-2">{{ subsidiary.code }}</code>
                 {% if subsidiary.governanceLabel %}
-                    {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[subsidiary.governanceModel]|default('secondary') %}
-                    {% set _gvtone = governance_variant in ['info'] ? 'primary' : (governance_variant in ['secondary','light','dark'] ? 'neutral' : governance_variant) %}
-                    {{ pill.render(subsidiary.governanceLabel, _gvtone, {size: 'sm', class: 'ms-2'}) }}
+                    {% import '_components/_status_vocabulary.html.twig' as _vocab %}
+                    {{ _vocab.pill('governance_model', subsidiary.governanceModel, subsidiary.governanceLabel, {size: 'sm', class: 'ms-2'}) }}
                 {% endif %}
             </div>
             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">

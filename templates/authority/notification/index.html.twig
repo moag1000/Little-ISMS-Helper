@@ -21,7 +21,7 @@
     }) }}
     {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: breaches|default([])|length } %}
 
-    <main>
+    <div>
 
         {# ── DataBreach exports ─────────────────────────────────────────────── #}
         {% if breaches|length > 0 %}
@@ -124,7 +124,7 @@
                     <tr class="fa-table__row">
                         <td class="fa-table__cell">{{ incident.title }}</td>
                         <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning">{{ incident.severity }}</span></td>
-                        <td class="fa-table__cell">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y') : '—' }}</td>
+                        <td class="fa-table__cell">{{ incident.detectedAt|fa_date }}</td>
                         <td class="fa-table__cell fa-table__cell--actions">
                             <a href="{{ path('app_authority_notification_incident_pdf', {_locale: app.request.locale, incidentId: incident.id, authorityKey: 'bsi_meldestelle'}) }}"
                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
@@ -139,6 +139,6 @@
         </section>
         {% endif %}
 
-    </main>
+    </div>
 </div>
 {% endblock %}

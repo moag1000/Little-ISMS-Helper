@@ -10,7 +10,7 @@
     subtitle: 'import.hub.subtitle'|trans({}, 'data_import'),
 }) }}
 
-<main class="fa-aurora-surface">
+<div class="fa-aurora-surface">
     {% for area, slugs in groups %}
         <h2 class="h6 mt-4 mb-2 text-muted">{{ ('import.hub.area.' ~ area)|trans({}, 'data_import') }}</h2>
         <div class="row g-3">
@@ -32,5 +32,5 @@
         <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
         {{ 'import.hub.help'|trans({}, 'data_import') }}
     </p>
-</main>
+</div>
 {% endblock %}

@@ -130,7 +130,7 @@
                             {% if consent.processingActivity %}
                                 {{ consent.processingActivity.name|default(consent.processingActivity) }}
                             {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted">—</span>
                             {% endif %}
                         </span>
                     </div>
@@ -138,7 +138,7 @@
                 <div class="col-md-6">
                     <div class="detail-item">
                         <span class="label">{{ 'consent.field.purposes'|trans({}, 'consent') }}:</span>
-                        <span class="value">{{ consent.purposes|default('-') }}</span>
+                        <span class="value">{{ consent.purposes|default('—') }}</span>
                     </div>
                 </div>
             </div>

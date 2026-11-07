@@ -133,10 +133,10 @@
                 { value: '<code>' ~ row.control.controlId ~ '</code>' },
                 { value: row.control.name|e },
                 { value: '<span class="fa-status-pill fa-status-pill--neutral">' ~ (row.control.category ?? '—')|e ~ '</span>' },
-                { value: row.lastChecked ? row.lastChecked|date('d.m.Y') : '<span class="fa-status-pill fa-status-pill--danger">' ~ 'effectiveness_monitor.label.never'|trans({}, 'control') ~ '</span>' },
+                { value: row.lastChecked ? row.lastChecked|fa_date : '<span class="fa-status-pill fa-status-pill--danger">' ~ 'effectiveness_monitor.label.never'|trans({}, 'control') ~ '</span>' },
                 { value: row.overdueDays ? row.overdueDays ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control') : '—', align: 'right' },
                 { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
-                { value: '<span class="fa-status-pill fa-status-pill--' ~ (row.control.implementationStatus == 'implemented' ? 'success' : (row.control.implementationStatus == 'in_progress' ? 'warning' : 'neutral')) ~ '">' ~ (row.control.implementationStatus ?? 'n/a')|e ~ '</span>' },
+                { value: '<span class="fa-status-pill fa-status-pill--' ~ (row.control.implementationStatus == 'implemented' ? 'success' : (row.control.implementationStatus == 'in_progress' ? 'warning' : 'neutral')) ~ '">' ~ (row.control.implementationStatus ?? '—')|e ~ '</span>' },
                 { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'effectiveness_monitor.action.view'|trans({}, 'control')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
             ]
         }),
@@ -166,7 +166,7 @@
             cells: [
                 { value: '<code>' ~ row.control.controlId ~ '</code>' },
                 { value: row.control.name|e },
-                { value: row.nextDue|date('d.m.Y') },
+                { value: row.nextDue|fa_date },
                 { value: row.daysUntilDue ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
                 { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
                 { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
@@ -197,7 +197,7 @@
             cells: [
                 { value: '<code>' ~ row.control.controlId ~ '</code>' },
                 { value: row.control.name|e },
-                { value: row.lastChecked|date('d.m.Y') },
+                { value: row.lastChecked|fa_date },
                 { value: row.daysSinceCheck ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
                 { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
             ]

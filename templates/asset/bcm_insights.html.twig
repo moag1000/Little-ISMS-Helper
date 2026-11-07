@@ -48,8 +48,8 @@
                             <div class="text-center">
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.confidentiality'|trans({}, 'bcm') }}</div>
                                 {% set confLevel = analysis.confidentiality.level|default('normal') %}
-                                {% set levelColors = {'very_high': 'danger', 'high': 'warning', 'normal': 'info', 'low': 'secondary'} %}
-                                {% include '_components/_badge.html.twig' with { variant: levelColors[confLevel]|default('secondary'), class: 'fa-status-pill--lg', content: ('bcm.level.' ~ confLevel)|trans({}, 'bcm') } %}
+                                {% import '_components/_status_vocabulary.html.twig' as _status %}
+                                {{ _status.pill('protection_level', confLevel, ('bcm.level.' ~ confLevel)|trans({}, 'bcm'), { size: 'lg', noDot: true }) }}
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -63,7 +63,8 @@
                             <div class="text-center">
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.integrity'|trans({}, 'bcm') }}</div>
                                 {% set intLevel = analysis.integrity.level|default('normal') %}
-                                {% include '_components/_badge.html.twig' with { variant: levelColors[intLevel]|default('secondary'), class: 'fa-status-pill--lg', content: ('bcm.level.' ~ intLevel)|trans({}, 'bcm') } %}
+                                {% import '_components/_status_vocabulary.html.twig' as _status %}
+                                {{ _status.pill('protection_level', intLevel, ('bcm.level.' ~ intLevel)|trans({}, 'bcm'), { size: 'lg', noDot: true }) }}
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -77,7 +78,8 @@
                             <div class="text-center">
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.availability'|trans({}, 'bcm') }}</div>
                                 {% set availLevel = analysis.availability.level|default('normal') %}
-                                {% include '_components/_badge.html.twig' with { variant: levelColors[availLevel]|default('secondary'), class: 'fa-status-pill--lg', content: ('bcm.level.' ~ availLevel)|trans({}, 'bcm') } %}
+                                {% import '_components/_status_vocabulary.html.twig' as _status %}
+                                {{ _status.pill('protection_level', availLevel, ('bcm.level.' ~ availLevel)|trans({}, 'bcm'), { size: 'lg', noDot: true }) }}
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -121,11 +123,10 @@
                             {% endif %}
                         </td>
                         <td class="fa-table__cell">
-                            {% set critColors = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
-                            {% include '_components/_badge.html.twig' with { variant: critColors[process.criticality]|default('secondary'), content: ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm') } %}
+                            {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(process.criticality|default('')), content: ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm') } %}
                         </td>
-                        <td class="fa-table__cell">{{ process.rto|default('-') }}h</td>
-                        <td class="fa-table__cell">{{ process.rpo|default('-') }}h</td>
+                        <td class="fa-table__cell">{{ process.rto|default('—') }}h</td>
+                        <td class="fa-table__cell">{{ process.rpo|default('—') }}h</td>
                         <td class="fa-table__cell fa-table__cell--center">
                             <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
@@ -160,25 +161,24 @@
                 <div class="col-md-6">
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'asset.field.type'|trans({}, 'asset') }}</dt>
-                        <dd class="col-sm-8">{{ asset.assetType|default('-') }}</dd>
+                        <dd class="col-sm-8">{{ asset.assetType|default('—') }}</dd>
 
                         <dt class="col-sm-4">{{ 'asset.field.status'|trans({}, 'asset') }}</dt>
-                        <dd class="col-sm-8">{{ asset.status|default('-') }}</dd>
+                        <dd class="col-sm-8">{{ asset.status|default('—') }}</dd>
 
                         <dt class="col-sm-4">{{ 'asset.field.owner'|trans({}, 'asset') }}</dt>
-                        <dd class="col-sm-8">{{ asset.effectiveOwner|default('-') }}</dd>
+                        <dd class="col-sm-8">{{ asset.effectiveOwner|default('—') }}</dd>
                     </dl>
                 </div>
                 <div class="col-md-6">
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'asset.field.location'|trans({}, 'asset') }}</dt>
-                        <dd class="col-sm-8">{{ asset.physicalLocation ? asset.physicalLocation.name : (asset.location|default('-')) }}</dd>
+                        <dd class="col-sm-8">{{ asset.physicalLocation ? asset.physicalLocation.name : (asset.location|default('—')) }}</dd>
 
                         <dt class="col-sm-4">{{ 'asset.field.availability'|trans({}, 'asset') }}</dt>
                         <dd class="col-sm-8">
                             {% if asset.availabilityValue %}
-                                {% set availColors = {1: 'secondary', 2: 'success', 3: 'info', 4: 'warning', 5: 'danger'} %}
-                                {% include '_components/_badge.html.twig' with { variant: availColors[asset.availabilityValue]|default('secondary'), content: asset.availabilityValue ~ '/5' } %}
+                                {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(asset.availabilityValue), content: asset.availabilityValue ~ '/5' } %}
                             {% else %}
                                 -
                             {% endif %}

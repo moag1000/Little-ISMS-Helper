@@ -83,7 +83,7 @@
         {% for cat in flow.dataCategories %}
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: cat } %}
         {% else %}
-            <span class="text-muted-color">-</span>
+            <span class="text-muted-color">—</span>
         {% endfor %}
     </div>
     {% endblock %}
@@ -96,7 +96,7 @@
         {% for measure in flow.securityMeasures %}
             {% include '_components/_badge.html.twig' with { variant: 'success', content: measure } %}
         {% else %}
-            <span class="text-muted-color">-</span>
+            <span class="text-muted-color">—</span>
         {% endfor %}
     </div>
     {% endblock %}

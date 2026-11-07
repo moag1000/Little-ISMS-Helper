@@ -4,7 +4,6 @@
 {% trans_default_domain 'privacy' %}
 {% set editable = dpia.status in ['draft', 'requires_revision'] %}
 {% set status_class = {'draft':'secondary','in_review':'info','approved':'success','rejected':'danger','requires_revision':'warning'}[dpia.status] %}
-{% set risk_map = {'low':'success','medium':'info','high':'warning','critical':'danger'} %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
@@ -19,12 +18,12 @@
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
             {% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}
-            {% if dpia.riskLevel %} {% include '_components/_badge.html.twig' with { variant: risk_map[dpia.riskLevel], content: dpia.riskLevel|upper } %}{% endif %}
+            {% if dpia.riskLevel %} {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(dpia.riskLevel|default('')), content: dpia.riskLevel|upper } %}{% endif %}
         </div>
         {% if dpia.processingActivity %}<div class="fa-drawer__kv"><span class="label">{{ 'dpia.new.section_processing_operations'|trans({}, 'privacy') }}</span><span>{{ dpia.processingActivity.name }}</span></div>{% endif %}
         <div class="fa-drawer__kv"><span class="label">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</span><span>{{ dpia.completenessPercentage }}%</span></div>
         {% if dpia.residualRiskLevel %}<div class="fa-drawer__kv"><span class="label">{{ 'dpia.new.section_risk_assessment'|trans({}, 'privacy') }}</span><span>{{ dpia.residualRiskLevel|upper }}</span></div>{% endif %}
-        <div class="fa-drawer__kv"><span class="label">DPO</span><span>{{ dpia.dpoConsultationDate ? dpia.dpoConsultationDate|fa_date : '–' }}</span></div>
+        <div class="fa-drawer__kv"><span class="label">DPO</span><span>{{ dpia.dpoConsultationDate|fa_date }}</span></div>
         {% if dpia.necessityAssessment %}
             <div class="fa-drawer__section">
                 <span class="label">{{ 'dpia.new.section_necessity_proportionality'|trans({}, 'privacy') }}</span>

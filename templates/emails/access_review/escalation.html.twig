@@ -44,7 +44,7 @@
                 </tr>
                 <tr>
                     <td style="border:none; padding:3px 12px 3px 0; font-weight:bold; color:#374151;">Due Date</td>
-                    <td style="border:none; padding:3px 0;">{{ campaign.dueDate ? campaign.dueDate|fa_date : '–' }}</td>
+                    <td style="border:none; padding:3px 0;">{{ campaign.dueDate|fa_date }}</td>
                 </tr>
                 <tr>
                     <td style="border:none; padding:3px 12px 3px 0; font-weight:bold; color:#374151;">{{ 'access_review.field.decided_by'|trans({}, 'access_review') }}</td>
@@ -70,10 +70,10 @@
             <tbody>
                 {% for item in escalatedItems %}
                 <tr>
-                    <td>{{ item.subjectUser ? item.subjectUser.fullName|e : '–' }}</td>
-                    <td>{{ item.subjectUser ? item.subjectUser.email|e : '–' }}</td>
+                    <td>{{ item.subjectUser ? item.subjectUser.fullName|e : '—' }}</td>
+                    <td>{{ item.subjectUser ? item.subjectUser.email|e : '—' }}</td>
                     <td><code>{{ item.reviewedRole|e }}</code></td>
-                    <td>{{ item.decidedBy ? item.decidedBy.email|e : '–' }}</td>
+                    <td>{{ item.decidedBy ? item.decidedBy.email|e : '—' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

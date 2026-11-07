@@ -42,12 +42,7 @@
     </td>
     <td>
         {% if pa.riskLevel %}
-            {% set risk_class = {
-                'low': 'success',
-                'medium': 'info',
-                'high': 'warning',
-                'critical': 'danger'
-            }[pa.riskLevel] %}
+            {% set risk_class = pill_tone_severity(pa.riskLevel|default('')) %}
             {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('processing_activity.risk_level.' ~ pa.riskLevel)|trans({}, 'privacy') } %}
         {% else %}
             <span class="text-muted">—</span>

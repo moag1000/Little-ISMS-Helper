@@ -131,7 +131,7 @@
                         <div class="col-3">
                             <small class="d-block text-muted text-capitalize">{{ level }}</small>
                             <span class="fw-bold {% if data > (dashboard.risk_appetite.appetite[level ~ '_max'] ?? 999) %}text-danger{% endif %}">
-                                {{ data }}/{{ dashboard.risk_appetite.appetite[level ~ '_max'] ?? '-' }}
+                                {{ data }}/{{ dashboard.risk_appetite.appetite[level ~ '_max'] ?? '—' }}
                             </span>
                         </div>
                         {% endfor %}
@@ -325,7 +325,7 @@
                                     <small class="text-muted">{{ approval.entity_type }}</small>
                                 </div>
                                 {% if approval.due_date %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: approval.due_date|date('d.m.Y') } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: approval.due_date|fa_date } %}
                                 {% endif %}
                             </div>
                         </a>
@@ -365,7 +365,7 @@
                                     <small class="text-muted">{{ instance.entityType }} #{{ instance.entityId }}</small>
                                 </div>
                                 {% if instance.dueDate %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: instance.dueDate|date('d.m.Y') } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: instance.dueDate|fa_date } %}
                                 {% endif %}
                             </div>
                         </div>

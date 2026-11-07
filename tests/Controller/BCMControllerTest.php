@@ -146,6 +146,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
     }
@@ -157,6 +160,9 @@ class BCMControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         // Page should render successfully with statistics
     }
@@ -168,6 +174,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 
@@ -188,6 +197,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm/critical');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 
@@ -214,10 +226,16 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm/critical');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        // Clean up
-        $this->entityManager->remove($criticalProcess);
+        // Clean up (the redirect reboots the kernel and detaches the entity)
+        $stale = $this->entityManager->find(BusinessProcess::class, $criticalProcess->getId());
+        if ($stale !== null) {
+            $this->entityManager->remove($stale);
+        }
         $this->entityManager->flush();
     }
 
@@ -277,10 +295,16 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        // Clean up
-        $this->entityManager->remove($process2);
+        // Clean up (the redirect reboots the kernel and detaches the entity)
+        $stale = $this->entityManager->find(BusinessProcess::class, $process2->getId());
+        if ($stale !== null) {
+            $this->entityManager->remove($stale);
+        }
         $this->entityManager->flush();
     }
 
@@ -291,6 +315,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 
@@ -317,10 +344,16 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        // Clean up
-        $this->entityManager->remove($criticalProcess);
+        // Clean up (the redirect reboots the kernel and detaches the entity)
+        $stale = $this->entityManager->find(BusinessProcess::class, $criticalProcess->getId());
+        if ($stale !== null) {
+            $this->entityManager->remove($stale);
+        }
         $this->entityManager->flush();
     }
 
@@ -331,6 +364,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         // The test process has 'high' criticality
     }
@@ -349,6 +385,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 
@@ -364,6 +403,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm/critical');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 

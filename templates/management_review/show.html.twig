@@ -98,7 +98,7 @@
                                 {% endfor %}
                             </ul>
                             {% else %}
-                            <p class="text-muted">-</p>
+                            <p class="text-muted">—</p>
                             {% endif %}
                         </div>
                     </div>
@@ -320,7 +320,7 @@
                         <dd class="col-sm-7">{{ review.createdAt|fa_datetime }}</dd>
 
                         <dt class="col-sm-5 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-7">{{ review.updatedAt ? review.updatedAt|fa_datetime : '-' }}</dd>
+                        <dd class="col-sm-7">{{ review.updatedAt|fa_datetime }}</dd>
 
                         <dt class="col-sm-5 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7"><code>{{ review.id }}</code></dd>

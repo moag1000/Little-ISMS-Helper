@@ -141,15 +141,15 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {{ token.deviceName ?? '-' }}
+                                    {{ token.deviceName ?? '—' }}
                                     {% if token.isPrimary %}
                                         {% include '_components/_badge.html.twig' with { variant: 'primary', content: 'mfa.is_primary'|trans({}, 'mfa') } %}
                                     {% endif %}
                                 </td>
-                                <td>{{ token.enrolledAt|date('d.m.Y H:i') }}</td>
+                                <td>{{ token.enrolledAt|fa_datetime }}</td>
                                 <td>
                                     {% if token.lastUsedAt %}
-                                        {{ token.lastUsedAt|date('d.m.Y H:i') }}
+                                        {{ token.lastUsedAt|fa_datetime }}
                                     {% else %}
                                         <span class="text-muted">{{ 'mfa.never_used'|trans({}, 'mfa') }}</span>
                                     {% endif %}

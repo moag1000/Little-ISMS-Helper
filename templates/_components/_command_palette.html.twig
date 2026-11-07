@@ -9,6 +9,9 @@
 {% set _cmds = _cmds|merge([
     { id: 'goto-dashboard', label: 'ui.command_palette.command.goto_dashboard'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-dashboard', url: path('app_dashboard'), keywords: ['home', 'start', 'übersicht', 'overview']  }
 ]) %}
+{% set _cmds = _cmds|merge([
+    { id: 'goto-my-day', label: 'ui.command_palette.command.goto_my_day'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-dashboard', url: path('app_my_day'), keywords: ['my day', 'mein tag', 'inbox', 'posteingang', 'freigaben', 'approvals']  }
+]) %}
 {% if is_module_active('assets') %}{% set _cmds = _cmds|merge([
     { id: 'goto-assets', label: 'ui.command_palette.command.goto_assets'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-assets', url: path('app_asset_index'), keywords: ['asset', 'inventory', 'bestände']  }
 ]) %}{% endif %}
@@ -32,6 +35,15 @@
 ]) %}{% endif %}
 {% if is_module_active('bcm') %}{% set _cmds = _cmds|merge([
     { id: 'goto-bcm', label: 'ui.command_palette.command.goto_bcm'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-bar-chart', url: path('app_business_process_index'), keywords: ['bcm', 'bia', 'continuity']  }
+]) %}{% endif %}
+{% if is_module_active('compliance') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-mapping-hub', label: 'ui.command_palette.command.goto_mapping_hub'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'compliance-shield', url: path('app_compliance_mapping_hub'), keywords: ['mapping', 'cross-framework', 'zuordnung', 'grundschutz']  }
+]) %}{% endif %}
+{% if is_module_active('locations') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-location-map', label: 'ui.command_palette.command.goto_location_map'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-location', url: path('app_location_map'), keywords: ['karte', 'map', 'standort', 'site', 'lagebild']  }
+]) %}{% endif %}
+{% if is_module_active('portfolio_reports') and (is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_KONZERN_AUDITOR')) %}{% set _cmds = _cmds|merge([
+    { id: 'goto-group-comparison', label: 'ui.command_palette.command.goto_group_comparison'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-reports', url: path('app_group_report_comparison'), keywords: ['vergleich', 'comparison', 'konzern', 'group', 'benchmark']  }
 ]) %}{% endif %}
 {% if is_module_active('assets') %}{% set _cmds = _cmds|merge([
     { id: 'create-asset', label: 'ui.command_palette.command.create_asset'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: path('app_asset_new'), keywords: ['new', 'create', 'neu']  }

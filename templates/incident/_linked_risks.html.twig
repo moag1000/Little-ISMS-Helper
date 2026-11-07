@@ -93,10 +93,10 @@
                             {{ _fa_entity_card.render({
                                 type:    'risk',
                                 icon:    'risk',
-                                title:   risk.title ?? 'N/A',
+                                title:   risk.title ?? '—',
                                 meta:    [
                                     ('risk.link_incident.link_type.' ~ link.linkType)|trans({}, 'risk'),
-                                    link.linkedAt|date('d.m.Y'),
+                                    link.linkedAt|fa_date,
                                     link.linkedBy ? link.linkedBy.fullName ?? link.linkedBy.email : null
                                 ]|filter(v => v is not null),
                                 href:    path('app_risk_show', {id: risk.id}),

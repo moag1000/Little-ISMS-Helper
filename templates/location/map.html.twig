@@ -78,7 +78,7 @@
                 {% set _peer = peers[site.id] ?? null %}
                 {{ _fa_feature_card.render({
                     label: 'location.map.peer.own_rate'|trans({ '%site%': site.name }, 'locations'),
-                    value: site.checksRate is not null ? site.checksRate ~ ' %' : '–',
+                    value: site.checksRate is not null ? site.checksRate ~ ' %' : '—',
                     variant: site.gaps is empty ? 'success' : (site.gaps|length >= 3 ? 'danger' : 'warning'),
                     hint: peer_mode == 'off' ? null : (_peer and _peer.medianRate is not null ? 'location.map.peer.median_hint'|trans({ '%median%': _peer.medianRate, '%count%': _peer.size }, 'locations') : 'location.map.peer.none'|trans({}, 'locations'))
                 }) }}
@@ -245,7 +245,7 @@
                             <tr>
                                 <td>{{ _c.name }}</td>
                                 <td class="text-end">{{ _c.sites }}</td>
-                                <td class="text-end">{{ _c.checksRate is not null ? _c.checksRate ~ ' %' : '–' }}</td>
+                                <td class="text-end">{{ _c.checksRate is not null ? _c.checksRate ~ ' %' : '—' }}</td>
                                 <td class="text-end">{{ _c.gaps }}</td>
                                 <td class="text-end">{{ _c.critical }}</td>
                             </tr>
@@ -464,15 +464,15 @@
                         <td><input type="checkbox" class="form-check-input" name="ids[]" value="{{ site.id }}" form="location-map-selection" aria-label="{{ 'location.map.bulk.select_site'|trans({ '%site%': site.name }, 'locations') }}"></td>
                         <td><a href="{{ path('app_location_show', { id: site.id }) }}">{{ site.name }}</a>{% if site.mine %} <span class="text-muted-color">· {{ 'location.map.mine'|trans({}, 'locations') }}</span>{% endif %}{% if site.sample ?? false %} <span class="text-muted-color">· {{ 'location.map.sample.mark'|trans({}, 'locations') }}</span>{% endif %}</td>
                     {% endif %}
-                    <td>{{ (site.area in ['EU', 'WORLD'] ? ('location.map.area.' ~ site.area)|trans({}, 'locations') : [site.city, site.country]|filter(v => v)|join(', ')) ?: '–' }}{% if site.type == 'region' %} <span class="text-muted-color">· {{ 'location.type.region'|trans({}, 'locations') }}</span>{% endif %}</td>
-                    <td class="text-end">{{ site.protection ?: '–' }}</td>
-                    <td>{% if site.riskBand == 'none' %}<span class="text-muted-color">–</span>{% else %}{{ site.score }} {{ risk_level_label(site.riskBand) }}{% endif %}</td>
+                    <td>{{ (site.area in ['EU', 'WORLD'] ? ('location.map.area.' ~ site.area)|trans({}, 'locations') : [site.city, site.country]|filter(v => v)|join(', ')) ?: '—' }}{% if site.type == 'region' %} <span class="text-muted-color">· {{ 'location.type.region'|trans({}, 'locations') }}</span>{% endif %}</td>
+                    <td class="text-end">{{ site.protection ?: '—' }}</td>
+                    <td>{% if site.riskBand == 'none' %}<span class="text-muted-color">—</span>{% else %}{{ site.score }} {{ risk_level_label(site.riskBand) }}{% endif %}</td>
                     <td>{{ 'location.map.gaps_of'|trans({ '%count%': site.gaps|length, '%total%': site.checksApplicable }, 'locations') }}</td>
                     {% for _l in _extra_layers %}
                         {% set _f = site.layers[_l] ?? { band: 'none' } %}
                         <td data-layer-only="{{ _l }}" {{ _l != _layer ? 'hidden' }}>
                             {%- if _l == 'emergency' -%}
-                                {{ _f.band == 'none' ? '–' : ('location.map.emergency.cell.' ~ _f.band)|trans({ '%missing%': _f.missing, '%untested%': _f.untested }, 'locations') }}
+                                {{ _f.band == 'none' ? '—' : ('location.map.emergency.cell.' ~ _f.band)|trans({ '%missing%': _f.missing, '%untested%': _f.untested }, 'locations') }}
                             {%- elseif _l == 'audit' -%}
                                 {{ _f.last ?? null ? 'location.map.audit.last'|trans({ '%date%': date(_f.last.date)|fa_date }, 'locations') : 'location.map.audit.never'|trans({}, 'locations') }}{% if _f.next ?? null %} · {{ 'location.map.audit.next'|trans({ '%date%': date(_f.next.date)|fa_date }, 'locations') }}{% endif %}
                             {%- else -%}
@@ -496,7 +496,7 @@
             <h2 class="location-map__panel-title">{{ site.name }}</h2>
             <p class="text-muted-color mb-2">{{ site.tenantName }} · {{ (site.area in ['EU', 'WORLD'] ? ('location.map.area.' ~ site.area)|trans({}, 'locations') : [site.city, site.country]|filter(v => v)|join(', ')) }}</p>
             <dl class="location-map__facts">
-                <div><dt>{{ 'location.map.col.protection'|trans({}, 'locations') }}</dt><dd>{{ site.protection ?: '–' }}</dd></div>
+                <div><dt>{{ 'location.map.col.protection'|trans({}, 'locations') }}</dt><dd>{{ site.protection ?: '—' }}</dd></div>
                 <div><dt>{{ 'location.map.col.risk'|trans({}, 'locations') }}</dt><dd>{% if site.riskBand == 'none' %}–{% else %}{{ site.score }} {{ risk_level_label(site.riskBand) }}{% endif %}</dd></div>
                 <div><dt>{{ 'location.map.col.gaps'|trans({}, 'locations') }}</dt><dd>{{ 'location.map.gaps_of'|trans({ '%count%': site.gaps|length, '%total%': site.checksApplicable }, 'locations') }}</dd></div>
                 <div><dt>{{ 'location.map.col.incidents'|trans({}, 'locations') }}</dt><dd>{{ site.openIncidents }}</dd></div>
@@ -515,7 +515,7 @@
                 {% if site.children > 0 %}· {{ 'location.map.children'|trans({ '%count%': site.children }, 'locations') }}{% endif %}
             </p>
             <dl class="location-map__facts">
-                <div><dt>{{ 'location.map.col.protection'|trans({}, 'locations') }}</dt><dd>{{ site.protection ?: '–' }} <small class="text-muted-color">C {{ site.cia[0] }} · I {{ site.cia[1] }} · A {{ site.cia[2] }}</small></dd></div>
+                <div><dt>{{ 'location.map.col.protection'|trans({}, 'locations') }}</dt><dd>{{ site.protection ?: '—' }} <small class="text-muted-color">C {{ site.cia[0] }} · I {{ site.cia[1] }} · A {{ site.cia[2] }}</small></dd></div>
                 <div><dt>{{ 'location.map.col.risk'|trans({}, 'locations') }}</dt><dd>{% if site.riskBand == 'none' %}–{% else %}{{ site.score }} {{ risk_level_label(site.riskBand) }}{% endif %}</dd></div>
                 <div><dt>{{ 'location.map.col.assets'|trans({}, 'locations') }}</dt><dd>{{ site.assets }}</dd></div>
                 <div><dt>{{ 'location.map.col.incidents'|trans({}, 'locations') }}</dt><dd>{{ site.openIncidents }}</dd></div>
@@ -570,7 +570,7 @@
             {% for _o in objectives[site.id] ?? [] %}
                 {% if loop.first %}<h3 class="location-map__panel-sub">{{ 'location.map.objectives.title'|trans({}, 'locations') }}</h3><ul class="location-map__list">{% endif %}
                 <li><a href="{{ path('app_objective_show', { id: _o.id }) }}">{{ _o.title }}</a><br>
-                    <small class="text-muted-color">{{ 'location.map.objectives.line'|trans({ '%target%': _o.target, '%current%': _o.current ?? '–', '%months%': _o.monthsLeft ?? '–' }, 'locations') }}</small></li>
+                    <small class="text-muted-color">{{ 'location.map.objectives.line'|trans({ '%target%': _o.target, '%current%': _o.current ?? '—', '%months%': _o.monthsLeft ?? '—' }, 'locations') }}</small></li>
                 {% if loop.last %}</ul>{% endif %}
             {% endfor %}
 

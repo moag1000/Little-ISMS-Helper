@@ -24,7 +24,7 @@
     }) }}
 </div>
 
-<main>
+<div>
     <div class="container">
     {% if tree is empty %}
         {{ _fa_empty_state.render({
@@ -56,7 +56,7 @@
         {% endfor %}
     {% endif %}
     </div>
-</main>
+</div>
 {% endblock %}
 
 {% macro render_node(item) %}

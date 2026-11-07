@@ -121,17 +121,11 @@
                 {% include '_components/_badge.html.twig' with { variant: 'info', content: framework.name } only %}
             </td>
             <td>
-                {% set severityColors = {
-                    'critical': 'danger',
-                    'high': 'warning',
-                    'medium': 'info',
-                    'low': 'secondary'
-                } %}
                 {% set priority = gap.requirement.priority ?? 'low' %}
-                {% include '_components/_badge.html.twig' with { variant: severityColors[priority] ?? 'secondary', content: ('compliance.severity.' ~ priority)|trans({}, 'compliance') } only %}
+                {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(priority|default('')), content: ('compliance.severity.' ~ priority)|trans({}, 'compliance') } only %}
             </td>
             <td>
-                <small>{{ gap.requirement.description|default('-') }}</small>
+                <small>{{ gap.requirement.description|default('—') }}</small>
             </td>
             <td>
                 {% set fulfillment = gap.analysis.calculated_fulfillment ?? 0 %}

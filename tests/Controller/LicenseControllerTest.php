@@ -98,24 +98,28 @@ class LicenseControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testReportForUser(): void
+    public function testReportRedirectsPermanentlyToAdminReport(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->catchExceptions(false);
+        $this->client->request('GET', '/en/about/licenses/report');
+        $this->assertResponseStatusCodeSame(301);
+        $this->assertStringEndsWith('/admin/licensing/report', (string) $this->client->getResponse()->headers->get('Location'));
+    }
 
-        try {
-            $this->client->request('GET', '/en/about/licenses/report');
-            $response = $this->client->getResponse();
-            $statusCode = $response->getStatusCode();
-            // Accept 200 (success), 302/303 (redirect), 403 (forbidden), 404 (not found), 500 (template error in test env)
-            $this->assertTrue(
-                in_array($statusCode, [200, 302, 303, 403, 404, 500]),
-                sprintf('Unexpected status code %d', $statusCode)
-            );
-        } catch (\Exception $e) {
-            // Template rendering errors are acceptable in test environment
-            // as they may depend on missing routes or services
-            $this->assertTrue(true, 'Route accessible but template error: ' . $e->getMessage());
-        }
+    #[Test]
+    public function testSummaryRedirectsPermanentlyToAdminSummary(): void
+    {
+        $this->client->loginUser($this->testUser);
+        $this->client->request('GET', '/en/about/licenses/summary');
+        $this->assertResponseStatusCodeSame(301);
+        $this->assertStringEndsWith('/admin/licensing/summary', (string) $this->client->getResponse()->headers->get('Location'));
+    }
+
+    #[Test]
+    public function testGenerateRouteIsGone(): void
+    {
+        $this->client->loginUser($this->testUser);
+        $this->client->request('POST', '/en/about/licenses/generate');
+        $this->assertResponseStatusCodeSame(404);
     }
 }

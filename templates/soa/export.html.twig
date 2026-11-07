@@ -252,28 +252,28 @@
     <div class="header">
         <h1>{{ 'soa.title'|trans({}, 'soa')}}</h1>
         <div class="meta-info">
-            <strong>Standard:</strong> ISO/IEC 27001:2022 Annex A Controls<br>
-            <strong>Generiert am:</strong> {{ generatedAt|fa_datetime }} Uhr
+            <strong>{{ 'soa.export.standard'|trans({}, 'soa') }}</strong> ISO/IEC 27001:2022 Annex A Controls<br>
+            {{ 'soa.report.generated_at'|trans({'%datetime%': generatedAt|fa_datetime}, 'soa') }}
         </div>
     </div>
 
     {# Summary Statistics #}
-    <h2>Zusammenfassung</h2>
+    <h2>{{ 'soa.report.pdf.section_summary'|trans({}, 'soa') }}</h2>
     <div class="stats-grid">
         <div class="stat-box">
             <span class="value">{{ controls|length }}</span>
-            <div class="label">Gesamt Controls</div>
+            <div class="label">{{ 'soa.kpi.total_controls'|trans({}, 'soa') }}</div>
         </div>
 
         <div class="stat-box">
             <span class="value">{{ controls|filter(c => c.applicable)|length }}</span>
-            <div class="label">Anwendbare Controls</div>
+            <div class="label">{{ 'soa.kpi.applicable_controls'|trans({}, 'soa') }}</div>
         </div>
 
         <div class="stat-box">
             {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
             <span class="value">{{ implemented }}</span>
-            <div class="label">Implementierte Controls</div>
+            <div class="label">{{ 'soa.kpi.implemented_controls'|trans({}, 'soa') }}</div>
         </div>
 
         <div class="stat-box">
@@ -281,21 +281,21 @@
             {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
             {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
             <span class="value">{{ percentage }}%</span>
-            <div class="label">Compliance-Rate</div>
+            <div class="label">{{ 'soa.kpi.compliance_rate'|trans({}, 'soa') }}</div>
         </div>
     </div>
 
     {# Category Breakdown #}
-    <h2>Kategorieübersicht</h2>
+    <h2>{{ 'soa.export.category_overview'|trans({}, 'soa') }}</h2>
     {% set categories = ['Organizational', 'People', 'Physical', 'Technological'] %}
     <table>
         <thead>
             <tr>
-                <th scope="col">Kategorie</th>
-                <th scope="col" class="text-center">Gesamt</th>
-                <th scope="col" class="text-center">Anwendbar</th>
-                <th scope="col" class="text-center">Implementiert</th>
-                <th scope="col" class="text-center">Compliance-Rate</th>
+                <th scope="col">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
+                <th scope="col" class="text-center">{{ 'soa.export.col_total'|trans({}, 'soa') }}</th>
+                <th scope="col" class="text-center">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
+                <th scope="col" class="text-center">{{ 'soa.status.implemented'|trans({}, 'soa') }}</th>
+                <th scope="col" class="text-center">{{ 'soa.kpi.compliance_rate'|trans({}, 'soa') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -316,16 +316,16 @@
     </table>
 
     {# Controls Overview Table #}
-    <h2>Controls Übersicht</h2>
+    <h2>{{ 'soa.export.controls_overview'|trans({}, 'soa') }}</h2>
     <table>
         <thead>
             <tr>
-                <th scope="col">Control ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Kategorie</th>
-                <th scope="col" class="text-center">Anwendbar</th>
-                <th scope="col">Status</th>
-                <th scope="col" class="text-center">Fortschritt</th>
+                <th scope="col">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
+                <th scope="col">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
+                <th scope="col">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
+                <th scope="col" class="text-center">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
+                <th scope="col">{{ 'soa.label.status'|trans({}, 'soa') }}</th>
+                <th scope="col" class="text-center">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -344,14 +344,14 @@
                 <td>
                     {% if control.applicable %}
                         {% if control.implementationStatus == 'implemented' %}
-                            <span class="badge badge-success">Implementiert</span>
+                            <span class="badge badge-success">{{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
                         {% elseif control.implementationStatus == 'in_progress' %}
                             <span class="badge badge-warning">{{ 'soa.in_progress_badge'|trans({}, 'soa')}}</span>
                         {% elseif control.implementationStatus == 'not_started' %}
-                            <span class="badge badge-danger">Nicht begonnen</span>
+                            <span class="badge badge-danger">{{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-secondary">N/A</span>
+                        <span class="badge badge-secondary">{{ 'soa.value.na'|trans({}, 'soa') }}</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
@@ -367,7 +367,7 @@
     </table>
 
     {# Detailed Controls Information #}
-    <h2>Detaillierte Control-Informationen</h2>
+    <h2>{{ 'soa.export.detail_heading'|trans({}, 'soa') }}</h2>
 
     {% for control in controls|sort((a, b) => a.controlId <=> b.controlId) %}
     <div class="control-detail">
@@ -375,31 +375,31 @@
             <h2>{{ control.controlId }}: {{ control.name }}</h2>
             <span class="badge badge-info">{{ control.category }}</span>
             {% if control.applicable %}
-                <span class="badge badge-success">Anwendbar</span>
+                <span class="badge badge-success">{{ 'soa.field.applicable'|trans({}, 'soa') }}</span>
             {% else %}
-                <span class="badge badge-secondary">Nicht anwendbar</span>
+                <span class="badge badge-secondary">{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</span>
             {% endif %}
         </div>
 
         <div class="detail-section">
-            <div class="detail-label">Beschreibung:</div>
+            <div class="detail-label">{{ 'soa.section.description'|trans({}, 'soa') }}:</div>
             <div class="detail-value">{{ control.description }}</div>
         </div>
 
         <div class="detail-section">
-            <div class="detail-label">Begründung für Anwendbarkeit:</div>
+            <div class="detail-label">{{ 'soa.export.applicability_justification'|trans({}, 'soa') }}</div>
             <div class="detail-value">
                 {% if control.justification %}
                     {{ control.justification }}
                 {% else %}
-                    <em class="text-light-gray">Keine Begründung angegeben</em>
+                    <em class="text-light-gray">{{ 'soa.empty.no_justification'|trans({}, 'soa') }}</em>
                 {% endif %}
             </div>
         </div>
 
         {% if control.applicable %}
             <div class="detail-section">
-                <div class="detail-label">Implementierungsstatus:</div>
+                <div class="detail-label">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}:</div>
                 <div class="detail-value">
                     {% if control.implementationStatus == 'implemented' %}
                         <span class="badge badge-success">✓ {{ 'soa.status.implemented'|trans({}, 'soa') }}</span> - {{ control.implementationPercentage }}%
@@ -413,32 +413,32 @@
 
             {% if control.implementationNotes %}
             <div class="detail-section">
-                <div class="detail-label">Implementierungsnotizen:</div>
+                <div class="detail-label">{{ 'soa.field.implementation_notes'|trans({}, 'soa') }}:</div>
                 <div class="detail-value">{{ control.implementationNotes }}</div>
             </div>
             {% endif %}
 
             <div class="detail-section">
-                <div class="detail-label">Verantwortliche Person:</div>
+                <div class="detail-label">{{ 'soa.field.responsible_person'|trans({}, 'soa') }}:</div>
                 <div class="detail-value">
                     {% if control.effectiveResponsiblePerson %}
                         {{ control.effectiveResponsiblePerson }}
                     {% else %}
-                        <em class="text-light-gray">Nicht zugewiesen</em>
+                        <em class="text-light-gray">{{ 'soa.field.unassigned'|trans({}, 'soa') }}</em>
                     {% endif %}
                 </div>
             </div>
 
             {% if control.targetDate %}
             <div class="detail-section">
-                <div class="detail-label">Zieldatum:</div>
+                <div class="detail-label">{{ 'soa.field.target_date'|trans({}, 'soa') }}:</div>
                 <div class="detail-value">{{ control.targetDate|fa_date }}</div>
             </div>
             {% endif %}
         {% endif %}
 
         <div class="detail-section fs-08-light-gray">
-            <em>Zuletzt aktualisiert: {{ control.updatedAt|fa_datetime }}</em>
+            <em>{{ 'soa.field.updated_at'|trans({}, 'soa') }}: {{ control.updatedAt|fa_datetime }}</em>
         </div>
     </div>
     {% endfor %}
@@ -446,7 +446,7 @@
     <div class="footer">
         <p><strong>Statement of Applicability (SoA)</strong></p>
         <p>ISO/IEC 27001:2022 Annex A Controls</p>
-        <p>Generiert am {{ generatedAt|fa_datetime }} Uhr</p>
+        <p>{{ 'soa.report.generated_at'|trans({'%datetime%': generatedAt|fa_datetime}, 'soa') }}</p>
     </div>
 </body>
 </html>

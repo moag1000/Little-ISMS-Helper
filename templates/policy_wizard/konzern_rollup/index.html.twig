@@ -151,7 +151,7 @@
                                                 variant: 'primary',
                                                 icon: 'nav-shield-lock',
                                                 hint: std.last_updated_at is not null
-                                                    ? (std.last_updated_at|date('Y-m-d'))
+                                                    ? (std.last_updated_at|fa_date)
                                                     : '—'
                                             }) }}
                                         </div>

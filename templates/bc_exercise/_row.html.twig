@@ -17,7 +17,7 @@
            class="fa-row-link"><strong>{{ exercise.name }}</strong></a>
     </td>
     <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') } %}</td>
-    <td>{{ exercise.exerciseDate|locale_date }}</td>
+    <td>{{ exercise.exerciseDate|fa_date }}</td>
     <td><span class="{{ badge_status(exercise.status) }}">{{ ('bc_exercises.status.' ~ exercise.status)|trans({}, 'bc_exercises') }}</span></td>
     <td>
         {% if exercise.status == 'completed' %}

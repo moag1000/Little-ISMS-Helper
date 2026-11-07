@@ -35,6 +35,7 @@
     {% else %}
         <div class="row g-4">
             {% for monthKey, exercises in byMonth %}
+                {# machine-date: route params / grouping key #}
                 {% set monthDate = (monthKey ~ '-01')|date('Y-m-d') %}
                 <div class="col-md-6 col-lg-4">
                     <div class="card">
@@ -53,7 +54,7 @@
                                 <div>
                                     <div class="fw-semibold">{{ exercise.name }}</div>
                                     <small class="text-muted">
-                                        {{ exercise.exerciseDate ? exercise.exerciseDate|fa_date : '—' }}
+                                        {{ exercise.exerciseDate|fa_date }}
                                         {# Render exerciseType via i18n choice-label, not raw enum value. #}
                                         · <span class="fa-status-pill fa-status-pill--neutral">{{ ('bsi_200_4_exercise.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bsi_200_4_exercise') }}</span>
                                     </small>

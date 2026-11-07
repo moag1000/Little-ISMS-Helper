@@ -26,7 +26,7 @@
         }, 'policy_wizard')
     }) }}
 
-    <main>
+    <div>
 
     {# Severity + summary banner #}
     {% embed '_components/_card.html.twig' with {class: 'mb-3'} %}
@@ -142,14 +142,14 @@
                                 {% if row.oldValue is null or row.oldValue == '' %}
                                     <em class="text-muted">{{ 'common.none'|trans({}, 'messages') }}</em>
                                 {% else %}
-                                    {{ row.oldValue is iterable ? row.oldValue|json_encode : row.oldValue|default('-') }}
+                                    {{ row.oldValue is iterable ? row.oldValue|json_encode : row.oldValue|default('—') }}
                                 {% endif %}
                             </td>
                             <td>
                                 {% if row.newValue is null or row.newValue == '' %}
                                     <em class="text-muted">{{ 'common.none'|trans({}, 'messages') }}</em>
                                 {% else %}
-                                    <strong>{{ row.newValue is iterable ? row.newValue|json_encode : row.newValue|default('-') }}</strong>
+                                    <strong>{{ row.newValue is iterable ? row.newValue|json_encode : row.newValue|default('—') }}</strong>
                                 {% endif %}
                             </td>
                         </tr>
@@ -257,9 +257,9 @@
                                 <small class="text-muted ms-2">{{ 'policy_wizard.diff.hash_changed'|trans({}, 'policy_wizard') }}</small>
                             </span>
                             <small class="text-muted">
-                                {{ row.oldHash ? row.oldHash|slice(0, 7) : '-' }}
+                                {{ row.oldHash ? row.oldHash|slice(0, 7) : '—' }}
                                 &rarr;
-                                {{ row.newHash ? row.newHash|slice(0, 7) : '-' }}
+                                {{ row.newHash ? row.newHash|slice(0, 7) : '—' }}
                             </small>
                         </li>
                     {% endfor %}
@@ -269,6 +269,6 @@
     </div>
 
     {% endif %}
-    </main>
+    </div>
 </div>
 {% endblock %}

@@ -22,7 +22,7 @@
         {% if bc_exercise.exerciseDate %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'bc_exercises.field.exercise_date'|trans({}, 'bc_exercises') }}</span>
-            <span>{{ bc_exercise.exerciseDate|locale_date }}</span>
+            <span>{{ bc_exercise.exerciseDate|fa_date }}</span>
         </div>
         {% endif %}
 

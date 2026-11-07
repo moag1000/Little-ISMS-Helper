@@ -13,7 +13,7 @@
         {% block table_head %}
             <tr class="bg-alt">
                 <th scope="col" class="th-sticky-left">
-                    Von → Nach
+                    {{ 'compliance.transitive_view.matrix_corner'|trans({}, 'compliance') }}
                 </th>
                 {% for framework in frameworks %}
                     <th scope="col" class="th-center">

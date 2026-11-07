@@ -55,7 +55,7 @@
         {% if requirement.maturityCurrent is not null or requirement.maturityTarget is not null %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'compliance.requirement.mris.current'|trans({}, 'compliance') }} / {{ 'compliance.requirement.mris.target'|trans({}, 'compliance') }}</span>
-                <span>{{ requirement.maturityCurrent|default('–') }} / {{ requirement.maturityTarget|default('–') }}</span>
+                <span>{{ requirement.maturityCurrent|default('—') }} / {{ requirement.maturityTarget|default('—') }}</span>
             </div>
         {% endif %}
         {% if fulfillment and fulfillment.responsiblePersonUser %}

@@ -4,22 +4,6 @@
 
 {% block title %}{{ 'prototype_protection.page.index_title'|trans({}, 'prototype_protection') }}{% endblock %}
 
-{% set status_variant = {
-    'draft':     'secondary',
-    'in_review': 'info',
-    'approved':  'success',
-    'rejected':  'danger',
-    'expired':   'warning',
-} %}
-
-{% set result_variant = {
-    'not_applicable': 'secondary',
-    'not_met':        'danger',
-    'partial':        'warning',
-    'met':            'success',
-    'exceeded':       'success',
-} %}
-
 {% block body %}
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {

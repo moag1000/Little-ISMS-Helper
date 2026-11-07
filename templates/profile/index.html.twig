@@ -119,11 +119,11 @@
                         <dd class="col-sm-8">{{ user.timezone|default('Europe/Berlin') }}</dd>
 
                         <dt class="col-sm-4">{{ 'user.field.created_at'|trans({}, 'user') }}</dt>
-                        <dd class="col-sm-8">{{ user.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-8">{{ user.createdAt|fa_datetime }}</dd>
 
                         {% if user.lastLoginAt %}
                             <dt class="col-sm-4">{{ 'user.field.last_login'|trans({}, 'user') }}</dt>
-                            <dd class="col-sm-8">{{ user.lastLoginAt|date('d.m.Y H:i') }}</dd>
+                            <dd class="col-sm-8">{{ user.lastLoginAt|fa_datetime }}</dd>
                         {% endif %}
                     </dl>
                 {% endblock %}

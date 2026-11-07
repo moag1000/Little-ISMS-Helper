@@ -311,7 +311,7 @@
         ((requirement.description ?? '')|slice(0, 80)) ~ ((requirement.description ?? '')|length > 80 ? '...' : ''),
         '<span class="badge badge-' ~ _prio ~ '">' ~ _prio|upper ~ '</span>',
         '<strong style="color:' ~ _ful_color ~ ';">' ~ fulfillmentPct ~ '%</strong>',
-        requirement.category|default('N/A'),
+        requirement.category|default('—'),
     ]]) %}
 {% endfor %}
 
@@ -330,7 +330,7 @@
         kicker:       'Compliance · Gap Analysis',
         status:       'final',
         audience:     'auditor',
-        generated_at: pdf_generation_date|date('d.m.Y H:i'),
+        generated_at: pdf_generation_date|fa_datetime,
     },
     brand_name: 'Little ISMS Helper',
     key_findings: [

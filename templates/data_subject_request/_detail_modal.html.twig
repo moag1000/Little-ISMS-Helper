@@ -43,14 +43,14 @@
         </div>
         <div class="fa-drawer__kv">
             <span class="label">{{ 'dsr.field.received_at'|trans({}, 'data_subject_request') }}</span>
-            <span>{{ dsr.receivedAt ? dsr.receivedAt|locale_date : '—' }}</span>
+            <span>{{ dsr.receivedAt|fa_date }}</span>
         </div>
         {% set deadline = dsr.effectiveDeadline %}
         {% if deadline %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'dsr.field.deadline'|trans({}, 'data_subject_request') }}</span>
                 <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
-                    {{ deadline|locale_date }}
+                    {{ deadline|fa_date }}
                     {% if dsr.status not in ['completed', 'rejected'] %}
                         <small class="d-block {% if dsr.overdue %}text-danger{% else %}text-muted{% endif %}">
                             {% if dsr.overdue %}

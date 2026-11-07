@@ -73,15 +73,15 @@
     {% endif %}
     <div class="stats-grid mt-3 grid-responsive-250">
         <div class="stat-item">
-            <strong>{{ _p.protection ?: '–' }}</strong>
+            <strong>{{ _p.protection ?: '—' }}</strong>
             <span>{{ 'location.map.col.protection'|trans({}, 'locations') }}</span>
         </div>
         <div class="stat-item">
-            <strong>{{ _p.riskBand == 'none' ? '–' : _p.score }}</strong>
+            <strong>{{ _p.riskBand == 'none' ? '—' : _p.score }}</strong>
             <span>{{ 'location.map.col.risk'|trans({}, 'locations') }}</span>
         </div>
         <div class="stat-item">
-            <strong>{{ _p.checksRate is not null ? _p.checksRate ~ ' %' : '–' }}</strong>
+            <strong>{{ _p.checksRate is not null ? _p.checksRate ~ ' %' : '—' }}</strong>
             <span>{{ 'location.map.export.col.rate'|trans({}, 'locations') }}</span>
         </div>
     </div>
@@ -97,7 +97,7 @@
         </ul>
     {% endif %}
     {% for _o in profile.objectives %}
-        <p class="mt-2 mb-0">{{ _o.title }}: {{ 'location.map.objectives.line'|trans({ '%target%': _o.target, '%current%': _o.current ?? '–', '%months%': _o.monthsLeft ?? '–' }, 'locations') }}</p>
+        <p class="mt-2 mb-0">{{ _o.title }}: {{ 'location.map.objectives.line'|trans({ '%target%': _o.target, '%current%': _o.current ?? '—', '%months%': _o.monthsLeft ?? '—' }, 'locations') }}</p>
     {% endfor %}
     {% if is_granted('ROLE_MANAGER') and (is_module_active('audits') or is_module_active('bcm')) %}
         <div class="d-flex flex-wrap gap-2 mt-3">
@@ -142,14 +142,8 @@
 
         <div class="stat-item">
             <strong>
-                {% set securityColors = {
-                    'public': 'secondary',
-                    'restricted': 'info',
-                    'controlled': 'warning',
-                    'secure': 'warning',
-                    'high_security': 'danger'
-                } %}
-                {% include '_components/_badge.html.twig' with { variant: securityColors[location.securityLevel] ?? 'secondary', content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
+                {% import '_components/_status_vocabulary.html.twig' as _vocab %}
+                {% include '_components/_badge.html.twig' with { variant: _vocab.tone('security_zone', location.securityLevel)|trim, content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
             </strong>
             <span>{{ 'location.field.security_level'|trans({}, 'locations') }}</span>
         </div>
@@ -172,7 +166,7 @@
         </div>
 
         <div class="stat-item">
-            <strong>{{ location.accessControlSystem ?: '–' }}</strong>
+            <strong>{{ location.accessControlSystem ?: '—' }}</strong>
             <span>{{ 'location.field.access_control'|trans({}, 'locations') }}</span>
         </div>
     </div>
@@ -235,14 +229,8 @@
                 <td>{{ child.name }}</td>
                 <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('location.type.' ~ child.locationType)|trans({}, 'locations') } %}</td>
                 <td>
-                    {% set securityColors = {
-                        'public': 'secondary',
-                        'restricted': 'info',
-                        'controlled': 'warning',
-                        'secure': 'warning',
-                        'high_security': 'danger'
-                    } %}
-                    {% include '_components/_badge.html.twig' with { variant: securityColors[child.securityLevel] ?? 'secondary', content: ('location.security.' ~ child.securityLevel)|trans({}, 'locations') } %}
+                    {% import '_components/_status_vocabulary.html.twig' as _vocab %}
+                    {% include '_components/_badge.html.twig' with { variant: _vocab.tone('security_zone', child.securityLevel)|trim, content: ('location.security.' ~ child.securityLevel)|trans({}, 'locations') } %}
                 </td>
                 <td class="text-center">
                     <a href="{{ path('app_location_show', {id: child.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>

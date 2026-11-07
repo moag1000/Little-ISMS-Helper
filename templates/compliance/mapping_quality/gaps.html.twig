@@ -117,7 +117,7 @@
                                 <strong>{{ stat.count }}</strong>
                             </div>
                             {% set total = gap_stats_by_priority|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}
-                            {% set priority_tone = {critical: 'danger', high: 'warning', medium: 'info'}[stat.priority|lower]|default('neutral') %}
+                            {% set priority_tone = pill_tone_severity(stat.priority|lower) %}
                             {{ _fa_progress.render({
                                 value: stat.count,
                                 max: total,

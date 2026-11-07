@@ -25,7 +25,7 @@
     ]
 }) }}
 
-<main>
+<div>
 
 {# Statistics Cards #}
 <div class="kpi-grid">
@@ -118,31 +118,25 @@
         <tr>
             <td><strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong></td>
             <td>
-                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '-' } %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '—' } %}
             </td>
-            <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
+            <td>{{ instance.currentStep ? instance.currentStep.name : '—' }}</td>
             <td>
-                {% set statusColors = {
-                    'pending': 'warning',
-                    'in_progress': 'info',
-                    'approved': 'success',
-                    'rejected': 'danger',
-                    'cancelled': 'secondary'
-                } %}
-                {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
+                {% import '_components/_status_vocabulary.html.twig' as _status %}
+                {{ _status.pill('workflow', instance.status, ('workflow.status.' ~ instance.status)|trans({}, 'workflows')) }}
                 {% if instance.status == 'in_progress' and hasEligibleApprovers[instance.id] is defined and not hasEligibleApprovers[instance.id] %}
                     {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', title: 'workflow.warning.no_eligible_approvers'|trans({}, 'workflows'), icon: 'ui-person' } %}
                 {% endif %}
             </td>
-            <td>{{ instance.initiatedBy ? (instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName) : '-' }}</td>
+            <td>{{ instance.initiatedBy ? (instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName) : '—' }}</td>
             <td>
                 {% if instance.dueDate %}
-                    {{ instance.dueDate|date('d.m.Y') }}
+                    {{ instance.dueDate|fa_date }}
                     {% if instance.dueDate < date() and instance.status not in ['approved', 'rejected', 'cancelled'] %}
                         {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', content: 'workflow.badge.overdue'|trans({}, 'workflows') } %}
                     {% endif %}
                 {% else %}
-                    <span class="text-muted">-</span>
+                    <span class="text-muted">—</span>
                 {% endif %}
             </td>
             <td class="text-center">
@@ -184,5 +178,5 @@
     {% endif %}
 {% endfor %}
 
-</main>
+</div>
 {% endblock %}

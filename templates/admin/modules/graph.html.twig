@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'admin.modules.dependency_graph'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
+{% block title %}{{ 'admin.modules.dependency_graph'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}{{ 'admin.modules.dependency_graph'|trans({}, 'admin') }}{% endblock %}
 
@@ -62,7 +62,7 @@
                                                 <span class="fa-status-pill fa-status-pill--warning me-1">{{ module_name(dep, dependency_graph[dep].name) }}</span>
                                             {% endfor %}
                                         {% else %}
-                                            <span class="text-muted">-</span>
+                                            <span class="text-muted">—</span>
                                         {% endif %}
                                     </td>
                                     <td class="fa-table__cell">
@@ -71,7 +71,7 @@
                                                 <span class="fa-status-pill fa-status-pill--primary me-1">{{ module_name(dep, dependency_graph[dep].name) }}</span>
                                             {% endfor %}
                                         {% else %}
-                                            <span class="text-muted">-</span>
+                                            <span class="text-muted">—</span>
                                         {% endif %}
                                     </td>
                                 </tr>

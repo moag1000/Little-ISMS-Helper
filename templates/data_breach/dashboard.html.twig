@@ -239,13 +239,13 @@
                                 </td>
                                 <td>
                                     {% if breach.riskLevel %}
-                                        {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
+                                        {% set risk_class = pill_tone_severity(breach.riskLevel|default('')) %}
                                         {% include '_components/_badge.html.twig' with { variant: risk_class, content: breach.riskLevel|upper } %}
                                     {% else %}
-                                        <span class="text-muted">-</span>
+                                        <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ breach.affectedDataSubjects|default('-')|number_format }}</td>
+                                <td>{{ breach.affectedDataSubjects|default('—')|number_format }}</td>
                             </tr>
                         {% endfor %}
                     {% endblock %}

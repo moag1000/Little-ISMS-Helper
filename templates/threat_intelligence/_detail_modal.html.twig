@@ -2,8 +2,7 @@
    Frame. Uses the drawer chrome (header/body/footer/kv) which renders cleanly as
    a flex column; condensed, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'threat' %}
-{% set severity_map = {'critical':'danger','high':'warning','medium':'info','low':'secondary','informational':'light'} %}
-{% set severity_variant = severity_map[threat.severity]|default('secondary') %}
+{% set severity_variant = pill_tone_severity(threat.severity|default('')) %}
 {% set status_map = {'new':'primary','analyzing':'warning','mitigated':'success','monitoring':'info','closed':'secondary'} %}
 {% set status_variant = status_map[threat.status]|default('secondary') %}
 <turbo-frame id="fa-form-modal">

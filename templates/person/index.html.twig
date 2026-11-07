@@ -73,14 +73,7 @@
                 </tr>
             {% endblock %}
             {% block table_body %}
-                {% set typeColors = {
-                    'employee': 'success',
-                    'contractor': 'info',
-                    'visitor': 'warning',
-                    'vendor': 'info',
-                    'auditor': 'danger',
-                    'consultant': 'info'
-                } %}
+                {% import '_components/_status_vocabulary.html.twig' as _vocab %}
                 {% for person in page %}
                 <tr>
                     <td>
@@ -90,24 +83,24 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% include '_components/_badge.html.twig' with { variant: typeColors[person.personType]|default('secondary'), content: ('person.type.' ~ person.personType)|trans({}, 'people') } %}
+                        {% include '_components/_badge.html.twig' with { variant: _vocab.tone('person_type', person.personType)|trim, content: ('person.type.' ~ person.personType)|trans({}, 'people') } %}
                     </td>
                     <td>
                         {% if person.badgeId %}
                             <code>{{ person.badgeId }}</code>
                         {% else %}
-                            <span class="text-muted-color">-</span>
+                            <span class="text-muted-color">—</span>
                         {% endif %}
                     </td>
-                    <td>{{ person.company ?? '-' }}</td>
+                    <td>{{ person.company ?? '—' }}</td>
                     <td>
                         {% if person.email %}
                             <a href="mailto:{{ person.email }}">{{ person.email }}</a>
                         {% else %}
-                            <span class="text-muted-color">-</span>
+                            <span class="text-muted-color">—</span>
                         {% endif %}
                     </td>
-                    <td>{{ person.department ?? '-' }}</td>
+                    <td>{{ person.department ?? '—' }}</td>
                     <td class="text-center">
                         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'person.actions.label'|trans({}, 'people') }}">
                             <a href="{{ path('app_person_show', {id: person.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ person.fullName }}">

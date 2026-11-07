@@ -48,12 +48,8 @@
                     {% endblock %}
                     {% block table_body %}
                         {% import '_components/_status_pill.html.twig' as pill %}
+                        {% import '_components/_status_vocabulary.html.twig' as _vocab %}
                         {% for session in page %}
-                            {% set status_variant = {
-                                'committed': 'success',
-                                'preview': 'warning',
-                                'cancelled': 'secondary'
-                            }[session.status]|default('secondary') %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">
                                     <code>{{ session.originalFilename }}</code>
@@ -83,8 +79,7 @@
                                 <td class="fa-table__cell fa-table__cell--num">{{ session.rowCountSuperseded }}</td>
                                 <td class="fa-table__cell fa-table__cell--num">{{ session.rowCountSkipped }}</td>
                                 <td class="fa-table__cell">
-                                    {% set _stone = status_variant in ['info'] ? 'primary' : (status_variant in ['secondary','light','dark'] ? 'neutral' : status_variant) %}
-                                    {{ pill.render(('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import'), _stone, {size: 'sm'}) }}
+                                    {{ _vocab.pill('import_session', session.status, ('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import'), {size: 'sm'}) }}
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--actions">
                                     <a href="{{ path('admin_import_history_show', { id: session.id }) }}"

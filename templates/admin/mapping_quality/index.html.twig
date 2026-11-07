@@ -92,7 +92,7 @@
                             <td class="fa-table__cell">{{ pill.render(m.lifecycleState, m.lifecycleBadgeClass in ['info'] ? 'primary' : (m.lifecycleBadgeClass in ['secondary','light','dark'] ? 'neutral' : m.lifecycleBadgeClass), {size: 'sm'}) }}</td>
                             <td class="fa-table__cell fa-table__cell--num">
                                 {% set scoreClass = m.qualityScore >= 80 ? 'success' : (m.qualityScore >= 60 ? 'warning' : 'danger') %}
-                                <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '–' }}</span>
+                                <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '—' }}</span>
                             </td>
                             <td class="fa-table__cell fa-table__cell--actions">
                                 <a href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">

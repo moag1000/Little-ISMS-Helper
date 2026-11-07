@@ -43,7 +43,7 @@
                                     <td class="fa-table__cell fa-table__cell--num">{{ config.escalationHours ? config.escalationHours ~ 'h' : '—' }}</td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ config.resolutionHours ? config.resolutionHours ~ 'h' : '—' }}</td>
                                     <td class="fa-table__cell fa-table__cell--muted">
-                                        {{ config.updatedAt ? config.updatedAt|fa_datetime : '—' }}
+                                        {{ config.updatedAt|fa_datetime }}
                                     </td>
                                     <td class="fa-table__cell fa-table__cell--actions">
                                         <a href="{{ path('app_admin_incident_sla_config_edit', {id: config.id}) }}"

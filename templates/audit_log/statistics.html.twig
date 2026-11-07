@@ -15,15 +15,15 @@
 
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
     {% block alert_body %}
-        <div class="fa-alert__title">Gesamtstatistik</div>
-        <p><strong>Gesamt Protokolleinträge:</strong> {{ totalLogs }}</p>
+        <div class="fa-alert__title">{{ 'audit_log.stats_view.overall'|trans({}, 'audit_log') }}</div>
+        <p><strong>{{ 'audit_log.stats.total_logs'|trans({}, 'audit_log') }}:</strong> {{ totalLogs }}</p>
     {% endblock %}
 {% endembed %}
 
 <div class="grid-2-col-gap-mt">
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
         {% block alert_body %}
-            <div class="fa-alert__title">Aktionen</div>
+            <div class="fa-alert__title">{{ 'audit_log.stats.actions'|trans({}, 'audit_log') }}</div>
             {% if actionStats|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-stats',
@@ -31,9 +31,9 @@
             } %}
                 {% block table_head %}
                     <tr class="tr-header">
-                        <th scope="col" class="th-stats-left">Aktion</th>
-                        <th scope="col" class="td-stats-right">Anzahl</th>
-                        <th scope="col" class="td-stats-right">Anteil</th>
+                        <th scope="col" class="th-stats-left">{{ 'audit_log.stats_view.col_action'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="td-stats-right">{{ 'audit_log.stats_view.col_count'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="td-stats-right">{{ 'audit_log.stats_view.col_share'|trans({}, 'audit_log') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -60,7 +60,7 @@
 
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
         {% block alert_body %}
-            <div class="fa-alert__title">Entitätstypen</div>
+            <div class="fa-alert__title">{{ 'audit_log.stats.entity_types'|trans({}, 'audit_log') }}</div>
             {% if entityTypeStats|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-stats',
@@ -68,9 +68,9 @@
             } %}
                 {% block table_head %}
                     <tr class="tr-header">
-                        <th scope="col" class="th-stats-left">Entitätstyp</th>
-                        <th scope="col" class="td-stats-right">Anzahl</th>
-                        <th scope="col" class="td-stats-right">Anteil</th>
+                        <th scope="col" class="th-stats-left">{{ 'audit_log.stats_view.col_entity_type'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="td-stats-right">{{ 'audit_log.stats_view.col_count'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="td-stats-right">{{ 'audit_log.stats_view.col_share'|trans({}, 'audit_log') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -98,7 +98,7 @@
 
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-2' } } %}
     {% block alert_body %}
-        <div class="fa-alert__title">Aktivität der letzten 30 Tage</div>
+        <div class="fa-alert__title">{{ 'audit_log.stats_view.activity_30d'|trans({}, 'audit_log') }}</div>
         {% if activityByDay|length > 0 %}
         <div class="chart-container">
             <svg viewBox="0 0 900 300" class="w-h-100">
@@ -112,7 +112,7 @@
 
                     <rect x="{{ x + 2 }}" y="{{ y }}" width="{{ barWidth - 4 }}" height="{{ barHeight }}"
                           style="fill: var(--primary-strong);" opacity="0.8">
-                        <title>{{ date }}: {{ count }} Einträge</title>
+                        <title>{{ 'audit_log.stats_view.day_entries'|trans({'%date%': date, '%count%': count}, 'audit_log') }}</title>
                     </rect>
 
                     {% if i % 5 == 0 %}

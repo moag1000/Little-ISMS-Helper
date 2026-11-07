@@ -97,7 +97,7 @@
                                     {{ ('bsi_200_4_exercise.rating.' ~ log.overallRating)|trans({}, 'bsi_200_4_exercise') }}
                                 {% else %}—{% endif %}
                             </td>
-                            <td class="fa-table__cell">{{ log.submittedAt ? log.submittedAt|fa_date : '—' }}</td>
+                            <td class="fa-table__cell">{{ log.submittedAt|fa_date }}</td>
                             <td class="fa-table__cell fa-table__cell--actions">
                                 <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>

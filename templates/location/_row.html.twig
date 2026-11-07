@@ -1,13 +1,7 @@
 {# Single location table row — shared by the index list and the Turbo Stream
    that replaces/appends a row after an in-drawer save. #}
 {% trans_default_domain 'locations' %}
-{% set securityColors = {
-    'public': 'secondary',
-    'restricted': 'info',
-    'controlled': 'warning',
-    'secure': 'warning',
-    'high_security': 'danger'
-} %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 <tr id="location-row-{{ location.id }}">
     <td>
         <a href="{{ path('app_location_show', {id: location.id}) }}"
@@ -22,14 +16,14 @@
         {% include '_components/_badge.html.twig' with { variant: 'info', content: ('location.type.' ~ location.locationType)|trans({}, 'locations') } %}
     </td>
     <td>
-        {% if location.code %}<code>{{ location.code }}</code>{% else %}<span class="text-muted-color">-</span>{% endif %}
+        {% if location.code %}<code>{{ location.code }}</code>{% else %}<span class="text-muted-color">—</span>{% endif %}
     </td>
     <td>
-        {{ location.city ?? '-' }}
+        {{ location.city ?? '—' }}
         {% if location.country %}<br><small class="text-muted-color">{{ location.country }}</small>{% endif %}
     </td>
     <td>
-        {% include '_components/_badge.html.twig' with { variant: securityColors[location.securityLevel] ?? 'secondary', content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
+        {% include '_components/_badge.html.twig' with { variant: _status.tone('security_zone', location.securityLevel)|trim, content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
     </td>
     <td class="text-center">
         {% if location.requiresBadgeAccess %}

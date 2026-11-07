@@ -65,7 +65,7 @@
                                     <small class="text-muted">{{ session.user.email }}</small>
                                 </td>
                                 <td>
-                                    <code>{{ session.ipAddress ?? 'N/A' }}</code>
+                                    <code>{{ session.ipAddress ?? '—' }}</code>
                                 </td>
                                 <td>
                                     <small class="text-muted" title="{{ session.userAgent }}">
@@ -82,7 +82,7 @@
                                                 <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
                                             {% endif %}
                                         {% else %}
-                                            N/A
+                                            —
                                         {% endif %}
                                     </small>
                                 </td>

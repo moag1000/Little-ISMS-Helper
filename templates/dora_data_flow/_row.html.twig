@@ -7,7 +7,7 @@
         <a href="{{ path('app_dora_data_flow_show', {id: flow.id}) }}"
            data-turbo-frame="fa-form-modal"
            class="fa-row-link">
-            <strong>{% if flow.supplier %}{{ flow.supplier.name }}{% else %}<span class="text-muted-color">-</span>{% endif %}</strong>
+            <strong>{% if flow.supplier %}{{ flow.supplier.name }}{% else %}<span class="text-muted-color">—</span>{% endif %}</strong>
         </a>
     </td>
     <td>
@@ -20,7 +20,7 @@
         {% for cat in flow.dataCategories %}
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: cat } %}
         {% else %}
-            <span class="text-muted-color">-</span>
+            <span class="text-muted-color">—</span>
         {% endfor %}
     </td>
     <td>
@@ -31,7 +31,7 @@
         {% endif %}
     </td>
     <td>
-        {% if flow.receivingCountry %}<code>{{ flow.receivingCountry }}</code>{% else %}<span class="text-muted-color">-</span>{% endif %}
+        {% if flow.receivingCountry %}<code>{{ flow.receivingCountry }}</code>{% else %}<span class="text-muted-color">—</span>{% endif %}
     </td>
     <td class="text-center">
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">

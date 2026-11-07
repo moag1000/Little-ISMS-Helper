@@ -193,7 +193,7 @@
                             {% set severity = breach.severity|default('medium') %}
                             {% include '_components/_badge.html.twig' with { variant: severity == 'critical' ? 'danger' : (severity == 'high' ? 'warning' : (severity == 'medium' ? 'info' : 'success')), content: severity } %}
                         </td>
-                        <td class="fa-table__cell">{{ breach.discoveredAt ? breach.discoveredAt|fa_date : '-' }}</td>
+                        <td class="fa-table__cell">{{ breach.discoveredAt|fa_date }}</td>
                         <td class="fa-table__cell">
                             {% include '_components/_badge.html.twig' with { variant: breach.notificationRequired ? 'danger' : 'secondary', content: breach.notificationRequired ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') } %}
                         </td>
@@ -203,7 +203,7 @@
                             {% elseif breach.notificationRequired %}
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'management_reports.gdpr.pending'|trans({}, 'management_reports') } %}
                             {% else %}
-                            <span class="text-muted">-</span>
+                            <span class="text-muted">—</span>
                             {% endif %}
                         </td>
                     </tr>

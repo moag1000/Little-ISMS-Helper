@@ -2,12 +2,7 @@
    Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a flex
    column; condensed, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'interested_parties' %}
-{% set importance_variant = {
-    critical: 'danger',
-    high: 'warning',
-    medium: 'primary',
-    low: 'success'
-}[interested_party.importance]|default('neutral') %}
+{% set importance_variant = pill_tone_severity(interested_party.importance|default('')) %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
