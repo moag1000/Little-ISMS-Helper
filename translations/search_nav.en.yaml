@@ -18,6 +18,12 @@ search_nav:
     role_management_index:
         label: 'Role management'
         description: 'Configure roles and permissions'
+    app_profile:
+        label: 'My profile'
+        description: 'Personal data, language and reminder digest'
+    app_notification_center:
+        label: 'My notifications'
+        description: 'Personal reminders and rule notifications'
     app_profile_mfa_index:
         label: 'MFA / two-factor authentication'
         description: 'Set up or disable a TOTP authenticator'

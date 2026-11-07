@@ -15,7 +15,8 @@ Little ISMS Helper verwendet den Symfony Scheduler für automatisierte, zeitgest
 
 2. **Built-in Tasks** (fest codiert)
    - Session Cleanup (täglich 3:00 Uhr)
-   - Risk Review Checks (täglich 8:00 Uhr)
+   - Erinnerungen (`app:send-reminders`, alle 15 Minuten: Sammelmail zur Organisations-Uhrzeit, Sofortmeldung bei Stundenfristen)
+   - Weitere Commands aus `Schedule::COMMAND_TASKS` (Backup, Snapshots, Ablauf von Nachweisen, Risiko-Reviews einplanen)
    - Compliance Reports (montags 6:00 Uhr)
 
 3. **Database Tasks** (dynamisch über UI verwaltbar)
@@ -25,7 +26,6 @@ Little ISMS Helper verwendet den Symfony Scheduler für automatisierte, zeitgest
 
 4. **Message Handlers**
    - `CleanupExpiredSessionsHandler` - Löscht abgelaufene Sessions
-   - `CheckRiskReviewsHandler` - Prüft fällige Risk Reviews (ISO 27001:2022 Clause 6.1.3.d)
    - `GenerateComplianceReportHandler` - Erstellt wöchentliche Compliance Reports
    - `ExecuteScheduledTaskHandler` - Führt Datenbank-definierte Tasks aus
 
@@ -61,22 +61,22 @@ In Docker werden zwei Supervisor-Prozesse gestartet:
 // Wird automatisch ausgeführt, keine manuelle Interaktion nötig
 ```
 
-### 2. Risk Review Check (`CheckRiskReviewsMessage`)
+### 2. Erinnerungen (`app:send-reminders`)
 
-**Schedule:** Täglich um 8:00 Uhr
-**Cron:** `0 8 * * *`
-**Handler:** `CheckRiskReviewsHandler`
-**Compliance:** ISO 27001:2022 Clause 6.1.3.d
+**Schedule:** alle 15 Minuten (`*/15 * * * *`), als Command-Task in `Schedule::COMMAND_TASKS`
+**Compliance:** ISO 27001:2022 Clause 6.1.3.d, 9.2, 9.3, 10.2; NIS-2 Art. 23; DSGVO Art. 33
 
 **Funktion:**
-- Identifiziert Risiken mit fälligem Review-Datum
-- Sendet Erinnerungen an Risk Owner
-- Erfüllt ISO 27001 Review-Anforderungen
-
-**Email-Benachrichtigung:**
-- Template: `emails/risk_review_notification.html.twig`
-- Empfänger: Risk Owner
-- Inhalt: Risk-Details, Fälligkeitsdatum
+- Liest alle offenen Pflichten aus den Fristenquellen (`DeadlineSource`, siehe
+  `docs/DEADLINES_AND_RESPONSIBILITY.md`) und stellt sie über den
+  `ResponsibilityResolver` der zuständigen Person zu — dieselbe Liste wie „Mein Tag“.
+- Einmal täglich eine Sammelmail je Person zur Uhrzeit der Organisation
+  (Standard 07:00, Admin → Organisation → Einstellungen → Standards).
+  Jede Person kann sie im Profil abwählen.
+- Stundenfristen (Meldepflichten) gehen sofort raus, sobald sie fällig werden.
+- Jede verschickte Pflicht landet als persönlicher Eintrag in der Glocke;
+  doppelte Mails verhindert die Tabelle `obligation_notice`.
+- `--dry-run` zeigt nur, wer was bekäme; `--digest-now` verschickt die Sammelmail sofort.
 
 ### 3. Compliance Report (`GenerateComplianceReportMessage`)
 
@@ -181,7 +181,6 @@ framework:
 
         routing:
             App\Message\Schedule\CleanupExpiredSessionsMessage: scheduler
-            App\Message\Schedule\CheckRiskReviewsMessage: scheduler
             App\Message\Schedule\GenerateComplianceReportMessage: scheduler
             App\Message\Schedule\ExecuteScheduledTaskMessage: scheduler
 ```
@@ -415,7 +414,7 @@ docker exec isms-app tail -f /var/log/supervisor/scheduler-runner.log
 
 ### ISO 27001:2022 Bezüge
 
-- **Clause 6.1.3.d:** Periodic Risk Review - `CheckRiskReviewsHandler`
+- **Clause 6.1.3.d:** Periodic Risk Review - `app:risk:schedule-reviews` + Erinnerungen über `app:send-reminders`
 - **Clause 9.3:** Management Review - `GenerateComplianceReportHandler`
 - **Clause 7.5.3:** Control of documented information - Automatische Reports
 

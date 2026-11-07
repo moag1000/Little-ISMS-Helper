@@ -18,6 +18,12 @@ search_nav:
     role_management_index:
         label: 'Rollenverwaltung'
         description: 'Rollen und Berechtigungen konfigurieren'
+    app_profile:
+        label: 'Mein Profil'
+        description: 'Persönliche Daten, Sprache und Erinnerungs-Sammelmail'
+    app_notification_center:
+        label: 'Meine Benachrichtigungen'
+        description: 'Persönliche Erinnerungen und Regel-Benachrichtigungen'
     app_profile_mfa_index:
         label: 'MFA / Zwei-Faktor-Authentifizierung'
         description: 'TOTP-Authenticator einrichten oder deaktivieren'
