@@ -618,6 +618,15 @@ final class AdminHubCatalog
                         'route' => 'admin_settings_location_map',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
                     ],
+                    // scope: own-tenant AI suggestions (off by default; local model set up by the operator)
+                    [
+                        'key' => 'ai_settings',
+                        'icon' => 'fa-icon--nav-magic',
+                        'label' => 'admin.hub.module.ai_settings.label',
+                        'description' => 'admin.hub.module.ai_settings.desc',
+                        'route' => 'admin_settings_ai',
+                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                    ],
                     // scope: GLOBAL — instance-wide data retention defaults
                     [
                         'key' => 'data_retention_settings',

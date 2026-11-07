@@ -1,0 +1,198 @@
+suggestions:
+    page:
+        title: Vorschläge
+        subtitle: Was das Tool aus Ihren Daten ableitet, vererbt, importiert oder per KI vorschlägt. Sie entscheiden, nichts ändert sich ohne Annahme.
+    list:
+        open: Offene Vorschläge
+        decided: Entschieden (letzte 90 Tage)
+    empty:
+        open: Keine offenen Vorschläge vorhanden.
+        decided: Keine entschiedenen Vorschläge vorhanden.
+    filter:
+        kind: Art
+        origin: Herkunft
+        all: Alle
+    view:
+        open: Offen
+        decided: Entschieden
+    action:
+        accept: Annehmen
+        reject: Ablehnen
+        refresh: Jetzt prüfen
+        ai_settings: KI-Einstellungen
+        not_a_match: Passt nicht
+    row:
+        confidence: '%pct% % Sicherheit'
+        proposed_text: Vorgeschlagener Text
+        result: Ergebnis öffnen
+    dialog:
+        text: Text (vor dem Übernehmen anpassbar)
+        note: Notiz (optional)
+        reason: Begründung (optional)
+        reject_intro: Abgelehnte Vorschläge kommen für denselben Stand nicht wieder.
+    my_day:
+        link: '{1}1 Vorschlag offen|]1,Inf[%count% Vorschläge offen'
+    hint:
+        record: '{1}Ein offener Vorschlag: %title%|]1,Inf[%count% offene Vorschläge, zuerst: %title%'
+        open: Vorschläge ansehen
+    flash:
+        accepted: Vorschlag übernommen.
+        rejected: Vorschlag abgelehnt.
+        stale: Vorschlag ist veraltet, der Datensatz hat sich geändert. Er wurde zurückgezogen.
+        rule_failed: 'Nicht übernommen: %reason%'
+    job:
+        label: Vorschläge prüfen
+        subtitle: Regeln, Vererbung und KI laufen für diese Organisation.
+        running: Vorschläge werden geprüft …
+        done: '%created% neue Vorschläge, %superseded% erledigt.'
+    ai:
+        title: KI-Vorschläge
+        subtitle: Legt fest, ob und welches Sprachmodell Vorschläge für die Queue schreibt.
+        org:
+            title: Für diese Organisation
+            mode: Betriebsart
+        mode:
+            'off': Aus
+            local: Lokales Modell der Instanz
+            external: Externe API (OpenAI-kompatibel, z. B. Mistral)
+            local_target: '%model% an %endpoint%'
+            local_missing: Noch nicht eingerichtet, das richtet der Betreiber unten ein.
+        external:
+            title: Externe API
+            endpoint: Endpunkt
+            endpoint_help: 'Nur https und öffentliche Adressen. Standard: %default%'
+            model: Modell
+            api_key: API-Schlüssel
+            key_stored: Ein Schlüssel ist verschlüsselt gespeichert. Leer lassen, um ihn zu behalten.
+            key_missing: Noch kein Schlüssel gespeichert.
+            clear_key: Gespeicherten Schlüssel löschen
+            allow_personal_data: Personenbezogene Daten an die externe API senden
+            allow_personal_data_help: Aus = Namen, E-Mail-Adressen, Telefonnummern, IBAN und IP-Adressen werden vor dem Senden ersetzt (DSGVO Art. 5 Abs. 1 c). Nur einschalten, wenn ein Auftragsverarbeitungsvertrag besteht.
+        use_cases:
+            title: Einsatzzwecke
+            none: Kein KI-Einsatzzweck ist in den aktiven Modulen verfügbar.
+        instance:
+            title: Lokales Modell der Instanz (Betreiber)
+            intro: Ein Modell im eigenen Netz, das alle Organisationen dieser Instanz nutzen können, z. B. Ollama, LM Studio oder vLLM. Daten verlassen das Haus nicht.
+            endpoint: Endpunkt
+            endpoint_help: 'OpenAI-kompatible Adresse, z. B. %default%. Leer = kein lokales Modell.'
+            api_key: API-Schlüssel (optional)
+            key_optional: Nur nötig, wenn der lokale Server einen Schlüssel verlangt.
+        privacy:
+            title: Datenschutz
+            local: Lokal bleiben alle Daten auf Ihren Servern.
+            external: Extern werden nur die Felder des jeweiligen Datensatzes gesendet, personenbezogene Daten standardmäßig ersetzt. Das Audit-Log protokolliert jeden Aufruf ohne Inhalt.
+            human: Die KI schreibt nur Vorschläge. Übernommen wird erst, wenn eine berechtigte Person annimmt.
+        test: Verbindung testen
+        flash:
+            saved: Gespeichert.
+            endpoint_invalid: Endpunkt ungültig. Erlaubt sind http(s)-Adressen ohne Zugangsdaten, extern nur https an öffentliche Adressen.
+            test_ok: 'Verbindung steht, Modell %model% antwortet.'
+            test_failed: 'Verbindung fehlgeschlagen: %error%'
+            test_not_configured: KI ist für diese Organisation aus oder nicht eingerichtet.
+        origin:
+            rule: Regel
+            inheritance: Vererbung
+            import: Import
+            ai: KI
+        status:
+            pending: Offen
+            accepted: Angenommen
+            rejected: Abgelehnt
+            superseded: Zurückgezogen
+        kind:
+            asset:
+                protection_need: Schutzbedarf erhöhen
+            risk:
+                residual: Restrisiko einschätzen
+                treatment_complete: Behandlung abschließen
+                after_incident: Risiko nach Vorfall
+                from_vulnerability: Risiko aus Schwachstelle
+            treatment_plan:
+                progress: Fortschritt Behandlungsplan
+            control:
+                effectiveness: Wirksamkeit bewerten
+                requirement_link: Anforderung zuordnen
+            legacy_owner:
+                match: Verantwortliche zuordnen
+            compliance:
+                inheritance: Erfüllung übernehmen
+            ai:
+                risk_from_incident: Risiko aus Vorfall (KI)
+                soa_justification: SoA-Begründung (KI)
+                corrective_action: Korrekturmaßnahme (KI)
+        kind_help:
+            asset:
+                protection_need: Abhängigkeiten (Maximumprinzip) und BIA heben den Schutzbedarf an.
+            risk:
+                residual: Umgesetzte und wirksame Maßnahmen senken die Eintrittswahrscheinlichkeit.
+                treatment_complete: Alle Maßnahmen des Plans sind umgesetzt.
+                after_incident: Ein Vorfall hat das Risiko eintreten lassen.
+                from_vulnerability: Offene Schwachstelle ab CVSS 7 ohne Risiko.
+            treatment_plan:
+                progress: Anteil umgesetzter Maßnahmen.
+            control:
+                effectiveness: Aus Tests, Vorfällen und geschützten Werten.
+                requirement_link: Textähnlichkeit zwischen Maßnahme und Anforderung.
+            legacy_owner:
+                match: Freitext-Verantwortliche passen zu einer Person.
+            compliance:
+                inheritance: Eine erfüllte Anforderung deckt eine gemappte ab.
+            ai:
+                risk_from_incident: Schreibt ein Risiko zu Vorfällen der letzten 90 Tage ohne verknüpftes Risiko.
+                soa_justification: Schreibt eine Begründung für anwendbare Maßnahmen ohne Begründung (ISO 27001 6.1.3 d).
+                corrective_action: Schreibt eine Korrekturmaßnahme zu offenen Feststellungen ohne Maßnahme (ISO 27001 10.2).
+        text:
+            dimension:
+                confidentiality: Vertraulichkeit
+                integrity: Integrität
+                availability: Verfügbarkeit
+            effectiveness:
+                effective: wirksam
+                partially_effective: teilweise wirksam
+                ineffective: unwirksam
+            asset_protection:
+                title: 'Schutzbedarf von %asset% erhöhen'
+                change: '%dimension% %from% → %to% (%reason%)'
+                reason_dependency: 'erbt von %asset%'
+                reason_bia: 'BIA %process%, RTO %rto% h'
+            risk_residual:
+                title: 'Restrisiko für %risk% eintragen'
+                rationale: 'Inhärent %inherent%, Restrisiko %from% → %to%. %basis%'
+                no_controls: Keine umgesetzte Maßnahme, Restrisiko gleich inhärentem Risiko.
+                controls: 'Umgesetzt: %implemented%. Wirksam: %effective%.'
+            risk_treatment_complete:
+                title: 'Behandlung von %risk% abschließen'
+                rationale: 'Alle Maßnahmen sind umgesetzt: %controls%.'
+            treatment_plan_progress:
+                title: 'Fortschritt von %plan% aktualisieren'
+                rationale: '%done% von %total% Maßnahmen umgesetzt, Fortschritt %from% % → %to% %.'
+            control_effectiveness:
+                title: 'Wirksamkeit von %control% bewerten'
+                rationale: 'Bewertung %score% von 100 → %rating%. Letzter Test %tested%, %incidents% Vorfälle seit dem Test, %assets% geschützte Werte.'
+            risk_after_incident:
+                title: '%risk% ist eingetreten, Wahrscheinlichkeit erhöhen'
+                rationale: 'Vorfall %incident% wurde am %closed% geschlossen. Wahrscheinlichkeit %from% → %to%.'
+            risk_from_vulnerability:
+                title: 'Risiko zu %cve% anlegen'
+                rationale: 'CVSS %cvss%, betroffen: %asset%. Vorschlag Wahrscheinlichkeit %probability%, Auswirkung %impact%.'
+                risk_title: '%cve%: %title%'
+            legacy_owner:
+                title: 'Verantwortliche für %record% zuordnen'
+                rationale: 'Freitext „%legacy%“ passt zu %match%.'
+            inheritance:
+                title: '%target% aus %source% übernehmen: %title%'
+                rationale: '%source% ist erfüllt, Mapping-Sicherheit %confidence%. Vorschlag %percent% % Erfüllung für %target%.'
+                comment: 'Übernommen aus %source% (Mapping-Sicherheit %confidence%), geprüft für %target%.'
+            requirement_link:
+                title: '%control% deckt %requirement% ab'
+                rationale: '„%title%“, Textähnlichkeit %pct% %.'
+            ai_risk:
+                title: 'Risiko anlegen: %risk%'
+                rationale: 'Aus Vorfall %incident%. Bedrohung: %threat%. Schwachstelle: %vulnerability%. Wahrscheinlichkeit %probability%, Auswirkung %impact%.'
+            ai_soa:
+                title: 'Begründung für %control%'
+                rationale: 'Bezogene Risiken: %risks%. %reasoning%'
+            ai_capa:
+                title: 'Korrekturmaßnahme: %action%'
+                rationale: 'Zu Feststellung %finding%. Ursache: %cause%. %reasoning%'

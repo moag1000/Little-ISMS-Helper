@@ -52,6 +52,7 @@ class Schedule implements ScheduleProviderInterface
         ['0 3 * * *', 'app:four-eyes:cleanup-expired'],
         ['15 3 * * *', 'app:policy-wizard:purge-sandboxes'],
         ['0 2 * * 0', 'app:tisax:purge-old-ip-addresses'],
+        ['30 5 * * *', 'app:suggestions:generate'],
         ['0 7 * * *', 'app:notification:send-digests'],
         ['30 8 * * *', 'app:notify-overdue-controls'],
         ['0 5 * * *', 'app:evidence:expire'],

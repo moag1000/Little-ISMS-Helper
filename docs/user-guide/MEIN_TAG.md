@@ -15,6 +15,9 @@ entschieden; die Seite muss dafür nicht verlassen werden.
 Eine vor dem Login aufgerufene Adresse (z. B. der Link aus einer Freigabe-Mail) hat
 immer Vorrang. Für alle Rollen steht "Mein Tag" oben in der Seitenleiste, mit Zähler.
 
+Offene Vorschläge (abgeleitete, vererbte, importierte und KI-Vorschläge, die ich entscheiden
+darf) stehen als Link oben auf der Seite, siehe `VORSCHLAEGE.md`.
+
 ## Kategorien
 
 Angezeigt werden nur Kategorien mit offenen Punkten; der Rest wird zu einer Zeile

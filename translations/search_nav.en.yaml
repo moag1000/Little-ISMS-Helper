@@ -102,6 +102,12 @@ search_nav:
     app_my_day:
         label: 'My Day'
         description: 'Due tasks, approvals and reviews at a glance'
+    app_suggestion_index:
+        label: 'Suggestions'
+        description: 'Accept or reject derived, inherited, imported and AI suggestions'
+    admin_settings_ai:
+        label: 'AI settings'
+        description: 'Local model or Mistral API for AI suggestions, privacy'
     app_dashboard_risk_manager:
         label: 'Risk manager dashboard'
         description: 'Risk posture, treatment plans and due risk acceptances'

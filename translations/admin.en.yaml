@@ -122,6 +122,7 @@ admin:
             nis2_registration: { label: 'NIS-2 BSI Registration', desc: 'Annual mandatory registration in the BSI notification portal' }
             dora_roi: { label: 'DORA RoI XBRL export', desc: 'Register of Information XBRL/CSV export for BaFin reporting' }
             # Sprint 6 deferred system-settings sub-pages
+            ai_settings: { label: 'AI suggestions', desc: 'Local model or Mistral API, data protection, use cases' }
             location_map_settings: { label: 'Location map', desc: 'Site comparison, checks, precision and online lookup' }
             data_retention_settings: { label: 'Retention periods', desc: 'GDPR deletion schedules per data category' }
     section:

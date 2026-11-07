@@ -305,7 +305,7 @@
  # @param o.intro    string|null  muted explanation above the field
  # @param o.subject  string|null  record the decision is about
  # @param o.summary  string|null  business line under the subject
- # @param o.field    {name, label, required?, rows?, minlength?, help?, placeholder?}
+ # @param o.field    {name, label, required?, rows?, minlength?, help?, placeholder?, value?}
  # @param o.hidden   map name => value of extra hidden fields (optional)
  # @param o.submit_label / o.cancel_label  button texts (optional)
  #}
@@ -349,7 +349,7 @@
                         {{ field.label }}{% if field.required ?? false %} <span class="text-danger">*</span>{% endif %}
                     </label>
                     <textarea class="form-control fa-cyber-input__field" id="{{ o.id }}-{{ field.name }}" name="{{ field.name }}"
-                              rows="{{ field.rows ?? 3 }}"{% if field.placeholder ?? null %} placeholder="{{ field.placeholder }}"{% endif %}{% if field.minlength ?? false %} minlength="{{ field.minlength }}"{% endif %}{% if field.required ?? false %} required{% endif %}></textarea>
+                              rows="{{ field.rows ?? 3 }}"{% if field.placeholder ?? null %} placeholder="{{ field.placeholder }}"{% endif %}{% if field.minlength ?? false %} minlength="{{ field.minlength }}"{% endif %}{% if field.required ?? false %} required{% endif %}>{{ field.value ?? '' }}</textarea>
                     {% if field.help ?? null %}
                         <div class="form-text">{{ field.help }}</div>
                     {% endif %}

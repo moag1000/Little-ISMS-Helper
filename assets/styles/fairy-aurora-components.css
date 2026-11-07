@@ -9946,3 +9946,8 @@ a.fa-tabs__nav-item {
     flex-wrap: wrap;
     gap: var(--space-2);
 }
+
+/* Suggestion queue (Paket 5): rationale and proposed text keep their line breaks. */
+.fa-suggestion__text {
+    white-space: pre-line;
+}

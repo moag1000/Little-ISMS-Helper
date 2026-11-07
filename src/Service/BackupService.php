@@ -101,6 +101,7 @@ class BackupService
         'ComplianceMapping',
         'ComplianceRequirementFulfillment',
         'FulfillmentInheritanceLog', // FK: Tenant, ComplianceRequirementFulfillment, ComplianceMapping, User — audit-trail
+        'Suggestion', // FK: Tenant, User — suggestion queue decisions (accept/reject audit trail, rejected pairs stay remembered)
         'MappingGapItem',
 
         // GDPR/Privacy (CRITICAL - was missing!)
