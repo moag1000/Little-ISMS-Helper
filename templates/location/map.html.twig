@@ -41,7 +41,7 @@
     actions: _actions
 }) }}
 
-<main class="location-map-page"
+<div class="location-map-page"
       data-controller="location-map"
       data-location-map-sites-value="{{ _sites|json_encode|e('html_attr') }}"
       data-location-map-world-url-value="{{ asset('data/world-map.json') }}"
@@ -361,5 +361,5 @@
     {% endfor %}
 
     <p class="location-map__attribution text-muted-color">{{ 'location.map.attribution'|trans({}, 'locations') }}</p>
-</main>
+</div>
 {% endblock %}

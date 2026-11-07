@@ -245,7 +245,7 @@
                 <p><strong>{{ (risk.treatmentStrategy ? risk.treatmentStrategy.value : '')|upper|replace({'_': ' '}) }}</strong></p>
 
                 {% if risk.reviewDate %}
-                    <p>{{ 'risk.field.next_review'|trans({}, 'risk') }}: {{ risk.reviewDate|date('d.m.Y') }}</p>
+                    <p>{{ 'risk.field.next_review'|trans({}, 'risk') }}: {{ risk.reviewDate|fa_date }}</p>
                 {% endif %}
             </div>
 
@@ -433,7 +433,7 @@
                                             {% if plan.targetCompletionDate is defined and plan.targetCompletionDate %}
                                                 <small class="text-muted">
                                                     <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                                                    {{ plan.targetCompletionDate|date('Y-m-d') }}
+                                                    {{ plan.targetCompletionDate|fa_date }}
                                                 </small>
                                             {% endif %}
                                         </div>

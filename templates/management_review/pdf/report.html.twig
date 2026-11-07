@@ -92,7 +92,7 @@
         <div class="subtitle">
             {{ review.title }}
             {% if review.reviewDate %}
-                &mdash; {{ review.reviewDate|date('d.m.Y') }}
+                &mdash; {{ review.reviewDate|fa_date }}
             {% endif %}
         </div>
         <div class="small" style="margin-top: 2mm;">
@@ -140,7 +140,7 @@
         </tr>
         <tr>
             <th>{{ 'management_review.field.generated_at'|trans({}, 'management_review') }}</th>
-            <td>{{ generated_at|date('d.m.Y H:i') }}</td>
+            <td>{{ generated_at|fa_datetime }}</td>
         </tr>
     </table>
 
@@ -224,7 +224,7 @@
                 </td>
                 <td class="sig-line">
                     {% if review.status == 'completed' %}
-                        {{ review.updatedAt ? review.updatedAt|date('d.m.Y') : '' }}
+                        {{ review.updatedAt ? review.updatedAt|fa_date : '' }}
                     {% endif %}
                 </td>
                 <td class="sig-line"></td>

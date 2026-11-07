@@ -97,9 +97,9 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>Detected:</strong> {{ analysis.downtime.detected_at|date('Y-m-d H:i') }}</p>
+                    <p><strong>Detected:</strong> {{ analysis.downtime.detected_at|fa_datetime }}</p>
                     {% if analysis.downtime.resolved_at %}
-                        <p><strong>Resolved:</strong> {{ analysis.downtime.resolved_at|date('Y-m-d H:i') }}</p>
+                        <p><strong>Resolved:</strong> {{ analysis.downtime.resolved_at|fa_datetime }}</p>
                     {% else %}
                         <p><strong>Status:</strong> {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Ongoing' } %}</p>
                     {% endif %}

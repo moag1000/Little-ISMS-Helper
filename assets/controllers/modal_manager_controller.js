@@ -26,7 +26,6 @@ export default class extends Controller {
         const allModalElements = [
             ...document.querySelectorAll('.command-palette-modal'),
             ...document.querySelectorAll('.keyboard-shortcuts-modal'),
-            ...document.querySelectorAll('.global-search-modal'),
             // NOTE: .preferences-modal is intentionally NOT force-hidden here.
             // It was migrated to the fa-modal controller, which owns visibility
             // via the `.is-open` class. Force-hiding it (inline display:none +
@@ -99,12 +98,6 @@ export default class extends Controller {
             modals.push(keyboardShortcuts);
         }
 
-        // Global Search
-        const globalSearch = document.querySelector('.global-search-modal');
-        if (globalSearch && isVisible(globalSearch)) {
-            modals.push(globalSearch);
-        }
-
         // Preferences is owned by the fa-modal controller (its own escape/close).
 
         // Quick View
@@ -152,13 +145,6 @@ export default class extends Controller {
         // Keyboard Shortcuts
         else if (modal.classList.contains('keyboard-shortcuts-modal')) {
             modal.classList.remove('keyboard-shortcuts-open');
-        }
-
-        // Global Search
-        else if (modal.classList.contains('global-search-modal')) {
-            modal.classList.remove('show');
-            modal.classList.add('d-none');
-            document.body.style.overflow = '';
         }
 
         // Preferences

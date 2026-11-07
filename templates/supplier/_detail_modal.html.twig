@@ -43,13 +43,13 @@
         {% if supplier.nextAssessmentDate %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'supplier.field.next_assessment_date'|trans({}, 'suppliers') }}</span>
-            <span>{{ supplier.nextAssessmentDate|date('Y-m-d') }}</span>
+            <span>{{ supplier.nextAssessmentDate|fa_date }}</span>
         </div>
         {% endif %}
         {% if supplier.lastSecurityAssessment %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'supplier.field.last_security_assessment'|trans({}, 'suppliers') }}</span>
-            <span>{{ supplier.lastSecurityAssessment|date('Y-m-d') }}</span>
+            <span>{{ supplier.lastSecurityAssessment|fa_date }}</span>
         </div>
         {% endif %}
         {% if supplier.effectiveContactPerson %}

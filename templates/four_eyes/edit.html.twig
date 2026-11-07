@@ -38,7 +38,7 @@
             <dt class="col-sm-3">{{ 'four_eyes.requested_by'|trans({}, 'four_eyes') }}</dt>
             <dd class="col-sm-9">{{ approvalRequest.requestedBy ? approvalRequest.requestedBy.fullName : '-' }}</dd>
             <dt class="col-sm-3">{{ 'four_eyes.expires_at'|trans({}, 'four_eyes') }}</dt>
-            <dd class="col-sm-9">{{ approvalRequest.expiresAt|date('Y-m-d H:i') }}</dd>
+            <dd class="col-sm-9">{{ approvalRequest.expiresAt|fa_datetime }}</dd>
         </dl>
 
         {{ form_start(form) }}

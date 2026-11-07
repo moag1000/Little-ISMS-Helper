@@ -141,18 +141,18 @@
         <div class="info-grid">
             <div class="info-row">
                 <div class="info-label">{{ 'pdf.label.planned_date'|trans({}, 'audit') }}</div>
-                <div class="info-value">{{ audit.plannedDate|date('d.m.Y') }}</div>
+                <div class="info-value">{{ audit.plannedDate|fa_date }}</div>
             </div>
             {% if audit.actualDate %}
             <div class="info-row">
                 <div class="info-label">{{ 'pdf.label.actual_date'|trans({}, 'audit') }}</div>
-                <div class="info-value">{{ audit.actualDate|date('d.m.Y') }}</div>
+                <div class="info-value">{{ audit.actualDate|fa_date }}</div>
             </div>
             {% endif %}
             {% if audit.reportDate %}
             <div class="info-row">
                 <div class="info-label">{{ 'pdf.label.report_date'|trans({}, 'audit') }}</div>
-                <div class="info-value">{{ audit.reportDate|date('d.m.Y') }}</div>
+                <div class="info-value">{{ audit.reportDate|fa_date }}</div>
             </div>
             {% endif %}
         </div>
@@ -318,23 +318,23 @@
         <div class="info-grid">
             <div class="info-row">
                 <div class="info-label">{{ 'pdf.label.generated'|trans({}, 'audit') }}</div>
-                <div class="info-value">{{ "now"|date('d.m.Y H:i') }}</div>
+                <div class="info-value">{{ "now"|fa_datetime }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">{{ 'pdf.label.created'|trans({}, 'audit') }}</div>
-                <div class="info-value">{{ audit.createdAt|date('d.m.Y H:i') }}</div>
+                <div class="info-value">{{ audit.createdAt|fa_datetime }}</div>
             </div>
             {% if audit.updatedAt %}
             <div class="info-row">
                 <div class="info-label">{{ 'pdf.label.last_updated'|trans({}, 'audit') }}</div>
-                <div class="info-value">{{ audit.updatedAt|date('d.m.Y H:i') }}</div>
+                <div class="info-value">{{ audit.updatedAt|fa_datetime }}</div>
             </div>
             {% endif %}
         </div>
     </div>
 
     <div class="report-footer">
-        {{ 'pdf.footer'|trans({'%audit_number%': audit.auditNumber, '%datetime%': "now"|date('d.m.Y H:i')}, 'audit') }}
+        {{ 'pdf.footer'|trans({'%audit_number%': audit.auditNumber, '%datetime%': "now"|fa_datetime}, 'audit') }}
     </div>
 </body>
 </html>

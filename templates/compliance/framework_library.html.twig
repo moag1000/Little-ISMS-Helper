@@ -130,7 +130,7 @@
 
                                         {% if module %}
                                             <div class="module-badge {% if isActive %}active{% else %}inactive{% endif %}"
-                                                 data-bs-toggle="tooltip" data-bs-placement="top"
+                                                 data-bs-toggle="tooltip" tabindex="0" data-bs-placement="top"
                                                  title="{{ module.description }}">
                                                 <span class="module-icon">{% if isActive %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>{% endif %}</span>
                                                 <span class="module-name">{{ module.name }}</span>

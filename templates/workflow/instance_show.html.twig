@@ -19,14 +19,8 @@
     <div>
         <h1>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</h1>
         <div class="mt-2">
-            {% set statusColors = {
-                'pending': 'warning',
-                'in_progress': 'info',
-                'approved': 'success',
-                'rejected': 'danger',
-                'cancelled': 'secondary'
-            } %}
-            {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
+            {% import '_components/_status_vocabulary.html.twig' as _status %}
+            {{ _status.pill('workflow', instance.status, ('workflow.status.' ~ instance.status)|trans({}, 'workflows')) }}
             {% if instance.overdue %}
                 {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', content: 'workflow.badge.overdue'|trans({}, 'workflows') } %}
             {% endif %}
@@ -68,7 +62,7 @@
         <p class="fa-alert__message mb-0">
             <strong>{{ 'approval.business_summary.what_if_idle_label'|trans({}, 'workflows') }}</strong>
             {% if escalation_target is defined and escalation_target and deadline_dt %}
-                {{ 'approval.business_summary.what_if_idle_with_target'|trans({'%deadline%': deadline_dt|date('d.m.Y'), '%target%': escalation_target}, 'workflows') }}
+                {{ 'approval.business_summary.what_if_idle_with_target'|trans({'%deadline%': deadline_dt|fa_date, '%target%': escalation_target}, 'workflows') }}
             {% else %}
                 {{ 'approval.business_summary.what_if_idle'|trans({}, 'workflows') }}
             {% endif %}
@@ -109,19 +103,19 @@
             {% if instance.dueDate %}
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.due_date'|trans({}, 'workflows') }}</strong>
-                {{ instance.dueDate|date('d.m.Y H:i') }}
+                {{ instance.dueDate|fa_datetime }}
             </div>
             {% endif %}
 
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.created_at'|trans({}, 'workflows') }}</strong>
-                {{ instance.startedAt|date('d.m.Y H:i') }}
+                {{ instance.startedAt|fa_datetime }}
             </div>
 
             {% if instance.completedAt %}
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.completed_at'|trans({}, 'workflows') }}</strong>
-                {{ instance.completedAt|date('d.m.Y H:i') }}
+                {{ instance.completedAt|fa_datetime }}
             </div>
             {% endif %}
         </div>

@@ -424,8 +424,8 @@ help:
                 definition: "Select multiple entries via checkbox and perform one action on all at once: delete, export, assign tag. The action bar appears only when items are selected."
                 analogy: "Like batch update in QMS: select all and change in one step."
             command_palette:
-                name: "Command Palette (Cmd+P / Ctrl+P)"
-                definition: "Quick search via keyboard shortcut. Type a term and jump directly to any page, action or admin function — faster than navigating through menus."
+                name: "Search and commands (Cmd+K / Ctrl+K)"
+                definition: "One window for records, pages and commands, opened with Cmd+K, Cmd+P or \"/\". From two characters on it lists matching risks, assets, controls and other records."
                 analogy: "Like Spotlight on Mac — but for all tool functions."
             audit_trail:
                 name: "Audit Trail"

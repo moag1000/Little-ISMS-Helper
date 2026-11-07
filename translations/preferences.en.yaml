@@ -12,7 +12,7 @@ preferences:
     shortcuts:
         title: 'Keyboard shortcuts'
         enable: 'Enable keyboard shortcuts'
-        hint: 'Cmd+K for search, Space for preview, etc.'
+        hint: 'Cmd+K for search, Space for preview'
     language:
         title: 'Language'
     backup:

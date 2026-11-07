@@ -20,7 +20,7 @@ use Twig\TwigFilter;
  *   {{ entity.createdAt|fa_date }}      → "31.12.2024" (default 'd.m.Y')
  *   {{ entity.createdAt|fa_datetime }}  → "31.12.2024 23:59" (default 'd.m.Y H:i')
  *
- * null renders as "-" (same convention as {@see LocaleDateExtension}).
+ * null (or an empty/unparsable value) renders as "-" (same convention as {@see LocaleDateExtension}).
  * The settings are read once per request/process cycle.
  */
 final class AppDateFormatExtension extends AbstractExtension implements ResetInterface
@@ -48,8 +48,9 @@ final class AppDateFormatExtension extends AbstractExtension implements ResetInt
         ];
     }
 
-    public function formatDate(?DateTimeInterface $date): string
+    public function formatDate(mixed $date): string
     {
+        $date = $this->toDate($date);
         if ($date === null) {
             return '-';
         }
@@ -57,8 +58,9 @@ final class AppDateFormatExtension extends AbstractExtension implements ResetInt
         return $date->format($this->format('date_format', self::DEFAULT_DATE_FORMAT));
     }
 
-    public function formatDateTime(?DateTimeInterface $date): string
+    public function formatDateTime(mixed $date): string
     {
+        $date = $this->toDate($date);
         if ($date === null) {
             return '-';
         }
@@ -76,6 +78,29 @@ final class AppDateFormatExtension extends AbstractExtension implements ResetInt
         $this->formats = [];
         $this->timezoneResolved = false;
         $this->timezone = null;
+    }
+
+    /**
+     * Accepts what Twig's |date accepts (DateTime, date string, Unix timestamp), so
+     * templates can switch to fa_date without type checks. Empty or unparsable → null.
+     */
+    private function toDate(mixed $value): ?DateTimeInterface
+    {
+        if ($value instanceof DateTimeInterface) {
+            return $value;
+        }
+        if (\is_int($value) || (\is_string($value) && ctype_digit($value))) {
+            return new \DateTimeImmutable('@' . $value);
+        }
+        if (\is_string($value) && trim($value) !== '') {
+            try {
+                return new \DateTimeImmutable($value);
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     private function timezone(): ?\DateTimeZone

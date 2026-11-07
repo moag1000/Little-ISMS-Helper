@@ -253,7 +253,7 @@
         <h1>{{ 'soa.title'|trans({}, 'soa')}}</h1>
         <div class="meta-info">
             <strong>Standard:</strong> ISO/IEC 27001:2022 Annex A Controls<br>
-            <strong>Generiert am:</strong> {{ generatedAt|date('d.m.Y H:i') }} Uhr
+            <strong>Generiert am:</strong> {{ generatedAt|fa_datetime }} Uhr
         </div>
     </div>
 
@@ -432,13 +432,13 @@
             {% if control.targetDate %}
             <div class="detail-section">
                 <div class="detail-label">Zieldatum:</div>
-                <div class="detail-value">{{ control.targetDate|date('d.m.Y') }}</div>
+                <div class="detail-value">{{ control.targetDate|fa_date }}</div>
             </div>
             {% endif %}
         {% endif %}
 
         <div class="detail-section fs-08-light-gray">
-            <em>Zuletzt aktualisiert: {{ control.updatedAt|date('d.m.Y H:i') }}</em>
+            <em>Zuletzt aktualisiert: {{ control.updatedAt|fa_datetime }}</em>
         </div>
     </div>
     {% endfor %}
@@ -446,7 +446,7 @@
     <div class="footer">
         <p><strong>Statement of Applicability (SoA)</strong></p>
         <p>ISO/IEC 27001:2022 Annex A Controls</p>
-        <p>Generiert am {{ generatedAt|date('d.m.Y H:i') }} Uhr</p>
+        <p>Generiert am {{ generatedAt|fa_datetime }} Uhr</p>
     </div>
 </body>
 </html>

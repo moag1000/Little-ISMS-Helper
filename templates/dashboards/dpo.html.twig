@@ -9,7 +9,7 @@
 {% import '_components/_status_pill.html.twig' as pill %}
 
 {% block body %}
-<main class="fa-aurora-surface role-dashboard dpo-dashboard">
+<div class="fa-aurora-surface role-dashboard dpo-dashboard">
     {{ _fa_page_header.render({
         title:    'dpo.title'|trans,
         subtitle: 'dpo.subtitle'|trans,
@@ -80,7 +80,7 @@
                             <div>
                                 <strong>{{ breach.title|default('Breach #' ~ breach.id) }}</strong>
                                 <small class="d-block text-muted">
-                                    {{ breach.detectedAt|date('d.m.Y H:i') }}
+                                    {{ breach.detectedAt|fa_datetime }}
                                 </small>
                             </div>
                             {{ pill.render(breach.status|default('open'), breach.severity|default('medium') == 'high' ? 'danger' : 'warning', {size: 'sm'}) }}
@@ -195,7 +195,7 @@
                             <small class="d-block text-muted">{{ approval.entity_type }}</small>
                         </div>
                         {% if approval.due_date %}
-                            <span class="badge bg-warning text-dark">{{ approval.due_date|date('d.m.Y') }}</span>
+                            <span class="badge bg-warning text-dark">{{ approval.due_date|fa_date }}</span>
                         {% endif %}
                     </a>
                 {% endfor %}
@@ -218,7 +218,7 @@
                             <small class="d-block text-muted">{{ instance.entityType }} #{{ instance.entityId }}</small>
                         </div>
                         {% if instance.dueDate %}
-                            <span class="badge bg-danger">{{ instance.dueDate|date('d.m.Y') }}</span>
+                            <span class="badge bg-danger">{{ instance.dueDate|fa_date }}</span>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -279,5 +279,5 @@
         </div>
     </section>
     {% endif %}
-</main>
+</div>
 {% endblock %}

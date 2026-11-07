@@ -21,7 +21,7 @@
 </head>
 <body>
     <h1>{{ 'location.map.export.title'|trans({}, 'locations') }}</h1>
-    <div class="meta">{{ tenant_name }} · {{ 'now'|date('d.m.Y') }} · {{ 'location.map.export.scope'|trans({ '%count%': sites|length }, 'locations') }}</div>
+    <div class="meta">{{ tenant_name }} · {{ 'now'|fa_date }} · {{ 'location.map.export.scope'|trans({ '%count%': sites|length }, 'locations') }}</div>
 
     <table class="kpis">
         <tr>

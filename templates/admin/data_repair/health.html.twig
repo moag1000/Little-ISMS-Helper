@@ -39,7 +39,7 @@
                 {% if cache is not null %}
                     <p class="small text-muted mb-0">
                         {{ 'admin.data_repair.section.last_scan'|trans({
-                            '%when%': cache.completed_at|date('Y-m-d H:i'),
+                            '%when%': cache.completed_at|fa_datetime,
                             '%duration%': (cache.duration_ms / 1000)|round(1),
                         }, 'admin') }}
                         — {{ 'admin.data_repair.section.health_summary'|trans({

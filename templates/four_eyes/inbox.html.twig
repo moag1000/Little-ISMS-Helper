@@ -33,7 +33,7 @@
                                 </small>
                             </div>
                             <div class="small">
-                                {{ 'four_eyes.expires_at'|trans({}, 'four_eyes') }}: {{ r.expiresAt|date('Y-m-d H:i') }}
+                                {{ 'four_eyes.expires_at'|trans({}, 'four_eyes') }}: {{ r.expiresAt|fa_datetime }}
                             </div>
                             <pre class="small bg-body-secondary p-2 mt-2 mb-0">{{ r.payload|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
                         </div>

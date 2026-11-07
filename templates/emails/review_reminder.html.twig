@@ -28,7 +28,7 @@
             <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Review Due Date:</td>
                 <td style="padding: 8px 0;">
-                    <strong style="color: #dc3545;">{{ review_date|date('d.m.Y') }}</strong>
+                    <strong style="color: #dc3545;">{{ review_date|fa_date }}</strong>
                     {% set days_overdue = "now"|date('U') - review_date|date('U') %}
                     {% set days_overdue = (days_overdue / 86400)|round %}
                     {% if days_overdue > 0 %}
@@ -41,7 +41,7 @@
             <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Test Due Date:</td>
                 <td style="padding: 8px 0;">
-                    <strong style="color: #dc3545;">{{ test_date|date('d.m.Y') }}</strong>
+                    <strong style="color: #dc3545;">{{ test_date|fa_date }}</strong>
                 </td>
             </tr>
             {% endif %}

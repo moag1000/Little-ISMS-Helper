@@ -62,7 +62,7 @@
                                     <td class="fa-table__cell">
                                         <small class="text-muted">
                                             {% if setting.updatedAt %}
-                                                {{ setting.updatedAt|date('Y-m-d H:i') }}
+                                                {{ setting.updatedAt|fa_datetime }}
                                             {% else %}
                                                 —
                                             {% endif %}
@@ -102,7 +102,7 @@
                                     {{ pill.render(('policy_wizard.status.' ~ run.status)|trans, 'neutral', {size: 'sm', class: 'ms-2'}) }}
                                 </div>
                                 <small class="text-muted">
-                                    {{ run.startedAt ? run.startedAt|date('Y-m-d H:i') : '' }} —
+                                    {{ run.startedAt ? run.startedAt|fa_datetime : '' }} —
                                     {{ ('policy_wizard.step.' ~ run.step ~ '.title')|trans|default(run.step) }}
                                 </small>
                             </div>

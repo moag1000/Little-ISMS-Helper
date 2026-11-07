@@ -283,7 +283,7 @@
                                 <span class="small text-muted ms-2">{{ m.finalPercentage }}%</span>
                             </div>
                             <span class="small text-muted">
-                                {{ m.updatedAt ? m.updatedAt|date('Y-m-d') : '—' }}
+                                {{ m.updatedAt ? m.updatedAt|fa_date : '—' }}
                             </span>
                         </li>
                     {% endfor %}
