@@ -74,8 +74,10 @@
     {% if is_granted(constant('App\\Security\\Voter\\ComplianceCertificateVoter::CERT_DELETE'), certificate) %}
         <form method="post"
               action="{{ path('app_compliance_certificate_delete', {_locale: app.request.locale, id: certificate.id}) }}"
-              data-controller="fa-confirm"
-              data-action="fa-confirm#confirm">
+              data-controller="ui-actions"
+              data-action="submit->ui-actions#confirm"
+              data-ui-actions-message-param="{{ 'compliance.certificate.confirm.delete'|trans({}, 'compliance') }}"
+              data-ui-actions-tone-param="danger">
             <input type="hidden" name="_token" value="{{ csrf_token('cert_delete') }}">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                 <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.delete'|trans({}, 'compliance') }}</span>
