@@ -192,12 +192,6 @@
       data-guided-tour-complete-url-value="{{ path('app_guided_tour_complete', {role: tour_role|default('junior')}) }}"
       data-guided-tour-csrf-value="{{ csrf_token('guided_tour_complete') }}"
       data-guided-tour-auto-start-value="false"
-      data-guided-tour-i18n-next-value="{{ 'guided_tour.action.next'|trans({}, 'guided_tour') }}"
-      data-guided-tour-i18n-previous-value="{{ 'guided_tour.action.previous'|trans({}, 'guided_tour') }}"
-      data-guided-tour-i18n-finish-value="{{ 'guided_tour.action.finish'|trans({}, 'guided_tour') }}"
-      data-guided-tour-i18n-skip-value="{{ 'guided_tour.action.skip'|trans({}, 'guided_tour') }}"
-      data-guided-tour-i18n-mobile-title-value="{{ 'guided_tour.mobile.title'|trans({}, 'guided_tour') }}"
-      data-guided-tour-i18n-mobile-body-value="{{ 'guided_tour.mobile.body'|trans({}, 'guided_tour') }}"
       {% endif %}>
     {# Skip Links for Accessibility - WCAG 2.4.1 #}
     <a href="#main-content" class="skip-link">{{ 'accessibility.skip_to_content'|trans({}, 'messages') }}</a>
@@ -431,9 +425,6 @@
 
     {# Global Search is now included in the header #}
 
-    {# Quick View Modal (Paket B - Premium) #}
-    {% include '_components/_quick_view_modal.html.twig' %}
-
     {# FairyAurora v3.0: Mode-Switch ist jetzt in Header (3-State L/D/System) #}
 
     {# Preferences Modal (Paket C - Premium) #}
@@ -480,11 +471,6 @@
 
     {# Keyboard Shortcuts Help #}
     {% include '_components/_keyboard_shortcuts.html.twig' %}
-
-    {# Guided Tour Mount (global, damit User-Dropdown-Launcher
-     # von überall klickbar ist). Der eigentliche Tour-Content lebt via
-     # Fetch der /tour/steps/{role}-Route. #}
-    {% include '_components/_guided_tour_mount.html.twig' %}
 
     {# Bulk Delete Confirmation Dialog #}
     {% include '_components/_bulk_delete_confirmation.html.twig' %}

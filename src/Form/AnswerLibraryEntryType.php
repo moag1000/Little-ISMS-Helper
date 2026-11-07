@@ -64,7 +64,8 @@ final class AnswerLibraryEntryType extends AbstractType implements SectionMapInt
                 'attr'     => [
                     'placeholder' => 'answer_library.placeholder.tags',
                     'class'       => 'form-control',
-                    'data-controller' => 'tag-input',
+                    'data-controller' => 'tom-select',
+                    'data-tom-select-create-value' => 'true',
                 ],
                 'help'     => 'answer_library.help.tags',
             ])

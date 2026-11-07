@@ -53,10 +53,19 @@
                         <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                         {{ 'wizard.history.trend.title'|trans({}, 'wizard') }}
                     </h2>
+                    {% set _trend = {
+                        labels: trend_points|map(p => p.date),
+                        datasets: [{
+                            label: 'wizard.history.trend.score_label'|trans({}, 'wizard'),
+                            data: trend_points|map(p => p.score),
+                            tension: 0.3
+                        }]
+                    } %}
                     <canvas id="wizard-trend-chart"
-                            data-controller="chart-trend"
-                            data-chart-trend-data-value="{{ trend_points|json_encode|e('html_attr') }}"
-                            data-chart-trend-label-value="{{ 'wizard.history.trend.score_label'|trans({}, 'wizard') }}"
+                            data-controller="chart"
+                            data-chart-type-value="line"
+                            data-chart-data-value="{{ _trend|json_encode|e('html_attr') }}"
+                            data-chart-options-value="{{ { scales: { y: { beginAtZero: true, suggestedMax: 100 } }, plugins: { legend: { display: false } } }|json_encode|e('html_attr') }}"
                             height="180"></canvas>
                 </div>
             </div>

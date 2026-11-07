@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'audit' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
@@ -43,10 +42,9 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {# C5-04 — `conditional-fields` controller toggles the scoped-assets row
                        when scopeType=asset (ISO 19011 Cl. 5.5.2). #}
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form', 'data-controller': 'conditional-fields'}}) }}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form', 'data-controller': 'audit-subsidiaries conditional-fields'}}) }}
 
                     {# Basic Information Section #}
                     <fieldset class="mb-4">
@@ -75,8 +73,10 @@
                                     'label': 'audit.field.scope_type'|trans({}, 'audit')
                                 } %}
                             </div>
-                            <div class="col-md-12 d-none" id="subsidiaries-container">
-                                {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>Konzernaudit:</strong> Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei "Konzernweites Audit" sollten alle relevanten Tochtergesellschaften ausgewählt werden.' }) }}
+                            <div class="col-md-12 d-none" data-audit-subsidiaries-target="container">
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
+                                    {% block alert_body %}<strong>{{ 'audit.message.corporate_audit_note_title'|trans({}, 'audit') }}:</strong> {{ 'audit.message.corporate_audit_note'|trans({}, 'audit') }}{% endblock %}
+                                {% endembed %}
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditedSubsidiaries,
                                     'label': 'audit.field.audited_subsidiaries'|trans({}, 'audit')
@@ -185,51 +185,4 @@
     }
 </style>
 
-<script nonce="{{ csp_nonce() }}">
-// IIFE: Turbo re-eval guard — prevents re-declaration errors on body-swap
-(function () {
-function initAuditEditSubsidiaries() {
-    const scopeTypeSelect = document.querySelector('[data-corporate-scope]');
-    const subsidiariesContainer = document.getElementById('subsidiaries-container');
-    const subsidiariesSelect = document.querySelector('[data-corporate-subsidiaries]');
-
-    if (!scopeTypeSelect) {
-        return; // Exit if scope type field not found
-    }
-
-    function toggleSubsidiariesField() {
-        const selectedScope = scopeTypeSelect.value;
-        const isCorporateScope = selectedScope === 'corporate_wide' || selectedScope === 'corporate_subsidiaries';
-
-        if (isCorporateScope) {
-            subsidiariesContainer.style.display = 'block';
-
-            // Auto-select all for corporate_wide
-            if (selectedScope === 'corporate_wide' && subsidiariesSelect) {
-                for (let option of subsidiariesSelect.options) {
-                    option.selected = true;
-                }
-            }
-        } else {
-            subsidiariesContainer.style.display = 'none';
-            // Deselect all when hiding
-            if (subsidiariesSelect) {
-                for (let option of subsidiariesSelect.options) {
-                    option.selected = false;
-                }
-            }
-        }
-    }
-
-    // Run on page load to show field if already corporate scope
-    toggleSubsidiariesField();
-
-    // Run on scope type change
-    scopeTypeSelect.addEventListener('change', toggleSubsidiariesField);
-}
-
-document.addEventListener('DOMContentLoaded', initAuditEditSubsidiaries);
-document.addEventListener('turbo:load', initAuditEditSubsidiaries);
-})();
-</script>
 {% endblock %}

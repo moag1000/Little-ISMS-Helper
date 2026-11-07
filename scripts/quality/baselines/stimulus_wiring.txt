@@ -1,0 +1,2 @@
+# Gate 79 — Stimulus references that do not resolve (check_stimulus_wiring.py).
+# Only runtime-built names belong here: `kind  location  detail  # reason`.

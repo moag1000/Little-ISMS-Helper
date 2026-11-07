@@ -122,6 +122,30 @@ final class BulkDeleteCsrfTest extends WebTestCase
         self::assertStringContainsString('999999901 not found', $body['errors'][0]);
     }
 
+    /**
+     * Answer library list: its bulk bar existed without an endpoint (the old
+     * fa-bulk-select controller only toggled the bar). Module is optional, so
+     * the shared-handler leg runs only where answer_library is active.
+     */
+    #[Test]
+    public function answerLibraryBulkDeleteUsesTheSharedHandler(): void
+    {
+        $this->client->loginUser($this->admin);
+        $this->postJson('/en/answer-library/bulk-delete', ['ids' => [999999901]]);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $moduleActive = static::getContainer()->get(\App\Service\ModuleConfigurationService::class)
+            ->isModuleActive('answer_library');
+        if (!$moduleActive) {
+            self::markTestSkipped('answer_library module not active in this environment');
+        }
+        $token = $this->seedSessionCsrfToken($this->client, 'bulk_action');
+        $this->postJson('/en/answer-library/bulk-delete', ['ids' => [999999901], '_token' => $token]);
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        $body = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertStringContainsString('999999901 not found', $body['errors'][0]);
+    }
+
     #[Test]
     public function validTokenViaHeaderIsAccepted(): void
     {

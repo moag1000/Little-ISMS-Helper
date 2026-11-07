@@ -1,6 +1,5 @@
 import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import { faT } from '../../../assets/js/fa-i18n.js';
-import PasswordStrengthController from '../../../assets/controllers/password_strength_controller.js';
 import CommandPaletteController from '../../../assets/controllers/command_palette_controller.js';
 import ReportDesignerController from '../../../assets/controllers/report_designer_controller.js';
 import BulkDeleteConfirmationController from '../../../assets/controllers/bulk_delete_confirmation_controller.js';
@@ -11,13 +10,6 @@ import { mount, stopAll } from '../support/mount.js';
 const GERMAN = {
     cancel: 'Abbrechen',
     loading: 'Lädt …',
-    'password_strength.weak': 'Schwach',
-    'password_strength.missing': 'Fehlend: %items%',
-    'password_strength.uppercase': 'Großbuchstaben (A-Z)',
-    'password_strength.numbers': 'Zahlen (0-9)',
-    'password_strength.special': 'Sonderzeichen (!@#$%^&*)',
-    'password_strength.very_weak': 'Sehr schwach',
-    'password_strength.medium': 'Mittel',
     'search.no_results': 'Keine Ergebnisse für „%query%“',
     'search.no_results_hint': 'Andere Suchbegriffe versuchen.',
     'report_designer.no_data': 'Keine Daten',
@@ -43,20 +35,6 @@ describe('faT dictionary', () => {
 describe('controllers render dictionary texts', () => {
     beforeEach(() => { window.translations = { ui: GERMAN }; });
     afterEach(() => { stopAll(); delete window.translations; });
-
-    it('password-strength shows translated level and missing criteria', async () => {
-        const { controller } = await mount('password-strength', PasswordStrengthController, `
-            <div data-controller="password-strength">
-                <input data-password-strength-target="input" value="abcdefgh">
-                <div data-password-strength-target="meter"><div data-password-strength-target="bar"></div></div>
-                <div data-password-strength-target="feedback"></div>
-            </div>`);
-        controller.check();
-        const text = document.querySelector('[data-password-strength-target="feedback"]').textContent;
-        expect(text).toContain('Fehlend: ');
-        expect(text).toContain('Großbuchstaben (A-Z)');
-        expect(text).not.toMatch(/Missing|Upper/);
-    });
 
     it('search overlay escapes records and the query and uses the dictionary', async () => {
         window.translations = { ui: { ...GERMAN, 'search.category.risks': 'Risiken' } };

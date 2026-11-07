@@ -92,6 +92,8 @@
     }) }}
 {% else %}
 
+    <div{% if is_granted('ROLE_MANAGER') %} data-controller="bulk-actions"
+         data-bulk-actions-endpoint-value="{{ path('app_answer_library_index', {_locale: app.request.locale}) }}"{% endif %}>
     {# Bulk-action bar — MANAGER-only actions #}
     {% if is_granted('ROLE_MANAGER') %}
         {% include '_components/_bulk_action_bar.html.twig' with {
@@ -102,7 +104,6 @@
 
     {% embed '_components/_fa_table.html.twig' with {
         stickyHead: true,
-        bulkSelect: is_granted('ROLE_MANAGER'),
         id: 'answer-library-table'
     } %}
         {% block table_head %}
@@ -110,7 +111,8 @@
                 {% if is_granted('ROLE_MANAGER') %}
                     <th class="fa-table__th fa-table__th--checkbox">
                         <input type="checkbox"
-                               data-action="fa-bulk-select#selectAll"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
                                aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
                     </th>
                 {% endif %}
@@ -136,13 +138,13 @@
         {% endblock %}
         {% block table_body %}
             {% for entry in entries %}
-                <tr class="fa-table__row" data-fa-bulk-select-target="row">
+                <tr class="fa-table__row">
                     {% if is_granted('ROLE_MANAGER') %}
                         <td class="fa-table__cell fa-table__cell--checkbox">
                             <input type="checkbox"
                                    value="{{ entry.id }}"
-                                   data-fa-bulk-select-target="item"
-                                   data-action="change->fa-bulk-select#updateBar"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
                                    aria-label="{{ 'common.select'|trans({}, 'messages') }}">
                         </td>
                     {% endif %}
@@ -174,8 +176,7 @@
                         <div class="d-flex gap-1 justify-content-end">
                             {# Use / Copy — records FTE reuse #}
                             <form method="post"
-                                  action="{{ path('app_answer_library_use', {id: entry.id, _locale: app.request.locale}) }}"
-                                  data-controller="answer-library-use">
+                                  action="{{ path('app_answer_library_use', {id: entry.id, _locale: app.request.locale}) }}">
                                 <input type="hidden" name="_token"
                                        value="{{ csrf_token('answer_library_use_' ~ entry.id) }}">
                                 <button type="submit"
@@ -194,8 +195,10 @@
                                 </a>
                                 <form method="post"
                                       action="{{ path('app_answer_library_delete', {id: entry.id, _locale: app.request.locale}) }}"
-                                      data-controller="fa-confirm"
-                                      data-fa-confirm-message-value="{{ 'answer_library.confirm.delete'|trans({}, 'answer_library') }}">
+                                      data-controller="ui-actions"
+                                      data-action="submit->ui-actions#confirm"
+                                      data-ui-actions-message-param="{{ 'answer_library.confirm.delete'|trans({}, 'answer_library') }}"
+                                      data-ui-actions-tone-param="danger">
                                     <input type="hidden" name="_token"
                                            value="{{ csrf_token('answer_library_delete_' ~ entry.id) }}">
                                     <button type="submit"
@@ -212,6 +215,7 @@
             {% endfor %}
         {% endblock %}
     {% endembed %}
+    </div>
 {% endif %}
 
 </div>

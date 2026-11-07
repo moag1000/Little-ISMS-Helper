@@ -1,9 +1,5 @@
 guided_tour:
     action:
-        next: 'Next'
-        previous: 'Previous'
-        finish: 'Finish'
-        skip: 'Skip'
         restart: 'Restart tour'
         choose_role: 'Choose tour by role'
 
@@ -24,10 +20,6 @@ guided_tour:
             label: 'MRIS module tour'
         mapping:
             label: 'Mapping tour'
-
-    mobile:
-        title: 'Open tour on desktop'
-        body: 'The guided tour is optimized for desktop. Please open the tool on a larger screen for the full experience.'
 
     banner:
         aria_label: 'Suggested onboarding tour'

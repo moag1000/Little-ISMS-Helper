@@ -932,6 +932,77 @@ class RestoreServiceTest extends TestCase
     }
 
     /**
+     * An organisation backup (tenant_scope = [1]) restored without a target scope —
+     * instance-wide restore or setup wizard — keeps to the organisations it was made
+     * for, so "clear before restore" never empties whole tables.
+     */
+    #[Test]
+    public function testInstanceWideRestoreOfOrganisationBackupStaysInRecordedScope(): void
+    {
+        $backup = [
+            'metadata' => [
+                'version'      => '1.0',
+                'tenant_scope' => [1],
+                'scope_type'   => 'single',
+            ],
+            'data' => [
+                'User' => [
+                    ['id' => 1, 'email' => 'a@example.com', 'tenant_id' => ['id' => 1]],
+                    ['id' => 2, 'email' => 'b@example.com', 'tenant_id' => ['id' => 2]],
+                ],
+            ],
+        ];
+
+        $fieldMapping = new FieldMapping(type: 'string', fieldName: 'email', columnName: 'email');
+        $fieldMapping->nullable = true;
+
+        $userMetadata = $this->createMock(ClassMetadata::class);
+        $userMetadata->method('getFieldNames')->willReturn(['id', 'email']);
+        $userMetadata->method('getFieldMapping')->willReturn($fieldMapping);
+        $userMetadata->method('getTypeOfField')->willReturn('string');
+        $userMetadata->method('getAssociationNames')->willReturn(['tenant']);
+        $userMetadata->method('isSingleValuedAssociation')->willReturnCallback(
+            fn(string $name): bool => $name === 'tenant'
+        );
+        $userMetadata->method('getAssociationMappings')->willReturn([]);
+        $userMetadata->generatorType = ClassMetadata::GENERATOR_TYPE_AUTO;
+        $userMetadata->idGenerator   = new \Doctrine\ORM\Id\IdentityGenerator();
+
+        $userRepository = $this->createMock(EntityRepository::class);
+        $userRepository->method('find')->willReturn(null);
+        $userRepository->method('findOneBy')->willReturn(null);
+
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')->willReturn(1);
+        $connection->method('isTransactionActive')->willReturn(true);
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        $persistedEntities = [];
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+        $this->entityManager->method('getClassMetadata')->willReturn($userMetadata);
+        $this->entityManager->method('getRepository')->willReturn($userRepository);
+        $this->entityManager->method('getReference')->willReturn(null);
+        $this->entityManager->method('persist')->willReturnCallback(
+            function ($entity) use (&$persistedEntities): void {
+                $persistedEntities[] = $entity;
+            }
+        );
+
+        $result = $this->service->restoreFromBackup($backup, ['dry_run' => false], null);
+
+        $this->assertTrue($result['success'], 'Instance-wide restore must succeed');
+
+        // Only 1 entity (User A) should have been created, User B must be skipped
+        $this->assertArrayHasKey('User', $result['statistics']);
+        $this->assertEquals(1, $result['statistics']['User']['created'],
+            'An organisation backup restored instance-wide stays within its recorded scope');
+    }
+
+    /**
      * C2 T2: Cross-Tenant-Restore generates a warning in the warnings array.
      *
      * Backup was created for tenant_scope = [1].

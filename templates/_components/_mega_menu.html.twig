@@ -368,6 +368,7 @@
      data-controller="density-toggle"
      data-density-toggle-endpoint-value="{{ app.user ? path('app_preferences_density') : '' }}"
      data-density-toggle-csrf-value="{{ app.user ? csrf_token('density_toggle_' ~ app.user.id) : '' }}"
+     data-density-toggle-initial-value="{{ app.user ? app.user.menuDensity.value : '' }}"
      aria-label="{{ 'nav.mega.density.label'|trans({}, 'nav') }}">
     <div class="sb-density__label">{{ 'nav.mega.density.label'|trans({}, 'nav') }}</div>
     <div class="sb-density__group" role="radiogroup" aria-label="{{ 'nav.mega.density.label'|trans({}, 'nav') }}">

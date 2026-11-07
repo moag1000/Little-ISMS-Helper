@@ -658,11 +658,11 @@ jobs:
         # TenantContext's managed tenant; App\Doctrine\EntityManagerRecovery
         # restores both. No other resetManager( call in src/. Empty baseline.
         run: python3 scripts/quality/check_entity_manager_reset.py --quiet
-      - name: "Gate 69: no unreferenced templates or Stimulus controllers"
-        # A template nobody renders and a controller no markup attaches are dead
-        # weight that every design-system sweep has to migrate anyway (26 were
-        # found in the 2026-11 UX review). Dynamically built names go into the
-        # baseline with a reason.
+      - name: "Gate 69: no unreferenced templates"
+        # A template nobody renders is dead weight that every design-system sweep
+        # has to migrate anyway (26 found in the 2026-11 UX review, 33 more once
+        # a template's own usage comment stopped counting as a reference).
+        # Dynamically built names go into the baseline with a reason.
         run: python3 scripts/quality/check_unreferenced_ui.py --baseline scripts/quality/baselines/unreferenced_ui.txt --quiet
       - name: "Gate 70: every admin setting has a reader"
         # /admin/settings once stored 14 fields nothing read (incl. "Require MFA").
@@ -703,6 +703,12 @@ jobs:
         # No nested <main>, one <h1>, no local status colour maps, keyboard-reachable
         # tooltips. Offenders are baselined and may only shrink.
         run: python3 scripts/quality/check_page_semantics.py --baseline scripts/quality/baselines/page_semantics.txt --quiet
+      - name: "Gate 79: every Stimulus reference resolves, no dead controllers"
+        # Stimulus fails silently: an action on a missing controller or method,
+        # an unknown target/value, or a controller nothing attaches simply does
+        # nothing. The 2026-11 sweep found an unusable import upload, deletes
+        # without confirmation and a no-op trend chart wired that way.
+        run: python3 scripts/quality/check_stimulus_wiring.py --baseline scripts/quality/baselines/stimulus_wiring.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
