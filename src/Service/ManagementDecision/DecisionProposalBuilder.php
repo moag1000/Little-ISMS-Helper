@@ -192,14 +192,18 @@ class DecisionProposalBuilder
     {
         $latest = $this->reviewRepository->findLatestForTenant($tenant);
         $needs = $latest instanceof ManagementReview ? trim((string) $latest->getResourceNeeds()) : '';
+        if (!$latest instanceof ManagementReview || $needs === '') {
+            return new DecisionProposal(
+                $this->t('proposal.title.resources', [], $locale),
+                $this->t('proposal.resources.empty', [], $locale),
+            );
+        }
 
         return new DecisionProposal(
             $this->t('proposal.title.resources', [], $locale),
-            $needs !== ''
-                ? $this->t('proposal.resources.from_review', ['%review%' => (string) $latest?->getTitle()], $locale) . "\n" . $needs
-                : $this->t('proposal.resources.empty', [], $locale),
-            $latest instanceof ManagementReview && $needs !== '' ? 'ManagementReview' : null,
-            $needs !== '' ? $latest?->getId() : null,
+            $this->t('proposal.resources.from_review', ['%review%' => (string) $latest->getTitle()], $locale) . "\n" . $needs,
+            'ManagementReview',
+            $latest->getId(),
         );
     }
 

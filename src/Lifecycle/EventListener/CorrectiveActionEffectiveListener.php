@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Lifecycle\EventListener;
 
 use App\Entity\AuditFinding;
-use App\Entity\Control;
 use App\Entity\CorrectiveAction;
 use App\Entity\User;
 use App\Enum\CorrectiveActionStatus;
@@ -75,9 +74,6 @@ final class CorrectiveActionEffectiveListener
         $reviewBy = (new DateTimeImmutable('today'))->modify(sprintf('+%d days', self::CONTROL_REVIEW_WITHIN_DAYS));
 
         foreach ($capa->getRelatedControls() as $control) {
-            if (!$control instanceof Control) {
-                continue;
-            }
             $control->setLastEffectivenessTest($verifiedAt);
             $next = $control->getNextReviewDate();
             if ($next === null || $next > $reviewBy) {

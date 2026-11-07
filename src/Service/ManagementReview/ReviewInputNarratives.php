@@ -143,7 +143,7 @@ final class ReviewInputNarratives
         }
         $bySeverity = [];
         foreach ($incidents as $incident) {
-            $key = $incident->getSeverity()?->value ?? 'unknown';
+            $key = $incident->getSeverity()->value;
             $bySeverity[$key] = ($bySeverity[$key] ?? 0) + 1;
         }
         $lines = [$this->t('d2.incidents', ['%count%' => count($incidents)], $locale)];
