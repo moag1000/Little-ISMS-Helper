@@ -42,6 +42,7 @@ final class ExpireEvidenceCommand
         #[Option(description: 'Count without changing anything', name: 'dry-run')]
         bool $dryRun = false,
     ): int {
+        $io->title('Evidence Expiry (ISO 27001 7.5.3)');
         $now = new DateTimeImmutable();
         $flagged = 0;
         $expired = 0;
