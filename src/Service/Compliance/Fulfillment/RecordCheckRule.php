@@ -61,6 +61,7 @@ class RecordCheckRule implements ResetInterface
         $basis = [];
         $sum = 0.0;
         foreach ($this->checksFor($tenant, $code) as $ref => $checks) {
+            $ref = (string) $ref; // "7" and "28" become integer array keys
             if (!self::covers($ref, $number)) {
                 continue;
             }
