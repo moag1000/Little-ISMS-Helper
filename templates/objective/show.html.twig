@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% trans_default_domain 'objective'%}
+{% trans_default_domain 'objective' %}
 
 {% block title %}{{ objective.title }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -22,29 +22,36 @@
         {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_objective_edit', {id: objective.id}) }]) %}
     {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_objective_index') }]) %}
-    {# Lifecycle X.3 — status pill + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ISMSObjective', status_key: objective.status }) }}
-        {{ _lifecycle_actions.dropdown(objective, 'isms-objective', 'isms_objective_lifecycle') }}
-    </div>
-
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-bullseye', label: ('objective.status.' ~ objective.status)|trans({}, 'objective') },
         title: objective.title,
         subtitle: objective.category|default(''),
         actions: _show_actions
     }) }}
 
+    {% set _pct = kpi_progress ?? objective.progressPercentage %}
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ISMSObjective', status_key: objective.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(objective, 'isms-objective', 'isms_objective_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: objective.effectiveResponsiblePerson },
+            { label: 'show.status.target_date'|trans({}, 'messages'), value: objective.targetDate ? objective.targetDate|fa_date : null },
+            { label: 'show.status.progress'|trans({}, 'messages'), value: _pct is not null ? _pct ~ ' %' : null },
+        ],
+        workflow: workflow_state(objective),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: objective } only %}
+
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-8 fa-show-section" id="details">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header d-flex justify-content-between"><h2 class="mb-0">{{ objective.title }}</h2>
-                        {% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : 'info', content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}
-                    </div>
+                    <div class="card-header"><h2 class="mb-0">{{ 'show.anchor.details'|trans({}, 'messages') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <p class="lead">{{ objective.description }}</p>
 
@@ -54,8 +61,8 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.target_date'|trans({}, 'objective') }}</div><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
-                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.achieved_date'|trans({}, 'objective') }}</div><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
+                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.target_date'|trans({}, 'objective') }}</div><p>{{ objective.targetDate|fa_date }}</p></div>
+                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.achieved_date'|trans({}, 'objective') }}</div><p>{{ objective.achievedDate|fa_date }}</p></div>
                     </div>
 
                     {% if objective.measurableIndicators %}
@@ -80,28 +87,14 @@
         </div>
 
         <div class="col-lg-4">
-            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
-                {% block card_header %}
-                    <div class="card-header bg-body-secondary"><h2 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h2></div>
-                {% endblock %}
-                {% block card_body %}
-                    <div class="d-grid gap-2">
-                        {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
-                        {% endif %}
-                        <a href="{{ path('app_objective_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header bg-body-secondary"><h2 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h2></div>
+                    <div class="card-header"><h2 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <dl class="row mb-0 small">
-                        <dt class="col-sm-5">{{ 'common.created_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.createdAt|date('d.m.Y H:i') }}</dd>
-                        <dt class="col-sm-5">{{ 'common.updated_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.updatedAt ? objective.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
+                        <dt class="col-sm-5">{{ 'common.created_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.createdAt|fa_datetime }}</dd>
+                        <dt class="col-sm-5">{{ 'common.updated_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.updatedAt|fa_datetime }}</dd>
                         <dt class="col-sm-5">{{ 'common.id'|trans({}, 'messages') }}</dt><dd class="col-sm-7"><code>{{ objective.id }}</code></dd>
                     </dl>
                 {% endblock %}
@@ -109,7 +102,6 @@
         </div>
     </div>
 
-    {# Lifecycle X.3 — status history tab #}
-    {{ _lifecycle_history.history('isms-objective', objective.id) }}
+    {% include '_components/_fa_show_history.html.twig' with { entity: objective, lifecycle: 'isms-objective' } only %}
 </div>
 {% endblock %}

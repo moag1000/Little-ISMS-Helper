@@ -1,6 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}Benutzer: {{ user.firstName }} {{ user.lastName }}{% endblock %}
 
@@ -23,6 +25,27 @@
         ]
     }) }}
 
+    {% set _status %}{% if user.isActive %}{% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'user.status.active'|trans({}, 'user') } %}{% else %}{% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'user.status.inactive'|trans({}, 'user') } %}{% endif %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'user.label.department'|trans({}, 'user'), value: user.department },
+            { label: 'user.label.last_login'|trans({}, 'user'), value: user.lastLoginAt ? user.lastLoginAt|fa_datetime : null },
+            { label: 'show.status.created'|trans({}, 'messages'), value: user.createdAt ? user.createdAt|fa_date : null },
+        ],
+        workflow: workflow_state(user),
+    }) }}
+
+    {{ _fa_anchor_bar.render([
+        { id: 'basic', label: 'user.section.basic_info'|trans({}, 'user') },
+        { id: 'security', label: 'user.section.security_status'|trans({}, 'user') },
+        { id: 'roles', label: 'user.section.system_roles'|trans({}, 'user') },
+        { id: 'permissions', label: 'user.section.all_permissions'|trans({}, 'user') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: user } only %}
+
     {# Avatar block kept below header as it is a visual identity element, not part of standard page-header pattern #}
     <div class="d-flex align-items-center mb-4">
         {% if user.profilePicture %}
@@ -38,7 +61,7 @@
 
     <div class="row">
         {# Basic Information #}
-        <div class="col-md-6">
+        <div class="col-md-6 fa-show-section" id="basic">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -94,7 +117,7 @@
         </div>
 
         {# Security & Status #}
-        <div class="col-md-6">
+        <div class="col-md-6 fa-show-section" id="security">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -230,7 +253,7 @@
 
     {# Roles & Permissions #}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 fa-show-section" id="roles">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -308,7 +331,7 @@
 
     {# All Permissions #}
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 fa-show-section" id="permissions">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -390,6 +413,8 @@
             </div>
         {% endblock %}
     {% endembed %}
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: user } only %}
 </div>
 
 {# Delete Confirmation Modal #}

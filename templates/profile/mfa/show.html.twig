@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_icon.html.twig' as _fa_icon %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ 'mfa.token_details'|trans({}, 'mfa') }}{% endblock %}
 
@@ -13,6 +14,19 @@
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_profile_mfa_index') }
         ]
     }) }}
+
+    {% set _status %}{% if mfa_token.isActive %}{% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'mfa.status.active'|trans({}, 'mfa') } %}{% else %}{% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'ui-x', content: 'mfa.status.inactive'|trans({}, 'mfa') } %}{% endif %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.type'|trans({}, 'messages'), value: ('mfa.token_type.' ~ mfa_token.tokenType)|trans({}, 'mfa') },
+            { label: 'mfa.last_used'|trans({}, 'mfa'), value: mfa_token.lastUsedAt ? mfa_token.lastUsedAt|fa_datetime : null },
+            { label: 'show.status.valid_until'|trans({}, 'messages'), value: mfa_token.expiresAt ? mfa_token.expiresAt|fa_datetime : null },
+        ],
+        workflow: workflow_state(mfa_token),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: mfa_token } only %}
 
     <div class="row">
         <div class="col-lg-8">
@@ -201,5 +215,7 @@
             {% endembed %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: mfa_token } only %}
 </div>
 {% endblock %}

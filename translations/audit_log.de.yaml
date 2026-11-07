@@ -62,8 +62,6 @@ audit_log:
         about_text: 'Das Audit Log protokolliert alle wichtigen Aktionen im System, einschließlich Erstellen, Aktualisieren und Löschen. Dies ermöglicht eine vollständige Nachvollziehbarkeit für Compliance und Sicherheit.'
         module_link: 'Zum Audit‑Log‑Modul'
         entries: audit_log
-    showing_recent: 'Showing Recent'
-    entries: Entries
     field:
         timestamp: Zeitstempel
         action: Aktion

@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ requirement.requirementId }} - {{ requirement.title }}{% endblock %}
 
@@ -34,8 +36,32 @@
         ]
     }) }}
 
+    {% import '_components/_status_pill.html.twig' as _pill %}
+    {% set _status %}{% if fulfillment %}{{ _pill.render(('lifecycle.' ~ fulfillment.status)|trans({}, 'lifecycle'), fulfillment.statusEnum ? fulfillment.statusEnum.pillVariant : 'neutral') }}{% endif %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.priority'|trans({}, 'messages'), value: requirement.priority },
+            { label: 'show.status.progress'|trans({}, 'messages'), value: fulfillment ? fulfillment.fulfillmentPercentage ~ ' %' : null },
+            { label: 'show.status.owner'|trans({}, 'messages'), value: fulfillment ? fulfillment.effectiveResponsiblePerson : null },
+            { label: 'show.status.next_review'|trans({}, 'messages'), value: fulfillment and fulfillment.nextReviewDate ? fulfillment.nextReviewDate|fa_date : null },
+        ],
+        workflow: workflow_state(requirement),
+    }) }}
+
+    {% set _links = entity_links(requirement) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'compliance.requirement.details'|trans({}, 'compliance') },
+        { id: 'fulfillment', label: 'show.anchor.fulfillment'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: requirement } only %}
+
     <div class="row">
         <div class="col-md-8">
+            <div id="details" class="fa-show-section">
             {# Main Information #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
@@ -89,6 +115,7 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+            </div>
 
             {# MRIS — Reifegrad-Tracking pro MHC (nur für MRIS-v1.5 Framework) #}
             {% if is_mris and mris and is_module_active('mris') %}
@@ -298,11 +325,12 @@
         </div>
 
         <div class="col-md-4">
+            <div id="fulfillment" class="fa-show-section">
             {# Fulfillment Status #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0">Fulfillment Status</h2>
+                        <h2 class="mb-0">{{ 'show.anchor.fulfillment'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -321,7 +349,6 @@
                             size: 'lg',
                             class: 'progress-h-30',
                         }) }}
-                        <small class="text-muted">Status: <span class="{{ badge_completion(fulfillment.fulfillmentPercentage) }}">{{ fulfillment.status }}</span></small>
                     </div>
 
                     {% if calculated_fulfillment != fulfillment.fulfillmentPercentage %}
@@ -532,6 +559,7 @@
                     </script>
                 {% endblock %}
             {% endembed %}
+            </div>
 
             {# Metadata #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
@@ -551,7 +579,7 @@
                     </small></p>
                     <p><small><strong>Last Review:</strong>
                         {% if fulfillment.lastReviewDate %}
-                            {{ fulfillment.lastReviewDate|date('Y-m-d') }}
+                            {{ fulfillment.lastReviewDate|fa_date }}
                             {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
                         {% else %}
                             -
@@ -559,7 +587,7 @@
                     </small></p>
                     <p><small><strong>Next Review:</strong>
                         {% if fulfillment.nextReviewDate %}
-                            {{ fulfillment.nextReviewDate|date('Y-m-d') }}
+                            {{ fulfillment.nextReviewDate|fa_date }}
                             {% if fulfillment.isOverdueForReview() %}{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Overdue' } %}{% endif %}
                             {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
                         {% else %}
@@ -573,9 +601,9 @@
                             -
                         {% endif %}
                     </small></p>
-                    <p><small><strong>Created:</strong> {{ requirement.createdAt|date('Y-m-d H:i') }}</small></p>
+                    <p><small><strong>Created:</strong> {{ requirement.createdAt|fa_datetime }}</small></p>
                     {% if requirement.updatedAt %}
-                        <p><small><strong>Updated:</strong> {{ requirement.updatedAt|date('Y-m-d H:i') }}</small></p>
+                        <p><small><strong>Updated:</strong> {{ requirement.updatedAt|fa_datetime }}</small></p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -599,6 +627,8 @@
             {% endembed %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: requirement } only %}
     {% endif %} {# /M-4 compliance module gate #}
 </div>
 {% endblock %}

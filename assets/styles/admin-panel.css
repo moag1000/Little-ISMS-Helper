@@ -225,8 +225,6 @@
 .fa-admin-hub-card__badge--purple { background: rgba(var(--tone-purple-rgb), .10); color: var(--tone-purple-strong); border-color: rgba(var(--tone-purple-rgb), .24); }
 
 html[data-theme="dark"] .fa-admin-hub-card__count { background: rgba(255,255,255,.06); color: var(--fg-2); }
-
-.status--ok  { background: var(--success-bg); color: var(--success-strong); }
 .status--err { background: var(--danger-bg);  color: var(--danger-strong); }
 
 /* ══════════════════════════════════════════════════════════════
