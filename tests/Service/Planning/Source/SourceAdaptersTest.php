@@ -410,7 +410,7 @@ final class SourceAdaptersTest extends TestCase
             ->setDetectedAt($date)
             ->setStatus(IncidentStatus::InInvestigation);
 
-        self::assertSame($date, $adapter->dueDateOf($item));
+        self::assertNull($adapter->dueDateOf($item), 'An open incident has no deadline of its own.');
         self::assertSame('Ransomware on file server', $adapter->titleOf($item));
     }
 

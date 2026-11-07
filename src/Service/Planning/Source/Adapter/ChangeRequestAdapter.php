@@ -87,7 +87,14 @@ final class ChangeRequestAdapter implements SourceAdapter
     /** @return iterable<ChangeRequest> */
     public function findOpen(Tenant $tenant): iterable
     {
-        return $this->findConvertible($tenant);
+        foreach ($this->findConvertible($tenant) as $item) {
+            // No date, no duty to remind of; requests still waiting for approval
+            // are the approvers' decision (ChangeApprovalSource), not the implementer's.
+            if ($this->dueDateOf($item) !== null
+                && !in_array($item->getStatus(), ['submitted', 'under_review'], true)) {
+                yield $item;
+            }
+        }
     }
 
     public function supports(object $item): bool

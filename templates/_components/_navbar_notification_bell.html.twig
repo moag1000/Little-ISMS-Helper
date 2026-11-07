@@ -1,14 +1,14 @@
 {% trans_default_domain 'notification' %}
 {#
- # Navbar Bell — shown only when notifications module is active.
+ # Navbar Bell — the user's own reminders (deadline digest, urgent statutory
+ # deadlines) plus the organisation's rule notifications. Core, no module gate.
  # Managed by notification_bell_controller.js (polls /notifications/bell every 30s).
- # Included in base.html.twig header (gated by is_module_active('notifications')).
  #
  # Note: The legacy _notification_bell.html.twig + notifications_controller.js remain
  # active for in-memory notifications. This component provides the backend
  # polling for server-persisted NotificationDelivery rows.
  #}
-{% if is_module_active('notifications') and is_granted('ROLE_USER') %}
+{% if is_granted('ROLE_USER') %}
 <div class="notification-bell"
      data-controller="notification-bell"
      data-notification-bell-poll-url-value="{{ path('app_notification_bell') }}"

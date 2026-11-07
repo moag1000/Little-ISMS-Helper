@@ -130,8 +130,12 @@ export default class extends Controller {
         }
 
         items.slice(0, 10).forEach(item => {
-            const row = document.createElement('div');
-            row.className = `notification-bell-item p-2 border-bottom${item.isUnread ? ' fw-semibold' : ''}`;
+            // Personal reminders link to the record (or My Day); rule notifications have no link.
+            const row = document.createElement(item.link ? 'a' : 'div');
+            if (item.link) {
+                row.href = item.link;
+            }
+            row.className = `notification-bell-item d-block p-2 border-bottom text-reset text-decoration-none${item.isUnread ? ' fw-semibold' : ''}`;
             row.innerHTML = `
                 <div class="small">${this._escapeHtml(item.rule || item.eventType || '—')}</div>
                 <div class="text-muted" style="font-size:0.75rem">${this._escapeHtml(item.attemptedAt ? item.attemptedAt.substring(0, 16).replace('T', ' ') : '')}</div>

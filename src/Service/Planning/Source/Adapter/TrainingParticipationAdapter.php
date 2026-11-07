@@ -55,7 +55,8 @@ final class TrainingParticipationAdapter implements SourceAdapter
     public function dueDateOf(object $item): ?DateTimeInterface
     {
         assert($item instanceof TrainingParticipation);
-        return $item->getAssignedAt();
+        // The session date when one is planned, else when it was assigned.
+        return $item->getTraining()?->getScheduledDate() ?? $item->getAssignedAt();
     }
 
     public function titleOf(object $item): string

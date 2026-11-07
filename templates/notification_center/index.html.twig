@@ -28,11 +28,31 @@
             <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_read') }}">
         </form>
 
+        {# The user's own reminders: daily digests and urgent statutory deadlines. #}
+        {% if notices is not empty %}
+            <section class="fa-section mb-4" aria-labelledby="my-reminders-title">
+                <h2 id="my-reminders-title" class="h5 mb-2">{{ 'notification.center.my_reminders'|trans({}, 'notification') }}</h2>
+                <ul class="list-group">
+                    {% for notice in notices %}
+                        {% set isUnread = lastSeen is null or notice.createdAt > lastSeen %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                            <span>
+                                {% if isUnread %}<span class="fa-status-pill fa-status-pill--primary me-2">{{ 'notification.center.badge.new'|trans({}, 'notification') }}</span>{% endif %}
+                                {% if notice.kind == 'urgent' %}<span class="fa-status-pill fa-status-pill--danger me-2">{{ 'notification.center.kind.urgent'|trans({}, 'notification') }}</span>{% endif %}
+                                {% if notice.link %}<a href="{{ notice.link }}" class="fw-semibold">{{ notice.title }}</a>{% else %}<span class="fw-semibold">{{ notice.title }}</span>{% endif %}
+                            </span>
+                            <small class="text-muted text-nowrap">{{ notice.createdAt|fa_datetime }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
         {% embed '_components/_fa_list_page.html.twig' with {
             page: page,
             search_action: path('app_notification_center'),
             filter_keys: ['severity'],
-            list_title: 'notification.center.title'|trans({}, 'notification'),
+            list_title: 'notification.center.rule_notifications'|trans({}, 'notification'),
             empty: {
                 mood: 'happy',
                 title: 'notification.center.empty.title'|trans({}, 'notification'),

@@ -204,7 +204,11 @@ notification:
     # Sprint 6b: Notification center
     center:
         title: 'Benachrichtigungs-Center'
-        subtitle: 'Alle eingegangenen In-App-Benachrichtigungen im Überblick.'
+        subtitle: 'Deine Fristen-Erinnerungen und die Benachrichtigungen deiner Organisation.'
+        my_reminders: 'Meine Erinnerungen'
+        rule_notifications: 'Benachrichtigungen aus Regeln'
+        kind:
+            urgent: 'Frist läuft'
         tab:
             all: 'Alle'
         empty:

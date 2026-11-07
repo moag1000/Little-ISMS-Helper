@@ -6,6 +6,7 @@ namespace App\Service\Planning\Source\Adapter;
 
 use App\Entity\Tenant;
 use App\Entity\WorkflowInstance;
+use App\Entity\WorkflowStep;
 use App\Enum\WorkflowInstanceStatus;
 use App\Repository\UserRepository;
 use App\Repository\WorkflowInstanceRepository;
@@ -105,27 +106,36 @@ final class WorkflowInstanceAdapter implements SourceAdapter
     }
 
     /**
-     * The current step's named approvers, else its role. `approver_role: owner`
-     * hands the step to whoever is responsible for the workflow's record
-     * (risk owner, document owner, …) — never to a role nobody holds.
+     * Who has to decide the current step: see {@see responsibilityForStep()}.
      */
     public function responsibleOf(object $item): Responsibility
     {
         assert($item instanceof WorkflowInstance);
         $step = $item->getCurrentStep();
-        if ($step === null) {
-            return Responsibility::nobody();
-        }
-        $named = $this->userRepository !== null && $item->getTenant() !== null
-            ? $this->userRepository->findByIdsInTenant($step->getApproverUsers() ?? [], $item->getTenant())
+
+        return $step !== null ? $this->responsibilityForStep($item, $step) : Responsibility::nobody();
+    }
+
+    /**
+     * The step's named approvers, else its role. `approver_role: owner` hands
+     * the step to whoever is responsible for the workflow's record (risk
+     * owner, control owner, DPIA conductor, …) — never to a role nobody holds;
+     * without a record source it falls back to the managers.
+     */
+    public function responsibilityForStep(WorkflowInstance $instance, WorkflowStep $step): Responsibility
+    {
+        $named = $this->userRepository !== null && $instance->getTenant() !== null
+            ? $this->userRepository->findByIdsInTenant($step->getApproverUsers() ?? [], $instance->getTenant())
             : [];
+        if ($named !== []) {
+            return Responsibility::holders(...$named);
+        }
         $role = (string) $step->getApproverRole();
-        $responsibility = Responsibility::holders(...$named);
         if ($role === self::APPROVER_OWNER) {
-            return Responsibility::ofRecord($this->subjectOf($item))->orRoles('ROLE_MANAGER');
+            return Responsibility::ofRecord($this->subjectOf($instance))->orRoles('ROLE_MANAGER');
         }
 
-        return $role !== '' ? $responsibility->orRoles($role) : $responsibility;
+        return $role !== '' ? Responsibility::roles($role) : Responsibility::nobody();
     }
 
     public function linkOf(object $item): RecordLink

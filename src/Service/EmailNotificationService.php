@@ -7,11 +7,8 @@ namespace App\Service;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\Incident;
-use App\Entity\InternalAudit;
 use App\Entity\Risk;
 use App\Entity\Tenant;
-use App\Entity\Training;
-use App\Entity\Control;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
@@ -28,9 +25,7 @@ use Symfony\Component\Mime\Address;
  *
  * Features:
  * - Incident notifications (creation and updates)
- * - Audit reminders
- * - Training reminders
- * - Control target date warnings
+ * - Deadline digests and urgent notices (sendToUser)
  * - Workflow approval notifications
  * - Generic templated email support
  *
@@ -103,44 +98,6 @@ class EmailNotificationService
         }
     }
 
-    public function sendAuditDueNotification(InternalAudit $internalAudit, array $recipients): void
-    {
-        foreach ($recipients as $recipient) {
-            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
-            $safeTitle = $this->sanitizeEmailSubject($internalAudit->getTitle());
-
-            $email = new TemplatedEmail()
-                ->from($this->createFromAddress())
-                ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Reminder] Upcoming Audit: ' . $safeTitle)
-                ->htmlTemplate('emails/audit_due_notification.html.twig')
-                ->context([
-                    'audit' => $internalAudit,
-                ]);
-
-            $this->mailer->send($email);
-        }
-    }
-
-    public function sendTrainingDueNotification(Training $training, array $recipients): void
-    {
-        foreach ($recipients as $recipient) {
-            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
-            $safeTitle = $this->sanitizeEmailSubject($training->getTitle());
-
-            $email = new TemplatedEmail()
-                ->from($this->createFromAddress())
-                ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Reminder] Upcoming Training: ' . $safeTitle)
-                ->htmlTemplate('emails/training_due_notification.html.twig')
-                ->context([
-                    'training' => $training,
-                ]);
-
-            $this->mailer->send($email);
-        }
-    }
-
     public function sendGenericNotification(string $subject, string $template, array $context, array $recipients): void
     {
         foreach ($recipients as $recipient) {
@@ -158,42 +115,23 @@ class EmailNotificationService
         }
     }
 
-    public function sendControlDueNotification(Control $control, array $recipients): void
+    /**
+     * One mail to one person, with the organisation's sender branding.
+     *
+     * @param array<string, mixed> $context
+     */
+    public function sendToUser(User $user, string $subject, string $template, array $context, ?Tenant $tenant = null): void
     {
-        foreach ($recipients as $recipient) {
-            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
-            $safeControlId = $this->sanitizeEmailSubject($control->getControlId());
-
-            $email = new TemplatedEmail()
-                ->from($this->createFromAddress())
-                ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Reminder] Control Target Date Approaching: ' . $safeControlId)
-                ->htmlTemplate('emails/control_due_notification.html.twig')
-                ->context([
-                    'control' => $control,
-                ]);
-
-            $this->mailer->send($email);
+        $address = (string) $user->getEmail();
+        if ($address === '') {
+            return;
         }
-    }
-
-    public function sendWorkflowOverdueNotification(WorkflowInstance $workflowInstance, array $recipients): void
-    {
-        foreach ($recipients as $recipient) {
-            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
-            $safeWorkflowName = $this->sanitizeEmailSubject($workflowInstance->getWorkflow()->getName());
-
-            $email = new TemplatedEmail()
-                ->from($this->createFromAddress())
-                ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Alert] Overdue Workflow Approval: ' . $safeWorkflowName)
-                ->htmlTemplate('emails/workflow_overdue_notification.html.twig')
-                ->context([
-                    'instance' => $workflowInstance,
-                ]);
-
-            $this->mailer->send($email);
-        }
+        $this->mailer->send(new TemplatedEmail()
+            ->from($this->createFromAddress($tenant ?? $user->getTenant()))
+            ->to($address)
+            ->subject($this->sanitizeEmailSubject($subject))
+            ->htmlTemplate($template)
+            ->context($context));
     }
 
     /**
@@ -244,32 +182,6 @@ class EmailNotificationService
                 ->context([
                     'instance' => $workflowInstance,
                     'step' => $workflowStep,
-                    'recipient' => $recipient,
-                ]);
-
-            $this->mailer->send($email);
-        }
-    }
-
-    /**
-     * Send deadline warning notification for workflows nearing their due date
-     *
-     * @param User[] $recipients
-     * @throws TransportExceptionInterface
-     */
-    public function sendWorkflowDeadlineWarning(WorkflowInstance $workflowInstance, array $recipients, int $daysRemaining): void
-    {
-        foreach ($recipients as $recipient) {
-            $safeWorkflowName = $this->sanitizeEmailSubject($workflowInstance->getWorkflow()->getName());
-
-            $email = new TemplatedEmail()
-                ->from($this->createFromAddress())
-                ->to($recipient->getEmail())
-                ->subject('[ISMS Warning] Workflow Deadline in ' . $daysRemaining . ' days: ' . $safeWorkflowName)
-                ->htmlTemplate('emails/workflow_deadline_warning.html.twig')
-                ->context([
-                    'instance' => $workflowInstance,
-                    'daysRemaining' => $daysRemaining,
                     'recipient' => $recipient,
                 ]);
 

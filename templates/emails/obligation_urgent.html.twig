@@ -1,0 +1,16 @@
+{# Urgent notice for statutory hour deadlines (GDPR Art. 33, NIS-2 Art. 23) — ObligationReminderService. #}
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}{{ 'emails.obligation.urgent.subject'|trans({'%title%': items[0].title, '%count%': items|length}, 'emails', locale) }}{% endblock %}
+
+{% block content %}
+    <h1 style="font-size: 20px; margin: 0 0 8px 0; color: #b91c1c;">{{ 'emails.obligation.urgent.title'|trans({}, 'emails', locale) }}</h1>
+    <p style="margin: 0 0 16px 0;">{{ 'emails.obligation.urgent.intro'|trans({}, 'emails', locale) }}</p>
+
+    {% include 'emails/_obligation_rows.html.twig' with { items: items, locale: locale } only %}
+
+    <p style="margin: 24px 0 8px 0;">
+        <a href="{{ my_day_url }}" style="display: inline-block; background: #b91c1c; color: #ffffff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: 600;">{{ 'emails.obligation.digest.open_my_day'|trans({}, 'emails', locale) }}</a>
+    </p>
+    <p style="margin: 16px 0 0 0; font-size: 12px; color: #6d6b92;">{{ 'emails.obligation.urgent.note'|trans({}, 'emails', locale) }}</p>
+{% endblock %}

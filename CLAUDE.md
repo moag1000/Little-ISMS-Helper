@@ -248,6 +248,9 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
   `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
   My Day and reminder mails read only from these; a new norm = new sources. Doc: `docs/DEADLINES_AND_RESPONSIBILITY.md`
+- `Reminder\ObligationReminderService` - the one reminder path (`app:send-reminders`, scheduler every 15 min):
+  daily digest at the tenant's hour (`ReminderSettings`, default 07:00, user opt-out), hour deadlines at once,
+  each sent duty stored as `ObligationNotice` (bell "Meine Erinnerungen"). Never add a per-duty reminder command.
 - `Kpi\KpiCatalog` - the one source of management KPIs (stable keys, tenant KPI thresholds applied,
   euro KPIs from the risk quant fields). Dashboards pick tiles by key: Twig `kpi('<key>')`,
   `_components/_kpi_tile.html.twig`; never call `DashboardStatisticsService::getManagementKPIs()`
@@ -541,7 +544,7 @@ php bin/console app:migrate-legacy-workflows --archive
 - Edit DB `workflow_steps` rows directly (read-only since Y.4)
 - Use a role in `approver_role` / transition `roles` that `security.yaml` does not define, or `ROLE_USER` on an
   approval step — nobody gets it or everybody can approve (Gate 82, `check_workflow_roles.py`). An owner is a
-  relation on the record, not a role.
+  relation on the record, not a role: write `approver_role: owner` (resolved via `Responsibility::ofRecord()`).
 
 **Documentation:**
 - `docs/WORKFLOW_AUTO_PROGRESSION.md` - Complete auto-progression guide (updated for Y.4)
@@ -566,7 +569,7 @@ Do not add DORA fields to forms without `nis2_dora` gate, do not add GDPR fields
 Full reference: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md)
 
 **Key artifacts:**
-- `config/modules.yaml` — module keys + metadata (required modules: core, authentication, documents, audit_logging, workflows, objectives)
+- `config/modules.yaml` — module keys + metadata (required modules: core, authentication, documents, audit_logging, workflows, objectives, notifications)
 - `config/active_modules.yaml` — per-tenant activation overrides
 - `src/Form/Trait/ModuleAwareFormTrait.php` — FormType helper (`isModuleActive()`)
 - `src/Controller/Trait/ModuleGatedControllerTrait.php` — Controller helper (`checkModuleActive()`)

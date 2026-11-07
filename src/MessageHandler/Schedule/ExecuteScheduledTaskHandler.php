@@ -30,11 +30,10 @@ class ExecuteScheduledTaskHandler
         'app:process-timed-workflows',
         'app:generate-regulatory-workflows',
         // Notifications & reminders
-        'app:send-notifications',
-        'app:review:send-reminders',
+        'app:send-reminders',
         'app:nis2-notification-check',
-        'app:risk:monitor-treatment-plans',
         'app:risk:schedule-reviews',
+        'app:evidence:expire',
         // Scheduled reports
         'app:process-scheduled-reports',
         // KPI & snapshots

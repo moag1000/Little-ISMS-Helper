@@ -8,17 +8,13 @@ use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\RiskStatus;
-use App\Message\Schedule\CheckRiskReviewsMessage;
-use App\MessageHandler\Schedule\CheckRiskReviewsHandler;
 use App\Repository\RiskRepository;
-use App\Service\EmailNotificationService;
-use App\Service\MyDayAggregator;
+use App\Service\Deadline\ObligationInbox;
 use App\Service\RiskReviewService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -72,28 +68,6 @@ final class RiskPeriodicReviewRuleTest extends KernelTestCase
     }
 
     #[Test]
-    public function scheduledReviewMailIsNotSentForClosedRisks(): void
-    {
-        $mailed = [];
-        $mailer = $this->createStub(EmailNotificationService::class);
-        $mailer->method('sendGenericNotification')->willReturnCallback(
-            static function (string $subject) use (&$mailed): void {
-                $mailed[] = $subject;
-            },
-        );
-
-        $handler = new CheckRiskReviewsHandler(
-            self::getContainer()->get(RiskRepository::class),
-            $mailer,
-            new NullLogger(),
-        );
-        $handler(new CheckRiskReviewsMessage());
-
-        self::assertContains('Risk Review Required: ' . $this->openOverdue->getTitle(), $mailed);
-        self::assertNotContains('Risk Review Required: ' . $this->closedOverdue->getTitle(), $mailed);
-    }
-
-    #[Test]
     public function riskReviewServiceSkipsClosedRisks(): void
     {
         $service = self::getContainer()->get(RiskReviewService::class);
@@ -103,12 +77,19 @@ final class RiskPeriodicReviewRuleTest extends KernelTestCase
     }
 
     #[Test]
-    public function myDayListsNoClosedRiskAsReviewOverdue(): void
+    public function reminderInboxListsNoClosedRiskAsReviewDue(): void
     {
-        $aggregator = self::getContainer()->get(MyDayAggregator::class);
-        $items = (new \ReflectionMethod($aggregator, 'buildRiskReviewOverdue'))->invoke($aggregator, $this->tenant);
+        // My Day, the digest and the urgent mail all read this inbox.
+        $inbox = self::getContainer()->get(ObligationInbox::class);
+        $titles = [];
+        foreach ($inbox->byRecipient($this->tenant) as ['items' => $items]) {
+            foreach ($items as $obligation) {
+                if ($obligation->source->slug() === 'risk_review') {
+                    $titles[] = $obligation->title;
+                }
+            }
+        }
 
-        $titles = array_column($items, 'title');
         self::assertContains($this->openOverdue->getTitle(), $titles);
         self::assertNotContains($this->closedOverdue->getTitle(), $titles);
     }

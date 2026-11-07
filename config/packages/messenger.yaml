@@ -41,7 +41,6 @@ framework:
 
             # Scheduler messages
             App\Message\Schedule\CleanupExpiredSessionsMessage: scheduler
-            App\Message\Schedule\CheckRiskReviewsMessage: scheduler
             App\Message\Schedule\GenerateComplianceReportMessage: scheduler
             App\Message\Schedule\ExecuteScheduledTaskMessage: scheduler
 

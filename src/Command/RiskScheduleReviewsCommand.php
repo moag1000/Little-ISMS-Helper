@@ -46,13 +46,14 @@ class RiskScheduleReviewsCommand
     {
     }
 
-    public function __invoke(#[Option(name: 'tenant', shortcut: 't', description: 'Process only specific tenant ID')]
-    $tenant, SymfonyStyle $symfonyStyle): int
-    {
+    public function __invoke(
+        SymfonyStyle $symfonyStyle,
+        #[Option(name: 'tenant', shortcut: 't', description: 'Process only specific tenant ID')]
+        ?string $tenantId = null,
+    ): int {
         $symfonyStyle->title('Risk Review Scheduling (ISO 27001:2022 Clause 6.1.3.d)');
 
         // Get tenants to process
-        $tenantId = $tenant;
         if ($tenantId) {
             $tenant = $this->tenantRepository->find($tenantId);
             if (!$tenant) {
