@@ -31,7 +31,6 @@ risk_treatment_plan:
     section:
         details: Details
         controls: 'Linked Controls'
-        history: History
         basic_info: 'Basic Information'
         status_progress: 'Status & Progress'
         timeline: Timeline

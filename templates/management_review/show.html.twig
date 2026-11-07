@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'management_review' %}
 
 {% block title %}{{ review.title }}{% endblock %}
@@ -15,12 +18,6 @@
             body: 'common.module_not_active'|trans({'%module%': 'Management Review'}, 'messages')
         }) }}
     {% else %}
-    {# Lifecycle — status transition dropdown (management_review_lifecycle) #}
-    {% include '_components/_lifecycle_toolbar.html.twig' with {
-        entity: review,
-        entity_type: 'management-review',
-        workflow_name: 'management_review_lifecycle'
-    } only %}
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -36,22 +33,46 @@
         title: review.title
     }) }}
 
+    {% set statusClass = {
+        'planned': 'warning',
+        'in_progress': 'info',
+        'completed': 'success',
+        'cancelled': 'danger'
+    } %}
+    {% set _status %}{% include '_components/_badge.html.twig' with { variant: statusClass[review.status] ?? 'secondary', class: 'fa-status-pill--lg', content: ('management_review.status.' ~ review.status)|trans({}, 'management_review') } %}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(review, 'management-review', 'management_review_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.date'|trans({}, 'messages'), value: review.reviewDate ? review.reviewDate|fa_date : null },
+            { label: 'management_review.field.participants'|trans({}, 'management_review'), value: review.effectiveParticipantCount > 0 ? review.effectiveParticipantCount : null },
+        ],
+        workflow: workflow_state(review),
+    }) }}
+
+    {% set _links = entity_links(review) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'management_review.field.basic_info'|trans({}, 'management_review') },
+        { id: 'inputs', label: 'management_review.section.inputs'|trans({}, 'management_review') },
+        { id: 'followup', label: 'management_review.section.followup'|trans({}, 'management_review') },
+        { id: 'outputs', label: 'management_review.section.outputs'|trans({}, 'management_review') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: review } only %}
+
     <div class="row">
         <div class="col-lg-8">
             {# Main Review Information #}
+            <div id="details" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="h5 mb-0">
                             <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'management_review.field.basic_info'|trans({}, 'management_review') }}
                         </h2>
-                        {% set statusClass = {
-                            'planned': 'warning',
-                            'in_progress': 'info',
-                            'completed': 'success',
-                            'cancelled': 'danger'
-                        } %}
-                        {% include '_components/_badge.html.twig' with { variant: statusClass[review.status] ?? 'secondary', class: 'fa-status-pill--lg', content: ('management_review.status.' ~ review.status)|trans({}, 'management_review') } %}
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -60,7 +81,7 @@
                             <div class="text-muted small mb-2">
                                 <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ 'management_review.field.review_date'|trans({}, 'management_review') }}
                             </div>
-                            <p class="fs-5">{{ review.reviewDate|date('d.m.Y') }}</p>
+                            <p class="fs-5">{{ review.reviewDate|fa_date }}</p>
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted small mb-2">
@@ -83,8 +104,10 @@
                     </div>
                 {% endblock %}
             {% endembed %}
+            </div>
 
             {# Inputs to the Review #}
+            <div id="inputs" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
@@ -123,8 +146,10 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+            </div>
 
             {# Status of Previous Actions #}
+            <div id="followup" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
@@ -156,8 +181,10 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+            </div>
 
             {# Outputs from the Review #}
+            <div id="outputs" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-success' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -200,6 +227,7 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+            </div>
         </div>
 
         <div class="col-lg-4">
@@ -289,10 +317,10 @@
                 {% block card_body %}
                     <dl class="row mb-0 small">
                         <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-7">{{ review.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-7">{{ review.createdAt|fa_datetime }}</dd>
 
                         <dt class="col-sm-5 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-7">{{ review.updatedAt ? review.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
+                        <dd class="col-sm-7">{{ review.updatedAt ? review.updatedAt|fa_datetime : '-' }}</dd>
 
                         <dt class="col-sm-5 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7"><code>{{ review.id }}</code></dd>
@@ -301,6 +329,8 @@
             {% endembed %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: review, lifecycle: 'management-review' } only %}
     {% endif %} {# /M-4 reviews module gate #}
 </div>
 

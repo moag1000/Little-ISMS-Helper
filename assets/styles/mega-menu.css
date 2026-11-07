@@ -16,18 +16,6 @@
     margin: 0;
 }
 
-/* ====================================
-   Sections & Links
-   ==================================== */
-
-.mega-menu-section {
-    margin-bottom: 2rem;
-}
-
-.mega-menu-section:last-child {
-    margin-bottom: 0;
-}
-
 /* Dark mode is always on for panels - no override needed */
 
 /* ====================================

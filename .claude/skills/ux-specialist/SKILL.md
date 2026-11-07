@@ -55,7 +55,7 @@ You are a **UI/UX Specialist** with deep expertise in creating efficient, access
 - Reusable component library (`templates/_components/`)
 - Consistent CSS class naming (BEM methodology preferred)
 - Unified spacing system (Bootstrap utilities)
-- Color palette adherence (`assets/styles/app.css`, `dark-mode.css`)
+- Color palette adherence (`assets/styles/fairy-aurora.css` tokens, `app.css`)
 - Typography scale (h1-h6, body, small)
 - No "wildwuchs" (wild growth) - every component follows patterns
 
@@ -107,12 +107,10 @@ Single source of truth = `assets/styles/fairy-aurora.css`. All other CSS files c
 ```
 assets/styles/
 ├── fairy-aurora.css                ← TOKEN LAYER (loads first, single SoT)
-├── app.css                          ← base/layout
-├── components.css, ui-components.css ← component primitives
-├── mega-menu.css, command-palette.css, toast.css, skeleton.css, bulk-actions.css
-├── premium.css                      ← KPI/widget/stat cards
-├── dark-mode.css                    ← only Dark-specific *effects* (glow, shadow).
-│                                      No pure color-swaps — tokens are theme-aware.
+├── app.css                          ← app layer: base/layout, legacy components, KPI/widget cards,
+│                                      dark-only effects (merged from app/components/ui-components/
+│                                      premium/dark-mode in 2026-11 — no new components here)
+├── mega-menu.css, command-palette.css, bulk-actions.css
 ├── analytics.css                    ← chart panels
 ├── guided-tour.css
 ├── fairy-aurora-components.css      ← Aurora-Primitives (Brand, CyberButton, CyberInput,
@@ -1435,7 +1433,7 @@ Brief description of what this component does and when to use it.
   --card-padding: var(--spacing-md);
 }
 
-/* Dark mode overrides in assets/styles/dark-mode.css */
+/* Dark mode overrides: tokens in fairy-aurora.css, residue in app.css */
 [data-bs-theme="dark"] {
   --card-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }

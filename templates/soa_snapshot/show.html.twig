@@ -2,12 +2,13 @@
 {% trans_default_domain 'soa' %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
-{% block title %}{{ 'soa.snapshot.show.title'|trans({'%date%': snapshot.asOfDate|date('Y-m-d')}, 'soa') }}{% endblock %}
+{% block title %}{{ 'soa.snapshot.show.title'|trans({'%date%': snapshot.asOfDate|fa_date}, 'soa') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {# M-4 — module-gating: SoA Snapshot (depends on controls module) #}
 {% if not is_module_active('controls') %}
@@ -21,12 +22,12 @@
     breadcrumbs: [
         { label: 'nav.soa'|trans({}, 'nav'), url: path('app_soa_index') },
         { label: 'soa.snapshot.page.title'|trans({}, 'soa'), url: path('app_soa_snapshot_index') },
-        { label: snapshot.asOfDate|date('Y-m-d') }
+        { label: snapshot.asOfDate|fa_date }
     ]
 } %}
 
 {{ _fa_page_header.render({
-    title: 'soa.snapshot.show.title'|trans({'%date%': snapshot.asOfDate|date('Y-m-d')}, 'soa'),
+    title: 'soa.snapshot.show.title'|trans({'%date%': snapshot.asOfDate|fa_date}, 'soa'),
     subtitle: snapshot.purpose|default(''),
     actions: [
         { label: 'soa.snapshot.action.export_csv'|trans({}, 'soa'), variant: 'primary', icon: 'download', href: path('app_soa_snapshot_export_csv', { id: snapshot.id }), attrs: { 'data-turbo': 'false' } },
@@ -34,23 +35,33 @@
     ]
 }) }}
 
-<main>
+{{ _fa_status_band.render({
+    facts: [
+        { label: 'show.status.date'|trans({}, 'messages'), value: snapshot.asOfDate|fa_date },
+        { label: 'soa.snapshot.kpi.created_by'|trans({}, 'soa'), value: snapshot.createdBy ? snapshot.createdBy.email : null },
+        { label: 'soa.snapshot.kpi.controls'|trans({}, 'soa'), value: snapshot.controlCount },
+    ],
+}) }}
+
+{% include '_components/_fa_entity_links.html.twig' with { entity: snapshot } only %}
+
+<div class="fa-aurora-surface">
     <div class="row mb-4">
         <div class="col-md-3">
             {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.controls'|trans({}, 'soa'), value: snapshot.controlCount, variant: 'primary' }) }}
         </div>
         <div class="col-md-3">
-            {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.as_of'|trans({}, 'soa'), value: snapshot.asOfDate|date('Y-m-d'), variant: 'info' }) }}
+            {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.as_of'|trans({}, 'soa'), value: snapshot.asOfDate|fa_date, variant: 'info' }) }}
         </div>
         <div class="col-md-3">
-            {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.frozen_at'|trans({}, 'soa'), value: snapshot.createdAt|date('Y-m-d H:i'), variant: 'secondary' }) }}
+            {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.frozen_at'|trans({}, 'soa'), value: snapshot.createdAt|fa_datetime, variant: 'secondary' }) }}
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.created_by'|trans({}, 'soa'), value: snapshot.createdBy ? snapshot.createdBy.email : '—', variant: 'secondary' }) }}
         </div>
     </div>
 
-    <div class="mb-4">
+    <div class="mb-4 fa-show-section" id="details">
         <h2 class="h5">{{ 'soa.snapshot.section.integrity'|trans({}, 'soa') }}</h2>
         <p class="mb-1"><strong>{{ 'soa.snapshot.field.checksum'|trans({}, 'soa') }}:</strong> <code>{{ snapshot.checksumSha256 }}</code></p>
         {% if snapshot.notes %}
@@ -86,6 +97,8 @@
             {% endfor %}
         {% endblock %}
     {% endembed %}
-</main>
+</div>
+
+{% include '_components/_fa_show_history.html.twig' with { entity: snapshot } only %}
 {% endif %} {# /M-4 controls module gate #}
 {% endblock %}

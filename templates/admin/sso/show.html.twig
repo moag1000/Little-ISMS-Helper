@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'sso' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 {% from '_components/_fa_alert.html.twig' import render as fa_alert %}
 
 {% block admin_title %}{{ provider.name }} — {{ 'sso.admin.title'|trans }}{% endblock %}
@@ -20,6 +20,19 @@
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('admin_sso_edit', {id: provider.id}) }
         ]
     }) }}
+
+    {% set _status %}{% if provider.enabled %}<span class="fa-status-pill fa-status-pill--success">{{ 'sso.status.enabled'|trans }}</span>{% else %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'sso.status.disabled'|trans }}</span>{% endif %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'sso.field.type'|trans({}, 'sso'), value: ('sso.type.' ~ provider.type)|trans({}, 'sso') },
+            { label: 'sso.field.preset_type'|trans({}, 'sso'), value: provider.presetType ? ('sso.preset.' ~ provider.presetType)|trans({}, 'sso') : null },
+            { label: 'sso.field.default_fallback_role'|trans({}, 'sso'), value: provider.defaultFallbackRole ?: provider.defaultRole },
+        ],
+        workflow: workflow_state(provider),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: provider } only %}
 
     {% include 'admin/sso/_privileged_roles_ignored.html.twig' with { roles: ignored_privileged_roles } only %}
 
@@ -92,7 +105,7 @@
     </div>
 
     {# ── Role Mappings ────────────────────────────────────────── #}
-    <section class="fa-section mb-4 mt-4">
+    <section class="fa-section fa-show-section mb-4 mt-4" id="role-mappings">
         <div class="fa-section__header">
             <h2 class="fa-section__title">{{ 'sso.role_mapping.section.title'|trans }}</h2>
         </div>
@@ -135,21 +148,5 @@
         </div>
     </section>
 
-    {# ── Audit Trail ──────────────────────────────────────────── #}
-    <section class="fa-section mb-4">
-        <div class="fa-section__header">
-            <h2 class="fa-section__title">{{ 'sso.audit.section.title'|trans }}</h2>
-        </div>
-        <div class="fa-section__body">
-            {% if audit_trail is empty %}
-                <p class="text-muted">{{ 'sso.audit.empty'|trans }}</p>
-            {% else %}
-                <div class="list-group list-group-flush">
-                    {% for entry in audit_trail %}
-                        {{ _fa_audit_row.render({ log: entry, compact: true }) }}
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-    </section>
+    {% include '_components/_fa_show_history.html.twig' with { entity: provider } only %}
 {% endblock %}

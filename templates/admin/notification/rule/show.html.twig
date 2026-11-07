@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'notification' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ rule.name }} — {{ 'notification.rule.show.title'|trans }}{% endblock %}
 {% block admin_title %}{{ rule.name }}{% endblock %}
@@ -32,10 +33,23 @@
         ]
     }) }}
 
+    {% set _status %}{% if rule.isActive %}<span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>{% else %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'common.inactive'|trans({}, 'messages') }}</span>{% endif %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'notification.rule.field.severity_filter'|trans({}, 'notification'), value: rule.severityFilter ? ('notification.severity.' ~ rule.severityFilter)|trans({}, 'notification') : 'notification.severity.all'|trans({}, 'notification') },
+            { label: 'notification.rule.field.evaluation_count'|trans({}, 'notification'), value: rule.evaluationCount },
+            { label: 'notification.rule.field.last_evaluated'|trans({}, 'notification'), value: rule.lastEvaluatedAt ? rule.lastEvaluatedAt|fa_datetime : null },
+        ],
+        workflow: workflow_state(rule),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: rule } only %}
+
     <div class="row g-4">
         {# Left column: rule details #}
         <div class="col-lg-6">
-            <section class="fa-section">
+            <section class="fa-section fa-show-section" id="details">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">{{ 'notification.rule.show.details'|trans }}</h2>
                 </div>
@@ -135,11 +149,13 @@
         </div>
 
         {# Right column: evaluation log #}
-        <div class="col-lg-6">
+        <div class="col-lg-6 fa-show-section" id="evaluation-log">
             {% include 'admin/notification/rule/_evaluation_log.html.twig' with {
                 rule: rule,
                 recentDeliveries: recentDeliveries
             } %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: rule } only %}
 {% endblock %}

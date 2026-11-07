@@ -6,7 +6,8 @@
 {% import '_components/_status_pill.html.twig' as pill %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% import '_components/_lifecycle_pending_banner.html.twig' as _lifecycle_pending_banner %}
 
 {% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}, 'privacy') }}{% endblock %}
@@ -39,11 +40,31 @@
     {# Z.0 — Workflow pending action banner #}
     {{ _lifecycle_pending_banner.render(workflow_info|default({})) }}
 
-    {# Lifecycle X.3b — status chip + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataBreach', status_key: breach.status }) }}
-        {{ _lifecycle_actions.dropdown(breach, 'data-breach', 'data_breach_lifecycle') }}
-    </div>
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataBreach', status_key: breach.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(breach, 'data-breach', 'data_breach_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.severity'|trans({}, 'messages'), value: breach.severity ? ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') : null },
+            { label: 'show.status.owner'|trans({}, 'messages'), value: breach.assessor ? breach.assessor.firstName ~ ' ' ~ breach.assessor.lastName : null },
+            { label: 'show.status.detected'|trans({}, 'messages'), value: breach.detectedAt ? breach.detectedAt|fa_datetime : null },
+            { label: 'privacy.data_breach.field.deadline'|trans({}, 'privacy'), value: breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt and breach.authorityNotificationDeadline ? breach.authorityNotificationDeadline|fa_datetime : null },
+        ],
+        workflow: workflow_state(breach),
+    }) }}
+
+    {% set _links = entity_links(breach) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'notifications', label: 'privacy.data_breach.section.authority'|trans({}, 'privacy') },
+        { id: 'nature', label: 'privacy.data_breach.section.nature'|trans({}, 'privacy') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+        { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: breach } only %}
 
     {# CRITICAL: 72-Hour Deadline Alert #}
     {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
@@ -55,8 +76,8 @@
                     <p class="fa-alert__message">{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': 1}, 'privacy')|raw }}</p>
                     <hr>
                     <p class="mb-0">
-                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }} ·
-                        <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|fa_datetime }} ·
+                        <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}
                     </p>
                 {% endblock %}
             {% endembed %}
@@ -68,17 +89,18 @@
                         {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} {{ 'privacy.data_breach.field.within'|default('within') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>.
                     </p>
                     <p class="mb-0">
-                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }} ·
-                        <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|fa_datetime }} ·
+                        <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}
                     </p>
                 {% endblock %}
             {% endembed %}
         {% else %}
-            {{ _fa_alert.render({ variant: 'info', body: 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') ~ ' <strong>' ~ hours|number_format ~ ' ' ~ 'privacy.data_breach.field.hours'|trans({}, 'privacy') ~ '</strong> (' ~ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') ~ ': ' ~ breach.authorityNotificationDeadline|date('Y-m-d H:i') ~ ').' }) }}
+            {{ _fa_alert.render({ variant: 'info', body: 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') ~ ' <strong>' ~ hours|number_format ~ ' ' ~ 'privacy.data_breach.field.hours'|trans({}, 'privacy') ~ '</strong> (' ~ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') ~ ': ' ~ breach.authorityNotificationDeadline|fa_datetime ~ ').' }) }}
         {% endif %}
     {% endif %}
 
     {# Status & Workflow Actions #}
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
         {% block card_header %}
             <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'privacy.data_breach.section.status_workflow'|trans({}, 'privacy') }}</h2></div>
@@ -86,16 +108,6 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>{{ 'privacy.data_breach.field.status'|trans({}, 'privacy') }}:</strong>
-                        {% set status_class = {
-                            'draft': 'secondary',
-                            'under_assessment': 'info',
-                            'authority_notified': 'success',
-                            'subjects_notified': 'success',
-                            'closed': 'dark'
-                        }[breach.status] %}
-                        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
-                    </p>
                     <p><strong>{{ 'privacy.data_breach.field.completeness'|trans({}, 'privacy') }}:</strong> {{ breach.completenessPercentage }}%</p>
                     {% if breach.assessor %}
                         <p><strong>{{ 'privacy.data_breach.field.assessor'|trans({}, 'privacy') }}:</strong> {{ breach.assessor.firstName }} {{ breach.assessor.lastName }}</p>
@@ -111,7 +123,7 @@
                             {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
                         </p>
                     {% endif %}
-                    <p><strong>{{ 'privacy.data_breach.field.created'|trans({}, 'privacy') }}:</strong> {{ breach.createdAt|date('Y-m-d H:i') }}</p>
+                    <p><strong>{{ 'privacy.data_breach.field.created'|trans({}, 'privacy') }}:</strong> {{ breach.createdAt|fa_datetime }}</p>
                 </div>
             </div>
 
@@ -186,7 +198,7 @@
             <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ 'privacy.data_breach.section.detection_links'|trans({}, 'privacy') }}</h2></div>
         {% endblock %}
         {% block card_body %}
-            <p><strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }}</p>
+            <p><strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|fa_datetime }}</p>
             <p><strong>{{ 'privacy.data_breach.field.severity'|trans({}, 'privacy') }}:</strong>
                 {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.severity] %}
                 {% include '_components/_badge.html.twig' with { variant: sev_class, content: ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') } %}
@@ -214,8 +226,10 @@
         {% endblock %}
     {% endembed %}
 
+    </div>
+
     {# Art. 33/34 Notifications #}
-    <div class="row mb-4">
+    <div id="notifications" class="row mb-4 fa-show-section">
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
@@ -235,7 +249,7 @@
                     </p>
                     {% if breach.supervisoryAuthorityNotifiedAt %}
                         <p><strong>{{ 'privacy.data_breach.field.notified'|trans({}, 'privacy') }}:</strong>
-                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}</span>
+                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ breach.supervisoryAuthorityNotifiedAt|fa_datetime }}</span>
                         </p>
                         <p><strong>{{ 'privacy.data_breach.field.authority'|trans({}, 'privacy') }}:</strong> {{ breach.supervisoryAuthorityName }}</p>
                         {% if breach.supervisoryAuthorityReference %}
@@ -247,7 +261,7 @@
                         {% endif %}
                     {% elseif breach.requiresAuthorityNotification %}
                         <p class="text-danger"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
-                        <p><strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}</p>
                         <p><strong>{{ 'privacy.data_breach.field.time_remaining'|trans({}, 'privacy') }}:</strong>
                             {% set hours = breach.hoursUntilAuthorityDeadline %}
                             {% if hours < 0 %}
@@ -284,7 +298,7 @@
                     </p>
                     {% if breach.dataSubjectsNotifiedAt %}
                         <p><strong>{{ 'privacy.data_breach.field.notified'|trans({}, 'privacy') }}:</strong>
-                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ breach.dataSubjectsNotifiedAt|date('Y-m-d H:i') }}</span>
+                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ breach.dataSubjectsNotifiedAt|fa_datetime }}</span>
                         </p>
                         <p><strong>{{ 'privacy.data_breach.field.subjects_notified'|trans({}, 'privacy') }}:</strong> {{ breach.subjectsNotified|number_format }}</p>
                         <p><strong>{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }}:</strong> {{ breach.subjectNotificationMethod }}</p>
@@ -297,6 +311,7 @@
     </div>
 
     {# Breach Details - Art. 33(3) Content #}
+    <div id="nature" class="fa-show-section">
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
         {% block card_header %}
             <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }}</h2></div>
@@ -387,7 +402,12 @@
         {% endembed %}
     {% endif %}
 
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: breach, lifecycle: 'data-breach' } only %}
+
     {# Comment-Thread adoption (C7 macro). #}
+    <div id="comments" class="fa-show-section">
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'DataBreach',
@@ -396,9 +416,7 @@
         formAction: path('app_comment_post', {entityType: 'DataBreach', entityId: breach.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
-
-    {# Lifecycle X.3b — transition history tab #}
-    {{ _lifecycle_history.history('data-breach', breach.id) }}
+    </div>
 </div>
 
 {# Notify Supervisory Authority Modal — fa-modal--confirm/warning #}

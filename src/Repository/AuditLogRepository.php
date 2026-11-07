@@ -97,6 +97,36 @@ class AuditLogRepository extends ServiceEntityRepository
     }
 
     /**
+     * The newest audit logs of one record (history block on detail pages).
+     *
+     * @return list<AuditLog>
+     */
+    public function findRecentByEntity(string $entityType, int $entityId, int $limit = 10): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.entityType = :entityType')
+            ->andWhere('a.entityId = :entityId')
+            ->setParameter('entityType', $entityType)
+            ->setParameter('entityId', $entityId)
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countByEntity(string $entityType, int $entityId): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.entityType = :entityType')
+            ->andWhere('a.entityId = :entityId')
+            ->setParameter('entityType', $entityType)
+            ->setParameter('entityId', $entityId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * Find audit logs by user
      */
     public function findByUser(string $userName, int $limit = 100): array

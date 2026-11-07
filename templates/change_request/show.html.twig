@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'change_requests' %}
 
 {% block title %}{{ change_request.changeNumber }}{% endblock %}
@@ -15,12 +19,6 @@
             body: 'common.module_not_active'|trans({'%module%': 'Change Management'}, 'messages')
         }) }}
     {% else %}
-    {# Lifecycle — status transition dropdown (change_request_lifecycle) #}
-    {% include '_components/_lifecycle_toolbar.html.twig' with {
-        entity: change_request,
-        entity_type: 'change-request',
-        workflow_name: 'change_request_lifecycle'
-    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.change_requests'|trans({}, 'nav'), url: path('app_change_request_index') },
@@ -37,6 +35,29 @@
         ]
     }) }}
 
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ChangeRequest', status_key: change_request.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(change_request, 'change-request', 'change_request_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.priority'|trans({}, 'messages'), value: change_request.priority },
+            { label: 'show.status.type'|trans({}, 'messages'), value: change_request.changeType },
+            { label: 'change_request.field.requested_by'|trans({}, 'change_requests'), value: change_request.requestedBy },
+            { label: 'change_request.field.planned_implementation'|trans({}, 'change_requests'), value: change_request.plannedImplementationDate ? change_request.plannedImplementationDate|fa_date : null },
+        ],
+        workflow: workflow_state(change_request),
+    }) }}
+
+    {% set _links = entity_links(change_request) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: change_request } only %}
+
     {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if is_granted('ROLE_ADMIN') %}
         <div class="d-flex justify-content-end mb-3">
@@ -50,6 +71,7 @@
         </div>
     {% endif %}
 
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">
@@ -57,7 +79,6 @@
                 <div>
                     <span class="badge badge-{{ change_request.changeType }}">{{ change_request.changeType }}</span>
                     <span class="badge badge-{{ change_request.priority }}">{{ change_request.priority }}</span>
-                    <span class="{{ badge_status(change_request.status) }}">{{ change_request.status }}</span>
                 </div>
             </div>
         {% endblock %}
@@ -73,11 +94,11 @@
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'change_request.field.requested_date'|trans({}, 'change_requests') }}</span>
-                    <span class="value">{{ change_request.requestedDate|date('Y-m-d') }}</span>
+                    <span class="value">{{ change_request.requestedDate|fa_date }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'change_request.field.planned_implementation'|trans({}, 'change_requests') }}</span>
-                    <span class="value">{{ change_request.plannedImplementationDate ? change_request.plannedImplementationDate|date('Y-m-d') : ('change_request.status.not_scheduled'|trans({}, 'change_requests')) }}</span>
+                    <span class="value">{{ change_request.plannedImplementationDate ? change_request.plannedImplementationDate|fa_date : ('change_request.status.not_scheduled'|trans({}, 'change_requests')) }}</span>
                 </div>
             </div>
 
@@ -130,7 +151,7 @@
             <div class="detail-section alert-success">
                 <h3>{{ 'change_request.section.approval_info'|trans({}, 'change_requests') }}</h3>
                 <p><strong>{{ 'change_request.field.approved_by'|trans({}, 'change_requests') }}</strong> {{ change_request.approvedBy }}</p>
-                <p><strong>{{ 'change_request.field.approval_date'|trans({}, 'change_requests') }}</strong> {{ change_request.approvedDate|date('Y-m-d H:i') }}</p>
+                <p><strong>{{ 'change_request.field.approval_date'|trans({}, 'change_requests') }}</strong> {{ change_request.approvedDate|fa_datetime }}</p>
                 {% if change_request.approvalComments %}
                 <p><strong>{{ 'change_request.field.comments'|trans({}, 'change_requests') }}</strong> {{ change_request.approvalComments }}</p>
                 {% endif %}
@@ -141,7 +162,7 @@
             <div class="detail-section">
                 <h3>{{ 'change_request.section.implementation'|trans({}, 'change_requests') }}</h3>
                 <p><strong>{{ 'change_request.field.implemented_by'|trans({}, 'change_requests') }}</strong> {{ change_request.implementedBy }}</p>
-                <p><strong>{{ 'change_request.field.implementation_date'|trans({}, 'change_requests') }}</strong> {{ change_request.actualImplementationDate|date('Y-m-d') }}</p>
+                <p><strong>{{ 'change_request.field.implementation_date'|trans({}, 'change_requests') }}</strong> {{ change_request.actualImplementationDate|fa_date }}</p>
                 {% if change_request.implementationNotes %}
                 <p><strong>{{ 'change_request.field.notes'|trans({}, 'change_requests') }}</strong> {{ change_request.implementationNotes|nl2br }}</p>
                 {% endif %}
@@ -152,7 +173,7 @@
             <div class="detail-section alert-success">
                 <h3>{{ 'change_request.section.verification'|trans({}, 'change_requests') }}</h3>
                 <p><strong>{{ 'change_request.field.verified_by'|trans({}, 'change_requests') }}</strong> {{ change_request.verifiedBy }}</p>
-                <p><strong>{{ 'change_request.field.verification_date'|trans({}, 'change_requests') }}</strong> {{ change_request.verifiedDate|date('Y-m-d') }}</p>
+                <p><strong>{{ 'change_request.field.verification_date'|trans({}, 'change_requests') }}</strong> {{ change_request.verifiedDate|fa_date }}</p>
                 {% if change_request.verificationResults %}
                 <p><strong>{{ 'change_request.field.results'|trans({}, 'change_requests') }}</strong> {{ change_request.verificationResults|nl2br }}</p>
                 {% endif %}
@@ -162,7 +183,7 @@
             {% if change_request.status == 'closed' %}
             <div class="detail-section">
                 <h3>{{ 'change_request.section.closure'|trans({}, 'change_requests') }}</h3>
-                <p><strong>{{ 'change_request.field.closed_date'|trans({}, 'change_requests') }}</strong> {{ change_request.closedDate|date('Y-m-d') }}</p>
+                <p><strong>{{ 'change_request.field.closed_date'|trans({}, 'change_requests') }}</strong> {{ change_request.closedDate|fa_date }}</p>
                 {% if change_request.closureNotes %}
                 <p><strong>{{ 'change_request.field.notes'|trans({}, 'change_requests') }}</strong> {{ change_request.closureNotes }}</p>
                 {% endif %}
@@ -203,6 +224,9 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: change_request, lifecycle: 'change-request' } only %}
     {% endif %} {# /M-4 change_requests module gate #}
 </div>
 {% endblock %}

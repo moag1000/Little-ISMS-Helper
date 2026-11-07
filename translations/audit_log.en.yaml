@@ -62,8 +62,6 @@ audit_log:
         about_text: 'The audit log tracks all significant actions in the system including create, update, and delete operations. This provides a complete audit trail for compliance and security purposes.'
         module_link: 'Audit Log module'
         entries: audit_log
-    showing_recent: 'Showing Recent'
-    entries: Entries
     field:
         timestamp: Timestamp
         action: Action
