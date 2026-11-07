@@ -31,7 +31,7 @@
                 <tr>
                     <td class="p-sm fw-bold">{{ 'audit_log.field.action'|trans({}, 'audit_log') }}</td>
                     <td class="p-sm">
-                        <span class="badge badge-{{ auditLog.action }}">{{ auditLog.action|capitalize }}</span>
+                        <span class="fa-status-pill fa-status-pill--{{ pill_tone_action(auditLog.action) }}">{{ auditLog.action|capitalize }}</span>
                     </td>
                 </tr>
                 <tr>

@@ -421,8 +421,8 @@
                                     <span class="fa-status-pill fa-status-pill--neutral font-monospace">{{ ctrl.controlId }}</span>
                                     <span>{{ ctrl.name }}</span>
                                     <span class="fa-status-pill fa-status-pill--neutral">{{ ('document.evidence.type.' ~ link.evidenceType)|trans({}, 'document') }}</span>
-                                    <span class="badge rounded-pill" style="background:var(--state-info-bg,#e0f0ff);color:var(--state-info-fg,#0050a0)">
-                                        {{ ctrl.implementationStatus|replace({'_': ' '})|title }}
+                                    <span class="fa-status-pill fa-status-pill--primary">
+                                        {{ ('control.status.' ~ ctrl.implementationStatus)|trans({}, 'control') }}
                                     </span>
                                 </li>
                             {% endfor %}
