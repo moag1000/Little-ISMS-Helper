@@ -601,7 +601,7 @@ class RestoreEntityWriter
             $targetCol = $invJoinCols[0]['name'];
             $idsKey    = $field . '_ids';
 
-            $targetClass = is_array($mapping) ? ($mapping['targetEntity'] ?? '') : ($mapping->targetEntity ?? '');
+            $targetClass = $classMetadata->getAssociationTargetClass($field);
             $guard       = $this->tenantGuard();
             $tuples      = [];
             $dropped     = 0;
@@ -620,7 +620,7 @@ class RestoreEntityWriter
                     if ($targetId === null) {
                         continue;
                     }
-                    if ($targetClass !== '' && !$guard->mayReference($targetClass, $targetId, $scopeIds)) {
+                    if (!$guard->mayReference($targetClass, $targetId, $scopeIds)) {
                         $dropped++;
                         continue;
                     }
