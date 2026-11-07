@@ -32,20 +32,27 @@
             <span class="label">{{ 'objective.field.target_date'|trans({}, 'objective') }}</span>
             <span>{{ objective.targetDate|fa_date }}</span>
         </div>
-        {% if objective.targetValue or objective.currentValue %}
+        {% set _progress = objective_progress(objective) %}
+        {% if objective.targetValue or _progress.current is not null %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'objective.table.progress'|trans({}, 'objective') }}</span>
             <span>
                 {{ _fa_progress.render({
-                    value: objective.progressPercentage,
-                    tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'),
+                    value: _progress.percent,
+                    tone: _progress.percent >= 75 ? 'success' : (_progress.percent >= 50 ? 'warning' : 'danger'),
                     showText: true
                 }) }}
             </span>
         </div>
         <div class="fa-drawer__kv">
             <span class="label">{{ 'objective.label.current'|trans({}, 'objective') }} / {{ 'objective.label.target'|trans({}, 'objective') }}</span>
-            <span>{{ objective.currentValue }} {{ objective.unit }} / {{ objective.targetValue }} {{ objective.unit }}</span>
+            <span>{{ _progress.current ?? '—' }} {{ objective.unit }} / {{ objective.targetValue }} {{ objective.unit }}{% if _progress.computed %} · {{ 'objective.label.from_kpi'|trans({}, 'objective') }}{% endif %}</span>
+        </div>
+        {% endif %}
+        {% if objective.nextMeasurementDue %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'objective.label.next_measurement'|trans({}, 'objective') }}</span>
+            <span>{{ objective.nextMeasurementDue|fa_date }}</span>
         </div>
         {% endif %}
         {% if objective.measurableIndicators %}

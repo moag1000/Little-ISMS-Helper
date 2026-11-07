@@ -26,7 +26,6 @@ final class RecurringDutyCatalog
     public const array DUTIES = [
         'risk_acceptance_criteria' => ['module' => 'risks', 'scope' => null, 'norm' => 'ISO 27001 6.1.2 a', 'months' => 12, 'roles' => ['ROLE_RISK_MANAGER', 'ROLE_CISO']],
         'soa_review' => ['module' => 'controls', 'scope' => null, 'norm' => 'ISO 27001 6.1.3 d', 'months' => 12, 'roles' => ['ROLE_ISB', 'ROLE_CISO']],
-        'objectives_measurement' => ['module' => 'objectives', 'scope' => null, 'norm' => 'ISO 27001 6.2 / 9.1', 'months' => 3, 'roles' => ['ROLE_ISB', 'ROLE_CISO']],
         'crypto_key_rotation' => ['module' => 'controls', 'scope' => null, 'norm' => 'ISO 27001 A.8.24', 'months' => 12, 'roles' => ['ROLE_ISB', 'ROLE_CISO']],
         'access_review_campaign' => ['module' => 'access_review', 'scope' => null, 'norm' => 'ISO 27001 A.5.18', 'months' => 6, 'roles' => ['ROLE_ISB', 'ROLE_CISO']],
         'bia_review' => ['module' => 'bcm', 'scope' => null, 'norm' => 'ISO 22301 8.2.2', 'months' => 12, 'roles' => ['ROLE_BCM_OFFICER']],

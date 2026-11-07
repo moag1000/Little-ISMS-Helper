@@ -210,6 +210,7 @@ notification.event_type	1
 notification.severity	3
 notification.template.desc	1
 notification_delivery.status	1
+objective.frequency	1
 objective.status	4
 onboarding.mapping.step	1
 party	1
@@ -275,7 +276,7 @@ register.persona_competence	1
 register.persona_duty	1
 register.persona_role	1
 register.rating	2
-register.scope	1
+register.scope	4
 register.section	1
 register.source.context	1
 register.type	6

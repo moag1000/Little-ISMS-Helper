@@ -54,9 +54,6 @@ recurring_duty:
         soa_review:
             title: 'Review the Statement of Applicability'
             body: 'Check applicability and justification of all controls as a whole and approve them.'
-        objectives_measurement:
-            title: 'Measure information security objectives'
-            body: 'Collect target values and evaluate achievement. The default interval follows the shortest measurement frequency of the open objectives.'
         crypto_key_rotation:
             title: 'Rotate cryptographic keys'
             body: 'Renew keys and certificates according to the cryptography concept and record the rotation.'

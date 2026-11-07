@@ -291,10 +291,6 @@ soa:
         detail_heading: 'Detaillierte Control-Informationen'
         applicability_justification: 'Begründung für Anwendbarkeit:'
     pdf_v2:
-        isms_team: 'ISMS-Team'
-        version_initial: 'Initiale Version nach ISO 27001:2022'
-        version_update: 'Aktualisierung Controls A.8 und A.11'
-        version_review: 'Vollständige Überprüfung aller Controls, Status-Update'
         type_standard: 'Norm'
         type_policy: 'Richtlinie'
         type_risk_assessment: 'Risikoanalyse'
