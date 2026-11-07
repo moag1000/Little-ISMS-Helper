@@ -40,6 +40,12 @@ language-model output. User guide: `docs/user-guide/VORSCHLAEGE.md`.
 Nothing else to register: the tag wires the kind into the queue, the generator, the
 list filters and (for AI kinds) the admin use-case list.
 
+One mechanism for many kinds: `Kind/Register/AbstractRegisterProposalKind` turns every
+proposal of `RegisterProposalProvider` into a suggestion; each register type with
+proposals is a three-line subclass (`register.<type>`, decided by the register's
+maintaining persona). The register page and the queue write through the same
+`RegisterProposalAdopter` and deduplicate by `origin`.
+
 ## Rules
 
 - Generation never changes records; only `apply()` does, and only after a person

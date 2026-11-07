@@ -32,6 +32,11 @@ Persona und Anzahl, damit ein Auditor alle Verzeichnisse an einer Stelle findet.
 (`origin`) und erscheint nicht noch einmal. Die alten Kontext-Freitexte bleiben erhalten und
 werden im Kontextformular nur noch angezeigt, wenn sie befüllt sind.
 
+Dieselben Vorschläge erscheinen nachts auch in der Vorschlags-Queue (**Vorschläge**, „Mein Tag“,
+Sammelmail) bei der pflegenden Persona: rechtliche Anforderungen beim Compliance-Manager, Chancen
+beim Risikomanager, alle übrigen beim ISB. Was auf der Registerseite übernommen wurde, verschwindet
+beim nächsten Lauf aus der Queue und umgekehrt.
+
 ## Kompetenzlücken
 
 Eine Kompetenz kann mit Schulungen verknüpft werden, eine Rolle mit Kompetenzen. Hat der
