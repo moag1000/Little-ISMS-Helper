@@ -16,6 +16,7 @@ use App\Repository\ManagementReviewRepository;
 use App\Service\ManagementReviewAutoCollector;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,22 +44,35 @@ class ManagementReviewController extends AbstractController
         private readonly Security $security,
     ) {}
     #[Route('/management-review', name: 'app_management_review_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $status = (string) $request->query->get('status', '');
         $reviews = $this->managementReviewRepository->findAll();
+        if ($status !== '') {
+            $reviews = array_values(array_filter(
+                $reviews,
+                static fn (ManagementReview $r): bool => $r->getStatus() === $status,
+            ));
+        }
 
-        // Calculate statistics
-        $statistics = [
-            'total' => count($reviews),
-            'planned' => count($this->managementReviewRepository->findBy(['status' => ManagementReviewStatus::Planned->value])),
-            'completed' => count($this->managementReviewRepository->findBy(['status' => ManagementReviewStatus::Completed->value])),
-            'this_year' => count(array_filter($reviews, fn(ManagementReview $review): bool => $review->getReviewDate() instanceof DateTimeInterface &&
-                   $review->getReviewDate()->format('Y') === date('Y'))),
-        ];
+        $thisYear = date('Y');
 
         return $this->render('management_review/index.html.twig', [
-            'reviews' => $reviews,
-            'statistics' => $statistics,
+            'page' => ListPage::fromRequest(
+                $reviews,
+                $request,
+                static fn (ManagementReview $r): array => [$r->getTitle()],
+            ),
+            'status' => $status,
+            'planned_count' => count(array_filter(
+                $reviews,
+                static fn (ManagementReview $r): bool => $r->getStatus() === ManagementReviewStatus::Planned->value,
+            )),
+            'year_count' => count(array_filter(
+                $reviews,
+                static fn (ManagementReview $r): bool => $r->getReviewDate() instanceof DateTimeInterface
+                    && $r->getReviewDate()->format('Y') === $thisYear,
+            )),
         ]);
     }
     #[Route('/management-review/new', name: 'app_management_review_new', methods: ['GET', 'POST'])]

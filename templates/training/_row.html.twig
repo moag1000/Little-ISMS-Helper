@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single Training table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
@@ -16,6 +17,7 @@
     </td>
     <td>
         <a href="{{ path('app_training_show', {id: training.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ training.title }}</strong></a>
+        {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[training.id] ?? {}) : workflow_state(training)) }}
         {{ inheritance.small_badge(training, currentTenant) }}
         {% if training.mandatory %}
         {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-critical', class: 'ms-1', content: '' } %}
@@ -24,7 +26,7 @@
     <td>
         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('training.type.' ~ training.trainingType)|trans({}, 'training') } %}
     </td>
-    <td>{{ training.scheduledDate ? training.scheduledDate|date('d.m.Y') : '-' }}</td>
+    <td>{{ training.scheduledDate|fa_date }}</td>
     <td>{{ training.durationMinutes ?? '-' }} {{ 'training.minutes'|trans({}, 'training') }}</td>
     <td>
         <span class="{{ badge_status(training.status) }}">

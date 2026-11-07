@@ -10,11 +10,13 @@ use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Patch;
+use App\Enum\PatchStatus;
 use App\Form\PatchType;
 use App\Repository\PatchRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -79,24 +81,20 @@ class PatchController extends AbstractController
             ];
         }
 
-        // Statistics
-        $deploymentStats = $this->patchRepository->getDeploymentStatistics();
-        $pendingPatches = array_filter($patches, fn(Patch $patch): bool => in_array($patch->getStatus(), ['available', 'tested', 'approved']));
-
-        // Calculate detailed statistics based on origin
-        if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($patches, $tenant);
-        } else {
-            $detailedStats = ['own' => count($patches), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($patches)];
-        }
+        // Summary chips count the list as shown (view applied).
+        $pendingCount = count(array_filter($patches, static fn(Patch $p): bool => in_array($p->getStatus(), ['available', 'tested', 'approved'], true)));
+        $deployedCount = count(array_filter($patches, static fn(Patch $p): bool => $p->getStatus() === PatchStatus::Deployed->value));
 
         return $this->render('patch/index.html.twig', [
-            'patches' => $patches,
-            'deployment_stats' => $deploymentStats,
-            'pending_count' => count($pendingPatches),
+            'page' => ListPage::fromRequest(
+                $patches,
+                $request,
+                static fn(Patch $p): array => [$p->getPatchId(), $p->getTitle()],
+            ),
+            'pending_count' => $pendingCount,
+            'deployed_count' => $deployedCount,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
         ]);
     }
 
@@ -228,48 +226,6 @@ class PatchController extends AbstractController
         }
 
         return $this->redirectToRoute('app_patch_index');
-    }
-
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
     }
 
     /**

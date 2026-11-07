@@ -3,8 +3,7 @@
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
    PDF/export links must bypass Turbo (data-turbo="false"). #}
 {% trans_default_domain 'bc_plans' %}
-<tr id="business-continuity-plan-row-{{ bc_plan.id }}"
-    data-filter-target="filterableRow">
+<tr id="business-continuity-plan-row-{{ bc_plan.id }}">
     <td class="bulk-select-column">
         <input type="checkbox"
                class="form-check-input"

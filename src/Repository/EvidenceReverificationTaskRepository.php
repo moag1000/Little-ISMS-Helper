@@ -42,8 +42,8 @@ class EvidenceReverificationTaskRepository extends ServiceEntityRepository
                 EvidenceReverificationTask::STATUS_PENDING,
                 EvidenceReverificationTask::STATUS_IN_PROGRESS,
             ])
-            ->orderBy('t.dueDate', 'ASC')
-            ->addOrderBy('t.createdAt', 'ASC')
+            ->orderBy('t.dueDate', \SortDirection::Ascending)
+            ->addOrderBy('t.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -83,7 +83,7 @@ class EvidenceReverificationTaskRepository extends ServiceEntityRepository
                 EvidenceReverificationTask::STATUS_PENDING,
                 EvidenceReverificationTask::STATUS_IN_PROGRESS,
             ])
-            ->orderBy('t.dueDate', 'ASC')
+            ->orderBy('t.dueDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -99,7 +99,7 @@ class EvidenceReverificationTaskRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->where('t.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('t.createdAt', 'DESC')
+            ->orderBy('t.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -122,7 +122,7 @@ class EvidenceReverificationTaskRepository extends ServiceEntityRepository
                 EvidenceReverificationTask::STATUS_IN_PROGRESS,
             ])
             ->setParameter('today', new \DateTimeImmutable('today'))
-            ->orderBy('t.dueDate', 'ASC')
+            ->orderBy('t.dueDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -29,7 +29,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
             ->where('p.nextTestDate < :now OR (p.lastTested IS NULL AND p.status = :active)')
             ->setParameter('now', new DateTime())
             ->setParameter('active', BusinessContinuityPlanStatus::Active->value)
-            ->orderBy('p.nextTestDate', 'ASC')
+            ->orderBy('p.nextTestDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -42,7 +42,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.nextReviewDate < :now')
             ->setParameter('now', new DateTime())
-            ->orderBy('p.nextReviewDate', 'ASC')
+            ->orderBy('p.nextReviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -15,6 +15,7 @@ use App\Service\AuditLogger;
 use App\Service\Bsi2004ExerciseLogService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -71,7 +72,11 @@ class Bsi2004ExerciseLogController extends AbstractController
         }
 
         return $this->render('bcm/exercise_log/index.html.twig', [
-            'logs'         => $logs,
+            'page'         => ListPage::fromRequest(
+                $logs,
+                $request,
+                static fn(Bsi2004ExerciseLog $l): array => [$l->getBcExercise()?->getName(), $l->getExerciseType(), $l->getOverallRating()],
+            ),
             'overdueCount' => count($overdueLogs),
             'focus'        => $request->query->get('focus'),
         ]);

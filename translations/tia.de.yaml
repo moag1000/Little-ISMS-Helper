@@ -89,7 +89,7 @@ tia:
     delete: 'TIA löschen'
 
   empty:
-    title: 'Keine TIA vorhanden'
+    title: 'Keine TIAs vorhanden.'
     body: 'Für diese Verarbeitungstätigkeit wurde noch kein Transfer Impact Assessment angelegt. Legen Sie jetzt eine TIA an, um die Drittlandübermittlung zu dokumentieren.'
 
   success:

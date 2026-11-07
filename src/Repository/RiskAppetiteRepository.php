@@ -32,7 +32,7 @@ class RiskAppetiteRepository extends ServiceEntityRepository
             ->setParameter('category', $category)
             ->setParameter('active', true)
             ->setParameter('tenant', $tenant)
-            ->orderBy('ra.id', 'DESC')
+            ->orderBy('ra.id', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -49,7 +49,7 @@ class RiskAppetiteRepository extends ServiceEntityRepository
             ->andWhere('ra.tenant = :tenant')
             ->setParameter('active', true)
             ->setParameter('tenant', $tenant)
-            ->orderBy('ra.id', 'DESC')
+            ->orderBy('ra.id', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -83,7 +83,7 @@ class RiskAppetiteRepository extends ServiceEntityRepository
             ->andWhere('ra.tenant = :tenant')
             ->setParameter('active', true)
             ->setParameter('tenant', $tenant)
-            ->orderBy('ra.category', 'ASC')
+            ->orderBy('ra.category', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -98,7 +98,7 @@ class RiskAppetiteRepository extends ServiceEntityRepository
             ->where('ra.category IS NOT NULL')
             ->andWhere('ra.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('ra.category', 'ASC')
+            ->orderBy('ra.category', \SortDirection::Ascending)
             ->getQuery()
             ->getScalarResult();
 

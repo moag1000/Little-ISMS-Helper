@@ -47,7 +47,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->andWhere('d.isArchived = false')
             ->setParameter('entityType', $entityType)
             ->setParameter('entityId', $entityId)
-            ->orderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -75,7 +75,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->where('d.tenant = :tenant')
             ->andWhere('d.isArchived = false')
             ->setParameter('tenant', $tenant)
-            ->orderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -114,7 +114,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('nonTerminal', self::NON_TERMINAL_LIFECYCLE_STATUSES)
             ->setParameter('threshold', $threshold)
-            ->orderBy('d.updatedAt', 'ASC')
+            ->orderBy('d.updatedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -139,7 +139,7 @@ class DocumentRepository extends ServiceEntityRepository
             )')
             ->setParameter('tenant', $tenant)
             ->setParameter('approved', 'approved')
-            ->orderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -168,7 +168,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->andWhere('d.isArchived = false')
             ->setParameter('ancestors', $ancestors)
             ->setParameter('true', true)
-            ->orderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -198,7 +198,7 @@ class DocumentRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -218,7 +218,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->andWhere('d.isArchived = false')
             ->setParameter('tenant', $tenant)
             ->setParameter('category', $category)
-            ->orderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -247,7 +247,7 @@ class DocumentRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -271,7 +271,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('approved', 'approved')
             ->setParameter('asOf', $asOf)
-            ->orderBy('d.nextReviewDate', 'ASC')
+            ->orderBy('d.nextReviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -293,7 +293,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->andWhere('d.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', DocumentStatus::InReview->value)
-            ->orderBy('d.id', 'ASC')
+            ->orderBy('d.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

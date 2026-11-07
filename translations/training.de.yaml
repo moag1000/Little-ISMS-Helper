@@ -31,14 +31,13 @@ training:
   mandatory_info: Diese Schulung ist verpflichtend und muss von allen zugewiesenen
     Personen absolviert werden.
   statistics: Statistiken
-  stats:
-    total: Gesamt‑Schulungen
-    upcoming: Bevorstehend
-    completed: Abgeschlossen
-    mandatory: Pflichtschulungen
+  summary:
+    upcoming: '%count% anstehend'
+    completed: '%count% abgeschlossen'
+    mandatory: '%count% verpflichtend'
   upcoming_trainings: Bevorstehende Schulungen
   all_trainings: Alle Schulungen
-  no_trainings: Keine Schulungen vorhanden.
+  no_trainings: 'Keine Schulungen vorhanden.'
   section:
     basic_info: Basisinformationen
     schedule: Termin & Ort

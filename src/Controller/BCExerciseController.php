@@ -13,10 +13,12 @@ use App\Controller\Trait\BulkActionTrait;
 use App\Entity\BCExercise;
 use App\Form\BCExerciseType;
 use App\Repository\BCExerciseRepository;
+use App\Service\Prefill\RecordPrefill;
 use App\Service\AuditLogger;
 use App\Service\Clone\BCExerciseCloner;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,12 +45,13 @@ class BCExerciseController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
+        private readonly RecordPrefill $recordPrefill,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?BCExerciseCloner $bcExerciseCloner = null,
     ) {}
     #[Route('/bc-exercise', name: 'app_bc_exercise_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
 
@@ -59,15 +62,19 @@ class BCExerciseController extends AbstractController
             $allTenants => $this->bcExerciseRepository->findAll(),
             default => [],
         };
-        $statistics = $this->bcExerciseRepository->getStatistics();
         $upcoming = $currentTenant !== null || $allTenants
             ? $this->bcExerciseRepository->findUpcoming($currentTenant)
             : [];
         $incompleteReports = $this->bcExerciseRepository->findIncompleteReports();
 
         return $this->render('bc_exercise/index.html.twig', [
-            'bc_exercises' => $bcExercises,
-            'statistics' => $statistics,
+            'page' => ListPage::fromRequest(
+                $bcExercises,
+                $request,
+                static fn(BCExercise $e): array => [$e->getName(), $e->getExerciseType(), $e->getStatus()],
+            ),
+            'completed_count' => count(array_filter($bcExercises, static fn(BCExercise $e): bool => $e->getStatus() === 'completed')),
+            'planned_count' => count(array_filter($bcExercises, static fn(BCExercise $e): bool => $e->getStatus() === 'planned')),
             'upcoming' => $upcoming,
             'incomplete_reports' => $incompleteReports,
         ]);
@@ -80,6 +87,7 @@ class BCExerciseController extends AbstractController
 
         $bcExercise = new BCExercise();
         $bcExercise->setTenant($this->tenantContext->getCurrentTenant());
+        $this->recordPrefill->bcExercise($bcExercise, $request, $this->tenantContext->getCurrentTenant());
 
         $form = $this->createForm(BCExerciseType::class, $bcExercise);
         $form->handleRequest($request);

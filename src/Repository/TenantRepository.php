@@ -50,7 +50,7 @@ class TenantRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->where('t.isActive = :active')
             ->setParameter('active', true)
-            ->orderBy('t.name', 'ASC')
+            ->orderBy('t.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

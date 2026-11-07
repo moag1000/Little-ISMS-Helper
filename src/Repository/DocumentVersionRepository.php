@@ -37,7 +37,7 @@ class DocumentVersionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('dv')
             ->where('dv.document = :document')
             ->setParameter('document', $document)
-            ->orderBy('dv.versionNumber', 'ASC')
+            ->orderBy('dv.versionNumber', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -80,7 +80,7 @@ class DocumentVersionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('dv')
             ->where('dv.document = :document')
             ->setParameter('document', $document)
-            ->orderBy('dv.versionNumber', 'DESC')
+            ->orderBy('dv.versionNumber', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -110,7 +110,7 @@ class DocumentVersionRepository extends ServiceEntityRepository
             ->where('dv.tenant = :tenant')
             ->andWhere('dv.isActive = true')
             ->setParameter('tenant', $tenant)
-            ->orderBy('dv.uploadedAt', 'DESC')
+            ->orderBy('dv.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

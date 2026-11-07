@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single Supplier table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit actions do the
@@ -19,6 +20,7 @@
     </td>
     <td>
         <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ supplier.name }}</strong></a>
+        {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[supplier.id] ?? {}) : workflow_state(supplier)) }}
         {{ inheritance.small_badge(supplier, currentTenant) }}
         {% if supplier.isDoraRelevant %}
             {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA', title: 'supplier.field.is_dora_relevant'|trans({}, 'suppliers') } %}

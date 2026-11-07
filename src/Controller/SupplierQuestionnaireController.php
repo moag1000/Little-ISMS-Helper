@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequiresModule;
+use App\Entity\SupplierQuestionnaire;
 use App\Entity\User;
 use App\Repository\SupplierQuestionnaireRepository;
 use App\Repository\SupplierRepository;
 use App\Service\SupplierQuestionnaireService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +46,7 @@ final class SupplierQuestionnaireController extends AbstractController
     }
 
     #[Route('/supplier-questionnaire', name: 'supplier_questionnaire_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
@@ -52,7 +54,11 @@ final class SupplierQuestionnaireController extends AbstractController
         }
 
         return $this->render('supplier_questionnaire/index.html.twig', [
-            'questionnaires' => $this->repository->findByTenant($tenant),
+            'page'           => ListPage::fromRequest(
+                $this->repository->findByTenant($tenant),
+                $request,
+                static fn(SupplierQuestionnaire $q): array => [$q->getTitle(), $q->getSupplier()?->getName()],
+            ),
             'suppliers'      => $this->supplierRepository->findBy(['tenant' => $tenant], ['name' => 'ASC']),
         ]);
     }

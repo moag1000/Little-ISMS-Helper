@@ -10,12 +10,14 @@ use App\Entity\ComplianceRequirement;
 use App\Entity\User;
 use App\Form\ComplianceMappingType;
 use App\Lifecycle\LifecycleService;
+use App\Service\Bsi\KompendiumGsppCoverage;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
 use App\Service\ComplianceMappingService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,6 +58,7 @@ class ComplianceMappingController extends AbstractController
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?TranslatorInterface $translator = null,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?KompendiumGsppCoverage $gsppCoverage = null,
     ) {}
 
     /**
@@ -64,7 +67,8 @@ class ComplianceMappingController extends AbstractController
      * Junior-Consultant-Walkthrough: Wer zum ersten Mal auf /compliance/mapping
      * landet, sieht eine Tabelle mit tausenden Einträgen — keine Orientierung.
      * Der Hub bietet fünf Einstiege (Wizard, Seeds, Quality, Transitive,
-     * Liste) plus KPI-Strip + 9001-Brücke + Last-5.
+     * Liste) plus KPI-Strip + 9001-Brücke + Last-5, and the reach of the
+     * Kompendium → Grundschutz++ mapping once both BSI catalogues are loaded.
      */
     #[Route('/compliance/mapping/hub', name: 'app_compliance_mapping_hub', methods: ['GET'])]
     public function hub(): Response
@@ -85,6 +89,7 @@ class ComplianceMappingController extends AbstractController
             'unreviewed_count' => $unreviewed,
             'framework_count' => $frameworkCount,
             'recent' => $recent,
+            'gspp_coverage' => $this->gsppCoverage?->summary(),
         ]);
     }
 
@@ -109,8 +114,39 @@ class ComplianceMappingController extends AbstractController
                 : [];
         }
 
+        // Facet filters (GET, server-side): options come from the unfiltered set.
+        $facets = [
+            'source_fw' => static fn(ComplianceMapping $m): ?string => $m->getSourceRequirement()?->getFramework()?->getCode(),
+            'target_fw' => static fn(ComplianceMapping $m): ?string => $m->getTargetRequirement()?->getFramework()?->getCode(),
+            'type' => static fn(ComplianceMapping $m): string => $m->getMappingType(),
+            'confidence' => static fn(ComplianceMapping $m): string => $m->getConfidence(),
+            'status' => static fn(ComplianceMapping $m): string => $m->getReviewStatus(),
+        ];
+        $options = [];
+        foreach ($facets as $key => $value) {
+            $values = array_values(array_unique(array_filter(array_map($value, $mappings))));
+            sort($values);
+            $options[$key] = $values;
+        }
+        foreach ($facets as $key => $value) {
+            $selected = (string) $request->query->get($key, '');
+            if ($selected !== '') {
+                $mappings = array_values(array_filter($mappings, static fn(ComplianceMapping $m): bool => $value($m) === $selected));
+            }
+        }
+
         return $this->render('compliance/mapping/index.html.twig', [
-            'mappings' => $mappings,
+            'page' => ListPage::fromRequest(
+                $mappings,
+                $request,
+                static fn(ComplianceMapping $m): array => [
+                    $m->getSourceRequirement()?->getFramework()?->getCode(),
+                    $m->getSourceRequirement()?->getRequirementId(),
+                    $m->getTargetRequirement()?->getFramework()?->getCode(),
+                    $m->getTargetRequirement()?->getRequirementId(),
+                ],
+            ),
+            'facet_options' => $options,
             'selected_requirement' => $requirementId,
         ]);
     }

@@ -25,6 +25,10 @@ notification:
 
     # Sprint 6b: Rule CRUD
     rule:
+        list: 'Rules'
+        summary:
+            active: '%count% active'
+            inactive: '%count% inactive'
         index:
             title: 'Notification Rules'
             subtitle: 'Rules define which events trigger a notification and over which channels.'
@@ -40,7 +44,7 @@ notification:
         edit:
             title: 'Edit Rule: %name%'
         empty:
-            title: 'No rules yet'
+            title: 'No rules yet.'
             body: 'Create your first notification rule to get alerted about important events.'
         field:
             name: 'Name'
@@ -77,6 +81,10 @@ notification:
 
     # Sprint 6b: Channel CRUD
     channel:
+        list: 'Channels'
+        summary:
+            active: '%count% active'
+            unverified: '%count% unverified'
         index:
             title: 'Notification Channels'
             subtitle: 'Configure email, webhook, and in-app channels for outbound notifications.'
@@ -90,7 +98,7 @@ notification:
             not_verified_hint: 'This channel has not been verified yet. Click "Verify" to test connectivity.'
             verified_at: 'Last verified: %date%'
         empty:
-            title: 'No channels yet'
+            title: 'No channels yet.'
             body: 'Create a channel before configuring rules.'
         field:
             name: 'Channel name'
@@ -200,11 +208,19 @@ notification:
         tab:
             all: 'All'
         empty:
-            title: 'No notifications'
+            title: 'No notifications yet.'
             body: 'No notifications at the moment.'
-            severity: 'No notifications with severity "%severity%".'
         badge:
             new: 'New'
+        col:
+            rule: 'Rule'
+            event: 'Event'
+            severity: 'Severity'
+            time: 'Time'
+
+    summary:
+        critical: '%count% critical'
+        high: '%count% high'
 
     # Sprint 6b: Severity labels
     severity:

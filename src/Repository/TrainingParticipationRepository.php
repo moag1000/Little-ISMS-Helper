@@ -50,7 +50,7 @@ class TrainingParticipationRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('user', $user)
             ->setParameter('status', TrainingParticipation::STATUS_PENDING)
-            ->orderBy('tp.assignedAt', 'ASC')
+            ->orderBy('tp.assignedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -77,7 +77,7 @@ class TrainingParticipationRepository extends ServiceEntityRepository
                 TrainingParticipation::STATUS_FAILED,
                 TrainingParticipation::STATUS_WAIVED,
             ])
-            ->orderBy('tp.assignedAt', 'ASC')
+            ->orderBy('tp.assignedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -90,7 +90,7 @@ class TrainingParticipationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('tp')
             ->andWhere('tp.training = :training')
             ->setParameter('training', $training)
-            ->orderBy('tp.assignedAt', 'ASC')
+            ->orderBy('tp.assignedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

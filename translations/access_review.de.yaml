@@ -85,7 +85,7 @@ access_review:
       Soll die Kampagne jetzt geschlossen werden?
 
   empty:
-    title: Noch keine Kampagnen
+    title: 'Keine Kampagnen vorhanden.'
     body: >
       Erstellen Sie eine Zugriffsrezertifizierungs-Kampagne, um periodisch
       zu prüfen, wer welchen Zugriff behalten darf (ISO 27001 A.5.18).
@@ -140,14 +140,16 @@ access_review:
     flash_success: XLSX-Export heruntergeladen und in Audit-Log eingetragen.
     aria_download: 'Kampagne %name% als XLSX herunterladen'
 
+  summary:
+    open: '%count% offen'
+    closed: '%count% abgeschlossen'
+    overdue: '%count% überfällig'
+
   progress:
     tile_decided: Entschieden
     tile_pending: Ausstehend
-    tile_overdue: Überfällig
     tile_total: Gesamt
     decided_of_total: '%decided% / %total%'
     overdue_label: 'fällig: %date%'
     progress_aria: 'Kampagnenfortschritt: %pct%% abgeschlossen'
-    open_badge: Offen
-    closed_badge: Abgeschlossen
 

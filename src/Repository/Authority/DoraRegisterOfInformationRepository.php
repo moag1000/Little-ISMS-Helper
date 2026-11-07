@@ -30,7 +30,7 @@ class DoraRegisterOfInformationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('r.reportingDate', 'DESC')
+            ->orderBy('r.reportingDate', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -67,7 +67,7 @@ class DoraRegisterOfInformationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('r.reportingDate', 'DESC')
+            ->orderBy('r.reportingDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

@@ -31,7 +31,7 @@ class PushSubscriptionRepository extends ServiceEntityRepository
             ->where('ps.user = :user')
             ->andWhere('ps.isActive = true')
             ->setParameter('user', $user)
-            ->orderBy('ps.lastUsedAt', 'DESC')
+            ->orderBy('ps.lastUsedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -47,7 +47,7 @@ class PushSubscriptionRepository extends ServiceEntityRepository
             ->where('ps.tenant = :tenant')
             ->andWhere('ps.isActive = true')
             ->setParameter('tenant', $tenant)
-            ->orderBy('ps.lastUsedAt', 'DESC')
+            ->orderBy('ps.lastUsedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -94,7 +94,7 @@ class PushSubscriptionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ps')
             ->where('ps.failureCount >= :minFailures')
             ->setParameter('minFailures', $minFailures)
-            ->orderBy('ps.failureCount', 'DESC')
+            ->orderBy('ps.failureCount', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

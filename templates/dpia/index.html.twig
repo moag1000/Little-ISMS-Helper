@@ -2,7 +2,6 @@
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% block title %}{{ 'dpia.index.title'|trans({}, 'privacy')}}{% endblock %}
 
 {% block body %}
@@ -30,8 +29,6 @@
 {% endif %}
 
 
-    <main>
-
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
         {% block card_body %}
@@ -52,61 +49,19 @@
         {% endblock %}
     {% endembed %}
 
-    {# Key Metrics #}
-    <div class="row mb-4">
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-muted fw-semibold">{{ 'dpia.index.total_dpias'|trans({}, 'privacy') }}</div>
-                    <div class="fs-2 fw-bold">{{ statistics.total }}</div>
-                    <div class="mt-2">
-                        <small class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ statistics.approved }} {{ 'dpia.index.approved'|trans({}, 'privacy') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-muted fw-semibold">{{ 'dpia.index.in_review'|trans({}, 'privacy') }}</div>
-                    <div class="fs-2 fw-bold text-info">{{ statistics.in_review }}</div>
-                    <div class="mt-2">
-                        <small class="text-muted"><i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i> {{ 'dpia.index.awaiting_approval'|trans({}, 'privacy') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-muted fw-semibold">{{ 'dpia.index.high_risk'|trans({}, 'privacy') }}</div>
-                    <div class="fs-2 fw-bold text-danger">{{ statistics.high_risk }}</div>
-                    <div class="mt-2">
-                        <small class="text-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dpia.index.requires_attention'|trans({}, 'privacy') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-                    <div class="text-muted fw-semibold">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</div>
-                    <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
-                    {{ _fa_progress.render({ value: statistics.completeness_rate, tone: 'success', class: 'mt-2' }) }}
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-
-    {# Filters #}
-    {% embed '_components/_search_filter_form.html.twig' with {
-        action: path('app_dpia_index'),
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_dpia_index'),
         filter_keys: ['filter'],
-        show_search: false,
-        form_id: 'dpia-filter-form'
+        list_title: 'dpia.index.dpias_list'|trans({}, 'privacy'),
+        empty: {
+            mood: 'sleeping',
+            title: 'dpia.index.none'|trans({}, 'privacy'),
+            actions: [{ label: 'dpia.index.create_first_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }],
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/dpia"',
     } %}
-        {% block filters %}
+        {% block list_filters %}
             <div class="col-md-4">
                 <label for="filter-status" class="form-label">{{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</label>
                 <select class="form-select fa-cyber-input__field" id="filter-status" name="filter">
@@ -121,62 +76,45 @@
                 </select>
             </div>
         {% endblock %}
-    {% endembed %}
-
-    {# DPIA Table #}
-    {% embed '_components/_card.html.twig' with {noPadding: true} %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/dpia"{% endblock %}
-        {% block card_header %}
-            <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--evidence" aria-hidden="true"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2></div>
+        {% block list_summary %}
+            {% set _approved = dpias|filter(d => d.status == 'approved')|length %}
+            {% set _in_review = dpias|filter(d => d.status == 'in_review')|length %}
+            {% set _high_risk = dpias|filter(d => d.riskLevel in ['high', 'critical'])|length %}
+            {% if _approved > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'dpia.index.summary.approved'|trans({'%count%': _approved}, 'privacy') }}</span>{% endif %}
+            {% if _in_review > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'dpia.index.summary.in_review'|trans({'%count%': _in_review}, 'privacy') }}</span>{% endif %}
+            {% if _high_risk > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'dpia.index.summary.high_risk'|trans({'%count%': _high_risk}, 'privacy') }}</span>{% endif %}
         {% endblock %}
-        {% block card_body %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {% if dpias|length > 0 %}
-                {% embed '_components/_table.html.twig' with {
-                    'noMargin': true
-                } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="bulk-select-column">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       data-action="bulk-actions#selectAll"
-                                       data-bulk-actions-target="selectAllCheckbox"
-                                       aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-                            </th>
-                            <th scope="col">{{ 'dpia.index.reference'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'dpia.index.title_col'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'dpia.index.status'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'dpia.index.risk_level'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'dpia.index.residual_risk'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'dpia.index.dpo'|trans({}, 'privacy') }}</th>
-                            <th scope="col">{{ 'dpia.index.actions'|trans({}, 'privacy') }}</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body_attrs %}id="dpia-rows"{% endblock %}
-                    {% block table_body %}
-                        {% for dpia in dpias %}
-                            {% include 'dpia/_row.html.twig' with { dpia: dpia } %}
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-
-                {# Bulk Action Bar #}
-                {% include '_components/_bulk_action_bar.html.twig' with {
-                    actions: ['export', 'delete']
-                } %}
-            {% else %}
-                {{ _fa_empty_state.render({
-                    mood: 'sleeping',
-                    title: 'dpia.index.no_dpias_found'|trans({}, 'privacy'),
-                    actions: [
-                        { label: 'dpia.index.create_first_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
-                    ]
-                }) }}
-            {% endif %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
+                        <th scope="col">{{ 'dpia.index.reference'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'dpia.index.title_col'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'dpia.index.status'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'dpia.index.risk_level'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'dpia.index.residual_risk'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'dpia.index.dpo'|trans({}, 'privacy') }}</th>
+                        <th scope="col">{{ 'dpia.index.actions'|trans({}, 'privacy') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="dpia-rows"{% endblock %}
+                {% block table_body %}
+                    {% set workflowStates = workflow_states(page) %}
+                    {% for dpia in page %}
+                        {% include 'dpia/_row.html.twig' with { dpia: dpia } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+            {% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete'] } %}
         {% endblock %}
     {% endembed %}
-    </main>
 </div>
 {% endblock %}

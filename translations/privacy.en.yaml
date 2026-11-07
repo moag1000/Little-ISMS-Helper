@@ -62,14 +62,12 @@ privacy:
             completeness: Completeness
             summary: '%total% total breach(es) · %subjects% affected data subjects'
         kpi:
-            total_breaches: 'Total Breaches'
-            high_critical_risk: 'high/critical risk'
-            pending_authority: 'Pending Authority'
-            deadline_72h: '72h deadline'
-            special_categories: 'Special Categories'
-            art9_data: 'Art. 9 data'
             affected_subjects: 'Affected Subjects'
             total_count: 'Total count'
+        summary:
+            overdue: '%count% overdue'
+            high_risk: '%count% high/critical risk'
+            special_categories: '%count% with special categories'
         filter:
             title: 'Filter Data Breaches'
             all: 'All (%count%)'
@@ -365,15 +363,11 @@ processing_activity:
             start: 'Start export'
     confirm:
         clone: 'Do you want to clone this processing activity?'
+    summary:
+        missing_dpia: '%count% missing DPIA'
+        special_categories: '%count% special categories'
+        third_country: '%count% third country'
     stat:
-        total: 'Total'
-        active: 'active'
-        compliance_score: 'Compliance Score'
-        complete: 'complete'
-        high_risk: 'High Risk'
-        missing_dpia: 'missing DPIA'
-        special_categories: 'Special Categories'
-        art9_data: 'Art. 9 data'
         completeness: 'Completeness'
         status: 'Status'
         risk_level: 'Risk Level'
@@ -388,7 +382,6 @@ processing_activity:
         third_country: 'Third Country Transfers'
     table:
         title: 'Processing Activities'
-        items: 'items'
         name: 'Name'
         legal_basis: 'Legal Basis'
         data_subjects: 'Data Subjects'
@@ -403,9 +396,8 @@ processing_activity:
         third_country: 'Third Country'
         dpia_required: 'DPIA Required'
     empty:
-        title: No processing activities available.
+        title: 'No processing activities yet.'
         description: 'A record of processing activities (ROPA) documents which personal data you process, why, and how. It is mandatory under GDPR Art. 30.'
-        filter_hint: 'Try changing the filter or'
         create_hint: 'Start by'
         create_first: 'creating your first processing activity'
     section:
@@ -630,7 +622,6 @@ processing_activity:
         archived: 'Archived'
         active: 'Active (legacy)'
     permanently_delete: 'Permanently Delete'
-    view_all_activities: 'View All Processing Activities'
     confirm_delete: 'Do you really want to delete this processing activity?'
     dashboard:
         statistics: 'Statistics'
@@ -868,7 +859,7 @@ data_breach:
         reopen_reason_required: 'Reopen reason is required.'
     index:
         view_all_breaches: 'View All Breaches'
-        no_breaches_found: 'No data breaches found'
+        no_breaches_found: 'No data breaches yet.'
         kpi_affected_subjects: 'Affected Subjects'
         kpi_total_count: 'Total count'
         filter_title: 'Filter Data Breaches'
@@ -1170,12 +1161,9 @@ dpia:
         of: 'of'
         dpias_approved: 'DPIAs approved'
         due_for_review: 'due for review'
-        total_dpias: 'Total DPIAs'
         approved: 'approved'
         in_review: 'In Review'
-        awaiting_approval: 'Awaiting approval'
         high_risk: 'High Risk'
-        requires_attention: 'Requires attention'
         completeness: 'Completeness'
         filter_dpias: 'Filter DPIAs'
         all: 'All'
@@ -1195,7 +1183,11 @@ dpia:
         actions: 'Actions'
         dpo_consulted: 'DPO consulted'
         dpo_not_yet_consulted: 'DPO not yet consulted'
-        no_dpias_found: 'No DPIAs found for the selected filter.'
+        none: 'No DPIAs yet.'
+        summary:
+            approved: '%count% approved'
+            in_review: '%count% in review'
+            high_risk: '%count% high risk'
         create_first_dpia: 'Create First Data Protection Impact Assessment'
     form:
         title: 'DPIA Title'

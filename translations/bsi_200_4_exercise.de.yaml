@@ -85,7 +85,7 @@ bsi_200_4_exercise:
         header_actions: Aktionen
 
     empty_state:
-        title: 'Noch keine Logbücher vorhanden'
+        title: 'Keine Übungslogbücher vorhanden.'
         body: 'Erstellen Sie das erste BSI-200-4-Übungslogbuch für eine abgeschlossene Übung.'
         action: 'Übung auswählen'
 

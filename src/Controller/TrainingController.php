@@ -9,7 +9,6 @@ use App\Service\BulkDeleteService;
 use Exception;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
-use App\Controller\Trait\TenantOriginStatsTrait;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
 use App\Enum\TrainingStatus;
@@ -22,6 +21,7 @@ use App\Service\AuditLogger;
 use App\Service\Clone\TrainingCloner;
 use App\Service\FileUploadSecurityService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,7 +42,6 @@ class TrainingController extends AbstractController
 {
     use BulkActionTrait;
     use InPageFormTrait;
-    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly TrainingRepository $trainingRepository,
@@ -89,20 +88,16 @@ class TrainingController extends AbstractController
             'mandatory' => count(array_filter($trainings, fn(Training $training): bool => $training->isMandatory())),
         ];
 
-        // Calculate detailed statistics based on origin
-        if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($trainings, $tenant);
-        } else {
-            $detailedStats = ['own' => count($trainings), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($trainings)];
-        }
-
         return $this->render('training/index.html.twig', [
-            'trainings' => $trainings,
+            'page' => ListPage::fromRequest(
+                $trainings,
+                $request,
+                static fn(Training $t): array => [$t->getTitle(), $t->getTrainer(), $t->getTrainingType()],
+            ),
             'upcoming' => $upcoming,
             'statistics' => $statistics,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
         ]);
     }
     #[Route('/training/new', name: 'app_training_new', methods: ['GET', 'POST'])]

@@ -10,6 +10,7 @@ use App\Form\KpiThresholdConfigType;
 use App\Repository\KpiThresholdConfigRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -68,7 +69,7 @@ class KpiThresholdConfigController extends AbstractController
             : $this->repository->findAll();
 
         return $this->render('admin/kpi_threshold/index.html.twig', [
-            'configs' => $configs,
+            'page' => ListPage::fromRequest($configs, $request),
             'tenant' => $tenant,
         ]);
     }

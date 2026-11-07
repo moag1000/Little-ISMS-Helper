@@ -30,7 +30,7 @@ class DataSubjectRequestRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('dsr')
             ->where('dsr.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('dsr.receivedAt', 'DESC')
+            ->orderBy('dsr.receivedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -55,7 +55,7 @@ class DataSubjectRequestRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('terminalStatuses', ['completed', 'rejected'])
             ->setParameter('now', $now)
-            ->orderBy('dsr.deadlineAt', 'ASC')
+            ->orderBy('dsr.deadlineAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -70,7 +70,7 @@ class DataSubjectRequestRepository extends ServiceEntityRepository
             ->andWhere('dsr.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', $status)
-            ->orderBy('dsr.receivedAt', 'DESC')
+            ->orderBy('dsr.receivedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -93,7 +93,7 @@ class DataSubjectRequestRepository extends ServiceEntityRepository
             ->andWhere('dsr.status NOT IN (:terminal)')
             ->setParameter('tenant', $tenant)
             ->setParameter('terminal', ['completed', 'rejected'])
-            ->orderBy('dsr.receivedAt', 'DESC')
+            ->orderBy('dsr.receivedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

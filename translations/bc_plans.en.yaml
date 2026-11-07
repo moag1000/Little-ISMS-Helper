@@ -11,7 +11,7 @@ bc_plans:
     quick_create_business_process: Quick-create business process
     new_business_process: Create new business process
   empty:
-    title: No business continuity plans yet
+    title: 'No business continuity plans yet.'
     body: 'BC plans secure the recovery of critical business processes. For each process, document activation criteria, recovery procedures, team, and communication plan — required by ISO 22301 §8.4.'
   alert:
     overdue_tests: ⚠️ Overdue BC Plan Tests

@@ -10,19 +10,10 @@ answer_library:
   badge: Fragebögen
 
   # Junior-UX tooltip (vollständige Erklärung für neue Nutzer)
-  tooltip:
-    title: Was ist die Antwort-Bibliothek?
-    body: >
-      Die Antwort-Bibliothek speichert fertige Antworten auf häufige Fragen aus
-      Sicherheits-Fragebögen (RFP, Kundenaudits, Due-Diligence). Wählen Sie eine
-      gespeicherte Antwort aus, kopieren Sie sie in Ihren Fragebogen und das System
-      zählt die Wiederverwendung automatisch als gesparte FTE-Zeit — sichtbar im
-      ROI-Dashboard (F11). Einmal beantworten, immer wiederverwenden.
 
-  # KPI card labels
-  kpi:
-    total_entries: Gespeicherte Antworten
-    total_reuses: Gesamt-Wiederverwendungen
+  # Summary chips
+  summary:
+    reuses: '%count% Wiederverwendungen'
 
   # Field labels
   field:
@@ -72,7 +63,6 @@ answer_library:
 
   # Search/filter
   search:
-    label: Fragetext suchen
     placeholder: 'Frage oder Antwort durchsuchen…'
   filter:
     all_categories: Alle Kategorien
@@ -90,7 +80,7 @@ answer_library:
 
   # Empty state
   empty:
-    title: Noch keine Antworten
+    title: 'Keine Antworten vorhanden.'
     body: >
       Speichern Sie häufig verwendete Antworten auf Sicherheits-Fragebögen und
       verwenden Sie sie bei jedem Kundenfragebogen wieder. Das spart Zeit und

@@ -272,6 +272,22 @@ nicht prüfbar und werden übersprungen. `--list-missing` gibt die Treffer als T
 
 ---
 
+### quality/check_gdpr_transfer_zones.py (Gate 80)
+
+**Zweck:** `config/gdpr_transfer_zones.yaml` ist die eine Länderliste für EU, EWR,
+Angemessenheitsbeschlüsse (Art. 45 DSGVO) und das EU-US Data Privacy Framework
+(`App\Privacy\GdprTransferZones`). Sie speist die Ebene „Drittland“ der
+Standortkarte, die Lieferkettenprüfung, das EWR-Kennzeichen im DORA-Register und
+die Framework-Empfehlungen. Das Gate scheitert, wenn `as_of` fehlt oder älter als
+12 Monate ist (Liste mit der Seite der EU-Kommission abgleichen, Datum hochsetzen),
+wenn ein Code kein ISO-3166-Alpha-2-Code ist oder in zwei Zonen steht, oder wenn
+eine PHP-Datei unter `src/` wieder eine eigene EU-Liste (fünf oder mehr EU-Codes
+in einem Listen-Literal) enthält.
+
+**CI-Integration:** Gate 80 im `code-quality`-Job, keine Baseline.
+
+---
+
 ### quality/check_translation_nesting.py (Gate 26)
 
 **Zweck:** (1) Top-Level-Keys einer `<domain>.<locale>.yaml` müssen zur Domain
@@ -300,6 +316,18 @@ nur weniger werden (seit der Umstellung der restlichen Detailseiten leer).
 
 ---
 
+### quality/check_orm_sort_direction.py (Gate 81)
+
+**Zweck:** Sortierrichtungen für Doctrine ORM sind `\SortDirection::Ascending` /
+`\SortDirection::Descending`, keine Strings. doctrine/orm 3.7 meldet `'ASC'`/`'DESC'`
+in `orderBy()`/`addOrderBy()` und in `#[ORM\OrderBy]` als veraltet (Issue 11313),
+bei jedem Aufruf bzw. beim Cache-Warmup. Der DBAL-QueryBuilder nimmt weiter Strings;
+solche Zeilen tragen `// @dbal-order`. Keine Baseline.
+
+**CI-Integration:** Gate 81 im `code-quality`-Job.
+
+---
+
 ### quality/check_kpi_catalog.py (Gate 74)
 
 **Zweck:** Management-Kennzahlen kommen nur aus dem KPI-Katalog
@@ -321,9 +349,12 @@ Listen-Gerüst `_components/_fa_list_page.html.twig`: Filterleiste (Suche `q` +
 einklappbare Filter, alles GET), Kurzinfo-Chips, Tabelle, Pager, leerer Zustand.
 Listen auf dem Gerüst dürfen keine KPI-Kacheln (`_fa_feature_card`) tragen.
 
-**Baseline:** `scripts/quality/baselines/list_skeleton.txt` listet die noch nicht
-umgestellten Listen; sie darf nur schrumpfen, veraltete Einträge schlagen fehl.
+**Baseline:** `scripts/quality/baselines/list_skeleton.txt` ist seit der Umstellung
+aller Listen leer und darf leer bleiben: jede neue Liste läuft über das Gerüst.
 Neu schreiben: `--write-baseline scripts/quality/baselines/list_skeleton.txt`.
+`index.html.twig`-Dateien, die keine Liste sind (Hubs, Dashboards, Assistenten,
+Einstellungsformulare, Statusseiten), stehen mit Begründung in
+`scripts/quality/baselines/list_skeleton_not_lists.txt` und werden nicht geprüft.
 
 **CI-Integration:** Gate 73 im `code-quality`-Job.
 

@@ -8,6 +8,7 @@ use App\Attribute\RequiresModule;
 use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\RiskTreatmentPlan;
+use App\Util\ListPage;
 use App\Form\RiskTreatmentPlanType;
 use App\Repository\AuditLogRepository;
 use App\Repository\RiskTreatmentPlanRepository;
@@ -84,16 +85,19 @@ class RiskTreatmentPlanController extends AbstractController
         // Re-index array after filtering to avoid gaps in keys
         $plans = array_values($plans);
 
-        // Get statistics
-        $stats = $this->riskTreatmentPlanRepository->getStatisticsForTenant(null);
-        $overduePlans = $this->riskTreatmentPlanRepository->findOverdueForTenant(null);
-        $criticalPlans = $this->riskTreatmentPlanRepository->findCriticalPlans(null);
+        $overdueCount = count(array_filter($plans, static fn(RiskTreatmentPlan $plan): bool => $plan->isOverdue()));
+        $inProgressCount = count(array_filter($plans, static fn(RiskTreatmentPlan $plan): bool => $plan->getStatus() === 'in_progress'));
+        $completedCount = count(array_filter($plans, static fn(RiskTreatmentPlan $plan): bool => $plan->getStatus() === 'completed'));
 
         return $this->render('risk_treatment_plan/index.html.twig', [
-            'plans' => $plans,
-            'stats' => $stats,
-            'overduePlans' => $overduePlans,
-            'criticalPlans' => $criticalPlans,
+            'page' => ListPage::fromRequest(
+                $plans,
+                $request,
+                static fn(RiskTreatmentPlan $plan): array => [$plan->getTitle(), $plan->getRisk()?->getTitle(), $plan->getEffectiveResponsiblePerson()],
+            ),
+            'overdue_count' => $overdueCount,
+            'in_progress_count' => $inProgressCount,
+            'completed_count' => $completedCount,
         ]);
     }
     #[Route('/risk-treatment-plan/new', name: 'app_risk_treatment_plan_new', methods: ['GET', 'POST'])]

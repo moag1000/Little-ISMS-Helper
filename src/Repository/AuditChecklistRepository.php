@@ -40,7 +40,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ac')
             ->where('ac.audit = :audit')
             ->setParameter('audit', $internalAudit)
-            ->orderBy('ac.createdAt', 'ASC')
+            ->orderBy('ac.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -60,7 +60,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
             ->andWhere('r.framework = :framework')
             ->setParameter('audit', $internalAudit)
             ->setParameter('framework', $complianceFramework)
-            ->orderBy('r.requirementId', 'ASC')
+            ->orderBy('r.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -170,7 +170,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
             ->andWhere('ac.verificationStatus IN (:statuses)')
             ->setParameter('audit', $internalAudit)
             ->setParameter('statuses', ['non_compliant', 'partial'])
-            ->orderBy('ac.complianceScore', 'ASC')
+            ->orderBy('ac.complianceScore', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -205,8 +205,8 @@ class AuditChecklistRepository extends ServiceEntityRepository
             ->join('r.framework', 'f')
             ->where('ac.audit = :audit')
             ->setParameter('audit', $internalAudit)
-            ->orderBy('f.name', 'ASC')
-            ->addOrderBy('r.requirementId', 'ASC')
+            ->orderBy('f.name', \SortDirection::Ascending)
+            ->addOrderBy('r.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -254,7 +254,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
             ->setParameter('deadline', $deadline)
             ->setParameter('needle', '%' . $needle . '%')
             ->setParameter('email', '%' . $needleEmail . '%')
-            ->orderBy('a.plannedDate', 'ASC')
+            ->orderBy('a.plannedDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -273,7 +273,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
             ->andWhere('r.requirementType IN (:types)')
             ->setParameter('audit', $internalAudit)
             ->setParameter('types', ['detailed', 'sub_requirement'])
-            ->orderBy('r.requirementId', 'ASC')
+            ->orderBy('r.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

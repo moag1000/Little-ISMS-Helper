@@ -1,11 +1,15 @@
 sso:
     admin:
+        list: 'Providers'
+        summary:
+            enabled: '%count% enabled'
+            disabled: '%count% disabled'
         title: 'Single Sign-On'
         subtitle: 'Manage OIDC and OAuth2 identity providers. Login shows buttons only for enabled providers.'
         new_provider: 'New provider'
         edit_provider: 'Edit provider'
         approvals: 'Approval queue'
-        empty: 'No SSO providers configured yet. Add one to show a login button.'
+        empty: 'No SSO providers yet.'
         help: |
             <strong>Global providers</strong> (SUPER_ADMIN only) apply across tenants. <strong>Tenant providers</strong> are visible only within their tenant.
             <strong>Domain binding</strong>: <code>optional</code> — button always visible, <code>enforce</code> — only when email matches a listed domain, <code>disabled</code> — no domain check.

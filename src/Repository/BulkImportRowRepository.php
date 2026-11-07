@@ -27,7 +27,7 @@ class BulkImportRowRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('r')
             ->andWhere('r.batch = :batch')
             ->setParameter('batch', $batch)
-            ->orderBy('r.rowNumber', 'ASC');
+            ->orderBy('r.rowNumber', \SortDirection::Ascending);
 
         if ($statusFilter !== null) {
             $qb->andWhere('r.status = :status')->setParameter('status', $statusFilter);

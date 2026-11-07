@@ -141,6 +141,7 @@
             {% endblock %}
             {% block table_body %}
                 <tbody id="incident-rows">
+                {% set workflowStates = workflow_states(page) %}
                 {% for incident in page %}
                     {% include 'incident/_row.html.twig' with { incident: incident } %}
                 {% endfor %}

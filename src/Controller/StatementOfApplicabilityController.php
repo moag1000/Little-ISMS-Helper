@@ -22,6 +22,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -154,15 +155,6 @@ class StatementOfApplicabilityController extends AbstractController
             ? $this->controlRepository->countByCategory($tenant)
             : [];
 
-        // Calculate detailed statistics based on origin.
-        // Use $unfilteredControls so the KPI breakdown always reflects the full tenant set
-        // regardless of which display filters are active.
-        if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($unfilteredControls, $tenant);
-        } else {
-            $detailedStats = ['own' => count($unfilteredControls), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($unfilteredControls)];
-        }
-
         // MRIS-Verteilung pro Kategorie (alle Controls, nicht gefiltert) — für UI-Filter-Counts.
         // Reuse $unfilteredControls — eliminates the previous second identical DB query (perf fix B-1).
         $mrisStats = ['standfest' => 0, 'degradiert' => 0, 'reibung' => 0, 'nicht_betroffen' => 0];
@@ -185,11 +177,11 @@ class StatementOfApplicabilityController extends AbstractController
 
         return $this->render('soa/index.html.twig', [
             'controls' => $controls,
+            'page' => ListPage::fromRequest($controls, $request),
             'stats' => $stats,
             'categoryStats' => $categoryStats,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
             'mrisStats' => $mrisStats,
             'mrisFilter' => $mris,
             'essentialFilter' => $essential,
@@ -490,48 +482,6 @@ class StatementOfApplicabilityController extends AbstractController
             'form' => $form,
         ], new Response(status: $status));
     }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
-    }
-
     /**
      * Bulk CSV export of selected SoA controls.
      * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.

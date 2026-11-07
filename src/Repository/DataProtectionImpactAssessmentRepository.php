@@ -30,7 +30,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('dpia')
             ->where('dpia.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('dpia.createdAt', 'DESC')
+            ->orderBy('dpia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -45,7 +45,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', $status)
-            ->orderBy('dpia.createdAt', 'DESC')
+            ->orderBy('dpia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -92,7 +92,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.riskLevel = :riskLevel')
             ->setParameter('tenant', $tenant)
             ->setParameter('riskLevel', $riskLevel)
-            ->orderBy('dpia.createdAt', 'DESC')
+            ->orderBy('dpia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -107,7 +107,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.riskLevel IN (:riskLevels)')
             ->setParameter('tenant', $tenant)
             ->setParameter('riskLevels', ['high', 'critical'])
-            ->orderBy('dpia.createdAt', 'DESC')
+            ->orderBy('dpia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -122,7 +122,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.residualRiskLevel IN (:riskLevels)')
             ->setParameter('tenant', $tenant)
             ->setParameter('riskLevels', ['high', 'critical'])
-            ->orderBy('dpia.createdAt', 'DESC')
+            ->orderBy('dpia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -138,7 +138,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.supervisoryConsultationDate IS NULL')
             ->setParameter('tenant', $tenant)
             ->setParameter('required', true)
-            ->orderBy('dpia.createdAt', 'DESC')
+            ->orderBy('dpia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -156,7 +156,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.nextReviewDate <= :today')
             ->setParameter('tenant', $tenant)
             ->setParameter('today', $today)
-            ->orderBy('dpia.nextReviewDate', 'ASC')
+            ->orderBy('dpia.nextReviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -182,7 +182,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.dpoConsultationDate IS NULL')
             ->setParameter('tenant', $tenant)
             ->setParameter('statuses', [DpiaStatus::Draft->value, DpiaStatus::InReview->value])
-            ->orderBy('dpia.createdAt', 'DESC')
+            ->orderBy('dpia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -205,7 +205,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.status NOT IN (:terminal)')
             ->setParameter('tenant', $tenant)
             ->setParameter('terminal', [DpiaStatus::Approved->value, DpiaStatus::Rejected->value])
-            ->orderBy('dpia.createdAt', 'DESC')
+            ->orderBy('dpia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -232,7 +232,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.referenceNumber LIKE :pattern')
             ->setParameter('tenant', $tenant)
             ->setParameter('pattern', '%' . $pattern . '%')
-            ->orderBy('dpia.referenceNumber', 'ASC')
+            ->orderBy('dpia.referenceNumber', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -359,7 +359,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.referenceNumber LIKE :prefix')
             ->setParameter('tenant', $tenant)
             ->setParameter('prefix', $prefix . '%')
-            ->orderBy('dpia.referenceNumber', 'DESC')
+            ->orderBy('dpia.referenceNumber', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

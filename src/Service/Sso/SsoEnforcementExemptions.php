@@ -46,7 +46,7 @@ class SsoEnforcementExemptions
 
         $queryBuilder = $this->entityManager->getRepository(User::class)->createQueryBuilder('u')
             ->where('u.isActive = true')
-            ->orderBy('u.email', 'ASC');
+            ->orderBy('u.email', \SortDirection::Ascending);
         if (!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
             $tenants = $this->tenantContext->getAccessibleTenants();
             if ($tenants === []) {

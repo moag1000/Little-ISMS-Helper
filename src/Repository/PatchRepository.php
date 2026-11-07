@@ -47,8 +47,8 @@ class PatchRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.status IN (:statuses)')
             ->setParameter('statuses', [PatchStatus::Pending->value, PatchStatus::Testing->value, PatchStatus::Approved->value])
-            ->orderBy('p.priority', 'DESC')
-            ->addOrderBy('p.releaseDate', 'ASC')
+            ->orderBy('p.priority', \SortDirection::Descending)
+            ->addOrderBy('p.releaseDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -66,7 +66,7 @@ class PatchRepository extends ServiceEntityRepository
             ->andWhere('p.status NOT IN (:statuses)')
             ->setParameter('now', new DateTimeImmutable())
             ->setParameter('statuses', [PatchStatus::Deployed->value, PatchStatus::NotApplicable->value])
-            ->orderBy('p.deploymentDeadline', 'ASC')
+            ->orderBy('p.deploymentDeadline', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -83,7 +83,7 @@ class PatchRepository extends ServiceEntityRepository
             ->andWhere('p.status != :deployed')
             ->setParameter('priority', $priority)
             ->setParameter('deployed', PatchStatus::Deployed->value)
-            ->orderBy('p.releaseDate', 'DESC')
+            ->orderBy('p.releaseDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -106,7 +106,7 @@ class PatchRepository extends ServiceEntityRepository
             ->setParameter('priorities', ['critical', 'high'])
             ->setParameter('deadline', $deadline)
             ->setParameter('statuses', [PatchStatus::Deployed->value, PatchStatus::NotApplicable->value])
-            ->orderBy('p.deploymentDeadline', 'ASC')
+            ->orderBy('p.deploymentDeadline', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -162,7 +162,7 @@ class PatchRepository extends ServiceEntityRepository
             ->andWhere('p.deployedDate >= :since')
             ->setParameter('status', PatchStatus::Deployed->value)
             ->setParameter('since', $since)
-            ->orderBy('p.deployedDate', 'DESC')
+            ->orderBy('p.deployedDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -178,7 +178,7 @@ class PatchRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('p.releaseDate', 'DESC')
+            ->orderBy('p.releaseDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -207,7 +207,7 @@ class PatchRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('p.releaseDate', 'DESC')
+            ->orderBy('p.releaseDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -235,7 +235,7 @@ class PatchRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('p.releaseDate', 'DESC')
+            ->orderBy('p.releaseDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

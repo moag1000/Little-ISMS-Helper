@@ -21,7 +21,9 @@ use App\Service\AuditLogger;
 use App\Service\ExcelExportService;
 use App\Service\InternalAuditCloner;
 use App\Service\PdfExportService;
+use App\Service\Prefill\RecordPrefill;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\Trait\InPageFormTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,47 +52,34 @@ class AuditController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly LifecycleService $lifecycleService,
         private readonly CrossFrameworkCoverageService $crossFrameworkCoverage,
+        private readonly RecordPrefill $recordPrefill,
         private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
     #[Route('/audit', name: 'app_audit_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        // Get filter parameters
         $status = $request->query->get('status');
         $scopeType = $request->query->get('scope_type');
-        $dateFrom = $request->query->get('date_from');
-        $dateTo = $request->query->get('date_to');
+        $dateFrom = ($v = $request->query->get('date_from')) ? new DateTime($v) : null;
+        $dateTo = ($v = $request->query->get('date_to')) ? new DateTime($v) : null;
 
-        // Get all audits
-        $allAudits = $this->internalAuditRepository->findAll();
-
-        // Apply filters
-        if ($status) {
-            $allAudits = array_filter($allAudits, fn(InternalAudit $audit): bool => $audit->getStatus() === $status);
-        }
-
-        if ($scopeType) {
-            $allAudits = array_filter($allAudits, fn(InternalAudit $audit): bool => $audit->getScopeType() === $scopeType);
-        }
-
-        if ($dateFrom) {
-            $dateFromObj = new DateTime($dateFrom);
-            $allAudits = array_filter($allAudits, fn(InternalAudit $audit): bool => $audit->getPlannedDate() >= $dateFromObj);
-        }
-
-        if ($dateTo) {
-            $dateToObj = new DateTime($dateTo);
-            $allAudits = array_filter($allAudits, fn(InternalAudit $audit): bool => $audit->getPlannedDate() <= $dateToObj);
-        }
-
-        // Re-index array after filtering to avoid gaps in keys
-        $allAudits = array_values($allAudits);
-
-        $upcoming = $this->internalAuditRepository->findUpcoming();
+        $allAudits = array_values(array_filter(
+            $this->internalAuditRepository->findBy([], ['plannedDate' => 'DESC']),
+            static fn(InternalAudit $a): bool => (!$status || $a->getStatus() === $status)
+                && (!$scopeType || $a->getScopeType() === $scopeType)
+                && (!$dateFrom || $a->getPlannedDate() >= $dateFrom)
+                && (!$dateTo || $a->getPlannedDate() <= $dateTo),
+        ));
+        $statusCounts = array_count_values(array_map(static fn(InternalAudit $a): ?string => $a->getStatus(), $allAudits));
 
         return $this->render('audit/index.html.twig', [
-            'audits' => $allAudits,
-            'upcoming' => $upcoming,
+            'page' => ListPage::fromRequest(
+                $allAudits,
+                $request,
+                static fn(InternalAudit $a): array => [$a->getTitle(), $a->getAuditNumber()],
+            ),
+            'status_counts' => $statusCounts,
+            'upcoming' => $this->internalAuditRepository->findUpcoming(),
         ]);
     }
     #[Route('/audit/new', name: 'app_audit_new', methods: ['GET', 'POST'])]
@@ -101,7 +90,7 @@ class AuditController extends AbstractController
         $internalAudit->setTenant($this->tenantContext->getCurrentTenant());
         // Auto-generate audit number before form handling (required for validation)
         $internalAudit->setAuditNumber($this->generateAuditNumber());
-
+        $this->recordPrefill->internalAudit($internalAudit, $request, $this->tenantContext->getCurrentTenant());
         $form = $this->createForm(InternalAuditType::class, $internalAudit);
         $form->handleRequest($request);
 
@@ -163,10 +152,7 @@ class AuditController extends AbstractController
             'Content-Disposition' => 'attachment; filename="audits_' . date('Y-m-d') . '.xlsx"',
         ]);
     }
-    /**
-     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
-     * Audits have no blocking FK relations — returns empty dependencies.
-     */
+    /** Dependency check for the bulk-delete modal: audits have no blocking FK relations. */
     // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/audit/bulk-delete-check', name: 'app_audit_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -660,10 +646,7 @@ class AuditController extends AbstractController
             'Content-Disposition' => 'attachment; filename="audit_' . $internalAudit->getId() . '.pdf"',
         ]);
     }
-    /**
-     * Generate unique audit number
-     * Format: AUDIT-YYYY-NNN (e.g., AUDIT-2025-001)
-     */
+    /** Unique audit number, format AUDIT-YYYY-NNN (e.g. AUDIT-2025-001). */
     private function generateAuditNumber(): string
     {
         $year = date('Y');
@@ -673,7 +656,7 @@ class AuditController extends AbstractController
         $lastAudit = $this->internalAuditRepository->createQueryBuilder('a')
             ->where('a.auditNumber LIKE :prefix')
             ->setParameter('prefix', $prefix . '%')
-            ->orderBy('a.auditNumber', 'DESC')
+            ->orderBy('a.auditNumber', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

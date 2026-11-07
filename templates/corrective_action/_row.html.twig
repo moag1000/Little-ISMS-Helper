@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single CorrectiveAction card row — shared by the index and the Turbo Stream
    that replaces/appends a row after an in-modal save. The title link and eye/edit
    actions all target the fa-form-modal Turbo Frame. Loop variable: `action`. #}
@@ -16,7 +17,7 @@
 {% endif %}
 {% if action.plannedCompletionDate %}
     {% set _meta = _meta|merge([
-        (action.isOverdue ? '⚠ ' : '') ~ action.plannedCompletionDate|date('Y-m-d')
+        (action.isOverdue ? '⚠ ' : '') ~ action.plannedCompletionDate|fa_date
     ]) %}
 {% endif %}
 <div id="corrective-action-row-{{ action.id }}" class="fa-entity-card fa-entity-card--nonconformity d-flex align-items-center gap-2">
@@ -27,6 +28,7 @@
         <a href="{{ path('app_corrective_action_show', {id: action.id}) }}"
            class="fa-row-link fa-entity-card__title"
            data-turbo-frame="fa-form-modal">{{ action.title }}</a>
+           {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[action.id] ?? {}) : workflow_state(action)) }}
         {% if _meta|length > 0 %}
             <div class="fa-entity-card__meta">
                 {% for item in _meta %}<span>{{ item }}</span>{% endfor %}

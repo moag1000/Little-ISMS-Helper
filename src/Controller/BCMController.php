@@ -10,6 +10,7 @@ use App\Repository\BusinessProcessRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\ProtectionRequirementService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Util\ListPage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -34,15 +35,6 @@ class BCMController extends AbstractController
 
         $processes = $this->businessProcessRepository->findAll();
 
-        // Statistiken (always based on all processes)
-        $stats = [
-            'total' => count($processes),
-            'critical' => count(array_filter($processes, fn(BusinessProcess $businessProcess): bool => $businessProcess->getCriticality() === 'critical')),
-            'high' => count(array_filter($processes, fn(BusinessProcess $businessProcess): bool => $businessProcess->getCriticality() === 'high')),
-            'avg_rto' => $this->calculateAverageRTO($processes),
-            'avg_mtpd' => $this->calculateAverageMTPD($processes)
-        ];
-
         // Filter by criticality if requested
         $criticality = $request->query->get('criticality');
         if ($criticality !== null && $criticality !== '') {
@@ -51,8 +43,13 @@ class BCMController extends AbstractController
         }
 
         return $this->render('bcm/index.html.twig', [
-            'processes' => $processes,
-            'stats' => $stats,
+            'page' => ListPage::fromRequest(
+                $processes,
+                $request,
+                static fn(BusinessProcess $p): array => [$p->getName(), $p->getDescription(), (string) $p->getEffectiveProcessOwner()],
+            ),
+            'critical_count' => count(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getCriticality() === 'critical')),
+            'high_count' => count(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getCriticality() === 'high')),
             'current_criticality' => $criticality,
         ]);
     }
@@ -109,23 +106,5 @@ class BCMController extends AbstractController
         return $this->render('bcm/critical.html.twig', [
             'processes' => $processes,
         ]);
-    }
-    private function calculateAverageRTO(array $processes): float
-    {
-        if ($processes === []) {
-            return 0;
-        }
-
-        $total = array_reduce($processes, fn($carry, $p): float|int|array => $carry + $p->getRto(), 0);
-        return round($total / count($processes), 1);
-    }
-    private function calculateAverageMTPD(array $processes): float
-    {
-        if ($processes === []) {
-            return 0;
-        }
-
-        $total = array_reduce($processes, fn($carry, $p): float|int|array => $carry + $p->getMtpd(), 0);
-        return round($total / count($processes), 1);
     }
 }

@@ -85,7 +85,7 @@ bsi_200_4_exercise:
         header_actions: Actions
 
     empty_state:
-        title: 'No exercise logs yet'
+        title: 'No exercise logs yet.'
         body: 'Create the first BSI-200-4 exercise log for a completed exercise.'
         action: 'Select exercise'
 

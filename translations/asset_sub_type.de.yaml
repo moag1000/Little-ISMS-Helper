@@ -7,8 +7,10 @@ asset_sub_type:
       title: 'Branchen-Preset anwenden'
       lead: 'Importiert vordefinierte Sub-Typen für eine Branche. Duplikate werden übersprungen.'
     empty:
-      title: 'Noch keine Sub-Typen angelegt'
+      title: 'Keine Sub-Typen vorhanden.'
       subtitle: 'Wende ein Branchen-Preset an oder lege individuelle Sub-Typen an.'
+  summary:
+    top_type: '%type%: %count%'
   preset:
     bsi-grundschutz: 'BSI IT-Grundschutz'
     tisax: 'TISAX (Automotive)'

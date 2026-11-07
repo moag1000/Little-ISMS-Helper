@@ -9,6 +9,7 @@ use App\Entity\RoadmapGroup;
 use App\Form\RoadmapGroupType;
 use App\Repository\RoadmapGroupRepository;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -32,7 +33,7 @@ class RoadmapGroupController extends AbstractController
 
     #[Route('/planning/groups', name: 'app_planning_group_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
 
@@ -40,7 +41,11 @@ class RoadmapGroupController extends AbstractController
         $groups = $tenant ? $this->roadmapGroupRepository->findActiveByTenant($tenant) : [];
 
         return $this->render('planning/group/index.html.twig', [
-            'groups' => $groups,
+            'page' => ListPage::fromRequest(
+                $groups,
+                $request,
+                static fn(RoadmapGroup $e): array => [$e->getName()],
+            ),
         ]);
     }
 

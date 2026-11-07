@@ -47,13 +47,13 @@ audit_program:
         completed: 'Abgeschlossen'
         archived: 'Archiviert'
     kpi:
-        total: 'Programme gesamt'
-        active: 'Aktiv'
-        planning: 'In Planung'
-        completed: 'Abgeschlossen'
         audits: 'Audits'
+    summary:
+        active: '%count% aktiv'
+        planning: '%count% in Planung'
+        completed: '%count% abgeschlossen'
     empty:
-        title: 'Noch keine Audit-Programme'
+        title: 'Keine Audit-Programme vorhanden.'
         body: 'Legen Sie ISO 19011 §5.4 Audit-Programme an, um Ihre internen Audits strukturiert zu planen.'
     success:
         created: Audit-Programm erstellt.

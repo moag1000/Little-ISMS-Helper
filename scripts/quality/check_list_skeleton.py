@@ -24,13 +24,29 @@ TEMPLATES = ROOT / "templates"
 SKELETON = "_components/_fa_list_page.html.twig"
 # Not list pages despite the name: dashboards, hubs, wizards, landing pages.
 EXCLUDE_DIRS = {"dev", "emails", "pdf", "bundles"}
+# index.html.twig files that are not list pages (hubs, dashboards, wizards,
+# settings forms, status pages). Kept here with the reason, not in the
+# baseline: the baseline is for lists that still have to move.
+NOT_LISTS_FILE = ROOT / "scripts" / "quality" / "baselines" / "list_skeleton_not_lists.txt"
+
+
+def not_lists() -> set[str]:
+    if not NOT_LISTS_FILE.exists():
+        return set()
+    out = set()
+    for line in NOT_LISTS_FILE.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if line:
+            out.add(line.split()[0])
+    return out
 
 
 def list_templates() -> list[Path]:
     out = []
+    skip = not_lists()
     for p in sorted(TEMPLATES.rglob("index.html.twig")):
         rel = p.relative_to(TEMPLATES)
-        if rel.parts[0] in EXCLUDE_DIRS:
+        if rel.parts[0] in EXCLUDE_DIRS or str(p.relative_to(ROOT)) in skip:
             continue
         out.append(p)
     return out
@@ -70,6 +86,13 @@ def main() -> int:
             line = line.strip()
             if line and not line.startswith("#"):
                 baseline.add(line)
+
+    missing = sorted(r for r in not_lists() if not (ROOT / r).exists())
+    if missing:
+        print(f"check_list_skeleton: {len(missing)} entr(y/ies) in {NOT_LISTS_FILE.name} without a file:")
+        for r in missing:
+            print(f"  STALE {r}")
+        return 1
 
     new = [r for r in unmigrated if r not in baseline]
     stale = sorted(baseline - set(unmigrated))

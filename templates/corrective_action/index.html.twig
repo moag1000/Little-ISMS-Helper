@@ -1,12 +1,9 @@
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 
 {% block title %}{{ 'corrective_action.page.title'|trans({}, 'audits') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -27,50 +24,39 @@
     {% endfor %}
 {% endif %}
 
-<main>
 <div class="container-fluid py-4">
-
-    {% if overdue_count > 0 %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
-            {% block alert_body %}{{ 'corrective_action.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}{% endblock %}
-        {% endembed %}
-    {% endif %}
-
-    {# SourceType filter (ADR 2026-05-23). #}
-    {% if total_count is defined and total_count > 0 %}
-        <div class="mb-3" aria-label="{{ 'corrective_action.filter.source_type'|trans({}, 'audits') }}">
-            <div class="fa-filter-chip-group" role="group" aria-label="{{ 'corrective_action.filter.source_type'|trans({}, 'audits') }}">
-                <a href="{{ path('app_corrective_action_index') }}"
-                   class="fa-filter-chip{{ source_type_filter == '' ? ' fa-filter-chip--active' : '' }}"
-                   {% if source_type_filter == '' %}aria-current="true"{% endif %}>
-                    {{ 'corrective_action.filter.all'|trans({}, 'audits') }}
-                    <span class="badge bg-light text-dark ms-1">{{ total_count }}</span>
-                </a>
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_corrective_action_index'),
+    filter_keys: ['source_type'],
+    list_title: 'corrective_action.list.title'|trans({}, 'audits'),
+    empty: {
+        mood: 'sleeping',
+        title: 'corrective_action.message.none'|trans({}, 'audits'),
+    },
+} %}
+    {% block list_filters %}
+        <div class="col-md-4">
+            <label for="filter-source-type" class="form-label">{{ 'corrective_action.filter.source_type'|trans({}, 'audits') }}</label>
+            <select class="form-select fa-cyber-input__field" id="filter-source-type" name="source_type" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <option value="">{{ 'corrective_action.filter.all'|trans({}, 'audits') }} ({{ counts_by_source_type|reduce((sum, n) => sum + n, 0) }})</option>
                 {% for st in ['audit_finding', 'incident', 'change_request', 'manual'] %}
-                    {% set count = counts_by_source_type[st] ?? 0 %}
-                    <a href="{{ path('app_corrective_action_index', { source_type: st }) }}"
-                       class="fa-filter-chip{{ source_type_filter == st ? ' fa-filter-chip--active' : '' }}"
-                       {% if source_type_filter == st %}aria-current="true"{% endif %}>
-                        {{ ('corrective_action.source_type.' ~ st)|trans({}, 'audits') }}
-                        <span class="badge bg-light text-dark ms-1">{{ count }}</span>
-                    </a>
+                    <option value="{{ st }}" {{ source_type_filter == st ? 'selected' : '' }}>{{ ('corrective_action.source_type.' ~ st)|trans({}, 'audits') }} ({{ counts_by_source_type[st] ?? 0 }})</option>
                 {% endfor %}
-            </div>
+            </select>
         </div>
-    {% endif %}
-
-    {% if actions is empty %}
-        {{ _fa_empty_state.render({
-            mood: 'sleeping',
-            title: 'corrective_action.message.none'|trans({}, 'audits')
-        }) }}
-    {% else %}
-        <div class="d-flex flex-column gap-2" id="corrective-action-rows">
-            {% for a in actions %}
+    {% endblock %}
+    {% block list_summary %}
+        {% if overdue_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'corrective_action.summary.overdue'|trans({'%count%': overdue_count}, 'audits') }}</span>{% endif %}
+    {% endblock %}
+    {% block list_table %}
+        <div class="d-flex flex-column gap-2 p-3" id="corrective-action-rows">
+            {% set workflowStates = workflow_states(page) %}
+            {% for a in page %}
                 {% include 'corrective_action/_row.html.twig' with { action: a } %}
             {% endfor %}
         </div>
-    {% endif %}
+    {% endblock %}
+{% endembed %}
 </div>
-</main>
 {% endblock %}

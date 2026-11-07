@@ -4,6 +4,7 @@ supplier:
         title: 'ICT-Provider Library'
         intro: 'Curated catalogue of common ICT third-party providers (DORA Art. 28). Apply creates a pre-filled, DORA-relevant supplier for review.'
         empty: 'Library not loaded yet. Admin: run app:load-ict-provider-library.'
+        list: Providers
         action:
             apply: Apply
         field:
@@ -22,7 +23,7 @@ supplier:
     questionnaire:
         title: 'Supplier questionnaires'
         default_title: 'Security questionnaire'
-        empty: 'No questionnaires sent yet.'
+        empty: 'No questionnaires yet.'
         action:
             send: 'Send questionnaire'
         field:
@@ -55,11 +56,10 @@ supplier:
         lksg_export: 'LkSG annual report (CSV)'
     clone:
         success: 'Supplier has been duplicated. Re-enter contract data.'
-    statistics:
-        total: 'Total Suppliers'
-        critical: 'Critical Suppliers'
-        overdue_assessments: 'Overdue Assessments'
-        non_compliant: Non-compliant
+    summary:
+        critical: '%count% critical'
+        overdue_assessments: '%count% assessments overdue'
+        non_compliant: '%count% non-compliant'
     alert:
         overdue_assessments: 'Overdue assessments'
         non_compliant: 'Non-compliant suppliers'
@@ -77,7 +77,7 @@ supplier:
         iso27001: 'ISO 27001'
         actions: Actions
     empty:
-        message: 'No suppliers available.'
+        message: 'No suppliers yet.'
         add_first: 'Add first supplier'
     section:
         details: Details

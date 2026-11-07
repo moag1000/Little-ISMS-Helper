@@ -37,7 +37,7 @@
         ]
     }) }}
 
-    <main>
+    <div>
 
     {% if expiring|length > 0 %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
@@ -48,7 +48,7 @@
                         <li>
                             <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}" class="fa-alert__link">{{ a.title }}</a>
                             — {{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}:
-                            {{ a.nextAssessmentDue|date('d.m.Y') }}
+                            {{ a.nextAssessmentDue|fa_date }}
                         </li>
                     {% endfor %}
                 </ul>
@@ -56,37 +56,42 @@
         {% endembed %}
     {% endif %}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {% if assessments|length == 0 %}
-                {% include '_components/_empty_state.html.twig' with {
-                    icon: 'nav-shield-lock',
-                    title: 'prototype_protection.empty.title'|trans({}, 'prototype_protection'),
-                    message: 'prototype_protection.empty.message'|trans({}, 'prototype_protection')
-                } %}
-            {% else %}
-                {% embed '_components/_fa_table.html.twig' with { compact: true } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.title'|trans({}, 'prototype_protection') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.status'|trans({}, 'prototype_protection') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.tisax_level'|trans({}, 'prototype_protection') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
-                            <th class="fa-table__th fa-table__th--actions"></th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body_attrs %}id="prototype-protection-rows"{% endblock %}
-                    {% block table_body %}
-                        {% for a in assessments %}
-                            {% include 'prototype_protection/_row.html.twig' with { a: a } %}
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endif %}
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_prototype_protection_index'),
+        list_title: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection'),
+        empty: {
+            mood: 'sleeping',
+            title: 'prototype_protection.empty.title'|trans({}, 'prototype_protection'),
+            text: 'prototype_protection.empty.message'|trans({}, 'prototype_protection'),
+        },
+    } %}
+        {% block list_summary %}
+            {% if not_met_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'prototype_protection.summary.not_met'|trans({'%count%': not_met_count}, 'prototype_protection') }}</span>{% endif %}
+            {% if in_review_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'prototype_protection.summary.in_review'|trans({'%count%': in_review_count}, 'prototype_protection') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.title'|trans({}, 'prototype_protection') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.status'|trans({}, 'prototype_protection') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.tisax_level'|trans({}, 'prototype_protection') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
+                        <th class="fa-table__th fa-table__th--actions"></th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="prototype-protection-rows"{% endblock %}
+                {% block table_body %}
+                    {% for a in page %}
+                        {% include 'prototype_protection/_row.html.twig' with { a: a } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
-    </main>
+    </div>
 </div>
 {% endblock %}

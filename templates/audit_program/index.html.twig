@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'audit_program' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'audit_program.page.title'|trans }}{% endblock %}
 
@@ -21,35 +19,32 @@
     ] : []
 }) }}
 
-<main>
 <div class="container-fluid py-4">
-
-    {% set _total     = programs|length %}
-    {% set _active    = programs|filter(p => p.status == 'active')|length %}
-    {% set _planning  = programs|filter(p => p.status == 'planning')|length %}
-    {% set _completed = programs|filter(p => p.status == 'completed')|length %}
-    <div class="row g-3 mb-4">
-        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-clipboard-check', label: 'audit_program.kpi.total'|trans, value: _total, tone: 'neutral' }) }}</div>
-        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'ui-circle', label: 'audit_program.kpi.active'|trans, value: _active, tone: 'primary' }) }}</div>
-        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-edit', label: 'audit_program.kpi.planning'|trans, value: _planning, tone: 'neutral' }) }}</div>
-        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'status-ok', label: 'audit_program.kpi.completed'|trans, value: _completed, tone: 'success' }) }}</div>
-    </div>
-
-    {% if programs is empty %}
-        {{ _fa_empty_state.render({
-            icon: 'nav-clipboard-check',
-            title: 'audit_program.empty.title'|trans,
-            body: 'audit_program.empty.body'|trans,
-            cta: is_granted('ROLE_MANAGER') ? { label: 'audit_program.action.new'|trans, href: path('app_audit_program_new', {_locale: app.request.locale}) } : null
-        }) }}
-    {% else %}
-        <div class="row g-3" id="audit-program-rows">
-            {% for program in programs %}
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_audit_program_index', {_locale: app.request.locale}),
+    list_title: 'audit_program.page.title'|trans({}, 'audit_program'),
+    empty: {
+        mood: 'sleeping',
+        title: 'audit_program.empty.title'|trans({}, 'audit_program'),
+        text: 'audit_program.empty.body'|trans({}, 'audit_program'),
+        actions: is_granted('ROLE_MANAGER') ? [
+            { label: 'audit_program.action.new'|trans({}, 'audit_program'), variant: 'primary', icon: 'plus', href: path('app_audit_program_new', {_locale: app.request.locale}), attrs: {'data-turbo-frame': 'fa-form-modal'} }
+        ] : []
+    },
+} %}
+    {% block list_summary %}
+        {% if (status_counts.active ?? 0) > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'audit_program.summary.active'|trans({'%count%': status_counts.active}, 'audit_program') }}</span>{% endif %}
+        {% if (status_counts.planning ?? 0) > 0 %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'audit_program.summary.planning'|trans({'%count%': status_counts.planning}, 'audit_program') }}</span>{% endif %}
+        {% if (status_counts.completed ?? 0) > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'audit_program.summary.completed'|trans({'%count%': status_counts.completed}, 'audit_program') }}</span>{% endif %}
+    {% endblock %}
+    {% block list_table %}
+        <div class="row g-3 p-3" id="audit-program-rows">
+            {% for program in page %}
                 {% include 'audit_program/_row.html.twig' with { program: program } %}
             {% endfor %}
         </div>
-    {% endif %}
-
+    {% endblock %}
+{% endembed %}
 </div>
-</main>
 {% endblock %}

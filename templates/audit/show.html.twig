@@ -85,6 +85,10 @@
                         <p class="text-muted">{{ audit.scope ? audit.scope|nl2br : '-' }}</p>
                         <div class="mt-2">
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') } %}
+                            {% if audit.location %}
+                                <a href="{{ path('app_location_show', { id: audit.location.id }) }}">{{ audit.location.name }}</a>
+                                · <a href="{{ path('app_location_map', { site: audit.location.id, layer: 'audit' }) }}">{{ 'location.map.show_on_map'|trans({}, 'locations') }}</a>
+                            {% endif %}
                         </div>
 
                         {# Corporate Audit Subsidiaries #}

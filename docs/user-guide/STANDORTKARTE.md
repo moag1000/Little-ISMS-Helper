@@ -2,8 +2,10 @@
 
 Die Standortkarte (`/location/map`, Tab **Karte** unter *Standorte*) zeigt jeden
 Standort der obersten Ebene als Pin auf einer Weltkarte. Sie braucht keine neuen
-Eingaben: alles kommt aus Standorten, Assets, Risiken und Vorfällen, die schon
-gepflegt sind. Modul: `locations` (ISO 27001 A.7).
+Eingaben: alles kommt aus Standorten, Assets, Risiken, Vorfällen, Geschäftsprozessen,
+Notfallplänen, internen Audits und Lieferanten, die schon gepflegt sind. Modul:
+`locations` (ISO 27001 A.7); die Ebenen Notfall, Drittland und Audit erscheinen
+mit den Modulen `bcm`, `privacy` und `audits`.
 
 ## Was ein Pin zeigt
 
@@ -12,6 +14,9 @@ gepflegt sind. Modul: `locations` (ISO 27001 A.7).
 | Größe | Schutzbedarf: höchster Wert aus C, I, A der Assets am Standort (Maximumprinzip) | `Asset.physicalLocation` im Standortbaum |
 | Form + Farbe (Ebene *Restrisiko*) | Kreis = niedrig, Dreieck = mittel, Raute = hoch, Raute mit Ring = kritisch, grauer Kreis = keine Risiken | höchster aktueller Risikowert, Schwellen 6 / 12 / 20 |
 | Form + Farbe (Ebene *Prüfungen*) | Kreis = alle erfüllt, Dreieck = 1–2 offen, Raute = ab 3 offen | sechs Prüfungen, siehe unten |
+| Form + Farbe (Ebene *Notfall*, BCM) | Kreis = jeder kritische Prozess hat einen in 12 Monaten getesteten Plan, Dreieck = Plan nur im Entwurf oder ungetestet, Raute = kritischer Prozess ohne Plan, grau = kein kritischer Prozess | Geschäftsprozesse mit Kritikalität hoch/kritisch, deren Assets am Standort stehen, und ihr Notfallplan (ISO 22301 8.4/8.5) |
+| Form + Farbe (Ebene *Audit*) | Kreis = in den letzten 12 Monaten auditiert, Dreieck = innerhalb von 3 Jahren oder ein Audit ist geplant, Raute = seit 3 Jahren kein Audit und keins geplant | internes Audit mit Bereich *Standort* (ISO 27001 9.2) |
+| Form + Farbe (Ebene *Drittland*, Datenschutz) | Kreis = EU/EWR oder Angemessenheitsbeschluss, Dreieck = USA (DPF) oder anderes Drittland, grau = Land unbekannt | Land des Standorts und [Länderzonen](#länderzonen) (Art. 44–49 DSGVO) |
 | blass | Lage nur auf Landesebene bekannt | `geoSource = country` |
 
 Farbe ist nie das einzige Signal. Die Tabelle unter der Karte enthält dieselben
@@ -58,6 +63,17 @@ Die Sicht wird nach Rolle vorgewählt und lässt sich umschalten:
 - **ISB:** Ebene Prüfungen. *Welche Nachweise fehlen wo?*
 - **Compliance:** Ebene Prüfungen, nur Handlungsbedarf, dazu die Liste
   "Gleiche Lücke an mehreren Standorten".
+- **BCM** (Modul `bcm`): Ebene Notfall. *Welcher kritische Standort hat keinen geübten Plan?*
+  Dazu der [Ereignis-Modus](#ereignis-in-einem-land).
+- **Datenschutz** (Modul `privacy`): Ebene Drittland mit Länderzonen und
+  [Lieferanten](#lieferanten-und-unterauftragnehmer). *Wohin fließen Daten außerhalb der EU?*
+- **Audit** (Modul `audits`, Rolle Auditor): Ebene Audit mit Stichprobenvorschlag,
+  nur lesend. *Welche Standorte nehme ich in die Stichprobe?*
+- **Konzern** (Rolle Konzern-CISO oder Konzern-Auditor, Organisation mit
+  Tochtergesellschaften): alle Standorte der eigenen und der untergeordneten
+  Organisationen auf einer Karte, dazu eine Zeile je Gesellschaft. Nur lesend,
+  ohne Verantwortliche und ohne Links in fremde Datensätze; andere Konzerne
+  oder Schwestergesellschaften bleiben unsichtbar.
 - **Meine Standorte:** nur Standorte, bei denen man als verantwortliche Person
   eingetragen ist. Erscheint nur dann.
 
@@ -96,8 +112,9 @@ deren geplante Behandlung das Restrisiko am stärksten senkt (Differenz Ist → 
 × Schutzbedarf).
 
 **Aktionen im Panel.** Risiko erfassen (Standort vorbelegt, `?fromLocation=`) und Vorfall melden,
-ab Manager zusätzlich Verantwortliche zuweisen, Audit planen und mit BCM-Modul
-Notfallübung planen.
+ab Manager zusätzlich Verantwortliche zuweisen, Audit planen (Bereich *Standort*,
+Standort, Titel und Umfang vorbelegt) und mit BCM-Modul Notfallübung planen
+(Name, Umfang und die Notfallpläne der Prozesse am Standort vorbelegt).
 
 **Sammelaktionen (ab Manager).** Standorte in der Tabelle anhaken und in einem
 Schritt Verantwortliche, Vertretung oder eine Gruppe (Tag) setzen. Jede
@@ -107,7 +124,9 @@ Zeit geht ins FTE-Tracking (Kalibrierung *Datensatz einzeln ändern*, Standard
 
 **Export.** *Excel* liefert die Tabelle mit Erfüllungsgrad und Vergleich, *PDF*
 ein Lagebild auf einer Seite für das Management-Review (ISO 27001 9.3):
-Kennzahlen, größte Hebel, Standorte mit Handlungsbedarf. Mit Auswahl nur die
+Kartenbild mit den Pins der Ebene Restrisiko, Kennzahlen, größte Hebel,
+Standorte mit Handlungsbedarf. Das PDF hält den Stand zum Stichtag fest, etwa
+für die Audit-Stichprobe. Mit Auswahl nur die
 angehakten Standorte. Euro-Werte nur mit Modul Risikoquantifizierung und
 passender Rolle. Jeder Export wird protokolliert. Ist der Vergleich abgeschaltet,
 fehlt die Vergleichsspalte.
@@ -123,12 +142,63 @@ Standort-Kennzahlen mit Link zur Karte, sobald mindestens zwei Standorte
 platziert sind. Die Detailseite eines Standorts hat einen Steckbrief mit
 denselben Werten.
 
+## Lieferanten und Unterauftragnehmer
+
+In der Sicht *Datenschutz* zeigt die Karte Lieferanten, die personenbezogene Daten
+verarbeiten (Auftragsverarbeiter-Status nicht *keiner*, Status nicht beendet), als
+Quadrat im Land ihrer Verarbeitungsorte; ohne Verarbeitungsort zählt das Sitzland.
+Ein Klick auf das Quadrat zeigt die Lieferanten im Land, die Unterauftragnehmer-Kette
+mit gestrichelten Linien und die Transfer-Folgenabschätzungen für das Land.
+
+Jedes Glied der Kette wird eingestuft (Art. 28 Abs. 4, Art. 44–49 DSGVO):
+
+| Ziel | ohne Garantie | mit Garantie (SCC, BCR, Zertifizierung, Ausnahme) |
+|---|---|---|
+| EU/EWR, Angemessenheitsbeschluss | zulässig | zulässig |
+| USA (DPF) | Garantien prüfen | zulässig |
+| anderes Drittland | Drittland ohne Garantie | Garantien prüfen |
+
+Die Kette ist so gut wie ihr schwächstes Glied. Die Tabelle *Lieferanten mit
+personenbezogenen Daten* unter der Karte nennt dieselben Werte. Gepflegt werden
+Verarbeitungsorte, Kette und Garantie im Lieferanten-Formular.
+
+## Länderzonen
+
+Die Ebene Drittland färbt die Länder: EU/EWR flächig, Angemessenheitsbeschluss
+hell, USA (DPF) gepunktet, sonstige Drittländer schraffiert. Die Liste steht in
+`config/gdpr_transfer_zones.yaml` mit Datum (`as_of`, in der Legende als *Stand der
+Liste*). Sie gilt im ganzen Tool: Karte, Lieferkette, EWR-Kennzeichen im
+DORA-Informationsregister und Framework-Empfehlungen. CI-Gate 80 scheitert, wenn
+die Liste älter als zwölf Monate ist; dann mit der Seite der EU-Kommission
+abgleichen und das Datum hochsetzen. Die Liste ersetzt keine Rechtsprüfung.
+
+## Ereignis in einem Land
+
+In der Sicht *BCM* fragt der Abschnitt *Ereignis in einem Land* unter der Karte:
+Was trifft ein Stromausfall, Sturm oder Vorfall in Land X? Nach Wahl des Landes
+stehen dort die betroffenen Standorte, die Zahl der Assets, die Geschäftsprozesse,
+die diese Assets stützen, deren Notfallpläne und die Krisenstäbe (ISO 22301 8.4.2,
+BSI 200-4). Genannt werden die Krisenstäbe der betroffenen Pläne, sonst alle
+aktiven. *Aktivieren* startet den Krisenstab nach Rückfrage und wird protokolliert.
+
+## Audit-Stichprobe
+
+In der Sicht *Audit* schlägt die Karte eine Stichprobe nach IAF MD 1 vor: √n der
+aktiven Standorte (aufgerundet), zuerst Standorte ohne Audit seit drei Jahren, dann
+nach Abstand zum letzten Audit und nach Restrisiko. Die Standorte sind in Tabelle
+und Panel markiert. Den Zufallsanteil, den IAF MD 1 verlangt, ergänzt der Auditor.
+
+Ein internes Audit gehört zu einem Standort, wenn als Bereich *Standort* gewählt
+und der Standort im Feld *Standort* gesetzt ist. Bestehende Audits mit Bereich
+Standort wurden bei der Aktualisierung über den Namen zugeordnet.
+
 ## Drill-down
 
 Das Seitenpanel eines Standorts verlinkt auf das Formular, in dem eine Lücke
 geschlossen wird, und auf die Listen **Risiken**, **Assets** und **Vorfälle**,
 gefiltert mit `?location=<id>` auf den Standortbaum. Auf der Detailseite eines
-Standorts führt **Auf Karte zeigen** zurück.
+Standorts führt **Auf Karte zeigen** zurück. Sie zeigt außerdem die Assets und Risiken des Standorts mit *Risiko ableiten*,
+ab Manager im Steckbrief *Audit planen* und *Notfallübung planen* (vorbelegt wie im Panel).
 
 ## Lage der Standorte
 

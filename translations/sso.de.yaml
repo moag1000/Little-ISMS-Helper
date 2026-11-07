@@ -1,11 +1,15 @@
 sso:
     admin:
+        list: 'Provider'
+        summary:
+            enabled: '%count% aktiv'
+            disabled: '%count% deaktiviert'
         title: 'Single Sign-On'
         subtitle: 'OIDC- und OAuth2-Identity-Provider verwalten. Buttons im Login werden nur für aktive Provider angezeigt.'
         new_provider: 'Neuer Provider'
         edit_provider: 'Provider bearbeiten'
         approvals: 'Freigabe-Warteschlange'
-        empty: 'Noch keine SSO-Provider konfiguriert. Lege einen an, um den Login-Button anzuzeigen.'
+        empty: 'Keine SSO-Provider vorhanden.'
         help: |
             <strong>Globale Provider</strong> (nur SUPER_ADMIN) gelten organisationsübergreifend. <strong>Organisations-Provider</strong> sind nur in ihrer Organisation sichtbar.
             <strong>Domain-Bindung</strong>: <code>optional</code> — Button immer sichtbar, <code>enforce</code> — nur für matchende Email-Domains, <code>disabled</code> — keine Domain-Prüfung.

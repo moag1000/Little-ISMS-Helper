@@ -25,6 +25,7 @@ readonly class LocationMapExporter
         private PdfExportService $pdf,
         private AuditLogger $auditLogger,
         private TranslatorInterface $translator,
+        private LocationMapImage $mapImage,
     ) {
     }
 
@@ -89,6 +90,7 @@ readonly class LocationMapExporter
                 static fn (array $s): bool => $s['gaps'] !== [] || in_array($s['riskBand'], ['high', 'critical'], true),
             )),
             'check_norms' => LocationPostureService::CHECK_NORM,
+            'map_image' => $this->mapImage->dataUri($view['sites']),
         ]);
         $this->log('pdf', count($view['sites']));
 

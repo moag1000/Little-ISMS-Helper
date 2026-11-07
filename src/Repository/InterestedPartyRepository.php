@@ -27,7 +27,7 @@ class InterestedPartyRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.nextCommunication < :now')
             ->setParameter('now', new DateTime())
-            ->orderBy('p.importance', 'DESC')
+            ->orderBy('p.importance', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -40,7 +40,7 @@ class InterestedPartyRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.importance IN (:importance)')
             ->setParameter('importance', ['critical', 'high'])
-            ->orderBy('p.importance', 'DESC')
+            ->orderBy('p.importance', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -53,7 +53,7 @@ class InterestedPartyRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.partyType = :type')
             ->setParameter('type', $type)
-            ->orderBy('p.importance', 'DESC')
+            ->orderBy('p.importance', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

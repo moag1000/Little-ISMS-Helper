@@ -1,5 +1,9 @@
 tags:
     admin:
+        list: 'Tags'
+        summary:
+            global: '%count% global'
+            tenant: '%count% organisation-specific'
         page:
             title: "Manage tags"
             lead: "Framework tags and classification tags for assets, controls, risks and suppliers."
@@ -16,7 +20,7 @@ tags:
         scope_global: "Global"
         table:
             caption: "List of all visible tags"
-        empty: "No tags yet. Create one to enable bulk classification across frameworks."
+        empty: 'No tags yet.'
         aria:
             edit: 'Edit tag "%name%"'
             delete: 'Delete tag "%name%"'

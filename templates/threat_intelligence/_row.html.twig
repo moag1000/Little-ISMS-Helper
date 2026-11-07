@@ -34,7 +34,7 @@
     <td class="text-center">{% include '_components/_badge.html.twig' with { variant: severityVariant, content: ('severity.' ~ threat.severity)|trans({}, 'threat') } %}</td>
     <td class="text-center">{% include '_components/_badge.html.twig' with { variant: statusVariant, content: ('status_type.' ~ threat.status)|trans({}, 'threat') } %}</td>
     <td>{{ threat.effectiveAssignedTo ?? '-' }}</td>
-    <td>{{ threat.detectionDate ? threat.detectionDate|date('Y-m-d') : '-' }}</td>
+    <td>{{ threat.detectionDate|fa_date }}</td>
     <td class="text-center">
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
             <a href="{{ path('app_threat_intelligence_show', {id: threat.id}) }}" data-turbo-frame="fa-form-modal"

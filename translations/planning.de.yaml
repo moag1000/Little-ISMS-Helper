@@ -34,6 +34,8 @@ planning:
             open: Offen
             due: Fällig
             recurring: Wiederkehrend
+        summary:
+            overdue: '%count% überfällig'
         col:
             title: Ereignis
             origin: Herkunft
@@ -73,7 +75,7 @@ planning:
         error:
             invalid_transition: 'Statuswechsel nicht erlaubt.'
         message:
-            no_items: 'Noch keine Maßnahmen angelegt.'
+            no_items: 'Keine Maßnahmen vorhanden.'
     team:
         title:
             list: Teams
@@ -87,7 +89,7 @@ planning:
             member_count: Mitglieder
             lead: Leitung
         message:
-            no_teams: 'Noch keine Teams angelegt.'
+            no_teams: 'Keine Teams vorhanden.'
         field:
             name: Name
             type: Teamtyp
@@ -119,7 +121,7 @@ planning:
             sort_order: Reihenfolge
             default_visibility: 'Standard-Sichtbarkeit'
         message:
-            no_groups: 'Noch keine Gruppen angelegt.'
+            no_groups: 'Keine Gruppen vorhanden.'
         field:
             name: Name
             sort_order: Reihenfolge
@@ -144,7 +146,7 @@ planning:
             recurring: Wiederkehrend
             visibility: Sichtbarkeit
         message:
-            no_tasks: 'Noch keine Roadmap-Tasks angelegt.'
+            no_tasks: 'Keine Roadmap-Tasks vorhanden.'
         badge:
             reactive: Tagesgeschäft
         field:

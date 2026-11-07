@@ -9,6 +9,7 @@ use App\Entity\Team;
 use App\Form\TeamType;
 use App\Repository\TeamRepository;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +34,7 @@ class TeamController extends AbstractController
 
     #[Route('/planning/teams', name: 'app_planning_team_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
 
@@ -41,7 +42,11 @@ class TeamController extends AbstractController
         $teams = $tenant ? $this->teamRepository->findByTenant($tenant) : [];
 
         return $this->render('planning/team/index.html.twig', [
-            'teams' => $teams,
+            'page' => ListPage::fromRequest(
+                $teams,
+                $request,
+                static fn(Team $e): array => [$e->getName(), $e->getType()],
+            ),
         ]);
     }
 

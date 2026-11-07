@@ -70,6 +70,7 @@ class EntityLinks
             'vulnerability' => ['app_vulnerability_new', 'fromIncident'],
         ],
         'risk' => ['incident' => ['app_incident_new', 'fromRisk']],
+        'location' => ['risk' => ['app_risk_new', 'fromLocation']],
     ];
 
     public function __construct(
@@ -127,6 +128,8 @@ class EntityLinks
             $entity instanceof Incident => 'incident',
             $entity instanceof Vulnerability => 'vulnerability',
             $entity instanceof Document => 'evidence',
+            // Not a chain group, only a derive source.
+            $entity instanceof Location => 'location',
             default => null,
         };
     }
@@ -237,6 +240,7 @@ class EntityLinks
             ],
             $entity instanceof Location => [
                 'asset' => [self::unique([...$entity->getAssets()]), null],
+                'risk' => [self::unique($this->riskRepository->findBy(['location' => $entity])), null],
             ],
             $entity instanceof InternalAudit => [
                 'asset' => [self::unique([...$entity->getScopedAssets()]), null],
@@ -258,7 +262,7 @@ class EntityLinks
             ->innerJoin('c.evidenceDocuments', 'd')
             ->andWhere('d.id = :document')
             ->setParameter('document', $document->getId())
-            ->orderBy('c.controlId', 'ASC');
+            ->orderBy('c.controlId', \SortDirection::Ascending);
         if ($document->getTenant() !== null) {
             $qb->andWhere('c.tenant = :tenant')->setParameter('tenant', $document->getTenant());
         }

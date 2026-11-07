@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\Trait\InternalAuditLeadAuditorTrait;
@@ -13,14 +14,15 @@ use App\Entity\Trait\InternalAuditTeamTrait;
 use App\Entity\User;
 use App\Enum\InternalAuditStatus;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\InternalAuditRepository;
 use App\State\TenantAwareStateProcessor;
@@ -45,7 +47,16 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new GetCollection(
             description: 'Retrieve the collection of internal ISMS audits with filtering by status, scope, and date',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'title' => new QueryParameter(filter: new PartialSearchFilter()),
+                'auditNumber' => new QueryParameter(filter: new ExactFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'scopeType' => new QueryParameter(filter: new ExactFilter()),
+                'plannedDate' => new QueryParameter(filter: new DateFilter()),
+                'actualDate' => new QueryParameter(filter: new DateFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['plannedDate', 'actualDate', 'status'], castToArray: false),
+            ],
         ),
         new Post(
             description: 'Create a new internal audit plan',
@@ -64,9 +75,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['audit:write']],
     processor: TenantAwareStateProcessor::class
 )]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'auditNumber' => 'exact', 'status' => 'exact', 'scopeType' => 'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['plannedDate', 'actualDate', 'status'])]
-#[ApiFilter(DateFilter::class, properties: ['plannedDate', 'actualDate'])]
 class InternalAudit
 {
     use InternalAuditLeadAuditorTrait;
@@ -132,6 +140,12 @@ class InternalAudit
     #[Groups(['audit:read'])]
     #[MaxDepth(1)]
     private Collection $scopedAssets;
+
+    /** Site the audit covers (scopeType "location"); feeds the audit layer of the location map. */
+    #[ORM\ManyToOne(targetEntity: Location::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read', 'audit:write'])]
+    private ?Location $location = null;
 
     /**
      * @var Collection<int, Tenant>
@@ -548,6 +562,17 @@ public function __construct()
     public function setAuditedDepartments(?string $auditedDepartments): static
     {
         $this->auditedDepartments = $auditedDepartments;
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
         return $this;
     }
 

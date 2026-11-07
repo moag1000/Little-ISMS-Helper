@@ -1,7 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'incident_sla.title'|trans({}, 'incident_sla') }}{% endblock %}
 
@@ -14,15 +13,12 @@
 
     <div class="row">
         <div class="col-lg-10">
-            <section class="fa-section">
-                <div class="fa-section__header">
-                    <h2 class="fa-section__title">
-                        <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i>
-                        {{ 'incident_sla.section.list'|trans({}, 'incident_sla') }}
-                    </h2>
-                </div>
-                <div class="fa-section__body">
-                    {# Migrated to fa-table Aurora pattern #}
+            {% embed '_components/_fa_list_page.html.twig' with {
+                page: page,
+                list_title: 'incident_sla.section.list'|trans({}, 'incident_sla'),
+                empty: { mood: 'sleeping', title: 'incident_sla.empty'|trans({}, 'incident_sla') },
+            } %}
+                {% block list_table %}
                     {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
                         {% block table_head %}
                             <tr>
@@ -36,7 +32,7 @@
                         {% endblock %}
                         {% block table_body %}
                             {% import '_components/_status_pill.html.twig' as pill %}
-                            {% for config in configs %}
+                            {% for config in page %}
                                 {% set variant = (config.severity == 'breach' or config.severity == 'critical') ? 'danger' : (config.severity == 'high' ? 'warning' : (config.severity == 'medium' ? 'info' : 'secondary')) %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell" data-sort-value="{{ config.severity }}">
@@ -47,7 +43,7 @@
                                     <td class="fa-table__cell fa-table__cell--num">{{ config.escalationHours ? config.escalationHours ~ 'h' : '—' }}</td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ config.resolutionHours ? config.resolutionHours ~ 'h' : '—' }}</td>
                                     <td class="fa-table__cell fa-table__cell--muted">
-                                        {{ config.updatedAt ? config.updatedAt|date('d.m.Y H:i') : '—' }}
+                                        {{ config.updatedAt ? config.updatedAt|fa_datetime : '—' }}
                                     </td>
                                     <td class="fa-table__cell fa-table__cell--actions">
                                         <a href="{{ path('app_admin_incident_sla_config_edit', {id: config.id}) }}"
@@ -60,9 +56,9 @@
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}
-                    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'small mb-0 mt-3', body: 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }) }}
-                </div>
-            </section>
+                {% endblock %}
+            {% endembed %}
+            {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'small mb-0 mt-3', body: 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }) }}
         </div>
     </div>
 </div>

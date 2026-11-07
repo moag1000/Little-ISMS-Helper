@@ -33,8 +33,8 @@ class PrototypeProtectionAssessmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->andWhere('a.tenant = :t')
             ->setParameter('t', $tenant)
-            ->orderBy('a.assessmentDate', 'DESC')
-            ->addOrderBy('a.id', 'DESC')
+            ->orderBy('a.assessmentDate', \SortDirection::Descending)
+            ->addOrderBy('a.id', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -56,7 +56,7 @@ class PrototypeProtectionAssessmentRepository extends ServiceEntityRepository
             ->setParameter('t', $tenant)
             ->setParameter('s', PrototypeProtectionAssessmentStatus::Approved->value)
             ->setParameter('cutoff', $cutoff)
-            ->orderBy('a.nextAssessmentDue', 'ASC')
+            ->orderBy('a.nextAssessmentDue', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

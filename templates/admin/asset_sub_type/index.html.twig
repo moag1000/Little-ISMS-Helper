@@ -1,7 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'asset_sub_type' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
 {% block admin_title %}{{ 'asset_sub_type.admin.page.title'|trans({}, 'asset_sub_type') }}{% endblock %}
@@ -44,28 +43,24 @@
         </div>
     </section>
 
-    {# KPI strip showing counts per top-type #}
-    {% if counts_by_top_type|length > 0 %}
-        <div class="row g-2 mb-4">
-            {% for top_type in top_types %}
-                {% set cnt = counts_by_top_type[top_type] ?? 0 %}
-                <div class="col-6 col-md-2">
-                    <div class="fa-stat-card">
-                        <div class="fa-stat-card__label">{{ ('asset_sub_type.top_type.' ~ top_type)|trans({}, 'asset_sub_type') }}</div>
-                        <div class="fa-stat-card__value">{{ cnt }}</div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    {% if sub_types|length == 0 %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('admin_asset_sub_type_index'),
+        filter_keys: [],
+        list_title: 'asset_sub_type.admin.page.title'|trans({}, 'asset_sub_type'),
+        empty: {
             mood: 'thinking',
             title: 'asset_sub_type.admin.empty.title'|trans({}, 'asset_sub_type'),
             subtitle: 'asset_sub_type.admin.empty.subtitle'|trans({}, 'asset_sub_type')
-        }) }}
-    {% else %}
+        },
+    } %}
+        {% block list_summary %}
+            {% for top_type in top_types %}
+                {% set cnt = counts_by_top_type[top_type] ?? 0 %}
+                {% if cnt > 0 %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'asset_sub_type.summary.top_type'|trans({'%type%': ('asset_sub_type.top_type.' ~ top_type)|trans({}, 'asset_sub_type'), '%count%': cnt}, 'asset_sub_type') }}</span>{% endif %}
+            {% endfor %}
+        {% endblock %}
+        {% block list_table %}
         {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
             {% trans_default_domain 'asset_sub_type' %}
             {% block table_head %}
@@ -80,7 +75,7 @@
             {% endblock %}
             {% block table_body %}
                 {% import '_components/_status_pill.html.twig' as pill %}
-                {% for st in sub_types %}
+                {% for st in page %}
                     <tr class="fa-table__row">
                         <td class="fa-table__cell">{{ ('asset_sub_type.top_type.' ~ st.topType)|trans({}, 'asset_sub_type') }}</td>
                         <td class="fa-table__cell"><strong>{{ st.name }}</strong></td>
@@ -118,5 +113,6 @@
                 {% endfor %}
             {% endblock %}
         {% endembed %}
-    {% endif %}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

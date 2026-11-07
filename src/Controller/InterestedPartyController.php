@@ -12,6 +12,7 @@ use App\Repository\InterestedPartyRepository;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,14 +45,18 @@ class InterestedPartyController extends AbstractController
     }
     #[Route('/interested-party', name: 'app_interested_party_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $interestedParties = $this->interestedPartyRepository->findAll();
         $overdueCommunications = $this->interestedPartyRepository->findOverdueCommunications();
         $highImportance = $this->interestedPartyRepository->findHighImportance();
 
         return $this->render('interested_party/index.html.twig', [
-            'interested_parties' => $interestedParties,
+            'page' => ListPage::fromRequest(
+                $interestedParties,
+                $request,
+                static fn (InterestedParty $p): array => [$p->getName(), $p->getPartyType()],
+            ),
             'overdue_communications' => $overdueCommunications,
             'high_importance' => $highImportance,
         ]);

@@ -22,36 +22,37 @@
     }) }}
 </div>
 
-<main>
-    {% embed '_components/_table.html.twig' with {
-        'wrapperClass': 'table-container'
+<div class="container">
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_dora_data_flow_index'),
+        list_title: 'dora_data_flow.title.list'|trans({}, 'dora_data_flow'),
+        empty: {
+            mood: 'sleeping',
+            title: 'dora_data_flow.message.no_flows'|trans({}, 'dora_data_flow'),
+            actions: [{ label: 'dora_data_flow.action.create'|trans({}, 'dora_data_flow'), href: path('app_dora_data_flow_new'), variant: 'primary', attrs: { 'data-turbo-frame': 'fa-form-modal' } }],
+        },
     } %}
-        {% block table_head %}
-            <tr>
-                <th scope="col">{{ 'dora_data_flow.field.supplier'|trans({}, 'dora_data_flow') }}</th>
-                <th scope="col">{{ 'dora_data_flow.field.direction'|trans({}, 'dora_data_flow') }}</th>
-                <th scope="col">{{ 'dora_data_flow.field.data_categories'|trans({}, 'dora_data_flow') }}</th>
-                <th scope="col">{{ 'dora_data_flow.field.cross_border'|trans({}, 'dora_data_flow') }}</th>
-                <th scope="col">{{ 'dora_data_flow.field.receiving_country'|trans({}, 'dora_data_flow') }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
-            </tr>
-        {% endblock %}
-        {% block table_body_attrs %}id="dora-data-flow-rows"{% endblock %}
-        {% block table_body %}
-            {% for flow in flows %}
-                {% include 'dora_data_flow/_row.html.twig' with { flow: flow } %}
-            {% else %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            <tr>
-                <td colspan="6">
-                    {{ _fa_empty_state.render({
-                        mood: 'sleeping',
-                        title: 'dora_data_flow.message.no_flows'|trans({}, 'dora_data_flow')
-                    }) }}
-                </td>
-            </tr>
-            {% endfor %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'dora_data_flow.field.supplier'|trans({}, 'dora_data_flow') }}</th>
+                        <th scope="col">{{ 'dora_data_flow.field.direction'|trans({}, 'dora_data_flow') }}</th>
+                        <th scope="col">{{ 'dora_data_flow.field.data_categories'|trans({}, 'dora_data_flow') }}</th>
+                        <th scope="col">{{ 'dora_data_flow.field.cross_border'|trans({}, 'dora_data_flow') }}</th>
+                        <th scope="col">{{ 'dora_data_flow.field.receiving_country'|trans({}, 'dora_data_flow') }}</th>
+                        <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="dora-data-flow-rows"{% endblock %}
+                {% block table_body %}
+                    {% for flow in page %}
+                        {% include 'dora_data_flow/_row.html.twig' with { flow: flow } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
-</main>
+</div>
 {% endblock %}

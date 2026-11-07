@@ -92,7 +92,7 @@ final class DoraTlptCadenceCheck implements PolicyWizardCheckInterface
             ->setParameter('tlpt', '%tlpt%')
             ->setParameter('threatled', '%threat-led%')
             ->setParameter('tiber', '%tiber%')
-            ->orderBy('e.exerciseDate', 'DESC')
+            ->orderBy('e.exerciseDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
 

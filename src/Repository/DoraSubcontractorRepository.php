@@ -30,9 +30,9 @@ class DoraSubcontractorRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.parentSupplier', 'ASC')
-            ->addOrderBy('s.tier', 'ASC')
-            ->addOrderBy('s.name', 'ASC')
+            ->orderBy('s.parentSupplier', \SortDirection::Ascending)
+            ->addOrderBy('s.tier', \SortDirection::Ascending)
+            ->addOrderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -49,7 +49,7 @@ class DoraSubcontractorRepository extends ServiceEntityRepository
             ->where('s.parentSupplier = :supplier')
             ->andWhere('s.parentSubcontractor IS NULL')
             ->setParameter('supplier', $supplier)
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -66,8 +66,8 @@ class DoraSubcontractorRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.parentSupplier = :supplier')
             ->setParameter('supplier', $supplier)
-            ->orderBy('s.tier', 'ASC')
-            ->addOrderBy('s.name', 'ASC')
+            ->orderBy('s.tier', \SortDirection::Ascending)
+            ->addOrderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -33,7 +33,7 @@ class DashboardLayoutRepository extends ServiceEntityRepository
             ->andWhere('d.tenant = :tenant')
             ->setParameter('user', $user)
             ->setParameter('tenant', $tenant)
-            ->orderBy('d.updatedAt', 'DESC')
+            ->orderBy('d.updatedAt', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getResult();

@@ -1,0 +1,53 @@
+{#
+ # Mapping hub: reach of the mapping IT-Grundschutz-Kompendium 2023 → Grundschutz++.
+ # Data: KompendiumGsppCoverage::summary() (BSI mapping, reviewed supplement,
+ # requirements without counterpart, open). Included only when both catalogues
+ # are loaded and module bsi_grundschutz is active.
+ #
+ # Usage: {% include 'compliance/mapping/_gspp_transfer_card.html.twig' with { coverage: gspp_coverage } %}
+ #}
+{% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4', coverage: coverage } %}
+    {% block card_header %}
+        <div class="card-header d-flex justify-content-between align-items-center" id="gspp-transfer">
+            <h2 class="h6 mb-0">{{ 'compliance.mapping.hub.gspp.title'|trans({}, 'compliance') }}</h2>
+            <span class="small text-muted">{{ 'compliance.mapping.hub.gspp.source'|trans({}, 'compliance') }}</span>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+        <p class="mb-2" data-testid="gspp-coverage-summary">
+            {{ 'compliance.mapping.hub.gspp.summary'|trans({
+                '%with%': coverage.with_target,
+                '%total%': coverage.total,
+                '%percent%': coverage.percent,
+            }, 'compliance') }}
+        </p>
+        {{ _fa_progress.render({
+            value: coverage.percent,
+            tone: 'info',
+            size: 'sm',
+            label: 'compliance.mapping.hub.gspp.title'|trans({}, 'compliance'),
+            class: 'mb-3',
+        }) }}
+        <dl class="row small mb-3">
+            <dt class="col-8 col-md-5 fw-normal">{{ 'compliance.mapping.hub.gspp.official'|trans({}, 'compliance') }}</dt>
+            <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.official }}</dd>
+            <dt class="col-8 col-md-5 fw-normal">{{ 'compliance.mapping.hub.gspp.derived'|trans({}, 'compliance') }}</dt>
+            <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.derived }}</dd>
+            <dt class="col-8 col-md-5 fw-normal">{{ 'compliance.mapping.hub.gspp.no_counterpart'|trans({}, 'compliance') }}</dt>
+            <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.no_counterpart }}</dd>
+            <dt class="col-8 col-md-5 fw-normal">{{ 'compliance.mapping.hub.gspp.open'|trans({}, 'compliance') }}</dt>
+            <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.open }}</dd>
+        </dl>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ path('app_compliance_inheritance_queue', { frameworkCode: 'BSI-GSPP' }) }}"
+               class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                {{ 'compliance.mapping.hub.gspp.review'|trans({}, 'compliance') }}
+            </a>
+            <a href="{{ path('app_compliance_mapping_index', { source_fw: 'BSI_GRUNDSCHUTZ', target_fw: 'BSI-GSPP' }) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                {{ 'compliance.mapping.hub.gspp.list'|trans({}, 'compliance') }}
+            </a>
+        </div>
+    {% endblock %}
+{% endembed %}

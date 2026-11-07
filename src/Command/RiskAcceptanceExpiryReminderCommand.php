@@ -54,7 +54,7 @@ class RiskAcceptanceExpiryReminderCommand
             ->where('r.acceptanceExpiryDate IS NOT NULL')
             ->andWhere('r.acceptanceExpiryDate <= :cutoff')
             ->setParameter('cutoff', $cutoff)
-            ->orderBy('r.acceptanceExpiryDate', 'ASC');
+            ->orderBy('r.acceptanceExpiryDate', \SortDirection::Ascending);
 
         $risks = $qb->getQuery()->getResult();
 

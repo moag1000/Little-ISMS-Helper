@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceMapping;
 use App\Entity\User;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\MappingLifecycleService;
 use App\Service\MappingQualityScoreService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,7 +53,7 @@ class MappingQualityController extends AbstractController
         $minScore = (int) $request->query->get('min_score', 0);
 
         $qb = $this->mappingRepository->createQueryBuilder('m')
-            ->orderBy('m.qualityScore', 'DESC');
+            ->orderBy('m.qualityScore', \SortDirection::Descending);
         if ($stateFilter !== null && $stateFilter !== '') {
             $qb->andWhere('m.lifecycleState = :s')->setParameter('s', $stateFilter);
         }
@@ -60,12 +62,19 @@ class MappingQualityController extends AbstractController
         }
         $mappings = $qb->setMaxResults(200)->getQuery()->getResult();
 
-        // Aggregat-Statistiken
-        $stats = $this->computeStats();
-
         return $this->render('admin/mapping_quality/index.html.twig', [
-            'mappings' => $mappings,
-            'stats' => $stats,
+            'page' => ListPage::fromRequest(
+                $mappings,
+                $request,
+                static fn(ComplianceMapping $m): array => [
+                    $m->getSourceRequirement()?->getRequirementId(),
+                    $m->getTargetRequirement()?->getRequirementId(),
+                    $m->getSourceRequirement()?->getFramework()?->getName(),
+                    $m->getTargetRequirement()?->getFramework()?->getName(),
+                ],
+            ),
+            'low_score_count' => count(array_filter($mappings, static fn(ComplianceMapping $m): bool => ($m->getQualityScore() ?? 0) < 60)),
+            'published_count' => count(array_filter($mappings, static fn(ComplianceMapping $m): bool => $m->getLifecycleState() === 'published')),
             'filterState' => $stateFilter,
             'filterMinScore' => $minScore,
             'lifecycleStates' => ['draft', 'review', 'approved', 'published', 'deprecated'],
@@ -136,40 +145,6 @@ class MappingQualityController extends AbstractController
         $this->entityManager->flush();
         $this->addFlash('success', sprintf('%d Mapping-MQS-Scores neu berechnet.', $count));
         return $this->redirectToRoute('admin_mapping_quality_index');
-    }
-
-    /**
-     * @return array{total: int, avg_mqs: float, by_state: array<string, int>, low_score_published: int}
-     */
-    private function computeStats(): array
-    {
-        $rows = $this->mappingRepository->createQueryBuilder('m')
-            ->select('m.lifecycleState AS state, COUNT(m.id) AS c, AVG(m.qualityScore) AS avg_score')
-            ->groupBy('m.lifecycleState')
-            ->getQuery()->getArrayResult();
-
-        $byState = [];
-        $total = 0;
-        $weightedAvg = 0.0;
-        foreach ($rows as $r) {
-            $byState[(string) $r['state']] = (int) $r['c'];
-            $total += (int) $r['c'];
-            $weightedAvg += (float) $r['avg_score'] * (int) $r['c'];
-        }
-        $avgMqs = $total > 0 ? $weightedAvg / $total : 0.0;
-
-        $lowScore = (int) $this->mappingRepository->createQueryBuilder('m')
-            ->select('COUNT(m.id)')
-            ->where('m.qualityScore < 60')
-            ->andWhere("m.lifecycleState = 'published'")
-            ->getQuery()->getSingleScalarResult();
-
-        return [
-            'total' => $total,
-            'avg_mqs' => round($avgMqs, 1),
-            'by_state' => $byState,
-            'low_score_published' => $lowScore,
-        ];
     }
 
     /**

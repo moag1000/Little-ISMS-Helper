@@ -18,6 +18,7 @@ use App\Service\Import\EntityMapperRegistry;
 use App\Service\Import\HeaderHeuristicMapper;
 use App\Service\Import\SpreadsheetParser;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -85,7 +86,7 @@ final class BulkImportController extends AbstractController
 
     #[Route('/', name: 'app_bulk_import_index', methods: ['GET'])]
     #[IsGranted(BulkImportVoter::BULK_IMPORT_TRIGGER)]
-    public function index(string $entityType): Response
+    public function index(string $entityType, Request $request): Response
     {
         $tenant          = $this->tenantContext->getCurrentTenant();
         $entityTypePascal = $this->toPascalCase($entityType);
@@ -100,9 +101,13 @@ final class BulkImportController extends AbstractController
 
         return $this->render('import/index.html.twig', [
             'entityType'      => $entityType,
-            'entityTypePascal' => $entityTypePascal,
-            'recentBatches'   => $recentBatches,
-            'supportedTypes'  => $this->mapperRegistry->getSupportedEntityTypes(),
+            'page'            => ListPage::fromRequest(
+                $recentBatches,
+                $request,
+                static fn (BulkImportBatch $b): array => [$b->getSourceFileName(), $b->getMode()],
+            ),
+            'completedCount'  => count(array_filter($recentBatches, static fn (BulkImportBatch $b): bool => $b->getStatus() === BulkImportBatch::STATUS_COMPLETED)),
+            'failedCount'     => count(array_filter($recentBatches, static fn (BulkImportBatch $b): bool => $b->getStatus() === BulkImportBatch::STATUS_FAILED)),
         ]);
     }
 

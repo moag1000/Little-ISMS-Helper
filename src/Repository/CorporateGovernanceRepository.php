@@ -84,8 +84,8 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cg')
             ->where('cg.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('cg.scope', 'ASC')
-            ->addOrderBy('cg.scopeId', 'ASC')
+            ->orderBy('cg.scope', \SortDirection::Ascending)
+            ->addOrderBy('cg.scopeId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -100,7 +100,7 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
             ->andWhere('cg.scope = :scope')
             ->setParameter('tenant', $tenant)
             ->setParameter('scope', $scope)
-            ->orderBy('cg.scopeId', 'ASC')
+            ->orderBy('cg.scopeId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

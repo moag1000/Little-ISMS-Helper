@@ -10,10 +10,12 @@ use App\Entity\Notification\NotificationDelivery;
 use App\Entity\User;
 use App\Repository\Notification\NotificationDeliveryRepository;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
@@ -57,7 +59,7 @@ class InAppNotificationCenterController extends AbstractController
     }
 
     #[Route('', name: 'center', methods: ['GET'])]
-    public function center(): Response
+    public function center(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('notifications')) {
             return $redirect;
@@ -71,26 +73,25 @@ class InAppNotificationCenterController extends AbstractController
         // Fetch all recent in-app deliveries for this tenant, newest first
         $deliveries = $this->getInAppDeliveries($tenant, 100);
 
-        // Group by severity from rule event context
-        $grouped = [
-            'critical' => [],
-            'high'     => [],
-            'medium'   => [],
-            'low'      => [],
-            'other'    => [],
-        ];
+        $severityOf = static fn (NotificationDelivery $d): string => (string) (($d->getResponsePayload() ?? [])['severity'] ?? 'other');
 
-        foreach ($deliveries as $delivery) {
-            $payload  = $delivery->getResponsePayload() ?? [];
-            $severity = (string) ($payload['severity'] ?? 'other');
-            $key      = array_key_exists($severity, $grouped) ? $severity : 'other';
-            $grouped[$key][] = $delivery;
+        $severity = $request->query->getString('severity', '');
+        if (in_array($severity, ['critical', 'high', 'medium', 'low'], true)) {
+            $deliveries = array_values(array_filter($deliveries, static fn (NotificationDelivery $d): bool => $severityOf($d) === $severity));
         }
 
         return $this->render('notification_center/index.html.twig', [
-            'deliveries' => $deliveries,
-            'grouped'    => $grouped,
-            'lastSeen'   => $lastSeen,
+            'page'           => ListPage::fromRequest(
+                $deliveries,
+                $request,
+                static fn (NotificationDelivery $d): array => [
+                    ($d->getResponsePayload() ?? [])['rule_name'] ?? null,
+                    ($d->getResponsePayload() ?? [])['event_type'] ?? null,
+                ],
+            ),
+            'critical_count' => count(array_filter($deliveries, static fn (NotificationDelivery $d): bool => $severityOf($d) === 'critical')),
+            'high_count'     => count(array_filter($deliveries, static fn (NotificationDelivery $d): bool => $severityOf($d) === 'high')),
+            'lastSeen'       => $lastSeen,
         ]);
     }
 
@@ -174,7 +175,7 @@ class InAppNotificationCenterController extends AbstractController
             ->setParameter('tenant', $tenant)
             ->setParameter('type', NotificationChannel::TYPE_IN_APP)
             ->setParameter('status', NotificationDelivery::STATUS_SENT)
-            ->orderBy('d.attemptedAt', 'DESC')
+            ->orderBy('d.attemptedAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

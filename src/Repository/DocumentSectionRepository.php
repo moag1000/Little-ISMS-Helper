@@ -35,7 +35,7 @@ class DocumentSectionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.document = :doc')
             ->setParameter('doc', $document)
-            ->orderBy('s.sectionKey', 'ASC')
+            ->orderBy('s.sectionKey', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

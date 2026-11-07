@@ -38,7 +38,7 @@ class IdentityProviderRepository extends ServiceEntityRepository
                ->setParameter('t', $tenant);
         }
 
-        $qb->orderBy('p.tenant', 'ASC')->addOrderBy('p.name', 'ASC');
+        $qb->orderBy('p.tenant', \SortDirection::Ascending)->addOrderBy('p.name', \SortDirection::Ascending);
 
         return array_values($qb->getQuery()->getResult());
     }

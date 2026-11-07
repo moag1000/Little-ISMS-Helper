@@ -240,7 +240,7 @@ final class UserType extends AbstractType implements SectionMapInterface
                     $qb = $repository->createQueryBuilder('t')
                         ->where('t.isActive = :active')
                         ->setParameter('active', true)
-                        ->orderBy('t.name', 'ASC');
+                        ->orderBy('t.name', \SortDirection::Ascending);
                     if ($assignableTenantIds !== null) {
                         $qb->andWhere('t.id IN (:assignableTenantIds)')
                             ->setParameter('assignableTenantIds', $assignableTenantIds);

@@ -9,6 +9,7 @@ use App\Entity\RoadmapTask;
 use App\Form\RoadmapTaskType;
 use App\Repository\RoadmapTaskRepository;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -32,7 +33,7 @@ class RoadmapTaskController extends AbstractController
 
     #[Route('/planning/tasks', name: 'app_planning_task_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
 
@@ -40,7 +41,11 @@ class RoadmapTaskController extends AbstractController
         $tasks = $tenant ? $this->roadmapTaskRepository->findActiveByTenant($tenant) : [];
 
         return $this->render('planning/task/index.html.twig', [
-            'tasks' => $tasks,
+            'page' => ListPage::fromRequest(
+                $tasks,
+                $request,
+                static fn(RoadmapTask $e): array => [$e->getName(), $e->getGroup()?->getName()],
+            ),
         ]);
     }
 

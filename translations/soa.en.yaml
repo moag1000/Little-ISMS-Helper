@@ -25,6 +25,10 @@ soa:
         essential_only: 'Essential controls only (SME)'
         essential_hint: '31 of 93 controls — recommended for companies under 50 employees'
         reset: 'Reset filters'
+    summary:
+        applicable: '%count% applicable'
+        implemented: '%count% implemented'
+        rate: '%rate% % implemented'
     kpi:
         total_controls: 'Total controls'
         applicable_controls: 'Applicable controls'
@@ -207,7 +211,7 @@ soa:
         show:
             title: 'SoA snapshot %date%'
         empty:
-            title: 'No SoA snapshots yet'
+            title: 'No SoA snapshots yet.'
             text: 'As soon as you create a snapshot, the Statement of Applicability is frozen to the chosen as-of-date and can be re-exported into the certification bundle in exactly that state.'
         section:
             integrity: 'Integrity'
