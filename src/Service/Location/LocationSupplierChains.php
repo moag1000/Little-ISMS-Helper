@@ -104,14 +104,14 @@ class LocationSupplierChains
 
         $chain = [];
         foreach ($supplier->getSubcontractorChain() as $entry) {
-            if (!is_array($entry) || trim((string) ($entry['name'] ?? '')) === '') {
+            if (trim($entry['name']) === '') {
                 continue;
             }
-            $code = $this->code(isset($entry['country']) ? (string) $entry['country'] : null);
+            $code = $this->code($entry['country']);
             $chain[] = [
-                'tier' => max(1, (int) ($entry['tier'] ?? 1)),
-                'name' => trim((string) $entry['name']),
-                'service' => trim((string) ($entry['service'] ?? '')) ?: null,
+                'tier' => max(1, $entry['tier']),
+                'name' => trim($entry['name']),
+                'service' => trim((string) $entry['service']) ?: null,
             ] + ($code !== null ? $this->link($code, $safeguarded) : ['code' => null, 'zone' => GdprTransferZones::UNKNOWN, 'band' => 'none']);
         }
         usort($chain, static fn (array $a, array $b): int => $a['tier'] <=> $b['tier']);

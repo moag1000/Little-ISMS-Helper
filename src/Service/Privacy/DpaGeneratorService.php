@@ -124,11 +124,9 @@ class DpaGeneratorService
         // Sub-processors: the supplier's DoraSubcontractor rows (P5: one list).
         $subProcessors = [];
         if ($supplier->hasSubcontractors()) {
-            foreach ((array) $supplier->getSubcontractorChain() as $sub) {
-                if (is_array($sub) && isset($sub['name']) && is_string($sub['name'])) {
+            foreach ($supplier->getSubcontractorChain() as $sub) {
+                if ($sub['name'] !== '') {
                     $subProcessors[] = $sub['name'];
-                } elseif (is_string($sub) && $sub !== '') {
-                    $subProcessors[] = $sub;
                 }
             }
         }
