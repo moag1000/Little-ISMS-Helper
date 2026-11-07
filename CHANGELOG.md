@@ -3,6 +3,59 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.17.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.16.1...v3.17.0) (2026-11-07)
+
+
+### Added
+
+* **bsi:** close the 246 open Kompendium→Grundschutz++ pairs, import updates from the mapping hub ([#1120](https://github.com/moag1000/Little-ISMS-Helper/issues/1120)) ([cd77580](https://github.com/moag1000/Little-ISMS-Helper/commit/cd77580e938e365cdee85e52e7c26b7535f2573c))
+* **bsi:** Kompendium→Grundschutz++ mapping 28 % → 61 %, coverage in Mapping-Hub and KPI ([#1117](https://github.com/moag1000/Little-ISMS-Helper/issues/1117)) ([024f317](https://github.com/moag1000/Little-ISMS-Helper/commit/024f317c180528ba6184cc11eb7ef1c02b9b3793))
+* **compliance:** BSI Grundschutz++ (BSI-Standard 300-1) and robust mapping import ([#1075](https://github.com/moag1000/Little-ISMS-Helper/issues/1075)) ([1355f64](https://github.com/moag1000/Little-ISMS-Helper/commit/1355f64e74b4c0cc4f420732fa8544389730590c))
+* **compliance:** Grundschutz++ compliance wizard and policy templates ([#1092](https://github.com/moag1000/Little-ISMS-Helper/issues/1092)) ([c181704](https://github.com/moag1000/Little-ISMS-Helper/commit/c1817040bfe62987e05c3ebda258e668cdad438e))
+* **data-repair:** Freitext-Verantwortliche — admin page resolves legacy owner texts ([#1123](https://github.com/moag1000/Little-ISMS-Helper/issues/1123)) ([8e20f79](https://github.com/moag1000/Little-ISMS-Helper/commit/8e20f7965fde83247ac1b3a8a134e2e3833613b7))
+* **group-report:** Organisationsvergleich with Excel/PDF export, holding-wide reads fixed ([#1112](https://github.com/moag1000/Little-ISMS-Helper/issues/1112)) ([18dc481](https://github.com/moag1000/Little-ISMS-Helper/commit/18dc481c91bd3358262bc2fcaafc52fa87b5e38b))
+* **kpi:** one KPI catalog with tenant thresholds and euro KPIs (UI wave D) ([#1097](https://github.com/moag1000/Little-ISMS-Helper/issues/1097)) ([8a9e324](https://github.com/moag1000/Little-ISMS-Helper/commit/8a9e3249bdef22ff47503b210567910e6926f240))
+* **lists:** all list pages on the list skeleton, workflow pill in rows ([#1113](https://github.com/moag1000/Little-ISMS-Helper/issues/1113)) ([b17c135](https://github.com/moag1000/Little-ISMS-Helper/commit/b17c135b90c4b29de1da74954671a8c7637157f0))
+* **lists:** one list skeleton with search, pager and summary chips ([#1096](https://github.com/moag1000/Little-ISMS-Helper/issues/1096)) ([dd958bb](https://github.com/moag1000/Little-ISMS-Helper/commit/dd958bbf97095980bc10ab6e3472d27f89d8cedd))
+* **locations:** location map with offline geocoding and site posture ([#1091](https://github.com/moag1000/Little-ISMS-Helper/issues/1091)) ([1df8006](https://github.com/moag1000/Little-ISMS-Helper/commit/1df80066a897fb8212eed27179369e4fc4708540))
+* **locations:** Standortkarte PR 2 – Steuerung (KPIs, Vergleich, Hebel, Sammelaktionen, Export) ([#1099](https://github.com/moag1000/Little-ISMS-Helper/issues/1099)) ([1c8acf8](https://github.com/moag1000/Little-ISMS-Helper/commit/1c8acf884c995022b00ccb12b45d8e42a8cfb123))
+* **locations:** Standortkarte PR 3 – Ebenen Notfall/Audit/Drittland, Lieferkette, Konzernsicht, Ereignis-Modus, Kartenbild im PDF ([#1115](https://github.com/moag1000/Little-ISMS-Helper/issues/1115)) ([04a736e](https://github.com/moag1000/Little-ISMS-Helper/commit/04a736e358b78c52ec0b8f25031ccdf6ccda67a3))
+* **my-day:** one inbox — decide approvals in place, land risk owners on My Day ([#1093](https://github.com/moag1000/Little-ISMS-Helper/issues/1093)) ([116db6f](https://github.com/moag1000/Little-ISMS-Helper/commit/116db6f0e7a18fe38452c76daeceada2b765e286))
+* **nav:** one menu entry per page — remove duplicates, fix empty flyouts ([#1095](https://github.com/moag1000/Little-ISMS-Helper/issues/1095)) ([4aa3411](https://github.com/moag1000/Little-ISMS-Helper/commit/4aa3411c5366ab82e1b117ee380e9d1ca385d887))
+* **persona:** ein Persona-Resolver für Landing, Dashboards, Tour und Downloads ([#1125](https://github.com/moag1000/Little-ISMS-Helper/issues/1125)) ([1f1ee80](https://github.com/moag1000/Little-ISMS-Helper/commit/1f1ee80c40277a7fe87de7578fdd6bbcd044572d))
+* **privacy:** log who opens a data breach or data subject request ([#1102](https://github.com/moag1000/Little-ISMS-Helper/issues/1102)) ([ce8a229](https://github.com/moag1000/Little-ISMS-Helper/commit/ce8a229c9a99efbddc9a8a586de1a5802f087ece))
+* **review:** bulk action "Review bestätigen" for risks, controls, documents and suppliers ([#1110](https://github.com/moag1000/Little-ISMS-Helper/issues/1110)) ([c3a48d6](https://github.com/moag1000/Little-ISMS-Helper/commit/c3a48d6fa34e8e557f6c6bea0cd76eaa0a7ef327))
+* **ui:** every detail page on the detail skeleton (UI wave E, part 2) ([#1106](https://github.com/moag1000/Little-ISMS-Helper/issues/1106)) ([2292b33](https://github.com/moag1000/Little-ISMS-Helper/commit/2292b3323a5205c26b32fb3201d0856412d5c9be))
+* **ui:** Konsistenz-Sweep — ein Datumsfilter, „—“ als Leerwert, eine Schweregrad-Farbskala, Suche zweisprachig ([#1122](https://github.com/moag1000/Little-ISMS-Helper/issues/1122)) ([28d6b4a](https://github.com/moag1000/Little-ISMS-Helper/commit/28d6b4afc952eb8b519e83b8661b638b5681c69a))
+* **ui:** one detail-page skeleton with status band and evidence chain (UI wave E) ([#1098](https://github.com/moag1000/Little-ISMS-Helper/issues/1098)) ([b48c53d](https://github.com/moag1000/Little-ISMS-Helper/commit/b48c53d3bb24627735abee69f772d04a4fc841bf))
+* **ui:** wave F — forms open their core, unsaved-changes guard, context prefill, mapping hub tabs ([#1101](https://github.com/moag1000/Little-ISMS-Helper/issues/1101)) ([1b3d60f](https://github.com/moag1000/Little-ISMS-Helper/commit/1b3d60f3ac8c8629f079029dfe386f0eb8083041))
+* **ui:** wave G — one search/command overlay, one date format, one status vocabulary ([#1108](https://github.com/moag1000/Little-ISMS-Helper/issues/1108)) ([fe78813](https://github.com/moag1000/Little-ISMS-Helper/commit/fe78813dfff1807b003fcd0ab05b55d5e216738a))
+* **ui:** wave H — My Day and decision dialogs for phones ([#1105](https://github.com/moag1000/Little-ISMS-Helper/issues/1105)) ([898bae1](https://github.com/moag1000/Little-ISMS-Helper/commit/898bae121bf945d9549b99ca0dfd249272642df9))
+
+
+### Fixed
+
+* **api:** replace deprecated ApiFilter with QueryParameter, SortDirection in OrderBy, separate rate limiters ([#1116](https://github.com/moag1000/Little-ISMS-Helper/issues/1116)) ([a0b9506](https://github.com/moag1000/Little-ISMS-Helper/commit/a0b950607b82718b368c715dc0126039b6d5ec80))
+* app-wide sweep for five bug patterns ([#1094](https://github.com/moag1000/Little-ISMS-Helper/issues/1094)) ([988eac0](https://github.com/moag1000/Little-ISMS-Helper/commit/988eac096dfc600f8a7dc1f9d8cd7b46d6d55ecf))
+* **backup:** organisation backup keeps the organisation record and its settings ([#1104](https://github.com/moag1000/Little-ISMS-Helper/issues/1104)) ([e52ffbb](https://github.com/moag1000/Little-ISMS-Helper/commit/e52ffbb37c7b82f5cd5df6595dc2e6f1c62f7be4))
+* Bug-Sweep 3 Teil 2 — listeners write after the flush, holding actions reach the subsidiaries ([#1121](https://github.com/moag1000/Little-ISMS-Helper/issues/1121)) ([6ccc421](https://github.com/moag1000/Little-ISMS-Helper/commit/6ccc42128ca644acb23cec0c3b1f82e4b687adbf))
+* Bug-Sweep 4 Teil 1 — Controller und Templates ([#1124](https://github.com/moag1000/Little-ISMS-Helper/issues/1124)) ([39ede76](https://github.com/moag1000/Little-ISMS-Helper/commit/39ede76e5979c726e707f5107d06af43c7ddd649))
+* **deps:** Symfony 7.4.23 security release (14 advisories) ([dc628ae](https://github.com/moag1000/Little-ISMS-Helper/commit/dc628ae8b9d55211b5aad51d1c108bd16d8866b8))
+* remaining [#1059](https://github.com/moag1000/Little-ISMS-Helper/issues/1059) leftovers — tenant-scoped reports, import preview, SSO linking, orphan repair ([#1111](https://github.com/moag1000/Little-ISMS-Helper/issues/1111)) ([9d4d918](https://github.com/moag1000/Little-ISMS-Helper/commit/9d4d91879b0e884689596eec71425f9aabce65f1))
+* scheduler never fired, plus remaining bug-pattern sweep findings ([#1100](https://github.com/moag1000/Little-ISMS-Helper/issues/1100)) ([4776175](https://github.com/moag1000/Little-ISMS-Helper/commit/4776175f7f50bee7befd92358a57d027466d5839))
+* **security:** Bug-Sweep 3 — login throttling, trusted proxies, read-only auditor, formula injection, backup filenames ([#1119](https://github.com/moag1000/Little-ISMS-Helper/issues/1119)) ([09f156d](https://github.com/moag1000/Little-ISMS-Helper/commit/09f156de4d9212ed9049afd22305278f87268459))
+* **sso:** let the tenant filter see a global identity provider ([#1103](https://github.com/moag1000/Little-ISMS-Helper/issues/1103)) ([51da195](https://github.com/moag1000/Little-ISMS-Helper/commit/51da19581b12066770323fbaabc51c1e473555cf))
+* **tenancy:** records without a tenant, settings without effect, group policy modes ([#1090](https://github.com/moag1000/Little-ISMS-Helper/issues/1090)) ([5f97041](https://github.com/moag1000/Little-ISMS-Helper/commit/5f970414773142221e32dfd828e74d0a7c732d21))
+
+
+### Changed
+
+* **css:** drop unused CSS, merge five legacy stylesheets into app.css ([#1109](https://github.com/moag1000/Little-ISMS-Helper/issues/1109)) ([470677b](https://github.com/moag1000/Little-ISMS-Helper/commit/470677bb31c15aa3acdd504b0a7600be878d4a25))
+* **orm:** SortDirection for all QueryBuilder sort directions, Gate 81 ([#1118](https://github.com/moag1000/Little-ISMS-Helper/issues/1118)) ([9c13b9e](https://github.com/moag1000/Little-ISMS-Helper/commit/9c13b9e5ebfd0d43f0afa9fa943c0e56929ed7ee))
+* **ui:** Bootstrap-Reste auf Aurora umstellen, Gate 62 auf null ([#1107](https://github.com/moag1000/Little-ISMS-Helper/issues/1107)) ([a692bb1](https://github.com/moag1000/Little-ISMS-Helper/commit/a692bb1f83152e7a51523095388ef6928539dd2f))
+* **ui:** merge duplicate Stimulus controllers, repair silent wirings, Gate 79 ([#1114](https://github.com/moag1000/Little-ISMS-Helper/issues/1114)) ([eccf4b5](https://github.com/moag1000/Little-ISMS-Helper/commit/eccf4b5357cce4503b205753474206a9e812279b))
+* **ui:** Welle I de-clutter + De-Slop – tote UI, wirkungslose Settings, Copy-Regeln ([#1077](https://github.com/moag1000/Little-ISMS-Helper/issues/1077)) ([dc628ae](https://github.com/moag1000/Little-ISMS-Helper/commit/dc628ae8b9d55211b5aad51d1c108bd16d8866b8))
+
 ## [3.16.1](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.16.0...v3.16.1) (2026-11-01)
 
 
