@@ -163,11 +163,13 @@ final class AiBreachNotificationKind extends AbstractAiKind
             if ($value === '') {
                 continue;
             }
-            match ($field) {
-                'breachNature' => $breach->setBreachNature($value),
-                'likelyConsequences' => $breach->setLikelyConsequences($value),
-                'measuresTaken' => $breach->setMeasuresTaken($value),
-            };
+            if ($field === 'breachNature') {
+                $breach->setBreachNature($value);
+            } elseif ($field === 'likelyConsequences') {
+                $breach->setLikelyConsequences($value);
+            } else {
+                $breach->setMeasuresTaken($value);
+            }
             $written++;
         }
         if ($written === 0) {
