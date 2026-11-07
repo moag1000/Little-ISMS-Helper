@@ -120,9 +120,11 @@ if ($tenantScope->getAllSubsidiaries() !== [])             return 'holding';
 return 'single';
 ```
 
+**Organisation records** (`Tenant`) of the scope are always included in scoped backups (`id IN scope`). They hold every organisation setting — branding and logo, TLP default, authorities/CSIRT, on-call, DPO data, methodology, maturity target, the `settings` JSON (e.g. location map) and active modules. Before 2026-11 they were skipped like global entities, so an organisation backup restored an unconfigured organisation.
+
 **Entities without tenant association** (e.g., `Role`, `Permission`, `SystemSettings`) are silently skipped in scoped backups and listed in `metadata.skipped_global_entities`. They are only included in global backups.
 
-**Restore scope filtering** is performed in `RestoreService::filterEntitiesByScope()`: each serialized entity's `tenant_id` key (stored as `{"id": X}`) is checked against `$targetScopeIds`. Entities with no `tenant_id` key (global entities) are always included.
+**Restore scope filtering** is performed in `RestoreService::filterEntitiesByScope()`: each serialized entity's `tenant_id` key (stored as `{"id": X}`) is checked against `$targetScopeIds`. Entities with no `tenant_id` key (global entities) are always included, except `Tenant` rows, which are kept only when their own `id` is in scope. A scoped restore always updates the organisation record in place (never deletes or replaces it, whatever the existing-data strategy), keeps the live `@ORM\Version` value of existing rows, pins the identity fields of an existing organisation (`code`, `azureTenantId`, `isActive`, `status`, `isCorporateParent`, `parent`) to their current values (the SHA256 seal can be recomputed, so a crafted backup must not rebind SSO or move the organisation into another group), and a scoped `clear_before_restore` never empties a table without tenant association. An organisation backup restored without a target scope (instance-wide restore, setup wizard) uses the backup's recorded `tenant_scope` as scope, so it never clears other organisations' data.
 
 ---
 

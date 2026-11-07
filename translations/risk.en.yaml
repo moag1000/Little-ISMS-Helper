@@ -133,7 +133,6 @@ risk:
   field:
     title: 'Risk Name'
     score: 'Risk Score'
-    level: Risk Level
     treatment_strategy: Treatment Strategy
     status: Status
     asset: 'Affected Asset'
@@ -514,31 +513,11 @@ risk:
     impact_justification: 'e.g. In case of occurrence, customer data, availability and reputation would be affected...'
     decision_approved_by_user: '-- Select approving person --'
     decision_rationale: 'Rationale for the chosen treatment strategy...'
-  probability:
-    rare: Rare
-    unlikely: Unlikely
-    possible: Possible
-    likely: Likely
-    almost_certain: Almost Certain
-  impact:
-    negligible: Negligible
-    minor: Minor
-    moderate: Moderate
-    major: Major
-    severe: Severe
   level:
     low: Low Risk
     medium: Medium Risk
     high: High Risk
     critical: Critical Risk
-  presets: Quick Presets
-  preset:
-    low: Set Low Risk
-    medium: Set Medium Risk
-    high: Set High Risk
-    critical: Set Critical Risk
-  show_matrix: Show Risk Matrix
-  matrix_help: Click on a cell to set probability and impact directly
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
     subject_required: 'Risk subject: at least one of asset, person, location, or supplier must be linked (ISO 27001 Cl. 6.1.2 c).'

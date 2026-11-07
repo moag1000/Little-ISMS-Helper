@@ -30,7 +30,7 @@ import { faT } from '../js/fa-i18n.js';
  * the older `toast` controller, so existing dispatchers keep working.
  */
 export default class extends Controller {
-    static targets = ['stack'];
+    static targets = ['stack', 'toast'];
     static values = {
         defaultDuration: { type: Number, default: 5000 },
         maxStackSize:    { type: Number, default: 5 },

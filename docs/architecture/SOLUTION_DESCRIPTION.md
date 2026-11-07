@@ -627,7 +627,6 @@ public function logDelete(string $entityType, ?int $entityId, array $oldValues, 
 - Filterung nach Entity-Typ
 - Sortierung nach Relevanz (Doctrine Full-Text Search)
 - Highlighting von Suchbegriffen in Ergebnissen
-- Quick-View-Modal für schnelle Vorschau
 
 ---
 

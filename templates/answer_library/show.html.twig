@@ -122,8 +122,10 @@
                 <div class="mt-3">
                     <form method="post"
                           action="{{ path('app_answer_library_delete', {id: entry.id, _locale: app.request.locale}) }}"
-                          data-controller="fa-confirm"
-                          data-fa-confirm-message-value="{{ 'answer_library.confirm.delete'|trans({}, 'answer_library') }}">
+                          data-controller="ui-actions"
+                          data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'answer_library.confirm.delete'|trans({}, 'answer_library') }}"
+                          data-ui-actions-tone-param="danger">
                         <input type="hidden" name="_token"
                                value="{{ csrf_token('answer_library_delete_' ~ entry.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">

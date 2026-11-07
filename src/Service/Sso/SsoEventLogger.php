@@ -99,4 +99,41 @@ class SsoEventLogger
             ),
         );
     }
+
+    /**
+     * An administrator bound an account to $provider + $subject by hand
+     * (replacing $previousProvider / $previousSubject, if any).
+     */
+    public function logAccountLinked(
+        IdentityProvider $provider,
+        User $user,
+        ?IdentityProvider $previousProvider,
+        ?string $previousSubject,
+        string $subject,
+    ): void {
+        $this->audit->logCustom(
+            AuditLogger::ACTION_SSO_ACCOUNT_LINKED,
+            'IdentityProvider',
+            $provider->getId(),
+            [
+                'user_id' => $user->getId(),
+                'provider_slug' => $previousProvider?->getSlug(),
+                'subject' => $previousSubject,
+            ],
+            ['user_id' => $user->getId(), 'provider_slug' => $provider->getSlug(), 'subject' => $subject],
+            sprintf('SSO account linked by an administrator: user %d to %s', (int) $user->getId(), $provider->getSlug()),
+        );
+    }
+
+    public function logAccountUnlinked(IdentityProvider $provider, User $user, ?string $subject): void
+    {
+        $this->audit->logCustom(
+            AuditLogger::ACTION_SSO_ACCOUNT_UNLINKED,
+            'IdentityProvider',
+            $provider->getId(),
+            ['user_id' => $user->getId(), 'provider_slug' => $provider->getSlug(), 'subject' => $subject],
+            ['user_id' => $user->getId()],
+            sprintf('SSO account link removed by an administrator: user %d from %s', (int) $user->getId(), $provider->getSlug()),
+        );
+    }
 }

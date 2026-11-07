@@ -134,7 +134,7 @@
                          style="background: var(--surface); z-index: 10;">
                         <button type="submit"
                                 class="fa-cyber-btn fa-cyber-btn--primary"
-                                data-action="click->import-progress#onCommitClick">
+                                data-import-commit>
                             <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                             <span class="fa-cyber-btn__label">{{ 'import.action.commit'|trans({}, 'data_import') }}</span>
                         </button>
@@ -156,7 +156,7 @@
 <script nonce="{{ csp_nonce() }}">
     {# Emit scanning mood when the commit button is clicked #}
     document.addEventListener('turbo:load', function () {
-        var commitBtn = document.querySelector('[data-action="click->import-progress#onCommitClick"]');
+        var commitBtn = document.querySelector('[data-import-commit]');
         if (commitBtn) {
             commitBtn.addEventListener('click', function () {
                 window.alvaBus?.emit({ mood: 'scanning', reason: 'import-commit-started' });

@@ -448,10 +448,10 @@ an instance-wide provider's slug is reserved), which makes legacy slug-only
 links for that slug ambiguous — they are refused neutrally; id links keep
 working. Re-authentication of a signed-in user resolves the provider without
 the organisation filter (global and parent-organisation providers work) and
-then applies the usual allowed-for-user check. Known limitation: such a re-authentication
-does not apply the provider's claim→role mappings (they are loaded under the
-user's organisation filter); roles are synchronised on the next regular SSO
-login. This never grants a role, it only defers an IdP-side change. The post-login `target` of an
+then applies the usual allowed-for-user check. The provider's claim→role
+mappings are read without the organisation filter as well, so a
+re-authentication through a global or parent-organisation provider
+synchronises roles like a regular SSO login (never-privileged rule unchanged). The post-login `target` of an
 SSO start and the `return_to` of the re-authentication page follow one rule
 (same-origin relative path; `//…` and `/\…` are refused), the target is never
 carried over to a later start, and the password / MFA login re-checks any
@@ -470,15 +470,25 @@ with it off**. With the option off
 such a login is refused with a message pointing to the password login or an
 administrator; already linked accounts and new (JIT) accounts are not
 affected. An account already bound to *another* provider is never re-bound
-by e-mail, whatever the option says. To link an account deliberately,
-enable the option, let the user sign in once, then disable it again. The
+by e-mail, whatever the option says. To link an account deliberately, use
+**Admin → Benutzer → (Konto) → SSO-Verknüpfung**: choose an enabled provider
+that may sign the account in (global, or one of the account's organisation
+tree) and enter the subject (OIDC `sub`, SAML NameID). The same card changes
+or removes a binding. Rules: the admin may edit the account; a privileged
+account only an instance operator, and only to a global provider; one
+subject per provider belongs to one account. Every change is an
+`sso.account.linked` / `sso.account.unlinked` event in the provider's audit
+trail. The provider an account is bound to is loaded with the account and
+outside the tenant filter (`UserSsoProviderLoader`): a parent-organisation
+provider is hidden from the account's own (child) organisation, and the lazy
+load used to end in a 500 on every page (global providers are shared rows). The
 organisation-tree and never-privileged rules above apply whether the option
 is on or off.
 
 A login through the *same* provider with a *different* subject id (`sub`)
 for an already linked account is never re-linked either — it is refused and
 recorded as an `sso.login_failure` audit event with reason `subject_changed`;
-an IdP subject change needs admin action.
+an IdP subject change needs admin action (the *SSO-Verknüpfung* card above).
 
 SSO enforcement (`Tenant::ssoEnforced`, `domainBindingMode = enforce`) does
 not lock such users out. A password login is redirected to
@@ -500,19 +510,20 @@ So an organisation admin cannot switch off operator-level enforcement by
 disabling the own provider — **provided the operator's enforcing provider has
 e-mail linking on**. If it is off, such users fall back to password + MFA
 (listed on *Admin → SSO*): enable e-mail linking on the enforcing provider or
-link the users manually (let them sign in once while linking is on).
+link the users by hand (*SSO-Verknüpfung* on the user page).
 
 **Privileged accounts are never linked by e-mail** — through any provider,
 global ones included (`ROLE_SUPER_ADMIN`, `ROLE_GROUP_CISO`,
 `ROLE_KONZERN_AUDITOR`, `ROLE_ALLOWED_TO_SWITCH`). An existing binding keeps
-working; a new one for such an account needs a binding made while the account
-was not privileged, or an operator. Under SSO enforcement an unbound
+working; a new one is made by an instance operator on the user page
+(*SSO-Verknüpfung*, global providers only). Under SSO enforcement an unbound
 privileged account keeps password + MFA.
 
 Only when no enabled, allowed provider can sign the user in does the
 password login proceed; once the account is linked, enforcement applies. The SSO admin page
 (*Admin → SSO*) lists these exempted accounts (count and names, limited to
-the accounts the viewer may see).
+the accounts the viewer may see; the organisation's providers are loaded once
+per page view, not per account).
 
 **Env-configured Azure OAuth/SAML login** (`AZURE_*` variables, no provider
 record): when an Azure object id is not yet known, the login used to link any

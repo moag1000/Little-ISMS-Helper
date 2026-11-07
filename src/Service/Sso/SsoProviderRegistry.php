@@ -97,10 +97,12 @@ class SsoProviderRegistry
 
     /**
      * Returns the IdP an enforced-binding email MUST use, if any.
+     *
+     * @param list<IdentityProvider>|null $enabledProviders the tenant's enabled providers when the caller already loaded them
      */
-    public function findEnforcedProviderForEmail(?Tenant $tenant, string $email): ?IdentityProvider
+    public function findEnforcedProviderForEmail(?Tenant $tenant, string $email, ?array $enabledProviders = null): ?IdentityProvider
     {
-        foreach ($this->repo->findEnabledForTenant($tenant) as $p) {
+        foreach ($enabledProviders ?? $this->repo->findEnabledForTenant($tenant) as $p) {
             if ($p->getDomainBindingMode() === IdentityProvider::DOMAIN_MODE_ENFORCE
                 && $p->matchesEmailDomain($email)
             ) {
