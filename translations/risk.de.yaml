@@ -132,7 +132,6 @@ risk:
   field:
     title: Risikobezeichnung
     score: Risikobewertung
-    level: Risikostufe
     treatment_strategy: Behandlungsstrategie
     status: Status
     asset: Betroffenes Asset
@@ -527,32 +526,11 @@ risk:
     impact_justification: 'z.B. Bei Eintritt wären Kundendaten, Verfügbarkeit und Reputation betroffen...'
     decision_approved_by_user: '-- Genehmigende Person auswählen --'
     decision_rationale: 'Begründung für die gewählte Behandlungsstrategie...'
-  probability:
-    rare: Selten
-    unlikely: Unwahrscheinlich
-    possible: Möglich
-    likely: Wahrscheinlich
-    almost_certain: Fast sicher
-  impact:
-    negligible: Vernachlässigbar
-    minor: Gering
-    moderate: Moderat
-    major: Erheblich
-    severe: Schwerwiegend
   level:
     low: Niedriges Risiko
     medium: Mittleres Risiko
     high: Hohes Risiko
     critical: Kritisches Risiko
-  presets: Schnellauswahl
-  preset:
-    low: Niedriges Risiko setzen
-    medium: Mittleres Risiko setzen
-    high: Hohes Risiko setzen
-    critical: Kritisches Risiko setzen
-  show_matrix: Risikomatrix anzeigen
-  matrix_help: Klicken Sie auf eine Zelle, um Wahrscheinlichkeit und Auswirkung direkt
-    zu setzen
   error:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
     subject_required: 'Risiko-Bezug: Mindestens eines von Asset, Person, Standort oder Lieferant muss verknüpft sein (ISO 27001 Cl. 6.1.2 c).'

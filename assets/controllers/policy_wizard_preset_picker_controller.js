@@ -26,29 +26,45 @@ export default class extends Controller {
     static targets = ['select', 'standard', 'preview']
     static values = { previewUrl: String }
 
+    /** Single-bundle <select>. */
     onChange(event) {
         const key = (event.target.value || '').trim()
-        if (key === '') {
+        this.#preview(key === '' ? [] : [key])
+    }
+
+    /** Multi-bundle <select multiple> (Step 1 welcome standards): union of all picked bundles. */
+    onMultiChange(event) {
+        const keys = Array.from(event.target.selectedOptions || [])
+            .map((option) => option.value.trim())
+            .filter((key) => key !== '')
+        this.#preview(keys)
+    }
+
+    #preview(keys) {
+        if (keys.length === 0) {
             this.clearPreview()
             return
         }
-        if (!this.previewUrlValue || this.previewUrlValue === '') {
+        if (!this.previewUrlValue) {
             return
         }
 
-        const url = this.previewUrlValue.replace('__KEY__', encodeURIComponent(key))
-        fetch(url, {
+        Promise.all(keys.map((key) => fetch(this.previewUrlValue.replace('__KEY__', encodeURIComponent(key)), {
             method: 'GET',
             credentials: 'same-origin',
             headers: { Accept: 'application/json' },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('preset_preview_failed')
-                }
-                return response.json()
-            })
-            .then((data) => this.applyPreview(data))
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('preset_preview_failed')
+            }
+            return response.json()
+        })))
+            .then((all) => this.applyPreview({
+                preselected_standards: [...new Set(all.flatMap((d) => d.preselected_standards || []))],
+                // no estimated_document_count: applyPreview() derives it from the
+                // union of standards, so overlapping bundles are not counted twice
+                regulatory_references: [...new Set(all.flatMap((d) => d.regulatory_references || []))],
+            }))
             .catch(() => this.clearPreview())
     }
 

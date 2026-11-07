@@ -3,12 +3,6 @@ compliance:
         success: 'Created %count% new mappings between %framework1% and %framework2%.'
         skipped_suffix: '(%count% already existed, skipped)'
         error: 'Error creating mappings: %reason%'
-    heatmap:
-        title: 'Compliance Heatmap'
-        caption: 'Framework × control-cluster fulfillment heatmap'
-        col_framework: 'Framework'
-        col_cluster: 'Control Cluster'
-        no_data: 'No mapping data available for the heatmap yet.'
     iso9001_bridge:
         prefix: 'For 9001 practitioners:'
         more: 'full 9001 ↔ 27001 bridge →'
@@ -1116,6 +1110,8 @@ compliance:
             preview: 'Preview Coverage'
             view_details: 'View Details'
             delete: 'Delete'
+        confirm:
+            delete: 'Delete this certificate?'
         empty:
             title: 'No certificates yet.'
             text: 'Upload your first external compliance certificate to bulk-fulfil requirements.'

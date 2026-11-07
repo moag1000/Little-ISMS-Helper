@@ -515,10 +515,7 @@ export default class extends Controller {
     }
 
     translations(key) {
-        // Labels are passed as data-values from the template via a shared `i18n` stash.
-        // Minimal fallback — production uses twig-set dataset on the mount point.
-        const t = this.data.get(`i18n-${key}`);
-        if (t) return t;
+        // Labels come from translations/ui.*.yaml (ui.js.guided_tour.*).
         const fallback = {
             next: () => faT('guided_tour.next'),
             previous: () => faT('guided_tour.previous'),

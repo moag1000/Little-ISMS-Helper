@@ -1,0 +1,3 @@
+# Gate 79 — Stimulus references that do not resolve (check_stimulus_wiring.py).
+# Only runtime-built names belong here: `kind  location  detail  # reason`.
+unknown-method templates/_components/_mega_menu_panel_only.html.twig keyboard-shortcuts#toggle  # fixed by Welle G (search + palette PR); drop on its merge
