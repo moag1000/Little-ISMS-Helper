@@ -64,8 +64,8 @@ class RiskAppetiteController extends AbstractController
 
         // Get all risks to show appetite vs actual comparison
         $allRisks = $this->riskRepository->findAll();
-        $globalAppetite = $this->riskAppetiteRepository->findGlobalAppetiteForTenant(null);
-        $categories = $this->riskAppetiteRepository->findDistinctCategories(null);
+        $globalAppetite = $this->riskAppetiteRepository->findGlobalAppetiteForTenant($this->tenantContext->getCurrentTenant());
+        $categories = $this->riskAppetiteRepository->findDistinctCategories($this->tenantContext->getCurrentTenant());
 
         // Calculate risks exceeding appetite
         $risksExceedingAppetite = [];

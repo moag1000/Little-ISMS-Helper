@@ -321,6 +321,20 @@ class QuickFixControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testAnonymousVisitorCannotRunDataRepair(): void
+    {
+        // Status page + migrations are public for recovery; data repair and
+        // destructive schema changes need a super admin or the installer token.
+        $token = $this->generateCsrfToken('quick_fix_repair_all');
+
+        $this->client->request('POST', '/quick-fix/repair/all', [
+            '_token' => $token,
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
     public function testRepairAllWithInvalidCsrfIsForbidden(): void
     {
         $this->client->loginUser($this->testUser);

@@ -23,10 +23,10 @@ use Symfony\Component\Routing\Attribute\Route;
  * while the app is in a degraded boot state — the exact scenario QuickFix
  * exists to recover from.
  *
- * Threat model: callers that pass {@see QuickFixGuard::mayAccess()} have full
- * access to apply migrations, reconcile schema and reassign tenants on
- * this endpoint set — so reading their job-status JSON or rendering the
- * progress page adds no privilege. UUID-v4 validation still guards
+ * Threat model: callers that pass {@see QuickFixGuard::mayAccess()} may apply
+ * migrations on this endpoint set — reading a job-status JSON or rendering the
+ * progress page adds no privilege (destructive actions additionally need
+ * {@see QuickFixGuard::mayRunPrivileged()} when they are dispatched). UUID-v4 validation still guards
  * against directory traversal on the status file path.
  */
 class QuickFixJobStatusController extends AbstractController

@@ -104,14 +104,12 @@ final class IndustryBaselineService
     public function loadBaseline(string $frameworkCode, string $idOrFilename): array
     {
         $dir = $this->baselineDir($frameworkCode);
-        $candidates = [
-            $dir . '/' . $idOrFilename . '.yaml',
-            $dir . '/' . $idOrFilename,
-        ];
+        // Whitelist against the files that really live in the baseline dir —
+        // the user-supplied id never becomes part of a filesystem path.
         $found = null;
-        foreach ($candidates as $path) {
-            if (is_file($path)) {
-                $found = $path;
+        foreach (glob($dir . '/*.yaml') ?: [] as $f) {
+            if (basename($f, '.yaml') === $idOrFilename || basename($f) === $idOrFilename) {
+                $found = $f;
                 break;
             }
         }
@@ -232,7 +230,7 @@ final class IndustryBaselineService
     private function baselineDir(string $frameworkCode): string
     {
         // Sanitise to avoid traversal — only [A-Za-z0-9_.-] allowed.
-        if (preg_match('/^[A-Za-z0-9_.\-]+$/', $frameworkCode) !== 1) {
+        if (preg_match('/^[A-Za-z0-9_.\-]+$/', $frameworkCode) !== 1 || trim($frameworkCode, '.') === '') {
             throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf('Ungültiger Framework-Code: "%s".', $frameworkCode), 'frameworkCode');
         }
 

@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\SupplierCriticalityLevelRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * DORA-ICT-Kritikalität bleibt separat (Supplier.ictCriticality) und
  * wird nicht mit diesem Entity verquickt.
  */
+#[UniqueEntity(fields: ['tenant', 'code'], message: 'validators.supplier_criticality.code_unique')]
 #[ORM\Entity(repositoryClass: SupplierCriticalityLevelRepository::class)]
 #[ORM\Table(name: 'supplier_criticality_level')]
 #[ORM\Index(name: 'idx_scl_tenant', columns: ['tenant_id'])]

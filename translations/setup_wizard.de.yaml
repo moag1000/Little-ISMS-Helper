@@ -50,3 +50,4 @@ existing_frameworks:
     flash:
         saved: '%count% neue Frameworks für Reuse-Aktivierung gemerkt.'
         skipped: 'Portfolio-Abfrage übersprungen — Reuse-Prognose nicht aktiv.'
+    saved: 'Auswahl gespeichert.'

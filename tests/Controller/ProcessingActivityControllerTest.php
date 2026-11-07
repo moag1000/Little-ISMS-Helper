@@ -194,9 +194,18 @@ class ProcessingActivityControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testPlainUserCannotOpenNewForm(): void
+    {
+        // GDPR records are written by managers / DPO only (like data breaches).
+        $this->loginAsUser($this->testUser);
+        $this->client->request('GET', '/en/processing-activity/new');
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    #[Test]
     public function testNewDisplaysForm(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $crawler = $this->client->request('GET', '/en/processing-activity/new');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
@@ -214,7 +223,7 @@ class ProcessingActivityControllerTest extends WebTestCase
     #[Test]
     public function testEditDisplaysForm(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $crawler = $this->client->request('GET', '/en/processing-activity/' . $this->testActivity->getId() . '/edit');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');

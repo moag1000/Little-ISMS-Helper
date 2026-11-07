@@ -25,10 +25,6 @@
         subtitle: 'admin.data_repair.section.orphans_description'|trans({}, 'admin'),
     }) }}
 
-    {% for message in app.flashes('success') %}{{ _fa_alert.render({ variant: 'success', dismissible: true, body: message|e }) }}{% endfor %}
-    {% for message in app.flashes('error') %}{{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message|e }) }}{% endfor %}
-    {% for message in app.flashes('warning') %}{{ _fa_alert.render({ variant: 'warning', dismissible: true, body: message|e }) }}{% endfor %}
-    {% for message in app.flashes('info') %}{{ _fa_alert.render({ variant: 'info', dismissible: true, body: message|e }) }}{% endfor %}
 
     {# Cache state + refresh-now CTA #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: cache is null ? 'warning' : 'info', class: 'mb-4' } } %}

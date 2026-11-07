@@ -176,6 +176,13 @@ user:
         privileged_role_forbidden: 'Only a super administrator may grant or revoke the roles Super Admin, Group CISO and Group Auditor. The change was not saved.'
         tenant_not_assignable: 'You can only assign organizations you administer. The change was not saved.'
         import_email_unavailable: 'Skipped: %email% cannot be imported (e-mail address not available).'
+        import_invalid_email: 'Skipped: invalid e-mail address "%email%".'
+        import_duplicate_in_file: 'Skipped: %email% appears more than once in the file.'
+        import_file_rejected: 'The file was rejected.'
+        import_missing_fields: 'Row skipped: e-mail, first name or last name missing.'
+        import_no_organisation: 'Skipped: no organisation can be assigned to %email%.'
+        import_role_skipped: 'Privileged role %role% not assigned to %email%.'
+        import_row_failed: 'Row not imported: %error%'
     auth_provider:
         local: 'Local Authentication'
     auth:
@@ -329,6 +336,9 @@ user_management:
 
 # Flat profile keys (for ProfileController compatibility)
 profile:
+    error:
+        avatar_upload_invalid: 'Avatar not uploaded: %error%'
+        avatar_upload_failed: 'Avatar could not be uploaded. Please try again.'
     success:
         updated: Profile updated
         password_changed: Password changed

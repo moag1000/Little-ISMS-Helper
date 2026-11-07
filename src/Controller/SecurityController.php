@@ -33,10 +33,14 @@ class SecurityController extends AbstractController
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         // Store locale preference from query parameter or browser preference
-        $locale = $request->query->get('locale')
+        $requested = $request->query->get('locale');
+        $locale = (is_string($requested) && in_array($requested, ['de', 'en'], true) ? $requested : null)
             ?? $request->getSession()->get('_locale')
             ?? $request->getPreferredLanguage(['de', 'en'])
             ?? 'de';
+        if (!in_array($locale, ['de', 'en'], true)) {
+            $locale = 'de';
+        }
 
         $request->getSession()->set('_locale', $locale);
         $request->setLocale($locale);

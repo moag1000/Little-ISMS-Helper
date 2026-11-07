@@ -130,14 +130,13 @@ class IndustryPresetController extends AbstractController
             );
         }
 
-        $this->addFlash('success', sprintf(
-            'Preset "%s" applied: %d modules, %d frameworks, %d controls, %d documents.',
-            $config['name'] ?? $preset,
-            count($modulesActivated),
-            $frameworksActivated,
-            $controlsCreated,
-            $documentsCreated,
-        ));
+        $this->addFlash('success', $this->translator->trans('admin.industry_preset.applied', [
+            '%name%' => $config['name'] ?? $preset,
+            '%modules%' => count($modulesActivated),
+            '%frameworks%' => $frameworksActivated,
+            '%controls%' => $controlsCreated,
+            '%documents%' => $documentsCreated,
+        ], 'admin'));
 
         return $this->redirectToRoute('app_admin_industry_preset_index');
     }

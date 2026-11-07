@@ -206,6 +206,7 @@ eu_authorities:
             body: 'Generate the first XBRL export for your DORA Register of Information.'
         error:
             confirmation_required: 'Confirmation number is required.'
+            already_submitted: 'This record is already marked as submitted.'
         success:
             submitted: 'DORA RoI marked as submitted. Confirmation number: %number%'
         info:

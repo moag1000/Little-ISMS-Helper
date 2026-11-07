@@ -6,11 +6,14 @@ namespace App\Controller\Api;
 
 use App\Entity\IdentityProvider;
 use App\Service\Sso\OidcDiscoveryService;
+use App\Validator\Constraint\NoInternalIp;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * AJAX endpoint for on-blur discovery URL validation in the SSO wizard.
@@ -26,6 +29,8 @@ final class SsoDiscoveryApiController extends AbstractController
 {
     public function __construct(
         private readonly OidcDiscoveryService $discovery,
+        private readonly ValidatorInterface $validator,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -48,6 +53,12 @@ final class SsoDiscoveryApiController extends AbstractController
 
         if (!filter_var($discoveryUrl, FILTER_VALIDATE_URL) || !str_starts_with($discoveryUrl, 'https://')) {
             return $this->json(['ok' => false, 'error' => 'URL must be a valid HTTPS URL.'], 422);
+        }
+
+        // SSRF guard: no loopback / private / link-local / metadata targets.
+        $violations = $this->validator->validate($discoveryUrl, new NoInternalIp());
+        if (count($violations) > 0) {
+            return $this->json(['ok' => false, 'error' => $this->translator->trans((new NoInternalIp())->message, [], 'messages')], 422);
         }
 
         // Build a temporary entity to leverage OidcDiscoveryService

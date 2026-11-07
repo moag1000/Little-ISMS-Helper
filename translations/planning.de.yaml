@@ -190,6 +190,7 @@ planning:
             effort: 'Aufwand (PT)'
         success:
             saved: 'Einstellung gespeichert.'
+            invalid_effort: 'Aufwand ungültig (0 bis 999,9 PT erlaubt).'
     roadmap:
         title: Kapazitäts-Roadmap
         subtitle: 'Aufwände (PT) je Kalenderwoche planen und gegen die verfügbare Kapazität abgleichen'

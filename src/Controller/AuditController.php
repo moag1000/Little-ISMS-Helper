@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\BulkActionTrait;
+use App\Util\InputDate;
 use App\Service\BulkDeleteService;
 use DateTime;
 use DateTimeImmutable;
@@ -60,8 +61,8 @@ class AuditController extends AbstractController
     {
         $status = $request->query->get('status');
         $scopeType = $request->query->get('scope_type');
-        $dateFrom = ($v = $request->query->get('date_from')) ? new DateTime($v) : null;
-        $dateTo = ($v = $request->query->get('date_to')) ? new DateTime($v) : null;
+        $dateFrom = InputDate::parse($request->query->get('date_from'));
+        $dateTo = InputDate::parse($request->query->get('date_to'));
 
         $allAudits = array_values(array_filter(
             $this->internalAuditRepository->findBy([], ['plannedDate' => 'DESC']),
@@ -327,10 +328,14 @@ class AuditController extends AbstractController
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
-        $items = $data['items'] ?? [];
+        if (in_array($internalAudit->getStatus(), ['reported', 'approved', 'closed'], true)) {
+            return new JsonResponse(['error' => $this->translator->trans('checklist.flash.locked', [], 'audit')], Response::HTTP_CONFLICT);
+        }
+
+        $items = is_array($data['items'] ?? null) ? $data['items'] : [];
         $updated = 0;
         foreach ($items as $itemData) {
-            $itemId = (int) ($itemData['id'] ?? 0);
+            $itemId = is_array($itemData) ? (int) ($itemData['id'] ?? 0) : 0;
             if ($itemId <= 0) {
                 continue;
             }
@@ -338,34 +343,24 @@ class AuditController extends AbstractController
             if ($item === null || $item->getAudit()?->getId() !== $internalAudit->getId()) {
                 continue;
             }
-            if (isset($itemData['verificationStatus'])) {
-                $item->setVerificationStatus((string) $itemData['verificationStatus']);
+            if (isset($itemData['verificationStatus'])
+                && in_array($itemData['verificationStatus'], ['not_checked', 'compliant', 'partial', 'non_compliant', 'not_applicable'], true)) {
+                $item->setVerificationStatus($itemData['verificationStatus']);
             }
-            if (isset($itemData['auditNotes'])) {
-                $item->setAuditNotes((string) $itemData['auditNotes']);
-            }
-            if (isset($itemData['evidenceFound'])) {
-                $item->setEvidenceFound((string) $itemData['evidenceFound']);
-            }
-            if (isset($itemData['findings'])) {
-                $item->setFindings((string) $itemData['findings']);
-            }
-            if (isset($itemData['recommendations'])) {
-                $item->setRecommendations((string) $itemData['recommendations']);
+            foreach (['auditNotes', 'evidenceFound', 'findings', 'recommendations'] as $field) {
+                if (isset($itemData[$field])) {
+                    $item->{'set' . ucfirst($field)}((string) $itemData[$field]);
+                }
             }
             if (isset($itemData['complianceScore'])) {
-                $item->setComplianceScore((int) $itemData['complianceScore']);
+                $item->setComplianceScore(max(0, min(100, (int) $itemData['complianceScore'])));
             }
             $item->setUpdatedAt(new \DateTimeImmutable());
             $updated++;
         }
         $this->entityManager->flush();
 
-        return new Response(
-            json_encode(['saved' => $updated, 'message' => $this->translator->trans('checklist.flash.saved', ['%count%' => $updated], 'audit')]),
-            Response::HTTP_OK,
-            ['Content-Type' => 'application/json']
-        );
+        return new JsonResponse(['saved' => $updated, 'message' => $this->translator->trans('checklist.flash.saved', ['%count%' => $updated], 'audit')]);
     }
 
     #[Route('/audit/{id}/delete', name: 'app_audit_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

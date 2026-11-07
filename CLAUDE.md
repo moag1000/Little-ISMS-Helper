@@ -682,6 +682,12 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 - [ ] File uploads checked via `FileUploadSecurityService`
 - [ ] Spreadsheet/CSV cells with record text go through `CsvSanitizer::sanitize()`
       (formula injection); flash messages are plain text, escaped where rendered.
+      Flashes render once, in `base.html.twig`, through `|fa_flash`: a bare key
+      (`addFlash('success', 'tenant.flash.created')`) is translated from the domain
+      named by its first segment, then `messages`, then any domain — the key must
+      exist in DE + EN. Pages do not render `app.flashes` again (base consumed them).
+- [ ] Dates from request input go through `App\Util\InputDate::parse()` / `::ymd()`
+      (`new DateTime($userInput)` throws → 500 on `?date_from=x`).
 - [ ] `ROLE_AUDITOR` / `ROLE_GROUP_CISO` / `ROLE_KONZERN_AUDITOR` are read-only — a
       state-changing action needs at least `ROLE_MANAGER`.
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;

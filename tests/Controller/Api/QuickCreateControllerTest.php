@@ -169,8 +169,9 @@ final class QuickCreateControllerTest extends WebTestCase
         // S15 A2 — BusinessProcess Quick-Create wired into BCP-form
         // (businessProcess EntityType-select). Tenant-scoped, defaults
         // criticality=medium + RTO/RPO/MTPD placeholders so NotBlank passes.
+        // Same role as the business-process form (ROLE_MANAGER).
         $client = static::createClient();
-        $user = $this->getOrCreateUser($client);
+        $user = $this->getOrCreateUser($client, 'ROLE_MANAGER');
         $client->loginUser($user);
         $token = $this->csrfToken($client, 'quick_create');
 
@@ -198,6 +199,28 @@ final class QuickCreateControllerTest extends WebTestCase
         self::assertSame(24, $bp->getRto());
         self::assertSame(24, $bp->getRpo());
         self::assertSame(48, $bp->getMtpd());
+    }
+
+    #[Test]
+    public function plainUserCannotCreateBusinessProcessInline(): void
+    {
+        $client = static::createClient();
+        $client->loginUser($this->getOrCreateUser($client));
+        $token = $this->csrfToken($client, 'quick_create');
+
+        $name = 'QC-BP-User-' . uniqid();
+        $client->request(
+            'POST',
+            '/de/api/quick-create/business-process',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['name' => $name, '_token' => $token])
+        );
+
+        self::assertResponseStatusCodeSame(403);
+        $em = $client->getContainer()->get(EntityManagerInterface::class);
+        self::assertNull($em->getRepository(BusinessProcess::class)->findOneBy(['name' => $name]));
     }
 
     /**
@@ -257,12 +280,12 @@ final class QuickCreateControllerTest extends WebTestCase
         return $tokenValue;
     }
 
-    private function getOrCreateUser(KernelBrowser $client): User
+    private function getOrCreateUser(KernelBrowser $client, string $role = 'ROLE_USER'): User
     {
         $em = $client->getContainer()->get(EntityManagerInterface::class);
         $repo = $em->getRepository(User::class);
 
-        $email = 'quick-create-test-user@test.test';
+        $email = $role === 'ROLE_USER' ? 'quick-create-test-user@test.test' : 'quick-create-' . strtolower($role) . '@test.test';
         $existing = $repo->findOneBy(['email' => $email]);
         if ($existing !== null) {
             return $existing;
@@ -273,7 +296,7 @@ final class QuickCreateControllerTest extends WebTestCase
         $user = new User();
         $user->setEmail($email);
         $user->setPassword('$2y$13$fake_hashed_password_for_quick_create00');
-        $user->setRoles(['ROLE_USER']);
+        $user->setRoles([$role]);
         $user->setTenant($tenant);
         $user->setFirstName('Quick');
         $user->setLastName('Create');

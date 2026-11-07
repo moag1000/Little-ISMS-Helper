@@ -169,6 +169,7 @@ class CrisisTeamController extends AbstractController
     }
 
     #[Route('/crisis-team/{id}/delete', name: 'app_crisis_team_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
@@ -184,6 +185,7 @@ class CrisisTeamController extends AbstractController
     }
 
     #[Route('/crisis-team/{id}/activate', name: 'app_crisis_team_activate', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function activate(Request $request, CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;

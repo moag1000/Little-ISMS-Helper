@@ -111,9 +111,15 @@
     <main class="card">
         {% for label, messages in app.flashes(['success', 'error']) %}
             {% for message in messages %}
-                <div class="flash {{ label }}">{{ message }}</div>
+                <div class="flash {{ label }}">{{ message|fa_flash }}</div>
             {% endfor %}
         {% endfor %}
+
+        {% if not privileged|default(false) %}
+            <div class="flash" role="note" style="background: rgba(148,163,184,0.1); border: 1px solid var(--border); color: var(--muted); font-size: 13px;">
+                {{ 'quick_fix.locked.privileged_hint'|trans({}, 'quick_fix') }}
+            </div>
+        {% endif %}
 
         {# ── Clean-verdict band ─────────────────────────────────── #}
         {% if clean_verdict.ok %}

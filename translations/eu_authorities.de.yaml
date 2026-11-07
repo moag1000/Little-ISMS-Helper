@@ -206,6 +206,7 @@ eu_authorities:
             body: 'Generieren Sie den ersten XBRL-Export für Ihren DORA-RoI.'
         error:
             confirmation_required: 'Bestätigungsnummer ist Pflichtfeld.'
+            already_submitted: 'Dieser Eintrag wurde bereits als eingereicht markiert.'
         success:
             submitted: 'DORA RoI als eingereicht markiert. Bestätigungsnummer: %number%'
         info:

@@ -119,6 +119,10 @@ class ReportBuilderController extends AbstractController
         if ($r = $this->gate()) return $r;
         $user = $this->getUser();
         $tenantId = $this->tenantContext->getCurrentTenantId();
+        if ($tenantId === null) {
+            $this->addFlash('warning', $this->translator->trans('report_builder.no_tenant', [], 'report_builder'));
+            return $this->redirectToRoute('app_dashboard');
+        }
 
         $reports = $this->customReportRepository->findOwnedByUser($user, $tenantId);
         $favorites = $this->customReportRepository->findFavoritesByUser($user, $tenantId);
@@ -145,6 +149,10 @@ class ReportBuilderController extends AbstractController
         if ($r = $this->gate()) return $r;
         $user = $this->getUser();
         $tenantId = $this->tenantContext->getCurrentTenantId();
+        if ($tenantId === null) {
+            $this->addFlash('warning', $this->translator->trans('report_builder.no_tenant', [], 'report_builder'));
+            return $this->redirectToRoute('app_dashboard');
+        }
 
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('report_builder_new', $request->request->get('_token'))) {
@@ -189,6 +197,10 @@ class ReportBuilderController extends AbstractController
         }
         $user = $this->getUser();
         $tenantId = $this->tenantContext->getCurrentTenantId();
+        if ($tenantId === null) {
+            $this->addFlash('warning', $this->translator->trans('report_builder.no_tenant', [], 'report_builder'));
+            return $this->redirectToRoute('app_dashboard');
+        }
 
         $report = $this->reportBuilderService->createFromTemplate($templateKey, $user, $tenantId);
 

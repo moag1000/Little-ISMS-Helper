@@ -1274,6 +1274,12 @@ corporate:
     flash:
         text: 'Beziehungen zwischen Mutter- und Tochtergesellschaften festlegen. Das Governance-Modell bestimmt, wie ISMS-Verantwortlichkeiten zwischen Mutter- und Tochtergesellschaften aufgeteilt werden.'
         error: 'Fehler beim Verarbeiten der Konzernstruktur'
+        parent_not_found: 'Muttergesellschaft nicht gefunden.'
+        invalid_governance: 'Ungültiges Governance-Modell.'
+        parent_set: 'Muttergesellschaft gesetzt.'
+        parent_removed: 'Muttergesellschaft entfernt.'
+        governance_updated: 'Governance-Modell aktualisiert.'
+        no_governance_found: 'Keine Governance-Regel für diesen Bereich vorhanden.'
     level: 'Ebene %level%'
     placeholder:
         parent: 'Keine Muttergesellschaft (eigenständig)'

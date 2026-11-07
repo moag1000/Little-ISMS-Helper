@@ -71,7 +71,7 @@ class QuickFixSettingsController extends AbstractController
                 return $this->render('admin/quick_fix_settings/edit.html.twig', [
                     'current' => $new,
                     'ip_allowlist_invalid' => $invalid,
-                ]);
+                ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
             }
 
             $updatedBy = $user->getUserIdentifier();

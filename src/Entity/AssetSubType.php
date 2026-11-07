@@ -8,6 +8,7 @@ use App\Repository\AssetSubTypeRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -25,6 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Anti-pattern guard: existing Asset.type (top-level) stays untouched — the
  * sub-type FK is purely additive. NO data migration of existing rows.
  */
+#[UniqueEntity(fields: ['tenant', 'topType', 'name'], message: 'validators.asset_sub_type.name_unique')]
 #[ORM\Entity(repositoryClass: AssetSubTypeRepository::class)]
 #[ORM\Table(name: 'asset_sub_type')]
 #[ORM\UniqueConstraint(name: 'uniq_subtype_per_tenant', columns: ['tenant_id', 'top_type', 'name'])]

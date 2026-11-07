@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Service\AuditLogger;
 use App\Service\IndustryBaselineService;
 use App\Service\TenantContext;
+use App\Exception\AppException;
 use DomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Admin module for cross-framework industry baselines.
@@ -31,6 +33,7 @@ final class IndustryBaselineController extends AbstractController
         private readonly IndustryBaselineService $service,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $audit,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -46,6 +49,11 @@ final class IndustryBaselineController extends AbstractController
     #[Route('/{framework}', name: 'show', methods: ['GET'], requirements: ['framework' => '[A-Za-z0-9_.\-]+'])]
     public function show(string $framework): Response
     {
+        $known = array_column($this->service->listFrameworksWithBaselines(), 'code');
+        if (!in_array($framework, $known, true)) {
+            throw $this->createNotFoundException();
+        }
+
         return $this->render('admin/industry_baseline/show.html.twig', [
             'framework' => $framework,
             'baselines' => $this->service->listBaselinesForFramework($framework),
@@ -59,7 +67,7 @@ final class IndustryBaselineController extends AbstractController
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            $this->addFlash('error', 'Mandantenkontext erforderlich.');
+            $this->addFlash('error', 'industry_baseline.flash.tenant_required');
             return $this->redirectToRoute('admin_industry_baselines_show', ['framework' => $framework]);
         }
 
@@ -68,8 +76,8 @@ final class IndustryBaselineController extends AbstractController
 
         try {
             $result = $this->service->applyBaseline($tenant, $framework, $baselineId, $dryRun);
-        } catch (DomainException $e) {
-            $this->addFlash('error', $e->getMessage());
+        } catch (AppException | DomainException $e) {
+            $this->addFlash('error', $this->translator->trans('industry_baseline.flash.apply_failed', ['%message%' => $e->getMessage()], 'industry_baseline'));
             return $this->redirectToRoute('admin_industry_baselines_show', ['framework' => $framework]);
         }
 
@@ -83,19 +91,20 @@ final class IndustryBaselineController extends AbstractController
         }
 
         $missing = $result['missing'];
-        $msg = sprintf(
-            '%s "%s": %d Targets gesetzt, %d übersprungen, %d unbekannte Requirement-IDs.',
-            $dryRun ? 'Vorschau' : 'Angewendet',
-            $result['baseline'],
-            $result['applied'],
-            $result['skipped'],
-            count($missing)
+        $msg = $this->translator->trans(
+            $dryRun ? 'industry_baseline.flash.summary_preview' : 'industry_baseline.flash.summary_applied',
+            [
+                '%baseline%' => $result['baseline'],
+                '%applied%' => $result['applied'],
+                '%skipped%' => $result['skipped'],
+                '%missing%' => count($missing),
+            ],
+            'industry_baseline',
         );
         if ($missing !== []) {
-            $msg .= ' Unbekannt: ' . implode(', ', array_slice($missing, 0, 8));
-            if (count($missing) > 8) {
-                $msg .= ' …';
-            }
+            $msg .= ' ' . $this->translator->trans('industry_baseline.flash.unknown_ids', [
+                '%ids%' => implode(', ', array_slice($missing, 0, 8)) . (count($missing) > 8 ? ' …' : ''),
+            ], 'industry_baseline');
         }
         $this->addFlash($dryRun ? 'info' : 'success', $msg);
 
