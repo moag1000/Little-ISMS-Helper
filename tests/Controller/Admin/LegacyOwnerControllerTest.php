@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Admin report "Freitext-Verantwortliche": lists records whose owner is only
@@ -121,12 +122,12 @@ final class LegacyOwnerControllerTest extends WebTestCase
     {
         $this->client->loginUser($this->admin);
         $crawler = $this->client->request('GET', self::URL);
-        $token = (string) $crawler->filter('input[name="_token"]')->first()->attr('value');
+        $token = $this->pageToken($crawler);
 
         $this->client->request('POST', sprintf('%s/asset/%d/person', self::URL, $this->foreign->getId()), ['_token' => $token]);
         self::assertResponseRedirects();
         $crawler = $this->client->request('GET', self::URL);
-        $token = (string) $crawler->filter('input[name="_token"]')->first()->attr('value');
+        $token = $this->pageToken($crawler);
         $this->client->request('POST', self::URL . '/apply-all', ['_token' => $token]);
         self::assertResponseRedirects();
 
@@ -154,6 +155,14 @@ final class LegacyOwnerControllerTest extends WebTestCase
         $this->client->request('GET', self::URL);
 
         self::assertResponseStatusCodeSame(403);
+    }
+
+    /**
+     * The page's own token (the layout carries other forms with other token ids).
+     */
+    private function pageToken(Crawler $crawler): string
+    {
+        return (string) $crawler->filter('form[action$="/apply-all"] input[name="_token"]')->attr('value');
     }
 
     /**
