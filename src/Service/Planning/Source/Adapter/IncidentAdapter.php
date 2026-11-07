@@ -55,7 +55,9 @@ final class IncidentAdapter implements SourceAdapter
     public function dueDateOf(object $item): ?DateTimeInterface
     {
         assert($item instanceof Incident);
-        return $item->getDetectedAt();
+        // An open incident has no deadline of its own; the statutory reporting
+        // deadlines (NIS-2, GDPR) are sources of their own.
+        return null;
     }
 
     public function titleOf(object $item): string

@@ -5,295 +5,173 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\AuditChecklist;
-use App\Entity\AuditFinding;
-use App\Entity\ChangeRequest;
-use App\Entity\CorrectiveAction;
-use App\Entity\DataBreach;
-use App\Entity\DataSubjectRequest;
 use App\Entity\Document;
 use App\Entity\FourEyesApprovalRequest;
-use App\Entity\Incident;
-use App\Entity\ManagementReview;
 use App\Entity\PolicyAcknowledgement;
-use App\Entity\Risk;
 use App\Entity\Tenant;
-use App\Entity\TrainingParticipation;
 use App\Entity\User;
-use App\Entity\Vulnerability;
 use App\Entity\WizardSession;
 use App\Entity\WorkflowInstance;
-use App\Enum\DataSubjectRequestStatus;
 use App\Repository\AuditChecklistRepository;
-use App\Repository\AuditFindingRepository;
-use App\Repository\ChangeRequestRepository;
-use App\Repository\CorrectiveActionRepository;
-use App\Repository\DataBreachRepository;
-use App\Repository\DataSubjectRequestRepository;
 use App\Repository\DocumentRepository;
-use App\Repository\FourEyesApprovalRequestRepository;
-use App\Repository\IncidentRepository;
-use App\Repository\ManagementReviewRepository;
 use App\Repository\PolicyAcknowledgementRepository;
-use App\Repository\RiskRepository;
-use App\Repository\TrainingParticipationRepository;
-use App\Repository\VulnerabilityRepository;
 use App\Repository\WizardSessionRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Security\Persona\PersonaResolver;
-use App\Service\MyDay\PeriodicReviewBuckets;
+use App\Service\Deadline\Obligation;
+use App\Service\Deadline\ObligationInbox;
 use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Mein-Tag (Central Inbox) Aggregator.
+ * Mein Tag — the one inbox.
  *
- * Aggregates open items for the current user across the distributed inboxes.
- * Core buckets:
- *   - workflow/pending + workflow/overdue
- *   - four_eyes/inbox
- *   - policy_acknowledgement/inbox
- *   - audit_finding (assigned-to-me)
- *   - data_subject_request (assigned-to-me)
- *   - corrective_action overdue
+ * Every duty with a deadline comes from the deadline sources
+ * ({@see ObligationInbox}): each appears exactly once, at the person the
+ * {@see \App\Service\Responsibility\ResponsibilityResolver} names (record
+ * owner/assignee first, the role only when nobody is set). The bucket of an
+ * item is its source's profile bucket, so a new source shows up here without
+ * code changes.
  *
- * ISB-Pflicht-Buckets:
- *   - risk_acceptance_expiring  (Risk.acceptanceExpiryDate ≤ today+30d)
- *   - documents_review_overdue  (Document.nextReviewDate  < today)
- *   - trainings_pending         (TrainingParticipation.status = pending for me)
+ * Built here on top: approvals and four-eyes requests carry their in-place
+ * decision payload; policy acknowledgements (documents the user still has to
+ * confirm), audit checklist items and the compliance manager's portfolio
+ * buckets (documents in review, stalled wizards, critical framework gaps).
  *
- * ISB-Tagesgeschäft-Buckets covering
- * incident handling, GDPR breach notification, vulnerability management,
- * audit programme execution, change governance, and management-review
- * cadence:
- *   - incidents_open_assigned          (Incident.status open, assigned-to-me)
- *   - data_breaches_72h_ticking        (DataBreach detected within 72h, no
- *                                        authority notification yet — GDPR Art. 33)
- *   - vulnerabilities_critical_unpatched (Vulnerability severity high|critical,
- *                                        status not closed/accepted/patched —
- *                                        NIS2 Art. 21 (2) (e))
- *   - audit_checklist_due              (AuditChecklist verifiedAt IS NULL,
- *                                        plannedDate < today+7d, auditor=me —
- *                                        ISO 27001 Clause 9.2)
- *   - change_requests_pending_approval (ChangeRequest status=submitted/under_review
- *                                        — ISO 27001 Clause 6.3, surfaced to
- *                                        Manager/Admin/CAB)
- *   - management_review_upcoming       (ManagementReview status=planned,
- *                                        reviewDate ≤ today+90d — ISO 27001
- *                                        Clause 9.3 cadence)
- *
- * Total: 16 buckets (7 V3 + 3 V4 R1 + 6 V4 R2).
- *
- * (Notification-bell bucket dropped — no Notification entity exists yet;
- *  WorkflowInstance pending already covers the "things I started" side.)
- *
- * Returns an associative result with categorised buckets and per-item
- * dictionaries shaped for the Aurora UI:
- *   { priority: high|medium|low, due_date: ?DateTimeImmutable, link: string,
+ * Item shape for the Aurora UI:
+ *   { priority: high|medium|low, due_date: ?DateTimeInterface, link: string,
  *     entity_type: string, tone: success|warning|danger|info, title: string,
  *     subtitle: string, badge: ?string }
  */
 final class MyDayAggregator
 {
-    /** Days-window for Risk-acceptance-expiry surfacing. */
-    private const RISK_ACCEPTANCE_WARN_DAYS = 30;
-
-    /** Audit-checklist `plannedDate` look-ahead window (V4 R2). */
+    /** Audit-checklist `plannedDate` look-ahead window. */
     private const AUDIT_CHECKLIST_WARN_DAYS = 7;
 
-    /** Management-review look-ahead window — ISO 27001 §9.3 cadence (V4 R2). */
-    private const MGMT_REVIEW_WARN_DAYS = 90;
-
-    /** V4-EF-7: Wizard stall window in days before surfaced as "overdue" to CM. */
+    /** Wizard stall window in days before surfaced as "overdue" to CM. */
     private const WIZARD_OVERDUE_DAYS = 90;
 
-    /** V4-EF-7: Framework coverage threshold below which a gap is "critical". */
+    /** Framework coverage threshold below which a gap is "critical". */
     private const FRAMEWORK_GAP_CRITICAL_PCT = 60.0;
+
+    /** Days before the deadline an item counts as "due soon" (warning tone). */
+    private const DUE_SOON_DAYS = 7;
+
+    /** Buckets built here from their own query; the inbox items of these sources are skipped. */
+    private const OWN_BUCKETS = ['acknowledgements'];
 
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly WorkflowInstanceRepository $workflowInstances,
-        private readonly FourEyesApprovalRequestRepository $fourEyesRepo,
         private readonly PolicyAcknowledgementRepository $policyAckRepo,
-        private readonly AuditFindingRepository $auditFindingRepo,
-        private readonly DataSubjectRequestRepository $dsrRepo,
-        private readonly CorrectiveActionRepository $caRepo,
         private readonly DocumentRepository $documentRepo,
-        private readonly RiskRepository $riskRepo,
-        private readonly TrainingParticipationRepository $trainingParticipationRepo,
-        private readonly IncidentRepository $incidentRepo,
-        private readonly DataBreachRepository $dataBreachRepo,
-        private readonly VulnerabilityRepository $vulnerabilityRepo,
         private readonly AuditChecklistRepository $auditChecklistRepo,
-        private readonly ChangeRequestRepository $changeRequestRepo,
-        private readonly ManagementReviewRepository $managementReviewRepo,
         private readonly WizardSessionRepository $wizardSessionRepo,
         private readonly ComplianceAnalyticsService $complianceAnalytics,
-        private readonly \App\Repository\EvidenceReverificationTaskRepository $evidenceReverificationRepo,
-        private readonly PeriodicReviewBuckets $periodicReviews,
         private readonly UrlGeneratorInterface $urls,
         private readonly PersonaResolver $personaResolver,
+        private readonly ObligationInbox $inbox,
     ) {
     }
 
     /**
-     * Aggregate all inbox items for the user. Returns categorised buckets.
+     * Aggregate all inbox items for the user, categorised by bucket.
      *
-     * @return array{
-     *   summary: array<string, int>,
-     *   workflows_pending: array<int, array<string, mixed>>,
-     *   workflows_overdue: array<int, array<string, mixed>>,
-     *   four_eyes: array<int, array<string, mixed>>,
-     *   acknowledgements: array<int, array<string, mixed>>,
-     *   findings: array<int, array<string, mixed>>,
-     *   dsrs: array<int, array<string, mixed>>,
-     *   corrective_actions_overdue: array<int, array<string, mixed>>,
-     *   risk_acceptance_expiring: array<int, array<string, mixed>>,
-     *   documents_review_overdue: array<int, array<string, mixed>>,
-     *   trainings_pending: array<int, array<string, mixed>>,
-     *   incidents_open_assigned: array<int, array<string, mixed>>,
-     *   data_breaches_72h_ticking: array<int, array<string, mixed>>,
-     *   vulnerabilities_critical_unpatched: array<int, array<string, mixed>>,
-     *   audit_checklist_due: array<int, array<string, mixed>>,
-     *   change_requests_pending_approval: array<int, array<string, mixed>>,
-     *   management_review_upcoming: array<int, array<string, mixed>>,
-     *   documents_pending_approval_for_me: array<int, array<string, mixed>>,
-     *   wizard_overdue: array<int, array<string, mixed>>,
-     *   framework_gaps_critical: array<int, array<string, mixed>>,
-     *   total: int
-     * }
+     * @return array<string, mixed> bucket key => list of items, plus
+     *   summary (bucket => count), deadline_buckets (keys from the sources),
+     *   total and generated_at
      */
     public function aggregate(User $user): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         $today = new DateTimeImmutable();
+        // Without an active tenant we surface nothing — better empty than mixed-tenant.
+        if ($tenant === null) {
+            return ['summary' => [], 'deadline_buckets' => [], 'total' => 0, 'generated_at' => $today];
+        }
 
-        // Tenant-scope all aggregator queries to prevent
-        // Cross-Tenant-Leakage. Without an active tenant we surface nothing
-        // — better empty than mixed-tenant.
-        $workflowsPending = $tenant ? $this->buildWorkflowsPending($user, $tenant) : [];
-        $workflowsOverdue = $tenant ? $this->buildWorkflowsOverdue($user, $tenant) : [];
-        $fourEyes        = $tenant ? $this->buildFourEyes($user, $tenant) : [];
-        $acks            = $tenant ? $this->buildAcknowledgements($user, $tenant) : [];
-        $findings        = $tenant ? $this->buildFindings($user, $tenant) : [];
-        $dsrs            = $tenant ? $this->buildDsrs($user, $tenant) : [];
-        $caOverdue       = $tenant ? $this->buildCorrectiveActionsOverdue($user, $tenant) : [];
-        // ISB-Pflicht-Buckets.
-        $riskAcceptance  = $tenant ? $this->buildRiskAcceptanceExpiring($user, $tenant) : [];
-        $docsReviewOver  = $tenant ? $this->buildDocumentsReviewOverdue($user, $tenant) : [];
-        $trainingsPending = $tenant ? $this->buildTrainingsPending($user, $tenant) : [];
-        // ISB-Tagesgeschäft-Buckets.
-        $incidentsAssigned = $tenant ? $this->buildIncidentsOpenAssigned($user, $tenant) : [];
-        $breaches72h       = $tenant ? $this->buildDataBreaches72hTicking($user, $tenant) : [];
-        $vulnsCritical     = $tenant ? $this->buildVulnerabilitiesCriticalUnpatched($user, $tenant) : [];
-        $checklistDue      = $tenant ? $this->buildAuditChecklistDue($user, $tenant) : [];
-        $changesPending    = $tenant ? $this->buildChangeRequestsPendingApproval($user, $tenant) : [];
-        $reviewsUpcoming   = $tenant ? $this->buildManagementReviewUpcoming($user, $tenant) : [];
-        // Completeness round — further ISMS daily-action sources with a due/review
-        // date. Module-less by design: when the module/entity is unused the bucket
-        // is simply empty and folds away in the UI (no explicit gating needed).
-        $evidenceReverif   = $tenant ? $this->buildEvidenceReverificationDue($user, $tenant) : [];
-        $controlEffOverdue = $tenant ? $this->periodicReviews->controlEffectivenessOverdue($tenant) : [];
-        $supplierReassess  = $tenant ? $this->periodicReviews->supplierReassessmentDue($tenant) : [];
-        $dpiaReviewOverdue = $tenant ? $this->periodicReviews->dpiaReviewOverdue($tenant) : [];
-        $bcPlanReviewOver  = $tenant ? $this->periodicReviews->bcPlanReviewOverdue($tenant) : [];
-        $riskReviewOverdue = $tenant ? $this->buildRiskReviewOverdue($tenant) : [];
-        $riskAcceptNoExp   = $tenant ? $this->buildRiskAcceptanceNoExpiry($tenant) : [];
-        // V4-EF-7 — Compliance-Manager CM-Buckets (visibility-gated to ROLE_COMPLIANCE_MANAGER).
-        $docsPendingApproval = ($tenant && $this->isComplianceManager($user))
-            ? $this->buildDocumentsPendingApproval($tenant)
-            : [];
-        $wizardOverdue       = ($tenant && $this->isComplianceManager($user))
-            ? $this->buildWizardOverdue($tenant)
-            : [];
-        $frameworkGaps       = ($tenant && $this->isComplianceManager($user))
-            ? $this->buildFrameworkGapsCritical()
-            : [];
+        $buckets = [];
+        foreach ($this->inbox->forUser($user, $tenant) as $obligation) {
+            $bucket = $obligation->profile()->bucket;
+            if (in_array($bucket, self::OWN_BUCKETS, true)) {
+                continue;
+            }
+            $buckets[$bucket][] = $this->mapObligation($obligation);
+        }
+        $deadlineBuckets = array_keys($buckets);
 
-        $total = count($workflowsPending) + count($workflowsOverdue)
-            + count($fourEyes) + count($acks) + count($findings)
-            + count($dsrs) + count($caOverdue)
-            + count($riskAcceptance) + count($docsReviewOver) + count($trainingsPending)
-            + count($incidentsAssigned) + count($breaches72h) + count($vulnsCritical)
-            + count($checklistDue) + count($changesPending) + count($reviewsUpcoming)
-            + count($evidenceReverif) + count($controlEffOverdue) + count($supplierReassess)
-            + count($dpiaReviewOverdue) + count($bcPlanReviewOver) + count($riskReviewOverdue)
-            + count($riskAcceptNoExp)
-            + count($docsPendingApproval) + count($wizardOverdue) + count($frameworkGaps);
+        $buckets['workflows_overdue'] = $this->buildWorkflowsOverdue($user, $tenant);
+        $buckets['acknowledgements'] = $this->buildAcknowledgements($user, $tenant);
+        $buckets['audit_checklist_due'] = $this->buildAuditChecklistDue($user, $tenant);
+        if ($this->isComplianceManager($user)) {
+            $buckets['documents_pending_approval_for_me'] = $this->buildDocumentsPendingApproval($tenant);
+            $buckets['wizard_overdue'] = $this->buildWizardOverdue($tenant);
+            $buckets['framework_gaps_critical'] = $this->buildFrameworkGapsCritical();
+        }
 
-        return [
-            'summary' => [
-                'workflows_pending' => count($workflowsPending),
-                'workflows_overdue' => count($workflowsOverdue),
-                'four_eyes'         => count($fourEyes),
-                'acknowledgements'  => count($acks),
-                'findings'          => count($findings),
-                'dsrs'              => count($dsrs),
-                'corrective_actions_overdue' => count($caOverdue),
-                'risk_acceptance_expiring' => count($riskAcceptance),
-                'documents_review_overdue' => count($docsReviewOver),
-                'trainings_pending' => count($trainingsPending),
-                'incidents_open_assigned' => count($incidentsAssigned),
-                'data_breaches_72h_ticking' => count($breaches72h),
-                'vulnerabilities_critical_unpatched' => count($vulnsCritical),
-                'audit_checklist_due' => count($checklistDue),
-                'change_requests_pending_approval' => count($changesPending),
-                'management_review_upcoming' => count($reviewsUpcoming),
-                'evidence_reverification_due' => count($evidenceReverif),
-                'control_effectiveness_overdue' => count($controlEffOverdue),
-                'supplier_reassessment_due' => count($supplierReassess),
-                'dpia_review_overdue' => count($dpiaReviewOverdue),
-                'bc_plan_review_overdue' => count($bcPlanReviewOver),
-                'risk_review_overdue' => count($riskReviewOverdue),
-                'risk_acceptance_no_expiry' => count($riskAcceptNoExp),
-                'documents_pending_approval_for_me' => count($docsPendingApproval),
-                'wizard_overdue' => count($wizardOverdue),
-                'framework_gaps_critical' => count($frameworkGaps),
-            ],
-            'workflows_pending' => $workflowsPending,
-            'workflows_overdue' => $workflowsOverdue,
-            'four_eyes'         => $fourEyes,
-            'acknowledgements'  => $acks,
-            'findings'          => $findings,
-            'dsrs'              => $dsrs,
-            'corrective_actions_overdue' => $caOverdue,
-            'risk_acceptance_expiring' => $riskAcceptance,
-            'documents_review_overdue' => $docsReviewOver,
-            'trainings_pending' => $trainingsPending,
-            'incidents_open_assigned' => $incidentsAssigned,
-            'data_breaches_72h_ticking' => $breaches72h,
-            'vulnerabilities_critical_unpatched' => $vulnsCritical,
-            'audit_checklist_due' => $checklistDue,
-            'change_requests_pending_approval' => $changesPending,
-            'management_review_upcoming' => $reviewsUpcoming,
-            'evidence_reverification_due' => $evidenceReverif,
-            'control_effectiveness_overdue' => $controlEffOverdue,
-            'supplier_reassessment_due' => $supplierReassess,
-            'dpia_review_overdue' => $dpiaReviewOverdue,
-            'bc_plan_review_overdue' => $bcPlanReviewOver,
-            'risk_review_overdue' => $riskReviewOverdue,
-            'risk_acceptance_no_expiry' => $riskAcceptNoExp,
-            'documents_pending_approval_for_me' => $docsPendingApproval,
-            'wizard_overdue'    => $wizardOverdue,
-            'framework_gaps_critical' => $frameworkGaps,
-            'total'             => $total,
-            'generated_at'      => $today,
+        $summary = array_map('count', $buckets);
+
+        return $buckets + [
+            'summary' => $summary,
+            'deadline_buckets' => $deadlineBuckets,
+            'total' => array_sum($summary),
+            'generated_at' => $today,
         ];
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
-    private function buildWorkflowsPending(User $user, Tenant $tenant): array
+    private function mapObligation(Obligation $obligation): array
     {
-        $items = [];
-        foreach ($this->workflowInstances->findPendingForUser($user, $tenant) as $instance) {
-            /** @var WorkflowInstance $instance */
-            $items[] = $this->mapWorkflow($instance, false);
+        $record = $obligation->record;
+        if ($record instanceof WorkflowInstance) {
+            return $this->mapWorkflow($record, false); // the approver decides here, overdue or not
         }
-        return $items;
+        if ($record instanceof FourEyesApprovalRequest) {
+            return [
+                'priority'    => 'medium',
+                'due_date'    => $record->getExpiresAt(),
+                'link'        => $this->urls->generate('app_four_eyes_inbox'),
+                'entity_type' => 'four_eyes',
+                'tone'        => 'warning',
+                'title'       => $record->getActionType(), // translated by MyDayInboxEnricher
+                'subtitle'    => $record->getRequestedBy()?->getFullName() ?? '—',
+                'badge'       => 'pending',
+                'four_eyes_id' => $record->getId(),
+            ];
+        }
+
+        $due = $obligation->dueDate;
+        $soon = $due !== null && $due <= new DateTimeImmutable(sprintf('+%d days', self::DUE_SOON_DAYS));
+        [$priority, $tone, $badge] = match (true) {
+            $obligation->overdue || $obligation->urgent => ['high', 'danger', 'overdue'],
+            $soon => ['medium', 'warning', 'due'],
+            $due === null => ['medium', 'warning', 'open'],
+            default => ['low', 'info', null],
+        };
+        if ($obligation->urgent && !$obligation->overdue) {
+            $badge = 'due';
+        }
+        $link = $obligation->link();
+
+        return [
+            'priority'    => $priority,
+            'due_date'    => $due,
+            'link'        => $link !== null ? $this->urls->generate($link->route, $link->parameters) : '#',
+            'entity_type' => $obligation->source->slug(),
+            'tone'        => $tone,
+            'title'       => $obligation->title,
+            'subtitle'    => $obligation->profile()->normReference ?? $obligation->source->label(),
+            'badge'       => $badge,
+            'hours_countdown' => $obligation->profile()->urgentHours !== null,
+        ];
     }
 
     /**
+     * Approvals the user started that are past their deadline (the approver
+     * sees them under "workflows_pending").
+     *
      * @return array<int, array<string, mixed>>
      */
     private function buildWorkflowsOverdue(User $user, Tenant $tenant): array
@@ -301,21 +179,12 @@ final class MyDayAggregator
         $items = [];
         foreach ($this->workflowInstances->findOverdueForTenant($tenant) as $instance) {
             /** @var WorkflowInstance $instance */
-            // Filter overdue to those visible to this user (initiated or pending approver).
-            if ($this->isWorkflowRelevant($instance, $user)) {
+            if ($instance->getInitiatedBy()?->getId() === $user->getId()) {
                 $items[] = $this->mapWorkflow($instance, true);
             }
         }
-        return $items;
-    }
 
-    private function isWorkflowRelevant(WorkflowInstance $instance, User $user): bool
-    {
-        if ($instance->getInitiatedBy() && $instance->getInitiatedBy()->getId() === $user->getId()) {
-            return true;
-        }
-        // Loose match: pending workflows touched by user already returned via findPendingForUser
-        return false;
+        return $items;
     }
 
     /**
@@ -337,29 +206,6 @@ final class MyDayAggregator
                 'subject_type' => $instance->getEntityType(), 'subject_id' => $instance->getEntityId(), 'decidable' => !$isOverdue],
             'badge'       => $isOverdue ? 'overdue' : 'pending',
         ];
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildFourEyes(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->fourEyesRepo->findPendingFor($user, $tenant) as $req) {
-            /** @var FourEyesApprovalRequest $req */
-            $items[] = [
-                'priority'    => 'medium',
-                'due_date'    => $req->getExpiresAt(),
-                'link'        => $this->urls->generate('app_four_eyes_inbox'),
-                'entity_type' => 'four_eyes',
-                'tone'        => 'warning',
-                'title'       => $req->getActionType(), // translated by MyDayInboxEnricher
-                'subtitle'    => $req->getRequestedBy()?->getFullName() ?? '—',
-                'badge'       => 'pending',
-                'four_eyes_id' => $req->getId(),
-            ];
-        }
-        return $items;
     }
 
     /**
@@ -409,393 +255,12 @@ final class MyDayAggregator
     }
 
     /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildFindings(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->auditFindingRepo->findOpenByTenant($tenant) as $finding) {
-            /** @var AuditFinding $finding */
-            // Filter: assigned-to-me (best-effort via responsible person)
-            if (!$this->findingAssignedToUser($finding, $user)) {
-                continue;
-            }
-            $severity = $finding->getSeverity();
-            $tone = match ($severity) {
-                'critical', 'high' => 'danger',
-                'medium' => 'warning',
-                default => 'info',
-            };
-            $items[] = [
-                'priority'    => in_array($severity, ['critical', 'high'], true) ? 'high' : 'medium',
-                'due_date'    => $finding->getDueDate(),
-                'link'        => $this->urls->generate('app_audit_finding_show', ['id' => $finding->getId()]),
-                'entity_type' => 'audit_finding',
-                'tone'        => $tone,
-                'title'       => (string) $finding->getTitle(),
-                'subtitle'    => sprintf('%s · %s', $finding->getType() ?? '—', $severity),
-                'badge'       => $finding->getStatus(),
-            ];
-        }
-        return $items;
-    }
-
-    /**
      * Documents have no title column; the uploaded file name is what the
      * list and detail pages show.
      */
     private function documentTitle(Document $document): string
     {
         return (string) ($document->getOriginalFilename() ?? $document->getFilename() ?? 'Document');
-    }
-
-    private function findingAssignedToUser(AuditFinding $finding, User $user): bool
-    {
-        // AuditFinding carries its responsible user as `assignedTo`.
-        return $finding->getAssignedTo()?->getId() === $user->getId();
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildDsrs(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->dsrRepo->findByTenant($tenant) as $dsr) {
-            /** @var DataSubjectRequest $dsr */
-            if (!$this->dsrAssignedToUser($dsr, $user)) {
-                continue;
-            }
-            $status = $dsr->getStatus();
-            if (in_array($dsr->getStatusEnum(), [DataSubjectRequestStatus::Completed, DataSubjectRequestStatus::Rejected], true)) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'high',
-                // Art. 12 (3) DSGVO: one month, extended deadline when prolonged.
-                'due_date'    => $dsr->getEffectiveDeadline(),
-                'link'        => $this->urls->generate('app_data_subject_request_show', ['id' => $dsr->getId()]),
-                'entity_type' => 'dsr',
-                'tone'        => 'danger',
-                'title'       => sprintf('DSR #%d — %s', $dsr->getId(), $dsr->getRequestType() ?? ''),
-                'subtitle'    => $dsr->getDataSubjectName() ?? '',
-                'badge'       => $status,
-            ];
-        }
-        return $items;
-    }
-
-    private function dsrAssignedToUser(DataSubjectRequest $dsr, User $user): bool
-    {
-        // DSGVO-Fix: DSRs contain personally-identifiable
-        // data of the data subject (Art. 4 (1) DSGVO). Surface them ONLY
-        // to the explicitly assigned handler — no See-All-Fallback for
-        // generic ROLE_MANAGER. The DPO/Compliance-Manager-Persona has
-        // a dedicated dashboard via ROLE_DPO; seeing every open
-        // DSR via My-Day would breach Art. 5 (1) (c) (Datenminimierung).
-        return $dsr->getAssignedTo()?->getId() === $user->getId();
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildCorrectiveActionsOverdue(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->caRepo->findOverdue($tenant) as $ca) {
-            /** @var CorrectiveAction $ca */
-            if (!$this->caAssignedToUser($ca, $user)) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'high',
-                'due_date'    => $ca->getPlannedCompletionDate(),
-                'link'        => $this->urls->generate('app_corrective_action_show', ['id' => $ca->getId()]),
-                'entity_type' => 'corrective_action',
-                'tone'        => 'danger',
-                'title'       => (string) $ca->getTitle(),
-                'subtitle'    => 'overdue',
-                'badge'       => $ca->getStatus(),
-            ];
-        }
-        return $items;
-    }
-
-    private function caAssignedToUser(CorrectiveAction $ca, User $user): bool
-    {
-        if ($ca->getResponsiblePersonUser()?->getId() === $user->getId()) {
-            return true;
-        }
-        return $this->personaResolver->reaches($user, 'ROLE_MANAGER');
-    }
-
-    /**
-     * Risks whose formal acceptance expires within
-     * RISK_ACCEPTANCE_WARN_DAYS (or already has). The ISB has to renew
-     * acceptance OR pivot to a different treatment-strategy. Surfaces to
-     * the risk owner; CISO/Manager (ROLE_ADMIN/ROLE_MANAGER) sees them all
-     * because acceptance review is a governance-level duty.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildRiskAcceptanceExpiring(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->riskRepo->findAcceptanceExpiring($tenant, self::RISK_ACCEPTANCE_WARN_DAYS) as $risk) {
-            /** @var Risk $risk */
-            if (!$this->riskAcceptanceVisibleToUser($risk, $user)) {
-                continue;
-            }
-            $expiry = $risk->getAcceptanceExpiryDate();
-            $isExpired = $expiry !== null && $expiry < new DateTimeImmutable('today');
-            $items[] = [
-                'priority'    => $isExpired ? 'high' : 'medium',
-                'due_date'    => $expiry,
-                'link'        => $this->urls->generate('app_risk_show', ['id' => $risk->getId()]),
-                'entity_type' => 'risk_acceptance',
-                'tone'        => $isExpired ? 'danger' : 'warning',
-                'title'       => (string) $risk->getTitle(),
-                'subtitle'    => $isExpired ? 'expired' : 'expiring',
-                'badge'       => $isExpired ? 'expired' : 'expiring',
-            ];
-        }
-        return $items;
-    }
-
-    private function riskAcceptanceVisibleToUser(Risk $risk, User $user): bool
-    {
-        $owner = $risk->getRiskOwner();
-        if ($owner instanceof User && $owner->getId() === $user->getId()) {
-            return true;
-        }
-        // CISO / ISB-level governance roles see every accepted risk near
-        // expiry — that's the whole point of the ISB-Pflicht-Bucket.
-        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
-    }
-
-    /**
-     * Approved Documents whose review-cycle is overdue.
-     * ISO 27001 Clause 7.5.3 requires periodic re-validation of documented
-     * information. Surfaces to the document-owner; falls back to ROLE_ADMIN
-     * / ROLE_MANAGER (governance-wide responsibility).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildDocumentsReviewOverdue(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->documentRepo->findReviewOverdue($tenant) as $document) {
-            /** @var Document $document */
-            if (!$this->documentReviewVisibleToUser($document, $user)) {
-                continue;
-            }
-            $title = $this->documentTitle($document);
-            $items[] = [
-                'priority'    => 'high',
-                'due_date'    => $document->getNextReviewDate(),
-                'link'        => $this->urls->generate('app_document_show', ['id' => $document->getId()]),
-                'entity_type' => 'document_review',
-                'tone'        => 'danger',
-                'title'       => $title,
-                'subtitle'    => 'review_overdue',
-                'badge'       => 'overdue',
-            ];
-        }
-        return $items;
-    }
-
-    private function documentReviewVisibleToUser(Document $document, User $user): bool
-    {
-        // The document owner is a Person; the person's login account is the
-        // one that sees the review. The uploader stays the fallback owner
-        // (same chain as Document::getEffectiveOwnerName()).
-        $ownerUser = $document->getOwnerPerson()?->getLinkedUser() ?? $document->getUploadedBy();
-        if ($ownerUser !== null && $ownerUser->getId() === $user->getId()) {
-            return true;
-        }
-        return $this->personaResolver->reaches($user, 'ROLE_MANAGER');
-    }
-
-    /**
-     * TrainingParticipations with status=pending for the
-     * current user. Strict per-user filter (no governance fallback): a
-     * pending training is the responsibility of the assignee, not of the
-     * Manager.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildTrainingsPending(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->trainingParticipationRepo->findPendingForUser($user, $tenant) as $participation) {
-            /** @var TrainingParticipation $participation */
-            $training = $participation->getTraining();
-            if ($training === null) {
-                continue;
-            }
-            $title = (string) ($training->getTitle() ?? 'Training');
-            $items[] = [
-                'priority'    => 'medium',
-                'due_date'    => $participation->getAssignedAt(),
-                'link'        => $this->urls->generate('app_training_show', ['id' => $training->getId()]),
-                'entity_type' => 'training',
-                'tone'        => 'info',
-                'title'       => $title,
-                'subtitle'    => 'pending',
-                'badge'       => 'pending',
-            ];
-        }
-        return $items;
-    }
-
-    /**
-     * Open security incidents currently assigned
-     * to the user (or reported by user). ISO 27035-1 §6.3 — ongoing incident
-     * monitoring is the operational duty of the assignee. Governance roles
-     * (Admin/Manager/CISO) see ALL open incidents because incident oversight
-     * is part of their job description.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildIncidentsOpenAssigned(User $user, Tenant $tenant): array
-    {
-        $items = [];
-
-        if ($this->incidentVisibleToGovernanceRole($user)) {
-            $incidents = $this->incidentRepo->findOpenIncidents($tenant);
-        } else {
-            $incidents = $this->incidentRepo->findOpenAssignedToUser($user, $tenant);
-        }
-
-        foreach ($incidents as $incident) {
-            /** @var Incident $incident */
-            $severity = $incident->getSeverity();
-            $severityValue = $severity?->value ?? 'medium';
-            $tone = match ($severityValue) {
-                'critical', 'high' => 'danger',
-                'medium' => 'warning',
-                default => 'info',
-            };
-            $items[] = [
-                'priority'    => in_array($severityValue, ['critical', 'high'], true) ? 'high' : 'medium',
-                'due_date'    => $incident->getDetectedAt(),
-                'link'        => $this->urls->generate('app_incident_show', ['id' => $incident->getId()]),
-                'entity_type' => 'incident',
-                'tone'        => $tone,
-                'title'       => sprintf(
-                    '%s — %s',
-                    (string) ($incident->getIncidentNumber() ?? '#?'),
-                    (string) ($incident->getTitle() ?? '—'),
-                ),
-                'subtitle'    => sprintf('%s · %s', $incident->getCategory() ?? '—', $severityValue),
-                'badge'       => $incident->getStatus()?->value,
-            ];
-        }
-        return $items;
-    }
-
-    private function incidentVisibleToGovernanceRole(User $user): bool
-    {
-        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
-    }
-
-    /**
-     * Data breaches whose GDPR Art. 33 72h
-     * authority-notification clock is still ticking. Surfaces ONLY to
-     * DPO / Manager / Admin — not every employee should see breach details
-     * (DSGVO Art. 5 (1) (c) Datenminimierung). Already-overdue breaches
-     * fall into the existing alerting via `findAuthorityNotificationOverdue`
-     * and are NOT duplicated here to keep the inbox actionable.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildDataBreaches72hTicking(User $user, Tenant $tenant): array
-    {
-        if (!$this->dataBreachVisibleToUser($user)) {
-            return [];
-        }
-
-        $items = [];
-        foreach ($this->dataBreachRepo->findAuthorityNotification72hTicking($tenant) as $breach) {
-            /** @var DataBreach $breach */
-            $detectedAt = $breach->getDetectedAt();
-            $deadline = $detectedAt instanceof \DateTimeInterface
-                ? DateTimeImmutable::createFromInterface($detectedAt)->modify('+72 hours')
-                : null;
-            $items[] = [
-                'priority'    => 'high',
-                'due_date'    => $deadline,
-                'link'        => $this->urls->generate('app_data_breach_show', ['id' => $breach->getId()]),
-                'entity_type' => 'data_breach',
-                'tone'        => 'danger',
-                'title'       => sprintf(
-                    '%s — %s',
-                    (string) ($breach->getReferenceNumber() ?? '#?'),
-                    (string) ($breach->getTitle() ?? '—'),
-                ),
-                'subtitle'    => sprintf('GDPR Art. 33 · %s', (string) ($breach->getSeverity() ?? '—')),
-                'badge'       => '72h',
-            ];
-        }
-        return $items;
-    }
-
-    private function dataBreachVisibleToUser(User $user): bool
-    {
-        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
-    }
-
-    /**
-     * Critical / high vulnerabilities still
-     * open (NIS2 Art. 21 (2) (e)). Visible to ISB/CISO/Manager and the
-     * named `responsiblePerson` (string-match best-effort).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildVulnerabilitiesCriticalUnpatched(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->vulnerabilityRepo->findCriticalUnpatchedByTenant($tenant) as $vuln) {
-            /** @var Vulnerability $vuln */
-            if (!$this->vulnerabilityVisibleToUser($vuln, $user)) {
-                continue;
-            }
-            $severity = $vuln->getSeverity() ?? 'medium';
-            $items[] = [
-                'priority'    => 'high',
-                'due_date'    => $vuln->getRemediationDeadline(),
-                'link'        => $this->urls->generate('app_vulnerability_show', ['id' => $vuln->getId()]),
-                'entity_type' => 'vulnerability',
-                'tone'        => $severity === 'critical' ? 'danger' : 'warning',
-                'title'       => sprintf(
-                    '%s — %s',
-                    $vuln->getCveId() !== null ? (string) $vuln->getCveId() : '#' . (string) $vuln->getId(),
-                    (string) ($vuln->getTitle() ?? '—'),
-                ),
-                'subtitle'    => sprintf('CVSS %s · %s', $vuln->getCvssScore() ?? '?', $severity),
-                'badge'       => $severity,
-            ];
-        }
-        return $items;
-    }
-
-    private function vulnerabilityVisibleToUser(Vulnerability $vuln, User $user): bool
-    {
-        if ($this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO')
-            || ($user->getId() !== null && $vuln->getResponsiblePersonUser()?->getId() === $user->getId())) {
-            return true;
-        }
-        $responsible = $vuln->getResponsiblePerson(); // legacy free-text, best-effort match
-        if ($responsible !== null && $responsible !== '') {
-            $needle = strtolower($user->getUserIdentifier());
-            $email = strtolower((string) $user->getEmail());
-            $haystack = strtolower($responsible);
-            if (($needle !== '' && str_contains($haystack, $needle))
-                || ($email !== '' && str_contains($haystack, $email))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -833,104 +298,6 @@ final class MyDayAggregator
         }
         return $items;
     }
-
-    /**
-     * Change-requests pending approval. ISO 27001
-     * Clause 6.3 (Planning of Changes) requires evidence-trail for every
-     * approval. Visible to ROLE_MANAGER / ROLE_ADMIN (CAB-equivalent) — the
-     * `approvedBy` column is a free-text auto-fill on approval and cannot
-     * route requests, so per-user filtering is impossible without a CAB FK.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildChangeRequestsPendingApproval(User $user, Tenant $tenant): array
-    {
-        if (!$this->changeApproverVisibleToUser($user)) {
-            return [];
-        }
-        $items = [];
-        foreach ($this->changeRequestRepo->findPendingApprovalByTenant($tenant) as $cr) {
-            /** @var ChangeRequest $cr */
-            $items[] = [
-                'priority'    => $cr->getPriority() === 'critical' || $cr->getPriority() === 'high' ? 'high' : 'medium',
-                'due_date'    => $cr->getPlannedImplementationDate(),
-                'link'        => $this->urls->generate('app_change_request_show', ['id' => $cr->getId()]),
-                'entity_type' => 'change_request',
-                'tone'        => 'info',
-                'title'       => sprintf(
-                    '%s — %s',
-                    (string) ($cr->getChangeNumber() ?? '#?'),
-                    (string) ($cr->getTitle() ?? '—'),
-                ),
-                'subtitle'    => sprintf('%s · %s', $cr->getChangeType() ?? '—', $cr->getPriority() ?? '—'),
-                'badge'       => $cr->getStatus(),
-            ];
-        }
-        return $items;
-    }
-
-    private function changeApproverVisibleToUser(User $user): bool
-    {
-        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
-    }
-
-    /**
-     * Management reviews scheduled within the
-     * next 90 days. ISO 27001 Clause 9.3 mandates planned-interval reviews;
-     * the bucket reminds top-management + ISB to prepare inputs in time.
-     * Visible to top-management proxies (Admin / Manager / CISO) and the
-     * named reviewer.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildManagementReviewUpcoming(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->managementReviewRepo->findUpcomingByTenant($tenant, self::MGMT_REVIEW_WARN_DAYS) as $review) {
-            /** @var ManagementReview $review */
-            if (!$this->managementReviewVisibleToUser($review, $user)) {
-                continue;
-            }
-            $reviewDate = $review->getReviewDate();
-            $daysUntil = null;
-            if ($reviewDate instanceof \DateTimeInterface) {
-                $diff = (new DateTimeImmutable('today'))->diff($reviewDate);
-                $daysUntil = (int) $diff->days * ($diff->invert === 1 ? -1 : 1);
-            }
-            $items[] = [
-                'priority'    => $daysUntil !== null && $daysUntil <= 14 ? 'high' : 'medium',
-                'due_date'    => $reviewDate,
-                'link'        => $this->urls->generate('app_management_review_show', ['id' => $review->getId()]),
-                'entity_type' => 'management_review',
-                'tone'        => 'success',
-                'title'       => (string) ($review->getTitle() ?? '#' . (string) $review->getId()),
-                'subtitle'    => $daysUntil !== null
-                    ? sprintf('in %d Tagen', $daysUntil)
-                    : 'planned',
-                'badge'       => $review->getStatus(),
-            ];
-        }
-        return $items;
-    }
-
-    private function managementReviewVisibleToUser(ManagementReview $review, User $user): bool
-    {
-        $reviewedBy = $review->getReviewedBy();
-        if ($reviewedBy instanceof User && $reviewedBy->getId() === $user->getId()) {
-            return true;
-        }
-        // Participants list — registered users invited to the review.
-        foreach ($review->getParticipants() as $participant) {
-            if ($participant instanceof User && $participant->getId() === $user->getId()) {
-                return true;
-            }
-        }
-        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
-    }
-
-    // =========================================================================
-    //  V4-EF-7 — Compliance-Manager CM-Buckets (visibility-gated)
-    // =========================================================================
 
     /**
      * V4-EF-7 CM-Bucket 1 — Documents in 'in_review' status, awaiting formal
@@ -1022,98 +389,6 @@ final class MyDayAggregator
                 'title'       => sprintf('%s — %s', $f['code'] ?? '?', $f['name'] ?? '—'),
                 'subtitle'    => sprintf('%.1f%% compliant', $f['compliance_percentage']),
                 'badge'       => $f['mandatory'] ? 'mandatory' : 'optional',
-            ];
-        }
-        return $items;
-    }
-
-    /**
-     * Evidence re-verification tasks assigned to me, overdue or due within 7 days.
-     * (ISO 27001 7.5.3 / 9.1 — keeping evidence current is an explicit task.)
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildEvidenceReverificationDue(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        $today = new DateTimeImmutable('today');
-        $horizon = $today->modify('+7 days');
-        foreach ($this->evidenceReverificationRepo->findBy([
-            'tenant' => $tenant,
-            'assignedTo' => $user,
-            'status' => \App\Entity\EvidenceReverificationTask::STATUS_PENDING,
-        ]) as $task) {
-            $due = $task->getDueDate();
-            if ($due === null || $due > $horizon) {
-                continue;
-            }
-            $overdue = $due < $today;
-            $items[] = [
-                'priority'    => $overdue ? 'high' : 'medium',
-                'due_date'    => $due,
-                'link'        => $this->urls->generate('app_evidence_reverification_show', ['id' => $task->getId()]),
-                'entity_type' => 'evidence_reverification',
-                'tone'        => $overdue ? 'danger' : 'warning',
-                'title'       => $task->getControl()?->getName() ?? 'Evidence re-verification',
-                'subtitle'    => $overdue ? 'overdue' : 'due_soon',
-                'badge'       => $overdue ? 'overdue' : 'due',
-            ];
-        }
-        return $items;
-    }
-
-    /**
-     * Risks whose periodic review date has passed (ISO 27001 8.2).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildRiskReviewOverdue(Tenant $tenant): array
-    {
-        $items = [];
-        $today = new DateTimeImmutable('today');
-        foreach ($this->riskRepo->findBy(['tenant' => $tenant]) as $risk) {
-            $next = $risk->getReviewDate();
-            if ($next === null || $next >= $today || $risk->getStatus()?->requiresPeriodicReview() === false) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'medium',
-                'due_date'    => $next,
-                'link'        => $this->urls->generate('app_risk_show', ['id' => $risk->getId()]),
-                'entity_type' => 'risk_review',
-                'tone'        => 'warning',
-                'title'       => (string) $risk->getTitle(),
-                'subtitle'    => 'review_overdue',
-                'badge'       => 'overdue',
-            ];
-        }
-        return $items;
-    }
-
-    /**
-     * Accepted risks WITHOUT an acceptance expiry date — the classic audit-finding
-     * magnet (accepted residual risk with no review trigger, ISO 27001 6.1.3 e).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildRiskAcceptanceNoExpiry(Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->riskRepo->findBy(['tenant' => $tenant]) as $risk) {
-            $isAccepted = $risk->getTreatmentStrategy() === \App\Enum\TreatmentStrategy::Accept
-                || $risk->getStatus() === \App\Enum\RiskStatus::Accepted;
-            if (!$isAccepted || $risk->getAcceptanceExpiryDate() !== null) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'high',
-                'due_date'    => null,
-                'link'        => $this->urls->generate('app_risk_show', ['id' => $risk->getId()]),
-                'entity_type' => 'risk_acceptance',
-                'tone'        => 'danger',
-                'title'       => (string) $risk->getTitle(),
-                'subtitle'    => 'no_expiry',
-                'badge'       => 'no_expiry',
             ];
         }
         return $items;
