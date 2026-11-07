@@ -24,7 +24,10 @@ use Symfony\Contracts\Service\ResetInterface;
  * A check covers a requirement when its reference equals the requirement's
  * number ("7.2" ↔ "ISO27001-7.2", "21(2)(a)" ↔ "NIS2-21.2.a") or, for a
  * reference with two or more levels, is its parent ("9.2" covers 9.2.1 and
- * 9.2.2). Several checks average. Manual checks, checks of inactive modules
+ * 9.2.2). A check without a reference of its own takes its category's
+ * (NIS-2 Art. 21 (2) letters). An Annex-A control reference ("A.6.3") covers
+ * that Annex-A requirement; themes ("A.5") cover nothing. Several checks
+ * average. Manual checks, checks of inactive modules
  * and checks over zero records ("no data", no control, process, … at all) do not
  * count: an empty module proves nothing either way, so the requirement stays
  * with its other rules or the hand value.
@@ -50,7 +53,17 @@ class RecordCheckRule implements ResetInterface
     ) {
     }
 
-    public function derive(ComplianceRequirement $requirement, Tenant $tenant): ?FulfillmentDerivation
+    /**
+     * Check types that only restate the controls rule; left out when the
+     * requirement's controls already count ({@see FulfillmentRuleEngine}).
+     */
+    public const array CONTROL_CHECK_TYPES = ['control_coverage'];
+
+    /**
+     * @param bool $besideControls the controls rule already counts: checks that
+     *        only measure controls are left out, the others add the record view
+     */
+    public function derive(ComplianceRequirement $requirement, Tenant $tenant, bool $besideControls = false): ?FulfillmentDerivation
     {
         $code = (string) $requirement->getFramework()?->getCode();
         $number = self::requirementNumber($code, (string) $requirement->getRequirementId());
@@ -66,6 +79,9 @@ class RecordCheckRule implements ResetInterface
                 continue;
             }
             foreach ($checks as ['key' => $key, 'check' => $check]) {
+                if ($besideControls && in_array($check['type'] ?? null, self::CONTROL_CHECK_TYPES, true)) {
+                    continue;
+                }
                 $result = $this->result($tenant, $code, $key, $check);
                 if ($result === null) {
                     continue;
@@ -77,6 +93,7 @@ class RecordCheckRule implements ResetInterface
                     'label' => (string) ($check['name'] ?? $key),
                     'domain' => (string) ($check['translation_domain'] ?? 'wizard'),
                     'route' => is_string($check['route'] ?? null) ? $check['route'] : null,
+                    'check_type' => (string) ($check['type'] ?? ''),
                     'value' => $value,
                 ];
                 $sum += $value;
@@ -148,6 +165,33 @@ class RecordCheckRule implements ResetInterface
         return false;
     }
 
+    /**
+     * References each framework's checks of the given types answer — which
+     * requirements to recompute after such records changed.
+     *
+     * @param list<string> $checkTypes
+     * @return array<string, list<string>> framework code → normalised references
+     */
+    public function referencesOf(Tenant $tenant, array $checkTypes): array
+    {
+        $tenantId = (int) $tenant->getId();
+        $this->index[$tenantId] ??= $this->buildIndex($tenant);
+
+        $refs = [];
+        foreach ($this->index[$tenantId] as $code => $byRef) {
+            foreach ($byRef as $ref => $checks) {
+                foreach ($checks as ['check' => $check]) {
+                    if (in_array($check['type'] ?? null, $checkTypes, true)) {
+                        $refs[(string) $code][] = (string) $ref;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $refs;
+    }
+
     public function reset(): void
     {
         $this->index = [];
@@ -191,6 +235,7 @@ class RecordCheckRule implements ResetInterface
             $code = (string) ($wizard['code'] ?? '');
             $code = FrameworkCode::canonicalize($code) ?? $code;
             foreach ((array) ($wizard['categories'] ?? []) as $categoryKey => $category) {
+                $categoryRef = (string) ($category['clause'] ?? $category['article'] ?? '');
                 foreach ((array) ($category['checks'] ?? []) as $checkKey => $check) {
                     if (!is_array($check) || ($check['type'] ?? 'manual') === 'manual') {
                         continue;
@@ -198,11 +243,12 @@ class RecordCheckRule implements ResetInterface
                     if (isset($check['module']) && !in_array($check['module'], $active, true)) {
                         continue;
                     }
-                    $raw = (string) ($check['clause'] ?? $check['article'] ?? '');
+                    $raw = (string) ($check['clause'] ?? $check['article'] ?? $categoryRef);
                     foreach (explode('/', $raw) as $part) {
                         $ref = self::normaliseReference($part);
                         // Ranges ("24-25") and Annex-A themes ("A.5") are not one requirement.
-                        if ($ref === '' || str_contains($ref, '-') || str_starts_with($ref, 'a.')) {
+                        if ($ref === '' || str_contains($ref, '-')
+                            || (str_starts_with($ref, 'a.') && substr_count($ref, '.') < 2)) {
                             continue;
                         }
                         $index[$code][$ref][] = [

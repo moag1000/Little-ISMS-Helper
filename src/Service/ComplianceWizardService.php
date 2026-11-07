@@ -13,6 +13,7 @@ use App\Service\ComplianceWizard\CategoryProvider\OtherFrameworkCategoryProvider
 use App\Service\ComplianceWizard\CoverageCheckService;
 use App\Service\ComplianceWizard\EntityPresenceChecker;
 use App\Service\ComplianceWizard\DocumentReviewCheck;
+use App\Service\ComplianceWizard\RecordCheck;
 use App\Service\ComplianceWizard\WizardCheckSource;
 use App\Service\Catalog\FrameworkCode;
 
@@ -52,6 +53,7 @@ final class ComplianceWizardService implements WizardCheckSource
         private readonly EntityPresenceChecker $entityPresenceChecker,
         private readonly DocumentReviewCheck $documentReviewCheck,
         private readonly ?\App\Repository\WizardManualConfirmationRepository $manualConfirmationRepository = null,
+        private readonly ?RecordCheck $recordCheck = null,
     ) {
     }
 
@@ -638,6 +640,8 @@ final class ComplianceWizardService implements WizardCheckSource
             'dpia_coverage' => $this->coverageCheckService->checkDpiaCoverage($check, $tenant),
             'entity_presence' => $this->entityPresenceChecker->check($check, $tenant),
             'policy_wizard' => $this->coverageCheckService->dispatchPolicyWizardCheck($check, $tenant),
+            'register_coverage', 'management_decision', 'training_participation', 'reporting_duty'
+                => $this->recordCheck?->check($check, $tenant),
             default => null,
         };
     }

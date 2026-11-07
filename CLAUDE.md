@@ -249,7 +249,11 @@ systemctl enable isms-worker && systemctl start isms-worker
   percentage/status: `FulfillmentRuleEngine` derives it from the tenant's controls, mappings and maturity rows;
   hand values beside a rule are overrides (`override()` with reason + review date), `setManual()` only without
   rule. Rule order: maturity → controls → records (`RecordCheckRule`: the compliance wizard's data checks by
-  `clause`/`article`, so a new wizard check with a clause feeds fulfilment) → mappings. Evidence behind a
+  `clause`/`article`, so a new wizard check with a clause feeds fulfilment; checks without one take their
+  category's; controls AND records behind one requirement average, kind `controls_records`) → mappings. Record
+  check types for norm data: `register_coverage`, `management_decision`, `training_participation`,
+  `reporting_duty` (`ComplianceWizard\RecordCheck`, defs via `RecordCheck::register()/decision()`); a new record
+  type that feeds them adds one line to `RecordChangeCollector::CHECK_TYPES`. Evidence behind a
   requirement comes only from `RequirementEvidence` (requirement + fulfilment + controls, tenant-filtered; exports use
   `Export\EvidenceDocuments`) — never `getEvidenceDocuments()`/`getMappedControls()` of a global requirement.
   `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.

@@ -10,12 +10,14 @@ use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\ChangeRequestRepository;
 use App\Repository\CorrectiveActionRepository;
 use App\Repository\DocumentRepository;
+use App\Repository\DoraExitPlanRepository;
 use App\Repository\InterestedPartyRepository;
 use App\Repository\ISMSContextRepository;
 use App\Repository\ISMSObjectiveRepository;
 use App\Repository\ManagementReviewRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
+use App\Repository\ThreatLedPenetrationTestRepository;
 use App\Repository\VulnerabilityRepository;
 
 /**
@@ -40,6 +42,8 @@ final class EntityPresenceChecker
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly ?ChangeRequestRepository $changeRequestRepository = null,
         private readonly ?CorrectiveActionRepository $correctiveActionRepository = null,
+        private readonly ?DoraExitPlanRepository $doraExitPlanRepository = null,
+        private readonly ?ThreatLedPenetrationTestRepository $tlptRepository = null,
     ) {
     }
 
@@ -49,7 +53,8 @@ final class EntityPresenceChecker
      * Backs the formerly-`manual` ISO/GDPR clauses that DO map to a concrete
      * entity (Cl. 4.1/4.3 → ISMSContext, Cl. 4.2 → InterestedParty, Cl. 6.2 →
      * ISMSObjective, Cl. 6.3 → ChangeRequest, Cl. 9.3 → ManagementReview,
-     * Cl. 10.2 → CorrectiveAction, GDPR Art. 30 → ProcessingActivity,
+     * Cl. 10.1 → CorrectiveAction, GDPR Art. 30 → ProcessingActivity, DORA Art. 26 → TLPT,
+ * DORA Art. 28 (8) / 30 (3)(f) → exit plan,
      * …). Scores 100 once the tenant has the data, so populated tenants stop
      * seeing false "critical gap" rows.
      *
@@ -110,6 +115,8 @@ final class EntityPresenceChecker
             'vulnerability' => $this->vulnerabilityRepository,
             'change_request' => $this->changeRequestRepository,
             'corrective_action' => $this->correctiveActionRepository,
+            'dora_exit_plan' => $this->doraExitPlanRepository,
+            'tlpt' => $this->tlptRepository,
             default => null,
         };
 

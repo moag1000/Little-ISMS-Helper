@@ -58,9 +58,9 @@ final class PolicyFulfillmentSyncService
         private readonly ComplianceRequirementFulfillmentService $fulfillmentService,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly FulfillmentDerivationService $derivation,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly LoggerInterface $logger = new NullLogger(),
-        private readonly ?FulfillmentDerivationService $derivation = null,
     ) {
     }
 
@@ -121,7 +121,7 @@ final class PolicyFulfillmentSyncService
                 // A requirement a rule computes takes its value from the controls
                 // (which the policy wizard's SoA update already moved); the
                 // policy is attached as evidence only.
-                $this->derivation?->apply($fulfillment);
+                $this->derivation->apply($fulfillment);
                 if ($fulfillment->isDerived()) {
                     $fulfillment->addEvidenceDocument($document);
                     $this->entityManager->persist($fulfillment);
@@ -137,9 +137,10 @@ final class PolicyFulfillmentSyncService
 
                 $fulfillment->setStatus(self::TARGET_STATUS);
 
-                // Conservative partial-completion signal when still at zero.
+                // Conservative partial-completion signal when still at zero — a hand
+                // value, through the one writer of fulfilment values.
                 if ($fulfillment->getFulfillmentPercentage() === 0) {
-                    $fulfillment->setFulfillmentPercentage(25);
+                    $this->derivation->setManual($fulfillment, 25);
                 }
 
                 // Attach the generated policy as evidence.
