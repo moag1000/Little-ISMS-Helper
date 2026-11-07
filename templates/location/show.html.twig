@@ -99,6 +99,12 @@
     {% for _o in profile.objectives %}
         <p class="mt-2 mb-0">{{ _o.title }}: {{ 'location.map.objectives.line'|trans({ '%target%': _o.target, '%current%': _o.current ?? '–', '%months%': _o.monthsLeft ?? '–' }, 'locations') }}</p>
     {% endfor %}
+    {% if is_granted('ROLE_MANAGER') and (is_module_active('audits') or is_module_active('bcm')) %}
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            {% if is_module_active('audits') %}<a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_audit_new', { fromLocation: _p.id }) }}">{{ 'location.map.actions.audit'|trans({}, 'locations') }}</a>{% endif %}
+            {% if is_module_active('bcm') %}<a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_bc_exercise_new', { fromLocation: _p.id }) }}">{{ 'location.map.actions.exercise'|trans({}, 'locations') }}</a>{% endif %}
+        </div>
+    {% endif %}
     {% endblock %}
 {% endembed %}
 </div>

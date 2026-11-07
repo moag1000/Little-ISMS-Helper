@@ -197,7 +197,8 @@ Standort wurden bei der Aktualisierung über den Namen zugeordnet.
 Das Seitenpanel eines Standorts verlinkt auf das Formular, in dem eine Lücke
 geschlossen wird, und auf die Listen **Risiken**, **Assets** und **Vorfälle**,
 gefiltert mit `?location=<id>` auf den Standortbaum. Auf der Detailseite eines
-Standorts führt **Auf Karte zeigen** zurück.
+Standorts führt **Auf Karte zeigen** zurück. Sie zeigt außerdem die Assets und Risiken des Standorts mit *Risiko ableiten*,
+ab Manager im Steckbrief *Audit planen* und *Notfallübung planen* (vorbelegt wie im Panel).
 
 ## Lage der Standorte
 
