@@ -6,7 +6,7 @@
 {% block title %}{{ 'reports.compliance.title'|trans({}, 'reports') }}{% endblock %}
 
 {% block body %}
-<main class="fa-aurora-surface fa-aurora-surface--dots container-fluid">
+<div class="fa-aurora-surface fa-aurora-surface--dots container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -192,5 +192,5 @@
             {% endembed %}
         </div>
     </div>
-</main>
+</div>
 {% endblock %}

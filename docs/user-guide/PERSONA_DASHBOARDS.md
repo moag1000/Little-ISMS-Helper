@@ -265,6 +265,21 @@ Gruppen, deren Modul nicht aktiv ist, werden nicht angezeigt.
 
 ---
 
+## Suchen und Befehle: ein Fenster
+
+**⌘K** (Mac) bzw. **Strg+K**, **⌘P** / **Strg+P**, die Taste **/** und der Such-Knopf in der
+Kopfzeile öffnen dasselbe Fenster:
+
+| Eingabe | Ergebnis |
+|---|---|
+| leer | Befehle: Navigation, Anlegen, Export, Administration (nur, was Ihre Rolle und die aktiven Module erlauben; auf `/admin`-Seiten Administration zuerst) |
+| ab 2 Zeichen | Seiten und Einstellungen, Datensätze (Risiken, Assets, Controls, Vorfälle, Dokumente, Lieferanten …) und passende Befehle |
+
+Pfeiltasten wählen über alle Gruppen, **Enter** öffnet, **Esc** schließt. **?** zeigt alle Tastenkürzel.
+
+Datum und Uhrzeit erscheinen überall im Format und in der Zeitzone aus
+*Administration → Einstellungen → Anwendung*; ein leeres Datum wird als „-" angezeigt.
+
 ## Verwandte Dokumente
 
 - `docs/user-guide/MEIN_TAG.md` — Inbox-Aggregation fuer alle Rollen

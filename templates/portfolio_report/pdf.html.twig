@@ -91,13 +91,13 @@
         <div class="meta">
             <strong>{{ 'portfolio_report.header.tenant'|trans({}, 'portfolio_report') }}:</strong> {{ tenant.name }}
             &nbsp;|&nbsp;
-            <strong>{{ 'portfolio_report.header.stichtag'|trans({}, 'portfolio_report') }}:</strong> {{ stichtag|date('Y-m-d') }}
+            <strong>{{ 'portfolio_report.header.stichtag'|trans({}, 'portfolio_report') }}:</strong> {{ stichtag|fa_date }}
             {% if vorperiode %}
                 &nbsp;|&nbsp;
-                <strong>{{ 'portfolio_report.header.vorperiode'|trans({}, 'portfolio_report') }}:</strong> {{ vorperiode|date('Y-m-d') }}
+                <strong>{{ 'portfolio_report.header.vorperiode'|trans({}, 'portfolio_report') }}:</strong> {{ vorperiode|fa_date }}
             {% endif %}
             &nbsp;|&nbsp;
-            <strong>{{ 'portfolio_report.header.generated_at'|trans({}, 'portfolio_report') }}:</strong> {{ generated_at|date('Y-m-d H:i') }}
+            <strong>{{ 'portfolio_report.header.generated_at'|trans({}, 'portfolio_report') }}:</strong> {{ generated_at|fa_datetime }}
         </div>
     </div>
 

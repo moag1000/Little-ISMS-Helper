@@ -101,7 +101,7 @@
                     <div class="mb-4">
                         <div class="text-muted fw-semibold">
                             <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                            {{ date|date('d.m.Y') }}
+                            {{ date|fa_date }}
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: daily_activities|length } %}
                         </div>
                         <ul class="list-group">

@@ -241,8 +241,8 @@
                             {% set statusVariant = (plan.status == 'active' or plan.status == 'approved') ? 'success' : (plan.status == 'draft' ? 'warning' : (plan.status == 'review' ? 'info' : 'secondary')) %}
                             {% include '_components/_badge.html.twig' with { variant: statusVariant, content: plan.status } %}
                         </td>
-                        <td class="fa-table__cell">{{ plan.lastReviewDate ? plan.lastReviewDate|date('Y-m-d') : '-' }}</td>
-                        <td class="fa-table__cell">{{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : '-' }}</td>
+                        <td class="fa-table__cell">{{ plan.lastReviewDate ? plan.lastReviewDate|fa_date : '-' }}</td>
+                        <td class="fa-table__cell">{{ plan.nextReviewDate ? plan.nextReviewDate|fa_date : '-' }}</td>
                     </tr>
                     {% endfor %}
                 {% endblock %}
@@ -254,7 +254,7 @@
     {# Report Generated Info #}
     <div class="text-muted small text-end">
         <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
-        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|fa_datetime }}
     </div>
 </div>
 {% endblock %}

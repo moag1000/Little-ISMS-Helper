@@ -78,7 +78,7 @@
             </div>
             <div class="row">
                 <div class="col-md-3"><strong>Erstellt am:</strong></div>
-                <div class="col-md-9">{{ permission.createdAt|date('d.m.Y H:i') }}</div>
+                <div class="col-md-9">{{ permission.createdAt|fa_datetime }}</div>
             </div>
         {% endblock %}
     {% endembed %}

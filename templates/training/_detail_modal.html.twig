@@ -31,14 +31,14 @@
         {% if training.scheduledDate %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'training.scheduled_date'|trans({}, 'training') }}</span>
-            <span><i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ training.scheduledDate|date('d.m.Y') }}</span>
+            <span><i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ training.scheduledDate|fa_date }}</span>
         </div>
         {% endif %}
 
         {% if training.completionDate %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'training.field.completion_date'|trans({}, 'training') }}</span>
-            <span>{{ training.completionDate|date('d.m.Y') }}</span>
+            <span>{{ training.completionDate|fa_date }}</span>
         </div>
         {% endif %}
 

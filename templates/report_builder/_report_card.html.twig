@@ -13,7 +13,7 @@
         {% endif %}
         <div class="d-flex justify-content-between align-items-center">
             <small class="text-muted">
-                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ report.updatedAt ? report.updatedAt|date('d.m.Y') : report.createdAt|date('d.m.Y') }}
+                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ report.updatedAt ? report.updatedAt|fa_date : report.createdAt|fa_date }}
             </small>
             <div class="btn-group btn-group-sm">
                 <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'report_builder.action.edit'|trans({},'report_builder') }}">

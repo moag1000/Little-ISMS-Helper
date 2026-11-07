@@ -307,14 +307,14 @@
         {% endblock %}
         {% block card_body %}
             {% if mapping.reviewedBy %}
-                <p><strong>{{ 'mapping_review.metadata.reviewed_by'|trans({}, 'compliance') }}:</strong> {{ mapping.reviewedBy }} {{ 'mapping_review.metadata.at'|trans({}, 'compliance') }} {{ mapping.reviewedAt|date('d.m.Y H:i') }}</p>
+                <p><strong>{{ 'mapping_review.metadata.reviewed_by'|trans({}, 'compliance') }}:</strong> {{ mapping.reviewedBy }} {{ 'mapping_review.metadata.at'|trans({}, 'compliance') }} {{ mapping.reviewedAt|fa_datetime }}</p>
             {% endif %}
             {% if mapping.verifiedBy %}
-                <p><strong>{{ 'mapping_review.metadata.verified_by'|trans({}, 'compliance') }}:</strong> {{ mapping.verifiedBy }} {{ 'mapping_review.metadata.at'|trans({}, 'compliance') }} {{ mapping.verificationDate|date('d.m.Y') }}</p>
+                <p><strong>{{ 'mapping_review.metadata.verified_by'|trans({}, 'compliance') }}:</strong> {{ mapping.verifiedBy }} {{ 'mapping_review.metadata.at'|trans({}, 'compliance') }} {{ mapping.verificationDate|fa_date }}</p>
             {% endif %}
-            <p><strong>{{ 'mapping_review.metadata.created'|trans({}, 'compliance') }}:</strong> {{ mapping.createdAt|date('d.m.Y H:i') }}</p>
+            <p><strong>{{ 'mapping_review.metadata.created'|trans({}, 'compliance') }}:</strong> {{ mapping.createdAt|fa_datetime }}</p>
             {% if mapping.updatedAt %}
-                <p><strong>{{ 'mapping_review.metadata.updated'|trans({}, 'compliance') }}:</strong> {{ mapping.updatedAt|date('d.m.Y H:i') }}</p>
+                <p><strong>{{ 'mapping_review.metadata.updated'|trans({}, 'compliance') }}:</strong> {{ mapping.updatedAt|fa_datetime }}</p>
             {% endif %}
         {% endblock %}
     {% endembed %}

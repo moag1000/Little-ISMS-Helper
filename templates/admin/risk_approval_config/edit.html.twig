@@ -51,7 +51,7 @@
                     <div class="fa-section__body">
                         <dl class="row mb-0">
                             <dt class="col-sm-3">{{ 'risk_approval_config.updated_at'|trans({}, 'risk_approval_config') }}</dt>
-                            <dd class="col-sm-9">{{ config.updatedAt|date('d.m.Y H:i') }}</dd>
+                            <dd class="col-sm-9">{{ config.updatedAt|fa_datetime }}</dd>
                             {% if config.updatedBy %}
                                 <dt class="col-sm-3">{{ 'risk_approval_config.updated_by'|trans({}, 'risk_approval_config') }}</dt>
                                 <dd class="col-sm-9">{{ config.updatedBy.email }}</dd>

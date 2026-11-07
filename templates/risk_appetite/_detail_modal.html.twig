@@ -28,7 +28,7 @@
         <div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</span><span>{{ appetite.isGlobal() ? 'risk_appetite.category.global'|trans({}, 'risk_appetite') : appetite.category }}</span></div>
         <div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.max_acceptable_risk'|trans({}, 'risk_appetite') }}</span><span>{% include '_components/_badge.html.twig' with { variant: risk_variant, content: appetite.maxAcceptableRisk } %} <small class="text-muted">/ 25</small></span></div>
         {% if appetite.approvedBy %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.approved_by'|trans({}, 'risk_appetite') }}</span><span>{{ appetite.approvedBy.fullName }}</span></div>{% endif %}
-        {% if appetite.approvedAt %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.approved_at'|trans({}, 'risk_appetite') }}</span><span>{{ appetite.approvedAt|date('Y-m-d') }}</span></div>{% endif %}
+        {% if appetite.approvedAt %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.approved_at'|trans({}, 'risk_appetite') }}</span><span>{{ appetite.approvedAt|fa_date }}</span></div>{% endif %}
         {% if appetite.description %}
             <div class="fa-drawer__section">
                 <span class="label">{{ 'risk_appetite.field.description'|trans({}, 'risk_appetite') }}</span>

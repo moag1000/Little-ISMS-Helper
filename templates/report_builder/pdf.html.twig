@@ -225,7 +225,7 @@
         {% endif %}
         <div class="report-meta">
             {% if report.styles.showGeneratedDate|default(true) %}
-            {{ 'report_builder.pdf.generated_at'|trans({}, 'report_builder') }}: {{ report_data.report.generated_at|date('d.m.Y H:i') }}
+            {{ 'report_builder.pdf.generated_at'|trans({}, 'report_builder') }}: {{ report_data.report.generated_at|fa_datetime }}
             {% endif %}
             | {{ 'report_builder.pdf.category'|trans({}, 'report_builder') }}: {{ report.category }}
         </div>
@@ -363,7 +363,7 @@
             {{ 'report_builder.pdf.generated_by'|trans({}, 'report_builder') }}: {{ app.user.fullName }}
         </div>
         <div class="footer-right">
-            {{ report_data.report.generated_at|date('d.m.Y H:i') }}
+            {{ report_data.report.generated_at|fa_datetime }}
         </div>
         <div style="clear: both;"></div>
     </div>

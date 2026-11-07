@@ -159,10 +159,10 @@
                 {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-3 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-9">{{ audit.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-9">{{ audit.createdAt|fa_datetime }}</dd>
 
                         <dt class="col-sm-3 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-9">{{ audit.updatedAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-9">{{ audit.updatedAt|fa_datetime }}</dd>
 
                         <dt class="col-sm-3 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-9"><code>{{ audit.id }}</code></dd>

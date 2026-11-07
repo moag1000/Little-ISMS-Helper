@@ -25,7 +25,7 @@
             <div class="fa-drawer__kv"><span class="label">{{ 'risk.field.residual_risk'|trans({}, 'risk') }}</span><span>{{ plan.risk.residualRiskLevel }}</span></div>
         {% endif %}
         {% if plan.effectiveResponsiblePerson %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_treatment_plan.field.responsible_person'|trans({}, 'risk_treatment_plan') }}</span><span>{{ plan.effectiveResponsiblePerson }}</span></div>{% endif %}
-        {% if plan.targetCompletionDate %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_treatment_plan.field.target_completion_date'|trans({}, 'risk_treatment_plan') }}</span><span>{{ plan.targetCompletionDate|date('Y-m-d') }}</span></div>{% endif %}
+        {% if plan.targetCompletionDate %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_treatment_plan.field.target_completion_date'|trans({}, 'risk_treatment_plan') }}</span><span>{{ plan.targetCompletionDate|fa_date }}</span></div>{% endif %}
         <div class="fa-drawer__kv"><span class="label">{{ 'risk_treatment_plan.field.completion'|trans({}, 'risk_treatment_plan') }}</span><span>{{ plan.completionPercentage }}%</span></div>
         {% if plan.description %}
             <div class="fa-drawer__section">

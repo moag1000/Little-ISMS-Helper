@@ -175,7 +175,7 @@
         <h1>Data Breach Notification Report</h1>
         <p>Personal Data Breach per GDPR Art. 33/34</p>
         <p><strong>{{ breach.title }}</strong></p>
-        <p>{{ breach.referenceNumber }} - {{ "now"|date('Y-m-d H:i') }}</p>
+        <p>{{ breach.referenceNumber }} - {{ "now"|fa_datetime }}</p>
     </div>
 
     {# Meta Information #}
@@ -215,11 +215,11 @@
             </tr>
             <tr>
                 <td>Detection Date/Time:</td>
-                <td>{{ breach.detectedAt|date('Y-m-d H:i') }}</td>
+                <td>{{ breach.detectedAt|fa_datetime }}</td>
             </tr>
             <tr>
                 <td>Report Generated:</td>
-                <td>{{ "now"|date('Y-m-d H:i') }}</td>
+                <td>{{ "now"|fa_datetime }}</td>
             </tr>
         </table>
     </div>
@@ -230,7 +230,7 @@
             <h2>⏰ Art. 33 - 72-Hour Notification Requirement</h2>
             {% if breach.supervisoryAuthorityNotifiedAt %}
                 <p>
-                    <strong>✓ Supervisory authority notified:</strong> {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}
+                    <strong>✓ Supervisory authority notified:</strong> {{ breach.supervisoryAuthorityNotifiedAt|fa_datetime }}
                 </p>
                 <p><strong>Authority:</strong> {{ breach.supervisoryAuthorityName }}</p>
                 <p><strong>Method:</strong> {{ breach.notificationMethod }}</p>
@@ -248,13 +248,13 @@
                 {% if hours < 0 %}
                     <div class="alert alert-danger">
                         <strong>⚠ OVERDUE:</strong> Supervisory authority notification is {{ (hours * -1)|number_format }} hours overdue!<br>
-                        <strong>Detection:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }}<br>
-                        <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                        <strong>Detection:</strong> {{ breach.detectedAt|fa_datetime }}<br>
+                        <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}
                     </div>
                 {% else %}
                     <div class="alert alert-warning">
                         <strong>⏰ PENDING:</strong> {{ hours|number_format }} hours remaining until 72-hour deadline<br>
-                        <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                        <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}
                     </div>
                 {% endif %}
             {% endif %}
@@ -372,7 +372,7 @@
         {% if breach.requiresSubjectNotification %}
             <p><strong>Subject Notification Required:</strong> Yes (High risk to rights and freedoms)</p>
             {% if breach.dataSubjectsNotifiedAt %}
-                <p><strong>Notification Date:</strong> {{ breach.dataSubjectsNotifiedAt|date('Y-m-d H:i') }}</p>
+                <p><strong>Notification Date:</strong> {{ breach.dataSubjectsNotifiedAt|fa_datetime }}</p>
                 <p><strong>Notification Method:</strong> {{ breach.subjectNotificationMethod }}</p>
                 <p><strong>Number of Subjects Notified:</strong> {{ breach.subjectsNotified|number_format }}</p>
             {% else %}

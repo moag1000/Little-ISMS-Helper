@@ -1,7 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance_import.preview.title'|trans({}, 'compliance_import') }}{% endblock %}
 
@@ -92,14 +91,8 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
-                            {% import '_components/_status_pill.html.twig' as pill %}
+                            {% import '_components/_status_vocabulary.html.twig' as _status %}
                             {% for row in rows %}
-                                {% set status_tone = {
-                                    'new': 'success',
-                                    'update': 'primary',
-                                    'conflict': 'warning',
-                                    'error': 'danger'
-                                }[row.status]|default('neutral') %}
                                 <tr class="fa-table__row">
                                     <th scope="row" class="fa-table__cell">{{ row.line }}</th>
                                     <td class="fa-table__cell">
@@ -114,7 +107,7 @@
                                     </td>
                                     <td class="fa-table__cell">{{ row.percentage }}{% if row.percentage %} %{% endif %}</td>
                                     <td class="fa-table__cell">
-                                        {{ pill.render(('compliance_import.status.' ~ row.status)|trans({}, 'compliance_import'), status_tone, {size: 'sm'}) }}
+                                        {{ _status.pill('import_row', row.status, ('compliance_import.status.' ~ row.status)|trans({}, 'compliance_import'), {size: 'sm'}) }}
                                         {% if row.message %}
                                             <div class="small text-muted mt-1">
                                                 {{ row.message|trans({}, 'compliance_import') }}

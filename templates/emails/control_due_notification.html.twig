@@ -35,7 +35,7 @@
 
             <div class="due-date">
                 <strong>⏰ {{ 'emails.control_due.target_date'|trans({}, 'emails') }}:</strong>
-                {{ control.targetDate|date('d.m.Y') }}
+                {{ control.targetDate|fa_date }}
             </div>
 
             <div class="field">

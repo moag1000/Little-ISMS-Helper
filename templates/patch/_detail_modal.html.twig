@@ -38,12 +38,12 @@
         </div>
         <div class="fa-drawer__kv">
             <span class="label">{{ 'patch.field.release_date'|trans({}, 'patches') }}</span>
-            <span>{{ patch.releaseDate|date('Y-m-d') }}</span>
+            <span>{{ patch.releaseDate|fa_date }}</span>
         </div>
         {% if patch.deployedDate %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'patch.field.deployed_date'|trans({}, 'patches') }}</span>
-                <span>{{ patch.deployedDate|date('Y-m-d') }}</span>
+                <span>{{ patch.deployedDate|fa_date }}</span>
             </div>
         {% endif %}
         {% if patch.affectedAssets|length > 0 %}
