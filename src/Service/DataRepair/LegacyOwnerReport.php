@@ -199,13 +199,15 @@ class LegacyOwnerReport
      */
     public function applyAllSuggestions(array $rows): int
     {
+        /** @var array<string, list<array{LegacyOwnerRow, User|Person}>> $byType */
         $byType = [];
         foreach ($rows as $row) {
-            if ($row->suggestion === null) {
+            $target = $row->suggestion;
+            if ($target === null) {
                 continue;
             }
-            $this->assign($row, $row->suggestion);
-            $byType[$row->type][] = $row;
+            $this->assign($row, $target);
+            $byType[$row->type][] = [$row, $target];
         }
         if ($byType === []) {
             return 0;
@@ -214,15 +216,15 @@ class LegacyOwnerReport
 
         $resolved = 0;
         foreach ($byType as $typeRows) {
-            $perEntity = array_map(fn (LegacyOwnerRow $r): array => [
-                'entity_id' => $r->id,
+            $perEntity = array_map(fn (array $pair): array => [
+                'entity_id' => $pair[0]->id,
                 'action' => 'update',
-                'old_values' => [self::FIELDS[$r->type]['legacy'] => $r->legacy],
-                'new_values' => $this->auditValues($r, $r->suggestion),
+                'old_values' => [self::FIELDS[$pair[0]->type]['legacy'] => $pair[0]->legacy],
+                'new_values' => $this->auditValues($pair[0], $pair[1]),
             ], $typeRows);
             $this->auditLogger->logBulk(
                 'legacy_owner_resolve',
-                $this->auditLogger->getEntityTypeName($typeRows[0]->record),
+                $this->auditLogger->getEntityTypeName($typeRows[0][0]->record),
                 ['source' => 'admin.legacy_owners'],
                 $perEntity,
                 sprintf('Legacy owners resolved to matching accounts: %d', count($typeRows)),
