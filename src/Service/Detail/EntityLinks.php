@@ -258,7 +258,7 @@ class EntityLinks
             ->innerJoin('c.evidenceDocuments', 'd')
             ->andWhere('d.id = :document')
             ->setParameter('document', $document->getId())
-            ->orderBy('c.controlId', 'ASC');
+            ->orderBy('c.controlId', \SortDirection::Ascending);
         if ($document->getTenant() !== null) {
             $qb->andWhere('c.tenant = :tenant')->setParameter('tenant', $document->getTenant());
         }

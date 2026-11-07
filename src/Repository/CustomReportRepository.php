@@ -62,8 +62,8 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('shared', true)
             ->setParameter('userId', (string) $user->getId())
-            ->orderBy('r.updatedAt', 'DESC')
-            ->addOrderBy('r.createdAt', 'DESC');
+            ->orderBy('r.updatedAt', \SortDirection::Descending)
+            ->addOrderBy('r.createdAt', \SortDirection::Descending);
 
         // Fallback for databases that don't support JSON_CONTAINS
         try {
@@ -91,8 +91,8 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('tenantId', $tenantId)
             ->setParameter('notTemplate', false)
-            ->orderBy('r.updatedAt', 'DESC')
-            ->addOrderBy('r.createdAt', 'DESC')
+            ->orderBy('r.updatedAt', \SortDirection::Descending)
+            ->addOrderBy('r.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -113,7 +113,7 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('tenantId', $tenantId)
             ->setParameter('favorite', true)
             ->setParameter('notTemplate', false)
-            ->orderBy('r.name', 'ASC')
+            ->orderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -132,8 +132,8 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('tenantId', $tenantId)
             ->setParameter('isTemplate', true)
             ->setParameter('isShared', true)
-            ->orderBy('r.usageCount', 'DESC')
-            ->addOrderBy('r.name', 'ASC')
+            ->orderBy('r.usageCount', \SortDirection::Descending)
+            ->addOrderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -154,7 +154,7 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('isTemplate', true)
             ->setParameter('isShared', true)
             ->setParameter('category', $category)
-            ->orderBy('r.usageCount', 'DESC')
+            ->orderBy('r.usageCount', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -175,7 +175,7 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('tenantId', $tenantId)
             ->setParameter('category', $category)
             ->setParameter('notTemplate', false)
-            ->orderBy('r.name', 'ASC')
+            ->orderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -194,7 +194,7 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('tenantId', $tenantId)
             ->setParameter('isTemplate', true)
             ->setParameter('isShared', true)
-            ->orderBy('r.usageCount', 'DESC')
+            ->orderBy('r.usageCount', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -215,7 +215,7 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('tenantId', $tenantId)
             ->setParameter('notTemplate', false)
-            ->orderBy('r.lastUsedAt', 'DESC')
+            ->orderBy('r.lastUsedAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -254,7 +254,7 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('tenantId', $tenantId)
             ->setParameter('notTemplate', false)
             ->setParameter('query', '%' . $query . '%')
-            ->orderBy('r.name', 'ASC')
+            ->orderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

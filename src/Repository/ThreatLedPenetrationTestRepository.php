@@ -28,7 +28,7 @@ class ThreatLedPenetrationTestRepository extends ServiceEntityRepository
             ->andWhere('t.status NOT IN (:closed)')
             ->setParameter('tenant', $tenant)
             ->setParameter('closed', [ThreatLedPenetrationTestStatus::Closed->value, ThreatLedPenetrationTestStatus::Cancelled->value])
-            ->orderBy('t.plannedStartDate', 'ASC')
+            ->orderBy('t.plannedStartDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -32,7 +32,7 @@ class DataBreachRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('db')
             ->where('db.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('db.createdAt', 'DESC')
+            ->orderBy('db.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -47,7 +47,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', $status)
-            ->orderBy('db.createdAt', 'DESC')
+            ->orderBy('db.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -62,7 +62,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.riskLevel = :riskLevel')
             ->setParameter('tenant', $tenant)
             ->setParameter('riskLevel', $riskLevel)
-            ->orderBy('db.createdAt', 'DESC')
+            ->orderBy('db.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -77,7 +77,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.riskLevel IN (:riskLevels)')
             ->setParameter('tenant', $tenant)
             ->setParameter('riskLevels', ['high', 'critical'])
-            ->orderBy('db.createdAt', 'DESC')
+            ->orderBy('db.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -93,7 +93,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.supervisoryAuthorityNotifiedAt IS NULL')
             ->setParameter('tenant', $tenant)
             ->setParameter('required', true)
-            ->orderBy('db.createdAt', 'ASC') // Oldest first (most urgent)
+            ->orderBy('db.createdAt', \SortDirection::Ascending) // Oldest first (most urgent)
             ->getQuery()
             ->getResult();
     }
@@ -115,7 +115,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('required', true)
             ->setParameter('deadline', $deadline)
-            ->orderBy('db.detectedAt', 'ASC') // Oldest first (most overdue)
+            ->orderBy('db.detectedAt', \SortDirection::Ascending) // Oldest first (most overdue)
             ->getQuery()
             ->getResult();
     }
@@ -131,7 +131,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.dataSubjectsNotifiedAt IS NULL')
             ->setParameter('tenant', $tenant)
             ->setParameter('required', true)
-            ->orderBy('db.createdAt', 'ASC')
+            ->orderBy('db.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -146,7 +146,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.specialCategoriesAffected = :affected')
             ->setParameter('tenant', $tenant)
             ->setParameter('affected', true)
-            ->orderBy('db.createdAt', 'DESC')
+            ->orderBy('db.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -161,7 +161,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.criminalDataAffected = :affected')
             ->setParameter('tenant', $tenant)
             ->setParameter('affected', true)
-            ->orderBy('db.createdAt', 'DESC')
+            ->orderBy('db.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -186,7 +186,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.processingActivity = :processingActivity')
             ->setParameter('tenant', $tenant)
             ->setParameter('processingActivity', $processingActivityId)
-            ->orderBy('db.createdAt', 'DESC')
+            ->orderBy('db.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -203,7 +203,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('start', $start)
             ->setParameter('end', $end)
-            ->orderBy('db.detectedAt', 'DESC')
+            ->orderBy('db.detectedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -342,7 +342,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.referenceNumber LIKE :prefix')
             ->setParameter('tenant', $tenant)
             ->setParameter('prefix', $prefix . '%')
-            ->orderBy('db.referenceNumber', 'DESC')
+            ->orderBy('db.referenceNumber', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -403,7 +403,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->setParameter('required', true)
             ->setParameter('deadline', $deadline)
             ->setParameter('now', $now)
-            ->orderBy('db.detectedAt', 'ASC') // closest to deadline first
+            ->orderBy('db.detectedAt', \SortDirection::Ascending) // closest to deadline first
             ->getQuery()
             ->getResult();
     }
@@ -426,7 +426,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.status NOT IN (:terminal)')
             ->setParameter('tenant', $tenant)
             ->setParameter('terminal', ['authority_notified', 'subjects_notified', 'closed'])
-            ->orderBy('db.detectedAt', 'ASC')
+            ->orderBy('db.detectedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -443,7 +443,7 @@ class DataBreachRepository extends ServiceEntityRepository
             ->andWhere('db.createdAt >= :since')
             ->setParameter('tenant', $tenant)
             ->setParameter('since', $since)
-            ->orderBy('db.createdAt', 'DESC')
+            ->orderBy('db.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

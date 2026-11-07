@@ -39,7 +39,7 @@ class AccessReviewItemRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ari')
             ->andWhere('ari.campaign = :campaign')
             ->setParameter('campaign', $campaign)
-            ->orderBy('ari.createdAt', 'ASC')
+            ->orderBy('ari.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -92,7 +92,7 @@ class AccessReviewItemRepository extends ServiceEntityRepository
             ->andWhere('ari.decision = :decision')
             ->setParameter('campaign', $campaign)
             ->setParameter('decision', AccessReviewItem::DECISION_ESCALATED)
-            ->orderBy('ari.decidedAt', 'ASC')
+            ->orderBy('ari.decidedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

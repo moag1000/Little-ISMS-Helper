@@ -43,8 +43,8 @@ class ControlRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->where('c.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('LENGTH(c.controlId)', 'ASC')
-            ->addOrderBy('c.controlId', 'ASC')
+            ->orderBy('LENGTH(c.controlId)', \SortDirection::Ascending)
+            ->addOrderBy('c.controlId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -64,8 +64,8 @@ class ControlRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c')
             ->where('c.category = :category')
             ->setParameter('category', $category)
-            ->orderBy('LENGTH(c.controlId)', 'ASC')
-            ->addOrderBy('c.controlId', 'ASC');
+            ->orderBy('LENGTH(c.controlId)', \SortDirection::Ascending)
+            ->addOrderBy('c.controlId', \SortDirection::Ascending);
 
         if ($tenant instanceof Tenant) {
             $qb->andWhere('c.tenant = :tenant')
@@ -87,7 +87,7 @@ class ControlRepository extends ServiceEntityRepository
             ->andWhere('c.applicable = :applicable')
             ->setParameter('tenant', $tenant)
             ->setParameter('applicable', true)
-            ->orderBy('c.controlId', 'ASC')
+            ->orderBy('c.controlId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -104,7 +104,7 @@ class ControlRepository extends ServiceEntityRepository
             ->where('c.tenant = :tenant')
             ->setParameter('tenant', $tenant)
             ->groupBy('c.category')
-            ->orderBy('c.category', 'ASC')
+            ->orderBy('c.category', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -171,8 +171,8 @@ class ControlRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->where('c.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('LENGTH(c.controlId)', 'ASC')
-            ->addOrderBy('c.controlId', 'ASC')
+            ->orderBy('LENGTH(c.controlId)', \SortDirection::Ascending)
+            ->addOrderBy('c.controlId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -194,7 +194,7 @@ class ControlRepository extends ServiceEntityRepository
             ->andWhere('c.nextReviewDate < :to')
             ->setParameter('from', $from)
             ->setParameter('to', $to)
-            ->orderBy('c.nextReviewDate', 'ASC')
+            ->orderBy('c.nextReviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -223,8 +223,8 @@ class ControlRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('LENGTH(c.controlId)', 'ASC')
-            ->addOrderBy('c.controlId', 'ASC')
+            ->orderBy('LENGTH(c.controlId)', \SortDirection::Ascending)
+            ->addOrderBy('c.controlId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -320,8 +320,8 @@ class ControlRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('LENGTH(c.controlId)', 'ASC')
-            ->addOrderBy('c.controlId', 'ASC')
+            ->orderBy('LENGTH(c.controlId)', \SortDirection::Ascending)
+            ->addOrderBy('c.controlId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -343,8 +343,8 @@ class ControlRepository extends ServiceEntityRepository
             ->andWhere('c.controlId IN (:controlIds)')
             ->setParameter('tenant', $tenant)
             ->setParameter('controlIds', $controlIds)
-            ->orderBy('LENGTH(c.controlId)', 'ASC')
-            ->addOrderBy('c.controlId', 'ASC')
+            ->orderBy('LENGTH(c.controlId)', \SortDirection::Ascending)
+            ->addOrderBy('c.controlId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -361,7 +361,7 @@ class ControlRepository extends ServiceEntityRepository
             ->where('c.tenant = :tenant')
             ->andWhere('c.evidenceOutdated = true')
             ->setParameter('tenant', $tenant)
-            ->orderBy('c.controlId', 'ASC')
+            ->orderBy('c.controlId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -77,7 +77,7 @@ class FteTrackingMetricRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('since', $since)
             ->groupBy('month_key')
-            ->orderBy('month_key', 'ASC')
+            ->orderBy('month_key', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

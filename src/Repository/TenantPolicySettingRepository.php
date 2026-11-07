@@ -37,7 +37,7 @@ class TenantPolicySettingRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.key', 'ASC')
+            ->orderBy('s.key', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

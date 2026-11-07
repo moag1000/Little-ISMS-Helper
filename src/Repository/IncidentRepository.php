@@ -73,8 +73,8 @@ class IncidentRepository extends ServiceEntityRepository
                 \App\Enum\IncidentStatus::InInvestigation,
                 \App\Enum\IncidentStatus::InResolution,
             ])
-            ->orderBy('i.severity', 'DESC')
-            ->addOrderBy('i.detectedAt', 'DESC')
+            ->orderBy('i.severity', \SortDirection::Descending)
+            ->addOrderBy('i.detectedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -122,7 +122,7 @@ class IncidentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('i')
             ->where('i.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('i.detectedAt', 'DESC')
+            ->orderBy('i.detectedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -151,7 +151,7 @@ class IncidentRepository extends ServiceEntityRepository
             ->setParameter('severities', ['high', 'critical'])
             ->setParameter('category', 'privacy')
             ->setParameter('threshold', $threshold)
-            ->orderBy('i.createdAt', 'ASC')
+            ->orderBy('i.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -180,7 +180,7 @@ class IncidentRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('i.detectedAt', 'DESC')
+            ->orderBy('i.detectedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -208,7 +208,7 @@ class IncidentRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('i.detectedAt', 'DESC')
+            ->orderBy('i.detectedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -242,8 +242,8 @@ class IncidentRepository extends ServiceEntityRepository
             ->setParameter('needle', '%' . strtolower($needle) . '%')
             ->setParameter('email', '%' . strtolower($needleEmail) . '%')
             ->setParameter('user', $user)
-            ->orderBy('i.severity', 'DESC')
-            ->addOrderBy('i.detectedAt', 'DESC');
+            ->orderBy('i.severity', \SortDirection::Descending)
+            ->addOrderBy('i.detectedAt', \SortDirection::Descending);
 
         return $qb->getQuery()->getResult();
     }
@@ -262,7 +262,7 @@ class IncidentRepository extends ServiceEntityRepository
         return $this->withoutTenantFilter(
             fn() => $this->createQueryBuilder('i')
                 ->where('i.tenant IS NULL')
-                ->orderBy('i.detectedAt', 'DESC')
+                ->orderBy('i.detectedAt', \SortDirection::Descending)
                 ->getQuery()
                 ->getResult()
         );
@@ -280,7 +280,7 @@ class IncidentRepository extends ServiceEntityRepository
     {
         return $this->withoutTenantFilter(
             fn() => $this->createQueryBuilder('i')
-                ->orderBy('i.detectedAt', 'DESC')
+                ->orderBy('i.detectedAt', \SortDirection::Descending)
                 ->getQuery()
                 ->getResult()
         );

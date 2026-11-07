@@ -709,6 +709,10 @@ jobs:
         # nothing. The 2026-11 sweep found an unusable import upload, deletes
         # without confirmation and a no-op trend chart wired that way.
         run: python3 scripts/quality/check_stimulus_wiring.py --baseline scripts/quality/baselines/stimulus_wiring.txt --quiet
+      - name: "Gate 81: ORM sort directions use SortDirection"
+        # doctrine/orm 3.7 deprecates "ASC"/"DESC" strings in orderBy()/addOrderBy()
+        # and #[ORM\OrderBy] (issue 11313). No baseline.
+        run: python3 scripts/quality/check_orm_sort_direction.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

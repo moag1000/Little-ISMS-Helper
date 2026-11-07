@@ -55,7 +55,7 @@ class LocationRepository extends ServiceEntityRepository
             ->andWhere('l.active = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -70,7 +70,7 @@ class LocationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.active = :active')
             ->setParameter('active', true)
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -83,7 +83,7 @@ class LocationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.locationType = :type')
             ->setParameter('type', $type)
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -96,7 +96,7 @@ class LocationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.securityLevel IN (:levels)')
             ->setParameter('levels', ['secure', 'high_security'])
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -109,7 +109,7 @@ class LocationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.requiresBadgeAccess = :required')
             ->setParameter('required', true)
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -122,7 +122,7 @@ class LocationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.requiresEscort = :required')
             ->setParameter('required', true)
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -134,7 +134,7 @@ class LocationRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.parentLocation IS NULL')
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -147,7 +147,7 @@ class LocationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.parentLocation = :parent')
             ->setParameter('parent', $location)
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -160,7 +160,7 @@ class LocationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.name LIKE :query OR l.code LIKE :query')
             ->setParameter('query', '%' . $query . '%')
-            ->orderBy('l.name', 'ASC')
+            ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

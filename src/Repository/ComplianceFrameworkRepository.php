@@ -41,7 +41,7 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cf')
             ->where('cf.active = :active')
             ->setParameter('active', true)
-            ->orderBy('cf.name', 'ASC')
+            ->orderBy('cf.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -58,7 +58,7 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
             ->andWhere('cf.active = :active')
             ->setParameter('mandatory', true)
             ->setParameter('active', true)
-            ->orderBy('cf.name', 'ASC')
+            ->orderBy('cf.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -77,7 +77,7 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
             ->setParameter('industry', $industry)
             ->setParameter('all', 'all')
             ->setParameter('active', true)
-            ->orderBy('cf.name', 'ASC')
+            ->orderBy('cf.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

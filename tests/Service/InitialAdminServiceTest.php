@@ -485,7 +485,7 @@ class InitialAdminServiceTest extends TestCase
 
         $queryBuilder->expects($this->once())
             ->method('orderBy')
-            ->with('u.id', 'ASC')
+            ->with('u.id', \SortDirection::Ascending)
             ->willReturnSelf();
 
         $queryBuilder->expects($this->once())

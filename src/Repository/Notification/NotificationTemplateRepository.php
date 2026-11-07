@@ -41,8 +41,8 @@ class NotificationTemplateRepository extends ServiceEntityRepository
         }
 
         return $qb
-            ->orderBy('t.category', 'ASC')
-            ->addOrderBy('t.name', 'ASC')
+            ->orderBy('t.category', \SortDirection::Ascending)
+            ->addOrderBy('t.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

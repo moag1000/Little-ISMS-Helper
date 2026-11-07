@@ -27,8 +27,8 @@ class TagRepository extends ServiceEntityRepository
     public function findVisibleFor(?Tenant $tenant): array
     {
         $qb = $this->createQueryBuilder('t')
-            ->orderBy('t.type', 'ASC')
-            ->addOrderBy('t.name', 'ASC');
+            ->orderBy('t.type', \SortDirection::Ascending)
+            ->addOrderBy('t.name', \SortDirection::Ascending);
 
         if ($tenant instanceof Tenant) {
             $qb->andWhere('t.tenant = :tenant OR t.tenant IS NULL')
@@ -55,8 +55,8 @@ class TagRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('t')
             ->andWhere('t.type = :type')
             ->setParameter('type', Tag::TYPE_SCOPE)
-            ->orderBy('t.frameworkCode', 'ASC')
-            ->addOrderBy('t.name', 'ASC');
+            ->orderBy('t.frameworkCode', \SortDirection::Ascending)
+            ->addOrderBy('t.name', \SortDirection::Ascending);
 
         if ($tenant instanceof Tenant) {
             $qb->andWhere('t.tenant = :tenant OR t.tenant IS NULL')

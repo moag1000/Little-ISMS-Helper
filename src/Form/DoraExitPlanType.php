@@ -46,7 +46,7 @@ final class DoraExitPlanType extends AbstractType implements SectionMapInterface
                         ->setParameter('dora', true)
                         ->setParameter('critIct', 'critical')
                         ->setParameter('critGen', 'critical')
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.name', \SortDirection::Ascending);
                 },
             ])
             ->add('exitTrigger', ChoiceType::class, [

@@ -43,7 +43,7 @@ class CrisisTeamRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ct')
             ->where('ct.isActive = :active')
             ->setParameter('active', true)
-            ->orderBy('ct.teamName', 'ASC')
+            ->orderBy('ct.teamName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -60,7 +60,7 @@ class CrisisTeamRepository extends ServiceEntityRepository
             ->andWhere('ct.isActive = :active')
             ->setParameter('type', $teamType)
             ->setParameter('active', true)
-            ->orderBy('ct.teamName', 'ASC')
+            ->orderBy('ct.teamName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -78,7 +78,7 @@ class CrisisTeamRepository extends ServiceEntityRepository
             ->andWhere('ct.isActive = :active')
             ->setParameter('now', new DateTimeImmutable())
             ->setParameter('active', true)
-            ->orderBy('ct.nextTrainingAt', 'ASC')
+            ->orderBy('ct.nextTrainingAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -94,7 +94,7 @@ class CrisisTeamRepository extends ServiceEntityRepository
             ->where('ct.teamLeader IS NULL OR ct.primaryPhone IS NULL OR ct.primaryEmail IS NULL')
             ->andWhere('ct.isActive = :active')
             ->setParameter('active', true)
-            ->orderBy('ct.teamName', 'ASC')
+            ->orderBy('ct.teamName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

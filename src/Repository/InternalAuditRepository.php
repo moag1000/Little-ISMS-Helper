@@ -45,7 +45,7 @@ class InternalAuditRepository extends ServiceEntityRepository
             ->andWhere('a.plannedDate >= :today')
             ->setParameter('status', InternalAuditStatus::Planned->value)
             ->setParameter('today', new DateTime())
-            ->orderBy('a.plannedDate', 'ASC');
+            ->orderBy('a.plannedDate', \SortDirection::Ascending);
 
         if ($tenant instanceof Tenant) {
             $qb->andWhere('a.tenant = :tenant')->setParameter('tenant', $tenant);
@@ -70,7 +70,7 @@ class InternalAuditRepository extends ServiceEntityRepository
             ->where('a.tenant = :tenant OR s.id = :tenantId')
             ->setParameter('tenant', $tenant)
             ->setParameter('tenantId', $tenant->getId())
-            ->orderBy('a.plannedDate', 'DESC')
+            ->orderBy('a.plannedDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -88,7 +88,7 @@ class InternalAuditRepository extends ServiceEntityRepository
             ->andWhere('a.scopeType IN (:corporateTypes)')
             ->setParameter('tenant', $tenant)
             ->setParameter('corporateTypes', ['corporate_wide', 'corporate_subsidiaries'])
-            ->orderBy('a.plannedDate', 'DESC')
+            ->orderBy('a.plannedDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -105,7 +105,7 @@ class InternalAuditRepository extends ServiceEntityRepository
             ->join('a.auditedSubsidiaries', 's')
             ->where('s.id = :subsidiaryId')
             ->setParameter('subsidiaryId', $subsidiary->getId())
-            ->orderBy('a.plannedDate', 'DESC')
+            ->orderBy('a.plannedDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

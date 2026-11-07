@@ -33,8 +33,8 @@ class AnswerLibraryEntryRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->andWhere('a.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('a.useCount', 'DESC')
-            ->addOrderBy('a.createdAt', 'DESC')
+            ->orderBy('a.useCount', \SortDirection::Descending)
+            ->addOrderBy('a.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -51,8 +51,8 @@ class AnswerLibraryEntryRepository extends ServiceEntityRepository
             ->andWhere('a.category = :category')
             ->setParameter('tenant', $tenant)
             ->setParameter('category', $category)
-            ->orderBy('a.useCount', 'DESC')
-            ->addOrderBy('a.createdAt', 'DESC')
+            ->orderBy('a.useCount', \SortDirection::Descending)
+            ->addOrderBy('a.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -73,8 +73,8 @@ class AnswerLibraryEntryRepository extends ServiceEntityRepository
             ->andWhere('(a.question LIKE :kw OR a.answer LIKE :kw)')
             ->setParameter('tenant', $tenant)
             ->setParameter('kw', '%' . $keyword . '%')
-            ->orderBy('a.useCount', 'DESC')
-            ->addOrderBy('a.createdAt', 'DESC');
+            ->orderBy('a.useCount', \SortDirection::Descending)
+            ->addOrderBy('a.createdAt', \SortDirection::Descending);
 
         if ($category !== null && $category !== '') {
             $qb->andWhere('a.category = :category')
@@ -95,7 +95,7 @@ class AnswerLibraryEntryRepository extends ServiceEntityRepository
             ->andWhere('a.tenant = :tenant')
             ->andWhere('a.useCount > 0')
             ->setParameter('tenant', $tenant)
-            ->orderBy('a.useCount', 'DESC')
+            ->orderBy('a.useCount', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

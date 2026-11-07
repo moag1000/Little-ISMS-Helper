@@ -52,7 +52,7 @@ class Nis2RegistrationProfileRepository extends ServiceEntityRepository
             ->andWhere('p.nextDueAt <= :threshold')
             ->setParameter('now', $now)
             ->setParameter('threshold', $threshold)
-            ->orderBy('p.nextDueAt', 'ASC')
+            ->orderBy('p.nextDueAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -70,7 +70,7 @@ class Nis2RegistrationProfileRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.nextDueAt < :now')
             ->setParameter('now', $now)
-            ->orderBy('p.nextDueAt', 'ASC')
+            ->orderBy('p.nextDueAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

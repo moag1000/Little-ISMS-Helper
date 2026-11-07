@@ -36,8 +36,8 @@ class ISMSContextRepository extends ServiceEntityRepository
     public function getCurrentContext(): ?ISMSContext
     {
         return $this->createQueryBuilder('c')
-            ->orderBy('c.updatedAt', 'DESC')
-            ->addOrderBy('c.createdAt', 'DESC')
+            ->orderBy('c.updatedAt', \SortDirection::Descending)
+            ->addOrderBy('c.createdAt', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

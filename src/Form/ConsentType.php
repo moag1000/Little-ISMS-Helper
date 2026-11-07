@@ -59,7 +59,7 @@ final class ConsentType extends AbstractType implements SectionMapInterface
                     return $repo->createQueryBuilder('p')
                         ->where('p.legalBasis = :legal_basis')
                         ->setParameter('legal_basis', 'consent')
-                        ->orderBy('p.name', 'ASC');
+                        ->orderBy('p.name', \SortDirection::Ascending);
                 },
                 'help' => 'consent.form.processing_activity_help',
             ])

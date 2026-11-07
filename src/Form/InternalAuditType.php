@@ -229,7 +229,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
                 'required' => false,
                 'query_builder' => fn(TenantRepository $tenantRepository): QueryBuilder => $tenantRepository->createQueryBuilder('t')
                     ->where('t.parent IS NOT NULL')
-                    ->orderBy('t.name', 'ASC'),
+                    ->orderBy('t.name', \SortDirection::Ascending),
                 'attr' => [
                     'size' => 8,
                     'data-corporate-subsidiaries' => '1',

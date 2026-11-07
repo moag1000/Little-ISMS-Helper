@@ -37,8 +37,8 @@ class SoaSnapshotRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->andWhere('s.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.asOfDate', 'DESC')
-            ->addOrderBy('s.createdAt', 'DESC')
+            ->orderBy('s.asOfDate', \SortDirection::Descending)
+            ->addOrderBy('s.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -57,7 +57,7 @@ class SoaSnapshotRepository extends ServiceEntityRepository
             ->andWhere('s.asOfDate = :asOfDate')
             ->setParameter('tenant', $tenant)
             ->setParameter('asOfDate', $asOfDate->setTime(0, 0, 0))
-            ->orderBy('s.createdAt', 'DESC')
+            ->orderBy('s.createdAt', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

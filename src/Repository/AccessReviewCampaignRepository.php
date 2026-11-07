@@ -38,7 +38,7 @@ class AccessReviewCampaignRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('arc')
             ->andWhere('arc.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('arc.createdAt', 'DESC')
+            ->orderBy('arc.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -55,7 +55,7 @@ class AccessReviewCampaignRepository extends ServiceEntityRepository
             ->andWhere('arc.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', AccessReviewCampaign::STATUS_OPEN)
-            ->orderBy('arc.dueDate', 'ASC')
+            ->orderBy('arc.dueDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

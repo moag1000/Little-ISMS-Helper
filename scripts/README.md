@@ -300,6 +300,18 @@ nur weniger werden (seit der Umstellung der restlichen Detailseiten leer).
 
 ---
 
+### quality/check_orm_sort_direction.py (Gate 81)
+
+**Zweck:** Sortierrichtungen für Doctrine ORM sind `\SortDirection::Ascending` /
+`\SortDirection::Descending`, keine Strings. doctrine/orm 3.7 meldet `'ASC'`/`'DESC'`
+in `orderBy()`/`addOrderBy()` und in `#[ORM\OrderBy]` als veraltet (Issue 11313),
+bei jedem Aufruf bzw. beim Cache-Warmup. Der DBAL-QueryBuilder nimmt weiter Strings;
+solche Zeilen tragen `// @dbal-order`. Keine Baseline.
+
+**CI-Integration:** Gate 81 im `code-quality`-Job.
+
+---
+
 ### quality/check_kpi_catalog.py (Gate 74)
 
 **Zweck:** Management-Kennzahlen kommen nur aus dem KPI-Katalog

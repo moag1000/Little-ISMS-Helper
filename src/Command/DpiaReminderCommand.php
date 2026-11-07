@@ -66,7 +66,7 @@ class DpiaReminderCommand
             ->andWhere('d.status != :archived')
             ->setParameter('cutoff', $cutoff)
             ->setParameter('archived', 'archived')
-            ->orderBy('d.nextReviewDate', 'ASC')
+            ->orderBy('d.nextReviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

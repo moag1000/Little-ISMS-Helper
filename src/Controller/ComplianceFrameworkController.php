@@ -46,7 +46,7 @@ class ComplianceFrameworkController extends AbstractController
         ];
 
         $queryBuilder = $this->complianceFrameworkRepository->createQueryBuilder('f')
-            ->orderBy('f.name', 'ASC');
+            ->orderBy('f.name', \SortDirection::Ascending);
 
         // Apply filters
         if ($filters['active'] !== null && $filters['active'] !== '') {
@@ -69,7 +69,7 @@ class ComplianceFrameworkController extends AbstractController
         // Get unique industries for filter
         $industries = $this->complianceFrameworkRepository->createQueryBuilder('f')
             ->select('DISTINCT f.applicableIndustry')
-            ->orderBy('f.applicableIndustry', 'ASC')
+            ->orderBy('f.applicableIndustry', \SortDirection::Ascending)
             ->getQuery()
             ->getScalarResult();
 

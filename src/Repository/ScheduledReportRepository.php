@@ -30,7 +30,7 @@ class ScheduledReportRepository extends ServiceEntityRepository
             ->andWhere('sr.isActive = :active')
             ->setParameter('tenantId', $tenantId)
             ->setParameter('active', true)
-            ->orderBy('sr.nextRunAt', 'ASC')
+            ->orderBy('sr.nextRunAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -47,7 +47,7 @@ class ScheduledReportRepository extends ServiceEntityRepository
             ->andWhere('sr.nextRunAt <= :now')
             ->setParameter('active', true)
             ->setParameter('now', new \DateTime())
-            ->orderBy('sr.nextRunAt', 'ASC')
+            ->orderBy('sr.nextRunAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -64,7 +64,7 @@ class ScheduledReportRepository extends ServiceEntityRepository
             ->andWhere('sr.reportType = :reportType')
             ->setParameter('tenantId', $tenantId)
             ->setParameter('reportType', $reportType)
-            ->orderBy('sr.name', 'ASC')
+            ->orderBy('sr.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -79,7 +79,7 @@ class ScheduledReportRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('sr')
             ->andWhere('sr.tenantId = :tenantId')
             ->setParameter('tenantId', $tenantId)
-            ->orderBy('sr.name', 'ASC')
+            ->orderBy('sr.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

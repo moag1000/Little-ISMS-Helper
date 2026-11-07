@@ -48,7 +48,7 @@ class AuditLogRepository extends ServiceEntityRepository
     public function findAllOrdered(int $limit = 100, int $offset = 0): array
     {
         return $this->createQueryBuilder('a')
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->setFirstResult($offset)
             ->getQuery()
@@ -74,7 +74,7 @@ class AuditLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->andWhere('a.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->setFirstResult($offset)
             ->getQuery()
@@ -91,7 +91,7 @@ class AuditLogRepository extends ServiceEntityRepository
             ->andWhere('a.entityId = :entityId')
             ->setParameter('entityType', $entityType)
             ->setParameter('entityId', $entityId)
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -108,7 +108,7 @@ class AuditLogRepository extends ServiceEntityRepository
             ->andWhere('a.entityId = :entityId')
             ->setParameter('entityType', $entityType)
             ->setParameter('entityId', $entityId)
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -134,7 +134,7 @@ class AuditLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.userName = :userName')
             ->setParameter('userName', $userName)
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -148,7 +148,7 @@ class AuditLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.action = :action')
             ->setParameter('action', $action)
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -177,7 +177,7 @@ class AuditLogRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -201,7 +201,7 @@ class AuditLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->select('a.action, COUNT(a.id) as count')
             ->groupBy('a.action')
-            ->orderBy('count', 'DESC')
+            ->orderBy('count', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -214,7 +214,7 @@ class AuditLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->select('a.entityType, COUNT(a.id) as count')
             ->groupBy('a.entityType')
-            ->orderBy('count', 'DESC')
+            ->orderBy('count', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -229,7 +229,7 @@ class AuditLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.createdAt >= :since')
             ->setParameter('since', $since)
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -242,7 +242,7 @@ class AuditLogRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('a');
         $this->applySearchCriteria($queryBuilder, $criteria);
 
-        $queryBuilder->orderBy('a.createdAt', 'DESC')
+        $queryBuilder->orderBy('a.createdAt', \SortDirection::Descending)
             ->setMaxResults($criteria['limit'] ?? 100);
 
         // Offset enables real pagination of filtered results (previously the
@@ -326,7 +326,7 @@ class AuditLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.createdAt < :cutoffDate')
             ->setParameter('cutoffDate', $cutoffDate)
-            ->orderBy('a.createdAt', 'ASC')
+            ->orderBy('a.createdAt', \SortDirection::Ascending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -359,7 +359,7 @@ class AuditLogRepository extends ServiceEntityRepository
         $result = $this->createQueryBuilder('a')
             ->select('a.hmac')
             ->where('a.hmac IS NOT NULL')
-            ->orderBy('a.id', 'DESC')
+            ->orderBy('a.id', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -376,7 +376,7 @@ class AuditLogRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->where('a.hmac IS NOT NULL')
-            ->orderBy('a.id', 'ASC')
+            ->orderBy('a.id', \SortDirection::Ascending)
             ->getQuery()
             ->toIterable();
     }

@@ -36,7 +36,7 @@ class ConsentRepository extends ServiceEntityRepository
             ->setParameter('activity', $processingActivity)
             ->setParameter('status', ConsentStatus::Active->value)
             ->setParameter('revoked', false)
-            ->orderBy('c.grantedAt', 'DESC')
+            ->orderBy('c.grantedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -53,7 +53,7 @@ class ConsentRepository extends ServiceEntityRepository
             ->andWhere('c.isVerifiedByDpo = :verified')
             ->setParameter('status', ConsentStatus::PendingVerification->value)
             ->setParameter('verified', false)
-            ->orderBy('c.documentedAt', 'ASC');
+            ->orderBy('c.documentedAt', \SortDirection::Ascending);
 
         if ($tenant !== null) {
             $qb->andWhere('c.tenant = :tenant')
@@ -84,7 +84,7 @@ class ConsentRepository extends ServiceEntityRepository
             ->setParameter('future', $futureDate)
             ->setParameter('status', ConsentStatus::Active->value)
             ->setParameter('revoked', false)
-            ->orderBy('c.expiresAt', 'ASC');
+            ->orderBy('c.expiresAt', \SortDirection::Ascending);
 
         if ($tenant !== null) {
             $qb->andWhere('c.tenant = :tenant')
@@ -104,7 +104,7 @@ class ConsentRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c')
             ->where('c.dataSubjectIdentifier = :identifier')
             ->setParameter('identifier', $identifier)
-            ->orderBy('c.grantedAt', 'DESC');
+            ->orderBy('c.grantedAt', \SortDirection::Descending);
 
         if ($tenant !== null) {
             $qb->andWhere('c.tenant = :tenant')
