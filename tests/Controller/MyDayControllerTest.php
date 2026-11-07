@@ -131,6 +131,9 @@ final class MyDayControllerTest extends WebTestCase
             'form[action$="/workflow/instance/%d/approve"]',
             $this->instance->getId(),
         )), 'the approval is decided on the page');
+        $dialog = $crawler->filter(sprintf('#approveWorkflow%d .fa-modal__body', $this->instance->getId()));
+        self::assertStringContainsString((string) $this->risk->getTitle(), $dialog->text());
+        self::assertCount(1, $dialog->filter('p.small'), 'the dialog carries the business line of the risk');
     }
 
     #[Test]

@@ -600,7 +600,7 @@ final class AdminHubCatalog
                         'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
                     // Deferred system-settings sub-pages
-                    // scope: own-tenant location map (opt-in online geocoding)
+                    // scope: own-tenant location map (peer comparison, checks, precision, online geocoding)
                     [
                         'key' => 'location_map_settings',
                         'icon' => 'fa-icon--nav-location',

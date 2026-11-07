@@ -14,45 +14,91 @@
         title: 'admin.location_map.title'|trans({}, 'admin'),
     }) }}
 
+    <form method="post" action="{{ path('admin_settings_location_map') }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_location_map') }}">
     <div class="row g-4 mt-2">
         <div class="col-lg-8">
-            <section class="fa-section">
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.location_map.peer.title'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <fieldset class="mb-2">
+                        <legend class="visually-hidden">{{ 'admin.location_map.peer.title'|trans({}, 'admin') }}</legend>
+                        {% for _mode in peer_modes %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="peer_mode" id="peer_mode_{{ _mode }}" value="{{ _mode }}" {{ map.peerMode == _mode ? 'checked' : '' }}>
+                                <label class="form-check-label" for="peer_mode_{{ _mode }}">{{ ('admin.location_map.peer.' ~ _mode)|trans({}, 'admin') }}</label>
+                            </div>
+                        {% endfor %}
+                    </fieldset>
+                    <div class="form-text">{{ 'admin.location_map.peer.help'|trans({}, 'admin') }}</div>
+                </div>
+            </section>
+
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.location_map.checks.title'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check_owner" checked disabled>
+                        <label class="form-check-label" for="check_owner">{{ 'location.map.check.owner'|trans({}, 'locations') }} <small class="text-muted-color">{{ check_norms.owner }}</small></label>
+                    </div>
+                    {% for _check in optional_checks %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="active_checks[]" id="check_{{ _check }}" value="{{ _check }}" {{ _check in map.disabledChecks ? '' : 'checked' }}>
+                            <label class="form-check-label" for="check_{{ _check }}">{{ ('location.map.check.' ~ _check)|trans({}, 'locations') }} <small class="text-muted-color">{{ check_norms[_check] }}</small></label>
+                        </div>
+                    {% endfor %}
+                    <div class="form-text mt-2">{{ 'admin.location_map.checks.help'|trans({}, 'admin') }}</div>
+                </div>
+            </section>
+
+            <section class="fa-section mb-4">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">{{ 'admin.location_map.geocoding_title'|trans({}, 'admin') }}</h2>
                 </div>
                 <div class="fa-section__body">
                     <p>{{ 'admin.location_map.offline_note'|trans({}, 'admin') }}</p>
-                    <form method="post" action="{{ path('admin_settings_location_map') }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_location_map') }}">
 
-                        <div class="form-check form-switch mb-2">
-                            <input class="form-check-input" type="checkbox" role="switch" id="online_geocoding"
-                                   name="online_geocoding" value="1" {{ current.enabled ? 'checked' : '' }}>
-                            <label class="form-check-label fw-semibold" for="online_geocoding">
-                                {{ 'admin.location_map.online.label'|trans({}, 'admin') }}
-                            </label>
-                        </div>
-                        <div class="form-text mb-4">{{ 'admin.location_map.online.help'|trans({}, 'admin') }}</div>
+                    <fieldset class="mb-4">
+                        <legend class="form-label fw-semibold fs-6">{{ 'admin.location_map.precision.title'|trans({}, 'admin') }}</legend>
+                        {% for _p in precisions %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="precision" id="precision_{{ _p }}" value="{{ _p }}" {{ map.precision == _p ? 'checked' : '' }}>
+                                <label class="form-check-label" for="precision_{{ _p }}">{{ ('admin.location_map.precision.' ~ _p)|trans({}, 'admin') }}</label>
+                            </div>
+                        {% endfor %}
+                    </fieldset>
 
-                        <div class="mb-4">
-                            {{ _fa_cyber.text('endpoint', {
-                                id: 'endpoint',
-                                label: 'admin.location_map.endpoint.label'|trans({}, 'admin'),
-                                value: current.endpoint,
-                                type: 'url',
-                                help: 'admin.location_map.endpoint.help'|trans({ '%default%': default_endpoint }, 'admin'),
-                            }) }}
-                        </div>
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" role="switch" id="online_geocoding"
+                               name="online_geocoding" value="1" {{ current.enabled ? 'checked' : '' }}>
+                        <label class="form-check-label fw-semibold" for="online_geocoding">
+                            {{ 'admin.location_map.online.label'|trans({}, 'admin') }}
+                        </label>
+                    </div>
+                    <div class="form-text mb-4">{{ 'admin.location_map.online.help'|trans({}, 'admin') }}</div>
 
-                        <div class="d-flex gap-2">
-                            <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
-                            </button>
-                        </div>
-                    </form>
+                    <div class="mb-2">
+                        {{ _fa_cyber.text('endpoint', {
+                            id: 'endpoint',
+                            label: 'admin.location_map.endpoint.label'|trans({}, 'admin'),
+                            value: current.endpoint,
+                            type: 'url',
+                            help: 'admin.location_map.endpoint.help'|trans({ '%default%': default_endpoint }, 'admin'),
+                        }) }}
+                    </div>
                 </div>
             </section>
+
+            <div class="d-flex gap-2">
+                <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                </button>
+            </div>
         </div>
         <div class="col-lg-4">
             <section class="fa-section">
@@ -60,9 +106,11 @@
                     <h2 class="fa-section__title">{{ 'admin.location_map.privacy_title'|trans({}, 'admin') }}</h2>
                 </div>
                 <div class="fa-section__body">
+                    <p class="small">{{ 'admin.location_map.peer.privacy'|trans({}, 'admin') }}</p>
                     <p class="small mb-0">{{ 'admin.location_map.privacy_text'|trans({}, 'admin') }}</p>
                 </div>
             </section>
         </div>
     </div>
+    </form>
 {% endblock %}

@@ -89,3 +89,9 @@ kpi:
         percent: "%"
         hours: "hours"
         days: "days"
+
+    # Location map and efficiency tracking (KpiCatalog)
+    location_checks_rate: "Site checks passed"
+    location_open_gaps: "Open site checks"
+    location_critical_sites: "Sites with critical risk"
+    fte_saved_days: "Person-days saved (12 months)"

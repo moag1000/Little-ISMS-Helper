@@ -116,6 +116,7 @@ location:
             region: 'Lage auf der Karte: Gebiet (Land, EU/EWR oder weltweit)'
     map:
         title: Standortkarte
+        open: 'Karte öffnen'
         aria: 'Weltkarte mit %count% Standorten'
         attribution: 'Karte: Natural Earth. Postleitzahlen und Orte: GeoNames (CC BY 4.0).'
         show_on_map: 'Auf Karte zeigen'
@@ -206,6 +207,67 @@ location:
             risks: 'Risiken (%count%)'
             assets: 'Assets (%count%)'
             incidents: Vorfälle
+        levers:
+            title: 'Größte Hebel'
+            item: '%site%: %risk%'
+        peer:
+            title: 'Vergleich mit ähnlichen Standorten'
+            own_rate: 'Erfüllte Prüfungen, %site%'
+            own_avg: 'Erfüllte Prüfungen, Ø meiner %count% Standorte'
+            own_gaps: '%count% davon mit offenen Prüfungen'
+            median_hint: 'Median ähnlicher Standorte: %median% % (%count% Standorte)'
+            none: 'Kein Vergleich: weniger als drei ähnliche Standorte.'
+            solved_at: 'Erfüllt bei:'
+            values: 'Erfüllt %rate% %, Median %median% %; Risiko %score%, Median %median_score%'
+            rank_sentence:
+                top: 'Bei den erfüllten Prüfungen im oberen Drittel von %count% ähnlichen Standorten.'
+                middle: 'Bei den erfüllten Prüfungen im Mittelfeld von %count% ähnlichen Standorten.'
+                bottom: 'Bei den erfüllten Prüfungen im unteren Drittel von %count% ähnlichen Standorten.'
+            rank:
+                top: 'oberes Drittel'
+                middle: Mittelfeld
+                bottom: 'unteres Drittel'
+            basis:
+                tag: 'Gruppe „%tag%“'
+                type: 'gleicher Typ, ähnlicher Schutzbedarf'
+                band: 'ähnlicher Schutzbedarf'
+        objectives:
+            title: Ziele
+            line: 'Ziel %target%, Ist %current%, noch %months% Monate'
+        actions:
+            title: Aktionen
+            risk: 'Risiko erfassen'
+            incident: 'Vorfall melden'
+            owner: 'Verantwortliche zuweisen'
+            audit: 'Audit planen'
+            exercise: 'Notfallübung planen'
+        bulk:
+            hint: 'Auswahl:'
+            action: 'Zuweisen …'
+            owner: Verantwortliche
+            deputy: Vertretung
+            tag: 'Gruppe (Tag)'
+            apply: Anwenden
+            select: Auswahl
+            select_site: '%site% auswählen'
+            flash:
+                empty: 'Keine Standorte oder kein Ziel gewählt.'
+                done: '%count% Standorte geändert.'
+        export:
+            title: Standort-Lagebild
+            sheet: Standorte
+            scope: '%count% Standorte'
+            action_needed: 'Standorte mit Handlungsbedarf'
+            xlsx: Excel
+            pdf: PDF
+            col:
+                rate: 'Erfüllt (%)'
+                peer: Vergleich
+                ale: 'Erwarteter Jahresschaden'
+    profile:
+        title: Steckbrief
+        checks: 'Prüfungen offen'
+        not_site: 'Teil von %site%. Der Steckbrief gilt für den ganzen Standort.'
     title.list: Standorte
     title.create: 'Standort anlegen'
     title.show: Standortdetails

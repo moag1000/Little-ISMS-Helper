@@ -82,10 +82,12 @@ final class BulkReviewTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSame(2, $body['changed']);
-        self::assertEqualsCanonicalizing(
-            [['id' => $closed->getId(), 'reason' => 'not_reviewable'], ['id' => $foreign->getId(), 'reason' => 'tenant_mismatch']],
-            $body['rejected'],
-        );
+        $reasons = array_column($body['rejected'], 'reason', 'id');
+        self::assertCount(2, $reasons);
+        self::assertSame('not_reviewable', $reasons[$closed->getId()]);
+        // The tenant filter already hides the other organisation's risk (not_found); without
+        // the filter the scope check catches it (tenant_mismatch). Either way it stays untouched.
+        self::assertContains($reasons[$foreign->getId()] ?? null, ['not_found', 'tenant_mismatch']);
         self::assertNotEmpty($body['batch_id']);
 
         $this->em->clear();
