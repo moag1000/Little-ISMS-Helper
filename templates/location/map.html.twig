@@ -194,7 +194,7 @@
                         <span class="location-map__zone-key location-map__zone-key--{{ _z }}">{{ ('location.map.zone.' ~ _z)|trans({}, 'locations') }}</span>
                     {% endfor %}
                     <span class="location-map__key location-map__key--supplier">{{ 'location.map.legend.supplier'|trans({}, 'locations') }}</span>
-                    <span class="text-muted-color">{{ 'location.map.zone.as_of'|trans({ '%date%': zones_as_of|fa_date }, 'locations') }}</span>
+                    <span class="text-muted-color">{{ 'location.map.zone.as_of'|trans({ '%date%': date(zones_as_of)|fa_date }, 'locations') }}</span>
                 </span>
             </figcaption>
         </figure>
@@ -321,7 +321,7 @@
                     {% for _s in _sites|filter(s => s.sample) %}
                         {% set _a = _s.layers.audit %}
                         <li><a href="{{ path('app_location_show', { id: _s.id }) }}">{{ _s.name }}</a>
-                            <span class="text-muted-color">· {{ _a.last ? 'location.map.audit.last'|trans({ '%date%': _a.last.date|fa_date }, 'locations') : 'location.map.audit.never'|trans({}, 'locations') }}{% if _s.riskBand != 'none' %} · {{ 'location.map.col.risk'|trans({}, 'locations') }} {{ _s.score }}{% endif %}</span></li>
+                            <span class="text-muted-color">· {{ _a.last ? 'location.map.audit.last'|trans({ '%date%': date(_a.last.date)|fa_date }, 'locations') : 'location.map.audit.never'|trans({}, 'locations') }}{% if _s.riskBand != 'none' %} · {{ 'location.map.col.risk'|trans({}, 'locations') }} {{ _s.score }}{% endif %}</span></li>
                     {% endfor %}
                 </ol>
             </div>
@@ -474,7 +474,7 @@
                             {%- if _l == 'emergency' -%}
                                 {{ _f.band == 'none' ? '–' : ('location.map.emergency.cell.' ~ _f.band)|trans({ '%missing%': _f.missing, '%untested%': _f.untested }, 'locations') }}
                             {%- elseif _l == 'audit' -%}
-                                {{ _f.last ?? null ? 'location.map.audit.last'|trans({ '%date%': _f.last.date|fa_date }, 'locations') : 'location.map.audit.never'|trans({}, 'locations') }}{% if _f.next ?? null %} · {{ 'location.map.audit.next'|trans({ '%date%': _f.next.date|fa_date }, 'locations') }}{% endif %}
+                                {{ _f.last ?? null ? 'location.map.audit.last'|trans({ '%date%': date(_f.last.date)|fa_date }, 'locations') : 'location.map.audit.never'|trans({}, 'locations') }}{% if _f.next ?? null %} · {{ 'location.map.audit.next'|trans({ '%date%': date(_f.next.date)|fa_date }, 'locations') }}{% endif %}
                             {%- else -%}
                                 {{ ('location.map.zone.' ~ (_f.zone ?? 'unknown'))|trans({}, 'locations') }}
                             {%- endif -%}
@@ -584,7 +584,7 @@
                         <li class="{{ _p.state == 'ok' ? 'is-ok' : 'is-gap' }}">
                             <span class="location-map__check-mark" aria-hidden="true">{{ _p.state == 'ok' ? '✓' : '✗' }}</span>
                             <span><a href="{{ path('app_business_process_show', { id: _p.id }) }}">{{ _p.name }}</a>
-                                <br><small>{{ ('location.map.emergency.state.' ~ _p.state)|trans({ '%date%': _p.tested ? _p.tested|fa_date : '' }, 'locations') }}{% if _p.planId %} · <a href="{{ path('app_bc_plan_show', { id: _p.planId }) }}">{{ _p.planName }}</a>{% endif %}{% if _p.alternativeSite %} · {{ 'location.map.emergency.alt'|trans({ '%site%': _p.alternativeSite }, 'locations') }}{% endif %}</small>
+                                <br><small>{{ ('location.map.emergency.state.' ~ _p.state)|trans({ '%date%': _p.tested ? date(_p.tested)|fa_date : '' }, 'locations') }}{% if _p.planId %} · <a href="{{ path('app_bc_plan_show', { id: _p.planId }) }}">{{ _p.planName }}</a>{% endif %}{% if _p.alternativeSite %} · {{ 'location.map.emergency.alt'|trans({ '%site%': _p.alternativeSite }, 'locations') }}{% endif %}</small>
                                 {% if _p.state == 'missing' and not _read_only %}<br><a href="{{ path('app_bc_plan_new') }}">{{ 'location.map.emergency.fix_plan'|trans({}, 'locations') }}</a>{% endif %}
                             </span>
                         </li>
@@ -598,8 +598,8 @@
                 {% set _a = site.layers.audit %}
                 <div data-layer-only="audit">
                     <h3 class="location-map__panel-sub">{{ 'location.map.audit.title'|trans({}, 'locations') }}</h3>
-                    <p class="mb-1">{% if _a.last %}<a href="{{ path('app_audit_show', { id: _a.last.id }) }}">{{ 'location.map.audit.last'|trans({ '%date%': _a.last.date|fa_date }, 'locations') }}</a>{% else %}{{ 'location.map.audit.never'|trans({}, 'locations') }}{% endif %}</p>
-                    <p class="mb-1">{% if _a.next %}<a href="{{ path('app_audit_show', { id: _a.next.id }) }}">{{ 'location.map.audit.next'|trans({ '%date%': _a.next.date|fa_date }, 'locations') }}</a>{% else %}<span class="text-muted-color">{{ 'location.map.audit.none_planned'|trans({}, 'locations') }}</span>{% endif %}</p>
+                    <p class="mb-1">{% if _a.last %}<a href="{{ path('app_audit_show', { id: _a.last.id }) }}">{{ 'location.map.audit.last'|trans({ '%date%': date(_a.last.date)|fa_date }, 'locations') }}</a>{% else %}{{ 'location.map.audit.never'|trans({}, 'locations') }}{% endif %}</p>
+                    <p class="mb-1">{% if _a.next %}<a href="{{ path('app_audit_show', { id: _a.next.id }) }}">{{ 'location.map.audit.next'|trans({ '%date%': date(_a.next.date)|fa_date }, 'locations') }}</a>{% else %}<span class="text-muted-color">{{ 'location.map.audit.none_planned'|trans({}, 'locations') }}</span>{% endif %}</p>
                     {% if site.sample %}<p class="small mb-0">{{ 'location.map.sample.in_sample'|trans({}, 'locations') }}</p>{% endif %}
                 </div>
             {% endif %}
