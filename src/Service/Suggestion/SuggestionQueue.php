@@ -11,6 +11,7 @@ use App\Enum\SuggestionStatus;
 use App\Repository\SuggestionRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
+use App\Service\Responsibility\ResponsibilityResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -36,6 +37,8 @@ class SuggestionQueue
         private readonly AuditLogger $auditLogger,
         private readonly Security $security,
         private readonly ModuleConfigurationService $modules,
+        private readonly ?SuggestionResponsibility $responsibility = null,
+        private readonly ?ResponsibilityResolver $resolver = null,
     ) {
         foreach ($kinds as $kind) {
             $this->kinds[$kind->key()] = $kind;
@@ -170,6 +173,12 @@ class SuggestionQueue
             if ($this->security->isGranted($role)) {
                 return true;
             }
+        }
+        // The person responsible for the record (risk owner, asset owner, …)
+        // decides its suggestions too — the same answer My Day and the digest use.
+        $user = $this->security->getUser();
+        if ($user instanceof User && $this->responsibility !== null && $this->resolver !== null) {
+            return $this->resolver->isResponsible($user, $this->responsibility->of($suggestion), $suggestion->getTenant());
         }
 
         return false;
