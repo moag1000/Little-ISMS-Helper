@@ -156,7 +156,7 @@ final class RecordCheckRuleTest extends TestCase
 
             public function runDataCheck(array $check, Tenant $tenant): ?array
             {
-                return $this->test->result((string) $check['name']);
+                return $this->test->checkResult((string) $check['name']);
             }
         };
 
@@ -170,7 +170,7 @@ final class RecordCheckRuleTest extends TestCase
      * @return array{score: float, details: array<string, mixed>}|null
      * @internal called by the fake wizard
      */
-    public function result(string $name): ?array
+    public function checkResult(string $name): ?array
     {
         $this->runs++;
         $key = str_replace('wizard.check.', '', $name);
