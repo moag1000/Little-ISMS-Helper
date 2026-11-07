@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Audit\Generator;
 
 use App\Risk\RiskMatrixThresholds;
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -115,7 +116,7 @@ final class WorkbookStyleHelper
     public static function writeCoverRow(Worksheet $sheet, int $row, string $label, string $value): int
     {
         $sheet->setCellValue('A' . $row, $label);
-        $sheet->setCellValue('B' . $row, $value);
+        $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($value));
 
         $sheet->getStyle('A' . $row)->applyFromArray([
             'font' => ['bold' => true],

@@ -18,6 +18,7 @@ use App\Service\Import\EntityMapperRegistry;
 use App\Service\Import\HeaderHeuristicMapper;
 use App\Service\Import\SpreadsheetParser;
 use App\Service\TenantContext;
+use App\Util\CsvSanitizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -403,7 +404,7 @@ final class BulkImportController extends AbstractController
                 fputcsv($handle, [
                     $row->getRowNumber(),
                     json_encode($row->getParsedData(), JSON_UNESCAPED_UNICODE),
-                    $row->getErrorMessage() ?? '',
+                    CsvSanitizer::sanitize($row->getErrorMessage() ?? ''),
                 ], ';', '"', '\\');
             }
 

@@ -171,7 +171,9 @@ class ReportController extends AbstractController
                 $risk->getRiskScore(),
                 $risk->getTreatmentStrategy() ? substr($risk->getTreatmentStrategy()->value, 0, 50) : '-',
                 $risk->getStatus()?->value,
-                $risk->getRiskOwner() ? $risk->getRiskOwner()->getEmail() : '-',
+                // Name like the PDF and the register export — the owner's e-mail
+                // address is not register data and leaked to every ROLE_USER.
+                $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
             ];
         }
 

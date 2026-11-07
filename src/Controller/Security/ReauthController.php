@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -56,6 +57,7 @@ final class ReauthController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly TenantContext $tenantContext,
+        private readonly RateLimiterFactory $reauthLimiter,
     ) {
     }
 
@@ -88,10 +90,18 @@ final class ReauthController extends AbstractController
             return new JsonResponse(['error' => 'reauth.error.password_required'], Response::HTTP_BAD_REQUEST);
         }
 
+        // Per-user budget: a hijacked session must not brute-force the password here.
+        $limiter = $this->reauthLimiter->create('reauth-' . $user->getId());
+        if (!$limiter->consume(1)->isAccepted()) {
+            return new JsonResponse(['error' => 'reauth.error.too_many_attempts'], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
         if (!$this->passwordHasher->isPasswordValid($user, $plainPassword)) {
             $this->auditLogger->logCustom('reauth_failed', 'User', $user->getId(), [], ['reason' => 'invalid_password']);
             return new JsonResponse(['error' => 'reauth.error.invalid_password'], Response::HTTP_UNAUTHORIZED);
         }
+
+        $limiter->reset();
 
         // Upgrade the session token: replace RememberMeToken with fully-authenticated token.
         $token = new UsernamePasswordToken($user, 'main', $user->getRoles());

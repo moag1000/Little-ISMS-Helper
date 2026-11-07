@@ -7,6 +7,7 @@ namespace App\Service\Audit\Generator;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Repository\RiskRepository;
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 /**
@@ -104,17 +105,17 @@ final class RiskRegisterWorkbookGenerator implements AuditWorkbookGeneratorInter
             $residualScore = $risk->getResidualRiskLevel();
 
             $sheet->setCellValue('A' . $row, $risk->getId());
-            $sheet->setCellValue('B' . $row, $risk->getTitle());
-            $sheet->setCellValue('C' . $row, $risk->getCategory());
+            $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($risk->getTitle()));
+            $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($risk->getCategory()));
             $sheet->setCellValue('D' . $row, $risk->getProbability());
             $sheet->setCellValue('E' . $row, $risk->getImpact());
             $sheet->setCellValue('F' . $row, $inherentScore);
             $sheet->setCellValue('G' . $row, $risk->getResidualProbability());
             $sheet->setCellValue('H' . $row, $risk->getResidualImpact());
             $sheet->setCellValue('I' . $row, $residualScore);
-            $sheet->setCellValue('J' . $row, $risk->getTreatmentStrategy()?->value ?? '');
-            $sheet->setCellValue('K' . $row, $risk->getTreatmentDescription() ?? '');
-            $sheet->setCellValue('L' . $row, $risk->getEffectiveRiskOwner() ?? '');
+            $sheet->setCellValue('J' . $row, CsvSanitizer::sanitize($risk->getTreatmentStrategy()?->value ?? ''));
+            $sheet->setCellValue('K' . $row, CsvSanitizer::sanitize($risk->getTreatmentDescription() ?? ''));
+            $sheet->setCellValue('L' . $row, CsvSanitizer::sanitize($risk->getEffectiveRiskOwner() ?? ''));
             $sheet->setCellValue('M' . $row, $risk->getStatus()?->value ?? '');
             $sheet->setCellValue('N' . $row, $risk->isFormallyAccepted() ? 'Yes' : 'No');
             $sheet->setCellValue('O' . $row, $risk->isRequiresDPIA() ? 'Yes' : 'No');

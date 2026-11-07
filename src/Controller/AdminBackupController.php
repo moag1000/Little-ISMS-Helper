@@ -223,7 +223,7 @@ class AdminBackupController extends AbstractController
     {
         // Validate filename to prevent directory traversal (accept both backup_ and uploaded_ files)
         // Supports .zip (format 2.0), .json.gz, .json, and bare .gz (legacy)
-        if (!preg_match('/^(backup_|uploaded_)\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.(zip|json\.gz|json|gz)$/', $filename)) {
+        if (!BackupService::isBackupFilename($filename)) {
             throw $this->createNotFoundException('Invalid backup filename');
         }
 
@@ -368,7 +368,7 @@ class AdminBackupController extends AbstractController
 
         try {
             // Validate filename
-            if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
+            if (!BackupService::isBackupFilename($filename)) {
                 // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Invalid backup filename');
             }
@@ -414,7 +414,7 @@ class AdminBackupController extends AbstractController
     {
         try {
             // Validate filename
-            if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
+            if (!BackupService::isBackupFilename($filename)) {
                 // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Invalid backup filename');
             }
@@ -468,7 +468,7 @@ class AdminBackupController extends AbstractController
         // running for several minutes in a worker only to fail at flush-time.
         $targetTenantScope = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
 
-        if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
+        if (!BackupService::isBackupFilename($filename)) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Invalid backup filename',
@@ -553,7 +553,7 @@ class AdminBackupController extends AbstractController
 
         try {
             // Validate filename
-            if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
+            if (!BackupService::isBackupFilename($filename)) {
                 // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Invalid backup filename');
             }

@@ -131,7 +131,7 @@ class DataBreachController extends AbstractController
      * breach if the id is missing or mismatched.
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
         // Create a new breach with tenant and reference number pre-set
@@ -237,7 +237,7 @@ class DataBreachController extends AbstractController
      * Edit data breach
      */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, DataBreach $dataBreach): Response
     {
         if (!in_array($dataBreach->getStatus(), [DataBreachStatus::Draft->value, DataBreachStatus::UnderAssessment->value], true)) {
@@ -315,7 +315,7 @@ class DataBreachController extends AbstractController
      * Submit data breach for assessment
      */
     #[Route('/{id}/submit-for-assessment', name: 'submit_for_assessment', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function submitForAssessment(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
@@ -338,7 +338,7 @@ class DataBreachController extends AbstractController
      * Notify supervisory authority (Art. 33 GDPR)
      */
     #[Route('/{id}/notify-authority', name: 'notify_authority', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function notifyAuthority(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
@@ -387,7 +387,7 @@ class DataBreachController extends AbstractController
      * Notify data subjects (Art. 34 GDPR)
      */
     #[Route('/{id}/notify-subjects', name: 'notify_subjects', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function notifySubjects(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
@@ -418,7 +418,7 @@ class DataBreachController extends AbstractController
      * Record exemption from data subject notification (Art. 34(3) GDPR)
      */
     #[Route('/{id}/subject-notification-exemption', name: 'subject_notification_exemption', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function subjectNotificationExemption(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
@@ -448,7 +448,7 @@ class DataBreachController extends AbstractController
      * Close data breach investigation
      */
     #[Route('/{id}/close', name: 'close', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function close(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');

@@ -8,6 +8,7 @@ use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use App\Repository\ProcessingActivityRepository;
 use App\Service\PdfExportService;
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -92,17 +93,17 @@ final class VvtBfdiExporter
         $coverSheet->setCellValue('A1', 'Verzeichnis von Verarbeitungstätigkeiten');
         $coverSheet->setCellValue('A2', 'Art. 30 DSGVO — BfDI-Muster');
         $coverSheet->setCellValue('A4', 'Verantwortlicher:');
-        $coverSheet->setCellValue('B4', $tenant->getName() ?? '—');
+        $coverSheet->setCellValue('B4', CsvSanitizer::sanitize($tenant->getName() ?? '—'));
         $coverSheet->setCellValue('A5', 'Datenschutzbeauftragter:');
-        $coverSheet->setCellValue('B5', $this->dpoLabel($tenant));
+        $coverSheet->setCellValue('B5', CsvSanitizer::sanitize($this->dpoLabel($tenant)));
         $coverSheet->setCellValue('A6', 'DSB-E-Mail:');
-        $coverSheet->setCellValue('B6', $tenant->getDpoContactEmail() ?? '—');
+        $coverSheet->setCellValue('B6', CsvSanitizer::sanitize($tenant->getDpoContactEmail() ?? '—'));
         $coverSheet->setCellValue('A7', 'Stellvertretung DSB:');
-        $coverSheet->setCellValue('B7', $tenant->getDpoDeputyName() ?? '—');
+        $coverSheet->setCellValue('B7', CsvSanitizer::sanitize($tenant->getDpoDeputyName() ?? '—'));
         $coverSheet->setCellValue('A8', 'DSB bestellt / Aufsichtsbehörde informiert:');
-        $coverSheet->setCellValue('B8', $this->dpoRegisterLabel($tenant));
+        $coverSheet->setCellValue('B8', CsvSanitizer::sanitize($this->dpoRegisterLabel($tenant)));
         $coverSheet->setCellValue('A9', 'Vertreter in der EU (Art. 27 DSGVO):');
-        $coverSheet->setCellValue('B9', $this->representativeLabel($tenant));
+        $coverSheet->setCellValue('B9', CsvSanitizer::sanitize($this->representativeLabel($tenant)));
         $coverSheet->setCellValue('A10', 'Erstellt am:');
         $coverSheet->setCellValue('B10', (new \DateTimeImmutable())->format('d.m.Y H:i'));
         $coverSheet->setCellValue('A11', 'Anzahl Verarbeitungstätigkeiten:');
@@ -141,9 +142,12 @@ final class VvtBfdiExporter
                 continue;
             }
 
-            $subSheet->setCellValue('A' . $subRow, $activity->getName());
-            $subSheet->setCellValue('B' . $subRow, $recipientDetails);
-            $subSheet->setCellValue('C' . $subRow, implode(', ', $activity->getRecipientCategories() ?? []));
+            $subSheet->setCellValue('A' . $subRow, CsvSanitizer::sanitize($activity->getName()));
+            $subSheet->setCellValue('B' . $subRow, CsvSanitizer::sanitize($recipientDetails));
+            $subSheet->setCellValue(
+                'C' . $subRow,
+                CsvSanitizer::sanitize(implode(', ', $activity->getRecipientCategories() ?? [])),
+            );
             $subSheet->setCellValue('D' . $subRow, $activity->getHasThirdCountryTransfer() ? 'Ja' : 'Nein');
             $subSheet->setCellValue('E' . $subRow, $activity->getTransferSafeguards() ?? '—');
             ++$subRow;
@@ -168,20 +172,29 @@ final class VvtBfdiExporter
                 // Still write TOM description row if text-based TOMs present
                 $tom = $activity->getTechnicalOrganizationalMeasures();
                 if (!empty($tom)) {
-                    $tomsSheet->setCellValue('A' . $tomsRow, $activity->getName());
+                    $tomsSheet->setCellValue('A' . $tomsRow, CsvSanitizer::sanitize($activity->getName()));
                     $tomsSheet->setCellValue('B' . $tomsRow, '—');
                     $tomsSheet->setCellValue('C' . $tomsRow, '—');
-                    $tomsSheet->setCellValue('D' . $tomsRow, $tom);
+                    $tomsSheet->setCellValue('D' . $tomsRow, CsvSanitizer::sanitize($tom));
                     ++$tomsRow;
                 }
                 continue;
             }
 
             foreach ($controls as $control) {
-                $tomsSheet->setCellValue('A' . $tomsRow, $activity->getName());
-                $tomsSheet->setCellValue('B' . $tomsRow, method_exists($control, 'getIdentifier') ? $control->getIdentifier() : '—');
-                $tomsSheet->setCellValue('C' . $tomsRow, method_exists($control, 'getTitle') ? $control->getTitle() : '—');
-                $tomsSheet->setCellValue('D' . $tomsRow, $activity->getTechnicalOrganizationalMeasures() ?? '—');
+                $tomsSheet->setCellValue('A' . $tomsRow, CsvSanitizer::sanitize($activity->getName()));
+                $tomsSheet->setCellValue(
+                    'B' . $tomsRow,
+                    CsvSanitizer::sanitize(method_exists($control, 'getIdentifier') ? $control->getIdentifier() : '—'),
+                );
+                $tomsSheet->setCellValue(
+                    'C' . $tomsRow,
+                    CsvSanitizer::sanitize(method_exists($control, 'getTitle') ? $control->getTitle() : '—'),
+                );
+                $tomsSheet->setCellValue(
+                    'D' . $tomsRow,
+                    CsvSanitizer::sanitize($activity->getTechnicalOrganizationalMeasures() ?? '—'),
+                );
                 ++$tomsRow;
             }
         }
@@ -228,7 +241,13 @@ final class VvtBfdiExporter
         fputcsv($handle, self::BFDI_COLUMNS, ';', '"', '\\');
 
         foreach ($activities as $activity) {
-            fputcsv($handle, $this->buildVvtRow($activity, $tenant), ';', '"', '\\');
+            fputcsv(
+                $handle,
+                array_map(CsvSanitizer::sanitize(...), $this->buildVvtRow($activity, $tenant)),
+                ';',
+                '"',
+                '\\',
+            );
         }
 
         rewind($handle);
@@ -292,7 +311,7 @@ final class VvtBfdiExporter
 
             foreach (array_values($row) as $colIdx => $value) {
                 $col = chr(ord('A') + $colIdx);
-                $sheet->setCellValue($col . $rowNum, $value);
+                $sheet->setCellValue($col . $rowNum, CsvSanitizer::sanitize($value));
                 // Wrap text in cells to accommodate long values
                 $sheet->getStyle($col . $rowNum)->getAlignment()->setWrapText(true);
             }

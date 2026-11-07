@@ -353,16 +353,17 @@ final class Nis2ComplianceService
     }
 
     /**
-     * Art. 21(2)(j) — multi-factor authentication (MFA) + secured communications.
-     * Proxy: MFA adoption rate across active users.
+     * Active users of the organisation and how many of them hold an active
+     * MFA token — the one MFA adoption figure (dashboard tile and Art. 21(2)(j)).
+     * The tenant filter skips User and MfaToken has no tenant, so both counts
+     * are scoped explicitly; the numerator counts the same population as the
+     * denominator, otherwise the rate could exceed 100 %.
+     *
+     * @return array{total: int, with_mfa: int}
      */
-    private function authentication(): array
+    public function mfaAdoptionCounts(): array
     {
         $total = $this->userRepository->count($this->activeUserCriteria());
-        // Numerator counts the same population as the denominator: ACTIVE
-        // users (of the organisation) with an active token — otherwise the
-        // rate could exceed 100 %. MfaToken carries no tenant, so the scope
-        // goes through its user.
         $mfa = $this->mfaTokenRepository->createQueryBuilder('m')
             ->select('COUNT(DISTINCT m.user)')
             ->where('m.isActive = true')
@@ -372,7 +373,17 @@ final class Nis2ComplianceService
         if ($tenant !== null) {
             $mfa->andWhere('mu.tenant = :tenant')->setParameter('tenant', $tenant);
         }
-        $withMfa = $mfa->getQuery()->getSingleScalarResult();
+
+        return ['total' => $total, 'with_mfa' => (int) $mfa->getQuery()->getSingleScalarResult()];
+    }
+
+    /**
+     * Art. 21(2)(j) — multi-factor authentication (MFA) + secured communications.
+     * Proxy: MFA adoption rate across active users.
+     */
+    private function authentication(): array
+    {
+        ['total' => $total, 'with_mfa' => $withMfa] = $this->mfaAdoptionCounts();
         $rate = $total > 0 ? round(((int) $withMfa / $total) * 100, 1) : null;
         return $this->metric(
             '21.2.j', 'MFA / secured communications',

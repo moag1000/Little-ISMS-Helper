@@ -59,6 +59,27 @@ final class WebhookChannelTest extends TestCase
     }
 
     #[Test]
+    public function webhookDoesNotFollowRedirects(): void
+    {
+        $violations = $this->createMock(ConstraintViolationListInterface::class);
+        $violations->method('count')->willReturn(0);
+        $this->validator->method('validate')->willReturn($violations);
+
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(302);
+        $this->httpClient->expects($this->once())->method('request')
+            ->with('POST', 'https://hooks.example.com/r', $this->callback(
+                static fn(array $options): bool => ($options['max_redirects'] ?? null) === 0,
+            ))
+            ->willReturn($response);
+
+        $delivery = $this->makeDelivery();
+        $this->channel->deliver($this->makeRule(), $this->makeChannel('https://hooks.example.com/r'), $delivery, []);
+
+        self::assertNotSame(NotificationDelivery::STATUS_SENT, $delivery->getStatus(), 'A redirect is not a delivery.');
+    }
+
+    #[Test]
     public function testSuccessfulWebhookDelivery(): void
     {
         $url      = 'https://hooks.example.com/test';

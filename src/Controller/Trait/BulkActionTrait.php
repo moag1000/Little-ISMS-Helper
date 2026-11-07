@@ -11,6 +11,7 @@ use App\Security\TenantOwnership;
 use App\Service\AuditLogger;
 use App\Service\BulkDeleteService;
 use App\Service\TenantContext;
+use App\Util\CsvSanitizer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -250,7 +251,11 @@ trait BulkActionTrait
             fwrite($out, "\xEF\xBB\xBF");
             fputcsv($out, $headers, ',', '"', '\\');
             foreach ($rows as $entity) {
-                fputcsv($out, array_map('strval', ($extractor)($entity)), ',', '"', '\\');
+                $cells = array_map(
+                    static fn ($v): string => (string) CsvSanitizer::sanitize((string) $v),
+                    ($extractor)($entity),
+                );
+                fputcsv($out, $cells, ',', '"', '\\');
             }
             fclose($out);
         }, 200, [

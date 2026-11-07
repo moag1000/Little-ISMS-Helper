@@ -1583,7 +1583,6 @@ workflow:
         no_overdue_desc: 'All workflow instances are currently within their deadlines'
 security:
     error:
-        too_many_attempts: 'Too many login attempts. Please try again later.'
         saml_login_error: 'SAML login error'
         saml_logout_error: 'SAML logout error'
     csrf_token_invalid: 'Invalid CSRF token - please reload the page'

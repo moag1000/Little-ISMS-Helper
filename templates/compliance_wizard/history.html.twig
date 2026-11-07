@@ -32,7 +32,7 @@
 
     {# V4-EF-3: flash messages (e.g. diff unavailable) #}
     {% for message in app.flashes('warning') %}
-        {{ _fa_alert.render({ variant: 'warning', body: message }) }}
+        {{ _fa_alert.render({ variant: 'warning', body: message|e }) }}
     {% endfor %}
 
     {% if sessions|length == 0 %}

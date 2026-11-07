@@ -260,8 +260,11 @@ class DataSubjectRequestController extends AbstractController
      * Structured, machine-readable personal-data export (GDPR Art. 15 + 20).
      * Identity-gated like complete() — releasing the subject's data to an
      * unverified person would itself be a breach (Art. 12(6)).
+     * ROLE_MANAGER (incl. DPO) like complete(): releasing the bundle is part of
+     * answering the request, not something every reader of the record may do.
      */
     #[Route('/{id}/export-personal-data', name: 'export_personal_data', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function exportPersonalData(DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;

@@ -344,6 +344,7 @@ ui:
             invalid_password: 'Das Passwort ist nicht korrekt. Bitte erneut versuchen.'
             network: 'Verbindungsfehler. Bitte Seite neu laden und erneut versuchen.'
             password_required: 'Bitte geben Sie Ihr Passwort ein.'
+            too_many_attempts: 'Zu viele Versuche. Bitte in 15 Minuten erneut versuchen.'
         remove_entry: '„%label%“ entfernen'
         report_designer:
             config_limit: 'Max. Zeilen'

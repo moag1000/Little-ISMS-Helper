@@ -14,6 +14,7 @@ use App\Repository\RiskRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\BusinessProcessRepository;
 use App\Service\AuditLogger;
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -317,7 +318,8 @@ final class EntityListExporter
         foreach ($rows as $rowIndex => $row) {
             $col = 'A';
             foreach ($row as $value) {
-                $sheet->setCellValue($col . ($rowIndex + 2), is_array($value) ? implode(', ', $value) : (string) ($value ?? ''));
+                $text = is_array($value) ? implode(', ', $value) : (string) ($value ?? '');
+                $sheet->setCellValue($col . ($rowIndex + 2), CsvSanitizer::sanitize($text));
                 $col++;
             }
         }

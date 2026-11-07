@@ -673,6 +673,12 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       content — Twig auto-escaping is the XSS defence, Doctrine parameter binding the SQL one.
       Outbound URLs a user can set carry `#[NoInternalIp]` (SSRF).
 - [ ] File uploads checked via `FileUploadSecurityService`
+- [ ] Spreadsheet/CSV cells with record text go through `CsvSanitizer::sanitize()`
+      (formula injection); flash messages are plain text, escaped where rendered.
+- [ ] `ROLE_AUDITOR` / `ROLE_GROUP_CISO` / `ROLE_KONZERN_AUDITOR` are read-only — a
+      state-changing action needs at least `ROLE_MANAGER`.
+- [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
+      login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Sensitive data excluded from audit logs
 - [ ] Bulk operations use `AuditLogger::logBulk()` (1 batch-entry +
       N per-entity-entries, returns UUIDv4 batch_id) — never bypass

@@ -10,8 +10,6 @@ use App\Entity\Incident;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\IncidentRepository;
-use App\Repository\MfaTokenRepository;
-use App\Repository\UserRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Repository\PatchRepository;
 use App\Controller\Trait\ModuleGatedControllerTrait;
@@ -45,8 +43,6 @@ class Nis2ComplianceController extends AbstractController
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly MfaTokenRepository $mfaTokenRepository,
-        private readonly UserRepository $userRepository,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly PatchRepository $patchRepository,
         private readonly PdfExportService $pdfExportService,
@@ -89,12 +85,8 @@ class Nis2ComplianceController extends AbstractController
             return $this->redirectToRoute('app_compliance_index');
         }
         // 1. MFA Adoption Rate (Art. 21.2.b)
-        $totalUsers = $this->userRepository->count([]);
-        $usersWithMfa = $this->mfaTokenRepository->createQueryBuilder('m')
-            ->select('COUNT(DISTINCT m.user)')
-            ->where('m.isActive = true')
-            ->getQuery()
-            ->getSingleScalarResult();
+        // Own organisation only — the tenant filter does not cover User.
+        ['total' => $totalUsers, 'with_mfa' => $usersWithMfa] = $this->nis2ComplianceService->mfaAdoptionCounts();
         $mfaAdoptionRate = $totalUsers > 0 ? round(($usersWithMfa / $totalUsers) * 100, 1) : 0;
 
         // 2. Incident Reporting Compliance (Art. 23)

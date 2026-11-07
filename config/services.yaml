@@ -4,6 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Reverse proxies whose X-Forwarded-* headers are trusted in prod
+    # (config/packages/prod/framework.yaml). Override with SYMFONY_TRUSTED_PROXIES.
+    default_trusted_proxies: '127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fc00::/7'
     tisax.delta.pre_fill_target: '%env(int:TISAX_PRE_FILL_TARGET)%'
     # Env-configured Azure OAuth/SAML: link an existing account by e-mail when
     # its object id is unknown (AZURE_ALLOW_EMAIL_LINKING). Default true for
@@ -471,9 +474,9 @@ services:
 
     # Bind rate limiter factories for autowiring
     # Symfony automatically creates services named limiter.<name> from rate_limiter.yaml
-    Symfony\Component\RateLimiter\RateLimiterFactory $loginLimiter: '@limiter.login'
     Symfony\Component\RateLimiter\RateLimiterFactory $apiLimiter: '@limiter.api'
-    Symfony\Component\RateLimiter\RateLimiterFactory $passwordResetLimiter: '@limiter.password_reset'
+    Symfony\Component\RateLimiter\RateLimiterFactory $reauthLimiter: '@limiter.reauth'
+    Symfony\Component\RateLimiter\RateLimiterFactory $publicTokenLimiter: '@limiter.public_token'
     Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter: '@limiter.document_upload'
     Symfony\Component\RateLimiter\RateLimiterFactory $mfaVerifyLimiter: '@limiter.mfa_verify'
 

@@ -85,6 +85,9 @@ class WebhookChannel
                 'headers' => $headers,
                 'body'    => $payload,
                 'timeout' => $timeout,
+                // NoInternalIp checked the configured URL only; a redirect
+                // (302 → http://169.254.169.254/…) would carry the POST past it.
+                'max_redirects' => 0,
             ]);
 
             $statusCode = $response->getStatusCode();

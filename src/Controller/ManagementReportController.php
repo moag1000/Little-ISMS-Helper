@@ -656,11 +656,11 @@ class ManagementReportController extends AbstractController
         $row = 2;
         foreach ($bcmReport['exercises']['exercises'] as $exercise) {
             $exerciseSheet->setCellValue('A' . $row, $exercise->getId());
-            $exerciseSheet->setCellValue('B' . $row, $exercise->getName());
+            $exerciseSheet->setCellValue('B' . $row, \App\Util\CsvSanitizer::sanitize($exercise->getName()));
             $exerciseSheet->setCellValue('C' . $row, $exercise->getExerciseType());
             $exerciseSheet->setCellValue('D' . $row, $exercise->getExerciseDate() ? $exercise->getExerciseDate()->format('Y-m-d') : '-');
             $exerciseSheet->setCellValue('E' . $row, $exercise->getStatus());
-            $exerciseSheet->setCellValue('F' . $row, $exercise->getResults() ? substr((string) $exercise->getResults(), 0, 100) : '-');
+            $exerciseSheet->setCellValue('F' . $row, \App\Util\CsvSanitizer::sanitize(substr((string) ($exercise->getResults() ?: '-'), 0, 100)));
             $row++;
         }
 

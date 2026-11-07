@@ -76,7 +76,11 @@ final class ApiRateLimitSubscriber
             $jsonResponse->headers->set('X-RateLimit-Limit', (string) $limit->getLimit());
             $jsonResponse->headers->set('X-RateLimit-Remaining', '0');
             $jsonResponse->headers->set('X-RateLimit-Reset', (string) $limit->getRetryAfter()->getTimestamp());
-            $jsonResponse->headers->set('Retry-After', (string) $limit->getRetryAfter()->getTimestamp());
+            // Retry-After carries seconds (RFC 9110 §10.2.3), not a timestamp.
+            $jsonResponse->headers->set(
+                'Retry-After',
+                (string) max(1, $limit->getRetryAfter()->getTimestamp() - time()),
+            );
 
             $requestEvent->setResponse($jsonResponse);
 

@@ -172,6 +172,12 @@ final class MfaService
      */
     public function verifyBackupCode(MfaToken $mfaToken, string $code): bool
     {
+        // A TOTP token has already spent one attempt in verifyTotp(); every other
+        // token type reaches the backup codes directly and needs its own budget.
+        if ($mfaToken->getTokenType() !== 'totp') {
+            $this->checkRateLimit($mfaToken);
+        }
+
         $backupCodes = $mfaToken->getBackupCodes();
 
         if (!$backupCodes || count($backupCodes) === 0) {

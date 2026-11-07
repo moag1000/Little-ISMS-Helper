@@ -19,7 +19,8 @@
 
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            {% include '_components/_fa_alert.html.twig' with { variant: label == 'error' ? 'danger' : label, content: message } only %}
+            {# `props` is the include contract — without it the alert rendered nothing. #}
+            {% include '_components/_fa_alert.html.twig' with { props: { variant: label == 'error' ? 'danger' : label, body: message|e, dismissible: true } } only %}
         {% endfor %}
     {% endfor %}
 

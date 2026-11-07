@@ -47,7 +47,7 @@ final class TrainingCoverageGapRuleTest extends TestCase
         $this->documentRepository->method('createQueryBuilder')
             ->willReturn($this->stubResultQueryBuilder([$policy]));
         // 100 active users, 10 acknowledgements → 10% (well below 80%).
-        $this->userRepository->method('findActiveUsers')->willReturn(array_fill(0, 100, new User()));
+        $this->userRepository->method('findActiveByTenant')->willReturn(array_fill(0, 100, new User()));
         $this->acknowledgementRepository->method('findByDocument')
             ->willReturn(array_fill(0, 10, new PolicyAcknowledgement()));
 
@@ -68,7 +68,7 @@ final class TrainingCoverageGapRuleTest extends TestCase
         // Case 1: coverage above the threshold (100/100 = 100%).
         $this->documentRepository->method('createQueryBuilder')
             ->willReturn($this->stubResultQueryBuilder([$policy]));
-        $this->userRepository->method('findActiveUsers')->willReturn(array_fill(0, 100, new User()));
+        $this->userRepository->method('findActiveByTenant')->willReturn(array_fill(0, 100, new User()));
         $this->acknowledgementRepository->method('findByDocument')
             ->willReturn(array_fill(0, 100, new PolicyAcknowledgement()));
 
@@ -92,7 +92,7 @@ final class TrainingCoverageGapRuleTest extends TestCase
         $noUsersDocs->method('createQueryBuilder')->willReturn($this->stubResultQueryBuilder([$policy]));
         $noUsersAcks = $this->createMock(PolicyAcknowledgementRepository::class);
         $noUsersUsers = $this->createMock(UserRepository::class);
-        $noUsersUsers->method('findActiveUsers')->willReturn([]);
+        $noUsersUsers->method('findActiveByTenant')->willReturn([]);
         $noUsersRule = new TrainingCoverageGapRule($noUsersDocs, $noUsersAcks, $noUsersUsers);
         self::assertFalse($noUsersRule->appliesTo($tenant, $this->user));
     }
@@ -105,7 +105,7 @@ final class TrainingCoverageGapRuleTest extends TestCase
 
         $this->documentRepository->method('createQueryBuilder')
             ->willReturn($this->stubResultQueryBuilder([$policy]));
-        $this->userRepository->method('findActiveUsers')->willReturn(array_fill(0, 100, new User()));
+        $this->userRepository->method('findActiveByTenant')->willReturn(array_fill(0, 100, new User()));
         $this->acknowledgementRepository->method('findByDocument')
             ->willReturn(array_fill(0, 5, new PolicyAcknowledgement()));
 
@@ -140,7 +140,7 @@ final class TrainingCoverageGapRuleTest extends TestCase
 
         $this->documentRepository->method('createQueryBuilder')
             ->willReturn($this->stubResultQueryBuilder([$policy]));
-        $this->userRepository->method('findActiveUsers')->willReturn(array_fill(0, 100, new User()));
+        $this->userRepository->method('findActiveByTenant')->willReturn(array_fill(0, 100, new User()));
         $this->acknowledgementRepository->method('findByDocument')
             ->willReturn(array_fill(0, 25, new PolicyAcknowledgement()));
 

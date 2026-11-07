@@ -1,10 +1,7 @@
 framework:
     rate_limiter:
-        # Security: Login rate limiting to prevent brute force attacks
-        login:
-            policy: 'sliding_window'
-            limit: 5
-            interval: '15 minutes'
+        # Login brute-force protection lives in security.yaml
+        # (firewall `login_throttling`), where the credential check runs.
 
         # Security: API rate limiting to prevent abuse
         api:
@@ -12,11 +9,21 @@ framework:
             limit: 100
             rate: { interval: '1 minute', amount: 100 }
 
-        # Security: Password reset rate limiting
-        password_reset:
+        # Security: re-authentication (password confirm before sensitive
+        # actions) — per user, so a stolen session cannot brute-force the
+        # password through the reauth modal.
+        reauth:
             policy: 'sliding_window'
-            limit: 3
-            interval: '1 hour'
+            limit: 5
+            interval: '15 minutes'
+
+        # Security: public token URLs (Trust Center, supplier questionnaire)
+        # — per client IP, so a link cannot be hammered or flooded with
+        # questionnaire submissions.
+        public_token:
+            policy: 'sliding_window'
+            limit: 60
+            interval: '1 minute'
 
         # Security: Document upload rate limiting
         document_upload:

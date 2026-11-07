@@ -370,6 +370,36 @@ class DPIAControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    /**
+     * ROLE_AUDITOR is read-only (external / Konzern auditors): approving,
+     * rejecting or recording the DPO consultation needs ROLE_MANAGER (incl. DPO).
+     */
+    #[Test]
+    public function testAuditorCannotDecideDpia(): void
+    {
+        $auditor = new User();
+        $auditor->setEmail('auditor_' . uniqid('', true) . '@example.com');
+        $auditor->setFirstName('Audit');
+        $auditor->setLastName('Or');
+        $auditor->setRoles(['ROLE_AUDITOR']);
+        $auditor->setPassword('hashed_password');
+        $auditor->setTenant($this->testTenant);
+        $auditor->setIsActive(true);
+        $this->entityManager->persist($auditor);
+        $this->entityManager->flush();
+
+        try {
+            $this->client->loginUser($auditor);
+            foreach (['approve', 'reject', 'request-revision', 'dpo-consultation', 'complete-review'] as $action) {
+                $this->client->request('POST', '/en/dpia/' . $this->testDPIA->getId() . '/' . $action);
+                $this->assertResponseStatusCodeSame(403, $action);
+            }
+        } finally {
+            $this->entityManager->remove($this->entityManager->find(User::class, $auditor->getId()));
+            $this->entityManager->flush();
+        }
+    }
+
     // ========== EXPORT TESTS ==========
 
     #[Test]

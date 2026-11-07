@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\EventSubscriber;
 
 use App\Controller\DocumentController;
-use App\Controller\SecurityController;
+use App\Controller\Security\ReauthController;
 use App\EventSubscriber\ApiRateLimitSubscriber;
+use App\EventSubscriber\PublicTokenRateLimitSubscriber;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use ReflectionProperty;
@@ -27,7 +28,8 @@ final class RateLimiterWiringTest extends KernelTestCase
     {
         yield 'api' => [ApiRateLimitSubscriber::class, 'apiLimiter', 100];
         yield 'document upload' => [DocumentController::class, 'documentUploadLimiter', 20];
-        yield 'login' => [SecurityController::class, 'loginLimiter', 5];
+        yield 'reauth' => [ReauthController::class, 'reauthLimiter', 5];
+        yield 'public token urls' => [PublicTokenRateLimitSubscriber::class, 'publicTokenLimiter', 60];
     }
 
     /**

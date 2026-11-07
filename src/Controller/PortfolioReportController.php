@@ -14,6 +14,7 @@ use App\Service\InheritanceMetricsService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PortfolioReportService;
 use App\Service\TenantContext;
+use App\Util\CsvSanitizer;
 use DateTimeImmutable;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -213,7 +214,7 @@ class PortfolioReportController extends AbstractController
         $lastCol = Coordinate::stringFromColumnIndex(1 + count($matrix['frameworks']));
         foreach ($matrix['frameworks'] as $i => $framework) {
             $col = Coordinate::stringFromColumnIndex(2 + $i);
-            $sheet->setCellValue($col . $headerRow, $framework['name']);
+            $sheet->setCellValue($col . $headerRow, CsvSanitizer::sanitize($framework['name']));
             $sheet->getStyle($col . $headerRow)->getFont()->setBold(true);
         }
         $sheet->getStyle('A' . $headerRow . ':' . $lastCol . $headerRow)->getFill()
@@ -224,7 +225,7 @@ class PortfolioReportController extends AbstractController
         // Data rows
         $row = $headerRow + 1;
         foreach ($matrix['rows'] as $dataRow) {
-            $sheet->setCellValue('A' . $row, $dataRow['category']);
+            $sheet->setCellValue('A' . $row, CsvSanitizer::sanitize($dataRow['category']));
             foreach ($matrix['frameworks'] as $i => $framework) {
                 $col = Coordinate::stringFromColumnIndex(2 + $i);
                 $cell = $dataRow['cells'][$framework['code']] ?? ['pct' => 0, 'count' => 0];

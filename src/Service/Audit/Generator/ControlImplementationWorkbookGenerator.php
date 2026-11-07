@@ -7,6 +7,7 @@ namespace App\Service\Audit\Generator;
 use App\Entity\Control;
 use App\Entity\Tenant;
 use App\Repository\ControlRepository;
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -103,10 +104,10 @@ final class ControlImplementationWorkbookGenerator implements AuditWorkbookGener
             }
 
             $sheet->setCellValueExplicit('A' . $row, $control->getControlId(), DataType::TYPE_STRING);
-            $sheet->setCellValue('B' . $row, $control->getName());
-            $sheet->setCellValue('C' . $row, $control->getCategory());
+            $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($control->getName()));
+            $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($control->getCategory()));
             $sheet->setCellValue('D' . $row, $control->isApplicable() ? 'Yes' : 'No');
-            $sheet->setCellValue('E' . $row, $control->getEffectiveResponsiblePerson() ?? '');
+            $sheet->setCellValue('E' . $row, CsvSanitizer::sanitize($control->getEffectiveResponsiblePerson() ?? ''));
             $sheet->setCellValue('F' . $row, $control->getImplementationStatus() ?? 'not_started');
             $sheet->setCellValue('G' . $row, $control->getImplementationPercentage() ?? 0);
             $sheet->setCellValue('H' . $row, $control->getLastReviewDate()?->format('Y-m-d') ?? '');

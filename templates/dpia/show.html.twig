@@ -107,7 +107,7 @@
                     </a>
                 {% endif %}
 
-                {% if is_granted('ROLE_AUDITOR') and dpia.status == 'in_review' %}
+                {% if is_granted('ROLE_MANAGER') and dpia.status == 'in_review' %}
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--success" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="approveModal">
                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'dpia.action.approve'|trans({}, 'privacy') }}
                     </button>
@@ -247,7 +247,7 @@
                             <span class="text-muted">{{ 'dpia.show.not_yet_consulted'|trans({}, 'privacy') }}</span>
                         {% endif %}
                     </p>
-                    {% if not dpia.dpoConsultationDate and is_granted('ROLE_AUDITOR') %}
+                    {% if not dpia.dpoConsultationDate and is_granted('ROLE_MANAGER') %}
                         <form method="post" action="{{ path('app_dpia_dpo_consultation', {id: dpia.id}) }}" class="mb-3">
                             <input type="hidden" name="_token" value="{{ csrf_token('dpo' ~ dpia.id) }}">
                             <label for="dpo_advice_{{ dpia.id }}" class="form-label small">{{ 'dpia.show.dpo_advice_label'|trans({}, 'privacy') }}</label>

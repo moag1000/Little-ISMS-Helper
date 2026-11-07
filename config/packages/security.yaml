@@ -32,6 +32,16 @@ security:
                 success_handler: App\Security\LoginSuccessHandler
                 always_use_default_target_path: false
 
+            # Brute-force protection for every authenticator of this firewall
+            # (form login, API token, SSO). Symfony counts failed attempts per
+            # username+IP (5 per 15 minutes) and per IP (25 per 15 minutes) and
+            # resets on success. The check runs while the firewall verifies the
+            # credentials — a limiter inside SecurityController::login() never
+            # saw the POST, because form_login answers it before the controller.
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
+
             # Logout
             logout:
                 path: app_logout
@@ -179,6 +189,11 @@ security:
         # Safe for ROLE_USER: AsyncJobVoter only admits the job's owner or a
         # SUPER_ADMIN, so the job id is no longer an access token.
         - { path: '^/(de|en)/admin/jobs/[0-9a-f-]{36}/(status|progress)$', roles: ROLE_USER }
+
+        # REST API, its OpenAPI docs and JSON-LD contexts: logged-in session or
+        # API token (ApiTokenAuthenticator runs before this check). Without the
+        # rule /api/docs published the whole schema to anonymous visitors.
+        - { path: ^/api, roles: IS_AUTHENTICATED_REMEMBERED }
 
         # Admin routes (with locale prefix) - specific locale pattern for better security
         - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }

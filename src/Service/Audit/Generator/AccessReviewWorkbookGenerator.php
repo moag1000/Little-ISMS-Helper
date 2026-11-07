@@ -9,6 +9,7 @@ use App\Entity\AccessReviewItem;
 use App\Entity\Tenant;
 use App\Repository\AccessReviewCampaignRepository;
 use App\Repository\AccessReviewItemRepository;
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
@@ -162,14 +163,14 @@ final class AccessReviewWorkbookGenerator implements AuditWorkbookGeneratorInter
 
         $row = 2;
         foreach ($items as $item) {
-            $sheet->setCellValue('A' . $row, $campaign->getName() ?? '');
-            $sheet->setCellValue('B' . $row, $item->getSubjectUser()?->getFullName() ?? '');
-            $sheet->setCellValue('C' . $row, $item->getSubjectUser()?->getEmail() ?? '');
-            $sheet->setCellValue('D' . $row, $item->getReviewedRole() ?? '');
+            $sheet->setCellValue('A' . $row, CsvSanitizer::sanitize($campaign->getName() ?? ''));
+            $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($item->getSubjectUser()?->getFullName() ?? ''));
+            $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($item->getSubjectUser()?->getEmail() ?? ''));
+            $sheet->setCellValue('D' . $row, CsvSanitizer::sanitize($item->getReviewedRole() ?? ''));
             $sheet->setCellValue('E' . $row, $item->getDecision());
-            $sheet->setCellValue('F' . $row, $item->getDecidedBy()?->getEmail() ?? '');
+            $sheet->setCellValue('F' . $row, CsvSanitizer::sanitize($item->getDecidedBy()?->getEmail() ?? ''));
             $sheet->setCellValue('G' . $row, $item->getDecidedAt()?->format('Y-m-d H:i:s') ?? '');
-            $sheet->setCellValue('H' . $row, $item->getComment() ?? '');
+            $sheet->setCellValue('H' . $row, CsvSanitizer::sanitize($item->getComment() ?? ''));
 
             // Colour-code decision column E per WorkbookStyleHelper palette
             $decisionColor = match ($item->getDecision()) {
