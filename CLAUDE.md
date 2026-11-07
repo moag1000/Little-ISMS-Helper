@@ -333,7 +333,8 @@ single list of legacy owner columns is `App\Service\DataRepair\LegacyOwnerReport
 **One list, not two (P5).** A risk's controls live only on the risk (`Control.risks`); a treatment plan's
 `getControls()`/`addControl()` read and write that list. Risks of an incident are only `RiskIncidentLink`
 rows (`Incident::getRiskLinks()`, `getLinkedRisks()`; `getRealizedRisks()` = types materialized /
-mitigation_failed). A value the tool derives (plan progress, asset availability from the BIA) is made
+mitigation_failed). A supplier's subcontractors are only `DoraSubcontractor` rows
+(`Supplier::getSubcontractorChain()` derives the array view); the AVV is only `hasDPA`/`dpaSignedDate`. A value the tool derives (plan progress, asset availability from the BIA) is made
 read-only with `App\Form\Util\DerivedField::readOnlyWhen()`; changes come as a suggestion. Guide:
 `docs/user-guide/EINE_LISTE.md`.
 
