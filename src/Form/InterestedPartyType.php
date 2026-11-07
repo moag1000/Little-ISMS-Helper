@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\InterestedParty;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Form\Type\JsonBuilderType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -27,7 +28,7 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
         return [
             'overview'      => ['name', 'partyType', 'importance', 'description'],
             'contact'       => ['contactPersonUser', 'contactPersonRef', 'contactDeputyPersons', 'contactPerson', 'email', 'phone'],
-            'requirements'  => ['requirements', 'howAddressed'],
+            'requirements'  => ['requirements', 'legalRequirements', 'howAddressed'],
             'communication' => ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication'],
             'monitoring'    => ['feedback', 'satisfactionLevel', 'issues'],
         ];
@@ -121,6 +122,20 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
                 'label' => 'interested_party.field.requirements',
                 'required' => true,
                 'attr' => ['rows' => 4],
+            ])
+            // ISO 27001 4.2 c: which of these requirements are legal, regulatory or
+            // contractual — each line becomes a proposal for the legal register (P5).
+            ->add('legalRequirements', JsonBuilderType::class, [
+                'label' => 'interested_party.field.legal_requirements',
+                'required' => false,
+                'help' => 'interested_party.help.legal_requirements',
+                'shape' => 'list',
+                'add_label' => 'interested_party.json_builder.legal_requirements.add',
+                'fields' => [
+                    ['key' => 'title', 'type' => 'text', 'label' => 'interested_party.json_builder.legal_requirements.title', 'required' => true],
+                    ['key' => 'reference', 'type' => 'text', 'label' => 'interested_party.json_builder.legal_requirements.reference',
+                        'placeholder' => 'interested_party.json_builder.legal_requirements.reference_placeholder'],
+                ],
             ])
             ->add('howAddressed', TextareaType::class, [
                 'label' => 'interested_party.field.how_addressed',

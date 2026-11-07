@@ -96,12 +96,6 @@ class DocumentVersion
     private ?DateTimeImmutable $publishedAt = null;
 
     /**
-     * Retention deadline for compliance archiving. NULL = no explicit deadline.
-     */
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $retentionUntil = null;
-
-    /**
      * FK to the version that replaced this one (newer version).
      * NULL when this is still the current version.
      */
@@ -256,17 +250,6 @@ class DocumentVersion
     public function isPublished(): bool
     {
         return $this->publishedAt !== null;
-    }
-
-    public function getRetentionUntil(): ?DateTimeImmutable
-    {
-        return $this->retentionUntil;
-    }
-
-    public function setRetentionUntil(?DateTimeImmutable $retentionUntil): static
-    {
-        $this->retentionUntil = $retentionUntil;
-        return $this;
     }
 
     public function getReplacedBy(): ?self

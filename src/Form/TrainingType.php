@@ -13,6 +13,7 @@ use App\Entity\Person;
 use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
+use App\Form\Util\LegacyFreeTextField;
 use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -53,6 +54,8 @@ final class TrainingType extends AbstractType implements SectionMapInterface
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // P5: the old participant text only while filled; participants are users/participations.
+        LegacyFreeTextField::hideWhenEmpty($builder, 'participants');
         $builder
             ->add('title', TextType::class, [
                 'label' => 'training.field.title',

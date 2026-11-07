@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Incident;
 use App\Entity\Risk;
+use App\Entity\RiskIncidentLink;
 use App\Entity\User;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
@@ -27,12 +28,12 @@ use Psr\Log\LoggerInterface;
  *
  * Workflow Integration:
  * When an incident workflow completes, this service:
- * 1. Identifies related risks (via realizedRisks collection)
+ * 1. Identifies related risks (RiskIncidentLink, materialized / mitigation_failed)
  * 2. Triggers risk re-assessment workflow if likelihood exceeds threshold
  * 3. Creates audit trail for compliance documentation
  *
  * Data Reuse Pattern:
- * - Incident.realizedRisks → automatic risk identification
+ * - Incident risk links → automatic risk identification
  * - Incident.failedControls → identify control weaknesses
  * - Risk.likelihood update based on incident evidence
  */
@@ -214,8 +215,10 @@ class IncidentRiskFeedbackService
         $qb = $this->entityManager->createQueryBuilder();
         $qb->select('COUNT(i.id)')
             ->from('App\Entity\Incident', 'i')
-            ->join('i.realizedRisks', 'r')
-            ->where('r.id = :risk_id')
+            ->join('i.riskLinks', 'l')
+            ->where('IDENTITY(l.risk) = :risk_id')
+            ->andWhere('l.linkType IN (:realized)')
+            ->setParameter('realized', [RiskIncidentLink::TYPE_MATERIALIZED, RiskIncidentLink::TYPE_MITIGATION_FAILED])
             ->andWhere('i.status = :status')
             ->setParameter('risk_id', $risk->getId())
             ->setParameter('status', IncidentStatus::Closed);

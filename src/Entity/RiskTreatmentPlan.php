@@ -158,18 +158,6 @@ class RiskTreatmentPlan
     private Collection $responsibleDeputyPersons;
 
     /**
-     * Controls implementing this treatment plan
-     * Data Reuse: Link treatment plans to specific controls
-     *
-     * @var Collection<int, Control>
-     */
-    #[ORM\ManyToMany(targetEntity: Control::class)]
-    #[ORM\JoinTable(name: 'risk_treatment_plan_control')]
-    #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[MaxDepth(1)]
-    private Collection $controls;
-
-    /**
      * Evidence documents linked to this treatment plan (ISO 27001 Clause 7.5).
      *
      * @var Collection<int, Document>
@@ -205,7 +193,6 @@ class RiskTreatmentPlan
 
     public function __construct()
     {
-        $this->controls = new ArrayCollection();
         $this->evidenceDocuments = new ArrayCollection();
         $this->responsibleDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
@@ -400,24 +387,27 @@ class RiskTreatmentPlan
     }
 
     /**
+     * The controls of the treated risk — one list for risk and plan (P5). The plan
+     * keeps no own control list: adding or removing here changes the risk's list.
+     *
      * @return Collection<int, Control>
      */
+    #[Groups(['treatment_plan:read'])]
+    #[MaxDepth(1)]
     public function getControls(): Collection
     {
-        return $this->controls;
+        return $this->risk?->getControls() ?? new ArrayCollection();
     }
 
     public function addControl(Control $control): static
     {
-        if (!$this->controls->contains($control)) {
-            $this->controls->add($control);
-        }
+        $this->risk?->addControl($control);
         return $this;
     }
 
     public function removeControl(Control $control): static
     {
-        $this->controls->removeElement($control);
+        $this->risk?->removeControl($control);
         return $this;
     }
 
@@ -544,7 +534,7 @@ class RiskTreatmentPlan
     #[Groups(['treatment_plan:read'])]
     public function getControlCount(): int
     {
-        return $this->controls->count();
+        return $this->getControls()->count();
     }
 
     /**

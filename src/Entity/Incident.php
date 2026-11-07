@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Delete;
 use App\Entity\Trait\IncidentNis2ReportingTrait;
 use App\Entity\Trait\IncidentReporterTrait;
 use App\Entity\Trait\IncidentResponsiblePersonTrait;
+use App\Entity\Trait\IncidentRiskLinksTrait;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
@@ -85,6 +86,7 @@ class Incident
     use IncidentReporterTrait;
     use IncidentNis2ReportingTrait;
     use IncidentResponsiblePersonTrait;
+    use IncidentRiskLinksTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -349,15 +351,6 @@ class Incident
     private Collection $affectedAssets;
 
     /**
-     * @var Collection<int, Risk>
-     */
-    #[ORM\ManyToMany(targetEntity: Risk::class, inversedBy: 'incidents')]
-    #[ORM\JoinTable(name: 'incident_risk')]
-    #[Groups(['incident:read'])]
-    #[MaxDepth(1)]
-    private Collection $realizedRisks;
-
-    /**
      * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
@@ -392,7 +385,7 @@ class Incident
     {
         $this->relatedControls = new ArrayCollection();
         $this->affectedAssets = new ArrayCollection();
-        $this->realizedRisks = new ArrayCollection();
+        $this->riskLinks = new ArrayCollection();
         $this->failedControls = new ArrayCollection();
         $this->affectedBusinessProcesses = new ArrayCollection();
         $this->relatedVulnerabilities = new ArrayCollection();
@@ -751,28 +744,6 @@ class Incident
         return $this;
     }
 
-    /**
-     * @return Collection<int, Risk>
-     */
-    public function getRealizedRisks(): Collection
-    {
-        return $this->realizedRisks;
-    }
-
-    public function addRealizedRisk(Risk $risk): static
-    {
-        if (!$this->realizedRisks->contains($risk)) {
-            $this->realizedRisks->add($risk);
-        }
-        return $this;
-    }
-
-    public function removeRealizedRisk(Risk $risk): static
-    {
-        $this->realizedRisks->removeElement($risk);
-        return $this;
-    }
-
     public function getOriginatingThreat(): ?ThreatIntelligence
     {
         return $this->originatingThreat;
@@ -861,16 +832,6 @@ class Incident
     }
 
     /**
-     * Get count of realized risks
-     * Data Reuse: Links incidents to pre-defined risks
-     */
-    #[Groups(['incident:read'])]
-    public function getRealizedRiskCount(): int
-    {
-        return $this->realizedRisks->count();
-    }
-
-    /**
      * Get total impact value from affected assets
      * Data Reuse: Aggregates CIA values from affected assets
      */
@@ -882,16 +843,6 @@ class Incident
             $total += $affectedAsset->getTotalValue();
         }
         return $total;
-    }
-
-    /**
-     * Check if this incident validated a previously identified risk
-     * Data Reuse: Validates risk assessment accuracy
-     */
-    #[Groups(['incident:read'])]
-    public function isRiskValidated(): bool
-    {
-        return !$this->realizedRisks->isEmpty();
     }
 
     // NIS2 Article 23 - Getters and Setters

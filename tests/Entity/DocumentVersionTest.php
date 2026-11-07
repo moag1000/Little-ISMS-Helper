@@ -29,7 +29,6 @@ class DocumentVersionTest extends TestCase
         self::assertSame(0, $version->getFileSize());
         self::assertSame('', $version->getMimeType());
         self::assertNull($version->getPublishedAt());
-        self::assertNull($version->getRetentionUntil());
         self::assertNull($version->getReplacedBy());
         self::assertTrue($version->isActive());
         self::assertFalse($version->isPublished());
@@ -104,15 +103,5 @@ class DocumentVersionTest extends TestCase
         $version->setPublishedAt(new DateTimeImmutable());
 
         self::assertTrue($version->isPublished(), 'Published version should be marked as immutable evidence.');
-    }
-
-    #[Test]
-    public function testRetentionUntil(): void
-    {
-        $version = new DocumentVersion();
-        $deadline = new DateTimeImmutable('+5 years');
-        $version->setRetentionUntil($deadline);
-
-        self::assertSame($deadline, $version->getRetentionUntil());
     }
 }

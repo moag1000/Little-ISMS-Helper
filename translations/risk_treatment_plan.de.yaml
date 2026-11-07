@@ -87,8 +87,9 @@ risk_treatment_plan:
         responsible_person_user: 'Systembenutzer, der für die Umsetzung des Plans verantwortlich ist'
         responsible_person: 'Kontaktperson (Personenstamm) als Verantwortliche'
         responsible_deputy_persons: 'Stellvertretende Kontaktpersonen für diesen Behandlungsplan'
-        controls: 'ISO 27001 Controls, die zur Behandlung dieses Risikos implementiert werden (STRG für Mehrfachauswahl)'
+        controls: 'Dieselbe Liste wie am Risiko: Änderungen hier ändern die Maßnahmen des Risikos (STRG für Mehrfachauswahl)'
         completion_percentage: 'Fortschritt der Umsetzung in Prozent (0-100)'
+        completion_derived: 'Aus den Maßnahmen abgeleitet: Anteil umgesetzter Maßnahmen (%count%). Änderungen kommen als Vorschlag.'
         implementation_notes: 'Notizen zur Umsetzung, Fortschritt, Hindernisse und Lösungen'
         status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Geplant → In Umsetzung → Abgeschlossen; pausieren oder abbrechen möglich). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
     validation:

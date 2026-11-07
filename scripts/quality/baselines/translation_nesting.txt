@@ -54,10 +54,10 @@ translations/alva.en.yaml:245:incident
 translations/alva.en.yaml:259:policy_wizard
 translations/alva.en.yaml:265:dora_exit_plan
 translations/alva.en.yaml:423:alva_hint
-translations/asset.de.yaml:408:iso_9001_bridge
-translations/asset.de.yaml:411:qr
-translations/asset.en.yaml:406:iso_9001_bridge
-translations/asset.en.yaml:409:qr
+translations/asset.de.yaml:409:iso_9001_bridge
+translations/asset.de.yaml:412:qr
+translations/asset.en.yaml:407:iso_9001_bridge
+translations/asset.en.yaml:410:qr
 translations/assets.de.yaml:1:asset
 translations/assets.en.yaml:1:asset
 translations/audit.de.yaml:249:audit_log
@@ -227,9 +227,9 @@ translations/incident.en.yaml:1:incident_management
 translations/incident.en.yaml:7:deadline_counter
 translations/incident.en.yaml:470:iso_9001_bridge
 translations/interested_parties.de.yaml:1:interested_party
-translations/interested_parties.de.yaml:124:iso_9001_bridge
+translations/interested_parties.de.yaml:132:iso_9001_bridge
 translations/interested_parties.en.yaml:1:interested_party
-translations/interested_parties.en.yaml:124:iso_9001_bridge
+translations/interested_parties.en.yaml:132:iso_9001_bridge
 translations/journey.de.yaml:46:first_hour
 translations/journey.en.yaml:46:first_hour
 translations/locations.de.yaml:1:location
@@ -320,8 +320,8 @@ translations/risk.en.yaml:619:severity_choice
 translations/risk.en.yaml:633:dora
 translations/risk.en.yaml:666:fair
 translations/risk.en.yaml:690:risk_management
-translations/risk_treatment_plan.de.yaml:105:iso_9001_bridge
-translations/risk_treatment_plan.en.yaml:105:iso_9001_bridge
+translations/risk_treatment_plan.de.yaml:106:iso_9001_bridge
+translations/risk_treatment_plan.en.yaml:106:iso_9001_bridge
 translations/role_management.de.yaml:120:role
 translations/role_management.en.yaml:120:role
 translations/scheduled_reports.de.yaml:3:scheduled_report

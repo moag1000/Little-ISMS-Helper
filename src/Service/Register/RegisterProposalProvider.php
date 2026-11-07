@@ -276,6 +276,7 @@ final class RegisterProposalProvider
             foreach ($party->getLegalRequirements() ?? [] as $item) {
                 $text = is_array($item)
                     ? (string) ($item['title'] ?? $item['name'] ?? $item['requirement'] ?? $item['description'] ?? '')
+                        . (($item['reference'] ?? '') !== '' ? ' (' . $item['reference'] . ')' : '')
                     : (string) $item;
                 foreach (self::paragraphs($text) as $p) {
                     $proposals[] = new RegisterProposal(

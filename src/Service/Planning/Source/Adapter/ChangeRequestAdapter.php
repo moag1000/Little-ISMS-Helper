@@ -106,7 +106,8 @@ final class ChangeRequestAdapter implements SourceAdapter
     {
         assert($item instanceof ChangeRequest);
 
-        return Responsibility::roles('ROLE_CISO', 'ROLE_ISB');
+        // The approver who released the change answers for its implementation (P5).
+        return Responsibility::holders($item->getApproverPerson())->orRoles('ROLE_CISO', 'ROLE_ISB');
     }
 
     public function linkOf(object $item): RecordLink

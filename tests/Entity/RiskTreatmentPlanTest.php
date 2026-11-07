@@ -96,6 +96,8 @@ class RiskTreatmentPlanTest extends TestCase
     public function testAddAndRemoveControl(): void
     {
         $plan = new RiskTreatmentPlan();
+        $risk = new Risk();
+        $plan->setRisk($risk);
         $control = new Control();
 
         $this->assertEquals(0, $plan->getControls()->count());
@@ -106,7 +108,19 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertTrue($plan->getControls()->contains($control));
         $this->assertEquals(1, $plan->getControlCount());
 
+        // One list (P5): the plan writes into the risk's controls.
+        $this->assertTrue($risk->getControls()->contains($control));
+
         $plan->removeControl($control);
+        $this->assertEquals(0, $plan->getControls()->count());
+        $this->assertFalse($risk->getControls()->contains($control));
+    }
+
+    #[Test]
+    public function testControlsWithoutRiskAreEmpty(): void
+    {
+        $plan = new RiskTreatmentPlan();
+        $plan->addControl(new Control());
         $this->assertEquals(0, $plan->getControls()->count());
     }
 

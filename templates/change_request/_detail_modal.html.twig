@@ -40,10 +40,10 @@
                 <span>{{ change.riskAssessment|u.truncate(120, '…') }}</span>
             </div>
         {% endif %}
-        {% if change.approvedBy %}
+        {% if change.effectiveApprovedBy %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'change_request.field.approved_by'|trans({}, 'change_requests') }}</span>
-                <span>{{ change.approvedBy }}</span>
+                <span>{{ change.effectiveApprovedBy }}</span>
             </div>
         {% endif %}
         {% if change.description %}

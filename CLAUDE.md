@@ -330,6 +330,13 @@ single list of legacy owner columns is `App\Service\DataRepair\LegacyOwnerReport
 `/admin/data-repair/legacy-owners`). Mapping screens include
 `compliance/mapping/_hub_tabs.html.twig` (one menu entry, four tabs).
 
+**One list, not two (P5).** A risk's controls live only on the risk (`Control.risks`); a treatment plan's
+`getControls()`/`addControl()` read and write that list. Risks of an incident are only `RiskIncidentLink`
+rows (`Incident::getRiskLinks()`, `getLinkedRisks()`; `getRealizedRisks()` = types materialized /
+mitigation_failed). A value the tool derives (plan progress, asset availability from the BIA) is made
+read-only with `App\Form\Util\DerivedField::readOnlyWhen()`; changes come as a suggestion. Guide:
+`docs/user-guide/EINE_LISTE.md`.
+
 **Display conventions (UI wave G).** Dates in text output go through `|fa_date` / `|fa_datetime`
 (admin format + timezone, null → "-"; Gate 77) — `|date('Y-m-d')` only in attributes/URLs.
 Statuses without a lifecycle (workflow instances, consents, import rows, compliance results) take

@@ -7,6 +7,8 @@ namespace App\Form;
 use App\Entity\AuditFinding;
 use App\Entity\ChangeRequest;
 use App\Entity\CorrectiveAction;
+use App\Entity\Person;
+use App\Form\Util\LegacyFreeTextField;
 use App\Form\SectionMapInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -166,6 +168,14 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'widget' => 'single_text',
                 'required' => false,
             ])
+            ->add('approverPerson', EntityType::class, [
+                'label' => 'change_request.field.approver_person',
+                'class' => Person::class,
+                'choice_label' => fn (Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'change_request.placeholder.approver_person',
+                'required' => false,
+                'help' => 'change_request.help.approver_person',
+            ])
             ->add('approvedBy', TextType::class, [
                 'label' => 'change_request.field.approved_by',
                 'required' => false,
@@ -217,6 +227,8 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'attr' => ['rows' => 2],
             ])
         ;
+        // P5: the approver is a person; the old free text stays visible only while filled.
+        LegacyFreeTextField::hideWhenEmpty($builder, 'approvedBy');
     }
 
     /**
@@ -254,6 +266,7 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'riskAssessment',
             ],
             'approval' => [
+                'approverPerson',
                 'approvedBy',
                 'approvedDate',
                 'approvalComments',

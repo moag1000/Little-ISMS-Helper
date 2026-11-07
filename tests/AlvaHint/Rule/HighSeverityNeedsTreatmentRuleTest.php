@@ -89,7 +89,7 @@ class HighSeverityNeedsTreatmentRuleTest extends TestCase
             IncidentSeverity::High,
             IncidentStatus::Resolved,
             [$asset],
-            [new \stdClass()],
+            [new \App\Entity\Risk()],
         );
 
         $this->assertFalse($this->rule->appliesTo($incident, $this->user));
@@ -120,7 +120,9 @@ class HighSeverityNeedsTreatmentRuleTest extends TestCase
         $incident->setStatus($status);
         $reflection = new \ReflectionClass($incident);
         $reflection->getProperty('affectedAssets')->setValue($incident, new ArrayCollection($assets));
-        $reflection->getProperty('realizedRisks')->setValue($incident, new ArrayCollection($realizedRisks));
+        foreach ($realizedRisks as $risk) {
+            $incident->addRealizedRisk($risk);
+        }
         return $incident;
     }
 }

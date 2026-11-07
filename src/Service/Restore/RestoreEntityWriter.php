@@ -526,6 +526,50 @@ class RestoreEntityWriter
     }
 
     /**
+     * Backups made before P5 carry two lists that are now one (see
+     * Version20261107230000): Incident.realizedRisks → risk-incident links
+     * (materialized), RiskTreatmentPlan.controls → the risk's control list.
+     *
+     * @param array<int, array<string, mixed>> $entities
+     * @param array<string, mixed>             $m2mStats
+     */
+    private function restoreMergedLists(string $entityName, array $entities, array &$m2mStats): void
+    {
+        $sql = match ($entityName) {
+            'Incident' => ['realizedRisks_ids', "INSERT IGNORE INTO risk_incident_link (tenant_id, risk_id, incident_id, link_type, linked_at)
+                SELECT COALESCE(i.tenant_id, r.tenant_id), r.id, i.id, 'materialized', :linkedAt
+                FROM incident i JOIN risk r ON r.id = :target WHERE i.id = :owner AND COALESCE(i.tenant_id, r.tenant_id) IS NOT NULL"],
+            'RiskTreatmentPlan' => ['controls_ids', 'INSERT IGNORE INTO control_risk (control_id, risk_id)
+                SELECT c.id, p.risk_id FROM risk_treatment_plan p JOIN control c ON c.id = :target WHERE p.id = :owner AND p.risk_id IS NOT NULL'],
+            default => null,
+        };
+        if ($sql === null) {
+            return;
+        }
+        [$idsKey, $statement] = $sql;
+        $connection = $this->entityManager->getConnection();
+        $params = $entityName === 'Incident' ? ['linkedAt' => (new \DateTimeImmutable())->format('Y-m-d H:i:s')] : [];
+        $count = 0;
+        $tuples = 0;
+        foreach ($entities as $data) {
+            $ownerId = $data['id'] ?? null;
+            if ($ownerId === null || !is_array($data[$idsKey] ?? null)) {
+                continue;
+            }
+            foreach ($data[$idsKey] as $target) {
+                $targetId = is_array($target) ? ($target['id'] ?? null) : $target;
+                if ($targetId !== null) {
+                    ++$tuples;
+                    $count += (int) $connection->executeStatement($statement, [...$params, 'owner' => $ownerId, 'target' => $targetId]);
+                }
+            }
+        }
+        if ($tuples > 0) {
+            $m2mStats[$idsKey] = ['pivot' => 'merged (P5)', 'tuples' => $tuples, 'inserted' => $count];
+        }
+    }
+
+    /**
      * Restore ManyToMany associations via direct DBAL pivot-table inserts.
      * Called in second pass after all entity rows have been flushed.
      *
@@ -550,6 +594,7 @@ class RestoreEntityWriter
 
         $connection = $this->entityManager->getConnection();
         $m2mStats = [];
+        $this->restoreMergedLists($entityName, $entities, $m2mStats);
 
         foreach ($classMetadata->getAssociationMappings() as $field => $mapping) {
             $type      = is_array($mapping) ? ($mapping['type'] ?? null)          : ($mapping->type          ?? null);

@@ -301,6 +301,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Activity-Feed** -- Chronologische Event-Uebersicht aus allen Modulen; `?scope=compliance` filtert auf Compliance-relevante Events
 - **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
 - **Vorschlags-Queue** -- Ableitungen (Schutzbedarf, Restrisiko, Wirksamkeit, CVSS→Risiko, Risiko nach Vorfall), Vererbung, Import-Treffer und KI-Vorschläge (lokales Modell oder Mistral-API, personenbezogene Daten standardmäßig ersetzt) in einer Liste; Annehmen/Ablehnen mit Begründung und Audit-Log, nächtlich vorbereitet oder per „Entwurf vorschlagen“ am Datensatz (Meldetext NIS-2/DORA, Meldung Art. 33, Antwort an Betroffene, Zusammenfassung für die Leitung, Abweichungstext, Fragebogenauswertung, SoA-Begründung aus Verknüpfungen) ([Anleitung](docs/user-guide/VORSCHLAEGE.md))
+- **Eine Liste statt zwei** -- Maßnahmen von Risiko und Behandlungsplan, Risiken eines Vorfalls nur über Verknüpfungen, Change-Freigabe als Person (in „Mein Tag“), rechtliche Anforderungen am Stakeholder; abgeleitete Werte (Fortschritt, Verfügbarkeit aus BIA) nur lesbar ([Anleitung](docs/user-guide/EINE_LISTE.md))
 
 ### Bedienung: einheitlich, schnell, sinnvoll
 

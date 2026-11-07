@@ -147,10 +147,10 @@
             </div>
             {% endif %}
 
-            {% if change_request.approvedBy %}
+            {% if change_request.approvedDate or change_request.approvedBy %}
             <div class="detail-section alert-success">
                 <h3>{{ 'change_request.section.approval_info'|trans({}, 'change_requests') }}</h3>
-                <p><strong>{{ 'change_request.field.approved_by'|trans({}, 'change_requests') }}</strong> {{ change_request.approvedBy }}</p>
+                <p><strong>{{ 'change_request.field.approved_by'|trans({}, 'change_requests') }}</strong> {{ change_request.effectiveApprovedBy }}</p>
                 <p><strong>{{ 'change_request.field.approval_date'|trans({}, 'change_requests') }}</strong> {{ change_request.approvedDate|fa_datetime }}</p>
                 {% if change_request.approvalComments %}
                 <p><strong>{{ 'change_request.field.comments'|trans({}, 'change_requests') }}</strong> {{ change_request.approvalComments }}</p>
