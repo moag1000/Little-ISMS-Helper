@@ -58,7 +58,7 @@ framework:
                     -   name: "Training Completion"
                         description: "Participant completes the assigned training"
                         order: 1
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_MANAGER
                         step_type: approval
                         days_to_complete: 30
                         is_required: true

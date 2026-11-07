@@ -326,7 +326,7 @@ class EmailNotificationService
             ->context([
                 'risk' => $risk,
                 'risk_owner' => $riskOwner,
-                'approved_by' => $risk->getAcceptanceApprovedBy(),
+                'approved_by' => $risk->getEffectiveAcceptanceApprovedBy(),
                 'approved_at' => $risk->getAcceptanceApprovedAt(),
                 'approver' => $approver,
             ]);

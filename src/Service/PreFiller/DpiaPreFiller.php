@@ -59,10 +59,8 @@ final readonly class DpiaPreFiller
 
         // Pre-fill data-subject-impact narrative into the DPIA's
         // dataSubjectRisks slot (Art. 35(7)(c)) if Risk has one.
-        $dataSubjectImpact = method_exists($risk, 'getDataSubjectImpact')
-            ? trim((string) $risk->getDataSubjectImpact())
-            : '';
-        if ($dataSubjectImpact !== '' && method_exists($dpia, 'setDataSubjectRisks')) {
+        $dataSubjectImpact = trim((string) $risk->getDataSubjectImpact());
+        if ($dataSubjectImpact !== '') {
             $dpia->setDataSubjectRisks($dataSubjectImpact);
         }
 

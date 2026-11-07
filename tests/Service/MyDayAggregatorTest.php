@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\AuditChecklist;
+use App\Entity\AuditFinding;
 use App\Entity\ChangeRequest;
 use App\Entity\ComplianceRequirement;
 use App\Entity\DataBreach;
@@ -13,12 +14,14 @@ use App\Entity\Document;
 use App\Entity\Incident;
 use App\Entity\InternalAudit;
 use App\Entity\ManagementReview;
+use App\Entity\Person;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
 use App\Entity\User;
 use App\Entity\Vulnerability;
+use App\Enum\DataSubjectRequestStatus;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Enum\RiskStatus;
@@ -302,6 +305,7 @@ final class MyDayAggregatorTest extends TestCase
         $dsr->method('getId')->willReturn(7);
         $dsr->method('getAssignedTo')->willReturn($user);
         $dsr->method('getStatus')->willReturn('open');
+        $dsr->method('getStatusEnum')->willReturn(DataSubjectRequestStatus::InProgress);
         $dsr->method('getRequestType')->willReturn('access');
         $dsr->method('getDataSubjectName')->willReturn('Bob');
         $this->dsrRepo->method('findByTenant')->willReturn([$dsr]);
@@ -993,16 +997,98 @@ final class MyDayAggregatorTest extends TestCase
      * for per-test specialization. (PHPUnit's MockBuilder can't be re-bound
      * to the same method twice; once the stub is set it sticks.)
      */
-    private function stubAllRepoEmpty(): void
+    #[Test]
+    public function testFindingSurfacesToAssignedUser(): void
+    {
+        // Regression: the bucket asked for a getter AuditFinding does not
+        // have (getResponsiblePersonUser) and so never showed any finding.
+        $tenant = $this->createTenant(1);
+        $user = $this->createUser(11, $tenant, ['ROLE_USER']);
+        $other = $this->createUser(12, $tenant, ['ROLE_USER']);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->stubAllRepoEmpty(['findOpenByTenant']);
+        $this->urls->method('generate')->willReturn('/finding/1');
+
+        $mine = new AuditFinding();
+        $mine->setTitle('Zugriffsrechte nicht geprüft');
+        $mine->setAssignedTo($user);
+        $foreign = new AuditFinding();
+        $foreign->setTitle('Fremd');
+        $foreign->setAssignedTo($other);
+        $this->auditFindingRepo->method('findOpenByTenant')->willReturn([$mine, $foreign]);
+
+        $result = $this->aggregator->aggregate($user);
+
+        self::assertSame(1, $result['summary']['findings']);
+        self::assertSame('Zugriffsrechte nicht geprüft', $result['findings'][0]['title']);
+    }
+
+    #[Test]
+    public function testCompletedDsrLeavesMyDayAndOpenDsrCarriesDeadline(): void
+    {
+        $tenant = $this->createTenant(1);
+        $user = $this->createUser(11, $tenant, ['ROLE_USER']);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->stubAllRepoEmpty(['findByTenant']);
+        $this->urls->method('generate')->willReturn('/dsr/1');
+
+        $open = new DataSubjectRequest();
+        $open->setAssignedTo($user);
+        $open->setDeadlineAt(new DateTimeImmutable('2026-12-01'));
+        $done = new DataSubjectRequest();
+        $done->setAssignedTo($user);
+        $done->setStatus(DataSubjectRequestStatus::Completed->value);
+        $this->dsrRepo->method('findByTenant')->willReturn([$open, $done]);
+
+        $result = $this->aggregator->aggregate($user);
+
+        self::assertSame(1, $result['summary']['dsrs'], 'A completed request must leave My Day.');
+        self::assertNotNull($result['dsrs'][0]['due_date'], 'The Art. 12 (3) deadline must be shown.');
+    }
+
+    #[Test]
+    public function testDocumentReviewSurfacesToOwnerPersonAccount(): void
+    {
+        // Regression: the owner check asked for Document::getOwner(), which
+        // does not exist; the owner is a Person linked to a login.
+        $tenant = $this->createTenant(1);
+        $owner = $this->createUser(11, $tenant, ['ROLE_USER']);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->stubAllRepoEmpty(['findReviewOverdue']);
+        $this->urls->method('generate')->willReturn('/document/1');
+
+        $person = new Person();
+        $person->setLinkedUser($owner);
+        $document = new Document();
+        $document->setOriginalFilename('Passwortrichtlinie.pdf');
+        $document->setOwnerPerson($person);
+        $this->documentRepo->method('findReviewOverdue')->willReturn([$document]);
+
+        $result = $this->aggregator->aggregate($owner);
+
+        self::assertSame(1, $result['summary']['documents_review_overdue']);
+        self::assertSame('Passwortrichtlinie.pdf', $result['documents_review_overdue'][0]['title']);
+    }
+
+    /**
+     * @param list<string> $except repository methods the test stubs itself
+     */
+    private function stubAllRepoEmpty(array $except = []): void
     {
         $this->workflowInstances->method('findPendingForUser')->willReturn([]);
         $this->workflowInstances->method('findOverdueForTenant')->willReturn([]);
         $this->fourEyesRepo->method('findPendingFor')->willReturn([]);
-        $this->auditFindingRepo->method('findOpenByTenant')->willReturn([]);
-        $this->dsrRepo->method('findByTenant')->willReturn([]);
+        if (!in_array('findOpenByTenant', $except, true)) {
+            $this->auditFindingRepo->method('findOpenByTenant')->willReturn([]);
+        }
+        if (!in_array('findByTenant', $except, true)) {
+            $this->dsrRepo->method('findByTenant')->willReturn([]);
+        }
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
-        $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        if (!in_array('findReviewOverdue', $except, true)) {
+            $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        }
         $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);

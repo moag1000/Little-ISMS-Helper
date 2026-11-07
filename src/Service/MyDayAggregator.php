@@ -22,6 +22,7 @@ use App\Entity\User;
 use App\Entity\Vulnerability;
 use App\Entity\WizardSession;
 use App\Entity\WorkflowInstance;
+use App\Enum\DataSubjectRequestStatus;
 use App\Repository\AuditChecklistRepository;
 use App\Repository\AuditFindingRepository;
 use App\Repository\ChangeRequestRepository;
@@ -379,15 +380,14 @@ final class MyDayAggregator
         foreach ($allApproved as $document) {
             /** @var Document $document */
             // Only documents that require ack (best-effort field check)
-            if (method_exists($document, 'getRequiresAcknowledgement')
-                && !$document->getRequiresAcknowledgement()) {
+            if (!$document->getRequiresAcknowledgement()) {
                 continue;
             }
             // Check if ack exists for this user + version. 
             // PENDING rows (created by Auto-Acknowledgement-Campaign) keep
             // the document on the user's My-Day list — only ACKNOWLEDGED
             // rows close the item.
-            $version = method_exists($document, 'getVersion') ? (string) ($document->getVersion() ?? '') : '';
+            $version = $document->getVersion();
             $existing = $this->policyAckRepo->findOneFor($tenant, $document, $user, $version);
             if ($existing instanceof PolicyAcknowledgement
                 && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
@@ -400,7 +400,7 @@ final class MyDayAggregator
                 'link'        => $this->urls->generate('app_policy_ack_inbox'),
                 'entity_type' => 'acknowledgement',
                 'tone'        => 'info',
-                'title'       => method_exists($document, 'getTitle') ? (string) $document->getTitle() : 'Document',
+                'title'       => $this->documentTitle($document),
                 'subtitle'    => $version !== '' ? 'v' . $version : '—',
                 'badge'       => 'awaiting_ack',
             ];
@@ -420,7 +420,7 @@ final class MyDayAggregator
             if (!$this->findingAssignedToUser($finding, $user)) {
                 continue;
             }
-            $severity = method_exists($finding, 'getSeverity') ? $finding->getSeverity() : 'medium';
+            $severity = $finding->getSeverity();
             $tone = match ($severity) {
                 'critical', 'high' => 'danger',
                 'medium' => 'warning',
@@ -428,7 +428,7 @@ final class MyDayAggregator
             };
             $items[] = [
                 'priority'    => in_array($severity, ['critical', 'high'], true) ? 'high' : 'medium',
-                'due_date'    => method_exists($finding, 'getDueDate') ? $finding->getDueDate() : null,
+                'due_date'    => $finding->getDueDate(),
                 'link'        => $this->urls->generate('app_audit_finding_show', ['id' => $finding->getId()]),
                 'entity_type' => 'audit_finding',
                 'tone'        => $tone,
@@ -440,15 +440,19 @@ final class MyDayAggregator
         return $items;
     }
 
+    /**
+     * Documents have no title column; the uploaded file name is what the
+     * list and detail pages show.
+     */
+    private function documentTitle(Document $document): string
+    {
+        return (string) ($document->getOriginalFilename() ?? $document->getFilename() ?? 'Document');
+    }
+
     private function findingAssignedToUser(AuditFinding $finding, User $user): bool
     {
-        if (method_exists($finding, 'getResponsiblePersonUser')) {
-            $resp = $finding->getResponsiblePersonUser();
-            if ($resp instanceof User && $resp->getId() === $user->getId()) {
-                return true;
-            }
-        }
-        return false;
+        // AuditFinding carries its responsible user as `assignedTo`.
+        return $finding->getAssignedTo()?->getId() === $user->getId();
     }
 
     /**
@@ -462,18 +466,19 @@ final class MyDayAggregator
             if (!$this->dsrAssignedToUser($dsr, $user)) {
                 continue;
             }
-            $status = method_exists($dsr, 'getStatus') ? $dsr->getStatus() : null;
-            if (in_array($status, ['fulfilled', 'rejected', 'closed'], true)) {
+            $status = $dsr->getStatus();
+            if (in_array($dsr->getStatusEnum(), [DataSubjectRequestStatus::Completed, DataSubjectRequestStatus::Rejected], true)) {
                 continue;
             }
             $items[] = [
                 'priority'    => 'high',
-                'due_date'    => method_exists($dsr, 'getDeadline') ? $dsr->getDeadline() : null,
+                // Art. 12 (3) DSGVO: one month, extended deadline when prolonged.
+                'due_date'    => $dsr->getEffectiveDeadline(),
                 'link'        => $this->urls->generate('app_data_subject_request_show', ['id' => $dsr->getId()]),
                 'entity_type' => 'dsr',
                 'tone'        => 'danger',
-                'title'       => sprintf('DSR #%d — %s', $dsr->getId(), method_exists($dsr, 'getRequestType') ? ($dsr->getRequestType() ?? '') : ''),
-                'subtitle'    => method_exists($dsr, 'getDataSubjectName') ? ($dsr->getDataSubjectName() ?? '') : '',
+                'title'       => sprintf('DSR #%d — %s', $dsr->getId(), $dsr->getRequestType() ?? ''),
+                'subtitle'    => $dsr->getDataSubjectName() ?? '',
                 'badge'       => $status,
             ];
         }
@@ -488,13 +493,7 @@ final class MyDayAggregator
         // generic ROLE_MANAGER. The DPO/Compliance-Manager-Persona has
         // a dedicated dashboard via ROLE_DPO; seeing every open
         // DSR via My-Day would breach Art. 5 (1) (c) (Datenminimierung).
-        if (method_exists($dsr, 'getAssignedTo')) {
-            $u = $dsr->getAssignedTo();
-            if ($u instanceof User && $u->getId() === $user->getId()) {
-                return true;
-            }
-        }
-        return false;
+        return $dsr->getAssignedTo()?->getId() === $user->getId();
     }
 
     /**
@@ -510,7 +509,7 @@ final class MyDayAggregator
             }
             $items[] = [
                 'priority'    => 'high',
-                'due_date'    => method_exists($ca, 'getPlannedCompletionDate') ? $ca->getPlannedCompletionDate() : null,
+                'due_date'    => $ca->getPlannedCompletionDate(),
                 'link'        => $this->urls->generate('app_corrective_action_show', ['id' => $ca->getId()]),
                 'entity_type' => 'corrective_action',
                 'tone'        => 'danger',
@@ -524,11 +523,8 @@ final class MyDayAggregator
 
     private function caAssignedToUser(CorrectiveAction $ca, User $user): bool
     {
-        if (method_exists($ca, 'getResponsiblePersonUser')) {
-            $resp = $ca->getResponsiblePersonUser();
-            if ($resp instanceof User && $resp->getId() === $user->getId()) {
-                return true;
-            }
+        if ($ca->getResponsiblePersonUser()?->getId() === $user->getId()) {
+            return true;
         }
         return $this->personaResolver->reaches($user, 'ROLE_MANAGER');
     }
@@ -593,9 +589,7 @@ final class MyDayAggregator
             if (!$this->documentReviewVisibleToUser($document, $user)) {
                 continue;
             }
-            $title = method_exists($document, 'getTitle')
-                ? (string) ($document->getTitle() ?? '')
-                : (string) ($document->getOriginalFilename() ?? $document->getFilename() ?? 'Document');
+            $title = $this->documentTitle($document);
             $items[] = [
                 'priority'    => 'high',
                 'due_date'    => $document->getNextReviewDate(),
@@ -612,17 +606,12 @@ final class MyDayAggregator
 
     private function documentReviewVisibleToUser(Document $document, User $user): bool
     {
-        if (method_exists($document, 'getOwner')) {
-            $owner = $document->getOwner();
-            if ($owner instanceof User && $owner->getId() === $user->getId()) {
-                return true;
-            }
-        }
-        if (method_exists($document, 'getUploadedBy')) {
-            $uploader = $document->getUploadedBy();
-            if ($uploader instanceof User && $uploader->getId() === $user->getId()) {
-                return true;
-            }
+        // The document owner is a Person; the person's login account is the
+        // one that sees the review. The uploader stays the fallback owner
+        // (same chain as Document::getEffectiveOwnerName()).
+        $ownerUser = $document->getOwnerPerson()?->getLinkedUser() ?? $document->getUploadedBy();
+        if ($ownerUser !== null && $ownerUser->getId() === $user->getId()) {
+            return true;
         }
         return $this->personaResolver->reaches($user, 'ROLE_MANAGER');
     }
@@ -644,9 +633,7 @@ final class MyDayAggregator
             if ($training === null) {
                 continue;
             }
-            $title = method_exists($training, 'getTitle')
-                ? (string) ($training->getTitle() ?? '')
-                : 'Training';
+            $title = (string) ($training->getTitle() ?? 'Training');
             $items[] = [
                 'priority'    => 'medium',
                 'due_date'    => $participation->getAssignedAt(),
@@ -801,7 +788,7 @@ final class MyDayAggregator
         $responsible = $vuln->getResponsiblePerson(); // legacy free-text, best-effort match
         if ($responsible !== null && $responsible !== '') {
             $needle = strtolower($user->getUserIdentifier());
-            $email = method_exists($user, 'getEmail') ? strtolower((string) $user->getEmail()) : '';
+            $email = strtolower((string) $user->getEmail());
             $haystack = strtolower($responsible);
             if (($needle !== '' && str_contains($haystack, $needle))
                 || ($email !== '' && str_contains($haystack, $email))) {
@@ -960,9 +947,7 @@ final class MyDayAggregator
         $items = [];
         foreach ($this->documentRepo->findPendingApprovalForTenant($tenant) as $document) {
             /** @var Document $document */
-            $title = method_exists($document, 'getTitle')
-                ? (string) ($document->getTitle() ?? '')
-                : (string) ($document->getOriginalFilename() ?? $document->getFilename() ?? 'Document');
+            $title = $this->documentTitle($document);
             $items[] = [
                 'priority'    => 'medium',
                 'due_date'    => null,

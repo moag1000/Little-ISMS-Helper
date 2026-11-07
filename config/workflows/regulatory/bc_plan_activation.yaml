@@ -66,7 +66,7 @@ framework:
                     -   name: "Crisis Team Notification"
                         description: "All crisis team members are notified and confirm availability"
                         order: 2
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_BCM_OFFICER
                         step_type: notification
                         days_to_complete: 0
                         is_required: true

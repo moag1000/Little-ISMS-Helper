@@ -15,7 +15,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -72,7 +72,7 @@ class DoraSubcontractorController extends AbstractController
         $subcontractor = new DoraSubcontractor();
 
         $user = $this->security->getUser();
-        if ($user instanceof UserInterface && method_exists($user, 'getTenant') && $user->getTenant()) {
+        if ($user instanceof User && $user->getTenant()) {
             $subcontractor->setTenant($user->getTenant());
         }
 

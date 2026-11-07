@@ -30,6 +30,11 @@ Freigaben und Vier-Augen-Anfragen sind aufgeklappt, alle anderen zeigen nur den 
 | Alva-Empfehlungen | Alvas Hinweise der Priorität 1; die übrigen stehen im Alva-Posteingang |
 | Policy-Bestätigungen, Audit-Findings, Betroffenenanfragen, Korrekturmaßnahmen, Risiko-Akzeptanzen und -Reviews, Dokument-Reviews und -Freigaben, Nachweis-Reverifizierung, Wirksamkeitsprüfungen, Lieferanten-Reassessments, DSFA- und BC-Plan-Reviews, Schulungen, Vorfälle, Datenpannen (72h), kritische Schwachstellen, Audit-Checklisten, Change Requests, Management-Reviews, gestoppte Assessments, kritische Framework-Lücken | jeweils die mir zugewiesenen bzw. fälligen Punkte; Module ohne Aktivierung liefern nichts |
 
+Audit-Findings erscheinen bei der zugewiesenen Person, Dokument-Reviews beim
+Dokument-Eigner (verknüpfte Person mit Benutzerkonto, sonst die hochladende Person).
+Betroffenenanfragen zeigen ihre Frist (bei Verlängerung die verlängerte) und
+verschwinden, sobald sie erledigt oder abgelehnt sind.
+
 Freigaben tragen den Namen des Datensatzes ("Risiko: Kundendaten Online-Shop"), der
 Workflow und der aktuelle Schritt stehen darunter.
 

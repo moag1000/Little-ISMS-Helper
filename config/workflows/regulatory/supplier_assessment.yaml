@@ -59,7 +59,7 @@ framework:
                     -   name: "Initial Security Assessment"
                         description: "Complete security questionnaire, classify criticality, and perform initial risk assessment"
                         order: 1
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_MANAGER
                         step_type: approval
                         days_to_complete: 14
                         is_required: true

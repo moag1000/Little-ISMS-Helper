@@ -17,7 +17,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -78,7 +78,7 @@ class DoraDataFlowController extends AbstractController
 
         $flow = new DoraDataFlow();
         $user = $this->security->getUser();
-        if ($user instanceof UserInterface && method_exists($user, 'getTenant') && $user->getTenant() !== null) {
+        if ($user instanceof User && $user->getTenant() !== null) {
             $flow->setTenant($user->getTenant());
         }
 

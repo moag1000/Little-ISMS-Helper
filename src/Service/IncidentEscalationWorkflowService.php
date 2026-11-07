@@ -128,7 +128,7 @@ class IncidentEscalationWorkflowService
         // Find DPO, CISO, and CEO
         $dpo = $this->findUserByRole('ROLE_DPO', $incident);
         $ciso = $this->findUserByRole('ROLE_CISO', $incident);
-        $ceo = $this->findUserByRole('ROLE_CEO', $incident);
+        $ceo = $this->findUserByRole('ROLE_TOP_MGMT', $incident);
 
         // Create workflow instance for breach notification approval
         $workflowInstance = $this->workflowService->startWorkflow(
@@ -189,7 +189,7 @@ class IncidentEscalationWorkflowService
         ]);
 
         // Find responsible roles
-        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+        $incidentManager = $this->findUserByRole('ROLE_ISB', $incident);
         $ciso = $this->findUserByRole('ROLE_CISO', $incident);
         $management = $this->findUsersByRole('ROLE_MANAGER', $incident);
 
@@ -268,7 +268,7 @@ class IncidentEscalationWorkflowService
             'incident_number' => $incident->getIncidentNumber(),
         ]);
 
-        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+        $incidentManager = $this->findUserByRole('ROLE_ISB', $incident);
         $ciso = $this->findUserByRole('ROLE_CISO', $incident);
 
         $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'high') . ' hours');
@@ -333,7 +333,7 @@ class IncidentEscalationWorkflowService
      */
     private function escalateMedium(Incident $incident): array
     {
-        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+        $incidentManager = $this->findUserByRole('ROLE_ISB', $incident);
         $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'medium') . ' hours');
 
         $workflowInstance = $this->workflowService->startWorkflow(
@@ -386,7 +386,7 @@ class IncidentEscalationWorkflowService
      */
     private function escalateLow(Incident $incident): array
     {
-        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+        $incidentManager = $this->findUserByRole('ROLE_ISB', $incident);
         $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'low') . ' hours');
 
         // Generate incident URL for email
@@ -596,11 +596,11 @@ class IncidentEscalationWorkflowService
             $notifiedRoles = ['DPO', 'CISO', 'CEO'];
             $dpo = $this->findUserByRole('ROLE_DPO', $incident);
             $ciso = $this->findUserByRole('ROLE_CISO', $incident);
-            $ceo = $this->findUserByRole('ROLE_CEO', $incident);
+            $ceo = $this->findUserByRole('ROLE_TOP_MGMT', $incident);
             $notifiedUsers = array_filter([$dpo, $ciso, $ceo]);
         } elseif ($severity === self::SEVERITY_CRITICAL) {
             $notifiedRoles = ['Incident Manager', 'CISO', 'Management'];
-            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+            $incidentManager = $this->findUserByRole('ROLE_ISB', $incident);
             $ciso = $this->findUserByRole('ROLE_CISO', $incident);
             $management = $this->findUsersByRole('ROLE_MANAGER', $incident);
             $notifiedUsers = array_merge(
@@ -610,12 +610,12 @@ class IncidentEscalationWorkflowService
             );
         } elseif ($severity === self::SEVERITY_HIGH) {
             $notifiedRoles = ['Incident Manager', 'CISO'];
-            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+            $incidentManager = $this->findUserByRole('ROLE_ISB', $incident);
             $ciso = $this->findUserByRole('ROLE_CISO', $incident);
             $notifiedUsers = array_filter([$incidentManager, $ciso]);
         } elseif ($severity === self::SEVERITY_MEDIUM) {
             $notifiedRoles = ['Incident Manager'];
-            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+            $incidentManager = $this->findUserByRole('ROLE_ISB', $incident);
             $notifiedUsers = $incidentManager instanceof User ? [$incidentManager] : [];
         }
 

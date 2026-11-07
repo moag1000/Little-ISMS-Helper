@@ -63,43 +63,20 @@ final class InternalAuditCloner
             $clone->setTenant($tenant);
         }
 
-        if (method_exists($source, 'getScope')) {
-            $scope = $source->getScope();
-            if ($scope !== null && method_exists($clone, 'setScope')) {
-                $clone->setScope($scope);
-            }
+        $scope = $source->getScope();
+        if ($scope !== null) {
+            $clone->setScope($scope);
         }
-        if (method_exists($source, 'getScopeType') && method_exists($clone, 'setScopeType')) {
-            $scopeType = $source->getScopeType();
-            if ($scopeType !== null) {
-                $clone->setScopeType($scopeType);
-            }
+        $scopeType = $source->getScopeType();
+        if ($scopeType !== null) {
+            $clone->setScopeType($scopeType);
         }
-        if (method_exists($source, 'getObjectives') && method_exists($clone, 'setObjectives')) {
-            $clone->setObjectives($source->getObjectives());
-        }
-        if (method_exists($source, 'getAuditType') && method_exists($clone, 'setAuditType')) {
-            $clone->setAuditType((string) $source->getAuditType());
-        }
-        if (method_exists($source, 'getFramework') && method_exists($clone, 'setFramework')) {
-            $fw = $source->getFramework();
-            if ($fw !== null) {
-                $clone->setFramework($fw);
-            }
-        }
-        if (method_exists($source, 'getStandard') && method_exists($clone, 'setStandard')) {
-            $std = $source->getStandard();
-            if ($std !== null) {
-                $clone->setStandard($std);
-            }
-        }
+        $clone->setObjectives($source->getObjectives());
 
         // Primary compliance framework relation — method name is
         // `setScopedFramework` in the current entity.
         $primaryFramework = $source->getScopedFramework();
-        if ($primaryFramework instanceof ComplianceFramework
-            && method_exists($clone, 'setScopedFramework')
-        ) {
+        if ($primaryFramework instanceof ComplianceFramework) {
             $clone->setScopedFramework($primaryFramework);
         }
 
@@ -110,20 +87,14 @@ final class InternalAuditCloner
             }
         }
 
-        if (method_exists($source, 'getLeadAuditor') && method_exists($clone, 'setLeadAuditor')) {
-            $clone->setLeadAuditor((string) $source->getLeadAuditor());
-        }
-        if (method_exists($source, 'getAuditTeam') && method_exists($clone, 'setAuditTeam')) {
-            $team = $source->getAuditTeam();
-            if ($team !== null) {
-                $clone->setAuditTeam($team);
-            }
+        $clone->setLeadAuditor((string) $source->getLeadAuditor());
+        $team = $source->getAuditTeam();
+        if ($team !== null) {
+            $clone->setAuditTeam($team);
         }
 
         $clone->setPlannedDate($plannedDate ?? $source->getPlannedDate() ?? new DateTimeImmutable());
-        if (method_exists($clone, 'setStatus')) {
-            $clone->setStatus(InternalAuditStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist InternalAudit clone; 'planned' is the internal_audit_lifecycle initial_marking)
-        }
+        $clone->setStatus(InternalAuditStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist InternalAudit clone; 'planned' is the internal_audit_lifecycle initial_marking)
 
         $this->entityManager->persist($clone);
         return $clone;

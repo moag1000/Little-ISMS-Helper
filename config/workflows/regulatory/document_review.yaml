@@ -59,14 +59,14 @@ framework:
                     -   name: "Review Required"
                         description: "Document owner reviews content for accuracy and currency"
                         order: 1
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_MANAGER
                         step_type: approval
                         days_to_complete: 14
                         is_required: true
                     -   name: "Revision Draft"
                         description: "If changes needed: document owner creates revision draft"
                         order: 2
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_MANAGER
                         step_type: approval
                         days_to_complete: 14
                         is_required: false

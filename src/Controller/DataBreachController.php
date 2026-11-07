@@ -146,21 +146,7 @@ class DataBreachController extends AbstractController
                 && $currentTenant !== null
                 && $incident->getTenant()?->getId() === $currentTenant->getId()
             ) {
-                $breach->setIncident($incident);
-                if ($incident->getTitle() !== null) {
-                    $breach->setTitle(sprintf('Data Breach: %s', $incident->getTitle()));
-                }
-                if ($incident->getDescription() !== null
-                    && method_exists($breach, 'setDescription')
-                ) {
-                    $breach->setDescription($incident->getDescription());
-                }
-                if ($incident->getDetectedAt() !== null) {
-                    $breach->setDetectedAt($incident->getDetectedAt());
-                }
-                if ($incident->getSeverity() !== null) {
-                    $breach->setSeverity($incident->getSeverity()->value);
-                }
+                $this->dataBreachService->prefillFromIncident($breach, $incident);
             }
         }
 

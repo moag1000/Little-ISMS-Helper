@@ -84,9 +84,7 @@ final class DataBreachService
         $dataBreach->setIncident($incident);
         $dataBreach->setCreatedBy($user);
 
-        // Pre-populate from incident (data reuse!)
-        $dataBreach->setTitle(sprintf('Data Breach: %s', $incident->getTitle()));
-        $dataBreach->setSeverity($incident->getSeverity()?->value);
+        $this->prefillFromIncident($dataBreach, $incident);
 
         // Link processing activity if provided
         if ($processingActivity instanceof ProcessingActivity) {
@@ -120,6 +118,47 @@ final class DataBreachService
         ]);
 
         return $dataBreach;
+    }
+
+    /**
+     * Takes over what the incident already records, so the DPO does not type
+     * it again (GDPR Art. 33 (3)): what happened, when it was detected, how
+     * many people are affected, root cause, measures taken, lessons learned.
+     * Only empty breach fields are filled; the one used by both "create from
+     * incident" paths (service and the prefilled /new form).
+     */
+    public function prefillFromIncident(DataBreach $breach, Incident $incident): void
+    {
+        $breach->setIncident($incident);
+        if (($breach->getTitle() ?? '') === '' && $incident->getTitle() !== null) {
+            $breach->setTitle(sprintf('Data Breach: %s', $incident->getTitle()));
+        }
+        if ($breach->getSeverity() === null) {
+            $breach->setSeverity($incident->getSeverity()?->value);
+        }
+        if ($breach->getDetectedAt() === null && $incident->getDetectedAt() !== null) {
+            $breach->setDetectedAt($incident->getDetectedAt());
+        }
+        if ($breach->getAffectedDataSubjects() === null) {
+            $breach->setAffectedDataSubjects($incident->getAffectedUsersCount());
+        }
+        $filled = static fn(?string $text): bool => $text !== null && trim($text) !== '';
+        if (!$filled($breach->getBreachNature()) && $filled($incident->getDescription())) {
+            $breach->setBreachNature($incident->getDescription());
+        }
+        if (!$filled($breach->getRootCause()) && $filled($incident->getRootCause())) {
+            $breach->setRootCause($incident->getRootCause());
+        }
+        $measures = implode("\n\n", array_filter(
+            [$incident->getContainmentActions(), $incident->getCorrectiveActions()],
+            $filled,
+        ));
+        if (!$filled($breach->getMeasuresTaken()) && $measures !== '') {
+            $breach->setMeasuresTaken($measures);
+        }
+        if (!$filled($breach->getLessonsLearned()) && $filled($incident->getLessonsLearned())) {
+            $breach->setLessonsLearned($incident->getLessonsLearned());
+        }
     }
 
     /**
