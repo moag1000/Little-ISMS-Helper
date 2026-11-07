@@ -10,6 +10,7 @@ use App\Repository\AuditFreezeRepository;
 use App\Service\AuditFreezeService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -68,7 +69,11 @@ class AuditFreezeController extends AbstractController
         $years = $this->freezeRepository->findDistinctYears($tenant);
 
         return $this->render('audit_freeze/index.html.twig', [
-            'freezes' => $freezes,
+            'page' => ListPage::fromRequest(
+                $freezes,
+                $request,
+                static fn(AuditFreeze $f): array => [$f->getFreezeName(), implode(' ', $f->getFrameworkCodes())],
+            ),
             'years' => $years,
             'purposes' => AuditFreeze::PURPOSES,
             'selected_purpose' => $purpose,

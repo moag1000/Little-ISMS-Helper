@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Attribute\RequiresModule;
 use App\Repository\IctProviderLibraryRepository;
 use App\Service\IctProviderLibraryService;
+use App\Entity\IctProviderLibrary;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,10 +33,24 @@ final class IctProviderLibraryController extends AbstractController
     }
 
     #[Route('/ict-provider-library', name: 'ict_provider_library_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $category = (string) $request->query->get('category', '');
+        $entries = $this->repository->findAllOrdered();
+        if ($category !== '') {
+            $entries = array_filter(
+                $entries,
+                static fn (IctProviderLibrary $e): bool => $e->getCategory() === $category,
+            );
+        }
+
         return $this->render('ict_provider_library/index.html.twig', [
-            'entries' => $this->repository->findAllOrdered(),
+            'page' => ListPage::fromRequest(
+                $entries,
+                $request,
+                static fn (IctProviderLibrary $e): array => [$e->getName(), $e->getServiceType(), $e->getHeadquartersCountry()],
+            ),
+            'category' => $category,
         ]);
     }
 

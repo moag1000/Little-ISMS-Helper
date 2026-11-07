@@ -85,15 +85,14 @@ scheduled_report:
         actions: 'Aktionen'
 
     # Statistics
-    stats:
-        total: 'Gesamt'
-        active: 'Aktiv'
-        inactive: 'Inaktiv'
-        due: 'Fällig'
+    summary:
+        active: '%count% aktiv'
+        inactive: '%count% inaktiv'
+        due: '%count% fällig'
 
     # Empty state
     empty:
-        title: 'Keine geplanten Berichte'
+        title: 'Keine geplanten Berichte vorhanden.'
         text: 'Erstellen Sie Ihren ersten geplanten Bericht, um regelmäßige Berichte automatisch per E-Mail zu erhalten.'
 
     # Info messages

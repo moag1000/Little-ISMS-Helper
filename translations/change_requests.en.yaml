@@ -10,16 +10,12 @@ change_request:
         view: View
         edit: Edit
         update: Update
-    statistics:
-        total: 'Total Requests'
-        pending_approval: 'Pending Approval'
-        in_implementation: 'In Implementation'
-        overdue: Overdue
-    alert:
-        pending_approval: 'Pending approvals'
-        overdue: 'Overdue change requests'
+    summary:
+        pending_approval: '%count% pending'
+        in_implementation: '%count% in implementation'
+        overdue: '%count% overdue'
     list:
-        title: 'Change Requests (%count%)'
+        title: 'Change Requests'
     table:
         change_number: 'Request No.'
         title: Title
@@ -30,7 +26,7 @@ change_request:
         requested: 'Requested on'
         actions: Actions
     empty:
-        message: 'No change requests available.'
+        message: 'No change requests yet.'
         create_first: 'Create the first request'
     section:
         basic_info: 'Basic Information'

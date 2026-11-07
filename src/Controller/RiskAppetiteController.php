@@ -8,6 +8,7 @@ use App\Attribute\RequiresModule;
 use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\RiskAppetite;
+use App\Util\ListPage;
 use App\Form\RiskAppetiteType;
 use App\Repository\AuditLogRepository;
 use App\Repository\RiskAppetiteRepository;
@@ -77,10 +78,14 @@ class RiskAppetiteController extends AbstractController
         }
 
         return $this->render('risk_appetite/index.html.twig', [
-            'appetites' => $appetites,
+            'page' => ListPage::fromRequest(
+                $appetites,
+                $request,
+                static fn(RiskAppetite $a): array => [$a->getCategory(), $a->getDescription()],
+            ),
+            'active_count' => count(array_filter($appetites, static fn(RiskAppetite $a): bool => $a->isActive())),
             'categories' => $categories,
             'globalAppetite' => $globalAppetite,
-            'totalRisks' => count($allRisks),
             'risksExceedingAppetite' => $risksExceedingAppetite,
         ]);
     }

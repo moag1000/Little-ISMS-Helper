@@ -1,8 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block admin_title %}{{ 'tenant.title'|trans({}, 'tenant') }}{% endblock %}
 {% block admin_subtitle %}
@@ -21,19 +19,6 @@
             { label: 'tenant.action.create'|trans({}, 'tenant'), variant: 'primary', icon: 'plus', href: path('tenant_management_new') }
         ] : []
     }) }}
-
-    {# Statistics Cards #}
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            {{ _fa_kpi_card.render({ value: totalCount, label: 'tenant.stats.total'|trans({}, 'tenant') }) }}
-        </div>
-        <div class="col-md-4">
-            {{ _fa_kpi_card.render({ value: activeCount, label: 'tenant.stats.active'|trans({}, 'tenant') }) }}
-        </div>
-        <div class="col-md-4">
-            {{ _fa_kpi_card.render({ value: inactiveCount, label: 'tenant.stats.inactive'|trans({}, 'tenant') }) }}
-        </div>
-    </div>
 
     {# Orphan-user banner — accounts with NO tenant assignment cannot see any
        ISMS data and are invisible to per-tenant role pages. Surface them
@@ -59,141 +44,125 @@
         {% endembed %}
     {% endif %}
 
-    {# Toolbar #}
-    <section class="fa-section mb-4">
-        <div class="fa-section__body">
-            <div class="d-flex justify-content-between align-items-center">
-                {# Filters #}
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="{{ path('tenant_management_index', {filter: 'all'}) }}"
-                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm {% if filter == 'all' %}active{% endif %}">
-                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'tenant.filter.all'|trans({}, 'tenant') }}
-                    </a>
-                    <a href="{{ path('tenant_management_index', {filter: 'active'}) }}"
-                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm {% if filter == 'active' %}active{% endif %}">
-                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.filter.active'|trans({}, 'tenant') }}
-                    </a>
-                    <a href="{{ path('tenant_management_index', {filter: 'inactive'}) }}"
-                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm {% if filter == 'inactive' %}active{% endif %}">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.filter.inactive'|trans({}, 'tenant') }}
-                    </a>
-                </div>
-
-                {# Create Button — creating organisations is an instance-operator task #}
-                {% if is_granted('ROLE_SUPER_ADMIN') %}
-                <a href="{{ path('tenant_management_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'tenant.action.create'|trans({}, 'tenant') }}
-                </a>
-                {% endif %}
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('tenant_management_index'),
+        filter_keys: ['filter'],
+        list_title: 'tenant.title'|trans({}, 'tenant'),
+        empty: {
+            mood: 'sleeping',
+            title: 'tenant.empty'|trans({}, 'tenant'),
+            actions: is_granted('ROLE_SUPER_ADMIN') ? [
+                { label: 'tenant.action.create_first'|trans({}, 'tenant'), variant: 'primary', icon: 'plus', href: path('tenant_management_new') }
+            ] : []
+        },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-4">
+                <label for="tenant-filter" class="form-label">{{ 'tenant.field.status'|trans({}, 'tenant') }}</label>
+                <select name="filter" id="tenant-filter" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'tenant.filter.all'|trans({}, 'tenant') }}</option>
+                    <option value="active" {% if filter == 'active' %}selected{% endif %}>{{ 'tenant.filter.active'|trans({}, 'tenant') }}</option>
+                    <option value="inactive" {% if filter == 'inactive' %}selected{% endif %}>{{ 'tenant.filter.inactive'|trans({}, 'tenant') }}</option>
+                </select>
             </div>
-        </div>
-    </section>
-
-    {# Tenant Table #}
-    <section class="fa-section">
-        <div class="fa-section__body">
-            {% if tenants is empty %}
-                {{ _fa_empty_state.render({
-                    mood: 'sleeping',
-                    title: 'tenant.empty'|trans({}, 'tenant'),
-                    actions: is_granted('ROLE_SUPER_ADMIN') ? [
-                        { label: 'tenant.action.create_first'|trans({}, 'tenant'), variant: 'primary', icon: 'plus', href: path('tenant_management_new') }
-                    ] : []
-                }) }}
-            {% else %}
-                {% embed '_components/_fa_table.html.twig' %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="fa-table__th" style="width: 60px;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'tenant.field.users'|trans({}, 'tenant') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body %}
-                        {% for item in tenants %}
-                            {% set tenant = item.tenant %}
-                            <tr class="fa-table__row">
-                                <td class="fa-table__cell">
-                                    {% if tenant.logoPath %}
-                                        <img src="{{ asset(tenant.logoPath) }}"
-                                             alt="{{ tenant.name }}"
-                                             class="rounded"
-                                             style="width: 40px; height: 40px; object-fit: contain;">
-                                    {% else %}
-                                        <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center"
-                                             style="width: 40px; height: 40px;">
-                                            <i class="fa-icon fa-icon--nav-building text-muted" aria-hidden="true"></i>
-                                        </div>
-                                    {% endif %}
-                                </td>
-                                <td class="fa-table__cell">
-                                    <code class="text-primary">{{ tenant.code }}</code>
-                                </td>
-                                <td class="fa-table__cell">
-                                    <strong>{{ tenant.name }}</strong>
-                                    {% if tenant.description %}
-                                        <br><small class="text-muted">{{ tenant.description|u.truncate(50, '...') }}</small>
-                                    {% endif %}
-                                </td>
-                                <td class="fa-table__cell">
-                                    <span class="fa-status-pill fa-status-pill--primary"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ item.userCount }}</span>
-                                </td>
-                                <td class="fa-table__cell">
-                                    {% if tenant.azureTenantId %}
-                                        <small class="font-monospace text-muted">{{ tenant.azureTenantId|u.truncate(20, '...') }}</small>
-                                    {% else %}
-                                        <span class="text-muted">—</span>
-                                    {% endif %}
-                                </td>
-                                <td class="fa-table__cell">
-                                    {% if tenant.isActive %}
-                                        <span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
-                                    {% else %}
-                                        <span class="fa-status-pill fa-status-pill--neutral"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="fa-table__cell">
-                                    <small class="text-muted">{{ tenant.createdAt|date('d.m.Y') }}</small>
-                                </td>
-                                <td class="fa-table__cell fa-table__cell--actions">
-                                    <div class="d-flex gap-1">
-                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                        </a>
-                                        <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                        </a>
-                                        <a href="{{ path('admin_tenant_compliance_settings_edit', {tenantId: tenant.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                           title="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}" aria-label="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}">
-                                            <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i>
-                                        </a>
-                                        {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}#tenant-status"
-                                           class="fa-cyber-btn fa-cyber-btn--{{ tenant.isActive ? 'warning' : 'ghost' }} fa-cyber-btn--sm"
-                                           title="{{ 'tenant.lifecycle.title'|trans({}, 'tenant') }}"
-                                           aria-label="{{ 'tenant.lifecycle.title'|trans({}, 'tenant') }}">
-                                            <i class="fa-icon {% if tenant.isActive %}fa-icon--status-pending{% else %}fa-icon--status-ok{% endif %}" aria-hidden="true"></i>
-                                        </a>
-                                        {% endif %}
+        {% endblock %}
+        {% block list_summary %}
+            {% if activeCount > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'tenant.summary.active'|trans({'%count%': activeCount}, 'tenant') }}</span>{% endif %}
+            {% if inactiveCount > 0 %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'tenant.summary.inactive'|trans({'%count%': inactiveCount}, 'tenant') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th" style="width: 60px;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'tenant.field.users'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for tenant in page %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">
+                                {% if tenant.logoPath %}
+                                    <img src="{{ asset(tenant.logoPath) }}"
+                                         alt="{{ tenant.name }}"
+                                         class="rounded"
+                                         style="width: 40px; height: 40px; object-fit: contain;">
+                                {% else %}
+                                    <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center"
+                                         style="width: 40px; height: 40px;">
+                                        <i class="fa-icon fa-icon--nav-building text-muted" aria-hidden="true"></i>
                                     </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endif %}
-        </div>
-    </section>
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell">
+                                <code class="text-primary">{{ tenant.code }}</code>
+                            </td>
+                            <td class="fa-table__cell">
+                                <strong>{{ tenant.name }}</strong>
+                                {% if tenant.description %}
+                                    <br><small class="text-muted">{{ tenant.description|u.truncate(50, '...') }}</small>
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell">
+                                <span class="fa-status-pill fa-status-pill--primary"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ tenant.users|length }}</span>
+                            </td>
+                            <td class="fa-table__cell">
+                                {% if tenant.azureTenantId %}
+                                    <small class="font-monospace text-muted">{{ tenant.azureTenantId|u.truncate(20, '...') }}</small>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell">
+                                {% if tenant.isActive %}
+                                    <span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
+                                {% else %}
+                                    <span class="fa-status-pill fa-status-pill--neutral"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell">
+                                <small class="text-muted">{{ tenant.createdAt|fa_date }}</small>
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--actions">
+                                <div class="d-flex gap-1">
+                                    <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                       title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                       title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ path('admin_tenant_compliance_settings_edit', {tenantId: tenant.id}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                       title="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}" aria-label="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}">
+                                        <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i>
+                                    </a>
+                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                    <a href="{{ path('tenant_management_show', {id: tenant.id}) }}#tenant-status"
+                                       class="fa-cyber-btn fa-cyber-btn--{{ tenant.isActive ? 'warning' : 'ghost' }} fa-cyber-btn--sm"
+                                       title="{{ 'tenant.lifecycle.title'|trans({}, 'tenant') }}"
+                                       aria-label="{{ 'tenant.lifecycle.title'|trans({}, 'tenant') }}">
+                                        <i class="fa-icon {% if tenant.isActive %}fa-icon--status-pending{% else %}fa-icon--status-ok{% endif %}" aria-hidden="true"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
 
     {# Info Box #}
     {{ _fa_alert.render({ variant: 'info', class: 'mt-4', title: 'tenant.info.title'|trans({}, 'tenant'), body: 'tenant.info.text'|trans({}, 'tenant') }) }}

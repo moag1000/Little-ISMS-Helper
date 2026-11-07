@@ -9,6 +9,7 @@ use App\Form\Admin\DepartmentType;
 use App\Repository\DepartmentRepository;
 use App\Security\Voter\DepartmentVoter;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,13 +39,17 @@ final class DepartmentController extends AbstractController
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         $departments = $tenant !== null ? $this->departmentRepository->findByTenant($tenant) : [];
 
         return $this->render('admin/department/index.html.twig', [
-            'departments' => $departments,
+            'page' => ListPage::fromRequest(
+                $departments,
+                $request,
+                static fn(Department $d): array => [$d->getName(), $d->getCode(), $d->getDescription()],
+            ),
         ]);
     }
 

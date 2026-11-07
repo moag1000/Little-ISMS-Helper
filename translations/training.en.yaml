@@ -37,14 +37,13 @@ training:
   mandatory_info: This training is mandatory and must be completed by all assigned
     participants.
   statistics: Statistics
-  stats:
-    total: Total Trainings
-    upcoming: Upcoming
-    completed: Completed
-    mandatory: Mandatory Trainings
+  summary:
+    upcoming: '%count% upcoming'
+    completed: '%count% completed'
+    mandatory: '%count% mandatory'
   upcoming_trainings: Upcoming Trainings
   all_trainings: All Trainings
-  no_trainings: No trainings available.
+  no_trainings: 'No trainings yet.'
   section:
     basic_info: Basic Information
     schedule: Schedule & Location

@@ -1,7 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'department' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block admin_title %}{{ 'department.page.title'|trans({}, 'department') }}{% endblock %}
 
@@ -18,13 +17,18 @@
         ]
     }) }}
 
-    {% if departments|length == 0 %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('admin_department_index'),
+        filter_keys: [],
+        list_title: 'department.page.title'|trans({}, 'department'),
+        empty: {
             mood: 'thinking',
             title: 'department.empty.title'|trans({}, 'department'),
             description: 'department.empty.description'|trans({}, 'department')
-        }) }}
-    {% else %}
+        },
+    } %}
+        {% block list_table %}
         {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
             {% block table_head %}
                 <tr>
@@ -36,7 +40,7 @@
                 </tr>
             {% endblock %}
             {% block table_body %}
-                {% for dept in departments %}
+                {% for dept in page %}
                     <tr class="fa-table__row">
                         <td class="fa-table__cell">
                             <strong>{{ dept.name }}</strong>
@@ -74,5 +78,6 @@
                 {% endfor %}
             {% endblock %}
         {% endembed %}
-    {% endif %}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

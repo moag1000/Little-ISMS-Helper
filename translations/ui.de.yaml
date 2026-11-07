@@ -115,6 +115,10 @@ ui:
         reset_aria_label: 'Alle aktiven Filter entfernen'
         active_filters: 'Aktive Filter'
         shareable_hint: 'Diese URL enthält die aktuellen Filter und kann geteilt oder als Lesezeichen gespeichert werden.'
+    list_workflow:
+        running: 'In Freigabe'
+        overdue: 'Freigabe überfällig'
+        column: 'Freigabe'
     pager:
         nav_label: 'Seitennavigation'
         previous: 'Vorherige Seite'

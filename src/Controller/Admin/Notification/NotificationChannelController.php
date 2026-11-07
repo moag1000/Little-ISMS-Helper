@@ -16,6 +16,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\Notification\Channel\EmailChannel;
 use App\Service\Notification\Channel\WebhookChannel;
 use App\Service\Sso\SecretEncryptionInterface;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -62,6 +63,7 @@ class NotificationChannelController extends AbstractController
 
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(
+        Request $request,
         #[CurrentUser] User $user,
     ): Response {
         if ($redirect = $this->checkModuleActive('notifications')) {
@@ -76,7 +78,13 @@ class NotificationChannelController extends AbstractController
         );
 
         return $this->render('admin/notification/channel/index.html.twig', [
-            'channels' => $channels,
+            'page' => ListPage::fromRequest(
+                $channels,
+                $request,
+                static fn(NotificationChannel $c): array => [$c->getName(), $c->getType()],
+            ),
+            'active_count' => count(array_filter($channels, static fn(NotificationChannel $c): bool => $c->isActive())),
+            'unverified_count' => count(array_filter($channels, static fn(NotificationChannel $c): bool => $c->getVerifiedAt() === null)),
         ]);
     }
 

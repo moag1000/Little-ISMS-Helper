@@ -18,6 +18,7 @@ use App\Repository\CommentRepository;
 use App\Repository\CorrectiveActionRepository;
 use App\Service\CorrectiveActionService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -88,14 +89,15 @@ class CorrectiveActionController extends AbstractController
                 static fn (CorrectiveAction $ca): bool => $ca->getSourceType() === $sourceTypeFilter
             ));
 
-        $overdue = $tenant instanceof Tenant ? $this->repository->findOverdue($tenant) : [];
-
         return $this->render('corrective_action/index.html.twig', [
-            'actions' => $actions,
-            'overdue_count' => count($overdue),
+            'page' => ListPage::fromRequest(
+                $actions,
+                $request,
+                static fn (CorrectiveAction $ca): array => [$ca->getTitle(), $ca->getFinding()?->getFindingNumber()],
+            ),
+            'overdue_count' => count(array_filter($actions, static fn (CorrectiveAction $ca): bool => $ca->isOverdue())),
             'source_type_filter' => $sourceTypeFilter,
             'counts_by_source_type' => $countsBySourceType,
-            'total_count' => count($allActions),
         ]);
     }
 

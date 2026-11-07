@@ -19,7 +19,7 @@
                 <p class="card-text text-muted small mb-3">{{ program.description|u.truncate(120, '…') }}</p>
             {% endif %}
             <div class="d-flex gap-3 small text-muted">
-                <span><i class="fa-icon fa-icon--nav-calendar" aria-hidden="true"></i> {{ program.startDate|date('d.m.Y') }} – {{ program.endDate|date('d.m.Y') }}</span>
+                <span><i class="fa-icon fa-icon--nav-calendar" aria-hidden="true"></i> {{ program.startDate|fa_date }} – {{ program.endDate|fa_date }}</span>
                 <span><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i> {{ program.auditCount }} {{ 'audit_program.kpi.audits'|trans({}, 'audit_program') }}</span>
             </div>
         </div>

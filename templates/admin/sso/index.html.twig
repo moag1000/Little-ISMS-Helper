@@ -1,7 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'sso' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block admin_title %}{{ 'sso.admin.title'|trans }}{% endblock %}
 
@@ -32,32 +31,37 @@
         }) }}
     {% endif %}
 
-    {% if providers|length == 0 %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('admin_sso_index'),
+        list_title: 'sso.admin.list'|trans({}, 'sso'),
+        empty: {
             mood: 'thinking',
-            title: 'sso.admin.empty'|trans,
-            actions: [
-                { label: 'sso.admin.new_provider'|trans, variant: 'primary', icon: 'plus', href: path('admin_sso_new') }
-            ]
-        }) }}
-    {% else %}
-        {# Migrated to fa-table Aurora pattern #}
+            title: 'sso.admin.empty'|trans({}, 'sso'),
+            actions: [{ label: 'sso.admin.new_provider'|trans({}, 'sso'), variant: 'primary', icon: 'plus', href: path('admin_sso_new') }],
+        },
+    } %}
+      {% block list_summary %}
+        {% if enabled_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'sso.admin.summary.enabled'|trans({'%count%': enabled_count}, 'sso') }}</span>{% endif %}
+        {% if disabled_count > 0 %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'sso.admin.summary.disabled'|trans({'%count%': disabled_count}, 'sso') }}</span>{% endif %}
+      {% endblock %}
+      {% block list_table %}
         {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
             {% block table_head %}
                 {% trans_default_domain 'sso' %}
                 <tr>
-                    <th class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.admin.col.name'|trans }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.slug'|trans }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.scope'|trans }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.type'|trans }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.domains'|trans }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.status'|trans }}</th>
-                    <th class="fa-table__th fa-table__th--actions">{{ 'sso.admin.col.actions'|trans }}</th>
+                    <th class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.admin.col.name'|trans({}, 'sso') }}</th>
+                    <th class="fa-table__th">{{ 'sso.admin.col.slug'|trans({}, 'sso') }}</th>
+                    <th class="fa-table__th">{{ 'sso.admin.col.scope'|trans({}, 'sso') }}</th>
+                    <th class="fa-table__th">{{ 'sso.admin.col.type'|trans({}, 'sso') }}</th>
+                    <th class="fa-table__th">{{ 'sso.admin.col.domains'|trans({}, 'sso') }}</th>
+                    <th class="fa-table__th">{{ 'sso.admin.col.status'|trans({}, 'sso') }}</th>
+                    <th class="fa-table__th fa-table__th--actions">{{ 'sso.admin.col.actions'|trans({}, 'sso') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}
                 {% trans_default_domain 'sso' %}
-                {% for p in providers %}
+                {% for p in page %}
                     <tr class="fa-table__row">
                         <td class="fa-table__cell" data-sort-value="{{ p.name }}">
                             <strong>{{ p.name }}</strong>
@@ -68,7 +72,7 @@
                         <td class="fa-table__cell"><code>{{ p.slug }}</code></td>
                         <td class="fa-table__cell">
                             {% if p.global %}
-                                <span class="fa-status-pill fa-status-pill--primary">{{ 'sso.scope.global'|trans }}</span>
+                                <span class="fa-status-pill fa-status-pill--primary">{{ 'sso.scope.global'|trans({}, 'sso') }}</span>
                             {% else %}
                                 <span class="fa-status-pill fa-status-pill--neutral">{{ p.tenant.name }}</span>
                             {% endif %}
@@ -77,19 +81,19 @@
                         <td class="fa-table__cell" style="font-size: 12px;">
                             {% if p.domainBindings|length > 0 %}
                                 {{ p.domainBindings|join(', ') }}
-                                <span class="fa-status-pill fa-status-pill--neutral border ms-1">{{ ('sso.domain_mode.' ~ p.domainBindingMode)|trans }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral border ms-1">{{ ('sso.domain_mode.' ~ p.domainBindingMode)|trans({}, 'sso') }}</span>
                             {% else %}
                                 <span class="text-muted">—</span>
                             {% endif %}
                         </td>
                         <td class="fa-table__cell">
                             {% if p.enabled %}
-                                <span class="fa-status-pill fa-status-pill--success">{{ 'sso.status.enabled'|trans }}</span>
+                                <span class="fa-status-pill fa-status-pill--success">{{ 'sso.status.enabled'|trans({}, 'sso') }}</span>
                             {% else %}
-                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'sso.status.disabled'|trans }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'sso.status.disabled'|trans({}, 'sso') }}</span>
                             {% endif %}
                             {% if p.autoApprove %}
-                                <span class="fa-status-pill fa-status-pill--primary ms-1" title="{{ 'sso.field.auto_approve'|trans }}">A</span>
+                                <span class="fa-status-pill fa-status-pill--primary ms-1" title="{{ 'sso.field.auto_approve'|trans({}, 'sso') }}">A</span>
                             {% endif %}
                         </td>
                         <td class="fa-table__cell fa-table__cell--actions">
@@ -99,7 +103,7 @@
                             <form method="post" action="{{ path('admin_sso_toggle', {id: p.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_toggle') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                    {{ p.enabled ? 'sso.action.disable'|trans : 'sso.action.enable'|trans }}
+                                    {{ p.enabled ? 'sso.action.disable'|trans({}, 'sso') : 'sso.action.enable'|trans({}, 'sso') }}
                                 </button>
                             </form>
                             <form method="post" action="{{ path('admin_sso_delete', {id: p.id}) }}" class="d-inline"
@@ -117,8 +121,9 @@
                 {% endfor %}
             {% endblock %}
         {% endembed %}
-    {% endif %}
+      {% endblock %}
+    {% endembed %}
 
     {% from '_components/_fa_alert.html.twig' import render as fa_alert %}
-    {{ fa_alert({ variant: 'info', body: 'sso.admin.help'|trans|raw, class: 'mt-4 small' }) }}
+    {{ fa_alert({ variant: 'info', body: 'sso.admin.help'|trans({}, 'sso')|raw, class: 'mt-4 small' }) }}
 {% endblock %}

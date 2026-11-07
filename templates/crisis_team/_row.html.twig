@@ -3,7 +3,6 @@
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
 {% trans_default_domain 'crisis_team' %}
 <tr id="crisis-team-row-{{ team.id }}"
-    data-filter-target="filterableRow"
     class="{{ team.isActive ? '' : 'table-secondary' }}">
     <td>
         <a href="{{ path('app_crisis_team_show', {id: team.id}) }}"

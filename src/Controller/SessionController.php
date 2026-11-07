@@ -13,6 +13,7 @@ use App\Repository\UserSessionRepository;
 use App\Security\Voter\UserVoter;
 use App\Service\SessionManager;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,7 +55,7 @@ class SessionController extends AbstractController
         $statistics['max_concurrent'] = $sessionManager->getMaxConcurrentSessions();
 
         return $this->render('session/index.html.twig', [
-            'sessions' => $activeSessions,
+            'page' => ListPage::fromRequest($activeSessions, $request),
             'statistics' => $statistics,
             'search_email' => $userEmail,
         ]);

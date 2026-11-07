@@ -1,7 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'compliance_import' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}{% endblock %}
@@ -21,23 +20,18 @@
         ]
     }) }}
 
-    {% if sessions is empty %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        list_title: 'compliance_import.history.sessions_list'|trans({}, 'compliance_import'),
+        empty: {
             mood: 'thinking',
             title: 'compliance_import.history.empty'|trans({}, 'compliance_import'),
             actions: [
                 { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), variant: 'primary', icon: 'ui-upload', href: path('admin_compliance_import_upload') }
             ]
-        }) }}
-    {% else %}
-        <section class="fa-section">
-            <div class="fa-section__header">
-                <h2 class="fa-section__title">
-                    <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
-                    {{ 'compliance_import.history.sessions_list'|trans({}, 'compliance_import') }}
-                </h2>
-            </div>
-            <div class="fa-section__body">
+        },
+    } %}
+        {% block list_table %}
                 {% embed '_components/_fa_table.html.twig' with { striped: true } %}
                     {% block table_head %}
                         <tr>
@@ -54,7 +48,7 @@
                     {% endblock %}
                     {% block table_body %}
                         {% import '_components/_status_pill.html.twig' as pill %}
-                        {% for session in sessions %}
+                        {% for session in page %}
                             {% set status_variant = {
                                 'committed': 'success',
                                 'preview': 'warning',
@@ -77,9 +71,9 @@
                                 </td>
                                 <td class="fa-table__cell">
                                     {% if session.committedAt %}
-                                        {{ session.committedAt|date('Y-m-d H:i') }}
+                                        {{ session.committedAt|fa_datetime }}
                                     {% else %}
-                                        {{ session.uploadedAt|date('Y-m-d H:i') }}
+                                        {{ session.uploadedAt|fa_datetime }}
                                         <div class="small text-muted">
                                             ({{ 'compliance_import.history.uploaded'|trans({}, 'compliance_import') }})
                                         </div>
@@ -103,20 +97,6 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
-
-                {% if page_count > 1 %}
-                    <nav aria-label="{{ 'compliance_import.history.pagination_aria'|trans({}, 'compliance_import') }}">
-                        <ul class="pagination">
-                            {% for p in 1..page_count %}
-                                <li class="page-item {% if p == page %}active{% endif %}">
-                                    <a class="page-link"
-                                       href="{{ path('admin_import_history_index', { page: p }) }}">{{ p }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </nav>
-                {% endif %}
-            </div>
-        </section>
-    {% endif %}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

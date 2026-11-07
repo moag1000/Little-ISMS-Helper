@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'objective'%}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'objective.page.title'|trans({}, 'objective') }}{% endblock %}
@@ -28,45 +26,25 @@
     {% endfor %}
 {% endif %}
 
-
-    <main>
-
-    <turbo-frame id="objective-stats">
-        <div class="row mb-4">
-            <div class="col-md-3">
-                {{ _fa_feature_card.render({ label: 'objective.stats.total'|trans({}, 'objective'), value: statistics.total, variant: 'primary' }) }}
-            </div>
-            <div class="col-md-3">
-                {{ _fa_feature_card.render({ label: 'objective.stats.active'|trans({}, 'objective'), value: statistics.active, variant: 'info' }) }}
-            </div>
-            <div class="col-md-3">
-                {{ _fa_feature_card.render({ label: 'objective.stats.achieved'|trans({}, 'objective'), value: statistics.achieved, variant: 'success' }) }}
-            </div>
-            <div class="col-md-3">
-                {{ _fa_feature_card.render({ label: 'objective.stats.delayed'|trans({}, 'objective'), value: statistics.delayed, variant: 'warning' }) }}
-            </div>
-        </div>
-    </turbo-frame>
-
-    {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/objective"{% endblock %}
-        {% block card_header %}
-            <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-target" aria-hidden="true"></i> {{ 'objective.list.title'|trans({'%count%': objectives|length}, 'objective') }}</h2></div>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_objective_index'),
+        list_title: 'objective.list.title'|trans({}, 'objective'),
+        empty: {
+            mood: 'sleeping',
+            title: 'objective.message.no_objectives'|trans({}, 'objective'),
+            actions: is_granted('ROLE_ADMIN') ? [
+                { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new') }
+            ] : []
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/objective"',
+    } %}
+        {% block list_summary %}
+            {% if achieved_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'objective.summary.achieved'|trans({'%count%': achieved_count}, 'objective') }}</span>{% endif %}
+            {% if delayed_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'objective.summary.delayed'|trans({'%count%': delayed_count}, 'objective') }}</span>{% endif %}
         {% endblock %}
-        {% block card_body %}
-            {% if objectives|length == 0 %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {{ _fa_empty_state.render({
-                mood: 'sleeping',
-                title: 'objective.message.no_objectives'|trans({}, 'objective'),
-                actions: is_granted('ROLE_ADMIN') ? [
-                    { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new') }
-                ] : []
-            }) }}
-            {% else %}
-            {% embed '_components/_table.html.twig' with {
-                'noMargin': true
-            } %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
                 {% block table_head %}
                     <tr>
                         {% if is_granted('ROLE_ADMIN') %}
@@ -88,21 +66,15 @@
                 {% endblock %}
                 {% block table_body_attrs %}id="objective-rows"{% endblock %}
                 {% block table_body %}
-                    {% for objective in objectives %}
+                    {% for objective in page %}
                         {% include 'objective/_row.html.twig' with { objective: objective } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-
             {% if is_granted('ROLE_ADMIN') %}
-            {# Bulk Action Bar #}
-            {% include '_components/_bulk_action_bar.html.twig' with {
-                actions: ['delete']
-            } %}
-            {% endif %}
+                {% include '_components/_bulk_action_bar.html.twig' with { actions: ['delete'] } %}
             {% endif %}
         {% endblock %}
     {% endembed %}
-    </main>
 </div>
 {% endblock %}

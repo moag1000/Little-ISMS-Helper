@@ -164,6 +164,10 @@ import:
         col_file: 'File'
         action_details: 'Details'
         recent_batches: 'Recent Imports'
+        empty: 'No imports yet.'
+        col_status: 'Status'
+        summary_completed: '%count% completed'
+        summary_failed: '%count% failed'
 
     diff:
         col_row: 'Row'

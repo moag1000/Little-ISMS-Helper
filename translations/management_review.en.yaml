@@ -5,13 +5,11 @@ management_review:
     iso_requirement: 'ISO 27001: Management Review (Clause 9.3)'
     iso_clause_info: 'Top management shall review the ISMS at planned intervals to ensure its continuing suitability, adequacy and effectiveness.'
     iso_clause_93_info: 'Review according to ISO 27001:2022, Clause 9.3 (Management review).'
-    statistics:
-        total: 'Total Reviews'
-        planned: Planned
-        completed: Completed
-        this_year: 'This Year'
+    summary:
+        planned: '%count% planned'
+        this_year: '%count% this year'
     all_reviews: 'All Reviews'
-    no_reviews: 'No reviews available.'
+    no_reviews: 'No management reviews yet.'
     create_first: 'Create first review'
     confirm_delete: 'Delete review?'
     delete_warning: "Do you really want to delete the review '%title%'?"

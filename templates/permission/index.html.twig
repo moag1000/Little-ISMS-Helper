@@ -1,6 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ 'permission.title'|trans({}, 'messages') }}{% endblock %}
 {% block admin_subtitle %}
@@ -17,120 +16,64 @@
         subtitle: 'permission.subtitle'|trans({}, 'messages')
     }) }}
 
-    <main>
-    {# Statistics Cards #}
-    <div class="row mb-4">
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary', 'value': statistics.total } only %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="card-title text-muted fw-semibold small text-uppercase">{{ 'permission.statistics.total'|trans({}, 'messages') }}</div>
-                        <p class="display-6 text-primary">{{ value }}</p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success', 'value': statistics.system } only %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="card-title text-muted fw-semibold small text-uppercase">{{ 'permission.statistics.system'|trans({}, 'messages') }}</div>
-                        <p class="display-6 text-success">{{ value }}</p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info', 'value': statistics.custom } only %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="card-title text-muted fw-semibold small text-uppercase">{{ 'permission.statistics.custom'|trans({}, 'messages') }}</div>
-                        <p class="display-6 text-info">{{ value }}</p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning', 'value': statistics.categories_count } only %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="card-title text-muted fw-semibold small text-uppercase">{{ 'permission.statistics.categories'|trans({}, 'messages') }}</div>
-                        <p class="display-6 text-warning">{{ value }}</p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-
-    {# Category Filter #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-4', 'categories': categories, 'currentCategory': currentCategory } only %}
-        {% block card_body %}
-            <div class="btn-group btn-group-sm" role="group">
-                <a href="{{ path('permission_index') }}"
-                   class="fa-cyber-btn fa-cyber-btn--sm {{ currentCategory is null ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">
-                    Alle
-                </a>
-                {% for category in categories %}
-                    <a href="{{ path('permission_index', {category: category}) }}"
-                       class="fa-cyber-btn fa-cyber-btn--sm {{ currentCategory == category ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">
-                        {{ category|title }}
-                    </a>
-                {% endfor %}
+    <div>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('permission_index'),
+        filter_keys: ['category'],
+        list_title: 'permission.list'|trans({}, 'messages'),
+        empty: { mood: 'sleeping', title: 'role_management.permissions.no_results'|trans({}, 'role_management') },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-4">
+                <label for="permission-category" class="form-label">{{ 'permission.category'|trans({}, 'messages') }}</label>
+                <select class="form-select fa-cyber-input__field" id="permission-category" name="category" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}"{{ app.request.query.get('category') == category ? ' selected' : '' }}>{{ category|title }}</option>
+                    {% endfor %}
+                </select>
             </div>
         {% endblock %}
-    {% endembed %}
-
-    {# Permissions by Category #}
-    {% for category, permissions in groupedPermissions %}
-        {% embed '_components/_card.html.twig' with { 'class': 'mb-4', 'category': category, 'permissions': permissions } only %}
-            {% block card_header %}
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ category|title }}
-                        {% include '_components/_badge.html.twig' with { variant: 'light', content: permissions|length } only %}
-                    </h2>
-                </div>
-            {% endblock %}
-            {% block card_body %}
-                {% embed '_components/_table.html.twig' with { 'noMargin': true, 'permissions': permissions } only %}
-                    {% block table_head %}
+        {% block list_summary %}
+            {% if system_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'permission.summary.system'|trans({'%count%': system_count}, 'messages') }}</span>{% endif %}
+            {% if custom_count > 0 %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'permission.summary.custom'|trans({'%count%': custom_count}, 'messages') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'permission.action'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'permission.category'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'permission.description'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="text-center">{{ 'permission.system_permission'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for permission in page %}
                         <tr>
-                            <th scope="col">{{ 'permission.action'|trans({}, 'messages') }}</th>
-                            <th scope="col">{{ 'permission.description'|trans({}, 'messages') }}</th>
-                            <th scope="col" class="text-center">{{ 'permission.system_permission'|trans({}, 'messages') }}</th>
-                            <th scope="col" class="text-end">Aktionen</th>
+                            <td><code>{{ permission.name }}</code></td>
+                            <td>{{ permission.category|title }}</td>
+                            <td>{{ permission.description }}</td>
+                            <td class="text-center">
+                                {% if permission.isSystemPermission %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'permission.statistics.system'|trans({}, 'messages') } only %}
+                                {% else %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'permission.statistics.custom'|trans({}, 'messages') } only %}
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ path('permission_show', {id: permission.id}) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.details'|trans({}, 'messages') }}
+                                </a>
+                            </td>
                         </tr>
-                    {% endblock %}
-                    {% block table_body %}
-                        {% for permission in permissions %}
-                            <tr>
-                                <td>
-                                    <code>{{ permission.name }}</code>
-                                </td>
-                                <td>{{ permission.description }}</td>
-                                <td class="text-center">
-                                    {% if permission.isSystemPermission %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: 'System' } only %}
-                                    {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Custom' } only %}
-                                    {% endif %}
-                                </td>
-                                <td class="text-end">
-                                    <a href="{{ path('permission_show', {id: permission.id}) }}"
-                                       class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> Details
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endblock %}
-        {% endembed %}
-    {% endfor %}
-
-    {% if groupedPermissions|length == 0 %}
-        {{ _fa_alert.render({ variant: 'info', body: 'role_management.permissions.no_results'|trans({}, 'role_management') }) }}
-    {% endif %}
-    </main>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
+    </div>
 {% endblock %}

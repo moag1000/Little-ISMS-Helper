@@ -16,13 +16,10 @@ risk_treatment_plan:
     action:
         add_new: 'Add new'
         new: 'New treatment plan'
-    stats:
-        total: Total
-        planned: Planned
-        in_progress: 'In progress'
-        completed: Completed
-        overdue: Overdue
-        avg_completion: 'Avg. completion'
+    summary:
+        overdue: '%count% overdue'
+        in_progress: '%count% in progress'
+        completed: '%count% completed'
     list:
         title: 'Treatment Plans'
     filter:
@@ -70,7 +67,7 @@ risk_treatment_plan:
     delete:
         warning: 'This action cannot be undone. Do you really want to delete the treatment plan?'
         confirm: 'Are you sure you want to delete this treatment plan?'
-    no_plans: 'No treatment plans available'
+    no_plans: 'No treatment plans yet.'
     placeholder:
         risk: '-- Select risk --'
         title: 'e.g. Implementation of a Web Application Firewall'

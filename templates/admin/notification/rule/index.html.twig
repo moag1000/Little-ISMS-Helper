@@ -1,7 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'notification' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'notification.rule.index.title'|trans }}{% endblock %}
 {% block admin_title %}{{ 'notification.rule.index.title'|trans }}{% endblock %}
@@ -30,36 +29,35 @@
         ]
     }) }}
 
-    {% if rules is empty %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('admin_notification_rule_index'),
+        list_title: 'notification.rule.list'|trans({}, 'notification'),
+        empty: {
             mood: 'thinking',
-            title: 'notification.rule.empty.title'|trans,
-            body: 'notification.rule.empty.body'|trans,
-            actions: [
-                {
-                    label: 'notification.rule.action.new'|trans,
-                    href: path('admin_notification_rule_new'),
-                    variant: 'primary'
-                }
-            ]
-        }) }}
-    {% else %}
-        <section class="fa-section">
-            <div class="fa-section__body">
-                <div class="table-responsive">
-                    <table class="fa-table" aria-label="{{ 'notification.rule.index.title'|trans }}">
+            title: 'notification.rule.empty.title'|trans({}, 'notification'),
+            actions: [{ label: 'notification.rule.action.new'|trans({}, 'notification'), href: path('admin_notification_rule_new'), variant: 'primary' }],
+        },
+    } %}
+        {% block list_summary %}
+            {% if active_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'notification.rule.summary.active'|trans({'%count%': active_count}, 'notification') }}</span>{% endif %}
+            {% if inactive_count > 0 %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'notification.rule.summary.inactive'|trans({'%count%': inactive_count}, 'notification') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            <div class="table-responsive">
+                    <table class="fa-table" aria-label="{{ 'notification.rule.list'|trans({}, 'notification') }}">
                         <thead>
                             <tr>
-                                <th>{{ 'notification.rule.field.name'|trans }}</th>
-                                <th>{{ 'notification.rule.field.event_type'|trans }}</th>
-                                <th>{{ 'notification.rule.field.severity_filter'|trans }}</th>
-                                <th>{{ 'notification.rule.field.is_active'|trans }}</th>
-                                <th class="text-end">{{ 'notification.rule.field.evaluation_count'|trans }}</th>
+                                <th>{{ 'notification.rule.field.name'|trans({}, 'notification') }}</th>
+                                <th>{{ 'notification.rule.field.event_type'|trans({}, 'notification') }}</th>
+                                <th>{{ 'notification.rule.field.severity_filter'|trans({}, 'notification') }}</th>
+                                <th>{{ 'notification.rule.field.is_active'|trans({}, 'notification') }}</th>
+                                <th class="text-end">{{ 'notification.rule.field.evaluation_count'|trans({}, 'notification') }}</th>
                                 <th>{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for rule in rules %}
+                        {% for rule in page %}
                             <tr>
                                 <td>
                                     <a href="{{ path('admin_notification_rule_show', { id: rule.id }) }}" class="fw-semibold">
@@ -67,20 +65,20 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <span class="badge bg-secondary">{{ rule.eventType }}</span>
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ rule.eventType }}</span>
                                 </td>
                                 <td>
                                     {% if rule.severityFilter %}
-                                        <span class="fa-status-pill fa-status-pill--warning">{{ ('notification.severity.' ~ rule.severityFilter)|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--warning">{{ ('notification.severity.' ~ rule.severityFilter)|trans({}, 'notification') }}</span>
                                     {% else %}
-                                        <span class="text-muted fst-italic">{{ 'notification.severity.all'|trans }}</span>
+                                        <span class="text-muted fst-italic">{{ 'notification.severity.all'|trans({}, 'notification') }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if rule.isActive %}
                                         <span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-end">{{ rule.evaluationCount }}</td>
@@ -98,7 +96,7 @@
                                                    value="{{ csrf_token('notification_rule_toggle_' ~ rule.id) }}">
                                             <button type="submit"
                                                     class="fa-cyber-btn fa-cyber-btn--sm {{ rule.isActive ? 'fa-cyber-btn--warning' : 'fa-cyber-btn--success' }}"
-                                                    title="{{ (rule.isActive ? 'notification.rule.action.disable' : 'notification.rule.action.enable')|trans }}">
+                                                    title="{{ (rule.isActive ? 'notification.rule.action.disable' : 'notification.rule.action.enable')|trans({}, 'notification') }}">
                                                 <i class="fa-icon {{ rule.isActive ? 'fa-icon--pause' : 'fa-icon--play' }}" aria-hidden="true"></i>
                                             </button>
                                         </form>
@@ -122,8 +120,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                </div>
             </div>
-        </section>
-    {% endif %}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

@@ -75,7 +75,7 @@ compliance_import:
     history:
         title: "Import history"
         sessions_list: "All import sessions"
-        empty: "No import sessions recorded yet."
+        empty: 'No import sessions yet.'
         table_aria: "List of import sessions"
         uploaded: "uploaded"
         view_detail: "Detail"

@@ -1,6 +1,7 @@
 incident_sla:
     title: 'Incident SLAs'
     subtitle: 'Response times per severity per tenant. Applies in addition to regulatory deadlines (GDPR 72h / NIS2 24h / DORA 4h — these remain fixed).'
+    empty: 'No SLA configurations yet.'
     section:
         list: 'Severity List'
         edit: 'Edit SLA'

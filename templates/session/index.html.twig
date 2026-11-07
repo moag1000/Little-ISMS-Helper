@@ -14,194 +14,125 @@
         subtitle: 'session.subtitle'|trans({}, 'session')
     }) }}
 
-    {# Statistics Cards #}
-    <div class="row mb-4">
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="card-title text-muted fw-semibold">{{ 'session.statistics.total'|trans({}, 'session') }}</div>
-                        <p class="display-6 text-primary">{{ statistics.total_active }}</p>
-                        <small>{{ 'session.statistics.active_sessions'|trans({}, 'session') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="card-title text-muted fw-semibold">{{ 'session.statistics.today'|trans({}, 'session') }}</div>
-                        <p class="display-6 text-success">{{ statistics.total_last_24h }}</p>
-                        <small>{{ 'session.statistics.last_24h'|trans({}, 'session') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="card-title text-muted fw-semibold">{{ 'session.statistics.unique_users'|trans({}, 'session') }}</div>
-                        <p class="display-6 text-info">{{ statistics.unique_users }}</p>
-                        <small>{{ 'session.statistics.active_users'|trans({}, 'session') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="card-title text-muted fw-semibold">{{ 'session.statistics.limit_per_user'|trans({}, 'session') }}</div>
-                        <p class="display-6 text-warning">{{ statistics.max_concurrent }}</p>
-                        <small>{{ 'session.statistics.max_concurrent'|trans({}, 'session') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-
-    {# User Filter #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-        {% block card_body %}
-            <form method="get" class="row g-3">
-                <div class="col-auto">
-                    <label for="email" class="col-form-label">{{ 'session.filter.by_user'|trans({}, 'session') }}</label>
-                </div>
-                <div class="col-md-4">
-                    <input type="text"
-                           name="email"
-                           id="email"
-                           class="form-control fa-cyber-input__field"
-                           placeholder="{{ 'session.filter.email_placeholder'|trans({}, 'session') }}"
-                           value="{{ search_email ?? '' }}">
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
-                    </button>
-                    {% if search_email %}
-                        <a href="{{ path('session_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
-                        </a>
-                    {% endif %}
-                </div>
-            </form>
-        {% endblock %}
-    {% endembed %}
-
-    {# Active Sessions Table #}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'session.active_sessions'|trans({}, 'session') }}
-                </h2>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('session_index'),
+        show_search: false,
+        filter_keys: ['email'],
+        list_title: 'session.active_sessions'|trans({}, 'session'),
+        empty: { mood: 'sleeping', title: 'session.no_sessions_found'|trans({}, 'session') },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-4">
+                <label for="email" class="form-label">{{ 'session.filter.by_user'|trans({}, 'session') }}</label>
+                <input type="text"
+                       name="email"
+                       id="email"
+                       class="form-control fa-cyber-input__field"
+                       placeholder="{{ 'session.filter.email_placeholder'|trans({}, 'session') }}"
+                       value="{{ search_email ?? '' }}">
             </div>
         {% endblock %}
-        {% block card_body %}
-            {% if sessions|length > 0 %}
+        {% block list_summary %}
+            <span class="fa-status-pill fa-status-pill--primary" data-stat="active">{{ 'session.summary.active'|trans({'%count%': statistics.total_active}, 'session') }}</span>
+            <span class="fa-status-pill fa-status-pill--success" data-stat="last_24h">{{ 'session.summary.last_24h'|trans({'%count%': statistics.total_last_24h}, 'session') }}</span>
+            <span class="fa-status-pill" data-stat="users">{{ 'session.summary.users'|trans({'%count%': statistics.unique_users}, 'session') }}</span>
+            <span class="fa-status-pill">{{ 'session.summary.max_concurrent'|trans({'%count%': statistics.max_concurrent}, 'session') }}</span>
+        {% endblock %}
+        {% block list_table %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
                 'noMargin': true
             } %}
-                {% block table_head %}
-                    <tr>
-                        <th scope="col">{{ 'session.user_name'|trans({}, 'session') }}</th>
-                        <th scope="col">{{ 'session.ip_address'|trans({}, 'session') }}</th>
-                        <th scope="col">{{ 'session.user_agent'|trans({}, 'session') }}</th>
-                        <th scope="col">{{ 'session.last_activity'|trans({}, 'session') }}</th>
-                        <th scope="col">{{ 'session.session_start'|trans({}, 'session') }}</th>
-                        <th scope="col">{{ 'session.duration'|trans({}, 'session') }}</th>
-                        <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                    </tr>
-                {% endblock %}
-                {% block table_body %}
-                    {% for session in sessions %}
+                    {% block table_head %}
                         <tr>
-                            <td>
-                                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
-                                <strong>{{ session.user.firstName }} {{ session.user.lastName }}</strong>
-                                <br>
-                                <small class="text-muted">{{ session.user.email }}</small>
-                            </td>
-                            <td>
-                                <code>{{ session.ipAddress ?? 'N/A' }}</code>
-                            </td>
-                            <td>
-                                <small class="text-muted" title="{{ session.userAgent }}">
-                                    {% if session.userAgent %}
-                                        {% if 'Chrome' in session.userAgent %}
-                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Chrome
-                                        {% elseif 'Firefox' in session.userAgent %}
-                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Firefox
-                                        {% elseif 'Safari' in session.userAgent %}
-                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Safari
-                                        {% elseif 'Edge' in session.userAgent %}
-                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Edge
-                                        {% else %}
-                                            <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
-                                        {% endif %}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </small>
-                            </td>
-                            <td>
-                                {% set minutes_ago = 'now'|date('U') - session.lastActivityAt.timestamp %}
-                                {% set minutes = (minutes_ago / 60)|round %}
-                                {% if minutes < 1 %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'session.status.active_now'|trans({}, 'session') } %}
-                                {% elseif minutes < 5 %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') } %}
-                                {% elseif minutes < 60 %}
-                                    <span class="text-muted">{{ 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') }}</span>
-                                {% else %}
-                                    <span class="text-muted">{{ session.lastActivityAt|date('d.m.Y H:i') }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <small class="text-muted">{{ session.createdAt|date('d.m.Y H:i') }}</small>
-                            </td>
-                            <td>
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: session.formattedDuration } %}
-                            </td>
-                            <td class="text-end">
-                                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                    <a href="{{ path('session_show', {userName: session.user.email}) }}"
-                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                       title="{{ 'common.view_details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                    </a>
-                                    <form method="post"
-                                          action="{{ path('session_terminate_single', {sessionId: session.sessionId}) }}"
-                                          class="d-inline"
-                                          data-controller="ui-actions"
-                                          data-action="submit->ui-actions#confirm"
-                                          data-ui-actions-message-param="{{ 'session.confirm.terminate'|trans({}, 'session') }}">
-                                        <input type="hidden" name="_token"
-                                               value="{{ csrf_token('terminate_single_' ~ session.sessionId) }}">
-                                        <button type="submit"
-                                                class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
-                                                title="{{ 'session.action.terminate'|trans({}, 'session') }}"
-                                                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                            <th scope="col">{{ 'session.user_name'|trans({}, 'session') }}</th>
+                            <th scope="col">{{ 'session.ip_address'|trans({}, 'session') }}</th>
+                            <th scope="col">{{ 'session.user_agent'|trans({}, 'session') }}</th>
+                            <th scope="col">{{ 'session.last_activity'|trans({}, 'session') }}</th>
+                            <th scope="col">{{ 'session.session_start'|trans({}, 'session') }}</th>
+                            <th scope="col">{{ 'session.duration'|trans({}, 'session') }}</th>
+                            <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
                         </tr>
-                    {% endfor %}
-                {% endblock %}
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for session in page %}
+                            <tr>
+                                <td>
+                                    <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
+                                    <strong>{{ session.user.firstName }} {{ session.user.lastName }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ session.user.email }}</small>
+                                </td>
+                                <td>
+                                    <code>{{ session.ipAddress ?? 'N/A' }}</code>
+                                </td>
+                                <td>
+                                    <small class="text-muted" title="{{ session.userAgent }}">
+                                        {% if session.userAgent %}
+                                            {% if 'Chrome' in session.userAgent %}
+                                                <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Chrome
+                                            {% elseif 'Firefox' in session.userAgent %}
+                                                <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Firefox
+                                            {% elseif 'Safari' in session.userAgent %}
+                                                <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Safari
+                                            {% elseif 'Edge' in session.userAgent %}
+                                                <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Edge
+                                            {% else %}
+                                                <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
+                                            {% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% set minutes_ago = 'now'|date('U') - session.lastActivityAt.timestamp %}
+                                    {% set minutes = (minutes_ago / 60)|round %}
+                                    {% if minutes < 1 %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'session.status.active_now'|trans({}, 'session') } %}
+                                    {% elseif minutes < 5 %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') } %}
+                                    {% elseif minutes < 60 %}
+                                        <span class="text-muted">{{ 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') }}</span>
+                                    {% else %}
+                                        <span class="text-muted">{{ session.lastActivityAt|fa_datetime }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ session.createdAt|fa_datetime }}</small>
+                                </td>
+                                <td>
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: session.formattedDuration } %}
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+                                        <a href="{{ path('session_show', {userName: session.user.email}) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           title="{{ 'common.view_details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <form method="post"
+                                              action="{{ path('session_terminate_single', {sessionId: session.sessionId}) }}"
+                                              class="d-inline"
+                                              data-controller="ui-actions"
+                                              data-action="submit->ui-actions#confirm"
+                                              data-ui-actions-message-param="{{ 'session.confirm.terminate'|trans({}, 'session') }}">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('terminate_single_' ~ session.sessionId) }}">
+                                            <button type="submit"
+                                                    class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
+                                                    title="{{ 'session.action.terminate'|trans({}, 'session') }}"
+                                                    aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+                                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
             {% endembed %}
-            {% else %}
-                {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-                {{ _fa_empty_state.render({
-                    mood: 'sleeping',
-                    title: 'session.no_sessions_found'|trans({}, 'session')
-                }) }}
-            {% endif %}
         {% endblock %}
     {% endembed %}
 

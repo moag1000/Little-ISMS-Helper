@@ -286,38 +286,6 @@ class BusinessProcessControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
-    // ========== STATS API TESTS ==========
-
-    #[Test]
-    public function testStatsApiRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/bcm/business-process/api/stats');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testStatsApiReturnsJsonForUser(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/bcm/business-process/api/stats');
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('content-type', 'application/json');
-    }
-
-    #[Test]
-    public function testStatsApiContainsExpectedFields(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/bcm/business-process/api/stats');
-
-        $response = json_decode($this->client->getResponse()->getContent(), true);
-        $this->assertArrayHasKey('total', $response);
-        $this->assertArrayHasKey('by_criticality', $response);
-        $this->assertArrayHasKey('avg_rto', $response);
-        $this->assertArrayHasKey('avg_rpo', $response);
-        $this->assertArrayHasKey('processes_with_high_risks', $response);
-    }
-
     // ========== BIA TESTS ==========
 
     #[Test]

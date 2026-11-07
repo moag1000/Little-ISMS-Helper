@@ -197,17 +197,16 @@ dsr:
         extension_reason_required: "Ein Grund ist erforderlich, um die Frist zu verlaengern."
 
     # KPI-Bezeichnungen
-    kpi:
-        total: "Anfragen gesamt"
-        in_progress: "Offene Anfragen"
-        overdue: "Ueberfaellig"
-        avg_response: "Durchschn. Bearbeitungszeit"
-        days: "Tage"
+    summary:
+        open: "%count% offen"
+        avg_response: "Durchschnittlich %days% Tage bis zur Antwort"
 
     # Filterbezeichnungen
     filter:
         label: "Nach Status filtern"
         all: "Alle"
+        type_label: "Nach Art filtern"
+        all_types: "Alle Arten"
 
     # Tabellenkoepfe
     table:
@@ -233,7 +232,7 @@ dsr:
 
     # Leerer Zustand
     empty:
-        title: "Keine Betroffenenanfragen"
+        title: "Keine Betroffenenanfragen vorhanden."
         message: "Es wurden noch keine Betroffenenanfragen erfasst."
 
     # Bestaetigungen

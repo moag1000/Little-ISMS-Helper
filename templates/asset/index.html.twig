@@ -152,7 +152,8 @@
                 {% endblock %}
                 {% block table_body_attrs %}id="asset-rows"{% endblock %}
                 {% block table_body %}
-                    {% for asset in page %}
+                    {% set workflowStates = workflow_states(page) %}
+                {% for asset in page %}
                         {% include 'asset/_row.html.twig' with { asset: asset, currentTenant: currentTenant, recommendations: recommendations } %}
                     {% endfor %}
                 {% endblock %}

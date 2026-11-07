@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'supplier.questionnaire.title'|trans({}, 'suppliers') }}{% endblock %}
 
@@ -40,34 +39,36 @@
     </div>
 
     {# Sent questionnaires #}
-    {% if questionnaires is not empty %}
-    <div class="fa-table-wrap mb-3">
-    <table class="fa-table fa-table--hover">
-        <thead class="fa-table__head">
-            <tr>
-                <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.supplier'|trans({}, 'suppliers') }}</th>
-                <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.title'|trans({}, 'suppliers') }}</th>
-                <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.status'|trans({}, 'suppliers') }}</th>
-                <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.sent_at'|trans({}, 'suppliers') }}</th>
-            </tr>
-        </thead>
-        <tbody class="fa-table__body">
-            {% for q in questionnaires %}
-                <tr class="fa-table__row">
-                    <td class="fa-table__cell">{{ q.supplier ? q.supplier.name : '—' }}</td>
-                    <td class="fa-table__cell">{{ q.title }}</td>
-                    <td class="fa-table__cell"><span class="badge bg-secondary">{{ ('supplier.questionnaire.status.' ~ q.status)|trans({}, 'suppliers') }}</span></td>
-                    <td class="fa-table__cell">{{ q.sentAt ? q.sentAt|date('Y-m-d') : '—' }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    </div>
-    {% else %}
-        {{ _fa_empty_state.render({
-            mood: 'sleeping',
-            title: 'supplier.questionnaire.empty'|trans({}, 'suppliers')
-        }) }}
-    {% endif %}
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('supplier_questionnaire_index'),
+        list_title: 'supplier.questionnaire.title'|trans({}, 'suppliers'),
+        empty: { mood: 'sleeping', title: 'supplier.questionnaire.empty'|trans({}, 'suppliers') },
+    } %}
+        {% block list_table %}
+            <div class="fa-table-wrap">
+            <table class="fa-table fa-table--hover">
+                <thead class="fa-table__head">
+                    <tr>
+                        <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.supplier'|trans({}, 'suppliers') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.title'|trans({}, 'suppliers') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.status'|trans({}, 'suppliers') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.sent_at'|trans({}, 'suppliers') }}</th>
+                    </tr>
+                </thead>
+                <tbody class="fa-table__body">
+                    {% for q in page %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">{{ q.supplier ? q.supplier.name : '—' }}</td>
+                            <td class="fa-table__cell">{{ q.title }}</td>
+                            <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ ('supplier.questionnaire.status.' ~ q.status)|trans({}, 'suppliers') }}</span></td>
+                            <td class="fa-table__cell">{{ q.sentAt ? q.sentAt|fa_date : '—' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

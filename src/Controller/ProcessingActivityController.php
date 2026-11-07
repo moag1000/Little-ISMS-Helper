@@ -38,6 +38,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Util\CsvSanitizer;
+use App\Util\ListPage;
 
 #[IsGranted('ROLE_USER')]
 #[RequiresModule('privacy')]
@@ -60,13 +61,10 @@ class ProcessingActivityController extends AbstractController
         private readonly ?TransferImpactAssessmentRepository $tiaRepository = null,
     ) {}
 
-    /**
-     * List all processing activities (VVT index)
-     */
+    /** List all processing activities (VVT index) */
     #[Route('/processing-activity', name: 'app_processing_activity_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        // Get filter parameters
         $filter = $request->query->get('filter', 'all');
 
         $processingActivities = match ($filter) {
@@ -79,14 +77,15 @@ class ProcessingActivityController extends AbstractController
             default => $this->processingActivityService->findAll(),
         };
 
-        // Get statistics for dashboard
-        $statistics = $this->processingActivityService->getDashboardStatistics();
-        $complianceScore = $this->processingActivityService->calculateComplianceScore();
-
         return $this->render('processing_activity/index.html.twig', [
-            'processing_activities' => $processingActivities,
-            'statistics' => $statistics,
-            'compliance_score' => $complianceScore,
+            'page' => ListPage::fromRequest(
+                $processingActivities,
+                $request,
+                static fn(ProcessingActivity $pa): array => [$pa->getName(), $pa->getLegalBasis(), ...$pa->getPurposes()],
+            ),
+            'special_count' => count(array_filter($processingActivities, static fn(ProcessingActivity $pa): bool => $pa->getProcessesSpecialCategories())),
+            'dpia_count' => count(array_filter($processingActivities, static fn(ProcessingActivity $pa): bool => $pa->requiresDPIA() && !$pa->getDpiaCompleted())),
+            'third_country_count' => count(array_filter($processingActivities, static fn(ProcessingActivity $pa): bool => $pa->getHasThirdCountryTransfer())),
             'current_filter' => $filter,
         ]);
     }

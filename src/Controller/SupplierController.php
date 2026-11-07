@@ -23,6 +23,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\SupplierService;
 use App\Service\TagFilterService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -77,8 +78,6 @@ class SupplierController extends AbstractController
                 // Own + inherited from parents (default behavior)
                 default => $this->supplierService->getSuppliersForTenant($tenant),
             };
-            $statistics = $this->supplierRepository->getStatisticsByTenant($tenant);
-            $criticalSuppliers = $this->supplierRepository->findCriticalSuppliersByTenant($tenant);
             $overdueAssessments = $this->supplierRepository->findOverdueAssessmentsByTenant($tenant);
             $nonCompliant = $this->supplierRepository->findNonCompliantByTenant($tenant);
             $inheritanceInfo = $this->supplierService->getSupplierInheritanceInfo($tenant);
@@ -86,8 +85,6 @@ class SupplierController extends AbstractController
             $inheritanceInfo['currentView'] = $view;
         } else {
             $suppliers = $this->supplierRepository->findAll();
-            $statistics = [];
-            $criticalSuppliers = [];
             $overdueAssessments = [];
             $nonCompliant = [];
             $inheritanceInfo = [
@@ -97,13 +94,6 @@ class SupplierController extends AbstractController
                 'hasSubsidiaries' => false,
                 'currentView' => 'own'
             ];
-        }
-
-        // Calculate detailed statistics based on origin
-        if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($suppliers, $tenant);
-        } else {
-            $detailedStats = ['own' => count($suppliers), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($suppliers)];
         }
 
         // WS-5: framework-tag filter via ?tag=NIS2
@@ -121,6 +111,17 @@ class SupplierController extends AbstractController
             ));
         }
 
+        // Criticality / status / ISO 27001 filters of the filter bar
+        $criticality = (string) $request->query->get('criticality', '');
+        $statusFilter = (string) $request->query->get('status', '');
+        $iso27001Filter = (string) $request->query->get('iso27001', '');
+        $suppliers = array_values(array_filter(
+            $suppliers,
+            static fn(Supplier $s): bool => ($criticality === '' || $s->getCriticality() === $criticality)
+                && ($statusFilter === '' || $s->getStatus() === $statusFilter)
+                && ($iso27001Filter === '' || $s->isHasISO27001() === ($iso27001Filter === '1')),
+        ));
+
         // DORA filter-chip "Nur DORA-relevant" via ?dora_relevant=1
         if ($request->query->get('dora_relevant') === '1') {
             $suppliers = array_values(array_filter(
@@ -136,13 +137,15 @@ class SupplierController extends AbstractController
 
         return $this->render('supplier/index.html.twig', [
             'suppliers' => $suppliers,
-            'statistics' => $statistics,
-            'criticalSuppliers' => $criticalSuppliers,
+            'page' => ListPage::fromRequest(
+                $suppliers,
+                $request,
+                static fn(Supplier $s): array => [$s->getName(), $s->getServiceProvided()],
+            ),
             'overdueAssessments' => $overdueAssessments,
             'nonCompliant' => $nonCompliant,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
             'doraActive' => $doraActive,
         ]);
     }
@@ -385,48 +388,6 @@ class SupplierController extends AbstractController
             'supplier' => $supplier,
             'is_new' => $isNew,
         ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
-    }
-
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
     }
 
     /**

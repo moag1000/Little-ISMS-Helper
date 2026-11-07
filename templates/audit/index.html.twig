@@ -4,7 +4,6 @@
 {% block title %}{{ 'audit_management.title'|trans({}, 'audit')}}{% endblock %}
 
 {% block body %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 <div class="container-fluid">
@@ -31,166 +30,62 @@
     {% endfor %}
 {% endif %}
 
-<main>
-
-    {# Calculate Stats #}
-    {% set total = audits|length %}
-    {% set plannedAudits = audits|filter(a => a.status == 'planned')|length %}
-    {% set inProgressAudits = audits|filter(a => a.status == 'in_progress')|length %}
-    {% set completedAudits = audits|filter(a => a.status == 'completed')|length %}
-    {% set reportedAudits = audits|filter(a => a.status == 'reported')|length %}
-    {% set upcomingCount = upcoming|length %}
-
-    {# KPI Cards #}
-    <div class="kpi-grid">
-        {{ _fa_feature_card.render({
-            icon: 'nav-clipboard-check',
-            label: 'audit.kpi.total'|trans({}, 'audit'),
-            value: total,
-            variant: 'primary'
-        }) }}
-
-        {{ _fa_feature_card.render({
-            icon: 'ui-calendar-event',
-            label: 'audit.kpi.upcoming'|trans({}, 'audit'),
-            value: upcomingCount,
-            variant: 'primary'
-        }) }}
-
-        {{ _fa_feature_card.render({
-            icon: 'ui-hourglass',
-            label: 'audit.kpi.in_progress'|trans({}, 'audit'),
-            value: inProgressAudits,
-            variant: 'warning'
-        }) }}
-
-        {{ _fa_feature_card.render({
-            icon: 'status-ok',
-            label: 'audit.kpi.completed'|trans({}, 'audit'),
-            value: completedAudits,
-            variant: 'success'
-        }) }}
-    </div>
-
-    {# Status Overview Section #}
-    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--nav-pie-chart" aria-hidden="true"></i>
-                    {{ 'audit.status_overview'|trans({}, 'audit')}}
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            <div class="row g-4">
-                {# Planned #}
-                <div class="col-md-3">
-                    <div class="status-card text-center p-4 bg-audit-planned">
-                        <div class="status-icon mb-3 audit-icon-planned">
-                            <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                        </div>
-                        <div class="status-label text-muted mb-2">{{ 'audit.status.planned'|trans({}, 'audit') }}</div>
-                        <div class="status-count audit-count-planned">
-                            {{ plannedAudits }}
-                        </div>
-                    </div>
-                </div>
-
-                {# In Progress #}
-                <div class="col-md-3">
-                    <div class="status-card text-center p-4 bg-audit-in-progress">
-                        <div class="status-icon mb-3 audit-icon-in-progress">
-                            <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
-                        </div>
-                        <div class="status-label text-muted mb-2">{{ 'audit.status.in_progress'|trans({}, 'audit') }}</div>
-                        <div class="status-count audit-count-in-progress">
-                            {{ inProgressAudits }}
-                        </div>
-                    </div>
-                </div>
-
-                {# Completed #}
-                <div class="col-md-3">
-                    <div class="status-card text-center p-4 bg-audit-completed">
-                        <div class="status-icon mb-3 audit-icon-completed">
-                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                        </div>
-                        <div class="status-label text-muted mb-2">{{ 'audit.status.completed'|trans({}, 'audit') }}</div>
-                        <div class="status-count audit-count-completed">
-                            {{ completedAudits }}
-                        </div>
-                    </div>
-                </div>
-
-                {# Reported #}
-                <div class="col-md-3">
-                    <div class="status-card text-center p-4 bg-audit-reported">
-                        <div class="status-icon mb-3 audit-icon-reported">
-                            <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
-                        </div>
-                        <div class="status-label text-muted mb-2">{{ 'audit.status.reported'|trans({}, 'audit') }}</div>
-                        <div class="status-count audit-count-reported">
-                            {{ reportedAudits }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endblock %}
-    {% endembed %}
-
+<div class="py-4">
     {# Upcoming Audits Highlight #}
     {% if upcoming|length > 0 %}
     {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'audit.upcoming_audits'|trans({}, 'audit'), body: 'audit.upcoming_audits_count'|trans({'%count%': upcoming|length}, 'audit') }) }}
     {% endif %}
 
-    {# Aurora filter-chip quick row — quick toggles for status #}
-    {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
-    {% set _activeAuditStatus = app.request.query.get('status') %}
-    {% set _baseAuditUrl = path('app_audit_index') %}
-    {{ _fa_filter_chip.group([
-        { label: 'audit.filter.all_status'|trans({}, 'audit'),    href: _baseAuditUrl },
-        { label: 'audit.status.planned'|trans({}, 'audit'),       href: _baseAuditUrl ~ '?status=planned' },
-        { label: 'audit.status.in_progress'|trans({}, 'audit'),   href: _baseAuditUrl ~ '?status=in_progress' },
-        { label: 'audit.status.completed'|trans({}, 'audit'),     href: _baseAuditUrl ~ '?status=completed' },
-        { label: 'audit.status.reported'|trans({}, 'audit'),      href: _baseAuditUrl ~ '?status=reported' }
-    ],
-        _activeAuditStatus == 'planned' ? 1
-        : (_activeAuditStatus == 'in_progress' ? 2
-        : (_activeAuditStatus == 'completed' ? 3
-        : (_activeAuditStatus == 'reported' ? 4 : 0))),
-        { class: 'mb-3', ariaLabel: 'audit.filter.all_status'|trans({}, 'audit') }
-    ) }}
-
-    {# Audit List #}
-    {% embed '_components/_card.html.twig' with {noPadding: true} %}
-        {% block card_header %}
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i>
-                    {{ 'audit.list.all'|trans({}, 'audit')}}
-                </h2>
-
-                {# Filter Controls (legacy in-page JS-filter) #}
-                <div class="d-flex gap-2">
-                    <select class="form-select fa-cyber-input__field form-select-sm" id="statusFilter" class="w-auto">
-                        <option value="">{{ 'audit.filter.all_status'|trans({}, 'audit')}}</option>
-                        <option value="planned">{{ 'audit.status.planned'|trans({}, 'audit') }}</option>
-                        <option value="in_progress">{{ 'audit.status.in_progress'|trans({}, 'audit') }}</option>
-                        <option value="completed">{{ 'audit.status.completed'|trans({}, 'audit') }}</option>
-                        <option value="reported">{{ 'audit.status.reported'|trans({}, 'audit') }}</option>
-                    </select>
-
-                    <label for="auditSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-                    <input type="search"
-                           class="form-control form-control-sm w-250px fa-cyber-input__field"
-                           id="auditSearch"
-                           placeholder="{{ 'audit.filter.search_placeholder'|trans({}, 'audit')}}">
-                </div>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_audit_index'),
+        filter_keys: ['status', 'scope_type', 'date_from', 'date_to'],
+        search_placeholder: 'audit.filter.search_placeholder'|trans({}, 'audit'),
+        list_title: 'audit.list.all'|trans({}, 'audit'),
+        empty: {
+            mood: 'sleeping',
+            title: 'audit.empty.title'|trans({}, 'audit'),
+            text: 'audit.empty.description'|trans({}, 'audit'),
+            actions: [
+                { label: 'audit.new'|trans({}, 'audit'), variant: 'primary', icon: 'plus', href: path('app_audit_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
+            ]
+        },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-3">
+                <label for="audit-status" class="form-label">{{ 'audit.field.status'|trans({}, 'audit') }}</label>
+                <select name="status" id="audit-status" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'audit.filter.all_status'|trans({}, 'audit') }}</option>
+                    {% for st in ['planned', 'in_progress', 'conducted', 'completed', 'reported', 'postponed', 'cancelled'] %}
+                        <option value="{{ st }}" {% if app.request.query.get('status') == st %}selected{% endif %}>{{ ('audit.status.' ~ st)|trans({}, 'audit') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="audit-scope-type" class="form-label">{{ 'audit.field.scope_type'|trans({}, 'audit') }}</label>
+                <select name="scope_type" id="audit-scope-type" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    {% for st in ['full_isms', 'compliance_framework', 'asset', 'asset_type', 'asset_group', 'location', 'department', 'corporate_wide', 'corporate_subsidiaries'] %}
+                        <option value="{{ st }}" {% if app.request.query.get('scope_type') == st %}selected{% endif %}>{{ ('audit.scope_type.' ~ st)|trans({}, 'audit') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="audit-date-from" class="form-label">{{ 'common.date_from'|trans({}, 'messages') }}</label>
+                <input type="date" name="date_from" id="audit-date-from" class="form-control fa-cyber-input__field" value="{{ app.request.query.get('date_from') }}">
+            </div>
+            <div class="col-md-3">
+                <label for="audit-date-to" class="form-label">{{ 'common.date_to'|trans({}, 'messages') }}</label>
+                <input type="date" name="date_to" id="audit-date-to" class="form-control fa-cyber-input__field" value="{{ app.request.query.get('date_to') }}">
             </div>
         {% endblock %}
-        {% block card_body %}
-            {% if audits|length > 0 %}
+        {% block list_summary %}
+            {% if (status_counts.planned ?? 0) > 0 %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'audit.status_count.planned'|trans({'%count%': status_counts.planned}, 'audit') }}</span>{% endif %}
+            {% if (status_counts.in_progress ?? 0) > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'audit.status_count.in_progress'|trans({'%count%': status_counts.in_progress}, 'audit') }}</span>{% endif %}
+            {% if (status_counts.completed ?? 0) > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'audit.status_count.completed'|trans({'%count%': status_counts.completed}, 'audit') }}</span>{% endif %}
+            {% if (status_counts.reported ?? 0) > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'audit.status_count.reported'|trans({'%count%': status_counts.reported}, 'audit') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover mb-0',
                 'theadClass': 'thead-sticky',
@@ -209,132 +104,13 @@
                 {% endblock %}
                 {% block table_body_attrs %}id="audit-rows"{% endblock %}
                 {% block table_body %}
-                    {% for audit in audits|sort((a, b) => b.plannedDate <=> a.plannedDate) %}
+                    {% for audit in page %}
                         {% include 'audit/_row.html.twig' with { audit: audit } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-
-            {# No Results Message #}
-            <div id="noResults" class="text-center p-5 d-none">
-                <i class="fa-icon fa-icon--ui-search fs-3-text-muted-opacity-50" aria-hidden="true"></i>
-                <p class="text-muted mt-3">{{ 'audit.filter.no_results'|trans({}, 'audit')}}</p>
-            </div>
-            {% else %}
-            {# Empty State #}
-            {% include '_components/_empty_state.html.twig' with {
-                icon: 'nav-clipboard-check',
-                title: 'audit.empty.title'|trans({}, 'audit'),
-                description: 'audit.empty.description'|trans({}, 'audit'),
-                action: {
-                    label: 'audit.new'|trans({}, 'audit'),
-                    url: path('app_audit_new'),
-                    icon: 'plus'
-                }
-            } %}
-            {% endif %}
         {% endblock %}
     {% endembed %}
-</main>
 </div>
-
-<style>
-/* Status Cards Hover Effect */
-.status-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: default;
-}
-
-.status-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-/* Table Row Hover */
-.table tbody tr:hover {
-    background-color: rgba(52, 152, 219, 0.05);
-    transition: background-color 0.2s;
-}
-
-/* Filter Controls */
-#statusFilter:focus,
-#auditSearch:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 0.2rem rgba(60, 141, 188, 0.25);
-}
-</style>
-
-<script nonce="{{ csp_nonce() }}">
-// Turbo re-eval guard: IIFE prevents re-declare crash on body-swap navigation
-(function () {
-function initializeAuditFilters() {
-    const statusFilter = document.getElementById('statusFilter');
-    const searchInput = document.getElementById('auditSearch');
-    const auditRows = document.querySelectorAll('.audit-row');
-    const noResults = document.getElementById('noResults');
-    const tableBody = document.getElementById('audit-rows');
-
-    if (!statusFilter && !searchInput) return; // Elements not present on page
-
-    function filterAudits() {
-        const statusValue = statusFilter ? statusFilter.value.toLowerCase() : '';
-        const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
-        let visibleCount = 0;
-
-        auditRows.forEach(row => {
-            const status = row.dataset.status.toLowerCase();
-            const title = row.dataset.title;
-            const number = row.dataset.number;
-
-            const matchesStatus = !statusValue || status === statusValue;
-            const matchesSearch = !searchValue ||
-                                  title.includes(searchValue) ||
-                                  number.includes(searchValue);
-
-            if (matchesStatus && matchesSearch) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        // Show/hide no results message
-        if (noResults && tableBody) {
-            if (visibleCount === 0 && auditRows.length > 0) {
-                tableBody.style.display = 'none';
-                noResults.style.display = 'block';
-            } else {
-                tableBody.style.display = '';
-                noResults.style.display = 'none';
-            }
-        }
-    }
-
-    // Attach event listeners (prevent duplicates)
-    if (statusFilter && statusFilter.dataset.initialized !== 'true') {
-        statusFilter.dataset.initialized = 'true';
-        statusFilter.addEventListener('change', filterAudits);
-    }
-
-    if (searchInput && searchInput.dataset.initialized !== 'true') {
-        searchInput.dataset.initialized = 'true';
-        searchInput.addEventListener('input', filterAudits);
-    }
-}
-
-// Cleanup before Turbo caches the page to allow re-initialization on back navigation
-document.addEventListener('turbo:before-cache', function() {
-    const statusFilter = document.getElementById('statusFilter');
-    const searchInput = document.getElementById('auditSearch');
-
-    if (statusFilter) delete statusFilter.dataset.initialized;
-    if (searchInput) delete searchInput.dataset.initialized;
-});
-
-// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
-document.addEventListener('DOMContentLoaded', initializeAuditFilters);
-document.addEventListener('turbo:load', initializeAuditFilters);
-})();
-</script>
+</div>
 {% endblock %}

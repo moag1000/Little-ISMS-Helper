@@ -19,6 +19,7 @@ use App\Service\Certificate\CertificateUploadService;
 use App\Service\Certificate\OcrCapabilityInterface;
 use App\Service\Job\AsyncJobDispatcher;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -71,12 +72,16 @@ class ComplianceCertificateController extends AbstractController
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->requireTenant();
 
         return $this->render('compliance/certificate/index.html.twig', [
-            'certificates' => $this->certificateRepository->findByTenant($tenant),
+            'page' => ListPage::fromRequest(
+                $this->certificateRepository->findByTenant($tenant),
+                $request,
+                static fn(ComplianceCertificate $c): array => [$c->getCertNumber(), $c->getFrameworkCode(), $c->getCertBody(), $c->getStatus()],
+            ),
         ]);
     }
 

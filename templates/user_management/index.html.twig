@@ -42,214 +42,147 @@
 </div>
 </div>
 
-<main>
 <div class="container-fluid">
 
     {# Notifications Container #}
     <div id="notifications" class="mb-3"></div>
 
-    {# Statistics Cards #}
-    <turbo-frame id="user-stats">
-        <div class="row mb-4">
-            <div class="col-md-3">
-                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
-                    {% block card_body %}
-                        <div class="text-center">
-                            <h2 class="card-title text-muted">{{ 'user.stats.total'|trans({}, 'user') }}</h2>
-                            <p class="display-6 text-primary">
-                                <span id="user-total-count">{{ statistics.total ?? users|length }}</span>
-                            </p>
-                            <small>{{ 'user.stats.users'|trans({}, 'user') }}</small>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-            <div class="col-md-3">
-                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
-                    {% block card_body %}
-                        <div class="text-center">
-                            <h2 class="card-title text-muted">{{ 'user.stats.active'|trans({}, 'user') }}</h2>
-                            <p class="display-6 text-success">
-                                <span id="user-active-count">{{ statistics.active ?? 0 }}</span>
-                            </p>
-                            <small>{{ 'user.stats.active_users'|trans({}, 'user') }}</small>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-            <div class="col-md-3">
-                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
-                    {% block card_body %}
-                        <div class="text-center">
-                            <h2 class="card-title text-muted">{{ 'user.stats.admins'|trans({}, 'user') }}</h2>
-                            <p class="display-6 text-warning">
-                                <span id="user-admin-count">{{ statistics.admins ?? 0 }}</span>
-                            </p>
-                            <small>{{ 'user.stats.administrators'|trans({}, 'user') }}</small>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-            <div class="col-md-3">
-                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
-                    {% block card_body %}
-                        <div class="text-center">
-                            <h2 class="card-title text-muted">{{ 'user.stats.today_active'|trans({}, 'user') }}</h2>
-                            <p class="display-6 text-info">{{ statistics.today_active ?? 0 }}</p>
-                            <small>{{ 'user.stats.logins_today'|trans({}, 'user') }}</small>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-        </div>
-    </turbo-frame>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('user_management_index'),
+        list_title: 'user.message.all_users'|trans({}, 'user'),
+        empty: {
+            mood: 'sleeping',
+            title: 'user.empty.title'|trans({}, 'user'),
+            text: 'user.empty.description'|trans({}, 'user'),
+            actions: [
+                { label: 'user.action.new_user'|trans({}, 'user'), variant: 'primary', icon: 'ui-person', href: path('user_management_new') }
+            ]
+        },
+    } %}
+        {% block list_summary %}
+            {% if statistics.active|default(0) > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'user.summary.active'|trans({'%count%': statistics.active}, 'user') }}</span>{% endif %}
+            {% if statistics.admins|default(0) > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'user.summary.admins'|trans({'%count%': statistics.admins}, 'user') }}</span>{% endif %}
+            {% if statistics.today_active|default(0) > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'user.summary.today_active'|trans({'%count%': statistics.today_active}, 'user') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with {
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" style="width: 60px;"></th>
+                        <th scope="col">{{ 'user.table.name'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'user.table.email'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'user.table.roles'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'user.table.auth_provider'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'user.table.status'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'user.table.last_login'|trans({}, 'user') }}</th>
+                        <th scope="col">{{ 'user.table.actions'|trans({}, 'user') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="users-table-body"{% endblock %}
+                {% block table_body %}
+                    {% for user in page %}
+                        <tr id="user-{{ user.id }}">
+                            <td>
+                                {% if user.profilePicture %}
+                                    <img src="{{ asset(user.profilePicture) }}"
+                                         alt="{{ user.firstName }} {{ user.lastName }}"
+                                         class="rounded-circle"
+                                         style="width: 40px; height: 40px; object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                         style="width: 40px; height: 40px; font-weight: 600;">
+                                        {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('user_management_show', {'id': user.id}) }}"
+                                   data-turbo-frame="_top">
+                                    {{ user.firstName }} {{ user.lastName }}
+                                </a>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% for role in user.roles %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: role } %}
+                                {% endfor %}
+                                {% for customRole in user.customRoles %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: customRole.name } %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if user.authProvider == 'azure_oauth' %}
+                                    <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
+                                {% elseif user.authProvider == 'azure_saml' %}
+                                    <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
+                                {% else %}
+                                    <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.isActive %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'user.status.active'|trans({}, 'user') } %}
+                                {% else %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'user.status.inactive'|trans({}, 'user') } %}
+                                {% endif %}
+                                {% if not user.isVerified %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'user.status.not_verified'|trans({}, 'user') } %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.lastLoginAt %}
+                                    {{ user.lastLoginAt|fa_datetime }}
+                                {% else %}
+                                    <span class="text-muted">{{ 'user.status.never'|trans({}, 'user') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ path('user_management_show', {'id': user.id}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'common.view'|trans({}, 'messages') }}"
+                                       data-turbo-frame="_top" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ path('user_management_edit', {'id': user.id}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'common.edit'|trans({}, 'messages') }}"
+                                       data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                                    </a>
+                                    {% if user.id != app.user.id %}
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
+                                                title="{{ 'common.delete'|trans({}, 'messages') }}"
+                                                data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="deleteModal{{ user.id }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
+                                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
 
-    {# User List #}
-    <turbo-frame id="users-list">
-        {% embed '_components/_card.html.twig' %}
-            {% block card_header %}
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'user.message.all_users'|trans({}, 'user') }}
-                    </h2>
-                </div>
-            {% endblock %}
-            {% block card_body %}
-                {% if users|length > 0 %}
-                    {% embed '_components/_table.html.twig' with {
-                        'noMargin': true
-                    } %}
-                        {% block table_head %}
-                            <tr>
-                                <th scope="col" style="width: 60px;"></th>
-                                <th scope="col">{{ 'user.table.name'|trans({}, 'user') }}</th>
-                                <th scope="col">{{ 'user.table.email'|trans({}, 'user') }}</th>
-                                <th scope="col">{{ 'user.table.roles'|trans({}, 'user') }}</th>
-                                <th scope="col">{{ 'user.table.auth_provider'|trans({}, 'user') }}</th>
-                                <th scope="col">{{ 'user.table.status'|trans({}, 'user') }}</th>
-                                <th scope="col">{{ 'user.table.last_login'|trans({}, 'user') }}</th>
-                                <th scope="col">{{ 'user.table.actions'|trans({}, 'user') }}</th>
-                            </tr>
-                        {% endblock %}
-                        {% block table_body_attrs %}id="users-table-body"{% endblock %}
-                        {% block table_body %}
-                            {% for user in users %}
-                                <tr id="user-{{ user.id }}">
-                                    <td>
-                                        {% if user.profilePicture %}
-                                            <img src="{{ asset(user.profilePicture) }}"
-                                                 alt="{{ user.firstName }} {{ user.lastName }}"
-                                                 class="rounded-circle"
-                                                 style="width: 40px; height: 40px; object-fit: cover;">
-                                        {% else %}
-                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                                 style="width: 40px; height: 40px; font-weight: 600;">
-                                                {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{{ path('user_management_show', {'id': user.id}) }}"
-                                           data-turbo-frame="_top">
-                                            {{ user.firstName }} {{ user.lastName }}
-                                        </a>
-                                    </td>
-                                    <td>{{ user.email }}</td>
-                                    <td>
-                                        {% for role in user.roles %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: role } %}
-                                        {% endfor %}
-                                        {% for customRole in user.customRoles %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: customRole.name } %}
-                                        {% endfor %}
-                                    </td>
-                                    <td>
-                                        {% if user.authProvider == 'azure_oauth' %}
-                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
-                                        {% elseif user.authProvider == 'azure_saml' %}
-                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
-                                        {% else %}
-                                            <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if user.isActive %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'user.status.active'|trans({}, 'user') } %}
-                                        {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'user.status.inactive'|trans({}, 'user') } %}
-                                        {% endif %}
-                                        {% if not user.isVerified %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'user.status.not_verified'|trans({}, 'user') } %}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if user.lastLoginAt %}
-                                            {{ user.lastLoginAt|date('d.m.Y H:i') }}
-                                        {% else %}
-                                            <span class="text-muted">{{ 'user.status.never'|trans({}, 'user') }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <a href="{{ path('user_management_show', {'id': user.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'common.view'|trans({}, 'messages') }}"
-                                               data-turbo-frame="_top" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('user_management_edit', {'id': user.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'common.edit'|trans({}, 'messages') }}"
-                                               data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                            </a>
-                                            {% if user.id != app.user.id %}
-                                                <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
-                                                        title="{{ 'common.delete'|trans({}, 'messages') }}"
-                                                        data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="deleteModal{{ user.id }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
-                                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
-                                                </button>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                {# Delete Confirmation Modal #}
-                                <div class="fa-modal fa-modal--confirm fa-modal--danger" id="deleteModal{{ user.id }}"
+                        {# Delete Confirmation Modal #}
+                        <div class="fa-modal fa-modal--confirm fa-modal--danger" id="deleteModal{{ user.id }}"
      data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
      role="alertdialog" aria-modal="true" aria-labelledby="deleteModal{{ user.id }}Label" aria-hidden="true">
     <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
     <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-trash"></i></span><div class="fa-modal__heading"><h2  id="deleteModal{{ user.id }}Label" class="fa-modal__title">{{ 'user.action.delete_user'|trans({}, 'user') }}</h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
-                                            <div class="fa-modal__body">
-                                                {{ 'user.confirm.delete'|trans({'%name%': user.firstName ~ ' ' ~ user.lastName}, 'user') }}
-                                            </div>
-                                            <footer class="fa-modal__footer">
-                                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                                                <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" class="d-inline" data-fa-modal-target="form">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
-                                                </form></div>
+                                    <div class="fa-modal__body">
+                                        {{ 'user.confirm.delete'|trans({'%name%': user.firstName ~ ' ' ~ user.lastName}, 'user') }}
+                                    </div>
+                                    <footer class="fa-modal__footer">
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                                        <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" class="d-inline" data-fa-modal-target="form">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                                        </form></div>
 </div>
-                                </div>
-                            {% endfor %}
-                        {% endblock %}
-                    {% endembed %}
-                {% else %}
-                    {% include '_components/_empty_state.html.twig' with {
-                        icon: 'nav-people',
-                        title: 'user.empty.title'|trans({}, 'user'),
-                        description: 'user.empty.description'|trans({}, 'user'),
-                        action: { label: 'user.action.new_user'|trans({}, 'user'), url: path('user_management_new'), icon: 'ui-person' }
-                    } %}
-                {% endif %}
-            {% endblock %}
-        {% endembed %}
-    </turbo-frame>
+                        </div>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
 </div>
-
-<style>
-turbo-frame[busy] {
-    opacity: 0.6;
-    pointer-events: none;
-}
-</style>
-</main>
 {% endblock admin_content %}

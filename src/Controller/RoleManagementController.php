@@ -8,6 +8,7 @@ use App\Entity\Permission;
 use DateTimeImmutable;
 use App\Entity\Role;
 use App\Entity\User;
+use App\Util\ListPage;
 use App\Form\RoleType;
 use App\Repository\RoleRepository;
 use App\Repository\PermissionRepository;
@@ -26,7 +27,7 @@ class RoleManagementController extends AbstractController
 {
     #[Route('/admin/roles', name: 'role_management_index', methods: ['GET'])]
     #[IsGranted(RoleVoter::VIEW)]
-    public function index(RoleRepository $roleRepository): Response
+    public function index(Request $request, RoleRepository $roleRepository): Response
     {
         $roles = $roleRepository->getRolesWithUserCount();
 
@@ -37,8 +38,14 @@ class RoleManagementController extends AbstractController
         }
 
         return $this->render('role_management/index.html.twig', [
-            'roles' => $roles,
+            'page' => ListPage::fromRequest(
+                $roles,
+                $request,
+                static fn(Role $r): array => [$r->getName(), $r->getDescription()],
+            ),
             'visible_holder_counts' => $visibleHolderCounts,
+            'system_count' => count(array_filter($roles, static fn(Role $r): bool => $r->isSystemRole())),
+            'role_count' => count($roles),
         ]);
     }
     #[Route('/admin/roles/new', name: 'role_management_new', methods: ['GET', 'POST'])]

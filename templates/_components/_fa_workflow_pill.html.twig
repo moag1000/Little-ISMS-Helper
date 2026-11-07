@@ -1,0 +1,26 @@
+{#
+ # FairyAurora v4 — Workflow pill for list rows.
+ #
+ # Shows "Läuft" / "Überfällig" linking the running approval of a record;
+ # renders nothing when the record has none. Fed by workflow_states(page),
+ # one query per list page.
+ #
+ # Usage:
+ #   {% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
+ #   {% set _wf = workflow_states(page) %}
+ #   … {{ _fa_workflow_pill.render(_wf[risk.id] ?? {}) }}
+ #}
+{% macro render(wf) %}
+{% if wf.id is defined and wf.id %}
+    {% import '_components/_status_pill.html.twig' as _pill %}
+    {% set _stuck = wf.stuck|default(false) %}
+    <a href="{{ path('app_workflow_instance_show', {id: wf.id}) }}" class="text-decoration-none" data-testid="list-workflow-pill"
+       title="{{ wf.step_name|default(wf.title|default('')) }}{% if wf.due_date|default(null) %} · {{ wf.due_date|fa_date }}{% endif %}">
+        {{- _pill.render(
+            (_stuck ? 'ui.list_workflow.overdue' : 'ui.list_workflow.running')|trans({}, 'ui'),
+            _stuck ? 'danger' : 'primary',
+            {size: 'sm'}
+        ) -}}
+    </a>
+{% endif %}
+{% endmacro %}

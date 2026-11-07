@@ -10,16 +10,12 @@ change_request:
         view: Anzeigen
         edit: Bearbeiten
         update: Aktualisieren
-    statistics:
-        total: Gesamt‑Anträge
-        pending_approval: 'Ausstehende Freigaben'
-        in_implementation: 'In Umsetzung'
-        overdue: Überfällig
-    alert:
-        pending_approval: 'Ausstehende Freigaben'
-        overdue: 'Überfällige Änderungsanträge'
+    summary:
+        pending_approval: '%count% ausstehend'
+        in_implementation: '%count% in Umsetzung'
+        overdue: '%count% überfällig'
     list:
-        title: 'Änderungsanträge (%count%)'
+        title: Änderungsanträge
     table:
         change_number: Antrags‑Nr.
         title: Titel

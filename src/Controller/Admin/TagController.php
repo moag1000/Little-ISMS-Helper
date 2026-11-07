@@ -11,6 +11,7 @@ use App\Repository\TagRepository;
 use App\Security\Voter\TagVoter;
 use App\Service\BulkTagService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,13 +55,21 @@ final class TagController extends AbstractController
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         $tags = $this->tagRepository->findVisibleFor($tenant);
 
+        $globalCount = count(array_filter($tags, static fn(Tag $t): bool => $t->getTenant() === null));
+
         return $this->render('admin/tag/index.html.twig', [
-            'tags' => $tags,
+            'page' => ListPage::fromRequest(
+                $tags,
+                $request,
+                static fn(Tag $t): array => [$t->getName(), $t->getFrameworkCode(), $t->getDescription()],
+            ),
+            'global_count' => $globalCount,
+            'tenant_count' => count($tags) - $globalCount,
         ]);
     }
 

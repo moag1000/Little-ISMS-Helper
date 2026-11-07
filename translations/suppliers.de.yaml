@@ -4,6 +4,7 @@ supplier:
         title: 'ICT-Provider-Bibliothek'
         intro: 'Kuratierte Liste gängiger ICT-Drittanbieter (DORA Art. 28). Übernehmen erstellt einen vorausgefüllten, DORA-relevanten Lieferanten zur Prüfung.'
         empty: 'Bibliothek noch nicht geladen. Admin: app:load-ict-provider-library ausführen.'
+        list: Anbieter
         action:
             apply: Übernehmen
         field:
@@ -22,7 +23,7 @@ supplier:
     questionnaire:
         title: 'Lieferanten-Fragebögen'
         default_title: 'Sicherheits-Fragebogen'
-        empty: 'Noch keine Fragebögen versendet.'
+        empty: 'Keine Fragebögen vorhanden.'
         action:
             send: 'Fragebogen senden'
         field:
@@ -55,11 +56,10 @@ supplier:
         lksg_export: 'LkSG-Jahresbericht (CSV)'
     clone:
         success: 'Lieferant wurde dupliziert. Vertragsdaten neu erfassen.'
-    statistics:
-        total: Gesamt-Lieferanten
-        critical: 'Kritische Lieferanten'
-        overdue_assessments: 'Überfällige Bewertungen'
-        non_compliant: 'Nicht konform'
+    summary:
+        critical: '%count% kritisch'
+        overdue_assessments: '%count% Bewertungen überfällig'
+        non_compliant: '%count% nicht konform'
     alert:
         overdue_assessments: 'Überfällige Bewertungen'
         non_compliant: 'Nicht-konforme Lieferanten'
