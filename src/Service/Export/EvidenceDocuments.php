@@ -7,7 +7,6 @@ namespace App\Service\Export;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Document;
 use App\Entity\Tenant;
-use App\Entity\WorkflowInstance;
 use App\Enum\DocumentStatus;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\Compliance\Fulfillment\RequirementEvidence;
@@ -69,9 +68,6 @@ final class EvidenceDocuments
                 $instances = $this->workflowInstanceRepository->findByEntity('Document', $documentId);
                 $best = null;
                 foreach ($instances as $instance) {
-                    if (!$instance instanceof WorkflowInstance) {
-                        continue;
-                    }
                     if ($instance->getStatus() !== 'approved') {
                         continue;
                     }
@@ -154,7 +150,7 @@ final class EvidenceDocuments
         $filePath = (string) $doc->getFilePath();
         if ($filePath !== '' && is_file($filePath) && is_readable($filePath)) {
             $hash = hash_file('sha256', $filePath);
-            if (is_string($hash) && $hash !== '') {
+            if (is_string($hash)) {
                 return $hash;
             }
         }
