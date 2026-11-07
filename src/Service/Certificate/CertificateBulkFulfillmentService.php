@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Service\Certificate;
 
 use App\Entity\ComplianceCertificate;
+use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\User;
 use App\Enum\ComplianceRequirementFulfillmentStatus;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +36,7 @@ final class CertificateBulkFulfillmentService
         private readonly ComplianceFrameworkRepository $frameworkRepo,
         private readonly EntityManagerInterface $em,
         private readonly AuditLogger $auditLogger,
+        private readonly FulfillmentDerivationService $derivation,
     ) {
     }
 
@@ -75,8 +78,21 @@ final class CertificateBulkFulfillmentService
             }
 
             $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $req);
-            $fulfillment->setFulfillmentPercentage(100)
-                ->setStatus(ComplianceRequirementFulfillmentStatus::Verified)
+            // An external certificate is evidence that beats the rule until it
+            // expires: an explicit override with the certificate as reason and
+            // its expiry as review date (falls back to one year).
+            $this->derivation->apply($fulfillment, $now);
+            $this->derivation->override(
+                $fulfillment,
+                100,
+                sprintf('Zertifikat %s', (string) $cert->getCertNumber()),
+                $validUntil instanceof \DateTimeInterface
+                    ? DateTimeImmutable::createFromInterface($validUntil)
+                    : $now->modify('+1 year'),
+                $actor,
+                ComplianceRequirementFulfillment::OVERRIDE_CERTIFICATE,
+            );
+            $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::Verified)
                 ->setVerifiedAt($now)
                 ->setVerifiedBy($actor)
                 ->setEvidenceOutdated(false);

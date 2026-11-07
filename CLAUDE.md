@@ -242,6 +242,11 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `WorkflowService` - Workflow instance management (facade — stable public API)
 - `FieldCompletionAutoTransition` - Event-driven auto-progression listener (canonical since Y.1)
 - `ModuleConfigurationService` - Module activation check (per tenant)
+- `Compliance\Fulfillment\FulfillmentDerivationService` - the ONLY writer of a requirement fulfilment's
+  percentage/status: `FulfillmentRuleEngine` derives it from the tenant's controls, mappings and maturity rows;
+  hand values beside a rule are overrides (`override()` with reason + review date), `setManual()` only without
+  rule. `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
+  Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
   inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.

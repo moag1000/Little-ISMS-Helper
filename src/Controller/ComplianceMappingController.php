@@ -62,6 +62,7 @@ class ComplianceMappingController extends AbstractController
         private readonly Registry $workflowRegistry,
         private readonly MappingAccessGuard $accessGuard,
         private readonly MappingStatistics $statistics,
+        private readonly \App\Repository\ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?TranslatorInterface $translator = null,
         private readonly ?AuditLogger $auditLogger = null,
@@ -364,7 +365,11 @@ class ComplianceMappingController extends AbstractController
     {
         $this->accessGuard->assertVisible($complianceMapping);
         // Calculate transitive fulfillment
-        $transitiveFulfillment = $complianceMapping->calculateTransitiveFulfillment();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $source = $complianceMapping->getSourceRequirement();
+        $transitiveFulfillment = $tenant !== null && $source !== null
+            ? round($this->fulfillmentRepository->percentageFor($tenant, $source) * $complianceMapping->getMappingPercentage() / 100, 2)
+            : 0.0;
 
         return $this->render('compliance/mapping/show.html.twig', [
             'mapping' => $complianceMapping,

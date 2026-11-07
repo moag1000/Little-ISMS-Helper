@@ -65,6 +65,10 @@ Nicht nur Anforderungslisten — die eigentliche Vorgehensweise ist abgebildet:
 
 - **25 vollständige Frameworks** mit **~3.500 kuratierten Cross-Mappings** und **transitiver Coverage** — ein
   erfüllter Control wirkt automatisch auf gemappte Anforderungen anderer Frameworks.
+- **Erfüllung = Regel über Daten** — der Erfüllungsgrad jeder Anforderung wird aus Controls, Mappings und
+  Reifegraden der eigenen Organisation berechnet (eine Quelle pro Control, „Warum dieser Wert?“ auf der Anforderung);
+  Abweichungen nur als Übersteuerung mit Begründung und Prüfdatum. Siehe
+  [Erfüllung aus Daten](docs/user-guide/ERFUELLUNG_AUS_DATEN.md).
 - **FTE-/ROI-Rechner** — beziffert aus echten Ereignissen (Reuse, Import, Onboarding) die eingesparten
   Personentage, pro Mandant kalibrierbar und audit-protokolliert.
 

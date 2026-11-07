@@ -69,6 +69,10 @@ change_request.priority	2
 change_request.status	3
 compliance	2
 compliance.framework.flash	1
+compliance.fulfillment_rule.overrides.filter	1
+compliance.fulfillment_rule.source	1
+compliance.fulfillment_rule.status	1
+compliance.fulfillment_rule.why	1
 compliance.industry	3
 compliance.iso9001_bridge.variant	1
 compliance.mapping.hub.tabs	1

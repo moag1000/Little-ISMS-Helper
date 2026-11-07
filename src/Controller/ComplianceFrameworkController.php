@@ -11,6 +11,7 @@ use App\Entity\ComplianceFramework;
 use App\Form\ComplianceFrameworkType;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\TenantContext;
 use App\Util\ListPage;
@@ -35,6 +36,7 @@ class ComplianceFrameworkController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
         private readonly TisaxMaturityAssessmentService $tisaxMaturityAssessmentService,
+        private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
         private readonly ?RequirementLevelMetadataLoader $metadataLoader = null,
     ) {}
     #[Route('/compliance/framework', name: 'app_compliance_framework_index', methods: ['GET'])]
@@ -75,7 +77,16 @@ class ComplianceFrameworkController extends AbstractController
             ->getQuery()
             ->getScalarResult();
 
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $compliancePercentages = $tenant instanceof Tenant
+            ? $this->fulfillmentRepository->fulfilledShareByFramework(
+                $tenant,
+                array_map(static fn (ComplianceFramework $f): int => (int) $f->getId(), $frameworks),
+            )
+            : [];
+
         return $this->render('compliance/framework/index.html.twig', [
+            'compliancePercentages' => $compliancePercentages,
             'page' => ListPage::fromRequest(
                 $frameworks,
                 $request,

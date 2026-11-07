@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
@@ -59,6 +60,7 @@ class ComplianceController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly MappingOnboardingService $mappingOnboarding,
         private readonly \App\Service\Compliance\MappingStatistics $mappingStatistics,
+        private readonly \App\Repository\ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
     ) {}
 
     protected function getFlashDomain(): string
@@ -299,6 +301,16 @@ class ComplianceController extends AbstractController
             $topLevelCounts[$fw->getId()] = $this->complianceRequirementRepository->countTopLevelByFramework($fw);
         }
 
+        // Tenant-scoped source fulfilment, one query for every source requirement.
+        $transitiveTenant = $this->tenantContext->getCurrentTenant();
+        $sourceRequirements = [];
+        array_walk_recursive($allMappingsBulk, static function (ComplianceMapping $m) use (&$sourceRequirements): void {
+            $sourceRequirements[] = $m->getSourceRequirement();
+        });
+        $sourcePercentages = $transitiveTenant instanceof Tenant
+            ? $this->fulfillmentRepository->percentagesFor($transitiveTenant, array_filter($sourceRequirements))
+            : [];
+
         $transitiveAnalysis = [];
         $mappingMatrix = [];
         $crossMappings = [];
@@ -349,7 +361,7 @@ class ComplianceController extends AbstractController
                 // Inline transitive calculation (was getTransitiveCompliance — now uses cached data)
                 $targetRequirementsHelped = [];
                 foreach ($pairMappings as $mapping) {
-                    $transitiveFulfillment = $mapping->calculateTransitiveFulfillment();
+                    $transitiveFulfillment = round(($sourcePercentages[$mapping->getSourceRequirement()?->getId()] ?? 0) * $mapping->getMappingPercentage() / 100, 2);
                     if ($transitiveFulfillment > 0) {
                         $targetReqId = $mapping->getTargetRequirement()->getRequirementId();
                         if (!isset($targetRequirementsHelped[$targetReqId])
@@ -544,8 +556,10 @@ class ComplianceController extends AbstractController
     }
 
     /**
-     * Re-assess a framework: rewrites the fulfillment percentages of all its
-     * requirements, so it is a manager action and CSRF-protected.
+     * Recompute a framework from the organisation's data ("Neu berechnen"):
+     * rule values take effect, hand overrides with reason stay. A manager
+     * action, CSRF-protected. Control changes recompute live anyway; this is
+     * the explicit catch-up after catalogue or mapping changes.
      */
     #[Route('/compliance/framework/{id}/assess', name: 'app_compliance_assess', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -558,14 +572,12 @@ class ComplianceController extends AbstractController
             throw $this->createNotFoundException('Framework not found');
         }
 
-        // Run assessment and update all requirement fulfillment percentages
-        $assessmentResults = $this->complianceAssessmentService->assessFramework($framework);
+        $result = $this->complianceAssessmentService->assessFramework($framework);
 
-        $this->addFlash('success', sprintf(
-            'Assessment completed for %s. %d requirements assessed.',
-            $framework->getName(),
-            $assessmentResults['requirements_assessed']
-        ));
+        $this->flashSuccess('compliance.fulfillment_rule.flash.recomputed', [
+            '%derived%' => $result['derived'],
+            '%overridden%' => $result['overridden'],
+        ]);
 
         return $this->redirectToRoute('app_compliance_framework', ['id' => $id]);
     }

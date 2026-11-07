@@ -449,6 +449,15 @@ class NavigationSearch
                 'roles' => ['ROLE_USER'],
                 'requiresModule' => 'compliance',
             ],
+            [
+                'route' => 'app_compliance_fulfillment_overrides',
+                'label' => 'search_nav.app_compliance_fulfillment_overrides.label',
+                'description' => 'search_nav.app_compliance_fulfillment_overrides.description',
+                'aliases' => ['Übersteuerung', 'Altbestand', 'Override', 'Erfüllung', 'Fulfilment', 'Regel'],
+                'icon' => 'fa-icon--compliance-shield',
+                'roles' => ['ROLE_AUDITOR'],
+                'requiresModule' => 'compliance',
+            ],
             // ── Onboarding / Setup ────────────────────────────────────────────
             [
                 'route' => 'setup_wizard_index',

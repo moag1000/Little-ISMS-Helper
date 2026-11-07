@@ -10,7 +10,7 @@ use App\Repository\UserRepository;
 use App\Service\ComplianceInheritanceService;
 use App\Service\CompliancePolicyService;
 use App\Service\EmailNotificationService;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Doctrine\PostFlushWriter;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
@@ -24,7 +24,7 @@ final class NotifyDerivedFulfillmentsListener
     public function __construct(
         private readonly FulfillmentInheritanceLogRepository $inheritanceRepository,
         private readonly ComplianceInheritanceService $inheritanceService,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly PostFlushWriter $postFlushWriter,
         private readonly EmailNotificationService $emailService,
         private readonly UserRepository $userRepository,
         private readonly LoggerInterface $logger,
@@ -44,9 +44,14 @@ final class NotifyDerivedFulfillmentsListener
             return;
         }
 
+
         $notifyPerOwner = [];
         foreach ($derived as $log) {
+            if ($log->getFulfillment()?->isDerived() === true) {
+                continue; // a rule recomputes the target live — nothing to re-confirm
+            }
             $this->inheritanceService->markSourceUpdated($log);
+            $this->postFlushWriter->persist($log);
 
             $owner = $log->getReviewedBy() ?? $log->getFulfillment()?->getResponsiblePersonUser();
             if ($owner !== null) {
@@ -57,7 +62,8 @@ final class NotifyDerivedFulfillmentsListener
                 $notifyPerOwner[$owner->getId()]['logs'][] = $log;
             }
         }
-        $this->entityManager->flush();
+        // Dispatched from preUpdate: a flush here would re-enter the running
+        // commit (pitfall 1b) — the status change is written after the flush.
 
         foreach ($notifyPerOwner as $payload) {
             try {

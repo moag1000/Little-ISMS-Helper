@@ -132,6 +132,9 @@ search_nav:
     app_compliance_mapping_hub:
         label: 'Mapping-Hub'
         description: 'Framework-Mappings, Qualität, Vorschläge und Import an einem Ort'
+    app_compliance_fulfillment_overrides:
+        label: 'Übersteuerungen prüfen'
+        description: 'Erfüllungswerte, die von Hand von der Regel abweichen'
     setup_wizard_index:
         label: 'Setup-Wizard'
         description: 'Onboarding-Tour, Ersteinrichtung'

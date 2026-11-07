@@ -43,6 +43,7 @@ class Schedule implements ScheduleProviderInterface
         ['*/15 * * * *', 'app:send-reminders'],
         ['*/15 * * * *', 'app:nis2-notification-check'],
         ['0 * * * *', 'app:process-scheduled-reports'],
+        ['45 0 * * *', 'app:compliance:refresh-fulfillments'],
         ['0 1 * * *', 'app:kpi-snapshot'],
         ['15 1 * * *', 'app:portfolio:capture-snapshot'],
         ['30 1 * * *', 'app:reuse:capture-snapshot'],

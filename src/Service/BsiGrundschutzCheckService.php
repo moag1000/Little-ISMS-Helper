@@ -34,9 +34,8 @@ use App\Repository\ComplianceRequirementRepository;
  * Fulfillment source (WS-1 consolidation):
  *   When a Tenant is provided, fulfillment is read from ComplianceRequirementFulfillment
  *   records (canonical multi-tenant source, same as GrundschutzCheckService used).
- *   When no Tenant is provided, falls back to
- *   ComplianceRequirement::calculateFulfillmentFromControls() (mappedControls M:N)
- *   for backwards-compatible non-tenant-scoped usage (e.g. DashboardStatisticsService).
+ *   Without a Tenant (or without a row) fulfillment is 0 %: the mappedControls M:N
+ *   spans all organisations and is never used.
  */
 final class BsiGrundschutzCheckService
 {
@@ -72,8 +71,7 @@ final class BsiGrundschutzCheckService
      *
      * Fulfillment is resolved from ComplianceRequirementFulfillment records for the
      * current or explicitly passed tenant (canonical multi-tenant source, WS-1).
-     * If no tenant context is available (e.g. non-tenant-scoped usage), falls back
-     * to calculateFulfillmentFromControls().
+     * If no tenant context is available, fulfilment is 0 %.
      *
      * @param string|null $absicherungsStufe 'basis' | 'standard' | 'kern' or null for all
      * @param Tenant|null $tenant Override the tenant (default: current tenant from TenantContext)
@@ -388,12 +386,8 @@ final class BsiGrundschutzCheckService
      *
      * Priority (WS-1 consolidation):
      *   1. Tenant-scoped ComplianceRequirementFulfillment record (canonical)
-     *   2. calculateFulfillmentFromControls() via mappedControls M:N — DELIBERATE FALLBACK:
-     *      this path is intentionally kept for:
-     *        - DashboardStatisticsService::getBsiAbsicherungsstufenKPIs() when called
-     *          without an active tenant (e.g. SUPER_ADMIN no-tenant context)
-     *        - Console commands without a tenant scope
-     *      Do NOT remove this fallback — it is the correct behaviour for those paths.
+     *   2. No fulfillment row (or no tenant) = 0 %. The mappedControls M:N is cross-tenant
+     *      and is deliberately not used as a fallback.
      *
      * @param array<int, ComplianceRequirementFulfillment> $fulfillmentMap
      */
@@ -404,8 +398,6 @@ final class BsiGrundschutzCheckService
             return $fulfillmentMap[$reqEntityId]->getFulfillmentPercentage();
         }
 
-        // Deliberate no-tenant/console fallback: mappedControls-based calculation.
-        // Authenticated web requests always have a tenant and reach the branch above.
-        return $req->calculateFulfillmentFromControls();
+        return 0;
     }
 }

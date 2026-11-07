@@ -8,6 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Document;
 use App\Entity\Tenant;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
 use App\Service\PdfExportService;
@@ -39,6 +40,7 @@ final class AuditPackageExporter
     public function __construct(
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly PdfExportService $pdfExportService,
+        private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
         private readonly ?AuditLogger $auditLogger = null,
     ) {
     }
@@ -56,6 +58,7 @@ final class AuditPackageExporter
     public function export(ComplianceFramework $framework, Tenant $tenant): array
     {
         $requirements = $this->requirementRepository->findByFramework($framework);
+        $percentages = $this->fulfillmentRepository->percentagesFor($tenant, $requirements);
 
         $tempPath = tempnam(sys_get_temp_dir(), 'audit_pkg_');
         if ($tempPath === false) {
@@ -78,7 +81,7 @@ final class AuditPackageExporter
 
         foreach ($requirements as $req) {
             $reqFolder = $rootDir . '/' . $this->requirementFolderName($req);
-            $readme = $this->buildReadme($req);
+            $readme = $this->buildReadme($req, $percentages[$req->getId()] ?? 0);
             $zip->addFromString($reqFolder . '/README.txt', $readme);
 
             $files = [];
@@ -100,8 +103,8 @@ final class AuditPackageExporter
             $indexRows[] = [
                 (string) $req->getRequirementId(),
                 $this->oneLine((string) $req->getTitle()),
-                (string) ($req->calculateFulfillmentFromControls() >= 80 ? 'fulfilled' : 'open'),
-                (string) $req->calculateFulfillmentFromControls(),
+                (string) (($percentages[$req->getId()] ?? 0) >= 80 ? 'fulfilled' : 'open'),
+                (string) ($percentages[$req->getId()] ?? 0),
                 (string) count($files),
                 implode('|', $files),
             ];
@@ -117,6 +120,7 @@ final class AuditPackageExporter
                 'framework' => $framework,
                 'tenant' => $tenant,
                 'requirements' => $requirements,
+                'fulfillment_percentages' => $percentages,
                 'generated_at' => new DateTimeImmutable(),
                 'document_count' => $documentCount,
                 'missing_count' => $missingCount,
@@ -198,14 +202,14 @@ final class AuditPackageExporter
         return $zipName;
     }
 
-    private function buildReadme(ComplianceRequirement $req): string
+    private function buildReadme(ComplianceRequirement $req, int $fulfillmentPct): string
     {
         $lines = [
             'Requirement: ' . (string) $req->getRequirementId(),
             'Title: ' . (string) $req->getTitle(),
             'Category: ' . (string) $req->getCategory(),
             'Priority: ' . (string) $req->getPriority(),
-            'Fulfillment (%): ' . $req->calculateFulfillmentFromControls(),
+            'Fulfillment (%): ' . $fulfillmentPct,
             '',
             'Description:',
             (string) $req->getDescription(),
