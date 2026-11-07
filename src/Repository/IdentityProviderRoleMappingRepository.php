@@ -41,7 +41,7 @@ class IdentityProviderRoleMappingRepository extends ServiceEntityRepository
         $query = fn (): array => $this->createQueryBuilder('m')
             ->where('m.identityProvider = :idp')
             ->andWhere('m.isActive = true')
-            ->orderBy('m.priority', 'ASC')
+            ->orderBy('m.priority', \SortDirection::Ascending)
             ->setParameter('idp', $provider)
             ->getQuery()
             ->getResult();

@@ -32,7 +32,7 @@ class TeamRepository extends ServiceEntityRepository
             ->andWhere('t.isActive = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('t.name', 'ASC')
+            ->orderBy('t.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -50,7 +50,7 @@ class TeamRepository extends ServiceEntityRepository
         $rows = $this->createQueryBuilder('t')
             ->andWhere('t.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('t.name', 'ASC')
+            ->orderBy('t.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

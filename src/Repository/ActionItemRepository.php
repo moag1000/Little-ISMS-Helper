@@ -30,7 +30,7 @@ class ActionItemRepository extends ServiceEntityRepository
         $rows = $this->createQueryBuilder('a')
             ->andWhere('a.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('a.dueDate', 'ASC')
+            ->orderBy('a.dueDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -50,7 +50,7 @@ class ActionItemRepository extends ServiceEntityRepository
             ->andWhere('a.status NOT IN (:closed)')
             ->setParameter('tenant', $tenant)
             ->setParameter('closed', [ActionItem::STATUS_DONE, ActionItem::STATUS_DISMISSED])
-            ->orderBy('a.dueDate', 'ASC')
+            ->orderBy('a.dueDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

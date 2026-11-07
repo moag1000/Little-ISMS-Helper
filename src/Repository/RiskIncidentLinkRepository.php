@@ -31,7 +31,7 @@ class RiskIncidentLinkRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->where('l.risk = :risk')
             ->setParameter('risk', $risk)
-            ->orderBy('l.linkedAt', 'DESC')
+            ->orderBy('l.linkedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -46,7 +46,7 @@ class RiskIncidentLinkRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->where('l.incident = :incident')
             ->setParameter('incident', $incident)
-            ->orderBy('l.linkedAt', 'DESC')
+            ->orderBy('l.linkedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

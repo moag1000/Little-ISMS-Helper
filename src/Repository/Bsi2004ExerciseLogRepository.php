@@ -33,7 +33,7 @@ class Bsi2004ExerciseLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('l.createdAt', 'DESC')
+            ->orderBy('l.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -69,7 +69,7 @@ class Bsi2004ExerciseLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('l.createdAt', 'DESC')
+            ->orderBy('l.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

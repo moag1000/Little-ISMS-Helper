@@ -51,7 +51,7 @@ class MappingQualityController extends AbstractController
         $minScore = (int) $request->query->get('min_score', 0);
 
         $qb = $this->mappingRepository->createQueryBuilder('m')
-            ->orderBy('m.qualityScore', 'DESC');
+            ->orderBy('m.qualityScore', \SortDirection::Descending);
         if ($stateFilter !== null && $stateFilter !== '') {
             $qb->andWhere('m.lifecycleState = :s')->setParameter('s', $stateFilter);
         }

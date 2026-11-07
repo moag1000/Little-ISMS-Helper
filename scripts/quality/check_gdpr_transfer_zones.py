@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""
+check_gdpr_transfer_zones.py — the GDPR transfer zone list stays current and unique.
+
+`config/gdpr_transfer_zones.yaml` is the one list of EU, EEA, Art. 45 adequacy
+and EU-US DPF countries (App\\Privacy\\GdprTransferZones). It drives the
+"Drittland" layer of the location map, the supplier chain check and the
+DORA register's EEA flag. The gate fails when
+
+  1. `as_of` is missing or older than 12 months (the Commission adopts,
+     renews and revokes decisions; check the list and bump the date),
+  2. a code is not ISO 3166 alpha-2 or appears in more than one zone, or
+  3. a PHP file under src/ hard-codes an EU/EEA member list again
+     (five or more EU codes in one list literal) instead of asking
+     GdprTransferZones.
+
+    python3 scripts/quality/check_gdpr_transfer_zones.py [--quiet]
+"""
+from __future__ import annotations
+
+import datetime as dt
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+CONFIG = ROOT / "config/gdpr_transfer_zones.yaml"
+ZONES = ("eu", "eea_extra", "adequacy", "dpf")
+MAX_AGE_DAYS = 366
+EU = {"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU", "IE", "IT",
+      "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"}
+ARRAY = re.compile(r"\[[^\[\]]*\]", re.S)
+CODE = re.compile(r"['\"]([A-Z]{2})['\"]")
+
+
+def parse(text: str) -> tuple[str | None, dict[str, list[str]]]:
+    """Minimal reader for the flat file format (key: value / key: [A, B])."""
+    as_of, zones = None, {}
+    for line in text.splitlines():
+        line = line.split("#", 1)[0].rstrip()
+        m = re.match(r"^(\w+):\s*(.*)$", line)
+        if not m:
+            continue
+        key, value = m.group(1), m.group(2).strip()
+        if key == "as_of":
+            as_of = value.strip("'\"")
+        elif key in ZONES:
+            zones[key] = [c.strip() for c in value.strip("[]").split(",") if c.strip()]
+    return as_of, zones
+
+
+def main() -> int:
+    quiet = "--quiet" in sys.argv
+    errors: list[str] = []
+    as_of, zones = parse(CONFIG.read_text(encoding="utf-8"))
+
+    try:
+        age = (dt.date.today() - dt.date.fromisoformat(as_of or "")).days
+        if age > MAX_AGE_DAYS:
+            errors.append(f"as_of {as_of} is {age} days old: check the Commission's adequacy page and update the list")
+    except ValueError:
+        errors.append("as_of is missing or not an ISO date (YYYY-MM-DD)")
+
+    seen: dict[str, str] = {}
+    for zone in ZONES:
+        if zone not in zones:
+            errors.append(f"zone '{zone}' is missing")
+        for code in zones.get(zone, []):
+            if not re.fullmatch(r"[A-Z]{2}", code):
+                errors.append(f"{zone}: '{code}' is not an ISO 3166 alpha-2 code")
+            elif code in seen:
+                errors.append(f"{code} is in both '{seen[code]}' and '{zone}'")
+            else:
+                seen[code] = zone
+
+    for path in sorted((ROOT / "src").rglob("*.php")):
+        rel = path.relative_to(ROOT).as_posix()
+        text = path.read_text(encoding="utf-8")
+        for m in ARRAY.finditer(text):
+            # Associative arrays are choice lists (label => code), not membership checks.
+            if "=>" not in m.group(0) and len(set(CODE.findall(m.group(0))) & EU) >= 5:
+                line = text.count("\n", 0, m.start()) + 1
+                errors.append(f"{rel}:{line}: hard-coded EU/EEA country list, use App\\Privacy\\GdprTransferZones")
+
+    if errors:
+        print("check_gdpr_transfer_zones: FAIL\n")
+        for e in errors:
+            print("  " + e)
+        return 1
+    if not quiet:
+        print(f"check_gdpr_transfer_zones: OK (as_of {as_of}, {len(seen)} codes)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

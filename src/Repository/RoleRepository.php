@@ -37,7 +37,7 @@ class RoleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->andWhere('r.isSystemRole = :isSystem')
             ->setParameter('isSystem', false)
-            ->orderBy('r.name', 'ASC')
+            ->orderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -52,7 +52,7 @@ class RoleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->andWhere('r.isSystemRole = :isSystem')
             ->setParameter('isSystem', true)
-            ->orderBy('r.name', 'ASC')
+            ->orderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -99,7 +99,7 @@ class RoleRepository extends ServiceEntityRepository
         $roles = $this->createQueryBuilder('r')
             ->leftJoin('r.users', 'u')
             ->addSelect('u')
-            ->orderBy('r.name', 'ASC')
+            ->orderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
         if ($roles === []) {

@@ -40,7 +40,7 @@ class ComplianceCertificateRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('frameworkCode', $frameworkCode)
             ->setParameter('status', 'active')
-            ->orderBy('c.validUntil', 'DESC')
+            ->orderBy('c.validUntil', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

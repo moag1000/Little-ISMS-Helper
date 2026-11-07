@@ -34,7 +34,7 @@ class EntityTagRepository extends ServiceEntityRepository
             ->setParameter('i', $entityId)
             ->leftJoin('et.tag', 't')
             ->addSelect('t')
-            ->orderBy('t.name', 'ASC')
+            ->orderBy('t.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -53,7 +53,7 @@ class EntityTagRepository extends ServiceEntityRepository
             ->setParameter('i', $entityId)
             ->leftJoin('et.tag', 't')
             ->addSelect('t')
-            ->orderBy('et.taggedFrom', 'DESC')
+            ->orderBy('et.taggedFrom', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

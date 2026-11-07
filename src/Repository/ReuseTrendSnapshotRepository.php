@@ -40,7 +40,7 @@ class ReuseTrendSnapshotRepository extends ServiceEntityRepository
             ->andWhere('s.capturedAt >= :cutoff')
             ->setParameter('t', $tenant)
             ->setParameter('cutoff', $cutoff)
-            ->orderBy('s.capturedAt', 'ASC')
+            ->orderBy('s.capturedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

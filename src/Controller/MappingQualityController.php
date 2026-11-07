@@ -416,8 +416,8 @@ class MappingQualityController extends AbstractController
             }
 
             // Order by priority
-            $qb->orderBy('cm.analysisConfidence', 'ASC')
-                ->addOrderBy('cm.qualityScore', 'ASC')
+            $qb->orderBy('cm.analysisConfidence', \SortDirection::Ascending)
+                ->addOrderBy('cm.qualityScore', \SortDirection::Ascending)
                 ->setFirstResult($offset)
                 ->setMaxResults($limit);
 

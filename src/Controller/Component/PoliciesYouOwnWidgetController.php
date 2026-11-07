@@ -79,8 +79,8 @@ final class PoliciesYouOwnWidgetController extends AbstractController
             ->where('d.tenant = :tenant')
             ->andWhere('d.isArchived = false')
             ->setParameter('tenant', $tenant)
-            ->orderBy('d.updatedAt', 'DESC')
-            ->addOrderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.updatedAt', \SortDirection::Descending)
+            ->addOrderBy('d.uploadedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
 

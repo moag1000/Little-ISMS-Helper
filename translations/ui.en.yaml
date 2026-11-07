@@ -297,6 +297,17 @@ ui:
             region: 'Region without a building'
             protection: 'Protection need %level%'
             coarse: 'Position known at country level only'
+            suppliers: '%count% suppliers and subcontractors in %country%'
+            emergency_ok: 'every critical process has a tested plan'
+            emergency_warn: 'plan not tested or only a draft'
+            emergency_danger: 'critical process without a plan'
+            emergency_none: 'no critical process'
+            audit_ok: 'audited within the last 12 months'
+            audit_warn: 'audit older than 12 months or planned'
+            audit_danger: 'no audit for 3 years and none planned'
+            thirdcountry_ok: 'EU/EEA or adequacy decision'
+            thirdcountry_warn: 'third country: check safeguards'
+            thirdcountry_none: 'country unknown'
         mfa_setup:
             copied: Copied.
             error: 'Error'

@@ -109,6 +109,7 @@ audit:
         nonconformities: Nichtkonformitäten
         conclusion: Schlussfolgerung
         additional_scoped_frameworks: 'Zusätzliche abgedeckte Frameworks'
+        location: 'Standort'
     status:
         planned: Geplant
         in_progress: 'In Bearbeitung'
@@ -179,6 +180,7 @@ audit:
         lead_auditor_person: 'Person aus Stammdaten auswählen…'
         audit_team: 'Namen der Teammitglieder, kommagetrennt'
         scoped_framework: 'Framework auswählen, gegen das auditiert wird'
+        location: 'Standort wählen'
     help:
         title: 'Kurze Beschreibung des Audit-Zwecks'
         scope: 'Definiert den Umfang des Audits (z.B. gesamtes ISMS, spezifische Abteilung)'
@@ -219,6 +221,7 @@ audit:
         status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Geplant → In Durchführung → Berichtet → Freigegeben → Abgeschlossen). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
         additional_scoped_frameworks: 'Mehrfachauswahl — z. B. 27001 + NIS2 + DORA in einem Audit-Durchgang. Findings werden transitiv auf alle abgedeckten Frameworks gemappt.'
         scoped_assets: 'Assets, die Gegenstand des Audits sind (nur bei Geltungsbereich „Asset"). ISO 19011 Kap. 5.5.2 verlangt die Auflistung der auditierten Objekte.'
+        location: 'Auditierter Standort (Geltungsbereich „Standort"). Die Standortkarte zeigt damit, wann jeder Standort zuletzt auditiert wurde (IAF MD 1).'
     scope: Geltungsbereich
     report_date: Berichtsdatum
     status_in_progress: 'In Bearbeitung'
@@ -242,6 +245,9 @@ audit:
     validation:
         title_required: 'Bitte geben Sie einen Titel für das Audit an'
         date_required: 'Bitte wählen Sie ein geplantes Datum'
+    prefill:
+        title_from_location: 'Standort-Audit %name%'
+        scope_from_location: 'Standort %name% mit seinen Räumen, Assets und Prozessen.'
 audit_log:
     pagination:
         page_counter: 'Seite %current% von %total%'

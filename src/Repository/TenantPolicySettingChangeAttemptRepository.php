@@ -37,7 +37,7 @@ class TenantPolicySettingChangeAttemptRepository extends ServiceEntityRepository
             ->andWhere('a.key = :key')
             ->setParameter('tenant', $tenant)
             ->setParameter('key', $key)
-            ->orderBy('a.attemptedAt', 'DESC')
+            ->orderBy('a.attemptedAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

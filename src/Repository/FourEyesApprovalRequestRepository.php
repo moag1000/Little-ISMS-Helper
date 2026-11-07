@@ -37,7 +37,7 @@ class FourEyesApprovalRequestRepository extends ServiceEntityRepository
             ->setParameter('status', FourEyesApprovalRequestStatus::Pending->value)
             ->setParameter('now', new DateTimeImmutable())
             ->setParameter('user', $approver)
-            ->orderBy('r.createdAt', 'ASC')
+            ->orderBy('r.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

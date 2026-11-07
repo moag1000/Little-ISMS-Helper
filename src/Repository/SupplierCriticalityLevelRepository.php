@@ -30,7 +30,7 @@ class SupplierCriticalityLevelRepository extends ServiceEntityRepository
             ->where('scl.tenant = :tenant')
             ->andWhere('scl.isActive = true')
             ->setParameter('tenant', $tenant)
-            ->orderBy('scl.sortOrder', 'ASC')
+            ->orderBy('scl.sortOrder', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -45,7 +45,7 @@ class SupplierCriticalityLevelRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('scl')
             ->where('scl.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('scl.sortOrder', 'ASC')
+            ->orderBy('scl.sortOrder', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

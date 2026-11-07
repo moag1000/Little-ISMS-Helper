@@ -232,7 +232,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                     if ($tenant !== null) {
                         $qb->andWhere('p.tenant = :tenant')->setParameter('tenant', $tenant);
                     }
-                    return $qb->orderBy('p.name', 'ASC');
+                    return $qb->orderBy('p.name', \SortDirection::Ascending);
                 },
             ])
             ->add('downstreamProcesses', EntityType::class, [
@@ -255,7 +255,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                     if ($tenant !== null) {
                         $qb->andWhere('p.tenant = :tenant')->setParameter('tenant', $tenant);
                     }
-                    return $qb->orderBy('p.name', 'ASC');
+                    return $qb->orderBy('p.name', \SortDirection::Ascending);
                 },
             ])
             // @legacy-freetext: kept during transition while upstream/downstream

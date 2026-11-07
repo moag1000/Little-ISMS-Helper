@@ -33,8 +33,8 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
             ->andWhere('rtp.tenant = :tenant')
             ->setParameter('completed_statuses', ['completed', 'cancelled'])
             ->setParameter('tenant', $tenant)
-            ->orderBy('rtp.priority', 'DESC')
-            ->addOrderBy('rtp.targetCompletionDate', 'ASC')
+            ->orderBy('rtp.priority', \SortDirection::Descending)
+            ->addOrderBy('rtp.targetCompletionDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -54,8 +54,8 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
             ->setParameter('now', $now)
             ->setParameter('completed_statuses', ['completed', 'cancelled'])
             ->setParameter('tenant', $tenant)
-            ->orderBy('rtp.priority', 'DESC')
-            ->addOrderBy('rtp.targetCompletionDate', 'ASC')
+            ->orderBy('rtp.priority', \SortDirection::Descending)
+            ->addOrderBy('rtp.targetCompletionDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -70,7 +70,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
             ->andWhere('rtp.tenant = :tenant')
             ->setParameter('status', $status)
             ->setParameter('tenant', $tenant)
-            ->orderBy('rtp.targetCompletionDate', 'ASC')
+            ->orderBy('rtp.targetCompletionDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -84,8 +84,8 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('rtp')
             ->where('rtp.risk = :risk')
             ->setParameter('risk', $risk)
-            ->orderBy('rtp.status', 'ASC')
-            ->addOrderBy('rtp.targetCompletionDate', 'ASC')
+            ->orderBy('rtp.status', \SortDirection::Ascending)
+            ->addOrderBy('rtp.targetCompletionDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -100,8 +100,8 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
             ->andWhere('rtp.tenant = :tenant')
             ->setParameter('userId', $userId)
             ->setParameter('tenant', $tenant)
-            ->orderBy('rtp.priority', 'DESC')
-            ->addOrderBy('rtp.targetCompletionDate', 'ASC')
+            ->orderBy('rtp.priority', \SortDirection::Descending)
+            ->addOrderBy('rtp.targetCompletionDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -122,7 +122,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
             ->setParameter('future', $futureDate)
             ->setParameter('completed_statuses', ['completed', 'cancelled'])
             ->setParameter('tenant', $tenant)
-            ->orderBy('rtp.targetCompletionDate', 'ASC')
+            ->orderBy('rtp.targetCompletionDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -168,8 +168,8 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
             ->setParameter('completed_statuses', ['completed', 'cancelled'])
             ->setParameter('tenant', $tenant)
             ->setParameter('future', new DateTime()->modify('+14 days'))
-            ->orderBy('rtp.priority', 'DESC')
-            ->addOrderBy('rtp.targetCompletionDate', 'ASC')
+            ->orderBy('rtp.priority', \SortDirection::Descending)
+            ->addOrderBy('rtp.targetCompletionDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Service\Prefill;
 
 use App\Entity\Asset;
+use App\Entity\BCExercise;
 use App\Entity\Incident;
+use App\Entity\InternalAudit;
 use App\Entity\Location;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
@@ -16,6 +18,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\LocationRepository;
 use App\Repository\RiskRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Service\Location\LocationLayers;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -27,7 +30,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * else is ignored silently, so a foreign id never leaks data into a form.
  *
  * Sources: Risk ← Vulnerability, Incident, Asset, Location (map quick action);
- * Treatment plan ← Risk.
+ * Treatment plan ← Risk; internal audit and BC exercise ← Location (map).
  * Control → evidence needs no form: the control page uploads evidence in place.
  */
 class RecordPrefill
@@ -39,7 +42,43 @@ class RecordPrefill
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly LocationRepository $locationRepository,
+        private readonly LocationLayers $locationLayers,
     ) {
+    }
+
+    /** Audit of one site: scope type "location", the site, a title naming it. */
+    public function internalAudit(InternalAudit $audit, Request $request, ?Tenant $tenant): void
+    {
+        $location = $this->source($this->locationRepository, $request, 'fromLocation', $tenant);
+        if (!$location instanceof Location) {
+            return;
+        }
+        $name = (string) $location->getName();
+        $audit->setScopeType('location');
+        $audit->setLocation($location);
+        $audit->setScopeDetails(['location' => $name]);
+        $audit->setTitle($this->trans('audit.prefill.title_from_location', ['%name%' => $name], 'audit'));
+        $audit->setScope($this->trans('audit.prefill.scope_from_location', ['%name%' => $name], 'audit'));
+    }
+
+    /** BC exercise at one site: scope naming it, the BC plans of the processes there. */
+    public function bcExercise(BCExercise $exercise, Request $request, ?Tenant $tenant): void
+    {
+        $location = $this->source($this->locationRepository, $request, 'fromLocation', $tenant);
+        if (!$location instanceof Location || $tenant === null) {
+            return;
+        }
+        $root = $location;
+        $guard = 0;
+        while (($parent = $root->getParentLocation()) !== null && $parent->getTenant() === $tenant && $guard++ < 50) {
+            $root = $parent;
+        }
+        $name = (string) $location->getName();
+        $exercise->setName($this->trans('bc_exercises.prefill.name_from_location', ['%name%' => $name], 'bc_exercises'));
+        $exercise->setScope($this->trans('bc_exercises.prefill.scope_from_location', ['%name%' => $name], 'bc_exercises'));
+        foreach ($this->locationLayers->plansAtSite($tenant, (int) $root->getId()) as $plan) {
+            $exercise->addTestedPlan($plan);
+        }
     }
 
     public function risk(Risk $risk, Request $request, ?Tenant $tenant): void

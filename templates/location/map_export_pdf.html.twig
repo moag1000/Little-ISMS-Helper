@@ -17,6 +17,9 @@
         .list th { font-size: 7.5pt; color: #475569; text-transform: uppercase; }
         .num { text-align: right; }
         .muted { color: #64748b; }
+        .map { margin-top: 10pt; border: 1px solid #cbd5e1; overflow: hidden; }
+        .map img { width: 100%; }
+        .legend { margin-top: 2pt; font-size: 7.5pt; }
     </style>
 </head>
 <body>
@@ -33,6 +36,11 @@
             {% endfor %}
         </tr>
     </table>
+
+    {% if map_image %}
+        <div class="map"><img src="{{ map_image }}" alt="{{ 'location.map.export.map_alt'|trans({}, 'locations') }}"></div>
+        <div class="muted legend">{{ 'location.map.export.map_legend'|trans({}, 'locations') }}</div>
+    {% endif %}
 
     {% if levers|length > 0 %}
         <h2>{{ 'location.map.levers.title'|trans({}, 'locations') }}</h2>

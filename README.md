@@ -39,7 +39,9 @@ Nicht nur Anforderungslisten — die eigentliche Vorgehensweise ist abgebildet:
   (Finanzen, Gesundheit, KRITIS, Fertigung, SaaS).
 - **BSI Grundschutz++ (BSI-Standard 300-1)** — der Anwenderkatalog aus dem offiziellen BSI-OSCAL, mit
   eigenem Wizard (Praktiken STM/UMS/PERF/VRB, Wiederverwendung der ISO-27001-Nachweise über das amtliche
-  BSI-Mapping) und Grundschutz++-Abschnitten in den Policy-Vorlagen.
+  BSI-Mapping) und Grundschutz++-Abschnitten in den Policy-Vorlagen. Kompendium-Anwender sehen im
+  Mapping-Hub und als KPI, wie viel ihres Kompendium-Stands nach Grundschutz++ übertragbar ist (BSI-Mapping
+  plus geprüfte Ergänzung für die Anforderungen, die das BSI noch nicht abbildet).
 - **BSI C5 (2020 + 2026)** — der **offizielle BSI-C5-Katalog**; die C5:2026-Neuerungen
   (Krypto-Agilität/PQC, SBOM, Confidential Computing, Container-Management) sind erfasst.
 - **KRITIS** — §8a/§8b BSIG rechtlich verankert, sektorspezifische Policy-Vorlagen (Energie, Wasser, IT-TK,
@@ -242,9 +244,11 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 ### Standorte und Standortkarte
 
-- **Standort-Lagebild** -- Weltkarte aller Standorte mit Ebenen Restrisiko und Prüfungen (ISO 27001 A.7), Sichten für CISO, ISB, Compliance und Standortverantwortliche, Drill-down bis zu Risiken, Assets und Vorfällen
+- **Standort-Lagebild** -- Weltkarte aller Standorte mit Ebenen Restrisiko, Prüfungen, Notfall (ISO 22301), Audit (ISO 27001 9.2) und Drittland (DSGVO Kap. V), Sichten für CISO, ISB, Compliance, BCM, Datenschutz, Audit, Konzern und Standortverantwortliche, Drill-down bis zu Risiken, Assets und Vorfällen
+- **Lieferkette und Länderzonen** -- Lieferanten an ihren Verarbeitungsorten mit Unterauftragnehmer-Kette und DSGVO-Einstufung je Glied; eine versionierte Liste der EU/EWR-, Angemessenheits- und DPF-Länder für das ganze Tool (CI-Gate 80 meldet eine veraltete Liste)
+- **Ereignis-Modus und Audit-Stichprobe** -- betroffene Standorte, Prozesse, Notfallpläne und Krisenstäbe je Land; Stichprobenvorschlag nach IAF MD 1; Audit und Notfallübung vom Standort aus vorbelegt
 - **Offline-Geokodierung** -- Koordinaten aus PLZ (DE/AT/CH) oder Ort (weltweit) ohne Online-Dienst; optional eigener Nominatim-Dienst, Standard aus
-- **Steuerung** -- Standort-Kennzahlen aus dem KPI-Katalog, Vergleich mit ähnlichen Standorten (nur Standorte, keine Personen), größte Hebel, Sammelaktionen mit Audit-Log und FTE-Erfassung, Lagebild als Excel und einseitiges PDF
+- **Steuerung** -- Standort-Kennzahlen aus dem KPI-Katalog, Vergleich mit ähnlichen Standorten (nur Standorte, keine Personen), größte Hebel, Sammelaktionen mit Audit-Log und FTE-Erfassung, Lagebild als Excel und einseitiges PDF mit Kartenbild
 - **Überall dieselben Zahlen** -- ISMS-Ziele mit Katalog-Kennzahl je Standort, offene Prüfungen in *Mein Tag*, Kachel auf den Dashboards von CISO, ISB und Compliance, Steckbrief auf der Standortseite
 - **Einstellungen je Organisation** -- Vergleich aus, ohne oder mit Namen der Verantwortlichen (§ 87 BetrVG), einzelne Prüfungen abschaltbar, Koordinaten auf Karte und im Export auf etwa 1 km gerundet; Auditoren sehen die Karte nur lesend
 
@@ -581,7 +585,7 @@ php bin/console isms:load-annex-a-controls --env=test
 |---|---|
 | [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Mapping-Hub mit Tabs |
 | [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, Risk-Manager, DPO, CM, Auditor), Kennzahlen, Detailseiten- und Formular-Aufbau |
-| [Standortkarte](docs/user-guide/STANDORTKARTE.md) | Lagebild, Prüfungen, Sichten, Vergleich, Hebel, Sammelaktionen, Export, Geokodierung |
+| [Standortkarte](docs/user-guide/STANDORTKARTE.md) | Lagebild, Prüfungen, Ebenen, Sichten, Konzern, Lieferkette, Länderzonen, Ereignis, Stichprobe, Vergleich, Hebel, Sammelaktionen, Export, Geokodierung |
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |

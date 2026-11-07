@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Privacy\GdprTransferZones;
+
 /**
  * FrameworkApplicabilityService — wizard integration.
  *
@@ -45,13 +47,6 @@ final class FrameworkApplicabilityService
     ];
 
     /** @var list<string> */
-    private const EU_COUNTRIES = [
-        'DE', 'AT', 'BE', 'BG', 'CY', 'CZ', 'DK', 'EE', 'ES', 'FI',
-        'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT',
-        'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'EU_OTHER',
-    ];
-
-    /** @var list<string> */
     private const LARGE_SIZES = ['51-250', '251-1000', '1001+'];
 
     /**
@@ -69,7 +64,8 @@ final class FrameworkApplicabilityService
         string $country,
         bool $aiHighRisk = false,
     ): array {
-        $isEU = in_array($country, self::EU_COUNTRIES, true);
+        // EU list shared with the GDPR transfer zones; EU_OTHER = wizard choice "other EU state".
+        $isEU = $country === 'EU_OTHER' || GdprTransferZones::isEu($country);
         $isDE = $country === 'DE';
         $isLarge = in_array($employeeCount, self::LARGE_SIZES, true);
         $isNis2Sector = (bool) array_intersect($industries, self::NIS2_SECTORS);

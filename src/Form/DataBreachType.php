@@ -77,7 +77,7 @@ final class DataBreachType extends AbstractType implements SectionMapInterface
                 'attr' => ['data-controller' => 'tom-select'],
                 'help' => 'data_breach.help.incident',
                 'query_builder' => function (IncidentRepository $repo) use ($options): QueryBuilder {
-                    $qb = $repo->createQueryBuilder('i')->orderBy('i.detectedAt', 'DESC');
+                    $qb = $repo->createQueryBuilder('i')->orderBy('i.detectedAt', \SortDirection::Descending);
                     $tenant = $options['tenant'] ?? null;
                     if ($tenant instanceof Tenant) {
                         $qb->where('i.tenant = :tenant')->setParameter('tenant', $tenant);
@@ -94,7 +94,7 @@ final class DataBreachType extends AbstractType implements SectionMapInterface
                 'attr' => ['data-controller' => 'tom-select'],
                 'help' => 'data_breach.help.processing_activity',
                 'query_builder' => function (ProcessingActivityRepository $repo) use ($options): QueryBuilder {
-                    $qb = $repo->createQueryBuilder('pa')->orderBy('pa.name', 'ASC');
+                    $qb = $repo->createQueryBuilder('pa')->orderBy('pa.name', \SortDirection::Ascending);
                     $tenant = $options['tenant'] ?? null;
                     if ($tenant instanceof Tenant) {
                         $qb->where('pa.tenant = :tenant')->setParameter('tenant', $tenant);

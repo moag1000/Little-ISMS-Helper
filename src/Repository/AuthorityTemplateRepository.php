@@ -26,7 +26,7 @@ class AuthorityTemplateRepository extends ServiceEntityRepository
             ->andWhere('t.tenant = :tenant')
             ->andWhere('t.isActive = true')
             ->setParameter('tenant', $tenant)
-            ->orderBy('t.authorityKey', 'ASC')
+            ->orderBy('t.authorityKey', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

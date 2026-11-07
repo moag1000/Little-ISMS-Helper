@@ -94,7 +94,7 @@ final class SsoDiscoveryStepType extends AbstractType implements SectionMapInter
                 'class' => Tenant::class,
                 'placeholder' => 'sso.scope.global',
                 'required' => false,
-                'query_builder' => fn (TenantRepository $r) => $r->createQueryBuilder('t')->orderBy('t.name', 'ASC'),
+                'query_builder' => fn (TenantRepository $r) => $r->createQueryBuilder('t')->orderBy('t.name', \SortDirection::Ascending),
                 'help' => 'sso.help.scope',
             ]);
         }

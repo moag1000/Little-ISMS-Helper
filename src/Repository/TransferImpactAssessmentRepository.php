@@ -32,7 +32,7 @@ class TransferImpactAssessmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('tia')
             ->where('tia.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('tia.createdAt', 'DESC')
+            ->orderBy('tia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -47,7 +47,7 @@ class TransferImpactAssessmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('tia')
             ->where('tia.processingActivity = :pa')
             ->setParameter('pa', $processingActivity)
-            ->orderBy('tia.createdAt', 'DESC')
+            ->orderBy('tia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -64,7 +64,7 @@ class TransferImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('tia.residualRiskRating = :rating')
             ->setParameter('tenant', $tenant)
             ->setParameter('rating', $rating)
-            ->orderBy('tia.createdAt', 'DESC')
+            ->orderBy('tia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -91,7 +91,7 @@ class TransferImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('tia.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', 'draft')
-            ->orderBy('tia.createdAt', 'DESC')
+            ->orderBy('tia.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

@@ -88,8 +88,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
                 . 'OR tr.uploadTenant = :tenant'
             )
             ->setParameter('tenant', $tenant)
-            ->orderBy('cm.updatedAt', 'DESC')
-            ->addOrderBy('cm.id', 'DESC')
+            ->orderBy('cm.updatedAt', \SortDirection::Descending)
+            ->addOrderBy('cm.id', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -111,8 +111,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
                 . 'OR tr.uploadTenant = :tenant'
             )
             ->setParameter('tenant', $tenant)
-            ->orderBy('cm.updatedAt', 'DESC')
-            ->addOrderBy('cm.id', 'DESC')
+            ->orderBy('cm.updatedAt', \SortDirection::Descending)
+            ->addOrderBy('cm.id', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -182,7 +182,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cm')
             ->where('cm.sourceRequirement = :requirement')
             ->setParameter('requirement', $requirement)
-            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -198,7 +198,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('cm')
             ->where('cm.sourceRequirement = :requirement')
             ->setParameter('requirement', $complianceRequirement)
-            ->orderBy('cm.mappingPercentage', 'DESC');
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending);
         $this->applyOperationalStateFilter($qb);
 
         return $qb->getQuery()->getResult();
@@ -215,7 +215,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('cm')
             ->where('cm.targetRequirement = :requirement')
             ->setParameter('requirement', $complianceRequirement)
-            ->orderBy('cm.mappingPercentage', 'DESC');
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending);
         $this->applyOperationalStateFilter($qb);
 
         return $qb->getQuery()->getResult();
@@ -246,7 +246,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->leftJoin('tr.framework', 'tf')
             ->where('cm.sourceRequirement IN (:requirements)')
             ->setParameter('requirements', $requirements)
-            ->orderBy('cm.mappingPercentage', 'DESC');
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending);
         $this->applyOperationalStateFilter($qb);
         $mappings = $qb->getQuery()->getResult();
 
@@ -280,7 +280,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->leftJoin('sr.framework', 'sf')
             ->where('cm.targetRequirement IN (:requirements)')
             ->setParameter('requirements', $requirements)
-            ->orderBy('cm.mappingPercentage', 'DESC');
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending);
         $this->applyOperationalStateFilter($qb);
         $mappings = $qb->getQuery()->getResult();
 
@@ -319,7 +319,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('sr.framework != :target')
             ->setParameter('target', $targetFramework)
             ->groupBy('sr.framework')
-            ->orderBy('mapping_count', 'DESC');
+            ->orderBy('mapping_count', \SortDirection::Descending);
         $this->applyOperationalStateFilter($qb);
         $rows = $qb->getQuery()->getResult();
 
@@ -364,7 +364,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('tr.framework = :targetFramework')
             ->setParameter('sourceFramework', $sourceFramework)
             ->setParameter('targetFramework', $targetFramework)
-            ->orderBy('cm.mappingPercentage', 'DESC');
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending);
         $this->applyOperationalStateFilter($qb);
 
         return $qb->getQuery()->getResult();
@@ -400,7 +400,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('tf IN (:frameworks)')
             ->andWhere('sf != tf')
             ->setParameter('frameworks', $frameworks)
-            ->orderBy('cm.mappingPercentage', 'DESC');
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending);
         $this->applyOperationalStateFilter($qb);
         $mappings = $qb->getQuery()->getResult();
 
@@ -433,7 +433,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('cm.mappingPercentage >= 100')
             ->setParameter('sourceFramework', $sourceFramework)
             ->setParameter('targetFramework', $targetFramework)
-            ->orderBy('cm.mappingPercentage', 'DESC');
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending);
         $this->applyOperationalStateFilter($qb);
 
         return $qb->getQuery()->getResult();
@@ -682,7 +682,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('tr.framework = :targetFramework')
             ->setParameter('requirement', $complianceRequirement)
             ->setParameter('targetFramework', $complianceFramework)
-            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending)
             ->setMaxResults(1);
         $this->applyOperationalStateFilter($qbOut);
         $outboundMappings = $qbOut->getQuery()->getResult();
@@ -698,7 +698,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('sr.framework = :targetFramework')
             ->setParameter('requirement', $complianceRequirement)
             ->setParameter('targetFramework', $complianceFramework)
-            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->orderBy('cm.mappingPercentage', \SortDirection::Descending)
             ->setMaxResults(1);
         $this->applyOperationalStateFilter($qbIn);
         $inboundMappings = $qbIn->getQuery()->getResult();
@@ -1330,8 +1330,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('cm.reviewStatus = :status')
             ->setParameter('requiresReview', true)
             ->setParameter('status', 'unreviewed')
-            ->orderBy('cm.analysisConfidence', 'ASC')
-            ->addOrderBy('cm.qualityScore', 'ASC')
+            ->orderBy('cm.analysisConfidence', \SortDirection::Ascending)
+            ->addOrderBy('cm.qualityScore', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -1347,7 +1347,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cm')
             ->where('cm.analysisConfidence < :threshold')
             ->setParameter('threshold', $confidenceThreshold)
-            ->orderBy('cm.analysisConfidence', 'ASC')
+            ->orderBy('cm.analysisConfidence', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -1363,7 +1363,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cm')
             ->where('cm.qualityScore < :threshold')
             ->setParameter('threshold', $qualityThreshold)
-            ->orderBy('cm.qualityScore', 'ASC')
+            ->orderBy('cm.qualityScore', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -1378,7 +1378,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('cm')
             ->where('cm.manualPercentage IS NOT NULL')
-            ->orderBy('cm.updatedAt', 'DESC')
+            ->orderBy('cm.updatedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -1514,7 +1514,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('cm.provenanceUrl IS NOT NULL')
             ->andWhere("cm.provenanceUrl <> ''")
             ->andWhere("cm.confidence IN ('high', 'medium', 'low')")
-            ->orderBy('cm.id', 'ASC')
+            ->orderBy('cm.id', \SortDirection::Ascending)
             ->setFirstResult($offset);
 
         if ($limit !== null) {
@@ -1576,7 +1576,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->where('cm.calculatedPercentage IS NOT NULL')
             ->andWhere('ABS(cm.calculatedPercentage - cm.mappingPercentage) >= :threshold')
             ->setParameter('threshold', $discrepancyThreshold)
-            ->orderBy('ABS(cm.calculatedPercentage - cm.mappingPercentage)', 'DESC')
+            ->orderBy('ABS(cm.calculatedPercentage - cm.mappingPercentage)', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -1595,7 +1595,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->where('sr.framework = :framework')
             ->andWhere('cm.qualityScore IS NOT NULL')
             ->setParameter('framework', $complianceFramework)
-            ->orderBy('cm.qualityScore', 'DESC')
+            ->orderBy('cm.qualityScore', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -1622,7 +1622,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->join('tr.framework', 'tf')
             ->where('cm.calculatedPercentage IS NOT NULL')
             ->groupBy('sf.code, tf.code')
-            ->orderBy('avg_quality', 'DESC')
+            ->orderBy('avg_quality', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -1637,7 +1637,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cm')
             ->where('cm.reviewStatus = :status')
             ->setParameter('status', $status)
-            ->orderBy('cm.qualityScore', 'ASC')
+            ->orderBy('cm.qualityScore', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

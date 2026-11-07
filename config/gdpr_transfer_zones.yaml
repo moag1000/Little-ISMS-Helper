@@ -1,0 +1,23 @@
+# GDPR transfer zones per country (ISO 3166-1 alpha-2), used by the location
+# map (layer "Drittland"), the supplier chain check and the DORA register's
+# EEA flag. Versioned in the repo, not an admin setting: update it with a
+# release when the EU Commission adopts, renews or revokes a decision, and set
+# as_of to the day you checked the list.
+# Source: https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en
+# Gate: scripts/quality/check_gdpr_transfer_zones.py fails when as_of is older than 12 months.
+as_of: '2026-11-06'
+
+# EU-27. Art. 3 GDPR applies directly.
+eu: [AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK]
+
+# EEA members outside the EU (GDPR applies via the EEA Agreement).
+eea_extra: [IS, LI, NO]
+
+# Art. 45 adequacy decisions for whole countries or territories.
+# CA covers commercial organisations under PIPEDA only. GB renewed until 2031-12-27.
+# BR: Implementing Decision (EU) 2026/179 of 2026-01-26.
+adequacy: [AD, AR, BR, CA, CH, FO, GB, GG, IL, IM, JE, JP, KR, NZ, UY]
+
+# Adequacy only for recipients certified under the EU-US Data Privacy Framework
+# (Implementing Decision (EU) 2023/1795). Other US recipients need Art. 46 safeguards.
+dpf: [US]

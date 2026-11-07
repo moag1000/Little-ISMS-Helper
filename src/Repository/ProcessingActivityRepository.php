@@ -30,7 +30,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pa')
             ->where('pa.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('pa.name', 'ASC')
+            ->orderBy('pa.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -50,7 +50,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->andWhere('pa.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', ProcessingActivityStatus::Published->value)
-            ->orderBy('pa.name', 'ASC')
+            ->orderBy('pa.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -69,7 +69,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->setParameter('special', true)
             ->setParameter('automated', true)
             ->setParameter('dpiaCompleted', false)
-            ->orderBy('pa.name', 'ASC')
+            ->orderBy('pa.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -84,7 +84,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->andWhere('pa.hasThirdCountryTransfer = :hasTransfer')
             ->setParameter('tenant', $tenant)
             ->setParameter('hasTransfer', true)
-            ->orderBy('pa.name', 'ASC')
+            ->orderBy('pa.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -99,7 +99,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->andWhere('pa.processesSpecialCategories = :processesSpecial')
             ->setParameter('tenant', $tenant)
             ->setParameter('processesSpecial', true)
-            ->orderBy('pa.name', 'ASC')
+            ->orderBy('pa.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -127,7 +127,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->andWhere('pa.nextReviewDate <= :today')
             ->setParameter('tenant', $tenant)
             ->setParameter('today', $today)
-            ->orderBy('pa.nextReviewDate', 'ASC')
+            ->orderBy('pa.nextReviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -204,7 +204,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->andWhere('pa.name LIKE :query OR pa.description LIKE :query')
             ->setParameter('tenant', $tenant)
             ->setParameter('query', '%' . $query . '%')
-            ->orderBy('pa.name', 'ASC')
+            ->orderBy('pa.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -267,7 +267,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->andWhere('pa.tenant = :tenant')
             ->setParameter('supplier', $supplier)
             ->setParameter('tenant', $supplier->getTenant())
-            ->orderBy('pa.name', 'ASC')
+            ->orderBy('pa.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

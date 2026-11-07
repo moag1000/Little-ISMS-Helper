@@ -27,7 +27,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('p')
             ->andWhere('p.authorized = :authorized')
             ->setParameter('authorized', false)
-            ->orderBy('p.accessTime', 'DESC');
+            ->orderBy('p.accessTime', \SortDirection::Descending);
 
         if ($startDate instanceof DateTime) {
             $queryBuilder->andWhere('p.accessTime >= :startDate')
@@ -50,7 +50,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('p')
             ->andWhere('p.accessType = :type')
             ->setParameter('type', 'denied')
-            ->orderBy('p.accessTime', 'DESC');
+            ->orderBy('p.accessTime', \SortDirection::Descending);
 
         if ($startDate instanceof DateTime) {
             $queryBuilder->andWhere('p.accessTime >= :startDate')
@@ -73,7 +73,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('p')
             ->andWhere('p.accessType = :type')
             ->setParameter('type', 'forced_entry')
-            ->orderBy('p.accessTime', 'DESC');
+            ->orderBy('p.accessTime', \SortDirection::Descending);
 
         if ($startDate instanceof DateTime) {
             $queryBuilder->andWhere('p.accessTime >= :startDate')
@@ -96,7 +96,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('p')
             ->andWhere('p.afterHours = :afterHours')
             ->setParameter('afterHours', true)
-            ->orderBy('p.accessTime', 'DESC');
+            ->orderBy('p.accessTime', \SortDirection::Descending);
 
         if ($startDate instanceof DateTime) {
             $queryBuilder->andWhere('p.accessTime >= :startDate')
@@ -118,7 +118,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('p')
             ->andWhere('p.alertLevel IS NOT NULL')
-            ->orderBy('p.accessTime', 'DESC');
+            ->orderBy('p.accessTime', \SortDirection::Descending);
 
         if ($startDate instanceof DateTime) {
             $queryBuilder->andWhere('p.accessTime >= :startDate')
@@ -141,7 +141,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('p')
             ->andWhere('p.personName LIKE :personName')
             ->setParameter('personName', '%' . $personName . '%')
-            ->orderBy('p.accessTime', 'DESC');
+            ->orderBy('p.accessTime', \SortDirection::Descending);
 
         if ($startDate instanceof DateTime) {
             $queryBuilder->andWhere('p.accessTime >= :startDate')
@@ -164,7 +164,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('p')
             ->andWhere('p.location = :location')
             ->setParameter('location', $location)
-            ->orderBy('p.accessTime', 'DESC');
+            ->orderBy('p.accessTime', \SortDirection::Descending);
 
         if ($startDate instanceof DateTime) {
             $queryBuilder->andWhere('p.accessTime >= :startDate')
@@ -315,7 +315,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
             )
             ->setParameter('unauthorized', false)
             ->setParameter('incidentTypes', ['denied', 'forced_entry'])
-            ->orderBy('p.accessTime', 'DESC');
+            ->orderBy('p.accessTime', \SortDirection::Descending);
 
         return $queryBuilder->getQuery()->getResult();
     }

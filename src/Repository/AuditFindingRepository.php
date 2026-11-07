@@ -32,8 +32,8 @@ class AuditFindingRepository extends ServiceEntityRepository
             ->andWhere('f.status NOT IN (:done)')
             ->setParameter('tenant', $tenant)
             ->setParameter('done', AuditFindingStatus::doneValues())
-            ->orderBy('f.severity', 'ASC')
-            ->addOrderBy('f.createdAt', 'DESC')
+            ->orderBy('f.severity', \SortDirection::Ascending)
+            ->addOrderBy('f.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -56,8 +56,8 @@ class AuditFindingRepository extends ServiceEntityRepository
             ->andWhere('lr.id IS NULL')
             ->setParameter('tenant', $tenant)
             ->setParameter('done', AuditFindingStatus::doneValues())
-            ->orderBy('f.severity', 'ASC')
-            ->addOrderBy('f.createdAt', 'DESC')
+            ->orderBy('f.severity', \SortDirection::Ascending)
+            ->addOrderBy('f.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
