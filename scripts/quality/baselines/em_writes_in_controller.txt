@@ -16,11 +16,11 @@ src/Controller/Admin/AdminReportStyleController.php:180
 src/Controller/Admin/ComplianceImportController.php:707
 src/Controller/Admin/ComplianceImportController.php:712
 src/Controller/Admin/ComplianceImportController.php:739
-src/Controller/Admin/DataRepairController.php:613
-src/Controller/Admin/DataRepairController.php:662
-src/Controller/Admin/DataRepairController.php:711
-src/Controller/Admin/DataRepairController.php:1075
-src/Controller/Admin/DataRepairController.php:1080
+src/Controller/Admin/DataRepairController.php:610
+src/Controller/Admin/DataRepairController.php:659
+src/Controller/Admin/DataRepairController.php:708
+src/Controller/Admin/DataRepairController.php:1072
+src/Controller/Admin/DataRepairController.php:1077
 src/Controller/Admin/IncidentSlaConfigController.php:55
 src/Controller/Admin/IncidentSlaConfigController.php:103
 src/Controller/Admin/KpiThresholdConfigController.php:107
