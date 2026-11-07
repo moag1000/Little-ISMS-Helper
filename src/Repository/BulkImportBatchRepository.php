@@ -27,7 +27,7 @@ class BulkImportBatchRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('b')
             ->andWhere('b.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('b.createdAt', 'DESC')
+            ->orderBy('b.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -43,7 +43,7 @@ class BulkImportBatchRepository extends ServiceEntityRepository
             ->andWhere('b.entityType = :entityType')
             ->setParameter('tenant', $tenant)
             ->setParameter('entityType', $entityType)
-            ->orderBy('b.createdAt', 'DESC')
+            ->orderBy('b.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

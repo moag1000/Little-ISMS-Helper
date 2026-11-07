@@ -255,7 +255,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 ],
                 'query_builder' => function ($r) {
                     /** @var AssetRepository $r */
-                    $qb = $r->createQueryBuilder('a')->orderBy('a.name', 'ASC');
+                    $qb = $r->createQueryBuilder('a')->orderBy('a.name', \SortDirection::Ascending);
                     $tenant = $this->tenantContext->getCurrentTenant();
                     if ($tenant !== null) {
                         $qb->andWhere('a.tenant = :tenant')->setParameter('tenant', $tenant);

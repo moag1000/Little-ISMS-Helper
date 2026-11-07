@@ -37,7 +37,7 @@ class AssetDependencyRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('d')
             ->where('d.sourceAsset = :asset')
             ->setParameter('asset', $asset)
-            ->orderBy('d.id', 'ASC')
+            ->orderBy('d.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -53,7 +53,7 @@ class AssetDependencyRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('d')
             ->where('d.targetAsset = :asset')
             ->setParameter('asset', $asset)
-            ->orderBy('d.id', 'ASC')
+            ->orderBy('d.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -70,7 +70,7 @@ class AssetDependencyRepository extends ServiceEntityRepository
             ->innerJoin('d.sourceAsset', 'src')
             ->where('src.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('d.id', 'ASC')
+            ->orderBy('d.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

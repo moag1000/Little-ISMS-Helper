@@ -590,6 +590,8 @@ Compliance audit trail: [`docs/archive/FORM_AUDIT_2026-05.md`](docs/archive/FORM
 - JSON/AJAX controller actions catch `\Throwable`, never bare `\Exception` — otherwise an
   `\Error` escapes as an HTML 500 the fetch() caller cannot parse (CI Gate 64,
   `scripts/quality/check_json_catch_throwable.py`)
+- Doctrine ORM sort directions are `\SortDirection::Ascending` / `\SortDirection::Descending`, never `'ASC'`/`'DESC'`
+  strings — `orderBy()`, `addOrderBy()` and `#[ORM\OrderBy]` (doctrine/orm 3.7 deprecation, Gate 81).
 - File size is ratcheted (Gate 25, `check_god_class_size.py`): every file in `src/` has a per-kind
   LOC limit (controller 600, service 1500 / 15 ctor deps, entity 1000, repository 600, command 800,
   rest 800). Files already over it are listed in `scripts/quality/baselines/god_class_size.txt` and

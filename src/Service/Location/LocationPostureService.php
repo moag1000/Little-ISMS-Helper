@@ -55,6 +55,9 @@ class LocationPostureService implements ResetInterface
     /** @var array<string, list<array<string, mixed>>> "<tenant>:<viewer>" => rows, for the request */
     private array $memo = [];
 
+    /** @var array<int, array<int, int>> tenant id => (location id => site id), for the request */
+    private array $roots = [];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly LocationGeocoder $geocoder,
@@ -69,9 +72,25 @@ class LocationPostureService implements ResetInterface
         return $this->memo[$tenant->getId() . ':' . $viewer?->getId()] ??= $this->compute($tenant, $viewer);
     }
 
+    /**
+     * Site (top-level location) of every location of the tenant, so other
+     * layers place their records on the same pins.
+     *
+     * @return array<int, int> location id => site id
+     */
+    public function siteOfLocations(Tenant $tenant): array
+    {
+        if (!isset($this->roots[(int) $tenant->getId()])) {
+            $this->forTenant($tenant);
+        }
+
+        return $this->roots[(int) $tenant->getId()] ?? [];
+    }
+
     public function reset(): void
     {
         $this->memo = [];
+        $this->roots = [];
     }
 
     /**
@@ -81,6 +100,7 @@ class LocationPostureService implements ResetInterface
     {
         /** @var list<Location> $locations */
         $locations = $this->em->getRepository(Location::class)->findBy(['tenant' => $tenant], ['name' => 'ASC']);
+        $this->roots[(int) $tenant->getId()] = [];
         if ($locations === []) {
             return [];
         }
@@ -93,6 +113,7 @@ class LocationPostureService implements ResetInterface
         foreach ($locations as $location) {
             $rootOf[$location->getId()] = $this->rootId($location, $byId);
         }
+        $this->roots[(int) $tenant->getId()] = $rootOf;
 
         $sites = [];
         foreach ($locations as $location) {

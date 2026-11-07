@@ -37,7 +37,7 @@ class NotificationRuleRepository extends ServiceEntityRepository
             ->andWhere('r.isActive = true')
             ->setParameter('eventType', $eventType)
             ->setParameter('tenant', $tenant)
-            ->orderBy('r.name', 'ASC')
+            ->orderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

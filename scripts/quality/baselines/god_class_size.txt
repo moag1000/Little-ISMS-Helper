@@ -38,7 +38,7 @@ src/Controller/AssetController.php:LOC=759 deps=0
 src/Controller/QuickFixController.php:LOC=733 deps=0
 src/Controller/DPIAController.php:LOC=723 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
-src/Controller/AuditController.php:LOC=678 deps=0
+src/Controller/AuditController.php:LOC=674 deps=0
 src/Controller/AnalyticsController.php:LOC=671 deps=0
 src/Controller/MonitoringController.php:LOC=646 deps=0
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=625 deps=0

@@ -47,7 +47,7 @@ final class ReSignAuditLogCommand
         $qb = $this->repository->createQueryBuilder('a')
             ->where('a.id > :after')
             ->setParameter('after', $after)
-            ->orderBy('a.id', 'ASC');
+            ->orderBy('a.id', \SortDirection::Ascending);
 
         $count = (int) (clone $qb)->select('COUNT(a.id)')->getQuery()->getSingleScalarResult();
         $io->title(sprintf('Re-signing %d audit-log rows%s', $count, $dryRun ? ' (dry-run)' : ''));

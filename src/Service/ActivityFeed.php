@@ -138,7 +138,7 @@ final class ActivityFeed
             $docs = $this->documentRepo->createQueryBuilder('d')
                 ->andWhere('d.tenant = :tenant')
                 ->setParameter('tenant', $tenant)
-                ->orderBy('d.id', 'DESC')
+                ->orderBy('d.id', \SortDirection::Descending)
                 ->setMaxResults(15)
                 ->getQuery()
                 ->getResult();
@@ -162,7 +162,7 @@ final class ActivityFeed
             $risks = $this->riskRepo->createQueryBuilder('r')
                 ->andWhere('r.tenant = :tenant')
                 ->setParameter('tenant', $tenant)
-                ->orderBy('r.id', 'DESC')
+                ->orderBy('r.id', \SortDirection::Descending)
                 ->setMaxResults(15)
                 ->getQuery()
                 ->getResult();

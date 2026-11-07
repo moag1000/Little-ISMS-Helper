@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Setup;
 
+use App\Privacy\GdprTransferZones;
+
 /**
  * SetupRecommendationEngine — extracted from DeploymentWizardController (god-class split).
  *
@@ -48,7 +50,7 @@ final class SetupRecommendationEngine
 
         $isDACH = in_array($country, ['DE', 'AT', 'CH'], true);
         $isGermany = $country === 'DE';
-        $isEU = in_array($country, ['DE', 'AT', 'BE', 'DK', 'FI', 'FR', 'IT', 'LU', 'NL', 'PL', 'ES', 'SE', 'CZ', 'EU_OTHER'], true);
+        $isEU = $country === 'EU_OTHER' || GdprTransferZones::isEu($country);
 
         // Use ISO 27701 for DACH region (covers GDPR), otherwise recommend GDPR
         $privacyFramework = $isDACH ? 'ISO27701' : 'GDPR';

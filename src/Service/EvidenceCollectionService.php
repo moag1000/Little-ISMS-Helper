@@ -214,7 +214,7 @@ final class EvidenceCollectionService
             ->andWhere('d.isArchived = false')
             ->setParameter('tenant', $tenant)
             ->setParameter('category', 'evidence')
-            ->orderBy('d.uploadedAt', 'DESC')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

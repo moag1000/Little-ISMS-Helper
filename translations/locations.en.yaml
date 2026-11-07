@@ -148,10 +148,25 @@ location:
             owner:
                 label: 'My locations'
                 question: 'What is open at my location?'
+            bcm:
+                label: 'BCM'
+                question: 'Which critical site has no exercised plan?'
+            dpo:
+                label: 'Data protection'
+                question: 'Where does data flow outside the EU?'
+            auditor:
+                label: 'Audit'
+                question: 'Which sites go into the sample?'
+            group:
+                label: 'Group'
+                question: 'Where does each company stand?'
         layer:
             aria: 'Map layer'
             risk: 'Current risk'
             gaps: Checks
+            emergency: 'Emergency'
+            thirdcountry: 'Third country'
+            audit: 'Audit'
         zoom:
             aria: Zoom
             in: 'Zoom in'
@@ -172,6 +187,15 @@ location:
             gaps_none: 'all met'
             gaps_some: '1 to 2 open'
             gaps_many: '3 or more open'
+            emergency_ok: 'plan tested'
+            emergency_warn: 'plan untested'
+            emergency_danger: 'process without plan'
+            emergency_none: 'no critical process'
+            audit_ok: '≤ 12 months'
+            audit_warn: '≤ 3 years or planned'
+            audit_danger: '> 3 years, none planned'
+            audit_none: '–'
+            supplier: 'square = suppliers in the country'
         col:
             place: Place
             protection: 'Protection need'
@@ -263,6 +287,93 @@ location:
                 rate: 'Passed (%)'
                 peer: Comparison
                 ale: 'Expected annual loss'
+            map_alt: 'World map with the sites'
+            map_legend: 'Shape and colour = risk: circle low, triangle medium, diamond high, diamond with ring critical, grey not rated. Size = protection requirement.'
+        zone:
+            eea: 'EU/EEA'
+            adequacy: 'Adequacy decision'
+            dpf: 'USA (DPF)'
+            third: 'Third country'
+            unknown: 'Country unknown'
+            as_of: 'List as of %date%'
+            basis:
+                eea: 'no transfer under GDPR Chapter V'
+                adequacy: 'Art. 45 GDPR'
+                dpf: 'Art. 45 only for DPF-certified recipients, otherwise Art. 46'
+                third: 'Art. 46 safeguards or an Art. 49 derogation needed'
+                unknown: '–'
+            site:
+                eea: 'no transfer'
+                adequacy: 'transfer permitted (Art. 45)'
+                dpf: 'intra-group transfer needs safeguards (BCR/SCC)'
+                third: 'intra-group transfer needs safeguards (BCR/SCC)'
+        emergency:
+            title: 'Business continuity (ISO 22301 8.4)'
+            none: 'No critical business process with assets at this site.'
+            state:
+                ok: 'Plan tested on %date%'
+                untested: 'Plan not tested in the last 12 months'
+                draft: 'Plan only a draft'
+                missing: 'No continuity plan'
+            cell:
+                ok: 'tested'
+                warn: '%untested% untested'
+                danger: '%missing% without plan'
+            alt: 'Alternative site: %site%'
+            fix_plan: 'Create a continuity plan'
+        audit:
+            title: 'Internal audit (ISO 27001 9.2)'
+            last: 'Last audited %date%'
+            next: 'Next audit %date%'
+            never: 'Never audited'
+            none_planned: 'No audit planned'
+        sample:
+            title: 'Sample: %count% of %total% sites'
+            help: 'Proposal per IAF MD 1: √n of the active sites, first those without an audit for 3 years, then by time since the last audit and current risk. Add a random part yourself. The PDF export records the state on the cut-off date.'
+            mark: 'sample'
+            in_sample: 'In the proposed sample.'
+        suppliers:
+            title: 'Suppliers with personal data (%count%)'
+            unplaced: '%count% suppliers without a processing location or head-office country are not on the map.'
+            col:
+                supplier: 'Supplier'
+                locations: 'Processing locations'
+                chain: 'Subcontractors'
+                status: 'Assessment'
+            empty: 'No suppliers with a processing location.'
+            tier: 'Tier %tier%:'
+            band:
+                ok: 'permitted'
+                warn: 'check safeguards'
+                danger: 'third country without safeguard'
+                none: 'country unknown'
+            here: 'Processing here (%count%)'
+            sub_of: 'tier %tier% for %supplier%'
+            safeguard: 'Safeguard: %safeguard%'
+            tia: '%total% transfer impact assessments, %assessed% assessed.'
+            no_tia: 'No transfer impact assessment for this country.'
+            tia_link: 'Go to processing activities'
+        group:
+            title: 'Companies compared'
+            company: 'Company'
+            sites: 'Sites'
+            critical: 'Critical'
+        event:
+            title: 'Event in a country'
+            country: 'Country'
+            choose: 'Choose a country …'
+            show: 'Show'
+            summary: '%country%: %sites% sites, %assets% assets, %processes% business processes, %plans% continuity plans affected.'
+            sites: 'Sites'
+            processes: 'Business processes'
+            plans: 'Continuity plans'
+            teams_assigned: 'Crisis team of the affected plans'
+            teams_all: 'Crisis teams (not assigned to a plan)'
+            activate: 'Activate %team%'
+            confirm: 'Activate crisis team %team% now? The activation is logged.'
+            no_team: 'No active crisis team.'
+            new_team: 'Create a crisis team'
+            none: 'No active sites in this country.'
     profile:
         title: 'Site profile'
         checks: 'Open checks'

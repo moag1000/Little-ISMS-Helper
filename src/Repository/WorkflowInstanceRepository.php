@@ -45,7 +45,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('wi')
             ->where('wi.status IN (:statuses)')
             ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
-            ->orderBy('wi.startedAt', 'DESC')
+            ->orderBy('wi.startedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -64,7 +64,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->andWhere('wi.status IN (:statuses)')
             ->setParameter('tenant', $tenant)
             ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
-            ->orderBy('wi.startedAt', 'DESC')
+            ->orderBy('wi.startedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -81,7 +81,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->andWhere('wi.dueDate < :now')
             ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->setParameter('now', new DateTimeImmutable())
-            ->orderBy('wi.dueDate', 'ASC')
+            ->orderBy('wi.dueDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -102,7 +102,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->setParameter('now', new DateTimeImmutable())
-            ->orderBy('wi.dueDate', 'ASC')
+            ->orderBy('wi.dueDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -121,7 +121,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->andWhere('wi.entityId = :entityId')
             ->setParameter('entityType', $entityType)
             ->setParameter('entityId', $entityId)
-            ->orderBy('wi.startedAt', 'DESC')
+            ->orderBy('wi.startedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -147,7 +147,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->setParameter('entityTypes', $entityTypes)
             ->setParameter('ids', $entityIds)
             ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
-            ->orderBy('wi.startedAt', 'DESC')
+            ->orderBy('wi.startedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -192,7 +192,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->innerJoin('wi.currentStep', 'step')->addSelect('step')
             ->where('wi.status IN (:statuses)')
             ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
-            ->orderBy('wi.dueDate', 'ASC');
+            ->orderBy('wi.dueDate', \SortDirection::Ascending);
         if ($tenant instanceof Tenant) {
             $queryBuilder->andWhere('wi.tenant = :tenant')->setParameter('tenant', $tenant);
         }
@@ -233,7 +233,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->setParameter('now', new DateTimeImmutable())
             ->setParameter('within', $within)
-            ->orderBy('wi.dueDate', 'ASC')
+            ->orderBy('wi.dueDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

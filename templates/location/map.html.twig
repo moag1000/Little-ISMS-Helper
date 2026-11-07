@@ -8,15 +8,21 @@
 {% block title %}{{ 'location.map.title'|trans({}, 'locations') }}{% endblock %}
 
 {% block body %}
-{% set _lens_layer = { ciso: 'risk', isb: 'gaps', cm: 'gaps', owner: 'risk' } %}
+{% set _lens_layer = { ciso: 'risk', isb: 'gaps', cm: 'gaps', bcm: 'emergency', dpo: 'thirdcountry', auditor: 'audit', owner: 'risk', group: 'risk' } %}
+{% set _layer = _lens_layer[lens] in layers ? _lens_layer[lens] : 'risk' %}
 {% set _sites = lens == 'owner' ? sites|filter(s => s.mine) : sites %}
 {% set _lens_kpis = {
     ciso: ['location_critical_sites', 'location_checks_rate', 'overdue_treatments', 'fte_saved_days'],
     isb: ['location_open_gaps', 'location_checks_rate', 'overdue_treatments', 'open_incidents'],
     cm: ['location_checks_rate', 'location_open_gaps', 'control_compliance', 'fte_saved_days'],
-    owner: []
+    bcm: ['location_emergency_gaps', 'bia_coverage', 'location_checks_rate'],
+    dpo: ['location_third_country_chains', 'location_checks_rate'],
+    auditor: ['location_audit_overdue', 'location_checks_rate', 'open_audit_findings'],
+    owner: [],
+    group: []
 } %}
-{% set _read_only = is_granted('ROLE_AUDITOR') and not is_granted('ROLE_MANAGER') %}
+{# Auditors and the group view see the map read-only: no quick actions, no bulk. #}
+{% set _read_only = (is_granted('ROLE_AUDITOR') and not is_granted('ROLE_MANAGER')) or group %}
 {% set _gap_fix = {
     owner: 'edit', deputy: 'edit', access_control: 'edit', camera: 'edit',
     risks_treated: 'risks', incidents_closed: 'incidents'
@@ -45,7 +51,11 @@
       data-controller="location-map"
       data-location-map-sites-value="{{ _sites|json_encode|e('html_attr') }}"
       data-location-map-world-url-value="{{ asset('data/world-map.json') }}"
-      data-location-map-layer-value="{{ _lens_layer[lens] }}"
+      data-location-map-layer-value="{{ _layer }}"
+      data-location-map-layers-value="{{ layers|json_encode|e('html_attr') }}"
+      data-location-map-zones-value="{{ zones|json_encode|e('html_attr') }}"
+      data-location-map-countries-value="{{ (suppliers.countries ?? [])|json_encode|e('html_attr') }}"
+      data-location-map-chains-value="{{ (suppliers.suppliers ?? [])|map(c => { id: c.id, locations: c.locations|map(l => l.code), chain: c.chain|filter(l => l.code)|map(l => { code: l.code, band: l.band }) })|json_encode|e('html_attr') }}"
       data-location-map-focus-value="{{ lens == 'cm' ? 'true' : 'false' }}">
 
     {% include 'location/_view_switch.html.twig' with { active: 'map' } %}
@@ -88,13 +98,15 @@
         }) }}
 
         {% set _layer_items = [] %}
-        {% for _layer in ['risk', 'gaps'] %}
+        {% set _layer_index = 0 %}
+        {% for _l in layers %}
             {% set _layer_items = _layer_items|merge([{
-                label: ('location.map.layer.' ~ _layer)|trans({}, 'locations'),
-                attrs: { 'data-layer': _layer, 'data-location-map-target': 'layerButton', 'data-action': 'location-map#setLayer' }
+                label: ('location.map.layer.' ~ _l)|trans({}, 'locations'),
+                attrs: { 'data-layer': _l, 'data-location-map-target': 'layerButton', 'data-action': 'location-map#setLayer' }
             }]) %}
+            {% if _l == _layer %}{% set _layer_index = loop.index0 %}{% endif %}
         {% endfor %}
-        {{ _fa_filter_chip.group(_layer_items, _lens_layer[lens] == 'gaps' ? 1 : 0, {
+        {{ _fa_filter_chip.group(_layer_items, _layer_index, {
             ariaLabel: 'location.map.layer.aria'|trans({}, 'locations')
         }) }}
 
@@ -132,9 +144,21 @@
             <svg class="location-map__svg" data-location-map-target="svg" viewBox="0 0 1000 437"
                  role="img" aria-label="{{ 'location.map.aria'|trans({ '%count%': _sites|length }, 'locations') }}">
                 <rect class="location-map__sea" x="-2000" y="-2000" width="5000" height="5000"></rect>
+                <defs>
+                    {# "Farbe nie allein": third countries hatched, USA dotted. #}
+                    <pattern id="location-map-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                        <line x1="0" y1="0" x2="0" y2="6" class="location-map__hatch"></line>
+                    </pattern>
+                    <pattern id="location-map-dots" width="5" height="5" patternUnits="userSpaceOnUse">
+                        <circle cx="2.5" cy="2.5" r="0.9" class="location-map__dot"></circle>
+                    </pattern>
+                </defs>
                 <path class="location-map__land" data-location-map-target="land"></path>
+                <g class="location-map__zones" data-location-map-target="zones" hidden></g>
                 <path class="location-map__borders" data-location-map-target="borders"></path>
+                <g data-location-map-target="chainLines"></g>
                 <g data-location-map-target="pins"></g>
+                <g data-location-map-target="suppliers"></g>
             </svg>
             <div class="location-map__tip" data-location-map-target="tip" hidden></div>
             <div class="location-map__zoom" role="group" aria-label="{{ 'location.map.zoom.aria'|trans({}, 'locations') }}">
@@ -157,6 +181,20 @@
                     <span class="location-map__key location-map__key--ok">{{ 'location.map.legend.gaps_none'|trans({}, 'locations') }}</span>
                     <span class="location-map__key location-map__key--warn">{{ 'location.map.legend.gaps_some'|trans({}, 'locations') }}</span>
                     <span class="location-map__key location-map__key--danger">{{ 'location.map.legend.gaps_many'|trans({}, 'locations') }}</span>
+                </span>
+                {% for _l in ['emergency', 'audit'] %}
+                    <span data-location-map-target="legend" data-layer="{{ _l }}" hidden>
+                        {% for _b in ['ok', 'warn', 'danger', 'none'] %}
+                            <span class="location-map__key location-map__key--{{ _b }}">{{ ('location.map.legend.' ~ _l ~ '_' ~ _b)|trans({}, 'locations') }}</span>
+                        {% endfor %}
+                    </span>
+                {% endfor %}
+                <span data-location-map-target="legend" data-layer="thirdcountry" hidden>
+                    {% for _z in ['eea', 'adequacy', 'dpf', 'third'] %}
+                        <span class="location-map__zone-key location-map__zone-key--{{ _z }}">{{ ('location.map.zone.' ~ _z)|trans({}, 'locations') }}</span>
+                    {% endfor %}
+                    <span class="location-map__key location-map__key--supplier">{{ 'location.map.legend.supplier'|trans({}, 'locations') }}</span>
+                    <span class="text-muted-color">{{ 'location.map.zone.as_of'|trans({ '%date%': date(zones_as_of)|fa_date }, 'locations') }}</span>
                 </span>
             </figcaption>
         </figure>
@@ -184,6 +222,162 @@
                 </ol>
             </div>
         </section>
+    {% endif %}
+
+    {% if group %}
+        <section class="fa-section location-map__companies">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'location.map.group.title'|trans({}, 'locations') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                {% embed '_components/_table.html.twig' with { 'wrapperClass': 'table-container' } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">{{ 'location.map.group.company'|trans({}, 'locations') }}</th>
+                            <th scope="col" class="text-end">{{ 'location.map.group.sites'|trans({}, 'locations') }}</th>
+                            <th scope="col" class="text-end">{{ 'location.map.export.col.rate'|trans({}, 'locations') }}</th>
+                            <th scope="col" class="text-end">{{ 'location.map.col.gaps'|trans({}, 'locations') }}</th>
+                            <th scope="col" class="text-end">{{ 'location.map.group.critical'|trans({}, 'locations') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for _c in group.companies %}
+                            <tr>
+                                <td>{{ _c.name }}</td>
+                                <td class="text-end">{{ _c.sites }}</td>
+                                <td class="text-end">{{ _c.checksRate is not null ? _c.checksRate ~ ' %' : '–' }}</td>
+                                <td class="text-end">{{ _c.gaps }}</td>
+                                <td class="text-end">{{ _c.critical }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if event_countries is not empty %}
+        <section class="fa-section location-map__event" id="location-map-event">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'location.map.event.title'|trans({}, 'locations') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                <form method="get" action="{{ path('app_location_map') }}#location-map-event" class="location-map__event-form" data-turbo="false">
+                    <input type="hidden" name="lens" value="{{ lens }}">
+                    <label class="form-label mb-0" for="location-map-event-country">{{ 'location.map.event.country'|trans({}, 'locations') }}</label>
+                    <select name="event" id="location-map-event-country" class="form-select form-select-sm location-map__bulk-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                        <option value="">{{ 'location.map.event.choose'|trans({}, 'locations') }}</option>
+                        {% for _cc, _n in event_countries %}
+                            <option value="{{ _cc }}" {{ event and event.country == _cc ? 'selected' }}>{{ _cc|country_label }} ({{ _n }})</option>
+                        {% endfor %}
+                    </select>
+                    <noscript><button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'location.map.event.show'|trans({}, 'locations') }}</button></noscript>
+                </form>
+                {% if event %}
+                    <p class="mt-3 mb-2">{{ 'location.map.event.summary'|trans({ '%country%': event.country|country_label, '%sites%': event.sites|length, '%assets%': event.assets, '%processes%': event.processes|length, '%plans%': event.plans|length }, 'locations') }}</p>
+                    <dl class="location-map__event-facts">
+                        <div><dt>{{ 'location.map.event.sites'|trans({}, 'locations') }}</dt>
+                            <dd>{% for _s in event.sites %}<a href="{{ path('app_location_show', { id: _s.id }) }}">{{ _s.name }}</a>{{ not loop.last ? ', ' }}{% endfor %}</dd></div>
+                        <div><dt>{{ 'location.map.event.processes'|trans({}, 'locations') }}</dt>
+                            <dd>{% for _p in event.processes %}<a href="{{ path('app_business_process_show', { id: _p.id }) }}">{{ _p.name }}</a>{{ not loop.last ? ', ' }}{% else %}–{% endfor %}</dd></div>
+                        <div><dt>{{ 'location.map.event.plans'|trans({}, 'locations') }}</dt>
+                            <dd>{% for _p in event.plans %}<a href="{{ path('app_bc_plan_show', { id: _p.id }) }}">{{ _p.name }}</a>{{ not loop.last ? ', ' }}{% else %}–{% endfor %}</dd></div>
+                    </dl>
+                    {% if event.teams is not empty %}
+                        <h3 class="location-map__panel-sub">{{ (event.teams|first).assigned ? 'location.map.event.teams_assigned'|trans({}, 'locations') : 'location.map.event.teams_all'|trans({}, 'locations') }}</h3>
+                        <div class="location-map__actions">
+                            {% for _t in event.teams %}
+                                {% if is_granted('ROLE_MANAGER') %}
+                                    <form method="post" action="{{ path('app_crisis_team_activate', { id: _t.id }) }}" class="d-inline"
+                                          data-controller="ui-actions" data-action="submit->ui-actions#confirm"
+                                          data-ui-actions-message-param="{{ 'location.map.event.confirm'|trans({ '%team%': _t.name }, 'locations') }}"
+                                          data-ui-actions-tone-param="danger">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('activate' ~ _t.id) }}">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">{{ 'location.map.event.activate'|trans({ '%team%': _t.name }, 'locations') }}</button>
+                                    </form>
+                                {% else %}
+                                    <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_crisis_team_show', { id: _t.id }) }}">{{ _t.name }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted-color small mb-0">{{ 'location.map.event.no_team'|trans({}, 'locations') }} <a href="{{ path('app_crisis_team_new') }}">{{ 'location.map.event.new_team'|trans({}, 'locations') }}</a></p>
+                    {% endif %}
+                {% elseif app.request.query.get('event') %}
+                    <p class="text-muted-color small mt-2 mb-0">{{ 'location.map.event.none'|trans({}, 'locations') }}</p>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if lens == 'auditor' and sample.size > 0 %}
+        <section class="fa-section location-map__sample">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'location.map.sample.title'|trans({ '%count%': sample.size, '%total%': _sites|filter(s => s.active)|length }, 'locations') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                <p class="text-muted-color small">{{ 'location.map.sample.help'|trans({}, 'locations') }}</p>
+                <ol class="mb-0">
+                    {% for _s in _sites|filter(s => s.sample) %}
+                        {% set _a = _s.layers.audit %}
+                        <li><a href="{{ path('app_location_show', { id: _s.id }) }}">{{ _s.name }}</a>
+                            <span class="text-muted-color">· {{ _a.last ? 'location.map.audit.last'|trans({ '%date%': date(_a.last.date)|fa_date }, 'locations') : 'location.map.audit.never'|trans({}, 'locations') }}{% if _s.riskBand != 'none' %} · {{ 'location.map.col.risk'|trans({}, 'locations') }} {{ _s.score }}{% endif %}</span></li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if suppliers %}
+        <section class="fa-section location-map__suppliers" data-layer-only="thirdcountry" {{ _layer != 'thirdcountry' ? 'hidden' }}>
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'location.map.suppliers.title'|trans({ '%count%': suppliers.suppliers|length }, 'locations') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                {% if suppliers.unplaced > 0 %}<p class="text-muted-color small">{{ 'location.map.suppliers.unplaced'|trans({ '%count%': suppliers.unplaced }, 'locations') }}</p>{% endif %}
+                {% embed '_components/_table.html.twig' with { 'wrapperClass': 'table-container' } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">{{ 'location.map.suppliers.col.supplier'|trans({}, 'locations') }}</th>
+                            <th scope="col">{{ 'location.map.suppliers.col.locations'|trans({}, 'locations') }}</th>
+                            <th scope="col">{{ 'location.map.suppliers.col.chain'|trans({}, 'locations') }}</th>
+                            <th scope="col">{{ 'location.map.suppliers.col.status'|trans({}, 'locations') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for _c in suppliers.suppliers %}
+                            <tr>
+                                <td><a href="{{ path('app_supplier_show', { id: _c.id }) }}">{{ _c.name }}</a></td>
+                                <td>{% for _l in _c.locations %}{{ _l.code == 'EU' ? 'location.map.area.EU'|trans({}, 'locations') : _l.code }} <small class="text-muted-color">({{ ('location.map.zone.' ~ _l.zone)|trans({}, 'locations') }})</small>{{ not loop.last ? ', ' }}{% endfor %}</td>
+                                <td>{% for _l in _c.chain %}{{ 'location.map.suppliers.tier'|trans({ '%tier%': _l.tier }, 'locations') }} {{ _l.name }}{% if _l.code %} · {{ _l.code }} <small class="text-muted-color">({{ ('location.map.zone.' ~ _l.zone)|trans({}, 'locations') }})</small>{% endif %}{{ not loop.last ? '; ' }}{% else %}–{% endfor %}</td>
+                                <td>{{ ('location.map.suppliers.band.' ~ _c.band)|trans({}, 'locations') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="4" class="text-muted-color">{{ 'location.map.suppliers.empty'|trans({}, 'locations') }}</td></tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        </section>
+        {% for _country in suppliers.countries %}
+            <template data-country-panel="{{ _country.code }}">
+                <h2 class="location-map__panel-title">{{ _country.code == 'EU' ? 'location.map.area.EU'|trans({}, 'locations') : _country.code|country_label }}</h2>
+                <p class="text-muted-color mb-2">{{ ('location.map.zone.' ~ _country.zone)|trans({}, 'locations') }} · {{ ('location.map.zone.basis.' ~ _country.zone)|trans({}, 'locations') }}</p>
+                <h3 class="location-map__panel-sub">{{ 'location.map.suppliers.here'|trans({ '%count%': _country.entries|length }, 'locations') }}</h3>
+                <ul class="location-map__list">
+                    {% for _e in _country.entries %}
+                        {% set _c = suppliers.suppliers|filter(c => c.id == _e.supplier)|first %}
+                        <li>{% if _e.tier == 0 %}<a href="{{ path('app_supplier_show', { id: _e.supplier }) }}">{{ _e.name }}</a>{% else %}{{ _e.name }} <small class="text-muted-color">{{ 'location.map.suppliers.sub_of'|trans({ '%tier%': _e.tier, '%supplier%': _c.name }, 'locations') }}</small>{% endif %}
+                            <br><small>{{ ('location.map.suppliers.band.' ~ _c.band)|trans({}, 'locations') }}{% if _c.safeguard %} · {{ 'location.map.suppliers.safeguard'|trans({ '%safeguard%': _c.safeguard }, 'locations') }}{% endif %}</small></li>
+                    {% endfor %}
+                </ul>
+                {% set _tia = suppliers.tia[_country.code] ?? null %}
+                {% if _country.zone in ['third', 'dpf'] %}
+                    <p class="small mb-0">{{ _tia ? 'location.map.suppliers.tia'|trans({ '%total%': _tia.total, '%assessed%': _tia.assessed }, 'locations') : 'location.map.suppliers.no_tia'|trans({}, 'locations') }}
+                        {% if not _read_only %} <a href="{{ path('app_processing_activity_index') }}">{{ 'location.map.suppliers.tia_link'|trans({}, 'locations') }}</a>{% endif %}</p>
+                {% endif %}
+            </template>
+        {% endfor %}
     {% endif %}
 
     {% if lens == 'cm' %}
@@ -218,6 +412,7 @@
     <form method="post" action="{{ path('app_location_map_bulk') }}" id="location-map-selection" class="location-map__selection">
         <input type="hidden" name="_token" value="{{ csrf_token('location_map_bulk') }}">
         <input type="hidden" name="lens" value="{{ lens }}">
+        {% if not group %}
         <div class="location-map__bulk">
             <span class="text-muted-color">{{ 'location.map.bulk.hint'|trans({}, 'locations') }}</span>
             <button type="submit" data-turbo="false" formaction="{{ path('app_location_map_export', { format: 'xlsx' }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'location.map.export.xlsx'|trans({}, 'locations') }}</button>
@@ -237,38 +432,80 @@
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'location.map.bulk.apply'|trans({}, 'locations') }}</button>
             {% endif %}
         </div>
+        {% endif %}
+    {% set _extra_layers = layers|filter(l => l in ['emergency', 'thirdcountry', 'audit']) %}
+    {% set _cols = 7 + _extra_layers|length %}
     {% embed '_components/_table.html.twig' with { 'wrapperClass': 'table-container' } %}
         {% block table_head %}
             <tr>
-                <th scope="col"><span class="visually-hidden">{{ 'location.map.bulk.select'|trans({}, 'locations') }}</span></th>
+                {% if group %}
+                    <th scope="col">{{ 'location.map.group.company'|trans({}, 'locations') }}</th>
+                {% else %}
+                    <th scope="col"><span class="visually-hidden">{{ 'location.map.bulk.select'|trans({}, 'locations') }}</span></th>
+                {% endif %}
                 <th scope="col">{{ 'location.field.name'|trans({}, 'locations') }}</th>
                 <th scope="col">{{ 'location.map.col.place'|trans({}, 'locations') }}</th>
                 <th scope="col" class="text-end">{{ 'location.map.col.protection'|trans({}, 'locations') }}</th>
                 <th scope="col">{{ 'location.map.col.risk'|trans({}, 'locations') }}</th>
                 <th scope="col">{{ 'location.map.col.gaps'|trans({}, 'locations') }}</th>
+                {% for _l in _extra_layers %}
+                    <th scope="col" data-layer-only="{{ _l }}" {{ _l != _layer ? 'hidden' }}>{{ ('location.map.layer.' ~ _l)|trans({}, 'locations') }}</th>
+                {% endfor %}
                 <th scope="col" class="text-end">{{ 'location.map.col.incidents'|trans({}, 'locations') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
             {% for site in _sites %}
                 <tr data-location-map-target="row" data-site-id="{{ site.id }}" data-action="click->location-map#selectRow" class="location-map__row">
-                    <td><input type="checkbox" class="form-check-input" name="ids[]" value="{{ site.id }}" form="location-map-selection" aria-label="{{ 'location.map.bulk.select_site'|trans({ '%site%': site.name }, 'locations') }}"></td>
-                    <td><a href="{{ path('app_location_show', { id: site.id }) }}">{{ site.name }}</a>{% if site.mine %} <span class="text-muted-color">· {{ 'location.map.mine'|trans({}, 'locations') }}</span>{% endif %}</td>
+                    {% if group %}
+                        <td>{{ site.tenantName }}</td>
+                        <td>{{ site.name }}</td>
+                    {% else %}
+                        <td><input type="checkbox" class="form-check-input" name="ids[]" value="{{ site.id }}" form="location-map-selection" aria-label="{{ 'location.map.bulk.select_site'|trans({ '%site%': site.name }, 'locations') }}"></td>
+                        <td><a href="{{ path('app_location_show', { id: site.id }) }}">{{ site.name }}</a>{% if site.mine %} <span class="text-muted-color">· {{ 'location.map.mine'|trans({}, 'locations') }}</span>{% endif %}{% if site.sample ?? false %} <span class="text-muted-color">· {{ 'location.map.sample.mark'|trans({}, 'locations') }}</span>{% endif %}</td>
+                    {% endif %}
                     <td>{{ (site.area in ['EU', 'WORLD'] ? ('location.map.area.' ~ site.area)|trans({}, 'locations') : [site.city, site.country]|filter(v => v)|join(', ')) ?: '–' }}{% if site.type == 'region' %} <span class="text-muted-color">· {{ 'location.type.region'|trans({}, 'locations') }}</span>{% endif %}</td>
                     <td class="text-end">{{ site.protection ?: '–' }}</td>
                     <td>{% if site.riskBand == 'none' %}<span class="text-muted-color">–</span>{% else %}{{ site.score }} {{ risk_level_label(site.riskBand) }}{% endif %}</td>
                     <td>{{ 'location.map.gaps_of'|trans({ '%count%': site.gaps|length, '%total%': site.checksApplicable }, 'locations') }}</td>
+                    {% for _l in _extra_layers %}
+                        {% set _f = site.layers[_l] ?? { band: 'none' } %}
+                        <td data-layer-only="{{ _l }}" {{ _l != _layer ? 'hidden' }}>
+                            {%- if _l == 'emergency' -%}
+                                {{ _f.band == 'none' ? '–' : ('location.map.emergency.cell.' ~ _f.band)|trans({ '%missing%': _f.missing, '%untested%': _f.untested }, 'locations') }}
+                            {%- elseif _l == 'audit' -%}
+                                {{ _f.last ?? null ? 'location.map.audit.last'|trans({ '%date%': date(_f.last.date)|fa_date }, 'locations') : 'location.map.audit.never'|trans({}, 'locations') }}{% if _f.next ?? null %} · {{ 'location.map.audit.next'|trans({ '%date%': date(_f.next.date)|fa_date }, 'locations') }}{% endif %}
+                            {%- else -%}
+                                {{ ('location.map.zone.' ~ (_f.zone ?? 'unknown'))|trans({}, 'locations') }}
+                            {%- endif -%}
+                        </td>
+                    {% endfor %}
                     <td class="text-end">{{ site.openIncidents }}</td>
                 </tr>
             {% else %}
-                <tr><td colspan="7" class="text-muted-color">{{ 'location.message.no_locations'|trans({}, 'locations') }}</td></tr>
+                <tr><td colspan="{{ _cols }}" class="text-muted-color">{{ 'location.message.no_locations'|trans({}, 'locations') }}</td></tr>
             {% endfor %}
-            <tr data-location-map-target="empty" hidden><td colspan="7" class="text-muted-color">{{ 'location.map.no_action'|trans({}, 'locations') }}</td></tr>
+            <tr data-location-map-target="empty" hidden><td colspan="{{ _cols }}" class="text-muted-color">{{ 'location.map.no_action'|trans({}, 'locations') }}</td></tr>
         {% endblock %}
     {% endembed %}
     </form>
 
     {% for site in _sites %}
+        {% if group %}
+        <template data-site-panel="{{ site.id }}">
+            <h2 class="location-map__panel-title">{{ site.name }}</h2>
+            <p class="text-muted-color mb-2">{{ site.tenantName }} · {{ (site.area in ['EU', 'WORLD'] ? ('location.map.area.' ~ site.area)|trans({}, 'locations') : [site.city, site.country]|filter(v => v)|join(', ')) }}</p>
+            <dl class="location-map__facts">
+                <div><dt>{{ 'location.map.col.protection'|trans({}, 'locations') }}</dt><dd>{{ site.protection ?: '–' }}</dd></div>
+                <div><dt>{{ 'location.map.col.risk'|trans({}, 'locations') }}</dt><dd>{% if site.riskBand == 'none' %}–{% else %}{{ site.score }} {{ risk_level_label(site.riskBand) }}{% endif %}</dd></div>
+                <div><dt>{{ 'location.map.col.gaps'|trans({}, 'locations') }}</dt><dd>{{ 'location.map.gaps_of'|trans({ '%count%': site.gaps|length, '%total%': site.checksApplicable }, 'locations') }}</dd></div>
+                <div><dt>{{ 'location.map.col.incidents'|trans({}, 'locations') }}</dt><dd>{{ site.openIncidents }}</dd></div>
+            </dl>
+            {% if site.gaps is not empty %}
+                <ul class="location-map__list">{% for _g in site.gaps %}<li>{{ ('location.map.check.' ~ _g)|trans({}, 'locations') }} <small class="text-muted-color">{{ check_norms[_g] }}</small></li>{% endfor %}</ul>
+            {% endif %}
+        </template>
+        {% else %}
         <template data-site-panel="{{ site.id }}">
             <h2 class="location-map__panel-title">{{ site.name }}</h2>
             <p class="text-muted-color mb-2">
@@ -337,6 +574,42 @@
                 {% if loop.last %}</ul>{% endif %}
             {% endfor %}
 
+
+            {% if site.layers.emergency ?? null %}
+                {% set _e = site.layers.emergency %}
+                <div data-layer-only="emergency">
+                    <h3 class="location-map__panel-sub">{{ 'location.map.emergency.title'|trans({}, 'locations') }}</h3>
+                    {% for _p in _e.processes %}
+                        {% if loop.first %}<ul class="location-map__checks">{% endif %}
+                        <li class="{{ _p.state == 'ok' ? 'is-ok' : 'is-gap' }}">
+                            <span class="location-map__check-mark" aria-hidden="true">{{ _p.state == 'ok' ? '✓' : '✗' }}</span>
+                            <span><a href="{{ path('app_business_process_show', { id: _p.id }) }}">{{ _p.name }}</a>
+                                <br><small>{{ ('location.map.emergency.state.' ~ _p.state)|trans({ '%date%': _p.tested ? date(_p.tested)|fa_date : '' }, 'locations') }}{% if _p.planId %} · <a href="{{ path('app_bc_plan_show', { id: _p.planId }) }}">{{ _p.planName }}</a>{% endif %}{% if _p.alternativeSite %} · {{ 'location.map.emergency.alt'|trans({ '%site%': _p.alternativeSite }, 'locations') }}{% endif %}</small>
+                                {% if _p.state == 'missing' and not _read_only %}<br><a href="{{ path('app_bc_plan_new') }}">{{ 'location.map.emergency.fix_plan'|trans({}, 'locations') }}</a>{% endif %}
+                            </span>
+                        </li>
+                        {% if loop.last %}</ul>{% endif %}
+                    {% else %}
+                        <p class="text-muted-color small">{{ 'location.map.emergency.none'|trans({}, 'locations') }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if site.layers.audit ?? null %}
+                {% set _a = site.layers.audit %}
+                <div data-layer-only="audit">
+                    <h3 class="location-map__panel-sub">{{ 'location.map.audit.title'|trans({}, 'locations') }}</h3>
+                    <p class="mb-1">{% if _a.last %}<a href="{{ path('app_audit_show', { id: _a.last.id }) }}">{{ 'location.map.audit.last'|trans({ '%date%': date(_a.last.date)|fa_date }, 'locations') }}</a>{% else %}{{ 'location.map.audit.never'|trans({}, 'locations') }}{% endif %}</p>
+                    <p class="mb-1">{% if _a.next %}<a href="{{ path('app_audit_show', { id: _a.next.id }) }}">{{ 'location.map.audit.next'|trans({ '%date%': date(_a.next.date)|fa_date }, 'locations') }}</a>{% else %}<span class="text-muted-color">{{ 'location.map.audit.none_planned'|trans({}, 'locations') }}</span>{% endif %}</p>
+                    {% if site.sample %}<p class="small mb-0">{{ 'location.map.sample.in_sample'|trans({}, 'locations') }}</p>{% endif %}
+                </div>
+            {% endif %}
+            {% if site.layers.thirdcountry ?? null %}
+                {% set _z = site.layers.thirdcountry %}
+                <div data-layer-only="thirdcountry">
+                    <h3 class="location-map__panel-sub">{{ 'location.map.layer.thirdcountry'|trans({}, 'locations') }}</h3>
+                    <p class="mb-0">{{ ('location.map.zone.' ~ _z.zone)|trans({}, 'locations') }}{% if _z.zone != 'unknown' %} · <small class="text-muted-color">{{ ('location.map.zone.site.' ~ _z.zone)|trans({}, 'locations') }}</small>{% endif %}</p>
+                </div>
+            {% endif %}
             {# Auditors see the map read-only: no quick actions. #}
             {% if not _read_only %}
             <h3 class="location-map__panel-sub">{{ 'location.map.actions.title'|trans({}, 'locations') }}</h3>
@@ -345,8 +618,8 @@
                 <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_incident_new') }}">{{ 'location.map.actions.incident'|trans({}, 'locations') }}</a>
                 {% if is_granted('ROLE_MANAGER') %}
                     <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_location_edit', { id: site.id }) }}">{{ 'location.map.actions.owner'|trans({}, 'locations') }}</a>
-                    <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_audit_new') }}">{{ 'location.map.actions.audit'|trans({}, 'locations') }}</a>
-                    {% if is_module_active('bcm') %}<a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_bc_exercise_new') }}">{{ 'location.map.actions.exercise'|trans({}, 'locations') }}</a>{% endif %}
+                    {% if is_module_active('audits') %}<a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_audit_new', { fromLocation: site.id }) }}">{{ 'location.map.actions.audit'|trans({}, 'locations') }}</a>{% endif %}
+                    {% if is_module_active('bcm') %}<a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_bc_exercise_new', { fromLocation: site.id }) }}">{{ 'location.map.actions.exercise'|trans({}, 'locations') }}</a>{% endif %}
                 {% endif %}
             </div>
             {% endif %}
@@ -358,6 +631,7 @@
                 <a href="{{ path('app_incident_index', { location: site.id }) }}">{{ 'location.map.link.incidents'|trans({}, 'locations') }}</a>
             </div>
         </template>
+        {% endif %}
     {% endfor %}
 
     <p class="location-map__attribution text-muted-color">{{ 'location.map.attribution'|trans({}, 'locations') }}</p>

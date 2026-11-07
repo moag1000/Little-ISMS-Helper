@@ -101,6 +101,7 @@ audit:
         team_size: 'Team size'
         result: 'Result'
         additional_scoped_frameworks: 'Additional scoped frameworks'
+        location: 'Site'
     new: New
     create: Create
     status:
@@ -135,6 +136,7 @@ audit:
         lead_auditor_person: 'Select a master-data person…'
         audit_team: 'Names of team members, comma-separated'
         scoped_framework: 'Select framework to audit against'
+        location: 'Choose a site'
     help:
         scope_type: 'For corporate audits choose "Corporate-wide Audit" or "Subsidiaries Audit"'
         objectives: 'Objectives and purpose of the audit (what should be checked?)'
@@ -175,6 +177,7 @@ audit:
         status_readonly: 'Status is driven by the lifecycle workflow (Planned → In progress → Reported → Approved → Closed). Direct editing is disabled; use the status actions on the detail page.'
         additional_scoped_frameworks: 'Multi-select — e.g. 27001 + NIS2 + DORA in one audit pass. Findings are mapped transitively to all covered frameworks.'
         scoped_assets: 'Assets subject to the audit (only for scope type "Asset"). ISO 19011 Cl. 5.5.2 requires the audited objects to be listed.'
+        location: 'Audited site (scope "location"). The location map uses it to show when each site was last audited (IAF MD 1).'
     scope: Scope
     cross_framework_coverage:
         title: 'Cross-Framework Coverage'
@@ -243,6 +246,9 @@ audit:
         title_required: 'Please provide a title for the audit'
         date_required: 'Please select a planned date'
     documentation: 'Documentation'
+    prefill:
+        title_from_location: 'Site audit %name%'
+        scope_from_location: 'Site %name% with its rooms, assets and processes.'
 audit_management:
     title: 'Internal Audit'
     subtitle: 'Planning and conducting internal ISMS audits according to ISO 27001'

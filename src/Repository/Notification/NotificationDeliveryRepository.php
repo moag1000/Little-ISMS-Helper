@@ -37,7 +37,7 @@ class NotificationDeliveryRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('d')
             ->where('d.rule = :rule')
             ->setParameter('rule', $rule)
-            ->orderBy('d.attemptedAt', 'DESC')
+            ->orderBy('d.attemptedAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -57,7 +57,7 @@ class NotificationDeliveryRepository extends ServiceEntityRepository
             ->setParameter('status', NotificationDelivery::STATUS_FAILED)
             ->setParameter('tenant', $tenant)
             ->setParameter('since', $since)
-            ->orderBy('d.attemptedAt', 'DESC')
+            ->orderBy('d.attemptedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -75,7 +75,7 @@ class NotificationDeliveryRepository extends ServiceEntityRepository
             ->andWhere('d.channel = :channel')
             ->setParameter('status', NotificationDelivery::STATUS_PENDING_DIGEST)
             ->setParameter('channel', $channel)
-            ->orderBy('d.attemptedAt', 'ASC')
+            ->orderBy('d.attemptedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

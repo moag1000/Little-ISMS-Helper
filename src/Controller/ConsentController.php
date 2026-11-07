@@ -97,7 +97,7 @@ class ConsentController extends AbstractController
                 ->setParameter('pa_id', $processingActivityId);
         }
 
-        $consents = $qb->orderBy('c.documentedAt', 'DESC')
+        $consents = $qb->orderBy('c.documentedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
 

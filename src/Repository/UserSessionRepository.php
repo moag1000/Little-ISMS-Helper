@@ -32,7 +32,7 @@ class UserSessionRepository extends ServiceEntityRepository
             ->andWhere('s.isActive = :active')
             ->setParameter('user', $user)
             ->setParameter('active', true)
-            ->orderBy('s.lastActivityAt', 'DESC')
+            ->orderBy('s.lastActivityAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -47,7 +47,7 @@ class UserSessionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.isActive = :active')
             ->setParameter('active', true)
-            ->orderBy('s.lastActivityAt', 'DESC')
+            ->orderBy('s.lastActivityAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -104,7 +104,7 @@ class UserSessionRepository extends ServiceEntityRepository
                 ->setParameter('email', '%' . $userEmail . '%');
         }
 
-        $queryBuilder->orderBy('s.lastActivityAt', 'DESC');
+        $queryBuilder->orderBy('s.lastActivityAt', \SortDirection::Descending);
 
         if ($limit) {
             $queryBuilder->setMaxResults($limit);
@@ -278,7 +278,7 @@ class UserSessionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.user = :user')
             ->setParameter('user', $user)
-            ->orderBy('s.createdAt', 'DESC')
+            ->orderBy('s.createdAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

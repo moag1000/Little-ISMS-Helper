@@ -57,8 +57,8 @@ final class InverseCoverageService
             ->innerJoin('r.framework', 'f')
             ->andWhere('d.id = :docId')
             ->setParameter('docId', $document->getId())
-            ->orderBy('f.code', 'ASC')
-            ->addOrderBy('r.requirementId', 'ASC');
+            ->orderBy('f.code', \SortDirection::Ascending)
+            ->addOrderBy('r.requirementId', \SortDirection::Ascending);
 
         return $this->groupByFramework($qb->getQuery()->getResult());
     }
@@ -181,8 +181,8 @@ final class InverseCoverageService
             ->innerJoin('r.framework', 'f')
             ->andWhere('c.id = :ctlId')
             ->setParameter('ctlId', $control->getId())
-            ->orderBy('f.code', 'ASC')
-            ->addOrderBy('r.requirementId', 'ASC');
+            ->orderBy('f.code', \SortDirection::Ascending)
+            ->addOrderBy('r.requirementId', \SortDirection::Ascending);
 
         return $this->groupByFramework($qb->getQuery()->getResult());
     }

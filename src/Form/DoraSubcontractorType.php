@@ -55,7 +55,7 @@ final class DoraSubcontractorType extends AbstractType implements SectionMapInte
                 'help' => 'dora_subcontractor.help.parent_supplier',
                 'query_builder' => function (EntityRepository $repo) use ($tenant) {
                     $qb = $repo->createQueryBuilder('s')
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.name', \SortDirection::Ascending);
                     if ($tenant !== null) {
                         $qb->where('s.tenant = :tenant')->setParameter('tenant', $tenant);
                     }
@@ -72,7 +72,7 @@ final class DoraSubcontractorType extends AbstractType implements SectionMapInte
                 'help' => 'dora_subcontractor.help.parent_subcontractor',
                 'query_builder' => function (EntityRepository $repo) use ($tenant) {
                     $qb = $repo->createQueryBuilder('s')
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.name', \SortDirection::Ascending);
                     if ($tenant !== null) {
                         $qb->where('s.tenant = :tenant')->setParameter('tenant', $tenant);
                     }

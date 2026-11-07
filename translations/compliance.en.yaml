@@ -335,6 +335,16 @@ compliance:
                 unreviewed: 'Pending review'
                 bidirectional: 'Bidirectional'
                 frameworks: 'Active frameworks'
+            gspp:
+                title: 'Kompendium → Grundschutz++'
+                source: 'BSI mapping (draft) and reviewed supplement'
+                summary: '%with% of %total% Kompendium requirements have a target in Grundschutz++ (%percent% %).'
+                official: 'BSI mapping'
+                derived: 'Supplement, to review'
+                no_counterpart: 'No counterpart in Grundschutz++'
+                open: 'Open'
+                review: 'Review proposals'
+                list: 'Show mappings'
             action:
                 wizard:
                     title: 'New mapping (wizard)'

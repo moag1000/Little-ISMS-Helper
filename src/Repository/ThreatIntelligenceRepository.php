@@ -27,8 +27,8 @@ class ThreatIntelligenceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.status != :status')
             ->setParameter('status', ThreatIntelligenceStatus::Closed->value)
-            ->orderBy('t.severity', 'ASC')
-            ->addOrderBy('t.detectionDate', 'DESC')
+            ->orderBy('t.severity', \SortDirection::Ascending)
+            ->addOrderBy('t.detectionDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -41,8 +41,8 @@ class ThreatIntelligenceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.affectsOrganization = :affects')
             ->setParameter('affects', true)
-            ->orderBy('t.severity', 'ASC')
-            ->addOrderBy('t.detectionDate', 'DESC')
+            ->orderBy('t.severity', \SortDirection::Ascending)
+            ->addOrderBy('t.detectionDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -57,7 +57,7 @@ class ThreatIntelligenceRepository extends ServiceEntityRepository
             ->setParameter('severities', ['critical', 'high'])
             ->andWhere('t.status != :status')
             ->setParameter('status', ThreatIntelligenceStatus::Closed->value)
-            ->orderBy('t.detectionDate', 'DESC')
+            ->orderBy('t.detectionDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

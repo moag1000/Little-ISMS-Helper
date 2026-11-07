@@ -56,8 +56,8 @@ class FulfillmentInheritanceLogRepository extends ServiceEntityRepository
             ->andWhere('r.framework = :framework')
             ->setParameter('tenant', $tenant)
             ->setParameter('framework', $framework)
-            ->orderBy('m.confidence', 'DESC')
-            ->addOrderBy('l.suggestedPercentage', 'DESC');
+            ->orderBy('m.confidence', \SortDirection::Descending)
+            ->addOrderBy('l.suggestedPercentage', \SortDirection::Descending);
 
         if ($statusFilter === 'pending') {
             $qb->andWhere('l.reviewStatus IN (:statuses)')
@@ -81,7 +81,7 @@ class FulfillmentInheritanceLogRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->where('l.fulfillment = :fulfillment')
             ->setParameter('fulfillment', $fulfillment)
-            ->orderBy('l.createdAt', 'DESC')
+            ->orderBy('l.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -105,7 +105,7 @@ class FulfillmentInheritanceLogRepository extends ServiceEntityRepository
                 FulfillmentInheritanceLog::STATUS_PENDING_REVIEW,
                 FulfillmentInheritanceLog::STATUS_SOURCE_UPDATED,
             ])
-            ->orderBy('fw.code', 'ASC')
+            ->orderBy('fw.code', \SortDirection::Ascending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

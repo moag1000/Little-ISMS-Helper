@@ -327,7 +327,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'multiple' => true,
                 'required' => false,
                 'query_builder' => static function ($repo) {
-                    return $repo->createQueryBuilder('a')->orderBy('a.name', 'ASC');
+                    return $repo->createQueryBuilder('a')->orderBy('a.name', \SortDirection::Ascending);
                 },
                 'attr' => ['data-controller' => 'tom-select'],
             ])
@@ -400,7 +400,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                     $queryBuilder = $repo->createQueryBuilder('d')
                         ->andWhere('d.isActive = :active')
                         ->setParameter('active', true)
-                        ->orderBy('d.name', 'ASC');
+                        ->orderBy('d.name', \SortDirection::Ascending);
                     if ($tenant !== null) {
                         $queryBuilder->andWhere('d.tenant = :tenant')->setParameter('tenant', $tenant);
                     }
@@ -625,7 +625,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                     return $r->createQueryBuilder('s')
                         ->where('s.tenant = :tenant')
                         ->setParameter('tenant', $this->tenantContext->getCurrentTenant())
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.name', \SortDirection::Ascending);
                 },
                 'attr' => ['data-controller' => 'tom-select'],
             ]);

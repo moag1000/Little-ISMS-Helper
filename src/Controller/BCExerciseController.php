@@ -13,6 +13,7 @@ use App\Controller\Trait\BulkActionTrait;
 use App\Entity\BCExercise;
 use App\Form\BCExerciseType;
 use App\Repository\BCExerciseRepository;
+use App\Service\Prefill\RecordPrefill;
 use App\Service\AuditLogger;
 use App\Service\Clone\BCExerciseCloner;
 use App\Service\ModuleConfigurationService;
@@ -44,6 +45,7 @@ class BCExerciseController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
+        private readonly RecordPrefill $recordPrefill,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?BCExerciseCloner $bcExerciseCloner = null,
     ) {}
@@ -85,6 +87,7 @@ class BCExerciseController extends AbstractController
 
         $bcExercise = new BCExercise();
         $bcExercise->setTenant($this->tenantContext->getCurrentTenant());
+        $this->recordPrefill->bcExercise($bcExercise, $request, $this->tenantContext->getCurrentTenant());
 
         $form = $this->createForm(BCExerciseType::class, $bcExercise);
         $form->handleRequest($request);

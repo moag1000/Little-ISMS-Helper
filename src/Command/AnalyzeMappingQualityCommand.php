@@ -223,8 +223,8 @@ class AnalyzeMappingQualityCommand
         }
 
         // Order by priority (unanalyzed first, then low quality)
-        $queryBuilder->orderBy('cm.analysisConfidence', 'ASC')
-            ->addOrderBy('cm.qualityScore', 'ASC');
+        $queryBuilder->orderBy('cm.analysisConfidence', \SortDirection::Ascending)
+            ->addOrderBy('cm.qualityScore', \SortDirection::Ascending);
 
         // Return array of IDs only (flatten the result)
         return array_column($queryBuilder->getQuery()->getResult(), 'id');

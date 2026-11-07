@@ -32,8 +32,8 @@ class RoadmapGroupRepository extends ServiceEntityRepository
             ->andWhere('g.isActive = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('g.sortOrder', 'ASC')
-            ->addOrderBy('g.name', 'ASC')
+            ->orderBy('g.sortOrder', \SortDirection::Ascending)
+            ->addOrderBy('g.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

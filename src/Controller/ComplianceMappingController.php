@@ -10,6 +10,7 @@ use App\Entity\ComplianceRequirement;
 use App\Entity\User;
 use App\Form\ComplianceMappingType;
 use App\Lifecycle\LifecycleService;
+use App\Service\Bsi\KompendiumGsppCoverage;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -57,6 +58,7 @@ class ComplianceMappingController extends AbstractController
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?TranslatorInterface $translator = null,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?KompendiumGsppCoverage $gsppCoverage = null,
     ) {}
 
     /**
@@ -65,7 +67,8 @@ class ComplianceMappingController extends AbstractController
      * Junior-Consultant-Walkthrough: Wer zum ersten Mal auf /compliance/mapping
      * landet, sieht eine Tabelle mit tausenden Einträgen — keine Orientierung.
      * Der Hub bietet fünf Einstiege (Wizard, Seeds, Quality, Transitive,
-     * Liste) plus KPI-Strip + 9001-Brücke + Last-5.
+     * Liste) plus KPI-Strip + 9001-Brücke + Last-5, and the reach of the
+     * Kompendium → Grundschutz++ mapping once both BSI catalogues are loaded.
      */
     #[Route('/compliance/mapping/hub', name: 'app_compliance_mapping_hub', methods: ['GET'])]
     public function hub(): Response
@@ -86,6 +89,7 @@ class ComplianceMappingController extends AbstractController
             'unreviewed_count' => $unreviewed,
             'framework_count' => $frameworkCount,
             'recent' => $recent,
+            'gspp_coverage' => $this->gsppCoverage?->summary(),
         ]);
     }
 

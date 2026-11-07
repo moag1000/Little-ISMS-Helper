@@ -148,10 +148,25 @@ location:
             owner:
                 label: 'Meine Standorte'
                 question: 'Was ist an meinem Standort offen?'
+            bcm:
+                label: 'BCM'
+                question: 'Welcher kritische Standort hat keinen geübten Plan?'
+            dpo:
+                label: 'Datenschutz'
+                question: 'Wohin fließen Daten außerhalb der EU?'
+            auditor:
+                label: 'Audit'
+                question: 'Welche Standorte nehme ich in die Stichprobe?'
+            group:
+                label: 'Konzern'
+                question: 'Wo steht welche Gesellschaft?'
         layer:
             aria: Kartenebene
             risk: Restrisiko
             gaps: Prüfungen
+            emergency: 'Notfall'
+            thirdcountry: 'Drittland'
+            audit: 'Audit'
         zoom:
             aria: Zoom
             in: Vergrößern
@@ -172,6 +187,15 @@ location:
             gaps_none: 'alle erfüllt'
             gaps_some: '1 bis 2 offen'
             gaps_many: 'ab 3 offen'
+            emergency_ok: 'Plan getestet'
+            emergency_warn: 'Plan ungetestet'
+            emergency_danger: 'Prozess ohne Plan'
+            emergency_none: 'kein kritischer Prozess'
+            audit_ok: '≤ 12 Monate'
+            audit_warn: '≤ 3 Jahre oder geplant'
+            audit_danger: '> 3 Jahre, nichts geplant'
+            audit_none: '–'
+            supplier: 'Quadrat = Lieferanten im Land'
         col:
             place: Ort
             protection: Schutzbedarf
@@ -263,6 +287,93 @@ location:
                 rate: 'Erfüllt (%)'
                 peer: Vergleich
                 ale: 'Erwarteter Jahresschaden'
+            map_alt: 'Weltkarte mit den Standorten'
+            map_legend: 'Form und Farbe = Risiko: Kreis gering, Dreieck mittel, Raute hoch, Raute mit Ring kritisch, grau ohne Bewertung. Größe = Schutzbedarf.'
+        zone:
+            eea: 'EU/EWR'
+            adequacy: 'Angemessenheitsbeschluss'
+            dpf: 'USA (DPF)'
+            third: 'Drittland'
+            unknown: 'Land unbekannt'
+            as_of: 'Stand der Liste: %date%'
+            basis:
+                eea: 'keine Übermittlung im Sinne von Kap. V DSGVO'
+                adequacy: 'Art. 45 DSGVO'
+                dpf: 'Art. 45 nur für DPF-zertifizierte Empfänger, sonst Art. 46'
+                third: 'Art. 46 Garantien oder Art. 49 Ausnahme nötig'
+                unknown: '–'
+            site:
+                eea: 'keine Übermittlung'
+                adequacy: 'Übermittlung zulässig (Art. 45)'
+                dpf: 'konzerninterne Übermittlung braucht Garantien (BCR/SCC)'
+                third: 'konzerninterne Übermittlung braucht Garantien (BCR/SCC)'
+        emergency:
+            title: 'Notfallvorsorge (ISO 22301 8.4)'
+            none: 'Kein kritischer Geschäftsprozess mit Assets an diesem Standort.'
+            state:
+                ok: 'Plan getestet am %date%'
+                untested: 'Plan nicht in den letzten 12 Monaten getestet'
+                draft: 'Plan nur im Entwurf'
+                missing: 'Kein Notfallplan'
+            cell:
+                ok: 'getestet'
+                warn: '%untested% ungetestet'
+                danger: '%missing% ohne Plan'
+            alt: 'Ausweichstandort: %site%'
+            fix_plan: 'Notfallplan anlegen'
+        audit:
+            title: 'Internes Audit (ISO 27001 9.2)'
+            last: 'Zuletzt auditiert %date%'
+            next: 'Nächstes Audit %date%'
+            never: 'Noch nie auditiert'
+            none_planned: 'Kein Audit geplant'
+        sample:
+            title: 'Stichprobe: %count% von %total% Standorten'
+            help: 'Vorschlag nach IAF MD 1: √n der aktiven Standorte, zuerst ohne Audit seit 3 Jahren, dann nach Abstand zum letzten Audit und Restrisiko. Einen Zufallsanteil ergänzen Sie selbst. Der PDF-Export hält den Stand zum Stichtag fest.'
+            mark: 'Stichprobe'
+            in_sample: 'In der vorgeschlagenen Stichprobe.'
+        suppliers:
+            title: 'Lieferanten mit personenbezogenen Daten (%count%)'
+            unplaced: '%count% Lieferanten ohne Verarbeitungsort oder Sitzland erscheinen nicht auf der Karte.'
+            col:
+                supplier: 'Lieferant'
+                locations: 'Verarbeitungsorte'
+                chain: 'Unterauftragnehmer'
+                status: 'Einstufung'
+            empty: 'Keine Lieferanten mit Verarbeitungsort vorhanden.'
+            tier: 'Stufe %tier%:'
+            band:
+                ok: 'zulässig'
+                warn: 'Garantien prüfen'
+                danger: 'Drittland ohne Garantie'
+                none: 'Land unbekannt'
+            here: 'Verarbeitung hier (%count%)'
+            sub_of: 'Stufe %tier% für %supplier%'
+            safeguard: 'Garantie: %safeguard%'
+            tia: '%total% Transfer-Folgenabschätzungen, %assessed% bewertet.'
+            no_tia: 'Keine Transfer-Folgenabschätzung für dieses Land.'
+            tia_link: 'Zu den Verarbeitungstätigkeiten'
+        group:
+            title: 'Gesellschaften im Vergleich'
+            company: 'Gesellschaft'
+            sites: 'Standorte'
+            critical: 'Kritisch'
+        event:
+            title: 'Ereignis in einem Land'
+            country: 'Land'
+            choose: 'Land wählen …'
+            show: 'Anzeigen'
+            summary: '%country%: %sites% Standorte, %assets% Assets, %processes% Geschäftsprozesse, %plans% Notfallpläne betroffen.'
+            sites: 'Standorte'
+            processes: 'Geschäftsprozesse'
+            plans: 'Notfallpläne'
+            teams_assigned: 'Krisenstab der betroffenen Pläne'
+            teams_all: 'Krisenstäbe (keinem Plan zugeordnet)'
+            activate: '%team% aktivieren'
+            confirm: 'Krisenstab %team% jetzt aktivieren? Die Aktivierung wird protokolliert.'
+            no_team: 'Kein aktiver Krisenstab vorhanden.'
+            new_team: 'Krisenstab anlegen'
+            none: 'Keine aktiven Standorte in diesem Land.'
     profile:
         title: Steckbrief
         checks: 'Prüfungen offen'

@@ -308,7 +308,7 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                     $qb = $er->createQueryBuilder('d')
                         ->where('d.status != :deleted')
                         ->setParameter('deleted', 'deleted')
-                        ->orderBy('d.originalFilename', 'ASC');
+                        ->orderBy('d.originalFilename', \SortDirection::Ascending);
                     if ($currentTenant !== null) {
                         $qb->andWhere('d.tenant = :tenant')
                            ->setParameter('tenant', $currentTenant);

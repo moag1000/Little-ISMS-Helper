@@ -74,8 +74,8 @@ class AuditFindingController extends AbstractController
             ->andWhere('u.isActive = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
         $choices = [];

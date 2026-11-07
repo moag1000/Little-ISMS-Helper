@@ -37,7 +37,7 @@ class WizardSessionRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('wizardType', $wizardType)
             ->setParameter('status', WizardSession::STATUS_IN_PROGRESS)
-            ->orderBy('ws.lastActivityAt', 'DESC')
+            ->orderBy('ws.lastActivityAt', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -51,7 +51,7 @@ class WizardSessionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ws')
             ->andWhere('ws.user = :user')
             ->setParameter('user', $user)
-            ->orderBy('ws.lastActivityAt', 'DESC')
+            ->orderBy('ws.lastActivityAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -64,7 +64,7 @@ class WizardSessionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ws')
             ->andWhere('ws.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('ws.lastActivityAt', 'DESC')
+            ->orderBy('ws.lastActivityAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -79,7 +79,7 @@ class WizardSessionRepository extends ServiceEntityRepository
             ->andWhere('ws.status = :status')
             ->setParameter('user', $user)
             ->setParameter('status', WizardSession::STATUS_COMPLETED)
-            ->orderBy('ws.completedAt', 'DESC')
+            ->orderBy('ws.completedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -96,7 +96,7 @@ class WizardSessionRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('wizardType', $wizardType)
             ->setParameter('status', WizardSession::STATUS_COMPLETED)
-            ->orderBy('ws.completedAt', 'DESC')
+            ->orderBy('ws.completedAt', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -171,7 +171,7 @@ class WizardSessionRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('status', WizardSession::STATUS_IN_PROGRESS)
             ->setParameter('cutoff', $cutoff)
-            ->orderBy('ws.lastActivityAt', 'ASC')
+            ->orderBy('ws.lastActivityAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

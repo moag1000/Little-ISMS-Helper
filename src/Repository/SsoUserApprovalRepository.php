@@ -32,7 +32,7 @@ class SsoUserApprovalRepository extends ServiceEntityRepository
             $qb->andWhere('a.tenant IS NULL OR a.tenant = :t')
                ->setParameter('t', $tenant);
         }
-        $qb->orderBy('a.requestedAt', 'DESC');
+        $qb->orderBy('a.requestedAt', \SortDirection::Descending);
 
         return array_values($qb->getQuery()->getResult());
     }

@@ -71,7 +71,7 @@ final class DoraDataFlowType extends AbstractType implements SectionMapInterface
                 'required' => true,
                 'placeholder' => 'dora_data_flow.placeholder.supplier',
                 'query_builder' => function ($repo) use ($tenant) {
-                    $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+                    $qb = $repo->createQueryBuilder('s')->orderBy('s.name', \SortDirection::Ascending);
                     if ($tenant !== null) {
                         $qb->andWhere('s.tenant = :tenant')->setParameter('tenant', $tenant);
                     }

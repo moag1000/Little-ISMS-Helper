@@ -44,8 +44,8 @@ class RiskRepository extends ServiceEntityRepository
             ->andWhere('(r.probability * r.impact) >= :threshold')
             ->setParameter('tenant', $tenant)
             ->setParameter('threshold', $threshold)
-            ->orderBy('r.probability', 'DESC')
-            ->addOrderBy('r.impact', 'DESC')
+            ->orderBy('r.probability', \SortDirection::Descending)
+            ->addOrderBy('r.impact', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -77,7 +77,7 @@ class RiskRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('r.createdAt', 'DESC')
+            ->orderBy('r.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -96,7 +96,7 @@ class RiskRepository extends ServiceEntityRepository
             ->where('r.tenant = :tenant')
             ->andWhere('r.riskOwner IS NULL')
             ->setParameter('tenant', $tenant)
-            ->orderBy('r.createdAt', 'DESC')
+            ->orderBy('r.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -125,7 +125,7 @@ class RiskRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('r.createdAt', 'DESC')
+            ->orderBy('r.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -176,8 +176,8 @@ class RiskRepository extends ServiceEntityRepository
             ->andWhere('(r.probability * r.impact) >= :threshold')
             ->setParameter('tenant', $tenant)
             ->setParameter('threshold', $threshold)
-            ->orderBy('r.probability', 'DESC')
-            ->addOrderBy('r.impact', 'DESC')
+            ->orderBy('r.probability', \SortDirection::Descending)
+            ->addOrderBy('r.impact', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -205,7 +205,7 @@ class RiskRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('r.createdAt', 'DESC')
+            ->orderBy('r.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -233,7 +233,7 @@ class RiskRepository extends ServiceEntityRepository
                 ->setParameter('tenant', $tenant);
         }
 
-        return $qb->orderBy('r.reviewDate', 'ASC')
+        return $qb->orderBy('r.reviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -265,7 +265,7 @@ class RiskRepository extends ServiceEntityRepository
             ->setParameter('accept', \App\Enum\TreatmentStrategy::Accept)
             ->setParameter('closed', \App\Enum\RiskStatus::Closed)
             ->setParameter('deadline', $deadline)
-            ->orderBy('r.acceptanceExpiryDate', 'ASC')
+            ->orderBy('r.acceptanceExpiryDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -293,7 +293,7 @@ class RiskRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('accept', \App\Enum\TreatmentStrategy::Accept)
             ->setParameter('terminal', [\App\Enum\RiskStatus::Closed, \App\Enum\RiskStatus::Monitored])
-            ->orderBy('r.acceptanceExpiryDate', 'ASC')
+            ->orderBy('r.acceptanceExpiryDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -312,7 +312,7 @@ class RiskRepository extends ServiceEntityRepository
         return $this->withoutTenantFilter(
             fn() => $this->createQueryBuilder('r')
                 ->where('r.tenant IS NULL')
-                ->orderBy('r.createdAt', 'DESC')
+                ->orderBy('r.createdAt', \SortDirection::Descending)
                 ->getQuery()
                 ->getResult()
         );
@@ -330,7 +330,7 @@ class RiskRepository extends ServiceEntityRepository
     {
         return $this->withoutTenantFilter(
             fn() => $this->createQueryBuilder('r')
-                ->orderBy('r.createdAt', 'DESC')
+                ->orderBy('r.createdAt', \SortDirection::Descending)
                 ->getQuery()
                 ->getResult()
         );

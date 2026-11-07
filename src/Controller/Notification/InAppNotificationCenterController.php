@@ -175,7 +175,7 @@ class InAppNotificationCenterController extends AbstractController
             ->setParameter('tenant', $tenant)
             ->setParameter('type', NotificationChannel::TYPE_IN_APP)
             ->setParameter('status', NotificationDelivery::STATUS_SENT)
-            ->orderBy('d.attemptedAt', 'DESC')
+            ->orderBy('d.attemptedAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

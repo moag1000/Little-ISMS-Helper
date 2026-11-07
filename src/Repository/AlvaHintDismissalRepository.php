@@ -100,7 +100,7 @@ class AlvaHintDismissalRepository extends ServiceEntityRepository
             ->addSelect('SUM(CASE WHEN d.dismissedUntil IS NULL THEN 0 ELSE 1 END) AS snoozed')
             ->addSelect('COUNT(DISTINCT d.user) AS distinctUsers')
             ->groupBy('d.hintKey')
-            ->orderBy('total', 'DESC');
+            ->orderBy('total', \SortDirection::Descending);
 
         if ($tenant instanceof Tenant) {
             $qb->where('d.tenant = :tenant')

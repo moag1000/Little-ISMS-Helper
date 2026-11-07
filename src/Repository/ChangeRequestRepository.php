@@ -39,8 +39,8 @@ class ChangeRequestRepository extends ServiceEntityRepository
             ->andWhere('c.status IN (:statuses)')
             ->setParameter('tenant', $tenant)
             ->setParameter('statuses', [ChangeRequestStatus::Submitted->value, ChangeRequestStatus::UnderReview->value])
-            ->orderBy('c.priority', 'ASC')
-            ->addOrderBy('c.requestedDate', 'ASC')
+            ->orderBy('c.priority', \SortDirection::Ascending)
+            ->addOrderBy('c.requestedDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

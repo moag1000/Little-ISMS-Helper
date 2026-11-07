@@ -6,7 +6,9 @@ namespace App\Service\Kpi;
 
 use App\Entity\Tenant;
 use App\Repository\Fte\FteTrackingMetricRepository;
+use App\Service\Location\LocationLayers;
 use App\Service\Location\LocationPostureService;
+use App\Service\Location\LocationSupplierChains;
 use App\Service\ModuleConfigurationService;
 use DateInterval;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -26,6 +28,8 @@ readonly class LocationKpis
         private FteTrackingMetricRepository $fteMetrics,
         private ModuleConfigurationService $modules,
         private Security $security,
+        private LocationLayers $layers,
+        private LocationSupplierChains $supplierChains,
     ) {
     }
 
@@ -76,7 +80,7 @@ readonly class LocationKpis
         $placed = count(array_filter($sites, static fn (array $s): bool => $s['lat'] !== null));
         $details = ['sites' => count($sites), 'placed' => $placed];
 
-        return [
+        return $this->layerKpis($tenant, $sites, $details) + [
             'location_checks_rate' => [
                 'label' => 'kpi.location_checks_rate',
                 'value' => $applicable > 0 ? (int) round(100 * ($applicable - $gaps) / $applicable) : null,
@@ -100,5 +104,54 @@ readonly class LocationKpis
                 'details' => $details,
             ],
         ];
+    }
+
+    /**
+     * One KPI per further map layer, each behind its module.
+     *
+     * @param list<array<string, mixed>> $sites active posture rows
+     * @param array<string, int> $details
+     * @return array<string, array<string, mixed>>
+     */
+    private function layerKpis(Tenant $tenant, array $sites, array $details): array
+    {
+        $kpis = [];
+        if ($this->modules->isModuleActive('bcm')) {
+            $bands = array_column($this->layers->emergency($tenant, $sites), 'band');
+            $open = count(array_filter($bands, static fn (string $b): bool => in_array($b, ['warn', 'danger'], true)));
+            $kpis['location_emergency_gaps'] = [
+                'label' => 'kpi.location_emergency_gaps',
+                'value' => $open,
+                'unit' => '',
+                'status' => in_array('danger', $bands, true) ? 'danger' : ($open > 0 ? 'warning' : 'good'),
+                'details' => $details,
+            ];
+        }
+        if ($this->modules->isModuleActive('audits')) {
+            $overdue = count(array_filter(
+                $this->layers->audit($tenant, $sites),
+                static fn (array $a): bool => $a['band'] === 'danger',
+            ));
+            $kpis['location_audit_overdue'] = [
+                'label' => 'kpi.location_audit_overdue',
+                'value' => $overdue,
+                'unit' => '',
+                'status' => $overdue > 0 ? 'warning' : 'good',
+                'details' => $details,
+            ];
+        }
+        if ($this->modules->isModuleActive('privacy')) {
+            $chains = $this->supplierChains->forTenant($tenant)['suppliers'];
+            $open = count(array_filter($chains, static fn (array $c): bool => $c['band'] === 'danger'));
+            $kpis['location_third_country_chains'] = [
+                'label' => 'kpi.location_third_country_chains',
+                'value' => $open,
+                'unit' => '',
+                'status' => $open > 0 ? 'danger' : 'good',
+                'details' => ['suppliers' => count($chains)],
+            ];
+        }
+
+        return $kpis;
     }
 }

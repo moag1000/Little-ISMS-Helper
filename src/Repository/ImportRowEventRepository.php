@@ -37,8 +37,8 @@ class ImportRowEventRepository extends ServiceEntityRepository
             ->andWhere('e.targetEntityId = :id')
             ->setParameter('type', $entityType)
             ->setParameter('id', $entityId)
-            ->orderBy('e.createdAt', 'DESC')
-            ->addOrderBy('e.id', 'DESC')
+            ->orderBy('e.createdAt', \SortDirection::Descending)
+            ->addOrderBy('e.id', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -86,8 +86,8 @@ class ImportRowEventRepository extends ServiceEntityRepository
                 ->setParameter('type', $targetEntityType);
         }
 
-        return $qb->orderBy('e.lineNumber', 'ASC')
-            ->addOrderBy('e.id', 'ASC')
+        return $qb->orderBy('e.lineNumber', \SortDirection::Ascending)
+            ->addOrderBy('e.id', \SortDirection::Ascending)
             ->setMaxResults($limit)
             ->setFirstResult($offset)
             ->getQuery()

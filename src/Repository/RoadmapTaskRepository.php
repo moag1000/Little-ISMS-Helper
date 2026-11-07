@@ -32,7 +32,7 @@ class RoadmapTaskRepository extends ServiceEntityRepository
             ->andWhere('t.isActive = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('t.name', 'ASC')
+            ->orderBy('t.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -54,7 +54,7 @@ class RoadmapTaskRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
             ->setParameter('reactive', true)
-            ->orderBy('t.name', 'ASC')
+            ->orderBy('t.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
