@@ -45,7 +45,7 @@ final class KpiCatalogPagesTest extends WebTestCase
         $this->ciso->setEmail('kpi_' . $this->uid . '@example.com');
         $this->ciso->setFirstName('Kim');
         $this->ciso->setLastName('Ciso');
-        $this->ciso->setRoles(['ROLE_CISO', 'ROLE_ADMIN']);
+        $this->ciso->setRoles(['ROLE_CISO', 'ROLE_ADMIN', 'ROLE_TOP_MGMT']);
         $this->ciso->setPassword('hashed_password');
         $this->ciso->setTenant($this->tenant);
         $this->ciso->setIsActive(true);

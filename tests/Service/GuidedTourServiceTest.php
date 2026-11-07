@@ -134,7 +134,8 @@ class GuidedTourServiceTest extends TestCase
     {
         // Plan-Vertrag aus .claude/GUIDED_TOUR_PLAN.md § Tour-Matrix.
         $service = $this->buildService();
-        $this->assertCount(7, $service->stepsFor('junior'));
+        // junior: 7 plan stops + "next open control" (SoA, status not started).
+        $this->assertCount(8, $service->stepsFor('junior'));
         $this->assertCount(5, $service->stepsFor('cm'));
         $this->assertCount(4, $service->stepsFor('ciso'));
         // 6 ISB stops: welcome, soa, risk, incidents, workflows, audit-log
@@ -171,7 +172,7 @@ class GuidedTourServiceTest extends TestCase
         $service = $this->buildService();
         $meta = $service->metaFor('junior');
         $this->assertSame('junior', $meta['id']);
-        $this->assertSame(7, $meta['step_count']);
+        $this->assertSame(8, $meta['step_count']);
         $this->assertGreaterThan(0, $meta['duration_min']);
     }
 
