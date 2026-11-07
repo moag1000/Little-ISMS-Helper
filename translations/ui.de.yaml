@@ -34,6 +34,7 @@ ui:
             goto_compliance: 'Compliance Frameworks'
             goto_bcm: 'Business Continuity'
             goto_my_day: 'Mein Tag'
+            goto_suggestions: 'Vorschläge'
             goto_location_map: 'Standortkarte'
             goto_group_comparison: 'Organisationsvergleich'
             goto_mapping_hub: 'Mapping-Hub'

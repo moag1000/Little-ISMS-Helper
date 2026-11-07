@@ -438,6 +438,16 @@
                                             {{ 'control.mapping_suggestions.accept'|trans({}, 'control') }}
                                         </button>
                                     </form>
+                                    <form method="post"
+                                          action="{{ path('app_suggestion_mapping_reject', { id: control.id, requirement: row.requirement.id }) }}"
+                                          class="d-inline">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('suggestion_mapping_reject_' ~ control.id ~ '_' ~ row.requirement.id) }}">
+                                        <input type="hidden" name="confidence" value="{{ row.confidence }}">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                            {{ 'suggestions.action.not_a_match'|trans({}, 'suggestions') }}
+                                        </button>
+                                    </form>
                                     {% endif %}
                                 </div>
                             </li>

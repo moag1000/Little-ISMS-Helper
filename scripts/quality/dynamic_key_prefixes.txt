@@ -2,7 +2,6 @@
 # scripts/quality/check_translation_dynamic_keys.py.
 # Lines are sorted; format: `<prefix>\t<usage-count>`.
 # A NEW prefix in this list will fail CI until committed here.
-
 Art	1
 access_review.decision	2
 access_review.scope	2
@@ -277,6 +276,11 @@ sso.preset	3
 sso.preset.help	1
 sso.type	1
 status_type	3
+suggestions.ai.mode	1
+suggestions.kind	3
+suggestions.kind_help	1
+suggestions.origin	2
+suggestions.status	1
 supplier.criticality	2
 supplier.dora.ict_criticality	1
 supplier.dora.substitutability	1

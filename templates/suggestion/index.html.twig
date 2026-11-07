@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'suggestions.page.title'|trans({}, 'suggestions') }}{% endblock %}
+
+{% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.my_day'|trans({}, 'nav'), url: path('app_my_day') },
+        { label: 'suggestions.page.title'|trans({}, 'suggestions') }
+    ]
+} %}
+{{ _fa_page_header.render({
+    title: 'suggestions.page.title'|trans({}, 'suggestions'),
+    subtitle: 'suggestions.page.subtitle'|trans({}, 'suggestions'),
+    actions: is_granted('ROLE_ADMIN') ? [
+        { label: 'suggestions.action.ai_settings'|trans({}, 'suggestions'), href: path('admin_settings_ai'), variant: 'ghost' }
+    ] : [],
+}) }}
+
+<div class="container-fluid py-4">
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_suggestion_index'),
+    filter_keys: ['view', 'kind', 'origin', 'subject'],
+    list_title: (view == 'decided' ? 'suggestions.list.decided' : 'suggestions.list.open')|trans({}, 'suggestions'),
+    empty: {
+        mood: 'sleeping',
+        title: (view == 'decided' ? 'suggestions.empty.decided' : 'suggestions.empty.open')|trans({}, 'suggestions'),
+    },
+    card_attrs: any_bulk ? 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="' ~ path('app_suggestion_index') ~ '"' : '',
+} %}
+    {% block list_filters %}
+        <input type="hidden" name="view" value="{{ view }}">
+        <div class="col-md-4">
+            <label for="filter-kind" class="form-label">{{ 'suggestions.filter.kind'|trans({}, 'suggestions') }}</label>
+            <select class="form-select fa-cyber-input__field" id="filter-kind" name="kind" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <option value="">{{ 'suggestions.filter.all'|trans({}, 'suggestions') }}</option>
+                {% for key, count in kind_counts %}
+                    <option value="{{ key }}" {{ kind_filter == key ? 'selected' : '' }}>{{ ('suggestions.kind.' ~ key)|trans({}, 'suggestions') }} ({{ count }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="filter-origin" class="form-label">{{ 'suggestions.filter.origin'|trans({}, 'suggestions') }}</label>
+            <select class="form-select fa-cyber-input__field" id="filter-origin" name="origin" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <option value="">{{ 'suggestions.filter.all'|trans({}, 'suggestions') }}</option>
+                {% for o in origins %}
+                    <option value="{{ o.value }}" {{ origin_filter == o.value ? 'selected' : '' }}>{{ ('suggestions.origin.' ~ o.value)|trans({}, 'suggestions') }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endblock %}
+    {% block list_summary %}
+        <a href="{{ path('app_suggestion_index') }}" class="fa-status-pill fa-status-pill--{{ view == 'open' ? 'primary' : 'neutral' }}"{% if view == 'open' %} aria-current="page"{% endif %}>{{ 'suggestions.view.open'|trans({}, 'suggestions') }}</a>
+        <a href="{{ path('app_suggestion_index', {view: 'decided'}) }}" class="fa-status-pill fa-status-pill--{{ view == 'decided' ? 'primary' : 'neutral' }}"{% if view == 'decided' %} aria-current="page"{% endif %}>{{ 'suggestions.view.decided'|trans({}, 'suggestions') }}</a>
+        {% if is_granted('ROLE_MANAGER') %}
+            <form method="post" action="{{ path('app_suggestion_refresh') }}" class="ms-auto">
+                <input type="hidden" name="_token" value="{{ csrf_token('suggestion_refresh') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'suggestions.action.refresh'|trans({}, 'suggestions') }}</button>
+            </form>
+        {% endif %}
+    {% endblock %}
+    {% block list_table %}
+        <div class="d-flex flex-column gap-2 p-3" id="suggestion-rows">
+            {% for s in page %}
+                {% include 'suggestion/_row.html.twig' with { s: s, row: rows[s.id] } %}
+            {% endfor %}
+        </div>
+        {% if any_bulk %}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['approve', 'reject'],
+                labels: {
+                    approve: 'suggestions.action.accept'|trans({}, 'suggestions'),
+                    reject: 'suggestions.action.reject'|trans({}, 'suggestions'),
+                },
+            } %}
+        {% endif %}
+    {% endblock %}
+{% endembed %}
+</div>
+{% endblock %}

@@ -542,6 +542,15 @@ php bin/console app:migrate-legacy-workflows --archive
 - `docs/decisions/2026-05-17-workflow-yaml-unification.md` - ADR with deprecation deadlines
 - `config/workflows/regulatory/` - Canonical YAML definitions
 
+## Suggestion Queue (Paket 5)
+
+Anything the tool proposes and a person decides (derivation, inheritance, import match, AI output) is a
+`SuggestionKind` (`src/Service/Suggestion/Kind/`, autoconfigured tag) feeding `SuggestionQueue` — no own
+"suggest" tables, flashes or listeners that write on their own. `generate()` never writes; `apply()` writes
+through the owning service after acceptance and throws `StaleSuggestionException` when the state changed.
+Nightly `app:suggestions:generate` (05:30). AI goes only through `App\Service\Ai\AiAssistant` (off by
+default, redaction, audit without content). Guide: `docs/features/SUGGESTION_QUEUE.md`.
+
 ## Module-Awareness
 
 **Every feature that relates to an optional compliance framework MUST be module-gated.**
