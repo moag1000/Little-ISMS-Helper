@@ -1,4 +1,7 @@
 certification_bundle:
+    audit_package:
+        title: 'Audit package per framework'
+        intro: 'All evidence of one framework as a ZIP with checksum (SHA-256). Read-only.'
     title: 'Certification Document Bundle'
     subtitle: 'All ISMS documents in a single ZIP archive for the auditor'
     breadcrumb: 'Certification Bundle'

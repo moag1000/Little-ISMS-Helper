@@ -19,13 +19,8 @@
         ]
     } %}
 
-    {# Guided-Tour-Banner (nur wenn Tour für diese Rolle
-     # noch nicht abgeschlossen ist — siehe HomeController::dashboard).
-     # Der eigentliche Controller-Mount sitzt global in base.html.twig. #}
-    {% include '_components/_guided_tour_banner.html.twig' with { suggested_tour: suggested_tour|default(null) } %}
-
-    {# MRIS-Topic-Tour-Banner (themenbezogen, nicht rollenbezogen). Nur
-     # ROLE_USER (nicht ROLE_AUDITOR) — siehe HomeController. #}
+    {# The persona's tour banner comes from base.html.twig (landing page).
+     # MRIS topic tour: everyone who works on the ISMS — see HomeController. #}
     {% include '_components/_guided_tour_banner.html.twig' with { suggested_tour: suggested_mris_tour|default(null) } %}
 
     {# ISMS Journey Progress (AP 2) #}
@@ -48,17 +43,21 @@
                     <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i> {{ 'dashboard.action.role_dashboards'|trans({}, 'dashboard') }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    {% if is_granted('ROLE_MANAGER') %}
+                    {% if is_granted('PERSONA_CISO') %}
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_ciso') }}">
                             <i class="fa-icon fa-icon--control fa-icon--primary me-2" aria-hidden="true"></i>{{ 'dashboard.role.ciso'|trans({}, 'dashboard') }}
                         </a>
                     </li>
+                    {% endif %}
+                    {% if is_granted('PERSONA_RISK') %}
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_risk_manager') }}">
                             <i class="fa-icon fa-icon--nav-bar-chart text-warning me-2" aria-hidden="true"></i>{{ 'dashboard.role.risk_manager'|trans({}, 'dashboard') }}
                         </a>
                     </li>
+                    {% endif %}
+                    {% if is_granted('PERSONA_BOARD') %}
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_board') }}">
                             <i class="fa-icon me-2 fa-icon--nav-process" aria-hidden="true"></i>{{ 'dashboard.role.board'|trans({}, 'dashboard') }}

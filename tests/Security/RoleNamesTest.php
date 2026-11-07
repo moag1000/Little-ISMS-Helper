@@ -31,7 +31,7 @@ final class RoleNamesTest extends KernelTestCase
         // System roles offered by UserType (roles ChoiceType).
         array_push($expected, 'ROLE_USER', 'ROLE_AUDITOR', 'ROLE_MANAGER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN',
             'ROLE_CISO', 'ROLE_RISK_MANAGER', 'ROLE_DPO', 'ROLE_COMPLIANCE_MANAGER',
-            'ROLE_ISB', 'ROLE_BCM_OFFICER');
+            'ROLE_ISB', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT');
 
         foreach (array_unique($expected) as $role) {
             self::assertTrue(RoleNames::isReserved($role), $role . ' must be reserved');
@@ -51,7 +51,7 @@ final class RoleNamesTest extends KernelTestCase
     public function reservedCheckIsCaseAndWhitespaceInsensitive(): void
     {
         self::assertTrue(RoleNames::isReserved(' role_super_admin '));
-        self::assertFalse(RoleNames::isReserved('ROLE_TOP_MGMT'));
+        self::assertFalse(RoleNames::isReserved('ROLE_TOP_MANAGER'));
         self::assertFalse(RoleNames::isReserved('Editor'));
     }
 

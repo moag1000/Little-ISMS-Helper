@@ -110,7 +110,10 @@ search_nav:
         description: 'Planned audits, open findings and evidence'
     app_dashboard_board:
         label: 'Board dashboard'
-        description: 'KPIs for management and the board'
+        description: 'Status, risks and compliance for top management'
+    app_certification_bundle_index:
+        label: 'Audit package and certification bundle'
+        description: 'Download evidence per framework as a ZIP with checksum'
     app_compliance_mapping_hub:
         label: 'Mapping hub'
         description: 'Framework mappings, quality, proposals and import in one place'

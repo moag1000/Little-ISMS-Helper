@@ -7,9 +7,10 @@ namespace App\Service;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\GuidedTourStepOverrideRepository;
+use App\Security\Persona\Persona;
+use App\Security\Persona\PersonaResolver;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Optional-Dependency-Sicht: ModuleConfigurationService wird injiziert,
@@ -28,13 +29,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * Target-Selektoren (DOM-Anker) und optionale URLs für
  * Mehr-Seiten-Touren.
  *
- * Role-Auto-Detect:
- *   - ROLE_AUDITOR                   → auditor-Tour
- *   - ROLE_GROUP_CISO / ROLE_ADMIN   → ciso-Tour
- *   - ROLE_COMPLIANCE_MANAGER        → cm-Tour
- *   - ROLE_ISB / ROLE_MANAGER        → isb-Tour
- *   - ROLE_RISK_OWNER                → risk-owner-Tour
- *   - Fallback                       → junior-Tour
+ * Auto-Zuordnung: die Tour der Persona ({@see Persona::tour()}).
  *
  * Der User kann im Banner die Auto-Zuordnung überschreiben.
  *
@@ -49,6 +44,8 @@ final class GuidedTourService
     public const TOUR_ISB = 'isb';
     public const TOUR_RISK_OWNER = 'risk_owner';
     public const TOUR_AUDITOR = 'auditor';
+    /** Top management (ROLE_TOP_MGMT) and group CISO — ISO 27001 5.1/9.3, NIS-2 Art. 20. */
+    public const TOUR_BOARD = 'board';
     /**
      * Topic-Tour MRIS — themenbezogen, nicht rollenbezogen. Wird zusätzlich
      * zur Auto-Detect-Rollentour angeboten (ROLE_USER, nicht ROLE_AUDITOR).
@@ -69,12 +66,13 @@ final class GuidedTourService
         self::TOUR_ISB,
         self::TOUR_RISK_OWNER,
         self::TOUR_AUDITOR,
+        self::TOUR_BOARD,
         self::TOUR_MRIS,
         self::TOUR_MAPPING,
     ];
 
     public function __construct(
-        private readonly AuthorizationCheckerInterface $authChecker,
+        private readonly PersonaResolver $personaResolver,
         private readonly ?ModuleConfigurationService $moduleConfig = null,
         private readonly ?GuidedTourStepOverrideRepository $overrideRepository = null,
         private readonly ?TenantContext $tenantContext = null,
@@ -123,33 +121,12 @@ final class GuidedTourService
     }
 
     /**
-     * Automatisch die wahrscheinlich passende Tour anhand der granted
-     * Roles wählen. User kann im Banner überschreiben.
+     * Die Tour der Persona des Nutzers ({@see PersonaResolver}). Der Nutzer
+     * kann im Banner und im Nutzermenü eine andere wählen.
      */
     public function autoDetectTour(User $user): string
     {
-        // Priorität: spezifischere Rollen zuerst (Auditor schlägt Admin),
-        // Fallback Junior für alle Standard-User ohne spezielle Rolle.
-        if ($this->authChecker->isGranted('ROLE_AUDITOR')) {
-            return self::TOUR_AUDITOR;
-        }
-        if ($this->authChecker->isGranted('ROLE_RISK_OWNER')) {
-            return self::TOUR_RISK_OWNER;
-        }
-        if ($this->authChecker->isGranted('ROLE_COMPLIANCE_MANAGER')) {
-            return self::TOUR_CM;
-        }
-        if ($this->authChecker->isGranted('ROLE_ISB')
-            || $this->authChecker->isGranted('ROLE_MANAGER')
-        ) {
-            return self::TOUR_ISB;
-        }
-        if ($this->authChecker->isGranted('ROLE_GROUP_CISO')
-            || $this->authChecker->isGranted('ROLE_ADMIN')
-        ) {
-            return self::TOUR_CISO;
-        }
-        return self::TOUR_JUNIOR;
+        return $this->personaResolver->primaryOf($user)->tour();
     }
 
     /**
@@ -174,6 +151,7 @@ final class GuidedTourService
             self::TOUR_ISB => $this->isbSteps(),
             self::TOUR_RISK_OWNER => $this->riskOwnerSteps(),
             self::TOUR_AUDITOR => $this->auditorSteps(),
+            self::TOUR_BOARD => $this->boardSteps(),
             self::TOUR_MRIS => $this->mrisSteps(),
             self::TOUR_MAPPING => $this->mappingSteps(),
             default => [],
@@ -321,10 +299,31 @@ final class GuidedTourService
         $auditorDash = $this->urlFor('app_dashboard_auditor');
         $documents = $this->urlFor('app_document_index');
         $auditLog = $this->urlFor('app_audit_log_index');
+        $auditPackage = $this->urlFor('app_certification_bundle_index');
         return [
             ['id' => 'welcome', 'icon' => 'ui-search', 'target' => null, 'title_key' => 'guided_tour.auditor.step.welcome.title', 'body_key' => 'guided_tour.auditor.step.welcome.body', 'url' => $auditorDash, 'placement' => 'center'],
             ['id' => 'documents', 'icon' => 'nav-file-earmark-text', 'target' => null, 'title_key' => 'guided_tour.auditor.step.documents.title', 'body_key' => 'guided_tour.auditor.step.documents.body', 'url' => $documents, 'placement' => 'center'],
             ['id' => 'audit-log', 'icon' => 'nav-journal-text', 'target' => null, 'title_key' => 'guided_tour.auditor.step.audit_log.title', 'body_key' => 'guided_tour.auditor.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
+            ['id' => 'audit-package', 'icon' => 'nav-download', 'target' => null, 'title_key' => 'guided_tour.auditor.step.audit_package.title', 'body_key' => 'guided_tour.auditor.step.audit_package.body', 'url' => $auditPackage, 'placement' => 'center'],
+        ];
+    }
+
+    /**
+     * Leitung: Lage, One-Pager, Managementbewertung, Freigaben in My Day.
+     *
+     * @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}>
+     */
+    private function boardSteps(): array
+    {
+        $boardDash = $this->urlFor('app_dashboard_board');
+        $managementReports = $this->urlFor('app_management_reports');
+        $managementReview = $this->urlFor('app_management_review_index');
+        $myDay = $this->urlFor('app_my_day');
+        return [
+            ['id' => 'welcome', 'icon' => 'nav-building', 'target' => null, 'title_key' => 'guided_tour.board.step.welcome.title', 'body_key' => 'guided_tour.board.step.welcome.body', 'url' => $boardDash, 'placement' => 'center'],
+            ['id' => 'one-pager', 'icon' => 'nav-file-earmark-text', 'target' => null, 'title_key' => 'guided_tour.board.step.one_pager.title', 'body_key' => 'guided_tour.board.step.one_pager.body', 'url' => $managementReports, 'placement' => 'center'],
+            ['id' => 'management-review', 'icon' => 'nav-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.board.step.management_review.title', 'body_key' => 'guided_tour.board.step.management_review.body', 'url' => $managementReview, 'placement' => 'center'],
+            ['id' => 'my-day', 'icon' => 'nav-dashboard', 'target' => null, 'title_key' => 'guided_tour.board.step.my_day.title', 'body_key' => 'guided_tour.board.step.my_day.body', 'url' => $myDay, 'placement' => 'center'],
         ];
     }
 
@@ -517,12 +516,15 @@ final class GuidedTourService
      * ist. Nur ROLE_USER (Standard-User), explizit nicht ROLE_AUDITOR
      * (zu viele Re-Suggestions im Read-only-Workflow).
      */
-    public function isEligibleForMrisSuggestion(): bool
+    /**
+     * MRIS-Topic-Tour für alle, die das ISMS bearbeiten — nicht für
+     * lesende Personas (Auditoren, Leitung).
+     */
+    public function isEligibleForMrisSuggestion(User $user): bool
     {
-        if ($this->authChecker->isGranted('ROLE_AUDITOR')) {
-            return false;
-        }
-        return $this->authChecker->isGranted('ROLE_USER');
+        return !in_array($this->personaResolver->primaryOf($user), [
+            Persona::AUDITOR, Persona::KONZERN_AUDITOR, Persona::TOP_MANAGEMENT, Persona::GROUP_CISO,
+        ], true);
     }
 
     /**
@@ -546,6 +548,7 @@ final class GuidedTourService
                 self::TOUR_ISB => 4,
                 self::TOUR_RISK_OWNER => 1,
                 self::TOUR_AUDITOR => 2,
+                self::TOUR_BOARD => 2,
                 self::TOUR_MRIS => 6,
                 self::TOUR_MAPPING => 5,
                 default => 3,

@@ -16,17 +16,23 @@ final class LandingRouteTest extends KernelTestCase
     public static function roles(): iterable
     {
         yield 'risk owner (plain user)' => [['ROLE_USER'], 'app_my_day'];
+        yield 'function owner' => [['ROLE_FUNCTION_OWNER'], 'app_my_day'];
         yield 'auditor' => [['ROLE_AUDITOR'], 'app_my_day'];
         yield 'manager' => [['ROLE_MANAGER'], 'app_dashboard'];
         yield 'admin' => [['ROLE_ADMIN'], 'app_dashboard'];
-        yield 'dpo persona' => [['ROLE_USER', 'ROLE_DPO'], 'app_dashboard'];
-        yield 'ciso persona' => [['ROLE_CISO'], 'app_dashboard'];
+        yield 'ciso persona' => [['ROLE_CISO'], 'app_dashboard_ciso'];
+        yield 'isb persona' => [['ROLE_ISB'], 'app_dashboard_isb'];
+        yield 'risk manager persona' => [['ROLE_RISK_MANAGER'], 'app_dashboard_risk_manager'];
+        yield 'compliance manager persona' => [['ROLE_COMPLIANCE_MANAGER'], 'app_dashboard_compliance_manager'];
+        yield 'top management' => [['ROLE_TOP_MGMT'], 'app_dashboard_board'];
+        yield 'admin who is ISB lands as ISB' => [['ROLE_ADMIN', 'ROLE_ISB'], 'app_dashboard_isb'];
+        yield 'konzern auditor' => [['ROLE_KONZERN_AUDITOR'], 'app_dashboard_auditor'];
     }
 
     /** @param list<string> $roles */
     #[Test]
     #[DataProvider('roles')]
-    public function landsOnMyDayUnlessTheRoleHasADashboard(array $roles, string $expected): void
+    public function landsOnThePersonaDashboardOrMyDay(array $roles, string $expected): void
     {
         self::bootKernel();
         $user = new User();

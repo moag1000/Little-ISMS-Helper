@@ -117,9 +117,11 @@
                         <div class="col-md-6">
                             <h4 class="h6">{{ 'management_reports.quick_access.pdf_exports'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2 mb-3">
+                                {% if is_granted('REPORT_BOARD_ONE_PAGER') %}
                                 <a href="{{ path('app_reports_board_one_pager_pdf') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> Board One-Pager
                                 </a>
+                                {% endif %}
                                 <a href="{{ path('app_management_reports_executive_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> Executive Summary
                                 </a>
@@ -134,12 +136,16 @@
                                 <a href="{{ path('app_management_reports_compliance_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> Compliance Status
                                 </a>
+                                {% if is_granted('REPORT_REVIEW_OUTPUT') %}
                                 <a href="{{ path('app_management_reports_review_output_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'management_reports.review_output.title'|trans({}, 'management_reports') }}
                                 </a>
+                                {% endif %}
+                                {% if is_granted('REPORT_QUARTERLY_TREND') %}
                                 <a href="{{ path('app_management_reports_quarterly_trend') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'management_reports.quarterly_trend.view_report'|trans({}, 'management_reports') }}
                                 </a>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -168,6 +174,7 @@
                                 </a>
                                 {% endif %}
                             </div>
+                            {% if is_granted('REPORT_CERTIFICATION_READINESS') %}
                             <h4 class="h6">{{ 'cert_readiness.title'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2 mb-3">
                                 <a href="{{ path('app_management_reports_cert_readiness') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
@@ -177,12 +184,15 @@
                                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'cert_readiness.download_pdf'|trans({}, 'management_reports') }}
                                 </a>
                             </div>
+                            {% endif %}
+                            {% if is_granted('REPORT_EVIDENCE_PACKAGE') %}
                             <h4 class="h6">{{ 'management_reports.quick_access.evidence_package'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2">
                                 <a href="{{ path('app_management_reports_evidence_package') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--archive" aria-hidden="true"></i> {{ 'management_reports.action.download_evidence_package'|trans({}, 'management_reports') }}
                                 </a>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 {% endblock %}

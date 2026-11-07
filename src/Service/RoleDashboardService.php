@@ -451,48 +451,6 @@ class RoleDashboardService
         ];
     }
 
-    /**
-     * Determine which dashboard a user should see based on their role.
-     *
-     * Persona-roles take precedence over the generic
-     * Manager/Admin fallback so a user with ROLE_DPO sees the
-     * Compliance-Manager dashboard rather than the CISO one.
-     */
-    public function getRecommendedDashboard(): string
-    {
-        $user = $this->security->getUser();
-
-        if ($user === null) {
-            return 'default';
-        }
-
-        // Check persona-roles first — most specific takes precedence.
-        if ($this->security->isGranted('ROLE_CISO')) {
-            return 'ciso';
-        }
-        if ($this->security->isGranted('ROLE_RISK_MANAGER')) {
-            return 'risk_manager';
-        }
-        if ($this->security->isGranted('ROLE_COMPLIANCE_MANAGER') || $this->security->isGranted('ROLE_DPO')) {
-            return 'compliance_manager';
-        }
-
-        // Generic role fallbacks
-        if ($this->security->isGranted('ROLE_SUPER_ADMIN') || $this->security->isGranted('ROLE_ADMIN')) {
-            return 'ciso'; // Admins inherit all persona-roles, default landing is CISO view
-        }
-
-        if ($this->security->isGranted('ROLE_MANAGER')) {
-            return 'risk_manager';
-        }
-
-        if ($this->security->isGranted('ROLE_AUDITOR')) {
-            return 'auditor';
-        }
-
-        return 'default';
-    }
-
     // ==================== Private Helper Methods ====================
 
     private function getCriticalRisks(int $limit): array

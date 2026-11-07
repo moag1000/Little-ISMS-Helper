@@ -3,8 +3,9 @@
 
 # Common Actions
 action:
+    board_one_pager: 'One-Pager (PDF)'
     standard_dashboard: 'Standard-Dashboard'
-    board_view: 'Vorstandsansicht'
+    board_view: 'Leitungsansicht'
     ciso_view: 'CISO-Ansicht'
     risk_register: 'Risikoregister'
     audit_plan: 'Auditplan'
@@ -233,9 +234,9 @@ compliance_manager:
 
 # Board Dashboard
 board:
-    title: 'Vorstands-Dashboard'
+    title: 'Leitungs-Dashboard'
     subtitle: 'Führungsübersicht zur Informationssicherheit'
-    badge: 'Vorstand'
+    badge: 'Leitung'
     rag:
         security: 'Sicherheit'
         compliance: 'Compliance'

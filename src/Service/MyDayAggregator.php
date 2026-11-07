@@ -38,6 +38,8 @@ use App\Repository\TrainingParticipationRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Repository\WizardSessionRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Security\Persona\PersonaResolver;
+use App\Service\MyDay\PeriodicReviewBuckets;
 use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -126,11 +128,9 @@ final class MyDayAggregator
         private readonly WizardSessionRepository $wizardSessionRepo,
         private readonly ComplianceAnalyticsService $complianceAnalytics,
         private readonly \App\Repository\EvidenceReverificationTaskRepository $evidenceReverificationRepo,
-        private readonly \App\Repository\ControlRepository $controlRepo,
-        private readonly \App\Repository\SupplierRepository $supplierRepo,
-        private readonly \App\Repository\DataProtectionImpactAssessmentRepository $dpiaRepo,
-        private readonly \App\Repository\BusinessContinuityPlanRepository $bcPlanRepo,
+        private readonly PeriodicReviewBuckets $periodicReviews,
         private readonly UrlGeneratorInterface $urls,
+        private readonly PersonaResolver $personaResolver,
     ) {
     }
 
@@ -191,10 +191,10 @@ final class MyDayAggregator
         // date. Module-less by design: when the module/entity is unused the bucket
         // is simply empty and folds away in the UI (no explicit gating needed).
         $evidenceReverif   = $tenant ? $this->buildEvidenceReverificationDue($user, $tenant) : [];
-        $controlEffOverdue = $tenant ? $this->buildControlEffectivenessOverdue($tenant) : [];
-        $supplierReassess  = $tenant ? $this->buildSupplierReassessmentDue($tenant) : [];
-        $dpiaReviewOverdue = $tenant ? $this->buildDpiaReviewOverdue($tenant) : [];
-        $bcPlanReviewOver  = $tenant ? $this->buildBcPlanReviewOverdue($tenant) : [];
+        $controlEffOverdue = $tenant ? $this->periodicReviews->controlEffectivenessOverdue($tenant) : [];
+        $supplierReassess  = $tenant ? $this->periodicReviews->supplierReassessmentDue($tenant) : [];
+        $dpiaReviewOverdue = $tenant ? $this->periodicReviews->dpiaReviewOverdue($tenant) : [];
+        $bcPlanReviewOver  = $tenant ? $this->periodicReviews->bcPlanReviewOverdue($tenant) : [];
         $riskReviewOverdue = $tenant ? $this->buildRiskReviewOverdue($tenant) : [];
         $riskAcceptNoExp   = $tenant ? $this->buildRiskAcceptanceNoExpiry($tenant) : [];
         // V4-EF-7 — Compliance-Manager CM-Buckets (visibility-gated to ROLE_COMPLIANCE_MANAGER).
@@ -530,10 +530,7 @@ final class MyDayAggregator
                 return true;
             }
         }
-        if (in_array('ROLE_ADMIN', $user->getRoles(), true) || in_array('ROLE_MANAGER', $user->getRoles(), true)) {
-            return true;
-        }
-        return false;
+        return $this->personaResolver->reaches($user, 'ROLE_MANAGER');
     }
 
     /**
@@ -577,13 +574,7 @@ final class MyDayAggregator
         }
         // CISO / ISB-level governance roles see every accepted risk near
         // expiry — that's the whole point of the ISB-Pflicht-Bucket.
-        $roles = $user->getRoles();
-        if (in_array('ROLE_ADMIN', $roles, true)
-            || in_array('ROLE_MANAGER', $roles, true)
-            || in_array('ROLE_GROUP_CISO', $roles, true)) {
-            return true;
-        }
-        return false;
+        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
     }
 
     /**
@@ -633,11 +624,7 @@ final class MyDayAggregator
                 return true;
             }
         }
-        $roles = $user->getRoles();
-        if (in_array('ROLE_ADMIN', $roles, true) || in_array('ROLE_MANAGER', $roles, true)) {
-            return true;
-        }
-        return false;
+        return $this->personaResolver->reaches($user, 'ROLE_MANAGER');
     }
 
     /**
@@ -722,11 +709,7 @@ final class MyDayAggregator
 
     private function incidentVisibleToGovernanceRole(User $user): bool
     {
-        $roles = $user->getRoles();
-        return in_array('ROLE_ADMIN', $roles, true)
-            || in_array('ROLE_SUPER_ADMIN', $roles, true)
-            || in_array('ROLE_MANAGER', $roles, true)
-            || in_array('ROLE_GROUP_CISO', $roles, true);
+        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
     }
 
     /**
@@ -772,12 +755,7 @@ final class MyDayAggregator
 
     private function dataBreachVisibleToUser(User $user): bool
     {
-        $roles = $user->getRoles();
-        return in_array('ROLE_ADMIN', $roles, true)
-            || in_array('ROLE_SUPER_ADMIN', $roles, true)
-            || in_array('ROLE_MANAGER', $roles, true)
-            || in_array('ROLE_DPO', $roles, true)
-            || in_array('ROLE_GROUP_CISO', $roles, true);
+        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
     }
 
     /**
@@ -816,11 +794,7 @@ final class MyDayAggregator
 
     private function vulnerabilityVisibleToUser(Vulnerability $vuln, User $user): bool
     {
-        $roles = $user->getRoles();
-        if (in_array('ROLE_ADMIN', $roles, true)
-            || in_array('ROLE_SUPER_ADMIN', $roles, true)
-            || in_array('ROLE_MANAGER', $roles, true)
-            || in_array('ROLE_GROUP_CISO', $roles, true)
+        if ($this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO')
             || ($user->getId() !== null && $vuln->getResponsiblePersonUser()?->getId() === $user->getId())) {
             return true;
         }
@@ -910,11 +884,7 @@ final class MyDayAggregator
 
     private function changeApproverVisibleToUser(User $user): bool
     {
-        $roles = $user->getRoles();
-        return in_array('ROLE_ADMIN', $roles, true)
-            || in_array('ROLE_SUPER_ADMIN', $roles, true)
-            || in_array('ROLE_MANAGER', $roles, true)
-            || in_array('ROLE_GROUP_CISO', $roles, true);
+        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
     }
 
     /**
@@ -968,11 +938,7 @@ final class MyDayAggregator
                 return true;
             }
         }
-        $roles = $user->getRoles();
-        return in_array('ROLE_ADMIN', $roles, true)
-            || in_array('ROLE_SUPER_ADMIN', $roles, true)
-            || in_array('ROLE_MANAGER', $roles, true)
-            || in_array('ROLE_GROUP_CISO', $roles, true);
+        return $this->personaResolver->reaches($user, 'ROLE_MANAGER', 'ROLE_GROUP_CISO');
     }
 
     // =========================================================================
@@ -1112,121 +1078,6 @@ final class MyDayAggregator
     }
 
     /**
-     * Controls whose effectiveness test / review date has passed (ISO 27001 9.1).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildControlEffectivenessOverdue(Tenant $tenant): array
-    {
-        $items = [];
-        $today = new DateTimeImmutable('today');
-        foreach ($this->controlRepo->findBy(['tenant' => $tenant]) as $control) {
-            $next = $control->getNextEffectivenessTest() ?? $control->getNextReviewDate();
-            if ($next === null || $next >= $today) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'high',
-                'due_date'    => $next,
-                'link'        => $this->urls->generate('app_analytics_control_effectiveness'),
-                'entity_type' => 'control',
-                'tone'        => 'danger',
-                'title'       => (string) ($control->getName() ?? ('Control #' . $control->getId())),
-                'subtitle'    => 'effectiveness_overdue',
-                'badge'       => 'overdue',
-            ];
-        }
-        return $items;
-    }
-
-    /**
-     * Suppliers whose reassessment date has passed (ISO 27001 A.5.22).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildSupplierReassessmentDue(Tenant $tenant): array
-    {
-        $items = [];
-        $today = new DateTimeImmutable('today');
-        foreach ($this->supplierRepo->findBy(['tenant' => $tenant]) as $supplier) {
-            $next = $supplier->getNextAssessmentDate();
-            if ($next === null || $next >= $today) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'medium',
-                'due_date'    => $next,
-                'link'        => $this->urls->generate('app_supplier_show', ['id' => $supplier->getId()]),
-                'entity_type' => 'supplier',
-                'tone'        => 'warning',
-                'title'       => (string) ($supplier->getName() ?? 'Supplier'),
-                'subtitle'    => 'reassessment_due',
-                'badge'       => 'overdue',
-            ];
-        }
-        return $items;
-    }
-
-    /**
-     * DPIAs whose review date has passed (GDPR Art. 35(11)). Draft/archived skip.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildDpiaReviewOverdue(Tenant $tenant): array
-    {
-        $items = [];
-        $today = new DateTimeImmutable('today');
-        foreach ($this->dpiaRepo->findBy(['tenant' => $tenant]) as $dpia) {
-            $next = $dpia->getNextReviewDate();
-            if ($next === null || $next >= $today) {
-                continue;
-            }
-            if (in_array($dpia->getStatus(), ['draft', 'archived'], true)) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'high',
-                'due_date'    => $next,
-                'link'        => $this->urls->generate('app_dpia_show', ['id' => $dpia->getId()]),
-                'entity_type' => 'dpia',
-                'tone'        => 'danger',
-                'title'       => (string) ($dpia->getTitle() ?? 'DPIA'),
-                'subtitle'    => 'review_overdue',
-                'badge'       => 'overdue',
-            ];
-        }
-        return $items;
-    }
-
-    /**
-     * Business-continuity plans whose review date has passed (ISO 22301 8.4/9.1).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildBcPlanReviewOverdue(Tenant $tenant): array
-    {
-        $items = [];
-        $today = new DateTimeImmutable('today');
-        foreach ($this->bcPlanRepo->findBy(['tenant' => $tenant]) as $plan) {
-            $next = $plan->getNextReviewDate();
-            if ($next === null || $next >= $today) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'medium',
-                'due_date'    => $next,
-                'link'        => $this->urls->generate('app_bc_plan_show', ['id' => $plan->getId()]),
-                'entity_type' => 'bc_plan',
-                'tone'        => 'warning',
-                'title'       => (string) ($plan->getName() ?? 'BC plan'),
-                'subtitle'    => 'review_overdue',
-                'badge'       => 'overdue',
-            ];
-        }
-        return $items;
-    }
-
-    /**
      * Risks whose periodic review date has passed (ISO 27001 8.2).
      *
      * @return array<int, array<string, mixed>>
@@ -1286,9 +1137,6 @@ final class MyDayAggregator
     /** V4-EF-7: Check whether the user holds ROLE_COMPLIANCE_MANAGER. */
     private function isComplianceManager(User $user): bool
     {
-        $roles = $user->getRoles();
-        return in_array('ROLE_COMPLIANCE_MANAGER', $roles, true)
-            || in_array('ROLE_ADMIN', $roles, true)
-            || in_array('ROLE_SUPER_ADMIN', $roles, true);
+        return $this->personaResolver->reaches($user, 'ROLE_COMPLIANCE_MANAGER');
     }
 }
