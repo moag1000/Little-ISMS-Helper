@@ -3,7 +3,8 @@
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ finding.title }}{% endblock %}
 
@@ -39,19 +40,33 @@
         ]
     }) }}
 
-    {# Lifecycle X.3b — status chip + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\AuditFinding', status_key: finding.status }) }}
-        {{ _lifecycle_actions.dropdown(finding, 'audit-finding', 'audit_finding_lifecycle') }}
-    </div>
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\AuditFinding', status_key: finding.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(finding, 'audit-finding', 'audit_finding_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.type'|trans({}, 'messages'), value: finding.type ? ('audit_finding.type.' ~ finding.type)|trans({}, 'audits') : null },
+            { label: 'show.status.severity'|trans({}, 'messages'), value: finding.severity ? ('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits') : null },
+            { label: 'show.status.owner'|trans({}, 'messages'), value: finding.assignedPerson ? finding.assignedPerson.fullName : (finding.assignedTo ? finding.assignedTo.fullName : null) },
+            { label: 'show.status.due_date'|trans({}, 'messages'), value: finding.dueDate ? finding.dueDate|fa_date : null },
+        ],
+        workflow: workflow_state(finding),
+    }) }}
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3"><strong>{{ 'audit_finding.field.type'|trans({}, 'audits') }}:</strong> {{ ('audit_finding.type.' ~ finding.type)|trans({}, 'audits') }}</div>
-        <div class="col-md-3"><strong>{{ 'audit_finding.field.severity'|trans({}, 'audits') }}:</strong> {{ ('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits') }}</div>
-        <div class="col-md-3"><strong>{{ 'audit_finding.field.status'|trans({}, 'audits') }}:</strong> {{ ('audit_finding.status.' ~ finding.status)|trans({}, 'audits') }}</div>
-        <div class="col-md-3"><strong>{{ 'audit_finding.field.due_date'|trans({}, 'audits') }}:</strong> {{ finding.dueDate ? finding.dueDate|date('Y-m-d') : '—' }}</div>
-    </div>
+    {% set _links = entity_links(finding) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'audit_finding.section.description'|trans({}, 'audits') },
+        { id: 'nc-capa', label: 'audit_finding.section.nc_capa'|trans({}, 'audits'), show: finding.type in ['major_nc', 'minor_nc'] },
+        { id: 'corrective-actions', label: 'corrective_action.page.title'|trans({}, 'audits') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+        { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages') },
+    ]) }}
 
+    {% include '_components/_fa_entity_links.html.twig' with { entity: finding } only %}
+
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0">{{ 'audit_finding.section.description'|trans({}, 'audits') }}</h2></div>
@@ -65,6 +80,7 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
 
     {# Linked Norm Requirements as filter-chip group #}
     {% if finding.linkedRequirements|length > 0 %}
@@ -85,6 +101,7 @@
 
     {# CAPA / Nonconformity-Details (ISO 27001 Cl. 10.2 b) + d)). #}
     {% if finding.type in ['major_nc', 'minor_nc'] %}
+    <div id="nc-capa" class="fa-show-section">
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0">{{ 'audit_finding.section.nc_capa'|trans({}, 'audits') }}</h2></div>
@@ -97,11 +114,11 @@
                 </div>
                 <div class="col-md-3">
                     <strong>{{ 'audit_finding.field.nc_correction_due_date'|trans({}, 'audits') }}</strong>
-                    <p class="mb-0">{{ finding.ncCorrectionDueDate ? finding.ncCorrectionDueDate|date('Y-m-d') : '—' }}</p>
+                    <p class="mb-0">{{ finding.ncCorrectionDueDate ? finding.ncCorrectionDueDate|fa_date : '—' }}</p>
                 </div>
                 <div class="col-md-3">
                     <strong>{{ 'audit_finding.field.nc_verified_at'|trans({}, 'audits') }}</strong>
-                    <p class="mb-0">{{ finding.ncVerifiedAt ? finding.ncVerifiedAt|date('Y-m-d H:i') : '—' }}</p>
+                    <p class="mb-0">{{ finding.ncVerifiedAt ? finding.ncVerifiedAt|fa_datetime : '—' }}</p>
                 </div>
                 <div class="col-md-6">
                     <strong>{{ 'audit_finding.field.nc_verified_by'|trans({}, 'audits') }}</strong>
@@ -143,8 +160,10 @@
             </div>
         {% endblock %}
     {% endembed %}
+    </div>
     {% endif %}
 
+    <div id="corrective-actions" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0">{{ 'corrective_action.page.title'|trans({}, 'audits') }} ({{ finding.correctiveActions|length }})</h2></div>
@@ -172,7 +191,7 @@
                                 <td class="fa-table__cell">
                                     {% if ca.plannedCompletionDate %}
                                         <span {% if ca.isOverdue %}class="text-danger fw-bold"{% endif %}>
-                                            {{ ca.plannedCompletionDate|date('Y-m-d') }}
+                                            {{ ca.plannedCompletionDate|fa_date }}
                                         </span>
                                     {% else %}—{% endif %}
                                 </td>
@@ -184,8 +203,12 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: finding, lifecycle: 'audit-finding' } only %}
 
     {# Comment-Thread adoption (C7 macro). #}
+    <div id="comments">
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'AuditFinding',
@@ -194,6 +217,7 @@
         formAction: path('app_comment_post', {entityType: 'AuditFinding', entityId: finding.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
+    </div>
 
     <div class="d-flex gap-2 mt-4">
         {% if is_granted('ROLE_USER') %}
@@ -216,8 +240,6 @@
         </form>
     </div>
 
-    {# Lifecycle X.3b — transition history tab #}
-    {{ _lifecycle_history.history('audit-finding', finding.id) }}
     {% endif %} {# /M-4 audits module gate #}
 </div>
 {% endblock %}

@@ -4,6 +4,9 @@
 {% import '_components/_fa_table.html.twig' as _fa_table %}
 {% import '_components/_isms_approval_stages.html.twig' as _isms_approval_stages %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ campaign.name|e }} – {{ 'access_review.title'|trans({}, 'access_review') }}{% endblock %}
 
@@ -17,7 +20,7 @@
 
 {{ _fa_page_header.render({
     title:   campaign.name,
-    subtitle: ('access_review.scope.' ~ campaign.scope)|trans({}, 'access_review') ~ ' · ' ~ 'access_review.field.due_date'|trans({}, 'access_review') ~ ': ' ~ (campaign.dueDate ? campaign.dueDate|date('Y-m-d') : '–'),
+    subtitle: ('access_review.scope.' ~ campaign.scope)|trans({}, 'access_review') ~ ' · ' ~ 'access_review.field.due_date'|trans({}, 'access_review') ~ ': ' ~ (campaign.dueDate ? campaign.dueDate|fa_date : '–'),
     actions: [
         is_granted('ROLE_AUDITOR') ? {
             label: 'access_review.export.button'|trans({}, 'access_review'),
@@ -37,13 +40,34 @@
     ]|filter(a => a is not null)
 }) }}
 
-<main>
 <div class="container-fluid py-4">
+
+{% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\AccessReviewCampaign', status_key: campaign.status }) }}{% endset %}
+{{ _fa_status_band.render({
+    status: _status,
+    facts: [
+        { label: 'show.status.owner'|trans({}, 'messages'), value: campaign.createdBy ? (campaign.createdBy.fullName ?? campaign.createdBy.email) : null },
+        { label: 'show.status.due_date'|trans({}, 'messages'), value: campaign.dueDate ? campaign.dueDate|fa_date : null },
+        { label: 'show.status.scope'|trans({}, 'messages'), value: ('access_review.scope.' ~ campaign.scope)|trans({}, 'access_review') },
+        { label: 'show.status.progress'|trans({}, 'messages'), value: 'access_review.progress.decided_of_total'|trans({'%decided%': approvedCount + revokedCount, '%total%': items|length}, 'access_review') },
+    ],
+    workflow: workflow_state(campaign),
+}) }}
+
+{% set _links = entity_links(campaign) %}
+{{ _fa_anchor_bar.render([
+    { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+    { id: 'details', label: 'access_review.stage.title'|trans({}, 'access_review') },
+    { id: 'items', label: 'show.anchor.details'|trans({}, 'messages') },
+    { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+]) }}
+
+{% include '_components/_fa_entity_links.html.twig' with { entity: campaign } only %}
 
 <div class="row g-4">
 
     {# Left: approval stages overview + summary stats #}
-    <div class="col-md-4">
+    <div class="col-md-4 fa-show-section" id="details">
         <div class="card mb-4">
             <div class="card-header fw-bold">
                 {{ 'access_review.stage.title'|trans({}, 'access_review') }}
@@ -102,7 +126,7 @@
     </div>
 
     {# Right: items table with per-row decide forms + bulk-decide bar #}
-    <div class="col-md-8">
+    <div class="col-md-8 fa-show-section" id="items">
         <div class="card"
              {% if campaign.isOpen %}
              data-controller="bulk-actions"
@@ -194,7 +218,7 @@
                                     <td class="fa-table__cell">
                                         {% if item.decidedBy %}
                                             {{ item.decidedBy.fullName ?? item.decidedBy.email }}
-                                            <br><small class="text-muted">{{ item.decidedAt|date('Y-m-d H:i') }}</small>
+                                            <br><small class="text-muted">{{ item.decidedAt|fa_datetime }}</small>
                                         {% else %}
                                             <span class="text-muted">–</span>
                                         {% endif %}
@@ -332,8 +356,8 @@
 </div>
 {% endif %}
 
+{% include '_components/_fa_show_history.html.twig' with { entity: campaign, lifecycle: 'access-review-campaign' } only %}
 </div>
-</main>
 
 {# Close-campaign confirmation modal (fa-modal pattern) #}
 {% if campaign.isOpen %}

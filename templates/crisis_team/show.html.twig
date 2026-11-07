@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'crisis_team' %}
 {% block title %}{{ crisis_team.teamName }}{% endblock %}
 {% block body %}
@@ -23,6 +25,27 @@
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost',   icon: 'util-arrow-left', href: path('app_crisis_team_index') }
         ]
     }) }}
+
+    {% set _status %}{% include '_components/_badge.html.twig' with { variant: crisis_team.isActive ? 'success' : 'secondary', content: (crisis_team.isActive ? 'show.status.active' : 'show.status.inactive')|trans({}, 'messages') } %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.type'|trans({}, 'messages'), value: ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') },
+            { label: 'crisis_team.field.team_leader'|trans({}, 'crisis_team'), value: crisis_team.teamLeader ? crisis_team.teamLeader.email : null },
+        ],
+        workflow: workflow_state(crisis_team),
+    }) }}
+
+    {% set _links = entity_links(crisis_team) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: crisis_team } only %}
+
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
             <dl class="row">
@@ -42,5 +65,8 @@
             </dl>
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: crisis_team } only %}
 </div>
 {% endblock %}

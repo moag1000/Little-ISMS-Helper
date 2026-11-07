@@ -112,7 +112,6 @@ privacy:
             high: 'High'
             critical: 'Critical'
         field:
-            status: Status
             completeness: Completeness
             assessor: Assessor
             affected_subjects: 'Affected Data Subjects'
@@ -328,7 +327,6 @@ processing_activity:
     clone_suffix: '(Copy)'
     kpi:
         completeness: 'Completeness'
-        status: 'Status'
         risk_level: 'Risk Level'
         dpia_status: 'DPIA Status'
         required: 'Required'

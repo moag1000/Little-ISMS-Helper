@@ -4,13 +4,25 @@
  # Last block before the comments: the newest audit-log entries of the record
  # and, for lifecycle-managed entities, the status transitions.
  #
- # Usage:
+ # Usage — the controller passes the entries:
  #   {% include '_components/_fa_show_history.html.twig' with {
  #       auditLogs: auditLogs|default([]), total: totalAuditLogs|default(0),
  #       entityType: 'Risk', entityId: risk.id, lifecycle: 'risk'
  #   } only %}
+ #
+ # or the block reads them for the record (show_history(entity)):
+ #   {% include '_components/_fa_show_history.html.twig' with { entity: supplier } only %}
+ #
+ # lifecycle — EntityTypeRegistry slug; adds the status transitions.
  #}
 {% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% if entity is defined and entity and auditLogs is not defined %}
+    {% set _h = show_history(entity) %}
+    {% set auditLogs = _h.logs %}
+    {% set total = _h.total %}
+    {% set entityType = entityType|default(show_entity_type(entity)) %}
+    {% set entityId = entity.id %}
+{% endif %}
 <section id="history" class="fa-section fa-show-section mb-4" aria-labelledby="history-title">
     <h2 id="history-title" class="fa-section__title">{{ 'show.anchor.history'|trans({}, 'messages') }} <span class="text-muted">({{ total|default(0) }})</span></h2>
     {% if auditLogs|default([]) is not empty %}

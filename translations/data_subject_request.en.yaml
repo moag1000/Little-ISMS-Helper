@@ -125,7 +125,6 @@ dsr:
     # Field labels (show page)
     field:
         request_type: "Request Type"
-        status: "Status"
         received_at: "Received"
         deadline: "Deadline"
         original_deadline: "Original deadline"

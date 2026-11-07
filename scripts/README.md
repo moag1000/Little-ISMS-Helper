@@ -270,7 +270,7 @@ Nachweis → Vorfall → Schwachstelle aus `App\Service\Detail\EntityLinks`), da
 die Fachabschnitte, zuletzt Historie (`_fa_show_history`) und Kommentare. Eine
 Seite auf dem Gerüst darf die alte `_entity_link_matrix` nicht mehr enthalten.
 Noch nicht umgestellte Seiten stehen in `baselines/show_skeleton.txt` und dürfen
-nur weniger werden.
+nur weniger werden (seit der Umstellung der restlichen Detailseiten leer).
 
 **CI-Integration:** Gate 75 im `code-quality`-Job.
 

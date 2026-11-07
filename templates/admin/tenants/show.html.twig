@@ -5,6 +5,7 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_status_pill.html.twig' as pill %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block admin_title %}{{ tenant.name }}{% endblock %}
 
@@ -25,6 +26,18 @@
         ]
     }) }}
 
+    {% set _status %}{% if tenant.isActive %}<span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>{% else %}<span class="fa-status-pill fa-status-pill--neutral"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>{% endif %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.created'|trans({}, 'messages'), value: tenant.createdAt ? tenant.createdAt|fa_date : null },
+            { label: 'tenant.tabs.users'|trans({}, 'tenant'), value: userCount },
+        ],
+        workflow: workflow_state(tenant),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: tenant } only %}
+
     {# Tenant Header (logo + status) #}
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div class="d-flex align-items-start">
@@ -42,11 +55,6 @@
             <div>
                 <p class="text-muted mb-2">
                     <code class="text-primary">{{ tenant.code }}</code>
-                    {% if tenant.isActive %}
-                        <span class="fa-status-pill fa-status-pill--success ms-2"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
-                    {% else %}
-                        <span class="fa-status-pill fa-status-pill--neutral ms-2"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
-                    {% endif %}
                 </p>
                 {% if tenant.description %}
                     <p>{{ tenant.description }}</p>
@@ -505,6 +513,8 @@
             </div>
         </section>
     {% endif %}
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: tenant } only %}
 
     {# Manage Users Modal #}
     <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="manageUsersModal"

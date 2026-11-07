@@ -3,7 +3,8 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'consent' %}
 
 {% block title %}{{ consent.dataSubjectIdentifier }} - {{ 'consent.header.title'|trans({}, 'consent') }}{% endblock %}
@@ -59,31 +60,29 @@
         </div>
     {% endif %}
 
-    {# Lifecycle X.3b — status chip + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Consent', status_key: consent.status }) }}
-        {{ _lifecycle_actions.dropdown(consent, 'consent', 'consent_lifecycle') }}
-    </div>
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Consent', status_key: consent.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(consent, 'consent', 'consent_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'consent.field.granted_at'|trans({}, 'consent'), value: consent.grantedAt ? consent.grantedAt|fa_date : null },
+            { label: 'show.status.valid_until'|trans({}, 'messages'), value: consent.expiresAt ? consent.expiresAt|fa_date : null },
+            { label: 'consent.verified'|trans({}, 'consent'), value: consent.verifiedBy ? consent.verifiedBy : null },
+        ],
+        workflow: workflow_state(consent),
+    }) }}
 
-    {# Status Badges #}
-    <div class="mb-4">
-        {% set statusBadgeClass = {
-            'pending_verification': 'warning',
-            'active': 'success',
-            'revoked': 'danger'
-        }[consent.status] ?? 'secondary' %}
+    {% set _links = entity_links(consent) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
 
-        {% include '_components/_badge.html.twig' with { variant: statusBadgeClass, class: 'me-2 fa-status-pill--lg', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
+    {% include '_components/_fa_entity_links.html.twig' with { entity: consent } only %}
 
-        {% if consent.verifiedBy %}
-        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'status-ok', class: 'me-2 fa-status-pill--lg', content: 'consent.verified'|trans({}, 'consent') } %}
-        {% endif %}
-
-        {% if consent.revokedAt %}
-        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', class: 'fa-status-pill--lg', content: 'consent.revoked'|trans({}, 'consent') } %}
-        {% endif %}
-    </div>
-
+    <div id="details" class="fa-show-section">
     {# Data Subject Section #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
@@ -161,7 +160,7 @@
                 <div class="col-md-4">
                     <div class="detail-item">
                         <span class="label">{{ 'consent.field.granted_at'|trans({}, 'consent') }}:</span>
-                        <span class="value">{{ consent.grantedAt|date('d.m.Y H:i') }}</span>
+                        <span class="value">{{ consent.grantedAt|fa_datetime }}</span>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -234,7 +233,7 @@
         {% block card_body %}
             <div class="detail-item">
                 <span class="label">{{ 'consent.field.expires_at'|trans({}, 'consent') }}:</span>
-                <span class="value">{{ consent.expiresAt|date('d.m.Y') }}</span>
+                <span class="value">{{ consent.expiresAt|fa_date }}</span>
             </div>
         {% endblock %}
     {% endembed %}
@@ -253,7 +252,7 @@
         {% block card_body %}
             {% if consent.verifiedBy %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'status-ok', class: 'mb-0' } } %}
-                {% block alert_body %}<div class="d-flex align-items-center"> <i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i> <div> <strong>{{ 'consent.verified'|trans({}, 'consent') }}</strong> <br> <small>{{ 'consent.verified_by_user'|trans({'%user%': consent.verifiedBy}, 'consent') }}</small> {% if consent.verifiedAt %} <br> <small>{{ consent.verifiedAt|date('d.m.Y H:i') }}</small> {% endif %} </div> </div>{% endblock %}
+                {% block alert_body %}<div class="d-flex align-items-center"> <i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i> <div> <strong>{{ 'consent.verified'|trans({}, 'consent') }}</strong> <br> <small>{{ 'consent.verified_by_user'|trans({'%user%': consent.verifiedBy}, 'consent') }}</small> {% if consent.verifiedAt %} <br> <small>{{ consent.verifiedAt|fa_datetime }}</small> {% endif %} </div> </div>{% endblock %}
             {% endembed %}
             {% else %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning', class: 'mb-0' } } %}
@@ -276,7 +275,7 @@
         {% endblock %}
         {% block card_body %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-0' } } %}
-                {% block alert_body %}<strong>{{ 'consent.revoked'|trans({}, 'consent') }}</strong> <br> <small>{{ 'consent.revoked_at'|trans({'%date%': consent.revokedAt|date('d.m.Y H:i')}, 'consent') }}</small> {% if consent.revocationReason %} <br> <small>{{ 'consent.revocation_reason'|trans({}, 'consent') }}: {{ consent.revocationReason }}</small> {% endif %}{% endblock %}
+                {% block alert_body %}<strong>{{ 'consent.revoked'|trans({}, 'consent') }}</strong> <br> <small>{{ 'consent.revoked_at'|trans({'%date%': consent.revokedAt|fa_datetime}, 'consent') }}</small> {% if consent.revocationReason %} <br> <small>{{ 'consent.revocation_reason'|trans({}, 'consent') }}: {{ consent.revocationReason }}</small> {% endif %}{% endblock %}
             {% endembed %}
         {% endblock %}
     {% endembed %}
@@ -322,20 +321,23 @@
                 <div class="col-md-6">
                     <div class="detail-item">
                         <span class="label">{{ 'consent.field.created_at'|trans({}, 'consent') }}:</span>
-                        <span class="value">{{ consent.createdAt|date('d.m.Y H:i') }}</span>
+                        <span class="value">{{ consent.createdAt|fa_datetime }}</span>
                     </div>
                 </div>
                 {% if consent.updatedAt %}
                 <div class="col-md-6">
                     <div class="detail-item">
                         <span class="label">{{ 'consent.field.updated_at'|trans({}, 'consent') }}:</span>
-                        <span class="value">{{ consent.updatedAt|date('d.m.Y H:i') }}</span>
+                        <span class="value">{{ consent.updatedAt|fa_datetime }}</span>
                     </div>
                 </div>
                 {% endif %}
             </div>
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: consent, lifecycle: 'consent' } only %}
 </div>
 
 {# Verify Modal — fa-modal--confirm/success #}
@@ -425,8 +427,5 @@
     background-color: var(--surface-2) !important;
 }
 </style>
-
-{# Lifecycle X.3b — transition history tab #}
-{{ _lifecycle_history.history('consent', consent.id) }}
 
 {% endblock %}

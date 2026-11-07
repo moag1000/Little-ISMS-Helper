@@ -2,6 +2,8 @@
 {% trans_default_domain 'people' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ person.fullName }} - {{ 'person.title.show'|trans({}, 'messages') }}{% endblock %}
 
@@ -31,9 +33,31 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_person_index') }
         ]
     }) }}
-</div>
+
+    {% set _status %}{% include '_components/_badge.html.twig' with { variant: person.isActive ? 'success' : 'secondary', content: (person.isActive ? 'show.status.active' : 'show.status.inactive')|trans({}, 'messages') } %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.type'|trans({}, 'messages'), value: ('person.type.' ~ person.personType)|trans({}, 'people') },
+            { label: 'person.field.company'|trans({}, 'messages'), value: person.company },
+            { label: 'person.field.department'|trans({}, 'messages'), value: person.department },
+        ],
+        workflow: workflow_state(person),
+    }) }}
+
+    {% set _links = entity_links(person) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'person.section.details'|trans({}, 'messages') },
+        { id: 'contact', label: 'person.section.contact'|trans({}, 'messages') },
+        { id: 'notes', label: 'person.section.notes'|trans({}, 'messages'), show: person.notes is not empty },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: person } only %}
 
 {# Person Details #}
+<div id="details" class="fa-show-section">
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_header %}
         <div class="card-header">
@@ -82,8 +106,10 @@
         </div>
     {% endblock %}
 {% endembed %}
+</div>
 
 {# Contact Information #}
+<div id="contact" class="fa-show-section">
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_header %}
         <div class="card-header">
@@ -116,9 +142,11 @@
         </div>
     {% endblock %}
 {% endembed %}
+</div>
 
 {# Additional Information #}
 {% if person.notes %}
+<div id="notes" class="fa-show-section">
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_header %}
         <div class="card-header">
@@ -133,7 +161,10 @@
         {% endembed %}
     {% endblock %}
 {% endembed %}
+</div>
 {% endif %}
+
+{% include '_components/_fa_show_history.html.twig' with { entity: person } only %}
 
 {# Action Buttons #}
 <div class="button-group mt-xl">
