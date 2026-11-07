@@ -138,12 +138,15 @@ class GuidedTourServiceTest extends TestCase
         $this->assertCount(8, $service->stepsFor('junior'));
         $this->assertCount(5, $service->stepsFor('cm'));
         $this->assertCount(4, $service->stepsFor('ciso'));
-        // 6 ISB stops: welcome, soa, risk, incidents, workflows, audit-log
-        // (risk register added — ISO 27001 Cl. 6.1.2 is daily ISB core work).
-        $this->assertCount(6, $service->stepsFor('isb'));
-        $this->assertCount(2, $service->stepsFor('risk_owner'));
+        // 11 ISB stops: welcome, my day, context, registers, soa, risk, incidents,
+        // duty calendar, suggestions, workflows, audit-log (P3: wave-1 pages).
+        $this->assertCount(11, $service->stepsFor('isb'));
+        $this->assertCount(3, $service->stepsFor('risk_owner'));
         $this->assertCount(4, $service->stepsFor('auditor'));
-        $this->assertCount(4, $service->stepsFor('board'));
+        $this->assertCount(5, $service->stepsFor('board'));
+        $this->assertCount(6, $service->stepsFor('risk_manager'));
+        $this->assertCount(5, $service->stepsFor('bcm'));
+        $this->assertCount(5, $service->stepsFor('dpo'));
         // MRIS-Topic-Tour: 8 Stopps (themenbezogen, nicht rollenbezogen).
         $this->assertCount(8, $service->stepsFor('mris'));
     }
