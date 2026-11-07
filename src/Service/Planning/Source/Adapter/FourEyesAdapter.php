@@ -104,7 +104,7 @@ final class FourEyesAdapter implements SourceAdapter
             ->orRoles('ROLE_MANAGER');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof FourEyesApprovalRequest);
 

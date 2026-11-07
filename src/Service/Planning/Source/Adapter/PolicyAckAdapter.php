@@ -101,7 +101,7 @@ final class PolicyAckAdapter implements SourceAdapter
         return Responsibility::holders($item->getUser());
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof PolicyAcknowledgement);
 

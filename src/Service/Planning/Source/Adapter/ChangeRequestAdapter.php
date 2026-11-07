@@ -102,7 +102,7 @@ final class ChangeRequestAdapter implements SourceAdapter
         return Responsibility::roles('ROLE_CISO', 'ROLE_ISB');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof ChangeRequest);
 

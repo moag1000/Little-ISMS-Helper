@@ -128,7 +128,7 @@ final class WorkflowInstanceAdapter implements SourceAdapter
         return $role !== '' ? $responsibility->orRoles($role) : $responsibility;
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof WorkflowInstance);
 
