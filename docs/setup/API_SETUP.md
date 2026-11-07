@@ -145,6 +145,8 @@ All endpoints available at `/api` (the complete, current list is the Swagger UI)
 - Approval evidence is read-only: risk acceptance and decision approver/date, `formallyAccepted`,
   supplier board acceptance, change-request approval and verification.
 - Decisions of top management, register entries and suggestions are not created over the API.
+- `PUT` updates the stored record with the writable fields only (`standard_put: false` in
+  `config/packages/api_platform.yaml`); fields you leave out keep their value.
 - Reviewer roles (`ROLE_AUDITOR`, `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) and API tokens are
   read-only: write calls answer 403 (session) or 405 (token).
 

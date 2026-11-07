@@ -22,6 +22,13 @@ api_platform:
             skip_null_values: false
         denormalization_context:
             enable_max_depth: true
+        # PUT updates the stored record with the write-group fields only. With the
+        # API Platform default (standard_put: true) PUT deserializes into a NEW
+        # object and the Doctrine processor copies ALL its properties over the
+        # stored one: tenant became null, status fell back to the constructor
+        # default (lifecycle bypass), createdAt/lockVersion were reset.
+        extra_properties:
+            standard_put: false
 
     # OpenAPI documentation
     openapi:
