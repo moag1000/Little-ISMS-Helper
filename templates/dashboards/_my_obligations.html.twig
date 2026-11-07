@@ -1,0 +1,41 @@
+{#
+ # "Was bei dir ansteht" — the user's open duties from every deadline source
+ # (ObligationInbox, same list as My Day), for the persona dashboards.
+ # Replaces the dashboard-own "pending approvals" query: approvals are duties too.
+ #}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% set _ob = my_obligations(8) %}
+<div class="card h-100">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="fa-icon fa-icon--ui-inbox" aria-hidden="true"></i>
+        <strong>{{ 'dashboards.obligations.title'|trans({}, 'dashboards') }}</strong>
+        {% if _ob.overdue > 0 %}
+            <span class="fa-status-pill fa-status-pill--sm fa-status-pill--danger ms-auto">{{ 'dashboards.obligations.overdue'|trans({ '%count%': _ob.overdue }, 'dashboards') }}</span>
+        {% elseif _ob.total > 0 %}
+            <span class="fa-status-pill fa-status-pill--sm fa-status-pill--warning ms-auto">{{ _ob.total }}</span>
+        {% endif %}
+    </div>
+    <div class="card-body p-0">
+        {% if _ob.items|length > 0 %}
+            <ul class="list-group list-group-flush">
+                {% for item in _ob.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                        <span class="text-truncate">
+                            {% if item.url %}<a href="{{ item.url }}">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}
+                            {% if item.norm %}<small class="text-muted ms-1">{{ item.norm }}</small>{% endif %}
+                        </span>
+                        <span class="fa-status-pill fa-status-pill--sm fa-status-pill--{{ item.overdue ? 'danger' : (item.urgent ? 'warning' : 'neutral') }} flex-shrink-0">{{ item.due|fa_date }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {{ _fa_empty_state.render({
+                icon:  'ui-inbox',
+                title: 'dashboards.obligations.empty'|trans({}, 'dashboards')
+            }) }}
+        {% endif %}
+    </div>
+    <div class="card-footer text-end">
+        <a href="{{ path('app_my_day') }}">{{ 'dashboards.obligations.all'|trans({ '%count%': _ob.total }, 'dashboards') }}</a>
+    </div>
+</div>

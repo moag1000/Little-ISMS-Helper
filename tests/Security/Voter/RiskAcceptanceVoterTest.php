@@ -69,8 +69,10 @@ final class RiskAcceptanceVoterTest extends TestCase
         yield 'executive tier, manager' => [8, ['ROLE_MANAGER'], VoterInterface::ACCESS_DENIED];
         yield 'executive tier, top management' => [12, ['ROLE_TOP_MGMT'], VoterInterface::ACCESS_GRANTED];
         yield 'manager tier, top management only' => [5, ['ROLE_TOP_MGMT'], VoterInterface::ACCESS_DENIED];
-        yield 'executive tier, admin' => [16, ['ROLE_ADMIN'], VoterInterface::ACCESS_GRANTED];
-        yield 'executive tier, super admin via hierarchy' => [25, ['ROLE_SUPER_ADMIN'], VoterInterface::ACCESS_GRANTED];
+        // ISO 27001 5.1: accepting a high residual risk is a top-management decision — admin does not inherit it.
+        yield 'executive tier, admin without Leitung role' => [16, ['ROLE_ADMIN'], VoterInterface::ACCESS_DENIED];
+        yield 'executive tier, super admin without Leitung role' => [25, ['ROLE_SUPER_ADMIN'], VoterInterface::ACCESS_DENIED];
+        yield 'executive tier, admin with Leitung role' => [16, ['ROLE_ADMIN', 'ROLE_TOP_MGMT'], VoterInterface::ACCESS_GRANTED];
         yield 'manager tier, admin via hierarchy' => [5, ['ROLE_ADMIN'], VoterInterface::ACCESS_GRANTED];
     }
 

@@ -2,6 +2,14 @@ soa:
     page:
         title: 'Statement of Applicability (SoA)'
         subtitle: 'ISO/IEC 27001:2022 Annex A controls – overview and applicability'
+    governance:
+        approval: 'Approval by top management'
+        approved_on: 'approved on %date%'
+        not_approved: 'not approved'
+        propose: 'Submit for approval'
+        review: 'Yearly review'
+        review_link: 'in the duty calendar'
+        snapshots: 'Frozen versions'
     action:
         export_html: 'Export HTML'
         export_pdf: 'Export PDF'

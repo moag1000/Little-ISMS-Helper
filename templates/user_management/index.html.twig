@@ -21,6 +21,8 @@
     ]
 }) }}
 
+{% include '_components/_top_management_role_hint.html.twig' with { dismissable: false } %}
+
 {# Async-export dispatch modal — minimal confirm dialog with embedded CSRF #}
 <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="userExportModal"
      data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"

@@ -20,7 +20,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Surfaces the ISB's day-to-day ISMS operational scope:
  *   - Open incidents and controls
- *   - Pending workflow approvals
+ *   - the ISB's open duties (ObligationInbox, same list as My Day)
+ *   - the downloads the persona may take (ReportAccessVoter)
  *   - Lifecycle-stuck items
  *   - Quick-links to ISMS core, controls, incidents, audits
  *
@@ -47,7 +48,6 @@ final class IsbDashboardController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $pendingApprovals = $this->roleDashboardService->getPendingApprovals();
         $lifecycleStuck   = $this->roleDashboardService->getLifecycleStuck();
 
         // TISAX IS-tier aggregate — ISB scope covers information_security chapters only
@@ -64,7 +64,6 @@ final class IsbDashboardController extends AbstractController
 
         return $this->render('dashboards/isb.html.twig', [
             'dashboard' => [
-                'pending_approvals' => $pendingApprovals,
                 'lifecycle_stuck'   => $lifecycleStuck,
                 'tisax_aggregate'   => $tisaxAggregate,
             ],

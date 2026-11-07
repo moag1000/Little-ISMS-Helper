@@ -48,6 +48,51 @@ class GuidedTourServiceTest extends TestCase
         yield 'admin' => [['ROLE_ADMIN'], 'ciso'];
         yield 'top management' => [['ROLE_TOP_MGMT'], 'board'];
         yield 'group ciso' => [['ROLE_GROUP_CISO'], 'board'];
+        yield 'risk manager' => [['ROLE_RISK_MANAGER'], 'risk_manager'];
+        yield 'bcm officer' => [['ROLE_BCM_OFFICER'], 'bcm'];
+        yield 'dpo' => [['ROLE_DPO'], 'dpo'];
+    }
+
+    #[Test]
+    public function aPlainUserWhoOwnsARiskGetsTheRiskOwnerTour(): void
+    {
+        $owner = $this->createStub(\App\Repository\RiskRepository::class);
+        $owner->method('countOwnedBy')->willReturn(2);
+        $service = new GuidedTourService(PersonaResolverFactory::create(), riskRepository: $owner);
+
+        self::assertSame(GuidedTourService::TOUR_RISK_OWNER, $service->autoDetectTour($this->user([])));
+        // Ownership never overrides an explicit persona role.
+        self::assertSame('isb', $service->autoDetectTour($this->user(['ROLE_ISB'])));
+    }
+
+    #[Test]
+    public function aPlainUserWithoutRisksStaysOnTheJuniorTour(): void
+    {
+        $owner = $this->createStub(\App\Repository\RiskRepository::class);
+        $owner->method('countOwnedBy')->willReturn(0);
+        $service = new GuidedTourService(PersonaResolverFactory::create(), riskRepository: $owner);
+
+        self::assertSame(GuidedTourService::TOUR_JUNIOR, $service->autoDetectTour($this->user([])));
+    }
+
+    #[Test]
+    public function everyTourStepHasItsTextInBothLanguages(): void
+    {
+        $service = $this->buildService();
+        foreach (['de', 'en'] as $locale) {
+            $messages = \Symfony\Component\Yaml\Yaml::parseFile(dirname(__DIR__, 2) . '/translations/guided_tour.' . $locale . '.yaml');
+            foreach (GuidedTourService::ALL_TOURS as $tourId) {
+                foreach ($service->stepsFor($tourId) as $step) {
+                    foreach (['title_key', 'body_key'] as $key) {
+                        $value = $messages;
+                        foreach (explode('.', $step[$key]) as $segment) {
+                            $value = is_array($value) ? ($value[$segment] ?? null) : null;
+                        }
+                        self::assertIsString($value, sprintf('%s missing in %s', $step[$key], $locale));
+                    }
+                }
+            }
+        }
     }
 
     /** @param list<string> $roles */
