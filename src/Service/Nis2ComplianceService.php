@@ -404,7 +404,7 @@ final class Nis2ComplianceService
      */
     public function article23Timeline(): array
     {
-        $nis2Incidents = $this->incidentRepository->findBy(['nis2Category' => ['operational', 'security', 'privacy', 'availability']]);
+        $nis2Incidents = $this->incidentRepository->findNis2Reportable();
         $totalNis2 = count($nis2Incidents);
         $earlyOk = $detailedOk = $finalOk = 0;
         $overdue = 0;

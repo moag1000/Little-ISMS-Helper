@@ -7,247 +7,123 @@ namespace App\Tests\Service\Notification;
 use App\Entity\AuditFinding;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
+use App\Entity\Notification\SlaDeadlineMonitor;
 use App\Entity\Tenant;
 use App\Enum\IncidentSeverity;
+use App\Enum\SlaDeadlineStatus;
 use App\Enum\SlaDeadlineType;
+use App\Service\Incident\ReportingPlanner;
+use App\Service\ModuleConfigurationService;
 use App\Service\Notification\SlaDeadlineFactory;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for SlaDeadlineFactory.
- *
- * Verifies that each factory method produces monitors with correct:
- *  - deadlineType
- *  - durationHours (deadlineAt = triggeredAt + hours)
- *  - notifyAtCheckpoints
- *  - entityType / entityId
+ * SlaDeadlineFactory keeps one monitor per statutory report of a record in
+ * line with the ReportingPlanner, and one ISO 10.1 monitor per nonconformity.
  */
-#[AllowMockObjectsWithoutExpectations]
 final class SlaDeadlineFactoryTest extends TestCase
 {
-    private EntityManagerInterface $em;
     private SlaDeadlineFactory $factory;
     private Tenant $tenant;
 
     protected function setUp(): void
     {
-        $this->em      = $this->createMock(EntityManagerInterface::class);
-        $this->factory = new SlaDeadlineFactory($this->em);
-        $this->tenant  = new Tenant();
+        $modules = $this->createStub(ModuleConfigurationService::class);
+        $modules->method('isModuleActiveForTenant')->willReturn(true);
+        $this->factory = new SlaDeadlineFactory(new ReportingPlanner($modules));
+        $this->tenant = new Tenant();
     }
 
-    // --- DataBreach ----------------------------------------------------------
-
     #[Test]
-    public function createForDataBreachProducesGdpr72hMonitor(): void
+    public function dataBreachClockStartsAtAwarenessNotAtRecordCreation(): void
     {
-        $breach = $this->makeDataBreach(id: 7);
+        $breach = $this->withId(new DataBreach(), 7);
+        $breach->setDetectedAt(new DateTimeImmutable('2026-05-01 10:00:00'));
+        $breach->setCreatedAt(new DateTimeImmutable('2026-05-02 09:00:00'));
 
-        $monitor = $this->factory->createForDataBreach($breach);
+        [$monitor] = $this->factory->sync($breach, [])['new'];
 
         self::assertSame(SlaDeadlineType::GdprNotification72h, $monitor->getDeadlineType());
         self::assertSame('DataBreach', $monitor->getEntityType());
         self::assertSame(7, $monitor->getEntityId());
-        self::assertSame($this->tenant, $monitor->getTenant());
-    }
-
-    #[Test]
-    public function createForDataBreachSetsDeadlineAt72h(): void
-    {
-        $triggeredAt = new DateTimeImmutable('2026-05-14 10:00:00');
-        $breach      = $this->makeDataBreach(id: 7, createdAt: $triggeredAt);
-
-        $monitor = $this->factory->createForDataBreach($breach);
-
-        $expectedDeadline = $triggeredAt->modify('+72 hours');
-        self::assertSame(
-            $expectedDeadline->format('Y-m-d H:i:s'),
-            $monitor->getDeadlineAt()->format('Y-m-d H:i:s'),
-        );
-    }
-
-    #[Test]
-    public function createForDataBreachSetsCorrectCheckpoints(): void
-    {
-        $breach  = $this->makeDataBreach(id: 7);
-        $monitor = $this->factory->createForDataBreach($breach);
-
+        self::assertSame('2026-05-04 10:00:00', $monitor->getDeadlineAt()->format('Y-m-d H:i:s'));
         self::assertSame([48, 24, 12, 4, 1], $monitor->getNotifyAtCheckpoints());
     }
 
     #[Test]
-    public function createForDataBreachCallsEntityManagerPersist(): void
+    public function breachWithoutAuthorityNotificationHasNoClock(): void
     {
-        $this->em->expects(self::once())->method('persist');
+        $breach = $this->withId(new DataBreach(), 8);
+        $breach->setRequiresAuthorityNotification(false);
 
-        $breach = $this->makeDataBreach(id: 7);
-        $this->factory->createForDataBreach($breach);
-    }
-
-    // --- Incident NIS2 -------------------------------------------------------
-
-    #[Test]
-    public function createForHighSeverityIncidentProducesNis2_24hMonitor(): void
-    {
-        $incident = $this->makeIncident(id: 3, severity: IncidentSeverity::High);
-        $monitor  = $this->factory->createForIncident($incident, 'high');
-
-        self::assertSame(SlaDeadlineType::Nis2EarlyWarning24h, $monitor->getDeadlineType());
-        self::assertSame('Incident', $monitor->getEntityType());
-        self::assertSame(3, $monitor->getEntityId());
+        self::assertSame([], $this->factory->sync($breach, [])['new']);
     }
 
     #[Test]
-    public function createForCriticalIncidentProducesNis2_24hMonitor(): void
+    public function reportableIncidentGetsThreeNis2Clocks(): void
     {
-        $incident = $this->makeIncident(id: 4, severity: IncidentSeverity::Critical);
-        $monitor  = $this->factory->createForIncident($incident, 'critical');
+        $incident = $this->incident(3, IncidentSeverity::High);
 
-        self::assertSame(SlaDeadlineType::Nis2EarlyWarning24h, $monitor->getDeadlineType());
-    }
-
-    #[Test]
-    public function createForLowSeverityIncidentProducesNis2_72hMonitor(): void
-    {
-        $incident = $this->makeIncident(id: 5, severity: IncidentSeverity::Low);
-        $monitor  = $this->factory->createForIncident($incident, 'low');
-
-        self::assertSame(SlaDeadlineType::Nis2Notification72h, $monitor->getDeadlineType());
-    }
-
-    #[Test]
-    public function createForMediumIncidentProducesNis2_72hMonitor(): void
-    {
-        $incident = $this->makeIncident(id: 6, severity: IncidentSeverity::Medium);
-        $monitor  = $this->factory->createForIncident($incident, 'medium');
-
-        self::assertSame(SlaDeadlineType::Nis2Notification72h, $monitor->getDeadlineType());
-        self::assertSame([48, 24, 12, 4, 1], $monitor->getNotifyAtCheckpoints());
-    }
-
-    #[Test]
-    public function createForHighIncidentSetsDeadlineAt24h(): void
-    {
-        $detectedAt = new DateTimeImmutable('2026-05-14 10:00:00');
-        $incident   = $this->makeIncident(id: 3, detectedAt: $detectedAt, severity: IncidentSeverity::High);
-
-        $monitor = $this->factory->createForIncident($incident, 'high');
-
-        $expectedDeadline = $detectedAt->modify('+24 hours');
-        self::assertSame(
-            $expectedDeadline->format('Y-m-d H:i:s'),
-            $monitor->getDeadlineAt()->format('Y-m-d H:i:s'),
+        $types = array_map(
+            static fn (SlaDeadlineMonitor $m): SlaDeadlineType => $m->getDeadlineType(),
+            $this->factory->sync($incident, [])['new'],
         );
+
+        self::assertSame([SlaDeadlineType::Nis2EarlyWarning24h, SlaDeadlineType::Nis2Notification72h, SlaDeadlineType::Nis2FinalReport1mo], $types);
     }
 
     #[Test]
-    public function createForHighIncidentHasCorrectCheckpoints(): void
+    public function lateReportMarksTheClockMissedInTimeReportSatisfiesIt(): void
     {
-        $incident = $this->makeIncident(id: 3, severity: IncidentSeverity::High);
-        $monitor  = $this->factory->createForIncident($incident, 'high');
+        $incident = $this->incident(4, IncidentSeverity::High);
+        $incident->setEarlyWarningReportedAt(new DateTimeImmutable('2026-05-01 12:00')); // in time
+        $incident->setDetailedNotificationReportedAt(new DateTimeImmutable('2026-05-06 08:00')); // late
 
-        self::assertSame([12, 4, 1], $monitor->getNotifyAtCheckpoints());
+        $monitors = $this->factory->sync($incident, [])['new'];
+
+        self::assertSame(SlaDeadlineStatus::Satisfied, $monitors[0]->getStatus());
+        self::assertSame(SlaDeadlineStatus::Missed, $monitors[1]->getStatus());
+        self::assertSame(SlaDeadlineStatus::Active, $monitors[2]->getStatus());
+        // Final report: one calendar month after the actual notification.
+        self::assertSame('2026-06-06 08:00', $monitors[2]->getDeadlineAt()->format('Y-m-d H:i'));
     }
 
-    // --- AuditFinding corrective action --------------------------------------
-
     #[Test]
-    public function createForCorrectiveActionProducesIso30dMonitor(): void
+    public function nonconformityGetsTheIso30dClockOnce(): void
     {
-        $finding = $this->makeAuditFinding(id: 11);
-        $monitor = $this->factory->createForCorrectiveAction($finding);
+        $finding = $this->withId(new AuditFinding(), 11);
+        $finding->setType(AuditFinding::TYPE_MAJOR_NC);
+        (new \ReflectionProperty(AuditFinding::class, 'createdAt'))->setValue($finding, new DateTimeImmutable('2026-05-01 00:00:00'));
+
+        [$monitor] = $this->factory->sync($finding, [])['new'];
 
         self::assertSame(SlaDeadlineType::IsoCorrectiveAction30d, $monitor->getDeadlineType());
-        self::assertSame('AuditFinding', $monitor->getEntityType());
-        self::assertSame(11, $monitor->getEntityId());
-    }
-
-    #[Test]
-    public function createForCorrectiveActionSetsDeadlineAt720h(): void
-    {
-        $createdAt = new DateTimeImmutable('2026-05-01 00:00:00');
-        $finding   = $this->makeAuditFinding(id: 11, createdAt: $createdAt);
-
-        $monitor = $this->factory->createForCorrectiveAction($finding);
-
-        // 30 days = 720 hours
-        $expectedDeadline = $createdAt->modify('+720 hours');
-        self::assertSame(
-            $expectedDeadline->format('Y-m-d H:i:s'),
-            $monitor->getDeadlineAt()->format('Y-m-d H:i:s'),
-        );
-    }
-
-    #[Test]
-    public function createForCorrectiveActionHasCorrectCheckpoints(): void
-    {
-        $finding = $this->makeAuditFinding(id: 11);
-        $monitor = $this->factory->createForCorrectiveAction($finding);
-
-        // 10d (240h), 7d (168h), 3d (72h), 1d (24h)
+        self::assertSame('2026-05-31 00:00:00', $monitor->getDeadlineAt()->format('Y-m-d H:i:s'));
         self::assertSame([240, 168, 72, 24], $monitor->getNotifyAtCheckpoints());
+        self::assertSame([], $this->factory->sync($finding, [$monitor])['new']);
     }
 
-    // --- Helpers -------------------------------------------------------------
-
-    private function makeDataBreach(int $id, ?DateTimeImmutable $createdAt = null): DataBreach
+    private function incident(int $id, IncidentSeverity $severity): Incident
     {
-        $breach = new DataBreach();
-
-        // Inject tenant via reflection (no public setter for id)
-        $r = new \ReflectionProperty(DataBreach::class, 'id');
-        $r->setValue($breach, $id);
-
-        $breach->setTenant($this->tenant);
-
-        if ($createdAt !== null) {
-            $breach->setCreatedAt($createdAt);
-        }
-
-        return $breach;
-    }
-
-    private function makeIncident(
-        int $id,
-        ?DateTimeImmutable $detectedAt = null,
-        ?IncidentSeverity $severity = null,
-    ): Incident {
-        $incident = new Incident();
-
-        $r = new \ReflectionProperty(Incident::class, 'id');
-        $r->setValue($incident, $id);
-
-        $incident->setTenant($this->tenant);
-
-        if ($detectedAt !== null) {
-            $incident->setDetectedAt($detectedAt);
-        }
-
-        if ($severity !== null) {
-            $incident->setSeverity($severity);
-        }
+        $incident = $this->withId(new Incident(), $id);
+        $incident->setSeverity($severity);
+        $incident->setDetectedAt(new DateTimeImmutable('2026-05-01 08:00:00'));
 
         return $incident;
     }
 
-    private function makeAuditFinding(int $id, ?DateTimeImmutable $createdAt = null): AuditFinding
+    /**
+     * @template T of object
+     * @param T $entity
+     * @return T
+     */
+    private function withId(object $entity, int $id): object
     {
-        $finding = new AuditFinding();
+        (new \ReflectionProperty($entity::class, 'id'))->setValue($entity, $id);
+        $entity->setTenant($this->tenant);
 
-        $r = new \ReflectionProperty(AuditFinding::class, 'id');
-        $r->setValue($finding, $id);
-
-        $finding->setTenant($this->tenant);
-
-        if ($createdAt !== null) {
-            $r2 = new \ReflectionProperty(AuditFinding::class, 'createdAt');
-            $r2->setValue($finding, $createdAt);
-        }
-
-        return $finding;
+        return $entity;
     }
 }

@@ -24,7 +24,8 @@ my_day:
         documents_review_overdue: 'Dokument-Reviews'
         trainings_pending: 'Trainings offen'
         incidents_open_assigned: 'Incidents (mir)'
-        data_breaches_72h_ticking: 'Datenpannen 72h'
+        data_breaches_open: 'Datenpannen offen'
+        reporting_duties: 'Meldepflichten'
         audit_checklist_due: 'Audit-Checkliste fällig'
         change_requests_pending_approval: 'CRs zur Freigabe'
         management_review_upcoming: 'Mgmt-Review anstehend'
@@ -73,7 +74,8 @@ my_day:
         documents_review_overdue: 'Dokumente — Review fällig (ISO 27001 7.5.3)'
         trainings_pending: 'Trainings (mir zugewiesen)'
         incidents_open_assigned: 'Incidents (mir zugewiesen)'
-        data_breaches_72h_ticking: 'Datenpannen — 72h-Frist läuft (DSGVO Art. 33)'
+        data_breaches_open: 'Datenpannen — in Bearbeitung (DSGVO Art. 33/34)'
+        reporting_duties: 'Meldepflichten — Berichte an Behörden (NIS-2, DORA, DSGVO)'
         audit_checklist_due: 'Audit-Checkliste — fällig in 7 Tagen'
         change_requests_pending_approval: 'Change Requests — warten auf Freigabe'
         management_review_upcoming: 'Management-Review — anstehend (90-Tage-Fenster)'
@@ -119,9 +121,12 @@ my_day:
         incidents_open_assigned:
             title: 'Incidents (mir zugewiesen)'
             empty: 'Keine offenen Incidents auf deinem Tisch.'
-        data_breaches_72h_ticking:
-            title: 'Datenpannen — 72h-Frist läuft'
-            empty: 'Keine offenen Datenpannen mit laufender 72h-Frist.'
+        data_breaches_open:
+            title: 'Datenpannen — in Bearbeitung'
+            empty: 'Keine offenen Datenpannen.'
+        reporting_duties:
+            title: 'Meldepflichten — Berichte an Behörden'
+            empty: 'Keine offenen Meldungen.'
         audit_checklist_due:
             title: 'Audit-Checkliste — fällig'
             empty: 'Keine Audit-Checklisten-Items in den nächsten 7 Tagen fällig.'
@@ -151,7 +156,8 @@ my_day:
         risk_acceptance_no_expiry: 'Akzeptiertes Risiko ohne Ablaufdatum — Wiedervorlage fehlt (Audit-Finding).'
         wizard_overdue: 'Begonnenes Setup/Assessment, das nicht zu Ende geklickt wurde.'
         framework_gaps_critical: 'Norm/Framework mit kritisch niedriger Abdeckung (< 60 %).'
-        data_breaches_72h_ticking: 'Datenpanne — gesetzliche 72h-Meldefrist (DSGVO Art. 33).'
+        data_breaches_open: 'Datenpanne in Bearbeitung; die 72h-Meldung steht unter Meldepflichten.'
+        reporting_duties: 'Gesetzliche Meldung mit Stundenfrist: NIS-2 Art. 23, DORA Art. 19, DSGVO Art. 33.'
         evidence_reverification_due: 'Nachweis muss erneut als aktuell bestätigt werden (Cl. 7.5.3).'
         control_effectiveness_overdue: 'Wirksamkeit der Maßnahme muss geprüft werden (Cl. 9.1).'
 

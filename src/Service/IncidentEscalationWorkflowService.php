@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Enum\IncidentSeverity;
+use App\Enum\SlaDeadlineType;
 use DateMalformedStringException;
 use DateTimeImmutable;
 use App\Entity\WorkflowInstance;
@@ -47,8 +48,6 @@ class IncidentEscalationWorkflowService
     private const IncidentSeverity SEVERITY_HIGH = IncidentSeverity::High;
     private const IncidentSeverity SEVERITY_CRITICAL = IncidentSeverity::Critical;
 
-    // GDPR breach notification deadline (hours)
-    private const int GDPR_BREACH_DEADLINE_HOURS = 72;      // 1 hour (immediate)
 
     public function __construct(
         private readonly WorkflowService $workflowService,
@@ -119,7 +118,7 @@ class IncidentEscalationWorkflowService
 
         // Calculate 72h deadline
         $detectedAt = $incident->getDetectedAt() ?? new DateTimeImmutable();
-        $deadline = DateTimeImmutable::createFromInterface($detectedAt)->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
+        $deadline = DateTimeImmutable::createFromInterface($detectedAt)->modify('+' . SlaDeadlineType::GdprNotification72h->durationHours() . ' hours');
 
         // Calculate time remaining
         $now = new DateTimeImmutable();
@@ -623,7 +622,7 @@ class IncidentEscalationWorkflowService
         $gdprDeadline = null;
         if ($isDataBreach) {
             $detectedAt = $incident->getDetectedAt() ?? new DateTimeImmutable();
-            $gdprDeadline = DateTimeImmutable::createFromInterface($detectedAt)->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
+            $gdprDeadline = DateTimeImmutable::createFromInterface($detectedAt)->modify('+' . SlaDeadlineType::GdprNotification72h->durationHours() . ' hours');
         }
 
         // Approval requirements

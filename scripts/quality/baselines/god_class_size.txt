@@ -7,10 +7,10 @@ src/Entity/Risk.php:LOC=1893 deps=0
 src/Controller/DeploymentWizardController.php:LOC=1753 deps=0
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1729 deps=17
 src/Service/DashboardStatisticsService.php:LOC=1677 deps=24
-src/Entity/Incident.php:LOC=1631 deps=0
 src/Repository/ComplianceMappingRepository.php:LOC=1593 deps=0
 src/Controller/ComplianceExportController.php:LOC=1591 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1572 deps=18
+src/Entity/Incident.php:LOC=1507 deps=0
 src/Entity/ProcessingActivity.php:LOC=1415 deps=0
 src/Controller/PolicyWizardController.php:LOC=1357 deps=0
 src/Controller/ManagementReportController.php:LOC=1266 deps=0

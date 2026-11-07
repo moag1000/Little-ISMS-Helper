@@ -19,18 +19,18 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * Starts the regulatory SLA clock (SlaDeadlineMonitor) that
- * `app:process-timed-workflows` ticks via SlaDeadlineWatcher:
+ * Keeps the regulatory SLA clocks (SlaDeadlineMonitor) that
+ * `app:process-timed-workflows` ticks via SlaDeadlineWatcher in line with
+ * their records, on every save:
  *
- *  - DataBreach (created)                         → GDPR Art. 33 72h
- *  - Incident with notificationRequired or a NIS2
- *    category (created or later flagged)          → NIS2 Art. 23 24h (high/critical) / 72h
+ *  - Incident / DataBreach (created or changed) → one clock per statutory
+ *    report (ReportingPlanner: NIS-2, DORA, GDPR). A recorded report closes
+ *    its clock, a withdrawn assessment dismisses it, a later anchor moves it.
  *  - AuditFinding of type major/minor NC (created) → ISO 27001 Cl. 10.1 30 days
  *
- * At most one monitor per entity. Monitors are persisted in postFlush with a
- * second flush, because entities persisted during a flush are not written by
- * that same flush. A spawn that fails here (factory error, failed second
- * flush) is logged and retried idempotently by
+ * Monitors are written in postFlush with a second flush, because entities
+ * persisted during a flush are not written by that same flush. A spawn that
+ * fails here is logged and retried idempotently by
  * {@see \App\Service\Notification\SlaDeadlineMonitorRetry} on the next run
  * of `app:process-timed-workflows`.
  */
@@ -56,8 +56,8 @@ final class SlaDeadlineMonitorSpawner
 
     public function postUpdate(PostUpdateEventArgs $args): void
     {
-        // Only incidents can become reportable after creation.
-        if ($args->getObject() instanceof Incident) {
+        // Reports, assessments and anchors change on incidents and breaches.
+        if ($args->getObject() instanceof Incident || $args->getObject() instanceof DataBreach) {
             $this->queue($args->getObject());
         }
     }
@@ -81,15 +81,11 @@ final class SlaDeadlineMonitorSpawner
                 if ($tenant === null || $id === null || $type === null) {
                     continue;
                 }
-                if ($this->monitorRepository->findForEntity($type, $id, $tenant) !== null) {
-                    continue;
-                }
-
-                $monitor = $this->factory->buildFor($entity);
-                if ($monitor !== null) {
+                $result = $this->factory->sync($entity, $this->monitorRepository->findAllForEntity($type, $id, $tenant));
+                foreach ($result['new'] as $monitor) {
                     $em->persist($monitor);
-                    $created = true;
                 }
+                $created = $created || $result['changed'];
             } catch (\Throwable $e) {
                 $this->logger->error('SlaDeadlineMonitorSpawner: could not start SLA monitor — the next cron run retries', [
                     'entity' => $entity::class,

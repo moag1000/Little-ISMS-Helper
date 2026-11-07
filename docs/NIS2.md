@@ -221,14 +221,37 @@ php bin/console app:generate-regulatory-workflows --workflow=incident-low
 
 ---
 
-## 10. NIS2-Meldung via BSI-Notifikationskommando
+## 10. Meldepflichten und Fristen (ein Planer)
 
-```bash
-# NIS2-Meldeprozess starten
-php bin/console app:nis2-notification [incident-id]
-```
+`App\Service\Incident\ReportingPlanner` ist die einzige Stelle, die sagt,
+welche Meldungen ein Vorfall oder eine Datenpanne schuldet und bis wann:
 
-Datei: `src/Command/Nis2NotificationCommand.php`
+| Meldung | Frist | Anker | „gemeldet“-Feld |
+|---|---|---|---|
+| NIS-2-Frühwarnung | 24 h | Erkennung | `earlyWarningReportedAt` |
+| NIS-2-Meldung | 72 h | Erkennung | `detailedNotificationReportedAt` |
+| NIS-2-Abschlussbericht | 1 Kalendermonat | tatsächliche 72-h-Meldung, sonst deren Frist | `finalReportSubmittedAt` |
+| DORA-Erstmeldung | 4 h nach Klassifizierung, spätestens 24 h | Erkennung | `initialReportSubmittedAt` |
+| DORA-Zwischenbericht | 72 h | Erstmeldung, sonst deren Frist | `intermediateReportSubmittedAt` |
+| DORA-Abschlussbericht | 1 Kalendermonat | Zwischenbericht, sonst dessen Frist | `doraFinalReportSubmittedAt` |
+| DSGVO Art. 33 | 72 h | Kenntnisnahme (`DataBreach.detectedAt`) | `supervisoryAuthorityNotifiedAt` |
+
+NIS-2 gilt, wenn das Modul `nis2_dora` aktiv ist, die Organisation nicht als
+„nicht reguliert“ eingestuft ist und `Incident::requiresNis2Reporting()` zutrifft:
+die Bewertung der Einrichtung (`notificationRequired`, Knopf „Meldepflicht
+bestätigen“ / „Nicht meldepflichtig“ auf der Vorfallseite), solange sie fehlt
+die Vorprüfung (`getNis2SignificanceReasons()`: Schweregrad hoch/kritisch,
+kritischer Prozess, grenzüberschreitend, ab 100 Betroffenen, Schaden ab
+500.000 EUR, Verdacht auf böswillige Handlung). DORA gilt für Finanzunternehmen
+(`Tenant::DORA_FINANCIAL_ENTITY`) bei Klassifizierung „schwerwiegend“.
+
+Je Meldung gibt es einen `SlaDeadlineMonitor` (Spawner bei jedem Speichern,
+Retry über `app:process-timed-workflows`). „Als gemeldet markieren“ auf der
+Vorfallseite setzt das Feld; der Monitor gilt dann als erfüllt (oder als
+verpasst, wenn zu spät gemeldet). Offene Meldungen stehen in „Mein Tag“ unter
+„Meldepflichten“ und gehen als Sofortmeldung an die zuständige Person
+(Vorfall-Verantwortliche, sonst ISB/CISO; Datenpanne: Bewerter/DSB) über
+`app:send-reminders`. Einen eigenen NIS-2-Meldebefehl gibt es nicht mehr.
 
 ---
 

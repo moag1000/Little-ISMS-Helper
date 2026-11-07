@@ -137,6 +137,8 @@ import_session.status	1
 incident.category	5
 incident.nis2_category	2
 incident.nis2_compliance	1
+incident.nis2_reason	1
+incident.reporting.duty	2
 incident.severity	3
 incident.status	3
 incident.workflow.escalation	1

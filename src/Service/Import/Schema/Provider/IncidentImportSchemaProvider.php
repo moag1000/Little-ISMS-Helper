@@ -45,8 +45,8 @@ use App\Service\Import\Schema\ImportSchemaProviderInterface;
  *     Person relations are, mirroring the ProcessingActivity provider convention;
  *     the legacy free-text `reportedBy` slot carries the human reporter instead)
  *   - fields not present in IncidentType (incidentNumber, assignedTo,
- *     immediateActions, preventiveActions, notificationRequired, resolvedAt,
- *     originatingThreat, evidenceArtifactsJson, dora* duplicate setters)
+ *     immediateActions, preventiveActions, resolvedAt,
+ *     originatingThreat, evidenceArtifactsJson)
  */
 final class IncidentImportSchemaProvider implements ImportSchemaProviderInterface
 {
@@ -263,12 +263,6 @@ final class IncidentImportSchemaProvider implements ImportSchemaProviderInterfac
                     module: 'nis2_dora',
                 ),
                 new ImportFieldSpec(
-                    name: 'economicImpact',
-                    setter: 'setEconomicImpact',
-                    type: ImportFieldSpec::TYPE_STRING,
-                    module: 'nis2_dora',
-                ),
-                new ImportFieldSpec(
                     name: 'reputationalImpact',
                     setter: 'setReputationalImpact',
                     type: ImportFieldSpec::TYPE_INT,
@@ -307,6 +301,12 @@ final class IncidentImportSchemaProvider implements ImportSchemaProviderInterfac
                 new ImportFieldSpec(
                     name: 'intermediateReportSubmittedAt',
                     setter: 'setIntermediateReportSubmittedAt',
+                    type: ImportFieldSpec::TYPE_DATE,
+                    module: 'nis2_dora',
+                ),
+                new ImportFieldSpec(
+                    name: 'doraFinalReportSubmittedAt',
+                    setter: 'setDoraFinalReportSubmittedAt',
                     type: ImportFieldSpec::TYPE_DATE,
                     module: 'nis2_dora',
                 ),

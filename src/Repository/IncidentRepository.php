@@ -305,4 +305,22 @@ class IncidentRepository extends ServiceEntityRepository
             }
         }
     }
+
+    /**
+     * Incidents with NIS-2 Art. 23 reporting duties — the one definition
+     * {@see Incident::requiresNis2Reporting()} (the entity's assessment, else
+     * the pre-check), within the active tenant scope.
+     *
+     * @return list<Incident>
+     */
+    public function findNis2Reportable(): array
+    {
+        /** @var list<Incident> $candidates */
+        $candidates = $this->createQueryBuilder('i')
+            ->where('i.detectedAt IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+
+        return array_values(array_filter($candidates, static fn (Incident $i): bool => $i->requiresNis2Reporting()));
+    }
 }

@@ -79,18 +79,20 @@ readonly class SlaDeadlineMonitorRetry
                 if (isset($skip[$key])) {
                     continue;
                 }
-                $monitor = null;
+                $new = [];
                 try {
                     if ($entity->getTenant() === null || $entity->getId() === null || !SlaDeadlineFactory::isRelevant($entity)) {
                         continue;
                     }
-                    $monitor = $this->factory->buildFor($entity);
-                    if ($monitor === null) {
+                    $new = $this->factory->sync($entity, [])['new'];
+                    if ($new === []) {
                         continue;
                     }
-                    $this->entityManager->persist($monitor);
+                    foreach ($new as $monitor) {
+                        $this->entityManager->persist($monitor);
+                    }
                     $this->entityManager->flush();
-                    ++$created;
+                    $created += count($new);
                 } catch (UniqueConstraintViolationException) {
                     // A concurrent spawn (web request) started this clock first.
                     $this->logger->info('SlaDeadlineMonitorRetry: monitor already started concurrently', [
@@ -98,7 +100,7 @@ readonly class SlaDeadlineMonitorRetry
                         'id' => $entity->getId(),
                     ]);
                     $skip[$key] = true;
-                    if ($this->recover($monitor)) {
+                    if ($this->recover($new)) {
                         $restart = ++$recoveries <= self::MAX_RECOVERIES;
                         break;
                     }
@@ -109,7 +111,7 @@ readonly class SlaDeadlineMonitorRetry
                         'error' => $e->getMessage(),
                     ]);
                     $skip[$key] = true;
-                    if ($this->recover($monitor)) {
+                    if ($this->recover($new)) {
                         $restart = ++$recoveries <= self::MAX_RECOVERIES;
                         break;
                     }
@@ -125,15 +127,18 @@ readonly class SlaDeadlineMonitorRetry
      * is recovered instead (EntityManagerRecovery). Returns true when the
      * candidates have to be queried again (they belong to the closed manager).
      */
-    private function recover(?SlaDeadlineMonitor $monitor): bool
+    /** @param list<SlaDeadlineMonitor> $monitors */
+    private function recover(array $monitors): bool
     {
         if (!$this->entityManager->isOpen()) {
             $this->entityManagerRecovery?->recover();
 
             return true;
         }
-        if ($monitor !== null && $this->entityManager->contains($monitor)) {
-            $this->entityManager->detach($monitor);
+        foreach ($monitors as $monitor) {
+            if ($this->entityManager->contains($monitor)) {
+                $this->entityManager->detach($monitor);
+            }
         }
 
         return false;
@@ -150,14 +155,17 @@ readonly class SlaDeadlineMonitorRetry
         yield from $this->withoutMonitor(
             DataBreach::class,
             'DataBreach',
-            'e.createdAt >= :since',
+            'e.detectedAt >= :since',
             $now->modify('-' . (SlaDeadlineType::GdprNotification72h->durationHours() + self::MISSED_GRACE_HOURS) . ' hours'),
         );
-        // The factory starts an incident clock at detectedAt (createdAt when unset).
+        // Incident clocks start at detectedAt. The window is the 72 h
+        // notification plus grace, not the final report: a back-fill of
+        // month-old incidents would raise a burst of historic "missed" alerts.
+        // Later stages of an incident with clocks are kept by the spawner.
         yield from $this->withoutMonitor(
             Incident::class,
             'Incident',
-            '(e.detectedAt >= :since OR (e.detectedAt IS NULL AND e.createdAt >= :since))',
+            'e.detectedAt >= :since',
             $now->modify('-' . (SlaDeadlineType::Nis2Notification72h->durationHours() + self::MISSED_GRACE_HOURS) . ' hours'),
         );
         yield from $this->withoutMonitor(
