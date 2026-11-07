@@ -12,8 +12,7 @@ use App\Service\ManagementDecision\ManagementDecisionService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use Twig\Attribute\AsTwigFunction;
 
 /**
  * `board_decisions()` — what top management has to decide and has decided,
@@ -25,7 +24,7 @@ use Twig\TwigFunction;
  * - expiring: approvals that end within 60 days
  * - recent:   decisions of the last 12 months
  */
-final class ManagementDecisionExtension extends AbstractExtension
+final class ManagementDecisionExtension
 {
     private const array STANDING = [
         ManagementDecisionType::Policy,
@@ -45,17 +44,11 @@ final class ManagementDecisionExtension extends AbstractExtension
     ) {
     }
 
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('board_decisions', $this->boardDecisions(...)),
-        ];
-    }
-
     /**
      * @return array{pending: list<ManagementDecision>, missing: list<ManagementDecisionType>,
      *               expiring: list<ManagementDecision>, recent: list<ManagementDecision>}
      */
+    #[AsTwigFunction('board_decisions')]
     public function boardDecisions(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
