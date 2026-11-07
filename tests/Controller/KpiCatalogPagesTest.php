@@ -115,12 +115,38 @@ final class KpiCatalogPagesTest extends WebTestCase
         self::assertSelectorTextContains('#risk-acceptance-pending', 'Ransomware Kundenportal');
         self::assertSelectorTextContains('#risk-acceptance-pending', '€/Jahr');
 
-        $form = $crawler->filter('#risk-acceptance-pending form')->form();
+        // Both decisions open the shared decision dialog with the business line.
+        $dialog = sprintf('#approveAcceptance%d', $this->risk->getId());
+        self::assertSelectorExists(sprintf('#risk-acceptance-pending button[data-fa-modal-id="approveAcceptance%d"]', $this->risk->getId()));
+        self::assertSelectorTextContains($dialog, '€/Jahr');
+
+        $form = $crawler->filter($dialog . ' form')->form(['comments' => 'Vertretbar.']);
         $this->client->submit($form);
         self::assertResponseRedirects('/de/my-day');
 
         $this->em->clear();
         self::assertTrue($this->em->find(Risk::class, $this->risk->getId())?->isFormallyAccepted());
+    }
+
+    #[Test]
+    public function requestedAcceptanceIsRejectedFromMyDayAndLeavesTheQueue(): void
+    {
+        $this->client->loginUser($this->ciso);
+        $crawler = $this->client->request('GET', '/de/my-day');
+
+        $form = $crawler->filter(sprintf('#rejectAcceptance%d form', $this->risk->getId()))->form([
+            'reason' => 'Schaden zu hoch für eine Akzeptanz.',
+        ]);
+        $this->client->submit($form);
+        self::assertResponseRedirects('/de/my-day');
+
+        $this->em->clear();
+        $risk = $this->em->find(Risk::class, $this->risk->getId());
+        self::assertFalse($risk?->isFormallyAccepted());
+        self::assertNull($risk?->getAcceptanceJustification(), 'the decided request is cleared');
+
+        $this->client->request('GET', '/de/my-day');
+        self::assertSelectorNotExists('#risk-acceptance-pending');
     }
 
     #[Test]

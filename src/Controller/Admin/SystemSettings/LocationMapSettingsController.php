@@ -7,6 +7,8 @@ namespace App\Controller\Admin\SystemSettings;
 use App\Entity\Tenant;
 use App\Attribute\RequiresModule;
 use App\Service\Location\LocationCoordinateUpdater;
+use App\Service\Location\LocationMapSettings;
+use App\Service\Location\LocationPostureService;
 use App\Service\Location\OnlineGeocoder;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +19,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Location map settings: opt-in online geocoding (Tenant.settings['location_map']).
+ * Location map settings (Tenant.settings['location_map']): peer comparison,
+ * position precision, active gap checks and opt-in online geocoding.
  *
  * Off by default. When on, only postal code, city and country code of a
  * location are sent to the configured Nominatim-compatible endpoint, and only
@@ -58,6 +61,15 @@ class LocationMapSettingsController extends AbstractController
                 $tenant,
                 $request->request->getBoolean('online_geocoding'),
                 $endpoint !== '' ? $endpoint : OnlineGeocoder::DEFAULT_ENDPOINT,
+                LocationMapSettings::fromArray([
+                    'peer_mode' => $request->request->get('peer_mode'),
+                    'precision' => $request->request->get('precision'),
+                    // The form lists active checks; everything optional not ticked is off.
+                    'disabled_checks' => array_values(array_diff(
+                        LocationMapSettings::OPTIONAL_CHECKS,
+                        $request->request->all('active_checks'),
+                    )),
+                ]),
             );
 
             $this->addFlash('success', $this->translator->trans('admin.location_map.saved', [], 'admin'));
@@ -67,6 +79,11 @@ class LocationMapSettingsController extends AbstractController
         return $this->render('admin/system_settings/location_map.html.twig', [
             'current' => OnlineGeocoder::settings($tenant),
             'default_endpoint' => OnlineGeocoder::DEFAULT_ENDPOINT,
+            'map' => LocationMapSettings::of($tenant),
+            'peer_modes' => LocationMapSettings::PEER_MODES,
+            'precisions' => LocationMapSettings::PRECISIONS,
+            'optional_checks' => LocationMapSettings::OPTIONAL_CHECKS,
+            'check_norms' => LocationPostureService::CHECK_NORM,
         ]);
     }
 

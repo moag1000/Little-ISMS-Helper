@@ -146,4 +146,17 @@ class FteCalculationServiceTest extends TestCase
 
         $this->assertGreaterThanOrEqual(0, $savings);
     }
+
+    #[Test]
+    public function bulkActionSavesAllButOneSingleUpdate(): void
+    {
+        $this->calibrationRepo
+            ->expects(self::once())
+            ->method('getMinutesFor')
+            ->with($this->tenant, FteCalibrationConstant::OP_MANUAL_RECORD_UPDATE)
+            ->willReturn(2.0);
+
+        // 5 sites in one step instead of 5 edits: 4 × 2 min saved
+        $this->assertSame(8, $this->service->calculateBulkActionSavings(5, $this->tenant));
+    }
 }

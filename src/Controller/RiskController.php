@@ -400,8 +400,6 @@ class RiskController extends AbstractController
     public function new(Request $request): Response
     {
         $risk = new Risk();
-
-        // Set tenant from current user
         $user = $this->security->getUser();
         $tenant = null;
         if ($user instanceof UserInterface && $user->getTenant()) {
@@ -880,50 +878,50 @@ class RiskController extends AbstractController
     #[IsGranted(RiskAcceptanceVoter::APPROVE, subject: 'risk')]
     public function approveAcceptance(Request $request, Risk $risk): Response
     {
-        $user = $this->security->getUser();
-
         if (!$this->isCsrfTokenValid('approve-acceptance'.$risk->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid', [], 'messages'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
-
+        $comments = (string) $request->request->get('comments', '');
         try {
-            $this->riskAcceptanceWorkflowService->approveAcceptance($risk, $user, (string) $request->request->get('comments', ''));
+            $this->riskAcceptanceWorkflowService->approveAcceptance($risk, $this->security->getUser(), $comments);
             $this->flashSuccess('risk.acceptance.success.approved');
         } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        $toMyDay = $request->request->get('_back') === 'my_day'; // decided inline in My Day
-        return $this->redirectToRoute($toMyDay ? 'app_my_day' : 'app_risk_show', $toMyDay ? [] : ['id' => $risk->getId()]);
+        return $this->afterAcceptanceDecision($request, $risk);
+    }
+    /** Back to My Day when the acceptance was decided there (`_back=my_day`), else to the risk. */
+    private function afterAcceptanceDecision(Request $request, Risk $risk): Response
+    {
+        return $request->request->get('_back') === 'my_day'
+            ? $this->redirectToRoute('app_my_day')
+            : $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
     /** Reject a requested risk acceptance; a reason is required. */
     #[Route('/risk/{id}/reject-acceptance', name: 'app_risk_reject_acceptance', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted(RiskAcceptanceVoter::APPROVE, subject: 'risk')]
     public function rejectAcceptance(Request $request, Risk $risk): Response
     {
-        $user = $this->security->getUser();
-
         if (!$this->isCsrfTokenValid('reject-acceptance'.$risk->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid', [], 'messages'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
-        $reason = $request->request->get('reason');
-
-        if (empty($reason)) {
+        $reason = trim((string) $request->request->get('reason', ''));
+        if ($reason === '') {
             $this->flashError('risk.acceptance.error.reason_required');
-            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+            return $this->afterAcceptanceDecision($request, $risk);
         }
-
         try {
-            $result = $this->riskAcceptanceWorkflowService->rejectAcceptance($risk, $user, $reason);
+            $this->riskAcceptanceWorkflowService->rejectAcceptance($risk, $this->security->getUser(), $reason);
             $this->flashWarning('risk.acceptance.success.rejected');
         } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        return $this->afterAcceptanceDecision($request, $risk);
     }
     /**
      * Bulk CSV export of selected risks.

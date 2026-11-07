@@ -25,7 +25,9 @@ use Symfony\Bundle\SecurityBundle\Security;
  *    inherited down the holding tree) to the traffic-light status, so the
  *    setting takes effect on every dashboard and report, not on none;
  *  - adds the euro KPIs from the quantitative risk fields (module
- *    `risk_quant`), only for roles allowed to see monetary risk fields.
+ *    `risk_quant`), only for roles allowed to see monetary risk fields;
+ *  - adds the location KPIs (module `locations`) and the person-days saved
+ *    from the FTE tracking ({@see LocationKpis}).
  *
  * Twig: `kpi('risk_exposure_eur')`, `management_kpis()` ({@see \App\Twig\KpiExtension}).
  */
@@ -45,6 +47,7 @@ class KpiCatalog
         'training_completion_rate' => ['training', 90, 70],
         'supplier_assessment_rate' => ['supplier_management', 90, 70],
         'bia_coverage' => ['business_continuity', 90, 70],
+        'location_checks_rate' => ['locations', 90, 70],
     ];
 
     /** Per-framework and BSI coverage are compliance percentages: they follow `control_compliance`. */
@@ -65,6 +68,7 @@ class KpiCatalog
         private readonly ModuleConfigurationService $modules,
         private readonly Security $security,
         private readonly TenantRecords $tenantRecords = new TenantRecords(),
+        private readonly ?LocationKpis $locationKpis = null,
     ) {
     }
 
@@ -114,6 +118,7 @@ class KpiCatalog
         if ($kpis === []) {
             return [];
         }
+        $kpis = array_merge($kpis, $this->locationKpis?->sections($tenant) ?? []);
 
         foreach (self::THRESHOLDS as $key => [$section, $good, $warning]) {
             if (isset($kpis[$section][$key]) && is_numeric($kpis[$section][$key]['value'] ?? null)) {

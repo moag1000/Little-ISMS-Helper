@@ -126,6 +126,10 @@ dashboard:
       icon: bi-file-text
     risk_finance:
       title: Risk in euro
+    locations:
+      title: Locations
+    efficiency:
+      title: Efficiency
     bsi_stufen:
       title: 'BSI Absicherungsstufen'
       icon: bi-shield-shaded
@@ -192,6 +196,10 @@ dashboard:
     critical_ict_providers: Critical ICT Providers
     risk_exposure_eur: Expected annual loss
     risk_top5_eur: Top 5 risks by euro
+    location_checks_rate: Site checks passed
+    location_open_gaps: Open site checks
+    location_critical_sites: Sites with critical risk
+    fte_saved_days: Person-days saved (12 months)
   hint:
     weighted_compliance: 'Weighting: implemented=1.0, partial=0.5, planned=0'
     isms_health_score: 'Composite: Compliance 40%, Risk 25%, Incidents 20%, Asset
