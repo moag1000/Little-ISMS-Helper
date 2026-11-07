@@ -839,7 +839,6 @@ setup:
         name_help: 'Name der Datenbank (nur Buchstaben, Zahlen und Unterstriche)'
         name_invalid: 'Datenbankname darf nur Buchstaben, Zahlen und Unterstriche enthalten'
         user: Benutzername
-        user_help: 'Benutzername für die Datenbankverbindung'
         password: Passwort
         password_help: 'Passwort für die Datenbankverbindung'
         password_help_standalone: 'Das Passwort wurde automatisch generiert und ist bereits vorausgefüllt (siehe /var/www/html/var/mysql_credentials.txt)'

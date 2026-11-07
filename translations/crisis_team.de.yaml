@@ -85,7 +85,6 @@ crisis_team:
         decision_authority: 'Befugnisse und Eskalationswege'
         communication_protocols: 'Interne und externe Kommunikationswege'
         training_schedule: 'Regelmäßige Trainings und Übungen'
-        next_training_at: 'Wann findet das nächste Training statt?'
         person_members: 'Strukturierte Mitgliederliste — Stammdaten-Personen, ergänzend zur JSON-Liste mit Rollen/Kontakt. Externe Berater oder Auditoren können hier ohne System-Login geführt werden.'
         escalation_matrix_json: 'Externe Eskalationspartner gemäß BSI 200-4 §6.2 und NIS2 Art. 23 (z. B. BSI, CERT-Bund, Polizei) mit Auslöser, Kontakt und Eskalationszeitpunkt.'
         activation_count: 'Gesamtanzahl der realen Aktivierungen dieses Krisenstabs (BSI 200-4 §7.2). Wird typisch automatisch erhöht.'

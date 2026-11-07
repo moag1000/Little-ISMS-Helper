@@ -383,7 +383,7 @@ class DPIAController extends AbstractController
     // ============================================================================
 
     /**
-     * Record DPO consultation (Art. 35(4))
+     * Record DPO consultation (Art. 35(2))
      */
     #[Route('/dpia/{id}/dpo-consultation', name: 'app_dpia_dpo_consultation', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]

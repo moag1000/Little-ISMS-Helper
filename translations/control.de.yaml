@@ -54,7 +54,6 @@ control:
     target_date: Bis wann soll das Control vollständig implementiert sein?
     next_review_date: Wann soll das Control das nächste Mal überprüft werden?
     protected_assets: Welche Assets werden durch dieses Control geschützt?
-    responsible_person_user: Verantwortliche Person aus der Benutzerverwaltung.
     responsible_person_contact: 'Person ohne System-Login als Verantwortliche wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
     responsible_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
     framework_references_json: 'JSON-Format: {"iso27001":["A.5.1"],"bsi":["ORP.1.A1"],"nist":["AC-1"],"dora":["Art. 6"]}'

@@ -135,20 +135,17 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             // ============================================================================
             ->add('necessityAssessment', TextareaType::class, [
                 'label' => 'dpia.form.necessity_assessment',
-                'help' => 'dpia.help.necessity_assessment',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             ->add('proportionalityAssessment', TextareaType::class, [
                 'label' => 'dpia.form.proportionality_assessment',
-                'help' => 'dpia.help.proportionality_assessment',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             // @no-module-gate-required: DPIA form is GDPR-scoped (only rendered behind privacy module).
             ->add('legalBasis', ChoiceType::class, [
                 'label' => 'dpia.form.legal_basis',
-                'help' => 'dpia.help.legal_basis',
                 'choices' => [
                     'privacy.legal_basis.consent' => 'consent',
                     'privacy.legal_basis.contract' => 'contract',
@@ -186,7 +183,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('likelihood', ChoiceType::class, [
                 'label' => 'dpia.form.likelihood',
-                'help' => 'dpia.help.likelihood',
                 'choices' => [
                     'privacy.likelihood.rare' => 'rare',
                     'privacy.likelihood.unlikely' => 'unlikely',
@@ -235,7 +231,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('implementedControls', EntityType::class, [
                 'label' => 'dpia.form.implemented_controls',
-                'help' => 'dpia.help.implemented_controls',
                 'class' => Control::class,
                 'choice_label' => fn(Control $control): string => $control->getControlId() . ' - ' . $control->getName(),
                 'multiple' => true,
@@ -277,11 +272,10 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
 
             // ============================================================================
-            // Stakeholder Consultation (Art. 35(4), 35(9))
+            // Stakeholder Consultation (Art. 35(2), 35(9))
             // ============================================================================
             ->add('dataProtectionOfficer', OwnerUserType::class, [
                 'label' => 'dpia.form.data_protection_officer',
-                'help' => 'dpia.help.data_protection_officer',
                 'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.data_protection_officer',
@@ -314,7 +308,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('dpoAdvice', TextareaType::class, [
                 'label' => 'dpia.form.dpo_advice',
-                'help' => 'dpia.help.dpo_advice',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -350,13 +343,11 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('supervisoryConsultationDate', DateType::class, [
                 'label' => 'dpia.form.supervisory_consultation_date',
-                'help' => 'dpia.help.supervisory_consultation_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('supervisoryAuthorityFeedback', TextareaType::class, [
                 'label' => 'dpia.form.supervisory_authority_feedback',
-                'help' => 'dpia.help.supervisory_authority_feedback',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -402,7 +393,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('approverDeputyPersons', EntityType::class, [
                 'label' => 'dpia.form.approver_deputies',
-                'help' => 'dpia.help.approver_deputies',
                 'class' => Person::class,
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
@@ -424,7 +414,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('nextReviewDate', DateType::class, [
                 'label' => 'dpia.form.next_review_date',
-                'help' => 'dpia.help.next_review_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
@@ -600,7 +589,7 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
                 'residualRiskAssessment',
                 'residualRiskLevel',
             ],
-            // Art. 35(4) / 35(9) — Stakeholder consultation
+            // Art. 35(2) / 35(9) — Stakeholder consultation
             'contact' => [
                 'dataProtectionOfficer',
                 'dataProtectionOfficerPerson',

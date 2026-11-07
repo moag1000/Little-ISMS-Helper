@@ -217,7 +217,7 @@ final class DataProtectionImpactAssessmentImportSchemaProvider implements Import
                     type: ImportFieldSpec::TYPE_TEXT,
                 ),
 
-                // ── Stakeholder consultation (Art. 35(4), 35(9)) ────────────────
+                // ── Stakeholder consultation (Art. 35(2), 35(9)) ────────────────
                 new ImportFieldSpec(
                     name: 'dataProtectionOfficerPerson',
                     setter: 'setDataProtectionOfficerPerson',

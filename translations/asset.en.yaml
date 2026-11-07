@@ -90,7 +90,6 @@ asset:
     physical_location: Physical location from location management. Add new locations
       under Management → Locations.
     acquisition_value: Original purchase price or acquisition costs
-    current_value: Estimated current market value
     confidentiality: 'Confidentiality: protection from unauthorized access (1=public,
       2=internal, 3=confidential, 4=strictly confidential, 5=secret)'
     integrity: 'Integrity: protection from unauthorized modification (1=low, 2=normal,
@@ -98,7 +97,6 @@ asset:
     availability: 'Availability: reachability when needed (1=>24h downtime tolerable,
       2=8h, 3=4h, 4=1h, 5=<15 min / 24×7)'
     data_classification: Classification of data by protection requirements
-    acceptable_use_policy: Guidelines for acceptable use of this asset
     handling_instructions: Special instructions for handling this asset
     return_date: Date of planned return (for temporarily assigned assets)
     status: Current usage status of the asset

@@ -857,7 +857,6 @@ setup:
         name_help: 'Name of the database (only letters, numbers and underscores)'
         name_invalid: 'Database name can only contain letters, numbers and underscores'
         user: Username
-        user_help: 'Username for the database connection'
         password: Password
         password_help: 'Password for the database connection'
         password_help_standalone: 'Password has been auto-generated and is already pre-filled (see /var/www/html/var/mysql_credentials.txt)'

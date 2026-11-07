@@ -63,7 +63,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             ->add('purposes', ChoiceType::class, [
                 'label' => 'processing_activity.form.purposes',
-                'help' => 'processing_activity.help.purposes',
                 'choices' => [
                     'processing_activity.purpose.contract_fulfillment' => 'contract_fulfillment',
                     'processing_activity.purpose.marketing' => 'marketing',
@@ -110,7 +109,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             ->add('estimatedDataSubjectsCount', IntegerType::class, [
                 'label' => 'processing_activity.form.estimated_data_subjects_count',
-                'help' => 'processing_activity.help.estimated_data_subjects_count',
                 'required' => false,
             ])
 
@@ -139,7 +137,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             ->add('processesSpecialCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.processes_special_categories',
-                'help' => 'processing_activity.help.processes_special_categories',
                 'choices' => [
                     'common.no' => false,
                     'common.yes' => true,
@@ -172,7 +169,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             ->add('processesCriminalData', ChoiceType::class, [
                 'label' => 'processing_activity.form.processes_criminal_data',
-                'help' => 'processing_activity.help.processes_criminal_data',
                 'choices' => [
                     'common.no' => false,
                     'common.yes' => true,
@@ -362,7 +358,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             // @no-module-gate-required: see legalBasis above — VVT form is privacy-scoped.
             ->add('legalBasisSpecialCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.legal_basis_special_categories',
-                'help' => 'processing_activity.help.legal_basis_special_categories',
                 'choices' => [
                     'processing_activity.legal_basis_special.explicit_consent' => 'explicit_consent',
                     'processing_activity.legal_basis_special.employment_law' => 'employment_law',
@@ -421,7 +416,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             // ============================================================================
             ->add('involvesProcessors', ChoiceType::class, [
                 'label' => 'processing_activity.form.involves_processors',
-                'help' => 'processing_activity.help.involves_processors',
                 'choices' => [
                     'common.no' => false,
                     'common.yes' => true,
@@ -436,7 +430,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             // ============================================================================
             ->add('isJointController', ChoiceType::class, [
                 'label' => 'processing_activity.form.is_joint_controller',
-                'help' => 'processing_activity.help.is_joint_controller',
                 'choices' => [
                     'common.no' => false,
                     'common.yes' => true,
@@ -589,7 +582,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             ->add('startDate', DateType::class, [
                 'label' => 'processing_activity.form.start_date',
-                'help' => 'processing_activity.help.start_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
