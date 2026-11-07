@@ -176,21 +176,10 @@ curl -X POST http://localhost:8000/api/risks \
 ### List Risks with Filters
 
 ```bash
-# Filter by status
-curl "http://localhost:8000/api/risks?status=active"
-
-# Filter by date range
-curl "http://localhost:8000/api/risks?createdAt[after]=2024-01-01"
-
-# Search by title
-curl "http://localhost:8000/api/risks?title=database"
-
-# Sort by creation date
-curl "http://localhost:8000/api/risks?order[createdAt]=desc"
-
-# Pagination
-curl "http://localhost:8000/api/risks?page=2&itemsPerPage=50"
+curl "http://localhost:8000/api/risks?status=assessed&createdAt[after]=2024-01-01&order[createdAt]=desc"
 ```
+
+All filter parameters per endpoint: see [API Filters](#2-api-filters).
 
 ### Get Risk with Computed Properties
 
@@ -264,53 +253,28 @@ All entities have comprehensive validation. Invalid data returns 400 Bad Request
 
 ### 2. API Filters
 
-#### Search Filter (Partial Match)
-```bash
-# Search risks by title
-curl "http://localhost:8000/api/risks?title=unauthorized"
+Filters apply to the collection endpoints (`GET /api/<resource>`) only. They are declared as
+`#[QueryParameter]` on each entity's `GetCollection` operation and listed in the OpenAPI document
+(`/api/docs`).
 
-# Search assets by name
-curl "http://localhost:8000/api/assets?name=server"
-```
+| Endpoint | Search (partial) | Search (exact) | Boolean | Date range | Sort `order[…]` |
+|---|---|---|---|---|---|
+| `/api/assets` | `name`, `owner` | `assetType`, `status` | – | – | `name`, `assetType`, `createdAt` |
+| `/api/controls` | `name` | `controlId`, `category`, `implementationStatus` | `applicable` | `targetDate`, `lastReviewDate` | `controlId`, `category`, `implementationPercentage`, `targetDate` |
+| `/api/incidents` | `title` | `incidentNumber`, `severity`, `status`, `category` | `dataBreachOccurred`, `notificationRequired` | `detectedAt`, `resolvedAt`, `closedAt` | `detectedAt`, `severity`, `status` |
+| `/api/internal_audits` | `title` | `auditNumber`, `status`, `scopeType` | – | `plannedDate`, `actualDate` | `plannedDate`, `actualDate`, `status` |
+| `/api/risks` | `title`, `riskOwner.email`, `riskOwner.firstName`, `riskOwner.lastName` (ROLE_MANAGER) | `status` | – | `createdAt`, `reviewDate` | `title`, `createdAt`, `status` |
+| `/api/suppliers` | `name` | `status`, `criticality` | – | `nextAssessmentDate`, `lastSecurityAssessment` | `name`, `criticality`, `nextAssessmentDate` |
+| `/api/trainings` | `title` | `trainingType`, `status` | `mandatory` | `scheduledDate`, `completionDate` | `scheduledDate`, `status` |
 
-#### Exact Match Filter
-```bash
-# Filter by status
-curl "http://localhost:8000/api/risks?status=active"
-
-# Filter controls by category
-curl "http://localhost:8000/api/controls?category=Access+Control"
-```
-
-#### Date Filter
-```bash
-# Risks created after date
-curl "http://localhost:8000/api/risks?createdAt[after]=2024-01-01"
-
-# Incidents before date
-curl "http://localhost:8000/api/incidents?detectedAt[before]=2024-12-31"
-
-# Date range
-curl "http://localhost:8000/api/incidents?detectedAt[after]=2024-01-01&detectedAt[before]=2024-12-31"
-```
-
-#### Boolean Filter
-```bash
-# Only applicable controls
-curl "http://localhost:8000/api/controls?applicable=true"
-
-# Data breach incidents
-curl "http://localhost:8000/api/incidents?dataBreachOccurred=true"
-```
-
-#### Order Filter
-```bash
-# Sort by creation date descending
-curl "http://localhost:8000/api/risks?order[createdAt]=desc"
-
-# Sort by title ascending
-curl "http://localhost:8000/api/risks?order[title]=asc"
-```
+- Partial search ignores case and treats `%` and `_` literally: `?title=database`.
+- Exact search takes one or several values: `?status=assessed` or `?status[]=assessed&status[]=identified`.
+- Boolean: `true`/`false` or `1`/`0`; any other value answers 422.
+- Date range: `[after]`, `[before]` (inclusive), `[strictly_after]`, `[strictly_before]`:
+  `?detectedAt[after]=2024-01-01&detectedAt[before]=2024-12-31`.
+- Sort: `asc` or `desc`, any other value answers 422. Several sort keys apply in the order of the
+  table column, not in the order of the query string: `?order[createdAt]=desc`.
+- The `riskOwner.*` filters answer 403 below ROLE_MANAGER, like the `riskOwner` field itself.
 
 ### 3. Pagination
 

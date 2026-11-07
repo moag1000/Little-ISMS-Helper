@@ -7,15 +7,15 @@ namespace App\Entity;
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
 use App\Entity\Trait\ControlResponsiblePersonTrait;
 use App\Repository\ControlRepository;
@@ -43,7 +43,17 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new GetCollection(
             description: 'Retrieve the collection of ISO 27001 controls with filtering by category, status, and applicability',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'controlId' => new QueryParameter(filter: new ExactFilter()),
+                'name' => new QueryParameter(filter: new PartialSearchFilter()),
+                'category' => new QueryParameter(filter: new ExactFilter()),
+                'implementationStatus' => new QueryParameter(filter: new ExactFilter()),
+                'applicable' => new QueryParameter(filter: new ExactFilter(), schema: ['type' => 'boolean'], castToArray: false, castToNativeType: true),
+                'targetDate' => new QueryParameter(filter: new DateFilter()),
+                'lastReviewDate' => new QueryParameter(filter: new DateFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['controlId', 'category', 'implementationPercentage', 'targetDate'], castToArray: false),
+            ],
         ),
         new Post(
             description: 'Create a new control implementation',
@@ -62,10 +72,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['control:write']],
     processor: TenantAwareStateProcessor::class
 )]
-#[ApiFilter(SearchFilter::class, properties: ['controlId' => 'exact', 'name' => 'partial', 'category' => 'exact', 'implementationStatus' => 'exact'])]
-#[ApiFilter(BooleanFilter::class, properties: ['applicable'])]
-#[ApiFilter(OrderFilter::class, properties: ['controlId', 'category', 'implementationPercentage', 'targetDate'])]
-#[ApiFilter(DateFilter::class, properties: ['targetDate', 'lastReviewDate'])]
 #[ORM\HasLifecycleCallbacks]
 class Control
 {
@@ -810,14 +816,6 @@ class Control
     #[ORM\Column(type: Types::JSON, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
     private ?array $frameworkReferences = null;
-
-    /**
-     * Related risks for cross-linking (ISO 27005 §8.5).
-     * Uses the existing control↔risk join table (control has inversedBy='controls').
-     *
-     * @var Collection<int, Risk>
-     */
-    // NOTE: uses existing join (Control::$risks ↔ Risk::$controls); no new join table needed.
 
     // ── Cloud-Security fields (gated 'cloud_security' module) ─────────────────
 
