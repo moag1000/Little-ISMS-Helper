@@ -14,7 +14,10 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use App\Controller\Admin\SystemSettings\DataRetentionController;
 use App\Form\Type\JsonBuilderType;
+use App\Service\Reminder\ReminderSettings;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -51,6 +54,19 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
                     \DateTimeZone::listIdentifiers(\DateTimeZone::EUROPE),
                     \DateTimeZone::listIdentifiers(\DateTimeZone::EUROPE),
                 ),
+                'required' => true,
+                'translation_domain' => 'admin',
+            ])
+            // Stored in the tenant's notification preferences (ReminderSettings), see the listeners below.
+            ->add('reminderDigestHour', ChoiceType::class, [
+                'mapped' => false,
+                'label' => 'admin.tenant_settings.reminder_digest_hour',
+                'help' => 'admin.tenant_settings.reminder_digest_hour_help',
+                'choices' => array_combine(
+                    array_map(static fn (int $h): string => sprintf('%02d:00', $h), range(0, 23)),
+                    range(0, 23),
+                ),
+                'choice_translation_domain' => false,
                 'required' => true,
                 'translation_domain' => 'admin',
             ])
@@ -251,6 +267,21 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
                 ['key' => 'deputy', 'type' => 'text', 'label' => $tr . 'on_call_deputy'],
             ],
         ]);
+
+        // The digest hour lives in the tenant's notification preferences.
+        $builder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $event): void {
+            $tenant = $event->getData();
+            if ($tenant instanceof Tenant) {
+                $event->getForm()->get('reminderDigestHour')->setData(ReminderSettings::digestHour($tenant));
+            }
+        });
+        $builder->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event): void {
+            $tenant = $event->getData();
+            $hour = $event->getForm()->get('reminderDigestHour')->getData();
+            if ($tenant instanceof Tenant && is_int($hour)) {
+                ReminderSettings::setDigestHour($tenant, $hour);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -267,7 +298,7 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
     public static function getSectionMap(): array
     {
         return [
-            'defaults'              => ['locale', 'timezone', 'tlpDefault'],
+            'defaults'              => ['locale', 'timezone', 'reminderDigestHour', 'tlpDefault'],
             'address'               => ['addressStreet', 'addressPostalCode', 'addressCity', 'addressCountry'],
             'privacy'               => ['dpoContactName', 'dpoContactEmail', 'dpoAppointmentDate', 'dpoIsExternal', 'dpoAuthorityNotifiedAt', 'dpoDeputyName', 'representativeName', 'representativeContact'],
             'risk_assessment'       => ['riskMethodology', 'wizardMaturityTarget'],

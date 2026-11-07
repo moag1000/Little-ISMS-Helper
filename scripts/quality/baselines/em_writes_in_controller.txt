@@ -236,7 +236,7 @@ src/Controller/EvidenceReverificationController.php:177
 src/Controller/FourEyesController.php:89
 src/Controller/GuidedTourController.php:90
 src/Controller/GuidedTourController.php:119
-src/Controller/HomeController.php:338
+src/Controller/HomeController.php:342
 src/Controller/ISMSObjectiveController.php:75
 src/Controller/ISMSObjectiveController.php:76
 src/Controller/ISMSObjectiveController.php:135
@@ -274,7 +274,7 @@ src/Controller/MappingQualityController.php:574
 src/Controller/MappingQualityController.php:580
 src/Controller/MfaTokenController.php:272
 src/Controller/MfaTokenController.php:273
-src/Controller/Notification/InAppNotificationCenterController.php:150
+src/Controller/Notification/InAppNotificationCenterController.php:146
 src/Controller/PatchController.php:120
 src/Controller/PatchController.php:121
 src/Controller/PatchController.php:178
@@ -289,11 +289,12 @@ src/Controller/PlanningAdminController.php:168
 src/Controller/PlanningSettingsController.php:115
 src/Controller/PlanningSettingsController.php:117
 src/Controller/ProcessingActivityController.php:603
-src/Controller/ProfileController.php:107
-src/Controller/ProfileController.php:179
-src/Controller/ProfileController.php:202
-src/Controller/ProfileController.php:308
-src/Controller/ProfileController.php:335
+src/Controller/ProfileController.php:112
+src/Controller/ProfileController.php:184
+src/Controller/ProfileController.php:199
+src/Controller/ProfileController.php:221
+src/Controller/ProfileController.php:327
+src/Controller/ProfileController.php:354
 src/Controller/ProfileMfaController.php:246
 src/Controller/ProfileMfaController.php:247
 src/Controller/PrototypeProtectionAssessmentController.php:88
@@ -421,7 +422,7 @@ src/Controller/UserManagementController.php:803
 src/Controller/UserManagementController.php:853
 src/Controller/UserManagementController.php:961
 src/Controller/UserManagementController.php:962
-src/Controller/WelcomeController.php:106
+src/Controller/WelcomeController.php:108
 src/Controller/WorkflowController.php:253
 src/Controller/WorkflowController.php:431
 src/Controller/WorkflowController.php:432

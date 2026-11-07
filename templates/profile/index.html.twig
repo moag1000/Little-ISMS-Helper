@@ -129,6 +129,31 @@
                 {% endblock %}
             {% endembed %}
 
+            {# Reminder settings: the daily digest of the user's deadlines (ObligationReminderService). #}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'user.profile.section.reminders'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <form method="post" action="{{ path('app_profile_reminder_settings') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('reminder_settings') }}">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" role="switch" id="reminderDigestEnabled"
+                                   name="reminder_digest_enabled" value="1" {% if user.reminderDigestEnabled %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" for="reminderDigestEnabled">
+                                {{ 'user.profile.reminders.digest_label'|trans({}, 'user') }}
+                            </label>
+                        </div>
+                        <p class="small text-muted mb-3">{{ 'user.profile.reminders.digest_help'|trans({'%hour%': '%02d:00'|format(reminder_digest_hour)}, 'user') }}</p>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'common.save'|trans({}, 'messages') }}</button>
+                        </div>
+                    </form>
+                {% endblock %}
+            {% endembed %}
+
             {# Alva Companion Settings Card #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}

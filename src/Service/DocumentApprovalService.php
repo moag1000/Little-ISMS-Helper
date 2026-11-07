@@ -10,7 +10,6 @@ use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\Document;
 use App\Enum\WorkflowInstanceStatus;
-use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -46,7 +45,6 @@ class DocumentApprovalService
     public function __construct(
         private readonly WorkflowService $workflowService,
         private readonly EmailNotificationService $emailNotificationService,
-        private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         private readonly ?UrlGeneratorInterface $urlGenerator = null,
@@ -222,24 +220,10 @@ class DocumentApprovalService
             return;
         }
 
-        $assignedUsers = $currentStep->getApproverUsers();
-        $assignedRole = $currentStep->getApproverRole();
-
-        // Send to specific users if assigned
-        if ($assignedUsers && is_array($assignedUsers)) {
-            // Restricted to the document's organisation: step user ids are
-            // plain integers and must never reach another tenant's users.
-            foreach ($this->userRepository->findByIdsInTenant($assignedUsers, $document->getTenant()) as $user) {
-                $this->sendNotificationToUser($document, $user, $approvalLevel, $isNewDocument, $workflowInstance);
-            }
-        }
-
-        // Send to all users with assigned role
-        if ($assignedRole) {
-            $roleUsers = $this->userRepository->findByRoleInTenant($assignedRole, $document->getTenant());
-            foreach ($roleUsers as $roleUser) {
-                $this->sendNotificationToUser($document, $roleUser, $approvalLevel, $isNewDocument, $workflowInstance);
-            }
+        // Named approvers, else the document owner (`approver_role: owner`), else the
+        // holders of the step role — the one answer of the ResponsibilityResolver.
+        foreach ($this->workflowService->getEligibleApprovers($currentStep, $document->getTenant(), $workflowInstance) as $approver) {
+            $this->sendNotificationToUser($document, $approver, $approvalLevel, $isNewDocument, $workflowInstance);
         }
     }
 

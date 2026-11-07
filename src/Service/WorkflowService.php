@@ -19,6 +19,8 @@ use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Repository\UserRepository;
+use App\Service\Planning\Source\Adapter\WorkflowInstanceAdapter;
+use App\Service\Responsibility\ResponsibilityResolver;
 use App\Workflow\Loader\RegulatoryWorkflowLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -87,6 +89,8 @@ class WorkflowService
         private readonly LifecycleTransitionInterface $lifecycleService,
         private readonly RegulatoryWorkflowLoader $regulatoryWorkflowLoader,
         private readonly ?FourEyesValidator $fourEyesValidator = null,
+        private readonly ?ResponsibilityResolver $responsibility = null,
+        private readonly ?WorkflowInstanceAdapter $workflowSource = null,
     ) {}
 
     /**
@@ -288,7 +292,7 @@ class WorkflowService
         }
 
         // Check if user is allowed to approve
-        if (!$this->canUserApprove($user, $currentStep)) {
+        if (!$this->canUserApprove($user, $currentStep, $workflowInstance)) {
             return false;
         }
 
@@ -352,7 +356,7 @@ class WorkflowService
         }
 
         // Check if user is allowed to reject
-        if (!$this->canUserApprove($user, $currentStep)) {
+        if (!$this->canUserApprove($user, $currentStep, $workflowInstance)) {
             return false;
         }
 
@@ -476,7 +480,7 @@ class WorkflowService
             $approver,
             $authorizedForStep instanceof WorkflowStep,
             $authorizedForStep instanceof WorkflowStep
-                ? $this->eligibleStepApprovers($authorizedForStep)
+                ? $this->eligibleStepApprovers($authorizedForStep, $workflowInstance)
                 : null,
             automatic: $automatic,
         );
@@ -540,7 +544,7 @@ class WorkflowService
         $nextStep = $this->moveToNextStep($workflowInstance, $actingApprover, $reason, $authorizedForStep, $automatic);
 
         // Send notification to assigned users
-        $recipients = $this->getStepApprovers($workflowStep, $workflowInstance->getTenant());
+        $recipients = $this->getStepApprovers($workflowStep, $workflowInstance->getTenant(), $workflowInstance);
         if ($recipients !== []) {
             $this->emailNotificationService->sendWorkflowNotificationStepEmail($workflowInstance, $workflowStep, $recipients);
         }
@@ -556,50 +560,37 @@ class WorkflowService
      */
     private function sendStepAssignmentNotification(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep): void
     {
-        $recipients = $this->getStepApprovers($workflowStep, $workflowInstance->getTenant());
+        $recipients = $this->getStepApprovers($workflowStep, $workflowInstance->getTenant(), $workflowInstance);
         if ($recipients !== []) {
             $this->emailNotificationService->sendWorkflowAssignmentNotification($workflowInstance, $workflowStep, $recipients);
         }
     }
 
     /**
-     * Get all users of $tenant who can approve a step.
-     *
-     * Workflow steps are shared definitions; approvers are always resolved
-     * inside the organisation that owns the workflow instance, never across
-     * tenants (explicit user ids and role holders alike).
+     * Who has to decide a step, inside the organisation that owns the
+     * workflow instance: the step's named approvers, else the record's owner
+     * (`approver_role: owner`), else the holders of the step's role (role
+     * hierarchy, admins only as the last resort) — ResponsibilityResolver.
      *
      * @return User[]
      */
-    private function getStepApprovers(WorkflowStep $workflowStep, ?Tenant $tenant): array
+    private function getStepApprovers(WorkflowStep $workflowStep, ?Tenant $tenant, ?WorkflowInstance $instance = null): array
     {
-        $recipients = [];
-
-        // Get approvers by user IDs
-        $approverUserIds = $workflowStep->getApproverUsers() ?? [];
-        if ($approverUserIds !== []) {
-            $usersByIds = $this->userRepository->findByIdsInTenant($approverUserIds, $tenant);
-            $recipients = array_merge($recipients, $usersByIds);
+        if ($tenant === null) {
+            return [];
+        }
+        if ($instance !== null && $this->responsibility !== null && $this->workflowSource !== null) {
+            return $this->responsibility->resolve($this->workflowSource->responsibilityForStep($instance, $workflowStep), $tenant);
         }
 
-        // Get approvers by role
-        $approverRole = $workflowStep->getApproverRole();
-        if ($approverRole) {
-            $usersByRole = $this->userRepository->findByRoleInTenant($approverRole, $tenant);
-            $recipients = array_merge($recipients, $usersByRole);
+        $recipients = $this->userRepository->findByIdsInTenant($workflowStep->getApproverUsers() ?? [], $tenant);
+        $approverRole = (string) $workflowStep->getApproverRole();
+        if ($recipients === [] && $approverRole !== '' && $approverRole !== WorkflowInstanceAdapter::APPROVER_OWNER) {
+            $recipients = $this->responsibility?->usersHolding($tenant, $approverRole)
+                ?? $this->userRepository->findByRoleInTenant($approverRole, $tenant);
         }
 
-        // Remove duplicates
-        $recipientIds = [];
-        $uniqueRecipients = [];
-        foreach ($recipients as $recipient) {
-            if (!in_array($recipient->getId(), $recipientIds)) {
-                $recipientIds[] = $recipient->getId();
-                $uniqueRecipients[] = $recipient;
-            }
-        }
-
-        return $uniqueRecipients;
+        return $recipients;
     }
 
     /**
@@ -624,10 +615,15 @@ class WorkflowService
             }
         }
 
-        // Check if a role is assigned and active users with that role exist in this tenant
+        // The record's owner always resolves (owner, deputy, role fallback).
         $approverRole = $workflowStep->getApproverRole();
-        if ($approverRole) {
-            return $this->userRepository->findByRoleInTenant($approverRole, $tenant) !== [];
+        if ($approverRole === WorkflowInstanceAdapter::APPROVER_OWNER) {
+            return true;
+        }
+        // A role is assigned and active users hold it in this tenant
+        if ($approverRole && $tenant !== null) {
+            return ($this->responsibility?->usersHolding($tenant, $approverRole)
+                ?? $this->userRepository->findByRoleInTenant($approverRole, $tenant)) !== [];
         }
 
         return false;
@@ -639,9 +635,9 @@ class WorkflowService
      *
      * @return User[]
      */
-    public function getEligibleApprovers(WorkflowStep $workflowStep, ?Tenant $tenant): array
+    public function getEligibleApprovers(WorkflowStep $workflowStep, ?Tenant $tenant, ?WorkflowInstance $instance = null): array
     {
-        return $this->getStepApprovers($workflowStep, $tenant);
+        return $this->getStepApprovers($workflowStep, $tenant, $instance);
     }
 
     /**
@@ -650,7 +646,7 @@ class WorkflowService
      * Uses Symfony Security to respect role hierarchy. ROLE_ADMIN and ROLE_SUPER_ADMIN
      * can approve any workflow step regardless of the required role.
      */
-    public function canUserApprove(User $user, WorkflowStep $workflowStep): bool
+    public function canUserApprove(User $user, WorkflowStep $workflowStep, ?WorkflowInstance $instance = null): bool
     {
         // ROLE_ADMIN and ROLE_SUPER_ADMIN can approve any step
         if ($this->security->isGranted('ROLE_ADMIN')) {
@@ -662,6 +658,20 @@ class WorkflowService
             return true;
         }
 
+        // `approver_role: owner`: whoever is responsible for the record decides.
+        if ($workflowStep->getApproverRole() === WorkflowInstanceAdapter::APPROVER_OWNER) {
+            if ($instance === null || $user->getId() === null) {
+                return false;
+            }
+            foreach ($this->stepOwners($workflowStep, $instance) as $owner) {
+                if ($owner->getId() === $user->getId()) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         // Check by role (using Security to respect role hierarchy)
         if ($workflowStep->getApproverRole()) {
             return $this->security->isGranted($workflowStep->getApproverRole());
@@ -671,32 +681,67 @@ class WorkflowService
     }
 
     /**
+     * The people `approver_role: owner` resolves to for this instance.
+     *
+     * @return list<User>
+     */
+    private function stepOwners(WorkflowStep $workflowStep, WorkflowInstance $instance): array
+    {
+        $tenant = $instance->getTenant();
+        if ($tenant === null || $this->responsibility === null || $this->workflowSource === null) {
+            return [];
+        }
+
+        return $this->responsibility->resolve($this->workflowSource->responsibilityForStep($instance, $workflowStep), $tenant);
+    }
+
+    /**
      * Who may approve $workflowStep — the same rule as {@see canUserApprove()}:
      * ROLE_ADMIN, the step's approver_role (both through the role hierarchy)
      * or an explicit approver_users entry. FourEyesValidator counts the OTHER
      * active users matching it to decide whether a second approver exists for
      * the closing four-eyes check.
      */
-    private function eligibleStepApprovers(WorkflowStep $workflowStep): EligibleApprovers
+    private function eligibleStepApprovers(WorkflowStep $workflowStep, ?WorkflowInstance $instance = null): EligibleApprovers
     {
         $roles = ['ROLE_ADMIN'];
+        $userIds = array_map(intval(...), $workflowStep->getApproverUsers() ?? []);
         $approverRole = $workflowStep->getApproverRole();
-        if ($approverRole !== null && $approverRole !== '') {
+        if ($approverRole === WorkflowInstanceAdapter::APPROVER_OWNER) {
+            $owners = $instance !== null ? $this->stepOwners($workflowStep, $instance) : [];
+            $userIds = [...$userIds, ...array_map(static fn (User $u): int => (int) $u->getId(), $owners)];
+        } elseif ($approverRole !== null && $approverRole !== '') {
             $roles[] = $approverRole;
         }
 
-        return new EligibleApprovers(
-            $roles,
-            array_values(array_map(intval(...), $workflowStep->getApproverUsers() ?? [])),
-        );
+        return new EligibleApprovers($roles, array_values(array_unique($userIds)));
     }
 
     /**
      * Get pending approvals for a user (one definition: WorkflowInstanceRepository::findPendingForUser)
      */
-    public function getPendingApprovals(User $user): array
+    public function getPendingApprovals(User $user, ?Tenant $tenant = null): array
     {
-        return $this->workflowInstanceRepository->findPendingForUser($user, $user->getTenant());
+        $tenant ??= $user->getTenant();
+        $pending = $this->workflowInstanceRepository->findPendingForUser($user, $tenant);
+        if ($tenant === null) {
+            return $pending;
+        }
+        // Steps on `approver_role: owner` belong to the record's owner — the
+        // repository cannot see that relation, the resolver can.
+        $seen = array_flip(array_map(static fn (WorkflowInstance $i): int => (int) $i->getId(), $pending));
+        foreach ($this->workflowInstanceRepository->findActiveForTenant($tenant) as $instance) {
+            $step = $instance->getCurrentStep();
+            if ($step !== null && !isset($seen[(int) $instance->getId()])
+                && $step->getApproverRole() === WorkflowInstanceAdapter::APPROVER_OWNER
+                && $this->canUserApprove($user, $step, $instance)) {
+                $pending[] = $instance;
+            }
+        }
+        usort($pending, static fn (WorkflowInstance $a, WorkflowInstance $b): int
+            => ($a->getDueDate()?->getTimestamp() ?? PHP_INT_MAX) <=> ($b->getDueDate()?->getTimestamp() ?? PHP_INT_MAX));
+
+        return $pending;
     }
 
     /**

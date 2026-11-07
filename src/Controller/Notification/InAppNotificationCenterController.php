@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Notification;
 
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Notification\NotificationChannel;
 use App\Entity\Notification\NotificationDelivery;
 use App\Entity\User;
 use App\Repository\Notification\NotificationDeliveryRepository;
-use App\Service\ModuleConfigurationService;
+use App\Repository\ObligationNoticeRepository;
 use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,13 +37,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class InAppNotificationCenterController extends AbstractController
 {
-    use ModuleGatedControllerTrait;
-
     public function __construct(
         private readonly NotificationDeliveryRepository $deliveryRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
+        private readonly ObligationNoticeRepository $notices,
     ) {}
 
     /**
@@ -58,13 +55,10 @@ class InAppNotificationCenterController extends AbstractController
         return $this->redirectToRoute('app_notification_center', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 
+    // @no-module-gate-required: notifications is a required core module (personal reminders).
     #[Route('', name: 'center', methods: ['GET'])]
     public function center(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('notifications')) {
-            return $redirect;
-        }
-
         /** @var User $user */
         $user        = $this->getUser();
         $tenant      = $user->getTenant();
@@ -92,58 +86,60 @@ class InAppNotificationCenterController extends AbstractController
             'critical_count' => count(array_filter($deliveries, static fn (NotificationDelivery $d): bool => $severityOf($d) === 'critical')),
             'high_count'     => count(array_filter($deliveries, static fn (NotificationDelivery $d): bool => $severityOf($d) === 'high')),
             'lastSeen'       => $lastSeen,
+            'notices'        => $this->notices->latestFor($user, 20),
         ]);
     }
 
+    /**
+     * The bell: the user's own reminders (deadline digests, urgent statutory
+     * deadlines) first, then the organisation's rule notifications.
+     */
+    // @no-module-gate-required: notifications is a required core module (personal reminders).
     #[Route('/bell', name: 'bell', methods: ['GET'])]
     public function bell(): JsonResponse
     {
-        if (!$this->moduleService->isModuleActive('notifications')) {
-            return new JsonResponse(['count' => 0, 'items' => []]);
-        }
-
         /** @var User $user */
         $user     = $this->getUser();
-        $tenant   = $user->getTenant();
         $lastSeen = $user->getLastSeenNotifications();
+        $isUnread = static fn (?\DateTimeInterface $at): bool => $lastSeen === null || ($at !== null && $at > $lastSeen);
 
-        $deliveries = $this->getInAppDeliveries($tenant, 20);
-
-        $unreadCount = 0;
-        $items       = [];
-
-        foreach ($deliveries as $delivery) {
-            $isUnread = $lastSeen === null || ($delivery->getAttemptedAt() !== null && $delivery->getAttemptedAt() > $lastSeen);
-            if ($isUnread) {
-                $unreadCount++;
-            }
-
-            $payload  = $delivery->getResponsePayload() ?? [];
-            $ruleName = (string) ($payload['rule_name'] ?? '');
+        $items = [];
+        foreach ($this->notices->latestFor($user, 10) as $notice) {
             $items[] = [
-                'id'         => $delivery->getId(),
-                'rule'       => $ruleName,
-                'eventType'  => (string) ($payload['event_type'] ?? ''),
-                'status'     => $delivery->getStatus(),
-                'attemptedAt'=> $delivery->getAttemptedAt()?->format('c'),
-                'isUnread'   => $isUnread,
+                'id'          => 'notice-' . $notice->getId(),
+                'rule'        => $notice->getTitle(),
+                'eventType'   => $notice->getKind(),
+                'status'      => 'sent',
+                'attemptedAt' => $notice->getCreatedAt()->format('c'),
+                'isUnread'    => $isUnread($notice->getCreatedAt()),
+                'link'        => $notice->getLink(),
             ];
         }
+        foreach ($this->getInAppDeliveries($user->getTenant(), 20) as $delivery) {
+            $payload = $delivery->getResponsePayload() ?? [];
+            $items[] = [
+                'id'          => $delivery->getId(),
+                'rule'        => (string) ($payload['rule_name'] ?? ''),
+                'eventType'   => (string) ($payload['event_type'] ?? ''),
+                'status'      => $delivery->getStatus(),
+                'attemptedAt' => $delivery->getAttemptedAt()?->format('c'),
+                'isUnread'    => $isUnread($delivery->getAttemptedAt()),
+                'link'        => null,
+            ];
+        }
+        usort($items, static fn (array $a, array $b): int => strcmp((string) $b['attemptedAt'], (string) $a['attemptedAt']));
 
         return new JsonResponse([
-            'count' => $unreadCount,
+            'count' => count(array_filter($items, static fn (array $i): bool => $i['isUnread'])),
             'items' => $items,
         ]);
     }
 
+    // @no-module-gate-required: notifications is a required core module (personal reminders).
     #[Route('/mark-read', name: 'mark_read', methods: ['POST'])]
     #[IsCsrfTokenValid('notification_mark_read')]
     public function markRead(): Response
     {
-        if (!$this->moduleService->isModuleActive('notifications')) {
-            return $this->redirectToRoute('app_dashboard');
-        }
-
         /** @var User $user */
         $user = $this->getUser();
         $user->setLastSeenNotifications(new DateTimeImmutable());

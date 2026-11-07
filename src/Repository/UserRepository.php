@@ -33,8 +33,10 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly ?\Symfony\Component\Security\Core\Role\RoleHierarchyInterface $roleHierarchy = null,
+    ) {
         parent::__construct($registry, User::class);
     }
 
@@ -149,14 +151,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Find active users carrying the given role string within a tenant.
+     * Active users of a tenant who hold the role — themselves or through a
+     * non-admin role of the role hierarchy (an ISB who is also CISO counts;
+     * an admin who merely inherits ROLE_DPO does not, unless an admin role is
+     * asked for). Same rule as ResponsibilityResolver::usersHolding().
      *
      * This is the ONLY role-based lookup for an organisation's users
      * (instance operators aside, see findActiveInstanceOperators()):
      * recipients and approvers are always resolved inside the tenant that
-     * owns the record being notified about. The former unscoped `findByRole()` selected users across every
-     * organisation and leaked tenant data into other organisations' inboxes,
-     * so it was removed.
+     * owns the record being notified about. Who has to act on a record is
+     * answered by the ResponsibilityResolver (owner first, role as fallback).
      *
      * A null / unresolvable tenant yields an empty list instead of "all
      * tenants": a record without an owning tenant has no legitimate
@@ -181,19 +185,26 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             return [];
         }
 
-        $qb = $this->createQueryBuilder('u')
-            ->andWhere('u.roles LIKE :role')
+        /** @var list<User> $users */
+        $users = $this->createQueryBuilder('u')
             ->andWhere('u.isActive = :active')
-            ->setParameter('role', '%"' . $role . '"%')
+            ->andWhere('u.tenant = :tenantId')
             ->setParameter('active', true)
+            ->setParameter('tenantId', $tenantId)
             ->orderBy('u.lastName', \SortDirection::Ascending)
             ->addOrderBy('u.firstName', \SortDirection::Ascending)
-            ->andWhere('u.tenant = :tenantId')
-            ->setParameter('tenantId', $tenantId);
+            ->getQuery()
+            ->getResult();
 
-        /** @var list<User> $rows */
-        $rows = $qb->getQuery()->getResult();
-        return $rows;
+        $adminRoles = ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'];
+        $countAdmin = in_array($role, $adminRoles, true);
+
+        return array_values(array_filter($users, function (User $user) use ($role, $adminRoles, $countAdmin): bool {
+            $own = $countAdmin ? $user->getRoles() : array_values(array_diff($user->getRoles(), $adminRoles));
+            $reachable = $this->roleHierarchy?->getReachableRoleNames($own) ?? $own;
+
+            return in_array($role, $reachable, true);
+        }));
     }
 
     /**

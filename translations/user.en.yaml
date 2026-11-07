@@ -304,6 +304,7 @@ user:
             security: Security
             current_avatar: 'Current Avatar'
             alva: 'Alva Companion'
+            reminders: 'Reminders'
         field:
             language: Language
             timezone: Timezone
@@ -320,6 +321,10 @@ user:
             password_changed: Password changed
             avatar_deleted: Avatar deleted
             alva_settings: 'Alva Companion settings saved'
+            reminder_settings: 'Reminders saved.'
+        reminders:
+            digest_label: 'Daily digest of my deadlines'
+            digest_help: 'Sent at %hour%, only when something is open. Statutory hour deadlines (GDPR 72 h, NIS-2 24/72 h) are always sent immediately.'
         alva:
             enabled_label: 'Show Alva Companion'
             size_label: 'Companion Size'

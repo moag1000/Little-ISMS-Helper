@@ -304,6 +304,7 @@ user:
             security: Sicherheit
             current_avatar: 'Aktuelles Profilbild'
             alva: 'Alva-Begleiter'
+            reminders: 'Erinnerungen'
         field:
             language: Sprache
             timezone: Zeitzone
@@ -320,6 +321,10 @@ user:
             password_changed: Passwort geändert
             avatar_deleted: Profilbild gelöscht
             alva_settings: 'Alva-Begleiter-Einstellungen gespeichert'
+            reminder_settings: 'Erinnerungen gespeichert.'
+        reminders:
+            digest_label: 'Tägliche Sammelmail mit meinen Fristen'
+            digest_help: 'Kommt um %hour% Uhr, nur wenn etwas offen ist. Gesetzliche Stundenfristen (DSGVO 72 h, NIS-2 24/72 h) kommen immer sofort.'
         alva:
             enabled_label: 'Alva-Begleiter anzeigen'
             size_label: 'Größe des Begleiters'

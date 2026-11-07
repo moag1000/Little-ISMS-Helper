@@ -90,20 +90,9 @@ final class LiveCountAggregatorTest extends TestCase
         // Create a real-but-useless MyDayAggregator whose aggregate() returns total=0.
         // We test getMyDayCount separately by checking null-tenant short-circuit.
         $workflowRepo       = $this->createMock(\App\Repository\WorkflowInstanceRepository::class);
-        $fourEyesRepo       = $this->createMock(\App\Repository\FourEyesApprovalRequestRepository::class);
         $policyAckRepo      = $this->createMock(\App\Repository\PolicyAcknowledgementRepository::class);
-        $auditFindingRepo   = $this->createMock(\App\Repository\AuditFindingRepository::class);
-        $dsrRepo            = $this->createMock(\App\Repository\DataSubjectRequestRepository::class);
-        $caRepo             = $this->createMock(\App\Repository\CorrectiveActionRepository::class);
         $docRepo            = $this->createMock(\App\Repository\DocumentRepository::class);
-        $riskRepo           = $this->createMock(\App\Repository\RiskRepository::class);
-        $trainingRepo       = $this->createMock(\App\Repository\TrainingParticipationRepository::class);
-        $incidentRepo       = $this->createMock(\App\Repository\IncidentRepository::class);
-        $dataBreachRepo     = $this->createMock(\App\Repository\DataBreachRepository::class);
-        $vulnRepo           = $this->createMock(\App\Repository\VulnerabilityRepository::class);
         $auditChecklistRepo = $this->createMock(\App\Repository\AuditChecklistRepository::class);
-        $changeRequestRepo  = $this->createMock(\App\Repository\ChangeRequestRepository::class);
-        $mgmtReviewRepo     = $this->createMock(\App\Repository\ManagementReviewRepository::class);
         $wizardRepo         = $this->createMock(\App\Repository\WizardSessionRepository::class);
         $complianceAnalytics = $this->createMock(\App\Service\ComplianceAnalyticsService::class);
         $tenantContext      = $this->createMock(\App\Service\TenantContext::class);
@@ -112,12 +101,7 @@ final class LiveCountAggregatorTest extends TestCase
         // All repos return empty arrays → total = 0
         $workflowRepo->method('findPendingForUser')->willReturn([]);
         $workflowRepo->method('findOverdueForTenant')->willReturn([]);
-        $fourEyesRepo->method('findPendingFor')->willReturn([]);
         $policyAckRepo->method('findOneFor')->willReturn(null);
-        $auditFindingRepo->method('findOpenByTenant')->willReturn([]);
-        $dsrRepo->method('findByTenant')->willReturn([]);
-        $caRepo->method('findOverdue')->willReturn([]);
-        $docRepo->method('findReviewOverdue')->willReturn([]);
         $docRepo->method('findPendingApprovalForTenant')->willReturn([]);
         // buildAcknowledgements uses createQueryBuilder on DocumentRepository.
         // Doctrine\ORM\Query is final — use getMockBuilder with disabling final class checks.
@@ -131,49 +115,29 @@ final class LiveCountAggregatorTest extends TestCase
         $qb->method('setParameter')->willReturnSelf();
         $qb->method('getQuery')->willReturn($query);
         $docRepo->method('createQueryBuilder')->willReturn($qb);
-        $riskRepo->method('findAcceptanceExpiring')->willReturn([]);
-        $trainingRepo->method('findPendingForUser')->willReturn([]);
-        $incidentRepo->method('findOpenIncidents')->willReturn([]);
-        $incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
-        $dataBreachRepo->method('findAuthorityNotification72hTicking')->willReturn([]);
-        $vulnRepo->method('findCriticalUnpatchedByTenant')->willReturn([]);
         $auditChecklistRepo->method('findDueForUser')->willReturn([]);
-        $changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
-        $mgmtReviewRepo->method('findUpcomingByTenant')->willReturn([]);
         $wizardRepo->method('findOverdueByTenant')->willReturn([]);
         $complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $tenantContext->method('getCurrentTenant')->willReturn($this->createMock(\App\Entity\Tenant::class));
         $urls->method('generate')->willReturn('/');
 
+        $registry = new \App\Service\Deadline\DeadlineSourceRegistry([]);
+
         return new MyDayAggregator(
             $tenantContext,
             $workflowRepo,
-            $fourEyesRepo,
             $policyAckRepo,
-            $auditFindingRepo,
-            $dsrRepo,
-            $caRepo,
             $docRepo,
-            $riskRepo,
-            $trainingRepo,
-            $incidentRepo,
-            $dataBreachRepo,
-            $vulnRepo,
             $auditChecklistRepo,
-            $changeRequestRepo,
-            $mgmtReviewRepo,
             $wizardRepo,
             $complianceAnalytics,
-            $this->createMock(\App\Repository\EvidenceReverificationTaskRepository::class),
-            new \App\Service\MyDay\PeriodicReviewBuckets(
-                $this->createMock(\App\Repository\ControlRepository::class),
-                $this->createMock(\App\Repository\SupplierRepository::class),
-                $this->createMock(\App\Repository\DataProtectionImpactAssessmentRepository::class),
-                $this->createMock(\App\Repository\BusinessContinuityPlanRepository::class),
-                $urls,
-            ),
             $urls,
             \App\Tests\Stub\PersonaResolverFactory::create(),
+            new \App\Service\Deadline\ObligationInbox($registry, new \App\Service\Responsibility\ResponsibilityResolver(
+                $this->createStub(\App\Repository\UserRepository::class),
+                \App\Tests\Stub\PersonaResolverFactory::create(),
+                $registry,
+            )),
         );
     }
 
