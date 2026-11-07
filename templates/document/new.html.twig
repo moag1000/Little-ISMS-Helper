@@ -34,13 +34,12 @@
 {# Discoverability bridge to policy_wizard
    for users who landed on Upload but actually want to author a new
    ISMS-Leitlinie from scratch via wizard-driven templates. #}
-<div class="alert alert-info d-flex align-items-start gap-3 mb-4" role="note">
-    <i class="fa-icon fa-icon--ui-info fs-4" aria-hidden="true"></i>
-    <div class="flex-grow-1">
+<div class="fa-alert fa-alert--info mb-4" role="note">
+    <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+    <div class="fa-alert__body flex-grow-1">
         <strong>{{ 'document.wizard_cta.title'|trans({}, 'document') }}</strong>
         <p class="mb-2">{{ 'document.wizard_cta.body'|trans({}, 'document') }}</p>
-        <a href="{{ path('app_policy_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost btn-sm">
-            <i class="fa-icon fa-icon--ui-magic" aria-hidden="true"></i>
+        <a href="{{ path('app_policy_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
             {{ 'document.wizard_cta.action'|trans({}, 'document') }}
         </a>
     </div>

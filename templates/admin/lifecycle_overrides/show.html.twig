@@ -70,7 +70,7 @@
                                         <td class="fa-table__cell">
                                             {% if tOverrides is not empty %}
                                                 {% for key, val in tOverrides %}
-                                                    <span class="badge bg-warning text-dark me-1">{{ key }}</span>
+                                                    <span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm me-1">{{ key }}</span>
                                                 {% endfor %}
                                             {% else %}
                                                 <span class="fa-table__cell--muted">{{ 'admin.lifecycle_overrides.yaml_baseline'|trans }}</span>

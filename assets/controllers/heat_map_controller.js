@@ -262,8 +262,9 @@ export default class extends Controller {
         if (this.hasGridTarget) {
             const msg = this.escapeHtml(faT('heat_map.load_error'));
             this.gridTarget.innerHTML = `
-                <div class="alert alert-danger" style="grid-column:1 / -1;">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${msg}
+                <div class="fa-alert fa-alert--danger" role="alert" style="grid-column:1 / -1;">
+                    <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body"><p class="fa-alert__message">${msg}</p></div>
                 </div>
             `;
         }

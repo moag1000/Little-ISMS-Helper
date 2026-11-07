@@ -113,7 +113,7 @@
                     {% for source, minutes in by_source %}
                     <tr class="fa-table__row">
                         <td class="fa-table__cell">
-                            <span class="badge bg-secondary me-2">{{ source }}</span>
+                            <span class="fa-status-pill fa-status-pill--neutral me-2">{{ source }}</span>
                             {{ ('fte_tracking.source.' ~ source)|trans({}, 'fte_tracking') }}
                         </td>
                         <td class="fa-table__cell fa-table__cell--num">{{ minutes }}</td>

@@ -21,9 +21,9 @@
     }) }}
 
     {# UX tooltip — junior onboarding #}
-    <div class="alert alert-info d-flex align-items-start gap-2 mb-4" role="note">
-        <i class="fa-icon fa-icon--ui-info-circle flex-shrink-0 mt-1" aria-hidden="true"></i>
-        <div>
+    <div class="fa-alert fa-alert--info mb-4" role="note">
+        <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body">
             <strong>{{ 'tia.help.concept_title'|trans({}, 'tia') }}</strong>
             {{ 'tia.help.concept_body'|trans({}, 'tia') }}
             <br><small class="text-muted">{{ 'tia.help.norm_ref'|trans({}, 'tia') }}</small>
@@ -72,11 +72,11 @@
         {% endembed %}
 
         <div class="d-flex gap-2 mb-4">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--check" aria-hidden="true"></i>
                 {{ 'tia.action.save'|trans({}, 'tia') }}
             </button>
-            <a href="{{ path('app_processing_activity_show', {id: processing_activity.id}) }}" class="btn btn-ghost">
+            <a href="{{ path('app_processing_activity_show', {id: processing_activity.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'tia.action.cancel'|trans({}, 'tia') }}
             </a>
         </div>

@@ -22,7 +22,7 @@
         ]
     }) }}
 
-    {% set _status %}<span class="badge bg-{{ task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'secondary' : 'warning') }}">{{ ('evidence_reverification.status.' ~ task.status)|trans({}, 'document') }}</span>{% endset %}
+    {% set _status %}<span class="fa-status-pill fa-status-pill--{{ task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'neutral' : 'warning') }}">{{ ('evidence_reverification.status.' ~ task.status)|trans({}, 'document') }}</span>{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         facts: [

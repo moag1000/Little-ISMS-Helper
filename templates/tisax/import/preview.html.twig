@@ -64,7 +64,7 @@
             <div class="card-header">
                 <h6 class="mb-0">
                     {{ 'tisax.import.preview.sample_heading'|trans({}, 'tisax_isa') }}
-                    <span class="badge bg-secondary ms-1">{{ totalRows }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ totalRows }}</span>
                 </h6>
             </div>
             <div class="card-body p-0">
@@ -82,12 +82,12 @@
         <div class="d-flex gap-2 mt-3">
             <form method="post" action="{{ path('app_tisax_import_preview', { _locale: app.request.locale }) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('tisax_proceed') }}">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                     {{ 'tisax.import.preview.proceed'|trans({}, 'tisax_isa') }}
                     <i class="fa-icon fa-icon--util-arrow-right ms-1"></i>
                 </button>
             </form>
-            <a href="{{ path('app_tisax_import_validate', { _locale: app.request.locale }) }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_tisax_import_validate', { _locale: app.request.locale }) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>

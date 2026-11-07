@@ -26,9 +26,9 @@
     <div class="mb-4">
         {% if applied_template_key is defined and applied_template_key %}
         {# Compact "template active" banner with reset link #}
-        <div class="alert alert-info d-flex align-items-center gap-2 mb-3" role="status">
-            <i class="fa-icon fa-icon--status-ok flex-shrink-0" aria-hidden="true"></i>
-            <span>
+        <div class="fa-alert fa-alert--info align-items-center mb-3" role="status">
+            <i class="fa-icon fa-icon--status-ok fa-alert__icon" aria-hidden="true"></i>
+            <span class="fa-alert__body">
                 <strong>{{ 'dpia.template.picker.selected'|trans({}, 'privacy') }}</strong>
                 {% for tpl in sector_templates %}
                     {% if tpl.key == applied_template_key %}
@@ -36,7 +36,7 @@
                     {% endif %}
                 {% endfor %}
             </span>
-            <a href="{{ path('app_dpia_new', {_locale: app.request.locale}) }}" class="ms-auto btn btn-sm btn-outline-secondary">
+            <a href="{{ path('app_dpia_new', {_locale: app.request.locale}) }}" class="ms-auto fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                 {{ 'dpia.template.picker.skip'|trans({}, 'privacy') }}
             </a>
         </div>
@@ -58,7 +58,7 @@
                                     <span class="fw-semibold text-body">{{ tpl.nameTransKey|trans({}, 'privacy') }}</span>
                                 </div>
                                 <p class="text-muted small mb-0 flex-grow-1">{{ tpl.usageHint|trans({}, 'privacy') }}</p>
-                                <span class="badge bg-primary-subtle text-primary-emphasis mt-auto">
+                                <span class="fa-status-pill fa-status-pill--primary mt-auto">
                                     {% if tpl.key starts with 'healthcare' %}{{ 'dpia.template.picker.norm_badge.healthcare'|trans({}, 'privacy') }}
                                     {% elseif tpl.key starts with 'financial' %}{{ 'dpia.template.picker.norm_badge.financial'|trans({}, 'privacy') }}
                                     {% else %}{{ 'dpia.template.picker.norm_badge.ai_act'|trans({}, 'privacy') }}
@@ -70,7 +70,7 @@
                     {% endfor %}
                 </div>
                 <div class="mt-3">
-                    <a href="{{ path('app_dpia_new', {_locale: app.request.locale}) }}" class="btn btn-sm btn-outline-secondary">
+                    <a href="{{ path('app_dpia_new', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                         {{ 'dpia.template.picker.skip'|trans({}, 'privacy') }}
                     </a>
                 </div>

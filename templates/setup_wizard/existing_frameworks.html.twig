@@ -166,18 +166,16 @@
 
     {# Navigation #}
     <div class="d-flex flex-wrap justify-content-between gap-2 mt-4">
-        <a href="{{ path('setup_step8_compliance_frameworks') }}" class="btn btn-outline-secondary">
-            <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
+        <a href="{{ path('setup_step8_compliance_frameworks') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             {{ 'setup.navigation.back'|trans({}, 'setup') }}
         </a>
 
         <div class="d-flex flex-wrap gap-2">
             <a href="{{ path('setup_wizard_existing_frameworks_skip') }}"
-               class="btn btn-outline-warning">
-                <i class="fa-icon me-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
+               class="fa-cyber-btn fa-cyber-btn--warning">
                 {{ 'existing_frameworks.actions.skip'|trans({}, 'setup_wizard') }}
             </a>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 {{ 'existing_frameworks.actions.save_next'|trans({}, 'setup_wizard') }}
                 <i class="fa-icon ms-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
             </button>

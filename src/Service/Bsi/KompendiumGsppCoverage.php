@@ -10,6 +10,7 @@ use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * How far the mapping IT-Grundschutz-Kompendium 2023 → Grundschutz++ reaches.
@@ -17,18 +18,22 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * Three sources, in this order of trust:
  *  - the BSI mapping (`bsi-it-grundschutz_to_bsi-gspp_official_v1`, BSI draft),
  *  - the app's supplement for requirements the BSI has not mapped
- *    (`bsi-it-grundschutz_to_bsi-gspp_derived_v1`, two independent reviews,
- *    heuristic tier: inheritance proposes these pairs for review),
- *  - requirements both reviews found without counterpart in Grundschutz++
- *    (review fixture, no mapping row).
+ *    (`bsi-it-grundschutz_to_bsi-gspp_derived_v1`, two independent reviews and
+ *    an Obergutachten where they disagreed; heuristic tier: inheritance
+ *    proposes these pairs for review),
+ *  - requirements the deciding reviews found without counterpart in
+ *    Grundschutz++ (review fixture, no mapping row).
  *
- * The rest is open. Mapping hub and KPI catalogue read the numbers from here.
+ * The rest is open (zero once every disputed requirement has its Obergutachten;
+ * a new Kompendium catalogue or a missing import makes it grow again). Mapping hub and KPI catalogue read the numbers from here.
  */
 class KompendiumGsppCoverage
 {
     public const string KOMPENDIUM = 'BSI_GRUNDSCHUTZ';
     public const string GSPP = 'BSI-GSPP';
     public const string REVIEW_FIXTURE = 'fixtures/library/mappings/panel_verdicts/bsi-it-grundschutz_to_bsi-gspp_review_v1.json';
+    public const string SUPPLEMENT_FIXTURE = 'fixtures/library/mappings/bsi-it-grundschutz_to_bsi-gspp_derived_v1.yaml';
+    public const string SUPPLEMENT_ID = 'bsi-it-grundschutz_to_bsi-gspp_derived_v1';
 
     /** @var array<string, mixed>|false|null memo for the request (false = not loaded) */
     private array|false|null $summary = null;
@@ -55,6 +60,71 @@ class KompendiumGsppCoverage
         }
 
         return $this->summary === false ? null : $this->summary;
+    }
+
+    /**
+     * Pairs of the shipped supplement the database does not hold yet, counted
+     * only where both requirements are loaded (an import could not add the
+     * rest). The mapping hub offers the import while this is above zero, so an
+     * update of the supplement reaches the instance without the command line.
+     */
+    public function pendingSupplementPairs(): int
+    {
+        $path = $this->projectDir . '/' . self::SUPPLEMENT_FIXTURE;
+        if ($this->summary() === null || !is_file($path)) {
+            return 0;
+        }
+        $shipped = [];
+        foreach ((Yaml::parseFile($path)['mappings'] ?? []) as $m) {
+            $shipped[] = [(string) $m['source'], (string) $m['target']];
+        }
+
+        $rows = $this->em->createQueryBuilder()
+            ->select('s.requirementId AS src', 't.requirementId AS tgt')
+            ->from(ComplianceMapping::class, 'm')
+            ->join('m.sourceRequirement', 's')
+            ->join('m.targetRequirement', 't')
+            ->where('m.source = :tag')
+            ->setParameter('tag', self::SUPPLEMENT_ID)
+            ->getQuery()
+            ->getArrayResult();
+        $known = $this->em->createQueryBuilder()
+            ->select('fw.code AS code', 'r.requirementId AS rid')
+            ->from(ComplianceRequirement::class, 'r')
+            ->join('r.framework', 'fw')
+            ->where('fw.code IN (:codes)')
+            ->setParameter('codes', [self::KOMPENDIUM, self::GSPP])
+            ->getQuery()
+            ->getArrayResult();
+
+        $ids = [self::KOMPENDIUM => [], self::GSPP => []];
+        foreach ($known as $r) {
+            $ids[$r['code']][] = (string) $r['rid'];
+        }
+        $imported = array_map(static fn (array $r): array => [(string) $r['src'], (string) $r['tgt']], $rows);
+
+        return self::missingPairs($shipped, $imported, $ids[self::KOMPENDIUM], $ids[self::GSPP]);
+    }
+
+    /**
+     * @param list<array{0: string, 1: string}> $shipped pairs in the fixture
+     * @param list<array{0: string, 1: string}> $imported pairs in the database
+     * @param list<string> $kompendiumIds loaded Kompendium requirement ids
+     * @param list<string> $gsppIds loaded Grundschutz++ requirement ids
+     */
+    public static function missingPairs(array $shipped, array $imported, array $kompendiumIds, array $gsppIds): int
+    {
+        $have = array_flip(array_map(static fn (array $p): string => $p[0] . '|' . $p[1], $imported));
+        $sources = array_flip($kompendiumIds);
+        $targets = array_flip($gsppIds);
+        $missing = 0;
+        foreach ($shipped as [$source, $target]) {
+            if (isset($sources[$source], $targets[$target]) && !isset($have[$source . '|' . $target])) {
+                $missing++;
+            }
+        }
+
+        return $missing;
     }
 
     /**

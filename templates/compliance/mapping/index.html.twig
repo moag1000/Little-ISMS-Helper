@@ -183,7 +183,7 @@
                             <td>
                                 {% if mapping.qualityScore is not null %}
                                     {% set mqsTone = mapping.qualityScore >= 75 ? 'success' : (mapping.qualityScore >= 50 ? 'warning' : 'danger') %}
-                                    <span class="badge bg-{{ mqsTone }}"
+                                    <span class="fa-status-pill fa-status-pill--{{ mqsTone }}"
                                           title="{{ 'compliance.mapping.gloss.mqs'|trans({}, 'compliance') }}"
                                           data-bs-toggle="tooltip"
                                           data-bs-placement="top">

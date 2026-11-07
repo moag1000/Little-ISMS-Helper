@@ -175,11 +175,10 @@
         {# ISO 27001 policy starter set #}
         {% if _system_templates|length > 0 %}
             <div class="text-center mt-3">
-                <button type="button" class="btn btn-outline-primary"
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--secondary"
                         data-controller="fa-modal-dispatcher"
                         data-action="click->fa-modal-dispatcher#open"
                         data-fa-modal-id="systemTemplateModalDocument">
-                    <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                     {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
                 </button>
                 <div class="form-text small">

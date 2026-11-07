@@ -116,7 +116,7 @@
                             <div class="fw-semibold">{{ ('cert_bundle.preflight.blocker.' ~ blocker.type)|trans({'%count%': blocker.count|default(0)|number_format(0, '.', '')}) }}</div>
                             <small class="text-muted">{{ ('cert_bundle.preflight.blocker.' ~ blocker.type ~ '_hint')|trans({}, 'cert_bundle') }}</small>
                         </div>
-                        <span class="ms-auto badge text-bg-danger flex-shrink-0">{{ blocker.severity }}</span>
+                        <span class="ms-auto fa-status-pill fa-status-pill--danger flex-shrink-0">{{ blocker.severity }}</span>
                     </li>
                 {% endfor %}
             </ul>
@@ -138,7 +138,7 @@
                             <div class="fw-semibold">{{ ('cert_bundle.preflight.warning.' ~ warning.type)|trans({'%count%': warning.count|default(0)}) }}</div>
                             <small class="text-muted">{{ ('cert_bundle.preflight.warning.' ~ warning.type ~ '_hint')|trans({}, 'cert_bundle', null, '') }}</small>
                         </div>
-                        <span class="ms-auto badge text-bg-warning text-dark flex-shrink-0">{{ warning.severity }}</span>
+                        <span class="ms-auto fa-status-pill fa-status-pill--warning flex-shrink-0">{{ warning.severity }}</span>
                     </li>
                 {% endfor %}
             </ul>

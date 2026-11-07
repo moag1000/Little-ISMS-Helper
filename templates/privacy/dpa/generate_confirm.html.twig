@@ -67,7 +67,7 @@
                 {% if pa.hasThirdCountryTransfer or supplier.thirdCountryTransfer %}
                 <dt class="col-sm-4">{{ 'dpa.generate.field.third_country'|trans({}, 'privacy') }}</dt>
                 <dd class="col-sm-8">
-                    <span class="badge bg-warning text-dark">
+                    <span class="fa-status-pill fa-status-pill--warning">
                         {{ 'dpa.generate.third_country_active'|trans({}, 'privacy') }}
                     </span>
                 </dd>
@@ -77,9 +77,9 @@
     </section>
 
     {# GDPR Art. 28 tooltip hint for junior users #}
-    <div class="alert alert-light border d-flex align-items-start gap-3 mb-4" role="note">
-        <i class="fa-icon fa-icon--question-circle text-primary fs-5 mt-1" aria-hidden="true"></i>
-        <div>
+    <div class="fa-alert fa-alert--info mb-4" role="note">
+        <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body">
             <strong>{{ 'dpa.generate.help_title'|trans({}, 'privacy') }}</strong>
             <p class="mb-0 small text-muted">{{ 'dpa.generate.help_body'|trans({}, 'privacy') }}</p>
         </div>

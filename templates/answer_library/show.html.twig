@@ -81,7 +81,7 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                         <span class="text-muted small">{{ 'answer_library.field.category'|trans({}, 'answer_library') }}</span>
-                        <span class="badge bg-secondary">
+                        <span class="fa-status-pill fa-status-pill--neutral">
                             {{ ('answer_library.category.' ~ entry.category)|trans({}, 'answer_library') }}
                         </span>
                     </li>
@@ -89,7 +89,7 @@
                         <span class="text-muted small">{{ 'answer_library.field.tags'|trans({}, 'answer_library') }}</span>
                         <div class="mt-1">
                             {% for tag in entry.tags %}
-                                <span class="badge bg-light text-dark border me-1">{{ tag }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm me-1">{{ tag }}</span>
                             {% else %}
                                 <span class="text-muted">—</span>
                             {% endfor %}

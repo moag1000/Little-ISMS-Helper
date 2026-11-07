@@ -389,12 +389,14 @@
 
     {# Progress bar #}
     {% if show_progress %}
-    <div class="progress progress-h-6 mt-2" role="progressbar"
-         aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-bar bg-{{ computed_variant in ['info', 'secondary', 'light', 'dark'] ? 'primary' : computed_variant }}"
-             style="width: {{ progress_percent }}%"
-             data-{{ controller }}-target="progress"></div>
-    </div>
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+    {{ _fa_progress.render({
+        value: progress_percent,
+        size: 'sm',
+        tone: computed_variant in ['info', 'secondary', 'light', 'dark'] ? 'primary' : computed_variant,
+        class: 'progress-h-6 mt-2',
+        barAttrs: {('data-' ~ controller ~ '-target'): 'progress'}
+    }) }}
     {% endif %}
 
     {# Current value label #}

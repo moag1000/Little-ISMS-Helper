@@ -18,7 +18,7 @@ test.describe('Asset CRUD', () => {
         await expect(page).not.toHaveURL(/\/asset\/new$/);
         // Be lenient about which template renders: either an .fa-alert success
         // banner, an entity show heading, or the index row listing it.
-        const success = page.locator('.fa-alert--success, .alert-success').first();
+        const success = page.locator('.fa-toast--success, .fa-alert--success, .alert-success').first();
         const nameVisible = page.getByText(name).first();
         await Promise.race([
             success.waitFor({ timeout: 10_000 }).catch(() => null),

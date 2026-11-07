@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.certificate.new.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -27,10 +28,7 @@
            Do NOT render _certificate_fields.html.twig here — any values entered
            would be silently discarded by ProcessCertificateOcrJob::applyDraft.
         #}
-        <div class="alert alert-info d-flex align-items-center gap-2" role="status">
-            <i class="fa-icon fa-icon--file-earmark-text" aria-hidden="true"></i>
-            <span>{{ 'compliance.certificate.ocr.available_hint'|trans({}, 'compliance') }}</span>
-        </div>
+        {{ _fa_alert.render({variant: 'info', body: 'compliance.certificate.ocr.available_hint'|trans({}, 'compliance')}) }}
 
         <section class="fa-section mb-4">
             <div class="fa-section__body">

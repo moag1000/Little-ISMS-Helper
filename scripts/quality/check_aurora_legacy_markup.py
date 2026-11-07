@@ -19,7 +19,7 @@ Bootstrap classes still render in Aurora style through the CSS bridges in
 fairy-aurora-components.css; the ratchet keeps new code on the components.
 
 Skipped: templates/dev/ (design-system showcase), emails/ and PDF/export
-templates (inline-styled for mail clients and dompdf), and the component
+templates (any pdf/ directory) (inline-styled for mail clients and dompdf), and the component
 files that implement the bridges themselves.
 
 Usage:
@@ -44,9 +44,11 @@ PATTERNS: dict[str, re.Pattern[str]] = {
     "bs_progress": re.compile(r'class="(?:[^"]*\s)?progress-bar(?:\s[^"]*)?"'),
     "legacy_page_header": re.compile(r"_components/_page_header\.html\.twig"),
     "bs_modal": re.compile(r'data-bs-toggle="modal"|bootstrap\.Modal\b'),
-    "bs_badge": re.compile(r'class="(?:[^"]*\s)?badge\s(?:[^"]*\s)?(?:text-)?bg-[a-z]'),
-    "bs_alert": re.compile(r'class="(?:[^"]*\s)?alert\s(?:[^"]*\s)?alert-[a-z]'),
-    "bs_btn": re.compile(r'class="(?:[^"]*\s)?btn\s(?:[^"]*\s)?btn-[a-z]'),
+    # The class may sit inside a Twig ternary ('badge bg-x') and the tone may be computed
+    # (bg-{{ tone }}), so a quote counts as a boundary and "{{" as a tone.
+    "bs_badge": re.compile(r'class="(?:[^"]*[\s\'])?badge\s(?:[^"]*\s)?(?:text-)?bg-(?:[a-z]|\{\{)'),
+    "bs_alert": re.compile(r'class="(?:[^"]*[\s\'])?alert\s(?:[^"]*\s)?alert-(?:[a-z]|\{\{)'),
+    "bs_btn": re.compile(r'class="(?:[^"]*[\s\'])?btn\s(?:[^"]*\s)?btn-(?:[a-z]|\{\{)'),
 }
 
 SKIP_DIRS = ("dev", "emails", "pdf")
@@ -56,6 +58,9 @@ SKIP_FILES = {
     "_components/_badge.html.twig",
     "_components/_fa_table.html.twig",
     "_components/_fa_progress.html.twig",
+    # Stand-alone recovery page with its own inline CSS (no Bootstrap/Aurora loaded),
+    # so its .progress-bar is a local class, not Bootstrap markup.
+    "quick_fix/job_progress.html.twig",
 }
 
 RE_TWIG_COMMENT = re.compile(r"\{#.*?#\}", re.DOTALL)
@@ -63,7 +68,7 @@ RE_TWIG_COMMENT = re.compile(r"\{#.*?#\}", re.DOTALL)
 
 def skipped(rel: str) -> bool:
     parts = rel.split("/")
-    if parts[0] in SKIP_DIRS or rel in SKIP_FILES:
+    if parts[0] in SKIP_DIRS or "pdf" in parts[:-1] or rel in SKIP_FILES:
         return True
     name = parts[-1]
     return any(p in name for p in SKIP_NAME_PARTS)

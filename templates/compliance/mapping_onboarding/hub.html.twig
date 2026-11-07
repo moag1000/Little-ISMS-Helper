@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
 {% import '_components/_onboarding_fairy.html.twig' as onFairy %}
 
@@ -60,7 +61,7 @@
                  data-controller="guided-tour"
                  data-guided-tour-steps-url-value="{{ path('app_guided_tour_steps', {role: 'mapping'}) }}"
                  data-guided-tour-complete-url-value="{{ path('app_guided_tour_complete', {role: 'mapping'}) }}">
-                <button type="button" class="btn btn-outline-primary btn-sm"
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm"
                         data-action="click->guided-tour#start"
                         data-guided-tour-role-param="mapping">
                     {{ 'onboarding.mapping.show_me'|trans }}
@@ -81,12 +82,10 @@
 
                     <div class="d-flex align-items-center flex-wrap gap-2">
                         {% if cur.manager_only and not isManager %}
-                            <div class="alert alert-info mb-0 w-100">
-                                {{ 'onboarding.mapping.step.laden.blocked_by_role'|trans }}
-                            </div>
+                            <div class="w-100">{{ _fa_alert.render({variant: 'info', body: 'onboarding.mapping.step.laden.blocked_by_role'|trans}) }}</div>
                         {% else %}
                             <a href="{{ path(cur.route) }}?wf=mapping-onboarding"
-                               class="btn btn-primary">
+                               class="fa-cyber-btn fa-cyber-btn--primary">
                                 {{ 'onboarding.mapping.do_now'|trans }}
                             </a>
                         {% endif %}
@@ -95,13 +94,13 @@
                               action="{{ path('app_mapping_onboarding_advance') }}"
                               class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('mapping_onboarding') }}">
-                            <button type="submit" class="btn btn-outline-secondary">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 {{ 'onboarding.mapping.check_done'|trans }}
                             </button>
                         </form>
 
                         {% if currentId in (state.completed|default([])) %}
-                            <span class="badge text-bg-success">
+                            <span class="fa-status-pill fa-status-pill--success">
                                 {{ 'onboarding.mapping.step_done'|trans }}
                             </span>
                         {% endif %}
@@ -110,9 +109,7 @@
             </div>
 
             {% if (state.step|default(0)) >= 4 %}
-                <div class="alert alert-success mt-3">
-                    {{ 'onboarding.mapping.all_done'|trans }}
-                </div>
+                <div class="mt-3">{{ _fa_alert.render({variant: 'success', body: 'onboarding.mapping.all_done'|trans}) }}</div>
             {% endif %}
         </section>
     </div>

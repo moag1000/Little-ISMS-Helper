@@ -44,7 +44,7 @@
                     <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
                     <strong>{{ 'isb.section.pending_approvals'|trans }}</strong>
                     {% if dashboard.pending_approvals|length > 0 %}
-                    <span class="badge bg-warning text-dark ms-auto">{{ dashboard.pending_approvals|length }}</span>
+                    <span class="fa-status-pill fa-status-pill--sm fa-status-pill--warning ms-auto">{{ dashboard.pending_approvals|length }}</span>
                     {% endif %}
                 </div>
                 <div class="card-body p-0">
@@ -54,7 +54,7 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <span class="text-truncate me-2">{{ approval.label|default('—') }}</span>
                             {% if approval.href is defined %}
-                            <a href="{{ approval.href }}" class="btn btn-sm btn-ghost">
+                            <a href="{{ approval.href }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                 {{ 'action.view_details'|trans }}
                             </a>
                             {% endif %}
@@ -79,7 +79,7 @@
                     <i class="fa-icon fa-icon--nav-clock-history" aria-hidden="true"></i>
                     <strong>{{ 'isb.section.lifecycle_stuck'|trans }}</strong>
                     {% if dashboard.lifecycle_stuck|length > 0 %}
-                    <span class="badge bg-danger ms-auto">{{ dashboard.lifecycle_stuck|length }}</span>
+                    <span class="fa-status-pill fa-status-pill--sm fa-status-pill--danger ms-auto">{{ dashboard.lifecycle_stuck|length }}</span>
                     {% endif %}
                 </div>
                 <div class="card-body p-0">
@@ -89,7 +89,7 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <span class="text-truncate me-2">{{ item.label|default('—') }}</span>
                             {% if item.href is defined %}
-                            <a href="{{ item.href }}" class="btn btn-sm btn-ghost">
+                            <a href="{{ item.href }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                 {{ 'action.view_details'|trans }}
                             </a>
                             {% endif %}

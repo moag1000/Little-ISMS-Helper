@@ -8,7 +8,7 @@
     <p class="text-body-secondary mb-4">{{ 'supplier.questionnaire.public.intro'|trans({}, 'suppliers') }}</p>
 
     {% if closed %}
-        <div class="alert alert-info">{{ 'supplier.questionnaire.public.closed'|trans({}, 'suppliers') }}</div>
+        <div class="fa-alert fa-alert--info" role="alert"><i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">{{ 'supplier.questionnaire.public.closed'|trans({}, 'suppliers') }}</p></div></div>
     {% else %}
         <form method="post" action="{{ path('public_supplier_questionnaire_submit', {token: questionnaire.publicToken}) }}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token('supplier_questionnaire_' ~ questionnaire.publicToken) }}">

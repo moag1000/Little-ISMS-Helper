@@ -138,13 +138,13 @@
                                     <td class="fa-table__cell">{{ item.baustein }}</td>
                                     <td class="fa-table__cell">
                                         {% if item.isoControl %}
-                                            <span class="badge bg-info text-dark">{{ item.isoControl }}</span>
+                                            <span class="fa-status-pill fa-status-pill--primary">{{ item.isoControl }}</span>
                                         {% else %}
                                             <span class="text-muted">—</span>
                                         {% endif %}
                                     </td>
                                     <td class="fa-table__cell">
-                                        <span class="badge bg-secondary">
+                                        <span class="fa-status-pill fa-status-pill--neutral">
                                             {{ ('bsi.cross_gap.tier.' ~ item.tier)|trans({}, 'compliance') }}
                                         </span>
                                     </td>
@@ -167,15 +167,14 @@
     {% if pendingReview > 0 %}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
-                <i class="fa-icon fa-icon--ui-exclamation-triangle fa-icon--warning" aria-hidden="true"></i>
-                <div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' }, pendingReview: pendingReview, bsiCode: bsiCode ?? 'BSI_GRUNDSCHUTZ' } %}
+                {% block alert_body %}
                     {{ 'bsi.cross_gap.pending_review'|trans({'%count%': pendingReview}, 'compliance') }}
-                    <a href="{{ path('app_compliance_inheritance_queue', {frameworkCode: bsiCode ?? 'BSI_GRUNDSCHUTZ'}) }}" class="alert-link ms-1">
+                    <a href="{{ path('app_compliance_inheritance_queue', {frameworkCode: bsiCode}) }}" class="alert-link ms-1">
                         {{ 'bsi.cross_gap.pending_review_link'|trans({}, 'compliance') }}
                     </a>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
     {% endif %}
@@ -235,7 +234,7 @@
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span class="fw-semibold font-monospace">{{ baustein }}</span>
-                    <span class="badge bg-secondary">{{ items|length }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral">{{ items|length }}</span>
                 </div>
                 <div class="card-body p-0">
                     {% embed '_components/_fa_table.html.twig' with { compact: true } %}
@@ -288,7 +287,7 @@
                                     </td>
                                     <td class="fa-table__cell">
                                         {% if item.isoControl %}
-                                            <span class="badge bg-light text-dark border">{{ item.isoControl }}</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral">{{ item.isoControl }}</span>
                                         {% else %}
                                             <span class="text-muted">—</span>
                                         {% endif %}

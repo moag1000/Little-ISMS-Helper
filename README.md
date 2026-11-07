@@ -41,7 +41,8 @@ Nicht nur Anforderungslisten — die eigentliche Vorgehensweise ist abgebildet:
   eigenem Wizard (Praktiken STM/UMS/PERF/VRB, Wiederverwendung der ISO-27001-Nachweise über das amtliche
   BSI-Mapping) und Grundschutz++-Abschnitten in den Policy-Vorlagen. Kompendium-Anwender sehen im
   Mapping-Hub und als KPI, wie viel ihres Kompendium-Stands nach Grundschutz++ übertragbar ist (BSI-Mapping
-  plus geprüfte Ergänzung für die Anforderungen, die das BSI noch nicht abbildet).
+  plus geprüfte Ergänzung für die Anforderungen, die das BSI noch nicht abbildet; jede Kompendium-Anforderung hat
+  ein Ziel oder ist begründet ohne Entsprechung).
 - **BSI C5 (2020 + 2026)** — der **offizielle BSI-C5-Katalog**; die C5:2026-Neuerungen
   (Krypto-Agilität/PQC, SBOM, Confidential Computing, Container-Management) sind erfasst.
 - **KRITIS** — §8a/§8b BSIG rechtlich verankert, sektorspezifische Policy-Vorlagen (Energie, Wasser, IT-TK,
@@ -309,6 +310,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 ### Design und Barrierefreiheit
 
 - **FairyAurora v4** -- Cyberpunk-Design-System mit Alva-Maskottchen (9 Stimmungen)
+- **Einheitliche Bausteine** -- Buttons, Status-Pills, Hinweise, Fortschrittsbalken und Dialoge kommen überall aus FairyAurora; CI-Gate 62 lässt keine neue Bootstrap-Variante davon zu. Erfolgsmeldungen erscheinen als Toast, Warnungen und Fehler bleiben sichtbar über dem Inhalt
 - **Dark Mode** -- Vollstaendige Theme-Unterstuetzung
 - **Aufgeräumtes CSS** -- Tokens in `fairy-aurora.css`, Komponenten in `fairy-aurora-components.css`, App-Layer in einer `app.css` (früher fünf Dateien); ungenutzte Klassen und überschriebene Doppel-Deklarationen entfernt, ein Test prüft, dass jedes Stylesheet geladen wird
 - **WCAG 2.2 AA** -- ARIA, Keyboard-Navigation, Focus-Management, Skip-Links

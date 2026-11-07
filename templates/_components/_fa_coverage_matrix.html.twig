@@ -39,7 +39,7 @@
             {% if config.filters is defined and config.filters %}
                 <div class="ms-3 d-flex gap-1">
                     {% for f in config.filters %}
-                        <span class="badge bg-primary-subtle text-primary-emphasis">{{ f }}</span>
+                        <span class="fa-status-pill fa-status-pill--primary">{{ f }}</span>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -94,7 +94,8 @@
         {% if config.actions is defined and config.actions %}
             <div class="p-3 d-flex gap-2 border-top">
                 {% for action in config.actions %}
-                    <a href="{{ action.href }}" class="btn btn-{{ action.variant|default('secondary') }} btn-sm">
+                    {% set _btn_tone = {'primary': 'primary', 'success': 'success', 'warning': 'warning', 'danger': 'danger', 'info': 'primary', 'outline-secondary': 'ghost', 'link': 'ghost'}[action.variant|default('secondary')]|default('secondary') %}
+                    <a href="{{ action.href }}" class="fa-cyber-btn fa-cyber-btn--{{ _btn_tone }} fa-cyber-btn--sm">
                         {{ action.label }}
                     </a>
                 {% endfor %}

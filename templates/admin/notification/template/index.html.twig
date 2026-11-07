@@ -69,7 +69,7 @@
                             {{ ('notification.template.desc.' ~ template.templateKey)|trans({}, 'notification') }}
                         </p>
                         <div class="d-flex align-items-center justify-content-between mt-3">
-                            <span class="badge bg-secondary">{{ template.defaultEventType }}</span>
+                            <span class="fa-status-pill fa-status-pill--neutral">{{ template.defaultEventType }}</span>
                             <form method="post"
                                   action="{{ path('admin_notification_template_apply', { id: template.id }) }}"
                                   data-controller="notification-template-picker">

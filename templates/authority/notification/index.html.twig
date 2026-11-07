@@ -34,7 +34,7 @@
                         <div class="card-header d-flex align-items-center gap-2">
                             <i class="fa-icon fa-icon--status-warning text-danger"></i>
                             <span class="fw-semibold">{{ breach.referenceNumber }}</span>
-                            <span class="badge bg-secondary ms-auto">{{ breach.severity }}</span>
+                            <span class="fa-status-pill fa-status-pill--neutral ms-auto">{{ breach.severity }}</span>
                         </div>
                         <div class="card-body">
                             <p class="fa-meta small mb-3">{{ breach.title }}</p>
@@ -66,8 +66,7 @@
                                     {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (BaFin DORA)
                                 </a>
                                 <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa-icon fa-icon--util-geo me-1" aria-hidden="true"></i>
+                                    <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ 'authority.section.lfdi_export'|trans({}, 'eu_authorities') }}
                                     </button>
                                     <ul class="dropdown-menu">

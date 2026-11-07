@@ -29,11 +29,11 @@
                         {{ 'trust_center.admin.settings_title'|trans({}, 'trust_center') }}
                     </h2>
                     {% if tenant.publicPostureEnabled %}
-                        <span class="badge bg-success-subtle text-success-emphasis">
+                        <span class="fa-status-pill fa-status-pill--success">
                             {{ 'trust_center.admin.sharing_enabled'|trans({}, 'trust_center') }}
                         </span>
                     {% else %}
-                        <span class="badge bg-secondary-subtle text-secondary-emphasis">
+                        <span class="fa-status-pill fa-status-pill--neutral">
                             {{ 'trust_center.admin.sharing_disabled'|trans({}, 'trust_center') }}
                         </span>
                     {% endif %}
@@ -53,7 +53,7 @@
                                        readonly
                                        aria-label="{{ 'trust_center.admin.public_link_label'|trans({}, 'trust_center') }}">
                                 <button type="button"
-                                        class="btn btn-outline-secondary"
+                                        class="fa-cyber-btn fa-cyber-btn--ghost"
                                         data-controller="ui-actions"
                                         data-action="ui-actions#copyToClipboard"
                                         data-ui-actions-source-param="#posture-public-url"
@@ -74,8 +74,7 @@
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'trust_center.admin.confirm_regenerate'|trans({}, 'trust_center') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('trust_center_regenerate') }}">
-                            <button type="submit" class="btn btn-warning me-2">
-                                <span class="fa-icon fa-icon--arrow-repeat me-1" aria-hidden="true"></span>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning me-2">
                                 {{ 'trust_center.admin.regenerate_token'|trans({}, 'trust_center') }}
                             </button>
                         </form>
@@ -90,7 +89,7 @@
                       data-ui-actions-message-param="{{ 'trust_center.admin.confirm_disable'|trans({}, 'trust_center') }}"
                       data-ui-actions-tone-param="danger">
                             <input type="hidden" name="_token" value="{{ csrf_token('trust_center_disable') }}">
-                            <button type="submit" class="btn btn-outline-danger">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                                 <span class="fa-icon fa-icon--x-circle me-1" aria-hidden="true"></span>
                                 {{ 'trust_center.admin.disable_label'|trans({}, 'trust_center') }}
                             </button>
@@ -104,7 +103,7 @@
 
                         <form method="POST" action="{{ path('admin_trust_center_enable') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('trust_center_enable') }}">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <span class="fa-icon fa-icon--shield-check me-1" aria-hidden="true"></span>
                                 {{ 'trust_center.admin.enable_label'|trans({}, 'trust_center') }}
                             </button>

@@ -148,7 +148,7 @@
                                 {% set statusTone = jobStatus == 'succeeded' ? 'success'
                                     : (jobStatus == 'failed' ? 'danger'
                                     : (jobStatus == 'running' ? 'primary'
-                                    : (jobStatus == 'pending' ? 'warning' : 'muted'))) %}
+                                    : (jobStatus == 'pending' ? 'warning' : 'neutral'))) %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell">
                                         <code class="small">{{ job.name|default('—') }}</code>
@@ -157,7 +157,7 @@
                                         {% endif %}
                                     </td>
                                     <td class="fa-table__cell">
-                                        <span class="badge text-bg-{{ statusTone }}">
+                                        <span class="fa-status-pill fa-status-pill--{{ statusTone }}">
                                             {{ ('admin.queue.job_status.' ~ jobStatus)|trans({}, 'admin') }}
                                         </span>
                                     </td>

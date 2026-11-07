@@ -330,7 +330,7 @@
                             <small class="d-block text-muted">{{ approval.entity_type }}</small>
                         </div>
                         {% if approval.due_date %}
-                            <span class="badge bg-warning text-dark">{{ approval.due_date|fa_date }}</span>
+                            <span class="fa-status-pill fa-status-pill--warning">{{ approval.due_date|fa_date }}</span>
                         {% endif %}
                     </a>
                 {% endfor %}
@@ -353,7 +353,7 @@
                             <small class="d-block text-muted">{{ instance.entityType }} #{{ instance.entityId }}</small>
                         </div>
                         {% if instance.dueDate %}
-                            <span class="badge bg-danger">{{ instance.dueDate|fa_date }}</span>
+                            <span class="fa-status-pill fa-status-pill--danger">{{ instance.dueDate|fa_date }}</span>
                         {% endif %}
                     </div>
                 {% endfor %}

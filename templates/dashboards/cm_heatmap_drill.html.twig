@@ -34,12 +34,12 @@
         <div class="fa-section__body">
             <div class="d-flex flex-wrap gap-2 align-items-center">
                 <span class="text-muted small fw-semibold">{{ 'compliance_manager.heatmap.drill.filter_section'|trans }}:</span>
-                <a class="{% if section_code == '' %}fa-status-pill fa-status-pill--primary{% else %}badge bg-body-secondary text-body{% endif %} text-decoration-none"
+                <a class="{% if section_code == '' %}fa-status-pill fa-status-pill--primary{% else %}fa-status-pill fa-status-pill--neutral{% endif %} text-decoration-none"
                    href="{{ path('app_dashboard_cm_heatmap_drill', {framework: framework_code}) }}">
                     {{ 'compliance_manager.heatmap.drill.all_sections'|trans }}
                 </a>
                 {% for sec in available_sections %}
-                    <a class="{% if section_code == sec %}fa-status-pill fa-status-pill--primary{% else %}badge bg-body-secondary text-body{% endif %} text-decoration-none"
+                    <a class="{% if section_code == sec %}fa-status-pill fa-status-pill--primary{% else %}fa-status-pill fa-status-pill--neutral{% endif %} text-decoration-none"
                        href="{{ path('app_dashboard_cm_heatmap_drill', {framework: framework_code, section: sec}) }}">
                         {{ sec }}
                     </a>

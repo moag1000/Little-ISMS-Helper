@@ -6,7 +6,35 @@
 
 ---
 
-## Bestandsaufnahme — wo stehen wir?
+## Stand 2026-11 — Markup-Migration abgeschlossen
+
+Buttons, Badges, Alerts, Fortschrittsbalken und Modals sind in Templates, Stimulus-Controllern und PHP
+(Form-Typen, `BadgeExtension`) auf Aurora umgestellt. Gate 62 (`check_aurora_legacy_markup.py`) hat
+keine Baseline mehr: jede neue `btn btn-*`-, `badge bg-*`-, `alert alert-*`-, `.progress-bar`- oder
+Bootstrap-Modal-Stelle lässt CI scheitern. Ausgenommen sind PDF-Templates (`*/pdf/*`, dompdf rendert
+kein Aurora) und die eigenständige `quick_fix/job_progress.html.twig`.
+
+Einheitliche Zuordnung:
+
+| Bootstrap | Aurora |
+|---|---|
+| `btn-primary`, `btn-info` | `fa-cyber-btn--primary` |
+| `btn-success` / `-warning` / `-danger` (auch `outline-`) | `--success` / `--warning` / `--danger` |
+| `btn-secondary`, `btn-outline-primary`, `btn-outline-info`, `btn-light`, `btn-dark` | `--secondary` |
+| `btn-outline-secondary`, `btn-link` | `--ghost` |
+| `badge bg-success/warning/danger/primary` | `fa-status-pill--success/warning/danger/primary` |
+| `badge bg-info` | `fa-status-pill--primary` (es gibt kein `--info`) |
+| `badge bg-secondary/light/dark` | `fa-status-pill--neutral` (es gibt kein `--secondary`) |
+| `alert alert-*` | `_fa_alert.render({variant})`, Töne info/success/warning/danger |
+| `.progress > .progress-bar` | `_fa_progress.render()`, gestapelt über `segments`, JS-Balken über `barAttrs` |
+
+Flash-Meldungen: Erfolg und Info erscheinen als Toast, Warnung, Fehler und Meldungen mit Link bleiben als
+Box über dem Inhalt (`fa_toast_controller.js`). Nicht in diesem Umfang, weil sie schon über die Aurora-
+Brücke gerendert werden: rohe `.card`, `form-control`, `list-group`, Bootstrap-Tooltips.
+
+---
+
+## Bestandsaufnahme (2026-04, historisch)
 
 Ist-Zustand vs. Spec, gemessen mit `grep`:
 

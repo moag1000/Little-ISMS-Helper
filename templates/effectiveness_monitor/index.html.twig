@@ -22,8 +22,11 @@
 }) }}
 
 {% if noTenant %}
-    <div class="alert alert-warning">
-        {{ 'effectiveness_monitor.no_tenant'|trans({}, 'control') }}
+    <div class="fa-alert fa-alert--warning" role="alert">
+        <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body">
+            <p class="fa-alert__message">{{ 'effectiveness_monitor.no_tenant'|trans({}, 'control') }}</p>
+        </div>
     </div>
 {% else %}
 
@@ -93,12 +96,12 @@
             <option value="24" {% if thresholdMonths == 24 %}selected{% endif %}>24 {{ 'effectiveness_monitor.filter.months'|trans({}, 'control') }}</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-sm btn-primary">
+    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
         <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
         {{ 'effectiveness_monitor.filter.apply'|trans({}, 'control') }}
     </button>
     {% if categoryFilter %}
-        <a href="{{ path('app_effectiveness_monitor', {threshold: thresholdMonths}) }}" class="btn btn-sm btn-ghost">
+        <a href="{{ path('app_effectiveness_monitor', {threshold: thresholdMonths}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
             {{ 'effectiveness_monitor.filter.clear'|trans({}, 'control') }}
         </a>
     {% endif %}
@@ -109,7 +112,7 @@
     <h2 id="overdue-heading" class="h5 mb-3">
         <i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
         {{ 'effectiveness_monitor.section.overdue'|trans({}, 'control') }}
-        <span class="badge bg-danger ms-1">{{ overdueControls|length }}</span>
+        <span class="fa-status-pill fa-status-pill--danger ms-1">{{ overdueControls|length }}</span>
     </h2>
 
     {{ _fa_table.render({
@@ -129,12 +132,12 @@
             cells: [
                 { value: '<code>' ~ row.control.controlId ~ '</code>' },
                 { value: row.control.name|e },
-                { value: '<span class="badge bg-secondary">' ~ (row.control.category ?? '—')|e ~ '</span>' },
-                { value: row.lastChecked ? row.lastChecked|date('d.m.Y') : '<span class="badge bg-danger">' ~ 'effectiveness_monitor.label.never'|trans({}, 'control') ~ '</span>' },
+                { value: '<span class="fa-status-pill fa-status-pill--neutral">' ~ (row.control.category ?? '—')|e ~ '</span>' },
+                { value: row.lastChecked ? row.lastChecked|date('d.m.Y') : '<span class="fa-status-pill fa-status-pill--danger">' ~ 'effectiveness_monitor.label.never'|trans({}, 'control') ~ '</span>' },
                 { value: row.overdueDays ? row.overdueDays ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control') : '—', align: 'right' },
                 { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
-                { value: '<span class="badge bg-' ~ (row.control.implementationStatus == 'implemented' ? 'success' : (row.control.implementationStatus == 'in_progress' ? 'warning' : 'secondary')) ~ '">' ~ (row.control.implementationStatus ?? 'n/a')|e ~ '</span>' },
-                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost" aria-label="' ~ 'effectiveness_monitor.action.view'|trans({}, 'control')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
+                { value: '<span class="fa-status-pill fa-status-pill--' ~ (row.control.implementationStatus == 'implemented' ? 'success' : (row.control.implementationStatus == 'in_progress' ? 'warning' : 'neutral')) ~ '">' ~ (row.control.implementationStatus ?? 'n/a')|e ~ '</span>' },
+                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'effectiveness_monitor.action.view'|trans({}, 'control')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
             ]
         }),
         empty: 'effectiveness_monitor.empty.no_overdue'|trans({}, 'control')
@@ -146,7 +149,7 @@
     <h2 id="due-soon-heading" class="h5 mb-3">
         <i class="fa-icon fa-icon--nav-clock-history text-warning" aria-hidden="true"></i>
         {{ 'effectiveness_monitor.section.due_soon'|trans({}, 'control') }}
-        <span class="badge bg-warning text-dark ms-1">{{ upcomingControls|length }}</span>
+        <span class="fa-status-pill fa-status-pill--warning ms-1">{{ upcomingControls|length }}</span>
     </h2>
 
     {{ _fa_table.render({
@@ -166,7 +169,7 @@
                 { value: row.nextDue|date('d.m.Y') },
                 { value: row.daysUntilDue ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
                 { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
-                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
+                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
             ]
         }),
         empty: 'effectiveness_monitor.empty.no_due_soon'|trans({}, 'control')
@@ -178,7 +181,7 @@
     <summary class="h5 mb-3 cursor-pointer">
         <i class="fa-icon fa-icon--status-ok text-success" aria-hidden="true"></i>
         {{ 'effectiveness_monitor.section.recently_checked'|trans({}, 'control') }}
-        <span class="badge bg-success ms-1">{{ recentlyChecked|length }}</span>
+        <span class="fa-status-pill fa-status-pill--success ms-1">{{ recentlyChecked|length }}</span>
     </summary>
 
     {{ _fa_table.render({
@@ -196,7 +199,7 @@
                 { value: row.control.name|e },
                 { value: row.lastChecked|date('d.m.Y') },
                 { value: row.daysSinceCheck ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
-                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
+                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
             ]
         }),
         empty: 'effectiveness_monitor.empty.no_recent'|trans({}, 'control')

@@ -345,6 +345,10 @@ compliance:
                 open: 'Offen'
                 review: 'Vorschläge prüfen'
                 list: 'Mappings anzeigen'
+                update_pending: 'Noch nicht importiert: %count% neue Vorschläge.'
+                update: 'Vorschläge importieren'
+                update_done: 'Importiert: %count% Vorschläge.'
+                update_failed: 'Import abgebrochen: %errors%'
             action:
                 wizard:
                     title: 'Neues Mapping (Wizard)'
@@ -636,6 +640,9 @@ compliance:
             fulfillment_no_tenant: 'Erfüllungsstatus kann ohne Organisationszuordnung nicht aktualisiert werden.'
             inherited_fulfillment_readonly: 'Vererbter Erfüllungsstatus von der übergeordneten Organisation kann nicht bearbeitet werden.'
         details: 'Anforderungsdetails'
+        inherited_notice:
+            title: 'Von der übergeordneten Organisation übernommen'
+            body: 'Den Erfüllungsstatus pflegt die übergeordnete Organisation, hier ist er nur lesbar.'
         confirm:
             delete: 'Möchten Sie diese Anforderung wirklich löschen?'
         title: Compliance-Anforderung

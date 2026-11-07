@@ -48,7 +48,7 @@
                                     <span class="text-muted ms-2">{{ u.fullName }}</span>
                                 {% endif %}
                                 {% if u.id in already_assigned_ids %}
-                                    <span class="badge bg-secondary ms-2">
+                                    <span class="fa-status-pill fa-status-pill--neutral ms-2">
                                         {{ 'training.mandatory_audience.already_assigned'|trans({}, 'alva') }}
                                     </span>
                                 {% endif %}

@@ -20,15 +20,15 @@
     }) }}
 
     {% set confidence = certificate.extractionConfidence %}
-    <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2" role="status">
-        <span>
-            <i class="fa-icon fa-icon--exclamation-triangle me-1" aria-hidden="true"></i>
-            {{ 'compliance.certificate.confirm_draft.review_notice'|trans({}, 'compliance') }}
+    <div class="fa-alert fa-alert--warning d-flex align-items-center justify-content-between flex-wrap gap-2" role="status">
+        <span class="d-flex align-items-center gap-2">
+            <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+            <span class="fa-alert__message">{{ 'compliance.certificate.confirm_draft.review_notice'|trans({}, 'compliance') }}</span>
         </span>
         {% if confidence is not null %}
             {% set pct = (confidence * 100)|round %}
             {% set tone = pct >= 75 ? 'success' : (pct >= 40 ? 'warning' : 'danger') %}
-            <span class="badge bg-{{ tone }}" data-testid="ocr-confidence">
+            <span class="fa-status-pill fa-status-pill--{{ tone }}" data-testid="ocr-confidence">
                 {{ 'compliance.certificate.confirm_draft.confidence'|trans({}, 'compliance') }}: {{ pct }}%
             </span>
         {% endif %}

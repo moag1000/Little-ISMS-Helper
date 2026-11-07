@@ -51,7 +51,7 @@ export default class extends Controller {
                 const msg = r.status === 403 ? faT('forbidden') : faT('error_status', { '%status%': r.status });
                 window.faToast(msg, 'danger');
                 this.effectiveContextContainerTarget.innerHTML = `
-                    <div class="alert alert-danger small mb-0">${this.escapeHtml(this.loadErrorTextValue)}</div>`;
+                    ${this.alertHtml('danger', 'status-critical', this.escapeHtml(this.loadErrorTextValue))}`;
                 return;
             }
 
@@ -59,10 +59,7 @@ export default class extends Controller {
 
             if (data.error) {
                 this.effectiveContextContainerTarget.innerHTML = `
-                    <div class="alert alert-warning small mb-0">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        ${this.escapeHtml(this.noContextTextValue)}
-                    </div>`;
+                    ${this.alertHtml('warning', 'status-warning', this.escapeHtml(this.noContextTextValue))}`;
                 return;
             }
 
@@ -71,22 +68,18 @@ export default class extends Controller {
             html += `<p class="mb-2"><strong>${this.escapeHtml(this.organizationLabelValue)}:</strong> ${this.escapeHtml(data.context.organizationName)}</p>`;
 
             if (data.context.isInherited) {
-                html += '<div class="alert alert-info small mb-0">';
-                html += '<i class="fa-icon fa-icon--util-arrow-up" aria-hidden="true"></i> ';
-                html += `${this.escapeHtml(this.inheritedFromTextValue)}: `;
-                html += `<a href="/admin/tenants/${data.context.inheritedFrom.id}" class="alert-link">${this.escapeHtml(data.context.inheritedFrom.name)}</a>`;
-                html += '</div>';
+                html += this.alertHtml('info', 'status-info',
+                    `${this.escapeHtml(this.inheritedFromTextValue)}: `
+                    + `<a href="/admin/tenants/${data.context.inheritedFrom.id}">${this.escapeHtml(data.context.inheritedFrom.name)}</a>`);
             } else {
-                html += '<div class="alert alert-success small mb-0">';
-                html += `<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${this.escapeHtml(this.ownContextTextValue)}`;
-                html += '</div>';
+                html += this.alertHtml('success', 'status-ok', this.escapeHtml(this.ownContextTextValue));
             }
 
             html += '</div></div>';
             this.effectiveContextContainerTarget.innerHTML = html;
         } catch (err) {
             this.effectiveContextContainerTarget.innerHTML = `
-                <div class="alert alert-danger small mb-0">${this.escapeHtml(this.loadErrorTextValue)}</div>`;
+                ${this.alertHtml('danger', 'status-critical', this.escapeHtml(this.loadErrorTextValue))}`;
         }
     }
 
@@ -130,7 +123,7 @@ export default class extends Controller {
                 const msg = r.status === 403 ? faT('forbidden') : faT('error_status', { '%status%': r.status });
                 window.faToast(msg, 'danger');
                 this.governanceRulesContainerTarget.innerHTML = `
-                    <div class="alert alert-danger small mb-0">${this.escapeHtml(this.saveErrorTextValue)}</div>`;
+                    ${this.alertHtml('danger', 'status-critical', this.escapeHtml(this.saveErrorTextValue))}`;
                 return;
             }
 
@@ -145,15 +138,15 @@ export default class extends Controller {
             let html = '<div class="list-group list-group-flush">';
             data.rules.forEach(rule => {
                 const badgeColor = rule.governanceModel === 'hierarchical' ? 'primary' :
-                                  (rule.governanceModel === 'shared' ? 'warning' : 'secondary');
+                                  (rule.governanceModel === 'shared' ? 'warning' : 'neutral');
 
                 html += `
                     <div class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <strong>${this.escapeHtml(rule.scope)}</strong>${rule.scopeId ? ': ' + this.escapeHtml(rule.scopeId) : ''}
-                            <br><span class="badge bg-${badgeColor}">${this.escapeHtml(rule.governanceLabel)}</span>
+                            <br><span class="fa-status-pill fa-status-pill--${badgeColor}">${this.escapeHtml(rule.governanceLabel)}</span>
                         </div>
-                        <button class="btn btn-sm btn-danger"
+                        <button class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                 data-action="tenant-governance#deleteRule"
                                 data-rule-id="${rule.id}"
                                 data-rule-scope="${this.escapeHtml(rule.scope)}"
@@ -166,7 +159,7 @@ export default class extends Controller {
             this.governanceRulesContainerTarget.innerHTML = html;
         } catch (err) {
             this.governanceRulesContainerTarget.innerHTML = `
-                <div class="alert alert-danger small mb-0">${this.escapeHtml(this.saveErrorTextValue)}</div>`;
+                ${this.alertHtml('danger', 'status-critical', this.escapeHtml(this.saveErrorTextValue))}`;
         }
     }
 
@@ -262,6 +255,15 @@ export default class extends Controller {
     /**
      * Helper: Escape HTML to prevent XSS
      */
+    /**
+     * Aurora alert markup (same structure as _fa_alert.html.twig). `innerHtml` must be pre-escaped.
+     */
+    alertHtml(tone, icon, innerHtml) {
+        return `<div class="fa-alert fa-alert--${tone}" role="alert">`
+            + `<i class="fa-icon fa-icon--${icon} fa-alert__icon" aria-hidden="true"></i>`
+            + `<div class="fa-alert__body"><p class="fa-alert__message">${innerHtml}</p></div></div>`;
+    }
+
     escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');

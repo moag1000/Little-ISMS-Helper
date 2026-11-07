@@ -146,7 +146,7 @@
                 <i class="fa-icon fa-icon--globe" aria-hidden="true"></i>
                 TIA
                 {% if tias is defined and tias|length > 0 %}
-                    <span class="badge bg-secondary ms-1">{{ tias|length }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm ms-1">{{ tias|length }}</span>
                 {% endif %}
             </button>
         </li>
@@ -336,18 +336,18 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     {# ── UX tooltip: what is a TIA? ────────────────────────────────────── #}
-                    <div class="alert alert-info d-flex align-items-start gap-2 mb-3" role="note">
-                        <i class="fa-icon fa-icon--ui-info-circle flex-shrink-0 mt-1" aria-hidden="true"></i>
-                        <div>
-                            <strong>{{ 'tia.help.concept_title'|trans({}, 'tia') }}</strong>
-                            {{ 'tia.help.concept_body'|trans({}, 'tia') }}
-                            <br><small class="text-muted">{{ 'tia.help.norm_ref'|trans({}, 'tia') }}</small>
+                    <div class="fa-alert fa-alert--info mb-3" role="note">
+                        <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                        <div class="fa-alert__body">
+                            <div class="fa-alert__title">{{ 'tia.help.concept_title'|trans({}, 'tia') }}</div>
+                            <p class="fa-alert__message">{{ 'tia.help.concept_body'|trans({}, 'tia') }}
+                                <br><small class="text-muted">{{ 'tia.help.norm_ref'|trans({}, 'tia') }}</small></p>
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="h5 mb-0">{{ 'processing_activity.section.tia'|trans({}, 'privacy') }}</h2>
-                        <a href="{{ path('app_tia_new', {paId: processing_activity.id}) }}" class="btn btn-sm btn-primary">
+                        <a href="{{ path('app_tia_new', {paId: processing_activity.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--plus" aria-hidden="true"></i>
                             {{ 'tia.action.new'|trans({}, 'tia') }}
                         </a>
@@ -395,7 +395,7 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <a href="{{ path('app_tia_show', {paId: processing_activity.id, id: tia.id}) }}" class="btn btn-sm btn-ghost" title="{{ 'tia.action.view'|trans({}, 'tia') }}">
+                                            <a href="{{ path('app_tia_show', {paId: processing_activity.id, id: tia.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'tia.action.view'|trans({}, 'tia') }}">
                                                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                             </a>
                                         </td>

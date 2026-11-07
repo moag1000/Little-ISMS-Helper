@@ -83,11 +83,11 @@
         ? (field.vars.label.label|default(field.vars.name)|trans({}, trans_domain))
         : (field.vars.label ? (field.vars.label|trans({}, trans_domain)) : field.vars.name) %}
     <button type="button"
-            class="btn btn-link btn-sm p-0 mt-1 fairy-help-drawer-trigger"
+            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0 mt-1 fairy-help-drawer-trigger"
             data-action="click->help-drawer#open"
             data-help-drawer-title-param="{{ field_label_text }}"
             data-help-drawer-body-param="{{ drawer_body }}"
             aria-label="{{ 'common.more_info_aria'|trans({'%field%': field_label_text}, 'messages') }}">
-        <i class="fa-icon fa-icon--status-info me-1" aria-hidden="true"></i>{{ 'common.more_info'|trans({}, 'messages') }}
+        {{ 'common.more_info'|trans({}, 'messages') }}
     </button>
 {% endif %}
