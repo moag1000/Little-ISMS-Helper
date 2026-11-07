@@ -10,14 +10,17 @@ use App\Entity\Tenant;
 use App\EventListener\AutoReactionCorrectiveActionListener;
 use App\Repository\SystemSettingsRepository;
 use App\Service\AutoReactionService;
+use App\Doctrine\PostFlushWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * V3 W2-WS-7 — Severity-based CorrectiveAction due-days resolver.
@@ -27,6 +30,7 @@ class AutoReactionCorrectiveActionSeverityTest extends TestCase
 {
     private MockObject $reactions;
     private MockObject $logger;
+    private PostFlushWriter $writer;
     private MockObject $settings;
     private AutoReactionCorrectiveActionListener $listener;
 
@@ -34,10 +38,12 @@ class AutoReactionCorrectiveActionSeverityTest extends TestCase
     {
         $this->reactions = $this->createMock(AutoReactionService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->writer = new PostFlushWriter(new NullLogger());
         $this->settings = $this->createMock(SystemSettingsRepository::class);
         $this->listener = new AutoReactionCorrectiveActionListener(
             $this->reactions,
             $this->logger,
+            $this->writer,
             null,
             null,
             $this->settings,
@@ -56,6 +62,14 @@ class AutoReactionCorrectiveActionSeverityTest extends TestCase
         $em = $this->mockEm($persisted);
         $args = new PostPersistEventArgs($finding, $em);
         $this->listener->postPersist($finding, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $cas = array_values(array_filter($persisted, fn ($e) => $e instanceof CorrectiveAction));
         $this->assertCount(1, $cas);
@@ -82,6 +96,14 @@ class AutoReactionCorrectiveActionSeverityTest extends TestCase
         $args = new PostPersistEventArgs($finding, $em);
         $this->listener->postPersist($finding, $args);
 
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
+
         $cas = array_values(array_filter($persisted, fn ($e) => $e instanceof CorrectiveAction));
         $this->assertCount(1, $cas);
         $diff = $this->daysBetweenNowAnd($cas[0]->getPlannedCompletionDate());
@@ -101,6 +123,14 @@ class AutoReactionCorrectiveActionSeverityTest extends TestCase
         $em = $this->mockEm($persisted);
         $args = new PostPersistEventArgs($finding, $em);
         $this->listener->postPersist($finding, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $cas = array_values(array_filter($persisted, fn ($e) => $e instanceof CorrectiveAction));
         $this->assertCount(1, $cas);
@@ -151,7 +181,7 @@ class AutoReactionCorrectiveActionSeverityTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
-        $em->method('flush');
+        $em->expects($this->once())->method('flush');
         return $em;
     }
 }

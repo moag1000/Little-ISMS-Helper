@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Doctrine\PostFlushWriter;
 use App\Entity\Risk;
 use App\Entity\Vulnerability;
 use App\Repository\UserRepository;
@@ -26,6 +27,8 @@ use Psr\Log\LoggerInterface;
  * title-string match, which was brittle against title renames and false-positives
  * with similarly-named vulnerabilities.
  *
+ * Derived rows are written after the flush via PostFlushWriter (no flush inside the listener).
+ *
  * Toggle: AutoReactionService::KEY_RISK_SKELETON (default true).
  */
 #[AsEntityListener(event: Events::postPersist, entity: Vulnerability::class)]
@@ -35,6 +38,7 @@ final class AutoReactionRiskSkeletonListener
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
+        private readonly PostFlushWriter $postFlushWriter,
         private readonly ?EmailNotificationService $emailNotifier = null,
         private readonly ?UserRepository $userRepository = null,
     ) {
@@ -88,6 +92,7 @@ final class AutoReactionRiskSkeletonListener
             $risk = new Risk();
             $risk->setTenant(method_exists($vuln, 'getTenant') ? $vuln->getTenant() : null);
             $risk->setTitle($expectedTitle);
+            $risk->setCategory('security'); // NOT NULL; a vulnerability is an information-security risk
             if (method_exists($risk, 'setDescription')) {
                 $risk->setDescription(sprintf(
                     'Auto-generated risk skeleton from Vulnerability %s (CVSS %.1f). Description: %s',
@@ -105,14 +110,12 @@ final class AutoReactionRiskSkeletonListener
             // V4-LB-3: Link Risk→Vulnerability via FK for reliable future idempotency checks.
             $risk->setLinkedVulnerability($vuln);
 
-            $em->persist($risk);
-            $em->flush();
+            $this->postFlushWriter->persist($risk);
 
             $this->logger->info('Auto-Risk-Skeleton created for vulnerability', [
                 'vulnerability_id' => $vuln->getId(),
                 'cve' => $cve,
                 'cvss' => $cvss,
-                'risk_id' => $risk->getId(),
             ]);
 
             // (ISO 27001 Cl.7.4): Notify Risk-Owner candidates so the
@@ -161,7 +164,6 @@ final class AutoReactionRiskSkeletonListener
             );
         } catch (\Throwable $e) {
             $this->logger->warning('Auto-Risk-Skeleton notification failed', [
-                'risk_id' => $risk->getId(),
                 'error' => $e->getMessage(),
             ]);
         }

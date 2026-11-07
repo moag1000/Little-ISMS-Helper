@@ -10,6 +10,7 @@ use App\Repository\TenantPolicySettingRepository;
 use App\Service\AuditLogger;
 use App\Service\PolicyWizard\KonzernPushDownService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Tests\Stub\PassThroughHoldingScope;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -159,6 +160,7 @@ final class KonzernPushDownServiceTest extends TestCase
             entityManager: $em,
             settingRepository: $repo,
             auditLogger: $audit,
+            holdingScope: new PassThroughHoldingScope(),
         );
     }
 

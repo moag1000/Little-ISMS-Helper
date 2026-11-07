@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Doctrine\PostFlushWriter;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
 use App\Entity\User;
@@ -42,6 +43,8 @@ use Psr\Log\LoggerInterface;
  * Idempotent: a pre-existing TrainingParticipation row for
  * (training, user) is left untouched (its current status is preserved).
  *
+ * Derived rows are written after the flush via PostFlushWriter (no flush inside the listener).
+ *
  * Toggle: {@see AutoReactionService::KEY_TRAINING_ASSIGN} — shared with
  * the existing User-direction listener (operationally the two are one
  * Awareness feature; flipping the toggle off must disable both
@@ -54,6 +57,7 @@ final class AutoReactionTrainingAudienceAssignListener
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
+        private readonly PostFlushWriter $postFlushWriter,
         private readonly ?EmailNotificationService $emailNotifier = null,
     ) {
     }
@@ -117,12 +121,14 @@ final class AutoReactionTrainingAudienceAssignListener
                 $participation->setStatus(TrainingParticipation::STATUS_PENDING);
                 $participation->setAssignmentSource('auto:mandatory_assign');
 
-                $em->persist($participation);
+                $key = 'training_participation:' . $training->getId() . ':' . $user->getId();
+                if (!$this->postFlushWriter->persistOnce($key, $participation)) {
+                    continue; // the other direction's listener queued it in this flush
+                }
                 $created++;
                 $assignedUsers[] = $user;
             }
             if ($created > 0) {
-                $em->flush();
                 $this->logger->info(
                     'Auto-assigned mandatory training to existing tenant users',
                     [

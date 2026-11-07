@@ -8,6 +8,7 @@ use App\Entity\Tenant;
 use App\Entity\TenantPolicySetting;
 use App\Repository\TenantPolicySettingRepository;
 use App\Service\AuditLogger;
+use App\Service\Group\HoldingScope;
 use App\Service\TenantSettingResolver\OverrideMode;
 use App\Service\TenantSettingResolver\TenantPolicySettingProvider;
 use DateTimeImmutable;
@@ -36,6 +37,7 @@ final class KonzernPushDownService
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantPolicySettingRepository $settingRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly HoldingScope $holdingScope,
         private readonly LoggerInterface $logger = new NullLogger(),
     ) {
     }
@@ -73,7 +75,10 @@ final class KonzernPushDownService
                 continue;
             }
 
-            $setting = $this->settingRepository->findOneByTenantAndKey($descendant, $settingKey);
+            // The request's tenant filter is armed with the holding: read the subsidiary's row explicitly.
+            $setting = $this->holdingScope->read(
+                fn () => $this->settingRepository->findOneByTenantAndKey($descendant, $settingKey),
+            );
             if (!$setting instanceof TenantPolicySetting) {
                 continue;
             }

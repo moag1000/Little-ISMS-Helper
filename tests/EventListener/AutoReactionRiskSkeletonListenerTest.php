@@ -9,14 +9,17 @@ use App\Entity\Tenant;
 use App\Entity\Vulnerability;
 use App\EventListener\AutoReactionRiskSkeletonListener;
 use App\Service\AutoReactionService;
+use App\Doctrine\PostFlushWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * V3 W2-M5 / V4-LB-3 — AutoReactionRiskSkeletonListener tests.
@@ -29,13 +32,15 @@ class AutoReactionRiskSkeletonListenerTest extends TestCase
 {
     private MockObject $reactions;
     private MockObject $logger;
+    private PostFlushWriter $writer;
     private AutoReactionRiskSkeletonListener $listener;
 
     protected function setUp(): void
     {
         $this->reactions = $this->createMock(AutoReactionService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->listener = new AutoReactionRiskSkeletonListener($this->reactions, $this->logger);
+        $this->writer = new PostFlushWriter(new NullLogger());
+        $this->listener = new AutoReactionRiskSkeletonListener($this->reactions, $this->logger, $this->writer);
     }
 
     #[Test]
@@ -81,10 +86,18 @@ class AutoReactionRiskSkeletonListenerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
-        $em->method('flush');
+        $em->expects($this->once())->method('flush');
 
         $args = new PostPersistEventArgs($vuln, $em);
         $this->listener->postPersist($vuln, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $riskInstances = array_values(array_filter(
             $persisted,
@@ -116,10 +129,18 @@ class AutoReactionRiskSkeletonListenerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
-        $em->method('flush');
+        $em->expects($this->once())->method('flush');
 
         $args = new PostPersistEventArgs($vuln, $em);
         $this->listener->postPersist($vuln, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $riskInstances = array_values(array_filter(
             $persisted,
@@ -206,13 +227,21 @@ class AutoReactionRiskSkeletonListenerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted): void { $persisted[] = $e; });
-        $em->method('flush');
+        $em->expects($this->once())->method('flush');
 
         $args1 = new PostPersistEventArgs($vuln1, $em);
         $this->listener->postPersist($vuln1, $args1);
 
         $args2 = new PostPersistEventArgs($vuln2, $em);
         $this->listener->postPersist($vuln2, $args2);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $riskInstances = array_values(array_filter($persisted, static fn($e) => $e instanceof Risk));
         $this->assertCount(2, $riskInstances, 'Each vulnerability must produce its own skeleton — no title-prefix false-positive.');

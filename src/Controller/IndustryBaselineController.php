@@ -145,6 +145,7 @@ final class IndustryBaselineController extends AbstractController
      * Intended for governance baselines (ISO 27001 clauses, top-level
      * policies) that every tochter should share as a starting point.
      */
+    #[IsGranted('ROLE_ADMIN')] // writes into every subsidiary; a holding admin administers its subtree
     #[Route('/{code}/apply-recursive', name: 'apply_recursive', methods: ['POST'], requirements: ['code' => '[A-Za-z0-9_\-]+'])]
     public function applyRecursive(string $code, Request $request): Response
     {

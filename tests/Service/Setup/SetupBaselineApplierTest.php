@@ -16,6 +16,7 @@ use App\Service\AuditLogger;
 use App\Service\IndustryBaselineApplier;
 use App\Service\Setup\SetupBaselineApplier;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Tests\Stub\PassThroughHoldingScope;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -118,6 +119,7 @@ final class SetupBaselineApplierTest extends TestCase
             $this->createMock(ControlRepository::class),
             $this->createMock(ComplianceFrameworkRepository::class),
             $this->createMock(AuditLogger::class),
+            new PassThroughHoldingScope(),
         );
 
         return new SetupBaselineApplier(

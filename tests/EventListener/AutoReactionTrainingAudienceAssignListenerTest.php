@@ -10,8 +10,10 @@ use App\Entity\TrainingParticipation;
 use App\Entity\User;
 use App\EventListener\AutoReactionTrainingAudienceAssignListener;
 use App\Service\AutoReactionService;
+use App\Doctrine\PostFlushWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -19,6 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Junior-ISB-Audit C3-01 (S14 Cluster C, 2026-05-23) —
@@ -38,15 +41,18 @@ class AutoReactionTrainingAudienceAssignListenerTest extends TestCase
 {
     private MockObject $reactions;
     private MockObject $logger;
+    private PostFlushWriter $writer;
     private AutoReactionTrainingAudienceAssignListener $listener;
 
     protected function setUp(): void
     {
         $this->reactions = $this->createMock(AutoReactionService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->writer = new PostFlushWriter(new NullLogger());
         $this->listener = new AutoReactionTrainingAudienceAssignListener(
             $this->reactions,
             $this->logger,
+            $this->writer,
         );
     }
 
@@ -148,6 +154,11 @@ class AutoReactionTrainingAudienceAssignListenerTest extends TestCase
 
         $args = new PostUpdateEventArgs($training, $em);
         $this->listener->postUpdate($training, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+        self::assertNull($persisted);
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
 
         self::assertInstanceOf(TrainingParticipation::class, $persisted);
         /** @var TrainingParticipation $persisted */
