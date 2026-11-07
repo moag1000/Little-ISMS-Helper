@@ -9,6 +9,7 @@ use App\Entity\CorrectiveAction;
 use App\Entity\Suggestion;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\AuditFindingStatus;
 use App\Repository\AuditFindingRepository;
 use App\Repository\SuggestionRepository;
 use App\Service\Ai\AiAssistant;
@@ -55,10 +56,23 @@ final class AiCorrectiveActionKind extends AbstractAiKind
     protected function candidates(Tenant $tenant): iterable
     {
         foreach ($this->findings->findOpenByTenant($tenant) as $finding) {
-            if ($finding->getCorrectiveActions()->count() === 0 && mb_strlen((string) $finding->getDescription()) >= 20) {
+            if ($this->isCandidate($finding)) {
                 yield $finding;
             }
         }
+    }
+
+    public function subjectClasses(): array
+    {
+        return [AuditFinding::class];
+    }
+
+    protected function isCandidate(object $record): bool
+    {
+        return $record instanceof AuditFinding
+            && !in_array($record->getStatus(), AuditFindingStatus::doneValues(), true)
+            && $record->getCorrectiveActions()->count() === 0
+            && mb_strlen((string) $record->getDescription()) >= 20;
     }
 
     protected function instructions(): string

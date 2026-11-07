@@ -171,7 +171,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 | Bereich | Neuerung |
 |---|---|
-| **Role-Scope-Architektur** | `TenantScopedAdminVoter` -- `ROLE_ADMIN` ist auf den eigenen Tenant beschraenkt, `ROLE_SUPER_ADMIN` tenant-uebergreifend; Persona-Rollen (`ROLE_CISO`, `ROLE_ISB`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`, `ROLE_BCM_OFFICER`, Leitung `ROLE_TOP_MGMT`) gaten je eigenes Dashboard unter `/dashboards/<persona>`; ein `PersonaResolver` entscheidet Landeseite, Tour und Berichts-Downloads |
+| **Role-Scope-Architektur** | `TenantScopedAdminVoter` -- `ROLE_ADMIN` ist auf den eigenen Tenant beschraenkt, `ROLE_SUPER_ADMIN` tenant-uebergreifend; Persona-Rollen (`ROLE_CISO`, `ROLE_ISB`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`, `ROLE_BCM_OFFICER`, Leitung `ROLE_TOP_MGMT`, von `ROLE_ADMIN` nicht geerbt) gaten je eigenes Dashboard unter `/dashboards/<persona>`; ein `PersonaResolver` entscheidet Landeseite, Tour und Berichts-Downloads |
 | **Lifecycle-Foundation (Symfony Workflow)** | `LifecycleService::transition()`-Facade als Pflicht-Einstieg; produktive Workflows u.a. `document`, `processing_activity`, `isms_objective`, `policy_template`, `asset` (Definitionen in `config/workflows/`); Tenant-Overrides via `/admin/lifecycle-overrides` |
 | **Status-Enums** | Erste-Klasse-Status-Lifecycle: `DocumentStatus`, `IncidentStatus`, `RiskStatus`, `DataBreachStatus`, etc.; Server-erzwungene 5-Transition-Matrix; bulk-status-change-Support via canonical `_bulk_action_bar.html.twig` |
 | **YAML-Workflows** | Regulatorische Workflows als YAML-Source-of-Truth (`config/workflows/regulatory/*.yaml`) -- GDPR Data Breach, Incident Response, Risk Treatment, DPIA, DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC-Plan Activation, Document Review, Incident Post-Mortem; Event-getriebene Auto-Progression via Doctrine-Listener |
@@ -301,7 +301,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **AlvaHint-Engine** -- Kontextuelle Hilfetexte mit Rules-Engine (Tier-System, Modul-/Rollen-Gating, Render-/Dismiss-Telemetrie)
 - **Activity-Feed** -- Chronologische Event-Uebersicht aus allen Modulen; `?scope=compliance` filtert auf Compliance-relevante Events
 - **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
-- **Vorschlags-Queue** -- Ableitungen (Schutzbedarf, Restrisiko, Wirksamkeit, CVSS→Risiko, Risiko nach Vorfall), Vererbung, Import-Treffer und KI-Vorschläge (lokales Modell oder Mistral-API, personenbezogene Daten standardmäßig ersetzt) in einer Liste; Annehmen/Ablehnen mit Begründung und Audit-Log, nächtlich vorbereitet ([Anleitung](docs/user-guide/VORSCHLAEGE.md))
+- **Vorschlags-Queue** -- Ableitungen (Schutzbedarf, Restrisiko, Wirksamkeit, CVSS→Risiko, Risiko nach Vorfall), Vererbung, Import-Treffer und KI-Vorschläge (lokales Modell oder Mistral-API, personenbezogene Daten standardmäßig ersetzt) in einer Liste; Annehmen/Ablehnen mit Begründung und Audit-Log, nächtlich vorbereitet oder per „Entwurf vorschlagen“ am Datensatz (Meldetext NIS-2/DORA, Meldung Art. 33, Antwort an Betroffene, Zusammenfassung für die Leitung, Abweichungstext, Fragebogenauswertung, SoA-Begründung aus Verknüpfungen) ([Anleitung](docs/user-guide/VORSCHLAEGE.md))
 
 ### Bedienung: einheitlich, schnell, sinnvoll
 

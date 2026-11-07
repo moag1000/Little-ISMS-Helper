@@ -259,7 +259,7 @@ user:
         user: 'Basis-Zugriff auf ISMS-Module. Kann Daten einsehen und eigene Aufgaben bearbeiten.'
         auditor: 'Erweiterte Leserechte für Audits und Reviews. Kann Audit-Ergebnisse dokumentieren und Compliance prüfen.'
         manager: 'Vollzugriff auf ISMS-Daten. Kann Reports erstellen, Workflows genehmigen und Compliance-Wizards nutzen. KEIN Zugriff auf Benutzerverwaltung.'
-        admin: 'Organisations-Administrator. Verwaltet Benutzer, Rollen und Organisations-Einstellungen. Vollzugriff auf alle ISMS-Funktionen innerhalb seiner Organisation.'
+        admin: 'Organisations-Administrator. Verwaltet Benutzer, Rollen und Organisations-Einstellungen. Vollzugriff auf alle ISMS-Funktionen innerhalb seiner Organisation, außer den Billigungen der Leitung (dafür die Rolle Leitung zusätzlich zuweisen).'
         super_admin: 'System-Administrator. Organisationsübergreifender Zugriff, kann Benutzer wechseln (impersonieren) und globale Einstellungen verwalten.'
         ciso: 'Chief Information Security Officer. Strategische Sicht auf Compliance, Risiko-Posture und Genehmigungs-Pipeline. Schaltet das CISO- und das Leitungs-Dashboard frei.'
         risk_manager: 'Risiko-Manager. Operative Sicht auf Risiko-Pipeline, Risk-Appetite-Monitoring und Mitigation-Effektivität. Schaltet das Risk-Manager-Dashboard frei.'
@@ -267,7 +267,11 @@ user:
         compliance_manager: 'Head of GRC / Compliance-Manager. Framework-Coverage, Cross-Mapping, Audit-Plan und Findings im Blick. Schaltet das Compliance-Manager-Dashboard frei.'
         isb: 'Operativer Informationssicherheitsbeauftragter: Controls, Vorfälle, Audits. Schaltet das ISB-Dashboard frei.'
         bcm_officer: 'Business-Continuity-Manager: BC-Pläne, Krisenstab, Übungen, Geschäftsprozesse. Schaltet das BCM-Dashboard frei.'
-        top_mgmt: 'Geschäftsleitung (ISO 27001 5.1, NIS-2 Art. 20): Leitungs-Dashboard, One-Pager und Berichte, liest alles, ändert nichts operativ.'
+        top_mgmt: 'Geschäftsleitung (ISO 27001 5.1, 9.3, NIS-2 Art. 20): billigt Leitungsentscheidungen, Risikoakzeptanzen und die Managementbewertung, liest alles, ändert nichts operativ. Admins haben diese Rolle nicht automatisch.'
+    top_management_hint:
+        title: 'Wer ist bei euch die Leitung?'
+        body: 'Billigungen der Leitung (Entscheidungen, hohe Risikoakzeptanzen, Abschluss der Managementbewertung) gehen nur noch mit der Rolle „Leitung“. Admins erben sie nicht mehr, und in eurer Organisation hat sie noch niemand. Weise sie der Geschäftsführung zu, auch dir selbst, wenn du dazugehörst.'
+        cta: 'Rolle Leitung zuweisen'
     role_hierarchy:
         title: 'Rollen-Hierarchie'
         description: 'Jede Rolle erbt automatisch die Berechtigungen der darunterliegenden Rollen.'

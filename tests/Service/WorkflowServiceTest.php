@@ -463,6 +463,46 @@ class WorkflowServiceTest extends TestCase
         self::assertSame([7], $eligible->userIds);
     }
 
+    /**
+     * ISO 27001 5.1 / NIS-2 Art. 20: a step reserved for top management is
+     * decided by whoever holds ROLE_TOP_MGMT — the admin override does not reach it.
+     */
+    #[Test]
+    public function adminCannotApproveAStepReservedForTopManagement(): void
+    {
+        $admin = $this->createUser(3, 'Ada', 'Admin');
+        $step = $this->createWorkflowStep(9, 'Leitung billigt', 5);
+        $step->method('getApproverRole')->willReturn('ROLE_TOP_MGMT');
+        $step->method('getApproverUsers')->willReturn([]);
+        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_ADMIN');
+
+        self::assertFalse($this->service->canUserApprove($admin, $step));
+    }
+
+    #[Test]
+    public function topManagementApprovesItsOwnStep(): void
+    {
+        $board = $this->createUser(4, 'Bo', 'Board');
+        $step = $this->createWorkflowStep(9, 'Leitung billigt', 5);
+        $step->method('getApproverRole')->willReturn('ROLE_TOP_MGMT');
+        $step->method('getApproverUsers')->willReturn([]);
+        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_TOP_MGMT');
+
+        self::assertTrue($this->service->canUserApprove($board, $step));
+    }
+
+    #[Test]
+    public function adminStillApprovesOrdinarySteps(): void
+    {
+        $admin = $this->createUser(3, 'Ada', 'Admin');
+        $step = $this->createWorkflowStep(10, 'DPO sign-off', 5);
+        $step->method('getApproverRole')->willReturn('ROLE_DPO');
+        $step->method('getApproverUsers')->willReturn([]);
+        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_ADMIN');
+
+        self::assertTrue($this->service->canUserApprove($admin, $step));
+    }
+
     private function createUser(int $id, string $firstName, string $lastName): MockObject
     {
         $user = $this->createMock(User::class);

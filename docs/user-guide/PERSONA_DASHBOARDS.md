@@ -18,10 +18,10 @@ im Menue "Mein Cockpit" erscheinen und welche Berichte jemand selbst laden darf.
 |---|---|---|---|---|
 | CISO | `ROLE_CISO` | CISO-Dashboard | CISO | alle |
 | ISB | `ROLE_ISB` | ISB-Dashboard | ISB | alle |
-| Risk-Manager | `ROLE_RISK_MANAGER` | Risk-Manager-Dashboard | ISB | alle |
+| Risk-Manager | `ROLE_RISK_MANAGER` | Risk-Manager-Dashboard | Risikomanagement | alle |
 | Compliance-Manager | `ROLE_COMPLIANCE_MANAGER` | CM-Dashboard | CM | alle |
-| DSB | `ROLE_DPO` | DSB-Dashboard (ohne Modul Datenschutz: Standard-Dashboard) | CM | alle |
-| BCM-Beauftragter | `ROLE_BCM_OFFICER`, `ROLE_GROUP_BCM_OFFICER` | BCM-Dashboard (ohne Modul BCM: Standard-Dashboard) | ISB | alle |
+| DSB | `ROLE_DPO` | DSB-Dashboard (ohne Modul Datenschutz: Standard-Dashboard) | Datenschutz | alle |
+| BCM-Beauftragter | `ROLE_BCM_OFFICER`, `ROLE_GROUP_BCM_OFFICER` | BCM-Dashboard (ohne Modul BCM: Standard-Dashboard) | BCM | alle |
 | Leitung | `ROLE_TOP_MGMT` | Leitungs-Dashboard | Leitung | One-Pager, Managementbewertung, Quartalstrend, Zertifizierungsreife |
 | Administrator ohne Persona-Rolle | `ROLE_ADMIN` | Standard-Dashboard | CISO | alle |
 | Konzern-ISB | `ROLE_GROUP_CISO` | Standard-Dashboard | Leitung | Audit- und Leitungsberichte |
@@ -29,13 +29,23 @@ im Menue "Mein Cockpit" erscheinen und welche Berichte jemand selbst laden darf.
 | Manager | `ROLE_MANAGER` | Standard-Dashboard | ISB | alle |
 | Auditor | `ROLE_AUDITOR` | My Day | Auditor | wie Konzern-Auditor |
 | Fachbereichsleitung / Risk-Owner | `ROLE_FUNCTION_OWNER` | My Day | Risk-Owner | keine |
-| Nutzer | `ROLE_USER` | My Day | Einstieg | keine |
+| Nutzer, der ein Risiko besitzt | `ROLE_USER` (Eigentümer eines Risikos, als Login oder verknüpfte Person) | My Day | Risk-Owner | keine |
+| Nutzer | `ROLE_USER` | My Day | Einstieg (mit Stopp „nächstes Control“) | keine |
 
 Regeln:
 
 - **Zugewiesene Rolle vor Rollenhierarchie.** Wer `ROLE_ADMIN` und `ROLE_DPO`
   hat, landet als DSB. Ein Administrator ohne Persona-Rolle landet nicht auf dem
-  CISO-Dashboard, darf es aber oeffnen (die Hierarchie gibt Admins jede Persona).
+  CISO-Dashboard, darf es aber oeffnen (die Hierarchie gibt Admins jede
+  operative Persona). **Ausnahme Leitung:** `ROLE_ADMIN` erbt `ROLE_TOP_MGMT`
+  nicht (seit 2026-11). Billigungen der Leitung (Leitungsentscheidungen,
+  Risikoakzeptanz über der Schwelle, Abschluss der Managementbewertung,
+  Workflow-Schritte mit `approver_role: ROLE_TOP_MGMT`) gehen nur mit der
+  zugewiesenen Rolle Leitung — ISO 27001 5.1 verlangt die oberste Leitung.
+  Solange in einer Organisation niemand die Rolle hat, sehen Admins auf dem
+  Dashboard und in der Benutzerverwaltung einen Hinweis mit Link zum Zuweisen.
+- **Kontext und Ziele pflegen ISB und CISO** (ISO 27001 4.1–4.3, 6.2), nicht nur
+  der Admin: ein Voter-Attribut `ISMS_STEERING_EDIT` (`IsmsSteeringVoter`).
 - **Rechte folgen der Rollenhierarchie.** Jede Persona-Rolle erbt `ROLE_MANAGER`;
   ein ISB sieht in My Day deshalb Pannen, Vorfaelle und Freigaben wie ein Manager.
 - **Leitung liest, aendert nichts operativ** (`ROLE_TOP_MGMT` erbt `ROLE_AUDITOR`).
@@ -49,6 +59,16 @@ Regeln:
 
 Rollen vergibt der Administrator unter Administration → Benutzer → Bearbeiten →
 Systemrollen.
+
+**Was jedes Persona-Dashboard zeigt (gleiche Bausteine):**
+
+- **„Was bei dir ansteht“** — die offenen Pflichten der Person aus allen
+  Fristenquellen (`ObligationInbox`, Twig `my_obligations()`), dieselbe Liste wie
+  Mein Tag; ersetzt die frühere eigene Freigabe-Abfrage (ISB, BCM, Auditor).
+- **Downloads** — die Berichte, die die Persona laden darf
+  (`dashboards/_report_downloads.html.twig`, geprüft über `ReportAccessVoter`).
+- **Kennzahlen** nur aus dem `KpiCatalog` (BCM: BIA-Abdeckung, kritische
+  Prozesse, aktive Pläne, Übungen dieses Jahres).
 
 ---
 

@@ -165,7 +165,8 @@ final class Nis2MusExportService
 
     private function shortDescription(Incident $incident): ?string
     {
-        $description = $incident->getDescription();
+        // The report text the organisation wrote or accepted wins over the raw description.
+        $description = $incident->getReportSummary() ?: $incident->getDescription();
         if ($description === null) {
             return null;
         }

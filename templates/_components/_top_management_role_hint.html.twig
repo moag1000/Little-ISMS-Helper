@@ -1,0 +1,25 @@
+{#
+ # One-time hint for admins: approvals reserved for top management (ISO 27001
+ # 5.1, 9.3; NIS-2 Art. 20) need the assigned Leitung role — admins no longer
+ # inherit it. Shown while nobody in the organisation holds ROLE_TOP_MGMT and
+ # the admin has not dismissed it; disappears on its own once the role is assigned.
+ #
+ # Params: dismissable (bool, default true) — false on the user list, where the role is assigned.
+ #}
+{% set _tm_dismissable = dismissable ?? true %}
+{% if top_management_unassigned() %}
+    {% from '_components/_fa_onboarding_banner.html.twig' import fa_onboarding_banner %}
+    {% set _tm_dismissed = app.user.mappingOnboardingState.dismissed_banners.top_management_role is defined
+        or app.session.get('onboarding_banner_dismissed_top_management_role') %}
+    {% if not _tm_dismissable or not _tm_dismissed %}
+        {{ fa_onboarding_banner({
+            mood: 'thinking',
+            title: 'user.top_management_hint.title'|trans({}, 'user'),
+            body: 'user.top_management_hint.body'|trans({}, 'user'),
+            ctas: _tm_dismissable
+                ? [{ label: 'user.top_management_hint.cta'|trans({}, 'user'), href: path('user_management_index'), variant: 'primary' }]
+                : [],
+            dismissKey: _tm_dismissable ? 'top_management_role' : null
+        }) }}
+    {% endif %}
+{% endif %}

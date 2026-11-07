@@ -12,7 +12,7 @@ den Datensatz. Das ist der Nachweis für ISO 27001 5.1, 6.1.2 a, 6.1.3 d/f,
 | Wer | Tut |
 |---|---|
 | CISO / ISB (`ROLE_MANAGER`) | legt eine Vorlage vor; sie ist aus den Daten vorbefüllt |
-| Leitung (`ROLE_TOP_MGMT`, Admin erbt sie) | billigt oder lehnt ab, im Entscheidungsdialog |
+| Leitung (`ROLE_TOP_MGMT`, ausdrücklich zugewiesen; Admins erben sie nicht) | billigt oder lehnt ab, im Entscheidungsdialog |
 | Auditor | liest alles, lädt die Managementbewertung als PDF |
 
 ## Vorlagen

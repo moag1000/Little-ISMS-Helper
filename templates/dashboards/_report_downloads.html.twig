@@ -1,0 +1,25 @@
+{#
+ # Downloads this persona may take (ReportAccessVoter, table in the Persona enum):
+ # auditors get the audit package, top management the board reports, operational
+ # personas all of them. Renders nothing when the user may download none.
+ #}
+{% set _reports = [
+    { attr: 'REPORT_CERTIFICATION_BUNDLE', key: 'certification_bundle', route: 'app_certification_bundle_index' },
+    { attr: 'REPORT_CERTIFICATION_READINESS', key: 'certification_readiness', route: 'app_management_reports_cert_readiness' },
+    { attr: 'REPORT_EVIDENCE_PACKAGE', key: 'evidence_package', route: 'app_management_reports_evidence_package' },
+    { attr: 'REPORT_REVIEW_OUTPUT', key: 'review_output', route: 'app_management_reports_review_output_pdf' },
+    { attr: 'REPORT_QUARTERLY_TREND', key: 'quarterly_trend', route: 'app_management_reports_quarterly_trend' },
+    { attr: 'REPORT_BOARD_ONE_PAGER', key: 'board_one_pager', route: 'app_reports_board_one_pager_pdf' }
+]|filter(r => is_granted(r.attr)) %}
+{% if _reports|length > 0 %}
+<section class="fa-section mb-4 mt-4" id="report-downloads">
+    <div class="fa-section__header">
+        <h2 class="fa-section__title">{{ 'dashboards.reports.title'|trans({}, 'dashboards') }}</h2>
+    </div>
+    <div class="fa-section__body d-flex flex-wrap gap-2">
+        {% for r in _reports %}
+            <a href="{{ path(r.route) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-turbo="false">{{ ('dashboards.reports.' ~ r.key)|trans({}, 'dashboards') }}</a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}

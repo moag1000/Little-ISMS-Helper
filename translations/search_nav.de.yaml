@@ -168,6 +168,12 @@ search_nav:
     admin_tenant_compliance_settings_current:
         label: 'Compliance-Einstellungen'
         description: 'Compliance-Frameworks aktivieren: ISO 27001, TISAX, DORA, NIS2, BSI'
+    app_context_index:
+        label: 'Kontext der Organisation'
+        description: 'Interne und externe Themen, Anwendungsbereich und Schnittstellen (ISO 27001 4.1–4.3)'
+    app_objective_index:
+        label: 'Informationssicherheitsziele'
+        description: 'Ziele mit Messgröße, Verantwortlichem und Fortschritt (ISO 27001 6.2)'
     register_overview:
         label: 'Register'
         description: 'Alle Register nach ISO 27001 und NIS-2 mit offenen Punkten'

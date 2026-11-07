@@ -4,7 +4,7 @@
 {% block title %}{{ 'bcm_officer.title'|trans }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_kpi_tile.html.twig' as _kpi_tile %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block body %}
@@ -20,42 +20,20 @@
         ]
     }) }}
 
+    {# Key figures from the KPI catalog (ISO 22301 8.2.2 BIA, 8.4 plans, 8.5 exercises) #}
+    <div class="row g-3 mt-2 mb-4">
+        <div class="col-6 col-md-3">{{ _kpi_tile.render('bia_coverage', { icon: 'nav-process', href: path('app_business_process_index') }) }}</div>
+        <div class="col-6 col-md-3">{{ _kpi_tile.render('critical_processes', { href: path('app_business_process_index') }) }}</div>
+        <div class="col-6 col-md-3">{{ _kpi_tile.render('active_bc_plans', { icon: 'nav-workflow', href: path('app_bc_plan_index') }) }}</div>
+        <div class="col-6 col-md-3">{{ _kpi_tile.render('bc_exercises_ytd', { icon: 'nav-stars', href: path('app_bc_exercise_index') }) }}</div>
+    </div>
+
     {# ── Workflow Transparency (Pending Approvals + Lifecycle Stuck) ── #}
     <div class="row g-4 mt-2">
 
-        {# Pending Approvals #}
+        {# What is waiting for this person — every deadline source, same list as My Day #}
         <div class="col-12 col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex align-items-center gap-2">
-                    <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
-                    <strong>{{ 'bcm_officer.section.pending_approvals'|trans }}</strong>
-                    {% if dashboard.pending_approvals|length > 0 %}
-                    <span class="fa-status-pill fa-status-pill--sm fa-status-pill--warning ms-auto">{{ dashboard.pending_approvals|length }}</span>
-                    {% endif %}
-                </div>
-                <div class="card-body p-0">
-                    {% if dashboard.pending_approvals|length > 0 %}
-                    <ul class="list-group list-group-flush">
-                        {% for approval in dashboard.pending_approvals|slice(0, 10) %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="text-truncate me-2">{{ approval.label|default('—') }}</span>
-                            {% if approval.href is defined %}
-                            <a href="{{ approval.href }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                {{ 'action.view_details'|trans }}
-                            </a>
-                            {% endif %}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    {{ _fa_empty_state.render({
-                        icon:  'nav-workflow',
-                        title: 'bcm_officer.empty.no_approvals_title'|trans,
-                        text:  'bcm_officer.empty.no_approvals_text'|trans
-                    }) }}
-                    {% endif %}
-                </div>
-            </div>
+            {% include 'dashboards/_my_obligations.html.twig' %}
         </div>
 
         {# Lifecycle Stuck #}
@@ -95,32 +73,7 @@
 
     </div>{# /row #}
 
-    {# TISAX IS-Tier Maturity — ISB scope: information_security chapters 1-6 only #}
-    {% if is_module_active('tisax') and dashboard.tisax_aggregate is defined and dashboard.tisax_aggregate is not null %}
-    <section class="fa-section mb-4 mt-4" id="tisax-is-maturity">
-        <div class="fa-section__header">
-            <h2 class="fa-section__title">{{ 'tisax.section.title'|trans }}</h2>
-            <small class="text-muted">{{ 'tisax.tier.information_security'|trans }}</small>
-        </div>
-        <div class="fa-section__body">
-            <div class="kpi-grid d-grid grid-responsive-250 gap-4">
-                {% for tierKey, tier in dashboard.tisax_aggregate.byTier %}
-                    {% if tierKey == 'information_security' and tier.model == 'reifegrad' %}
-                        {% set avg = tier.average %}
-                        {% set variant = avg < 2 ? 'danger' : (avg < 3 ? 'warning' : 'success') %}
-                        {{ _fa_feature_card.render({
-                            icon:    'compliance-shield',
-                            label:   'tisax.label.avg_maturity'|trans,
-                            value:   avg ~ ' / 5',
-                            variant: variant,
-                            href:    path('app_compliance_wizard_assess', {wizard: 'tisax', _locale: app.request.locale})
-                        }) }}
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-    {% endif %}
+    {% include 'dashboards/_report_downloads.html.twig' %}
 
 </div>
 {% endblock %}

@@ -37,6 +37,14 @@ language-model output. User guide: `docs/user-guide/VORSCHLAEGE.md`.
    (false for kinds whose result needs reading).
 6. Labels: `suggestions.kind.<key>` and `suggestions.kind_help.<key>` (DE + EN).
 
+7. Optional "Entwurf vorschlagen" on the record's detail page: implement
+   `RecordDraftKind` (`subjectClasses()`, `supportsRecord()`, `needsModel()`,
+   `draftFor()`). AI kinds get it from `AbstractAiKind`: implement `subjectClasses()` and
+   `isCandidate()` (the same test the nightly `candidates()` use); override `recordFor()`
+   when the page's record is not the one the model reads (supplier page → questionnaire)
+   and `alreadyAsked()` when the nightly "ask once" check is not by subject id. Button
+   label: `suggestions.draft.button.<key>`.
+
 Nothing else to register: the tag wires the kind into the queue, the generator, the
 list filters and (for AI kinds) the admin use-case list.
 
@@ -45,6 +53,33 @@ proposal of `RegisterProposalProvider` into a suggestion; each register type wit
 proposals is a three-line subclass (`register.<type>`, decided by the register's
 maintaining persona). The register page and the queue write through the same
 `RegisterProposalAdopter` and deduplicate by `origin`.
+
+## Drafts on request (P6)
+
+`_fa_entity_links.html.twig` shows one button per kind from `draft_kinds(entity)`
+(`RecordDrafts::kindsFor()`): kind is a `RecordDraftKind`, module active, model available
+(AI kinds), the user may decide it (decision role or responsible for the record), no
+pending suggestion of that kind for the record, `supportsRecord()`. `POST
+/suggestions/draft` (`SuggestionDraftController`, CSRF `suggestion_draft`) resolves the
+record only for a class in `subjectClasses()` and in the current organisation, runs rule
+drafts at once and AI drafts as `DraftSuggestionJob` (shared progress page), then opens
+the queue filtered to the record. Asking again after a decision gets its own dedup key
+(`…:asked:<time>`), so the person's explicit request is never swallowed by the
+"rejected stays rejected" rule.
+
+Drafts that fill several fields use `SectionedText` (one editable text, a block per
+field headed "Label:"; a removed heading keeps the drafted value), e.g.
+`AiBreachNotificationKind` for GDPR Art. 33 (3) a, c, d.
+
+| Kind | Record | Writes on accept |
+|---|---|---|
+| `soa.justification` (rule) | Control | justification from linked risks + requirements of other active frameworks + implementation state; nightly only while `ai.soa_justification` is unavailable |
+| `ai.incident_report` | Incident | `reportSummary` (NIS-2 Art. 23 (4) / DORA Art. 19), sent by the MUS export as short description |
+| `ai.breach_notification` | DataBreach | empty `breachNature`, `likelyConsequences`, `measuresTaken` |
+| `ai.dsr_response` | DataSubjectRequest | `responseDescription` (identity verified where Art. 12 (6) requires it) |
+| `ai.board_summary` | ManagementReview | `summary` (≥ 3 inputs of 9.3.2) |
+| `ai.nonconformity_statement` | AuditFinding (major/minor NC) | `description` (unchanged notes only), `evidence` if empty |
+| `ai.questionnaire_evaluation` | Supplier (latest answered questionnaire) | appended to `assessmentFindings` |
 
 ## Rules
 
