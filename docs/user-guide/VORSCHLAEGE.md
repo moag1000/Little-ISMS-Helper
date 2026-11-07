@@ -25,6 +25,13 @@ annimmt. Jede Entscheidung steht mit Person, Zeit und Begründung im Audit-Log
 | Risiko aus Vorfall (KI) | Sprachmodell, Vorfälle ohne Risiko | Risiko wird angelegt und mit dem Vorfall verknüpft | Risikomanager, Manager |
 | SoA-Begründung (KI) | Sprachmodell, anwendbare Maßnahmen ohne Begründung (6.1.3 d) | Begründung wird eingetragen, vorher anpassbar | ISB, Compliance-Manager |
 | Korrekturmaßnahme (KI) | Sprachmodell, offene Feststellungen ohne Maßnahme (10.2) | Korrekturmaßnahme wird angelegt | ISB, Auditverantwortliche |
+| SoA-Begründung aus Verknüpfungen | Regel: behandelte Risiken, Anforderungen anderer aktiver Frameworks, Umsetzungsstand (6.1.3 d); nachts nur, solange die KI-Variante aus ist | Begründung wird eingetragen, vorher anpassbar | ISB, Manager |
+| Meldetext Vorfall (KI) | Sprachmodell, Vorfall mit offener NIS-2- oder DORA-Meldung ohne Meldetext (NIS-2 Art. 23 Abs. 4, DORA Art. 19) | Text steht als „Meldetext an die Behörde“ am Vorfall und geht in den MUS-Export; „Als gemeldet markieren“ bleibt bei Ihnen | ISB, CISO |
+| Meldung Datenpanne Art. 33 (KI) | Sprachmodell, meldepflichtige Datenpanne, noch nicht gemeldet | Leere Felder Art, Folgen, Maßnahmen (Art. 33 Abs. 3 a, c, d) werden gefüllt, im Dialog als ein Text mit drei Abschnitten anpassbar | DSB |
+| Antwort Betroffenenanfrage (KI) | Sprachmodell, offene Anfrage ohne Antwort, Identität geprüft wo Art. 12 Abs. 6 es verlangt | Antworttext der Anfrage wird eingetragen; Versand und Abschluss bleiben beim DSB | DSB |
+| Zusammenfassung für die Leitung (KI) | Sprachmodell, Managementbewertung mit mindestens drei Eingaben (9.3.2) und ohne Zusammenfassung | Zusammenfassung wird eingetragen; Entscheidungen bleiben bei der Leitung (9.3.3) | ISB, CISO |
+| Abweichungstext (KI) | Sprachmodell, offene Haupt- oder Nebenabweichung mit kurzen Notizen | Notizen werden durch den Abweichungstext ersetzt (ISO 19011 6.4.8), Nachweise nur wenn leer | ISB |
+| Auswertung Lieferantenfragebogen (KI) | Sprachmodell, beantworteter Sicherheitsfragebogen (A.5.19–5.22, NIS-2 Art. 21 Abs. 2 d) | Auswertung wird an die Bewertungsergebnisse des Lieferanten angehängt; die Punktzahl bleibt bei Ihnen | ISB, Manager |
 
 Neben den Rollen der Tabelle entscheidet immer auch, wer für den Datensatz zuständig ist
 (Risikoeigner, Asset-Verantwortliche, …; dieselbe Zuständigkeit wie in „Mein Tag“ und der
@@ -42,6 +49,14 @@ Group CISO) sehen alle Vorschläge, auch die entschiedenen, aber nur lesend.
 - **„Jetzt prüfen“** auf der Vorschlagsseite (ab Manager) startet die Prüfung sofort
   im Hintergrund.
 - **Beim Aktivieren eines Frameworks** landen die Vererbungsvorschläge sofort in der Queue.
+- **„Entwurf vorschlagen“** auf der Detailseite: über den Verknüpfungen stehen die Entwürfe,
+  die Sie für diesen Datensatz anfordern dürfen, z. B. „Meldetext (KI)“ am Vorfall oder
+  „SoA-Begründung aus Verknüpfungen“ an der Maßnahme. Regelentwürfe entstehen sofort,
+  KI-Entwürfe im Hintergrund (Fortschrittsseite). Danach öffnet die Vorschlagsliste mit
+  diesem Datensatz, dort nehmen Sie an oder lehnen ab. Ein Knopf erscheint nur, wenn das
+  Modul aktiv ist, die KI eingerichtet ist (bei KI-Entwürfen), Sie den Vorschlag entscheiden
+  dürfen und zu dieser Art noch keiner offen ist. Nach einer Ablehnung können Sie erneut
+  anfordern.
 - Fällt die Bedingung weg (z. B. das Restrisiko wurde von Hand eingetragen), wird der
   offene Vorschlag beim nächsten Lauf zurückgezogen.
 
@@ -80,6 +95,7 @@ Group CISO) sehen alle Vorschläge, auch die entschiedenen, aber nur lesend.
 
 Jeder KI-Aufruf steht im Audit-Log (`ai.request`) mit Einsatzzweck, Modell, Zieladresse
 und ob ersetzt wurde, nie mit Inhalt. Je Lauf schreibt die KI höchstens zehn Vorschläge
-pro Einsatzzweck und fragt zu jedem Datensatz nur einmal.
+pro Einsatzzweck und fragt zu jedem Datensatz nur einmal; „Entwurf vorschlagen“ fragt
+genau dann, wenn Sie es anfordern.
 
 Technik und neue Vorschlagsarten: `docs/features/SUGGESTION_QUEUE.md`.

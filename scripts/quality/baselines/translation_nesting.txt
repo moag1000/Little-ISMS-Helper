@@ -222,10 +222,10 @@ translations/eu_authorities.en.yaml:232:authority
 translations/eu_authorities.en.yaml:409:dora
 translations/incident.de.yaml:1:incident_management
 translations/incident.de.yaml:8:deadline_counter
-translations/incident.de.yaml:476:iso_9001_bridge
+translations/incident.de.yaml:478:iso_9001_bridge
 translations/incident.en.yaml:1:incident_management
 translations/incident.en.yaml:7:deadline_counter
-translations/incident.en.yaml:466:iso_9001_bridge
+translations/incident.en.yaml:468:iso_9001_bridge
 translations/interested_parties.de.yaml:1:interested_party
 translations/interested_parties.de.yaml:124:iso_9001_bridge
 translations/interested_parties.en.yaml:1:interested_party

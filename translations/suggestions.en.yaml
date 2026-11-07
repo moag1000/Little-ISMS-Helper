@@ -38,6 +38,27 @@ suggestions:
         rejected: Suggestion rejected.
         stale: Suggestion is out of date, the record has changed. It was withdrawn.
         rule_failed: 'Not applied: %reason%'
+        drafted: Draft added to suggestions.
+        no_draft: No draft possible, the record lacks details.
+    draft:
+        prompt: 'Suggest a draft:'
+        label: Writing draft
+        running: The language model is writing the draft …
+        done: Draft added to suggestions.
+        none: No draft received. Model not reachable or details too thin.
+        button:
+            ai:
+                risk_from_incident: Risk (AI)
+                soa_justification: SoA justification (AI)
+                corrective_action: Corrective action (AI)
+                incident_report: Report text (AI)
+                breach_notification: Art. 33 notification (AI)
+                dsr_response: Answer to data subject (AI)
+                board_summary: Summary for top management (AI)
+                nonconformity_statement: Nonconformity statement (AI)
+                questionnaire_evaluation: Evaluate questionnaire (AI)
+            soa:
+                justification: SoA justification from links
     job:
         label: Checking suggestions
         subtitle: Rules, inheritance and AI run for this organisation.
@@ -127,6 +148,14 @@ suggestions:
             risk_from_incident: Risk from incident (AI)
             soa_justification: SoA justification (AI)
             corrective_action: Corrective action (AI)
+            incident_report: Incident report text (AI)
+            breach_notification: Breach notification Art. 33 (AI)
+            dsr_response: Data subject request answer (AI)
+            board_summary: Summary for top management (AI)
+            nonconformity_statement: Nonconformity statement (AI)
+            questionnaire_evaluation: Supplier questionnaire evaluation (AI)
+        soa:
+            justification: SoA justification from links
     kind_help:
         asset:
             protection_need: Dependencies (maximum principle) and the BIA raise the protection need.
@@ -156,6 +185,14 @@ suggestions:
             risk_from_incident: Writes a risk for incidents of the last 90 days without a linked risk.
             soa_justification: Writes a justification for applicable controls without one (ISO 27001 6.1.3 d).
             corrective_action: Writes a corrective action for open findings without one (ISO 27001 10.2).
+            incident_report: Writes the text of the next open NIS-2 or DORA report (Art. 23 (4), Art. 19).
+            breach_notification: Writes the empty parts of the notification to the supervisory authority (GDPR Art. 33 (3) a, c, d).
+            dsr_response: Writes the answer to open data subject requests without one (GDPR Art. 12, 15–22).
+            board_summary: Writes the summary of a management review with at least three inputs (ISO 27001 9.3).
+            nonconformity_statement: Turns notes on a nonconformity into the audit report statement (ISO 19011 6.4.8).
+            questionnaire_evaluation: Evaluates answered supplier questionnaires (ISO 27001 A.5.19–5.22, NIS-2 Art. 21 (2) d).
+        soa:
+            justification: Justification from the risks treated and the requirements of other frameworks (ISO 27001 6.1.3 d).
     text:
         dimension:
             confidentiality: Confidentiality
@@ -213,3 +250,36 @@ suggestions:
         ai_capa:
             title: 'Corrective action: %action%'
             rationale: 'For finding %finding%. Cause: %cause%. %reasoning%'
+        ai_incident_report:
+            title: 'Report text for %incident%'
+            rationale: 'Next report due by %deadline%. Marking it as reported stays with you. %reasoning%'
+        ai_breach:
+            title: 'Art. 33 notification for %breach%'
+            rationale: 'Notification deadline %deadline%. Only empty fields are filled. %reasoning%'
+            nature: Nature of the breach
+            consequences: Likely consequences
+            measures: Measures taken or proposed
+        ai_dsr:
+            title: 'Answer to %request%'
+            rationale: '%article%, deadline %deadline%. Sending and closing stay with you. %reasoning%'
+        ai_board:
+            title: 'Summary for top management: %review%'
+            rationale: 'From %inputs% inputs of the management review. Deciding stays with top management (9.3.3). %reasoning%'
+        ai_nc:
+            title: 'Nonconformity statement for %finding%'
+            rationale: 'Requirement: %clause%. Replaces the notes, evidence only if empty. %reasoning%'
+        ai_questionnaire:
+            title: 'Evaluation of %questionnaire% from %supplier%'
+            rationale: '%answers% of %questions% questions answered, %gaps% gaps. The rating stays with you. %reasoning%'
+            heading: 'Evaluation %questionnaire% (answered %date%):'
+        soa_rule:
+            rationale: 'From %risks% linked risks and %requirements% requirements of other frameworks.'
+            risks: 'Applicable because the control treats these risks: %risks%.'
+            requirements: 'Required by: %requirements%.'
+            excluded: Not applicable, no risk in the register is treated by this control and no requirement of an active framework asks for it.
+            status:
+                not_started: Implementation not started.
+                planned: Implementation planned.
+                in_progress: Implementation in progress.
+                implemented: Implemented.
+                verified: Implemented and verified.

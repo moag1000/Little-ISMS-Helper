@@ -7,7 +7,8 @@
  # without records stays visible, so a gap in the chain is a visible gap.
  #
  # Above the block: a one-line hint when the queue holds suggestions about
- # the record (pending_suggestions(entity), Paket 5).
+ # the record (pending_suggestions(entity), Paket 5), and the "Entwurf
+ # vorschlagen" buttons for the drafts the user may ask for (draft_kinds(entity), P6).
  #
  # Usage:
  #   {% include '_components/_fa_entity_links.html.twig' with { entity: risk } only %}
@@ -26,6 +27,25 @@
             ~ ' <a href="' ~ path('app_suggestion_index', {subject: _first.subjectClass ~ '#' ~ _first.subjectId})|e('html_attr') ~ '">'
             ~ ('suggestions.hint.open'|trans({}, 'suggestions'))|e ~ '</a>',
     }) }}
+{% endif %}
+{# Drafts the user may ask for on this record (P6) — rule drafts at once, model drafts in the background; both land in the queue. #}
+{% set _drafts = draft_kinds(entity) %}
+{% if _drafts is not empty %}
+    <div class="fa-entity-links__drafts" data-testid="record-drafts">
+        <span class="fa-entity-links__note">{{ 'suggestions.draft.prompt'|trans({}, 'suggestions') }}</span>
+        {% for _d in _drafts %}
+            <form method="post" action="{{ path('app_suggestion_draft') }}" data-unsaved-guard="off"
+                  data-controller="ui-actions" data-action="submit->ui-actions#submitOnce">
+                <input type="hidden" name="_token" value="{{ csrf_token('suggestion_draft') }}">
+                <input type="hidden" name="kind" value="{{ _d.key }}">
+                <input type="hidden" name="class" value="{{ _d.class }}">
+                <input type="hidden" name="id" value="{{ _d.id }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-testid="draft-{{ _d.key }}">
+                    {{ ('suggestions.draft.button.' ~ _d.key)|trans({}, 'suggestions') }}
+                </button>
+            </form>
+        {% endfor %}
+    </div>
 {% endif %}
 {% set _groups = entity_links(entity) %}
 {% set _icons = { asset: 'asset', risk: 'risk', control: 'control', evidence: 'evidence', incident: 'incident', vulnerability: 'vulnerability' } %}

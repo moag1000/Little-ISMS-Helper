@@ -300,7 +300,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **AlvaHint-Engine** -- Kontextuelle Hilfetexte mit Rules-Engine (Tier-System, Modul-/Rollen-Gating, Render-/Dismiss-Telemetrie)
 - **Activity-Feed** -- Chronologische Event-Uebersicht aus allen Modulen; `?scope=compliance` filtert auf Compliance-relevante Events
 - **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
-- **Vorschlags-Queue** -- Ableitungen (Schutzbedarf, Restrisiko, Wirksamkeit, CVSS→Risiko, Risiko nach Vorfall), Vererbung, Import-Treffer und KI-Vorschläge (lokales Modell oder Mistral-API, personenbezogene Daten standardmäßig ersetzt) in einer Liste; Annehmen/Ablehnen mit Begründung und Audit-Log, nächtlich vorbereitet ([Anleitung](docs/user-guide/VORSCHLAEGE.md))
+- **Vorschlags-Queue** -- Ableitungen (Schutzbedarf, Restrisiko, Wirksamkeit, CVSS→Risiko, Risiko nach Vorfall), Vererbung, Import-Treffer und KI-Vorschläge (lokales Modell oder Mistral-API, personenbezogene Daten standardmäßig ersetzt) in einer Liste; Annehmen/Ablehnen mit Begründung und Audit-Log, nächtlich vorbereitet oder per „Entwurf vorschlagen“ am Datensatz (Meldetext NIS-2/DORA, Meldung Art. 33, Antwort an Betroffene, Zusammenfassung für die Leitung, Abweichungstext, Fragebogenauswertung, SoA-Begründung aus Verknüpfungen) ([Anleitung](docs/user-guide/VORSCHLAEGE.md))
 
 ### Bedienung: einheitlich, schnell, sinnvoll
 

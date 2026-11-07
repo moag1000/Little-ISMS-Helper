@@ -215,6 +215,12 @@
                     </h3>
                     <p class="text-muted">{{ 'incident.nis2_timeline.description'|trans({}, 'incident') }}</p>
                     {{ _rep.assessment(incident) }}
+                    {% if incident.reportSummary %}
+                        <div class="mb-3" data-testid="incident-report-summary">
+                            <div class="fw-bold">{{ 'incident.field.report_summary'|trans({}, 'incident') }}</div>
+                            <p class="mb-0 ws-pre-wrap-lh">{{ incident.reportSummary }}</p>
+                        </div>
+                    {% endif %}
                     {% include '_components/_tenant_reporting_contacts.html.twig' with { authorities: incident.tenant.supervisoryAuthorities, csirts: incident.tenant.csirtEndpoints } only %}
 
                     <div class="timeline-container">

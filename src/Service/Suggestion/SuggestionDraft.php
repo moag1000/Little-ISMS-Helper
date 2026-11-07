@@ -27,6 +27,21 @@ final readonly class SuggestionDraft
     ) {
     }
 
+    /** Same draft under another dedup key (asking again on request after a decision). */
+    public function withDedupKey(string $dedupKey): self
+    {
+        return new self(
+            $this->subject,
+            $this->title,
+            $this->rationale,
+            $this->payload,
+            $this->editableText,
+            $this->confidence,
+            $dedupKey,
+            $this->model,
+        );
+    }
+
     public function subjectClass(): ?string
     {
         if ($this->subject === null) {

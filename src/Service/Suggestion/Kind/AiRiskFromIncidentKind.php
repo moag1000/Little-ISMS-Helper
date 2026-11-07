@@ -60,10 +60,22 @@ final class AiRiskFromIncidentKind extends AbstractAiKind
             if ($incident->getDetectedAt() !== null && $incident->getDetectedAt() < $since) {
                 break;
             }
-            if ($incident->getRealizedRisks()->count() === 0 && mb_strlen((string) $incident->getDescription()) >= 40) {
+            if ($this->isCandidate($incident)) {
                 yield $incident;
             }
         }
+    }
+
+    public function subjectClasses(): array
+    {
+        return [Incident::class];
+    }
+
+    protected function isCandidate(object $record): bool
+    {
+        return $record instanceof Incident
+            && $record->getRealizedRisks()->count() === 0
+            && mb_strlen((string) $record->getDescription()) >= 40;
     }
 
     protected function instructions(): string

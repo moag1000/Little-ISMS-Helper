@@ -572,7 +572,9 @@ Anything the tool proposes and a person decides (derivation, inheritance, import
 `SuggestionKind` (`src/Service/Suggestion/Kind/`, autoconfigured tag) feeding `SuggestionQueue` — no own
 "suggest" tables, flashes or listeners that write on their own. `generate()` never writes; `apply()` writes
 through the owning service after acceptance and throws `StaleSuggestionException` when the state changed.
-Nightly `app:suggestions:generate` (05:30). AI goes only through `App\Service\Ai\AiAssistant` (off by
+Nightly `app:suggestions:generate` (05:30). "Entwurf vorschlagen" on a detail page = the kind implements
+`RecordDraftKind` (AI kinds via `AbstractAiKind::isCandidate()`), shown by `draft_kinds(entity)` in
+`_fa_entity_links.html.twig` — never an own "draft" button or endpoint. AI goes only through `App\Service\Ai\AiAssistant` (off by
 default, redaction, audit without content). Guide: `docs/features/SUGGESTION_QUEUE.md`.
 
 ## Module-Awareness
