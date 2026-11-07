@@ -115,7 +115,6 @@ class BCMControllerTest extends WebTestCase
         $this->testProcess->setRto(4);
         $this->testProcess->setRpo(2);
         $this->testProcess->setMtpd(24);
-        $this->testProcess->setProcessOwner('Test User');
         $this->testProcess->setReputationalImpact(3);
         $this->testProcess->setRegulatoryImpact(2);
         $this->testProcess->setOperationalImpact(4);
@@ -217,7 +216,6 @@ class BCMControllerTest extends WebTestCase
         $criticalProcess->setRto(1);
         $criticalProcess->setRpo(1);
         $criticalProcess->setMtpd(4);
-        $criticalProcess->setProcessOwner('Test User');
         $criticalProcess->setReputationalImpact(5);
         $criticalProcess->setRegulatoryImpact(5);
         $criticalProcess->setOperationalImpact(5);
@@ -286,7 +284,6 @@ class BCMControllerTest extends WebTestCase
         $process2->setRto(8);
         $process2->setRpo(4);
         $process2->setMtpd(48);
-        $process2->setProcessOwner('Test User');
         $process2->setReputationalImpact(2);
         $process2->setRegulatoryImpact(2);
         $process2->setOperationalImpact(2);
@@ -335,7 +332,6 @@ class BCMControllerTest extends WebTestCase
         $criticalProcess->setRto(1);
         $criticalProcess->setRpo(1);
         $criticalProcess->setMtpd(4);
-        $criticalProcess->setProcessOwner('Test User');
         $criticalProcess->setReputationalImpact(5);
         $criticalProcess->setRegulatoryImpact(5);
         $criticalProcess->setOperationalImpact(5);

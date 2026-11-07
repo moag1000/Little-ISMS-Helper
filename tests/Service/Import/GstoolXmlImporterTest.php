@@ -128,7 +128,7 @@ XML);
         ]);
         self::assertInstanceOf(Asset::class, $webserver);
         self::assertSame('it_system', $webserver->getAssetType());
-        self::assertSame('IT-Abteilung', $webserver->getOwner());
+        self::assertSame('IT-Abteilung', $webserver->getEffectiveOwner());
         self::assertSame('RZ-Nord', $webserver->getLocation());
         // hoch → 4, sehr hoch → 5
         self::assertSame(4, $webserver->getConfidentialityValue());

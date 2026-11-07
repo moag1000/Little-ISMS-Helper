@@ -158,9 +158,6 @@ common:
     owner_picker:
         section_label: 'Owner'
         or: 'or'
-        legacy:
-            title: 'Legacy data — migration recommended'
-            body: 'This value still uses the legacy free-text owner field. Please migrate it to a User or Person record at your earliest convenience.'
     section:
         other: 'Other Fields'
     new: 'New'
@@ -308,7 +305,6 @@ common:
         explain_breach_reopened: 'Explain why the data breach needs to be reopened'
         owner_user: '-- Select user --'
         owner_person: '-- Select person --'
-        owner_legacy: 'Name (legacy, migrated data only)'
     time_savings: 'Time savings'
     consistency: 'Consistency'
     audit_evidence: 'Audit evidence'
@@ -324,12 +320,10 @@ common:
         owner_user: 'Owner (System User)'
         owner_person: 'Owner (Person)'
         owner_deputies: Deputies
-        owner_legacy: 'Owner (free text, legacy)'
     help:
         owner_user: 'System user with login as the responsible owner.'
         owner_person: 'Person without login as owner (priority: User > Person).'
         owner_deputies: 'Additional persons sharing ownership or deputising.'
-        owner_legacy: 'Legacy free-text field — kept only for migrated data. Please select a user or person above.'
     deselect_all: 'Deselect all'
 framework: Framework
 requirement: Requirement
@@ -2367,10 +2361,6 @@ sso:
     status:
         enabled: 'Enabled'
         disabled: 'Disabled'
-
-# Owner-Picker — Tri-State Owner Slot Component (S4 P-1)
-owner_picker:
-    legacy_hint: 'Legacy free-text from historical records. Please select a user or person above; this field is read-only and serves as a migration hint.'
 
 # Flash messages cross-cutting (DeploymentWizard, DataRepair) — keys referenced with `messages` domain
 'setup.preset.applied': 'Industry preset "%preset%" applied. %modules% module(s) activated, %frameworks% framework(s) unlocked.'

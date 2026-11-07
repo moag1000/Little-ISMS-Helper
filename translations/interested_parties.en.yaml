@@ -67,7 +67,6 @@ interested_party:
         contact_person_user: 'Contact person (user)'
         contact_person_ref: 'Contact person (person)'
         contact_deputies: 'Deputies'
-        contact_person_legacy: 'Contact person (free text, legacy)'
     empty:
         message: 'No interested parties found.'
         add_first: 'Add first party'

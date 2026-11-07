@@ -28,6 +28,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * BC Exercise/Test Entity for ISO 22301
@@ -162,17 +163,6 @@ class BCExercise
     private ?Collection $participantPersons = null;
 
     /**
-     * Exercise facilitator/lead — legacy free-text field. 
-     * Pattern A dual-state with `facilitatorUser` and `facilitatorPerson`
-     * (NB: existing `exerciseLeaderUser` / `exerciseLeaderPerson` from
-     *  are kept untouched, the new `facilitatorUser/Person` mirror
-     * the Pattern-A naming used across other entities).
-     */
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
-    private ?string $facilitator = null;
-
-    /**
      * DataReuse Pattern A: typed facilitator as application User.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -192,8 +182,8 @@ class BCExercise
 
     /**
      * Typed exercise leader. Application
-     * User (employee with login). Backward-compat optional slot —
-     * `facilitator` string remains canonical for Migration legacy data.
+     * User (employee with login). Optional — without it the facilitator
+     * leads the exercise.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'exercise_leader_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -562,17 +552,6 @@ class BCExercise
         return $this;
     }
 
-    public function getFacilitator(): ?string
-    {
-        return $this->facilitator;
-    }
-
-    public function setFacilitator(?string $facilitator): static
-    {
-        $this->facilitator = $facilitator;
-        return $this;
-    }
-
     public function getFacilitatorUser(): ?User
     {
         return $this->facilitatorUser;
@@ -596,15 +575,15 @@ class BCExercise
     }
 
     /**
-     * DataReuse Tri-State resolver — prefer structured User name, then
-     * Person, fall back to legacy `facilitator` free-text.
+     * Facilitator's name: the User, else the Person (API: `facilitator`, read-only).
      */
+    #[Groups(['bc_exercise:read'])]
+    #[SerializedName('facilitator')]
     public function getEffectiveFacilitatorName(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->facilitatorUser,
             $this->facilitatorPerson,
-            $this->facilitator,
         );
     }
 
@@ -631,17 +610,14 @@ class BCExercise
     }
 
     /**
-     * Effective exercise leader name — Tri-State chain User → Person →
-     * legacy `facilitator` string. Templates prefer this over reading
-     * the raw fields so the migration window stays UI-transparent.
+     * Effective exercise leader name — User → Person, else the facilitator.
      */
     public function getEffectiveExerciseLeaderName(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->exerciseLeaderUser,
             $this->exerciseLeaderPerson,
-            $this->facilitator,
-        );
+        ) ?? $this->getEffectiveFacilitatorName();
     }
 
     /** @deprecated since 2026-05-25 — use getObserverPersons() */

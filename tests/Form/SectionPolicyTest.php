@@ -178,7 +178,7 @@ final class SectionPolicyTest extends TestCase
      *
      * Additionally synthesises the four fields contributed by the
      * OwnerPickerFormTrait helper `$this->addOwnerPicker($builder, [...])` —
-     * `user_field`, `person_field`, `deputies_field`, `legacy_field`.
+     * `user_field`, `person_field`, `deputies_field`.
      * Those land on the builder via the trait but the static parser
      * doesn't see literal `->add()` calls for them.
      *
@@ -200,7 +200,7 @@ final class SectionPolicyTest extends TestCase
             $pickerCalls
         );
         foreach ($pickerCalls[1] ?? [] as $configBody) {
-            foreach (['user_field', 'person_field', 'deputies_field', 'legacy_field'] as $key) {
+            foreach (['user_field', 'person_field', 'deputies_field'] as $key) {
                 if (preg_match("/['\"]" . $key . "['\"]\s*=>\s*['\"]([A-Za-z_][A-Za-z0-9_]*)['\"]/", $configBody, $m)) {
                     $fields[] = $m[1];
                 }

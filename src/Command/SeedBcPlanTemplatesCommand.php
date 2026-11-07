@@ -72,7 +72,6 @@ class SeedBcPlanTemplatesCommand
                 $plan->setName($data['name']);
             }
             $plan->setDescription($data['description']);
-            $plan->setPlanOwner($data['plan_owner']);
             $plan->setBcTeam($data['bc_team']);
             $plan->setStatus(BusinessContinuityPlanStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist seed entity; 'draft' is the business_continuity_plan_lifecycle initial_marking)
             $plan->setActivationCriteria($data['activation_criteria']);
@@ -108,7 +107,6 @@ class SeedBcPlanTemplatesCommand
             [
                 'name' => 'IT-Ausfall (Template)',
                 'description' => 'Kompletter oder partieller Ausfall zentraler IT-Systeme (Server, Netzwerk, SaaS). Wiederherstellung geschäftskritischer Services.',
-                'plan_owner' => 'CIO / IT-Leitung',
                 'bc_team' => 'IT-Operations, Infrastruktur, Security, Kommunikation',
                 'activation_criteria' => "- Ausfall eines kritischen Systems > 1 Stunde\n- Bekannte Ursache verhindert Selbstwiederherstellung\n- Mehr als 50% der Mitarbeiter betroffen",
                 'roles' => "- IT-Leitung: Gesamtkoordination, Entscheidung über Fallback\n- Infrastruktur: Hardware-/Netzwerk-Diagnose\n- Security: Ausschluss Cyberangriff\n- Kommunikation: Statusmeldungen intern/extern",
@@ -122,7 +120,6 @@ class SeedBcPlanTemplatesCommand
             [
                 'name' => 'Pandemie / Großflächiger Personalausfall (Template)',
                 'description' => 'Plan für Szenarien mit Ausfall eines Großteils der Belegschaft (Epidemie, Pandemie, lokaler Katastrophenfall).',
-                'plan_owner' => 'COO / HR-Leitung',
                 'bc_team' => 'HR, IT, Facility-Management, Kommunikation, Arbeitsschutz',
                 'activation_criteria' => "- Offizielle Pandemie-Erklärung durch WHO / RKI\n- Krankenstand > 25% der Belegschaft\n- Behördlich angeordnete Schließungen",
                 'roles' => "- HR-Leitung: Abwesenheits-Tracking, Arbeitsschutz\n- IT: Remote-Work-Infrastruktur skalieren\n- Facility-Management: Hygienekonzept, Raumbelegung\n- Kommunikation: Mitarbeiterinformation",
@@ -136,7 +133,6 @@ class SeedBcPlanTemplatesCommand
             [
                 'name' => 'Datenschutzverletzung / Data Breach (Template)',
                 'description' => 'DSGVO Art. 33/34 Datenschutzverletzung mit personenbezogenen Daten. 72-Stunden-Meldefrist an Aufsichtsbehörde.',
-                'plan_owner' => 'DSB / DPO',
                 'bc_team' => 'DSB, CISO, Rechtsabteilung, Kommunikation, IT-Security',
                 'activation_criteria' => "- Bekannte oder vermutete Offenlegung personenbezogener Daten\n- Ransomware-Angriff auf Systeme mit PII\n- Verlust unverschlüsselter Datenträger\n- Fehlkonfiguration mit öffentlichem Zugriff",
                 'roles' => "- DSB: Gesamtkoordination, DSGVO-Bewertung, Behördenmeldung\n- CISO: Technische Eindämmung, Forensik\n- Recht: Haftungsbewertung, Vertragsrisiken\n- Kommunikation: Betroffenenbenachrichtigung bei hohem Risiko",
@@ -150,7 +146,6 @@ class SeedBcPlanTemplatesCommand
             [
                 'name' => 'Gebäude-/Standort-Ausfall (Template)',
                 'description' => 'Vollständiger oder teilweiser Ausfall eines Standorts (Feuer, Wasserschaden, Stromausfall, behördliche Sperrung).',
-                'plan_owner' => 'Facility Manager / COO',
                 'bc_team' => 'Facility-Management, HR, IT, Arbeitsschutz, Kommunikation',
                 'activation_criteria' => "- Zutrittsverbot zum Gebäude > 4 Stunden\n- Schadensereignis mit Auswirkung auf Arbeitsfähigkeit\n- Ausfall Strom/Wasser/Netz > 2 Stunden",
                 'roles' => "- Facility-Manager: Schadensbewertung, Kontakt zu Dienstleistern/Versicherung\n- HR: Alternative Arbeitsplätze, Home-Office-Anordnung\n- IT: Remote-Zugang, Standort-Failover\n- Arbeitsschutz: Evakuierung, Personenschäden vermeiden",
@@ -164,7 +159,6 @@ class SeedBcPlanTemplatesCommand
             [
                 'name' => 'Lieferkette / Kritischer Lieferant-Ausfall (Template)',
                 'description' => 'Ausfall eines kritischen Lieferanten (ICT-Dienstleister, Rechenzentrum, Cloud-Provider). DORA Art. 28 Exit-Strategie.',
-                'plan_owner' => 'Procurement / CISO',
                 'bc_team' => 'Einkauf, CISO, Rechtsabteilung, IT-Operations, Business-Owner',
                 'activation_criteria' => "- Service-Ausfall eines als kritisch klassifizierten Lieferanten > 4 Stunden\n- Insolvenz-Meldung eines Lieferanten\n- Schwerwiegender Compliance-Verstoß (z.B. Datenschutz)\n- Kündigung durch Lieferant ohne ausreichende Frist",
                 'roles' => "- Einkauf: Vertragsstatus, Eskalation beim Lieferanten\n- CISO: Bewertung Sicherheitsauswirkung\n- Recht: Vertragsklauseln, SLA-Durchsetzung\n- IT-Operations: Technischer Workaround, Failover",

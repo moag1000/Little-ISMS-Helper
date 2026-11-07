@@ -59,7 +59,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
     {
         return [
             'overview'        => ['name', 'inIsmsScope', 'description', 'criticality'],
-            'owner'           => ['processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons', 'processOwner'],
+            'owner'           => ['processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons'],
             'criticality'     => ['reputationalImpact', 'regulatoryImpact', 'operationalImpact', 'financialImpactPerHour', 'financialImpactPerDay'],
             'recovery_targets'=> ['rto', 'rpo', 'mtpd'],
             'dependencies'    => ['upstreamProcesses', 'downstreamProcesses', 'dependenciesUpstream', 'dependenciesDownstream', 'recoveryStrategy'],
@@ -93,7 +93,6 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             'user_field'         => 'processOwnerUser',
             'person_field'       => 'processOwnerPerson',
             'deputies_field'     => 'processOwnerDeputyPersons',
-            'legacy_field'       => 'processOwner',
             'translation_prefix' => 'business_process',
             'user_label'         => 'business_process.field.process_owner',
             'user_placeholder'   => 'business_process.placeholder.process_owner_user',
@@ -103,7 +102,6 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             'person_help'        => 'business_process.help.process_owner_person',
             'deputies_label'     => 'business_process.field.process_owner_deputies',
             'deputies_help'      => 'business_process.help.process_owner_deputies',
-            'legacy_label'       => 'business_process.field.process_owner_legacy',
             // Owner pre-fill — UX-Polish
             'default_to_current_user' => true,
         ]);

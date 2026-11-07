@@ -97,7 +97,6 @@ trait ProcessingActivityContactTrait
         return OwnerResolver::resolveEffective(
             $this->contactPersonUser,
             $this->contactPerson,
-            null,
         );
     }
 
@@ -111,7 +110,6 @@ trait ProcessingActivityContactTrait
         return OwnerResolver::resolveAll(
             $this->contactPersonUser,
             $this->contactPerson,
-            null,
             $this->contactDeputyPersons,
         );
     }

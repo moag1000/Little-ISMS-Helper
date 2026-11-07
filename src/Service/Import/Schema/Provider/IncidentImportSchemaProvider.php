@@ -42,8 +42,8 @@ use App\Service\Import\Schema\ImportSchemaProviderInterface;
  *   - M:N collections without a single-value human lookup
  *     (reportedByDeputyPersons, affectedAssets, criticalServicesAffected)
  *   - User relation reportedByUser (no human lookup field is imported — only
- *     Person relations are, mirroring the ProcessingActivity provider convention;
- *     the legacy free-text `reportedBy` slot carries the human reporter instead)
+ *     Person relations are; the `reportedBy` text column (name or e-mail)
+ *     resolves to a user or person)
  *   - fields not present in IncidentType (incidentNumber, assignedTo,
  *     immediateActions, preventiveActions, resolvedAt,
  *     originatingThreat, evidenceArtifactsJson)
@@ -123,11 +123,7 @@ final class IncidentImportSchemaProvider implements ImportSchemaProviderInterfac
                 ),
 
                 // ── Reporter / responsible (OwnerPicker cluster) ────────────────
-                new ImportFieldSpec(
-                    name: 'reportedBy',
-                    setter: 'setReportedBy',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
+                OwnerImportFields::text('reportedBy', 'reportedByUser', 'reportedByPerson'),
                 new ImportFieldSpec(
                     name: 'reportedByPerson',
                     setter: 'setReportedByPerson',

@@ -587,15 +587,6 @@ class NavigationSearch
                 'requiresModule' => null,
             ],
             [
-                'route' => 'admin_legacy_owner_index',
-                'label' => 'search_nav.admin_legacy_owner_index.label',
-                'description' => 'search_nav.admin_legacy_owner_index.description',
-                'aliases' => ['Freitext', 'Legacy', 'Eigentümer', 'Owner', 'Verantwortliche', 'Ansprechpartner', 'Zuordnen'],
-                'icon' => 'fa-icon--ui-person',
-                'roles' => ['ADMIN_OWN_TENANT'],
-                'requiresModule' => null,
-            ],
-            [
                 'route' => 'admin_queue_status',
                 'label' => 'search_nav.admin_queue_status.label',
                 'description' => 'search_nav.admin_queue_status.description',

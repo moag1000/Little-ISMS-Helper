@@ -138,7 +138,6 @@ class BCExerciseControllerTest extends WebTestCase
         $this->testExercise->setObjectives('Test objectives');
         $this->testExercise->setParticipants('Test participants');
         $this->testExercise->setExerciseDate(new \DateTime('+30 days'));
-        $this->testExercise->setFacilitator('Test Facilitator');
         $this->entityManager->persist($this->testExercise);
 
         $this->entityManager->flush();

@@ -35,7 +35,6 @@ objective:
         responsible_person_user: 'Responsible person from user management'
         responsible_person_ref: 'Responsible person from person directory'
         responsible_deputies: 'Deputies'
-        responsible_person_legacy: 'Responsible person (free text, legacy)'
     placeholder:
         kpi_key: 'Maintained manually'
         kpi_location: 'Whole organisation'

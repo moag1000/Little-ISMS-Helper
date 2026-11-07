@@ -47,7 +47,6 @@ bc_exercises:
         facilitator: 'Moderator/Leitung'
         facilitator_user: 'Moderator/Leitung (User)'
         facilitator_person: 'Moderator/Leitung (Person)'
-        facilitator_legacy: 'Moderator/Leitung (Freitext, Migration)'
         exercise_leader_user: 'Übungsleitung (User)'
         exercise_leader_person: 'Übungsleitung (Person)'
         observers: Beobachter
@@ -93,7 +92,6 @@ bc_exercises:
         facilitator: 'Person, die die Übung leitet und moderiert'
         facilitator_user: 'Moderator/Leitung als Anwendungs-Benutzer.'
         facilitator_person: 'Moderator/Leitung als Stammdaten-Person (z.B. externer BCM-Berater).'
-        facilitator_legacy: 'Legacy-Freitext, nur lesend bei Migration.'
         exercise_leader_user: 'Übungsleitung mit Anwendungs-Login. Optional, wenn die Leitung intern und mit System-Account hinterlegt ist.'
         exercise_leader_person: 'Übungsleitung als Stammdaten-Person — typischerweise externer BCM-Berater ohne System-Login.'
         observers: 'Externe Beobachter (z.B. Auditoren, Management)'

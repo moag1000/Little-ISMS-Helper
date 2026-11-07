@@ -47,7 +47,6 @@ vulnerability:
         responsible_person_user: 'Verantwortliche Person (Benutzer)'
         responsible_person_ref: 'Verantwortliche Person (Kontakt)'
         responsible_deputies: 'Vertretungen'
-        responsible_person_legacy: 'Verantwortliche Person (Freitext)'
     placeholder:
         cve_id: 'z.B. CVE-2024-12345'
         title: 'z.B. Remote Code Execution in Apache Log4j'

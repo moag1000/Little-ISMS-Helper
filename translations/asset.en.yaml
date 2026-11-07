@@ -73,7 +73,6 @@ asset:
     handling_instructions: Handling Instructions
     return_date: Return Date
     status: Status
-    owner_legacy: Owner (free text, legacy)
     owner_person: Owner (Person from master data)
     owner_deputies: Deputies (Persons)
     depends_on: Dependencies (upstream)

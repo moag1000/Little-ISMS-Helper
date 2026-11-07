@@ -49,7 +49,7 @@ final class SuggestionDeadlineSourceTest extends TestCase
     #[Test]
     public function importMatchesStayWithTheKindRoles(): void
     {
-        $s = new Suggestion(new Tenant(), 'legacy_owner.match', SuggestionOrigin::Import, 'T', 'R', 'k');
+        $s = new Suggestion(new Tenant(), 'unknown.kind', SuggestionOrigin::Import, 'T', 'R', 'k');
         $responsibility = (new SuggestionResponsibility([], $this->createStub(EntityManagerInterface::class)))->of($s);
 
         self::assertNull($responsibility->record);

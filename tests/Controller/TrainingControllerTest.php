@@ -153,7 +153,6 @@ class TrainingControllerTest extends WebTestCase
         $this->testTraining->setTitle('Test Training ' . $uniqueId);
         $this->testTraining->setDescription('Test training description');
         $this->testTraining->setTrainingType('security_awareness');
-        $this->testTraining->setTrainer('Test Trainer');
         $this->testTraining->setStatus('planned');
         $this->testTraining->setMandatory(true);
         $this->testTraining->setScheduledDate(new \DateTime('+1 month'));
@@ -439,7 +438,6 @@ class TrainingControllerTest extends WebTestCase
         $training2->setTitle('Bulk Delete Training 2');
         $training2->setDescription('Training for bulk delete');
         $training2->setTrainingType('security_awareness');
-        $training2->setTrainer('Test Trainer');
         $training2->setScheduledDate(new \DateTime('+1 month'));
         $training2->setStatus('planned');
         $this->entityManager->persist($training2);
@@ -491,7 +489,6 @@ class TrainingControllerTest extends WebTestCase
         $otherTraining->setTitle('Other Tenant Training');
         $otherTraining->setDescription('Training from other tenant');
         $otherTraining->setTrainingType('security_awareness');
-        $otherTraining->setTrainer('Other Trainer');
         $otherTraining->setScheduledDate(new \DateTime('+1 month'));
         $otherTraining->setStatus('planned');
         $this->entityManager->persist($otherTraining);
@@ -552,7 +549,6 @@ class TrainingControllerTest extends WebTestCase
         $completedTraining->setTitle('Completed Training ' . uniqid());
         $completedTraining->setDescription('Completed');
         $completedTraining->setTrainingType('security_awareness');
-        $completedTraining->setTrainer('Test Trainer');
         $completedTraining->setScheduledDate(new \DateTime('-1 month'));
         $completedTraining->setStatus('completed');
         $this->entityManager->persist($completedTraining);

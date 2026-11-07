@@ -73,7 +73,6 @@ asset:
     handling_instructions: Handhabungsanweisungen
     return_date: Rückgabedatum
     status: Status
-    owner_legacy: Verantwortlich (freitext, veraltet)
     owner_person: Verantwortlich (Person aus Stammdaten)
     owner_deputies: Vertretungen (Personen)
     depends_on: Abhängigkeiten (Upstream)

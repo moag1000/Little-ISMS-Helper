@@ -22,7 +22,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Form\Util\LegacyFreeTextField;
 
 final class ISMSObjectiveType extends AbstractType implements SectionMapInterface
 {
@@ -46,7 +45,7 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
             'overview'      => ['title', 'description', 'category'],
             'target_metric' => ['measurableIndicators', 'kpiKey', 'kpiLocation', 'targetValue', 'currentValue', 'unit'],
             'monitoring'    => ['measurementFrequency', 'measurementMethod'],
-            'responsibility'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'responsibleForMeasurement', 'targetDate'],
+            'responsibility'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsibleForMeasurement', 'targetDate'],
             'audit_metadata'=> ['status', 'progressNotes'],
         ];
     }
@@ -147,8 +146,7 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
                                 'choice_translation_domain' => 'objective',
             ]);
 
-        // Pattern A dual-state owner cluster (User + Person + deputies) via the
-        // shared trait; the legacy free-text field below keeps round-tripping.
+        // Owner cluster (User + Person + deputies) via the shared trait.
         $this->addOwnerPicker($builder, [
             'translation_prefix' => 'objective',
             'user_field'         => 'responsiblePersonUser',
@@ -167,14 +165,6 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
         ]);
 
         $builder
-            ->add('responsiblePerson', TextType::class, [
-                'label' => 'objective.field.responsible_person_legacy',
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'objective.placeholder.responsible_person',
-                ],
-            ])
             ->add('responsibleForMeasurement', TextType::class, [
                 'label' => 'objective.field.responsible_for_measurement',
                 'required' => false,
@@ -245,7 +235,6 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
             ])
         ;
 
-        LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
 
         if ($this->isModuleActive('locations')) {
             $builder->add('kpiLocation', EntityType::class, [

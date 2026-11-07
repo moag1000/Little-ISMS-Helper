@@ -46,7 +46,6 @@ vulnerability:
         responsible_person_user: 'Responsible Person (User)'
         responsible_person_ref: 'Responsible Person (Contact)'
         responsible_deputies: 'Deputies'
-        responsible_person_legacy: 'Responsible Person (Free Text)'
     placeholder:
         cvss_score: '7.5'
         cve_id: 'e.g. CVE-2024-12345'

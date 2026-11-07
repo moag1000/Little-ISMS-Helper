@@ -999,7 +999,6 @@ class DataProtectionImpactAssessment
         return OwnerResolver::resolveEffective(
             $this->dataProtectionOfficer,
             $this->dataProtectionOfficerPerson,
-            null,
         );
     }
 
@@ -1013,7 +1012,6 @@ class DataProtectionImpactAssessment
         return OwnerResolver::resolveAll(
             $this->dataProtectionOfficer,
             $this->dataProtectionOfficerPerson,
-            null,
             $this->dataProtectionOfficerDeputyPersons,
         );
     }

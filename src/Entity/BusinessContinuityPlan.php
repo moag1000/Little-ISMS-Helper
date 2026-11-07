@@ -85,13 +85,6 @@ class BusinessContinuityPlan
     private ?BusinessProcess $businessProcess = null;
 
     /**
-     * Plan owner/responsible person
-     */
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?string $planOwner = null;
-
-    /**
      * Doppelpflege-Deprecation — use $responseTeamMembers.
      *
      * Freetext BC team roster. Superseded by the structured
@@ -430,17 +423,6 @@ class BusinessContinuityPlan
     public function setBusinessProcess(?BusinessProcess $businessProcess): static
     {
         $this->businessProcess = $businessProcess;
-        return $this;
-    }
-
-    public function getPlanOwner(): ?string
-    {
-        return $this->planOwner;
-    }
-
-    public function setPlanOwner(?string $planOwner): static
-    {
-        $this->planOwner = $planOwner;
         return $this;
     }
 
@@ -952,7 +934,7 @@ class BusinessContinuityPlan
         if (!in_array($this->name, [null, '', '0'], true)) {
             $completed++;
         }
-        if (!in_array($this->planOwner, [null, '', '0'], true)) {
+        if ($this->planOwnerUser !== null || $this->planOwnerPerson !== null) {
             $completed++;
         }
         if (!in_array($this->activationCriteria, [null, '', '0'], true)) {

@@ -274,13 +274,13 @@ class PrototypeProtectionAssessment
 
     public function getEffectiveAssessor(): ?string
     {
-        return OwnerResolver::resolveEffective($this->assessor, $this->assessorPerson, null);
+        return OwnerResolver::resolveEffective($this->assessor, $this->assessorPerson);
     }
 
     /** @return list<string> */
     public function getAllAssessorOwners(): array
     {
-        return OwnerResolver::resolveAll($this->assessor, $this->assessorPerson, null, $this->assessorDeputyPersons);
+        return OwnerResolver::resolveAll($this->assessor, $this->assessorPerson, $this->assessorDeputyPersons);
     }
 
     public function getAssessmentDate(): ?DateTimeInterface { return $this->assessmentDate; }

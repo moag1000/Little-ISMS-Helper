@@ -134,7 +134,6 @@ class BusinessProcessControllerTest extends WebTestCase
         $this->testProcess->setRto(4);
         $this->testProcess->setRpo(1);
         $this->testProcess->setMtpd(24);
-        $this->testProcess->setProcessOwner('Test Owner');
         $this->testProcess->setReputationalImpact(3);
         $this->testProcess->setRegulatoryImpact(2);
         $this->testProcess->setOperationalImpact(3);

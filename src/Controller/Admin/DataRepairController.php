@@ -47,9 +47,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_GLOBAL_OP}
  * (SUPER_ADMIN). The scans, the repairs and the schema tools read and write
- * every tenant of the instance, so a tenant admin must not reach them; their
- * own-organisation clean-up is the Freitext-Verantwortliche page
- * (LegacyOwnerController). The per-action ADMIN_GLOBAL_OP attributes below
+ * every tenant of the instance, so a tenant admin must not reach them. The
+ * per-action ADMIN_GLOBAL_OP attributes below
  * stay as explicit markers for the destructive ones.
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]

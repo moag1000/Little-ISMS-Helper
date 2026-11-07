@@ -90,7 +90,6 @@ final class BCExerciseCloner implements EntityClonerInterface
         // Facilitator / leader Pattern-A dual-state refs (User OR Person)
         // — at least one must remain so the validateFacilitatorSlot
         // callback passes on the clone.
-        $clone->setFacilitator($source->getFacilitator());
         $clone->setFacilitatorUser($source->getFacilitatorUser());
         $clone->setFacilitatorPerson($source->getFacilitatorPerson());
         $clone->setExerciseLeaderUser($source->getExerciseLeaderUser());

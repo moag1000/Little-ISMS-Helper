@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * Verifies the helper:
  *  - always adds user + person child-fields
- *  - adds deputies + legacy only when configured
+ *  - adds deputies only when configured
  *  - wires the cross-disable Stimulus controller (data-controller attr)
  *  - propagates configurable property-paths so divergent entity layouts
  *    (Risk uses riskOwner, Asset uses ownerUser) work without a schema
@@ -44,28 +44,24 @@ final class OwnerPickerFormTraitTest extends KernelTestCase
     }
 
     #[Test]
-    public function fullConfigAddsAllFourChildren(): void
+    public function fullConfigAddsAllThreeChildren(): void
     {
         $form = $this->formFactory->create(OwnerPickerTraitFixtureType_Full::class);
 
         self::assertTrue($form->has('ownerUser'), 'ownerUser child must be present');
         self::assertTrue($form->has('ownerPerson'), 'ownerPerson child must be present');
         self::assertTrue($form->has('ownerDeputyPersons'), 'deputies child must be present when configured');
-        self::assertFalse($form->has('owner'), 'empty legacy child is hidden');
-
-        $filled = $this->formFactory->create(OwnerPickerTraitFixtureType_Full::class, ['owner' => 'Team alt']);
-        self::assertTrue($filled->has('owner'), 'filled legacy child is present when configured');
+        self::assertFalse($form->has('owner'), 'no free-text owner child');
     }
 
     #[Test]
-    public function minimalConfigOmitsDeputiesAndLegacy(): void
+    public function minimalConfigOmitsDeputies(): void
     {
         $form = $this->formFactory->create(OwnerPickerTraitFixtureType_Minimal::class);
 
         self::assertTrue($form->has('ownerUser'));
         self::assertTrue($form->has('ownerPerson'));
         self::assertFalse($form->has('ownerDeputyPersons'), 'deputies must be absent without config');
-        self::assertFalse($form->has('owner'), 'legacy must be absent without config');
     }
 
     #[Test]
@@ -262,7 +258,7 @@ final class OwnerPickerFormTraitTest extends KernelTestCase
 }
 
 /**
- * Fixture FormType: full config (user + person + deputies + legacy).
+ * Fixture FormType: full config (user + person + deputies).
  */
 class OwnerPickerTraitFixtureType_Full extends AbstractType
 {
@@ -274,14 +270,13 @@ class OwnerPickerTraitFixtureType_Full extends AbstractType
             'user_field'         => 'ownerUser',
             'person_field'       => 'ownerPerson',
             'deputies_field'     => 'ownerDeputyPersons',
-            'legacy_field'       => 'owner',
             'translation_prefix' => 'asset',
         ]);
     }
 }
 
 /**
- * Fixture FormType: minimal (no deputies, no legacy).
+ * Fixture FormType: minimal (no deputies).
  */
 class OwnerPickerTraitFixtureType_Minimal extends AbstractType
 {
@@ -310,7 +305,6 @@ class OwnerPickerTraitFixtureType_Custom extends AbstractType
             'user_field'         => 'riskOwner',
             'person_field'       => 'riskOwnerPerson',
             'deputies_field'     => 'riskOwnerDeputyPersons',
-            'legacy_field'       => null,
             'translation_prefix' => 'risk',
             'user_label'         => 'risk.field.risk_owner',
         ]);
@@ -326,7 +320,6 @@ class OwnerPickerPreFillFixtureEntity
 {
     private ?User $ownerUser = null;
     private mixed $ownerPerson = null;
-    private mixed $owner = null;
 
     public function getOwnerUser(): ?User
     {
@@ -344,15 +337,6 @@ class OwnerPickerPreFillFixtureEntity
     public function setOwnerPerson(mixed $ownerPerson): static
     {
         $this->ownerPerson = $ownerPerson;
-        return $this;
-    }
-    public function getOwner(): mixed
-    {
-        return $this->owner;
-    }
-    public function setOwner(mixed $owner): static
-    {
-        $this->owner = $owner;
         return $this;
     }
 }

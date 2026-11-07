@@ -120,8 +120,6 @@ suggestions:
             role: 'Register: Rolle'
             competence: 'Register: Kompetenz'
             opportunity: 'Register: Chance'
-        legacy_owner:
-            match: Verantwortliche zuordnen
         compliance:
             inheritance: Erfüllung übernehmen
         ai:
@@ -150,8 +148,6 @@ suggestions:
             role: Aus den Inhabern der Persona-Rollen.
             competence: Standard-Kompetenzen der Rollen im Rollenregister.
             opportunity: Aus der letzten Managementbewertung.
-        legacy_owner:
-            match: Freitext-Verantwortliche passen zu einer Person.
         compliance:
             inheritance: Eine erfüllte Anforderung deckt eine gemappte ab.
         ai:
@@ -209,9 +205,6 @@ suggestions:
         register:
             title: '%register%: %title% übernehmen'
             rationale: 'Vorgeschlagen aus: %source%. Norm: %norm%.'
-        legacy_owner:
-            title: 'Verantwortliche für %record% zuordnen'
-            rationale: 'Freitext „%legacy%“ passt zu %match%.'
         inheritance:
             title: '%target% aus %source% übernehmen: %title%'
             rationale: '%source% ist erfüllt, Mapping-Sicherheit %confidence%. Vorschlag %percent% % Erfüllung für %target%.'

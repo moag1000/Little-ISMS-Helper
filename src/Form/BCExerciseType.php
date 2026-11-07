@@ -106,8 +106,7 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
-            // Facilitator now Pattern-A dual-state.
-            // facilitator textfield kept for legacy migration display only.
+            // Facilitator: User or Person.
             ->add('facilitatorUser', OwnerUserType::class, [
                 'label' => 'bc_exercises.field.facilitator_user',
                 'help' => 'bc_exercises.help.facilitator_user',
@@ -122,12 +121,6 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'bc_exercises.placeholder.facilitator_person',
                 'required' => false,
-            ])
-            ->add('facilitator', TextType::class, [
-                'label' => 'bc_exercises.field.facilitator_legacy',
-                'help' => 'bc_exercises.help.facilitator_legacy',
-                'required' => false,
-                'attr' => ['maxlength' => 100],
             ])
             ->add('exerciseLeaderUser', OwnerUserType::class, [
                 'label' => 'bc_exercises.field.exercise_leader_user',
@@ -335,7 +328,7 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
             'overview'        => ['name', 'exerciseType', 'description', 'status'],
             'exercise_scope'  => ['scope', 'objectives', 'scenario'],
             'schedule'        => ['exerciseDate', 'durationHours'],
-            'team'            => ['participantPersons', 'participants', 'facilitatorUser', 'facilitatorPerson', 'facilitator', 'exerciseLeaderUser', 'exerciseLeaderPerson', 'observerPersons', 'observers'],
+            'team'            => ['participantPersons', 'participants', 'facilitatorUser', 'facilitatorPerson', 'exerciseLeaderUser', 'exerciseLeaderPerson', 'observerPersons', 'observers'],
             'results'         => ['results', 'successCriteria', 'successRating', 'actualRtoAchieved', 'actualRpoAchieved', 'whatWentWell', 'areasForImprovement'],
             'lessons_learned' => ['findings', 'actionItems', 'lessonsLearned', 'planUpdatesRequired'],
             'references'      => ['testedPlans', 'evidenceArtifacts'],

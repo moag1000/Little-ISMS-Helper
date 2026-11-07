@@ -43,11 +43,6 @@
             <span class="label">{{ 'audit.field.lead_auditor_person'|trans({}, 'audit') }}</span>
             <span>{{ audit.leadAuditorPerson.fullName }}</span>
         </div>
-        {% elseif audit.leadAuditor %}
-        <div class="fa-drawer__kv">
-            <span class="label">{{ 'audit.field.lead_auditor'|trans({}, 'audit') }}</span>
-            <span>{{ audit.leadAuditor }}</span>
-        </div>
         {% endif %}
 
         {% if audit.scope %}

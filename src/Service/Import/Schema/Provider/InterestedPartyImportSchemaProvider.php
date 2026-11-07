@@ -91,11 +91,6 @@ final class InterestedPartyImportSchemaProvider implements ImportSchemaProviderI
                 ),
 
                 // ── Contact ─────────────────────────────────────────────────────
-                new ImportFieldSpec(
-                    name: 'contactPerson',
-                    setter: 'setContactPerson',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
                 ...OwnerImportFields::specs('contactPerson'),
                 new ImportFieldSpec(
                     name: 'email',

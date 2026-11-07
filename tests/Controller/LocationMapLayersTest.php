@@ -53,7 +53,7 @@ final class LocationMapLayersTest extends WebTestCase
         $this->keep((new Location())->setTenant($stranger)->setName('Außen ' . $this->uid)
             ->setLocationType('building')->setCity('Zürich')->setCountry('Schweiz'));
 
-        $asset = $this->keep((new Asset())->setName('ERP ' . $this->uid)->setAssetType('software')->setOwner('IT')
+        $asset = $this->keep((new Asset())->setName('ERP ' . $this->uid)->setAssetType('software')
             ->setStatus('active')->setTenant($this->holding)->setConfidentialityValue(3)
             ->setIntegrityValue(3)->setAvailabilityValue(4)->setPhysicalLocation($this->site));
         $process = new BusinessProcess();
@@ -64,7 +64,6 @@ final class LocationMapLayersTest extends WebTestCase
         $process->setRto(4);
         $process->setRpo(2);
         $process->setMtpd(24);
-        $process->setProcessOwner('Vertrieb');
         $process->setReputationalImpact(3);
         $process->setRegulatoryImpact(2);
         $process->setOperationalImpact(4);

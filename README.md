@@ -275,7 +275,8 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Setup-Wizard** -- 12 Schritte (Welcome -> Requirements -> Datenbank -> Backup-Restore -> Admin-User -> Email -> Organisation -> Module -> Compliance-Frameworks -> Stammdaten -> Sample-Data -> Abschluss) im einheitlichen Aurora-Layout
 - **Industry-Preset Express-Path** -- 3-Fragen-Onboarding (Branche + Groesse + Zertifizierungen) aktiviert automatisch relevante Module und Branchen-Baselines (Tag-1-Onboarding)
 - **3-Bucket-Applicability** -- Frameworks automatisch in Pflicht / Empfohlen / Optional klassifiziert
-- **Bulk-Import mit ehrlicher Vorschau** -- die Vorschau löst Verantwortliche (Benutzer/Person) bereits in der Organisation auf und zeigt nicht auflösbare Zeilen mit Zeilennummer, statt sie erst beim Übernehmen abzulehnen
+- **Bulk-Import mit ehrlicher Vorschau** -- die Vorschau löst Verantwortliche (Benutzer/Person) bereits in der Organisation auf und zeigt nicht auflösbare Zeilen mit Zeilennummer, statt sie erst beim Übernehmen abzulehnen; eine Spalte mit Name oder E-Mail (z. B. „owner“) wird zum passenden Benutzer oder zur Person, ein unbekannter Name wird beim Übernehmen als Person angelegt
+- **Verantwortliche nur als Benutzer oder Person** -- keine Freitext-Eigentümer mehr; alte Freitexte, GSTOOL-„verantwortlich“ und alte Backups werden zu Personen der Organisation (Erinnerungen und Mein Tag erreichen sie)
 - **Guided Tours** -- Rollenbezogene Einfuehrungen (Junior, ISB, CISO, Auditor, Compliance Manager)
 - **Command Palette** -- Cmd+K / Ctrl+K fuer schnellen Zugriff
 - **Mein-Tag-Inbox** -- Zentrale Inbox aggregiert 19 Buckets aus allen Modulen (Workflow-Inbox, 4-Eyes, Audit-Findings, DSR-Requests, Policy-Acks, Risk-Reviews, Patch-Deadlines, Control-Evidence, Training, Incidents, BCM und mehr)

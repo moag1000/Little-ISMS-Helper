@@ -164,11 +164,6 @@ class Incident
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'incident.validation.reported_by_max_length')]
-    private ?string $reportedBy = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
     #[Assert\Length(max: 100, maxMessage: 'incident.validation.assigned_to_max_length')]
     private ?string $assignedTo = null;
 
@@ -539,17 +534,6 @@ class Incident
     public function setOccurredAt(?DateTimeInterface $occurredAt): static
     {
         $this->occurredAt = $occurredAt;
-        return $this;
-    }
-
-    public function getReportedBy(): ?string
-    {
-        return $this->reportedBy;
-    }
-
-    public function setReportedBy(?string $reportedBy): static
-    {
-        $this->reportedBy = $reportedBy;
         return $this;
     }
 

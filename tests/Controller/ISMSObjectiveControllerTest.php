@@ -109,7 +109,6 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->testObjective->setTitle('Test Objective ' . $uniqueId);
         $this->testObjective->setDescription('Test description');
         $this->testObjective->setCategory('security');
-        $this->testObjective->setResponsiblePerson('Test User');
         $this->testObjective->setStatus('in_progress');
         $this->testObjective->setTargetDate(new \DateTime('+30 days'));
         $this->entityManager->persist($this->testObjective);

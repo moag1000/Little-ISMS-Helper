@@ -229,8 +229,6 @@
                         {{ control.responsiblePersonUser.fullName }}
                     {% elseif control.responsiblePersonRef %}
                         {{ control.responsiblePersonRef.displayName }}
-                    {% elseif control.responsiblePerson %}
-                        {{ control.responsiblePerson }}
                     {% else %}
                         <span class="text-muted">{{ 'soa.field.unassigned'|trans({}, 'soa') }}</span>
                     {% endif %}

@@ -6,7 +6,7 @@
  # {% include '_components/_detail_group.html.twig' with {
  #     items: [
  #         { label: 'asset.label.type'|trans({}, 'asset'), value: asset.type },
- #         { label: 'asset.label.owner'|trans({}, 'asset'), value: asset.owner, dataReuse: true },
+ #         { label: 'asset.label.owner'|trans({}, 'asset'), value: asset.effectiveOwner, dataReuse: true },
  #         { label: 'common.status'|trans({}, 'messages'), value: statusBadge, raw: true }
  #     ],
  #     title: 'Section Title (optional)',

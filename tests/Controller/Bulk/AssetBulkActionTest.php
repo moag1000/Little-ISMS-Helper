@@ -198,7 +198,7 @@ class AssetBulkActionTest extends WebTestCase
     private function makeAsset(string $name, Tenant $tenant): Asset
     {
         $a = new Asset();
-        $a->setName($name)->setAssetType('hardware')->setOwner('Owner')
+        $a->setName($name)->setAssetType('hardware')
           ->setTenant($tenant)->setConfidentialityValue(2)->setIntegrityValue(2)
           ->setAvailabilityValue(2)->setStatus('active')->setDataClassification('internal');
         $this->em->persist($a);

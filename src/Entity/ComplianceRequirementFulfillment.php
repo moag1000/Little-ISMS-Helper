@@ -331,7 +331,7 @@ class ComplianceRequirementFulfillment
      */
     public function getEffectiveResponsiblePerson(): ?string
     {
-        return OwnerResolver::resolveEffective($this->responsiblePersonUser, $this->responsiblePerson, null);
+        return OwnerResolver::resolveEffective($this->responsiblePersonUser, $this->responsiblePerson);
     }
 
     /**
@@ -344,7 +344,6 @@ class ComplianceRequirementFulfillment
         return OwnerResolver::resolveAll(
             $this->responsiblePersonUser,
             $this->responsiblePerson,
-            null,
             $this->responsibleDeputyPersons
         );
     }

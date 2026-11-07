@@ -282,7 +282,7 @@ class IsmsRegisterEntry
     /** Display name of the owner (user before person), null when nobody is set. */
     public function getEffectiveOwner(): ?string
     {
-        return OwnerResolver::resolveEffective($this->ownerUser, $this->ownerPerson, null);
+        return OwnerResolver::resolveEffective($this->ownerUser, $this->ownerPerson);
     }
 
     public function getNextReviewDate(): ?DateTimeImmutable

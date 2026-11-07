@@ -529,13 +529,13 @@ class ManagementReview
 
     public function getEffectiveReviewedBy(): ?string
     {
-        return OwnerResolver::resolveEffective($this->reviewedBy, $this->reviewedByPerson, null);
+        return OwnerResolver::resolveEffective($this->reviewedBy, $this->reviewedByPerson);
     }
 
     /** @return list<string> */
     public function getAllReviewedByOwners(): array
     {
-        return OwnerResolver::resolveAll($this->reviewedBy, $this->reviewedByPerson, null, $this->reviewedByDeputyPersons);
+        return OwnerResolver::resolveAll($this->reviewedBy, $this->reviewedByPerson, $this->reviewedByDeputyPersons);
     }
 
     public function getIncidentsReview(): ?string

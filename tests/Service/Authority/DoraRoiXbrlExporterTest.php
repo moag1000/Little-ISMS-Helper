@@ -324,7 +324,6 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $asset->setConfidentialityValue(5);
         $asset->setIntegrityValue(5);
         $asset->setAvailabilityValue(4);
-        $asset->setOwner('CIO Office');
         $asset->setLocation('Frankfurt DC');
         $asset->setStatus('active');
 

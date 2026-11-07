@@ -9,7 +9,6 @@ access_review.scope	2
 access_review.status	1
 admin.data_repair.cascade.category	1
 admin.data_retention.entity	1
-admin.legacy_owners.type	1
 admin.location_map.peer	1
 admin.location_map.precision	1
 admin.queue.job_status	1

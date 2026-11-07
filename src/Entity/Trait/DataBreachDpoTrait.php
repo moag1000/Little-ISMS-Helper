@@ -95,7 +95,6 @@ trait DataBreachDpoTrait
         return OwnerResolver::resolveEffective(
             $this->dataProtectionOfficer,
             $this->dataProtectionOfficerPerson,
-            null,
         );
     }
 
@@ -109,7 +108,6 @@ trait DataBreachDpoTrait
         return OwnerResolver::resolveAll(
             $this->dataProtectionOfficer,
             $this->dataProtectionOfficerPerson,
-            null,
             $this->dataProtectionOfficerDeputyPersons,
         );
     }

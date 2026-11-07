@@ -81,7 +81,6 @@ final class BCExerciseRepositoryUpcomingTest extends KernelTestCase
         $exercise->setScope('scope');
         $exercise->setObjectives('objective');
         $exercise->setParticipants('Alice');
-        $exercise->setFacilitator('Bob');
         $exercise->setStatus('planned');
         $exercise->setExerciseDate(new \DateTime('+5 days'));
         $exercise->setTenant($tenant);

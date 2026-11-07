@@ -6,6 +6,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\Asset;
 use App\Entity\BusinessContinuityPlan;
+use App\Entity\Person;
 use App\Entity\BusinessProcess;
 use App\Entity\Document;
 use App\Entity\Supplier;
@@ -37,9 +38,6 @@ class BusinessContinuityPlanTest extends TestCase
 
         $plan->setDescription('Recovery plan for critical IT systems');
         $this->assertEquals('Recovery plan for critical IT systems', $plan->getDescription());
-
-        $plan->setPlanOwner('John Doe');
-        $this->assertEquals('John Doe', $plan->getPlanOwner());
 
         $plan->setBcTeam('IT Team, Management');
         $this->assertEquals('IT Team, Management', $plan->getBcTeam());
@@ -415,7 +413,7 @@ class BusinessContinuityPlanTest extends TestCase
 
         // Add all key fields
         $plan->setName('Test Plan');
-        $plan->setPlanOwner('Owner');
+        $plan->setPlanOwnerPerson((new Person())->setFullName('Owner'));
         $plan->setActivationCriteria('Criteria');
         $plan->setRecoveryProcedures('Procedures');
         $plan->setCommunicationPlan('Communication');
@@ -436,7 +434,7 @@ class BusinessContinuityPlanTest extends TestCase
         // Test partial completion
         $plan2 = new BusinessContinuityPlan();
         $plan2->setName('Test');
-        $plan2->setPlanOwner('Owner');
+        $plan2->setPlanOwnerPerson((new Person())->setFullName('Owner'));
         $plan2->setActivationCriteria('Criteria');
         $plan2->setRecoveryProcedures('Procedures');
 

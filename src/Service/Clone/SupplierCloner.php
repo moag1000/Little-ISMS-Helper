@@ -78,7 +78,6 @@ final class SupplierCloner implements EntityClonerInterface
         );
 
         $clone->setDescription($source->getDescription());
-        $clone->setContactPerson($source->getContactPerson());
         $this->copyStructuredContact($source, $clone, $tenant);
         $clone->setEmail($source->getEmail());
         $clone->setPhone($source->getPhone());

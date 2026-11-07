@@ -26,7 +26,6 @@ control:
     last_review_date: Last Review Date
     next_review_date: Next Review Date
     protected_assets: Protected Assets
-    responsible_person_legacy: Responsible Person (free text, legacy)
     essential_for_small_business: Essential for SME
     effectiveness: Effectiveness
     control_type: Control Type (NIST)
@@ -110,8 +109,6 @@ control:
   status_hint:
     verified_full: "Verified = fully implemented (100%)."
     implemented_confirm: "Mark as fully implemented (100%)?"
-  disclosure:
-    legacy_owner: "External/legacy owner (free text)"
   effectiveness:
     not_assessed: Not Assessed
     ineffective: Ineffective

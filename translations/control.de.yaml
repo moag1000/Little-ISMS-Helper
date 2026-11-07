@@ -26,7 +26,6 @@ control:
     last_review_date: Letzte Überprüfung
     next_review_date: Nächste Überprüfung
     protected_assets: Geschützte Assets
-    responsible_person_legacy: Verantwortliche Person (freitext, veraltet)
     essential_for_small_business: Wesentlich für KMU
     effectiveness: Wirksamkeit
     control_type: Maßnahmentyp (NIST)
@@ -110,8 +109,6 @@ control:
   status_hint:
     verified_full: "Verifiziert = vollständig umgesetzt (100%)."
     implemented_confirm: "Als vollständig umgesetzt (100%) markieren?"
-  disclosure:
-    legacy_owner: "Externer/Legacy-Verantwortlicher (Freitext)"
   effectiveness:
     not_assessed: Nicht bewertet
     ineffective: Unwirksam

@@ -84,7 +84,7 @@ final class BusinessProcessImportSchemaProvider implements ImportSchemaProviderI
                     enumValues: self::CRITICALITY_VALUES,
                 ),
 
-                // ── Process owner (Pattern A dual-state + legacy string) ─────────
+                // ── Process owner (User, Person, or name as text) ─────────
                 new ImportFieldSpec(
                     name: 'processOwnerUser',
                     setter: 'setProcessOwnerUser',
@@ -99,11 +99,7 @@ final class BusinessProcessImportSchemaProvider implements ImportSchemaProviderI
                     relationClass: Person::class,
                     relationLookup: 'fullName',
                 ),
-                new ImportFieldSpec(
-                    name: 'processOwner',
-                    setter: 'setProcessOwner',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
+                OwnerImportFields::text('processOwner', 'processOwnerUser', 'processOwnerPerson'),
 
                 // ── Recovery targets (ISO 22301 Cl. 8.2.2 — hours) ──────────────
                 new ImportFieldSpec(

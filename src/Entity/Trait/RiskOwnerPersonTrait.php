@@ -84,7 +84,6 @@ trait RiskOwnerPersonTrait
         return OwnerResolver::resolveEffective(
             $this->riskOwner,
             $this->riskOwnerPerson,
-            null,
         );
     }
 
@@ -98,7 +97,6 @@ trait RiskOwnerPersonTrait
         return OwnerResolver::resolveAll(
             $this->riskOwner,
             $this->riskOwnerPerson,
-            null,
             $this->riskOwnerDeputyPersons,
         );
     }

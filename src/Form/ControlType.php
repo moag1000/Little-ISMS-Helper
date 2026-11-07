@@ -30,7 +30,6 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use App\Form\Util\LegacyFreeTextField;
 
 final class ControlType extends AbstractType implements SectionMapInterface
 {
@@ -189,14 +188,6 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'control.help.responsible_deputies',
             ])
-            ->add('responsiblePerson', TextType::class, [
-                'label' => 'control.field.responsible_person_legacy',
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'control.placeholder.responsible_person',
-                ],
-            ])
             ->add('targetDate', DateType::class, [
                 'label' => 'control.field.target_date',
                 'required' => false,
@@ -332,7 +323,6 @@ final class ControlType extends AbstractType implements SectionMapInterface
                     return $qb;
                 },
             ]);
-        LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
 
         // frameworkReferences shape conversion now lives inside
         // ControlFrameworkReferencesType via FrameworkReferencesTransformer.
@@ -477,7 +467,6 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 'responsiblePersonUser',
                 'responsiblePersonRef',
                 'responsibleDeputyPersons',
-                'responsiblePerson',
             ],
             'review' => ['lastReviewDate', 'nextReviewDate'],
             'references' => ['frameworkReferences'],

@@ -367,8 +367,7 @@ class LocationPostureService implements ResetInterface
 
         $checks = [
             'owner' => $root->getResponsiblePersonUser() !== null
-                || $root->getResponsiblePersonRef() !== null
-                || trim((string) $root->getResponsiblePerson()) !== '',
+                || $root->getResponsiblePersonRef() !== null,
             'deputy' => ($controlled || $protection >= 3) ? !$root->getResponsibleDeputyPersons()->isEmpty() : null,
             'access_control' => $controlled ? $site['access_missing'] === 0 : null,
             'camera' => in_array('secure', $site['levels'], true) ? $site['camera_missing'] === 0 : null,
@@ -427,8 +426,7 @@ class LocationPostureService implements ResetInterface
                 'score' => self::currentScore($r),
             ], array_slice($risks, 0, 3)),
             'ownerName' => $root->getResponsiblePersonUser()?->getFullName()
-                ?? $root->getResponsiblePersonRef()?->getDisplayName()
-                ?? (trim((string) $root->getResponsiblePerson()) ?: null),
+                ?? $root->getResponsiblePersonRef()?->getDisplayName(),
             'mine' => $site['mine'],
             'active' => $root->isActive() !== false,
         ];

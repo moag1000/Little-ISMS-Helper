@@ -21,7 +21,6 @@ class BusinessProcessTest extends TestCase
         $this->assertNull($process->getId());
         $this->assertNull($process->getName());
         $this->assertNull($process->getDescription());
-        $this->assertNull($process->getProcessOwner());
         $this->assertNull($process->getCriticality());
         $this->assertNull($process->getRto());
         $this->assertNull($process->getRpo());
@@ -56,15 +55,6 @@ class BusinessProcessTest extends TestCase
         $process->setDescription('Handles all customer orders from receipt to fulfillment');
 
         $this->assertEquals('Handles all customer orders from receipt to fulfillment', $process->getDescription());
-    }
-
-    #[Test]
-    public function testSetAndGetProcessOwner(): void
-    {
-        $process = new BusinessProcess();
-        $process->setProcessOwner('Sales Director');
-
-        $this->assertEquals('Sales Director', $process->getProcessOwner());
     }
 
     #[Test]
@@ -399,7 +389,6 @@ class BusinessProcessTest extends TestCase
         $process = new BusinessProcess();
 
         $process->setName('Customer Portal');
-        $process->setProcessOwner('IT Director');
         $process->setCriticality('high');
         $process->setRto(2);
         $process->setRpo(1);
