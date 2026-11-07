@@ -63,7 +63,7 @@
                 </form>
             {% endif %}
 
-            {% if app.user and app.user.tenant and app.user.tenant.allSubsidiaries|length > 0 %}
+            {% if is_granted('ROLE_ADMIN') and app.user.tenant and app.user.tenant.allSubsidiaries|length > 0 %}
                 <form method="post" action="{{ path('app_industry_baseline_apply_recursive', {code: baseline.code}) }}"
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"

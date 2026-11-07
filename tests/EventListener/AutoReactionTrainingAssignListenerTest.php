@@ -10,14 +10,17 @@ use App\Entity\TrainingParticipation;
 use App\Entity\User;
 use App\EventListener\AutoReactionTrainingAssignListener;
 use App\Service\AutoReactionService;
+use App\Doctrine\PostFlushWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * V3 W2-C3 — AutoReactionTrainingAssignListener tests.
@@ -34,13 +37,15 @@ class AutoReactionTrainingAssignListenerTest extends TestCase
 {
     private MockObject $reactions;
     private MockObject $logger;
+    private PostFlushWriter $writer;
     private AutoReactionTrainingAssignListener $listener;
 
     protected function setUp(): void
     {
         $this->reactions = $this->createMock(AutoReactionService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->listener = new AutoReactionTrainingAssignListener($this->reactions, $this->logger);
+        $this->writer = new PostFlushWriter(new NullLogger());
+        $this->listener = new AutoReactionTrainingAssignListener($this->reactions, $this->logger, $this->writer);
     }
 
     #[Test]
@@ -132,6 +137,11 @@ class AutoReactionTrainingAssignListenerTest extends TestCase
 
         $args = new PostPersistEventArgs($user, $em);
         $this->listener->postPersist($user, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+        self::assertNull($persisted);
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
 
         self::assertInstanceOf(TrainingParticipation::class, $persisted);
         /** @var TrainingParticipation $persisted */

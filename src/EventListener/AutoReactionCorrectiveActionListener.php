@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Doctrine\PostFlushWriter;
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
 use App\Enum\CorrectiveActionStatus;
@@ -24,6 +25,8 @@ use Psr\Log\LoggerInterface;
  * On AuditFinding postPersist/Update with severity in [major, critical, high]:
  * create a Corrective-Action skeleton with planned completion in 30 days,
  * status='planned', linked to the finding.
+ *
+ * Derived rows are written after the flush via PostFlushWriter (no flush inside the listener).
  *
  * Toggle: AutoReactionService::KEY_CA_ON_FINDING (default true).
  */
@@ -52,6 +55,7 @@ final class AutoReactionCorrectiveActionListener
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
+        private readonly PostFlushWriter $postFlushWriter,
         private readonly ?EmailNotificationService $emailNotifier = null,
         private readonly ?UserRepository $userRepository = null,
         private readonly ?SystemSettingsRepository $systemSettings = null,
@@ -115,12 +119,10 @@ final class AutoReactionCorrectiveActionListener
                 $ca->setStatus(CorrectiveActionStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist entity)
             }
 
-            $em->persist($ca);
-            $em->flush();
+            $this->postFlushWriter->persist($ca);
 
             $this->logger->info('Auto-CorrectiveAction created for finding', [
                 'finding_id' => $finding->getId(),
-                'ca_id' => $ca->getId(),
             ]);
 
             // (ISO 27001 Cl.7.4 + Cl.10.1): Notify CA assignee /
@@ -228,7 +230,6 @@ final class AutoReactionCorrectiveActionListener
             );
         } catch (\Throwable $e) {
             $this->logger->warning('Auto-CA notification failed', [
-                'ca_id' => $ca->getId(),
                 'error' => $e->getMessage(),
             ]);
         }

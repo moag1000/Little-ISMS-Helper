@@ -17,6 +17,7 @@ use App\Repository\AssetRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ControlRepository;
 use App\Repository\RiskRepository;
+use App\Service\Group\HoldingScope;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -39,6 +40,7 @@ final class IndustryBaselineApplier
         private readonly ControlRepository $controlRepository,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly HoldingScope $holdingScope,
     ) {
     }
 
@@ -195,7 +197,11 @@ final class IndustryBaselineApplier
         $results[(string) $root->getCode()] = $this->apply($baseline, $root, $actor);
 
         foreach ($root->getAllSubsidiaries() as $subsidiary) {
-            $results[(string) $subsidiary->getCode()] = $this->apply($baseline, $subsidiary, $actor);
+            // Pinned as context: the duplicate checks must see the subsidiary's own rows, not the holding's.
+            $results[(string) $subsidiary->getCode()] = $this->holdingScope->asTenant(
+                $subsidiary,
+                fn (): array => $this->apply($baseline, $subsidiary, $actor),
+            );
         }
 
         return $results;

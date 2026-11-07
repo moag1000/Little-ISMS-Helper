@@ -7,8 +7,10 @@ namespace App\Tests\EventListener;
 use App\Entity\Asset;
 use App\Entity\User;
 use App\EventListener\AssetOwnerSyncListener;
+use App\Doctrine\PostFlushWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -16,6 +18,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * V3 W2-LB-6 — AssetOwnerSyncListener tests.
@@ -24,12 +27,14 @@ use Psr\Log\LoggerInterface;
 class AssetOwnerSyncListenerTest extends TestCase
 {
     private MockObject $logger;
+    private PostFlushWriter $writer;
     private AssetOwnerSyncListener $listener;
 
     protected function setUp(): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->listener = new AssetOwnerSyncListener($this->logger);
+        $this->writer = new PostFlushWriter(new NullLogger());
+        $this->listener = new AssetOwnerSyncListener($this->logger, $this->writer);
     }
 
     #[Test]
@@ -75,12 +80,18 @@ class AssetOwnerSyncListenerTest extends TestCase
         $args = new PostUpdateEventArgs($user, $em);
         $this->listener->postUpdate($user, $args);
 
-        // Both assets re-persisted; flush called once.
         $this->assertSame('Bob Builder', $asset1->getOwner());
         $this->assertSame('Bob Builder', $asset2->getOwner());
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+        $this->assertSame([], $persisted);
+        $this->assertFalse($flushed);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
+        // Only asset1 changed (asset2 already had the matching string); the writer flushes once.
+        $this->assertSame([$asset1], $persisted);
         $this->assertTrue($flushed);
-        // Only the asset1 changed (asset2 already had matching string).
-        $this->assertCount(1, $persisted);
     }
 
     #[Test]

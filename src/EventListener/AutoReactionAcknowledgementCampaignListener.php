@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Doctrine\PostFlushWriter;
 use App\Entity\Document;
 use App\Entity\PolicyAcknowledgement;
 use App\Entity\User;
@@ -37,6 +38,8 @@ use Psr\Log\LoggerInterface;
  * caller's responsibility to surface pending rows via the
  * inbox UI / email reminder cron.
  *
+ * Derived rows are written after the flush via PostFlushWriter (no flush inside the listener).
+ *
  * Toggle: AutoReactionService::KEY_ACK_CAMPAIGN (default true).
  */
 #[AsEntityListener(event: Events::postUpdate, entity: Document::class)]
@@ -45,6 +48,7 @@ final class AutoReactionAcknowledgementCampaignListener
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
+        private readonly PostFlushWriter $postFlushWriter,
     ) {
     }
 
@@ -128,12 +132,11 @@ final class AutoReactionAcknowledgementCampaignListener
                 $pending->setAcknowledgedAt(null);
                 $pending->setAcknowledgementMethod(null);
 
-                $em->persist($pending);
+                $this->postFlushWriter->persist($pending);
                 $created++;
             }
 
             if ($created > 0) {
-                $em->flush();
                 $this->logger->info('Auto-Acknowledgement campaign persisted pending rows', [
                     'document_id' => $document->getId(),
                     'document_version' => $version,

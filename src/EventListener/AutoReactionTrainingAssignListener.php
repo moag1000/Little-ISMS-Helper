@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Doctrine\PostFlushWriter;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
 use App\Entity\User;
@@ -32,6 +33,8 @@ use Psr\Log\LoggerInterface;
  *     "was user X assigned mandatory training Y" via SELECT instead of
  *     LIKE-matching against the free-text `participants` column.
  *
+ * Derived rows are written after the flush via PostFlushWriter (no flush inside the listener).
+ *
  * Toggle: AutoReactionService::KEY_TRAINING_ASSIGN (default true).
  */
 #[AsEntityListener(event: Events::postPersist, entity: User::class)]
@@ -40,6 +43,7 @@ final class AutoReactionTrainingAssignListener
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
+        private readonly PostFlushWriter $postFlushWriter,
         private readonly ?EmailNotificationService $emailNotifier = null,
     ) {
     }
@@ -90,12 +94,14 @@ final class AutoReactionTrainingAssignListener
                 $participation->setStatus(TrainingParticipation::STATUS_PENDING);
                 $participation->setAssignmentSource('auto:user_create');
 
-                $em->persist($participation);
+                $key = 'training_participation:' . $training->getId() . ':' . $user->getId();
+                if (!$this->postFlushWriter->persistOnce($key, $participation)) {
+                    continue; // the other direction's listener queued it in this flush
+                }
                 $assigned++;
                 $assignedTrainings[] = $training;
             }
             if ($assigned > 0) {
-                $em->flush();
                 $this->logger->info('Auto-assigned mandatory trainings to new user', [
                     'user_id' => $user->getId(),
                     'tenant_id' => $tenant->getId(),

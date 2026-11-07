@@ -24,8 +24,8 @@ use App\Service\PdfExportService;
 use App\Service\PolicyWizard\Export\PolicyPdfExporter;
 use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use App\Service\SoAReportService;
-use App\Service\TenantContext;
 use DateTimeImmutable;
+use App\Tests\Stub\PassThroughHoldingScope;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -48,6 +48,8 @@ use ZipArchive;
 #[AllowMockObjectsWithoutExpectations]
 final class CertificationBundleExporterKonzernTest extends TestCase
 {
+    private PassThroughHoldingScope $holdingScope;
+
     private function makeTenant(int $id, string $name, string $code): Tenant
     {
         $tenant = new Tenant();
@@ -146,7 +148,7 @@ final class CertificationBundleExporterKonzernTest extends TestCase
         return new CertificationBundleExporter(
             $this->createMock(PdfExportService::class),
             $this->createMock(SoAReportService::class),
-            $this->createMock(TenantContext::class),
+            $this->holdingScope = new PassThroughHoldingScope(),
             $this->createMock(Security::class),
             $assetRepo,
             $riskRepo,
@@ -283,6 +285,8 @@ final class CertificationBundleExporterKonzernTest extends TestCase
 
         self::assertSame(3, $result['subsidiary_count']);
         self::assertSame(3, $result['document_count']);
+        // Each organisation's bundle and overview row is built with that organisation as context.
+        self::assertSame([10, 10, 20, 20, 30, 30], $this->holdingScope->pinned);
 
         // Pick up the aggregated root INDEX.csv. We don't know the date-based
         // root dir prefix at runtime, so locate it dynamically.
