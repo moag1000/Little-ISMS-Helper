@@ -252,92 +252,115 @@
 {% endmacro %}
 
 {#
- # Approve / reject confirm modals for one workflow instance — the single copy
- # used by My Day, the workflow pages, the home widget and inline_actions().
- # After the decision the controller returns to the page it came from.
+ # Approve / reject confirm modals for one workflow instance — used by My Day,
+ # the workflow pages, the home widget and inline_actions(). After the
+ # decision the controller returns to the page it came from.
  #
  # @param instanceId   int
  # @param workflowName string
  # @param subject      string|null name of the record the decision is about
+ # @param summary      string|null business line (e.g. risk in euro), shown under the subject
  #}
-{% macro decision_modals(instanceId, workflowName, subject = null) %}
-    <div class="fa-modal fa-modal--confirm fa-modal--success"
-         id="approveWorkflow{{ instanceId }}"
-         data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="success"
-         role="alertdialog" aria-modal="true"
-         aria-labelledby="approveWorkflowLabel{{ instanceId }}" aria-hidden="true">
-        <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
-        <div class="fa-modal__container" data-fa-modal-target="dialog">
-            <form method="post" action="{{ path('app_workflow_instance_approve', {id: instanceId}) }}" data-fa-modal-target="form">
-                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instanceId) }}">
-                <header class="fa-modal__header">
-                    <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-ok"></i></span>
-                    <div class="fa-modal__heading">
-                        <h2 class="fa-modal__title" id="approveWorkflowLabel{{ instanceId }}">
-                            {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
-                        </h2>
-                    </div>
-                    <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
-                </header>
-                <div class="fa-modal__body">
-                    <p class="mb-3">{{ 'workflow.widget.confirm.approve'|trans({'%workflow%': workflowName}, 'workflows') }}</p>
-                    {% if subject %}
-                        <p class="mb-3"><strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong> {{ subject }}</p>
-                    {% endif %}
-                    <label for="approveComments{{ instanceId }}" class="form-label">
-                        {{ 'workflow.widget.field.comments'|trans({}, 'workflows') }}
-                    </label>
-                    <textarea class="form-control fa-cyber-input__field" id="approveComments{{ instanceId }}" name="comments" rows="3"></textarea>
-                </div>
-                <footer class="fa-modal__footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">
-                        {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
-                    </button>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                        {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
-                    </button>
-                </footer>
-            </form>
-        </div>
-    </div>
+{% macro decision_modals(instanceId, workflowName, subject = null, summary = null) %}
+    {{ _self.decision_modal({
+        id: 'approveWorkflow' ~ instanceId,
+        tone: 'success',
+        title: 'workflow.widget.action.approve'|trans({}, 'workflows'),
+        action: path('app_workflow_instance_approve', {id: instanceId}),
+        token: csrf_token('approve' ~ instanceId),
+        question: 'workflow.widget.confirm.approve'|trans({'%workflow%': workflowName}, 'workflows'),
+        subject: subject,
+        summary: summary,
+        field: { name: 'comments', label: 'workflow.widget.field.comments'|trans({}, 'workflows') },
+    }) }}
+    {{ _self.decision_modal({
+        id: 'rejectWorkflow' ~ instanceId,
+        tone: 'danger',
+        title: 'workflow.widget.action.reject'|trans({}, 'workflows'),
+        action: path('app_workflow_instance_reject', {id: instanceId}),
+        token: csrf_token('reject' ~ instanceId),
+        question: 'workflow.widget.confirm.reject'|trans({'%workflow%': workflowName}, 'workflows'),
+        subject: subject,
+        summary: summary,
+        field: {
+            name: 'comments', label: 'workflow.widget.field.reason'|trans({}, 'workflows'), required: true, rows: 4,
+            help: 'workflow.widget.help.rejection_reason'|trans({}, 'workflows'),
+        },
+    }) }}
+{% endmacro %}
 
-    <div class="fa-modal fa-modal--confirm fa-modal--danger"
-         id="rejectWorkflow{{ instanceId }}"
-         data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
-         role="alertdialog" aria-modal="true"
-         aria-labelledby="rejectWorkflowLabel{{ instanceId }}" aria-hidden="true">
+{#
+ # The one decision dialog (approve / reject with comment or reason) for
+ # workflows, four-eyes requests and risk acceptances. On phones fa-modal.css
+ # turns it into a bottom sheet with full-width buttons.
+ #
+ # @param o.id       string  modal id, opened via fa-modal-dispatcher data-fa-modal-id
+ # @param o.tone     'success'|'danger'|'neutral'
+ # @param o.icon     icon name (optional, default by tone)
+ # @param o.submit_variant fa-cyber-btn variant of the submit button (optional, default tone)
+ # @param o.title    string
+ # @param o.action   string  form action URL (POST)
+ # @param o.token    string  CSRF token value (field _token)
+ # @param o.question string|null
+ # @param o.intro    string|null  muted explanation above the field
+ # @param o.subject  string|null  record the decision is about
+ # @param o.summary  string|null  business line under the subject
+ # @param o.field    {name, label, required?, rows?, minlength?, help?, placeholder?}
+ # @param o.hidden   map name => value of extra hidden fields (optional)
+ # @param o.submit_label / o.cancel_label  button texts (optional)
+ #}
+{% macro decision_modal(o) %}
+    {% set approve = o.tone == 'success' %}
+    {% set field = o.field %}
+    {% set icon = o.icon ?? (approve ? 'status-ok' : 'status-critical') %}
+    <div class="fa-modal fa-modal--confirm fa-modal--{{ o.tone }}"
+         id="{{ o.id }}"
+         data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="{{ o.tone }}"
+         role="{{ o.tone == 'neutral' ? 'dialog' : 'alertdialog' }}" aria-modal="true"
+         aria-labelledby="{{ o.id }}-label" aria-hidden="true">
         <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
         <div class="fa-modal__container" data-fa-modal-target="dialog">
-            <form method="post" action="{{ path('app_workflow_instance_reject', {id: instanceId}) }}" data-fa-modal-target="form">
-                <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instanceId) }}">
+            <form method="post" action="{{ o.action }}" data-fa-modal-target="form">
+                <input type="hidden" name="_token" value="{{ o.token }}">
+                {% for name, value in o.hidden ?? {} %}
+                    <input type="hidden" name="{{ name }}" value="{{ value }}">
+                {% endfor %}
                 <header class="fa-modal__header">
-                    <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span>
+                    <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--{{ icon }}"></i></span>
                     <div class="fa-modal__heading">
-                        <h2 class="fa-modal__title" id="rejectWorkflowLabel{{ instanceId }}">
-                            {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
-                        </h2>
+                        <h2 class="fa-modal__title" id="{{ o.id }}-label">{{ o.title }}</h2>
                     </div>
                     <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
                 </header>
                 <div class="fa-modal__body">
-                    <p class="mb-3">{{ 'workflow.widget.confirm.reject'|trans({'%workflow%': workflowName}, 'workflows') }}</p>
-                    {% if subject %}
-                        <p class="mb-3"><strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong> {{ subject }}</p>
+                    {% if o.question ?? null %}
+                        <p class="mb-3">{{ o.question }}</p>
                     {% endif %}
-                    <label for="rejectComments{{ instanceId }}" class="form-label">
-                        {{ 'workflow.widget.field.reason'|trans({}, 'workflows') }} <span class="text-danger">*</span>
+                    {% if o.subject ?? null %}
+                        <p class="{{ (o.summary ?? null) ? 'mb-1' : 'mb-3' }}"><strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong> {{ o.subject }}</p>
+                    {% endif %}
+                    {% if o.summary ?? null %}
+                        <p class="mb-3 small text-muted">{{ o.summary }}</p>
+                    {% endif %}
+                    {% if o.intro ?? null %}
+                        <p class="text-muted small mb-3">{{ o.intro }}</p>
+                    {% endif %}
+                    <label for="{{ o.id }}-{{ field.name }}" class="form-label">
+                        {{ field.label }}{% if field.required ?? false %} <span class="text-danger">*</span>{% endif %}
                     </label>
-                    <textarea class="form-control fa-cyber-input__field" id="rejectComments{{ instanceId }}" name="comments" rows="4" required></textarea>
-                    <div class="form-text">{{ 'workflow.widget.help.rejection_reason'|trans({}, 'workflows') }}</div>
+                    <textarea class="form-control fa-cyber-input__field" id="{{ o.id }}-{{ field.name }}" name="{{ field.name }}"
+                              rows="{{ field.rows ?? 3 }}"{% if field.placeholder ?? null %} placeholder="{{ field.placeholder }}"{% endif %}{% if field.minlength ?? false %} minlength="{{ field.minlength }}"{% endif %}{% if field.required ?? false %} required{% endif %}></textarea>
+                    {% if field.help ?? null %}
+                        <div class="form-text">{{ field.help }}</div>
+                    {% endif %}
                 </div>
                 <footer class="fa-modal__footer">
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">
-                        {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
+                        {{ o.cancel_label ?? 'common.cancel'|trans({}, 'messages') }}
                     </button>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
-                        {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ o.submit_variant ?? o.tone }}">
+                        <i class="fa-icon fa-icon--{{ o.icon is defined ? o.icon : (approve ? 'ui-check' : 'ui-close') }}" aria-hidden="true"></i>
+                        {{ o.submit_label ?? o.title }}
                     </button>
                 </footer>
             </form>

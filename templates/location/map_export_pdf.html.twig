@@ -1,0 +1,81 @@
+{# Standort-Lagebild as a one-page PDF (dompdf) — input for the management review, ISO 27001 9.3. #}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('de') }}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{{ 'location.map.export.title'|trans({}, 'locations') }}</title>
+    <style>
+        @page { margin: 1.6cm 1.4cm; }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 8.5pt; color: #1e293b; }
+        h1 { font-size: 15pt; margin: 0 0 2pt; }
+        h2 { font-size: 10pt; margin: 12pt 0 4pt; border-bottom: 1px solid #cbd5e1; padding-bottom: 2pt; }
+        .meta { color: #64748b; margin-bottom: 8pt; }
+        .kpis td { border: 1px solid #cbd5e1; padding: 5pt 8pt; width: 25%; vertical-align: top; }
+        .kpis .value { font-size: 13pt; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        .list th, .list td { border-bottom: 1px solid #e2e8f0; padding: 3pt 4pt; text-align: left; vertical-align: top; }
+        .list th { font-size: 7.5pt; color: #475569; text-transform: uppercase; }
+        .num { text-align: right; }
+        .muted { color: #64748b; }
+    </style>
+</head>
+<body>
+    <h1>{{ 'location.map.export.title'|trans({}, 'locations') }}</h1>
+    <div class="meta">{{ tenant_name }} · {{ 'now'|fa_date }} · {{ 'location.map.export.scope'|trans({ '%count%': sites|length }, 'locations') }}</div>
+
+    <table class="kpis">
+        <tr>
+            {% for _key in ['location_checks_rate', 'location_open_gaps', 'location_critical_sites', 'risk_exposure_eur'] %}
+                {% set _k = kpi(_key) %}
+                {% if _k is not null %}
+                    <td><div class="muted">{{ ('dashboard.kpi.' ~ _key)|trans({}, 'dashboard') }}</div><div class="value">{{ _k|kpi_value }}</div></td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    </table>
+
+    {% if levers|length > 0 %}
+        <h2>{{ 'location.map.levers.title'|trans({}, 'locations') }}</h2>
+        <table class="list">
+            {% for _l in levers %}
+                <tr>
+                    <td>{{ _l.siteName }}</td>
+                    <td>{{ _l.title }}</td>
+                    <td class="num">{{ _l.from }} → {{ _l.to }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    <h2>{{ 'location.map.export.action_needed'|trans({}, 'locations') }}</h2>
+    {% if action_needed|length > 0 %}
+        <table class="list">
+            <thead>
+                <tr>
+                    <th>{{ 'location.field.name'|trans({}, 'locations') }}</th>
+                    <th class="num">{{ 'location.map.col.protection'|trans({}, 'locations') }}</th>
+                    <th class="num">{{ 'location.map.col.risk'|trans({}, 'locations') }}</th>
+                    <th>{{ 'location.map.col.gaps'|trans({}, 'locations') }}</th>
+                    {% if peerMode != 'off' %}<th>{{ 'location.map.export.col.peer'|trans({}, 'locations') }}</th>{% endif %}
+                    {% if money %}<th class="num">{{ 'location.map.export.col.ale'|trans({}, 'locations') }}</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for site in action_needed %}
+                    {% set _peer = peers[site.id] ?? null %}
+                    <tr>
+                        <td>{{ site.name }}<br><span class="muted">{{ [site.city, site.country]|filter(v => v)|join(', ') }}</span></td>
+                        <td class="num">{{ site.protection ?: '–' }}</td>
+                        <td class="num">{{ site.riskBand == 'none' ? '–' : site.score }}</td>
+                        <td>{% for _c in site.gaps %}{{ ('location.map.check.' ~ _c)|trans({}, 'locations') }} ({{ check_norms[_c] }}){{ not loop.last ? ', ' }}{% else %}–{% endfor %}</td>
+                        {% if peerMode != 'off' %}<td>{{ _peer and _peer.rank ? ('location.map.peer.rank.' ~ _peer.rank)|trans({}, 'locations') : '–' }}</td>{% endif %}
+                        {% if money %}<td class="num">{{ (site.ale ?? 0)|number_format(0, ',', '.') }} €</td>{% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">{{ 'location.map.no_action'|trans({}, 'locations') }}</p>
+    {% endif %}
+</body>
+</html>

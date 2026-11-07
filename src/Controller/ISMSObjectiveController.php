@@ -10,6 +10,7 @@ use DateTime;
 use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ISMSObjective;
+use App\Service\Kpi\ObjectiveKpiProgress;
 use App\Enum\ISMSObjectiveStatus;
 use App\Form\ISMSObjectiveType;
 use App\Repository\ISMSObjectiveRepository;
@@ -36,6 +37,7 @@ class ISMSObjectiveController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
+        private readonly ObjectiveKpiProgress $kpiProgress,
     ) {}
     #[Route('/objective', name: 'app_objective_index', methods: ['GET'])]
     public function index(): Response
@@ -107,8 +109,12 @@ class ISMSObjectiveController extends AbstractController
             ]);
         }
 
+        $kpiCurrent = $this->kpiProgress->current($ismsObjective);
+
         return $this->render('objective/show.html.twig', [
             'objective' => $ismsObjective,
+            'kpi_current' => $kpiCurrent,
+            'kpi_progress' => ObjectiveKpiProgress::progress((string) $ismsObjective->getKpiKey(), $kpiCurrent, $ismsObjective->getTargetValue()),
         ]);
     }
     #[Route('/objective/{id}/edit', name: 'app_objective_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

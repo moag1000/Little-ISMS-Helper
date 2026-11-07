@@ -6,12 +6,14 @@ namespace App\Service\Prefill;
 
 use App\Entity\Asset;
 use App\Entity\Incident;
+use App\Entity\Location;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Tenant;
 use App\Entity\Vulnerability;
 use App\Repository\AssetRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\LocationRepository;
 use App\Repository\RiskRepository;
 use App\Repository\VulnerabilityRepository;
 use Doctrine\Persistence\ObjectRepository;
@@ -24,7 +26,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * already knows. Only records of the same organisation are read; anything
  * else is ignored silently, so a foreign id never leaks data into a form.
  *
- * Sources: Risk ← Vulnerability, Incident, Asset; Treatment plan ← Risk.
+ * Sources: Risk ← Vulnerability, Incident, Asset, Location (map quick action);
+ * Treatment plan ← Risk.
  * Control → evidence needs no form: the control page uploads evidence in place.
  */
 class RecordPrefill
@@ -35,6 +38,7 @@ class RecordPrefill
         private readonly IncidentRepository $incidentRepository,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
+        private readonly LocationRepository $locationRepository,
     ) {
     }
 
@@ -61,6 +65,11 @@ class RecordPrefill
                 $this->trans('risk.prefill.note_from_incident', ['%id%' => (string) $incident->getId()], 'risk'),
             ));
             $risk->setCategory('operational');
+        }
+
+        $location = $this->source($this->locationRepository, $request, 'fromLocation', $tenant);
+        if ($location instanceof Location) {
+            $risk->setLocation($location);
         }
 
         $asset = $this->source($this->assetRepository, $request, 'fromAsset', $tenant);

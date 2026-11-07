@@ -113,7 +113,7 @@ admin:
             nis2_registration: { label: 'NIS-2 BSI Registration', desc: 'Annual mandatory registration in the BSI notification portal' }
             dora_roi: { label: 'DORA RoI XBRL export', desc: 'Register of Information XBRL/CSV export for BaFin reporting' }
             # Sprint 6 deferred system-settings sub-pages
-            location_map_settings: { label: 'Location map', desc: 'Online lookup of location positions (optional)' }
+            location_map_settings: { label: 'Location map', desc: 'Site comparison, checks, precision and online lookup' }
             data_retention_settings: { label: 'Retention periods', desc: 'GDPR deletion schedules per data category' }
     section:
         overview: Overview
@@ -1142,6 +1142,20 @@ admin:
         endpoint:
             label: 'Service URL (Nominatim-compatible)'
             help: 'HTTPS only. Default: %default%. For self-hosting, enter the URL of your own Nominatim instance.'
+        peer:
+            title: 'Site comparison'
+            off: 'Off'
+            anonymous: 'Compare sites, do not name the owners of other sites'
+            named: 'Compare sites and name owners'
+            help: 'Comparison within similar sites (same type, similar protection need or a shared tag).'
+            privacy: 'A comparison that names persons can count as performance monitoring (German Works Constitution Act § 87(1) no. 6). Only choose "name owners" with the works council''s consent.'
+        checks:
+            title: 'Checks per site'
+            help: 'Checks that are off count neither as a gap nor as passed. The owner check always applies.'
+        precision:
+            title: 'Precision on the map and in exports'
+            city: 'Rounded to about 1 km'
+            exact: 'Exact as stored'
         privacy_title: Privacy
         privacy_text: 'Postal code and city of a company site are usually not personal data. The public service has its own terms of use; a self-hosted instance avoids any transfer.'
         saved: Saved.
@@ -1824,6 +1838,7 @@ kpi_threshold:
         bia_coverage: 'BIA Coverage'
         implementation_readiness: 'ISMS Implementation Readiness'
         isms_health_score: 'ISMS Health Score'
+        location_checks_rate: 'Site checks passed'
     flash:
         created: 'Threshold created.'
         updated: 'Threshold updated.'

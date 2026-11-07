@@ -33,6 +33,7 @@ fte_tracking:
         manual_calibration: 'Manual Calibration'
         workflow_automation: 'Workflow Automation'
         notification_automation: 'Notification Automation'
+        bulk_action: 'Bulk action'
     empty:
         no_data: 'No FTE savings recorded yet. Start using SSO JIT, Bulk-Import, or Evidence reuse.'
     calibration:
@@ -58,6 +59,8 @@ fte_tracking:
         single_framework_evidence_maintenance.desc: 'Effort to maintain evidence in a single compliance framework'
         manual_business_process_creation: 'Manual Business Process Entry'
         manual_business_process_creation.desc: 'Effort for BIA entry, owner, criticality assignment'
+        manual_record_update: 'Single record update'
+        manual_record_update.desc: 'Effort to open one record, change one field and save'
     report:
         badge: 'Board Report'
         breadcrumb: 'Board Report'

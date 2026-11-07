@@ -10,6 +10,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Location;
 use App\Form\LocationType;
 use App\Repository\LocationRepository;
+use App\Service\Location\LocationMapView;
 use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +32,7 @@ class LocationController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly LocationMapView $mapView,
     ) {}
     #[Route('/location', name: 'app_location_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -123,6 +125,8 @@ class LocationController extends AbstractController
             'child_locations' => $childLocations,
             'access_logs' => $accessLogs,
             'assets' => $assets,
+            'profile' => $this->mapView->profile($location, $this->getUser() instanceof \App\Entity\User ? $this->getUser() : null),
+            'check_norms' => \App\Service\Location\LocationPostureService::CHECK_NORM,
         ]);
     }
     #[Route('/location/{id}/edit', name: 'app_location_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
