@@ -53,7 +53,7 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly ?CommentRepository $commentRepository = null,
     ) {}
     #[Route('/soa', name: 'app_soa_index', methods: ['GET'])]
-    public function index(Request $request): Response
+    public function index(Request $request, ?\App\Service\Review\PeriodicReviewService $reviews = null): Response
     {
         // Get current user's tenant
         $user = $this->security->getUser();
@@ -77,8 +77,8 @@ class StatementOfApplicabilityController extends AbstractController
         // MRIS-Mythos-Klassifikation gem. Peddi (2026) MRIS v1.5 Anhang A.
         // Werte: standfest|degradiert|reibung|nicht_betroffen.
         $mris = $request->query->get('mris');
-        // Essential-for-small-business filter (KMU/SME toggle)
-        $essential = $request->query->get('essential');
+        $essential = $request->query->get('essential'); // Essential-for-small-business filter (KMU/SME toggle)
+        $dueOnly = $request->query->get('review_overdue') === '1'; // "Review fällig" (PeriodicReviewService)
 
         // Get controls based on view filter.
         // $unfilteredControls holds the full DB result; applied filters narrow it
@@ -146,7 +146,7 @@ class StatementOfApplicabilityController extends AbstractController
                 return str_contains($haystack, $needle);
             });
         }
-        $controls = array_values($controls);
+        $controls = array_values($reviews?->filterDueWhen($dueOnly, $controls) ?? $controls);
 
         $stats = $tenant
             ? $this->controlRepository->getImplementationStats($tenant)

@@ -66,7 +66,7 @@
     {% embed '_components/_fa_list_page.html.twig' with {
         page: page,
         search_action: path('app_document_index'),
-        filter_keys: ['view', 'status', 'category', 'include_history', 'focus'],
+        filter_keys: ['view', 'status', 'category', 'include_history', 'focus', 'review_overdue'],
         list_title: 'document.section.all_documents'|trans({}, 'document'),
         empty: {
             mood: 'sleeping',
@@ -77,6 +77,7 @@
         card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/document"',
     } %}
         {% block list_filters %}
+            {% if app.request.query.get('review_overdue') == '1' %}<input type="hidden" name="review_overdue" value="1">{% endif %}
             {% if currentTenant %}
             <div class="col-md-3">
                 <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
@@ -120,6 +121,7 @@
         {% block list_summary %}
             {% if kpiDrafts > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'document.summary.drafts'|trans({'%count%': kpiDrafts}, 'document') }}</span>{% endif %}
             {% if kpiInReview > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'document.summary.in_review'|trans({'%count%': kpiInReview}, 'document') }}</span>{% endif %}
+            {% include '_components/_review_due_chip.html.twig' with { type: 'document' } only %}
         {% endblock %}
         {% block list_table %}
             {% embed '_components/_fa_table.html.twig' with {
@@ -162,7 +164,7 @@
             {% endblock %}
         {% endembed %}
             {% include '_components/_bulk_action_bar.html.twig' with {
-                actions: ['status_change', 'approve', 'export', 'delete'],
+                actions: ['status_change', 'approve', 'review', 'export', 'delete'],
                 variant: 'brand'
             } %}
         {% endblock %}

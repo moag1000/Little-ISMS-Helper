@@ -69,6 +69,28 @@ eigene Kartenansicht dafür ist bewusst nicht vorgesehen.
 Die frühere Seite "Ausstehende Workflows" (`/workflow/pending`) leitet auf "Mein Tag"
 um. Vier-Augen- und Policy-Posteingang bleiben auf Dichte "Experte" erreichbar.
 
+## Fällige Reviews gesammelt bestätigen
+
+Die Kategorien Risiko-Reviews, Dokument-Reviews und Lieferanten-Reassessments haben
+für Manager die Schaltfläche **In der Liste bestätigen**. Sie öffnet die Liste mit dem
+Filter "Review fällig"; dort Einträge auswählen und in der Auswahlleiste **Review
+bestätigen** klicken. Dieselbe Aktion gibt es in der SoA-Liste für Controls.
+
+"Fällig" heißt: Termin überschritten oder noch nie geprüft. Der Chip "Review fällig: N"
+zählt die Einträge der eigenen Organisation. Die Bestätigung speichert heute als
+Prüfdatum und setzt den nächsten Termin nach der Regel des Typs:
+
+| Typ | nimmt teil | nächster Termin |
+|---|---|---|
+| Risiko | alle Status außer geschlossen | eigenes Intervall des Risikos, sonst nach Risikostufe 90 / 180 / 365 / 730 Tage |
+| Control | anwendbare Controls | bisheriger Abstand zwischen letztem und nächstem Review, sonst 12 Monate |
+| Dokument | freigegeben oder veröffentlicht | Prüfintervall des Dokuments (Standard 12 Monate) |
+| Lieferant | aktiv oder in Bewertung | bisheriger Abstand, sonst 12 Monate; "noch nie bewertet" zählt nur bei aktiven Lieferanten als fällig |
+
+Einträge außerhalb dieser Regel, anderer Organisationen oder ohne Bearbeitungsrecht
+werden übersprungen und in der Meldung gezählt. Alle Bestätigungen eines Klicks stehen
+als ein Batch im Audit-Log (ISO 27001 Kap. 7.5.3), dazu je ein Eintrag pro Datensatz.
+
 ## Technische Referenz
 
 - Controller: `src/Controller/MyDayController.php`, Route `app_my_day`
@@ -81,6 +103,8 @@ um. Vier-Augen- und Policy-Posteingang bleiben auf Dichte "Experte" erreichbar.
   `decision_buttons()` / `decision_modals()` in `templates/_macros/workflow.html.twig`
 - Bottom-Sheet auf dem Smartphone: Abschnitt "Phones" in `assets/styles/fa-modal.css`
 - Template: `templates/my_day/index.html.twig`
+- Review bestätigen: `src/Service/Review/PeriodicReviewService.php` (Regeln), `src/Controller/BulkReviewController.php`
+  (`POST /{risk|soa|document|supplier}/bulk-review`), Chip `templates/_components/_review_due_chip.html.twig`
 
 ## Verwandte Dokumente
 

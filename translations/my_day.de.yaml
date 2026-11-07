@@ -5,6 +5,7 @@ my_day:
 
     action:
         open: 'Öffnen'
+        review_in_list: 'In der Liste bestätigen'
         standard_dashboard: 'Standard-Dashboard'
 
     kpi:

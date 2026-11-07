@@ -133,6 +133,7 @@
         {% if critical_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'risk.summary.critical'|trans({'%count%': critical_count}, 'risk') }}</span>{% endif %}
         {% if high_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'risk.summary.high'|trans({'%count%': high_count}, 'risk') }}</span>{% endif %}
         {% if unowned_count > 0 %}<span class="fa-status-pill fa-status-pill--info">{{ 'risk.summary.unowned'|trans({'%count%': unowned_count}, 'risk') }}</span>{% endif %}
+        {% include '_components/_review_due_chip.html.twig' with { type: 'risk' } only %}
     {% endblock %}
     {% block list_table %}
         {% embed '_components/_table.html.twig' with {
@@ -167,7 +168,7 @@
             {% endblock %}
         {% endembed %}
         {% include '_components/_bulk_action_bar.html.twig' with {
-            actions: ['export', 'assign', 'delete'],
+            actions: ['export', 'assign', 'review', 'delete'],
             variant: 'brand'
         } %}
     {% endblock %}

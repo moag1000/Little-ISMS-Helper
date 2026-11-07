@@ -1,0 +1,20 @@
+{#
+ # "Review fällig" chip for the list summary of the four lists with the bulk
+ # action "Review bestätigen" (risk, soa, document, supplier). Toggles the
+ # list filter `?review_overdue=1` and keeps all other query parameters
+ # (page reset). Count and rule: review_due_count() / PeriodicReviewService.
+ #
+ #   {% include '_components/_review_due_chip.html.twig' with { type: 'risk' } only %}
+ #}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% set _active = app.request.query.get('review_overdue') == '1' %}
+{% set _count = review_due_count(type) %}
+{% if _count > 0 or _active %}
+    {% set _query = app.request.query.all|filter((v, k) => k not in ['review_overdue', 'page']) %}
+    {% set _query = _active ? _query : _query|merge({ review_overdue: '1' }) %}
+    {{ _fa_filter_chip.render('periodic_review.due_filter'|trans({ '%count%': _count }, 'messages'), {
+        active: _active,
+        href: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge(_query)),
+        attrs: { title: 'periodic_review.due_hint'|trans({}, 'messages') },
+    }) }}
+{% endif %}
