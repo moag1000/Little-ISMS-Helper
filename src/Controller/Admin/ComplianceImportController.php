@@ -829,10 +829,8 @@ final class ComplianceImportController extends AbstractController
         }
 
         foreach ($this->candidateIds($framework, $requirementId) as $candidate) {
-            $hit = $this->requirementRepository->findOneBy([
-                'framework' => $framework,
-                'requirementId' => $candidate,
-            ]);
+            $criteria = ['framework' => $framework, 'requirementId' => $candidate, 'uploadTenant' => null]; // global only
+            $hit = $this->requirementRepository->findOneBy($criteria);
             if ($hit instanceof ComplianceRequirement) {
                 $cache[$key] = $hit;
 
@@ -844,6 +842,7 @@ final class ComplianceImportController extends AbstractController
             $qb = $this->requirementRepository->createQueryBuilder('r')
                 ->andWhere('r.framework = :f')
                 ->andWhere('r.requirementId LIKE :p')
+                ->andWhere('r.uploadTenant IS NULL')
                 ->setParameter('f', $framework)
                 ->setParameter('p', $prefix . '%')
                 ->orderBy('r.requirementId', \SortDirection::Ascending)

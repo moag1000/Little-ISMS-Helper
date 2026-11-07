@@ -359,6 +359,35 @@ PHPStan meldet nur den „immer wahr“-Fall. Das Gate scheitert auch, wenn
 
 ---
 
+### quality/check_csv_formula_injection.py (Gate 84)
+
+**Zweck:** Jede Datei in `src/` (außer `src/Command/`), die Tabellenzellen schreibt
+(`fputcsv()`, PhpSpreadsheet `setCellValue*()`/`fromArray()`, eigene `csvRow()`-Helfer),
+nutzt `App\Util\CsvSanitizer::sanitize()` oder einen Helfer, der es tut (`csvCell`,
+`streamCsvExport`). Sonst läuft ein Lieferantenname wie `=HYPERLINK(…)` beim Öffnen in
+Excel als Formel (CWE-1236); so war es beim DORA-RoI-CSV und beim FTE-Board-CSV. Dateien
+ohne Datensatztext markieren `// @csv-sanitize-exempt: <Grund>`. Keine Baseline.
+
+**CI-Integration:** Gate 84 im `code-quality`-Job.
+
+---
+
+### quality/check_requirement_controls_scope.py (Gate 86)
+
+**Zweck:** `ComplianceRequirement` ist globaler Katalog; `getMappedControls()` enthält
+die Controls *aller* Organisationen. Im HTTP-Request blendet der Doctrine-Filter fremde
+aus, in Jobs, Commands und Workern nicht. Die Controls hinter einer Anforderung kommen
+deshalb aus `FulfillmentRuleEngine::controlsFor($requirement, $tenant)` (für die aktuelle
+Organisation `ComplianceMappingService::controlsFor()`, Dokumente über
+`RequirementEvidence`). Das Gate zählt `getMappedControls()` je Datei außerhalb von
+`src/Entity/` und `src/Service/Compliance/Fulfillment/`; neue Dateien oder mehr Aufrufe
+scheitern. Baseline `baselines/requirement_controls_scope.txt` darf nur schrumpfen
+(`--write-baseline` nach dem Abbau).
+
+**CI-Integration:** Gate 86 im `code-quality`-Job.
+
+---
+
 ### quality/check_kpi_catalog.py (Gate 74)
 
 **Zweck:** Management-Kennzahlen kommen nur aus dem KPI-Katalog

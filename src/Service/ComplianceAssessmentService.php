@@ -143,9 +143,10 @@ class ComplianceAssessmentService
         if ($currentFulfillment < 100) {
             $gap = 100 - $currentFulfillment;
 
-            if (!$complianceRequirement->getMappedControls()->isEmpty()) {
+            $tenantControls = $this->complianceMappingService->controlsFor($complianceRequirement);
+            if ($tenantControls !== []) {
                 $partialControls = [];
-                foreach ($complianceRequirement->getMappedControls() as $mappedControl) {
+                foreach ($tenantControls as $mappedControl) {
                     if ($mappedControl->getImplementationStatus() !== 'implemented'
                         || ($mappedControl->getImplementationPercentage() ?? 0) < 100) {
                         $partialControls[] = [
@@ -273,7 +274,7 @@ class ComplianceAssessmentService
             // Check for unmapped requirements
             $unmappedCount = 0;
             foreach ($gaps as $gap) {
-                if ($gap->getMappedControls()->isEmpty()) {
+                if ($this->complianceMappingService->controlsFor($gap) === []) {
                     $unmappedCount++;
                 }
             }

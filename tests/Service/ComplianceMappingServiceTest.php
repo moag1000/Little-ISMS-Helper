@@ -12,9 +12,9 @@ use App\Entity\Incident;
 use App\Entity\InternalAudit;
 use App\Repository\AssetRepository;
 use App\Repository\BusinessProcessRepository;
-use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\MappingQualityAnalysisService;
@@ -28,7 +28,6 @@ use PHPUnit\Framework\Attributes\Test;
 class ComplianceMappingServiceTest extends TestCase
 {
     private ComplianceMappingService $service;
-    private ControlRepository $controlRepo;
     private AssetRepository $assetRepo;
     private BusinessProcessRepository $businessProcessRepo;
     private IncidentRepository $incidentRepo;
@@ -39,7 +38,6 @@ class ComplianceMappingServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->controlRepo = $this->createMock(ControlRepository::class);
         $this->assetRepo = $this->createMock(AssetRepository::class);
         $this->businessProcessRepo = $this->createMock(BusinessProcessRepository::class);
         $this->incidentRepo = $this->createMock(IncidentRepository::class);
@@ -58,70 +56,48 @@ class ComplianceMappingServiceTest extends TestCase
         $mockFulfillment->method('getFulfillmentPercentage')->willReturn(0);
         $this->fulfillmentService->method('getOrCreateFulfillment')->willReturn($mockFulfillment);
 
+        // The engine returns the organisation's controls; the fixtures below model
+        // them through the requirement mock.
+        $engine = $this->createMock(FulfillmentRuleEngine::class);
+        $engine->method('controlsFor')->willReturnCallback(
+            static fn (ComplianceRequirement $requirement): array => $requirement->getMappedControls()->toArray(),
+        );
+
         $this->service = new ComplianceMappingService(
-            $this->controlRepo,
             $this->assetRepo,
             $this->businessProcessRepo,
             $this->incidentRepo,
             $this->auditRepo,
             $this->fulfillmentService,
             $this->tenantContext,
-            $this->mappingQualityAnalysisService
+            $this->mappingQualityAnalysisService,
+            $engine,
         );
     }
 
     #[Test]
-    public function testMapControlsToRequirementWithNoMapping(): void
+    public function controlsComeFromTheTenantScopedRuleEngine(): void
     {
+        // The global requirement's getMappedControls() spans every organisation
+        // when the Doctrine filter is not armed — the export must not read it.
         $requirement = $this->createMock(ComplianceRequirement::class);
-        $requirement->method('getDataSourceMapping')->willReturn(null);
+        $requirement->expects($this->never())->method('getMappedControls');
+        $control = $this->createMock(Control::class);
+        $engine = $this->createMock(FulfillmentRuleEngine::class);
+        $engine->expects($this->once())->method('controlsFor')->willReturn([$control]);
 
-        $result = $this->service->mapControlsToRequirement($requirement);
+        $service = new ComplianceMappingService(
+            $this->assetRepo,
+            $this->businessProcessRepo,
+            $this->incidentRepo,
+            $this->auditRepo,
+            $this->fulfillmentService,
+            $this->tenantContext,
+            $this->mappingQualityAnalysisService,
+            $engine,
+        );
 
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function testMapControlsToRequirementWithEmptyIsoControls(): void
-    {
-        $requirement = $this->createMock(ComplianceRequirement::class);
-        $requirement->method('getDataSourceMapping')->willReturn(['iso_controls' => []]);
-
-        $result = $this->service->mapControlsToRequirement($requirement);
-
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function testMapControlsToRequirementMapsCorrectly(): void
-    {
-        $control1 = $this->createMock(Control::class);
-        $control1->method('getControlId')->willReturn('A.5.1');
-
-        $control2 = $this->createMock(Control::class);
-        $control2->method('getControlId')->willReturn('A.5.2');
-
-        $requirement = $this->createMock(ComplianceRequirement::class);
-        $requirement->method('getDataSourceMapping')->willReturn([
-            'iso_controls' => ['A.5.1', 'A.5.2']
-        ]);
-
-        $this->controlRepo->expects($this->exactly(2))
-            ->method('findBy')
-            ->willReturnCallback(function ($criteria) use ($control1, $control2) {
-                if ($criteria['controlId'] === 'A.5.1') {
-                    return [$control1];
-                }
-                return [$control2];
-            });
-
-        $requirement->expects($this->exactly(2))->method('addMappedControl');
-
-        $result = $this->service->mapControlsToRequirement($requirement);
-
-        $this->assertCount(2, $result);
-        $this->assertSame($control1, $result[0]);
-        $this->assertSame($control2, $result[1]);
+        self::assertSame([$control], $service->controlsFor($requirement));
     }
 
     #[Test]

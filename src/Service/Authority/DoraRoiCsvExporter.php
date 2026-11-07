@@ -288,6 +288,8 @@ final class DoraRoiCsvExporter
     {
         return implode(',', array_map(
             static function (string $cell): string {
+                // Formula injection: supplier names and descriptions are record text.
+                $cell = (string) \App\Util\CsvSanitizer::sanitize($cell);
                 if (preg_match('/[",\r\n]/', $cell) === 1) {
                     return '"' . str_replace('"', '""', $cell) . '"';
                 }
