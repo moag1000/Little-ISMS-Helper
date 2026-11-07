@@ -393,7 +393,8 @@ class DocumentControllerTest extends TestCase
             $storage
         );
         // Pre-consume the limit so next request will be rejected
-        $rateLimiterFactory->create($this->createRequestWithSession()->getClientIp())->consume(1);
+        // The limit is per account (shared office IPs must not block each other).
+        $rateLimiterFactory->create('upload-' . $user->getUserIdentifier())->consume(1);
 
         // Recreate controller with rate-limiting factory
         $controller = new DocumentController(

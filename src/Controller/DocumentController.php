@@ -282,8 +282,8 @@ class DocumentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Per user: an IP key gave every colleague behind one NAT the same 20/hour budget.
-            $limiter = $this->documentUploadLimiter->create('upload-' . $this->getUser()?->getUserIdentifier());
+            $limiter = $this->documentUploadLimiter // per user: an IP key gave a whole office one budget
+                ->create('upload-' . $this->security->getUser()?->getUserIdentifier());
 
             if (false === $limiter->consume(1)->isAccepted()) {
                 // Security: Log rate limit hit for monitoring
