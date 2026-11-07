@@ -85,7 +85,6 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 'choice_translation_domain' => 'asset',
                 'attr' => [
                     'id' => 'asset_form_assetType',
-                    'data-asset-form-target' => 'assetTypeSelect',
                     'data-asset-sub-type-target' => 'topType',
                     'data-action' => 'change->asset-sub-type#topTypeChanged',
                 ],

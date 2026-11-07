@@ -53,14 +53,25 @@ class RestoreDataPurger
      *
      * When $scopeIds is empty (global restore) the original array is returned unchanged.
      *
-     * @param array $entities  Array of serialized entity arrays from the backup
-     * @param int[] $scopeIds  Tenant IDs that are allowed; empty = all
+     * Organisation records (`Tenant`) carry no tenant_id; they are kept when their
+     * own id is in scope, so an organisation restore never touches a foreign one.
+     *
+     * @param array       $entities   Array of serialized entity arrays from the backup
+     * @param int[]       $scopeIds   Tenant IDs that are allowed; empty = all
+     * @param string|null $entityName Short entity name (e.g. 'Tenant')
      * @return array Filtered entities
      */
-    public function filterEntitiesByScope(array $entities, array $scopeIds): array
+    public function filterEntitiesByScope(array $entities, array $scopeIds, ?string $entityName = null): array
     {
         if ($scopeIds === []) {
             return $entities;
+        }
+
+        if ($entityName === 'Tenant') {
+            return array_values(array_filter(
+                $entities,
+                static fn(array $data): bool => isset($data['id']) && in_array((int) $data['id'], $scopeIds, true),
+            ));
         }
 
         return array_values(array_filter($entities, function (array $data) use ($scopeIds): bool {
@@ -139,6 +150,16 @@ class RestoreDataPurger
                     continue;
                 }
 
+                // Tenant-scoped clear never empties a whole table: entities without a
+                // tenant association (the organisation records themselves, global
+                // catalogues) are updated in place by the restore instead.
+                if ($tenantScopeIds !== []) {
+                    $this->logger->info('Tenant-scoped clear: keeping entity without tenant association', [
+                        'entity' => $entityName,
+                    ]);
+                    continue;
+                }
+
                 // Use DQL DELETE for efficiency
                 $query = $this->entityManager->createQuery(
                     sprintf('DELETE FROM %s e', $entityClass)
@@ -189,6 +210,44 @@ class RestoreDataPurger
                 ]);
             }
         }
+    }
+
+    /**
+     * Pin the identity fields of organisation records that already exist to their
+     * current database values: code, SSO binding (azureTenantId), active flag, status,
+     * holding flag and parent. The backup's SHA256 seal can be recomputed, so a
+     * crafted organisation backup must not rebind SSO or move the organisation into
+     * another group. Values are overwritten, not removed — the writer would set a
+     * missing field to its default.
+     *
+     * @param array<int, array<string, mixed>> $rows Serialized Tenant rows from the backup
+     * @return array<int, array<string, mixed>>
+     */
+    public function pinOrganisationIdentity(array $rows): array
+    {
+        foreach ($rows as $index => $row) {
+            if (!isset($row['id'])) {
+                continue;
+            }
+            $current = $this->entityManager->getRepository(Tenant::class)->find((int) $row['id']);
+            if (!$current instanceof Tenant) {
+                continue;
+            }
+
+            $row['code'] = $current->getCode();
+            $row['azureTenantId'] = $current->getAzureTenantId();
+            $row['isActive'] = $current->isActive();
+            $row['status'] = $current->getStatus();
+            $row['isCorporateParent'] = $current->isCorporateParent();
+            unset($row['parent_id']); // absent association key = existing parent stays
+            if ($current->getParent() instanceof Tenant) {
+                $row['parent_id'] = ['id' => $current->getParent()->getId()];
+            }
+
+            $rows[$index] = $row;
+        }
+
+        return $rows;
     }
 
     /**

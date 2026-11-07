@@ -3,12 +3,6 @@ compliance:
         success: '%count% neue Mappings zwischen %framework1% und %framework2% erstellt.'
         skipped_suffix: '(%count% bereits vorhanden, übersprungen)'
         error: 'Fehler beim Erstellen der Mappings: %reason%'
-    heatmap:
-        title: 'Compliance-Heatmap'
-        caption: 'Heatmap: Framework × Control-Cluster-Erfüllung'
-        col_framework: 'Framework'
-        col_cluster: 'Control-Cluster'
-        no_data: 'Bisher keine Mapping-Daten für die Heatmap verfügbar.'
     iso9001_bridge:
         prefix: 'Für 9001-Praktiker:'
         more: 'volle Brücke 9001 ↔ 27001 →'
@@ -1116,6 +1110,8 @@ compliance:
             preview: 'Abdeckung anzeigen'
             view_details: 'Details anzeigen'
             delete: 'Löschen'
+        confirm:
+            delete: 'Dieses Zertifikat löschen?'
         empty:
             title: 'Noch keine Zertifikate'
             text: 'Laden Sie Ihr erstes externes Compliance-Zertifikat hoch, um Anforderungen gesammelt zu erfüllen.'

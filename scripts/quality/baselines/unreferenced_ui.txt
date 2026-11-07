@@ -1,2 +1,2 @@
-# Gate 69 — unreferenced templates / Stimulus controllers.
+# Gate 69 — unreferenced templates.
 # Only names that are built dynamically belong here: `path  # reason`.

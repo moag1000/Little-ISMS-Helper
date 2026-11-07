@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 """
-check_unreferenced_ui.py — Gate 69: no dead templates, no dead Stimulus controllers.
+check_unreferenced_ui.py — Gate 69: no dead templates.
 
 A template nobody renders, includes, embeds, extends or imports is dead weight:
 it still has to be migrated in every design-system sweep and it misleads the
-next reader into thinking it is live. Same for a Stimulus controller that no
-markup attaches.
+next reader into thinking it is live. (Dead Stimulus controllers: Gate 79,
+check_stimulus_wiring.py.)
 
 Template reference = its path (relative to templates/, with or without the
-`.html.twig` suffix) appears as a string anywhere in src/, templates/, config/
-or tests/. Controller reference = its identifier (`foo_bar_controller.js` →
-`foo-bar`) appears in templates/, assets/ (other than its own file), src/ or
-config/.
+`.html.twig` suffix) appears as a string in src/, templates/, config/ or tests/
+outside the template itself (its own usage comment does not count).
 
 Dynamically built names are not resolvable statically: list them in the
 baseline with a short reason (`path  # reason`). Stale baseline entries are
@@ -27,7 +25,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATES = ROOT / "templates"
-CONTROLLERS = ROOT / "assets" / "controllers"
 
 # Rendered by framework conventions, not by name.
 TEMPLATE_PREFIX_ALLOW = ("bundles/", "emails/", "email/")
@@ -68,26 +65,13 @@ def find_dead_templates() -> list[str]:
         if rel.startswith(TEMPLATE_PREFIX_ALLOW):
             continue
         stem = rel.removesuffix(".html.twig").removesuffix(".twig")
-        if rel in corpus or f"'{stem}'" in corpus or f'"{stem}"' in corpus:
+        # A template's own usage comment ("{% include 'x.html.twig' %}") is
+        # not a reference: count occurrences outside the file itself.
+        own = path.read_text(encoding="utf-8", errors="ignore")
+        needles = (rel, f"'{stem}'", f'"{stem}"')
+        if any(corpus.count(n) > own.count(n) for n in needles):
             continue
         dead.append(f"templates/{rel}")
-    return dead
-
-
-def find_dead_controllers() -> list[str]:
-    controllers = sorted(CONTROLLERS.glob("*_controller.js"))
-    corpus = read_corpus([TEMPLATES, ROOT / "src", ROOT / "config"])
-    own = {p: p.read_text(encoding="utf-8", errors="ignore") for p in controllers}
-    assets = read_corpus([ROOT / "assets"])
-    dead = []
-    for path in controllers:
-        ident = path.name.removesuffix("_controller.js").replace("_", "-")
-        if ident in corpus:
-            continue
-        # Referenced from another asset file (not just its own source)?
-        if assets.count(ident) > own[path].count(ident):
-            continue
-        dead.append(f"assets/controllers/{path.name}")
     return dead
 
 
@@ -98,7 +82,7 @@ def main() -> int:
     args = parser.parse_args()
 
     baseline = load_baseline(args.baseline)
-    found = find_dead_templates() + find_dead_controllers()
+    found = find_dead_templates()
     new = [f for f in found if f not in baseline]
     stale = sorted(baseline - set(found))
 
@@ -108,13 +92,13 @@ def main() -> int:
             print(f"  {entry}")
 
     if new:
-        print("Unreferenced UI files (delete them, or baseline with a reason if built dynamically):")
+        print("Unreferenced templates (delete them, or baseline with a reason if built dynamically):")
         for entry in new:
             print(f"  {entry}")
         return 1
 
     if not args.quiet:
-        print(f"OK — {len(found)} baselined, no new unreferenced templates or controllers.")
+        print(f"OK — {len(found)} baselined, no new unreferenced templates.")
     return 0
 
 

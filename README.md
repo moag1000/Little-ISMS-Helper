@@ -273,7 +273,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **MFA** -- TOTP mit Backup-Codes
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag
-- **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping, DR-Runbook
+- **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping (Organisations-Backup enthaelt auch die Organisations-Einstellungen), DR-Runbook
 
 ### Persona-Dashboards und Workflow-Inbox
 
@@ -294,6 +294,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 - **Ein Detailseiten-Aufbau** -- Statusband, Ankerleiste, Nachweiskette Asset → Risiko → Control → Nachweis → Vorfall → Schwachstelle als erster Block, Historie und Kommentare
 - **Formulare** -- große Formulare zeigen zuerst den Kern (Rest eingeklappt mit Füllstand), Warnung bei ungespeicherten Änderungen, Vorbelegung aus dem Kontext ("Risiko ableiten" am Asset, "Behandlungsplan" am Risiko), alte Freitext-Personenfelder nur noch wenn befüllt
 - **Mapping-Hub** -- alle Mapping-Werkzeuge hinter vier Tabs: Übersicht, Mappings, Qualität, Vergleich
+- **Ein Baustein pro Interaktion** -- Dialoge über `fa-modal`, Bestätigungen über `ui-actions#confirm`, Mehrfachauswahl über `bulk-actions`, Seitenleisten über `fa-drawer`, Diagramme über `chart`; CI-Gate 79 prüft jede Stimulus-Verdrahtung (Controller, Methode, Target, Wert) und meldet nie angehängte Controller
 
 ### Design und Barrierefreiheit
 

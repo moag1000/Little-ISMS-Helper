@@ -1,22 +1,14 @@
 {% trans_default_domain 'document' %}
 {#
-  Document Version List Drawer
-  Rendered inline (partial) or via AJAX into a drawer overlay.
+  Document version history — loaded into the page-level fa-drawer
+  (link with data-turbo-frame="fa-drawer" on the document page).
   Variables: document, versions (DocumentVersion[]), reuse (array{control_count, framework_count, label})
 #}
-<div class="fa-drawer__content" data-controller="reuse-drawer">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h2 class="h5 mb-0">
-            <i class="fa-icon fa-icon--document-history me-2" aria-hidden="true"></i>
-            {{ 'document.version.history.title'|trans({}, 'document') }}
-        </h2>
-        <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                data-action="reuse-drawer#close"
-                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
-            <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
-        </button>
-    </div>
-
+{% embed '_layouts/_drawer_shell.html.twig' with {
+    eyebrow: document.originalFilename,
+    title: 'document.version.history.title'|trans({}, 'document')
+} %}
+{% block body %}
     {# Reuse badge #}
     {% if reuse.label is not empty %}
         <div class="fa-alert fa-alert--info mb-3" role="alert">
@@ -34,8 +26,7 @@
             striped: false,
             compact: true,
             stickyHead: false,
-            sortable: false,
-            bulkSelect: false
+            sortable: false
         } %}
             {% block table_head %}
                 {% trans_default_domain 'document' %}
@@ -91,4 +82,5 @@
             {% endblock %}
         {% endembed %}
     {% endif %}
-</div>
+{% endblock %}
+{% endembed %}
