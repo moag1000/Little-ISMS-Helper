@@ -87,6 +87,19 @@ bestaetigen, bevor Aenderungen gespeichert werden. Die letzten drei
 Kategorien sind detection-only — eine versteckte automatische Reparatur
 koennte echte Lifecycle-Bugs verbergen.
 
+**Orphans einer Organisation zuordnen:** Jeder Datensatz wird mit seinem
+Audit-Eintrag `admin.data_repair.orphan_reassigned` in einer eigenen
+Transaktion gespeichert; scheitert einer (z. B. Deadlock oder Lock-Wait-Timeout),
+bleibt er Orphan und der Lauf geht mit dem naechsten weiter, ohne eine
+halb offene Transaktion zurueckzulassen. Der Audit-Eintrag traegt den
+Entity-Kurznamen (`DataBreach`, `Risk`, …) wie alle anderen Audit-Zeilen.
+Eintraege aus der Zeit vor 3.16 ("Alles reparieren" und der asynchrone
+Komplett-Lauf) tragen noch den Bucket-Namen (`data_breaches`, `risks`, …);
+das Audit-Log ist manipulationssicher verkettet und wird deshalb nicht
+umgeschrieben. Wer im Audit-Log nach Typ filtert, sucht fuer alte
+Zuordnungen nach beiden Schreibweisen. Kein Bericht und kein Filter der
+Anwendung wertet `orphan_reassigned` nach Typnamen aus.
+
 ---
 
 ### 4. "Alles-Sicher-Reparieren" (Convenience-Schaltflaeche)

@@ -219,12 +219,12 @@
                                     </tr>
                                     <tr class="fa-table__row">
                                         <th scope="row" class="fa-table__cell">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
-                                        <td class="fa-table__cell">{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
+                                        <td class="fa-table__cell">{{ tenant.createdAt|fa_datetime }}</td>
                                     </tr>
                                     {% if tenant.updatedAt %}
                                         <tr class="fa-table__row">
                                             <th scope="row" class="fa-table__cell">{{ 'tenant.field.updated'|trans({}, 'tenant') }}</th>
-                                            <td class="fa-table__cell">{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
+                                            <td class="fa-table__cell">{{ tenant.updatedAt|fa_datetime }}</td>
                                         </tr>
                                     {% endif %}
                                 {% endblock %}

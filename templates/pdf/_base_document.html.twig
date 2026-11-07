@@ -408,7 +408,7 @@
             </div>
             <div class="doc-meta-row">
                 <div class="doc-meta-label">Erstellt am:</div>
-                <div class="doc-meta-value">{% block created_date %}{{ created_at|default('now'|date('d.m.Y')) }}{% endblock %}</div>
+                <div class="doc-meta-value">{% block created_date %}{{ created_at|default('now'|fa_date) }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
                 <div class="doc-meta-label">Erstellt von:</div>
@@ -416,7 +416,7 @@
             </div>
             <div class="doc-meta-row">
                 <div class="doc-meta-label">Letzte Änderung:</div>
-                <div class="doc-meta-value">{% block modified_date %}{{ modified_at|default('now'|date('d.m.Y H:i')) }}{% endblock %}</div>
+                <div class="doc-meta-value">{% block modified_date %}{{ modified_at|default('now'|fa_datetime) }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
                 <div class="doc-meta-label">Gültig bis:</div>
@@ -503,7 +503,7 @@
                 {% block version_history %}
                 <tr>
                     <td>1.0</td>
-                    <td>{{ created_at|default('now')|date('d.m.Y') }}</td>
+                    <td>{{ created_at|default('now')|fa_date }}</td>
                     <td>{{ creator_name|default(app.user.fullName) }}</td>
                     <td>Initiale Version</td>
                 </tr>

@@ -229,6 +229,35 @@ String nennt.
 
 ---
 
+### quality/check_date_display.py (Gate 77)
+
+**Zweck:** Angezeigte Datumswerte laufen über `|fa_date` / `|fa_datetime`
+(Format und Zeitzone aus `/admin/settings/application`). Ein fest verdrahtetes
+`|date('d.m.Y')`, `|date('Y-m-d')`, `|date('d.m.Y H:i')` oder `|date('Y-m-d H:i')` in der
+Textausgabe ist ein Fund; in HTML-Attributen, `<script>`, `path()`/`url()` und
+String-Verkettung bleibt `|date` (Maschinenformat). Erkennung in
+`scripts/quality/date_display.py`; `--fix <template>` ersetzt die Funde.
+
+**CI-Integration:** Gate 77 im `code-quality`-Job, Baseline mit Anzahl je Datei
+(`baselines/date_display.txt`, darf nur sinken; enthält vor allem Listen- und
+Detailseiten, die mit dem Listen-/Detail-Skelett migriert werden).
+
+---
+
+### quality/check_page_semantics.py (Gate 78)
+
+**Zweck:** Seitensemantik und ein Status-Vokabular. Regeln: kein eigenes `<main>`
+in Templates, die `base.html.twig` erweitern (`nested-main`); höchstens ein `<h1>`
+und keines neben dem Page-Header (`extra-h1`); keine lokale Status-Farbtabelle
+(`{% set statusColors = {...} %}`), stattdessen `_components/_status_vocabulary.html.twig`
+oder `_fa_status_chip` (`status-map`); Bootstrap-Tooltips nur auf fokussierbaren
+Elementen (`tooltip-unreachable`).
+
+**CI-Integration:** Gate 78 im `code-quality`-Job, Baseline `baselines/page_semantics.txt`
+(darf nur sinken).
+
+---
+
 ### quality/check_trans_default_masking.py (Gate 76)
 
 **Zweck:** `'key'|trans({}, 'domain')|default('Text')` maskiert fehlende
@@ -349,9 +378,15 @@ Operator-Pfaden (Restore, Schema-Wartung, Sample-Purge).
 (einzige erlaubte Stelle ist der Helper selbst). Erkannt werden
 `resetManager(` — auch über Zeilen umbrochen — und `->reset(` auf der
 Doctrine-Registry (Variable/Property/Getter mit `registry`/`doctrine` im Namen
-oder `->get('doctrine')`). String-Literale und Kommentare werden vorher
-ausgeblendet. Grenzen: Heredoc-Inhalte gelten als Code; eine Registry in einer
-Variablen mit fremdem Namen wird nicht erkannt.
+oder `->get('doctrine')`) sowie auf jedem Namen, der in derselben Datei als
+Registry typisiert ist (`ManagerRegistry`, `\Doctrine\Persistence\ManagerRegistry`,
+Doctrine-Bundle-`Registry`, auch nullable und Constructor-Promotion) oder aus
+`->getDoctrine()` / `->get('doctrine')` zugewiesen wird — `$mr->reset(` und
+`$this->mr?->reset(` werden also unabhängig vom Namen gefunden, `->reset(` auf
+anderen Objekten nicht. String-Literale, Kommentare sowie Heredoc-/Nowdoc-Inhalte
+werden vorher ausgeblendet. Grenzen: Die Typisierung wird je Datei aufgelöst;
+eine über untypisierte Variablen/Array-Zugriffe weitergereichte oder per
+`use … as` umbenannte Registry wird nicht erkannt.
 
 **CI-Integration:** Gate 68 im `code-quality`-Job, keine Baseline.
 Selbsttest: `scripts/quality/tests/test_check_entity_manager_reset.py`.

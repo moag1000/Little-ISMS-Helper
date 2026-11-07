@@ -43,7 +43,7 @@
             <div class="d-flex gap-3 text-muted small">
                 <span><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ report.category }}</span>
                 {% if report_data.report.generated_at is defined %}
-                <span><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
+                <span><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ report_data.report.generated_at|fa_datetime }}</span>
                 {% endif %}
                 <span><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ report.owner.fullName }}</span>
             </div>
@@ -197,7 +197,7 @@
         <div class="d-flex justify-content-between">
             <span>{{ 'report_builder.preview.generated_by'|trans({},'report_builder') }} {{ app.user.fullName }}</span>
             {% if report_data.report.generated_at is defined %}
-            <span>{{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
+            <span>{{ report_data.report.generated_at|fa_datetime }}</span>
             {% endif %}
         </div>
     </div>

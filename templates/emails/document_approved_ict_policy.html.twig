@@ -20,7 +20,7 @@
                 <p style="margin: 0;"><strong>Document:</strong> {{ document.originalFilename|default(document.filename|default('—')) }}</p>
                 <p style="margin: 4px 0 0 0;"><strong>Category:</strong> {{ document.category|default('—') }}</p>
                 {% if document.nextReviewDate %}
-                    <p style="margin: 4px 0 0 0;"><strong>Next Review:</strong> {{ document.nextReviewDate|date('Y-m-d') }}</p>
+                    <p style="margin: 4px 0 0 0;"><strong>Next Review:</strong> {{ document.nextReviewDate|fa_date }}</p>
                 {% endif %}
             </div>
 

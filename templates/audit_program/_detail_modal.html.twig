@@ -15,9 +15,8 @@
     </div>
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
-            <span class="badge bg-{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'secondary') }}">
-                {{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}
-            </span>
+            {% import '_components/_status_pill.html.twig' as _pill %}
+            {{ _pill.render(('audit_program.status.' ~ program.status)|trans({}, 'audit_program'), program.statusTone) }}
             {% if program.frequency %}
                 <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ ('audit_program.frequency.' ~ program.frequency)|trans({}, 'audit_program') }}</span>
             {% endif %}
@@ -25,7 +24,7 @@
 
         <div class="fa-drawer__kv">
             <span class="label">{{ 'audit_program.field.start_date'|trans({}, 'audit_program') }}</span>
-            <span>{{ program.startDate|date('d.m.Y') }} – {{ program.endDate|date('d.m.Y') }}</span>
+            <span>{{ program.startDate|fa_date }} – {{ program.endDate|fa_date }}</span>
         </div>
 
         {% if program.objectives %}

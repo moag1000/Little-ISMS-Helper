@@ -45,19 +45,19 @@
     {% set mrisLocale = app.request.locale|default('de') %}
     <div class="d-flex flex-wrap gap-2 mb-3">
         {% if control.mythosResilience == 'standfest' %}
-            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
+            <span tabindex="0" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
                 {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
             </span>
         {% elseif control.mythosResilience == 'degradiert' %}
-            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
+            <span tabindex="0" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
                 {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
             </span>
         {% elseif control.mythosResilience == 'reibung' %}
-            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
+            <span tabindex="0" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
                 {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
             </span>
         {% elseif control.mythosResilience == 'nicht_betroffen' %}
-            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
+            <span tabindex="0" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
             </span>
         {% endif %}
@@ -247,7 +247,7 @@
             <div class="stat-item">
                 <strong>
                     {% if control.targetDate %}
-                        {{ control.targetDate|date('d.m.Y') }}
+                        {{ control.targetDate|fa_date }}
                     {% else %}
                         <span class="text-muted">{{ 'soa.field.not_set'|trans({}, 'soa') }}</span>
                     {% endif %}
@@ -273,7 +273,7 @@
                     <strong>{{ training.title }}</strong>
                     <span class="{{ badge_status(training.status) }}">{{ training.status|upper }}</span>
                     {% if training.completionDate %}
-                        <small>Abgeschlossen: {{ training.completionDate|date('Y-m-d') }}</small>
+                        <small>Abgeschlossen: {{ training.completionDate|fa_date }}</small>
                     {% endif %}
                 </div>
             {% endfor %}
@@ -323,7 +323,7 @@
                 {% set isOverdue = lastTest is null or lastTest < date('-12 months') %}
                 <div class="d-flex align-items-center gap-2 mt-2">
                     {% if lastTest %}
-                        <span class="text-muted small">{{ 'soa.label.last_effectiveness_test'|trans({}, 'soa') }}: <strong>{{ lastTest|date('d.m.Y') }}</strong></span>
+                        <span class="text-muted small">{{ 'soa.label.last_effectiveness_test'|trans({}, 'soa') }}: <strong>{{ lastTest|fa_date }}</strong></span>
                     {% else %}
                         <span class="text-muted small"><em>{{ 'soa.label.never_tested'|trans({}, 'soa') }}</em></span>
                     {% endif %}
@@ -352,25 +352,25 @@
         <h2>{{ 'soa.section.metadata'|trans({}, 'soa') }}</h2>
         <div class="stats-grid mt-2 grid-responsive-250">
             <div class="stat-item">
-                <strong>{{ control.createdAt|date('d.m.Y H:i') }}</strong>
+                <strong>{{ control.createdAt|fa_datetime }}</strong>
                 <span>{{ 'soa.field.created_at'|trans({}, 'soa') }}</span>
             </div>
 
             <div class="stat-item">
-                <strong>{{ control.updatedAt|date('d.m.Y H:i') }}</strong>
+                <strong>{{ control.updatedAt|fa_datetime }}</strong>
                 <span>{{ 'soa.field.updated_at'|trans({}, 'soa') }}</span>
             </div>
 
             {% if control.lastReviewDate %}
             <div class="stat-item">
-                <strong>{{ control.lastReviewDate|date('d.m.Y') }}</strong>
+                <strong>{{ control.lastReviewDate|fa_date }}</strong>
                 <span>{{ 'soa.field.last_review'|trans({}, 'soa') }}</span>
             </div>
             {% endif %}
 
             {% if control.nextReviewDate %}
             <div class="stat-item">
-                <strong>{{ control.nextReviewDate|date('d.m.Y') }}</strong>
+                <strong>{{ control.nextReviewDate|fa_date }}</strong>
                 <span>{{ 'soa.field.next_review'|trans({}, 'soa') }}</span>
             </div>
             {% endif %}

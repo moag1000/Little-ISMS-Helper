@@ -45,7 +45,7 @@
 
             <div class="field">
                 <span class="label">{{ 'emails.risk_acceptance.approval_date'|trans({}, 'emails') }}:</span>
-                <span class="value">{{ approved_at|date('d.m.Y H:i') }}</span>
+                <span class="value">{{ approved_at|fa_datetime }}</span>
             </div>
 
             <div class="info">

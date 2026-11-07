@@ -149,7 +149,7 @@
     <div class="metadata">
         <strong>Status:</strong> {{ dpia.status|upper }}
         {% if dpia.approvalDate %}
-            | <strong>Approved:</strong> {{ dpia.approvalDate|date('Y-m-d') }}
+            | <strong>Approved:</strong> {{ dpia.approvalDate|fa_date }}
         {% endif %}
         | <strong>Generated:</strong> {{ "now"|date('Y-m-d H:i:s') }}<br>
         {% if dpia.conductor %}
@@ -414,7 +414,7 @@
                 <td>DPO Consultation (Art. 35(4))</td>
                 <td>
                     {% if dpia.dpoConsultationDate %}
-                        <span class="badge badge-success">COMPLETED</span> {{ dpia.dpoConsultationDate|date('Y-m-d') }}
+                        <span class="badge badge-success">COMPLETED</span> {{ dpia.dpoConsultationDate|fa_date }}
                         {% if dpia.dataProtectionOfficer %}
                             <br><strong>DPO:</strong> {{ dpia.dataProtectionOfficer.firstName }} {{ dpia.dataProtectionOfficer.lastName }}
                         {% endif %}
@@ -444,7 +444,7 @@
                 <td>
                     {% if dpia.requiresSupervisoryConsultation %}
                         {% if dpia.supervisoryConsultationDate %}
-                            <span class="badge badge-success">COMPLETED</span> {{ dpia.supervisoryConsultationDate|date('Y-m-d') }}
+                            <span class="badge badge-success">COMPLETED</span> {{ dpia.supervisoryConsultationDate|fa_date }}
                             {% if dpia.supervisoryAuthorityFeedback %}
                                 <br><strong>Feedback:</strong> {{ dpia.supervisoryAuthorityFeedback }}
                             {% endif %}
@@ -472,13 +472,13 @@
                 {% if dpia.lastReviewDate %}
                     <tr>
                         <td>Last Review Date</td>
-                        <td>{{ dpia.lastReviewDate|date('Y-m-d') }}</td>
+                        <td>{{ dpia.lastReviewDate|fa_date }}</td>
                     </tr>
                 {% endif %}
                 {% if dpia.nextReviewDate %}
                     <tr>
                         <td>{{ 'dpia.pdf.next_review_date'|trans({}, 'privacy')}}</td>
-                        <td>{{ dpia.nextReviewDate|date('Y-m-d') }}</td>
+                        <td>{{ dpia.nextReviewDate|fa_date }}</td>
                     </tr>
                 {% endif %}
                 {% if dpia.reviewFrequencyMonths %}
@@ -514,7 +514,7 @@
                 {% if dpia.approvalDate %}
                     <tr>
                         <td>Approval Date</td>
-                        <td>{{ dpia.approvalDate|date('Y-m-d') }}</td>
+                        <td>{{ dpia.approvalDate|fa_date }}</td>
                     </tr>
                 {% endif %}
                 {% if dpia.approvalComments %}

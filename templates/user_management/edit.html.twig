@@ -85,12 +85,12 @@
                     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
                         {% block alert_body %}
                         <small>
-                            <strong>{{ 'user.field.created_at'|trans({}, 'user') }}:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
+                            <strong>{{ 'user.field.created_at'|trans({}, 'user') }}:</strong> {{ user.createdAt|fa_datetime }}<br>
                             {% if user.updatedAt %}
-                                <strong>{{ 'user.field.updated_at'|trans({}, 'user') }}:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
+                                <strong>{{ 'user.field.updated_at'|trans({}, 'user') }}:</strong> {{ user.updatedAt|fa_datetime }}<br>
                             {% endif %}
                             {% if user.lastLoginAt %}
-                                <strong>{{ 'user.field.last_login'|trans({}, 'user') }}:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
+                                <strong>{{ 'user.field.last_login'|trans({}, 'user') }}:</strong> {{ user.lastLoginAt|fa_datetime }}
                             {% endif %}
                         </small>
                         {% endblock %}

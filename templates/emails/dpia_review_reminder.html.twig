@@ -19,7 +19,7 @@
             <div style="background: white; padding: 12px; border-left: 4px solid #d97706; margin: 16px 0;">
                 <p style="margin: 0;"><strong>DPIA:</strong> {{ dpia.title|default('—') }}</p>
                 {% if dpia.nextReviewDate %}
-                    <p style="margin: 4px 0 0 0;"><strong>Next Review:</strong> {{ dpia.nextReviewDate|date('Y-m-d') }}</p>
+                    <p style="margin: 4px 0 0 0;"><strong>Next Review:</strong> {{ dpia.nextReviewDate|fa_date }}</p>
                 {% endif %}
                 <p style="margin: 4px 0 0 0;"><strong>Days remaining:</strong> {{ days_remaining }}</p>
                 <p style="margin: 4px 0 0 0;"><strong>Reminder window:</strong> {{ matched_window }} days</p>

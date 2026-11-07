@@ -230,13 +230,13 @@
                                 <div class="fw-bold fs-6">{{ 'incident.timeline.early_warning'|trans({}, 'incident') }}</div>
                                 <p class="timeline-deadline">
                                     <strong>{{ 'incident.timeline.deadline'|trans({}, 'incident') }}:</strong>
-                                    {{ incident.earlyWarningDeadline|date('d.m.Y H:i') }}
+                                    {{ incident.earlyWarningDeadline|fa_datetime }}
                                 </p>
                                 {% if incident.earlyWarningReportedAt %}
                                     <div class="timeline-completed">
                                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans({}, 'incident') }}:
-                                        <strong>{{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}</strong>
+                                        <strong>{{ incident.earlyWarningReportedAt|fa_datetime }}</strong>
                                     </div>
                                 {% elseif incident.isEarlyWarningOverdue %}
                                     <div class="timeline-overdue">
@@ -268,13 +268,13 @@
                                 <div class="fw-bold fs-6">{{ 'incident.timeline.detailed_notification'|trans({}, 'incident') }}</div>
                                 <p class="timeline-deadline">
                                     <strong>{{ 'incident.timeline.deadline'|trans({}, 'incident') }}:</strong>
-                                    {{ incident.detailedNotificationDeadline|date('d.m.Y H:i') }}
+                                    {{ incident.detailedNotificationDeadline|fa_datetime }}
                                 </p>
                                 {% if incident.detailedNotificationReportedAt %}
                                     <div class="timeline-completed">
                                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans({}, 'incident') }}:
-                                        <strong>{{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}</strong>
+                                        <strong>{{ incident.detailedNotificationReportedAt|fa_datetime }}</strong>
                                     </div>
                                 {% elseif incident.isDetailedNotificationOverdue %}
                                     <div class="timeline-overdue">
@@ -306,13 +306,13 @@
                                 <div class="fw-bold fs-6">{{ 'incident.timeline.final_report'|trans({}, 'incident') }}</div>
                                 <p class="timeline-deadline">
                                     <strong>{{ 'incident.timeline.deadline'|trans({}, 'incident') }}:</strong>
-                                    {{ incident.finalReportDeadline|date('d.m.Y H:i') }}
+                                    {{ incident.finalReportDeadline|fa_datetime }}
                                 </p>
                                 {% if incident.finalReportSubmittedAt %}
                                     <div class="timeline-completed">
                                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans({}, 'incident') }}:
-                                        <strong>{{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}</strong>
+                                        <strong>{{ incident.finalReportSubmittedAt|fa_datetime }}</strong>
                                     </div>
                                 {% elseif incident.isFinalReportOverdue %}
                                     <div class="timeline-overdue">
@@ -445,7 +445,7 @@
             {% if incident.closedAt %}
                 <div class="detail-section">
                     <h3 class="h5">{{ 'incident.section.closure'|trans({}, 'incident') }}</h3>
-                    <p>{{ 'incident.field.closed_date'|trans({}, 'incident') }}: <strong>{{ incident.closedAt|date('d.m.Y H:i') }}</strong></p>
+                    <p>{{ 'incident.field.closed_date'|trans({}, 'incident') }}: <strong>{{ incident.closedAt|fa_datetime }}</strong></p>
                 </div>
             {% endif %}
 

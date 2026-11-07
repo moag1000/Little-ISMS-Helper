@@ -62,7 +62,7 @@
 
             <div class="field">
                 <span class="label">{{ 'emails.workflow.started'|trans({}, 'emails') }}:</span>
-                <span class="value">{{ instance.startedAt|date('d.m.Y H:i') }}</span>
+                <span class="value">{{ instance.startedAt|fa_datetime }}</span>
             </div>
 
             <div class="note">

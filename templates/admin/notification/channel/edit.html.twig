@@ -28,7 +28,7 @@
     }) }}
 
     {% if channel.verifiedAt %}
-        {{ _fa_alert.render({variant: 'success', icon: 'shield-check', class: 'mb-3', body: ('notification.channel.show.verified_at'|trans({'%date%': channel.verifiedAt|date('Y-m-d H:i')}, 'notification'))|e}) }}
+        {{ _fa_alert.render({variant: 'success', icon: 'shield-check', class: 'mb-3', body: ('notification.channel.show.verified_at'|trans({'%date%': channel.verifiedAt|fa_datetime}, 'notification'))|e}) }}
     {% else %}
         {{ _fa_alert.render({variant: 'warning', class: 'mb-3', body: ('notification.channel.show.not_verified_hint'|trans({}, 'notification'))|e}) }}
     {% endif %}

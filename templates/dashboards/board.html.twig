@@ -10,7 +10,7 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block body %}
-<main class="fa-aurora-surface role-dashboard board-dashboard">
+<div class="fa-aurora-surface role-dashboard board-dashboard">
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
         title:    'board.title'|trans({}, 'dashboards'),
@@ -327,5 +327,5 @@
         {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
     </div>
 
-</main>
+</div>
 {% endblock %}

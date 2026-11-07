@@ -17,7 +17,7 @@
     title:  'answer_library.page.edit_title'|trans({}, 'answer_library'),
 }) }}
 
-<main>
+<div>
 <div class="container-fluid py-4" style="max-width: 800px;">
     <div class="card">
         <div class="card-body">
@@ -62,7 +62,7 @@
                 {% if entry.lastUsedAt %}
                     <span>
                         <i class="fa-icon fa-icon--clock" aria-hidden="true"></i>
-                        {{ 'answer_library.field.last_used_at'|trans({}, 'answer_library') }}: {{ entry.lastUsedAt|date('d.m.Y') }}
+                        {{ 'answer_library.field.last_used_at'|trans({}, 'answer_library') }}: {{ entry.lastUsedAt|fa_date }}
                     </span>
                 {% endif %}
             </div>
@@ -82,5 +82,5 @@
         </div>
     </div>
 </div>
-</main>
+</div>
 {% endblock %}

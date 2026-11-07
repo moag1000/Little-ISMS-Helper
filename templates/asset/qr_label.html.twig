@@ -249,7 +249,7 @@
 
         <div class="label-footer">
             {% trans from 'asset' %}qr.scan_for_details{% endtrans %}<br>
-            {% trans from 'asset' %}qr.printed_on{% endtrans %}: {{ printDate|date('d.m.Y H:i') }}
+            {% trans from 'asset' %}qr.printed_on{% endtrans %}: {{ printDate|fa_datetime }}
         </div>
     </div>
 </body>

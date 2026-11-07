@@ -27,16 +27,34 @@ class IdentityProviderRoleMappingRepository extends ServiceEntityRepository
     /**
      * Load active mappings for an IdP ordered by priority ASC (lowest = checked first).
      *
+     * The mappings carry their provider's tenant (null for a global provider,
+     * the parent organisation for a parent's provider). A signed-in user who
+     * re-authenticates through such a provider has the tenant filter armed for
+     * their own organisation, which would hide every mapping row and silently
+     * skip the role sync. The provider itself is already authorised for the
+     * user at this point, so its mappings are read without the tenant filter.
+     *
      * @return IdentityProviderRoleMapping[]
      */
     public function findActiveByProvider(IdentityProvider $provider): array
     {
-        return $this->createQueryBuilder('m')
+        $query = fn (): array => $this->createQueryBuilder('m')
             ->where('m.identityProvider = :idp')
             ->andWhere('m.isActive = true')
             ->orderBy('m.priority', 'ASC')
             ->setParameter('idp', $provider)
             ->getQuery()
             ->getResult();
+
+        $filters = $this->getEntityManager()->getFilters();
+        if (!$filters->isEnabled('tenant_filter')) {
+            return $query();
+        }
+        $filters->suspend('tenant_filter');
+        try {
+            return $query();
+        } finally {
+            $filters->restore('tenant_filter');
+        }
     }
 }

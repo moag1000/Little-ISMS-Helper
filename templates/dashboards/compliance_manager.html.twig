@@ -10,7 +10,7 @@
 {% import '_components/_status_pill.html.twig' as pill %}
 
 {% block body %}
-<main class="fa-aurora-surface role-dashboard compliance-manager-dashboard">
+<div class="fa-aurora-surface role-dashboard compliance-manager-dashboard">
     {{ _fa_page_header.render({
         title:    'compliance_manager.title'|trans,
         subtitle: 'compliance_manager.subtitle'|trans,
@@ -247,7 +247,7 @@
                             </div>
                             <span>
                                 {% if audit.plannedDate is defined and audit.plannedDate %}
-                                    {{ pill.render(audit.plannedDate|date('d.m.Y'), 'primary', {size: 'sm'}) }}
+                                    {{ pill.render(audit.plannedDate|fa_date, 'primary', {size: 'sm'}) }}
                                 {% endif %}
                             </span>
                         </a>
@@ -330,7 +330,7 @@
                             <small class="d-block text-muted">{{ approval.entity_type }}</small>
                         </div>
                         {% if approval.due_date %}
-                            <span class="fa-status-pill fa-status-pill--warning">{{ approval.due_date|date('d.m.Y') }}</span>
+                            <span class="fa-status-pill fa-status-pill--warning">{{ approval.due_date|fa_date }}</span>
                         {% endif %}
                     </a>
                 {% endfor %}
@@ -353,7 +353,7 @@
                             <small class="d-block text-muted">{{ instance.entityType }} #{{ instance.entityId }}</small>
                         </div>
                         {% if instance.dueDate %}
-                            <span class="fa-status-pill fa-status-pill--danger">{{ instance.dueDate|date('d.m.Y') }}</span>
+                            <span class="fa-status-pill fa-status-pill--danger">{{ instance.dueDate|fa_date }}</span>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -385,5 +385,5 @@
         </div>
     </section>
     {% endif %}
-</main>
+</div>
 {% endblock %}

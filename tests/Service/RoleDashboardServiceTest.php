@@ -90,7 +90,7 @@ class RoleDashboardServiceTest extends TestCase
             $this->incidentRepository,
             $this->workflowInstanceRepository,
             $this->security,
-            $this->tenantContext,
+            new \App\Service\TenantRecords($this->tenantContext),
             $metrics,
         );
     }
@@ -141,6 +141,30 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertArrayHasKey('control_implementation', $result['summary']);
         $this->assertArrayHasKey('high_risks', $result['summary']);
         $this->assertArrayHasKey('risk_trend', $result['summary']);
+    }
+
+    #[Test]
+    public function testRiskFiguresAreEmptyAndNeverUnscopedWithoutResolvableTenant(): void
+    {
+        // #1059/#1066: no tenant => fail closed, never an instance-wide findAll()
+        $this->tenantContext->method('getCurrentTenant')->willReturn(null);
+        $this->riskRepository->expects($this->never())->method('findAll');
+        $this->riskRepository->expects($this->never())->method('findBy');
+        $this->incidentRepository->expects($this->never())->method('findAll');
+
+        $service = $this->createService();
+
+        $this->assertSame(0, $this->invokePrivate($service, 'countHighCriticalRisks'));
+        $this->assertSame([], $this->invokePrivate($service, 'getCriticalRisks', [5]));
+        $this->assertSame([], $this->invokePrivate($service, 'getRecentIncidents', [5]));
+        $this->assertSame([], $this->invokePrivate($service, 'getRisksByCategory'));
+    }
+
+    private function invokePrivate(object $object, string $method, array $args = []): mixed
+    {
+        $ref = new \ReflectionMethod($object, $method);
+
+        return $ref->invoke($object, ...$args);
     }
 
     // ==================== getRiskManagerDashboard() Tests ====================
@@ -222,7 +246,7 @@ class RoleDashboardServiceTest extends TestCase
         $risk2 = $this->createRiskMock(2, 'Risk 2', null, 16);
         $risk3 = $this->createRiskMock(3, 'Risk 3', 'accept', 8);
 
-        $this->riskRepository->method('findAll')->willReturn([$risk1, $risk2, $risk3]);
+        $this->riskRepository->method('findBy')->willReturn([$risk1, $risk2, $risk3]);
         $this->setupAllMocksExceptRisk();
         $service = $this->createService();
 
@@ -601,8 +625,8 @@ class RoleDashboardServiceTest extends TestCase
         $this->dashboardStatisticsService->method('getManagementKPIs')
             ->willReturn([]);
 
-        $this->riskRepository->method('findAll')->willReturn([]);
-        $this->incidentRepository->method('findAll')->willReturn([]);
+        $this->riskRepository->method('findBy')->willReturn([]);
+        $this->incidentRepository->method('findBy')->willReturn([]);
         $this->controlRepository->method('findApplicableControls')->willReturn([]);
         $this->workflowInstanceRepository->method('findPendingForUser')->willReturn([]);
         $this->workflowInstanceRepository->method('findOverdueForTenant')->willReturn([]);
@@ -683,7 +707,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->dashboardStatisticsService->method('getManagementKPIs')
             ->willReturn([]);
 
-        $this->incidentRepository->method('findAll')->willReturn([]);
+        $this->incidentRepository->method('findBy')->willReturn([]);
         $this->controlRepository->method('findApplicableControls')->willReturn([]);
         $this->workflowInstanceRepository->method('findPendingForUser')->willReturn([]);
         $this->workflowInstanceRepository->method('findOverdueForTenant')->willReturn([]);
@@ -764,8 +788,8 @@ class RoleDashboardServiceTest extends TestCase
         $this->dashboardStatisticsService->method('getManagementKPIs')
             ->willReturn([]);
 
-        $this->riskRepository->method('findAll')->willReturn([]);
-        $this->incidentRepository->method('findAll')->willReturn([]);
+        $this->riskRepository->method('findBy')->willReturn([]);
+        $this->incidentRepository->method('findBy')->willReturn([]);
         $this->workflowInstanceRepository->method('findPendingForUser')->willReturn([]);
         $this->workflowInstanceRepository->method('findOverdueForTenant')->willReturn([]);
         $this->security->method('getUser')->willReturn(null);

@@ -9,7 +9,7 @@
 {% block title %}{{ 'inbox.title'|trans({}, 'alva') }}{% endblock %}
 
 {% block body %}
-<main>
+<div>
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'inbox.badge'|trans({}, 'alva') }
@@ -83,5 +83,5 @@
             </div>
         {% endif %}
     {% endif %}
-</main>
+</div>
 {% endblock %}

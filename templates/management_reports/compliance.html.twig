@@ -198,7 +198,7 @@
     {# Report Generated Info #}
     <div class="text-muted small text-end">
         <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
-        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|fa_datetime }}
     </div>
 </div>
 {% endblock %}

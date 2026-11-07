@@ -8,7 +8,7 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block body %}
-<main class="fa-aurora-surface role-dashboard bcm-officer-dashboard">
+<div class="fa-aurora-surface role-dashboard bcm-officer-dashboard">
     {{ _fa_page_header.render({
         title:    'bcm_officer.title'|trans,
         subtitle: 'bcm_officer.subtitle'|trans,
@@ -122,5 +122,5 @@
     </section>
     {% endif %}
 
-</main>
+</div>
 {% endblock %}

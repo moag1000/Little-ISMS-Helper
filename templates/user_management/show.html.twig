@@ -157,6 +157,8 @@
                                         <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
                                     {% elseif user.authProvider == 'azure_saml' %}
                                         <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
+                                    {% elseif user.authProvider starts with 'sso:' %}
+                                        <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.sso'|trans({'%provider%': user.ssoProvider ? user.ssoProvider.name : user.authProvider|slice(4)}, 'user') }}
                                     {% else %}
                                         <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
                                     {% endif %}
@@ -170,13 +172,13 @@
                             {% endif %}
                             <tr>
                                 <th scope="row">{{ 'user.label.created_at'|trans({}, 'user') }}</th>
-                                <td>{{ user.createdAt|date('d.m.Y H:i') }}</td>
+                                <td>{{ user.createdAt|fa_datetime }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{ 'user.label.last_login'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.lastLoginAt %}
-                                        {{ user.lastLoginAt|date('d.m.Y H:i') }}
+                                        {{ user.lastLoginAt|fa_datetime }}
                                     {% else %}
                                         <span class="text-muted">{{ 'user.status.never'|trans({}, 'user') }}</span>
                                     {% endif %}
@@ -188,6 +190,66 @@
             {% endembed %}
         </div>
     </div>
+
+    {# SSO binding — set or removed by hand (SsoAccountLinker) #}
+    {% set _sso_may_link = sso_link_allowed(user) %}
+    {% if user.ssoProvider or _sso_may_link %}
+    <section class="fa-section mb-4" id="sso-link">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'user.sso_link.title'|trans({}, 'user') }}</h2>
+        </div>
+        <div class="fa-section__body">
+            {% if user.ssoProvider %}
+                <dl class="row mb-3">
+                    <dt class="col-sm-3">{{ 'user.sso_link.provider'|trans({}, 'user') }}</dt>
+                    <dd class="col-sm-9">{{ user.ssoProvider.name }}{% if user.ssoProvider.tenant is null %} <span class="text-muted">({{ 'user.sso_link.global'|trans({}, 'user') }})</span>{% endif %}</dd>
+                    <dt class="col-sm-3">{{ 'user.sso_link.subject'|trans({}, 'user') }}</dt>
+                    <dd class="col-sm-9"><code>{{ user.ssoExternalId }}</code></dd>
+                </dl>
+                {% if _sso_may_link %}
+                    <form method="post" action="{{ path('user_management_sso_unlink', {id: user.id}) }}" class="mb-3"
+                          data-controller="ui-actions"
+                          data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'user.sso_link.unlink_confirm'|trans({}, 'user') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('user_sso_unlink_' ~ user.id) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">{{ 'user.sso_link.unlink'|trans({}, 'user') }}</button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <p class="text-muted">{{ 'user.sso_link.none'|trans({}, 'user') }}</p>
+            {% endif %}
+
+            {% if _sso_may_link %}
+                {% set _sso_providers = sso_linkable_providers(user) %}
+                {% if _sso_providers is empty %}
+                    <p class="text-muted mb-0">{{ 'user.sso_link.no_provider'|trans({}, 'user') }}</p>
+                {% else %}
+                    <form method="post" action="{{ path('user_management_sso_link', {id: user.id}) }}" class="row g-2 align-items-end"
+                          data-controller="ui-actions" data-action="submit->ui-actions#submitOnce">
+                        <input type="hidden" name="_token" value="{{ csrf_token('user_sso_link_' ~ user.id) }}">
+                        <div class="col-md-4">
+                            <label class="form-label" for="sso-link-provider">{{ 'user.sso_link.provider'|trans({}, 'user') }}</label>
+                            <select class="form-select" id="sso-link-provider" name="provider" required>
+                                {% for provider in _sso_providers %}
+                                    <option value="{{ provider.id }}"{% if user.ssoProvider and user.ssoProvider.id == provider.id %} selected{% endif %}>{{ provider.name }}{% if provider.tenant is null %} ({{ 'user.sso_link.global'|trans({}, 'user') }}){% endif %}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label" for="sso-link-subject">{{ 'user.sso_link.subject'|trans({}, 'user') }}</label>
+                            <input type="text" class="form-control" id="sso-link-subject" name="subject" required maxlength="255"
+                                   value="{{ user.ssoExternalId }}" autocomplete="off" aria-describedby="sso-link-subject-help">
+                            <div class="form-text" id="sso-link-subject-help">{{ 'user.sso_link.subject_help'|trans({}, 'user') }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ (user.ssoProvider ? 'user.sso_link.relink' : 'user.sso_link.link')|trans({}, 'user') }}</button>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
 
     {# Roles & Permissions #}
     <div class="row">
