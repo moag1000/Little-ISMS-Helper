@@ -21,11 +21,11 @@ use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\TenantBrandingRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\AuditLogger;
+use App\Service\Group\HoldingScope;
 use App\Service\PdfExportService;
 use App\Service\PolicyWizard\Export\PolicyPdfExporter;
 use App\Service\Soa\SoaSnapshotService;
 use App\Service\SoAReportService;
-use App\Service\TenantContext;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Psr\Log\LoggerInterface;
@@ -64,7 +64,7 @@ final class CertificationBundleExporter
     public function __construct(
         private readonly PdfExportService $pdfExportService,
         private readonly SoAReportService $soAReportService,
-        private readonly TenantContext $tenantContext,
+        private readonly HoldingScope $holdingScope,
         private readonly Security $security,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
@@ -473,10 +473,9 @@ final class CertificationBundleExporter
                     $slug = 'tenant-' . $tenantId;
                 }
 
-                // Generate the per-tenant bundle. Pass-through framework
-                // selection so each subsidiary receives the same coverage
-                // CSVs.
-                $subResult = $this->export($subTenant, $frameworks);
+                // Subsidiary pinned as context: tenant filter and SoA report would read the holding.
+                $subResult = $this->holdingScope->asTenant($subTenant, fn (): array => $this->export($subTenant,
+                    $frameworks));
                 $tempPerTenantZips[] = $subResult['path'];
                 $totalDocumentCount += (int) ($subResult['document_count'] ?? 0);
 
@@ -497,12 +496,12 @@ final class CertificationBundleExporter
                 }
 
                 // Per-subsidiary overview row (compliance scores per framework).
-                $overviewRows[] = $this->buildKonzernOverviewRow(
+                $overviewRows[] = $this->holdingScope->asTenant($subTenant, fn () => $this->buildKonzernOverviewRow(
                     $subTenant,
                     $slug,
                     $frameworks,
                     $holdingTenant,
-                );
+                ));
             }
         } finally {
             // Ensure per-tenant temp files are removed even on errors.

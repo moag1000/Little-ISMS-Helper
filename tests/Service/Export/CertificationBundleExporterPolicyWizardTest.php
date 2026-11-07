@@ -24,10 +24,10 @@ use App\Service\Export\CertificationBundleExporter;
 use App\Service\PdfExportService;
 use App\Service\PolicyWizard\Export\PolicyPdfExporter;
 use App\Service\SoAReportService;
-use App\Service\TenantContext;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
 use DateTimeImmutable;
+use App\Tests\Stub\PassThroughHoldingScope;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -174,7 +174,7 @@ final class CertificationBundleExporterPolicyWizardTest extends TestCase
         return new CertificationBundleExporter(
             $this->createMock(PdfExportService::class),
             $this->createMock(SoAReportService::class),
-            $this->createMock(TenantContext::class),
+            new PassThroughHoldingScope(),
             $this->createMock(Security::class),
             $this->createMock(AssetRepository::class),
             $this->createMock(RiskRepository::class),
