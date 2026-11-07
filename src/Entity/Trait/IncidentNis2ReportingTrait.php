@@ -108,6 +108,26 @@ trait IncidentNis2ReportingTrait
         return $this;
     }
 
+    /**
+     * The text that goes to the authority (NIS-2 Art. 23 (4), DORA Art. 19),
+     * written by hand or accepted from "Entwurf vorschlagen". The MUS export
+     * sends it as the short description when it is set.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?string $reportSummary = null;
+
+    public function getReportSummary(): ?string
+    {
+        return $this->reportSummary;
+    }
+
+    public function setReportSummary(?string $reportSummary): static
+    {
+        $this->reportSummary = $reportSummary;
+        return $this;
+    }
+
 
     /**
      * Get early warning deadline (24 hours from detection)
