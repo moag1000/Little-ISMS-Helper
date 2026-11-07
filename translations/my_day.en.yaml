@@ -39,6 +39,9 @@ my_day:
         documents_pending_approval_for_me: 'Documents pending approval'
         wizard_overdue: 'Wizard assessments stalled'
         framework_gaps_critical: 'Framework gaps critical'
+        change_requests_due: 'Changes due'
+        audits_upcoming: 'Audits upcoming'
+        vulnerabilities_due: 'Vulnerabilities due'
 
     section:
         workflows_pending: 'Approvals — waiting for my decision'
@@ -71,6 +74,9 @@ my_day:
         documents_pending_approval_for_me: 'Documents in review — pending CM approval'
         wizard_overdue: 'Wizard assessments — stalled (90+ days)'
         framework_gaps_critical: 'Framework coverage gaps — critical (< 60 %)'
+        change_requests_due: 'Changes — implementation due (ISO 27001 6.3)'
+        audits_upcoming: 'Internal audits — upcoming (ISO 27001 9.2)'
+        vulnerabilities_due: 'Vulnerabilities — remediation due (A.8.8)'
 
     bucket:
         risk_acceptance_expiring:

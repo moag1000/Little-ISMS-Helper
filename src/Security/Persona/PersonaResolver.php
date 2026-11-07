@@ -89,6 +89,18 @@ final class PersonaResolver
         ));
     }
 
+    /**
+     * Roles reachable from a plain role list (role hierarchy), for questions
+     * about part of a user's roles.
+     *
+     * @param list<string> $roles
+     * @return list<string>
+     */
+    public function reachableRolesOf(array $roles): array
+    {
+        return array_values(array_unique($this->roleHierarchy->getReachableRoleNames($roles)));
+    }
+
     /** May the user open the dashboard of this persona (own role, hierarchy or preview)? */
     public function canSeeDashboardOf(UserInterface $user, Persona $persona): bool
     {

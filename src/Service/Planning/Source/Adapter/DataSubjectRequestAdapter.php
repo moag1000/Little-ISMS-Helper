@@ -7,6 +7,9 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\DataSubjectRequest;
 use App\Entity\Tenant;
 use App\Repository\DataSubjectRequestRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -72,5 +75,37 @@ final class DataSubjectRequestAdapter implements SourceAdapter
     {
         assert($item instanceof DataSubjectRequest);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<DataSubjectRequest> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof DataSubjectRequest;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof DataSubjectRequest);
+
+        return Responsibility::holders($item->getAssignedTo(), $item->getAssignedPerson())
+            ->withDeputies($item->getDpoPerson())
+            ->orRoles('ROLE_DPO');
+    }
+
+    public function linkOf(object $item): RecordLink
+    {
+        assert($item instanceof DataSubjectRequest);
+
+        return new RecordLink('app_data_subject_request_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'dsrs', leadDays: null, normReference: 'DSGVO Art. 12 Abs. 3');
     }
 }
