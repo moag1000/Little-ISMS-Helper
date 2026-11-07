@@ -95,6 +95,7 @@ final class ImportHistoryController extends AbstractController
                 $targetEntityType,
                 (int) $searchEntityId,
                 self::PAGE_SIZE_EVENTS,
+                $tenant,
             );
         }
 

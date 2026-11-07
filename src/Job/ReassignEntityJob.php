@@ -8,7 +8,9 @@ use App\Entity\Tenant;
 use App\Repository\TenantRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Exception\Security\InsufficientPrivilegeException;
 use App\Service\DataIntegrityService;
+use App\Service\DataRepair\RepairTenantScope;
 use App\Service\SectionScanResultCache;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -28,6 +30,8 @@ use Doctrine\ORM\EntityManagerInterface;
  *   - entityId (int)      — primary key
  *   - tenantId (int)      — new tenant ID
  *   - userId (int|null)   — caller's user-id for audit-log identity
+ *   - scope (array)       — dispatching user's tenant scope ({@see RepairTenantScope::jobArg()}):
+ *                           source entity and target tenant must lie inside it (fail-closed)
  */
 final class ReassignEntityJob implements AsyncJobInterface
 {
@@ -38,6 +42,7 @@ final class ReassignEntityJob implements AsyncJobInterface
         private readonly AuditLogger $auditLogger,
         private readonly SectionScanResultCache $sectionScanCache,
         private readonly EntityManagerInterface $entityManager,
+        private readonly RepairTenantScope $repairScope,
     ) {
     }
 
@@ -103,6 +108,12 @@ final class ReassignEntityJob implements AsyncJobInterface
 
             $previousTenant = method_exists($entity, 'getTenant') ? $entity->getTenant() : null;
             $previousTenantId = $previousTenant instanceof Tenant ? $previousTenant->getId() : null;
+
+            $scopeArg = (array) ($ctx->arg(RepairTenantScope::ARG) ?? []);
+            if (!$this->repairScope->jobScopeCovers($scopeArg, $previousTenant instanceof Tenant ? $previousTenant : null)
+                || !$this->repairScope->jobScopeCovers($scopeArg, $tenant)) {
+                throw new InsufficientPrivilegeException('reassign entity outside own tenant tree', is_numeric($userId) ? (int) $userId : null);
+            }
 
             $entityName = $this->bestLabel($entity);
             $className = (new \ReflectionClass($entity))->getShortName();

@@ -595,20 +595,20 @@ class DeploymentWizardController extends AbstractController
         $file = $request->files->get('backup_file');
 
         if (!$file) {
-            $this->addFlash('error', 'Keine Backup-Datei hochgeladen');
+            $this->addFlash('error', 'setup.flash.no_backup_file');
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
         // Validate file extension
         $extension = $file->getClientOriginalExtension();
         if (!in_array($extension, ['json', 'gz'])) {
-            $this->addFlash('error', 'Ungültiges Dateiformat. Nur .json oder .gz Dateien sind erlaubt.');
+            $this->addFlash('error', 'setup.flash.invalid_backup_format');
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
         // Check if schema has been created first
         if (!$session->get('setup_schema_created', false)) {
-            $this->addFlash('error', 'Bitte erstellen Sie zuerst die Datenbank-Struktur, bevor Sie ein Backup wiederherstellen.');
+            $this->addFlash('error', 'setup.flash.schema_first');
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
@@ -848,13 +848,13 @@ class DeploymentWizardController extends AbstractController
 
         $targetTenantId = $request->request->get('target_tenant_id');
         if (!$targetTenantId) {
-            $this->addFlash('error', 'Bitte wählen Sie einen Ziel-Mandanten aus.');
+            $this->addFlash('error', 'setup.flash.select_target_tenant');
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
         $targetTenant = $this->tenantRepository->find($targetTenantId);
         if (!$targetTenant) {
-            $this->addFlash('error', 'Ziel-Mandant nicht gefunden.');
+            $this->addFlash('error', 'setup.flash.target_tenant_not_found');
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
@@ -892,11 +892,10 @@ class DeploymentWizardController extends AbstractController
             $this->entityManager->flush();
 
             $totalRepaired = count($orphanedAssets) + count($orphanedRisks) + count($orphanedIncidents);
-            $this->addFlash('success', sprintf(
-                '%d verwaiste Entitäten erfolgreich dem Mandanten "%s" zugewiesen.',
-                $totalRepaired,
-                $targetTenant->getName()
-            ));
+            $this->addFlash('success', $this->translator->trans('setup.flash.orphans_assigned', [
+                '%count%' => $totalRepaired,
+                '%tenant%' => $targetTenant->getName(),
+            ], 'setup'));
 
             $logger->info('Orphaned entities repaired during setup', [
                 'tenant' => $targetTenant->getName(),
@@ -915,7 +914,7 @@ class DeploymentWizardController extends AbstractController
                 'error' => $e->getMessage(),
             ]);
 
-            $this->addFlash('error', 'Fehler bei der Reparatur: ' . $e->getMessage());
+            $this->addFlash('error', 'setup.flash.repair_failed');
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
     }
@@ -923,7 +922,7 @@ class DeploymentWizardController extends AbstractController
      * Step 4: Admin User Creation
      */
     #[Route('/setup/step4-admin-user', name: 'setup_step4_admin_user', methods: ['GET', 'POST'])]
-    public function step4AdminUser(Request $request, SessionInterface $session): Response
+    public function step4AdminUser(Request $request, SessionInterface $session, LoggerInterface $logger): Response
     {
         if ($guard = $this->guardPostSetup()) { return $guard; }
 
@@ -1007,7 +1006,8 @@ class DeploymentWizardController extends AbstractController
                 return $this->redirectToRoute('setup_step4_admin_user');
 
             } catch (\Throwable $e) {
-                $this->addFlash('error', 'Fehler: ' . $e->getMessage());
+                $logger->error('Setup admin creation failed', ['error' => $e->getMessage()]);
+                $this->addFlash('error', 'setup.flash.admin_failed');
                 return $this->redirectToRoute('setup_step4_admin_user');
             }
         }

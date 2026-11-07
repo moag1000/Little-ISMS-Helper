@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\User;
 use App\Exception\AppException;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
+use App\Service\Compliance\MappingAccessGuard;
+use App\Service\Compliance\MappingCoverageMatrix;
 use App\Service\MappingLifecycleService;
 use App\Service\MappingQualityScoreService;
 use App\Util\ListPage;
@@ -44,6 +45,8 @@ class MappingQualityController extends AbstractController
         private readonly MappingLifecycleService $lifecycleService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
+        private readonly MappingAccessGuard $accessGuard,
+        private readonly MappingCoverageMatrix $coverageMatrix,
     ) {
     }
 
@@ -61,6 +64,7 @@ class MappingQualityController extends AbstractController
         if ($minScore > 0) {
             $qb->andWhere('m.qualityScore >= :score')->setParameter('score', $minScore);
         }
+        $this->accessGuard->scopeQuery($qb, 'm');
         $mappings = $qb->setMaxResults(200)->getQuery()->getResult();
 
         return $this->render('admin/mapping_quality/index.html.twig', [
@@ -86,17 +90,18 @@ class MappingQualityController extends AbstractController
     public function show(int $id): Response
     {
         $mapping = $this->mappingRepository->find($id);
-        if (!$mapping) {
+        if (!$mapping || !$this->accessGuard->isVisible($mapping)) {
             throw $this->createNotFoundException();
         }
-        // Live-Recompute beim Öffnen → Score reflektiert aktuellen DB-State
+        // Live score for display only: GET never persists (recompute() does).
         $this->mqsService->compute($mapping);
-        $this->entityManager->flush();
-
-        return $this->render('admin/mapping_quality/show.html.twig', [
+        $response = $this->render('admin/mapping_quality/show.html.twig', [
             'mapping' => $mapping,
             'allowedTransitions' => $this->lifecycleService->allowedNextStates($mapping->getLifecycleState()),
         ]);
+        $this->entityManager->refresh($mapping); // drop the unsaved display values
+
+        return $response;
     }
 
     #[Route('/admin/mapping-quality/{id}/transition', name: 'admin_mapping_quality_transition', methods: ['POST'], requirements: ['id' => '\d+'])]
@@ -110,7 +115,7 @@ class MappingQualityController extends AbstractController
             return $this->redirectToRoute('admin_mapping_quality_show', ['id' => $id]);
         }
         $mapping = $this->mappingRepository->find($id);
-        if (!$mapping) {
+        if (!$mapping || !$this->accessGuard->isVisible($mapping)) {
             throw $this->createNotFoundException();
         }
 
@@ -161,64 +166,8 @@ class MappingQualityController extends AbstractController
     #[Route('/admin/mapping-quality/coverage/all', name: 'admin_mapping_quality_coverage', methods: ['GET'])]
     public function coverage(): Response
     {
-        $frameworks = $this->frameworkRepository->findAll();
-        $rows = [];
-
-        foreach ($frameworks as $source) {
-            foreach ($frameworks as $target) {
-                if ($source === $target) {
-                    continue;
-                }
-                $stats = $this->mappingRepository->coverageBetweenFrameworks($source, $target);
-                if ($stats['source_with_mapping'] === 0) {
-                    continue;  // Keine Mappings → nicht in Liste
-                }
-                $confidenceCounts = $this->confidenceDistribution($source, $target);
-                $sourceTotal = (int) $stats['source_total'];
-                $covered = (int) $stats['source_with_mapping'];
-                $coveragePct = $sourceTotal > 0 ? ($covered / $sourceTotal) * 100 : 0;
-
-                $rows[] = [
-                    'source' => $source,
-                    'target' => $target,
-                    'source_total' => $sourceTotal,
-                    'covered' => $covered,
-                    'unmapped' => $sourceTotal - $covered,
-                    'coverage_pct' => round($coveragePct, 1),
-                    'high' => $confidenceCounts['high'],
-                    'medium' => $confidenceCounts['medium'],
-                    'low' => $confidenceCounts['low'],
-                ];
-            }
-        }
-        usort($rows, static fn(array $a, array $b) => $b['coverage_pct'] <=> $a['coverage_pct']);
+        $rows = $this->coverageMatrix->rows(array_values($this->frameworkRepository->findAll()));
 
         return $this->render('admin/mapping_quality/coverage.html.twig', ['rows' => $rows]);
-    }
-
-    /**
-     * @return array{high: int, medium: int, low: int}
-     */
-    private function confidenceDistribution(ComplianceFramework $source, ComplianceFramework $target): array
-    {
-        $rows = $this->mappingRepository->createQueryBuilder('m')
-            ->select('m.confidence AS c, COUNT(m.id) AS n')
-            ->join('m.sourceRequirement', 'sr')
-            ->join('m.targetRequirement', 'tr')
-            ->where('sr.framework = :s AND tr.framework = :t')
-            ->andWhere("m.lifecycleState != 'deprecated'")
-            ->groupBy('m.confidence')
-            ->setParameter('s', $source)
-            ->setParameter('t', $target)
-            ->getQuery()->getArrayResult();
-
-        $out = ['high' => 0, 'medium' => 0, 'low' => 0];
-        foreach ($rows as $r) {
-            $key = (string) $r['c'];
-            if (isset($out[$key])) {
-                $out[$key] = (int) $r['n'];
-            }
-        }
-        return $out;
     }
 }

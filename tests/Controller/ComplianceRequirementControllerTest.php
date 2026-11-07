@@ -112,7 +112,7 @@ class ComplianceRequirementControllerTest extends WebTestCase
         $this->adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $this->adminUser->setFirstName('Admin');
         $this->adminUser->setLastName('User');
-        $this->adminUser->setRoles(['ROLE_ADMIN']);
+        $this->adminUser->setRoles(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN']); // catalogue writes are super-admin only
         $this->adminUser->setPassword('hashed_password');
         $this->adminUser->setTenant($this->testTenant);
         $this->adminUser->setIsActive(true);
@@ -169,7 +169,7 @@ class ComplianceRequirementControllerTest extends WebTestCase
     #[Test]
     public function testNewDisplaysFormForUser(): void
     {
-        $this->client->loginUser($this->testUser);
+        $this->client->loginUser($this->adminUser);
         $this->client->request('GET', '/en/compliance/requirement/new');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
@@ -260,7 +260,7 @@ class ComplianceRequirementControllerTest extends WebTestCase
     #[Test]
     public function testEditInFrameRendersFormModalPartial(): void
     {
-        $this->client->loginUser($this->testUser);
+        $this->client->loginUser($this->adminUser);
 
         $this->client->request(
             'GET',
@@ -279,7 +279,7 @@ class ComplianceRequirementControllerTest extends WebTestCase
     #[Test]
     public function testEditWithoutFrameRendersFullPage(): void
     {
-        $this->client->loginUser($this->testUser);
+        $this->client->loginUser($this->adminUser);
         $this->client->request('GET', '/en/compliance/requirement/' . $this->testRequirement->getId() . '/edit');
 
         $this->assertResponseIsSuccessful();
@@ -291,7 +291,7 @@ class ComplianceRequirementControllerTest extends WebTestCase
     {
         // The POST path is frame-aware: an invalid in-frame submit re-renders the
         // slim form-modal partial with 422 (errors inline), not the full page.
-        $this->client->loginUser($this->testUser);
+        $this->client->loginUser($this->adminUser);
 
         $crawler = $this->client->request(
             'GET',

@@ -30,10 +30,11 @@
         badge: { icon: 'nav-list-check', label: requirement.framework.code },
         title: requirement.requirementId,
         subtitle: requirement.title,
-        actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_compliance_requirement_edit', {id: requirement.id}) },
+        actions: ((is_granted('ADMIN_GLOBAL_OP') or (requirement.uploadTenant is not null and is_granted('ROLE_MANAGER'))) ? [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_compliance_requirement_edit', {id: requirement.id}) }
+        ] : [])|merge([
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_requirement_index') ~ '?framework=' ~ requirement.framework.id }
-        ]
+        ])
     }) }}
 
     {% import '_components/_status_pill.html.twig' as _pill %}
@@ -373,7 +374,7 @@
                     {% endif %}
 
                     {# Quick Update Form - Enhanced with Visual Slider #}
-                    {% if can_edit %}
+                    {% if can_edit and is_granted('ROLE_MANAGER') %}
                         <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3" id="quickUpdateForm"
                               data-controller="fulfillment">
                             <input type="hidden" name="_token" value="{{ csrf_token('quick-update' ~ requirement.id) }}">
@@ -609,7 +610,8 @@
                 {% endblock %}
             {% endembed %}
 
-            {# Delete Button #}
+            {% if is_granted('ADMIN_GLOBAL_OP') or (requirement.uploadTenant is not null and is_granted('ROLE_ADMIN')) %}
+{# Delete Button #}
             {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
                 {% block card_header %}
                     <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2></div>
@@ -626,6 +628,7 @@
                     </form>
                 {% endblock %}
             {% endembed %}
+{% endif %}
         </div>
     </div>
 

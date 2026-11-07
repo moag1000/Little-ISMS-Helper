@@ -49,6 +49,7 @@ class AuditRetentionController extends AbstractController
         $current = (int) ($this->systemSettingsRepository->getSetting('audit', 'retention_days', self::DEFAULT_DAYS));
 
         if ($request->isMethod('POST')) {
+            $this->denyAccessUnlessGranted(\App\Security\Voter\TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
             $token = (string) $request->request->get('_token', '');
             if (!$this->isCsrfTokenValid('audit_retention', $token)) {
                 $this->addFlash('danger', 'audit_log.retention.csrf_invalid');

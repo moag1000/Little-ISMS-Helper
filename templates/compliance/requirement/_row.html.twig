@@ -58,12 +58,12 @@
                title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
             </a>
-            <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id, _locale: app.request.locale}) }}"
+            {% if (is_granted('ADMIN_GLOBAL_OP') or (requirement.uploadTenant is not null and is_granted('ROLE_MANAGER'))) %}<a href="{{ path('app_compliance_requirement_edit', {id: requirement.id, _locale: app.request.locale}) }}"
                class="fa-cyber-btn fa-cyber-btn--ghost"
                data-turbo-frame="fa-form-modal"
                title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                 <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-            </a>
+            </a>{% endif %}
         </div>
     </td>
 </tr>

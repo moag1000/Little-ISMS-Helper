@@ -404,7 +404,8 @@ class StatementOfApplicabilityController extends AbstractController
         }
 
         $requirement = $this->requirementRepository->find($requirementId);
-        if ($requirement === null) {
+        $uploadTenant = $requirement?->getUploadTenant();
+        if ($requirement === null || ($uploadTenant !== null && $uploadTenant->getId() !== $control->getTenant()?->getId())) {
             throw $this->createNotFoundException('Requirement not found.');
         }
 

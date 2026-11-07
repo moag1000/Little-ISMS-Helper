@@ -154,7 +154,13 @@ Enthaltene Widgets:
 | Audit-Log-Viewer | Direktlink zum gefilterten Audit-Log |
 
 Der Auditor hat Lesezugriff auf alle Bereiche, aber kein Schreibrecht auf
-Entitaeten (nur NC-Eintraege und Kommentare).
+Entitaeten. Das gilt ebenso für Group-CISO und Konzern-Auditor ohne Manager-Rolle
+und wird zentral geprüft: Formulare zum Anlegen, Bearbeiten oder Klonen öffnen
+sich nicht, die Seite „Zugriff verweigert" nennt den Grund. Erlaubt bleiben die
+Audit-Arbeit (Audits, Checklisten, Feststellungen, Auditbericht), Kommentare,
+SoA-Stichtag-Snapshots, Wirksamkeits-Reviews von Dokumenten, Entscheidungen in
+Freigaben, die dem Auditor zugewiesen sind, eigene Reports, Exporte, das eigene
+Profil und die Bestätigung von Richtlinien.
 
 ---
 

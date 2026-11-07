@@ -774,11 +774,7 @@ class UserManagementController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::DELETE, $user);
 
-        // Check if this is the initial setup admin
-        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
-
-        if ($isInitialAdmin) {
-            // Log security-relevant attempt
+        if ($this->initialAdminService->isInitialAdmin($user)) {
             $this->logger->warning('Attempt to delete initial setup admin blocked', [
                 'target_user_id' => $user->getId(),
                 'target_user_email' => $user->getEmail(),
@@ -791,7 +787,6 @@ class UserManagementController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-            // Capture user data for audit log before deletion
             $userId = $user->getId();
             $userEmail = $user->getEmail();
             $userName = $user->getFirstName() . ' ' . $user->getLastName();
@@ -803,10 +798,15 @@ class UserManagementController extends AbstractController
                 'roles' => $user->getRoles(),
             ];
 
-            $entityManager->remove($user);
-            $entityManager->flush();
+            try {
+                $entityManager->remove($user);
+                $entityManager->flush();
+            } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException) {
+                // EM is closed after the violation (pitfall 1) — only redirect, no further DB work
+                $this->addFlash('error', 'user.error.delete_referenced');
+                return $this->redirectToRoute('user_management_show', ['id' => $userId]);
+            }
 
-            // Audit log
             $this->auditLogger->logCustom(
                 'user_deleted',
                 'User',

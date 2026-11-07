@@ -99,7 +99,7 @@ final class DataRepairControllerTest extends WebTestCase
     #[Test]
     public function testFixTenantMismatchesRejectsShortReason(): void
     {
-        $this->client->loginUser($this->adminUser);
+        $this->client->loginUser($this->superUser);
         // Warm the session so the CSRF token we use below is bound to the
         // same session as the POST. The token value itself is irrelevant
         // here — the controller's guards reject on reason length *after*
@@ -123,12 +123,12 @@ final class DataRepairControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testRepairIndexRendersForAdmin(): void
+    public function testRepairIndexRendersForSuperAdmin(): void
     {
         // Smoke-test the route — confirms authentication, rendering and
         // container wiring are all intact after the MAJOR-1 audit-log
         // additions to the controller constructor.
-        $this->client->loginUser($this->adminUser);
+        $this->client->loginUser($this->superUser);
         $this->client->request('GET', '/de/admin/data-repair');
         self::assertResponseIsSuccessful();
         $html = (string) $this->client->getResponse()->getContent();
@@ -143,7 +143,7 @@ final class DataRepairControllerTest extends WebTestCase
         // database must not write any audit rows (the `tenant IS NULL`
         // query returns zero rows and the loop never body). Running the
         // call twice keeps the audit-row count stable.
-        $this->client->loginUser($this->adminUser);
+        $this->client->loginUser($this->superUser);
         $this->client->request('GET', '/de/admin/data-repair');
         self::assertResponseIsSuccessful();
 
@@ -177,7 +177,7 @@ final class DataRepairControllerTest extends WebTestCase
         // *always* render, regardless of pending count or drift count.
         // Asserting the localized card titles is sufficient — they're
         // unique on the page and only present when the grid renders.
-        $this->client->loginUser($this->adminUser);
+        $this->client->loginUser($this->superUser);
         $this->client->request('GET', '/de/admin/data-repair');
         self::assertResponseIsSuccessful();
         $html = (string) $this->client->getResponse()->getContent();
@@ -225,9 +225,20 @@ final class DataRepairControllerTest extends WebTestCase
      * Job unit-tests.
      */
     #[Test]
+    public function testTenantAdminCannotOpenTheInstanceWideRepairPages(): void
+    {
+        // Scans and repairs read every organisation of the instance.
+        $this->client->loginUser($this->adminUser);
+        foreach (['/de/admin/data-repair', '/de/admin/data-repair/orphans', '/de/admin/data-repair/duplicates'] as $path) {
+            $this->client->request('GET', $path);
+            self::assertResponseStatusCodeSame(403, $path);
+        }
+    }
+
+    #[Test]
     public function testSectionSubpagesRender(): void
     {
-        $this->client->loginUser($this->adminUser);
+        $this->client->loginUser($this->superUser);
         $paths = [
             '/de/admin/data-repair/orphans' => '/admin/data-repair/orphans/refresh',
             '/de/admin/data-repair/duplicates' => '/admin/data-repair/duplicates/refresh',

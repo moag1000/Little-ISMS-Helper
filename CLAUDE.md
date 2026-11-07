@@ -689,7 +689,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 - [ ] Dates from request input go through `App\Util\InputDate::parse()` / `::ymd()`
       (`new DateTime($userInput)` throws → 500 on `?date_from=x`).
 - [ ] `ROLE_AUDITOR` / `ROLE_GROUP_CISO` / `ROLE_KONZERN_AUDITOR` are read-only — a
-      state-changing action needs at least `ROLE_MANAGER`.
+      state-changing action needs at least `ROLE_MANAGER`. `ReadOnlyRoleSubscriber` enforces it
+      centrally (writes and create/edit/clone forms → 403 for reviewer roles without MANAGER);
+      an action built for reviewers names the reviewer role in its `#[IsGranted]`, or its route
+      prefix goes on the subscriber's allow list (audit work, comments, profile, decisions, exports).
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Sensitive data excluded from audit logs

@@ -1,5 +1,14 @@
 setup:
     reset_done: 'Setup reset.'
+    flash:
+        no_backup_file: 'No backup file uploaded.'
+        invalid_backup_format: 'Invalid file format. Only .json or .gz files are allowed.'
+        schema_first: 'Please create the database structure before restoring a backup.'
+        select_target_tenant: 'Please select a target tenant.'
+        target_tenant_not_found: 'Target tenant not found.'
+        orphans_assigned: '%count% orphaned entities assigned to tenant "%tenant%".'
+        repair_failed: 'Repair failed. See the log for details.'
+        admin_failed: 'Administrator could not be created. See the log for details.'
     # Common keys used across setup templates
     common:
         close: 'Close'
