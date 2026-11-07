@@ -2,9 +2,11 @@
  "provenance": {
   "source_framework": "BSI_GRUNDSCHUTZ",
   "target_framework": "BSI-GSPP",
-  "description": "Two independent expert reviews (A: BSI-Grundschutz-Berater, B: externer Auditor) of the candidates from derive_itgs_gspp_review.py for every Kompendium requirement the BSI mapping does not cover. build keeps pairs both reviews chose.",
+  "description": "Two independent expert reviews (A: BSI-Grundschutz-Berater, B: externer Auditor) of the candidates from derive_itgs_gspp_review.py for every Kompendium requirement the BSI mapping does not cover; where they disagree, a third review (C: Obergutachten, ISMS-Zertifizierungsauditor) decides among the targets A or B chose. build keeps pairs both reviews chose or C confirmed.",
   "run_date": "2026-11-07",
-  "reviewed": 1324
+  "reviewed": 1324,
+  "adjudication_run_date": "2026-11-07",
+  "adjudicated": 246
  },
  "requirements": {
   "APP.1.1.A6": [
@@ -34,6 +36,16 @@
       "rationale": "Beide verlangen, Erweiterungen vor dem Produktiveinsatz auf einem isolierten Testsystem zu prüfen; GS++ fordert die dedizierte Testumgebung allgemein."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "TEST.3.1.5",
+      "relationship": "subset",
+      "rationale": "Das Testen von Office-Erweiterungen ausschließlich auf isolierten Testsystemen verlangt eine dedizierte Testumgebung, wie sie GS++ allgemein fordert."
+     }
+    ]
    }
   ],
   "APP.1.1.A13": [
@@ -49,6 +61,16 @@
       "target": "KONF.12.1.11",
       "relationship": "partial_overlap",
       "rationale": "Beide begrenzen die Wirkung aktiver Inhalte aus unsicheren Office-Dateien; Schutzmodus und Deaktivierung sind verwandte Maßnahmen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.12.1.11",
+      "relationship": "partial_overlap",
+      "rationale": "Der geschützte Modus für Daten aus unsicheren Quellen verhindert die Ausführung aktiver Inhalte, was die GS++-Konfiguration zur Deaktivierung aktiver Dateiinhalte abdeckt."
      }
     ]
    }
@@ -313,6 +335,16 @@
       "rationale": "Beide verlangen dokumentierte Notfallvorsorge für den Ausfall zeitkritischer Systeme, hier des Verzeichnisdienstes."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Notfallpläne für den Ausfall wichtiger Verzeichnisdienst-Systeme sind ein Spezialfall der dokumentierten Wiederanlaufplanung für zeitkritische Systeme."
+     }
+    ]
    }
   ],
   "APP.2.1.A17": [
@@ -403,6 +435,21 @@
       "target": "BER.3.23",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern ein abgesichertes Notfallzugangskonto für den Verzeichnisdienst bzw. Domänencontroller."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.3.23",
+      "relationship": "partial_overlap",
+      "rationale": "Der geplante Notfallzugriff über das DSRM-Konto entspricht dem Notfallzugangskonto für Verzeichnisdienste."
+     },
+     {
+      "target": "STM.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderte Risikobetrachtung für AD DS ist eine konkrete Ausprägung der Risikobetrachtung nach GS++-Methodik."
      }
     ]
    }
@@ -551,6 +598,16 @@
       "rationale": "Beide beschränken privilegierte Konten nach dem Prinzip der geringsten Berechtigung auf die minimal nötigen Systeme."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die technische Beschränkung der Anmeldung hochprivilegierter Konten auf minimal notwendige Systeme setzt das Prinzip der geringsten Berechtigungen um."
+     }
+    ]
    }
   ],
   "APP.2.2.A18": [
@@ -571,6 +628,16 @@
       "target": "BER.2.2",
       "relationship": "partial_overlap",
       "rationale": "Beide schränken das Anlegen von Identitäten (Computer-Objekte) auf berechtigte administrative Konten ein."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.2.2",
+      "relationship": "partial_overlap",
+      "rationale": "Das Hinzufügen von Computer-Objekten (Maschinenidentitäten) auf administrative Konten zu beschränken schränkt die Einrichtung von Identitäten ein."
      }
     ]
    }
@@ -638,6 +705,16 @@
       "rationale": "Beide verlangen eine sichere Grundkonfiguration der Anwendung, hier von slapd und Clients."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.10.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die sichere Konfiguration von slapd und Clients samt Prüfung der Vorgabewerte ist die Grundkonfiguration der Anwendung, die GS++ dokumentiert fordert."
+     }
+    ]
    }
   ],
   "APP.2.3.A4": [
@@ -677,6 +754,16 @@
       "target": "KONF.11.1",
       "relationship": "partial_overlap",
       "rationale": "Beide verlangen, dass Zugriffe auf geschützte Daten eine Authentifizierung der Benutzenden voraussetzen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.11.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Pflicht, dass sich Benutzende gegenüber dem Verzeichnisdienst geeignet authentisieren, entspricht der Authentifizierung vor dem Zugriff auf schützenswerte Daten."
      }
     ]
    }
@@ -720,6 +807,11 @@
       "rationale": "Beide betreffen das geordnete Einspielen von Software-Updates; das Kompendium betont Abhängigkeitsprüfung."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Die Prüfung von Backends, Overlays und Migrationspfaden bei OpenLDAP-Updates ist produktspezifisch; das allgemeine Patchmanagement von GS++ trägt diese Pflicht nicht."
    }
   ],
   "APP.2.3.A11": [
@@ -781,6 +873,16 @@
       "target": "KONF.12.1.7",
       "relationship": "partial_overlap",
       "rationale": "Eine WAF filtert schädliche Webinhalte und Anfragen; GS++ fordert die Filterung schädlicher Webinhalte."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.12.1.7",
+      "relationship": "partial_overlap",
+      "rationale": "Eine WAF filtert schädliche Anfragen und Inhalte an der Webanwendung und setzt damit die Filterung schädlicher Webinhalte um."
      }
     ]
    }
@@ -849,6 +951,16 @@
       "rationale": "Beide verlangen kryptografisch gesichert (gehashte) gespeicherte Passwörter."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DEV.3.4",
+      "relationship": "partial_overlap",
+      "rationale": "Kryptografisch gesicherte Speicherung von Client-Passwörtern entspricht dem Hashing von Passwörtern vor der Speicherung."
+     }
+    ]
    }
   ],
   "APP.3.2.A8": [
@@ -890,6 +1002,16 @@
       "rationale": "Beide verlangen die Auswahl externer Anbieter anhand von Verlässlichkeitskriterien."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.3.2",
+      "relationship": "subset",
+      "rationale": "Die Auswahl eines Webhosters anhand geeigneter Punkte ist ein Spezialfall der Lieferantenauswahl nach Verlässlichkeitskriterien."
+     }
+    ]
    }
   ],
   "APP.3.2.A13": [
@@ -922,6 +1044,21 @@
       "target": "DET.4.9",
       "relationship": "partial_overlap",
       "rationale": "Beide prüfen regelmäßig auf Manipulation durch Angriffe."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.10.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die regelmäßige Integritätsprüfung der Webserver-Konfiguration ist der Abgleich der tatsächlichen Konfiguration mit dem Referenzzustand."
+     },
+     {
+      "target": "DET.4.9",
+      "relationship": "partial_overlap",
+      "rationale": "Die Prüfung der bereitgestellten Dateien auf Veränderung durch Angriffe entspricht dem regelmäßigen Manipulations-Checkup."
      }
     ]
    }
@@ -1048,6 +1185,16 @@
       "rationale": "Beide verlangen die Vorhaltung von Ersatz für physische Komponenten, hier Ersatzspeicher."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.3.14",
+      "relationship": "partial_overlap",
+      "rationale": "Das Vorhalten geeigneter Ersatzspeicher entspricht der Reserve physischer Assets."
+     }
+    ]
    }
   ],
   "APP.3.3.A11": [
@@ -1121,6 +1268,16 @@
       "target": "KONF.2.1",
       "relationship": "subset",
       "rationale": "Beide verlangen eine sichere Grundkonfiguration; GS++ gilt für alle IT-Systeme."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die sichere Grundkonfiguration des Samba-Servers ist die Grundkonfiguration des IT-Systems, die GS++ festzulegen fordert."
      }
     ]
    }
@@ -1450,6 +1607,16 @@
       "rationale": "Beide verlangen eine sichere Grundkonfiguration der Anwendung durch Parameter."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.10.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die sichere Konfiguration des SAP-ABAP-Stacks über Profilparameter ist die Grundkonfiguration der Anwendung."
+     }
+    ]
    }
   ],
   "APP.4.2.A2": [
@@ -1465,6 +1632,16 @@
       "target": "KONF.10.1",
       "relationship": "subset",
       "rationale": "Beide verlangen eine sichere Grundkonfiguration der Anwendung."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.10.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die sichere Konfiguration des SAP-JAVA-Stacks ist die Grundkonfiguration der Anwendung."
      }
     ]
    }
@@ -1518,6 +1695,16 @@
       "rationale": "Beide beschränken die Verwaltung von Konten auf wenige Berechtigte und sichern sie ab."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.3.3",
+      "relationship": "partial_overlap",
+      "rationale": "Anlegen, Ändern und Löschen von SAP-Konten als Aufgabe der Konto-Administration beschränkt das Kontenmanagement auf Administrierende."
+     }
+    ]
    }
   ],
   "APP.4.2.A6": [
@@ -1538,6 +1725,21 @@
       "target": "BER.4.1.1",
       "relationship": "partial_overlap",
       "rationale": "Beide verlangen ein rollenbasiertes Konten- und Berechtigungskonzept und dessen Umsetzung."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das Konten- und Berechtigungskonzept mit SoD-Prüfung und Kontrolle kritischer Berechtigungen setzt die geringsten Berechtigungen um."
+     },
+     {
+      "target": "BER.4.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das Berechtigungskonzept für SAP arbeitet mit Rollen und Profilen und damit mit rollenbasierter Berechtigungszuweisung."
      }
     ]
    }
@@ -1567,6 +1769,16 @@
       "target": "KONF.11.7",
       "relationship": "partial_overlap",
       "rationale": "Beide schränken aktivierte Schnittstellen zu anderen Systemen ein; hier RFC-Verbindungen und -Berechtigungen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.11.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die Absicherung der RFC-Schnittstelle auf definierte benötigte Verbindungen schränkt aktivierte Schnittstellen der Anwendung ein."
      }
     ]
    }
@@ -1685,6 +1897,16 @@
       "rationale": "Beide verlangen zeitnahe Aktualisierung der Software; hier der SAP GUI auf den Clients."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.5.10",
+      "relationship": "partial_overlap",
+      "rationale": "Die regelmäßige Aktualisierung der SAP GUI auf allen Clients ist Teil des zeitnahen Patchmanagements."
+     }
+    ]
    }
   ],
   "APP.4.2.A22": [
@@ -1748,6 +1970,16 @@
       "rationale": "Beide verlangen eine sichere Grundkonfiguration der Anwendung (Web Dispatcher)."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.10.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die sichere Konfiguration des SAP Web Dispatchers entspricht der Grundkonfiguration der Anwendung."
+     }
+    ]
    }
   ],
   "APP.4.2.A26": [
@@ -1775,6 +2007,16 @@
       "target": "PERF.3.1.4",
       "relationship": "partial_overlap",
       "rationale": "Beide verlangen regelmäßige Audits in angemessenem Umfang, hier der SAP-ERP-Systeme."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERF.3.1.4",
+      "relationship": "partial_overlap",
+      "rationale": "Regelmäßige Audits der SAP-ERP-Systeme sind eine konkrete Ausprägung der Pflicht, Audits in angemessenem Umfang auszuführen."
      }
     ]
    }
@@ -2030,6 +2272,16 @@
       "rationale": "Beide verlangen regelmäßige Prüfungen auf Schwachstellen einschließlich Auswertung und Behandlung."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.5.3",
+      "relationship": "partial_overlap",
+      "rationale": "Regelmäßige Sicherheitsprüfungen von Datenbanksystemen sind eine Form der Schwachstellenprüfung mit Auswertung."
+     }
+    ]
    }
   ],
   "APP.4.4.A4": [
@@ -2160,6 +2412,21 @@
       "target": "BER.4.1",
       "relationship": "subset",
       "rationale": "Prozesse der Automatisierung dürfen nur mit den unbedingt notwendigen Rechten arbeiten (Least Privilege)."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.1",
+      "relationship": "subset",
+      "rationale": "Prozesse der Automatisierungssoftware mit nur unbedingt notwendigen Rechten betreiben ist ein Spezialfall minimal erforderlicher Anwendungsberechtigungen."
+     },
+     {
+      "target": "BER.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Gruppenspezifisch eingeschränkte Rechte an der Automatisierungssoftware folgen dem Prinzip der geringsten Berechtigungen."
      }
     ]
    }
@@ -2424,6 +2691,16 @@
       "rationale": "Beide verlangen die Prüfung von Benutzereingaben, bevor sie Dateizugriffe oder Befehle beeinflussen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.12.1",
+      "relationship": "subset",
+      "rationale": "Die Validierung von Benutzereingaben vor dem Dateizugriff ist ein Spezialfall der Eingabevalidierung in Anwendungen."
+     }
+    ]
    }
   ],
   "APP.4.6.A9": [
@@ -2456,6 +2733,21 @@
       "target": "KONF.7.13",
       "relationship": "partial_overlap",
       "rationale": "Beide schränken Systemaufrufe bzw. Kommandoausführung von Anwendungen ein."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DEV.2.6.1",
+      "relationship": "partial_overlap",
+      "rationale": "Benutzereingaben dürfen nicht Teil eines Betriebssystemkommandos werden, was das Testen auf eingeschleuste Befehle absichert."
+     },
+     {
+      "target": "KONF.7.13",
+      "relationship": "partial_overlap",
+      "rationale": "Die Beschränkung von Betriebssystemaufrufen auf vorgesehene SAP-Funktionen schränkt Systemaufrufe pro Anwendung ein."
      }
     ]
    }
@@ -2651,6 +2943,16 @@
       "rationale": "Beide verlangen ein dokumentiertes, rollenbasiertes Berechtigungskonzept, hier für die Exchange-Infrastruktur."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das Berechtigungskonzept für die Exchange-Infrastruktur mit Profilen und Rollen entspricht der rollenbasierten Berechtigungszuweisung."
+     }
+    ]
    }
   ],
   "APP.5.2.A5": [
@@ -2690,6 +2992,16 @@
       "rationale": "Beide verlangen eine sichere Konfiguration der Anwendung nach Vorgaben."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.10.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Installation und Konfiguration der Exchange-Server nach Sicherheitsrichtlinie ist die Grundkonfiguration der Anwendung."
+     }
+    ]
    }
   ],
   "APP.5.2.A10": [
@@ -2707,6 +3019,11 @@
       "rationale": "Beide verlangen eine sichere Konfiguration der Anwendung, hier Outlook."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Outlook-spezifische Profil- und Übermittlungseinstellungen werden von GS++ nicht als Pflicht geführt; die Grundkonfigurations-Vorschläge treffen den Kern nicht."
    }
   ],
   "APP.5.2.A11": [
@@ -2876,6 +3193,26 @@
       "target": "SENS.7.1",
       "relationship": "subset",
       "rationale": "Beide verlangen zielobjektspezifische Sensibilisierung der Nutzenden, hier zu E-Mail-Risiken."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.7.1",
+      "relationship": "subset",
+      "rationale": "Die Aufklärung zu Risiken und sicherem Umgang mit E-Mail-Anwendungen ist ein Spezialfall zielobjektspezifischer Sensibilisierung."
+     },
+     {
+      "target": "SENS.7.8",
+      "relationship": "partial_overlap",
+      "rationale": "Die Gefahren-Sensibilisierung umfasst das Erkennen gefälschter E-Mails."
+     },
+     {
+      "target": "SENS.7.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die Sensibilisierung zu Gefahren umfasst den Umgang mit Anhängen unerwünschter E-Mails."
      }
     ]
    }
@@ -3100,6 +3437,21 @@
       "rationale": "Gespeicherte UCC-Daten sollen verschlüsselt werden; GS++ fordert At-rest-Verschlüsselung."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.11.8",
+      "relationship": "partial_overlap",
+      "rationale": "Die Verschlüsselung gespeicherter UCC-Daten entspricht der Verschlüsselung schützenswerter Daten at-rest."
+     },
+     {
+      "target": "KONF.10.1",
+      "relationship": "partial_overlap",
+      "rationale": "Sichere Einstellungen für UCC sind die dokumentierte Grundkonfiguration der Anwendung."
+     }
+    ]
    }
   ],
   "APP.5.4.A10": [
@@ -3219,6 +3571,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Sicherheitsmonitoring der zentralen UCC-Komponenten ist eine Überwachung auf Anzeichen für Angriffe."
+     }
+    ]
    }
   ],
   "APP.6.A2": [
@@ -3304,6 +3666,16 @@
       "rationale": "Beide verlangen, die Installation auf das Notwendige zu beschränken; GS++ gilt für Anwendungen allgemein, nicht nur Plug-ins."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.9",
+      "relationship": "partial_overlap",
+      "rationale": "Nur unbedingt notwendige Plug-ins und Erweiterungen zu installieren schränkt die Installation von Anwendungen ein."
+     }
+    ]
    }
   ],
   "APP.6.A13": [
@@ -3365,6 +3737,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DEV.1.1",
+      "relationship": "subset",
+      "rationale": "Die Planung von Individualsoftware als Entwicklungsprojekt mit Ablaufplan ist Teil geregelter Entwicklungsverfahren."
+     }
+    ]
    }
   ],
   "APP.7.A5": [
@@ -3455,6 +3837,21 @@
       "rationale": "Beide fordern, Auftragnehmer anhand von Zertifikaten oder Testaten auszuwählen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.3.2.1",
+      "relationship": "subset",
+      "rationale": "Die Beauftragung zertifizierter Entwicklungsunternehmen ist die Lieferantenauswahl anhand von Zertifikaten."
+     },
+     {
+      "target": "BES.4.8.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderte Zertifizierung von Sicherheitsaspekten entspricht dem Zertifikat oder Testat nach Sicherheitsstandard."
+     }
+    ]
    }
   ],
   "CON.1.A2": [
@@ -3538,6 +3935,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die im Kryptokonzept festgelegten Auswahlkriterien für Kryptoprodukte sind Kriterien, nach denen beschafft wird."
+     }
+    ]
    }
   ],
   "CON.1.A10": [
@@ -3661,6 +4068,16 @@
       "rationale": "Beide fordern dedizierte, für die Aufbewahrungsdauer geeignete Speichermedien für Datensicherungen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.4.9",
+      "relationship": "partial_overlap",
+      "rationale": "Die Festlegung der Speichermedien für Datensicherungen entspricht dem Einsatz dedizierter, geeigneter Sicherungsmedien."
+     }
+    ]
    }
   ],
   "CON.3.A4": [
@@ -3676,6 +4093,16 @@
       "target": "NOT.4.1",
       "relationship": "partial_overlap",
       "rationale": "Datensicherungspläne dokumentieren, welche Daten je System gesichert werden."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Datensicherungspläne legen fest, welche Daten gesichert werden, was der Dokumentation der zu sichernden Daten entspricht."
      }
     ]
    }
@@ -3920,6 +4347,21 @@
       "rationale": "Beide fordern, Lösch- und Vernichtungsverfahren anhand des Schutzbedarfs standardisiert auszuwählen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.7.3.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Auswahl geeigneter Löschverfahren je Datenträger entspricht dem Verfahren zur endgültigen Löschung."
+     },
+     {
+      "target": "ASST.7.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Auswahl von Vernichtungsverfahren für Datenträger entspricht einem standardisierten Vernichtungsverfahren."
+     }
+    ]
    }
   ],
   "CON.6.A8": [
@@ -4077,6 +4519,16 @@
       "target": "SENS.9.7",
       "relationship": "partial_overlap",
       "rationale": "Beide verlangen, Reisende vorab über länderspezifische Sicherheitsrisiken und Vorgaben zu informieren."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.9.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die Prüfung und Kommunikation länderspezifischer Regelungen vor Reiseantritt entspricht der Sensibilisierung zu Reise- und Sicherheitshinweisen."
      }
     ]
    }
@@ -4272,6 +4724,21 @@
       "rationale": "Beide verlangen Verschlüsselung schützenswerter Daten auf mitgeführten Geräten."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.9.6",
+      "relationship": "partial_overlap",
+      "rationale": "Nicht erforderliche Daten und Geräte auf Auslandsreisen nicht mitzunehmen entspricht dem Untersagen der Mitnahme."
+     },
+     {
+      "target": "KONF.3.2",
+      "relationship": "partial_overlap",
+      "rationale": "Schützenswerte mitgeführte Daten verschlüsselt zu speichern entspricht der Verschlüsselung integrierter Festspeichermedien."
+     }
+    ]
    }
   ],
   "CON.7.A14": [
@@ -4357,6 +4824,21 @@
       "rationale": "Beide fordern Berechtigungen nur im erforderlichen Mindestumfang."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.8",
+      "relationship": "partial_overlap",
+      "rationale": "Der Entzug von Zugriffsrechten für die Reisedauer ist ein Entzug von Berechtigungen."
+     },
+     {
+      "target": "BER.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Prüfung, welche Berechtigungen im Ausland notwendig sind, folgt dem Prinzip der geringsten Berechtigungen."
+     }
+    ]
    }
   ],
   "CON.8.A1": [
@@ -4396,6 +4878,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die Auswahl der Entwicklungsumgebung anhand vorab festgelegter Kriterien entspricht der Beschaffung anhand festgelegter Kriterien."
+     }
+    ]
    }
   ],
   "CON.8.A11": [
@@ -4837,6 +5329,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DEV.2.6",
+      "relationship": "subset",
+      "rationale": "Der CSRF-Schutz ist ein Schutzmechanismus gegen einen gängigen Angriffsmuster-Typ von Webanwendungen."
+     }
+    ]
    }
   ],
   "CON.10.A16": [
@@ -5122,6 +5624,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.8.8",
+      "relationship": "partial_overlap",
+      "rationale": "Die Aufbewahrung von Datenträgern bei Nichtgebrauch in verschlossenen Behältern entspricht der sicheren Verwahrung von Datenträgern."
+     }
+    ]
    }
   ],
   "CON.11.1.A18": [
@@ -5195,6 +5707,21 @@
       "rationale": "Beide fordern rollenspezifische Schulung der für die Auswertung Zuständigen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERS.4.2",
+      "relationship": "subset",
+      "rationale": "Weiterführende Schulung der für Ereignismeldungen Zuständigen ist eine rollenspezifische Schulung."
+     },
+     {
+      "target": "PERS.4.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Schulungen vor dem Einsatz neu beschaffter IT-Komponenten entsprechen produktspezifischen Schulungen bei neuen IT-Produkten."
+     }
+    ]
    }
   ],
   "DER.1.A11": [
@@ -5217,6 +5744,21 @@
       "rationale": "Beide fordern die werkzeuggestützte automatisierte Auswertung von Ereignismeldungen zur Feststellung kritischer Vorfälle."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.6.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Auswertung zentral gesammelter Ereignismeldungen ist die Beurteilung sicherheitsrelevanter Ereignisse."
+     },
+     {
+      "target": "DET.6.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Der Abruf und die Auswertung per Tool entsprechen einer automatisierten Feststellung kritischer Vorfälle."
+     }
+    ]
    }
   ],
   "DER.1.A16": [
@@ -5234,6 +5776,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.4.6",
+      "relationship": "partial_overlap",
+      "rationale": "Zusätzliche Detektion für Anwendungen mit erhöhtem Schutzbedarf umfasst die Überwachung der Anwendungsnutzung auf Anomalien."
+     }
+    ]
    }
   ],
   "DER.1.A18": [
@@ -5251,6 +5803,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.4.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die regelmäßige Integritätsprüfung der Detektionssysteme stellt deren Funktionsfähigkeit sicher."
+     }
+    ]
    }
   ],
   "DER.2.1.A3": [
@@ -5388,6 +5950,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "REA.2.6.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die Analyse der Schnittstellen zu Notfall- und Sicherheitsmanagement dient der Koordinierung bei Vorfällen."
+     }
+    ]
    }
   ],
   "DER.2.1.A13": [
@@ -5405,6 +5977,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "REA.2.6.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die Abstimmung der Vorfallsbehandlung mit dem Notfallmanagement ist Koordinierung bei Vorfällen."
+     }
+    ]
    }
   ],
   "DER.2.1.A14": [
@@ -5442,6 +6024,16 @@
       "target": "PERS.4.2",
       "relationship": "subset",
       "rationale": "Beide fordern rollenspezifische Schulung, hier des Service Desks zum Erkennen von Sicherheitsvorfällen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERS.4.2",
+      "relationship": "subset",
+      "rationale": "Die Schulung des Service-Desk-Personals zur Erkennung von Sicherheitsvorfällen ist eine rollenspezifische Schulung."
      }
     ]
    }
@@ -5532,6 +6124,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "REA.2.6.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die Festlegung von Schnittstellen, Zuständigkeiten und Kommunikation zum Krisenmanagement regelt die Koordinierung bei Vorfällen."
+     }
+    ]
    }
   ],
   "DER.2.2.A6": [
@@ -5552,6 +6154,21 @@
       "target": "PERS.4.2",
       "relationship": "subset",
       "rationale": "Beide fordern rollenspezifische Schulung, hier der Beteiligten zur forensischen Sicherung."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERS.4.2",
+      "relationship": "subset",
+      "rationale": "Die Schulung des Personals zur forensischen Sicherung ist eine rollenspezifische Schulung."
+     },
+     {
+      "target": "PERS.4.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Schulung am Einsatz der Forensik-Werkzeuge entspricht Schulungen zum Umgang mit administrativen Werkzeugen."
      }
     ]
    }
@@ -5805,6 +6422,21 @@
       "rationale": "Beide fordern unabhängige alternative Kommunikationswege für den Krisen- bzw. Notfall."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "REA.2.6.2",
+      "relationship": "partial_overlap",
+      "rationale": "Sichere Kommunikationskanäle für Leitungsgremium und Bereinigungsteam setzen die Vorgehensweise zur Kommunikation bei Vorfällen um."
+     },
+     {
+      "target": "NOT.3.5",
+      "relationship": "partial_overlap",
+      "rationale": "Unabhängige Kommunikationskanäle bei kompromittierter Infrastruktur entsprechen Ausweich-Telekommunikationsdiensten."
+     }
+    ]
    }
   ],
   "DER.2.3.A9": [
@@ -5834,6 +6466,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Mechanismen zum schnellen Erkennen wiederkehrender Angreifender sind eine automatisierte Angriffserkennung."
+     }
+    ]
    }
   ],
   "DER.3.1.A3": [
@@ -5946,6 +6588,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERF.3.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die dokumentierte Ergebnisse der Dokumentenprüfung sind Teil der Auditergebnis-Dokumentation."
+     }
+    ]
    }
   ],
   "DER.3.1.A14": [
@@ -5995,6 +6647,16 @@
       "target": "PERF.3.1.4",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern die Durchführung der geplanten Audits."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERF.3.1.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die Kontrolle aller im Prüfplan festgelegten Anforderungen vor Ort bestimmt den Umfang des Audits."
      }
     ]
    }
@@ -6104,6 +6766,16 @@
       "rationale": "Beide fordern die Aufbewahrung von Unterlagen für festgelegte Fristen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.7.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die nachvollziehbare Aufbewahrung von Auditunterlagen nach regulatorischen Vorgaben entspricht der Aufbewahrung für festgelegte Fristen."
+     }
+    ]
    }
   ],
   "DER.3.2.A2": [
@@ -6194,6 +6866,21 @@
       "rationale": "Beide fordern die Durchführung von Audits bzw. Revisionen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERF.3.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Dokumentation der Prüfergebnisse im IS-Revisionsbericht ist ein Auditbericht."
+     },
+     {
+      "target": "PERF.3.1.4",
+      "relationship": "partial_overlap",
+      "rationale": "Dokumenten- und Vor-Ort-Prüfung bestimmen den Umfang der Revision."
+     }
+    ]
    }
   ],
   "DER.3.2.A8": [
@@ -6209,6 +6896,16 @@
       "target": "ASST.7.2",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern die Aufbewahrung von Dokumenten für eine festgelegte Frist."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.7.2",
+      "relationship": "subset",
+      "rationale": "Die zehnjährige Aufbewahrung der Revisionsberichte ist eine konkrete Aufbewahrungsfrist."
      }
     ]
    }
@@ -6313,6 +7010,16 @@
       "rationale": "Beide fordern die Durchführung der Vor-Ort-Prüfung als Teil der Audits."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERF.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Vor-Ort-Prüfung stellt fest, ob Maßnahmen die Anforderungen erfüllen, und belegt damit die geforderte Überprüfung der Einhaltung von Verpflichtungen."
+     }
+    ]
    }
   ],
   "DER.3.2.A18": [
@@ -6376,6 +7083,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "GS++ führt keine Abstimmungspflicht zwischen Sicherheits- und Notfallmanagement; REA.2.6.3 betrifft die Koordinierung bei Vorfällen."
    }
   ],
   "DER.4.A3": [
@@ -6410,6 +7122,21 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.1.1",
+      "relationship": "subset",
+      "rationale": "Die von der Leitung verabschiedete Notfallleitlinie ist eine Regelung zur Notfallvorsorge im Sinne der GS++-Anforderung."
+     },
+     {
+      "target": "NOT.1.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderte regelmäßige Überprüfung und Überarbeitung der Leitlinie deckt die Aktualitätsprüfung der Notfallregelungen ab."
+     }
+    ]
    }
   ],
   "DER.4.A5": [
@@ -6471,6 +7198,21 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das Notfallkonzept mit Kontinuitätsstrategien für Wiederanlauf und Wiederherstellung enthält den geforderten Wiederanlaufplan für zeitkritische Systeme."
+     },
+     {
+      "target": "NOT.3.2",
+      "relationship": "partial_overlap",
+      "rationale": "Das Notfallkonzept umfasst Strategien zur Fortführung kritischer Geschäftsprozesse und damit Inhalte eines Geschäftsfortführungsplans."
+     }
+    ]
    }
   ],
   "DER.4.A8": [
@@ -6556,6 +7298,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GC.1.1",
+      "relationship": "subset",
+      "rationale": "Ein selbständiges oder integriertes ISMS für die OT ist ein Spezialfall der Errichtung und Aufrechterhaltung eines ISMS."
+     }
+    ]
    }
   ],
   "IND.1.A3": [
@@ -6573,6 +7325,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Bedingungen für Virenschutz auf OT-Komponenten (Herstellerfreigabe, Alternativmaßnahmen) fordert GS++ nicht; KONF.7.1 verlangt nur allgemein einen Echtzeitscan."
    }
   ],
   "IND.1.A5": [
@@ -6622,6 +7379,26 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein GS++-Pendant mit gleichem Schutzziel und gleicher Maßnahmenart; nur thematische Nähe der Kandidaten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Beide fordern Vergabe von Berechtigungen nach dem Minimalprinzip."
+     },
+     {
+      "target": "BER.4.4",
+      "relationship": "partial_overlap",
+      "rationale": "Beide fordern die regelmäßige Überprüfung vergebener Berechtigungen."
+     },
+     {
+      "target": "BER.4.8",
+      "relationship": "partial_overlap",
+      "rationale": "Beide fordern ein geregeltes Vorgehen zum Entzug von Berechtigungen."
+     }
+    ]
    }
   ],
   "IND.1.A9": [
@@ -6735,6 +7512,16 @@
       "target": "ARCH.2.5",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern dokumentierte Kommunikationsbeziehungen bzw. Netzdokumentation."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die dokumentierten Kommunikationsbeziehungen der ICS-Komponenten sind Bestandteil einer Netzdokumentation."
      }
     ]
    }
@@ -7092,6 +7879,16 @@
       "rationale": "Beide fordern, nicht benötigte Funktionen und Schnittstellen eines Systems zu deaktivieren."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.4",
+      "relationship": "subset",
+      "rationale": "Das Deaktivieren nicht benutzter Kommunikationsschnittstellen ist ein Spezialfall des Deaktivierens nicht benötigter Systemfunktionen."
+     }
+    ]
    }
   ],
   "IND.2.4.A2": [
@@ -7165,6 +7962,16 @@
       "rationale": "Beide beschränken die Änderung von Programmen und Konfiguration auf autorisierte Personen bzw. Administrierende."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "TEST.1.3",
+      "relationship": "partial_overlap",
+      "rationale": "Beide beschränken Änderungen an Systemen und Programmen auf autorisierte Personen."
+     }
+    ]
    }
   ],
   "IND.2.7.A4": [
@@ -7192,6 +7999,16 @@
       "target": "ARCH.2.2.5",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern, OT-/Sicherheitssysteme von der übrigen IT-Umgebung zu entkoppeln und Verbindungen einzuschränken."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.2.5",
+      "relationship": "partial_overlap",
+      "rationale": "Der rückwirkungsfreie Betrieb des SIS setzt eine Einschränkung der Verbindungen zwischen OT-Systemen und anderen Systemen voraus."
      }
     ]
    }
@@ -7236,6 +8053,16 @@
       "target": "ARCH.2.2.5",
       "relationship": "subset",
       "rationale": "Beide fordern, Verbindungen zwischen OT-Systemen und anderen Systemen einzuschränken bzw. abzusichern."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.2.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Absicherung von Daten- und Signalverbindungen des SIS schränkt Verbindungen zwischen OT und anderen IT-Systemen ein."
      }
     ]
    }
@@ -7284,6 +8111,21 @@
       "rationale": "Beide verlangen, externe Netzanschlüsse bzw. Fernwartungszugänge zentral zu erfassen und zu dokumentieren."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.4",
+      "relationship": "partial_overlap",
+      "rationale": "Das Fernwartungskonzept legt fest, wie Fernwartungsfunktionen eingeschränkt und abgesichert werden."
+     },
+     {
+      "target": "ARCH.2.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die zentrale Erfassung aller Fernwartungszugänge entspricht der Dokumentation externer Netzanschlüsse im Netzinventar."
+     }
+    ]
    }
   ],
   "IND.3.2.A2": [
@@ -7299,6 +8141,16 @@
       "target": "ARCH.2.4",
       "relationship": "partial_overlap",
       "rationale": "Beide verlangen, externe Zugänge und Anschlüsse vollständig zu erfassen und zu dokumentieren."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die gemeinsame Erfassung aller OT-Fernwartungszugänge ist eine Dokumentation externer Netzanschlüsse und ihres Verwendungszwecks."
      }
     ]
    }
@@ -7323,6 +8175,11 @@
       "rationale": "Beide fordern, Fernwartungszugriffe auf festgelegte Berechtigte und Tätigkeiten einzuschränken; die OT-Anforderung regelt dies mit Externen vertraglich."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Vertragliche Regelungen für die OT-Fernwartung durch Dritte führt GS++ nicht als Pflicht; ASST.5.6 betrifft nur die Beaufsichtigung von Wartungen."
    }
   ],
   "IND.3.2.A6": [
@@ -7370,6 +8227,16 @@
       "target": "KONF.7.1",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern eine Schadcodeprüfung ausgetauschter Dateien; die OT-Anforderung ergänzt Authentisierung und Protokollierung des Dateiaustauschs."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderte Schadsoftwareprüfung ausgetauschter Dateien entspricht der automatischen Prüfung auf Schadcode bei Öffnung von Dateien."
      }
     ]
    }
@@ -7468,6 +8335,16 @@
       "target": "KONF.4.4",
       "relationship": "partial_overlap",
       "rationale": "Beide verlangen, Fernwartungsfunktionen technisch auf zulässige Tätigkeiten einzuschränken."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die technische Reglementierung von Fernwartungssitzungen schränkt Fernwartungsfunktionen ein."
      }
     ]
    }
@@ -7642,6 +8519,16 @@
       "target": "GEB.10.2",
       "relationship": "subset",
       "rationale": "Rauchverbot in brandgefährdeten IT-Räumen ist eine vorbeugende Brandschutzmaßnahme im Sinne der Brandschutzanforderung."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.10.2",
+      "relationship": "subset",
+      "rationale": "Das Rauchverbot in Serverräumen und Archiven ist eine Brandschutzmaßnahme."
      }
     ]
    }
@@ -7894,6 +8781,16 @@
       "rationale": "Die Einbindung der brandschutzverantwortlichen Person bei Bauarbeiten ist Teil eines normgerecht verankerten Brandschutzes."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.10.2",
+      "relationship": "subset",
+      "rationale": "Die Kontrolle der Brandschutzmaßnahmen durch den Brandschutzbeauftragten ist Teil des Brandschutzes."
+     }
+    ]
    }
   ],
   "INF.1.A20": [
@@ -7909,6 +8806,16 @@
       "target": "GEB.10.2",
       "relationship": "subset",
       "rationale": "Alarmierungsplan und Brandschutzübungen sind Bestandteil eines normgerecht verankerten Brandschutzes."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.10.2",
+      "relationship": "subset",
+      "rationale": "Alarmierungsplan und Brandschutzübungen sind Bestandteile des Brandschutzes."
      }
     ]
    }
@@ -8137,6 +9044,16 @@
       "target": "GEB.10.2.2",
       "relationship": "partial_overlap",
       "rationale": "Beide betreffen die Dokumentation und Instandhaltung von Brandabschnittsabschlüssen wie Brandschotts."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.10.2.2",
+      "relationship": "partial_overlap",
+      "rationale": "Das Brandschott-Kataster dokumentiert die Schotten, die die geforderten Brandabschnitte abschotten."
      }
     ]
    }
@@ -8429,6 +9346,21 @@
       "target": "ASST.5.2",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern die regelmäßige Wartung der Komponenten in festgelegten Intervallen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.5.1",
+      "relationship": "partial_overlap",
+      "rationale": "Beide verlangen Wartungsbedarf und Wartungsvorgaben der zum Betrieb erforderlichen Infrastruktur zu erfassen."
+     },
+     {
+      "target": "ASST.5.2",
+      "relationship": "partial_overlap",
+      "rationale": "Beide verlangen die Ausführung von Wartungen in festgelegten Intervallen."
      }
     ]
    }
@@ -8867,6 +9799,16 @@
       "rationale": "Beide fordern technische und organisatorische Zugangsvorgaben für Räume der technischen Infrastruktur nach Schutzniveau."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.9.6",
+      "relationship": "partial_overlap",
+      "rationale": "Die Vorgaben zur Raumabsicherung umfassen die Zugangsbeschränkung zu Räumen für technische Infrastruktur."
+     }
+    ]
    }
   ],
   "INF.5.A2": [
@@ -8884,6 +9826,11 @@
       "rationale": "Beide beschränken den Zugang zum Infrastrukturraum, hier durch Verbot als Durchgangsraum."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Durchgangsverbot, Lage und Fläche des Technikraums fordert GS++ nicht."
    }
   ],
   "INF.5.A3": [
@@ -8970,6 +9917,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "Abstand zu elektromagnetischen Störquellen hat in GS++ keine Entsprechung, GEB.2.4 betrifft die Abschirmung gegen Abstrahlung."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Abstand zu elektromagnetischen Störquellen fordert GS++ nicht; GEB.2.4 betrifft die Abschirmung gegen Abstrahlung."
    }
   ],
   "INF.5.A6": [
@@ -9262,6 +10214,21 @@
       "target": "ASST.5.2",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern die regelmäßige Inspektion und Wartung der Komponenten in festgelegten Intervallen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.5.1",
+      "relationship": "partial_overlap",
+      "rationale": "Beide verlangen Wartungsbedarf und Wartungsvorgaben der zum Betrieb erforderlichen Infrastruktur zu erfassen."
+     },
+     {
+      "target": "ASST.5.2",
+      "relationship": "partial_overlap",
+      "rationale": "Beide verlangen die Ausführung von Wartungen in festgelegten Intervallen."
      }
     ]
    }
@@ -9735,6 +10702,16 @@
       "rationale": "Beide fordern eine dem Schutzbedarf angemessene, vor Unbefugten geschützte Unterbringung der IT-Arbeitsplätze."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.6.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Eignung von Büroräumen nach Schutzbedarf umfasst den Schutz der IT-Systeme vor dem Zugriff Unbefugter."
+     }
+    ]
    }
   ],
   "INF.7.A2": [
@@ -9840,6 +10817,26 @@
       "rationale": "Beide fordern, vertrauliche Unterlagen und Datenträger bei Nichtgebrauch sicher zu verwahren."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.8.2",
+      "relationship": "partial_overlap",
+      "rationale": "Beide verlangen, vertrauliche Dokumente und Datenträger geordnet und verschlossen zu verwahren."
+     },
+     {
+      "target": "GEB.8.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Behältnisse für vertrauliche Unterlagen entsprechen verschließbaren Schutzeinrichtungen für Speichermedien."
+     },
+     {
+      "target": "SENS.8.8",
+      "relationship": "partial_overlap",
+      "rationale": "Beide fordern die sichere Verwahrung von Datenträgern durch die Mitarbeitenden."
+     }
+    ]
    }
   ],
   "INF.7.A8": [
@@ -9889,6 +10886,21 @@
       "rationale": "Beide fordern Regelungen für den Transfer von Datenträgern und Unterlagen zwischen Institution und Arbeitsplatz."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Beide fordern sicheren Transport von Datenträgern und Unterlagen mit Schutz von Vertraulichkeit und Integrität."
+     },
+     {
+      "target": "ASST.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Regelung, welche Unterlagen transportiert werden dürfen, ist eine Regelung zum Transfer."
+     }
+    ]
    }
   ],
   "INF.8.A3": [
@@ -9928,6 +10940,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "Raumaufteilung und Ergonomie am häuslichen Arbeitsplatz sind in GS++ nicht gefordert."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Raumaufteilung, Ergonomie und Einbruchschutz des häuslichen Arbeitsplatzes fordert GS++ nicht; SENS.9.3 betrifft nur die Verwahrung."
    }
   ],
   "INF.8.A5": [
@@ -9987,6 +11004,16 @@
       "target": "SENS.9.1",
       "relationship": "partial_overlap",
       "rationale": "Beide betreffen die geeignete Auswahl und Nutzung mobiler Arbeitsumgebungen, damit vertrauliche Informationen nicht offenliegen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.9.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Vorgaben zur Auswahl und Nutzung mobiler Arbeitsplätze verhindern die Verarbeitung vertraulicher Informationen in der Öffentlichkeit."
      }
     ]
    }
@@ -10090,6 +11117,26 @@
       "target": "SENS.2.2",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern, Mitarbeitenden klare Meldewege und Ansprechpartner bekannt zu machen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.2.8",
+      "relationship": "partial_overlap",
+      "rationale": "Beide verlangen, dass Mitarbeitende sicherheitsrelevante Ereignisse wie Verlust melden."
+     },
+     {
+      "target": "ASST.6.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Verlustmeldung ist Teil der Vorgehensweise beim Abhandenkommen von Assets."
+     },
+     {
+      "target": "DET.2.1",
+      "relationship": "subset",
+      "rationale": "Die Verlustmeldung mit klaren Meldewegen ist ein Spezialfall des geforderten Meldeverfahrens."
      }
     ]
    }
@@ -10324,6 +11371,21 @@
       "rationale": "Beide fordern, die zulässigen Anwendungen auf den Systemen festzulegen und zu autorisieren."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die Minimalkonfiguration von Schulungsrechnern deaktiviert nicht benötigte Funktionen."
+     },
+     {
+      "target": "ASST.2.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Festlegung zulässiger Anwendungen entspricht der Autorisierung von Anwendungen."
+     }
+    ]
    }
   ],
   "INF.10.A8": [
@@ -10361,6 +11423,16 @@
       "target": "BES.4.2",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern, Anforderungen einschließlich der Informationssicherheit vor der Beschaffung festzulegen und zu dokumentieren."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Erhebung der Informationssicherheitsanforderungen vor der Fahrzeugbeschaffung dokumentiert Beschaffungskriterien."
      }
     ]
    }
@@ -10475,6 +11547,11 @@
       "rationale": "Beide fordern physische Schutzmaßnahmen für IT-Assets gegen Witterungs- und Wassereinflüsse."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Witterungsschutz für Fahrzeuge fordert GS++ nicht; GEB.10.3 betrifft den Wasserschutz von Standorten."
    }
   ],
   "INF.11.A9": [
@@ -10512,6 +11589,21 @@
       "target": "ASST.6.4",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern, ausgesonderte IT-Systeme vor der Rückgabe in einen definierten, informationsfreien Zustand zu versetzen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.7.3.2",
+      "relationship": "partial_overlap",
+      "rationale": "Beide verlangen, dass keine schützenswerten Informationen auf ausgesonderten Geräten verbleiben."
+     },
+     {
+      "target": "ASST.6.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die Prüfung vor Aussonderung entspricht dem Zurücksetzen auf einen definierten Ausgangszustand bei Rücknahme."
      }
     ]
    }
@@ -10631,6 +11723,11 @@
       "rationale": "Eine Brandlöschanlage im Fahrzeug ist ein Brandschutzbaustein im Sinne eines normgerecht verankerten Brandschutzes."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Brandlöschanlagen in Fahrzeugen fordert GS++ nicht; GEB.10.2 gilt nur für Standorte."
    }
   ],
   "INF.11.A17": [
@@ -10814,6 +11911,21 @@
       "rationale": "Brandschutzgerechte Dimensionierung und Belüftung von Kabeltrassen ist Teil eines normgerechten baulichen Brandschutzes."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.10.2",
+      "relationship": "subset",
+      "rationale": "Dimensionierung und Belüftung der Trassen sind Brandschutzmaßnahmen."
+     },
+     {
+      "target": "GEB.9.5",
+      "relationship": "partial_overlap",
+      "rationale": "Beide fordern eine bedarfsgerechte Auslegung der Kabelinfrastruktur."
+     }
+    ]
    }
   ],
   "INF.12.A11": [
@@ -10834,6 +11946,21 @@
       "target": "ARCH.2.5",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern aktuelle Dokumentation der Netz- und Leitungsbelegung bzw. Rangierungen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.1.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Dokumentation von Rangierungen und Leitungsbelegungen ist Teil der Strukturpläne."
+     },
+     {
+      "target": "ARCH.2.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Dokumentation der Rangierungen ergänzt den Netzplan."
      }
     ]
    }
@@ -10938,6 +12065,11 @@
       "rationale": "Beide fordern, einen übernommenen Standort bzw. Gebäude vor der Nutzung anhand von Kriterien zu beurteilen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Bestandsaufnahme der TGA bei Gebäudeübernahme fordert GS++ nicht; GEB.1.3.1 betrifft die Abnahme von Standorten."
    }
   ],
   "INF.13.A2": [
@@ -11189,6 +12321,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.6.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Kategorisierung und Klassifizierung von TGM-Ereignissen ist ein Verfahren zur Beurteilung sicherheitsrelevanter Ereignisse."
+     }
+    ]
    }
   ],
   "INF.13.A24": [
@@ -11314,6 +12456,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.2.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Dokumentation der GA-Komponenten ist ein Inventar der IT-Systeme."
+     }
+    ]
    }
   ],
   "INF.14.A7": [
@@ -11469,6 +12621,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Dedizierte Adressbereiche für GA-Netze fordert GS++ nicht; ARCH.2.2 betrifft die Einschränkung von Verbindungen."
    }
   ],
   "INF.14.A20": [
@@ -11532,6 +12689,16 @@
       "target": "KONF.4.5",
       "relationship": "partial_overlap",
       "rationale": "Beide betreffen definierte Zeitquellen für synchrone Systemzeit; GS++ verlangt die Autorisierung der Zeitquellen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Alle GA-Komponenten nutzen eine abgestimmte Zeitquelle, wie sie GS++ als autorisierte Zeitquelle fordert."
      }
     ]
    }
@@ -11627,6 +12794,16 @@
       "target": "KONF.4.5",
       "relationship": "partial_overlap",
       "rationale": "Beide betreffen eine autorisierte, vertrauenswürdige Zeitquelle; das Kompendium fordert einen eigenen GA-Zeitserver."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Der eigene GA-Zeitserver ist die festgelegte, autorisierte Zeitquelle der GA."
      }
     ]
    }
@@ -11736,6 +12913,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Einstufung der Netze nach Vertrauenswürdigkeit bildet die Grundlage der Segmentierung nach Schutzbedarf."
+     }
+    ]
    }
   ],
   "NET.1.1.A26": [
@@ -11833,6 +13020,16 @@
       "rationale": "Beide betreffen definierte Zeitquellen für synchrone Uhrzeit der Komponenten (NTP)."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die NTP-Synchronisation der Netzmanagement-Komponenten legt eine gemeinsame Zeitquelle fest, wie sie GS++ als autorisierte Zeitquelle fordert."
+     }
+    ]
    }
   ],
   "NET.1.2.A9": [
@@ -11916,6 +13113,16 @@
       "rationale": "Beide fordern den regelmäßigen Abgleich der tatsächlichen Konfiguration mit dem Sollzustand."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.5",
+      "relationship": "partial_overlap",
+      "rationale": "Der Soll-Ist-Vergleich der Netzmanagement-Lösung ist eine Überprüfung der Konfiguration gegen den Referenzzustand."
+     }
+    ]
    }
   ],
   "NET.1.2.A18": [
@@ -11936,6 +13143,21 @@
       "target": "PERS.4.2.1",
       "relationship": "subset",
       "rationale": "Beide fordern Schulungen der Administrierenden zum Umgang mit eingesetzten administrativen Werkzeugen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERS.4.2.1",
+      "relationship": "subset",
+      "rationale": "Schulungen zu Netzmanagement-Lösungen sind produktspezifische Schulungen für Administrierende."
+     },
+     {
+      "target": "PERS.4.2",
+      "relationship": "subset",
+      "rationale": "Die Schulungen sind rollenspezifische Schulungen für Administrierende."
      }
     ]
    }
@@ -11987,6 +13209,16 @@
       "target": "NOT.4.2",
       "relationship": "subset",
       "rationale": "Beide verlangen Datensicherung der Systeme; hier Sicherung der Netzmanagement-Werkzeuge und Konfigurationen für den Notfall."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Beide fordern die Sicherung der Systeme und Konfigurationen als Grundlage der Wiederherstellung."
      }
     ]
    }
@@ -12045,6 +13277,16 @@
       "rationale": "Beide betreffen eine gemeinsame, autorisierte Zeitquelle als Referenzzeit für alle Standorte."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die gemeinsame Referenzzeit für alle Standorte ist die festgelegte, autorisierte Zeitquelle."
+     }
+    ]
    }
   ],
   "NET.1.2.A38": [
@@ -12086,6 +13328,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.2",
+      "relationship": "partial_overlap",
+      "rationale": "Das Verhindern der Kopplung von Sicherheitszonen über WLAN schränkt Verbindungen zwischen Netzsegmenten ein."
+     }
+    ]
    }
   ],
   "NET.2.1.A7": [
@@ -12227,6 +13479,26 @@
       "rationale": "Beide fordern zielgruppengerechte Sensibilisierung zu objektspezifischen Schutzmaßnahmen; hier WLAN-Nutzende."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.7.1",
+      "relationship": "subset",
+      "rationale": "Die WLAN-Schulung ist eine zielobjektspezifische Sensibilisierung."
+     },
+     {
+      "target": "SENS.7.12",
+      "relationship": "partial_overlap",
+      "rationale": "Die WLAN-Schulung umfasst die Risiken öffentlicher WLANs."
+     },
+     {
+      "target": "SENS.7.13",
+      "relationship": "partial_overlap",
+      "rationale": "Die WLAN-Schulung umfasst die Risiken unverschlüsselter WLANs."
+     }
+    ]
    }
   ],
   "NET.3.1.A6": [
@@ -12244,6 +13516,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.3.22",
+      "relationship": "partial_overlap",
+      "rationale": "Beide sichern den administrativen Notfallzugang, der bei Ausfall der regulären Zugriffswege verfügbar bleibt."
+     }
+    ]
    }
   ],
   "NET.3.1.A8": [
@@ -12295,6 +13577,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Anforderungsliste für die Beschaffung dokumentiert die Beschaffungskriterien."
+     }
+    ]
    }
   ],
   "NET.3.1.A12": [
@@ -12339,6 +13631,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.5.1.2",
+      "relationship": "subset",
+      "rationale": "Die restriktive Filterung von ICMP ist ein Spezialfall des Blockierens bekannter netzbasierter Angriffsmethoden."
+     }
+    ]
    }
   ],
   "NET.3.1.A22": [
@@ -12356,6 +13658,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die vorbereiteten Handlungsanweisungen für typische Ausfallszenarien sind Teil eines Wiederanlaufplans für zeitkritische Systeme."
+     }
+    ]
    }
   ],
   "NET.3.1.A23": [
@@ -12488,6 +13800,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.3.22",
+      "relationship": "partial_overlap",
+      "rationale": "Beide sichern den administrativen Notfallzugang, der bei Ausfall der regulären Zugriffswege verfügbar bleibt."
+     }
+    ]
    }
   ],
   "NET.3.2.A14": [
@@ -12517,6 +13839,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Anforderungsliste für die Beschaffung dokumentiert die Beschaffungskriterien."
+     }
+    ]
    }
   ],
   "NET.3.2.A22": [
@@ -12532,6 +13864,16 @@
       "target": "KONF.4.5",
       "relationship": "partial_overlap",
       "rationale": "Beide betreffen die Festlegung autorisierter Zeitquellen für die Systemzeit."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die NTP-Anbindung der Firewall ohne externe Synchronisation legt eine autorisierte Zeitquelle fest."
      }
     ]
    }
@@ -12619,6 +13961,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die vorbereiteten Handlungsanweisungen für typische Ausfallszenarien sind Teil eines Wiederanlaufplans für zeitkritische Systeme."
+     }
+    ]
    }
   ],
   "NET.3.3.A1": [
@@ -12818,6 +14170,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Planung des NAC-Einsatzes legt die Netzzugangskontrolle für IT-Systeme fest."
+     }
+    ]
    }
   ],
   "NET.3.4.A3": [
@@ -12847,6 +14209,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das NAC-Konzept legt fest, wie IT-Systeme beim Netzzugang authentifiziert werden, und belegt damit die Netzzugangskontrolle nach ARCH.4.1."
+     }
+    ]
    }
   ],
   "NET.3.4.A5": [
@@ -12898,6 +14270,16 @@
       "target": "ARCH.4.1",
       "relationship": "subset",
       "rationale": "Beide fordern die Authentifizierung von IT-Systemen am Netz anhand der Identitätsverwaltung; hier individuelle NAC-Identitäten."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Individuelle Identitäten für die NAC-Authentisierung sind die Grundlage der Authentifizierung beim Zugang zum Netzsegment im Einklang mit dem Identitätsmanagement."
      }
     ]
    }
@@ -12973,6 +14355,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.14.1",
+      "relationship": "subset",
+      "rationale": "MACsec nach IEEE 802.1AE ist ein anerkannter Standard zur Verschlüsselung und Integritätssicherung der Kommunikation beim Transport im Netz."
+     }
+    ]
    }
   ],
   "NET.3.4.A21": [
@@ -13170,6 +14562,16 @@
       "rationale": "Beide fordern zielgruppengerechte Einweisung zu objektspezifischen Schutzmaßnahmen; hier TK-Nutzende."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.7.1",
+      "relationship": "subset",
+      "rationale": "Einweisung und Unterlagen für die Nutzenden der TK-Anlage sind eine zielobjektspezifische, zielgruppengerechte Sensibilisierung."
+     }
+    ]
    }
   ],
   "NET.4.1.A10": [
@@ -13229,6 +14631,16 @@
       "rationale": "Beide fordern ein Verfahren zur endgültigen Löschung von Daten; hier bei Aussonderung von TK-Anlagen und Endgeräten."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.7.3.2",
+      "relationship": "subset",
+      "rationale": "Das sichere Löschen der Daten auf TK-Anlagen und Endgeräten vor der Aussonderung ist ein Spezialfall des Verfahrens zur endgültigen Löschung."
+     }
+    ]
    }
   ],
   "NET.4.1.A12": [
@@ -13273,6 +14685,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die Berücksichtigung von Anforderungsanalyse und Planung bei der TK-Anlagen-Beschaffung entspricht der Beschaffung anhand festgelegter Kriterien."
+     }
+    ]
    }
   ],
   "NET.4.1.A14": [
@@ -13295,6 +14717,21 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Der Notfallplan für die TK-Anlage ist ein Wiederanlaufplan für ein zeitkritisches System."
+     },
+     {
+      "target": "NOT.3.4",
+      "relationship": "partial_overlap",
+      "rationale": "Regelmäßige Notfallübungen für TK-Anlagen überprüfen die Funktionstüchtigkeit der Notfallpläne."
+     }
+    ]
    }
   ],
   "NET.4.1.A15": [
@@ -13329,6 +14766,21 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.6.2",
+      "relationship": "partial_overlap",
+      "rationale": "Der Schutz frei zugänglicher Endgeräte vor unbefugtem Zugriff entspricht der geschützten Aufstellung von IT-Systemen."
+     },
+     {
+      "target": "KONF.2.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die Einschränkung des Funktionsumfangs der Endgeräte entspricht der Deaktivierung nicht benötigter Systemfunktionen."
+     }
+    ]
    }
   ],
   "NET.4.1.A17": [
@@ -13346,6 +14798,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.5.1",
+      "relationship": "subset",
+      "rationale": "Passwort- bzw. PIN-Schutz der Wartungs- und Konfigurationsgeräte ist eine Authentifizierung am System."
+     }
+    ]
    }
   ],
   "NET.4.1.A18": [
@@ -13473,6 +14935,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Anforderungsliste mit Sicherheitsmerkmalen vor der VoIP-Beschaffung ist die dokumentierte Festlegung von Beschaffungskriterien."
+     }
+    ]
    }
   ],
   "NET.4.2.A11": [
@@ -13539,6 +15011,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.2.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die VoIP-spezifische Firewall schränkt die Verbindungen zwischen Daten- und VoIP-Systemen ein."
+     }
+    ]
    }
   ],
   "NET.4.2.A14": [
@@ -13605,6 +15087,21 @@
       "rationale": "Beide fordern die Aufstellung von IT-Systemen geschützt vor dem Zugriff Unbefugter; hier das Faxgerät."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.6.1",
+      "relationship": "partial_overlap",
+      "rationale": "Faxgeräte sind Ausgabesysteme, deren Sendungen nur Berechtigte einsehen oder entnehmen dürfen."
+     },
+     {
+      "target": "GEB.6.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Aufstellung des Faxgerätes schützt vor dem Zugriff Unbefugter."
+     }
+    ]
    }
   ],
   "NET.4.3.A2": [
@@ -13627,6 +15124,21 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.7.21",
+      "relationship": "subset",
+      "rationale": "Der Hinweis auf die eingeschränkte Rechtsverbindlichkeit von Faxen sensibilisiert gegen die Rechtsunsicherheit beim Faxverkehr."
+     },
+     {
+      "target": "SENS.7.22",
+      "relationship": "partial_overlap",
+      "rationale": "Die Unterweisung zu den Besonderheiten der Faxübermittlung umfasst die Risiken unverschlüsselter und unauthentisierter Faxnutzung."
+     }
+    ]
    }
   ],
   "NET.4.3.A3": [
@@ -13644,6 +15156,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Dokumentation der Konfigurationsparameter und Änderungen des Faxservers entspricht der dokumentierten Grundkonfiguration."
+     }
+    ]
    }
   ],
   "NET.4.3.A4": [
@@ -13673,6 +15195,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Anforderungsliste mit Sicherheitsaspekten vor der Fax-Beschaffung entspricht den dokumentierten Beschaffungskriterien."
+     }
+    ]
    }
   ],
   "NET.4.3.A7": [
@@ -13729,6 +15261,21 @@
       "rationale": "Beide fordern die Protokollierung von Verbindungen der Telekommunikationsanwendung (Kommunikationsjournal)."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.12.13",
+      "relationship": "partial_overlap",
+      "rationale": "Die Protokollierung der Übertragungsvorgänge von Faxgeräten entspricht dem Sendebericht."
+     },
+     {
+      "target": "KONF.12.12",
+      "relationship": "partial_overlap",
+      "rationale": "Die Kommunikationsjournale der Faxgeräte sind ein Verbindungsprotokoll einer TK-Anwendung."
+     }
+    ]
    }
   ],
   "NET.4.3.A10": [
@@ -13770,6 +15317,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.11.7.2.1",
+      "relationship": "subset",
+      "rationale": "Das Blockieren unerwünschter Faxadressen bzw. die Beschränkung auf zugelassene Rufnummern schränkt TK-Verbindungen zu externen Gegenstellen ein."
+     }
+    ]
    }
   ],
   "NET.4.3.A13": [
@@ -13828,6 +15385,21 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das Rollen- und Berechtigungskonzept für den IT-Betrieb weist Berechtigungen rollenbasiert zu."
+     },
+     {
+      "target": "PERS.2.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Festlegung getrennter Betriebs- und Administrationsrollen definiert Rollen mit Aufgaben für die Tätigkeiten im Betrieb."
+     }
+    ]
    }
   ],
   "OPS.1.1.1.A3": [
@@ -13962,6 +15534,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Betriebsanforderungen für Konzeption und Beschaffung gehören zu den dokumentierten Beschaffungskriterien."
+     }
+    ]
    }
   ],
   "OPS.1.1.1.A16": [
@@ -14040,6 +15622,16 @@
       "rationale": "Beide fordern nachvollziehbare Protokollierung; das Kompendium für jeden Betriebsprozessschritt, GS++ für sicherheitsrelevante Ereignisse."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Protokollierung von Betriebsprozessschritten überschneidet sich mit der Protokollierung sicherheitsrelevanter Ereignisse, fordert aber mehr."
+     }
+    ]
    }
   ],
   "OPS.1.1.1.A25": [
@@ -14091,6 +15683,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GC.9.1.1.2",
+      "relationship": "subset",
+      "rationale": "Die Vertretungsregelung für Administrationsaufgaben ist eine Stellvertreterregelung für die Rollen und Zuständigkeiten."
+     }
+    ]
    }
   ],
   "OPS.1.1.2.A4": [
@@ -14135,6 +15737,21 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.4",
+      "relationship": "partial_overlap",
+      "rationale": "Administrative Funktionen dürfen nur berechtigten Personen offenstehen, also eingeschränkte privilegierte Funktionen."
+     },
+     {
+      "target": "KONF.5.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderte Authentisierung vor Administrationstätigkeiten ist die Authentifizierung am System."
+     }
+    ]
    }
   ],
   "OPS.1.1.2.A8": [
@@ -14186,6 +15803,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Ausschließlich für die Administration vergebene Rollen mit Berechtigungen nach Bedarf entsprechen der rollenbasierten Berechtigungszuweisung."
+     }
+    ]
    }
   ],
   "OPS.1.1.2.A22": [
@@ -14330,6 +15957,16 @@
       "rationale": "Beide fordern die Zuweisung von Zuständigkeiten zu Rollen; hier für Patch- und Änderungsmanagement."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "TEST.1.1.2",
+      "relationship": "subset",
+      "rationale": "Die Benennung Zuständiger für Patch- und Änderungsmanagement ist eine Aufgabenzuweisung an Personen oder Rollen im Änderungsprozess."
+     }
+    ]
    }
   ],
   "OPS.1.1.3.A3": [
@@ -14406,6 +16043,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "Kein inhaltlich entsprechendes GS++-Pendant; Kandidaten betreffen nur Themennähe oder andere Pflichten."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Auswahlkriterien und Sicherheitsrichtlinie für Patch-Werkzeuge werden von GS++ nicht gefordert; KONF.1.3 betrifft nur die Dokumentation der Konfigurationswerkzeuge."
    }
   ],
   "OPS.1.1.3.A12": [
@@ -14596,6 +16238,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Synchrone Systemzeit setzt definierte, autorisierte Zeitquellen voraus; das einheitliche Zeitformat der Protokolle ist nicht abgedeckt."
+     }
+    ]
    }
   ],
   "OPS.1.1.5.A8": [
@@ -14633,6 +16285,16 @@
       "target": "DET.3.5",
       "relationship": "partial_overlap",
       "rationale": "Signierte Protokolle sichern Integrität und Revisionssicherheit der Protokollierungsdaten."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.3.5",
+      "relationship": "partial_overlap",
+      "rationale": "Digitale Signatur der Protokolle dient der revisionssicheren Integrität des Audit Logs; die Verschlüsselung ist nicht abgedeckt."
      }
     ]
    }
@@ -14722,6 +16384,16 @@
       "rationale": "Der Abnahmeplan legt Freigabekriterien fest, die in der Freigabedokumentation nachzuweisen sind."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "TEST.4.1.3",
+      "relationship": "partial_overlap",
+      "rationale": "Der Abnahmeplan mit Freigabekriterien und Vorgehen bei Ablehnung entspricht der dokumentierten Freigabe samt Freigabekriterien."
+     }
+    ]
    }
   ],
   "OPS.1.1.6.A15": [
@@ -14785,6 +16457,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die gemeinsame Uhrzeit aller Systeme beruht auf autorisierten Zeitquellen, die GS++ fordert."
+     }
+    ]
    }
   ],
   "OPS.1.1.7.A4": [
@@ -14846,6 +16528,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.11.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Authentisierung und Autorisierung beim Zugriff auf die Systemmanagement-Lösung entspricht der Authentifizierung vor dem Zugriff auf schützenswerte Daten."
+     }
+    ]
    }
   ],
   "OPS.1.1.7.A7": [
@@ -14950,6 +16642,21 @@
       "rationale": "Beide fordern die Versionierung von Konfigurationen mit Nachvollziehbarkeit früherer Stände."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Versionierung und Änderungsverfolgung der Konfigurationsdaten entsprechen der Versionierung vorheriger Konfigurationen."
+     },
+     {
+      "target": "KONF.1.1",
+      "relationship": "subset",
+      "rationale": "Das zentrale Konfigurationsmanagement ist ein Spezialfall der Verfahren und Regelungen zum Konfigurationsmanagement."
+     }
+    ]
    }
   ],
   "OPS.1.1.7.A16": [
@@ -15016,6 +16723,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Eine gemeinsame Referenzzeit über alle Standorte setzt autorisierte Zeitquellen voraus."
+     }
+    ]
    }
   ],
   "OPS.1.1.7.A24": [
@@ -15133,6 +16850,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.4.5.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die regelmäßige Aufbereitung archivierter Bestände stellt die Nutzbarkeit der Archivdaten sicher, wofür auch die dazugehörigen Assets archiviert werden müssen."
+     }
+    ]
    }
   ],
   "OPS.1.2.2.A6": [
@@ -15233,6 +16960,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERS.4.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Schulung der Administrierenden zum Archivsystem ist eine produktspezifische Schulung für administrative Werkzeuge."
+     }
+    ]
    }
   ],
   "OPS.1.2.2.A13": [
@@ -15298,6 +17035,16 @@
       "rationale": "Beide fordern Speichermedien, die für den Aufbewahrungszeitraum geeignet sind."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.4.9",
+      "relationship": "partial_overlap",
+      "rationale": "Archivmedien müssen für den Aufbewahrungszeitraum geeignet sein (Lebensdauer, Revisionssicherheit)."
+     }
+    ]
    }
   ],
   "OPS.1.2.2.A19": [
@@ -15313,6 +17060,16 @@
       "target": "NOT.4.16.1",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern regelmäßige Wiederherstellungs- und Lesbarkeitsprüfungen archivierter Daten."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.4.16.1",
+      "relationship": "partial_overlap",
+      "rationale": "Regelmäßige Recoverytests der Archivdaten entsprechen der regelmäßigen Überprüfung der Wiederherstellung."
      }
     ]
    }
@@ -15335,6 +17092,21 @@
       "target": "KONF.2.2",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern kryptografische Verfahren nach anerkannten, aktuellen Standards."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.10.2",
+      "relationship": "partial_overlap",
+      "rationale": "Archivdaten sind mit kryptografischen Verfahren nach anerkannten Standards zu sichern, wie es für Anwendungen gefordert ist."
+     },
+     {
+      "target": "KONF.2.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Forderung aktueller Standards für Kryptografie entspricht kryptographischen Verfahren nach anerkannten Standards im IT-System."
      }
     ]
    }
@@ -15366,6 +17138,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Aushändigung der Telearbeits-Regelungen an die Mitarbeitenden ist eine Anweisung zu den Nutzungsregeln für Informationen und Assets."
+     }
+    ]
    }
   ],
   "OPS.1.2.4.A2": [
@@ -15395,6 +17177,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.7.1",
+      "relationship": "subset",
+      "rationale": "Die Sensibilisierung anhand eines Leitfadens zu Telearbeit-Gefahren ist eine zielgruppengerechte, zielobjektspezifische Sensibilisierung."
+     }
+    ]
    }
   ],
   "OPS.1.2.4.A6": [
@@ -15524,6 +17316,16 @@
       "target": "KONF.4.4",
       "relationship": "partial_overlap",
       "rationale": "Beschränkung der Fernwartung über externe Online-Dienste auf wenige Fälle schränkt Fernwartungsfunktionen ein."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.4",
+      "relationship": "partial_overlap",
+      "rationale": "Die Beschränkung der Nutzung von Online-Diensten zur Fernwartung entspricht der Einschränkung von Fernwartungsfunktionen."
      }
     ]
    }
@@ -15713,6 +17515,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Synchronisation interner NTP-Server mit vertrauenswürdigen Zeitquellen entspricht der Autorisierung von Zeitquellen."
+     }
+    ]
    }
   ],
   "OPS.1.2.6.A4": [
@@ -15752,6 +17564,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Konfiguration aller Systeme als NTP-Clients ihrer Server legt fest, welche Zeitquellen genutzt werden."
+     }
+    ]
    }
   ],
   "OPS.1.2.6.A6": [
@@ -15793,6 +17615,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Gesicherte Zeitprotokolle wie NTS authentifizieren die Zeitquelle und stützen deren Autorisierung."
+     }
+    ]
    }
   ],
   "OPS.1.2.6.A9": [
@@ -15881,6 +17713,21 @@
       "target": "BES.1.6",
       "relationship": "partial_overlap",
       "rationale": "Die Festlegung der Dienste und Bereitstellungsmodelle in der Cloud-Strategie ist Teil der Dokumentation des Bereitstellungsmodells."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.1.4",
+      "relationship": "subset",
+      "rationale": "Die Cloud-Strategie mit Zielen, Chancen und Risiken ist ein Spezialfall der Outsourcing-Strategie."
+     },
+     {
+      "target": "BES.1.6",
+      "relationship": "partial_overlap",
+      "rationale": "Die Festlegung des Bereitstellungsmodells ist Teil der Cloud-Strategie."
      }
     ]
    }
@@ -16036,6 +17883,16 @@
       "target": "DLS.3.1",
       "relationship": "partial_overlap",
       "rationale": "Beide fordern die regelmäßige Kontrolle, dass der Cloud-Anbieter die vereinbarten Leistungen und Sicherheitsvorgaben erbringt."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DLS.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die periodische Kontrolle der vertraglich zugesicherten Leistungen entspricht der regelmäßigen Überprüfung der Einhaltung von Sicherheitsvorgaben durch den Dienstleister."
      }
     ]
    }
@@ -16909,6 +18766,26 @@
       "rationale": "Auch gespeicherte Daten sind zu verschlüsseln."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.6.2",
+      "relationship": "partial_overlap",
+      "rationale": "Das mit den Nutzenden vereinbarte Verschlüsselungsverfahren entspricht der vereinbarten Verschlüsselung durch den Anbieter."
+     },
+     {
+      "target": "KONF.14.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die verschlüsselte Datenübertragung entspricht der Transportverschlüsselung nach anerkanntem Standard."
+     },
+     {
+      "target": "KONF.11.8",
+      "relationship": "partial_overlap",
+      "rationale": "Die verschlüsselte Speicherung entspricht der Verschlüsselung at-rest."
+     }
+    ]
    }
   ],
   "OPS.3.2.A21": [
@@ -17055,6 +18932,21 @@
       "rationale": "Fremdpersonal ist auf interne Regelungen zur Nutzung von Informationen zu verpflichten."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.8.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die Beaufsichtigung kurzfristig eingesetzten Fremdpersonals in sicherheitsrelevanten Bereichen entspricht der Beaufsichtigung Externer."
+     },
+     {
+      "target": "ASST.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Verpflichtung auf geltende Regelungen und die Einweisung entsprechen der Anweisung zu den Nutzungsregeln."
+     }
+    ]
    }
   ],
   "ORP.2.A5": [
@@ -17072,6 +18964,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Keine entsprechende Pflicht in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERS.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die schriftliche Vertraulichkeitsvereinbarung für Externe entspricht der vereinbarten vertraulichen Behandlung von Betriebs- und Geschäftsgeheimnissen."
+     }
+    ]
    }
   ],
   "ORP.2.A7": [
@@ -17398,6 +19300,26 @@
       "rationale": "Der Entzug bzw. Widerruf ausgegebener Zutrittsmittel ist zu regeln."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.3.3",
+      "relationship": "partial_overlap",
+      "rationale": "Festlegung und Umsetzung der Zutrittsberechtigungen entsprechen der Authentifizierung vor Zutritt."
+     },
+     {
+      "target": "BER.5.1",
+      "relationship": "partial_overlap",
+      "rationale": "Dokumentierte Ausgabe von Zutrittsmitteln entspricht der Vorgehensweise zur Ausgabe und Zuordnung."
+     },
+     {
+      "target": "BER.5.3",
+      "relationship": "partial_overlap",
+      "rationale": "Entzug und Austausch kompromittierter Zutrittsmittel entsprechen der Vorgehensweise zum Widerruf."
+     }
+    ]
    }
   ],
   "ORP.4.A6": [
@@ -17423,6 +19345,26 @@
       "target": "BER.5.3",
       "relationship": "partial_overlap",
       "rationale": "Der Entzug bzw. Widerruf ausgegebener Zugangsmittel ist zu regeln."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.8",
+      "relationship": "partial_overlap",
+      "rationale": "Die Festlegung des Entzugs von Zugangsberechtigungen entspricht der Vorgehensweise zum Entzug von Berechtigungen."
+     },
+     {
+      "target": "BER.5.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die dokumentierte Ausgabe von Zugangsmitteln entspricht der Vorgehensweise zur Ausgabe und Zuordnung."
+     },
+     {
+      "target": "BER.5.3",
+      "relationship": "partial_overlap",
+      "rationale": "Der Entzug und Austausch kompromittierter Zugangsmittel entspricht dem Widerruf."
      }
     ]
    }
@@ -17619,6 +19561,26 @@
       "rationale": "Zugriff auf Authentisierungsdaten in Anwendungen ist einzuschränken."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.3.10",
+      "relationship": "partial_overlap",
+      "rationale": "Zunehmende Verzögerung nach erfolglosen Anmeldeversuchen ist eine Anmeldeversuchsgrenze am System."
+     },
+     {
+      "target": "BER.3.11",
+      "relationship": "partial_overlap",
+      "rationale": "Dieselbe Begrenzung gilt für Anwendungen."
+     },
+     {
+      "target": "BER.5.10",
+      "relationship": "partial_overlap",
+      "rationale": "Der Schutz der Authentisierungsdaten vor Ausspähung und Veränderung entspricht der Zugriffsbeschränkung auf Authentifizierungsmittel."
+     }
+    ]
    }
   ],
   "ORP.4.A14": [
@@ -17634,6 +19596,16 @@
       "target": "BER.3.16",
       "relationship": "partial_overlap",
       "rationale": "Die Kontrolle, dass nicht mehrere Benutzende unter einer Kennung arbeiten, entspricht dem Verbot von Gruppenkonten."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.3.16",
+      "relationship": "partial_overlap",
+      "rationale": "Die Kontrolle, dass nicht mehrere Benutzende unter derselben Kennung arbeiten, belegt das Verbot von Gruppenkonten."
      }
     ]
    }
@@ -17678,6 +19650,21 @@
       "target": "BER.4.1.1",
       "relationship": "partial_overlap",
       "rationale": "Standard-Rechteprofile entsprechend den Funktionen entsprechen der rollenbasierten Berechtigungsvergabe."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.1.1",
+      "relationship": "subset",
+      "rationale": "Die Richtlinie für Zugriffs- und Zugangskontrolle ist ein Spezialfall der Verfahren und Regelungen zum Identitäts- und Berechtigungsmanagement."
+     },
+     {
+      "target": "BER.4.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Standard-Rechteprofile nach Funktion entsprechen der rollenbasierten Berechtigungszuweisung."
      }
     ]
    }
@@ -18108,6 +20095,16 @@
       "rationale": "Betriebliche Aufgaben am Server sind nachvollziehbar mit Wer, Wann, Was zu dokumentieren."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.5.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die Dokumentation betrieblicher Aufgaben am Server mit Wer, Wann und Was entspricht der Dokumentation von Wartungen."
+     }
+    ]
    }
   ],
   "SYS.1.1.A22": [
@@ -18372,6 +20369,26 @@
       "rationale": "Das Surfverbot im Web auf dem Server entspricht der Sensibilisierung gegen Internetzugriff mit Administrationskonto."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "PERS.4.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Schulung der Administrierenden zur Server-Administration ist eine produktspezifische Schulung für administrative Werkzeuge."
+     },
+     {
+      "target": "SENS.10.1",
+      "relationship": "partial_overlap",
+      "rationale": "Sie sensibilisiert zu den Grundprinzipien sicherer Administration."
+     },
+     {
+      "target": "SENS.10.5",
+      "relationship": "subset",
+      "rationale": "Das Surfverbot auf dem Server entspricht der Sensibilisierung gegen Internetzugriff über Administrationskonten."
+     }
+    ]
    }
   ],
   "SYS.1.2.2.A4": [
@@ -18419,6 +20436,26 @@
       "target": "KONF.7.5",
       "relationship": "equivalent",
       "rationale": "Beide fordern konfigurierte Alarme bei Schadcodefunden."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das Virenschutzprogramm entspricht der automatischen Prüfung auf Schadcode."
+     },
+     {
+      "target": "KONF.7.2",
+      "relationship": "partial_overlap",
+      "rationale": "Der regelmäßige vollständige Festplattenscan entspricht dem regelmäßigen Scan."
+     },
+     {
+      "target": "KONF.7.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Virenfund-Alarme entsprechen der Benachrichtigung bei Schadcode."
      }
     ]
    }
@@ -18499,6 +20536,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Prüfung von Windows-Verfügbarkeitsfunktionen hat keine Entsprechung in GS++."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.8.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die Prüfung der Verfügbarkeitsfunktionen betrifft die redundante Auslegung der Server."
+     }
+    ]
    }
   ],
   "SYS.1.2.2.A14": [
@@ -18847,6 +20894,16 @@
       "rationale": "Beide fordern, die Zugriffsrechte Administrierender auf das notwendige Maß zu reduzieren."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Reduzierung der Administrationsrechte auf das notwendige Maß entspricht dem Prinzip der geringsten Berechtigungen."
+     }
+    ]
    }
   ],
   "SYS.1.5.A3": [
@@ -18862,6 +20919,16 @@
       "target": "KONF.6.16",
       "relationship": "subset",
       "rationale": "Beide verhindern den Datenaustausch zwischen Gast und Host bzw. virtuellen Systemen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.16",
+      "relationship": "partial_overlap",
+      "rationale": "Die Beschränkung des Gastzugriffs auf Geräte und Schnittstellen des Hosts schränkt den Datenaustausch in der Virtualisierung ein."
      }
     ]
    }
@@ -18901,6 +20968,16 @@
       "target": "KONF.4.5",
       "relationship": "partial_overlap",
       "rationale": "Die Zeitsynchronisation der virtuellen Systeme erfolgt über autorisierte Zeitquellen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.5",
+      "relationship": "partial_overlap",
+      "rationale": "Synchrone Systemzeit der virtuellen Systeme setzt autorisierte Zeitquellen voraus."
      }
     ]
    }
@@ -19010,6 +21087,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Audit der Virtualisierungsinfrastruktur hat keine spezifische GS++-Entsprechung."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.5",
+      "relationship": "partial_overlap",
+      "rationale": "Das Audit der Konfiguration gegen die Standardkonfiguration entspricht der regelmäßigen Überprüfung der Konfiguration gegen den Referenzzustand."
+     }
+    ]
    }
   ],
   "SYS.1.5.A20": [
@@ -19091,6 +21178,16 @@
       "target": "KONF.6.16",
       "relationship": "partial_overlap",
       "rationale": "Das Unterbinden von Host-Schnittstellen und Page-Sharing begrenzt den Austausch zwischen virtuellen Systemen und Host."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.16",
+      "relationship": "partial_overlap",
+      "rationale": "Die Deaktivierung der Informationskanäle zwischen VM und Host schränkt den Datenaustausch in der Virtualisierung ein."
      }
     ]
    }
@@ -19248,6 +21345,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Vertrauenswürdige Image-Quellen haben keine eindeutige GS++-Entsprechung."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "TEST.3.1.2",
+      "relationship": "partial_overlap",
+      "rationale": "Beide untersagen die Einbindung externer Software-Artefakte, hier Images, aus unzuverlässigen oder unbekannten Quellen."
+     }
+    ]
    }
   ],
   "SYS.1.6.A7": [
@@ -19265,6 +21372,16 @@
       "rationale": "Beide betreffen die Aufbewahrung von Protokolldaten sicherheitsrelevanter Ereignisse außerhalb des Containers."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Auslagerung der Container-Logs sichert die Protokolle sicherheitsrelevanter Ereignisse über die Container-Lebensdauer hinaus und stützt damit die geforderte Protokollierung mit Aufbewahrungsfrist."
+     }
+    ]
    }
   ],
   "SYS.1.6.A8": [
@@ -19280,6 +21397,16 @@
       "target": "BER.5.10",
       "relationship": "subset",
       "rationale": "Beide fordern, den Zugriff auf Zugangsdaten auf berechtigte Personen und Container zu beschränken."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.5.10",
+      "relationship": "subset",
+      "rationale": "Zugangsdaten nur für Berechtigte und nicht in Images zu speichern ist ein Spezialfall der Zugriffsbeschränkung auf Authentifizierungsmittel."
      }
     ]
    }
@@ -19323,6 +21450,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Dokumentation vertrauenswürdiger Image-Quellen ohne GS++-Gegenstück."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "TEST.3.1.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die dokumentierte Klassifizierung vertrauenswürdiger Image-Quellen belegt, welche externen Software-Artefakte zulässig sind und welche als unzuverlässig ausgeschlossen werden."
+     }
+    ]
    }
   ],
   "SYS.1.6.A13": [
@@ -19606,6 +21743,21 @@
       "rationale": "Schutz sicherheitskritischer Programme und Kommandos entspricht der Einschränkung privilegierter Systemfunktionen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.4",
+      "relationship": "partial_overlap",
+      "rationale": "Der RACF-Schutz sicherheitskritischer Programme und Kommandos beschränkt privilegierte Systemfunktionen auf autorisierte Personen."
+     },
+     {
+      "target": "BER.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Rechte auf kritische Programme nur an dafür vorgesehene Personen zu vergeben ist Anwendung des Prinzips der geringsten Berechtigungen."
+     }
+    ]
    }
   ],
   "SYS.1.7.A3": [
@@ -19626,6 +21778,21 @@
       "target": "ASST.5.4",
       "relationship": "equivalent",
       "rationale": "Beide fordern, Wartungsaktivitäten im Änderungsmanagement abzuwickeln."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.5.2",
+      "relationship": "equivalent",
+      "rationale": "Beide fordern geplante, regelmäßige Wartung der Systeme einschließlich Hardware, Firmware und Software."
+     },
+     {
+      "target": "ASST.5.4",
+      "relationship": "equivalent",
+      "rationale": "Beide verlangen, Wartungsaktivitäten in das Änderungsmanagement einzubinden."
      }
     ]
    }
@@ -19721,6 +21888,21 @@
       "rationale": "Voreingestellte Passwörter (RVARY, neue User-IDs) müssen geändert werden."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.6.4",
+      "relationship": "partial_overlap",
+      "rationale": "Regeln für User-ID und Passwort bei der RACF-Planung sind Kriterien für die Passwortqualität."
+     },
+     {
+      "target": "KONF.2.3",
+      "relationship": "partial_overlap",
+      "rationale": "Das Ändern voreingestellter Passwörter für RVARY und neue User-IDs ist die Änderung von Default-Zugangsdaten."
+     }
+    ]
    }
   ],
   "SYS.1.7.A9": [
@@ -19782,6 +21964,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "Sicherheitsreports unter z/OS haben keine passende GS++-Entsprechung."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Der z/OS-spezifische Prozess für regelmäßige Sicherheitsreports aus SMF-Daten wird von der reinen Ereignisprotokollierung (DET.3.1) nicht abgedeckt, die Vorschläge tragen nicht."
    }
   ],
   "SYS.1.7.A17": [
@@ -19874,6 +22061,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "z/OS-Betriebsfunktionen sind produktspezifisch ohne GS++-Gegenstück."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "TEST.4.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Durchführung von Wartungsarbeiten und Änderungen nur im Rahmen des Änderungsmanagements setzt die Autorisierung kritischer Änderungen anhand von Kriterien um."
+     }
+    ]
    }
   ],
   "SYS.1.7.A23": [
@@ -20029,6 +22226,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "Namenskonventionen für z/OS-Systemdefinitionen ohne GS++-Gegenstück."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Namenskonventionen und Standards für z/OS-Systemdefinitionen sind keine Grundkonfigurationsdokumentation, eine passende GS++-Pflicht fehlt."
    }
   ],
   "SYS.1.7.A34": [
@@ -20180,6 +22382,21 @@
       "rationale": "Beide fordern, den Zugriff auf Administrationsschnittstellen aus nicht vertrauenswürdigen Netzen zu blockieren."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.5.1.6",
+      "relationship": "partial_overlap",
+      "rationale": "Der Ausschluss von Zugriffen auf Administrationsschnittstellen aus nicht vertrauenswürdigen Netzen entspricht dem Blockieren von Verbindungen zu Management-Schnittstellen."
+     },
+     {
+      "target": "KONF.11.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die Einschränkung aller Administrations- und Management-Zugänge ist eine Einschränkung aktivierter Schnittstellen."
+     }
+    ]
    }
   ],
   "SYS.1.8.A6": [
@@ -20304,6 +22521,21 @@
       "target": "ARCH.2.1",
       "relationship": "partial_overlap",
       "rationale": "Die Segmentierung des SAN entspricht der Unterteilung in Netzsegmente."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Segmentierung des SAN ist eine Unterteilung des Netzes in Segmente nach Schutzbedarf."
+     },
+     {
+      "target": "ARCH.2.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Zuordnung von SAN-Ressourcen zu bestimmten Servern schränkt Verbindungen zwischen Segmenten ein."
      }
     ]
    }
@@ -20499,6 +22731,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Sicherheitsmerkmale der SAN-Fabric-Protokolle ohne GS++-Gegenstück."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Protokolle mit zusätzlichen Sicherheitsmerkmalen in der SAN-Fabric sichern Integrität und Vertraulichkeit der Daten beim Transport."
+     }
+    ]
    }
   ],
   "SYS.1.8.A25": [
@@ -20626,6 +22868,16 @@
       "rationale": "Beide fordern definierte und dokumentierte Konfigurationsvorgaben für das System."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.1",
+      "relationship": "subset",
+      "rationale": "Dokumentierte Konfigurationsvorgaben samt Herstellerhärtung für Terminalserver sind eine Grundkonfiguration für ein IT-System."
+     }
+    ]
    }
   ],
   "SYS.1.9.A5": [
@@ -20702,6 +22954,16 @@
       "target": "SENS.7.1",
       "relationship": "subset",
       "rationale": "Beide fordern zielobjektspezifische Sensibilisierung der Nutzenden."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.7.1",
+      "relationship": "subset",
+      "rationale": "Die Sensibilisierung der Terminalserver-Nutzenden ist eine zielobjektspezifische Sensibilisierung."
      }
     ]
    }
@@ -20850,6 +23112,16 @@
       "rationale": "Datentransfer und Zwischenablage sind nicht benötigte Systemfunktionen, die zu deaktivieren sind."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.4",
+      "relationship": "subset",
+      "rationale": "Das Deaktivieren von Datentransfer und Zwischenablage zwischen Client und Terminalserver deaktiviert nicht benötigte Systemfunktionen."
+     }
+    ]
    }
   ],
   "SYS.2.1.A6": [
@@ -20865,6 +23137,16 @@
       "target": "KONF.7.1",
       "relationship": "partial_overlap",
       "rationale": "Beide betreffen den Einsatz von Schutzprogrammen gegen Schadcode auf Clients."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.1",
+      "relationship": "partial_overlap",
+      "rationale": "Schutzprogramme gegen Schadsoftware auf Clients prüfen Dateien automatisch auf Schadcode, wie es der Echtzeitscanner fordert."
      }
     ]
    }
@@ -20911,6 +23193,21 @@
       "target": "KONF.6.4",
       "relationship": "partial_overlap",
       "rationale": "Zugriff auf abgesicherte Ausführungsumgebungen nur mit administrativen Rechten schränkt privilegierte Funktionen ein."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.5.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das Passwort für BIOS/UEFI-Einstellungen authentifiziert den Zugriff auf die Firmware."
+     },
+     {
+      "target": "KONF.6.4",
+      "relationship": "partial_overlap",
+      "rationale": "Der Zugriff auf abgesicherte Ausführungsumgebungen nur mit administrativen Rechten schränkt privilegierte Systemfunktionen ein."
      }
     ]
    }
@@ -21004,6 +23301,16 @@
       "target": "KONF.3.7",
       "relationship": "partial_overlap",
       "rationale": "Einschränkung von Kamera und Mikrofon entspricht der Beschränkung angeschlossener Peripherie."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.3.7",
+      "relationship": "partial_overlap",
+      "rationale": "Das Abschalten oder Beschränken von Kamera und Mikrofon schränkt angeschlossene bzw. eingebaute Peripherie ein."
      }
     ]
    }
@@ -21114,6 +23421,16 @@
       "target": "TEST.3.1.5",
       "relationship": "partial_overlap",
       "rationale": "Die Referenzumgebung zum Vorabtest von Änderungen und Patches entspricht einer dedizierten Testumgebung."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "TEST.3.1.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Referenzinstallation zum Vorabtest von Konfigurationsänderungen und Patches ist eine dedizierte Testumgebung."
      }
     ]
    }
@@ -21273,6 +23590,21 @@
       "rationale": "Beide fordern Wiederanlaufpläne für priorisierte zeitkritische Systeme."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.3.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderten Wiederanlaufpläne und die Priorisierung der Clients entsprechen dem Wiederanlaufplan für zeitkritische Systeme."
+     },
+     {
+      "target": "NOT.4.15",
+      "relationship": "partial_overlap",
+      "rationale": "Bootmedien und gesicherte Schlüssel für die Systemwiederherstellung gehören zur dokumentierten Vorgehensweise bei der Wiederherstellung."
+     }
+    ]
    }
   ],
   "SYS.2.1.A39": [
@@ -21295,6 +23627,21 @@
       "rationale": "Der Überspannungsschutz für Clients entspricht der Überspannungsschutzeinrichtung."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.9.1.3",
+      "relationship": "partial_overlap",
+      "rationale": "Die USV mit ausreichender Stützzeit entspricht der Stromversorgung mit Stützzeit."
+     },
+     {
+      "target": "GEB.9.4",
+      "relationship": "subset",
+      "rationale": "Der geforderte Überspannungsschutz für Clients ist ein Spezialfall der Überspannungsschutzeinrichtungen."
+     }
+    ]
    }
   ],
   "SYS.2.1.A40": [
@@ -21310,6 +23657,16 @@
       "target": "ASST.5.7",
       "relationship": "partial_overlap",
       "rationale": "Nachvollziehbare Dokumentation betrieblicher Aufgaben nach Wer, Wann, Was entspricht der Wartungsdokumentation."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.5.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die nachvollziehbare Dokumentation von Konfigurationsänderungen und betrieblichen Aufgaben (wer, wann, was) überschneidet sich mit der Dokumentation von Wartungen mit Beteiligten, Zeitpunkt und Maßnahmen."
      }
     ]
    }
@@ -21422,6 +23779,16 @@
       "rationale": "Die Festlegung zulässiger Cloud-Dienste führt zur Deaktivierung nicht benötigter Cloud-Anbindungen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Festlegung, welche Microsoft-Cloud-Dienste genutzt werden dürfen, ist Grundlage dafür, nicht benötigte Cloud-Anbindungen zu deaktivieren."
+     }
+    ]
    }
   ],
   "SYS.2.2.3.A2": [
@@ -21451,6 +23818,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Telemetrie-Level bei Windows ist produktspezifisch ohne GS++-Pflicht."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Das Unterbinden der Telemetrie-Übertragung an den Hersteller deaktiviert eine nicht benötigte externe Cloud-Anbindung."
+     }
+    ]
    }
   ],
   "SYS.2.2.3.A5": [
@@ -21466,6 +23843,16 @@
       "target": "KONF.7.1",
       "relationship": "subset",
       "rationale": "Beide fordern eine spezialisierte Komponente zum Schutz vor Schadcode."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.1",
+      "relationship": "subset",
+      "rationale": "Die Schadsoftware-Schutzkomponente auf Windows-Clients ist ein Spezialfall der automatischen Prüfung auf Schadcode."
      }
     ]
    }
@@ -21517,6 +23904,16 @@
       "rationale": "Zugriffsrechte auf Netzfreigaben nach einem Berechtigungskonzept entsprechen der Einschränkung gemeinsam genutzter Verzeichnisse."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.2",
+      "relationship": "partial_overlap",
+      "rationale": "Berechtigungskonzept für Dateien, Ordner und Netzfreigaben mit begrenzten Schreibrechten schränkt Zugriffsrechte gemeinsam genutzter Verzeichnisse ein."
+     }
+    ]
    }
   ],
   "SYS.2.2.3.A13": [
@@ -21534,6 +23931,11 @@
     "reviewer": "B",
     "targets": [],
     "note": "SmartScreen-Deaktivierung ist produktspezifisch aus Datenschutzgründen."
+   },
+   {
+    "reviewer": "C",
+    "targets": [],
+    "note": "Das Deaktivieren von SmartScreen aus Datenschutzgründen ist produktspezifisch und steht inhaltlich im Gegensatz zur GS++-Filterung schädlicher Webinhalte."
    }
   ],
   "SYS.2.2.3.A14": [
@@ -21595,6 +23997,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Bewertung des Microsoft-Stores ist produktspezifisch."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Das Deaktivieren der Microsoft-Store-Anbindung bei fehlendem Bedarf entspricht dem Deaktivieren nicht benötigter Cloud-Anbindungen."
+     }
+    ]
    }
   ],
   "SYS.2.2.3.A17": [
@@ -21615,6 +24027,16 @@
       "target": "KONF.12.4",
       "relationship": "partial_overlap",
       "rationale": "Beide regeln die Speicherung von Zugangsdaten außerhalb dedizierter Passwortspeicher."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.3.20",
+      "relationship": "equivalent",
+      "rationale": "Beide verlangen, die Speicherung bzw. Zwischenspeicherung von Zugangsdaten auf dem System zu unterbinden."
      }
     ]
    }
@@ -21740,6 +24162,21 @@
       "target": "KONF.2.9",
       "relationship": "partial_overlap",
       "rationale": "Secure Boot ist Teil des abgesicherten Bootprozesses."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.4.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Option restrictedAdmin für RDP verhindert die Weiterleitung wiederverwendbarer Anmeldeinformationen."
+     },
+     {
+      "target": "KONF.2.9",
+      "relationship": "partial_overlap",
+      "rationale": "SecureBoot auf UEFI-Systemen ist ein abgesicherter und authentisierter Bootprozess."
      }
     ]
    }
@@ -21873,6 +24310,16 @@
       "rationale": "Beide verlangen restriktive Schreib- und Zugriffsrechte auf gemeinsam genutzte Verzeichnisse; GS++ nur für Dateiserver."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.2",
+      "relationship": "partial_overlap",
+      "rationale": "Sticky Bit auf allgemein beschreibbaren Verzeichnissen wie /tmp schränkt Zugriffsrechte gemeinsam genutzter Verzeichnisse ein."
+     }
+    ]
    }
   ],
   "SYS.2.3.A8": [
@@ -21890,6 +24337,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "MAC-Frameworks (AppArmor/SELinux) zur Rechtebeschränkung von Anwendungen haben in GS++ keine passende Pflicht; KONF.7.13 betrifft nur Systemaufrufe."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.1",
+      "relationship": "subset",
+      "rationale": "AppArmor oder SELinux mit entzogenen Rechten und Positivlisten sind eine Umsetzung der Beschränkung erforderlicher Berechtigungen für Anwendungen."
+     }
+    ]
    }
   ],
   "SYS.2.3.A9": [
@@ -22029,6 +24486,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Gehärtete Kernel (grsecurity/PaX) sind produktspezifisch; GS++ kennt keine entsprechende Pflicht."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.16.1",
+      "relationship": "partial_overlap",
+      "rationale": "Gehärtete Kernel mit Speicherschutz verhindern die Ausnutzung von Schwachstellen im Arbeitsspeicher."
+     }
+    ]
    }
   ],
   "SYS.2.3.A19": [
@@ -22068,6 +24535,16 @@
       "rationale": "Abschaltung kritischer SysRq-Funktionen ist ein Fall der Deaktivierung nicht benötigter Systemfunktionen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.4",
+      "relationship": "subset",
+      "rationale": "Das Abschalten kritischer SysRq-Funktionen deaktiviert nicht benötigte Systemfunktionen."
+     }
+    ]
    }
   ],
   "SYS.2.4.A1": [
@@ -22083,6 +24560,16 @@
       "target": "NOT.4.2",
       "relationship": "partial_overlap",
       "rationale": "Die Integration der Mac-Datensicherung in das Datensicherungskonzept entspricht der regelmäßigen Datensicherung von IT-Systemen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "NOT.4.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Integration von macOS in das institutionsweite Datensicherungskonzept entspricht der regelmäßigen Datensicherung des IT-Systems."
      }
     ]
    }
@@ -22256,6 +24743,21 @@
       "rationale": "Zusätzlicher Virenschutz entspricht der automatischen Prüfung auf Schadcode durch einen Echtzeitscanner."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.1",
+      "relationship": "partial_overlap",
+      "rationale": "Zusätzlicher Virenschutz auf dem Mac prüft Dateien automatisch auf Schadcode."
+     },
+     {
+      "target": "KONF.7.8",
+      "relationship": "partial_overlap",
+      "rationale": "Ein Drittanbieter-Virenschutz neben dem integrierten Schutz setzt eine zweite Scan-Engine ein."
+     }
+    ]
    }
   ],
   "SYS.2.4.A10": [
@@ -22295,6 +24797,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Zurücksetzen von NVRAM/SMC bei Aussonderung ist Mac-spezifisch; keine generische GS++-Pflicht."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ASST.7.3",
+      "relationship": "partial_overlap",
+      "rationale": "Das Zurücksetzen von NVRAM und SMC bei der Aussonderung gehört zum geregelten Löschen von Daten auf Speichern am Ende der Nutzung."
+     }
+    ]
    }
   ],
   "SYS.2.4.A12": [
@@ -22451,6 +24963,21 @@
       "rationale": "Regelmäßige Aktualisierung der Templates und zentrale Provisionierung unterstützen das zeitnahe Patchmanagement."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.5.10",
+      "relationship": "subset",
+      "rationale": "Zentrale Provisionierung und regelmäßige Aktualisierung der Templates sind Teil eines zeitnahen Patchmanagements."
+     },
+     {
+      "target": "DET.5.10.5",
+      "relationship": "partial_overlap",
+      "rationale": "Das regelmäßige Testen der Templates entspricht dem Test von Patches gemäß Änderungsmanagement."
+     }
+    ]
    }
   ],
   "SYS.2.5.A10": [
@@ -22512,6 +25039,16 @@
       "target": "ARCH.2.2.3",
       "relationship": "subset",
       "rationale": "Unterbinden unkontrollierter Layer-2-Kommunikation zwischen virtuellen Clients schränkt Verbindungen zwischen Clients ein."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "ARCH.2.2.3",
+      "relationship": "partial_overlap",
+      "rationale": "Das Unterbinden unkontrollierter Layer-2-Kommunikation zwischen virtuellen Clients schränkt Verbindungen zwischen Clients ein."
      }
     ]
    }
@@ -22930,6 +25467,21 @@
       "rationale": "Hinweise zur sicheren Aufbewahrung von Laptops außerhalb der Institution entsprechen der Anweisung zur Verwahrung außer Haus."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.9.3",
+      "relationship": "partial_overlap",
+      "rationale": "Der Hinweis an Benutzende zur sicheren Aufbewahrung von Laptops außer Haus entspricht der Anweisung zur Verwahrung von IT-Systemen beim mobilen Arbeiten."
+     },
+     {
+      "target": "KONF.3.4",
+      "relationship": "partial_overlap",
+      "rationale": "Das verschlossene Aufbewahren gegen Diebstahl entspricht dem physischen Diebstahlschutz."
+     }
+    ]
    }
   ],
   "SYS.3.1.A15": [
@@ -23004,6 +25556,21 @@
       "target": "GEB.6.2",
       "relationship": "partial_overlap",
       "rationale": "Abgesicherter Raum schützt IT-Systeme vor Zugriff Unbefugter."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.6.2",
+      "relationship": "partial_overlap",
+      "rationale": "Die Aufbewahrung nicht benutzter Laptops in einem abgesicherten Raum stellt die Systeme geschützt vor dem Zugriff Unbefugter auf."
+     },
+     {
+      "target": "ASST.3.13",
+      "relationship": "partial_overlap",
+      "rationale": "Die Sammelaufbewahrung entspricht der Lagerung physischer Assets in einem dafür vorgesehenen Lager."
      }
     ]
    }
@@ -23126,6 +25693,16 @@
       "target": "KONF.11.7",
       "relationship": "partial_overlap",
       "rationale": "Einschränkung des Zugriffs von Apps auf Daten und Schnittstellen entspricht dem Einschränken aktivierter Anwendungsschnittstellen."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.1",
+      "relationship": "subset",
+      "rationale": "Restriktive Datenschutzeinstellungen und eingeschränkter App-Zugriff auf Kamera, Mikrofon und Ortung sind ein Spezialfall der Beschränkung von Anwendungsberechtigungen."
      }
     ]
    }
@@ -23311,6 +25888,21 @@
       "rationale": "Die Sensibilisierung für die Fälschbarkeit biometrischer Merkmale ist enthalten; zusätzlich Gleichwertigkeitsprüfung gegenüber Gerätepasswort."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.5.5",
+      "relationship": "partial_overlap",
+      "rationale": "Die Prüfung und der Verzicht auf schwächere biometrische Verfahren gegenüber dem Gerätepasswort adressiert die Deaktivierung einfacher Biometrie."
+     },
+     {
+      "target": "SENS.4.1.5",
+      "relationship": "superset",
+      "rationale": "Die geforderte Sensibilisierung für die Fälschbarkeit biometrischer Merkmale ist in der Kompendium-Anforderung enthalten, die zusätzlich die Eignungsprüfung verlangt."
+     }
+    ]
    }
   ],
   "SYS.3.2.1.A19": [
@@ -23397,6 +25989,26 @@
       "target": "KONF.11.8",
       "relationship": "partial_overlap",
       "rationale": "Eigene Datenverschlüsselung des Containers entspricht der Verschlüsselung schützenswerter Daten at-rest."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.6.1.1",
+      "relationship": "equivalent",
+      "rationale": "Die Kapselung von Informationen in einem PIM-Container ist Datenkapselung."
+     },
+     {
+      "target": "KONF.11.8",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderte Datenverschlüsselung im Container entspricht der Verschlüsselung schützenswerter Daten bei der Speicherung."
+     },
+     {
+      "target": "KONF.14.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderte Transportverschlüsselung entspricht der Verschlüsselung der Kommunikation über Netze."
      }
     ]
    }
@@ -23635,6 +26247,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Protokollierung des Gerätelebenszyklus im MDM ohne eigenständige GS++-Entsprechung."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.1.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die protokollierte Konfigurationshistorie der Endgeräte entspricht der Versionierung vorheriger Konfigurationen."
+     }
+    ]
    }
   ],
   "SYS.3.2.2.A7": [
@@ -23732,6 +26354,16 @@
       "rationale": "Zentrale Zertifikatsverwaltung über das MDM ist Teil der Verwaltung durch MDM."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.6",
+      "relationship": "subset",
+      "rationale": "Die zentrale Zertifikatsverwaltung über das MDM ist ein Spezialfall der Verwaltung mobiler Endgeräte durch ein MDM."
+     }
+    ]
    }
   ],
   "SYS.3.2.2.A22": [
@@ -23827,6 +26459,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Schutz der Konfigurationsprofile vor Löschung ist iOS-spezifisch ohne GS++-Entsprechung."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.2.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die geforderte Sensibilisierung der Benutzenden zum Zweck der Schutzmaßnahmen deckt die Sensibilisierung gegen unautorisierte Konfigurationsänderungen ab."
+     }
+    ]
    }
   ],
   "SYS.3.2.3.A12": [
@@ -23982,6 +26624,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Beschränkung der iOS-Geräteverbindung auf das MDM ist produktspezifisch."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.3.7",
+      "relationship": "partial_overlap",
+      "rationale": "Die Beschränkung der Geräteverbindung auf das MDM schränkt angeschlossene Peripherie bzw. Gegenstellen ein."
+     }
+    ]
    }
   ],
   "SYS.3.2.4.A3": [
@@ -24307,6 +26959,21 @@
       "rationale": "Abschalten der GPS-Ortung nach Risikoklärung entspricht der Sensibilisierung zu Standortbestimmungsfunktionen."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.4",
+      "relationship": "subset",
+      "rationale": "Das Abschalten der GPS-Ortung deaktiviert eine nicht benötigte Systemfunktion."
+     },
+     {
+      "target": "SENS.7.23",
+      "relationship": "partial_overlap",
+      "rationale": "Die Klärung der Auswirkungen von Bewegungsprofilen berührt die Sensibilisierung für Standortbestimmungsfunktionen."
+     }
+    ]
    }
   ],
   "SYS.3.3.A14": [
@@ -24324,6 +26991,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Unterdrücken der Rufnummer und SMS/MMS-Verzicht ohne passende GS++-Pflicht."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "SENS.5.3",
+      "relationship": "partial_overlap",
+      "rationale": "Das Verbot, Rufnummern zu veröffentlichen oder an Unbefugte weiterzugeben, entspricht dem Untersagen der Weitergabe von Erreichbarkeiten."
+     }
+    ]
    }
   ],
   "SYS.4.1.A1": [
@@ -24412,6 +27089,21 @@
       "target": "KONF.5.1",
       "relationship": "partial_overlap",
       "rationale": "Authentisierung der Nutzenden am Gerät vor Zugriff auf Ausdrucke entspricht der Authentifizierung am System."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.5.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die Authentisierung am Gerät vor dem Druck (Secure-Print) ist eine Authentifizierung am System."
+     },
+     {
+      "target": "ASST.3.12",
+      "relationship": "partial_overlap",
+      "rationale": "Der Zugriff auf ausgedruckte Dokumente nur für Berechtigte autorisiert den Zugriff auf Daten."
      }
     ]
    }
@@ -24527,6 +27219,21 @@
       "target": "KONF.2.5.1",
       "relationship": "partial_overlap",
       "rationale": "Regelmäßige, möglichst automatisierte Kontrolle der Sicherheitseinstellungen entspricht der automatisierten Konfigurationsüberprüfung."
+     }
+    ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.2.5",
+      "relationship": "subset",
+      "rationale": "Die regelmäßige Kontrolle und Korrektur der Sicherheitseinstellungen ist ein Abgleich der Konfiguration mit dem Referenzzustand."
+     },
+     {
+      "target": "KONF.2.5.1",
+      "relationship": "partial_overlap",
+      "rationale": "Das geforderte automatisierte Kontroll- und Korrektursystem entspricht der automatisierten Konfigurationsüberprüfung."
      }
     ]
    }
@@ -24748,6 +27455,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Evaluiertes Betriebssystem nach anerkanntem Standard; GS++ fordert kein zertifiziertes Betriebssystem."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.8.1",
+      "relationship": "partial_overlap",
+      "rationale": "Ein nach anerkanntem Standard evaluiertes Betriebssystem entspricht der Vereinbarung eines Zertifikats oder Testats nach einem Sicherheitsstandard."
+     }
+    ]
    }
   ],
   "SYS.4.3.A14": [
@@ -24787,6 +27504,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Speicherschutz beim Entwurf eingebetteter Systeme ohne GS++-Entsprechung."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.16.1",
+      "relationship": "partial_overlap",
+      "rationale": "Speicherschutzmechanismen in eingebetteten Systemen schützen den Arbeitsspeicher vor der Ausnutzung von Sicherheitslücken."
+     }
+    ]
    }
   ],
   "SYS.4.3.A17": [
@@ -24911,6 +27638,21 @@
       "rationale": "Installation und Konfiguration nur durch autorisierte Personen entspricht dem Einschränken der Installation."
      }
     ]
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "KONF.7.9",
+      "relationship": "partial_overlap",
+      "rationale": "Installation und Konfiguration von IoT-Geräten nur durch autorisierte Personen schränkt die Installation ein."
+     },
+     {
+      "target": "KONF.2.1",
+      "relationship": "partial_overlap",
+      "rationale": "Die dokumentierten Installations- und Konfigurationsschritte bilden eine dokumentierte Grundkonfiguration."
+     }
+    ]
    }
   ],
   "SYS.4.4.A11": [
@@ -24977,6 +27719,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Restriktive Rechtevergabe auf IoT-Geräten; kein passendes generisches GS++-Gegenstück."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BER.4.1",
+      "relationship": "subset",
+      "rationale": "Restriktive Zugriffsberechtigungen auf IoT-Geräte sind Anwendung des Prinzips der geringsten Berechtigungen."
+     }
+    ]
    }
   ],
   "SYS.4.4.A16": [
@@ -25060,6 +27812,21 @@
     "reviewer": "B",
     "targets": [],
     "note": "Einsatzumgebung und Stromversorgung von IoT-Geräten ohne passende GS++-Pflicht."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "GEB.6.2",
+      "relationship": "subset",
+      "rationale": "Der Schutz von IoT-Geräten in der Einsatzumgebung vor Diebstahl und Manipulation fordert geschützte Aufstellung vor Zugriff Unbefugter."
+     },
+     {
+      "target": "GEB.5.2",
+      "relationship": "partial_overlap",
+      "rationale": "Der geforderte Schutz vor Manipulation entspricht Manipulationsschutzvorkehrungen."
+     }
+    ]
    }
   ],
   "SYS.4.4.A22": [
@@ -25077,6 +27844,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Systemüberwachung der IoT-Geräte; GS++ kennt keine entsprechende generische Pflicht."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "DET.4.14",
+      "relationship": "partial_overlap",
+      "rationale": "Die laufende Überwachung von Zustand und Funktionsfähigkeit der IoT-Geräte überschneidet sich mit der Verfügbarkeitsüberwachung."
+     }
+    ]
    }
   ],
   "SYS.4.4.A23": [
@@ -25316,6 +28093,16 @@
     "reviewer": "B",
     "targets": [],
     "note": "Einsatz zertifizierter Wechseldatenträger ohne GS++-Entsprechung."
+   },
+   {
+    "reviewer": "C",
+    "targets": [
+     {
+      "target": "BES.4.8.1",
+      "relationship": "partial_overlap",
+      "rationale": "Zertifizierte Wechseldatenträger entsprechen der Vereinbarung eines Zertifikats nach einem Sicherheitsstandard."
+     }
+    ]
    }
   ],
   "SYS.4.5.A17": [
@@ -25367,6 +28154,7 @@
   "APP.2.3.A5",
   "APP.2.3.A8",
   "APP.2.3.A9",
+  "APP.2.3.A10",
   "APP.3.1.A7",
   "APP.3.1.A9",
   "APP.3.2.A8",
@@ -25430,6 +28218,7 @@
   "APP.4.6.A22",
   "APP.5.2.A1",
   "APP.5.2.A2",
+  "APP.5.2.A10",
   "APP.5.2.A12",
   "APP.5.3.A5",
   "APP.5.3.A6",
@@ -25495,10 +28284,12 @@
   "DER.3.2.A13",
   "DER.3.2.A18",
   "DER.3.2.A20",
+  "DER.4.A2",
   "DER.4.A3",
   "DER.4.A6",
   "DER.4.A9",
   "DER.4.A16",
+  "IND.1.A3",
   "IND.2.1.A13",
   "IND.2.3.A1",
   "IND.2.3.A2",
@@ -25507,27 +28298,34 @@
   "IND.2.7.A4",
   "IND.2.7.A10",
   "IND.2.7.A11",
+  "IND.3.2.A4",
   "INF.1.A10",
   "INF.1.A31",
   "INF.2.A21",
   "INF.2.A22",
   "INF.2.A29",
+  "INF.5.A2",
+  "INF.5.A5",
   "INF.5.A26",
   "INF.7.A5",
+  "INF.8.A4",
   "INF.8.A6",
   "INF.9.A7",
   "INF.9.A8",
   "INF.10.A4",
   "INF.11.A6",
   "INF.11.A7",
+  "INF.11.A8",
   "INF.11.A9",
   "INF.11.A11",
   "INF.11.A13",
+  "INF.11.A16",
   "INF.12.A6",
   "INF.12.A8",
   "INF.12.A12",
   "INF.12.A13",
   "INF.12.A16",
+  "INF.13.A1",
   "INF.13.A5",
   "INF.13.A7",
   "INF.13.A9",
@@ -25548,6 +28346,7 @@
   "INF.14.A10",
   "INF.14.A14",
   "INF.14.A17",
+  "INF.14.A19",
   "INF.14.A20",
   "INF.14.A21",
   "INF.14.A22",
@@ -25609,6 +28408,7 @@
   "OPS.1.1.2.A8",
   "OPS.1.1.2.A29",
   "OPS.1.1.2.A30",
+  "OPS.1.1.3.A8",
   "OPS.1.1.3.A12",
   "OPS.1.1.4.A1",
   "OPS.1.1.4.A3",
@@ -25715,6 +28515,7 @@
   "SYS.1.6.A15",
   "SYS.1.6.A16",
   "SYS.1.6.A23",
+  "SYS.1.7.A14",
   "SYS.1.7.A17",
   "SYS.1.7.A19",
   "SYS.1.7.A20",
@@ -25726,6 +28527,7 @@
   "SYS.1.7.A28",
   "SYS.1.7.A29",
   "SYS.1.7.A30",
+  "SYS.1.7.A32",
   "SYS.1.7.A34",
   "SYS.1.7.A35",
   "SYS.1.7.A36",
@@ -25749,6 +28551,7 @@
   "SYS.2.1.A20",
   "SYS.2.1.A29",
   "SYS.2.2.3.A2",
+  "SYS.2.2.3.A13",
   "SYS.2.2.3.A24",
   "SYS.2.2.3.A26",
   "SYS.2.3.A2",

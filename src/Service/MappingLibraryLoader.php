@@ -89,7 +89,13 @@ final class MappingLibraryLoader
         return $matches;
     }
 
-    public function load(string $yamlPath): array
+    /**
+     * @param bool $onlyNew add pairs the database does not hold yet and leave
+     *                      existing ones untouched (their review state stays)
+     *
+     * @return array{success: bool, errors: list<string>, warnings: list<string>, imported: int, updated: int, skipped: int}
+     */
+    public function load(string $yamlPath, bool $onlyNew = false): array
     {
         $absPath = str_starts_with($yamlPath, '/') ? $yamlPath : $this->projectDir . '/' . $yamlPath;
         if (!is_readable($absPath)) {
@@ -179,6 +185,9 @@ final class MappingLibraryLoader
                 'targetRequirement' => $targetReq,
                 'source' => $sourceTag,
             ]);
+            if ($existing !== null && $onlyNew) {
+                continue;
+            }
             $mapping = $existing ?? new ComplianceMapping();
             $mapping->setSourceRequirement($sourceReq);
             $mapping->setTargetRequirement($targetReq);
