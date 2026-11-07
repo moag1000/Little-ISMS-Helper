@@ -54,7 +54,7 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
         'api_alva_hint_',
         'api_push_',
         'app_api_tokens_',       // API tokens are read-only themselves
-        'app_mcp_',              // assistant connection: reads, drafts only into the suggestion queue
+        'app_mcp_',              // assistant connection; its API writes are sub-requests, checked again as `_api_` routes
         'report_builder_',       // own report definitions
         'app_mapping_onboarding_',
         'app_workflow_instance_approve',
@@ -103,18 +103,19 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
 
     public function onController(ControllerEvent $event): void
     {
-        if (!$event->isMainRequest()) {
-            return;
-        }
         $request = $event->getRequest();
         $route = (string) $request->attributes->get('_route', '');
+        // Sub-requests only for API operations: the assistant connection (MCP)
+        // runs them as sub-requests of POST /mcp, and the read-only rule has to
+        // hold there too. Other sub-requests (fragments) stay untouched.
+        if (!$event->isMainRequest() && !str_starts_with($route, '_api_')) {
+            return;
+        }
         if ($route === '' || !$this->isRestricted($route, $request->getMethod())
             || $this->isBuiltForReviewers($event)) {
             return;
         }
-        if ($this->security->getUser() === null
-            || !$this->security->isGranted('ROLE_AUDITOR')
-            || $this->security->isGranted('ROLE_MANAGER')) {
+        if (!$this->isReadOnlyUser()) {
             return;
         }
 
@@ -128,6 +129,14 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
         }
 
         throw new AccessDeniedHttpException(self::MESSAGE_KEY);
+    }
+
+    /** A reviewer role (auditor, group CISO, top management, …) without ROLE_MANAGER: reads only. */
+    public function isReadOnlyUser(): bool
+    {
+        return $this->security->getUser() !== null
+            && $this->security->isGranted('ROLE_AUDITOR')
+            && !$this->security->isGranted('ROLE_MANAGER');
     }
 
     /** Whether a reviewer-role user may not call this route with this method. */

@@ -9,12 +9,14 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Read-only API access token (Bearer).
+ * API access token (Bearer).
  *
  * Only the SHA-256 hash of the token is stored; the plaintext is shown once at
  * creation. A token is bound to a User (and therefore a tenant) and grants
  * read-only access to the REST API (enforced by ReadOnlyApiSubscriber). Tokens
- * can carry an optional expiry and be revoked.
+ * can carry an optional expiry and be revoked. `canWrite` lets the assistant
+ * connection (MCP, /mcp) create and change records with the user's rights;
+ * the REST API stays read-only for every token.
  */
 #[ORM\Entity(repositoryClass: ApiTokenRepository::class)]
 #[ORM\Table(name: 'api_tokens')]
@@ -51,6 +53,10 @@ class ApiToken
 
     #[ORM\Column(name: 'revoked', type: 'boolean', options: ['default' => false])]
     private bool $revoked = false;
+
+    /** The assistant connection (MCP) may write with this token; never the REST API. */
+    #[ORM\Column(name: 'can_write', type: 'boolean', options: ['default' => false])]
+    private bool $canWrite = false;
 
     public function __construct()
     {
@@ -150,6 +156,18 @@ class ApiToken
     public function setRevoked(bool $revoked): static
     {
         $this->revoked = $revoked;
+        return $this;
+    }
+
+    public function canWrite(): bool
+    {
+        return $this->canWrite;
+    }
+
+    public function setCanWrite(bool $canWrite): static
+    {
+        $this->canWrite = $canWrite;
+
         return $this;
     }
 }

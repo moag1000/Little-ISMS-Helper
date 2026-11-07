@@ -1,6 +1,6 @@
 api_token:
     title: 'API tokens'
-    intro: 'API access by bearer token for your own scripts and AI assistants (MCP): read with your rights, drafts only as suggestions. The plain text is shown only once at creation.'
+    intro: 'API access by bearer token for your own scripts and AI assistants (MCP), always with your rights. The REST API stays read-only; only the assistant writes, and only with a token that may write. The plain text is shown once at creation.'
     created_once: 'Token created — copy it now, it will not be shown again:'
     empty: 'No API tokens yet.'
     field:
@@ -10,9 +10,15 @@ api_token:
         last_used: 'Last used'
         expires: Expires
         status: Status
+        access: Access
+        can_write: 'Assistant may write'
+        can_write_help: 'The AI assistant may create and change records with it, with your rights. Approvals and status changes stay suggestions a person confirms.'
     status:
         active: Active
         revoked: Revoked
+    access:
+        read: Read
+        write: 'Read + write (assistant)'
     action:
         create: Create
         revoke: Revoke

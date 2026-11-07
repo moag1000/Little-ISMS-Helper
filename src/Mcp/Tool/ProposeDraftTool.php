@@ -11,7 +11,8 @@ use App\Service\Suggestion\RecordDrafts;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * The only writing tool: puts a draft into the suggestion queue. Nothing is
+ * Puts a draft into the suggestion queue (for anything that needs a person's
+ * decision; plain field changes go through save_record). Nothing is
  * written to the record — a person accepts (optionally edited) or rejects
  * the suggestion in the app; both are audit-logged by the queue. Text drafts
  * carry the assistant as model, so the queue shows where they came from.
