@@ -814,6 +814,7 @@ class IncidentController extends AbstractController
 
         // Create temporary incident object for preview
         $incident = new Incident();
+        $incident->setTenant($this->tenantContext->getCurrentTenant()); // recipients are per organisation
         $incident->setSeverity(IncidentSeverity::from($severity));
         $incident->setDataBreachOccurred((bool) $dataBreachOccurred);
 
@@ -829,7 +830,6 @@ class IncidentController extends AbstractController
             'notified_users' => array_map(fn(User $user): array => [
                 'id' => $user->getId(),
                 'name' => $user->getFirstName() . ' ' . $user->getLastName(),
-                'email' => $user->getEmail(),
             ], $preview['notified_users']),
             'sla_hours' => $preview['sla_hours'],
             'sla_description' => $preview['sla_description'],

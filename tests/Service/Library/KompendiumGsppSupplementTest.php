@@ -82,14 +82,36 @@ final class KompendiumGsppSupplementTest extends TestCase
         $derivedSources = array_fill_keys(array_column(Yaml::parseFile(self::DERIVED)['mappings'], 'source'), true);
 
         foreach ($review['requirements'] as $id => $reviews) {
-            self::assertCount(2, $reviews, "{$id}: two independent reviews");
+            self::assertContains(count($reviews), [2, 3], "{$id}: two independent reviews, at most one Obergutachten");
             self::assertArrayNotHasKey($id, $official, "{$id}: reviewed although the BSI maps it");
+            if (count($reviews) === 3) {
+                self::assertSame(['A', 'B', 'C'], array_column($reviews, 'reviewer'), "{$id}: Obergutachten is review C");
+                $proposed = array_column(array_merge($reviews[0]['targets'], $reviews[1]['targets']), 'target');
+                foreach ($reviews[2]['targets'] as $t) {
+                    self::assertContains($t['target'], $proposed, "{$id}: Obergutachten may only confirm a target A or B chose");
+                }
+            }
         }
         foreach ($review['no_counterpart'] as $id) {
             self::assertArrayNotHasKey($id, $derivedSources, "{$id}: marked without counterpart but has supplement pairs");
-            foreach ($review['requirements'][$id] as $r) {
-                self::assertSame([], $r['targets'], "{$id}: a review picked a target");
+            $deciding = count($review['requirements'][$id]) === 3
+                ? [$review['requirements'][$id][2]]
+                : $review['requirements'][$id];
+            foreach ($deciding as $r) {
+                self::assertSame([], $r['targets'], "{$id}: a deciding review picked a target");
             }
+        }
+    }
+
+    #[Test]
+    public function every_reviewed_requirement_is_decided(): void
+    {
+        $review = json_decode((string) file_get_contents(self::REVIEW), true, 512, JSON_THROW_ON_ERROR);
+        $decided = array_fill_keys(array_column(Yaml::parseFile(self::DERIVED)['mappings'], 'source'), true)
+            + array_fill_keys($review['no_counterpart'], true);
+
+        foreach (array_keys($review['requirements']) as $id) {
+            self::assertArrayHasKey($id, $decided, "{$id}: reviewed but neither mapped nor without counterpart");
         }
     }
 }

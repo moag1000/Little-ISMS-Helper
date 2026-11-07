@@ -222,6 +222,7 @@ export default class extends Controller {
             'reauth.error.invalid_password': () => faT('reauth.invalid_password'),
             'reauth.error.password_required': () => faT('reauth.password_required'),
             'reauth.error.network': () => faT('reauth.network'),
+            'reauth.error.too_many_attempts': () => faT('reauth.too_many_attempts'),
         };
         return (known[errorKey] ?? (() => faT('reauth.generic')))();
     }

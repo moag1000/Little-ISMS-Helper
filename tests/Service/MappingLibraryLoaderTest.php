@@ -244,6 +244,34 @@ YAML;
     }
 
     #[Test]
+    public function onlyNewLeavesExistingMappingUntouched(): void
+    {
+        $sourceFw = (new ComplianceFramework())->setCode('ISO27001');
+        $targetFw = (new ComplianceFramework())->setCode('NIS2');
+        $sourceReq = (new ComplianceRequirement())->setRequirementId('A.5.7');
+        $targetReq = (new ComplianceRequirement())->setRequirementId('21.2.f');
+        $existingMapping = new ComplianceMapping();
+        $existingMapping->setSourceRequirement($sourceReq);
+        $existingMapping->setTargetRequirement($targetReq);
+        $existingMapping->setLifecycleState('deprecated');
+
+        $loader = $this->makeLoader(
+            sourceFw: $sourceFw,
+            targetFw: $targetFw,
+            sourceReq: $sourceReq,
+            targetReq: $targetReq,
+            existingMapping: $existingMapping,
+        );
+        $result = $loader->load($this->writeYaml('valid.yaml', $this->validYaml()), onlyNew: true);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(0, $result['imported']);
+        $this->assertSame(0, $result['updated']);
+        // A reviewer's decision on an existing pair survives the update.
+        $this->assertSame('deprecated', $existingMapping->getLifecycleState());
+    }
+
+    #[Test]
     public function testMissingRequirementsAreSkipped(): void
     {
         $sourceFw = (new ComplianceFramework())->setCode('ISO27001');

@@ -355,6 +355,7 @@ ui:
             invalid_password: 'The password is incorrect. Please try again.'
             network: 'Connection error. Please reload the page and try again.'
             password_required: 'Please enter your password.'
+            too_many_attempts: 'Too many attempts. Please try again in 15 minutes.'
         remove_entry: 'Remove “%label%”'
         report_designer:
             config_limit: 'Max. rows'

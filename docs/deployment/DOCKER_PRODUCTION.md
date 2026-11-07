@@ -165,6 +165,22 @@ labels:
   - "traefik.http.services.isms.loadbalancer.server.port=80"
 ```
 
+### Vertrauenswürdige Proxys (Client-IP)
+
+Die App liest `X-Forwarded-For` / `X-Forwarded-Proto` / `X-Forwarded-Host` nur von
+Proxys aus Loopback- und privaten Netzen (`127.0.0.1`, `::1`, `10.0.0.0/8`,
+`172.16.0.0/12`, `192.168.0.0/16`, `fc00::/7`). Das deckt nginx/Traefik auf dem
+gleichen Host oder im Docker-Netz und Plesk ab. Steht ein öffentlicher Proxy
+davor (CDN, Load Balancer mit öffentlicher IP), seine Netze setzen:
+
+```bash
+SYMFONY_TRUSTED_PROXIES=127.0.0.1,10.0.0.0/8,203.0.113.0/24
+```
+
+Bis 2026-11 wurde jeder Absender als Proxy behandelt. Ein Angreifer konnte so mit
+einem eigenen `X-Forwarded-For` pro Anfrage die Anmelde-Drosselung und das
+API-Limit umgehen.
+
 ## 🔄 Updates
 
 ```bash

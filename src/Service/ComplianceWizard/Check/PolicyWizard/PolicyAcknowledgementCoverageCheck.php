@@ -87,7 +87,9 @@ final class PolicyAcknowledgementCoverageCheck implements PolicyWizardCheckInter
             );
         }
 
-        $audience = count($this->userRepository->findActiveUsers());
+        // Own organisation only — the tenant filter does not cover User, so
+        // findActiveUsers() counted every active account of the instance.
+        $audience = count($this->userRepository->findActiveByTenant($tenant));
         if ($audience === 0) {
             // No active users: acknowledgement coverage cannot be evidenced.
             return new PolicyWizardCheckResult(

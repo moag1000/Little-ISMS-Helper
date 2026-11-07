@@ -2,7 +2,7 @@
 {# Single DataBreach table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit/pdf actions do the
-   same (eye/edit) or bypass Turbo (pdf). Edit is gated on status + ROLE_AUDITOR,
+   same (eye/edit) or bypass Turbo (pdf). Edit is gated on status + ROLE_MANAGER,
    matching the full-page edit() status-guard. #}
 {% trans_default_domain 'privacy' %}
 {% set status_class = {
@@ -98,7 +98,7 @@
                title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
             </a>
-            {% if breach.status in ['draft', 'under_assessment'] and is_granted('ROLE_AUDITOR') %}
+            {% if breach.status in ['draft', 'under_assessment'] and is_granted('ROLE_MANAGER') %}
                 <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}"
                    class="fa-cyber-btn fa-cyber-btn--ghost"
                    data-turbo-frame="fa-form-modal"

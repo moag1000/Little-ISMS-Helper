@@ -4,6 +4,8 @@
 Usage:
     python3 scripts/library/derive_itgs_gspp_review.py candidates <out-dir> [--batch-size N]
     python3 scripts/library/derive_itgs_gspp_review.py assemble <verdict-dir> <run-date>
+    python3 scripts/library/derive_itgs_gspp_review.py disputes <out-dir> [--batch-size N]
+    python3 scripts/library/derive_itgs_gspp_review.py adjudicate <verdict-dir> <run-date>
     python3 scripts/library/derive_itgs_gspp_review.py build
     python3 scripts/library/derive_itgs_gspp_review.py stats
 
@@ -21,8 +23,14 @@ covers 510 of the 1834 Kompendium requirements. For the other 1324 this script
      live in fixtures/library/mappings/panel_verdicts/bsi-it-grundschutz_to_bsi-gspp_review_v1.json.
   3. `assemble`: merges the review files (`batch_NN_A.json`, `batch_NN_B.json`)
      into the verdict fixture, including the list `no_counterpart` the app reads.
-  4. `build`: keeps a pair only when both reviewers chose it (relationship
-     disagreement -> partial_overlap) and writes
+  4. `disputes` / `adjudicate`: where A and B disagree, a third review C
+     (Obergutachten) decides. C sees both reviews and may only confirm targets
+     A or B chose, or confirm that Grundschutz++ has no counterpart, so every
+     requirement ends mapped or without counterpart. `adjudicate` adds C to the
+     verdict fixture.
+  5. `build`: keeps a pair when both reviewers chose it, or, after an
+     Obergutachten, when C confirmed it (relationship disagreement ->
+     partial_overlap), and writes
      `bsi-it-grundschutz_to_bsi-gspp_derived_v1.yaml`. Provenance
      `derived_expert_review` keeps every pair in the heuristic tier: inheritance and
      the gap view propose them for review, nothing counts as confirmed.
@@ -200,22 +208,40 @@ def load_verdicts() -> dict:
 
 
 def consensus(verdicts: dict) -> tuple[list[tuple[str, str, str, list[str]]], set[str]]:
-    """Return (pairs, no_counterpart). A pair needs both reviews; a requirement is
-    'no counterpart' when both reviews say so."""
+    """Return (pairs, no_counterpart).
+
+    Two reviews (A, B): a pair needs both, 'no counterpart' needs both.
+    With an Obergutachten (C): C decides among the targets A or B chose; a
+    pair stands when C confirmed it, 'no counterpart' when C picked nothing.
+    """
     pairs = []
     none = set()
     for rid, reviews in sorted(verdicts['requirements'].items(), key=lambda kv: natural_key(kv[0])):
         if len(reviews) < 2:
             continue
-        picks = [{t['target']: t for t in rv.get('targets', [])} for rv in reviews]
-        common = set(picks[0])
-        for p in picks[1:]:
-            common &= set(p)
-        for tid in sorted(common, key=natural_key):
-            rels = {p[tid]['relationship'] for p in picks}
+        first = [rv for rv in reviews if rv.get('reviewer') != 'C']
+        adjudication = next((rv for rv in reviews if rv.get('reviewer') == 'C'), None)
+        picks = [{t['target']: t for t in rv.get('targets', [])} for rv in first]
+        if adjudication is None:
+            common = set(picks[0])
+            for p in picks[1:]:
+                common &= set(p)
+            for tid in sorted(common, key=natural_key):
+                rels = {p[tid]['relationship'] for p in picks}
+                rel = rels.pop() if len(rels) == 1 else 'partial_overlap'
+                pairs.append((rid, tid, rel, [p[tid].get('rationale', '') for p in picks]))
+            if all(not rv.get('targets') for rv in first):
+                none.add(rid)
+            continue
+        chosen = {t['target']: t for t in adjudication.get('targets', [])}
+        for tid in sorted(chosen, key=natural_key):
+            backers = [p[tid] for p in picks if tid in p]
+            if not backers:
+                raise SystemExit(f'{rid}: Obergutachten picked {tid}, which neither review chose')
+            rels = {chosen[tid]['relationship']} | {b['relationship'] for b in backers}
             rel = rels.pop() if len(rels) == 1 else 'partial_overlap'
-            pairs.append((rid, tid, rel, [p[tid].get('rationale', '') for p in picks]))
-        if all(not rv.get('targets') for rv in reviews):
+            pairs.append((rid, tid, rel, [chosen[tid].get('rationale', '')]))
+        if not chosen:
             none.add(rid)
     return pairs, none
 
@@ -261,6 +287,78 @@ def cmd_assemble(verdict_dir: Path, run_date: str) -> None:
     print(f'{len(files)} review files, {len(reviews)} requirements -> {VERDICTS.relative_to(ROOT)}')
 
 
+def disputed(verdicts: dict) -> list[str]:
+    """Requirements with two reviews that neither agree on a pair nor on 'no counterpart'."""
+    pairs, none = consensus(verdicts)
+    decided = {p[0] for p in pairs} | none
+    return [rid for rid, reviews in verdicts['requirements'].items()
+            if rid not in decided and len(reviews) == 2]
+
+
+def cmd_disputes(out_dir: Path, batch_size: int) -> None:
+    """Write the disputed requirements with both reviews and their candidates for the Obergutachten."""
+    verdicts = load_verdicts()
+    items, _itgs, gspp = build_candidates()
+    by_id = {item['id']: item for item in items}
+    out = []
+    for rid in sorted(disputed(verdicts), key=natural_key):
+        item = dict(by_id[rid])
+        picked = {t['target'] for rv in verdicts['requirements'][rid] for t in rv.get('targets', [])}
+        listed = {c['id'] for c in item['candidates']}
+        item['candidates'] = item['candidates'] + [
+            {'id': g, 'title': gspp[g]['title'], 'statement': gspp[g].get('statement', '')[:200], 'signals': []}
+            for g in sorted(picked - listed, key=natural_key)
+        ]
+        item['reviews'] = verdicts['requirements'][rid]
+        out.append(item)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for i in range(0, len(out), batch_size):
+        path = out_dir / f'dispute_{i // batch_size + 1:02d}.json'
+        path.write_text(json.dumps(out[i:i + batch_size], ensure_ascii=False, indent=1), encoding='utf-8')
+    print(f'{len(out)} disputed requirements, {math.ceil(len(out) / batch_size)} batches in {out_dir}')
+
+
+def cmd_adjudicate(verdict_dir: Path, run_date: str) -> None:
+    """Add the Obergutachten files (`dispute_NN_C.json`) to the verdict fixture."""
+    verdicts = load_verdicts()
+    open_ids = set(disputed(verdicts))
+    seen: set[str] = set()
+    for f in sorted(verdict_dir.glob('dispute_*_C.json')):
+        for rid, verdict in json.loads(f.read_text(encoding='utf-8')).items():
+            if rid not in open_ids or rid in seen:
+                raise SystemExit(f'{f.name}: {rid} is not disputed or decided twice')
+            allowed = {t['target'] for rv in verdicts['requirements'][rid] for t in rv.get('targets', [])}
+            targets = verdict.get('targets', [])
+            for t in targets:
+                if t['target'] not in allowed or t['relationship'] not in USABLE:
+                    raise SystemExit(f'{f.name}: {rid} -> {t["target"]} ({t["relationship"]}) not allowed')
+            if not targets and not verdict.get('note'):
+                raise SystemExit(f'{f.name}: {rid} without target needs a note')
+            seen.add(rid)
+            verdicts['requirements'][rid].append(OrderedDict([
+                ('reviewer', 'C'),
+                ('targets', [OrderedDict([('target', t['target']), ('relationship', t['relationship']),
+                                          ('rationale', t.get('rationale', ''))]) for t in targets]),
+                *([('note', verdict['note'])] if verdict.get('note') else []),
+            ]))
+    missing = open_ids - seen
+    if missing:
+        raise SystemExit(f'{len(missing)} disputed requirements without Obergutachten, e.g. '
+                         f'{sorted(missing, key=natural_key)[:5]}')
+    prov = verdicts['provenance']
+    prov['description'] = (
+        'Two independent expert reviews (A: BSI-Grundschutz-Berater, B: externer Auditor) of the candidates '
+        'from derive_itgs_gspp_review.py for every Kompendium requirement the BSI mapping does not cover; '
+        'where they disagree, a third review (C: Obergutachten, ISMS-Zertifizierungsauditor) decides among '
+        'the targets A or B chose. build keeps pairs both reviews chose or C confirmed.')
+    prov['adjudication_run_date'] = run_date
+    prov['adjudicated'] = len(seen)
+    _pairs, none = consensus(verdicts)
+    verdicts['no_counterpart'] = sorted(none, key=natural_key)
+    VERDICTS.write_text(json.dumps(verdicts, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    print(f'{len(seen)} Obergutachten -> {VERDICTS.relative_to(ROOT)}')
+
+
 def cmd_build() -> None:
     verdicts = load_verdicts()
     itgs = load_itgs()
@@ -272,12 +370,15 @@ def cmd_build() -> None:
         if rid not in itgs or tid not in gspp or rid in mapped or rel not in USABLE:
             raise SystemExit(f'invalid verdict pair {rid} -> {tid} ({rel})')
         reason = max(rationales, key=len).strip().rstrip('.')
+        adjudicated = any(rv.get('reviewer') == 'C' for rv in verdicts['requirements'][rid])
+        how = ('Obergutachten nach zwei uneinigen Reviews' if adjudicated
+               else 'Expertenprüfung, zwei unabhängige Reviews')
         entries.append(OrderedDict([
             ('source', rid),
             ('target', tid),
             ('relationship', rel),
             ('confidence', 'medium' if rel == 'equivalent' else 'low'),
-            ('rationale', f'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): {reason}.'),
+            ('rationale', f'Ergänzung zum BSI-Mapping ({how}): {reason}.'),
         ]))
     meta = verdicts['provenance']
     doc = OrderedDict([
@@ -306,7 +407,8 @@ def cmd_build() -> None:
                     'Für die Kompendium-Anforderungen ohne BSI-Mapping: bis zu zehn Kandidaten je Anforderung '
                     '(Ziele des BSI-Mappings für andere Anforderungen desselben Bausteins, amtlicher Pfad über '
                     'ISO 27001, Textähnlichkeit), geprüft in zwei unabhängigen Reviews. Ein Paar steht nur hier, '
-                    'wenn beide Reviews es gewählt haben. Provenienz derived_expert_review: heuristische Stufe, '
+                    'wenn beide Reviews es gewählt haben oder, bei Uneinigkeit, ein drittes Review (Obergutachten) '
+                    'es unter den Vorschlägen der beiden bestätigt hat. Provenienz derived_expert_review: heuristische Stufe, '
                     'die Vererbung schlägt die Paare zur Prüfung vor und übernimmt nichts ungeprüft. Ersetzt '
                     'kein BSI-Mapping; sobald das BSI eine Anforderung mappt, gilt dessen Paar.')),
             ])),
@@ -357,6 +459,11 @@ def main() -> None:
         cmd_candidates(Path(args[1]), size)
     elif args[0] == 'assemble':
         cmd_assemble(Path(args[1]), args[2])
+    elif args[0] == 'disputes':
+        size = int(args[args.index('--batch-size') + 1]) if '--batch-size' in args else 62
+        cmd_disputes(Path(args[1]), size)
+    elif args[0] == 'adjudicate':
+        cmd_adjudicate(Path(args[1]), args[2])
     elif args[0] == 'build':
         cmd_build()
     elif args[0] == 'stats':

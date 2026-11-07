@@ -14,6 +14,7 @@ use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\TenantBrandingRepository;
 use App\Repository\WizardRunRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Util\CsvSanitizer;
 use Twig\Environment as TwigEnvironment;
 use ZipArchive;
 
@@ -362,7 +363,7 @@ final class PolicyZipExporter
             return '';
         }
         foreach ($rows as $row) {
-            fputcsv($handle, $row, ',', '"', '\\');
+            fputcsv($handle, array_map(CsvSanitizer::sanitize(...), $row), ',', '"', '\\');
         }
         rewind($handle);
         $out = stream_get_contents($handle);

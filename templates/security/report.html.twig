@@ -66,6 +66,7 @@
                         <a href="{{ path(report_version == '2021' ? 'app_security_report_2021' : 'app_security_report_2025', { download: 1 }) }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon me-1 fa-icon--nav-download" aria-hidden="true"></i>{{ 'security_reports.action.download_md'|trans({}, 'security_reports') }}
                         </a>
+                        {% if is_granted('ROLE_ADMIN') %}
                         <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-controller="report-regenerate"
                                 data-action="click->report-regenerate#regenerate"
@@ -75,6 +76,7 @@
                                 data-report-regenerate-success-text-value="{{ 'common.report_regenerated'|trans({}, 'messages') }}">
                             <i class="fa-icon me-1 fa-icon--ui-refresh" aria-hidden="true"></i>{{ 'security_reports.action.regenerate'|trans({}, 'security_reports') }}
                         </button>
+                        {% endif %}
                     </div>
                     <div class="mt-3">
                         <small class="text-muted">

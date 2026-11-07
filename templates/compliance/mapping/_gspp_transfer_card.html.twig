@@ -1,12 +1,15 @@
 {#
  # Mapping hub: reach of the mapping IT-Grundschutz-Kompendium 2023 → Grundschutz++.
  # Data: KompendiumGsppCoverage::summary() (BSI mapping, reviewed supplement,
- # requirements without counterpart, open). Included only when both catalogues
+ # requirements without counterpart, open — row shown only while > 0). Included only when both catalogues
  # are loaded and module bsi_grundschutz is active.
  #
- # Usage: {% include 'compliance/mapping/_gspp_transfer_card.html.twig' with { coverage: gspp_coverage } %}
+ # pending: supplement pairs shipped with the release but not imported yet;
+ # above zero the card offers the import (managers).
+ #
+ # Usage: {% include 'compliance/mapping/_gspp_transfer_card.html.twig' with { coverage: gspp_coverage, pending: gspp_pending } %}
  #}
-{% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4', coverage: coverage } %}
+{% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4', coverage: coverage, pending: pending|default(0) } %}
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center" id="gspp-transfer">
             <h2 class="h6 mb-0">{{ 'compliance.mapping.hub.gspp.title'|trans({}, 'compliance') }}</h2>
@@ -36,9 +39,21 @@
             <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.derived }}</dd>
             <dt class="col-8 col-md-5 fw-normal">{{ 'compliance.mapping.hub.gspp.no_counterpart'|trans({}, 'compliance') }}</dt>
             <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.no_counterpart }}</dd>
-            <dt class="col-8 col-md-5 fw-normal">{{ 'compliance.mapping.hub.gspp.open'|trans({}, 'compliance') }}</dt>
-            <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.open }}</dd>
+            {% if coverage.open > 0 %}
+                <dt class="col-8 col-md-5 fw-normal">{{ 'compliance.mapping.hub.gspp.open'|trans({}, 'compliance') }}</dt>
+                <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.open }}</dd>
+            {% endif %}
         </dl>
+        {% if pending > 0 and is_granted('ROLE_MANAGER') %}
+            <form method="post" action="{{ path('app_compliance_mapping_gspp_supplement') }}"
+                  class="d-flex flex-wrap align-items-center gap-2 mb-3" data-testid="gspp-supplement-update">
+                <input type="hidden" name="_token" value="{{ csrf_token('gspp_supplement') }}">
+                <span class="small">{{ 'compliance.mapping.hub.gspp.update_pending'|trans({'%count%': pending}, 'compliance') }}</span>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--info fa-cyber-btn--sm">
+                    {{ 'compliance.mapping.hub.gspp.update'|trans({}, 'compliance') }}
+                </button>
+            </form>
+        {% endif %}
         <div class="d-flex flex-wrap gap-2">
             <a href="{{ path('app_compliance_inheritance_queue', { frameworkCode: 'BSI-GSPP' }) }}"
                class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">

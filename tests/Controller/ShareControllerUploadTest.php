@@ -55,7 +55,7 @@ final class ShareControllerUploadTest extends WebTestCase
             self::assertResponseIsSuccessful();
             $html = (string) $client->getResponse()->getContent();
             self::assertStringContainsString('notes.txt', $html);
-            self::assertStringContainsString('The file "evil.php" was rejected', $html);
+            self::assertStringContainsString('The file &quot;evil.php&quot; was rejected', $html); // flash is escaped
             self::assertStringNotContainsString('file_ids', $html);
             self::assertStringNotContainsString('share_uploads', $html);
             self::assertSame($before, is_dir($shareDir) ? count((array) scandir($shareDir)) : 0, 'shared files must not be stored');

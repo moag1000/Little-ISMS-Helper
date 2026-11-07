@@ -20,7 +20,8 @@ library:
     type: machine_assisted_with_review
     description: 'Für die Kompendium-Anforderungen ohne BSI-Mapping: bis zu zehn Kandidaten je Anforderung (Ziele
       des BSI-Mappings für andere Anforderungen desselben Bausteins, amtlicher Pfad über ISO 27001, Textähnlichkeit),
-      geprüft in zwei unabhängigen Reviews. Ein Paar steht nur hier, wenn beide Reviews es gewählt haben. Provenienz
+      geprüft in zwei unabhängigen Reviews. Ein Paar steht nur hier, wenn beide Reviews es gewählt haben oder, bei
+      Uneinigkeit, ein drittes Review (Obergutachten) es unter den Vorschlägen der beiden bestätigt hat. Provenienz
       derived_expert_review: heuristische Stufe, die Vererbung schlägt die Paare zur Prüfung vor und übernimmt nichts
       ungeprüft. Ersetzt kein BSI-Mapping; sobald das BSI eine Anforderung mappt, gilt dessen Paar.'
   lifecycle:
@@ -30,6 +31,19 @@ library:
       date: '2026-11-07'
       actor: Little-ISMS-Helper
 mappings:
+- source: APP.1.1.A11
+  target: TEST.3.1.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Testen von Office-Erweiterungen
+    ausschließlich auf isolierten Testsystemen verlangt eine dedizierte Testumgebung, wie sie GS++ allgemein fordert.'
+- source: APP.1.1.A13
+  target: KONF.12.1.11
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der geschützte Modus für Daten
+    aus unsicheren Quellen verhindert die Ausführung aktiver Inhalte, was die GS++-Konfiguration zur Deaktivierung
+    aktiver Dateiinhalte abdeckt.'
 - source: APP.1.2.A10
   target: KONF.12.6
   relationship: partial_overlap
@@ -66,12 +80,31 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschlüsselung
     der Kommunikation über Netze mit einem sicheren Protokoll; hier für Verzeichnisdienstzugriffe.'
+- source: APP.2.1.A16
+  target: NOT.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Notfallpläne für den Ausfall
+    wichtiger Verzeichnisdienst-Systeme sind ein Spezialfall der dokumentierten Wiederanlaufplanung für zeitkritische
+    Systeme.'
 - source: APP.2.1.A20
   target: KONF.14.1
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Verschlüsselung
     der Übertragung über Netze (Transport-/Netzebene); hier für die Replikation vertraulicher Verzeichnisdaten.'
+- source: APP.2.2.A5
+  target: BER.3.23
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der geplante Notfallzugriff
+    über das DSRM-Konto entspricht dem Notfallzugangskonto für Verzeichnisdienste.'
+- source: APP.2.2.A5
+  target: STM.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte Risikobetrachtung
+    für AD DS ist eine konkrete Ausprägung der Risikobetrachtung nach GS++-Methodik.'
 - source: APP.2.2.A7
   target: BER.3.6
   relationship: partial_overlap
@@ -96,12 +129,45 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Built-in-Konten dürfen nur
     als Notfallkonten dienen, GS++ fordert ein Notfallzugangskonto für Verzeichnisdienste.'
+- source: APP.2.2.A17
+  target: BER.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die technische Beschränkung
+    der Anmeldung hochprivilegierter Konten auf minimal notwendige Systeme setzt das Prinzip der geringsten Berechtigungen
+    um.'
+- source: APP.2.2.A18
+  target: BER.2.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Hinzufügen von Computer-Objekten
+    (Maschinenidentitäten) auf administrative Konten zu beschränken schränkt die Einrichtung von Identitäten ein.'
+- source: APP.2.3.A3
+  target: KONF.10.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die sichere Konfiguration von
+    slapd und Clients samt Prüfung der Vorgabewerte ist die Grundkonfiguration der Anwendung, die GS++ dokumentiert
+    fordert.'
+- source: APP.2.3.A6
+  target: KONF.11.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Pflicht, dass sich Benutzende
+    gegenüber dem Verzeichnisdienst geeignet authentisieren, entspricht der Authentifizierung vor dem Zugriff auf
+    schützenswerte Daten.'
 - source: APP.2.3.A11
   target: KONF.6.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide beschränken die Anwendung
     (hier slapd-Laufzeitumgebung) auf die minimal benötigten Berechtigungen, Dateien und Ressourcen.'
+- source: APP.3.1.A20
+  target: KONF.12.1.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Eine WAF filtert schädliche
+    Anfragen und Inhalte an der Webanwendung und setzt damit die Filterung schädlicher Webinhalte um.'
 - source: APP.3.1.A22
   target: DET.5.4
   relationship: partial_overlap
@@ -114,6 +180,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide beschränken Uploads auf
     dem Webserver (u. a. Maximalgröße und zulässige Dateien).'
+- source: APP.3.2.A5
+  target: DEV.3.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Kryptografisch gesicherte Speicherung
+    von Client-Passwörtern entspricht dem Hashing von Passwörtern vor der Speicherung.'
+- source: APP.3.2.A10
+  target: BES.3.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Auswahl eines Webhosters
+    anhand geeigneter Punkte ist ein Spezialfall der Lieferantenauswahl nach Verlässlichkeitskriterien.'
+- source: APP.3.2.A14
+  target: DET.4.9
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Prüfung der bereitgestellten
+    Dateien auf Veränderung durch Angriffe entspricht dem regelmäßigen Manipulations-Checkup.'
+- source: APP.3.2.A14
+  target: KONF.10.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die regelmäßige Integritätsprüfung
+    der Webserver-Konfiguration ist der Abgleich der tatsächlichen Konfiguration mit dem Referenzzustand.'
 - source: APP.3.2.A16
   target: DET.5.4
   relationship: partial_overlap
@@ -132,12 +222,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen eine festgelegte
     Datenablagestruktur, auf deren Einhaltung die Benutzenden hingewiesen werden.'
+- source: APP.3.3.A9
+  target: ASST.3.14
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Vorhalten geeigneter Ersatzspeicher
+    entspricht der Reserve physischer Assets.'
 - source: APP.3.3.A11
   target: KONF.9.1
   relationship: equivalent
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide begrenzen den Speicherplatz
     für Benutzende (Quotas), um Überlastung des Systems zu vermeiden.'
+- source: APP.3.4.A2
+  target: KONF.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die sichere Grundkonfiguration
+    des Samba-Servers ist die Grundkonfiguration des IT-Systems, die GS++ festzulegen fordert.'
 - source: APP.3.4.A13
   target: NOT.4.2
   relationship: subset
@@ -180,24 +282,78 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die regelmäßige
     Prüfung der Funktionstüchtigkeit bzw. Durchführbarkeit von Notfallplänen; hier für DNS-Server.'
+- source: APP.4.2.A1
+  target: KONF.10.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die sichere Konfiguration des
+    SAP-ABAP-Stacks über Profilparameter ist die Grundkonfiguration der Anwendung.'
+- source: APP.4.2.A2
+  target: KONF.10.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die sichere Konfiguration des
+    SAP-JAVA-Stacks ist die Grundkonfiguration der Anwendung.'
 - source: APP.4.2.A4
   target: BER.5.7
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen, voreingestellte
     Authentisierungsmittel (hier Standardpasswörter der SAP-Standardkonten) zu ändern bzw. zu deaktivieren.'
+- source: APP.4.2.A5
+  target: BER.3.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Anlegen, Ändern und Löschen
+    von SAP-Konten als Aufgabe der Konto-Administration beschränkt das Kontenmanagement auf Administrierende.'
+- source: APP.4.2.A6
+  target: BER.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Konten- und Berechtigungskonzept
+    mit SoD-Prüfung und Kontrolle kritischer Berechtigungen setzt die geringsten Berechtigungen um.'
+- source: APP.4.2.A6
+  target: BER.4.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Berechtigungskonzept für
+    SAP arbeitet mit Rollen und Profilen und damit mit rollenbasierter Berechtigungszuweisung.'
+- source: APP.4.2.A8
+  target: KONF.11.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Absicherung der RFC-Schnittstelle
+    auf definierte benötigte Verbindungen schränkt aktivierte Schnittstellen der Anwendung ein.'
 - source: APP.4.2.A18
   target: KONF.14.1
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschlüsselung
     der Kommunikation über Netze nach anerkanntem Standard; hier SNC für SAP-Kommunikation.'
+- source: APP.4.2.A20
+  target: DET.5.10
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die regelmäßige Aktualisierung
+    der SAP GUI auf allen Clients ist Teil des zeitnahen Patchmanagements.'
 - source: APP.4.2.A24
   target: KONF.10.4
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, nicht benötigte
     Anwendungsfunktionen bzw. Dienste (hier ICF-Dienste) zu deaktivieren.'
+- source: APP.4.2.A25
+  target: KONF.10.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die sichere Konfiguration des
+    SAP Web Dispatchers entspricht der Grundkonfiguration der Anwendung.'
+- source: APP.4.2.A27
+  target: PERF.3.1.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Regelmäßige Audits der SAP-ERP-Systeme
+    sind eine konkrete Ausprägung der Pflicht, Audits in angemessenem Umfang auszuführen.'
 - source: APP.4.2.A29
   target: BER.3.22
   relationship: partial_overlap
@@ -246,6 +402,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschlüsselung
     schützenswerter Daten bei der Speicherung (at-rest); hier in Datenbanken.'
+- source: APP.4.3.A25
+  target: DET.5.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Regelmäßige Sicherheitsprüfungen
+    von Datenbanksystemen sind eine Form der Schwachstellenprüfung mit Auswertung.'
 - source: APP.4.4.A4
   target: KONF.6.1.2
   relationship: subset
@@ -270,6 +432,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Rechtevergabe
     nach dem Prinzip der geringsten Berechtigungen; hier keine Rechte für den default-Service-Account.'
+- source: APP.4.4.A10
+  target: BER.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Gruppenspezifisch eingeschränkte
+    Rechte an der Automatisierungssoftware folgen dem Prinzip der geringsten Berechtigungen.'
+- source: APP.4.4.A10
+  target: KONF.6.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Prozesse der Automatisierungssoftware
+    mit nur unbedingt notwendigen Rechten betreiben ist ein Spezialfall minimal erforderlicher Anwendungsberechtigungen.'
 - source: APP.4.4.A11
   target: DET.4.14
   relationship: partial_overlap
@@ -301,6 +475,24 @@ mappings:
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern verbindliche
     Verfahren und Regelungen für die Softwareentwicklung; hier eine ABAP-Entwicklungsrichtlinie mit Namenskonventionen
     und Sicherheitsvorgaben.'
+- source: APP.4.6.A8
+  target: KONF.12.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Validierung von Benutzereingaben
+    vor dem Dateizugriff ist ein Spezialfall der Eingabevalidierung in Anwendungen.'
+- source: APP.4.6.A10
+  target: DEV.2.6.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Benutzereingaben dürfen nicht
+    Teil eines Betriebssystemkommandos werden, was das Testen auf eingeschleuste Befehle absichert.'
+- source: APP.4.6.A10
+  target: KONF.7.13
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Beschränkung von Betriebssystemaufrufen
+    auf vorgesehene SAP-Funktionen schränkt Systemaufrufe pro Anwendung ein.'
 - source: APP.4.6.A14
   target: DEV.2.6.1
   relationship: partial_overlap
@@ -313,12 +505,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verhindern SQL-Injection:
     Eingabedaten dürfen nicht ungeprüft in dynamische Datenbankabfragen gelangen.'
+- source: APP.5.2.A3
+  target: BER.4.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Berechtigungskonzept für
+    die Exchange-Infrastruktur mit Profilen und Rollen entspricht der rollenbasierten Berechtigungszuweisung.'
 - source: APP.5.2.A5
   target: NOT.4.2
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die regelmäßige
     Datensicherung von IT-Systemen; hier Exchange-Server vor Änderungen und zyklisch.'
+- source: APP.5.2.A9
+  target: KONF.10.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Installation und Konfiguration
+    der Exchange-Server nach Sicherheitsrichtlinie ist die Grundkonfiguration der Anwendung.'
 - source: APP.5.2.A11
   target: KONF.14.1
   relationship: subset
@@ -343,6 +547,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern einen Spam-Filter,
     der die Zustellung unerwünschter Nachrichten verhindert.'
+- source: APP.5.3.A7
+  target: SENS.7.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Aufklärung zu Risiken und
+    sicherem Umgang mit E-Mail-Anwendungen ist ein Spezialfall zielobjektspezifischer Sensibilisierung.'
+- source: APP.5.3.A7
+  target: SENS.7.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Sensibilisierung zu Gefahren
+    umfasst den Umgang mit Anhängen unerwünschter E-Mails.'
+- source: APP.5.3.A7
+  target: SENS.7.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Gefahren-Sensibilisierung
+    umfasst das Erkennen gefälschter E-Mails.'
 - source: APP.5.3.A8
   target: SENS.7.4
   relationship: equivalent
@@ -391,6 +613,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschlüsselung
     der Kommunikation über Netze mit sicheren Verfahren; hier für UCC-Daten über nicht vertrauenswürdige Netze.'
+- source: APP.5.4.A9
+  target: KONF.10.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Sichere Einstellungen für UCC
+    sind die dokumentierte Grundkonfiguration der Anwendung.'
+- source: APP.5.4.A9
+  target: KONF.11.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Verschlüsselung gespeicherter
+    UCC-Daten entspricht der Verschlüsselung schützenswerter Daten at-rest.'
 - source: APP.5.4.A12
   target: NOT.3.1
   relationship: partial_overlap
@@ -409,6 +643,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen, nicht benötigte
     Anwendungsfunktionen (hier KI-Funktionen) zu deaktivieren.'
+- source: APP.5.4.A18
+  target: DET.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Sicherheitsmonitoring der zentralen
+    UCC-Komponenten ist eine Überwachung auf Anzeichen für Angriffe.'
 - source: APP.6.A7
   target: BES.4.3
   relationship: partial_overlap
@@ -421,6 +661,12 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern ein Inventar
     der Anwendungen mit Produktangaben, die Lizenz- und Einsatzorte-Zuordnung geht darüber hinaus.'
+- source: APP.6.A11
+  target: KONF.7.9
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Nur unbedingt notwendige Plug-ins
+    und Erweiterungen zu installieren schränkt die Installation von Anwendungen ein.'
 - source: APP.6.A13
   target: ASST.7.1
   relationship: partial_overlap
@@ -433,6 +679,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide betreffen den Nachweis
     der Sicherheitseigenschaften durch Zertifikat oder Testat bei der Beschaffung.'
+- source: APP.7.A1
+  target: DEV.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Planung von Individualsoftware
+    als Entwicklungsprojekt mit Ablaufplan ist Teil geregelter Entwicklungsverfahren.'
 - source: APP.7.A5
   target: DEV.1.1
   relationship: partial_overlap
@@ -445,6 +697,18 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Treuhand- bzw.
     Escrow-Regelungen zur Absicherung gegen den Ausfall des Herstellers.'
+- source: APP.7.A10
+  target: BES.3.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Beauftragung zertifizierter
+    Entwicklungsunternehmen ist die Lieferantenauswahl anhand von Zertifikaten.'
+- source: APP.7.A10
+  target: BES.4.8.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte Zertifizierung
+    von Sicherheitsaspekten entspricht dem Zertifikat oder Testat nach Sicherheitsstandard.'
 - source: CON.1.A4
   target: BER.7.15
   relationship: partial_overlap
@@ -457,12 +721,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine festgelegte
     Vorgehensweise für Außerbetriebnahme und sicheres Löschen nicht mehr benötigter Schlüssel.'
+- source: CON.1.A9
+  target: BES.4.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die im Kryptokonzept festgelegten
+    Auswahlkriterien für Kryptoprodukte sind Kriterien, nach denen beschafft wird.'
 - source: CON.1.A18
   target: ASST.3.14
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine Reserve
     physischer Assets; hier Ersatzhardware mit kryptografischen Funktionen.'
+- source: CON.3.A2
+  target: NOT.4.9
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Festlegung der Speichermedien
+    für Datensicherungen entspricht dem Einsatz dedizierter, geeigneter Sicherungsmedien.'
+- source: CON.3.A4
+  target: NOT.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Datensicherungspläne legen
+    fest, welche Daten gesichert werden, was der Dokumentation der zu sichernden Daten entspricht.'
 - source: CON.3.A5
   target: NOT.4.2
   relationship: partial_overlap
@@ -505,6 +787,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Informationen
     und Datenträger vor der Entsorgung sicher zu löschen bzw. zu vernichten.'
+- source: CON.6.A4
+  target: ASST.7.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Auswahl von Vernichtungsverfahren
+    für Datenträger entspricht einem standardisierten Vernichtungsverfahren.'
+- source: CON.6.A4
+  target: ASST.7.3.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Auswahl geeigneter Löschverfahren
+    je Datenträger entspricht dem Verfahren zur endgültigen Löschung.'
 - source: CON.6.A8
   target: ASST.7.3
   relationship: partial_overlap
@@ -547,6 +841,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Sensibilisierung
     der Reisenden zu länderspezifischen Reise- und Sicherheitshinweisen.'
+- source: CON.7.A3
+  target: SENS.9.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Prüfung und Kommunikation
+    länderspezifischer Regelungen vor Reiseantritt entspricht der Sensibilisierung zu Reise- und Sicherheitshinweisen.'
 - source: CON.7.A5
   target: BER.3.12
   relationship: partial_overlap
@@ -589,18 +889,48 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, vertrauliche
     Dokumente sicher zu vernichten und entsprechende Möglichkeiten bereitzustellen.'
+- source: CON.7.A13
+  target: KONF.3.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Schützenswerte mitgeführte
+    Daten verschlüsselt zu speichern entspricht der Verschlüsselung integrierter Festspeichermedien.'
+- source: CON.7.A13
+  target: SENS.9.6
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Nicht erforderliche Daten und
+    Geräte auf Auslandsreisen nicht mitzunehmen entspricht dem Untersagen der Mitnahme.'
 - source: CON.7.A14
   target: KONF.13.4
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide betreffen kryptografische
     Signatur bzw. Absicherung der E-Mail durch Nutzende.'
+- source: CON.7.A18
+  target: BER.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Prüfung, welche Berechtigungen
+    im Ausland notwendig sind, folgt dem Prinzip der geringsten Berechtigungen.'
+- source: CON.7.A18
+  target: BER.4.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Entzug von Zugriffsrechten
+    für die Reisedauer ist ein Entzug von Berechtigungen.'
 - source: CON.8.A1
   target: DEV.1.1.2
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Zuweisung
     von Aufgaben der Softwareentwicklung an zuständige Personen oder Rollen.'
+- source: CON.8.A3
+  target: BES.4.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Auswahl der Entwicklungsumgebung
+    anhand vorab festgelegter Kriterien entspricht der Beschaffung anhand festgelegter Kriterien.'
 - source: CON.8.A11
   target: DEV.1.1
   relationship: equivalent
@@ -697,6 +1027,12 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, sicherheitsrelevante
     HTTP-Response-Header in Webanwendungen zu aktivieren.'
+- source: CON.10.A15
+  target: DEV.2.6
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der CSRF-Schutz ist ein Schutzmechanismus
+    gegen einen gängigen Angriffsmuster-Typ von Webanwendungen.'
 - source: CON.10.A16
   target: BER.5.9
   relationship: partial_overlap
@@ -739,12 +1075,54 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern das sichere Löschen
     bzw. Vernichten von Informationen, hier per Schlüssellöschung oder Überschreiben.'
+- source: CON.11.1.A15
+  target: SENS.8.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Aufbewahrung von Datenträgern
+    bei Nichtgebrauch in verschlossenen Behältern entspricht der sicheren Verwahrung von Datenträgern.'
 - source: DER.1.A4
   target: SENS.2.8
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Nutzende anzuweisen,
     sicherheitsrelevante Ereignisse über die vorgesehenen Wege zu melden.'
+- source: DER.1.A7
+  target: PERS.4.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Weiterführende Schulung der
+    für Ereignismeldungen Zuständigen ist eine rollenspezifische Schulung.'
+- source: DER.1.A7
+  target: PERS.4.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Schulungen vor dem Einsatz
+    neu beschaffter IT-Komponenten entsprechen produktspezifischen Schulungen bei neuen IT-Produkten.'
+- source: DER.1.A11
+  target: DET.6.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Auswertung zentral gesammelter
+    Ereignismeldungen ist die Beurteilung sicherheitsrelevanter Ereignisse.'
+- source: DER.1.A11
+  target: DET.6.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Abruf und die Auswertung
+    per Tool entsprechen einer automatisierten Feststellung kritischer Vorfälle.'
+- source: DER.1.A16
+  target: DET.4.6
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Zusätzliche Detektion für Anwendungen
+    mit erhöhtem Schutzbedarf umfasst die Überwachung der Anwendungsnutzung auf Anomalien.'
+- source: DER.1.A18
+  target: DET.4.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die regelmäßige Integritätsprüfung
+    der Detektionssysteme stellt deren Funktionsfähigkeit sicher.'
 - source: DER.2.1.A3
   target: REA.1.1.2
   relationship: equivalent
@@ -775,12 +1153,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide betreffen Vorgehen zur
     Behandlung und Analyse von Vorfällen; Eindämmung und Aufklärung werden gegeneinander abgewogen.'
+- source: DER.2.1.A12
+  target: REA.2.6.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Analyse der Schnittstellen
+    zu Notfall- und Sicherheitsmanagement dient der Koordinierung bei Vorfällen.'
+- source: DER.2.1.A13
+  target: REA.2.6.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Abstimmung der Vorfallsbehandlung
+    mit dem Notfallmanagement ist Koordinierung bei Vorfällen.'
 - source: DER.2.1.A14
   target: REA.2.6.5
   relationship: equivalent
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine festgelegte
     Eskalationsstrategie bzw. Eskalationsleiter für Sicherheitsvorfälle.'
+- source: DER.2.1.A15
+  target: PERS.4.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Schulung des Service-Desk-Personals
+    zur Erkennung von Sicherheitsvorfällen ist eine rollenspezifische Schulung.'
 - source: DER.2.2.A1
   target: REA.2.5.1
   relationship: partial_overlap
@@ -799,6 +1195,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, vorab externe
     Forensik-Dienstleister zu bestimmen, auf die im Vorfall zurückgegriffen werden kann.'
+- source: DER.2.2.A4
+  target: REA.2.6.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Festlegung von Schnittstellen,
+    Zuständigkeiten und Kommunikation zum Krisenmanagement regelt die Koordinierung bei Vorfällen.'
+- source: DER.2.2.A6
+  target: PERS.4.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Schulung des Personals
+    zur forensischen Sicherung ist eine rollenspezifische Schulung.'
+- source: DER.2.2.A6
+  target: PERS.4.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Schulung am Einsatz der
+    Forensik-Werkzeuge entspricht Schulungen zum Umgang mit administrativen Werkzeugen.'
 - source: DER.2.2.A8
   target: REA.2.5
   relationship: partial_overlap
@@ -847,6 +1261,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Behandlung
     erkannter Schwachstellen; hier das Schließen der für den Einbruch genutzten Schwachstelle.'
+- source: DER.2.3.A8
+  target: NOT.3.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Unabhängige Kommunikationskanäle
+    bei kompromittierter Infrastruktur entsprechen Ausweich-Telekommunikationsdiensten.'
+- source: DER.2.3.A8
+  target: REA.2.6.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Sichere Kommunikationskanäle
+    für Leitungsgremium und Bereinigungsteam setzen die Vorgehensweise zur Kommunikation bei Vorfällen um.'
+- source: DER.2.3.A10
+  target: DET.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Mechanismen zum schnellen Erkennen
+    wiederkehrender Angreifender sind eine automatisierte Angriffserkennung.'
 - source: DER.3.1.A3
   target: PERF.3.1.4
   relationship: partial_overlap
@@ -865,12 +1297,24 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern einen Auditplan
     für jedes durchzuführende Audit.'
+- source: DER.3.1.A13
+  target: PERF.3.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die dokumentierte Ergebnisse
+    der Dokumentenprüfung sind Teil der Auditergebnis-Dokumentation.'
 - source: DER.3.1.A16
   target: PERF.3.1.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Der Ablaufplan der Vor-Ort-Prüfung
     wird im geforderten Auditplan je Audit festgelegt.'
+- source: DER.3.1.A17
+  target: PERF.3.1.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Kontrolle aller im Prüfplan
+    festgelegten Anforderungen vor Ort bestimmt den Umfang des Audits.'
 - source: DER.3.1.A23
   target: PERF.3.2
   relationship: equivalent
@@ -889,6 +1333,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Aufbau, Überwachung
     und Pflege eines Auditprogramms.'
+- source: DER.3.1.A27
+  target: ASST.7.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die nachvollziehbare Aufbewahrung
+    von Auditunterlagen nach regulatorischen Vorgaben entspricht der Aufbewahrung für festgelegte Fristen.'
 - source: DER.3.2.A4
   target: PERF.3.1.2
   relationship: partial_overlap
@@ -901,6 +1351,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, ein fachlich
     geeignetes Prüf- bzw. Auditteam mit der Prüfung zu beauftragen.'
+- source: DER.3.2.A7
+  target: PERF.3.1.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Dokumenten- und Vor-Ort-Prüfung
+    bestimmen den Umfang der Revision.'
+- source: DER.3.2.A7
+  target: PERF.3.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Dokumentation der Prüfergebnisse
+    im IS-Revisionsbericht ist ein Auditbericht.'
+- source: DER.3.2.A8
+  target: ASST.7.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die zehnjährige Aufbewahrung
+    der Revisionsberichte ist eine konkrete Aufbewahrungsfrist.'
 - source: DER.3.2.A12
   target: PERF.3.1.1
   relationship: equivalent
@@ -913,18 +1381,49 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Der Ablaufplan der Vor-Ort-Prüfung
     wird zusammen mit dem Prüfplan, also dem geforderten Auditplan, dokumentiert.'
+- source: DER.3.2.A17
+  target: PERF.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Vor-Ort-Prüfung stellt
+    fest, ob Maßnahmen die Anforderungen erfüllen, und belegt damit die geforderte Überprüfung der Einhaltung von
+    Verpflichtungen.'
 - source: DER.3.2.A21
   target: PERF.3.2
   relationship: equivalent
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern einen nachvollziehbaren
     Bericht über die Prüfergebnisse.'
+- source: DER.4.A4
+  target: NOT.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die von der Leitung verabschiedete
+    Notfallleitlinie ist eine Regelung zur Notfallvorsorge im Sinne der GS++-Anforderung.'
+- source: DER.4.A4
+  target: NOT.1.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte regelmäßige
+    Überprüfung und Überarbeitung der Leitlinie deckt die Aktualitätsprüfung der Notfallregelungen ab.'
 - source: DER.4.A5
   target: NOT.1.1.2
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Zuweisung
     von Rollen und Aufgaben des Notfallmanagements an Zuständige.'
+- source: DER.4.A7
+  target: NOT.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Notfallkonzept mit Kontinuitätsstrategien
+    für Wiederanlauf und Wiederherstellung enthält den geforderten Wiederanlaufplan für zeitkritische Systeme.'
+- source: DER.4.A7
+  target: NOT.3.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Notfallkonzept umfasst
+    Strategien zur Fortführung kritischer Geschäftsprozesse und damit Inhalte eines Geschäftsfortführungsplans.'
 - source: DER.4.A8
   target: NOT.3.3
   relationship: partial_overlap
@@ -937,12 +1436,36 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Notfallpläne
     regelmäßig auf tatsächliche Funktionstüchtigkeit zu testen bzw. zu üben.'
+- source: IND.1.A1
+  target: GC.1.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Ein selbständiges oder integriertes
+    ISMS für die OT ist ein Spezialfall der Errichtung und Aufrechterhaltung eines ISMS.'
 - source: IND.1.A5
   target: ARCH.2.1
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Unterteilung
     des Netzes in Segmente; hier horizontale Zonen der OT nach Funktionsbereichen.'
+- source: IND.1.A7
+  target: BER.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide fordern Vergabe von Berechtigungen
+    nach dem Minimalprinzip.'
+- source: IND.1.A7
+  target: BER.4.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide fordern die regelmäßige
+    Überprüfung vergebener Berechtigungen.'
+- source: IND.1.A7
+  target: BER.4.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide fordern ein geregeltes
+    Vorgehen zum Entzug von Berechtigungen.'
 - source: IND.1.A9
   target: KONF.3.8
   relationship: partial_overlap
@@ -973,6 +1496,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern regelmäßige Datensicherung
     von Anwendungen und Programmen.'
+- source: IND.1.A21
+  target: ARCH.2.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die dokumentierten Kommunikationsbeziehungen
+    der ICS-Komponenten sind Bestandteil einer Netzdokumentation.'
 - source: IND.1.A22
   target: DET.6.1.2
   relationship: partial_overlap
@@ -1063,6 +1592,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide betreffen die kontrollierte
     Zeitversorgung von Systemen über festgelegte zentrale Zeitquellen.'
+- source: IND.2.3.A3
+  target: KONF.2.4
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Deaktivieren nicht benutzter
+    Kommunikationsschnittstellen ist ein Spezialfall des Deaktivierens nicht benötigter Systemfunktionen.'
 - source: IND.2.7.A1
   target: ASST.2.2
   relationship: partial_overlap
@@ -1075,12 +1610,48 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Erfassung
     der eingesetzten Software; das Kompendium bezogen auf das SIS.'
+- source: IND.2.7.A3
+  target: TEST.1.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide beschränken Änderungen
+    an Systemen und Programmen auf autorisierte Personen.'
+- source: IND.2.7.A7
+  target: ARCH.2.2.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der rückwirkungsfreie Betrieb
+    des SIS setzt eine Einschränkung der Verbindungen zwischen OT-Systemen und anderen Systemen voraus.'
 - source: IND.2.7.A8
   target: ASST.4.2
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, die Integrität
     von Daten bei der Übertragung sicherzustellen; die SIS-Anforderung betrifft Engineering-Daten.'
+- source: IND.2.7.A9
+  target: ARCH.2.2.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Absicherung von Daten-
+    und Signalverbindungen des SIS schränkt Verbindungen zwischen OT und anderen IT-Systemen ein.'
+- source: IND.3.2.A1
+  target: ARCH.2.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die zentrale Erfassung aller
+    Fernwartungszugänge entspricht der Dokumentation externer Netzanschlüsse im Netzinventar.'
+- source: IND.3.2.A1
+  target: KONF.4.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Fernwartungskonzept legt
+    fest, wie Fernwartungsfunktionen eingeschränkt und abgesichert werden.'
+- source: IND.3.2.A2
+  target: ARCH.2.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die gemeinsame Erfassung aller
+    OT-Fernwartungszugänge ist eine Dokumentation externer Netzanschlüsse und ihres Verwendungszwecks.'
 - source: IND.3.2.A6
   target: KONF.4.3
   relationship: subset
@@ -1093,6 +1664,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Fernwartungsfunktionen
     einzuschränken; das Kompendium durch explizite Zulassung jedes Zugriffs.'
+- source: IND.3.2.A9
+  target: KONF.7.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte Schadsoftwareprüfung
+    ausgetauschter Dateien entspricht der automatischen Prüfung auf Schadcode bei Öffnung von Dateien.'
 - source: IND.3.2.A10
   target: ASST.5.6
   relationship: partial_overlap
@@ -1117,6 +1694,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Protokollierung
     sicherheitsrelevanter Ereignisse; die OT-Anforderung verlangt lückenlose Aufzeichnung der Fernwartungstätigkeiten.'
+- source: IND.3.2.A14
+  target: KONF.4.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die technische Reglementierung
+    von Fernwartungssitzungen schränkt Fernwartungsfunktionen ein.'
 - source: INF.1.A2
   target: GEB.9.1
   relationship: partial_overlap
@@ -1159,6 +1742,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, den Zutritt
     zu schutzbedürftigen Bereichen zu regeln und nur Berechtigten nach Authentifizierung zu gewähren.'
+- source: INF.1.A8
+  target: GEB.10.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Rauchverbot in Serverräumen
+    und Archiven ist eine Brandschutzmaßnahme.'
 - source: INF.1.A9
   target: GEB.1.1
   relationship: partial_overlap
@@ -1231,6 +1820,18 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die regelmäßige
     Überprüfung der Brandschutzmaßnahmen, im Kompendium durch Begehungen mit Mängelbeseitigung.'
+- source: INF.1.A19
+  target: GEB.10.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Kontrolle der Brandschutzmaßnahmen
+    durch den Brandschutzbeauftragten ist Teil des Brandschutzes.'
+- source: INF.1.A20
+  target: GEB.10.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Alarmierungsplan und Brandschutzübungen
+    sind Bestandteile des Brandschutzes.'
 - source: INF.1.A22
   target: GEB.3.5
   relationship: partial_overlap
@@ -1291,6 +1892,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, ein Gebäude
     vor der Nutzung auf die Umsetzbarkeit der Sicherheitsanforderungen zu prüfen.'
+- source: INF.1.A32
+  target: GEB.10.2.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Brandschott-Kataster dokumentiert
+    die Schotten, die die geforderten Brandabschnitte abschotten.'
 - source: INF.1.A34
   target: GEB.3.6
   relationship: partial_overlap
@@ -1369,6 +1976,18 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Brandunterdrückungs-
     bzw. Löschanlagen für Serverräume und Rechenzentren.'
+- source: INF.2.A10
+  target: ASST.5.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen Wartungsbedarf
+    und Wartungsvorgaben der zum Betrieb erforderlichen Infrastruktur zu erfassen.'
+- source: INF.2.A10
+  target: ASST.5.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen die Ausführung
+    von Wartungen in festgelegten Intervallen.'
 - source: INF.2.A11
   target: GEB.10.1.2
   relationship: partial_overlap
@@ -1489,6 +2108,12 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine Brandunterdrückungs-
     bzw. automatische Löschanlage für das Rechenzentrum.'
+- source: INF.5.A1
+  target: GEB.9.6
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Vorgaben zur Raumabsicherung
+    umfassen die Zugangsbeschränkung zu Räumen für technische Infrastruktur.'
 - source: INF.5.A3
   target: GEB.3.3
   relationship: partial_overlap
@@ -1597,6 +2222,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine USV mit
     ausreichender Stützzeit für die Stromversorgung der angeschlossenen Komponenten.'
+- source: INF.5.A17
+  target: ASST.5.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen Wartungsbedarf
+    und Wartungsvorgaben der zum Betrieb erforderlichen Infrastruktur zu erfassen.'
+- source: INF.5.A17
+  target: ASST.5.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen die Ausführung
+    von Wartungen in festgelegten Intervallen.'
 - source: INF.5.A18
   target: GEB.1.4
   relationship: partial_overlap
@@ -1735,6 +2372,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide betreffen Gefahrenmeldeanlagen
     für Brand im Archiv.'
+- source: INF.7.A1
+  target: GEB.6.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Eignung von Büroräumen
+    nach Schutzbedarf umfasst den Schutz der IT-Systeme vor dem Zugriff Unbefugter.'
 - source: INF.7.A2
   target: SENS.8.4
   relationship: partial_overlap
@@ -1753,12 +2396,42 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, den Arbeitsplatz
     aufgeräumt zu hinterlassen, damit Unbefugte keine vertraulichen Informationen einsehen.'
+- source: INF.7.A7
+  target: GEB.8.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Behältnisse für vertrauliche
+    Unterlagen entsprechen verschließbaren Schutzeinrichtungen für Speichermedien.'
+- source: INF.7.A7
+  target: SENS.8.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen, vertrauliche
+    Dokumente und Datenträger geordnet und verschlossen zu verwahren.'
+- source: INF.7.A7
+  target: SENS.8.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide fordern die sichere Verwahrung
+    von Datenträgern durch die Mitarbeitenden.'
 - source: INF.7.A8
   target: KONF.3.4
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern physische Diebstahlsicherungen
     für IT-Geräte; die GS++-Anforderung betrifft nur mobile Endgeräte.'
+- source: INF.8.A2
+  target: ASST.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide fordern sicheren Transport
+    von Datenträgern und Unterlagen mit Schutz von Vertraulichkeit und Integrität.'
+- source: INF.8.A2
+  target: ASST.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Regelung, welche Unterlagen
+    transportiert werden dürfen, ist eine Regelung zum Transfer.'
 - source: INF.8.A3
   target: SENS.8.4
   relationship: partial_overlap
@@ -1777,6 +2450,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die sichere Vernichtung
     vertraulicher Dokumente, im GS++ als Sensibilisierung.'
+- source: INF.9.A1
+  target: SENS.9.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Vorgaben zur Auswahl und
+    Nutzung mobiler Arbeitsplätze verhindern die Verarbeitung vertraulicher Informationen in der Öffentlichkeit.'
 - source: INF.9.A2
   target: SENS.9.5
   relationship: partial_overlap
@@ -1795,6 +2474,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen, für die Informationsverarbeitung
     genutzte Systeme durch eine zuständige Stelle zu autorisieren, hier fremde IT-Systeme.'
+- source: INF.9.A5
+  target: ASST.6.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Verlustmeldung ist Teil
+    der Vorgehensweise beim Abhandenkommen von Assets.'
+- source: INF.9.A5
+  target: DET.2.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Verlustmeldung mit klaren
+    Meldewegen ist ein Spezialfall des geforderten Meldeverfahrens.'
+- source: INF.9.A5
+  target: SENS.2.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen, dass Mitarbeitende
+    sicherheitsrelevante Ereignisse wie Verlust melden.'
 - source: INF.9.A6
   target: ASST.7.3
   relationship: partial_overlap
@@ -1843,12 +2540,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine bedarfsgerechte
     Verkabelung mit Anschlüssen dort, wo die Geräte stehen.'
+- source: INF.10.A7
+  target: ASST.2.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Festlegung zulässiger Anwendungen
+    entspricht der Autorisierung von Anwendungen.'
+- source: INF.10.A7
+  target: KONF.2.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Minimalkonfiguration von
+    Schulungsrechnern deaktiviert nicht benötigte Funktionen.'
 - source: INF.10.A8
   target: GEB.3.3.2
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, nachvollziehbar
     zu dokumentieren, wer wann den Raum betreten bzw. genutzt hat.'
+- source: INF.11.A1
+  target: BES.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Erhebung der Informationssicherheitsanforderungen
+    vor der Fahrzeugbeschaffung dokumentiert Beschaffungskriterien.'
 - source: INF.11.A2
   target: ASST.5.2
   relationship: partial_overlap
@@ -1867,6 +2582,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern ein regelmäßig
     aktualisiertes Inventar der IT-bezogenen Assets, hier je Fahrzeug.'
+- source: INF.11.A10
+  target: ASST.6.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Prüfung vor Aussonderung
+    entspricht dem Zurücksetzen auf einen definierten Ausgangszustand bei Rücknahme.'
+- source: INF.11.A10
+  target: ASST.7.3.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen, dass keine
+    schützenswerten Informationen auf ausgesonderten Geräten verbleiben.'
 - source: INF.11.A12
   target: KONF.3.4
   relationship: partial_overlap
@@ -1921,6 +2648,30 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Überspannungsschutz
     für elektrisch leitende Netze nach einem normgerechten Konzept.'
+- source: INF.12.A9
+  target: GEB.9.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide fordern eine bedarfsgerechte
+    Auslegung der Kabelinfrastruktur.'
+- source: INF.12.A9
+  target: GEB.10.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Dimensionierung und Belüftung
+    der Trassen sind Brandschutzmaßnahmen.'
+- source: INF.12.A11
+  target: ARCH.2.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Dokumentation der Rangierungen
+    ergänzt den Netzplan.'
+- source: INF.12.A11
+  target: GEB.1.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Dokumentation von Rangierungen
+    und Leitungsbelegungen ist Teil der Strukturpläne.'
 - source: INF.12.A14
   target: GEB.9.1.3
   relationship: partial_overlap
@@ -1981,6 +2732,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern regelmäßige Wartung
     der Systeme in festgelegten Intervallen.'
+- source: INF.13.A20
+  target: DET.6.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Kategorisierung und Klassifizierung
+    von TGM-Ereignissen ist ein Verfahren zur Beurteilung sicherheitsrelevanter Ereignisse.'
+- source: INF.14.A5
+  target: ASST.2.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Dokumentation der GA-Komponenten
+    ist ein Inventar der IT-Systeme.'
 - source: INF.14.A12
   target: KONF.14.1
   relationship: subset
@@ -1999,6 +2762,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Absicherung
     der Kommunikation durch Verschlüsselung; hier für drahtlose GA-Funknetze.'
+- source: INF.14.A24
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Alle GA-Komponenten nutzen
+    eine abgestimmte Zeitquelle, wie sie GS++ als autorisierte Zeitquelle fordert.'
 - source: INF.14.A26
   target: DET.3.1
   relationship: subset
@@ -2017,6 +2786,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Verbindungen
     zwischen Segmenten kontrolliert einzuschränken; hier per Filter zwischen TGA-Segmenten.'
+- source: INF.14.A30
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der eigene GA-Zeitserver ist
+    die festgelegte, autorisierte Zeitquelle der GA.'
 - source: ISMS.1.A5
   target: GC.9.1.1.1
   relationship: partial_overlap
@@ -2035,6 +2810,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die verschluesselte
     Uebertragung schuetzenswerter Informationen ueber Netze mit sicheren Protokollen.'
+- source: NET.1.1.A9
+  target: ARCH.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Einstufung der Netze nach
+    Vertrauenswürdigkeit bildet die Grundlage der Segmentierung nach Schutzbedarf.'
 - source: NET.1.2.A6
   target: NOT.4.2
   relationship: subset
@@ -2047,6 +2828,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die regelmaessige
     Datensicherung einer Anwendung; hier der Netzmanagement-Daten.'
+- source: NET.1.2.A8
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die NTP-Synchronisation der
+    Netzmanagement-Komponenten legt eine gemeinsame Zeitquelle fest, wie sie GS++ als autorisierte Zeitquelle fordert.'
 - source: NET.1.2.A9
   target: ARCH.2.2.7
   relationship: partial_overlap
@@ -2065,18 +2852,54 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen, anfällige
     Netzwerkprotokolle (hier unsichere SNMP-Versionen) nicht zuzulassen bzw. zu blockieren.'
+- source: NET.1.2.A17
+  target: KONF.2.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Soll-Ist-Vergleich der
+    Netzmanagement-Lösung ist eine Überprüfung der Konfiguration gegen den Referenzzustand.'
+- source: NET.1.2.A18
+  target: PERS.4.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Schulungen sind rollenspezifische
+    Schulungen für Administrierende.'
+- source: NET.1.2.A18
+  target: PERS.4.2.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Schulungen zu Netzmanagement-Lösungen
+    sind produktspezifische Schulungen für Administrierende.'
 - source: NET.1.2.A22
   target: KONF.10.4
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, nur benötigte
     Funktionen aktiv zu lassen; hier Management-Funktionen der Netzmanagement-Lösung.'
+- source: NET.1.2.A27
+  target: NOT.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide fordern die Sicherung
+    der Systeme und Konfigurationen als Grundlage der Wiederherstellung.'
 - source: NET.1.2.A31
   target: KONF.14.1
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern verschluesselte,
     sichere Protokolle fuer die Uebertragung; hier im Netzmanagement.'
+- source: NET.1.2.A37
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die gemeinsame Referenzzeit
+    für alle Standorte ist die festgelegte, autorisierte Zeitquelle.'
+- source: NET.2.1.A6
+  target: ARCH.2.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Verhindern der Kopplung
+    von Sicherheitszonen über WLAN schränkt Verbindungen zwischen Netzsegmenten ein.'
 - source: NET.2.1.A9
   target: ARCH.2.2
   relationship: partial_overlap
@@ -2095,18 +2918,60 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Einschränkung
     von Verbindungen zwischen Segmenten; hier verstärkter Schutz am Übergang WLAN zu LAN.'
+- source: NET.2.2.A2
+  target: SENS.7.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die WLAN-Schulung ist eine
+    zielobjektspezifische Sensibilisierung.'
+- source: NET.2.2.A2
+  target: SENS.7.12
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die WLAN-Schulung umfasst die
+    Risiken öffentlicher WLANs.'
+- source: NET.2.2.A2
+  target: SENS.7.13
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die WLAN-Schulung umfasst die
+    Risiken unverschlüsselter WLANs.'
+- source: NET.3.1.A6
+  target: BER.3.22
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide sichern den administrativen
+    Notfallzugang, der bei Ausfall der regulären Zugriffswege verfügbar bleibt.'
 - source: NET.3.1.A8
   target: NOT.4.2
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die regelmaessige
     Datensicherung von Systemen; hier die Konfigurationsdateien von Routern und Switches.'
+- source: NET.3.1.A11
+  target: BES.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Anforderungsliste für die
+    Beschaffung dokumentiert die Beschaffungskriterien.'
 - source: NET.3.1.A12
   target: KONF.2.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine dokumentierte
     sichere Grundkonfiguration als Soll-Vorgabe; hier als Checkliste fuer Router/Switches.'
+- source: NET.3.1.A14
+  target: ARCH.5.1.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die restriktive Filterung von
+    ICMP ist ein Spezialfall des Blockierens bekannter netzbasierter Angriffsmethoden.'
+- source: NET.3.1.A22
+  target: NOT.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die vorbereiteten Handlungsanweisungen
+    für typische Ausfallszenarien sind Teil eines Wiederanlaufplans für zeitkritische Systeme.'
 - source: NET.3.1.A23
   target: DET.5.3
   relationship: subset
@@ -2137,6 +3002,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen eine dokumentierte
     sichere Grundkonfiguration vor Inbetriebnahme; hier für die Firewall.'
+- source: NET.3.2.A7
+  target: BER.3.22
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide sichern den administrativen
+    Notfallzugang, der bei Ausfall der regulären Zugriffswege verfügbar bleibt.'
+- source: NET.3.2.A15
+  target: BES.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Anforderungsliste für die
+    Beschaffung dokumentiert die Beschaffungskriterien.'
+- source: NET.3.2.A22
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die NTP-Anbindung der Firewall
+    ohne externe Synchronisation legt eine autorisierte Zeitquelle fest.'
 - source: NET.3.2.A29
   target: ARCH.8.2
   relationship: partial_overlap
@@ -2149,6 +3032,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen Sicherheitszertifizierung
     beschaffter Produkte; hier Common Criteria EAL4 fuer Firewalls.'
+- source: NET.3.2.A32
+  target: NOT.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die vorbereiteten Handlungsanweisungen
+    für typische Ausfallszenarien sind Teil eines Wiederanlaufplans für zeitkritische Systeme.'
 - source: NET.3.3.A2
   target: BES.5.2
   relationship: partial_overlap
@@ -2179,6 +3068,25 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern ein zentrales
     Managementsystem für Zugangskonten; hier für Fernzugriff-VPNs.'
+- source: NET.3.4.A2
+  target: ARCH.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Planung des NAC-Einsatzes
+    legt die Netzzugangskontrolle für IT-Systeme fest.'
+- source: NET.3.4.A4
+  target: ARCH.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das NAC-Konzept legt fest,
+    wie IT-Systeme beim Netzzugang authentifiziert werden, und belegt damit die Netzzugangskontrolle nach ARCH.4.1.'
+- source: NET.3.4.A10
+  target: ARCH.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Individuelle Identitäten für
+    die NAC-Authentisierung sind die Grundlage der Authentifizierung beim Zugang zum Netzsegment im Einklang mit
+    dem Identitätsmanagement.'
 - source: NET.3.4.A11
   target: KONF.2.1
   relationship: partial_overlap
@@ -2191,6 +3099,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Management-Komponenten
     in einem geschuetzten Management-Netz zu platzieren.'
+- source: NET.3.4.A20
+  target: KONF.14.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): MACsec nach IEEE 802.1AE ist
+    ein anerkannter Standard zur Verschlüsselung und Integritätssicherung der Kommunikation beim Transport im Netz.'
 - source: NET.3.4.A21
   target: ARCH.4.1.1
   relationship: partial_overlap
@@ -2221,6 +3135,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, nicht benoetigte
     Systemfunktionen zu deaktivieren; hier Leistungsmerkmale der TK-Anlage.'
+- source: NET.4.1.A9
+  target: SENS.7.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Einweisung und Unterlagen für
+    die Nutzenden der TK-Anlage sind eine zielobjektspezifische, zielgruppengerechte Sensibilisierung.'
 - source: NET.4.1.A10
   target: KONF.2.1
   relationship: partial_overlap
@@ -2233,12 +3153,54 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die regelmäßige
     Überprüfung der Konfiguration.'
+- source: NET.4.1.A11
+  target: ASST.7.3.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das sichere Löschen der Daten
+    auf TK-Anlagen und Endgeräten vor der Aussonderung ist ein Spezialfall des Verfahrens zur endgültigen Löschung.'
 - source: NET.4.1.A12
   target: NOT.4.2
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die regelmaessige
     Datensicherung von Systemdaten; hier Konfigurations- und Anwendungsdaten der TK-Anlage.'
+- source: NET.4.1.A13
+  target: BES.4.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Berücksichtigung von Anforderungsanalyse
+    und Planung bei der TK-Anlagen-Beschaffung entspricht der Beschaffung anhand festgelegter Kriterien.'
+- source: NET.4.1.A14
+  target: NOT.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Notfallplan für die TK-Anlage
+    ist ein Wiederanlaufplan für ein zeitkritisches System.'
+- source: NET.4.1.A14
+  target: NOT.3.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Regelmäßige Notfallübungen
+    für TK-Anlagen überprüfen die Funktionstüchtigkeit der Notfallpläne.'
+- source: NET.4.1.A16
+  target: GEB.6.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Schutz frei zugänglicher
+    Endgeräte vor unbefugtem Zugriff entspricht der geschützten Aufstellung von IT-Systemen.'
+- source: NET.4.1.A16
+  target: KONF.2.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Einschränkung des Funktionsumfangs
+    der Endgeräte entspricht der Deaktivierung nicht benötigter Systemfunktionen.'
+- source: NET.4.1.A17
+  target: KONF.5.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Passwort- bzw. PIN-Schutz der
+    Wartungs- und Konfigurationsgeräte ist eine Authentifizierung am System.'
 - source: NET.4.1.A18
   target: GEB.9.6
   relationship: partial_overlap
@@ -2263,6 +3225,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschluesselung
     der Kommunikation beim Transport; hier Sprach- und Signalisierungsdaten bei VoIP.'
+- source: NET.4.2.A9
+  target: BES.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Anforderungsliste mit Sicherheitsmerkmalen
+    vor der VoIP-Beschaffung ist die dokumentierte Festlegung von Beschaffungskriterien.'
 - source: NET.4.2.A11
   target: SENS.7.1
   relationship: partial_overlap
@@ -2275,6 +3243,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern ein Verfahren
     zur endgueltigen Loeschung; hier sicherheitsrelevante Daten auf VoIP-Geraeten.'
+- source: NET.4.2.A13
+  target: ARCH.2.2.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die VoIP-spezifische Firewall
+    schränkt die Verbindungen zwischen Daten- und VoIP-Systemen ein.'
 - source: NET.4.2.A14
   target: KONF.14.1
   relationship: subset
@@ -2287,12 +3261,79 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern den Schutz der
     Kommunikation beim Transport; hier Mediendaten über RTP/SRTP.'
+- source: NET.4.3.A1
+  target: GEB.6.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Faxgeräte sind Ausgabesysteme,
+    deren Sendungen nur Berechtigte einsehen oder entnehmen dürfen.'
+- source: NET.4.3.A1
+  target: GEB.6.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Aufstellung des Faxgerätes
+    schützt vor dem Zugriff Unbefugter.'
+- source: NET.4.3.A2
+  target: SENS.7.21
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Hinweis auf die eingeschränkte
+    Rechtsverbindlichkeit von Faxen sensibilisiert gegen die Rechtsunsicherheit beim Faxverkehr.'
+- source: NET.4.3.A2
+  target: SENS.7.22
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Unterweisung zu den Besonderheiten
+    der Faxübermittlung umfasst die Risiken unverschlüsselter und unauthentisierter Faxnutzung.'
+- source: NET.4.3.A3
+  target: KONF.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Dokumentation der Konfigurationsparameter
+    und Änderungen des Faxservers entspricht der dokumentierten Grundkonfiguration.'
+- source: NET.4.3.A6
+  target: BES.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Anforderungsliste mit Sicherheitsaspekten
+    vor der Fax-Beschaffung entspricht den dokumentierten Beschaffungskriterien.'
 - source: NET.4.3.A8
   target: ASST.7.3.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die sichere Vernichtung
     informationshaltiger Gegenstände bei Veräußerung bzw. Entsorgung; hier Faxverbrauchsgüter.'
+- source: NET.4.3.A9
+  target: KONF.12.12
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Kommunikationsjournale
+    der Faxgeräte sind ein Verbindungsprotokoll einer TK-Anwendung.'
+- source: NET.4.3.A9
+  target: KONF.12.13
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Protokollierung der Übertragungsvorgänge
+    von Faxgeräten entspricht dem Sendebericht.'
+- source: NET.4.3.A12
+  target: KONF.11.7.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Blockieren unerwünschter
+    Faxadressen bzw. die Beschränkung auf zugelassene Rufnummern schränkt TK-Verbindungen zu externen Gegenstellen
+    ein.'
+- source: OPS.1.1.1.A2
+  target: BER.4.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Rollen- und Berechtigungskonzept
+    für den IT-Betrieb weist Berechtigungen rollenbasiert zu.'
+- source: OPS.1.1.1.A2
+  target: PERS.2.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Festlegung getrennter Betriebs-
+    und Administrationsrollen definiert Rollen mit Aufgaben für die Tätigkeiten im Betrieb.'
 - source: OPS.1.1.1.A6
   target: ASST.2.2
   relationship: partial_overlap
@@ -2317,6 +3358,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, den Zugriff
     auf Betriebs- und Konfigurationsdokumentation auf Berechtigte zu beschraenken.'
+- source: OPS.1.1.1.A14
+  target: BES.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Betriebsanforderungen für
+    Konzeption und Beschaffung gehören zu den dokumentierten Beschaffungskriterien.'
 - source: OPS.1.1.1.A16
   target: PERS.4.2.1
   relationship: partial_overlap
@@ -2329,24 +3376,54 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Steuerung
     von Dienstleistern über definierte Verfahren und Vereinbarungen wie SLAs.'
+- source: OPS.1.1.1.A24
+  target: DET.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Protokollierung von Betriebsprozessschritten
+    überschneidet sich mit der Protokollierung sicherheitsrelevanter Ereignisse, fordert aber mehr.'
 - source: OPS.1.1.1.A26
   target: ASST.5.2
   relationship: equivalent
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern regelmäßige bzw.
     vorbeugende Wartung der IT-Systeme in festgelegten Intervallen.'
+- source: OPS.1.1.2.A2
+  target: GC.9.1.1.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Vertretungsregelung für
+    Administrationsaufgaben ist eine Stellvertreterregelung für die Rollen und Zuständigkeiten.'
 - source: OPS.1.1.2.A4
   target: BER.4.8
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern den geregelten
     Entzug von Berechtigungen; hier der privilegierten Rechte bei Ende der Administrationstaetigkeit.'
+- source: OPS.1.1.2.A6
+  target: KONF.5.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte Authentisierung
+    vor Administrationstätigkeiten ist die Authentifizierung am System.'
+- source: OPS.1.1.2.A6
+  target: KONF.6.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Administrative Funktionen dürfen
+    nur berechtigten Personen offenstehen, also eingeschränkte privilegierte Funktionen.'
 - source: OPS.1.1.2.A19
   target: KONF.2.8
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide sehen alternative Administrationszugänge
     bzw. redundante Administrationswege für den Störungsfall vor.'
+- source: OPS.1.1.2.A21
+  target: BER.4.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Ausschließlich für die Administration
+    vergebene Rollen mit Berechtigungen nach Bedarf entsprechen der rollenbasierten Berechtigungszuweisung.'
 - source: OPS.1.1.2.A22
   target: BER.3.6
   relationship: partial_overlap
@@ -2377,6 +3454,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern alternative Administrationszugaenge
     bzw. Ersatz, falls zentrale Administrationswerkzeuge ausfallen.'
+- source: OPS.1.1.3.A2
+  target: TEST.1.1.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Benennung Zuständiger für
+    Patch- und Änderungsmanagement ist eine Aufgabenzuweisung an Personen oder Rollen im Änderungsprozess.'
 - source: OPS.1.1.3.A3
   target: KONF.8.1.1
   relationship: partial_overlap
@@ -2431,24 +3514,48 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern den Einsatz unterschiedlicher
     Scan-Engines (Dual-Engine) zur besseren Erkennung von Schadcode.'
+- source: OPS.1.1.5.A4
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Synchrone Systemzeit setzt
+    definierte, autorisierte Zeitquellen voraus; das einheitliche Zeitformat der Protokolle ist nicht abgedeckt.'
 - source: OPS.1.1.5.A8
   target: DET.3.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen, Protokolldaten
     über eine festgelegte Frist vorzuhalten (Aufbewahrung bzw. Archivierung).'
+- source: OPS.1.1.5.A12
+  target: DET.3.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Digitale Signatur der Protokolle
+    dient der revisionssicheren Integrität des Audit Logs; die Verschlüsselung ist nicht abgedeckt.'
 - source: OPS.1.1.6.A3
   target: TEST.3.1.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Testergebnisse
     auszuwerten und mit Prüfschritten und Ergebnissen zu dokumentieren.'
+- source: OPS.1.1.6.A10
+  target: TEST.4.1.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Abnahmeplan mit Freigabekriterien
+    und Vorgehen bei Ablehnung entspricht der dokumentierten Freigabe samt Freigabekriterien.'
 - source: OPS.1.1.6.A16
   target: PERS.3.6.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine Sicherheitsüberprüfung
     von Personen, die auf besonders schützenswerte Informationen zugreifen.'
+- source: OPS.1.1.7.A3
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die gemeinsame Uhrzeit aller
+    Systeme beruht auf autorisierten Zeitquellen, die GS++ fordert.'
 - source: OPS.1.1.7.A4
   target: KONF.14.1
   relationship: subset
@@ -2461,12 +3568,31 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Authentisierung
     der Gegenstelle vor dem Datenaustausch; das Kompendium verlangt sie beidseitig.'
+- source: OPS.1.1.7.A6
+  target: KONF.11.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Authentisierung und Autorisierung
+    beim Zugriff auf die Systemmanagement-Lösung entspricht der Authentifizierung vor dem Zugriff auf schützenswerte
+    Daten.'
 - source: OPS.1.1.7.A11
   target: KONF.2.5
   relationship: equivalent
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern den regelmäßigen
     Abgleich der tatsächlichen Konfiguration mit dem Sollzustand.'
+- source: OPS.1.1.7.A14
+  target: KONF.1.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das zentrale Konfigurationsmanagement
+    ist ein Spezialfall der Verfahren und Regelungen zum Konfigurationsmanagement.'
+- source: OPS.1.1.7.A14
+  target: KONF.2.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Versionierung und Änderungsverfolgung
+    der Konfigurationsdaten entsprechen der Versionierung vorheriger Konfigurationen.'
 - source: OPS.1.1.7.A16
   target: NOT.4.2
   relationship: subset
@@ -2479,6 +3605,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschlüsselung
     der Kommunikation beim Transport über Netze nach anerkanntem Standard.'
+- source: OPS.1.1.7.A23
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Eine gemeinsame Referenzzeit
+    über alle Standorte setzt autorisierte Zeitquellen voraus.'
 - source: OPS.1.1.7.A24
   target: KONF.2.5.1
   relationship: equivalent
@@ -2503,6 +3635,13 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide betreffen die geschützte
     Lagerung von Speichermedien im Archiv.'
+- source: OPS.1.2.2.A5
+  target: NOT.4.5.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die regelmäßige Aufbereitung
+    archivierter Bestände stellt die Nutzbarkeit der Archivdaten sicher, wofür auch die dazugehörigen Assets archiviert
+    werden müssen.'
 - source: OPS.1.2.2.A6
   target: NOT.4.3
   relationship: partial_overlap
@@ -2521,6 +3660,48 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die regelmäßige
     Datensicherung der Anwendung, hier von Archivdaten und Indexdatenbank.'
+- source: OPS.1.2.2.A11
+  target: PERS.4.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Schulung der Administrierenden
+    zum Archivsystem ist eine produktspezifische Schulung für administrative Werkzeuge.'
+- source: OPS.1.2.2.A18
+  target: NOT.4.9
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Archivmedien müssen für den
+    Aufbewahrungszeitraum geeignet sein (Lebensdauer, Revisionssicherheit).'
+- source: OPS.1.2.2.A19
+  target: NOT.4.16.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Regelmäßige Recoverytests der
+    Archivdaten entsprechen der regelmäßigen Überprüfung der Wiederherstellung.'
+- source: OPS.1.2.2.A20
+  target: KONF.2.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Forderung aktueller Standards
+    für Kryptografie entspricht kryptographischen Verfahren nach anerkannten Standards im IT-System.'
+- source: OPS.1.2.2.A20
+  target: KONF.10.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Archivdaten sind mit kryptografischen
+    Verfahren nach anerkannten Standards zu sichern, wie es für Anwendungen gefordert ist.'
+- source: OPS.1.2.4.A1
+  target: ASST.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Aushändigung der Telearbeits-Regelungen
+    an die Mitarbeitenden ist eine Anweisung zu den Nutzungsregeln für Informationen und Assets.'
+- source: OPS.1.2.4.A5
+  target: SENS.7.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Sensibilisierung anhand
+    eines Leitfadens zu Telearbeit-Gefahren ist eine zielgruppengerechte, zielobjektspezifische Sensibilisierung.'
 - source: OPS.1.2.4.A9
   target: ASST.5.2
   relationship: partial_overlap
@@ -2539,6 +3720,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Fernwartungsfunktion nur nach
     expliziter Zustimmung der Benutzenden ist eine Einschränkung von Fernwartungsfunktionen.'
+- source: OPS.1.2.5.A5
+  target: KONF.4.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Beschränkung der Nutzung
+    von Online-Diensten zur Fernwartung entspricht der Einschränkung von Fernwartungsfunktionen.'
 - source: OPS.1.2.5.A17
   target: BER.5.9
   relationship: partial_overlap
@@ -2569,12 +3756,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Zeitquellen
     zu prüfen und zu autorisieren; die Quelle betrifft externe NTP-Server.'
+- source: OPS.1.2.6.A3
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Synchronisation interner
+    NTP-Server mit vertrauenswürdigen Zeitquellen entspricht der Autorisierung von Zeitquellen.'
 - source: OPS.1.2.6.A4
   target: KONF.4.5
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Das Verwerfen unaufgeforderter
     Zeitinformationen stellt sicher, dass nur autorisierte Zeitquellen genutzt werden.'
+- source: OPS.1.2.6.A5
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Konfiguration aller Systeme
+    als NTP-Clients ihrer Server legt fest, welche Zeitquellen genutzt werden.'
+- source: OPS.1.2.6.A8
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Gesicherte Zeitprotokolle wie
+    NTS authentifizieren die Zeitquelle und stützen deren Autorisierung.'
 - source: OPS.1.2.6.A10
   target: KONF.4.5
   relationship: subset
@@ -2587,6 +3792,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Authentisierte NTP-Daten stellen
     sicher, dass nur autorisierte Zeitquellen akzeptiert werden.'
+- source: OPS.2.2.A1
+  target: BES.1.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Cloud-Strategie mit Zielen,
+    Chancen und Risiken ist ein Spezialfall der Outsourcing-Strategie.'
+- source: OPS.2.2.A1
+  target: BES.1.6
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Festlegung des Bereitstellungsmodells
+    ist Teil der Cloud-Strategie.'
 - source: OPS.2.2.A3
   target: BES.7.4.10
   relationship: equivalent
@@ -2605,6 +3822,13 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Die Abgrenzung der geteilten
     Verantwortung ist je Cloud-Dienst mit dem Anbieter zu klären.'
+- source: OPS.2.2.A12
+  target: DLS.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die periodische Kontrolle der
+    vertraglich zugesicherten Leistungen entspricht der regelmäßigen Überprüfung der Einhaltung von Sicherheitsvorgaben
+    durch den Dienstleister.'
 - source: OPS.2.2.A13
   target: BES.4.8.2
   relationship: equivalent
@@ -2761,6 +3985,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Überprüfung
     der Vertrauenswürdigkeit von Personal anhand von Nachweisen vor dem Einsatz.'
+- source: OPS.3.2.A20
+  target: BES.4.6.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das mit den Nutzenden vereinbarte
+    Verschlüsselungsverfahren entspricht der vereinbarten Verschlüsselung durch den Anbieter.'
+- source: OPS.3.2.A20
+  target: KONF.11.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die verschlüsselte Speicherung
+    entspricht der Verschlüsselung at-rest.'
+- source: OPS.3.2.A20
+  target: KONF.14.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die verschlüsselte Datenübertragung
+    entspricht der Transportverschlüsselung nach anerkanntem Standard.'
 - source: ORP.1.A3
   target: SENS.8.6
   relationship: equivalent
@@ -2785,6 +4027,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide untersagen das Mitführen
     mobiler Endgeräte in sicherheitsrelevanten Bereichen bzw. Besprechungen.'
+- source: ORP.2.A4
+  target: ASST.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Verpflichtung auf geltende
+    Regelungen und die Einweisung entsprechen der Anweisung zu den Nutzungsregeln.'
+- source: ORP.2.A4
+  target: SENS.8.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Beaufsichtigung kurzfristig
+    eingesetzten Fremdpersonals in sicherheitsrelevanten Bereichen entspricht der Beaufsichtigung Externer.'
+- source: ORP.2.A5
+  target: PERS.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die schriftliche Vertraulichkeitsvereinbarung
+    für Externe entspricht der vereinbarten vertraulichen Behandlung von Betriebs- und Geschäftsgeheimnissen.'
 - source: ORP.2.A7
   target: PERS.3.6
   relationship: equivalent
@@ -2863,6 +4123,42 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Trennung
     unvereinbarer Aufgaben; das Kompendium verlangt die technische Durchsetzung im Berechtigungsmanagement.'
+- source: ORP.4.A5
+  target: BER.5.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Dokumentierte Ausgabe von Zutrittsmitteln
+    entspricht der Vorgehensweise zur Ausgabe und Zuordnung.'
+- source: ORP.4.A5
+  target: BER.5.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Entzug und Austausch kompromittierter
+    Zutrittsmittel entsprechen der Vorgehensweise zum Widerruf.'
+- source: ORP.4.A5
+  target: GEB.3.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Festlegung und Umsetzung der
+    Zutrittsberechtigungen entsprechen der Authentifizierung vor Zutritt.'
+- source: ORP.4.A6
+  target: BER.4.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Festlegung des Entzugs
+    von Zugangsberechtigungen entspricht der Vorgehensweise zum Entzug von Berechtigungen.'
+- source: ORP.4.A6
+  target: BER.5.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die dokumentierte Ausgabe von
+    Zugangsmitteln entspricht der Vorgehensweise zur Ausgabe und Zuordnung.'
+- source: ORP.4.A6
+  target: BER.5.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Entzug und Austausch kompromittierter
+    Zugangsmittel entspricht dem Widerruf.'
 - source: ORP.4.A7
   target: BER.4.8
   relationship: partial_overlap
@@ -2905,12 +4201,48 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Ein sicheres Reset-Verfahren
     umfasst die Identitätsprüfung der anfragenden Person.'
+- source: ORP.4.A13
+  target: BER.3.10
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Zunehmende Verzögerung nach
+    erfolglosen Anmeldeversuchen ist eine Anmeldeversuchsgrenze am System.'
+- source: ORP.4.A13
+  target: BER.3.11
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Dieselbe Begrenzung gilt für
+    Anwendungen.'
+- source: ORP.4.A13
+  target: BER.5.10
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Schutz der Authentisierungsdaten
+    vor Ausspähung und Veränderung entspricht der Zugriffsbeschränkung auf Authentifizierungsmittel.'
+- source: ORP.4.A14
+  target: BER.3.16
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Kontrolle, dass nicht mehrere
+    Benutzende unter derselben Kennung arbeiten, belegt das Verbot von Gruppenkonten.'
 - source: ORP.4.A15
   target: BER.1.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern definierte Verfahren
     und Regelungen für das Identitäts- und Berechtigungsmanagement.'
+- source: ORP.4.A16
+  target: BER.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Richtlinie für Zugriffs-
+    und Zugangskontrolle ist ein Spezialfall der Verfahren und Regelungen zum Identitäts- und Berechtigungsmanagement.'
+- source: ORP.4.A16
+  target: BER.4.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Standard-Rechteprofile nach
+    Funktion entsprechen der rollenbasierten Berechtigungszuweisung.'
 - source: ORP.4.A18
   target: BER.3.1
   relationship: equivalent
@@ -3019,6 +4351,12 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, ein- und ausgehende
     Netzverbindungen mit einer lokalen Firewall einzuschränken.'
+- source: SYS.1.1.A21
+  target: ASST.5.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Dokumentation betrieblicher
+    Aufgaben am Server mit Wer, Wann und Was entspricht der Dokumentation von Wartungen.'
 - source: SYS.1.1.A22
   target: NOT.3.1
   relationship: partial_overlap
@@ -3079,12 +4417,48 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, nicht benötigte
     Rollen, Features und Funktionen des Systems nicht zu installieren oder zu deaktivieren.'
+- source: SYS.1.2.2.A3
+  target: PERS.4.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Schulung der Administrierenden
+    zur Server-Administration ist eine produktspezifische Schulung für administrative Werkzeuge.'
+- source: SYS.1.2.2.A3
+  target: SENS.10.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Sie sensibilisiert zu den Grundprinzipien
+    sicherer Administration.'
+- source: SYS.1.2.2.A3
+  target: SENS.10.5
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Surfverbot auf dem Server
+    entspricht der Sensibilisierung gegen Internetzugriff über Administrationskonten.'
 - source: SYS.1.2.2.A4
   target: KONF.2.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine definierte,
     dokumentierte Grundkonfiguration (Härtung) der Systeme vor Inbetriebnahme.'
+- source: SYS.1.2.2.A5
+  target: KONF.7.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Virenschutzprogramm entspricht
+    der automatischen Prüfung auf Schadcode.'
+- source: SYS.1.2.2.A5
+  target: KONF.7.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der regelmäßige vollständige
+    Festplattenscan entspricht dem regelmäßigen Scan.'
+- source: SYS.1.2.2.A5
+  target: KONF.7.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Virenfund-Alarme entsprechen
+    der Benachrichtigung bei Schadcode.'
 - source: SYS.1.2.2.A8
   target: KONF.7.10
   relationship: subset
@@ -3097,6 +4471,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Protokollierung
     sicherheitsrelevanter Ereignisse, hier mit zentraler Sammlung und Auswertung.'
+- source: SYS.1.2.2.A12
+  target: ARCH.8.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Prüfung der Verfügbarkeitsfunktionen
+    betrifft die redundante Auslegung der Server.'
 - source: SYS.1.2.3.A2
   target: KONF.2.4
   relationship: partial_overlap
@@ -3157,12 +4537,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Speicherschutz
     zum Schutz des Systems vor Ausnutzung von Schwachstellen.'
+- source: SYS.1.5.A2
+  target: BER.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Reduzierung der Administrationsrechte
+    auf das notwendige Maß entspricht dem Prinzip der geringsten Berechtigungen.'
+- source: SYS.1.5.A3
+  target: KONF.6.16
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Beschränkung des Gastzugriffs
+    auf Geräte und Schnittstellen des Hosts schränkt den Datenaustausch in der Virtualisierung ein.'
 - source: SYS.1.5.A6
   target: DET.4.15
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen die laufende
     Überwachung der Ressourcenauslastung von Hostsystemen mit Reaktion bei Kapazitätsgrenzen.'
+- source: SYS.1.5.A7
+  target: KONF.4.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Synchrone Systemzeit der virtuellen
+    Systeme setzt autorisierte Zeitquellen voraus.'
 - source: SYS.1.5.A12
   target: PERS.2.3.2
   relationship: partial_overlap
@@ -3181,6 +4579,12 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, den Datenaustausch
     (Kopieren/Einfügen) zwischen virtualisierten Systemen einzuschränken.'
+- source: SYS.1.5.A19
+  target: KONF.2.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Audit der Konfiguration
+    gegen die Standardkonfiguration entspricht der regelmäßigen Überprüfung der Konfiguration gegen den Referenzzustand.'
 - source: SYS.1.5.A20
   target: ARCH.8.3
   relationship: partial_overlap
@@ -3199,6 +4603,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Mandatory Access Control isoliert
     und kapselt virtuelle Systeme gegeneinander und gegenüber dem Host.'
+- source: SYS.1.5.A23
+  target: KONF.6.16
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Deaktivierung der Informationskanäle
+    zwischen VM und Host schränkt den Datenaustausch in der Virtualisierung ein.'
 - source: SYS.1.5.A24
   target: KONF.2.4
   relationship: subset
@@ -3217,6 +4627,32 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Verschlüsselung der virtuellen
     Systeme entspricht der Verschlüsselung der Festspeichermedien.'
+- source: SYS.1.6.A6
+  target: TEST.3.1.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide untersagen die Einbindung
+    externer Software-Artefakte, hier Images, aus unzuverlässigen oder unbekannten Quellen.'
+- source: SYS.1.6.A7
+  target: DET.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Auslagerung der Container-Logs
+    sichert die Protokolle sicherheitsrelevanter Ereignisse über die Container-Lebensdauer hinaus und stützt damit
+    die geforderte Protokollierung mit Aufbewahrungsfrist.'
+- source: SYS.1.6.A8
+  target: BER.5.10
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Zugangsdaten nur für Berechtigte
+    und nicht in Images zu speichern ist ein Spezialfall der Zugriffsbeschränkung auf Authentifizierungsmittel.'
+- source: SYS.1.6.A12
+  target: TEST.3.1.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die dokumentierte Klassifizierung
+    vertrauenswürdiger Image-Quellen belegt, welche externen Software-Artefakte zulässig sind und welche als unzuverlässig
+    ausgeschlossen werden.'
 - source: SYS.1.6.A13
   target: DEV.6.1
   relationship: partial_overlap
@@ -3271,6 +4707,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Berechtigungen
     nur nach dem Prinzip der geringsten Rechte, besonders für hochprivilegierte Kennungen.'
+- source: SYS.1.7.A2
+  target: BER.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Rechte auf kritische Programme
+    nur an dafür vorgesehene Personen zu vergeben ist Anwendung des Prinzips der geringsten Berechtigungen.'
+- source: SYS.1.7.A2
+  target: KONF.6.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der RACF-Schutz sicherheitskritischer
+    Programme und Kommandos beschränkt privilegierte Systemfunktionen auf autorisierte Personen.'
+- source: SYS.1.7.A3
+  target: ASST.5.2
+  relationship: equivalent
+  confidence: medium
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide fordern geplante, regelmäßige
+    Wartung der Systeme einschließlich Hardware, Firmware und Software.'
+- source: SYS.1.7.A3
+  target: ASST.5.4
+  relationship: equivalent
+  confidence: medium
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen, Wartungsaktivitäten
+    in das Änderungsmanagement einzubinden.'
 - source: SYS.1.7.A4
   target: PERS.4.2.1
   relationship: partial_overlap
@@ -3289,6 +4749,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, dass Personen
     nur die Zugriffsrechte erhalten, die sie für ihre Tätigkeit benötigen.'
+- source: SYS.1.7.A8
+  target: BER.6.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Regeln für User-ID und Passwort
+    bei der RACF-Planung sind Kriterien für die Passwortqualität.'
+- source: SYS.1.7.A8
+  target: KONF.2.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Ändern voreingestellter
+    Passwörter für RVARY und neue User-IDs ist die Änderung von Default-Zugangsdaten.'
 - source: SYS.1.7.A9
   target: KONF.6.6.1
   relationship: partial_overlap
@@ -3307,6 +4779,13 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern Rollentrennung
     unvereinbarer Aufgaben (RACF-Attribute auf verschiedene Personen).'
+- source: SYS.1.7.A22
+  target: TEST.4.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Durchführung von Wartungsarbeiten
+    und Änderungen nur im Rahmen des Änderungsmanagements setzt die Autorisierung kritischer Änderungen anhand von
+    Kriterien um.'
 - source: SYS.1.7.A23
   target: KONF.2.3
   relationship: subset
@@ -3343,12 +4822,37 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern eine sichere,
     dokumentierte Grundkonfiguration vor produktivem Einsatz.'
+- source: SYS.1.8.A4
+  target: ARCH.5.1.6
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Ausschluss von Zugriffen
+    auf Administrationsschnittstellen aus nicht vertrauenswürdigen Netzen entspricht dem Blockieren von Verbindungen
+    zu Management-Schnittstellen.'
+- source: SYS.1.8.A4
+  target: KONF.11.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Einschränkung aller Administrations-
+    und Management-Zugänge ist eine Einschränkung aktivierter Schnittstellen.'
 - source: SYS.1.8.A11
   target: DET.4.15
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Die Überwachung der Systemauslastung
     entspricht der Auslastungsüberwachung der Hostsysteme.'
+- source: SYS.1.8.A14
+  target: ARCH.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Segmentierung des SAN ist
+    eine Unterteilung des Netzes in Segmente nach Schutzbedarf.'
+- source: SYS.1.8.A14
+  target: ARCH.2.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Zuordnung von SAN-Ressourcen
+    zu bestimmten Servern schränkt Verbindungen zwischen Segmenten ein.'
 - source: SYS.1.8.A15
   target: KONF.6.6.1
   relationship: partial_overlap
@@ -3397,6 +4901,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Die Verschlüsselung bei Data-in-Motion
     entspricht der Transportverschlüsselung.'
+- source: SYS.1.8.A24
+  target: ASST.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Protokolle mit zusätzlichen
+    Sicherheitsmerkmalen in der SAN-Fabric sichern Integrität und Vertraulichkeit der Daten beim Transport.'
 - source: SYS.1.8.A25
   target: ASST.7.3
   relationship: partial_overlap
@@ -3415,6 +4925,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide untersagen Sammelkonten
     bzw. Gruppenkonten im Regelbetrieb.'
+- source: SYS.1.9.A4
+  target: KONF.2.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Dokumentierte Konfigurationsvorgaben
+    samt Herstellerhärtung für Terminalserver sind eine Grundkonfiguration für ein IT-System.'
 - source: SYS.1.9.A7
   target: KONF.14.1
   relationship: partial_overlap
@@ -3427,6 +4943,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen die Segmentierung
     von Servern und Clients mit kontrollierten Verbindungen.'
+- source: SYS.1.9.A9
+  target: SENS.7.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Sensibilisierung der Terminalserver-Nutzenden
+    ist eine zielobjektspezifische Sensibilisierung.'
 - source: SYS.1.9.A10
   target: BER.3.1
   relationship: equivalent
@@ -3445,6 +4967,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, nicht benötigte
     Anwendungen zu entfernen.'
+- source: SYS.1.9.A22
+  target: KONF.2.4
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Deaktivieren von Datentransfer
+    und Zwischenablage zwischen Client und Terminalserver deaktiviert nicht benötigte Systemfunktionen.'
+- source: SYS.2.1.A6
+  target: KONF.7.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Schutzprogramme gegen Schadsoftware
+    auf Clients prüfen Dateien automatisch auf Schadcode, wie es der Echtzeitscanner fordert.'
+- source: SYS.2.1.A13
+  target: KONF.5.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Passwort für BIOS/UEFI-Einstellungen
+    authentifiziert den Zugriff auf die Firmware.'
+- source: SYS.2.1.A13
+  target: KONF.6.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Zugriff auf abgesicherte
+    Ausführungsumgebungen nur mit administrativen Rechten schränkt privilegierte Systemfunktionen ein.'
 - source: SYS.2.1.A15
   target: KONF.2.1
   relationship: partial_overlap
@@ -3469,6 +5015,12 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, nicht benötigte
     Systemfunktionen, Dienste und Module zu deaktivieren.'
+- source: SYS.2.1.A21
+  target: KONF.3.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Abschalten oder Beschränken
+    von Kamera und Mikrofon schränkt angeschlossene bzw. eingebaute Peripherie ein.'
 - source: SYS.2.1.A26
   target: KONF.7.16
   relationship: subset
@@ -3493,6 +5045,12 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschlüsselung
     der Datenträger bzw. Dateisystembereiche des Clients.'
+- source: SYS.2.1.A30
+  target: TEST.3.1.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Referenzinstallation zum
+    Vorabtest von Konfigurationsänderungen und Patches ist eine dedizierte Testumgebung.'
 - source: SYS.2.1.A32
   target: KONF.7.16
   relationship: equivalent
@@ -3535,6 +5093,37 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Mehr-Faktor-Authentisierung
     für die Client-Anmeldung deckt die MFA für weitreichende Berechtigungen teilweise ab.'
+- source: SYS.2.1.A38
+  target: NOT.3.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderten Wiederanlaufpläne
+    und die Priorisierung der Clients entsprechen dem Wiederanlaufplan für zeitkritische Systeme.'
+- source: SYS.2.1.A38
+  target: NOT.4.15
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Bootmedien und gesicherte Schlüssel
+    für die Systemwiederherstellung gehören zur dokumentierten Vorgehensweise bei der Wiederherstellung.'
+- source: SYS.2.1.A39
+  target: GEB.9.1.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die USV mit ausreichender Stützzeit
+    entspricht der Stromversorgung mit Stützzeit.'
+- source: SYS.2.1.A39
+  target: GEB.9.4
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der geforderte Überspannungsschutz
+    für Clients ist ein Spezialfall der Überspannungsschutzeinrichtungen.'
+- source: SYS.2.1.A40
+  target: ASST.5.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die nachvollziehbare Dokumentation
+    von Konfigurationsänderungen und betrieblichen Aufgaben (wer, wann, was) überschneidet sich mit der Dokumentation
+    von Wartungen mit Beteiligten, Zeitpunkt und Maßnahmen.'
 - source: SYS.2.1.A41
   target: KONF.9.1
   relationship: equivalent
@@ -3559,12 +5148,37 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Verwaltung der Client-Einstellungen
     über ein Managementsystem entspricht der automatisierten Konfigurationsverwaltung.'
+- source: SYS.2.2.3.A1
+  target: KONF.2.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Festlegung, welche Microsoft-Cloud-Dienste
+    genutzt werden dürfen, ist Grundlage dafür, nicht benötigte Cloud-Anbindungen zu deaktivieren.'
+- source: SYS.2.2.3.A4
+  target: KONF.2.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Unterbinden der Telemetrie-Übertragung
+    an den Hersteller deaktiviert eine nicht benötigte externe Cloud-Anbindung.'
+- source: SYS.2.2.3.A5
+  target: KONF.7.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Schadsoftware-Schutzkomponente
+    auf Windows-Clients ist ein Spezialfall der automatischen Prüfung auf Schadcode.'
 - source: SYS.2.2.3.A6
   target: KONF.4.1
   relationship: partial_overlap
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Anmeldung nur über das eigene
     Verzeichnis entspricht der Anbindung an den Verzeichnisdienst.'
+- source: SYS.2.2.3.A12
+  target: KONF.6.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Berechtigungskonzept für Dateien,
+    Ordner und Netzfreigaben mit begrenzten Schreibrechten schränkt Zugriffsrechte gemeinsam genutzter Verzeichnisse
+    ein.'
 - source: SYS.2.2.3.A14
   target: KONF.2.4
   relationship: subset
@@ -3577,6 +5191,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Die Deaktivierung der Cloud-Synchronisation
     ist eine Umsetzung der Deaktivierung nicht benötigter Cloud-Anbindungen.'
+- source: SYS.2.2.3.A16
+  target: KONF.2.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Deaktivieren der Microsoft-Store-Anbindung
+    bei fehlendem Bedarf entspricht dem Deaktivieren nicht benötigter Cloud-Anbindungen.'
+- source: SYS.2.2.3.A17
+  target: BER.3.20
+  relationship: equivalent
+  confidence: medium
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Beide verlangen, die Speicherung
+    bzw. Zwischenspeicherung von Zugangsdaten auf dem System zu unterbinden.'
 - source: SYS.2.2.3.A18
   target: KONF.7.15
   relationship: partial_overlap
@@ -3601,6 +5227,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide verlangen die Verschlüsselung
     gespeicherter Daten auf dem System.'
+- source: SYS.2.2.3.A23
+  target: KONF.2.9
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): SecureBoot auf UEFI-Systemen
+    ist ein abgesicherter und authentisierter Bootprozess.'
+- source: SYS.2.2.3.A23
+  target: KONF.4.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Option restrictedAdmin
+    für RDP verhindert die Weiterleitung wiederverwendbarer Anmeldeinformationen.'
 - source: SYS.2.2.3.A25
   target: KONF.4.4
   relationship: partial_overlap
@@ -3619,6 +5257,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, das automatische
     Einbinden von Wechselmedien zu unterbinden; das Kompendium ergänzt noexec.'
+- source: SYS.2.3.A7
+  target: KONF.6.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Sticky Bit auf allgemein beschreibbaren
+    Verzeichnissen wie /tmp schränkt Zugriffsrechte gemeinsam genutzter Verzeichnisse ein.'
+- source: SYS.2.3.A8
+  target: KONF.6.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): AppArmor oder SELinux mit entzogenen
+    Rechten und Positivlisten sind eine Umsetzung der Beschränkung erforderlicher Berechtigungen für Anwendungen.'
 - source: SYS.2.3.A11
   target: KONF.9.1
   relationship: partial_overlap
@@ -3649,12 +5299,30 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Systemaufrufe
     pro Anwendung auf das Notwendige einzuschränken (z. B. seccomp).'
+- source: SYS.2.3.A18
+  target: KONF.7.16.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Gehärtete Kernel mit Speicherschutz
+    verhindern die Ausnutzung von Schwachstellen im Arbeitsspeicher.'
 - source: SYS.2.3.A19
   target: KONF.3.2
   relationship: equivalent
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschlüsselung
     der integrierten Festspeicher bzw. Dateien des Systems.'
+- source: SYS.2.3.A20
+  target: KONF.2.4
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Abschalten kritischer SysRq-Funktionen
+    deaktiviert nicht benötigte Systemfunktionen.'
+- source: SYS.2.4.A1
+  target: NOT.4.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Integration von macOS in
+    das institutionsweite Datensicherungskonzept entspricht der regelmäßigen Datensicherung des IT-Systems.'
 - source: SYS.2.4.A2
   target: KONF.7.10
   relationship: partial_overlap
@@ -3691,12 +5359,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Zwei-Faktor-Authentisierung
     für die Apple-ID ist Mehr-Faktor-Authentifizierung beim Login in einen Online-Dienst.'
+- source: SYS.2.4.A9
+  target: KONF.7.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Zusätzlicher Virenschutz auf
+    dem Mac prüft Dateien automatisch auf Schadcode.'
+- source: SYS.2.4.A9
+  target: KONF.7.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Ein Drittanbieter-Virenschutz
+    neben dem integrierten Schutz setzt eine zweite Scan-Engine ein.'
 - source: SYS.2.4.A10
   target: KONF.7.15
   relationship: equivalent
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Aktivierung
     der lokalen Firewall zur Einschränkung ein- und ausgehender Verbindungen.'
+- source: SYS.2.4.A11
+  target: ASST.7.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Zurücksetzen von NVRAM
+    und SMC bei der Aussonderung gehört zum geregelten Löschen von Daten auf Speichern am Ende der Nutzung.'
 - source: SYS.2.4.A12
   target: KONF.5.1.1
   relationship: equivalent
@@ -3727,12 +5413,30 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Sperre einer
     Sitzung bzw. eines Systems nach Inaktivität; hier für Sitzungen virtueller Clients.'
+- source: SYS.2.5.A9
+  target: DET.5.10
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Zentrale Provisionierung und
+    regelmäßige Aktualisierung der Templates sind Teil eines zeitnahen Patchmanagements.'
+- source: SYS.2.5.A9
+  target: DET.5.10.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das regelmäßige Testen der
+    Templates entspricht dem Test von Patches gemäß Änderungsmanagement.'
 - source: SYS.2.5.A12
   target: SENS.7.1
   relationship: subset
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern zielgruppengerechte
     Sensibilisierung zu objektspezifischen Schutzmaßnahmen; hier für virtuelle Clients.'
+- source: SYS.2.5.A13
+  target: ARCH.2.2.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Unterbinden unkontrollierter
+    Layer-2-Kommunikation zwischen virtuellen Clients schränkt Verbindungen zwischen Clients ein.'
 - source: SYS.2.6.A2
   target: KONF.2.1
   relationship: partial_overlap
@@ -3805,6 +5509,19 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verschlüsselung
     der integrierten Datenträger des Geräts.'
+- source: SYS.3.1.A14
+  target: KONF.3.4
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das verschlossene Aufbewahren
+    gegen Diebstahl entspricht dem physischen Diebstahlschutz.'
+- source: SYS.3.1.A14
+  target: SENS.9.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Hinweis an Benutzende zur
+    sicheren Aufbewahrung von Laptops außer Haus entspricht der Anweisung zur Verwahrung von IT-Systemen beim mobilen
+    Arbeiten.'
 - source: SYS.3.1.A15
   target: BES.4.2
   relationship: partial_overlap
@@ -3823,6 +5540,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Zentrales Laptop-Management
     entspricht der Verwaltung mobiler Endgeräte über ein zentrales Managementsystem.'
+- source: SYS.3.1.A17
+  target: ASST.3.13
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Sammelaufbewahrung entspricht
+    der Lagerung physischer Assets in einem dafür vorgesehenen Lager.'
+- source: SYS.3.1.A17
+  target: GEB.6.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Aufbewahrung nicht benutzter
+    Laptops in einem abgesicherten Raum stellt die Systeme geschützt vor dem Zugriff Unbefugter auf.'
 - source: SYS.3.1.A18
   target: KONF.3.4
   relationship: equivalent
@@ -3847,6 +5576,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Selbsttätige Bildschirmsperre
     nach kurzer Inaktivität entspricht der Systemsperre bei Inaktivität.'
+- source: SYS.3.2.1.A6
+  target: KONF.6.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Restriktive Datenschutzeinstellungen
+    und eingeschränkter App-Zugriff auf Kamera, Mikrofon und Ortung sind ein Spezialfall der Beschränkung von Anwendungsberechtigungen.'
 - source: SYS.3.2.1.A7
   target: SENS.2.8
   relationship: subset
@@ -3883,6 +5618,19 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Nicht benötigte Kommunikationsschnittstellen
     zu deaktivieren ist Teil des Deaktivierens nicht benötigter Systemfunktionen.'
+- source: SYS.3.2.1.A18
+  target: BER.5.5
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Prüfung und der Verzicht
+    auf schwächere biometrische Verfahren gegenüber dem Gerätepasswort adressiert die Deaktivierung einfacher Biometrie.'
+- source: SYS.3.2.1.A18
+  target: SENS.4.1.5
+  relationship: superset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte Sensibilisierung
+    für die Fälschbarkeit biometrischer Merkmale ist in der Kompendium-Anforderung enthalten, die zusätzlich die
+    Eignungsprüfung verlangt.'
 - source: SYS.3.2.1.A19
   target: KONF.10.4
   relationship: subset
@@ -3895,6 +5643,24 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern getrennte Arbeitsumgebungen
     auf dem mobilen Endgerät für dienstliche und private Nutzung.'
+- source: SYS.3.2.1.A26
+  target: KONF.6.1.1
+  relationship: equivalent
+  confidence: medium
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Kapselung von Informationen
+    in einem PIM-Container ist Datenkapselung.'
+- source: SYS.3.2.1.A26
+  target: KONF.11.8
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte Datenverschlüsselung
+    im Container entspricht der Verschlüsselung schützenswerter Daten bei der Speicherung.'
+- source: SYS.3.2.1.A26
+  target: KONF.14.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte Transportverschlüsselung
+    entspricht der Verschlüsselung der Kommunikation über Netze.'
 - source: SYS.3.2.1.A30
   target: KONF.7.9
   relationship: partial_overlap
@@ -3937,6 +5703,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern die Verwaltung
     mobiler Geräte per MDM; hier Installation des MDM-Clients vor Übergabe.'
+- source: SYS.3.2.2.A6
+  target: KONF.2.1.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die protokollierte Konfigurationshistorie
+    der Endgeräte entspricht der Versionierung vorheriger Konfigurationen.'
 - source: SYS.3.2.2.A7
   target: KONF.2.6
   relationship: subset
@@ -3949,6 +5721,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide betreffen die Erkennung
     von Manipulationen am Endgerät; hier Jailbreak- und Root-Erkennung.'
+- source: SYS.3.2.2.A21
+  target: KONF.2.6
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die zentrale Zertifikatsverwaltung
+    über das MDM ist ein Spezialfall der Verwaltung mobiler Endgeräte durch ein MDM.'
 - source: SYS.3.2.2.A22
   target: KONF.3.6
   relationship: equivalent
@@ -3967,6 +5745,13 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): iOS-Geräte über das MDM zu
     verwalten und zu konfigurieren ist ein Fall der MDM-Verwaltung.'
+- source: SYS.3.2.3.A7
+  target: SENS.2.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die geforderte Sensibilisierung
+    der Benutzenden zum Zweck der Schutzmaßnahmen deckt die Sensibilisierung gegen unautorisierte Konfigurationsänderungen
+    ab.'
 - source: SYS.3.2.3.A13
   target: KONF.2.4
   relationship: subset
@@ -3985,6 +5770,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Zugangs- und Profilentzug bei
     längerer Offline-Zeit entspricht der automatischen Fernsperre bei Inaktivität.'
+- source: SYS.3.2.3.A26
+  target: KONF.3.7
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Beschränkung der Geräteverbindung
+    auf das MDM schränkt angeschlossene Peripherie bzw. Gegenstellen ein.'
 - source: SYS.3.2.4.A5
   target: BER.4.4
   relationship: partial_overlap
@@ -4057,6 +5848,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Geräte bei Rücknahme
     in einen definierten Ausgangszustand ohne vertrauliche Daten zurückzusetzen.'
+- source: SYS.3.3.A13
+  target: KONF.2.4
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Abschalten der GPS-Ortung
+    deaktiviert eine nicht benötigte Systemfunktion.'
+- source: SYS.3.3.A13
+  target: SENS.7.23
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Klärung der Auswirkungen
+    von Bewegungsprofilen berührt die Sensibilisierung für Standortbestimmungsfunktionen.'
+- source: SYS.3.3.A14
+  target: SENS.5.3
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das Verbot, Rufnummern zu veröffentlichen
+    oder an Unbefugte weiterzugeben, entspricht dem Untersagen der Weitergabe von Erreichbarkeiten.'
 - source: SYS.4.1.A2
   target: GEB.6.2
   relationship: partial_overlap
@@ -4069,6 +5878,18 @@ mappings:
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Fernwartungs-
     bzw. Fernadministrationsfunktionen auf berechtigte Nutzende zu beschränken.'
+- source: SYS.4.1.A14
+  target: ASST.3.12
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Zugriff auf ausgedruckte
+    Dokumente nur für Berechtigte autorisiert den Zugriff auf Daten.'
+- source: SYS.4.1.A14
+  target: KONF.5.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die Authentisierung am Gerät
+    vor dem Druck (Secure-Print) ist eine Authentifizierung am System.'
 - source: SYS.4.1.A15
   target: KONF.3.2
   relationship: partial_overlap
@@ -4093,6 +5914,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, Schnittstellen
     für angeschlossene Speichermedien bzw. Peripherie zu sperren oder einzuschränken.'
+- source: SYS.4.1.A21
+  target: KONF.2.5
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die regelmäßige Kontrolle und
+    Korrektur der Sicherheitseinstellungen ist ein Abgleich der Konfiguration mit dem Referenzzustand.'
+- source: SYS.4.1.A21
+  target: KONF.2.5.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Das geforderte automatisierte
+    Kontroll- und Korrektursystem entspricht der automatisierten Konfigurationsüberprüfung.'
 - source: SYS.4.1.A22
   target: SENS.5.6
   relationship: partial_overlap
@@ -4135,12 +5968,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Sicheres Löschen oder Vernichten
     vor Aussonderung entspricht dem geregelten Löschen oder Vernichten.'
+- source: SYS.4.3.A13
+  target: BES.4.8.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Ein nach anerkanntem Standard
+    evaluiertes Betriebssystem entspricht der Vereinbarung eines Zertifikats oder Testats nach einem Sicherheitsstandard.'
 - source: SYS.4.3.A14
   target: KONF.2.9
   relationship: equivalent
   confidence: medium
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern einen abgesicherten
     und authentisierten Bootprozess mit Integritätsprüfung.'
+- source: SYS.4.3.A15
+  target: KONF.7.16.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Speicherschutzmechanismen in
+    eingebetteten Systemen schützen den Arbeitsspeicher vor der Ausnutzung von Sicherheitslücken.'
 - source: SYS.4.4.A2
   target: KONF.5.1
   relationship: partial_overlap
@@ -4159,6 +6004,18 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide fordern, die Beschaffung
     anhand der festgelegten Kriterien vorzunehmen.'
+- source: SYS.4.4.A10
+  target: KONF.2.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die dokumentierten Installations-
+    und Konfigurationsschritte bilden eine dokumentierte Grundkonfiguration.'
+- source: SYS.4.4.A10
+  target: KONF.7.9
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Installation und Konfiguration
+    von IoT-Geräten nur durch autorisierte Personen schränkt die Installation ein.'
 - source: SYS.4.4.A11
   target: KONF.14.1
   relationship: subset
@@ -4171,6 +6028,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Nicht benötigte Protokolle,
     Dienste und Schnittstellen zu deaktivieren entspricht dem Deaktivieren nicht benötigter Systemfunktionen.'
+- source: SYS.4.4.A15
+  target: BER.4.1
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Restriktive Zugriffsberechtigungen
+    auf IoT-Geräte sind Anwendung des Prinzips der geringsten Berechtigungen.'
 - source: SYS.4.4.A19
   target: KONF.4.4
   relationship: partial_overlap
@@ -4183,6 +6046,24 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Datenlöschung bei Außerbetriebnahme
     gemäß Checkliste entspricht dem geregelten Löschen oder Vernichten.'
+- source: SYS.4.4.A21
+  target: GEB.5.2
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der geforderte Schutz vor Manipulation
+    entspricht Manipulationsschutzvorkehrungen.'
+- source: SYS.4.4.A21
+  target: GEB.6.2
+  relationship: subset
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Der Schutz von IoT-Geräten
+    in der Einsatzumgebung vor Diebstahl und Manipulation fordert geschützte Aufstellung vor Zugriff Unbefugter.'
+- source: SYS.4.4.A22
+  target: DET.4.14
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Die laufende Überwachung von
+    Zustand und Funktionsfähigkeit der IoT-Geräte überschneidet sich mit der Verfügbarkeitsüberwachung.'
 - source: SYS.4.5.A1
   target: SENS.6.1
   relationship: partial_overlap
@@ -4231,6 +6112,12 @@ mappings:
   confidence: low
   rationale: 'Ergänzung zum BSI-Mapping (Expertenprüfung, zwei unabhängige Reviews): Beide betreffen die Kennzeichnung
     von Datenträgern, ohne vertrauliche Inhalte offenzulegen.'
+- source: SYS.4.5.A15
+  target: BES.4.8.1
+  relationship: partial_overlap
+  confidence: low
+  rationale: 'Ergänzung zum BSI-Mapping (Obergutachten nach zwei uneinigen Reviews): Zertifizierte Wechseldatenträger
+    entsprechen der Vereinbarung eines Zertifikats nach einem Sicherheitsstandard.'
 - source: SYS.4.5.A17
   target: NOT.4.9
   relationship: partial_overlap

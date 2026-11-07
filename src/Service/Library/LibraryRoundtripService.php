@@ -6,6 +6,7 @@ namespace App\Service\Library;
 
 use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceRequirementRepository;
+use App\Util\CsvSanitizer;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -91,7 +92,7 @@ final class LibraryRoundtripService
         }
 
         foreach ($rows as $row) {
-            fputcsv($buffer, $row, ',', '"', '\\');
+            fputcsv($buffer, array_map(CsvSanitizer::sanitize(...), $row), ',', '"', '\\');
         }
 
         rewind($buffer);

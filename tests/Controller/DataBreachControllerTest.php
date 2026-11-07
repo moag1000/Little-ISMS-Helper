@@ -440,7 +440,7 @@ class DataBreachControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testNewRequiresAuditorRole(): void
+    public function testNewRequiresManagerRole(): void
     {
         $this->loginAsUser($this->testUser);
 
@@ -449,10 +449,32 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    /**
+     * ROLE_AUDITOR (and the holding roles inheriting it) is read-only: an
+     * external auditor must not record an Art. 33 notification or open a breach.
+     */
     #[Test]
-    public function testNewDisplaysFormForAuditor(): void
+    public function testAuditorCannotChangeBreach(): void
     {
         $this->loginAsUser($this->auditorUser);
+
+        $this->client->request('GET', '/en/data-breach/new');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/notify-authority', [
+            'authority_name' => 'BfDI',
+            'notification_method' => 'email',
+        ]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/close');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function testNewDisplaysFormForManager(): void
+    {
+        $this->loginAsUser($this->managerUser);
 
         $crawler = $this->client->request('GET', '/en/data-breach/new');
 
@@ -467,7 +489,7 @@ class DataBreachControllerTest extends WebTestCase
     #[Test]
     public function testNewRendersWizardModalMarkup(): void
     {
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         $crawler = $this->client->request('GET', '/en/data-breach/new');
 
@@ -495,7 +517,7 @@ class DataBreachControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testEditRequiresAuditorRole(): void
+    public function testEditRequiresManagerRole(): void
     {
         $this->loginAsUser($this->testUser);
 
@@ -505,9 +527,9 @@ class DataBreachControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testEditDisplaysFormForAuditor(): void
+    public function testEditDisplaysFormForManager(): void
     {
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         $crawler = $this->client->request('GET', '/en/data-breach/' . $this->testBreach->getId() . '/edit');
 
@@ -522,7 +544,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->testBreach->setStatus('closed');
         $this->entityManager->flush();
 
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         $this->client->request('GET', '/en/data-breach/' . $this->testBreach->getId() . '/edit');
 
@@ -532,7 +554,7 @@ class DataBreachControllerTest extends WebTestCase
     #[Test]
     public function testEditReturns404ForNonexistentBreach(): void
     {
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         $this->client->request('GET', '/en/data-breach/999999/edit');
 
@@ -621,9 +643,9 @@ class DataBreachControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testSubmitForAssessmentRedirectsForAuditor(): void
+    public function testSubmitForAssessmentRedirectsForManager(): void
     {
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         $token = $this->generateCsrfToken('submit' . $this->testBreach->getId());
 
@@ -661,7 +683,7 @@ class DataBreachControllerTest extends WebTestCase
     #[Test]
     public function testNotifyAuthorityRequiresParameters(): void
     {
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         $token = $this->generateCsrfToken('notify_authority' . $this->testBreach->getId());
 
@@ -701,7 +723,7 @@ class DataBreachControllerTest extends WebTestCase
     #[Test]
     public function testNotifySubjectsRequiresParameters(): void
     {
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         $token = $this->generateCsrfToken('notify_subjects' . $this->testBreach->getId());
 
@@ -740,7 +762,7 @@ class DataBreachControllerTest extends WebTestCase
     #[Test]
     public function testSubjectNotificationExemptionRequiresReason(): void
     {
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         $token = $this->generateCsrfToken('exemption' . $this->testBreach->getId());
 
@@ -895,7 +917,7 @@ class DataBreachControllerTest extends WebTestCase
     #[Test]
     public function testWorkflowActionsRequireValidCsrfToken(): void
     {
-        $this->loginAsUser($this->auditorUser);
+        $this->loginAsUser($this->managerUser);
 
         // Test submit for assessment with invalid token
         $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/submit-for-assessment', [

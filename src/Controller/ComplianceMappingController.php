@@ -10,7 +10,9 @@ use App\Entity\ComplianceRequirement;
 use App\Entity\User;
 use App\Form\ComplianceMappingType;
 use App\Lifecycle\LifecycleService;
+use App\Attribute\RequiresModule;
 use App\Service\Bsi\KompendiumGsppCoverage;
+use App\Service\MappingLibraryLoader;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -24,6 +26,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Workflow\Registry;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -59,6 +62,7 @@ class ComplianceMappingController extends AbstractController
         private readonly ?TranslatorInterface $translator = null,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?KompendiumGsppCoverage $gsppCoverage = null,
+        private readonly ?MappingLibraryLoader $mappingLibraryLoader = null,
     ) {}
 
     /**
@@ -90,7 +94,40 @@ class ComplianceMappingController extends AbstractController
             'framework_count' => $frameworkCount,
             'recent' => $recent,
             'gspp_coverage' => $this->gsppCoverage?->summary(),
+            'gspp_pending' => $this->gsppCoverage?->pendingSupplementPairs() ?? 0,
         ]);
+    }
+
+    /**
+     * Adds the pairs of the shipped Kompendium → Grundschutz++ supplement the
+     * database does not hold yet. Existing pairs keep their review state; the
+     * new ones enter the inheritance queue as proposals.
+     */
+    #[Route('/compliance/mapping/gspp-supplement', name: 'app_compliance_mapping_gspp_supplement', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[RequiresModule('bsi_grundschutz')]
+    #[IsCsrfTokenValid('gspp_supplement')]
+    public function importGsppSupplement(): Response
+    {
+        if ($this->mappingLibraryLoader === null || $this->gsppCoverage?->summary() === null) {
+            return $this->redirectToRoute('app_compliance_mapping_hub');
+        }
+        $result = $this->mappingLibraryLoader->load(KompendiumGsppCoverage::SUPPLEMENT_FIXTURE, onlyNew: true);
+        $this->auditLogger?->logCustom(
+            'compliance.mapping_library.imported',
+            'ComplianceMapping',
+            null,
+            null,
+            ['fixture' => basename(KompendiumGsppCoverage::SUPPLEMENT_FIXTURE), 'imported' => $result['imported']],
+            sprintf('Added %d Kompendium → Grundschutz++ supplement pairs', $result['imported']),
+        );
+        $this->addFlash($result['success'] ? 'success' : 'error', $this->translator?->trans(
+            $result['success'] ? 'compliance.mapping.hub.gspp.update_done' : 'compliance.mapping.hub.gspp.update_failed',
+            ['%count%' => $result['imported'], '%errors%' => implode('; ', $result['errors'])],
+            'compliance',
+        ) ?? '');
+
+        return $this->redirect($this->generateUrl('app_compliance_mapping_hub') . '#gspp-transfer');
     }
 
     #[Route('/compliance/mapping', name: 'app_compliance_mapping_index', methods: ['GET'])]

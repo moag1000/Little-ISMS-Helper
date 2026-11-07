@@ -19,8 +19,8 @@
         subtitle: 'data_breach.dashboard.subtitle'|trans({}, 'privacy'),
         actions: [
             { label: 'data_breach.dashboard.action.view_all'|trans({}, 'privacy'), href: path('app_data_breach_index'), variant: 'primary', icon: 'ui-list', attrs: { 'data-turbo-action': 'advance' } },
-            { label: 'data_breach.dashboard.action.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus', attrs: { 'data-turbo-action': 'advance' } }
-        ]
+            is_granted('ROLE_MANAGER') ? { label: 'data_breach.dashboard.action.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus', attrs: { 'data-turbo-action': 'advance' } } : null
+        ]|filter(a => a is not null)
     }) }}
 
     {# Overall Compliance Score #}

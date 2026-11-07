@@ -7,6 +7,7 @@ namespace App\Service\Audit\Generator;
 use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 /**
@@ -110,17 +111,20 @@ final class ComplianceFulfillmentWorkbookGenerator implements AuditWorkbookGener
                     $isOverdue = true;
                 }
 
-                $sheet->setCellValue('A' . $row, $frameworkName);
-                $sheet->setCellValue('B' . $row, $requirement?->getRequirementId() ?? '');
-                $sheet->setCellValue('C' . $row, $requirement?->getTitle() ?? '');
-                $sheet->setCellValue('D' . $row, $requirement?->getCategory() ?? '');
+                $sheet->setCellValue('A' . $row, CsvSanitizer::sanitize($frameworkName));
+                $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($requirement?->getRequirementId() ?? ''));
+                $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($requirement?->getTitle() ?? ''));
+                $sheet->setCellValue('D' . $row, CsvSanitizer::sanitize($requirement?->getCategory() ?? ''));
                 $sheet->setCellValue('E' . $row, $fulfillment->isApplicable() ? 'Yes' : 'No');
                 $sheet->setCellValue('F' . $row, $fulfillment->getStatus());
                 $sheet->setCellValue('G' . $row, $fulfillment->getFulfillmentPercentage());
-                $sheet->setCellValue('H' . $row, $fulfillment->getEvidenceDescription() ?? '');
+                $sheet->setCellValue('H' . $row, CsvSanitizer::sanitize($fulfillment->getEvidenceDescription() ?? ''));
                 $sheet->setCellValue('I' . $row, $fulfillment->getLastReviewDate()?->format('Y-m-d') ?? '');
                 $sheet->setCellValue('J' . $row, $fulfillment->getNextReviewDate()?->format('Y-m-d') ?? '');
-                $sheet->setCellValue('K' . $row, $fulfillment->getEffectiveResponsiblePerson() ?? '');
+                $sheet->setCellValue(
+                    'K' . $row,
+                    CsvSanitizer::sanitize($fulfillment->getEffectiveResponsiblePerson() ?? ''),
+                );
                 $sheet->setCellValue('L' . $row, $isOverdue ? 'YES' : 'no');
 
                 // Colour completeness cell

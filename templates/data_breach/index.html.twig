@@ -20,8 +20,8 @@
         subtitle: 'privacy.data_breach.subtitle'|trans({}, 'privacy'),
         actions: [
             { label: 'privacy.data_breach.actions.dashboard'|trans({}, 'privacy'), href: path('app_data_breach_dashboard'), variant: 'ghost', icon: 'nav-dashboard' },
-            { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus', attrs: { 'data-turbo-frame': 'fa-form-modal' } }
-        ]
+            is_granted('ROLE_MANAGER') ? { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus', attrs: { 'data-turbo-frame': 'fa-form-modal' } } : null
+        ]|filter(a => a is not null)
     }) }}
 {% set _global_hints = alva_hints('data_breach_index') %}
 {% if _global_hints|length > 0 %}

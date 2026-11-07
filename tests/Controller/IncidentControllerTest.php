@@ -871,7 +871,20 @@ class IncidentControllerTest extends TestCase
             'estimated_completion_time' => '4 hours',
         ];
 
+        $tenant = $this->createTenant(7);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+
+        $recipient = $this->createMock(User::class);
+        $recipient->method('getId')->willReturn(3);
+        $recipient->method('getFirstName')->willReturn('Dana');
+        $recipient->method('getLastName')->willReturn('Ops');
+        $recipient->method('getEmail')->willReturn('dana@example.com');
+        $preview['notified_users'] = [$recipient];
+
+        // The recipients are resolved inside the user's organisation, so the
+        // temporary incident must carry the current tenant.
         $this->incidentEscalationWorkflowService->method('previewEscalation')
+            ->with($this->callback(static fn(Incident $i): bool => $i->getTenant() === $tenant))
             ->willReturn($preview);
 
         $request = new Request(
@@ -891,6 +904,7 @@ class IncidentControllerTest extends TestCase
         $data = json_decode($response->getContent(), true);
         $this->assertTrue($data['will_escalate']);
         $this->assertEquals('high', $data['escalation_level']);
+        $this->assertSame([['id' => 3, 'name' => 'Dana Ops']], $data['notified_users'], 'No e-mail addresses in the preview.');
     }
 
     /**

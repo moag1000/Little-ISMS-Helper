@@ -53,7 +53,7 @@
     {% for label, messages in app.flashes %}
         {% set tone = label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')) %}
         {% for message in messages %}
-            {{ faAlert.render(message|raw, tone, { dismissible: true })|raw }}
+            {{ faAlert.render(message|e, tone, { dismissible: true })|raw }}
         {% endfor %}
     {% endfor %}
 

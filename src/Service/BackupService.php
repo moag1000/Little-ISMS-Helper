@@ -713,6 +713,18 @@ class BackupService
     }
 
     /**
+     * The one filename rule for every backup endpoint (download, validate,
+     * preview, restore, delete): created and uploaded backups in all formats
+     * (.zip with files, .json.gz, .json, legacy .gz), no path, no sidecar.
+     */
+    public static function isBackupFilename(string $filename): bool
+    {
+        return $filename === basename($filename)
+            && preg_match('/^(backup_|uploaded_)[A-Za-z0-9_.-]+\.(zip|json\.gz|json|gz)$/', $filename) === 1
+            && !str_ends_with($filename, '.meta.json');
+    }
+
+    /**
      * Single source of truth for backup visibility (listing, download, delete, preview).
      *
      * $scope = null (SUPER_ADMIN) sees every existing backup. A tenant scope sees only
@@ -722,10 +734,7 @@ class BackupService
      */
     public function isBackupVisibleTo(string $filename, ?Tenant $scope): bool
     {
-        if ($filename !== basename($filename)
-            || !preg_match('/^(backup_|uploaded_)[A-Za-z0-9_.-]+\.(zip|json\.gz|json|gz)$/', $filename)
-            || str_ends_with($filename, '.meta.json')
-        ) {
+        if (!self::isBackupFilename($filename)) {
             return false;
         }
 

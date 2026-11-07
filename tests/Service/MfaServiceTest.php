@@ -271,6 +271,22 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function backupCodesOfNonTotpTokenAreRateLimited(): void
+    {
+        $token = $this->createMock(MfaToken::class);
+        $token->method('getId')->willReturn(77);
+        $token->method('getTokenType')->willReturn('webauthn');
+        $token->method('getBackupCodes')->willReturn([password_hash('ABCD-1234', PASSWORD_ARGON2ID)]);
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->assertFalse($this->service->verifyBackupCode($token, 'WRONG-' . $i));
+        }
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException::class);
+        $this->service->verifyBackupCode($token, 'ABCD-1234');
+    }
+
+    #[Test]
     public function testVerifyBackupCodeEmptyCodes(): void
     {
         $token = $this->createMock(MfaToken::class);

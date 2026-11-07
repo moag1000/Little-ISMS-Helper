@@ -24,7 +24,7 @@
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             {{ faAlert.render(
-                message|trans,
+                message|trans|e,
                 label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')),
                 { dismissible: true }
             )|raw }}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -187,8 +188,8 @@ class ExcelExportService
 
         // Metrics
         foreach ($metrics as $label => $value) {
-            $worksheet->setCellValue('A' . $currentRow, $label);
-            $worksheet->setCellValue('B' . $currentRow, $value);
+            $worksheet->setCellValue('A' . $currentRow, CsvSanitizer::sanitize($label));
+            $worksheet->setCellValue('B' . $currentRow, CsvSanitizer::sanitize($value));
 
             // Style
             $worksheet->getStyle('A' . $currentRow . ':B' . $currentRow)->applyFromArray([
