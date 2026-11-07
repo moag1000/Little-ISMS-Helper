@@ -403,6 +403,15 @@ class NavigationSearch
                 'roles' => ['ROLE_MANAGER'],
                 'requiresModule' => null,
             ],
+            [
+                'route' => 'app_location_map',
+                'label' => 'Standortkarte',
+                'description' => 'Standort-Lagebild: Restrisiko, offene Prüfungen und Vergleich je Standort',
+                'aliases' => ['Karte', 'Weltkarte', 'Standortkarte', 'Lagebild', 'Map', 'Location map', 'Site map'],
+                'icon' => 'fa-icon--nav-location',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => 'locations',
+            ],
             // ── API Documentation ─────────────────────────────────────────────
             [
                 'route' => 'api_doc',

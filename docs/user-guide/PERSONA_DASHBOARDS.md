@@ -265,7 +265,7 @@ Gruppen, deren Modul nicht aktiv ist, werden nicht angezeigt.
   Behandlungsplan" den Plan mit Risiko, Titel und Risikoeigner als
   Verantwortlichem an. Am Control werden Nachweise direkt hochgeladen
   („Nachweis hochladen" springt dorthin). Vorbelegt wird nur aus Datensätzen
-  der eigenen Organisation. URL-Parameter: `fromAsset`, `fromRisk`,
+  der eigenen Organisation. URL-Parameter: `fromAsset`, `fromLocation`, `fromRisk`,
   `fromIncident`, `fromVulnerability`.
 - **Alte Freitextfelder für Personen** (Eigentümer, Verantwortliche,
   Ansprechpartner aus der Zeit vor der Personenauswahl) erscheinen nur noch,
