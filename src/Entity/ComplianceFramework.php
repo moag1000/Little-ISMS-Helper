@@ -335,48 +335,4 @@ class ComplianceFramework
     {
         return in_array($moduleKey, $this->requiredModules ?? []);
     }
-
-    /**
-     * Compute the compliance percentage from the loaded requirements.
-     *
-     * A top-level requirement is "fulfilled" when its derived status is
-     * 'implemented' (fulfilment from mapped controls >= 100 %). Deriving the
-     * status walks each requirement's `mappedControls` collection, which
-     * lazy-loads one query per requirement unless it is already initialised.
-     * Callers on large catalogues MUST first call
-     * {@see \App\Repository\ComplianceRequirementRepository::preloadMappedControls()}
-     * (one fetch-join query) so this method runs without further queries.
-     */
-    public function getCompliancePercentage(): float
-    {
-        // Denominator = top-level requirements only. The EU-mapping decomposition
-        // import added ~5000 sub_requirements (parentRequirement set); these roll
-        // up via their parent and must NOT dilute the compliance %.
-        $total = 0;
-        $fulfilled = 0;
-        foreach ($this->requirements as $req) {
-            /** @var \App\Entity\ComplianceRequirement $req */
-            // Top-level only: no parent AND a core/detailed type. Sub-requirements
-            // (parent set, or requirementType='sub_requirement') are excluded.
-            if ($req->getParentRequirement() !== null
-                || !in_array($req->getRequirementType(), ['core', 'detailed'], true)) {
-                continue;
-            }
-            $total++;
-
-            // ComplianceRequirement::getStatus() speaks the gap-analysis
-            // vocabulary (implemented / partially_implemented / not_implemented).
-            // The former check for 'fulfilled'/'compliant' never matched a real
-            // requirement, so the framework index always showed 0 %.
-            if ($req->getStatus() === 'implemented') {
-                $fulfilled++;
-            }
-        }
-
-        if ($total === 0) {
-            return 0.0;
-        }
-
-        return round(($fulfilled / $total) * 100, 1);
-    }
 }

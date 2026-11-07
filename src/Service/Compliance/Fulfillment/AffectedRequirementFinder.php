@@ -135,7 +135,7 @@ class AffectedRequirementFinder
     {
         $qb = $this->em->createQueryBuilder()->select('r')->from(ComplianceRequirement::class, 'r');
         $or = $qb->expr()->orX();
-        foreach (array_values($keys) as $i => $key) {
+        foreach ($keys as $i => $key) {
             $or->add($qb->expr()->like('r.dataSourceMapping', ':k' . $i . 'a'));
             $or->add($qb->expr()->like('r.dataSourceMapping', ':k' . $i . 'b'));
             $qb->setParameter('k' . $i . 'a', '%"' . $key . '"%');

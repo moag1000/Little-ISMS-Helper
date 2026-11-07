@@ -190,6 +190,63 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Share of a framework's top-level requirements (core/detailed, no parent)
+     * the organisation has fulfilled to 100 %, per framework — the one
+     * tenant-aware "Erfüllung" figure of framework lists and hints.
+     *
+     * @param list<int> $frameworkIds
+     * @return array<int, float> framework id → percentage (one decimal)
+     */
+    public function fulfilledShareByFramework(Tenant $tenant, array $frameworkIds): array
+    {
+        $result = array_fill_keys($frameworkIds, 0.0);
+        if ($frameworkIds === []) {
+            return $result;
+        }
+        $em = $this->getEntityManager();
+
+        /** @var list<array{fw: int|string, n: int|string}> $totals */
+        $totals = $em->createQueryBuilder()
+            ->select('IDENTITY(r.framework) AS fw', 'COUNT(r.id) AS n')
+            ->from(ComplianceRequirement::class, 'r')
+            ->where('r.framework IN (:fw)')
+            ->andWhere('r.parentRequirement IS NULL')
+            ->andWhere("r.requirementType IN ('core', 'detailed')")
+            ->setParameter('fw', $frameworkIds)
+            ->groupBy('r.framework')
+            ->getQuery()
+            ->getArrayResult();
+
+        /** @var list<array{fw: int|string, n: int|string}> $fulfilled */
+        $fulfilled = $this->createQueryBuilder('f')
+            ->select('IDENTITY(r.framework) AS fw', 'COUNT(f.id) AS n')
+            ->join('f.requirement', 'r')
+            ->where('f.tenant = :tenant')
+            ->andWhere('r.framework IN (:fw)')
+            ->andWhere('r.parentRequirement IS NULL')
+            ->andWhere("r.requirementType IN ('core', 'detailed')")
+            ->andWhere('f.applicable = true')
+            ->andWhere('f.fulfillmentPercentage >= 100')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('fw', $frameworkIds)
+            ->groupBy('r.framework')
+            ->getQuery()
+            ->getArrayResult();
+
+        $done = [];
+        foreach ($fulfilled as $row) {
+            $done[(int) $row['fw']] = (int) $row['n'];
+        }
+        foreach ($totals as $row) {
+            $total = (int) $row['n'];
+            $id = (int) $row['fw'];
+            $result[$id] = $total > 0 ? round(($done[$id] ?? 0) / $total * 100, 1) : 0.0;
+        }
+
+        return $result;
+    }
+
+    /**
      * Batch variant of percentageFor(): one query for many requirements.
      * Requirements without a fulfillment row for the tenant map to 0.
      *

@@ -11,7 +11,6 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\PersistentCollection;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -69,8 +68,7 @@ final class ControlChangeCollector implements ResetInterface
 
         $collections = [...$uow->getScheduledCollectionUpdates(), ...$uow->getScheduledCollectionDeletions()];
         foreach ($collections as $collection) {
-            if (!$collection instanceof PersistentCollection
-                || !$collection->getOwner() instanceof ComplianceRequirement
+            if (!$collection->getOwner() instanceof ComplianceRequirement
                 || $collection->getMapping()->fieldName !== 'mappedControls') {
                 continue;
             }

@@ -33,7 +33,7 @@ final class FulfillmentDerivationServiceTest extends TestCase
         $this->rule = new FulfillmentDerivation(100, FulfillmentRuleEngine::KIND_CONTROLS, [], true);
         $f = $this->fulfillment();
 
-        self::assertTrue($this->service()->apply($f));
+        self::assertTrue($this->evaluate($this->service(), $f));
         self::assertSame(100, $f->getFulfillmentPercentage());
         self::assertSame(ComplianceRequirementFulfillmentStatus::Implemented->value, $f->getStatus());
         self::assertTrue($f->isDerived());
@@ -48,7 +48,7 @@ final class FulfillmentDerivationServiceTest extends TestCase
             ->setStatus(ComplianceRequirementFulfillmentStatus::InProgress);
         $now = new DateTimeImmutable('2026-11-07 10:00');
 
-        $this->service()->apply($f, $now);
+        $this->evaluate($this->service(), $f, $now);
 
         self::assertSame(80, $f->getFulfillmentPercentage(), 'The hand value is kept.');
         self::assertSame(40, $f->getDerivedPercentage());
@@ -62,7 +62,7 @@ final class FulfillmentDerivationServiceTest extends TestCase
         $this->rule = new FulfillmentDerivation(40, FulfillmentRuleEngine::KIND_CONTROLS, []);
         $f = $this->fulfillment(stored: true);
 
-        $this->service()->apply($f);
+        $this->evaluate($this->service(), $f);
 
         self::assertSame(40, $f->getFulfillmentPercentage());
         self::assertFalse($f->isOverridden());
@@ -74,10 +74,10 @@ final class FulfillmentDerivationServiceTest extends TestCase
         $this->rule = new FulfillmentDerivation(30, FulfillmentRuleEngine::KIND_MAPPING, []);
         $f = $this->fulfillment();
         $service = $this->service(expectAudit: 2);
-        $service->apply($f);
+        $this->evaluate($service, $f);
 
         $service->override($f, 90, 'Externer Penetrationstest belegt die Umsetzung', new DateTimeImmutable('+6 months'), null);
-        $service->apply($f);
+        $this->evaluate($service, $f);
         self::assertSame(90, $f->getFulfillmentPercentage());
         self::assertSame('Externer Penetrationstest belegt die Umsetzung', $f->getOverrideReason());
 
@@ -92,7 +92,7 @@ final class FulfillmentDerivationServiceTest extends TestCase
         $this->rule = new FulfillmentDerivation(null, FulfillmentRuleEngine::KIND_CONTROLS, [], false, 'Kein Rechenzentrum');
         $f = $this->fulfillment();
 
-        $this->service()->apply($f);
+        $this->evaluate($this->service(), $f);
 
         self::assertFalse($f->isApplicable());
         self::assertSame('Kein Rechenzentrum', $f->getApplicabilityJustification());
@@ -103,13 +103,19 @@ final class FulfillmentDerivationServiceTest extends TestCase
     {
         $f = $this->fulfillment();
         $service = $this->service();
-        $service->apply($f);
+        $this->evaluate($service, $f);
         self::assertTrue($service->setManual($f, 70));
         self::assertSame(70, $f->getFulfillmentPercentage());
 
         $this->rule = new FulfillmentDerivation(20, FulfillmentRuleEngine::KIND_CONTROLS, []);
-        $service->apply($f);
+        $this->evaluate($service, $f);
         self::assertFalse($service->setManual($f, 70), 'A computed requirement takes an override, not a slider value.');
+    }
+
+    /** FulfillmentDerivationService::apply(), named apart from the controller actions of the same name. */
+    private function evaluate(FulfillmentDerivationService $service, ComplianceRequirementFulfillment $f, ?DateTimeImmutable $now = null): bool
+    {
+        return (bool) call_user_func([$service, 'apply'], $f, $now);
     }
 
     private function service(int $expectAudit = 0): FulfillmentDerivationService

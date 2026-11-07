@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *      angelegt (old.req → new.req, type=full, percentage=100,
  *      confidence=high, verified_by='app:migrate-framework-version').
  *   4. Indirect-Hinweis für den Auditor: die Bridge hat eine klare
- *      `rationale`, sodass transitive Coverage (TransitiveCoverageService) aus dem
+ *      `rationale`, sodass die Mapping-Regel (FulfillmentRuleEngine) aus dem
  *      alten Framework auch im neuen zählt.
  *
  * Keine bestehende Mapping wird überschrieben. Alle Änderungen sind

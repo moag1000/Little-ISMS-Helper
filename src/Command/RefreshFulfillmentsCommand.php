@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Tenant;
 use App\Repository\TenantRepository;
 use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -43,9 +42,6 @@ final class RefreshFulfillmentsCommand
 
         $rows = [];
         foreach ($tenants as $t) {
-            if (!$t instanceof Tenant) {
-                continue;
-            }
             $r = $this->derivation->refreshTenant($t);
             $rows[] = [$t->getId(), $t->getName(), $r['derived'], $r['overridden'], $r['manual'], $r['changed']];
         }
