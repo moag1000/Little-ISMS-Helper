@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Persona\Persona;
+use App\Security\Persona\PersonaResolver;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\RoleDashboardService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,27 +33,21 @@ class RoleDashboardController extends AbstractController
 {
     public function __construct(
         private readonly RoleDashboardService $roleDashboardService,
+        private readonly PersonaResolver $personaResolver,
     ) {
     }
 
     /**
-     * Dashboard selector - redirects to appropriate dashboard based on role
+     * Dashboard selector — redirects to the dashboard of the user's persona
+     * (persona preview included).
      */
     #[Route('', name: 'app_role_dashboard_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        $recommendedDashboard = $this->roleDashboardService->getRecommendedDashboard();
+        $persona = $this->personaResolver->current() ?? Persona::USER;
 
-        return match ($recommendedDashboard) {
-            'ciso' => $this->redirectToRoute('app_dashboard_ciso'),
-            'risk_manager' => $this->redirectToRoute('app_dashboard_risk_manager'),
-            'auditor' => $this->redirectToRoute('app_dashboard_auditor'),
-            'board' => $this->redirectToRoute('app_dashboard_board'),
-            // Compliance-Manager / DPO persona dashboard.
-            'compliance_manager' => $this->redirectToRoute('app_dashboard_compliance_manager'),
-            default => $this->redirectToRoute('app_dashboard'),
-        };
+        return $this->redirectToRoute($this->personaResolver->dashboardRouteFor($persona));
     }
 
     /**
@@ -112,7 +108,7 @@ class RoleDashboardController extends AbstractController
      * and top critical items requiring board attention.
      */
     #[Route('/board', name: 'app_dashboard_board', methods: ['GET'])]
-    #[IsGranted(TenantScopedAdminVoter::PERSONA_CISO)]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_BOARD)]
     public function boardDashboard(): Response
     {
         $data = $this->roleDashboardService->getBoardDashboard();
@@ -158,7 +154,7 @@ class RoleDashboardController extends AbstractController
      * API: Get Board dashboard data
      */
     #[Route('/api/board', name: 'app_dashboard_api_board', methods: ['GET'])]
-    #[IsGranted(TenantScopedAdminVoter::PERSONA_CISO)]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_BOARD)]
     public function getBoardDashboardData(): JsonResponse
     {
         return new JsonResponse($this->roleDashboardService->getBoardDashboard());

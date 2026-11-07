@@ -107,7 +107,13 @@ security:
         #   Steers BCM module: BC-Plans, Crisis-Team, BC-Exercises, Business-Processes.
         #   Inherits ROLE_MANAGER — BCM operational scope.
         ROLE_BCM_OFFICER:           ROLE_MANAGER
-        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_BCM_OFFICER]
+        # ROLE_TOP_MGMT: Leitung / Geschäftsleitung (ISO 27001 5.1, 9.3; NIS-2 Art. 20).
+        #   Own persona with the board dashboard and board tour. Reads everything
+        #   (inherits ROLE_AUDITOR), changes nothing operational; approvals that
+        #   belong to top management check ROLE_TOP_MGMT explicitly (policy
+        #   wizard bulk approval, document sections, workflow steps).
+        ROLE_TOP_MGMT:              ROLE_AUDITOR
+        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_BCM_OFFICER, ROLE_TOP_MGMT]
         ROLE_SUPER_ADMIN:       [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR]
         # Holding-Rollen für Konzern-Strukturen.
         #

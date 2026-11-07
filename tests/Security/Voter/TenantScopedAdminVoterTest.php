@@ -7,8 +7,10 @@ namespace App\Tests\Security\Voter;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\TenantRepository;
+use App\Security\Persona\PersonaResolver;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\TenantContext;
+use App\Tests\Stub\PersonaResolverFactory;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -120,7 +122,10 @@ final class TenantScopedAdminVoterTest extends TestCase
             $security,
             $tenantContext,
             $tenantRepository,
-            $requestStack ?? new \Symfony\Component\HttpFoundation\RequestStack(),
+            PersonaResolverFactory::create(
+                $security,
+                $requestStack ?? new \Symfony\Component\HttpFoundation\RequestStack(),
+            ),
         );
     }
 
@@ -534,6 +539,62 @@ final class TenantScopedAdminVoterTest extends TestCase
         yield 'RISK'       => [TenantScopedAdminVoter::PERSONA_RISK,       'ROLE_RISK_MANAGER'];
         yield 'DPO'        => [TenantScopedAdminVoter::PERSONA_DPO,        'ROLE_DPO'];
         yield 'COMPLIANCE' => [TenantScopedAdminVoter::PERSONA_COMPLIANCE, 'ROLE_COMPLIANCE_MANAGER'];
+        yield 'ISB'        => [TenantScopedAdminVoter::PERSONA_ISB,        'ROLE_ISB'];
+        yield 'BCM'        => [TenantScopedAdminVoter::PERSONA_BCM,        'ROLE_BCM_OFFICER'];
+        yield 'BOARD'      => [TenantScopedAdminVoter::PERSONA_BOARD,      'ROLE_TOP_MGMT'];
+    }
+
+    /** @return iterable<string, array{string, list<string>, bool}> */
+    public static function providePersonaHierarchy(): iterable
+    {
+        yield 'admin reaches the CISO dashboard' => [TenantScopedAdminVoter::PERSONA_CISO, ['ROLE_ADMIN'], true];
+        yield 'admin reaches the board view' => [TenantScopedAdminVoter::PERSONA_BOARD, ['ROLE_ADMIN'], true];
+        yield 'CISO prepares the board view' => [TenantScopedAdminVoter::PERSONA_BOARD, ['ROLE_CISO'], true];
+        yield 'compliance manager sees the board view' => [TenantScopedAdminVoter::PERSONA_BOARD, ['ROLE_COMPLIANCE_MANAGER'], true];
+        yield 'ISB does not see the board view' => [TenantScopedAdminVoter::PERSONA_BOARD, ['ROLE_ISB'], false];
+        yield 'top management is no CISO' => [TenantScopedAdminVoter::PERSONA_CISO, ['ROLE_TOP_MGMT'], false];
+        yield 'manager is no ISB' => [TenantScopedAdminVoter::PERSONA_ISB, ['ROLE_MANAGER'], false];
+    }
+
+    /** @param list<string> $roles */
+    #[Test]
+    #[DataProvider('providePersonaHierarchy')]
+    public function testPersonaAttributeFollowsRoleHierarchy(string $attribute, array $roles, bool $granted): void
+    {
+        $user = $this->createUser($roles);
+        $voter = $this->buildVoter(
+            $this->createSecurity($user, $roles),
+            $this->createTenantContext(null),
+            $this->createTenantRepository(),
+        );
+
+        $this->assertSame($granted ? VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED,
+            $voter->vote($this->createToken($user), null, [$attribute]));
+    }
+
+    #[Test]
+    public function testPersonaPreviewGrantsThePreviewedDashboardOnly(): void
+    {
+        $user = $this->createUser(['ROLE_COMPLIANCE_MANAGER']);
+        $request = new \Symfony\Component\HttpFoundation\Request();
+        $session = new \Symfony\Component\HttpFoundation\Session\Session(
+            new \Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage(),
+        );
+        $session->set(PersonaResolver::ACTING_AS_SESSION_KEY, TenantScopedAdminVoter::PERSONA_ISB);
+        $request->setSession($session);
+        $stack = new \Symfony\Component\HttpFoundation\RequestStack();
+        $stack->push($request);
+        $voter = $this->buildVoter(
+            $this->createSecurity($user, ['ROLE_COMPLIANCE_MANAGER']),
+            $this->createTenantContext(null),
+            $this->createTenantRepository(),
+            $stack,
+        );
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED,
+            $voter->vote($this->createToken($user), null, [TenantScopedAdminVoter::PERSONA_ISB]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED,
+            $voter->vote($this->createToken($user), null, [TenantScopedAdminVoter::PERSONA_BCM]));
     }
 
     #[Test]

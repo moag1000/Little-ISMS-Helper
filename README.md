@@ -166,7 +166,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 | Bereich | Neuerung |
 |---|---|
-| **Role-Scope-Architektur** | `TenantScopedAdminVoter` -- `ROLE_ADMIN` ist auf den eigenen Tenant beschraenkt, `ROLE_SUPER_ADMIN` tenant-uebergreifend; Persona-Rollen (`ROLE_CISO`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`) gaten je eigenes Dashboard unter `/dashboards/<persona>` |
+| **Role-Scope-Architektur** | `TenantScopedAdminVoter` -- `ROLE_ADMIN` ist auf den eigenen Tenant beschraenkt, `ROLE_SUPER_ADMIN` tenant-uebergreifend; Persona-Rollen (`ROLE_CISO`, `ROLE_ISB`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`, `ROLE_BCM_OFFICER`, Leitung `ROLE_TOP_MGMT`) gaten je eigenes Dashboard unter `/dashboards/<persona>`; ein `PersonaResolver` entscheidet Landeseite, Tour und Berichts-Downloads |
 | **Lifecycle-Foundation (Symfony Workflow)** | `LifecycleService::transition()`-Facade als Pflicht-Einstieg; produktive Workflows u.a. `document`, `processing_activity`, `isms_objective`, `policy_template`, `asset` (Definitionen in `config/workflows/`); Tenant-Overrides via `/admin/lifecycle-overrides` |
 | **Status-Enums** | Erste-Klasse-Status-Lifecycle: `DocumentStatus`, `IncidentStatus`, `RiskStatus`, `DataBreachStatus`, etc.; Server-erzwungene 5-Transition-Matrix; bulk-status-change-Support via canonical `_bulk_action_bar.html.twig` |
 | **YAML-Workflows** | Regulatorische Workflows als YAML-Source-of-Truth (`config/workflows/regulatory/*.yaml`) -- GDPR Data Breach, Incident Response, Risk Treatment, DPIA, DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC-Plan Activation, Document Review, Incident Post-Mortem; Event-getriebene Auto-Progression via Doctrine-Listener |
@@ -176,7 +176,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 | **Industry-Preset Express-Path** | Tag-1-Onboarding in 3 Fragen -- Module und Baselines werden automatisch aktiviert |
 | **106 BSI IT-Grundschutz-Bausteine** | Vollstaendiger Baustein-Katalog (vorher 15 Beispiel-Bausteine) |
 | **3.543 Cross-Framework-Mappings** | 56 kuratierte YAML-Bibliotheken; Lex-Specialis-Markierungen |
-| **Persona-Dashboards** | CISO, Risk-Manager, DPO, Compliance-Manager, Auditor, Board -- rollenspezifisch verkabelt |
+| **Persona-Dashboards** | CISO, ISB, Risk-Manager, DPO, Compliance-Manager, BCM, Auditor, Leitung -- jede Persona landet nach dem Login auf ihrem Dashboard |
 | **19-Bucket Mein-Tag-Inbox** | Vollstaendige Inbox-Aggregation aus allen Modulen |
 | **Activity-Feed** | Vollansicht `/de/activity-feed` mit Scope-Filter, CSV-Export, HMAC-Verknuepfung |
 | **Quick-Fix-Operator-UI** | Web-UI fuer Migrationen, Schema-Reconcile und Daten-Repair ohne CLI |
@@ -274,7 +274,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 ### Sicherheit und Administration
 
-- **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR plus Persona-Rollen ROLE_CISO / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER plus granulare Permissions
+- **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR plus Persona-Rollen ROLE_CISO / ROLE_ISB / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER / ROLE_BCM_OFFICER / ROLE_TOP_MGMT (Leitung) plus granulare Permissions
 - **Tenant-Scoped Admin** -- `TenantScopedAdminVoter` schraenkt `ROLE_ADMIN` strikt auf den eigenen Tenant ein; nur `ROLE_SUPER_ADMIN` darf tenant-uebergreifend agieren
 - **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, globale Provider fuer alle Organisationen oder je Organisation, AEAD-verschluesselte Client-Secrets)
 - **MFA** -- TOTP mit Backup-Codes
@@ -285,7 +285,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 ### Persona-Dashboards und Workflow-Inbox
 
-- **6 Persona-Dashboards** -- CISO, Risk-Manager, DPO, Compliance-Manager, Auditor und Board, je per Persona-Rolle (`ROLE_CISO`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`) gegated unter `/dashboards/<persona>`
+- **8 Persona-Dashboards** -- CISO, ISB, Risk-Manager, DPO, Compliance-Manager, BCM, Auditor und Leitung, je per Persona-Rolle gegated unter `/dashboards/<persona>`; Login-Landeseite, Tour und Berichts-Downloads (Auditor laedt Audit-Paket selbst, Leitung den One-Pager) aus einer Zuordnung
 - **Board-Dashboard** -- Druckoptimierte Management-Ansicht (PDF-Export) fuer Geschaeftsfuehrung und Aufsichtsgremien
 - **AlvaHint-Engine** -- Kontextuelle Hilfetexte mit Rules-Engine (Tier-System, Modul-/Rollen-Gating, Render-/Dismiss-Telemetrie)
 - **Activity-Feed** -- Chronologische Event-Uebersicht aus allen Modulen; `?scope=compliance` filtert auf Compliance-relevante Events
@@ -527,7 +527,7 @@ Common Pitfalls -- siehe [`CLAUDE.md`](CLAUDE.md).
 ### Wichtige Patterns
 
 - **Multi-Tenancy:** Jede Entity traegt `tenant_id`. `TenantContext` filtert automatisch. `TenantScopedAdminVoter` haelt `ROLE_ADMIN` strikt auf den eigenen Tenant.
-- **RBAC:** USER bis SUPER_ADMIN + Holding-Rollen (ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR) + Persona-Rollen (ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER), granulare Permissions via Voter.
+- **RBAC:** USER bis SUPER_ADMIN + Holding-Rollen (ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR) + Persona-Rollen (ROLE_CISO, ROLE_ISB, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER, ROLE_BCM_OFFICER, ROLE_TOP_MGMT), granulare Permissions via Voter.
 - **Lifecycle-Foundation:** Status-Uebergaenge ueber `LifecycleService::transition()`-Facade. YAML-Baseline unter `config/workflows/<entity>.yaml`, per-Tenant-Overrides via `/admin/lifecycle-overrides`. Direkte `setStatus()`-Aufrufe sind anti-pattern.
 - **Module-Awareness:** Optional-Features werden ueber `config/modules.yaml` gegated. FormType-Trait `ModuleAwareFormTrait`, Controller-Trait `ModuleGatedControllerTrait`, Twig-Funktion `is_module_active()`. Vollstaendige Referenz: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md).
 - **Data Reuse:** Ein Nachweis wird ueber Cross-Framework-Mappings mehreren Frameworks zugeordnet. Review-Pflicht bei Uebernahme.
@@ -587,7 +587,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | Dokument | Thema |
 |---|---|
 | [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Mapping-Hub mit Tabs |
-| [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, Risk-Manager, DPO, CM, Auditor), Kennzahlen, Detailseiten- und Formular-Aufbau |
+| [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, ISB, Risk-Manager, DPO, CM, BCM, Auditor, Leitung), wer wo landet, Kennzahlen, Detailseiten- und Formular-Aufbau |
 | [Standortkarte](docs/user-guide/STANDORTKARTE.md) | Lagebild, Prüfungen, Ebenen, Sichten, Konzern, Lieferkette, Länderzonen, Ereignis, Stichprobe, Vergleich, Hebel, Sammelaktionen, Export, Geokodierung |
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |

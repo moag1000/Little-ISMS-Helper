@@ -414,6 +414,13 @@ class SetupPermissionsCommand
                     'data_breach.view', 'processing_activity.view', 'dpia.view',
                 ]
             ],
+            'ROLE_TOP_MGMT' => [
+                'description' => 'Top management (ISO 27001 5.1, NIS-2 Art. 20) — board dashboard and reports, read-only',
+                'permissions' => [
+                    'risk.view', 'asset.view', 'incident.view', 'control.view',
+                    'audit.view', 'compliance.view', 'report.view', 'kpi.view',
+                ]
+            ],
             'ROLE_ADMIN' => [
                 'description' => 'Administrator - full system access',
                 'permissions' => '*' // Will get all permissions

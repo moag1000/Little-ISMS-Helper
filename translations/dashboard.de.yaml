@@ -22,7 +22,7 @@ dashboard:
     ciso: CISO-Dashboard
     risk_manager: Risikomanager
     auditor: Auditor
-    board: Vorstand
+    board: Leitung
   stats:
     registered_assets: Registrierte Assets
     critical: kritisch

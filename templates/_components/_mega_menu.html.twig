@@ -163,7 +163,7 @@
 <nav class="sb-list" id="main-navigation" role="menubar" aria-label="{{ 'nav.main_navigation'|trans({}, 'nav') }}" aria-orientation="vertical">
 
     {# Mein Cockpit — Persona-Dashboard-Eingang #}
-    {% if is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('PERSONA_DPO') or is_granted('PERSONA_COMPLIANCE') or is_granted('PERSONA_ISB') or is_granted('PERSONA_BCM') or is_granted('ROLE_AUDITOR') %}
+    {% if is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('PERSONA_DPO') or is_granted('PERSONA_COMPLIANCE') or is_granted('PERSONA_ISB') or is_granted('PERSONA_BCM') or is_granted('PERSONA_BOARD') or is_granted('ROLE_AUDITOR') %}
     <button class="sb-link {% if nav_active == 'cockpit' %}is-active{% endif %}"
             type="button"
             role="menuitem"

@@ -25,8 +25,14 @@ the parent's scope do not. `TenantContext` service manages context.
 
 **RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN, plus holding-level
 ROLE_GROUP_CISO + ROLE_KONZERN_AUDITOR, plus persona-roles
-ROLE_CISO / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER (each
-gates own dashboard at `/dashboards/<persona>`). Plus fine-grained permissions.
+ROLE_CISO / ROLE_ISB / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER /
+ROLE_BCM_OFFICER / ROLE_TOP_MGMT (top management, read-only, board view) — each
+gates own dashboard at `/dashboards/<persona>`. "Which persona am I" is answered
+ONLY by `App\Security\Persona\PersonaResolver` (table: `Persona` enum): login
+landing, `/dashboards`, `PERSONA_*` voter attributes, tour, tour menu, My Day role
+checks (`reaches()`, role hierarchy — never `in_array(..., $user->getRoles())`) and
+report downloads (`ReportAccessVoter::*`, e.g. auditors get the audit package).
+Plus fine-grained permissions.
 
 ## Essential Commands
 
