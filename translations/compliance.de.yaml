@@ -623,6 +623,15 @@ compliance:
         aria:
             current: 'Ist (aktueller Reifegrad)'
             target: 'Soll (Ziel-Reifegrad)'
+        controls_title: 'Controls dahinter (%count%)'
+        evidence:
+            anchor: 'Nachweise'
+            title: 'Nachweise (%count%)'
+            empty: 'Keine Nachweise vorhanden.'
+            source:
+                requirement: 'An der Anforderung'
+                fulfillment: 'An der Erfüllung'
+                control: 'Über Control %ref%'
         mapped_col:
             control_id: 'Control-ID'
             name: 'Name'
@@ -1187,6 +1196,7 @@ compliance:
         source:
             controls: 'Aus Controls'
             mapping: 'Über Mapping'
+            records: 'Aus Datensätzen'
             maturity: 'Aus Reifegrad'
             manual: 'Von Hand bewertet'
             override_manual: 'Übersteuert'
@@ -1196,6 +1206,7 @@ compliance:
         why:
             controls: '{1} Aus 1 Control|]1,Inf[ Aus %count% Controls'
             mapping: '{1} Über 1 Mapping|]1,Inf[ Über %count% Mappings, das beste zählt'
+            records: '{1} Aus 1 Prüfung der Datensätze|]1,Inf[ Aus %count% Prüfungen der Datensätze, gemittelt'
             maturity: 'Aus dem Reifegrad'
             excluded: 'ausgeschlossen'
             mapping_formula: '%source% % × Mapping %mapping% %'

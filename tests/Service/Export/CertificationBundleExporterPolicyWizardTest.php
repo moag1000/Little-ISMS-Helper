@@ -53,6 +53,8 @@ use ZipArchive;
 #[AllowMockObjectsWithoutExpectations]
 final class CertificationBundleExporterPolicyWizardTest extends TestCase
 {
+    use EvidenceDocumentsFactoryTrait;
+
     private function makeTenant(int $id = 7): Tenant
     {
         $stub = $this->createStub(Tenant::class);
@@ -185,10 +187,9 @@ final class CertificationBundleExporterPolicyWizardTest extends TestCase
             $frameworkRepo,
             $this->createMock(RiskTreatmentPlanRepository::class),
             $pdfExporter,
+            $this->evidenceDocuments($workflowInstanceRepository),
             null,
             $this->createMock(TenantBrandingRepository::class),
-            null,
-            $workflowInstanceRepository,
         );
     }
 

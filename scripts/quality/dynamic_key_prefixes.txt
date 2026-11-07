@@ -2,6 +2,7 @@
 # scripts/quality/check_translation_dynamic_keys.py.
 # Lines are sorted; format: `<prefix>\t<usage-count>`.
 # A NEW prefix in this list will fail CI until committed here.
+
 Art	1
 access_review.decision	2
 access_review.scope	2
@@ -79,6 +80,7 @@ compliance.mapping.hub.tabs	1
 compliance.mapping.hub.views	1
 compliance.mapping.rel_type	1
 compliance.maturity.label	1
+compliance.requirement.evidence.source	1
 compliance.severity	1
 compliance_import	1
 compliance_import.history.decision	1
@@ -192,7 +194,7 @@ mris.wizard.ai_risk.class	1
 my_day.badge_value	1
 my_day.hint	1
 my_day.kpi	1
-my_day.section	1
+my_day.section	2
 nis2.art21.measure	1
 nis2.dashboard.letter	1
 nis2.dashboard.status	1

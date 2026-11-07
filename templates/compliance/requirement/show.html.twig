@@ -54,6 +54,7 @@
     {{ _fa_anchor_bar.render([
         { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
         { id: 'details', label: 'compliance.requirement.details'|trans({}, 'compliance') },
+        { id: 'evidence', label: 'compliance.requirement.evidence.anchor'|trans({}, 'compliance') },
         { id: 'fulfillment', label: 'show.anchor.fulfillment'|trans({}, 'messages') },
         { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
     ]) }}
@@ -210,12 +211,12 @@
                 </div>
             {% endif %}
 
-            {# Mapped Controls #}
-            {% if requirement.mappedControls|length > 0 %}
+            {# The organisation's controls behind the requirement (what the rule reads) #}
+            {% if rule_controls|length > 0 %}
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                     {% block card_header %}
                         <div class="card-header">
-                            <h2 class="mb-0"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> Mapped Controls ({{ requirement.mappedControls|length }})</h2>
+                            <h2 class="mb-0"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ 'compliance.requirement.controls_title'|trans({'%count%': rule_controls|length}, 'compliance') }}</h2>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -233,9 +234,9 @@
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
-                                {% for control in requirement.mappedControls %}
+                                {% for control in rule_controls %}
                                     <tr>
-                                        <td>{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false } only %}</td>
+                                        <td><a href="{{ path('app_soa_show', {id: control.id}) }}">{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false } only %}</a></td>
                                         <td>{{ control.name }}</td>
                                         <td>
                                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: control.implementationStatus } %}
@@ -248,6 +249,35 @@
                     {% endblock %}
                 {% endembed %}
             {% endif %}
+
+            {# Evidence: on the requirement, its fulfilment and the controls behind it #}
+            <div id="evidence" class="fa-show-section">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> {{ 'compliance.requirement.evidence.title'|trans({'%count%': evidence|length}, 'compliance') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {% if evidence is empty %}
+                        <p class="text-body-secondary mb-0">{{ 'compliance.requirement.evidence.empty'|trans({}, 'compliance') }}</p>
+                    {% else %}
+                        <ul class="list-unstyled mb-0">
+                            {% for row in evidence %}
+                                <li class="d-flex justify-content-between flex-wrap gap-2 py-1 border-bottom">
+                                    <a href="{{ path('app_document_show', {id: row.document.id}) }}">{{ row.document.originalFilename|default(row.document.filename) }}</a>
+                                    <span class="small text-body-secondary">
+                                        {% for source in row.sources %}
+                                            {{ ('compliance.requirement.evidence.source.' ~ source.type)|trans({'%ref%': source.ref}, 'compliance') }}{% if not loop.last %} · {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+            </div>
 
             {# Cross-Framework Equivalents #}
             {% if cross_framework_equivalents is defined and cross_framework_equivalents|length > 0 %}

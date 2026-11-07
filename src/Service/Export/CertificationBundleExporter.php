@@ -8,7 +8,6 @@ use App\Entity\Document;
 use App\Entity\SoaSnapshot;
 use App\Entity\Tenant;
 use App\Entity\User;
-use App\Entity\WorkflowInstance;
 use App\Enum\DocumentStatus;
 use App\Repository\AssetRepository;
 use App\Repository\ComplianceFrameworkRepository;
@@ -19,7 +18,6 @@ use App\Repository\DocumentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\TenantBrandingRepository;
-use App\Repository\WorkflowInstanceRepository;
 use App\Service\AuditLogger;
 use App\Service\Group\HoldingScope;
 use App\Service\PdfExportService;
@@ -27,7 +25,6 @@ use App\Service\PolicyWizard\Export\PolicyPdfExporter;
 use App\Service\Soa\SoaSnapshotService;
 use App\Service\SoAReportService;
 use DateTimeImmutable;
-use DateTimeInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use App\Util\CsvSanitizer;
@@ -75,10 +72,10 @@ final class CertificationBundleExporter
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly RiskTreatmentPlanRepository $treatmentPlanRepository,
         private readonly PolicyPdfExporter $pdfExporter,
+        private readonly EvidenceDocuments $evidence,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?TenantBrandingRepository $brandingRepository = null,
         private readonly ?LoggerInterface $logger = null,
-        private readonly ?WorkflowInstanceRepository $workflowInstanceRepository = null,
         private readonly ?SoaSnapshotService $soaSnapshotService = null,
     ) {
     }
@@ -212,7 +209,7 @@ final class CertificationBundleExporter
         $wizardResult = $this->addPolicyWizardDocuments($zip, $rootDir, $tenant);
 
         // ── 04: Evidence Documents ──────────────────────────────────────
-        $evidenceResult = $this->addEvidenceDocuments($zip, $rootDir);
+        $evidenceResult = $this->addEvidenceDocuments($zip, $rootDir, $tenant);
         $documentCount = $evidenceResult['document_count'] + $wizardResult['document_count'];
 
         // ── 02_FRAMEWORK_MAPPING: per-framework coverage CSVs ───────────
@@ -871,15 +868,17 @@ final class CertificationBundleExporter
     {
         $controlStats = $this->controlRepository->getImplementationStats($tenant);
 
-        // Count evidence documents linked to compliance requirements
+        // Distinct evidence documents of this organisation behind the requirements
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
-        $evidenceCount = 0;
+        $evidenceIds = [];
         foreach ($frameworks as $framework) {
-            $requirements = $this->complianceRequirementRepository->findByFramework($framework);
-            foreach ($requirements as $req) {
-                $evidenceCount += $req->getEvidenceDocuments()->count();
+            foreach ($this->complianceRequirementRepository->findByFramework($framework) as $req) {
+                foreach ($this->evidence->forRequirement($req, $tenant) as $doc) {
+                    $evidenceIds[(int) $doc->getId()] = true;
+                }
             }
         }
+        $evidenceCount = count($evidenceIds);
 
         // Count gaps
         $gapCount = 0;
@@ -1048,8 +1047,8 @@ final class CertificationBundleExporter
                     ? 'edited'
                     : 'pristine';
 
-                $approver = $this->resolveDocumentApprover($doc);
-                $sha256 = $this->computeDocumentSha256($doc, $pdfBinary);
+                $approver = $this->evidence->approver($doc);
+                $sha256 = $this->evidence->sha256($doc, $pdfBinary);
                 $wizardRun = $doc->getGeneratedFromWizardRun();
 
                 $indexRows[] = [
@@ -1097,7 +1096,7 @@ final class CertificationBundleExporter
      *
      * @return array{document_count: int, index_rows: list<list<string>>}
      */
-    private function addEvidenceDocuments(\ZipArchive $zip, string $rootDir): array
+    private function addEvidenceDocuments(\ZipArchive $zip, string $rootDir, Tenant $tenant): array
     {
         $evidenceDir = $rootDir . '/04_EVIDENCE';
         $documentCount = 0;
@@ -1125,18 +1124,10 @@ final class CertificationBundleExporter
             $requirements = $this->complianceRequirementRepository->findByFramework($framework);
 
             foreach ($requirements as $req) {
-                $evidence = $req->getEvidenceDocuments();
-                if ($evidence->count() === 0) {
-                    continue;
-                }
-
                 $category = $this->safeFilename((string) ($req->getCategory() ?: 'general'));
                 $idx = 1;
 
-                foreach ($evidence as $doc) {
-                    if ($doc->isArchived() || $doc->getStatus() === DocumentStatus::Archived->value) {
-                        continue;
-                    }
+                foreach ($this->evidence->forRequirement($req, $tenant) as $doc) {
                     if ($doc->getGeneratedFromTemplate() !== null) {
                         continue;
                     }
@@ -1157,8 +1148,8 @@ final class CertificationBundleExporter
                         $zip->addFromString($zipPath . '.MISSING.txt', $stub);
                     }
 
-                    $approver = $this->resolveDocumentApprover($doc);
-                    $sha256 = $this->computeDocumentSha256($doc, null);
+                    $approver = $this->evidence->approver($doc);
+                    $sha256 = $this->evidence->sha256($doc, null);
                     $wizardRun = $doc->getGeneratedFromWizardRun();
                     $template = $doc->getGeneratedFromTemplate();
 
@@ -1191,132 +1182,6 @@ final class CertificationBundleExporter
             'document_count' => $documentCount,
             'index_rows' => $indexRows,
         ];
-    }
-
-    // ─── Approver Resolution (task — Auditor MINOR-NC) ────────────
-
-    /**
-     * Resolve approver identity for a document.
-     *
-     * Priority chain:
-     *   1) WorkflowInstance with entityType='Document' + status='approved'
-     *      — most recent completedAt wins. Source of truth for documents
-     *      that ran through a formal approval workflow.
-     *   2) policyBodyEditedBy / policyBodyEditedAt — wizard docs that
-     *      were customised + saved with status='approved' fall here.
-     *   3) uploadedBy / uploadedAt — fallback for legacy upload-only flow.
-     *
-     * Empty fields ('') when we cannot establish identity, so auditors
-     * see explicit gaps instead of silent fallbacks.
-     *
-     * @return array{user_email: string, user_id: ?int, approved_at: string}
-     */
-    private function resolveDocumentApprover(Document $doc): array
-    {
-        $documentId = $doc->getId();
-
-        // 1) Workflow approval — highest evidentiary weight.
-        if ($this->workflowInstanceRepository !== null && $documentId !== null) {
-            try {
-                $instances = $this->workflowInstanceRepository->findByEntity('Document', $documentId);
-                $best = null;
-                foreach ($instances as $instance) {
-                    if (!$instance instanceof WorkflowInstance) {
-                        continue;
-                    }
-                    if ($instance->getStatus() !== 'approved') {
-                        continue;
-                    }
-                    if ($best === null || ($instance->getCompletedAt() !== null
-                        && $best->getCompletedAt() !== null
-                        && $instance->getCompletedAt() > $best->getCompletedAt())
-                    ) {
-                        $best = $instance;
-                    }
-                }
-                if ($best !== null) {
-                    $approver = $best->getInitiatedBy();
-                    return [
-                        'user_email' => $approver?->getEmail() ?? '',
-                        'user_id' => $approver?->getId(),
-                        'approved_at' => $best->getCompletedAt()?->format(DateTimeInterface::ATOM) ?? '',
-                    ];
-                }
-            } catch (\Throwable $e) {
-                $this->logger?->debug(
-                    'CertificationBundle: workflow lookup failed; falling through.',
-                    ['document_id' => $documentId, 'error' => $e->getMessage()],
-                );
-            }
-        }
-
-        // 2) Wizard-policy edit signal — locked + edited == approved-by-editor.
-        if ($doc->getStatus() === DocumentStatus::Approved->value) {
-            $editor = $doc->getPolicyBodyEditedBy();
-            $editedAt = $doc->getPolicyBodyEditedAt();
-            if ($editor !== null && $editedAt !== null) {
-                return [
-                    'user_email' => $editor->getEmail() ?? '',
-                    'user_id' => $editor->getId(),
-                    'approved_at' => $editedAt->format(DateTimeInterface::ATOM),
-                ];
-            }
-        }
-
-        // 3) Upload fallback — only treat as "approved by uploader" when
-        // status actually says approved. Otherwise we leave it blank so
-        // the auditor sees the gap rather than a misleading identity.
-        if ($doc->getStatus() === DocumentStatus::Approved->value) {
-            $uploader = $doc->getUploadedBy();
-            $uploadedAt = $doc->getUploadedAt();
-            if ($uploader !== null) {
-                return [
-                    'user_email' => $uploader->getEmail() ?? '',
-                    'user_id' => $uploader->getId(),
-                    'approved_at' => $uploadedAt instanceof DateTimeInterface
-                        ? $uploadedAt->format(DateTimeInterface::ATOM)
-                        : '',
-                ];
-            }
-        }
-
-        return ['user_email' => '', 'user_id' => null, 'approved_at' => ''];
-    }
-
-    /**
-     * Compute SHA-256 of the document body. Priority:
-     *   1) Rendered binary (wizard PDF render path) — always exact.
-     *   2) Existing `sha256Hash` column — set on upload by file-upload service.
-     *   3) Hash the file on disk if readable.
-     *   4) Hash the persisted policy body (wizard fallback when the
-     *      column is blank and there is no on-disk file).
-     *   5) '' — explicit empty so auditors can grep for gaps.
-     */
-    private function computeDocumentSha256(Document $doc, ?string $renderedBinary): string
-    {
-        if ($renderedBinary !== null && $renderedBinary !== '') {
-            return hash('sha256', $renderedBinary);
-        }
-
-        $stored = (string) ($doc->getSha256Hash() ?? '');
-        if ($stored !== '') {
-            return $stored;
-        }
-
-        $filePath = (string) $doc->getFilePath();
-        if ($filePath !== '' && is_file($filePath) && is_readable($filePath)) {
-            $hash = hash_file('sha256', $filePath);
-            if (is_string($hash) && $hash !== '') {
-                return $hash;
-            }
-        }
-
-        $body = (string) ($doc->getPolicyBody() ?? '');
-        if ($body !== '') {
-            return hash('sha256', $body);
-        }
-
-        return '';
     }
 
     // ─── Framework Coverage ────────────────────────────────
@@ -1376,18 +1241,14 @@ final class CertificationBundleExporter
                 default => 'gap',
             };
 
-            $evidence = $req->getEvidenceDocuments();
-            if ($evidence->count() === 0) {
+            $evidence = $this->evidence->forRequirement($req, $tenant);
+            if ($evidence === []) {
                 $rows[] = [$reqId, $this->oneLine((string) $req->getTitle()), '', $status, (string) $pct];
                 $rowCount++;
                 continue;
             }
 
             foreach ($evidence as $doc) {
-                if ($doc->isArchived() || $doc->getStatus() === DocumentStatus::Archived->value) {
-                    continue;
-                }
-
                 $category = $this->safeFilename((string) ($req->getCategory() ?: 'general'));
                 if ($doc->getGeneratedFromTemplate() !== null) {
                     $template = $doc->getGeneratedFromTemplate();

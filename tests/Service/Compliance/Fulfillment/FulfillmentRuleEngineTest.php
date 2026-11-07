@@ -13,7 +13,9 @@ use App\Entity\Tenant;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ControlRepository;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivation;
 use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
+use App\Service\Compliance\Fulfillment\RecordCheckRule;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
@@ -31,6 +33,7 @@ final class FulfillmentRuleEngineTest extends TestCase
     /** @var array<int, ComplianceRequirementFulfillment> requirement id → stored fulfilment */
     private array $stored = [];
     private int $nextId = 1;
+    private ?FulfillmentDerivation $records = null;
 
     protected function setUp(): void
     {
@@ -157,6 +160,19 @@ final class FulfillmentRuleEngineTest extends TestCase
     }
 
     #[Test]
+    public function recordsComeAfterControlsAndBeforeMappings(): void
+    {
+        $this->records = new FulfillmentDerivation(40, FulfillmentRuleEngine::KIND_RECORDS, [['type' => 'record', 'value' => 40]]);
+        $this->control('5.1', 'implemented');
+        $source = $this->requirement('ISO27001', 'A.5.1');
+        $clause = $this->requirement('ISO27001', 'ISO27001-7.2');
+        $this->mapping($source, $clause, 100);
+
+        self::assertSame(FulfillmentRuleEngine::KIND_RECORDS, $this->engine()->derive($clause, $this->tenant)?->kind, 'own records beat inheritance');
+        self::assertSame(FulfillmentRuleEngine::KIND_CONTROLS, $this->engine()->derive($source, $this->tenant)?->kind, 'controls beat records');
+    }
+
+    #[Test]
     public function controlValueScale(): void
     {
         self::assertSame(100, FulfillmentRuleEngine::controlValue((new Control())->setImplementationStatus('verified')));
@@ -189,7 +205,10 @@ final class FulfillmentRuleEngineTest extends TestCase
             fn (array $criteria): ?ComplianceRequirementFulfillment => $this->stored[(int) $criteria['requirement']->getId()] ?? null,
         );
 
-        return new FulfillmentRuleEngine($controls, $mappings, $fulfillments);
+        $records = $this->createStub(RecordCheckRule::class);
+        $records->method('derive')->willReturnCallback(fn (): ?FulfillmentDerivation => $this->records);
+
+        return new FulfillmentRuleEngine($controls, $mappings, $fulfillments, $records);
     }
 
     private function control(string $id, string $status, ?bool $applicable = true, ?string $justification = null): Control

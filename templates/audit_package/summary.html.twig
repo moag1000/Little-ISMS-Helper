@@ -64,7 +64,7 @@
         <tbody>
             {% for req in requirements %}
                 {% set pct = fulfillment_percentages[req.id] ?? 0 %}
-                {% set evCount = req.evidenceDocuments|length %}
+                {% set evCount = evidence_counts[req.id] ?? 0 %}
                 <tr>
                     <td><code>{{ req.requirementId }}</code></td>
                     <td>{{ req.title }}</td>
