@@ -48,7 +48,6 @@ final class ExistingFrameworksType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'existing-frameworks-already-certified',
-                    'data-existing-frameworks-target' => 'alreadyCertified',
                 ],
                 'help' => 'existing_frameworks.already_certified.help',
                 'translation_domain' => 'setup_wizard',
@@ -61,7 +60,6 @@ final class ExistingFrameworksType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'existing-frameworks-newly-added',
-                    'data-existing-frameworks-target' => 'newlyAdded',
                 ],
                 'help' => 'existing_frameworks.newly_added.help',
                 'translation_domain' => 'setup_wizard',

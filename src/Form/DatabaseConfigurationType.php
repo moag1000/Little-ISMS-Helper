@@ -81,10 +81,6 @@ final class DatabaseConfigurationType extends AbstractType implements SectionMap
                 'choices' => $availableTypes,
                 'data' => $defaultDbType,
                 'required' => true,
-                'attr' => [
-                    'data-controller' => 'database-type',
-                    'data-action' => 'change->database-type#toggle',
-                ],
                 'help' => 'setup.database.type_help',
                     'choice_translation_domain' => 'admin',
             ])
@@ -100,7 +96,6 @@ final class DatabaseConfigurationType extends AbstractType implements SectionMap
                 ],
                 'attr' => [
                     'placeholder' => 'localhost',
-                    'data-database-type-target' => 'hostField',
                 ],
                 'help' => 'setup.database.host_help',
             ])
@@ -110,7 +105,6 @@ final class DatabaseConfigurationType extends AbstractType implements SectionMap
                 'required' => false,
                 'attr' => [
                     'placeholder' => '3306',
-                    'data-database-type-target' => 'portField',
                 ],
                 'help' => 'setup.database.port_help',
             ])
@@ -120,7 +114,6 @@ final class DatabaseConfigurationType extends AbstractType implements SectionMap
                 'required' => false,
                 'attr' => [
                     'placeholder' => '/var/run/mysqld/mysqld.sock',
-                    'data-database-type-target' => 'socketField',
                 ],
                 'help' => 'setup.database.unix_socket_help',
             ])
@@ -152,7 +145,6 @@ final class DatabaseConfigurationType extends AbstractType implements SectionMap
                 ],
                 'attr' => [
                     'placeholder' => $isStandaloneDocker ? 'isms' : 'root',
-                    'data-database-type-target' => 'userField',
                 ],
                 'help' => 'setup.database.user_help',
             ])
@@ -162,7 +154,6 @@ final class DatabaseConfigurationType extends AbstractType implements SectionMap
                 'required' => false,
                 'attr' => [
                     'placeholder' => '••••••••',
-                    'data-database-type-target' => 'passwordField',
                 ],
                 'help' => $isStandaloneDocker
                     ? 'setup.database.password_help_standalone'
@@ -174,7 +165,6 @@ final class DatabaseConfigurationType extends AbstractType implements SectionMap
                 'required' => false,
                 'attr' => [
                     'placeholder' => $isStandaloneDocker ? 'mariadb-11.4.0' : '8.0',
-                    'data-database-type-target' => 'versionField',
                 ],
                 'help' => 'setup.database.server_version_help',
             'translation_domain' => 'setup',

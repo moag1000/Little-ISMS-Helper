@@ -19,7 +19,7 @@ import { Controller } from '@hotwired/stimulus'
  *   <div data-controller="risk-mini-heatmap"
  *        data-risk-mini-heatmap-probability-selector-value="#risk_probability"
  *        data-risk-mini-heatmap-impact-selector-value="#risk_impact">
- *     ... 25 cells with data-risk-mini-heatmap-cell-value="p_i" + data-score="N" ...
+ *     ... 25 cells with data-cell="p_i" + data-score="N" ...
  *     <span data-risk-mini-heatmap-target="scoreLabel">—</span>
  *   </div>
  */
@@ -64,7 +64,7 @@ export default class extends Controller {
 
         this.cellTargets.forEach(cell => {
             cell.classList.remove('is-active')
-            if (valid && cell.dataset.riskMiniHeatmapCellValue === `${p}_${i}`) {
+            if (valid && cell.dataset.cell === `${p}_${i}`) {
                 cell.classList.add('is-active')
             }
         })

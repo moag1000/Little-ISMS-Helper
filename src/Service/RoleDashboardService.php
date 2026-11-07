@@ -43,7 +43,7 @@ class RoleDashboardService
         private readonly IncidentRepository $incidentRepository,
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
         private readonly Security $security,
-        private readonly TenantContext $tenantContext,
+        private readonly TenantRecords $tenantRecords,
         private readonly DashboardMetricsProvider $metrics,
         private readonly ?RiskTreatmentPlanRepository $treatmentPlanRepository = null,
         private readonly ?InternalAuditRepository $auditRepository = null,
@@ -60,7 +60,7 @@ class RoleDashboardService
      */
     public function getCisoDashboard(): array
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantRecords->resolve(null);
 
         // Framework compliance overview
         $frameworkComparison = $this->complianceAnalyticsService->getFrameworkComparison();
@@ -155,7 +155,7 @@ class RoleDashboardService
      */
     public function getRiskManagerDashboard(): array
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantRecords->resolve(null);
 
         // Risk treatment pipeline
         $treatmentPipeline = $this->getRiskTreatmentPipeline();
@@ -185,7 +185,7 @@ class RoleDashboardService
 
         return [
             'summary' => [
-                'total_risks' => count($this->riskRepository->findAll()),
+                'total_risks' => count($this->tenantRecords->all($this->riskRepository, null)),
                 'high_critical' => $this->countHighCriticalRisks(),
                 'treated_percentage' => $treatmentPipeline['treated_percentage'],
                 'overdue_treatments' => count($overdueTreatments),
@@ -217,7 +217,7 @@ class RoleDashboardService
      */
     public function getAuditorDashboard(): array
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantRecords->resolve(null);
 
         // Audit schedule and status
         $auditStatus = $this->getAuditStatus();
@@ -273,7 +273,7 @@ class RoleDashboardService
      */
     public function getBoardDashboard(): array
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantRecords->resolve(null);
 
         // Get base statistics
         $stats = $this->dashboardStatisticsService->getDashboardStatistics();
@@ -315,7 +315,7 @@ class RoleDashboardService
             // Key Metrics
             'metrics' => [
                 'overall_compliance' => $overallCompliance,
-                'total_risks' => count($this->riskRepository->findAll()),
+                'total_risks' => count($this->tenantRecords->all($this->riskRepository, null)),
                 'critical_risks' => $highCriticalRisks,
                 'incidents_ytd' => $stats['incidents_total'] ?? 0,
                 'controls_implemented' => $stats['compliancePercentage'],
@@ -497,7 +497,7 @@ class RoleDashboardService
 
     private function getCriticalRisks(int $limit): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->tenantRecords->all($this->riskRepository, null);
 
         $criticalRisks = array_filter(
             $risks,
@@ -553,7 +553,7 @@ class RoleDashboardService
      */
     public function getLifecycleStuck(): array
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantRecords->resolve(null);
         if ($tenant === null) {
             return [];
         }
@@ -602,7 +602,7 @@ class RoleDashboardService
 
     private function getRecentIncidents(int $limit): array
     {
-        $incidents = $this->incidentRepository->findAll();
+        $incidents = $this->tenantRecords->all($this->incidentRepository, null);
 
         usort($incidents, fn($a, $b) => ($b->getDetectedAt() ?? new \DateTime('1970-01-01')) <=> ($a->getDetectedAt() ?? new \DateTime('1970-01-01')));
 
@@ -617,7 +617,7 @@ class RoleDashboardService
 
     private function getRiskTreatmentPipeline(): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->tenantRecords->all($this->riskRepository, null);
         $total = count($risks);
         $byStrategy = [
             'mitigate' => 0,
@@ -646,7 +646,7 @@ class RoleDashboardService
 
     private function getRisksByCategory(): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->tenantRecords->all($this->riskRepository, null);
         $byCategory = [];
         foreach ($risks as $risk) {
             $category = $risk->getCategory() ?? 'Uncategorized';
@@ -666,7 +666,7 @@ class RoleDashboardService
 
     private function countHighCriticalRisks(): int
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->tenantRecords->all($this->riskRepository, null);
         return count(array_filter($risks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::HIGH_MIN));
     }
 
@@ -675,7 +675,7 @@ class RoleDashboardService
         if ($this->treatmentPlanRepository === null) {
             return [];
         }
-        $plans = $this->treatmentPlanRepository->findAll();
+        $plans = $this->tenantRecords->all($this->treatmentPlanRepository, null);
         $now = new \DateTime();
         $overdue = array_filter($plans, fn($p) => $p->getTargetCompletionDate() !== null
             && $p->getTargetCompletionDate() < $now
@@ -691,7 +691,7 @@ class RoleDashboardService
 
     private function getUntreatedRisks(int $limit): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->tenantRecords->all($this->riskRepository, null);
 
         $untreated = array_filter($risks, fn($r) => $r->getTreatmentStrategy() === null);
 

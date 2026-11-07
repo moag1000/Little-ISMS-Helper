@@ -103,8 +103,6 @@ audit:
         additional_scoped_frameworks: 'Additional scoped frameworks'
         location: 'Site'
     new: New
-    corporate_audit_note_title: 'Corporate Audit Note Title'
-    corporate_audit_note: 'Corporate Audit Note'
     create: Create
     status:
         planned: Planned

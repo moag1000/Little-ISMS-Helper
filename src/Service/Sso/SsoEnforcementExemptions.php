@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\EventSubscriber\SsoEnforcementSubscriber;
 use App\EventSubscriber\TenantSsoEnforcementSubscriber;
+use App\Repository\IdentityProviderRepository;
 use App\Security\Voter\UserVoter;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,7 @@ class SsoEnforcementExemptions
         private readonly SsoEnforcementSubscriber $domainEnforcement,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly TenantContext $tenantContext,
+        private readonly IdentityProviderRepository $providerRepository,
     ) {
     }
 
@@ -54,9 +56,17 @@ class SsoEnforcementExemptions
         }
 
         $exempt = [];
+        // The enabled providers of each organisation are loaded once per page view,
+        // not twice per account (both subscribers would query them per user).
+        $providersByTenant = [];
         /** @var User $user */
         foreach ($queryBuilder->getQuery()->getResult() as $user) {
-            if ($this->isExempt($user) && $this->authorizationChecker->isGranted(UserVoter::VIEW, $user)) {
+            $tenant = $user->getTenant();
+            $key = $tenant?->getId() ?? 0;
+            $providersByTenant[$key] ??= $this->providerRepository->findEnabledForTenant($tenant);
+            if ($this->isExempt($user, $providersByTenant[$key])
+                && $this->authorizationChecker->isGranted(UserVoter::VIEW, $user)
+            ) {
                 $exempt[] = $user;
             }
         }
@@ -67,11 +77,13 @@ class SsoEnforcementExemptions
     /**
      * Enforced (by tenant flag or domain) but neither subscriber redirects —
      * both run on the same POST, the first redirect wins.
+     *
+     * @param list<IdentityProvider>|null $enabledProviders the user's organisation's enabled providers, if already loaded
      */
-    public function isExempt(User $user): bool
+    public function isExempt(User $user, ?array $enabledProviders = null): bool
     {
-        $byTenant = $this->tenantEnforcement->enforcementTarget($user);
-        $byDomain = $this->domainEnforcement->enforcementTarget($user, (string) $user->getEmail());
+        $byTenant = $this->tenantEnforcement->enforcementTarget($user, $enabledProviders);
+        $byDomain = $this->domainEnforcement->enforcementTarget($user, (string) $user->getEmail(), $enabledProviders);
 
         return ($byTenant === false || $byDomain === false)
             && !$byTenant instanceof IdentityProvider
