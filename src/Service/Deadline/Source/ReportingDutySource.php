@@ -68,7 +68,7 @@ final class ReportingDutySource extends EntityDeadlineSource
         }
     }
 
-    public function dueDateOf(object $item): ?DateTimeInterface
+    public function dueDateOf(object $item): DateTimeInterface
     {
         assert($item instanceof SlaDeadlineMonitor);
 
