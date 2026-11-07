@@ -23,6 +23,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\SupplierService;
 use App\Service\TagFilterService;
 use App\Service\TenantContext;
+use App\Util\IsmsScopeFilter;
 use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -127,6 +128,8 @@ class SupplierController extends AbstractController
                 fn(Supplier $s): bool => $s->isDoraRelevant(),
             ));
         }
+
+        $suppliers = IsmsScopeFilter::apply($suppliers, $request);
 
         // "Review fällig" via ?review_overdue=1 — PeriodicReviewService, one rule for all four lists
         $dueOnly = $request->query->get('review_overdue') === '1';

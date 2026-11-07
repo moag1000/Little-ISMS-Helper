@@ -242,6 +242,9 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `WorkflowService` - Workflow instance management (facade — stable public API)
 - `FieldCompletionAutoTransition` - Event-driven auto-progression listener (canonical since Y.1)
 - `ModuleConfigurationService` - Module activation check (per tenant)
+- `Register\RegisterCatalog` - the norm registers (ISO 27001 4.1–7.4): one entity `IsmsRegisterEntry`, types in
+  `App\Enum\RegisterType` (a new register = a new case, not a new table), proposals from existing records in
+  `RegisterProposalProvider`; guide `docs/user-guide/REGISTER.md`
 - `Kpi\KpiCatalog` - the one source of management KPIs (stable keys, tenant KPI thresholds applied,
   euro KPIs from the risk quant fields). Dashboards pick tiles by key: Twig `kpi('<key>')`,
   `_components/_kpi_tile.html.twig`; never call `DashboardStatisticsService::getManagementKPIs()`

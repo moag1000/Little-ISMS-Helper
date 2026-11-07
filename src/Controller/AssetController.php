@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\Location\LocationScope;
+use App\Util\IsmsScopeFilter;
 use App\Util\ListPage;
 use App\Attribute\RequiresModule;
 use App\Service\BulkDeleteService;
@@ -173,11 +174,9 @@ class AssetController extends AbstractController
 
         // DORA filter-chip "Nur DORA-relevant / DORA only" via ?dora_relevant=1
         if ($request->query->get('dora_relevant') === '1') {
-            $assets = array_values(array_filter(
-                $assets,
-                fn(Asset $a): bool => $a->isDoraRelevant(),
-            ));
+            $assets = array_values(array_filter($assets, fn(Asset $a): bool => $a->isDoraRelevant()));
         }
+        $assets = IsmsScopeFilter::apply($assets, $request);
 
         $typeStats = $tenant
             ? $this->assetRepository->countByType($tenant)

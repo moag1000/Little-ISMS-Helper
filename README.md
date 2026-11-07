@@ -200,6 +200,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **MRIS v1.5** -- zusaetzliche Branchen-Reife-Baselines mit DE/EN-i18n
 - **GSTOOL-XML-Import** -- 5-phasiger Migrationspfad fuer Grundschutz-Altbestaende (Zielobjekte -> Bausteine -> Massnahmen -> Risikoanalyse), Admin-UI mit Tabbed-Preview
 - **SoA-Export** -- Statement of Applicability als PDF, inklusive Management-Review nach Clause 9.3
+- **Register der Norm** -- ein Register-Mechanismus fuer Kontextthemen (4.1), rechtliche und vertragliche Anforderungen (4.2), Schnittstellen des Geltungsbereichs (4.3), Rollen (5.3), Chancen (6.1.1), Kompetenzen (7.2) und Kommunikation (7.4); Vorschlaege aus vorhandenen Daten (Kontexttexte, Rolleninhaber, Frameworks, interessierte Parteien, kritische Lieferanten, Management-Review), Kompetenzluecken aus Schulungsnachweisen, Merkmal "im Geltungsbereich" an Asset, Standort, Prozess und Lieferant, `REGISTERS.csv` im Audit-Paket, siehe [Register](docs/user-guide/REGISTER.md)
 
 ### Risikomanagement
 
@@ -589,6 +590,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Mapping-Hub mit Tabs |
 | [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, ISB, Risk-Manager, DPO, CM, BCM, Auditor, Leitung), wer wo landet, Kennzahlen, Detailseiten- und Formular-Aufbau |
 | [Standortkarte](docs/user-guide/STANDORTKARTE.md) | Lagebild, Prüfungen, Ebenen, Sichten, Konzern, Lieferkette, Länderzonen, Ereignis, Stichprobe, Vergleich, Hebel, Sammelaktionen, Export, Geokodierung |
+| [Register](docs/user-guide/REGISTER.md) | Register der Norm (4.1–7.4), Vorschläge aus vorhandenen Daten, Kompetenzlücken, Geltungsbereich, Prüfintervalle, Export |
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |

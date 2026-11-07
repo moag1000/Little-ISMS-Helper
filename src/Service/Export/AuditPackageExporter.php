@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Export;
 
+use App\Enum\RegisterType;
+use App\Repository\IsmsRegisterEntryRepository;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Document;
@@ -26,6 +28,7 @@ use App\Util\CsvSanitizer;
  * ZIP layout:
  *   {code}/INDEX.csv                  — master map: requirement → documents
  *   {code}/AUDIT_SUMMARY.pdf          — per-framework compliance summary
+ *   {code}/REGISTERS.csv              — norm registers (roles, legal requirements, …)
  *   {code}/{reqId}_{slug}/            — one folder per requirement
  *       README.txt                    — requirement text + control mapping +
  *                                       implementation status
@@ -40,6 +43,7 @@ final class AuditPackageExporter
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly PdfExportService $pdfExportService,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?IsmsRegisterEntryRepository $registerEntries = null,
     ) {
     }
 
@@ -109,6 +113,11 @@ final class AuditPackageExporter
 
         // Master INDEX
         $zip->addFromString($rootDir . '/INDEX.csv', $this->rowsToCsv($indexRows));
+
+        // Norm registers (ISO 27001 4.1, 4.2 b, 4.3 c, 5.3, 6.1.1, 7.2, 7.4) — Paket 9
+        if ($this->registerEntries !== null) {
+            $zip->addFromString($rootDir . '/REGISTERS.csv', $this->rowsToCsv($this->registerRows($tenant)));
+        }
 
         // PDF summary
         $summaryPdf = $this->pdfExportService->generatePdf(
@@ -262,6 +271,28 @@ final class AuditPackageExporter
     private function oneLine(string $value): string
     {
         return preg_replace('/\s+/u', ' ', trim($value)) ?? $value;
+    }
+
+    /** @return list<list<string>> */
+    private function registerRows(Tenant $tenant): array
+    {
+        $rows = [['register', 'norm', 'title', 'category', 'reference', 'owner', 'next_review', 'last_reviewed']];
+        foreach (RegisterType::cases() as $type) {
+            foreach ($this->registerEntries?->findByType($tenant, $type) ?? [] as $entry) {
+                $rows[] = [
+                    $type->value,
+                    $type->normReference(),
+                    $this->oneLine((string) $entry->getTitle()),
+                    (string) $entry->getCategory(),
+                    (string) $entry->getReference(),
+                    (string) $entry->getEffectiveOwner(),
+                    (string) $entry->getNextReviewDate()?->format('Y-m-d'),
+                    (string) $entry->getLastReviewedAt()?->format('Y-m-d'),
+                ];
+            }
+        }
+
+        return $rows;
     }
 
     /** @param list<list<string>> $rows */

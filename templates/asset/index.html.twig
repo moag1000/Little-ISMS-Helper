@@ -45,6 +45,7 @@
     card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/asset" data-bulk-actions-entity-label="' ~ 'asset.modern.header.title'|trans({}, 'asset') ~ '"',
 } %}
     {% block list_filters %}
+        {% include '_components/_isms_scope_filter.html.twig' %}
         {% if app.request.query.getInt('location') > 0 %}
             <input type="hidden" name="location" value="{{ app.request.query.getInt('location') }}">
         {% endif %}

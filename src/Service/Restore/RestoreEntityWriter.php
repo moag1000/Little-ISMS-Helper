@@ -124,6 +124,8 @@ class RestoreEntityWriter
             'ISMSContext' => 58,
             'ISMSObjective' => 59,
             'CorporateGovernance' => 60,
+            'IsmsRegisterEntry' => 61,
+            'IsmsRegisterLink' => 61,
             'ChangeRequest' => 62,
             'CryptographicOperation' => 63,
             'PhysicalAccessLog' => 64,

@@ -59,6 +59,22 @@ final class PersonaResolver
     }
 
     /**
+     * Personas whose role is assigned to the user directly (no hierarchy):
+     * "who holds the ISB role" for the ISMS role register (ISO 27001 5.3).
+     *
+     * @return list<Persona>
+     */
+    public function assignedPersonasOf(UserInterface $user): array
+    {
+        $assigned = $user->getRoles();
+
+        return array_values(array_filter(
+            Persona::cases(),
+            static fn (Persona $p): bool => array_intersect($p->roles(), $assigned) !== [],
+        ));
+    }
+
+    /**
      * Every persona the user holds through the role hierarchy, in priority order.
      *
      * @return list<Persona>

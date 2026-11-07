@@ -192,6 +192,7 @@ import:
             description: 'Description'
             contactEmail: 'Contact Email'
             criticality: 'Criticality'
+            inIsmsScope: 'In ISMS scope'
             isDoraRelevant: 'DORA Relevant'
             identifier: 'Control ID'
             title: 'Title'

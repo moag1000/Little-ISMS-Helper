@@ -1,0 +1,14 @@
+{# On the ISMS context page: where the structured register for this topic lives.
+   Params: types (list of RegisterType values), legacy (bool: free text still shown below). #}
+{% set _stats = register_stats() %}
+<div class="fa-register-link small mb-3">
+    {% for t in types %}
+        {% set _n = _stats[t].active ?? 0 %}
+        <a href="{{ path('app_register_list', {type: t}) }}" class="me-3" data-turbo-action="advance">
+            {{- ('register.type.' ~ t ~ '.title')|trans({}, 'register') }}: {{ 'register.context.count'|trans({'%count%': _n}, 'register') -}}
+        </a>
+    {% endfor %}
+    {% if legacy|default(false) %}
+        <div class="text-muted mt-1">{{ 'register.context.legacy_hint'|trans({}, 'register') }}</div>
+    {% endif %}
+</div>

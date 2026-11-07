@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Trait\IsmsScopeTrait;
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
@@ -48,6 +49,8 @@ use App\Validator\Constraint\SameTenantOwner;
 )]
 class Location
 {
+    use IsmsScopeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

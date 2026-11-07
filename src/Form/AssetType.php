@@ -61,6 +61,11 @@ final class AssetType extends AbstractType implements SectionMapInterface
                     'placeholder' => 'asset.placeholder.name',
                 ],
             ])
+            ->add('inIsmsScope', CheckboxType::class, [
+                'label' => 'asset.field.in_isms_scope',
+                'help' => 'asset.help.in_isms_scope',
+                'required' => false,
+            ])
             ->add('description', TextareaType::class, [
                 'label' => 'asset.field.description',
                 'required' => false,
@@ -490,6 +495,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
         return [
             'overview' => [
                 'name',
+                'inIsmsScope',
                 'description',
                 'assetType',
                 'subType',

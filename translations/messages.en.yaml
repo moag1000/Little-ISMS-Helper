@@ -130,6 +130,11 @@ confirm:
     _default: Confirm
 back: Back
 common:
+    isms_scope:
+        label: 'ISMS scope'
+        all: 'All'
+        in: 'In scope'
+        out: 'Out of scope'
     tenant_required: 'Organisation context required.'
     access_denied: 'Access denied.'
     module_not_active: 'Module "%module%" is not active. Please activate via Setup → Modules.'
@@ -2489,6 +2494,7 @@ show:
             incident: 'Record incident'
             vulnerability: 'Derive vulnerability'
     status:
+        in_isms_scope: 'In ISMS scope'
         owner: 'Owner'
         next_review: 'Next review'
         level: 'Residual risk'

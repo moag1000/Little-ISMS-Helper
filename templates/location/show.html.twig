@@ -43,6 +43,7 @@
         status: _status,
         facts: [
             { label: 'show.status.owner'|trans({}, 'messages'), value: location.effectiveResponsiblePerson },
+            { label: 'show.status.in_isms_scope'|trans({}, 'messages'), value: (location.inIsmsScope ? 'common.yes' : 'common.no')|trans({}, 'messages') },
             { label: 'location.field.security_level'|trans({}, 'locations'), value: location.securityLevel ? ('location.security.' ~ location.securityLevel)|trans({}, 'locations') : null },
             { label: 'show.status.protection'|trans({}, 'messages'), value: profile and profile.site.protection ? profile.site.protection : null },
         ],

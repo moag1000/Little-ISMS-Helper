@@ -1,0 +1,15 @@
+{# Register entries that link to this record (legal requirements, interfaces, communication, competences). #}
+{% set _refs = register_references(record) %}
+{% if _refs is not empty %}
+<section id="register-references" class="fa-show-section" aria-labelledby="register-references-title">
+    <h2 id="register-references-title" class="h5 mb-2">{{ 'register.references.title'|trans({}, 'register') }}</h2>
+    <ul class="mb-0">
+        {% for ref in _refs %}
+            <li>
+                <span class="text-muted small">{{ ('register.type.' ~ ref.type.value ~ '.title')|trans({}, 'register') }}:</span>
+                <a href="{{ path('app_register_entry_show', {id: ref.id}) }}">{{ ref.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}

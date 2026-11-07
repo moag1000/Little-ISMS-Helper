@@ -145,6 +145,8 @@ class BackupService
         'ISMSObjective',
         'InterestedParty',
         'CorporateGovernance',
+        'IsmsRegisterEntry',        // FK: Tenant, User, Person — norm registers (Paket 9)
+        'IsmsRegisterLink',         // FK: IsmsRegisterEntry — polymorphic link (field + ref_id)
 
         // Inbound Security-Questionnaire Answer Library
         'AnswerLibraryEntry',            // FK: Tenant, User (createdBy)
