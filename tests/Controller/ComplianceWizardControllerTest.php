@@ -203,10 +203,10 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->client->loginUser($this->managerUser);
         $token = $this->generateCsrfToken('wizard_manual_confirm');
 
-        // Confirm a genuinely-manual clause (ISO 27001 Cl. 5.1, no backing entity).
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/leadership_commitment/confirm', [
+        // Confirm a genuinely-manual clause (ISO 27001 Cl. 4.4, no backing entity).
+        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/isms_established/confirm', [
             '_token' => $token,
-            'category' => 'leadership',
+            'category' => 'context',
             'confirmed' => '1',
         ]);
         $this->assertResponseRedirects();
@@ -215,15 +215,15 @@ class ComplianceWizardControllerTest extends WebTestCase
         $row = $repo->findOneBy([
             'tenant' => $this->testTenant,
             'wizardKey' => 'iso27001',
-            'checkKey' => 'leadership_commitment',
+            'checkKey' => 'isms_established',
         ]);
         $this->assertNotNull($row, 'Confirmation row should be created');
         $this->assertTrue($row->isConfirmed());
 
         // Un-confirm removes the row again.
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/leadership_commitment/confirm', [
+        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/isms_established/confirm', [
             '_token' => $token,
-            'category' => 'leadership',
+            'category' => 'context',
             'confirmed' => '0',
         ]);
         $this->assertResponseRedirects();
@@ -232,7 +232,7 @@ class ComplianceWizardControllerTest extends WebTestCase
         $gone = $repo->findOneBy([
             'tenant' => $this->testTenant,
             'wizardKey' => 'iso27001',
-            'checkKey' => 'leadership_commitment',
+            'checkKey' => 'isms_established',
         ]);
         $this->assertNull($gone, 'Confirmation row should be removed after un-confirm');
     }
@@ -242,9 +242,9 @@ class ComplianceWizardControllerTest extends WebTestCase
     {
         $this->client->loginUser($this->testUser);
         $token = $this->generateCsrfToken('wizard_manual_confirm');
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/leadership_commitment/confirm', [
+        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/isms_established/confirm', [
             '_token' => $token,
-            'category' => 'leadership',
+            'category' => 'context',
             'confirmed' => '1',
         ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);

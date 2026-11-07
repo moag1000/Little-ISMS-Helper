@@ -41,7 +41,7 @@ class ComplianceInheritanceService
         private readonly FourEyesApprovalService $fourEyesService,
         private readonly AuditLogger $auditLogger,
         private readonly CompliancePolicyService $policy,
-        private readonly ?FulfillmentDerivationService $derivation = null,
+        private readonly FulfillmentDerivationService $derivation,
     ) {
     }
 
@@ -59,10 +59,6 @@ class ComplianceInheritanceService
         ?string $overrideReason = null,
     ): void {
         $percentage = min(100, max(0, $percentage));
-        if ($this->derivation === null) {
-            $fulfillment->setFulfillmentPercentage($percentage);
-            return;
-        }
         if (!$fulfillment->isDerived()) {
             $this->derivation->setManual($fulfillment, $percentage);
             return;
@@ -85,7 +81,7 @@ class ComplianceInheritanceService
     {
         $fulfillment = $this->fulfillmentRepository->findOrCreateForTenantAndRequirement($tenant, $requirement);
         if (!$dryRun || $fulfillment->getId() === null) {
-            $this->derivation?->apply($fulfillment); // a dry run never changes a stored row
+            $this->derivation->apply($fulfillment); // a dry run never changes a stored row
         }
         if (!$fulfillment->isDerived()) {
             return false;
@@ -129,7 +125,7 @@ class ComplianceInheritanceService
             // A requirement a rule computes inherits live through the approved
             // mappings — it gets its fulfilment row with the rule value instead of
             // a suggestion somebody has to confirm.
-            if ($this->derivation !== null && $this->materialiseDerived($tenant, $targetRequirement, $dryRun)) {
+            if ($this->materialiseDerived($tenant, $targetRequirement, $dryRun)) {
                 $skipped++;
                 continue;
             }

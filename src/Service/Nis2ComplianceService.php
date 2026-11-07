@@ -20,6 +20,7 @@ use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Service\Compliance\Fulfillment\FrameworkFulfillmentReader;
 
 /**
  * NIS2 Compliance Service — computes a metric per Art. 21(2) letter (a..j)
@@ -70,6 +71,7 @@ final class Nis2ComplianceService
         private readonly ?BusinessContinuityPlanRepository $bcPlanRepository = null,
         private readonly ?ManagementReviewRepository $managementReviewRepository = null,
         private readonly ?TenantContext $tenantContext = null,
+        private readonly ?FrameworkFulfillmentReader $fulfillmentReader = null,
     ) {
     }
 
@@ -119,6 +121,8 @@ final class Nis2ComplianceService
             '21.2.i' => $this->accessControlAndAssetMgmt(),        // (i) HR security + access ctrl + asset mgmt
             '21.2.j' => $this->authentication(),                          // (j) MFA + secured communications
         ];
+
+        $letters = $this->withFulfilment($letters, $tenant ?? $this->tenantContext?->getCurrentTenant());
 
         return [
             'letters' => $letters,
@@ -481,6 +485,42 @@ final class Nis2ComplianceService
             'weighted' => $perLetter,
             'applicable_count' => $applicable,
         ];
+    }
+
+    /**
+     * Each letter shows the organisation's fulfilment of its Art. 21 (2)
+     * requirement — the value the rule derives from controls and records (or
+     * an override with reason), the same figure as on the requirement page.
+     * The former auxiliary metric stays as indicator in the details. Letters
+     * whose requirement nobody assessed keep the indicator as value.
+     *
+     * @param array<string, array<string, mixed>> $letters
+     * @return array<string, array<string, mixed>>
+     */
+    private function withFulfilment(array $letters, ?Tenant $tenant): array
+    {
+        if ($this->fulfillmentReader === null || !$tenant instanceof Tenant) {
+            return $letters;
+        }
+        $byNumber = $this->fulfillmentReader->byNumber($tenant, 'NIS2');
+        foreach ($letters as $code => $letter) {
+            $fulfilment = $byNumber[$code] ?? $byNumber['art21.' . substr($code, -1)] ?? null;
+            if ($fulfilment === null || !$fulfilment->isApplicable()) {
+                continue;
+            }
+            $value = $fulfilment->getFulfillmentPercentage();
+            $indicator = $letter['value'] === null ? '—' : $letter['value'] . $letter['unit'];
+            $letters[$code] = $this->metric(
+                $code,
+                (string) $letter['title'],
+                $value,
+                '%',
+                $this->status((float) $value, 80.0, 50.0),
+                ['indicator' => $indicator] + (array) $letter['details'],
+            ) + ['requirement_id' => $fulfilment->getRequirement()?->getId(), 'source' => 'fulfillment'];
+        }
+
+        return $letters;
     }
 
     // ── helpers ──────────────────────────────────────────────────────────
