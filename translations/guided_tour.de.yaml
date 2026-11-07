@@ -20,6 +20,8 @@ guided_tour:
             label: 'MRIS-Modul-Tour'
         mapping:
             label: 'Mapping-Tour'
+        board:
+            label: 'Leitungs-Tour'
 
     banner:
         aria_label: 'Empfohlene Einweisungs-Tour'
@@ -188,13 +190,35 @@ guided_tour:
         step:
             welcome:
                 title: Kurztour für Auditoren
-                body: 'Ihr Account ist Read-only. Zwei Minuten, drei Stopps — die drei Bookmarks für Ihren Audit-Durchlauf.'
+                body: 'Ihr Account ist Read-only. Zwei Minuten, vier Stopps — die Bookmarks für Ihren Audit-Durchlauf.'
             documents:
                 title: 'Dokumente + Policies'
                 body: '/document listet alle Policies, Prozess-Dokumente, Nachweise. Filter nach Framework (ISO 27001, NIS2, DORA etc.) reduziert auf Ihren Audit-Scope. Export als PDF oder Audit-Package-ZIP unten rechts.'
             audit_log:
                 title: 'Audit-Log mit Integritäts-Prüfung'
                 body: '/admin/audit-log — tamper-evident HMAC-SHA256-Chain. Klick auf „Verify" prüft jeden Eintrag. Das ist Ihre Spurensicherung für ISO 27001 Clause 9.2 und NIS2 Art. 21.2.'
+            audit_package:
+                title: 'Audit-Paket selbst laden'
+                body: 'Unter Berichte → Audit-Paket laden Sie Zertifizierungsbündel und Audit-Paket je Framework selbst, als ZIP mit Prüfsumme. Nur lesend, der Datenbestand bleibt unverändert.'
+
+    # Leitung (4 Steps) — ISO 27001 5.1, 9.3; NIS-2 Art. 20
+    board:
+        meta:
+            label: 'Einweisung für die Leitung'
+            description: 'Lage, Bericht, Managementbewertung und Ihre Freigaben — vier Stopps.'
+        step:
+            welcome:
+                title: 'Die Lage auf einen Blick'
+                body: 'Das Leitungs-Dashboard zeigt die Ampeln für Sicherheit, Risiken und Compliance mit Trend. Rot heißt: hier ist eine Entscheidung von Ihnen nötig.'
+            one_pager:
+                title: 'Board-One-Pager'
+                body: 'Unter Management-Reports laden Sie den One-Pager als PDF für die nächste Sitzung selbst, ohne Umweg über den ISB.'
+            management_review:
+                title: 'Managementbewertung'
+                body: 'ISO 27001 9.3 verlangt die Bewertung durch die Leitung. Hier sehen Sie Termine, Eingaben und Beschlüsse der Bewertungen.'
+            my_day:
+                title: 'Ihre Freigaben'
+                body: 'Was auf Ihre Entscheidung wartet, steht in My Day: Freigaben, Risikoakzeptanzen und Vier-Augen-Anfragen.'
 
     # Mapping-Topic-Tour (10 Steps) — für Junior-ISB mit IT-/9001-Hintergrund
     mapping:

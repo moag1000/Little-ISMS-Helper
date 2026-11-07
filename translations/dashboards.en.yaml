@@ -3,6 +3,7 @@
 
 # Common Actions
 action:
+    board_one_pager: 'One-pager (PDF)'
     standard_dashboard: 'Standard Dashboard'
     board_view: 'Board View'
     ciso_view: 'CISO View'

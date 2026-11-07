@@ -46,11 +46,7 @@ SEEDERS = [
 
 # Roles in use whose definition is on its way in another change. Each line
 # names the change; delete the line once the role is in security.yaml.
-PENDING = {
-    # Management / Leitung role: defined by the persona-resolver change
-    # (norm-coverage package 1), used by policy sign-off and executive steps.
-    "ROLE_TOP_MGMT",
-}
+PENDING: set[str] = set()
 
 LOOKUP = re.compile(r"""\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\(\s*'(ROLE_[A-Z_]+)'""")
 SEEDER_ROLE = re.compile(r"""'(?:approverRole|role)'\s*=>\s*'(ROLE_[A-Z_]+)'""")

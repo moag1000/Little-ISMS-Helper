@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Security\Voter\ReportAccessVoter;
 use App\Service\Export\AuditPackageExporter;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +16,11 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_MANAGER')]
+/**
+ * Audit package per framework (ZIP with checksum). Who may download it comes
+ * from the persona mapping ({@see ReportAccessVoter}): operational personas and auditors.
+ */
+#[IsGranted(ReportAccessVoter::AUDIT_PACKAGE)]
 class AuditPackageController extends AbstractController
 {
     public function __construct(

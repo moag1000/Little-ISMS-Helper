@@ -174,28 +174,11 @@ class AdminTourCompletionController extends AbstractController
     }
 
     /**
-     * Auto-Role-Detection für einen beliebigen User — ohne AuthorizationChecker-
-     * Kontext (der wäre auf den eingeloggten Admin bezogen, nicht auf den
-     * User in der Zeile). Fällt zurück auf Analyse der User.customRoles.
+     * The tour of the user in the row — from their persona (role hierarchy
+     * included), independent of the admin who is looking.
      */
     private function autoRoleFor(User $user): string
     {
-        $roles = $user->getRoles();
-        if (in_array('ROLE_AUDITOR', $roles, true)) {
-            return GuidedTourService::TOUR_AUDITOR;
-        }
-        if (in_array('ROLE_RISK_OWNER', $roles, true)) {
-            return GuidedTourService::TOUR_RISK_OWNER;
-        }
-        if (in_array('ROLE_COMPLIANCE_MANAGER', $roles, true)) {
-            return GuidedTourService::TOUR_CM;
-        }
-        if (in_array('ROLE_ISB', $roles, true) || in_array('ROLE_MANAGER', $roles, true)) {
-            return GuidedTourService::TOUR_ISB;
-        }
-        if (in_array('ROLE_GROUP_CISO', $roles, true) || in_array('ROLE_ADMIN', $roles, true)) {
-            return GuidedTourService::TOUR_CISO;
-        }
-        return GuidedTourService::TOUR_JUNIOR;
+        return $this->tourService->autoDetectTour($user);
     }
 }

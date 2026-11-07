@@ -16,9 +16,10 @@
         title:    'board.title'|trans({}, 'dashboards'),
         subtitle: 'board.subtitle'|trans({}, 'dashboards'),
         actions: [
-            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'nav-home',       href: path('app_dashboard') },
-            { label: 'action.ciso_view'|trans({}, 'dashboards'),          variant: 'primary', icon: 'nav-shield-lock', href: path('app_dashboard_ciso') }
+            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'nav-home',       href: path('app_dashboard') }
         ]
+            |merge(is_granted('PERSONA_CISO') ? [{ label: 'action.ciso_view'|trans({}, 'dashboards'), variant: 'ghost', icon: 'nav-shield-lock', href: path('app_dashboard_ciso') }] : [])
+            |merge(is_granted('REPORT_BOARD_ONE_PAGER') ? [{ label: 'action.board_one_pager'|trans({}, 'dashboards'), variant: 'primary', icon: 'nav-file-pdf', href: path('app_reports_board_one_pager_pdf') }] : [])
     }) }}
 
     {% set _global_hints = alva_hints('dashboard_board') %}
