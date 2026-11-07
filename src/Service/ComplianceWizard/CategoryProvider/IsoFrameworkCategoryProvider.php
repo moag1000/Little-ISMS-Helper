@@ -351,23 +351,24 @@ final class IsoFrameworkCategoryProvider
                 'clause' => '10',
                 'checks' => [
                     'nonconformity' => [
-                        'name' => 'wizard.check.iso_10_1_nonconformity',
-                        'description' => 'wizard.check.iso_10_1_nonconformity_desc',
+                        'name' => 'wizard.check.iso_10_2_nonconformity',
+                        'description' => 'wizard.check.iso_10_2_nonconformity_desc',
+                        // Cl. 10.2 (2022): nonconformities from audits are closed.
                         'type' => 'audit_status',
                         'module' => 'audits',
                         'priority' => 'high',
-                        'clause' => '10.1',
+                        'clause' => '10.2',
                         'route' => 'app_audit_index',
                     ],
                     'continual_improvement' => [
-                        'name' => 'wizard.check.iso_10_2_improvement',
-                        'description' => 'wizard.check.iso_10_2_improvement_desc',
-                        // Cl. 10.2: nonconformities are answered by corrective actions.
+                        'name' => 'wizard.check.iso_10_1_improvement',
+                        'description' => 'wizard.check.iso_10_1_improvement_desc',
+                        // Cl. 10.1 (2022): continual improvement, evidenced by improvement actions.
                         'type' => 'entity_presence',
                         'entity' => 'corrective_action',
                         'module' => 'corrective_actions',
                         'priority' => 'medium',
-                        'clause' => '10.2',
+                        'clause' => '10.1',
                         'route' => 'app_corrective_action_index',
                     ],
                 ],
