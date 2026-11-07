@@ -34,9 +34,9 @@
             </div>
         {% endblock %}
         {% block list_summary %}
-            <span class="fa-status-pill fa-status-pill--primary">{{ 'session.summary.active'|trans({'%count%': statistics.total_active}, 'session') }}</span>
-            <span class="fa-status-pill fa-status-pill--success">{{ 'session.summary.last_24h'|trans({'%count%': statistics.total_last_24h}, 'session') }}</span>
-            <span class="fa-status-pill">{{ 'session.summary.users'|trans({'%count%': statistics.unique_users}, 'session') }}</span>
+            <span class="fa-status-pill fa-status-pill--primary" data-stat="active">{{ 'session.summary.active'|trans({'%count%': statistics.total_active}, 'session') }}</span>
+            <span class="fa-status-pill fa-status-pill--success" data-stat="last_24h">{{ 'session.summary.last_24h'|trans({'%count%': statistics.total_last_24h}, 'session') }}</span>
+            <span class="fa-status-pill" data-stat="users">{{ 'session.summary.users'|trans({'%count%': statistics.unique_users}, 'session') }}</span>
             <span class="fa-status-pill">{{ 'session.summary.max_concurrent'|trans({'%count%': statistics.max_concurrent}, 'session') }}</span>
         {% endblock %}
         {% block list_table %}

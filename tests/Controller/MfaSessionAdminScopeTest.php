@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -310,7 +311,7 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         $this->client->loginUser($tenantless);
         $crawler = $this->client->request('GET', '/en/admin/sessions');
         self::assertResponseIsSuccessful();
-        self::assertSame('0', trim($crawler->filter('p.display-6.text-primary')->first()->text()));
+        self::assertSame('0', $this->statCount($crawler, 'active'));
     }
 
     #[Test]
@@ -328,7 +329,7 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         $this->client->loginUser($this->adminA);
         $crawler = $this->client->request('GET', '/en/admin/sessions');
         self::assertResponseIsSuccessful();
-        self::assertSame('1', trim($crawler->filter('p.display-6.text-primary')->first()->text()));
+        self::assertSame('1', $this->statCount($crawler, 'active'));
     }
 
     #[Test]
@@ -349,8 +350,8 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         $html = (string) $this->client->getResponse()->getContent();
         self::assertStringContainsString((string) $this->userA->getEmail(), $html, 'LIMIT must apply after scoping');
         self::assertStringNotContainsString((string) $this->superA->getEmail(), $html);
-        self::assertSame('1', trim($crawler->filter('p.display-6.text-primary')->first()->text()), 'statistics = listable sessions');
-        self::assertSame('1', trim($crawler->filter('p.display-6.text-info')->first()->text()));
+        self::assertSame('1', $this->statCount($crawler, 'active'), 'statistics = listable sessions');
+        self::assertSame('1', $this->statCount($crawler, 'users'));
 
         // The instance operator still sees both (and tenantless users' sessions).
         $this->client->loginUser($this->superA);
@@ -424,5 +425,11 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         $this->em->flush();
 
         return $session;
+    }
+
+    /** Leading number of a list summary chip, e.g. "1 active sessions" → "1". */
+    private function statCount(Crawler $crawler, string $stat): string
+    {
+        return (string) strtok(trim($crawler->filter(sprintf('[data-stat="%s"]', $stat))->first()->text()), ' ');
     }
 }
