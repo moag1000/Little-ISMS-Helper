@@ -345,6 +345,10 @@ compliance:
                 open: 'Offen'
                 review: 'Vorschläge prüfen'
                 list: 'Mappings anzeigen'
+                update_pending: 'Noch nicht importiert: %count% neue Vorschläge.'
+                update: 'Vorschläge importieren'
+                update_done: 'Importiert: %count% Vorschläge.'
+                update_failed: 'Import abgebrochen: %errors%'
             action:
                 wizard:
                     title: 'Neues Mapping (Wizard)'
