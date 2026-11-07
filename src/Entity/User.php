@@ -217,6 +217,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'in_app_notifications_enabled')]
     private bool $inAppNotificationsEnabled = true;
 
+    /** Daily reminder digest by mail; urgent statutory deadlines are always sent. */
+    #[ORM\Column(name: 'reminder_digest_enabled', options: ['default' => true])]
+    private bool $reminderDigestEnabled = true;
+
     #[ORM\Column(name: 'last_seen_notifications', nullable: true)]
     private ?DateTimeImmutable $lastSeenNotifications = null;
 
@@ -883,6 +887,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setInAppNotificationsEnabled(bool $inAppNotificationsEnabled): static
     {
         $this->inAppNotificationsEnabled = $inAppNotificationsEnabled;
+        return $this;
+    }
+
+    public function isReminderDigestEnabled(): bool
+    {
+        return $this->reminderDigestEnabled;
+    }
+
+    public function setReminderDigestEnabled(bool $enabled): static
+    {
+        $this->reminderDigestEnabled = $enabled;
         return $this;
     }
 

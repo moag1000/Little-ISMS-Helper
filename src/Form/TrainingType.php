@@ -287,7 +287,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
             ])
             // Awareness recurrence
             // (ISO 27001 A.6.3). NULL = one-off, integer >=1 = months cadence
-            // picked up by `app:training-send-reminders` cron.
+            // the trainer is reminded on My Day / digest (TrainingRefreshSource).
             ->add('recurrenceMonths', IntegerType::class, [
                 'label' => 'training.field.recurrence_months',
                 'required' => false,

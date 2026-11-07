@@ -5,11 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Incident;
-use App\Entity\InternalAudit;
-use App\Entity\Training;
-use App\Entity\Control;
-use App\Entity\WorkflowInstance;
-use App\Entity\Workflow;
 use App\Entity\User;
 use App\Service\EmailNotificationService;
 use PHPUnit\Framework\TestCase;
@@ -122,73 +117,6 @@ class EmailNotificationServiceTest extends TestCase
             ['user@example.com'],
             'Status changed to resolved'
         );
-    }
-
-    #[Test]
-    public function testSendAuditDueNotification(): void
-    {
-        $audit = $this->createMock(InternalAudit::class);
-        $audit->method('getTitle')->willReturn('Q4 Compliance Audit');
-
-        $this->mailer->expects($this->once())
-            ->method('send')
-            ->with($this->callback(function ($email) {
-                return str_contains($email->getSubject(), '[ISMS Reminder] Upcoming Audit:')
-                    && str_contains($email->getSubject(), 'Q4 Compliance Audit');
-            }));
-
-        $this->service->sendAuditDueNotification($audit, ['auditor@example.com']);
-    }
-
-    #[Test]
-    public function testSendTrainingDueNotification(): void
-    {
-        $training = $this->createMock(Training::class);
-        $training->method('getTitle')->willReturn('Security Awareness Training');
-
-        $this->mailer->expects($this->once())
-            ->method('send')
-            ->with($this->callback(function ($email) {
-                return str_contains($email->getSubject(), '[ISMS Reminder] Upcoming Training:')
-                    && str_contains($email->getSubject(), 'Security Awareness Training');
-            }));
-
-        $this->service->sendTrainingDueNotification($training, ['trainee@example.com']);
-    }
-
-    #[Test]
-    public function testSendControlDueNotification(): void
-    {
-        $control = $this->createMock(Control::class);
-        $control->method('getControlId')->willReturn('A.5.1');
-
-        $this->mailer->expects($this->once())
-            ->method('send')
-            ->with($this->callback(function ($email) {
-                return str_contains($email->getSubject(), '[ISMS Reminder] Control Target Date Approaching:')
-                    && str_contains($email->getSubject(), 'A.5.1');
-            }));
-
-        $this->service->sendControlDueNotification($control, ['manager@example.com']);
-    }
-
-    #[Test]
-    public function testSendWorkflowOverdueNotification(): void
-    {
-        $workflow = $this->createMock(Workflow::class);
-        $workflow->method('getName')->willReturn('Document Approval');
-
-        $instance = $this->createMock(WorkflowInstance::class);
-        $instance->method('getWorkflow')->willReturn($workflow);
-
-        $this->mailer->expects($this->once())
-            ->method('send')
-            ->with($this->callback(function ($email) {
-                return str_contains($email->getSubject(), '[ISMS Alert] Overdue Workflow Approval:')
-                    && str_contains($email->getSubject(), 'Document Approval');
-            }));
-
-        $this->service->sendWorkflowOverdueNotification($instance, ['approver@example.com']);
     }
 
     #[Test]

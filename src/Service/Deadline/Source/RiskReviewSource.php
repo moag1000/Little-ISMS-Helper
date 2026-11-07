@@ -51,7 +51,8 @@ final class RiskReviewSource extends EntityDeadlineSource
     {
         assert($item instanceof Risk);
 
-        return $item->getStatus() === \App\Enum\RiskStatus::Closed;
+        // One review rule for the whole app: every risk except a closed one (ISO 27001 8.2).
+        return !($item->getStatus()?->requiresPeriodicReview() ?? true);
     }
 
     public function responsibleOf(object $item): Responsibility
@@ -63,7 +64,7 @@ final class RiskReviewSource extends EntityDeadlineSource
             ->orRoles('ROLE_RISK_MANAGER');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof Risk);
 

@@ -22,7 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Integration test proving the daily review-reminder command wires the
+ * Integration test proving the daily evidence command (app:evidence:expire) wires the
  * generic evidence-expiry re-review mechanism
  * ({@see \App\Service\Evidence\EvidenceCascadeInvalidationService::flagExpiredEvidence()})
  * for every active tenant.
@@ -36,7 +36,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * rolled back in tearDown().
  */
 #[Group('integration')]
-class SendReviewRemindersExpiredEvidenceTest extends KernelTestCase
+class ExpireEvidenceCommandTest extends KernelTestCase
 {
     private EntityManagerInterface $em;
 
@@ -215,7 +215,7 @@ class SendReviewRemindersExpiredEvidenceTest extends KernelTestCase
     private function commandTester(): CommandTester
     {
         $application = new Application(self::$kernel);
-        $command = $application->find('app:review:send-reminders');
+        $command = $application->find('app:evidence:expire');
 
         return new CommandTester($command);
     }

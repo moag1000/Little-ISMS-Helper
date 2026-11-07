@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -179,6 +180,20 @@ class ProfileController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', $translator->trans('user.profile.success.alva_settings', [], 'user'));
+
+        return $this->redirectToRoute('app_profile', ['_locale' => $request->getLocale()]);
+    }
+
+    /** Daily deadline digest on/off; urgent statutory deadlines are always sent. */
+    #[Route('/profile/reminder-settings', name: 'app_profile_reminder_settings', methods: ['POST'])]
+    #[IsCsrfTokenValid('reminder_settings')]
+    public function reminderSettings(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $user->setReminderDigestEnabled($request->request->getBoolean('reminder_digest_enabled'));
+        $entityManager->flush();
+        $this->addFlash('success', 'user.profile.success.reminder_settings');
 
         return $this->redirectToRoute('app_profile', ['_locale' => $request->getLocale()]);
     }

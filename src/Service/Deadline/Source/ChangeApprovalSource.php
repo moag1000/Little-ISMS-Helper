@@ -72,7 +72,7 @@ final class ChangeApprovalSource extends EntityDeadlineSource
         return Responsibility::roles('ROLE_ISB', 'ROLE_CISO');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof ChangeRequest);
 

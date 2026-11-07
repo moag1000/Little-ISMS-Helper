@@ -63,7 +63,7 @@ final class ProcessingActivityReviewSource extends EntityDeadlineSource
             ->orRoles('ROLE_DPO');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof ProcessingActivity);
 

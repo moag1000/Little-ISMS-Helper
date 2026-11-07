@@ -63,7 +63,7 @@ final class BcPlanTestSource extends EntityDeadlineSource
             ->orRoles('ROLE_BCM_OFFICER');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof BusinessContinuityPlan);
 

@@ -1181,6 +1181,8 @@ admin:
         locale: 'Language + region'
         timezone: 'Timezone'
         tlp_default: 'TLP default for incident sharing'
+        reminder_digest_hour: 'Daily digest at'
+        reminder_digest_hour_help: 'Time of the daily digest with each person''s open deadlines (organisation local time). Statutory hour deadlines (GDPR 72 h, NIS-2 24/72 h) are sent immediately.'
         tlp_default_help: 'Traffic Light Protocol — preselects the TLP classification for new threat intelligence entries (NIS2 Art. 29). CLEAR is preselected as WHITE, AMBER+STRICT as AMBER.'
         dpo_name: 'DPO contact (name)'
         dpo_email: 'DPO contact (email)'

@@ -331,6 +331,11 @@ class Tenant
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Notification preferences keyed by event type (incident, breach, audit_finding, training_overdue)'])]
     private ?array $notificationPreferences = null;
 
+    /** Local hour (tenant timezone) of the daily reminder digest, 0–23. */
+    #[ORM\Column(name: 'reminder_digest_hour', type: Types::SMALLINT, options: ['default' => 7])]
+    #[Assert\Range(min: 0, max: 23)]
+    private int $reminderDigestHour = 7;
+
     /** @var array<string, array{url?: string, contact?: string, auth_type?: string}>|null */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'CSIRT endpoints for automated incident reporting (BSI, sectoral CSIRT, ENISA)'])]
     private ?array $csirtEndpoints = null;
@@ -967,6 +972,17 @@ class Tenant
     public function setWizardMaturityTarget(?string $target): static { $this->wizardMaturityTarget = $target; return $this; }
 
     /** @return array<string, array{email?: bool, slack?: bool, teams?: bool}>|null */
+    public function getReminderDigestHour(): int
+    {
+        return $this->reminderDigestHour;
+    }
+
+    public function setReminderDigestHour(int $hour): static
+    {
+        $this->reminderDigestHour = max(0, min(23, $hour));
+        return $this;
+    }
+
     public function getNotificationPreferences(): ?array { return $this->notificationPreferences; }
 
     /** @param array<string, array{email?: bool, slack?: bool, teams?: bool}>|null $prefs */

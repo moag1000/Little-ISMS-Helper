@@ -54,6 +54,17 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
                 'required' => true,
                 'translation_domain' => 'admin',
             ])
+            ->add('reminderDigestHour', ChoiceType::class, [
+                'label' => 'admin.tenant_settings.reminder_digest_hour',
+                'help' => 'admin.tenant_settings.reminder_digest_hour_help',
+                'choices' => array_combine(
+                    array_map(static fn (int $h): string => sprintf('%02d:00', $h), range(0, 23)),
+                    range(0, 23),
+                ),
+                'choice_translation_domain' => false,
+                'required' => true,
+                'translation_domain' => 'admin',
+            ])
             ->add('tlpDefault', ChoiceType::class, [
                 'label' => 'admin.tenant_settings.tlp_default',
                 'help' => 'admin.tenant_settings.tlp_default_help',
@@ -267,7 +278,7 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
     public static function getSectionMap(): array
     {
         return [
-            'defaults'              => ['locale', 'timezone', 'tlpDefault'],
+            'defaults'              => ['locale', 'timezone', 'reminderDigestHour', 'tlpDefault'],
             'address'               => ['addressStreet', 'addressPostalCode', 'addressCity', 'addressCountry'],
             'privacy'               => ['dpoContactName', 'dpoContactEmail', 'dpoAppointmentDate', 'dpoIsExternal', 'dpoAuthorityNotifiedAt', 'dpoDeputyName', 'representativeName', 'representativeContact'],
             'risk_assessment'       => ['riskMethodology', 'wizardMaturityTarget'],

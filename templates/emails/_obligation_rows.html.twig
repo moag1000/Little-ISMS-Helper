@@ -1,0 +1,20 @@
+{# One table row per duty: title (linked), norm reference, due date. #}
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
+    {% for item in items %}
+        <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #eef0f9;">
+                {% if item.url %}<a href="{{ item.url }}" style="color: #1e1b4b; font-weight: 600; text-decoration: none;">{{ item.title }}</a>{% else %}<strong>{{ item.title }}</strong>{% endif %}
+                {% if item.norm %}<span style="display: block; font-size: 12px; color: #6d6b92;">{{ item.norm }}</span>{% endif %}
+            </td>
+            <td style="padding: 8px 0 8px 12px; border-bottom: 1px solid #eef0f9; text-align: right; white-space: nowrap; font-size: 13px; {{ item.overdue or item.urgent ? 'color: #b91c1c; font-weight: 600;' : 'color: #6d6b92;' }}">
+                {% if item.due is null %}
+                    {{ 'emails.obligation.no_date'|trans({}, 'emails', locale) }}
+                {% elseif item.overdue %}
+                    {{ 'emails.obligation.overdue'|trans({'%date%': item.urgent ? item.due|fa_datetime : item.due|fa_date}, 'emails', locale) }}
+                {% else %}
+                    {{ 'emails.obligation.due'|trans({'%date%': item.urgent ? item.due|fa_datetime : item.due|fa_date}, 'emails', locale) }}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

@@ -61,7 +61,7 @@ final class CertificateExpirySource extends EntityDeadlineSource
         return Responsibility::roles('ROLE_COMPLIANCE_MANAGER', 'ROLE_ISB', 'ROLE_CISO');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof ComplianceCertificate);
 

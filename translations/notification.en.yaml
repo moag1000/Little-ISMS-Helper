@@ -204,7 +204,11 @@ notification:
     # Sprint 6b: Notification center
     center:
         title: 'Notification Center'
-        subtitle: 'All received in-app notifications at a glance.'
+        subtitle: "Your deadline reminders and your organisation's notifications."
+        my_reminders: 'My reminders'
+        rule_notifications: 'Rule notifications'
+        kind:
+            urgent: 'Deadline running'
         tab:
             all: 'All'
         empty:

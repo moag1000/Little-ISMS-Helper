@@ -62,7 +62,7 @@ final class TreatmentPlanSource extends EntityDeadlineSource
             ->orRoles('ROLE_RISK_MANAGER');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof RiskTreatmentPlan);
 

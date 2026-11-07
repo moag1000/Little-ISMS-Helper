@@ -63,7 +63,7 @@ final class Nis2RegistrationSource extends EntityDeadlineSource
             ->orRoles('ROLE_ISB', 'ROLE_CISO');
     }
 
-    public function linkOf(object $item): ?RecordLink
+    public function linkOf(object $item): RecordLink
     {
         assert($item instanceof Nis2RegistrationProfile);
 
