@@ -48,6 +48,51 @@ class GuidedTourServiceTest extends TestCase
         yield 'admin' => [['ROLE_ADMIN'], 'ciso'];
         yield 'top management' => [['ROLE_TOP_MGMT'], 'board'];
         yield 'group ciso' => [['ROLE_GROUP_CISO'], 'board'];
+        yield 'risk manager' => [['ROLE_RISK_MANAGER'], 'risk_manager'];
+        yield 'bcm officer' => [['ROLE_BCM_OFFICER'], 'bcm'];
+        yield 'dpo' => [['ROLE_DPO'], 'dpo'];
+    }
+
+    #[Test]
+    public function aPlainUserWhoOwnsARiskGetsTheRiskOwnerTour(): void
+    {
+        $owner = $this->createStub(\App\Repository\RiskRepository::class);
+        $owner->method('countOwnedBy')->willReturn(2);
+        $service = new GuidedTourService(PersonaResolverFactory::create(), riskRepository: $owner);
+
+        self::assertSame(GuidedTourService::TOUR_RISK_OWNER, $service->autoDetectTour($this->user([])));
+        // Ownership never overrides an explicit persona role.
+        self::assertSame('isb', $service->autoDetectTour($this->user(['ROLE_ISB'])));
+    }
+
+    #[Test]
+    public function aPlainUserWithoutRisksStaysOnTheJuniorTour(): void
+    {
+        $owner = $this->createStub(\App\Repository\RiskRepository::class);
+        $owner->method('countOwnedBy')->willReturn(0);
+        $service = new GuidedTourService(PersonaResolverFactory::create(), riskRepository: $owner);
+
+        self::assertSame(GuidedTourService::TOUR_JUNIOR, $service->autoDetectTour($this->user([])));
+    }
+
+    #[Test]
+    public function everyTourStepHasItsTextInBothLanguages(): void
+    {
+        $service = $this->buildService();
+        foreach (['de', 'en'] as $locale) {
+            $messages = \Symfony\Component\Yaml\Yaml::parseFile(dirname(__DIR__, 2) . '/translations/guided_tour.' . $locale . '.yaml');
+            foreach (GuidedTourService::ALL_TOURS as $tourId) {
+                foreach ($service->stepsFor($tourId) as $step) {
+                    foreach (['title_key', 'body_key'] as $key) {
+                        $value = $messages;
+                        foreach (explode('.', $step[$key]) as $segment) {
+                            $value = is_array($value) ? ($value[$segment] ?? null) : null;
+                        }
+                        self::assertIsString($value, sprintf('%s missing in %s', $step[$key], $locale));
+                    }
+                }
+            }
+        }
     }
 
     /** @param list<string> $roles */
@@ -89,15 +134,19 @@ class GuidedTourServiceTest extends TestCase
     {
         // Plan-Vertrag aus .claude/GUIDED_TOUR_PLAN.md § Tour-Matrix.
         $service = $this->buildService();
-        $this->assertCount(7, $service->stepsFor('junior'));
+        // junior: 7 plan stops + "next open control" (SoA, status not started).
+        $this->assertCount(8, $service->stepsFor('junior'));
         $this->assertCount(5, $service->stepsFor('cm'));
         $this->assertCount(4, $service->stepsFor('ciso'));
-        // 6 ISB stops: welcome, soa, risk, incidents, workflows, audit-log
-        // (risk register added — ISO 27001 Cl. 6.1.2 is daily ISB core work).
-        $this->assertCount(6, $service->stepsFor('isb'));
-        $this->assertCount(2, $service->stepsFor('risk_owner'));
+        // 11 ISB stops: welcome, my day, context, registers, soa, risk, incidents,
+        // duty calendar, suggestions, workflows, audit-log (P3: wave-1 pages).
+        $this->assertCount(11, $service->stepsFor('isb'));
+        $this->assertCount(3, $service->stepsFor('risk_owner'));
         $this->assertCount(4, $service->stepsFor('auditor'));
-        $this->assertCount(4, $service->stepsFor('board'));
+        $this->assertCount(5, $service->stepsFor('board'));
+        $this->assertCount(6, $service->stepsFor('risk_manager'));
+        $this->assertCount(5, $service->stepsFor('bcm'));
+        $this->assertCount(5, $service->stepsFor('dpo'));
         // MRIS-Topic-Tour: 8 Stopps (themenbezogen, nicht rollenbezogen).
         $this->assertCount(8, $service->stepsFor('mris'));
     }
@@ -126,7 +175,7 @@ class GuidedTourServiceTest extends TestCase
         $service = $this->buildService();
         $meta = $service->metaFor('junior');
         $this->assertSame('junior', $meta['id']);
-        $this->assertSame(7, $meta['step_count']);
+        $this->assertSame(8, $meta['step_count']);
         $this->assertGreaterThan(0, $meta['duration_min']);
     }
 

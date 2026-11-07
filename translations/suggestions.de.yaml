@@ -38,6 +38,27 @@ suggestions:
         rejected: Vorschlag abgelehnt.
         stale: Vorschlag ist veraltet, der Datensatz hat sich geändert. Er wurde zurückgezogen.
         rule_failed: 'Nicht übernommen: %reason%'
+        drafted: Entwurf liegt in den Vorschlägen.
+        no_draft: Kein Entwurf möglich, es fehlen Angaben im Datensatz.
+    draft:
+        prompt: 'Entwurf vorschlagen:'
+        label: Entwurf wird geschrieben
+        running: Das Sprachmodell schreibt den Entwurf …
+        done: Entwurf liegt in den Vorschlägen.
+        none: Kein Entwurf erhalten. Modell nicht erreichbar oder Angaben zu knapp.
+        button:
+            ai:
+                risk_from_incident: Risiko (KI)
+                soa_justification: SoA-Begründung (KI)
+                corrective_action: Korrekturmaßnahme (KI)
+                incident_report: Meldetext (KI)
+                breach_notification: Meldung nach Art. 33 (KI)
+                dsr_response: Antwort an Betroffene (KI)
+                board_summary: Zusammenfassung für die Leitung (KI)
+                nonconformity_statement: Abweichungstext (KI)
+                questionnaire_evaluation: Fragebogen auswerten (KI)
+            soa:
+                justification: SoA-Begründung aus Verknüpfungen
     job:
         label: Vorschläge prüfen
         subtitle: Regeln, Vererbung und KI laufen für diese Organisation.
@@ -128,6 +149,14 @@ suggestions:
             risk_from_incident: Risiko aus Vorfall (KI)
             soa_justification: SoA-Begründung (KI)
             corrective_action: Korrekturmaßnahme (KI)
+            incident_report: Meldetext Vorfall (KI)
+            breach_notification: Meldung Datenpanne Art. 33 (KI)
+            dsr_response: Antwort Betroffenenanfrage (KI)
+            board_summary: Zusammenfassung für die Leitung (KI)
+            nonconformity_statement: Abweichungstext (KI)
+            questionnaire_evaluation: Auswertung Lieferantenfragebogen (KI)
+        soa:
+            justification: SoA-Begründung aus Verknüpfungen
     kind_help:
         asset:
             protection_need: Abhängigkeiten (Maximumprinzip) und BIA heben den Schutzbedarf an.
@@ -158,6 +187,14 @@ suggestions:
             risk_from_incident: Schreibt ein Risiko zu Vorfällen der letzten 90 Tage ohne verknüpftes Risiko.
             soa_justification: Schreibt eine Begründung für anwendbare Maßnahmen ohne Begründung (ISO 27001 6.1.3 d).
             corrective_action: Schreibt eine Korrekturmaßnahme zu offenen Feststellungen ohne Maßnahme (ISO 27001 10.2).
+            incident_report: Schreibt den Text für die nächste offene NIS-2- oder DORA-Meldung (Art. 23 Abs. 4, Art. 19).
+            breach_notification: Schreibt die leeren Teile der Meldung an die Aufsichtsbehörde (DSGVO Art. 33 Abs. 3 a, c, d).
+            dsr_response: Schreibt die Antwort auf offene Betroffenenanfragen ohne Antwort (DSGVO Art. 12, 15–22).
+            board_summary: Schreibt die Zusammenfassung einer Managementbewertung mit mindestens drei Eingaben (ISO 27001 9.3).
+            nonconformity_statement: Macht aus Notizen zu einer Abweichung den Text für den Auditbericht (ISO 19011 6.4.8).
+            questionnaire_evaluation: Wertet beantwortete Lieferantenfragebögen aus (ISO 27001 A.5.19–5.22, NIS-2 Art. 21 Abs. 2 d).
+        soa:
+            justification: Begründung aus den behandelten Risiken und den Anforderungen anderer Frameworks (ISO 27001 6.1.3 d).
     text:
         dimension:
             confidentiality: Vertraulichkeit
@@ -228,3 +265,36 @@ suggestions:
         ai_capa:
             title: 'Korrekturmaßnahme: %action%'
             rationale: 'Zu Feststellung %finding%. Ursache: %cause%. %reasoning%'
+        ai_incident_report:
+            title: 'Meldetext für %incident%'
+            rationale: 'Nächste Meldung fällig bis %deadline%. Markieren als gemeldet bleibt bei Ihnen. %reasoning%'
+        ai_breach:
+            title: 'Meldung nach Art. 33 für %breach%'
+            rationale: 'Meldefrist bis %deadline%. Übernommen werden nur leere Felder. %reasoning%'
+            nature: Art der Verletzung
+            consequences: Wahrscheinliche Folgen
+            measures: Ergriffene oder geplante Maßnahmen
+        ai_dsr:
+            title: 'Antwort auf %request%'
+            rationale: '%article%, Frist bis %deadline%. Versand und Abschluss bleiben bei Ihnen. %reasoning%'
+        ai_board:
+            title: 'Zusammenfassung für die Leitung: %review%'
+            rationale: 'Aus %inputs% Eingaben der Managementbewertung. Entscheiden bleibt bei der Leitung (9.3.3). %reasoning%'
+        ai_nc:
+            title: 'Abweichungstext für %finding%'
+            rationale: 'Anforderung: %clause%. Ersetzt die Notizen, Nachweise nur wenn leer. %reasoning%'
+        ai_questionnaire:
+            title: 'Auswertung %questionnaire% von %supplier%'
+            rationale: '%answers% von %questions% Fragen beantwortet, %gaps% Lücken. Die Bewertung bleibt bei Ihnen. %reasoning%'
+            heading: 'Auswertung %questionnaire% (beantwortet %date%):'
+        soa_rule:
+            rationale: 'Aus %risks% verknüpften Risiken und %requirements% Anforderungen anderer Frameworks.'
+            risks: 'Anwendbar, weil das Control diese Risiken behandelt: %risks%.'
+            requirements: 'Gefordert von: %requirements%.'
+            excluded: Nicht anwendbar, kein Risiko im Register wird durch dieses Control behandelt und keine Anforderung eines aktiven Frameworks verlangt es.
+            status:
+                not_started: Umsetzung noch nicht begonnen.
+                planned: Umsetzung geplant.
+                in_progress: Umsetzung läuft.
+                implemented: Umgesetzt.
+                verified: Umgesetzt und geprüft.

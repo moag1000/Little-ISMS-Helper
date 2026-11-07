@@ -55,10 +55,22 @@ final class AiSoaJustificationKind extends AbstractAiKind
     protected function candidates(Tenant $tenant): iterable
     {
         foreach ($this->controls->findAllInIsoOrder($tenant) as $control) {
-            if ($control->isApplicable() !== null && trim((string) $control->getJustification()) === '') {
+            if ($this->isCandidate($control)) {
                 yield $control;
             }
         }
+    }
+
+    public function subjectClasses(): array
+    {
+        return [Control::class];
+    }
+
+    protected function isCandidate(object $record): bool
+    {
+        return $record instanceof Control
+            && $record->isApplicable() !== null
+            && trim((string) $record->getJustification()) === '';
     }
 
     protected function instructions(): string

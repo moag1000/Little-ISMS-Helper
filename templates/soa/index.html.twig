@@ -32,6 +32,7 @@
     ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_index'), attrs: { 'data-turbo': 'false' } }] : [])
      |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'control', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet', attrs: { 'data-turbo': 'false' } }] : [])
 }) }}
+{% include 'soa/_governance_strip.html.twig' %}
 {% set _global_hints = alva_hints('soa_index') %}
 {% if _global_hints|length > 0 %}
     {% for _h in _global_hints %}

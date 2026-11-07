@@ -139,6 +139,7 @@ incident:
     nis2_suspected_malicious: 'Verdacht auf rechtswidrige oder böswillige Handlung'
     cross_border_impact: Grenzüberschreitende Auswirkungen
     early_warning_reported_at: Frühwarnung gemeldet am
+    report_summary: Meldetext an die Behörde
     detailed_notification_reported_at: Detaillierte Meldung gemeldet am
     final_report_submitted_at: Abschlussbericht eingereicht am
     affected_users_count: Betroffene Nutzer (Anzahl)
@@ -288,6 +289,7 @@ incident:
       funktioniert.'
     early_warning_24h: Frühwarnung muss innerhalb von 24 Stunden nach Erkennung erfolgen
       (NIS2 Art. 23)
+    report_summary: Geht als Kurzbeschreibung in die NIS-2-Meldung (MUS-Export). „Entwurf vorschlagen“ auf dem Vorfall schreibt einen Entwurf.
     detailed_notification_72h: Detaillierte Meldung innerhalb von 72 Stunden (NIS2
       Art. 23)
     final_report_1month: Abschlussbericht innerhalb eines Monats nach dem Vorfall

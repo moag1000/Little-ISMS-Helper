@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\GuidedTourStepOverrideRepository;
+use App\Repository\RiskRepository;
 use App\Security\Persona\Persona;
 use App\Security\Persona\PersonaResolver;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -46,6 +47,12 @@ final class GuidedTourService
     public const TOUR_AUDITOR = 'auditor';
     /** Top management (ROLE_TOP_MGMT) and group CISO — ISO 27001 5.1/9.3, NIS-2 Art. 20. */
     public const TOUR_BOARD = 'board';
+    /** Risk manager — criteria, register, treatment, acceptance (ISO 27001 6.1.2/6.1.3, 8.2/8.3). */
+    public const TOUR_RISK_MANAGER = 'risk_manager';
+    /** BCM officer — BIA, plans, exercises, crisis team (ISO 22301 8.2–8.5). */
+    public const TOUR_BCM = 'bcm';
+    /** Data protection officer — records of processing, DPIA, breaches, requests (GDPR Art. 30, 33–35, 15–22). */
+    public const TOUR_DPO = 'dpo';
     /**
      * Topic-Tour MRIS — themenbezogen, nicht rollenbezogen. Wird zusätzlich
      * zur Auto-Detect-Rollentour angeboten (ROLE_USER, nicht ROLE_AUDITOR).
@@ -67,6 +74,9 @@ final class GuidedTourService
         self::TOUR_RISK_OWNER,
         self::TOUR_AUDITOR,
         self::TOUR_BOARD,
+        self::TOUR_RISK_MANAGER,
+        self::TOUR_BCM,
+        self::TOUR_DPO,
         self::TOUR_MRIS,
         self::TOUR_MAPPING,
     ];
@@ -78,6 +88,7 @@ final class GuidedTourService
         private readonly ?TenantContext $tenantContext = null,
         private readonly ?UrlGeneratorInterface $urlGenerator = null,
         private readonly ?RequestStack $requestStack = null,
+        private readonly ?RiskRepository $riskRepository = null,
     ) {
     }
 
@@ -126,7 +137,13 @@ final class GuidedTourService
      */
     public function autoDetectTour(User $user): string
     {
-        return $this->personaResolver->primaryOf($user)->tour();
+        $persona = $this->personaResolver->primaryOf($user);
+        // A risk owner is whoever owns a risk, not only who holds ROLE_FUNCTION_OWNER.
+        if ($persona === Persona::USER && ($this->riskRepository?->countOwnedBy($user) ?? 0) > 0) {
+            return self::TOUR_RISK_OWNER;
+        }
+
+        return $persona->tour();
     }
 
     /**
@@ -152,6 +169,9 @@ final class GuidedTourService
             self::TOUR_RISK_OWNER => $this->riskOwnerSteps(),
             self::TOUR_AUDITOR => $this->auditorSteps(),
             self::TOUR_BOARD => $this->boardSteps(),
+            self::TOUR_RISK_MANAGER => $this->riskManagerSteps(),
+            self::TOUR_BCM => $this->bcmSteps(),
+            self::TOUR_DPO => $this->dpoSteps(),
             self::TOUR_MRIS => $this->mrisSteps(),
             self::TOUR_MAPPING => $this->mappingSteps(),
             default => [],
@@ -214,6 +234,7 @@ final class GuidedTourService
     {
         $dashboard = $this->urlFor('app_dashboard');
         $assets = $this->urlFor('app_asset_index');
+        $nextControl = $this->urlFor('app_soa_index', ['status' => 'not_started']);
         return [
             ['id' => 'welcome', 'icon' => 'ui-stars', 'target' => null, 'title_key' => 'guided_tour.junior.step.welcome.title', 'body_key' => 'guided_tour.junior.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
             ['id' => 'mega-menu', 'icon' => 'nav-grid', 'target' => '[data-mega-menu-target="trigger"]', 'title_key' => 'guided_tour.junior.step.mega_menu.title', 'body_key' => 'guided_tour.junior.step.mega_menu.body', 'url' => $dashboard, 'placement' => 'bottom'],
@@ -221,6 +242,7 @@ final class GuidedTourService
             ['id' => 'iso9001-bridge', 'icon' => 'nav-link', 'target' => null, 'title_key' => 'guided_tour.junior.step.iso9001_bridge.title', 'body_key' => 'guided_tour.junior.step.iso9001_bridge.body', 'url' => $dashboard, 'placement' => 'center'],
             ['id' => 'command-palette', 'icon' => 'ui-magic', 'target' => null, 'title_key' => 'guided_tour.junior.step.command_palette.title', 'body_key' => 'guided_tour.junior.step.command_palette.body', 'url' => $dashboard, 'placement' => 'center'],
             ['id' => 'first-asset', 'icon' => 'nav-boxes', 'target' => null, 'title_key' => 'guided_tour.junior.step.first_asset.title', 'body_key' => 'guided_tour.junior.step.first_asset.body', 'url' => $assets, 'placement' => 'center'],
+            ['id' => 'next-control', 'module' => 'controls', 'icon' => 'nav-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.junior.step.next_control.title', 'body_key' => 'guided_tour.junior.step.next_control.body', 'url' => $nextControl, 'placement' => 'center'],
             ['id' => 'shortcuts-hint', 'icon' => 'cpu', 'target' => null, 'title_key' => 'guided_tour.junior.step.shortcuts.title', 'body_key' => 'guided_tour.junior.step.shortcuts.body', 'url' => $dashboard, 'placement' => 'center'],
         ];
     }
@@ -267,6 +289,11 @@ final class GuidedTourService
         $incidents = $this->urlFor('app_incident_index');
         $workflows = $this->urlFor('app_workflow_index');
         $auditLog = $this->urlFor('app_audit_log_index');
+        $myDay = $this->urlFor('app_my_day');
+        $context = $this->urlFor('app_context_index');
+        $registers = $this->urlFor('app_register_index');
+        $duties = $this->urlFor('app_recurring_duty_index');
+        $suggestions = $this->urlFor('app_suggestion_index');
         return [
             ['id' => 'welcome', 'icon' => 'ui-stars', 'target' => null, 'title_key' => 'guided_tour.isb.step.welcome.title', 'body_key' => 'guided_tour.isb.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
             // module: controls — SoA requires the controls module
@@ -279,6 +306,12 @@ final class GuidedTourService
             ['id' => 'workflows', 'module' => 'core', 'icon' => 'nav-process', 'target' => null, 'title_key' => 'guided_tour.isb.step.workflows.title', 'body_key' => 'guided_tour.isb.step.workflows.body', 'url' => $workflows, 'placement' => 'center'],
             // audit-log: no module gate (access is role-gated ROLE_AUDITOR/ROLE_ADMIN, not module-gated)
             ['id' => 'audit-log', 'icon' => 'nav-journal-text', 'target' => null, 'title_key' => 'guided_tour.isb.step.audit_log.title', 'body_key' => 'guided_tour.isb.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
+            // Wave-1 pages: what is due (My Day), context + registers (4.1–7.4), recurring duties, suggestions
+            ['id' => 'my-day', 'icon' => 'ui-inbox', 'target' => null, 'title_key' => 'guided_tour.isb.step.my_day.title', 'body_key' => 'guided_tour.isb.step.my_day.body', 'url' => $myDay, 'placement' => 'center'],
+            ['id' => 'context', 'module' => 'core', 'icon' => 'nav-process', 'target' => null, 'title_key' => 'guided_tour.isb.step.context.title', 'body_key' => 'guided_tour.isb.step.context.body', 'url' => $context, 'placement' => 'center'],
+            ['id' => 'registers', 'icon' => 'nav-list-ordered', 'target' => null, 'title_key' => 'guided_tour.isb.step.registers.title', 'body_key' => 'guided_tour.isb.step.registers.body', 'url' => $registers, 'placement' => 'center'],
+            ['id' => 'duties', 'icon' => 'ui-calendar', 'target' => null, 'title_key' => 'guided_tour.isb.step.duties.title', 'body_key' => 'guided_tour.isb.step.duties.body', 'url' => $duties, 'placement' => 'center'],
+            ['id' => 'suggestions', 'icon' => 'nav-magic', 'target' => null, 'title_key' => 'guided_tour.isb.step.suggestions.title', 'body_key' => 'guided_tour.isb.step.suggestions.body', 'url' => $suggestions, 'placement' => 'center'],
         ];
     }
 
@@ -287,9 +320,11 @@ final class GuidedTourService
     {
         $dashboard = $this->urlFor('app_dashboard');
         $risks = $this->urlFor('app_risk_index');
+        $myDay = $this->urlFor('app_my_day');
         return [
             ['id' => 'welcome', 'icon' => 'ui-stars', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.welcome.title', 'body_key' => 'guided_tour.risk_owner.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
             ['id' => 'my-risks', 'icon' => 'status-warning', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.my_risks.title', 'body_key' => 'guided_tour.risk_owner.step.my_risks.body', 'url' => $risks, 'placement' => 'center'],
+            ['id' => 'my-day', 'icon' => 'ui-inbox', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.my_day.title', 'body_key' => 'guided_tour.risk_owner.step.my_day.body', 'url' => $myDay, 'placement' => 'center'],
         ];
     }
 
@@ -309,6 +344,71 @@ final class GuidedTourService
     }
 
     /**
+     * Risikomanagement: Kriterien, Register, Behandlung, Akzeptanz.
+     *
+     * @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}>
+     */
+    private function riskManagerSteps(): array
+    {
+        $dash = $this->urlFor('app_dashboard_risk_manager');
+        $appetite = $this->urlFor('app_risk_appetite_index');
+        $risks = $this->urlFor('app_risk_index');
+        $plans = $this->urlFor('app_risk_treatment_plan_index');
+        $decisions = $this->urlFor('app_management_decision_index');
+        $duties = $this->urlFor('app_recurring_duty_index');
+        return [
+            ['id' => 'welcome', 'icon' => 'nav-bar-chart', 'target' => null, 'title_key' => 'guided_tour.risk_manager.step.welcome.title', 'body_key' => 'guided_tour.risk_manager.step.welcome.body', 'url' => $dash, 'placement' => 'center'],
+            ['id' => 'criteria', 'module' => 'risks', 'icon' => 'status-warning', 'target' => null, 'title_key' => 'guided_tour.risk_manager.step.criteria.title', 'body_key' => 'guided_tour.risk_manager.step.criteria.body', 'url' => $appetite, 'placement' => 'center'],
+            ['id' => 'register', 'module' => 'risks', 'icon' => 'status-warning', 'target' => null, 'title_key' => 'guided_tour.risk_manager.step.register.title', 'body_key' => 'guided_tour.risk_manager.step.register.body', 'url' => $risks, 'placement' => 'center'],
+            ['id' => 'treatment', 'module' => 'risks', 'icon' => 'nav-workflow', 'target' => null, 'title_key' => 'guided_tour.risk_manager.step.treatment.title', 'body_key' => 'guided_tour.risk_manager.step.treatment.body', 'url' => $plans, 'placement' => 'center'],
+            ['id' => 'acceptance', 'icon' => 'nav-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.risk_manager.step.acceptance.title', 'body_key' => 'guided_tour.risk_manager.step.acceptance.body', 'url' => $decisions, 'placement' => 'center'],
+            ['id' => 'duties', 'icon' => 'ui-calendar', 'target' => null, 'title_key' => 'guided_tour.risk_manager.step.duties.title', 'body_key' => 'guided_tour.risk_manager.step.duties.body', 'url' => $duties, 'placement' => 'center'],
+        ];
+    }
+
+    /**
+     * BCM: BIA, Pläne, Übungen, Krisenstab (ISO 22301 8.2–8.5).
+     *
+     * @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}>
+     */
+    private function bcmSteps(): array
+    {
+        $dash = $this->urlFor('app_dashboard_bcm');
+        $processes = $this->urlFor('app_business_process_index');
+        $plans = $this->urlFor('app_bc_plan_index');
+        $exercises = $this->urlFor('app_bc_exercise_index');
+        $crisis = $this->urlFor('app_crisis_team_index');
+        return [
+            ['id' => 'welcome', 'module' => 'bcm', 'icon' => 'recovery', 'target' => null, 'title_key' => 'guided_tour.bcm.step.welcome.title', 'body_key' => 'guided_tour.bcm.step.welcome.body', 'url' => $dash, 'placement' => 'center'],
+            ['id' => 'bia', 'module' => 'bcm', 'icon' => 'nav-process', 'target' => null, 'title_key' => 'guided_tour.bcm.step.bia.title', 'body_key' => 'guided_tour.bcm.step.bia.body', 'url' => $processes, 'placement' => 'center'],
+            ['id' => 'plans', 'module' => 'bcm', 'icon' => 'nav-workflow', 'target' => null, 'title_key' => 'guided_tour.bcm.step.plans.title', 'body_key' => 'guided_tour.bcm.step.plans.body', 'url' => $plans, 'placement' => 'center'],
+            ['id' => 'exercises', 'module' => 'bcm', 'icon' => 'nav-stars', 'target' => null, 'title_key' => 'guided_tour.bcm.step.exercises.title', 'body_key' => 'guided_tour.bcm.step.exercises.body', 'url' => $exercises, 'placement' => 'center'],
+            ['id' => 'crisis-team', 'module' => 'bcm', 'icon' => 'nav-people', 'target' => null, 'title_key' => 'guided_tour.bcm.step.crisis_team.title', 'body_key' => 'guided_tour.bcm.step.crisis_team.body', 'url' => $crisis, 'placement' => 'center'],
+        ];
+    }
+
+    /**
+     * Datenschutz: Verzeichnis, DSFA, Datenpannen, Betroffenenanfragen.
+     *
+     * @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}>
+     */
+    private function dpoSteps(): array
+    {
+        $dash = $this->urlFor('app_dashboard_dpo');
+        $vvt = $this->urlFor('app_processing_activity_index');
+        $dpia = $this->urlFor('app_dpia_index');
+        $breaches = $this->urlFor('app_data_breach_index');
+        $requests = $this->urlFor('app_data_subject_request_index');
+        return [
+            ['id' => 'welcome', 'module' => 'privacy', 'icon' => 'nav-people', 'target' => null, 'title_key' => 'guided_tour.dpo.step.welcome.title', 'body_key' => 'guided_tour.dpo.step.welcome.body', 'url' => $dash, 'placement' => 'center'],
+            ['id' => 'records', 'module' => 'privacy', 'icon' => 'nav-list-ordered', 'target' => null, 'title_key' => 'guided_tour.dpo.step.records.title', 'body_key' => 'guided_tour.dpo.step.records.body', 'url' => $vvt, 'placement' => 'center'],
+            ['id' => 'dpia', 'module' => 'privacy', 'icon' => 'compliance-shield', 'target' => null, 'title_key' => 'guided_tour.dpo.step.dpia.title', 'body_key' => 'guided_tour.dpo.step.dpia.body', 'url' => $dpia, 'placement' => 'center'],
+            ['id' => 'breaches', 'module' => 'privacy', 'icon' => 'status-warning', 'target' => null, 'title_key' => 'guided_tour.dpo.step.breaches.title', 'body_key' => 'guided_tour.dpo.step.breaches.body', 'url' => $breaches, 'placement' => 'center'],
+            ['id' => 'requests', 'module' => 'privacy', 'icon' => 'ui-inbox', 'target' => null, 'title_key' => 'guided_tour.dpo.step.requests.title', 'body_key' => 'guided_tour.dpo.step.requests.body', 'url' => $requests, 'placement' => 'center'],
+        ];
+    }
+
+    /**
      * Leitung: Lage, One-Pager, Managementbewertung, Freigaben in My Day.
      *
      * @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}>
@@ -319,10 +419,12 @@ final class GuidedTourService
         $managementReports = $this->urlFor('app_management_reports');
         $managementReview = $this->urlFor('app_management_review_index');
         $myDay = $this->urlFor('app_my_day');
+        $decisions = $this->urlFor('app_management_decision_index');
         return [
             ['id' => 'welcome', 'icon' => 'nav-building', 'target' => null, 'title_key' => 'guided_tour.board.step.welcome.title', 'body_key' => 'guided_tour.board.step.welcome.body', 'url' => $boardDash, 'placement' => 'center'],
             ['id' => 'one-pager', 'icon' => 'nav-file-earmark-text', 'target' => null, 'title_key' => 'guided_tour.board.step.one_pager.title', 'body_key' => 'guided_tour.board.step.one_pager.body', 'url' => $managementReports, 'placement' => 'center'],
             ['id' => 'management-review', 'icon' => 'nav-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.board.step.management_review.title', 'body_key' => 'guided_tour.board.step.management_review.body', 'url' => $managementReview, 'placement' => 'center'],
+            ['id' => 'decisions', 'icon' => 'nav-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.board.step.decisions.title', 'body_key' => 'guided_tour.board.step.decisions.body', 'url' => $decisions, 'placement' => 'center'],
             ['id' => 'my-day', 'icon' => 'nav-dashboard', 'target' => null, 'title_key' => 'guided_tour.board.step.my_day.title', 'body_key' => 'guided_tour.board.step.my_day.body', 'url' => $myDay, 'placement' => 'center'],
         ];
     }
@@ -549,6 +651,9 @@ final class GuidedTourService
                 self::TOUR_RISK_OWNER => 1,
                 self::TOUR_AUDITOR => 2,
                 self::TOUR_BOARD => 2,
+                self::TOUR_RISK_MANAGER => 3,
+                self::TOUR_BCM => 3,
+                self::TOUR_DPO => 3,
                 self::TOUR_MRIS => 6,
                 self::TOUR_MAPPING => 5,
                 default => 3,

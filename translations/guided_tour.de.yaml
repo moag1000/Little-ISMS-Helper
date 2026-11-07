@@ -22,6 +22,12 @@ guided_tour:
             label: 'Mapping-Tour'
         board:
             label: 'Leitungs-Tour'
+        risk_manager:
+            label: 'Risikomanagement-Tour'
+        bcm:
+            label: 'BCM-Tour'
+        dpo:
+            label: 'Datenschutz-Tour'
 
     banner:
         aria_label: 'Empfohlene Einweisungs-Tour'
@@ -36,6 +42,9 @@ guided_tour:
             label: 'Einweisung für Neu-Nutzer'
             description: 'Die wichtigsten Anlaufpunkte für Einsteiger — besonders hilfreich mit QM-Hintergrund.'
         step:
+            next_control:
+                title: 'Das nächste Control'
+                body: 'Die SoA gefiltert auf noch nicht begonnene Controls: Hier finden Sie Ihre nächste Aufgabe.'
             welcome:
                 title: Willkommen im Tool
                 body: 'In 5 Minuten zeige ich Ihnen die wichtigsten Anlaufpunkte. Sie können jederzeit mit Esc abbrechen — die Tour ist im Benutzermenü oben rechts immer wieder verfügbar.'
@@ -103,8 +112,23 @@ guided_tour:
     isb:
         meta:
             label: 'Einweisung für ISB'
-            description: 'Operative Werkzeuge: SoA, Risikoregister, Incidents, Workflows, Audit-Log — tägliche ISB-Arbeit.'
+            description: 'Operative Werkzeuge: SoA, Risikoregister, Incidents, Workflows, Audit-Log, Mein Tag, Kontext, Register, Pflichtenkalender und Vorschläge.'
         step:
+            my_day:
+                title: 'Mein Tag'
+                body: 'Alles, was bei Ihnen ansteht: Freigaben, Fristen, Überprüfungen und Meldepflichten aus allen Modulen an einer Stelle.'
+            context:
+                title: 'Kontext der Organisation'
+                body: 'ISO 27001 4.1–4.3: interne und externe Themen, Anwendungsbereich und Schnittstellen pflegen Sie hier.'
+            registers:
+                title: 'Register'
+                body: 'Rollen, Kommunikation, Rechtskataster und weitere Register nach 4.1–7.4, mit Vorschlägen aus vorhandenen Daten.'
+            duties:
+                title: 'Pflichtenkalender'
+                body: 'Wiederkehrende Normpflichten ohne Datum am Datensatz, etwa die jährliche SoA-Überprüfung.'
+            suggestions:
+                title: 'Vorschläge'
+                body: 'Was das Tool aus Ihren Daten ableitet, entscheiden Sie hier: übernehmen oder verwerfen.'
             welcome:
                 title: Kurztour für den ISB
                 body: 'Fünf Minuten, sechs operative Stopps — SoA, Risikoregister, Incidents, Workflows, Audit-Log, Command-Palette. Ihre Kern-Werkzeuge für den Alltag.'
@@ -130,6 +154,9 @@ guided_tour:
             label: 'Einweisung für Risk-Owner'
             description: 'Ihre Risiken, Ihre Bestätigung — das reicht für den Einstieg.'
         step:
+            my_day:
+                title: 'Mein Tag'
+                body: 'Fällige Bewertungen und Behandlungsschritte Ihrer Risiken stehen hier, auch in der täglichen Sammelmail.'
             welcome:
                 title: Kurztour für Risk-Owner
                 body: 'Eine Minute, zwei Stopps. Sie sind Fachbereich, kein Security-Experte — meine Tour ist bewusst kurz.'
@@ -205,8 +232,11 @@ guided_tour:
     board:
         meta:
             label: 'Einweisung für die Leitung'
-            description: 'Lage, Bericht, Managementbewertung und Ihre Freigaben — vier Stopps.'
+            description: 'Lage, Bericht, Managementbewertung, Entscheidungen und Ihre Freigaben — fünf Stopps.'
         step:
+            decisions:
+                title: 'Leitungsentscheidungen'
+                body: 'Was die Norm von Ihnen verlangt: Politik, Risikokriterien, SoA und Ziele billigen. Offene Vorlagen und ablaufende Billigungen stehen hier.'
             welcome:
                 title: 'Die Lage auf einen Blick'
                 body: 'Das Leitungs-Dashboard zeigt die Ampeln für Sicherheit, Risiken und Compliance mit Trend. Rot heißt: hier ist eine Entscheidung von Ihnen nötig.'
@@ -221,6 +251,72 @@ guided_tour:
                 body: 'Was auf Ihre Entscheidung wartet, steht in My Day: Freigaben, Risikoakzeptanzen und Vier-Augen-Anfragen.'
 
     # Mapping-Topic-Tour (10 Steps) — für Junior-ISB mit IT-/9001-Hintergrund
+    risk_manager:
+        meta:
+            label: 'Einweisung für das Risikomanagement'
+            description: 'Kriterien, Register, Behandlung, Akzeptanz und die jährlichen Pflichten — sechs Stopps.'
+        step:
+            welcome:
+                title: 'Ihr Risiko-Cockpit'
+                body: 'Das Dashboard zeigt Exposition, offene Behandlungen und Akzeptanzen, die auf eine Entscheidung warten.'
+            criteria:
+                title: 'Kriterien zuerst'
+                body: 'ISO 27001 6.1.2 a verlangt Kriterien für Bewertung und Akzeptanz. Risikoappetit und Schwellen legen Sie hier fest, die Leitung billigt sie.'
+            register:
+                title: 'Das Risikoregister'
+                body: 'Jedes Risiko mit Eigentümer, Bewertung und Behandlungsoption (6.1.2 c–e). Neue Risiken entstehen auch aus Assets, Vorfällen und Schwachstellen.'
+            treatment:
+                title: 'Behandlungspläne'
+                body: '6.1.3 und 8.3: Maßnahmen, Termine und Verantwortliche. Fällige Schritte erscheinen bei den Verantwortlichen in Mein Tag.'
+            acceptance:
+                title: 'Akzeptanz durch die Leitung'
+                body: 'Restrisiken über der Schwelle akzeptiert nur die Leitung. Die Entscheidung steht im Register der Leitungsentscheidungen.'
+            duties:
+                title: 'Wiederkehrende Pflichten'
+                body: 'Die jährliche Überprüfung der Kriterien und des Registers steht im Pflichtenkalender, mit Nachweis beim Erledigen.'
+
+    bcm:
+        meta:
+            label: 'Einweisung für BCM'
+            description: 'BIA, Pläne, Übungen und Krisenstab — fünf Stopps nach ISO 22301.'
+        step:
+            welcome:
+                title: 'Ihr BCM-Cockpit'
+                body: 'BIA-Abdeckung, aktive Pläne und Übungen dieses Jahres aus denselben Kennzahlen wie überall, dazu was bei Ihnen ansteht.'
+            bia:
+                title: 'Geschäftsprozesse und BIA'
+                body: 'ISO 22301 8.2.2: Kritikalität, RTO und RPO je Prozess. Prozesse ohne BIA senken die Abdeckung.'
+            plans:
+                title: 'Notfallpläne'
+                body: '8.4: ein Plan je kritischem Prozess, mit Freigabe und Überprüfung.'
+            exercises:
+                title: 'Übungen'
+                body: '8.5: geplante und durchgeführte Übungen mit Ergebnis und Lehren.'
+            crisis_team:
+                title: 'Krisenstab'
+                body: 'Mitglieder, Vertretungen und Schulungsstand des Krisenstabs.'
+
+    dpo:
+        meta:
+            label: 'Einweisung für den Datenschutz'
+            description: 'Verzeichnis, DSFA, Datenpannen und Betroffenenanfragen — fünf Stopps nach DSGVO.'
+        step:
+            welcome:
+                title: 'Ihr Datenschutz-Cockpit'
+                body: 'Offene Anfragen, Pannen mit laufender Frist und fällige Prüfungen auf einen Blick.'
+            records:
+                title: 'Verzeichnis der Verarbeitungen'
+                body: 'Art. 30: jede Verarbeitung mit Zweck, Rechtsgrundlage, Empfängern und Löschfristen.'
+            dpia:
+                title: 'Datenschutz-Folgenabschätzung'
+                body: 'Art. 35: für Verarbeitungen mit hohem Risiko, mit Konsultation nach Art. 36 wenn nötig.'
+            breaches:
+                title: 'Datenpannen'
+                body: 'Art. 33/34: Vorprüfung, Bewertung und Meldung binnen 72 Stunden. Die Frist läuft ab Kenntnis.'
+            requests:
+                title: 'Betroffenenanfragen'
+                body: 'Art. 15–22: Auskunft, Löschung, Berichtigung binnen eines Monats, mit Erinnerung vor Fristende.'
+
     mapping:
         meta:
             label: 'Mapping-Tour'

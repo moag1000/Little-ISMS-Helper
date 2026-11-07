@@ -120,6 +120,7 @@ incident:
     nis2_suspected_malicious: 'Suspected unlawful or malicious act'
     cross_border_impact: Cross Border Impact
     early_warning_reported_at: Early Warning Reported At
+    report_summary: Report text for the authority
     detailed_notification_reported_at: Detailed Notification Reported At
     final_report_submitted_at: Final Report Submitted At
     affected_users_count: Affected Users Count
@@ -283,6 +284,7 @@ incident:
       so sector-specific NIS2 mandatory-field detection works fully.'
     early_warning_24h: Early warning must be submitted within 24 hours of detection
       (NIS2 Art. 23)
+    report_summary: Sent as the short description of the NIS-2 report (MUS export). "Suggest a draft" on the incident writes one.
     detailed_notification_72h: Detailed notification within 72 hours (NIS2 Art. 23)
     final_report_1month: Final report within one month after the incident (NIS2 Art.
       23)

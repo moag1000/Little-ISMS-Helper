@@ -43,7 +43,7 @@ final class VoterTestHelper
                 'ROLE_COMPLIANCE_MANAGER',
                 'ROLE_ISB',
                 'ROLE_BCM_OFFICER',
-                'ROLE_TOP_MGMT',
+                // ROLE_TOP_MGMT deliberately not inherited (ISO 27001 5.1 — Leitung is assigned explicitly).
             ],
             'ROLE_SUPER_ADMIN' => [
                 'ROLE_ADMIN',

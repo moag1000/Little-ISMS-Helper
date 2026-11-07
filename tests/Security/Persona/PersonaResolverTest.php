@@ -107,6 +107,8 @@ final class PersonaResolverTest extends TestCase
         self::assertSame(['isb', 'junior'], $resolver->toursFor($this->user(['ROLE_ISB'])));
         self::assertSame(['auditor', 'junior'], $resolver->toursFor($this->user(['ROLE_AUDITOR'])));
         self::assertSame(['board', 'junior'], $resolver->toursFor($this->user(['ROLE_TOP_MGMT'])));
+        self::assertSame(['dpo', 'junior'], $resolver->toursFor($this->user(['ROLE_DPO'])));
+        self::assertNotContains('board', $resolver->toursFor($this->user(['ROLE_ADMIN'])), 'admins do not inherit the Leitung role');
         self::assertSame('ciso', $resolver->toursFor($this->user(['ROLE_ADMIN']))[0]);
     }
 

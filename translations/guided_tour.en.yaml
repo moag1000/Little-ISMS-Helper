@@ -22,6 +22,12 @@ guided_tour:
             label: 'Mapping tour'
         board:
             label: 'Top management tour'
+        risk_manager:
+            label: 'Risk management tour'
+        bcm:
+            label: 'BCM tour'
+        dpo:
+            label: 'Data protection tour'
 
     banner:
         aria_label: 'Suggested onboarding tour'
@@ -36,6 +42,9 @@ guided_tour:
             label: 'Newcomer orientation'
             description: 'The most important entry points for newcomers — especially helpful with a QM background.'
         step:
+            next_control:
+                title: 'The next control'
+                body: 'The SoA filtered to controls not started yet: this is where you find your next task.'
             welcome:
                 title: Welcome to the tool
                 body: 'In 5 minutes I''ll show you the key landing points. You can skip with Esc anytime — the tour stays accessible from the user menu (top right).'
@@ -103,8 +112,23 @@ guided_tour:
     isb:
         meta:
             label: 'ISB orientation'
-            description: 'Operational tools: SoA, risk register, incidents, workflows, audit log — daily ISB work.'
+            description: 'Operational tools: SoA, risk register, incidents, workflows, audit log, My Day, context, registers, duty calendar and suggestions.'
         step:
+            my_day:
+                title: 'My Day'
+                body: 'Everything waiting for you: approvals, deadlines, reviews and reporting duties from all modules in one place.'
+            context:
+                title: 'Context of the organisation'
+                body: 'ISO 27001 4.1–4.3: you maintain internal and external issues, scope and interfaces here.'
+            registers:
+                title: 'Registers'
+                body: 'Roles, communication, legal register and further registers under 4.1–7.4, with suggestions from existing data.'
+            duties:
+                title: 'Duty calendar'
+                body: 'Recurring norm duties without a date on a record, such as the yearly SoA review.'
+            suggestions:
+                title: 'Suggestions'
+                body: 'What the tool derives from your data, you decide here: accept or dismiss.'
             welcome:
                 title: Quick tour for the ISB
                 body: 'Five minutes, six operational stops — SoA, risk register, incidents, workflows, audit log, command palette. Your core tools for daily work.'
@@ -130,6 +154,9 @@ guided_tour:
             label: 'Risk Owner orientation'
             description: 'Your risks, your confirmation — enough to get started.'
         step:
+            my_day:
+                title: 'My Day'
+                body: 'Due assessments and treatment steps of your risks are listed here, also in the daily digest mail.'
             welcome:
                 title: Quick tour for risk owners
                 body: 'One minute, two stops. You''re business, not security expert — my tour is intentionally short.'
@@ -205,8 +232,11 @@ guided_tour:
     board:
         meta:
             label: 'Top management orientation'
-            description: 'Status, report, management review and your approvals — four stops.'
+            description: 'Situation, report, management review, decisions and your approvals — five stops.'
         step:
+            decisions:
+                title: 'Management decisions'
+                body: 'What the norm asks of you: approve policy, risk criteria, SoA and objectives. Open proposals and expiring approvals are listed here.'
             welcome:
                 title: 'The status at a glance'
                 body: 'The top management dashboard shows the traffic lights for security, risks and compliance with their trend. Red means a decision of yours is needed.'
@@ -221,6 +251,72 @@ guided_tour:
                 body: 'What waits for your decision is in My Day: approvals, risk acceptances and four-eyes requests.'
 
     # Mapping topic tour (10 steps) — for junior ISOs with an IT / ISO 9001 background
+    risk_manager:
+        meta:
+            label: 'Introduction for risk management'
+            description: 'Criteria, register, treatment, acceptance and the yearly duties — six stops.'
+        step:
+            welcome:
+                title: 'Your risk cockpit'
+                body: 'The dashboard shows exposure, open treatments and acceptances waiting for a decision.'
+            criteria:
+                title: 'Criteria first'
+                body: 'ISO 27001 6.1.2 a asks for criteria for assessment and acceptance. You set risk appetite and thresholds here, top management approves them.'
+            register:
+                title: 'The risk register'
+                body: 'Every risk with owner, assessment and treatment option (6.1.2 c–e). New risks also come from assets, incidents and vulnerabilities.'
+            treatment:
+                title: 'Treatment plans'
+                body: '6.1.3 and 8.3: measures, dates and owners. Due steps appear in My Day of the people responsible.'
+            acceptance:
+                title: 'Acceptance by top management'
+                body: 'Residual risks above the threshold are accepted by top management only. The decision is kept in the management decision register.'
+            duties:
+                title: 'Recurring duties'
+                body: 'The yearly review of criteria and register is in the duty calendar, with evidence when you mark it done.'
+
+    bcm:
+        meta:
+            label: 'Introduction for BCM'
+            description: 'BIA, plans, exercises and crisis team — five stops following ISO 22301.'
+        step:
+            welcome:
+                title: 'Your BCM cockpit'
+                body: 'BIA coverage, active plans and exercises this year from the same KPIs as everywhere, plus what is waiting for you.'
+            bia:
+                title: 'Business processes and BIA'
+                body: 'ISO 22301 8.2.2: criticality, RTO and RPO per process. Processes without BIA lower the coverage.'
+            plans:
+                title: 'Continuity plans'
+                body: '8.4: one plan per critical process, approved and reviewed.'
+            exercises:
+                title: 'Exercises'
+                body: '8.5: planned and completed exercises with result and lessons learned.'
+            crisis_team:
+                title: 'Crisis team'
+                body: 'Members, deputies and training status of the crisis team.'
+
+    dpo:
+        meta:
+            label: 'Introduction for data protection'
+            description: 'Records, DPIA, data breaches and data subject requests — five stops following the GDPR.'
+        step:
+            welcome:
+                title: 'Your data protection cockpit'
+                body: 'Open requests, breaches with a running deadline and due reviews at a glance.'
+            records:
+                title: 'Records of processing'
+                body: 'Art. 30: every processing activity with purpose, legal basis, recipients and retention.'
+            dpia:
+                title: 'Data protection impact assessment'
+                body: 'Art. 35: for high-risk processing, with consultation under Art. 36 where needed.'
+            breaches:
+                title: 'Data breaches'
+                body: 'Art. 33/34: pre-check, assessment and notification within 72 hours. The clock starts when you become aware.'
+            requests:
+                title: 'Data subject requests'
+                body: 'Art. 15–22: access, erasure, rectification within one month, with a reminder before the deadline.'
+
     mapping:
         meta:
             label: 'Mapping tour'

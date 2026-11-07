@@ -644,12 +644,14 @@ class WorkflowService
      * Check if user can approve a step
      *
      * Uses Symfony Security to respect role hierarchy. ROLE_ADMIN and ROLE_SUPER_ADMIN
-     * can approve any workflow step regardless of the required role.
+     * can approve any workflow step regardless of the required role — except a
+     * step reserved for top management (ISO 27001 5.1, NIS-2 Art. 20): that one
+     * needs the assigned ROLE_TOP_MGMT.
      */
     public function canUserApprove(User $user, WorkflowStep $workflowStep, ?WorkflowInstance $instance = null): bool
     {
-        // ROLE_ADMIN and ROLE_SUPER_ADMIN can approve any step
-        if ($this->security->isGranted('ROLE_ADMIN')) {
+        // ROLE_ADMIN and ROLE_SUPER_ADMIN can approve any step that is not reserved for top management
+        if (!$this->isTopManagementStep($workflowStep) && $this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 
@@ -680,6 +682,12 @@ class WorkflowService
         return false;
     }
 
+    /** Steps only top management decides — the admin override does not reach them. */
+    private function isTopManagementStep(WorkflowStep $workflowStep): bool
+    {
+        return $workflowStep->getApproverRole() === 'ROLE_TOP_MGMT';
+    }
+
     /**
      * The people `approver_role: owner` resolves to for this instance.
      *
@@ -704,7 +712,7 @@ class WorkflowService
      */
     private function eligibleStepApprovers(WorkflowStep $workflowStep, ?WorkflowInstance $instance = null): EligibleApprovers
     {
-        $roles = ['ROLE_ADMIN'];
+        $roles = $this->isTopManagementStep($workflowStep) ? [] : ['ROLE_ADMIN'];
         $userIds = array_map(intval(...), $workflowStep->getApproverUsers() ?? []);
         $approverRole = $workflowStep->getApproverRole();
         if ($approverRole === WorkflowInstanceAdapter::APPROVER_OWNER) {

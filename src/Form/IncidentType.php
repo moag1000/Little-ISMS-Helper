@@ -383,6 +383,14 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                     'help' => 'incident.help.nis2_notification_required',
                     'choice_translation_domain' => 'incident',
                 ])
+                // NIS-2 Art. 23 (4) / DORA Art. 19: the text that goes to the
+                // authority; "Entwurf vorschlagen" on the incident drafts it.
+                ->add('reportSummary', TextareaType::class, [
+                    'label' => 'incident.field.report_summary',
+                    'required' => false,
+                    'attr' => ['rows' => 5],
+                    'help' => 'incident.help.report_summary',
+                ])
                 ->add('earlyWarningReportedAt', DateTimeType::class, [
                     'label' => 'incident.field.early_warning_reported_at',
                     'widget' => 'single_text',
@@ -575,7 +583,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
             'classification'    => ['incidentClassification', 'nis2Category', 'nis2SuspectedMalicious', 'notificationRequired', 'ictIncidentClassification'],
             'impact_assessment' => ['crossBorderImpact', 'affectedUsersCount', 'estimatedFinancialImpact', 'reputationalImpact', 'clientsAffected', 'clientsAffectedFinancialVolume', 'replicationOfImpact', 'recurringIncident'],
             'privacy'           => ['dataBreachOccurred', 'dataLossOccurred', 'dataLeakageOccurred'],
-            'notification'      => ['nationalAuthorityNotified', 'authorityReferenceNumber', 'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt', 'initialReportSubmittedAt', 'intermediateReportSubmittedAt', 'doraFinalReportSubmittedAt'],
+            'notification'      => ['reportSummary', 'nationalAuthorityNotified', 'authorityReferenceNumber', 'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt', 'initialReportSubmittedAt', 'intermediateReportSubmittedAt', 'doraFinalReportSubmittedAt'],
             'corrective_action' => ['containmentActions', 'correctiveActions', 'dataRecoveryStrategy'],
             'root_cause'        => ['rootCause', 'failedControls', 'evidencePreserved'],
             'lessons_learned'   => ['lessonsLearned'],

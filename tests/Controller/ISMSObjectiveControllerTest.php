@@ -191,4 +191,15 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->client->request('GET', '/en/objective/' . $this->testObjective->getId() . '/delete');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
+
+    /** ISO 27001 6.2: the ISB sets the objectives, not only the admin. */
+    #[Test]
+    public function testNewDisplaysFormForIsb(): void
+    {
+        $this->testUser->setRoles(['ROLE_ISB']);
+        $this->entityManager->flush();
+        $this->client->loginUser($this->testUser);
+        $this->client->request('GET', '/en/objective/new');
+        $this->assertResponseIsSuccessful();
+    }
 }

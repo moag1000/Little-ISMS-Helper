@@ -24,6 +24,10 @@ use Twig\Attribute\AsTwigFunction;
  *             the same list
  * - expiring: approvals that end within 60 days
  * - recent:   decisions of the last 12 months
+ *
+ * `management_approval('soa')` — the approval of one standing decision type
+ * that is in force now, or null; for the page the decision is about (SoA,
+ * objectives, risk criteria), so its owner sees whether it is approved.
  */
 final class ManagementDecisionExtension
 {
@@ -61,5 +65,19 @@ final class ManagementDecisionExtension
             'expiring' => $this->repository->findApprovalsEndingBefore($tenant, new DateTimeImmutable('+60 days')),
             'recent' => $this->repository->findDecidedSince($tenant, new DateTimeImmutable('-12 months'), 8),
         ];
+    }
+
+    #[AsTwigFunction('management_approval')]
+    public function managementApproval(string $type): ?ManagementDecision
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $decisionType = ManagementDecisionType::tryFrom($type);
+        if (!$tenant instanceof Tenant || $decisionType === null) {
+            return null;
+        }
+
+        return $decisionType === ManagementDecisionType::RiskCriteria
+            ? $this->decisions->criteriaApproval($tenant)
+            : $this->decisions->currentApproval($tenant, $decisionType);
     }
 }

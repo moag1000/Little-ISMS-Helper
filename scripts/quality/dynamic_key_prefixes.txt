@@ -101,6 +101,7 @@ coverage.impact.title	1
 crisis_team.type	3
 dashboard.kpi	7
 dashboard.management_kpis	2
+dashboards.reports	1
 data_breach.data_categories	1
 data_breach.data_subject_categories	1
 data_breach.severity	1
@@ -312,7 +313,8 @@ sso.preset.help	1
 sso.type	1
 status_type	3
 suggestions.ai.mode	1
-suggestions.kind	3
+suggestions.draft.button	1
+suggestions.kind	4
 suggestions.kind_help	1
 suggestions.origin	2
 suggestions.status	1
