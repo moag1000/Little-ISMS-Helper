@@ -23,7 +23,7 @@ class SuggestionResponsibility
     private ?array $kinds = null;
 
     /**
-     * @param iterable<SuggestionKind> $kinds
+     * @param iterable<SuggestionKind> $kindIterator
      */
     public function __construct(
         #[AutowireIterator('app.suggestion_kind')] private readonly iterable $kindIterator,
