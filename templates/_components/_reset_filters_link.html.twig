@@ -10,7 +10,7 @@
  *   - action:        Target URL without query-params (required)
  *   - active_count:  Number of active filters (optional, used in aria label)
  *   - controls:      ID of the form/region this link resets (optional, aria-controls)
- *   - class:         CSS class override (default: 'btn btn-outline-secondary btn-sm')
+ *   - class:         CSS class override (default: 'fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm')
  *   - label:         Custom link label (default: ui.filter.reset translation)
  *
  * Accessibility:
@@ -18,7 +18,7 @@
  *   - aria-controls points at the form id so SR users know what gets reset
  */
 #}
-{% set class = class|default('btn btn-outline-secondary btn-sm') %}
+{% set class = class|default('fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm') %}
 {% set label = label|default('ui.filter.reset'|trans({}, 'ui')) %}
 {% set aria_label = 'ui.filter.reset_aria_label'|trans({}, 'ui') %}
 {% if active_count is defined and active_count > 0 %}

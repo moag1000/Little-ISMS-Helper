@@ -16,13 +16,13 @@
     'good': 'success',
     'warning': 'warning',
     'danger': 'danger',
-    'na': 'secondary',
+    'na': 'neutral',
 } %}
-{% set variant = status_variant[coverage.status] ?? 'secondary' %}
+{% set variant = status_variant[coverage.status] ?? 'neutral' %}
 
 <details class="transitive-coverage{% if compact %} transitive-coverage-compact{% endif %}">
     <summary class="d-inline-flex align-items-center gap-1" style="cursor: pointer;">
-        <span class="badge text-bg-{{ variant }}" title="{{ 'coverage.tooltip'|trans({}, 'control') }}">
+        <span class="fa-status-pill fa-status-pill--{{ variant }}" title="{{ 'coverage.tooltip'|trans({}, 'control') }}">
             <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
             {{ coverage.percentage }}%
         </span>
@@ -37,7 +37,7 @@
         {% endif %}
     </summary>
 
-    <div class="small mt-2 ps-3 border-start border-2 border-{{ variant }}">
+    <div class="small mt-2 ps-3 border-start border-2 border-{{ variant == 'neutral' ? 'secondary' : variant }}">
         {% if coverage.direct|length > 0 %}
             <div class="fw-semibold text-muted mb-1">
                 {{ 'coverage.direct_heading'|trans({}, 'control') }}

@@ -221,29 +221,12 @@ export default class extends Controller {
     }
 
     /**
-     * Show a notification using Turbo Stream
+     * Show a notification as an Aurora toast (fa-toast controller in base.html.twig).
      */
     notify(message, type = 'info') {
-        const html = `
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                <i class="fa-icon fa-icon--${this.getIconForType(type)}" aria-hidden="true"></i> ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-
-        this.stream('append', 'notifications', html);
-    }
-
-    getIconForType(type) {
-        // Aurora-namespaced names (mapped from former Bootstrap-Icon ids)
-        const icons = {
-            'success': 'status-ok',
-            'danger': 'status-critical',
-            'warning': 'status-warning',
-            'info': 'status-info'
-        };
-
-        return icons[type] || 'status-info';
+        window.dispatchEvent(new CustomEvent('fa-toast:show', {
+            detail: { tone: type, message },
+        }));
     }
 
     handleBeforeCache(event) {

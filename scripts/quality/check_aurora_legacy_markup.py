@@ -44,9 +44,11 @@ PATTERNS: dict[str, re.Pattern[str]] = {
     "bs_progress": re.compile(r'class="(?:[^"]*\s)?progress-bar(?:\s[^"]*)?"'),
     "legacy_page_header": re.compile(r"_components/_page_header\.html\.twig"),
     "bs_modal": re.compile(r'data-bs-toggle="modal"|bootstrap\.Modal\b'),
-    "bs_badge": re.compile(r'class="(?:[^"]*\s)?badge\s(?:[^"]*\s)?(?:text-)?bg-[a-z]'),
-    "bs_alert": re.compile(r'class="(?:[^"]*\s)?alert\s(?:[^"]*\s)?alert-[a-z]'),
-    "bs_btn": re.compile(r'class="(?:[^"]*\s)?btn\s(?:[^"]*\s)?btn-[a-z]'),
+    # The class may sit inside a Twig ternary ('badge bg-x') and the tone may be computed
+    # (bg-{{ tone }}), so a quote counts as a boundary and "{{" as a tone.
+    "bs_badge": re.compile(r'class="(?:[^"]*[\s\'])?badge\s(?:[^"]*\s)?(?:text-)?bg-(?:[a-z]|\{\{)'),
+    "bs_alert": re.compile(r'class="(?:[^"]*[\s\'])?alert\s(?:[^"]*\s)?alert-(?:[a-z]|\{\{)'),
+    "bs_btn": re.compile(r'class="(?:[^"]*[\s\'])?btn\s(?:[^"]*\s)?btn-(?:[a-z]|\{\{)'),
 }
 
 SKIP_DIRS = ("dev", "emails", "pdf")

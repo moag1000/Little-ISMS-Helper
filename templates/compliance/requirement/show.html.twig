@@ -272,9 +272,9 @@
                                         {% for entry in entries %}
                                             {% set otherReq = entry.requirement %}
                                             {% set mappingPct = entry.mapping.finalPercentage %}
-                                            {% set badgeVariant = mappingPct >= 100 ? 'success' : (mappingPct >= 50 ? 'warning' : 'secondary') %}
+                                            {% set badgeVariant = mappingPct >= 100 ? 'success' : (mappingPct >= 50 ? 'warning' : 'neutral') %}
                                             <a href="{{ path('app_compliance_requirement_show', {id: otherReq.id, _locale: app.request.locale}) }}"
-                                               class="badge text-bg-{{ badgeVariant }} text-decoration-none"
+                                               class="fa-status-pill fa-status-pill--{{ badgeVariant }} text-decoration-none"
                                                title="{{ otherReq.title }}{% if entry.direction == 'reverse' %} ({{ 'compliance.requirement.equivalents.reverse'|trans({}, 'compliance') }}){% endif %}">
                                                 <code>{{ otherReq.requirementId }}</code>
                                                 <span class="ms-1">{{ mappingPct }}%</span>
@@ -524,7 +524,7 @@
                         slider.value = value;
                         hiddenInput.value = value;
                         sliderValue.textContent = value + '%';
-                        sliderValue.className = 'badge bg-' + (value >= 75 ? 'success' : (value >= 50 ? 'warning' : 'danger'));
+                        sliderValue.className = 'fa-status-pill fa-status-pill--' + (value >= 75 ? 'success' : (value >= 50 ? 'warning' : 'danger'));
                         progressBar.style.width = value + '%';
                         progressBar.style.backgroundColor = value >= 75 ? 'var(--success)' : (value >= 50 ? 'var(--warning)' : 'var(--danger)');
                         progressBar.setAttribute('aria-valuenow', value);
