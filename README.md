@@ -260,6 +260,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Setup-Wizard** -- 12 Schritte (Welcome -> Requirements -> Datenbank -> Backup-Restore -> Admin-User -> Email -> Organisation -> Module -> Compliance-Frameworks -> Stammdaten -> Sample-Data -> Abschluss) im einheitlichen Aurora-Layout
 - **Industry-Preset Express-Path** -- 3-Fragen-Onboarding (Branche + Groesse + Zertifizierungen) aktiviert automatisch relevante Module und Branchen-Baselines (Tag-1-Onboarding)
 - **3-Bucket-Applicability** -- Frameworks automatisch in Pflicht / Empfohlen / Optional klassifiziert
+- **Bulk-Import mit ehrlicher Vorschau** -- die Vorschau löst Verantwortliche (Benutzer/Person) bereits in der Organisation auf und zeigt nicht auflösbare Zeilen mit Zeilennummer, statt sie erst beim Übernehmen abzulehnen
 - **Guided Tours** -- Rollenbezogene Einfuehrungen (Junior, ISB, CISO, Auditor, Compliance Manager)
 - **Command Palette** -- Cmd+K / Ctrl+K fuer schnellen Zugriff
 - **Mein-Tag-Inbox** -- Zentrale Inbox aggregiert 19 Buckets aus allen Modulen (Workflow-Inbox, 4-Eyes, Audit-Findings, DSR-Requests, Policy-Acks, Risk-Reviews, Patch-Deadlines, Control-Evidence, Training, Incidents, BCM und mehr)
@@ -271,6 +272,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Tenant-Scoped Admin** -- `TenantScopedAdminVoter` schraenkt `ROLE_ADMIN` strikt auf den eigenen Tenant ein; nur `ROLE_SUPER_ADMIN` darf tenant-uebergreifend agieren
 - **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, globale Provider fuer alle Organisationen oder je Organisation, AEAD-verschluesselte Client-Secrets)
 - **MFA** -- TOTP mit Backup-Codes
+- **SSO-Verknüpfung von Hand** -- Admins binden ein bestehendes Konto auf der Benutzerseite an Provider + Kennung (OIDC `sub`, SAML NameID), ändern oder lösen sie; privilegierte Konten nur der Instanz-Betreiber, jede Änderung im SSO-Audit-Trail
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag
 - **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping (Organisations-Backup enthaelt auch die Organisations-Einstellungen), DR-Runbook

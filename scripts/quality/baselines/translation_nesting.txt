@@ -362,10 +362,10 @@ translations/tisax_isa.de.yaml:7:tisax
 translations/tisax_isa.en.yaml:7:tisax
 translations/training.de.yaml:197:iso_9001_bridge
 translations/training.en.yaml:192:iso_9001_bridge
-translations/user.de.yaml:309:user_management
-translations/user.de.yaml:313:profile
-translations/user.en.yaml:309:user_management
-translations/user.en.yaml:313:profile
+translations/user.de.yaml:332:user_management
+translations/user.de.yaml:336:profile
+translations/user.en.yaml:332:user_management
+translations/user.en.yaml:336:profile
 translations/validators.de.yaml:110:Error
 translations/validators.de.yaml:224:setup
 translations/validators.de.yaml:229:document

@@ -14,11 +14,19 @@ and context state first and restores both. Any other reset in src/ fails:
     resets a closed manager the same way): a variable / property / getter
     whose name contains `registry` or `doctrine`, or `->get('doctrine')`.
 
-String literals and comments (`//`, `#` except `#[`, `/* … */`) are blanked
-before matching (line numbers kept), so a `#` or `//` inside a string does
-not hide the code after it and a string that mentions resetManager() is not
-flagged. Limits: heredoc / nowdoc bodies are scanned as code; a registry
-held in a variable with an unrelated name is not recognised as such.
+  * `->reset(` on a name typed as Doctrine registry in the same file
+    (parameter / property / promoted property typed `ManagerRegistry`,
+    `\\Doctrine\\Persistence\\ManagerRegistry`, Doctrine-Bundle `Registry`,
+    also nullable) or assigned from `->getDoctrine()` / `->get('doctrine')`:
+    `$mr->reset(` and `$this->mr?->reset(` are flagged whatever the name.
+
+String literals, comments (`//`, `#` except `#[`, `/* … */`) and heredoc /
+nowdoc bodies are blanked before matching (line numbers kept), so a `#` or
+`//` inside a string does not hide the code after it and a string or heredoc
+that mentions resetManager() is not flagged. Limits: typing is resolved per
+file (a name typed as registry anywhere in the file counts for the whole
+file); a registry passed on through untyped variables or array access, or
+aliased via `use ... as`, is not recognised.
 
 Exit-codes: 0 clean / baselined, 1 violations.
 """
@@ -39,6 +47,15 @@ RE_REGISTRY_RESET = re.compile(
     r"\s*\??->\s*reset\s*\(",
     re.IGNORECASE,
 )
+RE_HEREDOC_OPEN = re.compile(r"<<<[ \t]*(?:'(\w+)'|\"(\w+)\"|(\w+))[ \t]*\r?\n")
+RE_TYPED_NAME = re.compile(
+    r"(?<![\w$])(\??)((?:\\?[A-Za-z_][\w]*\\)*)(ManagerRegistry|Registry)(?:\s*\|\s*null)?\s+(?:readonly\s+)?&?(?:\.\.\.)?\$(\w+)"
+)
+RE_DOCTRINE_ASSIGN = re.compile(
+    r"\$(\w+)\s*=\s*\$\w+(?:\s*\??->\s*\w+)*\s*\??->\s*"
+    r"(?:getDoctrine\s*\(\s*\)|get\s*\(\s*['\"]doctrine['\"]\s*\))"
+)
+RE_DOCTRINE_REGISTRY_IMPORT = re.compile(r"\buse\s+Doctrine\\Bundle\\DoctrineBundle\\Registry\s*;")
 
 
 def strip_code(source: str) -> str:
@@ -54,6 +71,16 @@ def strip_code(source: str) -> str:
     while i < n:
         ch = source[i]
         nxt = source[i + 1] if i + 1 < n else ""
+        if ch == "<" and source.startswith("<<<", i):
+            m = RE_HEREDOC_OPEN.match(source, i)
+            if m:
+                ident = m.group(1) or m.group(2) or m.group(3)
+                close = re.compile(r"^[ \t]*" + re.escape(ident) + r"(?!\w)", re.M)
+                c = close.search(source, m.end())
+                body_end = c.start() if c else n
+                blank(m.end(), body_end)
+                i = c.end() if c else n
+                continue
         if ch in ("'", '"'):
             j = i + 1
             while j < n and source[j] != ch:
@@ -77,11 +104,35 @@ def strip_code(source: str) -> str:
     return "".join(out)
 
 
+def registry_names(clean: str) -> set[str]:
+    """Variable / property names typed as Doctrine registry in this file."""
+    names: set[str] = set()
+    bundle_registry = bool(RE_DOCTRINE_REGISTRY_IMPORT.search(clean))
+    for m in RE_TYPED_NAME.finditer(clean):
+        ns, cls = m.group(2), m.group(3)
+        if cls == "Registry" and not bundle_registry and not ns.lstrip("\\").startswith("Doctrine\\"):
+            continue  # some other Registry class (e.g. Workflow\\Registry)
+        names.add(m.group(4))
+    names.update(m.group(1) for m in RE_DOCTRINE_ASSIGN.finditer(clean))
+    return names
+
+
+def typed_registry_regex(names: set[str]) -> re.Pattern[str] | None:
+    if not names:
+        return None
+    alt = "|".join(re.escape(x) for x in sorted(names))
+    return re.compile(
+        r"(?:\$(?:" + alt + r")\b|\$this\s*\??->\s*(?:" + alt + r")\b)\s*\??->\s*reset\s*\("
+    )
+
+
 def scan_text(source: str) -> list[int]:
     """Line numbers of bare EntityManager resets (sorted, unique)."""
     clean = strip_code(source)
     lines: set[int] = set()
-    for regex in (RE_RESET_MANAGER, RE_REGISTRY_RESET):
+    for regex in (RE_RESET_MANAGER, RE_REGISTRY_RESET, typed_registry_regex(registry_names(clean))):
+        if regex is None:
+            continue
         for m in regex.finditer(clean):
             lines.add(clean.count("\n", 0, m.start()) + 1)
     return sorted(lines)

@@ -92,11 +92,14 @@ final class SsoEnforcementSubscriber
      * provider, or the provider an existing user is bound to —
      * {@see SsoAccountLinkPolicy::resolveLoginProvider()}); false = enforced
      * but no enabled provider can sign the user in (fail open). Also
-     * read by the SSO admin page.
+     * read by the SSO admin page, which passes the organisation's enabled
+     * providers it already loaded ($enabledProviders).
+     *
+     * @param list<IdentityProvider>|null $enabledProviders
      */
-    public function enforcementTarget(?User $user, string $email): IdentityProvider|false|null
+    public function enforcementTarget(?User $user, string $email, ?array $enabledProviders = null): IdentityProvider|false|null
     {
-        $provider = $this->ssoProviderRegistry->findEnforcedProviderForEmail($user?->getTenant(), $email);
+        $provider = $this->ssoProviderRegistry->findEnforcedProviderForEmail($user?->getTenant(), $email, $enabledProviders);
         if (!$provider instanceof IdentityProvider || !$provider->isEnabled() || (string) $provider->getSlug() === '') {
             return null; // no enforcement, or a misconfigured provider — do not trap the user
         }

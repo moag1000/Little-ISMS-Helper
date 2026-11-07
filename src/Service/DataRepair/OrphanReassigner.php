@@ -21,7 +21,10 @@ use Doctrine\ORM\EntityManagerInterface;
  * (ISO 27001 Cl. 7.5.3). A flush that closed the EntityManager is recovered
  * (EntityManagerRecovery). After a recovery the callers' entities belong to
  * the dead unit of work, so the entity and the tenant are re-loaded into the
- * current one first; an entity that is no longer an orphan is skipped.
+ * current one first; an entity that is no longer an orphan is skipped. A
+ * failed rollback (deadlock, lock-wait timeout) never leaves a transaction
+ * level behind, and a reassigned entity is detached so large orphan sets do
+ * not slow every later flush down.
  */
 final readonly class OrphanReassigner
 {
@@ -61,6 +64,7 @@ final readonly class OrphanReassigner
         }
 
         $shortName = (new \ReflectionClass($class))->getShortName();
+        $outerLevel = $em->getConnection()->getTransactionNestingLevel();
         $em->beginTransaction();
         try {
             $entity->setTenant($tenant);
@@ -78,14 +82,13 @@ final readonly class OrphanReassigner
                 strict: true,
             );
             $em->commit();
+            // Done with it: a job reassigning thousands of orphans would otherwise
+            // make every later flush re-check every entity it already handled.
+            $em->detach($entity);
 
             return true;
         } catch (\Throwable) {
-            try {
-                $em->rollback();
-            } catch (\Throwable) {
-                // connection already gone; the reassignment is reported as failed below either way
-            }
+            $this->rollBackTo($outerLevel);
             if (!$em->isOpen()) {
                 $this->entityManagerRecovery?->recover();
             } elseif ($em->contains($entity)) {
@@ -93,6 +96,27 @@ final readonly class OrphanReassigner
             }
 
             return false;
+        }
+    }
+
+    /**
+     * Leave no transaction open behind a failed reassignment. A deadlock or
+     * lock-wait timeout makes the server roll the whole transaction back; the
+     * rollback call can then fail and Doctrine's nesting level stays above
+     * the caller's, so every later beginTransaction() of the job would only
+     * open a savepoint in a transaction that no longer exists. Roll back to
+     * the level the caller had; if that fails, close the connection (resets
+     * the level, DBAL reconnects on the next query).
+     */
+    private function rollBackTo(int $outerLevel): void
+    {
+        $connection = $this->entityManager->getConnection();
+        try {
+            while ($connection->getTransactionNestingLevel() > $outerLevel) {
+                $connection->rollBack();
+            }
+        } catch (\Throwable) {
+            $connection->close();
         }
     }
 }

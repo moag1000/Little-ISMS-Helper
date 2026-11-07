@@ -60,3 +60,40 @@ jobs:
             --repo "${{ github.repository }}" \
             --ref "$TAG"
           echo "::notice::ci.yml workflow_dispatch fired for $TAG — Docker build/push will run shortly."
+
+      # release-please bumps "version" in composer.json, and composer's
+      # content-hash covers that field: without a refresh every release PR
+      # carries a lock file Composer reports as "not up to date" (warning on
+      # every `composer install`, Docker build included). Refresh only the
+      # hash (`update --lock` changes no package) and commit it to the PR
+      # branch. release-please rewrites its branch on each run, so this step
+      # runs after it every time. The GITHUB_TOKEN push starts no CI — the
+      # Monday auto-merge dispatches CI on the release branch anyway.
+      - name: Check out the release PR branch
+        if: ${{ steps.release.outputs.pr != '' }}
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
+
+      - name: Set up PHP for the lock refresh
+        if: ${{ steps.release.outputs.pr != '' }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: Refresh the composer.lock content-hash on the release PR
+        if: ${{ steps.release.outputs.pr != '' }}
+        run: |
+          set -euo pipefail
+          composer update --lock --no-install --no-scripts --no-plugins --no-interaction --ignore-platform-reqs
+          if git diff --quiet -- composer.lock; then
+            echo "::notice::composer.lock already matches composer.json."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add composer.lock
+          git commit -m "chore(release): refresh composer.lock content-hash"
+          git push origin HEAD
+          echo "::notice::composer.lock content-hash refreshed on the release PR."

@@ -75,6 +75,23 @@ final class EmptyStateAndPageHeaderMacroTest extends KernelTestCase
         self::assertStringContainsString('fa-icon--plus', $icon);
     }
 
+    #[Test]
+    public function pageHeaderBadgeEscapesPlainLabelsOnceAndKeepsSafeLabels(): void
+    {
+        // A plain label is escaped exactly once.
+        self::assertStringContainsString('R&amp;D', $this->header("{ label: 'R&D' }"));
+
+        // A label that is already safe markup (a rendered macro) is not escaped a
+        // second time (#1059: |trim in the macro keeps the safe flag).
+        $safe = $this->twig->createTemplate(
+            "{% macro label() %}A&amp;B{% endmacro %}"
+            . "{% import '_components/_fa_page_header.html.twig' as h %}"
+            . "{{ h.render({ title: 'Title', badge: { label: _self.label() } }) }}"
+        )->render();
+        self::assertStringContainsString('A&amp;B', $safe);
+        self::assertStringNotContainsString('A&amp;amp;B', $safe);
+    }
+
     private function header(string $badge): string
     {
         return $this->twig->createTemplate(

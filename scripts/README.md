@@ -349,9 +349,15 @@ Operator-Pfaden (Restore, Schema-Wartung, Sample-Purge).
 (einzige erlaubte Stelle ist der Helper selbst). Erkannt werden
 `resetManager(` — auch über Zeilen umbrochen — und `->reset(` auf der
 Doctrine-Registry (Variable/Property/Getter mit `registry`/`doctrine` im Namen
-oder `->get('doctrine')`). String-Literale und Kommentare werden vorher
-ausgeblendet. Grenzen: Heredoc-Inhalte gelten als Code; eine Registry in einer
-Variablen mit fremdem Namen wird nicht erkannt.
+oder `->get('doctrine')`) sowie auf jedem Namen, der in derselben Datei als
+Registry typisiert ist (`ManagerRegistry`, `\Doctrine\Persistence\ManagerRegistry`,
+Doctrine-Bundle-`Registry`, auch nullable und Constructor-Promotion) oder aus
+`->getDoctrine()` / `->get('doctrine')` zugewiesen wird — `$mr->reset(` und
+`$this->mr?->reset(` werden also unabhängig vom Namen gefunden, `->reset(` auf
+anderen Objekten nicht. String-Literale, Kommentare sowie Heredoc-/Nowdoc-Inhalte
+werden vorher ausgeblendet. Grenzen: Die Typisierung wird je Datei aufgelöst;
+eine über untypisierte Variablen/Array-Zugriffe weitergereichte oder per
+`use … as` umbenannte Registry wird nicht erkannt.
 
 **CI-Integration:** Gate 68 im `code-quality`-Job, keine Baseline.
 Selbsttest: `scripts/quality/tests/test_check_entity_manager_reset.py`.
