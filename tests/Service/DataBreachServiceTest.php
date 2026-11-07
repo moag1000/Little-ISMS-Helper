@@ -185,6 +185,35 @@ class DataBreachServiceTest extends TestCase
     }
 
     #[Test]
+    public function testPrefillFromIncidentTakesOverTheIncidentRecord(): void
+    {
+        // Regression: the /new prefill asked for DataBreach::setDescription(),
+        // which does not exist, so "what happened" was silently dropped.
+        $incident = new Incident();
+        $incident->setTitle('Phishing');
+        $incident->setDescription('Mailbox of the HR lead was accessed.');
+        $incident->setDetectedAt(new DateTime('2026-11-05 10:00'));
+        $incident->setAffectedUsersCount(40);
+        $incident->setRootCause('Reused password.');
+        $incident->setContainmentActions('Session revoked.');
+        $incident->setCorrectiveActions('MFA enforced.');
+        $incident->setLessonsLearned('Phishing drill twice a year.');
+
+        $breach = new DataBreach();
+        $breach->setRootCause('Already assessed by the DPO.');
+        $this->service->prefillFromIncident($breach, $incident);
+
+        $this->assertSame($incident, $breach->getIncident());
+        $this->assertSame('Data Breach: Phishing', $breach->getTitle());
+        $this->assertSame('Mailbox of the HR lead was accessed.', $breach->getBreachNature());
+        $this->assertSame(40, $breach->getAffectedDataSubjects());
+        $this->assertSame("Session revoked.\n\nMFA enforced.", $breach->getMeasuresTaken());
+        $this->assertSame('Phishing drill twice a year.', $breach->getLessonsLearned());
+        $this->assertSame('Already assessed by the DPO.', $breach->getRootCause(), 'Filled fields are kept.');
+        $this->assertNotNull($breach->getDetectedAt());
+    }
+
+    #[Test]
     public function testCreateStandaloneThrowsExceptionWithoutTenant(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);

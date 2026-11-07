@@ -294,17 +294,14 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
     private function highRiskReasons(ProcessingActivity $activity): array
     {
         $reasons = [];
-        if (method_exists($activity, 'getProcessesSpecialCategories') && $activity->getProcessesSpecialCategories() === true) {
+        if ($activity->getProcessesSpecialCategories() === true) {
             $reasons[] = 'GDPR Art. 9 special categories';
         }
-        if (method_exists($activity, 'getAutomatedDecisionMakingDetails')) {
-            $admd = $activity->getAutomatedDecisionMakingDetails();
-            if (!empty($admd)) {
-                $reasons[] = 'Automated decision-making';
-            }
+        $admd = $activity->getAutomatedDecisionMakingDetails();
+        if (!empty($admd)) {
+            $reasons[] = 'Automated decision-making';
         }
-        if (method_exists($activity, 'getEstimatedDataSubjectsCount')
-            && (int) $activity->getEstimatedDataSubjectsCount() > 1000) {
+        if ((int) $activity->getEstimatedDataSubjectsCount() > 1000) {
             $reasons[] = 'Large-scale processing (>1000 data subjects)';
         }
         // Asset-classification-driven trigger
@@ -321,19 +318,15 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
 
     private function isHighRisk(ProcessingActivity $activity): bool
     {
-        if (method_exists($activity, 'getProcessesSpecialCategories')
-            && $activity->getProcessesSpecialCategories() === true) {
+        if ($activity->getProcessesSpecialCategories() === true) {
             return true;
         }
-        if (method_exists($activity, 'getAutomatedDecisionMakingDetails')) {
-            $admd = $activity->getAutomatedDecisionMakingDetails();
-            if (!empty($admd)) {
-                return true;
-            }
+        $admd = $activity->getAutomatedDecisionMakingDetails();
+        if (!empty($admd)) {
+            return true;
         }
         // Large scale heuristic
-        if (method_exists($activity, 'getEstimatedDataSubjectsCount')
-            && (int) $activity->getEstimatedDataSubjectsCount() > 1000) {
+        if ((int) $activity->getEstimatedDataSubjectsCount() > 1000) {
             return true;
         }
         // Asset with confidential/restricted dataClassification.
@@ -376,9 +369,6 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
      */
     private function vulnerableSubjectCategories(ProcessingActivity $activity): array
     {
-        if (!method_exists($activity, 'getDataSubjectCategories')) {
-            return [];
-        }
         $categories = (array) $activity->getDataSubjectCategories();
         $vulnerableMarkers = [
             'children', 'kinder', 'minor', 'minors', 'minderjährige',

@@ -252,10 +252,8 @@ final class PolicyZipExporter
         if ($this->controlRepository !== null) {
             $controls = $this->controlRepository->findBy(['tenant' => $tenant]);
             foreach ($controls as $control) {
-                $evidence = method_exists($control, 'getEvidenceDocuments')
-                    ? $control->getEvidenceDocuments()
-                    : null;
-                $count = $evidence !== null ? $evidence->count() : 0;
+                $evidence = $control->getEvidenceDocuments();
+                $count = $evidence->count();
                 $rows[] = [
                     (string) ($control->getControlId() ?? ''),
                     (string) ($control->getName() ?? ''),
@@ -313,8 +311,8 @@ final class PolicyZipExporter
                         (string) ($instance->getEntityType() ?? ''),
                         (string) ($instance->getEntityId() ?? ''),
                         (string) ($instance->getStatus() ?? ''),
-                        method_exists($instance, 'getStartedAt') ? ($instance->getStartedAt()?->format(DATE_ATOM) ?? '') : '',
-                        method_exists($instance, 'getCompletedAt') ? ($instance->getCompletedAt()?->format(DATE_ATOM) ?? '') : '',
+                        $instance->getStartedAt()?->format(DATE_ATOM) ?? '',
+                        $instance->getCompletedAt()?->format(DATE_ATOM) ?? '',
                         json_encode($history, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '',
                     ];
                 }

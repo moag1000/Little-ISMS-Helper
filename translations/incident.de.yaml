@@ -133,6 +133,7 @@ incident:
     lessons_learned: Gelernte Lektionen
     closed_at: Geschlossen am
     nis2_category: NIS2‑Kategorie
+    nis2_suspected_malicious: 'Verdacht auf rechtswidrige oder böswillige Handlung'
     cross_border_impact: Grenzüberschreitende Auswirkungen
     early_warning_reported_at: Frühwarnung gemeldet am
     detailed_notification_reported_at: Detaillierte Meldung gemeldet am
@@ -252,6 +253,7 @@ incident:
     corrective_actions: Beschreiben Sie ergriffene und geplante Maßnahmen...
     lessons_learned: Welche Erkenntnisse wurden gewonnen? Was sollte verbessert werden?
     nis2_category: -- NIS2-Kategorie auswählen --
+    nis2_suspected_malicious: '-- Noch nicht bewertet --'
     national_authority: z.B. BSI, BNetzA
     authority_reference: Aktenzeichen von der Behörde
     reported_by_user: -- Meldende Person --
@@ -275,6 +277,7 @@ incident:
     affected_assets: Wählen Sie die vom Vorfall betroffenen Assets aus (Tippen
       zum Suchen, Mehrfachauswahl möglich)
     nis2_category: Kategorie gemäß NIS2-Richtlinie Artikel 23
+    nis2_suspected_malicious: 'NIS-2 Art. 23 Abs. 4 a: Pflichtangabe der Frühwarnung. Ohne Bewertung meldet der BSI-Export „unbekannt“.'
     nis2_category_kritis_hint: 'Kategorie gemäß NIS2-Richtlinie Artikel 23. Hinweis:
       Markieren Sie Ihre Organisation in den Compliance-Einstellungen als KRITIS-Betreiber
       (BSI-Kritis-V), damit sektor-spezifische NIS2-Pflichtfeld-Erkennung vollständig
@@ -309,6 +312,10 @@ incident:
     data_recovery_strategy: 'Strategie zur Wiederherstellung von Daten und Diensten; Cross-Referenz auf den BCM-Kontinuitätsplan (DORA Art. 11(2)).'
     owner_legacy: 'Veraltetes Freitextfeld — nur noch für migrierte Altdaten. Bitte Benutzer oder Person oben auswählen.'
     initial_report_submitted_at_dora: 'Zeitpunkt der Erstmeldung an die zuständige Behörde. DORA Art. 19 i. V. m. RTS: spätestens 4 Stunden nach Einstufung als schwerwiegend und 24 Stunden nach Kenntnisnahme.'
+  suspected_malicious:
+    suspected: 'Ja'
+    not_suspected: 'Nein'
+    unknown: 'Nicht bewertet'
   category:
     data_breach: Datenschutzverletzung
     security_incident: Sicherheitsvorfall

@@ -114,6 +114,7 @@ incident:
     visible_to_holding: 'Visible to group crisis team'
     closed_at: Closed At
     nis2_category: Nis2 Category
+    nis2_suspected_malicious: 'Suspected unlawful or malicious act'
     cross_border_impact: Cross Border Impact
     early_warning_reported_at: Early Warning Reported At
     detailed_notification_reported_at: Detailed Notification Reported At
@@ -250,6 +251,7 @@ incident:
     corrective_actions: Describe measures taken and planned...
     lessons_learned: What insights were gained? What should be improved?
     nis2_category: -- Select NIS2 category --
+    nis2_suspected_malicious: '-- Not yet assessed --'
     national_authority: e.g. BSI, NCSC, ANSSI
     authority_reference: Reference number from authority
     reported_by_user: -- Select reporter --
@@ -271,6 +273,7 @@ incident:
     affected_assets: Select assets affected by the incident (type to search,
       multi-select supported)
     nis2_category: Category according to NIS2 Directive Article 23
+    nis2_suspected_malicious: 'NIS-2 Art. 23 (4) (a): required in the early warning. Without an assessment the BSI export reports "unknown".'
     nis2_category_kritis_hint: 'Category according to NIS2 Directive Article 23. Note:
       Flag your tenant as a KRITIS operator (BSI-Kritis-V) in the compliance settings
       so sector-specific NIS2 mandatory-field detection works fully.'
@@ -302,6 +305,10 @@ incident:
     data_recovery_strategy: 'Strategy for restoring data and services; cross-reference to the BCM continuity plan (DORA Art. 11(2)).'
     owner_legacy: 'Legacy free-text field — kept only for migrated data. Please select a user or person above.'
     initial_report_submitted_at_dora: 'Time the initial notification was submitted to the competent authority. DORA Art. 19 with RTS: no later than 4 hours after classification as major and 24 hours after becoming aware.'
+  suspected_malicious:
+    suspected: 'Yes'
+    not_suspected: 'No'
+    unknown: 'Not assessed'
   category:
     data_breach: Data Breach
     security_incident: Security Incident

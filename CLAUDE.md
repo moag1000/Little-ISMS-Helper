@@ -533,6 +533,9 @@ php bin/console app:migrate-legacy-workflows --archive
 **Do NOT:**
 - Create `new Workflow()` or `new WorkflowStep()` in `src/` outside Repository/Command (PHPStan blocks this)
 - Edit DB `workflow_steps` rows directly (read-only since Y.4)
+- Use a role in `approver_role` / transition `roles` that `security.yaml` does not define, or `ROLE_USER` on an
+  approval step — nobody gets it or everybody can approve (Gate 82, `check_workflow_roles.py`). An owner is a
+  relation on the record, not a role.
 
 **Documentation:**
 - `docs/WORKFLOW_AUTO_PROGRESSION.md` - Complete auto-progression guide (updated for Y.4)
@@ -605,6 +608,8 @@ Compliance audit trail: [`docs/archive/FORM_AUDIT_2026-05.md`](docs/archive/FORM
   `scripts/quality/check_json_catch_throwable.py`)
 - Doctrine ORM sort directions are `\SortDirection::Ascending` / `\SortDirection::Descending`, never `'ASC'`/`'DESC'`
   strings — `orderBy()`, `addOrderBy()` and `#[ORM\OrderBy]` (doctrine/orm 3.7 deprecation, Gate 81).
+- No `method_exists()` on a typed entity: call the getter. Always-false calls silently disabled features
+  (Gate 83, `check_entity_method_exists.py`; it also rejects such entries in `phpstan-baseline.neon`).
 - File size is ratcheted (Gate 25, `check_god_class_size.py`): every file in `src/` has a per-kind
   LOC limit (controller 600, service 1500 / 15 ctor deps, entity 1000, repository 600, command 800,
   rest 800). Files already over it are listed in `scripts/quality/baselines/god_class_size.txt` and

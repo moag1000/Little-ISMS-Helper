@@ -327,6 +327,26 @@ class ControlRepository extends ServiceEntityRepository
     }
 
     /**
+     * Annex A ids are stored as "A.8.25"; catalogues and wizard checks write
+     * "8.25". Both spellings of every id, so a lookup matches either way.
+     *
+     * @param array<int, string|int> $controlIds
+     * @return list<string>
+     */
+    public static function annexAIdVariants(array $controlIds): array
+    {
+        $variants = [];
+        foreach ($controlIds as $id) {
+            $id = (string) $id;
+            $bare = str_starts_with($id, 'A.') ? substr($id, 2) : $id;
+            $variants[$bare] = true;
+            $variants['A.' . $bare] = true;
+        }
+
+        return array_keys($variants);
+    }
+
+    /**
      * Find controls by their control IDs (e.g., '5.1', '5.2', 'A.5.1')
      *
      * @param array $controlIds Array of control ID strings
@@ -342,7 +362,7 @@ class ControlRepository extends ServiceEntityRepository
             ->where('c.tenant = :tenant')
             ->andWhere('c.controlId IN (:controlIds)')
             ->setParameter('tenant', $tenant)
-            ->setParameter('controlIds', $controlIds)
+            ->setParameter('controlIds', self::annexAIdVariants($controlIds))
             ->orderBy('LENGTH(c.controlId)', \SortDirection::Ascending)
             ->addOrderBy('c.controlId', \SortDirection::Ascending)
             ->getQuery()

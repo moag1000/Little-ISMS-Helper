@@ -193,7 +193,7 @@ final class DocumentApprovalListener
             // Deduplicate by user id.
             $unique = [];
             foreach ($recipients as $user) {
-                $id = method_exists($user, 'getId') ? $user->getId() : null;
+                $id = $user->getId();
                 if ($id !== null && !isset($unique[$id])) {
                     $unique[$id] = $user;
                 }

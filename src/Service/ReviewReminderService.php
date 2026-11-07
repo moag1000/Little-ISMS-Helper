@@ -359,35 +359,43 @@ final class ReviewReminderService
             }
         }
 
-        // Process overdue BC Plans
+        // Process overdue BC Plans (review and test, ISO 22301 8.4.5 / 8.5).
+        // The reminder goes to the plan owner; only an ownerless plan falls
+        // back to the administrators of the plan's organisation.
         foreach ($this->getOverdueBcPlanReviews($tenant) as $plan) {
-            // BC Plans use planOwner as string, would need to resolve to User
-            // For now, notify the admins of the plan's own organisation
-            $admins = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $plan->getTenant());
-            foreach ($admins as $admin) {
-                try {
-                    $this->emailNotificationService->sendGenericNotification(
-                        '[ISMS Reminder] Overdue BC Plan Review: ' . $plan->getName(),
-                        'emails/review_reminder.html.twig',
-                        [
-                            'entity_type' => 'Business Continuity Plan',
-                            'entity_name' => $plan->getName(),
-                            'review_date' => $plan->getNextReviewDate(),
-                            'test_date' => $plan->getNextTestDate(),
-                            'entity_id' => $plan->getId(),
-                            'route_name' => 'app_bc_plan_show',
-                            'is_test_overdue' => $plan->isTestOverdue(),
-                            'is_review_overdue' => $plan->isReviewOverdue(),
-                        ],
-                        [$admin]
-                    );
-                    $sent++;
-                    $details[] = ['type' => 'bc_plan', 'id' => $plan->getId(), 'status' => 'sent'];
-                    break; // Only send once per plan (to first admin)
-                } catch (Throwable $e) {
-                    $failed++;
-                    $details[] = ['type' => 'bc_plan', 'id' => $plan->getId(), 'status' => 'failed', 'error' => $e->getMessage()];
-                }
+            $owner = OwnerResolver::recipient(
+                $plan->getPlanOwnerUser(),
+                $plan->getPlanOwnerPerson(),
+                $plan->getPlanOwner(),
+            );
+            $recipients = $owner !== null
+                ? [$owner]
+                : $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $plan->getTenant());
+            if ($recipients === []) {
+                $details[] = ['type' => 'bc_plan', 'id' => $plan->getId(), 'status' => 'skipped', 'reason' => 'no recipient'];
+                continue;
+            }
+            try {
+                $this->emailNotificationService->sendGenericNotification(
+                    '[ISMS Reminder] Overdue BC Plan Review: ' . $plan->getName(),
+                    'emails/review_reminder.html.twig',
+                    [
+                        'entity_type' => 'Business Continuity Plan',
+                        'entity_name' => $plan->getName(),
+                        'review_date' => $plan->getNextReviewDate(),
+                        'test_date' => $plan->getNextTestDate(),
+                        'entity_id' => $plan->getId(),
+                        'route_name' => 'app_bc_plan_show',
+                        'is_test_overdue' => $plan->isTestOverdue(),
+                        'is_review_overdue' => $plan->isReviewOverdue(),
+                    ],
+                    $recipients
+                );
+                $sent++;
+                $details[] = ['type' => 'bc_plan', 'id' => $plan->getId(), 'status' => 'sent'];
+            } catch (Throwable $e) {
+                $failed++;
+                $details[] = ['type' => 'bc_plan', 'id' => $plan->getId(), 'status' => 'failed', 'error' => $e->getMessage()];
             }
         }
 

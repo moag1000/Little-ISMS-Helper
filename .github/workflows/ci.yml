@@ -717,6 +717,15 @@ jobs:
         # config/gdpr_transfer_zones.yaml (EU, EEA, adequacy, DPF) is checked at
         # least yearly (as_of), codes are unique, and src/ keeps no own EU list.
         run: python3 scripts/quality/check_gdpr_transfer_zones.py --quiet
+      - name: "Gate 82: workflow approvers and recipients are real roles"
+        # A role Symfony does not know is never granted: the step waits for
+        # nobody and nobody is notified. ROLE_USER on an approval step lets
+        # every signed-in user approve.
+        run: python3 scripts/quality/check_workflow_roles.py --quiet
+      - name: "Gate 83: no method_exists() on typed entities"
+        # Always true is dead code, always false silently disables the feature
+        # (My Day findings, document-review owners). PHPStan misses the false case.
+        run: python3 scripts/quality/check_entity_method_exists.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

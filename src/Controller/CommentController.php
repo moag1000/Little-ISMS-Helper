@@ -99,7 +99,7 @@ class CommentController extends AbstractController
         // Defense-in-depth: explicit tenant comparison. The TenantFilter is
         // expected to have caught cross-tenant access already, but we re-check
         // here so a misconfigured filter can't silently widen the boundary.
-        $targetTenant = method_exists($target, 'getTenant') ? $target->getTenant() : null;
+        $targetTenant = $target->getTenant();
         if (!$targetTenant instanceof Tenant
             || !$this->tenantContext->canAccessTenant($targetTenant)
         ) {

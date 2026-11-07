@@ -460,13 +460,9 @@ class ComplianceWizardController extends AbstractController
             return $this->redirect($request->headers->get('referer', $this->generateUrl('app_compliance_wizard_index')));
         }
 
-        $oldDays = method_exists($fulfillment, 'getAdjustedEffortDays') ? $fulfillment->getAdjustedEffortDays() : null;
-        if (method_exists($fulfillment, 'setAdjustedEffortDays')) {
-            $fulfillment->setAdjustedEffortDays($days);
-        }
-        if (method_exists($fulfillment, 'setAdjustedEffortReason')) {
-            $fulfillment->setAdjustedEffortReason($reason);
-        }
+        $oldDays = $fulfillment->getAdjustedEffortDays();
+        $fulfillment->setAdjustedEffortDays($days);
+        $fulfillment->setAdjustedEffortReason($reason);
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(

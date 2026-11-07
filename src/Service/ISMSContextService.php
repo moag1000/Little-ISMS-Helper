@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User;
 use DateTimeImmutable;
 use App\Entity\Tenant;
 use DateTimeInterface;
@@ -69,7 +69,7 @@ final class ISMSContextService
         }
 
         $user = $this->security->getUser();
-        if (!$user instanceof UserInterface || !method_exists($user, 'getTenant')) {
+        if (!$user instanceof User) {
             return null;
         }
 
@@ -280,7 +280,7 @@ final class ISMSContextService
         }
 
         $user = $this->security->getUser();
-        if (!$user instanceof UserInterface || !method_exists($user, 'getTenant')) {
+        if (!$user instanceof User) {
             return true;
         }
 

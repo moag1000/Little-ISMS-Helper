@@ -46,7 +46,7 @@ enum SlaDeadlineType: string
             self::DoraFinalReport1mo         => 720,   // 30 days × 24h
             self::Nis2EarlyWarning24h        => 24,
             self::Nis2Notification72h        => 72,
-            self::Nis2FinalReport1mo         => 720,   // 30 days × 24h
+            self::Nis2FinalReport1mo         => 720,   // approx.; legal: Incident::getFinalReportDeadline()
             self::IsoCorrectiveAction30d     => 720,   // 30 days × 24h
             self::Custom                     => 0,     // caller must set deadlineAt explicitly
         };

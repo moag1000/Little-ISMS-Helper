@@ -112,7 +112,7 @@ class SeedIncidentWorkflowsCommand
                         'description' => 'Incident Manager reviews the incident details, assesses impact, and determines appropriate response actions.',
                         'order' => 1,
                         'type' => 'approval',
-                        'role' => 'ROLE_INCIDENT_MANAGER',
+                        'role' => 'ROLE_ISB',
                         'daysToComplete' => 1, // 24 hours = 1 day
                     ],
                     [
@@ -120,7 +120,7 @@ class SeedIncidentWorkflowsCommand
                         'description' => 'Incident Manager verifies that the incident has been properly resolved and documented.',
                         'order' => 2,
                         'type' => 'approval',
-                        'role' => 'ROLE_INCIDENT_MANAGER',
+                        'role' => 'ROLE_ISB',
                         'daysToComplete' => 1, // 24 hours = 1 day
                     ],
                 ],
@@ -137,7 +137,7 @@ class SeedIncidentWorkflowsCommand
                         'description' => 'Incident Manager performs initial assessment of the high severity incident, documenting scope and potential impact.',
                         'order' => 1,
                         'type' => 'approval',
-                        'role' => 'ROLE_INCIDENT_MANAGER',
+                        'role' => 'ROLE_ISB',
                         'daysToComplete' => 1, // 8 hours rounded up to 1 day
                     ],
                     [
@@ -170,7 +170,7 @@ class SeedIncidentWorkflowsCommand
                         'description' => 'Notify the incident response team immediately to begin containment and initial response actions.',
                         'order' => 1,
                         'type' => 'notification',
-                        'role' => 'ROLE_INCIDENT_MANAGER',
+                        'role' => 'ROLE_ISB',
                         'daysToComplete' => 1, // 2 hours rounded up to 1 day
                     ],
                     [
@@ -227,7 +227,7 @@ class SeedIncidentWorkflowsCommand
                         'description' => 'CEO approves notification strategy for supervisory authority and affected data subjects, including public communications.',
                         'order' => 3,
                         'type' => 'approval',
-                        'role' => 'ROLE_CEO',
+                        'role' => 'ROLE_TOP_MGMT',
                         'daysToComplete' => 1, // 4 hours rounded up to 1 day
                     ],
                     [

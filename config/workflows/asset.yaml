@@ -1,3 +1,6 @@
+# The asset owner is a relation on the record (Asset.ownerUser), not a role;
+# a ROLE_ASSET_OWNER entry here never matched anybody. Owner-based permission
+# comes with the responsibility resolver (norm-coverage package 2).
 framework:
     workflows:
         asset_lifecycle:
@@ -21,34 +24,34 @@ framework:
                     from: draft
                     to: active
                     metadata:
-                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                        roles: [ROLE_MANAGER]
                         module: assets
                 deactivate:
                     from: active
                     to: inactive
                     metadata:
-                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                        roles: [ROLE_MANAGER]
                         reason_required: true
                 reactivate:
                     from: inactive
                     to: active
                     metadata:
-                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                        roles: [ROLE_MANAGER]
                 assign_to_person:
                     from: active
                     to: in_use
                     metadata:
-                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                        roles: [ROLE_MANAGER]
                 return_from_person:
                     from: in_use
                     to: returned
                     metadata:
-                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                        roles: [ROLE_MANAGER]
                 restore_to_active:
                     from: returned
                     to: active
                     metadata:
-                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                        roles: [ROLE_MANAGER]
                 retire_from_active:
                     from: active
                     to: retired

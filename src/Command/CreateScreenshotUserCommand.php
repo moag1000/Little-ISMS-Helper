@@ -113,9 +113,7 @@ class CreateScreenshotUserCommand
         $tenant->setCode($code);
         $tenant->setName($name);
         $tenant->setIsActive(true);
-        if (method_exists($tenant, 'setCreatedAt')) {
-            $tenant->setCreatedAt(new DateTimeImmutable());
-        }
+        $tenant->setCreatedAt(new DateTimeImmutable());
         $this->entityManager->persist($tenant);
         $this->entityManager->flush();
         return $tenant;

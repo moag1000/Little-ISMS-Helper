@@ -479,6 +479,33 @@ class ReviewReminderServiceTest extends TestCase
         return $risk;
     }
 
+    #[Test]
+    public function testBcPlanReminderGoesToPlanOwnerNotFirstAdmin(): void
+    {
+        // Regression: the reminder went to the alphabetically first admin
+        // although the plan has an owner (ISO 22301 8.4.5 / 8.5).
+        $owner = new User();
+        $owner->setEmail('bcm-owner@example.com');
+        $plan = $this->createOverdueBcPlan();
+        $plan->method('getPlanOwnerUser')->willReturn($owner);
+        $plan->method('getName')->willReturn('Rechenzentrum');
+
+        $this->riskRepository->method('findBy')->willReturn([]);
+        $this->bcPlanRepository->method('findBy')->willReturn([$plan]);
+        $this->processingActivityRepository->method('findBy')->willReturn([]);
+        $this->dpiaRepository->method('findBy')->willReturn([]);
+        $this->dataBreachRepository->method('findBy')->willReturn([]);
+
+        $this->userRepository->expects($this->never())->method('findByRoleInTenant');
+        $this->emailNotificationService->expects($this->once())
+            ->method('sendGenericNotification')
+            ->with($this->anything(), $this->anything(), $this->anything(), [$owner]);
+
+        $result = $this->service->sendReminderNotifications($this->tenant);
+
+        $this->assertSame(1, $result['sent']);
+    }
+
     private function createOverdueBcPlan(): MockObject
     {
         $plan = $this->createMock(BusinessContinuityPlan::class);

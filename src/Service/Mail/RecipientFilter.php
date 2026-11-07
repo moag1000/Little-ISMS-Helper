@@ -61,7 +61,7 @@ final class RecipientFilter
                 continue;
             }
 
-            if (method_exists($user, 'isActive') && !$user->isActive()) {
+            if (!$user->isActive()) {
                 $dropped[] = ['email' => $email, 'reason' => self::REASON_INACTIVE];
                 continue;
             }
@@ -99,7 +99,7 @@ final class RecipientFilter
             return self::REASON_CROSS_TENANT;
         }
 
-        if (method_exists($user, 'isActive') && !$user->isActive()) {
+        if (!$user->isActive()) {
             return self::REASON_INACTIVE;
         }
 

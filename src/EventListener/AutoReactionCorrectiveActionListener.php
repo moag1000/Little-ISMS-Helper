@@ -78,8 +78,8 @@ final class AutoReactionCorrectiveActionListener
             return;
         }
 
-        $type = method_exists($finding, 'getType') ? $finding->getType() : null;
-        $severity = method_exists($finding, 'getSeverity') ? $finding->getSeverity() : null;
+        $type = $finding->getType();
+        $severity = $finding->getSeverity();
 
         $isMajor = in_array($type, [AuditFinding::TYPE_MAJOR_NC], true)
             || in_array($severity, [AuditFinding::SEVERITY_CRITICAL, AuditFinding::SEVERITY_HIGH], true);
@@ -100,24 +100,16 @@ final class AutoReactionCorrectiveActionListener
             }
 
             $ca = new CorrectiveAction();
-            $ca->setTenant(method_exists($finding, 'getTenant') ? $finding->getTenant() : null);
+            $ca->setTenant($finding->getTenant());
             $ca->setFinding($finding);
             $ca->setTitle('Corrective Action: ' . ($finding->getTitle() ?? '—'));
-            if (method_exists($ca, 'setDescription')) {
-                $ca->setDescription(
-                    'Auto-generated corrective action skeleton for major/critical finding. Update root-cause analysis and target date.'
-                );
-            }
-            if (method_exists($ca, 'setActionType')) {
-                $ca->setActionType(CorrectiveAction::ACTION_TYPE_CORRECTIVE);
-            }
-            if (method_exists($ca, 'setPlannedCompletionDate')) {
-                $dueDays = $this->resolveDueDays($severity, $type);
-                $ca->setPlannedCompletionDate(new DateTimeImmutable('+' . $dueDays . ' days'));
-            }
-            if (method_exists($ca, 'setStatus')) {
-                $ca->setStatus(CorrectiveActionStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist entity)
-            }
+            $ca->setDescription(
+                'Auto-generated corrective action skeleton for major/critical finding. Update root-cause analysis and target date.'
+            );
+            $ca->setActionType(CorrectiveAction::ACTION_TYPE_CORRECTIVE);
+            $dueDays = $this->resolveDueDays($severity, $type);
+            $ca->setPlannedCompletionDate(new DateTimeImmutable('+' . $dueDays . ' days'));
+            $ca->setStatus(CorrectiveActionStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist entity)
 
             $this->postFlushWriter->persist($ca);
 
@@ -195,15 +187,15 @@ final class AutoReactionCorrectiveActionListener
             return;
         }
         try {
-            $tenant = method_exists($finding, 'getTenant') ? $finding->getTenant() : null;
+            $tenant = $finding->getTenant();
             $recipients = [];
 
             // 1) Direct assignee on the CA (currently null since we just created it)
-            if (method_exists($ca, 'getResponsiblePersonUser') && $ca->getResponsiblePersonUser() !== null) {
+            if ($ca->getResponsiblePersonUser() !== null) {
                 $recipients[] = $ca->getResponsiblePersonUser();
             }
             // 2) Finding owner
-            if (empty($recipients) && method_exists($finding, 'getAssignedTo') && $finding->getAssignedTo() !== null) {
+            if (empty($recipients) && $finding->getAssignedTo() !== null) {
                 $recipients[] = $finding->getAssignedTo();
             }
             // 3) Tenant fallback

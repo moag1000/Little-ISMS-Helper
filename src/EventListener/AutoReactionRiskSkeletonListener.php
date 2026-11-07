@@ -90,23 +90,17 @@ final class AutoReactionRiskSkeletonListener
             };
 
             $risk = new Risk();
-            $risk->setTenant(method_exists($vuln, 'getTenant') ? $vuln->getTenant() : null);
+            $risk->setTenant($vuln->getTenant());
             $risk->setTitle($expectedTitle);
             $risk->setCategory('security'); // NOT NULL; a vulnerability is an information-security risk
-            if (method_exists($risk, 'setDescription')) {
-                $risk->setDescription(sprintf(
-                    'Auto-generated risk skeleton from Vulnerability %s (CVSS %.1f). Description: %s',
-                    $cve,
-                    $cvss,
-                    $vuln->getDescription() ?? ''
-                ));
-            }
-            if (method_exists($risk, 'setProbability')) {
-                $risk->setProbability($prob);
-            }
-            if (method_exists($risk, 'setImpact')) {
-                $risk->setImpact($imp);
-            }
+            $risk->setDescription(sprintf(
+                'Auto-generated risk skeleton from Vulnerability %s (CVSS %.1f). Description: %s',
+                $cve,
+                $cvss,
+                $vuln->getDescription() ?? ''
+            ));
+            $risk->setProbability($prob);
+            $risk->setImpact($imp);
             // V4-LB-3: Link Risk→Vulnerability via FK for reliable future idempotency checks.
             $risk->setLinkedVulnerability($vuln);
 
@@ -140,7 +134,7 @@ final class AutoReactionRiskSkeletonListener
             return;
         }
         try {
-            $tenant = method_exists($risk, 'getTenant') ? $risk->getTenant() : null;
+            $tenant = $risk->getTenant();
             $recipients = $this->userRepository->findByRoleInTenant('ROLE_RISK_MANAGER', $tenant);
             if (empty($recipients)) {
                 $recipients = $this->userRepository->findByRoleInTenant('ROLE_CISO', $tenant);

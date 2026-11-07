@@ -228,21 +228,12 @@ final class InverseCoverageService
         $hits = [];
         $seen = [];
 
-        // Approach: collect all controls related to this risk (via Risk.mitigatingControls
+        // Approach: collect all controls related to this risk (via Risk.controls
         // or Asset-derived). Then collect requirements mapping to those controls.
         $relatedControlIds = [];
-        if (method_exists($risk, 'getMitigatingControls')) {
-            foreach ($risk->getMitigatingControls() as $ctl) {
-                if ($ctl instanceof Control && $ctl->getId() !== null) {
-                    $relatedControlIds[$ctl->getId()] = true;
-                }
-            }
-        }
-        if (method_exists($risk, 'getControls')) {
-            foreach ($risk->getControls() as $ctl) {
-                if ($ctl instanceof Control && $ctl->getId() !== null) {
-                    $relatedControlIds[$ctl->getId()] = true;
-                }
+        foreach ($risk->getControls() as $ctl) {
+            if ($ctl instanceof Control && $ctl->getId() !== null) {
+                $relatedControlIds[$ctl->getId()] = true;
             }
         }
 
