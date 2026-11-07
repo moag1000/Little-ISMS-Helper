@@ -254,7 +254,7 @@
                     {% block card_header %}
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h2 class="mb-0"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ 'compliance.requirement.equivalents.title'|trans({}, 'compliance') }}</h2>
-                            <span class="badge bg-secondary">{{ cross_framework_equivalents|length }} {{ 'compliance.requirement.equivalents.frameworks'|trans({}, 'compliance') }}</span>
+                            <span class="fa-status-pill fa-status-pill--neutral">{{ cross_framework_equivalents|length }} {{ 'compliance.requirement.equivalents.frameworks'|trans({}, 'compliance') }}</span>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -265,7 +265,7 @@
                             {% for frameworkCode, entries in cross_framework_equivalents %}
                                 <div class="mb-3">
                                     <div class="d-flex align-items-center mb-2">
-                                        <span class="badge text-bg-secondary me-2">{{ frameworkCode }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm me-2">{{ frameworkCode }}</span>
                                         <span class="text-muted small">{{ entries|length }} {{ 'compliance.requirement.equivalents.controls'|trans({}, 'compliance') }}</span>
                                     </div>
                                     <div class="d-flex flex-wrap gap-2">
@@ -336,7 +336,7 @@
                 {% block card_body %}
                     {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {% if is_inherited %}
-                        {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>Inherited from parent tenant</strong> <br><small>This fulfillment data is inherited from your parent organization. You cannot edit it directly.</small>' }) }}
+                        {{ _fa_alert.render({ variant: 'info', title: 'compliance.requirement.inherited_notice.title'|trans({}, 'compliance'), body: 'compliance.requirement.inherited_notice.body'|trans({}, 'compliance')|e }) }}
                     {% endif %}
 
                     <div class="text-center mb-3">
@@ -397,11 +397,12 @@
                                 <input type="hidden" id="fulfillmentPercentage" name="fulfillmentPercentage" value="{{ fulfillment.fulfillmentPercentage }}">
 
                                 {# Visual Progress Bar #}
-                                <div class="progress progress-h-8 mt-2">
-                                    <div data-fulfillment-target="progressBar" class="progress-bar" role="progressbar"
-                                         style="width: {{ fulfillment.fulfillmentPercentage }}%; background-color: {{ fulfillment.fulfillmentPercentage >= 75 ? 'var(--success)' : (fulfillment.fulfillmentPercentage >= 50 ? 'var(--warning)' : 'var(--danger)') }};"
-                                         aria-valuenow="{{ fulfillment.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
+                                {{ _fa_progress.render({
+                                    value: fulfillment.fulfillmentPercentage,
+                                    tone: fulfillment.fulfillmentPercentage >= 75 ? 'success' : (fulfillment.fulfillmentPercentage >= 50 ? 'warning' : 'danger'),
+                                    class: 'progress-h-8 mt-2',
+                                    barAttrs: {'data-fulfillment-target': 'progressBar'}
+                                }) }}
 
                             {# Quick Preset Buttons #}
                             <div class="d-flex gap-1 mt-2">

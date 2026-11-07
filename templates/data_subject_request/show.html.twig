@@ -268,9 +268,11 @@
                            enforces the real Art. 12(6) gate; this only disables the UI early. #}
                         {% set needs_identity = dsr.requestType in ['access', 'rectification', 'erasure', 'portability'] and not dsr.identityVerified %}
                         {% if needs_identity %}
-                            <div class="alert alert-warning py-2" role="alert">
-                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                                {{ 'dsr.complete.identity_required_hint'|trans({}, 'data_subject_request') }}
+                            <div class="fa-alert fa-alert--warning mb-2" role="alert">
+                                <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body">
+                                    <p class="fa-alert__message">{{ 'dsr.complete.identity_required_hint'|trans({}, 'data_subject_request') }}</p>
+                                </div>
                             </div>
                         {% endif %}
                         <form method="post" action="{{ path('app_data_subject_request_complete', {id: dsr.id}) }}">

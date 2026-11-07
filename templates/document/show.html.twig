@@ -139,7 +139,7 @@
                 <i class="fa-icon fa-icon--document-history me-1" aria-hidden="true"></i>
                 {{ 'document.version.history.title'|trans({}, 'document') }}
                 {% if document.versions|length > 0 %}
-                    <span class="badge bg-secondary ms-1">{{ document.versions|length }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm ms-1">{{ document.versions|length }}</span>
                 {% endif %}
             </a>
             {% if document.currentVersion is not null %}
@@ -415,9 +415,9 @@
                             {% for link in links %}
                                 {% set ctrl = link.control %}
                                 <li class="d-flex align-items-center gap-2 mb-1">
-                                    <span class="badge bg-secondary font-monospace">{{ ctrl.controlId }}</span>
+                                    <span class="fa-status-pill fa-status-pill--neutral font-monospace">{{ ctrl.controlId }}</span>
                                     <span>{{ ctrl.name }}</span>
-                                    <span class="badge bg-light text-dark small">{{ ('document.evidence.type.' ~ link.evidenceType)|trans({}, 'document') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ ('document.evidence.type.' ~ link.evidenceType)|trans({}, 'document') }}</span>
                                     <span class="badge rounded-pill" style="background:var(--state-info-bg,#e0f0ff);color:var(--state-info-fg,#0050a0)">
                                         {{ ctrl.implementationStatus|replace({'_': ' '})|title }}
                                     </span>
@@ -438,12 +438,12 @@
                     {% for fwCode, fwGroup in requirementsByFramework %}
                         <p class="small text-muted mb-1">
                             <strong>{{ fwGroup.framework.name }}</strong>
-                            <span class="badge bg-secondary ms-1">{{ fwCode }}</span>
+                            <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm ms-1">{{ fwCode }}</span>
                         </p>
                         <ul class="list-unstyled mb-2">
                             {% for req in fwGroup.requirements %}
                                 <li class="d-flex align-items-center gap-2 mb-1">
-                                    <span class="badge bg-secondary font-monospace">{{ req.requirementId }}</span>
+                                    <span class="fa-status-pill fa-status-pill--neutral font-monospace">{{ req.requirementId }}</span>
                                     <span>{{ req.title }}</span>
                                 </li>
                             {% endfor %}

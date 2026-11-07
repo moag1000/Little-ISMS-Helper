@@ -211,9 +211,11 @@
                         </p>
                         {% set _saving = coverageReport.estimatedFteDaySaving %}
                         {% if _saving > 0 %}
-                            <div class="alert alert-success small mb-3" role="status">
-                                <i class="fa-icon fa-icon--util-arrow-up" aria-hidden="true"></i>
-                                {{ 'audit.cross_framework_coverage.fte_saving'|trans({'%days%': _saving}, 'audit') }}
+                            <div class="fa-alert fa-alert--success mb-3" role="status">
+                                <i class="fa-icon fa-icon--status-ok fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body">
+                                    <p class="fa-alert__message">{{ 'audit.cross_framework_coverage.fte_saving'|trans({'%days%': _saving}, 'audit') }}</p>
+                                </div>
                             </div>
                         {% endif %}
                         <div class="fa-table-wrap">
@@ -235,7 +237,7 @@
                                             <td class="fa-table__cell fa-table__cell--num">{{ row.direct }}</td>
                                             <td class="fa-table__cell fa-table__cell--num">
                                                 {% if row.transitive > 0 %}
-                                                    <span class="badge bg-info-subtle text-info-emphasis">+{{ row.transitive }}</span>
+                                                    <span class="fa-status-pill fa-status-pill--primary fa-status-pill--sm">+{{ row.transitive }}</span>
                                                 {% else %}
                                                     <span class="text-muted">0</span>
                                                 {% endif %}
@@ -396,7 +398,7 @@
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-4' } } %}
                 {% block alert_body %}
                     <h3 class="h6 alert-heading mb-2">
-                        <span class="badge bg-secondary me-2">{{ 'audit.section.legacy_freetext'|trans({}, 'audit') }}</span>
+                        <span class="fa-status-pill fa-status-pill--neutral me-2">{{ 'audit.section.legacy_freetext'|trans({}, 'audit') }}</span>
                         {{ 'audit.section.findings'|trans({}, 'audit') }}
                     </h3>
                     <p class="small mb-3">{{ 'audit.section.legacy_freetext_help'|trans({}, 'audit') }}</p>

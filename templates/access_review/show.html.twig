@@ -89,17 +89,17 @@
 
                     <dt class="col-sm-6">{{ 'access_review.stats.pending'|trans({}, 'access_review') }}</dt>
                     <dd class="col-sm-6">
-                        <span class="badge bg-warning text-dark">{{ pendingCount }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm">{{ pendingCount }}</span>
                     </dd>
 
                     <dt class="col-sm-6">{{ 'access_review.stats.approved'|trans({}, 'access_review') }}</dt>
                     <dd class="col-sm-6">
-                        <span class="badge bg-success">{{ approvedCount }}</span>
+                        <span class="fa-status-pill fa-status-pill--success fa-status-pill--sm">{{ approvedCount }}</span>
                     </dd>
 
                     <dt class="col-sm-6">{{ 'access_review.stats.revoked'|trans({}, 'access_review') }}</dt>
                     <dd class="col-sm-6">
-                        <span class="badge bg-danger">{{ revokedCount }}</span>
+                        <span class="fa-status-pill fa-status-pill--danger fa-status-pill--sm">{{ revokedCount }}</span>
                     </dd>
                 </dl>
 
@@ -138,7 +138,7 @@
              {% endif %}>
             <div class="card-header fw-bold d-flex justify-content-between align-items-center">
                 <span>{{ 'access_review.items_title'|trans({}, 'access_review') }}</span>
-                <span class="badge bg-secondary">{{ items|length }}</span>
+                <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm">{{ items|length }}</span>
             </div>
             <div class="card-body p-0">
                 {% if items|length == 0 %}
@@ -193,24 +193,24 @@
                                     </td>
                                     <td class="fa-table__cell">
                                         {% if item.decision == 'pending' %}
-                                            <span class="badge bg-warning text-dark">
+                                            <span class="fa-status-pill fa-status-pill--warning">
                                                 {{ 'access_review.decision.pending'|trans({}, 'access_review') }}
                                             </span>
                                         {% elseif item.decision == 'approved' %}
-                                            <span class="badge bg-success">
+                                            <span class="fa-status-pill fa-status-pill--success">
                                                 {{ 'access_review.decision.approved'|trans({}, 'access_review') }}
                                             </span>
                                         {% elseif item.decision == 'revoked' %}
-                                            <span class="badge bg-danger">
+                                            <span class="fa-status-pill fa-status-pill--danger">
                                                 {{ 'access_review.decision.revoked'|trans({}, 'access_review') }}
                                             </span>
                                         {% elseif item.decision == 'escalated' %}
-                                            <span class="badge bg-warning text-dark">
+                                            <span class="fa-status-pill fa-status-pill--warning">
                                                 <i class="fa-icon fa-icon--ui-arrow-right me-1" aria-hidden="true"></i>
                                                 {{ 'access_review.decision.escalated'|trans({}, 'access_review') }}
                                             </span>
                                         {% else %}
-                                            <span class="badge bg-secondary">
+                                            <span class="fa-status-pill fa-status-pill--neutral">
                                                 {{ ('access_review.decision.' ~ item.decision)|trans({}, 'access_review') }}
                                             </span>
                                         {% endif %}
@@ -328,12 +328,11 @@
 {% if escalatedItems is defined and escalatedItems|length > 0 %}
 <div class="row mt-3">
     <div class="col-12">
-        <div class="alert alert-warning" role="alert">
-            <div class="d-flex align-items-start gap-2">
-                <i class="fa-icon fa-icon--status-warning flex-shrink-0 mt-1" aria-hidden="true"></i>
-                <div class="flex-grow-1">
+        <div class="fa-alert fa-alert--warning" role="alert">
+            <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+            <div class="fa-alert__body">
                     <strong>{{ 'access_review.escalation.escalated_items_title'|trans({}, 'access_review') }}</strong>
-                    <span class="badge bg-warning text-dark ms-1">{{ escalatedItems|length }}</span>
+                    <span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm ms-1">{{ escalatedItems|length }}</span>
                     <p class="mb-2 mt-1 text-muted small">{{ 'access_review.escalation.escalated_hint'|trans({}, 'access_review') }}</p>
                     <ul class="mb-0 list-unstyled">
                         {% for eItem in escalatedItems %}
@@ -349,7 +348,6 @@
                         </li>
                         {% endfor %}
                     </ul>
-                </div>
             </div>
         </div>
     </div>
