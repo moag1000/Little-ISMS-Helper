@@ -885,7 +885,7 @@ class IncidentController extends AbstractController
                     (string) ($i->getSeverity()?->value ?? ''),
                     (string) ($i->getStatus()?->value ?? ''),
                     (string) $i->getAssignedTo(),
-                    (string) $i->getReportedBy(),
+                    (string) $i->getEffectiveReportedBy(),
                 ];
             },
             'incidents-export',

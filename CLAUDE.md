@@ -288,7 +288,10 @@ on `<body>` guards every Symfony POST form (opt out: `data-unsaved-guard="off"`)
 prefill for `/new` forms lives in `App\Service\Prefill\RecordPrefill` (`?fromAsset=`, `?fromLocation=`,
 `?fromRisk=`, `?fromIncident=`, `?fromVulnerability=`, same tenant only); "derive" buttons on
 detail pages come from `EntityLinks::DERIVE`. Legacy free-text person fields go through
-`App\Form\Util\LegacyFreeTextField::hideWhenEmpty()`. Mapping screens include
+`App\Form\Util\LegacyFreeTextField::hideWhenEmpty()`. Code that shows or mails an owner reads the
+`getEffective*()` accessor (names) or `OwnerResolver::recipient()` (mail), never the raw legacy column; the
+single list of legacy owner columns is `App\Service\DataRepair\LegacyOwnerReport::FIELDS` (admin page
+`/admin/data-repair/legacy-owners`). Mapping screens include
 `compliance/mapping/_hub_tabs.html.twig` (one menu entry, four tabs).
 
 **Display conventions (UI wave G).** Dates in text output go through `|fa_date` / `|fa_datetime`

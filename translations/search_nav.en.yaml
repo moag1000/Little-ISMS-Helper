@@ -126,6 +126,9 @@ search_nav:
     admin_data_repair_index:
         label: 'Data repair'
         description: 'Assign orphans, fix organisation mismatches, clean up duplicates'
+    admin_legacy_owner_index:
+        label: 'Free-text owners'
+        description: 'Assign owners without a user or person'
     admin_queue_status:
         label: 'Queue status'
         description: 'Worker health and pending Messenger jobs'

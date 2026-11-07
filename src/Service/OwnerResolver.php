@@ -50,4 +50,28 @@ final class OwnerResolver
         }
         return $names;
     }
+
+    /**
+     * Who a reminder for this owner slot goes to: the User, else the Person's
+     * linked account or e-mail address, else the legacy text when it is an
+     * e-mail address. A plain name ("Max Muster") reaches nobody and gives null
+     * — the admin page "Freitext-Verantwortliche" resolves those.
+     */
+    public static function recipient(?User $user, ?Person $person, ?string $legacy): User|string|null
+    {
+        if ($user !== null) {
+            return $user;
+        }
+        if ($person?->getLinkedUser() !== null) {
+            return $person->getLinkedUser();
+        }
+        foreach ([$person?->getEmail(), $legacy] as $candidate) {
+            $address = trim((string) $candidate);
+            if ($address !== '' && filter_var($address, FILTER_VALIDATE_EMAIL) !== false) {
+                return $address;
+            }
+        }
+
+        return null;
+    }
 }

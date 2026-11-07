@@ -134,8 +134,8 @@
                 {% endif %}
             </td>
             <td>
-                {% if control.responsiblePerson %}
-                    {{ control.responsiblePerson }}
+                {% if control.effectiveResponsiblePerson %}
+                    {{ control.effectiveResponsiblePerson }}
                 {% else %}
                     <span class="text-muted">{{ 'soa.field.unassigned'|trans({}, 'soa') }}</span>
                 {% endif %}

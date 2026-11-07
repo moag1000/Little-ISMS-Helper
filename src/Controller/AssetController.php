@@ -155,7 +155,7 @@ class AssetController extends AbstractController
         }
 
         if ($owner) {
-            $assets = array_filter($assets, fn(Asset $asset): bool => stripos((string) $asset->getOwner(), $owner) !== false);
+            $assets = array_filter($assets, fn(Asset $asset): bool => stripos((string) $asset->getEffectiveOwner(), $owner) !== false);
         }
 
         if ($status) {
@@ -198,7 +198,7 @@ class AssetController extends AbstractController
         $page = ListPage::fromRequest(
             $assets,
             $request,
-            static fn(Asset $a): array => [$a->getName(), $a->getDescription(), $a->getAssetType(), $a->getOwner(), (string) $a->getId()],
+            static fn(Asset $a): array => [$a->getName(), $a->getDescription(), $a->getAssetType(), $a->getEffectiveOwner(), (string) $a->getId()],
         );
 
         // BCM-based suggestions and risk count, only for the rows on this page

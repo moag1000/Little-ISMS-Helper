@@ -117,6 +117,9 @@
 {% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
     { id: 'admin-data-repair', label: 'admin.nav.data_repair'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-tools', url: path('admin_data_repair_index'), keywords: ['repair', 'reparatur', 'integrity']  }
 ]) %}{% endif %}
+{% if is_granted('ADMIN_OWN_TENANT') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-legacy-owners', label: 'admin.legacy_owners.title'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'ui-person', url: path('admin_legacy_owner_index'), keywords: ['owner', 'eigentümer', 'verantwortlich', 'freitext', 'legacy', 'person']  }
+]) %}{% endif %}
 {% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
     { id: 'admin-health', label: 'admin.nav.system_health'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-heart-pulse', url: path('monitoring_health'), keywords: ['health', 'status']  }
 ]) %}{% endif %}

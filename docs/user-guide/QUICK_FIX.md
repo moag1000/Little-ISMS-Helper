@@ -100,6 +100,24 @@ umgeschrieben. Wer im Audit-Log nach Typ filtert, sucht fuer alte
 Zuordnungen nach beiden Schreibweisen. Kein Bericht und kein Filter der
 Anwendung wertet `orphan_reassigned` nach Typnamen aus.
 
+**Freitext-Verantwortliche zuordnen** (Admin > Daten-Reparatur > Kachel
+„Freitext-Verantwortliche“, oder ⌘K „Freitext“): listet alle Datensaetze der
+eigenen Organisation und ihrer Tochtergesellschaften, deren Eigentuemer bzw.
+Verantwortlicher nur als alter Freitext erfasst ist (Asset, Control,
+Geschaeftsprozess, BC-Plan, BC-Uebung, Vorfall, Audit, Schulung, ISMS-Ziel,
+Lieferant, interessierte Partei, Standort, Schwachstelle, Patch). Solche
+Eintraege erreichen weder Erinnerungs-Mails noch Mein Tag. Pro Zeile:
+*Uebernehmen* (der Freitext passt genau zu einem Benutzer oder einer Person
+der Organisation — Name, „Nachname, Vorname“ oder E-Mail, ohne Gross-/
+Kleinschreibung), *Als Person erfassen* (legt eine Person mit diesem Namen
+an oder nimmt die vorhandene) oder *Im Formular zuordnen*. *Alle Vorschlaege
+uebernehmen* erledigt alle eindeutigen Treffer in einem Schritt (ein
+Audit-Batch je Datensatztyp). Der Freitext bleibt dabei stehen; die Zeile
+verschwindet, sobald Benutzer oder Person gesetzt ist. Fuer einzelne
+Verantwortliche wird die CLI `app:migrate:freetext-owners` damit nicht mehr
+gebraucht; Teilnehmerlisten (Audit-Team, Schulungs- und Uebungsteilnehmer)
+deckt die Seite nicht ab.
+
 ---
 
 ### 4. "Alles-Sicher-Reparieren" (Convenience-Schaltflaeche)

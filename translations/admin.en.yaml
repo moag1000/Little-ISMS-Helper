@@ -87,6 +87,7 @@ admin:
             system_health: { label: 'System health', desc: 'Service status, disk, cache, logs' }
             modules: { label: 'Modules', desc: 'Manage active ISMS modules' }
             data_repair: { label: 'Data repair', desc: 'Orphans, tenant mismatches, schema reconcile' }
+            legacy_owners: { label: 'Free-text owners', desc: 'Assign owners without a user or person' }
             quick_fix_settings: { label: 'Quick-fix settings', desc: 'Auto-fallback UI configuration' }
             kpi_threshold: { label: 'KPI thresholds', desc: 'Traffic-light limits for dashboard KPIs' }
             fte_tracking: { label: 'FTE Tracking', desc: 'Measure and report effort savings through automation' }
@@ -507,6 +508,55 @@ admin:
             legend_title: 'Note'
             legend: 'Coverage = share of source items with ≥1 published/approved mapping.'
 
+    legacy_owners:
+        title: 'Free-text owners'
+        subtitle: 'Assign owners recorded only as free text to a user or a person. Only then do notifications, My Day and approvals reach them.'
+        list: 'Open entries'
+        empty: 'No open free-text owners.'
+        apply: 'Apply'
+        apply_all: 'Apply all suggestions (%count%)'
+        apply_all_confirm: 'Assign %count% records to the suggested user or person? The free text is kept.'
+        as_person: 'Record as person'
+        person_confirm: 'Create "%name%" as a person and assign it? An existing person with exactly this name is reused.'
+        edit: 'Assign in form'
+        tile_hint: 'Free text without user or person'
+        filter:
+            type: 'Record type'
+            match: 'Suggestion'
+            all: 'All'
+            suggested: 'With suggestion'
+            none: 'Without suggestion'
+        summary:
+            suggested: '%count% with suggestion'
+        col:
+            record: 'Record'
+            text: 'Free text'
+            tenant: 'Organisation'
+            suggestion: 'Suggestion'
+            actions: 'Actions'
+        kind:
+            user: 'User'
+            person: 'Person'
+        flash:
+            applied: 'Assigned.'
+            applied_all: '%count% records assigned.'
+            person: '"%name%" assigned as person.'
+            not_open: 'Entry is already assigned or no longer exists.'
+        type:
+            asset: 'Asset – owner'
+            control: 'Control – responsible'
+            business_process: 'Business process – process owner'
+            bc_plan: 'BC plan – plan owner'
+            bc_exercise: 'BC exercise – facilitator'
+            incident: 'Incident – reported by'
+            internal_audit: 'Audit – lead auditor'
+            training: 'Training – trainer'
+            objective: 'ISMS objective – responsible'
+            supplier: 'Supplier – contact person'
+            interested_party: 'Interested party – contact person'
+            location: 'Location – responsible'
+            vulnerability: 'Vulnerability – responsible'
+            patch: 'Patch – responsible'
     sample_data:
         title: 'Sample Data'
         description: 'Import or remove demo datasets (assets, risks, business processes, …) for the current tenant.'

@@ -207,6 +207,7 @@ class AdminHubCatalogTest extends TestCase
             'industry_preset',
             'data_backup',
             'data_repair',
+            'legacy_owners',
             'kpi_threshold',
             'modules',
             'tenant_compliance_settings',
