@@ -27,6 +27,9 @@
 {% if is_module_active('controls') %}{% set _cmds = _cmds|merge([
     { id: 'goto-soa', label: 'ui.command_palette.command.goto_soa'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'soa', url: path('app_soa_index'), keywords: ['soa', 'controls', 'iso', '27001']  }
 ]) %}{% endif %}
+{% set _cmds = _cmds|merge([
+    { id: 'goto-registers', label: 'ui.command_palette.command.goto_registers'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-list-ordered', url: path('app_register_index'), keywords: ['register', 'verzeichnis', 'rollen', 'roles', 'kommunikation', 'rechtskataster', 'kontext', 'context']  }
+]) %}
 {% if is_module_active('training') %}{% set _cmds = _cmds|merge([
     { id: 'goto-trainings', label: 'ui.command_palette.command.goto_trainings'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'training', url: path('app_training_index'), keywords: ['training', 'schulung']  }
 ]) %}{% endif %}

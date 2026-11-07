@@ -36,6 +36,7 @@ business_process:
     recovery: Wiederherstellungsstrategie
     supporting_resources: Unterstützende Ressourcen und Assets
   field:
+    in_isms_scope: 'Im ISMS-Geltungsbereich'
     name: Prozessname
     process_owner: Prozessverantwortlicher
     description: Prozessbeschreibung
@@ -60,6 +61,7 @@ business_process:
     process_owner_person: 'Prozessverantwortlich (Person aus Stammdaten)'
     process_owner_deputies: 'Vertretungen (Personen)'
   help:
+    in_isms_scope: 'ISO 27001 Kap. 4.3: Geltungsbereich des ISMS.'
     bia_optional: 'BIA-Impact-Werte (Reputational/Regulatory/Operational) sind optional — Sie können den Prozess zunächst speichern und die Bewertung später ergänzen. Empfehlung ISO 22301 Cl. 8.2.2: alle drei Dimensionen vor der Abnahme der BIA bewerten.'
     name: Eindeutiger Name des Geschäftsprozesses (z.B. "Kundenauftragsabwicklung")
     process_owner: Verantwortlicher für den Prozess (fachlicher und strategischer

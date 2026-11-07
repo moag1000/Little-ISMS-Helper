@@ -15,6 +15,7 @@ nav:
     analytics: Analytics
     fte_tracking: 'FTE Tracking'
     interested_parties: 'Interested Parties'
+    registers: 'Registers'
     soa: 'SoA (Statement of Applicability)'
     effectiveness_monitor: 'Effectiveness Monitor'
     assets: Assets
@@ -207,6 +208,7 @@ nav:
             fte_tracking: 'FTE savings from SSO JIT, Bulk-Import, and Evidence reuse'
             context: 'Organization context and scope'
             interested_parties: 'Stakeholders and requirements'
+            registers: 'Context, roles, legal requirements, communication'
             soa: 'Statement of Applicability (ISO 27001 Annex A)'
             effectiveness_monitor: 'Track control effectiveness cadence (ISO 27001 §9.1 / A.5.35/5.36)'
             objectives: 'ISMS objectives and targets'

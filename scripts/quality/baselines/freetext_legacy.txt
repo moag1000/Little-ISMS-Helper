@@ -9,7 +9,7 @@ src/Form/IncidentType.php:223:affectedSystems
 src/Form/InterestedPartyType.php:92:contactPerson
 src/Form/InternalAuditType.php:182:leadAuditor
 src/Form/InternalAuditType.php:202:auditTeam
-src/Form/LocationType.php:111:country
-src/Form/SupplierType.php:91:contactPerson
-src/Form/SupplierType.php:410:countryOfHeadOffice
+src/Form/LocationType.php:116:country
+src/Form/SupplierType.php:96:contactPerson
+src/Form/SupplierType.php:415:countryOfHeadOffice
 src/Form/TrainingType.php:147:participants

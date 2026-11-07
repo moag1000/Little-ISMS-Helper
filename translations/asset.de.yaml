@@ -47,6 +47,7 @@ asset:
     inherited_protection: Geerbter Schutzbedarf (BSI 3.6)
     dependency_graph: Abhängigkeitsgraph (DORA RT_05)
   field:
+    in_isms_scope: 'Im ISMS-Geltungsbereich'
     name: Name
     type: Asset‑Typ
     description: Beschreibung
@@ -80,6 +81,7 @@ asset:
     is_dora_relevant: 'DORA-relevant (Art. 28 IKT-Asset)'
     tisax_information_classification: 'TISAX-Informationsklassifizierung'
   help:
+    in_isms_scope: 'ISO 27001 Kap. 4.3: Geltungsbereich des ISMS.'
     name: Eindeutiger Name des Assets
     type: Kategorie des Assets (Hardware, Software, Daten, etc.)
     description: Detaillierte Beschreibung des Assets und seiner Funktion

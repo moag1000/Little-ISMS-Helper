@@ -40,6 +40,7 @@
     {{ _fa_status_band.render({
         facts: [
             { label: 'show.status.owner'|trans({}, 'messages'), value: business_process.effectiveProcessOwner },
+            { label: 'show.status.in_isms_scope'|trans({}, 'messages'), value: (business_process.inIsmsScope ? 'common.yes' : 'common.no')|trans({}, 'messages') },
             { label: 'show.status.criticality'|trans({}, 'messages'), value: business_process.criticality ? ('business_process.criticality.' ~ business_process.criticality)|trans({}, 'business_process') : null },
             { label: 'business_process.show.rto'|trans({}, 'business_process'), value: business_process.rto is not null ? business_process.rto ~ ' ' ~ 'business_process.show.hours'|trans({}, 'business_process') : null },
         ],

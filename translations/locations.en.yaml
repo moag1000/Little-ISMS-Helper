@@ -10,6 +10,7 @@ location:
         rooms: '%count% rooms'
         secure: '%count% badge access'
     field:
+        in_isms_scope: 'In ISMS scope'
         name: Name
         type: Type
         code: Code
@@ -64,6 +65,7 @@ location:
         responsible_person_user: '-- Select user account --'
         responsible_person_ref: '-- Select person --'
     help:
+        in_isms_scope: 'ISO 27001 clause 4.3: scope of the ISMS.'
         coordinates: 'Leave empty to derive from postal code, city and country. Values entered here are kept when the address changes.'
         type: 'Select the appropriate location type (building, room, data center, …)'
         code: 'Internal location code for unique reference (optional)'

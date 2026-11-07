@@ -16,6 +16,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -57,7 +58,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
     public static function getSectionMap(): array
     {
         return [
-            'overview'        => ['name', 'description', 'criticality'],
+            'overview'        => ['name', 'inIsmsScope', 'description', 'criticality'],
             'owner'           => ['processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons', 'processOwner'],
             'criticality'     => ['reputationalImpact', 'regulatoryImpact', 'operationalImpact', 'financialImpactPerHour', 'financialImpactPerDay'],
             'recovery_targets'=> ['rto', 'rpo', 'mtpd'],
@@ -72,6 +73,11 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             ->add('name', TextType::class, [
                 'label' => 'business_process.field.name',
                 'constraints' => [new NotBlank()],
+            ])
+            ->add('inIsmsScope', CheckboxType::class, [
+                'label' => 'business_process.field.in_isms_scope',
+                'help' => 'business_process.help.in_isms_scope',
+                'required' => false,
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'business_process.field.description',

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Trait\IsmsScopeTrait;
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
@@ -71,6 +72,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 )]
 class Asset
 {
+    use IsmsScopeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

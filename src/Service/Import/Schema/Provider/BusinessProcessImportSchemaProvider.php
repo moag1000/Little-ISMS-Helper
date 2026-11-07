@@ -58,6 +58,11 @@ final class BusinessProcessImportSchemaProvider implements ImportSchemaProviderI
             entityClass: BusinessProcess::class,
             module: null,
             fields: [
+                new ImportFieldSpec(
+                    name: 'inIsmsScope',
+                    setter: 'setInIsmsScope',
+                    type: ImportFieldSpec::TYPE_BOOL,
+                ),
                 // ── Overview ────────────────────────────────────────────────────
                 new ImportFieldSpec(
                     name: 'name',

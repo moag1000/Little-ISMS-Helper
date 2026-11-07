@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as _pill %}
+
+{% block title %}{{ 'register.overview.title'|trans({}, 'register') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [{ label: 'register.overview.title'|trans({}, 'register') }]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: 'register.overview.title'|trans({}, 'register'),
+        subtitle: 'register.overview.subtitle'|trans({}, 'register'),
+        actions: [
+            { label: 'register.action.export'|trans({}, 'register'), variant: 'ghost', href: path('app_register_export') }
+        ]
+    }) }}
+
+    <section class="fa-show-section mb-4" aria-labelledby="register-table-title">
+        <h2 id="register-table-title" class="h5 mb-3">{{ 'register.overview.table_title'|trans({}, 'register') }}</h2>
+        {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">{{ 'register.overview.col.register'|trans({}, 'register') }}</th>
+                    <th scope="col">{{ 'register.overview.col.norm'|trans({}, 'register') }}</th>
+                    <th scope="col">{{ 'register.overview.col.maintainer'|trans({}, 'register') }}</th>
+                    <th scope="col" class="text-end">{{ 'register.overview.col.count'|trans({}, 'register') }}</th>
+                    <th scope="col">{{ 'register.overview.col.open'|trans({}, 'register') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% import '_components/_status_pill.html.twig' as _pill %}
+                {% for row in rows %}
+                    <tr>
+                        <td>
+                            <a href="{{ path(row.route, row.routeParams) }}" data-turbo-action="advance">
+                                {{- (row.type ? 'register.type.' ~ row.key ~ '.title' : 'register.module.' ~ row.key)|trans({}, 'register') -}}
+                            </a>
+                        </td>
+                        <td class="small text-muted">{{ row.norm }}</td>
+                        <td>{{ ('register.persona.' ~ row.persona)|trans({}, 'register') }}</td>
+                        <td class="text-end">{{ row.count }}</td>
+                        <td>
+                            {% if row.count == 0 and row.type %}
+                                {{ _pill.render('register.overview.empty'|trans({}, 'register'), 'warning', { size: 'sm' }) }}
+                            {% endif %}
+                            {% if row.overdue > 0 %}
+                                {{ _pill.render('register.overview.overdue'|trans({'%count%': row.overdue}, 'register'), 'danger', { size: 'sm' }) }}
+                            {% endif %}
+                            {% if row.proposals > 0 %}
+                                {{ _pill.render('register.overview.proposals'|trans({'%count%': row.proposals}, 'register'), 'accent', { size: 'sm' }) }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <section class="fa-show-section" aria-labelledby="register-scope-title">
+                <h2 id="register-scope-title" class="h5 mb-2">{{ 'register.scope.title'|trans({}, 'register') }}</h2>
+                <p class="small text-muted mb-2">{{ 'register.scope.hint'|trans({}, 'register') }}</p>
+                {% include 'register/_scope_summary.html.twig' with { scope: scope } only %}
+            </section>
+        </div>
+        <div class="col-lg-6">
+            <section class="fa-show-section" aria-labelledby="register-gaps-title">
+                <h2 id="register-gaps-title" class="h5 mb-2">{{ 'register.gaps.title'|trans({}, 'register') }}</h2>
+                {% if gaps is empty %}
+                    <p class="text-muted mb-0">{{ 'register.gaps.none'|trans({}, 'register') }}</p>
+                {% else %}
+                    <ul class="mb-0">
+                        {% for gap in gaps %}
+                            <li>
+                                <a href="{{ path('app_register_entry_show', {id: gap.role.id}) }}">{{ gap.role.title }}</a>
+                                ({{ gap.role.effectiveOwner ?? '—' }}):
+                                {{ gap.competence.title }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

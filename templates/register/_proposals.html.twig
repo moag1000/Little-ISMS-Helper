@@ -1,0 +1,23 @@
+{# Proposals from records the tool already holds; a person adopts them (ROLE_MANAGER). #}
+<section class="fa-show-section mb-4" aria-labelledby="register-proposals-title">
+    <form method="post" action="{{ path('app_register_proposals_adopt', {type: type.value}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('register_adopt') }}">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+            <h2 id="register-proposals-title" class="h5 mb-0">{{ 'register.proposals.title'|trans({'%count%': proposals|length}, 'register') }}</h2>
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'register.proposals.adopt'|trans({}, 'register') }}</button>
+        </div>
+        <p class="small text-muted mb-2">{{ 'register.proposals.hint'|trans({}, 'register') }}</p>
+        <ul class="list-unstyled mb-0">
+            {% for p in proposals %}
+                <li class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" name="origins[]" value="{{ p.origin }}" id="proposal-{{ loop.index }}" checked>
+                    <label class="form-check-label" for="proposal-{{ loop.index }}">
+                        <strong>{{ p.title }}</strong>
+                        {% if p.description %}<span class="text-muted"> · {{ p.description|u.truncate(140, '…') }}</span>{% endif %}
+                        <span class="small text-muted"> — {{ p.source|trans({}, 'register') }}</span>
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
+</section>

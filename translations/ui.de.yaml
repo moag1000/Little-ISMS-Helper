@@ -29,6 +29,7 @@ ui:
             goto_risks: 'Risiken anzeigen'
             goto_incidents: 'Vorfälle anzeigen'
             goto_soa: 'Statement of Applicability'
+            goto_registers: 'Register'
             goto_trainings: 'Schulungen verwalten'
             goto_audits: 'Audits anzeigen'
             goto_compliance: 'Compliance Frameworks'

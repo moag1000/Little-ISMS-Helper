@@ -32,7 +32,7 @@ src/Command/GenerateIsoProceduresCommand.php:LOC=834 deps=0
 src/Form/ProcessingActivityType.php:LOC=816 deps=0
 src/Controller/ComplianceWizardController.php:LOC=795 deps=0
 src/Controller/AdminBackupController.php:LOC=778 deps=0
-src/Controller/AssetController.php:LOC=759 deps=0
+src/Controller/AssetController.php:LOC=758 deps=0
 src/Controller/ProcessingActivityController.php:LOC=756 deps=0
 src/Controller/QuickFixController.php:LOC=730 deps=0
 src/Controller/DPIAController.php:LOC=696 deps=0

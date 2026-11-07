@@ -1,0 +1,12 @@
+{# ISO 27001 4.3: what the ISMS covers, counted from the inventories (in-scope flag). #}
+<dl class="row mb-0 small">
+    {% for key, s in scope %}
+        <dt class="col-6">{{ ('register.scope.' ~ key)|trans({}, 'register') }}</dt>
+        <dd class="col-6 text-end">
+            <a href="{{ path(s.route, {scope: 'in'}) }}">{{ 'register.scope.in'|trans({'%count%': s.in}, 'register') }}</a>
+            {% if s.out > 0 %}
+                · <a href="{{ path(s.route, {scope: 'out'}) }}">{{ 'register.scope.out'|trans({'%count%': s.out}, 'register') }}</a>
+            {% endif %}
+        </dd>
+    {% endfor %}
+</dl>

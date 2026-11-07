@@ -12,6 +12,7 @@ use App\Form\LocationType;
 use App\Repository\LocationRepository;
 use App\Service\Location\LocationMapView;
 use App\Service\ModuleConfigurationService;
+use App\Util\IsmsScopeFilter;
 use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,6 +55,8 @@ class LocationController extends AbstractController
                 static fn (Location $l): bool => $l->getLocationType() === $type,
             ));
         }
+
+        $locations = IsmsScopeFilter::apply($locations, $request);
 
         return $this->render('location/index.html.twig', [
             'page' => ListPage::fromRequest(

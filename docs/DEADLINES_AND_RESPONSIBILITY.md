@@ -22,6 +22,8 @@ Sources are tagged `app.deadline_source` automatically and collected by
 implement `App\Service\Planning\Source\SourceAdapter`, which extends
 `DeadlineSource`. Inbox-only sources (suggestions, decisions) implement
 `DeadlineSource` alone.
+Example of a recurring review without a planner step: `App\Service\Register\RegisterReviewSource`
+(norm registers, owner → deputies → the register's maintaining persona).
 
 **Adding a norm** means adding sources for its duties. A DE + EN label
 `my_day.section.<bucket>` / `my_day.kpi.<bucket>` is required;
