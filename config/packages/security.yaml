@@ -203,6 +203,11 @@ security:
         # rule /api/docs published the whole schema to anonymous visitors.
         - { path: ^/api, roles: IS_AUTHENTICATED_REMEMBERED }
 
+        # Assistant connection (MCP): bearer API token only — McpController
+        # answers 401 itself (JSON-RPC error + WWW-Authenticate) instead of the
+        # login redirect, and refuses session cookies.
+        - { path: ^/mcp$, roles: PUBLIC_ACCESS }
+
         # Admin routes (with locale prefix) - specific locale pattern for better security
         - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }
 

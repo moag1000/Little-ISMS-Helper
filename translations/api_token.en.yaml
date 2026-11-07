@@ -1,12 +1,13 @@
 api_token:
     title: 'API tokens'
-    intro: 'Read-only API access via Bearer token. The plaintext is shown only once at creation.'
+    intro: 'API access by bearer token for your own scripts and AI assistants (MCP): read with your rights, drafts only as suggestions. The plain text is shown only once at creation.'
     created_once: 'Token created — copy it now, it will not be shown again:'
     empty: 'No API tokens yet.'
     field:
         label: Label
         expires_days: 'Valid (days)'
         created: Created
+        last_used: 'Last used'
         expires: Expires
         status: Status
     status:
