@@ -61,3 +61,6 @@ Audit-Log.
 - Datensatzseiten von interessierten Parteien, Lieferanten und Schulungen zeigen, in welchen
   Registereinträgen sie vorkommen.
 - Sicherung und Wiederherstellung der Organisation umfassen die Register.
+- Die automatisch vorbereitete Managementbewertung listet unter 9.3.2 b alle Einträge zu Themen,
+  rechtlichen Anforderungen und Schnittstellen, die seit der letzten Bewertung neu, geändert oder
+  archiviert sind.
