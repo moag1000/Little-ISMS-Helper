@@ -25,7 +25,7 @@ class AuditProgramRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ap')
             ->andWhere('ap.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('ap.startDate', 'DESC')
+            ->orderBy('ap.startDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -44,7 +44,7 @@ class AuditProgramRepository extends ServiceEntityRepository
             ->andWhere('ap.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', $status)
-            ->orderBy('ap.startDate', 'DESC')
+            ->orderBy('ap.startDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

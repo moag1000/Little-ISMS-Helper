@@ -36,7 +36,7 @@ class TisaxLicenseConfirmationRepository extends ServiceEntityRepository
             ->andWhere('c.confirmedAt < :cutoff')
             ->andWhere("c.ipAddress != ''")
             ->setParameter('cutoff', $cutoff)
-            ->orderBy('c.confirmedAt', 'ASC')
+            ->orderBy('c.confirmedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -59,7 +59,7 @@ class TisaxLicenseConfirmationRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('tenant', $tenant)
             ->setParameter('cutoff', $cutoff)
-            ->orderBy('c.confirmedAt', 'DESC')
+            ->orderBy('c.confirmedAt', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

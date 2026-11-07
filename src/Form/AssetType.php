@@ -109,8 +109,8 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 $qb = $repo->createQueryBuilder('s')
                     ->andWhere('s.isActive = :a')
                     ->setParameter('a', true)
-                    ->orderBy('s.topType', 'ASC')
-                    ->addOrderBy('s.name', 'ASC');
+                    ->orderBy('s.topType', \SortDirection::Ascending)
+                    ->addOrderBy('s.name', \SortDirection::Ascending);
                 if ($tenant !== null) {
                     $qb->andWhere('s.tenant = :t')->setParameter('t', $tenant);
                 } else {
@@ -163,7 +163,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 'multiple' => true,
                 'required' => false,
                 'query_builder' => static function ($repo) {
-                    return $repo->createQueryBuilder('a')->orderBy('a.name', 'ASC');
+                    return $repo->createQueryBuilder('a')->orderBy('a.name', \SortDirection::Ascending);
                 },
                 'attr' => [
                     'data-controller' => 'tom-select',
@@ -185,7 +185,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'by_reference' => false,
                 'query_builder' => static function ($repo) {
-                    return $repo->createQueryBuilder('p')->orderBy('p.name', 'ASC');
+                    return $repo->createQueryBuilder('p')->orderBy('p.name', \SortDirection::Ascending);
                 },
                 'attr' => [
                     'data-controller' => 'tom-select',

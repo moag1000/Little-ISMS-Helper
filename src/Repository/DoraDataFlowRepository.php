@@ -35,9 +35,9 @@ class DoraDataFlowRepository extends ServiceEntityRepository
             ->leftJoin('df.supplier', 's')
             ->andWhere('df.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.name', 'ASC')
-            ->addOrderBy('df.direction', 'ASC')
-            ->addOrderBy('df.id', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
+            ->addOrderBy('df.direction', \SortDirection::Ascending)
+            ->addOrderBy('df.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -55,7 +55,7 @@ class DoraDataFlowRepository extends ServiceEntityRepository
         $rows = $this->createQueryBuilder('df')
             ->andWhere('df.supplier = :supplier')
             ->setParameter('supplier', $supplierId)
-            ->orderBy('df.direction', 'ASC')
+            ->orderBy('df.direction', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

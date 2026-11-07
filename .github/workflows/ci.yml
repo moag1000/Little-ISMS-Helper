@@ -695,6 +695,10 @@ jobs:
         # never fires and the user sees the raw key. Every literal key with a
         # literal domain must exist in <domain>.de.yaml AND <domain>.en.yaml. No baseline.
         run: python3 scripts/quality/check_trans_default_masking.py --quiet
+      - name: "Gate 81: ORM sort directions use SortDirection"
+        # doctrine/orm 3.7 deprecates "ASC"/"DESC" strings in orderBy()/addOrderBy()
+        # and #[ORM\OrderBy] (issue 11313). No baseline.
+        run: python3 scripts/quality/check_orm_sort_direction.py --quiet
       - name: "Gate 77: shown dates use |fa_date / |fa_datetime"
         # One admin-configured date format and timezone instead of four hard-coded
         # formats; machine formats in attributes/URLs stay. Per-file counts may only shrink.

@@ -41,7 +41,7 @@ class KpiSnapshotRepository extends ServiceEntityRepository
             ->andWhere('s.snapshotDate <= :date')
             ->setParameter('tenant', $tenant)
             ->setParameter('date', $date)
-            ->orderBy('s.snapshotDate', 'DESC')
+            ->orderBy('s.snapshotDate', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -90,7 +90,7 @@ class KpiSnapshotRepository extends ServiceEntityRepository
             ->andWhere('s.snapshotDate >= :since')
             ->setParameter('tenant', $tenant)
             ->setParameter('since', $since)
-            ->orderBy('s.snapshotDate', 'ASC')
+            ->orderBy('s.snapshotDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -125,7 +125,7 @@ class KpiSnapshotRepository extends ServiceEntityRepository
             ->andWhere('s.snapshotDate >= :since')
             ->setParameter('tenant', $tenant)
             ->setParameter('since', $since)
-            ->orderBy('s.snapshotDate', 'ASC')
+            ->orderBy('s.snapshotDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -161,7 +161,7 @@ class KpiSnapshotRepository extends ServiceEntityRepository
             ->andWhere('s.snapshotDate < :cutoff')
             ->setParameter('tenant', $tenant)
             ->setParameter('cutoff', $thirtyDaysAgo)
-            ->orderBy('s.snapshotDate', 'ASC')
+            ->orderBy('s.snapshotDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

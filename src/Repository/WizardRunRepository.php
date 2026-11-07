@@ -36,7 +36,7 @@ class WizardRunRepository extends ServiceEntityRepository
             ->andWhere('r.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', 'in_progress')
-            ->orderBy('r.startedAt', 'DESC')
+            ->orderBy('r.startedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -52,7 +52,7 @@ class WizardRunRepository extends ServiceEntityRepository
             ->andWhere('r.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', 'completed')
-            ->orderBy('r.completedAt', 'DESC')
+            ->orderBy('r.completedAt', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

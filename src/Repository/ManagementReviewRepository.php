@@ -39,7 +39,7 @@ class ManagementReviewRepository extends ServiceEntityRepository
     public function findLatest(int $limit = 5): array
     {
         return $this->createQueryBuilder('m')
-            ->orderBy('m.reviewDate', 'DESC')
+            ->orderBy('m.reviewDate', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -70,7 +70,7 @@ class ManagementReviewRepository extends ServiceEntityRepository
             ->setParameter('status', ManagementReviewStatus::Planned->value)
             ->setParameter('today', $today)
             ->setParameter('deadline', $deadline)
-            ->orderBy('m.reviewDate', 'ASC')
+            ->orderBy('m.reviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -41,7 +41,7 @@ class TrainingRepository extends ServiceEntityRepository
             ->andWhere('t.scheduledDate >= :today')
             ->setParameter('statuses', ['planned', 'scheduled'])
             ->setParameter('today', new DateTime())
-            ->orderBy('t.scheduledDate', 'ASC')
+            ->orderBy('t.scheduledDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -57,7 +57,7 @@ class TrainingRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->where('t.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('t.scheduledDate', 'DESC')
+            ->orderBy('t.scheduledDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -86,7 +86,7 @@ class TrainingRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('t.scheduledDate', 'DESC')
+            ->orderBy('t.scheduledDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -114,7 +114,7 @@ class TrainingRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('t.scheduledDate', 'DESC')
+            ->orderBy('t.scheduledDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

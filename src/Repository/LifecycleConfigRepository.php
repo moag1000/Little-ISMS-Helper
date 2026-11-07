@@ -51,8 +51,8 @@ class LifecycleConfigRepository extends ServiceEntityRepository
             ->andWhere('lc.workflowName = :wf')
             ->setParameter('tenant', $tenant)
             ->setParameter('wf', $workflowName)
-            ->orderBy('lc.transitionName', 'ASC')
-            ->addOrderBy('lc.configKey', 'ASC')
+            ->orderBy('lc.transitionName', \SortDirection::Ascending)
+            ->addOrderBy('lc.configKey', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

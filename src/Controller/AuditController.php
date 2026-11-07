@@ -673,7 +673,7 @@ class AuditController extends AbstractController
         $lastAudit = $this->internalAuditRepository->createQueryBuilder('a')
             ->where('a.auditNumber LIKE :prefix')
             ->setParameter('prefix', $prefix . '%')
-            ->orderBy('a.auditNumber', 'DESC')
+            ->orderBy('a.auditNumber', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

@@ -262,7 +262,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                     return $r->createQueryBuilder('ct')
                         ->where('ct.tenant = :tenant')
                         ->setParameter('tenant', $this->tenantContext->getCurrentTenant())
-                        ->orderBy('ct.teamName', 'ASC');
+                        ->orderBy('ct.teamName', \SortDirection::Ascending);
                 },
             ])
         ;

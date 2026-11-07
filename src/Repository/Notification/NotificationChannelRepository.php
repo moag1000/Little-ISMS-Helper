@@ -37,7 +37,7 @@ class NotificationChannelRepository extends ServiceEntityRepository
             ->andWhere('c.isActive = true')
             ->setParameter('type', $type)
             ->setParameter('tenant', $tenant)
-            ->orderBy('c.name', 'ASC')
+            ->orderBy('c.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

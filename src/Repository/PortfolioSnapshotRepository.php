@@ -70,7 +70,7 @@ class PortfolioSnapshotRepository extends ServiceEntityRepository
             ->setParameter('day', $day->setTime(0, 0))
             ->setParameter('framework', $frameworkCode)
             ->setParameter('category', $nistCsfCategory)
-            ->orderBy('s.snapshotDate', 'DESC')
+            ->orderBy('s.snapshotDate', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

@@ -71,7 +71,7 @@ final class BcmExerciseProgrammeActiveCheck implements PolicyWizardCheckInterfac
             ->setParameter('tenant', $tenant)
             ->setParameter('back_cutoff', $backCutoff)
             ->setParameter('forward_cutoff', $forwardCutoff)
-            ->orderBy('e.exerciseDate', 'DESC')
+            ->orderBy('e.exerciseDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
 
