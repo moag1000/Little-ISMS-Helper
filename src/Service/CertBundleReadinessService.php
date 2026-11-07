@@ -122,7 +122,7 @@ class CertBundleReadinessService
 
         foreach ($documents as $doc) {
             $status = $doc->getStatus();
-            if ($status !== null && !in_array($status, ['approved', 'archived'], true)) {
+            if (!in_array($status, ['approved', 'archived'], true)) {
                 $unapproved++;
             }
         }
