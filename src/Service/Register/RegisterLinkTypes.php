@@ -151,12 +151,9 @@ final class RegisterLinkTypes
     /** Link field of a record class (reverse view on the record's page). */
     public static function fieldOfClass(string $class): ?string
     {
-        foreach (self::KINDS as $field => [$kindClass, , , $types]) {
-            if ($types === null && $kindClass === $class) {
-                return $field;
-            }
-        }
+        $recordClasses = array_map(static fn (array $kind): ?string => $kind[3] === null ? $kind[0] : null, self::KINDS);
+        $field = array_search($class, $recordClasses, true);
 
-        return null;
+        return is_string($field) ? $field : null;
     }
 }
