@@ -47,10 +47,7 @@ auth:
 logout: Logout
 email: Email
 password: Password
-forgot_password: 'Forgot Password'
 remember_me: 'Remember Me'
-login_title: Login
-welcome_back: Sign in
 home:
     _default: Home
     welcome: Home
@@ -108,7 +105,6 @@ risks: Risks
 controls: Controls
 incidents: Incidents
 audits: Audits
-compliance_label: Compliance
 users: Users
 settings: Settings
 profile: Profile
@@ -1500,7 +1496,6 @@ bsi_check:
         title: 'No requirements found'
         message: 'No BSI IT-Grundschutz requirements are loaded for the selected Absicherungsstufe. Try a different filter or load the Kompendium data with app:load-bsi-grundschutz-requirements and app:load-bsi-kompendium-delta.'
 Customer: Customer
-Shareholder: Shareholder
 Employee: Employee
 Regulator: Regulator
 Supplier: Supplier
@@ -1508,7 +1503,6 @@ Partner: Partner
 Public: Public
 Media: Media
 Government: Government
-Competitor: Competitor
 Other: Other
 Critical: Critical
 High: High
@@ -1520,7 +1514,6 @@ Monthly: Monthly
 Yearly: Annually
 Quarterly: Quarterly
 Annually: Annually
-'As Needed': 'As Needed'
 Active: Active
 Inactive: Inactive
 Evaluation: Evaluation
