@@ -59,6 +59,30 @@ final class ObligationInboxTest extends TestCase
     }
 
     #[Test]
+    public function informedRolesGetTheDutyBesideTheOneWhoActs(): void
+    {
+        $inbox = $this->inbox(new FakeDeadlineSource('reporting_duty', new DeadlineProfile('reporting_duties'), [
+            FakeDeadlineSource::record(1, Responsibility::holders($this->owner)->alsoInform('ROLE_RISK_MANAGER'), $this->now),
+        ]));
+
+        self::assertCount(1, $inbox->forUser($this->owner, $this->tenant, $this->now));
+        self::assertCount(1, $inbox->forUser($this->riskManager, $this->tenant, $this->now));
+        self::assertSame([], $inbox->forUser($this->other, $this->tenant, $this->now));
+    }
+
+    #[Test]
+    public function informingNeverReplacesTheOneWhoActs(): void
+    {
+        $users = $this->createStub(UserRepository::class);
+        $users->method('findActiveByTenant')->willReturn([$this->owner, $this->other, $this->riskManager]);
+        $resolver = new ResponsibilityResolver($users, PersonaResolverFactory::create(), new DeadlineSourceRegistry([]));
+        $who = Responsibility::holders($this->owner)->alsoInform($this->other);
+
+        self::assertSame([$this->owner], $resolver->resolve($who, $this->tenant));
+        self::assertSame([$this->owner, $this->other], $resolver->recipients($who, $this->tenant));
+    }
+
+    #[Test]
     public function leadWindowCompletionAndOverdueFlag(): void
     {
         $who = Responsibility::holders($this->owner);

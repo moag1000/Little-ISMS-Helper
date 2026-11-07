@@ -8,6 +8,8 @@ my_day:
         review_in_list: 'In der Liste bestätigen'
         standard_dashboard: 'Standard-Dashboard'
 
+    retention_title: '%count% × %type% werden gelöscht'
+
     kpi:
         register_review: 'Register-Prüfungen'
         suggestions: 'Vorschläge'
@@ -62,6 +64,19 @@ my_day:
         training_refresh_due: 'Auffrischungen'
         nis2_registration_due: 'NIS-2-Registrierung'
         dpias_open: 'DSFA offen'
+        consents_expiring: 'Einwilligungen laufen ab'
+        teams_expiring: 'Teams laufen aus'
+        access_expiring: 'Zugänge enden'
+        patches_due: 'Patches fällig'
+        supplier_contracts_ending: 'Verträge enden'
+        crisis_team_training_due: 'Krisenstab-Trainings'
+        tisax_assessment_due: 'Prototypenschutz neu bewerten'
+        mappings_expiring: 'Mappings laufen ab'
+        tlpt_due: 'TLPT fällig'
+        dora_exit_plan_tests_due: 'Exit-Pläne testen'
+        retention_deletion_upcoming: 'Löschungen angekündigt'
+        action_items_due: 'Maßnahmen fällig'
+        management_approvals_missing: 'Leitungsentscheidungen vorbereiten'
 
     section:
         register_review: 'Register — Prüfung fällig (ISO 27001 4.1–7.4)'
@@ -115,8 +130,21 @@ my_day:
         treatment_plans_due: 'Risikobehandlungspläne — Zieltermin (ISO 27001 6.1.3)'
         capa_effectiveness_due: 'Korrekturmaßnahmen — Wirksamkeit prüfen (ISO 27001 10.2)'
         training_refresh_due: 'Schulungen — Auffrischung planen (ISO 27001 7.2)'
-        nis2_registration_due: 'NIS-2-Registrierung — Aktualisierung fällig'
+        nis2_registration_due: 'NIS-2-Registrierung — Registrierung oder jährliche Bestätigung fällig (BSIG § 33)'
         dpias_open: 'Datenschutz-Folgenabschätzungen — offen (DSGVO Art. 35)'
+        consents_expiring: 'Einwilligungen — laufen in 30 Tagen ab (DSGVO Art. 7)'
+        teams_expiring: 'Teams — Gültigkeit endet (ISO 27001 7.1)'
+        access_expiring: 'Zugänge — enden, Rechte entziehen (A.5.18, A.6.5)'
+        patches_due: 'Patches — Einspielfrist (A.8.8)'
+        supplier_contracts_ending: 'Lieferantenverträge — enden in 90 Tagen (A.5.20, DORA Art. 28)'
+        crisis_team_training_due: 'Krisenstab — Training fällig (ISO 22301 7.2, 8.4.2)'
+        tisax_assessment_due: 'TISAX-Prototypenschutz — Neubewertung fällig'
+        mappings_expiring: 'Eigene Mappings — Gültigkeit endet'
+        tlpt_due: 'TLPT — Test fällig (DORA Art. 26)'
+        dora_exit_plan_tests_due: 'Exit-Pläne — jährlicher Test fällig (DORA Art. 28 Abs. 8)'
+        retention_deletion_upcoming: 'Aufbewahrung — automatische Löschung in 14 Tagen (DSGVO Art. 5 Abs. 1 e)'
+        action_items_due: 'Maßnahmen — Fälligkeit'
+        management_approvals_missing: 'Leitungsentscheidungen — fehlen oder laufen ab, Vorlage vorbereiten (ISO 27001 5.1, 6.1, 6.2, 7.1)'
 
     bucket:
         risk_acceptance_expiring:

@@ -22,9 +22,10 @@ use BackedEnum;
  *
  * Severity/status transitions are detected from the Doctrine change-set
  * (`field => [old, new]`) so an event fires once on the TRANSITION, never on
- * every save — the storm-avoidance guarantee. Computed/time-driven events
- * (risk.score_critical, control.overdue) are NOT here; they are emitted by the
- * cron `app:dispatch-domain-notifications` because they have no change-set.
+ * every save — the storm-avoidance guarantee. Time-driven duties (an overdue
+ * control review, an hour deadline) are not events: they reach people through
+ * the deadline sources and the one reminder path (`app:send-reminders`), which
+ * fires `obligation.urgent` for rules that forward hour deadlines.
  */
 final class DomainEventDetector
 {

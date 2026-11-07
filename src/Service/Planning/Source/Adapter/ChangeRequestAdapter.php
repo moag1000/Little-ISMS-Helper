@@ -10,6 +10,7 @@ use App\Enum\ChangeRequestStatus;
 use App\Repository\ChangeRequestRepository;
 use App\Service\Deadline\DeadlineProfile;
 use App\Service\Deadline\RecordLink;
+use App\Service\Deadline\Source\ChangeApprovalSource;
 use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
@@ -90,16 +91,16 @@ final class ChangeRequestAdapter implements SourceAdapter
         foreach ($this->findConvertible($tenant) as $item) {
             // No date, no duty to remind of; requests still waiting for approval
             // are the approvers' decision (ChangeApprovalSource), not the implementer's.
-            if ($this->dueDateOf($item) !== null
-                && !in_array($item->getStatus(), ['submitted', 'under_review'], true)) {
+            if ($this->dueDateOf($item) !== null && $this->supports($item)) {
                 yield $item;
             }
         }
     }
 
+    /** Changes still waiting for approval belong to ChangeApprovalSource. */
     public function supports(object $item): bool
     {
-        return $item instanceof ChangeRequest;
+        return $item instanceof ChangeRequest && !in_array($item->getStatus(), ChangeApprovalSource::PENDING, true);
     }
 
     public function responsibleOf(object $item): Responsibility
