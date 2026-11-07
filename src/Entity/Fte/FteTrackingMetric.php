@@ -32,6 +32,7 @@ class FteTrackingMetric
     public const string SOURCE_MANUAL_CALIBRATION = 'manual_calibration';
     public const string SOURCE_WORKFLOW_AUTOMATION = 'workflow_automation';
     public const string SOURCE_NOTIFICATION_AUTOMATION = 'notification_automation';
+    public const string SOURCE_BULK_ACTION = 'bulk_action';
 
     public const string PERIOD_REALTIME = 'realtime';
     public const string PERIOD_DAILY = 'daily';

@@ -148,4 +148,29 @@ class FteRecorderService
             $this->logger->warning('FteRecorderService::recordEvidenceReuse failed: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Record savings from one bulk action over $records records of $entityType
+     * (e.g. one owner assigned to five sites from the location map).
+     */
+    public function recordBulkAction(int $records, string $entityType, string $action, Tenant $tenant): void
+    {
+        try {
+            if ($records < 2) {
+                return;
+            }
+            $savings = $this->calculator->calculateBulkActionSavings($records, $tenant);
+            $this->calculator->recordMetric(
+                FteTrackingMetric::SOURCE_BULK_ACTION,
+                $entityType,
+                null,
+                $savings + 1,
+                1, // actual = one dialog
+                $tenant,
+                ['record_count' => $records, 'action' => $action],
+            );
+        } catch (\Throwable $e) {
+            $this->logger->warning('FteRecorderService::recordBulkAction failed: ' . $e->getMessage());
+        }
+    }
 }

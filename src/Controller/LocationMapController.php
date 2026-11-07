@@ -7,7 +7,11 @@ namespace App\Controller;
 use App\Attribute\RequiresModule;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Service\Location\LocationBulkChoices;
+use App\Service\Location\LocationBulkService;
 use App\Service\Location\LocationCoordinateUpdater;
+use App\Service\Location\LocationMapExporter;
+use App\Service\Location\LocationMapView;
 use App\Service\Location\LocationGeocoder;
 use App\Service\Location\LocationPostureService;
 use App\Service\Location\OnlineGeocoder;
@@ -28,10 +32,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class LocationMapController extends AbstractController
 {
     public const array LENSES = ['ciso', 'isb', 'cm', 'owner'];
+    private const string LENS_SESSION_KEY = 'location_map_lens';
 
     public function __construct(
-        private readonly LocationPostureService $postureService,
-        private readonly LocationGeocoder $geocoder,
+        private readonly LocationMapView $mapView,
+        private readonly LocationBulkService $bulkService,
+        private readonly LocationBulkChoices $bulkChoices,
+        private readonly LocationMapExporter $exporter,
         private readonly OnlineGeocoder $onlineGeocoder,
         private readonly LocationCoordinateUpdater $coordinateUpdater,
         private readonly TranslatorInterface $translator,
@@ -43,28 +50,19 @@ final class LocationMapController extends AbstractController
     {
         $user = $this->getUser();
         $tenant = $user instanceof User ? $user->getTenant() : null;
-        $sites = $tenant instanceof Tenant ? $this->postureService->forTenant($tenant, $user) : [];
-
-        // Old rows have no coordinates yet: place them for display from the
-        // offline tables. Stored on the next save or via "Koordinaten ermitteln".
-        $unsaved = 0;
-        foreach ($sites as &$site) {
-            if ($site['lat'] === null && $site['geoSource'] === null) {
-                $point = $site['type'] === 'region'
-                    ? $this->geocoder->locateArea($site['country'])
-                    : $this->geocoder->locate($site['postalCode'], $site['city'], $site['country']);
-                if ($point !== null) {
-                    [$site['lat'], $site['lng'], $site['geoSource']] = [$point->latitude, $point->longitude, $point->source];
-                    ++$unsaved;
-                }
-            }
-        }
-        unset($site);
+        $view = $tenant instanceof Tenant
+            ? $this->mapView->build($tenant, $user)
+            : ['sites' => [], 'unsaved' => 0, 'peers' => [], 'objectives' => [], 'levers' => [], 'money' => false, 'peerMode' => 'off'];
+        $sites = $view['sites'];
 
         $hasOwnSite = array_filter($sites, static fn (array $s): bool => $s['mine']) !== [];
-        $lens = (string) $request->query->get('lens', '');
+        // The chosen lens is kept for the session; without a choice the role decides.
+        $session = $request->getSession();
+        $lens = (string) $request->query->get('lens', (string) $session->get(self::LENS_SESSION_KEY, ''));
         if (!in_array($lens, self::LENSES, true) || ($lens === 'owner' && !$hasOwnSite)) {
             $lens = $this->defaultLens($hasOwnSite);
+        } elseif ($request->query->has('lens')) {
+            $session->set(self::LENS_SESSION_KEY, $lens);
         }
 
         $unplaced = array_values(array_filter(
@@ -82,10 +80,59 @@ final class LocationMapController extends AbstractController
             'lenses' => $hasOwnSite ? self::LENSES : array_values(array_diff(self::LENSES, ['owner'])),
             'unplaced' => $unplaced,
             'coarse' => $coarse,
-            'unsaved' => $unsaved,
+            'unsaved' => $view['unsaved'],
+            'peers' => $view['peers'],
+            'peer_mode' => $view['peerMode'],
+            'objectives' => $view['objectives'],
+            'levers' => LocationMapView::levers($lens === 'owner' ? array_values(array_filter($sites, static fn (array $s): bool => $s['mine'])) : $sites),
+            'money' => $view['money'],
+            'bulk' => $tenant instanceof Tenant && $this->isGranted('ROLE_MANAGER') ? $this->bulkChoices->forTenant($tenant) : null,
             'online_enabled' => $tenant instanceof Tenant && $this->onlineGeocoder->isEnabled($tenant),
             'check_norms' => LocationPostureService::CHECK_NORM,
         ]);
+    }
+
+    /**
+     * Close the same gap at several sites in one step: owner, deputy or peer
+     * group (tag) for the selected sites.
+     */
+    #[Route('/location/map/bulk', name: 'app_location_map_bulk', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid('location_map_bulk')]
+    public function bulk(Request $request): Response
+    {
+        $user = $this->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+        [$action, $target] = explode(':', (string) $request->request->get('target'), 2) + ['', '0'];
+        $target = (int) $target;
+        $ids = array_values(array_filter(array_map('intval', $request->request->all('ids'))));
+        if (!$user instanceof User || !$tenant instanceof Tenant || $ids === [] || $target === 0) {
+            $this->addFlash('warning', $this->translator->trans('location.map.bulk.flash.empty', [], 'locations'));
+            return $this->redirectToRoute('app_location_map', ['lens' => $request->request->get('lens')]);
+        }
+
+        $changed = $this->bulkService->apply($tenant, $user, $action, $ids, $target);
+        $this->addFlash('success', $this->translator->trans('location.map.bulk.flash.done', ['%count%' => $changed], 'locations'));
+        return $this->redirectToRoute('app_location_map', ['lens' => $request->request->get('lens')]);
+    }
+
+    /** Situation report of the selected (or all) sites as Excel or PDF one-pager. */
+    // POST from the selection form, so the token stays out of URLs and logs.
+    #[Route('/location/map/export.{format}', name: 'app_location_map_export', requirements: ['format' => 'xlsx|pdf'], methods: ['POST'])]
+    #[IsCsrfTokenValid('location_map_bulk')]
+    public function export(Request $request, string $format): Response
+    {
+        $user = $this->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+        if (!$user instanceof User || !$tenant instanceof Tenant) {
+            return $this->redirectToRoute('app_location_map');
+        }
+        $ids = array_values(array_filter(array_map('intval', $request->request->all('ids'))));
+        $request->getSession()->save();
+
+        return $format === 'pdf'
+            ? $this->exporter->pdf($tenant, $user, $ids)
+            : $this->exporter->excel($tenant, $user, $ids);
     }
 
     /**

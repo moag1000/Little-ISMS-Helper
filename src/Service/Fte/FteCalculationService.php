@@ -100,6 +100,17 @@ class FteCalculationService
     }
 
     /**
+     * Minutes saved by changing $records records in one bulk action instead of
+     * opening each one: (n − 1) × the calibrated minutes per single update.
+     */
+    public function calculateBulkActionSavings(int $records, Tenant $tenant): int
+    {
+        $minutesEach = $this->calibrationRepo->getMinutesFor($tenant, FteCalibrationConstant::OP_MANUAL_RECORD_UPDATE);
+
+        return max(0, (int) round(($records - 1) * $minutesEach));
+    }
+
+    /**
      * Persist a FteTrackingMetric row and emit audit entry.
      */
     public function recordMetric(

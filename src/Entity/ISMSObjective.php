@@ -151,6 +151,20 @@ class ISMSObjective
     #[Assert\NotBlank]
     private ?DateTimeInterface $targetDate = null;
 
+    /**
+     * Optional KPI-catalog key: the current value is then computed instead of
+     * maintained by hand ({@see \App\Service\Kpi\ObjectiveKpiProgress}).
+     */
+    #[ORM\Column(length: 64, nullable: true)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Assert\Length(max: 64)]
+    private ?string $kpiKey = null;
+
+    /** Optional scope of a location KPI: one site; null = the whole organisation. */
+    #[ORM\ManyToOne(targetEntity: Location::class)]
+    #[ORM\JoinColumn(name: 'kpi_location_id', nullable: true, onDelete: 'SET NULL')]
+    private ?Location $kpiLocation = null;
+
     #[ORM\Column(length: 50)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
     #[Assert\Choice(choices: ['not_started', 'in_progress', 'achieved', 'delayed', 'cancelled'])]
@@ -281,6 +295,30 @@ public function __construct()
     public function setResponsiblePerson(?string $responsiblePerson): static
     {
         $this->responsiblePerson = $responsiblePerson;
+        return $this;
+    }
+
+    public function getKpiKey(): ?string
+    {
+        return $this->kpiKey;
+    }
+
+    public function setKpiKey(?string $kpiKey): static
+    {
+        $this->kpiKey = $kpiKey !== '' ? $kpiKey : null;
+
+        return $this;
+    }
+
+    public function getKpiLocation(): ?Location
+    {
+        return $this->kpiLocation;
+    }
+
+    public function setKpiLocation(?Location $kpiLocation): static
+    {
+        $this->kpiLocation = $kpiLocation;
+
         return $this;
     }
 

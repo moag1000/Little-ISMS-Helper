@@ -4,9 +4,7 @@ src/Controller/AnswerLibraryController.php::new-no-tenant::new::AnswerLibraryEnt
 src/Controller/Api/QuickCreateController.php::new-no-tenant::buildAsset::Asset  # factory; create() sets the tenant on every built entity
 src/Controller/Api/QuickCreateController.php::new-no-tenant::buildBusinessProcess::BusinessProcess  # factory; create() sets the tenant on every built entity
 src/Controller/Api/QuickCreateController.php::new-no-tenant::buildCrisisTeam::CrisisTeam  # factory; create() sets the tenant on every built entity
-src/Controller/Api/SsoDiscoveryApiController.php::new-no-tenant::validateDiscovery::IdentityProvider  # transient probe object, never persisted
 src/Controller/DataSubjectRequestController.php::new-no-tenant::new::DataSubjectRequest  # form object; DataSubjectRequestService::create() sets the tenant
 src/Controller/IncidentController.php::new-no-tenant::escalationPreview::Incident  # transient preview object, never persisted
-src/Repository/IdentityProviderRepository.php::shared-query::IdentityProvider  # global providers are shared rows; interface lands with #1087 (issue #1086)
 src/Repository/SsoUserApprovalRepository.php::shared-query::SsoUserApproval  # approvals for global providers; decided together with #1086/#1087
 src/Service/ProcessingActivityService.php::new-no-tenant::clone::ProcessingActivity  # clone goes through create(), which sets the tenant

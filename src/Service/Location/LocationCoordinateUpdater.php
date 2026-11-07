@@ -44,10 +44,12 @@ class LocationCoordinateUpdater
         return $placed;
     }
 
-    public function saveSettings(Tenant $tenant, bool $onlineGeocoding, string $endpoint): void
+    public function saveSettings(Tenant $tenant, bool $onlineGeocoding, string $endpoint, LocationMapSettings $map): void
     {
-        $old = OnlineGeocoder::settings($tenant);
-        $new = ['online_geocoding' => $onlineGeocoding, 'endpoint' => $endpoint];
+        $oldOnline = OnlineGeocoder::settings($tenant);
+        $old = ['online_geocoding' => $oldOnline['enabled'], 'endpoint' => $oldOnline['endpoint']]
+            + LocationMapSettings::of($tenant)->toArray();
+        $new = ['online_geocoding' => $onlineGeocoding, 'endpoint' => $endpoint] + $map->toArray();
         $settings = $tenant->getSettings() ?? [];
         $settings[OnlineGeocoder::SETTINGS_KEY] = $new;
         $tenant->setSettings($settings);
@@ -56,7 +58,7 @@ class LocationCoordinateUpdater
         $this->auditLogger->logUpdate(
             entityType: 'Tenant',
             entityId: $tenant->getId(),
-            oldValues: ['online_geocoding' => $old['enabled'], 'endpoint' => $old['endpoint']],
+            oldValues: $old,
             newValues: $new,
             description: 'Location map settings updated',
         );

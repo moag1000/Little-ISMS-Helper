@@ -1,0 +1,24 @@
+{#
+ # Location map on the persona dashboards: three location KPIs from the
+ # catalog and the way to the map. Hidden until at least two sites are placed,
+ # because a map with one pin says nothing (ISO 27001 A.7).
+ #
+ #   {% include 'location/_dashboard_tile.html.twig' %}
+ #}
+{% import '_components/_kpi_tile.html.twig' as _kpi_tile %}
+{% set _loc = kpi('location_checks_rate') %}
+{% if is_module_active('locations') and _loc is not null and (_loc.details.placed ?? 0) >= 2 %}
+<section class="fa-section mb-4" id="location-map-tile">
+    <div class="fa-section__header">
+        <h2 class="fa-section__title">{{ 'location.map.title'|trans({}, 'locations') }}</h2>
+        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_location_map') }}">{{ 'location.map.open'|trans({}, 'locations') }}</a>
+    </div>
+    <div class="fa-section__body">
+        <div class="row g-3">
+            <div class="col-6 col-md-4">{{ _kpi_tile.render('location_checks_rate', { icon: 'nav-location', href: path('app_location_map', { layer: 'gaps' }) }) }}</div>
+            <div class="col-6 col-md-4">{{ _kpi_tile.render('location_open_gaps', { href: path('app_location_map', { layer: 'gaps' }) }) }}</div>
+            <div class="col-6 col-md-4">{{ _kpi_tile.render('location_critical_sites', { href: path('app_location_map') }) }}</div>
+        </div>
+    </div>
+</section>
+{% endif %}

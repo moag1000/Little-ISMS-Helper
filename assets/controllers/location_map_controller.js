@@ -119,7 +119,7 @@ export default class extends Controller {
     }
 
     selectRow(event) {
-        if (event.target.closest('a, button')) return;
+        if (event.target.closest('a, button, input')) return;
         const id = parseInt(event.currentTarget.dataset.siteId, 10);
         const point = this.points.find((p) => p.site.id === id);
         if (point) this.centerOn(point.xy);
