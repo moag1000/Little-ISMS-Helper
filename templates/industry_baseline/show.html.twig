@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+
 {% block title %}{{ baseline.name }} · {{ 'industry_baseline.title'|trans({}, 'industry_baseline') }}{% endblock %}
 
 {% block body %}
@@ -18,20 +21,23 @@
         subtitle: 'v' ~ baseline.version ~ ' · ' ~ baseline.source
     }) }}
 
-    {# Apply / Status forms (POST + complex layout) kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
-    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
-        <div></div>
-        <div class="d-flex flex-column align-items-end gap-2">
+    {% set _status %}
             {% if applied_record %}
                 <span class="fa-status-pill fa-status-pill--success">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                    {{ 'industry_baseline.status.applied_at'|trans({'%date%': applied_record.appliedAt|date('Y-m-d H:i')}, 'industry_baseline') }}
+                    {{ 'industry_baseline.status.applied_at'|trans({'%date%': applied_record.appliedAt|fa_datetime}, 'industry_baseline') }}
                 </span>
             {% elseif inherited_record %}
                 <span class="fa-status-pill fa-status-pill--primary" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inherited_record.tenant.name}, 'industry_baseline') }}">
                     <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                     {{ 'industry_baseline.status.inherited'|trans({'%tenant%': inherited_record.tenant.name}, 'industry_baseline') }}
                 </span>
+            {% endif %}
+    {% endset %}
+    {# Apply forms (POST + confirm) cannot be expressed via _fa_page_header GET-only actions #}
+    {% set _actions %}
+            {% if applied_record %}
+            {% elseif inherited_record %}
                 <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"
@@ -70,11 +76,28 @@
                     </button>
                 </form>
             {% endif %}
-        </div>
-    </div>
+    {% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.version'|trans({}, 'messages'), value: baseline.version },
+            { label: 'show.status.type'|trans({}, 'messages'), value: ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') },
+            { label: 'industry_baseline.field.fte_saved'|trans({}, 'industry_baseline'), value: baseline.fteDaysSavedEstimate|number_format(1, '.', ',') ~ ' ' ~ 'industry_baseline.fte_suffix'|trans({}, 'industry_baseline') },
+        ],
+    }) }}
+
+    {% set _links = entity_links(baseline) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: baseline } only %}
 
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-7 fa-show-section" id="details">
             {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -250,7 +273,7 @@
                     {% block card_body %}
                         <dl class="small mb-0">
                             <dt>{{ 'industry_baseline.applied_record.applied_at'|trans({}, 'industry_baseline') }}</dt>
-                            <dd>{{ applied_record.appliedAt|date('Y-m-d H:i') }}</dd>
+                            <dd>{{ applied_record.appliedAt|fa_datetime }}</dd>
                             <dt>{{ 'industry_baseline.applied_record.applied_by'|trans({}, 'industry_baseline') }}</dt>
                             <dd>{{ applied_record.appliedBy.email|default('—') }}</dd>
                             <dt>{{ 'industry_baseline.applied_record.summary'|trans({}, 'industry_baseline') }}</dt>
@@ -263,5 +286,7 @@
             {% endif %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: baseline } only %}
 </div>
 {% endblock %}

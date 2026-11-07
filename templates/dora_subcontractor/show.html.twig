@@ -2,6 +2,7 @@
 {% trans_default_domain 'dora' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ subcontractor.name }} - {{ 'dora_subcontractor.title.show'|trans({}, 'dora') }}{% endblock %}
 
@@ -24,10 +25,20 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_dora_subcontractor_index') }
         ]
     }) }}
-</div>
 
-<main>
-    <div class="container">
+    {{ _fa_status_band.render({
+        facts: [
+            { label: 'show.status.criticality'|trans({}, 'messages'), value: subcontractor.criticality ? ('dora_subcontractor.criticality.' ~ subcontractor.criticality)|trans({}, 'dora') : null },
+            { label: 'dora_subcontractor.field.substitutability'|trans({}, 'dora'), value: subcontractor.substitutability ? ('dora_subcontractor.substitutability.' ~ subcontractor.substitutability)|trans({}, 'dora') : null },
+            { label: 'dora_subcontractor.field.tier'|trans({}, 'dora'), value: subcontractor.tier },
+            { label: 'dora_subcontractor.field.country'|trans({}, 'dora'), value: subcontractor.country },
+        ],
+        workflow: workflow_state(subcontractor),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: subcontractor } only %}
+
+    <div class="fa-show-section" id="details">
         {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
             {% block card_body %}
                 <h2>{{ 'dora_subcontractor.section.identification'|trans({}, 'dora') }}</h2>
@@ -98,5 +109,7 @@
             {% endblock %}
         {% endembed %}
     </div>
-</main>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: subcontractor } only %}
+</div>
 {% endblock %}

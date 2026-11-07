@@ -34,14 +34,40 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_location_index') }
         ]
     }) }}
-</div>
+
+    {% import '_components/_status_pill.html.twig' as _pill %}
+    {% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+    {% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+    {% set _status %}{{ _pill.render((location.active ? 'common.active' : 'common.inactive')|trans({}, 'messages'), location.active ? 'success' : 'neutral') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: location.effectiveResponsiblePerson },
+            { label: 'location.field.security_level'|trans({}, 'locations'), value: location.securityLevel ? ('location.security.' ~ location.securityLevel)|trans({}, 'locations') : null },
+            { label: 'show.status.protection'|trans({}, 'messages'), value: profile and profile.site.protection ? profile.site.protection : null },
+        ],
+        workflow: workflow_state(location),
+    }) }}
+
+    {% set _links = entity_links(location) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'profile', label: 'location.profile.title'|trans({}, 'locations'), show: profile is not empty },
+        { id: 'details', label: 'location.section.details'|trans({}, 'locations') },
+        { id: 'address', label: 'location.section.address'|trans({}, 'locations'), show: location.address or location.city or location.country },
+        { id: 'children', label: 'location.section.child_locations'|trans({}, 'locations'), count: location.childLocations|length, show: location.childLocations|length > 0 },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: location } only %}
 
 {# Site profile ("Steckbrief"): the same figures as the location map, ISO 27001 A.7. #}
 {% if profile %}
 {% set _p = profile.site %}
+<div id="profile" class="fa-show-section">
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_body %}
-    <h2 id="profile">{{ 'location.profile.title'|trans({}, 'locations') }}</h2>
+    <h2>{{ 'location.profile.title'|trans({}, 'locations') }}</h2>
     {% if profile.partOf %}
         <p class="text-muted">{{ 'location.profile.not_site'|trans({ '%site%': _p.name }, 'locations') }}</p>
     {% endif %}
@@ -75,9 +101,11 @@
     {% endfor %}
     {% endblock %}
 {% endembed %}
+</div>
 {% endif %}
 
 {# Location Details #}
+<div id="details" class="fa-show-section">
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_body %}
     <h2>{{ 'location.section.details'|trans({}, 'locations') }}</h2>
@@ -136,12 +164,19 @@
             <span>{{ 'location.field.responsible_person'|trans({}, 'locations') }}</span>
             {% include '_components/_deputy_persons.html.twig' with { deputies: location.responsibleDeputyPersons } only %}
         </div>
+
+        <div class="stat-item">
+            <strong>{{ location.accessControlSystem ?: '–' }}</strong>
+            <span>{{ 'location.field.access_control'|trans({}, 'locations') }}</span>
+        </div>
     </div>
     {% endblock %}
 {% endembed %}
+</div>
 
 {# Address Information #}
 {% if location.address or location.city or location.country %}
+<div id="address" class="fa-show-section">
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_body %}
     <h2>{{ 'location.section.address'|trans({}, 'locations') }}</h2>
@@ -166,10 +201,12 @@
     {% endembed %}
     {% endblock %}
 {% endembed %}
+</div>
 {% endif %}
 
 {# Child Locations #}
 {% if location.childLocations|length > 0 %}
+<div id="children" class="fa-show-section">
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_body %}
     <h2>{{ 'location.section.child_locations'|trans({}, 'locations') }} ({{ location.childLocations|length }})</h2>
@@ -202,9 +239,7 @@
                     {% include '_components/_badge.html.twig' with { variant: securityColors[child.securityLevel] ?? 'secondary', content: ('location.security.' ~ child.securityLevel)|trans({}, 'locations') } %}
                 </td>
                 <td class="text-center">
-                    <a href="{{ path('app_location_show', {id: child.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        👁 {{ 'common.view'|trans({}, 'messages') }}
-                    </a>
+                    <a href="{{ path('app_location_show', {id: child.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
                 </td>
             </tr>
             {% endfor %}
@@ -213,46 +248,12 @@
     </div>
     {% endblock %}
 {% endembed %}
+</div>
 {% endif %}
 
-{# Additional Features #}
-{% embed '_components/_card.html.twig' %}
-    {% block card_body %}
-    <h2>{{ 'location.section.features'|trans({}, 'locations') }}</h2>
-    <div class="stats-grid mt-2 grid-responsive-250">
-        <div class="stat-item">
-            <strong>
-                {% if location.active %}
-                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
-                {% else %}
-                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
-                {% endif %}
-            </strong>
-            <span>{{ 'location.field.status'|trans({}, 'locations') }}</span>
-        </div>
+{% include '_components/_fa_show_history.html.twig' with { entity: location } only %}
 
-        <div class="stat-item">
-            <strong>
-                {% if location.accessControlSystem %}
-                    {% include '_components/_badge.html.twig' with { variant: 'info', content: location.accessControlSystem } %}
-                {% else %}
-                    <span class="text-muted-color">-</span>
-                {% endif %}
-            </strong>
-            <span>{{ 'location.field.access_control'|trans({}, 'locations') }}</span>
-        </div>
-    </div>
-    {% endblock %}
-{% endembed %}
-
-{# Action Buttons #}
 <div class="button-group mt-xl">
-    <a href="{{ path('app_location_edit', {id: location.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-    </a>
-    <a href="{{ path('app_location_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
-    </a>
     <form method="post" action="{{ path('app_location_delete', {id: location.id}) }}" class="d-inline"
           data-controller="ui-actions"
           data-action="submit->ui-actions#confirm"
@@ -260,6 +261,7 @@
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ location.id) }}">
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
     </form>
+</div>
     {% endif %} {# /M-4 locations module gate #}
 </div>
 {% endblock %}

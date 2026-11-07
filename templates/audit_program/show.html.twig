@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'audit_program' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ program.name }}{% endblock %}
 
@@ -14,36 +16,53 @@
 
 {{ _fa_page_header.render({
     title: program.name,
-    subtitle: program.startDate|date('d.m.Y') ~ ' – ' ~ program.endDate|date('d.m.Y'),
+    subtitle: program.startDate|fa_date ~ ' – ' ~ program.endDate|fa_date,
     actions: is_granted('ROLE_MANAGER') ? [
-        { label: 'audit_program.action.edit'|trans, href: path('app_audit_program_edit', {_locale: app.request.locale, id: program.id}), variant: 'secondary', icon: 'pencil' }
+        { label: 'audit_program.action.edit'|trans({}, 'audit_program'), href: path('app_audit_program_edit', {_locale: app.request.locale, id: program.id}), variant: 'secondary', icon: 'pencil' }
     ] : []
 }) }}
 
-<main>
 <div class="container-fluid py-4">
+    {% set _status %}<span class="badge bg-{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'secondary') }}">{{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}</span>{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: program.effectiveOwnerName },
+            { label: 'show.status.period'|trans({}, 'messages'), value: program.startDate|fa_date ~ ' – ' ~ program.endDate|fa_date },
+            { label: 'audit_program.field.frequency'|trans({}, 'audit_program'), value: program.frequency ? ('audit_program.frequency.' ~ program.frequency)|trans({}, 'audit_program') : null },
+        ],
+        workflow: workflow_state(program),
+    }) }}
+
+    {% set _links = entity_links(program) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'audits', label: 'audit_program.show.linked_audits'|trans({}, 'audit_program') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: program } only %}
+
     <div class="row g-4">
         <div class="col-lg-8">
 
-            <div class="card mb-4">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <strong>{{ program.name }}</strong>
-                    <span class="badge bg-{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'secondary') }}">
-                        {{ ('audit_program.status.' ~ program.status)|trans }}
-                    </span>
+            <div class="card mb-4 fa-show-section" id="details">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">{{ 'show.anchor.details'|trans({}, 'messages') }}</h2>
                 </div>
                 <div class="card-body">
                     {% if program.description %}<p class="text-muted mb-3">{{ program.description }}</p>{% endif %}
                     <div class="row g-3">
                         {% if program.objectives %}
                         <div class="col-md-6">
-                            <dt class="small text-muted">{{ 'audit_program.field.objectives'|trans }}</dt>
+                            <dt class="small text-muted">{{ 'audit_program.field.objectives'|trans({}, 'audit_program') }}</dt>
                             <dd>{{ program.objectives }}</dd>
                         </div>
                         {% endif %}
                         {% if program.scope %}
                         <div class="col-md-6">
-                            <dt class="small text-muted">{{ 'audit_program.field.scope'|trans }}</dt>
+                            <dt class="small text-muted">{{ 'audit_program.field.scope'|trans({}, 'audit_program') }}</dt>
                             <dd>{{ program.scope }}</dd>
                         </div>
                         {% endif %}
@@ -51,14 +70,14 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
+            <div class="card mb-4 fa-show-section" id="audits">
                 <div class="card-header">
-                    <strong>{{ 'audit_program.show.linked_audits'|trans }}</strong>
+                    <h2 class="h6 mb-0 d-inline">{{ 'audit_program.show.linked_audits'|trans({}, 'audit_program') }}</h2>
                     <span class="badge bg-secondary ms-2">{{ program.auditCount }}</span>
                 </div>
                 <div class="card-body p-0">
                     {% if program.internalAudits is empty %}
-                        <div class="p-4 text-center text-muted small">{{ 'audit_program.show.no_audits'|trans }}</div>
+                        <div class="p-4 text-center text-muted small">{{ 'audit_program.show.no_audits'|trans({}, 'audit_program') }}</div>
                     {% else %}
                         <div class="fa-table-wrap">
                         <table class="fa-table fa-table--hover fa-table--compact">
@@ -75,7 +94,7 @@
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell"><a href="{{ path('app_audit_show', {_locale: app.request.locale, id: audit.id}) }}">{{ audit.auditNumber }}</a></td>
                                     <td class="fa-table__cell">{{ audit.title }}</td>
-                                    <td class="fa-table__cell">{{ audit.plannedDate|date('d.m.Y') }}</td>
+                                    <td class="fa-table__cell">{{ audit.plannedDate|fa_date }}</td>
                                     <td class="fa-table__cell"><span class="badge bg-secondary">{{ audit.status }}</span></td>
                                 </tr>
                                 {% endfor %}
@@ -89,32 +108,32 @@
 
         <div class="col-lg-4">
             <div class="card mb-3">
-                <div class="card-header"><strong>{{ 'audit_program.show.responsibility'|trans }}</strong></div>
+                <div class="card-header"><strong>{{ 'audit_program.show.responsibility'|trans({}, 'audit_program') }}</strong></div>
                 <div class="card-body">
                     <dl class="mb-0">
-                        <dt class="small text-muted">{{ 'audit_program.show.programme_owner'|trans }}</dt>
-                        <dd>{{ program.effectiveOwnerName ?? ('audit_program.show.not_assigned'|trans) }}</dd>
+                        <dt class="small text-muted">{{ 'audit_program.show.programme_owner'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.effectiveOwnerName ?? ('audit_program.show.not_assigned'|trans({}, 'audit_program')) }}</dd>
                         {% if program.frequency %}
-                        <dt class="small text-muted mt-2">{{ 'audit_program.field.frequency'|trans }}</dt>
-                        <dd>{{ ('audit_program.frequency.' ~ program.frequency)|trans }}</dd>
+                        <dt class="small text-muted mt-2">{{ 'audit_program.field.frequency'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ ('audit_program.frequency.' ~ program.frequency)|trans({}, 'audit_program') }}</dd>
                         {% endif %}
                     </dl>
                 </div>
             </div>
 
             <div class="card mb-3">
-                <div class="card-header"><strong>{{ 'audit_program.show.metadata'|trans }}</strong></div>
+                <div class="card-header"><strong>{{ 'audit_program.show.metadata'|trans({}, 'audit_program') }}</strong></div>
                 <div class="card-body">
                     <dl class="mb-0 small">
-                        <dt class="text-muted">{{ 'audit_program.show.created_at'|trans }}</dt>
-                        <dd>{{ program.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dt class="text-muted">{{ 'audit_program.show.created_at'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.createdAt|fa_datetime }}</dd>
                         {% if program.createdBy %}
-                        <dt class="text-muted mt-1">{{ 'audit_program.show.created_by'|trans }}</dt>
+                        <dt class="text-muted mt-1">{{ 'audit_program.show.created_by'|trans({}, 'audit_program') }}</dt>
                         <dd>{{ program.createdBy.fullName }}</dd>
                         {% endif %}
                         {% if program.updatedAt %}
-                        <dt class="text-muted mt-1">{{ 'audit_program.show.updated_at'|trans }}</dt>
-                        <dd>{{ program.updatedAt|date('d.m.Y H:i') }}</dd>
+                        <dt class="text-muted mt-1">{{ 'audit_program.show.updated_at'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.updatedAt|fa_datetime }}</dd>
                         {% endif %}
                     </dl>
                 </div>
@@ -122,25 +141,26 @@
 
             {% if is_granted('ROLE_ADMIN') %}
             <div class="card border-danger">
-                <div class="card-header"><strong class="text-danger">{{ 'audit_program.show.danger_zone'|trans }}</strong></div>
+                <div class="card-header"><strong class="text-danger">{{ 'audit_program.show.danger_zone'|trans({}, 'audit_program') }}</strong></div>
                 <div class="card-body">
                     {% if program.status != 'archived' and is_granted('ROLE_MANAGER') %}
                     <form method="post" action="{{ path('app_audit_program_archive', {_locale: app.request.locale, id: program.id}) }}" class="mb-2">
                         <input type="hidden" name="_token" value="{{ csrf_token('archive-audit-program-' ~ program.id) }}">
-                        <label for="audit-program-archive-reason" class="form-label small">{{ 'audit_program.show.archive_reason'|trans }}</label>
+                        <label for="audit-program-archive-reason" class="form-label small">{{ 'audit_program.show.archive_reason'|trans({}, 'audit_program') }}</label>
                         <textarea id="audit-program-archive-reason" name="reason" class="form-control form-control-sm mb-2" rows="2" required maxlength="1000"></textarea>
-                        <button type="submit" class="btn btn-sm btn-outline-warning w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.archive_confirm'|trans({}, 'audit_program') }}">{{ 'audit_program.action.archive'|trans }}</button>
+                        <button type="submit" class="btn btn-sm btn-outline-warning w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.archive_confirm'|trans({}, 'audit_program') }}">{{ 'audit_program.action.archive'|trans({}, 'audit_program') }}</button>
                     </form>
                     {% endif %}
                     <form method="post" action="{{ path('app_audit_program_delete', {_locale: app.request.locale, id: program.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete-audit-program-' ~ program.id) }}">
-                        <button type="submit" class="btn btn-sm btn-danger w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.delete_confirm'|trans({}, 'audit_program') }}" data-ui-actions-tone-param="danger">{{ 'audit_program.action.delete'|trans }}</button>
+                        <button type="submit" class="btn btn-sm btn-danger w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.delete_confirm'|trans({}, 'audit_program') }}" data-ui-actions-tone-param="danger">{{ 'audit_program.action.delete'|trans({}, 'audit_program') }}</button>
                     </form>
                 </div>
             </div>
             {% endif %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: program, lifecycle: 'audit-program' } only %}
 </div>
-</main>
 {% endblock %}
