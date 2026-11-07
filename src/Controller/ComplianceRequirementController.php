@@ -23,6 +23,7 @@ use App\Service\TenantContext;
 use App\Service\CrossFrameworkLookupService;
 use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
+use App\Service\Compliance\Fulfillment\RequirementEvidence;
 use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,6 +53,7 @@ class ComplianceRequirementController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly PersonRepository $personRepository,
         private readonly TranslatorInterface $translator,
+        private readonly RequirementEvidence $requirementEvidence,
     ) {}
 
     /** A requirement uploaded by another tenant does not exist for this tenant (SUPER_ADMIN sees all). */
@@ -271,6 +273,10 @@ class ComplianceRequirementController extends AbstractController
             'sub_requirement_fulfillments' => $subRequirementFulfillments,
             'cross_framework_equivalents' => $this->crossFrameworkLookupService->findEquivalentsGroupedByFramework($complianceRequirement),
             'identity_control' => $tenant instanceof Tenant ? $this->fulfillmentRuleEngine->identityControl($complianceRequirement, $tenant) : null,
+            // The organisation's controls and evidence only (a global requirement's
+            // mappedControls / evidenceDocuments hold every organisation's rows).
+            'rule_controls' => $tenant instanceof Tenant ? $this->fulfillmentRuleEngine->controlsFor($complianceRequirement, $tenant) : [],
+            'evidence' => $tenant instanceof Tenant ? $this->requirementEvidence->for($complianceRequirement, $tenant, $fulfillment) : [],
             'is_mris' => $isMris,
             'mris' => $mrisData,
             // Users of the current organisation only — never all users of

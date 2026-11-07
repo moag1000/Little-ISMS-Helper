@@ -26,7 +26,11 @@ use Symfony\Contracts\Service\ResetInterface;
  *                 `iso_controls` list and explicit control mappings. Controls the
  *                 SoA excludes drop out; the Annex-A requirement takes its
  *                 applicability from its control (one SoA truth).
- *  3. mapping   — approved cross-framework mappings to requirements the
+ *  3. records   — the organisation's records behind a clause or article, through
+ *                 the compliance wizard's data checks ({@see RecordCheckRule}):
+ *                 ISO 27001 7.2 from training records, 9.3 from management
+ *                 reviews, DORA Art. 28 from the supplier register, …
+ *  4. mapping   — approved cross-framework mappings to requirements the
  *                 organisation already fulfils (effective value × mapping %),
  *                 the best one counts. This is inheritance, live.
  * No rule → null: the requirement is assessed by hand.
@@ -40,6 +44,7 @@ class FulfillmentRuleEngine implements ResetInterface
     public const KIND_CONTROLS = 'controls';
     public const KIND_MAPPING = 'mapping';
     public const KIND_MATURITY = 'maturity';
+    public const KIND_RECORDS = 'records';
 
     private const ISO27001 = 'ISO27001';
     private const MAX_MAPPING_DEPTH = 2;
@@ -51,6 +56,7 @@ class FulfillmentRuleEngine implements ResetInterface
         private readonly ControlRepository $controlRepository,
         private readonly ComplianceMappingRepository $mappingRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly ?RecordCheckRule $recordRule = null,
     ) {
     }
 
@@ -141,10 +147,11 @@ class FulfillmentRuleEngine implements ResetInterface
         $this->controlsByTenant = [];
     }
 
-    /** Drops the cached control map, e.g. after controls were created in this request. */
+    /** Drops the cached control map and record results, e.g. after controls were created in this request. */
     public function forgetTenant(Tenant $tenant): void
     {
         unset($this->controlsByTenant[(int) $tenant->getId()]);
+        $this->recordRule?->forgetTenant($tenant);
     }
 
     /**
@@ -165,6 +172,11 @@ class FulfillmentRuleEngine implements ResetInterface
                 return $fromControls;
             }
             $excludedOnly = $fromControls;
+        }
+
+        $fromRecords = $excludedOnly?->applicable === false ? null : $this->recordRule?->derive($requirement, $tenant);
+        if ($fromRecords instanceof FulfillmentDerivation) {
+            return $fromRecords;
         }
 
         $visiting[(int) $requirement->getId()] = true;

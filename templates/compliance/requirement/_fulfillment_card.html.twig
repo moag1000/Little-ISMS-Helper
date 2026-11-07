@@ -1,7 +1,7 @@
 {#
  # Fulfilment of one requirement (Paket 3: fulfilment = rule over data).
- # Shows the effective value, where it comes from ("why": controls, mappings,
- # maturity), an override with reason and review date, and the edit form:
+ # Shows the effective value, where it comes from ("why": controls, records,
+ # mappings, maturity), an override with reason and review date, and the edit form:
  # override for a requirement a rule computes, hand value for one without.
  #
  # Vars: requirement, fulfillment, is_inherited, can_edit, identity_control,
@@ -74,6 +74,9 @@
                     {% elseif row.type == 'mapping' %}
                         <a href="{{ path('app_compliance_requirement_show', {id: row.id}) }}"><code>{{ row.framework }} {{ row.ref }}</code> {{ row.label }}</a>
                         <span class="text-nowrap" title="{{ 'compliance.fulfillment_rule.why.mapping_formula'|trans({'%source%': row.source_value, '%mapping%': row.mapping_percentage}, 'compliance') }}">{{ row.value }} %</span>
+                    {% elseif row.type == 'record' %}
+                        {% if row.route %}<a href="{{ path(row.route) }}">{% else %}<span>{% endif %}<code>{{ row.ref }}</code> {{ row.label|trans({}, row.domain) }}{% if row.route %}</a>{% else %}</span>{% endif %}
+                        <span class="text-nowrap">{{ row.value }} %</span>
                     {% elseif row.type == 'maturity' %}
                         <span>{{ 'compliance.fulfillment_rule.why.maturity_level'|trans({'%level%': row.level}, 'compliance') }}</span>
                         <span class="text-nowrap">{{ row.value }} %</span>

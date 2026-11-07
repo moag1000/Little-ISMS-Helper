@@ -199,9 +199,13 @@ final class IsoFrameworkCategoryProvider
                     'planning_changes' => [
                         'name' => 'wizard.check.iso_6_3_changes',
                         'description' => 'wizard.check.iso_6_3_changes_desc',
-                        'type' => 'manual',
+                        // Planned changes are change requests (Cl. 6.3 "changes … in a planned manner").
+                        'type' => 'entity_presence',
+                        'entity' => 'change_request',
+                        'module' => 'change_requests',
                         'priority' => 'medium',
                         'clause' => '6.3',
+                        'route' => 'app_change_request_index',
                     ],
                 ],
             ],
@@ -358,9 +362,13 @@ final class IsoFrameworkCategoryProvider
                     'continual_improvement' => [
                         'name' => 'wizard.check.iso_10_2_improvement',
                         'description' => 'wizard.check.iso_10_2_improvement_desc',
-                        'type' => 'manual',
+                        // Cl. 10.2: nonconformities are answered by corrective actions.
+                        'type' => 'entity_presence',
+                        'entity' => 'corrective_action',
+                        'module' => 'corrective_actions',
                         'priority' => 'medium',
                         'clause' => '10.2',
+                        'route' => 'app_corrective_action_index',
                     ],
                 ],
             ],

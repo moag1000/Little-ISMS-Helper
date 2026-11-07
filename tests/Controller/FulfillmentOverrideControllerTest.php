@@ -141,6 +141,17 @@ final class FulfillmentOverrideControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function requirementPageShowsTheOrganisationsControlsAndEvidence(): void
+    {
+        $this->client->loginUser($this->manager);
+        $this->client->request('GET', '/en/compliance/requirement/' . $this->requirement->getId());
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', 'Controls behind it (1)');
+        self::assertSelectorTextContains('#evidence', 'No evidence yet.');
+    }
+
+    #[Test]
     public function auditorsReadTheListButCannotOverride(): void
     {
         $this->client->loginUser($this->auditor);

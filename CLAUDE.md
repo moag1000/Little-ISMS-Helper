@@ -248,7 +248,11 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `Compliance\Fulfillment\FulfillmentDerivationService` - the ONLY writer of a requirement fulfilment's
   percentage/status: `FulfillmentRuleEngine` derives it from the tenant's controls, mappings and maturity rows;
   hand values beside a rule are overrides (`override()` with reason + review date), `setManual()` only without
-  rule. `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
+  rule. Rule order: maturity → controls → records (`RecordCheckRule`: the compliance wizard's data checks by
+  `clause`/`article`, so a new wizard check with a clause feeds fulfilment) → mappings. Evidence behind a
+  requirement comes only from `RequirementEvidence` (requirement + fulfilment + controls, tenant-filtered; exports use
+  `Export\EvidenceDocuments`) — never `getEvidenceDocuments()`/`getMappedControls()` of a global requirement.
+  `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
   Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin

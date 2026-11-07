@@ -623,6 +623,15 @@ compliance:
         aria:
             current: 'Current maturity'
             target: 'Target maturity'
+        controls_title: 'Controls behind it (%count%)'
+        evidence:
+            anchor: 'Evidence'
+            title: 'Evidence (%count%)'
+            empty: 'No evidence yet.'
+            source:
+                requirement: 'On the requirement'
+                fulfillment: 'On the fulfilment'
+                control: 'Via control %ref%'
         mapped_col:
             control_id: 'Control ID'
             name: 'Name'
@@ -1187,6 +1196,7 @@ compliance:
         source:
             controls: 'From controls'
             mapping: 'Via mapping'
+            records: 'From records'
             maturity: 'From maturity'
             manual: 'Assessed by hand'
             override_manual: 'Overridden'
@@ -1196,6 +1206,7 @@ compliance:
         why:
             controls: '{1} From 1 control|]1,Inf[ From %count% controls'
             mapping: '{1} Via 1 mapping|]1,Inf[ Via %count% mappings, the best one counts'
+            records: '{1} From 1 check of the records|]1,Inf[ From %count% checks of the records, averaged'
             maturity: 'From the maturity level'
             excluded: 'excluded'
             mapping_formula: '%source% % × mapping %mapping% %'

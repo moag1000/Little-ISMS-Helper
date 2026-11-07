@@ -13,6 +13,7 @@ use App\Entity\Tenant;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Service\PdfExportService;
 use DateTimeImmutable;
 use App\Util\CsvSanitizer;
@@ -33,7 +34,9 @@ use App\Util\CsvSanitizer;
  *   {code}/{reqId}_{slug}/            — one folder per requirement
  *       README.txt                    — requirement text + control mapping +
  *                                       implementation status
- *       {N}_{original_filename}       — each linked evidence document
+ *       {N}_{original_filename}       — each evidence document of the
+ *                                       organisation: on the requirement, its
+ *                                       fulfilment and the controls behind it
  *
  * SHA-256 of the final ZIP body is returned so the caller can record it in
  * the audit log (makes the export tamper-evident).
@@ -44,6 +47,8 @@ final class AuditPackageExporter
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly PdfExportService $pdfExportService,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly EvidenceDocuments $evidence,
+        private readonly FulfillmentRuleEngine $ruleEngine,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?IsmsRegisterEntryRepository $registerEntries = null,
     ) {
@@ -82,15 +87,17 @@ final class AuditPackageExporter
         ];
         $documentCount = 0;
         $missingCount = 0;
+        $evidenceCounts = [];
 
         foreach ($requirements as $req) {
+            $evidence = $this->evidence->forRequirement($req, $tenant);
+            $evidenceCounts[(int) $req->getId()] = count($evidence);
             $reqFolder = $rootDir . '/' . $this->requirementFolderName($req);
-            $readme = $this->buildReadme($req, $percentages[$req->getId()] ?? 0);
+            $readme = $this->buildReadme($req, $tenant, $evidence, $percentages[$req->getId()] ?? 0);
             $zip->addFromString($reqFolder . '/README.txt', $readme);
 
             $files = [];
-            $evidence = $req->getEvidenceDocuments();
-            if ($evidence->count() === 0) {
+            if ($evidence === []) {
                 $missingCount++;
             }
 
@@ -130,6 +137,7 @@ final class AuditPackageExporter
                 'tenant' => $tenant,
                 'requirements' => $requirements,
                 'fulfillment_percentages' => $percentages,
+                'evidence_counts' => $evidenceCounts,
                 'generated_at' => new DateTimeImmutable(),
                 'document_count' => $documentCount,
                 'missing_count' => $missingCount,
@@ -211,7 +219,10 @@ final class AuditPackageExporter
         return $zipName;
     }
 
-    private function buildReadme(ComplianceRequirement $req, int $fulfillmentPct): string
+    /**
+     * @param list<Document> $evidence
+     */
+    private function buildReadme(ComplianceRequirement $req, Tenant $tenant, array $evidence, int $fulfillmentPct): string
     {
         $lines = [
             'Requirement: ' . (string) $req->getRequirementId(),
@@ -226,10 +237,11 @@ final class AuditPackageExporter
             'Mapped Controls:',
         ];
 
-        if ($req->getMappedControls()->count() === 0) {
+        $controls = $this->ruleEngine->controlsFor($req, $tenant);
+        if ($controls === []) {
             $lines[] = '  (none)';
         } else {
-            foreach ($req->getMappedControls() as $control) {
+            foreach ($controls as $control) {
                 $lines[] = sprintf(
                     '  - %s — %s (status: %s, %d%%)',
                     (string) $control->getControlId(),
@@ -242,10 +254,10 @@ final class AuditPackageExporter
 
         $lines[] = '';
         $lines[] = 'Evidence Documents:';
-        if ($req->getEvidenceDocuments()->count() === 0) {
+        if ($evidence === []) {
             $lines[] = '  (none)';
         } else {
-            foreach ($req->getEvidenceDocuments() as $doc) {
+            foreach ($evidence as $doc) {
                 $lines[] = '  - ' . (string) ($doc->getOriginalFilename() ?? 'document-' . $doc->getId());
             }
         }

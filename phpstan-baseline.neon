@@ -2127,12 +2127,6 @@ parameters:
 			path: src/Service/Export/CertificationBundleExporter.php
 
 		-
-			message: '#^Instanceof between App\\Entity\\WorkflowInstance and App\\Entity\\WorkflowInstance will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/Service/Export/CertificationBundleExporter.php
-
-		-
 			message: '#^Offset ''document_count'' on array\{path\: string, filename\: string, sha256\: string, document_count\: int, frameworks\: list\<string\>, snapshot_id\?\: int\|null, as_of_date\?\: string\|null\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
@@ -2147,12 +2141,6 @@ parameters:
 		-
 			message: '#^Property App\\Service\\Export\\CertificationBundleExporter\:\:\$tenantContext is never read, only written\.$#'
 			identifier: property.onlyWritten
-			count: 1
-			path: src/Service/Export/CertificationBundleExporter.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between lowercase\-string&non\-falsy\-string and '''' will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: src/Service/Export/CertificationBundleExporter.php
 

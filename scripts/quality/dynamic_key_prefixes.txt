@@ -80,6 +80,7 @@ compliance.mapping.hub.tabs	1
 compliance.mapping.hub.views	1
 compliance.mapping.rel_type	1
 compliance.maturity.label	1
+compliance.requirement.evidence.source	1
 compliance.severity	1
 compliance_import	1
 compliance_import.history.decision	1

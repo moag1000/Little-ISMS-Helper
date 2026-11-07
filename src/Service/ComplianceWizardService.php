@@ -13,6 +13,7 @@ use App\Service\ComplianceWizard\CategoryProvider\OtherFrameworkCategoryProvider
 use App\Service\ComplianceWizard\CoverageCheckService;
 use App\Service\ComplianceWizard\EntityPresenceChecker;
 use App\Service\ComplianceWizard\DocumentReviewCheck;
+use App\Service\ComplianceWizard\WizardCheckSource;
 use App\Service\Catalog\FrameworkCode;
 
 /**
@@ -36,7 +37,7 @@ use App\Service\Catalog\FrameworkCode;
  * - BSI Grundschutz++ (BSI-Standard 300-1)
  * - GDPR/DSGVO (processing activities, DPIA, data breaches)
  */
-final class ComplianceWizardService
+final class ComplianceWizardService implements WizardCheckSource
 {
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfigurationService,
@@ -74,7 +75,26 @@ final class ComplianceWizardService
     {
         $activeModules = $this->moduleConfigurationService->getActiveModules();
 
-        $wizards = [
+        // Filter wizards by required modules
+        return array_filter($this->getWizardDefinitions(), function ($wizard) use ($activeModules) {
+            foreach ($wizard['required_modules'] as $requiredModule) {
+                if (!in_array($requiredModule, $activeModules)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Every wizard with its categories and checks, before module filtering —
+     * the clause/article catalogue the fulfilment rule reads (Paket 3).
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function getWizardDefinitions(): array
+    {
+        return [
             'iso27001' => [
                 'code' => 'ISO27001',
                 'name' => 'ISO 27001:2022 Readiness',
@@ -306,16 +326,6 @@ final class ComplianceWizardService
                 'categories' => $this->euProvider->getCraCategories(),
             ],
         ];
-
-        // Filter wizards by required modules
-        return array_filter($wizards, function ($wizard) use ($activeModules) {
-            foreach ($wizard['required_modules'] as $requiredModule) {
-                if (!in_array($requiredModule, $activeModules)) {
-                    return false;
-                }
-            }
-            return true;
-        });
     }
 
     /**
@@ -575,8 +585,43 @@ final class ComplianceWizardService
     private function runCheck(array $check, ?Tenant $tenant, string $wizardKey = '', string $checkKey = ''): array
     {
         $type = $check['type'] ?? 'manual';
+        $result = $this->dispatchCheck($check, $tenant) ?? $this->runManualCheck($check, $tenant, $wizardKey, $checkKey);
 
-        $result = match ($type) {
+        return [
+            'name' => $check['name'] ?? $type,
+            'description' => $check['description'] ?? '',
+            'translation_domain' => $check['translation_domain'] ?? null,
+            'score' => $result['score'],
+            'status' => $this->coverageCheckService->getStatusFromScore($result['score']),
+            'details' => $result['details'],
+            'gap' => $result['gap'] ?? null,
+            'route' => $check['route'] ?? null,
+            'module' => $check['module'] ?? null,
+            'manual_confirmable' => ($check['type'] ?? 'manual') === 'manual',
+            'check_key' => $checkKey,
+        ];
+    }
+
+    /**
+     * A check that reads the organisation's records, or null for a manual one.
+     * Shared with the fulfilment rule, which turns these results into the
+     * fulfilment of clause requirements (ISO 27001 7.2 from training records, …).
+     *
+     * @param array<string, mixed> $check
+     * @return array<string, mixed>|null
+     */
+    public function runDataCheck(array $check, Tenant $tenant): ?array
+    {
+        return $this->dispatchCheck($check, $tenant);
+    }
+
+    /**
+     * @param array<string, mixed> $check
+     * @return array<string, mixed>|null
+     */
+    private function dispatchCheck(array $check, ?Tenant $tenant): ?array
+    {
+        return match ($check['type'] ?? 'manual') {
             'control_coverage' => $this->coverageCheckService->checkControlCoverage($check, $tenant),
             'maturity_coverage' => $this->checkMaturityCoverage($check, $tenant),
             'risk_coverage' => $this->coverageCheckService->checkRiskCoverage($check, $tenant),
@@ -593,22 +638,8 @@ final class ComplianceWizardService
             'dpia_coverage' => $this->coverageCheckService->checkDpiaCoverage($check, $tenant),
             'entity_presence' => $this->entityPresenceChecker->check($check, $tenant),
             'policy_wizard' => $this->coverageCheckService->dispatchPolicyWizardCheck($check, $tenant),
-            default => $this->runManualCheck($check, $tenant, $wizardKey, $checkKey),
+            default => null,
         };
-
-        return [
-            'name' => $check['name'] ?? $type,
-            'description' => $check['description'] ?? '',
-            'translation_domain' => $check['translation_domain'] ?? null,
-            'score' => $result['score'],
-            'status' => $this->coverageCheckService->getStatusFromScore($result['score']),
-            'details' => $result['details'],
-            'gap' => $result['gap'] ?? null,
-            'route' => $check['route'] ?? null,
-            'module' => $check['module'] ?? null,
-            'manual_confirmable' => ($check['type'] ?? 'manual') === 'manual',
-            'check_key' => $checkKey,
-        ];
     }
 
     /**
