@@ -231,8 +231,11 @@ class BCMControllerTest extends WebTestCase
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        // Clean up
-        $this->entityManager->remove($criticalProcess);
+        // Clean up (the redirect reboots the kernel and detaches the entity)
+        $stale = $this->entityManager->find(BusinessProcess::class, $criticalProcess->getId());
+        if ($stale !== null) {
+            $this->entityManager->remove($stale);
+        }
         $this->entityManager->flush();
     }
 
@@ -297,8 +300,11 @@ class BCMControllerTest extends WebTestCase
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        // Clean up
-        $this->entityManager->remove($process2);
+        // Clean up (the redirect reboots the kernel and detaches the entity)
+        $stale = $this->entityManager->find(BusinessProcess::class, $process2->getId());
+        if ($stale !== null) {
+            $this->entityManager->remove($stale);
+        }
         $this->entityManager->flush();
     }
 
@@ -343,8 +349,11 @@ class BCMControllerTest extends WebTestCase
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        // Clean up
-        $this->entityManager->remove($criticalProcess);
+        // Clean up (the redirect reboots the kernel and detaches the entity)
+        $stale = $this->entityManager->find(BusinessProcess::class, $criticalProcess->getId());
+        if ($stale !== null) {
+            $this->entityManager->remove($stale);
+        }
         $this->entityManager->flush();
     }
 
