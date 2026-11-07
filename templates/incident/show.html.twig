@@ -505,7 +505,7 @@
                                 <strong>{{ process.name }}</strong>
                                 {% set crit_class = pill_tone_severity(process.criticality|default('')) %}
                                 {% include '_components/_badge.html.twig' with { variant: crit_class, content: process.criticality|upper } %}
-                                <small>RTO: {{ process.rto }}h | {{ 'incident.bcm.owner'|trans({}, 'incident') }}: {{ process.processOwner }}</small>
+                                <small>RTO: {{ process.rto }}h | {{ 'incident.bcm.owner'|trans({}, 'incident') }}: {{ process.effectiveProcessOwner ?? '—' }}</small>
                             </div>
                         {% endfor %}
                     </div>

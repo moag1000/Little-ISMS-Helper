@@ -149,7 +149,7 @@ final class DoraRoiCsvExporter
                 (string) ($asset->getConfidentialityValue() ?? 0),// 0050
                 (string) ($asset->getIntegrityValue() ?? 0),      // 0060
                 (string) ($asset->getAvailabilityValue() ?? 0),   // 0070
-                (string) ($asset->getOwner() ?? ''),              // 0080
+                (string) ($asset->getEffectiveOwner() ?? ''),              // 0080
                 (string) ($asset->getLocation() ?? ''),           // 0090
                 (string) ($asset->getStatus() ?? 'active'),       // 0100
             ];

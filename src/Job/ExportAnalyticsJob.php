@@ -145,7 +145,7 @@ final class ExportAnalyticsJob implements AsyncJobInterface
                 $asset->getName(),
                 $asset->getAssetType(),
                 $asset->getConfidentialityValue() . '/' . $asset->getIntegrityValue() . '/' . $asset->getAvailabilityValue(),
-                $asset->getOwner() ?? 'N/A',
+                $asset->getEffectiveOwner() ?? 'N/A',
                 $asset->getCreatedAt()?->format('Y-m-d'),
             ];
         }

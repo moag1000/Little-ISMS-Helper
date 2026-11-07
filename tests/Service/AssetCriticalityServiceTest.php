@@ -322,6 +322,7 @@ class AssetCriticalityServiceTest extends TestCase
         $asset->method('getIntegrityValue')->willReturn($integ);
         $asset->method('getAvailabilityValue')->willReturn($avail);
         $asset->method('getOwner')->willReturn($owner);
+        $asset->method('getEffectiveOwner')->willReturn($owner);
         return $asset;
     }
 

@@ -103,7 +103,7 @@ final class IndustryBaselineApplier
                 ->setTenant($tenant)
                 ->setName($name)
                 ->setAssetType((string) ($data['asset_type'] ?? 'hardware'))
-                ->setOwner((string) ($data['owner'] ?? 'ISMS-Team'))
+                ->setOwner(isset($data['owner']) && trim((string) $data['owner']) !== '' ? (string) $data['owner'] : null)
                 ->setConfidentialityValue((int) ($data['confidentiality'] ?? 3))
                 ->setIntegrityValue((int) ($data['integrity'] ?? 3))
                 ->setAvailabilityValue((int) ($data['availability'] ?? 3));

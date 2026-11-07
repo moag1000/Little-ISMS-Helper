@@ -221,7 +221,7 @@ class IncidentBCMImpactService
         return [
             'process_id' => $businessProcess->getId(),
             'process_name' => $businessProcess->getName(),
-            'process_owner' => $businessProcess->getProcessOwner(),
+            'process_owner' => $businessProcess->getEffectiveProcessOwner(),
             'criticality' => $businessProcess->getCriticality(),
 
             'bia_data' => [

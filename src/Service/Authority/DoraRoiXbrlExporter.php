@@ -505,7 +505,7 @@ final class DoraRoiXbrlExporter
             // B_03.02.0080: Asset owner — free text owner-name (legacy field).
             $ownerEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.02.0080');
             $ownerEl->setAttribute('contextRef', 'ctx_period');
-            $ownerEl->textContent = (string) ($asset->getOwner() ?? '');
+            $ownerEl->textContent = (string) ($asset->getEffectiveOwner() ?? '');
             $assetEl->appendChild($ownerEl);
 
             // B_03.02.0090: Asset location — physical-location relation falls

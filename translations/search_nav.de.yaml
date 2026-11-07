@@ -126,6 +126,9 @@ search_nav:
     admin_data_repair_index:
         label: 'Daten-Reparatur'
         description: 'Orphans zuweisen, Tenant-Mismatches fixen, Duplikate bereinigen'
+    admin_legacy_owner_index:
+        label: 'Freitext-Verantwortliche'
+        description: 'Verantwortliche ohne Benutzer oder Person zuordnen'
     admin_queue_status:
         label: 'Queue-Status'
         description: 'Worker-Health und ausstehende Messenger-Jobs'

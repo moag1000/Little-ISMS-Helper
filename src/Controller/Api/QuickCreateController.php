@@ -229,7 +229,10 @@ final class QuickCreateController extends AbstractController
         $p = new BusinessProcess();
         $p->setName($name);
         $p->setCriticality((string) ($payload['criticality'] ?? 'medium'));
-        $p->setProcessOwner((string) ($payload['processOwner'] ?? 'TBD'));
+        // No placeholder owner: a 'TBD' text would pose as an owner and land in the
+        // legacy-owner report; the process owner is picked in the edit form.
+        $owner = trim((string) ($payload['processOwner'] ?? ''));
+        $p->setProcessOwner($owner !== '' ? $owner : null);
         $p->setRto((int) ($payload['rto'] ?? 24));
         $p->setRpo((int) ($payload['rpo'] ?? 24));
         $p->setMtpd((int) ($payload['mtpd'] ?? 48));

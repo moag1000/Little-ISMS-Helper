@@ -109,6 +109,7 @@ admin:
             system_health: { label: 'System-Health', desc: 'Service-Status, Disk, Cache, Logs' }
             modules: { label: 'Module', desc: 'Aktive ISMS-Module verwalten' }
             data_repair: { label: 'Daten-Reparatur', desc: 'Orphans, Organisations-Mismatches, Schema-Reconcile' }
+            legacy_owners: { label: 'Freitext-Verantwortliche', desc: 'Verantwortliche ohne Benutzer oder Person zuordnen' }
             quick_fix_settings: { label: 'Quick-Fix-Settings', desc: 'Auto-Fallback-UI Konfiguration' }
             kpi_threshold: { label: 'KPI-Schwellen', desc: 'Ampel-Grenzen für Dashboard-KPIs' }
             fte_tracking: { label: 'FTE-Tracking', desc: 'Aufwands-Einsparungen durch Automatisierung messen und berichten' }
@@ -532,6 +533,55 @@ admin:
             legend_title: 'Hinweis'
             legend: 'Coverage = Anteil der Source-Items mit ≥1 published/approved-Mapping. Konfidenz-Verteilung zeigt wie sicher die Mappings sind.'
 
+    legacy_owners:
+        title: 'Freitext-Verantwortliche'
+        subtitle: 'Verantwortliche, die nur als Freitext erfasst sind, einem Benutzer oder einer Person zuordnen. Erst dann erreichen sie Benachrichtigungen, Mein Tag und Freigaben.'
+        list: 'Offene Einträge'
+        empty: 'Keine offenen Freitext-Verantwortlichen vorhanden.'
+        apply: 'Übernehmen'
+        apply_all: 'Alle Vorschläge übernehmen (%count%)'
+        apply_all_confirm: '%count% Datensätze dem vorgeschlagenen Benutzer bzw. der Person zuordnen? Der Freitext bleibt erhalten.'
+        as_person: 'Als Person erfassen'
+        person_confirm: '„%name%“ als Person anlegen und zuordnen? Eine vorhandene Person mit genau diesem Namen wird wiederverwendet.'
+        edit: 'Im Formular zuordnen'
+        tile_hint: 'Freitext ohne Benutzer oder Person'
+        filter:
+            type: 'Datensatztyp'
+            match: 'Vorschlag'
+            all: 'Alle'
+            suggested: 'Mit Vorschlag'
+            none: 'Ohne Vorschlag'
+        summary:
+            suggested: '%count% mit Vorschlag'
+        col:
+            record: 'Datensatz'
+            text: 'Freitext'
+            tenant: 'Organisation'
+            suggestion: 'Vorschlag'
+            actions: 'Aktionen'
+        kind:
+            user: 'Benutzer'
+            person: 'Person'
+        flash:
+            applied: 'Zugeordnet.'
+            applied_all: '%count% Datensätze zugeordnet.'
+            person: '„%name%“ als Person zugeordnet.'
+            not_open: 'Eintrag ist bereits zugeordnet oder nicht mehr vorhanden.'
+        type:
+            asset: 'Asset – Eigentümer'
+            control: 'Control – Verantwortlich'
+            business_process: 'Geschäftsprozess – Prozessverantwortlich'
+            bc_plan: 'BC-Plan – Planverantwortlich'
+            bc_exercise: 'BC-Übung – Moderation'
+            incident: 'Vorfall – Gemeldet von'
+            internal_audit: 'Audit – Leitender Auditor'
+            training: 'Schulung – Trainer'
+            objective: 'ISMS-Ziel – Verantwortlich'
+            supplier: 'Lieferant – Ansprechpartner'
+            interested_party: 'Interessierte Partei – Ansprechpartner'
+            location: 'Standort – Verantwortlich'
+            vulnerability: 'Schwachstelle – Verantwortlich'
+            patch: 'Patch – Verantwortlich'
     sample_data:
         framework_not_found: 'Framework %code% nicht gefunden – nichts zu entfernen.'
         framework_removed: '%code% entfernt: Framework und %count% Anforderungen.'

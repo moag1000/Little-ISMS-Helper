@@ -29,7 +29,7 @@
             <dt class="col-sm-4">{{ 'incident.field.detected_at'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">{{ incident.detectedAt|fa_datetime }}</dd>
 
-            {% if incident.reportedBy %}
+            {% if incident.effectiveReportedBy %}
             <dt class="col-sm-4">{{ 'incident.field.reported_by'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">{{ incident.effectiveReportedBy }}</dd>
             {% endif %}

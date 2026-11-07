@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Service\OwnerResolver;
 use Symfony\Component\Console\Attribute\Option;
 use DateTime;
 use DateTimeImmutable;
@@ -117,8 +118,9 @@ class SendNotificationsCommand
         foreach ($audits as $audit) {
             $recipients = [];
 
-            if ($audit->getLeadAuditor()) {
-                $recipients[] = $audit->getLeadAuditor();
+            $leadAuditor = OwnerResolver::recipient($audit->getLeadAuditorUser(), $audit->getLeadAuditorPerson(), $audit->getLeadAuditor());
+            if ($leadAuditor !== null) {
+                $recipients[] = $leadAuditor;
             }
 
             foreach ($audit->getAuditTeam() as $member) {
@@ -166,8 +168,9 @@ class SendNotificationsCommand
             } else {
                 // For non-mandatory, send to participants + trainer
                 $recipients = $training->getParticipants()->toArray();
-                if ($training->getTrainer()) {
-                    $recipients[] = $training->getTrainer();
+                $trainer = OwnerResolver::recipient($training->getTrainerUser(), $training->getTrainerPerson(), $training->getTrainer());
+                if ($trainer !== null) {
+                    $recipients[] = $trainer;
                 }
             }
 
@@ -257,8 +260,9 @@ class SendNotificationsCommand
         foreach ($controls as $control) {
             $recipients = [];
 
-            if ($control->getResponsiblePerson()) {
-                $recipients[] = $control->getResponsiblePerson();
+            $responsible = OwnerResolver::recipient($control->getResponsiblePersonUser(), $control->getResponsiblePersonRef(), $control->getResponsiblePerson());
+            if ($responsible !== null) {
+                $recipients[] = $responsible;
             }
 
             if ($recipients !== []) {

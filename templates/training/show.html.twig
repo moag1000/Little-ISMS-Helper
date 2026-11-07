@@ -42,7 +42,7 @@
         facts: [
             { label: 'training.scheduled_date'|trans({}, 'training'), value: training.scheduledDate ? training.scheduledDate|fa_date : null },
             { label: 'training.type_label'|trans({}, 'training'), value: training.trainingType ? ('training.type.' ~ training.trainingType)|trans({}, 'training') : null },
-            { label: 'training.trainer'|trans({}, 'training'), value: training.trainer ? training.effectiveTrainer : null },
+            { label: 'training.trainer'|trans({}, 'training'), value: training.effectiveTrainer },
         ],
         workflow: workflow_state(training),
     }) }}
@@ -130,7 +130,7 @@
                     </div>
                     {% endif %}
 
-                    {% if training.trainer %}
+                    {% if training.effectiveTrainer %}
                     <div class="mb-3">
                         <div class="text-muted mb-2 fw-semibold">
                             <i class="fa-icon fa-icon--role" aria-hidden="true"></i> {{ 'training.trainer'|trans({}, 'training')}}
