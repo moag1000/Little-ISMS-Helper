@@ -222,6 +222,8 @@ final class AuditLogSubscriber
             'IdentityProvider',
             // ISO 27001 Cl. 7.5.3 — vulnerability tracking is a documented information asset
             'Vulnerability',
+            // ISO 27001 4.1/5.3/7.2/7.4 — norm registers (Paket 9)
+            'IsmsRegisterEntry',
         ];
 
         return in_array($className, $auditedEntities);

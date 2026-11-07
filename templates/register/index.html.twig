@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% set _t = 'register.type.' ~ type.value %}
+{% block title %}{{ (_t ~ '.title')|trans({}, 'register') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'register.overview.title'|trans({}, 'register'), url: path('app_register_index') },
+            { label: (_t ~ '.title')|trans({}, 'register') }
+        ]
+    } %}
+
+    {% set _actions = [] %}
+    {% if is_granted('ROLE_MANAGER') %}
+        {% set _actions = _actions|merge([{ label: (_t ~ '.new')|trans({}, 'register'), variant: 'primary', icon: 'plus', href: path('app_register_new', {type: type.value}) }]) %}
+    {% endif %}
+    {{ _fa_page_header.render({
+        title: (_t ~ '.title')|trans({}, 'register'),
+        subtitle: (_t ~ '.purpose')|trans({}, 'register'),
+        actions: _actions
+    }) }}
+
+    {% if proposals is not empty %}
+        {% include 'register/_proposals.html.twig' with { type: type, proposals: proposals } only %}
+    {% endif %}
+
+    {% if scope is not empty %}
+        <section class="fa-show-section mb-4" aria-labelledby="register-scope-title">
+            <h2 id="register-scope-title" class="h6 mb-2">{{ 'register.scope.title'|trans({}, 'register') }}</h2>
+            {% include 'register/_scope_summary.html.twig' with { scope: scope } only %}
+        </section>
+    {% endif %}
+
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_register_list', {type: type.value}),
+        filter_keys: ['archived'],
+        list_title: (_t ~ '.title')|trans({}, 'register'),
+        empty: {
+            mood: 'thinking',
+            title: (_t ~ '.empty')|trans({}, 'register'),
+            text: (_t ~ '.purpose')|trans({}, 'register'),
+            norm_ref: type.normReference,
+            actions: is_granted('ROLE_MANAGER') ? [
+                { label: (_t ~ '.new')|trans({}, 'register'), variant: 'primary', icon: 'plus', href: path('app_register_new', {type: type.value}) }
+            ] : [],
+        },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-3">
+                <label for="register-archived" class="form-label">{{ 'register.filter.state'|trans({}, 'register') }}</label>
+                <select class="form-select fa-cyber-input__field" id="register-archived" name="archived" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="" {{ not archived ? 'selected' : '' }}>{{ 'register.filter.active'|trans({}, 'register') }}</option>
+                    <option value="1" {{ archived ? 'selected' : '' }}>{{ 'register.filter.archived'|trans({}, 'register') }}</option>
+                </select>
+            </div>
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ ('register.type.' ~ type.value ~ '.field.title')|trans({}, 'register') }}</th>
+                        {% if type.uses('category') %}<th scope="col">{{ type.labelKey('category')|trans({}, 'register') }}</th>{% endif %}
+                        {% if type.uses('rating') %}<th scope="col">{{ type.labelKey('rating')|trans({}, 'register') }}</th>{% endif %}
+                        {% if type.uses('reference') %}<th scope="col">{{ type.labelKey('reference')|trans({}, 'register') }}</th>{% endif %}
+                        {% if type.uses('frequency') %}<th scope="col">{{ 'register.field.frequency'|trans({}, 'register') }}</th>{% endif %}
+                        <th scope="col">{{ ('register.type.' ~ type.value ~ '.field.owner')|trans({}, 'register') }}</th>
+                        <th scope="col">{{ (type.value == 'communication' ? 'register.field.next_date' : 'register.field.next_review_date')|trans({}, 'register') }}</th>
+                        {% if type.value == 'role' %}<th scope="col">{{ 'register.gaps.column'|trans({}, 'register') }}</th>{% endif %}
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% import '_components/_status_pill.html.twig' as _pill %}
+                    {% for entry in page %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('app_register_entry_show', {id: entry.id}) }}" data-turbo-action="advance">{{ entry.title }}</a>
+                            </td>
+                            {% if type.uses('category') %}
+                                <td>{{ entry.category ? ('register.type.' ~ type.value ~ '.category.' ~ entry.category)|trans({}, 'register') : '—' }}</td>
+                            {% endif %}
+                            {% if type.uses('rating') %}
+                                <td>{{ entry.rating ? ('register.rating.' ~ entry.rating)|trans({}, 'register') : '—' }}</td>
+                            {% endif %}
+                            {% if type.uses('reference') %}<td>{{ entry.reference ?? '—' }}</td>{% endif %}
+                            {% if type.uses('frequency') %}
+                                <td>{{ entry.frequency ? ('register.frequency.' ~ entry.frequency)|trans({}, 'register') : '—' }}</td>
+                            {% endif %}
+                            <td>{{ entry.effectiveOwner ?? '—' }}</td>
+                            <td>
+                                {{ entry.nextReviewDate|fa_date }}
+                                {% if entry.reviewOverdue %}{{ _pill.render('register.badge.overdue'|trans({}, 'register'), 'danger', { size: 'sm' }) }}{% endif %}
+                            </td>
+                            {% if type.value == 'role' %}
+                                <td>
+                                    {% set _g = gaps[entry.id] ?? 0 %}
+                                    {% if _g > 0 %}{{ _pill.render('register.gaps.count'|trans({'%count%': _g}, 'register'), 'warning', { size: 'sm' }) }}{% else %}—{% endif %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
+
+    {% if partySchedule is not empty %}
+        <section class="fa-show-section mt-4" aria-labelledby="register-party-schedule">
+            <h2 id="register-party-schedule" class="h5 mb-1">{{ 'register.communication.parties_title'|trans({}, 'register') }}</h2>
+            <p class="small text-muted mb-2">{{ 'register.communication.parties_hint'|trans({}, 'register') }}</p>
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'register.communication.col.party'|trans({}, 'register') }}</th>
+                        <th scope="col">{{ 'register.field.frequency'|trans({}, 'register') }}</th>
+                        <th scope="col">{{ 'register.communication.col.method'|trans({}, 'register') }}</th>
+                        <th scope="col">{{ 'register.communication.col.contact'|trans({}, 'register') }}</th>
+                        <th scope="col">{{ 'register.field.next_date'|trans({}, 'register') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for party in partySchedule %}
+                        <tr>
+                            <td><a href="{{ path('app_interested_party_show', {id: party.id}) }}">{{ party.name }}</a></td>
+                            <td>{{ party.communicationFrequency ? ('interested_party.frequency.' ~ party.communicationFrequency)|trans({}, 'interested_parties') : '—' }}</td>
+                            <td>{{ party.communicationMethod ?? '—' }}</td>
+                            <td>{{ party.effectiveContactPerson ?? '—' }}</td>
+                            <td>{{ party.nextCommunication|fa_date }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        </section>
+    {% endif %}
+</div>
+{% endblock %}

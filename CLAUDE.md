@@ -242,6 +242,9 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `WorkflowService` - Workflow instance management (facade — stable public API)
 - `FieldCompletionAutoTransition` - Event-driven auto-progression listener (canonical since Y.1)
 - `ModuleConfigurationService` - Module activation check (per tenant)
+- `Register\RegisterCatalog` - the norm registers (ISO 27001 4.1–7.4): one entity `IsmsRegisterEntry`, types in
+  `App\Enum\RegisterType` (a new register = a new case, not a new table), proposals from existing records in
+  `RegisterProposalProvider`; guide `docs/user-guide/REGISTER.md`
 - `Compliance\Fulfillment\FulfillmentDerivationService` - the ONLY writer of a requirement fulfilment's
   percentage/status: `FulfillmentRuleEngine` derives it from the tenant's controls, mappings and maturity rows;
   hand values beside a rule are overrides (`override()` with reason + review date), `setManual()` only without

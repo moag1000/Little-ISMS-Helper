@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Document;
 use App\Entity\ISMSContext;
+use App\Form\Util\LegacyFreeTextField;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -26,7 +29,7 @@ final class ISMSContextType extends AbstractType implements SectionMapInterface
             'internal_issues'        => ['internalIssues'],
             'external_issues'        => ['externalIssues'],
             'interested_parties_link'=> ['interestedPartiesRequirements'],
-            'details'                => ['legalRequirements', 'regulatoryRequirements', 'contractualObligations', 'ismsPolicy', 'rolesAndResponsibilities'],
+            'details'                => ['legalRequirements', 'regulatoryRequirements', 'contractualObligations', 'ismsPolicyDocument', 'ismsPolicy', 'rolesAndResponsibilities'],
             'audit_metadata'         => ['lastReviewDate', 'nextReviewDate'],
         ];
     }
@@ -126,6 +129,17 @@ final class ISMSContextType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'context.help.contractual_obligations'
             ])
+            // ISO 27001 5.2: the top-level policy is a managed document (approval,
+            // version, acknowledgement), not a text copy in the context.
+            ->add('ismsPolicyDocument', EntityType::class, [
+                'label' => 'context.field.isms_policy_document',
+                'class' => Document::class,
+                'choice_label' => static fn (Document $d): string => (string) $d->getOriginalFilename(),
+                'required' => false,
+                'placeholder' => 'context.placeholder.isms_policy_document',
+                'help' => 'context.help.isms_policy_document',
+                'attr' => ['data-controller' => 'tom-select'],
+            ])
             ->add('ismsPolicy', TextareaType::class, [
                 'label' => 'context.field.isms_policy',
                 'required' => false,
@@ -179,6 +193,13 @@ final class ISMSContextType extends AbstractType implements SectionMapInterface
                 ]);
             }
         });
+
+        // Paket 9: issues, roles, legal requirements and the policy live in the
+        // registers now; an empty legacy text field is no longer offered.
+        foreach (['externalIssues', 'internalIssues', 'legalRequirements', 'regulatoryRequirements',
+            'contractualObligations', 'ismsPolicy', 'rolesAndResponsibilities'] as $legacy) {
+            LegacyFreeTextField::hideWhenEmpty($builder, $legacy);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -88,6 +88,11 @@ class ISMSContext
     #[Groups(['isms_context:read', 'isms_context:write'])]
     private ?string $ismsPolicy = null;
 
+    /** ISO 27001 5.2: the top-level information security policy as a managed document. */
+    #[ORM\ManyToOne(targetEntity: Document::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Document $ismsPolicyDocument = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['isms_context:read', 'isms_context:write'])]
     private ?string $rolesAndResponsibilities = null;
@@ -240,6 +245,17 @@ class ISMSContext
     public function setIsmsPolicy(?string $ismsPolicy): static
     {
         $this->ismsPolicy = $ismsPolicy;
+        return $this;
+    }
+
+    public function getIsmsPolicyDocument(): ?Document
+    {
+        return $this->ismsPolicyDocument;
+    }
+
+    public function setIsmsPolicyDocument(?Document $ismsPolicyDocument): static
+    {
+        $this->ismsPolicyDocument = $ismsPolicyDocument;
         return $this;
     }
 

@@ -92,6 +92,7 @@ consent.channel	1
 consent.identifier_type	3
 consent.method	2
 consent.status	2
+context	1
 control.status	1
 corrective_action.source_type	1
 corrective_action.status	4
@@ -111,7 +112,7 @@ diff.change_type	1
 diff.section	1
 document.evidence.source	1
 document.evidence.type	1
-document.status	5
+document.status	6
 document.type	1
 dora.status	1
 dora_data_flow.direction	3
@@ -131,6 +132,7 @@ eu_authorities.nis2_registration.sector	1
 evidence_reverification.status	2
 form.section	1
 four_eyes.action	3
+framework	1
 framework_baseline.framework	2
 fte_tracking.op	1
 fte_tracking.source	2
@@ -148,6 +150,7 @@ incident.status	3
 incident.workflow.escalation	1
 incident_sla.severity	2
 industry_baseline.industry	2
+interested_party.frequency	1
 interested_party.importance	2
 interested_party.party_type	2
 inverse_coverage	1
@@ -180,6 +183,7 @@ management_decision.board.missing	1
 management_decision.subject	1
 management_reports.category	1
 management_reports.report	1
+management_review	1
 management_review.dora_category	1
 management_review.field	1
 management_review.input	1
@@ -205,10 +209,12 @@ notification.template.desc	1
 notification_delivery.status	1
 objective.status	4
 onboarding.mapping.step	1
+party	1
 patch.priority	2
 patch.status	3
 patch.type	3
 person.type	2
+persona_competence	1
 planning.action_item.origin	1
 planning.action_item.status	4
 planning.roadmap.mode	1
@@ -256,6 +262,17 @@ prototype_protection.result	4
 prototype_protection.section	2
 prototype_protection.status	3
 reauth.action.confirm_sso	1
+register.frequency	2
+register.link	1
+register.persona	1
+register.persona_competence	1
+register.persona_duty	1
+register.persona_role	1
+register.rating	2
+register.scope	1
+register.section	1
+register.source.context	1
+register.type	4
 report.doc.audience	1
 report.doc.chart.type	1
 report_builder.widget	1
@@ -294,6 +311,7 @@ suggestions.kind	3
 suggestions.kind_help	1
 suggestions.origin	2
 suggestions.status	1
+supplier	1
 supplier.criticality	2
 supplier.dora.ict_criticality	1
 supplier.dora.substitutability	1

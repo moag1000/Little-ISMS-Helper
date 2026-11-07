@@ -50,6 +50,7 @@
         },
     } %}
         {% block list_filters %}
+        {% include '_components/_isms_scope_filter.html.twig' %}
             {% if currentTenant %}
             <div class="col-md-4">
                 <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>

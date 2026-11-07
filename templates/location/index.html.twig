@@ -41,6 +41,7 @@
     empty: { mood: 'sleeping', title: 'location.message.no_locations'|trans({}, 'locations') },
 } %}
     {% block list_filters %}
+        {% include '_components/_isms_scope_filter.html.twig' %}
         <div class="col-md-4">
             <label for="type-filter" class="form-label">{{ 'location.field.type'|trans({}, 'locations') }}</label>
             <select class="form-select fa-cyber-input__field" id="type-filter" name="type" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">

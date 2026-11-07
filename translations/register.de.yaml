@@ -1,0 +1,331 @@
+register:
+    overview:
+        title: Register
+        subtitle: Welche Register ISO 27001 und NIS-2 verlangen, wer sie pflegt und wo etwas offen ist.
+        table_title: Alle Register
+        empty: Leer
+        overdue: '%count% offen'
+        proposals: '%count% Vorschläge'
+        col:
+            register: Register
+            norm: Norm
+            maintainer: Pflege
+            count: Einträge
+            open: Offen
+    action:
+        export: Register exportieren (CSV)
+        reviewed: Geprüft, aktuell
+        archive: Archivieren
+        restore: Wieder aktivieren
+    module:
+        interested_parties: Interessierte Parteien
+        risks: Risikoregister
+        soa: Erklärung zur Anwendbarkeit
+        objectives: Informationssicherheitsziele
+        trainings: Schulungen und Nachweise
+        documents: Dokumentierte Information
+        assets: Inventar der Werte
+        locations: Standorte
+        business_processes: Geschäftsprozesse und BIA
+        suppliers: Lieferanten und Dienstleister
+        processing_activities: Verzeichnis von Verarbeitungstätigkeiten
+    persona:
+        isb: ISB
+        risk_manager: Risikomanagement
+        compliance_manager: Compliance-Management
+        ciso: CISO
+        bcm_officer: BCM-Beauftragte
+        dpo: Datenschutz
+    scope:
+        title: Geltungsbereich (ISO 27001 4.3)
+        hint: Gezählt aus den Inventaren. Was außerhalb liegt, markieren Sie am Datensatz.
+        in: '%count% im Geltungsbereich'
+        out: '%count% außerhalb'
+        asset: Werte
+        location: Standorte
+        business_process: Geschäftsprozesse
+        supplier: Lieferanten
+    gaps:
+        title: Kompetenzlücken (ISO 27001 7.2)
+        none: Keine Lücken.
+        column: Kompetenzen
+        count: '%count% fehlt'
+        section: Erforderliche Kompetenzen
+        hint: Nachweis aus dem Profil der Person oder einer abgeschlossenen, verknüpften Schulung.
+        no_requirements: Keine Kompetenzen verknüpft.
+        covered: Nachgewiesen
+        missing: Fehlt
+    type:
+        issue_external:
+            title: Externe Themen
+            purpose: 'Externe Themen, die das ISMS beeinflussen: Markt, Recht, Technik, Bedrohungslage.'
+            new: Externes Thema erfassen
+            empty: Keine externen Themen vorhanden.
+            referenced_by: Chancen dazu
+            field:
+                title: Thema
+                description: Beschreibung und Auswirkung
+                owner: Verantwortlich
+                category: Bereich
+                rating: Einfluss auf das ISMS
+            category:
+                political: Politik
+                economic: Wirtschaft
+                social: Gesellschaft
+                technological: Technik
+                legal: Recht
+                environmental: Umwelt
+                market: Markt und Wettbewerb
+        issue_internal:
+            title: Interne Themen
+            purpose: 'Interne Themen, die das ISMS beeinflussen: Organisation, Kultur, Ressourcen, Technik.'
+            new: Internes Thema erfassen
+            empty: Keine internen Themen vorhanden.
+            referenced_by: Chancen dazu
+            field:
+                title: Thema
+                description: Beschreibung und Auswirkung
+                owner: Verantwortlich
+                category: Bereich
+                rating: Einfluss auf das ISMS
+            category:
+                organisation: Organisation
+                culture: Kultur
+                resources: Ressourcen
+                processes: Prozesse
+                technology: Technik
+                information: Informationen
+        opportunity:
+            title: Chancen
+            purpose: Chancen für das ISMS, die geplant und verfolgt werden (ISO 27001 6.1.1).
+            new: Chance erfassen
+            empty: Keine Chancen vorhanden.
+            field:
+                title: Chance
+                description: Beschreibung und geplante Maßnahme
+                owner: Verantwortlich
+                rating: Nutzen
+        legal_requirement:
+            title: Rechtliche und vertragliche Anforderungen
+            purpose: Gesetze, Verordnungen und Verträge mit Bezug zur Informationssicherheit (A.5.31).
+            new: Anforderung erfassen
+            empty: Keine Anforderungen vorhanden.
+            field:
+                title: Anforderung
+                description: Inhalt und Umsetzung
+                owner: Verantwortlich
+                category: Art
+                reference: Fundstelle
+                effectiveFrom: Gilt seit
+            help:
+                reference: Zum Beispiel „§ 30 BSIG“ oder „Vertrag Nr. 2024-17, Anlage 3“.
+            category:
+                law: Gesetz
+                regulation: Verordnung oder Aufsicht
+                contract: Vertrag
+                standard: Norm oder Branchenstandard
+                internal: Konzernvorgabe
+        scope_interface:
+            title: Schnittstellen des Geltungsbereichs
+            purpose: Schnittstellen und Abhängigkeiten zu Tätigkeiten anderer Organisationen (ISO 27001 4.3 c).
+            new: Schnittstelle erfassen
+            empty: Keine Schnittstellen vorhanden.
+            field:
+                title: Schnittstelle
+                description: Was übergeben wird und wer wofür zuständig ist
+                owner: Verantwortlich
+                category: Art
+            category:
+                supplier: Lieferant oder Dienstleister
+                customer: Kunde
+                group: Konzerngesellschaft
+                authority: Behörde
+                it_service: IT-Dienst
+                other: Sonstige
+        role:
+            title: ISMS-Rollen
+            purpose: Wer welche Rolle im ISMS innehat, mit Aufgaben, Befugnissen und Ernennung (ISO 27001 5.3).
+            new: Rolle erfassen
+            empty: Keine Rollen vorhanden.
+            field:
+                title: Rolle
+                description: Aufgaben und Befugnisse
+                owner: Inhaber
+                effectiveFrom: Ernannt am
+        competence:
+            title: Erforderliche Kompetenzen
+            purpose: Welche Kompetenz eine Rolle verlangt und welche Schulung sie vermittelt (ISO 27001 7.2).
+            new: Kompetenz erfassen
+            empty: Keine Kompetenzen vorhanden.
+            referenced_by: Verlangt von
+            field:
+                title: Kompetenz
+                description: Was die Person können muss
+                owner: Verantwortlich
+                category: Niveau
+                reference: Nachweis
+            help:
+                reference: Zum Beispiel ein Zertifikat oder die Norm, die die Schulung verlangt.
+            category:
+                basic: Grundkenntnisse
+                intermediate: Fortgeschritten
+                expert: Experte
+        communication:
+            title: Kommunikationsplan
+            purpose: Was, wann, mit wem, wer und wie kommuniziert wird (ISO 27001 7.4).
+            new: Kommunikation planen
+            empty: Keine Kommunikation geplant.
+            field:
+                title: Thema
+                description: Inhalt
+                owner: Wer kommuniziert
+                category: Kanal
+                reference: Zielgruppe
+            help:
+                reference: Zum Beispiel „alle Mitarbeitenden“ oder „Geschäftsleitung“; externe Parteien verknüpfen Sie unten.
+            category:
+                email: E-Mail
+                meeting: Besprechung
+                intranet: Intranet
+                training: Schulung
+                report: Bericht
+                other: Sonstige
+    field:
+        frequency: Rhythmus
+        next_date: Nächster Termin
+        next_review_date: Nächste Prüfung
+        last_reviewed: Zuletzt geprüft
+        deputies: Vertretung
+        owner_person: Person ohne Login
+        norm: Norm
+    help:
+        owner: Benutzer mit Login; erhält die Erinnerung zur Prüfung.
+        owner_person: Nur wenn die Person keinen Login hat.
+        deputies: Vertretung bei Abwesenheit.
+        next_review_date: 'Standard: in 12 Monaten, beim Kommunikationsplan in 3 Monaten.'
+    placeholder:
+        choose: Bitte wählen
+        owner_user: Benutzer wählen
+        owner_person: Person wählen
+    rating:
+        '1': 1 – sehr gering
+        '2': 2 – gering
+        '3': 3 – mittel
+        '4': 4 – hoch
+        '5': 5 – sehr hoch
+    frequency:
+        weekly: Wöchentlich
+        monthly: Monatlich
+        quarterly: Quartalsweise
+        semi_annually: Halbjährlich
+        annually: Jährlich
+        on_event: Anlassbezogen
+    link:
+        risk: Risiken
+        interested_party: Interessierte Parteien
+        objective: Ziele
+        compliance_framework: Normen und Gesetze im Tool
+        supplier: Lieferanten
+        document: Dokumente
+        training: Schulungen
+        asset: Werte
+        business_process: Geschäftsprozesse
+        location: Standorte
+        issue_entry: Interne und externe Themen
+        competence_entry: Erforderliche Kompetenzen
+    section:
+        overview: Eintrag
+        team: Zuständigkeit
+        audit_metadata: Prüfung
+        links: Verknüpfungen
+    filter:
+        state: Stand
+        active: Aktiv
+        archived: Archiviert
+    badge:
+        overdue: Überfällig
+    state:
+        archived: Archiviert
+        review_overdue: Prüfung überfällig
+        active: Aktuell
+    confirm:
+        delete: Eintrag endgültig löschen? Archivieren behält ihn als Nachweis.
+    flash:
+        nothing_selected: Nichts ausgewählt.
+        adopted: '%count% Einträge übernommen.'
+        created: Angelegt.
+        saved: Gespeichert.
+        reviewed: Als geprüft markiert.
+        restored: Wieder aktiv.
+        archived: Archiviert.
+        deleted: Gelöscht.
+    proposals:
+        title: '%count% Vorschläge aus vorhandenen Daten'
+        adopt: Ausgewählte übernehmen
+        hint: Übernommene Vorschläge kommen nicht wieder. Freitexte bleiben unverändert stehen.
+    source:
+        context:
+            externalIssues: 'Freitext Kontext: externe Themen'
+            internalIssues: 'Freitext Kontext: interne Themen'
+            rolesAndResponsibilities: 'Freitext Kontext: Rollen'
+            legalRequirements: 'Freitext Kontext: gesetzliche Anforderungen'
+            regulatoryRequirements: 'Freitext Kontext: regulatorische Anforderungen'
+            contractualObligations: 'Freitext Kontext: vertragliche Pflichten'
+        persona: Rolle im Benutzerkonto
+        tenant_dpo: DSB in den Organisationsdaten
+        role_register: ISMS-Rollen
+        framework: Verpflichtende Norm im Tool
+        interested_party: Interessierte Partei
+        supplier: Kritischer Lieferant
+        management_review: Letzte Managementbewertung
+    persona_role:
+        top_management: Oberste Leitung
+        ciso: Chief Information Security Officer (CISO)
+        isb: Informationssicherheitsbeauftragte/r (ISB)
+        risk_manager: Risikomanagement
+        compliance_manager: Compliance-Management
+        dpo: Datenschutzbeauftragte/r (DSB)
+        bcm_officer: BCM-Beauftragte/r
+    persona_duty:
+        top_management: Trägt die Gesamtverantwortung für das ISMS, billigt die Risikomanagementmaßnahmen und überwacht ihre Umsetzung (ISO 27001 5.1, NIS-2 Art. 20).
+        ciso: Verantwortet die Informationssicherheitsstrategie und berichtet der Leitung über die Leistung des ISMS (ISO 27001 5.3 b).
+        isb: Steuert das ISMS, stellt die Normkonformität sicher und berichtet der Leitung (ISO 27001 5.3 a, b).
+        risk_manager: Führt Risikobeurteilung und -behandlung durch und bereitet die Risikoakzeptanz vor (ISO 27001 6.1.2, 8.2).
+        compliance_manager: Ermittelt rechtliche, regulatorische und vertragliche Anforderungen und überwacht ihre Einhaltung (A.5.31).
+        dpo: Berät und überwacht zum Datenschutz, Ansprechpartner der Aufsichtsbehörde (DSGVO Art. 39).
+        bcm_officer: Plant, übt und verbessert die Notfallvorsorge und die Kontinuitätspläne (A.5.29, A.5.30, ISO 22301).
+    persona_competence:
+        top_management: Schulung der Leitung zum Risikomanagement in der Cybersicherheit
+        ciso: Informationssicherheitsmanagement nach ISO 27001
+        isb: Informationssicherheitsmanagement nach ISO 27001
+        risk_manager: Methoden der Risikobeurteilung
+        compliance_manager: Ermittlung und Bewertung rechtlicher Anforderungen
+        dpo: Datenschutzrecht (DSGVO, BDSG)
+        bcm_officer: Business Continuity Management nach ISO 22301
+    proposal:
+        interface_title: Schnittstelle zu %name%
+    communication:
+        parties_title: Termine mit interessierten Parteien
+        parties_hint: Externer Teil des Plans, gepflegt an der jeweiligen Partei.
+        col:
+            party: Partei
+            method: Weg
+            contact: Ansprechperson
+    csv:
+        register: Register
+        norm: Norm
+        title: Titel
+        description: Beschreibung
+        category: Kategorie
+        reference: Fundstelle
+        owner: Verantwortlich
+        next_review: Nächste Prüfung
+        last_reviewed: Zuletzt geprüft
+    references:
+        title: In Registern
+    context:
+        count: '%count% Einträge'
+        legacy_hint: Der Freitext unten ist Altbestand. Im Register stehen Vorschläge daraus zur Übernahme bereit.
+        policy_version: Version %version%
+        policy_missing: Noch kein Dokument als Leitlinie gewählt. Unter „Bearbeiten“ auswählen.
+        edit_hint: Themen, Rollen, Rechtsanforderungen und Kommunikation pflegen Sie als Einträge im Register.

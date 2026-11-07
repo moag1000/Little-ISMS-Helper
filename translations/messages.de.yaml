@@ -130,6 +130,11 @@ confirm:
     _default: Bestätigen
 back: Zurück
 common:
+    isms_scope:
+        label: 'ISMS-Geltungsbereich'
+        all: 'Alle'
+        in: 'Im Geltungsbereich'
+        out: 'Außerhalb'
     tenant_required: 'Organisationskontext erforderlich.'
     access_denied: 'Zugriff verweigert.'
     module_not_active: 'Modul "%module%" ist nicht aktiviert. Bitte Setup → Module aktivieren.'
@@ -2491,6 +2496,7 @@ show:
             incident: 'Vorfall erfassen'
             vulnerability: 'Schwachstelle ableiten'
     status:
+        in_isms_scope: 'Im ISMS-Geltungsbereich'
         owner: 'Verantwortlich'
         next_review: 'Nächste Überprüfung'
         level: 'Restrisiko'

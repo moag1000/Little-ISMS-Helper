@@ -97,6 +97,7 @@ supplier:
         linkage: 'Asset-Verlinkung'
         dora: 'DORA Register of Information (Art. 28)'
     field:
+        in_isms_scope: 'Im ISMS-Geltungsbereich'
         name: Name
         description: Beschreibung
         service_provided: 'Erbrachte Leistung'
@@ -186,6 +187,7 @@ supplier:
         security_score: 'Sicherheitsbewertung 0–100 (siehe Bewertungsrahmen).'
         criticality: 'Kritikalität des Lieferanten für Ihren Geschäftsbetrieb.'
     help:
+        in_isms_scope: 'ISO 27001 Kap. 4.3: Geltungsbereich des ISMS.'
         name: 'Offizieller Name des Lieferanten oder Dienstleisters.'
         description: 'Kurze Beschreibung des Lieferanten und seiner Rolle für Ihr Unternehmen.'
         contact_person: 'Hauptansprechpartner beim Lieferanten für Sicherheitsfragen.'

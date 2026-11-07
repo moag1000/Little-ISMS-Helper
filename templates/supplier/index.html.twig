@@ -114,6 +114,7 @@
         card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/supplier"',
     } %}
         {% block list_filters %}
+        {% include '_components/_isms_scope_filter.html.twig' %}
             {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
             {% if app.request.query.get('review_overdue') == '1' %}<input type="hidden" name="review_overdue" value="1">{% endif %}
             {% if currentTenant %}

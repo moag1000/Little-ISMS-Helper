@@ -42,6 +42,11 @@ final class LocationImportSchemaProvider implements ImportSchemaProviderInterfac
             entityClass: Location::class,
             module: null,
             fields: [
+                new ImportFieldSpec(
+                    name: 'inIsmsScope',
+                    setter: 'setInIsmsScope',
+                    type: ImportFieldSpec::TYPE_BOOL,
+                ),
                 // ── Overview ────────────────────────────────────────────────────
                 new ImportFieldSpec(
                     name: 'name',

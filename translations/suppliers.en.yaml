@@ -97,6 +97,7 @@ supplier:
         linkage: 'Asset linkage'
         dora: 'DORA Register of Information (Art. 28)'
     field:
+        in_isms_scope: 'In ISMS scope'
         name: Name
         description: Description
         service_provided: 'Service Provided'
@@ -185,6 +186,7 @@ supplier:
         security_score: 'Security score 0–100 (see assessment framework).'
         criticality: 'Supplier criticality for your operations.'
     help:
+        in_isms_scope: 'ISO 27001 clause 4.3: scope of the ISMS.'
         name: 'Official name of the supplier or service provider.'
         description: 'Brief description of the supplier and their role for your organization.'
         contact_person: 'Primary contact person at the supplier for security matters.'

@@ -51,6 +51,11 @@ final class SupplierImportSchemaProvider implements ImportSchemaProviderInterfac
             entityClass: Supplier::class,
             module: null,
             fields: [
+                new ImportFieldSpec(
+                    name: 'inIsmsScope',
+                    setter: 'setInIsmsScope',
+                    type: ImportFieldSpec::TYPE_BOOL,
+                ),
                 // ── Overview / identification ───────────────────────────────────
                 new ImportFieldSpec(
                     name: 'name',

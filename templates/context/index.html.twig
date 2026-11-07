@@ -128,6 +128,9 @@
                         <div class="h4 mb-0">{{ context.organizationName }}</div>
                     </div>
 
+                    {% include 'register/_context_link.html.twig' with { types: ['scope_interface'], legacy: false } only %}
+                    {% include 'register/_scope_summary.html.twig' with { scope: scope_summary } only %}
+
                     {% if context.ismsScope %}
                     <div class="mb-3">
                         <label class="small">
@@ -180,6 +183,7 @@
                 {% endblock %}
                 {% block card_body %}
                     {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                    {% include 'register/_context_link.html.twig' with { types: ['issue_external', 'issue_internal'], legacy: context.externalIssues or context.internalIssues } only %}
                     {% if context.externalIssues %}
                     <div class="mb-3">
                         <label class="small">
@@ -200,7 +204,7 @@
                     </div>
                     {% endif %}
 
-                    {% if not context.externalIssues and not context.internalIssues %}
+                    {% if not context.externalIssues and not context.internalIssues and (register_stats().issue_external.active ?? 0) + (register_stats().issue_internal.active ?? 0) == 0 %}
                     {{ _fa_empty_state.render({
                         mood: 'sleeping',
                         title: 'context.message.no_context_topics'|trans({}, 'context')
@@ -306,6 +310,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% include 'register/_context_link.html.twig' with { types: ['legal_requirement'], legacy: context.legalRequirements or context.regulatoryRequirements or context.contractualObligations } only %}
             <div class="row">
                 <div class="col-md-4">
                     <div class="requirement-box">
@@ -363,6 +368,15 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% if context.ismsPolicyDocument %}
+                    {% set _doc = context.ismsPolicyDocument %}
+                    <p class="mb-2">
+                        <a href="{{ path('app_document_show', {id: _doc.id}) }}">{{ _doc.originalFilename }}</a>
+                        <span class="small text-muted">· {{ 'register.context.policy_version'|trans({'%version%': _doc.version}, 'register') }} · {{ ('document.status.' ~ _doc.status)|trans({}, 'document') }}</span>
+                    </p>
+                    {% elseif ownContext.id and canEdit %}
+                    <p class="small text-muted mb-2">{{ 'register.context.policy_missing'|trans({}, 'register') }}</p>
+                    {% endif %}
                     {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if context.ismsPolicy %}
                     <p class="mb-0">{{ context.ismsPolicy|nl2br }}</p>
@@ -387,6 +401,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% include 'register/_context_link.html.twig' with { types: ['role', 'competence', 'communication'], legacy: context.rolesAndResponsibilities is not empty } only %}
                     {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if context.rolesAndResponsibilities %}
                     <p class="mb-0">{{ context.rolesAndResponsibilities|nl2br }}</p>
