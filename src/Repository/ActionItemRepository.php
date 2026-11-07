@@ -83,4 +83,28 @@ class ActionItemRepository extends ServiceEntityRepository
 
         return $rows;
     }
+
+    /**
+     * Open tasks from management reviews of a tenant (ISO 27001 9.3.3),
+     * due-date ascending — the deadline source for My Day and the digest.
+     *
+     * @return list<ActionItem>
+     */
+    public function findOpenManagementReviewTasks(Tenant $tenant): array
+    {
+        /** @var list<ActionItem> $rows */
+        $rows = $this->createQueryBuilder('a')
+            ->innerJoin('a.references', 'r')
+            ->andWhere('a.tenant = :tenant')
+            ->andWhere('r.refType = :refType')
+            ->andWhere('a.status NOT IN (:closed)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('refType', self::MANAGEMENT_REVIEW_REF)
+            ->setParameter('closed', [ActionItem::STATUS_DONE, ActionItem::STATUS_DISMISSED])
+            ->orderBy('a.dueDate', \SortDirection::Ascending)
+            ->getQuery()
+            ->getResult();
+
+        return $rows;
+    }
 }
