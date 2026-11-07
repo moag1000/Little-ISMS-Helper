@@ -19,6 +19,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\RiskReviewService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\WorkflowService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +44,7 @@ class WelcomeController extends AbstractController
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly WorkflowService $workflowService,
     ) {}
 
     #[Route('/welcome', name: 'app_welcome', methods: ['GET'])]
@@ -58,7 +60,7 @@ class WelcomeController extends AbstractController
         $urgentTasks = $this->getUrgentTasks($tenant, $user);
 
         // Get pending workflows for current user
-        $pendingWorkflows = $this->workflowInstanceRepository->findPendingForUser($user);
+        $pendingWorkflows = $this->workflowService->getPendingApprovals($user);
 
         // Check if user prefers to skip welcome page (entity-persisted, session fallback)
         $skipWelcome = $user->isSkipWelcomePage()
@@ -319,7 +321,7 @@ class WelcomeController extends AbstractController
 
         // Pending workflow approvals
         if ($user) {
-            $pendingWorkflows = $this->workflowInstanceRepository->findPendingForUser($user);
+            $pendingWorkflows = $this->workflowService->getPendingApprovals($user);
             if (count($pendingWorkflows) > 0) {
                 $topWorkflow = $pendingWorkflows[0];
                 $workflowName = $topWorkflow->getWorkflow()?->getName();

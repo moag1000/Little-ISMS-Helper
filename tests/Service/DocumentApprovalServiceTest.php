@@ -7,7 +7,6 @@ namespace App\Tests\Service;
 use App\Entity\Document;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
-use App\Repository\UserRepository;
 use App\Service\DocumentApprovalService;
 use App\Service\WorkflowService;
 use App\Service\EmailNotificationService;
@@ -29,7 +28,6 @@ class DocumentApprovalServiceTest extends TestCase
     private DocumentApprovalService $service;
     private WorkflowService&MockObject $workflowService;
     private EmailNotificationService&MockObject $emailService;
-    private UserRepository&MockObject $userRepository;
     private AuditLogger&MockObject $auditLogger;
     private LoggerInterface&MockObject $logger;
 
@@ -37,14 +35,12 @@ class DocumentApprovalServiceTest extends TestCase
     {
         $this->workflowService = $this->createMock(WorkflowService::class);
         $this->emailService = $this->createMock(EmailNotificationService::class);
-        $this->userRepository = $this->createMock(UserRepository::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->service = new DocumentApprovalService(
             $this->workflowService,
             $this->emailService,
-            $this->userRepository,
             $this->auditLogger,
             $this->logger
         );

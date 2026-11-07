@@ -51,7 +51,7 @@ Risikoakzeptanzen oberhalb der Manager-Stufe entscheidet die Leitung
 - **Leitungs-Dashboard**, oben: „Zu entscheiden“ (offene Vorlagen mit
   Billigen/Ablehnen, fehlende oder bald endende Billigungen) und „Letzte
   Entscheidungen“.
-- **Mein Tag**: Kategorie „Leitungsentscheidungen“, mit denselben Knöpfen.
+- **Mein Tag**: Kategorie „Leitungsentscheidungen“ (aus der Fristenquelle), mit denselben Knöpfen.
 - **Fristenquellen**: offene Vorschläge (`management_decision`, an `ROLE_TOP_MGMT`) und offene Aufgaben aus der Managementbewertung (`management_review_action`, an die verantwortliche Person, sonst ISB/CISO) melden sich als Fristenquelle; Mein Tag und die Sammelmail lesen sie von dort.
 - **Board-One-Pager**: Abschnitt „Entscheidungen der Leitung“.
 

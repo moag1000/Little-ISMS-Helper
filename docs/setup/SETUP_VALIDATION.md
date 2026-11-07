@@ -23,7 +23,7 @@ All console commands referenced in README.md exist and have correct names:
 | `app:setup-permissions` | ✅ Valid | `src/Command/SetupPermissionsCommand.php` |
 | `app:load-tisax-requirements` | ✅ Valid | `src/Command/LoadTisaxRequirementsCommand.php` |
 | `app:load-dora-requirements` | ✅ Valid | `src/Command/LoadDoraRequirementsCommand.php` |
-| `app:send-notifications` | ✅ Valid | `src/Command/SendNotificationsCommand.php` |
+| `app:send-reminders` | ✅ Valid | `src/Command/SendRemindersCommand.php` |
 
 ### 2. Command Dependencies & Execution Order ✅
 

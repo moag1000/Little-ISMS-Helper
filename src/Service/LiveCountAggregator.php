@@ -39,6 +39,7 @@ class LiveCountAggregator
         private readonly FourEyesApprovalRequestRepository $fourEyesRepo,
         private readonly WorkflowInstanceRepository $workflowInstanceRepo,
         private readonly MyDayInboxEnricher $myDayEnricher,
+        private readonly ?WorkflowService $workflowService = null,
     ) {
     }
 
@@ -106,6 +107,8 @@ class LiveCountAggregator
             return 0;
         }
 
-        return count($this->workflowInstanceRepo->findPendingForUser($user, $tenant));
+        // Same list as the workflow pages, owner steps included.
+        return count($this->workflowService?->getPendingApprovals($user, $tenant)
+            ?? $this->workflowInstanceRepo->findPendingForUser($user, $tenant));
     }
 }

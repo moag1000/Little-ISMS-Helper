@@ -327,7 +327,7 @@ class Tenant
     #[ORM\Column(length: 32, nullable: true, options: ['default' => 'baseline', 'comment' => 'Default maturity target across wizards: baseline|enhanced'])]
     private ?string $wizardMaturityTarget = 'baseline';
 
-    /** @var array<string, array{email?: bool, slack?: bool, teams?: bool}>|null */
+    /** @var array<string, array{email?: bool, slack?: bool, teams?: bool, hour?: int}>|null */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Notification preferences keyed by event type (incident, breach, audit_finding, training_overdue)'])]
     private ?array $notificationPreferences = null;
 
@@ -966,10 +966,10 @@ class Tenant
     public function getWizardMaturityTarget(): ?string { return $this->wizardMaturityTarget; }
     public function setWizardMaturityTarget(?string $target): static { $this->wizardMaturityTarget = $target; return $this; }
 
-    /** @return array<string, array{email?: bool, slack?: bool, teams?: bool}>|null */
+    /** @return array<string, array{email?: bool, slack?: bool, teams?: bool, hour?: int}>|null */
     public function getNotificationPreferences(): ?array { return $this->notificationPreferences; }
 
-    /** @param array<string, array{email?: bool, slack?: bool, teams?: bool}>|null $prefs */
+    /** @param array<string, array{email?: bool, slack?: bool, teams?: bool, hour?: int}>|null $prefs */
     public function setNotificationPreferences(?array $prefs): static { $this->notificationPreferences = $prefs; return $this; }
 
     /** @return array<string, array{url?: string, contact?: string, auth_type?: string}>|null */
