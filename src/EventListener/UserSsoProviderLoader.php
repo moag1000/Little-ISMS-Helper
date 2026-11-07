@@ -12,13 +12,14 @@ use Doctrine\ORM\Events;
 /**
  * Loads the SSO provider an account is bound to without the tenant filter.
  *
- * A global provider (tenant NULL) or a provider of a parent organisation is
- * hidden by the TenantFilter of the account's own organisation. Hydration
+ * A provider of a parent organisation is hidden by the TenantFilter of the
+ * account's own (child) organisation; global providers are shared rows
+ * ({@see \App\Doctrine\SharedTenantRowsInterface}) and stay visible. Hydration
  * leaves `User::$ssoProvider` as a lazy proxy; initialising it later in the
  * request (reauth modal in base.html.twig, user detail page, reauth
  * redirect) ran the filtered SELECT, found no row and ended in an
  * EntityNotFoundException — a 500 for every account that signs in through a
- * global or parent-organisation provider.
+ * provider of its parent organisation.
  *
  * The binding is part of the account itself, so it is resolved right after
  * the user is loaded, unfiltered. One query per distinct provider: the

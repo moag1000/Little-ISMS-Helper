@@ -479,9 +479,9 @@ account only an instance operator, and only to a global provider; one
 subject per provider belongs to one account. Every change is an
 `sso.account.linked` / `sso.account.unlinked` event in the provider's audit
 trail. The provider an account is bound to is loaded with the account and
-outside the tenant filter (`UserSsoProviderLoader`): a global or
-parent-organisation provider is hidden from the account's own organisation,
-and the lazy load used to end in a 500 on every page. The
+outside the tenant filter (`UserSsoProviderLoader`): a parent-organisation
+provider is hidden from the account's own (child) organisation, and the lazy
+load used to end in a 500 on every page (global providers are shared rows). The
 organisation-tree and never-privileged rules above apply whether the option
 is on or off.
 

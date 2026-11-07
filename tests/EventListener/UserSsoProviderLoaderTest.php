@@ -12,10 +12,10 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * An account bound to a global or parent-organisation provider: the tenant
- * filter of its own organisation hides that provider, and initialising the
- * lazy proxy later ended in an EntityNotFoundException (500 on every page,
- * reauth modal in base.html.twig).
+ * An account bound to a parent-organisation provider: the tenant filter of
+ * its own organisation hides that provider, and initialising the lazy proxy
+ * later ended in an EntityNotFoundException (500 on every page, reauth modal
+ * in base.html.twig). Global providers are shared rows and stay readable.
  */
 final class UserSsoProviderLoaderTest extends KernelTestCase
 {
@@ -64,9 +64,9 @@ final class UserSsoProviderLoaderTest extends KernelTestCase
         self::assertSame(
             [],
             $this->em->createQuery('SELECT p.id FROM ' . IdentityProvider::class . ' p WHERE p.id = :id')
-                ->setParameter('id', $global->getId())
+                ->setParameter('id', $parentProvider->getId())
                 ->getScalarResult(),
-            'the provider itself stays hidden from organisation-scoped queries',
+            'the parent provider itself stays hidden from the child organisation\'s queries',
         );
     }
 

@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 /**
  * Security hotfix (C1): a tenant admin controls the issuer/JWKS of a
@@ -405,8 +406,7 @@ final class SsoAccountTakeoverTest extends WebTestCase
         );
         self::assertSame(1, $events, 'the manual link is in the provider audit trail');
 
-        // The global provider is hidden by adminA's tenant filter; the page
-        // still shows the binding (UserSsoProviderLoader) instead of a 500.
+        // The page shows the new binding and offers to remove it.
         $crawler = $this->client->request('GET', '/en/admin/users/' . $this->userChildA->getId());
         self::assertResponseIsSuccessful();
         self::assertStringContainsString('manual-sub-' . $this->uid, $crawler->filter('#sso-link')->text());
@@ -429,8 +429,12 @@ final class SsoAccountTakeoverTest extends WebTestCase
         }
 
         // … and a forged post is refused (CSRF token valid, rule enforced server-side).
-        $token = static::getContainer()->get('security.csrf.token_manager')
-            ->getToken('user_sso_link_' . $this->super->getId())->getValue();
+        // Token written into the session the way SessionTokenStorage does
+        // (pattern of QuickCreateControllerTest::csrfToken()).
+        $token = (new UriSafeTokenGenerator())->generateToken();
+        $session = $this->client->getRequest()->getSession();
+        $session->set('_csrf/user_sso_link_' . $this->super->getId(), $token);
+        $session->save();
         $this->client->request('POST', '/en/admin/users/' . $this->super->getId() . '/sso-link', [
             '_token' => $token,
             'provider' => (string) $this->globalProvider->getId(),
