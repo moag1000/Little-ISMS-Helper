@@ -114,8 +114,8 @@ class ComplianceMappingController extends AbstractController
         $facets = [
             'source_fw' => static fn(ComplianceMapping $m): ?string => $m->getSourceRequirement()?->getFramework()?->getCode(),
             'target_fw' => static fn(ComplianceMapping $m): ?string => $m->getTargetRequirement()?->getFramework()?->getCode(),
-            'type' => static fn(ComplianceMapping $m): ?string => $m->getMappingType(),
-            'confidence' => static fn(ComplianceMapping $m): ?string => $m->getConfidence(),
+            'type' => static fn(ComplianceMapping $m): string => $m->getMappingType(),
+            'confidence' => static fn(ComplianceMapping $m): string => $m->getConfidence(),
             'status' => static fn(ComplianceMapping $m): ?string => $m->getReviewStatus(),
         ];
         $options = [];
