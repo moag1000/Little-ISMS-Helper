@@ -330,16 +330,14 @@ final class RegisterProposalProvider
             return [];
         }
         $proposals = [];
-        foreach ([$review->getOpportunitiesForImprovement(), $review->getImprovementOpportunities()] as $text) {
-            foreach (self::paragraphs($text) as $p) {
-                $proposals[] = new RegisterProposal(
-                    RegisterType::OPPORTUNITY,
-                    $p['title'],
-                    $p['description'],
-                    'management_review.' . $review->getId() . '#' . $p['hash'],
-                    'register.source.management_review',
-                );
-            }
+        foreach (self::paragraphs($review->getOpportunitiesForImprovement()) as $p) {
+            $proposals[] = new RegisterProposal(
+                RegisterType::OPPORTUNITY,
+                $p['title'],
+                $p['description'],
+                'management_review.' . $review->getId() . '#' . $p['hash'],
+                'register.source.management_review',
+            );
         }
 
         return $proposals;
