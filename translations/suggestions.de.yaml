@@ -88,109 +88,128 @@ suggestions:
             test_ok: 'Verbindung steht, Modell %model% antwortet.'
             test_failed: 'Verbindung fehlgeschlagen: %error%'
             test_not_configured: KI ist für diese Organisation aus oder nicht eingerichtet.
-        origin:
-            rule: Regel
-            inheritance: Vererbung
-            import: Import
-            ai: KI
-        status:
-            pending: Offen
-            accepted: Angenommen
-            rejected: Abgelehnt
-            superseded: Zurückgezogen
-        kind:
-            asset:
-                protection_need: Schutzbedarf erhöhen
-            risk:
-                residual: Restrisiko einschätzen
-                treatment_complete: Behandlung abschließen
-                after_incident: Risiko nach Vorfall
-                from_vulnerability: Risiko aus Schwachstelle
-            treatment_plan:
-                progress: Fortschritt Behandlungsplan
-            control:
-                effectiveness: Wirksamkeit bewerten
-                requirement_link: Anforderung zuordnen
-            legacy_owner:
-                match: Verantwortliche zuordnen
-            compliance:
-                inheritance: Erfüllung übernehmen
-            ai:
-                risk_from_incident: Risiko aus Vorfall (KI)
-                soa_justification: SoA-Begründung (KI)
-                corrective_action: Korrekturmaßnahme (KI)
-        kind_help:
-            asset:
-                protection_need: Abhängigkeiten (Maximumprinzip) und BIA heben den Schutzbedarf an.
-            risk:
-                residual: Umgesetzte und wirksame Maßnahmen senken die Eintrittswahrscheinlichkeit.
-                treatment_complete: Alle Maßnahmen des Plans sind umgesetzt.
-                after_incident: Ein Vorfall hat das Risiko eintreten lassen.
-                from_vulnerability: Offene Schwachstelle ab CVSS 7 ohne Risiko.
-            treatment_plan:
-                progress: Anteil umgesetzter Maßnahmen.
-            control:
-                effectiveness: Aus Tests, Vorfällen und geschützten Werten.
-                requirement_link: Textähnlichkeit zwischen Maßnahme und Anforderung.
-            legacy_owner:
-                match: Freitext-Verantwortliche passen zu einer Person.
-            compliance:
-                inheritance: Eine erfüllte Anforderung deckt eine gemappte ab.
-            ai:
-                risk_from_incident: Schreibt ein Risiko zu Vorfällen der letzten 90 Tage ohne verknüpftes Risiko.
-                soa_justification: Schreibt eine Begründung für anwendbare Maßnahmen ohne Begründung (ISO 27001 6.1.3 d).
-                corrective_action: Schreibt eine Korrekturmaßnahme zu offenen Feststellungen ohne Maßnahme (ISO 27001 10.2).
-        text:
-            dimension:
-                confidentiality: Vertraulichkeit
-                integrity: Integrität
-                availability: Verfügbarkeit
-            effectiveness:
-                effective: wirksam
-                partially_effective: teilweise wirksam
-                ineffective: unwirksam
-            asset_protection:
-                title: 'Schutzbedarf von %asset% erhöhen'
-                change: '%dimension% %from% → %to% (%reason%)'
-                reason_dependency: 'erbt von %asset%'
-                reason_bia: 'BIA %process%, RTO %rto% h'
-            risk_residual:
-                title: 'Restrisiko für %risk% eintragen'
-                rationale: 'Inhärent %inherent%, Restrisiko %from% → %to%. %basis%'
-                no_controls: Keine umgesetzte Maßnahme, Restrisiko gleich inhärentem Risiko.
-                controls: 'Umgesetzt: %implemented%. Wirksam: %effective%.'
-            risk_treatment_complete:
-                title: 'Behandlung von %risk% abschließen'
-                rationale: 'Alle Maßnahmen sind umgesetzt: %controls%.'
-            treatment_plan_progress:
-                title: 'Fortschritt von %plan% aktualisieren'
-                rationale: '%done% von %total% Maßnahmen umgesetzt, Fortschritt %from% % → %to% %.'
-            control_effectiveness:
-                title: 'Wirksamkeit von %control% bewerten'
-                rationale: 'Bewertung %score% von 100 → %rating%. Letzter Test %tested%, %incidents% Vorfälle seit dem Test, %assets% geschützte Werte.'
-            risk_after_incident:
-                title: '%risk% ist eingetreten, Wahrscheinlichkeit erhöhen'
-                rationale: 'Vorfall %incident% wurde am %closed% geschlossen. Wahrscheinlichkeit %from% → %to%.'
-            risk_from_vulnerability:
-                title: 'Risiko zu %cve% anlegen'
-                rationale: 'CVSS %cvss%, betroffen: %asset%. Vorschlag Wahrscheinlichkeit %probability%, Auswirkung %impact%.'
-                risk_title: '%cve%: %title%'
-            legacy_owner:
-                title: 'Verantwortliche für %record% zuordnen'
-                rationale: 'Freitext „%legacy%“ passt zu %match%.'
-            inheritance:
-                title: '%target% aus %source% übernehmen: %title%'
-                rationale: '%source% ist erfüllt, Mapping-Sicherheit %confidence%. Vorschlag %percent% % Erfüllung für %target%.'
-                comment: 'Übernommen aus %source% (Mapping-Sicherheit %confidence%), geprüft für %target%.'
-            requirement_link:
-                title: '%control% deckt %requirement% ab'
-                rationale: '„%title%“, Textähnlichkeit %pct% %.'
-            ai_risk:
-                title: 'Risiko anlegen: %risk%'
-                rationale: 'Aus Vorfall %incident%. Bedrohung: %threat%. Schwachstelle: %vulnerability%. Wahrscheinlichkeit %probability%, Auswirkung %impact%.'
-            ai_soa:
-                title: 'Begründung für %control%'
-                rationale: 'Bezogene Risiken: %risks%. %reasoning%'
-            ai_capa:
-                title: 'Korrekturmaßnahme: %action%'
-                rationale: 'Zu Feststellung %finding%. Ursache: %cause%. %reasoning%'
+    origin:
+        rule: Regel
+        inheritance: Vererbung
+        import: Import
+        ai: KI
+    status:
+        pending: Offen
+        accepted: Angenommen
+        rejected: Abgelehnt
+        superseded: Zurückgezogen
+    kind:
+        asset:
+            protection_need: Schutzbedarf erhöhen
+        risk:
+            residual: Restrisiko einschätzen
+            treatment_complete: Behandlung abschließen
+            after_incident: Risiko nach Vorfall
+            from_vulnerability: Risiko aus Schwachstelle
+        treatment_plan:
+            progress: Fortschritt Behandlungsplan
+        control:
+            effectiveness: Wirksamkeit bewerten
+            requirement_link: Anforderung zuordnen
+        register:
+            issue_external: 'Register: externes Thema'
+            issue_internal: 'Register: internes Thema'
+            legal_requirement: 'Register: rechtliche Anforderung'
+            scope_interface: 'Register: Schnittstelle'
+            role: 'Register: Rolle'
+            competence: 'Register: Kompetenz'
+            opportunity: 'Register: Chance'
+        legacy_owner:
+            match: Verantwortliche zuordnen
+        compliance:
+            inheritance: Erfüllung übernehmen
+        ai:
+            risk_from_incident: Risiko aus Vorfall (KI)
+            soa_justification: SoA-Begründung (KI)
+            corrective_action: Korrekturmaßnahme (KI)
+    kind_help:
+        asset:
+            protection_need: Abhängigkeiten (Maximumprinzip) und BIA heben den Schutzbedarf an.
+        risk:
+            residual: Umgesetzte und wirksame Maßnahmen senken die Eintrittswahrscheinlichkeit.
+            treatment_complete: Alle Maßnahmen des Plans sind umgesetzt.
+            after_incident: Ein Vorfall hat das Risiko eintreten lassen.
+            from_vulnerability: Offene Schwachstelle ab CVSS 7 ohne Risiko.
+        treatment_plan:
+            progress: Anteil umgesetzter Maßnahmen.
+        control:
+            effectiveness: Aus Tests, Vorfällen und geschützten Werten.
+            requirement_link: Textähnlichkeit zwischen Maßnahme und Anforderung.
+        register:
+            issue_external: Aus den externen Themen im Kontext.
+            issue_internal: Aus den internen Themen im Kontext.
+            legal_requirement: Aus Frameworks, interessierten Parteien und Kontext.
+            scope_interface: Aus kritischen Lieferanten.
+            role: Aus den Inhabern der Persona-Rollen.
+            competence: Standard-Kompetenzen der Rollen im Rollenregister.
+            opportunity: Aus der letzten Managementbewertung.
+        legacy_owner:
+            match: Freitext-Verantwortliche passen zu einer Person.
+        compliance:
+            inheritance: Eine erfüllte Anforderung deckt eine gemappte ab.
+        ai:
+            risk_from_incident: Schreibt ein Risiko zu Vorfällen der letzten 90 Tage ohne verknüpftes Risiko.
+            soa_justification: Schreibt eine Begründung für anwendbare Maßnahmen ohne Begründung (ISO 27001 6.1.3 d).
+            corrective_action: Schreibt eine Korrekturmaßnahme zu offenen Feststellungen ohne Maßnahme (ISO 27001 10.2).
+    text:
+        dimension:
+            confidentiality: Vertraulichkeit
+            integrity: Integrität
+            availability: Verfügbarkeit
+        effectiveness:
+            effective: wirksam
+            partially_effective: teilweise wirksam
+            ineffective: unwirksam
+        asset_protection:
+            title: 'Schutzbedarf von %asset% erhöhen'
+            change: '%dimension% %from% → %to% (%reason%)'
+            reason_dependency: 'erbt von %asset%'
+            reason_bia: 'BIA %process%, RTO %rto% h'
+        risk_residual:
+            title: 'Restrisiko für %risk% eintragen'
+            rationale: 'Inhärent %inherent%, Restrisiko %from% → %to%. %basis%'
+            no_controls: Keine umgesetzte Maßnahme, Restrisiko gleich inhärentem Risiko.
+            controls: 'Umgesetzt: %implemented%. Wirksam: %effective%.'
+        risk_treatment_complete:
+            title: 'Behandlung von %risk% abschließen'
+            rationale: 'Alle Maßnahmen sind umgesetzt: %controls%.'
+        treatment_plan_progress:
+            title: 'Fortschritt von %plan% aktualisieren'
+            rationale: '%done% von %total% Maßnahmen umgesetzt, Fortschritt %from% % → %to% %.'
+        control_effectiveness:
+            title: 'Wirksamkeit von %control% bewerten'
+            rationale: 'Bewertung %score% von 100 → %rating%. Letzter Test %tested%, %incidents% Vorfälle seit dem Test, %assets% geschützte Werte.'
+        risk_after_incident:
+            title: '%risk% ist eingetreten, Wahrscheinlichkeit erhöhen'
+            rationale: 'Vorfall %incident% wurde am %closed% geschlossen. Wahrscheinlichkeit %from% → %to%.'
+        risk_from_vulnerability:
+            title: 'Risiko zu %cve% anlegen'
+            rationale: 'CVSS %cvss%, betroffen: %asset%. Vorschlag Wahrscheinlichkeit %probability%, Auswirkung %impact%.'
+            risk_title: '%cve%: %title%'
+        register:
+            title: '%register%: %title% übernehmen'
+            rationale: 'Vorgeschlagen aus: %source%. Norm: %norm%.'
+        legacy_owner:
+            title: 'Verantwortliche für %record% zuordnen'
+            rationale: 'Freitext „%legacy%“ passt zu %match%.'
+        inheritance:
+            title: '%target% aus %source% übernehmen: %title%'
+            rationale: '%source% ist erfüllt, Mapping-Sicherheit %confidence%. Vorschlag %percent% % Erfüllung für %target%.'
+            comment: 'Übernommen aus %source% (Mapping-Sicherheit %confidence%), geprüft für %target%.'
+        requirement_link:
+            title: '%control% deckt %requirement% ab'
+            rationale: '„%title%“, Textähnlichkeit %pct% %.'
+        ai_risk:
+            title: 'Risiko anlegen: %risk%'
+            rationale: 'Aus Vorfall %incident%. Bedrohung: %threat%. Schwachstelle: %vulnerability%. Wahrscheinlichkeit %probability%, Auswirkung %impact%.'
+        ai_soa:
+            title: 'Begründung für %control%'
+            rationale: 'Bezogene Risiken: %risks%. %reasoning%'
+        ai_capa:
+            title: 'Korrekturmaßnahme: %action%'
+            rationale: 'Zu Feststellung %finding%. Ursache: %cause%. %reasoning%'
