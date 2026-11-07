@@ -101,6 +101,6 @@ final class ReportingPlannerTest extends TestCase
         $modules = $this->createStub(ModuleConfigurationService::class);
         $modules->method('isModuleActiveForTenant')->willReturn($active);
 
-        return new ReportingPlanner($modules);
+        return new ReportingPlanner(static fn (): ModuleConfigurationService => $modules);
     }
 }

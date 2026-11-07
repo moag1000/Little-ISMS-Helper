@@ -12,6 +12,7 @@ use App\Service\ModuleConfigurationService;
 use App\Util\LegalPeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireServiceClosure;
 
 /**
  * The one place that answers "which reports are due for this incident or
@@ -34,8 +35,14 @@ final readonly class ReportingPlanner
 {
     public const string DORA_MAJOR = 'major_ict_incident';
 
+    /**
+     * @param \Closure(): ModuleConfigurationService $modules resolved on use:
+     *        the planner sits behind a Doctrine listener, and an eager module
+     *        service would be pinned when Doctrine builds its listeners.
+     */
     public function __construct(
-        private ModuleConfigurationService $modules,
+        #[AutowireServiceClosure(ModuleConfigurationService::class)]
+        private \Closure $modules,
     ) {
     }
 
@@ -54,7 +61,7 @@ final readonly class ReportingPlanner
     {
         $detectedAt = self::immutable($incident->getDetectedAt());
         $tenant = $incident->getTenant();
-        if ($detectedAt === null || $tenant === null || !$this->modules->isModuleActiveForTenant('nis2_dora', $tenant)) {
+        if ($detectedAt === null || $tenant === null || !($this->modules)()->isModuleActiveForTenant('nis2_dora', $tenant)) {
             return [];
         }
 

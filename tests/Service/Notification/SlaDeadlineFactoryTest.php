@@ -32,7 +32,7 @@ final class SlaDeadlineFactoryTest extends TestCase
     {
         $modules = $this->createStub(ModuleConfigurationService::class);
         $modules->method('isModuleActiveForTenant')->willReturn(true);
-        $this->factory = new SlaDeadlineFactory(new ReportingPlanner($modules));
+        $this->factory = new SlaDeadlineFactory(new ReportingPlanner(static fn (): ModuleConfigurationService => $modules));
         $this->tenant = new Tenant();
     }
 

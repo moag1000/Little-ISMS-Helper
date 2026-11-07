@@ -240,7 +240,7 @@ final class SlaDeadlineMonitorSpawnerTest extends TestCase
         $modules = $this->createStub(ModuleConfigurationService::class);
         $modules->method('isModuleActiveForTenant')->willReturn(true);
 
-        return new SlaDeadlineFactory(new ReportingPlanner($modules));
+        return new SlaDeadlineFactory(new ReportingPlanner(static fn (): ModuleConfigurationService => $modules));
     }
 
     private function incident(int $id): Incident
