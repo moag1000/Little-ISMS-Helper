@@ -39,11 +39,14 @@ class RecordCheckRule implements ResetInterface
 
     /**
      * @param Closure(): WizardCheckSource $wizards lazy: the wizard reads half the repositories
+     * @param Closure(): ModuleConfigurationService $modules lazy: the rule engine is built early (Doctrine
+     *        listeners), the module configuration only when a requirement is derived
      */
     public function __construct(
         #[AutowireServiceClosure(ComplianceWizardService::class)]
         private readonly Closure $wizards,
-        private readonly ModuleConfigurationService $modules,
+        #[AutowireServiceClosure(ModuleConfigurationService::class)]
+        private readonly Closure $modules,
     ) {
     }
 
@@ -181,7 +184,7 @@ class RecordCheckRule implements ResetInterface
      */
     private function buildIndex(Tenant $tenant): array
     {
-        $active = $this->modules->getActiveModulesForTenant($tenant);
+        $active = ($this->modules)()->getActiveModulesForTenant($tenant);
         $index = [];
         foreach (($this->wizards)()->getWizardDefinitions() as $wizardKey => $wizard) {
             $code = (string) ($wizard['code'] ?? '');

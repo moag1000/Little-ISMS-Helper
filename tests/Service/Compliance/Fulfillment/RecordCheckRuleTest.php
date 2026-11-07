@@ -163,7 +163,7 @@ final class RecordCheckRuleTest extends TestCase
         $modules = $this->createStub(ModuleConfigurationService::class);
         $modules->method('getActiveModulesForTenant')->willReturn($activeModules);
 
-        return new RecordCheckRule(static fn (): WizardCheckSource => $wizard, $modules);
+        return new RecordCheckRule(static fn (): WizardCheckSource => $wizard, static fn (): ModuleConfigurationService => $modules);
     }
 
     /**
