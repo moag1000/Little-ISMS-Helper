@@ -129,7 +129,7 @@ admin:
             nis2_registration: { label: 'NIS-2-BSI-Registrierung', desc: 'Jährliche Stammdaten-Registrierung beim BSI-Meldeportal' }
             dora_roi: { label: 'DORA RoI XBRL-Export', desc: 'Register-of-Information XBRL/CSV-Export für die BaFin-Meldung' }
             # Sprint 6 System-Settings Folgeseiten
-            location_map_settings: { label: 'Standortkarte', desc: 'Online-Nachschlagen der Standortlage (optional)' }
+            location_map_settings: { label: 'Standortkarte', desc: 'Standortvergleich, Prüfungen, Genauigkeit und Online-Nachschlagen' }
             data_retention_settings: { label: 'Aufbewahrungsfristen', desc: 'DSGVO-Löschfristen pro Datenkategorie' }
     section:
         overview: Übersicht
@@ -1158,6 +1158,20 @@ admin:
         endpoint:
             label: 'Dienst-Adresse (Nominatim-kompatibel)'
             help: 'Nur HTTPS. Standard: %default%. Für eigenen Betrieb die Adresse der eigenen Nominatim-Instanz eintragen.'
+        peer:
+            title: 'Vergleich der Standorte'
+            off: 'Aus'
+            anonymous: 'Standorte vergleichen, Verantwortliche anderer Standorte nicht nennen'
+            named: 'Standorte vergleichen und Verantwortliche nennen'
+            help: 'Vergleich innerhalb gleichartiger Standorte (gleicher Typ, ähnlicher Schutzbedarf oder gemeinsamer Tag).'
+            privacy: 'Ein Vergleich, der Personen nennt, kann als Leistungskontrolle gelten (§ 87 Abs. 1 Nr. 6 BetrVG). „Verantwortliche nennen“ nur mit Zustimmung des Betriebsrats wählen.'
+        checks:
+            title: 'Prüfungen je Standort'
+            help: 'Abgeschaltete Prüfungen zählen weder als Lücke noch als erfüllt. Die Prüfung der verantwortlichen Person gilt immer.'
+        precision:
+            title: 'Genauigkeit auf Karte und im Export'
+            city: 'Auf etwa 1 km gerundet'
+            exact: 'Exakt wie gespeichert'
         privacy_title: Datenschutz
         privacy_text: 'Postleitzahl und Ort eines Firmenstandorts sind in der Regel keine personenbezogenen Daten. Beim öffentlichen Dienst gelten dessen Nutzungsbedingungen; eine eigene Instanz vermeidet die Übermittlung ganz.'
         saved: Gespeichert.
@@ -1839,6 +1853,7 @@ kpi_threshold:
         bia_coverage: 'BIA-Abdeckung'
         implementation_readiness: 'ISMS Implementation-Readiness'
         isms_health_score: 'ISMS Health Score'
+        location_checks_rate: 'Erfüllte Standort-Prüfungen'
     flash:
         created: 'Schwellwert erstellt.'
         updated: 'Schwellwert aktualisiert.'

@@ -484,11 +484,15 @@ class BackupService
      */
     private function fetchEntities(string $entityClass, array $scopeIds): array
     {
+        $repository = $this->entityManager->getRepository($entityClass);
         if ($scopeIds === [] || !$this->entityHasTenantField($entityClass)) {
-            return $this->entityManager->getRepository($entityClass)->findAll();
+            // Some repositories block findAll() against tenant leaks and offer
+            // findAllGlobal() for operator tasks (ComplianceMappingRepository).
+            // Without this every global backup and Quick-Fix snapshot aborted.
+            return method_exists($repository, 'findAllGlobal') ? $repository->findAllGlobal() : $repository->findAll();
         }
 
-        $qb = $this->entityManager->getRepository($entityClass)->createQueryBuilder('e');
+        $qb = $repository->createQueryBuilder('e');
         $qb->andWhere('e.tenant IN (:scope)')
             ->setParameter('scope', $scopeIds);
 

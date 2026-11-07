@@ -9,6 +9,7 @@ use App\Entity\RiskAppetite;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
+use App\Enum\RiskStatus;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
@@ -292,12 +293,14 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $risk = $this->createMock(Risk::class);
         $risk->method('getId')->willReturn(1);
         $risk->method('getRiskOwner')->willReturn(null);
+        $risk->method('getStatus')->willReturn(RiskStatus::Accepted); // a granted acceptance is withdrawn
 
         $user = $this->createMock(User::class);
         $user->method('getFullName')->willReturn('Jane Doe');
         $user->method('getEmail')->willReturn('jane@example.com');
 
         $risk->expects($this->once())->method('setFormallyAccepted')->with(false);
+        $risk->expects($this->once())->method('setAcceptanceJustification')->with(null);
         // X.6: setStatus(Assessed) is now called via LifecycleService::transition('revert_to_assessed')
         // instead of directly. Verify transition is invoked with the correct transition name.
         $this->lifecycleService->expects($this->once())->method('transition')->with(
@@ -316,6 +319,29 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('rejected', $result['status']);
         $this->assertSame('Jane Doe', $result['rejected_by']);
         $this->assertSame('Needs more mitigation', $result['reason']);
+    }
+
+    #[Test]
+    public function testRejectingAPendingRequestClearsItWithoutLifecycleTransition(): void
+    {
+        // Regression: a pending request never left "assessed"; revert_to_assessed
+        // (accepted → assessed) threw, so rejecting from My Day or the risk page
+        // always failed and the request stayed in the approver's queue.
+        $risk = $this->createMock(Risk::class);
+        $risk->method('getId')->willReturn(1);
+        $risk->method('getRiskOwner')->willReturn(null);
+        $risk->method('getStatus')->willReturn(RiskStatus::Assessed);
+
+        $user = $this->createMock(User::class);
+        $user->method('getFullName')->willReturn('Jane Doe');
+        $user->method('getEmail')->willReturn('jane@example.com');
+
+        $risk->expects($this->once())->method('setAcceptanceJustification')->with(null);
+        $this->lifecycleService->expects($this->never())->method('transition');
+
+        $result = $this->service->rejectAcceptance($risk, $user, 'Schaden zu hoch für Akzeptanz.');
+
+        $this->assertSame('rejected', $result['status']);
     }
 
     #[Test]
