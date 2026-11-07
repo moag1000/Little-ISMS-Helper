@@ -200,6 +200,9 @@ dashboard:
     location_open_gaps: Open site checks
     location_critical_sites: Sites with critical risk
     fte_saved_days: Person-days saved (12 months)
+    location_emergency_gaps: 'Sites with an emergency gap'
+    location_audit_overdue: 'Sites not audited for 3 years'
+    location_third_country_chains: 'Supplier chains with an unsafeguarded third country'
   hint:
     weighted_compliance: 'Weighting: implemented=1.0, partial=0.5, planned=0'
     isms_health_score: 'Composite: Compliance 40%, Risk 25%, Incidents 20%, Asset

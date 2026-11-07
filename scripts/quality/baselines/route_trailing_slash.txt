@@ -1,9 +1,9 @@
 # check_route_trailing_slash.py baseline
 src/Controller/Admin/DataRepairController.php:160:/admin/data-repair/
 src/Controller/AssetController.php:67:/asset/
-src/Controller/AuditController.php:46:/audit/
+src/Controller/AuditController.php:47:/audit/
 src/Controller/AuditLogController.php:55:/admin/audit-log/
-src/Controller/BCExerciseController.php:37:/bc-exercise/
+src/Controller/BCExerciseController.php:38:/bc-exercise/
 src/Controller/BCMController.php:23:/bcm/
 src/Controller/BusinessContinuityPlanController.php:37:/business-continuity-plan/
 src/Controller/BusinessProcessController.php:40:/bcm/business-process/

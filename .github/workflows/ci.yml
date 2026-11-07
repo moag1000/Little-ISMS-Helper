@@ -695,6 +695,10 @@ jobs:
         # never fires and the user sees the raw key. Every literal key with a
         # literal domain must exist in <domain>.de.yaml AND <domain>.en.yaml. No baseline.
         run: python3 scripts/quality/check_trans_default_masking.py --quiet
+      - name: "Gate 80: GDPR transfer zones current and in one place"
+        # config/gdpr_transfer_zones.yaml (EU, EEA, adequacy, DPF) is checked at
+        # least yearly (as_of), codes are unique, and src/ keeps no own EU list.
+        run: python3 scripts/quality/check_gdpr_transfer_zones.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

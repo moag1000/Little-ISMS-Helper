@@ -7,13 +7,16 @@ namespace App\Form;
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\Asset;
 use App\Entity\InternalAudit;
+use App\Entity\Location;
 use App\Entity\ComplianceFramework;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\InternalAuditStatus;
+use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\OwnerUserType;
 use App\Repository\TenantRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -31,8 +34,11 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class InternalAuditType extends AbstractType implements SectionMapInterface
 {
+    use ModuleAwareFormTrait;
+
     public function __construct(
         private readonly TenantContext $tenantContext,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -271,6 +277,23 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
                 ],
                 'help' => 'audit.help.conclusion',
             ]);
+
+        // ISO 19011 Cl. 5.5.2 / IAF MD 1 multi-site: the audited site as a record,
+        // so the location map shows when each site was last audited.
+        if ($this->isModuleActive('locations')) {
+            $builder->add('location', EntityType::class, [
+                'label' => 'audit.field.location',
+                'class' => Location::class,
+                'choice_label' => fn (Location $l): string => (string) $l->getName(),
+                'required' => false,
+                'placeholder' => 'audit.placeholder.location',
+                'attr' => [
+                    'data-depends-on' => 'internal_audit_scopeType',
+                    'data-depends-on-value' => 'location',
+                ],
+                'help' => 'audit.help.location',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -317,7 +340,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
     {
         return [
             'overview'         => ['title', 'status'],
-            'scope_definition' => ['scope', 'scopeType', 'scopedAssets', 'objectives', 'scopedFramework', 'additionalScopedFrameworks', 'auditedSubsidiaries'],
+            'scope_definition' => ['scope', 'scopeType', 'scopedAssets', 'location', 'objectives', 'scopedFramework', 'additionalScopedFrameworks', 'auditedSubsidiaries'],
             'schedule'         => ['plannedDate', 'actualDate'],
             'team'             => ['leadAuditorUser', 'leadAuditorPerson', 'leadAuditor', 'auditTeamMembers', 'auditTeam'],
             'results'          => ['findings', 'recommendations', 'conclusion'],
