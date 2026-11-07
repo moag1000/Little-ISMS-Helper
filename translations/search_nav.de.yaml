@@ -105,6 +105,9 @@ search_nav:
     app_my_day:
         label: 'Mein Tag'
         description: 'Fällige Aufgaben, Freigaben und Reviews auf einen Blick'
+    app_recurring_duty_index:
+        label: 'Pflichtenkalender'
+        description: 'Wiederkehrende Pflichten der Normen ohne Datum am Datensatz: erledigen, Nachweis anhängen, Intervall festlegen'
     app_suggestion_index:
         label: 'Vorschläge'
         description: 'Abgeleitete, vererbte, importierte und KI-Vorschläge annehmen oder ablehnen'

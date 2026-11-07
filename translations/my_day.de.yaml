@@ -28,6 +28,7 @@ my_day:
         incidents_open_assigned: 'Incidents (mir)'
         data_breaches_open: 'Datenpannen offen'
         reporting_duties: 'Meldepflichten'
+        recurring_duties: 'Wiederkehrende Pflichten'
         audit_checklist_due: 'Audit-Checkliste fällig'
         change_requests_pending_approval: 'CRs zur Freigabe'
         management_review_tasks: 'Aufgaben aus der Managementbewertung'
@@ -82,6 +83,7 @@ my_day:
         incidents_open_assigned: 'Incidents (mir zugewiesen)'
         data_breaches_open: 'Datenpannen — in Bearbeitung (DSGVO Art. 33/34)'
         reporting_duties: 'Meldepflichten — Berichte an Behörden (NIS-2, DORA, DSGVO)'
+        recurring_duties: 'Pflichtenkalender — wiederkehrende Pflichten der Normen'
         audit_checklist_due: 'Audit-Checkliste — fällig in 7 Tagen'
         change_requests_pending_approval: 'Change Requests — warten auf Freigabe'
         management_review_tasks: 'Managementbewertung — beschlossene Aufgaben (ISO 27001 9.3.3)'
@@ -135,6 +137,9 @@ my_day:
         reporting_duties:
             title: 'Meldepflichten — Berichte an Behörden'
             empty: 'Keine offenen Meldungen.'
+        recurring_duties:
+            title: 'Pflichtenkalender — fällig'
+            empty: 'Keine wiederkehrenden Pflichten in den nächsten 30 Tagen fällig.'
         audit_checklist_due:
             title: 'Audit-Checkliste — fällig'
             empty: 'Keine Audit-Checklisten-Items in den nächsten 7 Tagen fällig.'

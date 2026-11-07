@@ -10,7 +10,7 @@ use App\Service\Deadline\RecordLink;
 use App\Service\Responsibility\Responsibility;
 use DateTimeInterface;
 
-/** Kommunikation interessierte Partei: getNextCommunication() of InterestedParty. */
+/** Kommunikation interessierte Partei: planned date, else last communication + frequency. */
 final class InterestedPartyCommunicationSource extends EntityDeadlineSource
 {
     protected function entityClass(): string
@@ -37,7 +37,7 @@ final class InterestedPartyCommunicationSource extends EntityDeadlineSource
     {
         assert($item instanceof InterestedParty);
 
-        return $item->getNextCommunication();
+        return $item->getEffectiveNextCommunication();
     }
 
     public function titleOf(object $item): string

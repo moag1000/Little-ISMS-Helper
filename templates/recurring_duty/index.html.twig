@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'recurring_duty.page.title'|trans({}, 'recurring_duty') }}{% endblock %}
+
+{% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.my_day'|trans({}, 'nav'), url: path('app_my_day') },
+        { label: 'recurring_duty.page.title'|trans({}, 'recurring_duty') }
+    ]
+} %}
+{{ _fa_page_header.render({
+    title: 'recurring_duty.page.title'|trans({}, 'recurring_duty'),
+    subtitle: 'recurring_duty.page.subtitle'|trans({}, 'recurring_duty'),
+}) }}
+
+<div class="container-fluid py-4">
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_recurring_duty_index'),
+    filter_keys: [],
+    list_title: 'recurring_duty.page.title'|trans({}, 'recurring_duty'),
+    empty: {
+        mood: 'sleeping',
+        title: 'recurring_duty.empty.title'|trans({}, 'recurring_duty'),
+        description: 'recurring_duty.empty.description'|trans({}, 'recurring_duty'),
+    },
+} %}
+    {% block list_table %}
+    {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+        {% block table_head %}
+            <tr>
+                <th class="fa-table__th">{{ 'recurring_duty.column.duty'|trans({}, 'recurring_duty') }}</th>
+                <th class="fa-table__th">{{ 'recurring_duty.column.owner'|trans({}, 'recurring_duty') }}</th>
+                <th class="fa-table__th">{{ 'recurring_duty.column.interval'|trans({}, 'recurring_duty') }}</th>
+                <th class="fa-table__th">{{ 'recurring_duty.column.last_done'|trans({}, 'recurring_duty') }}</th>
+                <th class="fa-table__th">{{ 'recurring_duty.column.next_due'|trans({}, 'recurring_duty') }}</th>
+                <th class="fa-table__th fa-table__th--actions">{{ 'recurring_duty.column.actions'|trans({}, 'recurring_duty') }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for duty in page %}
+                {% set _meta = catalog[duty.dutyKey] %}
+                {% set _days = ((duty.nextDueAt|date('U') - today|date('U')) / 86400)|round(0, 'floor') %}
+                <tr class="fa-table__row" id="duty-{{ duty.id }}">
+                    <td class="fa-table__cell">
+                        <strong>{{ ('recurring_duty.duty.' ~ duty.dutyKey ~ '.title')|trans({}, 'recurring_duty') }}</strong>
+                        <br><small class="text-muted">{{ _meta.norm }} · {{ ('recurring_duty.duty.' ~ duty.dutyKey ~ '.body')|trans({}, 'recurring_duty') }}</small>
+                    </td>
+                    <td class="fa-table__cell">
+                        {% if duty.owner %}
+                            {{ duty.owner.fullName }}
+                        {% else %}
+                            <span class="text-muted">{{ _meta.roles|map(r => ('recurring_duty.role.' ~ r|lower)|trans({}, 'recurring_duty'))|join(', ') }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell">{{ 'recurring_duty.interval_value'|trans({'%count%': duty.intervalMonths}, 'recurring_duty') }}</td>
+                    <td class="fa-table__cell">
+                        {{ duty.lastDoneAt|fa_date }}
+                        {% if duty.lastEvidence %}
+                            <br><a href="{{ path('app_document_show', {id: duty.lastEvidence.id}) }}"><small>{{ duty.lastEvidence.originalFilename }}</small></a>
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell">
+                        {{ duty.nextDueAt|fa_date }}
+                        {% if _days < 0 %}
+                            <span class="fa-status-pill fa-status-pill--danger">{{ 'recurring_duty.status.overdue'|trans({}, 'recurring_duty') }}</span>
+                        {% elseif _days <= 30 %}
+                            <span class="fa-status-pill fa-status-pill--warning">{{ 'recurring_duty.status.due_soon'|trans({}, 'recurring_duty') }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--actions">
+                        {% if completable[duty.id] ?? false %}
+                            <a href="{{ path('app_recurring_duty_done', {id: duty.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'recurring_duty.action.done'|trans({}, 'recurring_duty') }}</a>
+                        {% endif %}
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <a href="{{ path('app_recurring_duty_edit', {id: duty.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'recurring_duty.action.edit'|trans({}, 'recurring_duty') }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+    {% endblock %}
+{% endembed %}
+</div>
+{% endblock %}

@@ -36,6 +36,7 @@
     'audit_checklist_due':                { icon: 'nav-clipboard-check',    tone: 'primary' },
     'change_requests_pending_approval':   { icon: 'util-refresh',           tone: 'primary' },
     'management_review_upcoming':         { icon: 'nav-clipboard-data',     tone: 'primary' },
+    'recurring_duties':                   { icon: 'nav-calendar-check',           tone: 'warning' },
     'evidence_reverification_due':        { icon: 'nav-clipboard-check',    tone: 'danger'  },
     'control_effectiveness_overdue':      { icon: 'ui-search',              tone: 'danger'  },
     'supplier_reassessment_due':          { icon: 'nav-truck',              tone: 'warning' },
@@ -52,7 +53,7 @@
 {# Ordered category list. Items come from inbox.<key>; the three CM-only buckets
    default to [] when the aggregator did not provide them. Approvals and
    four-eyes requests come first: they are decided right here. #}
-{% set order = ['management_decisions_pending','workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','reporting_duties','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','location_gaps','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_open','vulnerabilities_due','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
+{% set order = ['management_decisions_pending','workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','reporting_duties','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','location_gaps','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_open','vulnerabilities_due','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','recurring_duties','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
 {# Build the active list and the zero counter in one pass — avoids relying on a
    lazy |filter iterator being consumed twice. #}
 {# Jargon categories that get a hover-tooltip (junior aid) — the ones a 9001-
@@ -72,7 +73,7 @@
         {% set activeCategories = activeCategories|merge([{
             key: key,
             anchor: key|replace({'_': '-'}),
-            icon: meta[key].icon ?? 'nav-calendar',
+            icon: meta[key].icon ?? 'nav-calendar-check',
             tone: meta[key].tone ?? (items|filter(i => i.tone == 'danger')|length > 0 ? 'danger' : 'warning'),
             items: items,
             count: items|length,

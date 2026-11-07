@@ -339,4 +339,21 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('current', $party->getCommunicationStatus());
         $this->assertEquals(100, $party->getEngagementScore()); // 50 + 30 + 20
     }
+
+    #[Test]
+    public function withoutPlannedDateTheNextCommunicationFollowsTheFrequency(): void
+    {
+        $party = new InterestedParty();
+        $party->setCommunicationFrequency('quarterly');
+        $party->setLastCommunication(new \DateTime('2026-08-31'));
+
+        self::assertSame('2026-11-30', $party->getEffectiveNextCommunication()?->format('Y-m-d'));
+
+        $party->setNextCommunication(new \DateTime('2026-10-15'));
+        self::assertSame('2026-10-15', $party->getEffectiveNextCommunication()?->format('Y-m-d'), 'a planned date wins');
+
+        $party->setNextCommunication(null);
+        $party->setCommunicationFrequency('as_needed');
+        self::assertNull($party->getEffectiveNextCommunication());
+    }
 }
