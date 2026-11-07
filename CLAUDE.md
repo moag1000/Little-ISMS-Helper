@@ -832,7 +832,7 @@ declared twice for the same selector in `app.css` / `fairy-aurora-components.css
 `!important`; redefining `.mt-2`, `.d-flex`, … without it is dead code.
 
 Import pattern for macros: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
-Gate 62 (`check_aurora_legacy_markup.py`) ratchets Bootstrap markup that has an Aurora replacement: counts per template may only go down.
+Gate 62 (`check_aurora_legacy_markup.py`) blocks Bootstrap markup that has an Aurora replacement (`btn btn-*`, `badge bg-*`, `alert alert-*`, `.progress-bar`, Bootstrap modals); its baseline is empty, PDF templates are exempt. Pill tones are primary/success/warning/danger/neutral/accent only (no `--info`, no `--secondary`). Mapping: `docs/design_system/AURORA_v4_FULL_MIGRATION_PLAN.md`.
 For the bulk-action bar use `{% include '_components/_bulk_action_bar.html.twig' with { actions: [...], variant: 'neutral' } %}` (it is a plain include, not a macro). `variant: 'brand'` for hero lists (risk, document). The canonical CSS class set is `.fa-bulk-bar*` (BEM); the old `.bulk-action-bar*` is a deprecated shim.
 Legacy `.kpi-card` / `variant:'kpi'` still works for backward-compat but emits
 a dev-env console deprecation warning.

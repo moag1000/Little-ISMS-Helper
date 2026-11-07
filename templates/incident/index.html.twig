@@ -111,7 +111,7 @@
     {% block list_summary %}
         {% if critical_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'incident.summary.critical'|trans({'%count%': critical_count}, 'incident') }}</span>{% endif %}
         {% if open_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'incident.summary.open'|trans({'%count%': open_count}, 'incident') }}</span>{% endif %}
-        {% if data_breach_count > 0 %}<span class="fa-status-pill fa-status-pill--info">{{ 'incident.summary.data_breach'|trans({'%count%': data_breach_count}, 'incident') }}</span>{% endif %}
+        {% if data_breach_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'incident.summary.data_breach'|trans({'%count%': data_breach_count}, 'incident') }}</span>{% endif %}
         {% if nis2_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'incident.summary.nis2'|trans({'%count%': nis2_count}, 'incident') }}</span>{% endif %}
     {% endblock %}
     {% block list_table %}

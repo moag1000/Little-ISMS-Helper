@@ -21,7 +21,7 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-auto"><button class="btn btn-primary">{{ 'compliance_policy.policy_profile.page.apply_baseline'|trans({}, 'compliance_policy') }}</button></div>
+                <div class="col-auto"><button class="fa-cyber-btn fa-cyber-btn--primary">{{ 'compliance_policy.policy_profile.page.apply_baseline'|trans({}, 'compliance_policy') }}</button></div>
                 {% if profile.sectorKey %}<div class="col-auto text-muted">{{ 'compliance_policy.policy_profile.page.current_sector'|trans({}, 'compliance_policy') }}: <strong>{{ profile.sectorKey }}</strong></div>{% endif %}
             </form>
         </div>
@@ -32,7 +32,7 @@
         <div class="d-flex flex-wrap gap-2 mb-4">
             {% for fw, c in coverage %}
                 {% set blocking = c.blockingViolations()|length %}
-                <span class="badge {{ blocking > 0 ? 'bg-danger' : (c.violations|length > 0 ? 'bg-warning text-dark' : 'bg-success') }}">
+                <span class="fa-status-pill fa-status-pill--{{ blocking > 0 ? 'danger' : (c.violations|length > 0 ? 'warning' : 'success') }}">
                     {{ fw|upper }}: {{ c.satisfiedCount() }}/{{ c.totalConstrained }}{% if blocking > 0 %} · {{ blocking }} {{ 'compliance_policy.policy_profile.page.mandatory_gap'|trans({}, 'compliance_policy') }}{% endif %}
                 </span>
             {% endfor %}
@@ -67,8 +67,8 @@
             </tbody>
         </table>
         </div>
-        <button class="btn btn-success">{{ 'compliance_policy.policy_profile.page.save_params'|trans({}, 'compliance_policy') }}</button>
-        <a href="{{ path('app_policy_profile_register', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">{{ 'compliance_policy.policy_profile.page.view_register'|trans({}, 'compliance_policy') }}</a>
+        <button class="fa-cyber-btn fa-cyber-btn--success">{{ 'compliance_policy.policy_profile.page.save_params'|trans({}, 'compliance_policy') }}</button>
+        <a href="{{ path('app_policy_profile_register', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'compliance_policy.policy_profile.page.view_register'|trans({}, 'compliance_policy') }}</a>
     </form>
 </div>
 {% endblock %}

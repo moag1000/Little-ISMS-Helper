@@ -63,17 +63,17 @@
     {% set sub = item.node %}
     <li class="dora-subcontractor-tree__item">
         <div class="d-flex align-items-center gap-2 mb-2">
-            <span class="badge bg-secondary">T{{ sub.tier }}</span>
+            <span class="fa-status-pill fa-status-pill--neutral">T{{ sub.tier }}</span>
             <a href="{{ path('app_dora_subcontractor_show', {id: sub.id}) }}">
                 <strong>{{ sub.name }}</strong>
             </a>
             {% if sub.country %}
-                <span class="badge bg-light text-dark">{{ sub.country }}</span>
+                <span class="fa-status-pill fa-status-pill--neutral">{{ sub.country }}</span>
             {% endif %}
-            {% set critVariant = sub.criticality == 'critical' ? 'danger' : (sub.criticality == 'important' ? 'warning' : 'info') %}
-            <span class="badge bg-{{ critVariant }}">{{ ('dora_subcontractor.criticality.' ~ sub.criticality)|trans({}, 'dora') }}</span>
+            {% set critVariant = sub.criticality == 'critical' ? 'danger' : (sub.criticality == 'important' ? 'warning' : 'primary') %}
+            <span class="fa-status-pill fa-status-pill--{{ critVariant }}">{{ ('dora_subcontractor.criticality.' ~ sub.criticality)|trans({}, 'dora') }}</span>
             {% set substVariant = sub.substitutability == 'low' ? 'danger' : (sub.substitutability == 'medium' ? 'warning' : 'success') %}
-            <span class="badge bg-{{ substVariant }}">
+            <span class="fa-status-pill fa-status-pill--{{ substVariant }}">
                 {{ 'dora_subcontractor.field.substitutability'|trans({}, 'dora') }}:
                 {{ ('dora_subcontractor.substitutability.' ~ sub.substitutability)|trans({}, 'dora') }}
             </span>

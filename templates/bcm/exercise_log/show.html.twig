@@ -41,7 +41,7 @@
         {% if log.isConfirmed %}
             <span class="fa-status-pill fa-status-pill--success">{{ 'bsi_200_4_exercise.status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
         {% elseif log.isSubmitted %}
-            <span class="fa-status-pill fa-status-pill--info">{{ 'bsi_200_4_exercise.status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
+            <span class="fa-status-pill fa-status-pill--primary">{{ 'bsi_200_4_exercise.status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
         {% else %}
             <span class="fa-status-pill fa-status-pill--neutral">{{ 'bsi_200_4_exercise.status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
         {% endif %}
