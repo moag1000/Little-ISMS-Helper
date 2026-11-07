@@ -96,10 +96,10 @@
                 {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-6">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-6">{{ framework.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-6">{{ framework.createdAt|fa_datetime }}</dd>
 
                         <dt class="col-sm-6">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-6">{{ framework.updatedAt ? framework.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
+                        <dd class="col-sm-6">{{ framework.updatedAt ? framework.updatedAt|fa_datetime : '-' }}</dd>
 
                         <dt class="col-sm-6">{{ 'compliance.framework.field.requirements'|trans({}, 'compliance') }}</dt>
                         <dd class="col-sm-6">{% include '_components/_badge.html.twig' with { variant: 'info', content: framework.requirements|length } %}</dd>

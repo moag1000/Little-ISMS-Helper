@@ -46,13 +46,13 @@
         {% if document.uploadedAt %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'document.label.uploaded_at'|trans({}, 'document') }}</span>
-                <span>{{ document.uploadedAt|date('d.m.Y H:i') }}</span>
+                <span>{{ document.uploadedAt|fa_datetime }}</span>
             </div>
         {% endif %}
         {% if document.nextReviewDate %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'document.field.next_review_date'|trans({}, 'document') }}</span>
-                <span>{{ document.nextReviewDate|date('d.m.Y') }}{% if document.isEffectivenessOverdue(12) %} <i class="fa-icon fa-icon--nav-shield-alert text-danger" aria-hidden="true"></i>{% endif %}</span>
+                <span>{{ document.nextReviewDate|fa_date }}{% if document.isEffectivenessOverdue(12) %} <i class="fa-icon fa-icon--nav-shield-alert text-danger" aria-hidden="true"></i>{% endif %}</span>
             </div>
         {% endif %}
         <div class="fa-drawer__kv">

@@ -95,7 +95,7 @@
         <div class="subtitle">
             {{ assessment.title }}
             {% if assessment.assessmentDate %}
-                &mdash; {{ assessment.assessmentDate|date('d.m.Y') }}
+                &mdash; {{ assessment.assessmentDate|fa_date }}
             {% endif %}
         </div>
         <div class="small" style="margin-top: 2mm;">
@@ -161,15 +161,15 @@
         </tr>
         <tr>
             <th>{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
-            <td>{{ assessment.assessmentDate ? assessment.assessmentDate|date('d.m.Y') : '—' }}</td>
+            <td>{{ assessment.assessmentDate ? assessment.assessmentDate|fa_date : '—' }}</td>
         </tr>
         <tr>
             <th>{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
-            <td>{{ assessment.nextAssessmentDue ? assessment.nextAssessmentDue|date('d.m.Y') : '—' }}</td>
+            <td>{{ assessment.nextAssessmentDue ? assessment.nextAssessmentDue|fa_date : '—' }}</td>
         </tr>
         <tr>
             <th>{{ 'prototype_protection.pdf.generated_at'|trans({}, 'prototype_protection') }}</th>
-            <td>{{ generated_at|date('d.m.Y H:i') }}</td>
+            <td>{{ generated_at|fa_datetime }}</td>
         </tr>
     </table>
 
@@ -225,7 +225,7 @@
             <tr>
                 <td>{{ 'prototype_protection.pdf.signature.role_assessor'|trans({}, 'prototype_protection') }}</td>
                 <td class="sig-line">{{ assessment.assessor ? assessment.assessor.fullName|default(assessment.assessor.email) : '' }}</td>
-                <td class="sig-line">{{ assessment.assessmentDate ? assessment.assessmentDate|date('d.m.Y') : '' }}</td>
+                <td class="sig-line">{{ assessment.assessmentDate ? assessment.assessmentDate|fa_date : '' }}</td>
                 <td class="sig-line"></td>
             </tr>
             <tr>

@@ -91,7 +91,7 @@
                         {% endif %}
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.version'|trans({}, 'admin') }}</dt>
-                        <dd class="col-sm-8">v{{ mapping.version }} (gültig ab {{ mapping.validFrom|date('Y-m-d') }}{% if mapping.validUntil %} bis {{ mapping.validUntil|date('Y-m-d') }}{% endif %})</dd>
+                        <dd class="col-sm-8">v{{ mapping.version }} (gültig ab {{ mapping.validFrom|fa_date }}{% if mapping.validUntil %} bis {{ mapping.validUntil|fa_date }}{% endif %})</dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.source_id'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-8"><code class="small">{{ mapping.source }}</code></dd>

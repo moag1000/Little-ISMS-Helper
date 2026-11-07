@@ -120,7 +120,7 @@
                             {% for pa in due_for_review|slice(0, 5) %}
                                 <li class="mb-2">
                                     <a href="{{ path('app_processing_activity_show', {id: pa.id}) }}">{{ pa.name }}</a>
-                                    <small class="text-muted">{{ pa.nextReviewDate|date('Y-m-d') }}</small>
+                                    <small class="text-muted">{{ pa.nextReviewDate|fa_date }}</small>
                                 </li>
                             {% endfor %}
                         </ul>

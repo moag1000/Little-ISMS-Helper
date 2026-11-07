@@ -44,7 +44,7 @@
                 </tr>
                 <tr>
                     <td style="border:none; padding:3px 12px 3px 0; font-weight:bold; color:#374151;">Due Date</td>
-                    <td style="border:none; padding:3px 0;">{{ campaign.dueDate ? campaign.dueDate|date('Y-m-d') : '–' }}</td>
+                    <td style="border:none; padding:3px 0;">{{ campaign.dueDate ? campaign.dueDate|fa_date : '–' }}</td>
                 </tr>
                 <tr>
                     <td style="border:none; padding:3px 12px 3px 0; font-weight:bold; color:#374151;">{{ 'access_review.field.decided_by'|trans({}, 'access_review') }}</td>

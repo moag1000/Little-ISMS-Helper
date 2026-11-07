@@ -24,7 +24,7 @@
         {% if dpia.processingActivity %}<div class="fa-drawer__kv"><span class="label">{{ 'dpia.new.section_processing_operations'|trans({}, 'privacy') }}</span><span>{{ dpia.processingActivity.name }}</span></div>{% endif %}
         <div class="fa-drawer__kv"><span class="label">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</span><span>{{ dpia.completenessPercentage }}%</span></div>
         {% if dpia.residualRiskLevel %}<div class="fa-drawer__kv"><span class="label">{{ 'dpia.new.section_risk_assessment'|trans({}, 'privacy') }}</span><span>{{ dpia.residualRiskLevel|upper }}</span></div>{% endif %}
-        <div class="fa-drawer__kv"><span class="label">DPO</span><span>{{ dpia.dpoConsultationDate ? dpia.dpoConsultationDate|date('Y-m-d') : '–' }}</span></div>
+        <div class="fa-drawer__kv"><span class="label">DPO</span><span>{{ dpia.dpoConsultationDate ? dpia.dpoConsultationDate|fa_date : '–' }}</span></div>
         {% if dpia.necessityAssessment %}
             <div class="fa-drawer__section">
                 <span class="label">{{ 'dpia.new.section_necessity_proportionality'|trans({}, 'privacy') }}</span>

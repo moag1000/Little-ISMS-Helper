@@ -172,13 +172,13 @@
                             {% endif %}
                             <tr>
                                 <th scope="row">{{ 'user.label.created_at'|trans({}, 'user') }}</th>
-                                <td>{{ user.createdAt|date('d.m.Y H:i') }}</td>
+                                <td>{{ user.createdAt|fa_datetime }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{ 'user.label.last_login'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.lastLoginAt %}
-                                        {{ user.lastLoginAt|date('d.m.Y H:i') }}
+                                        {{ user.lastLoginAt|fa_datetime }}
                                     {% else %}
                                         <span class="text-muted">{{ 'user.status.never'|trans({}, 'user') }}</span>
                                     {% endif %}

@@ -28,7 +28,7 @@
 
             <div class="due-date">
                 <strong>⏰ {{ 'emails.audit_due.scheduled_date'|trans({}, 'emails') }}:</strong>
-                {{ audit.plannedDate|date('d.m.Y') }}
+                {{ audit.plannedDate|fa_date }}
             </div>
 
             <div class="field">

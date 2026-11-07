@@ -101,7 +101,7 @@
             {{ 'compliance_inheritance.panel.final_state'|trans({
                 '%status%': ('compliance_inheritance.status.' ~ log.reviewStatus)|trans({}, 'compliance_inheritance')
             }, 'compliance_inheritance') }}
-            {% if log.reviewedAt %} · {{ log.reviewedAt|date('Y-m-d H:i') }}{% endif %}
+            {% if log.reviewedAt %} · {{ log.reviewedAt|fa_datetime }}{% endif %}
             {% if log.reviewedBy %} · {{ log.reviewedBy.fullName|default(log.reviewedBy.email) }}{% endif %}
             {% endblock %}
         {% endembed %}
