@@ -7,7 +7,6 @@ namespace App\Service\Restore;
 use App\Entity\User;
 use App\Service\BackupEncryptionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -145,7 +144,7 @@ class RestoreSecretsHandler
                     'user_email' => $data['email'] ?? 'unknown',
                 ]);
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Failed to hash/set password for restored user', [
                 'user_email' => $data['email'] ?? 'unknown',
                 'error' => $e->getMessage(),
@@ -162,20 +161,30 @@ class RestoreSecretsHandler
     /**
      * Set password for the first admin user after restore completes.
      *
+     * Within an organisation restore only an admin of those organisations is
+     * considered, never a super admin (the user lookup is not tenant-filtered).
+     *
      * @param string $password   Plain text password
      * @param array  $warnings   Reference to warnings array (mutated in-place)
+     * @param int[]  $scopeIds   Organisations of the restore; empty = instance-wide
      */
-    public function setAdminPassword(string $password, array &$warnings): void
+    public function setAdminPassword(string $password, array &$warnings, array $scopeIds = []): void
     {
         try {
-            $adminUser = $this->entityManager->getRepository(User::class)->createQueryBuilder('u')
+            $qb = $this->entityManager->getRepository(User::class)->createQueryBuilder('u')
                 ->where('u.roles LIKE :role')
-                ->setParameter('role', '%ROLE_ADMIN%')
-                ->setMaxResults(1)
-                ->getQuery()
-                ->getOneOrNullResult();
+                ->setParameter('role', '%"ROLE_ADMIN"%')
+                ->orderBy('u.id', \SortDirection::Ascending)
+                ->setMaxResults(1);
+            if ($scopeIds !== []) {
+                $qb->andWhere('u.tenant IN (:scope)')
+                    ->andWhere('u.roles NOT LIKE :super')
+                    ->setParameter('scope', $scopeIds)
+                    ->setParameter('super', '%"ROLE_SUPER_ADMIN"%');
+            }
+            $adminUser = $qb->getQuery()->getOneOrNullResult();
 
-            if ($adminUser === null) {
+            if ($adminUser === null && $scopeIds === []) {
                 $adminUser = $this->entityManager->getRepository(User::class)->findOneBy([], ['id' => 'ASC']);
             }
 
@@ -189,7 +198,7 @@ class RestoreSecretsHandler
             } else {
                 $warnings[] = 'Kein Benutzer gefunden, um Admin-Passwort zu setzen.';
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $warnings[] = sprintf('Fehler beim Setzen des Admin-Passworts: %s', $e->getMessage());
             $this->logger->error('Failed to set admin password', ['error' => $e->getMessage()]);
         }

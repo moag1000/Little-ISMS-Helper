@@ -9,6 +9,7 @@ use App\Service\Restore\RestoreDataPurger;
 use App\Service\Restore\RestoreEntityWriter;
 use App\Service\Restore\RestoreOptions;
 use App\Service\Restore\RestoreSecretsHandler;
+use App\Service\Restore\RestoreTenantGuard;
 use App\Service\Restore\RestoreValidator;
 use Exception;
 use Doctrine\ORM\Events;
@@ -263,6 +264,8 @@ class RestoreService
             'clear_before_restore'   => false,
             'best_effort'            => false,
         ], $options);
+        // The writer checks every row against this scope (RestoreTenantGuard).
+        $options[RestoreTenantGuard::OPTION_SCOPE] = $targetScopeIds;
 
         // Validate first (resets $this->warnings internally).
         // We do NOT pass $targetTenantScope — strict cross-tenant rejection is for
@@ -481,7 +484,7 @@ class RestoreService
                     }
                     $entityWriter->restoreManyToManyAssociations(
                         $entityClass, $orderedEntity, $entities,
-                        $this->statistics, $this->warnings,
+                        $this->statistics, $this->warnings, $targetScopeIds,
                     );
                 }
                 $this->logger->info('ManyToMany second-pass restore completed');
@@ -574,7 +577,7 @@ class RestoreService
 
             if (isset($this->statistics['User']) && $this->statistics['User']['created'] > 0 && !$options['dry_run']) {
                 if (!empty($options['admin_password'])) {
-                    $secretsHandler->setAdminPassword($options['admin_password'], $this->warnings);
+                    $secretsHandler->setAdminPassword($options['admin_password'], $this->warnings, $targetScopeIds);
                 } else {
                     // app:setup-permissions only CREATES a new admin and leaves an
                     // existing (restored) account untouched — never point to it here.
@@ -607,7 +610,8 @@ class RestoreService
                 'failures'     => $this->failures,
                 'dry_run'      => $options['dry_run'],
             ];
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
+            // \Throwable: a TypeError must also roll back and re-enable the listeners.
             try {
                 if ($this->entityManager->isOpen() && $this->entityManager->getConnection()->isTransactionActive()) {
                     $this->entityManager->rollback();

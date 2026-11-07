@@ -156,6 +156,8 @@ Each tenant can customize the lifecycle behavior for their organization without 
 
 Overrides are **tenant-scoped** — they affect only your tenant and are invisible to other tenants. They take effect immediately without a deployment.
 
+Only workflows of records that belong to your organisation can be overridden. Workflows of instance-wide records (organisations, roles, permissions, policy templates, mappings) are not offered; their transitions follow the system configuration.
+
 **What admins cannot change:** The list of valid statuses and the allowed from/to wiring of transitions are fixed in the system configuration. If you need a new status stage or a new transition direction (e.g. allowing `approved` → `draft` directly), contact your implementation partner — that requires a code and configuration change.
 
 ---

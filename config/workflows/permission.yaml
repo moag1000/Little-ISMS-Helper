@@ -12,6 +12,8 @@
 #   deprecated → archived (final retirement from the catalog)
 #   active → archived  (direct retirement when a permission is replaced)
 #   deprecated → active  (reinstatement when the deprecation was premature)
+# Instance-wide catalogue (no tenant): only ROLE_SUPER_ADMIN transitions it, like
+# RoleVoter for edits. Organisation overrides do not apply (EntityTypeRegistry::acceptsTenantOverrides).
 framework:
     workflows:
         permission_lifecycle:
@@ -34,7 +36,7 @@ framework:
                     from: draft
                     to: active
                     metadata:
-                        roles: [ROLE_ADMIN, ROLE_SUPER_ADMIN]
+                        roles: [ROLE_SUPER_ADMIN]
                         reason_required: false
                 # Discourage further use without breaking existing role
                 # bindings. The auditor expects a reason on the trail.
@@ -42,7 +44,7 @@ framework:
                     from: active
                     to: deprecated
                     metadata:
-                        roles: [ROLE_ADMIN, ROLE_SUPER_ADMIN]
+                        roles: [ROLE_SUPER_ADMIN]
                         reason_required: true
                 # Reinstatement — deprecation was premature or a successor
                 # permission was rolled back.
@@ -50,7 +52,7 @@ framework:
                     from: deprecated
                     to: active
                     metadata:
-                        roles: [ROLE_ADMIN, ROLE_SUPER_ADMIN]
+                        roles: [ROLE_SUPER_ADMIN]
                         reason_required: true
                 # Final retirement from a deprecated state — the catalog
                 # entry is no longer available for new assignments.

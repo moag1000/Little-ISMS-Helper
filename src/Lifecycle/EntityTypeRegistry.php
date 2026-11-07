@@ -217,4 +217,26 @@ final class EntityTypeRegistry
     {
         return array_values(array_unique(array_column(self::MAP, 'class')));
     }
+
+    /**
+     * Whether an organisation may override this workflow's transition metadata
+     * (roles, four-eyes, reason, module) in /admin/lifecycle-overrides.
+     *
+     * Only workflows of organisation-owned records: a workflow of an instance
+     * record (Tenant, Role, Permission, PolicyTemplate, global compliance
+     * mappings) acts on every organisation, so an organisation admin who
+     * lowered its roles could suspend another organisation or archive a role
+     * for everyone. Derived from the entity class, so a new global entity is
+     * covered without a list.
+     */
+    public static function acceptsTenantOverrides(string $workflowName): bool
+    {
+        foreach (self::MAP as $entry) {
+            if ($entry['workflow'] === $workflowName) {
+                return method_exists($entry['class'], 'getTenant');
+            }
+        }
+
+        return false;
+    }
 }
