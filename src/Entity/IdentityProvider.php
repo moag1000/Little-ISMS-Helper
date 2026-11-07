@@ -184,7 +184,7 @@ class IdentityProvider implements SharedTenantRowsInterface
 
     /** @var Collection<int, IdentityProviderRoleMapping> */
     #[ORM\OneToMany(targetEntity: IdentityProviderRoleMapping::class, mappedBy: 'identityProvider', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[ORM\OrderBy(['priority' => 'ASC'])]
+    #[ORM\OrderBy(['priority' => \SortDirection::Ascending])]
     private Collection $roleMappings;
 
     public function __construct()

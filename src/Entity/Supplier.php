@@ -7,15 +7,16 @@ namespace App\Entity;
 use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
 use App\Enum\SupplierStatus;
 use App\Attribute\RequiresModule;
@@ -49,7 +50,15 @@ use App\Entity\Trait\SupplierContactPersonTrait;
         ),
         new GetCollection(
             description: 'Retrieve the collection of suppliers with filtering',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'name' => new QueryParameter(filter: new PartialSearchFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'criticality' => new QueryParameter(filter: new ExactFilter()),
+                'nextAssessmentDate' => new QueryParameter(filter: new DateFilter()),
+                'lastSecurityAssessment' => new QueryParameter(filter: new DateFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['name', 'criticality', 'nextAssessmentDate'], castToArray: false),
+            ],
         ),
         new Post(
             description: 'Create a new supplier',
@@ -68,9 +77,6 @@ use App\Entity\Trait\SupplierContactPersonTrait;
     denormalizationContext: ['groups' => ['supplier:write']],
     processor: TenantAwareStateProcessor::class
 )]
-#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'status' => 'exact', 'criticality' => 'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['name', 'criticality', 'nextAssessmentDate'])]
-#[ApiFilter(DateFilter::class, properties: ['nextAssessmentDate', 'lastSecurityAssessment'])]
 #[ORM\HasLifecycleCallbacks]
 class Supplier
 {
@@ -696,9 +702,6 @@ class Supplier
         return min(100, (int)$score);
     }
 
-    /**
-     * Check if security assessment is overdue
-     */
     public function isAssessmentOverdue(): bool
     {
         if (!$this->nextAssessmentDate instanceof DateTimeInterface) {
@@ -751,9 +754,6 @@ class Supplier
         return RiskMatrixThresholds::classify((int) floor($avgRisk));
     }
 
-    /**
-     * Check if supplier supports critical assets
-     */
     public function supportsCriticalAssets(): bool
     {
         foreach ($this->supportedAssets as $supportedAsset) {
@@ -764,9 +764,6 @@ class Supplier
         return false;
     }
 
-    /**
-     * Get compliance status
-     */
     public function getComplianceStatus(): array
     {
         return [

@@ -54,7 +54,7 @@ class Workflow
      * @var Collection<int, WorkflowStep>
      */
     #[ORM\OneToMany(targetEntity: WorkflowStep::class, mappedBy: 'workflow', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[ORM\OrderBy(['stepOrder' => 'ASC'])]
+    #[ORM\OrderBy(['stepOrder' => \SortDirection::Ascending])]
     private Collection $steps;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

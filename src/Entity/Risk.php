@@ -8,17 +8,17 @@ use App\Entity\Trait\RiskOwnerPersonTrait;
 use App\Risk\RiskMatrixThresholds;
 use DateTimeInterface;
 use DateTimeImmutable;
-use Deprecated;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
 use App\Enum\IncidentSeverity;
 use App\Enum\RiskStatus;
@@ -48,7 +48,17 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
         ),
         new GetCollection(
             description: 'Retrieve the collection of risk assessments with filtering by status and date',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'title' => new QueryParameter(filter: new PartialSearchFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'riskOwner.email' => new QueryParameter(filter: new PartialSearchFilter(), property: 'riskOwner.email', security: "is_granted('ROLE_MANAGER')"),
+                'riskOwner.firstName' => new QueryParameter(filter: new PartialSearchFilter(), property: 'riskOwner.firstName', security: "is_granted('ROLE_MANAGER')"),
+                'riskOwner.lastName' => new QueryParameter(filter: new PartialSearchFilter(), property: 'riskOwner.lastName', security: "is_granted('ROLE_MANAGER')"),
+                'createdAt' => new QueryParameter(filter: new DateFilter()),
+                'reviewDate' => new QueryParameter(filter: new DateFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['title', 'createdAt', 'status'], castToArray: false),
+            ],
         ),
         new Post(
             description: 'Create a new risk assessment with probability and impact analysis',
@@ -67,9 +77,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     denormalizationContext: ['groups' => ['risk:write']],
     processor: TenantAwareStateProcessor::class
 )]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'status' => 'exact', 'riskOwner.email' => 'partial', 'riskOwner.firstName' => 'partial', 'riskOwner.lastName' => 'partial'])]
-#[ApiFilter(OrderFilter::class, properties: ['title', 'createdAt', 'status'])]
-#[ApiFilter(DateFilter::class, properties: ['createdAt', 'reviewDate'])]
 class Risk
 {
     use RiskOwnerPersonTrait;
@@ -1049,15 +1056,6 @@ class Risk
     public function isAcceptanceApprovalRequired(): bool
     {
         return $this->treatmentStrategy === TreatmentStrategy::Accept && !$this->formallyAccepted;
-    }
-
-    /**
-     * Alias for backward compatibility
-     */
-    #[Deprecated(message: 'Use isAcceptanceApprovalRequired() instead')]
-    public function requiresAcceptanceApproval(): bool
-    {
-        return $this->isAcceptanceApprovalRequired();
     }
 
     /**
