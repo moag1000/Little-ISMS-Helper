@@ -80,9 +80,10 @@ final class SlaDeadlineMonitorRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function doraInitialNotification4hHasDuration4h(): void
+    public function doraInitialNotificationLatestAt24h(): void
     {
-        self::assertSame(4, SlaDeadlineType::DoraInitialNotification4h->durationHours());
+        // 4h after classification as major, 24h after awareness at the latest (RTS Art. 5).
+        self::assertSame(24, SlaDeadlineType::DoraInitialNotification4h->durationHours());
     }
 
     #[Test]

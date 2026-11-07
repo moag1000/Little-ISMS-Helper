@@ -16,6 +16,7 @@ use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\AutowireServiceClosure;
 
 /**
  * An incident flagged "data breach occurred" gets its GDPR data breach draft
@@ -35,10 +36,19 @@ final class IncidentDataBreachDraftListener
     /** @var array<int, Incident> */
     private array $pending = [];
 
+    /**
+     * Data breach service and module check are resolved on use, not when
+     * Doctrine builds its listeners: an eager instance pins them before
+     * tests can replace them.
+     */
     public function __construct(
-        private readonly DataBreachService $dataBreachService,
+        /** @var \Closure(): DataBreachService */
+        #[AutowireServiceClosure(DataBreachService::class)]
+        private readonly \Closure $dataBreachService,
         private readonly DataBreachRepository $dataBreachRepository,
-        private readonly ModuleConfigurationService $modules,
+        /** @var \Closure(): ModuleConfigurationService */
+        #[AutowireServiceClosure(ModuleConfigurationService::class)]
+        private readonly \Closure $modules,
         private readonly Security $security,
         private readonly LoggerInterface $logger,
     ) {
@@ -66,13 +76,13 @@ final class IncidentDataBreachDraftListener
             try {
                 $tenant = $incident->getTenant();
                 if ($tenant === null || $incident->getId() === null
-                    || !$this->modules->isModuleActiveForTenant('privacy', $tenant)
+                    || !($this->modules)()->isModuleActiveForTenant('privacy', $tenant)
                     || $this->dataBreachRepository->findOneBy(['incident' => $incident]) !== null
                 ) {
                     continue;
                 }
                 $user = $this->security->getUser();
-                $this->dataBreachService->createFromIncident($incident, $user instanceof User ? $user : null);
+                ($this->dataBreachService)()->createFromIncident($incident, $user instanceof User ? $user : null);
             } catch (\Throwable $e) {
                 $this->logger->error('Data breach draft from incident failed', [
                     'incident_id' => $incident->getId(),
