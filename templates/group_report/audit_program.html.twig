@@ -25,7 +25,7 @@
             {# First cell: program identity #}
             {% set _prog_cell = '<strong>' ~ program.title|e ~ '</strong>'
                 ~ '<br><code style="font-size:.7em;color:var(--fg-3);">' ~ program.auditNumber|e ~ '</code>'
-                ~ (program.plannedDate ? ' <span style="font-size:.75em;color:var(--fg-3);">· ' ~ program.plannedDate|date('Y-m-d') ~ '</span>' : '')
+                ~ (program.plannedDate ? ' <span style="font-size:.75em;color:var(--fg-3);">· ' ~ program.plannedDate|fa_date ~ '</span>' : '')
                 ~ (program.scopeType ? ' <code style="font-size:.7em;">' ~ program.scopeType|e ~ '</code>' : '') %}
             {% set _row = [ _prog_cell ] %}
 
@@ -91,7 +91,7 @@
             kicker:       'group_report.title'|trans({}, 'group_report'),
             status:       'auditor-only',
             audience:     'auditor',
-            generated_at: 'now'|date('d.m.Y H:i'),
+            generated_at: 'now'|fa_datetime,
         },
         brand_name: root.name,
         key_findings: [

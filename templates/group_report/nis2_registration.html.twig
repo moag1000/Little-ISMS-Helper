@@ -24,7 +24,7 @@
         {% set _class = tenant.nis2Classification|default('unknown') %}
         {% set _cbadge = _class == 'essential' ? 'confidential' : (_class == 'important' ? 'draft' : 'final') %}
         {% set _reg_cell = tenant.nis2RegisteredAt
-            ? '<span style="color:var(--success);font-weight:700;">' ~ tenant.nis2RegisteredAt|date('Y-m-d') ~ '</span>'
+            ? '<span style="color:var(--success);font-weight:700;">' ~ tenant.nis2RegisteredAt|fa_date ~ '</span>'
             : (tenant.isNis2Regulated
                 ? '<span style="color:var(--danger);font-weight:700;">' ~ ('group_report.nis2.registration.missing'|trans({}, 'group_report')) ~ '</span>'
                 : '<span style="color:var(--fg-3);">—</span>') %}
@@ -46,7 +46,7 @@
             kicker:       'NIS2 Directive · Art. 3 Registration',
             status:       'final',
             audience:     'aufsicht',
-            generated_at: 'now'|date('d.m.Y H:i'),
+            generated_at: 'now'|fa_datetime,
         },
         brand_name: root.name,
         key_findings: [

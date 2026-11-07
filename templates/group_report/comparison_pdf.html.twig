@@ -27,7 +27,7 @@
 </head>
 <body>
     <h1>{{ 'group_report.comparison.title'|trans({}, 'group_report') }}</h1>
-    <div class="meta">{{ 'group_report.comparison.subtitle'|trans({'%root%': root.name, '%count%': comparison.rows|length}, 'group_report') }} · {{ 'now'|date('d.m.Y') }}</div>
+    <div class="meta">{{ 'group_report.comparison.subtitle'|trans({'%root%': root.name, '%count%': comparison.rows|length}, 'group_report') }} · {{ 'now'|fa_date }}</div>
 
     <h2>{{ 'group_report.comparison.kpis.title'|trans({}, 'group_report') }}</h2>
     <p class="text-body-secondary">{{ 'group_report.comparison.kpis.intro'|trans({}, 'group_report') }}</p>

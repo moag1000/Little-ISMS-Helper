@@ -41,7 +41,7 @@
             kicker:       'group_report.title'|trans({}, 'group_report'),
             status:       'final',
             audience:     'auditor',
-            generated_at: 'now'|date('d.m.Y H:i'),
+            generated_at: 'now'|fa_datetime,
         },
         brand_name: root.name,
         key_findings: [
