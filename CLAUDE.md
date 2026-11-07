@@ -688,6 +688,8 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 ## Common Pitfalls
 
 1. **EntityManager closes after constraint violation** - Wrap in try-catch and check `$em->isOpen()`
+1b. **No `flush()` in postPersist/postUpdate listeners** - it re-enters the running commit. Queue derived rows
+    with `App\Doctrine\PostFlushWriter::persist()`; they are written in postFlush.
 2. **Unique constraint conflicts** - Check both by ID and unique fields before insert
 3. **Foreign key order** - Restore/delete entities in dependency order
 4. **Bootstrap not loaded** - Check `window.bootstrap` before using modals
