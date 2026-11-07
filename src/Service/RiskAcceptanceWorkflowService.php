@@ -440,19 +440,27 @@ class RiskAcceptanceWorkflowService
      */
     public function rejectAcceptance(Risk $risk, User $user, string $reason): array
     {
+        $wasAccepted = $risk->getStatus() === RiskStatus::Accepted;
         $risk->setFormallyAccepted(false);
+        // The request is decided: clear it, so the risk leaves the approver's queue
+        // (My Day, risk page). The reason stays in the audit log and lifecycle history.
+        $risk->setAcceptanceJustification(null);
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
 
-        // revert_to_assessed transition (accepted → assessed) via risk_lifecycle; reverts the acceptance decision.
-        $this->lifecycleService->transition(
-            $risk,
-            'risk_lifecycle',
-            'revert_to_assessed',
-            $user,
-            'Risk acceptance rejected: ' . $reason,
-        );
+        // revert_to_assessed (accepted → assessed) only when a granted acceptance is
+        // withdrawn; a still pending request never left "assessed", and the transition
+        // would throw there, so a rejection from the queue failed every time.
+        if ($wasAccepted) {
+            $this->lifecycleService->transition(
+                $risk,
+                'risk_lifecycle',
+                'revert_to_assessed',
+                $user,
+                'Risk acceptance rejected: ' . $reason,
+            );
+        }
 
         // Log rejection
         $this->auditLogger->logRiskAcceptanceRejected(

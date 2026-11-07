@@ -36,6 +36,7 @@ class FteCalibrationConstant implements SharedTenantRowsInterface
     public const string OP_MANUAL_CONTROL_MAPPING = 'manual_control_mapping';
     public const string OP_SINGLE_FRAMEWORK_EVIDENCE_MAINTENANCE = 'single_framework_evidence_maintenance';
     public const string OP_MANUAL_BUSINESS_PROCESS_CREATION = 'manual_business_process_creation';
+    public const string OP_MANUAL_RECORD_UPDATE = 'manual_record_update';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

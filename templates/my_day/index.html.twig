@@ -18,6 +18,7 @@
 {% set meta = {
     'workflows_pending':                  { icon: 'ui-undo',                tone: 'warning' },
     'risk_acceptance_pending':            { icon: 'nav-shield-alert',       tone: 'warning' },
+    'location_gaps':                      { icon: 'nav-location',           tone: 'warning' },
     'workflows_overdue':                  { icon: 'status-critical',        tone: 'danger'  },
     'four_eyes':                          { icon: 'nav-people',             tone: 'warning' },
     'acknowledgements':                   { icon: 'ui-check',               tone: 'primary' },
@@ -48,7 +49,7 @@
 {# Ordered category list. Items come from inbox.<key>; the three CM-only buckets
    default to [] when the aggregator did not provide them. Approvals and
    four-eyes requests come first: they are decided right here. #}
-{% set order = ['workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
+{% set order = ['workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','location_gaps','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
 {# Build the active list and the zero counter in one pass — avoids relying on a
    lazy |filter iterator being consumed twice. #}
 {# Jargon categories that get a hover-tooltip (junior aid) — the ones a 9001-
@@ -97,7 +98,17 @@
     {# KPI tiles — only categories WITH open actions are shown prominently.
        Zero-action categories are folded into one quiet line below, so the
        page leads with what actually needs doing (no 20-tile green wall). #}
-    <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
+    {# Phones: one scrollable strip of jump chips instead of a tile per category,
+       so the first decision is on the first screen. #}
+    <nav class="my-day-jump d-sm-none" aria-label="{{ 'my_day.jump.label'|trans({}, 'my_day') }}">
+        {% for c in activeCategories %}
+            <a href="#{{ c.anchor }}" class="fa-filter-chip my-day-jump__chip my-day-jump__chip--{{ c.tone }}">
+                {{ ('my_day.kpi.' ~ c.key)|trans({}, 'my_day') }}
+                <span class="my-day-jump__count">{{ c.count }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+    <div class="kpi-grid d-none d-sm-grid grid-responsive-250 gap-4 my-2rem">
         {% for c in activeCategories %}
             {{ _fa_feature_card.render({
                 icon: c.icon,
@@ -109,7 +120,7 @@
         {% endfor %}
     </div>
     {% if zeroCount > 0 %}
-        <p class="text-muted small mb-4">
+        <p class="text-muted small mb-4 d-none d-sm-block">
             <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
             {{ 'my_day.tiles.all_clear'|trans({'%count%': zeroCount}, 'my_day') }}
         </p>
@@ -127,13 +138,16 @@
                     <i class="fa-icon fa-icon--{{ c.icon }}" aria-hidden="true"></i>
                     {{ ('my_day.section.' ~ c.key)|trans({}, 'my_day') }}
                     {% if c.key in hinted %}
-                        <i class="fa-icon fa-icon--nav-info-circle text-muted" style="font-size:.8em;"
+                        <i class="fa-icon fa-icon--nav-info-circle text-muted my-day-section__hint-icon d-none d-sm-inline"
                            title="{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}" aria-label="{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}"></i>
                     {% endif %}
                     {{ pill.render(c.count, c.tone == 'danger' ? 'danger' : 'neutral', {class: 'ms-1'}) }}
                 </span>
             </summary>
             <div class="fa-section__body">
+                {% if c.key in hinted %}
+                    <p class="small text-muted mb-2 d-sm-none">{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}</p>
+                {% endif %}
                 <div class="list-group">
                     {% for item in c.items %}
                         {% set entityIcon = {
@@ -195,14 +209,20 @@
                                 {% elseif canDecideFourEyes %}
                                     <span class="my-day-item__actions">{% include 'four_eyes/_decision_buttons.html.twig' with { requestId: item.four_eyes_id } only %}</span>
                                 {% elseif item.acceptance_risk_id ?? false %}
-                                    {# Accept in one click; rejecting needs a reason → the risk page #}
+                                    {# Same two buttons and dialogs as a workflow approval #}
                                     <span class="my-day-item__actions">
-                                        <form method="post" action="{{ path('app_risk_approve_acceptance', {id: item.acceptance_risk_id}) }}" class="d-inline">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('approve-acceptance' ~ item.acceptance_risk_id) }}">
-                                            <input type="hidden" name="_back" value="my_day">
-                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'risk.acceptance.pending.approve'|trans({}, 'risk') }}</button>
-                                        </form>
-                                        <a href="{{ item.link }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'risk.acceptance.pending.reject'|trans({}, 'risk') }}</a>
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
+                                                data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open"
+                                                data-fa-modal-id="approveAcceptance{{ item.acceptance_risk_id }}">
+                                            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                                            {{ 'risk.acceptance.pending.approve'|trans({}, 'risk') }}
+                                        </button>
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+                                                data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open"
+                                                data-fa-modal-id="rejectAcceptance{{ item.acceptance_risk_id }}">
+                                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                                            {{ 'risk.acceptance.pending.reject'|trans({}, 'risk') }}
+                                        </button>
                                     </span>
                                 {% endif %}
                             </div>
@@ -215,10 +235,29 @@
 
     {# Decision dialogs live outside the <details> sections: a dialog inside a
        collapsed section would not be displayed. #}
-    {% for c in activeCategories|filter(c => c.key in ['workflows_pending', 'four_eyes']) %}
+    {% for c in activeCategories|filter(c => c.key in ['workflows_pending', 'risk_acceptance_pending', 'four_eyes']) %}
         {% for item in c.items %}
             {% if item.decision.decidable ?? false %}
-                {{ workflow_macros.decision_modals(item.decision.id, item.decision.name, item.title) }}
+                {{ workflow_macros.decision_modals(item.decision.id, item.decision.name, item.title, item.decision.summary ?? null) }}
+            {% elseif item.acceptance_risk_id ?? false %}
+                {% for d in [
+                    { id: 'approveAcceptance', tone: 'success', route: 'app_risk_approve_acceptance', token: 'approve-acceptance',
+                      label: 'risk.acceptance.pending.approve', field: { name: 'comments', label: 'risk.acceptance.pending.comments'|trans({}, 'risk') } },
+                    { id: 'rejectAcceptance', tone: 'danger', route: 'app_risk_reject_acceptance', token: 'reject-acceptance',
+                      label: 'risk.acceptance.pending.reject', field: { name: 'reason', label: 'risk.acceptance.pending.reason'|trans({}, 'risk'), required: true } },
+                ] %}
+                    {{ workflow_macros.decision_modal({
+                        id: d.id ~ item.acceptance_risk_id,
+                        tone: d.tone,
+                        title: d.label|trans({}, 'risk'),
+                        action: path(d.route, {id: item.acceptance_risk_id}),
+                        token: csrf_token(d.token ~ item.acceptance_risk_id),
+                        subject: item.title,
+                        summary: item.subtitle,
+                        field: d.field,
+                        hidden: { _back: 'my_day' },
+                    }) }}
+                {% endfor %}
             {% elseif (item.four_eyes_id ?? null) and is_granted('ROLE_MANAGER') %}
                 {% include 'four_eyes/_reject_modal.html.twig' with { requestId: item.four_eyes_id } only %}
             {% endif %}
@@ -231,25 +270,38 @@
 <style>
 /* My-Day accordion — collapsed sections show only the summary (title + count).
    Density-aware spacing comes from the global body[data-density] tokens. */
-.my-day-section { border: 1px solid var(--border); border-radius: var(--radius-md, .5rem); overflow: hidden; }
-.my-day-section__summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .75rem 1rem; }
+.my-day-section { border: 1px solid var(--border); border-radius: var(--radius-md, .5rem); overflow: hidden; scroll-margin-top: 4.5rem; }
+.my-day-section__summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .75rem 1rem; min-height: 44px; }
 .my-day-section__summary::-webkit-details-marker { display: none; }
 .my-day-section__summary::after { content: '\203A'; font-size: 1.25rem; line-height: 1; color: var(--fg-2); transition: transform .15s ease; }
 .my-day-section[open] > .my-day-section__summary::after { transform: rotate(90deg); }
 .my-day-section__summary:hover { background: var(--surface-2); }
+.my-day-section__hint-icon { font-size: .8em; }
 body[data-density='compact'] .my-day-section__summary { padding: .4rem .75rem; }
 /* One row per item: what it is on the left, status and the decision on the
    right. On a phone the decision drops below the text with full-size buttons. */
 .my-day-item { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: .5rem 1rem; }
 .my-day-item__main { flex: 1 1 18rem; min-width: 0; }
-.my-day-item__title { color: var(--fg); text-decoration: none; }
+.my-day-item__title { color: var(--fg); text-decoration: none; overflow-wrap: anywhere; }
 .my-day-item__title:hover { text-decoration: underline; }
 .my-day-item__side { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .4rem; }
 .my-day-item__actions { display: inline-flex; flex-wrap: wrap; gap: .4rem; }
 .my-day-item__actions form { display: inline; }
+/* Phone jump strip: one row, scrolls sideways, each chip jumps to its section. */
+.my-day-jump { display: flex; gap: .5rem; overflow-x: auto; margin: 1rem 0 1.25rem; padding-bottom: .25rem; scrollbar-width: none; }
+.my-day-jump::-webkit-scrollbar { display: none; }
+.my-day-jump__chip { flex: 0 0 auto; display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; white-space: nowrap; text-decoration: none; }
+.my-day-jump__count { font-weight: 700; font-variant-numeric: tabular-nums; }
+.my-day-jump__chip--danger .my-day-jump__count { color: var(--danger); }
+.my-day-jump__chip--warning .my-day-jump__count { color: var(--warning); }
 @media (max-width: 575.98px) {
+    .my-day .list-group-item { padding: .75rem; }
     .my-day-item__side { justify-content: flex-start; width: 100%; }
-    .my-day-item__actions .fa-cyber-btn { min-height: 44px; }
+    /* Decision buttons share the row and are thumb-sized. */
+    .my-day-item__actions { display: flex; width: 100%; }
+    .my-day-item__actions > .fa-cyber-btn,
+    .my-day-item__actions > form { flex: 1 1 0; }
+    .my-day-item__actions .fa-cyber-btn { min-height: 44px; width: 100%; justify-content: center; }
 }
 </style>
 {% endblock %}

@@ -64,8 +64,12 @@
                     {% endif %}
 
                     <div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.table.progress'|trans({}, 'objective') }}</div>
-                    {{ _fa_progress.render({ value: objective.progressPercentage, tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'), showText: true, class: 'mb-2' }) }}
-                    <p><strong>{{ 'objective.label.current'|trans({}, 'objective') }}:</strong> {{ objective.currentValue }} {{ objective.unit }} / <strong>{{ 'objective.label.target'|trans({}, 'objective') }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
+                    {% set _pct = kpi_progress ?? objective.progressPercentage %}
+                    {{ _fa_progress.render({ value: _pct, tone: _pct >= 75 ? 'success' : (_pct >= 50 ? 'warning' : 'danger'), showText: true, class: 'mb-2' }) }}
+                    <p><strong>{{ 'objective.label.current'|trans({}, 'objective') }}:</strong> {{ kpi_current ?? objective.currentValue }} {{ objective.unit }} / <strong>{{ 'objective.label.target'|trans({}, 'objective') }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
+                    {% if objective.kpiKey %}
+                        <p class="text-muted-color small">{{ 'objective.label.kpi_computed'|trans({ '%kpi%': ('dashboard.kpi.' ~ objective.kpiKey)|trans({}, 'dashboard'), '%scope%': objective.kpiLocation ? objective.kpiLocation.name : 'objective.label.kpi_scope_all'|trans({}, 'objective') }, 'objective') }}{% if objective.kpiLocation %} · <a href="{{ path('app_location_map', { site: objective.kpiLocation.id }) }}">{{ 'objective.label.kpi_on_map'|trans({}, 'objective') }}</a>{% endif %}</p>
+                    {% endif %}
 
                     {% if objective.progressNotes %}
                     <div class="fw-semibold text-muted small text-uppercase mb-2 mt-3">{{ 'objective.field.progress_notes'|trans({}, 'objective') }}</div>

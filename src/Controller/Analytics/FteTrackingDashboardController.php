@@ -109,6 +109,7 @@ class FteTrackingDashboardController extends AbstractController
             FteCalibrationConstant::OP_MANUAL_CONTROL_MAPPING,
             FteCalibrationConstant::OP_SINGLE_FRAMEWORK_EVIDENCE_MAINTENANCE,
             FteCalibrationConstant::OP_MANUAL_BUSINESS_PROCESS_CREATION,
+            FteCalibrationConstant::OP_MANUAL_RECORD_UPDATE,
         ];
 
         if ($request->isMethod('POST')) {
