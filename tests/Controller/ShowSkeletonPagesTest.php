@@ -8,6 +8,7 @@ use App\Entity\Asset;
 use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Risk;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\IncidentSeverity;
@@ -46,7 +47,7 @@ final class ShowSkeletonPagesTest extends WebTestCase
         $this->uid = substr(uniqid('', true), -8);
         $this->tenant = (new Tenant())->setName('Show ' . $this->uid)->setCode('show_' . $this->uid);
         $this->tenant->setActiveModules(array_values(array_unique([
-            ...$modules->getInstanceDefaultModules(), 'risks', 'assets', 'controls', 'incidents', 'documents',
+            ...$modules->getInstanceDefaultModules(), 'risks', 'assets', 'controls', 'incidents', 'documents', 'suppliers',
         ])));
         $this->em->persist($this->tenant);
 
@@ -111,15 +112,25 @@ final class ShowSkeletonPagesTest extends WebTestCase
         $incident->addRealizedRisk($risk);
         $this->em->persist($incident);
 
+        $supplier = new Supplier();
+        $supplier->setTenant($this->tenant);
+        $supplier->setName('Hoster ' . $this->uid);
+        $supplier->setEmail('hoster_' . $this->uid . '@example.com');
+        $supplier->setContactPerson('Hoster Kontakt');
+        $supplier->setCriticality('high');
+        $supplier->setServiceProvided('Hosting Kundenportal');
+        $supplier->addSupportedAsset($asset);
+        $this->em->persist($supplier);
+
         $this->em->flush();
-        $this->records = ['asset' => $asset, 'control' => $control, 'risk' => $risk, 'incident' => $incident];
+        $this->records = ['asset' => $asset, 'control' => $control, 'risk' => $risk, 'incident' => $incident, 'supplier' => $supplier];
         // Pages read the inverse sides (asset → risks, risk → incidents) from the database.
         $this->em->clear();
     }
 
     protected function tearDown(): void
     {
-        foreach (['incident', 'risk', 'control', 'asset'] as $key) {
+        foreach (['supplier', 'incident', 'risk', 'control', 'asset'] as $key) {
             $record = isset($this->records[$key]) ? $this->em->find($this->records[$key]::class, $this->records[$key]->getId()) : null;
             if ($record !== null) {
                 try {
@@ -185,5 +196,19 @@ final class ShowSkeletonPagesTest extends WebTestCase
         self::assertSelectorExists('[data-testid="links-incident"] a[href*="fromRisk=' . $this->records['risk']->getId() . '"]');
         self::assertSelectorTextContains('[data-testid="links-evidence"]', 'Keine Verknüpfung.');
         self::assertSelectorTextContains('[data-testid="status-band"]', 'Restrisiko');
+    }
+
+    #[Test]
+    public function aSupplierPageShowsItsPartOfTheChainAndItsHistory(): void
+    {
+        $this->client->loginUser($this->user);
+        $this->client->request('GET', '/de/supplier/' . $this->records['supplier']->getId());
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('[data-testid="status-band"]');
+        self::assertSelectorTextContains('[data-testid="links-asset"]', 'Kundenportal ' . $this->uid);
+        self::assertSelectorTextContains('[data-testid="links-risk"]', 'Keine Verknüpfung.');
+        self::assertSelectorNotExists('[data-testid="links-control"]');
+        self::assertSelectorExists('#history');
     }
 }

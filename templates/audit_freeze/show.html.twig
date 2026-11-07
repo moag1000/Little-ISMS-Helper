@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ freeze.freezeName }} · {{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}{% endblock %}
 
@@ -34,6 +35,16 @@
         subtitle: ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze'),
         actions: _show_actions
     }) }}
+
+    {{ _fa_status_band.render({
+        facts: [
+            { label: 'show.status.date'|trans({}, 'messages'), value: freeze.stichtag|fa_date },
+            { label: 'audit_freeze.column.created_by'|trans({}, 'audit_freeze'), value: freeze.createdBy.email|default(null) },
+            { label: 'show.status.framework'|trans({}, 'messages'), value: freeze.frameworkCodes|join(', ') },
+        ],
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: freeze } only %}
 
     {# PDF locale-switch + POST-generate kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if freeze.pdfPath %}
@@ -70,7 +81,7 @@
     {% endif %}
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 fa-show-section" id="details">
             <div class="card fa-section shadow-sm mb-4">
                 <div class="card-header">
                     <h2 class="h5 mb-0">{{ 'audit_freeze.meta.title'|trans({}, 'audit_freeze') }}</h2>
@@ -78,7 +89,7 @@
                 <div class="card-body">
                     <dl class="row mb-0">
                         <dt class="col-sm-4">{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}</dt>
-                        <dd class="col-sm-8">{{ freeze.createdAt|date('Y-m-d H:i') }}</dd>
+                        <dd class="col-sm-8">{{ freeze.createdAt|fa_datetime }}</dd>
 
                         <dt class="col-sm-4">{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}</dt>
                         <dd class="col-sm-8">{{ freeze.createdBy.email|default('—') }}</dd>
@@ -118,6 +129,8 @@
             </div>
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: freeze } only %}
     {% endif %} {# /M-4 audits module gate #}
 </div>
 {% endblock %}

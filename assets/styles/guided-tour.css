@@ -326,7 +326,7 @@
 
 @media print {
     /* Print-Mode optimiert für A4-Handout */
-    body { background: var(--print-bg) !important; color: var(--print-fg) !important; }
+    body { color: var(--print-fg) !important; }
     .header, .footer, .mega-menu, .breadcrumb, .toast-container,
     .alert-dismissible, .d-print-none, .guided-tour-banner,
     .modal, .command-palette-modal { display: none !important; }

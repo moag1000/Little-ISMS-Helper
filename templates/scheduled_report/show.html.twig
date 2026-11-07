@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'scheduled_reports' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ report.name }}{% endblock %}
 
@@ -31,9 +33,38 @@
         ]
     }) }}
 
+    {% set _status %}
+        {% if report.active %}
+            <span class="fa-status-pill fa-status-pill--success">{{ 'scheduled_report.status.active'|trans({}, 'scheduled_reports') }}</span>
+        {% else %}
+            <span class="fa-status-pill fa-status-pill--neutral">{{ 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports') }}</span>
+        {% endif %}
+    {% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'scheduled_report.form.report_type'|trans({}, 'scheduled_reports'), value: ('scheduled_report.type.' ~ report.reportType)|trans({}, 'scheduled_reports') },
+            { label: 'scheduled_report.form.schedule'|trans({}, 'scheduled_reports'), value: ('scheduled_report.schedule.' ~ report.schedule)|trans({}, 'scheduled_reports') },
+            { label: 'scheduled_report.next_run'|trans({}, 'scheduled_reports'), value: report.active and report.nextRunAt ? report.nextRunAt|fa_datetime : null },
+        ],
+        workflow: workflow_state(report),
+    }) }}
+
+    {% set _links = entity_links(report) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'scheduled_report.details.title'|trans({}, 'scheduled_reports') },
+        { id: 'recipients', label: 'scheduled_report.recipients.title'|trans({}, 'scheduled_reports') },
+        { id: 'last-run', label: 'scheduled_report.last_run.title'|trans({}, 'scheduled_reports'), show: report.lastRunAt is not empty },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: report } only %}
+
     <div class="row">
         {# Main Info #}
         <div class="col-md-8">
+            <div id="details" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -90,8 +121,10 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+            </div>
 
             {# Recipients #}
+            <div id="recipients" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -114,9 +147,11 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+            </div>
 
             {# Last Run Info #}
             {% if report.lastRunAt %}
+            <div id="last-run" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -129,7 +164,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <strong>{{ 'scheduled_report.last_run.time'|trans({}, 'scheduled_reports') }}:</strong><br>
-                            {{ report.lastRunAt|date('Y-m-d H:i') }}
+                            {{ report.lastRunAt|fa_datetime }}
                         </div>
                         <div class="col-md-4">
                             <strong>{{ 'scheduled_report.last_run.status'|trans({}, 'scheduled_reports') }}:</strong><br>
@@ -146,6 +181,7 @@
                     </div>
                 {% endblock %}
             {% endembed %}
+            </div>
             {% endif %}
         </div>
 
@@ -179,7 +215,7 @@
                         {% if report.active and report.nextRunAt %}
                         <p class="mb-2">
                             <strong>{{ 'scheduled_report.next_run'|trans({}, 'scheduled_reports') }}:</strong><br>
-                            {{ report.nextRunAt|date('Y-m-d H:i') }}
+                            {{ report.nextRunAt|fa_datetime }}
                             {% if report.isDue() %}
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
                             {% endif %}
@@ -258,20 +294,22 @@
                 {% block card_body %}
                     <small class="text-muted">
                         <strong>{{ 'scheduled_report.metadata.created'|trans({}, 'scheduled_reports') }}:</strong><br>
-                        {{ report.createdAt|date('Y-m-d H:i') }}
+                        {{ report.createdAt|fa_datetime }}
                         {% if report.createdBy %}
                         ({{ report.createdBy.email }})
                         {% endif %}
                         <br><br>
                         {% if report.updatedAt %}
                         <strong>{{ 'scheduled_report.metadata.updated'|trans({}, 'scheduled_reports') }}:</strong><br>
-                        {{ report.updatedAt|date('Y-m-d H:i') }}
+                        {{ report.updatedAt|fa_datetime }}
                         {% endif %}
                     </small>
                 {% endblock %}
             {% endembed %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: report } only %}
     {% endif %} {# /M-4 scheduled_reports module gate #}
 </div>
 {% endblock %}

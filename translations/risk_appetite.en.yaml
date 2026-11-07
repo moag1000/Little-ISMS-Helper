@@ -16,7 +16,6 @@ risk_appetite:
         definition: Definition
         approval: Approval
         details: Details
-        history: History
     field:
         category: Category
         max_acceptable_risk: 'Max acceptable risk'
