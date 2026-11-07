@@ -35,7 +35,7 @@
                 <summary class="fa-framework-refs__label">
                     {{ child.vars.label|trans({}, 'control') }}
                     {%- if has_value -%}
-                        <span class="fa-framework-refs__badge badge bg-info-subtle text-info-emphasis">{{ child.vars.value|split(',')|length }}</span>
+                        <span class="fa-framework-refs__badge fa-status-pill fa-status-pill--primary fa-status-pill--sm">{{ child.vars.value|split(',')|length }}</span>
                     {%- endif -%}
                 </summary>
                 <div class="fa-framework-refs__input-wrap">

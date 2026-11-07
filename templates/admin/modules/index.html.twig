@@ -45,7 +45,7 @@
             <i class="fa-icon fa-icon--nav-building me-1" aria-hidden="true"></i>
             {{ 'admin.modules.scope_hint'|trans({ '%tenant%': module_scope_tenant }, 'admin') }}
             {% if module_scope_inherited %}
-                <span class="badge bg-secondary ms-1">{{ 'admin.modules.scope_inherited'|trans({}, 'admin') }}</span>
+                <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ 'admin.modules.scope_inherited'|trans({}, 'admin') }}</span>
             {% endif %}
         </p>
     {% endif %}

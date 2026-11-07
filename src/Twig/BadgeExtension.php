@@ -15,9 +15,8 @@ use Twig\Attribute\AsTwigFunction;
  *
  * Aurora v4 Migration:
  * - All methods return BC-aliased dual class-set:
- *   "badge bg-{bs-color} fa-status-pill fa-status-pill--{aurora-variant}"
- * - Bootstrap classes kept for backward-compat (templates using the class
- *   string directly without going through _badge.html.twig macro).
+ *   "fa-status-pill fa-status-pill--{aurora-variant}"
+ * - No Bootstrap `badge bg-*` classes are emitted any more.
  * - Variant mapping: BS "secondary" → Aurora "neutral", BS "info" → Aurora "primary".
  *
  * @author Claude Code
@@ -165,20 +164,20 @@ final class BadgeExtension
     ];
 
     /**
-     * Returns the BC-aliased dual class string for a given Bootstrap color.
+     * Returns the Aurora status-pill class string for a given Bootstrap color.
      *
-     * Example: buildBadgeClasses('danger') → "badge bg-danger fa-status-pill fa-status-pill--danger"
+     * Example: buildBadgeClasses('danger') → "fa-status-pill fa-status-pill--danger"
      */
     private function buildBadgeClasses(string $bsColor): string
     {
         $auroraVariant = self::BS_TO_AURORA[$bsColor] ?? 'neutral';
-        return "badge bg-{$bsColor} fa-status-pill fa-status-pill--{$auroraVariant}";
+        return "fa-status-pill fa-status-pill--{$auroraVariant}";
     }
 
     /**
      * Resolves a Bootstrap color to its Aurora status-pill tone name.
      *
-     * Used by templates that have migrated from raw <span class="badge bg-*">
+     * Used by templates that have migrated from raw <span class="badge ...">
      * to the _status_pill.html.twig macro and need the semantic tone only.
      */
     private function resolveAuroraTone(string $bsColor): string
@@ -263,7 +262,7 @@ final class BadgeExtension
      * Get Bootstrap badge class for severity level
      *
      * @param string|int|\BackedEnum $severity Severity level (critical/high/medium/low or 1-5 or backed enum)
-     * @return string BC-aliased badge classes: "badge bg-{color} fa-status-pill fa-status-pill--{variant}"
+     * @return string Badge classes: "fa-status-pill fa-status-pill--{variant}"
      */
     #[AsTwigFunction('badge_severity')]
     public function getSeverityBadgeClass(string|int|\BackedEnum $severity): string

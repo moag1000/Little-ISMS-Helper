@@ -43,7 +43,7 @@
                             <span>
                                 <strong>{{ supplier.name }}</strong>
                                 {% if supplier.criticality is defined and supplier.criticality %}
-                                    <span class="badge bg-secondary ms-2">{{ supplier.criticality }}</span>
+                                    <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ supplier.criticality }}</span>
                                 {% endif %}
                                 {% if supplier.description %}
                                     <br><small class="text-muted">{{ supplier.description|u.truncate(120, '…') }}</small>

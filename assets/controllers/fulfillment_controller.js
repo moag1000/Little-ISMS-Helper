@@ -48,13 +48,8 @@ export default class extends Controller {
             this.progressBarTarget.style.width = value + '%';
 
             // Update color based on value
-            if (value >= 75) {
-                this.progressBarTarget.style.backgroundColor = '#28a745';
-            } else if (value >= 50) {
-                this.progressBarTarget.style.backgroundColor = '#ffc107';
-            } else {
-                this.progressBarTarget.style.backgroundColor = '#dc3545';
-            }
+            this.progressBarTarget.style.backgroundColor =
+                value >= 75 ? 'var(--success)' : (value >= 50 ? 'var(--warning)' : 'var(--danger)');
         }
     }
 }

@@ -33,35 +33,35 @@
         <div class="row mb-4">
             <div class="col-12">
                 {% if profile.isOverdue %}
-                    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
-                        <i class="fa-icon fa-icon--status-warning fs-4" aria-hidden="true"></i>
-                        <div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'status-warning' } } %}
+                        {% block alert_body %}
+                            {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.nis2_registration.status.overdue'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.overdue_body'|trans({
-                                '%date%': profile.nextDueAt|date('d.m.Y')
+                                '%date%': profile.nextDueAt|fa_date
                             }) }}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 {% elseif profile.isDueSoon(30) %}
-                    <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
-                        <i class="fa-icon fa-icon--ui-clock fs-4" aria-hidden="true"></i>
-                        <div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'ui-clock' } } %}
+                        {% block alert_body %}
+                            {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.nis2_registration.status.due_soon'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.due_soon_body'|trans({
-                                '%date%': profile.nextDueAt|date('d.m.Y')
+                                '%date%': profile.nextDueAt|fa_date
                             }) }}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 {% else %}
-                    <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
-                        <i class="fa-icon fa-icon--ui-check fs-4" aria-hidden="true"></i>
-                        <div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'ui-check' } } %}
+                        {% block alert_body %}
+                            {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.nis2_registration.status.current'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.current_body'|trans({
-                                '%date%': profile.nextDueAt|date('d.m.Y')
+                                '%date%': profile.nextDueAt|fa_date
                             }) }}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 {% endif %}
             </div>
         </div>
@@ -127,7 +127,7 @@
                             <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.sector'|trans }}</dt>
                             <dd class="col-sm-7">
                                 {% if profile.nis2Sector %}
-                                    <span class="badge bg-secondary">{{ ('eu_authorities.nis2_registration.sector.' ~ profile.nis2Sector)|trans }}</span>
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ ('eu_authorities.nis2_registration.sector.' ~ profile.nis2Sector)|trans }}</span>
                                 {% else %}
                                     —
                                 {% endif %}
@@ -218,7 +218,7 @@
                             {% endif %}
                         </p>
                         <p class="mb-0"><strong>{{ 'eu_authorities.nis2_registration.field.next_due'|trans }}:</strong>
-                            {{ profile.nextDueAt|date('d.m.Y') }}
+                            {{ profile.nextDueAt|fa_date }}
                         </p>
                     </div>
                     <div class="col-md-6 d-flex gap-2 flex-wrap">

@@ -5,6 +5,7 @@
 
 {% block body %}
 {% import '_components/_fa_form_layout.html.twig' as _fa_form %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -82,9 +83,7 @@
                         } }) }}
                         <span data-progress-slider-target="display" class="fa-status-pill fa-status-pill--primary">{{ form.vars.data.implementationPercentage }}%</span>
                     </div>
-                    <div class="progress mt-2">
-                        <div data-progress-slider-target="bar" class="progress-bar" style="width: {{ form.vars.data.implementationPercentage }}%">{{ form.vars.data.implementationPercentage }}%</div>
-                    </div>
+                    {{ _fa_progress.render({value: form.vars.data.implementationPercentage|default(0), showText: true, class: 'mt-2', label: form.implementationPercentage.vars.label|trans({}, 'control'), barAttrs: {'data-progress-slider-target': 'bar'}}) }}
                     {{ form_help(form.implementationPercentage) }}
                     {{ form_errors(form.implementationPercentage) }}
                 </div>

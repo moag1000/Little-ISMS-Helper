@@ -38,8 +38,9 @@
 
             <div class="fa-onboarding-banner__actions">
                 {% for cta in config.ctas|default([]) %}
+                    {% set _btn_tone = {'primary': 'primary', 'success': 'success', 'warning': 'warning', 'danger': 'danger', 'info': 'primary', 'outline-secondary': 'ghost', 'link': 'ghost'}[cta.variant|default('secondary')]|default('secondary') %}
                     <a href="{{ cta.href }}"
-                       class="btn btn-{{ cta.variant|default('secondary') }} btn-sm">
+                       class="fa-cyber-btn fa-cyber-btn--{{ _btn_tone }} fa-cyber-btn--sm">
                         {{ cta.label }}
                     </a>
                 {% endfor %}

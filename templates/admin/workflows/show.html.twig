@@ -84,7 +84,7 @@
                                         <td class="fa-table__cell">
                                             <strong>{{ step.effective.name ?? step.yaml.name ?? ('admin.workflows.step.unnamed'|trans) }}</strong>
                                             {% if step.has_overrides %}
-                                                <span class="badge bg-warning text-dark ms-1 small">
+                                                <span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm ms-1">
                                                     {{ 'admin.workflows.step.overridden'|trans }}
                                                 </span>
                                             {% endif %}
@@ -114,7 +114,7 @@
                                         <td class="fa-table__cell">
                                             {% if step.overrides is not empty %}
                                                 {% for key, val in step.overrides %}
-                                                    <span class="badge bg-warning text-dark me-1 small">{{ key }}</span>
+                                                    <span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm me-1">{{ key }}</span>
                                                 {% endfor %}
                                             {% else %}
                                                 <span class="fa-table__cell--muted">{{ 'admin.workflows.yaml_baseline'|trans }}</span>

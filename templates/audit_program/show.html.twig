@@ -23,7 +23,7 @@
 }) }}
 
 <div class="container-fluid py-4">
-    {% set _status %}<span class="badge bg-{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'secondary') }}">{{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}</span>{% endset %}
+    {% set _status %}<span class="fa-status-pill fa-status-pill--{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'neutral') }}">{{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}</span>{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         facts: [
@@ -73,7 +73,7 @@
             <div class="card mb-4 fa-show-section" id="audits">
                 <div class="card-header">
                     <h2 class="h6 mb-0 d-inline">{{ 'audit_program.show.linked_audits'|trans({}, 'audit_program') }}</h2>
-                    <span class="badge bg-secondary ms-2">{{ program.auditCount }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm ms-2">{{ program.auditCount }}</span>
                 </div>
                 <div class="card-body p-0">
                     {% if program.internalAudits is empty %}
@@ -95,7 +95,7 @@
                                     <td class="fa-table__cell"><a href="{{ path('app_audit_show', {_locale: app.request.locale, id: audit.id}) }}">{{ audit.auditNumber }}</a></td>
                                     <td class="fa-table__cell">{{ audit.title }}</td>
                                     <td class="fa-table__cell">{{ audit.plannedDate|fa_date }}</td>
-                                    <td class="fa-table__cell"><span class="badge bg-secondary">{{ audit.status }}</span></td>
+                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ audit.status }}</span></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -148,12 +148,12 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('archive-audit-program-' ~ program.id) }}">
                         <label for="audit-program-archive-reason" class="form-label small">{{ 'audit_program.show.archive_reason'|trans({}, 'audit_program') }}</label>
                         <textarea id="audit-program-archive-reason" name="reason" class="form-control form-control-sm mb-2" rows="2" required maxlength="1000"></textarea>
-                        <button type="submit" class="btn btn-sm btn-outline-warning w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.archive_confirm'|trans({}, 'audit_program') }}">{{ 'audit_program.action.archive'|trans({}, 'audit_program') }}</button>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.archive_confirm'|trans({}, 'audit_program') }}">{{ 'audit_program.action.archive'|trans({}, 'audit_program') }}</button>
                     </form>
                     {% endif %}
                     <form method="post" action="{{ path('app_audit_program_delete', {_locale: app.request.locale, id: program.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete-audit-program-' ~ program.id) }}">
-                        <button type="submit" class="btn btn-sm btn-danger w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.delete_confirm'|trans({}, 'audit_program') }}" data-ui-actions-tone-param="danger">{{ 'audit_program.action.delete'|trans({}, 'audit_program') }}</button>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.delete_confirm'|trans({}, 'audit_program') }}" data-ui-actions-tone-param="danger">{{ 'audit_program.action.delete'|trans({}, 'audit_program') }}</button>
                     </form>
                 </div>
             </div>

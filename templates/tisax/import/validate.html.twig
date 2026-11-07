@@ -59,32 +59,38 @@
 
             {# Errors #}
             {% if validation.errors is not empty %}
-                <div class="alert alert-danger">
+                <div class="fa-alert fa-alert--danger" role="alert">
+                    <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body">
                     <strong>{{ 'tisax.import.validate.errors_heading'|trans({}, 'tisax_isa') }}</strong>
                     <ul class="mb-0 mt-1">
                         {% for error in validation.errors %}
                             <li>{{ error }}</li>
                         {% endfor %}
                     </ul>
+                    </div>
                 </div>
             {% endif %}
 
             {# Warnings #}
             {% if validation.warnings is not empty %}
-                <div class="alert alert-warning">
+                <div class="fa-alert fa-alert--warning" role="alert">
+                    <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body">
                     <strong>{{ 'tisax.import.validate.warnings_heading'|trans({}, 'tisax_isa') }}</strong>
                     <ul class="mb-0 mt-1">
                         {% for warning in validation.warnings %}
                             <li>{{ warning }}</li>
                         {% endfor %}
                     </ul>
+                    </div>
                 </div>
             {% endif %}
 
             {% if validation.ok %}
-                <div class="alert alert-success">
-                    <i class="fa-icon fa-icon--check-circle-fill me-1"></i>
-                    {{ 'tisax.import.validate.ok'|trans({}, 'tisax_isa') }}
+                <div class="fa-alert fa-alert--success" role="alert">
+                    <i class="fa-icon fa-icon--status-ok fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body"><p class="fa-alert__message">{{ 'tisax.import.validate.ok'|trans({}, 'tisax_isa') }}</p></div>
                 </div>
             {% endif %}
 
@@ -92,13 +98,13 @@
                 {% if canProceed %}
                     <form method="post" action="{{ path('app_tisax_import_validate', { _locale: app.request.locale }) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('tisax_proceed') }}">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             {{ 'tisax.import.validate.proceed'|trans({}, 'tisax_isa') }}
                             <i class="fa-icon fa-icon--util-arrow-right ms-1"></i>
                         </button>
                     </form>
                 {% endif %}
-                <a href="{{ path('app_tisax_import_upload', { _locale: app.request.locale }) }}" class="btn btn-outline-secondary">
+                <a href="{{ path('app_tisax_import_upload', { _locale: app.request.locale }) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     {{ 'common.back'|trans({}, 'messages') }}
                 </a>
             </div>

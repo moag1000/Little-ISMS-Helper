@@ -57,9 +57,8 @@
                 {{ 'system_templates.modal.intro'|trans({}, 'system_templates') }}
             </p>
             {% if templates is empty %}
-                <div class="alert alert-info mb-0" role="alert">
-                    {{ 'system_templates.modal.empty'|trans({}, 'system_templates') }}
-                </div>
+                {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+                {{ _fa_alert.render({variant: 'info', class: 'mb-0', body: 'system_templates.modal.empty'|trans({}, 'system_templates')}) }}
             {% else %}
                 <ul class="list-group">
                     {% for tpl in templates %}
@@ -75,17 +74,17 @@
                                     <div class="fw-semibold">{{ tpl.name }}</div>
                                     <div class="small text-body-secondary">{{ tpl.description }}</div>
                                     {% if tpl.items is not null %}
-                                        <span class="badge bg-secondary mt-1">
+                                        <span class="fa-status-pill fa-status-pill--neutral mt-1">
                                             {{ 'system_templates.modal.bulk_records'|trans({'%count%': tpl.items|length}, 'system_templates') }}
                                         </span>
                                     {% endif %}
                                     {% if tpl.module %}
-                                        <span class="badge bg-light text-dark border mt-1">
+                                        <span class="fa-status-pill fa-status-pill--neutral border mt-1">
                                             {{ tpl.module }}
                                         </span>
                                     {% endif %}
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-sm align-self-center">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm align-self-center">
                                     <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                     {{ 'system_templates.modal.apply'|trans({}, 'system_templates') }}
                                 </button>
@@ -98,7 +97,7 @@
 
         <footer class="fa-modal__footer">
             <button type="button"
-                    class="btn btn-outline-secondary"
+                    class="fa-cyber-btn fa-cyber-btn--ghost"
                     data-action="fa-modal#cancel">
                 {{ 'common.close'|trans({}, 'messages') }}
             </button>

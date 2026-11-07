@@ -89,8 +89,9 @@ export default class extends Controller {
 
             if (data.success) {
                 this.feedbackTarget.innerHTML = `
-                    <div class="alert alert-success">
-                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${data.message}
+                    <div class="fa-alert fa-alert--success" role="alert">
+                        <i class="fa-icon fa-icon--status-ok fa-alert__icon" aria-hidden="true"></i>
+                        <div class="fa-alert__body"><p class="fa-alert__message">${data.message}</p></div>
                     </div>
                 `;
 
@@ -157,8 +158,9 @@ export default class extends Controller {
     showError(message) {
         if (this.hasFeedbackTarget) {
             this.feedbackTarget.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> ${message}
+                <div class="fa-alert fa-alert--danger" role="alert">
+                    <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body"><p class="fa-alert__message">${message}</p></div>
                 </div>
             `;
         }

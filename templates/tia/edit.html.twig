@@ -63,11 +63,11 @@
         {% endembed %}
 
         <div class="d-flex gap-2 mb-4">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--check" aria-hidden="true"></i>
                 {{ 'tia.action.save'|trans({}, 'tia') }}
             </button>
-            <a href="{{ path('app_tia_show', {paId: processing_activity.id, id: tia.id}) }}" class="btn btn-ghost">
+            <a href="{{ path('app_tia_show', {paId: processing_activity.id, id: tia.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'tia.action.cancel'|trans({}, 'tia') }}
             </a>
         </div>

@@ -416,7 +416,7 @@
                                     <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i>
                                     {{ ca.title }}
                                 </a>
-                                <span class="badge bg-light text-dark ms-1">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span>
                             </li>
                         {% endfor %}
                     </ul>

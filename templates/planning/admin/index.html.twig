@@ -39,7 +39,7 @@
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h2 class="h5 mb-0">{{ 'planning.tab.teams'|trans({}, 'planning') }}</h2>
-            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_planning_team_index') }}">{{ 'planning.common.manage'|trans({}, 'planning') }}</a>
+            <a class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm" href="{{ path('app_planning_team_index') }}">{{ 'planning.common.manage'|trans({}, 'planning') }}</a>
         </div>
         {% if teams is empty %}
             <p class="text-muted">{{ 'planning.team.message.no_teams'|trans({}, 'planning') }}</p>
@@ -61,7 +61,7 @@
                     <td class="fa-table__cell">{{ team.memberCount }}</td>
                     <td class="fa-table__cell">{{ team.teamLead ? team.teamLead.fullName : (team.teamLeadPerson ? team.teamLeadPerson.fullName : '—') }}</td>
                     <td class="fa-table__cell fa-table__cell--actions">
-                        <a class="btn btn-sm btn-link" href="{{ path('app_planning_team_edit', { id: team.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
+                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_planning_team_edit', { id: team.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -75,7 +75,7 @@
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h2 class="h5 mb-0">{{ 'planning.tab.tasks'|trans({}, 'planning') }}</h2>
-            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_planning_task_index') }}">{{ 'planning.common.manage'|trans({}, 'planning') }}</a>
+            <a class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm" href="{{ path('app_planning_task_index') }}">{{ 'planning.common.manage'|trans({}, 'planning') }}</a>
         </div>
         {% if tasks is empty %}
             <p class="text-muted">{{ 'planning.task.message.no_tasks'|trans({}, 'planning') }}</p>
@@ -92,12 +92,12 @@
             <tbody class="fa-table__body">
             {% for task in tasks %}
                 <tr class="fa-table__row">
-                    <td class="fa-table__cell">{{ task.name }}{% if task.isReactiveReservation %} <span class="badge bg-info-subtle text-info-emphasis">{{ 'planning.task.badge.reactive'|trans({}, 'planning') }}</span>{% endif %}</td>
+                    <td class="fa-table__cell">{{ task.name }}{% if task.isReactiveReservation %} <span class="fa-status-pill fa-status-pill--primary">{{ 'planning.task.badge.reactive'|trans({}, 'planning') }}</span>{% endif %}</td>
                     <td class="fa-table__cell">{{ task.group ? task.group.name : '—' }}</td>
                     <td class="fa-table__cell">{{ task.defaultPtPerWeek ?? '—' }}</td>
                     <td class="fa-table__cell">{{ ('planning.visibility.' ~ task.visibility)|trans({}, 'planning') }}</td>
                     <td class="fa-table__cell fa-table__cell--actions">
-                        <a class="btn btn-sm btn-link" href="{{ path('app_planning_task_edit', { id: task.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
+                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_planning_task_edit', { id: task.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -126,7 +126,7 @@
                     <td class="fa-table__cell">{{ person.fullName }}</td>
                     <td class="fa-table__cell">{{ (person.ismsAvailabilityPct * 100)|round }}%</td>
                     <td class="fa-table__cell fa-table__cell--actions">
-                        <a class="btn btn-sm btn-link" href="{{ path('app_planning_person_edit', { id: person.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
+                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_planning_person_edit', { id: person.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
                     </td>
                 </tr>
             {% endfor %}

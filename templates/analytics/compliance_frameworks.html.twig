@@ -129,11 +129,12 @@
                                 </td>
                                 <td class="fa-table__cell">
                                     {% if framework.applicable > 0 %}
-                                    <div class="progress progress-h-20">
-                                        <div class="progress-bar bg-success" style="width: {{ (framework.fulfilled / framework.applicable * 100)|round }}%"></div>
-                                        <div class="progress-bar bg-warning" style="width: {{ (framework.in_progress / framework.applicable * 100)|round }}%"></div>
-                                        <div class="progress-bar bg-danger" style="width: {{ (framework.not_started / framework.applicable * 100)|round }}%"></div>
-                                    </div>
+                                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                                    {{ _fa_progress.render({class: 'progress-h-20', max: framework.applicable, label: framework.compliance_percentage ~ '%', segments: [
+                                        {value: framework.fulfilled, tone: 'success', label: framework.fulfilled},
+                                        {value: framework.in_progress, tone: 'warning', label: framework.in_progress},
+                                        {value: framework.not_started, tone: 'danger', label: framework.not_started}
+                                    ]}) }}
                                     {% else %}
                                     <span class="text-muted">-</span>
                                     {% endif %}

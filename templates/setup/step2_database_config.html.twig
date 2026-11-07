@@ -49,11 +49,10 @@
                                 <p class="mb-2">{{ 'setup.database.docker_password_info'|trans({}, 'setup') }}</p>
                                 <div class="p-3 bg-body-secondary border rounded">
                                     <code class="text-primary fw-bold" style="font-size: 1.1rem;">{{ docker_password }}</code>
-                                    <button type="button" class="btn btn-sm btn-outline-primary ms-3"
+                                    <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--secondary ms-3"
                                             data-controller="ui-actions"
                                             data-action="click->ui-actions#copyToClipboard"
                                             data-ui-actions-text-param="{{ docker_password }}">
-                                        <i class="fa-icon me-1 fa-icon--audit-trail" aria-hidden="true"></i>
                                         {{ 'setup.common.copy'|trans({}, 'setup') }}
                                     </button>
                                 </div>
@@ -195,17 +194,15 @@
 
                         {# Navigation #}
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
-                                <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
+                            <a href="{{ path('setup_step0_welcome') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 {{ 'setup.navigation.back'|trans({}, 'setup') }}
                             </a>
 
                             <div>
-                                <button type="submit" name="test" value="1" class="btn btn-outline-primary me-2">
-                                    <i class="fa-icon me-2 fa-icon--nav-tools" aria-hidden="true"></i>
+                                <button type="submit" name="test" value="1" class="fa-cyber-btn fa-cyber-btn--secondary me-2">
                                     {{ 'setup.database.test_button'|trans({}, 'setup') }}
                                 </button>
-                                <button type="submit" name="save" value="1" class="btn btn-primary">
+                                <button type="submit" name="save" value="1" class="fa-cyber-btn fa-cyber-btn--primary">
                                     {{ 'setup.navigation.next'|trans({}, 'setup') }}
                                     <i class="fa-icon ms-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                 </button>

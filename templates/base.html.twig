@@ -379,7 +379,9 @@
                         {% include '_components/_worker_status_banner.html.twig' %}
                     {% endif %}
 
-                    {# Flash Messages — Aurora-styled alerts with Alva-avatar #}
+                    {# Flash Messages — rendered inline as Aurora alerts (works without JS).
+                       fa_toast_controller moves success/info flashes into the toast
+                       stack; warnings and errors stay here until dismissed. #}
                     {% import '_components/_alert.html.twig' as faAlert %}
                     {% set flashToneMap = {
                         'success': 'success',
@@ -434,7 +436,7 @@
     {% include '_components/_notification_center.html.twig' %}
 
     {# Toast Notifications Stack — canonical Aurora _fa_toast (V4-FP-1)
-       Picks up Symfony flash-messages via fa_toast_controller#_convertFlashMessages
+       Picks up success/info flash-messages via fa_toast_controller#_convertFlashMessages
        and listens for both `fa-toast:show` (canonical) and legacy `toast:show`
        window/document events. Tones: info | success | warning | danger.
        Flash label mapping: success→success, error/danger→danger,

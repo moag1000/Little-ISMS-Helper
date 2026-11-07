@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
@@ -723,6 +724,13 @@
                     const safeCompleteness = parseInt(completeness) || 0;
                     const safeCompletenessPct = Math.min(100, Math.max(0, safeCompleteness));
                     const completenessTone = safeCompleteness >= 80 ? 'success' : safeCompleteness >= 50 ? 'warning' : 'danger';
+                    // Server-rendered _fa_progress markup (placeholder value 0 / tone primary), adapted client-side.
+                    const completenessBar = {{ _fa_progress.render({value: 0, tone: 'primary', size: 'sm', class: 'progress-h-8 mt-2', label: 'context.kpi.completeness'|trans({}, 'context')})|json_encode|raw }}
+                        .replaceAll('fa-progress--primary', 'fa-progress--' + completenessTone)
+                        .replaceAll('bg-primary', 'bg-' + completenessTone)
+                        .replaceAll('--fa-progress-value: 0%', '--fa-progress-value: ' + safeCompletenessPct + '%')
+                        .replaceAll('width: 0%', 'width: ' + safeCompletenessPct + '%')
+                        .replaceAll('aria-valuenow="0"', 'aria-valuenow="' + safeCompletenessPct + '"');
                     html += `
                         <div class="card fa-section mb-4">
                             <div class="card-body">
@@ -742,14 +750,7 @@
                                         }
                                     </div>
                                 </div>
-                                {# Mirrors the markup of _components/_fa_progress.html.twig (built client-side). #}
-                                <div class="progress fa-progress fa-progress--sm fa-progress--${completenessTone} progress-h-8 mt-2"
-                                     role="progressbar"
-                                     aria-label="{{ 'context.kpi.completeness'|trans({}, 'context')|e('html_attr') }}"
-                                     aria-valuenow="${safeCompletenessPct}" aria-valuemin="0" aria-valuemax="100"
-                                     style="--fa-progress-value: ${safeCompletenessPct}%;">
-                                    <div class="progress-bar bg-${completenessTone}" style="width: ${safeCompletenessPct}%;"></div>
-                                </div>
+                                ${completenessBar}
                             </div>
                         </div>
                     `;

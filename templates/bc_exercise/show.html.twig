@@ -154,7 +154,7 @@
                     <p><strong>{{ 'bc_exercises.field.participant_persons'|trans({}, 'bc_exercises') }}:</strong>
                         {% for person in bc_exercise.participantPersons %}
                             <a href="{{ path('app_person_show', { _locale: app.request.locale, id: person.id }) }}"
-                               class="badge bg-secondary text-decoration-none me-1">{{ person.fullName }}</a>
+                               class="fa-status-pill fa-status-pill--neutral text-decoration-none me-1">{{ person.fullName }}</a>
                         {% endfor %}
                     </p>
                 {% endif %}
@@ -162,7 +162,7 @@
                     <p><strong>{{ 'bc_exercises.field.observer_persons'|trans({}, 'bc_exercises') }}:</strong>
                         {% for person in bc_exercise.observerPersons %}
                             <a href="{{ path('app_person_show', { _locale: app.request.locale, id: person.id }) }}"
-                               class="badge bg-secondary text-decoration-none me-1">{{ person.fullName }}</a>
+                               class="fa-status-pill fa-status-pill--neutral text-decoration-none me-1">{{ person.fullName }}</a>
                         {% endfor %}
                     </p>
                 {% endif %}

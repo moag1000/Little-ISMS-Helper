@@ -76,7 +76,7 @@
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer bg-transparent border-{{ wizard.color }}">
-                        <a href="{{ path('app_compliance_wizard_start', {wizard: key}) }}" class="btn btn-{{ wizard.color }} w-100">
+                        <a href="{{ path('app_compliance_wizard_start', {wizard: key}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full">
                             <i class="fa-icon me-1 fa-icon--status-info" aria-hidden="true"></i>{{ 'wizard.start_wizard'|trans({}, 'wizard') }}
                         </a>
                     </div>

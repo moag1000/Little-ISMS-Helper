@@ -46,8 +46,8 @@
                 }
             } %}
             <div class="d-flex gap-2 justify-content-end mt-3">
-                <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}" class="btn btn-outline-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
-                <button type="submit" class="btn btn-primary">{{ 'common.save'|trans({}, 'messages') }}</button>
+                <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.cancel'|trans({}, 'messages') }}</a>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'common.save'|trans({}, 'messages') }}</button>
             </div>
             {{ form_end(form) }}
         </div>

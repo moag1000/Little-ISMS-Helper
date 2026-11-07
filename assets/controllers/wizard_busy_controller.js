@@ -6,7 +6,7 @@ import { faT } from '../js/fa-i18n.js';
  *
  * Attached to a wizard <form> that triggers a long-running action
  * (restore, migration, seeding, import). On submit:
- *   1. Disables all interactive form elements (inputs, selects, buttons, .btn links).
+ *   1. Disables all interactive form elements (inputs, selects, buttons, .btn / .fa-cyber-btn links).
  *   2. Sets aria-busy on the form for assistive tech.
  *   3. Switches the Alva avatar mood (default: 'working') so the user sees
  *      the assistant is actively handling the request.
@@ -82,7 +82,7 @@ export default class extends Controller {
         // DISABLED) — disabled inputs don't get submitted in POST body, which
         // bites form validation with "field should not be empty" even though
         // the user filled it in. Disabled is only for buttons + links.
-        const selector = 'input:not([type="hidden"]), select, textarea, button, a.btn';
+        const selector = 'input:not([type="hidden"]), select, textarea, button, a.btn, a.fa-cyber-btn';
         this._previouslyDisabled = new Set();
         this._previouslyReadonly = new Set();
         this.element.querySelectorAll(selector).forEach((el) => {
@@ -111,7 +111,7 @@ export default class extends Controller {
     }
 
     reEnableForm() {
-        const selector = 'input:not([type="hidden"]), select, textarea, button, a.btn';
+        const selector = 'input:not([type="hidden"]), select, textarea, button, a.btn, a.fa-cyber-btn';
         this.element.querySelectorAll(selector).forEach((el) => {
             if (this._previouslyDisabled && this._previouslyDisabled.has(el)) return;
             if (el.tagName === 'A') {

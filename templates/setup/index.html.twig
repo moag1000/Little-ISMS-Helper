@@ -23,16 +23,15 @@
                             {{ _fa_alert.render({ variant: 'success', title: 'setup.already_complete.title'|trans({}, 'setup'), body: 'setup.already_complete.description'|trans({}, 'setup') }) }}
 
                             <div class="d-grid gap-3 mt-4">
-                                <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-primary">
+                                <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                                     <i class="fa-icon me-2 fa-icon--nav-home" aria-hidden="true"></i>
                                     {{ 'setup.go_to_dashboard'|trans({}, 'setup') }}
                                 </a>
-                                <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-outline-primary">
-                                    <i class="fa-icon me-2 fa-icon--nav-puzzle" aria-hidden="true"></i>
+                                <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--lg">
                                     {{ 'setup.manage_modules'|trans({}, 'setup') }}
                                 </a>
                                 {% if app.environment == 'dev' %}
-                                    <a href="{{ path('setup_wizard_reset') }}" class="btn btn-sm btn-outline-danger">
+                                    <a href="{{ path('setup_wizard_reset') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                         <i class="fa-icon me-2 fa-icon--ui-refresh" aria-hidden="true"></i>
                                         {{ 'setup.reset_development'|trans({}, 'setup') }}
                                     </a>
@@ -121,7 +120,7 @@
                             {% endembed %}
 
                             <div class="d-grid">
-                                <a href="{{ path('setup_step0_welcome') }}" class="btn btn-lg btn-primary">
+                                <a href="{{ path('setup_step0_welcome') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                                     <i class="fa-icon me-2 fa-icon--status-info" aria-hidden="true"></i>
                                     {{ 'setup.start_setup'|trans({}, 'setup') }}
                                 </a>

@@ -51,7 +51,7 @@
         {% block list_table %}
             <div class="px-3">
                 {% for task in page %}
-                    {% set status_variant = task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'secondary' : (task.isOverdue ? 'danger' : 'warning')) %}
+                    {% set status_variant = task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'neutral' : (task.isOverdue ? 'danger' : 'warning')) %}
                     <div class="d-flex align-items-start gap-3 py-3{{ not loop.last ? ' border-bottom' : '' }}">
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2 mb-1">
@@ -59,7 +59,7 @@
                                    class="fw-semibold text-body text-decoration-none">
                                     {{ task.documentVersion.fileName }}
                                 </a>
-                                <span class="badge bg-{{ status_variant }}">
+                                <span class="fa-status-pill fa-status-pill--{{ status_variant }}">
                                     {{ ('evidence_reverification.status.' ~ task.status)|trans({}, 'document') }}
                                 </span>
                                 {% if task.isOverdue %}

@@ -302,17 +302,17 @@ export default class extends Controller {
             </h3>
             <div id="guided-tour-body" class="guided-tour-body">${this.escapeHtml(step.body)}</div>
             <div class="guided-tour-footer">
-                <button type="button" class="btn btn-link btn-sm"
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                         data-guided-tour-action="skip">
                     ${this.escapeHtml(this.translations('skip'))}
                 </button>
                 <div class="guided-tour-nav">
-                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                             data-guided-tour-action="prev"
                             ${this.currentIndex === 0 ? 'disabled' : ''}>
                         ← ${this.escapeHtml(this.translations('previous'))}
                     </button>
-                    <button type="button" class="btn btn-primary btn-sm"
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                             data-guided-tour-action="${isLast ? 'finish' : 'next'}">
                         ${isLast ? this.escapeHtml(this.translations('finish')) : this.escapeHtml(this.translations('next')) + ' →'}
                     </button>
@@ -502,15 +502,19 @@ export default class extends Controller {
         const existing = document.querySelector('.guided-tour-mobile-hint');
         if (existing) return;
         const hint = document.createElement('div');
-        hint.className = 'guided-tour-mobile-hint alert alert-info alert-dismissible fade show';
+        hint.className = 'guided-tour-mobile-hint fa-alert fa-alert--info';
         hint.setAttribute('role', 'status');
         hint.innerHTML = `
-            <i class="fa-icon fa-icon--phone" aria-hidden="true"></i>
-            <strong>${this.escapeHtml(this.translations('mobile_title'))}</strong>
-            ${this.escapeHtml(this.translations('mobile_body'))}
-            <button type="button" class="btn-close" aria-label="${this.escapeHtml(faT('close'))}"></button>
+            <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+            <div class="fa-alert__body">
+                <div class="fa-alert__title">${this.escapeHtml(this.translations('mobile_title'))}</div>
+                <p class="fa-alert__message">${this.escapeHtml(this.translations('mobile_body'))}</p>
+            </div>
+            <button type="button" class="fa-alert__close" aria-label="${this.escapeHtml(faT('close'))}">
+                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+            </button>
         `;
-        hint.querySelector('.btn-close').addEventListener('click', () => hint.remove());
+        hint.querySelector('.fa-alert__close').addEventListener('click', () => hint.remove());
         document.body.appendChild(hint);
     }
 

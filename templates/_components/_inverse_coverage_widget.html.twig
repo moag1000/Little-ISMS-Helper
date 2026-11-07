@@ -27,7 +27,7 @@
             <summary class="d-inline-flex align-items-center gap-2" style="cursor: pointer;">
                 <span class="border fa-status-pill fa-status-pill--neutral">{{ code }}</span>
                 <span class="small">{{ row.framework.name }}</span>
-                <span class="badge text-bg-info">{{ row.requirements|length }}</span>
+                <span class="fa-status-pill fa-status-pill--primary">{{ row.requirements|length }}</span>
             </summary>
             <ul class="list-unstyled ps-3 small mt-1 mb-0">
                 {% for req in row.requirements %}

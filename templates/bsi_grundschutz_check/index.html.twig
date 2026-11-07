@@ -213,7 +213,7 @@
                                         <li class="py-1 border-bottom">
                                             <div class="d-flex justify-content-between">
                                                 <span>
-                                                    <span class="badge text-bg-{{ req.type == 'muss' ? 'danger' : (req.type == 'sollte' ? 'warning' : 'info') }}">
+                                                    <span class="fa-status-pill fa-status-pill--{{ req.type == 'muss' ? 'danger' : (req.type == 'sollte' ? 'warning' : 'primary') }}">
                                                         {{ ('bsi_check.type.' ~ req.type)|trans({}, 'messages') }}
                                                     </span>
                                                     <code class="ms-1">{{ req.id }}</code>

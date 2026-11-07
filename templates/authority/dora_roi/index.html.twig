@@ -29,34 +29,34 @@
         <div class="row mb-4">
             <div class="col-12">
                 {% if currentYear and currentYear.isSubmitted %}
-                    <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
-                        <i class="fa-icon fa-icon--ui-check fs-4" aria-hidden="true"></i>
-                        <div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'ui-check' } } %}
+                        {% block alert_body %}
+                            {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.dora_roi.status.submitted'|trans }}</strong>
                             — {{ 'eu_authorities.dora_roi.status.submitted_body'|trans({
-                                '%date%': currentYear.submittedAt|date('d.m.Y'),
+                                '%date%': currentYear.submittedAt|fa_date,
                                 '%number%': currentYear.confirmationNumber ?? 'N/A'
                             }) }}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 {% elseif currentYear %}
-                    <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
-                        <i class="fa-icon fa-icon--ui-clock fs-4" aria-hidden="true"></i>
-                        <div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'ui-clock' } } %}
+                        {% block alert_body %}
+                            {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.dora_roi.status.generated_not_submitted'|trans }}</strong>
                             — {{ 'eu_authorities.dora_roi.status.generated_body'|trans }}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 {% else %}
-                    <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
-                        <i class="fa-icon fa-icon--ui-info fs-4" aria-hidden="true"></i>
-                        <div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'ui-info' } } %}
+                        {% block alert_body %}
+                            {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.dora_roi.status.not_yet_generated'|trans({
                                 '%year%': reportingYear
                             }) }}</strong>
                             — {{ 'eu_authorities.dora_roi.status.not_yet_generated_body'|trans }}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 {% endif %}
             </div>
         </div>
@@ -119,7 +119,7 @@
                     <tr class="fa-table__row">
                         <td class="fa-table__cell">{{ record.reportingDate ? record.reportingDate|date('d.m.Y') : '—' }}</td>
                         <td class="fa-table__cell">
-                            <span class="badge bg-secondary">
+                            <span class="fa-status-pill fa-status-pill--neutral">
                                 {{ ('eu_authorities.dora_roi.scope.' ~ record.reportingScope)|trans }}
                             </span>
                         </td>
@@ -143,9 +143,8 @@
                         <td class="fa-table__cell fa-table__cell--actions">
                             {% if not record.isSubmitted and is_granted('ROLE_ADMIN') %}
                             <button type="button"
-                                    class="btn btn-sm btn-outline-success"
+                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
                                     data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="modal-mark-submitted-{{ record.id }}">
-                                <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
                                 {{ 'eu_authorities.dora_roi.action.mark_submitted'|trans }}
                             </button>
 
@@ -180,11 +179,10 @@
                                                    required>
                                         </div>
                                         <footer class="fa-modal__footer">
-                                            <button type="button" class="btn btn-secondary" data-action="fa-modal#cancel">
+                                            <button type="button" class="fa-cyber-btn fa-cyber-btn--secondary" data-action="fa-modal#cancel">
                                                 {{ 'common.cancel'|trans({}, 'messages') }}
                                             </button>
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                                                 {{ 'eu_authorities.dora_roi.action.confirm_submission'|trans }}
                                             </button>
                                         </footer>

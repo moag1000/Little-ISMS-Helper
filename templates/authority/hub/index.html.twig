@@ -45,7 +45,7 @@
                             <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.overdue'|trans }}</span>
                         </span>
                         <span class="d-flex align-items-center gap-1">
-                            <span class="badge bg-secondary rounded-pill fs-6">{{ summary.not_configured }}</span>
+                            <span class="fa-status-pill fa-status-pill--neutral">{{ summary.not_configured }}</span>
                             <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.not_configured'|trans }}</span>
                         </span>
                     </div>
@@ -84,8 +84,8 @@
                         <span class="{% if obligation.status == 'overdue' %}fa-status-pill fa-status-pill--danger
                             {% elseif obligation.status == 'due_soon' %}fa-status-pill fa-status-pill--warning
                             {% elseif obligation.status == 'current' %}fa-status-pill fa-status-pill--success
-                            {% elseif obligation.status == 'available' %}fa-status-pill fa-status-pill--info
-                            {% else %}badge bg-secondary{% endif %}">
+                            {% elseif obligation.status == 'available' %}fa-status-pill fa-status-pill--primary
+                            {% else %}fa-status-pill fa-status-pill--neutral{% endif %}">
                             {{ ('eu_authorities.hub.status.' ~ obligation.status)|trans }}
                         </span>
                     </div>
@@ -110,7 +110,7 @@
 
                             <dt class="col-5 text-body-secondary">{{ 'eu_authorities.hub.field.country'|trans }}</dt>
                             <dd class="col-7">
-                                <span class="badge bg-light text-dark border">{{ obligation.country }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral">{{ obligation.country }}</span>
                             </dd>
                         </dl>
                     </div>

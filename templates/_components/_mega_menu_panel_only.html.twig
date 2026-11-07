@@ -765,7 +765,7 @@
                     <span class="fly-item__title">
                         {{ 'nav.evidence_reviewer_queue'|trans({}, 'nav') }}
                         {% if evidence_open_task_count is defined and evidence_open_task_count > 0 %}
-                        <span class="badge bg-warning text-dark ms-1">{{ evidence_open_task_count }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm ms-1">{{ evidence_open_task_count }}</span>
                         {% endif %}
                     </span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.evidence_reviewer_queue'|trans({}, 'nav') }}</span>
@@ -1144,13 +1144,13 @@
                     <p class="fa-onboarding-banner__body">{{ 'nav.mega.onboarding.body'|trans({}, 'nav') }}</p>
                     <div class="fa-onboarding-banner__actions">
                         <a href="#"
-                           class="btn btn-primary btn-sm"
+                           class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                            data-action="click->guided-tour#start"
                            data-guided-tour-role-param="mris"
                            data-turbo="false">
                             {{ 'nav.mega.onboarding.cta_tour'|trans({}, 'nav') }}
                         </a>
-                        <a href="{{ path('app_my_day', {_locale: _locale}) }}" class="btn btn-secondary btn-sm">
+                        <a href="{{ path('app_my_day', {_locale: _locale}) }}" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm">
                             {{ 'nav.mega.onboarding.cta_checklist'|trans({}, 'nav') }}
                         </a>
                     </div>

@@ -80,14 +80,14 @@
 
                     <dt class="col-sm-3">{{ 'dora_subcontractor.field.criticality'|trans({}, 'dora') }}</dt>
                     <dd class="col-sm-9">
-                        {% set critVariant = subcontractor.criticality == 'critical' ? 'danger' : (subcontractor.criticality == 'important' ? 'warning' : 'info') %}
-                        <span class="badge bg-{{ critVariant }}">{{ ('dora_subcontractor.criticality.' ~ subcontractor.criticality)|trans({}, 'dora') }}</span>
+                        {% set critVariant = subcontractor.criticality == 'critical' ? 'danger' : (subcontractor.criticality == 'important' ? 'warning' : 'primary') %}
+                        <span class="fa-status-pill fa-status-pill--{{ critVariant }}">{{ ('dora_subcontractor.criticality.' ~ subcontractor.criticality)|trans({}, 'dora') }}</span>
                     </dd>
 
                     <dt class="col-sm-3">{{ 'dora_subcontractor.field.substitutability'|trans({}, 'dora') }}</dt>
                     <dd class="col-sm-9">
                         {% set substVariant = subcontractor.substitutability == 'low' ? 'danger' : (subcontractor.substitutability == 'medium' ? 'warning' : 'success') %}
-                        <span class="badge bg-{{ substVariant }}">{{ ('dora_subcontractor.substitutability.' ~ subcontractor.substitutability)|trans({}, 'dora') }}</span>
+                        <span class="fa-status-pill fa-status-pill--{{ substVariant }}">{{ ('dora_subcontractor.substitutability.' ~ subcontractor.substitutability)|trans({}, 'dora') }}</span>
                     </dd>
 
                     {% if subcontractor.serviceDescription %}
@@ -101,7 +101,7 @@
                       data-ui-actions-message-param="{{ 'common.confirm_delete'|trans({}, 'messages') }}"
                       data-ui-actions-tone-param="danger">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ subcontractor.id) }}">
-                    <button type="submit" class="btn btn-danger btn-sm">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                         <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>
                         {{ 'common.delete'|trans({}, 'messages') }}
                     </button>

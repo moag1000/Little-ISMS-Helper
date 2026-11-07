@@ -4,6 +4,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'trust_center.page_title'|trans({'%org%': snapshot.tenantName}, 'trust_center') }}{% endblock %}
 
@@ -20,13 +21,13 @@
     }) }}
 
     {# Freshness note #}
-    <div class="alert alert-info d-flex align-items-center gap-2 mb-4" role="note">
-        <span class="fa-icon fa-icon--nav-info-circle" aria-hidden="true"></span>
-        <span>
-            {{ 'trust_center.snapshot_freshness'|trans({
+    <div class="mb-4">
+        {{ _fa_alert.render({
+            variant: 'info',
+            body: 'trust_center.snapshot_freshness'|trans({
                 '%date%': snapshot.snapshotAt|date('Y-m-d H:i') ~ ' UTC'
-            }, 'trust_center') }}
-        </span>
+            }, 'trust_center')|e
+        }) }}
     </div>
 
     {# KPI tiles row #}
@@ -90,7 +91,7 @@
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <div>
                                 <span class="fw-semibold">{{ fc.name }}</span>
-                                <span class="badge bg-secondary-subtle text-secondary-emphasis ms-2 small">{{ fc.code }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ fc.code }}</span>
                             </div>
                             <span class="fw-bold {% if fc.percent >= 80 %}text-success{% elseif fc.percent >= 50 %}text-warning{% else %}text-danger{% endif %}">
                                 {{ fc.percent|number_format(1) }}%
@@ -124,8 +125,9 @@
     {% endif %}
 
     {# Disclosure notice #}
-    <div class="alert alert-secondary small" role="note">
-        <strong>{{ 'trust_center.disclosure.heading'|trans({}, 'trust_center') }}</strong>
-        {{ 'trust_center.disclosure.body'|trans({}, 'trust_center') }}
-    </div>
+    {{ _fa_alert.render({
+        variant: 'info',
+        title: 'trust_center.disclosure.heading'|trans({}, 'trust_center'),
+        body: 'trust_center.disclosure.body'|trans({}, 'trust_center')|e
+    }) }}
 {% endblock %}

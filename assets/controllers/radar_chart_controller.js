@@ -172,7 +172,7 @@ export default class extends Controller {
                     <td>${item.implemented}</td>
                     <td>${item.total}</td>
                     <td>
-                        <span class="badge bg-${badgeClass}">${percentage}%</span>
+                        <span class="fa-status-pill fa-status-pill--${badgeClass}">${percentage}%</span>
                     </td>
                 </tr>
             `;
@@ -236,9 +236,9 @@ export default class extends Controller {
         this.hideLoading();
         if (this.hasCanvasTarget) {
             this.canvasTarget.parentElement.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                    ${faT('radar_chart.load_error')}
+                <div class="fa-alert fa-alert--danger" role="alert">
+                    <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body"><p class="fa-alert__message">${faT('radar_chart.load_error')}</p></div>
                 </div>
             `;
         }

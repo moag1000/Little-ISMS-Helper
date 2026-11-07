@@ -182,9 +182,9 @@
                     {# Withdrawal (GDPR Art. 7(3)) moved to the dedicated revoke
                        action on the show page (M-1) — recording it here created a
                        second, unsynchronised path next to isRevoked. #}
-                    <div class="alert alert-info mb-4" role="alert">
-                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                        {{ 'consent.withdrawal.via_revoke_note'|trans({}, 'consent') }}
+                    <div class="fa-alert fa-alert--info mb-4" role="alert">
+                        <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                        <div class="fa-alert__body"><p class="fa-alert__message">{{ 'consent.withdrawal.via_revoke_note'|trans({}, 'consent') }}</p></div>
                     </div>
 
                     {# Form Actions #}

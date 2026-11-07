@@ -9,6 +9,13 @@
  #   animated: bool (default false)
  #   size:     'sm'|'md'|'lg' (default 'md')
  #   class:    string (optional extra-classes auf .progress wrapper)
+ #   id:       string (optional id on the .progress wrapper)
+ #   attrs:    map (optional extra attributes on the wrapper, e.g. Stimulus targets)
+ #   barClass: string (optional extra classes on the inner bar)
+ #   barAttrs: map (optional extra attributes on the inner bar — for JS-driven bars)
+ #   segments: list (optional stacked bar; replaces value/tone). Each item:
+ #             {value, tone, label (title + sr text), text (optional visible text in the segment)}
+ #             Widths are value / max; max defaults to the sum of all segment values.
  #}
 {% macro render(args = {}) %}
     {% set value = args.value|default(0) %}
@@ -20,19 +27,47 @@
     {% set animated = args.animated|default(false) %}
     {% set size = args.size|default('md') %}
     {% set class = args.class|default('') %}
+    {% set attrs = args.attrs|default({}) %}
+    {% set barClass = args.barClass|default('') %}
+    {% set barAttrs = args.barAttrs|default({}) %}
 
+    {% if args.segments is defined and args.segments %}
+    {% set segTotal = 0 %}
+    {% for seg in args.segments %}{% set segTotal = segTotal + seg.value|default(0) %}{% endfor %}
+    {% set segMax = args.max is defined ? args.max : segTotal %}
+    <div class="progress fa-progress fa-progress--{{ size }} fa-progress--stacked {{ class }}"
+         {% if args.id is defined and args.id %}id="{{ args.id }}"{% endif %}
+         {% if label %}role="group" aria-label="{{ label }}"{% endif %}
+         {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+        {% for seg in args.segments %}
+            {% set segPct = segMax > 0 ? (seg.value|default(0) / segMax * 100)|round(1) : 0 %}
+            {% if segPct > 0 %}
+            {% set segTone = seg.tone|default('primary') %}
+            <div class="progress-bar bg-{{ segTone == 'neutral' ? 'secondary' : segTone }}"
+                 style="width: {{ segPct }}%;"
+                 {% if seg.label is defined and seg.label %}title="{{ seg.label }}"{% endif %}>
+                {%- if seg.text is defined and seg.text %}{{ seg.text }}{% elseif seg.label is defined and seg.label %}<span class="visually-hidden">{{ seg.label }}</span>{% endif -%}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
     {% set pct = max > 0 ? (value / max * 100)|round(1) : 0 %}
     {% if pct < 0 %}{% set pct = 0 %}{% endif %}
     {% if pct > 100 %}{% set pct = 100 %}{% endif %}
 
     <div class="progress fa-progress fa-progress--{{ size }} fa-progress--{{ tone }} {{ class }}"
+         {% if args.id is defined and args.id %}id="{{ args.id }}"{% endif %}
          role="progressbar"
          {% if label %}aria-label="{{ label }}"{% endif %}
          aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"
-         style="--fa-progress-value: {{ pct }}%;">
-        <div class="progress-bar bg-{{ tone == 'neutral' ? 'secondary' : tone }} {% if striped %}progress-bar-striped{% endif %} {% if animated %}progress-bar-animated{% endif %}"
-             style="width: {{ pct }}%;">
+         style="--fa-progress-value: {{ pct }}%;"
+         {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+        <div class="progress-bar bg-{{ tone == 'neutral' ? 'secondary' : tone }} {% if striped %}progress-bar-striped{% endif %} {% if animated %}progress-bar-animated{% endif %} {{ barClass }}"
+             style="width: {{ pct }}%;"
+             {%- for k, v in barAttrs %} {{ k }}="{{ v }}"{% endfor %}>
             {% if showText %}{{ pct }}%{% endif %}
         </div>
     </div>
+    {% endif %}
 {% endmacro %}
