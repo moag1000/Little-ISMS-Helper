@@ -476,8 +476,6 @@ services:
     Symfony\Component\RateLimiter\RateLimiterFactory $passwordResetLimiter: '@limiter.password_reset'
     Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter: '@limiter.document_upload'
     Symfony\Component\RateLimiter\RateLimiterFactory $mfaVerifyLimiter: '@limiter.mfa_verify'
-    # Aliases for Rector-renamed parameters (SecurityController login limiter)
-    Symfony\Component\RateLimiter\RateLimiterFactory $rateLimiterFactory: '@limiter.login'
 
     # ── Bulk-Import Mapper Registry ────────────────────────────────────
     # Mappers auto-register via the _instanceof rule for EntityMapperInterface

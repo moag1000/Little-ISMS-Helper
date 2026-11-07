@@ -695,6 +695,14 @@ jobs:
         # never fires and the user sees the raw key. Every literal key with a
         # literal domain must exist in <domain>.de.yaml AND <domain>.en.yaml. No baseline.
         run: python3 scripts/quality/check_trans_default_masking.py --quiet
+      - name: "Gate 77: shown dates use |fa_date / |fa_datetime"
+        # One admin-configured date format and timezone instead of four hard-coded
+        # formats; machine formats in attributes/URLs stay. Per-file counts may only shrink.
+        run: python3 scripts/quality/check_date_display.py --baseline scripts/quality/baselines/date_display.txt --quiet
+      - name: "Gate 78: page semantics and one status vocabulary"
+        # No nested <main>, one <h1>, no local status colour maps, keyboard-reachable
+        # tooltips. Offenders are baselined and may only shrink.
+        run: python3 scripts/quality/check_page_semantics.py --baseline scripts/quality/baselines/page_semantics.txt --quiet
       - name: "Gate 79: every Stimulus reference resolves, no dead controllers"
         # Stimulus fails silently: an action on a missing controller or method,
         # an unknown target/value, or a controller nothing attaches simply does

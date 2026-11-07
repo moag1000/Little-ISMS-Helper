@@ -30,7 +30,7 @@
         </div>
         <div class="fa-drawer__kv">
             <span class="label">{{ 'objective.field.target_date'|trans({}, 'objective') }}</span>
-            <span>{{ objective.targetDate|date('d.m.Y') }}</span>
+            <span>{{ objective.targetDate|fa_date }}</span>
         </div>
         {% if objective.targetValue or objective.currentValue %}
         <div class="fa-drawer__kv">

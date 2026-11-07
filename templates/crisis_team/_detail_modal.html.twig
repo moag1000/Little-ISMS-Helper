@@ -51,7 +51,7 @@
         {% if crisis_team.lastActivatedAt %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'crisis_team.field.last_activated_at'|trans({}, 'crisis_team') }}</span>
-                <span>{{ crisis_team.lastActivatedAt|date('d.m.Y H:i') }}</span>
+                <span>{{ crisis_team.lastActivatedAt|fa_datetime }}</span>
             </div>
         {% endif %}
 

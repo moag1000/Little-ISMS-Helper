@@ -71,11 +71,11 @@
                         </dd>
 
                         <dt class="col-sm-3">{{ 'workflow.field.created_at'|trans({}, 'workflows') }}</dt>
-                        <dd class="col-sm-9">{{ workflow.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-9">{{ workflow.createdAt|fa_datetime }}</dd>
 
                         {% if workflow.updatedAt %}
                         <dt class="col-sm-3">{{ 'workflow.field.updated_at'|trans({}, 'workflows') }}</dt>
-                        <dd class="col-sm-9">{{ workflow.updatedAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-9">{{ workflow.updatedAt|fa_datetime }}</dd>
                         {% endif %}
                     </dl>
                 {% endblock %}
@@ -173,7 +173,7 @@
                                         <td>
                                             {{ instance.currentStep ? instance.currentStep.name : '—' }}
                                         </td>
-                                        <td>{{ instance.startedAt|date('d.m.Y H:i') }}</td>
+                                        <td>{{ instance.startedAt|fa_datetime }}</td>
                                         <td>
                                             <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>

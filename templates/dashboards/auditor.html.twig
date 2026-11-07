@@ -8,7 +8,7 @@
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
 {% block body %}
-<main class="fa-aurora-surface role-dashboard auditor-dashboard">
+<div class="fa-aurora-surface role-dashboard auditor-dashboard">
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
         title:    'auditor.title'|trans({}, 'dashboards'),
@@ -275,5 +275,5 @@
         </div>
     </div>
 
-</main>
+</div>
 {% endblock %}

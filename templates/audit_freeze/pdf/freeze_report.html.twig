@@ -57,13 +57,13 @@
         <div class="meta">
             <strong>{{ 'audit_freeze.pdf.tenant'|trans({}, 'audit_freeze') }}:</strong> {{ freeze.tenant.name }}
             &nbsp;|&nbsp;
-            <strong>{{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}:</strong> {{ freeze.stichtag|date('Y-m-d') }}
+            <strong>{{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}:</strong> {{ freeze.stichtag|fa_date }}
             &nbsp;|&nbsp;
             <strong>{{ 'audit_freeze.column.purpose'|trans({}, 'audit_freeze') }}:</strong>
             {{ ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze') }}
             &nbsp;|&nbsp;
             <strong>{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}:</strong>
-            {{ freeze.createdAt|date('Y-m-d H:i') }}
+            {{ freeze.createdAt|fa_datetime }}
             &nbsp;|&nbsp;
             <strong>{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}:</strong>
             {{ freeze.createdBy.email|default('—') }}

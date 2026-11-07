@@ -29,7 +29,7 @@
     <tr><td class="label">Aktenzeichen (intern)</td><td>{{ reference_number }}</td></tr>
     <tr><td class="label">Betreff</td><td>{{ title }}</td></tr>
     <tr><td class="label">Schweregrad</td><td>{{ severity }}</td></tr>
-    <tr><td class="label">Entdeckungsdatum</td><td>{{ detected_at ? detected_at|date('d.m.Y H:i') : '—' }}</td></tr>
+    <tr><td class="label">Entdeckungsdatum</td><td>{{ detected_at ? detected_at|fa_datetime : '—' }}</td></tr>
     <tr><td class="label">Meldestatus</td><td>{{ status }}</td></tr>
 </table>
 
@@ -54,12 +54,12 @@
 <h2>5. Behörden-Meldung</h2>
 <table>
     <tr><td class="label">Meldepflicht besteht</td><td>{{ requires_authority_notification ? 'Ja' : 'Nein' }}</td></tr>
-    <tr><td class="label">Meldedatum</td><td>{{ supervisory_authority_notified_at ? supervisory_authority_notified_at|date('d.m.Y H:i') : 'Noch nicht gemeldet' }}</td></tr>
+    <tr><td class="label">Meldedatum</td><td>{{ supervisory_authority_notified_at ? supervisory_authority_notified_at|fa_datetime : 'Noch nicht gemeldet' }}</td></tr>
     <tr><td class="label">Behörde</td><td>{{ supervisory_authority_name ?? 'BfDI' }}</td></tr>
 </table>
 
 <div class="footer">
-    Erstellt am: {{ generated_at|date('d.m.Y H:i') }} — Vertraulich / Datenschutzrechtlich relevantes Dokument
+    Erstellt am: {{ generated_at|fa_datetime }} — Vertraulich / Datenschutzrechtlich relevantes Dokument
 </div>
 </body>
 </html>

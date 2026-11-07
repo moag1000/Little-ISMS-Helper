@@ -368,7 +368,7 @@
                             {% if supplier.dpaSignedDate %}
                             <div class="detail-item">
                                 <span class="label">{{ 'supplier.field.dpa_signed_date'|trans({}, 'suppliers') }}:</span>
-                                <span class="value">{{ supplier.dpaSignedDate|date('Y-m-d') }}</span>
+                                <span class="value">{{ supplier.dpaSignedDate|fa_date }}</span>
                             </div>
                             {% endif %}
                         </div>
@@ -409,11 +409,11 @@
                         <div class="detail-grid">
                             <div class="detail-item">
                                 <span class="label">{{ 'supplier.field.contract_start'|trans({}, 'suppliers') }}:</span>
-                                <span class="value">{{ supplier.contractStartDate ? supplier.contractStartDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                                <span class="value">{{ supplier.contractStartDate ? supplier.contractStartDate|fa_date : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="label">{{ 'supplier.field.contract_end'|trans({}, 'suppliers') }}:</span>
-                                <span class="value">{{ supplier.contractEndDate ? supplier.contractEndDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                                <span class="value">{{ supplier.contractEndDate ? supplier.contractEndDate|fa_date : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
                             </div>
                         </div>
                         {% if supplier.securityRequirements %}
@@ -453,7 +453,7 @@
                             </div>
                             <div class="detail-item">
                                 <span class="label">{{ 'supplier.field.lksg_risk_analysis_date'|trans({}, 'suppliers') }}:</span>
-                                <span class="value">{{ supplier.lksgRiskAnalysisDate ? supplier.lksgRiskAnalysisDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                                <span class="value">{{ supplier.lksgRiskAnalysisDate ? supplier.lksgRiskAnalysisDate|fa_date : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
                             </div>
                         </div>
                         {% if supplier.lksgComplaintMechanism %}
@@ -532,7 +532,7 @@
                         <dt class="col-sm-4">{{ 'supplier.dora.field.last_dora_audit_date'|trans({}, 'suppliers') }}</dt>
                         <dd class="col-sm-8">
                             {% if supplier.lastDoraAuditDate %}
-                                {{ supplier.lastDoraAuditDate|date('Y-m-d') }}
+                                {{ supplier.lastDoraAuditDate|fa_date }}
                             {% else %}
                                 <span class="text-muted">{{ 'supplier.value.never'|trans({}, 'suppliers') }}</span>
                             {% endif %}
@@ -657,7 +657,7 @@
                         <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_av_contract_date'|trans({}, 'suppliers') }}</dt>
                         <dd class="col-sm-8">
                             {% if supplier.gdprAvContractDate %}
-                                {{ supplier.gdprAvContractDate|date('Y-m-d') }}
+                                {{ supplier.gdprAvContractDate|fa_date }}
                             {% else %}
                                 <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
                             {% endif %}

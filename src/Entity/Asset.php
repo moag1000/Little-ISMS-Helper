@@ -6,14 +6,15 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
 use App\Enum\AssetStatus;
 use App\Repository\AssetRepository;
@@ -42,7 +43,14 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
         ),
         new GetCollection(
             description: 'Retrieve the collection of assets with pagination and filtering',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'name' => new QueryParameter(filter: new PartialSearchFilter()),
+                'assetType' => new QueryParameter(filter: new ExactFilter()),
+                'owner' => new QueryParameter(filter: new PartialSearchFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['name', 'assetType', 'createdAt'], castToArray: false),
+            ],
         ),
         new Post(
             description: 'Create a new asset with protection requirements',
@@ -61,8 +69,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     denormalizationContext: ['groups' => ['asset:write']],
     processor: TenantAwareStateProcessor::class
 )]
-#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'assetType' => 'exact', 'owner' => 'partial', 'status' => 'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['name', 'assetType', 'createdAt'])]
 class Asset
 {
     #[ORM\Id]

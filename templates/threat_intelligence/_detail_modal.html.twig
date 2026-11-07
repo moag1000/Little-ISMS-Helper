@@ -28,7 +28,7 @@
         <div class="fa-drawer__kv"><span class="label">{{ 'threat.field.affected_assets'|trans({}, 'threat') }}</span><span>{{ threat.affectedAssets|length }}</span></div>
         {% if threat.effectiveAssignedTo %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.label.assignee'|trans({}, 'threat') }}</span><span>{{ threat.effectiveAssignedTo }}</span></div>{% endif %}
         {% if is_module_active('vulnerability_intel') and threat.tlpClassification %}<div class="fa-drawer__kv"><span class="label">{{ 'threat_intelligence.field.tlp_classification'|trans({}, 'threat') }}</span><span>{{ ('threat_intelligence.tlp.' ~ threat.tlpClassification)|trans({}, 'threat') }}</span></div>{% endif %}
-        {% if threat.detectionDate %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.field.detection_date'|trans({}, 'threat') }}</span><span>{{ threat.detectionDate|date('Y-m-d') }}</span></div>{% endif %}
+        {% if threat.detectionDate %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.field.detection_date'|trans({}, 'threat') }}</span><span>{{ threat.detectionDate|fa_date }}</span></div>{% endif %}
         {% if threat.description %}
             <div class="fa-drawer__section">
                 <span class="label">{{ 'threat.field.description'|trans({}, 'threat') }}</span>

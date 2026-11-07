@@ -30,7 +30,7 @@
 
         <div class="fa-drawer__kv">
             <span class="label">{{ 'management_review.field.review_date'|trans({}, 'management_review') }}</span>
-            <span>{{ review.reviewDate|date('d.m.Y') }}</span>
+            <span>{{ review.reviewDate|fa_date }}</span>
         </div>
 
         {% if review.reviewedBy %}

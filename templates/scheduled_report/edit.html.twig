@@ -122,7 +122,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <strong>{{ 'scheduled_report.last_run.time'|trans({}, 'scheduled_reports') }}:</strong><br>
-                    {{ report.lastRunAt|date('Y-m-d H:i') }}
+                    {{ report.lastRunAt|fa_datetime }}
                 </div>
                 <div class="col-md-4">
                     <strong>{{ 'scheduled_report.last_run.status'|trans({}, 'scheduled_reports') }}:</strong><br>

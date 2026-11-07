@@ -10,15 +10,15 @@ use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Service\OwnerResolver;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
 use App\Enum\TrainingStatus;
 use App\Attribute\RequiresModule;
@@ -46,7 +46,16 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new GetCollection(
             description: 'Retrieve the collection of security awareness trainings with filtering by type, status, and date',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'title' => new QueryParameter(filter: new PartialSearchFilter()),
+                'trainingType' => new QueryParameter(filter: new ExactFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'mandatory' => new QueryParameter(filter: new ExactFilter(), schema: ['type' => 'boolean'], castToArray: false, castToNativeType: true),
+                'scheduledDate' => new QueryParameter(filter: new DateFilter()),
+                'completionDate' => new QueryParameter(filter: new DateFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['scheduledDate', 'status'], castToArray: false),
+            ],
         ),
         new Post(
             description: 'Create a new security awareness training event',
@@ -65,10 +74,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['training:write']],
     processor: TenantAwareStateProcessor::class
 )]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'trainingType' => 'exact', 'status' => 'exact'])]
-#[ApiFilter(BooleanFilter::class, properties: ['mandatory'])]
-#[ApiFilter(OrderFilter::class, properties: ['scheduledDate', 'status'])]
-#[ApiFilter(DateFilter::class, properties: ['scheduledDate', 'completionDate'])]
 class Training
 {
     #[ORM\Id]

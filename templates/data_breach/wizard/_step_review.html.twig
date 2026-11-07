@@ -22,7 +22,7 @@
     <div class="fa-modal--wizard__review-tile">
         <span class="fa-modal--wizard__review-label">{{ 'data_breach.form.detected_at'|trans({}, 'privacy') }}</span>
         <span class="fa-modal--wizard__review-value">
-            {{ data_breach.detectedAt ? data_breach.detectedAt|date('d.m.Y H:i') : '—' }}
+            {{ data_breach.detectedAt ? data_breach.detectedAt|fa_datetime : '—' }}
         </span>
     </div>
     <div class="fa-modal--wizard__review-tile">

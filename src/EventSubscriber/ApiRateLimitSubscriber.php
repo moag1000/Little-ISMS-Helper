@@ -38,7 +38,7 @@ use Symfony\Component\RateLimiter\RateLimiterFactory;
 final class ApiRateLimitSubscriber
 {
     public function __construct(
-        private readonly RateLimiterFactory $rateLimiterFactory
+        private readonly RateLimiterFactory $apiLimiter
     ) {}
 
     public function onKernelRequest(RequestEvent $requestEvent): void
@@ -59,7 +59,7 @@ final class ApiRateLimitSubscriber
         }
 
         // Create limiter based on client IP
-        $limiter = $this->rateLimiterFactory->create($request->getClientIp());
+        $limiter = $this->apiLimiter->create($request->getClientIp());
 
         // Try to consume 1 token
         $limit = $limiter->consume(1);

@@ -26,12 +26,12 @@
         </div>
         <div class="fa-drawer__kv">
             <span class="label">{{ 'change_request.field.requested_date'|trans({}, 'change_requests') }}</span>
-            <span>{{ change.requestedDate|date('Y-m-d') }}</span>
+            <span>{{ change.requestedDate|fa_date }}</span>
         </div>
         {% if change.plannedImplementationDate %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'change_request.field.planned_implementation'|trans({}, 'change_requests') }}</span>
-                <span>{{ change.plannedImplementationDate|date('Y-m-d') }}</span>
+                <span>{{ change.plannedImplementationDate|fa_date }}</span>
             </div>
         {% endif %}
         {% if change.riskAssessment %}

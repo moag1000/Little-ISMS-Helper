@@ -62,13 +62,13 @@
             </tr>
             <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Detected At:</td>
-                <td style="padding: 8px 0;">{{ breach.effectiveDetectedAt|date('d.m.Y H:i') }}</td>
+                <td style="padding: 8px 0;">{{ breach.effectiveDetectedAt|fa_datetime }}</td>
             </tr>
             <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Notification Deadline:</td>
                 <td style="padding: 8px 0;">
                     <strong style="color: {% if hours_remaining < 0 %}#dc3545{% elseif hours_remaining < 12 %}#fd7e14{% else %}#ffc107{% endif %};">
-                        {{ deadline|date('d.m.Y H:i') }}
+                        {{ deadline|fa_datetime }}
                     </strong>
                 </td>
             </tr>

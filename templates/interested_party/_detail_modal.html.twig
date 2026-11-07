@@ -53,7 +53,7 @@
         <div class="fa-drawer__kv">
             <span class="label">{{ 'interested_party.field.next_communication'|trans({}, 'interested_parties') }}</span>
             <span class="{{ interested_party.isCommunicationOverdue() ? 'text-danger' : '' }}">
-                {{ interested_party.nextCommunication|date('Y-m-d') }}
+                {{ interested_party.nextCommunication|fa_date }}
             </span>
         </div>
         {% endif %}

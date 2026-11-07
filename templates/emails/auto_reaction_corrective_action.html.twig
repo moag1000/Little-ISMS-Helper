@@ -22,7 +22,7 @@
                 {% if finding.severity is defined %}<p style="margin: 4px 0 0 0;"><strong>Severity:</strong> {{ finding.severity|upper }}</p>{% endif %}
                 <p style="margin: 4px 0 0 0;"><strong>Corrective Action:</strong> {{ ca.title|default('—') }}</p>
                 {% if plannedCompletionDate %}
-                    <p style="margin: 4px 0 0 0;"><strong>Planned Completion:</strong> {{ plannedCompletionDate|date('Y-m-d') }} ({{ 'emails.auto_reaction.ca.target_30d'|trans({}, 'emails')|default('30-day target') }})</p>
+                    <p style="margin: 4px 0 0 0;"><strong>Planned Completion:</strong> {{ plannedCompletionDate|fa_date }} ({{ 'emails.auto_reaction.ca.target_30d'|trans({}, 'emails')|default('30-day target') }})</p>
                 {% endif %}
             </div>
 

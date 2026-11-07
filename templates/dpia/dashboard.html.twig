@@ -124,7 +124,7 @@
                             {% for dpia in due_for_review|slice(0, 5) %}
                                 <li class="mb-2">
                                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
-                                    <small class="text-muted">{{ dpia.nextReviewDate|date('Y-m-d') }}</small>
+                                    <small class="text-muted">{{ dpia.nextReviewDate|fa_date }}</small>
                                 </li>
                             {% endfor %}
                         </ul>
