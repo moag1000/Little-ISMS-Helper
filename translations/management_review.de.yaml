@@ -24,26 +24,13 @@ management_review:
     resource_needs: Ressourcenbedarf
     decisions: Beschlüsse/Entscheidungen
     action_items: Maßnahmenliste
-    management_decisions: Management‑Beschlüsse
-    action_items_label: Maßnahmen
-    clause_93: 'ISO 27001 Klausel 9.3'
-    clause_93_description: 'Eingaben und Ergebnisse der Managementbewertung gemäß ISO 27001:2022.'
-    inputs_label: 'Eingaben (Beispiele)'
-    input_1: 'Änderungen interner und externer Themen mit ISMS‑Bezug'
-    input_2: 'Rückmeldungen interessierter Parteien'
-    input_3: 'Informationen zur Leistung und Wirksamkeit des ISMS'
-    input_4: 'Status früherer Maßnahmen und Risikobehandlung'
-    outputs_label: 'Ergebnisse (Beispiele)'
-    output_1: 'Beschlüsse/Maßnahmen zu Verbesserungsmöglichkeiten'
-    output_2: 'Änderungsbedarf am ISMS'
-    output_3: Ressourcenbedarf
     section:
         basic_info: Basisinformationen
         inputs: 'Eingaben zur Bewertung (9.3.2)'
-        followup: 'Status früherer Maßnahmen'
         outputs: 'Ergebnisse der Bewertung (9.3.3)'
         audit_metadata: 'ISO 27001 §9.3 · Norm-Felder'
         compliance: 'Framework-Compliance-Status'
+        overview: 'Überblick'
     action:
         cancel: Abbrechen
         save: 'Änderungen speichern'
@@ -69,12 +56,9 @@ management_review:
         previous_review_actions: 'Status früherer Maßnahmen'
         non_conformities_status: 'Status von Nichtkonformitäten'
         corrective_actions_status: 'Status der Korrekturmaßnahmen'
-        nonconformities_review: 'Bewertung von Nichtkonformitäten'
         incidents_review: 'Bewertung von Vorfällen'
         risks_review: 'Bewertung von Risiken'
         objectives_review: 'Bewertung der Ziele'
-        context_changes: 'Kontextänderungen'
-        improvement_opportunities: 'Verbesserungschancen'
         opportunities_for_improvement: Verbesserungsmöglichkeiten
         resource_needs: Ressourcenbedarf
         decisions: Beschlüsse/Entscheidungen
@@ -86,7 +70,7 @@ management_review:
         risk_treatment_effectiveness: 'Wirksamkeit der Risikobehandlung'
         policy_review_outcome: 'Ergebnis der Richtlinienüberprüfung (§5.2)'
         framework_compliance_status: 'Framework-Compliance-Status'
-        action_items_with_deadlines: 'Maßnahmen mit Fristen (strukturiert)'
+        interested_party_needs_changes: 'Geänderte Erfordernisse und Erwartungen interessierter Parteien'
     status_values:
         planned: Geplant
         in_progress: 'In Bearbeitung'
@@ -131,13 +115,14 @@ management_review:
             objectives: 'Status der ISMS-Ziele'
             risks: 'Risikobewertung und -behandlung'
             opportunities: 'Chancen zur Verbesserung'
+            interested_party_needs: 'Geänderte Erfordernisse interessierter Parteien'
+            risk_treatment: 'Wirksamkeit der Risikobehandlung'
         output:
-            improvements: 'Entscheidungen zur kontinuierlichen Verbesserung'
-            changes_isms: 'Beschlossene Änderungen am ISMS'
             resources: 'Benötigte Ressourcen'
             decisions: 'Weitere Entscheidungen'
             action_items: 'Action Items (Maßnahmenplan)'
             summary: 'Zusammenfassung'
+            policy: 'Ergebnis der Überprüfung der Leitlinie'
     edit: Bearbeiten
     placeholder:
         title: 'z.B. Management Review Q1 2025'
@@ -154,15 +139,12 @@ management_review:
         changes_relevant_to_isms: 'Änderungen, die für das ISMS relevant sind (z.B. gesetzliche, organisatorische, technologische)'
         feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien (Kunden, Partner, Behörden, Mitarbeitende)'
         audit_results: 'Ergebnisse interner/externer Audits seit dem letzten Review'
-        nonconformities_review: 'Status offener Nichtkonformitäten aus Audits'
         incidents_review: 'Analyse von Sicherheitsvorfällen seit letztem Review'
         objectives_review: 'Status der ISMS-Ziele und Zielerreichung'
-        context_changes: 'Änderungen in internen/externen Anforderungen'
         previous_review_actions: 'Status der Maßnahmen aus dem vorherigen Management Review'
         non_conformities_status: 'Übersicht offener Nichtkonformitäten und deren Bearbeitungsstand'
         corrective_actions_status: 'Status der Korrekturmaßnahmen (geplant, in Bearbeitung, abgeschlossen)'
-        improvement_opportunities: 'Identifizierte Chancen zur Verbesserung des ISMS'
-        opportunities_for_improvement: 'Verbesserungsmöglichkeiten (Alias-Feld, kompatibel mit bestehendem Template)'
+        opportunities_for_improvement: 'ISO 27001 9.3.2 g — Chancen zur fortlaufenden Verbesserung.'
         decisions: 'Getroffene Entscheidungen und Maßnahmen'
         action_items: 'Konkrete Maßnahmen mit Verantwortlichkeiten und Fristen'
         resource_needs: 'Budget, Personal oder sonstige Ressourcen'
@@ -173,8 +155,8 @@ management_review:
         risk_treatment_effectiveness: 'Bewertung, ob die umgesetzten Risikobehandlungsmaßnahmen wirksam sind (Treatment-ROI; ergänzt risksReview).'
         policy_review_outcome: 'Ergebnis der Überprüfung der Informationssicherheitsrichtlinie gemäß §5.2.'
         framework_compliance_status: 'Momentaufnahme des Compliance-Status je Framework (DORA, NIS2, ISO 27001, BaFin-Anforderungen). Nur sichtbar, wenn das Compliance-Modul aktiv ist.'
-        action_items_with_deadlines: 'Beschlossene Maßnahmen mit Verantwortlichen, Frist und Status (ISO 27001 Kap. 9.3.3).'
         status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Geplant → Abgeschlossen / Nachverfolgung erforderlich). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
+        interested_party_needs_changes: 'ISO 27001 9.3.2 c — wird aus den seit der letzten Bewertung geänderten interessierten Parteien vorbefüllt.'
     error:
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
     auto_collect:
@@ -188,18 +170,69 @@ management_review:
         financial_entity: 'Finanzunternehmen (DORA Art. 2 Abs. 2)'
         critical_ict_third_party: 'Kritischer IKT-Drittanbieter (CTPP, DORA Art. 31)'
     json_builder:
-        action_items:
-            add: 'Maßnahme hinzufügen'
-            action: 'Maßnahme'
-            owner: 'Verantwortlich'
-            deadline: 'Frist'
-            status: 'Status'
-            status_open: 'Offen'
-            status_in_progress: 'In Bearbeitung'
-            status_done: 'Erledigt'
         framework_status:
             add: 'Framework hinzufügen'
             framework: 'Framework'
             status: 'Status'
             last_review: 'Letzte Prüfung'
             open_items: 'Offene Punkte'
+    complete:
+        hint: 'Die Eingaben sind vorbereitet. Mit dem Abschluss billigt die Leitung die Ergebnisse (ISO 27001 9.3.3).'
+        action: 'Ergebnisse billigen und abschließen'
+        question: 'Die Leitung billigt die Ergebnisse dieser Managementbewertung. Die Entscheidung wird im Register der Leitungsentscheidungen festgehalten.'
+        summary: '%count% Maßnahmen beschlossen'
+        comment: 'Kommentar der Leitung'
+    decision:
+        title: 'Entscheidungen der Leitung'
+        none: 'Noch keine Entscheidung festgehalten.'
+    task:
+        title: 'Maßnahmen aus der Bewertung'
+        empty: 'Keine Maßnahmen beschlossen.'
+        add: 'Maßnahme hinzufügen'
+        done: 'Erledigt'
+        open_count: 'Offene Maßnahmen'
+        field:
+            title: 'Maßnahme'
+            responsible: 'Verantwortlich'
+            due: 'Frist'
+            status: 'Status'
+        placeholder:
+            responsible: '— Person wählen —'
+    flash:
+        task_added: 'Maßnahme hinzugefügt.'
+        task_invalid: 'Maßnahme nicht gespeichert: Titel und Frist fehlen.'
+        task_done: 'Als erledigt markiert.'
+        task_closed: 'Diese Maßnahme ist bereits abgeschlossen.'
+        completed: 'Managementbewertung abgeschlossen.'
+        not_completable: 'Diese Bewertung ist bereits abgeschlossen.'
+    input:
+        a:
+            no_previous: 'Keine vorherige Managementbewertung vorhanden.'
+            header: 'Maßnahmen aus „%review%“ vom %date%:'
+            due: 'fällig %date%'
+            decision: 'Entscheidung: %title%'
+            none: 'In der vorherigen Bewertung wurden keine Maßnahmen beschlossen.'
+        b:
+            no_context: 'Der Kontext der Organisation ist noch nicht erfasst.'
+            unchanged: 'Keine Änderung am Kontext der Organisation seit %date%.'
+            changed: 'Kontext der Organisation zuletzt geändert am %date%.'
+            external: 'Externe Themen:'
+            internal: 'Interne Themen:'
+        c:
+            unchanged: 'Keine geänderten interessierten Parteien seit %date%.'
+            none: 'Keine interessierten Parteien erfasst.'
+            header_since: 'Seit %date% geänderte interessierte Parteien:'
+            header: 'Interessierte Parteien und ihre Anforderungen:'
+            new: 'neu'
+        d2:
+            no_incidents: 'Keine Sicherheitsvorfälle im Zeitraum.'
+            incidents: '%count% Sicherheitsvorfälle im Zeitraum:'
+        d4:
+            none: 'Keine Sicherheitsziele erfasst.'
+            progress: 'Ist %current%, Ziel %target% %unit%'
+        e:
+            satisfaction: 'Zufriedenheit %level%/5'
+            issues: 'Themen: %issues%'
+            none: 'Keine Rückmeldungen interessierter Parteien im Zeitraum.'
+        f:
+            treatment: '%total% Risikobehandlungspläne, davon %active% aktiv und %overdue% überfällig.'

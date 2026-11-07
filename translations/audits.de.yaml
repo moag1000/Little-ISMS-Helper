@@ -323,6 +323,7 @@ audit_finding:
         nonconformity_details: 'NC-Details (strukturiert)'
     placeholder:
         audit: '-- Audit auswählen --'
+        audit_none: '-- Kein Audit (Managementbewertung, Vorfall, Selbstbewertung) --'
         related_control: '-- Control auswählen (optional) --'
         assigned_to: '-- Verantwortliche Person --'
         assigned_person: '-- Person aus Stammdaten --'
@@ -335,7 +336,7 @@ audit_finding:
         nonconformity_details: '{"rootCauseAnalysisMethod":"5-why","correctiveActions":[],"verificationMethod":"document-review","verificationEvidence":""}'
     help:
         status_readonly: 'Status wird vom AuditFinding-Lifecycle-Workflow gesteuert (open → in_progress → resolved → verified → closed). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite (LifecycleService::transition).'
-        audit: 'Internes Audit, in dem diese Feststellung entstanden ist'
+        audit: 'Internes Audit, in dem diese Feststellung entstanden ist. Leer lassen, wenn die Abweichung anders festgestellt wurde (ISO 27001 10.2).'
         # F14 — shown when audit is pre-selected (locked) via audit show-page link
         audit_locked: 'Audit ist vorausgewählt (aus dem Audit-Kontext). Wechseln Sie zur vollständigen Erfassung, um ein anderes Audit zu wählen.'
         finding_number: 'Eindeutige Nummer (optional — z.B. F-2026-001)'
@@ -440,11 +441,6 @@ audit_finding:
         no_findings: 'Keine Feststellungen vorhanden.'
     empty:
         body: 'Keine offenen Feststellungen — Ihr ISMS arbeitet aktuell konformitätsfest. Im Audit-Modul können Sie jederzeit neue Feststellungen aus internen oder externen Audits dokumentieren.'
-        no_audit:
-            title: 'Zuerst ein Audit anlegen'
-            text: 'Eine Feststellung gehört immer zu einem internen Audit. Legen Sie zuerst ein Audit an — danach können Sie hier Feststellungen dazu dokumentieren.'
-            cta: 'Audit anlegen'
-            back: 'Zurück zur Übersicht'
     confirm:
         delete: 'Möchten Sie diese Feststellung wirklich löschen?'
     flash:

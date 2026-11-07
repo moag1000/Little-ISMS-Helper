@@ -79,7 +79,10 @@ Enthaltene Widgets:
 Separate, druckoptimierte Ansicht fuer Geschaeftsfuehrung und Aufsichtsgremien
 (Rolle `ROLE_TOP_MGMT`, dazu CISO, Compliance-Manager, Konzern-ISB). Der Knopf
 "One-Pager (PDF)" oben rechts laedt den Board-One-Pager direkt.
-Enthalt keine technischen Details, nur aggregierte KPIs:
+Oben steht, was die Leitung entscheidet: offene Vorlagen mit Billigen und
+Ablehnen, fehlende oder bald endende Billigungen und die letzten
+Entscheidungen ([Leitungsentscheidungen](LEITUNGSENTSCHEIDUNGEN.md)).
+Darunter aggregierte KPIs ohne technische Details:
 
 - ISMS Health Score mit Vorperioden-Vergleich
 - Anzahl kritischer Risiken mit Behandlungsstatus

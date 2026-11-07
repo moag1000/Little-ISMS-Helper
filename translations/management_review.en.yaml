@@ -16,10 +16,10 @@ management_review:
     section:
         basic_info: 'Basic Information'
         inputs: 'Inputs to the Review (9.3.2)'
-        followup: 'Status of Previous Actions'
         outputs: 'Outputs of the Review (9.3.3)'
         audit_metadata: 'ISO 27001 §9.3 · Norm Fields'
         compliance: 'Framework Compliance Status'
+        overview: 'Overview'
     action:
         cancel: Cancel
         save: 'Save Changes'
@@ -45,12 +45,9 @@ management_review:
         previous_review_actions: 'Status of previous actions'
         non_conformities_status: 'Status of nonconformities'
         corrective_actions_status: 'Status of corrective actions'
-        nonconformities_review: 'Nonconformities review'
         incidents_review: 'Incidents review'
         risks_review: 'Risks review'
         objectives_review: 'Objectives review'
-        context_changes: 'Context changes'
-        improvement_opportunities: 'Improvement opportunities'
         opportunities_for_improvement: 'Opportunities for improvement'
         resource_needs: 'Resource needs'
         decisions: Decisions
@@ -62,7 +59,7 @@ management_review:
         risk_treatment_effectiveness: 'Risk Treatment Effectiveness'
         policy_review_outcome: 'Policy Review Outcome (§5.2)'
         framework_compliance_status: 'Framework Compliance Status'
-        action_items_with_deadlines: 'Action Items with Deadlines (structured)'
+        interested_party_needs_changes: 'Changes in needs and expectations of interested parties'
     status_values:
         planned: Planned
         in_progress: 'In Progress'
@@ -85,19 +82,6 @@ management_review:
     resource_needs: 'Resource needs'
     decisions: Decisions
     action_items: 'Action items'
-    management_decisions: 'Management decisions'
-    action_items_label: 'Action items'
-    clause_93: 'ISO 27001 Clause 9.3'
-    clause_93_description: 'Management review inputs and outputs according to ISO 27001:2022.'
-    inputs_label: 'Inputs (examples)'
-    input_1: 'Changes in external and internal issues relevant to the ISMS'
-    input_2: 'Feedback from interested parties'
-    input_3: 'Information on ISMS performance and effectiveness'
-    input_4: 'Status of previous actions and risk treatment'
-    outputs_label: 'Outputs (examples)'
-    output_1: 'Decisions and actions related to opportunities for improvement'
-    output_2: 'Any need for changes to the ISMS'
-    output_3: 'Resource needs'
     pdf:
         title: 'Management Review — %title%'
         heading: 'Management Review (ISO 27001 Clause 9.3)'
@@ -131,13 +115,14 @@ management_review:
             objectives: 'Status of ISMS objectives'
             risks: 'Risk assessment and treatment'
             opportunities: 'Opportunities for improvement'
+            interested_party_needs: 'Changed needs of interested parties'
+            risk_treatment: 'Effectiveness of risk treatment'
         output:
-            improvements: 'Decisions on continual improvement'
-            changes_isms: 'Approved ISMS changes'
             resources: 'Resource needs'
             decisions: 'Other decisions'
             action_items: 'Action items (tracked)'
             summary: 'Summary'
+            policy: 'Outcome of the policy review'
     edit: Edit
     placeholder:
         title: 'e.g. Management Review Q1 2025'
@@ -154,15 +139,12 @@ management_review:
         changes_relevant_to_isms: 'Changes relevant to the ISMS (e.g. legal, organizational, technological)'
         feedback_from_interested_parties: 'Feedback from interested parties (customers, partners, authorities, employees)'
         audit_results: 'Results of internal/external audits since last review'
-        nonconformities_review: 'Status of open nonconformities from audits'
         incidents_review: 'Analysis of security incidents since last review'
         objectives_review: 'Status of ISMS objectives and achievement'
-        context_changes: 'Changes in internal/external requirements'
         previous_review_actions: 'Status of actions from the previous management review'
         non_conformities_status: 'Overview of open nonconformities and their processing status'
         corrective_actions_status: 'Status of corrective actions (planned, in progress, completed)'
-        improvement_opportunities: 'Identified opportunities to improve the ISMS'
-        opportunities_for_improvement: 'Improvement opportunities (alias field, compatible with existing template)'
+        opportunities_for_improvement: 'ISO 27001 9.3.2 g — opportunities for continual improvement.'
         decisions: 'Decisions and actions taken'
         action_items: 'Specific actions with responsibilities and deadlines'
         resource_needs: 'Budget, personnel or other resources'
@@ -173,8 +155,8 @@ management_review:
         risk_treatment_effectiveness: 'Assessment of whether the implemented risk-treatment measures are effective (treatment ROI; supplements risksReview).'
         policy_review_outcome: 'Outcome of the information-security policy review according to §5.2.'
         framework_compliance_status: 'Snapshot of the compliance status per framework (DORA, NIS2, ISO 27001, BaFin). Only visible when the compliance module is active.'
-        action_items_with_deadlines: 'Decided action items with owner, deadline and status (ISO 27001 cl. 9.3.3).'
         status_readonly: 'Status is driven by the lifecycle workflow (Planned → Completed / Follow-up required). Direct editing is disabled; use the status actions on the detail page.'
+        interested_party_needs_changes: 'ISO 27001 9.3.2 c — prefilled from the interested parties changed since the previous review.'
     error:
         owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
     auto_collect:
@@ -188,18 +170,69 @@ management_review:
         financial_entity: 'Financial entity (DORA Art. 2(2))'
         critical_ict_third_party: 'Critical ICT third-party provider (CTPP, DORA Art. 31)'
     json_builder:
-        action_items:
-            add: 'Add action item'
-            action: 'Action'
-            owner: 'Owner'
-            deadline: 'Deadline'
-            status: 'Status'
-            status_open: 'Open'
-            status_in_progress: 'In progress'
-            status_done: 'Done'
         framework_status:
             add: 'Add framework'
             framework: 'Framework'
             status: 'Status'
             last_review: 'Last review'
             open_items: 'Open items'
+    complete:
+        hint: 'The inputs are prepared. Completing the review is top management approving its results (ISO 27001 9.3.3).'
+        action: 'Approve results and complete'
+        question: 'Top management approves the results of this management review. The decision is recorded in the register of management decisions.'
+        summary: '%count% actions decided'
+        comment: 'Comment of top management'
+    decision:
+        title: 'Decisions of top management'
+        none: 'No decision recorded yet.'
+    task:
+        title: 'Actions from the review'
+        empty: 'No actions decided.'
+        add: 'Add action'
+        done: 'Done'
+        open_count: 'Open actions'
+        field:
+            title: 'Action'
+            responsible: 'Responsible'
+            due: 'Due'
+            status: 'Status'
+        placeholder:
+            responsible: '— Choose a person —'
+    flash:
+        task_added: 'Action added.'
+        task_invalid: 'Action not saved: title and due date are missing.'
+        task_done: 'Marked as done.'
+        task_closed: 'This action is already closed.'
+        completed: 'Management review completed.'
+        not_completable: 'This review is already completed.'
+    input:
+        a:
+            no_previous: 'No previous management review.'
+            header: 'Actions from “%review%” of %date%:'
+            due: 'due %date%'
+            decision: 'Decision: %title%'
+            none: 'The previous review decided no actions.'
+        b:
+            no_context: 'The context of the organisation is not recorded yet.'
+            unchanged: 'No change to the context of the organisation since %date%.'
+            changed: 'Context of the organisation last changed on %date%.'
+            external: 'External issues:'
+            internal: 'Internal issues:'
+        c:
+            unchanged: 'No interested parties changed since %date%.'
+            none: 'No interested parties recorded.'
+            header_since: 'Interested parties changed since %date%:'
+            header: 'Interested parties and their requirements:'
+            new: 'new'
+        d2:
+            no_incidents: 'No security incidents in the period.'
+            incidents: '%count% security incidents in the period:'
+        d4:
+            none: 'No security objectives recorded.'
+            progress: 'current %current%, target %target% %unit%'
+        e:
+            satisfaction: 'satisfaction %level%/5'
+            issues: 'issues: %issues%'
+            none: 'No feedback from interested parties in the period.'
+        f:
+            treatment: '%total% risk treatment plans, %active% active and %overdue% overdue.'

@@ -64,7 +64,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'class' => InternalAudit::class,
                 'choice_label' => fn(InternalAudit $a): string => ($a->getAuditNumber() ?? '') . ' — ' . ($a->getTitle() ?? ''),
                 'placeholder' => 'audit_finding.placeholder.audit',
-                'required' => true,
+                'required' => false,
                 'help' => 'audit_finding.help.audit_locked',
                 'disabled' => true,
                 'mapped' => false,
@@ -74,8 +74,8 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'label' => 'audit_finding.field.audit',
                 'class' => InternalAudit::class,
                 'choice_label' => fn(InternalAudit $a): string => ($a->getAuditNumber() ?? '') . ' — ' . ($a->getTitle() ?? ''),
-                'placeholder' => 'audit_finding.placeholder.audit',
-                'required' => true,
+                'placeholder' => 'audit_finding.placeholder.audit_none',
+                'required' => false,
                 'help' => 'audit_finding.help.audit',
             ]);
         }

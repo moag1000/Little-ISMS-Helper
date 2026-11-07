@@ -74,4 +74,37 @@ class ManagementReviewRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * The review before a date (newest first) — the "since" of the 9.3.2
+     * inputs of the next review.
+     */
+    public function findPreviousForTenant(Tenant $tenant, \DateTimeInterface $before): ?ManagementReview
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.tenant = :tenant')
+            ->andWhere('m.reviewDate < :before')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('before', $before)
+            ->orderBy('m.reviewDate', \SortDirection::Descending)
+            ->addOrderBy('m.id', \SortDirection::Descending)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * The newest review of a tenant, or null.
+     */
+    public function findLatestForTenant(Tenant $tenant): ?ManagementReview
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('m.reviewDate', \SortDirection::Descending)
+            ->addOrderBy('m.id', \SortDirection::Descending)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block title %}{{ decision.title }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'management_decision.title'|trans({}, 'management_decision'), url: path('app_management_decision_index') },
+            { label: decision.title },
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: decision.title,
+        badge: { label: decision.type.label|trans({}, 'management_decision') },
+    }) }}
+
+    {% set _pending = decision.pending %}
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ManagementDecision', status_key: decision.status, label: decision.statusEnum.label|trans({}, 'management_decision'), size: 'lg' }) }}{% endset %}
+    {% set _actions %}
+        {% if _pending and is_granted('ROLE_TOP_MGMT') %}
+            {% include 'management_decision/_decide_buttons.html.twig' with { decision: decision } only %}
+        {% endif %}
+        {% if _pending and is_granted('ROLE_MANAGER') %}
+            <form method="post" action="{{ path('app_management_decision_withdraw', {id: decision.id}) }}" class="d-inline"
+                  data-controller="ui-actions" data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="{{ 'management_decision.confirm.withdraw'|trans({}, 'management_decision') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('md_withdraw_' ~ decision.id) }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'management_decision.action.withdraw'|trans({}, 'management_decision') }}</button>
+            </form>
+        {% endif %}
+    {% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: _pending ? [
+            { label: 'management_decision.field.requested_by'|trans({}, 'management_decision'), value: decision.requestedBy ? decision.requestedBy.fullName : null },
+            { label: 'management_decision.field.due_date'|trans({}, 'management_decision'), value: decision.dueDate ? decision.dueDate|fa_date : null },
+        ] : [
+            { label: 'management_decision.field.decided_by'|trans({}, 'management_decision'), value: decision.decidedBy ? decision.decidedBy.fullName : null },
+            { label: 'management_decision.field.decided_at'|trans({}, 'management_decision'), value: decision.decidedAt ? decision.decidedAt|fa_date : null },
+            { label: 'management_decision.field.valid_until'|trans({}, 'management_decision'), value: decision.validUntil ? decision.validUntil|fa_date : null },
+        ],
+    }) }}
+
+    {% if superseded_by %}
+        {{ _fa_alert.render({ variant: 'info', body: 'management_decision.superseded_by'|trans({'%title%': superseded_by.title}, 'management_decision') }) }}
+    {% elseif decision.expired %}
+        {{ _fa_alert.render({ variant: 'warning', body: 'management_decision.expired'|trans({}, 'management_decision') }) }}
+    {% endif %}
+
+    {% set _links = entity_links(decision) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'proposal', label: 'management_decision.field.proposal'|trans({}, 'management_decision') },
+        { id: 'decision', label: 'management_decision.section.decision'|trans({}, 'management_decision') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: decision } only %}
+
+    <div id="proposal" class="fa-show-section">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h5 mb-0">{{ 'management_decision.field.proposal'|trans({}, 'management_decision') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <dl class="row mb-3">
+                <dt class="col-sm-3 text-muted">{{ 'management_decision.field.norm'|trans({}, 'management_decision') }}</dt>
+                <dd class="col-sm-9">{{ decision.type.normReference }}</dd>
+                <dt class="col-sm-3 text-muted">{{ 'management_decision.field.subject'|trans({}, 'management_decision') }}</dt>
+                <dd class="col-sm-9">{% include 'management_decision/_subject.html.twig' with { decision: decision } only %}</dd>
+                {% if decision.managementReview %}
+                    <dt class="col-sm-3 text-muted">{{ 'management_decision.field.review'|trans({}, 'management_decision') }}</dt>
+                    <dd class="col-sm-9"><a href="{{ path('app_management_review_show', {id: decision.managementReview.id}) }}">{{ decision.managementReview.title }}</a></dd>
+                {% endif %}
+                {% if decision.basis %}
+                    <dt class="col-sm-3 text-muted">{{ 'management_decision.field.basis'|trans({}, 'management_decision') }}</dt>
+                    <dd class="col-sm-9"><a href="{{ path('app_management_decision_show', {id: decision.basis.id}) }}">{{ decision.basis.title }}</a> ({{ decision.basis.decidedAt|fa_date }})</dd>
+                {% endif %}
+            </dl>
+            <div>{{ decision.proposal ? decision.proposal|nl2br : '—' }}</div>
+        {% endblock %}
+    {% endembed %}
+    </div>
+
+    <div id="decision" class="fa-show-section">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h5 mb-0">{{ 'management_decision.section.decision'|trans({}, 'management_decision') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            {% if decision.pending %}
+                <p class="mb-0">{{ 'management_decision.waiting'|trans({}, 'management_decision') }}</p>
+            {% else %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 text-muted">{{ 'management_decision.field.decided_by'|trans({}, 'management_decision') }}</dt>
+                    <dd class="col-sm-9">{{ decision.decidedBy ? decision.decidedBy.fullName : '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">{{ 'management_decision.field.decided_at'|trans({}, 'management_decision') }}</dt>
+                    <dd class="col-sm-9">{{ decision.decidedAt|fa_datetime }}</dd>
+                    <dt class="col-sm-3 text-muted">{{ 'management_decision.field.comment'|trans({}, 'management_decision') }}</dt>
+                    <dd class="col-sm-9 mb-0">{{ decision.decisionComment ? decision.decisionComment|nl2br : '—' }}</dd>
+                </dl>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: decision, lifecycle: 'management-decision' } only %}
+</div>
+
+{% if decision.pending and is_granted('ROLE_TOP_MGMT') %}
+    {% include 'management_decision/_decide_modals.html.twig' with { decision: decision } only %}
+{% endif %}
+{% endblock %}

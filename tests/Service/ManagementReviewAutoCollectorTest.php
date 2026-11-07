@@ -57,7 +57,11 @@ final class ManagementReviewAutoCollectorTest extends KernelTestCase
         self::assertStringStartsWith('Audit results', (string) $review->getAuditResults());
         self::assertStringStartsWith('Non-conformities status', (string) $review->getNonConformitiesStatus());
         self::assertStringStartsWith('Corrective actions status', (string) $review->getCorrectiveActionsStatus());
-        self::assertStringStartsWith('Context changes', (string) $review->getChangesRelevantToISMS());
+        // 9.3.2 a–c come from the records; an empty organisation says so instead of a placeholder.
+        self::assertSame('No previous management review.', $review->getPreviousReviewActions());
+        self::assertSame('The context of the organisation is not recorded yet.', $review->getChangesRelevantToISMS());
+        self::assertSame('No interested parties recorded.', $review->getInterestedPartyNeedsChanges());
+        self::assertNotNull($review->getNextReviewDate(), 'the next review is planned 12 months ahead (9.3.1)');
         self::assertInstanceOf(ManagementReview::class, $this->em->find(ManagementReview::class, $review->getId()));
     }
 

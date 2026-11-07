@@ -1,0 +1,17 @@
+{# The record a decision is about, linked where the reader may open it. #}
+{% set _routes = {
+    'ManagementReview': 'app_management_review_show',
+    'Risk': 'app_risk_show',
+    'SoaSnapshot': 'app_soa_snapshot_show',
+} %}
+{% if decision.subjectType is null %}
+    —
+{% elseif _routes[decision.subjectType] is defined %}
+    <a href="{{ path(_routes[decision.subjectType], {id: decision.subjectId}) }}">{{ ('management_decision.subject.' ~ decision.subjectType)|trans({}, 'management_decision') }} #{{ decision.subjectId }}</a>
+{% elseif decision.subjectType == 'ISMSContext' %}
+    <a href="{{ path('app_context_index') }}">{{ 'management_decision.subject.ISMSContext'|trans({}, 'management_decision') }}</a>
+{% elseif decision.subjectType == 'RiskApprovalConfig' and is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('app_admin_risk_approval_config') }}">{{ 'management_decision.subject.RiskApprovalConfig'|trans({}, 'management_decision') }}</a>
+{% else %}
+    {{ ('management_decision.subject.' ~ decision.subjectType)|trans({}, 'management_decision') }}
+{% endif %}
