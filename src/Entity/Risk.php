@@ -836,14 +836,14 @@ class Risk
     #[MaxDepth(1)]
     public function getIncidents(): Collection
     {
-        $incidents = new ArrayCollection();
+        $incidents = [];
         foreach ($this->incidentLinks as $link) {
             $incident = $link->getIncident();
-            if ($incident !== null && $link->isRealized() && !$incidents->contains($incident)) {
-                $incidents->add($incident);
+            if ($incident !== null && $link->isRealized()) {
+                $incidents[spl_object_id($incident)] = $incident;
             }
         }
-        return $incidents;
+        return new ArrayCollection(array_values($incidents));
     }
 
     /**

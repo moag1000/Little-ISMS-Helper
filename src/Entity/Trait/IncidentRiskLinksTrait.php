@@ -115,13 +115,13 @@ trait IncidentRiskLinksTrait
      */
     private function risksOfLinks(callable $keep): Collection
     {
-        $risks = new ArrayCollection();
+        $risks = [];
         foreach ($this->riskLinks as $link) {
             $risk = $link->getRisk();
-            if ($risk !== null && $keep($link) && !$risks->contains($risk)) {
-                $risks->add($risk);
+            if ($risk !== null && $keep($link)) {
+                $risks[spl_object_id($risk)] = $risk;
             }
         }
-        return $risks;
+        return new ArrayCollection(array_values($risks));
     }
 }
