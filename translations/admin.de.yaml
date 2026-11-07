@@ -1659,7 +1659,7 @@ admin:
             lifecycle_overrides: 'Lifecycle-Overrides'
         form:
             approver_role: 'Genehmiger-Rolle'
-            approver_role_help: 'ROLE_*-Wert, der die YAML-Genehmiger-Rolle für diesen Schritt überschreibt. Leer lassen für YAML-Standard.'
+            approver_role_help: 'ROLE_*-Wert oder „owner“ (die oder der Verantwortliche des Datensatzes, z. B. Risk Owner), der die YAML-Genehmiger-Rolle für diesen Schritt überschreibt. Leer lassen für YAML-Standard.'
             approver_users: 'Genehmiger'
             approver_users_help: 'Benutzer dieser Organisation, die den Schritt genehmigen dürfen. Leer lassen für YAML-Standard.'
             days_to_complete: 'Tage bis Abschluss'

@@ -11,14 +11,13 @@ use Doctrine\Migrations\AbstractMigration;
  * One reminder path for all deadlines (Paket 2):
  *  - obligation_notice: sent digests / urgent notices per person (dedupe +
  *    the person's own in-app notifications);
- *  - tenant.reminder_digest_hour: local hour of the daily digest (default 7);
  *  - users.reminder_digest_enabled: per-person opt-out of the digest.
  */
 final class Version20261107140000_ObligationReminders extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Reminders: obligation_notice table, tenant digest hour, user digest opt-out';
+        return 'Reminders: obligation_notice table, user digest opt-out';
     }
 
     public function isTransactional(): bool
@@ -48,14 +47,12 @@ final class Version20261107140000_ObligationReminders extends AbstractMigration
             . ' CONSTRAINT FK_2EBED285A76ED395 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE'
             . ') DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB'
         );
-        $this->addSql('ALTER TABLE tenant ADD reminder_digest_hour SMALLINT DEFAULT 7 NOT NULL');
         $this->addSql('ALTER TABLE users ADD reminder_digest_enabled TINYINT DEFAULT 1 NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         $this->addSql('DROP TABLE IF EXISTS obligation_notice');
-        $this->addSql('ALTER TABLE tenant DROP reminder_digest_hour');
         $this->addSql('ALTER TABLE users DROP reminder_digest_enabled');
     }
 }

@@ -62,7 +62,7 @@ class ObligationReminderService
         $sent = 0;
         foreach ($this->tenants->findActive() as $tenant) {
             $local = $now->setTimezone($this->timezoneOf($tenant));
-            if (!$force && (int) $local->format('G') !== $tenant->getReminderDigestHour()) {
+            if (!$force && (int) $local->format('G') !== ReminderSettings::digestHour($tenant)) {
                 continue;
             }
             $key = 'digest:' . $local->format('Y-m-d');

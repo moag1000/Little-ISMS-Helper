@@ -11,6 +11,7 @@ use App\Security\Persona\Persona;
 use App\Security\Persona\PersonaResolver;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
+use App\Service\Reminder\ReminderSettings;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -48,6 +49,9 @@ class ProfileController extends AbstractController
 
         return $this->render('profile/index.html.twig', [
             'user' => $user,
+            'reminder_digest_hour' => $user->getTenant() !== null
+                ? ReminderSettings::digestHour($user->getTenant())
+                : ReminderSettings::DEFAULT_DIGEST_HOUR,
         ]);
     }
 

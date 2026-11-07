@@ -146,7 +146,7 @@
                                 {{ 'user.profile.reminders.digest_label'|trans({}, 'user') }}
                             </label>
                         </div>
-                        <p class="small text-muted mb-3">{{ 'user.profile.reminders.digest_help'|trans({'%hour%': '%02d:00'|format(user.tenant.reminderDigestHour ?? 7)}, 'user') }}</p>
+                        <p class="small text-muted mb-3">{{ 'user.profile.reminders.digest_help'|trans({'%hour%': '%02d:00'|format(reminder_digest_hour)}, 'user') }}</p>
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'common.save'|trans({}, 'messages') }}</button>
                         </div>

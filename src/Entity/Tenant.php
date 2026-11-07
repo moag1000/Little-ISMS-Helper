@@ -327,14 +327,9 @@ class Tenant
     #[ORM\Column(length: 32, nullable: true, options: ['default' => 'baseline', 'comment' => 'Default maturity target across wizards: baseline|enhanced'])]
     private ?string $wizardMaturityTarget = 'baseline';
 
-    /** @var array<string, array{email?: bool, slack?: bool, teams?: bool}>|null */
+    /** @var array<string, array{email?: bool, slack?: bool, teams?: bool, hour?: int}>|null */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Notification preferences keyed by event type (incident, breach, audit_finding, training_overdue)'])]
     private ?array $notificationPreferences = null;
-
-    /** Local hour (tenant timezone) of the daily reminder digest, 0–23. */
-    #[ORM\Column(name: 'reminder_digest_hour', type: Types::SMALLINT, options: ['default' => 7])]
-    #[Assert\Range(min: 0, max: 23)]
-    private int $reminderDigestHour = 7;
 
     /** @var array<string, array{url?: string, contact?: string, auth_type?: string}>|null */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'CSIRT endpoints for automated incident reporting (BSI, sectoral CSIRT, ENISA)'])]
@@ -971,21 +966,10 @@ class Tenant
     public function getWizardMaturityTarget(): ?string { return $this->wizardMaturityTarget; }
     public function setWizardMaturityTarget(?string $target): static { $this->wizardMaturityTarget = $target; return $this; }
 
-    /** @return array<string, array{email?: bool, slack?: bool, teams?: bool}>|null */
-    public function getReminderDigestHour(): int
-    {
-        return $this->reminderDigestHour;
-    }
-
-    public function setReminderDigestHour(int $hour): static
-    {
-        $this->reminderDigestHour = max(0, min(23, $hour));
-        return $this;
-    }
-
+    /** @return array<string, array{email?: bool, slack?: bool, teams?: bool, hour?: int}>|null */
     public function getNotificationPreferences(): ?array { return $this->notificationPreferences; }
 
-    /** @param array<string, array{email?: bool, slack?: bool, teams?: bool}>|null $prefs */
+    /** @param array<string, array{email?: bool, slack?: bool, teams?: bool, hour?: int}>|null $prefs */
     public function setNotificationPreferences(?array $prefs): static { $this->notificationPreferences = $prefs; return $this; }
 
     /** @return array<string, array{url?: string, contact?: string, auth_type?: string}>|null */

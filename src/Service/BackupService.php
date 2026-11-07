@@ -233,6 +233,7 @@ class BackupService
         'ElementaryThreat'      => 'global BSI threat catalogue, re-loadable via LoadElementaryThreats command',
         'IctProviderLibrary'    => 'global seeded catalogue (no tenant_id), re-loadable via app:load-ict-provider-library',
         'CertificateCoverageRule' => 'global seeded catalogue (no tenant_id) — certificate→requirement coverage rules, re-loadable via fixtures',
+        'ObligationNotice'      => 'reminder log (sent digests / urgent notices, purged after 90 days) — rebuilt by the next reminder run',
 
         // Derived / re-computable snapshots
         'PortfolioSnapshot'     => 'derived trend-cache, re-computable from primary entities',

@@ -55,6 +55,7 @@ class InAppNotificationCenterController extends AbstractController
         return $this->redirectToRoute('app_notification_center', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 
+    // @no-module-gate-required: notifications is a required core module (personal reminders).
     #[Route('', name: 'center', methods: ['GET'])]
     public function center(Request $request): Response
     {
@@ -93,6 +94,7 @@ class InAppNotificationCenterController extends AbstractController
      * The bell: the user's own reminders (deadline digests, urgent statutory
      * deadlines) first, then the organisation's rule notifications.
      */
+    // @no-module-gate-required: notifications is a required core module (personal reminders).
     #[Route('/bell', name: 'bell', methods: ['GET'])]
     public function bell(): JsonResponse
     {
@@ -133,6 +135,7 @@ class InAppNotificationCenterController extends AbstractController
         ]);
     }
 
+    // @no-module-gate-required: notifications is a required core module (personal reminders).
     #[Route('/mark-read', name: 'mark_read', methods: ['POST'])]
     #[IsCsrfTokenValid('notification_mark_read')]
     public function markRead(): Response

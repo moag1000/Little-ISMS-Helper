@@ -82,7 +82,7 @@ class WorkflowController extends AbstractController
         $hasEligibleApprovers = [];
         foreach ($instances as $instance) {
             $currentStep = $instance->getCurrentStep();
-            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep, $instance);
             // Check if step has eligible approvers (for warning display)
             if ($currentStep && $instance->getStatus() === WorkflowInstanceStatus::InProgress->value) {
                 $hasEligibleApprovers[$instance->getId()] = $this->workflowService->hasEligibleApprovers($currentStep, $instance->getTenant());
@@ -123,7 +123,7 @@ class WorkflowController extends AbstractController
     {
         $currentUser = $this->currentUser();
         $currentStep = $workflowInstance->getCurrentStep();
-        $canApprove = $currentStep instanceof WorkflowStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+        $canApprove = $currentStep instanceof WorkflowStep && $this->workflowService->canUserApprove($currentUser, $currentStep, $workflowInstance);
 
         // Check if the current step has eligible approvers (for warning display)
         $hasEligibleApprovers = true;
@@ -131,7 +131,7 @@ class WorkflowController extends AbstractController
         if ($currentStep instanceof WorkflowStep && $workflowInstance->getStatus() === WorkflowInstanceStatus::InProgress->value) {
             $hasEligibleApprovers = $this->workflowService->hasEligibleApprovers($currentStep, $workflowInstance->getTenant());
             if (!$hasEligibleApprovers) {
-                $eligibleApprovers = $this->workflowService->getEligibleApprovers($currentStep, $workflowInstance->getTenant());
+                $eligibleApprovers = $this->workflowService->getEligibleApprovers($currentStep, $workflowInstance->getTenant(), $workflowInstance);
             }
         }
 
@@ -226,7 +226,7 @@ class WorkflowController extends AbstractController
 
         $currentUser = $this->currentUser();
         $currentStep = $workflowInstance->getCurrentStep();
-        if (!$currentStep instanceof WorkflowStep || !$this->workflowService->canUserApprove($currentUser, $currentStep)) {
+        if (!$currentStep instanceof WorkflowStep || !$this->workflowService->canUserApprove($currentUser, $currentStep, $workflowInstance)) {
             $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_approve', [], 'messages'));
             return $this->getSmartRedirect($request, $workflowInstance);
         }
@@ -333,7 +333,7 @@ class WorkflowController extends AbstractController
         $userCanApprove = [];
         foreach ($activeWorkflows as $instance) {
             $currentStep = $instance->getCurrentStep();
-            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep, $instance);
         }
 
         return $this->render('workflow/active.html.twig', [
@@ -353,7 +353,7 @@ class WorkflowController extends AbstractController
         $userCanApprove = [];
         foreach ($overdueWorkflows as $instance) {
             $currentStep = $instance->getCurrentStep();
-            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep, $instance);
         }
 
         return $this->render('workflow/overdue.html.twig', [

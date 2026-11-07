@@ -22,7 +22,9 @@ Rules:
   2. no approval step and no approve/reject/verify transition is open to ROLE_USER.
 
 A relation on the record ("the risk owner", "the document owner") is not a
-role; it needs the responsibility resolver, not a made-up ROLE_ string.
+role: a step names it with the keyword `approver_role: owner`, which the
+responsibility resolver turns into the record's owner (deputies, then the
+role fallback of the record's deadline source) — never a made-up ROLE_ string.
 
     python3 scripts/quality/check_workflow_roles.py
 """
@@ -51,6 +53,10 @@ PENDING: set[str] = set()
 LOOKUP = re.compile(r"""\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\(\s*'(ROLE_[A-Z_]+)'""")
 SEEDER_ROLE = re.compile(r"""'(?:approverRole|role)'\s*=>\s*'(ROLE_[A-Z_]+)'""")
 SEEDER_TYPE = re.compile(r"""'stepType'\s*=>\s*'([a-z_]+)'""")
+
+
+# Keyword for "whoever is responsible for the workflow's record" (WorkflowInstanceAdapter::APPROVER_OWNER).
+OWNER = "owner"
 
 
 def known_roles() -> set[str]:
@@ -97,7 +103,7 @@ def check_yaml(known: set[str]) -> list[str]:
             for step in meta.get("steps") or []:
                 role = step.get("approver_role")
                 line = yaml_line(lines, f'"{step.get("name")}"')
-                if role and role not in known:
+                if role and role != OWNER and role not in known:
                     errors.append(f"{rel(path)}:{line}: step \"{step.get('name')}\" waits on unknown role {role}")
                 if role == "ROLE_USER" and step.get("step_type", "approval") == "approval":
                     errors.append(f"{rel(path)}:{line}: approval step \"{step.get('name')}\" is open to ROLE_USER "
@@ -153,8 +159,8 @@ def main() -> int:
         print(f"Gate 82: {len(errors)} workflow role problem(s):")
         for e in errors:
             print(f"  {e}")
-        print("Use a role from security.yaml role_hierarchy. An owner/assignee is a relation on the record,"
-              " not a role.")
+        print("Use a role from security.yaml role_hierarchy. An owner/assignee is a relation on the record:"
+              " use `approver_role: owner`.")
         return 1
     if not args.quiet:
         print("Gate 82: workflow approvers and recipients are real roles.")

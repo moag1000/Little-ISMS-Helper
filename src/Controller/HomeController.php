@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\WorkflowService;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -61,6 +62,7 @@ class HomeController extends AbstractController
         private readonly ?InheritanceMetricsService $inheritanceMetricsService = null,
         private readonly ?GuidedTourService $guidedTourService = null,
         private readonly ?ImplementationJourneyService $journeyService = null,
+        private readonly ?WorkflowService $workflowService = null,
     ) {}
 
     // @no-methods-required: verb-agnostic redirect, unchanged from the former config/routes.yaml entry
@@ -131,7 +133,7 @@ class HomeController extends AbstractController
 
         // Workflow Approvals (UX High Priority #1 - Single-pane visibility)
         $user = $this->getUser();
-        $pendingWorkflows = $user instanceof UserInterface ? $this->workflowInstanceRepository->findPendingForUser($user) : [];
+        $pendingWorkflows = $user instanceof UserInterface ? ($user instanceof \App\Entity\User && $this->workflowService !== null ? $this->workflowService->getPendingApprovals($user) : $this->workflowInstanceRepository->findPendingForUser($user)) : [];
         $overdueWorkflows = $this->workflowInstanceRepository->findOverdue();
         $upcomingDeadlines = $this->workflowInstanceRepository->findUpcomingDeadlines(
             new DateTimeImmutable('+24 hours')
