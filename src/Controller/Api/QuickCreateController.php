@@ -50,7 +50,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 final class QuickCreateController extends AbstractController
 {
     /**
-     * @var array<string, array{class: class-string, module: string, factory: callable, label: callable}>
+     * @var array<string, array{class: class-string, module: string, role?: string, factory: callable, label: callable}>
      */
     private array $registry;
 
@@ -77,6 +77,8 @@ final class QuickCreateController extends AbstractController
             'business-process' => [
                 'class'   => BusinessProcess::class,
                 'module'  => 'bcm',
+                // Same role as BusinessProcessController::new — no back door via the inline "+ new".
+                'role'    => 'ROLE_MANAGER',
                 'factory' => $this->buildBusinessProcess(...),
                 'label'   => static fn (BusinessProcess $p): string => (string) $p->getName(),
             ],
@@ -112,6 +114,11 @@ final class QuickCreateController extends AbstractController
                 'error'  => 'module_not_active',
                 'module' => $module,
             ], 403);
+        }
+
+        $role = $this->registry[$entityType]['role'] ?? null;
+        if ($role !== null && !$this->isGranted($role)) {
+            return $this->json(['ok' => false, 'error' => 'forbidden'], 403);
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();

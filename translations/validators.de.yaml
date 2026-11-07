@@ -891,3 +891,7 @@ risk_treatment_plan.error.owner_required_user_or_person: 'Verantwortlich: Benutz
 security.url.dns_resolution_failed: 'Hostname konnte nicht aufgelöst werden (potentieller DNS-Pinning-Angriff blockiert).'
 training.error.owner_required_user_or_person: 'Trainer: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
 workflow_instance.validation.entity_id_positive: 'Die Entitäts-ID muss eine positive Zahl sein.'
+'validators.department.name_unique': 'Eine Abteilung mit diesem Namen existiert bereits.'
+'validators.tag.name_unique': 'Ein Tag mit diesem Namen existiert bereits.'
+'validators.asset_sub_type.name_unique': 'Dieser Untertyp existiert für den Asset-Obertyp bereits.'
+'validators.supplier_criticality.code_unique': 'Diesen Code gibt es bereits.'

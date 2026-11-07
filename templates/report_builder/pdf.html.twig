@@ -345,7 +345,7 @@
             <div class="text-summary">{{ data.text }}</div>
 
             {% elseif widgetType == 'text_custom' %}
-            <div>{{ data.text|default(meta.config.text|default(''))|raw }}</div>
+            <div>{{ data.text|default(meta.config.text|default(''))|e|nl2br }}</div>
 
             {% else %}
             <div style="color: #666; text-align: center; padding: 20px;">

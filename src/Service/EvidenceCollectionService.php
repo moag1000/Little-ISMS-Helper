@@ -51,6 +51,9 @@ final class EvidenceCollectionService
         User $user,
         Tenant $tenant,
     ): Document {
+        // Resolve the target first so an unknown entity never leaves an orphan file behind
+        $this->resolveEntity($entityType, $entityId);
+
         // Validate upload
         $this->fileUploadSecurityService->validateUploadedFile($file);
 

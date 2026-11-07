@@ -301,6 +301,7 @@ evidence_reverification:
         skipped: 'Reverification cycle skipped — next cycle will be scheduled automatically.'
     error:
         invalid_token: 'Reverification token is invalid or expired.'
+        not_open: 'Task is no longer open.'
     show:
         title: 'Reverification details'
         details: 'Details'

@@ -2,6 +2,11 @@ gap_report:
     title: 'Gap-Report & Aufwandsschätzung'
     back_to_assessment: 'Zurück zum Assessment'
     sort_label: 'Sortierung'
+    flash:
+        invalid_csrf: 'Ungültiges CSRF-Token.'
+        invalid_days: 'Ungültige Anzahl Personentage (0 bis 999).'
+        reason_too_short: 'Begründung zu kurz (mindestens 20 Zeichen).'
+        override_saved: 'Aufwandsanpassung gespeichert.'
     unit:
         person_days: 'Personentage'
     error:

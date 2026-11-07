@@ -278,6 +278,7 @@ checklist:
     progress: 'Progress'
     flash:
         saved: '%count% items saved'
+        locked: 'Audit is reported or closed; the checklist is locked.'
 
 pdf:
     title: 'Audit Report'

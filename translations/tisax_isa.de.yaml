@@ -100,6 +100,8 @@ tisax:
       ok: 'Das Workbook hat alle Validierungsprüfungen bestanden. Sie können fortfahren.'
       proceed: 'Weiter zur Vorschau'
       no_workbook: 'Kein Workbook in der Sitzung gefunden. Bitte laden Sie es erneut hoch.'
+      parse_failed: 'Das Workbook konnte nicht gelesen werden. Bitte laden Sie eine gültige VDA-ISA-XLSX-Datei hoch.'
+      no_tenant: 'Keine Organisation ausgewählt. Bitte wählen Sie zuerst einen Mandanten.'
       legacy_five_partial: 'ISA %version%-Workbook erkannt: Teilimport mit %count% Controls. ISA 5.x ist eine Teilmenge von ISA 6 — passende Controls werden übernommen, die nur in ISA 6 enthaltenen Controls (u. a. erweitertes Datenschutz-Modul) bleiben unbewertet.'
       version_ambiguous: 'Katalog-Version des Workbooks nicht eindeutig erkennbar — der Import läuft gegen VDA-ISA %version%. Bitte prüfen Sie nach dem Import, ob die Controls zur erwarteten ISA-Version gehören.'
       detected_catalogue: 'Erkannter Katalog'

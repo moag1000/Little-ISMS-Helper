@@ -52,6 +52,10 @@ final class MfaService
      */
     public function generateTotpSecret(User $user, string $deviceName = 'Authenticator App'): MfaToken
     {
+        // The setup page is a GET: every reload used to leave one more pending
+        // token + backup-code set behind. Only the newest enrolment is kept.
+        $this->discardPendingTotp($user);
+
         // Create TOTP instance with a fresh base32-encoded secret (otphp handles encoding)
         $totp = TOTP::generate();
         $totp->setLabel($user->getEmail());
@@ -82,6 +86,18 @@ final class MfaService
         $mfaToken->temporaryBackupCodes = $backupCodes;
 
         return $mfaToken;
+    }
+
+    /**
+     * Drops unverified, never-used TOTP enrolments of the user.
+     */
+    public function discardPendingTotp(User $user): void
+    {
+        foreach ($this->mfaTokenRepository->findBy(['user' => $user, 'tokenType' => 'totp']) as $pending) {
+            if (!$pending->isActive() && $pending->getLastUsedAt() === null && $pending->getUsageCount() === 0) {
+                $this->entityManager->remove($pending);
+            }
+        }
     }
 
     /**

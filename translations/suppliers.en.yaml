@@ -1,6 +1,8 @@
 supplier:
     title: Suppliers
     ict_library:
+        applied: 'Supplier "%name%" created from the ICT-provider library. Please review and complete the details.'
+        already_exists: 'Supplier "%name%" already exists.'
         title: 'ICT-Provider Library'
         intro: 'Curated catalogue of common ICT third-party providers (DORA Art. 28). Apply creates a pre-filled, DORA-relevant supplier for review.'
         empty: 'Library not loaded yet. Admin: run app:load-ict-provider-library.'

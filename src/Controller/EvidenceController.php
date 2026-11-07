@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exception\AppException;
 use App\Repository\DocumentRepository;
 use App\Service\AuditLogger;
 use App\Service\EvidenceCollectionService;
@@ -83,7 +84,7 @@ class EvidenceController extends AbstractController
             return $this->redirectToRoute('app_evidence_index');
         }
 
-        $entityType = $request->request->get('entity_type');
+        $entityType = (string) $request->request->get('entity_type');
         $entityId = (int) $request->request->get('entity_id');
         $file = $request->files->get('evidence_file');
 
@@ -118,7 +119,7 @@ class EvidenceController extends AbstractController
                 $e->getMessage()
             );
             $this->addFlash('error', $e->getMessage());
-        } catch (\InvalidArgumentException $e) {
+        } catch (AppException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
@@ -130,10 +131,11 @@ class EvidenceController extends AbstractController
      */
     #[Route('/unlink', name: 'unlink', methods: ['POST'])]
     #[IsCsrfTokenValid('evidence_unlink')]
+    #[IsGranted('ROLE_MANAGER')]
     public function unlink(Request $request): JsonResponse
     {
         $documentId = (int) $request->request->get('document_id');
-        $entityType = $request->request->get('entity_type');
+        $entityType = (string) $request->request->get('entity_type');
         $entityId = (int) $request->request->get('entity_id');
 
         $document = $this->documentRepository->find($documentId);
@@ -144,7 +146,7 @@ class EvidenceController extends AbstractController
         try {
             $this->evidenceService->unlinkFromEntity($document, $entityType, $entityId);
             return new JsonResponse(['success' => true, 'message' => 'Evidence unlinked']);
-        } catch (\InvalidArgumentException $e) {
+        } catch (AppException $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }

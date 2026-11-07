@@ -1,5 +1,9 @@
 admin:
+    compliance_policy:
+        saved: '%count% Einstellung(en) gespeichert.'
+        reset: 'Einstellung "%key%" zurückgesetzt.'
     industry_preset:
+        applied: 'Preset "%name%" angewendet: %modules% Module, %frameworks% Frameworks, %controls% Controls, %documents% Dokumente.'
         error:
             not_found: 'Preset wurde nicht gefunden.'
             invalid_csrf: 'Ungültiges CSRF-Token.'
@@ -25,6 +29,8 @@ admin:
             approval_approved: 'Freigegeben: %email%'
             approval_rejected: 'Abgelehnt: %email%'
         error:
+            approval_not_pending: 'Freigabe-Anfrage ist nicht mehr offen.'
+            approval_user_exists: 'Es existiert bereits ein Benutzer mit der E-Mail %email%.'
             discovery_failed: 'Discovery fehlgeschlagen: %message%'
             privileged_role_mapping: 'Rollen-Mappings nicht gespeichert: Nur Instanz-Administratoren (Super-Admin) dürfen privilegierte Rollen (%roles%) zuweisen.'
     title: Administration
@@ -411,6 +417,7 @@ admin:
         quick_fix:
             title: 'Quick-Fix-Einstellungen'
             description: 'Auto-Fallback-Verhalten und Schema-Abgleichskonfiguration für die Operator-UI'
+        saved: 'Einstellungen gespeichert.'
     compliance:
         framework: Framework
         total_requirements: Gesamtanforderungen
@@ -506,6 +513,8 @@ admin:
         transition_confirm: 'Lifecycle wirklich auf "%state%" setzen?'
         transition_reason_placeholder: 'Grund für die Transition (optional, gehört in Audit-Log)'
         transition_success: 'Lifecycle auf "%state%" gesetzt.'
+        transition_failed: 'Übergang nicht möglich: %message%'
+        recomputed: '%count% Mapping-MQS-Scores neu berechnet.'
         coverage_title: 'Coverage-Übersicht'
         coverage_button: 'Coverage-Übersicht'
         coverage_description: 'Aggregat pro Framework-Paar — wie viele Source-Items abgedeckt, mit welcher Konfidenz, was bleibt offen? Antwortet die Board-Frage „Wie viel von Y ist durch X abgedeckt — und wie sicher sind wir uns dabei?"'
@@ -524,6 +533,9 @@ admin:
             legend: 'Coverage = Anteil der Source-Items mit ≥1 published/approved-Mapping. Konfidenz-Verteilung zeigt wie sicher die Mappings sind.'
 
     sample_data:
+        framework_not_found: 'Framework %code% nicht gefunden – nichts zu entfernen.'
+        framework_removed: '%code% entfernt: Framework und %count% Anforderungen.'
+        framework_remove_failed: '%code% konnte nicht entfernt werden: %message%'
         title: 'Beispieldaten'
         description: 'Demo-Datensätze (Assets, Risiken, Geschäftsprozesse …) für die aktuelle Organisation importieren oder wieder entfernen.'
         tenant_label: 'Aktueller Organisation'

@@ -31,6 +31,8 @@
           class="fa-auth-form__form"
           data-controller="ui-actions" data-action="submit->ui-actions#submitOnce">
 
+        <input type="hidden" name="_token" value="{{ csrf_token('mfa_verify') }}">
+
         {% set deviceOptions = [] %}
         {% for token in mfaTokens %}
             {% set label = token.deviceName %}

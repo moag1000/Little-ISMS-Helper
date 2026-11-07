@@ -24,12 +24,6 @@
 
 <div>
 
-{% set _flash_variant_map = { 'success': 'success', 'error': 'danger', 'danger': 'danger', 'warning': 'warning', 'info': 'info', 'notice': 'info' } %}
-{% for label, msgs in app.flashes %}
-    {% for msg in msgs %}
-        {{ _fa_alert.render({ variant: _flash_variant_map[label]|default('info'), body: msg|trans|e, class: 'mb-3' }) }}
-    {% endfor %}
-{% endfor %}
 
 <div class="row g-4"
      data-controller="report-style-preview"

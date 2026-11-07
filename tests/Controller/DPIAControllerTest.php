@@ -231,9 +231,18 @@ class DPIAControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testPlainUserCannotOpenNewForm(): void
+    {
+        // GDPR records are written by managers / DPO only (like data breaches).
+        $this->loginAsUser($this->testUser);
+        $this->client->request('GET', '/en/dpia/new');
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    #[Test]
     public function testNewDisplaysForm(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $crawler = $this->client->request('GET', '/en/dpia/new');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
@@ -251,7 +260,7 @@ class DPIAControllerTest extends WebTestCase
     #[Test]
     public function testEditDisplaysForm(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $crawler = $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId() . '/edit');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
@@ -279,7 +288,7 @@ class DPIAControllerTest extends WebTestCase
     #[Test]
     public function testEditInFrameRendersFormModalPartial(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $this->client->request(
             'GET',
@@ -298,7 +307,7 @@ class DPIAControllerTest extends WebTestCase
     #[Test]
     public function testEditWithoutFrameRendersFullPage(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId() . '/edit');
 
         $this->assertResponseIsSuccessful();
@@ -312,7 +321,7 @@ class DPIAControllerTest extends WebTestCase
         // slim form-modal partial with 422 (errors inline), not the full page.
         // (The valid → Turbo-Stream path is identical to LocationController and
         // covered there; the DPIA fixture is intentionally an incomplete draft.)
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request(
             'GET',

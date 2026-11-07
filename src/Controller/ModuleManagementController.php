@@ -13,7 +13,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Module Management - Redirect to Admin Panel
  *
  * Module management has been centralized in the admin panel.
- * All routes redirect to their admin equivalents.
+ * All routes redirect to their admin equivalents (GET aliases only; POST
+ * actions live on the admin_modules_* routes — a 302 would turn them into GETs).
  */
 #[IsGranted('ROLE_ADMIN')]
 class ModuleManagementController extends AbstractController
@@ -28,42 +29,12 @@ class ModuleManagementController extends AbstractController
     }
 
     /**
-     * Activate Module - Redirect to Admin
-     */
-    // @csrf-exempt: redirect-only alias, the admin target route enforces CSRF
-    #[Route('/modules/{moduleKey}/activate', name: 'module_management_activate', methods: ['POST'])]
-    public function activate(string $moduleKey): Response
-    {
-        return $this->redirectToRoute('admin_modules_activate', ['moduleKey' => $moduleKey]);
-    }
-
-    /**
-     * Deactivate Module - Redirect to Admin
-     */
-    // @csrf-exempt: redirect-only alias, the admin target route enforces CSRF
-    #[Route('/modules/{moduleKey}/deactivate', name: 'module_management_deactivate', methods: ['POST'])]
-    public function deactivate(string $moduleKey): Response
-    {
-        return $this->redirectToRoute('admin_modules_deactivate', ['moduleKey' => $moduleKey]);
-    }
-
-    /**
      * Module Details - Redirect to Admin
      */
     #[Route('/modules/{moduleKey}/details', name: 'module_management_details', methods: ['GET'])]
     public function details(string $moduleKey): Response
     {
         return $this->redirectToRoute('admin_modules_details', ['moduleKey' => $moduleKey]);
-    }
-
-    /**
-     * Import Module Data - Redirect to Admin
-     */
-    // @csrf-exempt: redirect-only alias, the admin target route enforces CSRF
-    #[Route('/modules/{moduleKey}/import-data', name: 'module_management_import_data', methods: ['POST'])]
-    public function importData(string $moduleKey): Response
-    {
-        return $this->redirectToRoute('admin_modules_import_data', ['moduleKey' => $moduleKey]);
     }
 
     /**

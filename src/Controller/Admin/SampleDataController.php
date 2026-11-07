@@ -192,7 +192,7 @@ class SampleDataController extends AbstractController
             $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)
                 ->findOneBy(['code' => $code]);
             if ($framework === null) {
-                $this->addFlash('warning', sprintf('Framework %s nicht gefunden — nichts zu entfernen.', $code));
+                $this->addFlash('warning', $this->translator->trans('admin.sample_data.framework_not_found', ['%code%' => $code], 'admin'));
                 return $this->redirectToRoute('admin_sample_data_index');
             }
             $reqCount = $this->em->getRepository(\App\Entity\ComplianceRequirement::class)
@@ -200,13 +200,16 @@ class SampleDataController extends AbstractController
             try {
                 $this->em->remove($framework);
                 $this->em->flush();
-                $this->addFlash('success', sprintf(
-                    '%s entfernt: Framework + %d Anforderungen.',
-                    $code, $reqCount
+                $this->addFlash('success', $this->translator->trans(
+                    'admin.sample_data.framework_removed',
+                    ['%code%' => $code, '%count%' => $reqCount],
+                    'admin',
                 ));
             } catch (\Throwable $e) {
-                $this->addFlash('error', sprintf(
-                    'Konnte %s nicht entfernen: %s', $code, $e->getMessage()
+                $this->addFlash('error', $this->translator->trans(
+                    'admin.sample_data.framework_remove_failed',
+                    ['%code%' => $code, '%message%' => $e->getMessage()],
+                    'admin',
                 ));
             }
             return $this->redirectToRoute('admin_sample_data_index');

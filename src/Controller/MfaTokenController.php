@@ -112,7 +112,7 @@ class MfaTokenController extends AbstractController
     {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
-        $deviceName = $request->query->get('device_name', 'Authenticator App');
+        $deviceName = mb_substr((string) $request->query->get('device_name', 'Authenticator App'), 0, 255);
 
         // Generate TOTP secret
         $mfaToken = $this->mfaService->generateTotpSecret($user, $deviceName);

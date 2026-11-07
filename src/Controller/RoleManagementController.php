@@ -155,18 +155,26 @@ class RoleManagementController extends AbstractController
 
             $templateKey = $request->request->get('template');
             $customName = $request->request->get('custom_name');
+            $customName = is_string($customName) ? trim($customName) : '';
 
-            if (isset($templates[$templateKey])) {
+            if (is_string($templateKey) && isset($templates[$templateKey])) {
                 $template = $templates[$templateKey];
+                $roleName = $customName !== '' ? $customName : $template['name'];
 
                 // Security hotfix: no custom role may carry a reserved Symfony role name.
-                if (RoleNames::isReserved($customName ?: $template['name'])) {
+                if (RoleNames::isReserved($roleName)) {
                     $this->addFlash('danger', $translator->trans('role.validation.name_reserved', [], 'validators'));
                     return $this->redirectToRoute('role_management_templates');
                 }
 
+                // Role.name is unique: report a duplicate instead of a constraint-violation 500.
+                if ($entityManager->getRepository(Role::class)->findOneBy(['name' => $roleName]) !== null) {
+                    $this->addFlash('danger', $translator->trans('role.validation.name_unique', [], 'validators'));
+                    return $this->redirectToRoute('role_management_templates');
+                }
+
                 $role = new Role();
-                $role->setName($customName ?: $template['name']);
+                $role->setName(mb_substr($roleName, 0, 100));
                 $role->setDescription($template['description']);
                 $role->setIsSystemRole(false);
 

@@ -274,10 +274,23 @@ final class BulkImportController extends AbstractController
     // -------------------------------------------------------------------------
 
     #[Route('/{batchId}/preview', name: 'app_bulk_import_preview', requirements: ['batchId' => '\d+'], methods: ['GET'])]
-    public function preview(string $entityType, int $batchId): Response
+    public function preview(string $entityType, int $batchId, Request $request): Response
     {
         $batch = $this->findBatchOr404($batchId);
         $this->denyAccessUnlessGranted(BulkImportVoter::VIEW, $batch);
+
+        if (!in_array($batch->getStatus(), [
+            BulkImportBatch::STATUS_UPLOADED,
+            BulkImportBatch::STATUS_MAPPED,
+            BulkImportBatch::STATUS_PREVIEW,
+        ], true)) {
+            // Already committing/finished: the preview must not reset the status.
+            return $this->redirectToRoute('app_bulk_import_commit_status', [
+                '_locale'    => $request->getLocale(),
+                'entityType' => $entityType,
+                'batchId'    => $batchId,
+            ]);
+        }
 
         $entityTypePascal = $this->toPascalCase($entityType);
 

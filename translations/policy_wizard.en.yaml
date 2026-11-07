@@ -1,4 +1,8 @@
 policy_wizard:
+    profile_flash:
+        sector_applied: 'Sector baseline applied.'
+        sector_unknown: 'Unknown sector.'
+        saved: 'Parameters saved.'
     generator:
         unfilled_variable: '[to be completed: %name%]'
     title: Policy Wizard

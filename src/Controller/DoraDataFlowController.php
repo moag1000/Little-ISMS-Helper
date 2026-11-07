@@ -69,7 +69,7 @@ class DoraDataFlowController extends AbstractController
     }
 
     #[Route('/dora/data-flow/new', name: 'app_dora_data_flow_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {
@@ -138,7 +138,7 @@ class DoraDataFlowController extends AbstractController
     }
 
     #[Route('/dora/data-flow/{id}/edit', name: 'app_dora_data_flow_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, DoraDataFlow $flow): Response
     {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {

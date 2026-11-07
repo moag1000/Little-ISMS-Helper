@@ -886,3 +886,7 @@ risk_treatment_plan.error.owner_required_user_or_person: 'Owner: User or master-
 security.url.dns_resolution_failed: 'Hostname could not be resolved (potential DNS-pinning attack blocked).'
 training.error.owner_required_user_or_person: 'Trainer: User or master-data Person required (free-text alone is not sufficient).'
 workflow_instance.validation.entity_id_positive: 'The entity ID must be a positive number.'
+'validators.department.name_unique': 'A department with this name already exists.'
+'validators.tag.name_unique': 'A tag with this name already exists.'
+'validators.asset_sub_type.name_unique': 'This sub-type already exists for the asset top type.'
+'validators.supplier_criticality.code_unique': 'This code already exists.'

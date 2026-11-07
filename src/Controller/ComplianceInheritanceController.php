@@ -303,6 +303,6 @@ final class ComplianceInheritanceController extends AbstractController
 
     private function trans(string $key): string
     {
-        return $this->translator->trans($key, [], 'messages');
+        return $this->translator->trans($key, [], 'compliance_inheritance');
     }
 }

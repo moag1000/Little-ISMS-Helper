@@ -179,7 +179,7 @@ final class LiveCountAggregatorTest extends TestCase
         $user   = $this->createMock(User::class);
         $tenant = $this->createMock(Tenant::class);
 
-        $this->auditLogRepo->method('getRecentActivity')->willReturn([]);
+        $this->auditLogRepo->method('countRecentActivityForTenant')->willReturn(0);
         $this->fourEyesRepo->method('findPendingFor')->willReturn([]);
         $this->workflowInstanceRepo->method('findPendingForUser')->willReturn([]);
         $user->method('getRoles')->willReturn(['ROLE_USER']);

@@ -1,4 +1,8 @@
 policy_wizard:
+    profile_flash:
+        sector_applied: 'Branchen-Baseline angewendet.'
+        sector_unknown: 'Unbekannte Branche.'
+        saved: 'Parameter gespeichert.'
     generator:
         unfilled_variable: '[zu ergänzen: %name%]'
     title: Policy-Wizard

@@ -149,6 +149,7 @@ class TransferImpactAssessmentController extends AbstractController
      * Create a new TIA for a processing activity.
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request, int $paId): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) {
@@ -260,6 +261,7 @@ class TransferImpactAssessmentController extends AbstractController
      * Edit a TIA (only allowed in draft status).
      */
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, int $paId, int $id): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) {

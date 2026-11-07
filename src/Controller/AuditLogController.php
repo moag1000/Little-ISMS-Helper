@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use DateTime;
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Util\InputDate;
 use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
 use App\Service\AuditLogIntegrityService;
@@ -76,11 +77,11 @@ class AuditLogController extends AbstractController
 
         // Get filter parameters
         $filters = [
-            'entityType' => $request->query->get('entityType'),
-            'action' => $request->query->get('action'),
-            'userName' => $request->query->get('userName'),
-            'dateFrom' => $request->query->get('dateFrom') ? new DateTime($request->query->get('dateFrom')) : null,
-            'dateTo' => $request->query->get('dateTo') ? new DateTime($request->query->get('dateTo')) : null,
+            'entityType' => is_string($v = $request->query->get('entityType')) ? $v : null,
+            'action' => is_string($v = $request->query->get('action')) ? $v : null,
+            'userName' => is_string($v = $request->query->get('userName')) ? $v : null,
+            'dateFrom' => InputDate::parse($request->query->get('dateFrom')),
+            'dateTo' => InputDate::parse($request->query->get('dateTo')),
         ];
 
         // Remove empty filters

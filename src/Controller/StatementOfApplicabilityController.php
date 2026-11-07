@@ -200,7 +200,7 @@ class StatementOfApplicabilityController extends AbstractController
         // first-impression failure the junior flagged.
         $autoSeeded = 0;
         $controlsModuleActive = $this->moduleConfiguration->isModuleActive('controls');
-        if ($tenant instanceof Tenant && $controlsModuleActive && !$this->annexBootstrap->isTenantSeeded($tenant)) {
+        if ($tenant instanceof Tenant && $controlsModuleActive && $this->isGranted('ROLE_MANAGER') && !$this->annexBootstrap->isTenantSeeded($tenant)) {
             $autoSeeded = $this->annexBootstrap->ensureLoadedForTenant($tenant);
         }
 

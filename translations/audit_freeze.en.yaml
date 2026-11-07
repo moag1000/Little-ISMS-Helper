@@ -59,6 +59,8 @@ audit_freeze:
         stichtag_future: 'Reference date must not be in the future.'
         pdf_generated: PDF generated.
         pdf_failed: 'PDF generation failed.'
+        no_pdf: 'No PDF available. Generate it first.'
+        pdf_missing_on_disk: 'PDF file is missing on disk. Please regenerate it.'
         pdf_not_found: 'PDF not found. Generate it first.'
         invalid_csrf: 'Invalid CSRF token.'
     pdf:

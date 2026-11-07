@@ -157,7 +157,7 @@ class SupplierCriticalityController extends AbstractController
         $this->requireTenantOwnership($level);
 
         if (!$this->isCsrfTokenValid('delete_supplier_criticality_' . $level->getId(), (string) $request->request->get('_token'))) {
-            $this->addFlash('error', 'common.invalid_csrf');
+            $this->addFlash('error', 'common.csrf_invalid');
             return $this->redirectToRoute('app_admin_supplier_criticality_index');
         }
 

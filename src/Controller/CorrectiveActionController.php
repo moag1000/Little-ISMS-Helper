@@ -241,6 +241,7 @@ class CorrectiveActionController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, CorrectiveAction $action): Response
     {
         $this->denyIfWrongTenant($action);

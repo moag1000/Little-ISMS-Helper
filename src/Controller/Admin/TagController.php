@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Exception\AppException;
 use App\Entity\Tag;
 use App\Entity\User;
 use App\Form\Admin\TagType;
@@ -193,7 +194,13 @@ final class TagController extends AbstractController
 
         /** @var User $actor */
         $actor = $this->getUser();
-        $result = $this->bulkTagService->applyTags($entities, $tagIds, $actor);
+        try {
+            $result = $this->bulkTagService->applyTags($entities, $tagIds, $actor);
+        } catch (AppException | \InvalidArgumentException $e) {
+            return new JsonResponse(['ok' => false, 'error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable) {
+            return new JsonResponse(['ok' => false, 'error' => 'bulk_apply_failed'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return new JsonResponse([
             'ok' => true,

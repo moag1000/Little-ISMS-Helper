@@ -98,8 +98,8 @@ class IncidentController extends AbstractController
         $focus = $request->query->get('focus'); // Alva-hint deep-link target
         $view = $request->query->get('view', 'inherited'); // Default: inherited
 
-        // Cross-tenant + orphan views are admin-only (no ?view=all leak for non-admins).
-        $isAdmin = $this->isGranted('ROLE_ADMIN');
+        // Cross-tenant + orphan views read past the tenant filter: super admin only, not a tenant admin.
+        $isAdmin = $this->isGranted('ROLE_SUPER_ADMIN');
         if (in_array($view, ['orphaned', 'all'], true) && !$isAdmin) {
             $view = 'own';
         }

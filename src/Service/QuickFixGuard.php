@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Repository\SystemSettingsRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -13,10 +14,21 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * Decides whether the public-fallback Quick-Fix UI is reachable for the
  * current request.
  *
- * Defaults to OPEN (no auth) — the only action behind it is "apply pending
- * migrations" which is idempotent and safe-by-design (only ships vendored
- * migrations from this repo). Admins can tighten access via three optional
- * toggles in the `quick_fix` settings category:
+ * Two levels:
+ *
+ *  - mayAccess(): the status page, "apply pending migrations" and job
+ *    polling. Defaults to OPEN (no auth) so an operator can recover an
+ *    instance whose login is broken by a pending migration — applying the
+ *    vendored migrations is idempotent and safe-by-design.
+ *  - mayRunPrivileged(): everything that changes data or drops schema
+ *    (destructive reconcile, force-mark-executed, phantom-diff marking,
+ *    schema force-update, data repair). Needs mayAccess() AND either a
+ *    logged-in ROLE_SUPER_ADMIN or the installer token. Before this split an
+ *    anonymous visitor could reassign tenants or DROP columns on a default
+ *    install.
+ *
+ * Admins can tighten mayAccess() via three optional toggles in the
+ * `quick_fix` settings category:
  *
  *  - require_installer_token  — match query param / cookie against
  *                               `var/setup-token` (random token written by
@@ -31,6 +43,7 @@ class QuickFixGuard
     public function __construct(
         private readonly SystemSettingsRepository $settings,
         private readonly KernelInterface $kernel,
+        private readonly ?Security $security = null,
     ) {
     }
 
@@ -54,6 +67,26 @@ class QuickFixGuard
             }
         }
         return true;
+    }
+
+    /**
+     * Data-changing / destructive Quick-Fix actions: a super admin session or
+     * the installer token (query param / cookie, see tokenMatches()).
+     */
+    public function mayRunPrivileged(Request $request): bool
+    {
+        if (!$this->mayAccess($request)) {
+            return false;
+        }
+        if ($this->tokenMatches($request)) {
+            return true;
+        }
+        try {
+            return $this->security?->isGranted('ROLE_SUPER_ADMIN') ?? false;
+        } catch (\Throwable) {
+            // Broken user table / session: fall back to the token path only.
+            return false;
+        }
     }
 
     public function fallbackUiEnabled(): bool

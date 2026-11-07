@@ -1110,6 +1110,7 @@ dpia:
         dpo_advice_required: 'DSB-Stellungnahme ist erforderlich.'
         authority_feedback_required: 'Rückmeldung der Aufsichtsbehörde ist erforderlich.'
         review_reason_required: 'Begründung für Überprüfung ist erforderlich.'
+        invalid_date: 'Ungültiges Datum.'
     warning:
         cannot_edit_in_status: 'Nur DSFAs im Status Entwurf oder Überarbeitung erforderlich können bearbeitet werden.'
     dashboard:
