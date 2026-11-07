@@ -100,6 +100,40 @@ final class RecordCheckRuleTest extends TestCase
     }
 
     #[Test]
+    public function aCheckWithoutReferenceTakesItsCategoryArticle(): void
+    {
+        $this->results['incident'] = ['score' => 60.0, 'details' => ['total' => 3]];
+        $this->results['incident_controls'] = ['score' => 100.0, 'details' => ['total' => 5]];
+        $requirement = $this->requirement('NIS2', 'NIS2-21.2.b');
+
+        self::assertSame(80, $this->rule()->derive($requirement, $this->tenant)?->percentage, 'both checks of Art. 21 (2)(b)');
+
+        $beside = $this->rule()->derive($requirement, $this->tenant, true);
+        self::assertSame(60, $beside?->percentage, 'beside the controls rule only the record view counts');
+        self::assertCount(1, $beside->basis);
+        self::assertSame('incident_process', $beside->basis[0]['check_type']);
+    }
+
+    #[Test]
+    public function anAnnexAControlReferenceCoversThatRequirement(): void
+    {
+        $this->results['participation'] = ['score' => 40.0, 'details' => ['total' => 10]];
+
+        self::assertSame(40, $this->rule()->derive($this->requirement('ISO27001', 'A.6.3'), $this->tenant)?->percentage);
+        self::assertNull($this->rule()->derive($this->requirement('ISO27001', 'A.6.2'), $this->tenant));
+    }
+
+    #[Test]
+    public function referencesOfNamesTheRequirementsARecordTypeAnswers(): void
+    {
+        $refs = $this->rule()->referencesOf($this->tenant, ['training_participation', 'incident_process']);
+
+        self::assertSame(['a.6.3'], $refs['ISO27001']);
+        self::assertSame(['21.2.b'], $refs['NIS2']);
+        self::assertSame([], $this->rule()->referencesOf($this->tenant, ['register_coverage']));
+    }
+
+    #[Test]
     public function eachCheckRunsOncePerOrganisation(): void
     {
         $this->results['audit'] = ['score' => 100.0, 'details' => []];
@@ -143,6 +177,15 @@ final class RecordCheckRuleTest extends TestCase
                             'audit' => ['name' => 'audit', 'type' => 'audit_status', 'clause' => '9.2'],
                             'audit_programme' => ['name' => 'audit_programme', 'type' => 'audit_status', 'clause' => '9.2.1/9.2.2'],
                             'annex' => ['name' => 'annex', 'type' => 'control_coverage', 'clause' => 'A.5/A.6'],
+                        ]],
+                        'annex_a_people' => ['clause' => 'A.6', 'checks' => [
+                            'participation' => ['name' => 'participation', 'type' => 'training_participation', 'module' => 'training', 'clause' => 'A.6.3'],
+                        ]],
+                    ]],
+                    'nis2' => ['code' => 'NIS2', 'categories' => [
+                        'incident_handling' => ['article' => '21(2)(b)', 'checks' => [
+                            'incident' => ['name' => 'incident', 'type' => 'incident_process'],
+                            'incident_controls' => ['name' => 'incident_controls', 'type' => 'control_coverage'],
                         ]],
                     ]],
                     'dora' => ['code' => 'DORA', 'categories' => [

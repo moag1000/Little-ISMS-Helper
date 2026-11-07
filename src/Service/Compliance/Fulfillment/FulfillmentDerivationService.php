@@ -182,6 +182,37 @@ class FulfillmentDerivationService
     }
 
     /**
+     * Recomputes every requirement the organisation's records of these check
+     * types answer (register entries → register_coverage, top-management
+     * decisions → management_decision, …), after such records changed.
+     *
+     * @param list<string> $checkTypes
+     * @return int number of fulfilments whose effective value changed
+     */
+    public function refreshForRecords(Tenant $tenant, array $checkTypes): int
+    {
+        $this->engine->forgetTenant($tenant);
+        $requirements = [];
+        foreach ($this->engine->recordReferences($tenant, $checkTypes) as $code => $refs) {
+            $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+            if (!$framework instanceof ComplianceFramework) {
+                continue;
+            }
+            foreach ($this->requirementRepository->findBy(['framework' => $framework]) as $requirement) {
+                $number = RecordCheckRule::requirementNumber($code, (string) $requirement->getRequirementId());
+                foreach ($refs as $ref) {
+                    if ($number !== '' && RecordCheckRule::covers($ref, $number)) {
+                        $requirements[] = $requirement;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $requirements === [] ? 0 : $this->refreshRequirements($tenant, $requirements);
+    }
+
+    /**
      * Recomputes the given requirements and everything inheriting from them.
      *
      * @param list<ComplianceRequirement> $requirements

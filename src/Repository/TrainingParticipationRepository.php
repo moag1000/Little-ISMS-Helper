@@ -94,4 +94,27 @@ class TrainingParticipationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Participations of the organisation per status (awareness evidence, ISO 27001 A.6.3).
+     *
+     * @return array<string, int> status → count
+     */
+    public function countByStatus(Tenant $tenant): array
+    {
+        $rows = $this->createQueryBuilder('p')
+            ->select('p.status AS status', 'COUNT(p.id) AS n')
+            ->where('p.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->groupBy('p.status')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($rows as $row) {
+            $counts[(string) $row['status']] = (int) $row['n'];
+        }
+
+        return $counts;
+    }
 }

@@ -29,7 +29,12 @@ use Symfony\Contracts\Service\ResetInterface;
  *  3. records   — the organisation's records behind a clause or article, through
  *                 the compliance wizard's data checks ({@see RecordCheckRule}):
  *                 ISO 27001 7.2 from training records, 9.3 from management
- *                 reviews, DORA Art. 28 from the supplier register, …
+ *                 reviews, 5.1 from top-management decisions, 4.1 from the
+ *                 register of issues, DORA Art. 28 from the supplier register, …
+ *                 When controls AND records stand behind a requirement (NIS-2
+ *                 Art. 20 (1): controls 5.1/5.3 and the board's approval;
+ *                 A.6.3: the control and who completed their training), both
+ *                 count: the mean of the two, kind "controls_records".
  *  4. mapping   — approved cross-framework mappings to requirements the
  *                 organisation already fulfils (effective value × mapping %),
  *                 the best one counts. This is inheritance, live.
@@ -45,6 +50,7 @@ class FulfillmentRuleEngine implements ResetInterface
     public const KIND_MAPPING = 'mapping';
     public const KIND_MATURITY = 'maturity';
     public const KIND_RECORDS = 'records';
+    public const KIND_CONTROLS_RECORDS = 'controls_records';
 
     private const ISO27001 = 'ISO27001';
     private const MAX_MAPPING_DEPTH = 2;
@@ -147,6 +153,18 @@ class FulfillmentRuleEngine implements ResetInterface
         $this->controlsByTenant = [];
     }
 
+    /**
+     * References of the record checks of these types, per framework code
+     * ({@see RecordCheckRule::referencesOf()}).
+     *
+     * @param list<string> $checkTypes
+     * @return array<string, list<string>>
+     */
+    public function recordReferences(Tenant $tenant, array $checkTypes): array
+    {
+        return $this->recordRule?->referencesOf($tenant, $checkTypes) ?? [];
+    }
+
     /** Drops the cached control map and record results, e.g. after controls were created in this request. */
     public function forgetTenant(Tenant $tenant): void
     {
@@ -169,7 +187,7 @@ class FulfillmentRuleEngine implements ResetInterface
         if ($controls !== []) {
             $fromControls = $this->fromControls($requirement, $tenant, $controls);
             if ($fromControls->percentage !== null) {
-                return $fromControls;
+                return self::withRecords($fromControls, $this->recordRule?->derive($requirement, $tenant, true));
             }
             $excludedOnly = $fromControls;
         }
@@ -191,6 +209,22 @@ class FulfillmentRuleEngine implements ResetInterface
         }
 
         return $excludedOnly;
+    }
+
+    /** Controls plus the records behind the same requirement: the mean of both views. */
+    private static function withRecords(FulfillmentDerivation $controls, ?FulfillmentDerivation $records): FulfillmentDerivation
+    {
+        if (!$records instanceof FulfillmentDerivation || $records->percentage === null) {
+            return $controls;
+        }
+
+        return new FulfillmentDerivation(
+            (int) round(((int) $controls->percentage + $records->percentage) / 2),
+            self::KIND_CONTROLS_RECORDS,
+            [...$controls->basis, ...$records->basis],
+            $controls->applicable,
+            $controls->applicabilityJustification,
+        );
     }
 
     private function fromMaturity(ComplianceRequirement $requirement, Tenant $tenant): ?FulfillmentDerivation
