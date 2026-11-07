@@ -10,6 +10,7 @@ use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\AnswerLibraryEntry;
 use App\Form\AnswerLibraryEntryType;
+use App\Repository\AnswerLibraryEntryRepository;
 use App\Service\AnswerLibraryService;
 use App\Service\BulkDeleteService;
 use App\Service\ModuleConfigurationService;
@@ -43,6 +44,7 @@ class AnswerLibraryController extends AbstractController
     use ModuleGatedControllerTrait;
 
     public function __construct(
+        private readonly AnswerLibraryEntryRepository  $repository,
         private readonly AnswerLibraryService          $answerLibraryService,
         private readonly TenantContext                 $tenantContext,
         private readonly ModuleConfigurationService    $moduleService,
