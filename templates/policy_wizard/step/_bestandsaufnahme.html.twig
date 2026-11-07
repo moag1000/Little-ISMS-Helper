@@ -258,7 +258,7 @@
                         </td>
                         <td class="fa-table__cell">
                             {% if row.lastApprovedAt %}
-                                <small>{{ row.lastApprovedAt|date('Y-m-d') }}</small>
+                                <small>{{ row.lastApprovedAt|fa_date }}</small>
                             {% else %}
                                 <small class="text-muted">—</small>
                             {% endif %}

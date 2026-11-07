@@ -224,7 +224,7 @@
 <body>
     <div class="print-header">
         <h1><i class="fa-icon fa-icon--mfa" aria-hidden="true"></i> {% trans from 'asset' %}qr.labels_sheet.title{% endtrans %}</h1>
-        <p>{{ labels|length }} {% trans from 'asset' %}qr.labels_sheet.count{% endtrans %} | {% trans from 'asset' %}qr.printed_on{% endtrans %}: {{ printDate|date('d.m.Y H:i') }}</p>
+        <p>{{ labels|length }} {% trans from 'asset' %}qr.labels_sheet.count{% endtrans %} | {% trans from 'asset' %}qr.printed_on{% endtrans %}: {{ printDate|fa_datetime }}</p>
         <div class="print-actions">
             <button class="fa-cyber-btn fa-cyber-btn--primary" data-controller="ui-actions" data-action="click->ui-actions#print">
                 <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>

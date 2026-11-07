@@ -16,12 +16,12 @@
 {% block footer_left %}DOC-CERT-ASR | Version {{ version }}{% endblock %}
 {% block footer_center %}{{ tenant_name }}{% endblock %}
 {% block footer_version %}{{ version }}{% endblock %}
-{% block created_date %}{{ generated_at|date('d.m.Y') }}{% endblock %}
-{% block modified_date %}{{ generated_at|date('d.m.Y H:i') }}{% endblock %}
+{% block created_date %}{{ generated_at|fa_date }}{% endblock %}
+{% block modified_date %}{{ generated_at|fa_datetime }}{% endblock %}
 
 {% block document_content %}
 <h1>{{ 'certification_bundle.pdf.asset_register.title'|trans({}, 'certification_bundle') }}</h1>
-<p class="text-muted">{{ 'certification_bundle.pdf.generated'|trans({}, 'certification_bundle') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'certification_bundle.pdf.organization'|trans({}, 'certification_bundle') }}: {{ tenant_name }}</p>
+<p class="text-muted">{{ 'certification_bundle.pdf.generated'|trans({}, 'certification_bundle') }}: {{ generated_at|fa_datetime }} | {{ 'certification_bundle.pdf.organization'|trans({}, 'certification_bundle') }}: {{ tenant_name }}</p>
 <p>{{ 'certification_bundle.pdf.asset_register.total_assets'|trans({}, 'certification_bundle') }}: <strong>{{ assets|length }}</strong></p>
 
 {% if assets|length == 0 %}

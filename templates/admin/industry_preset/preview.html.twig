@@ -13,7 +13,7 @@
 {% set _preset_desc_key = 'industry_preset.catalog.' ~ preset ~ '.description' %}
 {% set _preset_desc = _preset_desc_key|trans({}, 'admin') %}
 {% set _preset_desc = _preset_desc != _preset_desc_key ? _preset_desc : config.description|default('—') %}
-<main>
+<div>
     {{ _fa_page_header.render({
         title:    _preset_name,
         subtitle: 'industry_preset.preview.subtitle'|trans,
@@ -126,5 +126,5 @@
             </section>
         </div>
     </div>
-</main>
+</div>
 {% endblock %}

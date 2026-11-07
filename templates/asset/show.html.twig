@@ -291,7 +291,7 @@
                         {% if asset.returnDate %}
                             <div class="detail-item">
                                 <span class="label">{{ 'asset.label.return_date'|trans({}, 'asset') }}</span>
-                                <span class="value">{{ asset.returnDate|date('Y-m-d') }}</span>
+                                <span class="value">{{ asset.returnDate|fa_date }}</span>
                             </div>
                         {% endif %}
                     </div>

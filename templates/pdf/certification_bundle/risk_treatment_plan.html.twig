@@ -16,8 +16,8 @@
 {% block footer_left %}DOC-CERT-RTP | Version {{ version }}{% endblock %}
 {% block footer_center %}{{ tenant_name }}{% endblock %}
 {% block footer_version %}{{ version }}{% endblock %}
-{% block created_date %}{{ generated_at|date('d.m.Y') }}{% endblock %}
-{% block modified_date %}{{ generated_at|date('d.m.Y H:i') }}{% endblock %}
+{% block created_date %}{{ generated_at|fa_date }}{% endblock %}
+{% block modified_date %}{{ generated_at|fa_datetime }}{% endblock %}
 
 {% block custom_styles %}
     .risk-critical { color: var(--danger); font-weight: bold; }
@@ -28,7 +28,7 @@
 
 {% block document_content %}
 <h1>{{ 'certification_bundle.pdf.risk_treatment_plan.title'|trans({}, 'certification_bundle') }}</h1>
-<p class="text-muted">{{ 'certification_bundle.pdf.generated'|trans({}, 'certification_bundle') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'certification_bundle.pdf.organization'|trans({}, 'certification_bundle') }}: {{ tenant_name }}</p>
+<p class="text-muted">{{ 'certification_bundle.pdf.generated'|trans({}, 'certification_bundle') }}: {{ generated_at|fa_datetime }} | {{ 'certification_bundle.pdf.organization'|trans({}, 'certification_bundle') }}: {{ tenant_name }}</p>
 <p>{{ 'certification_bundle.pdf.risk_treatment_plan.total_risks'|trans({}, 'certification_bundle') }}: <strong>{{ risks|length }}</strong> | {{ 'certification_bundle.pdf.risk_treatment_plan.active_plans'|trans({}, 'certification_bundle') }}: <strong>{{ treatment_plans|length }}</strong></p>
 
 <h2>{{ 'certification_bundle.pdf.risk_treatment_plan.section_register'|trans({}, 'certification_bundle') }}</h2>
@@ -63,7 +63,7 @@
             <td class="risk-{{ residualLevel }}">{{ residual }}</td>
             <td>{{ risk.status ? risk.status.value : '-' }}</td>
             <td>{{ risk.riskOwnerName ?? '-' }}</td>
-            <td>{{ risk.reviewDate ? risk.reviewDate|date('d.m.Y') : '-' }}</td>
+            <td>{{ risk.reviewDate ? risk.reviewDate|fa_date : '-' }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -99,7 +99,7 @@
             <td>{{ plan.status|replace({'_': ' '})|capitalize }}</td>
             <td>{{ plan.completionPercentage }}%</td>
             <td>{{ plan.responsiblePersonName ?? '-' }}</td>
-            <td>{{ plan.targetCompletionDate ? plan.targetCompletionDate|date('d.m.Y') : '-' }}</td>
+            <td>{{ plan.targetCompletionDate ? plan.targetCompletionDate|fa_date : '-' }}</td>
             <td>{{ plan.budget ?? '-' }}</td>
         </tr>
         {% endfor %}

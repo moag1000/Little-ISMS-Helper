@@ -101,13 +101,13 @@
                             {% if current_settings.setup_completed_at is defined %}
                             <li>
                                 <strong>{{ 'tenant.organisation_context.setup_date'|trans({}, 'tenant') }}:</strong>
-                                {{ current_settings.setup_completed_at|date('d.m.Y H:i') }}
+                                {{ current_settings.setup_completed_at|fa_datetime }}
                             </li>
                             {% endif %}
                             {% if current_settings.last_modified_at is defined %}
                             <li>
                                 <strong>{{ 'tenant.organisation_context.last_modified'|trans({}, 'tenant') }}:</strong>
-                                {{ current_settings.last_modified_at|date('d.m.Y H:i') }}
+                                {{ current_settings.last_modified_at|fa_datetime }}
                             </li>
                             {% endif %}
                         </ul>

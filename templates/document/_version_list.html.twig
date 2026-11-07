@@ -52,7 +52,7 @@
                                 <span class="fa-status-pill fa-status-pill--primary ms-1">{{ 'document.version.current'|trans({}, 'document') }}</span>
                             {% endif %}
                         </td>
-                        <td class="fa-table__cell">{{ version.uploadedAt|date('Y-m-d H:i') }}</td>
+                        <td class="fa-table__cell">{{ version.uploadedAt|fa_datetime }}</td>
                         <td class="fa-table__cell">
                             {{ version.uploadedBy ? (version.uploadedBy.fullName ?? version.uploadedBy.email) : '—' }}
                         </td>

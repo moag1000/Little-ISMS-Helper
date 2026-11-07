@@ -1,119 +1,115 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
- * Command Palette Controller (⌘P / Ctrl+P — VS-Code-style)
- * Modern command interface for power users.
+ * Search + command overlay (UI wave G) — the one overlay behind ⌘K, ⌘P,
+ * Ctrl+K, Ctrl+P, "/" (via keyboard_shortcuts) and every `[data-command-palette-open]` trigger.
  *
- * Discoverable via the Keyboard-Shortcuts-Cheatsheet (? key) under „Global".
+ * Empty query: the commands from the template (already gated by module and
+ * role), admin commands first on /admin pages. From `minChars` characters on:
+ * matching commands at once, then records and pages from the search API
+ * (debounced). One flat keyboard list over all groups.
  *
- * Usage:
- * <div data-controller="command-palette">
- *   <div data-command-palette-target="modal">...</div>
- * </div>
+ * Usage: templates/_components/_command_palette.html.twig
  */
+
+// Search API result keys → label key (ui.js.search.category.*) and icon.
+const RECORD_CATEGORIES = [
+    ['assets', 'asset-server'], ['risks', 'status-warning'], ['controls', 'nav-shield-check'],
+    ['incidents', 'status-critical'], ['trainings', 'nav-mortarboard'], ['documents', 'nav-document'],
+    ['suppliers', 'nav-truck'], ['processing_activities', 'nav-shield-lock'], ['dpias', 'nav-shield-lock'],
+    ['data_breaches', 'nav-shield-lock'], ['audit_findings', 'nav-clipboard-check'],
+    ['corrective_actions', 'nav-clipboard-check'], ['change_requests', 'nav-change'],
+    ['internal_audits', 'nav-clipboard-check'], ['business_processes', 'nav-flow'], ['bc_plans', 'nav-flow'],
+    ['bc_exercises', 'nav-flow'], ['crisis_teams', 'nav-flow'], ['management_reviews', 'nav-reports'],
+    ['objectives', 'nav-target'], ['vulnerabilities', 'status-critical'], ['patches', 'nav-wrench'],
+    ['threat_intelligence', 'status-warning'], ['persons', 'nav-people'], ['interested_parties', 'nav-people'],
+    ['consents', 'nav-shield-lock'], ['data_subject_requests', 'nav-shield-lock'],
+    ['compliance_frameworks', 'compliance-shield'], ['compliance_requirements', 'compliance-shield'],
+];
+
 export default class extends Controller {
     static targets = ['modal', 'input', 'results', 'noResults'];
 
     static values = {
-        // Commands passed from template as JSON array
-        commands: { type: Array, default: [] }
+        commands: { type: Array, default: [] },
+        searchUrl: { type: String, default: '' },
+        minChars: { type: Number, default: 2 },
+        debounceDelay: { type: Number, default: 250 },
     };
 
-    // Default commands (fallback if not provided via values).
-    // Icons use Aurora fa-icon names (no `bi-` prefix); render below
-    // emits <i class="fa-icon fa-icon--{icon}">.
-    defaultCommands = [
-        // Navigation
-        { id: 'goto-dashboard', label: 'Dashboard', category: 'Navigation', icon: 'nav-dashboard', url: '/dashboard', keywords: ['home', 'start'] },
-        { id: 'goto-assets', label: 'Assets', category: 'Navigation', icon: 'nav-assets', url: '/asset', keywords: ['asset', 'inventory'] },
-        { id: 'goto-risks', label: 'Risks', category: 'Navigation', icon: 'risk-register', url: '/risk', keywords: ['risk'] },
-        { id: 'goto-incidents', label: 'Incidents', category: 'Navigation', icon: 'incident', url: '/incident', keywords: ['incident'] },
-        { id: 'goto-soa', label: 'SoA', category: 'Navigation', icon: 'soa', url: '/soa', keywords: ['soa', 'controls'] },
-    ];
-
-    filteredCommands = [];
-    selectedIndex = 0;
-    previouslyFocusedElement = null;
-
     connect() {
-        // Global keyboard shortcut: Cmd/Ctrl + P
-        this.boundHandleGlobalShortcut = this.handleGlobalShortcut.bind(this);
-        document.addEventListener('keydown', this.boundHandleGlobalShortcut);
+        this.items = [];
+        this.selectedIndex = 0;
+        this.records = [];
+        this.query = '';
+        this.requestId = 0;
+        this.previouslyFocusedElement = null;
 
-        // ESC to close
-        this.boundHandleModalKeydown = this.handleModalKeydown.bind(this);
-        this.modalTarget.addEventListener('keydown', this.boundHandleModalKeydown);
-
-        // Click outside to close
-        this.boundHandleBackdropClick = this.handleBackdropClick.bind(this);
-        this.modalTarget.addEventListener('click', this.boundHandleBackdropClick);
-
-        // Use commands from value or fallback to defaults
-        this.commands = this.commandsValue.length > 0 ? this.commandsValue : this.defaultCommands;
-        this.filteredCommands = this.commands;
+        this.onGlobalKeydown = this.handleGlobalKeydown.bind(this);
+        this.onTriggerClick = this.handleTriggerClick.bind(this);
+        this.onModalKeydown = this.handleModalKeydown.bind(this);
+        this.onBackdropClick = this.handleBackdropClick.bind(this);
+        document.addEventListener('keydown', this.onGlobalKeydown);
+        document.addEventListener('click', this.onTriggerClick);
+        this.modalTarget.addEventListener('keydown', this.onModalKeydown);
+        this.modalTarget.addEventListener('click', this.onBackdropClick);
     }
 
     disconnect() {
-        document.removeEventListener('keydown', this.boundHandleGlobalShortcut);
-        if (this.hasModalTarget) {
-            this.modalTarget.removeEventListener('keydown', this.boundHandleModalKeydown);
-            this.modalTarget.removeEventListener('click', this.boundHandleBackdropClick);
-        }
+        document.removeEventListener('keydown', this.onGlobalKeydown);
+        document.removeEventListener('click', this.onTriggerClick);
+        this.modalTarget.removeEventListener('keydown', this.onModalKeydown);
+        this.modalTarget.removeEventListener('click', this.onBackdropClick);
+        clearTimeout(this.searchTimeout);
     }
 
-    handleGlobalShortcut(event) {
-        // Cmd+P (Mac) or Ctrl+P (Windows/Linux) - like VS Code
-        if ((event.metaKey || event.ctrlKey) && event.key === 'p') {
+    get isOpen() {
+        return this.modalTarget.classList.contains('command-palette-open');
+    }
+
+    handleGlobalKeydown(event) {
+        const key = (event.key || '').toLowerCase();
+        if ((event.metaKey || event.ctrlKey) && (key === 'k' || key === 'p')) {
             event.preventDefault();
             this.open();
         }
+        // "/" is wired in keyboard_shortcuts_controller (cheatsheet) and clicks the trigger.
+    }
+
+    handleTriggerClick(event) {
+        const trigger = event.target.closest?.('[data-command-palette-open]');
+        if (!trigger) return;
+        event.preventDefault();
+        this.open();
     }
 
     handleModalKeydown(event) {
-        if (event.key === 'Escape') {
-            this.close();
-        } else if (event.key === 'Tab') {
-            // Focus trap - keep focus within command palette
-            this.handleTabKey(event);
-        } else if (event.key === 'ArrowDown') {
-            event.preventDefault();
-            this.selectNext();
-        } else if (event.key === 'ArrowUp') {
-            event.preventDefault();
-            this.selectPrevious();
-        } else if (event.key === 'Enter') {
-            event.preventDefault();
-            this.executeSelected();
-        }
-    }
-
-    handleTabKey(event) {
-        const focusableElements = this.getFocusableElements();
-        if (focusableElements.length === 0) return;
-
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (event.shiftKey) {
-            // Shift+Tab: if on first element, go to last
-            if (document.activeElement === firstElement) {
+        switch (event.key) {
+            case 'Escape':
                 event.preventDefault();
-                lastElement.focus();
-            }
-        } else {
-            // Tab: if on last element, go to first
-            if (document.activeElement === lastElement) {
+                this.close();
+                break;
+            case 'ArrowDown':
                 event.preventDefault();
-                firstElement.focus();
-            }
+                this.move(1);
+                break;
+            case 'ArrowUp':
+                event.preventDefault();
+                this.move(-1);
+                break;
+            case 'Enter':
+                event.preventDefault();
+                this.activate(this.items[this.selectedIndex]);
+                break;
+            case 'Tab':
+                // Focus stays in the overlay; the list is driven by the arrow keys.
+                event.preventDefault();
+                this.inputTarget.focus();
+                break;
+            default:
+                break;
         }
-    }
-
-    getFocusableElements() {
-        const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-        return Array.from(this.modalTarget.querySelectorAll(selector)).filter(
-            el => !el.disabled && el.offsetParent !== null
-        );
     }
 
     handleBackdropClick(event) {
@@ -122,214 +118,180 @@ export default class extends Controller {
         }
     }
 
-    isInputFocused() {
-        const activeElement = document.activeElement;
-        return activeElement && (
-            activeElement.tagName === 'INPUT' ||
-            activeElement.tagName === 'TEXTAREA' ||
-            activeElement.isContentEditable
-        );
-    }
-
     open() {
-        // Save currently focused element to restore on close
+        if (this.isOpen) {
+            this.inputTarget.focus();
+            return;
+        }
         this.previouslyFocusedElement = document.activeElement;
-
-        // Remove inline style that modal manager might have set
         this.modalTarget.style.display = '';
         this.modalTarget.classList.remove('d-none');
-
         this.modalTarget.classList.add('command-palette-open');
         this.inputTarget.value = '';
-        this.inputTarget.focus();
-
-        // Admin-Scope — wenn wir auf /admin/* sind, Admin-Commands
-        // zuerst zeigen. User muss „admin" nicht erst tippen.
-        this.filteredCommands = this.isOnAdminPage()
-            ? this.sortAdminFirst(this.commands)
-            : this.commands;
+        this.query = '';
+        this.records = [];
         this.selectedIndex = 0;
         this.render();
-    }
-
-    isOnAdminPage() {
-        const path = window.location.pathname;
-        // Matches /admin, /de/admin, /en/admin etc.
-        return /^\/(?:[a-z]{2}\/)?admin(?:\/|$)/.test(path);
-    }
-
-    sortAdminFirst(commands) {
-        const isAdmin = (cmd) => (cmd.id || '').startsWith('admin-') || (cmd.url || '').includes('/admin/');
-        const adminCmds = commands.filter(isAdmin);
-        const others = commands.filter((c) => !isAdmin(c));
-        return [...adminCmds, ...others];
+        this.inputTarget.focus();
     }
 
     close() {
         this.modalTarget.classList.remove('command-palette-open');
-
-        // Restore focus to previously focused element
+        clearTimeout(this.searchTimeout);
+        this.requestId++;
         if (this.previouslyFocusedElement && typeof this.previouslyFocusedElement.focus === 'function') {
             this.previouslyFocusedElement.focus();
         }
         this.previouslyFocusedElement = null;
     }
 
-    search(event) {
-        const query = event.target.value.toLowerCase().trim();
-
-        if (!query) {
-            this.filteredCommands = this.isOnAdminPage()
-                ? this.sortAdminFirst(this.commands)
-                : this.commands;
-        } else {
-            this.filteredCommands = this.commands.filter(cmd => {
-                const searchStr = `${cmd.label} ${cmd.category} ${cmd.keywords.join(' ')}`.toLowerCase();
-                return searchStr.includes(query);
-            });
-        }
-
+    search() {
+        this.query = this.inputTarget.value.trim();
+        this.records = [];
         this.selectedIndex = 0;
+        clearTimeout(this.searchTimeout);
+        this.render();
+        if (this.query.length < this.minCharsValue || !this.searchUrlValue) return;
+
+        const query = this.query;
+        this.searchTimeout = setTimeout(() => this.fetchRecords(query), this.debounceDelayValue);
+    }
+
+    async fetchRecords(query) {
+        const requestId = ++this.requestId;
+        try {
+            const response = await fetch(`${this.searchUrlValue}?q=${encodeURIComponent(query)}`, {
+                headers: { Accept: 'application/json' },
+            });
+            if (!response.ok) throw new Error(String(response.status));
+            const data = await response.json();
+            if (requestId !== this.requestId || query !== this.query) return;
+            this.records = this.recordGroups(data);
+        } catch (error) {
+            if (requestId !== this.requestId) return;
+            this.records = [{ label: faT('search.error'), items: [], error: true }];
+        }
         this.render();
     }
 
+    /** Pages (navigation results) first, then one group per record type. */
+    recordGroups(data) {
+        const groups = [];
+        const toItem = (item, icon) => ({
+            label: item.title,
+            description: item.description || '',
+            badge: item.badge || '',
+            url: item.url,
+            icon: item.icon ? String(item.icon).replace(/^fa-icon--/, '') : icon,
+        });
+        if (Array.isArray(data?.navigation) && data.navigation.length > 0) {
+            groups.push({ label: faT('search.category.navigation'), items: data.navigation.map((i) => toItem(i, 'util-arrow-right')) });
+        }
+        for (const [key, icon] of RECORD_CATEGORIES) {
+            if (Array.isArray(data?.[key]) && data[key].length > 0) {
+                groups.push({ label: faT(`search.category.${key}`), items: data[key].map((i) => toItem(i, icon)) });
+            }
+        }
+        return groups;
+    }
+
+    commandGroups() {
+        const query = this.query.toLowerCase();
+        let commands = this.commandsValue;
+        if (query) {
+            commands = commands.filter((cmd) => `${cmd.label} ${cmd.category} ${(cmd.keywords || []).join(' ')}`
+                .toLowerCase().includes(query));
+        } else if (this.isOnAdminPage()) {
+            const isAdmin = (cmd) => (cmd.id || '').startsWith('admin-');
+            commands = [...commands.filter(isAdmin), ...commands.filter((c) => !isAdmin(c))];
+        }
+        const groups = new Map();
+        for (const cmd of commands) {
+            if (!groups.has(cmd.category)) groups.set(cmd.category, []);
+            groups.get(cmd.category).push(cmd);
+        }
+        return [...groups].map(([label, items]) => ({ label, items }));
+    }
+
+    isOnAdminPage() {
+        return /^\/(?:[a-z]{2}\/)?admin(?:\/|$)/.test(window.location.pathname);
+    }
+
     render() {
-        if (this.filteredCommands.length === 0) {
+        const groups = [...this.records, ...this.commandGroups()];
+        this.items = groups.flatMap((g) => g.items);
+        if (this.selectedIndex >= this.items.length) this.selectedIndex = 0;
+
+        const hasError = groups.some((g) => g.error);
+        if (this.items.length === 0 && !hasError) {
             this.resultsTarget.innerHTML = '';
             this.noResultsTarget.classList.remove('hidden');
             return;
         }
-
         this.noResultsTarget.classList.add('hidden');
 
-        // Group by category
-        const grouped = this.groupByCategory(this.filteredCommands);
-
+        let index = 0;
         let html = '';
-        for (const [category, commands] of Object.entries(grouped)) {
-            html += `<div class="command-category">`;
-            html += `<div class="command-category-label">${category}</div>`;
-
-            commands.forEach((cmd, index) => {
-                const globalIndex = this.filteredCommands.indexOf(cmd);
-                const isSelected = globalIndex === this.selectedIndex;
-
-                // Backward compat: support legacy bi-* icon names — render
-                // as Bootstrap-Icon. New code should use fa-icon names.
-                const iconHtml = (cmd.icon || '').startsWith('bi-')
-                    ? `<i class="bi ${cmd.icon}" aria-hidden="true"></i>`
-                    : `<i class="fa-icon fa-icon--${cmd.icon}" aria-hidden="true"></i>`;
-
-                // Layout per design system (.fa-cmdp__item): icon tile | label | meta
+        for (const group of groups) {
+            html += `<div class="command-category" role="group" aria-label="${this.escape(group.label)}">`;
+            html += `<div class="command-category-label">${this.escape(group.label)}</div>`;
+            if (group.error) {
+                html += `<div class="command-item-description">${this.escape(faT('search.error_hint'))}</div>`;
+            }
+            for (const item of group.items) {
+                const selected = index === this.selectedIndex;
                 html += `
-                    <div class="command-item ${isSelected ? 'selected' : ''}"
-                         data-command-id="${cmd.id}"
-                         data-action="click->command-palette#execute"
-                         data-index="${globalIndex}">
-                        <span class="command-item-icon">${iconHtml}</span>
+                    <div class="command-item ${selected ? 'selected' : ''}" role="option"
+                         aria-selected="${selected}" data-index="${index}"
+                         data-action="click->command-palette#execute">
+                        <span class="command-item-icon"><i class="fa-icon fa-icon--${this.escape(item.icon || 'util-arrow-right')}" aria-hidden="true"></i></span>
                         <div class="command-item-content">
-                            <span class="command-item-label">${cmd.label}</span>
+                            <span class="command-item-label">${this.highlight(item.label)}</span>
+                            ${item.description ? `<span class="command-item-description">${this.highlight(item.description)}</span>` : ''}
                         </div>
-                        ${this.getShortcutBadge(cmd)}
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
+                        ${item.badge ? `<span class="fa-status-pill fa-status-pill--neutral">${this.escape(item.badge)}</span>` : ''}
+                    </div>`;
+                index++;
+            }
+            html += '</div>';
         }
-
         this.resultsTarget.innerHTML = html;
     }
 
-    groupByCategory(commands) {
-        return commands.reduce((acc, cmd) => {
-            if (!acc[cmd.category]) {
-                acc[cmd.category] = [];
-            }
-            acc[cmd.category].push(cmd);
-            return acc;
-        }, {});
-    }
-
-    getShortcutBadge(cmd) {
-        // Could be extended with specific shortcuts per command
-        return '';
-    }
-
-    selectNext() {
-        if (this.selectedIndex < this.filteredCommands.length - 1) {
-            this.selectedIndex++;
-            this.render();
-            this.scrollToSelected();
-        }
-    }
-
-    selectPrevious() {
-        if (this.selectedIndex > 0) {
-            this.selectedIndex--;
-            this.render();
-            this.scrollToSelected();
-        }
-    }
-
-    scrollToSelected() {
+    move(step) {
+        if (this.items.length === 0) return;
+        this.selectedIndex = (this.selectedIndex + step + this.items.length) % this.items.length;
+        this.render();
         const selected = this.resultsTarget.querySelector('.command-item.selected');
-        if (selected) {
-            selected.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        if (selected && typeof selected.scrollIntoView === 'function') {
+            selected.scrollIntoView({ block: 'nearest' });
         }
     }
 
     execute(event) {
-        const commandId = event.currentTarget.dataset.commandId;
-        const command = this.commands.find(cmd => cmd.id === commandId);
-
-        if (command) {
-            this.executeCommand(command);
-        }
+        this.activate(this.items[Number(event.currentTarget.dataset.index)]);
     }
 
-    executeSelected() {
-        if (this.filteredCommands.length > 0) {
-            const command = this.filteredCommands[this.selectedIndex];
-            this.executeCommand(command);
-        }
-    }
-
-    executeCommand(command) {
+    activate(item) {
+        if (!item?.url) return;
         this.close();
-
-        // Navigate using Turbo with locale prefix
-        if (command.url) {
-            const url = this.addLocalePrefix(command.url);
-            window.Turbo.visit(url);
+        if (item.download || !window.Turbo || typeof window.Turbo.visit !== 'function') {
+            window.location.href = item.url;
+            return;
         }
+        window.Turbo.visit(item.url);
     }
 
-    /**
-     * Add locale prefix to URL if not already present
-     * @param {string} url - URL path (e.g., '/dashboard')
-     * @returns {string} URL with locale prefix (e.g., '/de/dashboard')
-     */
-    addLocalePrefix(url) {
-        const locale = this.getCurrentLocale();
-        // Check if URL already has locale prefix
-        if (url.match(/^\/[a-z]{2}\//)) {
-            return url;
-        }
-        return `/${locale}${url}`;
+    highlight(text) {
+        const safe = this.escape(text);
+        const needle = this.escape(this.query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (!needle) return safe;
+        return safe.replace(new RegExp(`(${needle})`, 'gi'), '<mark>$1</mark>');
     }
 
-    /**
-     * Get current locale from URL path
-     * @returns {string} Current locale (default: 'de')
-     */
-    getCurrentLocale() {
-        const pathParts = window.location.pathname.split('/');
-        const possibleLocale = pathParts[1];
-        // Check if it's a valid locale (de, en, etc.)
-        if (possibleLocale && /^[a-z]{2}$/.test(possibleLocale)) {
-            return possibleLocale;
-        }
-        return 'de';
+    escape(value) {
+        const div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
     }
 }

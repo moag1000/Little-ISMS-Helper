@@ -42,7 +42,7 @@
                             <span class="isms-comment__author">
                                 {% if author %}{{ author.firstName }} {{ author.lastName }}{% else %}—{% endif %}
                             </span>
-                            <span class="isms-comment__meta">{{ comment.createdAt|date('d.m.Y H:i') }}</span>
+                            <span class="isms-comment__meta">{{ comment.createdAt|fa_datetime }}</span>
                         </div>
                         <div class="isms-comment__body">
                             {{ comment.body|nl2br }}

@@ -86,7 +86,7 @@
                         <td class="fa-table__cell">
                             {% set last_approved = documents|first.lastApprovedAt|default(null) %}
                             {% if last_approved %}
-                                <small>{{ last_approved|date('Y-m-d') }}</small>
+                                <small>{{ last_approved|fa_date }}</small>
                             {% else %}
                                 <small class="text-muted">—</small>
                             {% endif %}
@@ -94,7 +94,7 @@
                         <td class="fa-table__cell">
                             {% set next_review = documents|first.nextReviewDate|default(null) %}
                             {% if next_review %}
-                                <small>{{ next_review|date('Y-m-d') }}</small>
+                                <small>{{ next_review|fa_date }}</small>
                             {% else %}
                                 <small class="text-muted">—</small>
                             {% endif %}

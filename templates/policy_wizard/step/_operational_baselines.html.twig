@@ -88,7 +88,7 @@
     <label class="form-label" for="op-crypto-allowlist">
         {{ 'policy_wizard.step.operational_baselines.crypto_allowlist_label'|trans }}
         <i class="fa-icon fa-icon--ui-info text-muted ms-1"
-           data-bs-toggle="tooltip"
+           data-bs-toggle="tooltip" tabindex="0" role="img"
            title="{{ (bsi_in_scope
                 ? 'policy_wizard.step.operational_baselines.tooltip.crypto_allowlist_bsi'
                 : 'policy_wizard.step.operational_baselines.tooltip.crypto_allowlist_modern')|trans }}"
@@ -284,7 +284,7 @@
                 <label class="form-label" for="op-working-modes">
                     {{ 'policy_wizard.step.operational_baselines.working_modes_label'|trans }}
                     <i class="fa-icon fa-icon--ui-info text-muted ms-1"
-                       data-bs-toggle="tooltip"
+                       data-bs-toggle="tooltip" tabindex="0" role="img"
                        title="{{ 'policy_wizard.step.operational_baselines.tooltip.working_modes'|trans }}"
                        aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.working_modes'|trans }}"></i>
                 </label>
@@ -479,7 +479,7 @@
                             {{ pill.render('policy_wizard.step.operational_baselines.dora.significance_self_check.derived_no'|trans, 'neutral', {size: 'sm', class: 'ms-2'}) }}
                         {% endif %}
                         <i class="fa-icon fa-icon--ui-info text-muted ms-2"
-                           data-bs-toggle="tooltip"
+                           data-bs-toggle="tooltip" tabindex="0" role="img"
                            title="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"
                            aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"></i>
                         {# Junior-Helps: explain in plain language what the result MEANS for the tenant. #}
@@ -518,7 +518,7 @@
                     <label class="form-check-label" for="op-dora-ctpp">
                         {{ 'policy_wizard.step.operational_baselines.dora_ctpp_label'|trans }}
                         <i class="fa-icon fa-icon--ui-info text-muted ms-1"
-                           data-bs-toggle="tooltip"
+                           data-bs-toggle="tooltip" tabindex="0" role="img"
                            title="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_ctpp'|trans }}"
                            aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_ctpp'|trans }}"></i>
                     </label>

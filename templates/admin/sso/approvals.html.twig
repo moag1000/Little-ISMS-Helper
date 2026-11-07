@@ -47,7 +47,7 @@
                                 <span class="fa-status-pill fa-status-pill--primary">{{ 'sso.scope.global'|trans }}</span>
                             {% endif %}
                         </td>
-                        <td class="fa-table__cell fa-table__cell--muted" data-sort-value="{{ a.requestedAt ? a.requestedAt|date('Y-m-d H:i') : '' }}">{{ a.requestedAt|date('Y-m-d H:i') }}</td>
+                        <td class="fa-table__cell fa-table__cell--muted" data-sort-value="{{ a.requestedAt ? a.requestedAt|date('Y-m-d H:i') : '' }}">{{ a.requestedAt|fa_datetime }}</td>
                         <td class="fa-table__cell">
                             <details>
                                 <summary class="small text-primary" style="cursor: pointer;">{{ 'sso.approvals.show_claims'|trans }}</summary>

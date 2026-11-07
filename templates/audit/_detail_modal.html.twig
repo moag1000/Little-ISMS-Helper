@@ -29,7 +29,7 @@
         {% if audit.plannedDate %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'audit.field.planned_date'|trans({}, 'audit') }}</span>
-            <span><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ audit.plannedDate|date('d.m.Y') }}</span>
+            <span><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ audit.plannedDate|fa_date }}</span>
         </div>
         {% endif %}
 

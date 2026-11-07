@@ -201,7 +201,7 @@
 
                         {% if mris.reviewedAt %}
                             <p class="text-muted small mb-0 mt-2">
-                                {{ 'compliance.requirement.mris.last_review'|trans({}, 'compliance') }}: {{ mris.reviewedAt|date('Y-m-d H:i') }}
+                                {{ 'compliance.requirement.mris.last_review'|trans({}, 'compliance') }}: {{ mris.reviewedAt|fa_datetime }}
                             </p>
                         {% endif %}
                     {% endblock %}

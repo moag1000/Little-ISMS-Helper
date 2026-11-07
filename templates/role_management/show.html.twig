@@ -121,7 +121,7 @@
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell"><strong>{{ user.fullName }}</strong></td>
                                 <td class="fa-table__cell">{{ user.email|default('-') }}</td>
-                                <td class="fa-table__cell">{{ user.roleAssignedAt is defined and user.roleAssignedAt ? user.roleAssignedAt|date('d.m.Y H:i') : '-' }}</td>
+                                <td class="fa-table__cell">{{ user.roleAssignedAt is defined and user.roleAssignedAt ? user.roleAssignedAt|fa_datetime : '-' }}</td>
                             </tr>
                         {% endfor %}
                     {% endblock %}

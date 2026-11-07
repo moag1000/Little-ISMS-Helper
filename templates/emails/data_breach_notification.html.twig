@@ -73,14 +73,14 @@
             {% if incident.detectedAt %}
             <div class="field">
                 <span class="label">{{ 'incident.field.detected_at'|trans({}, 'incident') }}:</span>
-                <span class="value">{{ incident.detectedAt|date('d.m.Y H:i') }}</span>
+                <span class="value">{{ incident.detectedAt|fa_datetime }}</span>
             </div>
             {% endif %}
 
             {% if incident.occurredAt %}
             <div class="field">
                 <span class="label">{{ 'incident.field.occurred_at'|trans({}, 'incident') }}:</span>
-                <span class="value">{{ incident.occurredAt|date('d.m.Y H:i') }}</span>
+                <span class="value">{{ incident.occurredAt|fa_datetime }}</span>
             </div>
             {% endif %}
 

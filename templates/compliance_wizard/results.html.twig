@@ -55,7 +55,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <p class="text-muted mb-0">
-                                {{ 'wizard.assessed_at'|trans({}, 'wizard') }}: {{ result.assessed_at|date('d.m.Y H:i') }}
+                                {{ 'wizard.assessed_at'|trans({}, 'wizard') }}: {{ result.assessed_at|fa_datetime }}
                             </p>
                         </div>
                         <div class="text-end">
@@ -65,8 +65,8 @@
                                 {% else %}text-danger{% endif %}">
                                 {{ result.overall_score }}%
                             </div>
-                            {% set _status_tone = result.status == 'compliant' ? 'success' : (result.status == 'partial' ? 'warning' : (result.status == 'in_progress' ? 'primary' : 'danger')) %}
-                            {{ pill.render(('wizard.status.' ~ result.status)|trans({}, 'wizard'), _status_tone) }}
+                            {% import '_components/_status_vocabulary.html.twig' as _status %}
+                            {{ _status.pill('compliance_result', result.status, ('wizard.status.' ~ result.status)|trans({}, 'wizard')) }}
                         </div>
                     </div>
                 {% endblock %}

@@ -62,7 +62,7 @@
             {% if instance.dueDate %}
             <div class="field">
                 <span class="label">{{ 'emails.workflow.due_date'|trans({}, 'emails') }}:</span>
-                <span class="value">{{ instance.dueDate|date('d.m.Y') }}</span>
+                <span class="value">{{ instance.dueDate|fa_date }}</span>
             </div>
             {% endif %}
 
@@ -75,7 +75,7 @@
 
             <div class="field">
                 <span class="label">{{ 'emails.workflow.started'|trans({}, 'emails') }}:</span>
-                <span class="value">{{ instance.startedAt|date('d.m.Y H:i') }}</span>
+                <span class="value">{{ instance.startedAt|fa_datetime }}</span>
             </div>
 
             <div class="warning-box">

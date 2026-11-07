@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SecurityController extends AbstractController
 {
     public function __construct(
-        private readonly RateLimiterFactory $rateLimiterFactory,
+        private readonly RateLimiterFactory $loginLimiter,
         private readonly SamlAuthFactory $samlAuthFactory,
         private readonly TranslatorInterface $translator,
         private readonly SsoProviderRegistry $ssoRegistry,
@@ -35,7 +35,7 @@ class SecurityController extends AbstractController
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         // Security: Rate limit login attempts to prevent brute force attacks
-        $limiter = $this->rateLimiterFactory->create($request->getClientIp());
+        $limiter = $this->loginLimiter->create($request->getClientIp());
 
         if (false === $limiter->consume(1)->isAccepted()) {
             $this->addFlash('error', $this->translator->trans('security.error.too_many_attempts', [], 'messages'));

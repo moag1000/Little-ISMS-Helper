@@ -40,7 +40,7 @@
             <span class="label">{{ 'dora_exit_plan.field.tested_at'|trans({}, 'dora_exit_plan') }}</span>
             <span>
                 {% if plan.testedAt %}
-                    {{ plan.testedAt|date('Y-m-d') }}
+                    {{ plan.testedAt|fa_date }}
                 {% else %}
                     {% include '_components/_badge.html.twig' with {
                         variant: 'warning',

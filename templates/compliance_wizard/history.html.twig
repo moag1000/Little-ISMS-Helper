@@ -94,7 +94,7 @@
                         <select id="diff-from" name="from" class="form-select" required>
                             {% for session in sessions %}
                                 <option value="{{ session.id }}">
-                                    {{ session.completedAt ? session.completedAt|date('Y-m-d H:i') : '?' }}
+                                    {{ session.completedAt ? session.completedAt|fa_datetime : '?' }}
                                     — {{ session.overallScore }}%
                                     {% if session.user %}({{ session.user.email }}){% endif %}
                                 </option>
@@ -112,7 +112,7 @@
                             {% for session in sessions %}
                                 <option value="{{ session.id }}"
                                     {% if loop.first %}selected{% endif %}>
-                                    {{ session.completedAt ? session.completedAt|date('Y-m-d H:i') : '?' }}
+                                    {{ session.completedAt ? session.completedAt|fa_datetime : '?' }}
                                     — {{ session.overallScore }}%
                                     {% if session.user %}({{ session.user.email }}){% endif %}
                                 </option>
@@ -152,7 +152,7 @@
                         {% for session in sessions %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">
-                                    {% if session.completedAt %}{{ session.completedAt|date('Y-m-d H:i') }}{% else %}—{% endif %}
+                                    {% if session.completedAt %}{{ session.completedAt|fa_datetime }}{% else %}—{% endif %}
                                 </td>
                                 <td class="fa-table__cell">
                                     {% if session.user %}{{ session.user.email }}{% else %}—{% endif %}

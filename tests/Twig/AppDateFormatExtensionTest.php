@@ -52,6 +52,18 @@ final class AppDateFormatExtensionTest extends TestCase
 
         self::assertSame('-', $ext->formatDate(null));
         self::assertSame('-', $ext->formatDateTime(null));
+        self::assertSame('-', $ext->formatDate(''));
+        self::assertSame('-', $ext->formatDate('kein Datum'));
+    }
+
+    #[Test]
+    public function acceptsWhatTwigDateAccepts(): void
+    {
+        $ext = $this->extension([]);
+
+        self::assertSame('31.12.2024', $ext->formatDate('2024-12-31'));
+        self::assertSame('31.12.2024 23:59', $ext->formatDateTime('2024-12-31 23:59:00'));
+        self::assertSame('01.01.1970', $ext->formatDate(0));
     }
 
     #[Test]
