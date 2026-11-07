@@ -38,6 +38,7 @@
             { key: 'risk_finance', icon: 'nav-analytics', title_key: 'dashboard.management_kpis.risk_finance.title', route: 'app_risk_index', col_class: 'col-6' },
             { key: 'locations', icon: 'nav-location', title_key: 'dashboard.management_kpis.locations.title', route: 'app_location_map', col_class: 'col-6 col-md-4' },
             { key: 'efficiency', icon: 'nav-speedometer', title_key: 'dashboard.management_kpis.efficiency.title', route: 'analytics_fte_index', col_class: 'col-6' },
+            { key: 'bsi_gspp', icon: 'nav-process', title_key: 'dashboard.management_kpis.bsi_gspp.title', route: 'app_compliance_mapping_hub', route_params: { _fragment: 'gspp-transfer' }, col_class: 'col-6' },
             { key: 'bsi_stufen', icon: 'nav-shield', title_key: 'dashboard.management_kpis.bsi_stufen.title', route: 'app_bsi_grundschutz_check', col_class: 'col-6 col-md-4' },
         ] %}
 
@@ -75,7 +76,7 @@
                              data-bs-parent="#kpiAccordion">
                             <div class="accordion-body py-2 px-3">
                                 <div class="d-flex justify-content-end mb-2">
-                                    <a href="{{ path(section.route) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
+                                    <a href="{{ path(section.route, section.route_params|default({})) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                     </a>
                                 </div>

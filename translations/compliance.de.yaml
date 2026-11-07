@@ -335,6 +335,16 @@ compliance:
                 unreviewed: 'Noch zu prüfen'
                 bidirectional: 'Bidirektional'
                 frameworks: 'Aktive Frameworks'
+            gspp:
+                title: 'Kompendium → Grundschutz++'
+                source: 'BSI-Mapping (Entwurf) und geprüfte Ergänzung'
+                summary: '%with% von %total% Kompendium-Anforderungen haben ein Ziel in Grundschutz++ (%percent% %).'
+                official: 'BSI-Mapping'
+                derived: 'Ergänzung, zur Prüfung'
+                no_counterpart: 'Ohne Entsprechung in Grundschutz++'
+                open: 'Offen'
+                review: 'Vorschläge prüfen'
+                list: 'Mappings anzeigen'
             action:
                 wizard:
                     title: 'Neues Mapping (Wizard)'

@@ -340,6 +340,7 @@ GS++ genauso wie für die anderen Frameworks.
 | `iso27001-2022_to_bsi-gspp_official_v1.yaml` + Gegenrichtung | amtliches BSI-Mapping Annex A → GS++ (1.0.1-qa), alle 93 Controls | 362 |
 | `iso27001-2022-clauses_to_bsi-gspp_v1.yaml` + Gegenrichtung | Expertenmapping Klauseln 4–10 → GS++-Methodik | 28 / 81 |
 | `bsi-it-grundschutz_to_bsi-gspp_official_v1.yaml` | BSI-Mapping Kompendium 2023 → GS++ (beim BSI noch **Entwurf**), von Teilanforderungen auf Anforderungen verdichtet | 1026 |
+| `bsi-it-grundschutz_to_bsi-gspp_derived_v1.yaml` | Ergänzung für die Kompendium-Anforderungen ohne BSI-Mapping, zwei unabhängige Reviews (siehe unten) | 701 |
 | `{nis2-art21,bsi-c5-2020,bsi-c5-2026,dora,tisax}_to_bsi-gspp_derived_v1.yaml` + Gegenrichtung | über ISO 27001 abgeleitet (siehe unten) | 159 / 928 / 559 / 176 / 265 |
 
 **Über ISO abgeleitete Mappings.** Für NIS2, C5, DORA und TISAX gibt es kein amtliches
@@ -350,6 +351,38 @@ ISO 27001 → GS++. Glieder mit `related` oder `low` entfallen, die Konfidenz is
 `derived_iso27001_pivot` stuft die Paare als heuristisch ein: Die Vererbung schlägt sie zur
 Prüfung vor und übernimmt sie nicht ungeprüft. Nach Änderungen an einem der Eingangs-Mappings
 das Skript erneut laufen lassen.
+
+**Ergänzung Kompendium → GS++.** Das BSI-Mapping deckt 510 der 1834 Kompendium-Anforderungen ab
+(Stand der BSI-Bibliothek geprüft am 2026-11-07, Commit `c3f3785`: Mapping unverändert seit 2026-07-21).
+Für die übrigen 1324 schlägt `python3 scripts/library/derive_itgs_gspp_review.py candidates <dir>` je
+Anforderung bis zu zehn GS++-Kandidaten vor: Ziele, die das BSI anderen Anforderungen desselben Bausteins
+gibt, der amtliche Pfad über ISO 27001 (BSI-CRT und BSI-Mapping ISO → GS++) und Textähnlichkeit. Zwei
+unabhängige Reviews (BSI-Grundschutz-Berater, externer Auditor) wählen 0–3 Ziele oder halten fest, dass
+GS++ keine Entsprechung hat; `assemble` legt beide in
+`panel_verdicts/bsi-it-grundschutz_to_bsi-gspp_review_v1.json` ab, `build` übernimmt nur Paare, die beide
+Reviews gewählt haben. Provenienz `derived_expert_review` = heuristische Stufe: Die Vererbungs-Queue schlägt
+die Paare zur Prüfung vor, nichts gilt ungeprüft als erfüllt. Sobald das BSI eine Anforderung selbst mappt,
+fällt sie beim nächsten Lauf aus der Ergänzung. `stats` zeigt den Stand:
+
+| Kompendium-Anforderungen | Anzahl |
+|---|---|
+| mit BSI-Mapping | 510 (27,8 %) |
+| Ergänzung, zur Prüfung (701 Paare) | 609 |
+| ohne Entsprechung in GS++ (beide Reviews) | 469 |
+| offen (Reviews uneinig) | 246 |
+| **mit GS++-Ziel** | **1119 (61,0 %)** |
+
+„Ohne Entsprechung“ betrifft vor allem produktspezifische Anforderungen (z. B. Samba, DNS-Produktauswahl,
+WLAN-Standards), die der Anwenderkatalog nicht als eigene Pflicht führt. Die offenen 246 bleiben ohne
+Vorschlag, bis das BSI sie mappt oder eine Prüfung im Tool sie zuordnet.
+
+**Im Tool.** Der Mapping-Hub (Übersicht) zeigt die Karte „Kompendium → Grundschutz++“ mit BSI-Mapping,
+Ergänzung, „ohne Entsprechung“ und offen, dazu „Vorschläge prüfen“ (Vererbungs-Queue `BSI-GSPP`). Der
+`KpiCatalog` liefert im Abschnitt `bsi_gspp` (Modul `bsi_grundschutz`) zwei Kennzahlen:
+`bsi_gspp_transfer` = Anteil der erfüllten Kompendium-Anforderungen der Organisation mit GS++-Ziel,
+`bsi_gspp_mapping_coverage` = Anteil aller Kompendium-Anforderungen mit GS++-Ziel
+(`App\Service\Bsi\KompendiumGsppCoverage`). Import wie die anderen Mappings über
+`app:mapping:library:import` bzw. die Mapping-Bibliothek in der Oberfläche.
 
 Ziel-IDs, die das BSI seit Erstellung eines Mappings umnummeriert hat, löst der
 Generator über die stabile OSCAL-UUID auf. Wer ISO 27001 umgesetzt hat, sieht über die

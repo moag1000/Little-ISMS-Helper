@@ -107,6 +107,10 @@
         </div>
     </div>
 
+    {% if gspp_coverage|default(null) and is_module_active('bsi_grundschutz') %}
+        {% include 'compliance/mapping/_gspp_transfer_card.html.twig' with { coverage: gspp_coverage } %}
+    {% endif %}
+
     {# 9 entry cards — 8H.4: migrated. Each card is a clickable block-link to a mapping tool. #}
     <div class="row g-3 mb-4">
         <div class="col-md-6 col-lg-4">
