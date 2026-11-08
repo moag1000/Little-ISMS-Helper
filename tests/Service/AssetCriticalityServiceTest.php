@@ -308,7 +308,7 @@ class AssetCriticalityServiceTest extends TestCase
         $asset->method('getConfidentialityValue')->willReturn($conf);
         $asset->method('getIntegrityValue')->willReturn($integ);
         $asset->method('getAvailabilityValue')->willReturn($avail);
-        $asset->method('getOwner')->willReturn(null);
+        $asset->method('getEffectiveOwner')->willReturn(null);
         return $asset;
     }
 
@@ -321,7 +321,6 @@ class AssetCriticalityServiceTest extends TestCase
         $asset->method('getConfidentialityValue')->willReturn($conf);
         $asset->method('getIntegrityValue')->willReturn($integ);
         $asset->method('getAvailabilityValue')->willReturn($avail);
-        $asset->method('getOwner')->willReturn($owner);
         $asset->method('getEffectiveOwner')->willReturn($owner);
         return $asset;
     }
@@ -335,7 +334,7 @@ class AssetCriticalityServiceTest extends TestCase
         $asset->method('getConfidentialityValue')->willReturn(null);
         $asset->method('getIntegrityValue')->willReturn(null);
         $asset->method('getAvailabilityValue')->willReturn(null);
-        $asset->method('getOwner')->willReturn(null);
+        $asset->method('getEffectiveOwner')->willReturn(null);
         return $asset;
     }
 

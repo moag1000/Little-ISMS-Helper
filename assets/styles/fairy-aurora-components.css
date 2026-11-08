@@ -7229,11 +7229,6 @@ a.fa-matrix-table__cell:focus-visible {
     opacity: 1;
 }
 
-.fa-owner-picker__legacy {
-    border-top: 1px solid var(--border);
-    padding-top: var(--space-2);
-}
-
 /* ─── fa-json-builder family (P-9 visual macros) ──────────────────────────
    Shared shell for:
      .fa-team-role-builder, .fa-resource-list, .fa-escalation-chain,

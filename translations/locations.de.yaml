@@ -39,7 +39,6 @@ location:
         responsible_person_user: 'Verantwortliche/r (Benutzerkonto)'
         responsible_person_ref: 'Verantwortliche/r (Person)'
         responsible_deputies: 'Vertretung'
-        responsible_person_legacy: 'Verantwortliche Person (Freitext, veraltet)'
     section:
         basic_info: Grundinformationen
         address: Adresse

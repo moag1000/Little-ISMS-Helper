@@ -30,6 +30,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
 #[ORM\Index(name: 'idx_asset_type', columns: ['asset_type'])]
@@ -48,7 +49,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
             parameters: [
                 'name' => new QueryParameter(filter: new PartialSearchFilter()),
                 'assetType' => new QueryParameter(filter: new ExactFilter()),
-                'owner' => new QueryParameter(filter: new PartialSearchFilter()),
                 'status' => new QueryParameter(filter: new ExactFilter()),
                 'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['name', 'assetType', 'createdAt'], castToArray: false),
             ],
@@ -160,11 +160,6 @@ class Asset
     #[ORM\Column(type: Types::JSON, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
     private ?array $aiAgentExtensionAllowlist = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'asset.validation.owner_max_length')]
-    private ?string $owner = null;
 
     // Legacy field - kept for backward compatibility
     // @deprecated Use $physicalLocation instead
@@ -483,17 +478,6 @@ class Asset
     public function getAiAgentExtensionAllowlist(): ?array { return $this->aiAgentExtensionAllowlist; }
     /** @param array<int, string>|null $v */
     public function setAiAgentExtensionAllowlist(?array $v): static { $this->aiAgentExtensionAllowlist = $v; return $this; }
-
-    public function getOwner(): ?string
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?string $owner): static
-    {
-        $this->owner = $owner;
-        return $this;
-    }
 
     public function getLocation(): ?string
     {
@@ -840,8 +824,8 @@ class Asset
 
     /**
      * Person-based owner: für Personen-Eintraege ohne System-Login (externe
-     * Stakeholder, Berater, abteilungs-shared Mailbox-Inhaber). Drittstufe
-     * der Pattern-A-Kette zwischen User und Legacy-String.
+     * Stakeholder, Berater, abteilungs-shared Mailbox-Inhaber). Zweite Stufe
+     * nach dem User.
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -895,15 +879,15 @@ class Asset
     }
 
     /**
-     * Effective owner: prefer ownerUser.fullName, then ownerPerson.fullName,
-     * fall back to legacy string.
+     * Effective owner: prefer ownerUser.fullName, then ownerPerson.fullName.
      */
+    #[Groups(['asset:read'])]
+    #[SerializedName('owner')]
     public function getEffectiveOwner(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->ownerUser,
             $this->ownerPerson,
-            $this->owner,
         );
     }
 
@@ -917,7 +901,6 @@ class Asset
         return OwnerResolver::resolveAll(
             $this->ownerUser,
             $this->ownerPerson,
-            $this->owner,
             $this->ownerDeputyPersons,
         );
     }

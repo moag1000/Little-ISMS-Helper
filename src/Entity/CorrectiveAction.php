@@ -398,7 +398,7 @@ class CorrectiveAction
      */
     public function getEffectiveResponsiblePerson(): ?string
     {
-        return OwnerResolver::resolveEffective($this->responsiblePersonUser, $this->responsiblePerson, null);
+        return OwnerResolver::resolveEffective($this->responsiblePersonUser, $this->responsiblePerson);
     }
 
     /**
@@ -411,7 +411,6 @@ class CorrectiveAction
         return OwnerResolver::resolveAll(
             $this->responsiblePersonUser,
             $this->responsiblePerson,
-            null,
             $this->responsibleDeputyPersons
         );
     }

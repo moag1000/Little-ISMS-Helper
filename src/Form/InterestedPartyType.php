@@ -17,7 +17,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\Util\LegacyFreeTextField;
 
 final class InterestedPartyType extends AbstractType implements SectionMapInterface
 {
@@ -27,7 +26,7 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
     {
         return [
             'overview'      => ['name', 'partyType', 'importance', 'description'],
-            'contact'       => ['contactPersonUser', 'contactPersonRef', 'contactDeputyPersons', 'contactPerson', 'email', 'phone'],
+            'contact'       => ['contactPersonUser', 'contactPersonRef', 'contactDeputyPersons', 'email', 'phone'],
             'requirements'  => ['requirements', 'legalRequirements', 'howAddressed'],
             'communication' => ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication'],
             'monitoring'    => ['feedback', 'satisfactionLevel', 'issues'],
@@ -72,8 +71,7 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
                 'attr' => ['rows' => 3],
             ]);
 
-        // Pattern A dual-state owner cluster (User + Person + deputies) via the
-        // shared trait; the legacy free-text field below keeps round-tripping.
+        // Owner cluster (User + Person + deputies) via the shared trait.
         $this->addOwnerPicker($builder, [
             'translation_prefix' => 'interested_party',
             'user_field'         => 'contactPersonUser',
@@ -90,14 +88,6 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
         ]);
 
         $builder
-            ->add('contactPerson', TextType::class, [
-                'label' => 'interested_party.field.contact_person_legacy',
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'interested_party.placeholder.contact_person',
-                ],
-            ])
             ->add('email', EmailType::class, [
                 'label' => 'interested_party.field.email',
                 'required' => false,
@@ -189,7 +179,6 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
                 'attr' => ['rows' => 3],
             ])
         ;
-        LegacyFreeTextField::hideWhenEmpty($builder, 'contactPerson');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

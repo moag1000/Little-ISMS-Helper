@@ -141,8 +141,6 @@ suggestions:
             role: 'Register: role'
             competence: 'Register: competence'
             opportunity: 'Register: opportunity'
-        legacy_owner:
-            match: Assign owners
         compliance:
             inheritance: Take over fulfilment
         ai:
@@ -179,8 +177,6 @@ suggestions:
             role: From the holders of the persona roles.
             competence: Default competences of the roles in the role register.
             opportunity: From the last management review.
-        legacy_owner:
-            match: Free-text owners match a person.
         compliance:
             inheritance: A fulfilled requirement covers a mapped one.
         ai:
@@ -246,9 +242,6 @@ suggestions:
         register:
             title: '%register%: adopt %title%'
             rationale: 'Proposed from: %source%. Standard: %norm%.'
-        legacy_owner:
-            title: 'Assign owners for %record%'
-            rationale: 'Free text "%legacy%" matches %match%.'
         inheritance:
             title: 'Take over %target% from %source%: %title%'
             rationale: '%source% is fulfilled, mapping confidence %confidence%. Proposed %percent% % fulfilment for %target%.'

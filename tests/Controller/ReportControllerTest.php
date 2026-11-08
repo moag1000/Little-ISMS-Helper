@@ -281,9 +281,8 @@ class ReportControllerTest extends WebTestCase
     // ========== EXCEL CONTENT (regression) ==========
 
     /**
-     * Regression: controlsExcel() called ->getEmail() on the ?string returned
-     * by Control::getResponsiblePerson() — a fatal error as soon as a control
-     * had a responsible person.
+     * Regression: controlsExcel() must list the responsible person's name and
+     * cope with a control that has none.
      */
     #[Test]
     public function testControlsExcelListsResponsiblePerson(): void
@@ -292,14 +291,12 @@ class ReportControllerTest extends WebTestCase
         $control->setControlId('RPT-' . uniqid())->setName('Report regression control')
             ->setDescription('d')->setCategory('Organisational controls')
             ->setApplicable(true)->setControlType('preventive')
-            ->setTenant($this->testTenant)
-            ->setResponsiblePerson('Erika Legacy');
+            ->setTenant($this->testTenant);
         $withUser = new \App\Entity\Control();
         $withUser->setControlId('RPT-' . uniqid())->setName('Report regression control 2')
             ->setDescription('d')->setCategory('Organisational controls')
             ->setApplicable(true)->setControlType('preventive')
             ->setTenant($this->testTenant)
-            ->setResponsiblePerson('stale text')
             ->setResponsiblePersonUser($this->adminUser);
         $this->entityManager->persist($control);
         $this->entityManager->persist($withUser);
@@ -311,17 +308,14 @@ class ReportControllerTest extends WebTestCase
             $this->assertResponseIsSuccessful();
 
             $cells = $this->readXlsxCells($this->client->getResponse()->getContent());
-            $this->assertContains('Erika Legacy', $cells);
             $this->assertContains($this->adminUser->getFullName(), $cells);
-            $this->assertNotContains('stale text', $cells);
         } finally {
             $this->removeEntities(\App\Entity\Control::class, [$control->getId(), $withUser->getId()]);
         }
     }
 
     /**
-     * Regression: incidentsExcel() called ->getEmail() on the ?string returned
-     * by Incident::getReportedBy().
+     * Regression: incidentsExcel() lists the reporter's name.
      */
     #[Test]
     public function testIncidentsExcelListsReporter(): void
@@ -332,7 +326,7 @@ class ReportControllerTest extends WebTestCase
             ->setSeverity(\App\Enum\IncidentSeverity::Medium)
             ->setStatus(\App\Enum\IncidentStatus::Reported)
             ->setTenant($this->testTenant)
-            ->setReportedBy('Rudi Reporter');
+            ->setReportedByUser($this->adminUser);
         $this->entityManager->persist($incident);
         $this->entityManager->flush();
 
@@ -341,7 +335,7 @@ class ReportControllerTest extends WebTestCase
             $this->client->request('GET', '/en/reports/incidents/excel');
             $this->assertResponseIsSuccessful();
 
-            $this->assertContains('Rudi Reporter', $this->readXlsxCells($this->client->getResponse()->getContent()));
+            $this->assertContains($this->adminUser->getFullName(), $this->readXlsxCells($this->client->getResponse()->getContent()));
         } finally {
             $this->removeEntities(\App\Entity\Incident::class, [$incident->getId()]);
         }

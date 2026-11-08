@@ -68,11 +68,6 @@ final class TrainingTypeTest extends KernelTestCase
         self::assertStringContainsString("'user_field'         => 'trainerUser',", $source);
         self::assertStringContainsString("'person_field'       => 'trainerPerson',", $source);
         self::assertStringContainsString("'deputies_field'     => 'trainerDeputyPersons',", $source);
-        self::assertStringContainsString(
-            "'legacy_field'       => 'trainer',",
-            $source,
-            'Legacy free-text `trainer` must remain wired as read-only Migration-Hint.'
-        );
     }
 
     #[Test]
@@ -110,7 +105,7 @@ final class TrainingTypeTest extends KernelTestCase
         self::assertStringNotContainsString(
             "->add('trainer', TextType::class",
             $source,
-            'trainer legacy field must be wired exclusively via addOwnerPicker.'
+            'the old free-text trainer field stays removed.'
         );
     }
 

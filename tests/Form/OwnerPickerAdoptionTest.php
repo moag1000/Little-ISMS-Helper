@@ -42,28 +42,27 @@ final class OwnerPickerAdoptionTest extends KernelTestCase
     #[Test]
     public function assetFormExposesOwnerCluster(): void
     {
-        self::assertFalse($this->formFactory->create(AssetType::class, new Asset(), ['csrf_protection' => false])->has('owner'), 'empty legacy "owner" is hidden');
-        $form = $this->formFactory->create(AssetType::class, (new Asset())->setOwner('Team alt'), [
+        $form = $this->formFactory->create(AssetType::class, (new Asset()), [
             'csrf_protection' => false,
         ]);
 
         self::assertTrue($form->has('ownerUser'));
         self::assertTrue($form->has('ownerPerson'));
         self::assertTrue($form->has('ownerDeputyPersons'));
-        self::assertTrue($form->has('owner'), 'a filled legacy "owner" stays visible');
+        self::assertFalse($form->has('owner'), 'no free-text owner field');
     }
 
     #[Test]
     public function businessProcessFormExposesProcessOwnerCluster(): void
     {
-        $form = $this->formFactory->create(BusinessProcessType::class, (new BusinessProcess())->setProcessOwner('Team alt'), [
+        $form = $this->formFactory->create(BusinessProcessType::class, (new BusinessProcess()), [
             'csrf_protection' => false,
         ]);
 
         self::assertTrue($form->has('processOwnerUser'));
         self::assertTrue($form->has('processOwnerPerson'));
         self::assertTrue($form->has('processOwnerDeputyPersons'));
-        self::assertTrue($form->has('processOwner'), 'BP keeps legacy free-text "processOwner"');
+        self::assertFalse($form->has('processOwner'), 'no free-text processOwner field');
     }
 
     #[Test]
@@ -98,7 +97,7 @@ final class OwnerPickerAdoptionTest extends KernelTestCase
     #[Test]
     public function incidentFormExposesReportedByClusterPlusResponsiblePerson(): void
     {
-        $form = $this->formFactory->create(IncidentType::class, (new Incident())->setReportedBy('Team alt'), [
+        $form = $this->formFactory->create(IncidentType::class, (new Incident()), [
             'csrf_protection' => false,
         ]);
 
@@ -106,7 +105,7 @@ final class OwnerPickerAdoptionTest extends KernelTestCase
         self::assertTrue($form->has('reportedByUser'));
         self::assertTrue($form->has('reportedByPerson'));
         self::assertTrue($form->has('reportedByDeputyPersons'));
-        self::assertTrue($form->has('reportedBy'), 'Incident keeps legacy free-text "reportedBy"');
+        self::assertFalse($form->has('reportedBy'), 'no free-text reportedBy field');
 
         // ResponsiblePerson stays separate (Governance, different role).
         self::assertTrue($form->has('responsiblePerson'));

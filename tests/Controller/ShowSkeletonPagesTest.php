@@ -64,7 +64,6 @@ final class ShowSkeletonPagesTest extends WebTestCase
         $asset = (new Asset())
             ->setName('Kundenportal ' . $this->uid)
             ->setAssetType('application')
-            ->setOwner('Team Web')
             ->setDescription('Skeleton fixture.')
             ->setTenant($this->tenant)
             ->setConfidentialityValue(4)
@@ -106,7 +105,6 @@ final class ShowSkeletonPagesTest extends WebTestCase
         $incident->setCategory('security');
         $incident->setStatus(IncidentStatus::Reported);
         $incident->setSeverity(IncidentSeverity::High);
-        $incident->setReportedBy('show@example.com');
         $incident->setIncidentNumber('INC-SK-' . $this->uid);
         $incident->addAffectedAsset($asset);
         $incident->addRealizedRisk($risk);
@@ -116,7 +114,6 @@ final class ShowSkeletonPagesTest extends WebTestCase
         $supplier->setTenant($this->tenant);
         $supplier->setName('Hoster ' . $this->uid);
         $supplier->setEmail('hoster_' . $this->uid . '@example.com');
-        $supplier->setContactPerson('Hoster Kontakt');
         $supplier->setCriticality('high');
         $supplier->setServiceProvided('Hosting Kundenportal');
         $supplier->addSupportedAsset($asset);

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Restore;
 
 use App\Doctrine\EntityManagerRecovery;
+use App\Service\Owner\LegacyOwnerColumns;
+use App\Service\Owner\OwnerTextResolver;
 use App\Service\Supplier\SubcontractorChainRows;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -42,6 +44,7 @@ class RestoreEntityWriter
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
+        private readonly ?OwnerTextResolver $ownerTexts = null,
     ) {
     }
 
@@ -350,6 +353,8 @@ class RestoreEntityWriter
                     $entity, $data, $classMetadata, $propertyAccessor, $entityName
                 );
 
+                $this->restoreLegacyOwnerText($entity, $entityName, $data);
+
                 $this->entityManager->persist($entity);
 
                 if ($existingEntity !== null) {
@@ -607,6 +612,29 @@ class RestoreEntityWriter
         if ($inserted > 0) {
             $m2mStats['subcontractorChain'] = ['pivot' => 'dora_subcontractor (P5)', 'tuples' => $inserted, 'inserted' => $inserted];
         }
+    }
+
+    /**
+     * A backup written before the free-text owner columns were dropped still
+     * carries the owner as text ("owner": "Max Muster"). It becomes the User or
+     * Person it names in the record's organisation, else a new Person — the same
+     * rule the column-drop migration applied. A record whose User or Person slot
+     * is already set keeps it.
+     *
+     * @param array<string, mixed> $data
+     */
+    private function restoreLegacyOwnerText(object $entity, string $entityName, array $data): void
+    {
+        $slot = LegacyOwnerColumns::FIELDS[$entityName] ?? null;
+        if ($slot === null || $this->ownerTexts === null || !method_exists($entity, 'getTenant')) {
+            return;
+        }
+        [$key, $userProperty, $personProperty] = $slot;
+        $text = $data[$key] ?? null;
+        if (!is_string($text) || trim($text) === '') {
+            return;
+        }
+        $this->ownerTexts->assign($entity, $userProperty, $personProperty, $entity->getTenant(), $text);
     }
 
     /**

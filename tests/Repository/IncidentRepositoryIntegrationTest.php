@@ -240,7 +240,6 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
         $incident->setSeverity(\App\Enum\IncidentSeverity::from($severity));
         $statusValue = $status === 'investigating' ? 'in_investigation' : ($status === 'new' ? 'reported' : ($status === 'open' ? 'reported' : $status));
         $incident->setStatus(\App\Enum\IncidentStatus::from($statusValue));
-        $incident->setReportedBy('Integration Test');
         $incident->setDetectedAt(new DateTimeImmutable());
         $incident->setDataBreachOccurred(false);
         $incident->setNotificationRequired(false);
@@ -280,7 +279,6 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
         $incident->setCategory($category);
         $incident->setSeverity(\App\Enum\IncidentSeverity::from($severity));
         $incident->setStatus($statusEnum);
-        $incident->setReportedBy('Integration Test');
         $incident->setDetectedAt(new DateTimeImmutable());
         $incident->setDataBreachOccurred(false);
         $incident->setNotificationRequired(false);

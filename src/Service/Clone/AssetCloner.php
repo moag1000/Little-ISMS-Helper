@@ -77,7 +77,8 @@ final class AssetCloner implements EntityClonerInterface
         $clone->setDescription($source->getDescription());
         $clone->setAssetType($source->getAssetType());
         $clone->setSubType($source->getSubType());
-        $clone->setOwner($source->getOwner());
+        $clone->setOwnerUser($source->getOwnerUser());
+        $clone->setOwnerPerson($source->getOwnerPerson());
         $clone->setPhysicalLocation($source->getPhysicalLocation());
         $clone->setLocation($source->getLocation());
         $clone->setAcquisitionValue($source->getAcquisitionValue());

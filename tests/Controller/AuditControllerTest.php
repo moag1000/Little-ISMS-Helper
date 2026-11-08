@@ -155,7 +155,7 @@ class AuditControllerTest extends WebTestCase
         $this->testAudit->setScopeType('full_isms');
         $this->testAudit->setStatus('planned');
         $this->testAudit->setPlannedDate(new DateTime('2025-12-01'));
-        $this->testAudit->setLeadAuditor('Lead Auditor Name');
+        $this->testAudit->setLeadAuditorUser($this->testUser);
         $this->testAudit->setTenant($this->testTenant);
         $this->entityManager->persist($this->testAudit);
 
@@ -318,7 +318,7 @@ class AuditControllerTest extends WebTestCase
             'internal_audit[scopeType]' => 'full_isms',
             'internal_audit[status]' => 'planned',
             'internal_audit[plannedDate]' => '2025-12-15',
-            'internal_audit[leadAuditor]' => 'Test Lead Auditor',
+            'internal_audit[leadAuditorUser]' => (string) $this->testUser->getId(),
         ]);
 
         // CRITICAL: Re-login immediately before form submission to maintain authentication
@@ -704,7 +704,7 @@ class AuditControllerTest extends WebTestCase
         $audit2->setScopeType('full_isms');
         $audit2->setStatus('planned');
         $audit2->setPlannedDate(new DateTime('2025-12-15'));
-        $audit2->setLeadAuditor('Test Lead Auditor');
+        $audit2->setLeadAuditorUser($this->testUser);
         $audit2->setTenant($this->testTenant);
         $this->entityManager->persist($audit2);
         $this->entityManager->flush();

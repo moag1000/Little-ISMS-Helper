@@ -52,6 +52,10 @@ Pragmatisches XML-Schema (`gstool_xml_v1`) für die Implementierung. Echte GSTOO
 </gstool-export>
 ```
 
+`<verantwortlich>` wird zum Eigentümer des Assets: der passende Benutzer der
+Organisation (E-Mail oder Name), sonst die Person dieses Namens, sonst eine neue
+Person (Personen-Verzeichnis).
+
 ### Schutzbedarf-Mapping (BSI 200-2 4-stufig → Tool 5-stufige Skala)
 
 GSTOOL nutzt 3-stufig (oft 4-stufig erweitert), BSI 200-2 4-stufig. Tool intern 1–5. Mapping ist verlustfrei in eine Richtung:

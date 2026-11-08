@@ -203,7 +203,6 @@ class Bsi2004ExerciseLogServiceTest extends TestCase
         $exercise->setScenario($scenario);
         $exercise->setTenant($this->tenant);
         $exercise->setScope('scope');
-        $exercise->setFacilitator('facilitator');
         return $exercise;
     }
 }

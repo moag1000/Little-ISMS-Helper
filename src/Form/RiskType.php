@@ -178,7 +178,6 @@ final class RiskType extends AbstractType implements SectionMapInterface
             'user_field'         => 'riskOwner',
             'person_field'       => 'riskOwnerPerson',
             'deputies_field'     => 'riskOwnerDeputyPersons',
-            'legacy_field'       => null,
             'translation_prefix' => 'risk',
             'user_label'         => 'risk.field.risk_owner',
             'user_placeholder'   => 'risk.placeholder.risk_owner',

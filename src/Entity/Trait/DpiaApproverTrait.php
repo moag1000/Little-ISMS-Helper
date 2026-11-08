@@ -93,7 +93,6 @@ trait DpiaApproverTrait
         return OwnerResolver::resolveEffective(
             $this->approver,
             $this->approverPerson,
-            null,
         );
     }
 
@@ -107,7 +106,6 @@ trait DpiaApproverTrait
         return OwnerResolver::resolveAll(
             $this->approver,
             $this->approverPerson,
-            null,
             $this->approverDeputyPersons,
         );
     }

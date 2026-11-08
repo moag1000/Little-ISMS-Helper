@@ -160,7 +160,6 @@ supplier:
         contact_person_user: 'Contact Person (User)'
         contact_person_ref: 'Contact Person (Person)'
         contact_deputies: 'Deputies'
-        contact_person_legacy: 'Contact Person (free text, legacy)'
     lksg_risk:
         low: 'Low'
         medium: 'Medium'

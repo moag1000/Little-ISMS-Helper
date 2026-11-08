@@ -2,14 +2,10 @@
 # Format: <relative-path>:<line>:<field-name>
 # Remove an entry once the field is migrated to an EntityType.
 src/Form/BCExerciseType.php:103:participants
-src/Form/BCExerciseType.php:125:facilitator
-src/Form/BCExerciseType.php:157:observers
+src/Form/BCExerciseType.php:150:observers
 src/Form/DataSubjectRequestType.php:76:dataSubjectEmail
-src/Form/IncidentType.php:224:affectedSystems
-src/Form/InterestedPartyType.php:93:contactPerson
-src/Form/InternalAuditType.php:182:leadAuditor
-src/Form/InternalAuditType.php:202:auditTeam
-src/Form/LocationType.php:116:country
-src/Form/SupplierType.php:95:contactPerson
-src/Form/SupplierType.php:395:countryOfHeadOffice
+src/Form/IncidentType.php:221:affectedSystems
+src/Form/InternalAuditType.php:192:auditTeam
+src/Form/LocationType.php:115:country
+src/Form/SupplierType.php:383:countryOfHeadOffice
 src/Form/TrainingType.php:150:participants

@@ -43,7 +43,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
             // AttendeeCount no longer in form
             // (derived from participantUsers / TrainingParticipation Collection).
             'audience'     => ['targetAudience', 'participantUsers', 'participants'],
-            'team'         => ['trainerUser', 'trainerPerson', 'trainerDeputyPersons', 'trainer'],
+            'team'         => ['trainerUser', 'trainerPerson', 'trainerDeputyPersons'],
             'verification' => ['status', 'mandatory', 'coveredControls', 'complianceRequirements'],
             // MaterialFiles (File-Upload) replaces
             // the verbose Freitext `materials` textarea on the canonical data path.
@@ -312,11 +312,9 @@ final class TrainingType extends AbstractType implements SectionMapInterface
             'user_field'         => 'trainerUser',
             'person_field'       => 'trainerPerson',
             'deputies_field'     => 'trainerDeputyPersons',
-            'legacy_field'       => 'trainer',
             'user_label'         => 'training.field.trainer',
             'person_label'       => 'training.field.trainer_person',
             'deputies_label'     => 'training.field.trainer_deputy_persons',
-            'legacy_label'       => 'training.field.trainer_legacy',
             'user_placeholder'   => 'training.placeholder.trainer_user',
             'person_placeholder' => 'training.placeholder.trainer_person',
             'user_help'          => 'training.help.trainer_user',
