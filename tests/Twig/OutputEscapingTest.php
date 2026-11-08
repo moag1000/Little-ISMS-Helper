@@ -44,7 +44,7 @@ final class OutputEscapingTest extends KernelTestCase
         yield 'fa_alert body' => ["{% import '_components/_fa_alert.html.twig' as c %}{{ c.render({ body: rec }) }}"];
         yield 'fa_alert embed' => ["{% embed '_components/_fa_alert.html.twig' with { props: { body: rec } } %}{% endembed %}"];
         yield 'alert message' => ["{% import '_components/_alert.html.twig' as c %}{{ c.render(rec, 'warning') }}"];
-        yield 'fa_modal message + sub' => ["{% import '_components/_fa_modal.html.twig' as c %}{{ c.confirm({ id: 'm', title: 'T', message: rec, sub: rec }) }}"];
+        yield 'fa_modal message + sub' => ["{% import '_components/_fa_modal.html.twig' as c %}{{ c.confirm({ id: 'm', title: 'T', confirmLabel: 'OK', message: rec, sub: rec }) }}"];
         yield 'fa_table header + cells' => ["{% import '_components/_fa_table.html.twig' as c %}{{ c.render({ headers: [{ label: rec }], rows: [[rec], { cells: [{ value: rec }] }] }) }}"];
         yield 'fa_section body' => ["{% import '_components/_fa_section.html.twig' as c %}{{ c.render({ title: 'T', body: rec, footer: rec, tools: rec }) }}"];
         yield 'fa_toast message' => ["{% import '_components/_fa_toast.html.twig' as c %}{{ c.render({ title: rec, message: rec }) }}"];

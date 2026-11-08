@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Twig;
 
 use PHPUnit\Framework\Attributes\Test;
+use Twig\Markup;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Twig\Environment;
 
@@ -131,7 +132,7 @@ final class FormLayoutMacroTest extends KernelTestCase
     public function rendersSectionBodyWhenProvided(): void
     {
         $config = $this->fullConfig();
-        $config['sections'][1]['body'] = '<input type="text" name="risk_probability" value="Hoch">';
+        $config['sections'][1]['body'] = new Markup('<input type="text" name="risk_probability" value="Hoch">', 'UTF-8');
 
         $output = $this->renderMacro($config);
 
@@ -158,7 +159,7 @@ final class FormLayoutMacroTest extends KernelTestCase
                     'status' => 'pending',
                     'fields' => 3,
                     'filled' => 0,
-                    'body'   => '<input type="text" name="email">',
+                    'body'   => new Markup('<input type="text" name="email">', 'UTF-8'),
                 ],
                 [
                     'id'     => 'sec-b',
@@ -166,7 +167,7 @@ final class FormLayoutMacroTest extends KernelTestCase
                     'status' => 'pending',
                     'fields' => 2,
                     'filled' => 0,
-                    'body'   => '<input type="text" name="phone">',
+                    'body'   => new Markup('<input type="text" name="phone">', 'UTF-8'),
                 ],
             ],
         ];
@@ -194,7 +195,7 @@ final class FormLayoutMacroTest extends KernelTestCase
     {
         $config = $this->fullConfig();
         // sec-1 is status=done; add a body so we can assert it appears
-        $config['sections'][0]['body'] = '<input type="text" name="done_field">';
+        $config['sections'][0]['body'] = new Markup('<input type="text" name="done_field">', 'UTF-8');
 
         $output = $this->renderMacro($config);
 
