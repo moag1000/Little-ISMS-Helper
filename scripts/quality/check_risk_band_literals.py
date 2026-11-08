@@ -41,15 +41,21 @@ TWIG_CALLS = {"risk_level_band": 2, "risk_threshold": 2, "risk_bands": 1}
 PHP_CALL = re.compile(r"RiskMatrixThresholds::(" + "|".join(PHP_CALLS) + r")\s*\(")
 TWIG_CALL = re.compile(r"(?<![\w.])(" + "|".join(TWIG_CALLS) + r")\s*\(")
 
-SCAN = [("src", "*.php"), ("templates", "*.twig"), ("assets/controllers", "*.js")]
+SCAN = [("src", "*.php"), ("templates", "*.twig"), ("assets", "*.js")]
 SKIP = {"src/Risk/RiskMatrixThresholds.php"}
 
 # A risk-score-ish operand, then a comparison with a literal band edge.
+OPERAND = (r"(?:risk_?score|riskscore|risklevel|risk_level|inherentrisk|residualrisk|inherent|residual"
+           r"|\bscore\b|probability\s*\*\s*\w*\.?impact|\$level\b|\blevel\b)")
+# One line break inside the window is fine (`$score\n    >= 20`).
+GAP = r"(?:[^;\n{}]|\n(?!\s*\n)){0,40}?"
 PATTERN = re.compile(
-    r"(?i)(risk_?score|riskscore|risklevel|risk_level|inherentrisk|residualrisk|inherent|residual"
-    r"|\bscore\b|probability\s*\*\s*\w*\.?impact|\$level\b|\blevel\b)"
-    r"[^;\n{}]{0,40}?(>=|<=|>|<)\s*(20|12|6)\b(?![\d.]|\s*%(?!}))"
+    r"(?i)(" + OPERAND + r")" + GAP + r"(>=|<=|>|<)\s*(20|12|6)\b(?![\d.]|\s*%(?!}))"
+    # Yoda order: `20 <= $score`
+    r"|(?<![\w.$])(20|12|6)\s*(<=|<|>=|>)\s*" + GAP + OPERAND
 )
+# `private const HIGH_MIN = 12;` in a risk file: an own scale the organisation cannot change.
+BAND_CONST = re.compile(r"\bconst\s+(?:int\s+)?(?!\w*CIA)\w*(?:CRITICAL|HIGH|MEDIUM)\w*\s*=\s*(?:[2-9]|1\d|2[0-5])\s*;", re.I)
 
 
 def normalise(line: str) -> str:
@@ -61,14 +67,18 @@ def scan() -> list[tuple[str, int, str]]:
     for base, glob in SCAN:
         for path in sorted((ROOT / base).rglob(glob)):
             rel = path.relative_to(ROOT).as_posix()
-            if rel in SKIP:
+            if rel in SKIP or "vendor" in path.parts:
                 continue
-            for no, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
-                stripped = line.strip()
-                if stripped.startswith(("//", "*", "#", "/*", "{#")):
-                    continue
-                if PATTERN.search(line):
-                    hits.append((rel, no, normalise(line)))
+            lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+            code = [("" if ln.strip().startswith(("//", "*", "#", "/*", "{#")) else ln) for ln in lines]
+            text = "\n".join(code)
+            # The line of the comparison operator (a match may start one line above it).
+            found = {text.count("\n", 0, m.start(2) if m.group(2) else m.start(5)) + 1
+                     for m in PATTERN.finditer(text)}
+            if glob == "*.php" and re.search(r"risk", text, re.I):
+                found |= {text.count("\n", 0, m.start()) + 1 for m in BAND_CONST.finditer(text)}
+            for no in sorted(found):
+                hits.append((rel, no, normalise(lines[no - 1])))
     return hits
 
 
@@ -107,6 +117,32 @@ def count_args(text: str, open_pos: int) -> int | None:
     return None
 
 
+def split_args(text: str, open_pos: int) -> list[str]:
+    """Top-level argument texts of the call whose '(' is at open_pos."""
+    depth, quote, start, out = 0, "", open_pos + 1, []
+    for i in range(open_pos, len(text)):
+        ch = text[i]
+        if quote:
+            if ch == quote and text[i - 1] != "\\":
+                quote = ""
+        elif ch in "'\"":
+            quote = ch
+        elif ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+            if depth == 0:
+                out.append(text[start:i].strip())
+                return [a for a in out if a]
+        elif ch == "," and depth == 1:
+            out.append(text[start:i].strip())
+            start = i + 1
+    return []
+
+
+NULL_ARG = re.compile(r"^\\?(?:null|none)$|\|\s*default\(\s*(?:null|none)\s*\)$", re.I)
+
+
 def strip_comments(text: str, twig: bool) -> str:
     """Blank out comments, keeping line numbers."""
     blank = lambda m: re.sub(r"[^\n]", " ", m.group(0))  # noqa: E731
@@ -131,9 +167,14 @@ def scan_without_tenant() -> list[tuple[str, int, str]]:
                 if glob == "*.php" and re.search(r"function\s+$", text[max(0, m.start() - 20):m.start()]):
                     continue
                 n = count_args(text, m.end() - 1)
+                line = text.count("\n", 0, m.start()) + 1
                 if n is not None and n < needs[m.group(1)]:
-                    line = text.count("\n", 0, m.start()) + 1
                     hits.append((rel, line, m.group(1)))
+                elif n is not None:
+                    # The organisation argument is there but literally null: same defaults / viewer's scale.
+                    args = split_args(text, m.end() - 1)
+                    if len(args) >= needs[m.group(1)] and NULL_ARG.search(args[needs[m.group(1)] - 1]):
+                        hits.append((rel, line, m.group(1)))
     return hits
 
 

@@ -31,7 +31,10 @@ OPT_OUT = "@job-access-ok:"
 
 ACTION = re.compile(r"\n    public function (\w+)\(([^)]*)\)")
 ROUTE = re.compile(r"#\[Route\(")
-JOB_READ = re.compile(r"(?:jobStatusService|jobStatus|jobs)\s*->\s*(?:read|exists|delete)\(\s*\$(\w+)")
+# Every JobStatusService method that takes a job id (read, delete, but also markFailed / updatePayload ...).
+JOB_METHODS = r"(?:read|exists|delete|mark\w+|heartbeat|update\w+)"
+RECEIVER_DECL = re.compile(r"JobStatusService\s+\$(\w+)")
+ARG = re.compile(r"\$(\w+)")
 GUARD = re.compile(r"#\[IsGranted\(\s*(?:\\?App\\Security\\Voter\\)?AsyncJobVoter::ACCESS\s*,\s*subject:\s*'(\w+)'")
 
 
@@ -46,6 +49,23 @@ def actions(text: str) -> list[tuple[str, str, str, int]]:
         found.append((m.group(1), attributes, text[m.start():end], text.count("\n", 0, m.start()) + 2))
     return found
 
+
+
+def job_id_variables(text: str, body: str) -> set[str]:
+    """Variables an action passes to a JobStatusService method that takes a job id."""
+    # The service may sit in any property / local alias, not just `$jobStatusService`.
+    receivers = set(RECEIVER_DECL.findall(text)) | {"jobStatusService", "jobStatus", "jobs"}
+    for alias in re.findall(r"\$(\w+)\s*=\s*\$this->(?:" + "|".join(map(re.escape, receivers)) + r")\b", body):
+        receivers.add(alias)
+    call = re.compile(r"(?:" + "|".join(map(re.escape, receivers)) + r")\s*->\s*" + JOB_METHODS + r"\(")
+    used: set[str] = set()
+    for m in call.finditer(body):
+        depth, i = 1, m.end()
+        while i < len(body) and depth:  # the whole argument list: `(string) $id`, `id: $id`, `trim($id)`
+            depth += {"(": 1, ")": -1}.get(body[i], 0)
+            i += 1
+        used.update(ARG.findall(body[m.end():i]))
+    return used
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -64,7 +84,7 @@ def main() -> int:
             if not ROUTE.search(attributes):
                 continue
             signature = body.split("{", 1)[0]
-            for variable in set(JOB_READ.findall(body)):
+            for variable in job_id_variables(text, body):
                 if f"${variable}" not in signature:
                     continue  # not a route argument (an id from the session, …)
                 checked += 1

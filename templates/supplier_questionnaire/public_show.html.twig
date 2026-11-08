@@ -3,7 +3,7 @@
 {% block title %}{{ questionnaire.title }}{% endblock %}
 
 {% block body %}
-<main class="container py-5" style="max-width: 760px;">
+<div class="container py-5" style="max-width: 760px;">
     <h1 class="h3 mb-1">{{ questionnaire.title }}</h1>
     <p class="text-body-secondary mb-4">{{ 'supplier.questionnaire.public.intro'|trans({}, 'suppliers') }}</p>
 
@@ -25,5 +25,5 @@
             </button>
         </form>
     {% endif %}
-</main>
+</div>
 {% endblock %}

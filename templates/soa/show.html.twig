@@ -483,6 +483,8 @@
     </a>
 </div>
 
+{% include '_components/_fa_show_history.html.twig' with { entity: control } only %}
+
 {# V4 LB-4: Comment-Thread adoption (C7 macro). #}
 <div id="comments" class="fa-show-section">
 {% include '_components/_isms_comment_thread.html.twig' with {

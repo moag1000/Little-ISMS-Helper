@@ -9,6 +9,7 @@ use App\AlvaHint\AlvaHint;
 use App\Entity\Asset;
 use App\Entity\Risk;
 use App\Entity\User;
+use App\Risk\RiskMatrixThresholds;
 
 /**
  * Tier-2 hint: ISO 27001 Cl. 8.2 / A.5.9 — assets linked to high
@@ -18,8 +19,6 @@ use App\Entity\User;
  */
 final class CriticalityMissingOnHighRiskAssetRule extends AbstractAlvaHintRule
 {
-    private const int HIGH_RISK_THRESHOLD = 12;
-
     public function key(): string
     {
         return 'asset.criticality_missing_high_risk';
@@ -55,7 +54,7 @@ final class CriticalityMissingOnHighRiskAssetRule extends AbstractAlvaHintRule
             if (!$risk instanceof Risk) {
                 continue;
             }
-            if ($risk->getInherentRiskLevel() >= self::HIGH_RISK_THRESHOLD) {
+            if ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::highMin($risk->getTenant())) {
                 return true;
             }
         }

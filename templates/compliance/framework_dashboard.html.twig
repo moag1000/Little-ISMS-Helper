@@ -55,12 +55,14 @@
                         <br>{{ 'compliance_wizard.delta.glossary.baseline_framework'|trans({}, 'compliance_wizard') }}
                     </p>
                 {% else %}
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" disabled
-                            data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="{{ 'compliance_wizard.delta.action.baseline_required'|trans({}, 'compliance_wizard') }}">
-                        <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
-                        {{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}
-                    </button>
+                    <span class="d-inline-block" tabindex="0"
+                          data-bs-toggle="tooltip" data-bs-placement="top"
+                          title="{{ 'compliance_wizard.delta.action.baseline_required'|trans({}, 'compliance_wizard') }}">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" disabled>
+                            <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
+                            {{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}
+                        </button>
+                    </span>
                 {% endif %}
             {% endif %}
         </div>
@@ -97,7 +99,7 @@
             <p class="text-muted">{{ 'compliance.framework_dashboard.compliance_steps'|trans({}, 'compliance') }}</p>
         </div>
         <div class="workflow-steps">
-            <div class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}"
+            <div tabindex="0" class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'common.tooltip.framework_loaded_success'|trans({}, 'messages') }}">
                 <div class="step-icon">{% if dashboard.statistics.total > 0 %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}<span class="step-number">1</span>{% endif %}</div>
@@ -107,7 +109,7 @@
                 </div>
             </div>
 
-            <div class="workflow-step {% if dashboard.statistics.applicable > 0 %}active{% endif %} {% if dashboard.statistics.applicable == dashboard.statistics.total %}completed{% endif %}"
+            <div tabindex="0" class="workflow-step {% if dashboard.statistics.applicable > 0 %}active{% endif %} {% if dashboard.statistics.applicable == dashboard.statistics.total %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'compliance.dashboard.tooltip.review_requirements'|trans({}, 'compliance') }}">
                 <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.applicable > 0 %}<i class="fa-icon fa-icon--ui-refresh text-info" aria-hidden="true"></i>{% else %}<span class="step-number">2</span>{% endif %}{% endif %}</div>
@@ -124,7 +126,7 @@
                 </div>
             </div>
 
-            <div class="workflow-step {% if dashboard.statistics.fulfilled > 0 %}active{% endif %} {% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}completed{% endif %}"
+            <div tabindex="0" class="workflow-step {% if dashboard.statistics.fulfilled > 0 %}active{% endif %} {% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'compliance.dashboard.tooltip.implement_requirements'|trans({}, 'compliance') }}">
                 <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.fulfilled > 0 %}<i class="fa-icon fa-icon--ui-refresh text-info" aria-hidden="true"></i>{% else %}<span class="step-number">3</span>{% endif %}{% endif %}</div>
@@ -141,7 +143,7 @@
                 </div>
             </div>
 
-            <div class="workflow-step {% if dashboard.compliance_percentage >= 75 %}active{% endif %} {% if dashboard.compliance_percentage == 100 %}completed{% endif %}"
+            <div tabindex="0" class="workflow-step {% if dashboard.compliance_percentage >= 75 %}active{% endif %} {% if dashboard.compliance_percentage == 100 %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'common.tooltip.reach_100_percent'|trans({}, 'messages') }}">
                 <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}{% if dashboard.compliance_percentage >= 75 %}<i class="fa-icon fa-icon--ui-refresh text-info" aria-hidden="true"></i>{% else %}<span class="step-number">4</span>{% endif %}{% endif %}</div>

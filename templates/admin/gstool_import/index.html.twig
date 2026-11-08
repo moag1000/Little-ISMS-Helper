@@ -280,7 +280,7 @@
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ r.inherent_impact ?? '—' }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">
                                         {% if r.inherent_risk_score %}
-                                            {{ pill.render(r.inherent_risk_score, pill_tone_severity(risk_level_band(r.inherent_risk_score, scaleTenant|default(null))), {size: 'sm'}) }}
+                                            {{ pill.render(r.inherent_risk_score, pill_tone_severity(risk_level_band(r.inherent_risk_score, scaleTenant)), {size: 'sm'}) }}
                                         {% else %}–{% endif %}
                                     </td>
                                     <td class="fa-table__cell">

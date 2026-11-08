@@ -177,10 +177,10 @@ src/Controller/ComplianceMappingController.php:591
 src/Controller/ComplianceRequirementController.php:180
 src/Controller/ComplianceRequirementController.php:181
 src/Controller/ComplianceRequirementController.php:342
-src/Controller/ComplianceRequirementController.php:389
-src/Controller/ComplianceRequirementController.php:390
-src/Controller/ComplianceRequirementController.php:503
-src/Controller/ComplianceRequirementController.php:506
+src/Controller/ComplianceRequirementController.php:393
+src/Controller/ComplianceRequirementController.php:394
+src/Controller/ComplianceRequirementController.php:507
+src/Controller/ComplianceRequirementController.php:510
 src/Controller/ComplianceWizardController.php:449
 src/Controller/ComplianceWizardController.php:641
 src/Controller/ComplianceWizardController.php:642

@@ -286,10 +286,7 @@ risk:
     risk_owner_person: 'Person ohne System-Login als Risikoverantwortlichen wählen. Reihenfolge&#58; User &gt; Person.'
     risk_owner_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
       Behandlungsmaßnahmen
-    acceptance_approved_by: Person, die das Restrisiko formal akzeptiert hat (erforderlich
-      für Risikoakzeptanz)
-    acceptance_approved_at: Datum der formalen Risikoakzeptanz durch die verantwortliche
-      Person
+    acceptance_set_by_workflow: Wird von der Risikoakzeptanz-Freigabe gesetzt (ISO 27005), nicht von Hand.
     acceptance_expiry_date: 'ISO 27001 Kl. 8.3 — Datum, bis zu dem die Risikoakzeptanz gilt. Danach muss neu bewertet werden. Pflicht laut Audit, sonst gilt die Akzeptanz als unbefristet (Audit-Mangel).'
     review_date: Datum der nächsten geplanten Risikoüberprüfung
     likelihood_justification: 'ISO 27001:2022 Kl. 6.1.2.d — Begründen Sie, warum diese Eintrittswahrscheinlichkeit vergeben wurde (auditpflichtiger Nachweis).'

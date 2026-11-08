@@ -41,24 +41,46 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TPL = ROOT / "templates"
 
+def _both(src: str) -> str:
+    """Pattern source for the double-quoted attribute form plus the single-quoted one (class='btn btn-primary')."""
+    sq = src.replace("[\\s\\']", "@@").replace('"', "'").replace("@@", '[\\s"]')
+    return src + "|" + sq
+
+
+# Twig hash passed to a macro: {class: 'btn btn-primary'} / {'class': "btn btn-danger"}.
+_HASH_CLASS = r"""['"]?class['"]?\s*:\s*['"](?:[^'"]*\s)?"""
+
 PATTERNS: dict[str, re.Pattern[str]] = {
-    "raw_table": re.compile(r'<table\b[^>]*\bclass="(?:[^"]*\s)?table(?:\s[^"]*)?"'),
-    "bs_progress": re.compile(r'class="(?:[^"]*\s)?progress-bar(?:\s[^"]*)?"'),
+    "raw_table": re.compile(_both(r'<table\b[^>]*\bclass="(?:[^"]*\s)?table(?:\s[^"]*)?"')),
+    "bs_progress": re.compile(_both(r'class="(?:[^"]*\s)?progress-bar(?:\s[^"]*)?"')),
     "legacy_page_header": re.compile(r"_components/_page_header\.html\.twig"),
-    "bs_modal": re.compile(r'data-bs-toggle="modal"|bootstrap\.Modal\b'),
+    "bs_modal": re.compile(
+        r"""data-bs-toggle\s*=\s*["']modal["']|bootstrap\.Modal\b|['"]?data-bs-toggle['"]?\s*:\s*['"]modal['"]"""
+    ),
     # The class may sit inside a Twig ternary ('badge bg-x') and the tone may be computed
     # (bg-{{ tone }}), so a quote counts as a boundary and "{{" as a tone.
-    "bs_badge": re.compile(r'class="(?:[^"]*[\s\'])?badge\s(?:[^"]*\s)?(?:text-)?bg-(?:[a-z]|\{\{)'),
+    "bs_badge": re.compile(_both(r'class="(?:[^"]*[\s\'])?badge\s(?:[^"]*\s)?(?:text-)?bg-(?:[a-z]|\{\{)')),
     # Any element whose class list contains the bare word "badge" (or "badge-{{ … }}"): the
     # tone is computed in Twig so bs_badge misses it. "badges", "badge-matrix-zero" and a project
     # class like "timeline-action badge-{{ x }}" do not match.
     "bs_badge_literal": re.compile(r"""class=["'](?:(?:[^"']*\s)?badge[\s"']|badge-\{\{)"""),
-    "bs_alert": re.compile(r'class="(?:[^"]*[\s\'])?alert\s(?:[^"]*\s)?alert-(?:[a-z]|\{\{)'),
-    "bs_btn": re.compile(r'class="(?:[^"]*[\s\'])?btn\s(?:[^"]*\s)?btn-(?:[a-z]|\{\{)'),
+    # Also the reversed order (class="alert-danger alert") and the macro-hash form.
+    "bs_alert": re.compile(
+        _both(r'class="(?:[^"]*[\s\'])?alert\s(?:[^"]*\s)?alert-(?:[a-z]|\{\{)')
+        + "|" + _both(r'class="(?:[^"]*\s)?alert-(?:[a-z]|\{\{)[^"]*\salert[\s"]')
+        + "|" + _HASH_CLASS + r"alert\s(?:[^'\"]*\s)?alert-[a-z]"
+    ),
+    "bs_btn": re.compile(
+        _both(r'class="(?:[^"]*[\s\'])?btn\s(?:[^"]*\s)?btn-(?:[a-z]|\{\{)')
+        + "|" + _both(r'class="(?:[^"]*\s)?btn-(?:[a-z]|\{\{)[^"]*\sbtn[\s"]')
+        + "|" + _HASH_CLASS + r"btn\s(?:[^'\"]*\s)?btn-[a-z]"
+    ),
 }
 
 SKIP_DIRS = ("dev", "emails", "pdf")
-SKIP_NAME_PARTS = ("pdf", "_export", "export_")
+# Only documents that are really print/PDF output: "pdf" as a word of the file name. A bare substring
+# test ("_export", "export_") also exempted UI such as _export_bar.html.twig.
+SKIP_NAME = re.compile(r"(?:^|[_.\-])pdf(?:[_.\-]|$)|export_pdf")
 SKIP_FILES = {
     "_components/_page_header.html.twig",
     "_components/_badge.html.twig",
@@ -69,6 +91,8 @@ SKIP_FILES = {
     "quick_fix/job_progress.html.twig",
     # Stand-alone printable HTML documents with their own <style> (.badge-success etc. are local).
     "soa/export.html.twig",
+    # Stand-alone BfDI print document with its own <style> (renamed from the "export_" filename skip).
+    "processing_activity/vvt_bfdi_export.html.twig",
 }
 
 RE_TWIG_COMMENT = re.compile(r"\{#.*?#\}", re.DOTALL)
@@ -79,7 +103,7 @@ def skipped(rel: str) -> bool:
     if parts[0] in SKIP_DIRS or "pdf" in parts[:-1] or rel in SKIP_FILES:
         return True
     name = parts[-1]
-    return any(p in name for p in SKIP_NAME_PARTS)
+    return bool(SKIP_NAME.search(name))
 
 
 def scan() -> Counter[str]:

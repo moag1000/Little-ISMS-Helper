@@ -266,10 +266,15 @@ management named on a task marks it done); the voter has checked the
 assignment.
 
 **Permanent check:** `tests/Service/Deadline/DeadlineLinkReachabilityTest.php`
-takes every source's `link()` route and the roles of `responsibleOf()` (plus a
-plain user and top management as record holders) and fails when the route's
-`#[IsGranted]`, `/admin` prefix or the read-only rule shuts one of them out. A
-new source whose link the reminded person cannot open fails CI.
+runs end to end (since T, wave 7): for every source it creates an organisation
+with only the source's modules (`requiredModule()`, `module:` in
+`deadline_types.yaml`), one account per role of `responsibleOf()` plus a plain
+user and top management as record holders, and a record that
+`ResponsibilityResolver::recipients()` really sends to that account. It then
+opens the source's link as that account, follows redirects, and fails on any
+answer other than 200 or a landing on dashboard, login, MFA or setup. A source
+with a duty but no page (DORA TLPT) is listed in `WITHOUT_LINK` with the reason.
+A new source whose link the reminded person cannot open fails CI.
 
 Two duties live here because nothing else carried them:
 `RiskAcceptanceRequestSource` (a requested risk acceptance, to the approval

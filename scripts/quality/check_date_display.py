@@ -32,7 +32,7 @@ TEMPLATES = ROOT / "templates"
 
 def counts() -> dict[str, int]:
     out: dict[str, int] = {}
-    for p in sorted(TEMPLATES.rglob("*.html.twig")):
+    for p in sorted(TEMPLATES.rglob("*.twig")):
         n = sum(1 for _ in display_dates(p.read_text(encoding="utf-8")))
         if n:
             out[str(p.relative_to(ROOT))] = n

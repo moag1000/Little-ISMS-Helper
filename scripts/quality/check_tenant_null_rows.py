@@ -34,12 +34,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 
+# "own OR global" in every spelling: DQL/SQL string (any case, parentheses, tenant_id, IDENTITY(x.tenant)),
+# QueryBuilder `->orWhere('x.tenant IS NULL')` and `orX(…, $expr->isNull('x.tenant'))`.
 SHARED_OR_NULL = re.compile(
-    r"(\w+)\.tenant\s*=\s*:\w+\s+OR\s+\1\.tenant\s+IS\s+NULL"
-    r"|(\w+)\.tenant\s+IS\s+NULL\s+OR\s+\2\.tenant\s*=\s*:\w+",
-    re.I,
+    r"(?:IDENTITY\(\s*)?(\w+)\.tenant(?:_id)?\s*\)?\s*=\s*:\w+[\s)]+OR[\s(]+(?:IDENTITY\(\s*)?\1\.tenant(?:_id)?\s*\)?\s+IS\s+NULL"
+    r"|(?:IDENTITY\(\s*)?(\w+)\.tenant(?:_id)?\s*\)?\s+IS\s+NULL[\s)]+OR[\s(]+(?:IDENTITY\(\s*)?\2\.tenant(?:_id)?\s*\)?\s*=\s*:\w+"
+    r"|orWhere\(\s*['\"]\w+\.tenant\s+IS\s+NULL"
+    r"|orX\([^;]*?isNull\(\s*['\"]\w+\.tenant['\"]",
+    re.I | re.S,
 )
-SKIP_NEW = ("/Entity/", "/Command/", "/DataFixtures/", "/Restore/", "/Migrations/")
+# Code that is not run: tenant calls named in comments do not count.
+RE_COMMENTS = re.compile(r"/\*.*?\*/|(?<![:\"'])//[^\n]*", re.S)
+# Not application code that creates records for a request (entities, console, fixtures, restore, migrations).
+SKIP_NEW = ("src/Entity/", "src/Command/", "src/DataFixtures/", "src/Service/Restore/", "src/Migrations/")
+# `new Risk()`, `new Risk;`, `new \\App\\Entity\\Risk()`
+NEW_CLASS = re.compile(r"\bnew\s+\\?(?:\w+\\)*(\w+)\s*[(;]")
+ASSIGNED_NEW = re.compile(r"(\$\w+(?:->\w+)?)\s*=\s*new\s+\\?(?:\w+\\)*(\w+)\s*[(;]")
 
 
 def entity_classes() -> tuple[set[str], set[str]]:
@@ -84,13 +94,22 @@ def find() -> list[str]:
             if entity is None or entity not in shared:
                 found.append(f"{rel}::shared-query::{entity or 'unknown-entity'}")
 
-        if any(part in f"/{rel}" for part in SKIP_NEW):
+        if rel.startswith(SKIP_NEW):
             continue
-        for method, body in method_bodies(text):
-            if "setTenant(" in body:
-                continue
-            for cls in sorted(set(re.findall(r"new (\w+)\(", body))):
-                if cls in owned:
+        for method, body in method_bodies(RE_COMMENTS.sub("", text)):
+            # per variable: `$a = new Risk(); $b = new Asset(); $a->setTenant()` leaves $b without tenant
+            assigned = {}
+            for var, cls in ASSIGNED_NEW.findall(body):
+                assigned.setdefault(cls, []).append(var)
+            for cls in sorted(set(NEW_CLASS.findall(body))):
+                if cls not in owned:
+                    continue
+                vars_ = assigned.get(cls, [])
+                if vars_:
+                    ok = all(re.search(re.escape(v) + r"(?!\w)[^;]*?->\s*setTenant\(", body) for v in vars_)
+                else:
+                    ok = "setTenant(" in body
+                if not ok:
                     found.append(f"{rel}::new-no-tenant::{method}::{cls}")
     return sorted(set(found))
 

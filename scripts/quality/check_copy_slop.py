@@ -28,18 +28,23 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 
+# "no '!' anywhere in UI text" (CLAUDE.md): not only at the end or before a capital letter.
+EXCLAMATION = re.compile(r"!")
+
 RULES = {
     "de": [
-        ("erfolgreich", re.compile(r"\berfolgreich\b", re.I)),
-        ("exclamation", re.compile(r"!\s*$|!\s+[A-ZÄÖÜ]")),
-        ("filler", re.compile(r"\b(ganz einfach|kinderleicht|nahtlos|mit nur einem Klick|leistungsstark|Gute Arbeit)\b", re.I)),
+        # inflected forms too (erfolgreiche Speicherung, mit erfolgreichem Abschluss)
+        ("erfolgreich", re.compile(r"\berfolgreich\w*", re.I)),
+        ("exclamation", EXCLAMATION),
+        ("filler", re.compile(r"\b(ganz einfach|kinderleicht\w*|nahtlos\w*|mit nur einem Klick|leistungsstark\w*|Gute Arbeit)\b", re.I)),
     ],
     "en": [
         ("successfully", re.compile(r"\bsuccessful(ly)?\b", re.I)),
-        ("exclamation", re.compile(r"!\s*$|!\s+[A-Z]")),
-        ("filler", re.compile(r"\b(seamless(ly)?|effortless(ly)?|with just one click|Great job)\b", re.I)),
+        ("exclamation", EXCLAMATION),
+        ("filler", re.compile(r"\b(seamless\w*|effortless\w*|with just one click|Great job)\b", re.I)),
     ],
 }
+TITLE_SUFFIX = re.compile(r"""Little[\s\u00a0]+ISMS|ISMS[\s\u00a0]+Helper|['"]app\.title['"]""", re.I)
 TITLE_BLOCK = re.compile(r"{%-?\s*block title\s*-?%}(.*?){%-?\s*endblock", re.S)
 
 
@@ -47,6 +52,9 @@ def flatten(node, prefix=""):
     if isinstance(node, dict):
         for k, v in node.items():
             yield from flatten(v, f"{prefix}.{k}" if prefix else str(k))
+    elif isinstance(node, list):
+        for i, v in enumerate(node):
+            yield from flatten(v, f"{prefix}.{i}")
     elif isinstance(node, str):
         yield prefix, node
 
@@ -54,10 +62,11 @@ def flatten(node, prefix=""):
 def find() -> list[str]:
     found: list[str] = []
     for lang, rules in RULES.items():
-        for path in sorted((ROOT / "translations").glob(f"*.{lang}.yaml")):
+        for path in sorted((ROOT / "translations").rglob(f"*.{lang}.y*ml")):
             data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
             rel = path.relative_to(ROOT).as_posix()
-            policy_text = path.name.startswith("policy_")
+            # Policy-template bodies live in policy_<norm>.yaml; policy_wizard is UI.
+            policy_text = path.name.startswith("policy_") and not path.name.startswith("policy_wizard.")
             for key, value in flatten(data):
                 # Policy-template bodies are document content, not UI copy.
                 if policy_text and key.startswith("policy."):
@@ -71,7 +80,7 @@ def find() -> list[str]:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         for block in TITLE_BLOCK.findall(text):
-            if "Little ISMS Helper" in block or "'app.title'" in block:
+            if TITLE_SUFFIX.search(block):
                 found.append(f"{path.relative_to(ROOT).as_posix()}  [title-suffix]")
                 break
     return found

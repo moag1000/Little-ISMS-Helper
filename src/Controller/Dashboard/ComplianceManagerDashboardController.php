@@ -12,6 +12,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ComplianceAnalyticsService;
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
@@ -51,6 +52,7 @@ class ComplianceManagerDashboardController extends AbstractController
         private readonly RoleDashboardService $roleDashboardService,
         private readonly TisaxMaturityAssessmentService $tisaxAssessment,
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly FulfillmentRuleEngine $fulfillmentRuleEngine,
     ) {
     }
 
@@ -181,6 +183,7 @@ class ComplianceManagerDashboardController extends AbstractController
         $allRequirements = [];
         $coveredRequirements = [];
         $gapRequirements = [];
+        $controlsByRequirement = [];
 
         if ($framework !== null) {
             // Top-level only — sub-requirements roll up via their parent and must
@@ -195,7 +198,9 @@ class ComplianceManagerDashboardController extends AbstractController
                 $allRequirements[] = $req;
 
                 // Determine covered vs gap based on mapped controls
-                $mappedControls = $req->getMappedControls();
+                // The organisation's controls only (never the global requirement's collection).
+                $mappedControls = $tenant === null ? [] : $this->fulfillmentRuleEngine->controlsFor($req, $tenant);
+                $controlsByRequirement[(int) $req->getId()] = $mappedControls;
                 $hasCoveredControl = false;
                 foreach ($mappedControls as $control) {
                     $implStatus = $control->getImplementationStatus();
@@ -244,6 +249,7 @@ class ComplianceManagerDashboardController extends AbstractController
             'covered'              => $coveredRequirements,
             'gaps'                 => $gapRequirements,
             'all_requirements'     => $allRequirements,
+            'controls_by_requirement' => $controlsByRequirement,
             'open_findings'        => $openFindings,
         ]);
     }

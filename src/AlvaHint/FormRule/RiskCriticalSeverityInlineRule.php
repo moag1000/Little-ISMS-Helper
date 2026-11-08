@@ -7,6 +7,7 @@ namespace App\AlvaHint\FormRule;
 use App\AlvaHint\AlvaFormHint;
 use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
+use App\Risk\RiskMatrixThresholds;
 
 /**
  * reference rule — Form-Step-Inline-Hint.
@@ -23,16 +24,6 @@ use App\Entity\User;
  */
 final class RiskCriticalSeverityInlineRule implements AlvaHintFormRuleInterface
 {
-    /**
-     * Critical-risk threshold on the standard 5x5 matrix. 20 = e.g.
-     * Probability 4 x Impact 5 or Probability 5 x Impact 4 — see
-     * {@see \App\Service\Risk\RiskMatrixThresholds} for the canonical
-     * SoT (we copy the constant value rather than import to keep the
-     * rule's dependency surface tiny and unit-testable without the full
-     * thresholds service).
-     */
-    private const int CRITICAL_THRESHOLD = 20;
-
     public function key(): string
     {
         return 'risk.form.critical_severity_needs_board_approval';
@@ -65,7 +56,7 @@ final class RiskCriticalSeverityInlineRule implements AlvaHintFormRuleInterface
             return false;
         }
 
-        return ($probability * $impact) >= self::CRITICAL_THRESHOLD;
+        return ($probability * $impact) >= RiskMatrixThresholds::criticalMin($user->getTenant());
     }
 
     public function evaluate(array $payload, User $user): AlvaFormHint

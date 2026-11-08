@@ -16,19 +16,26 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CALL = re.compile(r"(?:->|::)(?:orderBy|addOrderBy)\([^;]*?,\s*['\"](?:ASC|DESC)['\"]\s*\)", re.IGNORECASE)
-ATTRIBUTE = re.compile(r"#\[ORM\\OrderBy\(\[[^\]]*=>\s*['\"](?:ASC|DESC)['\"]", re.IGNORECASE)
+# Matched on the whole file (calls and attributes may span lines). A literal string or Criteria::ASC/DESC
+# (which is the same string) as the direction.
+DIRECTION = r"(?:['\"](?:ASC|DESC)['\"]|(?:\\?Doctrine\\Common\\Collections\\)?Criteria::(?:ASC|DESC)\b)"
+CALL = re.compile(r"(?:->|::)(?:orderBy|addOrderBy)\([^;]*?,\s*" + DIRECTION + r"\s*\)", re.IGNORECASE | re.DOTALL)
+ATTRIBUTE = re.compile(r"#\[(?:\\?Doctrine\\ORM\\Mapping\\|ORM\\)?OrderBy\(\s*\[[^\]]*=>\s*" + DIRECTION, re.IGNORECASE | re.DOTALL)
 
 
 def main() -> int:
     quiet = "--quiet" in sys.argv
     findings: list[str] = []
     for path in sorted((ROOT / "src").rglob("*.php")):
-        for no, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
-            if "@dbal-order" in line:
-                continue
-            if CALL.search(line) or ATTRIBUTE.search(line):
-                findings.append(f"{path.relative_to(ROOT)}:{no}: {line.strip()}")
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        lines = text.splitlines()
+        for pattern in (CALL, ATTRIBUTE):
+            for m in pattern.finditer(text):
+                first = text.count("\n", 0, m.start()) + 1
+                last = text.count("\n", 0, m.end()) + 1
+                if any("@dbal-order" in lines[i - 1] for i in range(first, last + 1)):
+                    continue
+                findings.append(f"{path.relative_to(ROOT)}:{first}: {lines[first - 1].strip()}")
 
     if findings:
         for finding in findings:

@@ -69,14 +69,18 @@ final class WizardReferencesHitCatalogueTest extends KernelTestCase
             self::assertNotSame([], $ids, "loader for $code loads no requirement");
 
             foreach ($checks as $key => $refs) {
-                $checked++;
-                if (!$this->hitsOne($refs, $code, $ids)) {
-                    $misses[] = sprintf('%s → %s (%s)', $key, implode(', ', $refs), $code);
+                // Every reference on its own: one hit must not cover a mistyped second one
+                // (T, wave 7 — "4.2 / 4.3x" passed because 4.2 hit).
+                foreach ($refs as $ref) {
+                    $checked++;
+                    if (!$this->hits($ref, $code, $ids)) {
+                        $misses[] = sprintf('%s → %s (%s)', $key, $ref, $code);
+                    }
                 }
             }
         }
 
-        self::assertGreaterThan(50, $checked, 'ISO 27001, NIS-2 and DORA alone have more referenced checks');
+        self::assertGreaterThan(80, $checked, 'ISO 27001, NIS-2 and DORA alone have more check references');
         self::assertSame([], $misses, "Wizard checks whose clause/article matches no requirement of the loaded catalogue.\n"
             . "Fix the reference, or name the catalogue rows in the check's `requirements`:\n" . implode("\n", $misses));
     }
@@ -109,7 +113,8 @@ final class WizardReferencesHitCatalogueTest extends KernelTestCase
     }
 
     /**
-     * Data checks with at least one reference naming a requirement (two or more levels, or `requirements`).
+     * Data checks with at least one reference naming a requirement (two or more levels, or `requirements`),
+     * including the sub-checks a `clause_coverage` check runs (ISO 4.4 over clauses 4–10).
      *
      * @param array<string, mixed> $categories
      * @return array<string, list<string>> check key → references
@@ -119,13 +124,25 @@ final class WizardReferencesHitCatalogueTest extends KernelTestCase
         $checks = [];
         foreach ($categories as $categoryKey => $category) {
             $categoryRef = (string) ($category['clause'] ?? $category['article'] ?? '');
+            $flat = [];
             foreach ((array) ($category['checks'] ?? []) as $checkKey => $check) {
-                if (!is_array($check) || ($check['type'] ?? 'manual') === 'manual') {
+                $flat[$checkKey] = $check;
+                if (is_array($check) && ($check['type'] ?? '') === 'clause_coverage') {
+                    foreach ((array) ($check['checks'] ?? []) as $subKey => $sub) {
+                        $flat[$checkKey . '>' . $subKey] = $sub;
+                    }
+                }
+            }
+            foreach ($flat as $checkKey => $check) {
+                if (!is_array($check) || in_array($check['type'] ?? 'manual', ['manual', 'clause_coverage'], true) && !isset($check['requirements'])) {
                     continue;
                 }
+                // With `requirements` the exact rows answer and the clause is the label: each row must exist.
+                $named = isset($check['requirements']);
                 $refs = array_values(array_filter(
                     RecordCheckRule::referencesOfCheck($check, $categoryRef),
-                    static fn (string $ref): bool => str_starts_with($ref, RecordCheckRule::REQUIREMENT_ID_PREFIX) || str_contains($ref, '.'),
+                    static fn (string $ref): bool => str_starts_with($ref, RecordCheckRule::REQUIREMENT_ID_PREFIX)
+                        || (!$named && str_contains($ref, '.')),
                 ));
                 if ($refs !== []) {
                     $checks[$wizardKey . '.' . $categoryKey . '.' . $checkKey] = $refs;
@@ -149,17 +166,12 @@ final class WizardReferencesHitCatalogueTest extends KernelTestCase
             ->getSingleColumnResult());
     }
 
-    /**
-     * @param list<string> $refs
-     * @param list<string> $ids
-     */
-    private function hitsOne(array $refs, string $code, array $ids): bool
+    /** @param list<string> $ids */
+    private function hits(string $ref, string $code, array $ids): bool
     {
-        foreach ($refs as $ref) {
-            foreach ($ids as $id) {
-                if (RecordCheckRule::matches($ref, $code, $id)) {
-                    return true;
-                }
+        foreach ($ids as $id) {
+            if (RecordCheckRule::matches($ref, $code, $id)) {
+                return true;
             }
         }
 

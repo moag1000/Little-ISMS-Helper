@@ -16,6 +16,7 @@ belong in a summary line of chips, the tiles on a dashboard.
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -41,6 +42,32 @@ def not_lists() -> set[str]:
     return out
 
 
+RE_COMMENT = re.compile(r"\{#.*?#\}", re.S)
+# Every way a KPI tile gets onto a page: the feature-card macro, the KPI tile macro, the legacy classes.
+TILE = re.compile(r"_fa_feature_card|_kpi_tile|fa-feature-card|\bkpi-card\b|variant\s*:\s*['\"]kpi['\"]")
+INCLUDED = re.compile(r"""['"]([\w/.-]+\.twig)['"]""")
+
+
+def code(text: str) -> str:
+    """Template text without {# comments #} (a comment naming the skeleton is not using it)."""
+    return RE_COMMENT.sub("", text)
+
+
+def has_tiles(text: str, seen: frozenset[str] = frozenset(), depth: int = 0) -> bool:
+    """KPI tiles in the page itself or in a partial it includes (two levels deep)."""
+    if TILE.search(text):
+        return True
+    if depth >= 2:
+        return False
+    for ref in INCLUDED.findall(text):
+        part = TEMPLATES / ref
+        # page-local partials only; shared components/macros mention tiles in their own docs
+        if ref not in seen and not ref.startswith(("_components/", "_macros/")) and part.is_file():
+            if has_tiles(code(part.read_text(encoding="utf-8")), seen | {ref}, depth + 1):
+                return True
+    return False
+
+
 def list_templates() -> list[Path]:
     out = []
     skip = not_lists()
@@ -63,10 +90,10 @@ def main() -> int:
     migrated = 0
     for p in list_templates():
         rel = str(p.relative_to(ROOT))
-        text = p.read_text(encoding="utf-8")
+        text = code(p.read_text(encoding="utf-8"))
         if SKELETON in text:
             migrated += 1
-            if "_fa_feature_card" in text:
+            if has_tiles(text):
                 tiles.append(rel)
         else:
             unmigrated.append(rel)

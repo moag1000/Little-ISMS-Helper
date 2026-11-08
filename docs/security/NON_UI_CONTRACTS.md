@@ -40,7 +40,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Prüferrollen bekommen kein schreibendes Token; Lese-Token schreiben nirgends (405) | `ApiTokenBoundaryTest::aReviewerGetsNoWritingToken`, `ApiTokenReadOnlyTest` |
 | Mitglieder einer deaktivierten Organisation kommen weder per Passwort, SSO noch Token hinein (`UserChecker::refusal()`; Super-Admin ausgenommen) | `tests/Security/UserCheckerOrganisationTest` |
 | Fehlgeschlagene Token-Anmeldungen sind je IP gedrosselt (20 in 10 Minuten, dann 429 ohne Datenbankabfrage); das API-Limit gilt auch für `/api.json` u. ä. | `tests/Security/ApiTokenFailureThrottleTest`, `tests/EventSubscriber/RateLimiterWiringTest` |
-| Ausgehende Anfragen an URLs, die eine Person eingibt (Geocoder, OIDC-Discovery/JWKS/Token, Webhook), laufen nur über `App\Http\UserUrlHttpClient`: keine privaten/internen Adressen (auch nach DNS), keine Weiterleitungen; kein anderer roher HTTP-Client in `src/` | `tests/Security/OutboundUserUrlClientTest` |
+| Ausgehende Anfragen an URLs, die eine Person eingibt (Geocoder, OIDC-Discovery/JWKS/Token, Webhook), laufen nur über `App\Http\UserUrlHttpClient`: keine privaten/internen Adressen (auch nach DNS), keine Weiterleitungen; kein anderer roher HTTP-Client in `src/` (auch kein Guzzle, PSR-18, curl, Socket, SOAP oder Web-Push-SDK) | `tests/Security/OutboundUserUrlClientTest` |
 | Web-Push: ein Abo nimmt nur https-Endpunkte der Browser-Push-Dienste an (`PushEndpointPolicy`); ein fremdes Abo übernimmt nur der Browser mit dessen Schlüsseln; Zustellung über `UserUrlHttpClient` (PSR-18), nie über den Client der Bibliothek | `tests/Security/WebPushEndpointTest` |
 | Hochgeladene Tabellen öffnet nur `SafeSpreadsheetReader`: Reader-Typ fest (xlsx/xls/ods nach Aufrufer), ZIP-Grenzen vor dem Entpacken, Lesefilter auf Zeilen und Spalten; kein `IOFactory::createReaderForFile()`/`load()` in `src/` | `tests/Security/SpreadsheetUploadReaderTest` |
 | Wer einen zweiten Faktor hat, erreicht ohne ihn keine Seite – über jeden Authenticator der Web-Firewall, „Angemeldet bleiben“, eine zweite Anmeldung in derselben Sitzung, die Neuanmeldung mit Passwort und eine Sitzung ohne Anmeldeereignis (fail closed). Der Zustand gehört zur Anmeldung und zur Person (`MfaSessionState`), das Remember-me-Cookie kommt erst nach dem Code und verfällt mit jedem neuen oder entfernten Gerät, `/setup` ist nach der Einrichtung zu, ein TOTP-Code zählt einmal | `tests/Security/Mfa/MfaLoginPathsTest` (neuer Authenticator ohne Entscheidung = rot), `tests/Security/Mfa/MfaBypassRegressionTest`, `MfaServiceTest::aTotpCodeCountsOnlyOnce`, Gate 91 |
@@ -64,11 +64,11 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Prüferrollen ändern nichts im Audit-Bereich außer Checkliste, Feststellungen, Arbeitsmappe und Berichtseinreichung; der AVV-Picker braucht Manager | `tests/EventSubscriber/ReadOnlyRoleSubscriberTest` |
 | Maschinenprotokolle (Krypto-Operationen, Zutrittslog) schreibt über die API nur ein Admin | `ApiTenantVoter::WRITE_ROLES`, `tests/Api/ApiWriteRoleParityTest` |
 | Freigabe- und Meldenachweise (`#[ApiReadOnlyEvidence]`) sind über die API nicht schreibbar | `ApiResourceContractTest::approvalEvidenceIsNotWritableOverTheApi` |
-| Ein API-schreibbares Feld, dessen Name nach Nachweis aussieht (`*At`, `*By`, `approved*`, `*Notified` …), ist markiert, steht im Formular oder ist mit Grund geprüft | `tests/Api/ApiEvidenceFieldNamesTest` |
+| Ein API-schreibbares Feld, dessen Name nach Nachweis aussieht (`*At`, `*By`, `approved*`, `*Notified` …), ist markiert oder mit Grund geprüft (auch Unterordner von `src/Entity`); ein markiertes Feld ist im Entity-Formular nicht frei editierbar (Ausnahmen mit Grund) | `tests/Api/ApiEvidenceFieldNamesTest` |
 | Ein Konstruktor-Vorgabewert passt zum Spaltentyp (sonst 500 beim Anlegen über REST/MCP ohne das Feld) | `tests/Contract/EntityDefaultsMatchColumnTypesTest` |
 | Jede Ressource nennt ihre Serialisierungsgruppen; keine Zugangsdaten (Passwort, MFA, Token, Schlüssel, SSO-Kennung) in einer Gruppe | `ApiResourceContractTest::everyResourceNamesItsSerializationGroups`, `…noCredentialIsInASerializationGroup` |
 | Modulfelder sind nur bei aktivem Modul schreibbar (auch Felder aus Traits), Modul-Ressourcen nur bei aktivem Modul erreichbar | Gate 89, `tests/Api/ApiRouteModuleGateTest` |
-| MCP schreibt nur mit Schreib-Token, Organisationsschalter und Nicht-Prüferrolle; jedes nicht lesende Tool ist als solches klassifiziert, und ein als lesend erklärtes Tool enthält keinen schreibenden Aufruf | `tests/Mcp/McpServerTest`, `tests/Mcp/McpToolClassificationTest`, `tests/Controller/McpControllerTest` |
+| MCP schreibt nur mit Schreib-Token, Organisationsschalter und Nicht-Prüferrolle; jedes nicht lesende Tool ist als solches klassifiziert, und ein als lesend erklärtes Tool enthält keinen schreibenden Aufruf und schreibt beim Aufruf nichts (Doctrine-Spion) | `tests/Mcp/McpServerTest`, `tests/Mcp/McpToolClassificationTest`, `tests/Mcp/McpReadOnlyToolsWriteNothingTest`, `tests/Controller/McpControllerTest` |
 | PUT ersetzt nicht, ausgelassene Felder behalten ihren Wert | `tests/Api/ApiPutSemanticsTest` |
 
 ## Wiederherstellung, globale Daten, Quick-Fix
@@ -107,5 +107,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Exporte und Downloads werden protokolliert; jeder Datenschutz-Export (VVT, DSFA, Datenpanne, Betroffenenanfrage, Einwilligung, Behörden-VVT) trägt dieselbe Regel `PrivacyExportAccess::RULE` (DSB oder Manager) | `DownloadAuditSubscriber`, `tests/Security/PrivacyExportAccessTest` (findet die Routen selbst) |
 
 Gegenprobe: mit abgeschaltetem Organisationsfilter (`TenantFilter`) werden 25 der Vertragstests rot; die Tests prüfen außerdem, dass der eigene Datensatz in Liste und Suche auftaucht, damit eine leere Antwort nicht als Erfolg zählt.
+
+Mutationsgegenprobe aller Dauertests und Gates (T, Welle 7): `scripts/README.md` § Mutationsgegenprobe.
 
 Selbsttests der Gates 84, 85, 89 und 90: `scripts/quality/tests/test_s6_contract_gates.py`.
