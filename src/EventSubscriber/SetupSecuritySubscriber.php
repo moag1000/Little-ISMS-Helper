@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * Security Policy:
  * - Before setup completion: /setup is PUBLIC
- * - After setup completion: /setup requires ROLE_ADMIN
+ * - After setup completion: /setup requires ROLE_SUPER_ADMIN (organisation admins: 403)
  *
  * This prevents unauthorized access to the setup wizard after initial configuration.
  *
@@ -70,10 +70,9 @@ final class SetupSecuritySubscriber
         // Setup is complete - check authentication and authorization
         $user = $this->security->getUser();
         $isAuthenticated = $user instanceof UserInterface;
-        $roles = $isAuthenticated ? $user->getRoles() : [];
+        $isSuperAdmin = $isAuthenticated && $this->security->isGranted('ROLE_SUPER_ADMIN');
 
-        // Check if user can access setup
-        if (!$this->setupAccessChecker->canAccessSetup($isAuthenticated, $roles)) {
+        if (!$this->setupAccessChecker->canAccessSetup($isAuthenticated, $isSuperAdmin)) {
             // User not authenticated or not admin - redirect to login
             if (!$isAuthenticated) {
                 $loginUrl = $this->urlGenerator->generate('app_login');
@@ -81,7 +80,7 @@ final class SetupSecuritySubscriber
             } else {
                 // User authenticated but not admin - show access denied
                 throw new AccessDeniedException(
-                    'Setup wizard is only accessible to administrators after initial setup completion.'
+                    'Setup wizard is only accessible to the super admin after initial setup completion.'
                 );
             }
         }

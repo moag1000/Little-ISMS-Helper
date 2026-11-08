@@ -37,8 +37,8 @@ class CertificateUploadServiceTest extends TestCase
     protected function tearDown(): void
     {
         // Clean up the isolated upload dir.
-        if (is_dir($this->uploadDir . '/public/uploads/documents')) {
-            foreach (glob($this->uploadDir . '/public/uploads/documents/*') ?: [] as $f) {
+        if (is_dir($this->uploadDir . '/var/uploads/documents')) {
+            foreach (glob($this->uploadDir . '/var/uploads/documents/*') ?: [] as $f) {
                 @unlink($f);
             }
         }
@@ -135,6 +135,6 @@ class CertificateUploadServiceTest extends TestCase
         self::assertContains($cert, $persisted);
 
         // The file actually landed in the isolated upload dir.
-        self::assertFileExists($this->uploadDir . '/public/uploads/documents/safe-cert-name.pdf');
+        self::assertFileExists($this->uploadDir . '/var/uploads/documents/safe-cert-name.pdf');
     }
 }

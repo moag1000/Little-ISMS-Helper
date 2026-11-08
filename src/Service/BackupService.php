@@ -6,6 +6,7 @@ namespace App\Service;
 
 use DateTime;
 use App\Entity\Tenant;
+use App\Service\Upload\ProtectedUploads;
 use App\Entity\UserSession;
 use DateTimeInterface;
 use Composer\InstalledVersions;
@@ -732,6 +733,18 @@ class BackupService
      * preview, restore, delete): created and uploaded backups in all formats
      * (.zip with files, .json.gz, .json, legacy .gz), no path, no sidecar.
      */
+    /**
+     * The entity names a restore may write: exactly what createBackup() writes. Anything
+     * else in a backup file (ApiToken, ObligationNotice, a made-up name) is foreign to the
+     * format and is dropped by RestoreService — a restore must never plant credentials.
+     *
+     * @return list<string>
+     */
+    public static function restorableEntityNames(): array
+    {
+        return [...self::PRODUCTIVE_ENTITIES, 'AuditLog', 'UserSession'];
+    }
+
     public static function isBackupFilename(string $filename): bool
     {
         return $filename === basename($filename)
@@ -1049,7 +1062,8 @@ class BackupService
     }
 
     /**
-     * Writes the files embedded in a ZIP backup to public/uploads/ — called by the restore
+     * Writes the files embedded in a ZIP backup — documents to var/uploads/documents, logos to
+     * public/uploads/<folder> — called by the restore
      * after the data has been committed, never by preview, validation or dry run.
      *
      * Only the folders a backup carries, only file types the upload check accepts, size
@@ -1078,6 +1092,8 @@ class BackupService
             return 0;
         }
         $uploadsBase = (string) realpath($uploadsDir) . '/';
+        $documentsDir = (new ProtectedUploads($this->projectDir))->directory(ProtectedUploads::DOCUMENTS);
+        $documentsBase = (string) realpath($documentsDir) . '/';
 
         $written = 0;
         $skipped = 0;
@@ -1103,13 +1119,16 @@ class BackupService
                 continue;
             }
 
-            $targetPath = $uploadsBase . $relativePath;
+            // Documents (and versions, stored as /uploads/documents/<file>) go outside the web root.
+            $isDocument = in_array($folder, ['documents', 'document_versions'], true);
+            $base = $isDocument ? $documentsBase : $uploadsBase;
+            $targetPath = $isDocument ? $base . basename($relativePath) : $base . $relativePath;
             $targetDir = dirname($targetPath);
             if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
                 $skipped++;
                 continue;
             }
-            if (!str_starts_with((string) realpath($targetDir) . '/', $uploadsBase)) {
+            if (!str_starts_with((string) realpath($targetDir) . '/', $base)) {
                 $skipped++;
                 continue;
             }
@@ -1187,9 +1206,12 @@ class BackupService
                 // Normalize: strip leading slash
                 $relativePath = ltrim((string) $relativePath, '/');
 
-                $absPath = $this->projectDir . '/public/' . $relativePath;
+                // Documents live below var/uploads (ProtectedUploads), logos below public/.
+                $absPath = in_array($entityName, ['Document', 'DocumentVersion'], true)
+                    ? (string) (new ProtectedUploads($this->projectDir))->resolve($relativePath)
+                    : $this->projectDir . '/public/' . $relativePath;
 
-                if (!file_exists($absPath) || !is_file($absPath)) {
+                if ($absPath === '' || !file_exists($absPath) || !is_file($absPath)) {
                     continue;
                 }
 

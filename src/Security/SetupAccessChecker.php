@@ -11,10 +11,18 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *
  * Security Model:
  * - Before setup: /setup routes are PUBLIC (no authentication required)
- * - After setup: /setup routes require ROLE_ADMIN (admin-only access)
+ * - After setup: /setup routes require ROLE_SUPER_ADMIN (the instance operator). An
+ *   organisation admin must not reach them: step 2 writes .env.local, step 3 restores
+ *   or empties the whole instance.
+ *
+ * Enforced twice: SetupSecuritySubscriber for every /setup path, and the class-level
+ * #[IsGranted(SetupAccessChecker::ACCESS)] on the wizard controllers (SetupAccessVoter).
  */
 class SetupAccessChecker
 {
+    /** Voter attribute for the setup wizard controllers ({@see \App\Security\Voter\SetupAccessVoter}). */
+    public const string ACCESS = 'SETUP_ACCESS';
+
     // Runtime state belongs under var/ (the writable, volume-persisted dir),
     // NOT config/ (committed code, lives in the image and is lost on every
     // container recreate — which made the setup wizard re-trigger after an
@@ -126,21 +134,16 @@ class SetupAccessChecker
      * Check if user can access setup routes.
      *
      * @param bool $isAuthenticated Whether user is authenticated
-     * @param array $roles User roles (if authenticated)
+     * @param bool $isSuperAdmin    isGranted('ROLE_SUPER_ADMIN') — via the role hierarchy, never a raw role list
      * @return bool True if access is allowed
      */
-    public function canAccessSetup(bool $isAuthenticated, array $roles = []): bool
+    public function canAccessSetup(bool $isAuthenticated, bool $isSuperAdmin = false): bool
     {
-        // If setup not complete, allow everyone
         if (!$this->isSetupComplete()) {
             return true;
         }
 
-        // If setup is complete, require ROLE_ADMIN
-        return $isAuthenticated && (
-            in_array('ROLE_ADMIN', $roles, true) ||
-            in_array('ROLE_SUPER_ADMIN', $roles, true)
-        );
+        return $isAuthenticated && $isSuperAdmin;
     }
 
     /**

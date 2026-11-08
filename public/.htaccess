@@ -70,6 +70,15 @@ DirectoryIndex index.php
     </IfModule>
 </IfModule>
 
+# Security: uploaded evidence is never served by the web server (S7). Documents and
+# training materials live in var/uploads/ and are delivered only by the download
+# actions (login, organisation check, audit log). Blocks files of old installations
+# that have not been moved yet. Plesk with "serve static files by nginx": add the nginx
+# rule from docs/deployment/DEPLOYMENT_PLESK.md (Schritt 2b).
+<IfModule mod_alias.c>
+    RedirectMatch 403 ^/uploads/(documents|document_versions|training-materials)/
+</IfModule>
+
 # Security: Deny access to .env files
 <FilesMatch "^\.env">
     Require all denied

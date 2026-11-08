@@ -185,7 +185,7 @@ class Training
      *   - `mimeType`
      *   - `size` (bytes)
      *   - `uploadedAt` (ISO-8601 string)
-     * Files live under `public/uploads/training-materials/`. Validation
+     * Files live under `var/uploads/training-materials/` (ProtectedUploads). Validation
      * flows through {@see FileUploadSecurityService::validateUploadedFile()}
      * (MIME / magic-byte / extension / size whitelist).
      *
@@ -549,7 +549,7 @@ public function __construct()
 
     /**
      * Append a single material-file metadata entry. Caller is responsible
-     * for moving the physical file to `public/uploads/training-materials/`
+     * for moving the physical file to `var/uploads/training-materials/` (ProtectedUploads)
      * and producing the metadata array.
      *
      * @param array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string} $entry

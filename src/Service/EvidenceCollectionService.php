@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Service\Upload\ProtectedUploads;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use App\Entity\Document;
@@ -70,7 +71,7 @@ final class EvidenceCollectionService
         $fileSize = $file->getSize();
 
         // Move file
-        $uploadDir = $this->projectDir . '/public/uploads/documents';
+        $uploadDir = (new ProtectedUploads($this->projectDir))->directory(ProtectedUploads::DOCUMENTS);
         $file->move($uploadDir, $safeFilename);
 
         // Compute hash

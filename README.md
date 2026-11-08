@@ -296,7 +296,9 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **API = Formular** -- REST und KI-Assistent (MCP) verlangen dieselbe Rolle wie das Formular, ignorieren Felder ausgeschalteter Module und schreiben keine Melde-, Abschluss- oder Freigabezeitpunkte (`#[ApiReadOnlyEvidence]`, Gate 89)
 - **Aufbewahrung** -- die Aufbewahrungs-Löschung entfernt nur Datensätze im Endzustand (entsorgt, geschlossen, archiviert); aktive bleiben stehen und werden gemeldet
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag
-- **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping (Organisations-Backup enthaelt auch die Organisations-Einstellungen), DR-Runbook
+- **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping (Organisations-Backup enthaelt auch die Organisations-Einstellungen), DR-Runbook; ein Restore schreibt nur, was eine Sicherung enthaelt (keine API-Tokens aus der Datei)
+- **Nachweise ausserhalb des Web-Roots** -- Dokumente, Versionen und Schulungsmaterial liegen unter `var/uploads/`, nur ueber den Download mit Rechtepruefung und Audit-Log erreichbar ([Plesk-Hinweis](docs/deployment/DEPLOYMENT_PLESK.md))
+- **Instanz-Betreiber** -- Setup-Assistent nach Abschluss und das Loeschen eines Compliance-Frameworks nur fuer `ROLE_SUPER_ADMIN`
 
 ### Persona-Dashboards und Workflow-Inbox
 
@@ -406,7 +408,7 @@ veroeffentlicht:
 docker run -d \
   --name little-isms-helper \
   -p 8080:80 \
-  -v isms_data:/var/lib/mysql \
+  -v isms_data:/var/www/html/var \
   -v isms_uploads:/var/www/html/public/uploads \
   moag2000/little-isms-helper:3.9.0
 
@@ -428,7 +430,8 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - isms_data:/var/lib/mysql
+      # var/ holds the embedded MariaDB and the uploaded evidence (var/uploads)
+      - isms_data:/var/www/html/var
       - isms_uploads:/var/www/html/public/uploads
     environment:
       - APP_ENV=prod

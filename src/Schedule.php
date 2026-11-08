@@ -51,6 +51,8 @@ class Schedule implements ScheduleProviderInterface
         ['30 2 * * *', 'app:backup:prune'],
         ['45 2 * * *', 'app:audit-log:cleanup'],
         ['0 3 * * *', 'app:four-eyes:cleanup-expired'],
+        // Evidence that still (or again) lies in public/uploads/ moves outside the web root.
+        ['10 4 * * *', 'app:uploads:protect'],
         ['15 3 * * *', 'app:policy-wizard:purge-sandboxes'],
         ['0 2 * * 0', 'app:tisax:purge-old-ip-addresses'],
         ['30 5 * * *', 'app:suggestions:generate'],

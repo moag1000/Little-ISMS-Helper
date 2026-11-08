@@ -61,6 +61,10 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Quick-Fix lässt geteilte Zeilen ohne Organisation in Ruhe | `tests/Controller/QuickFixControllerTest`, `tests/Service/DataIntegrity/OrphanFinderTest` |
 | Identitätswechsel nur auf Konten mit weniger Rechten | `tests/Security/Voter/SwitchUserVoterTest` |
 | Aufbewahrung löscht nur Datensätze im Endzustand | `tests/Service/RetentionEnforcementServiceTest` |
+| Der Setup-Assistent ist nach Abschluss nur für den Super-Admin erreichbar, auf jeder Aktion (`SetupAccessChecker::ACCESS`) | `tests/Security/InstanceOperatorOnlyTest`, `EvidenceOutsideWebRootTest::everySetupControllerCarriesTheClassLevelGate` |
+| Eine Wiederherstellung nimmt nur Entitäten des Sicherungsformats an (`BackupService::restorableEntityNames()`), fremde Namen wie `ApiToken` werden mit Warnung verworfen | `tests/Service/RestoreForeignEntityTest` |
+| Ein globales Framework löscht (Kaskade über alle Organisationen) nur der Super-Admin (`ADMIN_GLOBAL_OP`) | `tests/Security/InstanceOperatorOnlyTest` |
+| Nachweisdateien (Dokumente, Versionen, Schulungsmaterial) liegen unter `var/uploads`, nie unter `public/`; Download nur über eine voter-geprüfte, protokollierte Aktion | `tests/Service/Upload/ProtectedUploadsTest`, `tests/Controller/TrainingMaterialDownloadTest`, `tests/Security/EvidenceOutsideWebRootTest` |
 
 ## Exporte und abgeleitete Werte
 

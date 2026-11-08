@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Document;
 
+use App\Service\Upload\ProtectedUploads;
 use App\Entity\Document;
 use App\Entity\DocumentVersion;
 use App\Entity\User;
@@ -33,8 +34,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class DocumentFileReplacer
 {
-    private const string UPLOAD_DIR = '/public/uploads/documents';
-
     public function __construct(
         private readonly FileUploadSecurityService $fileUploadSecurityService,
         private readonly EvidenceVersioningService $versioningService,
@@ -104,7 +103,7 @@ class DocumentFileReplacer
 
         $version = $result['version'];
         try {
-            $file->move($this->projectDir . self::UPLOAD_DIR, $safeFilename);
+            $file->move((new ProtectedUploads($this->projectDir))->directory(ProtectedUploads::DOCUMENTS), $safeFilename);
         } catch (\Throwable $e) {
             $this->entityManager->remove($version);
             $this->entityManager->flush();
@@ -134,8 +133,8 @@ class DocumentFileReplacer
         if ($path === null || $path === '' || $tenant === null) {
             return;
         }
-        $absolute = $this->projectDir . '/public' . $path;
-        if (!is_file($absolute)) {
+        $absolute = (new ProtectedUploads($this->projectDir))->resolve($path);
+        if ($absolute === null) {
             return;
         }
 

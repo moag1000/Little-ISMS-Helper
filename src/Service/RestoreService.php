@@ -192,6 +192,7 @@ class RestoreService
             'total_records' => 0,
         ];
 
+        $this->dropNonRestorableEntities($backup);
         foreach ($backup['data'] as $entityName => $entities) {
             $entityClass = 'App\\Entity\\' . $entityName;
 
@@ -274,6 +275,10 @@ class RestoreService
             }
         }
 
+        // Only the entities a backup contains (BackupService::restorableEntityNames()):
+        // after the integrity check, which hashes the file as it was written.
+        $foreignEntityWarning = $this->dropNonRestorableEntities($backup);
+
         $targetScopeIds = $purger->resolveTenantScopeIds($targetTenantScope);
 
         // An organisation backup restored without a target scope (instance-wide restore,
@@ -285,7 +290,7 @@ class RestoreService
         }
 
         // Collect warnings that must survive the validateBackup() reset
-        $prependWarnings = array_filter([$integrityWarning]);
+        $prependWarnings = array_filter([$integrityWarning, $foreignEntityWarning]);
         if ($targetTenantScope !== null) {
             $backupScopeIds = $backup['metadata']['tenant_scope'] ?? [];
             if ($backupScopeIds !== [] && array_intersect($targetScopeIds, $backupScopeIds) === []) {
@@ -700,6 +705,31 @@ class RestoreService
     // ------------------------------------------------------------------
     // Public accessor methods
     // ------------------------------------------------------------------
+
+    /**
+     * Removes every entity name from $backup['data'] that a backup never contains.
+     *
+     * @return string|null warning naming the dropped entities, null when nothing was dropped
+     */
+    private function dropNonRestorableEntities(array &$backup): ?string
+    {
+        if (!isset($backup['data']) || !is_array($backup['data'])) {
+            return null;
+        }
+        $foreign = array_values(array_diff(array_keys($backup['data']), BackupService::restorableEntityNames()));
+        if ($foreign === []) {
+            return null;
+        }
+        foreach ($foreign as $entityName) {
+            unset($backup['data'][$entityName]);
+        }
+        $this->logger->warning('Restore: dropped entities a backup never contains', ['entities' => $foreign]);
+
+        return sprintf(
+            'Nicht wiederhergestellt (gehören nicht zum Sicherungsformat): %s',
+            implode(', ', array_map('strval', $foreign)),
+        );
+    }
 
     /**
      * Get validation errors

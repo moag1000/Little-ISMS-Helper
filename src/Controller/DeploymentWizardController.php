@@ -43,7 +43,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// After setup: super admin only, every action (SetupAccessVoter) — never a per-action guard call.
+#[IsGranted(SetupAccessChecker::ACCESS)]
 class DeploymentWizardController extends AbstractController
 {
     use DetachableResponseTrait;
@@ -64,7 +67,6 @@ class DeploymentWizardController extends AbstractController
         private readonly IncidentRepository $incidentRepository,
         private readonly FrameworkApplicabilityService $applicabilityService,
         private readonly SetupJobStatusService $setupJobStatusService,
-        private readonly \Symfony\Bundle\SecurityBundle\Security $security,
         private readonly SetupIndustryPresetService $industryPresetService,
         private readonly DatabaseProvisioner $databaseProvisioner,
         private readonly SetupConsoleRunner $setupConsoleRunner,
@@ -93,33 +95,6 @@ class DeploymentWizardController extends AbstractController
         return $this->redirectToRoute('setup_step0_welcome');
     }
 
-    /**
-     * Defense-in-Depth gegen Setup-Wizard-Hijack:
-     * Auch wenn der SetupSecuritySubscriber umgangen wuerde (z. B. neue
-     * Locale, Reverse-Proxy-Pfad-Manipulation), refused jeder Step-Handler
-     * die Bedienung wenn Setup bereits abgeschlossen ist und der Aufrufer
-     * kein Admin ist. Liefert dieselbe UX wie der Subscriber:
-     *   - Unauthenticated → Redirect Login
-     *   - Authenticated ohne ROLE_ADMIN → AccessDeniedException
-     * Aufruf am Anfang jeder Step-Action: $this->guardPostSetup() oder null.
-     */
-    private function guardPostSetup(): ?Response
-    {
-        if (!$this->setupAccessChecker->isSetupComplete()) {
-            return null;
-        }
-        $user = $this->security->getUser();
-        $roles = $user instanceof \Symfony\Component\Security\Core\User\UserInterface ? $user->getRoles() : [];
-        if (in_array('ROLE_ADMIN', $roles, true) || in_array('ROLE_SUPER_ADMIN', $roles, true)) {
-            return null;
-        }
-        if ($user === null) {
-            return $this->redirectToRoute('app_login');
-        }
-        throw $this->createAccessDeniedException(
-            'Setup wizard is only accessible to administrators after initial setup completion.'
-        );
-    }
     /**
      * Step 0: Welcome & Language Selection
      */
@@ -154,7 +129,6 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/step2-database-config', name: 'setup_step2_database_config', methods: ['GET', 'POST'])]
     public function step2DatabaseConfig(Request $request, SessionInterface $session): Response
     {
-        if ($guard = $this->guardPostSetup()) { return $guard; }
 
         // Check if system requirements are met (step 1)
         if (!$this->systemRequirementsChecker->isSystemReady()) {
@@ -458,7 +432,7 @@ class DeploymentWizardController extends AbstractController
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_create_schema', $token)) {
             return new \Symfony\Component\HttpFoundation\JsonResponse(
-                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error')],
+                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error', [], 'messages')],
                 400
             );
         }
@@ -924,7 +898,6 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/step4-admin-user', name: 'setup_step4_admin_user', methods: ['GET', 'POST'])]
     public function step4AdminUser(Request $request, SessionInterface $session, LoggerInterface $logger): Response
     {
-        if ($guard = $this->guardPostSetup()) { return $guard; }
 
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
@@ -1030,7 +1003,6 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/step5-email-config', name: 'setup_step5_email_config', methods: ['GET', 'POST'])]
     public function step5EmailConfig(Request $request, SessionInterface $session): Response
     {
-        if ($guard = $this->guardPostSetup()) { return $guard; }
 
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
@@ -1137,7 +1109,6 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/step6-organisation-info', name: 'setup_step6_organisation_info', methods: ['GET', 'POST'])]
     public function step6OrganisationInfo(Request $request, SessionInterface $session): Response
     {
-        if ($guard = $this->guardPostSetup()) { return $guard; }
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
             $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps', [], 'messages'));
@@ -1205,7 +1176,6 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/industry-preset', name: 'setup_industry_preset', methods: ['GET'])]
     public function industryPreset(SessionInterface $session): Response
     {
-        if ($guard = $this->guardPostSetup()) { return $guard; }
 
         // Same prerequisites as step7 — admin user must exist, requirements OK.
         if ($session->get('setup_backup_restored')) {
@@ -1234,7 +1204,6 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/industry-preset/apply', name: 'setup_industry_preset_apply', methods: ['POST'])]
     public function industryPresetApply(Request $request, SessionInterface $session): Response
     {
-        if ($guard = $this->guardPostSetup()) { return $guard; }
 
         $token = (string) $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_industry_preset', $token)) {
@@ -1515,7 +1484,7 @@ class DeploymentWizardController extends AbstractController
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_base_data', $token)) {
             return new \Symfony\Component\HttpFoundation\JsonResponse(
-                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error')],
+                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error', [], 'messages')],
                 400
             );
         }
@@ -1618,13 +1587,12 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/step10-sample-data/import', name: 'setup_step10_sample_data_import', methods: ['POST'])]
     public function step10SampleDataImport(Request $request, SessionInterface $session): Response
     {
-        if ($guard = $this->guardPostSetup()) { return $guard; }
 
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_sample_data', $token)) {
             return new \Symfony\Component\HttpFoundation\JsonResponse(
-                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error')],
+                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error', [], 'messages')],
                 400
             );
         }
