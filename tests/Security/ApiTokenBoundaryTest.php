@@ -107,6 +107,7 @@ final class ApiTokenBoundaryTest extends WebTestCase
         // Deactivate behind the ORM's back, so the token is still unrevoked:
         // the UserChecker alone has to refuse it.
         $this->em->getConnection()->executeStatement('UPDATE users SET is_active = 0 WHERE id = ?', [$this->user->getId()]);
+        $this->em->clear(); // the first request runs on this kernel: no stale User in the identity map
 
         $this->bearer('GET', '/api');
         self::assertResponseStatusCodeSame(401);
@@ -205,8 +206,9 @@ final class ApiTokenBoundaryTest extends WebTestCase
         $this->em->flush();
 
         $this->client->loginUser($auditor);
-        $this->client->request('GET', '/de/profile/api-tokens');
-        $csrf = static::getContainer()->get('security.csrf.token_manager')->getToken('api_token_create')->getValue();
+        $crawler = $this->client->request('GET', '/de/profile/api-tokens');
+        self::assertResponseIsSuccessful();
+        $csrf = (string) $crawler->filter('form[action$="/profile/api-tokens/create"] input[name="_token"]')->attr('value');
         $this->client->request('POST', '/de/profile/api-tokens/create', ['label' => 'Pruefer', 'can_write' => '1', '_token' => $csrf]);
 
         $tokens = static::getContainer()->get(ApiTokenRepository::class)->findBy(['user' => $auditor->getId()]);
