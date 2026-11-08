@@ -8,6 +8,8 @@ use App\Entity\MfaToken;
 use App\Entity\User;
 use App\EventSubscriber\MfaEnrollmentEnforcerSubscriber;
 use App\Repository\SystemSettingsRepository;
+use App\Security\Mfa\MfaSessionState;
+use App\Security\SetupAccessChecker;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -131,7 +133,10 @@ final class MfaEnrollmentEnforcerSubscriberTest extends TestCase
         $settings = $this->createMock(SystemSettingsRepository::class);
         $settings->method('getSetting')->willReturn($policyJson);
 
-        $subscriber = new MfaEnrollmentEnforcerSubscriber($security, $urlGenerator, $settings);
+        $setup = $this->createStub(SetupAccessChecker::class);
+        $setup->method('isSetupComplete')->willReturn(true);
+
+        $subscriber = new MfaEnrollmentEnforcerSubscriber($security, $urlGenerator, $settings, new MfaSessionState(), $setup);
 
         $request = Request::create($path);
         $request->setSession(new Session(new MockArraySessionStorage()));

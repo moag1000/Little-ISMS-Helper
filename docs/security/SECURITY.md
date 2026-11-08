@@ -115,7 +115,8 @@ bin/console debug:voter AssetVoter
   - Login: firewall `login_throttling` — 5 failed attempts per username+IP and 25 per IP
     in 15 minutes (form login, API token, SSO)
   - Re-authentication (password confirm): 5 attempts per user in 15 minutes
-  - MFA codes: 5 attempts per token in 15 minutes (TOTP and backup codes)
+  - MFA codes: 5 attempts per token in 15 minutes (TOTP and backup codes); a TOTP code is
+    accepted once (last accepted time step per token)
   - API and `/mcp`: 100 requests per minute per API token (else per user, else per IP);
     an MCP JSON-RPC batch counts each message, at most 20 per batch
   - Public token URLs (Trust Center, supplier questionnaire): 60 requests per minute per IP
@@ -354,7 +355,12 @@ grep "SUSPICIOUS_ACTIVITY\|ACCESS_DENIED" var/log/prod.log
 
 Priority improvements:
 
-1. ✅ **Multi-Factor Authentication (MFA)** - IMPLEMENTED
+1. ✅ **Multi-Factor Authentication (MFA)** - IMPLEMENTED. One state per login
+   (`App\Security\Mfa\MfaSessionState`, bound to the person's id), started by
+   `MfaLoginListener` on every login of the web firewall (form, SSO, remember-me) and by the
+   password re-authentication; the enforcer fails closed. SSO logins ask for the local factor
+   too when the person enrolled one. "Stay logged in" issues its cookie only after the second
+   factor; the cookie signature covers the active devices. Gate 91, `tests/Security/Mfa/`.
 2. ✅ **Password complexity requirements** - IMPLEMENTED (PasswordPolicyResolver)
 3. **Account lockout mechanism**
 4. **IP whitelisting for admin panel**

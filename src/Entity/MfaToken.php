@@ -109,6 +109,12 @@ class MfaToken
     private ?DateTimeImmutable $lastUsedAt = null;
 
     /**
+     * Last accepted TOTP time step: a code of this step or an earlier one is refused (no reuse).
+     */
+    #[ORM\Column(nullable: true)]
+    private ?int $lastTotpStep = null;
+
+    /**
      * Number of times this token has been used
      */
     #[ORM\Column]
@@ -278,6 +284,18 @@ class MfaToken
     public function setLastUsedAt(?DateTimeImmutable $lastUsedAt): static
     {
         $this->lastUsedAt = $lastUsedAt;
+        return $this;
+    }
+
+    public function getLastTotpStep(): ?int
+    {
+        return $this->lastTotpStep;
+    }
+
+    public function setLastTotpStep(?int $step): static
+    {
+        $this->lastTotpStep = $step;
+
         return $this;
     }
 

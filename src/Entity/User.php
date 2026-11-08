@@ -782,6 +782,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Part of the remember-me cookie signature (security.yaml `signature_properties`): the ids of
+     * the active second factors. A cookie issued before an enrolment, a removal or a new device no
+     * longer opens a session — a remember-me login counts as both factors only because of this.
+     */
+    public function getMfaRememberMeMarker(): string
+    {
+        $ids = [];
+        foreach ($this->mfaTokens as $token) {
+            if ($token->isActive()) {
+                $ids[] = (int) $token->getId();
+            }
+        }
+        sort($ids);
+
+        return implode(',', $ids);
+    }
+
+    /**
      * Check if user has any active MFA tokens
      */
     public function hasMfaEnabled(): bool
