@@ -14,6 +14,8 @@ use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleService;
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
+use App\Security\TenantOwnership;
+use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
@@ -41,6 +43,7 @@ class LifecycleController extends AbstractController
         private readonly AuditLogRepository $auditLogRepository,
         private readonly UserRepository $userRepository,
         private readonly TenantContext $tenantContext,
+        private readonly AuditLogger $auditLogger,
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
@@ -147,11 +150,13 @@ class LifecycleController extends AbstractController
 
         $succeeded = [];
         $failed = [];
+        $perEntityData = [];
         $repo = $this->em->getRepository($mapping['class']);
 
         foreach ($ids as $id) {
             $entity = $repo->find((int) $id);
-            if ($entity === null) {
+            // A record of another organisation answers like a missing one.
+            if ($entity === null || !$this->isBulkTargetInScope($entity)) {
                 $failed[(string) $id] = 'not_found';
                 continue;
             }
@@ -174,15 +179,44 @@ class LifecycleController extends AbstractController
                     $approver,
                 );
                 $succeeded[] = (int) $id;
+                $perEntityData[] = [
+                    'action' => 'update',
+                    'entity_id' => (int) $id,
+                    'new_values' => ['status' => $entity->getStatus(), 'transition' => $transitionName],
+                ];
             } catch (\Throwable $e) {
                 $failed[(string) $id] = substr($e->getMessage(), 0, 200);
             }
         }
 
+        // One batch entry + one row per changed record (ISO 27001 Cl. 7.5.3);
+        // the returned id is the batch id of those rows.
+        $batchId = null;
+        if ($perEntityData !== []) {
+            $shortName = (new \ReflectionClass($mapping['class']))->getShortName();
+            $batchId = $this->auditLogger->logBulk(
+                eventType: 'bulk_lifecycle_transition',
+                entityType: $shortName,
+                batchData: [
+                    'workflow' => $mapping['workflow'],
+                    'transition' => $transitionName,
+                    'count' => count($perEntityData),
+                    'failed' => count($failed),
+                ],
+                perEntityData: $perEntityData,
+                description: sprintf(
+                    'Bulk lifecycle transition "%s" of %d %s records',
+                    $transitionName,
+                    count($perEntityData),
+                    $shortName,
+                ),
+            );
+        }
+
         return new JsonResponse([
             'succeeded' => $succeeded,
             'failed' => $failed,
-            'audit_log_batch_id' => bin2hex(random_bytes(8)),
+            'audit_log_batch_id' => $batchId,
         ]);
     }
 
@@ -286,6 +320,27 @@ class LifecycleController extends AbstractController
         }
 
         return $approver->getTenant()?->getId() !== $recordTenant->getId();
+    }
+
+    /**
+     * Bulk writes follow the own-organisation record scope of every other bulk
+     * endpoint ({@see TenantOwnership::isInContextScope()}). An organisation
+     * record is checked like its administration page; global catalogue rows
+     * (no tenant column) are left to the transition voter.
+     */
+    private function isBulkTargetInScope(object $entity): bool
+    {
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return true;
+        }
+        if ($entity instanceof Tenant) {
+            return $this->tenantContext->canAccessTenant($entity);
+        }
+        if (!method_exists($entity, 'getTenant')) {
+            return true;
+        }
+
+        return TenantOwnership::isInContextScope($entity, $this->tenantContext, false);
     }
 
     private function jsonError(int $code, string $errorCode, string $message, array $details = []): JsonResponse

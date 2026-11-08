@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lifecycle\Config;
 
+use App\Lifecycle\EntityTypeRegistry;
 use App\Repository\LifecycleConfigRepository;
 use App\Service\TenantContext;
 use Symfony\Component\Workflow\Registry;
@@ -40,7 +41,7 @@ final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
         $yaml = $transition === null ? [] : $workflow->getMetadataStore()->getTransitionMetadata($transition);
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        if ($tenant === null) {
+        if ($tenant === null || !EntityTypeRegistry::acceptsTenantOverrides($workflowName)) {
             return $yaml;
         }
 

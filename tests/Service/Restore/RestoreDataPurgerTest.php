@@ -7,6 +7,7 @@ namespace App\Tests\Service\Restore;
 use App\Entity\Tenant;
 use App\Service\Restore\RestoreDataPurger;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -96,17 +97,34 @@ final class RestoreDataPurgerTest extends TestCase
     }
 
     #[Test]
-    public function filter_entities_includes_entities_without_tenant_field(): void
+    public function filter_entities_drops_rows_without_tenant_id_in_scoped_restore(): void
     {
-        // Global entities (Role, Permission, etc.) have no tenant_id in backup
+        // The upload is untrusted: a tenant row whose tenant_id was removed by hand
+        // must not slip through as "global".
         $entities = [
-            ['id' => 1, 'name' => 'ROLE_USER'],
+            ['id' => 1, 'title' => 'no tenant'],
             ['id' => 2, 'tenant_id' => ['id' => 5]],
         ];
 
         $result = $this->purger->filterEntitiesByScope($entities, [5]);
 
-        self::assertCount(2, $result);
+        self::assertSame([2], array_column($result, 'id'));
+    }
+
+    #[Test]
+    public function filter_entities_drops_instance_entities_in_scoped_restore(): void
+    {
+        // Role, Permission, SystemSettings, MfaToken, UserSession … have no tenant
+        // association: an organisation restore never writes them.
+        $metadata = $this->createMock(ClassMetadata::class);
+        $metadata->method('hasAssociation')->with('tenant')->willReturn(false);
+        $this->entityManager->method('getClassMetadata')->willReturn($metadata);
+
+        $rows = [['id' => 1, 'name' => 'ROLE_USER'], ['id' => 2, 'user_id' => ['id' => 1]]];
+
+        self::assertSame([], $this->purger->filterEntitiesByScope($rows, [5], 'Role'));
+        self::assertSame([], $this->purger->filterEntitiesByScope($rows, [5], 'MfaToken'));
+        self::assertSame($rows, $this->purger->filterEntitiesByScope($rows, [], 'Role'));
     }
 
     #[Test]

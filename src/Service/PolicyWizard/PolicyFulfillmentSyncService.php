@@ -135,19 +135,16 @@ final class PolicyFulfillmentSyncService
                     continue; // do not downgrade — manual progress preserved
                 }
 
-                $fulfillment->setStatus(self::TARGET_STATUS);
-
-                // Conservative partial-completion signal when still at zero — a hand
-                // value, through the one writer of fulfilment values.
-                if ($fulfillment->getFulfillmentPercentage() === 0) {
-                    $this->derivation->setManual($fulfillment, 25);
-                }
+                // Conservative partial-completion signal (at least 25 %) — a hand
+                // value through the one writer of fulfilment values, which derives
+                // the status (> 0 % → in_progress) from it.
+                $this->derivation->setManual($fulfillment, max(25, $fulfillment->getFulfillmentPercentage()));
 
                 // Attach the generated policy as evidence.
                 $fulfillment->addEvidenceDocument($document);
 
                 $this->entityManager->persist($fulfillment);
-                $result[$reqId] = self::TARGET_STATUS;
+                $result[$reqId] = (string) $fulfillment->getStatus();
             }
         }
 

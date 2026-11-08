@@ -48,7 +48,9 @@ class QuickFixJobStatusController extends AbstractController
             return new JsonResponse(['error' => 'Invalid job ID'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (!$this->jobStatusService->exists($id)) {
+        // Only Quick-Fix jobs: other admin jobs (exports with download URL, backups,
+        // tenant ids) are owner-bound via AsyncJobVoter on their own endpoints.
+        if (!$this->jobStatusService->exists($id) || !self::isQuickFixJob($this->jobStatusService->read($id))) {
             return new JsonResponse(['error' => 'Job not found'], Response::HTTP_NOT_FOUND);
         }
 
@@ -93,6 +95,9 @@ class QuickFixJobStatusController extends AbstractController
         }
 
         $job = $this->jobStatusService->read($id);
+        if (!self::isQuickFixJob($job)) {
+            throw $this->createNotFoundException('Job not found');
+        }
         $payload = is_array($job['payload'] ?? null) ? $job['payload'] : [];
 
         $label = is_string($payload['_label'] ?? null) && $payload['_label'] !== ''
@@ -116,5 +121,11 @@ class QuickFixJobStatusController extends AbstractController
             'cancelUrl'   => $cancelUrl,
             'statusUrl'   => $this->generateUrl('app_quick_fix_job_status', ['id' => $id]),
         ]);
+    }
+
+    /** @param array<string, mixed> $job */
+    public static function isQuickFixJob(array $job): bool
+    {
+        return str_starts_with((string) ($job['name'] ?? ''), 'quick_fix.');
     }
 }

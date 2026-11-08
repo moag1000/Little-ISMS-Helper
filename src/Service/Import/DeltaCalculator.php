@@ -57,7 +57,7 @@ final class DeltaCalculator
 
         foreach ($parsed->rows as $index => $row) {
             $rowNumber  = $index + 1; // 1-based for human-readable output
-            $validation = $mapper->validate($row);
+            $validation = $mapper->validate($row, $columnMapping);
 
             if ($validation['errors'] !== []) {
                 $errors[] = [
@@ -68,12 +68,12 @@ final class DeltaCalculator
                 continue;
             }
 
-            $existing = $mapper->findExisting($row, $config->tenant);
+            $existing = $mapper->findExisting($row, $config->tenant, $columnMapping);
 
             if ($existing === null) {
                 // A second new row with the same unique key would fail the flush and
                 // abort the whole commit — reject it here as a row error instead.
-                $key = $mapper->duplicateKey($row);
+                $key = $mapper->duplicateKey($row, $columnMapping);
                 if ($key !== null && isset($newKeys[$key])) {
                     $errors[] = [
                         'rowNumber' => $rowNumber,
@@ -265,8 +265,11 @@ final class DeltaCalculator
             // Normalise to string for loose comparison
             $oldNorm = self::comparable($oldValue);
             $newNorm = self::comparable($newValue);
+            $same    = is_numeric($oldNorm) && is_numeric($newNorm)
+                ? (float) $oldNorm === (float) $newNorm // DECIMAL "7.50" vs "7.5"
+                : $oldNorm === $newNorm;
 
-            if ($oldNorm !== $newNorm) {
+            if (!$same) {
                 $diff[$field] = [
                     'old' => $oldValue,
                     'new' => $newValue,
@@ -278,15 +281,22 @@ final class DeltaCalculator
     }
 
     /**
-     * A related record compares by id (User / Person have no
-     * string form), anything else by its string form.
+     * String form of a persisted or mapped value — mapped values carry enum cases,
+     * dates, related entities (User / Person have no string form: by id) and lists,
+     * which a plain (string) cast cannot convert.
      */
     private static function comparable(mixed $value): string
     {
-        if (is_object($value) && !$value instanceof \Stringable && method_exists($value, 'getId')) {
-            return '#' . $value->getId();
-        }
-
-        return is_scalar($value) || $value === null || $value instanceof \Stringable ? (string) $value : get_debug_type($value);
+        return match (true) {
+            $value instanceof \BackedEnum        => (string) $value->value,
+            $value instanceof \DateTimeInterface => $value->format(\DateTimeInterface::ATOM),
+            $value instanceof \Stringable        => (string) $value,
+            is_object($value) && is_callable([$value, 'getId'])
+                                                 => '#' . $value->getId(), // same field → same class
+            is_object($value)                    => spl_object_hash($value),
+            is_array($value)                     => (string) json_encode($value),
+            is_bool($value)                      => $value ? '1' : '0',
+            default                              => (string) $value,
+        };
     }
 }

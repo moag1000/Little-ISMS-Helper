@@ -386,6 +386,28 @@ web UI for this.
   backups (and legacy backups without scope) are hidden from them** and
   answer 404 — previously they were listed. Only a `ROLE_SUPER_ADMIN` can
   work with them.
+- **Organisation restore treats the file as untrusted** (`RestoreTenantGuard`):
+  an uploaded backup's ids, `tenant_id` values and SHA256 seal can be edited by
+  hand, so a scoped restore checks every write against the database. Rows of
+  entities without an organisation (roles, permissions, system settings, MFA
+  tokens, sessions) are never restored; tenant rows without `tenant_id` are
+  dropped; a row whose id or unique field matches a record of another
+  organisation is skipped (warning), never updated, moved or deleted;
+  references and ManyToMany links to records of other organisations are
+  dropped; existing audit-log rows and super-admin accounts are never touched;
+  `ROLE_SUPER_ADMIN` is stripped from restored users. The setup password goes
+  only to users the restore creates, and "first admin" means an admin of the
+  restored organisations. ZIP entries with `..`, absolute paths, dot files or
+  executable types (`.php`, `.phar`, …) are not extracted. Organisation backups
+  with sessions only carry the sessions of their own users. Backup create,
+  upload, download, delete, restore and the raw data export/import write an
+  audit-log entry (`backup.*`, `data.*`; only whether an admin password was set,
+  never the password).
+- **Lifecycle overrides** (`/admin/lifecycle-overrides`) exist only for
+  workflows of organisation-owned records. Tenant, role, permission, policy
+  template and global mapping workflows are instance-wide: not listed, and
+  older stored overrides for them are ignored. Role and permission transitions
+  need `ROLE_SUPER_ADMIN`, like editing them.
 - **Custom roles:** custom roles are global. An organisation admin can only
   edit or delete a custom role if it may edit every holder; holders in other
   organisations are no longer shown. System roles are `ROLE_SUPER_ADMIN`

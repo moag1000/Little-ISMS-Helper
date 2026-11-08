@@ -423,6 +423,38 @@ Export application data in JSON or CSV format:
 
 **Future Implementation**: Full import validation and execution planned.
 
+### Bulk Import (spreadsheet wizard)
+
+`/{locale}/import/{entityType}` (ROLE_MANAGER) imports CSV/XLSX rows into assets, risks, incidents and the
+other schema-driven entity types: upload → column mapping → preview → commit.
+
+- **The preview shows what the commit does.** Validation, the match against existing records (update vs. new)
+  and the mapping all read the columns as you mapped them in step 2, so a renamed column is checked, not skipped.
+- **Value rules per field kind:**
+  - choice fields (e.g. risk `treatmentStrategy`, incident `severity`): one of the listed values,
+    case-insensitive; any other value is a row error in the preview.
+  - decimal fields (CVSS score, square metres, objective target/current value, financial impact per
+    hour/day): a number with a dot as decimal separator (`7.5`); text is a row error.
+  - dates: `YYYY-MM-DD`, `DD.MM.YYYY` or `DD/MM/YYYY`; an unreadable date is a warning and the field is skipped.
+- **A row is written completely or not at all.** If one value of an update row is refused, none of its
+  fields change; the row appears as error in the result and in the error CSV.
+- **Failures:** pressing "Import starten" twice or a failed commit shows a message and opens the status page.
+  A failed commit always ends in status *failed* with the error on the status page — also after a database
+  error — never stuck in *committing*. Upload the file again to retry.
+
+### Compliance mapping CSV import
+
+`/admin/import/compliance` (CSV `csv_generic_v1`) accepts the same values as the mapping form:
+
+| Column | Allowed |
+|---|---|
+| `mapping_percentage` | whole number 0–150 (101–150 = exceeds) |
+| `mapping_type` | `weak`, `partial`, `full`, `exceeds` (case-insensitive) |
+| `confidence` | `low`, `medium`, `high` (case-insensitive) |
+
+Rows with another value are shown as error in the preview ("Ungültiger Wert") and skipped on commit with
+`Line N: invalid <column>`; the other rows are imported.
+
 ---
 
 ## Best Practices

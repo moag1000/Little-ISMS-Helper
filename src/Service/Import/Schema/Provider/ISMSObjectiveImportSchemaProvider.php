@@ -90,12 +90,12 @@ final class ISMSObjectiveImportSchemaProvider implements ImportSchemaProviderInt
                 new ImportFieldSpec(
                     name: 'targetValue',
                     setter: 'setTargetValue',
-                    type: ImportFieldSpec::TYPE_FLOAT,
+                    type: ImportFieldSpec::TYPE_DECIMAL,
                 ),
                 new ImportFieldSpec(
                     name: 'currentValue',
                     setter: 'setCurrentValue',
-                    type: ImportFieldSpec::TYPE_FLOAT,
+                    type: ImportFieldSpec::TYPE_DECIMAL,
                 ),
                 new ImportFieldSpec(
                     name: 'unit',

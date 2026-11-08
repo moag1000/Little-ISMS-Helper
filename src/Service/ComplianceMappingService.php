@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Enum\InternalAuditStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BusinessProcessRepository;
-use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 
@@ -23,36 +23,28 @@ use App\Repository\InternalAuditRepository;
 class ComplianceMappingService
 {
     public function __construct(
-        private readonly ControlRepository $controlRepository,
         private readonly AssetRepository $assetRepository,
         private readonly BusinessProcessRepository $businessProcessRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly InternalAuditRepository $internalAuditRepository,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
-        private readonly MappingQualityAnalysisService $mappingQualityAnalysisService
+        private readonly MappingQualityAnalysisService $mappingQualityAnalysisService,
+        private readonly FulfillmentRuleEngine $fulfillmentRuleEngine,
     ) {}
 
     /**
-     * Map ISO 27001 controls to a requirement automatically
+     * The current organisation's controls behind a requirement. Never
+     * getMappedControls() of the global requirement: that collection spans every
+     * organisation once the Doctrine tenant filter is not armed.
+     *
+     * @return list<\App\Entity\Control>
      */
-    public function mapControlsToRequirement(ComplianceRequirement $complianceRequirement): array
+    public function controlsFor(ComplianceRequirement $complianceRequirement): array
     {
-        $mapping = $complianceRequirement->getDataSourceMapping() ?? [];
-        $mappedControls = [];
+        $tenant = $this->tenantContext->getCurrentTenant();
 
-        // Check if there are explicit ISO control mappings
-        if (isset($mapping['iso_controls']) && is_array($mapping['iso_controls'])) {
-            foreach ($mapping['iso_controls'] as $controlId) {
-                $controls = $this->controlRepository->findBy(['controlId' => $controlId]);
-                foreach ($controls as $control) {
-                    $mappedControls[] = $control;
-                    $complianceRequirement->addMappedControl($control);
-                }
-            }
-        }
-
-        return $mappedControls;
+        return $tenant === null ? [] : $this->fulfillmentRuleEngine->controlsFor($complianceRequirement, $tenant);
     }
 
     /**
@@ -78,7 +70,7 @@ class ComplianceMappingService
         $mapping = $complianceRequirement->getDataSourceMapping() ?? [];
 
         // Analyze mapped controls
-        if (!$complianceRequirement->getMappedControls()->isEmpty()) {
+        if ($this->controlsFor($complianceRequirement) !== []) {
             $controlsAnalysis = $this->analyzeControlsContribution($complianceRequirement);
             $analysis['sources']['controls'] = $controlsAnalysis;
         }
@@ -118,7 +110,7 @@ class ComplianceMappingService
      */
     private function analyzeControlsContribution(ComplianceRequirement $complianceRequirement): array
     {
-        $mappedControls = $complianceRequirement->getMappedControls();
+        $mappedControls = $this->controlsFor($complianceRequirement);
         $totalImplementation = 0;
         $implementedCount = 0;
         $controlDetails = [];
@@ -139,10 +131,10 @@ class ComplianceMappingService
             ];
         }
 
-        $avgImplementation = $mappedControls->count() > 0 ? $totalImplementation / $mappedControls->count() : 0;
+        $avgImplementation = count($mappedControls) > 0 ? $totalImplementation / count($mappedControls) : 0;
 
         return [
-            'count' => $mappedControls->count(),
+            'count' => count($mappedControls),
             'implemented' => $implementedCount,
             'average_implementation' => round($avgImplementation, 2),
             'controls' => $controlDetails,

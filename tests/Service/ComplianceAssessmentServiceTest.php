@@ -35,6 +35,11 @@ class ComplianceAssessmentServiceTest extends TestCase
     {
         $this->requirementRepository = $this->createMock(ComplianceRequirementRepository::class);
         $this->mappingService = $this->createMock(ComplianceMappingService::class);
+        // Controls behind a requirement come from the tenant-scoped engine
+        // (ComplianceMappingService::controlsFor); the fixtures model them on the mock.
+        $this->mappingService->method('controlsFor')->willReturnCallback(
+            static fn (\App\Entity\ComplianceRequirement $requirement): array => $requirement->getMappedControls()->toArray(),
+        );
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->fulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);

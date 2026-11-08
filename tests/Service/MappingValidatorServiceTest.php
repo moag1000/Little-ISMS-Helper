@@ -204,6 +204,27 @@ class MappingValidatorServiceTest extends TestCase
         $this->assertNull($svc->resolveRequirement($bsi, 'Kapitel 4'));
     }
 
+    #[Test]
+    public function lookupsOnlyMatchGlobalCatalogueRequirements(): void
+    {
+        // ComplianceRequirement.uploadTenant is not covered by the tenant filter:
+        // without the criterion a mapping import matched another organisation's
+        // uploaded (TISAX) requirement.
+        $seen = [];
+        $svc = $this->makeLookupService(static function (array $criteria) use (&$seen): ?ComplianceRequirement {
+            $seen[] = $criteria;
+
+            return null;
+        });
+        $svc->resolveRequirement((new ComplianceFramework())->setCode('BSI_GRUNDSCHUTZ'), 'ISMS.1');
+
+        $this->assertNotEmpty($seen);
+        foreach ($seen as $criteria) {
+            $this->assertArrayHasKey('uploadTenant', $criteria);
+            $this->assertNull($criteria['uploadTenant']);
+        }
+    }
+
     /**
      * @param \Closure(array<string, mixed>): ?ComplianceRequirement $lookup
      */

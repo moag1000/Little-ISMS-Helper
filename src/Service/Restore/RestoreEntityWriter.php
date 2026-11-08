@@ -14,7 +14,6 @@ use Doctrine\ORM\Id\AbstractIdGenerator;
 use ReflectionClass;
 use DateTimeImmutable;
 use DateTime;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -45,6 +44,13 @@ class RestoreEntityWriter
         private readonly LoggerInterface $logger,
         private readonly ?OwnerTextResolver $ownerTexts = null,
     ) {
+    }
+
+    private ?RestoreTenantGuard $tenantGuard = null;
+
+    private function tenantGuard(): RestoreTenantGuard
+    {
+        return $this->tenantGuard ??= new RestoreTenantGuard($this->entityManager);
     }
 
     /**
@@ -229,6 +235,7 @@ class RestoreEntityWriter
         $stats = ['created' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => 0];
 
         $uniqueFields = $this->getUniqueConstraintFields($entityName);
+        $scopeIds     = RestoreTenantGuard::scopeFromOptions($options);
 
         $batchSize    = 100;
         $batchSpName  = null;
@@ -236,6 +243,10 @@ class RestoreEntityWriter
         $batchErrored = false;
 
         foreach ($entities as $index => $data) {
+            if ($entityName === 'User') {
+                $data = $this->tenantGuard()->sanitizeUserRow($data, $scopeIds);
+            }
+
             // Decrypt SystemSettings value on the fly when best_effort deferred decryption
             if ($bestEffort && $entityName === 'SystemSettings' && isset($data['__needs_decrypt__'])) {
                 if ($secretsHandler !== null) {
@@ -312,6 +323,21 @@ class RestoreEntityWriter
                     continue;
                 }
 
+                // An organisation restore never writes a record of another organisation,
+                // an existing audit-log row or a super admin (ids in an upload are untrusted).
+                if ($existingEntity !== null
+                    && !$this->tenantGuard()->mayOverwrite($entityName, $existingEntity, $scopeIds)
+                ) {
+                    $warnings[] = sprintf(
+                        'Skipping %s at index %d: the existing record (ID %s) lies outside the organisations of this restore',
+                        $entityName,
+                        $index,
+                        (string) $existingEntity->getId(),
+                    );
+                    $stats['skipped']++;
+                    continue;
+                }
+
                 // Handle existing data
                 if ($existingEntity !== null) {
                     if ($options['existing_data_strategy'] === RestoreOptions::EXISTING_SKIP) {
@@ -338,10 +364,12 @@ class RestoreEntityWriter
                     $entityName, $existingEntity, $options, $warnings
                 );
 
-                // Special handling for User entities: Set password if admin_password is provided
-                if ($entityName === 'User' && !empty($options['admin_password']) && $secretsHandler !== null) {
+                // Special handling for User entities: newly created users (backups carry no
+                // password hashes) get the setup password; existing users keep their own.
+                $isNewUser = $entityName === 'User' && $existingEntity === null;
+                if ($isNewUser && !empty($options['admin_password']) && $secretsHandler !== null) {
                     $secretsHandler->applyAdminPasswordToUser($entity, $data, $options['admin_password'], $warnings);
-                } elseif ($entityName === 'User' && !empty($options['admin_password']) && $secretsHandler === null) {
+                } elseif ($isNewUser && !empty($options['admin_password']) && $secretsHandler === null) {
                     $this->logger->warning('admin_password provided but no RestoreSecretsHandler injected — password not set', [
                         'user_email' => $data['email'] ?? 'unknown',
                     ]);
@@ -349,7 +377,7 @@ class RestoreEntityWriter
 
                 // Restore ManyToOne / OneToOne associations
                 $this->resolveAssociations(
-                    $entity, $data, $classMetadata, $propertyAccessor, $entityName
+                    $entity, $data, $classMetadata, $propertyAccessor, $entityName, $scopeIds, $warnings
                 );
 
                 $this->restoreLegacyOwnerText($entity, $entityName, $data);
@@ -566,10 +594,11 @@ class RestoreEntityWriter
         array $entities,
         array &$statistics,
         array &$warnings,
+        array $scopeIds = [],
     ): void {
         try {
             $classMetadata = $this->entityManager->getClassMetadata($entityClass);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->warning('Could not load metadata for ManyToMany restore', [
                 'entity' => $entityName, 'error' => $e->getMessage(),
             ]);
@@ -600,18 +629,39 @@ class RestoreEntityWriter
             $targetCol = $invJoinCols[0]['name'];
             $idsKey    = $field . '_ids';
 
-            $tuples = [];
+            $targetClass = $classMetadata->getAssociationTargetClass($field);
+            $guard       = $this->tenantGuard();
+            $tuples      = [];
+            $dropped     = 0;
             foreach ($entities as $data) {
                 $ownerId = $data['id'] ?? null;
                 if ($ownerId === null || !isset($data[$idsKey]) || !is_array($data[$idsKey])) {
                     continue;
                 }
+                // Pivot rows are written by plain SQL: both ends must lie in the scope.
+                if (!$guard->mayReference($entityClass, $ownerId, $scopeIds)) {
+                    $dropped += count($data[$idsKey]);
+                    continue;
+                }
                 foreach ($data[$idsKey] as $targetIdData) {
                     $targetId = is_array($targetIdData) ? ($targetIdData['id'] ?? null) : $targetIdData;
-                    if ($targetId !== null) {
-                        $tuples[] = [$ownerId, $targetId];
+                    if ($targetId === null) {
+                        continue;
                     }
+                    if (!$guard->mayReference($targetClass, $targetId, $scopeIds)) {
+                        $dropped++;
+                        continue;
+                    }
+                    $tuples[] = [$ownerId, $targetId];
                 }
+            }
+            if ($dropped > 0) {
+                $warnings[] = sprintf(
+                    '%d %s.%s link(s) dropped: they point to records of another organisation',
+                    $dropped,
+                    $entityName,
+                    $field,
+                );
             }
 
             if ($tuples === []) {
@@ -643,7 +693,7 @@ class RestoreEntityWriter
 
                 try {
                     $inserted += $connection->executeStatement($sql, $params);
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $warnings[] = sprintf(
                         'ManyToMany restore failed for %s.%s (pivot=%s): %s',
                         $entityName, $field, $pivotTable, $e->getMessage()
@@ -801,7 +851,7 @@ class RestoreEntityWriter
                         $reflection->getProperty('id')->setValue($entity, $data['id']);
                         $this->logger->debug('Set entity ID from backup', ['entity' => $entityName, 'id' => $data['id']]);
                     }
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $this->logger->warning('Failed to set entity ID from backup', [
                         'entity' => $entityName, 'id' => $data['id'], 'error' => $e->getMessage(),
                     ]);
@@ -856,7 +906,7 @@ class RestoreEntityWriter
                     if (!$isNullable) {
                         $value = [];
                     }
-                } catch (Exception) {
+                } catch (\Throwable) {
                     $value = [];
                 }
             }
@@ -872,7 +922,7 @@ class RestoreEntityWriter
                 try {
                     $mapping = $meta->getFieldMapping($fieldName);
                     $isNullable = is_array($mapping) ? ($mapping['nullable'] ?? false) : ($mapping->nullable ?? false);
-                } catch (Exception) {
+                } catch (\Throwable) {
                     $isNullable = false;
                 }
                 if (!$isNullable) {
@@ -919,7 +969,7 @@ class RestoreEntityWriter
                     } elseif ($value instanceof DateTime && $expectsImmutable) {
                         $value = DateTimeImmutable::createFromMutable($value);
                     }
-                } catch (Exception $dateException) {
+                } catch (\Throwable $dateException) {
                     $this->logger->warning('Failed to parse date/time value', [
                         'entity' => $entityName, 'field' => $fieldName,
                         'value' => is_object($value) ? $value::class : $value,
@@ -979,6 +1029,8 @@ class RestoreEntityWriter
         ClassMetadata $meta,
         PropertyAccessor $propertyAccessor,
         string $entityName,
+        array $scopeIds = [],
+        array &$warnings = [],
     ): void {
         foreach ($meta->getAssociationNames() as $assocName) {
             if (!$meta->isSingleValuedAssociation($assocName)) {
@@ -999,6 +1051,16 @@ class RestoreEntityWriter
             }
 
             if ($assocId === null) {
+                continue;
+            }
+
+            if (!$this->tenantGuard()->mayReference($targetClass, $assocId, $scopeIds)) {
+                $warnings[] = sprintf(
+                    'Reference %s.%s → ID %s dropped: the target belongs to another organisation',
+                    $entityName,
+                    $assocName,
+                    (string) $assocId,
+                );
                 continue;
             }
 
@@ -1029,7 +1091,7 @@ class RestoreEntityWriter
                         ));
                     }
                 }
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->warning('Failed to restore association', [
                     'entity' => $entityName, 'association' => $assocName,
                     'target_id' => $assocId, 'error' => $e->getMessage(),
