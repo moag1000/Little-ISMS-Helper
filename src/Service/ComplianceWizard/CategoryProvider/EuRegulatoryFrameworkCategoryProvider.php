@@ -388,6 +388,15 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'priority' => 'critical',
                         'route' => 'app_soa_index',
                     ],
+                    // Second signal from the tool's own data: privileged accounts sign in with a second factor.
+                    'mfa_accounts' => [
+                        'name' => 'wizard.check.nis2_21_2j_mfa_accounts',
+                        'description' => 'wizard.check.nis2_21_2j_mfa_accounts_desc',
+                        'type' => 'account_mfa',
+                        'roles' => ['ROLE_ADMIN'],
+                        'priority' => 'critical',
+                        'route' => 'user_management_index',
+                    ],
                     'secure_communications' => [
                         'name' => 'wizard.check.nis2_21_2j_comms',
                         'description' => 'wizard.check.nis2_21_2j_comms_desc',

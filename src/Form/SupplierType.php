@@ -228,6 +228,18 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                     'placeholder' => 'supplier.placeholder.certifications',
                 ],
             ])
+            // ISO 27001 A.5.23: cloud services in use need assessment, security requirements and an exit plan.
+            ->add('isCloudService', CheckboxType::class, [
+                'label' => 'supplier.field.is_cloud_service',
+                'help' => 'supplier.help.is_cloud_service',
+                'required' => false,
+            ])
+            // ISO 27001 A.5.23 / DORA Art. 28 (8): exit strategy — core field, not DORA-only.
+            ->add('hasExitStrategy', CheckboxType::class, [
+                'label' => 'supplier.field.has_exit_strategy',
+                'help' => 'supplier.help.has_exit_strategy',
+                'required' => false,
+            ])
             // S14 Cluster A C1-05 — expose the existing supportedAssets M2M.
             // Tenant-scoped; tom-select for searchable multi-select UX.
             // ISO 27001 A.5.21 / DORA Art. 28 — supplier-asset linkage.
@@ -455,11 +467,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'widget' => 'single_text',
                 'required' => false,
             ])
-            ->add('hasExitStrategy', CheckboxType::class, [
-                'label' => 'supplier.field.has_exit_strategy',
-                'help' => 'supplier.help.has_exit_strategy',
-                'required' => false,
-            ])
         ;
     }
 
@@ -635,6 +642,8 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'hasISO27001',
                 'hasISO22301',
                 'certifications',
+                'isCloudService',
+                'hasExitStrategy',
             ],
             // S14 Cluster A C1-05 — supplier ↔ asset linkage (ISO 27001 A.5.21).
             'linkage' => [
@@ -659,7 +668,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'hasSubcontractors',
                 'processingLocations',
                 'lastDoraAuditDate',
-                'hasExitStrategy',
             ],
             'lksg' => [
                 'lksgReportingObligation',

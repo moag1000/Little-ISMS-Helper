@@ -151,6 +151,8 @@ compliance:
     already_loaded: 'Already Loaded'
     delete_framework: 'Delete Framework'
     load_framework: 'Load Framework'
+    load_framework_super_admin: 'Catalogues are shared by every organisation of this instance; the super admin loads them.'
+    open_framework: 'Open framework'
     confirm_load: 'Do you really want to load this framework?'
     loading: 'Loading...'
     successfully_loaded: Framework loaded
@@ -1229,17 +1231,20 @@ compliance:
             manual_percentage: 'Fulfilment'
             reason: 'Reason'
             review_due: 'Review by'
+            next_review: 'Next review on'
         action:
             override: 'Set a different value'
             change_override: 'Change or confirm override'
             save_override: 'Save override'
             follow_rule: 'Take rule value (%value% %)'
+            confirm_review: 'Confirm review'
         flash:
             recomputed: '%derived% requirements computed from data, %overridden% overridden.'
             overridden: 'Override saved.'
             override_invalid: 'Enter a value, a reason (at least %min% characters) and a review date from today.'
             follows_rule: 'Rule value taken.'
             follows_rule_all: '%count% legacy values follow the rule again.'
+            review_confirmed: 'Review confirmed.'
         meta:
             title: 'Metadata'
             responsible: 'Responsible'

@@ -79,6 +79,8 @@
                 <li>{{ 'setup.complete.next_steps.capture_assets'|trans({}, 'setup') }}</li>
                 <li>{{ 'setup.complete.next_steps.use_compliance'|trans({}, 'setup') }}</li>
                 <li>{{ 'setup.complete.next_steps.add_modules'|trans({}, 'setup') }}</li>
+                {# Leitungsentscheidungen go only to ROLE_TOP_MGMT; until it is assigned they wait (BoardUnassignedSource). #}
+                <li>{{ 'setup.complete.next_steps.assign_board'|trans({}, 'setup') }}</li>
             </ol>
         </section>
 

@@ -135,6 +135,12 @@ final class WorkflowInstanceAdapter implements SourceAdapter
             return Responsibility::ofRecord($this->subjectOf($instance))->orRoles('ROLE_MANAGER');
         }
 
+        if ($role === 'ROLE_TOP_MGMT') {
+            // Only top management decides (WorkflowService skips the admin override here too):
+            // admins are not reminded of a step they cannot approve.
+            return Responsibility::roles($role)->withoutAdminFallback();
+        }
+
         return $role !== '' ? Responsibility::roles($role) : Responsibility::nobody();
     }
 

@@ -9,7 +9,8 @@ use App\Entity\Tenant;
 /**
  * The wizard checks that read a norm's own records — registers, top-management
  * decisions, training participation, statutory reports, the duties of the
- * deadline sources and the fields of existing records — as one entry point
+ * deadline sources, the fields of existing records and the second factor of
+ * privileged accounts — as one entry point
  * for the wizard, plus short definitions for the category providers.
  *
  * Name and description keys follow `wizard.check.<key>` / `<key>_desc`.
@@ -23,6 +24,7 @@ final class RecordCheck
         private readonly ReportingDutyCheck $reporting,
         private readonly ?DeadlineAdherenceCheck $deadlines = null,
         private readonly ?RecordCompletenessCheck $completeness = null,
+        private readonly ?AccountMfaCheck $accountMfa = null,
     ) {
     }
 
@@ -39,6 +41,7 @@ final class RecordCheck
             'reporting_duty' => $this->reporting->check($check, $tenant),
             'deadline_adherence' => $this->deadlines?->check($check, $tenant),
             'record_completeness' => $this->completeness?->check($check, $tenant),
+            'account_mfa' => $this->accountMfa?->check($check, $tenant),
             default => null,
         };
     }

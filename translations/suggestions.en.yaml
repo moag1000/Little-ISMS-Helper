@@ -151,6 +151,7 @@ suggestions:
             competence: 'Register: competence'
             opportunity: 'Register: opportunity'
             improvement: 'Register: improvement'
+            monitoring_source: 'Register: monitored source'
         compliance:
             inheritance: Take over fulfilment
         ai:
@@ -197,6 +198,7 @@ suggestions:
             competence: Default competences of the roles in the role register.
             opportunity: Proposals from before the improvement register.
             improvement: From the management review, audit opportunities and lessons learned from incidents and exercises.
+            monitoring_source: From the cloud services in use (suppliers marked as cloud service).
         compliance:
             inheritance: A fulfilled requirement covers a mapped one.
         ai:

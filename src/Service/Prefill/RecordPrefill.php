@@ -21,7 +21,6 @@ use App\Repository\RiskRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Service\Deadline\Source\ManagementTrainingSource;
 use App\Service\Location\LocationLayers;
-use DateTimeImmutable;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -64,11 +63,8 @@ class RecordPrefill
         $training->setTitle($this->trans('training.prefill.board_title', [], 'training'));
         $training->setTrainingType('compliance');
         $training->setMandatory(true);
-        $horizon = new DateTimeImmutable(sprintf('+%d days', $this->managementTraining->profile()->leadDays ?? 30));
-        foreach ($this->managementTraining->trainees($tenant) as $trainee) {
-            if ($trainee->dueAt <= $horizon) {
-                $training->addParticipantUser($trainee->user);
-            }
+        foreach ($this->managementTraining->dueSoon($tenant) as $trainee) {
+            $training->addParticipantUser($trainee->user);
         }
     }
 

@@ -10,6 +10,7 @@ use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use App\Service\TenantContext;
 use App\Util\InputDate;
@@ -31,13 +32,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * overrides whose review date has come).
  *
  * Reading the list is open to reviewers (auditors see every override with its
- * reason); changing a value needs ROLE_MANAGER.
+ * reason); changing a value needs ROLE_MANAGER. Confirming the periodic review
+ * of a fulfilment (`nextReviewDate`, deadline type `fulfillment_review`) is
+ * open to managers and to whoever that reminder reaches.
  */
 #[RequiresModule('compliance')]
 final class FulfillmentOverrideController extends AbstractController
 {
     private const MIN_REASON_LENGTH = 10;
     private const FILTERS = ['legacy', 'due', 'manual', 'certificate', 'inheritance'];
+    /** Default cadence of the periodic fulfilment review (ISO 27001 9.1: at planned intervals). */
+    private const int REVIEW_CADENCE_MONTHS = 12;
 
     public function __construct(
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
@@ -130,6 +135,35 @@ final class FulfillmentOverrideController extends AbstractController
         return $back === 'list'
             ? $this->redirectToRoute('app_compliance_fulfillment_overrides', array_filter(['filter' => (string) $request->request->get('filter', '')]))
             : $this->backToRequirement($requirement);
+    }
+
+    /**
+     * "Review bestätigen" for one fulfilment (ISO 27001 9.1): the reminder of
+     * `fulfillment_review` links to the requirement page, its responsible
+     * person confirms there. Only the review dates change — the value stays
+     * with FulfillmentDerivationService. Next review in twelve months, or the
+     * date the person picks.
+     */
+    #[Route('/compliance/requirement/{id}/fulfillment/review', name: 'app_compliance_fulfillment_review', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    #[IsCsrfTokenValid(new Expression('"fulfillment_review_" ~ args["requirement"].getId()'))]
+    public function confirmReview(Request $request, ComplianceRequirement $requirement): Response
+    {
+        $fulfillment = $this->ownFulfillment($requirement);
+        if (!$this->isGranted('ROLE_MANAGER') && !$this->isGranted(RecordResponsibleVoter::RESPONSIBLE, $fulfillment)) {
+            throw $this->createAccessDeniedException();
+        }
+        $today = new DateTimeImmutable('today');
+        $next = InputDate::ymd($request->request->get('next_review'));
+        $next = $next instanceof \DateTime && $next > new \DateTime('today')
+            ? DateTimeImmutable::createFromMutable($next)
+            : $today->modify(sprintf('+%d months', self::REVIEW_CADENCE_MONTHS));
+        $fulfillment->setLastReviewDate($today);
+        $fulfillment->setNextReviewDate($next);
+        $this->derivation->save($fulfillment);
+        $this->addFlash('success', 'compliance.fulfillment_rule.flash.review_confirmed');
+
+        return $this->backToRequirement($requirement);
     }
 
     /** Every legacy value that a rule now computes goes back to its rule. */

@@ -38,14 +38,15 @@ final class RiskAcceptanceRequestSourceTest extends TestCase
         $source = $this->source($this->createStub(RiskRepository::class));
 
         // Defaults: up to 7 manager, above executive.
-        self::assertSame(
-            RiskAcceptanceRequestSource::MANAGER_LEVEL_ROLES,
-            $source->responsibleOf(new RiskAcceptanceRequest($this->risk(residual: 5, justification: 'x')))->roles,
-        );
-        self::assertSame(
-            ['ROLE_TOP_MGMT'],
-            $source->responsibleOf(new RiskAcceptanceRequest($this->risk(residual: 20, justification: 'x')))->roles,
-        );
+        $manager = $source->responsibleOf(new RiskAcceptanceRequest($this->risk(residual: 5, justification: 'x')));
+        self::assertSame(RiskAcceptanceRequestSource::MANAGER_LEVEL_ROLES, $manager->roles);
+        // Organisations without risk specialists: every manager (the voter's own role), not the admins.
+        self::assertSame(['ROLE_MANAGER'], $manager->fallbackRoles);
+        self::assertTrue($manager->adminFallback);
+
+        $executive = $source->responsibleOf(new RiskAcceptanceRequest($this->risk(residual: 20, justification: 'x')));
+        self::assertSame(['ROLE_TOP_MGMT'], $executive->roles);
+        self::assertFalse($executive->adminFallback);
     }
 
     #[Test]

@@ -96,6 +96,7 @@ final class RegisterProposalProvider
             RegisterType::COMPETENCE => $this->fromRoleEntries($tenant),
             RegisterType::LEGAL_REQUIREMENT => [...$this->fromFrameworks(), ...$this->fromPartyLegalRequirements($tenant)],
             RegisterType::SCOPE_INTERFACE => $this->fromCriticalSuppliers($tenant),
+            RegisterType::MONITORING_SOURCE => $this->fromCloudSuppliers($tenant),
             RegisterType::IMPROVEMENT => [
                 ...$this->fromManagementReview($tenant),
                 ...$this->fromAuditOpportunities($tenant),
@@ -355,6 +356,36 @@ final class RegisterProposalProvider
                 'supplier.' . $supplier->getId(),
                 'register.source.supplier',
                 category: 'supplier',
+                links: ['supplier' => [(int) $supplier->getId()]],
+            );
+        }
+
+        return $proposals;
+    }
+
+    /**
+     * A.8.16: every cloud service in use (A.5.23) is a source to monitor — the
+     * provider's logs and alerts reach the organisation, someone evaluates them.
+     *
+     * @return list<RegisterProposal>
+     */
+    private function fromCloudSuppliers(Tenant $tenant): array
+    {
+        if (!$this->modules->isModuleActive('suppliers')) {
+            return [];
+        }
+        $proposals = [];
+        foreach ($this->suppliers->findBy(['tenant' => $tenant, 'isCloudService' => true]) as $supplier) {
+            if (!in_array($supplier->getStatus(), ['active', 'evaluation'], true)) {
+                continue;
+            }
+            $proposals[] = new RegisterProposal(
+                RegisterType::MONITORING_SOURCE,
+                $this->translator->trans('register.proposal.monitoring_title', ['%name%' => $supplier->getName()], 'register'),
+                $supplier->getServiceProvided(),
+                'supplier.' . $supplier->getId(),
+                'register.source.supplier',
+                category: 'cloud',
                 links: ['supplier' => [(int) $supplier->getId()]],
             );
         }

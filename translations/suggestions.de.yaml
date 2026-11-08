@@ -151,6 +151,7 @@ suggestions:
             competence: 'Register: Kompetenz'
             opportunity: 'Register: Chance'
             improvement: 'Register: Verbesserung'
+            monitoring_source: 'Register: überwachte Quelle'
         compliance:
             inheritance: Erfüllung übernehmen
         ai:
@@ -197,6 +198,7 @@ suggestions:
             competence: Standard-Kompetenzen der Rollen im Rollenregister.
             opportunity: Vorschläge aus der Zeit vor dem Verbesserungsregister.
             improvement: Aus Managementbewertung, Audit-Verbesserungspotenzial und Erkenntnissen aus Vorfällen und Übungen.
+            monitoring_source: Aus den genutzten Cloud-Diensten (Lieferanten mit Kennzeichen Cloud-Dienst).
         compliance:
             inheritance: Eine erfüllte Anforderung deckt eine gemappte ab.
         ai:

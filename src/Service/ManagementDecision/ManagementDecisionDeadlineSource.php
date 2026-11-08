@@ -81,7 +81,10 @@ final readonly class ManagementDecisionDeadlineSource implements DeadlineSource
 
     public function responsibleOf(object $item): Responsibility
     {
-        return Responsibility::roles('ROLE_TOP_MGMT');
+        // Only top management decides (ISO 27001 5.1). Without a holder the
+        // decision waits; BoardUnassignedSource tells the admins to assign the
+        // role instead of handing them a decision that answers 403.
+        return Responsibility::roles('ROLE_TOP_MGMT')->withoutAdminFallback();
     }
 
     public function linkOf(object $item): RecordLink

@@ -149,9 +149,12 @@
                                 {% if framework.id is defined and framework.id %}
                                     <a href="{{ path('app_compliance_framework', {id: framework.id, _locale: app.request.locale}) }}"
                                        class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full mt-1">
-                                        <span class="icon">🚀</span> Start Working →
+                                        {{ 'compliance.open_framework'|trans({}, 'compliance') }}
                                     </a>
                                 {% endif %}
+                            {% elseif not is_granted('GLOBAL_CATALOGUE_WRITE') %}
+                                {# Shared by every organisation of the instance (S7.3): the super admin loads it. #}
+                                <p class="text-muted small mb-0">{{ 'compliance.load_framework_super_admin'|trans({}, 'compliance') }}</p>
                             {% else %}
                                 <button class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full load-framework-btn"
                                         data-framework-code="{{ framework.code }}"
@@ -223,7 +226,7 @@ function initializeLoadButtons() {
                             </button>
                             <a href="/${locale}/compliance/framework/${result.framework_id}"
                                class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full mt-1">
-                                <span class="icon">🚀</span> Start Working →
+                                {{ 'compliance.open_framework'|trans({}, 'compliance') }}
                             </a>
                         `;
                     } else {

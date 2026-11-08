@@ -478,6 +478,7 @@ setup:
             capture_assets: 'Capture Assets'
             use_compliance: 'Check Compliance Status'
             add_modules: 'Activate More Modules'
+            assign_board: 'Assign top management: give the role “Top management” in user management (ISO 27001 5.1, NIS-2 Art. 20) — admins do not decide for the board'
         help_documentation:
             title: 'Help & Documentation'
             description: 'Detailed documentation is available in the Help section.'

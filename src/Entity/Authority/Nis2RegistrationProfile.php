@@ -175,6 +175,9 @@ class Nis2RegistrationProfile
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $unreportedChangeAt = null;
 
+    /** Fingerprint as loaded from the database (not mapped): the baseline of {@see noteChange()} at flush. */
+    private ?string $loadedFingerprint = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeImmutable $createdAt;
 
@@ -203,6 +206,24 @@ class Nis2RegistrationProfile
         }
 
         return $profile;
+    }
+
+    #[ORM\PostLoad]
+    public function rememberLoadedData(): void
+    {
+        $this->loadedFingerprint = $this->fingerprint();
+    }
+
+    /**
+     * Every write path — the form, import, restore, REST, MCP — notes a change
+     * of the reported data (NIS-2 Art. 3 (4)) here, not only the controller.
+     * PreFlush runs before the change set is computed, so the dates are stored.
+     */
+    #[ORM\PreFlush]
+    public function noteChangeOnFlush(): void
+    {
+        $this->noteChange($this->loadedFingerprint ?? $this->fingerprint());
+        $this->loadedFingerprint = $this->fingerprint();
     }
 
     #[ORM\PreUpdate]

@@ -315,6 +315,16 @@ class NavigationSearch
             ],
             [
                 'route' => 'app_register_list',
+                'params' => ['type' => 'monitoring_source'],
+                'label' => 'search_nav.register_monitoring.label',
+                'description' => 'search_nav.register_monitoring.description',
+                'aliases' => ['Überwachung', 'Monitoring', 'SIEM', 'Protokollierung', 'monitoring activities', 'A.8.16'],
+                'icon' => 'fa-icon--nav-activity',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_register_list',
                 'params' => ['type' => 'improvement'],
                 'label' => 'search_nav.register_improvements.label',
                 'description' => 'search_nav.register_improvements.description',
