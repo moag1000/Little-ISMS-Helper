@@ -35,6 +35,12 @@ final class ReadOnlyRoleSubscriberTest extends TestCase
         yield 'export job' => ['app_risk_export_dispatch', 'POST', false];
         yield 'escalation preview' => ['app_incident_escalation_preview', 'POST', false];
         yield 'policy acknowledgement' => ['app_policy_ack_acknowledge', 'POST', false];
+        yield 'api write' => ['_api_/risks/{id}{._format}_put', 'PUT', true];
+        yield 'api create' => ['_api_/internal_audits{._format}_post', 'POST', true];
+        yield 'api delete' => ['_api_/assets/{id}{._format}_delete', 'DELETE', true];
+        yield 'api read' => ['_api_/risks/{id}{._format}_get', 'GET', false];
+        yield 'api collection' => ['_api_/risks{._format}_get_collection', 'GET', false];
+        yield 'profiler' => ['_wdt', 'GET', false];
     }
 
     #[Test]

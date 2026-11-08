@@ -133,6 +133,12 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
     /** Whether a reviewer-role user may not call this route with this method. */
     public function isRestricted(string $route, string $method): bool
     {
+        // API Platform operations are named `_api_…` and would slip through the
+        // framework-internals prefix '_' below: the REST API is read-only for
+        // reviewer roles, whatever the resource.
+        if (str_starts_with($route, '_api_')) {
+            return !in_array($method, self::SAFE_METHODS, true);
+        }
         foreach (self::ALLOWED_PREFIXES as $prefix) {
             if (str_starts_with($route, $prefix)) {
                 return false;
