@@ -651,7 +651,7 @@ class DeploymentWizardController extends AbstractController
                 'admin_password' => $request->request->get('admin_password', ''),
             ];
 
-            $result = $restoreService->restoreFromBackup($backup, $options);
+            $result = $restoreService->restoreFromBackup($backup, $options, null, $filepath);
 
             // Detect orphaned entities (entities without tenant assignment)
             $orphanedAssets = $this->assetRepository->createQueryBuilder('a')

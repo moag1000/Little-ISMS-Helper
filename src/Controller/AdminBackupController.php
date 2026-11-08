@@ -307,7 +307,7 @@ class AdminBackupController extends AbstractController
 
             // Move file to backups directory
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
-            $filename = 'uploaded_' . date('Y-m-d_H-i-s') . '.' . strtolower($file->getClientOriginalExtension());
+            $filename = 'uploaded_' . date('Y-m-d_H-i-s') . '_' . bin2hex(random_bytes(4)) . '.' . strtolower($file->getClientOriginalExtension());
 
             $file->move($backupDir, $filename);
 

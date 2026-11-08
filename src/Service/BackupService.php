@@ -656,7 +656,7 @@ class BackupService
      *
      * When $scope is null, all backups are returned (SUPER_ADMIN behaviour).
      * When $scope is a Tenant, the listing is filtered to backups whose embedded
-     * tenant_scope intersects with the scope's accessible tree (self + subsidiaries).
+     * tenant_scope lies completely inside the scope's accessible tree (self + subsidiaries).
      *
      * Detection order for each file:
      *   1. Sidecar `<filename>.meta.json` (preferred — fast, no decompression)
@@ -743,7 +743,7 @@ class BackupService
      * Single source of truth for backup visibility (listing, download, delete, preview).
      *
      * $scope = null (SUPER_ADMIN) sees every existing backup. A tenant scope sees only
-     * backups whose embedded tenant_scope intersects its accessible tree. Instance-wide
+     * backups whose embedded tenant_scope lies completely inside its accessible tree. Instance-wide
      * (empty scope) and legacy/unknown-scope backups are NOT visible to a tenant scope.
      * Filenames are validated against traversal; missing files are not visible.
      */
@@ -777,7 +777,9 @@ class BackupService
             return false;
         }
 
-        return array_intersect($backupScopeIds, $accessibleIds) !== [];
+        // Every organisation of the backup must be accessible: a subsidiary admin must not
+        // see (download, delete, restore) a holding backup with the siblings' data.
+        return array_diff($backupScopeIds, $accessibleIds) === [];
     }
 
     /**
@@ -887,17 +889,30 @@ class BackupService
         }
     }
 
+    /** Largest backup.json / decompressed JSON a restore reads (zip/gzip bomb guard). */
+    private const int MAX_BACKUP_JSON_BYTES = 1024 * 1024 * 1024;
+
+    /** Largest single embedded file and the sum of all embedded files written by a restore. */
+    private const int MAX_ARCHIVE_FILE_BYTES = 100 * 1024 * 1024;
+    private const int MAX_ARCHIVE_TOTAL_BYTES = 4 * 1024 * 1024 * 1024;
+
+    /**
+     * Folders below public/uploads/ that a backup archive carries ({@see collectFileReferences()}).
+     * Nothing else is ever written from an archive.
+     */
+    private const array ARCHIVE_FILE_FOLDERS = ['documents', 'document_versions', 'tenant_logos'];
+
     /**
      * Load backup from file.
      *
      * Supports three formats automatically detected by magic bytes / extension:
-     *  - ZIP archive (.zip): extracts backup.json and optionally restores files
+     *  - ZIP archive (.zip): reads backup.json
      *  - gzip-compressed JSON (.json.gz / .gz)
      *  - Plain JSON (.json)
      *
-     * When a ZIP is loaded, the method also extracts embedded files into
-     * public/uploads/ (path-traversal-safe) and populates
-     * $backup['metadata']['_extracted_file_count'] for callers.
+     * Reading never writes anything: preview, validation and dry run use it too. The files
+     * embedded in a ZIP are written by {@see extractArchiveFiles()}, which the restore calls
+     * after the data has been committed.
      *
      * @param string $filepath Path to backup file
      * @return array Backup data
@@ -920,20 +935,21 @@ class BackupService
                 throw new \App\Exception\Io\IoException('Cannot decompress backup: ext-zlib extension not available');
             }
 
-            $json = @gzdecode(file_get_contents($filepath)); // Suppress warning for intentionally corrupted test files
+            // max_length stops a gzip bomb; suppress the warning for intentionally corrupted test files
+            $json = @gzdecode((string) file_get_contents($filepath), self::MAX_BACKUP_JSON_BYTES);
             if ($json === false) {
-                throw new \App\Exception\Io\IoException('Failed to decompress backup file');
+                throw new \App\Exception\Io\IoException('Failed to decompress backup file (corrupt or larger than the limit)');
             }
         } else {
             $json = file_get_contents($filepath);
         }
 
-        $backup = json_decode($json, true);
-        if ($backup === null) {
+        $backup = json_decode((string) $json, true);
+        if (!is_array($backup)) {
             throw new \App\Exception\Io\IoException('Failed to decode backup JSON: ' . json_last_error_msg());
         }
 
-        return $backup;
+        return $this->stripInternalMetadata($backup);
     }
 
 
@@ -946,7 +962,9 @@ class BackupService
     /**
      * Whether a path from inside a backup archive may be extracted below public/uploads/.
      * Rejects traversal ("..", absolute, backslash, NUL), hidden files (.htaccess,
-     * .user.ini) and executable file types.
+     * .user.ini), executable file types, and every final extension the upload check does
+     * not accept either ({@see FileUploadSecurityService::getAllowedExtensions()}) — so no
+     * .html, .svg or .js lands on the application's origin.
      */
     public static function isSafeArchivePath(string $relativePath): bool
     {
@@ -968,14 +986,11 @@ class BackupService
             }
         }
 
-        return true;
+        return in_array(pathinfo($basename, PATHINFO_EXTENSION), FileUploadSecurityService::ALLOWED_EXTENSIONS, true);
     }
 
     /**
-     * Load backup from a ZIP archive.
-     *
-     * Extracts backup.json and copies embedded files to public/uploads/
-     * with path-traversal protection.
+     * Load backup.json from a ZIP archive. Embedded files stay in the archive.
      */
     private function loadFromZip(string $filepath): array
     {
@@ -988,71 +1003,150 @@ class BackupService
             throw new \App\Exception\Io\IoException('Failed to open ZIP backup: ' . $filepath);
         }
 
-        $jsonContent = $zip->getFromName('backup.json');
-        if ($jsonContent === false) {
+        $stat = $zip->statName('backup.json');
+        if ($stat === false) {
             $zip->close();
+            throw new \App\Exception\Io\IoException('ZIP backup does not contain backup.json');
+        }
+        if ((int) $stat['size'] > self::MAX_BACKUP_JSON_BYTES) {
+            $zip->close();
+            throw new \App\Exception\Io\IoException('backup.json in the ZIP backup is larger than the limit');
+        }
+
+        $jsonContent = $zip->getFromName('backup.json');
+        $zip->close();
+        if ($jsonContent === false) {
             throw new \App\Exception\Io\IoException('ZIP backup does not contain backup.json');
         }
 
         $backup = json_decode($jsonContent, true);
-        if ($backup === null) {
-            $zip->close();
+        if (!is_array($backup)) {
             throw new \App\Exception\Io\IoException('Failed to decode backup JSON from ZIP: ' . json_last_error_msg());
         }
 
-        // Extract embedded files into public/uploads/ (before entity restore so paths resolve)
-        $extractedCount = 0;
-        $publicDir = $this->projectDir . '/public';
+        $this->logger->info('Loaded backup from ZIP', ['file' => $filepath]);
 
+        return $this->stripInternalMetadata($backup);
+    }
+
+    /**
+     * Metadata keys starting with "_" are set by this application at run time, never by a file.
+     *
+     * @param mixed[] $backup
+     * @return mixed[]
+     */
+    private function stripInternalMetadata(array $backup): array
+    {
+        if (isset($backup['metadata']) && is_array($backup['metadata'])) {
+            foreach (array_keys($backup['metadata']) as $key) {
+                if (is_string($key) && str_starts_with($key, '_')) {
+                    unset($backup['metadata'][$key]);
+                }
+            }
+        }
+
+        return $backup;
+    }
+
+    /**
+     * Writes the files embedded in a ZIP backup to public/uploads/ — called by the restore
+     * after the data has been committed, never by preview, validation or dry run.
+     *
+     * Only the folders a backup carries, only file types the upload check accepts, size
+     * limits per file and in total. An organisation restore ($scopeIds not empty) never
+     * replaces an existing file: the folders are shared by all organisations, and a file
+     * with the same name may be another organisation's evidence.
+     *
+     * @param int[]    $scopeIds  tenant ids of an organisation restore; [] = instance restore
+     * @param string[] $warnings
+     * @return int number of files written
+     */
+    public function extractArchiveFiles(string $filepath, array $scopeIds, array &$warnings = []): int
+    {
+        if (!is_file($filepath) || !$this->isZipFile($filepath) || !class_exists(ZipArchive::class)) {
+            return 0;
+        }
+        $zip = new ZipArchive();
+        if ($zip->open($filepath) !== true) {
+            return 0;
+        }
+
+        $uploadsDir = $this->projectDir . '/public/uploads';
+        if (!is_dir($uploadsDir) && !mkdir($uploadsDir, 0755, true) && !is_dir($uploadsDir)) {
+            $zip->close();
+            $warnings[] = 'Dateien der Sicherung nicht entpackt: Upload-Verzeichnis fehlt.';
+            return 0;
+        }
+        $uploadsBase = (string) realpath($uploadsDir) . '/';
+
+        $written = 0;
+        $skipped = 0;
+        $kept = 0;
+        $total = 0;
         for ($i = 0; $i < $zip->count(); $i++) {
-            $entryName = $zip->getNameIndex($i);
+            $stat = $zip->statIndex($i);
+            $entryName = is_array($stat) ? (string) $stat['name'] : '';
+            if (!str_starts_with($entryName, 'files/') || str_ends_with($entryName, '/')) {
+                continue;
+            }
+            $relativePath = substr($entryName, strlen('files/'));
+            $folder = explode('/', $relativePath)[0];
+            $size = (int) ($stat['size'] ?? 0);
 
-            // Only process entries under files/
-            if (!str_starts_with((string) $entryName, 'files/')) {
+            if (!self::isSafeArchivePath($relativePath)
+                || !in_array($folder, self::ARCHIVE_FILE_FOLDERS, true)
+                || $size > self::MAX_ARCHIVE_FILE_BYTES
+                || $total + $size > self::MAX_ARCHIVE_TOTAL_BYTES
+            ) {
+                $this->logger->warning('Skipping file from backup archive', ['entry' => $entryName, 'size' => $size]);
+                $skipped++;
                 continue;
             }
 
-            $relativePath = substr((string) $entryName, strlen('files/'));
-            if ($relativePath === '' || $relativePath === false) {
-                continue;
-            }
-
-            // Security: the entry name comes from an uploaded file — no "..", absolute
-            // paths, backslashes, dot files or executable types (zip slip, web shell).
-            $targetPath = realpath($publicDir . '/uploads') . '/' . ltrim($relativePath, '/');
-            $uploadsBase = realpath($publicDir . '/uploads') . '/';
-
-            if (!self::isSafeArchivePath($relativePath) || !str_starts_with($targetPath, $uploadsBase)) {
-                $this->logger->warning('Skipping file with unsafe path in ZIP', ['entry' => $entryName]);
-                continue;
-            }
-
+            $targetPath = $uploadsBase . $relativePath;
             $targetDir = dirname($targetPath);
             if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
-                $this->logger->warning('Could not create target directory for extracted file', [
-                    'dir' => $targetDir,
-                ]);
+                $skipped++;
+                continue;
+            }
+            if (!str_starts_with((string) realpath($targetDir) . '/', $uploadsBase)) {
+                $skipped++;
+                continue;
+            }
+            if ($scopeIds !== [] && file_exists($targetPath)) {
+                $kept++;
                 continue;
             }
 
             $content = $zip->getFromIndex($i);
-            if ($content !== false && file_put_contents($targetPath, $content) !== false) {
-                $extractedCount++;
+            if ($content !== false && strlen($content) <= self::MAX_ARCHIVE_FILE_BYTES
+                && file_put_contents($targetPath, $content) !== false
+            ) {
+                $total += strlen($content);
+                $written++;
             } else {
-                $this->logger->warning('Failed to extract file from ZIP', ['entry' => $entryName]);
+                $skipped++;
             }
         }
-
         $zip->close();
 
-        $backup['metadata']['_extracted_file_count'] = $extractedCount;
-
-        $this->logger->info('Loaded backup from ZIP', [
-            'file'            => $filepath,
-            'extracted_files' => $extractedCount,
+        if ($skipped > 0) {
+            $warnings[] = sprintf(
+                '%d Datei(en) der Sicherung nicht entpackt: unzulässiger Pfad oder Dateityp, oder zu groß.',
+                $skipped,
+            );
+        }
+        if ($kept > 0) {
+            $warnings[] = sprintf(
+                '%d Datei(en) der Sicherung nicht entpackt: eine Datei mit diesem Namen ist bereits vorhanden.',
+                $kept,
+            );
+        }
+        $this->logger->info('Extracted files from backup archive', [
+            'file' => $filepath, 'written' => $written, 'skipped' => $skipped, 'kept' => $kept,
         ]);
 
-        return $backup;
+        return $written;
     }
 
     /**

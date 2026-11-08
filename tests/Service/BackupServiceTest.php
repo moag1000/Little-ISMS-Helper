@@ -464,7 +464,7 @@ class BackupServiceTest extends TestCase
 
         $this->assertArrayHasKey('data', $loaded, 'ZIP backup must be loaded correctly');
         $this->assertArrayHasKey('User', $loaded['data']);
-        $this->assertArrayHasKey('_extracted_file_count', $loaded['metadata'], 'Must have _extracted_file_count after ZIP load');
+        $this->assertArrayNotHasKey('_extracted_file_count', $loaded['metadata'], 'loading reads only — files are written by the restore');
     }
 
     #[Test]
@@ -979,6 +979,8 @@ class BackupServiceTest extends TestCase
         $write('backup_2026-05-18_11-00-00.json', ['version' => '2.0', 'tenant_scope' => [2]]);
         $write('backup_2026-05-18_12-00-00.json', ['version' => '2.0', 'tenant_scope' => []]);
         $write('backup_2026-05-18_13-00-00.json', ['version' => '1.0']);
+        // A holding backup (own organisation + a sibling) is not the subsidiary admin's.
+        $write('backup_2026-05-18_14-00-00.json', ['version' => '2.0', 'tenant_scope' => [1, 2]]);
 
         $tenant1 = $this->createMock(Tenant::class);
         $tenant1->method('getId')->willReturn(1);
@@ -988,6 +990,8 @@ class BackupServiceTest extends TestCase
         $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_11-00-00.json', $tenant1));
         $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_12-00-00.json', $tenant1));
         $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_13-00-00.json', $tenant1));
+        $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_14-00-00.json', $tenant1));
+        $this->assertTrue($this->service->isBackupVisibleTo('backup_2026-05-18_14-00-00.json', null));
         $this->assertFalse($this->service->isBackupVisibleTo('../backup_2026-05-18_10-00-00.json', $tenant1));
         $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_99-00-00.json', null));
         $this->assertTrue($this->service->isBackupVisibleTo('backup_2026-05-18_12-00-00.json', null));

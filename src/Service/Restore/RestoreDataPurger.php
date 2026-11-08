@@ -142,6 +142,12 @@ class RestoreDataPurger
                 $classMetadata = $this->entityManager->getClassMetadata($entityClass);
                 $tableName = $classMetadata->getTableName();
 
+                // The audit trail is evidence: an organisation restore does not restore it,
+                // so it must not clear it either.
+                if ($tenantScopeIds !== [] && RestoreTenantGuard::isEvidence($entityName)) {
+                    continue;
+                }
+
                 // Tenant-scoped clear: use WHERE tenant_id IN (:scope) when possible
                 if ($tenantScopeIds !== [] && $this->entityHasTenantAssociation($entityClass)) {
                     $qb = $this->entityManager->createQueryBuilder()

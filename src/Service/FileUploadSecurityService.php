@@ -91,7 +91,7 @@ class FileUploadSecurityService
     ];
 
     // Security: Allowed file extensions (whitelist)
-    private const array ALLOWED_EXTENSIONS = [
+    public const array ALLOWED_EXTENSIONS = [
         'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
         'txt', 'csv', 'jpg', 'jpeg', 'png', 'gif', 'webp',
         'zip', '7z',

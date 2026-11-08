@@ -77,7 +77,9 @@ security:
                 samesite: 'lax'
 
             # Allow user impersonation (for admins)
-            switch_user: { role: ROLE_ALLOWED_TO_SWITCH }
+            # SwitchUserVoter: caller needs ROLE_ALLOWED_TO_SWITCH, the target no role
+            # beyond the caller's and never ROLE_SUPER_ADMIN.
+            switch_user: { role: CAN_SWITCH_USER }
 
             # Re-authentication challenge: when a RememberMe user hits a route
             # requiring IS_AUTHENTICATED_FULLY, return a modal challenge instead
