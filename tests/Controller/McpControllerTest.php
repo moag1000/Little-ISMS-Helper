@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\AuditLog;
+use App\Entity\Person;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -137,11 +139,19 @@ final class McpControllerTest extends WebTestCase
             self::assertNotContains($never, $writable, $never . ' must not be writable through the assistant');
         }
 
+        $owner = (new Person())->setFullName('Bea Buchhaltung')->setTenant($this->tenant);
+        $this->em->persist($owner);
+        $this->em->flush();
+        $ownerIri = static::getContainer()->get(IriConverterInterface::class)->getIriFromResource($owner);
+
         $created = $this->rpc('tools/call', ['name' => 'save_record', 'arguments' => ['resource' => 'Risk', 'data' => [
             'title' => 'Phishing gegen Buchhaltung',
             'description' => 'Aus dem Workshop',
+            'category' => 'security',
             'probability' => 3,
             'impact' => 4,
+            'riskOwnerPerson' => $ownerIri,
+            'person' => $ownerIri,
         ]]], $token)['result'] ?? [];
         self::assertFalse($created['isError'] ?? true, (string) ($created['content'][0]['text'] ?? ''));
         self::assertSame('created', $created['structuredContent']['operation'] ?? null);

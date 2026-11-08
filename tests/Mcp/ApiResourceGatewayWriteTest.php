@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Operations;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Property\Factory\PropertyMetadataFactoryInterface;
@@ -118,22 +117,22 @@ final class ApiResourceGatewayWriteTest extends TestCase
         $metadata = $this->createStub(ResourceMetadataCollectionFactoryInterface::class);
         $metadata->method('create')->willReturnCallback(static fn (string $class): ResourceMetadataCollection => new ResourceMetadataCollection($class, [
             match ($class) {
-                GatewayNote::class => new ApiResource(shortName: 'Note', operations: new Operations([
+                GatewayNote::class => new ApiResource(shortName: 'Note', operations: [
                     'note_get' => new Get(uriTemplate: '/notes/{id}', shortName: 'Note'),
                     'note_post' => new Post(uriTemplate: '/notes', shortName: 'Note', denormalizationContext: $write),
                     'note_put' => new Put(uriTemplate: '/notes/{id}', shortName: 'Note', denormalizationContext: $write),
                     'note_patch' => new Patch(uriTemplate: '/notes/{id}', shortName: 'Note', denormalizationContext: $write),
                     'note_delete' => new Delete(uriTemplate: '/notes/{id}', shortName: 'Note'),
-                ])),
-                GatewayCatalogue::class => new ApiResource(shortName: 'Catalogue', operations: new Operations([
+                ]),
+                GatewayCatalogue::class => new ApiResource(shortName: 'Catalogue', operations: [
                     'cat_post' => new Post(uriTemplate: '/catalogues', shortName: 'Catalogue', denormalizationContext: $write),
-                ])),
-                GatewayReplaced::class => new ApiResource(shortName: 'Replaced', operations: new Operations([
+                ]),
+                GatewayReplaced::class => new ApiResource(shortName: 'Replaced', operations: [
                     'rep_put' => new Put(uriTemplate: '/replaced/{id}', shortName: 'Replaced', denormalizationContext: $write),
-                ])),
-                default => new ApiResource(shortName: 'Populated', operations: new Operations([
+                ]),
+                default => new ApiResource(shortName: 'Populated', operations: [
                     'pop_put' => new Put(uriTemplate: '/populated/{id}', shortName: 'Populated', extraProperties: ['standard_put' => false], denormalizationContext: $write),
-                ])),
+                ]),
             },
         ]));
 
