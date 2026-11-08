@@ -107,7 +107,6 @@ bc_plans:
     bc_team_deprecated: 'Veraltet — bitte den strukturierten Reaktionsteam-Builder (responseTeamMembers) unten benutzen. Dieses Freitextfeld bleibt nur für Bestandsdaten lesbar erhalten.'
     activation_criteria: Bedingungen, unter denen dieser Plan aktiviert werden soll
       (z.B. Serverausfall > 4h)
-    roles_responsibilities: Rollen und Verantwortlichkeiten der Teammitglieder während
       einer BC-Situation
     recovery_procedures: Schrittweise Verfahren zur Wiederherstellung des Geschäftsbetriebs
     communication_plan: Kommunikationsstrategie während der Kontinuitätssituation
@@ -117,7 +116,6 @@ bc_plans:
       Behörden)
     alternative_site: Alternativstandort für den Notbetrieb (falls physischer Standort
       nicht verfügbar)
-    alternative_site_address: Vollständige Adresse des Alternativstandorts
     alternative_site_capacity: Kapazität und Ressourcen am Alternativstandort (Arbeitsplätze,
       Technik)
     backup_procedures: Verfahren zur Datensicherung (Backup-Strategie, Frequenz, Speicherorte)

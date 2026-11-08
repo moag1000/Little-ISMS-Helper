@@ -107,7 +107,6 @@ bc_plans:
       server outage > 4h)
     roles_and_responsibilities: Roles and responsibilities of team members during
       a BC situation
-    roles_responsibilities: Roles and responsibilities of team members during a BC
       situation
     recovery_procedures: Step-by-step procedures for restoring business operations
     communication_plan: Communication strategy during the continuity situation
@@ -116,7 +115,6 @@ bc_plans:
       authorities)
     alternative_site: Alternative site for emergency operations (if physical location
       is unavailable)
-    alternative_site_address: Full address of the alternative site
     alternative_site_capacity: Capacity and resources at the alternative site (workstations,
       technology)
     backup_procedures: Data backup procedures (backup strategy, frequency, storage

@@ -151,7 +151,7 @@ emails:
         urgent:
             subject: 'Frist läuft: %title%'
             title: 'Gesetzliche Frist läuft'
-            intro: 'Für diese Aufgaben läuft eine Frist in Stunden. Bitte jetzt erledigen.'
+            intro: 'Für diese Aufgaben läuft eine gesetzliche Frist in wenigen Stunden oder Tagen ab.'
             note: 'Diese Meldung kommt einmal je Frist, unabhängig von der Sammelmail.'
         due: 'Fällig: %date%'
         overdue: 'überfällig seit %date%'

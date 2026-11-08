@@ -47,10 +47,7 @@ auth:
 logout: Abmelden
 email: E-Mail
 password: Passwort
-forgot_password: 'Passwort vergessen'
 remember_me: 'Angemeldet bleiben'
-login_title: Anmeldung
-welcome_back: Anmeldung
 home:
     _default: Startseite
     welcome: Start
@@ -108,7 +105,6 @@ risks: Risiken
 controls: Maßnahmen
 incidents: Vorfälle
 audits: Audits
-compliance_label: Compliance
 users: Benutzer
 settings: Einstellungen
 profile: Profil
@@ -833,7 +829,6 @@ setup:
         name_help: 'Name der Datenbank (nur Buchstaben, Zahlen und Unterstriche)'
         name_invalid: 'Datenbankname darf nur Buchstaben, Zahlen und Unterstriche enthalten'
         user: Benutzername
-        user_help: 'Benutzername für die Datenbankverbindung'
         password: Passwort
         password_help: 'Passwort für die Datenbankverbindung'
         password_help_standalone: 'Das Passwort wurde automatisch generiert und ist bereits vorausgefüllt (siehe /var/www/html/var/mysql_credentials.txt)'
@@ -1504,7 +1499,6 @@ bsi_check:
         title: 'Keine Anforderungen gefunden'
         message: 'Für die gewählte Absicherungsstufe sind keine BSI-IT-Grundschutz-Anforderungen erfasst. Versuchen Sie einen anderen Filter oder laden Sie den Kompendium-Datenbestand mit app:load-bsi-grundschutz-requirements und app:load-bsi-kompendium-delta.'
 Customer: Kunde
-Shareholder: Anteilseigner
 Employee: Mitarbeiter
 Regulator: 'Regulatorische Institution'
 Supplier: Lieferant
@@ -1512,7 +1506,6 @@ Partner: Partner
 Public: Öffentlichkeit
 Media: Medien
 Government: Regierung
-Competitor: Konkurrenz
 Other: Andere
 Critical: Kritisch
 High: Hoch
@@ -1524,7 +1517,6 @@ Monthly: Monatlich
 Yearly: Jährlich
 Quarterly: Quartalsweise
 Annually: Jährlich
-'As Needed': 'Nach Bedarf'
 Active: Aktiv
 Inactive: Inaktiv
 Evaluation: Bewertung

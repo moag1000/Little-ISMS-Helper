@@ -44,6 +44,8 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
         new Put(security: "is_granted('API_EDIT', object)"),
         new Delete(security: "is_granted('API_DELETE', object)"),
     ],
+    normalizationContext: ['groups' => ['interested_party:read']],
+    denormalizationContext: ['groups' => ['interested_party:write']],
     processor: TenantAwareStateProcessor::class
 )]
 #[ORM\Entity(repositoryClass: InterestedPartyRepository::class)]

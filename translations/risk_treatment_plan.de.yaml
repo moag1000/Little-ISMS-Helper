@@ -81,7 +81,6 @@ risk_treatment_plan:
         status: 'Aktueller Status des Behandlungsplans'
         priority: 'Priorität basierend auf Risikoschwere und Dringlichkeit'
         start_date: 'Geplanter oder tatsächlicher Start der Behandlungsmaßnahmen'
-        target_completion_date: 'Geplantes Datum für den Abschluss aller Maßnahmen'
         actual_completion_date: 'Tatsächliches Abschlussdatum (wird bei Status "Abgeschlossen" ausgefüllt)'
         budget: 'Geschätztes oder tatsächliches Budget in EUR'
         responsible_person_user: 'Systembenutzer, der für die Umsetzung des Plans verantwortlich ist'

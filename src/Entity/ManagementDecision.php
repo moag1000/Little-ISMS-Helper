@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use Symfony\Component\Serializer\Attribute\Groups;
 use App\Enum\ManagementDecisionStatus;
 use App\Enum\ManagementDecisionType;
 use App\Repository\ManagementDecisionRepository;
@@ -30,6 +36,26 @@ use Symfony\Component\Validator\Constraints as Assert;
  * the values that were approved (e.g. acceptance thresholds), so a later change
  * of the subject is visible as "no longer covered by the approval".
  */
+/*
+ * REST: read-only. Decisions are proposed in the UI and taken through
+ * management_decision_lifecycle (approve/reject by ROLE_TOP_MGMT) or recorded by
+ * ManagementDecisionService::record(); the API never writes them. Readers as in
+ * the UI: ROLE_AUDITOR and above.
+ */
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            description: 'Top-management decisions of the organisation (ISO 27001 5.1, 6.1.3, 9.3; NIS-2 Art. 20)',
+            security: "is_granted('ROLE_AUDITOR')",
+            parameters: [
+                'type' => new QueryParameter(filter: new ExactFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+            ],
+        ),
+        new Get(security: "is_granted('ROLE_AUDITOR') and is_granted('API_VIEW', object)"),
+    ],
+    normalizationContext: ['groups' => ['management_decision:read']],
+)]
 #[ORM\Entity(repositoryClass: ManagementDecisionRepository::class)]
 #[ORM\Table(name: 'management_decision')]
 #[ORM\Index(name: 'idx_md_tenant_status', columns: ['tenant_id', 'status'])]
@@ -40,6 +66,7 @@ class ManagementDecision
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['management_decision:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -47,21 +74,26 @@ class ManagementDecision
     private ?Tenant $tenant = null;
 
     #[ORM\Column(name: 'decision_type', length: 40, enumType: ManagementDecisionType::class)]
+    #[Groups(['management_decision:read'])]
     private ManagementDecisionType $type = ManagementDecisionType::Other;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
+    #[Groups(['management_decision:read'])]
     private ?string $title = null;
 
     /** What was put before top management (prefilled from the records, editable before submission). */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['management_decision:read'])]
     private ?string $proposal = null;
 
     #[ORM\Column(length: 60, nullable: true)]
+    #[Groups(['management_decision:read'])]
     private ?string $subjectType = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['management_decision:read'])]
     private ?int $subjectId = null;
 
     /** @var array<string, mixed>|null values the decision covers */
@@ -78,6 +110,7 @@ class ManagementDecision
     private ?ManagementDecision $basis = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['management_decision:read'])]
     private string $status = 'pending';
 
     #[ORM\Version]
@@ -90,10 +123,12 @@ class ManagementDecision
     private ?User $requestedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['management_decision:read'])]
     private DateTimeImmutable $requestedAt;
 
     /** By when top management should decide (pending proposals). */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['management_decision:read'])]
     private ?DateTimeImmutable $dueDate = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -102,16 +137,20 @@ class ManagementDecision
     private ?User $decidedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['management_decision:read'])]
     private ?DateTimeImmutable $decidedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['management_decision:read'])]
     private ?string $decisionComment = null;
 
     /** Until when the approval holds; top management confirms it again before. */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['management_decision:read'])]
     private ?DateTimeImmutable $validUntil = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['management_decision:read'])]
     private DateTimeImmutable $createdAt;
 
     public function __construct()
@@ -349,6 +388,24 @@ class ManagementDecision
     {
         $this->validUntil = $validUntil;
         return $this;
+    }
+
+    #[Groups(['management_decision:read'])]
+    public function getRequestedByName(): ?string
+    {
+        return $this->requestedBy?->getFullName();
+    }
+
+    #[Groups(['management_decision:read'])]
+    public function getDecidedByName(): ?string
+    {
+        return $this->decidedBy?->getFullName();
+    }
+
+    #[Groups(['management_decision:read'])]
+    public function getNormReference(): string
+    {
+        return $this->type->normReference();
     }
 
     public function getCreatedAt(): DateTimeImmutable

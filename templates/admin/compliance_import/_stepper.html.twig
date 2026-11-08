@@ -29,8 +29,7 @@
             <li class="flex-fill" {% if is_active %}aria-current="step"{% endif %}>
                 <div class="d-flex align-items-center p-2 border rounded
                             {% if is_active %}border-primary bg-primary-subtle{% elseif is_done %}border-success{% else %}border-secondary-subtle{% endif %}">
-                    <span class="badge rounded-pill me-2
-                                 {% if is_active %}bg-primary{% elseif is_done %}bg-success{% else %}bg-secondary{% endif %}"
+                    <span class="fa-status-pill fa-status-pill--{% if is_active %}primary{% elseif is_done %}success{% else %}neutral{% endif %} me-2"
                           aria-hidden="true">
                         {% if is_done %}
                             <i class="fa-icon fa-icon--ui-check"></i>

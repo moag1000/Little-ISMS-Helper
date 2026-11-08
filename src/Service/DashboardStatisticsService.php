@@ -1150,7 +1150,7 @@ class DashboardStatisticsService
             ? $this->getAllAccessibleAssets($tenant)
             : [];
 
-        $activeAssets = array_filter($allAssets, fn($a): bool => $a->isOperational());
+        $activeAssets = array_filter(\App\Util\IsmsScopeFilter::inScope($allAssets), fn($a): bool => $a->isOperational());
         $totalAssets = count($activeAssets);
         $criticalAssets = count(array_filter($activeAssets, fn($a): bool => $a->getConfidentialityValue() >= 4 || $a->getIntegrityValue() >= 4 || $a->getAvailabilityValue() >= 4
         ));
@@ -1283,7 +1283,7 @@ class DashboardStatisticsService
         $kpis = [];
         // Business processes with BIA
         if ($this->businessProcessRepository !== null) {
-            $allProcesses = $this->tenantRecords->all($this->businessProcessRepository, $tenant);
+            $allProcesses = \App\Util\IsmsScopeFilter::inScope($this->tenantRecords->all($this->businessProcessRepository, $tenant));
             $criticalProcesses = array_filter($allProcesses, fn($p): bool => $p->getCriticality() === 'critical' || $p->getCriticality() === 'high');
             $processesWithBia = array_filter($criticalProcesses, fn($p): bool => $p->getRto() !== null || $p->getRpo() !== null);
             $biaCoverage = count($criticalProcesses) > 0
@@ -1417,7 +1417,7 @@ class DashboardStatisticsService
         if ($this->supplierRepository === null) {
             return [];
         }
-        $allSuppliers = $this->tenantRecords->all($this->supplierRepository, $tenant);
+        $allSuppliers = \App\Util\IsmsScopeFilter::inScope($this->tenantRecords->all($this->supplierRepository, $tenant));
         $criticalSuppliers = array_filter(
             $allSuppliers,
             fn($s): bool => $s->getCriticality() === 'critical' || $s->getCriticality() === 'high'

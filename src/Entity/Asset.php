@@ -259,7 +259,7 @@ class Asset
     private bool $isDoraRelevant = false;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read'])]
     #[Assert\NotBlank(message: 'asset.validation.status_required')]
     #[Assert\Choice(
         choices: ['draft', 'active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],

@@ -25,6 +25,38 @@ implement `App\Service\Planning\Source\SourceAdapter`, which extends
 Example of a recurring review without a planner step: `App\Service\Register\RegisterReviewSource`
 (norm registers, owner → deputies → the register's maintaining persona).
 
+**Every date field that carries a duty has a source** (Stand 2026-11-07, P2):
+besides the reviews and approvals there are consent expiry (`ConsentExpirySource`,
+DPO), team validity (`TeamValiditySource`, team lead), end of a person's access
+(`PersonAccessExpirySource`, admins, the person informed), patch deadline
+(`PatchDeploymentSource`, responsible person), supplier contract end
+(`SupplierContractEndSource`, 90 days), crisis-team training
+(`CrisisTeamTrainingSource`, team lead → deputies → BCM), TISAX prototype
+protection (`PrototypeProtectionReassessmentSource`, assessor), own mappings'
+validity (`MappingValiditySource`, only mappings of uploaded requirements),
+TLPT (`ThreatLedPenetrationTestSource`: planned end of a running test, else
+three years after the last one), DORA exit-plan test (`DoraExitPlanTestSource`:
+yearly, untested plans three months after creation), the retention sweep's
+deletions within 14 days (`RetentionDeletionSource`, DPO/admins, due at the
+next Sunday 04:00 sweep) and Maßnahmen (`ActionItemDueSource`; tasks from a
+management review and Maßnahmen converted from another source are left out,
+that source reminds already). Missing or expiring standing approvals of top
+management (policy, risk criteria, SoA, objectives, resources, NIS-2 measures)
+reach the ISB through `StandingApprovalSource` — the board panel reads the same
+list. Multi-tenant user assignments (`UserTenantAssignment.validTo`) get a
+source when that entity goes live.
+
+One record belongs to one source at a time: a change request waiting for
+approval to `ChangeApprovalSource`, afterwards to `ChangeRequestAdapter`;
+both decide `supports()` by status.
+
+**NIS-2 registration** (`Nis2RegistrationSource`): with the NIS-2 module an
+organisation is due at once, also before anyone opened the registration page
+(the profile is built on the spot). A registration date recorded on the
+organisation counts as the last report; "Als gemeldet markieren" stores the
+date on the organisation too and moves the next confirmation a year ahead.
+Organisations classified as not regulated have no such duty.
+
 **Adding a norm** means adding sources for its duties. A DE + EN label
 `my_day.section.<bucket>` / `my_day.kpi.<bucket>` is required;
 `tests/Service/Deadline/DeadlineSourceContractTest.php` checks every source.
@@ -34,7 +66,7 @@ Example of a recurring review without a planner step: `App\Service\Register\Regi
 Duties the norms repeat but no record carries a date for live in
 `RecurringDutyCatalog` (key, module, NIS-2/DORA scope, norm reference, default
 interval, fallback roles): risk acceptance criteria (6.1.2), SoA review
-(6.1.3 d), objective measurement (6.2 / 9.1), key rotation (A.8.24), access
+(6.1.3 d), key rotation (A.8.24), access
 recertification (A.5.18), BIA (ISO 22301 8.2.2), BC exercise (8.5), TOM review
 (DSGVO Art. 32), NIS-2 management training (Art. 20) and measures review
 (Art. 21), DORA register of information and exit plans (Art. 28).
@@ -53,8 +85,14 @@ Cadence words stored on records (`AuditProgram.frequency`,
 `InterestedParty.communicationFrequency`, `ISMSObjective.measurementFrequency`)
 are read as months only through `App\Util\Cadence`: the next communication
 falls back to last communication + frequency, a completed audit programme
-with a frequency asks for its successor, and the objective measurement duty
-takes the shortest measurement frequency on record as its default interval.
+with a frequency asks for its successor, and every ISMS objective measured by
+hand is due again one cadence after its last measurement
+(`ObjectiveMeasurementSource`, ISO 27001 6.2 b / 9.1; `ISMSObjective::getNextMeasurementDue()`).
+The measuring `Person` receives it, else the objective's owner; a changed current
+value or "Heute gemessen, Wert unverändert" on the objective sets `lastMeasuredAt`.
+Objectives linked to a KPI are measured by the tool and carry no duty. (Until
+P8 this was one catalogue duty for all objectives; it is gone so nobody is
+reminded twice.)
 
 ## Responsibility (`App\Service\Responsibility\ResponsibilityResolver`)
 
@@ -79,7 +117,14 @@ return Responsibility::holders($risk->getRiskOwner(), $risk->getRiskOwnerPerson(
 
 API: `resolve()`, `isResponsible()`, `responsibleFor($record)`,
 `usersReaching()` (all with hierarchy, admins included), `usersHolding()`
-(without mere admin inheritance).
+(without mere admin inheritance), `recipients()`.
+
+**Also inform** (`->alsoInform('ROLE_ISB', $person)`): people or role holders
+who are told about a duty without acting on it. `recipients()` = who acts plus
+them; My Day and the reminder mails use it, decisions (`resolve()`,
+`isResponsible()`) never stop at them. Used for: the ISB/CISO on every
+statutory report (also when the incident has an owner), top management on an
+upcoming management review, the person whose access ends.
 
 Persona questions (landing page, dashboard, tour, downloads) stay with
 `PersonaResolver`; the responsibility resolver builds on it for role checks.
@@ -110,11 +155,17 @@ One path sends every reminder: `app:send-reminders`, run by the scheduler every
   (`users.reminder_digest_enabled`).
 - **Immediate notice**: duties with an hour deadline (`DeadlineProfile::$urgentHours`,
   e.g. reporting duties) are mailed as soon as they become urgent, regardless
-  of the digest setting.
+  of the digest setting. Data-subject requests use it too: 72 hours before the
+  answer is due (DSGVO Art. 12 (3)).
 - Every sent duty is stored as an `ObligationNotice` (unique per user and
   key), which keeps a duty from being mailed twice and fills the personal
   "Meine Erinnerungen" list in the bell and the notification centre. Notices
   older than 90 days are purged.
 
 Rule-based notifications (`NotificationRule`, webhooks) stay separate; they
-react to events, not to deadlines.
+react to events, not to deadlines. The former time-driven rule event
+`control.overdue` (`app:notify-overdue-controls`) is gone — overdue control
+reviews are a deadline source — and the SLA watcher no longer sends
+"approaching" notices for statutory reports of incidents and breaches; it still
+marks missed clocks. Rules that forward hour deadlines listen to
+`obligation.urgent`.

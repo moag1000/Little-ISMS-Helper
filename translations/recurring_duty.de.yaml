@@ -54,9 +54,6 @@ recurring_duty:
         soa_review:
             title: 'Erklärung zur Anwendbarkeit überprüfen'
             body: 'Anwendbarkeit und Begründungen aller Controls gesamthaft prüfen und freigeben.'
-        objectives_measurement:
-            title: 'Informationssicherheitsziele messen'
-            body: 'Zielwerte erheben und Zielerreichung bewerten. Das Standardintervall richtet sich nach der kürzesten Messfrequenz der offenen Ziele.'
         crypto_key_rotation:
             title: 'Kryptografische Schlüssel rotieren'
             body: 'Schlüssel und Zertifikate nach Kryptokonzept erneuern und die Rotation dokumentieren.'

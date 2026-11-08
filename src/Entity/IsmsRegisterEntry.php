@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use App\Enum\RegisterType;
 use App\Repository\IsmsRegisterEntryRepository;
 use App\Service\OwnerResolver;
@@ -27,6 +34,23 @@ use Symfony\Component\Validator\Constraints as Assert;
  * ({@see IsmsRegisterLink}), so a new register needs no new table.
  * Owner convention as everywhere: user, person, deputies — no free text.
  */
+/*
+ * REST: read-only (ISO 27001 4.1–7.4 registers). Entries are kept in the UI,
+ * proposals from existing records come from RegisterProposalProvider.
+ */
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            description: 'Register entries of the organisation (ISO 27001 4.1–7.4: issues, legal requirements, roles, …)',
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'type' => new QueryParameter(filter: new ExactFilter()),
+            ],
+        ),
+        new Get(security: "is_granted('API_VIEW', object)"),
+    ],
+    normalizationContext: ['groups' => ['isms_register:read']],
+)]
 #[ORM\Entity(repositoryClass: IsmsRegisterEntryRepository::class)]
 #[ORM\Table(name: 'isms_register_entry')]
 #[ORM\Index(name: 'idx_isms_register_tenant_type', columns: ['tenant_id', 'register_type'])]
@@ -37,6 +61,7 @@ class IsmsRegisterEntry
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['isms_register:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -44,36 +69,44 @@ class IsmsRegisterEntry
     private ?Tenant $tenant = null;
 
     #[ORM\Column(name: 'register_type', length: 40, enumType: RegisterType::class)]
+    #[Groups(['isms_register:read'])]
     private RegisterType $type;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'register.validation.title_required')]
     #[Assert\Length(max: 255)]
+    #[Groups(['isms_register:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?string $description = null;
 
     /** Register-specific choice ({@see RegisterType::categories()}). */
     #[ORM\Column(length: 40, nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?string $category = null;
 
     /** 1–5: influence of an issue, benefit of an opportunity. */
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     #[Assert\Range(min: 1, max: 5)]
+    #[Groups(['isms_register:read'])]
     private ?int $rating = null;
 
     /** Paragraph of a law, certificate of a competence, audience of a communication. */
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
+    #[Groups(['isms_register:read'])]
     private ?string $reference = null;
 
     /** Communication rhythm ({@see RegisterType::frequencies()}). */
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?string $frequency = null;
 
     /** Appointed on (role), in force since (legal requirement). */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?DateTimeImmutable $effectiveFrom = null;
 
     /** Role holder for a role, responsible person for everything else. */
@@ -96,17 +129,21 @@ class IsmsRegisterEntry
     private Collection $deputyPersons;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?DateTimeImmutable $nextReviewDate = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?DateTimeImmutable $lastReviewedAt = null;
 
     /** Set when the entry no longer applies; archived entries stay as evidence. */
     #[ORM\Column(nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?DateTimeImmutable $archivedAt = null;
 
     /** Where a proposal came from (e.g. `context.external_issues#3f2a…`) — keeps proposals from coming back. */
     #[ORM\Column(length: 120, nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?string $origin = null;
 
     /** @var Collection<int, IsmsRegisterLink> */
@@ -114,9 +151,11 @@ class IsmsRegisterEntry
     private Collection $links;
 
     #[ORM\Column]
+    #[Groups(['isms_register:read'])]
     private DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['isms_register:read'])]
     private ?DateTimeImmutable $updatedAt = null;
 
     public function __construct(RegisterType $type = RegisterType::ISSUE_EXTERNAL)
@@ -280,6 +319,8 @@ class IsmsRegisterEntry
     }
 
     /** Display name of the owner (user before person), null when nobody is set. */
+    #[Groups(['isms_register:read'])]
+    #[SerializedName('owner')]
     public function getEffectiveOwner(): ?string
     {
         return OwnerResolver::resolveEffective($this->ownerUser, $this->ownerPerson);

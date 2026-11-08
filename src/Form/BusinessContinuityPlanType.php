@@ -104,7 +104,6 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'label' => 'bc_plans.field.roles_and_responsibilities',
                 'required' => false,
                 'attr' => ['rows' => 4],
-                'help' => 'bc_plans.help.roles_responsibilities',
             ])
             ->add('recoveryProcedures', TextareaType::class, [
                 'label' => 'bc_plans.field.recovery_procedures',
@@ -165,7 +164,6 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'label' => 'bc_plans.field.alternative_site_address',
                 'required' => false,
                 'attr' => ['rows' => 2],
-                'help' => 'bc_plans.help.alternative_site_address',
             ])
             ->add('alternativeSiteCapacity', TextareaType::class, [
                 'label' => 'bc_plans.field.alternative_site_capacity',

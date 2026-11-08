@@ -210,7 +210,6 @@ final class AssetType extends AbstractType implements SectionMapInterface
                     'min' => '0',
                     'placeholder' => '0.00',
                 ],
-                'help' => 'asset.help.current_value',
             ])
             ->add('confidentialityValue', IntegerType::class, [
                 'label' => 'asset.field.confidentiality',
@@ -263,7 +262,6 @@ final class AssetType extends AbstractType implements SectionMapInterface
                     'rows' => 3,
                     'placeholder' => 'asset.placeholder.acceptable_use_policy',
                 ],
-                'help' => 'asset.help.acceptable_use_policy',
             ])
             ->add('handlingInstructions', TextareaType::class, [
                 'label' => 'asset.field.handling_instructions',

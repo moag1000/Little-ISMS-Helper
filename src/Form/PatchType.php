@@ -219,7 +219,6 @@ final class PatchType extends AbstractType implements SectionMapInterface
                     'min' => 0,
                     'placeholder' => '60',
                 ],
-                'help' => 'patch.help.estimated_downtime_minutes',
             ])
             ->add('requiresReboot', ChoiceType::class, [
                 'label' => 'patch.field.requires_reboot',

@@ -111,9 +111,12 @@ search_nav:
     app_suggestion_index:
         label: 'Vorschläge'
         description: 'Abgeleitete, vererbte, importierte und KI-Vorschläge annehmen oder ablehnen'
+    app_api_tokens:
+        label: 'API-Tokens und KI-Assistent (MCP)'
+        description: 'Token für REST API und KI-Assistenten anlegen und widerrufen, Konfiguration für Claude Desktop und Claude Code'
     admin_settings_ai:
         label: 'KI-Einstellungen'
-        description: 'Lokales Modell oder Mistral-API für KI-Vorschläge, Datenschutz'
+        description: 'Lokales Modell oder Mistral-API für KI-Vorschläge, Assistenten-Zugang (MCP), Datenschutz'
     app_dashboard_risk_manager:
         label: 'Risikomanager-Dashboard'
         description: 'Risikolage, Behandlungspläne und fällige Risikoakzeptanzen'

@@ -21,10 +21,6 @@ incident:
       title: 'GDPR Art. 33 — report data breach (72h deadline)'
       body: 'This action creates a prefilled data breach based on the incident. Deadline: 72h from detection.'
       cta: 'Create data breach now'
-  preview:
-    title: Incident Information
-    affected_assets: Affected Assets (%count%)
-    more_assets: + %count% more
   breadcrumb: Incident Management
   header:
     title: Incident Management
@@ -47,6 +43,7 @@ incident:
     back_to_list: Back to List
     delete: Delete
     download_nis2_report: Download NIS2 Report
+    download_dora_report: Download DORA ICT incident report
     mus_export: 'BSI MUS export'
     mus_export_group: 'BSI MUS export options'
     mus_early_warning: 'Early warning (24h)'
@@ -304,7 +301,6 @@ incident:
     ict_incident_classification: 'Classification per DORA Art. 18 and EBA/ESMA/EIOPA RTS: Major ICT Incident or significant cyber threat.'
     critical_services_affected: 'Critical or important functions/services impacted (DORA Art. 19(1)(e)).'
     clients_affected_financial_volume: 'Total transaction or contract volume of affected clients in EUR (DORA Art. 19).'
-    replication_of_impact: 'Was a service replica or failover activated to limit impact?'
     initial_report_submitted_at: 'DORA 4-hour initial report (≠ NIS2 24h): timestamp of submission to the competent authority (Art. 19(4)(a)).'
     data_recovery_strategy: 'Strategy for restoring data and services; cross-reference to the BCM continuity plan (DORA Art. 11(2)).'
     initial_report_submitted_at_dora: 'Time the initial notification was submitted to the competent authority. DORA Art. 19 with RTS: no later than 4 hours after classification as major and 24 hours after becoming aware.'

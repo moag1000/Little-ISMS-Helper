@@ -209,7 +209,7 @@ class InternalAudit
      * UI transitions go through `conducted`.
      */
     #[ORM\Column(length: 50)]
-    #[Groups(['audit:read', 'audit:write'])]
+    #[Groups(['audit:read'])]
     #[Assert\NotBlank(message: 'internal_audit.validation.status_required')]
     #[Assert\Choice(
         choices: ['planned', 'conducted', 'reported', 'approved', 'rejected', 'closed', 'cancelled', 'in_progress', 'completed', 'postponed'],

@@ -146,7 +146,6 @@ audit:
         audit_team_members: 'Typed selection from master-data Persons (Data Reuse).'
         audit_team_legacy: 'Legacy free-text. Read-only for migration display — use the Persons multi-select instead.'
         scoped_framework: 'If audit is limited to a framework (e.g. ISO 27001 only)'
-        audited_subsidiaries: 'For corporate audits: Which subsidiaries are included?'
         findings: 'Deprecated — please create structured Audit Findings via the finding list.'
         recommendations: 'Deprecated — please create structured Audit Findings via the finding list.'
         conclusion: 'Deprecated — please create structured Audit Findings via the finding list.'

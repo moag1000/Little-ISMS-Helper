@@ -94,7 +94,6 @@ business_process:
       manuelle Prozesse, alternative Lieferanten)
     supporting_assets: Verknüpfte IT-Assets, Infrastruktur und Ressourcen, die den
       Prozess unterstützen
-    identified_risks: Verknüpfte Risiken, die diesen Prozess gefährden könnten
     process_owner_user: Prozesseigentümer aus der Benutzerverwaltung.
     process_owner_person: 'Person ohne System-Login als Prozessverantwortlichen wählen. Reihenfolge der Anzeige in Listen&#58; User &gt; Person &gt; Legacy-Freitext.'
     process_owner_deputies: 'Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.'

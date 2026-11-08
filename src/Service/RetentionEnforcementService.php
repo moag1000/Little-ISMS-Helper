@@ -31,6 +31,10 @@ use Psr\Log\LoggerInterface;
  */
 final class RetentionEnforcementService
 {
+    /** The scheduler runs the sweep on Sundays at this hour (see App\Schedule). */
+    public const int SWEEP_WEEKDAY = 0;
+    public const int SWEEP_HOUR = 4;
+
     /**
      * entity-type key (as stored in the policy JSON) => [entity class, age field].
      * Only these types can be auto-enforced; any other configured type is
@@ -48,7 +52,7 @@ final class RetentionEnforcementService
      *
      * @var array<string, array{0: class-string, 1: string}>
      */
-    private const array REGISTRY = [
+    public const array REGISTRY = [
         'asset'               => [Asset::class, 'createdAt'],
         'risk'                => [Risk::class, 'createdAt'],
         'incident'            => [Incident::class, 'createdAt'],

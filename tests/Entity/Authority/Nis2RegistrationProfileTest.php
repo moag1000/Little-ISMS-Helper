@@ -35,14 +35,11 @@ final class Nis2RegistrationProfileTest extends TestCase
     }
 
     #[Test]
-    public function nextDueAtIsSetToOneYearOnCreation(): void
+    public function aNewProfileIsDueAtOnce(): void
     {
-        $before = new DateTimeImmutable('+364 days');
         $profile = new Nis2RegistrationProfile();
-        $after = new DateTimeImmutable('+366 days');
 
-        self::assertGreaterThan($before, $profile->getNextDueAt());
-        self::assertLessThan($after, $profile->getNextDueAt());
+        self::assertEquals($profile->getCreatedAt(), $profile->getNextDueAt());
     }
 
     #[Test]

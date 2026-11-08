@@ -53,7 +53,6 @@ control:
     target_date: By when should the control be fully implemented?
     next_review_date: When should this control be reviewed next?
     protected_assets: Which assets are protected by this control?
-    responsible_person_user: Responsible person from user management.
     responsible_person_contact: 'Select a person without a system login as responsible person. Priority&#58; User &gt; Person &gt; legacy.'
     responsible_deputies: Additional persons sharing responsibility or deputising. Multiple selection possible.
     framework_references_json: 'JSON format: {"iso27001":["A.5.1"],"bsi":["ORP.1.A1"],"nist":["AC-1"],"dora":["Art. 6"]}'

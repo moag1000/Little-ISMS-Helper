@@ -61,7 +61,6 @@ vulnerability:
         severity: 'Schweregrad basierend auf CVSS-Score oder manueller Bewertung'
         cvss_score: 'CVSS-Score von 0.0 bis 10.0'
         cvss_vector: 'CVSS v3.1 Vektor-String für detaillierte Bewertung'
-        source: 'Quelle der Schwachstelleninformation'
         affected_assets: 'Assets, die von dieser Schwachstelle betroffen sind'
         published_date: 'Datum der öffentlichen Bekanntgabe'
         remediation_deadline: 'Frist für die Behebung der Schwachstelle'

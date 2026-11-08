@@ -109,7 +109,6 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
             // Facilitator: User or Person.
             ->add('facilitatorUser', OwnerUserType::class, [
                 'label' => 'bc_exercises.field.facilitator_user',
-                'help' => 'bc_exercises.help.facilitator_user',
                 'choice_label' => fn(User $u): string => trim(($u->getFirstName() ?? '') . ' ' . ($u->getLastName() ?? '')) ?: ($u->getEmail() ?? ''),
                 'placeholder' => 'bc_exercises.placeholder.facilitator_user',
                 'required' => false,

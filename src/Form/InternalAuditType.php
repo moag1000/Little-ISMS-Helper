@@ -230,7 +230,6 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
                     'size' => 8,
                     'data-corporate-subsidiaries' => '1',
                 ],
-                'help' => 'audit.help.audited_subsidiaries',
             ])
             // Doppelpflege-Deprecation —
             // findings/recommendations/conclusion freetext fields are disabled.

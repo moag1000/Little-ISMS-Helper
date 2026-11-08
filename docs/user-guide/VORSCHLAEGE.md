@@ -97,4 +97,7 @@ und ob ersetzt wurde, nie mit Inhalt. Je Lauf schreibt die KI höchstens zehn Vo
 pro Einsatzzweck und fragt zu jedem Datensatz nur einmal; „Entwurf vorschlagen“ fragt
 genau dann, wenn Sie es anfordern.
 
+Entwürfe kann auch der eigene KI-Assistent einer Person einreichen (Claude Desktop/Code über MCP,
+[Anleitung](KI_ASSISTENT_MCP.md)); sie stehen mit Modell „MCP: <Token-Bezeichnung>“ in derselben Liste.
+
 Technik und neue Vorschlagsarten: `docs/features/SUGGESTION_QUEUE.md`.

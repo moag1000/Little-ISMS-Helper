@@ -514,7 +514,6 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                 ->add('replicationOfImpact', CheckboxType::class, [
                     'label' => 'incident.field.replication_of_impact',
                     'required' => false,
-                    'help' => 'incident.help.replication_of_impact',
                 ])
                 ->add('initialReportSubmittedAt', DateTimeType::class, [
                     'widget' => 'single_text',

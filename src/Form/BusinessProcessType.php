@@ -302,7 +302,6 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                 'attr' => ['size' => 5,
                     'data-controller' => 'tom-select',
                 ],
-                'help' => 'business_process.help.identified_risks',
             ])
         ;
     }

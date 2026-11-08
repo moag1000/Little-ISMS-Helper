@@ -90,7 +90,6 @@ bc_exercises:
         participants_legacy: 'Legacy free-text — read-only for migration. Prefer the persons multi-select.'
         participant_persons: 'Structured selection from master-data Persons — Data Reuse (P-15).'
         facilitator: 'Person leading and moderating the exercise'
-        facilitator_user: 'Facilitator/lead as an application user.'
         facilitator_person: 'Facilitator/lead as a master-data Person (e.g. external BCM consultant).'
         exercise_leader_user: 'Exercise leader with an application login. Optional when leadership is internal and account-tracked.'
         exercise_leader_person: 'Exercise leader as a master-data Person — typically an external BCM consultant without a system login.'

@@ -160,10 +160,28 @@ class Nis2RegistrationProfile
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
+    /** A new profile is due at once: an in-scope entity registers within three months (BSIG § 33 (1)). */
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
-        $this->nextDueAt = new DateTimeImmutable('+1 year');
+        $this->nextDueAt = $this->createdAt;
+    }
+
+    /**
+     * A profile for the organisation. A registration recorded on the
+     * organisation already (Tenant.nis2RegisteredAt) counts as the last
+     * report; the next confirmation is due a year later.
+     */
+    public static function forTenant(Tenant $tenant): self
+    {
+        $profile = (new self())->setTenant($tenant);
+        $registered = $tenant->getNis2RegisteredAt();
+        if ($registered !== null) {
+            $profile->setLastReportedAt($registered);
+            $profile->setNextDueAt($registered->modify('+1 year'));
+        }
+
+        return $profile;
     }
 
     #[ORM\PreUpdate]

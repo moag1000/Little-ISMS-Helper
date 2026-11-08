@@ -12,6 +12,7 @@ use App\Repository\Notification\NotificationRuleRepository;
 use App\Repository\Notification\SlaDeadlineMonitorRepository;
 use App\Repository\TenantRepository;
 use App\Service\AuditLogger;
+use App\Service\Deadline\Source\ReportingDutySource;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -20,7 +21,9 @@ use Psr\Log\LoggerInterface;
  * SLA Deadline Watcher
  *
  * Cron-driven service that iterates over all tenants and:
- *   1. Fires approaching-deadline notifications at each configured checkpoint.
+ *   1. Fires approaching-deadline notifications at each configured checkpoint
+ *      (not for statutory reports of incidents and breaches: those reach
+ *      people through ReportingDutySource and the one reminder path).
  *   2. Marks overdue monitors as 'missed' and fires a critical notification.
  *
  * Called by ProcessTimedWorkflowsCommand, which is recommended to run every 15 minutes.
@@ -105,6 +108,11 @@ final class SlaDeadlineWatcher
         $approaching = $this->monitorRepository->findApproachingDeadlines($tenant, self::LOOKAHEAD_HOURS);
 
         foreach ($approaching as $monitor) {
+            if ($this->isReportingDuty($monitor)) {
+                // Statutory reports reach people through the one reminder path
+                // (ReportingDutySource → urgent mail + My Day), not twice.
+                continue;
+            }
             if ($this->fireApproachingCheckpoint($monitor, $tenant)) {
                 $approached++;
             }
@@ -123,6 +131,12 @@ final class SlaDeadlineWatcher
         }
 
         return ['approached' => $approached, 'missed' => $missed];
+    }
+
+    /** Reports of incidents and breaches (NIS-2, DORA, GDPR) — owned by ReportingDutySource. */
+    private function isReportingDuty(SlaDeadlineMonitor $monitor): bool
+    {
+        return in_array($monitor->getEntityType(), ReportingDutySource::ENTITY_TYPES, true);
     }
 
     /**

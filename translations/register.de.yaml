@@ -37,6 +37,12 @@ register:
         bcm_officer: BCM-Beauftragte
         dpo: Datenschutz
     scope:
+        col_inventory: 'Inventar'
+        col_in: 'Im Geltungsbereich'
+        col_out: 'Außerhalb'
+        exclusions: 'Ausschlüsse'
+        no_statement: 'Im Kontext ist noch kein Geltungsbereich beschrieben.'
+        strip: 'Geltungsbereich'
         title: Geltungsbereich (ISO 27001 4.3)
         hint: Gezählt aus den Inventaren. Was außerhalb liegt, markieren Sie am Datensatz.
         in: '%count% im Geltungsbereich'

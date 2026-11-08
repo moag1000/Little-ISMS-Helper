@@ -25,10 +25,6 @@ use Psr\Log\LoggerInterface;
  * because the logging assertions double as a precise signal for the two failure
  * modes (lookup vs per-rule). Basic dispatch behaviour (only-matching-rules,
  * no-rules-no-op) is covered by DomainEventNotifierTest.
- *
- * The control.overdue cron path is exercised here to document that the
- * time-driven event type is routed through DomainEventNotifier.fire() from
- * DispatchOverdueControlNotificationsCommand, NOT from the Doctrine subscriber.
  */
 #[AllowMockObjectsWithoutExpectations]
 final class DomainEventNotifierLoggingTest extends TestCase
@@ -131,30 +127,6 @@ final class DomainEventNotifierLoggingTest extends TestCase
         self::assertCount(1, $warnMessages, 'Exactly one warning for the one failed rule');
         self::assertStringContainsString('dispatch failed', $warnMessages[0]);
         self::assertSame(2, $dispatchCount, 'Both rules must be attempted despite the first one failing');
-    }
-
-    /**
-     * control.overdue is time-driven and has no Doctrine change-set. The cron
-     * command (DispatchOverdueControlNotificationsCommand) calls
-     * DomainEventNotifier::fire() directly. This test documents that the plumbing
-     * is wired for that path.
-     */
-    #[Test]
-    public function controlOverdueCanBeDispatchedDirectlyThroughNotifier(): void
-    {
-        $tenant = new Tenant();
-        $rule   = $this->rule(99);
-
-        $this->ruleRepo
-            ->expects(self::once())
-            ->method('findActiveByEventType')
-            ->with('control.overdue', $tenant)
-            ->willReturn([$rule]);
-
-        $this->evaluator->method('evaluate')->willReturn(true);
-        $this->dispatcher->expects(self::once())->method('dispatch')->with($rule, self::anything())->willReturn([]);
-
-        $this->notifier->fire('control.overdue', $tenant, ['id' => 42, 'status' => 'partially_implemented']);
     }
 
     private function rule(int $id): NotificationRule

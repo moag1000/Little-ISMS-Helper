@@ -123,7 +123,7 @@ class SlaDeadlineMonitorRepository extends ServiceEntityRepository
             ->andWhere('s.status IN (:open)')
             ->andWhere('s.satisfiedAt IS NULL')
             ->setParameter('tenant', $tenant)
-            ->setParameter('types', ['Incident', 'DataBreach'])
+            ->setParameter('types', \App\Service\Deadline\Source\ReportingDutySource::ENTITY_TYPES)
             ->setParameter('open', [SlaDeadlineStatus::Active->value, SlaDeadlineStatus::Missed->value])
             ->orderBy('s.deadlineAt', \SortDirection::Ascending)
             ->getQuery()

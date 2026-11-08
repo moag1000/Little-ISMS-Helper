@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Controller\DPIAController;
 use App\Controller\IncidentController;
 use App\Controller\ProcessingActivityController;
 use App\Controller\TrainingController;
@@ -26,12 +25,7 @@ final class ModuleGatedJsonReturnTypeTest extends TestCase
      */
     public static function jsonActions(): iterable
     {
-        yield 'incident bcm impact' => [IncidentController::class, 'bcmImpactApi'];
         yield 'incident gdpr wizard result' => [IncidentController::class, 'gdprWizardResult'];
-        yield 'dpia validate' => [DPIAController::class, 'validate'];
-        yield 'processing activity search' => [ProcessingActivityController::class, 'search'];
-        yield 'processing activity compliance report' => [ProcessingActivityController::class, 'complianceReport'];
-        yield 'processing activity validate' => [ProcessingActivityController::class, 'validate'];
         yield 'processing activity bulk status' => [ProcessingActivityController::class, 'bulkStatusChange'];
         yield 'training bulk assign' => [TrainingController::class, 'bulkAssign'];
     }

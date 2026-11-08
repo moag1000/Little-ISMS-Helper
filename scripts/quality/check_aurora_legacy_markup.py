@@ -12,6 +12,8 @@ Patterns and their Aurora replacement:
   legacy_page_header  _components/_page_header         → _fa_page_header
   bs_modal            data-bs-toggle="modal", bootstrap.Modal → fa-modal dispatcher
   bs_badge            .badge + bg-*/text-bg-*          → _badge / fa-status-pill
+  bs_badge_literal    any class="badge …" / "badge-{{ x }}" (also single quotes, Twig-built
+                      tones) → fa-status-pill fa-status-pill--<tone>
   bs_alert            .alert.alert-*                   → _fa_alert
   bs_btn              .btn.btn-*                       → fa-cyber-btn
 
@@ -47,6 +49,10 @@ PATTERNS: dict[str, re.Pattern[str]] = {
     # The class may sit inside a Twig ternary ('badge bg-x') and the tone may be computed
     # (bg-{{ tone }}), so a quote counts as a boundary and "{{" as a tone.
     "bs_badge": re.compile(r'class="(?:[^"]*[\s\'])?badge\s(?:[^"]*\s)?(?:text-)?bg-(?:[a-z]|\{\{)'),
+    # Any element whose class list contains the bare word "badge" (or "badge-{{ … }}"): the
+    # tone is computed in Twig so bs_badge misses it. "badges", "badge-matrix-zero" and a project
+    # class like "timeline-action badge-{{ x }}" do not match.
+    "bs_badge_literal": re.compile(r"""class=["'](?:(?:[^"']*\s)?badge[\s"']|badge-\{\{)"""),
     "bs_alert": re.compile(r'class="(?:[^"]*[\s\'])?alert\s(?:[^"]*\s)?alert-(?:[a-z]|\{\{)'),
     "bs_btn": re.compile(r'class="(?:[^"]*[\s\'])?btn\s(?:[^"]*\s)?btn-(?:[a-z]|\{\{)'),
 }
@@ -61,6 +67,8 @@ SKIP_FILES = {
     # Stand-alone recovery page with its own inline CSS (no Bootstrap/Aurora loaded),
     # so its .progress-bar is a local class, not Bootstrap markup.
     "quick_fix/job_progress.html.twig",
+    # Stand-alone printable HTML documents with their own <style> (.badge-success etc. are local).
+    "soa/export.html.twig",
 }
 
 RE_TWIG_COMMENT = re.compile(r"\{#.*?#\}", re.DOTALL)

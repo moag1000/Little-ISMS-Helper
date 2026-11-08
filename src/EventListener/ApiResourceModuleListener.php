@@ -26,7 +26,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * attribute API Platform's routes carry.
  *
  * Priority 7 runs after the firewall (8), so the tenant is resolved from the
- * authenticated user and anonymous callers still get the 401 first.
+ * authenticated user and anonymous callers still get the 401 first. It also
+ * checks sub-requests, because the MCP gateway calls API operations that way.
  */
 #[AsEventListener(event: KernelEvents::REQUEST, method: 'onRequest', priority: 7)]
 final readonly class ApiResourceModuleListener
@@ -39,10 +40,8 @@ final readonly class ApiResourceModuleListener
 
     public function onRequest(RequestEvent $event): void
     {
-        if (!$event->isMainRequest()) {
-            return;
-        }
-
+        // Sub-requests too: the MCP gateway runs API operations as sub-requests,
+        // and a module switch has to hold there as well.
         $resourceClass = $event->getRequest()->attributes->get('_api_resource_class');
         if (!is_string($resourceClass) || !class_exists($resourceClass)) {
             return;

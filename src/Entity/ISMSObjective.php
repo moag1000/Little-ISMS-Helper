@@ -23,6 +23,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Service\OwnerResolver;
+use App\Util\Cadence;
+use App\Util\LegalPeriod;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Validator\Constraint\SameTenantOwner;
@@ -92,6 +94,26 @@ class ISMSObjective
     private ?string $responsibleForMeasurement = null;
 
     /**
+     * ISO 27001 6.2 / 9.1: the person who measures (structured; the free text
+     * above is legacy and only shown while still filled). Receives the
+     * measurement deadline ({@see \App\Service\Deadline\Source\ObjectiveMeasurementSource}).
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'measurement_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[SameTenantOwner]
+    private ?Person $measurementPerson = null;
+
+    /**
+     * ISO 27001 9.1 c/d: when the current value was last measured. Set when the
+     * value changes or when the measurement is confirmed; the next measurement
+     * is due one cadence later.
+     */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['isms_objective:read'])]
+    private ?DateTimeImmutable $lastMeasuredAt = null;
+
+    /**
      * ISO 27001 §6.2.b — wann gemessen wird.
      */
     #[ORM\Column(length: 32, nullable: true)]
@@ -158,7 +180,7 @@ class ISMSObjective
     private ?Location $kpiLocation = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Groups(['isms_objective:read'])]
     #[Assert\Choice(choices: ['not_started', 'in_progress', 'achieved', 'delayed', 'cancelled'])]
     private string $status = 'in_progress';
 
@@ -264,7 +286,58 @@ public function __construct()
 
     public function setCurrentValue(?string $currentValue): static
     {
+        if ($currentValue !== null && $currentValue !== '' && $currentValue !== $this->currentValue) {
+            $this->lastMeasuredAt = new DateTimeImmutable('today');
+        }
         $this->currentValue = $currentValue;
+        return $this;
+    }
+
+    public function getMeasurementPerson(): ?Person
+    {
+        return $this->measurementPerson;
+    }
+
+    public function setMeasurementPerson(?Person $measurementPerson): static
+    {
+        $this->measurementPerson = $measurementPerson;
+        return $this;
+    }
+
+    /** Who measures: the person, else the legacy free text, else the objective's owner. */
+    public function getEffectiveResponsibleForMeasurement(): ?string
+    {
+        $legacy = trim((string) $this->responsibleForMeasurement);
+
+        return $this->measurementPerson?->getFullName()
+            ?? ($legacy !== '' ? $legacy : $this->getEffectiveResponsiblePerson());
+    }
+
+    /**
+     * ISO 27001 9.1: next manual measurement — last measurement (or creation)
+     * plus the cadence. Null for KPI-linked objectives (the tool measures),
+     * finished ones and cadences without a month interval.
+     */
+    public function getNextMeasurementDue(): ?DateTimeImmutable
+    {
+        $months = Cadence::months($this->measurementFrequency);
+        $since = $this->lastMeasuredAt ?? $this->createdAt;
+        if ($months === null || $this->kpiKey !== null || $since === null
+            || in_array($this->status, ['achieved', 'cancelled'], true)) {
+            return null;
+        }
+
+        return LegalPeriod::addMonths(DateTimeImmutable::createFromInterface($since), $months);
+    }
+
+    public function getLastMeasuredAt(): ?DateTimeImmutable
+    {
+        return $this->lastMeasuredAt;
+    }
+
+    public function setLastMeasuredAt(?DateTimeImmutable $lastMeasuredAt): static
+    {
+        $this->lastMeasuredAt = $lastMeasuredAt;
         return $this;
     }
 

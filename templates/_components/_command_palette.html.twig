@@ -169,7 +169,8 @@
                     autocomplete="off"
                     spellcheck="false"
                 >
-                <kbd class="command-palette-hint">ESC</kbd>
+                <button type="button" class="command-palette-hint" data-action="command-palette#close"
+                        aria-label="{{ 'ui.keyboard.close'|trans({}, 'ui') }}">ESC</button>
             </div>
 
             <div class="command-palette-results" id="command-palette-results" role="listbox"

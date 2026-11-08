@@ -1,0 +1,27 @@
+{#
+ # ISO 27001 4.3 for documents that describe the ISMS (SoA PDF, management
+ # reports): scope statement and exclusions from the context, plus what the
+ # inventories count inside / outside the scope. Plain markup, PDF-safe.
+ # Params: scope (isms_scope()), heading ('h2' | 'h3', default 'h3').
+ #}
+{% if scope %}
+    {% set _h = heading ?? 'h3' %}
+    <div class="no-break mb-large">
+        <{{ _h }}>{{ 'register.scope.title'|trans({}, 'register') }}</{{ _h }}>
+        <p>{{ scope.statement ? scope.statement|nl2br : 'register.scope.no_statement'|trans({}, 'register') }}</p>
+        {% if scope.exclusions %}
+            <p><strong>{{ 'register.scope.exclusions'|trans({}, 'register') }}:</strong> {{ scope.exclusions|nl2br }}</p>
+        {% endif %}
+        <table>
+            <tbody>
+            {% for key, s in scope.counts %}
+                <tr>
+                    <th scope="row">{{ ('register.scope.' ~ key)|trans({}, 'register') }}</th>
+                    <td>{{ 'register.scope.in'|trans({'%count%': s.in}, 'register') }}</td>
+                    <td>{{ 'register.scope.out'|trans({'%count%': s.out}, 'register') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

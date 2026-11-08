@@ -172,7 +172,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find DPIAs awaiting DPO consultation (Art. 35(4))
+     * Find DPIAs awaiting DPO consultation (Art. 35(2))
      */
     public function findAwaitingDPOConsultation(Tenant $tenant): array
     {

@@ -33,13 +33,18 @@ Freigaben und Vier-Augen-Anfragen sind aufgeklappt, alle anderen zeigen nur den 
 | Standorte mit offenen Prüfungen | Eigene Standorte (als verantwortliche Person eingetragen) mit offenen Prüfungen der Standortkarte, je Prüfung mit Normbezug; Link zum Steckbrief. Nur mit Modul Standorte, siehe `STANDORTKARTE.md` |
 | Meldepflichten | Behördenmeldungen mit Stundenfrist: NIS-2 (24 h / 72 h / 1 Monat), DORA (bis 24 h / 72 h / 1 Monat), DSGVO Art. 33 (72 h ab Entdeckung); „Als gemeldet markieren“ am Vorfall schließt die Frist |
 | Pflichtenkalender | Wiederkehrende Pflichten ohne Datum am Datensatz (Risikoakzeptanzkriterien, SoA-Review, BIA, BC-Übung, Schlüsselrotation, TOM-Review, NIS-2-Leitungsschulung, DORA-Register …), 30 Tage vor Fälligkeit; „Erledigt“ mit Nachweis unter Pflichtenkalender |
+| Leitungsentscheidungen vorbereiten | Für den ISB: Billigungen der Leitung, die fehlen oder in 60 Tagen enden (Leitlinie, Risikokriterien, SoA, Ziele, Ressourcen, NIS-2-Maßnahmen); der Link öffnet die Vorlage |
+| Fristen aus Datensätzen | Einwilligungen laufen ab (DSB), Zugang einer Person endet (Admins, die Person selbst informiert), Patch-Frist, Lieferantenvertrag endet (90 Tage), Krisenstab-Training, Team läuft aus, TISAX-Prototypenschutz, eigene Mappings, TLPT, Exit-Plan-Test (DORA), Maßnahmen mit Fälligkeit, angekündigte Löschungen nach Aufbewahrungsfrist (14 Tage vorher) |
 | Alva-Empfehlungen | Alvas Hinweise der Priorität 1; die übrigen stehen im Alva-Posteingang |
 | Policy-Bestätigungen, Audit-Findings, Betroffenenanfragen, Korrekturmaßnahmen, Risiko-Akzeptanzen und -Reviews, Dokument-Reviews und -Freigaben, Nachweis-Reverifizierung, Wirksamkeitsprüfungen, Lieferanten-Reassessments, DSFA- und BC-Plan-Reviews, Schulungen, Vorfälle, Datenpannen in Bearbeitung, kritische Schwachstellen, Audit-Checklisten, Change Requests, Management-Reviews, gestoppte Assessments, kritische Framework-Lücken | jeweils die mir zugewiesenen bzw. fälligen Punkte; Module ohne Aktivierung liefern nichts |
 
 Audit-Findings erscheinen bei der zugewiesenen Person, Dokument-Reviews beim
 Dokument-Eigner (verknüpfte Person mit Benutzerkonto, sonst die hochladende Person).
 Betroffenenanfragen zeigen ihre Frist (bei Verlängerung die verlängerte) und
-verschwinden, sobald sie erledigt oder abgelehnt sind.
+verschwinden, sobald sie erledigt oder abgelehnt sind; drei Tage vor Fristende kommt
+zusätzlich eine Eilmail. Meldepflichten erscheinen bei der Person, die den Vorfall
+verantwortet, und immer auch beim ISB. Ein anstehendes Management-Review sieht auch
+die Leitung.
 
 Freigaben tragen den Namen des Datensatzes ("Risiko: Kundendaten Online-Shop"), der
 Workflow und der aktuelle Schritt stehen darunter.
@@ -73,6 +78,21 @@ Bildschirme ausgelegt (bis 575 px Breite):
   untereinander (Entscheidung oben, Abbrechen unten). Der Textbereich scrollt für sich,
   die Schaltflächen bleiben auch bei offener Tastatur sichtbar; Eingaben in 16 px, damit
   iOS nicht hineinzoomt. Das gilt für alle Bestätigungs- und Einstellungsdialoge der App.
+
+### Navigation auf dem Smartphone (bis 767 px)
+
+- Kopfzeile: ☰ Menü, Logo, Suche, **Mein Tag** (mit Zähler, ein Tipp von jeder Seite),
+  Benachrichtigungen, Farbmodus, Nutzermenü. Sie bleibt beim Scrollen oben stehen.
+- ☰ öffnet die Seitenleiste unter der Kopfzeile; die Seite dahinter scrollt nicht mit.
+  Schließen per ✕, Tipp daneben, Wischen nach links oder Tipp auf einen Eintrag.
+- Ein Tipp auf einen Bereich (z. B. "Assets & Risiken") öffnet dessen Untermenü über die
+  ganze Breite; der Pfeil ← oben führt zurück zur Seitenleiste.
+- Suche: Fenster oben am Bildschirmrand, damit die Treffer über der Tastatur bleiben;
+  ✕ schließt (die iOS-Tastatur hat kein ESC).
+- Deutsch/English steht im Nutzermenü; das Menü scrollt, wenn es länger als der
+  Bildschirm ist.
+- Alle Tippziele sind mindestens 44 px groß. Das Wischen vom linken Rand bleibt die
+  Zurück-Geste von Safari und öffnet das Menü nicht.
 
 Andere Seiten (Listen, Tabellen) scrollen auf dem Smartphone weiterhin seitlich; eine
 eigene Kartenansicht dafür ist bewusst nicht vorgesehen.

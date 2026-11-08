@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
+use App\Entity\ISMSObjective;
+use App\Entity\User;
 use App\Security\Persona\PersonaResolver;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -25,6 +27,13 @@ final class IsmsSteeringVoter extends Voter
 {
     public const string EDIT = 'ISMS_STEERING_EDIT';
 
+    /**
+     * Record a measurement of one objective (subject: ISMSObjective): the
+     * steering roles plus the people named on the objective as measuring or
+     * responsible — they get the measurement deadline, so they can close it.
+     */
+    public const string MEASURE = 'ISMS_OBJECTIVE_MEASURE';
+
     /** Roles that steer the ISMS (role hierarchy applies). */
     public const array STEERING_ROLES = ['ROLE_ISB', 'ROLE_CISO'];
 
@@ -34,13 +43,27 @@ final class IsmsSteeringVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::EDIT;
+        return $attribute === self::EDIT || ($attribute === self::MEASURE && $subject instanceof ISMSObjective);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
+        if (!$user instanceof UserInterface) {
+            return false;
+        }
+        if ($this->personaResolver->reaches($user, ...self::STEERING_ROLES)) {
+            return true;
+        }
+        if ($attribute !== self::MEASURE || !$user instanceof User || !$subject instanceof ISMSObjective
+            || $subject->getTenant()?->getId() !== $user->getTenant()?->getId()) {
+            return false;
+        }
 
-        return $user instanceof UserInterface && $this->personaResolver->reaches($user, ...self::STEERING_ROLES);
+        return in_array($user, [
+            $subject->getMeasurementPerson()?->getLinkedUser(),
+            $subject->getResponsiblePersonUser(),
+            $subject->getResponsiblePersonRef()?->getLinkedUser(),
+        ], true);
     }
 }

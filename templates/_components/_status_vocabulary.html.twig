@@ -34,6 +34,11 @@
         action_item: { open: 'neutral', planned: 'primary', in_progress: 'primary', done: 'success', dismissed: 'neutral' },
         requirement_result: { not_applicable: 'neutral', not_met: 'danger', partial: 'warning', met: 'success', exceeded: 'success' },
         suggestion: { pending: 'warning', accepted: 'success', rejected: 'danger', superseded: 'neutral' },
+        notification_delivery: { sent: 'success', delivered: 'success', failed: 'danger', pending: 'warning', retrying: 'warning', archived: 'neutral' },
+        bc_exercise: { planned: 'primary', in_progress: 'warning', completed: 'success', cancelled: 'neutral' },
+        bsi_tier: { basis: 'primary', standard: 'primary', kern: 'danger' },
+        bsi_gap_state: { gedeckt: 'success', partiell: 'warning', iso_offen: 'primary', ungemappt_unbewertet: 'neutral', ungemappt_eigenstaendig: 'neutral' },
+        bsi_trust: { amtlich: 'success', amtlich_gestuetzt: 'success', ki_validiert: 'primary', bestaetigt: 'primary', heuristisch: 'warning' },
         suggestion_origin: { rule: 'primary', inheritance: 'primary', import: 'neutral', ai: 'accent' },
     } %}
     {{- (_tones[vocabulary] ?? {})[status] ?? 'neutral' -}}

@@ -806,26 +806,6 @@ class IncidentControllerTest extends TestCase
     }
 
     /**
-     * Test BCM impact API endpoint
-     */
-    #[Test]
-    public function testBcmImpactApi(): void
-    {
-        $incident = $this->createIncident(1, 'high', 'investigating');
-        $analysis = ['totalImpact' => 50000];
-
-        $this->incidentBCMImpactService->method('analyzeBusinessImpact')
-            ->willReturn($analysis);
-
-        $request = new Request(['downtime_hours' => '24']);
-        $response = $this->controller->bcmImpactApi($incident, $request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $data = json_decode($response->getContent(), true);
-        $this->assertEquals(50000, $data['totalImpact']);
-    }
-
-    /**
      * Test auto-detect processes
      */
     #[Test]

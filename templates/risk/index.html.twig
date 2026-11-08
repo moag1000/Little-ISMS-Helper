@@ -22,6 +22,9 @@
         { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), variant: 'ghost', icon: 'nav-grid', href: path('app_risk_matrix') }
     ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_risk_register') }] : [])
      |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'risk', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
+     |merge([
+        { label: 'risk.modern.header.action.export_pdf'|trans({}, 'risk'), href: path('app_risk_export_pdf') ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', attrs: { 'data-turbo': 'false' } }
+     ])
 }) }}
     {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: page.total } %}
 {% set _global_hints = alva_hints('risk_index') %}
