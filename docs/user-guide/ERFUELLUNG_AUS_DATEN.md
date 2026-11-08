@@ -74,7 +74,7 @@ Audit-Log.
 Übersteuerungen entstehen auch automatisch:
 
 - **Altbestand:** Ein Wert, der vor der Regel von Hand gepflegt wurde und von ihr abweicht, bleibt erhalten. Er wird als Übersteuerung „Altbestand“ geführt und ist in 90 Tagen zu prüfen.
-- **Zertifikat:** Ein hochgeladenes Zertifikat (Compliance > Zertifikate) setzt 100 % bis zu seinem Ablaufdatum.
+- **Zertifikat:** Ein hochgeladenes Zertifikat (Compliance > Zertifikate) setzt 100 % mit Status „Verifiziert“ bis zu seinem Ablaufdatum.
 - **Vererbung:** Eine bestätigte Vererbung mit eigener Begründung gilt ein Jahr.
 
 ## Liste „Übersteuerungen“

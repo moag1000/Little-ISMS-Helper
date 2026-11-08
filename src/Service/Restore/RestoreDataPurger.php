@@ -74,12 +74,22 @@ class RestoreDataPurger
             ));
         }
 
+        // Instance data (roles, permissions, system settings, MFA tokens, sessions, …) has
+        // no tenant association and is never part of an organisation restore — the file
+        // is untrusted, so a row is not restored just because it lacks a tenant_id.
+        $entityClass = $entityName !== null ? 'App\\Entity\\' . $entityName : null;
+        if ($entityClass !== null && class_exists($entityClass)
+            && !(new RestoreTenantGuard($this->entityManager))->isRestorableInScope($entityName, $entityClass)
+        ) {
+            return [];
+        }
+
         return array_values(array_filter($entities, function (array $data) use ($scopeIds): bool {
             $tenantIdData = $data['tenant_id'] ?? null;
 
             if ($tenantIdData === null) {
-                // Entity has no tenant field in the backup — include it (global entity like Role)
-                return true;
+                // A tenant row without its organisation is not restored into one.
+                return false;
             }
 
             // tenant_id is stored as ['id' => X] (association format from serializeEntities)

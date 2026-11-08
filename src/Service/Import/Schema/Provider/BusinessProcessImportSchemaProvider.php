@@ -127,12 +127,12 @@ final class BusinessProcessImportSchemaProvider implements ImportSchemaProviderI
                 new ImportFieldSpec(
                     name: 'financialImpactPerHour',
                     setter: 'setFinancialImpactPerHour',
-                    type: ImportFieldSpec::TYPE_FLOAT,
+                    type: ImportFieldSpec::TYPE_DECIMAL,
                 ),
                 new ImportFieldSpec(
                     name: 'financialImpactPerDay',
                     setter: 'setFinancialImpactPerDay',
-                    type: ImportFieldSpec::TYPE_FLOAT,
+                    type: ImportFieldSpec::TYPE_DECIMAL,
                 ),
 
                 // ── BIA impact dimensions (1-5 scale) ───────────────────────────

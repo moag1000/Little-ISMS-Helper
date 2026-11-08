@@ -122,8 +122,15 @@ final class PolicyFulfillmentSyncServiceTest extends TestCase
         $em ??= $this->createMock(EntityManagerInterface::class);
 
         $derivation = $this->createStub(FulfillmentDerivationService::class);
+        // Mirrors the real writer: the status follows the percentage.
         $derivation->method('setManual')->willReturnCallback(
-            static fn (ComplianceRequirementFulfillment $f, int $percentage): bool => (bool) $f->setFulfillmentPercentage($percentage),
+            static fn (ComplianceRequirementFulfillment $f, int $percentage): bool => (bool) $f
+                ->setFulfillmentPercentage($percentage)
+                ->setStatus(match (true) {
+                    $percentage >= 100 => 'implemented',
+                    $percentage > 0 => 'in_progress',
+                    default => 'not_started',
+                }),
         );
 
         return new PolicyFulfillmentSyncService($fulfillmentService, $requirementRepo, $em, $derivation);

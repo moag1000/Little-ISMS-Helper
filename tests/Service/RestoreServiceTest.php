@@ -884,6 +884,7 @@ class RestoreServiceTest extends TestCase
             fn(string $name): bool => $name === 'tenant'
         );
         $userMetadata->method('getAssociationMappings')->willReturn([]);
+        $userMetadata->method('hasAssociation')->willReturnCallback(fn (string $name): bool => $name === 'tenant');
         $userMetadata->generatorType = ClassMetadata::GENERATOR_TYPE_AUTO;
         $userMetadata->idGenerator   = new \Doctrine\ORM\Id\IdentityGenerator();
 
@@ -965,6 +966,7 @@ class RestoreServiceTest extends TestCase
             fn(string $name): bool => $name === 'tenant'
         );
         $userMetadata->method('getAssociationMappings')->willReturn([]);
+        $userMetadata->method('hasAssociation')->willReturnCallback(fn (string $name): bool => $name === 'tenant');
         $userMetadata->generatorType = ClassMetadata::GENERATOR_TYPE_AUTO;
         $userMetadata->idGenerator   = new \Doctrine\ORM\Id\IdentityGenerator();
 

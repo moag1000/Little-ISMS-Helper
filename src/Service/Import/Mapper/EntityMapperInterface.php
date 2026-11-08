@@ -26,10 +26,14 @@ interface EntityMapperInterface
     /**
      * Validate a parsed row array against the entity's business rules.
      *
-     * @param array<string, mixed> $row
+     * The same `$columnMapping` as {@see toEntityData()} — validation, lookup and
+     * mapping must read the same cells.
+     *
+     * @param array<string, mixed>       $row
+     * @param array<string, string>|null $columnMapping optional manual column → field override
      * @return array{errors: list<string>, warnings: list<string>}
      */
-    public function validate(array $row): array;
+    public function validate(array $row, ?array $columnMapping = null): array;
 
     /**
      * Map a parsed row to an entity-property array ready for persistence.
@@ -47,17 +51,19 @@ interface EntityMapperInterface
      * Attempt to find an existing entity matching the row (for delta / upsert mode).
      * Match strategy is mapper-specific (e.g. name+type for Asset, identifier for Control).
      *
-     * @param array<string, mixed> $row
+     * @param array<string, mixed>       $row
+     * @param array<string, string>|null $columnMapping optional manual column → field override
      * @return object|null  the existing entity, or null if not found
      */
-    public function findExisting(array $row, Tenant $tenant): ?object;
+    public function findExisting(array $row, Tenant $tenant, ?array $columnMapping = null): ?object;
 
     /**
      * Identity of the row inside one file (its unique-field values), or null when the
      * entity has none. Two new rows with the same key would violate the unique key at
      * flush time and abort the whole commit, so the delta stage rejects the later one.
      *
-     * @param array<string, mixed> $row
+     * @param array<string, mixed>       $row
+     * @param array<string, string>|null $columnMapping optional manual column → field override
      */
-    public function duplicateKey(array $row): ?string;
+    public function duplicateKey(array $row, ?array $columnMapping = null): ?string;
 }

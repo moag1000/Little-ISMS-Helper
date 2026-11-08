@@ -8,6 +8,7 @@ use App\Entity\AccessReviewCampaign;
 use App\Entity\AccessReviewItem;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\BusinessRule\BusinessRuleException;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
@@ -63,6 +64,9 @@ final class AccessReviewCampaignService
 
     /** AuditLogger action constant for bulk decide. */
     public const ACTION_ACCESS_REVIEW_BULK_DECIDE = 'access_review.bulk_decide';
+
+    /** Rule code of the {@see BusinessRuleException} for a self-review. */
+    public const string RULE_SELF_REVIEW = 'access_review_self_review';
 
     /** AuditLogger action constant for XLSX export (chain-of-custody). */
     public const ACTION_ACCESS_REVIEW_EXPORT = 'access_review.export';
@@ -168,6 +172,9 @@ final class AccessReviewCampaignService
         if (!$item->getCampaign()?->isOpen()) {
             throw new \LogicException('Cannot record a decision on a closed campaign.');
         }
+        if (self::isSelfReview($item, $reviewer)) {
+            throw new BusinessRuleException('A reviewer cannot decide on their own access.', self::RULE_SELF_REVIEW);
+        }
 
         $oldDecision = $item->getDecision();
 
@@ -247,8 +254,11 @@ final class AccessReviewCampaignService
      * a double-click on the bulk-bar does not overwrite an earlier deliberate
      * decision. The caller receives decided/skipped counts for flash messaging.
      *
+     * Items about the reviewer's own access are skipped as well (segregation
+     * of duties, ISO 27001 A.5.18) and counted in `self_review`.
+     *
      * @param AccessReviewItem[] $items
-     * @return array{decided: int, skipped: int}
+     * @return array{decided: int, skipped: int, self_review: int}
      */
     public function bulkDecide(
         array $items,
@@ -258,6 +268,7 @@ final class AccessReviewCampaignService
     ): array {
         $decided = 0;
         $skipped = 0;
+        $selfReview = 0;
 
         foreach ($items as $item) {
             // Guard: campaign must be open
@@ -269,6 +280,12 @@ final class AccessReviewCampaignService
             // Only re-decide pending items (idempotency guard)
             if (!$item->isPending()) {
                 $skipped++;
+                continue;
+            }
+
+            if (self::isSelfReview($item, $reviewer)) {
+                $skipped++;
+                $selfReview++;
                 continue;
             }
 
@@ -287,6 +304,7 @@ final class AccessReviewCampaignService
                     'decision' => $decision,
                     'decided'  => $decided,
                     'skipped'  => $skipped,
+                    'self_review' => $selfReview,
                     'reviewer' => $reviewer->getEmail(),
                 ],
                 description: sprintf(
@@ -299,7 +317,21 @@ final class AccessReviewCampaignService
             );
         }
 
-        return ['decided' => $decided, 'skipped' => $skipped];
+        return ['decided' => $decided, 'skipped' => $skipped, 'self_review' => $selfReview];
+    }
+
+    /**
+     * Segregation of duties (ISO 27001 A.5.18): nobody recertifies their own
+     * access — the item's subject user is never its reviewer.
+     */
+    public static function isSelfReview(AccessReviewItem $item, User $reviewer): bool
+    {
+        $subject = $item->getSubjectUser();
+        if (!$subject instanceof User) {
+            return false;
+        }
+
+        return $subject === $reviewer || ($subject->getId() !== null && $subject->getId() === $reviewer->getId());
     }
 
     /**

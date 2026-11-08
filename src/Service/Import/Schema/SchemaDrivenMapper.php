@@ -28,6 +28,12 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 final class SchemaDrivenMapper extends AbstractEntityMapper
 {
+    private const NUMERIC_TYPES = [
+        ImportFieldSpec::TYPE_INT,
+        ImportFieldSpec::TYPE_FLOAT,
+        ImportFieldSpec::TYPE_DECIMAL,
+    ];
+
     public function __construct(
         EntityManagerInterface $em,
         private readonly ModuleConfigurationService $moduleConfiguration,
@@ -56,16 +62,16 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         ));
     }
 
-    public function validate(array $row): array
+    public function validate(array $row, ?array $columnMapping = null): array
     {
         $errors   = [];
         $warnings = [];
 
         foreach ($this->activeFields() as $field) {
-            $raw = $this->resolveField($row, $field->name, null);
+            $raw = $this->resolveField($row, $field->name, $columnMapping);
             $isEmpty = $raw === null || $raw === '';
 
-            if ($field->required && $isEmpty && $this->anyGiven($row, $field->requiredUnlessAny)) {
+            if ($field->required && $isEmpty && $this->anyGiven($row, $field->requiredUnlessAny, $columnMapping)) {
                 continue; // satisfied by an alternative (user OR person OR free text)
             }
 
@@ -78,21 +84,16 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
                 continue;
             }
 
-            if ($field->type === ImportFieldSpec::TYPE_ENUM
-                && $field->enumValues !== []
-                && !in_array(strtolower(trim((string) $raw)), $field->enumValues, strict: true)
-            ) {
+            if ($field->type === ImportFieldSpec::TYPE_ENUM && !$this->enumAccepts($field, $raw)) {
                 $errors[] = sprintf(
                     'Field "%s" value "%s" is not allowed. Allowed: %s.',
                     $field->label ?? $field->name,
                     $raw,
-                    implode(', ', $field->enumValues),
+                    implode(', ', $this->allowedEnumValues($field)),
                 );
             }
 
-            if (in_array($field->type, [ImportFieldSpec::TYPE_INT, ImportFieldSpec::TYPE_FLOAT], strict: true)
-                && !is_numeric((string) $raw)
-            ) {
+            if (in_array($field->type, self::NUMERIC_TYPES, strict: true) && !is_numeric(trim((string) $raw))) {
                 $errors[] = sprintf('Field "%s" must be numeric (got "%s").', $field->label ?? $field->name, $raw);
             }
 
@@ -104,11 +105,14 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         return ['errors' => $errors, 'warnings' => $warnings];
     }
 
-    /** @param list<string> $fieldNames */
-    private function anyGiven(array $row, array $fieldNames): bool
+    /**
+     * @param list<string>               $fieldNames
+     * @param array<string, string>|null $columnMapping
+     */
+    private function anyGiven(array $row, array $fieldNames, ?array $columnMapping): bool
     {
         foreach ($fieldNames as $name) {
-            $value = $this->resolveField($row, $name, null);
+            $value = $this->resolveField($row, $name, $columnMapping);
             if ($value !== null && trim((string) $value) !== '') {
                 return true;
             }
@@ -135,9 +139,12 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
             $value = match ($field->type) {
                 ImportFieldSpec::TYPE_INT      => $this->castInt($raw),
                 ImportFieldSpec::TYPE_FLOAT    => $this->castFloat($raw),
+                ImportFieldSpec::TYPE_DECIMAL  => $this->castDecimal($raw),
                 ImportFieldSpec::TYPE_BOOL     => $this->castBool($raw),
                 ImportFieldSpec::TYPE_DATE     => $this->castDateTime($raw),
-                ImportFieldSpec::TYPE_ENUM     => $this->castEnum($raw, $field->enumValues),
+                ImportFieldSpec::TYPE_ENUM     => $field->enumClass !== null
+                    ? $this->castBackedEnum($raw, $field->enumClass)
+                    : $this->castEnum($raw, $field->enumValues),
                 ImportFieldSpec::TYPE_LIST     => $this->castList($raw),
                 ImportFieldSpec::TYPE_RELATION => $this->resolveRelation($field, $raw, $tenant),
                 default                        => trim((string) $raw),
@@ -202,7 +209,7 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         }
     }
 
-    public function findExisting(array $row, Tenant $tenant): ?object
+    public function findExisting(array $row, Tenant $tenant, ?array $columnMapping = null): ?object
     {
         $uniqueFields = array_filter($this->activeFields(), fn(ImportFieldSpec $f): bool => $f->unique);
         if ($uniqueFields === []) {
@@ -211,7 +218,7 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
 
         $criteria = ['tenant' => $tenant];
         foreach ($uniqueFields as $field) {
-            $raw = $this->resolveField($row, $field->name, null);
+            $raw = $this->resolveField($row, $field->name, $columnMapping);
             if ($raw === null || $raw === '') {
                 return null;
             }
@@ -222,11 +229,11 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         return $this->em->getRepository($this->schema->entityClass)->findOneBy($criteria);
     }
 
-    public function duplicateKey(array $row): ?string
+    public function duplicateKey(array $row, ?array $columnMapping = null): ?string
     {
         $parts = [];
         foreach (array_filter($this->activeFields(), fn(ImportFieldSpec $f): bool => $f->unique) as $field) {
-            $raw = $this->resolveField($row, $field->name, null);
+            $raw = $this->resolveField($row, $field->name, $columnMapping);
             if ($raw === null || $raw === '') {
                 return null;
             }
@@ -234,6 +241,54 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         }
 
         return $parts === [] ? null : implode("\x1F", $parts);
+    }
+
+    /**
+     * A numeric cell as a numeric string — the type Doctrine DECIMAL columns and
+     * their `?string` setters take (a float would be a TypeError under strict types).
+     */
+    private function castDecimal(mixed $raw): ?string
+    {
+        $value = trim((string) $raw);
+
+        return is_numeric($value) ? $value : null;
+    }
+
+    /** The value list must contain the cell AND, with an enum class, a case must match it. */
+    private function enumAccepts(ImportFieldSpec $field, mixed $raw): bool
+    {
+        if ($field->enumValues !== [] && !in_array(strtolower(trim((string) $raw)), $field->enumValues, strict: true)) {
+            return false;
+        }
+
+        return $field->enumClass === null || $this->castBackedEnum($raw, $field->enumClass) !== null;
+    }
+
+    /** @return list<string> */
+    private function allowedEnumValues(ImportFieldSpec $field): array
+    {
+        if ($field->enumValues !== [] || $field->enumClass === null) {
+            return $field->enumValues;
+        }
+
+        return array_map(static fn(\BackedEnum $case): string => (string) $case->value, $field->enumClass::cases());
+    }
+
+    /**
+     * The BackedEnum case whose value matches the cell, case-insensitive; null when none does.
+     *
+     * @param class-string<\BackedEnum> $enumClass
+     */
+    private function castBackedEnum(mixed $raw, string $enumClass): ?\BackedEnum
+    {
+        $value = strtolower(trim((string) $raw));
+        foreach ($enumClass::cases() as $case) {
+            if (strtolower((string) $case->value) === $value) {
+                return $case;
+            }
+        }
+
+        return null;
     }
 
     /**

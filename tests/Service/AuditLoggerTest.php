@@ -609,12 +609,7 @@ class AuditLoggerTest extends TestCase
 
     private function setupRequest(string $ip, string $userAgent): void
     {
-        $request = $this->createMock(Request::class);
-        $request->method('getClientIp')->willReturn($ip);
-
-        $headers = $this->createMock(\Symfony\Component\HttpFoundation\HeaderBag::class);
-        $headers->method('get')->willReturn($userAgent);
-        $request->headers = $headers;
+        $request = Request::create('/', 'GET', [], [], [], ['REMOTE_ADDR' => $ip, 'HTTP_USER_AGENT' => $userAgent]);
 
         $this->requestStack->method('getCurrentRequest')->willReturn($request);
     }

@@ -251,7 +251,20 @@ class AccessReviewController extends AbstractController
 
         $comment = $request->request->get('comment');
 
-        $this->campaignService->decide($item, $decision, $this->currentUser(), $comment ?: null);
+        try {
+            $this->campaignService->decide($item, $decision, $this->currentUser(), $comment ?: null);
+        } catch (\App\Exception\BusinessRule\BusinessRuleException $e) {
+            if ($e->getRuleCode() !== AccessReviewCampaignService::RULE_SELF_REVIEW) {
+                throw $e;
+            }
+            // Segregation of duties (ISO 27001 A.5.18): own access is decided by someone else.
+            $this->addFlash('warning', $this->translator->trans('access_review.flash.self_review_refused', [], 'access_review'));
+
+            return $this->redirectToRoute('app_access_review_show', [
+                '_locale' => $request->getLocale(),
+                'id'      => $campaignId,
+            ]);
+        }
 
         $this->addFlash('success', $this->translator->trans(
             'access_review.flash.decision_saved',
@@ -414,10 +427,19 @@ class AccessReviewController extends AbstractController
                 'access_review',
             );
 
+        if ($result['self_review'] > 0) {
+            $message .= ' ' . $this->translator->trans(
+                'access_review.bulk.self_review_skipped',
+                ['%count%' => $result['self_review']],
+                'access_review',
+            );
+        }
+
         return new JsonResponse([
             'ok'      => true,
             'changed' => $result['decided'],
             'rejected' => $result['skipped'] > 0 ? [$result['skipped'] . ' skipped'] : [],
+            'self_review_skipped' => $result['self_review'],
             'message' => $message,
         ]);
     }

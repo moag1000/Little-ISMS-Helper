@@ -88,7 +88,7 @@ class ReportController extends AbstractController
         $sheet->setTitle('Dashboard');
 
         // Summary section
-        $sheet->setCellValue('A1', 'ISMS Dashboard Summary');
+        $sheet->setCellValue('A1', 'ISMS Dashboard Summary'); // @csv-sanitize-exempt: dashboard counters and fixed labels only
         $sheet->mergeCells('A1:B1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
 

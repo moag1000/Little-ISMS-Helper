@@ -51,6 +51,7 @@ compliance_import:
         col_count_mismatch: "Spaltenanzahl stimmt nicht mit der Kopfzeile überein."
         framework_missing: "Quell- oder Ziel-Framework nicht im System gefunden."
         requirement_missing: "Quell- oder Ziel-Requirement im Framework nicht gefunden."
+        value_invalid: "Ungültiger Wert: mapping_percentage ganze Zahl 0–150, mapping_type weak/partial/full/exceeds, confidence low/medium/high."
         xml_parse_error: "Die XML-Datei konnte nicht gelesen werden. Prüfen Sie das Wurzelelement (<bsi-profile version=\"1.0\">) und das Vorhandensein von <mappings>."
         xml_mapping_incomplete: "Mapping ohne source/target/framework/requirement-Attribut."
         xml_percentage_invalid: "Prozentwert muss ganzzahlig zwischen 0 und 150 liegen."

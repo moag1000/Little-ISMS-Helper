@@ -9,6 +9,8 @@
 #   draft  → active     (introduce a new role into the catalog)
 #   active → archived   (retire the role — 4-eyes required)
 #   archived → active   (re-activate an archived role — 4-eyes required)
+# Instance-wide catalogue (no tenant): only ROLE_SUPER_ADMIN transitions it, like
+# RoleVoter for edits. Organisation overrides do not apply (EntityTypeRegistry::acceptsTenantOverrides).
 framework:
     workflows:
         role_lifecycle:
@@ -30,7 +32,7 @@ framework:
                     from: draft
                     to: active
                     metadata:
-                        roles: [ROLE_ADMIN, ROLE_SUPER_ADMIN]
+                        roles: [ROLE_SUPER_ADMIN]
                         reason_required: false
                 # Retire a role — this is an RBAC change (A.5.18). Per
                 # segregation-of-duties this is dual-controlled. Once
@@ -40,7 +42,7 @@ framework:
                     from: active
                     to: archived
                     metadata:
-                        roles: [ROLE_SUPER_ADMIN, ROLE_ADMIN]
+                        roles: [ROLE_SUPER_ADMIN]
                         four_eyes: true
                         reason_required: true
                 # Reactivate an archived role (e.g. organisational pivot
@@ -50,6 +52,6 @@ framework:
                     from: archived
                     to: active
                     metadata:
-                        roles: [ROLE_SUPER_ADMIN, ROLE_ADMIN]
+                        roles: [ROLE_SUPER_ADMIN]
                         four_eyes: true
                         reason_required: true

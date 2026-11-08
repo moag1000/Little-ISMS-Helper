@@ -21,6 +21,7 @@ use App\Service\Catalog\RequirementIdPrefixes;
 use App\Service\CompliancePolicyService;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\BsiProfileXmlImporter;
+use App\Service\Import\ComplianceMappingRowRules;
 use App\Service\Import\ImportSessionRecorder;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -485,20 +486,13 @@ final class ComplianceImportController extends AbstractController
 
             $data = array_combine($headers, $row);
 
+            $invalid = ComplianceMappingRowRules::invalidColumns($data);
             $sourceFramework = $this->getFramework((string) $data['source_framework'], $frameworkCache);
             $targetFramework = $this->getFramework((string) $data['target_framework'], $frameworkCache);
 
-            if ($sourceFramework === null || $targetFramework === null) {
-                $rows[] = [
-                    'line' => $lineNo,
-                    'status' => 'error',
-                    'message' => 'compliance_import.preview.framework_missing',
-                    'source_framework' => (string) $data['source_framework'],
-                    'source_requirement_id' => (string) $data['source_requirement_id'],
-                    'target_framework' => (string) $data['target_framework'],
-                    'target_requirement_id' => (string) $data['target_requirement_id'],
-                    'percentage' => (string) $data['mapping_percentage'],
-                ];
+            if ($invalid !== [] || $sourceFramework === null || $targetFramework === null) {
+                $rows[] = $this->previewRow($lineNo, 'error', $invalid !== []
+                    ? 'compliance_import.preview.value_invalid' : 'compliance_import.preview.framework_missing', $data);
                 $summary['error']++;
                 continue;
             }
@@ -507,16 +501,7 @@ final class ComplianceImportController extends AbstractController
             $targetReq = $this->getRequirement($targetFramework, (string) $data['target_requirement_id'], $requirementCache);
 
             if ($sourceReq === null || $targetReq === null) {
-                $rows[] = [
-                    'line' => $lineNo,
-                    'status' => 'error',
-                    'message' => 'compliance_import.preview.requirement_missing',
-                    'source_framework' => (string) $data['source_framework'],
-                    'source_requirement_id' => (string) $data['source_requirement_id'],
-                    'target_framework' => (string) $data['target_framework'],
-                    'target_requirement_id' => (string) $data['target_requirement_id'],
-                    'percentage' => (string) $data['mapping_percentage'],
-                ];
+                $rows[] = $this->previewRow($lineNo, 'error', 'compliance_import.preview.requirement_missing', $data);
                 $summary['error']++;
                 continue;
             }
@@ -538,16 +523,7 @@ final class ComplianceImportController extends AbstractController
                 $status = 'conflict';
             }
 
-            $rows[] = [
-                'line' => $lineNo,
-                'status' => $status,
-                'message' => null,
-                'source_framework' => (string) $data['source_framework'],
-                'source_requirement_id' => (string) $data['source_requirement_id'],
-                'target_framework' => (string) $data['target_framework'],
-                'target_requirement_id' => (string) $data['target_requirement_id'],
-                'percentage' => (string) $data['mapping_percentage'],
-            ];
+            $rows[] = $this->previewRow($lineNo, $status, null, $data);
             $summary[$status]++;
         }
         fclose($handle);
@@ -556,6 +532,29 @@ final class ComplianceImportController extends AbstractController
             'rows' => $rows,
             'summary' => $summary,
             'header_error' => $headerError,
+        ];
+    }
+
+    /**
+     * One row of the preview table. `message` is a key of the compliance_import
+     * domain (null for new/update/conflict rows); value errors (percentage, type,
+     * confidence) come from {@see ComplianceMappingRowRules}, as in importFile().
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
+    private function previewRow(int $lineNo, string $status, ?string $message, array $data): array
+    {
+        return [
+            'line' => $lineNo,
+            'status' => $status,
+            'message' => $message,
+            'source_framework' => (string) $data['source_framework'],
+            'source_requirement_id' => (string) $data['source_requirement_id'],
+            'target_framework' => (string) $data['target_framework'],
+            'target_requirement_id' => (string) $data['target_requirement_id'],
+            'percentage' => (string) $data['mapping_percentage'],
         ];
     }
 
@@ -634,10 +633,11 @@ final class ComplianceImportController extends AbstractController
 
             $data = array_combine($headers, $row);
 
+            $invalid = ComplianceMappingRowRules::invalidColumns($data);
             $sourceFramework = $this->getFramework((string) $data['source_framework'], $frameworkCache);
             $targetFramework = $this->getFramework((string) $data['target_framework'], $frameworkCache);
-            if ($sourceFramework === null || $targetFramework === null) {
-                $errMsg = sprintf(
+            if ($invalid !== [] || $sourceFramework === null || $targetFramework === null) {
+                $errMsg = $invalid !== [] ? sprintf('Line %d: invalid %s', $lineNo, implode(', ', $invalid)) : sprintf(
                     'Line %d: framework not found (%s -> %s)',
                     $lineNo,
                     $data['source_framework'],
@@ -696,8 +696,8 @@ final class ComplianceImportController extends AbstractController
                 ->setSourceRequirement($sourceReq)
                 ->setTargetRequirement($targetReq)
                 ->setMappingPercentage((int) $data['mapping_percentage'])
-                ->setMappingType((string) $data['mapping_type'])
-                ->setConfidence((string) $data['confidence'])
+                ->setMappingType(ComplianceMappingRowRules::normalised($data['mapping_type']))
+                ->setConfidence(ComplianceMappingRowRules::normalised($data['confidence']))
                 ->setBidirectional(strtolower((string) $data['bidirectional']) === 'true')
                 ->setMappingRationale((string) $data['rationale'])
                 ->setSource((string) $data['source_catalog'])
@@ -829,10 +829,8 @@ final class ComplianceImportController extends AbstractController
         }
 
         foreach ($this->candidateIds($framework, $requirementId) as $candidate) {
-            $hit = $this->requirementRepository->findOneBy([
-                'framework' => $framework,
-                'requirementId' => $candidate,
-            ]);
+            $criteria = ['framework' => $framework, 'requirementId' => $candidate, 'uploadTenant' => null]; // global only
+            $hit = $this->requirementRepository->findOneBy($criteria);
             if ($hit instanceof ComplianceRequirement) {
                 $cache[$key] = $hit;
 
@@ -844,6 +842,7 @@ final class ComplianceImportController extends AbstractController
             $qb = $this->requirementRepository->createQueryBuilder('r')
                 ->andWhere('r.framework = :f')
                 ->andWhere('r.requirementId LIKE :p')
+                ->andWhere('r.uploadTenant IS NULL')
                 ->setParameter('f', $framework)
                 ->setParameter('p', $prefix . '%')
                 ->orderBy('r.requirementId', \SortDirection::Ascending)

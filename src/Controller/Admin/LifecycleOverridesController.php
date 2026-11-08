@@ -342,6 +342,10 @@ final class LifecycleOverridesController extends AbstractController
             if (!str_ends_with($base, '_lifecycle')) {
                 $base .= '_lifecycle';
             }
+            // Instance workflows (tenant, role, permission, …) are never overridable.
+            if (!\App\Lifecycle\EntityTypeRegistry::acceptsTenantOverrides($base)) {
+                continue;
+            }
             $names[] = $base;
         }
         sort($names);

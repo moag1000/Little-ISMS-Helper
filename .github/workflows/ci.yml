@@ -726,6 +726,19 @@ jobs:
         # Always true is dead code, always false silently disables the feature
         # (My Day findings, document-review owners). PHPStan misses the false case.
         run: python3 scripts/quality/check_entity_method_exists.py --quiet
+      - name: "Gate 84: spreadsheet cells go through CsvSanitizer"
+        # Record text starting with = + - @ runs as a formula in Excel (CWE-1236).
+        # The DORA RoI CSV and the FTE board CSV wrote such cells raw.
+        run: python3 scripts/quality/check_csv_formula_injection.py
+      - name: "Gate 86: controls behind a requirement come from the tenant-scoped engine"
+        # ComplianceRequirement is global; getMappedControls() spans every organisation
+        # outside an HTTP request. Baseline may only shrink.
+        run: python3 scripts/quality/check_requirement_controls_scope.py
+      - name: "Gate 85: fulfilment values have one writer"
+        # Percentage and status of a requirement fulfilment are written only by
+        # FulfillmentDerivationService (rule, override, manual). A second writer
+        # disagrees with the rule and is overwritten on the next recompute. No baseline.
+        run: python3 scripts/quality/check_fulfillment_single_writer.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

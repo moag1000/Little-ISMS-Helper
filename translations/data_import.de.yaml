@@ -119,6 +119,8 @@ import:
         upload_failed: 'Datei-Upload fehlgeschlagen: %message%'
         parse_failed: 'Datei konnte nicht geparst werden: %message%'
         unknown_entity: 'Unbekannter Entitätstyp: %type%'
+        commit_not_allowed: 'Import nicht gestartet: Er läuft bereits oder ist abgeschlossen.'
+        commit_failed: 'Import fehlgeschlagen. Der Fehler steht beim Import.'
         batch_not_found: 'Import-Batch nicht gefunden.'
         must_equal_commit: 'Bitte geben Sie "COMMIT" ein, um den Import zu bestätigen.'
 
