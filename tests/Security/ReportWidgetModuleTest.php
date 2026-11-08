@@ -43,8 +43,9 @@ final class ReportWidgetModuleTest extends TestCase
 
         foreach ($this->service(true)->getWidgetLibrary() as $category) {
             foreach ($category['widgets'] as $type => $widget) {
+                self::assertArrayHasKey($type, ReportBuilderService::WIDGET_MODULES, $type . ' is missing in WIDGET_MODULES');
                 self::assertSame(
-                    ReportBuilderService::WIDGET_MODULES[$type] ?? 'missing',
+                    ReportBuilderService::WIDGET_MODULES[$type],
                     $widget['module'] ?? null,
                     sprintf('Widget %s: library module and WIDGET_MODULES differ.', $type),
                 );
