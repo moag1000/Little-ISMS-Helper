@@ -663,23 +663,6 @@ class IncidentController extends AbstractController
         ]);
     }
     /**
-     * JSON API endpoint for BCM impact analysis
-     */
-    #[Route('/incident/{id}/bcm-impact/api', name: 'app_incident_bcm_impact_api', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
-    #[RequiresModule('bcm')]
-    public function bcmImpactApi(Incident $incident, Request $request): JsonResponse
-    {
-        $downtimeHours = $request->query->get('downtime_hours');
-
-        $analysis = $this->incidentBCMImpactService->analyzeBusinessImpact(
-            $incident,
-            $downtimeHours ? (int) $downtimeHours : null
-        );
-
-        return $this->json($analysis);
-    }
-    /**
      * Auto-detect affected business processes via assets
      */
     #[Route('/incident/{id}/auto-detect-processes', name: 'app_incident_auto_detect_processes', methods: ['POST'])]

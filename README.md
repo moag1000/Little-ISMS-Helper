@@ -319,6 +319,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 - **Review bestätigen** -- Risiken, Controls (SoA), Dokumente und Lieferanten: Chip "Review fällig" filtert die Liste, mehrere Einträge auswählen, ein Klick bestätigt das periodische Review (heutiges Datum, nächster Termin nach dem Prüfintervall des Eintrags, ein Audit-Log-Batch, ab Manager); aus "Mein Tag" führt "In der Liste bestätigen" direkt dorthin
 - **Ein Such- und Befehlsfenster** -- ⌘K, ⌘P und `/` öffnen dasselbe Fenster für Datensätze, Seiten und Befehle; angeboten wird nur, was Modul und Rolle erlauben
 - **Einheitliche Anzeige** -- Datum und Uhrzeit im Format und in der Zeitzone aus den Admin-Einstellungen, ein Status-Vokabular statt lokaler Farbtabellen, ein Hauptbereich und eine Seitenüberschrift pro Seite (CI-Gates 77 und 78)
+- **Aufgeräumt** -- keine Hilfetexte, die nur das Label wiederholen; keine toten Routen, Templates, Übersetzungen und CSS-Klassen (Gate 69 für Templates, Gate 62 auch für dynamisch gebaute Bootstrap-Badges); Toasts als Partizip ohne „erfolgreich“ und „!“ (Gate 71)
 - **Ein Baustein pro Interaktion** -- Dialoge über `fa-modal`, Bestätigungen über `ui-actions#confirm`, Mehrfachauswahl über `bulk-actions`, Seitenleisten über `fa-drawer`, Diagramme über `chart`; CI-Gate 79 prüft jede Stimulus-Verdrahtung (Controller, Methode, Target, Wert) und meldet nie angehängte Controller
 
 ### Design und Barrierefreiheit

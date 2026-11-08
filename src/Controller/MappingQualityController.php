@@ -532,23 +532,6 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /** Export quality report */
-    #[Route('/compliance/mapping-quality/export', name: 'app_mapping_quality_export', methods: ['GET'])]
-    public function export(): Response
-    {
-        $qualityStats = $this->statistics->getQualityStatistics();
-        $mappingsRequiringReview = $this->accessGuard->filterVisible($this->complianceMappingRepository->findMappingsRequiringReview());
-        $highPriorityGaps = $this->accessGuard->filterVisibleGaps($this->mappingGapItemRepository->findHighPriorityGaps());
-
-        // For now, return JSON (can be extended to PDF/Excel later)
-        return $this->json([
-            'quality_statistics' => $qualityStats,
-            'mappings_requiring_review_count' => count($mappingsRequiringReview),
-            'high_priority_gaps_count' => count($highPriorityGaps),
-            'export_date' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
-        ]);
-    }
-
     /**
      * Writes a quality-analysis result onto the mapping and adds fresh gap items (persisted,
      * not flushed); with $replaceGaps the existing gap items are removed and flushed first.

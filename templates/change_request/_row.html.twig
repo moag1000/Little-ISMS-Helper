@@ -25,10 +25,10 @@
            class="fa-row-link">{{ change.title|length > 40 ? change.title|slice(0, 40) ~ '…' : change.title }}</a>
     </td>
     <td>
-        <span class="badge badge-{{ change.changeType }}">{{ ('change_request.change_type.' ~ change.changeType)|trans({}, 'change_requests') }}</span>
+        <span class="fa-status-pill fa-status-pill--neutral">{{ ('change_request.change_type.' ~ change.changeType)|trans({}, 'change_requests') }}</span>
     </td>
     <td>
-        <span class="badge badge-{{ change.priority }}">{{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }}</span>
+        <span class="fa-status-pill fa-status-pill--{{ pill_tone_severity(change.priority) }}">{{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }}</span>
     </td>
     <td>
         <span class="{{ badge_status(change.status) }}">{{ ('change_request.status.' ~ change.status)|trans({}, 'change_requests') }}</span>

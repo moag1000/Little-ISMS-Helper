@@ -9,7 +9,6 @@ use App\Security\Persona\PersonaResolver;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\RoleDashboardService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -116,47 +115,5 @@ class RoleDashboardController extends AbstractController
         return $this->render('dashboards/board.html.twig', [
             'dashboard' => $data,
         ]);
-    }
-
-    // ==================== API Endpoints ====================
-
-    /**
-     * API: Get CISO dashboard data
-     */
-    #[Route('/api/ciso', name: 'app_dashboard_api_ciso', methods: ['GET'])]
-    #[IsGranted(TenantScopedAdminVoter::PERSONA_CISO)]
-    public function getCisoDashboardData(): JsonResponse
-    {
-        return new JsonResponse($this->roleDashboardService->getCisoDashboard());
-    }
-
-    /**
-     * API: Get Risk Manager dashboard data
-     */
-    #[Route('/api/risk-manager', name: 'app_dashboard_api_risk_manager', methods: ['GET'])]
-    #[IsGranted(TenantScopedAdminVoter::PERSONA_RISK)]
-    public function getRiskManagerDashboardData(): JsonResponse
-    {
-        return new JsonResponse($this->roleDashboardService->getRiskManagerDashboard());
-    }
-
-    /**
-     * API: Get Auditor dashboard data
-     */
-    #[Route('/api/auditor', name: 'app_dashboard_api_auditor', methods: ['GET'])]
-    #[IsGranted('ROLE_AUDITOR')]
-    public function getAuditorDashboardData(): JsonResponse
-    {
-        return new JsonResponse($this->roleDashboardService->getAuditorDashboard());
-    }
-
-    /**
-     * API: Get Board dashboard data
-     */
-    #[Route('/api/board', name: 'app_dashboard_api_board', methods: ['GET'])]
-    #[IsGranted(TenantScopedAdminVoter::PERSONA_BOARD)]
-    public function getBoardDashboardData(): JsonResponse
-    {
-        return new JsonResponse($this->roleDashboardService->getBoardDashboard());
     }
 }

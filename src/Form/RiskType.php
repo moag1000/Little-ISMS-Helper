@@ -130,7 +130,6 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'choice_label' => 'name',
                 'placeholder' => 'risk.placeholder.location',
                 'required' => false,
-                'help' => 'risk.help.location',
                 'attr' => [
                     'class' => 'risk-subject-field',
                 ],
@@ -141,7 +140,6 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'choice_label' => 'name',
                 'placeholder' => 'risk.placeholder.supplier',
                 'required' => false,
-                'help' => 'risk.help.supplier',
                 'attr' => [
                     'class' => 'risk-subject-field',
                 ],
@@ -210,14 +208,12 @@ final class RiskType extends AbstractType implements SectionMapInterface
                     'rows' => 4,
                     'placeholder' => 'risk.placeholder.treatment_description',
                 ],
-                'help' => 'risk.help.treatment_description',
             ])
             ->add('acceptanceApprovedByUser', OwnerUserType::class, [
                 'label' => 'risk.field.acceptance_approved_by',
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'risk.placeholder.acceptance_approved_by_user',
-                'help' => 'risk.help.acceptance_approved_by_user',
             ])
             ->add('acceptanceApprovedBy', TextType::class, [
                 'label' => 'risk.field.acceptance_approved_by_legacy',
@@ -241,7 +237,6 @@ final class RiskType extends AbstractType implements SectionMapInterface
                     'rows' => 3,
                     'placeholder' => 'risk.placeholder.acceptance_justification',
                 ],
-                'help' => 'risk.help.acceptance_justification',
             ])
             // ISO 27001 Cl. 8.3: acceptance must carry an
             // expiry / re-evaluation date so accepted risks do not "expire

@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Attribute\RequiresModule;
-use App\Repository\AssetRepository;
-use App\Repository\IncidentRepository;
-use App\Repository\RiskRepository;
 use App\Service\Search\SearchService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -21,9 +16,6 @@ class SearchController extends AbstractController
 {
     public function __construct(
         private readonly SearchService $searchService,
-        private readonly AssetRepository $assetRepository,
-        private readonly RiskRepository $riskRepository,
-        private readonly IncidentRepository $incidentRepository,
     ) {}
 
     /**
@@ -42,53 +34,5 @@ class SearchController extends AbstractController
         $results = $this->searchService->search($query, $tenant);
 
         return $this->json($results);
-    }
-
-    /**
-     * Quick-view endpoint for assets.
-     */
-    #[RequiresModule('assets')]
-    #[Route('/api/asset/{id}/preview', name: 'app_api_asset_preview', methods: ['GET'])]
-    public function assetPreview(int $id): Response
-    {
-        $asset = $this->assetRepository->find($id);
-        // Voter = shared tenant scope (own tenant, holding read, fail closed).
-        if (!$asset || !$this->isGranted('view', $asset)) {
-            return new Response('Not found', Response::HTTP_NOT_FOUND);
-        }
-
-        return $this->render('_previews/_asset_preview.html.twig', ['asset' => $asset]);
-    }
-
-    /**
-     * Quick-view endpoint for risks.
-     */
-    #[RequiresModule('risks')]
-    #[Route('/api/risk/{id}/preview', name: 'app_api_risk_preview', methods: ['GET'])]
-    public function riskPreview(int $id): Response
-    {
-        $risk = $this->riskRepository->find($id);
-        // Voter = shared tenant scope (own tenant, holding read, fail closed).
-        if (!$risk || !$this->isGranted('view', $risk)) {
-            return new Response('Not found', Response::HTTP_NOT_FOUND);
-        }
-
-        return $this->render('_previews/_risk_preview.html.twig', ['risk' => $risk]);
-    }
-
-    /**
-     * Quick-view endpoint for incidents.
-     */
-    #[RequiresModule('incidents')]
-    #[Route('/api/incident/{id}/preview', name: 'app_api_incident_preview', methods: ['GET'])]
-    public function incidentPreview(int $id): Response
-    {
-        $incident = $this->incidentRepository->find($id);
-        // Voter = shared tenant scope (own tenant, holding read, fail closed).
-        if (!$incident || !$this->isGranted('view', $incident)) {
-            return new Response('Not found', Response::HTTP_NOT_FOUND);
-        }
-
-        return $this->render('_previews/_incident_preview.html.twig', ['incident' => $incident]);
     }
 }

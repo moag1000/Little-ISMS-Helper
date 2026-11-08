@@ -91,7 +91,6 @@ business_process:
     recovery_strategy: Recovery strategy according to ISO 22301:2019 (e.g. backup
       site, manual processes, alternative suppliers)
     supporting_assets: Which IT assets support this process?
-    identified_risks: Which risks affect this process?
     process_owner_user: Process owner from user management.
     process_owner_person: 'Pick a Person without system login as process owner. List display order&#58; User &gt; Person &gt; legacy free-text.'
     process_owner_deputies: 'Additional Persons with deputy or shared responsibility. Multi-select.'

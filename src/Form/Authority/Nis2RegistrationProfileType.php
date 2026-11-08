@@ -113,7 +113,6 @@ final class Nis2RegistrationProfileType extends AbstractType implements SectionM
                 'label' => 'eu_authorities.nis2_registration.field.headcount',
                 'required' => true,
                 'constraints' => [new NotBlank(), new Positive()],
-                'help' => 'eu_authorities.nis2_registration.help.headcount',
                 'translation_domain' => 'eu_authorities',
             ])
             ->add('affectedAnnualTurnoverEur', NumberType::class, [

@@ -96,7 +96,6 @@ dsr:
             request_type: "Art. 15 Auskunft, Art. 16 Berichtigung, Art. 17 Loeschung, Art. 18 Einschraenkung, Art. 20 Datenuebertragbarkeit, Art. 21 Widerspruch, Art. 22 Automatisierte Entscheidung"
             received_at: "Datum und Uhrzeit des Eingangs der Anfrage"
             data_subject_identifier: "Beliebige Kennung zur Identifikation der Person in Ihren Systemen"
-            processing_activity: "Verknuepfung mit einer relevanten Verarbeitungstaetigkeit aus dem VVT"
             notes: "Interne Notizen werden nicht mit der betroffenen Person geteilt"
             assigned_person: "Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer."
             assigned_deputy_persons: "Weitere Personen mit Vertretungs- oder Mitverantwortung."

@@ -146,7 +146,6 @@ final class DatabaseConfigurationType extends AbstractType implements SectionMap
                 'attr' => [
                     'placeholder' => $isStandaloneDocker ? 'isms' : 'root',
                 ],
-                'help' => 'setup.database.user_help',
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'setup.database.password',

@@ -327,8 +327,7 @@
 @media print {
     /* Print-Mode optimiert für A4-Handout */
     body { color: var(--print-fg) !important; }
-    .header, .footer, .mega-menu, .breadcrumb, .toast-container,
-    .alert-dismissible, .d-print-none, .guided-tour-banner,
+    .header, .footer, .mega-menu, .breadcrumb, .toast-container, .d-print-none, .guided-tour-banner,
     .modal, .command-palette-modal { display: none !important; }
     .help-tour-handout { max-width: 100% !important; }
     .help-tour-step { break-inside: avoid; }

@@ -1,4 +1,5 @@
 {% trans_default_domain 'notification' %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 {#
  # Partial: last 10 NotificationDelivery rows for a rule.
  # Variables: rule (NotificationRule), recentDeliveries (NotificationDelivery[])
@@ -29,14 +30,8 @@
                                 {{ delivery.channel.name }}
                             </td>
                             <td>
-                                {% set statusClass = {
-                                    'sent': 'bg-success',
-                                    'failed': 'bg-danger',
-                                    'pending': 'bg-warning text-dark',
-                                    'retrying': 'bg-info text-dark'
-                                } %}
-                                <span class="badge {{ statusClass[delivery.status] ?? 'bg-secondary' }}">
-                                    {{ delivery.status }}
+                                <span class="fa-status-pill fa-status-pill--{{ _status.tone('notification_delivery', delivery.status)|trim }}">
+                                    {{ ('notification.delivery.status.' ~ delivery.status)|trans({}, 'notification') }}
                                 </span>
                                 {% if delivery.errorMessage %}
                                     <span class="text-danger small ms-1" title="{{ delivery.errorMessage }}">

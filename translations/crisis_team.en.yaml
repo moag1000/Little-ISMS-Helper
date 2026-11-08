@@ -84,7 +84,6 @@ crisis_team:
         decision_authority: 'Authorities and escalation paths'
         communication_protocols: 'Internal and external communication channels'
         training_schedule: 'Regular trainings and exercises'
-        next_training_at: 'When is the next training?'
         meeting_location: 'Physical meeting point during crises'
         person_members: 'Structured roster — master-data Persons in addition to the JSON list with roles/contact details. External consultants or auditors can be tracked here without a system login.'
         escalation_matrix_json: 'External escalation partners per BSI 200-4 §6.2 and NIS2 Art. 23 (e.g. BSI, CERT-Bund, police) with trigger, contact and escalation time.'

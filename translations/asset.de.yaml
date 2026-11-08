@@ -7,8 +7,6 @@ asset:
     cloned: 'Asset wurde dupliziert. Datei-Binary muss ggf. neu hochgeladen werden.'
   clone:
     success: 'Asset wurde dupliziert. Datei-Binary muss ggf. neu hochgeladen werden.'
-  preview:
-    title: Asset-Informationen
   action:
     bcm_insights: BCM-Erkenntnisse
     create: Asset anlegen
@@ -90,7 +88,6 @@ asset:
     physical_location: Physischer Standort aus der Standortverwaltung. Neue Standorte
       anlegen unter Verwaltung → Standorte.
     acquisition_value: Ursprünglicher Kaufpreis oder Anschaffungskosten
-    current_value: Geschätzter aktueller Marktwert
     confidentiality: 'Vertraulichkeit: Schutz vor unautorisiertem Zugriff (1=öffentlich,
       2=intern, 3=vertraulich, 4=streng vertraulich, 5=geheim)'
     integrity: 'Integrität: Schutz vor unautorisierter Änderung (1=gering, 2=normal,
@@ -98,7 +95,6 @@ asset:
     availability: 'Verfügbarkeit: Erreichbarkeit wenn gebraucht (1=>24h Ausfall tolerabel,
       2=8h, 3=4h, 4=1h, 5=<15 Min / 24×7)'
     data_classification: Klassifizierung der Daten nach Schutzbedarf
-    acceptable_use_policy: Richtlinien zur akzeptablen Nutzung dieses Assets
     handling_instructions: Besondere Anweisungen für den Umgang mit diesem Asset
     return_date: Datum der geplanten Rückgabe (bei temporär zugewiesenen Assets)
     status: Aktueller Nutzungsstatus des Assets

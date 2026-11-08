@@ -62,9 +62,6 @@ final class ApiRouteModuleGateTest extends KernelTestCase
         'App\Controller\GlossaryApiController' => 'core',
         'App\Controller\SearchController' => [
             'search' => 'core', // results are module-filtered by SearchService
-            'assetPreview' => 'assets',
-            'riskPreview' => 'risks',
-            'incidentPreview' => 'incidents',
         ],
     ];
 
