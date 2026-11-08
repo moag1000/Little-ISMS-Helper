@@ -382,10 +382,11 @@ web UI for this.
   that the admin may edit the user; making users organisation-less and
   re-parenting outside the own tree are `ROLE_SUPER_ADMIN` only.
 - **Backups:** organisation admins only see, download, validate, restore or
-  delete backups whose embedded scope lies within their tree. **Instance-wide
-  backups (and legacy backups without scope) are hidden from them** and
-  answer 404 — previously they were listed. Only a `ROLE_SUPER_ADMIN` can
-  work with them.
+  delete backups whose embedded scope lies **completely** within their tree —
+  a subsidiary admin does not see a holding backup that also holds the
+  siblings' data. **Instance-wide backups (and legacy backups without scope)
+  are hidden from them** and answer 404. Only a `ROLE_SUPER_ADMIN` can work
+  with them.
 - **Organisation restore treats the file as untrusted** (`RestoreTenantGuard`):
   an uploaded backup's ids, `tenant_id` values and SHA256 seal can be edited by
   hand, so a scoped restore checks every write against the database. Rows of
@@ -394,15 +395,42 @@ web UI for this.
   dropped; a row whose id or unique field matches a record of another
   organisation is skipped (warning), never updated, moved or deleted;
   references and ManyToMany links to records of other organisations are
-  dropped; existing audit-log rows and super-admin accounts are never touched;
-  `ROLE_SUPER_ADMIN` is stripped from restored users. The setup password goes
-  only to users the restore creates, and "first admin" means an admin of the
-  restored organisations. ZIP entries with `..`, absolute paths, dot files or
-  executable types (`.php`, `.phar`, …) are not extracted. Organisation backups
-  with sessions only carry the sessions of their own users. Backup create,
-  upload, download, delete, restore and the raw data export/import write an
-  audit-log entry (`backup.*`, `data.*`; only whether an admin password was set,
-  never the password).
+  dropped.
+  - **No instance rights from a file:** every privileged role
+    (`RoleNames::PRIVILEGED`: `ROLE_SUPER_ADMIN`, `ROLE_ALLOWED_TO_SWITCH`,
+    `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) is stripped from restored users,
+    links to custom roles with such a name are dropped, and accounts that
+    already hold one are never touched.
+  - **No credentials from a file:** password hash and SSO subject ids
+    (`password`, `authProvider`, `azureObjectId`, `azureTenantId`,
+    `azureMetadata`, `ssoExternalId`) keep their live value (new users: empty).
+    The setup password goes only to users the restore creates; an existing
+    admin's password is never reset by an organisation restore.
+  - **The organisation's place in the instance stays:** `parent`,
+    `isCorporateParent`, `isActive`, `status`, `azureTenantId`,
+    `apiRateLimitPerMinute` and `ssoEnforced` of the organisation are not taken
+    from the file.
+  - **The audit trail is evidence:** an organisation restore neither adds,
+    rewrites nor clears audit-log rows ("clear before restore" keeps them). The
+    restore itself is logged (`backup.restore`).
+  - **Fulfilment** values from the file are derived again from the restored
+    controls and records right after the restore (hand overrides stay
+    overrides).
+  - **Files of a ZIP backup** are written only by the restore itself, after the
+    data has been committed — never by preview, validation or dry run. Only the
+    folders a backup carries (`documents`, `document_versions`, `tenant_logos`),
+    only file types the upload check accepts (no `.html`, `.svg`, `.js`), at most
+    100 MB per file. An organisation restore never replaces an existing file
+    (the upload folders are shared); skipped files are listed as warnings.
+    `backup.json` above 1 GB is refused (zip/gzip bomb).
+  - Organisation backups with sessions only carry the sessions of their own
+    users. Backup create, upload, download, delete, restore and the raw data
+    export/import write an audit-log entry (`backup.*`, `data.*`; only whether an
+    admin password was set, never the password).
+- **Impersonation** (`?_switch_user=`) is decided by `SwitchUserVoter`: the
+  caller needs `ROLE_ALLOWED_TO_SWITCH`, a super admin is never a target, and a
+  caller other than the super admin may only become a user who reaches no role
+  the caller does not reach.
 - **Lifecycle overrides** (`/admin/lifecycle-overrides`) exist only for
   workflows of organisation-owned records. Tenant, role, permission, policy
   template and global mapping workflows are instance-wide: not listed, and

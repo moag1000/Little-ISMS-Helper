@@ -112,11 +112,11 @@ class RestoreValidator
             $this->checkSchemaVersionCompatibility($backup['metadata']['schema_version']);
         }
 
-        // Warn when files were in backup but extraction has not happened yet
-        if (!empty($backup['metadata']['files_included']) && !isset($backup['metadata']['_extracted_file_count'])) {
+        // Embedded files are written only by the restore itself (after commit), never here.
+        if (!empty($backup['metadata']['files_included'])) {
             $this->warnings[] = sprintf(
-                'Backup contains %d embedded file(s) — load via BackupService::loadBackupFromFile() to extract them.',
-                $backup['metadata']['file_count'] ?? 0
+                'Backup enthält %d eingebettete Datei(en); sie werden erst bei der Wiederherstellung entpackt.',
+                is_numeric($backup['metadata']['file_count'] ?? null) ? (int) $backup['metadata']['file_count'] : 0
             );
         }
 

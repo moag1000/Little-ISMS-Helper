@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Asset;
+use App\Entity\AuditLog;
 use App\Entity\Role;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
@@ -170,6 +171,100 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
         );
         self::assertGreaterThan(0, $countRows($ownSupplierId), 'the own old chain becomes rows');
         self::assertTrue($this->em->find(Supplier::class, $ownSupplierId)?->isHasDPA() ?? false, 'the own old AVV flag folds in');
+    }
+
+    /**
+     * S2 (third assessment): a crafted file granted ROLE_ALLOWED_TO_SWITCH (then
+     * ?_switch_user=<super admin>), carried password hashes and SSO subjects, moved the
+     * organisation under a holding and added audit-log rows. None of it may arrive.
+     */
+    #[Test]
+    public function craftedBackupCannotGrantInstanceRightsCredentialsOrEvidence(): void
+    {
+        $own = $this->tenant('own');
+        $holding = $this->tenant('holding');
+        $colleague = (new User())->setEmail('colleague-' . substr(uniqid(), -8) . '@example.test')
+            ->setFirstName('Live')->setLastName('Colleague')->setRoles(['ROLE_ADMIN'])
+            ->setPassword('live-hash')->setTenant($own);
+        $this->em->persist($colleague);
+        $privilegedRole = $this->em->getRepository(Role::class)->findOneBy(['name' => 'ROLE_GROUP_CISO'])
+            ?? (new Role())->setName('ROLE_GROUP_CISO')->setDescription('seeded')->setIsSystemRole(true);
+        $this->em->persist($privilegedRole);
+        $this->em->flush();
+        $ownId = (int) $own->getId();
+        $holdingId = (int) $holding->getId();
+        $colleagueId = (int) $colleague->getId();
+
+        $backup = self::getContainer()->get(BackupService::class)->createBackup(false, false, false, $own);
+
+        foreach ($backup['data']['Tenant'] ?? [] as $i => $row) {
+            if (($row['id'] ?? null) === $ownId) {
+                $backup['data']['Tenant'][$i] = [
+                    'parent_id' => ['id' => $holdingId],
+                    'isCorporateParent' => true,
+                    'isActive' => false,
+                    'apiRateLimitPerMinute' => 1000000,
+                ] + $row;
+            }
+        }
+        $users = [];
+        foreach ($backup['data']['User'] ?? [] as $row) {
+            if (($row['id'] ?? null) === $colleagueId) {
+                $row['password'] = 'forged-hash';
+                $row['ssoExternalId'] = 'forged-subject';
+                $row['roles'] = ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH'];
+            }
+            $users[] = $row;
+        }
+        $email = 'switcher-' . substr(uniqid(), -8) . '@example.test';
+        $users[] = [
+            'email' => $email,
+            'firstName' => 'Crafted',
+            'lastName' => 'Switcher',
+            'roles' => ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH', 'role_group_ciso '],
+            'password' => 'forged-hash',
+            'tenant_id' => ['id' => $ownId],
+            'customRoles_ids' => [(int) $privilegedRole->getId()],
+        ];
+        $backup['data']['User'] = $users;
+        $backup['data']['AuditLog'] = [[
+            'entityType' => 'Risk',
+            'entityId' => 1,
+            'action' => 'approve',
+            'userName' => 'leitung@example.test',
+            'description' => 'forged evidence',
+            'createdAt' => '2026-01-01 10:00:00',
+            'tenant_id' => ['id' => $ownId],
+        ]];
+        $backup['metadata']['sha256'] = hash('sha256', (string) json_encode($backup['data']));
+
+        self::getContainer()->get(RestoreService::class)
+            ->restoreFromBackup($backup, ['best_effort' => true], $own);
+        $this->em->clear();
+
+        $ownAfter = $this->em->find(Tenant::class, $ownId);
+        self::assertNull($ownAfter?->getParent(), 'the organisation is not moved under a holding');
+        self::assertFalse($ownAfter?->isCorporateParent() ?? true, 'the holding flag is not taken from the file');
+        self::assertTrue($ownAfter?->isActive() ?? false, 'the active state is not taken from the file');
+
+        $colleagueAfter = $this->em->find(User::class, $colleagueId);
+        self::assertSame('live-hash', $colleagueAfter?->getPassword(), 'no password hash from the file');
+        self::assertNull($colleagueAfter?->getSsoExternalId(), 'no SSO subject from the file');
+        self::assertNotContains('ROLE_ALLOWED_TO_SWITCH', $colleagueAfter?->getRoles() ?? []);
+
+        $switcher = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
+        if ($switcher !== null) {
+            self::assertNotSame('forged-hash', $switcher->getPassword());
+            foreach ($switcher->getRoles() as $role) {
+                self::assertFalse(\App\Security\RoleNames::isPrivileged($role), 'no privileged role: ' . $role);
+            }
+            self::assertCount(0, $switcher->getCustomRoles(), 'no privileged custom role');
+        }
+
+        self::assertNull(
+            $this->em->getRepository(AuditLog::class)->findOneBy(['description' => 'forged evidence']),
+            'an organisation restore adds no audit-log rows',
+        );
     }
 
     private function tenant(string $label): Tenant
