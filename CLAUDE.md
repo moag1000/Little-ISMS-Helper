@@ -794,6 +794,11 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       centrally (writes and create/edit/clone forms → 403 for reviewer roles without MANAGER);
       an action built for reviewers names the reviewer role in its `#[IsGranted]`, or its route
       prefix goes on the subscriber's allow list (audit work, comments, profile, decisions, exports).
+- [ ] The second factor lives only in `App\Security\Mfa\MfaSessionState` (one state per login, bound to the
+      person's id; `MfaLoginListener` starts it on every login of the web firewall, the enforcer fails closed).
+      A path that puts a token into the token storage by hand calls `MfaSessionState::begin()`; remember-me
+      cookies come only after the code (Gate 91, `tests/Security/Mfa/MfaLoginPathsTest` — a new authenticator
+      needs its MFA decision there).
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Privacy exports (VVT, DSFA, breach, DSR, consent) carry

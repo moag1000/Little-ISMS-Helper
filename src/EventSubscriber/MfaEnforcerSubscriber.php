@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Entity\User;
+use App\Security\Mfa\MfaLoginListener;
+use App\Security\Mfa\MfaSessionState;
+use App\Security\SetupAccessChecker;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * MFA Enforcer Subscriber — closes the MFA bypass vulnerability (CVSS 8.6).
  *
  * SECURITY CONTEXT
  * ----------------
- * After successful password login, LoginSuccessHandler stores
- *   _security.mfa_required = true
- * in the session and redirects to /mfa-challenge. Without this subscriber
+ * Every login writes a fresh MFA state for the person who logged in
+ * ({@see MfaLoginListener}, {@see MfaSessionState}). Without this subscriber
  * nothing prevented an authenticated user from simply navigating to any other
  * URL and skipping the second factor entirely.
  *
@@ -29,9 +31,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * and after SetupRequiredSubscriber at 10, but before regular controllers):
  *
  *   1. Skip sub-requests, profiler/debug routes and other exempt paths.
- *   2. If the session carries  _security.mfa_required=true  AND
- *      _security.mfa_verified is absent/false, the user has not yet completed
- *      the second factor.
+ *   2. If the state of the logged-in person (the impersonator while switched)
+ *      is not verified, the second factor is outstanding. No state for this
+ *      person — another person's state, a session from before the update — is
+ *      decided again here: with an active second factor it is pending (fail closed).
  *   3. If the current path is not one of the explicitly allowed MFA-flow paths
  *      the request is redirected to app_mfa_challenge with the current locale.
  *
@@ -53,7 +56,8 @@ final class MfaEnforcerSubscriber
      * profiler, error pages, and the public security/OAuth/SAML routes.
      */
     private const ALLOWED_PREFIXES = [
-        '/mfa',         // /mfa-challenge, /mfa-verify (and locale variants /{de,en}/mfa-…)
+        '/mfa-challenge', // the challenge itself (and locale variants /{de,en}/mfa-…)
+        '/mfa-verify',
         '/logout',      // allow logout so user can abort the session
         '/_wdt',        // Symfony web debug toolbar (dev)
         '/_profiler',   // Symfony profiler (dev)
@@ -61,12 +65,16 @@ final class MfaEnforcerSubscriber
         '/login',       // login page itself (edge case)
         '/oauth',       // Azure/OAuth flow
         '/saml',        // SAML flow
-        '/setup',       // setup wizard (handled by its own subscriber)
     ];
+
+    /** Setup wizard paths: allowed only while the installation is not set up yet. */
+    private const SETUP_PREFIX = '/setup';
 
     public function __construct(
         private readonly Security $security,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly MfaSessionState $mfaState,
+        private readonly SetupAccessChecker $setupAccessChecker,
     ) {
     }
 
@@ -84,22 +92,22 @@ final class MfaEnforcerSubscriber
             return;
         }
 
+        // Only the web firewall: API tokens (stateless firewall) are their own credential.
+        if ($this->security->getFirewallConfig($request)?->getName() !== MfaLoginListener::FIREWALL) {
+            return;
+        }
+
+        $subject = MfaSessionState::subjectOf($this->security->getToken());
+        if (!$subject instanceof User) {
+            return;
+        }
+
         $session = $request->getSession();
-
-        // Fast-exit: MFA is not pending in this session
-        if (!$session->get('_security.mfa_required', false)) {
+        if ($this->mfaState->isVerified($session, $subject)) {
             return;
         }
-
-        // Fast-exit: MFA has already been verified in this session
-        if ($session->get('_security.mfa_verified', false)) {
-            return;
-        }
-
-        // Only enforce for authenticated users (safety guard — in practice
-        // _security.mfa_required is only set after password authentication)
-        if (!($this->security->getUser() instanceof UserInterface)) {
-            return;
+        if (!$this->mfaState->isPending($session, $subject) && !$this->mfaState->begin($session, $subject)) {
+            return; // no state for this person yet and no second factor enrolled
         }
 
         $path = $request->getPathInfo();
@@ -113,6 +121,10 @@ final class MfaEnforcerSubscriber
             if (str_starts_with($normalizedPath, $allowedPrefix)) {
                 return;
             }
+        }
+        // After setup the wizard is ROLE_SUPER_ADMIN only — a password alone must not reach it.
+        if (str_starts_with($normalizedPath, self::SETUP_PREFIX) && !$this->setupAccessChecker->isSetupComplete()) {
+            return;
         }
 
         // Determine locale for redirect target (fall back to session locale or 'de')

@@ -6,6 +6,8 @@ namespace App\EventSubscriber;
 
 use App\Entity\User;
 use App\Repository\SystemSettingsRepository;
+use App\Security\Mfa\MfaSessionState;
+use App\Security\SetupAccessChecker;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -59,7 +61,6 @@ final class MfaEnrollmentEnforcerSubscriber
         '/login',
         '/oauth',
         '/saml',
-        '/setup',
         '/preferences/dismiss', // onboarding banner dismiss — never a trap
     ];
 
@@ -67,6 +68,8 @@ final class MfaEnrollmentEnforcerSubscriber
         private readonly Security $security,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly SystemSettingsRepository $systemSettings,
+        private readonly MfaSessionState $mfaState,
+        private readonly SetupAccessChecker $setupAccessChecker,
     ) {
     }
 
@@ -89,7 +92,8 @@ final class MfaEnrollmentEnforcerSubscriber
         // A pending second-factor challenge is handled by MfaEnforcerSubscriber;
         // never double-redirect. (Un-enrolled users never have this set, but be safe.)
         $session = $request->getSession();
-        if ($session->get('_security.mfa_required', false) && !$session->get('_security.mfa_verified', false)) {
+        $subject = MfaSessionState::subjectOf($this->security->getToken());
+        if ($subject instanceof User && $this->mfaState->isPending($session, $subject)) {
             return;
         }
 
@@ -120,6 +124,10 @@ final class MfaEnrollmentEnforcerSubscriber
             if (str_starts_with($normalizedPath, $allowedPrefix)) {
                 return;
             }
+        }
+        // Setup wizard only before the installation is set up (afterwards: ROLE_SUPER_ADMIN, who must enrol).
+        if (str_starts_with($normalizedPath, '/setup') && !$this->setupAccessChecker->isSetupComplete()) {
+            return;
         }
 
         $locale = $request->getLocale() ?: ($session->get('_locale', 'de'));
