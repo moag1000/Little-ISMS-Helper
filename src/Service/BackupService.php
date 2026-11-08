@@ -1091,7 +1091,7 @@ class BackupService
             }
             $relativePath = substr($entryName, strlen('files/'));
             $folder = explode('/', $relativePath)[0];
-            $size = (int) ($stat['size'] ?? 0);
+            $size = is_array($stat) ? $stat['size'] : 0;
 
             if (!self::isSafeArchivePath($relativePath)
                 || !in_array($folder, self::ARCHIVE_FILE_FOLDERS, true)

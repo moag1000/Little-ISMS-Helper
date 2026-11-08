@@ -38,7 +38,9 @@ final class BackupArchiveExtractionTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->remove($this->projectDir);
+        if (isset($this->projectDir)) {
+            $this->remove($this->projectDir);
+        }
     }
 
     #[Test]
