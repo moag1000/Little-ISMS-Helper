@@ -537,7 +537,7 @@ wizard:
         iso_10_2_nonconformity: "Nonconformity and corrective action"
         iso_10_2_nonconformity_desc: "Response to nonconformities with corrective actions"
         iso_10_1_improvement: "Continual improvement"
-        iso_10_1_improvement_desc: "Continuous improvement of the ISMS"
+        iso_10_1_improvement_desc: "Improvements are tracked in the improvement register, proposals from review, audit and lessons learned are adopted"
         iso_annex_a5: "Organizational Controls (A.5)"
         iso_annex_a5_desc: "37 organizational measures implemented"
         iso_annex_a6: "People Controls (A.6)"

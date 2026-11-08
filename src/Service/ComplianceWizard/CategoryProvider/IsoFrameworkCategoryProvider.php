@@ -371,17 +371,9 @@ final class IsoFrameworkCategoryProvider
                         'clause' => '10.2',
                         'route' => 'app_audit_index',
                     ],
-                    'continual_improvement' => [
-                        'name' => 'wizard.check.iso_10_1_improvement',
-                        'description' => 'wizard.check.iso_10_1_improvement_desc',
-                        // Cl. 10.1 (2022): continual improvement, evidenced by improvement actions.
-                        'type' => 'entity_presence',
-                        'entity' => 'corrective_action',
-                        'module' => 'corrective_actions',
-                        'priority' => 'medium',
-                        'clause' => '10.1',
-                        'route' => 'app_corrective_action_index',
-                    ],
+                    // Cl. 10.1 (2022): improvements tracked in the improvement register; open proposals
+                    // (review items, audit opportunities, lessons learned) count as missing entries.
+                    'continual_improvement' => RecordCheck::register('iso_10_1_improvement', ['improvement'], '10.1', 'medium', ['count_proposals' => true]),
                 ],
             ],
 

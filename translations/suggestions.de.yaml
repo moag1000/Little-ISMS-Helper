@@ -141,6 +141,7 @@ suggestions:
             role: 'Register: Rolle'
             competence: 'Register: Kompetenz'
             opportunity: 'Register: Chance'
+            improvement: 'Register: Verbesserung'
         compliance:
             inheritance: Erfüllung übernehmen
         ai:
@@ -176,7 +177,8 @@ suggestions:
             scope_interface: Aus kritischen Lieferanten.
             role: Aus den Inhabern der Persona-Rollen.
             competence: Standard-Kompetenzen der Rollen im Rollenregister.
-            opportunity: Aus der letzten Managementbewertung.
+            opportunity: Vorschläge aus der Zeit vor dem Verbesserungsregister.
+            improvement: Aus Managementbewertung, Audit-Verbesserungspotenzial und Erkenntnissen aus Vorfällen und Übungen.
         compliance:
             inheritance: Eine erfüllte Anforderung deckt eine gemappte ab.
         ai:
@@ -242,6 +244,8 @@ suggestions:
         register:
             title: '%register%: %title% übernehmen'
             rationale: 'Vorgeschlagen aus: %source%. Norm: %norm%.'
+            vacated_title: 'Inhaber prüfen: %title%'
+            vacated_rationale: 'Die Person hat diese Rolle im Benutzerkonto nicht mehr oder ist deaktiviert. Übernehmen archiviert den Eintrag; wer die Rolle jetzt hat, kommt als eigener Vorschlag. Norm: %norm%.'
         inheritance:
             title: '%target% aus %source% übernehmen: %title%'
             rationale: '%source% ist erfüllt, Mapping-Sicherheit %confidence%. Vorschlag %percent% % Erfüllung für %target%.'

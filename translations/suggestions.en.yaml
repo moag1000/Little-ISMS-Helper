@@ -141,6 +141,7 @@ suggestions:
             role: 'Register: role'
             competence: 'Register: competence'
             opportunity: 'Register: opportunity'
+            improvement: 'Register: improvement'
         compliance:
             inheritance: Take over fulfilment
         ai:
@@ -176,7 +177,8 @@ suggestions:
             scope_interface: From critical suppliers.
             role: From the holders of the persona roles.
             competence: Default competences of the roles in the role register.
-            opportunity: From the last management review.
+            opportunity: Proposals from before the improvement register.
+            improvement: From the management review, audit opportunities and lessons learned from incidents and exercises.
         compliance:
             inheritance: A fulfilled requirement covers a mapped one.
         ai:
@@ -242,6 +244,8 @@ suggestions:
         register:
             title: '%register%: adopt %title%'
             rationale: 'Proposed from: %source%. Standard: %norm%.'
+            vacated_title: 'Check holder: %title%'
+            vacated_rationale: 'The person no longer has this role on their account or is deactivated. Accepting archives the entry; whoever holds the role now comes as a proposal of its own. Norm: %norm%.'
         inheritance:
             title: 'Take over %target% from %source%: %title%'
             rationale: '%source% is fulfilled, mapping confidence %confidence%. Proposed %percent% % fulfilment for %target%.'
