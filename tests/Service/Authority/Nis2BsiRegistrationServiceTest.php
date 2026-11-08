@@ -243,6 +243,7 @@ final class Nis2BsiRegistrationServiceTest extends TestCase
         $expectedNextDue = $profile->getLastReportedAt()->modify('+1 year');
         $diff = abs($profile->getNextDueAt()->getTimestamp() - $expectedNextDue->getTimestamp());
         self::assertLessThan(5, $diff, 'nextDueAt should be within 5 seconds of +1 year from now');
+        self::assertNotNull($profile->getTenant()->getNis2RegisteredAt(), 'the organisation records the registration too');
     }
 
     #[Test]
@@ -264,6 +265,7 @@ final class Nis2BsiRegistrationServiceTest extends TestCase
         $user->setEmail('test@example.com');
 
         $profile = $this->buildProfileWithoutContacts();
+        $profile->setTenant(new Tenant());
         $profile->setIncidentReportingContact($user);
         $profile->setSecurityResponsibleContact($user);
 

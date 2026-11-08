@@ -93,8 +93,11 @@ final class ManagementReviewAdapter implements SourceAdapter
     {
         assert($item instanceof ManagementReview);
 
+        // The ISB prepares the review; top management holds it (ISO 27001 9.3.1)
+        // and is told when it comes up.
         return Responsibility::holders($item->getReviewedBy(), $item->getReviewedByPerson())
-            ->orRoles('ROLE_ISB', 'ROLE_CISO');
+            ->orRoles('ROLE_ISB', 'ROLE_CISO')
+            ->alsoInform('ROLE_TOP_MGMT');
     }
 
     public function linkOf(object $item): RecordLink

@@ -45,8 +45,7 @@ final class Nis2BsiRegistrationService
             return $profile;
         }
 
-        $profile = new Nis2RegistrationProfile();
-        $profile->setTenant($tenant);
+        $profile = Nis2RegistrationProfile::forTenant($tenant);
 
         // Auto-derive defaults from Tenant where available
         if ($tenant->getLegalName() !== null && $tenant->getLegalName() !== '') {
@@ -201,7 +200,8 @@ throw new \LogicException('Cannot export profile: securityResponsibleContact is 
      * Marks the profile as successfully reported to the BSI portal.
      *
      * Sets lastReportedAt to now, stores the portal confirmation number,
-     * and advances nextDueAt by exactly 1 year.
+     * advances nextDueAt by exactly 1 year and records the registration on
+     * the organisation (Tenant.nis2RegisteredAt, read by the group report).
      */
     public function markReported(Nis2RegistrationProfile $profile, string $portalConfirmation): void
     {
@@ -209,6 +209,7 @@ throw new \LogicException('Cannot export profile: securityResponsibleContact is 
         $profile->setLastReportedAt($now);
         $profile->setPortalConfirmationNumber($portalConfirmation);
         $profile->setNextDueAt($now->modify('+1 year'));
+        $profile->getTenant()->setNis2RegisteredAt($now);
 
         $this->entityManager->flush();
     }

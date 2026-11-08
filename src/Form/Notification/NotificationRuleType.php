@@ -58,7 +58,6 @@ final class NotificationRuleType extends AbstractType implements SectionMapInter
                     'notification.event_type.incident_severity_high'      => 'incident.severity_high',
                     'notification.event_type.risk_created'                => 'risk.created',
                     'notification.event_type.risk_score_critical'         => 'risk.score_critical',
-                    'notification.event_type.control_overdue'             => 'control.overdue',
                     'notification.event_type.control_evidence_expired'    => 'control.evidence_expired',
                     'notification.event_type.audit_finding_created'       => 'audit.finding_created',
                     'notification.event_type.document_approval_required'  => 'document.approval_required',

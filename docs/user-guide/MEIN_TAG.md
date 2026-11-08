@@ -33,13 +33,18 @@ Freigaben und Vier-Augen-Anfragen sind aufgeklappt, alle anderen zeigen nur den 
 | Standorte mit offenen Prüfungen | Eigene Standorte (als verantwortliche Person eingetragen) mit offenen Prüfungen der Standortkarte, je Prüfung mit Normbezug; Link zum Steckbrief. Nur mit Modul Standorte, siehe `STANDORTKARTE.md` |
 | Meldepflichten | Behördenmeldungen mit Stundenfrist: NIS-2 (24 h / 72 h / 1 Monat), DORA (bis 24 h / 72 h / 1 Monat), DSGVO Art. 33 (72 h ab Entdeckung); „Als gemeldet markieren“ am Vorfall schließt die Frist |
 | Pflichtenkalender | Wiederkehrende Pflichten ohne Datum am Datensatz (Risikoakzeptanzkriterien, SoA-Review, BIA, BC-Übung, Schlüsselrotation, TOM-Review, NIS-2-Leitungsschulung, DORA-Register …), 30 Tage vor Fälligkeit; „Erledigt“ mit Nachweis unter Pflichtenkalender |
+| Leitungsentscheidungen vorbereiten | Für den ISB: Billigungen der Leitung, die fehlen oder in 60 Tagen enden (Leitlinie, Risikokriterien, SoA, Ziele, Ressourcen, NIS-2-Maßnahmen); der Link öffnet die Vorlage |
+| Fristen aus Datensätzen | Einwilligungen laufen ab (DSB), Zugang einer Person endet (Admins, die Person selbst informiert), Patch-Frist, Lieferantenvertrag endet (90 Tage), Krisenstab-Training, Team läuft aus, TISAX-Prototypenschutz, eigene Mappings, TLPT, Exit-Plan-Test (DORA), Maßnahmen mit Fälligkeit, angekündigte Löschungen nach Aufbewahrungsfrist (14 Tage vorher) |
 | Alva-Empfehlungen | Alvas Hinweise der Priorität 1; die übrigen stehen im Alva-Posteingang |
 | Policy-Bestätigungen, Audit-Findings, Betroffenenanfragen, Korrekturmaßnahmen, Risiko-Akzeptanzen und -Reviews, Dokument-Reviews und -Freigaben, Nachweis-Reverifizierung, Wirksamkeitsprüfungen, Lieferanten-Reassessments, DSFA- und BC-Plan-Reviews, Schulungen, Vorfälle, Datenpannen in Bearbeitung, kritische Schwachstellen, Audit-Checklisten, Change Requests, Management-Reviews, gestoppte Assessments, kritische Framework-Lücken | jeweils die mir zugewiesenen bzw. fälligen Punkte; Module ohne Aktivierung liefern nichts |
 
 Audit-Findings erscheinen bei der zugewiesenen Person, Dokument-Reviews beim
 Dokument-Eigner (verknüpfte Person mit Benutzerkonto, sonst die hochladende Person).
 Betroffenenanfragen zeigen ihre Frist (bei Verlängerung die verlängerte) und
-verschwinden, sobald sie erledigt oder abgelehnt sind.
+verschwinden, sobald sie erledigt oder abgelehnt sind; drei Tage vor Fristende kommt
+zusätzlich eine Eilmail. Meldepflichten erscheinen bei der Person, die den Vorfall
+verantwortet, und immer auch beim ISB. Ein anstehendes Management-Review sieht auch
+die Leitung.
 
 Freigaben tragen den Namen des Datensatzes ("Risiko: Kundendaten Online-Shop"), der
 Workflow und der aktuelle Schritt stehen darunter.

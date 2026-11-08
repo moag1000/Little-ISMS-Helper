@@ -17,6 +17,11 @@ use App\Entity\User;
  *   2. deputies — only when no holder resolves to an active account
  *   3. roles    — users reaching one of these roles (role hierarchy)
  *   4. admins   — last resort, so a duty never reaches nobody
+ *
+ * Besides the one who acts, a duty may name people to keep informed
+ * ({@see alsoInform()}): they see it in My Day and get the reminder mails
+ * too, but resolving who acts never stops at them. Example: the ISB is told
+ * about every statutory report, also when the incident has an owner.
  */
 final readonly class Responsibility
 {
@@ -26,12 +31,16 @@ final readonly class Responsibility
      * @param list<string>      $roles
      * @param object|null       $record whoever is responsible for this other record
      *                                  (an approval on a risk goes to the risk owner)
+     * @param list<User|Person> $informed      people kept informed
+     * @param list<string>      $informedRoles roles kept informed (held, not merely inherited by admins)
      */
     private function __construct(
         public array $holders = [],
         public array $deputies = [],
         public array $roles = [],
         public ?object $record = null,
+        public array $informed = [],
+        public array $informedRoles = [],
     ) {
     }
 
@@ -58,12 +67,31 @@ final readonly class Responsibility
 
     public function withDeputies(User|Person|null ...$deputies): self
     {
-        return new self($this->holders, [...$this->deputies, ...self::compact($deputies)], $this->roles, $this->record);
+        return new self($this->holders, [...$this->deputies, ...self::compact($deputies)], $this->roles, $this->record, $this->informed, $this->informedRoles);
     }
 
     public function orRoles(string ...$roles): self
     {
-        return new self($this->holders, $this->deputies, array_values(array_unique([...$this->roles, ...$roles])), $this->record);
+        return new self($this->holders, $this->deputies, array_values(array_unique([...$this->roles, ...$roles])), $this->record, $this->informed, $this->informedRoles);
+    }
+
+    /**
+     * Also keep these informed: a role name (string) or a person. They do not
+     * act on the duty, so they never replace the one who does.
+     */
+    public function alsoInform(User|Person|string|null ...$whom): self
+    {
+        $roles = array_values(array_filter($whom, 'is_string'));
+        $people = self::compact(array_filter($whom, static fn ($w): bool => !is_string($w)));
+
+        return new self(
+            $this->holders,
+            $this->deputies,
+            $this->roles,
+            $this->record,
+            [...$this->informed, ...$people],
+            array_values(array_unique([...$this->informedRoles, ...$roles])),
+        );
     }
 
     /**

@@ -22,7 +22,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * from the SLA monitors the ReportingPlanner keeps. They reach whoever is
  * responsible for the incident (owner, otherwise ISB/CISO) or the breach
  * (assessor/DPO), in My Day and as an immediate mail: these deadlines are
- * counted in hours.
+ * counted in hours. The ISB/CISO is always informed as well.
  */
 final class ReportingDutySource extends EntityDeadlineSource
 {
@@ -36,6 +36,9 @@ final class ReportingDutySource extends EntityDeadlineSource
         'dora_1mo' => 'DORA-Abschlussbericht (1 Monat)',
         'gdpr_72h' => 'DSGVO-Meldung an die Aufsicht (72 h)',
     ];
+
+    /** Monitor entity types whose clocks are statutory reports. */
+    public const array ENTITY_TYPES = ['Incident', 'DataBreach'];
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -97,7 +100,11 @@ final class ReportingDutySource extends EntityDeadlineSource
         assert($item instanceof SlaDeadlineMonitor);
         $record = $this->recordOf($item);
 
-        return $record === null ? Responsibility::roles('ROLE_ISB', 'ROLE_CISO') : Responsibility::ofRecord($record);
+        // The security officer hears of every statutory report, also when the
+        // incident has its own owner (the authority asks the ISB first).
+        return $record === null
+            ? Responsibility::roles('ROLE_ISB', 'ROLE_CISO')
+            : Responsibility::ofRecord($record)->alsoInform('ROLE_ISB', 'ROLE_CISO');
     }
 
     public function linkOf(object $item): RecordLink

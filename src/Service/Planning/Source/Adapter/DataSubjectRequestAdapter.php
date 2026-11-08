@@ -106,6 +106,8 @@ final class DataSubjectRequestAdapter implements SourceAdapter
 
     public function profile(): DeadlineProfile
     {
-        return new DeadlineProfile(bucket: 'dsrs', leadDays: null, normReference: 'DSGVO Art. 12 Abs. 3');
+        // urgentHours: the urgent mail goes out three days before the answer is
+        // due, whatever the digest setting (an Art. 12 deadline missed is a breach).
+        return new DeadlineProfile(bucket: 'dsrs', leadDays: null, normReference: 'DSGVO Art. 12 Abs. 3', urgentHours: 72);
     }
 }
