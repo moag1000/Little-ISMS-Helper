@@ -20,7 +20,6 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Url;
-use App\Form\Util\LegacyFreeTextField;
 
 final class PatchType extends AbstractType implements SectionMapInterface
 {
@@ -161,8 +160,7 @@ final class PatchType extends AbstractType implements SectionMapInterface
                 'widget' => 'single_text',
             ]);
 
-        // Pattern A dual-state owner cluster (User + Person + deputies) via the
-        // shared trait; the legacy free-text field below keeps round-tripping.
+        // Owner cluster (User + Person + deputies) via the shared trait.
         $this->addOwnerPicker($builder, [
             'translation_prefix' => 'patch',
             'user_field'         => 'responsiblePersonUser',
@@ -179,15 +177,6 @@ final class PatchType extends AbstractType implements SectionMapInterface
         ]);
 
         $builder
-            ->add('responsiblePerson', TextType::class, [
-                'label' => 'patch.field.responsible_person_legacy',
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'patch.placeholder.responsible_person',
-                ],
-                'help' => 'patch.help.responsible_person',
-            ])
             ->add('testingNotes', TextareaType::class, [
                 'label' => 'patch.field.testing_notes',
                 'required' => false,
@@ -274,7 +263,6 @@ final class PatchType extends AbstractType implements SectionMapInterface
                 ],
             ])
         ;
-        LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
     }
 
     /**
@@ -319,7 +307,6 @@ final class PatchType extends AbstractType implements SectionMapInterface
                 'responsiblePersonUser',
                 'responsiblePersonRef',
                 'responsibleDeputyPersons',
-                'responsiblePerson',
                 'deploymentNotes',
             ],
             'verification' => [

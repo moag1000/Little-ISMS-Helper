@@ -51,9 +51,9 @@ TEMPLATES_DIR = ROOT / "templates"
 
 # FormType field collection — same pattern as Gate 29.
 RE_ADD = re.compile(r"->add\(\s*['\"]([a-zA-Z_][a-zA-Z0-9_]*)['\"]")
-# OwnerPickerFormTrait::addOwnerPicker(...) injects up to 4 child fields whose
-# names come from config-keys user_field / person_field / deputies_field /
-# legacy_field. Same handling as check_form_sections.py (Gate P-2).
+# OwnerPickerFormTrait::addOwnerPicker(...) injects up to 3 child fields whose
+# names come from config-keys user_field / person_field / deputies_field.
+# Same handling as check_form_sections.py (Gate P-2).
 RE_OWNER_PICKER = re.compile(
     r"addOwnerPicker\s*\([^,]+,\s*\[(.*?)\]\s*\)\s*;",
     re.DOTALL,
@@ -62,7 +62,6 @@ OWNER_PICKER_CONFIG_KEYS = (
     "user_field",
     "person_field",
     "deputies_field",
-    "legacy_field",
 )
 RE_OWNER_PICKER_FIELD = re.compile(
     r"['\"](?:" + "|".join(OWNER_PICKER_CONFIG_KEYS) + r")['\"]\s*=>\s*['\"]([a-zA-Z_][a-zA-Z0-9_]*)['\"]"
@@ -125,7 +124,7 @@ def collect_form_fields() -> dict[str, set[str]]:
         text = ft.read_text(encoding="utf-8", errors="ignore")
         fields = set(RE_ADD.findall(text))
         # Pull OwnerPickerFormTrait-injected fields (assignedTo / assignedPerson /
-        # assignedDeputyPersons / legacy) so they're counted as declared.
+        # assignedDeputyPersons) so they're counted as declared.
         for picker_block in RE_OWNER_PICKER.finditer(text):
             fields.update(RE_OWNER_PICKER_FIELD.findall(picker_block.group(1)))
         if fields:

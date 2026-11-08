@@ -114,11 +114,7 @@ final class AssetImportSchemaProvider implements ImportSchemaProviderInterface
                     relationClass: Person::class,
                     relationLookup: 'fullName',
                 ),
-                new ImportFieldSpec(
-                    name: 'owner',
-                    setter: 'setOwner',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
+                OwnerImportFields::text('owner', 'ownerUser', 'ownerPerson'),
                 new ImportFieldSpec(
                     name: 'physicalLocation',
                     setter: 'setPhysicalLocation',

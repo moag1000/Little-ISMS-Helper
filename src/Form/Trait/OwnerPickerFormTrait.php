@@ -9,23 +9,20 @@ use App\Entity\User;
 use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use App\Form\Util\LegacyFreeTextField;
 
 /**
  * OwnerPickerFormTrait.
  *
- * Unifies the recurring "Pattern A Dual-State Owner" cluster (User +
- * Person + optional Deputies + optional Legacy-Freetext) into a single
- * helper-call so that 9+ FormTypes stop hand-rolling the same 3-5
- * EntityType/TextType permutations.
+ * Unifies the recurring owner cluster (User + Person + optional Deputies)
+ * into a single helper-call so that 9+ FormTypes stop hand-rolling the
+ * same EntityType permutations. (The legacy free-text owner columns were
+ * dropped in 2026-11.)
  *
- * Pattern A Dual-State lives on the Entity layer (effective<Owner>
- * accessor + Backfill-Migration, already shipped). This trait stays
+ * The effective<Owner> accessor lives on the Entity layer. This trait stays
  * UI-only — no schema change, no entity touch.
  *
  * Property-names differ per entity (Asset uses ownerUser/ownerPerson,
@@ -43,7 +40,6 @@ use App\Form\Util\LegacyFreeTextField;
  *               'user_field'      => 'ownerUser',
  *               'person_field'    => 'ownerPerson',
  *               'deputies_field'  => 'ownerDeputyPersons',
- *               'legacy_field'    => 'owner',
  *               'translation_prefix' => 'asset',
  *           ]);
  *       }
@@ -56,7 +52,7 @@ use App\Form\Util\LegacyFreeTextField;
 trait OwnerPickerFormTrait
 {
     /**
-     * Adds the 2-4 owner-cluster form children in one call.
+     * Adds the 2-3 owner-cluster form children in one call.
      *
      * Translation keys default to `<prefix>.field.owner_*` /
      * `<prefix>.help.owner_*` / `<prefix>.placeholder.owner_*` so the
@@ -69,7 +65,6 @@ trait OwnerPickerFormTrait
      *     user_field?: string,
      *     person_field?: string,
      *     deputies_field?: string|null,
-     *     legacy_field?: string|null,
      *     translation_prefix?: string,
      *     translation_domain?: string|null,
      *     required?: bool,
@@ -82,9 +77,6 @@ trait OwnerPickerFormTrait
      *     person_placeholder?: string,
      *     deputies_label?: string,
      *     deputies_help?: string,
-     *     legacy_label?: string,
-     *     legacy_help?: string,
-     *     legacy_placeholder?: string,
      * } $config
      */
     protected function addOwnerPicker(FormBuilderInterface $builder, array $config): void
@@ -92,7 +84,6 @@ trait OwnerPickerFormTrait
         $userField     = $config['user_field']     ?? 'ownerUser';
         $personField   = $config['person_field']   ?? 'ownerPerson';
         $deputiesField = $config['deputies_field'] ?? null;
-        $legacyField   = $config['legacy_field']   ?? null;
         $prefix        = $config['translation_prefix'] ?? 'common';
         // The default `common.*` owner keys live in the `messages` domain, but a
         // privacy/training/bcm form's translation_domain is its own — so without
@@ -151,25 +142,6 @@ trait OwnerPickerFormTrait
                 ],
                 'help'         => $config['deputies_help'] ?? $prefix . '.help.owner_deputies',
             ]);
-        }
-
-        if ($legacyField !== null) {
-            // Legacy free-text owner — kept for backwards-compat but
-            // surfaced with an Alva-style hint in the template macro.
-            // Form-Type still exposes it as TextType so existing values
-            // round-trip cleanly during the migration window.
-            $builder->add($legacyField, TextType::class, [
-                'label'    => $config['legacy_label'] ?? $prefix . '.field.owner_legacy',
-                'translation_domain' => $domain,
-                'required' => false,
-                'attr'     => [
-                    'maxlength'                => 100,
-                    'placeholder'              => $config['legacy_placeholder'] ?? $prefix . '.placeholder.owner_legacy',
-                    'data-owner-picker-target' => 'legacy',
-                ],
-                'help'     => $config['legacy_help'] ?? $prefix . '.help.owner_legacy',
-            ]);
-            LegacyFreeTextField::hideWhenEmpty($builder, $legacyField);
         }
 
         // Owner pre-fill — UX-Polish.

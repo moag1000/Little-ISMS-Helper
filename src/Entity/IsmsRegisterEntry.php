@@ -323,7 +323,7 @@ class IsmsRegisterEntry
     #[SerializedName('owner')]
     public function getEffectiveOwner(): ?string
     {
-        return OwnerResolver::resolveEffective($this->ownerUser, $this->ownerPerson, null);
+        return OwnerResolver::resolveEffective($this->ownerUser, $this->ownerPerson);
     }
 
     public function getNextReviewDate(): ?DateTimeImmutable

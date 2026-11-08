@@ -87,7 +87,8 @@ final class InternalAuditCloner
             }
         }
 
-        $clone->setLeadAuditor((string) $source->getLeadAuditor());
+        $clone->setLeadAuditorUser($source->getLeadAuditorUser());
+        $clone->setLeadAuditorPerson($source->getLeadAuditorPerson());
         $team = $source->getAuditTeam();
         if ($team !== null) {
             $clone->setAuditTeam($team);

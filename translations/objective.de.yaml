@@ -37,7 +37,6 @@ objective:
         responsible_person_user: 'Verantwortliche Person aus der Benutzerverwaltung'
         responsible_person_ref: 'Verantwortliche Person aus dem Personenverzeichnis'
         responsible_deputies: 'Vertretungen'
-        responsible_person_legacy: 'Verantwortliche Person (Freitext, veraltet)'
     placeholder:
         measurement_person: 'Person wählen'
         kpi_key: 'Manuell gepflegt'

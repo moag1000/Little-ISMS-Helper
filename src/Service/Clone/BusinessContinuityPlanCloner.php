@@ -79,7 +79,8 @@ final class BusinessContinuityPlanCloner implements EntityClonerInterface
 
         $clone->setDescription($source->getDescription());
         $clone->setBusinessProcess($source->getBusinessProcess());
-        $clone->setPlanOwner($source->getPlanOwner());
+        $clone->setPlanOwnerUser($source->getPlanOwnerUser());
+        $clone->setPlanOwnerPerson($source->getPlanOwnerPerson());
 
         // Operational content — full template carries over.
         $clone->setActivationCriteria($source->getActivationCriteria());

@@ -24,6 +24,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Service\OwnerResolver;
 use App\Validator\Constraint\SameTenantOwner;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * Location Entity
@@ -137,10 +138,6 @@ class Location
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['location:read', 'location:write'])]
     private ?string $accessControlSystem = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['location:read', 'location:write'])]
-    private ?string $responsiblePerson = null;
 
     /**
      * Pattern A dual-state: preferred structured owner. Falls back to string responsiblePerson.
@@ -452,17 +449,6 @@ class Location
         return $this;
     }
 
-    public function getResponsiblePerson(): ?string
-    {
-        return $this->responsiblePerson;
-    }
-
-    public function setResponsiblePerson(?string $responsiblePerson): static
-    {
-        $this->responsiblePerson = $responsiblePerson;
-        return $this;
-    }
-
     public function getCapacity(): ?int
     {
         return $this->capacity;
@@ -636,14 +622,15 @@ class Location
 
     /**
      * Effective responsiblePerson: prefer responsiblePersonUser.fullName,
-     * then responsiblePersonRef (Person), fall back to legacy string.
+     * then responsiblePersonRef (Person).
      */
+    #[Groups(['location:read'])]
+    #[SerializedName('responsiblePerson')]
     public function getEffectiveResponsiblePerson(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->responsiblePersonUser,
             $this->responsiblePersonRef,
-            $this->responsiblePerson,
         );
     }
 
@@ -657,7 +644,6 @@ class Location
         return OwnerResolver::resolveAll(
             $this->responsiblePersonUser,
             $this->responsiblePersonRef,
-            $this->responsiblePerson,
             $this->responsibleDeputyPersons,
         );
     }

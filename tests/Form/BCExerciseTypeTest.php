@@ -12,9 +12,9 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 /**
  * S4 P-15 DataReuse — BCExerciseType form contract:
- *  - facilitator dual-state (User/Person/legacy text)
+ *  - facilitator as User/Person (no free text since 2026-11)
  *  - participantPersons + observerPersons typed Multi-Selects
- *  - All legacy free-text fields still present for migration display
+ *  - participants/observers free texts still present for migration display
  *  - Existing exerciseLeader{User,Person} (Phase B1) untouched
  */
 final class BCExerciseTypeTest extends KernelTestCase
@@ -34,7 +34,7 @@ final class BCExerciseTypeTest extends KernelTestCase
 
         self::assertTrue($form->has('facilitatorUser'), 'Pattern-A: facilitatorUser slot must exist');
         self::assertTrue($form->has('facilitatorPerson'), 'Pattern-A: facilitatorPerson slot must exist');
-        self::assertTrue($form->has('facilitator'), 'Legacy facilitator text field must remain');
+        self::assertFalse($form->has('facilitator'), 'no free-text facilitator field');
     }
 
     #[Test]
@@ -64,7 +64,6 @@ final class BCExerciseTypeTest extends KernelTestCase
 
         self::assertTrue($form->has('participants'), 'Legacy participants textarea must remain');
         self::assertTrue($form->has('observers'), 'Legacy observers textarea must remain');
-        self::assertTrue($form->has('facilitator'), 'Legacy facilitator text must remain');
     }
 
     #[Test]
@@ -75,14 +74,5 @@ final class BCExerciseTypeTest extends KernelTestCase
         // Phase-B1 fields must not be regressed by P-15
         self::assertTrue($form->has('exerciseLeaderUser'));
         self::assertTrue($form->has('exerciseLeaderPerson'));
-    }
-
-    #[Test]
-    public function facilitatorLegacyIsNoLongerHardRequired(): void
-    {
-        $form = $this->formFactory->create(BCExerciseType::class, new BCExercise());
-
-        $required = $form->get('facilitator')->getConfig()->getOption('required');
-        self::assertFalse((bool) $required, 'P-15: legacy facilitator text is optional once Pattern-A typed slot is wired.');
     }
 }

@@ -13,6 +13,7 @@ use App\Doctrine\EntityManagerRecovery;
 use App\Repository\AssetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
+use App\Service\Owner\OwnerTextResolver;
 
 /**
  * GSTOOL XML import (Zielobjekte → Asset).
@@ -146,6 +147,7 @@ final class GstoolXmlImporter
         private readonly ImportSessionRecorder $sessionRecorder,
         private readonly GstoolMigrationTable $migrationTable,
         private readonly ?EntityManagerRecovery $entityManagerRecovery = null,
+        private readonly ?OwnerTextResolver $ownerTexts = null,
     ) {
     }
 
@@ -703,11 +705,11 @@ final class GstoolXmlImporter
         if ($row['description'] !== null) {
             $asset->setDescription($row['description']);
         }
-        // <verantwortlich> is a name, not an account: it lands in the legacy
-        // owner text, and Admin > Daten-Reparatur > Freitext-Verantwortliche
-        // assigns the matching user or person. No marker text without it.
+        // <verantwortlich> is a name, not an account: it becomes the matching
+        // user or person of the organisation, else a new Person (OwnerTextResolver).
+        // An owner already chosen in the tool is kept.
         if ($row['owner'] !== null && trim((string) $row['owner']) !== '') {
-            $asset->setOwner($row['owner']);
+            $this->ownerTexts?->assign($asset, 'ownerUser', 'ownerPerson', $asset->getTenant(), (string) $row['owner']);
         }
         if ($row['locationLabel'] !== null) {
             $asset->setLocation($row['locationLabel']);
@@ -730,7 +732,7 @@ final class GstoolXmlImporter
             'name' => $asset->getName(),
             'assetType' => $asset->getAssetType(),
             'description' => $asset->getDescription(),
-            'owner' => $asset->getOwner(),
+            'owner' => $asset->getEffectiveOwner(),
             'location' => $asset->getLocation(),
             'cia' => [
                 'c' => $asset->getConfidentialityValue(),

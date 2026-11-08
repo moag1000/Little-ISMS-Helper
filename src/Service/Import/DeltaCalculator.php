@@ -263,8 +263,8 @@ final class DeltaCalculator
             $oldValue = $old[$field];
 
             // Normalise to string for loose comparison
-            $oldNorm = (string) $oldValue;
-            $newNorm = (string) $newValue;
+            $oldNorm = self::comparable($oldValue);
+            $newNorm = self::comparable($newValue);
 
             if ($oldNorm !== $newNorm) {
                 $diff[$field] = [
@@ -275,5 +275,18 @@ final class DeltaCalculator
         }
 
         return $diff;
+    }
+
+    /**
+     * A related record compares by id (User / Person have no
+     * string form), anything else by its string form.
+     */
+    private static function comparable(mixed $value): string
+    {
+        if (is_object($value) && !$value instanceof \Stringable && method_exists($value, 'getId')) {
+            return '#' . $value->getId();
+        }
+
+        return is_scalar($value) || $value === null || $value instanceof \Stringable ? (string) $value : get_debug_type($value);
     }
 }

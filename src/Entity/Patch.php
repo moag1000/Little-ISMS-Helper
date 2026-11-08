@@ -151,12 +151,6 @@ class Patch
     private ?DateTimeImmutable $deployedDate = null;
 
     /**
-     * Responsible person for deployment
-     */
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $responsiblePerson = null;
-
-    /**
      * Pattern A dual-state: preferred structured owner. Falls back to string responsiblePerson.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -444,17 +438,6 @@ public function __construct()
         return $this;
     }
 
-    public function getResponsiblePerson(): ?string
-    {
-        return $this->responsiblePerson;
-    }
-
-    public function setResponsiblePerson(?string $responsiblePerson): static
-    {
-        $this->responsiblePerson = $responsiblePerson;
-        return $this;
-    }
-
     public function getTestingNotes(): ?string
     {
         return $this->testingNotes;
@@ -704,14 +687,13 @@ public function __construct()
 
     /**
      * Effective responsiblePerson: prefer responsiblePersonUser.fullName,
-     * then responsiblePersonRef (Person), fall back to legacy string.
+     * then responsiblePersonRef (Person).
      */
     public function getEffectiveResponsiblePerson(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->responsiblePersonUser,
             $this->responsiblePersonRef,
-            $this->responsiblePerson,
         );
     }
 
@@ -725,7 +707,6 @@ public function __construct()
         return OwnerResolver::resolveAll(
             $this->responsiblePersonUser,
             $this->responsiblePersonRef,
-            $this->responsiblePerson,
             $this->responsibleDeputyPersons,
         );
     }

@@ -39,8 +39,7 @@ trait BusinessProcessOwnerTrait
     /**
      * Person-based primary owner: when the process owner has no system login
      * (external stakeholder, shared mailbox, contractor), use this slot
-     * instead of `processOwnerUser`. Falls back to the legacy string when
-     * neither is set.
+     * instead of `processOwnerUser`. 
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'process_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -94,14 +93,13 @@ trait BusinessProcessOwnerTrait
     }
 
     /**
-     * Effective processOwner: prefer processOwnerUser.fullName, fall back to Person, then legacy string.
+     * Effective processOwner: prefer processOwnerUser.fullName, fall back to Person.
      */
     public function getEffectiveProcessOwner(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->processOwnerUser,
             $this->processOwnerPerson,
-            $this->processOwner,
         );
     }
 
@@ -116,7 +114,6 @@ trait BusinessProcessOwnerTrait
         return OwnerResolver::resolveAll(
             $this->processOwnerUser,
             $this->processOwnerPerson,
-            $this->processOwner,
             $this->processOwnerDeputyPersons,
         );
     }

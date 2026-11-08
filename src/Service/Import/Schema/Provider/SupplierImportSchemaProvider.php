@@ -85,11 +85,6 @@ final class SupplierImportSchemaProvider implements ImportSchemaProviderInterfac
                 ),
 
                 // ── Contact ─────────────────────────────────────────────────────
-                new ImportFieldSpec(
-                    name: 'contactPerson',
-                    setter: 'setContactPerson',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
                 ...OwnerImportFields::specs('contactPerson'),
                 new ImportFieldSpec(
                     name: 'email',

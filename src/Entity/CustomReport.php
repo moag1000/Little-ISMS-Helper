@@ -409,13 +409,13 @@ class CustomReport
 
     public function getEffectiveOwner(): ?string
     {
-        return OwnerResolver::resolveEffective($this->owner, $this->ownerPerson, null);
+        return OwnerResolver::resolveEffective($this->owner, $this->ownerPerson);
     }
 
     /** @return list<string> */
     public function getAllOwners(): array
     {
-        return OwnerResolver::resolveAll($this->owner, $this->ownerPerson, null, $this->ownerDeputyPersons);
+        return OwnerResolver::resolveAll($this->owner, $this->ownerPerson, $this->ownerDeputyPersons);
     }
 
     public function getSharedWith(): array

@@ -502,7 +502,7 @@ final class DoraRoiXbrlExporter
             $availEl->textContent = (string) ($asset->getAvailabilityValue() ?? 0);
             $assetEl->appendChild($availEl);
 
-            // B_03.02.0080: Asset owner — free text owner-name (legacy field).
+            // B_03.02.0080: Asset owner — name of the owning user or person.
             $ownerEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.02.0080');
             $ownerEl->setAttribute('contextRef', 'ctx_period');
             $ownerEl->textContent = (string) ($asset->getEffectiveOwner() ?? '');

@@ -11,28 +11,17 @@ use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
- * Lead auditor (Pattern A dual-state): legacy free text + User + Person + effective accessor.
+ * Lead auditor (Pattern A dual-state): User + Person + effective accessor.
  * Extracted from InternalAudit to keep the entity within its god-class budget.
  */
 trait InternalAuditLeadAuditorTrait
 {
     /**
-     * Legacy free-text lead auditor name. kept read-only for
-     * migration display once `leadAuditorUser` or `leadAuditorPerson` is set.
-     * No longer NotBlank — the Pattern-A validator on the form enforces that
-     * at least one of legacy/user/person is provided.
-     */
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'internal_audit.validation.lead_auditor_max_length')]
-    private ?string $leadAuditor = null;
-
-    /**
      * Pattern A dual-state: preferred structured lead auditor
-     * as an application User. Falls back to leadAuditorPerson, then legacy
-     * `leadAuditor` string.
+     * as an application User. Falls back to leadAuditorPerson.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'lead_auditor_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -49,17 +38,6 @@ trait InternalAuditLeadAuditorTrait
     #[Groups(['audit:read', 'audit:write'])]
     #[SameTenantOwner]
     private ?Person $leadAuditorPerson = null;
-
-    public function getLeadAuditor(): ?string
-    {
-        return $this->leadAuditor;
-    }
-
-    public function setLeadAuditor(?string $leadAuditor): static
-    {
-        $this->leadAuditor = $leadAuditor;
-        return $this;
-    }
 
     public function getLeadAuditorUser(): ?User
     {
@@ -84,16 +62,16 @@ trait InternalAuditLeadAuditorTrait
     }
 
     /**
-     * DataReuse Tri-State resolver — prefer structured User name, then
-     * Person, fall back to legacy `leadAuditor` free-text. Templates should
-     * read this instead of accessing the raw fields directly.
+     * Lead auditor's name: the User, else the Person. Templates and the API
+     * (`leadAuditor`, read-only) read this instead of the raw fields.
      */
+    #[Groups(['audit:read'])]
+    #[SerializedName('leadAuditor')]
     public function getEffectiveLeadAuditorName(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->leadAuditorUser,
             $this->leadAuditorPerson,
-            $this->leadAuditor,
         );
     }
 }

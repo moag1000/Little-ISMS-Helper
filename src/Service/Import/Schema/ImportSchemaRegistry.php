@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Import\Schema;
 
 use App\Service\ModuleConfigurationService;
+use App\Service\Owner\OwnerTextResolver;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -26,6 +27,7 @@ final class ImportSchemaRegistry
         iterable $providers,
         private readonly EntityManagerInterface $em,
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly ?OwnerTextResolver $ownerTexts = null,
     ) {
         $this->providers = iterator_to_array($providers, false);
     }
@@ -47,7 +49,7 @@ final class ImportSchemaRegistry
             return null;
         }
 
-        return new SchemaDrivenMapper($this->em, $this->moduleConfiguration, $schema);
+        return new SchemaDrivenMapper($this->em, $this->moduleConfiguration, $schema, $this->ownerTexts);
     }
 
     /** @return list<string> entity types backed by a schema */

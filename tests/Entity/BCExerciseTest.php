@@ -47,8 +47,6 @@ class BCExerciseTest extends TestCase
         $exercise->setParticipants('IT team, management, crisis team');
         $this->assertEquals('IT team, management, crisis team', $exercise->getParticipants());
 
-        $exercise->setFacilitator('John Doe');
-        $this->assertEquals('John Doe', $exercise->getFacilitator());
 
         $exercise->setObservers('External auditor');
         $this->assertEquals('External auditor', $exercise->getObservers());

@@ -143,8 +143,8 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
         $this->testAudit->setScopeType('full_isms');
         $this->testAudit->setStatus('conducted');
         $this->testAudit->setPlannedDate(new DateTime('+30 days'));
-        $this->testAudit->setLeadAuditor('Lead Auditor');
         $this->testAudit->setTenant($this->testTenant);
+        $this->testAudit->setLeadAuditorUser($this->managerUser);
         $this->entityManager->persist($this->testAudit);
 
         $this->entityManager->flush();

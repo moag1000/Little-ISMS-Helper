@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Exception\Import\ImportRowInvalidException;
 use App\Service\Import\EntityMapperRegistry;
+use App\Service\Owner\OwnerText;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -17,7 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 /**
  * The structured owner columns (user by e-mail, person by name or e-mail) of
  * the six dual-state entities import tenant-scoped, exactly like Control; the
- * ISMSObjective free-text owner is required only while neither is given.
+ * ISMSObjective owner column is required only while neither is given. A
+ * plain owner column (name or e-mail as text) fills the User or Person slot.
  */
 final class OwnerColumnsImportTest extends KernelTestCase
 {
@@ -113,13 +115,20 @@ final class OwnerColumnsImportTest extends KernelTestCase
 
     #[Test]
     #[DataProvider('entities')]
-    public function anUnknownPersonRefusesTheRowAndFreeTextAloneIsAccepted(string $type, string $base): void
+    public function anUnknownPersonRefusesTheRowAndAnOwnerTextFillsTheSlots(string $type, string $base): void
     {
         $mapper = $this->registry->getMapperFor($type);
 
-        $accepted = $mapper->toEntityData(['responsiblePerson' => 'free text', 'contactPerson' => 'free text'], null, $this->own);
-        self::assertArrayNotHasKey($base . 'User', $accepted);
-        self::assertArrayNotHasKey($base . 'Ref', $accepted);
+        $unknown = $mapper->toEntityData([$base => 'Neu ' . $this->uid], null, $this->own);
+        self::assertNull($unknown[$base . 'User']);
+        self::assertInstanceOf(OwnerText::class, $unknown[$base . 'Ref'], 'becomes a Person on commit');
+
+        $known = $mapper->toEntityData([$base => $this->ownUser->getEmail()], null, $this->own);
+        self::assertSame($this->ownUser, $known[$base . 'User']);
+        self::assertNull($known[$base . 'Ref']);
+
+        $person = $mapper->toEntityData([$base => 'Pia Owner ' . $this->uid], null, $this->own);
+        self::assertSame($this->ownPerson->getId(), $person[$base . 'Ref']?->getId());
 
         $this->expectException(ImportRowInvalidException::class);
         $mapper->toEntityData([$base . 'Ref' => 'Nobody Known ' . $this->uid], null, $this->own);

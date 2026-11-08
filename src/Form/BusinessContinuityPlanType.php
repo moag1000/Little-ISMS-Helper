@@ -275,11 +275,9 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
             'user_field'         => 'planOwnerUser',
             'person_field'       => 'planOwnerPerson',
             'deputies_field'     => 'planOwnerDeputyPersons',
-            'legacy_field'       => 'planOwner',
             'user_label'         => 'bc_plans.field.plan_owner',
             'person_label'       => 'bc_plans.field.plan_owner_person',
             'deputies_label'     => 'bc_plans.field.plan_owner_deputies',
-            'legacy_label'       => 'bc_plans.field.plan_owner_legacy',
             'user_placeholder'   => 'bc_plans.placeholder.plan_owner_user',
             'person_placeholder' => 'bc_plans.placeholder.plan_owner_person',
             'user_help'          => 'bc_plans.help.plan_owner_user',
@@ -356,7 +354,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
     {
         return [
             'overview'      => ['name', 'businessProcess', 'description', 'status', 'version'],
-            'owner'          => ['planOwnerUser', 'planOwnerPerson', 'planOwnerDeputyPersons', 'planOwner'],
+            'owner'          => ['planOwnerUser', 'planOwnerPerson', 'planOwnerDeputyPersons'],
             'activation'    => ['activationCriteria', 'escalationLevels'],
             'team'          => ['bcTeam', 'rolesAndResponsibilities', 'responseTeamMembers', 'crisisTeams'],
             'recovery'      => ['recoveryProcedures', 'rto', 'rpo', 'criticalAssets', 'backupProcedures', 'restoreProcedures'],

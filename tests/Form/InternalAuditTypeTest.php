@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormFactoryInterface;
  * S4 P-15 DataReuse — InternalAuditType form contract:
  *  - structured leadAuditorUser + leadAuditorPerson EntityType slots
  *  - typed auditTeamMembers Multi-Select (Collection<Person>)
- *  - legacy leadAuditor + auditTeam text fields still present (migration)
+ *  - legacy auditTeam text field still present (migration); leadAuditor text is gone
  *
  * Uses KernelTestCase so EntityType has a real Doctrine ManagerRegistry.
  */
@@ -38,14 +38,11 @@ final class InternalAuditTypeTest extends KernelTestCase
     }
 
     #[Test]
-    public function legacyLeadAuditorTextFieldStillPresent(): void
+    public function noFreeTextLeadAuditorField(): void
     {
         $form = $this->formFactory->create(InternalAuditType::class, new InternalAudit());
 
-        self::assertTrue(
-            $form->has('leadAuditor'),
-            'Legacy text field must remain for migration display',
-        );
+        self::assertFalse($form->has('leadAuditor'), 'lead auditor is picked as user or person');
     }
 
     #[Test]
@@ -64,15 +61,6 @@ final class InternalAuditTypeTest extends KernelTestCase
         $form = $this->formFactory->create(InternalAuditType::class, new InternalAudit());
 
         self::assertTrue($form->has('auditTeam'), 'Legacy auditTeam textarea must remain (migration display)');
-    }
-
-    #[Test]
-    public function leadAuditorIsNoLongerHardRequiredOnLegacyField(): void
-    {
-        $form = $this->formFactory->create(InternalAuditType::class, new InternalAudit());
-
-        $required = $form->get('leadAuditor')->getConfig()->getOption('required');
-        self::assertFalse((bool) $required, 'Legacy leadAuditor must not be hard-required — Callback enforces "at least one".');
     }
 
     /**

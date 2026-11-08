@@ -153,7 +153,6 @@ class SupplierControllerTest extends WebTestCase
         $this->testSupplier->setTenant($this->testTenant);
         $this->testSupplier->setName('Test Supplier ' . $uniqueId);
         $this->testSupplier->setEmail('supplier_' . $uniqueId . '@example.com');
-        $this->testSupplier->setContactPerson('Supplier Contact');
         $this->testSupplier->setAddress('123 Test Street');
         $this->testSupplier->setCriticality('high');
         $this->testSupplier->setStatus('active');
@@ -477,7 +476,6 @@ class SupplierControllerTest extends WebTestCase
         $supplier2->setTenant($this->testTenant);
         $supplier2->setName('Bulk Delete Supplier 2');
         $supplier2->setEmail('bulk2@test.com');
-        $supplier2->setContactPerson('Contact 2');
         $supplier2->setServiceProvided('Other services');
         $supplier2->setCriticality('low');
         $supplier2->setStatus('active');
@@ -528,7 +526,6 @@ class SupplierControllerTest extends WebTestCase
         $otherSupplier->setTenant($otherTenant);
         $otherSupplier->setName('Other Tenant Supplier');
         $otherSupplier->setEmail('other@test.com');
-        $otherSupplier->setContactPerson('Other Contact');
         $otherSupplier->setServiceProvided('Other services');
         $otherSupplier->setCriticality('low');
         $otherSupplier->setStatus('active');
@@ -592,7 +589,6 @@ class SupplierControllerTest extends WebTestCase
         $otherSupplier->setTenant($otherTenant);
         $otherSupplier->setName('Other Tenant Supplier ' . $uniqueId);
         $otherSupplier->setEmail('other_' . $uniqueId . '@test.com');
-        $otherSupplier->setContactPerson('Other Contact');
         $otherSupplier->setServiceProvided('Other services');
         $otherSupplier->setCriticality('low');
         $otherSupplier->setStatus('active');

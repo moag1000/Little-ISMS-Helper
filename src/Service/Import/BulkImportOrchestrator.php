@@ -20,6 +20,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\FileUploadSecurityService;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\MessageBusInterface;
+use App\Service\Owner\OwnerText;
+use App\Service\Owner\OwnerTextResolver;
 
 /**
  * High-level orchestrator for the bulk-import pipeline.
@@ -54,6 +56,7 @@ class BulkImportOrchestrator
         private readonly string $uploadDir,
         private readonly FileUploadSecurityService $uploadSecurity,
         private readonly ?FteRecorderService $fteRecorder = null,
+        private readonly ?OwnerTextResolver $ownerTexts = null,
     ) {}
 
     // -------------------------------------------------------------------------
@@ -348,7 +351,7 @@ class BulkImportOrchestrator
                 $entityData = $mapper->toEntityData($updateRow['data'], $batch->getColumnMapping(), $tenant);
 
                 if ($existing !== null) {
-                    $this->applyEntityData($existing, $entityData);
+                    $this->applyEntityData($existing, $entityData, $tenant);
                     $this->em->persist($existing);
 
                     $bulkRow = $this->buildBulkRow($batch, $rowNumber, BulkImportRow::STATUS_UPDATED, BulkImportRow::ACTION_UPDATE, $updateRow['data'], $updateRow['oldValues'], $entityData);
@@ -516,7 +519,7 @@ class BulkImportOrchestrator
             $entity->setTenant($tenant);
         }
 
-        $this->applyEntityData($entity, $entityData);
+        $this->applyEntityData($entity, $entityData, $tenant);
 
         return $entity;
     }
@@ -525,13 +528,22 @@ class BulkImportOrchestrator
      * Apply a flat property array to an existing entity via setter methods.
      *
      * Setter name: "set" + ucfirst($propertyName).
-     * Properties whose setter does not exist are silently skipped.
+     * Properties whose setter does not exist are silently skipped. An owner
+     * given as text that named nobody known ({@see OwnerText}) becomes a Person
+     * of the organisation here (or the User / Person created by an earlier row).
      *
      * @param array<string, mixed> $entityData
      */
-    private function applyEntityData(object $entity, array $entityData): void
+    private function applyEntityData(object $entity, array $entityData, Tenant $tenant): void
     {
         foreach ($entityData as $property => $value) {
+            if ($value instanceof OwnerText) {
+                $target = $this->ownerTexts?->resolve($tenant, $value->text);
+                if ($target !== null) {
+                    $entity->{$target instanceof User ? $value->userSetter : $value->personSetter}($target);
+                }
+                continue;
+            }
             $setter = 'set' . ucfirst($property);
             if (method_exists($entity, $setter)) {
                 $entity->$setter($value);

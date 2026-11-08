@@ -20,7 +20,6 @@ class InterestedPartyTest extends TestCase
         $this->assertNull($party->getName());
         $this->assertNull($party->getPartyType());
         $this->assertNull($party->getDescription());
-        $this->assertNull($party->getContactPerson());
         $this->assertNull($party->getEmail());
         $this->assertNull($party->getPhone());
         $this->assertEquals('medium', $party->getImportance());
@@ -66,11 +65,9 @@ class InterestedPartyTest extends TestCase
     public function testSetAndGetContactDetails(): void
     {
         $party = new InterestedParty();
-        $party->setContactPerson('John Doe');
         $party->setEmail('john.doe@example.com');
         $party->setPhone('+49 123 456789');
 
-        $this->assertEquals('John Doe', $party->getContactPerson());
         $this->assertEquals('john.doe@example.com', $party->getEmail());
         $this->assertEquals('+49 123 456789', $party->getPhone());
     }

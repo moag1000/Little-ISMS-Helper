@@ -155,7 +155,6 @@
                             userField:     form.reportedByUser,
                             personField:   form.reportedByPerson,
                             deputiesField: form.reportedByDeputyPersons is defined ? form.reportedByDeputyPersons : null,
-                            legacyField:   form.reportedBy is defined ? form.reportedBy : null,
                             showSection:   false,
                         }) }}
                         <div class="row">
@@ -264,7 +263,7 @@
                     {% endif %}
 
                     {# Remove the old auto_form include since we've manually rendered everything #}
-                    {#{% set detection_fields = ['detectedAt', 'occurredAt', 'reportedBy'] %}
+                    {#{% set detection_fields = ['detectedAt', 'occurredAt'] %}
                     {% if form.detectedDate is defined %}
                         {% set detection_fields = detection_fields|merge(['detectedDate']) %}
                     {% endif %}
@@ -313,7 +312,6 @@
                             'status': 6,
                             'detectedAt': 3,
                             'occurredAt': 3,
-                            'reportedBy': 3,
                             'detectedDate': 3,
                             'affectedSystems': 12,
                             'affectedAssets': 12,

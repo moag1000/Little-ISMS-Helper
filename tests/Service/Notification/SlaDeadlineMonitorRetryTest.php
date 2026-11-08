@@ -176,7 +176,6 @@ final class SlaDeadlineMonitorRetryTest extends KernelTestCase
         $incident->setCategory('security');
         $incident->setSeverity(IncidentSeverity::High);
         $incident->setStatus(IncidentStatus::from('reported'));
-        $incident->setReportedBy('SLA retry test');
         $incident->setDetectedAt($detectedAt);
         $incident->setDataBreachOccurred(false);
         $incident->setNotificationRequired($notificationRequired);

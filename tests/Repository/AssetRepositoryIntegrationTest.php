@@ -224,7 +224,6 @@ class AssetRepositoryIntegrationTest extends KernelTestCase
         $asset->setTenant($tenant);
         $asset->setName($name);
         $asset->setAssetType($assetType);
-        $asset->setOwner('Integration Test Owner');
         $asset->setStatus($status);
         $asset->setConfidentialityValue(2);
         $asset->setIntegrityValue(2);
