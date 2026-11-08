@@ -90,13 +90,16 @@ export async function saveAuthState(context: BrowserContext, path: string): Prom
 }
 
 /**
- * Convenience: log out via the standard `/logout` endpoint.
+ * Convenience: log out via the logout link of the user menu (carries the CSRF token).
  *
  * Most tests don't need this — closing the BrowserContext at end-of-test
  * already discards cookies. Use only when a test needs to verify the
  * logout-flow itself.
  */
 export async function logout(page: Page, locale: 'de' | 'en' = 'de'): Promise<void> {
-    await page.goto(`/${locale}/logout`);
+    // /logout needs the CSRF token of the menu link (S9) — a bare URL no longer signs out.
+    await page.goto(`/${locale}/dashboard`);
+    const href = await page.locator('a.user-dropdown-logout').first().getAttribute('href');
+    await page.goto(href ?? `/${locale}/logout`);
     await expect(page).toHaveURL(/\/login/, { timeout: 10_000 });
 }

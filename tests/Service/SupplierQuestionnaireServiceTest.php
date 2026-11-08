@@ -54,6 +54,7 @@ final class SupplierQuestionnaireServiceTest extends TestCase
     {
         $q = (new SupplierQuestionnaire())
             ->setStatus(SupplierQuestionnaire::STATUS_SENT)
+            ->setSentAt(new \DateTimeImmutable('-1 day'))
             ->setQuestions([['id' => 'iso27001', 'text' => 'Certified?'], ['id' => 'bcm', 'text' => 'BCM?']]);
 
         $accepted = $this->service()->submitResponse($q, ['iso27001' => 'Yes, scope X', 'bogus' => 'ignored', 'bcm' => 'Tested annually']);
@@ -72,5 +73,31 @@ final class SupplierQuestionnaireServiceTest extends TestCase
         $q = (new SupplierQuestionnaire())->setStatus(SupplierQuestionnaire::STATUS_COMPLETED);
 
         self::assertFalse($this->service()->submitResponse($q, ['x' => 'y']));
+    }
+
+    #[Test]
+    public function nestedAnswerFieldsAreSkippedNotCastToArray(): void
+    {
+        $q = (new SupplierQuestionnaire())
+            ->setStatus(SupplierQuestionnaire::STATUS_SENT)
+            ->setSentAt(new \DateTimeImmutable('-1 day'))
+            ->setQuestions([['id' => 'iso27001', 'text' => 'Certified?'], ['id' => 'bcm', 'text' => 'BCM?']]);
+
+        self::assertTrue($this->service()->submitResponse($q, ['iso27001' => ['a', 'b'], 'bcm' => 'Tested']));
+        self::assertSame(['bcm' => 'Tested'], $q->getAnswers());
+    }
+
+    #[Test]
+    public function publicLinkClosesAfterTheResponseWindow(): void
+    {
+        $q = (new SupplierQuestionnaire())->setStatus(SupplierQuestionnaire::STATUS_SENT);
+        self::assertFalse($q->isOpenForResponse(), 'never sent → no open link');
+
+        $q->setSentAt(new \DateTimeImmutable('-' . (SupplierQuestionnaire::RESPONSE_WINDOW_DAYS + 1) . ' days'));
+        self::assertFalse($q->isOpenForResponse());
+        self::assertFalse($this->service()->submitResponse($q, ['x' => 'y']));
+
+        $q->setSentAt(new \DateTimeImmutable('-' . (SupplierQuestionnaire::RESPONSE_WINDOW_DAYS - 1) . ' days'));
+        self::assertTrue($q->isOpenForResponse());
     }
 }

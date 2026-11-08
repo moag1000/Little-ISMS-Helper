@@ -354,7 +354,7 @@
                             </div>
                         {% endif %}
                         <div class="user-dropdown-divider"></div>
-                        <a href="{{ path('app_logout') }}" class="user-dropdown-item fa-dropdown-panel__item user-dropdown-logout" role="menuitem">
+                        <a href="{{ logout_path() }}" data-turbo="false" data-turbo-prefetch="false" class="user-dropdown-item fa-dropdown-panel__item user-dropdown-logout" role="menuitem">
                             <i class="fa-icon fa-icon--ui-logout fa-dropdown-panel__item-icon" aria-hidden="true"></i>
                             <span class="fa-dropdown-panel__item-body">{{ 'nav.logout'|trans({}, 'nav') }}</span>
                             <span class="fa-dropdown-panel__item-meta" style="color: var(--accent);">✦</span>

@@ -72,7 +72,7 @@
     </details>
 
     <div class="fa-auth-form__footer-link">
-        <a href="{{ path('app_logout') }}" class="fa-auth-cancel-link">
+        <a href="{{ logout_path() }}" data-turbo="false" data-turbo-prefetch="false" class="fa-auth-cancel-link">
             <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
             {{ 'mfa.challenge.cancel'|trans({}, 'mfa') }}
         </a>

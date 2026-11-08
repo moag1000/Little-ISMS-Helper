@@ -87,9 +87,23 @@ class SupplierQuestionnaire
         $this->createdAt = new DateTimeImmutable();
     }
 
-    public function isOpenForResponse(): bool
+    /**
+     * Days the public link answers after sending (S9). The token is the only
+     * credential of the portal, so it must not stay valid for ever; a
+     * supplier who misses the window gets a new questionnaire.
+     */
+    public const int RESPONSE_WINDOW_DAYS = 90;
+
+    public function isOpenForResponse(?DateTimeImmutable $now = null): bool
     {
-        return in_array($this->status, [self::STATUS_SENT], true);
+        if ($this->status !== self::STATUS_SENT) {
+            return false;
+        }
+        if (!$this->sentAt instanceof DateTimeImmutable) {
+            return false;
+        }
+
+        return $this->sentAt->modify('+' . self::RESPONSE_WINDOW_DAYS . ' days') > ($now ?? new DateTimeImmutable());
     }
 
     public function getId(): ?int
