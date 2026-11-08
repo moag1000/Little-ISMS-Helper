@@ -50,6 +50,23 @@ def actions(text: str) -> list[tuple[str, str, str, int]]:
     return found
 
 
+
+def job_id_variables(text: str, body: str) -> set[str]:
+    """Variables an action passes to a JobStatusService method that takes a job id."""
+    # The service may sit in any property / local alias, not just `$jobStatusService`.
+    receivers = set(RECEIVER_DECL.findall(text)) | {"jobStatusService", "jobStatus", "jobs"}
+    for alias in re.findall(r"\$(\w+)\s*=\s*\$this->(?:" + "|".join(map(re.escape, receivers)) + r")\b", body):
+        receivers.add(alias)
+    call = re.compile(r"(?:" + "|".join(map(re.escape, receivers)) + r")\s*->\s*" + JOB_METHODS + r"\(")
+    used: set[str] = set()
+    for m in call.finditer(body):
+        depth, i = 1, m.end()
+        while i < len(body) and depth:  # the whole argument list: `(string) $id`, `id: $id`, `trim($id)`
+            depth += {"(": 1, ")": -1}.get(body[i], 0)
+            i += 1
+        used.update(ARG.findall(body[m.end():i]))
+    return used
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--quiet", action="store_true")
@@ -67,19 +84,7 @@ def main() -> int:
             if not ROUTE.search(attributes):
                 continue
             signature = body.split("{", 1)[0]
-            # The service may sit in any property / local alias, not just `$jobStatusService`.
-            receivers = set(RECEIVER_DECL.findall(text)) | {"jobStatusService", "jobStatus", "jobs"}
-            for alias in re.findall(r"\$(\w+)\s*=\s*\$this->(?:" + "|".join(map(re.escape, receivers)) + r")\b", body):
-                receivers.add(alias)
-            call = re.compile(r"(?:" + "|".join(map(re.escape, receivers)) + r")\s*->\s*" + JOB_METHODS + r"\(")
-            used: set[str] = set()
-            for m in call.finditer(body):
-                depth, i = 1, m.end()
-                while i < len(body) and depth:  # the whole argument list: `(string) $id`, `id: $id`, `trim($id)`
-                    depth += {"(": 1, ")": -1}.get(body[i], 0)
-                    i += 1
-                used.update(ARG.findall(body[m.end():i]))
-            for variable in used:
+            for variable in job_id_variables(text, body):
                 if f"${variable}" not in signature:
                     continue  # not a route argument (an id from the session, …)
                 checked += 1
