@@ -33,7 +33,7 @@ final class TerminatedSessionSubscriberTest extends TestCase
     #[Test]
     public function aSessionEndedByAnAdministratorIsSignedOut(): void
     {
-        [$event, $tokens] = $this->run('forced', active: false);
+        [$event, $tokens] = $this->dispatch('forced', active: false);
 
         self::assertInstanceOf(RedirectResponse::class, $event->getResponse());
         self::assertSame('/login', $event->getResponse()->getTargetUrl());
@@ -43,7 +43,7 @@ final class TerminatedSessionSubscriberTest extends TestCase
     #[Test]
     public function aSessionOverTheConcurrentLimitIsSignedOut(): void
     {
-        [$event] = $this->run('limit_exceeded', active: false);
+        [$event] = $this->dispatch('limit_exceeded', active: false);
 
         self::assertNotNull($event->getResponse());
     }
@@ -51,8 +51,8 @@ final class TerminatedSessionSubscriberTest extends TestCase
     #[Test]
     public function activeAndIdleTimedOutSessionsStay(): void
     {
-        [$active, $tokensA] = $this->run(null, active: true);
-        [$timeout, $tokensB] = $this->run('timeout', active: false);
+        [$active, $tokensA] = $this->dispatch(null, active: true);
+        [$timeout, $tokensB] = $this->dispatch('timeout', active: false);
 
         self::assertNull($active->getResponse());
         self::assertNotNull($tokensA->getToken());
@@ -61,7 +61,7 @@ final class TerminatedSessionSubscriberTest extends TestCase
     }
 
     /** @return array{RequestEvent, TokenStorage} */
-    private function run(?string $endReason, bool $active): array
+    private function dispatch(?string $endReason, bool $active): array
     {
         $session = new Session(new MockArraySessionStorage());
         $session->start();
