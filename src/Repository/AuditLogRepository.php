@@ -114,6 +114,39 @@ class AuditLogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Latest audit row per record — the date the record last changed (status
+     * included), for retention counted from completion. Not tenant-filtered on
+     * purpose: older cron rows carry no tenant, and (type, id) names one record.
+     *
+     * @param list<int> $entityIds
+     * @return array<int, DateTimeImmutable> entity id => last change
+     */
+    public function lastChangeAt(string $entityType, array $entityIds): array
+    {
+        if ($entityIds === []) {
+            return [];
+        }
+        $rows = $this->createQueryBuilder('a')
+            ->select('a.entityId AS id, MAX(a.createdAt) AS last')
+            ->where('a.entityType = :type')
+            ->andWhere('a.entityId IN (:ids)')
+            ->setParameter('type', $entityType)
+            ->setParameter('ids', $entityIds)
+            ->groupBy('a.entityId')
+            ->getQuery()
+            ->getArrayResult();
+
+        $out = [];
+        foreach ($rows as $row) {
+            if ($row['last'] !== null) {
+                $out[(int) $row['id']] = new DateTimeImmutable((string) $row['last']);
+            }
+        }
+
+        return $out;
+    }
+
     public function countByEntity(string $entityType, int $entityId): int
     {
         return (int) $this->createQueryBuilder('a')

@@ -86,6 +86,10 @@ final class LifecycleControllerHistoryTest extends WebTestCase
 
             $client->request('GET', '/lifecycle/tenant/' . $own->getId() . '/history');
             self::assertResponseIsSuccessful();
+
+            // W3: the allowed-transitions probe (status + lock version) has the same scope.
+            $client->request('GET', '/lifecycle/tenant/' . $other->getId() . '/allowed-transitions');
+            self::assertResponseStatusCodeSame(404);
         } finally {
             foreach ([$user, $other, $own] as $row) {
                 $managed = $em->find($row::class, $row->getId());

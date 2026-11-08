@@ -32,6 +32,13 @@ final class ReadOnlyRoleSubscriberTest extends TestCase
         yield 'risk detail' => ['app_risk_show', 'GET', false];
         yield 'audit checklist' => ['app_audit_checklist_save', 'POST', false];
         yield 'audit finding form' => ['app_audit_finding_new', 'GET', false];
+        yield 'audit report submit' => ['app_audit_submit_report', 'POST', false];
+        yield 'audit record form' => ['app_audit_new', 'GET', true];
+        yield 'audit record edit' => ['app_audit_edit', 'POST', true];
+        yield 'audit record clone' => ['app_audit_clone', 'POST', true];
+        yield 'audit record delete' => ['app_audit_delete', 'POST', true];
+        yield 'audit close' => ['app_audit_close', 'POST', true];
+        yield 'AVV picker save' => ['app_processing_activity_avv_picker', 'POST', true];
         yield 'supplier form' => ['app_supplier_edit', 'GET', true];
         yield 'supplier list' => ['app_supplier_index', 'GET', false];
         yield 'comment' => ['app_comment_post', 'POST', false];

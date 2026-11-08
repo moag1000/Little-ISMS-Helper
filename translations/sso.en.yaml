@@ -148,6 +148,7 @@ sso:
             wrong_tenant: 'You do not have access to this SSO provider (wrong organization).'
             admin_required: 'Only administrators can change SSO configuration.'
     wizard:
+        discovery_unreachable: 'Discovery document could not be loaded. Check the URL; the server must be publicly reachable over HTTPS.'
         title: 'SSO Setup Wizard'
         aria_label: 'SSO Setup Wizard'
         success: SSO Identity Provider saved.

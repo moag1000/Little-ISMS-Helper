@@ -30,7 +30,33 @@ final readonly class AvvPickerPreFiller
 {
     public function __construct(
         private SupplierRepository $supplierRepository,
+        private ?\Doctrine\ORM\EntityManagerInterface $entityManager = null,
+        private ?\App\Service\AuditLogger $auditLogger = null,
     ) {
+    }
+
+    /**
+     * Save the picked processors (Art. 28 GDPR) — suppliers of $tenant only —
+     * and audit-log the change: a collection change is no field change, the
+     * Doctrine audit subscriber does not see it (Art. 30 trail).
+     *
+     * @param list<int> $supplierIds
+     */
+    public function assign(ProcessingActivity $activity, array $supplierIds, Tenant $tenant): void
+    {
+        $ids = static fn (): array => array_values(array_map(static fn (Supplier $s): ?int => $s->getId(), $activity->getProcessorSuppliers()->toArray()));
+        $before = $ids();
+        foreach ($activity->getProcessorSuppliers() as $existing) {
+            $activity->removeProcessorSupplier($existing);
+        }
+        foreach ($supplierIds as $id) {
+            $supplier = $this->supplierRepository->find($id);
+            if ($supplier instanceof Supplier && $supplier->getTenant() === $tenant) {
+                $activity->addProcessorSupplier($supplier);
+            }
+        }
+        $this->entityManager?->flush();
+        $this->auditLogger?->logUpdate('ProcessingActivity', $activity->getId(), ['processorSuppliers' => $before], ['processorSuppliers' => $ids()], 'AVV processors changed');
     }
 
     /**

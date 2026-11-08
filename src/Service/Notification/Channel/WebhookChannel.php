@@ -12,7 +12,7 @@ use App\Validator\Constraint\NoInternalIp;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Http\UserUrlHttpClient;
 
 /**
  * Delivers notifications via HTTP POST webhook.
@@ -31,7 +31,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class WebhookChannel
 {
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
+        private readonly UserUrlHttpClient $httpClient,
         private readonly SecretEncryptionInterface $encryption,
         private readonly ValidatorInterface $validator,
     ) {}

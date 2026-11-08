@@ -81,12 +81,12 @@ final class AuditLogSubscriber
         $entityId = $this->getEntityId($entity);
         $values = $this->auditLogger->extractEntityValues($entity);
 
-        $this->auditLogger->logCreate(
+        $this->auditLogger->aboutRecord($entity, fn () => $this->auditLogger->logCreate(
             $entityType,
             $entityId,
             $values,
             sprintf('%s created', $entityType)
-        );
+        ));
     }
 
     /**
@@ -147,13 +147,13 @@ final class AuditLogSubscriber
 
         $updateData = $this->pendingUpdates[$entityHash];
 
-        $this->auditLogger->logUpdate(
+        $this->auditLogger->aboutRecord($entity, fn () => $this->auditLogger->logUpdate(
             $updateData['entityType'],
             $updateData['entityId'],
             $updateData['oldValues'],
             $updateData['newValues'],
             sprintf('%s updated', $updateData['entityType'])
-        );
+        ));
 
         // Clean up
         unset($this->pendingUpdates[$entityHash]);
@@ -180,12 +180,12 @@ final class AuditLogSubscriber
         $entityId = $this->getEntityId($entity);
         $values = $this->auditLogger->extractEntityValues($entity);
 
-        $this->auditLogger->logDelete(
+        $this->auditLogger->aboutRecord($entity, fn () => $this->auditLogger->logDelete(
             $entityType,
             $entityId,
             $values,
             sprintf('%s deleted', $entityType)
-        );
+        ));
     }
 
     /**

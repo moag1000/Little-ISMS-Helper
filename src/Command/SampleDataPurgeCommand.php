@@ -22,9 +22,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * them, "Entfernen" button hidden because count badge stays at 0).
  *
  * Usage:
- *   php bin/console app:sample-data:purge                # default tenant
  *   php bin/console app:sample-data:purge --tenant-id=1
- *   php bin/console app:sample-data:purge --dry-run
+ *   php bin/console app:sample-data:purge --tenant-id=1 --dry-run
+ *
+ * The organisation is named explicitly (no default: purging the wrong one is
+ * not undoable). Deletion goes through the EntityManager only — rows outside
+ * the sample tracking that still reference a sample (the organisation's real
+ * data) are reported, never deleted behind its back. Every run is audit-logged
+ * in the organisation.
  */
 #[AsCommand(
     name: 'app:sample-data:purge',
@@ -38,19 +43,22 @@ final class SampleDataPurgeCommand
         private readonly DataImportService $importer,
         private readonly ?ManagerRegistry $managerRegistry = null,
         private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
+        private readonly ?\App\Service\AuditLogger $auditLogger = null,
     ) {
     }
 
     public function __invoke(
         SymfonyStyle $io,
-        #[Option(description: 'Tenant ID to purge for (defaults to first tenant in DB)', name: 'tenant-id')]
+        #[Option(description: 'Organisation (tenant) ID to purge — required', name: 'tenant-id')]
         ?int $tenantId = null,
         #[Option(description: 'Show what would be deleted without actually deleting', name: 'dry-run')]
         bool $dryRun = false,
     ): int {
-        $tenant = $tenantId !== null
-            ? $this->tenantRepository->find($tenantId)
-            : ($this->tenantRepository->findOneBy(['code' => 'default']) ?? $this->tenantRepository->findOneBy([]));
+        if ($tenantId === null) {
+            $io->error('Name the organisation: --tenant-id=<id>.');
+            return Command::INVALID;
+        }
+        $tenant = $this->tenantRepository->find($tenantId);
         if ($tenant === null) {
             $io->error('No tenant found.');
             return Command::FAILURE;
@@ -116,9 +124,15 @@ final class SampleDataPurgeCommand
         if ($allErrors !== []) {
             $io->writeln('');
             $io->writeln('<comment>Retry-pass for FK-blocked entities …</comment>');
+            // Only entities this organisation's tracking names — an id parsed
+            // from an error message is never trusted on its own.
+            $tracked = [];
+            foreach ($tracks as $t) {
+                $tracked[$t->getEntityClass() . '#' . $t->getEntityId()] = true;
+            }
             $retryItems = [];
             foreach ($allErrors as $err) {
-                if (preg_match('/^(App\\\\Entity\\\\\w+)#(\d+):/', $err, $m)) {
+                if (preg_match('/^(App\\\\Entity\\\\\w+)#(\d+):/', $err, $m) && isset($tracked[$m[1] . '#' . $m[2]])) {
                     $retryItems[$m[1] . '#' . $m[2]] = ['class' => $m[1], 'id' => (int) $m[2]];
                 }
             }
@@ -161,60 +175,49 @@ final class SampleDataPurgeCommand
         $totalRemoved += $retryRemoved;
         if ($persistentFailures !== []) {
             $io->writeln('');
-            $io->warning(sprintf('%d entities still blocked by FKs from rows outside sample-tracking. Manual cleanup may be needed:', count($persistentFailures)));
-            $io->writeln('  e.g. SET FOREIGN_KEY_CHECKS=0; DELETE FROM <table> WHERE id=N; SET FOREIGN_KEY_CHECKS=1;');
+            $io->warning(sprintf('%d entities are still referenced by records outside the sample data (listed above). Remove or relink those records in the application, then run the purge again.', count($persistentFailures)));
         }
+        $this->auditLogger?->withTenant($tenant, fn () => $this->auditLogger->logCustom(
+            'sample_data.purged',
+            'SampleDataImport',
+            null,
+            null,
+            ['removed' => $totalRemoved, 'still_referenced' => $totalErrors],
+            sprintf('Sample data purged: %d removed, %d still referenced', $totalRemoved, $totalErrors),
+            'system:sample-data:purge',
+        ));
         $io->success(sprintf('Purge complete: %d entities removed, %d still-failing.', $totalRemoved, $totalErrors));
         return Command::SUCCESS;
     }
 
     /**
-     * Try to remove an entity. On FK-violation, parse the offending child
-     * table + column from the SQL error, raw-DELETE the blockers, retry.
-     * Repeats up to 3× to chase multi-level FK chains.
+     * Try once more to remove a tracked sample entity now that the other
+     * samples are gone. A row outside the sample data that still references it
+     * is reported (table + column), not deleted: that row is the
+     * organisation's own data and leaves only through the application.
      */
     private function tryRemoveWithCascade(string $entityClass, int $entityId, SymfonyStyle $io): bool
     {
-        for ($attempt = 0; $attempt < 3; $attempt++) {
-            try {
-                $entity = $this->entityManager->find($entityClass, $entityId);
-                if ($entity === null) {
-                    return true;
-                }
-                $this->entityManager->remove($entity);
-                $this->entityManager->flush();
+        try {
+            $entity = $this->entityManager->find($entityClass, $entityId);
+            if ($entity === null) {
                 return true;
-            } catch (\Throwable $e) {
-                if (!$this->entityManager->isOpen() && $this->managerRegistry !== null) {
-                    // Restores the tenant-filter state that existed before verbatim (CLI: unscoped).
-                    $this->entityManagerRecovery?->recover();
-                    $this->entityManager = $this->managerRegistry->getManager();
-                }
-                // Parse "table `db`.`childtable`, CONSTRAINT … FOREIGN KEY (`col`)"
-                $msg = $e->getMessage();
-                if (!preg_match('/`[^`]+`\.`([a-z_]+)`,\s*CONSTRAINT[^(]*\(`([a-z_]+)`\)/i', $msg, $m)) {
-                    return false;
-                }
-                $childTable = $m[1];
-                $childCol = $m[2];
-                try {
-                    $conn = $this->entityManager->getConnection();
-                    $deleted = $conn->executeStatement(
-                        sprintf('DELETE FROM %s WHERE %s = ?',
-                            $conn->quoteIdentifier($childTable),
-                            $conn->quoteIdentifier($childCol)
-                        ),
-                        [$entityId]
-                    );
-                    $io->writeln(sprintf('    <comment>orphan-purge: %d row(s) from %s.%s pointing to %s#%d</comment>',
-                        $deleted, $childTable, $childCol, $entityClass, $entityId));
-                } catch (\Throwable $rawErr) {
-                    $io->writeln(sprintf('    <error>cascade-delete failed for %s.%s: %s</error>',
-                        $childTable, $childCol, $rawErr->getMessage()));
-                    return false;
-                }
             }
+            $this->entityManager->remove($entity);
+            $this->entityManager->flush();
+
+            return true;
+        } catch (\Throwable $e) {
+            if (!$this->entityManager->isOpen() && $this->managerRegistry !== null) {
+                // Restores the tenant-filter state that existed before verbatim (CLI: unscoped).
+                $this->entityManagerRecovery?->recover();
+                $this->entityManager = $this->managerRegistry->getManager();
+            }
+            if (preg_match('/`[^`]+`\.`([a-z_]+)`,\s*CONSTRAINT[^(]*\(`([a-z_]+)`\)/i', $e->getMessage(), $m)) {
+                $io->writeln(sprintf('    <comment>%s#%d is referenced by %s.%s</comment>', $entityClass, $entityId, $m[1], $m[2]));
+            }
+
+            return false;
         }
-        return false;
     }
 }

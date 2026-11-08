@@ -270,14 +270,11 @@ final class SendNotificationDigestsCommand
             $lines[] = sprintf('    Event type: %s', $rule?->getEventType() ?? 'unknown');
             $lines[] = sprintf('    Triggered:  %s', $triggeredAt);
 
-            if ($payload !== []) {
-                $lines[] = '    Entity state:';
-                foreach ($payload as $key => $value) {
-                    $lines[] = sprintf(
-                        '      %s: %s',
-                        $key,
-                        is_scalar($value) ? (string) $value : json_encode($value),
-                    );
+            $summary = \App\Service\Notification\NotificationMailSummary::fields($payload);
+            if ($summary !== []) {
+                $lines[] = '    Record:';
+                foreach ($summary as $key => $value) {
+                    $lines[] = sprintf('      %s: %s', $key, $value);
                 }
             }
 

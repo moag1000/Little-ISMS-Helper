@@ -373,7 +373,7 @@ class ConsentController extends AbstractController
      * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
     #[Route('/bulk-export', name: 'app_consent_bulk_export', methods: ['POST'])]
-    #[IsGranted('ROLE_DPO')]
+    #[IsGranted(new \Symfony\Component\ExpressionLanguage\Expression(\App\Security\PrivacyExportAccess::RULE))]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) {

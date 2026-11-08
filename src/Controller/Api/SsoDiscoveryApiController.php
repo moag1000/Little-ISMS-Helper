@@ -11,7 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -31,6 +33,7 @@ final class SsoDiscoveryApiController extends AbstractController
         private readonly OidcDiscoveryService $discovery,
         private readonly ValidatorInterface $validator,
         private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -40,8 +43,13 @@ final class SsoDiscoveryApiController extends AbstractController
      * Returns: { "ok": true, "issuer": "...", "endpoints": {...} }
      *       or { "ok": false, "error": "..." }
      */
-    // @csrf-exempt: read-only, fetches and validates an OIDC discovery document, persists nothing
+    /*
+     * CSRF header token: without it a foreign page could make an admin's browser
+     * fetch arbitrary URLs. The answer never carries the transport error (refused,
+     * timeout, TLS) — otherwise the endpoint is a port scanner; details go to the log.
+     */
     #[Route('/validate-discovery', name: 'validate_discovery', methods: ['POST'])]
+    #[IsCsrfTokenValid('sso_discovery', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function validateDiscovery(Request $request): JsonResponse
     {
         $data = json_decode((string) $request->getContent(), true);
@@ -68,10 +76,9 @@ final class SsoDiscoveryApiController extends AbstractController
         try {
             $doc = $this->discovery->fetchDiscovery($provider);
         } catch (\Throwable $e) {
-            return $this->json([
-                'ok' => false,
-                'error' => 'Discovery fetch failed: ' . $e->getMessage(),
-            ]);
+            $this->logger->info('SSO discovery check failed', ['error' => $e->getMessage()]);
+
+            return $this->json(['ok' => false, 'error' => $this->translator->trans('sso.wizard.discovery_unreachable', [], 'sso')]);
         }
 
         return $this->json([

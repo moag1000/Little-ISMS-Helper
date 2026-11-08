@@ -9,6 +9,14 @@ framework:
             limit: 100
             rate: { interval: '1 minute', amount: 100 }
 
+        # Security: failed bearer-token attempts per client IP. Counted by
+        # ApiTokenAuthenticator (a failed attempt never reaches the `api`
+        # limiter, the firewall answers 401 first); exhausted → 429.
+        api_auth_failure:
+            policy: 'sliding_window'
+            limit: 20
+            interval: '10 minutes'
+
         # Security: re-authentication (password confirm before sensitive
         # actions) — per user, so a stolen session cannot brute-force the
         # password through the reauth modal.
@@ -37,3 +45,14 @@ framework:
             policy: 'sliding_window'
             limit: 5
             interval: '15 minutes'
+
+when@test:
+    framework:
+        rate_limiter:
+            # The suite makes many failed token attempts from 127.0.0.1;
+            # the throttle itself is tested with its own limiter
+            # (tests/Security/ApiTokenFailureThrottleTest).
+            api_auth_failure:
+                policy: 'sliding_window'
+                limit: 100000
+                interval: '10 minutes'

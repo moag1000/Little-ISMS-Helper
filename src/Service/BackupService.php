@@ -796,6 +796,25 @@ class BackupService
     }
 
     /**
+     * An uploaded file belongs to the organisation of the admin who uploaded it,
+     * whatever its metadata claims: the sidecar records the uploader's scope, so
+     * a crafted file naming another organisation never shows up in that
+     * organisation's backup list. The instance operator (null scope) keeps the
+     * file's own declaration.
+     */
+    public function recordUploadScope(string $filepath, ?Tenant $uploaderScope, string $uploadedBy): void
+    {
+        if ($uploaderScope === null) {
+            return;
+        }
+        @file_put_contents($filepath . '.meta.json', (string) json_encode([
+            'tenant_scope' => [$uploaderScope->getId()],
+            'uploaded_by' => $uploadedBy,
+            'detected_at' => date('c'),
+        ]));
+    }
+
+    /**
      * Detect the tenant_scope embedded in a backup file.
      *
      * Returns:
@@ -867,7 +886,9 @@ class BackupService
                 if ($zip->open($filepath) !== true) {
                     return null;
                 }
-                $json = $zip->getFromName('backup.json');
+                $stat = $zip->statName('backup.json');
+                // Same bomb guard as the restore: listing a file must not inflate it unbounded.
+                $json = is_array($stat) && (int) $stat['size'] <= self::MAX_BACKUP_JSON_BYTES ? $zip->getFromName('backup.json') : false;
                 $zip->close();
                 if ($json === false) {
                     return null;
@@ -880,12 +901,12 @@ class BackupService
                 if ($raw === false) {
                     return null;
                 }
-                $json = @gzdecode($raw);
+                $json = @gzdecode($raw, self::MAX_BACKUP_JSON_BYTES);
                 if ($json === false) {
                     return null;
                 }
             } else {
-                $json = @file_get_contents($filepath);
+                $json = (int) @filesize($filepath) <= self::MAX_BACKUP_JSON_BYTES ? @file_get_contents($filepath) : false;
                 if ($json === false) {
                     return null;
                 }

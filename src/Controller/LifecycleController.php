@@ -28,6 +28,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Workflow\Registry;
 
+#[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
 class LifecycleController extends AbstractController
 {
     private const string APPROVER_INVALID = 'four_eyes_approver_invalid';
@@ -57,7 +58,7 @@ class LifecycleController extends AbstractController
         }
 
         $entity = $this->em->getRepository($mapping['class'])->find($id);
-        if ($entity === null) {
+        if ($entity === null || !$this->isRecordInScope($entity)) {
             return $this->jsonError(404, 'not_found', 'Entity nicht gefunden.');
         }
 
@@ -230,7 +231,7 @@ class LifecycleController extends AbstractController
         }
 
         $entity = $this->em->getRepository($mapping['class'])->find($id);
-        if ($entity === null) {
+        if ($entity === null || !$this->isRecordInScope($entity)) {
             return $this->jsonError(404, 'not_found', 'Entity nicht gefunden.');
         }
 
@@ -282,7 +283,7 @@ class LifecycleController extends AbstractController
         }
 
         $entity = $this->em->getRepository($mapping['class'])->find($id);
-        if ($entity === null || !$this->isHistoryInScope($entity)) {
+        if ($entity === null || !$this->isRecordInScope($entity)) {
             return $this->jsonError(404, 'not_found', 'Entity nicht gefunden.');
         }
 
@@ -358,7 +359,7 @@ class LifecycleController extends AbstractController
      * organisation or below, like the record's show page. Global catalogue
      * rows (role, permission) have no owner and stay readable.
      */
-    private function isHistoryInScope(object $entity): bool
+    private function isRecordInScope(object $entity): bool
     {
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             return true;

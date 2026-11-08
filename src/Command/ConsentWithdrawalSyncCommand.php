@@ -52,6 +52,8 @@ class ConsentWithdrawalSyncCommand
 
         $fixed = 0;
         $rows = [];
+        /** @var array<int, array{tenant: ?\App\Entity\Tenant, count: int}> $perTenant */
+        $perTenant = [];
 
         foreach ($this->consentsTenantByTenant() as $consent) {
             $revoked = $consent->isRevoked();
@@ -85,6 +87,9 @@ class ConsentWithdrawalSyncCommand
             }
 
             ++$fixed;
+            $tenantKey = (int) $consent->getTenant()?->getId();
+            $perTenant[$tenantKey] ??= ['tenant' => $consent->getTenant(), 'count' => 0];
+            ++$perTenant[$tenantKey]['count'];
             $rows[] = [$consent->getId(), $direction, $consent->getRevokedAt()?->format('Y-m-d') ?? '-'];
         }
 
@@ -102,14 +107,17 @@ class ConsentWithdrawalSyncCommand
 
         $this->entityManager->flush();
 
-        $this->auditLogger->logCustom(
-            action: 'consent_withdrawal_sync',
-            entityType: 'Consent',
-            entityId: null,
-            newValues: ['repaired_count' => $fixed],
-            description: sprintf('Reconciled %d legacy consent row(s) with divergent withdrawal/revocation state (M-1)', $fixed),
-            userName: 'system:consent:sync-withdrawal',
-        );
+        // One row per organisation: an instance-wide row is in nobody's audit view.
+        foreach ($perTenant as $entry) {
+            $this->auditLogger->withTenant($entry['tenant'], fn () => $this->auditLogger->logCustom(
+                action: 'consent_withdrawal_sync',
+                entityType: 'Consent',
+                entityId: null,
+                newValues: ['repaired_count' => $entry['count']],
+                description: sprintf('Reconciled %d legacy consent row(s) with divergent withdrawal/revocation state (M-1)', $entry['count']),
+                userName: 'system:consent:sync-withdrawal',
+            ));
+        }
 
         $symfonyStyle->success(sprintf('Repaired %d inconsistent consent row(s).', $fixed));
         return Command::SUCCESS;

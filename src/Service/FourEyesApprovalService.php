@@ -159,19 +159,39 @@ class FourEyesApprovalService
         );
     }
 
+    /**
+     * Expire pending requests past their deadline — one audit batch per
+     * organisation (cron has no TenantContext; a single instance-wide row
+     * would be invisible to every organisation's audit view).
+     */
     public function cleanupExpired(): int
     {
-        $count = $this->repository->markExpired();
-        if ($count > 0) {
-            $this->auditLogger->logCustom(
-                'four_eyes.expired_batch',
-                'FourEyesApprovalRequest',
-                null,
-                null,
-                ['count' => $count],
-                sprintf('Marked %d expired 4-eyes approval requests', $count),
-            );
+        $byTenant = [];
+        foreach ($this->repository->findExpiredPending() as $request) {
+            $request->setStatus(FourEyesApprovalRequestStatus::Expired);
+            $byTenant[(int) $request->getTenant()?->getId()][] = $request;
         }
+        if ($byTenant === []) {
+            return 0;
+        }
+        $this->entityManager->flush();
+
+        $count = 0;
+        foreach ($byTenant as $requests) {
+            $count += count($requests);
+            $this->auditLogger->withTenant($requests[0]->getTenant(), fn () => $this->auditLogger->logBulk(
+                'four_eyes.expired',
+                'FourEyesApprovalRequest',
+                ['count' => count($requests)],
+                array_map(static fn (FourEyesApprovalRequest $r): array => [
+                    'action' => 'four_eyes.expired',
+                    'entity_id' => $r->getId(),
+                    'new_values' => ['status' => FourEyesApprovalRequestStatus::Expired->value],
+                ], $requests),
+                sprintf('Marked %d expired 4-eyes approval requests', count($requests)),
+            ));
+        }
+
         return $count;
     }
 }

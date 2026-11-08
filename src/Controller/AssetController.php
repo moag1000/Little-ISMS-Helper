@@ -535,16 +535,16 @@ class AssetController extends AbstractController
             throw $this->createNotFoundException('Asset not found');
         }
 
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        // Check if asset can be deleted (not inherited) - only if user has tenant
+        $tenant = $this->security->getUser()?->getTenant();
+        // Inherited assets are not deleted here (only if user has tenant)
         if ($tenant && !$this->assetService->canEditAsset($asset, $tenant)) {
             $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited', [], 'messages'));
             return $this->redirectToRoute('app_asset_index');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$asset->getId(), $request->request->get('_token'))) {
+        if (\App\Lifecycle\DeletionPolicy::refusal($asset) !== null) { // way out: retire → dispose (4 eyes)
+            $this->addFlash('warning', 'lifecycle.errors.delete_needs_end_state');
+        } elseif ($this->isCsrfTokenValid('delete'.$asset->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($asset);
             $this->entityManager->flush();
 

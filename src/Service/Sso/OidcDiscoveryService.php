@@ -8,7 +8,7 @@ use App\Entity\IdentityProvider;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Http\UserUrlHttpClient;
 
 /**
  * Fetches and caches OpenID-Connect discovery documents and JWKS.
@@ -21,7 +21,7 @@ class OidcDiscoveryService
     private const CACHE_TTL = 3600;
 
     public function __construct(
-        private readonly HttpClientInterface $http,
+        private readonly UserUrlHttpClient $http,
         private readonly CacheInterface $cache,
         private readonly LoggerInterface $logger,
     ) {

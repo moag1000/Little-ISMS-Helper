@@ -96,7 +96,7 @@ class BulkDeleteService
                     $errors[] = sprintf('%s ID %d: access denied', $entityType, $id);
                     continue;
                 }
-                $reason = $guard !== null ? $guard($entity) : null;
+                $reason = \App\Lifecycle\DeletionPolicy::refusal($entity) ?? ($guard !== null ? $guard($entity) : null);
                 if ($reason !== null) {
                     $errors[] = sprintf('%s ID %d: %s', $entityType, $id, $reason);
                     continue;

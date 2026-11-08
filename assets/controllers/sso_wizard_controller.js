@@ -11,7 +11,7 @@ import { faT } from '../js/fa-i18n.js';
  */
 export default class extends Controller {
     static targets = ['presetCard', 'discoveryUrl', 'discoveryResult', 'callbackUrl'];
-    static values = { validateUrl: String };
+    static values = { validateUrl: String, csrfToken: String };
 
     connect() {
         this._highlightSelectedPreset();
@@ -44,7 +44,7 @@ export default class extends Controller {
         try {
             const response = await fetch(this.validateUrlValue, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': this.csrfTokenValue },
                 body: JSON.stringify({ discoveryUrl: url }),
             });
             const data = await response.json();

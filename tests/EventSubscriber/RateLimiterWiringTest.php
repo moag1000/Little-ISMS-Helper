@@ -30,6 +30,8 @@ final class RateLimiterWiringTest extends KernelTestCase
         yield 'document upload' => [DocumentController::class, 'documentUploadLimiter', 20];
         yield 'reauth' => [ReauthController::class, 'reauthLimiter', 5];
         yield 'public token urls' => [PublicTokenRateLimitSubscriber::class, 'publicTokenLimiter', 60];
+        // test env raises the limit (the suite fails many tokens from one IP); the throttle has its own test
+        yield 'failed bearer attempts' => [\App\Security\ApiTokenAuthenticator::class, 'apiAuthFailureLimiter', 100000];
     }
 
     /**

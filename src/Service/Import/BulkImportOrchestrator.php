@@ -391,6 +391,7 @@ class BulkImportOrchestrator
                 $entityData = $mapper->toEntityData($updateRow['data'], $batch->getColumnMapping(), $tenant);
 
                 if ($existing !== null) {
+                    $entityData = EvidenceFieldFilter::forUpdate($existing::class, $entityData);
                     try {
                         $this->applyEntityData($existing, $entityData, $tenant);
                     } catch (\Throwable $e) {

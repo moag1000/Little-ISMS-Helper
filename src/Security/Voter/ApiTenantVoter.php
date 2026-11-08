@@ -80,10 +80,10 @@ final class ApiTenantVoter extends Voter
         \App\Entity\ISMSObjective::class => IsmsSteeringVoter::STEERING_ROLES,
         // ThreatIntelligenceController::new|edit: ROLE_MANAGER
         \App\Entity\ThreatIntelligence::class => ['ROLE_MANAGER'],
-        // Append-only machine logs without a form (ingest by a manager-level
-        // integration account); nobody else writes protocol entries.
-        \App\Entity\CryptographicOperation::class => ['ROLE_MANAGER'],
-        \App\Entity\PhysicalAccessLog::class => ['ROLE_MANAGER'],
+        // Machine-fed logs (badge reader, HSM): written by the integration account the admin sets up,
+        // not by hand — a manager could otherwise fabricate access or key-operation evidence (W3).
+        \App\Entity\CryptographicOperation::class => ['ROLE_ADMIN'],
+        \App\Entity\PhysicalAccessLog::class => ['ROLE_ADMIN'],
     ];
 
     protected function supports(string $attribute, mixed $subject): bool

@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -48,6 +49,7 @@ final class ApiTokenAuthenticator extends AbstractAuthenticator implements Authe
     public function __construct(
         private readonly ApiTokenRepository $tokenRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly ?RateLimiterFactoryInterface $apiAuthFailureLimiter = null,
     ) {
     }
 
@@ -58,6 +60,13 @@ final class ApiTokenAuthenticator extends AbstractAuthenticator implements Authe
 
     public function authenticate(Request $request): Passport
     {
+        // Guessing tokens: after too many failed attempts from one client the
+        // lookup is not even tried (429). A failed answer never reaches the
+        // general API limiter — the firewall stops the request first.
+        if ($this->failureBucket($request)?->consume(0)->getRemainingTokens() === 0) {
+            throw new TooManyTokenFailuresException();
+        }
+
         if (!ApiTokenRequest::acceptsTokenOn($request->getPathInfo())) {
             throw new CustomUserMessageAuthenticationException('API tokens are accepted only on /api and /mcp.');
         }
@@ -99,6 +108,15 @@ final class ApiTokenAuthenticator extends AbstractAuthenticator implements Authe
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
+        if ($exception instanceof TooManyTokenFailuresException) {
+            return new JsonResponse(
+                ['error' => 'Too many requests', 'detail' => $exception->getMessageKey()],
+                Response::HTTP_TOO_MANY_REQUESTS,
+                ['Retry-After' => '600'],
+            );
+        }
+        $this->failureBucket($request)?->consume(1);
+
         return new JsonResponse(
             ['error' => 'Authentication failed', 'detail' => $exception->getMessageKey()],
             Response::HTTP_UNAUTHORIZED,
@@ -113,5 +131,10 @@ final class ApiTokenAuthenticator extends AbstractAuthenticator implements Authe
             Response::HTTP_UNAUTHORIZED,
             ['WWW-Authenticate' => 'Bearer realm="little-isms-helper"'],
         );
+    }
+
+    private function failureBucket(Request $request): ?\Symfony\Component\RateLimiter\LimiterInterface
+    {
+        return $this->apiAuthFailureLimiter?->create('ip:' . ($request->getClientIp() ?? 'unknown'));
     }
 }

@@ -16,20 +16,20 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Http\UserUrlHttpClient;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 #[AllowMockObjectsWithoutExpectations]
 final class WebhookChannelTest extends TestCase
 {
-    private HttpClientInterface&MockObject $httpClient;
+    private UserUrlHttpClient&MockObject $httpClient;
     private SecretEncryptionInterface&MockObject $encryption;
     private ValidatorInterface&MockObject $validator;
     private WebhookChannel $channel;
 
     protected function setUp(): void
     {
-        $this->httpClient = $this->createMock(HttpClientInterface::class);
+        $this->httpClient = $this->createMock(UserUrlHttpClient::class);
         $this->encryption = $this->createMock(SecretEncryptionInterface::class);
         $this->validator  = $this->createMock(ValidatorInterface::class);
         $this->channel    = new WebhookChannel($this->httpClient, $this->encryption, $this->validator);

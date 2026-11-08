@@ -54,6 +54,12 @@ final readonly class TenantAwareStateProcessor implements ProcessorInterface
 
         // Delegate to appropriate inner processor
         if ($operation instanceof \ApiPlatform\Metadata\Delete) {
+            // Same rule as the form and the bulk action (four-eyes disposal).
+            $refusal = is_object($data) ? \App\Lifecycle\DeletionPolicy::refusal($data) : null;
+            if ($refusal !== null) {
+                throw new \Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException('Not deleted: ' . $refusal . '.');
+            }
+
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
         }
 

@@ -310,7 +310,7 @@ class AdminBackupController extends AbstractController
             $filename = 'uploaded_' . date('Y-m-d_H-i-s') . '_' . bin2hex(random_bytes(4)) . '.' . strtolower($file->getClientOriginalExtension());
 
             $file->move($backupDir, $filename);
-
+            $this->backupService->recordUploadScope($backupDir . '/' . $filename, $this->backupVisibilityScope(), (string) $this->getUser()?->getUserIdentifier());
             $this->logger->info('Backup file uploaded', [
                 'user' => $this->getUser()?->getUserIdentifier(),
                 'filename' => $filename,

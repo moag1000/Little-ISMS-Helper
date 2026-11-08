@@ -33,7 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/verfahrensverzeichnis/export', name: 'app_vvt_export_')]
-#[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
+#[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
 final class VvtExportController extends AbstractController
 {
     use ModuleGatedControllerTrait;

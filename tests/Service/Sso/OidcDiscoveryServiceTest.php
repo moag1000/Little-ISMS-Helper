@@ -47,7 +47,7 @@ final class OidcDiscoveryServiceTest extends TestCase
             public function delete(string $key): bool { return true; }
         };
 
-        return new OidcDiscoveryService($http, $cache, new NullLogger());
+        return new OidcDiscoveryService(new \App\Tests\Support\PassThroughUserUrlClient($http), $cache, new NullLogger());
     }
 
     #[Test]

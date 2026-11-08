@@ -96,11 +96,28 @@ final class RetentionEnforcementService
         'workflow_instance'   => ['approved', 'rejected', 'cancelled'],
     ];
 
+    /**
+     * Date fields that mark the end of a record's life (closure, completion).
+     * Retention runs from the LATEST of: the age field, these fields, updatedAt
+     * and the record's last audit row — a record closed yesterday is not
+     * deleted because it was created ten years ago (Art. 5(1)(e) counts from
+     * the end of the purpose, ISO 27001 A.5.33 from the end of the record).
+     *
+     * @var array<string, list<string>>
+     */
+    public const array COMPLETION_FIELDS = [
+        'incident'            => ['closedAt', 'resolvedAt'],
+        'audit_finding'       => ['closedAt'],
+        'processing_activity' => ['endDate'],
+        'workflow_instance'   => ['completedAt'],
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
+        private readonly ?\App\Repository\AuditLogRepository $auditLogRepository = null,
     ) {
     }
 
@@ -134,6 +151,7 @@ final class RetentionEnforcementService
                     $type,
                     $this->findExpired($class, $dateField, $tenant, $cutoff),
                 );
+                $expired = $this->endedBefore($type, $expired, $cutoff);
                 $activeNote = $stillActive === 0 ? null : sprintf(
                     '%d overdue for retention, still active (not deleted)',
                     $stillActive,
@@ -191,6 +209,48 @@ final class RetentionEnforcementService
         }
 
         return [$deletable, $active];
+    }
+
+    /**
+     * Keep only records whose life ended before the cutoff (see COMPLETION_FIELDS).
+     *
+     * @param list<Asset|Risk|Incident|Document|ProcessingActivity|AuditFinding|WorkflowInstance> $records
+     * @return list<Asset|Risk|Incident|Document|ProcessingActivity|AuditFinding|WorkflowInstance>
+     */
+    private function endedBefore(string $type, array $records, DateTimeImmutable $cutoff): array
+    {
+        if ($records === []) {
+            return [];
+        }
+        $class = self::REGISTRY[$type][0];
+        $short = substr($class, (int) strrpos($class, '\\') + 1);
+        $lastAudit = $this->auditLogRepository?->lastChangeAt(
+            $short,
+            array_values(array_filter(array_map(static fn (Asset|Risk|Incident|Document|ProcessingActivity|AuditFinding|WorkflowInstance $r): ?int => $r->getId(), $records))),
+        ) ?? [];
+
+        $fields = [self::REGISTRY[$type][1], 'updatedAt', ...(self::COMPLETION_FIELDS[$type] ?? [])];
+        $kept = [];
+        foreach ($records as $record) {
+            $dates = [$lastAudit[(int) $record->getId()] ?? null];
+            foreach ($fields as $field) {
+                $getter = 'get' . ucfirst($field);
+                if (is_callable([$record, $getter])) {
+                    $dates[] = $record->$getter();
+                }
+            }
+            $latest = null;
+            foreach ($dates as $date) {
+                if ($date instanceof \DateTimeInterface && ($latest === null || $date > $latest)) {
+                    $latest = $date;
+                }
+            }
+            if ($latest === null || $latest < $cutoff) {
+                $kept[] = $record;
+            }
+        }
+
+        return $kept;
     }
 
     private function statusOf(object $record): ?string

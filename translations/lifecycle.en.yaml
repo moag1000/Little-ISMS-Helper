@@ -313,3 +313,4 @@ lifecycle:
 
     errors:
         invalid_transition: 'Invalid status transition from "%from%" to "%to%". Allowed next states: %allowed%.'
+        delete_needs_end_state: 'Not deleted. An asset leaves the inventory by retiring and disposing of it (four-eyes principle); only within 24 hours of creation can it be deleted directly.'

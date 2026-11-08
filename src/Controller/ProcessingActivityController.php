@@ -13,7 +13,6 @@ use Exception;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\ProcessingActivity;
-use App\Entity\Supplier;
 use App\Entity\User;
 use App\Repository\TransferImpactAssessmentRepository;
 use App\Form\ProcessingActivityType;
@@ -278,7 +277,7 @@ class ProcessingActivityController extends AbstractController
      * Export VVT as PDF (Art. 30 documentation)
      */
     #[Route('/processing-activity/export/pdf', name: 'app_processing_activity_export_pdf', methods: ['GET'])]
-    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     public function exportPdf(Request $request): Response
     {
         $exportData = $this->processingActivityService->generateVVTExport();
@@ -313,7 +312,7 @@ class ProcessingActivityController extends AbstractController
      * polling progress page.
      */
     #[Route('/processing-activity/export/csv/dispatch', name: 'app_processing_activity_export_csv_dispatch', methods: ['POST'])]
-    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     #[IsCsrfTokenValid('processing_activity_export_csv_dispatch')]
     public function exportCsvDispatch(
         Request $request,
@@ -340,7 +339,7 @@ class ProcessingActivityController extends AbstractController
      * and removes it from disk afterwards.
      */
     #[Route('/processing-activity/export/csv/download/{id}', name: 'app_processing_activity_export_csv_download', methods: ['GET'])]
-    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportCsvDownload(
         string $id,
@@ -383,7 +382,7 @@ class ProcessingActivityController extends AbstractController
     }
 
     #[Route('/processing-activity/export/csv', name: 'app_processing_activity_export_csv', methods: ['GET'])]
-    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     public function exportCsv(): Response
     {
         $exportData = $this->processingActivityService->generateVVTExport();
@@ -519,6 +518,7 @@ class ProcessingActivityController extends AbstractController
      * Tenant-isolated; only Suppliers of the current tenant are offered.
      */
     #[Route('/processing-activity/{id}/avv-picker', name: 'app_processing_activity_avv_picker', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function avvPicker(Request $request, ProcessingActivity $processingActivity): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -532,22 +532,8 @@ class ProcessingActivityController extends AbstractController
                 return $this->redirectToRoute('app_processing_activity_avv_picker', ['id' => $processingActivity->getId()]);
             }
 
-            $supplierIds = array_filter(
-                (array) $request->request->all('supplier_ids'),
-                static fn($id): bool => is_string($id) && ctype_digit($id),
-            );
-
-            // Reset + re-attach (idempotent)
-            foreach ($processingActivity->getProcessorSuppliers() as $existing) {
-                $processingActivity->removeProcessorSupplier($existing);
-            }
-            foreach ($supplierIds as $id) {
-                $supplier = $this->entityManager->getRepository(Supplier::class)->find((int) $id);
-                if ($supplier instanceof Supplier && $supplier->getTenant() === $tenant) {
-                    $processingActivity->addProcessorSupplier($supplier);
-                }
-            }
-            $this->entityManager->flush();
+            $supplierIds = array_map('intval', array_filter((array) $request->request->all('supplier_ids'), static fn($id): bool => is_string($id) && ctype_digit($id)));
+            $this->avvPickerPreFiller?->assign($processingActivity, array_values($supplierIds), $tenant);
 
             $this->addFlash('success', $this->translator->trans('processing_activity.avv_required.flash_saved', [], 'alva'));
 
@@ -570,7 +556,7 @@ class ProcessingActivityController extends AbstractController
      * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
     #[Route('/processing-activity/bulk-export', name: 'app_processing_activity_bulk_export', methods: ['POST'])]
-    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);

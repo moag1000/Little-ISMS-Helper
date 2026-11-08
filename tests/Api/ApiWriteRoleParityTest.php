@@ -96,7 +96,8 @@ final class ApiWriteRoleParityTest extends TestCase
     {
         $forms = self::FORMS[$class];
         if ($forms === null) {
-            self::assertSame(['ROLE_MANAGER'], ApiTenantVoter::WRITE_ROLES[$class] ?? null, $class . ': a log without a form is fed by a manager-level account only.');
+            // W3: machine logs are evidence, fed by an integration account — admin only.
+            self::assertSame(['ROLE_ADMIN'], ApiTenantVoter::WRITE_ROLES[$class] ?? null, $class . ': a log without a form is fed by an admin-level account only.');
 
             return;
         }

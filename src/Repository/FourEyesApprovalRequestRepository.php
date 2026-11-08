@@ -42,17 +42,21 @@ class FourEyesApprovalRequestRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function markExpired(): int
+    /**
+     * Pending requests past their expiry, every organisation (background run).
+     * Expiry happens per entity in FourEyesApprovalService::cleanupExpired(),
+     * so each organisation gets its own audit batch.
+     *
+     * @return list<FourEyesApprovalRequest>
+     */
+    public function findExpiredPending(): array
     {
         return $this->createQueryBuilder('r')
-            ->update()
-            ->set('r.status', ':expired')
             ->where('r.status = :pending')
             ->andWhere('r.expiresAt <= :now')
-            ->setParameter('expired', FourEyesApprovalRequestStatus::Expired->value)
             ->setParameter('pending', FourEyesApprovalRequestStatus::Pending->value)
             ->setParameter('now', new DateTimeImmutable())
             ->getQuery()
-            ->execute();
+            ->getResult();
     }
 }

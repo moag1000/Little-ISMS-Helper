@@ -301,7 +301,7 @@ class BCExercise
      * Actual RTO achieved during exercise — ISO 22301 §8.6 d (hours)
      */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
-    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[Groups(['bc_exercise:read']), \App\Attribute\ApiReadOnlyEvidence('exercise form (ISO 22301 8.5)')]
     private ?string $actualRtoAchieved = null;
 
     /**
@@ -344,7 +344,7 @@ class BCExercise
      * Report completed
      */
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[Groups(['bc_exercise:read']), \App\Attribute\ApiReadOnlyEvidence('exercise form (ISO 22301 8.5)')]
     private bool $reportCompleted = false;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
