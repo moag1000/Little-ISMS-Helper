@@ -31,7 +31,8 @@ final class ComplianceMappingImportUploadTest extends WebTestCase
         $user->setEmail('mapping_import_' . uniqid() . '@example.com');
         $user->setFirstName('Mapping');
         $user->setLastName('Import');
-        $user->setRoles(['ROLE_MANAGER']);
+        // The consultant import writes global mappings: super admin on a shared instance (S3).
+        $user->setRoles(['ROLE_SUPER_ADMIN']);
         $user->setPassword('hashed_password');
         $user->setTenant($tenant);
         $user->setIsActive(true);

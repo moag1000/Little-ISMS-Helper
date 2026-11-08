@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity(repositoryClass: WorkflowRepository::class)]
 #[ORM\Table(name: 'workflows')]
-class Workflow
+class Workflow implements \App\Doctrine\SharedTenantRowsInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

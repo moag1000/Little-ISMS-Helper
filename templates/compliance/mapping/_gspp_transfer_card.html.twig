@@ -44,7 +44,7 @@
                 <dd class="col-4 col-md-1 text-end mb-1">{{ coverage.open }}</dd>
             {% endif %}
         </dl>
-        {% if pending > 0 and is_granted('ROLE_MANAGER') %}
+        {% if pending > 0 and is_granted('ROLE_MANAGER') and is_granted('GLOBAL_CATALOGUE_WRITE') %}
             <form method="post" action="{{ path('app_compliance_mapping_gspp_supplement') }}"
                   class="d-flex flex-wrap align-items-center gap-2 mb-3" data-testid="gspp-supplement-update">
                 <input type="hidden" name="_token" value="{{ csrf_token('gspp_supplement') }}">

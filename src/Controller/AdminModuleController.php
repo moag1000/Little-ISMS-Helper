@@ -198,7 +198,19 @@ class AdminModuleController extends AbstractController
         $selectedSamples = $request->request->all('samples') ?? [];
         $activeModules = $this->moduleConfigurationService->getActiveModules();
 
-        $result = $this->dataImportService->importSampleData($selectedSamples, $activeModules);
+        // Sample data belongs to the admin's own organisation, never to "the first" one.
+        $currentTenant = $this->tenantContext->getCurrentTenant();
+        if ($currentTenant === null) {
+            $this->flashError('admin.industry_preset.error.tenant_required');
+            return $this->redirectToRoute('admin_modules_details', ['moduleKey' => $moduleKey]);
+        }
+        $user = $this->getUser();
+        $result = $this->dataImportService->importSampleData(
+            $selectedSamples,
+            $activeModules,
+            $currentTenant,
+            $user instanceof \App\Entity\User ? $user : null,
+        );
 
         foreach ($result['results'] as $importResult) {
             if ($importResult['status'] === 'success') {

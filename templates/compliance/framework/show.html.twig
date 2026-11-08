@@ -29,7 +29,7 @@
     {% set _show_actions = [
         { label: 'compliance.framework.action.dashboard'|trans({}, 'compliance'), variant: 'primary', icon: 'nav-dashboard', href: path('app_compliance_framework', {id: framework.id}) }
     ] %}
-    {% if is_granted('ROLE_MANAGER') %}
+    {% if is_granted('ROLE_MANAGER') and is_granted('GLOBAL_CATALOGUE_WRITE') %}
         {% set _show_actions = _show_actions|merge([{ label: 'compliance.framework.migrate.title'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-arrow-up', href: path('app_compliance_framework_migrate', {id: framework.id}) }]) %}
     {% endif %}
     {% if is_granted('ADMIN_GLOBAL_OP') %}

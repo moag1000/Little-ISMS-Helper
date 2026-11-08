@@ -87,7 +87,12 @@ final class OrphanFinder
         foreach ($metadataFactory->getAllMetadata() as $metadata) {
             $className = $metadata->getName();
 
-            if (in_array($className, $excludedClasses, true) || !$metadata->hasAssociation('tenant')) {
+            // Rows shared by design (SharedTenantRowsInterface: SSO providers, tags, gap items,
+            // tour overrides, FTE constants, …) are not orphans: assigning them to one
+            // organisation would take them from all others.
+            if (in_array($className, $excludedClasses, true) || !$metadata->hasAssociation('tenant')
+                || is_subclass_of($className, \App\Doctrine\SharedTenantRowsInterface::class)
+            ) {
                 continue;
             }
 

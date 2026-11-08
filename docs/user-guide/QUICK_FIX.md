@@ -82,6 +82,22 @@ Die folgenden Aktionen sind verfuegbar:
 | **Audit-Log-Integritaet** | Nur Erkennung — Bulk-Batch-Mismatches, Tages-Luecken im AuditLog, NULL-Tenant-Eintraege. Keine Auto-Reparatur. |
 | **Status-Enum-Drift** | Nur Erkennung — DB-Statuswerte, die nicht im neuen `App\Enum\<Entity>Status` enthalten sind. Manuelle Triage erforderlich. |
 
+**Wer was sieht:** `/quick-fix` bleibt ohne Anmeldung erreichbar, damit eine
+Instanz mit kaputtem Login wiederherstellbar bleibt. Ohne Super-Admin-Sitzung
+oder Installer-Token zeigt die Seite aber nur, was das Anwenden der Migrationen
+braucht: keine SQL-Anweisungen, keine Datenbank-Fehlermeldung und keinen
+Datenintegritaets-Abschnitt (der zaehlt Zeilen aller Organisationen und ist der
+teure Teil jedes Seitenaufrufs).
+
+**Geteilte Zeilen sind keine Orphans:** Zeilen ohne Organisation, die absichtlich
+allen gehoeren (SSO-Anbieter, Tags, Mapping-Luecken, Tour-Anpassungen,
+FTE-Konstanten, globale Benachrichtigungsvorlagen — alles mit
+`SharedTenantRowsInterface`), zaehlen nicht als Orphans und werden nie einer
+Organisation zugeordnet. Mit mehr als einer Organisation ordnen *Orphans
+zuordnen* und *Alles sicher reparieren* nichts mehr „der ersten Organisation“
+zu; der Lauf verweist auf Admin → Datenreparatur, wo pro Datensatz die
+Organisation gewaehlt wird.
+
 Jede Aktion zeigt zuerst einen Vorschau-Bericht an. Sie muessen den Bericht
 bestaetigen, bevor Aenderungen gespeichert werden. Die letzten drei
 Kategorien sind detection-only — eine versteckte automatische Reparatur
@@ -123,7 +139,7 @@ Fuehrt in dieser Reihenfolge aus:
 
 1. Ausstehende Migrationen anwenden
 2. Schema-Reconcile ohne destructive Aktionen
-3. Orphans bereinigen
+3. Orphans bereinigen (nur mit genau einer Organisation, siehe oben)
 4. Tenant-Mismatches korrigieren
 
 Duplikate-Zusammenfuehrung ist *nicht* Teil dieses Buttons, da sie

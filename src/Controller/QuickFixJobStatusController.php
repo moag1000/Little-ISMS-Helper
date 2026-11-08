@@ -110,7 +110,7 @@ class QuickFixJobStatusController extends AbstractController
 
         // Open-redirect-safe: only accept relative paths (starting with /).
         $returnRaw = (string) $request->query->get('return', '');
-        $cancelUrl = (str_starts_with($returnRaw, '/') && !str_starts_with($returnRaw, '//'))
+        $cancelUrl = \App\Security\SafeRedirectTarget::isSafe($returnRaw)
             ? $returnRaw
             : $this->generateUrl('app_quick_fix_index');
 

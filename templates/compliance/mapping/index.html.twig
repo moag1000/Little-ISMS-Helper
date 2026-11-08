@@ -224,7 +224,7 @@
                                        class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                     </a>
-                                    {% if is_granted('ROLE_MANAGER') %}
+                                    {% if is_granted('ROLE_MANAGER') and is_granted('GLOBAL_CATALOGUE_WRITE', mapping) %}
                                     <a href="{{ path('app_compliance_mapping_edit', {id: mapping.id}) }}"
                                        class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>

@@ -139,6 +139,7 @@ class AdminHubCatalogTest extends TestCase
             'ADMIN_ANY_TENANT',
             'ADMIN_GLOBAL_OP',
             'ADMIN_HOLDING_READ',
+            'GLOBAL_CATALOGUE_WRITE',
             'PERSONA_CISO',
             'PERSONA_RISK',
             'PERSONA_DPO',
@@ -219,7 +220,6 @@ class AdminHubCatalogTest extends TestCase
             'notification_rules',
             'notification_channels',
             'notification_templates',
-            'compliance_import',
             'gstool_import',
             'sample_data',
         ];
@@ -237,5 +237,21 @@ class AdminHubCatalogTest extends TestCase
                 sprintf('Module "%s" must be flagged ADMIN_OWN_TENANT.', $key),
             );
         }
+    }
+
+    /** The compliance import writes the mappings every organisation uses (S3). */
+    #[Test]
+    public function complianceImportNeedsTheGlobalCatalogueRight(): void
+    {
+        foreach ($this->catalog->getGroups() as $group) {
+            foreach ($group['modules'] as $module) {
+                if ($module['key'] === 'compliance_import') {
+                    $this->assertSame('GLOBAL_CATALOGUE_WRITE', $module['requiredAttribute'] ?? null);
+
+                    return;
+                }
+            }
+        }
+        $this->fail('compliance_import module missing');
     }
 }

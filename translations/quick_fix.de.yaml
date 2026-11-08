@@ -51,6 +51,7 @@ quick_fix:
     error:
         title: 'Diagnose nicht möglich'
         body: 'Der Quick-Fix konnte den Schema-Status nicht ermitteln. Bitte Logs prüfen oder per CLI applyen:'
+        details_privileged: 'Die Fehlermeldung sehen nur Super-Admins oder wer das Installer-Token angibt.'
     locked:
         title: 'Quick-Fix gesperrt'
         body: 'Der Zugriff auf diese Seite ist durch die Admin-Settings beschränkt. Wende dich an einen Administrator.'

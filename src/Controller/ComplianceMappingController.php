@@ -547,7 +547,7 @@ class ComplianceMappingController extends AbstractController
             }
             $roles = $workflow->getMetadataStore()->getTransitionMetadata($transition)['roles'] ?? [];
             foreach ($roles as $role) {
-                if ($this->isGranted($role)) {
+                if ($this->isGranted($role) && $this->isGranted(\App\Security\Voter\GlobalCatalogueVoter::WRITE, $mapping)) {
                     return true;
                 }
             }

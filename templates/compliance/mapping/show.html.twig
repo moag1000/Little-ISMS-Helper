@@ -29,7 +29,7 @@
     {{ _fa_page_header.render({
         title: mapping.sourceRequirement.requirementId ~ ' → ' ~ mapping.targetRequirement.requirementId,
         subtitle: 'Compliance Mapping',
-        actions: (is_granted('ROLE_MANAGER') ? [
+        actions: (is_granted('ROLE_MANAGER') and is_granted('GLOBAL_CATALOGUE_WRITE', mapping) ? [
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_compliance_mapping_edit', {id: mapping.id}) }
         ] : [])|merge([
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_mapping_index') }
@@ -250,12 +250,14 @@
                     {% endif %}
 
                     {# Analyze Button #}
+                    {% if is_granted('ROLE_MANAGER') and is_granted('GLOBAL_CATALOGUE_WRITE', mapping) %}
                     <form method="post" action="{{ path('app_compliance_mapping_analyze', {id: mapping.id}) }}" class="mt-3">
                         <input type="hidden" name="_token" value="{{ csrf_token('analyze' ~ mapping.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
                             <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> Run Analysis
                         </button>
                     </form>
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
 
@@ -282,6 +284,7 @@
             {% endembed %}
 
             {# Delete #}
+            {% if is_granted('ROLE_ADMIN') and is_granted('GLOBAL_CATALOGUE_WRITE', mapping) %}
             {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
                 {% block card_header %}
                     <div class="card-header"><h5 class="mb-0"><i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h5></div>
@@ -298,6 +301,7 @@
                     </form>
                 {% endblock %}
             {% endembed %}
+            {% endif %}
         </div>
     </div>
 

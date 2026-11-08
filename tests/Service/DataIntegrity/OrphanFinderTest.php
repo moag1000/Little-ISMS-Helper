@@ -69,6 +69,32 @@ final class OrphanFinderTest extends TestCase
         self::assertSame([], $result);
     }
 
+    /**
+     * S3: rows shared by design (SharedTenantRowsInterface — SSO providers, tags, gap
+     * items, …) are not orphans; "assign orphans" used to hand them to the first tenant.
+     */
+    #[Test]
+    public function shared_rows_are_not_orphans(): void
+    {
+        $filters = $this->createMock(\Doctrine\ORM\Query\FilterCollection::class);
+        $filters->method('isEnabled')->willReturn(false);
+        $this->entityManager->method('getFilters')->willReturn($filters);
+
+        $shared = [];
+        foreach ([\App\Entity\IdentityProvider::class, \App\Entity\Tag::class, \App\Entity\MappingGapItem::class] as $class) {
+            $metadata = $this->createMock(\Doctrine\ORM\Mapping\ClassMetadata::class);
+            $metadata->method('getName')->willReturn($class);
+            $metadata->method('hasAssociation')->willReturn(true);
+            $shared[] = $metadata;
+        }
+        $metadataFactory = $this->createMock(\Doctrine\ORM\Mapping\ClassMetadataFactory::class);
+        $metadataFactory->method('getAllMetadata')->willReturn($shared);
+        $this->entityManager->method('getMetadataFactory')->willReturn($metadataFactory);
+        $this->entityManager->expects(self::never())->method('createQueryBuilder');
+
+        self::assertSame([], $this->finder->findAllOrphanedEntities());
+    }
+
     #[Test]
     public function find_cascade_orphans_returns_five_keyed_result(): void
     {
