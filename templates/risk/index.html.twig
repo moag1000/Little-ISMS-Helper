@@ -172,6 +172,7 @@
         {% endembed %}
         {% include '_components/_bulk_action_bar.html.twig' with {
             actions: ['export', 'assign', 'review', 'delete'],
+            reviewByOwner: true,
             variant: 'brand'
         } %}
     {% endblock %}

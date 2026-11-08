@@ -32,8 +32,13 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {% set _show_actions = [] %}
-    {% if canEdit is defined and canEdit %}
+    {% if canEdit is defined and canEdit and is_granted('edit', risk) %}
         {% set _show_actions = _show_actions|merge([{ label: 'action.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_risk_edit', {id: risk.id}) }]) %}
+    {% endif %}
+    {# ISO 27005 8.4.4: the risk owner asks for the formal acceptance right here (strategy "accept", not yet requested). #}
+    {% if risk.acceptanceApprovalRequired and risk.acceptanceJustification is null
+        and (is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', risk)) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'risk.acceptance.request_action'|trans({}, 'risk'), variant: 'ghost', href: path('app_risk_request_acceptance', {id: risk.id}) }]) %}
     {% endif %}
     {% set _show_actions = _show_actions|merge([
         { label: 'action.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_risk_index') }
@@ -78,7 +83,7 @@
 
     {# Detail skeleton (UI wave E): status band → anchor bar → links → sections → history → comments #}
     {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Risk', status_key: risk.status ? risk.status.value : 'unknown' }) }}{% endset %}
-    {% set _actions %}{{ _lifecycle_actions.dropdown(risk, 'risk', 'risk_lifecycle') }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(risk, 'risk', 'risk_lifecycle') }}{% if risk.status is null or risk.status.requiresPeriodicReview() is not same as(false) %}{% include '_components/_review_confirm_button.html.twig' with { entity: risk, route: 'app_risk_review_confirm' } only %}{% endif %}{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         actions: _actions,
@@ -231,7 +236,7 @@
                 </div>
             {% elseif is_module_active('risk_quant') %}
                 {# Module active but no data yet — show edit nudge only in edit mode #}
-                {% if canEdit is defined and canEdit %}
+                {% if canEdit is defined and canEdit and is_granted('edit', risk) %}
                     <div class="detail-section text-muted small">
                         <i class="fa-icon fa-icon--bank" aria-hidden="true"></i>
                         {{ 'risk.quant.display.empty'|trans({}, 'risk') }}

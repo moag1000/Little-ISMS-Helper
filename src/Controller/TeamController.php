@@ -8,12 +8,14 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Team;
 use App\Form\TeamType;
 use App\Repository\TeamRepository;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\ModuleConfigurationService;
 use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -84,7 +86,8 @@ class TeamController extends AbstractController
     }
 
     #[Route('/planning/teams/{id}/edit', name: 'app_planning_team_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('edit', 'team')]
+    // The team lead keeps the team current (team_validity reminder), also as top management.
+    #[IsGranted(new Expression(RecordResponsibleVoter::EDIT_OR_RESPONSIBLE), subject: 'team')]
     public function edit(Request $request, Team $team): Response
     {
         if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;

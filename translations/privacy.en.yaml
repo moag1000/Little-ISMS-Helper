@@ -1,4 +1,13 @@
 privacy:
+    data_retention:
+        overview:
+            title: 'Upcoming deletions'
+            subtitle: 'What the weekly retention sweep removes next (GDPR Art. 5(1)(e)). To keep a record, change it or the policy before the date.'
+            change_policy: 'Change policy'
+            open_list: 'Open list'
+            upcoming: '%count% on %date%'
+            col:
+                next_deletion: 'Next deletion'
     breadcrumb:
         privacy: Privacy
         data_breaches: 'Data Breaches'

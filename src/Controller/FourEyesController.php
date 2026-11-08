@@ -11,9 +11,11 @@ use App\Entity\FourEyesApprovalRequest;
 use App\Entity\User;
 use App\Form\FourEyesApprovalRequestType;
 use App\Service\FourEyesApprovalService;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -21,7 +23,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/four-eyes', name: 'app_four_eyes_')]
-#[IsGranted('ROLE_MANAGER')]
 final class FourEyesController extends AbstractController
 {
     public function __construct(
@@ -33,6 +34,7 @@ final class FourEyesController extends AbstractController
     }
 
     #[Route('/{id}/approve', name: 'approve', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'request')]
     public function approve(FourEyesApprovalRequest $request, Request $httpRequest): Response
     {
         if (!$this->isCsrfTokenValid('four_eyes_approve_' . $request->getId(), $httpRequest->request->get('_token', ''))) {
@@ -53,6 +55,7 @@ final class FourEyesController extends AbstractController
     }
 
     #[Route('/{id}/reject', name: 'reject', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'request')]
     public function reject(FourEyesApprovalRequest $request, Request $httpRequest): Response
     {
         if (!$this->isCsrfTokenValid('four_eyes_reject_' . $request->getId(), $httpRequest->request->get('_token', ''))) {

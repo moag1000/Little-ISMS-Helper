@@ -18,7 +18,7 @@ src/Entity/DataProtectionImpactAssessment.php:LOC=1262 deps=0
 src/Controller/ManagementReportController.php:LOC=1256 deps=0
 src/Entity/Supplier.php:LOC=1224 deps=0
 src/Controller/Admin/DataRepairController.php:LOC=1147 deps=0
-src/Controller/RiskController.php:LOC=1029 deps=0
+src/Controller/RiskController.php:LOC=1027 deps=0
 src/Entity/BusinessContinuityPlan.php:LOC=1009 deps=0
 src/Entity/Tenant.php:LOC=1007 deps=0
 src/Controller/TenantManagementController.php:LOC=995 deps=0

@@ -666,8 +666,9 @@
                     <span class="fly-item__sub">{{ 'nav.mega.desc.four_eyes_inbox'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            {# Gap A (2026-05-27): Audit-Log — Senior-ISB P0. ISO 27001 Cl. 7.5.3. #}
-            {% if is_granted('ROLE_AUDITOR') or is_granted('ROLE_ADMIN') %}
+            {# Gap A (2026-05-27): Audit-Log — Senior-ISB P0. ISO 27001 Cl. 7.5.3.
+               Same gate as AuditLogController (/admin, ROLE_ADMIN); auditors read a record's history on its detail page. #}
+            {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('app_audit_log_index') }}" class="fly-item {% if current_route starts with 'app_audit_log_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--audit-log" aria-hidden="true"></i></span>
                 <span class="fly-item__body">

@@ -271,6 +271,7 @@ user:
     top_management_hint:
         title: 'Who is your top management?'
         body: 'Top-management approvals (decisions, high risk acceptances, closing the management review) now need the Top management role. Admins no longer inherit it, and nobody in your organisation holds it yet. Assign it to your management, including yourself if you belong to it.'
+        body_ask_admin: 'Top-management approvals (decisions, high risk acceptances, closing the management review) need the Top management role, and nobody in your organisation holds it yet. Ask an admin to assign it to your management.'
         cta: 'Assign the Top management role'
     role_hierarchy:
         title: 'Role Hierarchy'

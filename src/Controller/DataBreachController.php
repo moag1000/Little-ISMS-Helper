@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequiresModule;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\BulkDeleteService;
 use RuntimeException;
 use DateTime;
@@ -28,6 +29,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -222,7 +224,7 @@ class DataBreachController extends AbstractController
      * Edit data breach
      */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataBreach')]
     public function edit(Request $request, DataBreach $dataBreach): Response
     {
         if (!in_array($dataBreach->getStatus(), [DataBreachStatus::Draft->value, DataBreachStatus::UnderAssessment->value], true)) {
@@ -300,7 +302,7 @@ class DataBreachController extends AbstractController
      * Submit data breach for assessment
      */
     #[Route('/{id}/submit-for-assessment', name: 'submit_for_assessment', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataBreach')]
     public function submitForAssessment(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
@@ -323,7 +325,7 @@ class DataBreachController extends AbstractController
      * Notify supervisory authority (Art. 33 GDPR)
      */
     #[Route('/{id}/notify-authority', name: 'notify_authority', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataBreach')]
     public function notifyAuthority(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
@@ -372,7 +374,7 @@ class DataBreachController extends AbstractController
      * Notify data subjects (Art. 34 GDPR)
      */
     #[Route('/{id}/notify-subjects', name: 'notify_subjects', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataBreach')]
     public function notifySubjects(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
@@ -403,7 +405,7 @@ class DataBreachController extends AbstractController
      * Record exemption from data subject notification (Art. 34(3) GDPR)
      */
     #[Route('/{id}/subject-notification-exemption', name: 'subject_notification_exemption', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataBreach')]
     public function subjectNotificationExemption(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
@@ -433,7 +435,7 @@ class DataBreachController extends AbstractController
      * Close data breach investigation
      */
     #[Route('/{id}/close', name: 'close', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataBreach')]
     public function close(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');

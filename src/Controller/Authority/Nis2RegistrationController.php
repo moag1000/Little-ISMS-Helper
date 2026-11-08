@@ -6,6 +6,7 @@ namespace App\Controller\Authority;
 
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Authority\Nis2RegistrationProfile;
+use App\Entity\Tenant;
 use App\Form\Authority\Nis2RegistrationProfileType;
 use App\Security\Voter\Authority\Nis2RegistrationProfileVoter;
 use App\Service\AuditLogger;
@@ -34,11 +35,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *  POST /authority/nis2-registration/mark-reported — admin confirms BSI submission
  *
  * Module gate: nis2_dora
- * RBAC: ROLE_MANAGER for VIEW/EDIT/EXPORT; ROLE_ADMIN for MARK_REPORTED
+ * RBAC: ROLE_MANAGER or a named contact of the profile for VIEW/EDIT/EXPORT;
+ * ROLE_ADMIN for MARK_REPORTED
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/authority/nis2-registration', name: 'nis2_registration_')]
-#[IsGranted('ROLE_MANAGER')]
+// ROLE_USER here; Nis2RegistrationProfileVoter decides per action (manager,
+// or a named contact of the profile).
+#[IsGranted('ROLE_USER')]
 final class Nis2RegistrationController extends AbstractController
 {
     use ModuleGatedControllerTrait;
@@ -67,7 +71,7 @@ final class Nis2RegistrationController extends AbstractController
             throw $this->createNotFoundException('No tenant context available.');
         }
 
-        $profile = $this->registrationService->getOrCreateProfile($tenant);
+        $profile = $this->profileFor($tenant);
         $this->denyAccessUnlessGranted(Nis2RegistrationProfileVoter::VIEW, $profile);
 
         $validationErrors = $this->registrationService->validate($profile);
@@ -93,7 +97,7 @@ final class Nis2RegistrationController extends AbstractController
             throw $this->createNotFoundException('No tenant context available.');
         }
 
-        $profile = $this->registrationService->getOrCreateProfile($tenant);
+        $profile = $this->profileFor($tenant);
         $this->denyAccessUnlessGranted(Nis2RegistrationProfileVoter::EDIT, $profile);
 
         $before = $profile->fingerprint();
@@ -148,7 +152,7 @@ final class Nis2RegistrationController extends AbstractController
             throw $this->createNotFoundException('No tenant context available.');
         }
 
-        $profile = $this->registrationService->getOrCreateProfile($tenant);
+        $profile = $this->profileFor($tenant);
         $this->denyAccessUnlessGranted(Nis2RegistrationProfileVoter::EXPORT, $profile);
 
         $errors = $this->registrationService->validate($profile);
@@ -205,7 +209,7 @@ final class Nis2RegistrationController extends AbstractController
             throw $this->createNotFoundException('No tenant context available.');
         }
 
-        $profile = $this->registrationService->getOrCreateProfile($tenant);
+        $profile = $this->profileFor($tenant);
         $this->denyAccessUnlessGranted(Nis2RegistrationProfileVoter::MARK_REPORTED, $profile);
 
         $confirmationNumber = trim((string) $request->request->get('confirmation_number', ''));
@@ -230,5 +234,17 @@ final class Nis2RegistrationController extends AbstractController
         return $this->redirectToRoute('nis2_registration_index');
     }
 
-}
+    /**
+     * Managers open (and on first visit create) the profile; a named contact
+     * without a manager role only reaches an existing one — never creates it.
+     */
+    private function profileFor(Tenant $tenant): Nis2RegistrationProfile
+    {
+        if ($this->isGranted('ROLE_MANAGER')) {
+            return $this->registrationService->getOrCreateProfile($tenant);
+        }
 
+        return $this->registrationService->findProfile($tenant)
+            ?? throw $this->createAccessDeniedException();
+    }
+}

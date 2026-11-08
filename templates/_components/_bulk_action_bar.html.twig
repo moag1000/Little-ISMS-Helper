@@ -17,7 +17,8 @@
      am Parent-Element `data-controller="bulk-actions"` und das
      `data-bulk-actions-endpoint-value="/<entity>"`.
 
-     'review'        → "Review bestätigen" (nur ROLE_MANAGER), ruft bulkReview auf →
+     'review'        → "Review bestätigen" (ROLE_MANAGER; mit reviewByOwner: true auch
+                       Inhaber — Risiko/SoA prüfen den edit-Voter je Datensatz), ruft bulkReview auf →
                        POST {endpoint}/bulk-review (Risiko, SoA, Dokument, Lieferant).
      'approve'       → Quick-Button (fa-bulk-btn--success), ruft bulkStatusChange
                        mit data-target-status="approved" auf.
@@ -254,8 +255,10 @@
             {% endif %}
 
             {# 'review' — confirm the periodic review (risk, soa, document, supplier);
-               POST {endpoint}/bulk-review, rules in PeriodicReviewService. #}
-            {% if 'review' in actions and is_granted('ROLE_MANAGER') %}
+               POST {endpoint}/bulk-review, rules in PeriodicReviewService.
+               reviewByOwner: the server checks the edit voter per record (risk, control),
+               so owners confirm their own records too (W1). #}
+            {% if 'review' in actions and (is_granted('ROLE_MANAGER') or (reviewByOwner|default(false) and is_granted('ROLE_USER'))) %}
                 <button type="button"
                         class="fa-bulk-btn fa-bulk-btn--success"
                         data-action="click->bulk-actions#bulkReview"

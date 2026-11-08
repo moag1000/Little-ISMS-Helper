@@ -196,6 +196,86 @@ final class ApiResourceContractTest extends TestCase
         }
     }
 
+    /**
+     * S6: every operation decides access itself — an operation without a
+     * security expression is open to any token. Item operations vote on the
+     * record (`object`), which is where the organisation is compared.
+     *
+     * @param class-string $class
+     */
+    #[Test]
+    #[DataProvider('apiResources')]
+    public function everyOperationNamesItsSecurity(string $class): void
+    {
+        foreach ($this->resource($class)->getOperations() ?? [] as $operation) {
+            $expression = $operation->getSecurity() ?? $operation->getSecurityPostDenormalize();
+            $label = sprintf('%s %s', $class, $operation::class);
+            self::assertNotNull($expression, $label . ': every operation needs security or securityPostDenormalize.');
+            if (!$operation instanceof GetCollection && !$operation instanceof \ApiPlatform\Metadata\Post) {
+                self::assertStringContainsString('object', (string) $operation->getSecurity(), $label . ': an item operation votes on the record (object).');
+            }
+        }
+    }
+
+    /**
+     * S6: a writing resource of an organisation stores through
+     * TenantAwareStateProcessor, which pins a new record to the writer's
+     * organisation whatever the body says.
+     *
+     * @param class-string $class
+     */
+    #[Test]
+    #[DataProvider('apiResources')]
+    public function everyWritingResourcePinsTheOrganisation(string $class): void
+    {
+        $resource = $this->resource($class);
+        if (!(new ReflectionClass($class))->hasProperty('tenant')) {
+            $this->expectNotToPerformAssertions();
+
+            return;
+        }
+        foreach ($resource->getOperations() ?? [] as $operation) {
+            if ($operation instanceof Get || $operation instanceof GetCollection) {
+                continue;
+            }
+            self::assertSame(
+                \App\State\TenantAwareStateProcessor::class,
+                $operation->getProcessor() ?? $resource->getProcessor(),
+                sprintf('%s %s must store through TenantAwareStateProcessor.', $class, $operation::class),
+            );
+        }
+        self::assertTrue(true);
+    }
+
+    /**
+     * S6: credentials and secrets are never serialized, on any entity — a
+     * group on such a property would ship it in every response that embeds it.
+     */
+    #[Test]
+    public function noCredentialIsInASerializationGroup(): void
+    {
+        $credential = '/password|secret|token|mfa|totp|backup_?code|reset_?(code|token)|api_?key|private_?key|sso_?external|credential/i';
+        $checked = 0;
+        foreach (glob(dirname(__DIR__, 2) . '/src/Entity/*.php') ?: [] as $file) {
+            $class = 'App\\Entity\\' . basename($file, '.php');
+            if (!class_exists($class)) {
+                continue;
+            }
+            foreach ((new ReflectionClass($class))->getProperties() as $property) {
+                if (preg_match($credential, $property->getName()) !== 1) {
+                    continue;
+                }
+                ++$checked;
+                self::assertSame(
+                    [],
+                    $property->getAttributes(Groups::class),
+                    sprintf('%s::$%s looks like a credential and must not carry serialization groups.', $class, $property->getName()),
+                );
+            }
+        }
+        self::assertGreaterThan(5, $checked, 'the credential pattern no longer finds the User/ApiToken fields');
+    }
+
     /** @param class-string $class */
     private function resource(string $class): ApiResource
     {

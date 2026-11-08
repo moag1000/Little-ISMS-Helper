@@ -314,24 +314,9 @@
         </div>
     </section>
 
-    {# Z.0 — Workflow Transparency: Pending Approvals + Stuck Workflows #}
-    {% if dashboard.pending_approvals is defined and dashboard.pending_approvals|length > 0 %}
-    <section class="fa-section mb-4" id="pending-approvals">
-        <div class="fa-section__header">
-            <h2 class="fa-section__title">{{ 'compliance_manager.section.pending_approvals'|trans({}, 'dashboards') }}</h2>
-        </div>
-        <div class="fa-section__body">
-            <div class="list-group">
-                {% for approval in dashboard.pending_approvals %}
-                    <a href="{{ path('app_workflow_instance_show', {id: approval.id}) }}"
-                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>{{ approval.title }}</strong>
-                            <small class="d-block text-muted">{{ approval.entity_type }}</small>
-                        </div>
-                        {% if approval.due_date %}
-                            <span class="fa-status-pill fa-status-pill--warning">{{ approval.due_date|fa_date }}</span>
-                        {% endif %}
+    {# What is waiting for this person — every deadline source, same list as My Day #}
+    <div class="mb-4">{% include 'dashboards/_my_obligations.html.twig' %}</div>
+
                     </a>
                 {% endfor %}
             </div>
@@ -361,6 +346,8 @@
         </div>
     </section>
     {% endif %}
+
+    {% include 'dashboards/_report_downloads.html.twig' %}
 
     {# DORA Obligation KPI tile — only for DORA-obligated tenants #}
     {% if is_module_active('nis2_dora') and is_dora_obligated() %}

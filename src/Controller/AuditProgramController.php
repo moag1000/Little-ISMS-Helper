@@ -14,6 +14,7 @@ use App\Lifecycle\Exception\ReasonRequiredException;
 use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleService;
 use App\Repository\AuditProgramRepository;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -33,10 +34,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * AuditProgramController — ISO 19011 §5.4 Audit Programme CRUD.
  *
  * RBAC: ROLE_AUDITOR required for read-actions.
- * Write actions (new/edit/archive) require ROLE_MANAGER.
+ * Write actions (new/edit/archive) require ROLE_MANAGER. The programme owner
+ * (RecordResponsibleVoter) may open and edit their programme without those roles.
  * Module gate: `audits`.
  */
-#[IsGranted('ROLE_AUDITOR')]
 #[Route('/audit-programs', name: 'app_audit_program_')]
 class AuditProgramController extends AbstractController
 {
@@ -67,6 +68,7 @@ class AuditProgramController extends AbstractController
     // ── Index ──────────────────────────────────────────────────────────────────
 
     #[Route('', name: 'index', methods: ['GET'])]
+    #[IsGranted('ROLE_AUDITOR')]
     public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('audits')) {
@@ -93,6 +95,8 @@ class AuditProgramController extends AbstractController
     // ── Show ───────────────────────────────────────────────────────────────────
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    // The programme owner gets the review reminder, also without a reviewer role.
+    #[IsGranted(new Expression(RecordResponsibleVoter::AUDITOR_OR_RESPONSIBLE), subject: 'auditProgram')]
     public function show(Request $request, AuditProgram $auditProgram): Response
     {
         if ($redirect = $this->checkModuleActive('audits')) {
@@ -169,7 +173,7 @@ class AuditProgramController extends AbstractController
     // ── Edit ───────────────────────────────────────────────────────────────────
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'auditProgram')]
     public function edit(Request $request, AuditProgram $auditProgram): Response
     {
         if ($redirect = $this->checkModuleActive('audits')) {

@@ -1,4 +1,9 @@
 training:
+  filter:
+    participant: 'Trainings of %name%'
+  prefill:
+    board_title: 'Management training (NIS-2 Art. 20(2))'
+    board_action: 'Plan management training'
   title: Trainings
   new: New Training
   edit: Edit Training

@@ -1,0 +1,12 @@
+{#
+ # "Review bestätigen" for one record on its detail page (W1): the review
+ # reminder links here and the owner confirms in one step. Shown only to who
+ # may edit the record (managers and the responsible person, edit voter).
+ # Params: entity, route (POST route taking {id}).
+ #}
+{% if is_granted('edit', entity) %}
+    <form method="post" action="{{ path(route, {id: entity.id}) }}" class="d-inline">
+        <input type="hidden" name="_token" value="{{ csrf_token('review_confirm_' ~ entity.id) }}">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'periodic_review.confirm_one'|trans({}, 'messages') }}</button>
+    </form>
+{% endif %}

@@ -127,9 +127,12 @@ final class ManagementTrainingSource implements DeadlineSource
         return Responsibility::holders($item->user)->alsoInform('ROLE_ISB', 'ROLE_CISO');
     }
 
+    /** The trainings this member takes part in; managers plan one from there ("Leitungsschulung anlegen"). */
     public function linkOf(object $item): RecordLink
     {
-        return new RecordLink('app_training_index', []);
+        assert($item instanceof ManagementTrainee);
+
+        return new RecordLink('app_training_index', ['participant' => (int) $item->user->getId()]);
     }
 
     public function profile(): DeadlineProfile

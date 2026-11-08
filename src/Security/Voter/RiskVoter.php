@@ -7,6 +7,8 @@ namespace App\Security\Voter;
 use App\Entity\Tenant;
 use App\Entity\Risk;
 use App\Entity\User;
+use App\Service\Responsibility\ResponsibilityResolver;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -27,12 +29,13 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - ROLE_SUPER_ADMIN bypasses all checks; ROLE_ADMIN only within its own tenant
  * - Users can only access risks from their own tenant
  * - Tenant isolation strictly enforced
+ * - EDIT below ROLE_ADMIN: ROLE_MANAGER, the `risk.edit` permission or the
+ *   risk owner (ResponsibilityResolver)
  * - Only admins can delete risk assessments
  *
  * Multi-tenancy:
  * - Implements OWASP A1: Broken Access Control prevention
  * - Tenant validation on all operations
- * - Future: Can be extended with risk owner checks
  */
 final class RiskVoter extends Voter
 {
@@ -40,6 +43,9 @@ final class RiskVoter extends Voter
 
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
+        // Lazy: the resolver collects the deadline sources (W1 "act where reminded").
+        #[Autowire(lazy: true)]
+        private readonly ?ResponsibilityResolver $responsibility = null,
     ) {
     }
 
@@ -77,7 +83,15 @@ final class RiskVoter extends Voter
             return $scope;
         }
 
-        // In scope below ROLE_ADMIN: view and edit, delete stays admin-only.
-        return $attribute !== self::DELETE;
+        // In scope below ROLE_ADMIN: everyone may view; editing needs the
+        // manager scope, the risk.edit permission or being the one who has to
+        // act on the risk (risk owner via ResponsibilityResolver); delete stays
+        // admin-only. Before W1 every ROLE_USER could edit every risk.
+        return match ($attribute) {
+            self::VIEW => true,
+            self::EDIT => $this->hasReachableRole($user, 'ROLE_MANAGER') || $user->hasPermission('risk.edit')
+                || ($this->responsibility?->isResponsibleFor($user, $risk) ?? false),
+            default => false,
+        };
     }
 }

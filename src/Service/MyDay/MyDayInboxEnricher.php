@@ -9,10 +9,11 @@ use App\AlvaHint\AlvaHintService;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Service\Location\LocationMyDayTasks;
-use App\Service\Risk\RiskAcceptanceInbox;
 use App\Service\Risk\RiskBusinessSummary;
 use App\Service\WorkflowService;
+use App\Security\Voter\RiskAcceptanceVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -26,8 +27,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - Status badges are translated instead of showing raw codes.
  * - Alva's priority-1 hints join the inbox as their own category, so the
  *   separate Alva inbox is no longer a second place to look.
- * - Requested risk acceptances the user may decide join as their own
- *   category; risk approvals carry a business line (band, €/year, asset).
+ * - Requested risk acceptances (deadline source RiskAcceptanceRequestSource)
+ *   carry a business line (band, €/year, asset) and are decided in place by
+ *   who may approve them; risk approvals carry the same business line.
  * - Own sites with open checks join as their own category (location map).
  */
 readonly class MyDayInboxEnricher
@@ -37,7 +39,7 @@ readonly class MyDayInboxEnricher
         private AlvaHintService $alvaHints,
         private TranslatorInterface $translator,
         private UrlGeneratorInterface $urls,
-        private RiskAcceptanceInbox $riskAcceptances,
+        private AuthorizationCheckerInterface $authorization,
         private RiskBusinessSummary $riskSummary,
         private LocationMyDayTasks $locationTasks,
     ) {
@@ -58,10 +60,9 @@ readonly class MyDayInboxEnricher
         ] + $item, $inbox['four_eyes'] ?? []);
 
         $inbox['alva_hints'] = $this->alvaItems();
-        $inbox['risk_acceptance_pending'] = $user !== null ? $this->riskAcceptances->pendingFor($user) : [];
+        $inbox['risk_acceptance_pending'] = array_map(fn (array $item): array => $this->acceptanceItem($item), $inbox['risk_acceptance_pending'] ?? []);
         $inbox['location_gaps'] = $user !== null ? $this->locationTasks->openGapsFor($user) : [];
-        $inbox['total'] = ($inbox['total'] ?? 0) + count($inbox['alva_hints']) + count($inbox['risk_acceptance_pending'])
-            + count($inbox['location_gaps']);
+        $inbox['total'] = ($inbox['total'] ?? 0) + count($inbox['alva_hints']) + count($inbox['location_gaps']);
 
         foreach ($inbox as $key => $items) {
             if (is_array($items) && array_is_list($items)) {
@@ -139,8 +140,29 @@ readonly class MyDayInboxEnricher
     /** Number of items enrich() adds (Alva hints, risk acceptances to decide), for the sidebar badge. */
     public function addedCount(User $user): int
     {
-        return count($this->priorityHints()) + count($this->riskAcceptances->pendingFor($user))
-            + count($this->locationTasks->openGapsFor($user));
+        return count($this->priorityHints()) + count($this->locationTasks->openGapsFor($user));
+    }
+
+    /**
+     * A requested risk acceptance: business line as subtitle; the approve /
+     * reject dialog only for who may decide it (RiskAcceptanceVoter) — the
+     * fallback recipient without that level just opens the risk.
+     *
+     * @param array<string, mixed> $item
+     * @return array<string, mixed>
+     */
+    private function acceptanceItem(array $item): array
+    {
+        $risk = isset($item['acceptance_risk_id']) ? $this->entityManager->find(Risk::class, $item['acceptance_risk_id']) : null;
+        if (!$risk instanceof Risk) {
+            return $item;
+        }
+        $item['subtitle'] = $this->riskSummary->line($risk);
+        if (!$this->authorization->isGranted(RiskAcceptanceVoter::APPROVE, $risk)) {
+            unset($item['acceptance_risk_id']);
+        }
+
+        return $item;
     }
 
     /**

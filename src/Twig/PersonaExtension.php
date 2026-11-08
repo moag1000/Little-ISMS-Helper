@@ -19,7 +19,7 @@ use Twig\Attribute\AsTwigFunction;
  * - persona_landing_route(): route the user lands on after login
  * - persona_tours(): tours for the tour menu, own persona first
  * - suggested_tour(): meta of the persona's tour while it is not completed
- * - top_management_unassigned(): an admin's organisation has nobody with the
+ * - top_management_unassigned(): the organisation of an admin or manager (ISB, CISO) has nobody with the
  *   Leitung role (ROLE_TOP_MGMT) — admins no longer inherit it, so approvals
  *   reserved for top management would wait for nobody
  */
@@ -73,7 +73,8 @@ final readonly class PersonaExtension
     public function topManagementUnassigned(): bool
     {
         $user = $this->security->getUser();
-        if (!$user instanceof User || !$this->security->isGranted('ROLE_ADMIN')) {
+        // Admins assign the role; ISB and CISO (manager scope) prepare the board's decisions and are told too.
+        if (!$user instanceof User || !$this->security->isGranted('ROLE_MANAGER')) {
             return false;
         }
         $tenant = $user->getTenant();

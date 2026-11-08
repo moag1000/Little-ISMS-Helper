@@ -398,7 +398,8 @@
         {# Canonical bulk-action-bar (export + delete). Tag-bulk lives in the
            polymorphic tag-bar above (entity_class: Control). #}
         {% include '_components/_bulk_action_bar.html.twig' with {
-            actions: ['applicable_change', 'review', 'export']
+            actions: ['applicable_change', 'review', 'export'],
+            reviewByOwner: true
         } %}
     {% endblock %}
 {% endembed %}

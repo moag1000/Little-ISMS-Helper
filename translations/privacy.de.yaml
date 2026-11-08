@@ -1,4 +1,13 @@
 privacy:
+    data_retention:
+        overview:
+            title: 'Anstehende Löschungen'
+            subtitle: 'Was die wöchentliche Löschung nach Aufbewahrungsfrist als Nächstes entfernt (DSGVO Art. 5 Abs. 1 e). Wer einen Datensatz behalten will, ändert ihn oder die Richtlinie vor dem Termin.'
+            change_policy: 'Richtlinie ändern'
+            open_list: 'Liste öffnen'
+            upcoming: '%count% am %date%'
+            col:
+                next_deletion: 'Nächste Löschung'
     breadcrumb:
         privacy: Datenschutz
         data_breaches: Datenschutzverletzungen

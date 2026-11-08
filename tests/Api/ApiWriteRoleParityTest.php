@@ -103,11 +103,7 @@ final class ApiWriteRoleParityTest extends TestCase
 
         $expected = [];
         foreach ($forms as [$controller, $method]) {
-            foreach ((new ReflectionMethod($controller, $method))->getAttributes(IsGranted::class) as $attribute) {
-                $required = $attribute->newInstance()->attribute;
-                if (!is_string($required) || in_array($required, self::RECORD_ATTRIBUTES, true)) {
-                    continue;
-                }
+            foreach (self::formAttributes($controller, $method) as $required) {
                 $expected[] = $required === IsmsSteeringVoter::EDIT ? IsmsSteeringVoter::STEERING_ROLES : [$required];
             }
         }
@@ -121,6 +117,113 @@ final class ApiWriteRoleParityTest extends TestCase
         foreach ($expected as $roles) {
             self::assertSame($roles, $actual, sprintf('%s: the form demands %s, the API %s.', $class, json_encode($roles), json_encode($actual)));
         }
+    }
+
+    /**
+     * Backbone resources decided by their own entity voter on the API
+     * (`is_granted('edit', object)`): the form must not demand more than that
+     * same record decision — otherwise the API would let through what the form stops.
+     *
+     * @var array<class-string, list<array{class-string, string}>>
+     */
+    private const array VOTER_FORMS = [
+        Entity\Asset::class => [[Controller\AssetController::class, 'new'], [Controller\AssetController::class, 'edit']],
+        Entity\Risk::class => [[Controller\RiskController::class, 'new'], [Controller\RiskController::class, 'edit']],
+        Entity\Incident::class => [[Controller\IncidentController::class, 'new'], [Controller\IncidentController::class, 'edit']],
+        Entity\Control::class => [[Controller\StatementOfApplicabilityController::class, 'edit']],
+    ];
+
+    /** S6: every writable resource is named in one of the two maps. */
+    #[Test]
+    public function everyWritableResourceIsCompared(): void
+    {
+        foreach ($this->writableResources() as $class) {
+            self::assertTrue(
+                array_key_exists($class, self::FORMS) || array_key_exists($class, self::VOTER_FORMS),
+                sprintf('%s is writable over the API — name its form in %s::FORMS or ::VOTER_FORMS.', $class, self::class),
+            );
+        }
+    }
+
+    /** @return iterable<string, array{class-string}> */
+    public static function voterResources(): iterable
+    {
+        foreach (array_keys(self::VOTER_FORMS) as $class) {
+            yield (new ReflectionClass($class))->getShortName() => [$class];
+        }
+    }
+
+    /** @param class-string $class */
+    #[Test]
+    #[DataProvider('voterResources')]
+    public function voterResourcesDemandNoMoreInTheFormThanOnTheApi(string $class): void
+    {
+        foreach (self::VOTER_FORMS[$class] as [$controller, $method]) {
+            self::assertSame(
+                [],
+                self::formAttributes($controller, $method),
+                sprintf('%s::%s demands more than the record voter the API uses for %s — add the role to the API operations.', $controller, $method, $class),
+            );
+        }
+        foreach ((new ReflectionClass($class))->getAttributes(ApiResource::class)[0]->newInstance()->getOperations() ?? [] as $operation) {
+            if ($operation instanceof \ApiPlatform\Metadata\Put || $operation instanceof \ApiPlatform\Metadata\Patch) {
+                self::assertStringContainsString("is_granted('edit', object)", (string) $operation->getSecurity(), $class . ': the API edits through the record voter of the form.');
+            }
+        }
+    }
+
+    /**
+     * What a form action demands beyond the record itself: #[IsGranted] on the
+     * action and on its controller class, and literal denyAccessUnlessGranted()
+     * calls in the action body (S6 — the method attribute alone missed both).
+     *
+     * @param class-string $controller
+     * @return list<string>
+     */
+    private static function formAttributes(string $controller, string $method): array
+    {
+        $reflection = new ReflectionMethod($controller, $method);
+        $attributes = [
+            ...(new ReflectionClass($controller))->getAttributes(IsGranted::class),
+            ...$reflection->getAttributes(IsGranted::class),
+        ];
+        $required = [];
+        foreach ($attributes as $attribute) {
+            $required[] = $attribute->newInstance()->attribute;
+        }
+        $source = implode('', array_slice(
+            file((string) $reflection->getFileName()) ?: [],
+            $reflection->getStartLine() - 1,
+            $reflection->getEndLine() - $reflection->getStartLine() + 1,
+        ));
+        preg_match_all("/denyAccessUnlessGranted\\(\\s*'([A-Za-z_]+)'/", $source, $calls);
+        $required = [...$required, ...$calls[1]];
+
+        return array_values(array_unique(array_filter(
+            $required,
+            static fn (mixed $r): bool => is_string($r) && !in_array($r, self::RECORD_ATTRIBUTES, true),
+        )));
+    }
+
+    /** @return list<class-string> */
+    private function writableResources(): array
+    {
+        $classes = [];
+        foreach (glob(dirname(__DIR__, 2) . '/src/Entity/*.php') ?: [] as $file) {
+            $class = 'App\\Entity\\' . basename($file, '.php');
+            if (!class_exists($class)) {
+                continue;
+            }
+            $attributes = (new ReflectionClass($class))->getAttributes(ApiResource::class);
+            foreach ($attributes === [] ? [] : $attributes[0]->newInstance()->getOperations() ?? [] as $operation) {
+                if (!$operation instanceof Get && !$operation instanceof GetCollection) {
+                    $classes[] = $class;
+                    break;
+                }
+            }
+        }
+
+        return $classes;
     }
 
     /** @return list<class-string> */

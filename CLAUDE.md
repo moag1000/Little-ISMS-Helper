@@ -267,6 +267,9 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
   inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.
+  Who is reminded may act there: `RecordResponsibleVoter` (`RECORD_RESPONSIBLE`), actions take
+  `#[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'x')]` ("role OR
+  responsible"); `DeadlineLinkReachabilityTest` fails when a source's link shuts out who it reminds.
 - `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
   `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
   My Day and reminder mails read only from these; a new norm = new sources. A duty that is one date field of one
@@ -788,6 +791,9 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Sensitive data excluded from audit logs
+- [ ] Non-UI paths (REST, MCP, restore, exports, jobs) are covered by contract tests that discover every
+      resource/tool themselves (`tests/Contract/`, list in `docs/security/NON_UI_CONTRACTS.md`); a route that reads
+      a job id carries `#[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]` (Gate 90).
 - [ ] Bulk operations use `AuditLogger::logBulk()` (1 batch-entry +
       N per-entity-entries, returns UUIDv4 batch_id) — never bypass
       Doctrine lifecycle via raw `executeStatement()` without explicit

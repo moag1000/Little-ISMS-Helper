@@ -294,15 +294,18 @@ dpo:
         dora_obligation: 'DORA-Verpflichtung'
         dora_obligated: 'Verpflichtet'
         dora_roi_link: 'RoI öffnen'
+    open_dsrs_all: 'Alle %count% offenen Anfragen'
     section:
         open_breaches: 'Offene Datenpannen (Art. 33 DSGVO)'
         dpias_in_progress: 'Datenschutz-Folgenabschätzungen in Bearbeitung (Art. 35 DSGVO)'
         activities_needing_dpia: 'Verarbeitungsverfahren ohne DSFA'
         quick_actions: 'Schnellzugriff'
         dora_status: 'DORA-Verpflichtungsstatus'
+        open_dsrs: 'Offene Betroffenenanfragen (Art. 12 Abs. 3 DSGVO)'
         pending_approvals: 'Ausstehende Freigaben'
         lifecycle_stuck: 'Überfällige Lifecycles'
     empty:
+        no_dsrs_title: 'Keine offenen Betroffenenanfragen.'
         no_breaches_title: 'Keine offenen Datenpannen'
         no_breaches_text: 'Aktuell sind keine offenen Datenpannen zu bearbeiten.'
         no_dpias_title: 'Keine DSFAs in Bearbeitung'

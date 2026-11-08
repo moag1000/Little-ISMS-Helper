@@ -101,8 +101,10 @@
 {# Detail skeleton (UI wave E): status band → anchor bar → links → sections → comments #}
 {% set _impl = control.implementationStatus %}
 {% set _status %}{% if not control.applicable %}{{ pill.render('soa.status.not_applicable'|trans({}, 'soa'), 'neutral', {size: 'sm'}) }}{% elseif _impl in ['implemented', 'verified'] %}{{ pill.render('soa.status.implemented'|trans({}, 'soa'), 'success', {size: 'sm'}) }}{% elseif _impl in ['in_progress', 'partial', 'planned'] %}{{ pill.render('soa.status.in_progress'|trans({}, 'soa'), 'warning', {size: 'sm'}) }}{% elseif _impl == 'not_started' %}{{ pill.render('soa.status.not_started'|trans({}, 'soa'), 'danger', {size: 'sm'}) }}{% else %}{{ pill.render('soa.value.na'|trans({}, 'soa'), 'neutral', {size: 'sm'}) }}{% endif %}{% endset %}
+{% set _actions %}{% if control.applicable is not same as(false) %}{% include '_components/_review_confirm_button.html.twig' with { entity: control, route: 'app_soa_review_confirm' } only %}{% endif %}{% endset %}
 {{ _fa_status_band.render({
     status: _status,
+    actions: _actions,
     facts: [
         { label: 'show.status.owner'|trans({}, 'messages'), value: control.effectiveResponsiblePerson },
         { label: 'show.status.target_date'|trans({}, 'messages'), value: control.targetDate ? control.targetDate|fa_date : null },

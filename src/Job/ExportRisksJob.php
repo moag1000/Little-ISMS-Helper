@@ -69,7 +69,7 @@ final class ExportRisksJob implements AsyncJobInterface
         // null tenant = explicit instance-wide export (SUPER_ADMIN without tenant only)
         $risks = $tenant !== null
             ? $this->riskService->getRisksForTenant($tenant)
-            : $this->riskRepository->findBy([]);
+            : $this->riskRepository->findBy([]); // @phpstan-ignore tenant.unscopedBackgroundQuery (null tenant only for a SUPER_ADMIN without organisation, set by JobTenantScope)
 
         if (is_string($level) && $level !== '') {
             $risks = array_filter(

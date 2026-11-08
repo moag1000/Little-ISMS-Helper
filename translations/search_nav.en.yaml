@@ -213,3 +213,27 @@ search_nav:
     register_interfaces:
         label: 'Scope interfaces'
         description: 'Dependencies on other organisations, ISO 27001 4.3 c'
+    app_management_review_index:
+        label: 'Management reviews'
+        description: 'Top management review of the ISMS, ISO 27001 9.3'
+    app_processing_activity_index:
+        label: 'Records of processing activities'
+        description: 'RoPA under GDPR Art. 30'
+    app_dpia_index:
+        label: 'Data protection impact assessments'
+        description: 'DPIA under GDPR Art. 35'
+    app_data_breach_index:
+        label: 'Data breaches'
+        description: 'Personal data breaches, GDPR Art. 33/34'
+    app_data_subject_request_index:
+        label: 'Data subject requests'
+        description: 'Requests of data subjects, GDPR Art. 12–22'
+    app_data_retention_overview:
+        label: 'Upcoming deletions'
+        description: 'What the retention sweep removes next, GDPR Art. 5(1)(e)'
+    app_audit_program_index:
+        label: 'Audit programmes'
+        description: 'Multi-year planning of internal audits, ISO 27001 9.2.2'
+    app_audit_finding_index:
+        label: 'Audit findings'
+        description: 'Findings and nonconformities from audits, ISO 27001 10.2'

@@ -70,7 +70,7 @@
         <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
             <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
         </button>
-        {% if canEdit and is_granted('ROLE_USER') %}
+        {% if canEdit and is_granted('edit', risk) %}
             <a href="{{ path('app_risk_edit', {id: risk.id}) }}" data-turbo-frame="fa-form-modal"
                class="fa-cyber-btn fa-cyber-btn--md">
                 <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
