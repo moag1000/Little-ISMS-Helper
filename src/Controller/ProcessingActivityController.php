@@ -36,6 +36,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Util\CsvSanitizer;
@@ -277,6 +278,7 @@ class ProcessingActivityController extends AbstractController
      * Export VVT as PDF (Art. 30 documentation)
      */
     #[Route('/processing-activity/export/pdf', name: 'app_processing_activity_export_pdf', methods: ['GET'])]
+    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
     public function exportPdf(Request $request): Response
     {
         $exportData = $this->processingActivityService->generateVVTExport();
@@ -311,6 +313,7 @@ class ProcessingActivityController extends AbstractController
      * polling progress page.
      */
     #[Route('/processing-activity/export/csv/dispatch', name: 'app_processing_activity_export_csv_dispatch', methods: ['POST'])]
+    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
     #[IsCsrfTokenValid('processing_activity_export_csv_dispatch')]
     public function exportCsvDispatch(
         Request $request,
@@ -337,6 +340,7 @@ class ProcessingActivityController extends AbstractController
      * and removes it from disk afterwards.
      */
     #[Route('/processing-activity/export/csv/download/{id}', name: 'app_processing_activity_export_csv_download', methods: ['GET'])]
+    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
     #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportCsvDownload(
         string $id,
@@ -379,29 +383,15 @@ class ProcessingActivityController extends AbstractController
     }
 
     #[Route('/processing-activity/export/csv', name: 'app_processing_activity_export_csv', methods: ['GET'])]
+    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
     public function exportCsv(): Response
     {
         $exportData = $this->processingActivityService->generateVVTExport();
 
         $csv = [];
         $csv[] = [
-            'ID',
-            'Name',
-            'Description',
-            'Purposes',
-            'Data Subjects',
-            'Personal Data Categories',
-            'Special Categories',
-            'Recipients',
-            'Third Country Transfer',
-            'Retention Period',
-            'Legal Basis',
-            'TOMs',
-            'Status',
-            'Risk Level',
-            'DPIA Required',
-            'DPIA Completed',
-            'Completeness %',
+            'ID', 'Name', 'Description', 'Purposes', 'Data Subjects', 'Personal Data Categories', 'Special Categories',
+            'Recipients', 'Third Country Transfer', 'Retention Period', 'Legal Basis', 'TOMs', 'Status', 'Risk Level', 'DPIA Required', 'DPIA Completed', 'Completeness %',
         ];
 
         foreach ($exportData['processing_activities'] as $pa) {
@@ -580,7 +570,7 @@ class ProcessingActivityController extends AbstractController
      * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
     #[Route('/processing-activity/bulk-export', name: 'app_processing_activity_bulk_export', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);

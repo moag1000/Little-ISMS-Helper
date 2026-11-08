@@ -9,6 +9,10 @@ use App\Entity\Tenant;
 use App\Entity\Training;
 use App\Entity\User;
 use App\Entity\Asset;
+use App\Entity\ISMSContext;
+use App\Entity\ISMSObjective;
+use App\Entity\ThreatIntelligence;
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Security\Voter\ApiTenantVoter;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -102,8 +106,9 @@ class ApiTenantVoterTest extends TestCase
         $this->assertSame(-1, $vote); // ACCESS_DENIED
     }
 
+    /** Training's form needs only ROLE_USER, so its API edit does too. */
     #[Test]
-    public function grantsEditForSameTenant(): void
+    public function grantsEditForSameTenantWhenTheFormNeedsNoMoreThanRoleUser(): void
     {
         $tenant = $this->createTenant(1);
         $user = $this->createUser($tenant);
@@ -241,5 +246,57 @@ class ApiTenantVoterTest extends TestCase
             ['UNKNOWN_ATTRIBUTE']
         );
         $this->assertSame(0, $vote); // ABSTAIN
+    }
+
+    /**
+     * S4: the UI demands ISMS_STEERING_EDIT for context and objectives and
+     * ROLE_MANAGER for threat intelligence — the API must not allow more.
+     *
+     * @return iterable<string, array{object, string}>
+     */
+    public static function restrictedWrites(): iterable
+    {
+        foreach (['API_EDIT', 'API_CREATE'] as $attribute) {
+            yield 'context ' . $attribute => [new ISMSContext(), $attribute];
+            yield 'objective ' . $attribute => [new ISMSObjective(), $attribute];
+            yield 'threat intelligence ' . $attribute => [new ThreatIntelligence(), $attribute];
+        }
+    }
+
+    #[Test]
+    #[DataProvider('restrictedWrites')]
+    public function plainUserCannotWriteWhatTheFormReservesForSteeringOrManagers(object $record, string $attribute): void
+    {
+        $tenant = $this->createTenant(1);
+        $record->setTenant($tenant);
+
+        $vote = $this->voter->vote($this->createToken($this->createUser($tenant)), $record, [$attribute]);
+        self::assertSame(-1, $vote);
+    }
+
+    /** A POST body has no tenant yet; the role still decides. */
+    #[Test]
+    public function plainUserCannotCreateTenantlessRestrictedRecords(): void
+    {
+        $token = $this->createToken($this->createUser($this->createTenant(1)));
+        foreach ([new ISMSContext(), new ISMSObjective(), new ThreatIntelligence()] as $record) {
+            self::assertSame(-1, $this->voter->vote($token, $record, ['API_CREATE']), $record::class);
+        }
+        self::assertSame(1, $this->voter->vote($token, new Training(), ['API_CREATE']));
+    }
+
+    #[Test]
+    public function isbMaySteerAndManagerMayRecordThreats(): void
+    {
+        $tenant = $this->createTenant(1);
+        $context = new ISMSContext();
+        $context->setTenant($tenant);
+        $threat = new ThreatIntelligence();
+        $threat->setTenant($tenant);
+
+        self::assertSame(1, $this->voter->vote($this->createToken($this->createUser($tenant, ['ROLE_ISB'])), $context, ['API_EDIT']));
+        self::assertSame(-1, $this->voter->vote($this->createToken($this->createUser($tenant, ['ROLE_MANAGER'])), $context, ['API_EDIT']));
+        self::assertSame(1, $this->voter->vote($this->createToken($this->createUser($tenant, ['ROLE_MANAGER'])), $threat, ['API_EDIT']));
+        self::assertSame(1, $this->voter->vote($this->createToken($this->createUser($tenant)), $context, ['API_VIEW']));
     }
 }

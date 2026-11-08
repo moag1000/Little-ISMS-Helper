@@ -102,6 +102,12 @@ class MyController extends AbstractController
 
 ### Verfügbare Methoden des AuditLogger
 
+Konsolenbefehle und Cron-Läufe haben keinen TenantContext; ihre Einträge würden
+ohne Mandant (`tenant = null`) geschrieben. Dort den Mandanten explizit setzen:
+`$auditLogger->withTenant($tenant, fn () => $auditLogger->logBulk(...))`
+(Retention-Sweep, Benachrichtigungs-Digest, versendete geplante Berichte).
+HTTP-Aufrufer brauchen das nicht.
+
 ```php
 // Erstellung protokollieren
 $auditLogger->logCreate(

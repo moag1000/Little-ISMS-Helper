@@ -14,6 +14,7 @@ use App\Enum\SuggestionOrigin;
 use App\Exception\BusinessRule\BusinessRuleException;
 use App\Job\RefreshSuggestionsJob;
 use App\Repository\SuggestionRepository;
+use App\Service\AuditLogger;
 use App\Service\Job\AsyncJobDispatcher;
 use App\Service\Job\JobTenantScope;
 use App\Security\Voter\ControlVoter;
@@ -55,6 +56,7 @@ final class SuggestionController extends AbstractController
         private readonly AsyncJobDispatcher $asyncJobDispatcher,
         private readonly JobTenantScope $jobTenantScope,
         private readonly TranslatorInterface $translator,
+        private readonly AuditLogger $auditLogger,
     ) {
     }
 
@@ -174,6 +176,7 @@ final class SuggestionController extends AbstractController
             $user = $this->user();
             $changed = 0;
             $rejected = [];
+            $perEntity = [];
             foreach (array_slice(array_map('intval', (array) ($data['ids'] ?? [])), 0, 500) as $id) {
                 $s = $this->repository->find($id);
                 $kind = $s instanceof Suggestion ? $this->queue->kind($s->getKind()) : null;
@@ -183,11 +186,34 @@ final class SuggestionController extends AbstractController
                     continue;
                 }
                 try {
+                    $kindKey = $s->getKind();
                     $accept ? $this->queue->accept($s, $user) : $this->queue->reject($s, $user, null);
                     $changed++;
+                    $perEntity[] = [
+                        'entity_id' => $id,
+                        'action' => 'update',
+                        'old_values' => ['status' => 'pending'],
+                        'new_values' => ['status' => $accept ? 'accepted' : 'rejected', 'kind' => $kindKey],
+                    ];
                 } catch (StaleSuggestionException|BusinessRuleException) {
                     $rejected[] = $id;
                 }
+            }
+
+            if ($perEntity !== []) {
+                // ISO 27001 Cl. 7.5.3: one batch entry + one row per decided suggestion.
+                $this->auditLogger->logBulk(
+                    'suggestion.bulk_decision',
+                    'Suggestion',
+                    [
+                        'decision' => $accept ? 'accept' : 'reject',
+                        'row_count_total' => count($data['ids'] ?? []),
+                        'row_count_success' => $changed,
+                        'row_count_skipped' => count($rejected),
+                        'user_id' => $user->getId(),
+                    ],
+                    $perEntity,
+                );
             }
 
             return new JsonResponse(['ok' => true, 'changed' => $changed, 'rejected' => $rejected]);

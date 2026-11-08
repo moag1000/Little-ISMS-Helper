@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ModuleField;
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
@@ -807,21 +808,21 @@ class Control
      * ISO 27017 cloud-control reference code.
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read', 'control:write']), ModuleField('cloud_security')]
     private ?string $cloudControlReference = null;
 
     /**
      * ISO 27018 cloud-privacy reference code.
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read', 'control:write']), ModuleField('cloud_security')]
     private ?string $cloudPrivacyReference = null;
 
     /**
      * ISO 27701 PIMS reference code.
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read', 'control:write']), ModuleField('cloud_security')]
     private ?string $pimsReference = null;
 
     /**
@@ -829,7 +830,7 @@ class Control
      * Values: customer | provider | shared
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read', 'control:write']), ModuleField('cloud_security')]
     private ?string $customerOrProviderResponsibility = null;
 
     public function getEffectiveness(): ?string

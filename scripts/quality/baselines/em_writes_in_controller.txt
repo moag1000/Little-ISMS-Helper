@@ -288,7 +288,7 @@ src/Controller/PersonController.php:168
 src/Controller/PlanningAdminController.php:168
 src/Controller/PlanningSettingsController.php:115
 src/Controller/PlanningSettingsController.php:117
-src/Controller/ProcessingActivityController.php:560
+src/Controller/ProcessingActivityController.php:550
 src/Controller/ProfileController.php:112
 src/Controller/ProfileController.php:184
 src/Controller/ProfileController.php:199

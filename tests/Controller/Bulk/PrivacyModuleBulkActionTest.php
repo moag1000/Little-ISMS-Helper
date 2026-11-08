@@ -172,7 +172,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     #[Test]
     public function dpiaExportReturnsCsv(): void
     {
-        $this->client->loginUser($this->userRole);
+        $this->client->loginUser($this->dpoRole);
         $this->client->request('POST', '/en/dpia/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['ids' => [$this->dpia->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
@@ -182,7 +182,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     #[Test]
     public function dpiaExportSkipsCrossTenant(): void
     {
-        $this->client->loginUser($this->userRole);
+        $this->client->loginUser($this->managerRole);
         $this->client->request('POST', '/en/dpia/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['ids' => [$this->otherDpia->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -201,7 +201,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     #[Test]
     public function processingActivityExportReturnsCsv(): void
     {
-        $this->client->loginUser($this->userRole);
+        $this->client->loginUser($this->dpoRole);
         $this->client->request('POST', '/en/processing-activity/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['ids' => [$this->pa->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
@@ -211,10 +211,22 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     #[Test]
     public function processingActivityExportSkipsCrossTenant(): void
     {
-        $this->client->loginUser($this->userRole);
+        $this->client->loginUser($this->managerRole);
         $this->client->request('POST', '/en/processing-activity/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['ids' => [$this->otherPa->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    /** S5 (2026-11): exports of personal-data registers need the DPO or a manager, like the single exports. */
+    #[Test]
+    public function privacyExportsRefuseAPlainUser(): void
+    {
+        $this->client->loginUser($this->userRole);
+        foreach (['/en/dpia/bulk-export' => $this->dpia, '/en/processing-activity/bulk-export' => $this->pa] as $url => $record) {
+            $this->client->request('POST', $url, [], [], ['CONTENT_TYPE' => 'application/json'],
+                json_encode(['ids' => [$record->getId()], '_token' => $this->getBulkCsrfToken()]));
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $url);
+        }
     }
 
     // ── ProcessingActivity bulk-status-change (CC-5) ─────────────────────────
@@ -283,7 +295,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     #[Test]
     public function processingActivityExportRejectsMissingCsrfToken(): void
     {
-        $this->client->loginUser($this->userRole);
+        $this->client->loginUser($this->dpoRole);
         $this->client->request('POST', '/en/processing-activity/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['ids' => [$this->pa->getId()]]));
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);

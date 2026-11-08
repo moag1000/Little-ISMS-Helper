@@ -37,6 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -568,6 +569,7 @@ class DPIAController extends AbstractController
      * Export DPIA as PDF (Art. 35 documentation)
      */
     #[Route('/dpia/{id}/export/pdf', name: 'app_dpia_export_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
     public function exportPdf(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
@@ -585,11 +587,7 @@ class DPIAController extends AbstractController
             'version' => $version,
         ]);
 
-        $filename = sprintf(
-            'DPIA-%s-%s.pdf',
-            $dataProtectionImpactAssessment->getReferenceNumber(),
-            new DateTime()->format('Y-m-d')
-        );
+        $filename = sprintf('DPIA-%s-%s.pdf', $dataProtectionImpactAssessment->getReferenceNumber(), new DateTime()->format('Y-m-d'));
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
@@ -632,7 +630,7 @@ class DPIAController extends AbstractController
      * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
     #[Route('/dpia/bulk-export', name: 'app_dpia_bulk_export', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);

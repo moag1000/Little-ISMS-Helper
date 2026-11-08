@@ -88,10 +88,20 @@ final class ControlRequirementLinkKind extends AbstractSuggestionKind
         if (!$control instanceof Control || !$requirement instanceof ComplianceRequirement || $control->getTenant() !== $suggestion->getTenant()) {
             throw new StaleSuggestionException('record_gone');
         }
+        $this->link($requirement, $control);
+
+        return $control;
+    }
+
+    /**
+     * The one write path "control covers requirement" (this kind and
+     * AiRequirementMappingKind): a link between the tenant's control and the
+     * requirement, no mapping row of the global catalogue.
+     */
+    public function link(ComplianceRequirement $requirement, Control $control): void
+    {
         if (!$requirement->getMappedControls()->contains($control)) {
             $requirement->addMappedControl($control);
         }
-
-        return $control;
     }
 }

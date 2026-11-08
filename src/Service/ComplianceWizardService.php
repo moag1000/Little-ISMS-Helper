@@ -10,6 +10,7 @@ use App\Service\ComplianceWizard\CategoryProvider\BsiFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\CategoryProvider\EuRegulatoryFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\CategoryProvider\IsoFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\CategoryProvider\OtherFrameworkCategoryProvider;
+use App\Service\ComplianceWizard\ClauseCoverageCheck;
 use App\Service\ComplianceWizard\CoverageCheckService;
 use App\Service\ComplianceWizard\EntityPresenceChecker;
 use App\Service\ComplianceWizard\DocumentReviewCheck;
@@ -640,8 +641,14 @@ final class ComplianceWizardService implements WizardCheckSource
             'dpia_coverage' => $this->coverageCheckService->checkDpiaCoverage($check, $tenant),
             'entity_presence' => $this->entityPresenceChecker->check($check, $tenant),
             'policy_wizard' => $this->coverageCheckService->dispatchPolicyWizardCheck($check, $tenant),
-            'register_coverage', 'management_decision', 'training_participation', 'reporting_duty'
+            'register_coverage', 'management_decision', 'training_participation', 'reporting_duty',
+            'deadline_adherence', 'record_completeness'
                 => $this->recordCheck?->check($check, $tenant),
+            'clause_coverage' => (new ClauseCoverageCheck())->check(
+                $check,
+                fn (array $sub): ?array => ($sub['type'] ?? 'manual') === 'clause_coverage' ? null : $this->dispatchCheck($sub, $tenant),
+                fn (string $module): bool => $tenant === null || $this->moduleConfigurationService->isModuleActiveForTenant($module, $tenant),
+            ),
             default => null,
         };
     }

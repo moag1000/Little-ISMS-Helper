@@ -155,6 +155,7 @@ final class ComplianceInheritanceController extends AbstractController
                 $logs,
                 $user,
                 (string) $request->request->get('comment', ''),
+                $framework,
             );
             $this->addFlash('success', sprintf(
                 'Bulk bestätigt: %d übernommen, %d übersprungen.',

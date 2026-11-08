@@ -17,9 +17,10 @@ Einstieg: **ISMS > Register** (`/register`), über ⌘K „Register“ oder von 
 | Rechtliche und vertragliche Anforderungen | ISO 27001 4.2 c, A.5.31 · NIS-2 Art. 21 | Compliance-Manager | aktive verpflichtende Frameworks, Anforderungen der interessierten Parteien, Kontext-Freitexte |
 | Schnittstellen des Geltungsbereichs | ISO 27001 4.3 c | ISB | kritische Lieferanten |
 | Rollen und Zuständigkeiten | ISO 27001 5.3 · NIS-2 Art. 20 | ISB | Inhaber der Persona-Rollen (CISO, ISB, DSB, …), Datenschutzbeauftragter der Organisation |
-| Chancen | ISO 27001 6.1.1 | Risikomanager | Chancen aus dem letzten Management-Review |
+| Chancen | ISO 27001 6.1.1 | Risikomanager | — (von Hand) |
 | Kompetenzen | ISO 27001 7.2 · NIS-2 Art. 20 (2) | ISB | Standard-Kompetenzen je Persona-Rolle im Rollenregister |
 | Kommunikation | ISO 27001 7.4 | ISB | — (Kommunikationsplan der interessierten Parteien wird darunter angezeigt) |
+| Verbesserungen | ISO 27001 10.1 · 9.3.2 g | ISB | Verbesserungsmöglichkeiten der letzten Managementbewertung, Audit-Feststellungen „Verbesserungspotenzial“, Erkenntnisse (Lessons Learned) aus Vorfällen und Notfallübungen der letzten 12 Monate |
 
 Register mit eigenem Fachmodul (interessierte Parteien, Risiken, SoA, Ziele, Schulungen, Dokumente,
 Assets, Standorte, Prozesse, Lieferanten, VVT) stehen in derselben Übersicht mit Norm, pflegender
@@ -37,11 +38,17 @@ Sammelmail) bei der pflegenden Persona: rechtliche Anforderungen beim Compliance
 beim Risikomanager, alle übrigen beim ISB. Was auf der Registerseite übernommen wurde, verschwindet
 beim nächsten Lauf aus der Queue und umgekehrt.
 
+Verliert eine Person ihre Persona-Rolle (Rolle entzogen, Konto deaktiviert), schlägt die Queue für
+den übernommenen Rolleneintrag **„Inhaber prüfen“** vor (ISO 27001 5.3): Übernehmen archiviert den
+Eintrag, wer die Rolle jetzt hat, kommt als eigener Übernahme-Vorschlag.
+
 ## Kompetenzlücken
 
 Eine Kompetenz kann mit Schulungen verknüpft werden, eine Rolle mit Kompetenzen. Hat der
 Rolleninhaber eine verknüpfte Schulung abgeschlossen oder die Kompetenz in seinem Profil, gilt sie
 als belegt; sonst erscheint sie als Lücke in der Rolle, in der Rollenliste und in der Übersicht.
+Jede Rolle mit offener Lücke steht außerdem in „Mein Tag“ und der Sammelmail des Rolleninhabers
+(Fristenquelle `CompetenceGapSource`, ohne Datum, solange die Lücke offen ist); der ISB wird informiert.
 
 ## Geltungsbereich (4.3)
 
@@ -61,7 +68,7 @@ angenommenen Status und keinen erfundenen Versionsverlauf.
 ## Prüfung
 
 Jeder Eintrag hat einen Verantwortlichen (Benutzer oder Person, dazu Vertretungen) und ein nächstes
-Prüfdatum: zwölf Monate, beim Kommunikationsplan drei. Die Prüfung ist eine Fristenquelle
+Prüfdatum: zwölf Monate, beim Kommunikationsplan und bei Verbesserungen drei. Die Prüfung ist eine Fristenquelle
 (`RegisterReviewSource`, 30 Tage Vorlauf) für „Mein Tag“ und die Sammelmail: zuständig ist der
 Verantwortliche, dann die Vertretung, sonst die pflegende Persona. „Geprüft“ setzt das Datum weiter, nicht mehr
 gültige Einträge werden archiviert statt gelöscht (Löschen nur `ROLE_ADMIN`). Änderungen landen im

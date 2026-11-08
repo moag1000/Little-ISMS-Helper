@@ -417,6 +417,22 @@ begründete Ausnahme trägt `// @fulfillment-writer-ok: <Grund>` in der Zeile. K
 
 ---
 
+### quality/check_api_module_fields.py (Gate 89)
+
+**Zweck:** Felder eines optionalen Moduls an einem Datensatz eines anderen Moduls (DORA am
+Vorfall, FAIR am Risiko, KI-Agent am Asset) sind über REST und den Assistenten (MCP) nur
+schreibbar, solange das Modul aktiv ist — wie im Formular, das sie sonst nicht hinzufügt.
+`App\Api\ModuleFieldContextBuilder` ignoriert sie im Request-Body, wenn die Entity-Property
+`#[ModuleField('<modul>')]` trägt. Das Gate prüft: jedes Feld, das ein FormType nur in einem
+`if ($this->isModuleActive('<m>'))`-Block (auch über `$this->addXyzFields($builder)`) hinzufügt
+und das in einer `:write`-Gruppe der Entity steht, trägt `#[ModuleField('<m>')]`; jedes
+`#[ModuleField]` nennt ein Modul aus `config/modules.yaml`. Felder ganz ohne Formular (DORA- und
+FAIR-Spalten am Risiko) sind von Hand markiert. Keine Baseline.
+
+**CI-Integration:** Gate 89 im `code-quality`-Job.
+
+---
+
 ### quality/check_kpi_catalog.py (Gate 74)
 
 **Zweck:** Management-Kennzahlen kommen nur aus dem KPI-Katalog

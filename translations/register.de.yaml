@@ -196,6 +196,23 @@ register:
                 training: Schulung
                 report: Bericht
                 other: Sonstige
+        improvement:
+            title: Verbesserungen
+            purpose: Verbesserungen des ISMS, die geplant und verfolgt werden (ISO 27001 10.1), aus Managementbewertung, Audits und Erkenntnissen aus Vorfällen und Übungen.
+            new: Verbesserung erfassen
+            empty: Keine Verbesserungen vorhanden.
+            field:
+                title: Verbesserung
+                description: Beschreibung und geplante Maßnahme
+                owner: Verantwortlich
+                category: Herkunft
+                rating: Nutzen
+            category:
+                management_review: Managementbewertung
+                audit: Audit
+                incident: Vorfall
+                exercise: Übung
+                other: Sonstige
     field:
         frequency: Rhythmus
         next_date: Nächster Termin
@@ -208,7 +225,7 @@ register:
         owner: Benutzer mit Login; erhält die Erinnerung zur Prüfung.
         owner_person: Nur wenn die Person keinen Login hat.
         deputies: Vertretung bei Abwesenheit.
-        next_review_date: 'Standard: in 12 Monaten, beim Kommunikationsplan in 3 Monaten.'
+        next_review_date: 'Standard: in 12 Monaten, beim Kommunikationsplan und bei Verbesserungen in 3 Monaten.'
     placeholder:
         choose: Bitte wählen
         owner_user: Benutzer wählen
@@ -284,6 +301,9 @@ register:
         interested_party: Interessierte Partei
         supplier: Kritischer Lieferant
         management_review: Letzte Managementbewertung
+        audit_finding: Verbesserungspotenzial aus einem Audit
+        incident: Erkenntnisse aus einem Vorfall
+        exercise: Erkenntnisse aus einer Notfallübung
     persona_role:
         top_management: Oberste Leitung
         ciso: Chief Information Security Officer (CISO)

@@ -71,6 +71,11 @@ implement `App\Service\Planning\Source\SourceAdapter`, which extends
 Example of a recurring review without a planner step: `App\Service\Register\RegisterReviewSource`
 (norm registers, owner → deputies → the register's maintaining persona).
 
+A duty without a date that stays open while a condition holds: `CompetenceGapSource` (ISO 27001
+7.2 — an ISMS role whose holder lacks a required competence; holder acts, ISB informed). The same
+sources answer ISO 27001 8.1 and 9.1 in the compliance wizard (`deadline_adherence`: share of open
+duties not overdue).
+
 **Every date field that carries a duty has a source** (Stand 2026-11-07, P2):
 besides the reviews and approvals there are consent expiry (`consent_expiry`,
 DPO), team validity (`team_validity`, team lead), end of a person's access
@@ -92,6 +97,20 @@ management (policy, risk criteria, SoA, objectives, resources, NIS-2 measures)
 reach the ISB through `StandingApprovalSource` — the board panel reads the same
 list. Multi-tenant user assignments (`UserTenantAssignment.validTo`) get a
 source when that entity goes live.
+
+### Retention sweep: end states only
+
+`RetentionEnforcementService` (Sundays 04:00, `app:enforce-retention --force`)
+deletes a record past its retention period only when it is in an end state
+(`RetentionEnforcementService::END_STATES`): asset `disposed`, risk `closed`,
+incident `closed`, audit finding `closed`, document `archived`/`deleted`,
+processing activity `archived`, workflow instance `approved`/`rejected`/`cancelled`.
+A `retired` asset is kept because `dispose` needs four-eyes approval; `accepted`
+risks stay under periodic review. Expired records that are still active are not
+touched and not transitioned automatically; the run report notes "N overdue for
+retention, still active (not deleted)" so a person decides. The sweep runs per
+tenant with the tenant in every query and writes one `logBulk()` batch per
+tenant and type, stamped with that tenant (`AuditLogger::withTenant()`).
 
 One record belongs to one source at a time: a change request waiting for
 approval to `ChangeApprovalSource`, afterwards to `ChangeRequestAdapter`;

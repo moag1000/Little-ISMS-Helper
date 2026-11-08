@@ -59,7 +59,7 @@ final class IsoFrameworkCategoryProvider
      */
     public function getIso27001Categories(): array
     {
-        return [
+        $categories = [
             // Clause 4: Context of the organization
             'context' => [
                 'name' => 'wizard.iso27001.context',
@@ -106,9 +106,12 @@ final class IsoFrameworkCategoryProvider
                     'isms_established' => [
                         'name' => 'wizard.check.iso_4_4_isms',
                         'description' => 'wizard.check.iso_4_4_isms_desc',
-                        'type' => 'manual',
+                        // 4.4 stands on clauses 4–10: each data check of them at 60 % or more.
+                        'type' => 'clause_coverage',
+                        'min_score' => 60,
                         'priority' => 'critical',
                         'clause' => '4.4',
+                        'route' => 'app_compliance_wizard_index',
                     ],
                 ],
             ],
@@ -284,13 +287,8 @@ final class IsoFrameworkCategoryProvider
                 'weight' => 2,
                 'clause' => '8',
                 'checks' => [
-                    'operational_planning' => [
-                        'name' => 'wizard.check.iso_8_1_planning',
-                        'description' => 'wizard.check.iso_8_1_planning_desc',
-                        'type' => 'manual',
-                        'priority' => 'high',
-                        'clause' => '8.1',
-                    ],
+                    // 8.1: the planned duties the tool knows (deadline sources, duty calendar) are done on time.
+                    'operational_planning' => RecordCheck::deadlines('iso_8_1_planning', [], '8.1'),
                     'risk_assessment_execution' => [
                         'name' => 'wizard.check.iso_8_2_risk_exec',
                         'description' => 'wizard.check.iso_8_2_risk_exec_desc',
@@ -322,13 +320,14 @@ final class IsoFrameworkCategoryProvider
                 'weight' => 1.5,
                 'clause' => '9',
                 'checks' => [
-                    'monitoring_measurement' => [
-                        'name' => 'wizard.check.iso_9_1_monitoring',
-                        'description' => 'wizard.check.iso_9_1_monitoring_desc',
-                        'type' => 'manual',
-                        'priority' => 'high',
-                        'clause' => '9.1',
-                    ],
+                    // 9.1: objectives measured on time (KPI-measured ones always) and control effectiveness tested.
+                    'monitoring_measurement' => RecordCheck::deadlines(
+                        'iso_9_1_monitoring',
+                        ['isms_objective_measurement', 'control_effectiveness'],
+                        '9.1',
+                        'high',
+                        ['kpi_objectives' => true],
+                    ),
                     'internal_audit' => [
                         'name' => 'wizard.check.iso_9_2_audit',
                         'description' => 'wizard.check.iso_9_2_audit_desc',
@@ -372,17 +371,9 @@ final class IsoFrameworkCategoryProvider
                         'clause' => '10.2',
                         'route' => 'app_audit_index',
                     ],
-                    'continual_improvement' => [
-                        'name' => 'wizard.check.iso_10_1_improvement',
-                        'description' => 'wizard.check.iso_10_1_improvement_desc',
-                        // Cl. 10.1 (2022): continual improvement, evidenced by improvement actions.
-                        'type' => 'entity_presence',
-                        'entity' => 'corrective_action',
-                        'module' => 'corrective_actions',
-                        'priority' => 'medium',
-                        'clause' => '10.1',
-                        'route' => 'app_corrective_action_index',
-                    ],
+                    // Cl. 10.1 (2022): improvements tracked in the improvement register; open proposals
+                    // (review items, audit opportunities, lessons learned) count as missing entries.
+                    'continual_improvement' => RecordCheck::register('iso_10_1_improvement', ['improvement'], '10.1', 'medium', ['count_proposals' => true]),
                 ],
             ],
 
@@ -570,6 +561,36 @@ final class IsoFrameworkCategoryProvider
             // Policy-Wizard outputs — 24 ISO 27002 topic policies + 4 cross-cutting
             'policies_topic_coverage' => $this->buildPolicyWizardTopicCategory(),
         ];
+
+        $categories['context']['checks']['isms_established']['checks'] = self::clauseChecks($categories, 'isms_established');
+
+        return $categories;
+    }
+
+    /**
+     * The data checks of clauses 4–10 — what 4.4 "the ISMS is established,
+     * implemented, maintained and continually improved" stands on.
+     *
+     * @param array<string, array<string, mixed>> $categories
+     * @return array<string, array<string, mixed>>
+     */
+    private static function clauseChecks(array $categories, string $except): array
+    {
+        $checks = [];
+        foreach ($categories as $categoryKey => $category) {
+            $clause = (int) explode('.', (string) ($category['clause'] ?? ''))[0];
+            if ($clause < 4 || $clause > 10) {
+                continue;
+            }
+            foreach ((array) ($category['checks'] ?? []) as $checkKey => $check) {
+                if ($checkKey === $except || !is_array($check) || ($check['type'] ?? 'manual') === 'manual') {
+                    continue;
+                }
+                $checks[$categoryKey . '.' . $checkKey] = $check;
+            }
+        }
+
+        return $checks;
     }
 
     /**

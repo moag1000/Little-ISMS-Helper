@@ -57,6 +57,15 @@ suggestions:
                 board_summary: Zusammenfassung für die Leitung (KI)
                 nonconformity_statement: Abweichungstext (KI)
                 questionnaire_evaluation: Fragebogen auswerten (KI)
+                bc_plan_from_bia: BC-Plan aus der BIA (KI)
+                bc_exercise_evaluation: Übungsauswertung (KI)
+                legal_requirement_from_party: Rechtliche Anforderung (KI)
+                requirement_mapping: Maßnahmen zuordnen (KI)
+                vvt_from_supplier: VVT-Eintrag aus AVV (KI)
+                evidence_fit: Passt der Nachweis? (KI)
+                audit_sample: Stichprobe vorschlagen (KI)
+                risk_acceptance_explained: Was bedeutet das für mich? (KI)
+                decision_rationale: Begründung schreiben (KI)
             soa:
                 justification: SoA-Begründung aus Verknüpfungen
     job:
@@ -141,6 +150,7 @@ suggestions:
             role: 'Register: Rolle'
             competence: 'Register: Kompetenz'
             opportunity: 'Register: Chance'
+            improvement: 'Register: Verbesserung'
         compliance:
             inheritance: Erfüllung übernehmen
         ai:
@@ -153,6 +163,15 @@ suggestions:
             board_summary: Zusammenfassung für die Leitung (KI)
             nonconformity_statement: Abweichungstext (KI)
             questionnaire_evaluation: Auswertung Lieferantenfragebogen (KI)
+            bc_plan_from_bia: BC-Plan aus der BIA (KI)
+            bc_exercise_evaluation: Auswertung BC-Übung (KI)
+            legal_requirement_from_party: Rechtliche Anforderung aus interessierter Partei (KI)
+            requirement_mapping: Maßnahmen zu Anforderung zuordnen (KI)
+            vvt_from_supplier: VVT-Eintrag aus Auftragsverarbeiter (KI)
+            evidence_fit: Auditnotiz zum Nachweis (KI)
+            audit_sample: Auditstichprobe (KI)
+            risk_acceptance_explained: Erklärung zur Risikoakzeptanz (KI)
+            decision_rationale: Begründung Leitungsentscheidung (KI)
         soa:
             justification: SoA-Begründung aus Verknüpfungen
     kind_help:
@@ -176,7 +195,8 @@ suggestions:
             scope_interface: Aus kritischen Lieferanten.
             role: Aus den Inhabern der Persona-Rollen.
             competence: Standard-Kompetenzen der Rollen im Rollenregister.
-            opportunity: Aus der letzten Managementbewertung.
+            opportunity: Vorschläge aus der Zeit vor dem Verbesserungsregister.
+            improvement: Aus Managementbewertung, Audit-Verbesserungspotenzial und Erkenntnissen aus Vorfällen und Übungen.
         compliance:
             inheritance: Eine erfüllte Anforderung deckt eine gemappte ab.
         ai:
@@ -189,6 +209,15 @@ suggestions:
             board_summary: Schreibt die Zusammenfassung einer Managementbewertung mit mindestens drei Eingaben (ISO 27001 9.3).
             nonconformity_statement: Macht aus Notizen zu einer Abweichung den Text für den Auditbericht (ISO 19011 6.4.8).
             questionnaire_evaluation: Wertet beantwortete Lieferantenfragebögen aus (ISO 27001 A.5.19–5.22, NIS-2 Art. 21 Abs. 2 d).
+            bc_plan_from_bia: Schreibt Aktivierung, Wiederanlauf und Kommunikation für Prozesse mit BIA ohne BC-Plan (ISO 22301 8.4).
+            bc_exercise_evaluation: Schreibt die leeren Teile der Auswertung einer durchgeführten BC-Übung (ISO 22301 8.5).
+            legal_requirement_from_party: Macht aus dem Freitext einer interessierten Partei einen Eintrag im Register rechtlicher Anforderungen (ISO 27001 4.2 b).
+            requirement_mapping: Ordnet Anforderungen aktiver Frameworks ohne Maßnahme passende eigene Maßnahmen zu. Nur nachts, ohne globale Mappings.
+            vvt_from_supplier: Schreibt den VVT-Entwurf zu Lieferanten mit AVV, die noch keine Verarbeitungstätigkeit haben (DSGVO Art. 30, 28).
+            evidence_fit: Beurteilt, ob die Nachweise zum Ziel der Maßnahme passen, und schreibt eine Auditnotiz als Kommentar (ISO 19011 6.4).
+            audit_sample: Schlägt für geplante und laufende Audits eine Stichprobe aus Maßnahmen und Werten des Umfangs vor (ISO 19011 6.3).
+            risk_acceptance_explained: Erklärt verständlich, was die beantragte Risikoakzeptanz bedeutet. Das Risiko wird nicht akzeptiert (ISO 27005 8.4.4).
+            decision_rationale: Schreibt die Begründung für Entscheidungsvorschläge an die Leitung ohne Text (ISO 27001 9.3.3).
         soa:
             justification: Begründung aus den behandelten Risiken und den Anforderungen anderer Frameworks (ISO 27001 6.1.3 d).
     text:
@@ -210,6 +239,7 @@ suggestions:
             rationale: 'Inhärent %inherent%, Restrisiko %from% → %to%. %basis%'
             no_controls: Keine umgesetzte Maßnahme, Restrisiko gleich inhärentem Risiko.
             controls: 'Umgesetzt: %implemented%. Wirksam: %effective%.'
+            interim: 'Zwischenstand: Die Behandlung ist noch nicht abgeschlossen; nach weiteren umgesetzten Maßnahmen kommt ein neuer Vorschlag.'
         risk_treatment_complete:
             title: 'Behandlung von %risk% abschließen'
             rationale: 'Alle Maßnahmen sind umgesetzt: %controls%.'
@@ -242,6 +272,8 @@ suggestions:
         register:
             title: '%register%: %title% übernehmen'
             rationale: 'Vorgeschlagen aus: %source%. Norm: %norm%.'
+            vacated_title: 'Inhaber prüfen: %title%'
+            vacated_rationale: 'Die Person hat diese Rolle im Benutzerkonto nicht mehr oder ist deaktiviert. Übernehmen archiviert den Eintrag; wer die Rolle jetzt hat, kommt als eigener Vorschlag. Norm: %norm%.'
         inheritance:
             title: '%target% aus %source% übernehmen: %title%'
             rationale: '%source% ist erfüllt, Mapping-Sicherheit %confidence%. Vorschlag %percent% % Erfüllung für %target%.'
@@ -280,6 +312,48 @@ suggestions:
             title: 'Auswertung %questionnaire% von %supplier%'
             rationale: '%answers% von %questions% Fragen beantwortet, %gaps% Lücken. Die Bewertung bleibt bei Ihnen. %reasoning%'
             heading: 'Auswertung %questionnaire% (beantwortet %date%):'
+        ai_bc_plan:
+            title: 'BC-Plan für %process%'
+            rationale: 'Aus der BIA, RTO %rto%, RPO %rpo%. Der Plan entsteht als Entwurf, Verantwortliche und Freigabe bleiben bei Ihnen. %reasoning%'
+            activation: Aktivierungskriterien
+            recovery: Wiederanlauf
+            communication: Kommunikation
+        ai_bc_exercise:
+            title: 'Auswertung der Übung %exercise%'
+            rationale: 'Übung vom %date%. Übernommen werden nur leere Felder, Bewertung und Abschluss bleiben bei Ihnen. %reasoning%'
+            results: Ergebnisse
+            well: Was gut lief
+            lessons: Erkenntnisse
+        ai_legal_req:
+            title: 'Rechtliche Anforderung: %requirement%'
+            rationale: 'Aus den Anforderungen von %party%. Art: %category%, Fundstelle: %reference%. Verantwortlich wird, wer annimmt. %reasoning%'
+        ai_mapping:
+            title: '%requirement% durch %controls% erfüllt'
+            rationale: '„%title%“. Verknüpft werden nur eigene Maßnahmen, das globale Mapping bleibt unverändert. %reasoning%'
+        ai_vvt:
+            title: 'VVT-Entwurf für %supplier%'
+            rationale: 'Betroffene: %subjects%. Datenkategorien: %data%. Der Eintrag entsteht als Entwurf, Rechtsgrundlage und Maßnahmen prüft die Datenschutzbeauftragte. %reasoning%'
+            purpose: Zweck
+            retention: Speicherdauer
+        ai_evidence:
+            title: 'Auditnotiz zu %control%'
+            rationale: '%documents% Nachweise gelesen, Einschätzung: %verdict%. Nur Titel und Beschreibung, nicht der Inhalt. %reasoning%'
+            heading: 'Auditnotiz Nachweis, passt zur Maßnahme: %verdict%.'
+            verdict:
+                'yes': Ja
+                partly: Teilweise
+                'no': Nein
+        ai_sample:
+            title: 'Stichprobe für Audit %audit%'
+            rationale: '%count% von %pool% Datensätzen des Umfangs. Wird den Beobachtungen des Audits angehängt. %reasoning%'
+            heading: 'Stichprobe (KI-Entwurf):'
+        ai_acceptance:
+            title: 'Was die Akzeptanz von „%risk%“ bedeutet'
+            rationale: 'Restrisiko: %level%. Wird als Kommentar am Risiko abgelegt, die Entscheidung läuft über die Freigabe. %reasoning%'
+            heading: 'Erklärung zur Risikoakzeptanz (KI-Entwurf):'
+        ai_decision:
+            title: 'Begründung für %decision%'
+            rationale: '%norm%. Füllt den Vorschlagstext, entschieden wird durch die Leitung. %reasoning%'
         soa_rule:
             rationale: 'Aus %risks% verknüpften Risiken und %requirements% Anforderungen anderer Frameworks.'
             risks: 'Anwendbar, weil das Control diese Risiken behandelt: %risks%.'

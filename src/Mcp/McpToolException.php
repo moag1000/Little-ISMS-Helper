@@ -11,4 +11,14 @@ namespace App\Mcp;
  */
 final class McpToolException extends \RuntimeException
 {
+    public function __construct(string $message = '', public readonly bool $accessDenied = false)
+    {
+        parent::__construct($message);
+    }
+
+    /** The caller's role, token or organisation setting refused the call — audited as `mcp.denied`. */
+    public static function denied(string $message): self
+    {
+        return new self($message, true);
+    }
 }

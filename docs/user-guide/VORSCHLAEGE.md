@@ -32,6 +32,15 @@ annimmt. Jede Entscheidung steht mit Person, Zeit und Begründung im Audit-Log
 | Zusammenfassung für die Leitung (KI) | Sprachmodell, Managementbewertung mit mindestens drei Eingaben (9.3.2) und ohne Zusammenfassung | Zusammenfassung wird eingetragen; Entscheidungen bleiben bei der Leitung (9.3.3) | ISB, CISO |
 | Abweichungstext (KI) | Sprachmodell, offene Haupt- oder Nebenabweichung mit kurzen Notizen | Notizen werden durch den Abweichungstext ersetzt (ISO 19011 6.4.8), Nachweise nur wenn leer | ISB |
 | Auswertung Lieferantenfragebogen (KI) | Sprachmodell, beantworteter Sicherheitsfragebogen (A.5.19–5.22, NIS-2 Art. 21 Abs. 2 d) | Auswertung wird an die Bewertungsergebnisse des Lieferanten angehängt; die Punktzahl bleibt bei Ihnen | ISB, Manager |
+| BC-Plan aus der BIA (KI) | Sprachmodell, Geschäftsprozess mit BIA und ohne BC-Plan (ISO 22301 8.4) | BC-Plan wird als Entwurf angelegt (Aktivierung, Wiederanlauf, Kommunikation; RTO/RPO aus der BIA); Verantwortliche und Freigabe bleiben bei Ihnen | BCM-Beauftragte |
+| Auswertung BC-Übung (KI) | Sprachmodell, durchgeführte Übung mit leerer Auswertung (ISO 22301 8.5) | Leere Felder Ergebnisse, Was gut lief und Erkenntnisse werden gefüllt; Bewertung und Abschluss bleiben bei Ihnen | BCM-Beauftragte |
+| Rechtliche Anforderung (KI) | Sprachmodell, interessierte Partei mit Freitext-Anforderungen ohne Registereintrag (ISO 27001 4.2 b, A.5.31) | Eintrag im Register rechtlicher Anforderungen, mit der Partei verknüpft; wer annimmt, wird Verantwortliche | Compliance-Manager, ISB |
+| Maßnahmen zuordnen (KI) | Sprachmodell, nur nachts: Anforderung eines aktiven Frameworks ohne eigene Maßnahme; das Modell sieht bis zu 40 eigene Maßnahmen | Gewählte eigene Maßnahmen werden der Anforderung zugeordnet (wie „Anforderung zuordnen“); das globale Mapping bleibt unverändert | Compliance-Manager, ISB, Manager |
+| VVT-Eintrag aus AVV (KI) | Sprachmodell, Lieferant mit AVV ohne Verarbeitungstätigkeit (DSGVO Art. 30, 28) | Verarbeitungstätigkeit wird als Entwurf angelegt (Zweck, Betroffene, Datenkategorien, Speicherdauer), Lieferant als Auftragsverarbeiter | DSB |
+| Auditnotiz zum Nachweis (KI) | Sprachmodell, Maßnahme mit Nachweisdokumenten (nur Titel und Beschreibung, ISO 19011 6.4) | Notiz „Passt der Nachweis?“ wird als Kommentar an der Maßnahme abgelegt; Umsetzung und Wirksamkeit bleiben unverändert | ISB, CISO |
+| Auditstichprobe (KI) | Sprachmodell, geplantes oder laufendes Audit ohne Stichprobe (ISO 19011 6.3) | Stichprobe aus Maßnahmen und Werten des Umfangs wird an die Beobachtungen des Audits angehängt | ISB, CISO |
+| Erklärung zur Risikoakzeptanz (KI) | Sprachmodell, beantragte und noch nicht entschiedene Risikoakzeptanz (ISO 27005 8.4.4) | Allgemeinverständliche Erklärung wird als Kommentar am Risiko abgelegt; das Risiko wird nie akzeptiert | Risikomanager, CISO, Risikoeigner |
+| Begründung Leitungsentscheidung (KI) | Sprachmodell, offener Entscheidungsvorschlag ohne Vorschlagstext (ISO 27001 9.3.3) | Vorschlagstext wird gefüllt, solange er leer ist; Billigen oder Ablehnen bleibt bei der Leitung | ISB, CISO |
 
 Neben den Rollen der Tabelle entscheidet immer auch, wer für den Datensatz zuständig ist
 (Risikoeigner, Asset-Verantwortliche, …; dieselbe Zuständigkeit wie in „Mein Tag“ und der
@@ -39,7 +48,9 @@ Sammelmail). Offene Vorschläge stehen bei diesen Personen in „Mein Tag“ und
 Sammelmail um 07:00 und gelten zwei Wochen nach dem Entstehen als fällig.
 
 Jede Art erscheint nur, wenn ihr Modul aktiv ist. Prüfer (Auditor, Konzern-Auditor,
-Group CISO) sehen alle Vorschläge, auch die entschiedenen, aber nur lesend.
+Group CISO) sehen alle Vorschläge, auch die entschiedenen, aber nur lesend. Deshalb entscheiden
+ISB und CISO über Auditnotiz und Stichprobe, nicht die Auditoren selbst; die Leitung (nur lesend)
+nutzt für die Risikofreigabe den Freigabedialog.
 
 ## Wann Vorschläge entstehen
 

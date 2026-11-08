@@ -328,6 +328,16 @@ entity gets the attribute exactly when its HTML controllers are module-gated;
 the ISO 27001 backbone entities (Asset, Risk, Control, Incident,
 InternalAudit) stay ungated, as their HTML controllers are.
 
+- **Fields of another module (S4, 2026-11).** A field that a FormType adds
+  only inside `if ($this->isModuleActive('<m>'))` carries
+  `#[ModuleField('<m>')]` on the entity property when it is in a `:write`
+  group. `App\Api\ModuleFieldContextBuilder` then ignores it in REST request
+  bodies while the module is off, and the MCP gateway neither offers nor
+  accepts it. Gate 89 (`check_api_module_fields.py`) keeps forms and
+  attributes in step; `tests/EventListener/ApiResourceModuleListenerTest`
+  checks that every API resource listed only by optional modules in
+  `config/modules.yaml` carries one of their gates (backbone excepted).
+
 - **Embedded relations follow the parent resource.** A relation serialised
   inside a response (embedded object or IRI) is decided by the gate of the
   resource that was requested, not by the related entity's module. If a

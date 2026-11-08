@@ -196,6 +196,23 @@ register:
                 training: Training
                 report: Report
                 other: Other
+        improvement:
+            title: Improvements
+            purpose: Improvements of the ISMS that are planned and followed up (ISO 27001 10.1), from the management review, audits and lessons learned from incidents and exercises.
+            new: Add improvement
+            empty: No improvements.
+            field:
+                title: Improvement
+                description: Description and planned action
+                owner: Responsible
+                category: Origin
+                rating: Benefit
+            category:
+                management_review: Management review
+                audit: Audit
+                incident: Incident
+                exercise: Exercise
+                other: Other
     field:
         frequency: Frequency
         next_date: Next date
@@ -208,7 +225,7 @@ register:
         owner: User with login; receives the review reminder.
         owner_person: Only if the person has no login.
         deputies: Deputy during absence.
-        next_review_date: 'Default: in 12 months, for the communication plan in 3 months.'
+        next_review_date: 'Default: in 12 months, for the communication plan and improvements in 3 months.'
     placeholder:
         choose: Please choose
         owner_user: Choose user
@@ -284,6 +301,9 @@ register:
         interested_party: Interested party
         supplier: Critical supplier
         management_review: Last management review
+        audit_finding: Opportunity for improvement from an audit
+        incident: Lessons learned from an incident
+        exercise: Lessons learned from a BC exercise
     persona_role:
         top_management: Top management
         ciso: Chief Information Security Officer (CISO)

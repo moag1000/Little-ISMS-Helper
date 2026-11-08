@@ -119,7 +119,7 @@ class CapturePortfolioSnapshotCommand
                         $snapshot->setSnapshotDate($today);
                         $snapshot->setFrameworkCode((string) $framework->getCode());
                         $snapshot->setNistCsfCategory($category);
-                        $snapshot->setFulfillmentPercentage($agg['pct']);
+                        $snapshot->setFulfillmentPercentage($agg['pct']); // @fulfillment-writer-ok: trend snapshot
                         $snapshot->setRequirementCount($agg['count']);
                         $snapshot->setGapCount($agg['gaps']);
 
