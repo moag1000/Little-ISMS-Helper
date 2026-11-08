@@ -9,6 +9,8 @@ use App\Entity\Notification\NotificationChannel;
 use App\Entity\Notification\NotificationDelivery;
 use App\Entity\Notification\NotificationRule;
 use App\Entity\Tenant;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Repository\Notification\NotificationDeliveryRepository;
 use App\Service\AuditLogger;
 use App\Service\Mail\RecipientFilter;
@@ -38,7 +40,8 @@ final class SendNotificationDigestsCommandTest extends TestCase
     private MailerInterface&MockObject                $mailer;
     private AuditLogger&MockObject                    $auditLogger;
     private SymfonyStyle&MockObject                   $io;
-    private RecipientFilter&MockObject                $recipientFilter;
+    private UserRepository&MockObject                 $userRepository;
+    private Tenant                                    $tenant;
 
     protected function setUp(): void
     {
@@ -47,11 +50,16 @@ final class SendNotificationDigestsCommandTest extends TestCase
         $this->mailer       = $this->createMock(MailerInterface::class);
         $this->auditLogger  = $this->createMock(AuditLogger::class);
         $this->io           = $this->createMock(SymfonyStyle::class);
-        $this->recipientFilter = $this->createMock(RecipientFilter::class);
-        // Default: every configured address qualifies (the filter itself has its own tests).
-        $this->recipientFilter->method('filterEmails')->willReturnCallback(
-            static fn (iterable $emails, ?int $tenantId): array => ['valid' => array_values([...$emails]), 'dropped' => []],
-        );
+        // RecipientFilter is final: run the real one over a user repository in which
+        // every configured address belongs to an active manager of the channel's organisation.
+        $this->tenant = new Tenant();
+        (new \ReflectionProperty(Tenant::class, 'id'))->setValue($this->tenant, 7);
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository->method('findOneBy')->willReturnCallback(fn (array $criteria): User => (new User())
+            ->setEmail($criteria['email'])
+            ->setRoles(['ROLE_MANAGER'])
+            ->setIsActive(true)
+            ->setTenant($this->tenant));
         $this->auditLogger->method('withTenant')->willReturnCallback(
             static fn (?Tenant $tenant, callable $callback): mixed => $callback(),
         );
@@ -64,7 +72,7 @@ final class SendNotificationDigestsCommandTest extends TestCase
             $this->em,
             $this->mailer,
             $this->auditLogger,
-            $this->recipientFilter,
+            new RecipientFilter($this->userRepository),
         );
     }
 
@@ -74,6 +82,7 @@ final class SendNotificationDigestsCommandTest extends TestCase
         $channel->setType(NotificationChannel::TYPE_EMAIL);
         $channel->setName('Test Channel');
         $channel->setConfig($config);
+        $channel->setTenant($this->tenant);
 
         $ref = new \ReflectionProperty($channel, 'id');
         $ref->setValue($channel, $id);
@@ -191,12 +200,8 @@ final class SendNotificationDigestsCommandTest extends TestCase
     #[Test]
     public function testDigestNotSentWhenRecipientFilterDropsEveryAddress(): void
     {
-        $filter = $this->createMock(RecipientFilter::class);
-        $filter->method('filterEmails')->willReturn([
-            'valid' => [],
-            'dropped' => [['email' => 'outsider@example.org', 'reason' => RecipientFilter::REASON_UNKNOWN_USER]],
-        ]);
-        $this->recipientFilter = $filter;
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository->method('findOneBy')->willReturn(null); // unknown address
 
         $channel  = $this->makeChannel(5, [
             'recipients'    => ['outsider@example.org'],
