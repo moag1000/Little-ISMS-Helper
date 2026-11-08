@@ -18,6 +18,7 @@ use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Repository\TrainingRepository;
 use App\Service\DashboardStatisticsService;
+use App\Service\ModuleConfigurationService;
 use App\Service\ReportBuilderService;
 use App\Service\TenantContext;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -71,6 +72,9 @@ class ReportBuilderServiceTest extends TestCase
         $this->translator->method('trans')
             ->willReturnCallback(fn(string $key) => $key);
 
+        $modules = $this->createStub(ModuleConfigurationService::class);
+        $modules->method('isModuleActive')->willReturn(true);
+
         $this->service = new ReportBuilderService(
             $this->customReportRepository,
             $this->riskRepository,
@@ -85,7 +89,8 @@ class ReportBuilderServiceTest extends TestCase
             $this->dataBreachRepository,
             $this->dashboardStatisticsService,
             $this->translator,
-            $this->tenantContext
+            $this->tenantContext,
+            $modules,
         );
     }
 

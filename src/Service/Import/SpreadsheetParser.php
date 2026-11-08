@@ -6,9 +6,7 @@ namespace App\Service\Import;
 
 use App\Service\Import\Dto\ParsedSpreadsheet;
 use ErrorException;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv as CsvReader;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Psr\Log\LoggerInterface;
 
@@ -33,8 +31,12 @@ final class SpreadsheetParser
     /** Number of sample rows used for delimiter detection. */
     private const CSV_SAMPLE_LINES = 5;
 
+    /** Leading rows that may come before the header row. */
+    private const int HEADER_SEARCH_ROWS = 100;
+
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly SafeSpreadsheetReader $reader = new SafeSpreadsheetReader(),
     ) {}
 
     /**
@@ -71,11 +73,13 @@ final class SpreadsheetParser
 
     private function parseSpreadsheet(string $filePath, ?string $sheetName): ParsedSpreadsheet
     {
-        $reader = IOFactory::createReaderForFile($filePath);
-        $reader->setReadDataOnly(true);
-
-        /** @var Spreadsheet $spreadsheet */
-        $spreadsheet = $reader->load($filePath);
+        // Rows beyond the hard limit (plus room for leading blank/header rows) are never
+        // read; the limit check below still sees that the sheet is too long.
+        $spreadsheet = $this->reader->load(
+            $filePath,
+            ['xlsx', 'xls', 'ods'],
+            self::MAX_ROWS_HARD_LIMIT + self::HEADER_SEARCH_ROWS + 1,
+        );
 
         $worksheet = $sheetName !== null
             ? $spreadsheet->getSheetByName($sheetName)

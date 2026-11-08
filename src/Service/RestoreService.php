@@ -284,9 +284,17 @@ class RestoreService
         // An organisation backup restored without a target scope (instance-wide restore,
         // setup wizard) stays within the organisations it was made for — otherwise
         // "clear before restore" would empty whole tables, other organisations included.
+        // The recorded scope is checked against this instance's organisation tree first
+        // (S11): the metadata is part of the file and can claim any organisation.
         $recordedScope = $backup['metadata']['tenant_scope'] ?? [];
         if ($targetTenantScope === null && is_array($recordedScope) && $recordedScope !== []) {
-            $targetScopeIds = array_values(array_map('intval', $recordedScope));
+            $targetScopeIds = $purger->verifiedRecordedScope(array_values($recordedScope));
+            if (count($targetScopeIds) < count(array_unique(array_map('intval', $recordedScope)))) {
+                $this->logger->warning('Restore: recorded tenant_scope reaches beyond one organisation tree; narrowed', [
+                    'recorded' => $recordedScope,
+                    'used' => $targetScopeIds,
+                ]);
+            }
         }
 
         // Collect warnings that must survive the validateBackup() reset

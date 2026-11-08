@@ -14,6 +14,7 @@ use App\Service\ReportBuilderService;
 use App\Service\TenantContext;
 use App\Service\PdfExportService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +35,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[RequiresModule('report_builder')]
 class ReportBuilderController extends AbstractController
 {
+    /** A report definition is a few kilobytes; this bounds what one save may store. */
+    private const int MAX_SAVE_BYTES = 256 * 1024;
+
     public function __construct(
         private readonly ReportBuilderService $reportBuilderService,
         private readonly CustomReportRepository $customReportRepository,
@@ -42,6 +46,7 @@ class ReportBuilderController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly UserRepository $userRepository,
         private readonly PdfExportService $pdfExportService,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -253,7 +258,13 @@ class ReportBuilderController extends AbstractController
             return $this->csrfErrorJson();
         }
 
+        if (strlen($request->getContent()) > self::MAX_SAVE_BYTES) {
+            return new JsonResponse(['error' => 'payload_too_large'], 413);
+        }
         $data = json_decode($request->getContent(), true);
+        if (!is_array($data)) {
+            return new JsonResponse(['error' => 'invalid_json'], 400);
+        }
 
         if (isset($data['name'])) {
             $report->setName($data['name']);
@@ -264,16 +275,16 @@ class ReportBuilderController extends AbstractController
         if (isset($data['category'])) {
             $report->setCategory($data['category']);
         }
-        if (isset($data['layout'])) {
+        if (isset($data['layout']) && is_string($data['layout'])) {
             $report->setLayout($data['layout']);
         }
-        if (isset($data['widgets'])) {
+        if (isset($data['widgets']) && is_array($data['widgets'])) {
             $report->setWidgets($data['widgets']);
         }
-        if (isset($data['filters'])) {
+        if (isset($data['filters']) && is_array($data['filters'])) {
             $report->setFilters($data['filters']);
         }
-        if (isset($data['styles'])) {
+        if (isset($data['styles']) && is_array($data['styles'])) {
             $report->setStyles($data['styles']);
         }
 
@@ -303,7 +314,8 @@ class ReportBuilderController extends AbstractController
             $report->incrementUsageCount();
             $this->entityManager->flush();
         } catch (\Throwable $e) {
-            $renderError = $e->getMessage();
+            $this->logger->error('Report preview failed', ['report_id' => $report->getId(), 'exception' => $e]);
+            $renderError = true;
             $reportData = ['report' => [], 'widgets' => [], 'filters' => []];
         }
 
@@ -353,18 +365,21 @@ class ReportBuilderController extends AbstractController
     public function getWidgetData(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+        if (!is_array($data)) {
+            return new JsonResponse(['error' => 'invalid_json'], 400);
+        }
 
-        $widgetType = $data['type'] ?? '';
-        $config = $data['config'] ?? [];
-        $filters = $data['filters'] ?? [];
+        $widgetType = is_string($data['type'] ?? null) ? $data['type'] : '';
+        $config = is_array($data['config'] ?? null) ? $data['config'] : [];
+        $filters = is_array($data['filters'] ?? null) ? $data['filters'] : [];
 
         try {
             $widgetData = $this->reportBuilderService->getWidgetData($widgetType, $config, $filters);
         } catch (\Throwable $e) {
-            return new JsonResponse([
-                'error' => 'widget_data_error',
-                'message' => $e->getMessage(),
-            ], 500);
+            // Exception texts carry SQL, paths and class names — the log keeps them, the client gets a code.
+            $this->logger->error('Report widget data failed', ['widget' => $widgetType, 'exception' => $e]);
+
+            return new JsonResponse(['error' => 'widget_data_error'], 500);
         }
 
         return new JsonResponse($widgetData);

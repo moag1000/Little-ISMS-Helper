@@ -77,4 +77,40 @@ final class UploadOrphanCheckerTest extends TestCase
         $this->assertIsInt($result['scanned']);
         $this->assertIsInt($result['referenced']);
     }
+
+    #[Test]
+    public function evidenceAreasBelowVarAreScannedButImportScratchIsNot(): void
+    {
+        // S11: since S7 documents and training materials live below var/uploads; the scan
+        // only knew public/uploads and never saw them.
+        $dir = sys_get_temp_dir() . '/orphan_' . uniqid();
+        mkdir($dir . '/var/uploads/documents', 0750, true);
+        mkdir($dir . '/var/uploads/compliance-import', 0750, true);
+        file_put_contents($dir . '/var/uploads/documents/lost.pdf', '%PDF');
+        file_put_contents($dir . '/var/uploads/compliance-import/pending.xlsx', 'x');
+
+        $metaFactory = $this->createStub(\Doctrine\ORM\Mapping\ClassMetadataFactory::class);
+        $metaFactory->method('getMetadataFor')->willThrowException(new \RuntimeException('no metadata'));
+        $this->entityManager->method('getMetadataFactory')->willReturn($metaFactory);
+
+        $result = (new UploadOrphanChecker($this->entityManager, $dir))->findOrphanedUploads();
+
+        self::assertSame(['/uploads/documents/lost.pdf'], array_column($result['files'], 'relative'));
+        self::assertSame(1, $result['scanned']);
+
+        unlink($dir . '/var/uploads/documents/lost.pdf');
+        unlink($dir . '/var/uploads/compliance-import/pending.xlsx');
+    }
+
+    #[Test]
+    public function trainingMaterialsAreReferenced(): void
+    {
+        $set = UploadOrphanChecker::trainingMaterialPaths([
+            ['files' => [['filename' => 'kurs.pdf']]],
+            ['files' => '[{"filename":"awareness.pptx"}]'],
+        ]);
+
+        self::assertArrayHasKey('/uploads/training-materials/kurs.pdf', $set);
+        self::assertArrayHasKey('/uploads/training-materials/awareness.pptx', $set);
+    }
 }
