@@ -8,7 +8,8 @@ use App\Entity\Tenant;
 
 /**
  * The wizard checks that read a norm's own records — registers, top-management
- * decisions, training participation, statutory reports — as one entry point
+ * decisions, training participation, statutory reports, the duties of the
+ * deadline sources and the fields of existing records — as one entry point
  * for the wizard, plus short definitions for the category providers.
  *
  * Name and description keys follow `wizard.check.<key>` / `<key>_desc`.
@@ -20,6 +21,8 @@ final class RecordCheck
         private readonly ManagementDecisionCheck $decisions,
         private readonly TrainingParticipationCheck $participation,
         private readonly ReportingDutyCheck $reporting,
+        private readonly ?DeadlineAdherenceCheck $deadlines = null,
+        private readonly ?RecordCompletenessCheck $completeness = null,
     ) {
     }
 
@@ -34,6 +37,8 @@ final class RecordCheck
             'management_decision' => $this->decisions->check($check, $tenant),
             'training_participation' => $this->participation->check($check, $tenant),
             'reporting_duty' => $this->reporting->check($check, $tenant),
+            'deadline_adherence' => $this->deadlines?->check($check, $tenant),
+            'record_completeness' => $this->completeness?->check($check, $tenant),
             default => null,
         };
     }
@@ -65,6 +70,38 @@ final class RecordCheck
             'type' => 'management_decision',
             'decision_types' => $types,
         ]);
+    }
+
+    /**
+     * A clause answered by duties done on time ({@see DeadlineAdherenceCheck}).
+     *
+     * @param list<string> $sources deadline source slugs, empty = every active source
+     * @param array<string, mixed> $extra
+     * @return array<string, mixed>
+     */
+    public static function deadlines(string $key, array $sources, string $clause, string $priority = 'high', array $extra = []): array
+    {
+        return self::definition($key, $clause, $priority, 'app_my_day', [
+            'type' => 'deadline_adherence',
+            'sources' => $sources,
+        ] + $extra);
+    }
+
+    /**
+     * A clause answered by fields on existing records ({@see RecordCompletenessCheck}).
+     *
+     * @param class-string $entity
+     * @param list<string> $fields
+     * @param array<string, mixed> $extra `where`, `since`, `module`
+     * @return array<string, mixed>
+     */
+    public static function fields(string $key, string $entity, array $fields, string $clause, string $route, string $priority = 'high', array $extra = []): array
+    {
+        return self::definition($key, $clause, $priority, $route, [
+            'type' => 'record_completeness',
+            'entity' => $entity,
+            'fields' => $fields,
+        ] + $extra);
     }
 
     /**

@@ -20,6 +20,9 @@ management_decision:
         nis2_measures: 'Risikomanagementmaßnahmen nach NIS-2'
         resources: 'Ressourcen'
         objectives: 'Informationssicherheitsziele'
+        dora_ict_framework: 'IKT-Risikomanagementrahmen nach DORA'
+        dora_strategy: 'Strategie für die digitale operationale Resilienz'
+        dora_third_party: 'Strategie für das IKT-Drittparteienrisiko'
         other: 'Sonstige Entscheidung'
     status:
         pending: 'Offen'
@@ -95,6 +98,10 @@ management_decision:
             soa: 'Keine gültige Billigung der Erklärung zur Anwendbarkeit (ISO 27001 6.1.3 d).'
             objectives: 'Keine gültige Billigung der Sicherheitsziele (ISO 27001 6.2).'
             nis2_measures: 'Risikomanagementmaßnahmen nicht gebilligt (NIS-2 Art. 20 Abs. 1).'
+            resources: 'Keine Entscheidung über die Ressourcen für das ISMS (ISO 27001 5.1 c, 7.1).'
+            dora_ict_framework: 'IKT-Risikomanagementrahmen nicht gebilligt (DORA Art. 5 Abs. 2, Art. 6 Abs. 1).'
+            dora_strategy: 'Resilienzstrategie nicht gebilligt (DORA Art. 6 Abs. 8).'
+            dora_third_party: 'Strategie für das IKT-Drittparteienrisiko nicht gebilligt (DORA Art. 28 Abs. 2).'
     proposal:
         title:
             policy: 'Informationssicherheitsleitlinie und Geltungsbereich billigen'
@@ -103,6 +110,9 @@ management_decision:
             objectives: 'Informationssicherheitsziele billigen'
             resources: 'Ressourcen für das ISMS bereitstellen'
             nis2_measures: 'Risikomanagementmaßnahmen nach NIS-2 billigen'
+            dora_ict_framework: 'IKT-Risikomanagementrahmen nach DORA billigen'
+            dora_strategy: 'Strategie für die digitale operationale Resilienz billigen'
+            dora_third_party: 'Strategie für das IKT-Drittparteienrisiko billigen'
             other: 'Entscheidung der Leitung'
             risk_acceptance: 'Risikoakzeptanz'
             auto_policy: 'Automatische Risikoakzeptanz'
@@ -130,3 +140,9 @@ management_decision:
             empty: 'Beschreiben Sie den Ressourcenbedarf (Personal, Budget, Werkzeuge).'
         nis2_measures:
             body: '%implemented% von %applicable% anwendbaren Maßnahmen sind umgesetzt. Die Leitung billigt die Risikomanagementmaßnahmen und überwacht ihre Umsetzung (NIS-2 Art. 20 Abs. 1).'
+        dora_ict_framework:
+            body: '%implemented% von %applicable% anwendbaren Controls sind umgesetzt. Das Leitungsorgan billigt den IKT-Risikomanagementrahmen, überwacht seine Umsetzung und lässt ihn mindestens jährlich überprüfen (DORA Art. 5 Abs. 2, Art. 6 Abs. 5).'
+        dora_strategy:
+            body: 'Ziele der digitalen operationalen Resilienz, Risikotoleranz für IKT-Risiken, Kennzahlen und Zuständigkeiten (DORA Art. 6 Abs. 8). Ergänzen Sie, wie die Strategie die Geschäftsstrategie stützt.'
+        dora_third_party:
+            body: '%total% IKT-Drittdienstleister im Informationsregister, davon %critical% für kritische oder wichtige Funktionen, %exit% mit Ausstiegsstrategie. Das Leitungsorgan billigt die Strategie für das IKT-Drittparteienrisiko und überprüft sie regelmäßig (DORA Art. 28 Abs. 2).'

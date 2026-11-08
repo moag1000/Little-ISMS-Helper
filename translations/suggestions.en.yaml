@@ -57,6 +57,15 @@ suggestions:
                 board_summary: Summary for top management (AI)
                 nonconformity_statement: Nonconformity statement (AI)
                 questionnaire_evaluation: Evaluate questionnaire (AI)
+                bc_plan_from_bia: BC plan from BIA (AI)
+                bc_exercise_evaluation: Exercise evaluation (AI)
+                legal_requirement_from_party: Legal requirement (AI)
+                requirement_mapping: Map controls (AI)
+                vvt_from_supplier: VVT entry from DPA (AI)
+                evidence_fit: Does the evidence fit? (AI)
+                audit_sample: Propose sample (AI)
+                risk_acceptance_explained: What does this mean for me? (AI)
+                decision_rationale: Write justification (AI)
             soa:
                 justification: SoA justification from links
     job:
@@ -141,6 +150,7 @@ suggestions:
             role: 'Register: role'
             competence: 'Register: competence'
             opportunity: 'Register: opportunity'
+            improvement: 'Register: improvement'
         compliance:
             inheritance: Take over fulfilment
         ai:
@@ -153,6 +163,15 @@ suggestions:
             board_summary: Summary for top management (AI)
             nonconformity_statement: Nonconformity statement (AI)
             questionnaire_evaluation: Supplier questionnaire evaluation (AI)
+            bc_plan_from_bia: BC plan from BIA (AI)
+            bc_exercise_evaluation: BC exercise evaluation (AI)
+            legal_requirement_from_party: Legal requirement from interested party (AI)
+            requirement_mapping: Map controls to requirement (AI)
+            vvt_from_supplier: VVT entry from processor (AI)
+            evidence_fit: Audit note on evidence (AI)
+            audit_sample: Audit sample (AI)
+            risk_acceptance_explained: Risk acceptance explained (AI)
+            decision_rationale: Justification for top-management decision (AI)
         soa:
             justification: SoA justification from links
     kind_help:
@@ -176,7 +195,8 @@ suggestions:
             scope_interface: From critical suppliers.
             role: From the holders of the persona roles.
             competence: Default competences of the roles in the role register.
-            opportunity: From the last management review.
+            opportunity: Proposals from before the improvement register.
+            improvement: From the management review, audit opportunities and lessons learned from incidents and exercises.
         compliance:
             inheritance: A fulfilled requirement covers a mapped one.
         ai:
@@ -189,6 +209,15 @@ suggestions:
             board_summary: Writes the summary of a management review with at least three inputs (ISO 27001 9.3).
             nonconformity_statement: Turns notes on a nonconformity into the audit report statement (ISO 19011 6.4.8).
             questionnaire_evaluation: Evaluates answered supplier questionnaires (ISO 27001 A.5.19–5.22, NIS-2 Art. 21 (2) d).
+            bc_plan_from_bia: Writes activation, recovery and communication for processes with a BIA but no BC plan (ISO 22301 8.4).
+            bc_exercise_evaluation: Writes the empty parts of the evaluation of a BC exercise that took place (ISO 22301 8.5).
+            legal_requirement_from_party: Turns the free text of an interested party into an entry of the register of legal requirements (ISO 27001 4.2 b).
+            requirement_mapping: Maps own controls to requirements of active frameworks that have none. Nightly only, no global mappings.
+            vvt_from_supplier: Writes the VVT draft for suppliers with a DPA that have no processing activity yet (GDPR Art. 30, 28).
+            evidence_fit: Judges whether the evidence fits the control objective and writes an audit note as a comment (ISO 19011 6.4).
+            audit_sample: Proposes a sample of controls and assets in scope for planned and running audits (ISO 19011 6.3).
+            risk_acceptance_explained: Explains in plain language what the requested risk acceptance means. The risk is not accepted (ISO 27005 8.4.4).
+            decision_rationale: Writes the justification for proposals to top management without text (ISO 27001 9.3.3).
         soa:
             justification: Justification from the risks treated and the requirements of other frameworks (ISO 27001 6.1.3 d).
     text:
@@ -210,6 +239,7 @@ suggestions:
             rationale: 'Inherent %inherent%, residual %from% → %to%. %basis%'
             no_controls: No implemented control, residual risk equals inherent risk.
             controls: 'Implemented: %implemented%. Effective: %effective%.'
+            interim: 'Interim value: treatment is not finished yet; further implemented controls bring a new proposal.'
         risk_treatment_complete:
             title: 'Complete treatment of %risk%'
             rationale: 'All controls are implemented: %controls%.'
@@ -242,6 +272,8 @@ suggestions:
         register:
             title: '%register%: adopt %title%'
             rationale: 'Proposed from: %source%. Standard: %norm%.'
+            vacated_title: 'Check holder: %title%'
+            vacated_rationale: 'The person no longer has this role on their account or is deactivated. Accepting archives the entry; whoever holds the role now comes as a proposal of its own. Norm: %norm%.'
         inheritance:
             title: 'Take over %target% from %source%: %title%'
             rationale: '%source% is fulfilled, mapping confidence %confidence%. Proposed %percent% % fulfilment for %target%.'
@@ -280,6 +312,48 @@ suggestions:
             title: 'Evaluation of %questionnaire% from %supplier%'
             rationale: '%answers% of %questions% questions answered, %gaps% gaps. The rating stays with you. %reasoning%'
             heading: 'Evaluation %questionnaire% (answered %date%):'
+        ai_bc_plan:
+            title: 'BC plan for %process%'
+            rationale: 'From the BIA, RTO %rto%, RPO %rpo%. The plan is created as a draft, owner and approval stay with you. %reasoning%'
+            activation: Activation criteria
+            recovery: Recovery
+            communication: Communication
+        ai_bc_exercise:
+            title: 'Evaluation of exercise %exercise%'
+            rationale: 'Exercise of %date%. Only empty fields are filled, rating and sign-off stay with you. %reasoning%'
+            results: Results
+            well: What went well
+            lessons: Lessons learned
+        ai_legal_req:
+            title: 'Legal requirement: %requirement%'
+            rationale: 'From the requirements of %party%. Kind: %category%, reference: %reference%. Whoever accepts becomes the owner. %reasoning%'
+        ai_mapping:
+            title: '%requirement% fulfilled by %controls%'
+            rationale: '"%title%". Only own controls are linked, the global mapping stays unchanged. %reasoning%'
+        ai_vvt:
+            title: 'VVT draft for %supplier%'
+            rationale: 'Data subjects: %subjects%. Data categories: %data%. The entry is created as a draft, the DPO reviews legal basis and measures. %reasoning%'
+            purpose: Purpose
+            retention: Retention
+        ai_evidence:
+            title: 'Audit note on %control%'
+            rationale: '%documents% evidence documents read, assessment: %verdict%. Titles and descriptions only, not the content. %reasoning%'
+            heading: 'Audit note on evidence, fits the control: %verdict%.'
+            verdict:
+                'yes': 'Yes'
+                partly: Partly
+                'no': 'No'
+        ai_sample:
+            title: 'Sample for audit %audit%'
+            rationale: '%count% of %pool% records in scope. Appended to the audit observations. %reasoning%'
+            heading: 'Sample (AI draft):'
+        ai_acceptance:
+            title: 'What accepting "%risk%" means'
+            rationale: 'Residual risk: %level%. Stored as a comment on the risk, the decision runs through the approval. %reasoning%'
+            heading: 'Explanation of the risk acceptance (AI draft):'
+        ai_decision:
+            title: 'Justification for %decision%'
+            rationale: '%norm%. Fills the proposal text, top management decides. %reasoning%'
         soa_rule:
             rationale: 'From %risks% linked risks and %requirements% requirements of other frameworks.'
             risks: 'Applicable because the control treats these risks: %risks%.'

@@ -42,9 +42,12 @@ ergänzt **„Aus dem Scope ergänzen“** neue Anforderungen; vorhandene Urteil
 
 | Datensatz | Prüfung | Klauseln |
 |---|---|---|
-| Register (Compliance > Register) | Einträge vorhanden und nicht überfällig zur Prüfung | ISO 27001 4.1 (Themen), 4.2 (rechtliche Anforderungen), 4.3 (Schnittstellen), 5.3 (Rollen), 6.1.1 (Chancen), 7.2 (Kompetenzen), 7.4 (Kommunikation) |
+| Register (Compliance > Register) | Einträge vorhanden und nicht überfällig zur Prüfung | ISO 27001 4.1 (Themen), 4.2 (rechtliche Anforderungen), 4.3 (Schnittstellen), 5.3 (Rollen), 6.1.1 (Chancen), 7.2 (Kompetenzen), 7.4 (Kommunikation), 10.1 (Verbesserungen; offene Vorschläge aus Bewertung, Audit und Erkenntnissen zählen als fehlend) |
 | Rollenregister | jede vergebene Persona-Rolle (ISB, DSB, Leitung …) steht im Register; nicht übernommene Vorschläge zählen als fehlend | ISO 27001 5.3 |
-| Leitungsentscheidungen | Billigung in Kraft 100 %, vorgelegt 50 %, abgelaufen 25 % | ISO 27001 5.1 (Leitlinie, Ressourcen, Ziele), 5.2, 6.1.2 (Risikokriterien), 6.1.3 (SoA), 6.2, 7.1, 9.3.3; NIS-2 Art. 20 (1) |
+| Leitungsentscheidungen | Billigung in Kraft 100 %, vorgelegt 50 %, abgelaufen 25 % | ISO 27001 5.1 (Leitlinie, Ressourcen, Ziele), 5.2, 6.1.2 (Risikokriterien), 6.1.3 (SoA), 6.2, 7.1, 9.3.3; NIS-2 Art. 20 (1); DORA Art. 5 (2), 6 (1) (IKT-Risikomanagementrahmen), 6 (8) (Resilienzstrategie), 28 (2) (Drittparteienstrategie) |
+| Fristen (Mein Tag, Pflichtenkalender) | Anteil der offenen Pflichten, die nicht überfällig sind (`deadline_adherence`) | ISO 27001 8.1 (alle Fristenquellen), 9.1 (Zielmessung und Wirksamkeitstests; Ziele mit Kennzahl misst das Tool und zählen als fristgerecht) |
+| Angaben an vorhandenen Datensätzen | Anteil der Datensätze, die die verlangten Felder tragen (`record_completeness`, Felder in der Wizard-Definition) | DORA Art. 14 (1) (Kommunikationsplan im BC-Plan), 17 (2) (Vorfälle der letzten 12 Monate eingestuft), 18 (1) (betroffene Kunden und wirtschaftliche Auswirkung), 30 (2) (Leistung, Standorte, AVV, Service-Level bei IKT-Lieferanten) |
+| Klauseln 4–10 zusammen | Anteil der Datenprüfungen der Klauseln 4–10 mit mindestens 60 % (`clause_coverage`) | ISO 27001 4.4 |
 | Schulungsteilnahmen | Anteil abgeschlossener Teilnahmen, befreite zählen nicht | ISO 27001 7.3, A.6.3 |
 | Meldepflichten | Anteil der fälligen Meldungen, die rechtzeitig gemacht wurden | NIS-2 Art. 23 (4)(a), (b), (d); DORA Art. 19 (4)(a)–(c) |
 

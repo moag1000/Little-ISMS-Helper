@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Service\Register;
 
+use App\Entity\AuditFinding;
 use App\Entity\ISMSContext;
+use App\Entity\IsmsRegisterEntry;
 use App\Entity\ManagementReview;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\RegisterType;
+use App\Repository\AuditFindingRepository;
+use App\Repository\BCExerciseRepository;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\IncidentRepository;
 use App\Repository\InterestedPartyRepository;
 use App\Repository\IsmsRegisterEntryRepository;
 use App\Repository\ISMSContextRepository;
@@ -30,7 +35,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *  - required competences per persona role (7.2, NIS-2 Art. 20 (2) for the board)
  *  - legally mandatory frameworks and legal requirements of interested parties (A.5.31)
  *  - critical suppliers → interfaces of the scope (4.3 c)
- *  - improvement opportunities of the last management review (6.1.1)
+ *  - improvements (10.1): opportunities of the last management review (9.3.2 g),
+ *    audit findings of type "opportunity", lessons learned of incidents and
+ *    BC exercises of the last 12 months
  *
  * Proposals whose origin an entry already carries (adopted, also archived)
  * never come back. A person adopts them ({@see RegisterProposalAdopter}).
@@ -75,6 +82,9 @@ final class RegisterProposalProvider
         private readonly ManagementReviewRepository $reviews,
         private readonly ModuleConfigurationService $modules,
         private readonly TranslatorInterface $translator,
+        private readonly ?AuditFindingRepository $findings = null,
+        private readonly ?IncidentRepository $incidents = null,
+        private readonly ?BCExerciseRepository $exercises = null,
     ) {
     }
 
@@ -86,11 +96,20 @@ final class RegisterProposalProvider
             RegisterType::COMPETENCE => $this->fromRoleEntries($tenant),
             RegisterType::LEGAL_REQUIREMENT => [...$this->fromFrameworks(), ...$this->fromPartyLegalRequirements($tenant)],
             RegisterType::SCOPE_INTERFACE => $this->fromCriticalSuppliers($tenant),
-            RegisterType::OPPORTUNITY => $this->fromManagementReview($tenant),
+            RegisterType::IMPROVEMENT => [
+                ...$this->fromManagementReview($tenant),
+                ...$this->fromAuditOpportunities($tenant),
+                ...$this->fromLessonsLearned($tenant),
+            ],
             default => [],
         }];
 
-        $taken = array_flip($this->entries->origins($tenant, $type));
+        $taken = $this->entries->origins($tenant, $type);
+        if ($type === RegisterType::IMPROVEMENT) {
+            // review items adopted as opportunities before the improvement register existed
+            $taken = [...$taken, ...$this->entries->origins($tenant, RegisterType::OPPORTUNITY)];
+        }
+        $taken = array_flip($taken);
         $unique = [];
         foreach ($proposals as $proposal) {
             if (!isset($taken[$proposal->origin]) && !isset($unique[$proposal->origin])) {
@@ -99,6 +118,32 @@ final class RegisterProposalProvider
         }
 
         return array_values($unique);
+    }
+
+    /**
+     * Role entries taken over from a persona role whose user no longer holds
+     * it (role withdrawn, account deactivated or removed): the register still
+     * names a holder the organisation has not got (ISO 27001 5.3).
+     *
+     * @return list<IsmsRegisterEntry>
+     */
+    public function vacatedRoles(Tenant $tenant): array
+    {
+        $held = [];
+        foreach ($this->users->findActiveByTenant($tenant) as $user) {
+            foreach ($this->personas->assignedPersonasOf($user) as $persona) {
+                $held[self::personaOrigin($persona, $user)] = true;
+            }
+        }
+        $vacated = [];
+        foreach ($this->entries->findByType($tenant, RegisterType::ROLE) as $entry) {
+            $origin = (string) $entry->getOrigin();
+            if (preg_match('/^persona\.[a-z_]+\.user\.\d+$/', $origin) === 1 && !isset($held[$origin])) {
+                $vacated[] = $entry;
+            }
+        }
+
+        return $vacated;
     }
 
     public function countFor(Tenant $tenant, RegisterType $type): int
@@ -333,12 +378,70 @@ final class RegisterProposalProvider
         $proposals = [];
         foreach (self::paragraphs($review->getOpportunitiesForImprovement()) as $p) {
             $proposals[] = new RegisterProposal(
-                RegisterType::OPPORTUNITY,
+                RegisterType::IMPROVEMENT,
                 $p['title'],
                 $p['description'],
                 'management_review.' . $review->getId() . '#' . $p['hash'],
                 'register.source.management_review',
+                category: 'management_review',
             );
+        }
+
+        return $proposals;
+    }
+
+    /** @return list<RegisterProposal> audit findings that are an opportunity for improvement */
+    private function fromAuditOpportunities(Tenant $tenant): array
+    {
+        if ($this->findings === null || !$this->modules->isModuleActive('audits')) {
+            return [];
+        }
+        $proposals = [];
+        foreach ($this->findings->findBy(['tenant' => $tenant, 'type' => AuditFinding::TYPE_OPPORTUNITY]) as $finding) {
+            $proposals[] = new RegisterProposal(
+                RegisterType::IMPROVEMENT,
+                (string) $finding->getTitle(),
+                $finding->getDescription(),
+                'audit_finding.' . $finding->getId(),
+                'register.source.audit_finding',
+                category: 'audit',
+            );
+        }
+
+        return $proposals;
+    }
+
+    /** @return list<RegisterProposal> lessons learned of the last 12 months, one per paragraph */
+    private function fromLessonsLearned(Tenant $tenant): array
+    {
+        $since = new \DateTimeImmutable('-12 months');
+        $sources = [];
+        if ($this->incidents !== null && $this->modules->isModuleActive('incidents')) {
+            foreach ($this->incidents->findBy(['tenant' => $tenant]) as $incident) {
+                if ($incident->getDetectedAt() === null || $incident->getDetectedAt() >= $since) {
+                    $sources[] = ['incident.' . $incident->getId(), $incident->getLessonsLearned(), 'incident'];
+                }
+            }
+        }
+        if ($this->exercises !== null && $this->modules->isModuleActive('bcm')) {
+            foreach ($this->exercises->findBy(['tenant' => $tenant]) as $exercise) {
+                if ($exercise->getExerciseDate() === null || $exercise->getExerciseDate() >= $since) {
+                    $sources[] = ['bc_exercise.' . $exercise->getId(), $exercise->getLessonsLearned(), 'exercise'];
+                }
+            }
+        }
+        $proposals = [];
+        foreach ($sources as [$origin, $text, $category]) {
+            foreach (self::paragraphs($text) as $p) {
+                $proposals[] = new RegisterProposal(
+                    RegisterType::IMPROVEMENT,
+                    $p['title'],
+                    $p['description'],
+                    $origin . '#' . $p['hash'],
+                    'register.source.' . $category,
+                    category: $category,
+                );
+            }
         }
 
         return $proposals;

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\ComplianceWizard\CategoryProvider;
 
+use App\Entity\BusinessContinuityPlan;
 use App\Entity\ComplianceFramework;
+use App\Entity\Incident;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExitStrategyDocumentedCheck;
@@ -22,6 +25,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DsrProcedurePresentC
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\GdprSectionCoverageCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\PrivacyPolicyPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\RopaMethodologyPresentCheck;
+use App\Service\ComplianceWizard\RecordCheck;
 use App\Service\TenantContext;
 
 /**
@@ -464,27 +468,10 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'weight' => 2,
                 'article' => '5-6',
                 'checks' => [
-                    'management_body' => [
-                        'name' => 'wizard.check.dora_5_management',
-                        'description' => 'wizard.check.dora_5_management_desc',
-                        'type' => 'manual',
-                        'priority' => 'critical',
-                        'article' => '5(2)',
-                    ],
-                    'ict_risk_framework' => [
-                        'name' => 'wizard.check.dora_6_framework',
-                        'description' => 'wizard.check.dora_6_framework_desc',
-                        'type' => 'manual',
-                        'priority' => 'critical',
-                        'article' => '6(1)',
-                    ],
-                    'ict_risk_strategy' => [
-                        'name' => 'wizard.check.dora_6_strategy',
-                        'description' => 'wizard.check.dora_6_strategy_desc',
-                        'type' => 'manual',
-                        'priority' => 'critical',
-                        'article' => '6(8)',
-                    ],
+                    // Art. 5 (2): the management body approves framework, strategy and budget.
+                    'management_body' => RecordCheck::decision('dora_5_management', ['dora_ict_framework', 'dora_strategy', 'resources'], '5(2)'),
+                    'ict_risk_framework' => RecordCheck::decision('dora_6_framework', ['dora_ict_framework'], '6(1)'),
+                    'ict_risk_strategy' => RecordCheck::decision('dora_6_strategy', ['dora_strategy'], '6(8)'),
                 ],
             ],
 
@@ -729,13 +716,8 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'weight' => 1,
                 'article' => '14',
                 'checks' => [
-                    'communication_plans' => [
-                        'name' => 'wizard.check.dora_14_plans',
-                        'description' => 'wizard.check.dora_14_plans_desc',
-                        'type' => 'manual',
-                        'priority' => 'high',
-                        'article' => '14(1)',
-                    ],
+                    // Art. 14 (1): crisis communication lives in the BC plans.
+                    'communication_plans' => RecordCheck::fields('dora_14_plans', BusinessContinuityPlan::class, ['communicationPlan'], '14(1)', 'app_bc_plan_index', 'high', ['module' => 'bcm']),
                 ],
             ],
 
@@ -759,13 +741,11 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'article' => '17(1)',
                         'route' => 'app_incident_index',
                     ],
-                    'incident_classification' => [
-                        'name' => 'wizard.check.dora_17_classification',
-                        'description' => 'wizard.check.dora_17_classification_desc',
-                        'type' => 'manual',
-                        'priority' => 'critical',
-                        'article' => '17(2)',
-                    ],
+                    // Art. 17 (2): incidents of the last 12 months are classified.
+                    'incident_classification' => RecordCheck::fields('dora_17_classification', Incident::class, ['incidentClassification'], '17(2)', 'app_incident_index', 'critical', [
+                        'module' => 'incidents',
+                        'since' => ['field' => 'detectedAt', 'months' => 12],
+                    ]),
                 ],
             ],
 
@@ -779,13 +759,12 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'weight' => 1.5,
                 'article' => '18',
                 'checks' => [
-                    'classification_criteria' => [
-                        'name' => 'wizard.check.dora_18_criteria',
-                        'description' => 'wizard.check.dora_18_criteria_desc',
-                        'type' => 'manual',
-                        'priority' => 'critical',
-                        'article' => '18(1)',
-                    ],
+                    // Art. 18 (1): incidents carry the RTS criteria (clients affected, economic impact).
+                    'classification_criteria' => RecordCheck::fields('dora_18_criteria', Incident::class, ['clientsAffected', 'estimatedFinancialImpact'], '18(1)', 'app_incident_index', 'critical', [
+                        'module' => 'incidents',
+                        'where' => ['incidentClassification' => 'incident'],
+                        'since' => ['field' => 'detectedAt', 'months' => 12],
+                    ]),
                 ],
             ],
 
@@ -904,13 +883,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'weight' => 2,
                 'article' => '28-30',
                 'checks' => [
-                    'third_party_strategy' => [
-                        'name' => 'wizard.check.dora_28_strategy',
-                        'description' => 'wizard.check.dora_28_strategy_desc',
-                        'type' => 'manual',
-                        'priority' => 'critical',
-                        'article' => '28(2)',
-                    ],
+                    'third_party_strategy' => RecordCheck::decision('dora_28_strategy', ['dora_third_party'], '28(2)'),
                     'ict_concentration_risk' => [
                         'name' => 'wizard.check.dora_29_concentration',
                         'description' => 'wizard.check.dora_29_concentration_desc',
@@ -942,13 +915,11 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'weight' => 1.5,
                 'article' => '30',
                 'checks' => [
-                    'contract_requirements' => [
-                        'name' => 'wizard.check.dora_30_contracts',
-                        'description' => 'wizard.check.dora_30_contracts_desc',
-                        'type' => 'manual',
-                        'priority' => 'high',
-                        'article' => '30(2)',
-                    ],
+                    // Art. 30 (2): ICT supplier contracts name service, locations, data protection and service levels.
+                    'contract_requirements' => RecordCheck::fields('dora_30_contracts', Supplier::class, ['serviceProvided', 'processingLocations', 'contractualSLAs', 'hasDPA'], '30(2)', 'app_supplier_index', 'high', [
+                        'module' => 'suppliers',
+                        'where' => ['isDoraRelevant' => true],
+                    ]),
                     'exit_strategies' => [
                         'name' => 'wizard.check.dora_30_exit',
                         'description' => 'wizard.check.dora_30_exit_desc',
