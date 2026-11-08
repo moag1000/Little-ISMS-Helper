@@ -26,11 +26,13 @@
     </td>
     <td>{{ objective.targetDate|fa_date }}</td>
     <td>
+        {% set _progress = objective_progress(objective) %}
         {{ _fa_progress.render({
-            value: objective.progressPercentage,
-            tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'),
+            value: _progress.percent,
+            tone: _progress.percent >= 75 ? 'success' : (_progress.percent >= 50 ? 'warning' : 'danger'),
             showText: true
         }) }}
+        {% if _progress.computed %}<span class="text-muted-color small">{{ 'objective.label.from_kpi'|trans({}, 'objective') }}</span>{% endif %}
     </td>
     <td>
         {% include '_components/_badge.html.twig' with {

@@ -110,6 +110,29 @@
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost"{{ org.mode == 'off' ? ' disabled' : '' }}>{{ 'suggestions.ai.test'|trans({}, 'suggestions') }}</button>
             </form>
 
+            <form method="post" action="{{ path('admin_settings_ai_mcp') }}" id="mcp">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_ai_mcp') }}">
+                <section class="fa-section mb-4">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">{{ 'mcp.admin.title'|trans({}, 'mcp') }}</h2>
+                    </div>
+                    <div class="fa-section__body">
+                        <p class="small">{{ 'mcp.admin.intro'|trans({}, 'mcp') }}</p>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" name="mcp_enabled" value="1" id="mcp_enabled" {{ mcp_enabled ? 'checked' : '' }}>
+                            <label class="form-check-label" for="mcp_enabled">{{ 'mcp.admin.enabled'|trans({}, 'mcp') }}</label>
+                        </div>
+                        <p class="small text-muted-color">{{ 'mcp.admin.privacy'|trans({}, 'mcp') }}</p>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                            <a href="{{ path('app_api_tokens') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'mcp.admin.to_tokens'|trans({}, 'mcp') }}</a>
+                        </div>
+                    </div>
+                </section>
+            </form>
+
             {% if is_granted('ROLE_SUPER_ADMIN') %}
                 <form method="post" action="{{ path('admin_settings_ai_instance') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_ai_instance') }}">

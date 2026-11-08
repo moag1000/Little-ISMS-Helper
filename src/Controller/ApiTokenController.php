@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Entity\ApiToken;
 use App\Entity\User;
+use App\Mcp\McpClientConfig;
+use App\Mcp\McpSettings;
 use App\Repository\ApiTokenRepository;
 use App\Service\ApiTokenManager;
 use App\Util\ListPage;
@@ -13,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -25,18 +28,14 @@ final class ApiTokenController extends AbstractController
     public function __construct(
         private readonly ApiTokenRepository $repository,
         private readonly ApiTokenManager $manager,
+        private readonly McpSettings $mcpSettings,
     ) {
     }
 
     #[Route('/profile/api-tokens', name: 'app_api_tokens', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $user = $this->currentUser();
-
-        return $this->render('api_token/index.html.twig', [
-            'page'      => ListPage::fromRequest($this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']), $request),
-            'new_token' => null,
-        ]);
+        return $this->renderPage($request, null);
     }
 
     #[Route('/profile/api-tokens/create', name: 'app_api_tokens_create', methods: ['POST'])]
@@ -51,10 +50,7 @@ final class ApiTokenController extends AbstractController
         $plain = $this->manager->mint($user, $label, $expiresDays);
 
         // Render the list with the freshly-minted plaintext shown ONCE.
-        return $this->render('api_token/index.html.twig', [
-            'page'      => ListPage::fromRequest($this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']), $request),
-            'new_token' => $plain,
-        ]);
+        return $this->renderPage($request, $plain);
     }
 
     #[Route('/profile/api-tokens/{id}/revoke', name: 'app_api_tokens_revoke', methods: ['POST'], requirements: ['id' => '\d+'])]
@@ -71,6 +67,21 @@ final class ApiTokenController extends AbstractController
         $this->addFlash('success', 'api_token.flash.revoked');
 
         return $this->redirectToRoute('app_api_tokens', ['_locale' => $request->getLocale()]);
+    }
+
+    private function renderPage(Request $request, ?string $newToken): Response
+    {
+        $user = $this->currentUser();
+        $tenant = $user->getTenant();
+        $mcpUrl = $this->generateUrl('app_mcp_endpoint', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->render('api_token/index.html.twig', [
+            'page'        => ListPage::fromRequest($this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']), $request),
+            'new_token'   => $newToken,
+            'mcp_enabled' => $tenant !== null && $this->mcpSettings->isEnabled($tenant),
+            'mcp_url'     => $mcpUrl,
+            'mcp_snippets' => McpClientConfig::snippets($mcpUrl, $newToken),
+        ]);
     }
 
     private function currentUser(): User

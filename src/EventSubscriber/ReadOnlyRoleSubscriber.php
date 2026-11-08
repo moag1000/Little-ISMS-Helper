@@ -54,6 +54,7 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
         'api_alva_hint_',
         'api_push_',
         'app_api_tokens_',       // API tokens are read-only themselves
+        'app_mcp_',              // assistant connection: reads, drafts only into the suggestion queue
         'report_builder_',       // own report definitions
         'app_mapping_onboarding_',
         'app_workflow_instance_approve',

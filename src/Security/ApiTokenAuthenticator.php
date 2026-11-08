@@ -29,6 +29,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
  */
 final class ApiTokenAuthenticator extends AbstractAuthenticator
 {
+    /** Request attribute carrying the ApiToken entity (MCP audit + organisation opt-in). */
+    public const string TOKEN_ATTRIBUTE = '_api_token';
+
     public function __construct(
         private readonly ApiTokenRepository $tokenRepository,
         private readonly EntityManagerInterface $entityManager,
@@ -60,6 +63,7 @@ final class ApiTokenAuthenticator extends AbstractAuthenticator
 
         $token->setLastUsedAt(new DateTimeImmutable());
         $this->entityManager->flush();
+        $request->attributes->set(self::TOKEN_ATTRIBUTE, $token);
 
         return new SelfValidatingPassport(
             new UserBadge($user->getUserIdentifier(), static fn (): UserInterface => $user),

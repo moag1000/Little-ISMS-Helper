@@ -1,0 +1,71 @@
+mcp:
+    instructions: >-
+        You work with the ISMS of the organisation "%organisation%" (Little ISMS Helper). Call get_context first: it lists
+        your roles (personas), the active modules and the record resources. Reading: my_day (open deadlines and decisions),
+        compliance_fulfillment (fulfilment per framework with "why this value"), management_kpis, duty_calendar, search,
+        list_records/get_record (every REST resource), pending_suggestions. Writing exists only as a proposal: draft_options
+        shows which drafts a record allows, propose_draft puts them into the suggestion queue, where a responsible person
+        accepts or rejects them. Link records, name norm clauses and never invent values: what the tools do not return is
+        not recorded.
+    prompt:
+        my_day_briefing:
+            title: 'My day'
+            description: 'Open deadlines and decisions by urgency'
+            text: >-
+                Summarise my day: call my_day and pending_suggestions. List overdue items and decisions first, then the next
+                seven days, each with norm clause and link. Suggest the next step for each item in one sentence.
+        audit_readiness:
+            title: 'Audit readiness'
+            description: 'Gaps of a framework with reasons and evidence'
+            text: >-
+                Check audit readiness for %framework%: call compliance_fulfillment for %framework% and, for the ten weakest
+                applicable requirements, their reason ("why"). For each gap name the missing controls, records or evidence and
+                what I can do in the app. List overridden values with reason and review date separately.
+        management_briefing:
+            title: 'Top management briefing'
+            description: 'One-page status for the board and the management review'
+            text: >-
+                Write a one-page status for top management (ISO 27001 9.3): call management_kpis, compliance_fulfillment (no
+                arguments), duty_calendar and my_day. Structure: overall status in three sentences, KPIs with traffic light,
+                fulfilment per framework, overdue duties, decisions top management has to take. Explain every technical term.
+        draft_from_record:
+            title: 'Propose a draft'
+            description: 'Put a draft for a record into the suggestion queue'
+            text: >-
+                Call draft_options for %resource% %id%. Pick the fitting draft, read the facts, write the draft with exactly the
+                requested JSON keys and put it into the suggestion queue with propose_draft. Show me the draft and the queue link.
+    prompt_argument:
+        framework: 'Framework code, e.g. ISO27001, NIS2, DORA'
+        resource: 'Record type, e.g. Incident, Control'
+        id: 'Record id'
+    admin:
+        title: 'Connect AI assistants (MCP)'
+        intro: >-
+            People of the organisation can connect their own AI assistant (Claude Desktop, Claude Code or another MCP client)
+            with an API token. The assistant reads with the person's rights and puts drafts only into the suggestion queue;
+            nothing is applied before someone approves it in the app.
+        enabled: 'Allow assistant access for this organisation'
+        privacy: >-
+            Data read goes to the person's assistant and its provider. Every access is in the audit log (tool, record type,
+            id); tokens can be revoked at any time. Switched off, /mcp answers every token with 403.
+        to_tokens: 'To the API tokens'
+    tokens:
+        title: 'Connect an AI assistant (MCP)'
+        status_on: 'Enabled'
+        status_off: 'Not enabled'
+        intro: >-
+            With a token from this page your AI assistant reads deadlines, fulfilment, risks, controls and other records with
+            your rights and proposes drafts that you approve in the app.
+        off_hint: 'The organisation has not enabled assistant access yet.'
+        off_admin_link: 'Enable now'
+        endpoint: 'MCP server address'
+        copy: 'Copy'
+        snippet:
+            claude_code: 'Claude Code'
+            claude_desktop: 'Claude Desktop'
+            project_file: 'Project file .mcp.json'
+        snippet_help:
+            claude_code: 'Run in a terminal.'
+            claude_desktop: 'Add to claude_desktop_config.json (Settings > Developer > Edit config), restart Claude Desktop. Needs Node.js.'
+            project_file: 'For teams: commit without the token, each person sets the environment variable ISMS_TOKEN.'
+        safety: 'The token is shown in plain text only once after creating it and then replaces <TOKEN> in the examples. Create one token per device; revoke lost tokens at once.'

@@ -225,6 +225,20 @@
                 {# Search/command overlay trigger (overlay itself: _command_palette) #}
                 {% include '_components/_command_palette_trigger.html.twig' %}
 
+                {# My Day in one tap on a phone (desktop: top of the sidebar) #}
+                {% if app.user and not is_setup_route %}
+                    <a href="{{ path('app_my_day') }}" class="header-my-day"
+                       aria-label="{{ 'nav.my_day'|trans({}, 'nav') }}"
+                       {% if app.request.attributes.get('_route') == 'app_my_day' %}aria-current="page"{% endif %}>
+                        <i class="fa-icon fa-icon--ui-inbox" aria-hidden="true"></i>
+                        <span class="header-my-day__badge"
+                              data-controller="live-badge"
+                              data-live-badge-source-value="my_day"
+                              data-live-badge-url-value="{{ path('api_live_counts') }}"
+                              aria-hidden="true"></span>
+                    </a>
+                {% endif %}
+
                 {# Notification Bell — single canonical.
                    Legacy _notification_bell.html.twig dropped 2026-05-22 — was a
                    non-functional duplicate that showed an empty bell next to the
@@ -329,6 +343,15 @@
                                     <span class="fa-dropdown-panel__item-body">{{ ('guided_tour.role.' ~ role ~ '.label')|trans({}, 'guided_tour')|default(role|capitalize) }}</span>
                                 </button>
                             {% endfor %}
+                        {% endif %}
+                        {% if current_route %}
+                            {# Phone: the header has no room for DE/EN #}
+                            <div class="user-dropdown-lang d-md-none" role="group" aria-label="{{ 'preferences.language.title'|trans({}, 'preferences') }}">
+                                <a href="{{ path(current_route, (app.request.attributes.get('_route_params') ?? {})|merge({'_locale': 'de'})) }}"
+                                   class="lang-btn {% if app.request.locale == 'de' %}active{% endif %}" role="menuitem" lang="de">Deutsch</a>
+                                <a href="{{ path(current_route, (app.request.attributes.get('_route_params') ?? {})|merge({'_locale': 'en'})) }}"
+                                   class="lang-btn {% if app.request.locale == 'en' %}active{% endif %}" role="menuitem" lang="en">English</a>
+                            </div>
                         {% endif %}
                         <div class="user-dropdown-divider"></div>
                         <a href="{{ path('app_logout') }}" class="user-dropdown-item fa-dropdown-panel__item user-dropdown-logout" role="menuitem">

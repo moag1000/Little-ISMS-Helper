@@ -431,6 +431,7 @@ class LocationPostureService implements ResetInterface
                 ?? (trim((string) $root->getResponsiblePerson()) ?: null),
             'mine' => $site['mine'],
             'active' => $root->isActive() !== false,
+            'inScope' => $root->isInIsmsScope(),
         ];
     }
 }

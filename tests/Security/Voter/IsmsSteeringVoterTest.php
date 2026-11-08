@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Security\Voter;
 
+use App\Entity\ISMSObjective;
+use App\Entity\Person;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\Voter\IsmsSteeringVoter;
 use App\Tests\Stub\PersonaResolverFactory;
@@ -41,6 +44,39 @@ final class IsmsSteeringVoterTest extends TestCase
         $voter = new IsmsSteeringVoter(PersonaResolverFactory::create());
 
         self::assertSame($expected, $voter->vote(new UsernamePasswordToken($user, 'main', $user->getRoles()), null, [IsmsSteeringVoter::EDIT]));
+    }
+
+    #[Test]
+    public function theMeasuringPersonMayRecordAMeasurement(): void
+    {
+        $voter = new IsmsSteeringVoter(PersonaResolverFactory::create());
+        $measurer = (new User())->setRoles(['ROLE_USER']);
+        $objective = (new ISMSObjective())->setMeasurementPerson((new Person())->setLinkedUser($measurer));
+        $token = new UsernamePasswordToken($measurer, 'main', $measurer->getRoles());
+
+        self::assertSame(VoterInterface::ACCESS_GRANTED, $voter->vote($token, $objective, [IsmsSteeringVoter::MEASURE]));
+        self::assertSame(VoterInterface::ACCESS_DENIED, $voter->vote($token, null, [IsmsSteeringVoter::EDIT]), 'measuring is not steering');
+
+        $other = (new User())->setRoles(['ROLE_USER']);
+        self::assertSame(
+            VoterInterface::ACCESS_DENIED,
+            $voter->vote(new UsernamePasswordToken($other, 'main', $other->getRoles()), $objective, [IsmsSteeringVoter::MEASURE]),
+        );
+    }
+
+    #[Test]
+    public function theOwnerOfAnotherOrganisationMayNotMeasure(): void
+    {
+        $voter = new IsmsSteeringVoter(PersonaResolverFactory::create());
+        $owner = (new User())->setRoles(['ROLE_USER']);
+        $tenant = $this->createStub(Tenant::class);
+        $tenant->method('getId')->willReturn(7);
+        $objective = (new ISMSObjective())->setResponsiblePersonUser($owner)->setTenant($tenant);
+
+        self::assertSame(
+            VoterInterface::ACCESS_DENIED,
+            $voter->vote(new UsernamePasswordToken($owner, 'main', $owner->getRoles()), $objective, [IsmsSteeringVoter::MEASURE]),
+        );
     }
 
     #[Test]

@@ -6,8 +6,10 @@
 {% block document_title %}{{ 'page.title'|trans({}, 'messages') }}{% endblock %}
 {% block document_type %}{{ 'report.document_type'|trans({}, 'reports') }}{% endblock %}
 {% block document_version %}{{ version }}{% endblock %}
-{% block document_status %}{{ status|default(('status.approved'|trans({}, 'messages'))) }}{% endblock %}
-{% block document_status_class %}{{ status|default('approved')|lower }}{% endblock %}
+{# Approval state from the decision register (ISO 27001 5.1 / 6.1.3), never assumed. #}
+{% set _soa_approval = management_approval('soa') %}
+{% block document_status %}{{ _soa_approval ? 'status.approved'|trans({}, 'messages') : 'soa.governance.not_approved'|trans({}, 'soa') }}{% endblock %}
+{% block document_status_class %}{{ _soa_approval ? 'approved' : 'draft' }}{% endblock %}
 {% block document_classification %}{{ 'label.classification_confidential'|trans({}, 'messages') }}{% endblock %}
 {% block classification_class %}confidential{% endblock %}
 
@@ -20,41 +22,11 @@
 {% set show_approval = true %}
 {% block reviewer_name %}{{ app.user.fullName|default(('report.default_reviewer'|trans({}, 'reports'))) }}{% endblock %}
 {% block review_date %}{{ generatedAt|fa_date }}{% endblock %}
-{% block approver_name %}{{ approver|default(('report.default_approver'|trans({}, 'messages'))) }}{% endblock %}
-{% block approval_date %}{{ approval_date|default(generatedAt|fa_date) }}{% endblock %}
+{% block approver_name %}{{ _soa_approval and _soa_approval.decidedBy ? _soa_approval.decidedBy.fullName : '—' }}{% endblock %}
+{% block approval_date %}{{ _soa_approval ? _soa_approval.decidedAt|fa_date : '—' }}{% endblock %}
 
-{# Show Version History - Beispieldaten! Echte Versionsdaten vom Controller übergeben! #}
-{% set show_version_history = true %}
-{% block version_history %}
-{# Beispiel-Versionsverlauf - durch echte Daten vom Controller ersetzen:
-   {% for versionEntry in versionHistory %}
-   <tr>
-       <td>{{ versionEntry.version }}</td>
-       <td>{{ versionEntry.date|fa_date }}</td>
-       <td>{{ versionEntry.author }}</td>
-       <td>{{ versionEntry.changes }}</td>
-   </tr>
-   {% endfor %}
-#}
-<tr>
-    <td>1.0</td>
-    <td>{{ generatedAt|date_modify('-6 months')|fa_date }}</td>
-    <td>{{ 'soa.pdf_v2.isms_team'|trans({}, 'soa') }}</td>
-    <td>{{ 'soa.pdf_v2.version_initial'|trans({}, 'soa') }}</td>
-</tr>
-<tr>
-    <td>1.5</td>
-    <td>{{ generatedAt|date_modify('-3 months')|fa_date }}</td>
-    <td>{{ app.user.fullName }}</td>
-    <td>{{ 'soa.pdf_v2.version_update'|trans({}, 'soa') }}</td>
-</tr>
-<tr>
-    <td>2.0</td>
-    <td>{{ generatedAt|fa_date }}</td>
-    <td>{{ app.user.fullName }}</td>
-    <td>{{ 'soa.pdf_v2.version_review'|trans({}, 'soa') }}</td>
-</tr>
-{% endblock %}
+{# No version history table: versions of the SoA are the snapshots (soa/snapshot), not invented rows. #}
+{% set show_version_history = false %}
 
 {# Custom Styles for SoA — Aurora token CSS (no raw hex) #}
 {% block custom_styles %}
@@ -120,6 +92,9 @@
         {{ 'report.pdf.intro_line2'|trans({}, 'soa') }}
     </p>
 </div>
+
+{# ISO 27001 4.3: the scope the SoA applies to #}
+{% include '_components/_isms_scope_block.html.twig' with { scope: isms_scope(), heading: 'h2' } only %}
 
 {# Statistics Overview #}
 <h2>{{ 'section.implementation_overview'|trans({}, 'soa') }}</h2>

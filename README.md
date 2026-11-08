@@ -260,6 +260,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Offline-Geokodierung** -- Koordinaten aus PLZ (DE/AT/CH) oder Ort (weltweit) ohne Online-Dienst; optional eigener Nominatim-Dienst, Standard aus
 - **Steuerung** -- Standort-Kennzahlen aus dem KPI-Katalog, Vergleich mit ähnlichen Standorten (nur Standorte, keine Personen), größte Hebel, Sammelaktionen mit Audit-Log und FTE-Erfassung, Lagebild als Excel und einseitiges PDF mit Kartenbild
 - **Überall dieselben Zahlen** -- ISMS-Ziele mit Katalog-Kennzahl je Standort, offene Prüfungen in *Mein Tag*, Kachel auf den Dashboards von CISO, ISB und Compliance, Steckbrief auf der Standortseite
+- **Ziele messen (ISO 27001 6.2 / 9.1)** -- Fortschritt in Liste, Seitenblatt und Detail aus der verknüpften Kennzahl; von Hand gemessene Ziele haben eine Person, die misst, und eine eigene Messfrist nach dem Messrhythmus in *Mein Tag*; Kennzahlen, SoA und Berichte zählen nur, was im Geltungsbereich liegt ([Register](docs/user-guide/REGISTER.md))
 - **Einstellungen je Organisation** -- Vergleich aus, ohne oder mit Namen der Verantwortlichen (§ 87 BetrVG), einzelne Prüfungen abschaltbar, Koordinaten auf Karte und im Export auf etwa 1 km gerundet; Auditoren sehen die Karte nur lesend
 
 ### KPI und Reporting
@@ -302,11 +303,13 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
 - **Vorschlags-Queue** -- Ableitungen (Schutzbedarf, Restrisiko, Wirksamkeit, CVSS→Risiko, Risiko nach Vorfall), Vererbung, Import-Treffer und KI-Vorschläge (lokales Modell oder Mistral-API, personenbezogene Daten standardmäßig ersetzt) in einer Liste; Annehmen/Ablehnen mit Begründung und Audit-Log, nächtlich vorbereitet oder per „Entwurf vorschlagen“ am Datensatz (Meldetext NIS-2/DORA, Meldung Art. 33, Antwort an Betroffene, Zusammenfassung für die Leitung, Abweichungstext, Fragebogenauswertung, SoA-Begründung aus Verknüpfungen) ([Anleitung](docs/user-guide/VORSCHLAEGE.md))
 
+- **KI-Assistent anbinden (MCP)** -- Little ISMS Helper ist MCP-Server unter `/mcp`: Claude Desktop, Claude Code oder ein anderer MCP-Client liest mit dem API-Token der Person Fristen (Mein Tag), Erfüllung je Norm mit „Warum dieser Wert?“, KPIs, Pflichtenkalender, Suche und jede REST-Ressource; schreiben nur als Entwurf in die Vorschlags-Queue. Opt-in je Organisation, Audit-Log je Zugriff, Konfiguration zum Kopieren auf der Token-Seite ([Anleitung](docs/user-guide/KI_ASSISTENT_MCP.md))
+
 ### Bedienung: einheitlich, schnell, sinnvoll
 
 Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterverwendet werden:
 
-- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand
+- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand; Navigation am iPhone mit fester Kopfzeile, "Mein Tag" in einem Tipp, Untermenüs per Tipp mit Zurück-Pfeil und 44-px-Tippzielen
 - **Eine Menüstelle pro Seite** -- Persona-Dashboards unter "Mein Cockpit", ein Import-Hub, CI-Gate gegen doppelte Menüeinträge
 - **Ein Listen-Aufbau** -- alle 74 Listen mit derselben Reihenfolge: Suche und Filter (teilbare URL), Zusammenfassungs-Chips statt KPI-Kacheln, Tabelle, Seitenumbruch (25/50/100), Leerzustand "Keine X vorhanden."; laufende Freigaben stehen als "In Freigabe" / "Freigabe überfällig" direkt in der Zeile
 - **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder 20/12/6
@@ -605,6 +608,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |
+| [KI-Assistent (MCP)](docs/user-guide/KI_ASSISTENT_MCP.md) | Claude Desktop/Code anbinden, Werkzeuge, Prompts, Rechte, Datenschutz, Betreiber-Hinweis |
 | [Modulverwaltung](docs/user-guide/MODULE_AKTIVIERUNG.md) | Module aktivieren und konfigurieren (User-Guide) |
 
 ### Setup und Deployment

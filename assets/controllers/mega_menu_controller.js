@@ -53,19 +53,22 @@ export default class extends Controller {
         // Keyboard navigation inside open flyout panels (ArrowUp/Down within sub-panel)
         document.addEventListener('keydown', this._handlePanelKeyboardBound);
 
-        // Hover: open flyout on mouseenter over L1 trigger — store per-trigger
-        // bound refs so they can be removed individually in disconnect().
+        // Hover (mouse only): open flyout on pointerenter over L1 trigger.
+        // Touch taps also fire enter/leave — iOS Safari then opened the flyout
+        // on the emulated hover and the click toggled it shut again, so the
+        // pointer handlers ignore everything that is not a mouse. Per-trigger
+        // bound refs are stored so disconnect() can remove them individually.
         this._boundMouseEnterMap = new WeakMap();
         this.triggerTargets.forEach(trigger => {
             const bound = this.handleMouseEnter.bind(this);
             this._boundMouseEnterMap.set(trigger, bound);
-            trigger.addEventListener('mouseenter', bound);
+            trigger.addEventListener('pointerenter', bound);
         });
 
         // Hover: close when leaving the sidebar
         this._sidebar = document.querySelector('.app__sidebar, .app-sidebar');
         if (this._sidebar) {
-            this._sidebar.addEventListener('mouseleave', this._boundMouseLeave);
+            this._sidebar.addEventListener('pointerleave', this._boundMouseLeave);
         }
 
         // Hover: also handle mouseleave on individual flyout panels
@@ -73,7 +76,7 @@ export default class extends Controller {
         this.panelTargets.forEach(panel => {
             const bound = this.handlePanelMouseLeave.bind(this);
             this._boundPanelMouseLeaveMap.set(panel, bound);
-            panel.addEventListener('mouseleave', bound);
+            panel.addEventListener('pointerleave', bound);
         });
 
         // Restore density from localStorage (initial render — density-toggle-controller also does this)
@@ -90,14 +93,14 @@ export default class extends Controller {
         if (this._boundMouseEnterMap) {
             this.triggerTargets.forEach(trigger => {
                 const bound = this._boundMouseEnterMap.get(trigger);
-                if (bound) trigger.removeEventListener('mouseenter', bound);
+                if (bound) trigger.removeEventListener('pointerenter', bound);
             });
             this._boundMouseEnterMap = null;
         }
 
         // Remove sidebar mouseleave listener
         if (this._sidebar) {
-            this._sidebar.removeEventListener('mouseleave', this._boundMouseLeave);
+            this._sidebar.removeEventListener('pointerleave', this._boundMouseLeave);
             this._sidebar = null;
         }
 
@@ -105,7 +108,7 @@ export default class extends Controller {
         if (this._boundPanelMouseLeaveMap) {
             this.panelTargets.forEach(panel => {
                 const bound = this._boundPanelMouseLeaveMap.get(panel);
-                if (bound) panel.removeEventListener('mouseleave', bound);
+                if (bound) panel.removeEventListener('pointerleave', bound);
             });
             this._boundPanelMouseLeaveMap = null;
         }
@@ -121,8 +124,11 @@ export default class extends Controller {
         const trigger = event.currentTarget;
         const category = trigger.dataset.category;
 
-        // Clicking the already-open trigger closes the flyout
+        // Clicking the already-open trigger closes the flyout — unless the
+        // mouse only just opened it on hover (the click that follows the hover
+        // would otherwise shut it again)
         if (trigger.hasAttribute('open')) {
+            if (Date.now() - (this._hoverOpenedAt || 0) < 600) return;
             this.closePanel();
             return;
         }
@@ -354,6 +360,7 @@ export default class extends Controller {
         const activeCategory = this.getActiveCategory();
         if (!activeCategory) return;
 
+        event.preventDefault(); // sidebar-toggle keeps the drawer open for this ESC
         this.closePanel();
 
         // Return focus to the trigger that opened this flyout
@@ -367,9 +374,11 @@ export default class extends Controller {
 
     /**
      * Open panel on hover over L1 trigger.
-     * @param {MouseEvent} event
+     * @param {PointerEvent} event
      */
     handleMouseEnter(event) {
+        if (event.pointerType !== 'mouse') return;
+        this._hoverOpenedAt = Date.now();
         if (this.closeTimeout) {
             clearTimeout(this.closeTimeout);
             this.closeTimeout = null;
@@ -382,6 +391,7 @@ export default class extends Controller {
      * @param {MouseEvent} event
      */
     handleMouseLeave(event) {
+        if (event.pointerType !== 'mouse') return;
         const relatedTarget = event.relatedTarget;
 
         // Don't close if moving into an open flyout panel
@@ -398,6 +408,7 @@ export default class extends Controller {
      * @param {MouseEvent} event
      */
     handlePanelMouseLeave(event) {
+        if (event.pointerType !== 'mouse') return;
         const relatedTarget = event.relatedTarget;
         const sidebar = document.querySelector('.app__sidebar, .app-sidebar');
 
