@@ -100,7 +100,7 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
             $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($control->getCategory()));
             $sheet->setCellValue('D' . $row, $control->isApplicable() ? 'Yes' : 'No');
             $sheet->setCellValue('E' . $row, CsvSanitizer::sanitize($control->getJustification() ?? ''));
-            $sheet->setCellValue('F' . $row, $control->getImplementationStatus() ?? 'not_started');
+            $sheet->setCellValue('F' . $row, CsvSanitizer::sanitize($control->getImplementationStatus() ?? 'not_started'));
             $sheet->setCellValue('G' . $row, CsvSanitizer::sanitize($control->getImplementationNotes() ?? ''));
 
             // Shade non-applicable rows in light grey
@@ -150,8 +150,8 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
             $sheet->setCellValue('D' . $row, $control->getImplementationPercentage() ?? 0);
             $sheet->setCellValue('E' . $row, $control->getLastReviewDate()?->format('Y-m-d') ?? '');
             $sheet->setCellValue('F' . $row, $control->getEvidenceDocuments()->count());
-            $sheet->setCellValue('G' . $row, $control->getEffectiveness() ?? '');
-            $sheet->setCellValue('H' . $row, $control->getControlMaturity() ?? '');
+            $sheet->setCellValue('G' . $row, CsvSanitizer::sanitize($control->getEffectiveness() ?? ''));
+            $sheet->setCellValue('H' . $row, CsvSanitizer::sanitize($control->getControlMaturity() ?? ''));
             $sheet->setCellValue('I' . $row, $control->getTargetDate()?->format('Y-m-d') ?? '');
             $sheet->setCellValue('J' . $row, $control->getNextReviewDate()?->format('Y-m-d') ?? '');
 
@@ -252,7 +252,7 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
             $sheet->setCellValueExplicit('A' . $row, $control->getControlId(), DataType::TYPE_STRING);
             $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($control->getName()));
             $sheet->setCellValue('C' . $row, $control->isApplicable() ? 'Yes' : 'No');
-            $sheet->setCellValue('D' . $row, $control->getImplementationStatus() ?? 'not_started');
+            $sheet->setCellValue('D' . $row, CsvSanitizer::sanitize($control->getImplementationStatus() ?? 'not_started'));
             // Columns E-I left empty for the auditor
             $row++;
         }

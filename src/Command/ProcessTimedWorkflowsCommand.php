@@ -137,7 +137,7 @@ HELP
         $io->title('Time-Based Workflow Processor');
 
         // Get all active workflow instances
-        $activeWorkflows = $this->workflowInstanceRepository->findBy([
+        $activeWorkflows = $this->workflowInstanceRepository->findBy([ // @phpstan-ignore tenant.unscopedBackgroundQuery (scheduler: advances the running workflows of every organisation, each in its own record)
             'status' => WorkflowInstanceStatus::InProgress->value,
         ]);
 

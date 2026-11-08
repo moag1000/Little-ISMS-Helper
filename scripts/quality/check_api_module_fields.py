@@ -16,6 +16,10 @@ This gate keeps the two sides in step:
 Fields with no form at all (machine-fed DORA/FAIR columns on Risk) are
 annotated by hand; rule 2 still checks them.
 
+Traits count (S6, 2026-11): properties an entity takes from `use XyzTrait;`
+(src/Entity/Trait/) and field helpers a FormType takes from a trait
+(src/Form/Trait/) are read as part of the class.
+
 Usage: python3 scripts/quality/check_api_module_fields.py [--quiet]
 """
 from __future__ import annotations
@@ -36,6 +40,24 @@ PROPERTY = re.compile(r"(?:private|protected|public)\s+(?:readonly\s+)?[?\w\\|]+
 RESOURCE_MODULE = re.compile(r"^#\[RequiresModule\('([a-z0-9_]+)'\)\]", re.M)
 MODULE_FIELD = re.compile(r"[\[,]\s*ModuleField\('([a-z0-9_]+)'\)")
 WRITE_GROUP = re.compile(r"#\[Groups\(\[[^\]]*:write'")
+TRAIT_USE = re.compile(r"^    use (\w+(?:\s*,\s*\w+)*);", re.M)
+
+
+def with_traits(source: str, trait_dir: Path) -> str:
+    """The class source followed by the source of every trait it uses (recursively)."""
+    seen: set[str] = set()
+    parts = [source]
+    pending = [name.strip() for m in TRAIT_USE.finditer(source) for name in m.group(1).split(',')]
+    while pending:
+        name = pending.pop()
+        path = trait_dir / f'{name}.php'
+        if name in seen or not path.exists():
+            continue
+        seen.add(name)
+        trait = path.read_text(encoding='utf-8')
+        parts.append(trait)
+        pending += [n.strip() for m in TRAIT_USE.finditer(trait) for n in m.group(1).split(',')]
+    return '\n'.join(parts)
 
 
 def module_keys() -> set[str]:
@@ -97,7 +119,7 @@ def entity_properties(entity: str) -> dict[str, str]:
     path = ENTITIES / f'{entity}.php'
     if not path.exists():
         return {}
-    source = path.read_text(encoding='utf-8')
+    source = with_traits(path.read_text(encoding='utf-8'), ENTITIES / 'Trait')
     properties: dict[str, str] = {}
     for match in PROPERTY.finditer(source):
         # attributes = everything since the previous statement or block end
@@ -113,7 +135,7 @@ def main() -> int:
     modules = module_keys()
 
     for form in sorted(FORMS.rglob('*Type.php')):
-        source = form.read_text(encoding='utf-8')
+        source = with_traits(form.read_text(encoding='utf-8'), FORMS / 'Trait')
         data_class = DATA_CLASS.search(source)
         if not data_class:
             continue
@@ -133,7 +155,7 @@ def main() -> int:
                     f"{form.relative_to(ROOT)} only while '{module}' is active — add #[ModuleField('{module}')]"
                 )
 
-    for entity in sorted(ENTITIES.glob('*.php')):
+    for entity in sorted(ENTITIES.rglob('*.php')):
         for line_no, line in enumerate(entity.read_text(encoding='utf-8').splitlines(), 1):
             for module in MODULE_FIELD.findall(line):
                 if module not in modules:

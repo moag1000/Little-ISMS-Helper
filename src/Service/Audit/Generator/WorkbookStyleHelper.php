@@ -58,7 +58,7 @@ final class WorkbookStyleHelper
     {
         foreach ($headers as $col => $header) {
             $cellCoord = Coordinate::stringFromColumnIndex($col + 1) . $row;
-            $sheet->setCellValue($cellCoord, $header);
+            $sheet->setCellValue($cellCoord, CsvSanitizer::sanitize($header));
         }
 
         $lastCol = Coordinate::stringFromColumnIndex(count($headers));
@@ -134,7 +134,7 @@ final class WorkbookStyleHelper
     public static function writeCoverSheet(Worksheet $sheet, string $title, array $meta): void
     {
         // Title row
-        $sheet->setCellValue('A1', $title);
+        $sheet->setCellValue('A1', CsvSanitizer::sanitize($title));
         $sheet->getStyle('A1')->applyFromArray([
             'font' => [
                 'bold'  => true,

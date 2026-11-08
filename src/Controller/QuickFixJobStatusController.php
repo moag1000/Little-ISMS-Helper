@@ -39,7 +39,7 @@ class QuickFixJobStatusController extends AbstractController
     #[Route('/quick-fix/jobs/{id}/status', name: 'app_quick_fix_job_status', methods: ['GET'])]
     public function status(Request $request, QuickFixGuard $guard, string $id): JsonResponse
     {
-        if (!$guard->mayAccess($request)) {
+        if (!$guard->mayAccess($request)) { // @job-access-ok: quick-fix guard, quick-fix jobs only
             return new JsonResponse(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
         }
 
@@ -80,7 +80,7 @@ class QuickFixJobStatusController extends AbstractController
         TranslatorInterface $translator,
         string $id,
     ): Response {
-        if (!$guard->mayAccess($request)) {
+        if (!$guard->mayAccess($request)) { // @job-access-ok: quick-fix guard, quick-fix jobs only
             return $this->render('quick_fix/locked.html.twig', [
                 'token_required' => $guard->isTokenRequired(),
             ], new Response('', Response::HTTP_FORBIDDEN));

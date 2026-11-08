@@ -116,7 +116,7 @@ final class RiskRegisterWorkbookGenerator implements AuditWorkbookGeneratorInter
             $sheet->setCellValue('J' . $row, CsvSanitizer::sanitize($risk->getTreatmentStrategy()?->value ?? ''));
             $sheet->setCellValue('K' . $row, CsvSanitizer::sanitize($risk->getTreatmentDescription() ?? ''));
             $sheet->setCellValue('L' . $row, CsvSanitizer::sanitize($risk->getEffectiveRiskOwner() ?? ''));
-            $sheet->setCellValue('M' . $row, $risk->getStatus()?->value ?? '');
+            $sheet->setCellValue('M' . $row, CsvSanitizer::sanitize($risk->getStatus()?->value ?? ''));
             $sheet->setCellValue('N' . $row, $risk->isFormallyAccepted() ? 'Yes' : 'No');
             $sheet->setCellValue('O' . $row, $risk->isRequiresDPIA() ? 'Yes' : 'No');
             $sheet->setCellValue('P' . $row, $risk->getReviewDate()?->format('Y-m-d') ?? '');

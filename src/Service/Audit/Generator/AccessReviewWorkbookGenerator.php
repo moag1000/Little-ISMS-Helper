@@ -167,7 +167,7 @@ final class AccessReviewWorkbookGenerator implements AuditWorkbookGeneratorInter
             $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($item->getSubjectUser()?->getFullName() ?? ''));
             $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($item->getSubjectUser()?->getEmail() ?? ''));
             $sheet->setCellValue('D' . $row, CsvSanitizer::sanitize($item->getReviewedRole() ?? ''));
-            $sheet->setCellValue('E' . $row, $item->getDecision());
+            $sheet->setCellValue('E' . $row, CsvSanitizer::sanitize($item->getDecision()));
             $sheet->setCellValue('F' . $row, CsvSanitizer::sanitize($item->getDecidedBy()?->getEmail() ?? ''));
             $sheet->setCellValue('G' . $row, $item->getDecidedAt()?->format('Y-m-d H:i:s') ?? '');
             $sheet->setCellValue('H' . $row, CsvSanitizer::sanitize($item->getComment() ?? ''));
