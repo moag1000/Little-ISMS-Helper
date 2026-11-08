@@ -17,7 +17,7 @@
 {{ _fa_page_header.render({
     title: program.name,
     subtitle: program.startDate|fa_date ~ ' – ' ~ program.endDate|fa_date,
-    actions: is_granted('ROLE_MANAGER') ? [
+    actions: (is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', program)) ? [
         { label: 'audit_program.action.edit'|trans({}, 'audit_program'), href: path('app_audit_program_edit', {_locale: app.request.locale, id: program.id}), variant: 'secondary', icon: 'pencil' }
     ] : []
 }) }}

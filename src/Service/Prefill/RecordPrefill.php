@@ -12,13 +12,16 @@ use App\Entity\Location;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Tenant;
+use App\Entity\Training;
 use App\Entity\Vulnerability;
 use App\Repository\AssetRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\LocationRepository;
 use App\Repository\RiskRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Service\Deadline\Source\ManagementTrainingSource;
 use App\Service\Location\LocationLayers;
+use DateTimeImmutable;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -30,7 +33,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * else is ignored silently, so a foreign id never leaks data into a form.
  *
  * Sources: Risk ← Vulnerability, Incident, Asset, Location (map quick action);
- * Treatment plan ← Risk; internal audit and BC exercise ← Location (map).
+ * Treatment plan ← Risk; internal audit and BC exercise ← Location (map);
+ * board training ← the members of top management due (NIS-2 Art. 20 (2)).
  * Control → evidence needs no form: the control page uploads evidence in place.
  */
 class RecordPrefill
@@ -43,7 +47,29 @@ class RecordPrefill
         private readonly RiskRepository $riskRepository,
         private readonly LocationRepository $locationRepository,
         private readonly LocationLayers $locationLayers,
+        private readonly ?ManagementTrainingSource $managementTraining = null,
     ) {
+    }
+
+    /**
+     * Board training (NIS-2 Art. 20 (2)): `?forBoard=1` opens a mandatory
+     * training with every member of top management whose training is due
+     * within the reminder's lead time as participant.
+     */
+    public function boardTraining(Training $training, Request $request, ?Tenant $tenant): void
+    {
+        if (!$request->query->getBoolean('forBoard') || $tenant === null || $this->managementTraining === null) {
+            return;
+        }
+        $training->setTitle($this->trans('training.prefill.board_title', [], 'training'));
+        $training->setTrainingType('compliance');
+        $training->setMandatory(true);
+        $horizon = new DateTimeImmutable(sprintf('+%d days', $this->managementTraining->profile()->leadDays ?? 30));
+        foreach ($this->managementTraining->trainees($tenant) as $trainee) {
+            if ($trainee->dueAt <= $horizon) {
+                $training->addParticipantUser($trainee->user);
+            }
+        }
     }
 
     /** Audit of one site: scope type "location", the site, a title naming it. */

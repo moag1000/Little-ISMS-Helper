@@ -187,42 +187,9 @@
             {% endembed %}
         </div>
 
-        {# Pending Approvals #}
+        {# What is waiting for this person — every deadline source, same list as My Day #}
         <div class="col-lg-6">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
-                {% block card_header %}
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="fa-icon fa-icon--audit-internal me-2" aria-hidden="true"></i>
-                            {{ 'ciso.section.pending_approvals'|trans({}, 'dashboards') }}
-                        </h5>
-                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: dashboard.pending_approvals|length } %}
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-                    {% if dashboard.pending_approvals|length > 0 %}
-                        <div class="list-group list-group-flush">
-                            {% for approval in dashboard.pending_approvals %}
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">{{ approval.title }}</h6>
-                                        <small class="text-muted">{{ approval.entity_type }}</small>
-                                    </div>
-                                    <small class="text-muted">{{ approval.created_at|fa_date }}</small>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ _fa_empty_state.render({
-                            mood: 'celebrating',
-                            title: 'ciso.no_pending_approvals'|trans({}, 'dashboards')
-                        }) }}
-                    {% endif %}
-                {% endblock %}
-            {% endembed %}
+            {% include 'dashboards/_my_obligations.html.twig' %}
         </div>
     </div>
 
@@ -338,6 +305,8 @@
         </div>
     </section>
     {% endif %}
+    {% include 'dashboards/_report_downloads.html.twig' %}
+
     {# Last Updated Timestamp #}
     <div class="text-muted text-end small mt-3">
         {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}

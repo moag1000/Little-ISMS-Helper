@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\Location\LocationScope;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Security\Voter\RiskAcceptanceVoter;
+use App\Security\Voter\RiskVoter;
+use Symfony\Component\ExpressionLanguage\Expression;
 use App\Security\Voter\AsyncJobVoter;
 use App\Service\BulkDeleteService;
 use App\Entity\User;
@@ -718,10 +721,9 @@ class RiskController extends AbstractController
     }
 
     #[Route('/risk/{id}/edit', name: 'app_risk_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(RiskVoter::EDIT, subject: 'risk')]
     public function edit(Request $request, Risk $risk): Response
     {
-        // Get current user's tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
@@ -735,11 +737,7 @@ class RiskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush();
-
-            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required.
-
+            $this->entityManager->flush(); // auto-progression: FieldCompletionAutoTransition (postUpdate)
             $this->flashSuccess('risk.success.updated');
 
             if ($this->isTurboFrameRequest($request)) {
@@ -802,7 +800,7 @@ class RiskController extends AbstractController
      * ISO 27005:2022 Section 8.4.4
      */
     #[Route('/risk/{id}/request-acceptance', name: 'app_risk_request_acceptance', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'risk')]
     public function requestAcceptance(Request $request, Risk $risk): Response
     {
         $user = $this->security->getUser();

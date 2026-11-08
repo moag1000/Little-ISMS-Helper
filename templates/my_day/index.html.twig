@@ -176,7 +176,7 @@
                             'interested_party_communication': 'nav-people', 'nis2_registration': 'nav-file-check'
                         } %}
                         {% set canDecideWorkflow = item.decision.decidable ?? false %}
-                        {% set canDecideFourEyes = (item.four_eyes_id ?? null) and is_granted('ROLE_MANAGER') %}
+                        {% set canDecideFourEyes = (item.four_eyes_id ?? null) %}
                         <div class="list-group-item my-day-item">
                             <div class="my-day-item__main">
                                 <a href="{{ item.link }}" class="fw-bold my-day-item__title">
@@ -247,8 +247,9 @@
                     {% endfor %}
                 </div>
                 {# Overdue reviews: jump to the filtered list, where "Review bestätigen" confirms several at once. #}
-                {% set _reviewList = { risk_review_overdue: 'app_risk_index', documents_review_overdue: 'app_document_index', supplier_reassessment_due: 'app_supplier_index' }[c.key] ?? null %}
-                {% if _reviewList and is_granted('ROLE_MANAGER') %}
+                {% set _reviewList = { risk_review_overdue: 'app_risk_index', control_review_due: 'app_soa_index', documents_review_overdue: 'app_document_index', supplier_reassessment_due: 'app_supplier_index' }[c.key] ?? null %}
+                {# Risks and controls: owners confirm their own there too (edit voter per record); documents, suppliers: managers. #}
+                {% if _reviewList and (is_granted('ROLE_MANAGER') or c.key in ['risk_review_overdue', 'control_review_due']) %}
                     <div class="mt-2 d-grid d-sm-block">
                         <a href="{{ path(_reviewList, { review_overdue: '1' }) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'my_day.action.review_in_list'|trans({}, 'my_day') }}</a>
                     </div>
@@ -284,7 +285,7 @@
                         hidden: { _back: 'my_day' },
                     }) }}
                 {% endfor %}
-            {% elseif (item.four_eyes_id ?? null) and is_granted('ROLE_MANAGER') %}
+            {% elseif (item.four_eyes_id ?? null) %}
                 {% include 'four_eyes/_reject_modal.html.twig' with { requestId: item.four_eyes_id } only %}
             {% endif %}
         {% endfor %}

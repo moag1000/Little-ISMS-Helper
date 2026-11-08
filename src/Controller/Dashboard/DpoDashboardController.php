@@ -8,6 +8,7 @@ use App\Attribute\RequiresModule;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
+use App\Repository\DataSubjectRequestRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ModuleConfigurationService;
@@ -28,6 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *   - Processing activities requiring DPIA
  *   - Processing activities due for review
  *   - Processing activities with third-country transfers
+ *   - Open data subject requests (Art. 12 (3)) and the DPO's open duties
  *   - Quick actions (VVT export, DPIA list, data breaches)
  *
  * Module gate: 'privacy'. Role gate: PERSONA_DPO (Role-Scope —
@@ -48,6 +50,7 @@ final class DpoDashboardController extends AbstractController
         private readonly TisaxMaturityAssessmentService $tisaxAssessment,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly DataSubjectRequestRepository $dsrRepo,
     ) {
     }
 
@@ -79,8 +82,7 @@ final class DpoDashboardController extends AbstractController
         // Processing activities with third-country transfers (Art. 44-49 GDPR)
         $thirdCountryTransfers = $this->processingActivityRepo->findWithThirdCountryTransfers($tenant);
 
-        // Z.0 — workflow transparency
-        $pendingApprovals = $this->roleDashboardService->getPendingApprovals();
+        // Z.0 — workflow transparency; open duties come from _my_obligations (ObligationInbox)
         $lifecycleStuck   = $this->roleDashboardService->getLifecycleStuck();
 
         // TISAX DP-tier aggregate — DPO sees data_protection chapter 9 compliance only
@@ -106,7 +108,7 @@ final class DpoDashboardController extends AbstractController
                 'activities_needing_dpia'  => $activitiesNeedingDpia,
                 'activities_due_review'    => $activitiesDueReview,
                 'third_country_transfers'  => $thirdCountryTransfers,
-                'pending_approvals'        => $pendingApprovals,
+                'open_dsrs'                => $this->dsrRepo->findConvertibleForTenant($tenant),
                 'lifecycle_stuck'          => $lifecycleStuck,
                 'tisax_dp_aggregate'       => $tisaxDpAggregate,
             ],

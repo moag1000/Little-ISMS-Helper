@@ -37,6 +37,11 @@ final class Nis2BsiRegistrationService
      * Returns the existing registration profile for the tenant, or creates
      * a new one pre-populated with defaults from Tenant entity fields.
      */
+    public function findProfile(Tenant $tenant): ?Nis2RegistrationProfile
+    {
+        return $this->profileRepository->findForTenant($tenant);
+    }
+
     public function getOrCreateProfile(Tenant $tenant): Nis2RegistrationProfile
     {
         $profile = $this->profileRepository->findForTenant($tenant);

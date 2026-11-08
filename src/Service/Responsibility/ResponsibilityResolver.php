@@ -34,6 +34,9 @@ class ResponsibilityResolver implements ResetInterface
     /** @var array<int, list<User>> active users per tenant id, request-local */
     private array $usersByTenant = [];
 
+    /** @var array<string, list<User>> responsible accounts per record, request-local */
+    private array $responsibleByRecord = [];
+
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly PersonaResolver $personaResolver,
@@ -45,6 +48,7 @@ class ResponsibilityResolver implements ResetInterface
     public function reset(): void
     {
         $this->usersByTenant = [];
+        $this->responsibleByRecord = [];
     }
 
     /**
@@ -130,6 +134,24 @@ class ResponsibilityResolver implements ResetInterface
         }
 
         return $this->resolve($source->responsibleOf($record), $tenant);
+    }
+
+    /**
+     * Whether the user is one who has to act on this record (holder, deputy or
+     * fallback role of its deadline source, admins as last resort). The answer
+     * behind the `RECORD_RESPONSIBLE` voter attribute: "role OR responsible".
+     */
+    public function isResponsibleFor(User $user, object $record): bool
+    {
+        $id = method_exists($record, 'getId') ? $record->getId() : null;
+        $key = $record::class . '#' . (is_scalar($id) ? (string) $id : 'o' . spl_object_id($record));
+        foreach ($this->responsibleByRecord[$key] ??= $this->responsibleFor($record) as $candidate) {
+            if ($candidate === $user || ($candidate->getId() !== null && $candidate->getId() === $user->getId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

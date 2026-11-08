@@ -210,3 +210,27 @@ search_nav:
     register_interfaces:
         label: 'Schnittstellen des Geltungsbereichs'
         description: 'Abhängigkeiten zu anderen Organisationen, ISO 27001 4.3 c'
+    app_management_review_index:
+        label: 'Managementbewertungen'
+        description: 'Bewertung des ISMS durch die Leitung, ISO 27001 9.3'
+    app_processing_activity_index:
+        label: 'Verzeichnis von Verarbeitungstätigkeiten'
+        description: 'VVT nach DSGVO Art. 30'
+    app_dpia_index:
+        label: 'Datenschutz-Folgenabschätzungen'
+        description: 'DSFA nach DSGVO Art. 35'
+    app_data_breach_index:
+        label: 'Datenpannen'
+        description: 'Verletzungen des Schutzes personenbezogener Daten, DSGVO Art. 33/34'
+    app_data_subject_request_index:
+        label: 'Betroffenenanfragen'
+        description: 'Anfragen betroffener Personen, DSGVO Art. 12–22'
+    app_data_retention_overview:
+        label: 'Anstehende Löschungen'
+        description: 'Was die Löschung nach Aufbewahrungsfrist als Nächstes entfernt, DSGVO Art. 5 Abs. 1 e'
+    app_audit_program_index:
+        label: 'Auditprogramme'
+        description: 'Mehrjährige Planung der internen Audits, ISO 27001 9.2.2'
+    app_audit_finding_index:
+        label: 'Audit-Feststellungen'
+        description: 'Feststellungen und Abweichungen aus Audits, ISO 27001 10.2'

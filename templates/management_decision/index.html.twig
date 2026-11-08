@@ -19,6 +19,8 @@
         ] : []
     }) }}
 
+    {% include '_components/_top_management_role_hint.html.twig' with { dismissable: false, cta: true } %}
+
     {% embed '_components/_fa_list_page.html.twig' with {
         page: page,
         search_action: path('app_management_decision_index'),

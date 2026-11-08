@@ -271,6 +271,7 @@ user:
     top_management_hint:
         title: 'Wer ist bei euch die Leitung?'
         body: 'Billigungen der Leitung (Entscheidungen, hohe Risikoakzeptanzen, Abschluss der Managementbewertung) gehen nur noch mit der Rolle „Leitung“. Admins erben sie nicht mehr, und in eurer Organisation hat sie noch niemand. Weise sie der Geschäftsführung zu, auch dir selbst, wenn du dazugehörst.'
+        body_ask_admin: 'Billigungen der Leitung (Entscheidungen, hohe Risikoakzeptanzen, Abschluss der Managementbewertung) gehen nur mit der Rolle „Leitung“, und in eurer Organisation hat sie noch niemand. Bitte einen Admin, sie der Geschäftsführung zuzuweisen.'
         cta: 'Rolle Leitung zuweisen'
     role_hierarchy:
         title: 'Rollen-Hierarchie'

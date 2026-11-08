@@ -68,6 +68,24 @@ Entscheidungsfenster: worum es geht (Datensatz), bei Risiken die Geschäftszeile
 
 Nach der Entscheidung kehrt die Seite zu "Mein Tag" zurück.
 
+## Handeln, wo erinnert wird
+
+Wer in "Mein Tag" oder in der Sammelmail an einen Datensatz erinnert wird, kann ihn dort
+auch bearbeiten — auch ohne Manager-Rolle: der Risiko-Verantwortliche sein Risiko, der
+Control-Verantwortliche sein Control, die zuständige Person ihre Betroffenenanfrage,
+Datenpanne, Aufgabe aus der Managementbewertung, ihr Auditprogramm, die benannte
+Freigabeperson ihre Vier-Augen-Anfrage. Andere Datensätze bleiben für Benutzer ohne
+Manager-Rolle lesbar, aber nicht bearbeitbar.
+
+- **Risikoakzeptanz**: "Akzeptanz anfordern" auf der Risikoseite; die Entscheidung
+  erscheint je nach Freigabestufe bei Risikomanagement/ISB/CISO oder bei der Leitung,
+  auch in der Sammelmail.
+- **Keine Leitung zugewiesen**: solange niemand die Rolle "Leitung" hat, erinnert
+  "Mein Tag" die Administration (ISB und CISO informiert); die Rolle vergibt die
+  Administration in der Benutzerverwaltung.
+- **Löschfristen**: der Datenschutzbeauftragte sieht unter *Anstehende Löschungen*
+  (`/data-retention`), was die Löschung nach Aufbewahrungsfrist als Nächstes entfernt.
+
 ## Auf dem Smartphone
 
 Für den Fall "Risk Owner, unterwegs, eine Freigabe" ist "Mein Tag" auf kleine
@@ -108,9 +126,12 @@ um. Vier-Augen- und Policy-Posteingang bleiben auf Dichte "Experte" erreichbar.
 ## Fällige Reviews gesammelt bestätigen
 
 Die Kategorien Risiko-Reviews, Dokument-Reviews und Lieferanten-Reassessments haben
-für Manager die Schaltfläche **In der Liste bestätigen**. Sie öffnet die Liste mit dem
-Filter "Review fällig"; dort Einträge auswählen und in der Auswahlleiste **Review
-bestätigen** klicken. Dieselbe Aktion gibt es in der SoA-Liste für Controls.
+für Manager die Schaltfläche **In der Liste bestätigen**; Risiko- und Control-Reviews
+haben sie für jeden, der dort erinnert wird (Risiko- oder Control-Verantwortliche).
+Sie öffnet die Liste mit dem Filter "Review fällig"; dort Einträge auswählen und in der
+Auswahlleiste **Review bestätigen** klicken. Dieselbe Aktion gibt es in der SoA-Liste für
+Controls und als Schaltfläche **Review bestätigen** auf der Detailseite eines Risikos oder
+Controls.
 
 "Fällig" heißt: Termin überschritten oder noch nie geprüft. Der Chip "Review fällig: N"
 zählt die Einträge der eigenen Organisation. Die Bestätigung speichert heute als

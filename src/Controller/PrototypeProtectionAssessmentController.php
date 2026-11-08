@@ -11,12 +11,14 @@ use App\Util\ListPage;
 use App\Form\PrototypeProtectionAssessmentType;
 use App\Repository\PrototypeProtectionAssessmentRepository;
 use App\Security\TenantOwnership;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -28,8 +30,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Supports the full assessment lifecycle:
  *   draft → in_review → approved/rejected → expired
+ *
+ * ROLE_MANAGER, except that the assessor (RecordResponsibleVoter) opens, edits
+ * and prints the assessment they are reminded to reassess.
  */
-#[IsGranted('ROLE_MANAGER')]
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/prototype-protection', name: 'app_prototype_protection_')]
 class PrototypeProtectionAssessmentController extends AbstractController
@@ -48,6 +52,7 @@ class PrototypeProtectionAssessmentController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('tisax')) return $redirect;
@@ -73,6 +78,7 @@ class PrototypeProtectionAssessmentController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('tisax')) return $redirect;
@@ -114,6 +120,7 @@ class PrototypeProtectionAssessmentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'assessment')]
     public function show(Request $request, PrototypeProtectionAssessment $assessment): Response
     {
         if ($redirect = $this->checkModuleActive('tisax')) return $redirect;
@@ -133,6 +140,7 @@ class PrototypeProtectionAssessmentController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'assessment')]
     public function edit(Request $request, PrototypeProtectionAssessment $assessment): Response
     {
         if ($redirect = $this->checkModuleActive('tisax')) return $redirect;
@@ -172,6 +180,7 @@ class PrototypeProtectionAssessmentController extends AbstractController
     }
 
     #[Route('/{id}/pdf', name: 'pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'assessment')]
     public function pdf(PrototypeProtectionAssessment $assessment): Response
     {
         if ($redirect = $this->checkModuleActive('tisax')) return $redirect;

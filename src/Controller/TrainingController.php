@@ -20,6 +20,7 @@ use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Clone\TrainingCloner;
 use App\Service\FileUploadSecurityService;
+use App\Service\Prefill\RecordPrefill;
 use App\Service\TenantContext;
 use App\Util\ListPage;
 use DateTimeImmutable;
@@ -56,6 +57,7 @@ class TrainingController extends AbstractController
         private readonly ?FileUploadSecurityService $fileUploadSecurityService = null,
         private readonly ?string $projectDir = null,
         private readonly ?TrainingCloner $trainingCloner = null,
+        private readonly ?RecordPrefill $recordPrefill = null,
     ) {}
     #[Route('/training', name: 'app_training_index', methods: ['GET'])]
     public function index(Request $request): Response
@@ -80,6 +82,14 @@ class TrainingController extends AbstractController
             $inheritanceInfo = ['hasParent' => false, 'hasSubsidiaries' => false, 'currentView' => 'own'];
         }
 
+        // ?participant=<user id>: trainings that person takes part in (NIS-2 board-training reminder, W1).
+        $participantUser = $this->userRepository?->find($request->query->getInt('participant'));
+        $participant = $participantUser !== null && $participantUser->getTenant() === $tenant ? (int) $participantUser->getId() : 0;
+        if ($participant > 0) {
+            $trainings = array_values(array_filter($trainings, static fn (Training $t): bool => $t->getParticipantUsers()
+                ->exists(static fn ($k, $u): bool => $u->getId() === $participant)));
+        }
+
         $upcoming = $this->trainingRepository->findUpcoming();
         $statistics = [
             'total' => count($trainings),
@@ -98,6 +108,7 @@ class TrainingController extends AbstractController
             'statistics' => $statistics,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
+            'participantFilter' => $participant > 0 ? $participantUser : null,
         ]);
     }
     #[Route('/training/new', name: 'app_training_new', methods: ['GET', 'POST'])]
@@ -106,6 +117,7 @@ class TrainingController extends AbstractController
     {
         $training = new Training();
         $training->setTenant($this->tenantContext->getCurrentTenant());
+        $this->recordPrefill?->boardTraining($training, $request, $training->getTenant());
 
         $form = $this->createForm(TrainingType::class, $training);
         $form->handleRequest($request);

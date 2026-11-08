@@ -424,6 +424,7 @@ risk:
       4: 'Hoch'
       5: 'Katastrophal'
   acceptance:
+    request_action: Akzeptanz anfordern
     title: Risikoakzeptanz beantragen
     request: Antrag auf Risikoakzeptanz
     justification_label: Begründung für die Risikoakzeptanz

@@ -1927,6 +1927,10 @@ bulk_actions:
         default_reason: 'Bulk action via SoA table'
 
 periodic_review:
+    confirm_one: 'Confirm review'
+    flash:
+        confirmed: 'Review confirmed.'
+        not_reviewable: 'No periodic review for this record (e.g. closed or not applicable).'
     due_filter: 'Review due: %count%'
     due_hint: 'Date passed or never reviewed'
 

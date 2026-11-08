@@ -221,7 +221,7 @@
                                             <td>{{ task.dueDate|fa_date }}</td>
                                             <td>{{ ('planning.action_item.status.' ~ task.status)|trans({}, 'planning') }}</td>
                                             <td class="text-end">
-                                                {% if not _closed and is_granted('ROLE_MANAGER') %}
+                                                {% if not _closed and (is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', task)) %}
                                                     <form method="post" action="{{ path('app_management_review_task_done', {id: review.id, task: task.id}) }}" class="d-inline">
                                                         <input type="hidden" name="_token" value="{{ csrf_token('mr_task_done_' ~ task.id) }}">
                                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'management_review.task.done'|trans({}, 'management_review') }}</button>

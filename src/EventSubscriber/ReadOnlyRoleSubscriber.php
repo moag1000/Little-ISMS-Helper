@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Security\Voter\RecordResponsibleVoter;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +26,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * own profile / MFA / preferences, notifications, decisions they are
  * assigned to (the action's own voter still checks the assignment), own
  * reports and exports, plus every action whose #[IsGranted] names a reviewer
- * role (SoA snapshot, effectiveness review, exercise-log confirmation, …).
+ * role (SoA snapshot, effectiveness review, exercise-log confirmation, …)
+ * or accepts the record's responsible person (RecordResponsibleVoter).
  * Opening a create / edit / clone form is refused too, so the user does not
  * fill in a form that cannot be saved.
  */
@@ -169,6 +172,12 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
     {
         foreach ($event->getAttributes(IsGranted::class) as $isGranted) {
             if (is_string($isGranted->attribute) && in_array($isGranted->attribute, self::REVIEWER_ATTRIBUTES, true)) {
+                return true;
+            }
+            // "role OR responsible" (W1): the one named on the record acts there,
+            // whatever their role — RecordResponsibleVoter has checked the assignment.
+            if ($isGranted->attribute instanceof Expression
+                && str_contains((string) $isGranted->attribute, RecordResponsibleVoter::RESPONSIBLE)) {
                 return true;
             }
         }

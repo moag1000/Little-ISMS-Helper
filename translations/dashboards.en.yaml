@@ -294,15 +294,18 @@ dpo:
         dora_obligation: 'DORA obligation'
         dora_obligated: 'Obligated'
         dora_roi_link: 'Open RoI'
+    open_dsrs_all: 'All %count% open requests'
     section:
         open_breaches: 'Open Data Breaches (Art. 33 GDPR)'
         dpias_in_progress: 'Data Protection Impact Assessments in Progress (Art. 35 GDPR)'
         activities_needing_dpia: 'Processing Activities Without DPIA'
         quick_actions: 'Quick Actions'
         dora_status: 'DORA obligation status'
+        open_dsrs: 'Open data subject requests (GDPR Art. 12(3))'
         pending_approvals: 'Pending Approvals'
         lifecycle_stuck: 'Overdue Lifecycles'
     empty:
+        no_dsrs_title: 'No open data subject requests.'
         no_breaches_title: 'No Open Data Breaches'
         no_breaches_text: 'There are currently no open data breaches to handle.'
         no_dpias_title: 'No DPIAs in Progress'

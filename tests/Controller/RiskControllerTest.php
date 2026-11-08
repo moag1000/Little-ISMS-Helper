@@ -919,13 +919,29 @@ class RiskControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testRequestAcceptanceRequiresManagerRole(): void
+    public function testRequestAcceptanceRequiresManagerRoleOrRiskOwner(): void
     {
-        $this->loginAsUser($this->testUser);
+        // W1: a plain user who does not own the risk may not request its acceptance …
+        $other = (new User())->setEmail(uniqid('other_', true) . '@example.com')->setFirstName('Other')->setLastName('User')
+            ->setRoles(['ROLE_USER'])->setPassword('hashed_password')->setTenant($this->testTenant)->setIsActive(true);
+        $this->entityManager->persist($other);
+        $this->entityManager->flush();
+        $this->loginAsUser($other);
 
         $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/request-acceptance');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function testRiskOwnerReachesRequestAcceptance(): void
+    {
+        // … the risk owner (testUser, ROLE_USER) may: they are the one reminded to act.
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/request-acceptance');
+
+        self::assertNotSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
     #[Test]

@@ -232,7 +232,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
     #[Test]
     public function dashboardPayloadContainsWorkflowTransparencyKeys(): void
     {
-        // Z.0 — verify pending_approvals + lifecycle_stuck keys exist in payload
+        // Z.0 — verify lifecycle_stuck exists in payload
         $tenant = $this->createMock(Tenant::class);
         $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
 
@@ -248,9 +248,9 @@ class ComplianceManagerDashboardControllerTest extends TestCase
         $this->controller->index();
 
         $this->assertNotNull($this->renderedDashboard);
-        $this->assertArrayHasKey('pending_approvals', $this->renderedDashboard);
+        // W1: open approvals are part of the "Meine Pflichten" panel, not a second list.
+        $this->assertArrayNotHasKey('pending_approvals', $this->renderedDashboard);
         $this->assertArrayHasKey('lifecycle_stuck', $this->renderedDashboard);
-        $this->assertIsArray($this->renderedDashboard['pending_approvals']);
         $this->assertIsArray($this->renderedDashboard['lifecycle_stuck']);
     }
 

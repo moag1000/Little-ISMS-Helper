@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'privacy.data_retention.overview.title'|trans({}, 'privacy') }}{% endblock %}
+
+{% block body %}
+    {{ _fa_page_header.render({
+        title: 'privacy.data_retention.overview.title'|trans({}, 'privacy'),
+        subtitle: 'privacy.data_retention.overview.subtitle'|trans({}, 'privacy'),
+        actions: is_granted('ROLE_ADMIN') ? [
+            { label: 'privacy.data_retention.overview.change_policy'|trans({}, 'privacy'), variant: 'ghost', href: path('admin_settings_data_retention') }
+        ] : [],
+    }) }}
+
+    {% embed '_components/_fa_table.html.twig' with { id: 'retention-overview' } %}
+        {% block table_head %}
+            <tr>
+                <th class="fa-table__th" scope="col">{{ 'admin.data_retention.col.entity_type'|trans({}, 'admin') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'admin.data_retention.col.retention_days'|trans({}, 'admin') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'admin.data_retention.col.auto_delete'|trans({}, 'admin') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'privacy.data_retention.overview.col.next_deletion'|trans({}, 'privacy') }}</th>
+                <th class="fa-table__th fa-table__th--actions" scope="col"><span class="visually-hidden">{{ 'common.actions'|trans({}, 'messages') }}</span></th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for row in rows %}
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell">{{ ('admin.data_retention.entity.' ~ row.type)|trans({}, 'admin') }}</td>
+                    <td class="fa-table__cell">{{ row.days }}</td>
+                    <td class="fa-table__cell">{{ (row.auto_delete ? 'common.yes' : 'common.no')|trans({}, 'messages') }}</td>
+                    <td class="fa-table__cell">
+                        {% if row.upcoming %}
+                            {{ 'privacy.data_retention.overview.upcoming'|trans({'%count%': row.upcoming.count, '%date%': row.upcoming.deletesAt|fa_date}, 'privacy') }}
+                        {% else %}—{% endif %}
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--actions">
+                        {% if row.upcoming and row.list_route %}
+                            <a href="{{ path(row.list_route) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'privacy.data_retention.overview.open_list'|trans({}, 'privacy') }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

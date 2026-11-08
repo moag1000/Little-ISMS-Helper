@@ -210,6 +210,43 @@ them; My Day and the reminder mails use it, decisions (`resolve()`,
 statutory report (also when the incident has an owner), top management on an
 upcoming management review, the person whose access ends.
 
+## Act where reminded (`RecordResponsibleVoter`)
+
+Whoever My Day or the reminder mail sends to a record may act on it there.
+The voter attribute `RECORD_RESPONSIBLE` asks the resolver
+(`isResponsibleFor($user, $record)`, cached per request); actions a role may do
+anyway accept "role OR responsible":
+
+```php
+#[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dsr')]
+```
+
+- `MANAGER_OR_RESPONSIBLE` — decisions and status actions (DSR, data breach,
+  management review task, risk "Akzeptanz anfordern", four-eyes approval,
+  audit programme and prototype-protection edit).
+- `AUDITOR_OR_RESPONSIBLE` — read pages normally for reviewers (audit programme).
+- `EDIT_OR_RESPONSIBLE` — records everyone may edit (Maßnahmen, teams): the
+  `edit` voter, read-only reviewer roles only when responsible.
+- `RiskVoter`, `ControlVoter` and `Nis2RegistrationProfileVoter` answer EDIT
+  (VIEW for NIS-2) the same way: manager scope, the permission, or responsible.
+  A plain user no longer edits every risk of the organisation, only their own.
+
+`ReadOnlyRoleSubscriber` lets such actions through for reviewer roles (top
+management named on a task marks it done); the voter has checked the
+assignment.
+
+**Permanent check:** `tests/Service/Deadline/DeadlineLinkReachabilityTest.php`
+takes every source's `link()` route and the roles of `responsibleOf()` (plus a
+plain user and top management as record holders) and fails when the route's
+`#[IsGranted]`, `/admin` prefix or the read-only rule shuts one of them out. A
+new source whose link the reminded person cannot open fails CI.
+
+Two duties live here because nothing else carried them:
+`RiskAcceptanceRequestSource` (a requested risk acceptance, to the approval
+level's role — risk personas or top management — so it reaches mail and MCP
+`my_day`) and `BoardUnassignedSource` (no account holds ROLE_TOP_MGMT: admins
+act, ISB and CISO are informed; link = decision register with the role hint).
+
 Persona questions (landing page, dashboard, tour, downloads) stay with
 `PersonaResolver`; the responsibility resolver builds on it for role checks.
 

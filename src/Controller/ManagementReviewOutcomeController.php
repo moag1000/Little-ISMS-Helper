@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Form\ManagementReviewTaskType;
 use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleTransitionInterface;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\ManagementReview\ReviewOutcomeService;
 use App\Service\Planning\InvalidActionItemTransitionException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -59,7 +60,7 @@ final class ManagementReviewOutcomeController extends AbstractController
     }
 
     #[Route('/management-review/{id}/tasks/{task}/done', name: 'app_management_review_task_done', requirements: ['id' => '\d+', 'task' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'task')]
     #[IsCsrfTokenValid(new Expression('"mr_task_done_" ~ args["task"].getId()'))]
     public function completeTask(
         #[MapEntity(id: 'id')] ManagementReview $review,

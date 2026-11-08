@@ -265,6 +265,9 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
   inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.
+  Who is reminded may act there: `RecordResponsibleVoter` (`RECORD_RESPONSIBLE`), actions take
+  `#[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'x')]` ("role OR
+  responsible"); `DeadlineLinkReachabilityTest` fails when a source's link shuts out who it reminds.
 - `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
   `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
   My Day and reminder mails read only from these; a new norm = new sources. A duty that is one date field of one

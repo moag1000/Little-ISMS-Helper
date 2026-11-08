@@ -14,10 +14,12 @@ use App\Service\Review\PeriodicReviewService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -25,7 +27,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * supplier lists: confirms the periodic review of the selected records in
  * one step. The rules (who takes part, next date) live in
  * {@see PeriodicReviewService}; this controller only does CSRF, role,
- * module gate and tenant scope.
+ * module gate and tenant scope. Risks and controls: every user, the edit
+ * voter per record admits managers and owners; documents and suppliers:
+ * ROLE_MANAGER.
  *
  * Body: { ids: [..], _token } — shared `bulk_action` CSRF token.
  * Returns: { ok, changed, rejected: [{id, reason}], batch_id }.
@@ -42,7 +46,8 @@ final class BulkReviewController extends AbstractController
     }
 
     #[Route('/risk/bulk-review', name: 'app_risk_bulk_review', methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    // Owners confirm their own records: PeriodicReviewService checks the edit voter per record.
+    #[IsGranted('ROLE_USER')]
     #[RequiresModule('risks')]
     public function risks(Request $request): JsonResponse
     {
@@ -50,7 +55,8 @@ final class BulkReviewController extends AbstractController
     }
 
     #[Route('/soa/bulk-review', name: 'app_soa_bulk_review', methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    // Owners confirm their own records: PeriodicReviewService checks the edit voter per record.
+    #[IsGranted('ROLE_USER')]
     #[RequiresModule('controls')]
     public function controls(Request $request): JsonResponse
     {
@@ -70,6 +76,41 @@ final class BulkReviewController extends AbstractController
     public function suppliers(Request $request): JsonResponse
     {
         return $this->confirm($request, Supplier::class, 'Supplier');
+    }
+
+    /**
+     * Single-record "Review bestätigen" on the detail page: the review reminder
+     * of a control or risk links there, and its owner confirms it in one step
+     * (W1). Same rules as the bulk action; the `edit` voter admits managers and
+     * whoever is responsible for the record.
+     */
+    #[Route('/soa/{id}/review', name: 'app_soa_review_confirm', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('edit', subject: 'control')]
+    #[IsCsrfTokenValid(new Expression('"review_confirm_" ~ args["control"].getId()'))]
+    #[RequiresModule('controls')]
+    public function confirmControl(Control $control): Response
+    {
+        return $this->confirmOne($control, 'Control', 'app_soa_show');
+    }
+
+    #[Route('/risk/{id}/review', name: 'app_risk_review_confirm', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('edit', subject: 'risk')]
+    #[IsCsrfTokenValid(new Expression('"review_confirm_" ~ args["risk"].getId()'))]
+    #[RequiresModule('risks')]
+    public function confirmRisk(Risk $risk): Response
+    {
+        return $this->confirmOne($risk, 'Risk', 'app_risk_show');
+    }
+
+    private function confirmOne(Control|Risk $entity, string $entityType, string $showRoute): Response
+    {
+        $result = $this->periodicReviewService->confirm($entityType, [$entity]);
+        $this->addFlash(
+            $result['changed'] > 0 ? 'success' : 'warning',
+            $result['changed'] > 0 ? 'periodic_review.flash.confirmed' : 'periodic_review.flash.not_reviewable',
+        );
+
+        return $this->redirectToRoute($showRoute, ['id' => $entity->getId()]);
     }
 
     /**

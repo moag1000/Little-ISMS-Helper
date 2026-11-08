@@ -38,7 +38,7 @@
                 </div>
             {% endfor %}
         </div>
-        {% if total|default(0) > auditLogs|length %}
+        {% if total|default(0) > auditLogs|length and is_granted('ROLE_ADMIN') %}
             <a href="{{ path('app_audit_log_index', {entity: entityType, entityId: entityId}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm mt-3">
                 {{ 'action.view_all'|trans({}, 'messages') }} ({{ total }})
             </a>

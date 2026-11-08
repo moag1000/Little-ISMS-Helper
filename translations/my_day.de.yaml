@@ -8,6 +8,7 @@ my_day:
         review_in_list: 'In der Liste bestätigen'
         standard_dashboard: 'Standard-Dashboard'
 
+    board_unassigned_title: 'Keine Leitung zugewiesen: Rolle „Leitung“ (ROLE_TOP_MGMT) in der Benutzerverwaltung vergeben, sonst bleiben Leitungsentscheidungen liegen'
     retention_title: '%count% × %type% werden gelöscht'
 
     kpi:
