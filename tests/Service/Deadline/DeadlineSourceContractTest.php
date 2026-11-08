@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Deadline;
 
+use App\Service\Deadline\Configured\ConfiguredDeadlineSource;
 use App\Service\Deadline\DeadlineSource;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -31,6 +32,10 @@ final class DeadlineSourceContractTest extends TestCase
                 continue;
             }
             $class = 'App\\' . str_replace(['/', '.php'], ['\\', ''], substr($file->getPathname(), strlen($root)));
+            // The generic configured source is checked per entry in Configured/DeadlineTypesConfigTest.
+            if ($class === ConfiguredDeadlineSource::class) {
+                continue;
+            }
             if (class_exists($class) && is_subclass_of($class, DeadlineSource::class) && !(new \ReflectionClass($class))->isAbstract()) {
                 yield substr((string) strrchr($class, '\\'), 1) => [$class];
             }
@@ -66,7 +71,12 @@ final class DeadlineSourceContractTest extends TestCase
             self::assertArrayNotHasKey($slug, $slugs, "$class reuses slug $slug of " . ($slugs[$slug] ?? ''));
             $slugs[$slug] = $class;
         }
-        self::assertGreaterThanOrEqual(16, count($slugs));
+        $configured = Yaml::parseFile(dirname(__DIR__, 3) . '/config/deadline_types.yaml')['parameters']['app.deadline_types'];
+        foreach (array_keys($configured) as $slug) {
+            self::assertArrayNotHasKey($slug, $slugs, "config/deadline_types.yaml reuses slug $slug of " . ($slugs[$slug] ?? ''));
+            $slugs[$slug] = 'config/deadline_types.yaml';
+        }
+        self::assertGreaterThanOrEqual(40, count($slugs));
     }
 
     /** @param class-string<DeadlineSource> $class */

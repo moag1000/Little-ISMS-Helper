@@ -1,4 +1,40 @@
 admin:
+    deadline_type:
+        page:
+            title: 'Deadline types'
+        empty: 'No matches.'
+        column:
+            type: 'Deadline type'
+            norm: 'Norm'
+            due: 'Date field'
+            lead: 'Lead time'
+            responsible: 'Who acts'
+            module: 'Module'
+            origin: 'Origin'
+        origin:
+            config: 'Configuration'
+            code: 'Programmed'
+        due:
+            none: 'no date'
+        lead:
+            days: '%count% days'
+            hours: 'Hour deadline %count% h'
+            open: 'while open'
+        decision: 'Decision'
+        responsible:
+            record: 'On the record'
+            deputies: 'Deputies'
+            fallback: 'Otherwise'
+            roles: 'Roles'
+            inform: 'Informed'
+            self: 'the person'
+            code: 'Set per record in the program'
+        module:
+            always: 'always'
+            inactive: 'inactive'
+        summary:
+            total: '%count% deadline types'
+            configured: '%count% from configuration'
     global_op:
         readonly_hint: 'Instance-wide setting: only super admins can change it.'
     compliance_policy:
@@ -116,6 +152,7 @@ admin:
             notification_rules: { label: 'Notification rules', desc: 'Define event rules and assign delivery channels' }
             notification_channels: { label: 'Notification channels', desc: 'Configure email, webhook, and in-app channels' }
             notification_templates: { label: 'Template gallery', desc: 'Apply tier-1 templates for common compliance scenarios' }
+            deadline_types: { label: 'Deadline types', desc: 'Which deadlines remind whom, with lead time and norm' }
             # Sprint 8 — EU Authority reporting
             authority_hub: { label: 'EU Authority Hub', desc: 'Reporting obligations and export templates for EU supervisory authorities' }
             nis2_registration: { label: 'NIS-2 BSI Registration', desc: 'Annual mandatory registration in the BSI notification portal' }

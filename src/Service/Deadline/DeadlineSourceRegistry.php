@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Service\Deadline;
 
 use App\Entity\Tenant;
+use App\Exception\InvalidArgument\InvalidArgumentException;
+use App\Service\Deadline\Configured\ConfiguredDeadlineSources;
 use App\Service\ModuleConfigurationService;
 
 /**
- * All {@see DeadlineSource}s, collected via the `app.deadline_source` tag.
+ * All {@see DeadlineSource}s: the classes collected via the
+ * `app.deadline_source` tag, then the deadline types declared in
+ * `config/deadline_types.yaml` ({@see ConfiguredDeadlineSources}).
  */
 final class DeadlineSourceRegistry
 {
@@ -21,8 +25,16 @@ final class DeadlineSourceRegistry
     public function __construct(
         iterable $sources,
         private readonly ?ModuleConfigurationService $modules = null,
+        ?ConfiguredDeadlineSources $configured = null,
     ) {
         foreach ($sources as $source) {
+            $this->bySlug[$source->slug()] = $source;
+        }
+        foreach ($configured?->all() ?? [] as $source) {
+            if (isset($this->bySlug[$source->slug()])) {
+                // @intentional-assertion: App\Exception\InvalidArgument (not SPL) — broken deadline config
+                throw new InvalidArgumentException(sprintf('Deadline type "%s" is declared as class and in config/deadline_types.yaml.', $source->slug()));
+            }
             $this->bySlug[$source->slug()] = $source;
         }
     }

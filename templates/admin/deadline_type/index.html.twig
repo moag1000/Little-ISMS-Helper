@@ -1,0 +1,107 @@
+{% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'admin.deadline_type.page.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
+            { label: 'admin.deadline_type.page.title'|trans({}, 'admin') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: 'admin.deadline_type.page.title'|trans({}, 'admin'),
+    }) }}
+
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('admin_deadline_type_index'),
+        filter_keys: ['origin'],
+        list_title: 'admin.deadline_type.page.title'|trans({}, 'admin'),
+        empty: { mood: 'sleeping', title: 'admin.deadline_type.empty'|trans({}, 'admin') },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-3">
+                <label for="deadline-type-origin" class="form-label">{{ 'admin.deadline_type.column.origin'|trans({}, 'admin') }}</label>
+                <select class="form-select fa-cyber-input__field" id="deadline-type-origin" name="origin" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    {% for o in ['config', 'code'] %}
+                        <option value="{{ o }}"{{ origin == o ? ' selected' : '' }}>{{ ('admin.deadline_type.origin.' ~ o)|trans({}, 'admin') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endblock %}
+        {% block list_summary %}
+            <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.deadline_type.summary.total'|trans({'%count%': totalCount}, 'admin') }}</span>
+            <span class="fa-status-pill fa-status-pill--primary">{{ 'admin.deadline_type.summary.configured'|trans({'%count%': configuredCount}, 'admin') }}</span>
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th class="fa-table__th">{{ 'admin.deadline_type.column.type'|trans({}, 'admin') }}</th>
+                        <th class="fa-table__th">{{ 'admin.deadline_type.column.norm'|trans({}, 'admin') }}</th>
+                        <th class="fa-table__th">{{ 'admin.deadline_type.column.due'|trans({}, 'admin') }}</th>
+                        <th class="fa-table__th">{{ 'admin.deadline_type.column.lead'|trans({}, 'admin') }}</th>
+                        <th class="fa-table__th">{{ 'admin.deadline_type.column.responsible'|trans({}, 'admin') }}</th>
+                        <th class="fa-table__th">{{ 'admin.deadline_type.column.module'|trans({}, 'admin') }}</th>
+                        <th class="fa-table__th">{{ 'admin.deadline_type.column.origin'|trans({}, 'admin') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for t in page %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">
+                                {{ t.label }}
+                                <div class="text-muted small">{{ ('my_day.section.' ~ t.bucket)|trans({}, 'my_day') }} · <code>{{ t.slug }}</code></div>
+                            </td>
+                            <td class="fa-table__cell">{{ t.norm ?? '—' }}</td>
+                            <td class="fa-table__cell">
+                                {% if t.origin == 'config' %}
+                                    {{ t.entity }}{% if t.due %} · <code>{{ t.due }}</code>{% else %} · {{ 'admin.deadline_type.due.none'|trans({}, 'admin') }}{% endif %}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell">
+                                {% if t.urgentHours %}
+                                    {{ 'admin.deadline_type.lead.hours'|trans({'%count%': t.urgentHours}, 'admin') }}
+                                {% elseif t.leadDays is null %}
+                                    {{ 'admin.deadline_type.lead.open'|trans({}, 'admin') }}
+                                {% else %}
+                                    {{ 'admin.deadline_type.lead.days'|trans({'%count%': t.leadDays}, 'admin') }}
+                                {% endif %}
+                                {% if t.decision %}<div><span class="fa-status-pill fa-status-pill--accent">{{ 'admin.deadline_type.decision'|trans({}, 'admin') }}</span></div>{% endif %}
+                            </td>
+                            <td class="fa-table__cell small">
+                                {% if t.origin == 'config' %}
+                                    {% if t.holders is not empty %}<div>{{ 'admin.deadline_type.responsible.record'|trans({}, 'admin') }}: <code>{{ t.holders|join(', ') }}</code></div>{% endif %}
+                                    {% if t.deputies is not empty %}<div>{{ 'admin.deadline_type.responsible.deputies'|trans({}, 'admin') }}: <code>{{ t.deputies|join(', ') }}</code></div>{% endif %}
+                                    {% if t.roles is not empty %}<div>{{ (t.holders is empty ? 'admin.deadline_type.responsible.roles' : 'admin.deadline_type.responsible.fallback')|trans({}, 'admin') }}: {{ t.roles|join(', ') }}</div>{% endif %}
+                                    {% if t.inform is not empty %}<div>{{ 'admin.deadline_type.responsible.inform'|trans({}, 'admin') }}: {{ t.inform|map(w => w == 'self' ? 'admin.deadline_type.responsible.self'|trans({}, 'admin') : w)|join(', ') }}</div>{% endif %}
+                                {% else %}
+                                    {{ 'admin.deadline_type.responsible.code'|trans({}, 'admin') }}
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell">
+                                {% if t.module is null %}
+                                    {{ 'admin.deadline_type.module.always'|trans({}, 'admin') }}
+                                {% else %}
+                                    {{ t.module }}
+                                    {% if not t.moduleActive %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.deadline_type.module.inactive'|trans({}, 'admin') }}</span>{% endif %}
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell">
+                                <span class="fa-status-pill fa-status-pill--{{ t.origin == 'config' ? 'primary' : 'neutral' }}">{{ ('admin.deadline_type.origin.' ~ t.origin)|trans({}, 'admin') }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

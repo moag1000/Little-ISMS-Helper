@@ -48,6 +48,9 @@ search_nav:
     app_analytics_dashboard:
         label: 'Analytics'
         description: 'KPI overview, charts, trend analysis'
+    admin_deadline_type_index:
+        label: 'Deadline types'
+        description: 'Which deadlines remind whom, with lead time and norm'
     admin_kpi_threshold_index:
         label: 'KPI thresholds'
         description: 'Configure KPI limits and targets'
