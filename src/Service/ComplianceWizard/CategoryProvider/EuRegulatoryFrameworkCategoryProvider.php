@@ -457,8 +457,10 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'route' => 'app_incident_index',
                     ],
                     // Art. 3 (4) / Art. 27 (3): registration data reported, changes within two weeks.
-                    'registration' => RecordCheck::deadlines('nis2_27_registration', ['nis2_registration'], '3(4)/27', 'high', [
+                    'registration' => RecordCheck::deadlines('nis2_27_registration', ['nis2_registration'], '27', 'high', [
                         'module' => 'nis2_dora',
+                        // Art. 3 (4) has no catalogue row of its own; the registry row carries the duty.
+                        'requirements' => ['Art.27'],
                     ]),
                 ],
             ],
