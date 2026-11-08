@@ -11,6 +11,7 @@ use App\Entity\Notification\NotificationRule;
 use App\Entity\Tenant;
 use App\Repository\Notification\NotificationDeliveryRepository;
 use App\Service\AuditLogger;
+use App\Service\Mail\RecipientFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -37,6 +38,7 @@ final class SendNotificationDigestsCommandTest extends TestCase
     private MailerInterface&MockObject                $mailer;
     private AuditLogger&MockObject                    $auditLogger;
     private SymfonyStyle&MockObject                   $io;
+    private RecipientFilter&MockObject                $recipientFilter;
 
     protected function setUp(): void
     {
@@ -45,6 +47,14 @@ final class SendNotificationDigestsCommandTest extends TestCase
         $this->mailer       = $this->createMock(MailerInterface::class);
         $this->auditLogger  = $this->createMock(AuditLogger::class);
         $this->io           = $this->createMock(SymfonyStyle::class);
+        $this->recipientFilter = $this->createMock(RecipientFilter::class);
+        // Default: every configured address qualifies (the filter itself has its own tests).
+        $this->recipientFilter->method('filterEmails')->willReturnCallback(
+            static fn (iterable $emails, ?int $tenantId): array => ['valid' => array_values([...$emails]), 'dropped' => []],
+        );
+        $this->auditLogger->method('withTenant')->willReturnCallback(
+            static fn (?Tenant $tenant, callable $callback): mixed => $callback(),
+        );
     }
 
     private function makeCommand(): SendNotificationDigestsCommand
@@ -54,6 +64,7 @@ final class SendNotificationDigestsCommandTest extends TestCase
             $this->em,
             $this->mailer,
             $this->auditLogger,
+            $this->recipientFilter,
         );
     }
 
@@ -175,5 +186,31 @@ final class SendNotificationDigestsCommandTest extends TestCase
 
         self::assertSame(NotificationDelivery::STATUS_PENDING_DIGEST, $delivery->getStatus());
         self::assertSame($payload, $delivery->getPayload());
+    }
+
+    #[Test]
+    public function testDigestNotSentWhenRecipientFilterDropsEveryAddress(): void
+    {
+        $filter = $this->createMock(RecipientFilter::class);
+        $filter->method('filterEmails')->willReturn([
+            'valid' => [],
+            'dropped' => [['email' => 'outsider@example.org', 'reason' => RecipientFilter::REASON_UNKNOWN_USER]],
+        ]);
+        $this->recipientFilter = $filter;
+
+        $channel  = $this->makeChannel(5, [
+            'recipients'    => ['outsider@example.org'],
+            'delivery_mode' => 'digest_daily',
+        ]);
+        $delivery = $this->makeDelivery($channel);
+
+        $this->deliveryRepo->method('findChannelsWithPendingDigests')->willReturn([$channel]);
+        $this->deliveryRepo->method('findPendingDigestByChannel')->with($channel)->willReturn([$delivery]);
+
+        $this->mailer->expects($this->never())->method('send');
+
+        ($this->makeCommand())(false, $this->io);
+
+        self::assertSame(NotificationDelivery::STATUS_FAILED, $delivery->getStatus());
     }
 }

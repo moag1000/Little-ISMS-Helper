@@ -34,12 +34,12 @@ src/Controller/AdminBackupController.php:LOC=778 deps=0
 src/Controller/ComplianceWizardController.php:LOC=778 deps=0
 src/Controller/AssetController.php:LOC=758 deps=0
 src/Controller/QuickFixController.php:LOC=730 deps=0
-src/Controller/ProcessingActivityController.php:LOC=713 deps=0
-src/Controller/DPIAController.php:LOC=682 deps=0
+src/Controller/ProcessingActivityController.php:LOC=703 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
+src/Controller/DPIAController.php:LOC=680 deps=0
 src/Controller/MonitoringController.php:LOC=646 deps=0
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=624 deps=0
-src/Service/ScheduledReportService.php:LOC=619 deps=21
+src/Service/ScheduledReportService.php:LOC=601 deps=21
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=453 deps=16
 src/Service/DataIntegrityService.php:LOC=438 deps=33
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=17

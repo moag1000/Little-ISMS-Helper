@@ -127,6 +127,16 @@ final class ResponsibilityResolverTest extends TestCase
         self::assertSame([$this->admin], $this->resolver()->resolve(Responsibility::holders($foreign), $this->tenant));
     }
 
+    #[Test]
+    public function accountWithoutTenantIsIgnored(): void
+    {
+        $reflection = new \ReflectionProperty(Tenant::class, 'id');
+        $reflection->setValue($this->tenant, 1);
+        $tenantless = $this->user('tenantless', ['ROLE_USER'])->setTenant(null);
+
+        self::assertSame([$this->admin], $this->resolver()->resolve(Responsibility::holders($tenantless), $this->tenant));
+    }
+
     private function resolver(?DeadlineSource $source = null): ResponsibilityResolver
     {
         $repository = $this->createStub(UserRepository::class);

@@ -93,6 +93,20 @@ reach the ISB through `StandingApprovalSource` — the board panel reads the sam
 list. Multi-tenant user assignments (`UserTenantAssignment.validTo`) get a
 source when that entity goes live.
 
+### Retention sweep: end states only
+
+`RetentionEnforcementService` (Sundays 04:00, `app:enforce-retention --force`)
+deletes a record past its retention period only when it is in an end state
+(`RetentionEnforcementService::END_STATES`): asset `disposed`, risk `closed`,
+incident `closed`, audit finding `closed`, document `archived`/`deleted`,
+processing activity `archived`, workflow instance `approved`/`rejected`/`cancelled`.
+A `retired` asset is kept because `dispose` needs four-eyes approval; `accepted`
+risks stay under periodic review. Expired records that are still active are not
+touched and not transitioned automatically; the run report notes "N overdue for
+retention, still active (not deleted)" so a person decides. The sweep runs per
+tenant with the tenant in every query and writes one `logBulk()` batch per
+tenant and type, stamped with that tenant (`AuditLogger::withTenant()`).
+
 One record belongs to one source at a time: a change request waiting for
 approval to `ChangeApprovalSource`, afterwards to `ChangeRequestAdapter`;
 both decide `supports()` by status.

@@ -181,7 +181,11 @@ class ResponsibilityResolver implements ResetInterface
             if ($user === null || !$user->isActive()) {
                 continue;
             }
-            if ($user->getTenant() !== null && $user->getTenant()->getId() !== $tenant->getId()) {
+            // A holder must belong to this very organisation: tenant-less and
+            // foreign accounts never receive reminders or approvals.
+            $userTenant = $user->getTenant();
+            if ($userTenant === null
+                || ($userTenant !== $tenant && ($userTenant->getId() === null || $userTenant->getId() !== $tenant->getId()))) {
                 continue;
             }
             $users[spl_object_id($user)] = $user;

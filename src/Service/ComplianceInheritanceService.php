@@ -354,14 +354,37 @@ class ComplianceInheritanceService
 
     /**
      * Bulk-confirm a batch of pending suggestions. Same confidence level required,
-     * shared reviewer comment (≥20 chars). Items not in pending state are skipped.
+     * shared reviewer comment (≥20 chars). Items not in pending state are skipped,
+     * and so are items of another framework when the caller names one (the
+     * confirmation dialog is per framework; ids are user input).
      *
      * @param list<FulfillmentInheritanceLog> $logs
      * @return array{confirmed: int, skipped: int}
      */
-    public function bulkConfirm(array $logs, User $reviewer, string $comment): array
+    public function bulkConfirm(
+        array $logs,
+        User $reviewer,
+        string $comment,
+        ?ComplianceFramework $framework = null,
+    ): array
     {
         $this->assertMinLength($comment, $this->minCommentLength(), 'bulk_review_comment');
+
+        if ($framework !== null) {
+            $inFramework = [];
+            $foreign = 0;
+            foreach ($logs as $log) {
+                $logFramework = $log->getFulfillment()?->getRequirement()?->getFramework();
+                if ($logFramework !== null && $logFramework->getId() === $framework->getId()) {
+                    $inFramework[] = $log;
+                } else {
+                    ++$foreign;
+                }
+            }
+            $logs = $inFramework;
+        } else {
+            $foreign = 0;
+        }
 
         $confidences = [];
         foreach ($logs as $log) {
@@ -372,8 +395,9 @@ class ComplianceInheritanceService
         }
 
         $confirmed = 0;
-        $skipped = 0;
+        $skipped = $foreign;
         $at = new DateTimeImmutable();
+        $perEntity = [];
 
         foreach ($logs as $log) {
             if (!$log->isPendingReview()) {
@@ -390,20 +414,27 @@ class ComplianceInheritanceService
                 $this->writeSuggested($fulfillment, (int) $log->getSuggestedPercentage(), $reviewer);
             }
             $confirmed++;
+            $perEntity[] = [
+                'entity_id' => $log->getId(),
+                'action' => 'update',
+                'old_values' => ['review_status' => FulfillmentInheritanceLog::STATUS_PENDING_REVIEW],
+                'new_values' => ['review_status' => FulfillmentInheritanceLog::STATUS_CONFIRMED],
+            ];
         }
 
         $this->entityManager->flush();
 
-        $this->auditLogger->logCustom(
+        // ISO 27001 Cl. 7.5.3: one batch entry + one row per confirmed suggestion.
+        $this->auditLogger->logBulk(
             'compliance.inheritance.bulk_confirmed',
             'FulfillmentInheritanceLog',
-            null,
-            null,
             [
                 'reviewer_id' => $reviewer->getId(),
-                'confirmed' => $confirmed,
-                'skipped' => $skipped,
+                'framework' => $framework?->getCode(),
+                'row_count_success' => $confirmed,
+                'row_count_skipped' => $skipped,
             ],
+            $perEntity,
             sprintf('Bulk-confirmed %d inheritance suggestions (%d skipped)', $confirmed, $skipped),
         );
 
