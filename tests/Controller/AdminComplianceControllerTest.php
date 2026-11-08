@@ -171,6 +171,11 @@ class AdminComplianceControllerTest extends WebTestCase
         $this->entityManager->flush();
         $frameworkId = $framework->getId();
 
+        // S7: deleting a global framework cascades over every organisation —
+        // instance operators only (an org admin gets 403, see InstanceOperatorOnlyTest).
+        $this->adminUser->setRoles(['ROLE_SUPER_ADMIN']);
+        $this->entityManager->flush();
+
         $this->client->loginUser($this->adminUser);
         $this->client->request('GET', '/en/admin/compliance/statistics');
         $session = $this->client->getRequest()->getSession();
