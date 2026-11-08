@@ -103,7 +103,8 @@ class ComplianceManagerDashboardControllerTest extends TestCase
             $this->requirementRepo,
             $this->roleDashboardService,
             $this->tisaxAssessment,
-            $this->moduleConfiguration, $this->createMock(\App\Service\Compliance\Fulfillment\FulfillmentRuleEngine::class),
+            $this->moduleConfiguration,
+            $this->createMock(\App\Service\Compliance\Fulfillment\FulfillmentRuleEngine::class),
         );
         $this->controller->setContainer($this->container);
     }

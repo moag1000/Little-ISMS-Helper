@@ -228,6 +228,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
             // Who accepted and when is written by RiskAcceptanceWorkflowService
             // (approval by the level's role, ISO 27005 / 27001 6.1.3 f) and only
             // shown here — typing an approval by hand would forge the evidence.
+            // @intentional-bind: shown read-only, disabled fields are not submitted, the workflow's value stays
             ->add('acceptanceApprovedByUser', OwnerUserType::class, [
                 'label' => 'risk.field.acceptance_approved_by',
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
@@ -236,6 +237,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'help' => 'risk.help.acceptance_set_by_workflow',
                 'placeholder' => 'risk.placeholder.acceptance_approved_by_user',
             ])
+            // @intentional-bind: shown read-only, disabled fields are not submitted, the workflow's value stays
             ->add('acceptanceApprovedBy', TextType::class, [
                 'label' => 'risk.field.acceptance_approved_by_legacy',
                 'required' => false,
@@ -246,6 +248,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'disabled' => true,
                 'help' => 'risk.help.acceptance_set_by_workflow',
             ])
+            // @intentional-bind: shown read-only, disabled fields are not submitted, the workflow's value stays
             ->add('acceptanceApprovedAt', DateType::class, [
                 'label' => 'risk.field.acceptance_approved_at',
                 'widget' => 'single_text',

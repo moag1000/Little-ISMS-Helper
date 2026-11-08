@@ -177,9 +177,9 @@ final class RiskRegisterExporterTest extends TestCase
     public function pdfReceivesLevelCountsAndNonZeroStatusBreakdown(): void
     {
         $risks = [
-            $this->risk('critical', 5, 3, RiskStatus::Open),
+            $this->risk('critical', 5, 4, RiskStatus::Open),
             $this->risk('high', 4, 3, RiskStatus::Open),
-            $this->risk('medium', 2, 2, RiskStatus::Closed),
+            $this->risk('medium', 2, 3, RiskStatus::Closed),
             $this->risk('low', 1, 1),
         ];
         $pdf = $this->createMock(PdfExportService::class);
