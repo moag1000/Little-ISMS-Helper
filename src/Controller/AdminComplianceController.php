@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\ComplianceFrameworkRepository;
+use App\Security\Voter\GlobalCatalogueVoter;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ComplianceFrameworkLoaderService;
@@ -68,6 +69,8 @@ class AdminComplianceController extends AbstractController
      */
     #[Route('/admin/compliance/frameworks/load/{code}', name: 'admin_compliance_load_framework', methods: ['POST'])]
     #[IsGranted('COMPLIANCE_MANAGE')]
+    // A loaded catalogue (requirements, mappings) is shared by every organisation of the instance.
+    #[IsGranted(GlobalCatalogueVoter::WRITE)]
     public function loadFramework(string $code, Request $request): JsonResponse
     {
         // Validate CSRF token

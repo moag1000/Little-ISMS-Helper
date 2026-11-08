@@ -57,6 +57,24 @@ final class Nis2RegistrationChangeTest extends TestCase
     }
 
     #[Test]
+    public function aChangeWrittenOutsideTheFormIsNotedAtFlush(): void
+    {
+        // Import, restore, REST and MCP save through Doctrine: PostLoad + PreFlush note the change.
+        $profile = (new Nis2RegistrationProfile())->setOrganizationLegalForm('GmbH');
+        $profile->setLastReportedAt(new DateTimeImmutable('2026-01-10'));
+        $profile->setNextDueAt(new DateTimeImmutable('2027-01-10'));
+        $profile->rememberLoadedData();
+
+        $profile->setOrganizationLegalForm('AG');
+        $profile->noteChangeOnFlush();
+        self::assertNotNull($profile->getUnreportedChangeAt());
+
+        $profile->setOrganizationLegalForm('GmbH');
+        $profile->noteChangeOnFlush();
+        self::assertNull($profile->getUnreportedChangeAt(), 'the baseline is the data as reported, not the last flush');
+    }
+
+    #[Test]
     public function beforeTheFirstReportThereIsNothingToChange(): void
     {
         $profile = (new Nis2RegistrationProfile())->setOrganizationLegalForm('GmbH');

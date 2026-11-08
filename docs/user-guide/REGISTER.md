@@ -21,6 +21,7 @@ Einstieg: **ISMS > Register** (`/register`), über ⌘K „Register“ oder von 
 | Kompetenzen | ISO 27001 7.2 · NIS-2 Art. 20 (2) | ISB | Standard-Kompetenzen je Persona-Rolle im Rollenregister |
 | Kommunikation | ISO 27001 7.4 | ISB | — (Kommunikationsplan der interessierten Parteien wird darunter angezeigt) |
 | Verbesserungen | ISO 27001 10.1 · 9.3.2 g | ISB | Verbesserungsmöglichkeiten der letzten Managementbewertung, Audit-Feststellungen „Verbesserungspotenzial“, Erkenntnisse (Lessons Learned) aus Vorfällen und Notfallübungen der letzten 12 Monate |
+| Überwachte Quellen | ISO 27001 A.8.16 · NIS-2 Art. 21 (2) b | ISB | genutzte Cloud-Dienste (Lieferanten mit Kennzeichen „Cloud-Dienst“) |
 
 Register mit eigenem Fachmodul (interessierte Parteien, Risiken, SoA, Ziele, Schulungen, Dokumente,
 Assets, Standorte, Prozesse, Lieferanten, VVT) stehen in derselben Übersicht mit Norm, pflegender

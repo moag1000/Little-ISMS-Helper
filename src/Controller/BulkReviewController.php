@@ -27,9 +27,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * supplier lists: confirms the periodic review of the selected records in
  * one step. The rules (who takes part, next date) live in
  * {@see PeriodicReviewService}; this controller only does CSRF, role,
- * module gate and tenant scope. Risks and controls: every user, the edit
- * voter per record admits managers and owners; documents and suppliers:
- * ROLE_MANAGER.
+ * module gate and tenant scope. Every user may call them; PeriodicReviewService
+ * admits per record: risks and controls through the edit voter (managers and
+ * owners), documents and suppliers for managers and whoever the review
+ * reminder reaches (RECORD_RESPONSIBLE).
  *
  * Body: { ids: [..], _token } — shared `bulk_action` CSRF token.
  * Returns: { ok, changed, rejected: [{id, reason}], batch_id }.
@@ -64,14 +65,16 @@ final class BulkReviewController extends AbstractController
     }
 
     #[Route('/document/bulk-review', name: 'app_document_bulk_review', methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    // Managers and the responsible person per record: PeriodicReviewService::mayConfirm().
+    #[IsGranted('ROLE_USER')]
     public function documents(Request $request): JsonResponse
     {
         return $this->confirm($request, Document::class, 'Document');
     }
 
     #[Route('/supplier/bulk-review', name: 'app_supplier_bulk_review', methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    // Managers and the responsible person per record: PeriodicReviewService::mayConfirm().
+    #[IsGranted('ROLE_USER')]
     #[RequiresModule('suppliers')]
     public function suppliers(Request $request): JsonResponse
     {

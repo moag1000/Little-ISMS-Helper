@@ -478,6 +478,7 @@ setup:
             capture_assets: 'Assets erfassen'
             use_compliance: 'Compliance-Status prüfen'
             add_modules: 'Weitere Module aktivieren'
+            assign_board: 'Leitung zuweisen: Rolle „Leitung“ in der Benutzerverwaltung vergeben (ISO 27001 5.1, NIS-2 Art. 20) — Admins entscheiden nicht für die Leitung'
         help_documentation:
             title: 'Hilfe & Dokumentation'
             description: 'Ausführliche Dokumentation finden Sie im Hilfe-Bereich.'

@@ -7,6 +7,7 @@ namespace App\Service\ComplianceWizard\CategoryProvider;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\ChangeRequest;
 use App\Entity\ComplianceFramework;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\ThreatIntelligence;
 use App\Repository\ComplianceFrameworkRepository;
@@ -415,6 +416,11 @@ final class IsoFrameworkCategoryProvider
                         'module' => 'vulnerability_intel',
                         'since' => ['field' => 'createdAt', 'months' => 12],
                     ]),
+                    // A.5.23: cloud services in use are assessed, carry agreed security requirements and an exit strategy.
+                    'cloud_services' => RecordCheck::fields('iso_annex_a5_23_cloud_services', Supplier::class, ['lastSecurityAssessment', 'securityRequirements', 'hasExitStrategy'], 'A.5.23', 'app_supplier_index', 'high', [
+                        'module' => 'suppliers',
+                        'where' => ['isCloudService' => true, 'status' => ['active', 'evaluation']],
+                    ]),
                     // A.5.30: active BC plans carry recovery objectives and a test (ICT readiness).
                     'ict_readiness' => RecordCheck::fields('iso_annex_a5_30_ict_readiness', BusinessContinuityPlan::class, ['rto', 'rpo', 'lastTested'], 'A.5.30', 'app_bc_plan_index', 'high', [
                         'module' => 'bcm',
@@ -494,6 +500,8 @@ final class IsoFrameworkCategoryProvider
                         'priority' => 'critical',
                         'route' => 'app_soa_index',
                     ],
+                    // A.8.16: the register of monitored sources (what, how often, who evaluates).
+                    'monitoring_sources' => RecordCheck::register('iso_annex_a8_16_monitoring', ['monitoring_source'], 'A.8.16', 'high'),
                 ],
             ],
 

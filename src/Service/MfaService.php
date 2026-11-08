@@ -146,10 +146,17 @@ final class MfaService
 
         $totp = TOTP::createFromSecret($this->decryptAndMigrate($mfaToken));
 
-        // Verify with time window (allows ±1 time step for clock drift)
-        $isValid = $totp->verify($code, null, 1);
+        // Same acceptance window as before (otphp leeway of 1 s), but a code counts once: the time
+        // step it belongs to must be later than the last accepted one (NIS-2 Art. 21(2)(j)).
+        $step = $this->matchingTotpStep($totp, $code);
+        $last = $mfaToken->getLastTotpStep();
+        $isValid = $step !== null && ($last === null || $step > $last);
+        if ($step !== null && !$isValid) {
+            $this->logger->warning('TOTP code reused', ['user_id' => $mfaToken->getUser()->getId()]);
+        }
 
         if ($isValid) {
+            $mfaToken->setLastTotpStep($step);
             // Activate token if this is initial setup
             if ($isSetup && !$mfaToken->isActive()) {
                 $mfaToken->setIsActive(true);
@@ -181,6 +188,26 @@ final class MfaService
         ]);
 
         return false;
+    }
+
+    /**
+     * The time step whose code $code is, within the accepted window, or null.
+     */
+    private function matchingTotpStep(TOTP $totp, string $code): ?int
+    {
+        $code = trim($code);
+        if ($code === '') {
+            return null;
+        }
+        $period = max(1, $totp->getPeriod());
+        $now = time();
+        foreach ([$now, $now - 1, $now + 1] as $timestamp) {
+            if (hash_equals($totp->at($timestamp), $code)) {
+                return intdiv($timestamp - $totp->getEpoch(), $period);
+            }
+        }
+
+        return null;
     }
 
     /**

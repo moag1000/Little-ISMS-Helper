@@ -178,8 +178,9 @@
             </div>
         {% else %}
             <div class="col-span-all text-center p-xl">
-                {# Opt-in Schnellstart — Junior-freundlicher Starter-Pack (nur ROLE_MANAGER, nur wenn 0 Frameworks) #}
-                {% if is_granted('ROLE_MANAGER') %}
+                {# Opt-in Schnellstart — Junior-freundlicher Starter-Pack (ROLE_MANAGER, nur wenn 0 Frameworks;
+                   globale Kataloge: bei mehreren Organisationen nur der Super-Admin, S7.3) #}
+                {% if is_granted('ROLE_MANAGER') and is_granted('GLOBAL_CATALOGUE_WRITE') %}
                     {% embed '_components/_card.html.twig' with { class: 'border-primary text-start mb-4' } %}
                         {% block card_body %}
                             <div class="d-flex align-items-start gap-3">

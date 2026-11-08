@@ -8,8 +8,9 @@ use App\Security\LandingRoute;
 use App\Security\SafeRedirectTarget;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Repository\MfaTokenRepository;
-use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Entity\User;
+use App\Security\Mfa\MfaSessionState;
 use App\Service\MfaService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,7 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\RememberMe\RememberMeHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -32,10 +34,12 @@ class MfaLoginController extends AbstractController
     public function __construct(
         private readonly MfaService $mfaService,
         private readonly MfaTokenRepository $mfaTokenRepository,
-        private readonly UserRepository $userRepository,
+        private readonly TokenStorageInterface $tokenStorage,
         private readonly AuditLogger $auditLogger,
         private readonly TranslatorInterface $translator,
         private readonly LandingRoute $landingRoute,
+        private readonly MfaSessionState $mfaState,
+        private readonly RememberMeHandlerInterface $rememberMeHandler,
     ) {
     }
 
@@ -54,17 +58,11 @@ class MfaLoginController extends AbstractController
     {
         // Ensure user is authenticated but hasn't completed MFA yet
         $session = $request->getSession();
+        $user = $this->pendingUser($request);
 
-        if (!$session->get('_security.mfa_required')) {
+        if (!$user instanceof User) {
             // No MFA required or already verified
             return $this->redirectToRoute($this->landingRoute->routeFor($this->getUser()), ['_locale' => $request->getLocale()]);
-        }
-
-        $userId = $session->get('_security.mfa_user_id');
-        $user = $this->userRepository->find($userId);
-
-        if (!$user) {
-            throw new AccessDeniedException('Invalid MFA session');
         }
 
         // Get active MFA tokens
@@ -72,9 +70,7 @@ class MfaLoginController extends AbstractController
 
         if ($mfaTokens === []) {
             // User has no active MFA tokens anymore - mark as verified and continue
-            $session->set('_security.mfa_verified', true);
-            $session->remove('_security.mfa_required');
-            $session->remove('_security.mfa_user_id');
+            $this->completeSecondFactor($request, $user);
 
             return $this->redirectToRoute($this->landingRoute->routeFor($this->getUser()), ['_locale' => $request->getLocale()]);
         }
@@ -92,17 +88,12 @@ class MfaLoginController extends AbstractController
     public function verify(Request $request): Response|RedirectResponse
     {
         $session = $request->getSession();
+        $user = $this->pendingUser($request);
 
-        if (!$session->get('_security.mfa_required')) {
+        if (!$user instanceof User) {
             return $this->redirectToRoute($this->landingRoute->routeFor($this->getUser()), ['_locale' => $request->getLocale()]);
         }
-
-        $userId = $session->get('_security.mfa_user_id');
-        $user = $this->userRepository->find($userId);
-
-        if (!$user) {
-            throw new AccessDeniedException('Invalid MFA session');
-        }
+        $userId = $user->getId();
 
         if (!$this->isCsrfTokenValid('mfa_verify', (string) $request->request->get('_token'))) {
             $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.invalid_token', [], 'mfa'));
@@ -145,9 +136,7 @@ class MfaLoginController extends AbstractController
 
         if ($verified) {
             // MFA verification successful
-            $session->set('_security.mfa_verified', true);
-            $session->remove('_security.mfa_required');
-            $session->remove('_security.mfa_user_id');
+            $this->completeSecondFactor($request, $user);
 
             $this->auditLogger->logCustom('mfa_verification_success', 'User', $userId, [
                 'token_type' => $mfaToken->getTokenType(),
@@ -180,5 +169,26 @@ class MfaLoginController extends AbstractController
 
         $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.invalid_code', [], 'mfa'));
         return $this->redirectToRoute('app_mfa_challenge', ['_locale' => $request->getLocale()]);
+    }
+
+    /**
+     * The logged-in person whose second factor is outstanding — never a user id from elsewhere.
+     */
+    private function pendingUser(Request $request): ?User
+    {
+        $subject = MfaSessionState::subjectOf($this->tokenStorage->getToken());
+        if (!$subject instanceof User || !$this->mfaState->isPending($request->getSession(), $subject)) {
+            return null;
+        }
+
+        return $subject;
+    }
+
+    /** Second factor given: the login is complete, "stay logged in" takes effect only now. */
+    private function completeSecondFactor(Request $request, User $user): void
+    {
+        if ($this->mfaState->markVerified($request->getSession(), $user)) {
+            $this->rememberMeHandler->createRememberMeCookie($user);
+        }
     }
 }

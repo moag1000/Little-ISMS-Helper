@@ -27,6 +27,8 @@ enum RegisterType: string
     case COMPETENCE = 'competence';
     case COMMUNICATION = 'communication';
     case IMPROVEMENT = 'improvement';
+    /** What is monitored for anomalous behaviour, how often and by whom (ISO 27001 A.8.16). */
+    case MONITORING_SOURCE = 'monitoring_source';
 
     /** Optional entry fields, besides title, description, owner and review date. */
     public const array OPTIONAL_FIELDS = ['category', 'rating', 'reference', 'frequency', 'effectiveFrom'];
@@ -42,6 +44,7 @@ enum RegisterType: string
             self::COMPETENCE => 'ISO 27001 7.2 · NIS-2 Art. 20 (2)',
             self::COMMUNICATION => 'ISO 27001 7.4',
             self::IMPROVEMENT => 'ISO 27001 10.1 · 9.3.2 g',
+            self::MONITORING_SOURCE => 'ISO 27001 A.8.16 · NIS-2 Art. 21 (2) b',
         };
     }
 
@@ -61,6 +64,7 @@ enum RegisterType: string
             self::COMPETENCE => ['category', 'reference'],
             self::COMMUNICATION => ['category', 'frequency', 'reference'],
             self::IMPROVEMENT => ['category', 'rating'],
+            self::MONITORING_SOURCE => ['category', 'frequency', 'reference'],
         };
     }
 
@@ -84,6 +88,7 @@ enum RegisterType: string
             self::COMPETENCE => ['basic', 'intermediate', 'expert'],
             self::COMMUNICATION => ['email', 'meeting', 'intranet', 'training', 'report', 'other'],
             self::IMPROVEMENT => ['management_review', 'audit', 'incident', 'exercise', 'other'],
+            self::MONITORING_SOURCE => ['network', 'system', 'application', 'cloud', 'identity', 'physical', 'other'],
             default => [],
         };
     }
@@ -110,6 +115,7 @@ enum RegisterType: string
             self::COMPETENCE => ['training'],
             self::COMMUNICATION => ['interested_party', 'document'],
             self::IMPROVEMENT => ['risk', 'objective', 'document'],
+            self::MONITORING_SOURCE => ['asset', 'supplier', 'document'],
         };
     }
 
@@ -146,6 +152,7 @@ enum RegisterType: string
             self::COMPETENCE => 'nav-stars',
             self::COMMUNICATION => 'nav-chat-quote',
             self::IMPROVEMENT => 'util-arrow-up',
+            self::MONITORING_SOURCE => 'nav-activity',
         };
     }
 

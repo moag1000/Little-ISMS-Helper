@@ -18,7 +18,7 @@
      `data-bulk-actions-endpoint-value="/<entity>"`.
 
      'review'        → "Review bestätigen" (ROLE_MANAGER; mit reviewByOwner: true auch
-                       Inhaber — Risiko/SoA prüfen den edit-Voter je Datensatz), ruft bulkReview auf →
+                       Inhaber — der Server prüft je Datensatz, PeriodicReviewService::mayConfirm()), ruft bulkReview auf →
                        POST {endpoint}/bulk-review (Risiko, SoA, Dokument, Lieferant).
      'approve'       → Quick-Button (fa-bulk-btn--success), ruft bulkStatusChange
                        mit data-target-status="approved" auf.
@@ -256,8 +256,9 @@
 
             {# 'review' — confirm the periodic review (risk, soa, document, supplier);
                POST {endpoint}/bulk-review, rules in PeriodicReviewService.
-               reviewByOwner: the server checks the edit voter per record (risk, control),
-               so owners confirm their own records too (W1). #}
+               reviewByOwner: the server checks per record (edit voter for risk/control,
+               manager or RECORD_RESPONSIBLE for document/supplier), so owners confirm
+               their own records too (W1, W5). #}
             {% if 'review' in actions and (is_granted('ROLE_MANAGER') or (reviewByOwner|default(false) and is_granted('ROLE_USER'))) %}
                 <button type="button"
                         class="fa-bulk-btn fa-bulk-btn--success"

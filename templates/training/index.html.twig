@@ -15,13 +15,15 @@
     ]
 } %}
 
+{# NIS-2 Art. 20 (2): "Leitungsschulung zuweisen" from the board member's reminder, or whenever a member's training falls due. #}
+{% set _board_action = (participantFilter|default(null) or board_training_due() > 0) and is_granted('ROLE_MANAGER') %}
 {{ _fa_page_header.render({
     title: 'training.title'|trans({}, 'training'),
     subtitle: participantFilter|default(null) ? 'training.filter.participant'|trans({'%name%': participantFilter.fullName}, 'training') : null,
-    actions: (participantFilter|default(null) and is_granted('ROLE_MANAGER') ? [
+    actions: (_board_action ? [
         { label: 'training.prefill.board_action'|trans({}, 'training'), variant: 'primary', href: path('app_training_new', {forBoard: 1}) }
     ] : [])|merge(is_granted('ROLE_USER') ? [
-        { label: 'training.new'|trans({}, 'training'), variant: participantFilter|default(null) ? 'ghost' : 'primary', icon: 'plus', href: path('app_training_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
+        { label: 'training.new'|trans({}, 'training'), variant: _board_action ? 'ghost' : 'primary', icon: 'plus', href: path('app_training_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
     ] : [])
 }) }}
 {% set _global_hints = alva_hints('training_index') %}

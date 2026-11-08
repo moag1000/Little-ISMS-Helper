@@ -118,6 +118,8 @@ final class AppDateFormatExtensionTest extends TestCase
         self::assertSame('00:30', $ext->formatTime($utc));
         self::assertSame('00:30:15', $ext->formatTime($utc, true));
         self::assertSame('—', $ext->formatTime(null));
+        // A time of day stored without a zone (TIME column) is shown as stored.
+        self::assertSame('23:30', $ext->formatTime($utc, false, false));
 
         $ymd = $this->extension(['application' => ['datetime_format' => 'Y-m-d H:i:s']]);
         self::assertSame('2024-12-31 23:30:15', $ymd->formatDateTime($utc, true));

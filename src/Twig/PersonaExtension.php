@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Security\Persona\Persona;
 use App\Security\Persona\PersonaResolver;
+use App\Service\Deadline\Source\ManagementTrainingSource;
 use App\Service\GuidedTourService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Twig\Attribute\AsTwigFunction;
@@ -22,6 +23,8 @@ use Twig\Attribute\AsTwigFunction;
  * - top_management_unassigned(): the organisation of an admin or manager (ISB, CISO) has nobody with the
  *   Leitung role (ROLE_TOP_MGMT) — admins no longer inherit it, so approvals
  *   reserved for top management would wait for nobody
+ * - board_training_due(): members of top management whose NIS-2 training (Art. 20 (2)) falls due
+ *   within the reminder's lead time — the training list offers "Leitungsschulung zuweisen" then
  */
 final readonly class PersonaExtension
 {
@@ -30,6 +33,7 @@ final readonly class PersonaExtension
         private GuidedTourService $guidedTourService,
         private Security $security,
         private UserRepository $userRepository,
+        private ?ManagementTrainingSource $managementTraining = null,
     ) {
     }
 
@@ -80,5 +84,17 @@ final readonly class PersonaExtension
         $tenant = $user->getTenant();
 
         return $tenant !== null && $this->userRepository->findByRoleInTenant('ROLE_TOP_MGMT', $tenant) === [];
+    }
+
+    #[AsTwigFunction('board_training_due')]
+    public function boardTrainingDue(): int
+    {
+        $user = $this->security->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+        if ($tenant === null || $this->managementTraining === null || !$tenant->isNis2Regulated()) {
+            return 0;
+        }
+
+        return count($this->managementTraining->dueSoon($tenant));
     }
 }
