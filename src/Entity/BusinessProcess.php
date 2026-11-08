@@ -602,7 +602,7 @@ class BusinessProcess
     public function hasUnmitigatedHighRisks(): bool
     {
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus()?->isHandled() !== true && $identifiedRisk->getResidualRiskLevel() >= RiskMatrixThresholds::highMin($this->tenant)) {
+            if ($identifiedRisk->getStatus()?->isHandled() !== true && $identifiedRisk->getResidualRiskLevel() >= RiskMatrixThresholds::highMin($identifiedRisk->getTenant())) {
                 return true;
             }
         }

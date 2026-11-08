@@ -343,12 +343,7 @@ final class ScheduledReportService
         $topRisks = [];
         foreach ($topRiskEntities as $risk) {
             $score = $risk->getInherentRiskLevel();
-            $level = match (true) {
-                $score >= \App\Risk\RiskMatrixThresholds::criticalMin() => 'Critical',
-                $score >= \App\Risk\RiskMatrixThresholds::highMin() => 'High',
-                $score >= \App\Risk\RiskMatrixThresholds::mediumMin() => 'Medium',
-                default => 'Low',
-            };
+            $level = ucfirst(\App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()));
             $topRisks[] = [
                 'title' => $risk->getTitle(),
                 'level' => $level,
@@ -478,12 +473,7 @@ final class ScheduledReportService
 
         foreach ($report['risks'] as $risk) {
             $score = $risk->getRiskScore();
-            $level = match (true) {
-                $score >= \App\Risk\RiskMatrixThresholds::criticalMin() => 'Critical',
-                $score >= \App\Risk\RiskMatrixThresholds::highMin() => 'High',
-                $score >= \App\Risk\RiskMatrixThresholds::mediumMin() => 'Medium',
-                default => 'Low',
-            };
+            $level = ucfirst(\App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()));
 
             $rows[] = [
                 $risk->getId(),

@@ -33,36 +33,36 @@ class RiskMatrixServiceTest extends TestCase
     public function testCalculateRiskLevelForCritical(): void
     {
         // Score >= 20 is critical
-        $this->assertEquals('critical', $this->service->calculateRiskLevel(5, 4)); // 20
-        $this->assertEquals('critical', $this->service->calculateRiskLevel(4, 5)); // 20
-        $this->assertEquals('critical', $this->service->calculateRiskLevel(5, 5)); // 25
+        $this->assertEquals('critical', $this->service->calculateRiskLevel(5, 4, null)); // 20
+        $this->assertEquals('critical', $this->service->calculateRiskLevel(4, 5, null)); // 20
+        $this->assertEquals('critical', $this->service->calculateRiskLevel(5, 5, null)); // 25
     }
 
     #[Test]
     public function testCalculateRiskLevelForHigh(): void
     {
         // Score >= 12 and < 20 is high
-        $this->assertEquals('high', $this->service->calculateRiskLevel(3, 4)); // 12
-        $this->assertEquals('high', $this->service->calculateRiskLevel(4, 3)); // 12
-        $this->assertEquals('high', $this->service->calculateRiskLevel(4, 4)); // 16
+        $this->assertEquals('high', $this->service->calculateRiskLevel(3, 4, null)); // 12
+        $this->assertEquals('high', $this->service->calculateRiskLevel(4, 3, null)); // 12
+        $this->assertEquals('high', $this->service->calculateRiskLevel(4, 4, null)); // 16
     }
 
     #[Test]
     public function testCalculateRiskLevelForMedium(): void
     {
         // Score >= 6 and < 12 is medium
-        $this->assertEquals('medium', $this->service->calculateRiskLevel(2, 3)); // 6
-        $this->assertEquals('medium', $this->service->calculateRiskLevel(3, 2)); // 6
-        $this->assertEquals('medium', $this->service->calculateRiskLevel(3, 3)); // 9
+        $this->assertEquals('medium', $this->service->calculateRiskLevel(2, 3, null)); // 6
+        $this->assertEquals('medium', $this->service->calculateRiskLevel(3, 2, null)); // 6
+        $this->assertEquals('medium', $this->service->calculateRiskLevel(3, 3, null)); // 9
     }
 
     #[Test]
     public function testCalculateRiskLevelForLow(): void
     {
         // Score < 6 is low
-        $this->assertEquals('low', $this->service->calculateRiskLevel(1, 1)); // 1
-        $this->assertEquals('low', $this->service->calculateRiskLevel(1, 5)); // 5
-        $this->assertEquals('low', $this->service->calculateRiskLevel(2, 2)); // 4
+        $this->assertEquals('low', $this->service->calculateRiskLevel(1, 1, null)); // 1
+        $this->assertEquals('low', $this->service->calculateRiskLevel(1, 5, null)); // 5
+        $this->assertEquals('low', $this->service->calculateRiskLevel(2, 2, null)); // 4
     }
 
     #[Test]

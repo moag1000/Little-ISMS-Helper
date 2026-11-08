@@ -459,7 +459,7 @@ class RoleDashboardService
 
         $criticalRisks = array_filter(
             $risks,
-            fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::criticalMin()
+            fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::criticalMin($r->getTenant())
         );
 
         usort($criticalRisks, fn($a, $b) => $b->getInherentRiskLevel() <=> $a->getInherentRiskLevel());
@@ -612,9 +612,9 @@ class RoleDashboardService
                 $byCategory[$category] = ['total' => 0, 'high' => 0, 'critical' => 0];
             }
             $byCategory[$category]['total']++;
-            if ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::criticalMin()) {
+            if ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::criticalMin($risk->getTenant())) {
                 $byCategory[$category]['critical']++;
-            } elseif ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::highMin()) {
+            } elseif ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::highMin($risk->getTenant())) {
                 $byCategory[$category]['high']++;
             }
         }
@@ -625,7 +625,7 @@ class RoleDashboardService
     private function countHighCriticalRisks(): int
     {
         $risks = $this->tenantRecords->all($this->riskRepository, null);
-        return count(array_filter($risks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::highMin()));
+        return count(array_filter($risks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::highMin($r->getTenant())));
     }
 
     private function getOverdueTreatmentPlans(): array
@@ -659,6 +659,7 @@ class RoleDashboardService
             'id' => $r->getId(),
             'title' => $r->getTitle(),
             'level' => $r->getInherentRiskLevel(),
+            'band' => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()), // the risk's own organisation's scale
             'category' => $r->getCategory(),
         ], array_slice($untreated, 0, $limit));
     }

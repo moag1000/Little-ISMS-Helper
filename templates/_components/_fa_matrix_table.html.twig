@@ -30,6 +30,8 @@
  #   yLabel  : string                 — vertical axis label (optional)
  #   xLabel  : string                 — horizontal axis label (optional)
  #   legend  : bool                   — show severity/RAG legend (default false)
+ #   tenant  : Tenant|null            — organisation whose risk scale colours
+ #                                      the cells + legend (null = in scope)
  #
  # Severity-mode cells:
  #   cells   : array[row][col]        — { score, severity?, count?, href? }
@@ -77,8 +79,8 @@
  #}
 
 {# Bands of the organisation's risk scale (Risikokriterien, ISO 27001 6.1.2 b). #}
-{% macro _severity(score) -%}
-    {{- risk_level_band(score) -}}
+{% macro _severity(score, tenant) -%}
+    {{- risk_level_band(score, tenant) -}}
 {% endmacro %}
 
 {# Map RAG status → fa-matrix-table severity class (reuses Aurora token palette). #}
@@ -101,6 +103,7 @@
     {%- set yLabel  = props.yLabel|default('') -%}
     {%- set xLabel  = props.xLabel|default('') -%}
     {%- set showLegend = props.legend|default(false) -%}
+    {%- set scaleTenant = props.tenant|default(null) -%}
     {%- set figId   = 'fa-matrix-' ~ random() -%}
     {%- set legendId = figId ~ '-legend' -%}
     {%- set titleId  = figId ~ '-title' -%}
@@ -170,7 +173,7 @@
                                                  : 'muted' -%}
                             {%- else -%}
                                 {%- set score   = cell.score|default(0) -%}
-                                {%- set sev     = cell.severity|default(_self._severity(score)|trim) -%}
+                                {%- set sev     = cell.severity|default(_self._severity(score, scaleTenant)|trim) -%}
                                 {%- set count   = cell.count|default(0) -%}
                                 {%- set href    = cell.href|default(null) -%}
                                 {%- set cellLabel = rowLabel ~ ' × ' ~ colLabel ~ (count > 0 ? ' (' ~ count ~ ')' : '') -%}
@@ -242,19 +245,19 @@
                 <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="{{ 'ui.component.matrix_legend.severity'|trans({}, 'ui') }}">
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--low">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.low'|trans({'%range%': risk_threshold('low')}, 'ui') }}
+                        {{ 'ui.component.matrix_legend.low'|trans({'%range%': risk_threshold('low', scaleTenant)}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--medium">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.medium'|trans({'%range%': risk_threshold('medium')}, 'ui') }}
+                        {{ 'ui.component.matrix_legend.medium'|trans({'%range%': risk_threshold('medium', scaleTenant)}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--high">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.high'|trans({'%range%': risk_threshold('high')}, 'ui') }}
+                        {{ 'ui.component.matrix_legend.high'|trans({'%range%': risk_threshold('high', scaleTenant)}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--critical">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.critical'|trans({'%range%': risk_threshold('critical')}, 'ui') }}
+                        {{ 'ui.component.matrix_legend.critical'|trans({'%range%': risk_threshold('critical', scaleTenant)}, 'ui') }}
                     </span>
                 </div>
             {% endif %}

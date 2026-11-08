@@ -295,7 +295,7 @@ final class AuditFreezeSnapshotBuilder
         $breach = 0;
         foreach ($risks as $risk) {
             // High or critical band (RiskMatrixThresholds SSoT)
-            if ($risk->getResidualRiskLevel() >= RiskMatrixThresholds::highMin()) {
+            if ($risk->getResidualRiskLevel() >= RiskMatrixThresholds::highMin($risk->getTenant())) {
                 $breach++;
             }
         }

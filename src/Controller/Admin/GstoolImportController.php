@@ -119,6 +119,7 @@ final class GstoolImportController extends AbstractController
             'form' => $form,
             'result' => $result,
             'isDryRun' => $isDryRun,
+            'scaleTenant' => $tenant, // preview rows in the importing organisation's scale
         ], new Response(status: $status));
     }
 

@@ -165,7 +165,7 @@ final class RiskReviewService
     {
         $score = ($risk->getProbability() ?? 1) * ($risk->getImpact() ?? 1);
 
-        return RiskMatrixThresholds::classify($score);
+        return RiskMatrixThresholds::classify($score, $risk->getTenant());
     }
 
     /**

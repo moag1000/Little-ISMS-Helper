@@ -1856,11 +1856,6 @@ parameters:
 			count: 3
 			path: src/Service/DashboardStatisticsService.php
 
-		-
-			message: '#^Cannot call method getInherentRiskLevel\(\) on class\-string\|object\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/DashboardStatisticsService.php
 
 		-
 			message: '#^Cannot call method getStatus\(\) on string\.$#'

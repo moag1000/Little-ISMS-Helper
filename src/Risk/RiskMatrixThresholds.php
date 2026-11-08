@@ -23,7 +23,10 @@ use App\Entity\Tenant;
  * no configuration yet) the defaults below apply.
  *
  * Read the edges via criticalMin()/highMin()/mediumMin() or classify() —
- * never the DEFAULT_* constants and never literal 20/12/6 (Gate 87).
+ * never the DEFAULT_* constants and never literal 20/12/6 — and always with
+ * the tenant of the data (the risk's organisation; Gate 87). Without it the
+ * tenant in scope applies: defaults in commands/jobs, the viewer's scale in
+ * holding views.
  *
  * Score range: 1-25 (probability 1-5 x impact 1-5). The 5×5 matrix itself is
  * fixed so that existing ratings stay comparable.

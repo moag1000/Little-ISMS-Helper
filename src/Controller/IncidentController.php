@@ -246,14 +246,7 @@ class IncidentController extends AbstractController
                 );
                 $incident->setCategory('security_incident');
                 // Map inherent risk level → incident severity
-                $level = $sourceRisk->getInherentRiskLevel();
-                $severity = match (true) {
-                    $level >= \App\Risk\RiskMatrixThresholds::criticalMin() => IncidentSeverity::Critical,
-                    $level >= \App\Risk\RiskMatrixThresholds::highMin() => IncidentSeverity::High,
-                    $level >= \App\Risk\RiskMatrixThresholds::mediumMin() => IncidentSeverity::Medium,
-                    default => IncidentSeverity::Low,
-                };
-                $incident->setSeverity($severity);
+                $incident->setSeverity(IncidentSeverity::from(\App\Risk\RiskMatrixThresholds::classify($sourceRisk->getInherentRiskLevel(), $sourceRisk->getTenant())));
                 $incident->setStatus(IncidentStatus::Reported); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'reported' is the incident_lifecycle initial_marking)
                 // Link back to the originating risk (RiskIncidentLink, materialized)
                 $incident->addRealizedRisk($sourceRisk);

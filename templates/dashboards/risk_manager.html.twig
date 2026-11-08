@@ -243,7 +243,7 @@
                                     <small class="text-muted">{{ risk.category }}</small>
                                 </div>
                                 {% include '_components/_badge.html.twig' with {
-                                    variant: {critical: 'danger', high: 'warning'}[risk_level_band(risk.level)] ?? 'secondary',
+                                    variant: {critical: 'danger', high: 'warning'}[risk.band] ?? 'secondary',
                                     content: risk.level
                                 } %}
                             </div>

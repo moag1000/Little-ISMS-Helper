@@ -97,8 +97,8 @@
 {% set _critical_high = report.by_level.critical|merge(report.by_level.high) %}
 {% set _ch_rows = [] %}
 {% for risk in _critical_high %}
-    {% set _badge = risk_level_band(risk.riskScore) == 'critical' ? 'badge-critical' : 'badge-high' %}
-    {% set _level = risk_level_band(risk.riskScore) == 'critical' ? ('management_reports.risk_level.critical'|trans({}, 'management_reports')) : ('management_reports.risk_level.high'|trans({}, 'management_reports')) %}
+    {% set _badge = risk_level_band(risk.riskScore, risk.tenant) == 'critical' ? 'badge-critical' : 'badge-high' %}
+    {% set _level = risk_level_band(risk.riskScore, risk.tenant) == 'critical' ? ('management_reports.risk_level.critical'|trans({}, 'management_reports')) : ('management_reports.risk_level.high'|trans({}, 'management_reports')) %}
     {% set _ch_rows = _ch_rows|merge([[
         risk.id,
         risk.title|length > 38 ? risk.title[:38] ~ '…' : risk.title,

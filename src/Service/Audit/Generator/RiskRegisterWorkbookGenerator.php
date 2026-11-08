@@ -123,10 +123,10 @@ final class RiskRegisterWorkbookGenerator implements AuditWorkbookGeneratorInter
             $sheet->setCellValue('Q' . $row, $risk->isInvolvesPersonalData() ? 'Yes' : 'No');
 
             // Colour-code inherent score (column F)
-            WorkbookStyleHelper::applyRiskScoreColor($sheet, 'F' . $row, $inherentScore);
+            WorkbookStyleHelper::applyRiskScoreColor($sheet, 'F' . $row, $inherentScore, $risk->getTenant());
 
             // Colour-code residual score (column I) — primary visual indicator
-            WorkbookStyleHelper::applyRiskScoreColor($sheet, 'I' . $row, $residualScore);
+            WorkbookStyleHelper::applyRiskScoreColor($sheet, 'I' . $row, $residualScore, $risk->getTenant());
 
             $row++;
         }

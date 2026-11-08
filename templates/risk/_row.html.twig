@@ -11,7 +11,7 @@
 {% set residual = risk.getResidualRiskLevel() %}
 <tr id="risk-row-{{ risk.id }}"
     data-risk-id="{{ risk.id }}"
-    data-risk-level="{{ risk_level_band(riskScore) }}">
+    data-risk-level="{{ risk_level_band(riskScore, risk.tenant) }}">
     <td class="bulk-select-column">
         <input type="checkbox"
                class="form-check-input"
@@ -32,7 +32,7 @@
         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.threat, class: 'text-wrap text-start' } %}
     </td>
     <td class="text-center">
-        <span class="risk-score risk-score-{{ risk_level_band(riskScore) }}">
+        <span class="risk-score risk-score-{{ risk_level_band(riskScore, risk.tenant) }}">
             {{ riskScore }}
         </span>
         {# Probability × impact under the score instead of two own columns, so the table fits at 1400px. #}

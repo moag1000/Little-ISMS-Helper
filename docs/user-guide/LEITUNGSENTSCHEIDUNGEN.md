@@ -62,6 +62,14 @@ Kennzahlen, Berichte, PDFs, Exporte und die Heatmaps (Code liest sie nur über
 Tochtergesellschaft ist nie laxer als ihre Holding: es gilt je Grenze der
 niedrigere Wert.
 
+Jedes Risiko wird in der Skala seiner eigenen Organisation eingestuft, nicht
+in der des Betrachters: Berichte, Exporte, geplante Berichte, Benachrichtigungen
+(„Risiko kritisch“) und Holding-Ansichten über mehrere Organisationen nutzen
+auch ohne angemeldete Sitzung (Cron, Hintergrundjob) die Grenzen der
+Organisation, zu der das Risiko gehört. Code übergibt dafür die Organisation
+an `RiskMatrixThresholds` bzw. `risk_level_band(score, risk.tenant)`; Gate 87
+lehnt Aufrufe ohne sie ab.
+
 Skala, Stufenbedeutung und Freigabestufen billigt die Leitung zusammen als
 „Risikokriterien“. Jede Änderung beendet die Billigung; bis zur neuen
 Billigung pausiert die automatische Akzeptanz.

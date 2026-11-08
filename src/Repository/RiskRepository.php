@@ -45,7 +45,7 @@ class RiskRepository extends ServiceEntityRepository
             ->where('r.tenant = :tenant')
             ->andWhere('(r.probability * r.impact) >= :threshold')
             ->setParameter('tenant', $tenant)
-            ->setParameter('threshold', $threshold ?? RiskMatrixThresholds::highMin())
+            ->setParameter('threshold', $threshold ?? RiskMatrixThresholds::highMin($tenant))
             ->orderBy('r.probability', \SortDirection::Descending)
             ->addOrderBy('r.impact', \SortDirection::Descending)
             ->getQuery()
@@ -174,9 +174,9 @@ class RiskRepository extends ServiceEntityRepository
         foreach ($risks as $risk) {
             $riskScore = ($risk->getProbability() ?? 0) * ($risk->getImpact() ?? 0);
 
-            if ($riskScore >= RiskMatrixThresholds::highMin()) {
+            if ($riskScore >= RiskMatrixThresholds::highMin($tenant)) {
                 $stats['high']++;
-            } elseif ($riskScore >= RiskMatrixThresholds::mediumMin()) {
+            } elseif ($riskScore >= RiskMatrixThresholds::mediumMin($tenant)) {
                 $stats['medium']++;
             } else {
                 $stats['low']++;
@@ -199,7 +199,7 @@ class RiskRepository extends ServiceEntityRepository
             ->where('r.tenant = :tenant')
             ->andWhere('(r.probability * r.impact) >= :threshold')
             ->setParameter('tenant', $tenant)
-            ->setParameter('threshold', $threshold ?? RiskMatrixThresholds::highMin())
+            ->setParameter('threshold', $threshold ?? RiskMatrixThresholds::highMin($tenant))
             ->orderBy('r.probability', \SortDirection::Descending)
             ->addOrderBy('r.impact', \SortDirection::Descending)
             ->getQuery()

@@ -436,7 +436,7 @@ class DashboardStatisticsService
 
         return count(array_filter(
             $allRisks,
-            fn($risk): bool => $risk->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin()
+            fn($risk): bool => $risk->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin($risk->getTenant())
         ));
     }
 
@@ -868,8 +868,8 @@ class DashboardStatisticsService
 
         if (in_array('risks', $activeModules, true)) {
             $risks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
-            $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= \App\Risk\RiskMatrixThresholds::criticalMin()));
-            $high = count(array_filter($risks, fn($r): bool => \App\Risk\RiskMatrixThresholds::classify($r->getResidualRiskLevel()) === 'high'));
+            $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= \App\Risk\RiskMatrixThresholds::criticalMin($r->getTenant())));
+            $high = count(array_filter($risks, fn($r): bool => \App\Risk\RiskMatrixThresholds::classify($r->getResidualRiskLevel(), $r->getTenant()) === 'high'));
             $riskScore = $risks === [] ? 0.0 : max(0.0, 100.0 - ($critical * 15.0) - ($high * 5.0));
             $components['risk_exposure'] = [0.25, round($riskScore, 1)];
         }
@@ -1049,8 +1049,8 @@ class DashboardStatisticsService
         $allRisks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
 
         $totalRisks = count($allRisks);
-        $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin()));
-        $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::criticalMin()));
+        $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin($r->getTenant())));
+        $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::criticalMin($r->getTenant())));
         $treatedRisks = count(array_filter($allRisks, fn($r): bool => $r->getTreatmentStrategy() !== null));
         $treatmentRate = $totalRisks > 0 ? (int) round(($treatedRisks / $totalRisks) * 100) : 0;
 
@@ -1065,9 +1065,9 @@ class DashboardStatisticsService
         foreach ($allRisks as $risk) {
             $residual = $risk->getResidualRiskLevel();
             $residualSum += $residual;
-            if ($residual >= \App\Risk\RiskMatrixThresholds::criticalMin()) {
+            if ($residual >= \App\Risk\RiskMatrixThresholds::criticalMin($risk->getTenant())) {
                 $residualCritical++;
-            } elseif ($residual >= \App\Risk\RiskMatrixThresholds::highMin()) {
+            } elseif ($residual >= \App\Risk\RiskMatrixThresholds::highMin($risk->getTenant())) {
                 $residualHigh++;
             }
             $category = $risk->getCategory();
@@ -1556,7 +1556,7 @@ class DashboardStatisticsService
         // Filter for ICT-related risks (assuming category or tag)
         $ictRisks = array_filter(
             $allRisks,
-            fn($r): bool => method_exists($r, 'getCategory') && stripos($r->getCategory() ?? '', 'ICT') !== false
+            fn(Risk $r): bool => stripos($r->getCategory() ?? '', 'ICT') !== false
         );
 
         return [
@@ -1568,9 +1568,9 @@ class DashboardStatisticsService
             ],
             'ict_risks_high' => [
                 'label' => 'kpi.dora.ict_risks_high',
-                'value' => count(array_filter($ictRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin())),
+                'value' => count(array_filter($ictRisks, fn(Risk $r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin($r->getTenant()))),
                 'unit' => '',
-                'status' => count(array_filter($ictRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin())) > 0 ? 'warning' : 'good',
+                'status' => count(array_filter($ictRisks, fn(Risk $r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin($r->getTenant()))) > 0 ? 'warning' : 'good',
             ],
         ];
     }

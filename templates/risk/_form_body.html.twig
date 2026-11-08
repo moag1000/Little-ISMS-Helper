@@ -51,6 +51,7 @@
             probability_selector: '#risk_probability',
             impact_selector: '#risk_impact',
             residual: false,
+            tenant: risk is defined and risk ? risk.tenant : null,
         } %}
     </div>
     <div class="col-md-6">
@@ -58,6 +59,7 @@
             probability_selector: '#risk_residualProbability',
             impact_selector: '#risk_residualImpact',
             residual: true,
+            tenant: risk is defined and risk ? risk.tenant : null,
         } %}
     </div>
 </div>

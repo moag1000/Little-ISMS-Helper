@@ -186,9 +186,8 @@ class RiskController extends AbstractController
         }
 
         // Summary chips count the list as shown (view + filters + focus applied).
-        $criticalCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::criticalMin()));
-        $highCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::highMin()
-            && $r->getRiskScore() < RiskMatrixThresholds::criticalMin()));
+        $criticalCount = count(array_filter($risks, static fn(Risk $r): bool => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'critical'));
+        $highCount = count(array_filter($risks, static fn(Risk $r): bool => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'high'));
         $unownedCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskOwner() === null));
 
         return $this->render('risk/index.html.twig', [
@@ -488,7 +487,7 @@ class RiskController extends AbstractController
         // empty matrix rather than every tenant's risks.
         $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : [];
 
-        $matrixData = $this->riskMatrixService->generateMatrix();
+        $matrixData = $this->riskMatrixService->generateMatrix(tenant: $tenant);
         $statistics = $this->riskMatrixService->getRiskStatistics();
         $risksByLevel = $this->riskMatrixService->getRisksByLevel();
 
@@ -505,6 +504,7 @@ class RiskController extends AbstractController
             'matrixData' => $matrixData,
             'statistics' => $statistics,
             'risksByLevel' => $risksByLevel,
+            'scaleTenant' => $tenant, // cell colours + legend: this organisation's scale
         ]);
     }
     /**

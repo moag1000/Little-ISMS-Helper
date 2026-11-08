@@ -382,6 +382,16 @@ Gelesen werden sie über `App\Risk\RiskMatrixThresholds` (`classify()`, `critica
 Vergleich eines Risikowerts mit 20, 12 oder 6. Andere Skalen mit denselben Zahlen stehen mit
 Grund in `baselines/risk_band_literals.txt`; die Baseline darf nur schrumpfen.
 
+Zweite Prüfung: Jeder Zugriff auf die Skala nennt die Organisation der Daten. In `src/` braucht
+`RiskMatrixThresholds::classify()` zwei Argumente, `criticalMin()`/`highMin()`/`mediumMin()`/
+`getBands()` eines (den Tenant); in `templates/` brauchen `risk_level_band()` und `risk_threshold()`
+zwei, `risk_bands()` eines (`risk_level_band(score, risk.tenant)`, bei Matrix/Legende die
+Organisation, deren Matrix gezeigt wird). Ohne Tenant greift die Organisation im Scope – in
+Befehlen, Cron und Hintergrundjobs also 20/12/6, in Holding-Ansichten die Skala des Betrachters.
+Wo die Organisation im Scope wirklich richtig ist, steht die Datei mit Grund in
+`baselines/risk_scale_without_tenant.txt` (`pfad::grund`, derzeit leer); veraltete Einträge
+lassen das Gate scheitern.
+
 **CI-Integration:** Gate 87 im `code-quality`-Job.
 
 ---

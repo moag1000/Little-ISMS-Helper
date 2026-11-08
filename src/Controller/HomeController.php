@@ -150,16 +150,7 @@ class HomeController extends AbstractController
             ? $this->riskRepository->findByTenant($tenant)
             : [];
         foreach ($allRisks as $risk) {
-            $level = $risk->getInherentRiskLevel();
-            if ($level >= \App\Risk\RiskMatrixThresholds::criticalMin()) {
-                $risksByLevel['critical']++;
-            } elseif ($level >= \App\Risk\RiskMatrixThresholds::highMin()) {
-                $risksByLevel['high']++;
-            } elseif ($level >= \App\Risk\RiskMatrixThresholds::mediumMin()) {
-                $risksByLevel['medium']++;
-            } else {
-                $risksByLevel['low']++;
-            }
+            $risksByLevel[\App\Risk\RiskMatrixThresholds::classify($risk->getInherentRiskLevel(), $risk->getTenant())]++; // the risk's own organisation's scale
         }
 
         // Assets grouped by type (real data for chart)

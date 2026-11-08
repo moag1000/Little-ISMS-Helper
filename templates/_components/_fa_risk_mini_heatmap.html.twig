@@ -17,10 +17,13 @@
  #   probability_selector  string — CSS selector for the prob-input (1-5)
  #   impact_selector       string — CSS selector for the impact-input (1-5)
  #   residual              bool   — render as residual-variant (gray border) (default false)
+ #   tenant                Tenant — organisation whose risk scale applies (the risk's;
+ #                                  null = the organisation in scope)
  #
  # Norm-Bezug: ISO 27005 (Risk-Matrix). Cell-band uses risk_threshold() SSoT.
  #}
-{% set _bands = risk_bands() %}
+{% set _scale_tenant = tenant|default(null) %}
+{% set _bands = risk_bands(_scale_tenant) %}
 {% set _critical_min = _bands.critical.min %}
 {% set _high_min = _bands.high.min %}
 {% set _medium_min = _bands.medium.min %}
@@ -45,10 +48,10 @@
             <span class="fa-risk-mini-heatmap__score-value" data-risk-mini-heatmap-target="scoreLabel">—</span>
             <span class="fa-risk-mini-heatmap__band-badge"
                   data-risk-mini-heatmap-target="bandLabel"
-                  data-label-critical="{{ 'risk.matrix.level.critical'|trans({}, 'risk') }} ({{ risk_threshold('critical') }})"
-                  data-label-high="{{ 'risk.matrix.level.high'|trans({}, 'risk') }} ({{ risk_threshold('high') }})"
-                  data-label-medium="{{ 'risk.matrix.level.medium'|trans({}, 'risk') }} ({{ risk_threshold('medium') }})"
-                  data-label-low="{{ 'risk.matrix.level.low'|trans({}, 'risk') }} ({{ risk_threshold('low') }})">—</span>
+                  data-label-critical="{{ 'risk.matrix.level.critical'|trans({}, 'risk') }} ({{ risk_threshold('critical', _scale_tenant) }})"
+                  data-label-high="{{ 'risk.matrix.level.high'|trans({}, 'risk') }} ({{ risk_threshold('high', _scale_tenant) }})"
+                  data-label-medium="{{ 'risk.matrix.level.medium'|trans({}, 'risk') }} ({{ risk_threshold('medium', _scale_tenant) }})"
+                  data-label-low="{{ 'risk.matrix.level.low'|trans({}, 'risk') }} ({{ risk_threshold('low', _scale_tenant) }})">—</span>
         </span>
     </div>
 

@@ -396,7 +396,7 @@ class ReportController extends AbstractController
         // One organisation only (TenantRecords rule): no tenant, no figures.
         $tenant = $this->tenantRecords->resolve(null);
         $risks = $this->tenantRecords->all($this->riskRepository, $tenant);
-        $highRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= RiskMatrixThresholds::highMin());
+        $highRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= RiskMatrixThresholds::highMin($risk->getTenant()));
 
         $controls = $this->tenantRecords->all($this->controlRepository, $tenant);
         $implementedControls = array_filter($controls, fn(Control $control): bool => $control->getImplementationStatus() === 'implemented');

@@ -61,7 +61,10 @@ class AnalyticsController extends AbstractController
     #[Route('', name: 'app_analytics_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
-        return $this->render('analytics/dashboard.html.twig');
+        // Heat-map cells use the scale of the organisation whose risks it shows (ISO 27001 6.1.2 b).
+        return $this->render('analytics/dashboard.html.twig', [
+            'scaleTenant' => $this->tenantContext->getCurrentTenant(),
+        ]);
     }
 
     /**
@@ -165,12 +168,13 @@ class AnalyticsController extends AbstractController
 
         // Calculate counts for each cell
         $heatMapData = [];
+        $tenant = $this->tenantContext->getCurrentTenant(); // the matrix shown is this organisation's
         for ($impact = 5; $impact >= 1; $impact--) {
             for ($probability = 1; $probability <= 5; $probability++) {
                 $cellRisks = $matrix[$impact][$probability];
                 $count = count($cellRisks);
                 $score = $probability * $impact;
-                $band = RiskMatrixThresholds::classify($score);
+                $band = RiskMatrixThresholds::classify($score, $tenant);
 
                 $heatMapData[] = [
                     'x' => $probability,

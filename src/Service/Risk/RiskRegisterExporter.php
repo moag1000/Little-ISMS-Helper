@@ -52,7 +52,7 @@ class RiskRegisterExporter
             // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
             $risks = array_filter(
                 $risks,
-                static fn(Risk $risk): bool => RiskMatrixThresholds::classify($risk->getRiskScore()) === $level,
+                static fn(Risk $risk): bool => RiskMatrixThresholds::classify($risk->getRiskScore(), $risk->getTenant()) === $level,
             );
         }
         if ($status) {
