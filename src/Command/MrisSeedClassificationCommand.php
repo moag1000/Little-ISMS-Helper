@@ -115,7 +115,7 @@ class MrisSeedClassificationCommand extends Command
                 ? null
                 : array_values(array_filter(array_map('trim', explode(',', $flankingRaw)), static fn(string $s): bool => $s !== ''));
 
-            $controls = $this->controlRepository->findBy(['controlId' => $controlId]);
+            $controls = $this->controlRepository->findBy(['controlId' => $controlId]); // @phpstan-ignore tenant.unscopedBackgroundQuery (instance maintenance: seeds the MRIS class on this control in every organisation)
             if (empty($controls)) {
                 $missing++;
                 $missingControls[] = $controlId;

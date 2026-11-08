@@ -116,7 +116,7 @@ final class ComplianceFulfillmentWorkbookGenerator implements AuditWorkbookGener
                 $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($requirement?->getTitle() ?? ''));
                 $sheet->setCellValue('D' . $row, CsvSanitizer::sanitize($requirement?->getCategory() ?? ''));
                 $sheet->setCellValue('E' . $row, $fulfillment->isApplicable() ? 'Yes' : 'No');
-                $sheet->setCellValue('F' . $row, $fulfillment->getStatus());
+                $sheet->setCellValue('F' . $row, CsvSanitizer::sanitize($fulfillment->getStatus()));
                 $sheet->setCellValue('G' . $row, $fulfillment->getFulfillmentPercentage());
                 $sheet->setCellValue('H' . $row, CsvSanitizer::sanitize($fulfillment->getEvidenceDescription() ?? ''));
                 $sheet->setCellValue('I' . $row, $fulfillment->getLastReviewDate()?->format('Y-m-d') ?? '');

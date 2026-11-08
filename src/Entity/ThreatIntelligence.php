@@ -234,7 +234,7 @@ class ThreatIntelligence
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
-        $this->detectionDate = new DateTimeImmutable();
+        $this->detectionDate = new \DateTime(); // mutable `date` column
         $this->affectedAssets = new ArrayCollection();
         $this->resultingIncidents = new ArrayCollection();
         $this->assignedDeputyPersons = new ArrayCollection();

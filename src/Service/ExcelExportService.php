@@ -52,7 +52,7 @@ class ExcelExportService
 
         foreach ($headers as $header) {
             $cell = $col . $row;
-            $worksheet->setCellValue($cell, $header);
+            $worksheet->setCellValue($cell, CsvSanitizer::sanitize($header));
 
             // Style header
             $worksheet->getStyle($cell)->applyFromArray([
@@ -220,7 +220,7 @@ class ExcelExportService
         $col = 'A';
         foreach ($headers as $header) {
             $cell = $col . $row;
-            $worksheet->setCellValue($cell, $header);
+            $worksheet->setCellValue($cell, CsvSanitizer::sanitize($header));
 
             // Enhanced header styling
             $worksheet->getStyle($cell)->applyFromArray([

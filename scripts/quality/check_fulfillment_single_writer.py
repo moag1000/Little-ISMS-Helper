@@ -16,6 +16,12 @@ src/Entity/ and fails on
     ComplianceRequirementFulfillment, or on a call chain that mentions a
     fulfilment (`$fulfillment->…`, `getOrCreateFulfillment(…)->…`);
   * `->setStatus(` on a call chain that mentions a fulfilment.
+  * a write by property NAME (PropertyAccessor / Reflection `setValue()` with
+    'fulfillmentPercentage', or with 'status' next to a fulfilment) — S6, the
+    setter-based check did not see generic hydrators;
+  * raw SQL `UPDATE` / `INSERT INTO compliance_requirement_fulfillments`.
+Restore hydrates every column by name: it must recompute afterwards, so
+src/Service/RestoreService.php must call `refreshTenant()` of the derivation.
 "Mentions a fulfilment" = the receiver chain (variables, properties and method
 names, arguments left out) contains `fulfil` (fulfilment / fulfillment).
 Other entities with an own `setFulfillmentPercentage()` (PortfolioSnapshot)
@@ -39,6 +45,9 @@ OPT_OUT = "@fulfillment-writer-ok"
 CALL = re.compile(r"\??->\s*(setFulfillmentPercentage|setStatus)\s*\(")
 IDENT = re.compile(r"[A-Za-z_]\w*$")
 CLASS_MENTION = re.compile(r"\bComplianceRequirementFulfillment\b")
+BY_NAME = re.compile(r"setValue\s*\(.*['\"](fulfillmentPercentage|status)['\"]")
+RAW_SQL = re.compile(r"(UPDATE|INSERT\s+INTO)\s+`?compliance_requirement_fulfillments?\b", re.IGNORECASE)
+RESTORE = SRC / "Service" / "RestoreService.php"
 
 
 def receiver_chain(text: str, pos: int) -> str:
@@ -92,13 +101,29 @@ def receiver_chain(text: str, pos: int) -> str:
     return "->".join(reversed(parts))
 
 
+def scan_by_name(path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    rel = path.relative_to(ROOT)
+    for line_no, line in enumerate(text.splitlines(), 1):
+        if OPT_OUT in line:
+            continue
+        m = BY_NAME.search(line)
+        if m and (m.group(1) == "fulfillmentPercentage" or "fulfil" in line.lower()):
+            errors.append(f"{rel}:{line_no}: '{m.group(1)}' written by property name — "
+                          "write fulfilment values through FulfillmentDerivationService")
+        if RAW_SQL.search(line):
+            errors.append(f"{rel}:{line_no}: raw SQL write of compliance_requirement_fulfillments — "
+                          "write fulfilment values through FulfillmentDerivationService")
+    return errors
+
+
 def scan(path: Path) -> list[str]:
     text = path.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = scan_by_name(path, text)
     if "setFulfillmentPercentage" not in text and "setStatus" not in text:
-        return []
+        return errors
     mentions_class = bool(CLASS_MENTION.search(text))
     lines = text.splitlines()
-    errors: list[str] = []
     for m in CALL.finditer(text):
         line_no = text.count("\n", 0, m.start()) + 1
         if OPT_OUT in lines[line_no - 1]:
@@ -123,6 +148,9 @@ def main() -> int:
         if any(path.is_relative_to(d) for d in EXEMPT_DIRS):
             continue
         errors.extend(scan(path))
+    if "refreshTenant(" not in RESTORE.read_text(encoding="utf-8"):
+        errors.append(f"{RESTORE.relative_to(ROOT)}: a restore hydrates fulfilment columns by name and "
+                      "must recompute them afterwards (FulfillmentDerivationService::refreshTenant())")
 
     if errors:
         print(f"Gate 85: {len(errors)} fulfilment write(s) outside FulfillmentDerivationService:")

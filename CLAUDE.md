@@ -789,6 +789,9 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Sensitive data excluded from audit logs
+- [ ] Non-UI paths (REST, MCP, restore, exports, jobs) are covered by contract tests that discover every
+      resource/tool themselves (`tests/Contract/`, list in `docs/security/NON_UI_CONTRACTS.md`); a route that reads
+      a job id carries `#[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]` (Gate 90).
 - [ ] Bulk operations use `AuditLogger::logBulk()` (1 batch-entry +
       N per-entity-entries, returns UUIDv4 batch_id) — never bypass
       Doctrine lifecycle via raw `executeStatement()` without explicit

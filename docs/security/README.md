@@ -21,6 +21,11 @@ General security architecture and best practices documentation.
 ### [SECURITY_IMPROVEMENTS.md](SECURITY_IMPROVEMENTS.md)
 Security enhancements and OWASP compliance documentation.
 
+### [NON_UI_CONTRACTS.md](NON_UI_CONTRACTS.md)
+Every security property of the non-UI paths (REST, MCP, restore, imports, exports, jobs, console,
+quick-fix) with the test or CI gate that locks it — organisation boundary, token rules, form-equal
+rights, restore, exports.
+
 ## 🛡️ Vulnerability Management Process
 
 ### 1. Detection

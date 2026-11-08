@@ -181,7 +181,7 @@ class ManagementReportController extends AbstractController
 
         $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Risk Management Report');
 
-        // Add summary sheet
+        // Summary sheet. @csv-sanitize-exempt: counters and fixed labels only
         $summarySheet = $spreadsheet->createSheet();
         $summarySheet->setTitle('Summary');
         $summarySheet->setCellValue('A1', 'Risk Management Summary');
@@ -647,9 +647,9 @@ class ManagementReportController extends AbstractController
         foreach ($bcmReport['exercises']['exercises'] as $exercise) {
             $exerciseSheet->setCellValue('A' . $row, $exercise->getId());
             $exerciseSheet->setCellValue('B' . $row, \App\Util\CsvSanitizer::sanitize($exercise->getName()));
-            $exerciseSheet->setCellValue('C' . $row, $exercise->getExerciseType());
+            $exerciseSheet->setCellValue('C' . $row, \App\Util\CsvSanitizer::sanitize($exercise->getExerciseType()));
             $exerciseSheet->setCellValue('D' . $row, $exercise->getExerciseDate() ? $exercise->getExerciseDate()->format('Y-m-d') : '-');
-            $exerciseSheet->setCellValue('E' . $row, $exercise->getStatus());
+            $exerciseSheet->setCellValue('E' . $row, \App\Util\CsvSanitizer::sanitize($exercise->getStatus()));
             $exerciseSheet->setCellValue('F' . $row, \App\Util\CsvSanitizer::sanitize(substr((string) ($exercise->getResults() ?: '-'), 0, 100)));
             $row++;
         }
@@ -702,7 +702,7 @@ class ManagementReportController extends AbstractController
 
         $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Compliance Frameworks');
 
-        // Summary sheet
+        // Summary sheet. @csv-sanitize-exempt: counters and fixed labels only
         $summarySheet = $spreadsheet->createSheet();
         $summarySheet->setTitle('Summary');
         $summarySheet->setCellValue('A1', 'Compliance Status Summary');
@@ -781,7 +781,7 @@ class ManagementReportController extends AbstractController
 
         $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Data Breaches');
 
-        // Summary sheet
+        // Summary sheet. @csv-sanitize-exempt: counters and fixed labels only
         $summarySheet = $spreadsheet->createSheet();
         $summarySheet->setTitle('Summary');
         $summarySheet->setCellValue('A1', 'GDPR Data Breach Summary');

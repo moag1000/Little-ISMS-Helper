@@ -361,12 +361,16 @@ PHPStan meldet nur den „immer wahr“-Fall. Das Gate scheitert auch, wenn
 
 ### quality/check_csv_formula_injection.py (Gate 84)
 
-**Zweck:** Jede Datei in `src/` (außer `src/Command/`), die Tabellenzellen schreibt
-(`fputcsv()`, PhpSpreadsheet `setCellValue*()`/`fromArray()`, eigene `csvRow()`-Helfer),
-nutzt `App\Util\CsvSanitizer::sanitize()` oder einen Helfer, der es tut (`csvCell`,
-`streamCsvExport`). Sonst läuft ein Lieferantenname wie `=HYPERLINK(…)` beim Öffnen in
-Excel als Formel (CWE-1236); so war es beim DORA-RoI-CSV und beim FTE-Board-CSV. Dateien
-ohne Datensatztext markieren `// @csv-sanitize-exempt: <Grund>`. Keine Baseline.
+**Zweck:** Jede Stelle in `src/` (seit S6 auch `src/Command/`), die eine Tabellenzelle schreibt
+(`fputcsv()`, PhpSpreadsheet `setCellValue*()`/`fromArray()`), schickt Datensatztext durch
+`App\Util\CsvSanitizer::sanitize()` (oder `sanitize*()`/`csvCell`/`streamCsvExport`). Sonst läuft
+ein Lieferantenname wie `=HYPERLINK(…)` beim Öffnen in Excel als Formel (CWE-1236); so war es beim
+DORA-RoI-CSV und beim FTE-Board-CSV. Seit S6 prüft das Gate **jede Schreibstelle** statt jeder
+Datei: ein Getter (`->getTitle()`) ohne Sanitizer fällt durch, ebenso eine bloße Variable in einer
+Funktion, die nie sanitisiert. Zahlen, Datumswerte (`->format()`), `->count()`, `is*`/`has*` und
+Übersetzungen gehen durch. Eine Stelle ohne Datensatztext trägt
+`// @csv-sanitize-exempt: <Grund>` (in der Zeile oder darüber; in der Funktion gilt die Marke für
+deren bloße Variablen, z. B. Zählerblätter). Keine Baseline.
 
 **CI-Integration:** Gate 84 im `code-quality`-Job.
 
@@ -422,8 +426,23 @@ scheitern. Baseline `baselines/requirement_controls_scope.txt` darf nur schrumpf
 einer solchen Kette oder in einer Datei, die `ComplianceRequirementFulfillment` nennt. Andere
 Entities mit eigenem `setFulfillmentPercentage()` (PortfolioSnapshot) bleiben erlaubt. Eine
 begründete Ausnahme trägt `// @fulfillment-writer-ok: <Grund>` in der Zeile. Keine Baseline.
+Seit S6 auch: Schreiben per Property-Name (`setValue($x, 'fulfillmentPercentage', …)` über
+PropertyAccessor/Reflection), rohes SQL auf `compliance_requirement_fulfillments`, und
+`RestoreService` muss nach einer Wiederherstellung `refreshTenant()` aufrufen.
 
 **CI-Integration:** Gate 85 im `code-quality`-Job.
+
+---
+
+### quality/check_job_id_access.py (Gate 90)
+
+**Zweck:** Jede Route, die einen Hintergrundjob über eine Job-ID aus der URL liest
+(`JobStatusService::read()/exists()/delete()`), trägt `#[IsGranted(AsyncJobVoter::ACCESS, subject: '<id>')]`
+an der Action oder Klasse — nur wer den Job gestartet hat (oder ein Super-Admin) sieht Status und
+Ergebnisdatei. Routen mit eigener Zugangsregel (Quick-Fix) tragen `// @job-access-ok: <Grund>`.
+Keine Baseline. Selbsttest: `scripts/quality/tests/test_s6_contract_gates.py`.
+
+**CI-Integration:** Gate 90 im `code-quality`-Job.
 
 ---
 
@@ -438,6 +457,7 @@ schreibbar, solange das Modul aktiv ist — wie im Formular, das sie sonst nicht
 und das in einer `:write`-Gruppe der Entity steht, trägt `#[ModuleField('<m>')]`; jedes
 `#[ModuleField]` nennt ein Modul aus `config/modules.yaml`. Felder ganz ohne Formular (DORA- und
 FAIR-Spalten am Risiko) sind von Hand markiert. Keine Baseline.
+Seit S6 zählen Traits mit: Properties aus `src/Entity/Trait/` und Feld-Helfer aus `src/Form/Trait/`.
 
 **CI-Integration:** Gate 89 im `code-quality`-Job.
 
