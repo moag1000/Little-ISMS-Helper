@@ -151,6 +151,8 @@ compliance:
     already_loaded: 'Bereits geladen'
     delete_framework: 'Framework löschen'
     load_framework: 'Framework laden'
+    load_framework_super_admin: 'Kataloge gelten für alle Organisationen dieser Instanz; laden kann sie der Super-Admin.'
+    open_framework: 'Framework öffnen'
     confirm_load: 'Möchten Sie dieses Framework wirklich laden?'
     loading: 'Wird geladen...'
     successfully_loaded: Framework geladen
@@ -1229,17 +1231,20 @@ compliance:
             manual_percentage: 'Erfüllung'
             reason: 'Begründung'
             review_due: 'Prüfen bis'
+            next_review: 'Nächste Prüfung am'
         action:
             override: 'Abweichenden Wert setzen'
             change_override: 'Übersteuerung ändern oder bestätigen'
             save_override: 'Übersteuerung speichern'
             follow_rule: 'Regel übernehmen (%value% %)'
+            confirm_review: 'Prüfung bestätigen'
         flash:
             recomputed: '%derived% Anforderungen aus Daten berechnet, %overridden% übersteuert.'
             overridden: 'Übersteuerung gespeichert.'
             override_invalid: 'Wert, Begründung (mindestens %min% Zeichen) und ein Prüfdatum ab heute angeben.'
             follows_rule: 'Regel übernommen.'
             follows_rule_all: '%count% Altbestände folgen wieder der Regel.'
+            review_confirmed: 'Prüfung bestätigt.'
         meta:
             title: 'Metadaten'
             responsible: 'Verantwortlich'

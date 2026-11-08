@@ -213,6 +213,27 @@ register:
                 incident: Incident
                 exercise: Exercise
                 other: Other
+        monitoring_source:
+            title: Monitored sources
+            purpose: Which networks, systems and applications are monitored for anomalous behaviour, how often and by whom (ISO 27001 A.8.16).
+            new: Add source
+            empty: No monitored sources.
+            field:
+                title: Source
+                description: What is monitored and which anomalies are reported
+                owner: Evaluated by
+                category: Kind
+                reference: Tool
+            help:
+                reference: For example SIEM, EDR or the cloud provider's monitoring.
+            category:
+                network: Network
+                system: Servers and endpoints
+                application: Application
+                cloud: Cloud service
+                identity: Identities and sign-ins
+                physical: Physical access
+                other: Other
     field:
         frequency: Frequency
         next_date: Next date
@@ -330,6 +351,7 @@ register:
         bcm_officer: Business continuity management according to ISO 22301
     proposal:
         interface_title: Interface with %name%
+        monitoring_title: Monitoring of the cloud service %name%
     communication:
         parties_title: Dates with interested parties
         parties_hint: External part of the plan, maintained on each party.

@@ -165,7 +165,8 @@
         {% endembed %}
             {% include '_components/_bulk_action_bar.html.twig' with {
                 actions: ['status_change', 'approve', 'review', 'export', 'delete'],
-                variant: 'brand'
+                variant: 'brand',
+                reviewByOwner: true
             } %}
         {% endblock %}
     {% endembed %}

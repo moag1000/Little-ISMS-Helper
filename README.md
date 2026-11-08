@@ -290,7 +290,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR plus Persona-Rollen ROLE_CISO / ROLE_ISB / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER / ROLE_BCM_OFFICER / ROLE_TOP_MGMT (Leitung) plus granulare Permissions
 - **Tenant-Scoped Admin** -- `TenantScopedAdminVoter` schraenkt `ROLE_ADMIN` strikt auf den eigenen Tenant ein; nur `ROLE_SUPER_ADMIN` darf tenant-uebergreifend agieren
 - **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, globale Provider fuer alle Organisationen oder je Organisation, AEAD-verschluesselte Client-Secrets)
-- **MFA** -- TOTP mit Backup-Codes
+- **MFA** -- TOTP mit Backup-Codes; der zweite Faktor gilt pro Anmeldung und Person (auch SSO und Neuanmeldung), „Angemeldet bleiben“ erst nach dem Code, jeder Code nur einmal
 - **SSO-Verknüpfung von Hand** -- Admins binden ein bestehendes Konto auf der Benutzerseite an Provider + Kennung (OIDC `sub`, SAML NameID), ändern oder lösen sie; privilegierte Konten nur der Instanz-Betreiber, jede Änderung im SSO-Audit-Trail
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform; nächtliche Läufe (Aufbewahrung, Digest, geplante Berichte) schreiben mit dem Mandanten des Datensatzes
 - **API = Formular** -- REST und KI-Assistent (MCP) verlangen dieselbe Rolle wie das Formular, ignorieren Felder ausgeschalteter Module und schreiben keine Melde-, Abschluss- oder Freigabezeitpunkte (`#[ApiReadOnlyEvidence]`, Gate 89)

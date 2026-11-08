@@ -83,8 +83,8 @@ src/Controller/Admin/TrustCenterAdminController.php:126
 src/Controller/Admin/WorkflowOverlayController.php:246
 src/Controller/Admin/WorkflowOverlayController.php:497
 src/Controller/Admin/WorkflowOverlayController.php:515
-src/Controller/AdminComplianceController.php:140
-src/Controller/AdminComplianceController.php:141
+src/Controller/AdminComplianceController.php:143
+src/Controller/AdminComplianceController.php:144
 src/Controller/AdminTourCompletionController.php:167
 src/Controller/AdminTourContentController.php:158
 src/Controller/AdminTourContentController.php:170
@@ -128,7 +128,7 @@ src/Controller/AuditProgramController.php:136
 src/Controller/AuditProgramController.php:188
 src/Controller/AuditProgramController.php:307
 src/Controller/AuditProgramController.php:308
-src/Controller/Authority/Nis2RegistrationController.php:120
+src/Controller/Authority/Nis2RegistrationController.php:118
 src/Controller/BCExerciseController.php:96
 src/Controller/BCExerciseController.php:97
 src/Controller/BCExerciseController.php:161

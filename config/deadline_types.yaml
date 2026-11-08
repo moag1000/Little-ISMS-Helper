@@ -18,14 +18,15 @@
 #   deputies   property paths to deputies (used when no holder has an account)
 #   roles      fallback roles
 #   inform     kept informed: ROLE_* names or property paths (self = the record)
-#   link       route of the record page (gets {id}); link_id: false for a page without id
+#   link       route of the record page (gets {id}); link_id: false for a page without id,
+#              a property path (requirement.id) for the page of a related record
 #   bucket     My Day group; needs my_day.section.<bucket> + my_day.kpi.<bucket> (DE + EN)
 #   lead_days  days before the date the duty shows up (default 14; ~ = while open)
 #   norm       norm reference shown in the digest
 #
 # tests/Service/Deadline/Configured/ checks every entry (entity, paths, expressions,
-# route, labels). Order matters only for records with several types: the
-# first matching type answers "who is responsible for this record".
+# route, labels). A record several types know (a supplier's assessment and
+# contract end) is the responsibility of everybody any of them names.
 
 parameters:
     app.deadline_types:
@@ -70,6 +71,23 @@ parameters:
             bucket: objectives_due
             lead_days: 30
             norm: ISO 27001 6.2
+
+        fulfillment_review:
+            label: Erfüllung prüfen
+            entity: App\Entity\ComplianceRequirementFulfillment
+            module: compliance
+            due: nextReviewDate
+            # Set by the person ("Prüfung bestätigen") and by certificates (valid until).
+            done: "not item.isApplicable()"
+            title: "words(item.getRequirement()?.getFramework()?.getCode(), item.getRequirement()?.getRequirementId(), item.getRequirement()?.getTitle())"
+            holders: [responsiblePersonUser, responsiblePerson]
+            deputies: [responsibleDeputyPersons]
+            roles: [ROLE_COMPLIANCE_MANAGER, ROLE_ISB]
+            link: app_compliance_requirement_show
+            link_id: requirement.id
+            bucket: fulfillment_review_due
+            lead_days: 30
+            norm: ISO 27001 9.1
 
         risk_review:
             label: Risiko-Review

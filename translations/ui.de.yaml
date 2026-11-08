@@ -43,6 +43,7 @@ ui:
             create_risk: 'Neues Risiko erfassen'
             create_incident: 'Vorfall melden'
             create_training: 'Schulung planen'
+            create_board_training: 'Leitungsschulung anlegen'
             create_audit: 'Audit anlegen'
             export_dashboard: 'Dashboard exportieren'
             export_soa: 'SoA exportieren'

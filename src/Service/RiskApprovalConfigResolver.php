@@ -72,7 +72,8 @@ final readonly class RiskApprovalConfigView
 
     /**
      * Minimum role that may approve an acceptance at this level. Executive
-     * level is top management (ISO 27001 6.1.3 f; ROLE_ADMIN inherits it).
+     * level is top management (ISO 27001 6.1.3 f; assigned explicitly, ROLE_ADMIN
+     * does not inherit it).
      */
     public static function approverRole(string $level): string
     {

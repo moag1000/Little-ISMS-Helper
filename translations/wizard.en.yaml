@@ -187,6 +187,9 @@ wizard:
         no_training_participation: 'No training participation recorded'
         training_participation_open: 'Training participation open'
         training_participation_open_desc: '%completed% of %total% assigned people completed their training.'
+        no_privileged_accounts: 'No administrator accounts with local sign-in'
+        accounts_without_mfa: 'Administrator accounts without a second factor'
+        accounts_without_mfa_desc: '%open% of %total% administrator accounts sign in without a second factor.'
         no_role_holders: 'Nobody holds the top-management role'
         role_training_missing: 'Management training missing'
         role_training_missing_desc: 'No completed training in the last %months% months: %names%.'
@@ -546,6 +549,10 @@ wizard:
         iso_annex_a5_7_threat_intel_desc: "Threat reports of the last 12 months carry a severity and a recommendation"
         iso_annex_a5_30_ict_readiness: "ICT readiness for business continuity (A.5.30)"
         iso_annex_a5_30_ict_readiness_desc: "Active BC plans carry RTO, RPO and a test"
+        iso_annex_a5_23_cloud_services: "Cloud services (A.5.23)"
+        iso_annex_a5_23_cloud_services_desc: "Cloud services in use are assessed, with security requirements and an exit strategy"
+        iso_annex_a8_16_monitoring: "Monitoring activities (A.8.16)"
+        iso_annex_a8_16_monitoring_desc: "Register of monitored sources: what, how often, who evaluates"
         iso_annex_a6: "People Controls (A.6)"
         iso_annex_a6_desc: "8 people-related measures implemented"
         iso_annex_a7: "Physical Controls (A.7)"
@@ -596,6 +603,8 @@ wizard:
         nis2_21_2i_assets_desc: "Assets are managed and tracked"
         nis2_21_2j_mfa: "Multi-Factor Authentication (Art. 21.2.j)"
         nis2_21_2j_mfa_desc: "MFA or continuous authentication implemented"
+        nis2_21_2j_mfa_accounts: "MFA of administrator accounts"
+        nis2_21_2j_mfa_accounts_desc: "Share of administrator accounts with a second factor (SSO accounts do not count)"
         nis2_21_2j_comms: "Secure Communication (Art. 21.2.j)"
         nis2_21_2j_comms_desc: "Secured voice, video and text communication"
         nis2_23_early_warning: "Early Warning (Art. 23.4.a)"

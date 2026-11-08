@@ -123,8 +123,18 @@ final class ConfiguredDeadlineSource implements DeadlineSource
 
         return new RecordLink(
             $this->definition->route,
-            $this->definition->routeWithId ? ['id' => $this->refId($item)] : [],
+            $this->definition->routeWithId ? ['id' => $this->linkIdOf($item)] : [],
         );
+    }
+
+    private function linkIdOf(object $item): int
+    {
+        if ($this->definition->routeIdPath === null) {
+            return $this->refId($item);
+        }
+        $id = $this->accessor->getValue($item, $this->definition->routeIdPath);
+
+        return is_numeric($id) ? (int) $id : 0;
     }
 
     public function profile(): DeadlineProfile

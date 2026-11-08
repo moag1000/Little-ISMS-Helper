@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\Entity\User;
-use App\Service\MfaService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -13,15 +12,14 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerI
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
- * Custom authentication success handler that handles locale-aware redirects and MFA challenges
+ * Custom authentication success handler that handles locale-aware redirects.
  *
- * NIS2 Compliance: Art. 21.2.b (Multi-Factor Authentication)
+ * MFA: {@see \App\Security\Mfa\MfaLoginListener} (NIS-2 Art. 21(2)(j)).
  */
 class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly MfaService $mfaService,
         private readonly LandingRoute $landingRoute,
     ) {
     }
@@ -36,19 +34,8 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         /** @var User $user */
         $user = $token->getUser();
 
-        // NIS2 Compliance: Check if MFA is required for this user
-        if ($this->mfaService->userHasMfaEnabled($user)) {
-            // Mark session as awaiting MFA verification
-            $request->getSession()->set('_security.mfa_required', true);
-            $request->getSession()->set('_security.mfa_user_id', $user->getId());
-
-            // Redirect to MFA challenge page
-            $url = $this->urlGenerator->generate('app_mfa_challenge', ['_locale' => $locale]);
-            return new RedirectResponse($url);
-        }
-
-        // Mark session as fully authenticated (no MFA required)
-        $request->getSession()->set('_security.mfa_verified', true);
+        // The second factor is not this handler's business: MfaLoginListener runs after it on every
+        // login and turns this redirect into the target after /mfa-challenge when one is due.
 
         // Check if there's a target path (requested page before login)
         $targetPath = $request->getSession()->get('_security.main.target_path');

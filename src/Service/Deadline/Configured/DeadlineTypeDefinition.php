@@ -21,7 +21,9 @@ use Symfony\Component\DependencyInjection\Attribute\Exclude;
  * - roles:    fallback roles when no holder resolves.
  * - inform:   kept informed — role names (ROLE_*) or property paths.
  * - link:     route of the record's page; `link_id: false` for a page
- *             without the record id (e.g. an index).
+ *             without the record id (e.g. an index), a property path for
+ *             the page of a related record (`requirement.id`: a fulfilment
+ *             lives on its requirement's page).
  */
 #[Exclude]
 final readonly class DeadlineTypeDefinition
@@ -48,6 +50,8 @@ final readonly class DeadlineTypeDefinition
     public array $inform;
     public ?string $route;
     public bool $routeWithId;
+    /** Property path of the id the route takes; null = the record's own id. */
+    public ?string $routeIdPath;
     public string $bucket;
     public ?int $leadDays;
     public ?string $norm;
@@ -68,7 +72,9 @@ final readonly class DeadlineTypeDefinition
         $this->roles = self::strings($config['roles'] ?? []);
         $this->inform = self::strings($config['inform'] ?? []);
         $this->route = $config['link'] ?? null;
-        $this->routeWithId = (bool) ($config['link_id'] ?? true);
+        $linkId = $config['link_id'] ?? true;
+        $this->routeWithId = $linkId !== false;
+        $this->routeIdPath = is_string($linkId) ? $linkId : null;
         $this->bucket = $config['bucket'];
         $leadDays = array_key_exists('lead_days', $config) ? $config['lead_days'] : 14;
         $this->leadDays = $leadDays === null ? null : (int) $leadDays;

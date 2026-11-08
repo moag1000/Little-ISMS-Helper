@@ -210,6 +210,9 @@ search_nav:
     register_communication:
         label: 'Communication plan'
         description: 'What, when, with whom, ISO 27001 7.4'
+    register_monitoring:
+        label: 'Monitored sources'
+        description: 'What is monitored for anomalies, ISO 27001 A.8.16'
     register_opportunities:
         label: 'Opportunities'
         description: 'Opportunities for the ISMS, ISO 27001 6.1.1'

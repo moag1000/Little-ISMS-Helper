@@ -220,7 +220,8 @@
                 {% endblock %}
             {% endembed %}
             {% include '_components/_bulk_action_bar.html.twig' with {
-                actions: ['export', 'review', 'delete']
+                actions: ['export', 'review', 'delete'],
+                reviewByOwner: true
             } %}
         {% endblock %}
     {% endembed %}

@@ -10,6 +10,7 @@ use App\Entity\Risk;
 use App\Entity\Supplier;
 use App\Enum\RiskStatus;
 use App\Repository\RiskRepository;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\AuditLogger;
 use App\Service\RiskReviewService;
 use App\Service\Review\PeriodicReviewService;
@@ -111,6 +112,37 @@ final class PeriodicReviewServiceTest extends TestCase
 
         $terminated = (new Supplier())->setStatus('terminated')->setNextAssessmentDate(new DateTime('2026-01-01'));
         self::assertFalse($this->service->isDue($terminated, $this->today));
+    }
+
+    #[Test]
+    public function theResponsiblePersonOfADocumentMayConfirmItAndNobodyElseWithoutManagerRole(): void
+    {
+        $em = $this->createStub(EntityManagerInterface::class);
+        $service = fn (array $granted): PeriodicReviewService => new PeriodicReviewService(
+            new RiskReviewService($this->createStub(RiskRepository::class), $em, new NullLogger()),
+            $em,
+            $this->createStub(AuditLogger::class),
+            $this->checker($granted),
+        );
+        // A draft takes no part in the review: past the access check it is "not_reviewable".
+        $document = new Document();
+
+        $stranger = $service([])->confirm('Document', [$document]);
+        $owner = $service([RecordResponsibleVoter::RESPONSIBLE])->confirm('Document', [$document]);
+        $manager = $service(['ROLE_MANAGER'])->confirm('Document', [$document]);
+
+        self::assertSame('access_denied', $stranger['rejected'][0]['reason']);
+        self::assertSame('not_reviewable', $owner['rejected'][0]['reason']);
+        self::assertSame('not_reviewable', $manager['rejected'][0]['reason']);
+    }
+
+    /** @param list<string> $granted */
+    private function checker(array $granted): AuthorizationCheckerInterface
+    {
+        $checker = $this->createStub(AuthorizationCheckerInterface::class);
+        $checker->method('isGranted')->willReturnCallback(static fn (mixed $attribute): bool => in_array($attribute, $granted, true));
+
+        return $checker;
     }
 
     #[Test]

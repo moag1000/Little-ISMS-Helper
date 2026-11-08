@@ -484,6 +484,19 @@ Keine Baseline. Selbsttest: `scripts/quality/tests/test_s6_contract_gates.py`.
 
 ---
 
+### quality/check_mfa_login_state.py (Gate 91)
+
+**Zweck:** Der zweite Faktor hat einen Zustand und keine Seitentür (S8, 2026-11). Rot bei
+(1) einem `_security.mfa_*`-Sitzungsschlüssel außerhalb von `src/Security/Mfa/MfaSessionState.php`,
+(2) `->setToken($x)` (nicht `null`) in einer Datei ohne `MfaSessionState` — eine selbstgebaute
+Anmeldung ohne zweiten Faktor; Ausnahme mit `// @mfa-ok: <Grund>`, (3) `'/setup'` in den
+`ALLOWED_PREFIXES` der MFA-Enforcer. Das Verhalten pinnen `tests/Security/Mfa/`. Keine Baseline.
+Selbsttest: `scripts/quality/tests/test_s6_contract_gates.py`.
+
+**CI-Integration:** Gate 91 im `code-quality`-Job.
+
+---
+
 ### quality/check_api_module_fields.py (Gate 89)
 
 **Zweck:** Felder eines optionalen Moduls an einem Datensatz eines anderen Moduls (DORA am

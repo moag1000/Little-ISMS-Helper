@@ -22,6 +22,7 @@ use Twig\TwigFilter;
  *   {{ entity.createdAt|fa_datetime }}  → "31.12.2024 23:59" (default 'd.m.Y H:i')
  *   {{ log.createdAt|fa_datetime(true) }} → "31.12.2024 23:59:58" (seconds, audit trails)
  *   {{ log.createdAt|fa_time }}         → "23:59" (time of a timestamp, zone applied; fa_time(true) with seconds)
+ *   {{ report.preferredTime|fa_time(false, false) }} → "08:00" (time of day without a zone, as stored)
  *   {{ month|fa_month }}                → "Dezember 2024" (month name in the request locale)
  *
  * Gate 77 (check_date_display.py) rejects any other |date() format in text output.
@@ -83,9 +84,13 @@ final class AppDateFormatExtension extends AbstractExtension implements ResetInt
     }
 
     /** Time of a timestamp in the application timezone ("23:59", with seconds "23:59:58"). */
-    public function formatTime(mixed $date, bool $seconds = false): string
+    /**
+     * @param bool $zone false for a time of day stored without a zone (TIME
+     *                   column: "send at 08:00"), shown as stored
+     */
+    public function formatTime(mixed $date, bool $seconds = false, bool $zone = true): string
     {
-        $date = $this->zoned($date);
+        $date = $zone ? $this->zoned($date) : $this->toDate($date);
 
         return $date === null ? self::EMPTY : $date->format($seconds ? 'H:i:s' : 'H:i');
     }

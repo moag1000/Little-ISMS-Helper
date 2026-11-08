@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Exception;
-use App\Entity\User;
 use App\Entity\Incident;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Document;
@@ -24,7 +23,8 @@ use Psr\Log\LoggerInterface;
  * - Incident: GDPR 72h breach notification (GDPR Art. 33 + BDSG § 42)
  * - RiskTreatmentPlan: Treatment plan approval (ISO 27005:2022 Clause 8.5.7)
  * - Document: Policy/Procedure approval (ISO 27001:2022 Clause 5.2.3)
- * - Risk: Acceptance workflow for high-risk items (ISO 27005:2022 Clause 8.4.4)
+ * - Risk: none here — an acceptance is requested on the risk page
+ *   (RiskAcceptanceWorkflowService, ISO 27005:2022 Clause 8.4.4)
  *
  * Usage:
  * - Call from Doctrine lifecycle events (postPersist, postUpdate)
@@ -35,7 +35,6 @@ class WorkflowAutoTriggerService
 {
     public function __construct(
         private readonly IncidentEscalationWorkflowService $incidentEscalationWorkflowService,
-        private readonly RiskAcceptanceWorkflowService $riskAcceptanceWorkflowService,
         private readonly RiskTreatmentPlanApprovalService $riskTreatmentPlanApprovalService,
         private readonly DocumentApprovalService $documentApprovalService,
         private readonly LoggerInterface $logger
@@ -156,45 +155,6 @@ class WorkflowAutoTriggerService
                 ]);
                 $results['approval'] = ['error' => $e->getMessage()];
             }
-        }
-
-        return $results;
-    }
-
-    /**
-     * Trigger workflows for a Risk requiring acceptance
-     *
-     * ISO 27005:2022 Clause 8.4.4: Risk acceptance requires formal approval
-     *
-     * @param User $requester User requesting acceptance
-     * @param string $justification Justification for acceptance
-     * @return array Workflow trigger results
-     */
-    public function triggerRiskAcceptanceWorkflow(Risk $risk, User $requester, string $justification): array
-    {
-        $this->logger->info('Triggering risk acceptance workflow', [
-            'risk_id' => $risk->getId(),
-            'risk_score' => $risk->getRiskScore(),
-            'treatment_strategy' => $risk->getTreatmentStrategy()?->value,
-        ]);
-
-        $results = [];
-
-        try {
-            // Use existing RiskAcceptanceWorkflowService
-            $acceptanceResult = $this->riskAcceptanceWorkflowService->requestAcceptance($risk, $requester, $justification);
-            $results['acceptance'] = $acceptanceResult;
-
-            $this->logger->info('Risk acceptance workflow triggered', [
-                'risk_id' => $risk->getId(),
-                'approval_level' => $acceptanceResult['approval_level'] ?? 'unknown',
-            ]);
-        } catch (Exception $e) {
-            $this->logger->error('Failed to trigger risk acceptance workflow', [
-                'risk_id' => $risk->getId(),
-                'error' => $e->getMessage(),
-            ]);
-            $results['acceptance'] = ['error' => $e->getMessage()];
         }
 
         return $results;

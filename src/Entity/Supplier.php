@@ -214,6 +214,15 @@ class Supplier
     private ?string $certifications = null;
 
     /**
+     * Cloud service (ISO 27001 A.5.23): the organisation uses a cloud service
+     * of this supplier. Cloud suppliers in use are checked for an assessment,
+     * agreed security requirements and an exit strategy.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private bool $isCloudService = false;
+
+    /**
      * DORA Art. 28 — Register of Information scope flag.
      * When true, this supplier is included in the DORA RoI XBRL export
      * as an ICT third-party service provider (Art. 28 ICT-Drittdienstleister).
@@ -957,6 +966,8 @@ class Supplier
     public function getLastDoraAuditDate(): ?\DateTimeInterface { return $this->lastDoraAuditDate; }
     public function setLastDoraAuditDate(?\DateTimeInterface $v): self { $this->lastDoraAuditDate = $v; return $this; }
 
+    public function isCloudService(): bool { return $this->isCloudService; }
+    public function setIsCloudService(bool $v): self { $this->isCloudService = $v; return $this; }
     public function hasExitStrategy(): bool { return $this->hasExitStrategy; }
     public function setHasExitStrategy(bool $v): self { $this->hasExitStrategy = $v; return $this; }
 
@@ -977,61 +988,20 @@ class Supplier
     public function setGdprAvContractDate(?\DateTimeInterface $v): self { $this->dpaSignedDate = $v; return $this; }
 
     // BCM Supplier Getters/Setters
+    public function getSupplierRto(): ?int { return $this->supplierRto; }
+    public function setSupplierRto(?int $v): static { $this->supplierRto = $v; return $this; }
 
-    public function getSupplierRto(): ?int
-    {
-        return $this->supplierRto;
-    }
+    public function getSupplierRecoveryCapability(): ?string { return $this->supplierRecoveryCapability; }
+    public function setSupplierRecoveryCapability(?string $v): static { $this->supplierRecoveryCapability = $v; return $this; }
 
-    public function setSupplierRto(?int $supplierRto): static
-    {
-        $this->supplierRto = $supplierRto;
-        return $this;
-    }
+    public function getAlternativeSupplier(): ?string { return $this->alternativeSupplier; }
+    public function setAlternativeSupplier(?string $v): static { $this->alternativeSupplier = $v; return $this; }
 
-    public function getSupplierRecoveryCapability(): ?string
-    {
-        return $this->supplierRecoveryCapability;
-    }
+    public function getBcmAssessmentDate(): ?\DateTimeImmutable { return $this->bcmAssessmentDate; }
+    public function setBcmAssessmentDate(?\DateTimeImmutable $v): static { $this->bcmAssessmentDate = $v; return $this; }
 
-    public function setSupplierRecoveryCapability(?string $supplierRecoveryCapability): static
-    {
-        $this->supplierRecoveryCapability = $supplierRecoveryCapability;
-        return $this;
-    }
-
-    public function getAlternativeSupplier(): ?string
-    {
-        return $this->alternativeSupplier;
-    }
-
-    public function setAlternativeSupplier(?string $alternativeSupplier): static
-    {
-        $this->alternativeSupplier = $alternativeSupplier;
-        return $this;
-    }
-
-    public function getBcmAssessmentDate(): ?\DateTimeImmutable
-    {
-        return $this->bcmAssessmentDate;
-    }
-
-    public function setBcmAssessmentDate(?\DateTimeImmutable $bcmAssessmentDate): static
-    {
-        $this->bcmAssessmentDate = $bcmAssessmentDate;
-        return $this;
-    }
-
-    public function getBcmAssessmentResult(): ?string
-    {
-        return $this->bcmAssessmentResult;
-    }
-
-    public function setBcmAssessmentResult(?string $bcmAssessmentResult): static
-    {
-        $this->bcmAssessmentResult = $bcmAssessmentResult;
-        return $this;
-    }
+    public function getBcmAssessmentResult(): ?string { return $this->bcmAssessmentResult; }
+    public function setBcmAssessmentResult(?string $v): static { $this->bcmAssessmentResult = $v; return $this; }
 
     // ── MaRisk outsourcing fields (gated 'marisk' module) ─────────
 

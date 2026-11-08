@@ -87,6 +87,20 @@ final class ManagementTrainingSource implements DeadlineSource
         return $trainees;
     }
 
+    /**
+     * Members whose training falls due within the reminder's lead time: the
+     * participants "Leitungsschulung zuweisen" prefills, and whether the
+     * training list offers that button at all.
+     *
+     * @return list<ManagementTrainee>
+     */
+    public function dueSoon(Tenant $tenant): array
+    {
+        $horizon = new DateTimeImmutable(sprintf('+%d days', $this->profile()->leadDays ?? 30));
+
+        return array_values(array_filter($this->trainees($tenant), static fn (ManagementTrainee $t): bool => $t->dueAt <= $horizon));
+    }
+
     public function dueDateOf(object $item): DateTimeInterface
     {
         assert($item instanceof ManagementTrainee);

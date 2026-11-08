@@ -91,6 +91,11 @@ security:
                 secure: auto
                 httponly: true
                 samesite: 'lax'
+                # MFA (NIS-2 Art. 21(2)(j)): the cookie is issued only after the second
+                # factor (MfaLoginListener + MfaLoginController) and its signature covers
+                # the active second factors — a new or removed device voids every cookie,
+                # so a remember-me login may count as both factors.
+                signature_properties: [password, mfaRememberMeMarker]
 
             # Allow user impersonation (for admins)
             # SwitchUserVoter: caller needs ROLE_ALLOWED_TO_SWITCH, the target no role

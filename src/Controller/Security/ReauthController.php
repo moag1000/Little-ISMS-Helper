@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Security;
 
 use App\Entity\User;
+use App\Security\Mfa\MfaSessionState;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +29,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *     to IS_AUTHENTICATED_FULLY by replacing the RememberMe token with a
  *     fresh UsernamePasswordToken.
  *     Returns JSON { success: true, return_to: "/..." } or 401 JSON on failure.
+ *     A person with a second factor is sent on to /mfa-challenge (return_to),
+ *     the original target follows after the code (NIS-2 Art. 21(2)(j)).
  *
  * GET /reauth/sso/{provider}
  *   → Initiates SSO re-auth redirect for azure_oauth, azure_saml, or
@@ -58,6 +61,7 @@ final class ReauthController extends AbstractController
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly TenantContext $tenantContext,
         private readonly RateLimiterFactory $reauthLimiter,
+        private readonly MfaSessionState $mfaState,
     ) {
     }
 
@@ -110,6 +114,20 @@ final class ReauthController extends AbstractController
         // Persist the new token in the session (Symfony 7 / security token serialiser).
         $session = $request->getSession();
         $session->set('_security_main', serialize($token));
+
+        // A password is one factor. Whoever has a second factor gives it now as well: the
+        // re-authentication starts a new MFA state, the enforcer holds every page but the
+        // challenge, and the challenge sends the person on to $returnTo.
+        if ($this->mfaState->begin($session, $user)) {
+            $session->set('_security.main.target_path', $returnTo);
+            $this->auditLogger->logCustom('reauth_password_ok_mfa_pending', 'User', $user->getId(), [], ['method' => 'password']);
+
+            return new JsonResponse([
+                'success' => true,
+                'mfa_required' => true,
+                'return_to' => $this->urlGenerator->generate('app_mfa_challenge', ['_locale' => $request->getLocale() ?: 'de']),
+            ]);
+        }
 
         $this->auditLogger->logCustom('reauth_success', 'User', $user->getId(), [], ['method' => 'password']);
 
