@@ -160,7 +160,7 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
 
         $connection = $this->em->getConnection();
         $countRows = static fn (int $supplierId): int => (int) $connection->fetchOne(
-            'SELECT COUNT(*) FROM dora_subcontractor WHERE supplier_id = ?',
+            'SELECT COUNT(*) FROM dora_subcontractor WHERE parent_supplier_id = ?',
             [$supplierId],
         );
         self::assertSame(0, $countRows($foreignSupplierId), 'no subcontractor rows on the foreign supplier');
