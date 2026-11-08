@@ -18,11 +18,13 @@ use Doctrine\ORM\QueryBuilder;
  *  - DORA Art. 17 (2): incidents are classified (event / incident);
  *  - DORA Art. 18 (1): incidents carry the classification criteria;
  *  - DORA Art. 14 (1): BC plans carry a communication plan;
- *  - DORA Art. 30 (2): ICT supplier contracts carry the key provisions.
+ *  - DORA Art. 30 (2): ICT supplier contracts carry the key provisions;
+ *  - ISO 27001 6.3: approved changes carry risk assessment, approver and date;
+ *  - ISO 27001 A.5.7 / A.5.30: threat reports are analysed, BC plans carry RTO/RPO and a test.
  *
  * Config (from the category provider, never from input): `entity` (class),
- * `where` (field => value), `since` ({field, months}: only recent records),
- * `fields` (all must be filled: text not empty, flag true, other not null).
+ * `where` (field => value, or field => list of values), `since` ({field, months}: only recent records),
+ * `fields` (all must be filled: text not empty, flag true, other — dates, to-one relations — not null).
  * Score = share of complete records. No record is "no data".
  */
 final class RecordCompletenessCheck
@@ -94,7 +96,7 @@ final class RecordCompletenessCheck
             ->setParameter('tenant', $tenant);
         $i = 0;
         foreach ((array) ($check['where'] ?? []) as $field => $value) {
-            $qb->andWhere(sprintf('r.%s = :w%d', $field, $i))->setParameter('w' . $i, $value);
+            $qb->andWhere(sprintf(is_array($value) ? 'r.%s IN (:w%d)' : 'r.%s = :w%d', $field, $i))->setParameter('w' . $i, $value);
             $i++;
         }
         $since = $check['since'] ?? null;

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service\ComplianceWizard\CategoryProvider;
 
+use App\Entity\BusinessContinuityPlan;
+use App\Entity\ChangeRequest;
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
+use App\Entity\ThreatIntelligence;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmBiaMethodologyPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmCrisisManagementPlanPresentCheck;
@@ -198,6 +201,8 @@ final class IsoFrameworkCategoryProvider
                         'module' => 'controls',
                         'priority' => 'critical',
                         'clause' => '6.1.3 d)',
+                        // The catalogue has 6.1.3 as one row; d) (the SoA) answers it.
+                        'requirements' => ['ISO27001-6.1.3'],
                         'route' => 'app_soa_index',
                     ],
                     'soa_approval' => RecordCheck::decision('iso_6_1_3_soa_approval', ['soa'], '6.1.3', 'critical'),
@@ -223,6 +228,12 @@ final class IsoFrameworkCategoryProvider
                         'clause' => '6.3',
                         'route' => 'app_change_request_index',
                     ],
+                    // 6.3: changes are planned — approved changes carry a risk assessment, an approver and a date.
+                    'planned_changes' => RecordCheck::fields('iso_6_3_planned_changes', ChangeRequest::class, ['riskAssessment', 'approverPerson', 'plannedImplementationDate'], '6.3', 'app_change_request_index', 'high', [
+                        'module' => 'change_requests',
+                        'where' => ['status' => ['approved', 'scheduled', 'implemented', 'verified', 'closed']],
+                        'since' => ['field' => 'createdAt', 'months' => 24],
+                    ]),
                 ],
             ],
 
@@ -399,6 +410,16 @@ final class IsoFrameworkCategoryProvider
                         'priority' => 'critical',
                         'route' => 'app_soa_index',
                     ],
+                    // A.5.7: threat reports of the last 12 months are analysed (rated, with a recommendation).
+                    'threat_intelligence' => RecordCheck::fields('iso_annex_a5_7_threat_intel', ThreatIntelligence::class, ['severity', 'mitigationRecommendations'], 'A.5.7', 'app_threat_intelligence_index', 'medium', [
+                        'module' => 'vulnerability_intel',
+                        'since' => ['field' => 'createdAt', 'months' => 12],
+                    ]),
+                    // A.5.30: active BC plans carry recovery objectives and a test (ICT readiness).
+                    'ict_readiness' => RecordCheck::fields('iso_annex_a5_30_ict_readiness', BusinessContinuityPlan::class, ['rto', 'rpo', 'lastTested'], 'A.5.30', 'app_bc_plan_index', 'high', [
+                        'module' => 'bcm',
+                        'where' => ['status' => 'active'],
+                    ]),
                 ],
             ],
             'annex_a_people' => [

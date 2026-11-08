@@ -364,6 +364,12 @@ class TransferImpactAssessmentController extends AbstractController
         $currentUser = $this->currentUser();
         $tia->setAssessedAt(new DateTime());
         $tia->setAssessedBy($currentUser);
+        // EDPB Rec. 01/2020 step 6: re-evaluate; one year unless the assessor set a later date
+        // (a reopened TIA keeps no past date).
+        $tia->setOwner($tia->getOwner() ?? $currentUser);
+        if ($tia->getNextReviewDate() === null || $tia->getNextReviewDate() <= new DateTime('today')) {
+            $tia->setNextReviewDate(new DateTime('+1 year'));
+        }
 
         // Create a Risk row when residual risk = high (accountability trail, GDPR Art. 32)
         if ($tia->getResidualRiskRating() === 'high') {

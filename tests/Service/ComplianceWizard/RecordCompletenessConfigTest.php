@@ -41,12 +41,16 @@ final class RecordCompletenessConfigTest extends KernelTestCase
                         $fields[] = $check['since']['field'];
                     }
                     foreach ($fields as $field) {
-                        self::assertTrue($metadata->hasField($field), sprintf('%s: field %s', $where, $field));
+                        // a column, or a to-one relation (approver, owner: "is set")
+                        self::assertTrue(
+                            $metadata->hasField($field) || ($metadata->hasAssociation($field) && $metadata->isSingleValuedAssociation($field)),
+                            sprintf('%s: field %s', $where, $field),
+                        );
                     }
                 }
             }
         }
 
-        self::assertGreaterThanOrEqual(4, $seen, 'DORA Art. 14, 17, 18 and 30 read record fields');
+        self::assertGreaterThanOrEqual(7, $seen, 'DORA Art. 14, 17, 18, 30, ISO 6.3, A.5.7 and A.5.30 read record fields');
     }
 }

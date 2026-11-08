@@ -6,7 +6,10 @@ namespace App\Form;
 
 use App\Entity\TransferImpactAssessment;
 use Symfony\Component\Form\AbstractType;
+use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,6 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *   overview   — destination + recipient + transfer mechanism
  *   assessment — surveillance law risk + supplementary measures
  *   conclusion — residual risk + conclusion text + status
+ *   review     — owner + re-evaluation date (deadline type tia_review)
  */
 final class TransferImpactAssessmentType extends AbstractType implements SectionMapInterface
 {
@@ -90,6 +94,21 @@ final class TransferImpactAssessmentType extends AbstractType implements Section
                 'required' => false,
                 'attr'     => ['rows' => 4],
             ])
+
+            // ── Section: review ──────────────────────────────────────────────
+            ->add('owner', OwnerUserType::class, [
+                'label'        => 'tia.field.owner',
+                'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
+                'required'     => false,
+                'placeholder'  => 'tia.placeholder.owner',
+                'attr'         => ['data-controller' => 'tom-select'],
+            ])
+            ->add('nextReviewDate', DateType::class, [
+                'label'    => 'tia.field.next_review_date',
+                'help'     => 'tia.help.next_review_date',
+                'required' => false,
+                'widget'   => 'single_text',
+            ])
         ;
     }
 
@@ -112,6 +131,7 @@ final class TransferImpactAssessmentType extends AbstractType implements Section
             'overview'   => ['destinationCountry', 'recipientName', 'transferMechanism'],
             'assessment' => ['lawSurveillanceRisk', 'supplementaryMeasures'],
             'conclusion' => ['residualRiskRating', 'conclusion'],
+            'review'     => ['owner', 'nextReviewDate'],
         ];
     }
 }

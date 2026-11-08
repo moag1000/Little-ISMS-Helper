@@ -128,7 +128,7 @@ src/Controller/AuditProgramController.php:132
 src/Controller/AuditProgramController.php:184
 src/Controller/AuditProgramController.php:303
 src/Controller/AuditProgramController.php:304
-src/Controller/Authority/Nis2RegistrationController.php:113
+src/Controller/Authority/Nis2RegistrationController.php:116
 src/Controller/BCExerciseController.php:96
 src/Controller/BCExerciseController.php:97
 src/Controller/BCExerciseController.php:161

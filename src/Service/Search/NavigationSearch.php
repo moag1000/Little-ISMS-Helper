@@ -469,6 +469,15 @@ class NavigationSearch
                 'requiresModule' => 'privacy',
             ],
             [
+                'route' => 'app_tia_overview',
+                'label' => 'search_nav.app_tia_overview.label',
+                'description' => 'search_nav.app_tia_overview.description',
+                'aliases' => ['TIA', 'Transfer Impact Assessment', 'Drittland', 'Third country', 'Schrems', 'Art. 46', 'Übermittlung'],
+                'icon' => 'fa-icon--compliance-shield',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => 'privacy',
+            ],
+            [
                 'route' => 'app_dashboard_compliance_manager',
                 'label' => 'search_nav.app_dashboard_compliance_manager.label',
                 'description' => 'search_nav.app_dashboard_compliance_manager.description',

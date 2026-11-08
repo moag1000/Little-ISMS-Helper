@@ -3,6 +3,8 @@ tia:
     title: 'Transfer Impact Assessment'
 
   page:
+    overview_title: 'Transfer Impact Assessments'
+    overview_subtitle: 'Welche Drittlandübermittlungen neu zu bewerten sind.'
     title: 'Transfer Impact Assessments (TIA)'
     subtitle: 'Drittland-Überprüfungen gem. DSGVO Art. 46/49 + Schrems-II'
     new_title: 'Neues Transfer Impact Assessment'
@@ -10,6 +12,7 @@ tia:
     edit_title: 'TIA bearbeiten'
 
   help:
+    next_review_date: 'EDPB-Empfehlung 01/2020 Schritt 6: bei Rechtsänderungen im Zielland erneut bewerten. Leer = ein Jahr nach der Bewertung.'
     concept_title: 'Was ist ein TIA?'
     concept_body: >
       Ein Transfer Impact Assessment (TIA) prüft, ob ein Drittland-Empfänger –
@@ -37,6 +40,8 @@ tia:
     conclusion: 'Zusammenfassendes Ergebnis und ggf. Bedingungen für die Übermittlung'
 
   field:
+    owner: 'Verantwortlich'
+    next_review_date: 'Nächste Überprüfung'
     destination_country: 'Zielland'
     recipient_name: 'Empfänger'
     transfer_mechanism: 'Übermittlungsmechanismus (Art. 46/49)'
@@ -50,6 +55,7 @@ tia:
     processing_activity: 'Verarbeitungstätigkeit'
 
   section:
+    review: 'Wiedervorlage (EDPB Step 6)'
     overview: 'Übertragungsdetails'
     assessment: 'Schrems-II-Bewertung (EDPB Steps 3–4)'
     conclusion: 'Ergebnis (EDPB Step 5)'
@@ -68,14 +74,17 @@ tia:
     high: 'Hoch – Übermittlung MUSS ausgesetzt werden'
 
   status:
+    review_due: 'Überprüfung fällig'
     draft: 'Entwurf'
     assessed: 'Bewertet'
 
   placeholder:
+    owner: '– Bitte wählen –'
     transfer_mechanism: '– Bitte wählen –'
     residual_risk_rating: '– Bitte wählen –'
 
   action:
+    to_processing_activities: 'Zu den Verarbeitungstätigkeiten'
     new: 'Neue TIA anlegen'
     edit: 'TIA bearbeiten'
     save: 'Speichern'
@@ -89,6 +98,7 @@ tia:
     delete: 'TIA löschen'
 
   empty:
+    overview_body: 'Ein TIA legen Sie an der Verarbeitungstätigkeit mit Drittlandübermittlung an.'
     title: 'Keine TIAs vorhanden.'
     body: 'Für diese Verarbeitungstätigkeit wurde noch kein Transfer Impact Assessment angelegt. Legen Sie jetzt eine TIA an, um die Drittlandübermittlung zu dokumentieren.'
 

@@ -25,7 +25,10 @@ use Symfony\Contracts\Service\ResetInterface;
  * number ("7.2" ↔ "ISO27001-7.2", "21(2)(a)" ↔ "NIS2-21.2.a") or, for a
  * reference with two or more levels, is its parent ("9.2" covers 9.2.1 and
  * 9.2.2). A check without a reference of its own takes its category's
- * (NIS-2 Art. 21 (2) letters). An Annex-A control reference ("A.6.3") covers
+ * (NIS-2 Art. 21 (2) letters). Requirement ids written as articles ("Art.21.2.a",
+ * "NIS2-ART21-A") count as their number. Where a catalogue numbers its rows
+ * apart from the article (NIS-2 "NIS2-23.1" is the early warning of Art. 23 (4) (a)),
+ * the check names those rows in `requirements` (exact requirement ids). An Annex-A control reference ("A.6.3") covers
  * that Annex-A requirement; themes ("A.5") cover nothing. Several checks
  * average. Manual checks, checks of inactive modules
  * and checks over zero records ("no data", no control, process, … at all) do not
@@ -73,12 +76,18 @@ class RecordCheckRule implements ResetInterface
 
         $basis = [];
         $sum = 0.0;
+        $requirementId = (string) $requirement->getRequirementId();
+        $seen = [];
         foreach ($this->checksFor($tenant, $code) as $ref => $checks) {
             $ref = (string) $ref; // "7" and "28" become integer array keys
-            if (!self::covers($ref, $number)) {
+            if (!self::matches($ref, $code, $requirementId)) {
                 continue;
             }
             foreach ($checks as ['key' => $key, 'check' => $check]) {
+                if (isset($seen[$key])) {
+                    continue; // named by its article and by requirement id
+                }
+                $seen[$key] = true;
                 if ($besideControls && in_array($check['type'] ?? null, self::CONTROL_CHECK_TYPES, true)) {
                     continue;
                 }
@@ -122,15 +131,70 @@ class RecordCheckRule implements ResetInterface
         return trim((string) preg_replace('/\.{2,}/', '.', $ref), '.');
     }
 
-    /** "ISO27001-7.2" → "7.2", "NIS2-21.2.a" → "21.2.a", "DORA-6.1" → "6.1". */
+    /** Prefix of an index entry that names one requirement id instead of a reference. */
+    public const string REQUIREMENT_ID_PREFIX = '#';
+
+    /**
+     * "ISO27001-7.2" → "7.2", "NIS2-21.2.a" → "21.2.a", "DORA-6.1" → "6.1",
+     * "Art.21.2.a" → "21.2.a", "NIS2-ART21-A" → "21.2.a" (NIS-2 Art. 21 letters
+     * all sit in paragraph 2).
+     */
     public static function requirementNumber(string $frameworkCode, string $requirementId): string
     {
         $id = trim($requirementId);
         if ($frameworkCode !== '' && stripos($id, $frameworkCode . '-') === 0) {
             $id = substr($id, strlen($frameworkCode) + 1);
         }
+        $id = (string) preg_replace('/^art\.?\s*(?=\d)/i', '', $id);
+        if (preg_match('/^21-([a-j])$/i', $id, $letter) === 1) {
+            $id = '21.2.' . $letter[1];
+        }
 
         return self::normaliseReference($id);
+    }
+
+    /**
+     * Does an index reference (normalised reference, or `#` + requirement id
+     * from a check's `requirements`) answer this requirement?
+     */
+    public static function matches(string $reference, string $frameworkCode, string $requirementId): bool
+    {
+        if (str_starts_with($reference, self::REQUIREMENT_ID_PREFIX)) {
+            return substr($reference, strlen(self::REQUIREMENT_ID_PREFIX)) === trim($requirementId);
+        }
+        $number = self::requirementNumber($frameworkCode, $requirementId);
+
+        return $number !== '' && self::covers($reference, $number);
+    }
+
+    /**
+     * Index references of one check: its own `clause`/`article` (or the
+     * category's), split at "/", "," and ";", without ranges ("24-25") and Annex-A themes
+     * ("A.5"), plus `#`-entries for the requirement ids it names.
+     *
+     * @param array<string, mixed> $check
+     * @return list<string>
+     */
+    public static function referencesOfCheck(array $check, string $categoryReference = ''): array
+    {
+        $refs = [];
+        $raw = (string) ($check['clause'] ?? $check['article'] ?? $categoryReference);
+        foreach (preg_split('#[/,;]#', $raw) ?: [] as $part) {
+            $ref = self::normaliseReference($part);
+            // Ranges ("24-25") and Annex-A themes ("A.5") are not one requirement.
+            if ($ref === '' || str_contains($ref, '-')
+                || (str_starts_with($ref, 'a.') && substr_count($ref, '.') < 2)) {
+                continue;
+            }
+            $refs[] = $ref;
+        }
+        foreach ((array) ($check['requirements'] ?? []) as $id) {
+            if (is_string($id) && trim($id) !== '') {
+                $refs[] = self::REQUIREMENT_ID_PREFIX . trim($id);
+            }
+        }
+
+        return array_values(array_unique($refs));
     }
 
     public static function covers(string $reference, string $requirementNumber): bool
@@ -243,14 +307,7 @@ class RecordCheckRule implements ResetInterface
                     if (isset($check['module']) && !in_array($check['module'], $active, true)) {
                         continue;
                     }
-                    $raw = (string) ($check['clause'] ?? $check['article'] ?? $categoryRef);
-                    foreach (explode('/', $raw) as $part) {
-                        $ref = self::normaliseReference($part);
-                        // Ranges ("24-25") and Annex-A themes ("A.5") are not one requirement.
-                        if ($ref === '' || str_contains($ref, '-')
-                            || (str_starts_with($ref, 'a.') && substr_count($ref, '.') < 2)) {
-                            continue;
-                        }
+                    foreach (self::referencesOfCheck($check, $categoryRef) as $ref) {
                         $index[$code][$ref][] = [
                             'key' => $wizardKey . '.' . $categoryKey . '.' . $checkKey,
                             'check' => $check,

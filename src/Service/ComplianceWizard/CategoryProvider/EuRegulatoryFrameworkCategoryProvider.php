@@ -418,6 +418,8 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'incidents',
                         'priority' => 'critical',
                         'article' => '23(4)(a)',
+                        // The loaded catalogues number Art. 23 apart from the article (NIS2-23.x thematic, Art.23.x full).
+                        'requirements' => ['NIS2-23.1', 'Art.23.2'],
                         'route' => 'app_incident_index',
                     ],
                     'incident_notification' => [
@@ -428,6 +430,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'incidents',
                         'priority' => 'critical',
                         'article' => '23(4)(b)',
+                        'requirements' => ['NIS2-23.2', 'Art.23.1', 'Art.23.3'],
                         'route' => 'app_incident_index',
                     ],
                     'final_report' => [
@@ -438,8 +441,25 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'incidents',
                         'priority' => 'high',
                         'article' => '23(4)(d)',
+                        'requirements' => ['NIS2-23.3', 'Art.23.4'],
                         'route' => 'app_incident_index',
                     ],
+                    // Art. 23 (4) (c): intermediate report when the authority asks for one.
+                    'interim_report' => [
+                        'name' => 'wizard.check.nis2_23_interim',
+                        'description' => 'wizard.check.nis2_23_interim_desc',
+                        'type' => 'reporting_duty',
+                        'deadline_types' => ['nis2_interim'],
+                        'module' => 'incidents',
+                        'priority' => 'medium',
+                        'article' => '23(4)(c)',
+                        'requirements' => ['Art.23.5'],
+                        'route' => 'app_incident_index',
+                    ],
+                    // Art. 3 (4) / Art. 27 (3): registration data reported, changes within two weeks.
+                    'registration' => RecordCheck::deadlines('nis2_27_registration', ['nis2_registration'], '3(4)/27', 'high', [
+                        'module' => 'nis2_dora',
+                    ]),
                 ],
             ],
         ];
@@ -471,7 +491,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                     // Art. 5 (2): the management body approves framework, strategy and budget.
                     'management_body' => RecordCheck::decision('dora_5_management', ['dora_ict_framework', 'dora_strategy', 'resources'], '5(2)'),
                     'ict_risk_framework' => RecordCheck::decision('dora_6_framework', ['dora_ict_framework'], '6(1)'),
-                    'ict_risk_strategy' => RecordCheck::decision('dora_6_strategy', ['dora_strategy'], '6(8)'),
+                    'ict_risk_strategy' => RecordCheck::decision('dora_6_strategy', ['dora_strategy'], '6(8)', 'critical', ['requirements' => ['DORA-6.1']]),
                 ],
             ],
 
@@ -492,6 +512,8 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'assets',
                         'priority' => 'critical',
                         'article' => '7(1)',
+                        // The thematic DORA catalogue (DORA-x.y) numbers its rows apart from the articles.
+                        'requirements' => ['DORA-8.2'],
                         'route' => 'app_asset_index',
                     ],
                     'network_security' => [
@@ -502,6 +524,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'controls',
                         'priority' => 'critical',
                         'article' => '7(2)',
+                        'requirements' => ['DORA-13.1'],
                         'route' => 'app_soa_index',
                     ],
                 ],
@@ -585,6 +608,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'controls',
                         'priority' => 'high',
                         'article' => '9(4)(d)',
+                        'requirements' => ['DORA-13.4'],
                         'route' => 'app_soa_index',
                     ],
                 ],
@@ -618,6 +642,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'controls',
                         'priority' => 'high',
                         'article' => '10(2)',
+                        'requirements' => ['DORA-8.3', 'DORA-13.5'],
                         'route' => 'app_soa_index',
                     ],
                 ],
@@ -650,6 +675,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'bcm',
                         'priority' => 'critical',
                         'article' => '11(3)',
+                        'requirements' => ['DORA-9.1', 'DORA-6.2'],
                         'route' => 'app_bc_plan_index',
                     ],
                     'rto_rpo' => [
@@ -659,6 +685,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'bcm',
                         'priority' => 'critical',
                         'article' => '11(4)',
+                        'requirements' => ['DORA-9.3'],
                         'route' => 'app_bcm_index',
                     ],
                     'backup' => [
@@ -669,6 +696,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'controls',
                         'priority' => 'critical',
                         'article' => '11(5)',
+                        'requirements' => ['DORA-10.1'],
                         'route' => 'app_soa_index',
                     ],
                 ],
@@ -761,6 +789,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'checks' => [
                     // Art. 18 (1): incidents carry the RTS criteria (clients affected, economic impact).
                     'classification_criteria' => RecordCheck::fields('dora_18_criteria', Incident::class, ['clientsAffected', 'estimatedFinancialImpact'], '18(1)', 'app_incident_index', 'critical', [
+                        'requirements' => ['DORA-17.2'],
                         'module' => 'incidents',
                         'where' => ['incidentClassification' => 'incident'],
                         'since' => ['field' => 'detectedAt', 'months' => 12],
@@ -786,6 +815,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'incidents',
                         'priority' => 'critical',
                         'article' => '19(4)(a)',
+                        'requirements' => ['DORA-19.1'],
                         'route' => 'app_incident_index',
                     ],
                     'intermediate_report' => [
@@ -796,6 +826,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'incidents',
                         'priority' => 'critical',
                         'article' => '19(4)(b)',
+                        'requirements' => ['DORA-19.1'],
                         'route' => 'app_incident_index',
                     ],
                     'final_report' => [
@@ -806,6 +837,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'incidents',
                         'priority' => 'critical',
                         'article' => '19(4)(c)',
+                        'requirements' => ['DORA-19.1'],
                         'route' => 'app_incident_index',
                     ],
                 ],
@@ -838,6 +870,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'controls',
                         'priority' => 'critical',
                         'article' => '25(1)',
+                        'requirements' => ['DORA-24.1', 'DORA-24.2'],
                         'route' => 'app_vulnerability_index',
                     ],
                     'penetration_testing' => [
@@ -847,6 +880,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'module' => 'audits',
                         'priority' => 'high',
                         'article' => '25(1)',
+                        'requirements' => ['DORA-24.1', 'DORA-24.2'],
                         'route' => 'app_audit_index',
                     ],
                 ],
@@ -917,6 +951,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'checks' => [
                     // Art. 30 (2): ICT supplier contracts name service, locations, data protection and service levels.
                     'contract_requirements' => RecordCheck::fields('dora_30_contracts', Supplier::class, ['serviceProvided', 'processingLocations', 'contractualSLAs', 'hasDPA'], '30(2)', 'app_supplier_index', 'high', [
+                        'requirements' => ['DORA-30.1', 'DORA-28.2'],
                         'module' => 'suppliers',
                         'where' => ['isDoraRelevant' => true],
                     ]),
@@ -927,6 +962,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'entity' => 'dora_exit_plan',
                         'priority' => 'high',
                         'article' => '30(3)(f)',
+                        'requirements' => ['DORA-30.1'],
                         'route' => 'app_dora_exit_plan_index',
                     ],
                 ],

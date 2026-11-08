@@ -211,6 +211,7 @@ throw new \LogicException('Cannot export profile: securityResponsibleContact is 
         $profile->setLastReportedAt($now);
         $profile->setPortalConfirmationNumber($portalConfirmation);
         $profile->setNextDueAt($now->modify('+1 year'));
+        $profile->markDataReported();
         $profile->getTenant()->setNis2RegisteredAt($now);
 
         $this->entityManager->flush();

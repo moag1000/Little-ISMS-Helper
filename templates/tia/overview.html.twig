@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% block title %}{{ 'tia.page.overview_title'|trans({}, 'tia') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'shield-check' },
+            { label: 'tia.page.overview_title'|trans({}, 'tia') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title:    'tia.page.overview_title'|trans({}, 'tia'),
+        subtitle: 'tia.page.overview_subtitle'|trans({}, 'tia'),
+    }) }}
+
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_tia_overview'),
+        filter_keys: ['status'],
+        list_title: 'tia.page.overview_title'|trans({}, 'tia'),
+        empty: {
+            mood: 'sleeping',
+            title: 'tia.empty.title'|trans({}, 'tia'),
+            text: 'tia.empty.overview_body'|trans({}, 'tia'),
+            norm_ref: 'DSGVO Art. 46 · EDPB 01/2020',
+            actions: [
+                { label: 'tia.action.to_processing_activities'|trans({}, 'tia'), variant: 'primary', href: path('app_processing_activity_index') }
+            ]
+        },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-3">
+                <label for="tia-filter-status" class="form-label">{{ 'tia.field.status'|trans({}, 'tia') }}</label>
+                <select class="form-select fa-cyber-input__field" id="tia-filter-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="draft" {{ status == 'draft' ? 'selected' }}>{{ 'tia.status.draft'|trans({}, 'tia') }}</option>
+                    <option value="assessed" {{ status == 'assessed' ? 'selected' }}>{{ 'tia.status.assessed'|trans({}, 'tia') }}</option>
+                    <option value="review_due" {{ status == 'review_due' ? 'selected' }}>{{ 'tia.status.review_due'|trans({}, 'tia') }}</option>
+                </select>
+            </div>
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { noMargin: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'tia.field.recipient_name'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.destination_country'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.processing_activity'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.residual_risk_rating'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.status'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.owner'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.next_review_date'|trans({}, 'tia') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for tia in page %}
+                        <tr>
+                            <td><a href="{{ path('app_tia_open', {id: tia.id}) }}" class="fa-row-link"><strong>{{ tia.recipientName ?? '—' }}</strong></a></td>
+                            <td>{{ tia.destinationCountry ?? '—' }}</td>
+                            <td>
+                                {% if tia.processingActivity %}
+                                    <a href="{{ path('app_processing_activity_show', {id: tia.processingActivity.id}) }}">{{ tia.processingActivity.name }}</a>
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>
+                                {% if tia.residualRiskRating %}
+                                    {% include '_components/_badge.html.twig' with {
+                                        variant: tia.residualRiskRating == 'high' ? 'danger' : (tia.residualRiskRating == 'medium' ? 'warning' : 'success'),
+                                        content: ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia')
+                                    } %}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: tia.status == 'assessed' ? 'success' : 'secondary',
+                                    content: ('tia.status.' ~ tia.status)|trans({}, 'tia')
+                                } %}
+                            </td>
+                            <td>{{ tia.owner ? tia.owner.fullName : '—' }}</td>
+                            <td>{{ tia.nextReviewDate|fa_date }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

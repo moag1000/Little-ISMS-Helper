@@ -105,6 +105,9 @@ search_nav:
     app_dashboard_dpo:
         label: 'DPO-Dashboard'
         description: 'Datenschutz-Übersicht, VVT, DSR-Status'
+    app_tia_overview:
+        label: 'Transfer Impact Assessments (TIA)'
+        description: 'Drittlandübermittlungen bewerten und neu prüfen (DSGVO Art. 46)'
     app_dashboard_compliance_manager:
         label: 'Compliance-Manager-Dashboard'
         description: 'Framework-Status, offene Maßnahmen'

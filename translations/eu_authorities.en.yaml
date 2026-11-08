@@ -88,6 +88,8 @@ eu_authorities:
             overdue: 'Registration OVERDUE'
             overdue_body: 'Deadline was %date% — immediate submission required (BSIG § 33).'
             never_reported: 'Not yet reported to BSI'
+            change_pending: 'Report changed registration data'
+            change_pending_body: 'Data changed on %changed% — report to the BSI by %date% (NIS-2 Art. 3 (4), BSIG § 33).'
         error:
             legal_name_required: 'Legal name is required'
             legal_form_required: 'Legal form is required'

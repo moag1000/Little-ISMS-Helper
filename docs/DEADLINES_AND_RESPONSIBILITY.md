@@ -23,13 +23,15 @@ duties have the same shape: one date field of one tenant-owned entity, a
 bucket, lead days, a norm. These are entries in `config/deadline_types.yaml`,
 not classes. One generic `App\Service\Deadline\Configured\ConfiguredDeadlineSource`
 reads each entry (`DeadlineTypeDefinition`); `DeadlineSourceRegistry` adds them
-after the class sources. 25 types live there (risk review, risk acceptance
+after the class sources. 27 types live there (risk review, risk acceptance
 without expiry, treatment plan, the three control dates, objectives, context
 review, interested-party communication, CAPA effectiveness, certificates,
 evidence re-verification, access review, access end of a person, supplier
 reassessment and contract end, patch deadline, BC plan review and test,
 crisis-team training, VVT and DPIA review, consent expiry, TISAX prototype
-protection, team validity).
+protection, team validity, nonconformity correction date of an audit finding
+(ISO 27001 10.2 c), TIA re-evaluation (GDPR Art. 46, EDPB 01/2020; owner and
+date on the TIA, one year after the assessment by default)).
 
 ```yaml
 consent_expiry:
@@ -139,6 +141,16 @@ recorded on the incident ("Zwischenbericht angefordert", due date given or 72 h)
 The NIS-2 significance thresholds (financial loss, affected persons) are set per
 organisation under Admin > Incident-SLAs. DORA reports export as JSON per phase
 (`DoraIncidentReportExport`, Art. 19 / RTS 2025/302).
+
+**Next management review** (`ManagementReviewFollowUpSource`, ISO 27001 9.3): once
+the organisation's newest review is completed, the next one is due at its
+`nextReviewDate` (twelve months after the review when empty) until a later review
+is planned — a class, because "is there a later review" spans records.
+
+**NIS-2 registration changes** (`Nis2RegistrationSource`, Art. 3 (4), Art. 27, BSIG § 33):
+editing reported registration data (organisation, classification, contacts)
+notes the first change; the duty is then due two weeks later instead of at the
+yearly confirmation. "Als gemeldet markieren" clears it, reverting the data too.
 
 **Adding a norm** means adding sources for its duties — an entry in
 `config/deadline_types.yaml` where the duty is a date field, a class otherwise.

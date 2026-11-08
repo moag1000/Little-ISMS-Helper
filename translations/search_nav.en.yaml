@@ -105,6 +105,9 @@ search_nav:
     app_dashboard_dpo:
         label: 'DPO dashboard'
         description: 'Privacy overview, records of processing, data subject requests'
+    app_tia_overview:
+        label: 'Transfer impact assessments (TIA)'
+        description: 'Assess and re-evaluate third-country transfers (GDPR Art. 46)'
     app_dashboard_compliance_manager:
         label: 'Compliance manager dashboard'
         description: 'Framework status, open measures'

@@ -32,13 +32,23 @@
         {# ── Status Banner ─────────────────────────────────────────────────────── #}
         <div class="row mb-4">
             <div class="col-12">
-                {% if profile.isOverdue %}
+                {% if profile.unreportedChangeAt %}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: profile.isOverdue ? 'danger' : 'warning', icon: 'ui-clock' } } %}
+                        {% block alert_body %}
+                            <strong>{{ 'eu_authorities.nis2_registration.status.change_pending'|trans({}, 'eu_authorities') }}</strong>
+                            — {{ 'eu_authorities.nis2_registration.status.change_pending_body'|trans({
+                                '%changed%': profile.unreportedChangeAt|fa_date,
+                                '%date%': profile.changeReportDueAt|fa_date
+                            }, 'eu_authorities') }}
+                        {% endblock %}
+                    {% endembed %}
+                {% elseif profile.isOverdue %}
                     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'status-warning' } } %}
                         {% block alert_body %}
                             {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.nis2_registration.status.overdue'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.overdue_body'|trans({
-                                '%date%': profile.nextDueAt|fa_date
+                                '%date%': profile.effectiveDueAt|fa_date
                             }) }}
                         {% endblock %}
                     {% endembed %}
@@ -48,7 +58,7 @@
                             {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.nis2_registration.status.due_soon'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.due_soon_body'|trans({
-                                '%date%': profile.nextDueAt|fa_date
+                                '%date%': profile.effectiveDueAt|fa_date
                             }) }}
                         {% endblock %}
                     {% endembed %}
@@ -58,7 +68,7 @@
                             {% trans_default_domain 'eu_authorities' %}
                             <strong>{{ 'eu_authorities.nis2_registration.status.current'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.current_body'|trans({
-                                '%date%': profile.nextDueAt|fa_date
+                                '%date%': profile.effectiveDueAt|fa_date
                             }) }}
                         {% endblock %}
                     {% endembed %}

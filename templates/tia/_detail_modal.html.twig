@@ -61,6 +61,18 @@
                 <span>{{ tia.assessedBy.fullName ?? tia.assessedBy }}</span>
             </div>
         {% endif %}
+        {% if tia.owner %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'tia.field.owner'|trans({}, 'tia') }}</span>
+                <span>{{ tia.owner.fullName }}</span>
+            </div>
+        {% endif %}
+        {% if tia.nextReviewDate %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'tia.field.next_review_date'|trans({}, 'tia') }}</span>
+                <span>{{ tia.nextReviewDate|fa_date }}</span>
+            </div>
+        {% endif %}
         {% if tia.conclusion %}
             <div class="fa-drawer__section">
                 <span class="label">{{ 'tia.field.conclusion'|trans({}, 'tia') }}</span>

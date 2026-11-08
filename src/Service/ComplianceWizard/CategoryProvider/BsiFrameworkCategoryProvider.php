@@ -872,7 +872,9 @@ final class BsiFrameworkCategoryProvider
                 'checks' => [
                     'bsi_c5_2026_nis2_alignment' => [
                         'name' => 'wizard.check.bsi_c5_2026_nis2_alignment',
-                        'type' => 'incident_coverage',
+                        // NIS-2 alignment = the NIS-2 reports of significant incidents are made on time.
+                        'type' => 'reporting_duty',
+                        'deadline_types' => ['nis2_24h', 'nis2_72h', 'nis2_1mo'],
                         'module' => 'incidents',
                         'route' => 'app_incident_index',
                     ],

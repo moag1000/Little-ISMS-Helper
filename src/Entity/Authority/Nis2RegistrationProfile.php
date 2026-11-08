@@ -164,6 +164,17 @@ class Nis2RegistrationProfile
     #[ORM\Column(type: Types::STRING, length: 80, nullable: true)]
     private ?string $portalConfirmationNumber = null;
 
+    /**
+     * NIS-2 Art. 3 (4) / BSIG § 33 (3): changes to the reported data are
+     * reported within two weeks. Fingerprint of the data as last reported, and
+     * when it first differed from it (null = nothing unreported).
+     */
+    #[ORM\Column(type: Types::STRING, length: 64, nullable: true)]
+    private ?string $reportedFingerprint = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $unreportedChangeAt = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeImmutable $createdAt;
 
@@ -440,20 +451,82 @@ class Nis2RegistrationProfile
         return $this->updatedAt;
     }
 
+    /** Days the organisation has to report a change of its registration data (NIS-2 Art. 3 (4)). */
+    public const int CHANGE_REPORT_DAYS = 14;
+
     /**
-     * Returns true if this profile is overdue (nextDueAt is in the past).
+     * The data the authority holds: organisation, classification, contacts.
+     * A different fingerprint after the last report is a change to report.
      */
-    public function isOverdue(): bool
+    public function fingerprint(): string
     {
-        return $this->nextDueAt < new DateTimeImmutable();
+        return hash('sha256', (string) json_encode([
+            $this->organizationLegalName, $this->organizationLegalForm, $this->commercialRegisterCity,
+            $this->commercialRegisterNumber, $this->vatId, array_values($this->naceCodes), $this->nis2Sector,
+            $this->nis2EntityCategory, $this->affectedHeadcount, $this->affectedAnnualTurnoverEur,
+            $this->ictDependencyDescription, $this->incidentReportingContact?->getId(),
+            $this->securityResponsibleContact?->getId(), $this->backupSecurityContact?->getId(),
+        ]));
     }
 
     /**
-     * Returns true if the registration is due within the given number of days.
+     * After an edit: notes the first change against the reported data (the
+     * two weeks run from it), or clears it when the data is back as reported.
+     * Only once something was reported; `$before` is the fingerprint before the
+     * edit, the baseline for profiles reported before fingerprints existed.
+     */
+    public function noteChange(string $before, ?DateTimeImmutable $now = null): void
+    {
+        if ($this->lastReportedAt === null) {
+            return;
+        }
+        $this->reportedFingerprint ??= $before;
+        if ($this->fingerprint() === $this->reportedFingerprint) {
+            $this->unreportedChangeAt = null;
+        } else {
+            $this->unreportedChangeAt ??= $now ?? new DateTimeImmutable();
+        }
+    }
+
+    /** The data now in the profile is what the authority holds. */
+    public function markDataReported(): void
+    {
+        $this->reportedFingerprint = $this->fingerprint();
+        $this->unreportedChangeAt = null;
+    }
+
+    public function getUnreportedChangeAt(): ?DateTimeImmutable
+    {
+        return $this->unreportedChangeAt;
+    }
+
+    public function getChangeReportDueAt(): ?DateTimeImmutable
+    {
+        return $this->unreportedChangeAt?->modify(sprintf('+%d days', self::CHANGE_REPORT_DAYS));
+    }
+
+    /** The next report: the yearly confirmation, or earlier a change to report. */
+    public function getEffectiveDueAt(): DateTimeImmutable
+    {
+        $change = $this->getChangeReportDueAt();
+
+        return $change !== null && $change < $this->nextDueAt ? $change : $this->nextDueAt;
+    }
+
+    /**
+     * Returns true if the next report is overdue.
+     */
+    public function isOverdue(): bool
+    {
+        return $this->getEffectiveDueAt() < new DateTimeImmutable();
+    }
+
+    /**
+     * Returns true if the next report is due within the given number of days.
      */
     public function isDueSoon(int $days = 30): bool
     {
         $threshold = new DateTimeImmutable(sprintf('+%d days', $days));
-        return $this->nextDueAt <= $threshold && !$this->isOverdue();
+        return $this->getEffectiveDueAt() <= $threshold && !$this->isOverdue();
     }
 }

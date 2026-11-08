@@ -62,14 +62,15 @@ final class RecordCheck
      * A clause answered by top-management decisions ({@see \App\Enum\ManagementDecisionType} values).
      *
      * @param list<string> $types
+     * @param array<string, mixed> $extra e.g. `requirements` (catalogue ids numbered apart from the article)
      * @return array<string, mixed>
      */
-    public static function decision(string $key, array $types, string $clause, string $priority = 'critical'): array
+    public static function decision(string $key, array $types, string $clause, string $priority = 'critical', array $extra = []): array
     {
         return self::definition($key, $clause, $priority, 'app_management_decision_index', [
             'type' => 'management_decision',
             'decision_types' => $types,
-        ]);
+        ] + $extra);
     }
 
     /**
