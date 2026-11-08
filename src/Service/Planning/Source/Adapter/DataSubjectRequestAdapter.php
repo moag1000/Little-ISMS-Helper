@@ -16,7 +16,7 @@ use DateTimeInterface;
 /**
  * SourceAdapter for GDPR Data Subject Requests (Art. 12–22 GDPR).
  *
- * Deadline field : deadlineAt — Art. 12(3) 30-day response deadline,
+ * Deadline field : extendedDeadlineAt ?? deadlineAt — Art. 12(3) 30-day response deadline (or the extension),
  *                  auto-calculated from receivedAt on pre-persist.
  * Terminal statuses: completed, rejected
  *   (received, identity_verification, in_progress, extended still require action)
@@ -51,7 +51,8 @@ final class DataSubjectRequestAdapter implements SourceAdapter
     public function dueDateOf(object $item): ?DateTimeInterface
     {
         assert($item instanceof DataSubjectRequest);
-        return $item->getDeadlineAt();
+        // Art. 12(3) extension: once extended, the reminder runs on the new date.
+        return $item->getEffectiveDeadline();
     }
 
     public function titleOf(object $item): string
