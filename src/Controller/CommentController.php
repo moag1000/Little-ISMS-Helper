@@ -18,6 +18,7 @@ use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\AuditLogger;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -58,10 +59,38 @@ class CommentController extends AbstractController
         'DataProtectionImpactAssessment' => DataProtectionImpactAssessment::class,
     ];
 
+    /**
+     * S11: who may read a record's detail page may comment on it — and nobody else.
+     * Per type the module its show controller requires (#[RequiresModule]) and the
+     * voter attribute its show action checks; tests/Security/CommentTargetAccessTest
+     * keeps this in step with the show controllers.
+     *
+     * @var array<string, array{module: ?string, attribute: ?string}>
+     */
+    public const array TARGET_ACCESS = [
+        'Risk' => ['module' => null, 'attribute' => 'view'],
+        'AuditFinding' => ['module' => null, 'attribute' => null],
+        'Document' => ['module' => null, 'attribute' => 'view'],
+        'Incident' => ['module' => null, 'attribute' => 'view'],
+        'Asset' => ['module' => null, 'attribute' => 'view'],
+        'Control' => ['module' => null, 'attribute' => 'view'],
+        'CorrectiveAction' => ['module' => 'corrective_actions', 'attribute' => null],
+        'DataSubjectRequest' => ['module' => 'privacy', 'attribute' => null],
+        'DataBreach' => ['module' => 'privacy', 'attribute' => null],
+        'DataProtectionImpactAssessment' => ['module' => 'privacy', 'attribute' => null],
+    ];
+
+    /** @return array<string, class-string> */
+    public static function entityTypes(): array
+    {
+        return self::ENTITY_TYPE_MAP;
+    }
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -105,6 +134,15 @@ class CommentController extends AbstractController
         ) {
             $this->auditCommentBlocked($entityType, $entityId, 'cross_tenant_post_blocked', $user);
             throw new AccessDeniedHttpException('Cross-tenant comment post denied');
+        }
+
+        // Same gate as the record's detail page: its module and its voter.
+        $access = self::TARGET_ACCESS[$entityType];
+        if (($access['module'] !== null && !$this->moduleConfiguration->isModuleActive($access['module']))
+            || ($access['attribute'] !== null && !$this->isGranted($access['attribute'], $target))
+        ) {
+            $this->auditCommentBlocked($entityType, $entityId, 'no_access_to_record', $user);
+            throw new AccessDeniedHttpException('No access to the commented record');
         }
 
         $body = trim((string) $request->request->get('body', ''));

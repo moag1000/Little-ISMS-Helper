@@ -7,11 +7,16 @@ namespace App\Service;
 use App\Entity\PushSubscription;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\InvalidArgument\InvalidArgumentException;
+use App\Exception\Security\PushSubscriptionTakenException;
+use App\Http\PushEndpointPolicy;
+use App\Http\UserUrlHttpClient;
 use App\Repository\PushSubscriptionRepository;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpClient\Psr18Client;
 
 /**
  * Web Push Notification Service
@@ -26,6 +31,7 @@ final class WebPushService
     public function __construct(
         private readonly PushSubscriptionRepository $subscriptionRepository,
         private readonly LoggerInterface $logger,
+        private readonly UserUrlHttpClient $httpClient,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -41,7 +47,11 @@ final class WebPushService
     }
 
     /**
-     * Subscribe a user to push notifications
+     * Subscribe a user to push notifications.
+     *
+     * @throws InvalidArgumentException when the endpoint is not one of a browser push service
+     * @throws PushSubscriptionTakenException when the endpoint belongs to another account and the
+     *                                         caller does not present that subscription's keys
      */
     public function subscribe(
         User $user,
@@ -51,8 +61,23 @@ final class WebPushService
         string $authToken,
         ?string $userAgent = null
     ): PushSubscription {
+        if (!PushEndpointPolicy::accepts($endpoint)) {
+            // @intentional-assertion: the controller answers 422 before; other callers must check too
+            throw new InvalidArgumentException('Push endpoint is not a browser push service.', 'endpoint');
+        }
+
         // Check if subscription already exists
         $existing = $this->subscriptionRepository->findByEndpoint($endpoint);
+
+        // Another account's row: only the browser that holds this subscription knows its keys
+        // (p256dh + auth). Someone who merely learnt the endpoint URL cannot take it over and
+        // silence or redirect that person's notifications.
+        if ($existing && $existing->getUser()?->getId() !== $user->getId()
+            && !(hash_equals((string) $existing->getPublicKey(), $publicKey)
+                && hash_equals((string) $existing->getAuthToken(), $authToken))
+        ) {
+            throw new PushSubscriptionTakenException();
+        }
 
         if ($existing) {
             // Update existing subscription
@@ -201,13 +226,22 @@ final class WebPushService
     private function sendPush(PushSubscription $subscription, string $payload, array $keys): bool
     {
         try {
+            // Rows from before the endpoint check are not sent to either.
+            if (!PushEndpointPolicy::accepts((string) $subscription->getEndpoint())) {
+                $subscription->setIsActive(false);
+
+                return false;
+            }
+            // The endpoint is user input: deliver through the guarded client (no private
+            // addresses, no redirects), never through the library's own discovered client.
+            $psr18 = new Psr18Client($this->httpClient);
             $webPush = new WebPush([
                 'VAPID' => [
                     'subject' => self::VAPID_SUBJECT,
                     'publicKey' => $keys['publicKey'],
                     'privateKey' => $keys['privateKey'],
                 ],
-            ]);
+            ], [], $psr18, $psr18, $psr18);
 
             $sub = Subscription::create([
                 'endpoint' => $subscription->getEndpoint(),

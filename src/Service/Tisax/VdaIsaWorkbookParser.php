@@ -7,7 +7,7 @@ namespace App\Service\Tisax;
 use App\Service\Tisax\Dto\ParsedWorkbookResult;
 use App\Service\Tisax\Dto\VdaIsaControlRow;
 use ErrorException;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Service\Import\SafeSpreadsheetReader;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Psr\Log\LoggerInterface;
 
@@ -250,8 +250,12 @@ final class VdaIsaWorkbookParser
         'data_protection'      => ['Data Protection', 'Datenschutz'],
     ];
 
+    /** Rows read per sheet — the largest ISA 6 sheet has a few hundred. */
+    public const int MAX_ROWS_PER_SHEET = 5000;
+
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly SafeSpreadsheetReader $reader = new SafeSpreadsheetReader(),
     ) {}
 
     /**
@@ -265,9 +269,8 @@ final class VdaIsaWorkbookParser
             throw new ErrorException(sprintf('VdaIsaWorkbookParser: cannot read "%s"', $filePath));
         }
 
-        $reader = IOFactory::createReaderForFile($filePath);
-        $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($filePath);
+        // The wizard stores every upload as .xlsx; VDA ISA ships as xlsx only.
+        $spreadsheet = $this->reader->load($filePath, ['xlsx'], self::MAX_ROWS_PER_SHEET, type: 'xlsx');
 
         // Version gate — the importer maps controls into the ISA-6 framework.
         // ISA 5.x is a strict subset of ISA 6 (every 5.1 control id also exists

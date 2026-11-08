@@ -266,6 +266,8 @@ class HealthAutoFixServiceTest extends TestCase
 
         $this->assertTrue($result['success']);
         $this->assertTrue(is_dir($this->projectDir . '/public/uploads'));
+        // S11: the evidence tree below var/ (S7) is covered as well.
+        $this->assertTrue(is_dir($this->projectDir . '/var/uploads'));
     }
 
     #[Test]

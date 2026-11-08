@@ -1,6 +1,6 @@
 # Verträge der Nicht-UI-Pfade (S6)
 
-Jede Sicherheitseigenschaft, die die Wellen 3, 5 und 6 (#1147, #1151, #1157, #1159–#1162, S7, W3) für
+Jede Sicherheitseigenschaft, die die Wellen 3, 5, 6 und 7 (#1147, #1151, #1157, #1159–#1162, S7, W3, S11) für
 REST, Assistent (MCP), Import, Wiederherstellung, Export, Hintergrundjobs, Konsole und Quick-Fix
 hergestellt haben, steht hier mit dem Test oder Gate, das sie dauerhaft belegt. Grünes CI heißt
 damit: die Eigenschaft gilt. Eine neue API-Ressource, ein neues MCP-Tool, ein neuer Export oder
@@ -40,6 +40,8 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Mitglieder einer deaktivierten Organisation kommen weder per Passwort, SSO noch Token hinein (`UserChecker::refusal()`; Super-Admin ausgenommen) | `tests/Security/UserCheckerOrganisationTest` |
 | Fehlgeschlagene Token-Anmeldungen sind je IP gedrosselt (20 in 10 Minuten, dann 429 ohne Datenbankabfrage); das API-Limit gilt auch für `/api.json` u. ä. | `tests/Security/ApiTokenFailureThrottleTest`, `tests/EventSubscriber/RateLimiterWiringTest` |
 | Ausgehende Anfragen an URLs, die eine Person eingibt (Geocoder, OIDC-Discovery/JWKS/Token, Webhook), laufen nur über `App\Http\UserUrlHttpClient`: keine privaten/internen Adressen (auch nach DNS), keine Weiterleitungen; kein anderer roher HTTP-Client in `src/` | `tests/Security/OutboundUserUrlClientTest` |
+| Web-Push: ein Abo nimmt nur https-Endpunkte der Browser-Push-Dienste an (`PushEndpointPolicy`); ein fremdes Abo übernimmt nur der Browser mit dessen Schlüsseln; Zustellung über `UserUrlHttpClient` (PSR-18), nie über den Client der Bibliothek | `tests/Security/WebPushEndpointTest` |
+| Hochgeladene Tabellen öffnet nur `SafeSpreadsheetReader`: Reader-Typ fest (xlsx/xls/ods nach Aufrufer), ZIP-Grenzen vor dem Entpacken, Lesefilter auf Zeilen und Spalten; kein `IOFactory::createReaderForFile()`/`load()` in `src/` | `tests/Security/SpreadsheetUploadReaderTest` |
 | Die SSO-Discovery-Prüfung braucht CSRF und gibt keine Verbindungsdetails zurück (kein Port-Scan-Orakel) | `tests/Controller/Api/SsoDiscoveryApiControllerTest` |
 
 ## Rechte wie im Formular
@@ -49,7 +51,12 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Schreibrollen der API = Rollen des Formulars (Methoden- und Klassen-`#[IsGranted]`, `denyAccessUnlessGranted()`); Kernressourcen (Asset, Risiko, Vorfall, Control) entscheiden auf der API mit demselben Datensatz-Voter wie das Formular; jede schreibbare Ressource ist einem Formular zugeordnet | `tests/Api/ApiWriteRoleParityTest` |
 | Lifecycle-Status ist über die API nicht schreibbar | `ApiResourceContractTest::lifecycleStatusIsReadOnlyOnTheApi` |
 | Wirksamkeits-, Test- und Meldenachweise (Control, BC-Übung, BC-Plan, Ziel-Istwert, Behördenmeldung) sind `#[ApiReadOnlyEvidence]`; die Entdeckungszeit eines Vorfalls wird nur beim Anlegen gesetzt | `ApiResourceContractTest::approvalEvidenceIsNotWritableOverTheApi`, `…theDetectionTimeOfAnIncidentIsSetOnceOnCreate` |
-| Ein Import, der bestehende Datensätze aktualisiert (auch Delta-Import), überschreibt keine Nachweisfelder (`EvidenceFieldFilter::forUpdate()`) | `tests/Service/Import/EvidenceFieldFilterTest` |
+| Kommentieren darf nur, wer die Detailseite öffnen darf: Modul und Datensatz-Voter der Zielentität (`CommentController::TARGET_ACCESS`), aus den Show-Controllern abgeleitet | `tests/Security/CommentTargetAccessTest` |
+| Ein Berichts-Widget liefert nur bei aktivem Modul Daten (Designer, Vorschau, PDF); Fehlertexte gehen ins Log, nicht an den Client; Berichtsstile sind auf bekannte Schlüssel und Hex-Farben begrenzt (PDF-`<style>`) | `tests/Security/ReportWidgetModuleTest`, `tests/Security/ReportStylesTest` |
+| Ein Lifecycle-Übergang, der einen Datensatz abschließt (z. B. TIA `assess`), ist nie für `ROLE_USER` offen — nur Arbeitsschritte (start, submit, triage …) oder begründete Ausnahmen | Gate 82 `check_workflow_roles.py` |
+| Gespeicherte JSON-Bodies (Dashboard-Layout, Berichtsdefinition) sind größen- und tiefenbegrenzt | `DashboardLayoutController::MAX_LAYOUT_BYTES`, `ReportBuilderController::MAX_SAVE_BYTES` |
+| Ein Import, der bestehende Datensätze aktualisiert (auch Delta-Import), überschreibt keine Nachweisfelder (`EvidenceFieldFilter::forUpdate()`); ein neu angelegter Datensatz bringt auch keine mit (`forCreate()`, S11) — nur `importable` markierte Ist-Werte wie der Umsetzungsstand eines Controls | `tests/Service/Import/EvidenceFieldFilterTest` |
+| Der Umsetzungsstand eines Controls (`implementationStatus`, `implementationPercentage`) speist die Erfüllung und ist über REST/MCP nur lesbar | `ApiResourceContractTest::approvalEvidenceIsNotWritableOverTheApi`, `EvidenceFieldFilterTest::theImplementationStatusIsApiReadOnlyButImportable` |
 | Ein Asset wird nur im Endzustand `disposed` gelöscht (oder in den ersten 24 h als Korrektur) — Formular, Massenlöschung und API (`DeletionPolicy::refusal()`) | `tests/Lifecycle/DeletionPolicyTest` |
 | Prüferrollen ändern nichts im Audit-Bereich außer Checkliste, Feststellungen, Arbeitsmappe und Berichtseinreichung; der AVV-Picker braucht Manager | `tests/EventSubscriber/ReadOnlyRoleSubscriberTest` |
 | Maschinenprotokolle (Krypto-Operationen, Zutrittslog) schreibt über die API nur ein Admin | `ApiTenantVoter::WRITE_ROLES`, `tests/Api/ApiWriteRoleParityTest` |
@@ -74,6 +81,8 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Quick-Fix lässt geteilte Zeilen ohne Organisation in Ruhe | `tests/Controller/QuickFixControllerTest`, `tests/Service/DataIntegrity/OrphanFinderTest` |
 | Identitätswechsel nur auf Konten mit weniger Rechten | `tests/Security/Voter/SwitchUserVoterTest` |
 | Aufbewahrung löscht nur Datensätze im Endzustand, und die Frist läuft ab Abschluss bzw. letzter Änderung (Abschlussfelder, `updatedAt`, letzte Audit-Zeile), nicht ab Anlage | `tests/Service/RetentionEnforcementServiceTest` |
+| Eine Instanz-Wiederherstellung glaubt `metadata.tenant_scope` der Datei nicht: nur Organisationen im aktuellen Baum der ersten genannten (oder hier unbekannte) — eine präparierte Liste leert keine fremde Organisation | `tests/Service/Restore/RestoreDataPurgerTest::a_recorded_scope_is_cut_to_the_roots_tree` |
+| ZIP-Sicherungen tragen jede Nachweis-Ablage (`ProtectedUploads::AREAS`, auch Schulungsmaterial); der Verwaist-Scan sieht `var/uploads/<Bereich>` und kennt Schulungsmaterial, damit es nicht in Quarantäne geht | `BackupArchiveExtractionTest::everyProtectedUploadAreaIsBackedUp`, `tests/Service/DataIntegrity/UploadOrphanCheckerTest` |
 | Wiederhergestellte Freigabe- und Nachweisfelder werden je Typ als `restore.evidence`-Batch protokolliert (Herkunft sichtbar); das Admin-Passwort der Wiederherstellung trifft nie „den ersten Nutzer“ | `tests/Service/Restore/RestoredEvidenceTrailTest` |
 | Sicherungs-Metadaten werden größenbegrenzt gelesen; der Sichtbarkeitsbereich einer hochgeladenen Sicherung kommt vom Hochladenden, nicht aus der Datei | `BackupService::readBackupMetadata()`, `BackupService::recordUploadScope()` |
 | Beispieldaten-Bereinigung nur mit `--tenant-id`, ohne rohes SQL über Organisationen | `src/Command/SampleDataPurgeCommand.php` |

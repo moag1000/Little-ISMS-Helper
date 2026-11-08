@@ -180,8 +180,9 @@ def scan_tests(actions: dict[str, int]) -> list[tuple[Path, int, str]]:
             # Skip `$session->save()` — HttpFoundation Session API (no-arg save),
             # not a controller action carrying a #[CurrentUser] parameter.
             recv_tail = re.search(r"(\$?\w+)\s*$", text[line_start:m.start()])
-            if recv_tail and recv_tail.group(1).lstrip("$").lower() == "session":
+            if recv_tail and recv_tail.group(1).lstrip("$").lower() in ("session", "writer"):
                 continue
+            # PhpSpreadsheet writers (`$writer->save($path)`) are not controller actions either.
             args_text = text[open_paren + 1:close].strip()
             if not args_text:
                 actual = 0

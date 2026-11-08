@@ -20,6 +20,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class DashboardLayoutController extends AbstractController
 {
     /** CSRF id for layout writes; dashboard_customizer_controller.js sends it as X-CSRF-Token. */
+    public const int MAX_LAYOUT_BYTES = 64 * 1024;
+    public const int MAX_LAYOUT_DEPTH = 8;
+
     public const string CSRF_ID = 'dashboard_layout';
 
     public function __construct(
@@ -63,7 +66,7 @@ class DashboardLayoutController extends AbstractController
             return $this->json(['error' => 'User or tenant not found'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $data = json_decode($request->getContent(), true);
+        $data = self::decodeBounded($request);
 
         if (!is_array($data)) {
             return $this->json(['error' => 'Invalid JSON data'], Response::HTTP_BAD_REQUEST);
@@ -118,7 +121,7 @@ class DashboardLayoutController extends AbstractController
             return $this->json(['error' => 'User or tenant not found'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $data = json_decode($request->getContent(), true);
+        $data = self::decodeBounded($request);
 
         if (!is_array($data)) {
             return $this->json(['error' => 'Invalid JSON data'], Response::HTTP_BAD_REQUEST);
@@ -134,5 +137,22 @@ class DashboardLayoutController extends AbstractController
             'message' => 'Widget configuration updated',
             'widget' => $dashboardLayout->getWidgetConfig($widgetId),
         ]);
+    }
+
+    /**
+     * A layout is a few kilobytes of widget positions. Bigger or deeper bodies are refused
+     * so one account cannot fill the table (S11).
+     *
+     * @return array<mixed>|null
+     */
+    private static function decodeBounded(Request $request): ?array
+    {
+        $content = $request->getContent();
+        if (strlen($content) > self::MAX_LAYOUT_BYTES) {
+            return null;
+        }
+        $data = json_decode($content, true, self::MAX_LAYOUT_DEPTH);
+
+        return is_array($data) ? $data : null;
     }
 }

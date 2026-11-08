@@ -24,6 +24,7 @@ use App\Service\Suggestion\SuggestionLinks;
 use App\Service\Suggestion\SuggestionQueue;
 use App\Service\TenantContext;
 use App\Util\ListPage;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -57,6 +58,7 @@ final class SuggestionController extends AbstractController
         private readonly JobTenantScope $jobTenantScope,
         private readonly TranslatorInterface $translator,
         private readonly AuditLogger $auditLogger,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -218,7 +220,10 @@ final class SuggestionController extends AbstractController
 
             return new JsonResponse(['ok' => true, 'changed' => $changed, 'rejected' => $rejected]);
         } catch (\Throwable $e) {
-            return new JsonResponse(['ok' => false, 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            // Exception texts carry SQL, paths and class names — the log keeps them, the client gets a code.
+            $this->logger->error('Suggestion bulk decision failed', ['exception' => $e]);
+
+            return new JsonResponse(['ok' => false, 'error' => 'internal'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -108,6 +108,45 @@ final class BackupArchiveExtractionTest extends TestCase
         self::assertStringEqualsFile($existing, '%PDF restored');
     }
 
+    #[Test]
+    public function trainingMaterialsTravelInTheArchive(): void
+    {
+        // S11: materials (ISO 27001 7.2/7.3 evidence) were missing from ZIP backups.
+        mkdir($this->projectDir . '/var/uploads/training-materials', 0750, true);
+        $material = $this->projectDir . '/var/uploads/training-materials/kurs.pdf';
+        file_put_contents($material, '%PDF material');
+
+        $collect = new \ReflectionMethod(BackupService::class, 'collectFileReferences');
+        $refs = $collect->invoke($this->service, [
+            'Training' => [['id' => 1, 'materialFiles' => [['filename' => 'kurs.pdf', 'originalName' => 'Kurs.pdf']]]],
+        ]);
+
+        self::assertSame(['training_materials/kurs.pdf' => $material], $refs);
+    }
+
+    #[Test]
+    public function restoredTrainingMaterialsLandOutsideTheWebRoot(): void
+    {
+        $zip = $this->archive(['files/training_materials/kurs.pdf' => '%PDF material']);
+
+        self::assertSame(1, $this->service->extractArchiveFiles($zip, [7]));
+        self::assertFileExists($this->projectDir . '/var/uploads/training-materials/kurs.pdf');
+        self::assertFileDoesNotExist($this->projectDir . '/public/uploads/training_materials/kurs.pdf');
+    }
+
+    #[Test]
+    public function everyProtectedUploadAreaIsBackedUp(): void
+    {
+        $source = (string) file_get_contents(dirname(__DIR__, 2) . '/src/Service/BackupService.php');
+        $carried = array_column(BackupService::FILE_LIST_FIELDS, 2);
+        foreach (\App\Service\Upload\ProtectedUploads::AREAS as $area) {
+            self::assertTrue(
+                in_array($area, $carried, true) || ($area === \App\Service\Upload\ProtectedUploads::DOCUMENTS && str_contains($source, "'Document'        => 'filePath'")),
+                sprintf('Upload area %s has no file reference in BackupService — its files would be missing from ZIP backups.', $area),
+            );
+        }
+    }
+
     /**
      * @param array<string, string> $files
      * @param array<string, mixed>  $metadata

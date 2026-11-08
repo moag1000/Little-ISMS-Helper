@@ -60,7 +60,8 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
   Organisation, Token mit „Assistent darf schreiben“, keine reine Prüferrolle. Es nutzt die Schreib-Operation der
   REST-Ressource (Rechteprüfung, Pflichtfelder, Mandant beim Anlegen erzwungen) und nur deren Schreibfelder; Status,
   Mandant, IDs und Freigabe-Nachweise (Risikoakzeptanz, Billigung, Genehmigung von Änderungen) sind dort nicht
-  schreibbar und werden abgewiesen. Globale Kataloge (Normen, Rollen, Vorlagen) schreibt kein Organisations-Token.
+  schreibbar und werden abgewiesen; ebenso der Umsetzungsstand eines Controls (Status und Prozent, speist die
+  Erfüllung — gesetzt im Control-Formular, in der SoA oder im geprüften Massenimport). Globale Kataloge (Normen, Rollen, Vorlagen) schreibt kein Organisations-Token.
   Gelöscht wird nie. Die REST-API selbst bleibt für jedes Token lesend.
 - **Gleiche Rechte wie das Formular** (S4, 2026-11): Kontext der Organisation und ISMS-Ziele schreibt nur, wer sie auch
   in der App pflegen darf (ISB, CISO, Admin), Bedrohungsinformationen ab Manager. Felder eines ausgeschalteten Moduls
