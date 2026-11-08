@@ -87,33 +87,28 @@
 {# ── Risk Assessment body HTML ────────────────────────────────────────── #}
 {% set _risk_status = '' %}
 {% if risk_score >= 50 %}
-    {% set _risk_status = '<strong>Status: CRITICAL</strong> - Immediate action required' %}
+    {% set _risk_status %}<strong>Status: CRITICAL</strong> - Immediate action required{% endset %}
 {% elseif risk_score >= 20 %}
-    {% set _risk_status = '<strong>Status: HIGH</strong> - Urgent attention needed' %}
+    {% set _risk_status %}<strong>Status: HIGH</strong> - Urgent attention needed{% endset %}
 {% elseif risk_score > 0 %}
-    {% set _risk_status = '<strong>Status: MEDIUM</strong> - Planned gap closure recommended' %}
+    {% set _risk_status %}<strong>Status: MEDIUM</strong> - Planned gap closure recommended{% endset %}
 {% else %}
-    {% set _risk_status = '<strong>Status: LOW</strong> - Good compliance status' %}
+    {% set _risk_status %}<strong>Status: LOW</strong> - Good compliance status{% endset %}
 {% endif %}
 
-{% set _risk_body = '<div style="border-left:3pt solid '
-    ~ (risk_score >= 50 ? 'var(--danger)' : (risk_score >= 20 ? 'var(--warning)' : 'var(--success)'))
-    ~ ';padding:8pt 10pt;margin:0 0 8pt;background:'
-    ~ (risk_score >= 50 ? 'rgba(220,38,38,.08)' : (risk_score >= 20 ? 'rgba(217,119,6,.08)' : 'var(--success-tint)'))
-    ~ ';font-size:9pt;">'
-    ~ '<strong>Overall Risk Score: ' ~ risk_score ~ '</strong> '
-    ~ '(Calculation: ' ~ (uncovered_critical ?? [])|length ~ ' critical &times; 10 + ' ~ (uncovered_high ?? [])|length ~ ' high &times; 5)'
-    ~ '<br>' ~ _risk_status ~ '</div>' %}
+{% set _risk_body %}<div style="border-left:3pt solid {{ (risk_score >= 50 ? 'var(--danger)' : (risk_score >= 20 ? 'var(--warning)' : 'var(--success)')) }};padding:8pt 10pt;margin:0 0 8pt;background:{{ (risk_score >= 50 ? 'rgba(220,38,38,.08)' : (risk_score >= 20 ? 'rgba(217,119,6,.08)' : 'var(--success-tint)')) }};font-size:9pt;"><strong>Overall Risk Score: {{ risk_score }}</strong> (Calculation: {{ (uncovered_critical ?? [])|length }} critical &times; 10 + {{ (uncovered_high ?? [])|length }} high &times; 5)<br>{{ _risk_status }}</div>{% endset %}
 
 {# ── Compliance Scores Comparison rows ────────────────────────────────── #}
 {% set _comp_diff = weighted_compliance_score - compliance_score %}
 {% set _diff_color = _comp_diff < 0 ? 'var(--danger-strong)' : (_comp_diff > 0 ? 'var(--success-strong)' : 'var(--fg-2)') %}
+{% set _cell_html2 %}<span style="color:{{ _diff_color }};font-weight:700;">{{ (_comp_diff > 0 ? '+' : '') }}{{ _comp_diff }}%</span>{% endset %}
+{% set _cell_html1 %}<strong>{{ weighted_compliance_score }}%</strong>{% endset %}
 {% set _comp_rows = [
     [
         'Compliance Score',
         compliance_score ~ '%',
-        '<strong>' ~ weighted_compliance_score ~ '%</strong>',
-        '<span style="color:' ~ _diff_color ~ ';font-weight:700;">' ~ (_comp_diff > 0 ? '+' : '') ~ _comp_diff ~ '%</span>',
+        _cell_html1,
+        _cell_html2,
     ],
 ] %}
 
@@ -127,45 +122,60 @@
 {% endif %}
 
 {# ── Gap Distribution by Severity rows ────────────────────────────────── #}
+{% set _cell_html16 %}<strong>Risk Score: {{ risk_score }}</strong>{% endset %}
+{% set _cell_html15 %}<strong>100%</strong>{% endset %}
+{% set _cell_html14 %}<strong>{{ total_gaps }}</strong>{% endset %}
+{% set _cell_html13 %}<strong>Total</strong>{% endset %}
+{% set _cell_html12 %}<strong>{{ priority_distribution.low }}</strong>{% endset %}
+{% set _cell_html11 %}<span class="badge badge-info">Low</span>{% endset %}
+{% set _cell_html10 %}<strong>{{ priority_distribution.medium }}</strong>{% endset %}
+{% set _cell_html9 %}<span class="badge badge-success">Medium</span>{% endset %}
+{% set _cell_html8 %}<strong style="color:var(--warning-strong);">{{ uncovered_high|length * 5 }}</strong>{% endset %}
+{% set _cell_html7 %}<strong>{{ uncovered_high|length }}</strong>{% endset %}
+{% set _cell_html6 %}<span class="badge badge-warning">High</span>{% endset %}
+{% set _cell_html5 %}<strong style="color:var(--danger-strong);">{{ uncovered_critical|length * 10 }}</strong>{% endset %}
+{% set _cell_html4 %}<strong>{{ uncovered_critical|length }}</strong>{% endset %}
+{% set _cell_html3 %}<span class="badge badge-danger">Critical</span>{% endset %}
 {% set _sev_rows = [
     [
-        '<span class="badge badge-danger">Critical</span>',
-        '<strong>' ~ uncovered_critical|length ~ '</strong>',
+        _cell_html3,
+        _cell_html4,
         (total_gaps > 0 ? ((uncovered_critical|length / total_gaps * 100)|round(1)) : 0) ~ '%',
         '10',
-        '<strong style="color:var(--danger-strong);">' ~ uncovered_critical|length * 10 ~ '</strong>',
+        _cell_html5,
     ],
     [
-        '<span class="badge badge-warning">High</span>',
-        '<strong>' ~ uncovered_high|length ~ '</strong>',
+        _cell_html6,
+        _cell_html7,
         (total_gaps > 0 ? ((uncovered_high|length / total_gaps * 100)|round(1)) : 0) ~ '%',
         '5',
-        '<strong style="color:var(--warning-strong);">' ~ uncovered_high|length * 5 ~ '</strong>',
+        _cell_html8,
     ],
     [
-        '<span class="badge badge-success">Medium</span>',
-        '<strong>' ~ priority_distribution.medium ~ '</strong>',
+        _cell_html9,
+        _cell_html10,
         (total_gaps > 0 ? ((priority_distribution.medium / total_gaps * 100)|round(1)) : 0) ~ '%',
         '-',
         '-',
     ],
     [
-        '<span class="badge badge-info">Low</span>',
-        '<strong>' ~ priority_distribution.low ~ '</strong>',
+        _cell_html11,
+        _cell_html12,
         (total_gaps > 0 ? ((priority_distribution.low / total_gaps * 100)|round(1)) : 0) ~ '%',
         '-',
         '-',
     ],
     [
-        '<strong>Total</strong>',
-        '<strong>' ~ total_gaps ~ '</strong>',
-        '<strong>100%</strong>',
+        _cell_html13,
+        _cell_html14,
+        _cell_html15,
         '',
-        '<strong>Risk Score: ' ~ risk_score ~ '</strong>',
+        _cell_html16,
     ],
 ] %}
 
 {# ── Build sections array ─────────────────────────────────────────────── #}
+{% set _body_html_html17 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Interpretation:</strong> {{ _comp_interpretation }}</div>{% endset %}
 {% set _sections = [
     {
         heading: 'Risk Assessment',
@@ -177,7 +187,7 @@
             headers: ['Metric', 'Standard Score', 'Weighted Score', 'Difference'],
             rows: _comp_rows,
         },
-        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Interpretation:</strong> ' ~ _comp_interpretation ~ '</div>',
+        body_html: _body_html_html17,
     },
     {
         heading: 'pdf.gap_analysis.distribution_by_severity'|trans({}, 'messages'),
@@ -190,28 +200,36 @@
 
 {# ── Root Cause Analysis section ──────────────────────────────────────── #}
 {% if root_cause_analysis is defined %}
+    {% set _cell_html25 %}<strong>{{ root_cause_analysis.summary.missing_evidence_count }}</strong>{% endset %}
+    {% set _cell_html24 %}<span class="badge badge-info">Missing Evidence</span>{% endset %}
+    {% set _cell_html23 %}<strong>{{ root_cause_analysis.summary.incomplete_implementation_count }}</strong>{% endset %}
+    {% set _cell_html22 %}<span class="badge badge-warning">Incomplete Implementation</span>{% endset %}
+    {% set _cell_html21 %}<strong>{{ root_cause_analysis.summary.missing_control_count }}</strong>{% endset %}
+    {% set _cell_html20 %}<span class="badge badge-warning">Missing Control</span>{% endset %}
+    {% set _cell_html19 %}<strong>{{ root_cause_analysis.summary.not_started_count }}</strong>{% endset %}
+    {% set _cell_html18 %}<span class="badge badge-danger">Not Started</span>{% endset %}
     {% set _rc_rows = [
         [
-            '<span class="badge badge-danger">Not Started</span>',
-            '<strong>' ~ root_cause_analysis.summary.not_started_count ~ '</strong>',
+            _cell_html18,
+            _cell_html19,
             (total_gaps > 0 ? ((root_cause_analysis.summary.not_started_count / total_gaps * 100)|round(1)) : 0) ~ '%',
             'pdf.gap_analysis.not_addressed'|trans({}, 'messages'),
         ],
         [
-            '<span class="badge badge-warning">Missing Control</span>',
-            '<strong>' ~ root_cause_analysis.summary.missing_control_count ~ '</strong>',
+            _cell_html20,
+            _cell_html21,
             (total_gaps > 0 ? ((root_cause_analysis.summary.missing_control_count / total_gaps * 100)|round(1)) : 0) ~ '%',
             'pdf.gap_analysis.very_low'|trans({}, 'messages'),
         ],
         [
-            '<span class="badge badge-warning">Incomplete Implementation</span>',
-            '<strong>' ~ root_cause_analysis.summary.incomplete_implementation_count ~ '</strong>',
+            _cell_html22,
+            _cell_html23,
             (total_gaps > 0 ? ((root_cause_analysis.summary.incomplete_implementation_count / total_gaps * 100)|round(1)) : 0) ~ '%',
             'pdf.gap_analysis.partial'|trans({}, 'messages'),
         ],
         [
-            '<span class="badge badge-info">Missing Evidence</span>',
-            '<strong>' ~ root_cause_analysis.summary.missing_evidence_count ~ '</strong>',
+            _cell_html24,
+            _cell_html25,
             (total_gaps > 0 ? ((root_cause_analysis.summary.missing_evidence_count / total_gaps * 100)|round(1)) : 0) ~ '%',
             'High fulfillment (80-99%) - control exists but documentation lacking',
         ],
@@ -230,26 +248,27 @@
     {% for category, pattern in category_patterns|slice(0, 5) %}
         {% set _rc_badge = '' %}
         {% if pattern.dominant_root_cause == 'not_started' %}
-            {% set _rc_badge = '<span class="badge badge-danger">Not Started</span>' %}
+            {% set _rc_badge %}<span class="badge badge-danger">Not Started</span>{% endset %}
         {% elseif pattern.dominant_root_cause == 'missing_control' %}
-            {% set _rc_badge = '<span class="badge badge-warning">Missing Control</span>' %}
+            {% set _rc_badge %}<span class="badge badge-warning">Missing Control</span>{% endset %}
         {% elseif pattern.dominant_root_cause == 'incomplete_implementation' %}
-            {% set _rc_badge = '<span class="badge badge-warning">Incomplete</span>' %}
+            {% set _rc_badge %}<span class="badge badge-warning">Incomplete</span>{% endset %}
         {% else %}
-            {% set _rc_badge = '<span class="badge badge-info">Missing Evidence</span>' %}
+            {% set _rc_badge %}<span class="badge badge-info">Missing Evidence</span>{% endset %}
         {% endif %}
 
         {% set _severity_label = '' %}
         {% if pattern.count >= 5 %}
-            {% set _severity_label = '<strong style="color:var(--danger-strong);">Critical Cluster</strong>' %}
+            {% set _severity_label %}<strong style="color:var(--danger-strong);">Critical Cluster</strong>{% endset %}
         {% elseif pattern.count >= 3 %}
-            {% set _severity_label = '<strong style="color:var(--warning-strong);">Significant Pattern</strong>' %}
+            {% set _severity_label %}<strong style="color:var(--warning-strong);">Significant Pattern</strong>{% endset %}
         {% else %}
             {% set _severity_label = 'Moderate' %}
         {% endif %}
 
+        {% set _cell_html26 %}<strong>{{ category }}</strong>{% endset %}
         {% set _cat_rows = _cat_rows|merge([[
-            '<strong>' ~ category ~ '</strong>',
+            _cell_html26,
             pattern.count,
             pattern.avg_fulfillment ~ '%',
             _rc_badge,
@@ -259,10 +278,7 @@
 
     {% set _rc_quick_win_body = '' %}
     {% if root_cause_analysis.summary.missing_evidence_count > 0 %}
-        {% set _rc_quick_win_body = '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">'
-            ~ '<strong>Quick Wins:</strong> '
-            ~ root_cause_analysis.summary.missing_evidence_count ~ ' gaps have missing documentation only. '
-            ~ 'A documentation sprint can close these gaps in 30-60 days!</div>' %}
+        {% set _rc_quick_win_body %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Quick Wins:</strong> {{ root_cause_analysis.summary.missing_evidence_count }} gaps have missing documentation only. A documentation sprint can close these gaps in 30-60 days!</div>{% endset %}
     {% endif %}
 
     {% set _sections = _sections|merge([{
@@ -279,12 +295,15 @@
 {% if gap_recommendations is defined and gap_recommendations|length > 0 %}
     {% set _road_rows = [] %}
     {% for rec in gap_recommendations %}
+        {% set _cell_html29 %}<strong style="color:var(--success-strong);">-{{ rec.risk_reduction }}</strong>{% endset %}
+        {% set _cell_html28 %}<strong>{{ rec.action }}</strong>{% endset %}
+        {% set _cell_html27 %}<span class="badge badge-{{ rec.priority|lower }}">{{ rec.priority }}</span>{% endset %}
         {% set _road_rows = _road_rows|merge([[
-            '<span class="badge badge-' ~ rec.priority|lower ~ '">' ~ rec.priority ~ '</span>',
-            '<strong>' ~ rec.action ~ '</strong>',
+            _cell_html27,
+            _cell_html28,
             rec.count,
             rec.timeline,
-            '<strong style="color:var(--success-strong);">-' ~ rec.risk_reduction ~ '</strong>',
+            _cell_html29,
             rec.effort,
         ]]) %}
     {% endfor %}
@@ -306,11 +325,14 @@
     {% set fulfillmentPct = gapFulfillment ? gapFulfillment.fulfillmentPercentage : 0 %}
     {% set _prio = requirement.priority|default('medium') %}
     {% set _ful_color = fulfillmentPct >= 80 ? 'var(--success-strong)' : (fulfillmentPct >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
+    {% set _cell_html32 %}<strong style="color:{{ _ful_color }};">{{ fulfillmentPct }}%</strong>{% endset %}
+    {% set _cell_html31 %}<span class="badge badge-{{ _prio }}">{{ _prio|upper }}</span>{% endset %}
+    {% set _cell_html30 %}<strong>{{ requirement.requirementId }}</strong>{% endset %}
     {% set _gap_rows = _gap_rows|merge([[
-        '<strong>' ~ requirement.requirementId ~ '</strong>',
+        _cell_html30,
         ((requirement.description ?? '')|slice(0, 80)) ~ ((requirement.description ?? '')|length > 80 ? '...' : ''),
-        '<span class="badge badge-' ~ _prio ~ '">' ~ _prio|upper ~ '</span>',
-        '<strong style="color:' ~ _ful_color ~ ';">' ~ fulfillmentPct ~ '%</strong>',
+        _cell_html31,
+        _cell_html32,
         requirement.category|default('—'),
     ]]) %}
 {% endfor %}
@@ -323,6 +345,7 @@
     },
 }]) %}
 
+{% set _methodology_html %}<p>Gap analysis compares framework requirements against implemented controls. Compliance Score = met requirements / total requirements. Weighted score applies priority multipliers (Critical &times;10, High &times;5). Risk Score = (critical gaps &times; 10) + (high gaps &times; 5). Root cause classification: Not Started (0%), Missing Control (&lt;30%), Incomplete Implementation (30-79%), Missing Evidence (80-99%).</p>{% endset %}
 {{ _fa_report_doc.render({
     report: {
         title:        'Gap Analysis Report',
@@ -355,7 +378,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: '<p>Gap analysis compares framework requirements against implemented controls. Compliance Score = met requirements / total requirements. Weighted score applies priority multipliers (Critical &times;10, High &times;5). Risk Score = (critical gaps &times; 10) + (high gaps &times; 5). Root cause classification: Not Started (0%), Missing Control (&lt;30%), Incomplete Implementation (30-79%), Missing Evidence (80-99%).</p>',
+        methodology: _methodology_html,
         sources: [
             { label: 'GapAnalysisService', detail: 'analyzeGaps() — per-requirement fulfillment assessment' },
         ],

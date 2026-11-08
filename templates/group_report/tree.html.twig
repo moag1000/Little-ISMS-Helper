@@ -58,15 +58,7 @@
     {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
     {# Navigation shortcuts — rendered as body_html in the nav section #}
-    {% set _nav_html = '<div class="d-flex flex-wrap gap-2" style="margin-bottom:1rem;">'
-        ~ (is_module_active('nis2_dora') ? '<a href="' ~ path('app_group_report_nis2_registration') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.nis2.title'|trans({}, 'group_report')) ~ '</a>' : '')
-        ~ '<a href="' ~ path('app_group_report_risks') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.risks.title'|trans({}, 'group_report')) ~ '</a>'
-        ~ '<a href="' ~ path('app_group_report_comparison') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.comparison.title'|trans({}, 'group_report')) ~ '</a>'
-        ~ '<a href="' ~ path('app_group_report_soa_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.soa.title'|trans({}, 'group_report')) ~ '</a>'
-        ~ '<a href="' ~ path('app_group_report_suppliers') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.suppliers.title'|trans({}, 'group_report')) ~ '</a>'
-        ~ '<a href="' ~ path('app_group_report_incidents') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.incidents.title'|trans({}, 'group_report')) ~ '</a>'
-        ~ '<a href="' ~ path('app_group_report_audit_program') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.audit_program.title'|trans({}, 'group_report')) ~ '</a>'
-        ~ '</div>' %}
+    {% set _nav_html %}<div class="d-flex flex-wrap gap-2" style="margin-bottom:1rem;">{% if is_module_active('nis2_dora') %}<a href="{{ path('app_group_report_nis2_registration') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ ('group_report.nis2.title'|trans({}, 'group_report')) }}</a>{% endif %}<a href="{{ path('app_group_report_risks') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ ('group_report.risks.title'|trans({}, 'group_report')) }}</a><a href="{{ path('app_group_report_comparison') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ ('group_report.comparison.title'|trans({}, 'group_report')) }}</a><a href="{{ path('app_group_report_soa_matrix') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ ('group_report.soa.title'|trans({}, 'group_report')) }}</a><a href="{{ path('app_group_report_suppliers') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ ('group_report.suppliers.title'|trans({}, 'group_report')) }}</a><a href="{{ path('app_group_report_incidents') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ ('group_report.incidents.title'|trans({}, 'group_report')) }}</a><a href="{{ path('app_group_report_audit_program') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ ('group_report.audit_program.title'|trans({}, 'group_report')) }}</a></div>{% endset %}
 
     {# Tree rendered via recursive macro — output captured into body_html slot #}
     {% set _tree_html %}

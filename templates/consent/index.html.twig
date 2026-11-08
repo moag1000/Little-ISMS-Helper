@@ -38,7 +38,7 @@
         text: 'consent.empty.description'|trans({}, 'consent'),
         actions: [{ label: 'consent.header.action.new'|trans({}, 'consent'), href: path('app_consent_new'), variant: 'primary' }],
     },
-    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/consent"',
+    card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/consent' },
 } %}
     {% block list_filters %}
         {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}

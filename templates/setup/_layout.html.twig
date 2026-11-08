@@ -64,18 +64,18 @@
 <div class="fa-setup-shell">
     {# ──── LEFT PANEL (480px) ──────────────────────────────────────── #}
     <aside class="fa-setup-left" aria-label="{{ 'wizard.companion'|trans({}, 'messages')|default('Alva — Begleiterin') }}">
-        {{ techBg.render(0.9)|raw }}
+        {{ techBg.render(0.9) }}
         <span class="fa-setup-left__tick fa-setup-left__tick--tl" aria-hidden="true"></span>
         <span class="fa-setup-left__tick fa-setup-left__tick--tr" aria-hidden="true"></span>
         <span class="fa-setup-left__tick fa-setup-left__tick--bl" aria-hidden="true"></span>
         <span class="fa-setup-left__tick fa-setup-left__tick--br" aria-hidden="true"></span>
 
         <div class="fa-setup-left__brand">
-            {{ faBrand.render(size='lg')|raw }}
+            {{ faBrand.render(size='lg') }}
         </div>
 
         <div class="fa-setup-left__middle">
-            {{ onFairy.render(step.mood)|raw }}
+            {{ onFairy.render(step.mood) }}
             <div>
                 <div class="fa-setup-left__alva-label">Alva · {{ 'wizard.companion_short'|trans({}, 'messages')|default('Begleiterin') }}</div>
                 <div class="fa-setup-left__line">

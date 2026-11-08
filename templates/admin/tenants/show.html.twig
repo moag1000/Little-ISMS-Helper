@@ -724,7 +724,7 @@
                     const safeCompletenessPct = Math.min(100, Math.max(0, safeCompleteness));
                     const completenessTone = safeCompleteness >= 80 ? 'success' : safeCompleteness >= 50 ? 'warning' : 'danger';
                     // Server-rendered _fa_progress markup (placeholder value 0 / tone primary), adapted client-side.
-                    const completenessBar = {{ _fa_progress.render({value: 0, tone: 'primary', size: 'sm', class: 'progress-h-8 mt-2', label: 'context.kpi.completeness'|trans({}, 'context')})|json_encode|raw }}
+                    const completenessBar = {{ _fa_progress.render({value: 0, tone: 'primary', size: 'sm', class: 'progress-h-8 mt-2', label: 'context.kpi.completeness'|trans({}, 'context')})|fa_json }}
                         .replaceAll('fa-progress--primary', 'fa-progress--' + completenessTone)
                         .replaceAll('bg-primary', 'bg-' + completenessTone)
                         .replaceAll('--fa-progress-value: 0%', '--fa-progress-value: ' + safeCompletenessPct + '%')

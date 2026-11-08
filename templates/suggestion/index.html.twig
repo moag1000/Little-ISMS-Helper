@@ -28,7 +28,7 @@
         mood: 'sleeping',
         title: (view == 'decided' ? 'suggestions.empty.decided' : 'suggestions.empty.open')|trans({}, 'suggestions'),
     },
-    card_attrs: any_bulk ? 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="' ~ path('app_suggestion_index') ~ '"' : '',
+    card_attrs: any_bulk ? { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': path('app_suggestion_index') } : {},
 } %}
     {% block list_filters %}
         <input type="hidden" name="view" value="{{ view }}">

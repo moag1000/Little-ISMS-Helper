@@ -30,7 +30,8 @@
 
 
 
-    {{ _fa_alert.render({ variant: 'info', class: 'mb-3', body: 'interested_party.hint.clause_context'|trans({}, 'interested_parties') ~ ' <a href="' ~ path('app_context_index') ~ '" class="fa-alert__link">' ~ 'interested_party.link.isms_context'|trans({}, 'interested_parties') ~ '</a>' }) }}
+    {% set _body_html %}{{ 'interested_party.hint.clause_context'|trans({}, 'interested_parties') }} <a href="{{ path('app_context_index') }}" class="fa-alert__link">{{ 'interested_party.link.isms_context'|trans({}, 'interested_parties') }}</a>{% endset %}
+    {{ _fa_alert.render({ variant: 'info', class: 'mb-3', body: _body_html }) }}
 
     {% if overdue_communications|length > 0 %}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}

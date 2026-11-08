@@ -35,7 +35,7 @@
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', dismissible: true } } %}
             {% block alert_body %}
                 <div class="fa-alert__title">{{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</div>
-                <p class="fa-alert__message">{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': compliance_score.overdue_notifications}, 'privacy')|raw }}</p>
+                <p class="fa-alert__message">{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': compliance_score.overdue_notifications|e}, 'privacy')|raw }}</p>
                 <hr>
                 <p class="mb-0">
                     <a href="{{ path('app_data_breach_index', {filter: 'overdue'}) }}" class="fa-alert__link">
@@ -91,7 +91,7 @@
                 { label: 'data_breach.index.view_all_breaches'|trans({}, 'privacy'), variant: 'ghost', icon: 'ui-list', href: path('app_data_breach_index') }
             ] : [],
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/data-breach"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/data-breach' },
     } %}
         {% block list_filters %}
             <div class="col-md-4">

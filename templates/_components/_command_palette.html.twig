@@ -155,7 +155,7 @@
          role="dialog" aria-modal="true" aria-label="{{ 'ui.global_search.label'|trans({}, 'ui') }}">
         <div class="command-palette-container">
             {% import '_components/_alva.html.twig' as faAlva %}
-            <span class="command-palette-alva" aria-hidden="true">{{ faAlva.render('thinking', { size: 24 })|raw }}</span>
+            <span class="command-palette-alva" aria-hidden="true">{{ faAlva.render('thinking', { size: 24 }) }}</span>
             <div class="command-palette-search">
                 <i class="fa-icon fa-icon--ui-search command-palette-search-icon" aria-hidden="true"></i>
                 <label class="visually-hidden" for="command-palette-input">{{ 'ui.global_search.label'|trans({}, 'ui') }}</label>

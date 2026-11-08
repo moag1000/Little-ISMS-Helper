@@ -2,7 +2,6 @@
 {% trans_default_domain 'control' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-{% import '_components/_fa_table.html.twig' as _fa_table %}
 
 {% block title %}{{ 'effectiveness_monitor.page.title'|trans({}, 'control') }}{% endblock %}
 
@@ -115,33 +114,36 @@
         <span class="fa-status-pill fa-status-pill--danger ms-1">{{ overdueControls|length }}</span>
     </h2>
 
-    {{ _fa_table.render({
-        sortable: true,
-        stickyHead: true,
-        headers: [
-            { label: 'effectiveness_monitor.table.control_id'|trans({}, 'control'),   key: 'controlId' },
-            { label: 'effectiveness_monitor.table.name'|trans({}, 'control'),          key: 'name' },
-            { label: 'effectiveness_monitor.table.category'|trans({}, 'control'),      key: 'category' },
-            { label: 'effectiveness_monitor.table.last_checked'|trans({}, 'control'),  key: 'lastChecked', sortable: true },
-            { label: 'effectiveness_monitor.table.overdue_days'|trans({}, 'control'),  key: 'overdueDays',  align: 'right', sortable: true },
-            { label: 'effectiveness_monitor.table.owner'|trans({}, 'control'),         key: 'owner' },
-            { label: 'effectiveness_monitor.table.status'|trans({}, 'control'),        key: 'status' },
-            { label: '', actions: true }
-        ],
-        rows: overdueControls|map(row => {
-            cells: [
-                { value: '<code>' ~ row.control.controlId ~ '</code>' },
-                { value: row.control.name|e },
-                { value: '<span class="fa-status-pill fa-status-pill--neutral">' ~ (row.control.category ?? '—')|e ~ '</span>' },
-                { value: row.lastChecked ? row.lastChecked|fa_date : '<span class="fa-status-pill fa-status-pill--danger">' ~ 'effectiveness_monitor.label.never'|trans({}, 'control') ~ '</span>' },
-                { value: row.overdueDays ? row.overdueDays ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control') : '—', align: 'right' },
-                { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
-                { value: '<span class="fa-status-pill fa-status-pill--' ~ (row.control.implementationStatus == 'implemented' ? 'success' : (row.control.implementationStatus == 'in_progress' ? 'warning' : 'neutral')) ~ '">' ~ (row.control.implementationStatus ?? '—')|e ~ '</span>' },
-                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'effectiveness_monitor.action.view'|trans({}, 'control')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
-            ]
-        }),
-        empty: 'effectiveness_monitor.empty.no_overdue'|trans({}, 'control')
-    }) }}
+    {% embed '_components/_fa_table.html.twig' with { sortable: true, stickyHead: true, rowClick: false } %}
+        {% block table_head %}
+                <tr>
+                    <th scope="col" class="fa-table__th" data-sort-key="controlId">{{ 'effectiveness_monitor.table.control_id'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th" data-sort-key="name">{{ 'effectiveness_monitor.table.name'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th" data-sort-key="category">{{ 'effectiveness_monitor.table.category'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="lastChecked" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort">{{ 'effectiveness_monitor.table.last_checked'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--num fa-table__th--sortable" data-sort-key="overdueDays" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort">{{ 'effectiveness_monitor.table.overdue_days'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th" data-sort-key="owner">{{ 'effectiveness_monitor.table.owner'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th" data-sort-key="status">{{ 'effectiveness_monitor.table.status'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions"></th>
+                </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for row in overdueControls %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell"><code>{{ row.control.controlId }}</code></td>
+                        <td class="fa-table__cell">{{ row.control.name }}</td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ row.control.category ?? '—' }}</span></td>
+                        <td class="fa-table__cell">{% if row.lastChecked %}{{ row.lastChecked|fa_date }}{% else %}<span class="fa-status-pill fa-status-pill--danger">{{ 'effectiveness_monitor.label.never'|trans({}, 'control') }}</span>{% endif %}</td>
+                        <td class="fa-table__cell fa-table__cell--num">{{ row.overdueDays ? row.overdueDays ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control') : '—' }}</td>
+                        <td class="fa-table__cell">{{ row.control.effectiveResponsiblePerson ?? '—' }}</td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--{{ row.control.implementationStatus == 'implemented' ? 'success' : (row.control.implementationStatus == 'in_progress' ? 'warning' : 'neutral') }}">{{ row.control.implementationStatus ?? '—' }}</span></td>
+                        <td class="fa-table__cell"><a href="{{ path('app_soa_show', {id: row.control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'effectiveness_monitor.action.view'|trans({}, 'control') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a></td>
+                    </tr>
+            {% else %}
+                    <tr><td class="fa-table__empty" colspan="8">{{ 'effectiveness_monitor.empty.no_overdue'|trans({}, 'control') }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 </section>
 
 {# ── Due Soon Table ───────────────────────────────────────────────────── #}
@@ -152,28 +154,32 @@
         <span class="fa-status-pill fa-status-pill--warning ms-1">{{ upcomingControls|length }}</span>
     </h2>
 
-    {{ _fa_table.render({
-        sortable: true,
-        headers: [
-            { label: 'effectiveness_monitor.table.control_id'|trans({}, 'control') },
-            { label: 'effectiveness_monitor.table.name'|trans({}, 'control') },
-            { label: 'effectiveness_monitor.table.next_due'|trans({}, 'control'), sortable: true },
-            { label: 'effectiveness_monitor.table.days_until_due'|trans({}, 'control'), align: 'right', sortable: true },
-            { label: 'effectiveness_monitor.table.owner'|trans({}, 'control') },
-            { label: '', actions: true }
-        ],
-        rows: upcomingControls|map(row => {
-            cells: [
-                { value: '<code>' ~ row.control.controlId ~ '</code>' },
-                { value: row.control.name|e },
-                { value: row.nextDue|fa_date },
-                { value: row.daysUntilDue ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
-                { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
-                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
-            ]
-        }),
-        empty: 'effectiveness_monitor.empty.no_due_soon'|trans({}, 'control')
-    }) }}
+    {% embed '_components/_fa_table.html.twig' with { sortable: true, rowClick: false } %}
+        {% block table_head %}
+                <tr>
+                    <th scope="col" class="fa-table__th">{{ 'effectiveness_monitor.table.control_id'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'effectiveness_monitor.table.name'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--sortable" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort">{{ 'effectiveness_monitor.table.next_due'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--num fa-table__th--sortable" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort">{{ 'effectiveness_monitor.table.days_until_due'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'effectiveness_monitor.table.owner'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions"></th>
+                </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for row in upcomingControls %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell"><code>{{ row.control.controlId }}</code></td>
+                        <td class="fa-table__cell">{{ row.control.name }}</td>
+                        <td class="fa-table__cell">{{ row.nextDue|fa_date }}</td>
+                        <td class="fa-table__cell fa-table__cell--num">{{ row.daysUntilDue }} {{ 'effectiveness_monitor.label.days'|trans({}, 'control') }}</td>
+                        <td class="fa-table__cell">{{ row.control.effectiveResponsiblePerson ?? '—' }}</td>
+                        <td class="fa-table__cell"><a href="{{ path('app_soa_show', {id: row.control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a></td>
+                    </tr>
+            {% else %}
+                    <tr><td class="fa-table__empty" colspan="6">{{ 'effectiveness_monitor.empty.no_due_soon'|trans({}, 'control') }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 </section>
 
 {# ── Recently Checked Table ──────────────────────────────────────────── #}
@@ -184,26 +190,30 @@
         <span class="fa-status-pill fa-status-pill--success ms-1">{{ recentlyChecked|length }}</span>
     </summary>
 
-    {{ _fa_table.render({
-        compact: true,
-        headers: [
-            { label: 'effectiveness_monitor.table.control_id'|trans({}, 'control') },
-            { label: 'effectiveness_monitor.table.name'|trans({}, 'control') },
-            { label: 'effectiveness_monitor.table.last_checked'|trans({}, 'control'), sortable: true },
-            { label: 'effectiveness_monitor.table.days_since'|trans({}, 'control'), align: 'right' },
-            { label: '', actions: true }
-        ],
-        rows: recentlyChecked|map(row => {
-            cells: [
-                { value: '<code>' ~ row.control.controlId ~ '</code>' },
-                { value: row.control.name|e },
-                { value: row.lastChecked|fa_date },
-                { value: row.daysSinceCheck ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
-                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
-            ]
-        }),
-        empty: 'effectiveness_monitor.empty.no_recent'|trans({}, 'control')
-    }) }}
+    {% embed '_components/_fa_table.html.twig' with { compact: true, rowClick: false } %}
+        {% block table_head %}
+                <tr>
+                    <th scope="col" class="fa-table__th">{{ 'effectiveness_monitor.table.control_id'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'effectiveness_monitor.table.name'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--sortable" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort">{{ 'effectiveness_monitor.table.last_checked'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'effectiveness_monitor.table.days_since'|trans({}, 'control') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions"></th>
+                </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for row in recentlyChecked %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell"><code>{{ row.control.controlId }}</code></td>
+                        <td class="fa-table__cell">{{ row.control.name }}</td>
+                        <td class="fa-table__cell">{{ row.lastChecked|fa_date }}</td>
+                        <td class="fa-table__cell fa-table__cell--num">{{ row.daysSinceCheck }} {{ 'effectiveness_monitor.label.days'|trans({}, 'control') }}</td>
+                        <td class="fa-table__cell"><a href="{{ path('app_soa_show', {id: row.control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a></td>
+                    </tr>
+            {% else %}
+                    <tr><td class="fa-table__empty" colspan="5">{{ 'effectiveness_monitor.empty.no_recent'|trans({}, 'control') }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 </details>
 
 {% endif %}{# end !noTenant #}

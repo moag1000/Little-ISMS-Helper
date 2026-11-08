@@ -29,7 +29,8 @@
  #   search_placeholder, filter_keys   passed to _search_filter_form
  #   list_title      card heading; the count is appended
  #   empty           fa-empty-state config for "nothing recorded yet"
- #   card_attrs      extra attributes on the table card (e.g. bulk-actions controller)
+ #   card_attrs      extra attributes on the table card as a map, values escaped
+ #                   (e.g. { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': path(…) })
  #}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_pager.html.twig' as _fa_pager %}
@@ -64,7 +65,7 @@
         {{ _fa_empty_state.render(empty|default({ mood: 'sleeping', title: 'ui.pager.no_match'|trans({}, 'ui') })) }}
     {% endif %}
 {% else %}
-    <section class="card fa-list-page__card" {{ card_attrs|default('')|raw }}>
+    <section class="card fa-list-page__card"{% for _name, _value in card_attrs|default({}) %} {{ _name|e('html_attr') }}="{{ _value }}"{% endfor %}>
         {% if list_title|default(false) %}
             <div class="card-header">
                 <h2 class="mb-0 h5">{{ list_title }} <span class="text-body-secondary fw-normal">({{ page.total }})</span></h2>

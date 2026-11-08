@@ -74,7 +74,7 @@
             text: 'document.message.upload_first'|trans({}, 'document'),
             actions: [{ label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'ui-upload', href: path('app_document_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }],
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/document"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/document' },
     } %}
         {% block list_filters %}
             {% if app.request.query.get('review_overdue') == '1' %}<input type="hidden" name="review_overdue" value="1">{% endif %}

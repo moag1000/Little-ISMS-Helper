@@ -88,32 +88,35 @@
 <body>
 {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
+{% set _cell_html4 %}<span class="badge badge-danger">{{ ('management_reports.audit_status.cancelled'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html3 %}<span class="badge badge-success">{{ ('management_reports.audit_status.completed'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html2 %}<span class="badge badge-info">{{ ('management_reports.audit_status.in_progress'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html1 %}<span class="badge badge-secondary">{{ ('management_reports.audit_status.planned'|trans({}, 'management_reports')) }}</span>{% endset %}
 {% set _status_rows = [
-    [ '<span class="badge badge-secondary">' ~ ('management_reports.audit_status.planned'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html1,
       report.audits.by_status.planned,
       report.audits.total > 0 ? (report.audits.by_status.planned / report.audits.total * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-info">' ~ ('management_reports.audit_status.in_progress'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html2,
       report.audits.by_status.in_progress,
       report.audits.total > 0 ? (report.audits.by_status.in_progress / report.audits.total * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-success">' ~ ('management_reports.audit_status.completed'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html3,
       report.audits.by_status.completed,
       report.audits.total > 0 ? (report.audits.by_status.completed / report.audits.total * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-danger">' ~ ('management_reports.audit_status.cancelled'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html4,
       report.audits.by_status.cancelled,
       report.audits.total > 0 ? (report.audits.by_status.cancelled / report.audits.total * 100)|round(1) ~ '%' : '0%' ],
 ] %}
 
+{% set _cell_html7 %}<span class="badge badge-info">{{ ('management_reports.audit.ongoing'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html6 %}<span class="badge {{ (report.management_reviews.this_year >= 1 ? 'badge-success' : 'badge-warning') }}">{{ (report.management_reviews.this_year >= 1 ? ('management_reports.audit.compliant'|trans({}, 'management_reports')) : ('management_reports.audit.pending'|trans({}, 'management_reports'))) }}</span>{% endset %}
+{% set _cell_html5 %}<span class="badge {{ (report.audits.with_activity_this_year >= 1 ? 'badge-success' : 'badge-warning') }}">{{ (report.audits.with_activity_this_year >= 1 ? ('management_reports.audit.compliant'|trans({}, 'management_reports')) : ('management_reports.audit.pending'|trans({}, 'management_reports'))) }}</span>{% endset %}
 {% set _iso9_rows = [
     [ 'management_reports.audit.internal_audits'|trans({}, 'management_reports'), 'Clause 9.2',
-      '<span class="badge ' ~ (report.audits.with_activity_this_year >= 1 ? 'badge-success' : 'badge-warning') ~ '">'
-      ~ (report.audits.with_activity_this_year >= 1 ? ('management_reports.audit.compliant'|trans({}, 'management_reports')) : ('management_reports.audit.pending'|trans({}, 'management_reports')))
-      ~ '</span>' ],
+      _cell_html5 ],
     [ 'management_reports.audit.management_review'|trans({}, 'management_reports'), 'Clause 9.3',
-      '<span class="badge ' ~ (report.management_reviews.this_year >= 1 ? 'badge-success' : 'badge-warning') ~ '">'
-      ~ (report.management_reviews.this_year >= 1 ? ('management_reports.audit.compliant'|trans({}, 'management_reports')) : ('management_reports.audit.pending'|trans({}, 'management_reports')))
-      ~ '</span>' ],
+      _cell_html6 ],
     [ 'management_reports.audit.performance_monitoring'|trans({}, 'management_reports'), 'Clause 9.1',
-      '<span class="badge badge-info">' ~ ('management_reports.audit.ongoing'|trans({}, 'management_reports')) ~ '</span>' ],
+      _cell_html7 ],
 ] %}
 
 {% set _rec_rows = [
@@ -182,7 +185,7 @@
         },
     ],
     appendix: {
-        methodology: 'management_reports.audit.methodology'|trans({}, 'management_reports'),
+        methodology: 'management_reports.audit.methodology'|trans({}, 'management_reports')|fa_html,
         sources: [
             { label: 'AuditRepository', detail: 'findByTenant() — all audits' },
             { label: 'ManagementReviewRepository', detail: 'findByTenant() — current year' },

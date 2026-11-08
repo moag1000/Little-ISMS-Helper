@@ -198,7 +198,8 @@
                     </div>
                     <hr>
                     {% set reportingVariant = incidents.reporting_compliance_rate >= 80 ? 'success' : (incidents.reporting_compliance_rate >= 60 ? 'warning' : 'danger') %}
-                    {{ _fa_alert.render({ variant: reportingVariant, class: 'mb-0 py-2', body: '<strong>' ~ 'dora.metric.4h_reporting'|trans ~ ':</strong> ' ~ (incidents.major_incidents > 0 ? incidents.reporting_compliance_rate ~ '%' : 'dora.metric.no_data'|trans) ~ '<small class="d-block">' ~ 'dora.article_19_hint'|trans ~ '</small>' }) }}
+                    {% set _body_html %}<strong>{{ 'dora.metric.4h_reporting'|trans }}:</strong> {{ (incidents.major_incidents > 0 ? incidents.reporting_compliance_rate ~ '%' : 'dora.metric.no_data'|trans) }}<small class="d-block">{{ 'dora.article_19_hint'|trans }}</small>{% endset %}
+                    {{ _fa_alert.render({ variant: reportingVariant, class: 'mb-0 py-2', body: _body_html }) }}
                 {% endblock %}
             {% endembed %}
         </div>

@@ -20,7 +20,8 @@
 
 {# Alert Banner #}
 {% if overdue_workflows|length > 0 %}
-{{ _fa_alert.render({ variant: 'danger', class: 'mb-4', body: '<p><strong>' ~ 'workflow.warning.overdue_count'|trans({'%count%': overdue_workflows|length}, 'workflows') ~ '</strong></p><p class="mb-0">' ~ 'workflow.warning.overdue_message'|trans({}, 'workflows') ~ '</p>' }) }}
+{% set _body_html %}<p><strong>{{ 'workflow.warning.overdue_count'|trans({'%count%': overdue_workflows|length}, 'workflows') }}</strong></p><p class="mb-0">{{ 'workflow.warning.overdue_message'|trans({}, 'workflows') }}</p>{% endset %}
+{{ _fa_alert.render({ variant: 'danger', class: 'mb-4', body: _body_html }) }}
 {% endif %}
 
 {# Statistics Cards #}

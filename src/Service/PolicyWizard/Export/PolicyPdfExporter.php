@@ -11,6 +11,7 @@ use App\Repository\TenantBrandingRepository;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Twig\Environment as TwigEnvironment;
+use Twig\Markup;
 
 /**
  * Policy-Wizard — PDF export with TenantBranding letterhead.
@@ -57,7 +58,7 @@ class PolicyPdfExporter
                 'tenant'      => $doc->getTenant(),
                 'branding'    => $branding,
                 'cover'       => $this->buildCoverContext($doc, $variables),
-                'body_html'   => $this->renderBodyHtml($doc),
+                'body_html'   => $this->renderBodyMarkup($doc, true),
                 'footer'      => $this->buildFooterContext($doc, $variables),
                 'primary'     => $branding?->getPrimaryColor() ?? '#0d6efd',
                 'secondary'   => $branding?->getSecondaryColor() ?? '#6c757d',
@@ -229,6 +230,19 @@ class PolicyPdfExporter
     }
 
     /**
+     * The rendered body as Twig Markup: `_fa_policy_doc` prints its `body_html` slot
+     * escaped unless it is Markup (S10, Gate 92). markdownToHtml() escapes every text
+     * run before it adds tags, so the result is safe to print as HTML.
+     */
+    public function renderBodyMarkup(Document $doc, bool $withFallback = true): ?Markup
+    {
+        $html = $this->renderBodyHtmlPublic($doc, $withFallback);
+
+        // @markup-safe: markdownToHtml()/inlineMd() escape all record text first
+        return $html === null ? null : new Markup($html, 'UTF-8');
+    }
+
+    /**
      * Tiny safe-subset Markdown → HTML renderer. Handles headings,
      * paragraphs, bullet lists, blockquotes, bold/italic/inline-code.
      * Anything we don't recognise is HTML-escaped and emitted as a
@@ -241,13 +255,7 @@ class PolicyPdfExporter
      *      by older runs that did not persist `policyBody`.
      *   3. `Document.description` — legacy uploaded-file path.
      *   4. Empty-body stub.
-     */
-    private function renderBodyHtml(Document $doc): string
-    {
-        return $this->renderBodyHtmlPublic($doc, true);
-    }
-
-    /**
+     *
      * Public surface so the document show-view (and other callers)
      * can render the same safe-subset Markdown → HTML preview that
      * the PDF exporter ships. When `$withFallback` is false and no

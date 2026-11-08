@@ -79,26 +79,28 @@
 <body>
 {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
+{% set _cell_html2 %}<span class="badge badge-info">{{ report.controls.not_applicable }}</span>{% endset %}
+{% set _cell_html1 %}<span class="badge badge-success">{{ report.controls.implemented }}</span>{% endset %}
 {% set _ctrl_rows = [
     [ 'management_reports.compliance.total'|trans({}, 'management_reports'), report.controls.total, '100%' ],
     [ 'management_reports.compliance.applicable'|trans({}, 'management_reports'), report.controls.applicable,
       report.controls.total > 0 ? ((report.controls.applicable / report.controls.total) * 100)|round(1) ~ '%' : '0%' ],
     [ 'management_reports.compliance.implemented'|trans({}, 'management_reports'),
-      '<span class="badge badge-success">' ~ report.controls.implemented ~ '</span>',
+      _cell_html1,
       report.controls.total > 0 ? ((report.controls.implemented / report.controls.total) * 100)|round(1) ~ '%' : '0%' ],
     [ 'management_reports.compliance.not_applicable'|trans({}, 'management_reports'),
-      '<span class="badge badge-info">' ~ report.controls.not_applicable ~ '</span>',
+      _cell_html2,
       report.controls.total > 0 ? ((report.controls.not_applicable / report.controls.total) * 100)|round(1) ~ '%' : '0%' ],
 ] %}
 
 {% set _fw_rows = [] %}
 {% for framework in report.frameworks %}
+    {% set _cell_html4 %}{% if framework.active %}<span class="badge badge-success">{{ ('management_reports.compliance.active'|trans({}, 'management_reports')) }}</span>{% else %}<span class="badge badge-warning">{{ ('management_reports.compliance.inactive'|trans({}, 'management_reports')) }}</span>{% endif %}{% endset %}
+    {% set _cell_html3 %}<code>{{ framework.code }}</code>{% endset %}
     {% set _fw_rows = _fw_rows|merge([[
         framework.name,
-        '<code>' ~ framework.code ~ '</code>',
-        framework.active
-            ? '<span class="badge badge-success">' ~ ('management_reports.compliance.active'|trans({}, 'management_reports')) ~ '</span>'
-            : '<span class="badge badge-warning">' ~ ('management_reports.compliance.inactive'|trans({}, 'management_reports')) ~ '</span>',
+        _cell_html3,
+        _cell_html4,
     ]]) %}
 {% endfor %}
 
@@ -109,15 +111,19 @@
         ? ('management_reports.compliance.improvement_needed'|trans({}, 'management_reports'))
         : ('management_reports.compliance.immediate_action'|trans({}, 'management_reports'))) %}
 
+{% set _cell_html7 %}<span class="badge badge-info">{{ ('management_reports.compliance.priority.low'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html6 %}<span class="badge badge-warning">{{ ('management_reports.compliance.priority.medium'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html5 %}<span class="badge badge-success">{{ ('management_reports.compliance.priority.high'|trans({}, 'management_reports')) }}</span>{% endset %}
 {% set _rec_rows = [
-    [ '<span class="badge badge-success">' ~ ('management_reports.compliance.priority.high'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html5,
       'management_reports.compliance.tip_1'|trans({}, 'management_reports') ],
-    [ '<span class="badge badge-warning">' ~ ('management_reports.compliance.priority.medium'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html6,
       'management_reports.compliance.tip_2'|trans({}, 'management_reports') ],
-    [ '<span class="badge badge-info">' ~ ('management_reports.compliance.priority.low'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html7,
       'management_reports.compliance.tip_3'|trans({}, 'management_reports') ],
 ] %}
 
+{% set _methodology_html %}<p>Compliance rate = implemented controls / applicable controls × 100. Threshold: ≥80% = Good Standing, 60-79% = Improvement Needed, &lt;60% = Immediate Action.</p>{% endset %}
 {{ _fa_report_doc.render({
     report: {
         title:        'management_reports.compliance.title'|trans({}, 'management_reports'),
@@ -179,7 +185,7 @@
         },
     ],
     appendix: {
-        methodology: '<p>Compliance rate = implemented controls / applicable controls × 100. Threshold: ≥80% = Good Standing, 60-79% = Improvement Needed, &lt;60% = Immediate Action.</p>',
+        methodology: _methodology_html,
         sources: [
             { label: 'ControlRepository', detail: 'findByTenant() — implementation status per Annex A control' },
             { label: 'ComplianceFrameworkRepository', detail: 'findByTenant() — active frameworks' },

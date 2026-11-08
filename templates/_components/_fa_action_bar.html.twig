@@ -90,7 +90,7 @@
     {%- set isPrimary = action.variant is defined ? (action.variant in ['primary', 'danger']) : ('--ghost' not in baseClass) -%}
     {%- if action.icon is defined and action.icon and (isPrimary or not action.label|default('')) -%}
         {%- set iconName = (action.icon starts with 'bi-') ? action.icon[3:] : action.icon -%}
-        {%- set iconHtml = '<i class="fa-icon fa-icon--' ~ iconName ~ '" aria-hidden="true"></i> ' -%}
+        {%- set iconHtml %}<i class="fa-icon fa-icon--{{ iconName }}" aria-hidden="true"></i> {% endset -%}
     {%- endif -%}
 
     {% if isDisabled %}
@@ -100,7 +100,7 @@
               tabindex="-1"
               {%- if action.ariaLabel is defined %} aria-label="{{ action.ariaLabel }}"{% endif -%}
               {{- _self._emitAttrs(action.attrs|default({})) -}}>
-            {{ iconHtml|raw }}{{ action.label }}
+            {{ iconHtml }}{{ action.label }}
         </span>
     {% elseif tag == 'button' %}
         <button type="{{ action.type|default('button') }}"
@@ -109,7 +109,7 @@
                 {%- if action.ariaLabel is defined %} aria-label="{{ action.ariaLabel }}"{% endif -%}
                 {%- if action.id is defined %} id="{{ action.id }}"{% endif -%}
                 {{- _self._emitAttrs(action.attrs|default({})) -}}>
-            {{ iconHtml|raw }}{{ action.label }}
+            {{ iconHtml }}{{ action.label }}
         </button>
     {% else %}
         <a href="{{ href|default('#') }}"
@@ -119,7 +119,7 @@
            {%- if action.ariaLabel is defined %} aria-label="{{ action.ariaLabel }}"{% endif -%}
            {%- if action.id is defined %} id="{{ action.id }}"{% endif -%}
            {{- _self._emitAttrs(action.attrs|default({})) -}}>
-            {{ iconHtml|raw }}{{ action.label }}
+            {{ iconHtml }}{{ action.label }}
         </a>
     {% endif %}
 {% endmacro %}

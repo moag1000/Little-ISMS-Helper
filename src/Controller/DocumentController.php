@@ -661,7 +661,7 @@ class DocumentController extends AbstractController
         // preview matches the printed PDF.
         $policyBodyHtml = null;
         if ($document->getGeneratedFromTemplate() !== null && $pdfExporter !== null) {
-            $policyBodyHtml = $pdfExporter->renderBodyHtmlPublic($document, false);
+            $policyBodyHtml = $pdfExporter->renderBodyMarkup($document, false);
         }
 
         // Compliance-Manager Wish — surface the `dora-validity:YYYY-MM-DD`

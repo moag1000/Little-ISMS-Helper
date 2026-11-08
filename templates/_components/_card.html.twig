@@ -124,11 +124,11 @@
        Slot uses BOTH .fa-section__header and .card-header for BC. #}
     {% set headerBlockContent %}{% block card_header %}{% endblock %}{% endset %}
     {% if headerBlockContent|trim %}
-        {{ headerBlockContent|raw }}
+        {{ headerBlockContent }}
     {% elseif header is defined or title is defined or actions is defined %}
     <div class="fa-section__header card-header">
         {% if header is defined %}
-            {{ header|raw }}
+            {{ header }}
         {% elseif title is defined %}
             <h5 class="fa-section__title mb-0">
                 {% if headerIcon is defined %}
@@ -143,7 +143,7 @@
 
         {% if actions is defined %}
             <div class="fa-section__tools card-actions">
-                {{ actions|raw }}
+                {{ actions }}
             </div>
         {% endif %}
     </div>
@@ -152,7 +152,7 @@
     {# Card Body #}
     <div class="fa-section__body card-body{% if noPadding %} p-0{% endif %}">
         {% if body is defined %}
-            {{ body|raw }}
+            {{ body }}
         {% else %}
             {% block card_body %}{% endblock %}
         {% endif %}
@@ -161,10 +161,10 @@
     {# Card Footer — block takes precedence over parameter #}
     {% set footerBlockContent %}{% block card_footer %}{% endblock %}{% endset %}
     {% if footerBlockContent|trim %}
-        {{ footerBlockContent|raw }}
+        {{ footerBlockContent }}
     {% elseif footer is defined %}
     <div class="fa-section__footer card-footer">
-        {{ footer|raw }}
+        {{ footer }}
     </div>
     {% endif %}
 </div>

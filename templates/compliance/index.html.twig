@@ -123,7 +123,7 @@
 
     {# Data Reuse Value Highlight #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success' } } %}
-        {% block alert_body %}<p class="fw-bold fs-4 mb-2">💎 {{ 'compliance.data_reuse.title'|trans({}, 'compliance') }}</p> <p class="text-lg-m0"> {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings, '%days%': total_days_savings}, 'compliance')|raw }} </p>{% endblock %}
+        {% block alert_body %}<p class="fw-bold fs-4 mb-2">💎 {{ 'compliance.data_reuse.title'|trans({}, 'compliance') }}</p> <p class="text-lg-m0"> {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings|e, '%days%': total_days_savings|e}, 'compliance')|raw }} </p>{% endblock %}
     {% endembed %}
 
     {# Framework Overview Cards - Simplified #}

@@ -66,7 +66,7 @@
                 <div class="fa-toast__title">{{ title }}</div>
             {% endif %}
             {% if message is not empty %}
-                <div class="fa-toast__message">{{ message|raw }}</div>
+                <div class="fa-toast__message">{{ message }}</div>
             {% endif %}
             {% if props.actions is defined and props.actions|length > 0 %}
                 <div class="fa-toast__actions">

@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
+import { escapeHtml, safeUrl } from '../js/fa-escape.js';
 
 /**
  * Notifications Controller - Notification Center
@@ -281,26 +282,29 @@ export default class extends Controller {
         const timeAgo = this.getTimeAgo(notification.timestamp);
         const iconClass = this.getIconClass(notification.type);
         const colorClass = this.getColorClass(notification.type);
+        // Notifications come from localStorage and the server: text is text, never markup (S10).
+        const link = safeUrl(notification.link);
+        const id = escapeHtml(notification.id);
 
         return `
             <div class="notification-item ${notification.read ? 'read' : 'unread'}"
                  data-action="click->notifications#markAsRead"
-                 data-notifications-id-param="${notification.id}">
+                 data-notifications-id-param="${id}">
                 <div class="notification-icon ${colorClass}">
                     <i class="${iconClass}"></i>
                 </div>
                 <div class="notification-content">
                     <div class="notification-header">
-                        <strong class="notification-title">${notification.title}</strong>
-                        <span class="notification-time">${timeAgo}</span>
+                        <strong class="notification-title">${escapeHtml(notification.title)}</strong>
+                        <span class="notification-time">${escapeHtml(timeAgo)}</span>
                     </div>
-                    <div class="notification-message">${notification.message}</div>
-                    ${notification.link ? `<a href="${notification.link}" class="notification-link">${this.label('viewDetails')}</a>` : ''}
+                    <div class="notification-message">${escapeHtml(notification.message)}</div>
+                    ${link ? `<a href="${link}" class="notification-link">${escapeHtml(this.label('viewDetails'))}</a>` : ''}
                 </div>
                 <button class="notification-delete"
                         data-action="click->notifications#deleteNotification:stop"
-                        data-notifications-id-param="${notification.id}"
-                        title="${this.label('deleteTitle')}">
+                        data-notifications-id-param="${id}"
+                        title="${escapeHtml(this.label('deleteTitle'))}">
                     <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                 </button>
             </div>

@@ -83,55 +83,43 @@
 {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
 {# Previous actions status #}
+{% set _cell_html1 %}{% if treatment_data.overdue > 0 %}<span style="color:var(--danger);font-weight:700;">{{ treatment_data.overdue }}</span>{% else %}<span style="color:var(--success);font-weight:700;">0</span>{% endif %}{% endset %}
 {% set _prev_rows = [
     [ 'management_reports.review_output.previous_reviews_count'|trans({}, 'management_reports'), audit_data.management_reviews.total ],
     [ 'management_reports.review_output.completed_audits'|trans({}, 'management_reports'), audit_data.audits.by_status.completed ],
     [ 'management_reports.review_output.treatment_plans_overdue'|trans({}, 'management_reports'),
-      treatment_data.overdue > 0
-        ? '<span style="color:var(--danger);font-weight:700;">' ~ treatment_data.overdue ~ '</span>'
-        : '<span style="color:var(--success);font-weight:700;">0</span>' ],
+      _cell_html1 ],
     [ 'management_reports.review_output.treatment_plans_active'|trans({}, 'management_reports'), treatment_data.active ],
 ] %}
 
 {# Risk summary #}
-{% set _risk_body = '<p><strong>' ~ ('management_reports.review_output.total_risks'|trans({}, 'management_reports')) ~ ':</strong> ' ~ risk_data.total_risks ~ ' &nbsp;|&nbsp; '
-    ~ '<span class="badge badge-danger">' ~ ('management_reports.risk_level.critical'|trans({}, 'management_reports')) ~ ': ' ~ risk_data.level_counts.critical ~ '</span> '
-    ~ '<span class="badge badge-warning">' ~ ('management_reports.risk_level.high'|trans({}, 'management_reports')) ~ ': ' ~ risk_data.level_counts.high ~ '</span> '
-    ~ '<span class="badge badge-info">' ~ ('management_reports.risk_level.medium'|trans({}, 'management_reports')) ~ ': ' ~ risk_data.level_counts.medium ~ '</span> '
-    ~ '<span class="badge badge-success">' ~ ('management_reports.risk_level.low'|trans({}, 'management_reports')) ~ ': ' ~ risk_data.level_counts.low ~ '</span></p>' %}
+{% set _risk_body %}<p><strong>{{ ('management_reports.review_output.total_risks'|trans({}, 'management_reports')) }}:</strong> {{ risk_data.total_risks }} &nbsp;|&nbsp; <span class="badge badge-danger">{{ ('management_reports.risk_level.critical'|trans({}, 'management_reports')) }}: {{ risk_data.level_counts.critical }}</span> <span class="badge badge-warning">{{ ('management_reports.risk_level.high'|trans({}, 'management_reports')) }}: {{ risk_data.level_counts.high }}</span> <span class="badge badge-info">{{ ('management_reports.risk_level.medium'|trans({}, 'management_reports')) }}: {{ risk_data.level_counts.medium }}</span> <span class="badge badge-success">{{ ('management_reports.risk_level.low'|trans({}, 'management_reports')) }}: {{ risk_data.level_counts.low }}</span></p>{% endset %}
 
 {# KPI table #}
 {% set _kpi_rows = [] %}
 {% for kpi in kpi_summary %}
-    {% set _kpi_badge = kpi.status == 'good'
-        ? '<span class="badge badge-success">' ~ kpi.status_label ~ '</span>'
-        : (kpi.status == 'warning'
-            ? '<span class="badge badge-warning">' ~ kpi.status_label ~ '</span>'
-            : (kpi.status == 'danger'
-                ? '<span class="badge badge-danger">' ~ kpi.status_label ~ '</span>'
-                : '<span class="badge badge-info">' ~ kpi.status_label ~ '</span>')) %}
-    {% set _kpi_rows = _kpi_rows|merge([[ kpi.label, '<strong>' ~ kpi.value ~ '</strong>', _kpi_badge ]]) %}
+    {% set _kpi_badge %}{% if kpi.status == 'good' %}<span class="badge badge-success">{{ kpi.status_label }}</span>{% else %}{% if kpi.status == 'warning' %}<span class="badge badge-warning">{{ kpi.status_label }}</span>{% else %}{% if kpi.status == 'danger' %}<span class="badge badge-danger">{{ kpi.status_label }}</span>{% else %}<span class="badge badge-info">{{ kpi.status_label }}</span>{% endif %}{% endif %}{% endif %}{% endset %}
+    {% set _cell_html2 %}<strong>{{ kpi.value }}</strong>{% endset %}
+    {% set _kpi_rows = _kpi_rows|merge([[ kpi.label, _cell_html2, _kpi_badge ]]) %}
 {% endfor %}
 
 {# Improvement items #}
 {% set _improvement_body = '' %}
 {% if compliance_data.overall_compliance < 80 %}
-    {% set _improvement_body = _improvement_body ~ '<p>- ' ~ ('management_reports.compliance.improvement_text'|trans({}, 'management_reports')) ~ '</p>' %}
+    {% set _improvement_body %}{{ _improvement_body }}<p>- {{ ('management_reports.compliance.improvement_text'|trans({}, 'management_reports')) }}</p>{% endset %}
 {% endif %}
 {% if risk_data.level_counts.critical > 0 %}
-    {% set _improvement_body = _improvement_body ~ '<p>- ' ~ ('management_reports.review_output.critical_risks_action'|trans({'%count%': risk_data.level_counts.critical}, 'management_reports')) ~ '</p>' %}
+    {% set _improvement_body %}{{ _improvement_body }}<p>- {{ ('management_reports.review_output.critical_risks_action'|trans({'%count%': risk_data.level_counts.critical}, 'management_reports')) }}</p>{% endset %}
 {% endif %}
 {% if treatment_data.overdue > 0 %}
-    {% set _improvement_body = _improvement_body ~ '<p>- ' ~ ('management_reports.review_output.overdue_plans_action'|trans({'%count%': treatment_data.overdue}, 'management_reports')) ~ '</p>' %}
+    {% set _improvement_body %}{{ _improvement_body }}<p>- {{ ('management_reports.review_output.overdue_plans_action'|trans({'%count%': treatment_data.overdue}, 'management_reports')) }}</p>{% endset %}
 {% endif %}
 {% if _improvement_body == '' %}
-    {% set _improvement_body = '<p>' ~ ('management_reports.review_output.improvement_hint'|trans({}, 'management_reports')) ~ '</p>' %}
+    {% set _improvement_body %}<p>{{ ('management_reports.review_output.improvement_hint'|trans({}, 'management_reports')) }}</p>{% endset %}
 {% endif %}
 
 {# Decisions #}
-{% set _decisions_body = '<p><strong>' ~ ('management_reports.review_output.continual_improvement'|trans({}, 'management_reports')) ~ ':</strong> ' ~ ('management_reports.review_output.improvement_items'|trans({}, 'management_reports')) ~ '</p>'
-    ~ '<p><strong>' ~ ('management_reports.review_output.isms_changes'|trans({}, 'management_reports')) ~ ':</strong> ' ~ ('management_reports.review_output.change_items'|trans({}, 'management_reports')) ~ '</p>'
-    ~ '<p><strong>' ~ ('management_reports.review_output.resource_needs'|trans({}, 'management_reports')) ~ ':</strong> ' ~ ('management_reports.review_output.resource_items'|trans({}, 'management_reports')) ~ '</p>' %}
+{% set _decisions_body %}<p><strong>{{ ('management_reports.review_output.continual_improvement'|trans({}, 'management_reports')) }}:</strong> {{ ('management_reports.review_output.improvement_items'|trans({}, 'management_reports')) }}</p><p><strong>{{ ('management_reports.review_output.isms_changes'|trans({}, 'management_reports')) }}:</strong> {{ ('management_reports.review_output.change_items'|trans({}, 'management_reports')) }}</p><p><strong>{{ ('management_reports.review_output.resource_needs'|trans({}, 'management_reports')) }}:</strong> {{ ('management_reports.review_output.resource_items'|trans({}, 'management_reports')) }}</p>{% endset %}
 
 {% set _sections = [
     {
@@ -206,7 +194,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: 'management_reports.review_output.methodology'|trans({}, 'management_reports'),
+        methodology: 'management_reports.review_output.methodology'|trans({}, 'management_reports')|fa_html,
         sources: [
             { label: 'ManagementReportService', detail: 'getReviewOutputData() — cross-module aggregation' },
         ],

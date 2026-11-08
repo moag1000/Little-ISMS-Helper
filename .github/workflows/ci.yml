@@ -820,6 +820,11 @@ jobs:
         # S8, 2026-11: remember-me, a second login and the password re-auth each skipped the TOTP
         # code because every path kept its own session flags. MfaSessionState is the only holder.
         run: python3 scripts/quality/check_mfa_login_state.py --quiet
+      - name: "Gate 92: output escaped unless reviewed (|raw allowlist, |fa_json, DocxDocumentFactory, Markup)"
+        # Components escape their text slots; HTML reaches them only as Markup (capture, macro,
+        # |fa_html on a reviewed translation). |raw needs an allowlist entry with a reason;
+        # PhpWord documents come only from DocxDocumentFactory (output escaping on). S10, 2026-11.
+        run: python3 scripts/quality/check_raw_output.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

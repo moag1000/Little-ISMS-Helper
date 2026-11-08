@@ -24,10 +24,12 @@
     }) }}
 
     {% if tenant is defined and tenant %}
-        {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: '<strong>' ~ 'tenant.isms_context.linked_to'|trans({}, 'tenant') ~ ':</strong> ' ~ tenant.name ~ ' (' ~ tenant.code ~ ')' }) }}
+        {% set _body_html %}<strong>{{ 'tenant.isms_context.linked_to'|trans({}, 'tenant') }}:</strong> {{ tenant.name }} ({{ tenant.code }}){% endset %}
+        {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: _body_html }) }}
     {% endif %}
 
-    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: 'register.context.edit_hint'|trans({}, 'register') ~ ' <a href="' ~ path('app_register_index') ~ '" class="fa-alert__link">' ~ 'register.overview.title'|trans({}, 'register') ~ '</a>' }) }}
+    {% set _body_html2 %}{{ 'register.context.edit_hint'|trans({}, 'register') }} <a href="{{ path('app_register_index') }}" class="fa-alert__link">{{ 'register.overview.title'|trans({}, 'register') }}</a>{% endset %}
+    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: _body_html2 }) }}
 
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     {% set _sections = {

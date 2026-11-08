@@ -452,6 +452,30 @@ PropertyAccessor/Reflection), rohes SQL auf `compliance_requirement_fulfillments
 
 ---
 
+### quality/check_raw_output.py (Gate 92)
+
+**Zweck:** Datensatztext wird nie als HTML ausgegeben (gespeichertes XSS, XML-Injection in Word-Exporten).
+Komponenten unter `templates/_components/` geben ihre Text-Slots escaped aus; HTML erreicht sie nur als
+`Twig\Markup`: ein `{% set x %}…{% endset %}`-Capture (Datensatztext darin wird escaped), Macro-Ausgabe
+oder `'key'|trans|fa_html` für eine geprüfte Übersetzung. JSON in Seiten und Skripten geht durch `|fa_json`.
+Regeln:
+- **R1:** jedes `|raw` / `|fa_html` ist `'literal.key'|trans(...)` mit escapten Parametern (`|e`, Zahlen,
+  `path()`, `fa_date`) oder steht mit Grund in `baselines/raw_output_allowlist.txt` (`pfad | ausdruck | grund`).
+  `|raw` auf Macro-Ausgabe ist überflüssig, `json_encode|raw` → `|fa_json`.
+- **R2:** Komponenten-Argumente enthalten kein HTML-Stringliteral, keine HTML-Übersetzung ohne `|fa_html`,
+  keine mit `=` gebaute HTML-Variable, keinen mit `|e` vorab escapten Wert (doppelt escaped), keine
+  `|nl2br`/`form_widget()`/`block()`-Strings (Attribut-Maps `attrs`/`card_attrs` sind ausgenommen).
+- **R3:** `new PhpWord()` nur in `App\Service\Export\DocxDocumentFactory` (schaltet
+  `Settings::setOutputEscapingEnabled(true)` ein); `TemplateProcessor` und Escaping aus sind verboten.
+- **R4:** `new Markup(` und `is_safe` in `src/` brauchen `// @markup-safe: <Grund>`.
+
+Veraltete Allowlist-Einträge lassen das Gate scheitern. Vor dem Fix meldete es 309 Funde.
+Selbsttest: `scripts/quality/tests/test_check_raw_output.py`; Render-Test `tests/Twig/OutputEscapingTest.php`.
+
+**CI-Integration:** Gate 92 im `code-quality`-Job.
+
+---
+
 ### quality/check_job_id_access.py (Gate 90)
 
 **Zweck:** Jede Route, die einen Hintergrundjob über eine Job-ID aus der URL liest

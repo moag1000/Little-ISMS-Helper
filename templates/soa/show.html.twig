@@ -266,7 +266,8 @@
     {% block card_body %}
         {% import '_components/_fa_alert.html.twig' as _fa_alert %}
         <h2>{{ 'soa.section.training_coverage'|trans({}, 'soa') }} ({{ control.trainings|length }})</h2>
-        {{ _fa_alert.render({ variant: control.hasTrainingCoverage ? 'success' : 'warning', body: '<strong>Status: ' ~ control.trainingStatus|upper ~ '</strong>' ~ (not control.hasTrainingCoverage ? '<br>' ~ 'soa.empty.no_completed_trainings'|trans({}, 'soa') : '') }) }}
+        {% set _body_html %}<strong>Status: {{ control.trainingStatus|upper }}</strong>{% if not control.hasTrainingCoverage %}<br>{{ 'soa.empty.no_completed_trainings'|trans({}, 'soa') }}{% endif %}{% endset %}
+        {{ _fa_alert.render({ variant: control.hasTrainingCoverage ? 'success' : 'warning', body: _body_html }) }}
         <div class="data-reuse-list">
             {% for training in control.trainings %}
                 <div class="data-reuse-item">

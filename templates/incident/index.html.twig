@@ -41,7 +41,7 @@
         norm_ref: 'ISO 27001 A.5.24-28',
         actions: [{ label: 'incident.header.action.report'|trans({}, 'incident'), href: path('app_incident_new'), variant: 'danger' }],
     },
-    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/incident"',
+    card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/incident' },
 } %}
     {% block list_filters %}
         {% if app.request.query.getInt('location') > 0 %}

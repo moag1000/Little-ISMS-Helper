@@ -12,11 +12,11 @@
     {% for label, messages in app.flashes %}
         {% import '_components/_alert.html.twig' as faAlert %}
         {% for message in messages %}
-            {{ faAlert.render(message|fa_flash|e, label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')), { dismissible: true })|raw }}
+            {{ faAlert.render(message|fa_flash, label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')), { dismissible: true }) }}
         {% endfor %}
     {% endfor %}
 
-    {{ step_header.render(1, 12, step.kind, 'setup.welcome.greeting'|trans({}, 'setup'), 'setup.welcome.description'|trans({}, 'setup'))|raw }}
+    {{ step_header.render(1, 12, step.kind, 'setup.welcome.greeting'|trans({}, 'setup'), 'setup.welcome.description'|trans({}, 'setup')) }}
 
     <div class="fa-setup-welcome-grid">
         <section class="fa-setup-welcome-col">
@@ -24,13 +24,13 @@
                 <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i>
                 {{ 'setup.welcome.steps.title'|trans({}, 'setup') }}
             </h3>
-            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.database'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.admin'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.requirements'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.modules'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.migrations'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.base_data'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.sample_data'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.database'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.admin'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.requirements'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.modules'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.migrations'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.base_data'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.sample_data'|trans({}, 'setup') }) }}
         </section>
 
         <section class="fa-setup-welcome-col">
@@ -38,10 +38,10 @@
                 <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                 {{ 'setup.welcome.requirements.title'|trans({}, 'setup') }}
             </h3>
-            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.duration'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.database'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.php'|trans({}, 'setup') })|raw }}
-            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.permissions'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.duration'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.database'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.php'|trans({}, 'setup') }) }}
+            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.permissions'|trans({}, 'setup') }) }}
         </section>
     </div>
 
@@ -64,5 +64,5 @@
             label: 'setup.welcome.start_button'|trans({}, 'setup'),
             icon: 'play'
         }
-    })|raw }}
+    }) }}
 {% endblock %}

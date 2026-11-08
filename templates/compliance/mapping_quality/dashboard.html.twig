@@ -157,7 +157,7 @@
         {% block card_body %}
             {% if quality_stats.unanalyzed_mappings > 0 %}
             <p class="mb-3">
-                {{ 'compliance.mapping_quality.batch_analysis.waiting'|trans({'%count%': quality_stats.unanalyzed_mappings}, 'compliance')|raw }}
+                {{ 'compliance.mapping_quality.batch_analysis.waiting'|trans({'%count%': quality_stats.unanalyzed_mappings|e}, 'compliance')|raw }}
             </p>
             {% else %}
             <p class="mb-3">
@@ -424,7 +424,7 @@
             <li><a href="{{ path('app_mapping_quality_review_queue') }}">{{ 'compliance.mapping_quality.next_actions.review_queue'|trans({}, 'compliance') }}</a> - {{ 'compliance.mapping_quality.next_actions.review_queue_desc'|trans({}, 'compliance') }}</li>
             <li><a href="{{ path('app_mapping_quality_gaps') }}">{{ 'compliance.mapping_quality.next_actions.gap_overview'|trans({}, 'compliance') }}</a> - {{ 'compliance.mapping_quality.next_actions.gap_overview_desc'|trans({}, 'compliance') }}</li>
             {% if quality_stats.unanalyzed_mappings > 0 %}
-            <li>{{ 'compliance.mapping_quality.next_actions.unanalyzed'|trans({'%count%': quality_stats.unanalyzed_mappings}, 'compliance')|raw }}</li>
+            <li>{{ 'compliance.mapping_quality.next_actions.unanalyzed'|trans({'%count%': quality_stats.unanalyzed_mappings|e}, 'compliance')|raw }}</li>
             {% endif %}
         </ul>
     
@@ -482,9 +482,9 @@
                     type: 'doughnut',
                     data: {
                         labels: [
-                            {{ ('compliance.mapping_quality.confidence.high'|trans({}, 'compliance'))|json_encode|raw }},
-                            {{ ('compliance.mapping_quality.confidence.medium'|trans({}, 'compliance'))|json_encode|raw }},
-                            {{ ('compliance.mapping_quality.confidence.low'|trans({}, 'compliance'))|json_encode|raw }}
+                            {{ ('compliance.mapping_quality.confidence.high'|trans({}, 'compliance'))|fa_json }},
+                            {{ ('compliance.mapping_quality.confidence.medium'|trans({}, 'compliance'))|fa_json }},
+                            {{ ('compliance.mapping_quality.confidence.low'|trans({}, 'compliance'))|fa_json }}
                         ],
                         datasets: [{
                             data: [
@@ -547,7 +547,7 @@
                     data: {
                         labels: gapLabels,
                         datasets: [{
-                            label: {{ ('compliance.mapping_quality.charts.gap_count'|trans({}, 'compliance'))|json_encode|raw }},
+                            label: {{ ('compliance.mapping_quality.charts.gap_count'|trans({}, 'compliance'))|fa_json }},
                             data: gapCounts,
                             backgroundColor: backgroundColors,
                             borderColor: backgroundColors,

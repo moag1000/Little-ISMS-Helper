@@ -37,7 +37,7 @@
                 { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new') }
             ] : []
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/objective"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/objective' },
     } %}
         {% block list_summary %}
             {% if achieved_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'objective.summary.achieved'|trans({'%count%': achieved_count}, 'objective') }}</span>{% endif %}

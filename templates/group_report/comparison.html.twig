@@ -34,6 +34,7 @@
     {% set _kpi_table %}{{ _cmp.kpi_table(comparison) }}{% endset %}
     {% set _fw_table %}{{ _cmp.framework_table(comparison) }}{% endset %}
 
+    {% set _methodology_html %}<p>{{ ('group_report.comparison.methodology'|trans({}, 'group_report')|e) }}</p>{% endset %}
     {{ _fa_report_doc.render({
         report: {
             title:        'group_report.comparison.title'|trans({}, 'group_report'),
@@ -62,7 +63,7 @@
             },
         ],
         appendix: {
-            methodology: '<p>' ~ ('group_report.comparison.methodology'|trans({}, 'group_report')|e) ~ '</p>',
+            methodology: _methodology_html,
         },
     }) }}
 </div>

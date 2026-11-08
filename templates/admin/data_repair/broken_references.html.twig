@@ -75,9 +75,10 @@
             </h2>
         </div>
         <div class="fa-section__body">
+            {% set _body_html %}<strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.broken_references_desc'|trans({}, 'admin') }}{% endset %}
             {{ _fa_alert.render({
                 variant: 'danger',
-                body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.broken_references_desc'|trans({}, 'admin'),
+                body: _body_html,
             }) }}
             <form method="post" action="{{ path('admin_data_repair_fix_tenant_mismatches') }}"
                   data-controller="ui-actions"

@@ -42,7 +42,7 @@
                 { label: 'compliance.mapping.empty.action_seeds'|trans({}, 'compliance'), variant: 'ghost', icon: 'threat', href: path('app_compliance_mapping_seeds_index') }
             ]
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/compliance/mapping"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/compliance/mapping' },
     } %}
         {% block list_filters %}
             {% if selected_requirement %}<input type="hidden" name="requirement" value="{{ selected_requirement }}">{% endif %}

@@ -136,7 +136,8 @@
                     {% endblock %}
                 {% endembed %}
 
-                {{ _fa_alert.render({ variant: 'info', class: 'mt-3', body: '<strong>' ~ 'permission.affected_users'|trans({}, 'messages') ~ ':</strong> Diese Berechtigung betrifft insgesamt ' ~ affected_users_count ~ ' Benutzer über ' ~ roles|length ~ ' Rolle(n).' }) }}
+                {% set _body_html %}<strong>{{ 'permission.affected_users'|trans({}, 'messages') }}:</strong> Diese Berechtigung betrifft insgesamt {{ affected_users_count }} Benutzer über {{ roles|length }} Rolle(n).{% endset %}
+                {{ _fa_alert.render({ variant: 'info', class: 'mt-3', body: _body_html }) }}
             {% else %}
                 {{ _fa_alert.render({ variant: 'warning', body: 'Diese Berechtigung wird derzeit von keiner Rolle verwendet.' }) }}
             {% endif %}

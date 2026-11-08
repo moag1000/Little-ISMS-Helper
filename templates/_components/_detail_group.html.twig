@@ -18,7 +18,7 @@
  #   - label: The field label (already translated)
  #   - value: The value to display
  #   - dataReuse: (optional) Boolean - shows fairy sparkle indicator for auto-populated data
- #   - raw: (optional) Boolean - if true, value is rendered as raw HTML
+ #   - raw: (optional) Boolean - legacy, no effect: value is escaped unless it is Markup (capture)
  # - title: (optional) Section title
  # - columns: (optional) Fixed number of columns (default: responsive auto-fit)
  # - class: (optional) Additional CSS classes for the grid
@@ -36,7 +36,7 @@
         <span class="label">{{ item.label }}</span>
         <span class="value">
             {% if item.raw is defined and item.raw %}
-                {{ item.value|raw }}
+                {{ item.value }}
             {% elseif item.value is same as(null) or item.value is same as('') %}
                 {# Empty value - CSS will show dash #}
             {% else %}

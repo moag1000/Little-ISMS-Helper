@@ -16,9 +16,9 @@
  #
  # Parameters:
  #   title  - section heading (required)
- #   tools  - raw HTML rendered right-aligned in the header (optional)
- #   body   - raw HTML for the section body (optional; use macro wrapper body for complex content)
- #   footer - raw HTML below the body (optional)
+ #   tools  - text or Markup (capture; strings are escaped) rendered right-aligned in the header (optional)
+ #   body   - text or Markup (capture; strings are escaped) for the section body (optional; use macro wrapper body for complex content)
+ #   footer - text or Markup (capture; strings are escaped) below the body (optional)
  #   id     - HTML id attribute for the <section> (optional)
  #   class  - additional CSS classes on <section> (optional)
  #}
@@ -32,19 +32,19 @@
             <div class="fa-section__header">
                 <h2 class="fa-section__title">{{ props.title }}</h2>
                 {% if props.tools is defined and props.tools %}
-                    <div class="fa-section__tools">{{ props.tools|raw }}</div>
+                    <div class="fa-section__tools">{{ props.tools }}</div>
                 {% endif %}
             </div>
         {% endif %}
 
         {# Body #}
         {% if props.body is defined and props.body %}
-            <div class="fa-section__body">{{ props.body|raw }}</div>
+            <div class="fa-section__body">{{ props.body }}</div>
         {% endif %}
 
         {# Optional footer #}
         {% if props.footer is defined and props.footer %}
-            <div class="fa-section__footer">{{ props.footer|raw }}</div>
+            <div class="fa-section__footer">{{ props.footer }}</div>
         {% endif %}
     </section>
 {% endmacro %}

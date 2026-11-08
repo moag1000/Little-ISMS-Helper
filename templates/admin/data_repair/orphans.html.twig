@@ -67,9 +67,10 @@
     {% if totalOrphans == 0 %}
         {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.no_orphans'|trans({}, 'admin') }) }}
     {% else %}
+        {% set _body_html %}<strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.orphans_found'|trans({}, 'admin') }} — {{ 'admin.data_repair.total_orphans'|trans({'%count%': totalOrphans}, 'admin') }}{% endset %}
         {{ _fa_alert.render({
             variant: 'warning',
-            body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.orphans_found'|trans({}, 'admin') ~ ' — ' ~ 'admin.data_repair.total_orphans'|trans({'%count%': totalOrphans}, 'admin'),
+            body: _body_html,
         }) }}
 
         {# Per-type tile grid #}

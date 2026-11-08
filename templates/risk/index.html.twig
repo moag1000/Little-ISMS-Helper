@@ -60,7 +60,7 @@
         norm_ref: 'ISO 27001 Clause 6.1.2',
         help_link: path('app_help_glossary') ~ '#glossary-risk',
     },
-    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/risk"',
+    card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/risk' },
 } %}
     {% block list_filters %}
         {% for _hk in ['location', 'tag', 'review_overdue', 'focus'] %}

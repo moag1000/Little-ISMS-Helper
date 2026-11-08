@@ -74,4 +74,37 @@ final class DocxExportServiceTest extends TestCase
         $bytes = (new DocxExportService())->exportDocument($doc);
         self::assertNotSame('', $bytes);
     }
+    /**
+     * S10: record text is text in the OOXML, never markup. Without output escaping a
+     * title closing </w:t> injects a Word field (INCLUDEPICTURE → UNC fetch on open).
+     */
+    #[Test]
+    public function titleAndBodyAreEscapedInTheXml(): void
+    {
+        $title = 'T</w:t></w:r><w:fldSimple w:instr="INCLUDEPICTURE \\\\host\\x"/><w:r><w:t> <&>';
+        $doc = $this->document($title, "Body <&> \"quoted\" text");
+
+        $bytes = (new DocxExportService())->exportDocument($doc);
+        $tmp = tempnam(sys_get_temp_dir(), 'docx-test-');
+        self::assertIsString($tmp);
+        file_put_contents($tmp, $bytes);
+        $zip = new ZipArchive();
+        self::assertTrue($zip->open($tmp) === true);
+        $xml = (string) $zip->getFromName('word/document.xml');
+        $core = (string) $zip->getFromName('docProps/core.xml');
+        $zip->close();
+        @unlink($tmp);
+
+        foreach (['word/document.xml' => $xml, 'docProps/core.xml' => $core] as $name => $part) {
+            $dom = new \DOMDocument();
+            self::assertTrue(@$dom->loadXML($part), $name . ' must stay well-formed XML');
+        }
+        self::assertStringNotContainsString('<w:fldSimple', $xml, 'record text must not become a Word field');
+
+        $dom = new \DOMDocument();
+        $dom->loadXML($xml);
+        $text = $dom->documentElement->textContent;
+        self::assertStringContainsString($title, $text, 'title survives as literal text');
+        self::assertStringContainsString('Body <&> "quoted" text', $text, 'body is escaped exactly once');
+    }
 }

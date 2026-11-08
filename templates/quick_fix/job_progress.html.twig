@@ -139,8 +139,8 @@
     <script nonce="{{ csp_nonce() }}">
         (function() {
             // Vanilla JS poller — keeps QuickFix usable without Stimulus / Aurora.
-            const statusUrl = {{ statusUrl|json_encode|raw }};
-            const cancelUrl = {{ (cancelUrl|default(path('app_quick_fix_index')))|json_encode|raw }};
+            const statusUrl = {{ statusUrl|fa_json }};
+            const cancelUrl = {{ (cancelUrl|default(path('app_quick_fix_index')))|fa_json }};
             const pollInterval = 3000;
             let terminal = false;
             let timer = null;

@@ -16,7 +16,8 @@
     {{ _fa_page_header.render({
         title: 'audit_freeze.new.title'|trans({}, 'audit_freeze')}) }}
 
-    {{ _fa_alert.render({ variant: 'info', title: 'audit_freeze.new.hint_title'|trans({}, 'audit_freeze'), body: '<span class="small">' ~ 'audit_freeze.new.hint_body'|trans({}, 'audit_freeze') ~ '</span>' }) }}
+    {% set _body_html %}<span class="small">{{ 'audit_freeze.new.hint_body'|trans({}, 'audit_freeze') }}</span>{% endset %}
+    {{ _fa_alert.render({ variant: 'info', title: 'audit_freeze.new.hint_title'|trans({}, 'audit_freeze'), body: _body_html }) }}
 
     <div class="card fa-section shadow-sm">
         <div class="card-body">

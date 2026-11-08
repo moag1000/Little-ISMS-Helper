@@ -23,35 +23,26 @@
     {% if programs is not empty and subsidiaries is not empty %}
         {% for program in programs %}
             {# First cell: program identity #}
-            {% set _prog_cell = '<strong>' ~ program.title|e ~ '</strong>'
-                ~ '<br><code style="font-size:.7em;color:var(--fg-3);">' ~ program.auditNumber|e ~ '</code>'
-                ~ (program.plannedDate ? ' <span style="font-size:.75em;color:var(--fg-3);">· ' ~ program.plannedDate|fa_date ~ '</span>' : '')
-                ~ (program.scopeType ? ' <code style="font-size:.7em;">' ~ program.scopeType|e ~ '</code>' : '') %}
+            {% set _prog_cell %}<strong>{{ program.title|e }}</strong><br><code style="font-size:.7em;color:var(--fg-3);">{{ program.auditNumber|e }}</code>{% if program.plannedDate %} <span style="font-size:.75em;color:var(--fg-3);">· {{ program.plannedDate|fa_date }}</span>{% endif %}{% if program.scopeType %} <code style="font-size:.7em;">{{ program.scopeType|e }}</code>{% endif %}{% endset %}
             {% set _row = [ _prog_cell ] %}
 
             {# One cell per subsidiary #}
             {% for sub in subsidiaries %}
                 {% set derived = matrix[program.id][sub.code] %}
                 {% if derived is null %}
-                    {% set _row = _row|merge([ '<span style="color:var(--fg-3);" title="' ~ ('group_report.audit_program.cell.missing_help'|trans({}, 'group_report')) ~ '">·</span>' ]) %}
+                    {% set _cell_html2 %}<span style="color:var(--fg-3);" title="{{ ('group_report.audit_program.cell.missing_help'|trans({}, 'group_report')) }}">·</span>{% endset %}
+                    {% set _row = _row|merge([ _cell_html2 ]) %}
                 {% else %}
                     {% set status = derived.status %}
                     {% set _chip = status == 'completed' ? 'final' : (status == 'in_progress' ? 'draft' : (status == 'planned' ? 'auditor-only' : 'confidential')) %}
                     {% set _sym = status == 'completed' ? '✓' : (status == 'in_progress' ? '◐' : (status == 'planned' ? '◯' : '—')) %}
-                    {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status|e ~ ' — ' ~ derived.auditNumber|e ~ '">' ~ _sym ~ '</span>' ]) %}
+                    {% set _cell_html3 %}<span class="report-doc__chip report-doc__chip--status-{{ _chip }}" title="{{ status|e }} — {{ derived.auditNumber|e }}">{{ _sym }}</span>{% endset %}
+                    {% set _row = _row|merge([ _cell_html3 ]) %}
                 {% endif %}
             {% endfor %}
 
             {# Last cell: derive action form — preserved as interactive element #}
-            {% set _form_html = '<form method="post" action="' ~ path('app_group_report_audit_program_derive', {id: program.id}) ~ '" class="d-inline"'
-                ~ ' data-controller="ui-actions"'
-                ~ ' data-action="submit->ui-actions#confirm"'
-                ~ ' data-ui-actions-message-param="' ~ ('group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report')) ~ '"'
-                ~ ' data-ui-actions-tone-param="danger">'
-                ~ '<input type="hidden" name="_token" value="' ~ csrf_token('audit_program_derive_' ~ program.id) ~ '">'
-                ~ '<button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">'
-                ~ ('group_report.audit_program.action.derive'|trans({}, 'group_report'))
-                ~ '</button></form>' %}
+            {% set _form_html %}<form method="post" action="{{ path('app_group_report_audit_program_derive', {id: program.id}) }}" class="d-inline" data-controller="ui-actions" data-action="submit->ui-actions#confirm" data-ui-actions-message-param="{{ ('group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report')) }}" data-ui-actions-tone-param="danger"><input type="hidden" name="_token" value="{{ csrf_token('audit_program_derive_' ~ program.id) }}"><button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ ('group_report.audit_program.action.derive'|trans({}, 'group_report')) }}</button></form>{% endset %}
             {% if is_granted('ROLE_GROUP_CISO') %}
                 {% set _row = _row|merge([ _form_html ]) %}
             {% endif %}
@@ -72,18 +63,13 @@
     {% endif %}
 
     {# Legend body_html #}
-    {% set _legend_html = '<p style="font-size:8pt;color:var(--fg-2);">'
-        ~ '<strong>' ~ ('group_report.soa.legend.title'|trans({}, 'group_report')) ~ ':</strong> '
-        ~ '✓ ' ~ ('group_report.audit_program.legend.completed'|trans({}, 'group_report'))
-        ~ ' · ◐ ' ~ ('group_report.audit_program.legend.in_progress'|trans({}, 'group_report'))
-        ~ ' · ◯ ' ~ ('group_report.audit_program.legend.planned'|trans({}, 'group_report'))
-        ~ ' · · ' ~ ('group_report.audit_program.legend.missing'|trans({}, 'group_report'))
-        ~ '</p>' %}
+    {% set _legend_html %}<p style="font-size:8pt;color:var(--fg-2);"><strong>{{ ('group_report.soa.legend.title'|trans({}, 'group_report')) }}:</strong> ✓ {{ ('group_report.audit_program.legend.completed'|trans({}, 'group_report')) }} · ◐ {{ ('group_report.audit_program.legend.in_progress'|trans({}, 'group_report')) }} · ◯ {{ ('group_report.audit_program.legend.planned'|trans({}, 'group_report')) }} · · {{ ('group_report.audit_program.legend.missing'|trans({}, 'group_report')) }}</p>{% endset %}
 
     {# Stats #}
     {% set _total_programs = programs|default([])|length %}
     {% set _total_subs = subsidiaries|default([])|length %}
 
+    {% set _body_html_html1 %}{% if _prog_rows|length == 0 %}<p style="color:var(--fg-3);font-style:italic;">{{ ('group_report.audit_program.empty'|trans({}, 'group_report')) }}</p>{% else %}{{ _legend_html }}{% endif %}{% endset %}
     {{ _fa_report_doc.render({
         report: {
             title:        'group_report.audit_program.title'|trans({}, 'group_report'),
@@ -105,14 +91,12 @@
         sections: [
             {
                 heading: 'group_report.audit_program.title'|trans({}, 'group_report'),
-                intro: 'group_report.audit_program.intro'|trans({}, 'group_report'),
+                intro: 'group_report.audit_program.intro'|trans({}, 'group_report')|fa_html,
                 table: _prog_rows|length > 0 ? {
                     headers: _headers,
                     rows:    _prog_rows,
                 } : null,
-                body_html: _prog_rows|length == 0
-                    ? '<p style="color:var(--fg-3);font-style:italic;">' ~ ('group_report.audit_program.empty'|trans({}, 'group_report')) ~ '</p>'
-                    : _legend_html,
+                body_html: _body_html_html1,
             },
         ],
         appendix: {
