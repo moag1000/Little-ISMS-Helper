@@ -41,6 +41,41 @@
         </div>
     </div>
 
+    {# Assistant connection (MCP): endpoint + ready-made client configuration #}
+    <section class="fa-section mb-4" id="mcp">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'mcp.tokens.title'|trans({}, 'mcp') }}</h2>
+            {% if mcp_enabled %}
+                <span class="fa-status-pill fa-status-pill--success">{{ 'mcp.tokens.status_on'|trans({}, 'mcp') }}</span>
+            {% else %}
+                <span class="fa-status-pill fa-status-pill--neutral">{{ 'mcp.tokens.status_off'|trans({}, 'mcp') }}</span>
+            {% endif %}
+        </div>
+        <div class="fa-section__body">
+            <p class="small">{{ 'mcp.tokens.intro'|trans({}, 'mcp') }}</p>
+            {% if not mcp_enabled %}
+                <p class="small">
+                    {{ 'mcp.tokens.off_hint'|trans({}, 'mcp') }}
+                    {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('admin_settings_ai') }}#mcp">{{ 'mcp.tokens.off_admin_link'|trans({}, 'mcp') }}</a>{% endif %}
+                </p>
+            {% endif %}
+            <p class="small mb-1 fw-bold">{{ 'mcp.tokens.endpoint'|trans({}, 'mcp') }}</p>
+            <pre class="small user-select-all mb-3">{{ mcp_url }}</pre>
+            {% for _key, _snippet in mcp_snippets %}
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <p class="small fw-bold mb-0">{{ ('mcp.tokens.snippet.' ~ _key)|trans({}, 'mcp') }}</p>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            data-controller="ui-actions"
+                            data-action="ui-actions#copyToClipboard"
+                            data-ui-actions-text-param="{{ _snippet }}">{{ 'mcp.tokens.copy'|trans({}, 'mcp') }}</button>
+                </div>
+                <p class="small text-muted-color mb-1">{{ ('mcp.tokens.snippet_help.' ~ _key)|trans({}, 'mcp') }}</p>
+                <pre class="small mb-3">{{ _snippet }}</pre>
+            {% endfor %}
+            <p class="small mb-0">{{ 'mcp.tokens.safety'|trans({}, 'mcp') }}</p>
+        </div>
+    </section>
+
     {% embed '_components/_fa_list_page.html.twig' with {
         page: page,
         list_title: 'api_token.title'|trans({}, 'api_token'),
@@ -53,6 +88,7 @@
                         <th class="fa-table__th" scope="col">{{ 'api_token.field.label'|trans({}, 'api_token') }}</th>
                         <th class="fa-table__th" scope="col">{{ 'api_token.field.created'|trans({}, 'api_token') }}</th>
                         <th class="fa-table__th" scope="col">{{ 'api_token.field.expires'|trans({}, 'api_token') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'api_token.field.last_used'|trans({}, 'api_token') }}</th>
                         <th class="fa-table__th" scope="col">{{ 'api_token.field.status'|trans({}, 'api_token') }}</th>
                         <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
@@ -63,6 +99,7 @@
                             <td class="fa-table__cell">{{ token.label }}</td>
                             <td class="fa-table__cell">{{ token.createdAt|fa_date }}</td>
                             <td class="fa-table__cell">{{ token.expiresAt|fa_date }}</td>
+                            <td class="fa-table__cell">{{ token.lastUsedAt|fa_datetime }}</td>
                             <td class="fa-table__cell">
                                 {% if token.revoked %}
                                     <span class="fa-status-pill fa-status-pill--neutral">{{ 'api_token.status.revoked'|trans({}, 'api_token') }}</span>

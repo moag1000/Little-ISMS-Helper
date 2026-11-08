@@ -585,7 +585,18 @@ through the owning service after acceptance and throws `StaleSuggestionException
 Nightly `app:suggestions:generate` (05:30). "Entwurf vorschlagen" on a detail page = the kind implements
 `RecordDraftKind` (AI kinds via `AbstractAiKind::isCandidate()`), shown by `draft_kinds(entity)` in
 `_fa_entity_links.html.twig` — never an own "draft" button or endpoint. AI goes only through `App\Service\Ai\AiAssistant` (off by
-default, redaction, audit without content). Guide: `docs/features/SUGGESTION_QUEUE.md`.
+default, redaction, audit without content) — or, from outside, through the person's own assistant over MCP
+(`AbstractAiKind::draftFromAssistant()`, same mapping). Guide: `docs/features/SUGGESTION_QUEUE.md`.
+
+## Assistant connection (MCP)
+
+`POST /mcp` (`McpController`, `App\Mcp\McpServer`: stateless Streamable HTTP, JSON-RPC, no SSE) for Claude Desktop/Code:
+bearer API token only, opt-in per organisation (`McpSettings`, admin page AI settings), token user's roles and tenant.
+Few generic tools (`src/Mcp/Tool/`, tag `app.mcp_tool`) over the existing services: REST resources via
+`ApiResourceGateway` (API Platform operations as sub-requests — a new API resource needs no new tool), `my_day`
+(ObligationInbox), `compliance_fulfillment` (derivation basis = "why"), KPIs, duty calendar, search, suggestions.
+The only writing tool is `propose_draft` (suggestion queue). Every call is audit-logged (`mcp.read`/`mcp.propose`, no
+arguments). Guide: `docs/user-guide/KI_ASSISTENT_MCP.md`.
 
 ## Module-Awareness
 

@@ -303,6 +303,8 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
 - **Vorschlags-Queue** -- Ableitungen (Schutzbedarf, Restrisiko, Wirksamkeit, CVSS→Risiko, Risiko nach Vorfall), Vererbung, Import-Treffer und KI-Vorschläge (lokales Modell oder Mistral-API, personenbezogene Daten standardmäßig ersetzt) in einer Liste; Annehmen/Ablehnen mit Begründung und Audit-Log, nächtlich vorbereitet oder per „Entwurf vorschlagen“ am Datensatz (Meldetext NIS-2/DORA, Meldung Art. 33, Antwort an Betroffene, Zusammenfassung für die Leitung, Abweichungstext, Fragebogenauswertung, SoA-Begründung aus Verknüpfungen) ([Anleitung](docs/user-guide/VORSCHLAEGE.md))
 
+- **KI-Assistent anbinden (MCP)** -- Little ISMS Helper ist MCP-Server unter `/mcp`: Claude Desktop, Claude Code oder ein anderer MCP-Client liest mit dem API-Token der Person Fristen (Mein Tag), Erfüllung je Norm mit „Warum dieser Wert?“, KPIs, Pflichtenkalender, Suche und jede REST-Ressource; schreiben nur als Entwurf in die Vorschlags-Queue. Opt-in je Organisation, Audit-Log je Zugriff, Konfiguration zum Kopieren auf der Token-Seite ([Anleitung](docs/user-guide/KI_ASSISTENT_MCP.md))
+
 ### Bedienung: einheitlich, schnell, sinnvoll
 
 Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterverwendet werden:
@@ -606,6 +608,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |
+| [KI-Assistent (MCP)](docs/user-guide/KI_ASSISTENT_MCP.md) | Claude Desktop/Code anbinden, Werkzeuge, Prompts, Rechte, Datenschutz, Betreiber-Hinweis |
 | [Modulverwaltung](docs/user-guide/MODULE_AKTIVIERUNG.md) | Module aktivieren und konfigurieren (User-Guide) |
 
 ### Setup und Deployment

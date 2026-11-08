@@ -102,6 +102,35 @@ abstract class AbstractAiKind extends AbstractSuggestionKind implements RecordDr
         return $target !== null ? $this->ask($tenant, $target) : null;
     }
 
+    /**
+     * What an external assistant (MCP, `propose_draft`) needs to draft in
+     * place of the configured model: the same instruction incl. JSON keys
+     * and the same facts about the record. Null when the record has nothing
+     * to draft for.
+     *
+     * @return array{instructions: string, facts: string}|null
+     */
+    public function assistantBrief(object $record): ?array
+    {
+        $target = $this->recordFor($record);
+
+        return $target !== null ? ['instructions' => $this->instructions(), 'facts' => $this->describe($target)] : null;
+    }
+
+    /**
+     * The draft from an external assistant's answer: the same mapping and
+     * checks as a model answer (empty title or text → null). The assistant
+     * is named as the model, so the queue shows where the text came from.
+     *
+     * @param array<string, mixed> $data the keys the instruction asks for
+     */
+    public function draftFromAssistant(Tenant $tenant, object $record, array $data, string $model): ?SuggestionDraft
+    {
+        $target = $this->recordFor($record);
+
+        return $target !== null && $this->isCandidate($target) ? $this->toDraft($target, $data, $model, $tenant) : null;
+    }
+
     /** The record the model reads for a detail page's record (null = nothing to draft). */
     protected function recordFor(object $record): ?object
     {
