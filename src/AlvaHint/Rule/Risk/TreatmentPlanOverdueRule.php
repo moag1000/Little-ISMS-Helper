@@ -8,6 +8,7 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\Risk;
 use App\Entity\User;
+use App\Risk\RiskMatrixThresholds;
 use App\Repository\RiskTreatmentPlanRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -19,7 +20,6 @@ use DateTimeInterface;
  */
 final class TreatmentPlanOverdueRule extends AbstractAlvaHintRule
 {
-    private const int HIGH_THRESHOLD = 12;
     private const int OVERDUE_DAYS = 30;
 
     public function __construct(
@@ -47,7 +47,7 @@ final class TreatmentPlanOverdueRule extends AbstractAlvaHintRule
         if (!$entity instanceof Risk) {
             return false;
         }
-        if ($entity->getInherentRiskLevel() < self::HIGH_THRESHOLD) {
+        if ($entity->getInherentRiskLevel() < RiskMatrixThresholds::highMin($entity->getTenant())) {
             return false;
         }
 

@@ -8,17 +8,16 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\Risk;
 use App\Entity\User;
+use App\Risk\RiskMatrixThresholds;
 use App\Repository\RiskTreatmentPlanRepository;
 
 /**
  * Tier-3 hint: ISO 27001 Cl. 6.1.3 — high / critical inherent risks
  * need a documented treatment plan. Hint fires when the risk score
- * (probability * impact) is ≥ 15 and no treatment plan points back.
+ * (probability * impact) reaches the organisation's high edge (Risikokriterien) and no treatment plan points back.
  */
 final class HighRiskWithoutTreatmentRule extends AbstractAlvaHintRule
 {
-    private const int HIGH_THRESHOLD = 15;
-
     public function __construct(
         private readonly RiskTreatmentPlanRepository $treatmentRepository,
     ) {
@@ -44,7 +43,7 @@ final class HighRiskWithoutTreatmentRule extends AbstractAlvaHintRule
         if (!$entity instanceof Risk) {
             return false;
         }
-        if ($entity->getInherentRiskLevel() < self::HIGH_THRESHOLD) {
+        if ($entity->getInherentRiskLevel() < RiskMatrixThresholds::highMin($entity->getTenant())) {
             return false;
         }
 

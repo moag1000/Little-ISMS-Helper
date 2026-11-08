@@ -40,8 +40,10 @@ METHOD = re.compile(r"\bfunction\s+&?(\w+)\s*\(")
 TRAIT_USE = re.compile(r"^\s{4}use\s+([\w\\,\s]+);", re.M)
 NAMESPACE = re.compile(r"^namespace\s+([\w\\]+);", re.M)
 IMPORT = re.compile(r"^use\s+([\w\\]+)(?:\s+as\s+(\w+))?;", re.M)
-CALL = re.compile(r"method_exists\(\s*\$(\w+)\s*,\s*'(\w+)'\s*\)")
+CALL = re.compile(r"""method_exists\(\s*(?:\$(?P<var>\w+)|\$this->(?P<prop>\w+)|(?P<cls>\\?[\w\\]+)::class)\s*,\s*['"](?P<m>\w+)['"]\s*\)""")
 FUNC = re.compile(r"\bfunction\s+&?\w*\s*\(([^)]*)\)", re.S)
+# Any callable signature: named functions, closures and arrow functions (`fn(Risk $r) => …`).
+SIGNATURE = re.compile(r"\b(?:function\s*&?(?P<name>\w*)|(?P<fn>fn))\s*\((?P<params>[^)]*)\)", re.S)
 
 
 def imports(text: str) -> tuple[str, dict[str, str]]:
@@ -128,6 +130,20 @@ def var_type(text: str, pos: int, var: str) -> str | None:
             candidates.append(found[-1])
     # A declared parameter type wins: `object $entity` stays untyped even when
     # a branch narrows it with instanceof.
+    if param_type is None:
+        # Closures and arrow functions inside the method declare their own parameters: take the nearest
+        # signature before the call that declares $var, but never look past the enclosing named method.
+        for sig_m in reversed(list(SIGNATURE.finditer(text[:pos]))):
+            declared = None
+            for param in sig_m.group("params").split(","):
+                pm = re.search(r"([?\w\\|]+)\s+(?:&|\.\.\.)?\$" + var + r"\b", param)
+                if pm:
+                    declared = pm.group(1)
+            if declared is not None:
+                param_type = declared
+                break
+            if sig_m.group("name"):
+                break
     if param_type is not None:
         candidates = [param_type]
     for candidate in reversed(candidates):
@@ -163,10 +179,20 @@ def main() -> int:
             continue
         namespace, table = imports(text)
         for m in CALL.finditer(text):
-            var, method = m.group(1), m.group(2)
+            var, method = m.group("var") or m.group("prop") or m.group("cls"), m.group("m")
             if var == "this":
                 continue
-            declared = var_type(text, m.start(), var)
+            if m.group("cls"):  # method_exists(Risk::class, 'x')
+                declared = m.group("cls")
+            elif m.group("prop"):  # method_exists($this->risk, 'x'): typed property or promoted ctor parameter
+                pm = re.search(r"(?:private|protected|public)\s+(?:readonly\s+)?([?\w\\|]+)\s+\$" + re.escape(var) + r"\b", text)
+                declared = pm.group(1) if pm else None
+                if declared is not None and "|" in declared.lstrip("?"):
+                    parts = [p for p in declared.lstrip("?").split("|") if p.lower() != "null"]
+                    declared = parts[0] if len(parts) == 1 else None
+                declared = declared.lstrip("?") if declared else None
+            else:
+                declared = var_type(text, m.start(), var)
             if declared is None:
                 continue
             fqcn = resolve(declared, namespace, table)

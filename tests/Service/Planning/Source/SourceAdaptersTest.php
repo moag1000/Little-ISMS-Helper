@@ -90,7 +90,8 @@ final class SourceAdaptersTest extends TestCase
 
         self::assertSame('corrective_action', $adapter->slug());
         self::assertSame('Korrekturmaßnahme', $adapter->label());
-        self::assertNull($adapter->requiredModule());
+        // The link is module-gated: a reminder with the module off would lead to the dashboard (T, wave 7).
+        self::assertSame('corrective_actions', $adapter->requiredModule());
         self::assertFalse($adapter->ownsRecurrence());
     }
 
@@ -477,7 +478,8 @@ final class SourceAdaptersTest extends TestCase
 
         self::assertSame('vulnerability', $adapter->slug());
         self::assertSame('Schwachstelle', $adapter->label());
-        self::assertNull($adapter->requiredModule());
+        // The link is module-gated: a reminder with the module off would lead to the dashboard (T, wave 7).
+        self::assertSame('vulnerability_intel', $adapter->requiredModule());
         self::assertFalse($adapter->ownsRecurrence());
     }
 

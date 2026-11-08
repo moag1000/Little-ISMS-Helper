@@ -545,10 +545,10 @@ final class TisaxConsolidateCommand extends Command
             $req = $u['req'];
             fputcsv($fh, [
                 (string) $req->getId(),
-                $u['legacy_id'],
+                \App\Util\CsvSanitizer::sanitize((string) $u['legacy_id']),
                 \App\Util\CsvSanitizer::sanitize((string) $req->getTitle()),
                 \App\Util\CsvSanitizer::sanitize((string) $req->getCategory()),
-                (string) $req->getMaturityCurrent(),
+                \App\Util\CsvSanitizer::sanitize((string) $req->getMaturityCurrent()),
                 self::LEGACY_UNMAPPED_CATEGORY,
             ], ',', '"', '\\');
         }

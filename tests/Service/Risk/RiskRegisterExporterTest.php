@@ -113,7 +113,7 @@ final class RiskRegisterExporterTest extends TestCase
     public function excelHasSummaryAllRisksAndCriticalHighTabs(): void
     {
         $content = $this->exporter()->buildExcel([
-            $this->risk('high', 4, 2, RiskStatus::InTreatment),
+            $this->risk('high', 4, 3, RiskStatus::InTreatment),
             $this->risk('low', 1, 1, RiskStatus::Identified),
         ]);
 
@@ -177,9 +177,9 @@ final class RiskRegisterExporterTest extends TestCase
     public function pdfReceivesLevelCountsAndNonZeroStatusBreakdown(): void
     {
         $risks = [
-            $this->risk('critical', 5, 3, RiskStatus::Open),
-            $this->risk('high', 4, 2, RiskStatus::Open),
-            $this->risk('medium', 2, 2, RiskStatus::Closed),
+            $this->risk('critical', 5, 4, RiskStatus::Open),
+            $this->risk('high', 4, 3, RiskStatus::Open),
+            $this->risk('medium', 2, 3, RiskStatus::Closed),
             $this->risk('low', 1, 1),
         ];
         $pdf = $this->createMock(PdfExportService::class);

@@ -7,6 +7,7 @@ namespace App\AlvaHint\FormRule;
 use App\AlvaHint\AlvaFormHint;
 use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
+use App\Risk\RiskMatrixThresholds;
 
 /**
  * Onboarding info-hint — Form-Step-Inline-Hint.
@@ -29,14 +30,6 @@ use App\Entity\User;
  */
 final class RiskScoreExplainerInlineRule implements AlvaHintFormRuleInterface
 {
-    /**
-     * Critical cutoff on the standard 5x5 matrix — value mirrored from
-     * {@see RiskCriticalSeverityInlineRule::CRITICAL_THRESHOLD}. At or above
-     * this score the critical warning takes over, so the explainer stands
-     * down to avoid a double hint on the `impact` field.
-     */
-    private const int CRITICAL_THRESHOLD = 20;
-
     public function key(): string
     {
         return 'risk.form.score_explainer';
@@ -69,8 +62,8 @@ final class RiskScoreExplainerInlineRule implements AlvaHintFormRuleInterface
             return false;
         }
 
-        // Critical territory is owned by RiskCriticalSeverityInlineRule.
-        return ($probability * $impact) < self::CRITICAL_THRESHOLD;
+        // Critical territory (the organisation's critical edge) is owned by RiskCriticalSeverityInlineRule.
+        return ($probability * $impact) < RiskMatrixThresholds::criticalMin($user->getTenant());
     }
 
     public function evaluate(array $payload, User $user): AlvaFormHint

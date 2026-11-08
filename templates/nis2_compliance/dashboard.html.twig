@@ -45,13 +45,6 @@
     {# Art. 21.2 letter grid — all 11 risk-management measures #}
     {% if letters|length > 0 %}
         {% import '_components/_status_vocabulary.html.twig' as _status %}
-        {% set status_text_class = {
-            'good': 'text-success',
-            'warning': 'text-warning',
-            'danger': 'text-danger',
-            'info': 'text-info',
-            'na': 'text-muted',
-        } %}
         <div class="row mb-2">
             <div class="col-12">
                 <h2 class="h4">
@@ -64,8 +57,8 @@
         <div class="row g-3 mb-4" data-testid="nis2-letters-grid">
             {% for code, letter in letters %}
                 {% set key = code|replace({'21.2.': ''}) %}
-                {% set color = status_text_class[letter.status] ?? 'text-muted' %}
                 {% set badge_variant = _status.tone('coverage', letter.status)|trim %}
+                {% set color = 'text-' ~ (badge_variant == 'neutral' ? 'muted' : badge_variant) %}
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                         {% block card_body %}

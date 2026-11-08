@@ -22,19 +22,23 @@ ROOT = Path(__file__).resolve().parents[2]
 # The catalog itself; ManagementReportService has its own (translated) getManagementKPIs()
 # built on the catalog and calls it on $this.
 ALLOWED = {"src/Service/Kpi/KpiCatalog.php"}
-CALL = re.compile(r"->getManagementKPIs\(")
-SELF_CALL = re.compile(r"\$this->getManagementKPIs\(")
+# Any use of the method on a foreign object, whatever the spelling: `->  getManagementKPIs (`, nullsafe `?->`,
+# first-class callable, callable array / Closure::fromCallable (`'getManagementKPIs'` as a string), Twig
+# `svc.getManagementKPIs()` or `attribute(svc, 'getManagementKPIs')`. PHP method names are case-insensitive.
+# Only `$this->…` (a class calling its own method) is allowed, judged per match, not per line.
+CALL = re.compile(r"(?<!\$this)(?:->|\.)\s*getManagementKPIs\b|['\"]getManagementKPIs['\"]", re.I)
 
 
 def main() -> int:
     quiet = "--quiet" in sys.argv
     hits = []
-    for path in sorted((ROOT / "src").rglob("*.php")):
+    files = sorted((ROOT / "src").rglob("*.php")) + sorted((ROOT / "templates").rglob("*.twig"))
+    for path in files:
         rel = path.relative_to(ROOT).as_posix()
         if rel in ALLOWED:
             continue
         for no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-            if CALL.search(line) and not SELF_CALL.search(line):
+            if CALL.search(line):
                 hits.append(f"FAIL {rel}:{no}: {line.strip()}")
     if hits:
         print("check_kpi_catalog: VIOLATIONS\n")

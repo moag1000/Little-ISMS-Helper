@@ -1,7 +1,6 @@
 # check_requirement_controls_scope.py baseline (Gate 86) — may only shrink.
 # <path> <number of getMappedControls() calls>
 src/Controller/AdminComplianceController.php 2
-src/Controller/Dashboard/ComplianceManagerDashboardController.php 1
 src/Controller/HomeController.php 1
 src/Controller/StatementOfApplicabilityController.php 1
 src/Service/ComplianceAnalyticsService.php 3

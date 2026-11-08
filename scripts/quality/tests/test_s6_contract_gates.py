@@ -79,7 +79,7 @@ class JobAccessTest(unittest.TestCase):
             if not jobs.ROUTE.search(attributes):
                 continue
             signature = body.split("{", 1)[0]
-            for variable in set(jobs.JOB_READ.findall(body)):
+            for variable in jobs.job_id_variables(text, body):
                 if f"${variable}" in signature and variable not in jobs.GUARD.findall(attributes) and jobs.OPT_OUT not in body:
                     found.append(name)
         return found
@@ -96,6 +96,11 @@ class JobAccessTest(unittest.TestCase):
                    "        $r = $this->jobStatusService->read($id);\n    }")
             self.assertEqual(self.check(php), [], guard)
 
+
+    def test_alias_and_other_methods_are_seen(self):
+        php = ("\n    #[Route('/x/{id}')]\n    public function cancel(string $id): Response\n    {\n"
+               "        $s = $this->jobStatusService;\n        $s->markFailed((string) $id, 'x');\n    }")
+        self.assertEqual(self.check(php), ["cancel"])
 
 class ModuleFieldTraitTest(unittest.TestCase):
     def test_entity_properties_include_traits(self):

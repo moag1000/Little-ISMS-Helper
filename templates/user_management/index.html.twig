@@ -16,7 +16,7 @@
 {{ _fa_page_header.render({
     title: 'user.page.title'|trans({}, 'user'),
     actions: [
-        { label: 'user.action.export_csv'|trans({}, 'user'), variant: 'ghost', icon: 'nav-download', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#userExportModal' } },
+        { label: 'user.action.export_csv'|trans({}, 'user'), variant: 'ghost', icon: 'nav-download', href: '#', attrs: { 'data-controller': 'fa-modal-dispatcher', 'data-action': 'click->fa-modal-dispatcher#open', 'data-fa-modal-id': 'userExportModal' } },
         { label: 'user.action.new_user'|trans({}, 'user'), variant: 'primary', icon: 'ui-person', href: path('user_management_new') }
     ]
 }) }}

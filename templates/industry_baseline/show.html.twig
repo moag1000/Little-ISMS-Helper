@@ -141,7 +141,7 @@
                                         </td>
                                         <td class="fa-table__cell"><code>{{ risk.category|default('—') }}</code></td>
                                         <td class="fa-table__cell">
-                                            {% set _v = pill_tone_severity(risk_level_band(inherent, scaleTenant|default(null))) %}
+                                            {% set _v = pill_tone_severity(risk_level_band(inherent, scaleTenant)) %}
                                             <span class="fa-status-pill fa-status-pill--{{ _v }}">
                                                 {{ inherent }}
                                             </span>

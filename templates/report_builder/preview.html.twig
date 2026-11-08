@@ -103,8 +103,9 @@
                                 {% set count = data.matrix[y][x]|default(0) %}
                                 {% set score = y * x %}
                                 {% set _band = data.bands[y][x]|default('low') %}
-                                {% set bgClass = {critical: 'bg-danger', high: 'bg-warning', medium: 'bg-info'}[_band] ?? 'bg-success' %}
-                                {% set fgClass = _band == 'high' ? '' : 'text-white' %}
+                                {% set _tone = pill_tone_severity(_band) %}
+                                {% set bgClass = 'bg-' ~ (_tone == 'neutral' ? 'secondary' : _tone) %}
+                                {% set fgClass = _tone == 'warning' ? '' : 'text-white' %}
                                 <td class="fa-table__cell fa-table__cell--center {{ bgClass }} {{ fgClass }}">{{ count > 0 ? count : '' }}</td>
                                 {% endfor %}
                             </tr>
@@ -159,7 +160,8 @@
             {# Status Widgets #}
             {% elseif widgetType == 'status_rag' %}
             <div class="status-widget text-center p-4">
-                {% set statusColor = data.status == 'green' ? 'success' : (data.status == 'amber' ? 'warning' : 'danger') %}
+                {% import '_components/_status_vocabulary.html.twig' as _status %}
+                {% set statusColor = _status.tone('coverage', data.status == 'green' ? 'good' : (data.status == 'amber' ? 'warning' : 'danger'))|trim %}
                 <div class="display-1">
                     <i class="fa-icon text-{{ statusColor }} fa-icon--status-pending" aria-hidden="true"></i>
                 </div>
