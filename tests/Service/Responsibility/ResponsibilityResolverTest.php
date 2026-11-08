@@ -137,7 +137,49 @@ final class ResponsibilityResolverTest extends TestCase
         self::assertSame([$this->admin], $this->resolver()->resolve(Responsibility::holders($tenantless), $this->tenant));
     }
 
-    private function resolver(?DeadlineSource $source = null): ResponsibilityResolver
+    #[Test]
+    public function everySourceThatKnowsTheRecordCountsNotTheFirst(): void
+    {
+        $supplier = new Risk();
+        $resolver = $this->resolver(
+            $this->sourceFor($supplier, Responsibility::holders($this->owner)->orRoles('ROLE_ISB'), 'assessment'),
+            $this->sourceFor($supplier, Responsibility::holders($this->ciso), 'contract_end'),
+            $this->sourceFor($supplier, Responsibility::roles('ROLE_ISB'), 'roles_only'),
+        );
+
+        $responsible = $resolver->resolve(Responsibility::ofRecord($supplier), $this->tenant);
+
+        // Both holders count; a source that only names a role does not widen an owner step.
+        self::assertCount(2, $responsible);
+        self::assertContains($this->owner, $responsible);
+        self::assertContains($this->ciso, $responsible);
+        self::assertNotContains($this->isb, $responsible);
+    }
+
+    #[Test]
+    public function widerCircleOnlyWhenNobodyHoldsTheFirstRoles(): void
+    {
+        $resolver = $this->resolver();
+
+        self::assertSame([$this->isb], $resolver->resolve(Responsibility::roles('ROLE_ISB')->thenRoles('ROLE_MANAGER'), $this->tenant));
+        $managers = $resolver->resolve(Responsibility::roles('ROLE_RISK_MANAGER')->thenRoles('ROLE_MANAGER'), $this->tenant);
+        self::assertContains($this->isb, $managers);
+        self::assertContains($this->ciso, $managers);
+        self::assertNotContains($this->admin, $managers);
+    }
+
+    #[Test]
+    public function aDutyOnlyTheRoleMayDischargeNeverFallsToAdmins(): void
+    {
+        $risk = (new Risk())->setTenant($this->tenant);
+        $board = Responsibility::roles('ROLE_TOP_MGMT')->withoutAdminFallback();
+
+        self::assertSame([], $this->resolver()->resolve($board, $this->tenant));
+        self::assertSame([], $this->resolver($this->sourceFor($risk, $board))->responsibleFor($risk));
+        self::assertSame([$this->admin], $this->resolver()->resolve(Responsibility::roles('ROLE_TOP_MGMT'), $this->tenant));
+    }
+
+    private function resolver(?DeadlineSource ...$sources): ResponsibilityResolver
     {
         $repository = $this->createStub(UserRepository::class);
         $repository->method('findActiveByTenant')->willReturn([$this->owner, $this->isb, $this->ciso, $this->admin]);
@@ -145,7 +187,7 @@ final class ResponsibilityResolverTest extends TestCase
         return new ResponsibilityResolver(
             $repository,
             PersonaResolverFactory::create(),
-            new DeadlineSourceRegistry($source !== null ? [$source] : []),
+            new DeadlineSourceRegistry(array_values(array_filter($sources))),
         );
     }
 
@@ -161,13 +203,13 @@ final class ResponsibilityResolverTest extends TestCase
         return $user;
     }
 
-    private function sourceFor(object $record, Responsibility $responsibility): DeadlineSource
+    private function sourceFor(object $record, Responsibility $responsibility, string $slug = 'test'): DeadlineSource
     {
-        return new class($record, $responsibility) implements DeadlineSource {
-            public function __construct(private object $record, private Responsibility $responsibility)
+        return new class($record, $responsibility, $slug) implements DeadlineSource {
+            public function __construct(private object $record, private Responsibility $responsibility, private string $slug)
             {
             }
-            public function slug(): string { return 'test'; }
+            public function slug(): string { return $this->slug; }
             public function label(): string { return 'Test'; }
             public function requiredModule(): ?string { return null; }
             public function findOpen(Tenant $tenant): iterable { return [$this->record]; }

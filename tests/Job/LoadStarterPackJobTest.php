@@ -180,6 +180,36 @@ class LoadStarterPackJobTest extends KernelTestCase
         );
     }
 
+    /** S7.3: in Messenger mode no request guard runs — the job refuses a manager of a multi-organisation instance itself. */
+    #[Test]
+    public function refusesAUserWhoMayNotWriteTheGlobalCatalogue(): void
+    {
+        $connection = $this->createStub(\Doctrine\DBAL\Connection::class);
+        $connection->method('fetchOne')->willReturn('2');
+        $metadata = $this->createStub(\Doctrine\ORM\Mapping\ClassMetadata::class);
+        $metadata->method('getTableName')->willReturn('tenant');
+        $em = $this->createStub(EntityManagerInterface::class);
+        $em->method('getConnection')->willReturn($connection);
+        $em->method('getClassMetadata')->willReturn($metadata);
+        $manager = (new \App\Entity\User())->setRoles(['ROLE_MANAGER']);
+        $users = $this->createStub(\App\Repository\UserRepository::class);
+        $users->method('find')->willReturn($manager);
+        $loader = $this->createMock(ComplianceFrameworkLoaderService::class);
+        $loader->expects(self::never())->method('loadFramework');
+
+        $job = new LoadStarterPackJob(
+            $loader,
+            $this->createStub(MappingSeedService::class),
+            $this->stubModule(false),
+            new \App\Security\Voter\GlobalCatalogueVoter($this->createStub(\Symfony\Bundle\SecurityBundle\Security::class), $em),
+            $users,
+        );
+
+        $this->expectException(\RuntimeException::class);
+        $statusService = self::getContainer()->get(JobStatusService::class);
+        $job->run(new JobContext($statusService->create('test.starter_pack'), $statusService, ['userId' => 7]));
+    }
+
     /**
      * @param list<string> $baseCodes
      */

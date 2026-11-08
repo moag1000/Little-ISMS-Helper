@@ -642,7 +642,7 @@ final class ComplianceWizardService implements WizardCheckSource
             'entity_presence' => $this->entityPresenceChecker->check($check, $tenant),
             'policy_wizard' => $this->coverageCheckService->dispatchPolicyWizardCheck($check, $tenant),
             'register_coverage', 'management_decision', 'training_participation', 'reporting_duty',
-            'deadline_adherence', 'record_completeness'
+            'deadline_adherence', 'record_completeness', 'account_mfa'
                 => $this->recordCheck?->check($check, $tenant),
             'clause_coverage' => (new ClauseCoverageCheck())->check(
                 $check,

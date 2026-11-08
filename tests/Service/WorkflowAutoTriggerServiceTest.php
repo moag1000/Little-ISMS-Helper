@@ -8,10 +8,8 @@ use App\Entity\Document;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
-use App\Entity\User;
 use App\Service\DocumentApprovalService;
 use App\Service\IncidentEscalationWorkflowService;
-use App\Service\RiskAcceptanceWorkflowService;
 use App\Service\RiskTreatmentPlanApprovalService;
 use App\Service\WorkflowAutoTriggerService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -29,7 +27,6 @@ use PHPUnit\Framework\Attributes\Test;
 class WorkflowAutoTriggerServiceTest extends TestCase
 {
     private MockObject $incidentEscalationService;
-    private MockObject $riskAcceptanceService;
     private MockObject $treatmentPlanApprovalService;
     private MockObject $documentApprovalService;
     private MockObject $logger;
@@ -38,14 +35,12 @@ class WorkflowAutoTriggerServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->incidentEscalationService = $this->createMock(IncidentEscalationWorkflowService::class);
-        $this->riskAcceptanceService = $this->createMock(RiskAcceptanceWorkflowService::class);
         $this->treatmentPlanApprovalService = $this->createMock(RiskTreatmentPlanApprovalService::class);
         $this->documentApprovalService = $this->createMock(DocumentApprovalService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->service = new WorkflowAutoTriggerService(
             $this->incidentEscalationService,
-            $this->riskAcceptanceService,
             $this->treatmentPlanApprovalService,
             $this->documentApprovalService,
             $this->logger
@@ -245,68 +240,6 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertArrayHasKey('escalation', $results);
         $this->assertArrayHasKey('error', $results['escalation']);
         $this->assertSame('Escalation service error', $results['escalation']['error']);
-    }
-
-    #[Test]
-    public function testTriggerRiskAcceptanceWorkflow(): void
-    {
-        $risk = $this->createMock(Risk::class);
-        $risk->method('getId')->willReturn(13);
-        $risk->method('getRiskScore')->willReturn(75);
-        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
-
-        $requester = $this->createMock(User::class);
-        $justification = 'Business decision - low impact';
-
-        $this->riskAcceptanceService->expects($this->once())
-            ->method('requestAcceptance')
-            ->with($risk, $requester, $justification)
-            ->willReturn([
-                'approval_level' => 'management',
-                'workflow_started' => true,
-            ]);
-
-        $this->logger->expects($this->exactly(2))
-            ->method('info');
-
-        $results = $this->service->triggerRiskAcceptanceWorkflow($risk, $requester, $justification);
-
-        $this->assertArrayHasKey('acceptance', $results);
-        $this->assertSame('management', $results['acceptance']['approval_level']);
-        $this->assertTrue($results['acceptance']['workflow_started']);
-    }
-
-    #[Test]
-    public function testTriggerRiskAcceptanceWorkflowHandlesException(): void
-    {
-        $risk = $this->createMock(Risk::class);
-        $risk->method('getId')->willReturn(14);
-        $risk->method('getRiskScore')->willReturn(80);
-        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
-
-        $requester = $this->createMock(User::class);
-        $justification = 'Test justification';
-
-        $exception = new \RuntimeException('Risk acceptance service error');
-        $this->riskAcceptanceService->method('requestAcceptance')
-            ->willThrowException($exception);
-
-        $this->logger->expects($this->once())
-            ->method('info');
-
-        $this->logger->expects($this->once())
-            ->method('error')
-            ->with(
-                'Failed to trigger risk acceptance workflow',
-                $this->callback(function ($context) {
-                    return isset($context['risk_id']) && isset($context['error']);
-                })
-            );
-
-        $results = $this->service->triggerRiskAcceptanceWorkflow($risk, $requester, $justification);
-
-        $this->assertArrayHasKey('acceptance', $results);
-        $this->assertArrayHasKey('error', $results['acceptance']);
     }
 
     #[Test]

@@ -21,8 +21,10 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * Covers:
  *  - ROLE_USER POST → 403 (route is ROLE_MANAGER-gated)
- *  - ROLE_MANAGER POST → dispatch happens → 303 redirect to progress page
- *  - empty-state CTA renders only when 0 frameworks are loaded
+ *  - a user who may write the global catalogue (super admin; on a single-organisation
+ *    instance also a manager) POST → dispatch happens → 303 redirect to progress page
+ *  - empty-state CTA renders only when 0 frameworks are loaded, and only for such a user
+ *  - a manager on an instance with several organisations gets neither CTA nor dispatch
  *
  * The async-job RUNNER ({@see InRequestJobRunner}) is replaced with a no-op
  * stub for the dispatch test: in the test (CLI) SAPI the in-request runner
@@ -43,6 +45,8 @@ class ComplianceStarterPackControllerTest extends WebTestCase
     private ?Tenant $tenant = null;
     private ?User $managerUser = null;
     private ?User $plainUser = null;
+    private ?User $superAdmin = null;
+    private ?Tenant $otherTenant = null;
 
     protected function setUp(): void
     {
@@ -55,6 +59,12 @@ class ComplianceStarterPackControllerTest extends WebTestCase
         $this->tenant->setName('SP Tenant ' . $uniqueId);
         $this->tenant->setCode('sp_tenant_' . $uniqueId);
         $this->em->persist($this->tenant);
+
+        // Several organisations: the starter pack writes the global catalogue all of them share.
+        $this->otherTenant = new Tenant();
+        $this->otherTenant->setName('SP Other ' . $uniqueId);
+        $this->otherTenant->setCode('sp_other_' . $uniqueId);
+        $this->em->persist($this->otherTenant);
 
         $this->managerUser = new User();
         $this->managerUser->setEmail('manager_' . $uniqueId . '@example.com');
@@ -76,12 +86,22 @@ class ComplianceStarterPackControllerTest extends WebTestCase
         $this->plainUser->setIsActive(true);
         $this->em->persist($this->plainUser);
 
+        $this->superAdmin = new User();
+        $this->superAdmin->setEmail('super_' . $uniqueId . '@example.com');
+        $this->superAdmin->setFirstName('Sara');
+        $this->superAdmin->setLastName('Super');
+        $this->superAdmin->setRoles(['ROLE_SUPER_ADMIN']);
+        $this->superAdmin->setPassword('hashed');
+        $this->superAdmin->setTenant($this->tenant);
+        $this->superAdmin->setIsActive(true);
+        $this->em->persist($this->superAdmin);
+
         $this->em->flush();
     }
 
     protected function tearDown(): void
     {
-        foreach ([$this->managerUser, $this->plainUser, $this->tenant] as $entity) {
+        foreach ([$this->managerUser, $this->plainUser, $this->superAdmin, $this->tenant, $this->otherTenant] as $entity) {
             if ($entity === null) {
                 continue;
             }
@@ -112,11 +132,11 @@ class ComplianceStarterPackControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function emptyStateRendersStarterPackCtaForManager(): void
+    public function emptyStateRendersStarterPackCtaForCatalogueWriter(): void
     {
         $this->purgeFrameworks();
 
-        $this->client->loginUser($this->managerUser);
+        $this->client->loginUser($this->superAdmin);
         $crawler = $this->client->request('GET', '/en/compliance');
         self::assertResponseIsSuccessful();
 
@@ -125,7 +145,21 @@ class ComplianceStarterPackControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function managerPostDispatchesJobAndRedirects(): void
+    public function managerOfOneOfSeveralOrganisationsMayNotLoadTheStarterPack(): void
+    {
+        $this->purgeFrameworks();
+
+        $this->client->loginUser($this->managerUser);
+        $crawler = $this->client->request('GET', '/en/compliance');
+        self::assertResponseIsSuccessful();
+        self::assertCount(0, $crawler->filter('form[action*="load-starter-pack"]'));
+
+        $this->client->request('POST', '/en/compliance/frameworks/load-starter-pack');
+        self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+    }
+
+    #[Test]
+    public function catalogueWriterPostDispatchesJobAndRedirects(): void
     {
         $this->purgeFrameworks();
 
@@ -143,7 +177,7 @@ class ComplianceStarterPackControllerTest extends WebTestCase
         $this->client->disableReboot();
         static::getContainer()->set(InRequestJobRunner::class, $runnerStub);
 
-        $this->client->loginUser($this->managerUser);
+        $this->client->loginUser($this->superAdmin);
 
         // GET the index first to render the CTA form with a valid CSRF token,
         // then submit the crawler form (carries the real token / session).

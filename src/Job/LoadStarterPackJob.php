@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Job;
 
+use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Security\Voter\GlobalCatalogueVoter;
 use App\Service\Compliance\MappingSeedService;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ModuleConfigurationService;
@@ -32,9 +35,14 @@ use App\Service\ModuleConfigurationService;
  * tenant/user args are carried for audit/scope symmetry with sibling jobs (see
  * {@see ExportRisksJob}) and forward-compatibility.
  *
+ * The catalogue is shared by every organisation of the instance: the job
+ * itself checks that the dispatching user may write it
+ * ({@see GlobalCatalogueVoter::userMayWrite()}) — in Messenger mode no request
+ * and no Doctrine guard stands between a manager and the global mappings.
+ *
  * Args:
  *   tenantId (?int) — calling tenant (carried for symmetry; catalogue is global)
- *   userId   (?int) — caller (carried for symmetry / future audit)
+ *   userId   (?int) — caller; must be allowed to write the global catalogue
  */
 final class LoadStarterPackJob implements AsyncJobInterface
 {
@@ -47,6 +55,8 @@ final class LoadStarterPackJob implements AsyncJobInterface
         private readonly ComplianceFrameworkLoaderService $loaderService,
         private readonly MappingSeedService $mappingSeedService,
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly ?GlobalCatalogueVoter $catalogueAccess = null,
+        private readonly ?UserRepository $users = null,
         private readonly array $baseCodes = ['ISO27001', 'BSI_GRUNDSCHUTZ'],
         private readonly string $gdprCode = 'GDPR',
     ) {
@@ -54,6 +64,15 @@ final class LoadStarterPackJob implements AsyncJobInterface
 
     public function run(JobContext $ctx): void
     {
+        if ($this->catalogueAccess !== null) {
+            $userId = $ctx->arg('userId');
+            $user = is_int($userId) ? $this->users?->find($userId) : null;
+            if (!$this->catalogueAccess->userMayWrite($user instanceof User ? $user : null)) {
+                // @intentional-assertion: refused like the controller's voter would
+                throw new \RuntimeException('Starter-Pack: Kataloge gelten für alle Organisationen; laden darf sie nur der Super-Admin.');
+            }
+        }
+
         $codes = $this->resolvePackCodes();
         $total = count($codes) + 1; // frameworks + 1 mapping-seed step
         $step = 0;

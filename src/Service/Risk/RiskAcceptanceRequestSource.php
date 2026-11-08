@@ -27,7 +27,10 @@ use DateTimeInterface;
  */
 final class RiskAcceptanceRequestSource implements DeadlineSource
 {
-    /** Who decides an acceptance on the management level (all reach ROLE_MANAGER, the voter's rule). */
+    /**
+     * Who decides an acceptance on the management level first (all reach ROLE_MANAGER,
+     * the voter's rule); without them every manager of the organisation.
+     */
     public const array MANAGER_LEVEL_ROLES = ['ROLE_RISK_MANAGER', 'ROLE_CISO', 'ROLE_ISB'];
 
     public function __construct(
@@ -105,11 +108,13 @@ final class RiskAcceptanceRequestSource implements DeadlineSource
 
         $tenant = $item->risk->getTenant();
         $config = $tenant instanceof Tenant ? $this->approvalConfig->resolveFor($tenant) : RiskApprovalConfigView::defaults();
+        // The one rule shared with RiskAcceptanceVoter: whoever reaches this role may decide.
         $role = RiskApprovalConfigView::approverRole($config->levelFor((int) $item->risk->getResidualRiskLevel()));
 
         return $role === 'ROLE_MANAGER'
-            ? Responsibility::roles(...self::MANAGER_LEVEL_ROLES)
-            : Responsibility::roles($role);
+            ? Responsibility::roles(...self::MANAGER_LEVEL_ROLES)->thenRoles($role)
+            // Executive level: top management only; admins do not inherit it (they would get a 403).
+            : Responsibility::roles($role)->withoutAdminFallback();
     }
 
     public function linkOf(object $item): RecordLink

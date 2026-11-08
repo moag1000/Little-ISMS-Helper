@@ -48,7 +48,9 @@ class ChangeRequestModuleGatingTest extends WebTestCase
             @file_put_contents($lockFile, date('c'));
         }
 
-        $this->createTestData();
+        // Test data is created in mockModules(): saving records reaches services that use
+        // ModuleConfigurationService (fulfilment recompute), and the container refuses to
+        // replace a service once it is built.
     }
 
     protected function tearDown(): void
@@ -88,6 +90,7 @@ class ChangeRequestModuleGatingTest extends WebTestCase
             fn(string $key): bool => in_array($key, $activeModules, true)
         );
         static::getContainer()->set(ModuleConfigurationService::class, $mock);
+        $this->createTestData();
     }
 
     /** All required + optional modules active, including change_requests. */

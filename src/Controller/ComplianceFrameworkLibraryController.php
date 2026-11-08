@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Job\LoadStarterPackJob;
+use App\Security\Voter\GlobalCatalogueVoter;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\Job\AsyncJobDispatcher;
 use App\Service\ModuleConfigurationService;
@@ -69,6 +70,8 @@ class ComplianceFrameworkLibraryController extends AbstractController
      */
     #[Route('/compliance/frameworks/load/{code}', name: 'app_compliance_user_load_framework', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
+    // Global catalogue: on an instance with several organisations only the super admin loads it.
+    #[IsGranted(GlobalCatalogueVoter::WRITE)]
     public function loadFrameworkForManager(string $code, Request $request): JsonResponse
     {
         $token = $request->headers->get('X-CSRF-Token');
@@ -101,6 +104,7 @@ class ComplianceFrameworkLibraryController extends AbstractController
      */
     #[Route('/compliance/frameworks/load-starter-pack', name: 'app_compliance_load_starter_pack', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(GlobalCatalogueVoter::WRITE)]
     public function loadStarterPack(
         Request $request,
         AsyncJobDispatcher $asyncJobDispatcher,

@@ -23,7 +23,7 @@ duties have the same shape: one date field of one tenant-owned entity, a
 bucket, lead days, a norm. These are entries in `config/deadline_types.yaml`,
 not classes. One generic `App\Service\Deadline\Configured\ConfiguredDeadlineSource`
 reads each entry (`DeadlineTypeDefinition`); `DeadlineSourceRegistry` adds them
-after the class sources. 27 types live there (risk review, risk acceptance
+after the class sources. 28 types live there (risk review, risk acceptance
 without expiry, treatment plan, the three control dates, objectives, context
 review, interested-party communication, CAPA effectiveness, certificates,
 evidence re-verification, access review, access end of a person, supplier
@@ -31,7 +31,10 @@ reassessment and contract end, patch deadline, BC plan review and test,
 crisis-team training, VVT and DPIA review, consent expiry, TISAX prototype
 protection, team validity, nonconformity correction date of an audit finding
 (ISO 27001 10.2 c), TIA re-evaluation (GDPR Art. 46, EDPB 01/2020; owner and
-date on the TIA, one year after the assessment by default)).
+date on the TIA, one year after the assessment by default), fulfilment review
+of a requirement (`fulfillment_review`, ISO 27001 9.1: `nextReviewDate`, set by
+certificates and by "Prüfung bestätigen" on the requirement page; the
+requirement's responsible person, else compliance manager and ISB)).
 
 ```yaml
 consent_expiry:
@@ -45,7 +48,8 @@ consent_expiry:
     deputies: [contactDeputyPersons]
     roles: [ROLE_DPO]                   # fallback
     inform: [ROLE_ISB]                  # ROLE_* or property path, self = the record
-    link: app_consent_show              # gets {id}; link_id: false for an index page
+    link: app_consent_show              # gets {id}; link_id: false for an index page,
+                                        # link_id: requirement.id for a related record's page
     bucket: consents_expiring
     lead_days: 30                       # default 14; ~ = while open
     norm: DSGVO Art. 7
@@ -203,7 +207,21 @@ The first step that yields an active account of the tenant wins:
 2. **Deputies**: used only when no holder has an active account.
 3. **Fallback roles**: users who hold the role themselves or through a
    non-admin role. An admin who inherits ROLE_ISB is not the ISB.
-4. **Admins**: the last resort, so a duty never reaches nobody.
+   `->thenRoles('ROLE_MANAGER')` names a wider circle asked only when nobody
+   holds the first roles (a risk acceptance on the manager level: risk manager,
+   CISO or ISB, else every manager of the organisation).
+4. **Admins**: the last resort, so a duty never reaches nobody — unless only
+   the role may discharge it (`->withoutAdminFallback()`): a board decision
+   or an acceptance on the executive level then waits for top management;
+   admins get the duty "Keine Leitung zugewiesen" instead of a decision that
+   would answer 403.
+
+A record several sources know (a supplier with assessment and contract end,
+a risk with review and acceptance expiry) is the responsibility of everybody
+the sources name on the strongest step any of them reaches (`responsibleFor()`,
+`RECORD_RESPONSIBLE`): two holders both count, a source that only names a
+fallback role does not widen an owner step. The order in which sources are
+registered no longer matters.
 
 ```php
 return Responsibility::holders($risk->getRiskOwner(), $risk->getRiskOwnerPerson())

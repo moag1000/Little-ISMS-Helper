@@ -253,11 +253,13 @@ systemctl enable isms-worker && systemctl start isms-worker
   category's; controls AND records behind one requirement average, kind `controls_records`) → mappings. Record
   check types for norm data: `register_coverage`, `management_decision`, `training_participation`,
   `reporting_duty`, `deadline_adherence` (duties of the deadline sources done on time, ISO 8.1/9.1),
-  `record_completeness` (fields on existing records, DORA 14/17/18/30) (`ComplianceWizard\RecordCheck`, defs via
+  `record_completeness` (fields on existing records, DORA 14/17/18/30, ISO A.5.23 cloud suppliers), `account_mfa`
+  (privileged local accounts with a second factor, NIS-2 21(2)(j)) (`ComplianceWizard\RecordCheck`, defs via
   `RecordCheck::register()/decision()/deadlines()/fields()`); `clause_coverage` = ISO 4.4 from clauses 4–10; a check whose
   catalogue numbers rows apart from the article names them in `requirements` (exact ids; NIS-2 Art. 23, thematic DORA) —
   `WizardReferencesHitCatalogueTest` fails on a clause/article that hits no loaded requirement or a type without handler; a new record
-  type that feeds them adds one line to `RecordChangeCollector::CHECK_TYPES`. On top, `AuditResultRule` caps the
+  type that feeds them adds one line to `RecordChangeCollector::CHECK_TYPES` (`deadline_adherence` needs none: any
+  record a deadline source knows triggers it on create/delete/date or status change). On top, `AuditResultRule` caps the
   value with the newest audit-checklist verdict (12 months; compliant at 100 % → Verified); the checklist is built
   from the audit scope by `Audit\AuditChecklistGenerator`. Evidence behind a
   requirement comes only from `RequirementEvidence` (requirement + fulfilment + controls, tenant-filtered; exports use
@@ -266,7 +268,8 @@ systemctl enable isms-worker && systemctl start isms-worker
   Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
-  inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.
+  inheritance; `thenRoles()` = wider circle) → admins (not for `withoutAdminFallback()`: board decisions wait for
+  ROLE_TOP_MGMT). A record several sources know: everybody named on the strongest step any source reaches. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.
   Who is reminded may act there: `RecordResponsibleVoter` (`RECORD_RESPONSIBLE`), actions take
   `#[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'x')]` ("role OR
   responsible"); `DeadlineLinkReachabilityTest` fails when a source's link shuts out who it reminds.

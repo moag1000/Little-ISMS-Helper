@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\ComplianceMapping;
 use App\Entity\Tenant;
+use App\Entity\User;
 use App\Entity\Workflow;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -24,9 +25,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * organisation (an uploaded requirement) is that organisation's and passes here; the
  * screens check its visibility (MappingAccessGuard) and roles as before.
  *
- * Attribute WRITE: subject null (the action creates or changes global mappings) or a
- * ComplianceMapping. The Doctrine backstop GlobalMappingWriteGuard asks the same question
- * on every flush.
+ * Attribute WRITE: subject null (the action creates or changes global mappings, or loads a
+ * framework catalogue into the instance) or a ComplianceMapping. The Doctrine backstop
+ * GlobalMappingWriteGuard asks the same question on every flush; jobs that run without a
+ * request (starter pack) ask {@see userMayWrite()} for the user who dispatched them.
  */
 final class GlobalCatalogueVoter extends Voter
 {
@@ -56,6 +58,19 @@ final class GlobalCatalogueVoter extends Voter
             return true;
         }
         if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
+            return true;
+        }
+
+        return $this->isSingleOrganisation();
+    }
+
+    /**
+     * The same rule for a user outside a request (async job, Messenger worker):
+     * the super admin, or anybody on an instance with a single organisation.
+     */
+    public function userMayWrite(?User $user): bool
+    {
+        if ($user instanceof User && in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true)) {
             return true;
         }
 
