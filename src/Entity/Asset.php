@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ModuleField;
 use App\Entity\Trait\IsmsScopeTrait;
 use DateTimeInterface;
 use DateTimeImmutable;
@@ -124,41 +125,41 @@ class Asset
     #[Assert\Choice(
         choices: [null, 'prohibited', 'high_risk', 'limited_risk', 'minimal_risk'],
         message: 'asset.validation.ai_classification_invalid',
-    )]
+    ), ModuleField('ai_governance')]
     private ?string $aiAgentClassification = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('ai_governance')]
     private ?string $aiAgentPurpose = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('ai_governance')]
     private ?string $aiAgentDataSources = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('ai_governance')]
     private ?string $aiAgentOversightMechanism = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('ai_governance')]
     private ?string $aiAgentProvider = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('ai_governance')]
     private ?string $aiAgentModelVersion = null;
 
     /** @var array<int, string>|null */
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('ai_governance')]
     private ?array $aiAgentCapabilityScope = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('ai_governance')]
     private ?int $aiAgentThreatModelDocId = null;
 
     /** @var array<int, string>|null */
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('ai_governance')]
     private ?array $aiAgentExtensionAllowlist = null;
 
     // Legacy field - kept for backward compatibility
@@ -225,7 +226,7 @@ class Asset
     #[Assert\Choice(
         choices: ['public', 'internal', 'confidential', 'strictly_confidential', 'prototype'],
         message: 'asset.validation.tisax_classification_invalid'
-    )]
+    ), ModuleField('tisax')]
     private ?string $tisaxInformationClassification = null;
 
     /**
@@ -255,7 +256,7 @@ class Asset
      * as a DORA-scoped ICT asset (Art. 28 ICT-Asset).
      */
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['asset:read', 'asset:write'])]
+    #[Groups(['asset:read', 'asset:write']), ModuleField('nis2_dora')]
     private bool $isDoraRelevant = false;
 
     #[ORM\Column(length: 50)]

@@ -12,6 +12,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Attribute\{ApiReadOnlyEvidence, ModuleField};
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
@@ -96,7 +97,7 @@ trait IncidentNis2ReportingTrait
      * assessed (the BSI export then reports "unknown" instead of guessing).
      */
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?bool $nis2SuspectedMalicious = null;
 
     public function getNis2SuspectedMalicious(): ?bool
@@ -116,7 +117,7 @@ trait IncidentNis2ReportingTrait
      * sends it as the short description when it is set.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?string $reportSummary = null;
 
     public function getReportSummary(): ?string
@@ -138,15 +139,15 @@ trait IncidentNis2ReportingTrait
      * request names (else 72 h after the request).
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ApiReadOnlyEvidence('interim request')]
     private ?DateTimeImmutable $nis2InterimRequestedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ApiReadOnlyEvidence('interim request')]
     private ?DateTimeImmutable $nis2InterimDueAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ApiReadOnlyEvidence('mark as reported (NIS-2 Art. 23 (4) c)')]
     private ?DateTimeImmutable $nis2InterimReportedAt = null;
 
     public function getNis2InterimRequestedAt(): ?DateTimeImmutable

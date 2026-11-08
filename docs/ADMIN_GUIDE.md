@@ -305,7 +305,10 @@ View and manage system permissions:
 Monitor active user sessions:
 - Session tracking based on login events
 - User activity timeline
-- Session termination (requires database session storage)
+- Session termination (requires database session storage). "Sitzung beenden" signs the browser out on its next
+  request (`TerminatedSessionSubscriber`, since 2026-11); the same holds for sessions closed by the limit of five
+  concurrent sessions. Rows the idle cleanup marks `timeout` do not sign anybody out — PHP's own session lifetime
+  handles idleness; the last activity is refreshed at most every five minutes.
 
 ---
 

@@ -6,7 +6,12 @@ namespace App\Mcp\Tool;
 
 use App\Mcp\McpSession;
 use App\Mcp\McpToolException;
+use App\Entity\Suggestion;
+use App\Enum\SuggestionStatus;
+use App\Repository\SuggestionRepository;
 use App\Service\Suggestion\Kind\AbstractAiKind;
+use App\Service\Suggestion\RecordDraftKind;
+use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\RecordDrafts;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -19,9 +24,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 final class ProposeDraftTool extends AbstractMcpTool
 {
+    /** Rejections of one kind for one record within 30 days after which the assistant stops. */
+    public const int MAX_REJECTIONS = 3;
+
     public function __construct(
         private readonly RecordDrafts $drafts,
         private readonly UrlGeneratorInterface $urls,
+        private readonly SuggestionRepository $suggestions,
     ) {
     }
 
@@ -85,6 +94,8 @@ final class ProposeDraftTool extends AbstractMcpTool
                 ?? throw new McpToolException('Nothing could be drafted from the record\'s data.');
         }
 
+        $this->refuseRepeatedRejection($session, $kind, $draft);
+
         $suggestion = $this->drafts->offer($session->tenant, $kind, $draft)
             ?? throw new McpToolException('The suggestion could not be recorded.');
 
@@ -96,5 +107,32 @@ final class ProposeDraftTool extends AbstractMcpTool
             'note' => 'Waiting for a person\'s decision in the suggestion queue.',
             '_audit' => ['resource' => $resource, 'record_id' => $id, 'kind' => $key, 'suggestion_id' => $suggestion->getId()],
         ];
+    }
+
+    /**
+     * A person's "no" stands: the assistant may not offer the same draft again,
+     * and after three rejections of one kind for one record within 30 days it
+     * stops proposing that kind there. The person can still ask in the app.
+     */
+    private function refuseRepeatedRejection(McpSession $session, RecordDraftKind $kind, SuggestionDraft $draft): void
+    {
+        $same = $this->suggestions->findOneByDedup($session->tenant, $kind->key(), $draft->resolveDedupKey($kind->key()));
+        if ($same instanceof Suggestion && $same->getStatus() === SuggestionStatus::Rejected) {
+            throw McpToolException::denied(sprintf(
+                'This draft was rejected on %s. Change it or let the person ask again in the app.',
+                $same->getDecidedAt()?->format('Y-m-d') ?? 'an earlier date',
+            ));
+        }
+
+        $subjectClass = $draft->subjectClass();
+        $subjectId = $draft->subjectId();
+        if ($subjectClass !== null && $subjectId !== null
+            && $this->suggestions->countRejectedForSubject($session->tenant, $kind->key(), $subjectClass, $subjectId, new \DateTimeImmutable('-30 days')) >= self::MAX_REJECTIONS) {
+            throw McpToolException::denied(sprintf(
+                'Drafts of "%s" for this record were rejected %d times in 30 days. The assistant stops proposing it here.',
+                $kind->key(),
+                self::MAX_REJECTIONS,
+            ));
+        }
     }
 }

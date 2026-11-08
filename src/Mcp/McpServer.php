@@ -18,6 +18,13 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  *
  * Every tool call is audit-logged (tool, resource, record id, result
  * count; never arguments or answer text, which may carry personal data).
+ * A refused call (tool not available to the caller, writing switched off,
+ * role or voter said no) is logged as `mcp.denied`.
+ *
+ * Writing tools (audit action `mcp.write`) are checked against
+ * McpWriteAccess here, centrally, before the tool runs — a tool cannot
+ * forget it. tests/Mcp/McpToolClassificationTest.php keeps the list of
+ * tools that change anything explicit.
  */
 class McpServer
 {
@@ -37,6 +44,7 @@ class McpServer
         private readonly McpPrompts $prompts,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
+        private readonly McpWriteAccess $writeAccess,
     ) {
         foreach ($tools as $tool) {
             $this->tools[$tool->name()] = $tool;
@@ -145,14 +153,23 @@ class McpServer
         $name = (string) ($params['name'] ?? '');
         $tool = $this->tools[$name] ?? null;
         if (!$tool instanceof McpTool || !$tool->isAvailable($session)) {
+            if ($tool instanceof McpTool) {
+                $this->audit($tool, $session, ['reason' => 'not_available'], 'mcp.denied');
+            }
             throw new McpProtocolException('Unknown tool: ' . $name, -32602);
         }
         $arguments = is_array($params['arguments'] ?? null) ? $params['arguments'] : [];
 
         try {
+            if ($tool->auditAction() === 'mcp.write' || (!$tool->isReadOnly() && $tool->auditAction() !== 'mcp.propose')) {
+                $reason = $this->writeAccess->reasonDenied($session);
+                if ($reason !== null) {
+                    throw McpToolException::denied($reason);
+                }
+            }
             $result = $tool->call($arguments, $session);
         } catch (McpToolException $e) {
-            $this->audit($tool, $session, ['error' => true]);
+            $this->audit($tool, $session, $e->accessDenied ? ['reason' => 'refused'] : ['error' => true], $e->accessDenied ? 'mcp.denied' : null);
 
             return ['content' => [['type' => 'text', 'text' => $e->getMessage()]], 'isError' => true];
         } catch (\Throwable $e) {
@@ -176,10 +193,10 @@ class McpServer
     /**
      * @param array<string, mixed> $details
      */
-    private function audit(McpTool $tool, McpSession $session, array $details): void
+    private function audit(McpTool $tool, McpSession $session, array $details, ?string $action = null): void
     {
         $this->auditLogger->logCustom(
-            action: $tool->auditAction(),
+            action: $action ?? $tool->auditAction(),
             entityType: 'ApiToken',
             entityId: $session->token->getId(),
             newValues: ['tool' => $tool->name()] + array_filter($details, static fn ($v): bool => is_scalar($v) || $v === null),

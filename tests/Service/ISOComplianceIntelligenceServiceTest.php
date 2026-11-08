@@ -239,6 +239,8 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
 
         $this->assertLessThan(100, $result['score']);
         $this->assertSame(1, $result['pending_approval']);
+        // S4: the strategy alone is no acceptance.
+        $this->assertSame(0, $result['accepted_risks']);
     }
 
     #[Test]

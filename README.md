@@ -292,7 +292,9 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, globale Provider fuer alle Organisationen oder je Organisation, AEAD-verschluesselte Client-Secrets)
 - **MFA** -- TOTP mit Backup-Codes
 - **SSO-Verknüpfung von Hand** -- Admins binden ein bestehendes Konto auf der Benutzerseite an Provider + Kennung (OIDC `sub`, SAML NameID), ändern oder lösen sie; privilegierte Konten nur der Instanz-Betreiber, jede Änderung im SSO-Audit-Trail
-- **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
+- **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform; nächtliche Läufe (Aufbewahrung, Digest, geplante Berichte) schreiben mit dem Mandanten des Datensatzes
+- **API = Formular** -- REST und KI-Assistent (MCP) verlangen dieselbe Rolle wie das Formular, ignorieren Felder ausgeschalteter Module und schreiben keine Melde-, Abschluss- oder Freigabezeitpunkte (`#[ApiReadOnlyEvidence]`, Gate 89)
+- **Aufbewahrung** -- die Aufbewahrungs-Löschung entfernt nur Datensätze im Endzustand (entsorgt, geschlossen, archiviert); aktive bleiben stehen und werden gemeldet
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag
 - **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping (Organisations-Backup enthaelt auch die Organisations-Einstellungen), DR-Runbook
 

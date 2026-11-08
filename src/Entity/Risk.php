@@ -20,12 +20,11 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
-use App\Enum\IncidentSeverity;
-use App\Enum\RiskStatus;
-use App\Enum\TreatmentStrategy;
+use App\Enum\{IncidentSeverity, RiskStatus, TreatmentStrategy};
 use App\Repository\RiskRepository;
 use App\State\TenantAwareStateProcessor;
 use App\Validator\Constraint\SameTenantOwner;
+use App\Attribute\{ApiReadOnlyEvidence, ModuleField};
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -121,7 +120,7 @@ class Risk
      * DSGVO Art. 4(1) - Personal Data Definition
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('privacy')]
     private bool $involvesPersonalData = false;
 
     /**
@@ -130,7 +129,7 @@ class Risk
      * trade union membership, genetic data, biometric data, health data, sex life
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('privacy')]
     private bool $involvesSpecialCategoryData = false;
 
     /**
@@ -141,7 +140,7 @@ class Risk
     #[Assert\Choice(
         choices: ['consent', 'contract', 'legal_obligation', 'vital_interests', 'public_task', 'legitimate_interests'],
         message: 'risk.validation.legal_basis_invalid'
-    )]
+    ), ModuleField('privacy')]
     private ?string $legalBasis = null;
 
     /**
@@ -153,7 +152,7 @@ class Risk
     #[Assert\Choice(
         choices: ['small', 'medium', 'large_scale'],
         message: 'risk.validation.processing_scale_invalid'
-    )]
+    ), ModuleField('privacy')]
     private ?string $processingScale = null;
 
     /**
@@ -161,7 +160,7 @@ class Risk
      * DSGVO Art. 35 - Data Protection Impact Assessment
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('privacy')]
     private bool $requiresDPIA = false;
 
     /**
@@ -169,7 +168,7 @@ class Risk
      * DSGVO Art. 35(7) - DPIA content requirements
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('privacy')]
     private ?string $dataSubjectImpact = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -299,11 +298,11 @@ class Risk
      * Required when treatmentStrategy = 'accept'
      */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['risk:read'])]
+    #[Groups(['risk:read']), ApiReadOnlyEvidence('RiskAcceptanceWorkflowService (formal acceptance)')]
     private ?string $acceptanceApprovedBy = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['risk:read'])]
+    #[Groups(['risk:read']), ApiReadOnlyEvidence('RiskAcceptanceWorkflowService (formal acceptance)')]
     private ?DateTimeInterface $acceptanceApprovedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -327,7 +326,7 @@ class Risk
      * Formal approval for risk acceptance
      */
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['risk:read'])]
+    #[Groups(['risk:read']), ApiReadOnlyEvidence('RiskAcceptanceWorkflowService (formal acceptance)')]
     private bool $formallyAccepted = false;
 
     /**
@@ -359,7 +358,7 @@ class Risk
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'decision_approved_by_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['risk:read'])]
+    #[Groups(['risk:read']), ApiReadOnlyEvidence('risk treatment decision approval')]
     #[SameTenantOwner]
     private ?User $decisionApprovedByUser = null;
 
@@ -367,7 +366,7 @@ class Risk
      * Date when the risk treatment decision was approved.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['risk:read'])]
+    #[Groups(['risk:read']), ApiReadOnlyEvidence('risk treatment decision approval')]
     private ?\DateTimeImmutable $decisionApprovalDate = null;
 
     /**
@@ -390,7 +389,7 @@ class Risk
      */
     #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('vulnerability_intel')]
     #[MaxDepth(1)]
     private ?ThreatIntelligence $threatIntelligence = null;
 
@@ -399,7 +398,7 @@ class Risk
      */
     #[ORM\ManyToOne(targetEntity: Vulnerability::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('vulnerability_intel')]
     #[MaxDepth(1)]
     private ?Vulnerability $linkedVulnerability = null;
 
@@ -1210,7 +1209,7 @@ class Risk
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'acceptance_approved_by_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[SameTenantOwner]
+    #[SameTenantOwner, ApiReadOnlyEvidence('RiskAcceptanceWorkflowService (formal acceptance)')]
     private ?User $acceptanceApprovedByUser = null;
 
     public function getAcceptanceApprovedByUser(): ?User
@@ -1368,21 +1367,21 @@ class Risk
      * Values: cyber | operations | third_party_ict | concentration | data_integrity
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private ?string $ictRiskCategory = null;
 
     /**
      * Whether the risk concerns a critical or important function (DORA Art. 6(2)+Annex).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private bool $criticalOrImportantFunction = false;
 
     /**
      * ICT third-party concentration risk flag (DORA Art. 28+29).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private bool $ictThirdPartyConcentration = false;
 
     /**
@@ -1395,7 +1394,7 @@ class Risk
     #[ORM\JoinTable(name: 'risk_ict_asset_dependency')]
     #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private Collection $ictAssetDependency;
 
     /**
@@ -1409,42 +1408,42 @@ class Risk
     #[ORM\JoinTable(name: 'risk_ict_incident_history')]
     #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'incident_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private Collection $ictIncidentHistory;
 
     /**
      * Data resilience requirement (RTO/RPO, Art. 11(2)(c)).
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private ?string $dataResilienceRequirement = null;
 
     /**
      * Threat-Led Penetration Test scope flag (DORA Art. 26-27).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private bool $tlptScope = false;
 
     /**
      * Whether regulatory reporting is required (DORA Art. 19 + NIS2 Art. 23).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private bool $regulatoryReportingRequired = false;
 
     /**
      * Whether board escalation is required (DORA Art. 5(2)).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private bool $boardEscalationRequired = false;
 
     /**
      * Whether lessons learned have been documented (DORA Art. 13).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('nis2_dora')]
     private bool $lessonsLearnedDocumented = false;
 
     // ── Quantitative Risk fields (module: risk_quant) ──────────────────
@@ -1456,7 +1455,7 @@ class Risk
      * Module-gate: risk_quant.
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // Monetary — mirror FieldVisibilityResolver Risk.sle
     #[Assert\PositiveOrZero(message: 'risk.validation.sle_positive_or_zero')]
     private ?int $singleLossExpectancy = null;
@@ -1467,7 +1466,7 @@ class Risk
      * Module-gate: risk_quant.
      */
     #[ORM\Column(type: 'decimal', precision: 8, scale: 4, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // Monetary — mirror FieldVisibilityResolver Risk.aro
     #[Assert\PositiveOrZero(message: 'risk.validation.aro_positive_or_zero')]
     private ?string $annualRateOfOccurrence = null;
@@ -1515,67 +1514,67 @@ class Risk
 
     /** FAIR Loss Event Frequency — minimum (annualised). */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $lossEventFrequencyMin = null;
 
     /** FAIR Loss Event Frequency — maximum (annualised). */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $lossEventFrequencyMax = null;
 
     /** FAIR Loss Event Frequency — most likely (mode). */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $lossEventFrequencyMode = null;
 
     /** FAIR Threat Event Frequency — minimum (annualised). */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $threatEventFrequencyMin = null;
 
     /** FAIR Threat Event Frequency — maximum (annualised). */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $threatEventFrequencyMax = null;
 
     /** FAIR Threat Event Frequency — most likely (mode). */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $threatEventFrequencyMode = null;
 
     /** FAIR Vulnerability probability (0.0000–1.0000): how likely a threat event leads to loss. */
     #[ORM\Column(type: 'decimal', precision: 5, scale: 4, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $vulnerabilityProbability = null;
 
     /** FAIR Primary Loss Magnitude — minimum (€). */
     #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $primaryLossMagnitudeMin = null;
 
     /** FAIR Primary Loss Magnitude — maximum (€). */
     #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $primaryLossMagnitudeMax = null;
 
     /** FAIR Primary Loss Magnitude — most likely (mode, €). */
     #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $primaryLossMagnitudeMode = null;
 
     /** FAIR Secondary Loss Magnitude — minimum (€, includes reputation/fines). */
     #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $secondaryLossMagnitudeMin = null;
 
     /** FAIR Secondary Loss Magnitude — maximum (€). */
     #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $secondaryLossMagnitudeMax = null;
 
     /** FAIR Secondary Loss Magnitude — most likely (mode, €). */
     #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read', 'risk:write']), ModuleField('risk_quant')]
     private ?string $secondaryLossMagnitudeMode = null;
 
     public function getIctRiskCategory(): ?string

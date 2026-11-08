@@ -105,6 +105,55 @@ final class ApiResourceModuleListenerTest extends TestCase
     }
 
     /**
+     * config/modules.yaml names the entities of each module. An API resource
+     * that only optional modules list carries the gate of one of them (its
+     * owning module); the other modules that list it own fields, gated by
+     * #[ModuleField] (scripts/quality/check_api_module_fields.py).
+     *
+     * Exception: the ISO 27001 backbone stays ungated on the API exactly as
+     * its HTML controllers do (docs/MODULE_GATING_GUIDE.md) — the API never
+     * allows less than the UI either.
+     */
+    #[Test]
+    public function everyApiResourceOfAnOptionalModuleIsGatedByItsOwningModule(): void
+    {
+        $config = \Symfony\Component\Yaml\Yaml::parseFile(dirname(__DIR__, 2) . '/config/modules.yaml');
+        $listing = [];
+        foreach ($config['modules'] as $key => $module) {
+            foreach ($module['entities'] ?? [] as $entity) {
+                // null = a required module lists it: always available.
+                $listing[$entity] = ($module['required'] ?? false) || (array_key_exists($entity, $listing) && $listing[$entity] === null)
+                    ? null
+                    : [...($listing[$entity] ?? []), $key];
+            }
+        }
+
+        $backbone = ['Asset', 'Risk', 'Control', 'Incident', 'InternalAudit'];
+        $checked = 0;
+        foreach ($listing as $entity => $modules) {
+            if (in_array($entity, $backbone, true)) {
+                continue;
+            }
+            $class = 'App\\Entity\\' . $entity;
+            if ($modules === null || !class_exists($class)
+                || (new ReflectionClass($class))->getAttributes(\ApiPlatform\Metadata\ApiResource::class) === []) {
+                continue;
+            }
+            $keys = array_map(
+                static fn ($a): string => $a->newInstance()->module,
+                (new ReflectionClass($class))->getAttributes(RequiresModule::class),
+            );
+            self::assertNotSame([], array_intersect($modules, $keys), sprintf(
+                '%s is an API resource of module(s) %s but gated by none of them.',
+                $class,
+                implode(', ', $modules),
+            ));
+            ++$checked;
+        }
+        self::assertGreaterThanOrEqual(6, $checked);
+    }
+
+    /**
      * @param class-string $class
      */
     #[Test]

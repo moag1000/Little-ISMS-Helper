@@ -26,6 +26,11 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *
  * PenTest Finding PT-005 (CVSS 7.1): API endpoints allowed cross-tenant access.
  *
+ * Writes follow the web UI (S4, 2026-11): a role the UI demands for creating
+ * or editing a record type is demanded here too, so REST and the assistant
+ * (MCP) never allow more than the form does. {@see self::WRITE_ROLES};
+ * tests/Api/ApiWriteRoleParityTest.php compares it with the controllers.
+ *
  * Attributes:
  *   API_VIEW   — read single entity
  *   API_EDIT   — update entity
@@ -62,6 +67,25 @@ final class ApiTenantVoter extends Voter
         \App\Entity\Document::class,
     ];
 
+    /**
+     * Roles (any of them, role hierarchy applies) a write needs beyond the
+     * tenant scope — the same the web form checks. Types not listed: ROLE_USER,
+     * like their forms.
+     *
+     * @var array<class-string, list<string>>
+     */
+    public const array WRITE_ROLES = [
+        // ContextController::edit / ISMSObjectiveController::new|edit: ISMS_STEERING_EDIT
+        \App\Entity\ISMSContext::class => IsmsSteeringVoter::STEERING_ROLES,
+        \App\Entity\ISMSObjective::class => IsmsSteeringVoter::STEERING_ROLES,
+        // ThreatIntelligenceController::new|edit: ROLE_MANAGER
+        \App\Entity\ThreatIntelligence::class => ['ROLE_MANAGER'],
+        // Append-only machine logs without a form (ingest by a manager-level
+        // integration account); nobody else writes protocol entries.
+        \App\Entity\CryptographicOperation::class => ['ROLE_MANAGER'],
+        \App\Entity\PhysicalAccessLog::class => ['ROLE_MANAGER'],
+    ];
+
     protected function supports(string $attribute, mixed $subject): bool
     {
         if (!in_array($attribute, [self::API_VIEW, self::API_EDIT, self::API_DELETE, self::API_CREATE])) {
@@ -96,7 +120,12 @@ final class ApiTenantVoter extends Voter
         // state processor assigns the creator's own tenant. Allow that only
         // to users who have a tenant to assign (or SUPER_ADMIN).
         if ($attribute === self::API_CREATE && !$entityTenant instanceof Tenant) {
-            return $this->hasReachableRole($user, 'ROLE_SUPER_ADMIN') || $user->getTenant() instanceof Tenant;
+            if ($this->hasReachableRole($user, 'ROLE_SUPER_ADMIN')) {
+                return true;
+            }
+
+            return $user->getTenant() instanceof Tenant
+                && ($this->hasReachableRole($user, 'ROLE_ADMIN') || $this->hasWriteRole($user, $subject));
         }
 
         // Tenant scope: SUPER_ADMIN everywhere, ROLE_ADMIN only inside its
@@ -106,7 +135,29 @@ final class ApiTenantVoter extends Voter
             return $scope;
         }
 
-        // In scope below ROLE_ADMIN: view, edit and create; delete is admin-only.
-        return $attribute !== self::API_DELETE;
+        // In scope below ROLE_ADMIN: view; edit and create with the role the
+        // web form demands; delete is admin-only.
+        return match ($attribute) {
+            self::API_VIEW => true,
+            self::API_DELETE => false,
+            default => $this->hasWriteRole($user, $subject),
+        };
+    }
+
+    private function hasWriteRole(User $user, object $subject): bool
+    {
+        foreach (self::WRITE_ROLES as $class => $roles) {
+            if ($subject instanceof $class) {
+                foreach ($roles as $role) {
+                    if ($this->hasReachableRole($user, $role)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        return true;
     }
 }
