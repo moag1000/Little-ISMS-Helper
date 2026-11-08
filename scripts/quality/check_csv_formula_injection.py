@@ -37,13 +37,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 
-CALL = re.compile(r"\bfputcsv\(|->setCellValue(?:Explicit)?(?:ByColumnAndRow)?\(|->fromArray\(")
+# `->setValue()` is also Doctrine/PropertyAccessor vocabulary: only on a cell (`getCell(...)->setValue(`, `$cell->setValue(`).
+CALL = re.compile(
+    r"\bfputcsv\(|->setCellValue(?:Explicit)?(?:ByColumnAndRow)?\(|->fromArray\("
+    r"|->insertOne\(|->insertAll\(|(?:getCell\([^()]*\)|\$cell\w*)->setValue(?:Explicit)?\("
+)
+FIRST_ARG = ("fromArray", "insertOne", "insertAll", "setValue")
 SANITIZED = re.compile(r"CsvSanitizer|\bcsvCell\b|\bsanitize\w*\(|streamCsvExport\(")
 EXEMPT = "@csv-sanitize-exempt:"
 # Getters that cannot return free text.
 SAFE_CALL = re.compile(
     r"^(getId|format|count|trans|round|is[A-Z]\w*|has[A-Z]\w*|getHas[A-Z]\w*|getIs[A-Z]\w*|"
-    r"get\w*(Count|Score|Id|Probability|Impact|Percentage|Percent|Number|Total|Days|Hours|Minutes|Rate|Amount|At|Date))$"
+    r"get\w*(Count|Score|Level|Id|Probability|Impact|Percentage|Percent|Number|Total|Days|Hours|Minutes|Rate|Amount|At|Date))$"
 )
 STRING = re.compile(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"")
 TERMINAL_SAFE = re.compile(r"->\s*\w+\(\s*\)\s*(\?->|->)\s*(count|format)\(")
@@ -91,21 +96,85 @@ def enclosing_function(text: str, pos: int) -> str:
     return text[max(start, 0):end if end > 0 else len(text)]
 
 
-def site_problem(text: str, match: re.Match[str]) -> str | None:
-    args = arguments(text, match.end())
-    value = args[0] if "fromArray" in match.group(0) else (args[1] if len(args) > 1 else "")
-    if SANITIZED.search(value):
+def split_array(code: str) -> list[str] | None:
+    """Elements of an array literal (`[a, b]` / `array(a, b)`), else None."""
+    m = re.match(r"^(?:\[|array\()", code)
+    return arguments(code, m.end()) if m else None
+
+
+def split_concat(code: str) -> list[str]:
+    """Top-level operands of a `.` concatenation (strings and brackets respected)."""
+    parts, depth, quote, start = [], 0, None, 0
+    for i, ch in enumerate(code):
+        if quote:
+            if ch == quote and code[i - 1] != "\\":
+                quote = None
+        elif ch in "'\"":
+            quote = ch
+        elif ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+        elif ch == "." and depth == 0 and code[i - 1:i + 2] != "..." and not code[i - 1:i].isdigit() \
+                and not code[i + 1:i + 2].isdigit():
+            parts.append(code[start:i])
+            start = i + 1
+    parts.append(code[start:])
+    return parts if len(parts) > 1 else [code]
+
+
+def value_problem(code: str, function: str, top: bool) -> str | None:
+    """Why a cell value / array of cell values reaches the sheet unsanitised, else None."""
+    code = code.strip()
+    elements = split_array(code)
+    if elements is not None:  # one sanitised element must not vouch for its siblings
+        for element in elements:
+            element = re.sub(r"^[^()\[\]]*?=>", "", STRING.sub("''", element)).strip() if "=>" in element else element
+            problem = value_problem(element, function, False)
+            if problem:
+                return problem
         return None
-    code = STRING.sub("''", value).strip()
+    parts = split_concat(code)
+    if len(parts) > 1:  # `sanitize($a) . $b->getTitle()`: every part counts, a sanitised sibling vouches for none
+        for part in parts:
+            problem = value_problem(part, function, False)
+            if problem:
+                return problem
+        return None
+    if SANITIZED.search(code):
+        return None
+    code = STRING.sub("''", code).strip()
+    if re.match(r"^(?:\\)?json_encode\(", code):  # starts with { or [, never a formula
+        return None
     # `->getEvidenceDocuments()->count()`, `->getReviewDate()?->format(…)`: the cell gets the number / date.
     code = TERMINAL_SAFE.sub(r"->\2(", code)
     for name in re.findall(r"->\s*(\w+)\s*\(", code):
         if not SAFE_CALL.match(name):
             return f"->{name}() reaches the cell unsanitised"
-    function = enclosing_function(text, match.start())
-    if BARE_VARIABLE.fullmatch(code) and not SANITIZED.search(function) and EXEMPT not in function:
-        return f"{code} is written in a function that never sanitises"
+    if top and BARE_VARIABLE.fullmatch(code) and EXEMPT not in function:
+        if not SANITIZED.search(function):
+            return f"{code} is written in a function that never sanitises"
+        # The function sanitises something, but maybe not this row: look at how the variable was filled.
+        name = code[1:].split("[", 1)[0]
+        names = {name}
+        for loop in re.finditer(r"foreach\s*\(\s*\$(\w+)[^)]*?\bas\s+(?:\$\w+\s*=>\s*)?\$" + re.escape(name) + r"\b", function):
+            names.add(loop.group(1))  # `foreach ($rows as $row)`: $row is filled where $rows is
+        base = "(?:" + "|".join(re.escape(n) for n in names) + ")"
+        for assign in re.finditer(r"\$" + base + r"(?:\[[^\]]*\])*\s*=(?![=>])\s*", function):
+            rhs = arguments("(" + function[assign.end():] , 1)
+            rhs_code = rhs[0] if rhs else ""
+            rhs_code = rhs_code.split(";", 1)[0] if ";" in rhs_code else rhs_code
+            problem = value_problem(rhs_code, function, False)
+            if problem:
+                return f"{code} is filled with unsanitised data ({problem})"
     return None
+
+
+def site_problem(text: str, match: re.Match[str]) -> str | None:
+    args = arguments(text, match.end())
+    first = any(name in match.group(0) for name in FIRST_ARG) or text[max(match.start() - 2, 0):match.start()] == "->"
+    value = args[0] if first else (args[1] if len(args) > 1 else "")
+    return value_problem(value, enclosing_function(text, match.start()), True)
 
 
 def main() -> int:

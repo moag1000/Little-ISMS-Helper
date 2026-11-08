@@ -29,8 +29,10 @@ ZONES = ("eu", "eea_extra", "adequacy", "dpf")
 MAX_AGE_DAYS = 366
 EU = {"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU", "IE", "IT",
       "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"}
-ARRAY = re.compile(r"\[[^\[\]]*\]", re.S)
-CODE = re.compile(r"['\"]([A-Z]{2})['\"]")
+ARRAY = re.compile(r"(?:\[|\barray\()[^\[\]()]*[\])]", re.S)
+CODE = re.compile(r"['\"]([A-Za-z]{2})['\"]")
+KEY = re.compile(r"['\"]([A-Za-z]{2})['\"]\s*=>")
+CODE_STRING = re.compile(r"['\"]([A-Za-z]{2}(?:\s*[,;|]\s*[A-Za-z]{2}){4,})['\"]")
 
 
 def parse(text: str) -> tuple[str | None, dict[str, list[str]]]:
@@ -76,11 +78,25 @@ def main() -> int:
     for path in sorted((ROOT / "src").rglob("*.php")):
         rel = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8")
+        hits: list[tuple[int, set[str]]] = []
         for m in ARRAY.finditer(text):
-            # Associative arrays are choice lists (label => code), not membership checks.
-            if "=>" not in m.group(0) and len(set(CODE.findall(m.group(0))) & EU) >= 5:
-                line = text.count("\n", 0, m.start()) + 1
+            body = m.group(0)
+            # Codes as VALUES of an associative array are a choice list (label => code); codes as KEYS
+            # (['DE' => true, ...]) are a membership map and count like a plain list.
+            codes = KEY.findall(body) if "=>" in body else CODE.findall(body)
+            hits.append((m.start(), {c.upper() for c in codes}))
+        for m in CODE_STRING.finditer(text):  # 'DE,AT,FR,...' / explode(',', ...)
+            hits.append((m.start(), {c.upper() for c in re.findall(r"[A-Za-z]{2}", m.group(1))}))
+        for start, found in hits:
+            if len(found & EU) >= 5:
+                line = text.count("\n", 0, start) + 1
                 errors.append(f"{rel}:{line}: hard-coded EU/EEA country list, use App\\Privacy\\GdprTransferZones")
+
+    if set(zones.get("eu", [])) != EU:
+        diff = sorted(set(zones.get("eu", [])) ^ EU)
+        errors.append(f"zone 'eu' is not the EU-27 (differs in: {', '.join(diff)})")
+    if not {"IS", "LI", "NO"} <= set(zones.get("eea_extra", [])):
+        errors.append("zone 'eea_extra' must contain IS, LI and NO")
 
     if errors:
         print("check_gdpr_transfer_zones: FAIL\n")

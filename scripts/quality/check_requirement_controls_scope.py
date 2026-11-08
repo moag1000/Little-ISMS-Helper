@@ -28,17 +28,25 @@ ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 BASELINE = ROOT / "scripts" / "quality" / "baselines" / "requirement_controls_scope.txt"
 ALLOWED = (SRC / "Entity", SRC / "Service" / "Compliance" / "Fulfillment")
-CALL = re.compile(r"->getMappedControls\(\)")
+# The getter (any spacing, first-class callable) and its name as a string (callable arrays, PropertyAccessor
+# paths); in Twig the property path `requirement.mappedControls`. (DQL joins by control id are scoped by the
+# control and stay allowed.)
+CALL = re.compile(r"->\s*getMappedControls\s*\(|['\"]getMappedControls['\"]|\b\w+\.mappedControls\b(?!['\"])")
+PHP_CALL = re.compile(r"->\s*getMappedControls\s*\(|['\"](?:get)?[Mm]appedControls['\"]")
 COMMENT = re.compile(r"^\s*(?:\*|//|/\*)")
 
 
 def counts() -> dict[str, int]:
     found: dict[str, int] = {}
-    for path in sorted(SRC.rglob("*.php")):
+    files = sorted(SRC.rglob("*.php")) + sorted((ROOT / "templates").rglob("*.twig"))
+    for path in files:
         if any(str(path).startswith(str(a)) for a in ALLOWED):
             continue
-        n = sum(len(CALL.findall(line)) for line in path.read_text(encoding="utf-8").splitlines()
-                if not COMMENT.match(line))
+        pattern = CALL if path.suffix == ".twig" else PHP_CALL
+        # Whole file (a call may be split over lines), comment lines blanked.
+        text = "\n".join("" if COMMENT.match(line) else line
+                         for line in path.read_text(encoding="utf-8").splitlines())
+        n = len(pattern.findall(text))
         if n:
             found[str(path.relative_to(ROOT))] = n
     return found

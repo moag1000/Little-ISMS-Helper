@@ -36,10 +36,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATES = ROOT / "templates"
 # Layouts whose children inherit a <main>.
-MAIN_LAYOUTS = re.compile(r"\{%\s*extends\s+'(base|admin/layout)\.html\.twig'")
+# (either quote style, `{%-` whitespace control; the public/auth/setup layouts open a <main> too)
+MAIN_LAYOUTS = re.compile(
+    r"""\{%-?\s*extends\s+['"](?:base|admin/layout|base_public|base_auth|setup/_layout)\.html\.twig['"]"""
+)
 PAGE_HEADER = re.compile(r"_fa_page_header\.(render|header)\(")
-MAIN_OPEN = re.compile(r"<main[\s>]")
-H1 = re.compile(r"<h1[\s>]")
+MAIN_OPEN = re.compile(r"<main[\s>]|role\s*=\s*[\"']main[\"']", re.I)
+H1 = re.compile(r"<h1[\s>]", re.I)
 STATUS_MAP = re.compile(
     r"\{%-?\s*set\s+_?(?!\w*(?:btn|button))\w*(?:[cC]olors?|[tT]ones?|[vV]ariants?)\s*=\s*\{([^{}]*)\}"
 )
@@ -50,8 +53,14 @@ SET_MAP = re.compile(r"\{%-?\s*set\s+(?!\w*(?:btn|button))\w+\s*=\s*\{([^{}]*)\}
 IS_DOCUMENT = re.compile(r"(_pdf|/pdf/|/emails?/)")
 BUTTON_MAP = re.compile(r"btn|button")
 VOCABULARY = "templates/_components/_status_vocabulary.html.twig"
-TONE_VALUE = re.compile(r":\s*'(?:danger|warning|success|info|primary|secondary|neutral|accent)'")
-TOOLTIP = re.compile(r"<(\w+)\b[^>]*data-bs-toggle=\"tooltip\"[^>]*>", re.S)
+# Tone names as map values: either quote style, also as Bootstrap classes ('bg-success', 'text-bg-danger', 'badge-info').
+TONE_VALUE = re.compile(
+    r""":\s*['"](?:(?:text-bg-|bg-|badge-|text-)?)(?:danger|warning|success|info|primary|secondary|neutral|accent)['"]"""
+)
+TWIG_EXPR = re.compile(r"\{\{.*?\}\}|\{%.*?%\}", re.S)
+TOOLTIP = re.compile(r"""<(\w+)\b[^>]*data-bs-toggle\s*=\s*["']tooltip["'][^>]*>""", re.S)
+TABINDEX = re.compile(r"\stabindex\s*=")
+DISABLED = re.compile(r"\sdisabled\b")
 FOCUSABLE = {"a", "button", "input", "select", "textarea"}
 # Print-only copies and JS print windows are not part of the page outline.
 PRINT_ONLY = re.compile(r"<(div|header|section)[^>]*\bd-none d-print-block\b.*?</\1>|<script\b.*?</script>", re.S)
@@ -70,8 +79,17 @@ def findings() -> list[str]:
             ))
         ):
             out.append(f"{rel}::status-map")
-        for m in TOOLTIP.finditer(text):
-            if m.group(1).lower() not in FOCUSABLE and "tabindex" not in m.group(0):
+        # Mask Twig expressions so a `>` inside `{{ a > b }}` does not end the tag early.
+        masked = TWIG_EXPR.sub(lambda m: "_" * len(m.group(0)), text)
+        for m in TOOLTIP.finditer(masked):
+            tag, html = m.group(1).lower(), m.group(0)
+            # a link without href and a disabled button are not in the tab order either
+            reachable = (
+                TABINDEX.search(html)
+                or (tag in FOCUSABLE and not (tag == "button" and DISABLED.search(html))
+                    and not (tag == "a" and "href" not in html))
+            )
+            if not reachable:
                 out.append(f"{rel}::tooltip-unreachable")
                 break
         if not MAIN_LAYOUTS.search(text):

@@ -28,9 +28,32 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATES = ROOT / "templates"
 SKELETON = "_components/_fa_entity_links.html.twig"
-NO_RECORD = re.compile(r"\{#\s*show-skeleton:\s*no record\s*[—-]\s*\S")
-PARTS = ("_fa_status_band",)
+# The reason must be a real sentence, not a placeholder.
+NO_RECORD = re.compile(r"\{#\s*show-skeleton:\s*no record\s*[—-]\s*\S.{9,}?#\}")
+RE_COMMENT = re.compile(r"\{#.*?#\}", re.S)
+# Parts of the skeleton that must be USED, not merely imported or named in a comment:
+# the status band macro call and the history block (both on every record page).
+PARTS = (
+    re.compile(r"_fa_status_band\s*\.\s*\w+\s*\("),
+    re.compile(r"_fa_show_history"),
+)
+OLD_MATRIX = "_entity_link_matrix"
+INCLUDED = re.compile(r"""['"]([\w/.-]+\.twig)['"]""")
 EXCLUDE_DIRS = {"dev", "emails", "pdf", "bundles"}
+
+
+def has_old_matrix(text: str, depth: int = 0) -> bool:
+    """The old link matrix in the page or in a page-local partial it includes."""
+    if OLD_MATRIX in text:
+        return True
+    if depth >= 2:
+        return False
+    for ref in INCLUDED.findall(text):
+        part = TEMPLATES / ref
+        if not ref.startswith(("_components/", "_macros/")) and part.is_file():
+            if has_old_matrix(RE_COMMENT.sub("", part.read_text(encoding="utf-8")), depth + 1):
+                return True
+    return False
 
 
 def show_templates() -> list[Path]:
@@ -54,12 +77,13 @@ def main() -> int:
     migrated = 0
     for p in show_templates():
         rel = str(p.relative_to(ROOT))
-        text = p.read_text(encoding="utf-8")
-        if NO_RECORD.search(text):
+        raw = p.read_text(encoding="utf-8")
+        if NO_RECORD.search(raw):
             continue
+        text = RE_COMMENT.sub("", raw)  # a comment naming the skeleton is not using it
         if SKELETON in text:
             migrated += 1
-            if "_entity_link_matrix" in text or not all(p_ in text for p_ in PARTS):
+            if has_old_matrix(text) or not all(p_.search(text) for p_ in PARTS):
                 incomplete.append(rel)
         else:
             unmigrated.append(rel)
@@ -95,7 +119,7 @@ def main() -> int:
             print(f"  STALE {r}")
     if incomplete:
         failed = True
-        print("check_show_skeleton: incomplete skeleton (needs the status band, no old link matrix):")
+        print("check_show_skeleton: incomplete skeleton (needs the status band call, the history block, no old link matrix):")
         for r in incomplete:
             print(f"  FAIL {r}")
     if failed:

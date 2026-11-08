@@ -37,9 +37,9 @@ final class CorrectiveActionAdapter implements SourceAdapter
         return 'Korrekturmaßnahme';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
-        return null;
+        return 'corrective_actions';
     }
 
     /** @return iterable<CorrectiveAction> */

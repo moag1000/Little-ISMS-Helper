@@ -43,7 +43,7 @@ BOOTSTRAP = ROOT / "assets" / "stimulus_bootstrap.js"
 SCAN_DIRS = (ROOT / "templates", ROOT / "src")
 
 # Controllers that come from packages (controllers.json), not from assets/controllers/.
-PACKAGE_CONTROLLERS = {"symfony--ux-chartjs--chart", "symfony--ux-turbo--turbo-core", "live"}
+PACKAGE_CONTROLLERS = {"symfony--ux-chartjs--chart", "symfony--ux-turbo--turbo-core", "live", "csrf-protection"}
 # `data-bs-target` & co. belong to Bootstrap, not to Stimulus.
 NOT_STIMULUS_PREFIXES = ("bs", "turbo")
 
@@ -110,6 +110,8 @@ def scan_files() -> list[Path]:
     files = []
     for base in SCAN_DIRS:
         files += [p for p in base.rglob("*") if p.suffix in (".twig", ".php") and p.is_file()]
+    # Markup built in JS template strings (toasts, palette, notifications) is wired just the same.
+    files += [p for p in (ROOT / "assets").rglob("*.js") if p.is_file() and "vendor" not in p.parts]
     return sorted(files)
 
 
@@ -150,8 +152,24 @@ def main() -> int:
         if path.suffix == ".twig":
             # Usage notes in {# … #} are documentation, not wiring (keep line numbers).
             text = re.sub(r"\{#.*?#\}", lambda c: "\n" * c.group(0).count("\n"), text, flags=re.S)
+        elif path.suffix == ".js":
+            # Usage notes in comments are documentation, not wiring (keep line numbers).
+            text = re.sub(r"/\*.*?\*/", lambda c: "\n" * c.group(0).count("\n"), text, flags=re.S)
+            text = re.sub(r"^\s*//.*$", "", text, flags=re.M)
         corpus_parts.append(text)
         rel = path.relative_to(ROOT).as_posix()
+
+        # Tokens that are not even shaped like an identifier (`ui_actions`, `uiActions#x`) are skipped by the
+        # checks below - and Stimulus ignores them just the same. Tokens touching Twig are left alone.
+        for kind, pattern in (("data-controller", CONTROLLER_ATTR), ("data-action", ACTION_ATTR)):
+            for m in pattern.finditer(text):
+                raw = TWIG_EXPR.sub("\x00", m.group("v"))
+                for token in raw.split():
+                    if "\x00" in token or token in "?:":
+                        continue
+                    ok = IDENT.match(token) if kind == "data-controller" else ACTION_TOKEN.match(token)
+                    if not ok:
+                        problems.append(f"bad-identifier {rel}:{line_of(text, m.start())} {kind}={token}")
 
         for m in CONTROLLER_ATTR.finditer(text):
             # Identifiers inside Twig string literals ({{ cond ? ' foo bar' }})
@@ -202,10 +220,14 @@ def main() -> int:
 
     # 5. Assigning a Stimulus base property (`this.scope = …`) throws in the
     # module's strict mode, so connect() dies silently.
-    reserved = re.compile(r"this\.(scope|element|application|data|identifier|targets|outlets|context|classes)\s*=(?!=)")
+    names = "scope|element|application|data|identifier|targets|outlets|context|classes"
+    reserved = re.compile(
+        rf"this(?:\.|\s*\[\s*['\"])(?P<n>{names})(?:['\"]\s*\])?\s*=(?!=)"
+        rf"|Object\.assign\(\s*this\s*,\s*\{{[^}}]*?\b(?P<m>{names})\s*[:,}}]"
+    )
     for ident, src in sources.items():
         for m in reserved.finditer(src):
-            problems.append(f"reserved-property {controllers[ident].relative_to(ROOT).as_posix()}:{line_of(src, m.start())} this.{m.group(1)}")
+            problems.append(f"reserved-property {controllers[ident].relative_to(ROOT).as_posix()}:{line_of(src, m.start())} this.{m.group('n') or m.group('m')}")
 
     # 4. Dead controllers: not attached by data-controller, not passed as a
     # quoted identifier (macro option / JS), not referenced by another controller.

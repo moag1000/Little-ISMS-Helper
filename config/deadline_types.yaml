@@ -103,6 +103,7 @@ parameters:
         risk_treatment_plan:
             label: Behandlungsplan
             entity: App\Entity\RiskTreatmentPlan
+            module: risk_treatment_plans
             due: targetCompletionDate
             done: "item.getStatus() in ['completed', 'cancelled']"
             title: "item.getTitle() ?? ('Treatment plan #' ~ item.getId())"
@@ -180,6 +181,7 @@ parameters:
         capa_effectiveness_review:
             label: Wirksamkeitsprüfung Korrekturmaßnahme
             entity: App\Entity\CorrectiveAction
+            module: corrective_actions
             due: effectivenessReviewDate
             # Due once the measure is completed.
             done: "item.getStatus() != 'completed'"
@@ -220,6 +222,7 @@ parameters:
         person_access_expiry:
             label: Zugang endet
             entity: App\Entity\Person
+            module: persons
             due: accessValidUntil
             done: "item.isActive() === false"
             title: "item.getFullName()"
@@ -233,6 +236,7 @@ parameters:
         supplier_assessment:
             label: Lieferantenbewertung
             entity: App\Entity\Supplier
+            module: suppliers
             due: nextAssessmentDate
             done: "item.getStatus() in ['inactive', 'terminated']"
             title: "item.getName() ?? ('Supplier #' ~ item.getId())"
