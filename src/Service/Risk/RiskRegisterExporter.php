@@ -275,11 +275,11 @@ class RiskRegisterExporter
             $risk->getProbability(),
             $risk->getImpact(),
             $riskScore,
-            $level($riskScore, $risk),
+            $level($riskScore),
             $risk->getResidualProbability(),
             $risk->getResidualImpact(),
             $residualScore,
-            $level($residualScore, $risk),
+            $level($residualScore),
             match ($risk->getTreatmentStrategy()) {
                 TreatmentStrategy::Accept => 'Akzeptieren',
                 TreatmentStrategy::Mitigate => 'Mindern',
