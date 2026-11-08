@@ -51,6 +51,7 @@ compliance_import:
         col_count_mismatch: "Column count does not match the header."
         framework_missing: "Source or target framework not found in the system."
         requirement_missing: "Source or target requirement not found in its framework."
+        value_invalid: "Invalid value: mapping_percentage whole number 0–150, mapping_type weak/partial/full/exceeds, confidence low/medium/high."
         xml_parse_error: "The XML file could not be parsed. Check the root element (<bsi-profile version=\"1.0\">) and that <mappings> exists."
         xml_mapping_incomplete: "Mapping is missing source, target, framework or requirement attributes."
         xml_percentage_invalid: "Percentage must be an integer between 0 and 150."

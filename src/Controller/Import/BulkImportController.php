@@ -6,6 +6,7 @@ namespace App\Controller\Import;
 
 use App\Entity\BulkImportBatch;
 use App\Entity\User;
+use App\Exception\BusinessRule\BusinessRuleException;
 use App\Exception\Import\ImportFailedException;
 use App\Form\Import\ColumnMappingType;
 use App\Form\Import\PreviewConfirmType;
@@ -323,7 +324,19 @@ final class BulkImportController extends AbstractController
         $confirmForm->handleRequest($request);
 
         if ($confirmForm->isSubmitted() && $confirmForm->isValid()) {
-            $this->orchestrator->dispatchCommit($batch);
+            try {
+                $this->orchestrator->dispatchCommit($batch);
+            } catch (\Throwable $e) {
+                // Double submit (batch no longer in preview) or a failed commit — the
+                // status page shows the batch as it is; the orchestrator marked it failed.
+                $this->addFlash('danger', $this->translator->trans(
+                    $e instanceof BusinessRuleException
+                        ? 'import.error.commit_not_allowed'
+                        : 'import.error.commit_failed',
+                    [],
+                    'data_import',
+                ));
+            }
 
             return $this->redirectToRoute('app_bulk_import_commit_status', [
                 '_locale'    => $request->getLocale(),

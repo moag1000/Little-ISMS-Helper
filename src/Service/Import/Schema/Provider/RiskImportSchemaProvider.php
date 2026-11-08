@@ -11,6 +11,7 @@ use App\Entity\Risk;
 use App\Entity\Supplier;
 use App\Entity\ThreatIntelligence;
 use App\Entity\Vulnerability;
+use App\Enum\TreatmentStrategy;
 use App\Service\Import\Schema\EntityImportSchema;
 use App\Service\Import\Schema\ImportFieldSpec;
 use App\Service\Import\Schema\ImportSchemaProviderInterface;
@@ -171,6 +172,7 @@ final class RiskImportSchemaProvider implements ImportSchemaProviderInterface
                         'transfer',
                         'avoid',
                     ],
+                    enumClass: TreatmentStrategy::class,
                 ),
                 new ImportFieldSpec(
                     name: 'treatmentDescription',

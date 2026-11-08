@@ -20,6 +20,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ComplianceMappingRepository::class)]
 class ComplianceMapping
 {
+    /** Allowed `mappingType` values (form choices, mapping wizard, CSV import). */
+    public const MAPPING_TYPES = ['weak', 'partial', 'full', 'exceeds'];
+
+    /** Allowed `confidence` values. */
+    public const CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
+
+    /** Upper bound of `mappingPercentage` (101-150 = exceeds). */
+    public const MAX_PERCENTAGE = 150;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

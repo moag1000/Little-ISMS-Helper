@@ -9,7 +9,9 @@ use App\Entity\BulkImportRow;
 use App\Entity\Document;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Doctrine\EntityManagerRecovery;
 use App\Exception\Import\ImportFailedException;
+use App\Exception\Import\ImportRowInvalidException;
 use App\Message\BulkImportMessage;
 use App\Service\AuditLogger;
 use App\Service\Fte\FteRecorderService;
@@ -35,6 +37,11 @@ use Symfony\Component\Messenger\MessageBusInterface;
  *   - Entities are flushed in batches of 100 to avoid ORM memory bloat.
  *   - AuditLogger::logBulk() is called AFTER the final flush so the batch_id
  *     correlates only to successfully committed rows (ISO 27001 Clause 7.5.3).
+ *   - A row is applied completely or not at all: every value is checked against its
+ *     setter's type first, and an existing entity whose row fails is refreshed, so no
+ *     half-applied change reaches a flush while the row is reported as error.
+ *   - A failed commit leaves the batch "failed", also when the EntityManager closed
+ *     (it is recovered first) — never stuck in "committing".
  *   - All entity persistence goes through the Doctrine lifecycle so
  *     AuditLogSubscriber + tenant-filter fire normally (no raw SQL shortcuts).
  */
@@ -54,6 +61,7 @@ class BulkImportOrchestrator
         private readonly string $uploadDir,
         private readonly FileUploadSecurityService $uploadSecurity,
         private readonly ?FteRecorderService $fteRecorder = null,
+        private readonly ?EntityManagerRecovery $emRecovery = null,
     ) {}
 
     // -------------------------------------------------------------------------
@@ -228,7 +236,15 @@ class BulkImportOrchestrator
         $batch->setStatus(BulkImportBatch::STATUS_COMMITTING);
         $this->em->flush();
 
-        $this->bus->dispatch(new BulkImportMessage($batch->getId()));
+        try {
+            $this->bus->dispatch(new BulkImportMessage($batch->getId()));
+        } catch (\Throwable $e) {
+            // Sync transport: the bus's doctrine_transaction middleware rolled back
+            // the "failed" status commit() wrote — record it again outside it.
+            $this->markFailed($batch, $e);
+
+            throw $e;
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -251,18 +267,42 @@ class BulkImportOrchestrator
                 $this->doCommit($batch);
             });
         } catch (\Throwable $e) {
-            // Status may already be failed if doCommit set it inside the
-            // rolled-back transaction; set it again outside the transaction.
-            $batch->setStatus(BulkImportBatch::STATUS_FAILED);
-            $batch->setNotes($e->getMessage());
-
-            // Use a fresh flush here — the EM may or may not be open depending
-            // on whether the exception originated inside a nested flush.
-            if ($this->em->isOpen()) {
-                $this->em->flush();
-            }
+            $this->markFailed($batch, $e);
 
             throw $e;
+        }
+    }
+
+    /**
+     * Persist status=failed with the error as note. A failed flush closes the
+     * EntityManager, so it is recovered first (tenant scope kept, see
+     * {@see EntityManagerRecovery}) and the batch re-loaded; the batch is refreshed
+     * before the write because a rolled-back transaction leaves the unit of work
+     * believing the status is stored already. Best effort: the caller rethrows the
+     * original failure either way.
+     */
+    public function markFailed(BulkImportBatch $batch, \Throwable $e): void
+    {
+        $batch->setStatus(BulkImportBatch::STATUS_FAILED);
+        $batch->setNotes($e->getMessage());
+
+        try {
+            if (!$this->em->isOpen()) {
+                $this->emRecovery?->recover();
+            }
+            if (!$this->em->isOpen()) {
+                return;
+            }
+            $managed = $batch->getId() !== null ? $this->em->find(BulkImportBatch::class, $batch->getId()) : null;
+            if ($managed !== null) {
+                $this->em->refresh($managed);
+                $managed->setStatus(BulkImportBatch::STATUS_FAILED);
+                $managed->setNotes($e->getMessage());
+            }
+            $this->em->flush();
+        } catch (\Throwable) {
+            // The status could not be stored (database unreachable) — the original
+            // failure is what the caller reports.
         }
     }
 
@@ -344,11 +384,19 @@ class BulkImportOrchestrator
             $rowNumber = $updateRow['rowNumber'];
 
             try {
-                $existing   = $mapper->findExisting($updateRow['data'], $tenant);
+                $existing   = $mapper->findExisting($updateRow['data'], $tenant, $batch->getColumnMapping());
                 $entityData = $mapper->toEntityData($updateRow['data'], $batch->getColumnMapping(), $tenant);
 
                 if ($existing !== null) {
-                    $this->applyEntityData($existing, $entityData);
+                    try {
+                        $this->applyEntityData($existing, $entityData);
+                    } catch (\Throwable $e) {
+                        // A setter threw after earlier ones ran: drop the half-applied
+                        // row, or the next flush would write it without audit entry.
+                        $this->em->refresh($existing);
+
+                        throw $e;
+                    }
                     $this->em->persist($existing);
 
                     $bulkRow = $this->buildBulkRow($batch, $rowNumber, BulkImportRow::STATUS_UPDATED, BulkImportRow::ACTION_UPDATE, $updateRow['data'], $updateRow['oldValues'], $entityData);
@@ -526,17 +574,54 @@ class BulkImportOrchestrator
      *
      * Setter name: "set" + ucfirst($propertyName).
      * Properties whose setter does not exist are silently skipped.
+     * Every value is checked against its setter's parameter type before the first
+     * setter runs, so a mismatch refuses the row without touching the entity.
      *
      * @param array<string, mixed> $entityData
+     *
+     * @throws ImportRowInvalidException when a value does not fit its setter
      */
     private function applyEntityData(object $entity, array $entityData): void
     {
+        $setters = [];
         foreach ($entityData as $property => $value) {
             $setter = 'set' . ucfirst($property);
-            if (method_exists($entity, $setter)) {
-                $entity->$setter($value);
+            if (!method_exists($entity, $setter)) {
+                continue;
             }
+            $type = ((new \ReflectionMethod($entity, $setter))->getParameters()[0] ?? null)?->getType();
+            if ($type instanceof \ReflectionNamedType && !self::fitsType($type, $value)) {
+                $message = sprintf('Field "%s": a %s value does not fit %s.', $property, get_debug_type($value), $type);
+
+                throw new ImportRowInvalidException(0, [$message], $message);
+            }
+            $setters[$setter] = $value;
         }
+
+        foreach ($setters as $setter => $value) {
+            $entity->$setter($value);
+        }
+    }
+
+    /** Whether $value passes a strict-types call to a parameter of this type. */
+    private static function fitsType(\ReflectionNamedType $type, mixed $value): bool
+    {
+        if ($value === null) {
+            return $type->allowsNull();
+        }
+        $name = $type->getName();
+        if (!$type->isBuiltin()) {
+            return in_array($name, ['self', 'static'], true) || $value instanceof $name;
+        }
+
+        return match ($name) {
+            'int'               => is_int($value),
+            'float'             => is_int($value) || is_float($value),
+            'string'            => is_string($value),
+            'bool'              => is_bool($value),
+            'array', 'iterable' => is_array($value),
+            default             => true, // mixed, object, …
+        };
     }
 
     /**

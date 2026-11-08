@@ -10,7 +10,8 @@ namespace App\Service\Import\Schema;
  * The schema-driven import (see {@see SchemaDrivenMapper}) reads a list of these
  * instead of hand-written per-entity mapper code. A field can be:
  *   - a scalar (string/int/float/bool/date/text)
- *   - an enum (validated against allowed values)
+ *   - a decimal (numeric cell → numeric string, for `?string` setters of DECIMAL columns)
+ *   - an enum (validated against allowed values; with `enumClass` cast to that BackedEnum)
  *   - a json list (comma/semicolon-separated → array)
  *   - a relation (resolved by looking up a related entity by a human field)
  *
@@ -25,6 +26,7 @@ final class ImportFieldSpec
     public const TYPE_TEXT     = 'text';
     public const TYPE_INT      = 'int';
     public const TYPE_FLOAT    = 'float';
+    public const TYPE_DECIMAL  = 'decimal';   // numeric string (Doctrine DECIMAL → ?string setter)
     public const TYPE_BOOL     = 'bool';
     public const TYPE_DATE     = 'date';
     public const TYPE_ENUM     = 'enum';
@@ -40,6 +42,8 @@ final class ImportFieldSpec
      *                                    without error when any of them is given (user OR person OR text)
      * @param bool         $refuseIfUnresolved a given, non-empty value that does not resolve (relation) refuses
      *                                    the row instead of silently dropping it (owner columns)
+     * @param class-string<\BackedEnum>|null $enumClass type = enum and the setter takes this BackedEnum: the cell
+     *                                    is cast via its cases (case-insensitive), an unknown value is a row error
      */
     public function __construct(
         public readonly string $name,
@@ -56,6 +60,7 @@ final class ImportFieldSpec
         public readonly ?string $relationFallbackLookup = null,
         public readonly array $requiredUnlessAny = [],
         public readonly bool $refuseIfUnresolved = false,
+        public readonly ?string $enumClass = null,
     ) {
     }
 

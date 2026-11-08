@@ -6,6 +6,7 @@ namespace App\Service\Import\Schema\Provider;
 
 use App\Entity\Incident;
 use App\Entity\Person;
+use App\Enum\IncidentSeverity;
 use App\Service\Import\Schema\EntityImportSchema;
 use App\Service\Import\Schema\ImportFieldSpec;
 use App\Service\Import\Schema\ImportSchemaProviderInterface;
@@ -96,6 +97,7 @@ final class IncidentImportSchemaProvider implements ImportSchemaProviderInterfac
                     type: ImportFieldSpec::TYPE_ENUM,
                     required: true,
                     enumValues: ['low', 'medium', 'high', 'critical'],
+                    enumClass: IncidentSeverity::class,
                 ),
                 new ImportFieldSpec(
                     name: 'dataBreachOccurred',
