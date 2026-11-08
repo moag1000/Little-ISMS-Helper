@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Controller\Admin\SystemSettings\DataRetentionController;
 use App\Entity\Tenant;
 use App\Service\Deadline\Source\RetentionDeletionSource;
-use App\Service\Deadline\Source\UpcomingDeletion;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +51,6 @@ final class DataRetentionOverviewController extends AbstractController
         $saved = $tenant->getDataRetentionPolicies() ?? [];
         $upcoming = [];
         foreach ($this->upcoming->findOpen($tenant) as $deletion) {
-            assert($deletion instanceof UpcomingDeletion);
             $upcoming[$deletion->type] = $deletion;
         }
 
@@ -63,7 +61,7 @@ final class DataRetentionOverviewController extends AbstractController
                 'days' => (int) ($saved[$type]['retention_days'] ?? $defaultDays),
                 'auto_delete' => (bool) ($saved[$type]['auto_delete'] ?? false),
                 'upcoming' => $upcoming[$type] ?? null,
-                'list_route' => self::LIST_ROUTES[$type] ?? null,
+                'list_route' => self::LIST_ROUTES[$type],
             ];
         }
 

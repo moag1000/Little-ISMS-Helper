@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Risk;
 
-use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Enum\TreatmentStrategy;
 use App\Repository\RiskRepository;
@@ -61,7 +60,7 @@ final class RiskAcceptanceRequestSource implements DeadlineSource
             'treatmentStrategy' => TreatmentStrategy::Accept,
             'formallyAccepted' => false,
         ]) as $risk) {
-            if ($risk instanceof Risk && $risk->getAcceptanceJustification() !== null) {
+            if ($risk->getAcceptanceJustification() !== null) {
                 $requests[] = new RiskAcceptanceRequest($risk);
             }
         }
