@@ -320,6 +320,20 @@ class QuickFixControllerTest extends WebTestCase
         $this->assertSelectorTextContains('body', 'Repair All');
     }
 
+    /**
+     * S3: the page is public for recovery, so an anonymous visitor sees neither the data
+     * scan across all organisations (counts, DB errors) nor drift SQL.
+     */
+    #[Test]
+    public function testAnonymousVisitorSeesNoDataScanAcrossOrganisations(): void
+    {
+        $this->client->request('GET', '/quick-fix');
+
+        $content = (string) $this->client->getResponse()->getContent();
+        $this->assertStringNotContainsString('repair-row', $content);
+        $this->assertStringNotContainsString('ALTER TABLE', $content);
+    }
+
     #[Test]
     public function testAnonymousVisitorCannotRunDataRepair(): void
     {

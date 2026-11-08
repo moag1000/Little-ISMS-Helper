@@ -266,7 +266,7 @@ final class SuggestionController extends AbstractController
     {
         $back = (string) $request->request->get('_back', '');
 
-        return str_starts_with($back, '/') && !str_starts_with($back, '//')
+        return \App\Security\SafeRedirectTarget::isSafe($back)
             ? $this->redirect($back)
             : $this->redirectToRoute('app_suggestion_index');
     }

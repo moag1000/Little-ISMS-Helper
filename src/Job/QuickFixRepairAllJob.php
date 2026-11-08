@@ -58,6 +58,12 @@ final class QuickFixRepairAllJob implements AsyncJobInterface
             $tenantRepo = $this->entityManager->getRepository(Tenant::class);
             /** @var Tenant|null $targetTenant */
             $targetTenant = $tenantRepo->findOneBy([]);
+            // "The first organisation" is only the right owner when there is just one;
+            // with several, orphans are assigned per organisation under Admin > Data repair.
+            if ($targetTenant !== null && $tenantRepo->count([]) > 1) {
+                $ctx->message('Step 1/3 skipped — several organisations exist, assign orphans under Admin > Data repair.');
+                $targetTenant = null;
+            }
             if ($targetTenant !== null) {
                 $globalClasses = $this->dataIntegrityService->getGlobalCatalogueEntityClasses();
                 $orphaned = $this->dataIntegrityService->findAllOrphanedEntities();

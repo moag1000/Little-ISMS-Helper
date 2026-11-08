@@ -431,6 +431,23 @@ web UI for this.
   caller needs `ROLE_ALLOWED_TO_SWITCH`, a super admin is never a target, and a
   caller other than the super admin may only become a user who reaches no role
   the caller does not reach.
+- **Global compliance mappings** (both requirements from the global
+  catalogue) feed every organisation's fulfilment. With more than one
+  organisation only `ROLE_SUPER_ADMIN` creates, changes, approves, deprecates,
+  analyses, imports or deletes them (`GlobalCatalogueVoter::WRITE`, attribute
+  `GLOBAL_CATALOGUE_WRITE`): mapping editor and wizard, CSV/BSI import wizard,
+  consultant CSV import, mapping libraries in the compliance wizard and the
+  hub, framework version migration, mapping quality review/analysis,
+  generated comparison mappings — one route list in
+  `GlobalCatalogueWriteSubscriber` (403 before any form). The main buttons are
+  hidden for others. A Doctrine
+  backstop (`GlobalMappingWriteGuard`) refuses any flush that touches a global
+  mapping for a signed-in user without the right, whichever path it comes
+  from. With a single organisation the screens' own role rules apply as
+  before. Mappings of an organisation's own uploaded requirements stay that
+  organisation's. Console commands run as the operator and are not checked.
+- **Sample data** from Admin → Modules is imported into the admin's current
+  organisation, never into "the default" or the first one.
 - **Lifecycle overrides** (`/admin/lifecycle-overrides`) exist only for
   workflows of organisation-owned records. Tenant, role, permission, policy
   template and global mapping workflows are instance-wide: not listed, and

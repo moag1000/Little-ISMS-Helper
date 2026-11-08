@@ -452,14 +452,15 @@ final class AdminHubCatalog
                 'label' => 'admin.hub.group.integrations.label',
                 'description' => 'admin.hub.group.integrations.desc',
                 'modules' => [
-                    // scope: own-tenant compliance import
+                    // scope: global mapping catalogue (GlobalCatalogueVoter)
                     [
                         'key' => 'compliance_import',
                         'icon' => 'fa-icon--nav-upload',
                         'label' => 'admin.hub.module.compliance_import.label',
                         'description' => 'admin.hub.module.compliance_import.desc',
                         'route' => 'admin_compliance_import_upload',
-                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                        // writes the mappings every organisation uses
+                        'requiredAttribute' => 'GLOBAL_CATALOGUE_WRITE',
                     ],
                     // scope: own-tenant GSTool import
                     [

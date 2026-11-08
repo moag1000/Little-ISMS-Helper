@@ -131,7 +131,7 @@ class JobStatusController extends AbstractController
         // paths (starting with `/`) so an attacker can't redirect the
         // operator to an external host via the query string.
         $returnRaw = (string) $request->query->get('return', '');
-        $cancelUrl = (str_starts_with($returnRaw, '/') && !str_starts_with($returnRaw, '//'))
+        $cancelUrl = \App\Security\SafeRedirectTarget::isSafe($returnRaw)
             ? $returnRaw
             : $this->generateUrl('admin_dashboard');
 

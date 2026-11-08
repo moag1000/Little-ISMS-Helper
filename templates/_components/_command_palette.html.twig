@@ -138,7 +138,7 @@
 {% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
     { id: 'admin-loader-fixer', label: 'admin.nav.loader_fixer'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'ui-refresh', url: path('admin_loader_fixer_index'), keywords: ['loader', 'fixer', 'idempotent']  }
 ]) %}{% endif %}
-{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+{% if is_granted('ROLE_ADMIN') and is_granted('GLOBAL_CATALOGUE_WRITE') %}{% set _cmds = _cmds|merge([
     { id: 'admin-compliance-import', label: 'admin.nav.compliance_import'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'import', url: path('admin_compliance_import_upload'), keywords: ['compliance', 'import', 'csv']  }
 ]) %}{% endif %}
 {% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([

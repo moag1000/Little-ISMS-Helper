@@ -217,7 +217,7 @@
             </a>
         </div>
 
-        {% if is_granted('ROLE_MANAGER') %}
+        {% if is_granted('ROLE_MANAGER') and is_granted('GLOBAL_CATALOGUE_WRITE') %}
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_compliance_mapping_import') }}" class="text-decoration-none">
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}

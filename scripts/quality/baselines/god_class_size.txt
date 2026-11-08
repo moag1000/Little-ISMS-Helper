@@ -33,8 +33,8 @@ src/Form/ProcessingActivityType.php:LOC=808 deps=0
 src/Controller/AdminBackupController.php:LOC=778 deps=0
 src/Controller/ComplianceWizardController.php:LOC=778 deps=0
 src/Controller/AssetController.php:LOC=758 deps=0
-src/Controller/QuickFixController.php:LOC=730 deps=0
 src/Controller/ProcessingActivityController.php:LOC=713 deps=0
+src/Controller/QuickFixController.php:LOC=703 deps=0
 src/Controller/DPIAController.php:LOC=682 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
 src/Controller/MonitoringController.php:LOC=646 deps=0

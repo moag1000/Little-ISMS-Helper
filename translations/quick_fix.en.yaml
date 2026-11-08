@@ -51,6 +51,7 @@ quick_fix:
     error:
         title: 'Diagnostic failed'
         body: 'Quick Fix could not determine the schema status. Check logs or apply via CLI:'
+        details_privileged: 'Only super admins or holders of the installer token see the error message.'
     locked:
         title: 'Quick Fix locked'
         body: 'Access to this page is restricted by admin settings. Contact an administrator.'

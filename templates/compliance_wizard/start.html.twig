@@ -68,7 +68,7 @@
             {% endembed %}
 
             {# Alva-fairy: shipped YAML mapping libraries available, no DB mappings yet (Data-Reuse) #}
-            {% if inheritance_source_frameworks|default([])|length == 0 and available_mapping_libraries|default([])|length > 0 %}
+            {% if inheritance_source_frameworks|default([])|length == 0 and available_mapping_libraries|default([])|length > 0 and is_granted('GLOBAL_CATALOGUE_WRITE') %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
                 {% block alert_body %}
                     {% trans_default_domain 'wizard' %}

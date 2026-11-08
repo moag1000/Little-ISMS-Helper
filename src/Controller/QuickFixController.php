@@ -12,10 +12,10 @@ use App\Job\QuickFixRepairDuplicatesJob;
 use App\Job\QuickFixRepairOrphansJob;
 use App\Job\QuickFixRepairTenantMismatchesJob;
 use App\Service\AuditLogger;
-use App\Service\DataIntegrityService;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\QuickFixGuard;
+use App\Service\QuickFixIntegritySummary;
 use App\Service\SchemaMaintenanceService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,8 +42,9 @@ class QuickFixController extends AbstractController
         Request $request,
         QuickFixGuard $guard,
         SchemaMaintenanceService $maintenance,
-        DataIntegrityService $dataIntegrity,
+        QuickFixIntegritySummary $integritySummary,
         JobStatusService $jobStatusService,
+        TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->lockedResponse($guard, $request);
@@ -56,6 +57,12 @@ class QuickFixController extends AbstractController
         if ($request->query->has('token') && $guard->mayAccess($request)) {
             $cookieToSet = (string) $request->query->get('token');
         }
+
+        // The page is open to anyone (a broken login must stay recoverable), so without a
+        // super admin session or the installer token it shows only what applying the
+        // migrations needs: no SQL, no database error text and no data scan across all
+        // organisations (which is also the expensive part of every page load).
+        $privileged = $guard->mayRunPrivileged($request);
 
         $pendingCount = 0;
         $pendingNames = [];
@@ -88,44 +95,16 @@ class QuickFixController extends AbstractController
             // migrations AND no entity-vs-DB drift remain.
             $cleanVerdict = $maintenance->verifyClean();
         } catch (\Throwable $e) {
-            $errorMessage = $e->getMessage();
+            $errorMessage = $privileged
+                ? $e->getMessage()
+                : $translator->trans('quick_fix.error.details_privileged', [], 'quick_fix');
+        }
+        if (!$privileged) {
+            $driftStatements = [];
+            $entityDriftStatements = [];
         }
 
-        // Data integrity counts for Operator UI.
-        // Failures here are non-fatal — schema may be broken, so integrity
-        // checks could throw. We show zeros in that case and surface partial
-        // errors as informational flash messages on the index page.
-        // Each operation is independently wrapped so a column-not-found on
-        // one entity type does NOT prevent the remaining checks from running.
-        $orphanCount = 0;
-        $orphansByType = [];
-        $mismatchCount = 0;
-        $duplicateCounts = [];
-        $dataIntegrityErrors = [];
-        try {
-            $orphaned = $dataIntegrity->findAllOrphanedEntities();
-            foreach ($orphaned as $type => $entities) {
-                $cnt = count($entities);
-                $orphansByType[$type] = $cnt;
-                $orphanCount += $cnt;
-            }
-        } catch (\Throwable $e) {
-            $dataIntegrityErrors[] = 'orphans: ' . $e->getMessage();
-        }
-        try {
-            $broken = $dataIntegrity->findBrokenReferences();
-            $mismatchCount = count($broken);
-        } catch (\Throwable $e) {
-            $dataIntegrityErrors[] = 'mismatches: ' . $e->getMessage();
-        }
-        try {
-            $allDuplicates = $dataIntegrity->findDuplicateEntities();
-            foreach ($allDuplicates as $type => $groups) {
-                $duplicateCounts[$type] = count($groups);
-            }
-        } catch (\Throwable $e) {
-            $dataIntegrityErrors[] = 'duplicates: ' . $e->getMessage();
-        }
+        $integrity = $privileged ? $integritySummary->summarise() : QuickFixIntegritySummary::hidden();
 
         // Read recovery payload(s) stored by apply() on failure.
         // Sticky across refreshes — cleared on successful force-mark or
@@ -204,7 +183,7 @@ class QuickFixController extends AbstractController
         }
 
         $response = $this->render('quick_fix/index.html.twig', [
-            'privileged' => $guard->mayRunPrivileged($request),
+            'privileged' => $privileged,
             'pending_count' => $pendingCount,
             'pending_names' => $pendingNames,
             'pending_fs_count' => $pendingFsCount,
@@ -218,13 +197,7 @@ class QuickFixController extends AbstractController
             'error_message' => $errorMessage,
             'error_diagnosis' => $errorDiagnosis,
             'apply_failure' => $applyFailure,
-            // Data integrity
-            'orphan_count' => $orphanCount,
-            'orphans_by_type' => $orphansByType,
-            'mismatch_count' => $mismatchCount,
-            'duplicate_counts' => $duplicateCounts,
-            'data_integrity_errors' => $dataIntegrityErrors,
-        ]);
+        ] + $integrity);
 
         if ($cookieToSet !== null) {
             $response->headers->setCookie(

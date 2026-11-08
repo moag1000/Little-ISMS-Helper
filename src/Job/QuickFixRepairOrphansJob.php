@@ -17,12 +17,12 @@ use Doctrine\ORM\EntityManagerInterface;
  * UI doesn't have to fight PHP-FPM's 30 s timeout while a fresh tenant tree
  * is rebuilt.
  *
- * No args — the operator never picks the target tenant in QuickFix; the first
- * one available wins (single-tenant deployments) or the operator re-assigns
- * via the full admin/data-repair UI after the app is reachable again.
+ * No args — the operator never picks the target tenant in QuickFix, so it only
+ * runs with exactly one organisation; with several it stops and points to the
+ * admin data-repair UI, where the operator picks the organisation per row.
  *
- * Global catalogue entities (tenant_id=NULL by design) are skipped to avoid
- * UniqueConstraintViolationException on shared seed rows.
+ * Rows shared by design (SharedTenantRowsInterface, global catalogue entities)
+ * are not orphans and never reassigned (OrphanFinder).
  */
 final class QuickFixRepairOrphansJob implements AsyncJobInterface
 {
@@ -43,6 +43,11 @@ final class QuickFixRepairOrphansJob implements AsyncJobInterface
 
         if ($targetTenant === null) {
             $ctx->progress(0, 0, 'No tenant available — orphans cannot be assigned.');
+            return;
+        }
+        // "The first organisation" is only the right owner when there is just one.
+        if ($tenantRepo->count([]) > 1) {
+            $ctx->progress(0, 0, 'Several organisations exist — assign orphans per organisation under Admin > Data repair.');
             return;
         }
 

@@ -263,6 +263,7 @@
             <p>{{ 'quick_fix.entity_drift.body'|trans({}, 'quick_fix') }}</p>
             <div class="count">{{ entity_drift_count }}</div>
             <div class="count-label">{{ 'quick_fix.entity_drift.count_label'|trans({}, 'quick_fix') }}</div>
+            {% if entity_drift_statements|length > 0 %}
             <details style="margin-top: 12px;">
                 <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
                     {{ 'quick_fix.drift.show_sql'|trans({}, 'quick_fix') }}
@@ -270,6 +271,7 @@
                 <pre style="background: var(--bg); padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 11px; color: var(--muted); margin-top: 8px;">{% for s in entity_drift_statements %}{{ s }}
 {% endfor %}</pre>
             </details>
+            {% endif %}
             <form method="POST" action="{{ path('app_quick_fix_force_schema_update') }}" style="margin-top: 16px;">
                 <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_schema_update') }}">
                 <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--muted);">
@@ -353,6 +355,7 @@
                 </details>
             {% endif %}
 
+            {% if drift_statements|length > 0 %}
             <details style="margin-top: 16px;">
                 <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
                     {{ 'quick_fix.drift.show_sql'|trans({}, 'quick_fix') }}
@@ -360,6 +363,7 @@
                 <pre style="background: var(--bg); padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 11px; color: var(--muted); margin-top: 8px;">{% for s in drift_statements %}{{ s }}
 {% endfor %}</pre>
             </details>
+            {% endif %}
 
             {% if drift_destructive|length > 0 %}
                 <div style="margin-top: 12px; color: var(--muted); font-size: 13px;">
@@ -418,7 +422,19 @@
             <a href="/" style="color: var(--accent);">{{ 'quick_fix.ok.return'|trans({}, 'quick_fix') }}</a>
         {% endif %}
 
-        {# ── Data-Integrity section ─────────────────────────────────────── #}
+        {# No active instance operator (e.g. phantom-repaired install that
+           skipped the 3.15.3 operator-bootstrap migration). CLI only.
+           /quick-fix is public: shown to logged-in visitors only. #}
+        {% if app.user and instance_operator_missing() %}
+            <div class="flash error" data-testid="quick-fix-no-super-admin">
+                <strong>{{ 'quick_fix.super_admin_missing.title'|trans({}, 'quick_fix') }}</strong><br>
+                {{ 'quick_fix.super_admin_missing.body'|trans({}, 'quick_fix') }}
+                <pre style="margin: 8px 0 0; white-space: pre-wrap;"><code>php bin/console app:user:grant-super-admin &lt;email&gt;</code></pre>
+            </div>
+        {% endif %}
+
+        {# ── Data-Integrity section (super admin / installer token only: it scans every organisation) ── #}
+        {% if privileged|default(false) %}
         {% set has_integrity_issues = (orphan_count > 0) or (mismatch_count > 0) or (duplicate_counts|length > 0) %}
         <div class="section">
             <h2>{{ 'quick_fix.repair.section.title'|trans({}, 'quick_fix') }}</h2>
@@ -434,16 +450,6 @@
                 </div>
             {% endif %}
 
-            {# No active instance operator (e.g. phantom-repaired install that
-               skipped the 3.15.3 operator-bootstrap migration). CLI only.
-               /quick-fix is public: shown to logged-in visitors only. #}
-            {% if app.user and instance_operator_missing() %}
-                <div class="flash error" data-testid="quick-fix-no-super-admin">
-                    <strong>{{ 'quick_fix.super_admin_missing.title'|trans({}, 'quick_fix') }}</strong><br>
-                    {{ 'quick_fix.super_admin_missing.body'|trans({}, 'quick_fix') }}
-                    <pre style="margin: 8px 0 0; white-space: pre-wrap;"><code>php bin/console app:user:grant-super-admin &lt;email&gt;</code></pre>
-                </div>
-            {% endif %}
 
             {# Orphans #}
             <div class="repair-row">
@@ -512,6 +518,7 @@
                 <p style="font-size:13px;color:var(--success);margin-top:8px;">{{ 'quick_fix.repair.all.empty'|trans({}, 'quick_fix') }}</p>
             {% endif %}
         </div>
+        {% endif %}
 
         <div class="footer">Little ISMS Helper</div>
     </main>
