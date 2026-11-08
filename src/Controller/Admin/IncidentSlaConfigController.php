@@ -12,6 +12,7 @@ use App\Repository\IncidentSlaConfigRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\IncidentSlaConfigResolver;
+use App\Service\Incident\Nis2SignificanceSettings;
 use App\Service\TenantContext;
 use App\Util\ListPage;
 use DateTimeImmutable;
@@ -20,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -41,6 +43,7 @@ class IncidentSlaConfigController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly IncidentSlaConfigResolver $resolver,
+        private readonly Nis2SignificanceSettings $significanceSettings,
     ) {
     }
 
@@ -67,6 +70,7 @@ class IncidentSlaConfigController extends AbstractController
 
         return $this->render('admin/incident_sla_config/index.html.twig', [
             'page' => ListPage::fromRequest($configs, $request),
+            'nis2_significance' => Nis2SignificanceSettings::values($tenant),
         ]);
     }
 
@@ -129,6 +133,26 @@ class IncidentSlaConfigController extends AbstractController
             'form' => $form,
             'config' => $config,
         ], new Response(status: $status));
+    }
+
+    /**
+     * The organisation's thresholds of the NIS-2 pre-check "significant
+     * incident" (NIS-2 Art. 23 (3)): financial loss and affected persons.
+     */
+    #[Route('/significance', name: 'app_admin_incident_sla_significance', methods: ['POST'])]
+    #[IsCsrfTokenValid('incident_sla_significance')]
+    public function significance(Request $request): Response
+    {
+        $tenant = $this->requireTenant($request);
+        $current = Nis2SignificanceSettings::values($tenant);
+        $this->significanceSettings->update(
+            $tenant,
+            $request->request->getInt('financial_loss_eur', $current['financial_loss_eur']),
+            $request->request->getInt('affected_persons', $current['affected_persons']),
+        );
+        $this->addFlash('success', 'incident_sla.saved_significance');
+
+        return $this->redirectToRoute('app_admin_incident_sla_config', ['_fragment' => 'nis2-significance']);
     }
 
     private function requireTenant(Request $request): Tenant

@@ -28,11 +28,18 @@ supplier:
         empty: 'Keine Fragebögen vorhanden.'
         action:
             send: 'Fragebogen senden'
+            review: 'Antworten prüfen'
+            save_review: 'Bewertung übernehmen'
         field:
             supplier: Lieferant
             title: Titel
             status: Status
             sent_at: Versendet
+            review: Bewertung
+            score: 'Sicherheitsbewertung (0–100)'
+            findings: Feststellungen
+        flash:
+            reviewed: 'Bewertung übernommen.'
         status:
             draft: Entwurf
             sent: Versendet

@@ -28,3 +28,9 @@ incident_sla:
     saved: 'SLA gespeichert.'
     hint:
         regulatory: 'Regulatorische Fristen (GDPR Art. 33, NIS2 Art. 23, DORA Art. 19) gelten zusätzlich und bleiben unveränderbar. Die hier gesetzten Werte sind interne Business-SLAs.'
+    saved_significance: 'Schwellen gespeichert.'
+    significance:
+        title: 'NIS-2-Vorprüfung: Schwellen für erhebliche Vorfälle'
+        hint: 'Ab diesen Werten schlägt die Vorprüfung am Vorfall die Meldepflicht vor (NIS-2 Art. 23 Abs. 3). Vorgabe: 500.000 EUR und 100 Personen nach Durchführungsverordnung (EU) 2024/2690 Art. 3. Die Bewertung trifft die Einrichtung.'
+        financial_loss_eur: 'Finanzieller Schaden ab (EUR)'
+        affected_persons: 'Betroffene Personen ab'

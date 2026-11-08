@@ -56,8 +56,8 @@ final class Nis2BsiRegistrationService
             $profile->setOrganizationLegalForm($tenant->getLegalForm());
         }
 
-        if ($tenant->getNis2Sector() !== null && $tenant->getNis2Sector() !== '') {
-            $profile->setNis2Sector($tenant->getNis2Sector());
+        if (in_array($tenant->getNis2Sector(), Nis2RegistrationProfile::VALID_SECTORS, true)) {
+            $profile->setNis2Sector((string) $tenant->getNis2Sector());
         }
 
         if ($tenant->getNaceCode() !== null && $tenant->getNaceCode() !== '') {
@@ -106,7 +106,9 @@ final class Nis2BsiRegistrationService
             $errors['nis2Sector'] = 'eu_authorities.nis2_registration.error.sector_required';
         }
 
-        if (!in_array($profile->getNis2EntityCategory(), Nis2RegistrationProfile::VALID_CATEGORIES, true)) {
+        if ($profile->isNotRegulated()) {
+            $errors['nis2EntityCategory'] = 'eu_authorities.nis2_registration.error.not_regulated';
+        } elseif (!in_array($profile->getNis2EntityCategory(), Nis2RegistrationProfile::VALID_CATEGORIES, true)) {
             $errors['nis2EntityCategory'] = 'eu_authorities.nis2_registration.error.category_invalid';
         }
 

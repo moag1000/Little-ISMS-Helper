@@ -14,12 +14,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Outbound supplier questionnaire lifecycle: create + send + record the
- * supplier's response. The public answer surface is token-gated (see
+ * supplier's response + review it into the supplier's assessment. The public answer surface is token-gated (see
  * {@see \App\Controller\PublicSupplierQuestionnaireController}).
  */
 final class SupplierQuestionnaireService
 {
     private const string WORKFLOW = 'supplier_questionnaire_lifecycle';
+
+    /** A reviewed questionnaire counts as the supplier assessment for a year. */
+    public const int REASSESSMENT_MONTHS = 12;
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -101,5 +104,37 @@ final class SupplierQuestionnaireService
         );
 
         return true;
+    }
+
+    /**
+     * The reviewer's verdict on the supplier's answers (ISO 27001 A.5.19–5.22,
+     * DORA Art. 28): completed → reviewed, and the supplier's security
+     * assessment takes it over — score, findings, assessed today, next
+     * assessment in a year. That date is what the supplier assessment
+     * reminder counts from, so the next due date follows without extra input.
+     */
+    public function review(SupplierQuestionnaire $questionnaire, int $score, ?string $findings, ?User $reviewer): void
+    {
+        $this->lifecycle->transition($questionnaire, self::WORKFLOW, 'review', $reviewer);
+
+        $supplier = $questionnaire->getSupplier();
+        if ($supplier instanceof Supplier) {
+            $today = new DateTimeImmutable('today');
+            $supplier->setSecurityScore(max(0, min(100, $score)));
+            $supplier->setLastSecurityAssessment($today);
+            $supplier->setNextAssessmentDate($today->modify('+' . self::REASSESSMENT_MONTHS . ' months'));
+            $findings = trim((string) $findings);
+            if ($findings !== '') {
+                $supplier->setAssessmentFindings(mb_substr($findings, 0, 5000));
+            }
+        }
+        $this->entityManager->flush();
+
+        $this->auditLogger->logCustom(
+            action: 'supplier_questionnaire.reviewed',
+            entityType: 'SupplierQuestionnaire',
+            entityId: $questionnaire->getId(),
+            description: sprintf('Questionnaire "%s" reviewed, supplier score %d', $questionnaire->getTitle(), $score),
+        );
     }
 }

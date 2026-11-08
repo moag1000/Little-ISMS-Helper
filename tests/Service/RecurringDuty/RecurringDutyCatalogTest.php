@@ -43,13 +43,13 @@ final class RecurringDutyCatalogTest extends TestCase
     {
         $tenant = new Tenant();
         self::assertTrue(RecurringDutyCatalog::inScope('bia_review', $tenant));
-        self::assertFalse(RecurringDutyCatalog::inScope('nis2_management_training', $tenant));
+        self::assertFalse(RecurringDutyCatalog::inScope('nis2_measures_review', $tenant));
         self::assertFalse(RecurringDutyCatalog::inScope('dora_exit_plans', $tenant));
         self::assertFalse(RecurringDutyCatalog::inScope('unknown', $tenant));
 
         $tenant->setNis2Classification(Tenant::NIS2_IMPORTANT);
         $tenant->setDoraEntityCategory(Tenant::DORA_FINANCIAL_ENTITY);
-        self::assertTrue(RecurringDutyCatalog::inScope('nis2_management_training', $tenant));
+        self::assertTrue(RecurringDutyCatalog::inScope('nis2_measures_review', $tenant));
         self::assertTrue(RecurringDutyCatalog::inScope('dora_exit_plans', $tenant));
     }
 }

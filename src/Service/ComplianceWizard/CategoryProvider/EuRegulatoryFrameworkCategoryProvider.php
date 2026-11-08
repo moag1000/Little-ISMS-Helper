@@ -80,7 +80,10 @@ final class EuRegulatoryFrameworkCategoryProvider
                     'management_training' => [
                         'name' => 'wizard.check.nis2_20_2_training',
                         'description' => 'wizard.check.nis2_20_2_training_desc',
-                        'type' => 'training_coverage',
+                        // every member of top management, trained within a year
+                        'type' => 'training_participation',
+                        'roles' => ['ROLE_TOP_MGMT'],
+                        'months' => 12,
                         'module' => 'training',
                         'priority' => 'critical',
                         'article' => '20(2)',

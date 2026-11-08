@@ -28,11 +28,18 @@ supplier:
         empty: 'No questionnaires yet.'
         action:
             send: 'Send questionnaire'
+            review: 'Review answers'
+            save_review: 'Apply rating'
         field:
             supplier: Supplier
             title: Title
             status: Status
             sent_at: Sent
+            review: Rating
+            score: 'Security rating (0–100)'
+            findings: Findings
+        flash:
+            reviewed: 'Rating applied.'
         status:
             draft: Draft
             sent: Sent

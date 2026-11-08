@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Tenant;
 use App\Privacy\GdprTransferZones;
 
 /**
@@ -277,6 +278,44 @@ final class FrameworkApplicabilityService
         ];
 
         return $result;
+    }
+
+    /** NIS-2 Annex I sectors (high criticality) as used by the BSI registration profile. */
+    public const array NIS2_ANNEX_I = [
+        'energy', 'transport', 'banking', 'financial_market', 'health', 'drinking_water',
+        'waste_water', 'digital_infrastructure', 'ict_service_management', 'public_administration', 'space',
+    ];
+
+    /** NIS-2 Annex II sectors (other critical sectors). */
+    public const array NIS2_ANNEX_II = [
+        'postal_courier', 'waste_management', 'chemicals', 'food', 'manufacturing', 'digital_providers', 'research',
+    ];
+
+    /**
+     * NIS-2 category from sector and size (NIS-2 Art. 3, BSIG § 28): a large
+     * Annex I entity (from 250 staff or more than EUR 50 m turnover) is
+     * essential, any other medium or large entity of Annex I or II (from 50
+     * staff or more than EUR 10 m) is important; public administration is
+     * essential regardless of size. Everything else is not regulated.
+     *
+     * @return Tenant::NIS2_ESSENTIAL|Tenant::NIS2_IMPORTANT|Tenant::NIS2_NOT_REGULATED
+     */
+    public function nis2Category(string $sector, int $headcount, ?float $turnoverEur): string
+    {
+        $annexI = in_array($sector, self::NIS2_ANNEX_I, true);
+        if (!$annexI && !in_array($sector, self::NIS2_ANNEX_II, true)) {
+            return Tenant::NIS2_NOT_REGULATED;
+        }
+        if ($sector === 'public_administration') {
+            return Tenant::NIS2_ESSENTIAL;
+        }
+
+        $turnover = $turnoverEur ?? 0.0;
+        if ($annexI && ($headcount >= 250 || $turnover > 50_000_000)) {
+            return Tenant::NIS2_ESSENTIAL;
+        }
+
+        return $headcount >= 50 || $turnover > 10_000_000 ? Tenant::NIS2_IMPORTANT : Tenant::NIS2_NOT_REGULATED;
     }
 
     /**

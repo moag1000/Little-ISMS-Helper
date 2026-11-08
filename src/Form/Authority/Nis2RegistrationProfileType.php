@@ -8,6 +8,7 @@ use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\User;
 use App\Form\SectionMapInterface;
 use App\Form\Type\OwnerUserType;
+use App\Service\FrameworkApplicabilityService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -20,6 +21,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Form for NIS-2 BSI-Portal registration profile.
@@ -30,6 +32,12 @@ use Symfony\Component\Validator\Constraints\Positive;
  */
 final class Nis2RegistrationProfileType extends AbstractType implements SectionMapInterface
 {
+    public function __construct(
+        private readonly FrameworkApplicabilityService $applicability,
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     public static function getSectionMap(): array
     {
         return [
@@ -48,9 +56,20 @@ final class Nis2RegistrationProfileType extends AbstractType implements SectionM
         }
 
         $categoryChoices = [];
-        foreach (Nis2RegistrationProfile::VALID_CATEGORIES as $category) {
+        foreach (Nis2RegistrationProfile::CLASSIFICATIONS as $category) {
             $categoryChoices['eu_authorities.nis2_registration.category.' . $category] = $category;
         }
+
+        // The thresholds (sector, staff, turnover) suggest the category; the
+        // value itself is the organisation's classification (one place).
+        $profile = $options['data'] ?? null;
+        $suggestion = $profile instanceof Nis2RegistrationProfile && $profile->getNis2Sector() !== ''
+            ? $this->applicability->nis2Category(
+                $profile->getNis2Sector(),
+                $profile->getAffectedHeadcount(),
+                $profile->getAffectedAnnualTurnoverEur() !== null ? (float) $profile->getAffectedAnnualTurnoverEur() : null,
+            )
+            : null;
 
         $builder
             ->add('organizationLegalName', TextType::class, [
@@ -106,6 +125,10 @@ final class Nis2RegistrationProfileType extends AbstractType implements SectionM
                 'choices' => $categoryChoices,
                 'required' => true,
                 'constraints' => [new NotBlank()],
+                'help' => $suggestion !== null ? 'eu_authorities.nis2_registration.help.category' : null,
+                'help_translation_parameters' => $suggestion !== null
+                    ? ['%suggestion%' => $this->translator->trans('eu_authorities.nis2_registration.category.' . $suggestion, [], 'eu_authorities')]
+                    : [],
                 'choice_translation_domain' => 'eu_authorities',
                 'translation_domain' => 'eu_authorities',
             ])

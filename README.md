@@ -213,8 +213,9 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Risikobehandlungsplaene** -- Formaler Akzeptanzprozess mit Genehmigungsworkflow und Audit-Trail
 - **Risk-Appetite** -- Organisationsweite Schwellenwerte mit automatischer Warnung
 - **Periodische Reviews** -- Automatisierte Erinnerungen nach ISO 27001 Clause 6.1.3.d
-- **Meldepflichten** -- Ein Planer für NIS-2 (24 h / 72 h / 1 Monat), DORA (4–24 h / 72 h / 1 Monat) und DSGVO Art. 33 (72 h ab Entdeckung): das Tool prüft „erheblich“ mit sichtbaren Gründen vor, der ISB bestätigt, „Als gemeldet markieren“ schließt die Frist; eine Datenpanne am Vorfall legt den Entwurf der Datenschutzverletzung automatisch an
-- **Pflichtenkalender** -- Wiederkehrende Normpflichten ohne Datum am Datensatz (Risikoakzeptanzkriterien, SoA-Review, BIA, BC-Übung, Schlüsselrotation, TOM-Review, NIS-2-Leitungsschulung, DORA-Register u. a.) erscheinen je aktivem Modul automatisch; „Erledigt“ mit Nachweis schiebt die nächste Fälligkeit, Intervall und Zuständigkeit je Organisation einstellbar
+- **Meldepflichten** -- Ein Planer für NIS-2 (24 h / 72 h / 1 Monat), DORA (4–24 h / 72 h / 1 Monat) und DSGVO Art. 33 (72 h ab Entdeckung): das Tool prüft „erheblich“ mit sichtbaren Gründen vor, der ISB bestätigt, „Als gemeldet markieren“ schließt die Frist; eine Datenpanne am Vorfall legt den Entwurf der Datenschutzverletzung automatisch an und zeigt deren Status und Meldefrist am Vorfall; Zwischenbericht auf Anforderung der Behörde als eigene Frist, Erheblichkeitsschwellen je Organisation einstellbar, DORA-Meldung je Phase als JSON
+- **NIS-2-Einstufung an einer Stelle** -- Die Organisation trägt die Einstufung (wesentlich / wichtig / nicht reguliert), das Registrierungsprofil liest sie und schlägt sie aus Sektor, Beschäftigten und Umsatz vor; jede Person mit Leitungsrolle hat ihre eigene jährliche Schulungsfrist (Art. 20 Abs. 2) in Mein Tag
+- **Pflichtenkalender** -- Wiederkehrende Normpflichten ohne Datum am Datensatz (Risikoakzeptanzkriterien, SoA-Review, BIA, BC-Übung, Schlüsselrotation, TOM-Review, NIS-2-Maßnahmenreview, DORA-Register u. a.) erscheinen je aktivem Modul automatisch; „Erledigt“ mit Nachweis schiebt die nächste Fälligkeit, Intervall und Zuständigkeit je Organisation einstellbar
 - **Erinnerungen** -- Jede Frist erscheint einmal, bei der zuständigen Person: in „Mein Tag“, als tägliche Sammelmail (Uhrzeit je Organisation, im Profil abwählbar) und in der Glocke; Meldefristen in Stunden gehen sofort raus. Jedes Datumsfeld mit Pflicht hat eine Quelle (auch Einwilligungsablauf, Vertragsende, Patch-Frist, Zugangsende, Krisenstab-Training, TLPT, Exit-Plan-Test, angekündigte Löschungen); wer nur informiert wird (ISB bei Meldepflichten, Leitung beim Management-Review), sieht die Frist ebenfalls
 - **Vulnerability- und Patch-Management** -- CVE/CVSS-Tracking (NIS2-konform)
 
@@ -228,7 +229,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 ### Business Continuity (BCM)
 
-- **Business-Impact-Analyse** -- RTO, RPO, MTPD nach BSI 200-4
+- **Business-Impact-Analyse** -- RTO, RPO, MTPD nach BSI 200-4; ein BC-Plan ohne eigene Ziele übernimmt RTO/RPO aus der BIA seines Geschäftsprozesses
 - **BC-Plaene** -- Kontinuitaetsstrategien mit Uebungsverwaltung
 - **Krisenstab** -- Rollen und Eskalationspfade nach BSI 200-4
 - **Uebungsmanagement** -- Planung, Durchfuehrung und Auswertung von BC-Uebungen
@@ -255,6 +256,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 ### Standorte und Standortkarte
 
 - **Standort-Lagebild** -- Weltkarte aller Standorte mit Ebenen Restrisiko, Prüfungen, Notfall (ISO 22301), Audit (ISO 27001 9.2) und Drittland (DSGVO Kap. V), Sichten für CISO, ISB, Compliance, BCM, Datenschutz, Audit, Konzern und Standortverantwortliche, Drill-down bis zu Risiken, Assets und Vorfällen
+- **Lieferanten-Fragebogen bewerten** -- Ein ausgefüllter Fragebogen wird in der Fragebogenliste bewertet: Score und Befund gehen an den Lieferanten, die letzte Sicherheitsbewertung ist heute, die nächste in 12 Monaten (NIS-2 Art. 21 Abs. 2 d, DORA Art. 28)
 - **Lieferkette und Länderzonen** -- Lieferanten an ihren Verarbeitungsorten mit Unterauftragnehmer-Kette und DSGVO-Einstufung je Glied; eine versionierte Liste der EU/EWR-, Angemessenheits- und DPF-Länder für das ganze Tool (CI-Gate 80 meldet eine veraltete Liste)
 - **Ereignis-Modus und Audit-Stichprobe** -- betroffene Standorte, Prozesse, Notfallpläne und Krisenstäbe je Land; Stichprobenvorschlag nach IAF MD 1; Audit und Notfallübung vom Standort aus vorbelegt
 - **Offline-Geokodierung** -- Koordinaten aus PLZ (DE/AT/CH) oder Ort (weltweit) ohne Online-Dienst; optional eigener Nominatim-Dienst, Standard aus

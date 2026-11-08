@@ -44,6 +44,16 @@ class Nis2RegistrationProfile
         self::CATEGORY_IMPORTANT,
     ];
 
+    /** Equal to Tenant::NIS2_NOT_REGULATED: below the thresholds, no registration. */
+    public const string CATEGORY_NOT_REGULATED = 'not_regulated';
+
+    /** What the profile can set on the organisation. */
+    public const array CLASSIFICATIONS = [
+        self::CATEGORY_ESSENTIAL,
+        self::CATEGORY_IMPORTANT,
+        self::CATEGORY_NOT_REGULATED,
+    ];
+
     /** ENISA NIS-2 sector taxonomy (Annex I + II) */
     public const string SECTOR_ENERGY = 'energy';
     public const string SECTOR_TRANSPORT = 'transport';
@@ -279,21 +289,46 @@ class Nis2RegistrationProfile
         return $this->nis2Sector;
     }
 
+    /** The sector is the organisation's: it is written to the tenant as well. */
     public function setNis2Sector(string $nis2Sector): static
     {
         $this->nis2Sector = $nis2Sector;
+        if (isset($this->tenant) && $nis2Sector !== '') {
+            $this->tenant->setNis2Sector($nis2Sector);
+        }
+
         return $this;
     }
 
+    /**
+     * The NIS-2 classification lives on the organisation
+     * (Tenant.nis2Classification): essential, important or not regulated.
+     * The profile shows and edits that one value; its own column is only the
+     * fallback while the organisation has none.
+     */
     public function getNis2EntityCategory(): string
     {
-        return $this->nis2EntityCategory;
+        $classification = isset($this->tenant) ? $this->tenant->getNis2Classification() : null;
+
+        return in_array($classification, self::CLASSIFICATIONS, true) ? $classification : $this->nis2EntityCategory;
     }
 
     public function setNis2EntityCategory(string $nis2EntityCategory): static
     {
-        $this->nis2EntityCategory = $nis2EntityCategory;
+        if (in_array($nis2EntityCategory, self::VALID_CATEGORIES, true)) {
+            $this->nis2EntityCategory = $nis2EntityCategory;
+        }
+        if (isset($this->tenant) && in_array($nis2EntityCategory, self::CLASSIFICATIONS, true)) {
+            $this->tenant->setNis2Classification($nis2EntityCategory);
+        }
+
         return $this;
+    }
+
+    /** Whether the organisation is classified as not regulated (no registration duty). */
+    public function isNotRegulated(): bool
+    {
+        return $this->getNis2EntityCategory() === self::CATEGORY_NOT_REGULATED;
     }
 
     public function getAffectedHeadcount(): int

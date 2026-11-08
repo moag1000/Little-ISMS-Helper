@@ -35,6 +35,25 @@ final class Nis2RegistrationProfileTest extends TestCase
     }
 
     #[Test]
+    public function theClassificationIsTheOrganisations(): void
+    {
+        $tenant = new Tenant();
+        $profile = Nis2RegistrationProfile::forTenant($tenant);
+
+        $profile->setNis2EntityCategory(Nis2RegistrationProfile::CATEGORY_ESSENTIAL);
+        $profile->setNis2Sector(Nis2RegistrationProfile::SECTOR_ENERGY);
+        self::assertSame(Tenant::NIS2_ESSENTIAL, $tenant->getNis2Classification());
+        self::assertSame(Nis2RegistrationProfile::SECTOR_ENERGY, $tenant->getNis2Sector());
+
+        $tenant->setNis2Classification(Tenant::NIS2_NOT_REGULATED);
+        self::assertSame(Nis2RegistrationProfile::CATEGORY_NOT_REGULATED, $profile->getNis2EntityCategory());
+        self::assertTrue($profile->isNotRegulated());
+
+        $tenant->setNis2Classification(Tenant::NIS2_UNKNOWN);
+        self::assertSame(Nis2RegistrationProfile::CATEGORY_ESSENTIAL, $profile->getNis2EntityCategory(), 'own value while the organisation has none');
+    }
+
+    #[Test]
     public function aNewProfileIsDueAtOnce(): void
     {
         $profile = new Nis2RegistrationProfile();

@@ -19,6 +19,7 @@ use App\Service\ComplianceWizard\ReportingDutyCheck;
 use App\Service\ComplianceWizard\TrainingParticipationCheck;
 use App\Service\Incident\ReportingPlanner;
 use App\Service\ModuleConfigurationService;
+use App\Service\Responsibility\ResponsibilityResolver;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -85,7 +86,7 @@ final class RecordChecksTest extends TestCase
         $participations = $this->createStub(TrainingParticipationRepository::class);
         $participations->method('countByStatus')->willReturn(['completed' => 6, 'pending' => 2, 'waived' => 2]);
 
-        $result = (new TrainingParticipationCheck($participations))->check([], new Tenant());
+        $result = (new TrainingParticipationCheck($participations, $this->createStub(ResponsibilityResolver::class)))->check([], new Tenant());
 
         self::assertSame(75.0, $result['score']);
         self::assertSame(8, $result['details']['total']);

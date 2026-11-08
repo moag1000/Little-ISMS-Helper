@@ -117,4 +117,39 @@ class TrainingParticipationRepository extends ServiceEntityRepository
 
         return $counts;
     }
+
+    /**
+     * The latest completed training per user since a date (NIS-2 Art. 20 (2):
+     * the management body is trained regularly).
+     *
+     * @param list<User> $users
+     * @return array<int, \DateTimeImmutable> user id → last completion
+     */
+    public function lastCompletionByUser(Tenant $tenant, array $users, \DateTimeInterface $since): array
+    {
+        if ($users === []) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('p')
+            ->select('IDENTITY(p.user) AS userId', 'MAX(p.completedAt) AS completedAt')
+            ->where('p.tenant = :tenant')
+            ->andWhere('p.user IN (:users)')
+            ->andWhere('p.status = :completed')
+            ->andWhere('p.completedAt >= :since')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('users', $users)
+            ->setParameter('completed', TrainingParticipation::STATUS_COMPLETED)
+            ->setParameter('since', $since)
+            ->groupBy('p.user')
+            ->getQuery()
+            ->getArrayResult();
+
+        $last = [];
+        foreach ($rows as $row) {
+            $last[(int) $row['userId']] = new \DateTimeImmutable((string) $row['completedAt']);
+        }
+
+        return $last;
+    }
 }

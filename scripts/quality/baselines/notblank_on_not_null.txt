@@ -7,7 +7,7 @@ src/Entity/AuditLog.php:36  ?string $entityType
 src/Entity/AuditLog.php:42  ?string $action
 src/Entity/AuditLog.php:45  ?string $userName
 src/Entity/Authority/DoraRegisterOfInformation.php:55  ?int $id
-src/Entity/Authority/Nis2RegistrationProfile.php:93  ?int $id
+src/Entity/Authority/Nis2RegistrationProfile.php:103  ?int $id
 src/Entity/CorporateGovernance.php:46  ?string $scope
 src/Entity/Document.php:33  ?string $filename
 src/Entity/Document.php:36  ?string $originalFilename
