@@ -234,6 +234,7 @@ final class MfaLoginPathsTest extends TestCase
         $setup->method('isSetupComplete')->willReturn($setupComplete);
 
         $request = Request::create($path);
+        $request->setLocale('de'); // the router sets it from the /{_locale} prefix
         $request->setSession($session);
         $event = new RequestEvent($this->createStub(HttpKernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST);
         (new MfaEnforcerSubscriber($security, $this->urls(), new MfaSessionState(), $setup))->onKernelRequest($event);

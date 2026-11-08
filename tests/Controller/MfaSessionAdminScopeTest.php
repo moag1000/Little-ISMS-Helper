@@ -290,7 +290,7 @@ final class MfaSessionAdminScopeTest extends WebTestCase
     public function superAdminCanTerminateForeignTenantUserSessions(): void
     {
         $session = $this->session($this->userB);
-        $this->client->loginUser($this->superA);
+        LoginWithSecondFactor::login($this->client, $this->superA); // active TOTP device (S8)
         $email = $this->userB->getEmail();
         $this->client->request('POST', '/en/admin/sessions/terminate/' . $email, [
             '_token' => $this->csrf('terminate_session_' . $email),
@@ -356,7 +356,7 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         self::assertSame('1', $this->statCount($crawler, 'users'));
 
         // The instance operator still sees both (and tenantless users' sessions).
-        $this->client->loginUser($this->superA);
+        LoginWithSecondFactor::login($this->client, $this->superA); // active TOTP device (S8)
         $this->client->request('GET', '/en/admin/sessions');
         $html = (string) $this->client->getResponse()->getContent();
         self::assertStringContainsString((string) $this->userA->getEmail(), $html);
