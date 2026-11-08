@@ -175,7 +175,7 @@ class WizardReportCommand extends Command
                     ['completedAt' => 'DESC']
                 );
             } else {
-                $sessions = $this->sessionRepository->findBy(
+                $sessions = $this->sessionRepository->findBy( // @phpstan-ignore tenant.unscopedBackgroundQuery (operator report without --tenant lists all organisations)
                     ['status' => WizardSession::STATUS_COMPLETED],
                     ['completedAt' => 'DESC'],
                     50
