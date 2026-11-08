@@ -26,10 +26,10 @@ use App\Service\Import\Schema\ImportSchemaProviderInterface;
  * `title` is the unique upsert key (NotBlank on the entity). Other NotBlank
  * fields (description, category, responsiblePerson, targetDate) are flagged required.
  *
- * Owner (entity rule: user OR person OR free text): `responsiblePersonUser` (by
- * e-mail) and `responsiblePersonRef` (by name, else e-mail) resolve tenant-scoped
- * via {@see OwnerImportFields}; the legacy free-text `responsiblePerson` is
- * required only while neither is given (`requiredUnlessAny`).
+ * Owner (entity rule: user OR person): `responsiblePersonUser` (by e-mail) and
+ * `responsiblePersonRef` (by name, else e-mail) resolve tenant-scoped via
+ * {@see OwnerImportFields}; the text column `responsiblePerson` (name or e-mail,
+ * unknown names become a Person) is required only while neither is given.
  *
  * Excluded by design: id, tenant, timestamps (createdAt/updatedAt), lockVersion,
  * lifecycle-owned `status` (workflow `isms_objective_lifecycle`, mapped=false in
@@ -90,12 +90,12 @@ final class ISMSObjectiveImportSchemaProvider implements ImportSchemaProviderInt
                 new ImportFieldSpec(
                     name: 'targetValue',
                     setter: 'setTargetValue',
-                    type: ImportFieldSpec::TYPE_FLOAT,
+                    type: ImportFieldSpec::TYPE_DECIMAL,
                 ),
                 new ImportFieldSpec(
                     name: 'currentValue',
                     setter: 'setCurrentValue',
-                    type: ImportFieldSpec::TYPE_FLOAT,
+                    type: ImportFieldSpec::TYPE_DECIMAL,
                 ),
                 new ImportFieldSpec(
                     name: 'unit',
@@ -135,15 +135,8 @@ final class ISMSObjectiveImportSchemaProvider implements ImportSchemaProviderInt
                 ),
 
                 // ── Responsibility ──────────────────────────────────────────────
-                new ImportFieldSpec(
-                    name: 'responsiblePerson',
-                    setter: 'setResponsiblePerson',
-                    type: ImportFieldSpec::TYPE_STRING,
-                    // Owner rule of the entity: user OR person OR free text.
-                    required: true,
-                    requiredUnlessAny: ['responsiblePersonUser', 'responsiblePersonRef'],
-                ),
-                ...OwnerImportFields::specs('responsiblePerson'),
+                // Owner rule of the entity: user OR person (a name as text becomes one).
+                ...OwnerImportFields::specs('responsiblePerson', required: true),
                 new ImportFieldSpec(
                     name: 'responsibleForMeasurement',
                     setter: 'setResponsibleForMeasurement',

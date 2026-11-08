@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  *
  * Verifies that IncidentType:
  *  1. Uses the OwnerPickerFormTrait (or otherwise wires the slot via addOwnerPicker).
- *  2. Defines the compound `reportedBy` slot (User + Person + Deputies + legacy text).
+ *  2. Defines the compound `reportedBy` slot (User + Person + Deputies).
  *  3. Keeps the existing single-Person `responsiblePerson` governance slot.
  *  4. Preserves the validator that requires either user or person for reportedBy.
  *
@@ -69,11 +69,6 @@ final class IncidentTypeTest extends TestCase
             "'deputies_field'     => 'reportedByDeputyPersons',",
             $source,
             'Deputies slot must remain reportedByDeputyPersons.'
-        );
-        self::assertStringContainsString(
-            "'legacy_field'       => 'reportedBy',",
-            $source,
-            'Legacy free-text slot must remain `reportedBy`.'
         );
     }
 

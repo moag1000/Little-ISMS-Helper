@@ -36,6 +36,7 @@ final readonly class SlaDeadlineFactory
         'nis2_24h' => [12, 4, 1],
         'nis2_72h' => [48, 24, 12, 4, 1],
         'nis2_1mo' => [168, 72, 24],
+        'nis2_interim' => [24, 4, 1],
         'dora_4h' => [12, 4, 1],
         'dora_72h' => [48, 24, 12, 4, 1],
         'dora_1mo' => [168, 72, 24],

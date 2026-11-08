@@ -534,15 +534,6 @@ final class AdminHubCatalog
                         'route' => 'admin_data_repair_index',
                         'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
-                    // scope: own tenant tree — legacy free-text owners without User/Person
-                    [
-                        'key' => 'legacy_owners',
-                        'icon' => 'fa-icon--ui-person',
-                        'label' => 'admin.hub.module.legacy_owners.label',
-                        'description' => 'admin.hub.module.legacy_owners.desc',
-                        'route' => 'admin_legacy_owner_index',
-                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
-                    ],
                     // scope: own-tenant quick-fix operator UI settings
                     [
                         'key' => 'quick_fix_settings',

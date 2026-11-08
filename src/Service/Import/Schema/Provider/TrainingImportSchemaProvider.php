@@ -146,12 +146,8 @@ final class TrainingImportSchemaProvider implements ImportSchemaProviderInterfac
                     relationClass: Person::class,
                     relationLookup: 'fullName',
                 ),
-                // Legacy free-text trainer (read-only migration display).
-                new ImportFieldSpec(
-                    name: 'trainer',
-                    setter: 'setTrainer',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
+                // Trainer as text (name or e-mail) → User or Person.
+                OwnerImportFields::text('trainer', 'trainerUser', 'trainerPerson'),
 
                 // ── Resources ───────────────────────────────────────────────────
                 // Legacy free-text materials (read-only migration display).

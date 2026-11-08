@@ -91,9 +91,9 @@ final class CertificateBulkFulfillmentService
                     : $now->modify('+1 year'),
                 $actor,
                 ComplianceRequirementFulfillment::OVERRIDE_CERTIFICATE,
+                verified: true,
             );
-            $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::Verified)
-                ->setVerifiedAt($now)
+            $fulfillment->setVerifiedAt($now)
                 ->setVerifiedBy($actor)
                 ->setEvidenceOutdated(false);
 

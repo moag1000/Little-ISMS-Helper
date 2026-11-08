@@ -69,9 +69,6 @@ recurring_duty:
         tom_review:
             title: 'Review technical and organisational measures'
             body: 'Test, assess and evaluate the effectiveness of the technical and organisational measures.'
-        nis2_management_training:
-            title: 'NIS-2 management training'
-            body: 'Members of the management body attend training on cyber risk management.'
         nis2_measures_review:
             title: 'Review NIS-2 risk management measures'
             body: 'Check the Art. 21 measures for adequacy and have management approve them.'

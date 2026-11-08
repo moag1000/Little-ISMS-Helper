@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\DataRepair;
+namespace App\Service\Owner;
 
 use App\Entity\Person;
 use App\Entity\Tenant;
@@ -17,15 +17,15 @@ use App\Entity\User;
  * suggestion: picking one of two "Max Muster" would be a guess. Users win
  * over Persons, because a User carries the login the owner role is for.
  *
- * Pure in-memory index, no database access — {@see LegacyOwnerReport} loads
+ * Pure in-memory index, no database access — {@see OwnerTextResolver} loads
  * the users and persons of the scoped organisations once.
  */
-final class LegacyOwnerMatcher
+final class OwnerNameMatcher
 {
-    /** @var array<int, array<string, list<User>>> tenant object id → key → users */
+    /** @var array<string, array<string, list<User>>> tenant key → key → users */
     private array $users = [];
 
-    /** @var array<int, array<string, list<Person>>> tenant object id → key → persons */
+    /** @var array<string, array<string, list<Person>>> tenant key → key → persons */
     private array $persons = [];
 
     /**
@@ -46,7 +46,7 @@ final class LegacyOwnerMatcher
                 array_push($keys, $first . ' ' . $last, $last . ' ' . $first, $last . ', ' . $first);
             }
             foreach (array_unique(array_filter(array_map(self::normalize(...), $keys))) as $key) {
-                $this->users[spl_object_id($tenant)][$key][] = $user;
+                $this->users[self::tenantKey($tenant)][$key][] = $user;
             }
         }
         foreach ($persons as $person) {
@@ -56,7 +56,7 @@ final class LegacyOwnerMatcher
             }
             $keys = [$person->getFullName(), $person->getEmail()];
             foreach (array_unique(array_filter(array_map(self::normalize(...), $keys))) as $key) {
-                $this->persons[spl_object_id($tenant)][$key][] = $person;
+                $this->persons[self::tenantKey($tenant)][$key][] = $person;
             }
         }
     }
@@ -70,7 +70,7 @@ final class LegacyOwnerMatcher
         if ($key === '' || $tenant === null) {
             return null;
         }
-        $tenantKey = spl_object_id($tenant);
+        $tenantKey = self::tenantKey($tenant);
 
         $users = $this->users[$tenantKey][$key] ?? [];
         if (count($users) === 1) {
@@ -94,5 +94,13 @@ final class LegacyOwnerMatcher
         }
 
         return mb_strtolower(trim((string) preg_replace('/\s+/u', ' ', $text)));
+    }
+
+    /**
+     * By id, so a re-fetched or proxied organisation object still finds its accounts.
+     */
+    private static function tenantKey(Tenant $tenant): string
+    {
+        return $tenant->getId() !== null ? 'id:' . $tenant->getId() : 'obj:' . spl_object_id($tenant);
     }
 }

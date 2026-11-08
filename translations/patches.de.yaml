@@ -44,7 +44,6 @@ patch:
         responsible_person_user: 'Verantwortliche Person (Benutzer)'
         responsible_person_ref: 'Verantwortliche Person (Kontakt)'
         responsible_deputies: 'Vertretungen'
-        responsible_person_legacy: 'Verantwortliche Person (Freitext)'
     type:
         security: Sicherheitspatch
         critical: 'Kritischer Patch'

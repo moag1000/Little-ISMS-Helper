@@ -11,6 +11,7 @@ use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * Plan owner (Pattern A dual-state): User + Person + deputies + effective accessors. Extracted
@@ -92,14 +93,15 @@ trait BcPlanOwnerTrait
     }
 
     /**
-     * Effective planOwner: prefer planOwnerUser.fullName, then Person, fall back to legacy string.
+     * Effective planOwner: prefer planOwnerUser.fullName, then Person.
      */
+    #[Groups(['bc_plan:read'])]
+    #[SerializedName('planOwner')]
     public function getEffectivePlanOwner(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->planOwnerUser,
             $this->planOwnerPerson,
-            $this->planOwner,
         );
     }
 
@@ -113,7 +115,6 @@ trait BcPlanOwnerTrait
         return OwnerResolver::resolveAll(
             $this->planOwnerUser,
             $this->planOwnerPerson,
-            $this->planOwner,
             $this->planOwnerDeputyPersons,
         );
     }

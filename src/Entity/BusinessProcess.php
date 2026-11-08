@@ -35,9 +35,6 @@ class BusinessProcess
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $processOwner = null;
-
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     private ?string $criticality = null; // critical, high, medium, low
@@ -210,17 +207,6 @@ class BusinessProcess
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-        return $this;
-    }
-
-    public function getProcessOwner(): ?string
-    {
-        return $this->processOwner;
-    }
-
-    public function setProcessOwner(?string $processOwner): static
-    {
-        $this->processOwner = $processOwner;
         return $this;
     }
 

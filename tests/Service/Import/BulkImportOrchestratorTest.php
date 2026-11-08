@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Import;
 
+use App\Doctrine\EntityManagerRecovery;
 use App\Entity\BulkImportBatch;
+use App\Entity\BulkImportRow;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Message\BulkImportMessage;
 use App\Service\AuditLogger;
+use App\Exception\BusinessRule\BusinessRuleException;
 use App\Exception\Import\ImportFailedException;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\BulkImportOrchestrator;
@@ -401,5 +404,176 @@ final class BulkImportOrchestratorTest extends TestCase
         $this->assertTrue($exceptionThrown, 'Expected RuntimeException was not thrown.');
         $this->assertSame(BulkImportBatch::STATUS_FAILED, $batch->getStatus());
         $this->assertSame('Simulated commit failure', $batch->getNotes());
+    }
+
+    // -------------------------------------------------------------------------
+    // Update path: a row is applied completely or not at all
+    // -------------------------------------------------------------------------
+
+    /**
+     * Commit one update row for $existing with the given mapped values and return
+     * the BulkImportRows persisted.
+     *
+     * @param array<string, mixed> $entityData
+     *
+     * @return list<BulkImportRow>
+     */
+    private function commitUpdateRow(ImportTargetStub $existing, array $entityData): array
+    {
+        $batch = $this->prepareBatchWithCsvFile(['Server A']);
+
+        $this->mapper->method('validate')->willReturn(['errors' => [], 'warnings' => []]);
+        $this->mapper->method('findExisting')->willReturn($existing);
+        $this->mapper->method('toEntityData')->willReturn($entityData);
+        $this->auditLogger->method('logBulk')->willReturn('uuid');
+        $this->em->method('wrapInTransaction')->willReturnCallback(fn (callable $cb) => $cb());
+
+        $persisted = [];
+        $this->em->method('persist')->willReturnCallback(function (object $o) use (&$persisted): void {
+            if ($o instanceof BulkImportRow) {
+                $persisted[] = $o;
+            }
+        });
+
+        $this->orchestrator->commit($batch);
+        $this->assertSame(1, $batch->getRowCountError());
+        $this->assertSame(0, $batch->getRowCountUpdated());
+
+        return $persisted;
+    }
+
+    #[Test]
+    public function updateWithAValueThatDoesNotFitItsSetterTouchesNoField(): void
+    {
+        $existing = new ImportTargetStub();
+        $this->em->expects($this->once())->method('refresh')->with($existing);
+
+        // "name" fits, "count" (?int setter) does not — "name" must not be set either.
+        $rows = $this->commitUpdateRow($existing, ['name' => 'New', 'count' => 'many']);
+
+        $this->assertSame('Old', $existing->name);
+        $this->assertCount(1, $rows);
+        $this->assertSame(BulkImportRow::STATUS_ERROR, $rows[0]->getStatus());
+        $this->assertStringContainsString('count', (string) $rows[0]->getErrorMessage());
+    }
+
+    #[Test]
+    public function updateWhoseSetterThrowsHalfwayIsRefreshedSoNothingPartialIsFlushed(): void
+    {
+        $existing = new ImportTargetStub();
+        $this->em->expects($this->once())->method('refresh')->with($existing);
+
+        $rows = $this->commitUpdateRow($existing, ['count' => 3, 'name' => ImportTargetStub::REFUSED]);
+
+        $this->assertSame(BulkImportRow::STATUS_ERROR, $rows[0]->getStatus());
+    }
+
+    // -------------------------------------------------------------------------
+    // Failed status survives a closed EntityManager / a rolled-back bus transaction
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function markFailedRecoversAClosedEntityManagerAndStoresTheStatus(): void
+    {
+        $open     = false;
+        $recovery = $this->createMock(EntityManagerRecovery::class);
+        $recovery->expects($this->once())->method('recover')->willReturnCallback(function () use (&$open): void {
+            $open = true;
+        });
+        $this->em->method('isOpen')->willReturnCallback(function () use (&$open): bool {
+            return $open;
+        });
+
+        $managed = new BulkImportBatch();
+        $managed->setStatus(BulkImportBatch::STATUS_COMMITTING);
+        $this->em->method('find')->willReturn($managed);
+        $this->em->expects($this->once())->method('refresh')->with($managed);
+        $this->em->expects($this->once())->method('flush');
+
+        $batch = new BulkImportBatch();
+        (new \ReflectionProperty(BulkImportBatch::class, 'id'))->setValue($batch, 42);
+
+        $orchestrator = new BulkImportOrchestrator(
+            $this->parser,
+            $this->headerMapper,
+            $this->mapperRegistry,
+            $this->deltaCalculator,
+            $this->auditLogger,
+            $this->em,
+            $this->bus,
+            $this->uploadDir,
+            $this->uploadSecurity,
+            null,
+            $recovery,
+        );
+        $orchestrator->markFailed($batch, new \RuntimeException('Connection lost'));
+
+        $this->assertSame(BulkImportBatch::STATUS_FAILED, $managed->getStatus());
+        $this->assertSame('Connection lost', $managed->getNotes());
+    }
+
+    #[Test]
+    public function dispatchCommitMarksTheBatchFailedWhenTheSyncCommitThrows(): void
+    {
+        $batch = new BulkImportBatch();
+        $batch->setStatus(BulkImportBatch::STATUS_PREVIEW);
+        (new \ReflectionProperty(BulkImportBatch::class, 'id'))->setValue($batch, 42);
+
+        $this->em->method('isOpen')->willReturn(true);
+        $this->em->method('find')->willReturn($batch);
+        // committing, then failed after the bus transaction was rolled back
+        $this->em->expects($this->exactly(2))->method('flush');
+        $this->bus->method('dispatch')->willThrowException(new \RuntimeException('Handler failed'));
+
+        try {
+            $this->orchestrator->dispatchCommit($batch);
+            $this->fail('The failure must reach the caller.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('Handler failed', $e->getMessage());
+        }
+
+        $this->assertSame(BulkImportBatch::STATUS_FAILED, $batch->getStatus());
+    }
+
+    #[Test]
+    public function dispatchCommitRefusesABatchThatLeftPreview(): void
+    {
+        $batch = new BulkImportBatch();
+        $batch->setStatus(BulkImportBatch::STATUS_COMMITTING);
+        $this->bus->expects($this->never())->method('dispatch');
+
+        $this->expectException(BusinessRuleException::class);
+        $this->orchestrator->dispatchCommit($batch);
+    }
+}
+
+/** Minimal update target: typed setters like an entity, one of them refusing a value. */
+final class ImportTargetStub
+{
+    public const REFUSED = 'refused';
+
+    public ?string $name = 'Old';
+    public ?int $count = null;
+
+    public function getId(): int
+    {
+        return 7;
+    }
+
+    public function setName(?string $name): static
+    {
+        if ($name === self::REFUSED) {
+            throw new \InvalidArgumentException('Name refused.');
+        }
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function setCount(?int $count): static
+    {
+        $this->count = $count;
+
+        return $this;
     }
 }

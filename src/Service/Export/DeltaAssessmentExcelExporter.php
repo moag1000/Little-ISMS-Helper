@@ -221,7 +221,7 @@ final class DeltaAssessmentExcelExporter
             ? $this->t('delta.summary.pre_fill_rate_ok')
             : $this->t('delta.summary.pre_fill_rate_miss');
 
-        $sheet->setCellValue('A' . $nextRow, $calloutLabel);
+        $sheet->setCellValue('A' . $nextRow, $calloutLabel); // @csv-sanitize-exempt: translated labels; record cells use the shared writer
         $sheet->setCellValue('B' . $nextRow, $calloutValue);
         $sheet->getStyle('A' . $nextRow . ':B' . $nextRow)->applyFromArray([
             'font' => ['bold' => true],

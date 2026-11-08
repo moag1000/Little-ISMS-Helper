@@ -12,6 +12,8 @@ incident:
   prefill:
     title_from_risk: 'Vorfall zu Risiko: %title%'
     note_from_risk: '(Diese Erfassung wurde aus Risiko ID=%id% abgeleitet.)'
+  data_breach:
+    linked: 'Datenpanne %ref%'
   deadline:
     gdpr_art33: 'DSGVO Art. 33 SLA'
   deadline_counter:
@@ -147,7 +149,6 @@ incident:
     closed_date: Abschlussdatum
     visible_to_holding: 'Für Konzern-Krisenstab sichtbar'
     data_breach_occurred: Datenschutzverletzung aufgetreten
-    reported_by_legacy: Gemeldet von (freitext, veraltet)
     reported_by_person: Gemeldet von (Person aus Stammdaten)
     reported_by_deputies: Vertretungen (Personen)
     responsible_person: Verantwortliche Person (Governance)
@@ -311,7 +312,6 @@ incident:
     clients_affected_financial_volume: 'Gesamtes Transaktions- oder Vertragsvolumen der betroffenen Kunden in EUR (DORA Art. 19).'
     initial_report_submitted_at: 'DORA 4-Stunden-Erstmeldung (≠ NIS2 24h): Zeitpunkt der Übermittlung an die zuständige Behörde (Art. 19(4)(a)).'
     data_recovery_strategy: 'Strategie zur Wiederherstellung von Daten und Diensten; Cross-Referenz auf den BCM-Kontinuitätsplan (DORA Art. 11(2)).'
-    owner_legacy: 'Veraltetes Freitextfeld — nur noch für migrierte Altdaten. Bitte Benutzer oder Person oben auswählen.'
     initial_report_submitted_at_dora: 'Zeitpunkt der Erstmeldung an die zuständige Behörde. DORA Art. 19 i. V. m. RTS: spätestens 4 Stunden nach Einstufung als schwerwiegend und 24 Stunden nach Kenntnisnahme.'
   suspected_malicious:
     suspected: 'Ja'
@@ -459,11 +459,16 @@ incident:
     precheck_body: 'Erfüllt: %reasons%. Die Fristen laufen ab Erkennung; die Bewertung trifft die Einrichtung (NIS-2 Art. 23 Abs. 3).'
     confirm_reportable: Meldepflicht bestätigen
     confirm_not_reportable: Nicht meldepflichtig
+    interim_hint: 'Nur wenn das CSIRT oder das BSI einen Zwischenbericht anfordert.'
+    interim_due: Frist laut Anforderung
+    interim_request: Anforderung erfassen
     dora_title: DORA-Meldungen (Art. 19)
+    dora_export: 'JSON für die Meldung'
     duty:
       nis2_24h: NIS-2-Frühwarnung (24 h)
       nis2_72h: NIS-2-Meldung (72 h)
       nis2_1mo: NIS-2-Abschlussbericht (1 Monat)
+      nis2_interim: 'NIS-2-Zwischenbericht auf Anforderung (Art. 23 Abs. 4 c)'
       dora_4h: 'Erstmeldung (4 h nach Klassifizierung, spätestens 24 h)'
       dora_72h: Zwischenbericht (72 h nach der Erstmeldung)
       dora_1mo: Abschlussbericht (1 Monat nach dem Zwischenbericht)
@@ -472,6 +477,7 @@ incident:
     assessed_reportable: Als meldepflichtig bewertet.
     assessed_not_reportable: Als nicht meldepflichtig bewertet.
     marked_reported: Als gemeldet markiert.
+    interim_requested: Anforderung erfasst.
 # Junior-ISB-Audit P-12 rollout — 9001-bridge for Incident form.
 iso_9001_bridge:
     incident: 'In ISO 9001 sind Vorfälle Teil von Klausel 8.7 (Steuerung nichtkonformer Ergebnisse) + 10.2 (Nichtkonformität & Korrekturmaßnahme). ISO 27001 A.5.24-27 erweitert um Plan/Bewerten/Behandeln/Lernen — die 9001-Logik bleibt: was ist passiert, was tun wir jetzt, was lernen wir daraus.'

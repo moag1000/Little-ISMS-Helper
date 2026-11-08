@@ -28,6 +28,7 @@ use App\Util\LegalPeriod;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Validator\Constraint\SameTenantOwner;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: ISMSObjectiveRepository::class)]
 #[ApiResource(
@@ -127,15 +128,6 @@ class ISMSObjective
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
     private ?string $measurementMethod = null;
-
-    /**
-     * Legacy free-text owner. Optional since the person-picker sweep — the
-     * form requires at least one of user / person / free text.
-     */
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['isms_objective:read', 'isms_objective:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')]
-    private ?string $responsiblePerson = null;
 
     /**
      * Pattern A dual-state: preferred structured owner. Falls back to string responsiblePerson.
@@ -360,17 +352,6 @@ public function __construct()
         return $this;
     }
 
-    public function getResponsiblePerson(): ?string
-    {
-        return $this->responsiblePerson;
-    }
-
-    public function setResponsiblePerson(?string $responsiblePerson): static
-    {
-        $this->responsiblePerson = $responsiblePerson;
-        return $this;
-    }
-
     public function getKpiKey(): ?string
     {
         return $this->kpiKey;
@@ -571,14 +552,15 @@ public function __construct()
 
     /**
      * Effective responsiblePerson: prefer responsiblePersonUser.fullName,
-     * then responsiblePersonRef (Person), fall back to legacy string.
+     * then responsiblePersonRef (Person).
      */
+    #[Groups(['isms_objective:read'])]
+    #[SerializedName('responsiblePerson')]
     public function getEffectiveResponsiblePerson(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->responsiblePersonUser,
             $this->responsiblePersonRef,
-            $this->responsiblePerson,
         );
     }
 
@@ -592,23 +574,18 @@ public function __construct()
         return OwnerResolver::resolveAll(
             $this->responsiblePersonUser,
             $this->responsiblePersonRef,
-            $this->responsiblePerson,
             $this->responsibleDeputyPersons,
         );
     }
 
     /**
-     * ISO 27001 6.2: an objective needs a responsible party. Structured owner
-     * (user or person) or, for legacy data, free text. Enforced here (not only
-     * in the form) so API / service writes are covered too.
+     * ISO 27001 6.2: an objective needs a responsible party (user or person).
+     * Enforced here (not only in the form) so API / service writes are covered too.
      */
     #[Assert\Callback]
     public function validateResponsibleParty(ExecutionContextInterface $context): void
     {
-        if ($this->responsiblePersonUser === null
-            && $this->responsiblePersonRef === null
-            && trim((string) $this->responsiblePerson) === ''
-        ) {
+        if ($this->responsiblePersonUser === null && $this->responsiblePersonRef === null) {
             $context->buildViolation('objective.validation.owner_required')
                 ->atPath('responsiblePersonUser')
                 ->addViolation();

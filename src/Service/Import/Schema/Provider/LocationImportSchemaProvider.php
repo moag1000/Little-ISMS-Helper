@@ -162,15 +162,10 @@ final class LocationImportSchemaProvider implements ImportSchemaProviderInterfac
                 new ImportFieldSpec(
                     name: 'squareMeters',
                     setter: 'setSquareMeters',
-                    type: ImportFieldSpec::TYPE_FLOAT,
+                    type: ImportFieldSpec::TYPE_DECIMAL,
                 ),
 
                 // ── Audit metadata ──────────────────────────────────────────────
-                new ImportFieldSpec(
-                    name: 'responsiblePerson',
-                    setter: 'setResponsiblePerson',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
                 ...OwnerImportFields::specs('responsiblePerson'),
                 new ImportFieldSpec(
                     name: 'active',

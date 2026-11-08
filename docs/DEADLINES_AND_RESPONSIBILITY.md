@@ -1,6 +1,6 @@
 # Fristen und Zuständigkeit (Deadlines and responsibility)
 
-Stand 2026-11-07. One mechanism answers two questions for every duty the tool
+Stand 2026-11-08. One mechanism answers two questions for every duty the tool
 reminds people of: **what is due when** and **who has to act**.
 
 ## Deadline sources (`App\Service\Deadline\DeadlineSource`)
@@ -55,7 +55,24 @@ organisation is due at once, also before anyone opened the registration page
 (the profile is built on the spot). A registration date recorded on the
 organisation counts as the last report; "Als gemeldet markieren" stores the
 date on the organisation too and moves the next confirmation a year ahead.
-Organisations classified as not regulated have no such duty.
+Organisations classified as not regulated have no such duty. The
+classification lives on the organisation only (`Tenant.nis2Classification`); the
+registration profile reads and writes it, and `FrameworkApplicabilityService::nis2Category()`
+suggests it from sector, staff and turnover (P7).
+
+**NIS-2 management training** (`ManagementTrainingSource`, Art. 20 (2)): every
+holder of ROLE_TOP_MGMT in an NIS-2 regulated organisation is due twelve months
+after their last completed training (at once if never trained), the ISB/CISO
+informed. The compliance check for Art. 20 (2) counts the same people
+(`training_participation` with `roles`). The former catalogue duty is gone.
+
+**Statutory reports on an incident** (`ReportingDutySource`, `ReportingPlanner`):
+besides the NIS-2 24 h / 72 h / one-month and DORA reports, an intermediate report
+the authority requests (Art. 23 (4) (c)) becomes a duty once the request is
+recorded on the incident ("Zwischenbericht angefordert", due date given or 72 h).
+The NIS-2 significance thresholds (financial loss, affected persons) are set per
+organisation under Admin > Incident-SLAs. DORA reports export as JSON per phase
+(`DoraIncidentReportExport`, Art. 19 / RTS 2025/302).
 
 **Adding a norm** means adding sources for its duties. A DE + EN label
 `my_day.section.<bucket>` / `my_day.kpi.<bucket>` is required;
@@ -68,8 +85,7 @@ Duties the norms repeat but no record carries a date for live in
 interval, fallback roles): risk acceptance criteria (6.1.2), SoA review
 (6.1.3 d), key rotation (A.8.24), access
 recertification (A.5.18), BIA (ISO 22301 8.2.2), BC exercise (8.5), TOM review
-(DSGVO Art. 32), NIS-2 management training (Art. 20) and measures review
-(Art. 21), DORA register of information and exit plans (Art. 28).
+(DSGVO Art. 32), NIS-2 measures review (Art. 21), DORA register of information and exit plans (Art. 28).
 
 `RecurringDutyService::applicable()` seeds one `RecurringDuty` row per
 organisation the first time a duty applies (module active, organisation in

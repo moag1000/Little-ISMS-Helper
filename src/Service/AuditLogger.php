@@ -23,6 +23,9 @@ class AuditLogger
     private const string ACTION_DELETE = 'delete';
     private const string ACTION_VIEW = 'view';
     private const string ACTION_EXPORT = 'export';
+
+    /** Request attribute set once this request wrote an audit-log entry. */
+    public const string REQUEST_LOGGED_ATTRIBUTE = '_audit_logged';
     private const string ACTION_IMPORT = 'import';
     private const string ACTION_BULK = 'bulk';
 
@@ -301,6 +304,9 @@ class AuditLogger
         if ($request instanceof Request) {
             $auditLog->setIpAddress($request->getClientIp());
             $auditLog->setUserAgent($request->headers->get('User-Agent'));
+            // DownloadAuditSubscriber writes a generic entry only for requests
+            // whose controller logged nothing itself.
+            $request->attributes->set(self::REQUEST_LOGGED_ATTRIBUTE, true);
         }
 
         // Set values as JSON

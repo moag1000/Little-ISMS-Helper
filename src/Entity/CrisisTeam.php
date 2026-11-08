@@ -365,13 +365,13 @@ public function __construct()
 
     public function getEffectiveTeamLeader(): ?string
     {
-        return OwnerResolver::resolveEffective($this->teamLeader, $this->teamLeaderPerson, null);
+        return OwnerResolver::resolveEffective($this->teamLeader, $this->teamLeaderPerson);
     }
 
     /** @return list<string> */
     public function getAllTeamLeaderOwners(): array
     {
-        return OwnerResolver::resolveAll($this->teamLeader, $this->teamLeaderPerson, null, $this->teamLeaderDeputyPersons);
+        return OwnerResolver::resolveAll($this->teamLeader, $this->teamLeaderPerson, $this->teamLeaderDeputyPersons);
     }
 
     public function getDeputyLeader(): ?User
@@ -418,13 +418,13 @@ public function __construct()
 
     public function getEffectiveDeputyLeader(): ?string
     {
-        return OwnerResolver::resolveEffective($this->deputyLeader, $this->deputyLeaderPerson, null);
+        return OwnerResolver::resolveEffective($this->deputyLeader, $this->deputyLeaderPerson);
     }
 
     /** @return list<string> */
     public function getAllDeputyLeaderOwners(): array
     {
-        return OwnerResolver::resolveAll($this->deputyLeader, $this->deputyLeaderPerson, null, $this->deputyLeaderDeputyPersons);
+        return OwnerResolver::resolveAll($this->deputyLeader, $this->deputyLeaderPerson, $this->deputyLeaderDeputyPersons);
     }
 
     public function getMembers(): array

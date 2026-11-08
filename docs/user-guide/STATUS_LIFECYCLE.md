@@ -133,6 +133,8 @@ Closing and cancelling a TLPT require a reason.
 ### Access review campaign
 `open` → `closed`
 
+Nobody decides on their own access (segregation of duties, ISO 27001 A.5.18): a single decision on an item whose subject is the reviewer is refused, and a bulk decision leaves such items pending and reports how many it skipped.
+
 ### Organisation (tenant)
 `draft` → `active` ⇄ `suspended` → `terminated` → `archived`
 
@@ -156,6 +158,8 @@ Each tenant can customize the lifecycle behavior for their organization without 
 
 Overrides are **tenant-scoped** — they affect only your tenant and are invisible to other tenants. They take effect immediately without a deployment.
 
+Only workflows of records that belong to your organisation can be overridden. Workflows of instance-wide records (organisations, roles, permissions, policy templates, mappings) are not offered; their transitions follow the system configuration.
+
 **What admins cannot change:** The list of valid statuses and the allowed from/to wiring of transitions are fixed in the system configuration. If you need a new status stage or a new transition direction (e.g. allowing `approved` → `draft` directly), contact your implementation partner — that requires a code and configuration change.
 
 ---
@@ -166,7 +170,7 @@ On list pages (e.g. the Documents list), selecting multiple rows via the checkbo
 
 The same role checks, 4-eyes requirements, reason prompts, and module gates apply to bulk transitions as to single-entity transitions. Bulk status changes follow the canonical matrix only (`draft→in_review`, `in_review→approved`, `in_review→draft`, `approved→published`, `published→archived`, `archived→published`); any other target is rejected per entity as "transition not allowed". If any of the selected entities cannot receive the transition (wrong current status, role denied, version conflict), those are reported individually in the result summary — the others succeed.
 
-Bulk transitions are recorded as a **batch** in the audit log: one batch entry with a shared `batch_id` (UUID v4), plus one individual entry per entity. The batch entry counts as a single compliance record; the per-entity entries provide the granular trail.
+Bulk transitions are recorded as a **batch** in the audit log: one batch entry with a shared `batch_id` (UUID v4), plus one individual entry per entity. The batch entry counts as a single compliance record; the per-entity entries provide the granular trail. The generic endpoint `POST /lifecycle/{type}/bulk-transition` returns that id as `audit_log_batch_id` (`null` when nothing changed) and processes only records of the organisation you are working in; others are reported as `not_found`.
 
 ---
 

@@ -487,9 +487,11 @@ final class BsiProfileXmlImporter
 
         $candidates = $this->candidateIds($requirementId);
         foreach ($candidates as $candidate) {
+            // Global catalogue only: never a requirement another organisation uploaded.
             $hit = $this->requirementRepository->findOneBy([
                 'framework' => $framework,
                 'requirementId' => $candidate,
+                'uploadTenant' => null,
             ]);
             if ($hit instanceof ComplianceRequirement) {
                 $cache[$key] = $hit;

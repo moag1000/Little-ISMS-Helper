@@ -180,11 +180,6 @@ final class ControlImportSchemaProvider implements ImportSchemaProviderInterface
 
                 // ── Responsibility (Person / User master-data FKs) ──────────────
                 ...OwnerImportFields::specs('responsiblePerson'),
-                new ImportFieldSpec(
-                    name: 'responsiblePerson',
-                    setter: 'setResponsiblePerson',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
 
                 // ── Review schedule ─────────────────────────────────────────────
                 new ImportFieldSpec(

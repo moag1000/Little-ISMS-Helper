@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\Import;
 
 use App\Entity\Tenant;
+use App\Enum\TreatmentStrategy;
 use App\Exception\Import\ImportRowInvalidException;
 use App\Service\Import\DeltaCalculator;
 use App\Service\Import\Dto\DeltaConfig;
@@ -348,5 +349,99 @@ final class DeltaCalculatorTest extends TestCase
         self::assertCount(1, $result->deletes);
         self::assertSame(30, $result->deletes[0]['entityId']);
         self::assertArrayHasKey('snapshot', $result->deletes[0]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Mapped values (enum cases, dates, DECIMAL strings) and the user mapping
+    // -------------------------------------------------------------------------
+
+    /**
+     * @param array<string, mixed> $newValues
+     */
+    private function calculateWith(
+        object $existing,
+        array $newValues,
+        ?array $mapping = null,
+        ?EntityMapperInterface $mapper = null,
+    ): array {
+        if ($mapper === null) {
+            $mapper = $this->createStub(EntityMapperInterface::class);
+            $mapper->method('supportsEntityType')->willReturn(true);
+            $mapper->method('validate')->willReturn(['errors' => [], 'warnings' => []]);
+            $mapper->method('findExisting')->willReturn($existing);
+            $mapper->method('toEntityData')->willReturn($newValues);
+        }
+
+        $calculator = new DeltaCalculator(
+            new EntityMapperRegistry([$mapper]),
+            $this->createStub(EntityManagerInterface::class),
+        );
+        $result = $calculator->calculate(
+            new ParsedSpreadsheet(['Titel'], [['Titel' => 'R1']], [], 'Sheet1', 1),
+            new DeltaConfig('Risk', $this->createStub(Tenant::class)),
+            $mapping,
+        );
+
+        return ['updates' => $result->updates, 'unchanged' => $result->unchanged, 'errors' => $result->errors];
+    }
+
+    #[Test]
+    public function sameEnumCaseAndEqualDecimalAreUnchanged(): void
+    {
+        $existing = new DeltaTargetStub(TreatmentStrategy::Mitigate, '7.50');
+
+        $result = $this->calculateWith($existing, ['strategy' => TreatmentStrategy::Mitigate, 'score' => '7.5']);
+
+        self::assertCount(1, $result['unchanged']);
+        self::assertSame([], $result['updates']);
+    }
+
+    #[Test]
+    public function changedEnumCaseIsAnUpdateWithoutCrashingThePreview(): void
+    {
+        $existing = new DeltaTargetStub(TreatmentStrategy::Mitigate, '7.50');
+
+        $result = $this->calculateWith($existing, [
+            'strategy' => TreatmentStrategy::Avoid,
+            'reviewedAt' => new \DateTimeImmutable('2026-01-31'),
+        ]);
+
+        self::assertCount(1, $result['updates']);
+        self::assertArrayHasKey('strategy', $result['updates'][0]['diff']);
+    }
+
+    #[Test]
+    public function validationAndLookupReceiveTheUserMapping(): void
+    {
+        $mapping = ['Titel' => 'title'];
+        $mapper  = $this->createMock(EntityMapperInterface::class);
+        $mapper->method('supportsEntityType')->willReturn(true);
+        $mapper->expects(self::once())->method('validate')->with(['Titel' => 'R1'], $mapping)
+            ->willReturn(['errors' => [], 'warnings' => []]);
+        $mapper->expects(self::once())->method('findExisting')
+            ->with(['Titel' => 'R1'], self::isInstanceOf(Tenant::class), $mapping)
+            ->willReturn(null);
+        $mapper->expects(self::once())->method('duplicateKey')->with(['Titel' => 'R1'], $mapping)->willReturn('r1');
+        $mapper->method('toEntityData')->willReturn(['title' => 'R1']);
+
+        $this->calculateWith(new \stdClass(), [], $mapping, $mapper);
+    }
+}
+
+/** Persisted side of the diff: an enum case, a DECIMAL string and a date. */
+final class DeltaTargetStub
+{
+    public \DateTimeImmutable $reviewedAt;
+
+    public function __construct(
+        public TreatmentStrategy $strategy,
+        public string $score,
+    ) {
+        $this->reviewedAt = new \DateTimeImmutable('2025-06-30');
+    }
+
+    public function getId(): int
+    {
+        return 11;
     }
 }

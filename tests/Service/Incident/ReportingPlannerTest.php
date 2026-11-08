@@ -9,6 +9,7 @@ use App\Entity\Incident;
 use App\Entity\Tenant;
 use App\Enum\IncidentSeverity;
 use App\Enum\SlaDeadlineType;
+use App\Service\Incident\Nis2SignificanceCriteria;
 use App\Service\Incident\ReportingPlanner;
 use App\Service\ModuleConfigurationService;
 use DateTimeImmutable;
@@ -84,6 +85,39 @@ final class ReportingPlannerTest extends TestCase
         self::assertSame('2026-05-04 11:00', $duties[1]->deadline->format('Y-m-d H:i'), '72 h after the actual initial report');
         self::assertSame('2026-06-04 11:00', $duties[2]->deadline->format('Y-m-d H:i'), 'one month after the intermediate deadline');
         self::assertTrue($duties[0]->isReportedInTime());
+    }
+
+    #[Test]
+    public function theIntermediateReportIsADutyOnlyOnRequest(): void
+    {
+        $incident = $this->incident();
+        $incident->setNotificationRequired(true);
+        self::assertNull($this->planner()->duty($incident, SlaDeadlineType::Nis2InterimOnRequest));
+
+        $incident->setNis2InterimRequestedAt(new DateTimeImmutable('2026-05-03 10:00'));
+        $duty = $this->planner()->duty($incident, SlaDeadlineType::Nis2InterimOnRequest);
+        self::assertNotNull($duty);
+        self::assertSame('2026-05-06 10:00', $duty->deadline->format('Y-m-d H:i'), '72 h without a date in the request');
+        self::assertSame('nis2InterimReportedAt', $duty->field);
+
+        $incident->setNis2InterimDueAt(new DateTimeImmutable('2026-05-04 12:00'));
+        self::assertSame('2026-05-04 12:00', $this->planner()->duty($incident, SlaDeadlineType::Nis2InterimOnRequest)?->deadline->format('Y-m-d H:i'));
+    }
+
+    #[Test]
+    public function theOrganisationSetsTheSignificanceThresholds(): void
+    {
+        $incident = $this->incident();
+        $incident->setAffectedUsersCount(40);
+        $incident->setEstimatedFinancialImpact('80000.00');
+        self::assertSame([], $incident->getNis2SignificanceReasons());
+
+        $tenant = $incident->getTenant();
+        self::assertNotNull($tenant);
+        Nis2SignificanceCriteria::set($tenant, 50000, 30);
+        self::assertSame(['affected_persons', 'financial_loss'], $incident->getNis2SignificanceReasons());
+        self::assertSame(30, Nis2SignificanceCriteria::affectedPersons($tenant));
+        self::assertSame(Nis2SignificanceCriteria::DEFAULT_AFFECTED_PERSONS, Nis2SignificanceCriteria::affectedPersons(null));
     }
 
     private function incident(): Incident

@@ -13,6 +13,7 @@ use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use App\Entity\Document;
 use App\Entity\InternalAudit;
+use App\Entity\Person;
 use App\Entity\Risk;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
@@ -112,7 +113,6 @@ final class EntityClonersTest extends TestCase
             ->setName('Production DB')
             ->setTenant($this->tenant)
             ->setAssetType('database')
-            ->setOwner('IT-Team')
             ->setConfidentialityValue(5)
             ->setIntegrityValue(5)
             ->setAvailabilityValue(4)
@@ -179,8 +179,8 @@ final class EntityClonersTest extends TestCase
         $source = (new Training())
             ->setTitle('Annual Awareness Training')
             ->setTenant($this->tenant)
+            ->setTrainerPerson((new Person())->setFullName('CISO'))
             ->setTrainingType('awareness')
-            ->setTrainer('CISO')
             ->setDurationMinutes(60)
             ->setMandatory(true)
             ->setStatus('completed')
@@ -193,7 +193,7 @@ final class EntityClonersTest extends TestCase
         $clone = (new TrainingCloner($this->em))->clone($source);
 
         self::assertSame('Annual Awareness Training (Kopie)', $clone->getTitle());
-        self::assertSame('CISO', $clone->getTrainer());
+        self::assertSame('CISO', $clone->getTrainerPerson()?->getFullName());
         self::assertSame(60, $clone->getDurationMinutes());
         self::assertTrue($clone->isMandatory());
         self::assertSame(12, $clone->getRecurrenceMonths());
@@ -274,12 +274,12 @@ final class EntityClonersTest extends TestCase
         $source = (new BCExercise())
             ->setName('Q1 Tabletop')
             ->setTenant($this->tenant)
+            ->setFacilitatorPerson((new Person())->setFullName('External consultant'))
             ->setExerciseType('tabletop')
             ->setScope('IT-Ops')
             ->setObjectives('Validate DR failover')
             ->setScenario('Ransomware on file-server')
             ->setDurationHours(4)
-            ->setFacilitator('External consultant')
             ->setStatus('completed')
             ->setResults('All steps passed')
             ->setSuccessRating(85)
@@ -291,7 +291,7 @@ final class EntityClonersTest extends TestCase
         self::assertSame('tabletop', $clone->getExerciseType());
         self::assertSame('Ransomware on file-server', $clone->getScenario());
         self::assertSame(4, $clone->getDurationHours());
-        self::assertSame('External consultant', $clone->getFacilitator());
+        self::assertSame('External consultant', $clone->getFacilitatorPerson()?->getFullName());
         self::assertSame('planned', $clone->getStatus(), 'status reset to planned');
         self::assertNull($clone->getExerciseDate());
         self::assertNull($clone->getResults());

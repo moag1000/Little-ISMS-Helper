@@ -12,7 +12,7 @@ tests/Controller/DocumentControllerTest.php:490
 tests/Controller/IncidentControllerTest.php:342
 tests/Controller/IncidentControllerTest.php:359
 tests/Controller/IncidentControllerTest.php:386
-tests/Controller/IncidentControllerTest.php:438
+tests/Controller/IncidentControllerTest.php:437
 tests/Service/Certificate/CertificateBulkFulfillmentServiceTest.php:89
 tests/Service/Certificate/CertificateBulkFulfillmentServiceTest.php:123
 tests/Service/Certificate/CertificateExpiryReviewTest.php:101

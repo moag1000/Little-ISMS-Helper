@@ -173,7 +173,6 @@ final class IncidentType extends AbstractType implements SectionMapInterface
             'user_field'         => 'reportedByUser',
             'person_field'       => 'reportedByPerson',
             'deputies_field'     => 'reportedByDeputyPersons',
-            'legacy_field'       => 'reportedBy',
             'translation_prefix' => 'incident',
             'user_label'         => 'incident.field.reported_by',
             'user_placeholder'   => 'incident.placeholder.reported_by_user',
@@ -183,8 +182,6 @@ final class IncidentType extends AbstractType implements SectionMapInterface
             'person_help'        => 'incident.help.reported_by_person',
             'deputies_label'     => 'incident.field.reported_by_deputies',
             'deputies_help'      => 'incident.help.reported_by_deputies',
-            'legacy_label'       => 'incident.field.reported_by_legacy',
-            'legacy_placeholder' => 'incident.placeholder.reported_by',
             // Owner pre-fill — UX-Polish
             'default_to_current_user' => true,
         ]);
@@ -577,7 +574,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
     {
         return [
             'overview'          => ['title', 'description', 'category', 'severity', 'status', 'detectedAt', 'occurredAt', 'closedAt'],
-            'responsibility'    => ['responsiblePerson', 'reportedByUser', 'reportedByPerson', 'reportedByDeputyPersons', 'reportedBy', 'visibleToHolding'],
+            'responsibility'    => ['responsiblePerson', 'reportedByUser', 'reportedByPerson', 'reportedByDeputyPersons', 'visibleToHolding'],
             'affected_assets'   => ['affectedSystems', 'affectedAssets', 'criticalServicesAffected'],
             'classification'    => ['incidentClassification', 'nis2Category', 'nis2SuspectedMalicious', 'notificationRequired', 'ictIncidentClassification'],
             'impact_assessment' => ['crossBorderImpact', 'affectedUsersCount', 'estimatedFinancialImpact', 'reputationalImpact', 'clientsAffected', 'clientsAffectedFinancialVolume', 'replicationOfImpact', 'recurringIncident'],

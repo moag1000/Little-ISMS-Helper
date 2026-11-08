@@ -22,7 +22,6 @@ class SupplierTest extends TestCase
         $this->assertNull($supplier->getTenant());
         $this->assertNull($supplier->getName());
         $this->assertNull($supplier->getDescription());
-        $this->assertNull($supplier->getContactPerson());
         $this->assertNull($supplier->getEmail());
         $this->assertNull($supplier->getPhone());
         $this->assertNull($supplier->getAddress());
@@ -63,12 +62,10 @@ class SupplierTest extends TestCase
     public function testSetAndGetContactDetails(): void
     {
         $supplier = new Supplier();
-        $supplier->setContactPerson('Max Mustermann');
         $supplier->setEmail('max@provider.com');
         $supplier->setPhone('+49 123 456789');
         $supplier->setAddress('Musterstrasse 123, 12345 Berlin');
 
-        $this->assertEquals('Max Mustermann', $supplier->getContactPerson());
         $this->assertEquals('max@provider.com', $supplier->getEmail());
         $this->assertEquals('+49 123 456789', $supplier->getPhone());
         $this->assertEquals('Musterstrasse 123, 12345 Berlin', $supplier->getAddress());

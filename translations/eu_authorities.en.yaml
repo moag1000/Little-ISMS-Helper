@@ -70,6 +70,7 @@ eu_authorities:
         help:
             legal_form: 'Legal form as registered, e.g. GmbH, AG'
             register_number: 'Commercial register number, e.g. HRB 12345'
+            category: 'By sector, staff and turnover: %suggestion% (NIS-2 Art. 3, BSIG § 28). Applies to the whole organisation.'
             turnover: 'Annual turnover in EUR — relevant for threshold assessment'
             ict_dependency: 'Brief description of critical ICT dependencies (max. 5 sentences)'
             nace_codes: 'NACE Rev.2 codes for your primary business activity'
@@ -95,6 +96,7 @@ eu_authorities:
             nace_codes_required: 'At least one NACE code is required'
             sector_required: 'NIS-2 sector is required'
             category_invalid: 'Invalid entity category'
+            not_regulated: 'With this classification there is no registration duty (BSIG § 33).'
             headcount_required: 'Headcount must be greater than 0'
             ict_description_required: 'ICT dependency description is required'
             incident_contact_required: 'Incident reporting contact is required'
@@ -130,6 +132,7 @@ eu_authorities:
         category:
             essential: 'Essential Entity'
             important: 'Important Entity'
+            not_regulated: 'Not regulated (below the thresholds)'
     hub:
         page:
             title: 'EU Authority Reporting Hub'

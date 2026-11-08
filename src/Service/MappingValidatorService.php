@@ -306,7 +306,11 @@ class MappingValidatorService
             $candidates[] = $code . '-' . $identifier;
         }
         foreach ($candidates as $candidate) {
-            $requirement = $this->requirementRepository->findOneBy(['framework' => $fw, 'requirementId' => $candidate]);
+            // Mappings are global: only global catalogue rows, never another
+            // organisation's uploaded requirement (uploadTenant is not tenant-filtered).
+            $requirement = $this->requirementRepository->findOneBy(
+                ['framework' => $fw, 'requirementId' => $candidate, 'uploadTenant' => null],
+            );
             if ($requirement !== null) {
                 return $requirement;
             }
@@ -314,7 +318,7 @@ class MappingValidatorService
 
         if ($code === self::BAUSTEIN_FRAMEWORK && preg_match(self::BAUSTEIN_PATTERN, $identifier) === 1) {
             return $this->requirementRepository->findOneBy(
-                ['framework' => $fw, 'category' => $identifier],
+                ['framework' => $fw, 'category' => $identifier, 'uploadTenant' => null],
                 ['id' => 'ASC'],
             );
         }

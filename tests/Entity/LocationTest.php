@@ -31,7 +31,6 @@ class LocationTest extends TestCase
         $this->assertFalse($location->requiresEscort());
         $this->assertFalse($location->isCameraMonitored());
         $this->assertNull($location->getAccessControlSystem());
-        $this->assertNull($location->getResponsiblePerson());
         $this->assertNull($location->getCapacity());
         $this->assertNull($location->getSquareMeters());
         $this->assertTrue($location->isActive());
@@ -176,15 +175,6 @@ class LocationTest extends TestCase
         $location->setAccessControlSystem('Biometric + Badge System');
 
         $this->assertEquals('Biometric + Badge System', $location->getAccessControlSystem());
-    }
-
-    #[Test]
-    public function testSetAndGetResponsiblePerson(): void
-    {
-        $location = new Location();
-        $location->setResponsiblePerson('Facility Manager');
-
-        $this->assertEquals('Facility Manager', $location->getResponsiblePerson());
     }
 
     #[Test]
@@ -373,7 +363,6 @@ class LocationTest extends TestCase
         $datacenter->setRequiresEscort(true);
         $datacenter->setCameraMonitored(true);
         $datacenter->setAccessControlSystem('Biometric + Multi-Factor Badge System');
-        $datacenter->setResponsiblePerson('Datacenter Operations Manager');
         $datacenter->setSquareMeters('5000.00');
 
         $this->assertEquals('Primary Datacenter', $datacenter->getName());

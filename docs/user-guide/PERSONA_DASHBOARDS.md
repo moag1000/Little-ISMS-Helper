@@ -337,9 +337,9 @@ Gruppen, deren Modul nicht aktiv ist, werden nicht angezeigt.
   („Nachweis hochladen" springt dorthin). Vorbelegt wird nur aus Datensätzen
   der eigenen Organisation. URL-Parameter: `fromAsset`, `fromLocation`, `fromRisk`,
   `fromIncident`, `fromVulnerability`.
-- **Alte Freitextfelder für Personen** (Eigentümer, Verantwortliche,
-  Ansprechpartner aus der Zeit vor der Personenauswahl) erscheinen nur noch,
-  solange sie einen Wert haben.
+- **Eigentümer, Verantwortliche und Ansprechpartner** werden nur noch als
+  Benutzer oder Person gewählt; die alten Freitextfelder sind seit 2026-11
+  entfallen (ihre Werte wurden zu Personen, siehe [Quick-Fix](QUICK_FIX.md)).
 
 ---
 

@@ -28,11 +28,18 @@ supplier:
         empty: 'No questionnaires yet.'
         action:
             send: 'Send questionnaire'
+            review: 'Review answers'
+            save_review: 'Apply rating'
         field:
             supplier: Supplier
             title: Title
             status: Status
             sent_at: Sent
+            review: Rating
+            score: 'Security rating (0–100)'
+            findings: Findings
+        flash:
+            reviewed: 'Rating applied.'
         status:
             draft: Draft
             sent: Sent
@@ -163,7 +170,6 @@ supplier:
         contact_person_user: 'Contact Person (User)'
         contact_person_ref: 'Contact Person (Person)'
         contact_deputies: 'Deputies'
-        contact_person_legacy: 'Contact Person (free text, legacy)'
     lksg_risk:
         low: 'Low'
         medium: 'Medium'

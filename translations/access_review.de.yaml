@@ -100,6 +100,7 @@ access_review:
     bulk_decide_partial: '%done% gespeichert, %skipped% übersprungen.'
     export_ok: XLSX-Export gestartet.
     escalation_notified: 'Eskalations-Benachrichtigung für %count% Item(s) versendet.'
+    self_review_refused: Über den eigenen Zugriff entscheidet eine andere Person (Funktionstrennung, ISO 27001 A.5.18).
 
   stats:
     total: Gesamt
@@ -114,6 +115,7 @@ access_review:
     success: '%count% Entscheidung(en) gespeichert.'
     partial: '%done% gespeichert, %skipped% übersprungen (bereits entschieden oder Kampagne geschlossen).'
     none_selected: Keine Items ausgewählt.
+    self_review_skipped: '%count% davon betreffen den eigenen Zugriff und bleiben für eine andere Person offen.'
     tooltip: >
       Wählen Sie mehrere Items per Checkbox aus, dann klicken Sie auf eine
       Massenentscheidung. Jedes Item erhält seinen eigenen Audit-Eintrag.

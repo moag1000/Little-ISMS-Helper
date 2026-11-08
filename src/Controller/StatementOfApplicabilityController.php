@@ -329,6 +329,7 @@ class StatementOfApplicabilityController extends AbstractController
         }
 
         $updated = 0;
+        $perEntityData = [];
         foreach (array_filter(array_map('intval', $ids)) as $controlId) {
             $control = $this->controlRepository->find($controlId);
             if (!$control instanceof Control) {
@@ -349,27 +350,34 @@ class StatementOfApplicabilityController extends AbstractController
             $control->setUpdatedAt(new DateTimeImmutable());
             $updated++;
 
-            if ($this->auditLogger !== null) {
-                try {
-                    $this->auditLogger->logCustom(
-                        action: 'control.bulk_applicability',
-                        entityType: 'Control',
-                        entityId: $controlId,
-                        oldValues: ['applicable' => $previous],
-                        newValues: ['applicable' => $applicable, 'reason' => $reason],
-                        description: sprintf(
-                            'Bulk-Applicability: control %s → %s',
-                            (string) $control->getControlId(),
-                            $applicable ? 'applicable' : 'N/A'
-                        ),
-                    );
-                } catch (\Throwable) {
-                    // audit log failure must not block the bulk operation
-                }
-            }
+            $perEntityData[] = [
+                'action' => 'update',
+                'entity_id' => $controlId,
+                'old_values' => ['applicable' => $previous],
+                'new_values' => ['applicable' => $applicable, 'reason' => $reason],
+            ];
         }
 
         $this->entityManager->flush();
+
+        // One audit batch for the whole selection (ISO 27001 Cl. 7.5.3).
+        if ($this->auditLogger !== null && $perEntityData !== []) {
+            try {
+                $this->auditLogger->logBulk(
+                    eventType: 'control.bulk_applicability',
+                    entityType: 'Control',
+                    batchData: ['applicable' => $applicable, 'reason' => $reason, 'count' => $updated],
+                    perEntityData: $perEntityData,
+                    description: sprintf(
+                        'Bulk-Applicability: %d controls → %s',
+                        $updated,
+                        $applicable ? 'applicable' : 'N/A'
+                    ),
+                );
+            } catch (\Throwable) {
+                // audit log failure must not block the bulk operation
+            }
+        }
 
         $this->addFlash(
             'success',

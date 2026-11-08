@@ -31,7 +31,6 @@ final class RecurringDutyCatalog
         'bia_review' => ['module' => 'bcm', 'scope' => null, 'norm' => 'ISO 22301 8.2.2', 'months' => 12, 'roles' => ['ROLE_BCM_OFFICER']],
         'bc_exercise' => ['module' => 'bcm', 'scope' => null, 'norm' => 'ISO 22301 8.5', 'months' => 12, 'roles' => ['ROLE_BCM_OFFICER']],
         'tom_review' => ['module' => 'privacy', 'scope' => null, 'norm' => 'DSGVO Art. 32 (1) d', 'months' => 12, 'roles' => ['ROLE_DPO']],
-        'nis2_management_training' => ['module' => 'nis2_dora', 'scope' => self::SCOPE_NIS2, 'norm' => 'NIS-2 Art. 20 (2)', 'months' => 12, 'roles' => ['ROLE_ISB', 'ROLE_CISO']],
         'nis2_measures_review' => ['module' => 'nis2_dora', 'scope' => self::SCOPE_NIS2, 'norm' => 'NIS-2 Art. 21', 'months' => 12, 'roles' => ['ROLE_ISB', 'ROLE_CISO']],
         'dora_register_of_information' => ['module' => 'nis2_dora', 'scope' => self::SCOPE_DORA, 'norm' => 'DORA Art. 28 (3)', 'months' => 12, 'roles' => ['ROLE_ISB', 'ROLE_COMPLIANCE_MANAGER']],
         'dora_exit_plans' => ['module' => 'nis2_dora', 'scope' => self::SCOPE_DORA, 'norm' => 'DORA Art. 28 (8)', 'months' => 12, 'roles' => ['ROLE_ISB', 'ROLE_COMPLIANCE_MANAGER']],

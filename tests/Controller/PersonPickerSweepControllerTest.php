@@ -130,9 +130,6 @@ final class PersonPickerSweepControllerTest extends WebTestCase
     ): void {
         $entity = $this->seed($class);
         $id = $entity->getId();
-        $legacySetter = 'set' . ucfirst($base);
-        $entity->{$legacySetter}('Legacy Freetext ' . $this->uid);
-        $this->em->flush();
 
         $this->client->loginUser($this->actor);
         $crawler = $this->client->request('GET', sprintf('/en/%s/%d/edit', $slug, $id));
@@ -156,7 +153,6 @@ final class PersonPickerSweepControllerTest extends WebTestCase
         $stored = $saved->{'get' . $role . 'DeputyPersons'}();
         self::assertCount(1, $stored);
         self::assertSame($this->deputy->getId(), $stored->first()->getId());
-        self::assertSame('Legacy Freetext ' . $this->uid, $saved->{'get' . ucfirst($base)}(), 'legacy text round-trips');
         self::assertSame($this->owner->getFullName(), $saved->{'getEffective' . ucfirst($base)}());
 
         $this->client->request('GET', sprintf('/en/%s/%d', $slug, $id));
@@ -165,11 +161,6 @@ final class PersonPickerSweepControllerTest extends WebTestCase
             (string) $this->owner->getFullName(),
             (string) $this->client->getResponse()->getContent(),
             'show page displays the structured owner',
-        );
-        self::assertStringNotContainsString(
-            'Legacy Freetext ' . $this->uid,
-            (string) $this->client->getResponse()->getContent(),
-            'show page prefers the structured owner over the legacy text',
         );
     }
 

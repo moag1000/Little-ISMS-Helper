@@ -70,11 +70,6 @@ final class BusinessContinuityPlanTypeTest extends TestCase
             "'deputies_field'     => 'planOwnerDeputyPersons',",
             $source
         );
-        self::assertStringContainsString(
-            "'legacy_field'       => 'planOwner',",
-            $source,
-            'Legacy free-text planOwner must remain wired as read-only Migration-Hint.'
-        );
     }
 
     #[Test]
@@ -112,7 +107,7 @@ final class BusinessContinuityPlanTypeTest extends TestCase
         self::assertStringNotContainsString(
             "->add('planOwner', TextType::class",
             $source,
-            'planOwner legacy field must be wired exclusively via addOwnerPicker.'
+            'the old free-text planOwner field stays removed.'
         );
     }
 }

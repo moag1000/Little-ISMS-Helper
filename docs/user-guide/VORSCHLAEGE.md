@@ -19,7 +19,6 @@ annimmt. Jede Entscheidung steht mit Person, Zeit und Begründung im Audit-Log
 | Control herabstufen | Regel: offene Abweichung aus einem Audit gegen ein Control, das als umgesetzt gilt (ISO 27001 10.2) | Hauptabweichung: Umsetzung „in Arbeit“ (50 %); Nebenabweichung: „verifiziert“ wird zu „umgesetzt“. Die Erfüllung der Anforderungen dahinter rechnet sofort neu | ISB, Manager |
 | Risiko nach Vorfall | Regel: Vorfall als eingetretenes Risiko geschlossen (90 Tage) | Wahrscheinlichkeit +1 (ISO 27001 6.1.2) | Risikomanager, Manager |
 | Risiko aus Schwachstelle | Regel: offene Schwachstelle ab CVSS 7 ohne Risiko | Risiko wird angelegt und verknüpft | Risikomanager, Manager |
-| Verantwortliche zuordnen | Import: Freitext-Verantwortliche passen zu einer Person | Person wird als Verantwortliche eingetragen | Admin |
 | Register: Thema, rechtliche Anforderung, Schnittstelle, Rolle, Kompetenz, Chance | Import: Kontext-Freitexte, Frameworks, interessierte Parteien, kritische Lieferanten, Persona-Rollen, letzte Managementbewertung | Registereintrag wird angelegt (siehe [Register](REGISTER.md)) | ISB; rechtliche Anforderungen Compliance-Manager, Chancen Risikomanager; Manager |
 | Erfüllung übernehmen | Vererbung über Framework-Mappings | Erfüllungsgrad wird übernommen, Kommentar anpassbar | Compliance-Manager, ISB |
 | Anforderung zuordnen | Textähnlichkeit auf der SoA-Seite | Maßnahme wird der Anforderung zugeordnet | Compliance-Manager, ISB |
@@ -37,8 +36,7 @@ annimmt. Jede Entscheidung steht mit Person, Zeit und Begründung im Audit-Log
 Neben den Rollen der Tabelle entscheidet immer auch, wer für den Datensatz zuständig ist
 (Risikoeigner, Asset-Verantwortliche, …; dieselbe Zuständigkeit wie in „Mein Tag“ und der
 Sammelmail). Offene Vorschläge stehen bei diesen Personen in „Mein Tag“ und in der
-Sammelmail um 07:00 und gelten zwei Wochen nach dem Entstehen als fällig. Import-Treffer
-(Freitext-Verantwortliche) bleiben beim Admin.
+Sammelmail um 07:00 und gelten zwei Wochen nach dem Entstehen als fällig.
 
 Jede Art erscheint nur, wenn ihr Modul aktiv ist. Prüfer (Auditor, Konzern-Auditor,
 Group CISO) sehen alle Vorschläge, auch die entschiedenen, aber nur lesend.

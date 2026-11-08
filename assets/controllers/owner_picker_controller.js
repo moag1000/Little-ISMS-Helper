@@ -11,13 +11,12 @@ import { Controller } from '@hotwired/stimulus'
  *   - user      <select> bound to the User EntityType
  *   - person    <select> bound to the Person EntityType
  *   - deputies  <select multiple> bound to the Deputies EntityType (optional)
- *   - legacy    <input type="text"> bound to the legacy free-text field (optional)
  *
  * The picker tolerates the targets missing (e.g. forms without
- * deputies or legacy field) — every callback no-ops gracefully.
+ * deputies) — every callback no-ops gracefully.
  */
 export default class extends Controller {
-    static targets = ['user', 'person', 'deputies', 'legacy']
+    static targets = ['user', 'person', 'deputies']
 
     connect() {
         this.toggle()

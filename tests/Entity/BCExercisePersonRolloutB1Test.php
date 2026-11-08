@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Person-Rollout Phase B1 — BCExercise.exerciseLeader{User,Person}
- * Tri-State chain on top of legacy `facilitator` free-text.
+ * chain, falling back to the facilitator slot.
  */
 final class BCExercisePersonRolloutB1Test extends TestCase
 {
@@ -23,7 +23,6 @@ final class BCExercisePersonRolloutB1Test extends TestCase
         $user = (new User())->setFirstName('Alice')->setLastName('Anderson');
         $person = (new Person())->setFullName('Bob Brown');
         $exercise
-            ->setFacilitator('Carol Carlson')
             ->setExerciseLeaderPerson($person)
             ->setExerciseLeaderUser($user);
 
@@ -36,17 +35,15 @@ final class BCExercisePersonRolloutB1Test extends TestCase
         $exercise = new BCExercise();
         $person = (new Person())->setFullName('Bob Brown');
         $exercise
-            ->setFacilitator('Carol Carlson')
             ->setExerciseLeaderPerson($person);
 
         $this->assertSame('Bob Brown', $exercise->getEffectiveExerciseLeaderName());
     }
 
     #[Test]
-    public function legacyFacilitatorUsedWhenNoTypedLeader(): void
+    public function facilitatorUsedWhenNoTypedLeader(): void
     {
-        $exercise = new BCExercise();
-        $exercise->setFacilitator('Carol Carlson');
+        $exercise = (new BCExercise())->setFacilitatorPerson((new Person())->setFullName('Carol Carlson'));
 
         $this->assertSame('Carol Carlson', $exercise->getEffectiveExerciseLeaderName());
         $this->assertNull($exercise->getExerciseLeaderUser());

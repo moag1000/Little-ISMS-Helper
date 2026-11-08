@@ -44,7 +44,6 @@ patch:
         responsible_person_user: 'Responsible Person (User)'
         responsible_person_ref: 'Responsible Person (Contact)'
         responsible_deputies: 'Deputies'
-        responsible_person_legacy: 'Responsible Person (Free Text)'
     type:
         security: 'Security Patch'
         critical: 'Critical Patch'

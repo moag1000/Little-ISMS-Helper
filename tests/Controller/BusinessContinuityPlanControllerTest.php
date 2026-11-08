@@ -179,7 +179,6 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->testProcess = new BusinessProcess();
         $this->testProcess->setName('Test Business Process ' . $uniqueId);
         $this->testProcess->setDescription('Test process for BC plan testing');
-        $this->testProcess->setProcessOwner('Process Owner');
         $this->testProcess->setCriticality('high');
         $this->testProcess->setRto(4);
         $this->testProcess->setRpo(1);
@@ -196,7 +195,6 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->testPlan->setName('Test BC Plan ' . $uniqueId);
         $this->testPlan->setDescription('Test business continuity plan');
         $this->testPlan->setBusinessProcess($this->testProcess);
-        $this->testPlan->setPlanOwner('Plan Owner');
         $this->testPlan->setStatus('active');
         $this->testPlan->setActivationCriteria('System downtime exceeds 30 minutes');
         $this->testPlan->setRecoveryProcedures('1. Notify team\n2. Assess damage\n3. Execute recovery');
@@ -266,7 +264,6 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $overduePlan->setTenant($this->testTenant);
         $overduePlan->setName('Overdue Test Plan');
         $overduePlan->setBusinessProcess($this->testProcess);
-        $overduePlan->setPlanOwner('Owner');
         $overduePlan->setStatus('active');
         $overduePlan->setActivationCriteria('Criteria');
         $overduePlan->setRecoveryProcedures('Procedures');
@@ -293,7 +290,6 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $overduePlan->setTenant($this->testTenant);
         $overduePlan->setName('Overdue Review Plan');
         $overduePlan->setBusinessProcess($this->testProcess);
-        $overduePlan->setPlanOwner('Owner');
         $overduePlan->setStatus('active');
         $overduePlan->setActivationCriteria('Criteria');
         $overduePlan->setRecoveryProcedures('Procedures');
@@ -543,7 +539,6 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $otherProcess = new BusinessProcess();
         $otherProcess->setName('Other Process ' . $uniqueId);
         $otherProcess->setDescription('Other process');
-        $otherProcess->setProcessOwner('Other Owner');
         $otherProcess->setCriticality('low');
         $otherProcess->setRto(8);
         $otherProcess->setRpo(4);
@@ -558,7 +553,6 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $otherPlan->setTenant($otherTenant);
         $otherPlan->setName('Other Tenant BC Plan ' . $uniqueId);
         $otherPlan->setBusinessProcess($otherProcess);
-        $otherPlan->setPlanOwner('Other Owner');
         $otherPlan->setStatus('active');
         $otherPlan->setActivationCriteria('Other criteria');
         $otherPlan->setRecoveryProcedures('Other procedures');

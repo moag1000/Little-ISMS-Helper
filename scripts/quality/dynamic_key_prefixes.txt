@@ -8,8 +8,7 @@ access_review.decision	2
 access_review.scope	2
 access_review.status	1
 admin.data_repair.cascade.category	1
-admin.data_retention.entity	1
-admin.legacy_owners.type	1
+admin.data_retention.entity	2
 admin.location_map.peer	1
 admin.location_map.precision	1
 admin.queue.job_status	1
@@ -129,7 +128,8 @@ dsr.verification	1
 eu_authorities.dora_roi.scope	1
 eu_authorities.hub.status	1
 eu_authorities.hub.type	1
-eu_authorities.nis2_registration.sector	1
+eu_authorities.nis2_registration.category	1
+eu_authorities.nis2_registration.sector	2
 evidence_reverification.status	2
 form.section	1
 four_eyes.action	3

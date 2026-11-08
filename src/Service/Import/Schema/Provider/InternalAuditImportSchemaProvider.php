@@ -32,11 +32,9 @@ use App\Service\Import\Schema\ImportSchemaProviderInterface;
  * `plannedDate` carry the entity's NotBlank/NotNull constraints and are flagged
  * required.
  *
- * `leadAuditor` is a genuine free-text VARCHAR (?string setter), NOT a relation —
- * the structured Pattern-A states (`leadAuditorUser`, `leadAuditorPerson`) are
- * the typed alternatives; only the Person one is imported (User has no plain
- * human lookup column, so it is excluded like ProcessingActivity excludes its
- * User relations).
+ * `leadAuditor` takes the lead auditor as text (name or e-mail): it resolves to
+ * `leadAuditorUser` or `leadAuditorPerson`, an unknown name becomes a Person.
+ * `leadAuditorPerson` can also be given by name.
  *
  * Excluded by design:
  *   - id, tenant, createdAt/updatedAt, lockVersion (infrastructure)
@@ -120,12 +118,8 @@ final class InternalAuditImportSchemaProvider implements ImportSchemaProviderInt
                     type: ImportFieldSpec::TYPE_DATE,
                 ),
 
-                // ── Lead auditor (legacy free-text) + team (legacy free-text) ───
-                new ImportFieldSpec(
-                    name: 'leadAuditor',
-                    setter: 'setLeadAuditor',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
+                // ── Lead auditor (name as text) + team (legacy free-text) ───
+                OwnerImportFields::text('leadAuditor', 'leadAuditorUser', 'leadAuditorPerson'),
                 new ImportFieldSpec(
                     name: 'auditTeam',
                     setter: 'setAuditTeam',

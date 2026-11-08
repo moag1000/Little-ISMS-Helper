@@ -20,6 +20,8 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -114,13 +116,13 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
             // ISO 22301 Cl. 8.2.2 — Recovery targets.
             ->add('rto', IntegerType::class, [
                 'label' => 'bc_plans.field.rto',
-                'required' => true,
+                'required' => false,
                 'attr' => ['min' => 0, 'max' => 8760],
                 'help' => 'bc_plans.help.rto',
             ])
             ->add('rpo', IntegerType::class, [
                 'label' => 'bc_plans.field.rpo',
-                'required' => true,
+                'required' => false,
                 'attr' => ['min' => 0, 'max' => 8760],
                 'help' => 'bc_plans.help.rpo',
             ])
@@ -275,11 +277,9 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
             'user_field'         => 'planOwnerUser',
             'person_field'       => 'planOwnerPerson',
             'deputies_field'     => 'planOwnerDeputyPersons',
-            'legacy_field'       => 'planOwner',
             'user_label'         => 'bc_plans.field.plan_owner',
             'person_label'       => 'bc_plans.field.plan_owner_person',
             'deputies_label'     => 'bc_plans.field.plan_owner_deputies',
-            'legacy_label'       => 'bc_plans.field.plan_owner_legacy',
             'user_placeholder'   => 'bc_plans.placeholder.plan_owner_user',
             'person_placeholder' => 'bc_plans.placeholder.plan_owner_person',
             'user_help'          => 'bc_plans.help.plan_owner_user',
@@ -288,6 +288,36 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
         ]);
 
         // JsonArrayTransformer now applied automatically by JsonStructuredType.
+
+        // ISO 22301 8.2.2 → 8.4: the plan's recovery targets come from the
+        // BIA of its business process unless the plan sets its own.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
+            $plan = $event->getData();
+            if ($plan instanceof BusinessContinuityPlan) {
+                self::takeTargetsFromBia($plan);
+            }
+        });
+        $builder->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event): void {
+            $plan = $event->getData();
+            if ($plan instanceof BusinessContinuityPlan) {
+                self::takeTargetsFromBia($plan);
+            }
+        }, 10);
+    }
+
+    /** Empty RTO/RPO of the plan take the values of the business process's BIA. */
+    public static function takeTargetsFromBia(BusinessContinuityPlan $plan): void
+    {
+        $process = $plan->getBusinessProcess();
+        if ($process === null) {
+            return;
+        }
+        if ($plan->getRto() === null && $process->getRto() !== null) {
+            $plan->setRto($process->getRto());
+        }
+        if ($plan->getRpo() === null && $process->getRpo() !== null) {
+            $plan->setRpo($process->getRpo());
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -356,7 +386,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
     {
         return [
             'overview'      => ['name', 'businessProcess', 'description', 'status', 'version'],
-            'owner'          => ['planOwnerUser', 'planOwnerPerson', 'planOwnerDeputyPersons', 'planOwner'],
+            'owner'          => ['planOwnerUser', 'planOwnerPerson', 'planOwnerDeputyPersons'],
             'activation'    => ['activationCriteria', 'escalationLevels'],
             'team'          => ['bcTeam', 'rolesAndResponsibilities', 'responseTeamMembers', 'crisisTeams'],
             'recovery'      => ['recoveryProcedures', 'rto', 'rpo', 'criticalAssets', 'backupProcedures', 'restoreProcedures'],

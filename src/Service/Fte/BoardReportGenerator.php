@@ -150,7 +150,7 @@ final class BoardReportGenerator
     private function csvRow(array $cells): string
     {
         $escaped = array_map(
-            static fn ($cell): string => '"' . str_replace('"', '""', (string) $cell) . '"',
+            static fn ($cell): string => '"' . str_replace('"', '""', (string) \App\Util\CsvSanitizer::sanitize((string) $cell)) . '"',
             $cells
         );
 

@@ -28,7 +28,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\Util\LegacyFreeTextField;
 
 final class SupplierType extends AbstractType implements SectionMapInterface
 {
@@ -46,7 +45,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // Legacy free text: shown only while it still holds a value (UI wave F).
-        LegacyFreeTextField::hideWhenEmpty($builder, 'contactPerson');
         // Build dynamic criticality choices from tenant-specific levels.
         $tenant = $this->tenantContext->getCurrentTenant();
         $criticalityChoices = $this->buildCriticalityChoices($tenant);
@@ -75,8 +73,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 ],
             ]);
 
-        // Pattern A dual-state owner cluster (User + Person + deputies) via the
-        // shared trait; the legacy free-text field below keeps round-tripping.
+        // Owner cluster (User + Person + deputies) via the shared trait.
         $this->addOwnerPicker($builder, [
             'translation_prefix' => 'supplier',
             'user_field'         => 'contactPersonUser',
@@ -93,15 +90,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
         ]);
 
         $builder
-            ->add('contactPerson', TextType::class, [
-                'label' => 'supplier.field.contact_person_legacy',
-                'help' => 'supplier.help.contact_person',
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'supplier.placeholder.contact_person',
-                ],
-            ])
             ->add('email', EmailType::class, [
                 'label' => 'supplier.field.email',
                 'help' => 'supplier.help.email',
@@ -657,7 +645,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'contactPersonUser',
                 'contactPersonRef',
                 'contactDeputyPersons',
-                'contactPerson',
                 'email',
                 'phone',
                 'address',

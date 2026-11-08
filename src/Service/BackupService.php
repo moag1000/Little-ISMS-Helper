@@ -396,7 +396,16 @@ class BackupService
             $sessionClass = UserSession::class;
             if (class_exists($sessionClass)) {
                 try {
-                    $sessions = $this->fetchEntities($sessionClass, $scopeIds);
+                    // UserSession has no tenant field: scope it through its user, otherwise
+                    // an organisation backup carried every organisation's sessions.
+                    $sessions = $scopeIds === []
+                        ? $this->fetchEntities($sessionClass, [])
+                        : $this->entityManager->getRepository($sessionClass)->createQueryBuilder('s')
+                            ->join('s.user', 'u')
+                            ->andWhere('u.tenant IN (:scope)')
+                            ->setParameter('scope', $scopeIds)
+                            ->getQuery()
+                            ->getResult();
                     $backup['data']['UserSession'] = $this->serializeEntities($sessions);
                     $backup['statistics']['UserSession'] = count($sessions);
 
@@ -927,6 +936,41 @@ class BackupService
         return $backup;
     }
 
+
+    /** File types that must never be written below public/ from a backup archive. */
+    private const array UNSAFE_ARCHIVE_EXTENSIONS = [
+        'php', 'phtml', 'phar', 'php3', 'php4', 'php5', 'php7', 'php8', 'phps', 'pht',
+        'shtml', 'cgi', 'pl', 'py', 'sh', 'asp', 'aspx', 'jsp', 'htaccess', 'htpasswd', 'ini',
+    ];
+
+    /**
+     * Whether a path from inside a backup archive may be extracted below public/uploads/.
+     * Rejects traversal ("..", absolute, backslash, NUL), hidden files (.htaccess,
+     * .user.ini) and executable file types.
+     */
+    public static function isSafeArchivePath(string $relativePath): bool
+    {
+        if ($relativePath === '' || str_contains($relativePath, "\0") || str_contains($relativePath, '\\')
+            || str_starts_with($relativePath, '/')
+        ) {
+            return false;
+        }
+        foreach (explode('/', $relativePath) as $segment) {
+            if ($segment === '' || $segment === '.' || $segment === '..' || str_starts_with($segment, '.')) {
+                return false;
+            }
+        }
+        $basename = strtolower(basename($relativePath));
+        foreach (explode('.', $basename) as $i => $part) {
+            // "shell.php.jpg" is executed by some server configurations as well
+            if ($i > 0 && in_array($part, self::UNSAFE_ARCHIVE_EXTENSIONS, true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Load backup from a ZIP archive.
      *
@@ -973,11 +1017,12 @@ class BackupService
                 continue;
             }
 
-            // Security: path-traversal check — resolved path must stay inside public/uploads/
+            // Security: the entry name comes from an uploaded file — no "..", absolute
+            // paths, backslashes, dot files or executable types (zip slip, web shell).
             $targetPath = realpath($publicDir . '/uploads') . '/' . ltrim($relativePath, '/');
             $uploadsBase = realpath($publicDir . '/uploads') . '/';
 
-            if (!str_starts_with($targetPath, $uploadsBase)) {
+            if (!self::isSafeArchivePath($relativePath) || !str_starts_with($targetPath, $uploadsBase)) {
                 $this->logger->warning('Skipping file with unsafe path in ZIP', ['entry' => $entryName]);
                 continue;
             }

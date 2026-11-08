@@ -122,11 +122,6 @@
             <div class="col-md-6">{{ form_row(form.responsiblePersonRef) }}</div>
         </div>
         <div class="row"><div class="col-12">{{ form_row(form.responsibleDeputyPersons) }}</div></div>
-        {# Legacy free-text owner behind a collapsed disclosure. #}
-        <details class="mt-2">
-            <summary class="text-muted small">{{ 'control.disclosure.legacy_owner'|trans({}, 'control') }}</summary>
-            {% if form.responsiblePerson is defined %}<div class="mt-2">{% include '_components/_form_field.html.twig' with { field: form.responsiblePerson, label_key: form.responsiblePerson.vars.label, translation_domain: 'control', required: form.responsiblePerson.vars.required } %}</div>{% endif %}
-        </details>
     {% endset %}
 
     {% set body_review %}

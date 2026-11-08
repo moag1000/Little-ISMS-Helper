@@ -8,6 +8,7 @@ namespace App\Controller;
 use App\Attribute\RequiresModule;
 use App\Entity\Incident;
 use App\Service\Incident\ReportingPlanner;
+use App\Util\InputDate;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,6 +51,28 @@ final class IncidentReportingController extends AbstractController
         return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId(), '_fragment' => 'nis2-reporting']);
     }
 
+    /**
+     * NIS-2 Art. 23 (4) (c): record that the CSIRT/authority asked for an
+     * intermediate report, with the date it names. From then on the report is
+     * a duty with a deadline like the others.
+     */
+    #[Route('/incident/{id}/reporting/interim-request', name: 'app_incident_reporting_interim', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(new Expression('"incident_reporting_" ~ args["incident"].getId()'))]
+    public function requestInterim(Request $request, Incident $incident): RedirectResponse
+    {
+        if (!$incident->requiresNis2Reporting()) {
+            throw new NotFoundHttpException('The incident has no NIS-2 reporting duty.');
+        }
+        $due = InputDate::parse($request->request->get('due_at'));
+        $incident->setNis2InterimRequestedAt($incident->getNis2InterimRequestedAt() ?? new DateTimeImmutable());
+        $incident->setNis2InterimDueAt($due !== null ? DateTimeImmutable::createFromMutable($due) : null);
+        $this->entityManager->flush();
+        $this->addFlash('success', 'incident.flash.interim_requested');
+
+        return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId(), '_fragment' => 'nis2-reporting']);
+    }
+
     #[Route('/incident/{id}/reporting/{field}/mark', name: 'app_incident_reporting_mark', requirements: ['id' => '\d+', 'field' => '[a-zA-Z]+'], methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     #[IsCsrfTokenValid(new Expression('"incident_reporting_" ~ args["incident"].getId()'))]
@@ -74,6 +97,7 @@ final class IncidentReportingController extends AbstractController
                 'initialReportSubmittedAt' => $incident->setInitialReportSubmittedAt($now),
                 'intermediateReportSubmittedAt' => $incident->setIntermediateReportSubmittedAt($now),
                 'doraFinalReportSubmittedAt' => $incident->setDoraFinalReportSubmittedAt($now),
+                'nis2InterimReportedAt' => $incident->setNis2InterimReportedAt($now),
                 default => throw new NotFoundHttpException('No such reporting duty on this incident.'),
             };
             $this->entityManager->flush();

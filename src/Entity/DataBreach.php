@@ -529,6 +529,8 @@ class DataBreach
     public function setIncident(?Incident $incident): static
     {
         $this->incident = $incident;
+        // The incident carries the fact that it became a data breach.
+        $incident?->setDataBreachOccurred(true);
         // Sync detectedAt from incident if set and detectedAt is empty
         if ($incident instanceof Incident && $incident->getDetectedAt() instanceof DateTimeInterface && !$this->detectedAt) {
             $this->detectedAt = $incident->getDetectedAt();

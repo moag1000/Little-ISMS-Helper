@@ -166,11 +166,6 @@ class Control
     )]
     private ?int $implementationPercentage = 0;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'control.validation.responsible_person_max_length')]
-    private ?string $responsiblePerson = null;
-
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
     private ?DateTimeInterface $targetDate = null;
@@ -398,17 +393,6 @@ class Control
     public function setImplementationPercentage(?int $implementationPercentage): static
     {
         $this->implementationPercentage = $implementationPercentage;
-        return $this;
-    }
-
-    public function getResponsiblePerson(): ?string
-    {
-        return $this->responsiblePerson;
-    }
-
-    public function setResponsiblePerson(?string $responsiblePerson): static
-    {
-        $this->responsiblePerson = $responsiblePerson;
         return $this;
     }
 
