@@ -252,7 +252,9 @@ systemctl enable isms-worker && systemctl start isms-worker
   `clause`/`article`, so a new wizard check with a clause feeds fulfilment; checks without one take their
   category's; controls AND records behind one requirement average, kind `controls_records`) → mappings. Record
   check types for norm data: `register_coverage`, `management_decision`, `training_participation`,
-  `reporting_duty` (`ComplianceWizard\RecordCheck`, defs via `RecordCheck::register()/decision()`); a new record
+  `reporting_duty`, `deadline_adherence` (duties of the deadline sources done on time, ISO 8.1/9.1),
+  `record_completeness` (fields on existing records, DORA 14/17/18/30) (`ComplianceWizard\RecordCheck`, defs via
+  `RecordCheck::register()/decision()/deadlines()/fields()`); `clause_coverage` = ISO 4.4 from clauses 4–10; a new record
   type that feeds them adds one line to `RecordChangeCollector::CHECK_TYPES`. On top, `AuditResultRule` caps the
   value with the newest audit-checklist verdict (12 months; compliant at 100 % → Verified); the checklist is built
   from the audit scope by `Audit\AuditChecklistGenerator`. Evidence behind a

@@ -71,6 +71,11 @@ implement `App\Service\Planning\Source\SourceAdapter`, which extends
 Example of a recurring review without a planner step: `App\Service\Register\RegisterReviewSource`
 (norm registers, owner → deputies → the register's maintaining persona).
 
+A duty without a date that stays open while a condition holds: `CompetenceGapSource` (ISO 27001
+7.2 — an ISMS role whose holder lacks a required competence; holder acts, ISB informed). The same
+sources answer ISO 27001 8.1 and 9.1 in the compliance wizard (`deadline_adherence`: share of open
+duties not overdue).
+
 **Every date field that carries a duty has a source** (Stand 2026-11-07, P2):
 besides the reviews and approvals there are consent expiry (`consent_expiry`,
 DPO), team validity (`team_validity`, team lead), end of a person's access
