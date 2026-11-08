@@ -13,6 +13,8 @@ use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -35,11 +37,12 @@ final class GlobalMappingWriteGuardTest extends TestCase
     {
         $this->flush(signedIn: true, granted: true);
         $this->flush(signedIn: false, granted: false);
+        $this->flush(signedIn: true, granted: false, inRequest: false);
 
-        $this->addToAssertionCount(2);
+        $this->addToAssertionCount(3);
     }
 
-    private function flush(bool $signedIn, bool $granted): void
+    private function flush(bool $signedIn, bool $granted, bool $inRequest = true): void
     {
         $mapping = (new ComplianceMapping())
             ->setSourceRequirement(new ComplianceRequirement())
@@ -56,6 +59,11 @@ final class GlobalMappingWriteGuardTest extends TestCase
         $em = $this->createStub(EntityManagerInterface::class);
         $em->method('getUnitOfWork')->willReturn($uow);
 
-        (new GlobalMappingWriteGuard($security))->onFlush(new OnFlushEventArgs($em));
+        $requestStack = new RequestStack();
+        if ($inRequest) {
+            $requestStack->push(new Request());
+        }
+
+        (new GlobalMappingWriteGuard($security, $requestStack))->onFlush(new OnFlushEventArgs($em));
     }
 }

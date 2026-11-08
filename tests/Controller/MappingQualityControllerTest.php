@@ -134,6 +134,30 @@ class MappingQualityControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    /** Batch analysis rewrites global mappings: super admin only on a shared instance (S3). */
+    private function superAdmin(): User
+    {
+        $this->adminUser->setRoles(['ROLE_SUPER_ADMIN']);
+        $this->entityManager->flush();
+
+        return $this->adminUser;
+    }
+
+    #[Test]
+    public function testBatchAnalyzeIsForbiddenForAnOrganisationAdmin(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $this->client->request(
+            'POST',
+            '/en/compliance/mapping-quality/batch-analyze',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()],
+            json_encode(['limit' => 5])
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     private function loginAsUser(User $user): void
     {
         $this->client->loginUser($user);
@@ -337,9 +361,9 @@ class MappingQualityControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testBatchAnalyzeReturnsJsonForManager(): void
+    public function testBatchAnalyzeReturnsJsonForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdmin());
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',
@@ -355,7 +379,7 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testBatchAnalyzeValidatesLimit(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdmin());
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',
@@ -370,7 +394,7 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testBatchAnalyzeValidatesJson(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdmin());
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',

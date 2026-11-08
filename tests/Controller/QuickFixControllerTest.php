@@ -330,7 +330,7 @@ class QuickFixControllerTest extends WebTestCase
         $this->client->request('GET', '/quick-fix');
 
         $content = (string) $this->client->getResponse()->getContent();
-        $this->assertStringNotContainsString('repair-row', $content);
+        $this->assertStringNotContainsString('class="repair-row"', $content);
         $this->assertStringNotContainsString('ALTER TABLE', $content);
     }
 

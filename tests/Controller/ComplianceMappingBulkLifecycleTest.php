@@ -17,9 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 /**
- * Bulk lifecycle change of (global) compliance mappings: only the
- * 5-transition matrix through compliance_mapping_lifecycle, ROLE_MANAGER for
- * draft/review, ROLE_ADMIN for the operational states.
+ * Bulk lifecycle change of compliance mappings: only the 5-transition matrix
+ * through compliance_mapping_lifecycle, ROLE_MANAGER for draft/review, ROLE_ADMIN
+ * for the operational states. The matrix is checked on an organisation's own
+ * mappings; global mappings (shared by every organisation) change only by the
+ * super admin once the instance has more than one organisation (S3).
  */
 final class ComplianceMappingBulkLifecycleTest extends WebTestCase
 {
@@ -32,6 +34,8 @@ final class ComplianceMappingBulkLifecycleTest extends WebTestCase
     private User $admin;
     private ComplianceRequirement $source;
     private ComplianceRequirement $target;
+    private ComplianceRequirement $globalSource;
+    private ComplianceRequirement $globalTarget;
 
     protected function setUp(): void
     {
@@ -49,8 +53,12 @@ final class ComplianceMappingBulkLifecycleTest extends WebTestCase
         $framework = (new ComplianceFramework())->setCode('CMFW-' . $uid)->setName('FW ' . $uid)->setVersion('1.0')
             ->setApplicableIndustry('all')->setRegulatoryBody('Test')->setMandatory(false)->setActive(true);
         $this->persist($framework);
-        $this->source = $this->makeRequirement($framework, 'S-' . $uid);
-        $this->target = $this->makeRequirement($framework, 'T-' . $uid);
+        $this->source = $this->makeRequirement($framework, 'S-' . $uid, $tenant);
+        $this->target = $this->makeRequirement($framework, 'T-' . $uid, $tenant);
+        $this->globalSource = $this->makeRequirement($framework, 'GS-' . $uid, null);
+        $this->globalTarget = $this->makeRequirement($framework, 'GT-' . $uid, null);
+        // A second organisation: global mappings are now shared data.
+        $this->persist((new Tenant())->setName('CM2 ' . $uid)->setCode('cm2_' . $uid));
         $this->em->flush();
     }
 
@@ -111,6 +119,18 @@ final class ComplianceMappingBulkLifecycleTest extends WebTestCase
     }
 
     #[Test]
+    public function organisationAdminCannotChangeAGlobalMappingOfASharedInstance(): void
+    {
+        $mapping = $this->makeMapping('deprecated', global: true);
+
+        $result = $this->post($this->admin, [$mapping->getId()], 'published');
+
+        self::assertSame(0, $result['changed']);
+        self::assertSame('forbidden', $result['rejected'][0]['reason']);
+        self::assertSame('deprecated', $this->reload($mapping)->getLifecycleState());
+    }
+
+    #[Test]
     public function plainUserCannotChangeGlobalMappings(): void
     {
         $mapping = $this->makeMapping('draft');
@@ -166,11 +186,13 @@ final class ComplianceMappingBulkLifecycleTest extends WebTestCase
         return $this->em->find(ComplianceMapping::class, $mapping->getId());
     }
 
-    private function makeMapping(string $state): ComplianceMapping
+    private function makeMapping(string $state, bool $global = false): ComplianceMapping
     {
+        $source = $global ? $this->globalSource : $this->source;
+        $target = $global ? $this->globalTarget : $this->target;
         $mapping = new ComplianceMapping();
-        $mapping->setSourceRequirement($this->em->find(ComplianceRequirement::class, $this->source->getId()));
-        $mapping->setTargetRequirement($this->em->find(ComplianceRequirement::class, $this->target->getId()));
+        $mapping->setSourceRequirement($this->em->find(ComplianceRequirement::class, $source->getId()));
+        $mapping->setTargetRequirement($this->em->find(ComplianceRequirement::class, $target->getId()));
         $mapping->setMappingPercentage(80);
         $mapping->setLifecycleState($state);
         $this->persist($mapping);
@@ -179,9 +201,10 @@ final class ComplianceMappingBulkLifecycleTest extends WebTestCase
         return $mapping;
     }
 
-    private function makeRequirement(ComplianceFramework $framework, string $reqId): ComplianceRequirement
+    private function makeRequirement(ComplianceFramework $framework, string $reqId, ?Tenant $owner): ComplianceRequirement
     {
         $requirement = new ComplianceRequirement();
+        $requirement->setUploadTenant($owner);
         $requirement->setFramework($framework);
         $requirement->setRequirementId($reqId);
         $requirement->setTitle('Requirement ' . $reqId);

@@ -10,6 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -18,20 +19,21 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  * screen, import, API resource or assistant tool made the change. The screens check the
  * voter first; this only catches what they miss.
  *
- * Without a signed-in user (console commands, scheduler, setup) nothing is checked: those
- * run as the instance operator.
+ * Only inside a request with a signed-in user. Console commands, scheduler, setup and
+ * Messenger workers run as the instance operator and are not checked.
  */
 #[AsDoctrineListener(event: Events::onFlush)]
 final class GlobalMappingWriteGuard
 {
     public function __construct(
         private readonly Security $security,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
     public function onFlush(OnFlushEventArgs $args): void
     {
-        if ($this->security->getToken() === null) {
+        if ($this->requestStack->getMainRequest() === null || $this->security->getToken() === null) {
             return;
         }
         $uow = $args->getObjectManager()->getUnitOfWork();

@@ -40,7 +40,6 @@ final class GlobalCatalogueWriteSubscriber implements EventSubscriberInterface
         'admin_compliance_import_commit',
         'app_compliance_mapping_import',      // consultant CSV import
         'app_compliance_mapping_gspp_supplement',
-        'app_compliance_mapping_bulk_status_change',
         'app_compliance_create_mappings',
         'app_compliance_create_comparison_mappings',
         'app_compliance_framework_migrate',

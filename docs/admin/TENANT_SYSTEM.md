@@ -439,8 +439,9 @@ web UI for this.
   consultant CSV import, mapping libraries in the compliance wizard and the
   hub, framework version migration, mapping quality review/analysis,
   generated comparison mappings — one route list in
-  `GlobalCatalogueWriteSubscriber` (403 before any form). The main buttons are
-  hidden for others. A Doctrine
+  `GlobalCatalogueWriteSubscriber` (403 before any form). The bulk status
+  change decides per mapping (global ones come back as `forbidden`, own ones
+  follow the lifecycle roles). The main buttons are hidden for others. A Doctrine
   backstop (`GlobalMappingWriteGuard`) refuses any flush that touches a global
   mapping for a signed-in user without the right, whichever path it comes
   from. With a single organisation the screens' own role rules apply as
