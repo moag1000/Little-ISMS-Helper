@@ -47,7 +47,9 @@ final class ApiTokenController extends AbstractController
         $expiresRaw = $request->request->get('expires_days');
         $expiresDays = is_numeric($expiresRaw) ? (int) $expiresRaw : null;
 
-        $plain = $this->manager->mint($user, $label, $expiresDays);
+        $canWrite = $request->request->getBoolean('can_write');
+
+        $plain = $this->manager->mint($user, $label, $expiresDays, $canWrite);
 
         // Render the list with the freshly-minted plaintext shown ONCE.
         return $this->renderPage($request, $plain);
@@ -79,6 +81,7 @@ final class ApiTokenController extends AbstractController
             'page'        => ListPage::fromRequest($this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']), $request),
             'new_token'   => $newToken,
             'mcp_enabled' => $tenant !== null && $this->mcpSettings->isEnabled($tenant),
+            'mcp_write_enabled' => $tenant !== null && $this->mcpSettings->isWriteEnabled($tenant),
             'mcp_url'     => $mcpUrl,
             'mcp_snippets' => McpClientConfig::snippets($mcpUrl, $newToken),
         ]);

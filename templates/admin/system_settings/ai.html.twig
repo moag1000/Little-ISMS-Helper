@@ -122,6 +122,11 @@
                             <input class="form-check-input" type="checkbox" role="switch" name="mcp_enabled" value="1" id="mcp_enabled" {{ mcp_enabled ? 'checked' : '' }}>
                             <label class="form-check-label" for="mcp_enabled">{{ 'mcp.admin.enabled'|trans({}, 'mcp') }}</label>
                         </div>
+                        <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" role="switch" name="mcp_write" value="1" id="mcp_write" {{ mcp_write_enabled or not mcp_enabled ? 'checked' : '' }}>
+                            <label class="form-check-label" for="mcp_write">{{ 'mcp.admin.write'|trans({}, 'mcp') }}</label>
+                        </div>
+                        <p class="small text-muted-color mb-3">{{ 'mcp.admin.write_help'|trans({}, 'mcp') }}</p>
                         <p class="small text-muted-color">{{ 'mcp.admin.privacy'|trans({}, 'mcp') }}</p>
                         <div class="d-flex gap-2">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">

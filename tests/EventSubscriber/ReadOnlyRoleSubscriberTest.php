@@ -9,6 +9,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 
 final class ReadOnlyRoleSubscriberTest extends TestCase
 {
@@ -50,5 +55,54 @@ final class ReadOnlyRoleSubscriberTest extends TestCase
         $subscriber = new ReadOnlyRoleSubscriber($this->createStub(Security::class));
 
         self::assertSame($restricted, $subscriber->isRestricted($route, $method));
+    }
+
+    #[Test]
+    public function anApiWriteInASubRequestIsRefusedForReviewers(): void
+    {
+        // The assistant connection (MCP) runs API operations as sub-requests of POST /mcp.
+        $event = $this->event('_api_/risks{._format}_post', 'POST', HttpKernelInterface::SUB_REQUEST);
+        $this->subscriber(reviewer: true)->onController($event);
+
+        $response = ($event->getController())();
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame(403, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function otherSubRequestsAndManagersAreLeftAlone(): void
+    {
+        $fragment = $this->event('app_risk_new', 'POST', HttpKernelInterface::SUB_REQUEST);
+        $this->subscriber(reviewer: true)->onController($fragment);
+        self::assertSame('original', ($fragment->getController())());
+
+        $manager = $this->event('_api_/risks{._format}_post', 'POST', HttpKernelInterface::SUB_REQUEST);
+        $this->subscriber(reviewer: false)->onController($manager);
+        self::assertSame('original', ($manager->getController())());
+    }
+
+    private function subscriber(bool $reviewer): ReadOnlyRoleSubscriber
+    {
+        $security = $this->createStub(Security::class);
+        $security->method('getUser')->willReturn(new InMemoryUser('reviewer', null));
+        $security->method('isGranted')->willReturnCallback(
+            static fn (string $attribute): bool => $attribute === 'ROLE_AUDITOR' || ($attribute === 'ROLE_MANAGER' && !$reviewer),
+        );
+
+        return new ReadOnlyRoleSubscriber($security);
+    }
+
+    private function event(string $route, string $method, int $type): ControllerEvent
+    {
+        $request = Request::create('/api/risks', $method);
+        $request->attributes->set('_route', $route);
+        $request->headers->set('Accept', 'application/ld+json');
+
+        return new ControllerEvent(
+            $this->createStub(HttpKernelInterface::class),
+            static fn (): string => 'original',
+            $request,
+            $type,
+        );
     }
 }

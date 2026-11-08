@@ -3,10 +3,12 @@ mcp:
         You work with the ISMS of the organisation "%organisation%" (Little ISMS Helper). Call get_context first: it lists
         your roles (personas), the active modules and the record resources. Reading: my_day (open deadlines and decisions),
         compliance_fulfillment (fulfilment per framework with "why this value"), management_kpis, duty_calendar, search,
-        list_records/get_record (every REST resource), pending_suggestions. Writing exists only as a proposal: draft_options
-        shows which drafts a record allows, propose_draft puts them into the suggestion queue, where a responsible person
-        accepts or rejects them. Link records, name norm clauses and never invent values: what the tools do not return is
-        not recorded.
+        list_records/get_record (every REST resource), pending_suggestions. Writing: save_record creates or changes records
+        (only when get_context reports writing.direct = true), with the person's rights and the form's checks. Never set
+        status, approvals, risk acceptance or management decisions directly: draft_options shows which drafts a record
+        allows, propose_draft puts them into the suggestion queue, where a responsible person accepts or rejects them.
+        Before writing, tell the person what you create or change. Link records, name norm clauses and never invent values:
+        what the tools do not return is not recorded.
     prompt:
         my_day_briefing:
             title: 'My day'
@@ -42,12 +44,14 @@ mcp:
         title: 'Connect AI assistants (MCP)'
         intro: >-
             People of the organisation can connect their own AI assistant (Claude Desktop, Claude Code or another MCP client)
-            with an API token. The assistant reads with the person's rights and puts drafts only into the suggestion queue;
-            nothing is applied before someone approves it in the app.
+            with an API token. The assistant reads and writes with the person's rights; status changes, approvals and
+            management decisions only go into the suggestion queue as proposals.
         enabled: 'Allow assistant access for this organisation'
         privacy: >-
             Data read goes to the person's assistant and its provider. Every access is in the audit log (tool, record type,
             id); tokens can be revoked at any time. Switched off, /mcp answers every token with 403.
+        write: 'Assistant may create and change records'
+        write_help: 'The person also has to tick "Assistant may write" on the token. Reviewer roles stay read-only; the assistant cannot delete.'
         to_tokens: 'To the API tokens'
     tokens:
         title: 'Connect an AI assistant (MCP)'
@@ -55,7 +59,8 @@ mcp:
         status_off: 'Not enabled'
         intro: >-
             With a token from this page your AI assistant reads deadlines, fulfilment, risks, controls and other records with
-            your rights and proposes drafts that you approve in the app.
+            your rights. With a token that may write it also creates and changes records; approvals and status changes it
+            only proposes.
         off_hint: 'The organisation has not enabled assistant access yet.'
         off_admin_link: 'Enable now'
         endpoint: 'MCP server address'

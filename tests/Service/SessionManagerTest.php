@@ -78,6 +78,21 @@ class SessionManagerTest extends TestCase
     }
 
     #[Test]
+    public function testCreateSessionReusesTheRecordOfTheSameSession(): void
+    {
+        $this->mockTableExists();
+        $user = $this->createMockUser(1, 'test@example.com');
+        $existing = (new UserSession())->setUser($user)->setSessionId('session123');
+        $this->sessionRepository->method('findBySessionId')->with('session123')->willReturn($existing);
+
+        // a second authentication in the same session must not insert the id again
+        $this->entityManager->expects($this->never())->method('persist');
+        $this->entityManager->expects($this->never())->method('flush');
+
+        $this->assertSame($existing, $this->service->createSession($user, 'session123'));
+    }
+
+    #[Test]
     public function testCreateSessionEnforcesSessionLimit(): void
     {
         $this->mockTableExists();

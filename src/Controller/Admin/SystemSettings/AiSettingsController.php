@@ -64,6 +64,7 @@ class AiSettingsController extends AbstractController
             'default_local_endpoint' => AiSettings::DEFAULT_LOCAL_ENDPOINT,
             'default_external_endpoint' => AiSettings::DEFAULT_EXTERNAL_ENDPOINT,
             'mcp_enabled' => $this->mcpSettings->isEnabled($tenant),
+            'mcp_write_enabled' => $this->mcpSettings->isWriteEnabled($tenant),
         ]);
     }
 
@@ -163,7 +164,8 @@ class AiSettingsController extends AbstractController
 
     /**
      * Assistant connection (MCP): the organisation's opt-in. Off by default;
-     * while off, /mcp refuses every token of the organisation.
+     * while off, /mcp refuses every token of the organisation. Writing is a
+     * second switch (on by default once the connection is on).
      */
     #[Route('/mcp', name: 'admin_settings_ai_mcp', methods: ['POST'])]
     #[IsCsrfTokenValid('admin_settings_ai_mcp')]
@@ -171,13 +173,15 @@ class AiSettingsController extends AbstractController
     {
         $tenant = $this->tenant();
         $enabled = $request->request->getBoolean('mcp_enabled');
-        $before = $this->mcpSettings->isEnabled($tenant);
+        $write = $request->request->getBoolean('mcp_write');
+        $before = ['mcp_enabled' => $this->mcpSettings->isEnabled($tenant), 'mcp_write' => $this->mcpSettings->isWriteEnabled($tenant)];
         $this->mcpSettings->setEnabled($tenant, $enabled);
+        $this->mcpSettings->setWriteEnabled($tenant, $write);
         $this->auditLogger->logUpdate(
             entityType: 'Tenant',
             entityId: $tenant->getId(),
-            oldValues: ['mcp_enabled' => $before],
-            newValues: ['mcp_enabled' => $enabled],
+            oldValues: $before,
+            newValues: ['mcp_enabled' => $enabled, 'mcp_write' => $enabled && $write],
             description: 'Assistant connection (MCP) ' . ($enabled ? 'enabled' : 'disabled'),
         );
         $this->addFlash('success', 'suggestions.ai.flash.saved');

@@ -34,6 +34,15 @@
                     <label class="form-label" for="expires_days">{{ 'api_token.field.expires_days'|trans({}, 'api_token') }}</label>
                     <input type="number" min="1" class="form-control" id="expires_days" name="expires_days" placeholder="—">
                 </div>
+                {% if mcp_write_enabled %}
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="can_write" name="can_write" value="1">
+                            <label class="form-check-label" for="can_write">{{ 'api_token.field.can_write'|trans({}, 'api_token') }}</label>
+                        </div>
+                        <p class="small text-muted-color mb-0">{{ 'api_token.field.can_write_help'|trans({}, 'api_token') }}</p>
+                    </div>
+                {% endif %}
                 <div class="col-md-3">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'api_token.action.create'|trans({}, 'api_token') }}</button>
                 </div>
@@ -89,6 +98,7 @@
                         <th class="fa-table__th" scope="col">{{ 'api_token.field.created'|trans({}, 'api_token') }}</th>
                         <th class="fa-table__th" scope="col">{{ 'api_token.field.expires'|trans({}, 'api_token') }}</th>
                         <th class="fa-table__th" scope="col">{{ 'api_token.field.last_used'|trans({}, 'api_token') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'api_token.field.access'|trans({}, 'api_token') }}</th>
                         <th class="fa-table__th" scope="col">{{ 'api_token.field.status'|trans({}, 'api_token') }}</th>
                         <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
@@ -100,6 +110,7 @@
                             <td class="fa-table__cell">{{ token.createdAt|fa_date }}</td>
                             <td class="fa-table__cell">{{ token.expiresAt|fa_date }}</td>
                             <td class="fa-table__cell">{{ token.lastUsedAt|fa_datetime }}</td>
+                            <td class="fa-table__cell">{{ (token.canWrite ? 'api_token.access.write' : 'api_token.access.read')|trans({}, 'api_token') }}</td>
                             <td class="fa-table__cell">
                                 {% if token.revoked %}
                                     <span class="fa-status-pill fa-status-pill--neutral">{{ 'api_token.status.revoked'|trans({}, 'api_token') }}</span>
