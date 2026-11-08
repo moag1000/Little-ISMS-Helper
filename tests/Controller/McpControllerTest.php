@@ -139,7 +139,11 @@ final class McpControllerTest extends WebTestCase
             self::assertNotContains($never, $writable, $never . ' must not be writable through the assistant');
         }
 
-        $owner = (new Person())->setFullName('Bea Buchhaltung')->setTenant($this->tenant);
+        // The client's requests reset the entity manager: work with a fresh, managed tenant.
+        $this->em = $this->freshEm();
+        $tenant = $this->em->find(Tenant::class, $this->tenant->getId());
+        self::assertInstanceOf(Tenant::class, $tenant);
+        $owner = (new Person())->setFullName('Bea Buchhaltung')->setTenant($tenant);
         $this->em->persist($owner);
         $this->em->flush();
         $ownerIri = static::getContainer()->get(IriConverterInterface::class)->getIriFromResource($owner);
@@ -158,8 +162,7 @@ final class McpControllerTest extends WebTestCase
         $id = $created['structuredContent']['record']['id'] ?? null;
         self::assertIsInt($id);
 
-        $this->em->clear();
-        $risk = $this->em->find(Risk::class, $id);
+        $risk = $this->freshEm()->find(Risk::class, $id);
         self::assertInstanceOf(Risk::class, $risk);
         self::assertSame($this->tenant->getId(), $risk->getTenant()?->getId(), 'the tenant is forced to the token user\'s organisation');
 
@@ -167,8 +170,7 @@ final class McpControllerTest extends WebTestCase
             'title' => 'Phishing gegen Buchhaltung und Einkauf',
         ]]], $token)['result'] ?? [];
         self::assertFalse($changed['isError'] ?? true, (string) ($changed['content'][0]['text'] ?? ''));
-        $this->em->clear();
-        $risk = $this->em->find(Risk::class, $id);
+        $risk = $this->freshEm()->find(Risk::class, $id);
         self::assertInstanceOf(Risk::class, $risk);
         self::assertSame('Phishing gegen Buchhaltung und Einkauf', $risk->getTitle());
         self::assertSame('Aus dem Workshop', $risk->getDescription(), 'an update changes only the fields sent');
@@ -179,7 +181,7 @@ final class McpControllerTest extends WebTestCase
         ]]], $token)['result'] ?? [];
         self::assertTrue($status['isError'] ?? false, 'status goes through the lifecycle, not through save_record');
 
-        $audit = $this->em->getRepository(AuditLog::class)->findBy(['action' => 'mcp.write', 'entityId' => $this->tokenId('Schreiben')]);
+        $audit = $this->freshEm()->getRepository(AuditLog::class)->findBy(['action' => 'mcp.write', 'entityId' => $this->tokenId('Schreiben')]);
         self::assertNotEmpty($audit, 'every write is audit-logged as mcp.write');
     }
 
@@ -226,9 +228,18 @@ final class McpControllerTest extends WebTestCase
         static::getContainer()->get(McpSettings::class)->setEnabled($tenant, true);
     }
 
+    /** The client reboots the kernel per request: read through the current container's entity manager. */
+    private function freshEm(): EntityManagerInterface
+    {
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $em->clear();
+
+        return $em;
+    }
+
     private function tokenId(string $label): ?int
     {
-        $token = $this->em->getRepository(\App\Entity\ApiToken::class)->findOneBy(['user' => $this->user, 'label' => $label]);
+        $token = $this->freshEm()->getRepository(\App\Entity\ApiToken::class)->findOneBy(['user' => $this->user, 'label' => $label]);
 
         return $token?->getId();
     }
