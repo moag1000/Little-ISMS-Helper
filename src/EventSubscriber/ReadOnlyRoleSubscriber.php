@@ -42,7 +42,13 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
     private const array REVIEWER_ATTRIBUTES = ['ROLE_AUDITOR', 'ROLE_GROUP_CISO', 'ROLE_KONZERN_AUDITOR', 'ADMIN_HOLDING_READ', 'ROLE_TOP_MGMT'];
 
     private const array ALLOWED_PREFIXES = [
-        'app_audit_',            // audits + findings: checklist, report, findings
+        // Audit work — never the audit record itself (app_audit_new/edit/clone/delete/close
+        // stay with the manager; approve/reject name ROLE_AUDITOR and pass on their own).
+        'app_audit_checklist',
+        'app_audit_finding_',
+        'app_audit_workbook_',
+        'app_audit_submit_report',
+        'app_audit_resubmit_report',
         'app_comment_',
         'app_profile_',
         'app_preferences_',
@@ -78,7 +84,7 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
         '_',                     // framework internals (profiler, error preview)
     ];
 
-    /** Read-type POST endpoints: exports, previews, pickers. */
+    /** Read-type POST endpoints: exports, previews. Pickers save a selection and are writes. */
     private const array ALLOWED_SUFFIXES = [
         '_export',
         '_export_dispatch',
@@ -86,7 +92,6 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
         '_tenant_zip',
         '_tenant_zip_dispatch',
         '_preview',
-        '_picker',
         '_widget_data',
         '_evaluate',
     ];

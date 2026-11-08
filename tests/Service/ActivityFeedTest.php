@@ -54,7 +54,31 @@ final class ActivityFeedTest extends TestCase
             $this->riskRepo,
             $this->tenantContext,
             $this->urlGenerator,
+            $this->authorization(true),
         );
+    }
+
+    private function authorization(bool $admin): \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface
+    {
+        $auth = $this->createStub(\Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface::class);
+        $auth->method('isGranted')->willReturnCallback(static fn (mixed $attr): bool => $admin && $attr === 'ROLE_ADMIN');
+
+        return $auth;
+    }
+
+    #[Test]
+    public function aNonAdminSeesNoAuditRows(): void
+    {
+        $this->tenantContext->method('getCurrentTenant')->willReturn($this->createTenant(42));
+        $this->auditLogRepo->expects($this->never())->method('findAllOrderedForTenant');
+        $this->workflowRepo->method('findActiveForTenant')->willReturn([]);
+        $this->stubEmptyQueryBuilder($this->documentRepo, 'd');
+        $this->stubEmptyQueryBuilder($this->riskRepo, 'r');
+
+        $feed = new ActivityFeed($this->auditLogRepo, $this->workflowRepo, $this->documentRepo, $this->riskRepo,
+            $this->tenantContext, $this->urlGenerator, $this->authorization(false));
+
+        self::assertSame([], array_filter($feed->recent(), static fn (array $i): bool => $i['source'] === 'audit_log'));
     }
 
     #[Test]

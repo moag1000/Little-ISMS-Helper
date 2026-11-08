@@ -315,3 +315,4 @@ lifecycle:
 
     errors:
         invalid_transition: 'Ungültiger Statusübergang von "%from%" zu "%to%". Erlaubte Folgezustände: %allowed%.'
+        delete_needs_end_state: 'Nicht gelöscht. Ein Asset verlässt den Bestand über Ausmustern und Entsorgen (Vier-Augen-Prinzip); nur in den ersten 24 Stunden nach der Anlage lässt es sich direkt löschen.'

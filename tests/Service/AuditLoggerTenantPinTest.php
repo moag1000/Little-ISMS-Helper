@@ -82,4 +82,40 @@ final class AuditLoggerTenantPinTest extends TestCase
 
         self::assertNull($this->persisted[0]->getTenant());
     }
+
+    #[Test]
+    public function aCronRowAboutARecordCarriesTheRecordsOrganisation(): void
+    {
+        // W3: refresh-fulfillments, purges, retention removes — no pin, no context.
+        $tenant = new Tenant();
+        $record = (new \App\Entity\Asset())->setTenant($tenant);
+        $logger = $this->logger();
+
+        $logger->aboutRecord($record, static fn () => $logger->logUpdate('Asset', 1, ['a' => 1], ['a' => 2]));
+        $logger->logCustom('after', 'Asset', null, null, null, 'x', 'system');
+
+        self::assertSame($tenant, $this->persisted[0]->getTenant());
+        self::assertNull($this->persisted[1]->getTenant(), 'The record fallback ends with the callback.');
+    }
+
+    #[Test]
+    public function pinAndContextStillComeBeforeTheRecord(): void
+    {
+        $record = (new \App\Entity\Asset())->setTenant(new Tenant());
+        $contextTenant = new Tenant();
+        $logger = $this->logger($contextTenant);
+
+        $logger->aboutRecord($record, static fn () => $logger->logCustom('a', 'Asset', null, null, null, 'x', 'system'));
+
+        self::assertSame($contextTenant, $this->persisted[0]->getTenant());
+    }
+
+    #[Test]
+    public function theDoctrineAuditSubscriberNamesTheRecord(): void
+    {
+        $code = (string) file_get_contents(dirname(__DIR__, 2) . '/src/EventSubscriber/AuditLogSubscriber.php');
+
+        self::assertSame(3, substr_count($code, '$this->auditLogger->aboutRecord($entity'),
+            'create, update and delete rows take the organisation of the record as fallback');
+    }
 }

@@ -7,7 +7,7 @@ namespace App\Service\Location;
 use App\Entity\Location;
 use App\Entity\Tenant;
 use Psr\Log\LoggerInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Http\UserUrlHttpClient;
 
 /**
  * Optional, opt-in lookup against a Nominatim-compatible endpoint, for
@@ -27,7 +27,7 @@ class OnlineGeocoder
     public const int MAX_PER_RUN = 10;
 
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
+        private readonly UserUrlHttpClient $httpClient,
         private readonly LocationGeocoder $geocoder,
         private readonly LoggerInterface $logger,
     ) {

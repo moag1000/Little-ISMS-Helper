@@ -226,6 +226,10 @@ security:
         # login redirect, and refuses session cookies.
         - { path: ^/mcp$, roles: PUBLIC_ACCESS }
 
+        # Lifecycle endpoints carry no locale prefix: without this rule they sat
+        # outside access_control (LifecycleController also gates class-level).
+        - { path: ^/lifecycle/, roles: ROLE_USER }
+
         # Admin routes (with locale prefix) - specific locale pattern for better security
         - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }
 

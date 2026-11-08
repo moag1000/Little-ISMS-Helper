@@ -64,7 +64,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             description: 'Create a new security incident report',
-            securityPostDenormalize: "is_granted('ROLE_USER')"
+            securityPostDenormalize: "is_granted('ROLE_USER')",
+            // detectedAt anchors the NIS-2 / GDPR reporting deadlines: set once on
+            // create (a SIEM may report an earlier detection), never moved later.
+            denormalizationContext: ['groups' => ['incident:write', 'incident:create']],
         ),
         new Put(
             description: 'Update an existing security incident',
@@ -154,7 +157,7 @@ class Incident
     private int $lockVersion = 0;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:create'])]
     #[Assert\NotNull(message: 'incident.validation.detected_at_required')]
     private ?DateTimeInterface $detectedAt = null;
 
@@ -304,18 +307,14 @@ class Incident
     #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?string $estimatedFinancialImpact = null;
 
-    /**
-     * National authority notified (e.g., BSI, ENISA)
-     */
+    /** National authority notified (e.g., BSI, ENISA) */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read']), ModuleField('nis2_dora'), \App\Attribute\ApiReadOnlyEvidence('incident form / mark as reported (NIS-2 Art. 23)')]
     private ?string $nationalAuthorityNotified = null;
 
-    /**
-     * Reference number from authority
-     */
+    /** Reference number from authority */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read']), ModuleField('nis2_dora'), \App\Attribute\ApiReadOnlyEvidence('incident form / mark as reported (NIS-2 Art. 23)')]
     private ?string $authorityReferenceNumber = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

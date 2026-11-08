@@ -132,6 +132,26 @@ final class PostureSnapshotServiceTest extends TestCase
     }
 
     #[Test]
+    public function aFrameworkTheOrganisationDoesNotWorkOnIsNotListed(): void
+    {
+        $iso = $this->buildFramework('ISO27001', 'ISO/IEC 27001:2022');
+        $dora = $this->buildFramework('DORA', 'DORA');
+        $this->frameworkRepo->method('findActiveFrameworks')->willReturn([$iso, $dora]);
+        $this->requirementRepo->method('getFrameworkStatisticsForTenant')->willReturnCallback(
+            static fn (ComplianceFramework $fw): array => $fw === $iso
+                ? ['total' => 93, 'applicable' => 80, 'fulfilled' => 60, 'critical_gaps' => 0]
+                : ['total' => 40, 'applicable' => 0, 'fulfilled' => 0, 'critical_gaps' => 0],
+        );
+        $this->kpiRepo->method('findClosestBefore')->willReturn(null);
+        $this->auditRepo->method('findBy')->willReturn([]);
+
+        $snapshot = $this->service->getSnapshot($this->buildTenant());
+
+        self::assertSame(['ISO27001'], array_column($snapshot['frameworks'], 'code'));
+        self::assertSame(['ISO27001'], array_column($snapshot['frameworkCompliance'], 'code'));
+    }
+
+    #[Test]
     public function frameworkCompliancePercentIsCalculatedCorrectly(): void
     {
         $tenant = $this->buildTenant();

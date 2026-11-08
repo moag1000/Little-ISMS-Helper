@@ -488,6 +488,7 @@ class DataBreachController extends AbstractController
      * Export data breach as PDF
      */
     #[Route('/{id}/export/pdf', name: 'export_pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     public function exportPdf(DataBreach $dataBreach): Response
     {
         // Generate version from last update date (Format: Year.Month.Day)
@@ -545,7 +546,7 @@ class DataBreachController extends AbstractController
      * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
     #[Route('/bulk-export', name: 'bulk_export', methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);

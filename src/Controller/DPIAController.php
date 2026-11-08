@@ -569,7 +569,7 @@ class DPIAController extends AbstractController
      * Export DPIA as PDF (Art. 35 documentation)
      */
     #[Route('/dpia/{id}/export/pdf', name: 'app_dpia_export_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
-    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     public function exportPdf(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
@@ -630,7 +630,7 @@ class DPIAController extends AbstractController
      * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
     #[Route('/dpia/bulk-export', name: 'app_dpia_bulk_export', methods: ['POST'])]
-    #[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression(\App\Security\PrivacyExportAccess::RULE))]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);

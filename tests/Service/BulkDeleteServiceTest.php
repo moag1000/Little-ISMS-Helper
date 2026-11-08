@@ -370,12 +370,27 @@ final class BulkDeleteServiceTest extends TestCase
         return $tenant;
     }
 
-    private function asset(int $id, Tenant $tenant, string $name): Asset
+    #[Test]
+    public function anAssetInUseIsNotDeletedAroundTheFourEyesDisposal(): void
+    {
+        $tenant = $this->tenant(1);
+        $inUse = $this->asset(10, $tenant, 'Server', 'in_use');
+        $this->em->expects(self::never())->method('remove');
+
+        $result = $this->actingIn($tenant)->delete('Asset', [10], static fn (int $id): ?object => $id === 10 ? $inUse : null);
+
+        self::assertSame(0, $result['deleted']);
+        self::assertStringContainsString('four-eyes disposal', implode(' ', $result['errors']));
+    }
+
+    private function asset(int $id, Tenant $tenant, string $name, string $status = 'disposed'): Asset
     {
         $asset = $this->createStub(Asset::class);
         $asset->method('getId')->willReturn($id);
         $asset->method('getTenant')->willReturn($tenant);
         $asset->method('getName')->willReturn($name);
+        $asset->method('getStatus')->willReturn($status);
+        $asset->method('getCreatedAt')->willReturn(new \DateTimeImmutable('-1 year'));
 
         return $asset;
     }

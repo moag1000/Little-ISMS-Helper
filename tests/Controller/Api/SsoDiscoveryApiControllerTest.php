@@ -24,15 +24,19 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
     public function endpointRequiresAdminAuthentication(): void
     {
         $client = static::createClient();
-        $client->request(
-            'POST',
-            '/de/api/sso/validate-discovery',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['discoveryUrl' => 'https://example.com'])
-        );
-        self::assertResponseStatusCodeSame(302); // redirects to login
+        $client->request('POST', '/de/api/sso/validate-discovery', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['discoveryUrl' => 'https://example.com']));
+        self::assertContains($client->getResponse()->getStatusCode(), [302, 403], 'Anonymous callers never reach the fetch.');
+    }
+
+    #[Test]
+    public function aRequestWithoutTheCsrfHeaderIsRefused(): void
+    {
+        $client = static::createClient();
+        $client->loginUser($this->getOrCreateAdminUser($client));
+        $client->request('POST', '/de/api/sso/validate-discovery', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['discoveryUrl' => 'https://93.184.215.14/.well-known/openid-configuration']));
+        self::assertResponseStatusCodeSame(403);
     }
 
     #[Test]
@@ -40,14 +44,7 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser($this->getOrCreateAdminUser($client));
-        $client->request(
-            'POST',
-            '/de/api/sso/validate-discovery',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['discoveryUrl' => ''])
-        );
+        $this->postDiscovery($client, json_encode(['discoveryUrl' => '']));
         self::assertResponseStatusCodeSame(422);
         $data = json_decode((string) $client->getResponse()->getContent(), true);
         self::assertFalse($data['ok']);
@@ -58,14 +55,7 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser($this->getOrCreateAdminUser($client));
-        $client->request(
-            'POST',
-            '/de/api/sso/validate-discovery',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['discoveryUrl' => 'http://insecure.example.com'])
-        );
+        $this->postDiscovery($client, json_encode(['discoveryUrl' => 'http://insecure.example.com']));
         self::assertResponseStatusCodeSame(422);
     }
 
@@ -79,17 +69,24 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
         $client->getContainer()->set(OidcDiscoveryService::class, $mockDiscovery);
 
         $client->loginUser($this->getOrCreateAdminUser($client));
-        $client->request(
-            'POST',
-            '/de/api/sso/validate-discovery',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['discoveryUrl' => 'https://93.184.215.14/.well-known/openid-configuration'])
-        );
+        $this->postDiscovery($client, json_encode(['discoveryUrl' => 'https://93.184.215.14/.well-known/openid-configuration']));
         $data = json_decode((string) $client->getResponse()->getContent(), true);
         self::assertFalse($data['ok']);
-        self::assertStringContainsString('Connection refused', $data['error']);
+        // The transport error (refused / timeout / TLS) never reaches the caller —
+        // otherwise the endpoint answers "which port is open" for any host.
+        self::assertStringNotContainsString('Connection refused', $data['error']);
+    }
+
+    private function postDiscovery(mixed $client, string $body): void
+    {
+        $client->disableReboot();
+        $client->request('GET', '/de/admin/sso/wizard/step1');
+        $session = $client->getRequest()->getSession();
+        $token = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/sso_discovery', $token);
+        $session->save();
+        $client->request('POST', '/de/api/sso/validate-discovery', [], [],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $token], $body);
     }
 
     /**

@@ -511,7 +511,8 @@ class HomeController extends AbstractController
      */
     private function getRecentActivities(): array
     {
-        if ($this->auditLogRepository === null) {
+        // The audit log is an admin page (AuditLogController); its rows are not for every dashboard.
+        if ($this->auditLogRepository === null || !$this->isGranted('ROLE_ADMIN')) {
             return [];
         }
 

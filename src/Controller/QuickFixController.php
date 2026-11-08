@@ -16,6 +16,7 @@ use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\QuickFixGuard;
 use App\Service\QuickFixIntegritySummary;
+use App\Service\QuickFixStatusSnapshot;
 use App\Service\SchemaMaintenanceService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -41,7 +42,7 @@ class QuickFixController extends AbstractController
     public function index(
         Request $request,
         QuickFixGuard $guard,
-        SchemaMaintenanceService $maintenance,
+        QuickFixStatusSnapshot $snapshot,
         QuickFixIntegritySummary $integritySummary,
         JobStatusService $jobStatusService,
         TranslatorInterface $translator,
@@ -76,7 +77,7 @@ class QuickFixController extends AbstractController
         $cleanVerdict = ['migrations_up_to_date' => false, 'drift_empty' => false, 'ok' => false];
         $errorMessage = null;
         try {
-            $status = $maintenance->getMaintenanceStatus();
+            ['status' => $status, 'pending_fs' => $pendingFsNames, 'clean' => $cleanVerdict] = $snapshot->get($privileged);
             $pendingCount = (int) ($status['migration_status']['pending'] ?? 0);
             $pendingNames = $status['migration_status']['names'] ?? [];
             $driftCount = (int) ($status['schema_drift']['count'] ?? 0);
@@ -84,16 +85,9 @@ class QuickFixController extends AbstractController
             $driftDestructive = $status['schema_drift']['destructive'] ?? [];
             $entityDriftCount = (int) ($status['entity_drift']['count'] ?? 0);
             $entityDriftStatements = $status['entity_drift']['statements'] ?? [];
-
-            // Second source: file-system-discovered pending migrations
-            // (the same list SchemaHealthService uses to gate reconcile).
-            // Surface the count when it diverges from Doctrine's plan.
-            $pendingFsNames = $maintenance->listPendingMigrationVersionsFromFileSystem();
+            // Second source: file-system pending migrations (SchemaHealthService's list, which
+            // gates reconcile); final verdict: green only without pending migrations and drift.
             $pendingFsCount = count($pendingFsNames);
-
-            // Final clean-verdict band: green only when no pending
-            // migrations AND no entity-vs-DB drift remain.
-            $cleanVerdict = $maintenance->verifyClean();
         } catch (\Throwable $e) {
             $errorMessage = $privileged
                 ? $e->getMessage()
@@ -220,8 +214,11 @@ class QuickFixController extends AbstractController
         JobStatusService $jobStatusService,
         JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
+        QuickFixStatusSnapshot $snapshot,
     ): Response {
-        if (!$guard->mayAccess($request)) {
+        // Without login only what the page offers then: applying migrations that are pending.
+        $anonymousAllowed = $guard->mayAccess($request) && $snapshot->hasPendingMigrations();
+        if (!$anonymousAllowed && !$guard->mayRunPrivileged($request)) {
             return $this->lockedResponse($guard, $request);
         }
 

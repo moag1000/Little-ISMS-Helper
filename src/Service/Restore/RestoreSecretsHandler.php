@@ -186,11 +186,8 @@ class RestoreSecretsHandler
                 ->getQuery()
                 ->getOneOrNullResult();
 
-            if ($adminUser === null) {
-                $adminUser = $this->entityManager->getRepository(User::class)
-                    ->findOneBy([], ['id' => 'ASC']);
-            }
-
+            // No admin in the restored data: the password goes nowhere (it used to land
+            // on whichever account had the lowest id — possibly a plain user).
             if ($adminUser !== null) {
                 $hashedPassword = $this->userPasswordHasher->hashPassword($adminUser, $password);
                 $adminUser->setPassword($hashedPassword);
@@ -199,7 +196,7 @@ class RestoreSecretsHandler
                 $warnings[] = sprintf('Admin-Passwort wurde für Benutzer "%s" gesetzt.', $adminUser->getEmail());
                 $this->logger->info('Set admin password after restore', ['user_email' => $adminUser->getEmail()]);
             } else {
-                $warnings[] = 'Kein Benutzer gefunden, um Admin-Passwort zu setzen.';
+                $warnings[] = 'Admin-Passwort nicht gesetzt: die Sicherung enthält kein Admin-Konto.';
             }
         } catch (\Throwable $e) {
             $warnings[] = sprintf('Fehler beim Setzen des Admin-Passworts: %s', $e->getMessage());

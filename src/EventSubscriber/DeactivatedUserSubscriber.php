@@ -40,7 +40,7 @@ final class DeactivatedUserSubscriber
             return;
         }
         $user = $this->security->getUser();
-        if (!$user instanceof User || $user->isActive()) {
+        if (!$user instanceof User || \App\Security\UserChecker::refusal($user) === null) {
             return;
         }
 

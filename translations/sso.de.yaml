@@ -148,6 +148,7 @@ sso:
             wrong_tenant: 'Sie haben keinen Zugriff auf diesen SSO-Provider (falscher Organisation).'
             admin_required: 'Nur Administratoren können SSO-Konfigurationen ändern.'
     wizard:
+        discovery_unreachable: 'Discovery-Dokument nicht abrufbar. URL prüfen; der Server muss öffentlich per HTTPS erreichbar sein.'
         title: 'SSO-Einrichtungsassistent'
         aria_label: 'SSO-Einrichtungsassistent'
         success: SSO-Identity-Provider gespeichert.

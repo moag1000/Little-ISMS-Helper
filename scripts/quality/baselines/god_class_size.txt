@@ -9,7 +9,7 @@ src/Controller/DeploymentWizardController.php:LOC=1721 deps=0
 src/Service/DashboardStatisticsService.php:LOC=1677 deps=24
 src/Controller/ComplianceExportController.php:LOC=1591 deps=0
 src/Repository/ComplianceMappingRepository.php:LOC=1497 deps=0
-src/Entity/Incident.php:LOC=1440 deps=0
+src/Entity/Incident.php:LOC=1439 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1426 deps=18
 src/Entity/ProcessingActivity.php:LOC=1415 deps=0
 src/Controller/PolicyWizardController.php:LOC=1357 deps=0
@@ -33,8 +33,8 @@ src/Form/ProcessingActivityType.php:LOC=808 deps=0
 src/Controller/AdminBackupController.php:LOC=778 deps=0
 src/Controller/ComplianceWizardController.php:LOC=778 deps=0
 src/Controller/AssetController.php:LOC=758 deps=0
-src/Controller/ProcessingActivityController.php:LOC=703 deps=0
-src/Controller/QuickFixController.php:LOC=703 deps=0
+src/Controller/QuickFixController.php:LOC=700 deps=0
+src/Controller/ProcessingActivityController.php:LOC=689 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
 src/Controller/DPIAController.php:LOC=680 deps=0
 src/Controller/MonitoringController.php:LOC=646 deps=0

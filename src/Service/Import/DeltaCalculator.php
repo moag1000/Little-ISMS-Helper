@@ -103,6 +103,8 @@ final class DeltaCalculator
                 if ($newValues === null) {
                     continue;
                 }
+                // Evidence is not overwritten on an existing record (EvidenceFieldFilter): no diff for it.
+                $newValues = EvidenceFieldFilter::forUpdate($existing::class, $newValues);
                 $entityId  = $existing->getId();
                 $oldValues = $this->getEntityValues($existing);
                 $diff      = $this->computeDiff($oldValues, $newValues, $config->ignoredFields);

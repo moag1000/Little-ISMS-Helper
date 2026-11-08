@@ -324,7 +324,7 @@ class BusinessContinuityPlan
     private ?string $version = '1.0';
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    #[Groups(['bc_plan:read']), \App\Attribute\ApiReadOnlyEvidence('plan form / exercise (ISO 22301 8.5)')]
     private ?DateTimeInterface $lastTested = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]

@@ -70,6 +70,6 @@ final class OnlineGeocoderTest extends TestCase
 
     private function geocoder(MockHttpClient $client): OnlineGeocoder
     {
-        return new OnlineGeocoder($client, new LocationGeocoder(dirname(__DIR__, 3) . '/fixtures/geo'), new NullLogger());
+        return new OnlineGeocoder(new \App\Tests\Support\PassThroughUserUrlClient($client), new LocationGeocoder(dirname(__DIR__, 3) . '/fixtures/geo'), new NullLogger());
     }
 }

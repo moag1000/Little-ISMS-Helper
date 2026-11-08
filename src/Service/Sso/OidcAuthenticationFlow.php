@@ -45,6 +45,7 @@ final class OidcAuthenticationFlow
         private readonly ClaimToRoleResolver $roleResolver,
         private readonly SsoEventLogger $eventLogger,
         private readonly ?\App\Repository\TenantRepository $tenantRepository = null,
+        private readonly ?\App\Http\UserUrlHttpClient $userUrlClient = null,
     ) {
     }
 
@@ -269,7 +270,7 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
             'urlAccessToken' => $tokenUrl,
             'urlResourceOwnerDetails' => $userinfoUrl ?? $tokenUrl,
             'scopes' => implode(' ', $provider->getScopes() ?: ['openid', 'profile', 'email']),
-        ]);
+        ], $this->userUrlClient !== null ? ['httpClient' => $this->userUrlClient->guzzle()] : []);
     }
 
     /**

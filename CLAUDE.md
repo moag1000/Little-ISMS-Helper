@@ -771,7 +771,9 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       User/Person FKs carry `#[SameTenantOwner]` — the TenantFilter skips `User`.
 - [ ] Input validated by form constraints (`#[Assert\…]` / FormType); no `|raw` on user
       content — Twig auto-escaping is the XSS defence, Doctrine parameter binding the SQL one.
-      Outbound URLs a user can set carry `#[NoInternalIp]` (SSRF).
+      Outbound URLs a user can set carry `#[NoInternalIp]` (SSRF) and are fetched only through
+      `App\Http\UserUrlHttpClient` (no private addresses after DNS, no redirects; `->guzzle()` for OAuth
+      libraries) — `OutboundUserUrlClientTest` rejects any other raw HTTP client in `src/`.
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training
       materials) stored and read only via `App\Service\Upload\ProtectedUploads` (`var/uploads`, never `public/`),
       served by a voter-checked download action (`EvidenceOutsideWebRootTest`). Setup wizard after completion and
@@ -791,6 +793,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       prefix goes on the subscriber's allow list (audit work, comments, profile, decisions, exports).
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
+- [ ] Privacy exports (VVT, DSFA, breach, DSR, consent) carry
+      `#[IsGranted(new Expression(PrivacyExportAccess::RULE))]`; a record with an end state is deleted only via
+      `DeletionPolicy::refusal()` (asset: disposed); evidence fields (`#[ApiReadOnlyEvidence]`) are kept on
+      import updates (`EvidenceFieldFilter::forUpdate()`).
 - [ ] Sensitive data excluded from audit logs
 - [ ] Non-UI paths (REST, MCP, restore, exports, jobs) are covered by contract tests that discover every
       resource/tool themselves (`tests/Contract/`, list in `docs/security/NON_UI_CONTRACTS.md`); a route that reads

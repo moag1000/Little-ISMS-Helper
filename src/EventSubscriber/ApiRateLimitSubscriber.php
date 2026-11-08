@@ -67,7 +67,8 @@ final class ApiRateLimitSubscriber
         $request = $requestEvent->getRequest();
 
         // Only apply to API routes and the assistant endpoint
-        if (!str_starts_with($request->getPathInfo(), '/api/') && $request->getPathInfo() !== '/mcp') {
+        // /api, /api/…, and the format variants /api.json, /api.jsonld (docs) count alike.
+        if (preg_match('#^/api($|[/.])#', $request->getPathInfo()) !== 1 && $request->getPathInfo() !== '/mcp') {
             return;
         }
 

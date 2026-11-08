@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Activity-Feed (Cross-Persona).
  *
  * Aggregates user-relevant activity from:
- *   - AuditLog (last 50 entries)
+ *   - AuditLog (last 50 entries, ROLE_ADMIN only — same as the audit log page)
  *   - WorkflowInstance updates (recent transitions)
  *   - Document version changes
  *   - Risk status changes (last X)
@@ -42,6 +42,7 @@ final class ActivityFeed
         private readonly RiskRepository $riskRepo,
         private readonly TenantContext $tenantContext,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly ?\Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorization = null,
     ) {
     }
 
@@ -84,7 +85,9 @@ final class ActivityFeed
         // 1. AuditLog (last 50) — tenant-scoped.
         // When no tenant context is available we deliberately return nothing
         // from this source rather than leaking cross-tenant rows.
-        $auditLogs = $tenant
+        // Audit rows only for those who may open the audit log (ROLE_ADMIN, as
+        // AuditLogController): they name people, logins and changed values.
+        $auditLogs = $tenant && $this->authorization?->isGranted('ROLE_ADMIN') === true
             ? $this->auditLogRepo->findAllOrderedForTenant($tenant, $limit, 0)
             : [];
         foreach ($auditLogs as $log) {

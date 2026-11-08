@@ -122,7 +122,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
         parent::tearDown();
     }
 
-    // ── DataBreach bulk-export (ROLE_AUDITOR) ────────────────────────────────
+    // ── DataBreach bulk-export (PrivacyExportAccess::RULE: DPO or Manager) ──
 
     #[Test]
     public function dataBreachExportRejectsGet(): void
@@ -143,7 +143,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     #[Test]
     public function dataBreachExportReturnsCsv(): void
     {
-        $this->client->loginUser($this->auditorRole);
+        $this->client->loginUser($this->dpoRole);
         $this->client->request('POST', '/en/data-breach/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['ids' => [$this->breach->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
@@ -153,10 +153,20 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     #[Test]
     public function dataBreachExportSkipsCrossTenant(): void
     {
-        $this->client->loginUser($this->auditorRole);
+        $this->client->loginUser($this->managerRole);
         $this->client->request('POST', '/en/data-breach/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['ids' => [$this->otherBreach->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    #[Test]
+    public function anAuditorGetsNoDataBreachExport(): void
+    {
+        // W3: personal data of a breach leaves the tool only for DPO or Manager, like every privacy export.
+        $this->client->loginUser($this->auditorRole);
+        $this->client->request('POST', '/en/data-breach/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['ids' => [$this->breach->getId()], '_token' => $this->getBulkCsrfToken()]));
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     // ── DPIA bulk-export ─────────────────────────────────────────────────────

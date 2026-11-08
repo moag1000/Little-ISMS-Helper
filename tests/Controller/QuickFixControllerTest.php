@@ -349,6 +349,23 @@ class QuickFixControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testAnonymousVisitorCannotApplyWhenNothingIsPending(): void
+    {
+        // Applying pending migrations stays open for recovery; with nothing pending an
+        // anonymous POST is no recovery and must not start a job.
+        $this->client->disableReboot();
+        $snapshot = $this->createStub(\App\Service\QuickFixStatusSnapshot::class);
+        $snapshot->method('hasPendingMigrations')->willReturn(false);
+        $snapshot->method('get')->willReturn(['status' => [], 'pending_fs' => [], 'clean' => []]);
+        static::getContainer()->set(\App\Service\QuickFixStatusSnapshot::class, $snapshot);
+        $token = $this->generateCsrfToken('quick_fix_apply');
+
+        $this->client->request('POST', '/quick-fix/apply', ['_token' => $token]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
     public function testRepairAllWithInvalidCsrfIsForbidden(): void
     {
         $this->client->loginUser($this->testUser);

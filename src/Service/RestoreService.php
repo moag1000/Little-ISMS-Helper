@@ -410,6 +410,7 @@ class RestoreService
             // DBAL 4 always nests transactions with savepoints (best-effort row isolation).
 
             // First pass: restore all scalar fields and single-valued associations
+            $evidenceTrail = new \App\Service\Restore\RestoredEvidenceTrail();
             foreach ($orderedEntities as $orderedEntity) {
                 if (in_array($orderedEntity, $options['skip_entities'])) {
                     $this->logger->info('Skipping entity as per options', ['entity' => $orderedEntity]);
@@ -424,6 +425,7 @@ class RestoreService
                 }
 
                 $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
+                $evidenceTrail->collect($entityClass, $entities);
                 if ($targetScopeIds !== [] && $orderedEntity === 'Tenant') {
                     $entities = $purger->pinOrganisationIdentity($entities);
                 }
@@ -606,6 +608,7 @@ class RestoreService
                         $totalRestored += $statistic['created'] + ($statistic['updated'] ?? 0);
                     }
                 }
+                $evidenceTrail->write($this->auditLogger, (string) ($backup['metadata']['created_at'] ?? 'unknown'));
                 $this->auditLogger->logImport(
                     'Backup',
                     $totalRestored,

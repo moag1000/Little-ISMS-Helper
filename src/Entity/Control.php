@@ -751,7 +751,7 @@ class Control
      * Values: not_assessed | ineffective | partially_effective | effective | highly_effective
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read']), \App\Attribute\ApiReadOnlyEvidence('control form within the derivation rules, effectiveness suggestion (ISO 27001 9.1)')]
     private ?string $effectiveness = null;
 
     /**
@@ -782,7 +782,7 @@ class Control
      * Date of the most recent effectiveness test.
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read']), \App\Attribute\ApiReadOnlyEvidence('control form, verified corrective action (ISO 27001 9.1)')]
     private ?\DateTimeImmutable $lastEffectivenessTest = null;
 
     /**

@@ -64,12 +64,16 @@ final class PostureSnapshotService
         $frameworkCompliance = [];
 
         foreach ($activeFrameworks as $fw) {
+            // Only the frameworks this organisation works on (own applicable fulfilment rows):
+            // a public page must not list every catalogue loaded on the instance as its scope.
+            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($fw, $tenant);
+            if (($stats['applicable'] ?? 0) === 0) {
+                continue;
+            }
             $frameworks[] = [
                 'code' => (string) $fw->getCode(),
                 'name' => (string) $fw->getName(),
             ];
-
-            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($fw, $tenant);
             $applicable = $stats['applicable'] ?? 0;
             $fulfilled  = $stats['fulfilled'] ?? 0;
             $percent    = $applicable > 0 ? round(($fulfilled / $applicable) * 100, 1) : 0.0;

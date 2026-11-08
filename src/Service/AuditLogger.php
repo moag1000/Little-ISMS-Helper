@@ -122,6 +122,45 @@ class AuditLogger
         }
     }
 
+    /** Organisation of the record being logged — the fallback when neither pin nor context names one. */
+    private ?\App\Entity\Tenant $recordTenant = null;
+
+    /**
+     * Run $callback with $record's organisation as fallback tenant for every row
+     * written inside it. A pin (withTenant) and the request's TenantContext still
+     * come first; in cron runs (refresh-fulfillments, purges, retention, reviews)
+     * neither exists, and rows would otherwise carry tenant = null and vanish
+     * from the organisation's own audit view. The Doctrine audit subscriber uses
+     * it for every create / update / delete.
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     */
+    public function aboutRecord(object $record, callable $callback): mixed
+    {
+        $previous = $this->recordTenant;
+        $this->recordTenant = self::tenantOfRecord($record);
+        try {
+            return $callback();
+        } finally {
+            $this->recordTenant = $previous;
+        }
+    }
+
+    public static function tenantOfRecord(object $record): ?\App\Entity\Tenant
+    {
+        if ($record instanceof \App\Entity\Tenant) {
+            return $record;
+        }
+        if (!is_callable([$record, 'getTenant'])) {
+            return null;
+        }
+        $tenant = $record->getTenant();
+
+        return $tenant instanceof \App\Entity\Tenant ? $tenant : null;
+    }
+
     /**
      * Log a create action
      */
@@ -305,7 +344,7 @@ class AuditLogger
         // Symfony-BP audit #5: capture tenant at write time. Future user-rename
         // or re-tenancy cannot leak this row across boundaries. Falls back to
         // the acting user's tenant if the context is empty (e.g. system actions).
-        $tenant = $this->pinnedTenant ?? $this->tenantContext?->getCurrentTenant();
+        $tenant = $this->pinnedTenant ?? $this->tenantContext?->getCurrentTenant() ?? $this->recordTenant;
         if ($tenant === null) {
             $user = $this->security->getUser();
             if ($user instanceof \App\Entity\User) {

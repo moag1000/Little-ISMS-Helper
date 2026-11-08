@@ -109,7 +109,8 @@ class RetentionEnforcementServiceTest extends TestCase
 
     private function asset(string $status): Asset
     {
-        return (new Asset())->setStatus($status);
+        // The query selects by age; the service re-checks that the record ended before the cutoff.
+        return (new Asset())->setStatus($status)->setCreatedAt(new \DateTime('-3 years'));
     }
 
     #[Test]
@@ -179,5 +180,40 @@ class RetentionEnforcementServiceTest extends TestCase
         foreach (RetentionEnforcementService::END_STATES as $states) {
             $this->assertNotSame([], $states);
         }
+    }
+
+    #[Test]
+    public function retentionRunsFromCompletionNotFromCreation(): void
+    {
+        // W3: an asset created years ago but disposed last week is not due yet.
+        $this->tenantRepository->method('findAll')->willReturn([
+            $this->tenantWithPolicies(['asset' => ['retention_days' => 365, 'auto_delete' => true]]),
+        ]);
+        $old = $this->asset('disposed')->setCreatedAt(new \DateTime('-5 years'))->setUpdatedAt(new \DateTime('-3 years'));
+        $justDisposed = $this->asset('disposed')->setCreatedAt(new \DateTime('-5 years'))->setUpdatedAt(new \DateTime('-7 days'));
+        $this->stubQuery([$old, $justDisposed]);
+
+        $report = $this->service->enforce(false);
+
+        $this->assertSame(1, $report[0]['expired']);
+    }
+
+    #[Test]
+    public function aRecentAuditRowKeepsTheRecord(): void
+    {
+        $tenant = $this->tenantWithPolicies(['incident' => ['retention_days' => 365, 'auto_delete' => true]]);
+        $this->tenantRepository->method('findAll')->willReturn([$tenant]);
+        $incident = (new \App\Entity\Incident())->setStatus(\App\Enum\IncidentStatus::Closed)
+            ->setCreatedAt(new \DateTime('-5 years'))->setClosedAt(new \DateTime('-4 years'));
+        (new \ReflectionProperty(\App\Entity\Incident::class, 'id'))->setValue($incident, 41);
+        $this->stubQuery([$incident]);
+
+        $audit = $this->createMock(\App\Repository\AuditLogRepository::class);
+        $audit->method('lastChangeAt')->with('Incident', [41])->willReturn([41 => new \DateTimeImmutable('-2 days')]);
+        $service = new RetentionEnforcementService($this->entityManager, $this->tenantRepository, $this->auditLogger,
+            $this->createMock(LoggerInterface::class), $audit);
+
+        $this->entityManager->expects($this->never())->method('remove');
+        $this->assertSame(0, $service->enforce(true)[0]['expired']);
     }
 }

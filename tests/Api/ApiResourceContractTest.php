@@ -52,7 +52,14 @@ final class ApiResourceContractTest extends TestCase
             'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt',
             'initialReportSubmittedAt', 'intermediateReportSubmittedAt', 'doraFinalReportSubmittedAt',
             'nis2InterimRequestedAt', 'nis2InterimDueAt', 'nis2InterimReportedAt', 'resolvedAt', 'closedAt',
+            // W3: authority and reference of the report are part of the report evidence.
+            'nationalAuthorityNotified', 'authorityReferenceNumber',
         ],
+        // W3: test results and measurements (ISO 27001 9.1, ISO 22301 8.5).
+        \App\Entity\Control::class => ['effectiveness', 'lastEffectivenessTest'],
+        \App\Entity\BCExercise::class => ['reportCompleted', 'actualRtoAchieved'],
+        \App\Entity\BusinessContinuityPlan::class => ['lastTested'],
+        \App\Entity\ISMSObjective::class => ['currentValue'],
     ];
 
     private const array READ_ONLY_RESOURCES = [
@@ -283,5 +290,18 @@ final class ApiResourceContractTest extends TestCase
         self::assertNotEmpty($attributes, $class . ' is not an API resource');
 
         return $attributes[0]->newInstance();
+    }
+
+    #[Test]
+    public function theDetectionTimeOfAnIncidentIsSetOnceOnCreate(): void
+    {
+        // W3: detectedAt anchors the NIS-2 / GDPR deadlines — an update must not move it.
+        $groups = [];
+        foreach ((new ReflectionClass(\App\Entity\Incident::class))->getProperty('detectedAt')->getAttributes(Groups::class) as $attribute) {
+            $groups = [...$groups, ...$attribute->newInstance()->groups];
+        }
+
+        self::assertContains('incident:create', $groups);
+        self::assertNotContains('incident:write', $groups);
     }
 }

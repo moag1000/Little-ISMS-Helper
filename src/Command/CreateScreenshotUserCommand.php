@@ -23,6 +23,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 )]
 class CreateScreenshotUserCommand
 {
+    /** Shared with scripts/screenshots and tests/E2e; valid only in dev/test. */
+    public const DEV_PASSWORD = 'Screenshots-Aurora-2026!';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
@@ -37,8 +40,8 @@ class CreateScreenshotUserCommand
     public function __invoke(
         #[Option(name: 'email', description: 'Email for the screenshot user')]
         string $email = 'screenshots@local.test',
-        #[Option(name: 'password', description: 'Password for the screenshot user')]
-        string $password = 'Screenshots-Aurora-2026!',
+        #[Option(name: 'password', description: 'Password (default: the shared dev password in dev/test, random elsewhere)')]
+        string $password = '',
         #[Option(name: 'tenant-code', description: 'Tenant code to assign / create')]
         string $tenantCode = 'screenshots',
         #[Option(name: 'tenant-name', description: 'Tenant name when newly created')]
@@ -52,6 +55,14 @@ class CreateScreenshotUserCommand
         if (!$force && !\in_array($this->kernelEnvironment, ['dev', 'test'], true)) {
             $symfonyStyle->error(sprintf('Refusing to run in environment "%s". Pass --force to override.', $this->kernelEnvironment));
             return Command::FAILURE;
+        }
+
+        // The well-known password is for local dev/test only; a super admin created on any
+        // other environment (--force) gets a random one unless the operator names one.
+        if ($password === '') {
+            $password = \in_array($this->kernelEnvironment, ['dev', 'test'], true)
+                ? self::DEV_PASSWORD
+                : bin2hex(random_bytes(12));
         }
 
         $tenant = $this->resolveTenant($tenantCode, $tenantName);

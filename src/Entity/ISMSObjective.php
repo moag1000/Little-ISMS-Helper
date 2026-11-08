@@ -77,7 +77,7 @@ class ISMSObjective
     private ?string $targetValue = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
-    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Groups(['isms_objective:read']), \App\Attribute\ApiReadOnlyEvidence('objective measurement (ISO 27001 9.1)')]
     private ?string $currentValue = null;
 
     #[ORM\Column(length: 50, nullable: true)]
