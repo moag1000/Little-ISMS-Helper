@@ -44,6 +44,9 @@ final class AiRequirementMappingKind extends AbstractAiKind
 
     private const int MAX_SCANNED = 400;
 
+    /** Organisation of the running nightly pass: describe() gets no tenant, and no request context runs at night. */
+    private ?Tenant $runTenant = null;
+
     public function __construct(
         AiAssistant $ai,
         SuggestionRepository $suggestions,
@@ -82,6 +85,7 @@ final class AiRequirementMappingKind extends AbstractAiKind
 
     protected function candidates(Tenant $tenant): iterable
     {
+        $this->runTenant = $tenant;
         $scanned = 0;
         foreach ($this->frameworks->findActiveFrameworks() as $framework) {
             foreach ($this->requirements->findInScopeForFrameworkListing($framework, $tenant) as $requirement) {
@@ -115,7 +119,7 @@ final class AiRequirementMappingKind extends AbstractAiKind
     protected function describe(object $record): string
     {
         \assert($record instanceof ComplianceRequirement);
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->runTenant ?? $this->tenantContext->getCurrentTenant();
         $lines = [
             'Framework: ' . $record->getFramework()?->getName(),
             'Requirement: ' . $record->getRequirementId() . ' ' . $record->getTitle(),
