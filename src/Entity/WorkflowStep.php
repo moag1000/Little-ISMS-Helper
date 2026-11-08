@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'workflow_steps')]
-class WorkflowStep
+class WorkflowStep implements \App\Doctrine\SharedTenantRowsInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

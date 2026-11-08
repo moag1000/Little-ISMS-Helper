@@ -409,7 +409,7 @@ class WorkflowController extends AbstractController
      * (ROLE_MANAGER) can deactivate/archive definitions via toggleDefinition instead.
      */
     #[Route('/workflow/definition/{id}/delete', name: 'app_workflow_definition_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_ADMIN'), IsGranted('GLOBAL_CATALOGUE_WRITE', subject: 'workflow')]
     public function deleteDefinition(Request $request, Workflow $workflow): Response
     {
         if (!$this->isCsrfTokenValid('delete'.$workflow->getId(), $request->request->get('_token'))) {
@@ -437,7 +437,7 @@ class WorkflowController extends AbstractController
     }
 
     #[Route('/workflow/definition/{id}/toggle', name: 'app_workflow_definition_toggle', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('ROLE_MANAGER'), IsGranted('GLOBAL_CATALOGUE_WRITE', subject: 'workflow')]
     public function toggleDefinition(Request $request, Workflow $workflow): Response
     {
         if (!$this->isCsrfTokenValid('toggle'.$workflow->getId(), $request->request->get('_token'))) {

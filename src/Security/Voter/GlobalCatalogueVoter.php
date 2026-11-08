@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\ComplianceMapping;
 use App\Entity\Tenant;
+use App\Entity\Workflow;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -41,12 +42,17 @@ final class GlobalCatalogueVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::WRITE && ($subject === null || $subject instanceof ComplianceMapping);
+        return $attribute === self::WRITE
+            && ($subject === null || $subject instanceof ComplianceMapping || $subject instanceof Workflow);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         if ($subject instanceof ComplianceMapping && $subject->getOwnerTenant() !== null) {
+            return true;
+        }
+        // An organisation's own workflow definition; seeded ones (no organisation) are shared.
+        if ($subject instanceof Workflow && $subject->getTenant() !== null) {
             return true;
         }
         if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {

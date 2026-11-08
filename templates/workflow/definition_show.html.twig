@@ -27,6 +27,7 @@
             <a href="{{ path('admin_workflow_overlay_index') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'workflow.action.manage_overlays'|trans({}, 'workflows') }}
             </a>
+            {% if is_granted('GLOBAL_CATALOGUE_WRITE', workflow) %}
             <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ workflow.isActive ? 'warning' : 'success' }}">
@@ -34,6 +35,7 @@
                     {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'workflows') : 'workflow.action.activate'|trans({}, 'workflows') }}
                 </button>
             </form>
+            {% endif %}
         </div>
     </div>
 
@@ -208,6 +210,7 @@
                         <a href="{{ path('admin_workflow_overlay_index') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'workflow.action.manage_overlays'|trans({}, 'workflows') }}
                         </a>
+                        {% if is_granted('GLOBAL_CATALOGUE_WRITE', workflow) %}
                         <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ workflow.isActive ? 'warning' : 'success' }} w-100">
@@ -225,6 +228,7 @@
                                 <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'workflow.action.delete'|trans({}, 'workflows') }}
                             </button>
                         </form>
+                        {% endif %}
                     </div>
                 {% endblock %}
             {% endembed %}

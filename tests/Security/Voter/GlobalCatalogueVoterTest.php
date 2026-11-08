@@ -7,6 +7,7 @@ namespace App\Tests\Security\Voter;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
+use App\Entity\Workflow;
 use App\Security\Voter\GlobalCatalogueVoter;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,6 +49,19 @@ final class GlobalCatalogueVoterTest extends TestCase
         self::assertSame(VoterInterface::ACCESS_GRANTED, $this->vote(superAdmin: false, tenants: 5, subject: $own));
     }
 
+    #[Test]
+    public function seededWorkflowDefinitionsAreSharedLikeTheCatalogue(): void
+    {
+        // Seeded definitions (no organisation) start for every organisation's records:
+        // only the super admin deactivates or deletes them; an organisation's own stays its own.
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->vote(superAdmin: false, tenants: 2, subject: new Workflow()));
+        self::assertSame(VoterInterface::ACCESS_GRANTED, $this->vote(superAdmin: true, tenants: 2, subject: new Workflow()));
+        self::assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            $this->vote(superAdmin: false, tenants: 2, subject: (new Workflow())->setTenant(new Tenant())),
+        );
+    }
+
     private function globalMapping(): ComplianceMapping
     {
         return (new ComplianceMapping())
@@ -55,7 +69,7 @@ final class GlobalCatalogueVoterTest extends TestCase
             ->setTargetRequirement(new ComplianceRequirement());
     }
 
-    private function vote(bool $superAdmin, int $tenants, ?ComplianceMapping $subject): int
+    private function vote(bool $superAdmin, int $tenants, ComplianceMapping|Workflow|null $subject): int
     {
         $security = $this->createStub(Security::class);
         $security->method('isGranted')->willReturnCallback(
