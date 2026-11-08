@@ -108,13 +108,13 @@ final class ControlImplementationWorkbookGenerator implements AuditWorkbookGener
             $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($control->getCategory()));
             $sheet->setCellValue('D' . $row, $control->isApplicable() ? 'Yes' : 'No');
             $sheet->setCellValue('E' . $row, CsvSanitizer::sanitize($control->getEffectiveResponsiblePerson() ?? ''));
-            $sheet->setCellValue('F' . $row, $control->getImplementationStatus() ?? 'not_started');
+            $sheet->setCellValue('F' . $row, CsvSanitizer::sanitize($control->getImplementationStatus() ?? 'not_started'));
             $sheet->setCellValue('G' . $row, $control->getImplementationPercentage() ?? 0);
             $sheet->setCellValue('H' . $row, $control->getLastReviewDate()?->format('Y-m-d') ?? '');
             $sheet->setCellValue('I' . $row, $control->getLastEffectivenessTest()?->format('Y-m-d') ?? '');
             $sheet->setCellValue('J' . $row, $control->getEvidenceDocuments()->count());
-            $sheet->setCellValue('K' . $row, $control->getEffectiveness() ?? '');
-            $sheet->setCellValue('L' . $row, $control->getControlMaturity() ?? '');
+            $sheet->setCellValue('K' . $row, CsvSanitizer::sanitize($control->getEffectiveness() ?? ''));
+            $sheet->setCellValue('L' . $row, CsvSanitizer::sanitize($control->getControlMaturity() ?? ''));
             $sheet->setCellValue('M' . $row, $isOverdue ? 'YES' : 'no');
             $sheet->setCellValue('N' . $row, $control->getTargetDate()?->format('Y-m-d') ?? '');
 

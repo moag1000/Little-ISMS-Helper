@@ -149,7 +149,7 @@ final class VvtBfdiExporter
                 CsvSanitizer::sanitize(implode(', ', $activity->getRecipientCategories() ?? [])),
             );
             $subSheet->setCellValue('D' . $subRow, $activity->getHasThirdCountryTransfer() ? 'Ja' : 'Nein');
-            $subSheet->setCellValue('E' . $subRow, $activity->getTransferSafeguards() ?? '—');
+            $subSheet->setCellValue('E' . $subRow, CsvSanitizer::sanitize($activity->getTransferSafeguards() ?? '—'));
             ++$subRow;
         }
 
@@ -286,7 +286,7 @@ final class VvtBfdiExporter
         $cols = range('A', chr(ord('A') + count(self::BFDI_COLUMNS) - 1));
 
         foreach (self::BFDI_COLUMNS as $i => $header) {
-            $sheet->setCellValue($cols[$i] . '1', $header);
+            $sheet->setCellValue($cols[$i] . '1', CsvSanitizer::sanitize($header));
         }
 
         $lastCol = $cols[count(self::BFDI_COLUMNS) - 1];

@@ -728,7 +728,7 @@ jobs:
         run: python3 scripts/quality/check_entity_method_exists.py --quiet
       - name: "Gate 84: spreadsheet cells go through CsvSanitizer"
         # Record text starting with = + - @ runs as a formula in Excel (CWE-1236).
-        # The DORA RoI CSV and the FTE board CSV wrote such cells raw.
+        # The DORA RoI CSV and the FTE board CSV wrote such cells raw. Checked per write site (S6).
         run: python3 scripts/quality/check_csv_formula_injection.py
       - name: "Gate 87: risk bands come from the organisation's risk scale"
         # Band edges are Risikokriterien (ISO 27001 6.1.2 a/b) since P8b; a literal
@@ -749,6 +749,10 @@ jobs:
         # FulfillmentDerivationService (rule, override, manual). A second writer
         # disagrees with the rule and is overwritten on the next recompute. No baseline.
         run: python3 scripts/quality/check_fulfillment_single_writer.py --quiet
+      - name: "Gate 90: every route that reads an async job by id checks its owner"
+        # Exports, backups and reports keep status + result under var/jobs/<uuid>.json;
+        # a known id must not open another person's file (#[IsGranted(AsyncJobVoter::ACCESS)]). S6, 2026-11.
+        run: python3 scripts/quality/check_job_id_access.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

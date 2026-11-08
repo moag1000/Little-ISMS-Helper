@@ -355,7 +355,7 @@ class ChangeRequest
         $this->associatedRisks = new ArrayCollection();
         $this->documents = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
-        $this->requestedDate = new DateTimeImmutable();
+        $this->requestedDate = new \DateTime(); // mutable `date` column
     }
 
     #[ORM\PrePersist]

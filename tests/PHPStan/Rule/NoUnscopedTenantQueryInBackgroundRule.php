@@ -48,18 +48,21 @@ use PHPStan\Rules\RuleErrorBuilder;
 final class NoUnscopedTenantQueryInBackgroundRule implements Rule
 {
     /**
-     * Deliberately only findAll().
+     * findAll() always; findBy()/findOneBy() since S6 (2026-11) when the criteria
+     * array is a literal that narrows neither by organisation nor by identity:
+     * no `tenant` key, no `id` key, no key that is a relation of the entity.
      *
-     * Extending this to findBy()/findOneBy() was measured and rejected: it adds
-     * seven findings, none of which is a leak. They are either instance-wide by
-     * design (BackfillPolicyBody, MrisSeedClassification, ProcessTimedWorkflows)
-     * or already scoped by explicit ids or a relation —
-     * findBy(['id' => $approverUserIds]), findBy(['training' => $training]).
-     * Whether such ids were themselves obtained tenant-safely is a data-flow
-     * property this rule cannot decide, so flagging them would trade real
-     * signal for noise and train people to baseline reflexively.
+     * The first measurement (all findBy()) gave seven findings and no leak —
+     * findBy(['id' => $approverUserIds]), findBy(['training' => $training]) are
+     * scoped by explicit ids or a relation whose row was itself loaded scoped.
+     * Those stay silent now. What remains, findBy(['status' => 'open']) in a
+     * cron command, reads every organisation's rows; instance-wide maintenance
+     * code goes into phpstan-baseline.neon as a reviewed decision.
      */
     private const UNSCOPED_METHODS = ['findAll'];
+
+    /** Unscoped only when the criteria array names no organisation, id or relation. */
+    private const CRITERIA_METHODS = ['findBy', 'findOneBy'];
 
     /** Code paths that run without an HTTP request. */
     private const BACKGROUND_FILE_PATTERNS = [
@@ -83,7 +86,9 @@ final class NoUnscopedTenantQueryInBackgroundRule implements Rule
             return [];
         }
 
-        if (!in_array($node->name->name, self::UNSCOPED_METHODS, true)) {
+        $method = $node->name->name;
+        $byCriteria = in_array($method, self::CRITERIA_METHODS, true);
+        if (!$byCriteria && !in_array($method, self::UNSCOPED_METHODS, true)) {
             return [];
         }
 
@@ -93,6 +98,10 @@ final class NoUnscopedTenantQueryInBackgroundRule implements Rule
 
         $entityClass = $this->resolveEntityClass($scope, $node);
         if ($entityClass === null || !$this->ownsTenant($entityClass)) {
+            return [];
+        }
+
+        if ($byCriteria && !$this->criteriaAreUnscoped($node, $entityClass)) {
             return [];
         }
 
@@ -127,15 +136,57 @@ final class NoUnscopedTenantQueryInBackgroundRule implements Rule
      */
     private function resolveEntityClass(Scope $scope, MethodCall $node): ?string
     {
-        $valueType = $scope->getType($node)->getIterableValueType();
+        $type = $scope->getType($node);
+        $candidates = $type->isIterable()->yes()
+            ? $type->getIterableValueType()->getObjectClassNames()
+            : $type->getObjectClassNames(); // findOneBy(): T|null
 
-        foreach ($valueType->getObjectClassNames() as $className) {
+        foreach ($candidates as $className) {
             if (str_starts_with($className, 'App\\Entity\\')) {
                 return $className;
             }
         }
 
         return null;
+    }
+
+    /**
+     * A literal criteria array without `tenant`, `id` or a relation key. A
+     * non-literal array (built elsewhere) stays silent — no guessing.
+     */
+    private function criteriaAreUnscoped(MethodCall $node, string $entityClass): bool
+    {
+        $criteria = $node->getArgs()[0]->value ?? null;
+        if (!$criteria instanceof Node\Expr\Array_) {
+            return false;
+        }
+        $entity = $this->reflectionProvider->getClass($entityClass);
+        foreach ($criteria->items as $item) {
+            if (!$item instanceof Node\ArrayItem || !$item->key instanceof Node\Scalar\String_) {
+                return false;
+            }
+            $key = explode('.', $item->key->value)[0];
+            if ($key === 'tenant' || $key === 'id') {
+                return false;
+            }
+            if ($entity->hasNativeProperty($key) && $this->isRelation($entity->getNativeProperty($key)->getNativeType())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /** A property typed as an entity or a collection of entities. */
+    private function isRelation(\PHPStan\Type\Type $type): bool
+    {
+        foreach ($type->getObjectClassNames() as $name) {
+            if (str_starts_with($name, 'App\\Entity\\') || str_contains($name, 'Collection')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** An entity is tenant-owned when it declares a `tenant` property. */

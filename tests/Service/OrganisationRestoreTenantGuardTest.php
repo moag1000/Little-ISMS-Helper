@@ -212,7 +212,7 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
             if (($row['id'] ?? null) === $colleagueId) {
                 $row['password'] = 'forged-hash';
                 $row['ssoExternalId'] = 'forged-subject';
-                $row['roles'] = ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH'];
+                $row['roles'] = ['ROLE_ADMIN', ...\App\Security\RoleNames::PRIVILEGED]; // S6: every instance role
             }
             $users[] = $row;
         }
@@ -221,7 +221,7 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
             'email' => $email,
             'firstName' => 'Crafted',
             'lastName' => 'Switcher',
-            'roles' => ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH', 'role_group_ciso '],
+            'roles' => ['ROLE_ADMIN', ...\App\Security\RoleNames::PRIVILEGED, 'role_group_ciso ', ' Role_Super_Admin'],
             'password' => 'forged-hash',
             'tenant_id' => ['id' => $ownId],
             'customRoles_ids' => [(int) $privilegedRole->getId()],
@@ -250,7 +250,9 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
         $colleagueAfter = $this->em->find(User::class, $colleagueId);
         self::assertSame('live-hash', $colleagueAfter?->getPassword(), 'no password hash from the file');
         self::assertNull($colleagueAfter?->getSsoExternalId(), 'no SSO subject from the file');
-        self::assertNotContains('ROLE_ALLOWED_TO_SWITCH', $colleagueAfter?->getRoles() ?? []);
+        foreach ($colleagueAfter?->getRoles() ?? [] as $role) {
+            self::assertFalse(\App\Security\RoleNames::isPrivileged($role), 'no privileged role on a live account: ' . $role);
+        }
 
         $switcher = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
         if ($switcher !== null) {
