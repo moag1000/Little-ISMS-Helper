@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Service\Compliance\Fulfillment;
 
 use App\Entity\AuditChecklist;
+use App\Entity\BusinessContinuityPlan;
 use App\Entity\ComplianceRequirement;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
 use App\Entity\IsmsRegisterEntry;
 use App\Entity\ManagementDecision;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
@@ -40,8 +42,10 @@ final class RecordChangeCollector implements ResetInterface
         ManagementDecision::class => ['management_decision'],
         Training::class => ['training_coverage', 'training_participation'],
         TrainingParticipation::class => ['training_participation'],
-        Incident::class => ['reporting_duty', 'incident_process'],
+        Incident::class => ['reporting_duty', 'incident_process', 'record_completeness'],
         DataBreach::class => ['reporting_duty'],
+        BusinessContinuityPlan::class => ['record_completeness'],
+        Supplier::class => ['record_completeness'],
     ];
 
     /** @var array<int, array{tenant: Tenant, types: array<string, true>, audited: array<int, ComplianceRequirement>}> */
@@ -123,7 +127,8 @@ final class RecordChangeCollector implements ResetInterface
         return match (true) {
             $entity instanceof IsmsRegisterEntry, $entity instanceof ManagementDecision, $entity instanceof Training,
             $entity instanceof TrainingParticipation, $entity instanceof Incident, $entity instanceof DataBreach,
-            $entity instanceof AuditChecklist => $entity->getTenant(),
+            $entity instanceof AuditChecklist, $entity instanceof BusinessContinuityPlan,
+            $entity instanceof Supplier => $entity->getTenant(),
             default => null,
         };
     }

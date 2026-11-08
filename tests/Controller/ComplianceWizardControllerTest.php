@@ -196,10 +196,10 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->client->loginUser($this->managerUser);
         $token = $this->generateCsrfToken('wizard_manual_confirm');
 
-        // Confirm a genuinely-manual clause (ISO 27001 Cl. 4.4, no backing entity).
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/isms_established/confirm', [
+        // Confirm a genuinely-manual clause (EU AI Act Art. 5, no backing entity).
+        $this->client->request('POST', '/en/compliance-wizard/eu_ai_act/check/eu_ai_act_prohibited/confirm', [
             '_token' => $token,
-            'category' => 'context',
+            'category' => 'prohibited_practices',
             'confirmed' => '1',
         ]);
         $this->assertResponseRedirects();
@@ -207,16 +207,16 @@ class ComplianceWizardControllerTest extends WebTestCase
         $repo = $this->entityManager->getRepository(\App\Entity\WizardManualConfirmation::class);
         $row = $repo->findOneBy([
             'tenant' => $this->testTenant,
-            'wizardKey' => 'iso27001',
-            'checkKey' => 'isms_established',
+            'wizardKey' => 'eu_ai_act',
+            'checkKey' => 'eu_ai_act_prohibited',
         ]);
         $this->assertNotNull($row, 'Confirmation row should be created');
         $this->assertTrue($row->isConfirmed());
 
         // Un-confirm removes the row again.
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/isms_established/confirm', [
+        $this->client->request('POST', '/en/compliance-wizard/eu_ai_act/check/eu_ai_act_prohibited/confirm', [
             '_token' => $token,
-            'category' => 'context',
+            'category' => 'prohibited_practices',
             'confirmed' => '0',
         ]);
         $this->assertResponseRedirects();
@@ -224,8 +224,8 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->entityManager->clear();
         $gone = $repo->findOneBy([
             'tenant' => $this->testTenant,
-            'wizardKey' => 'iso27001',
-            'checkKey' => 'isms_established',
+            'wizardKey' => 'eu_ai_act',
+            'checkKey' => 'eu_ai_act_prohibited',
         ]);
         $this->assertNull($gone, 'Confirmation row should be removed after un-confirm');
     }
@@ -235,9 +235,9 @@ class ComplianceWizardControllerTest extends WebTestCase
     {
         $this->client->loginUser($this->testUser);
         $token = $this->generateCsrfToken('wizard_manual_confirm');
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/isms_established/confirm', [
+        $this->client->request('POST', '/en/compliance-wizard/eu_ai_act/check/eu_ai_act_prohibited/confirm', [
             '_token' => $token,
-            'category' => 'context',
+            'category' => 'prohibited_practices',
             'confirmed' => '1',
         ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);

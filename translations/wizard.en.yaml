@@ -172,6 +172,15 @@ wizard:
         no_register_entries: 'Register has no entries'
         register_incomplete: 'Register incomplete'
         register_incomplete_desc: '%overdue% entries are overdue for review, %missing% proposals have not been adopted.'
+        no_clause_checks: 'No checks of clauses 4–10 active'
+        clauses_open: 'ISMS not yet established in every clause'
+        clauses_open_desc: '%open% checks below %min% %: %clauses%.'
+        no_planned_duties: 'No planned duties'
+        duties_overdue: 'Duties overdue'
+        duties_overdue_desc: '%overdue% of %total% open duties are overdue (%types%).'
+        no_records: 'No records'
+        records_incomplete: 'Details missing'
+        records_incomplete_desc: '%open% of %total% records lack required details.'
         no_management_decision: 'No top-management decision recorded'
         management_decision_missing: 'Top-management decision missing or expiring'
         management_decision_missing_desc: '%effective% of %total% top-management decisions are in force.'
@@ -486,7 +495,7 @@ wizard:
         iso_4_3_scope: "Determining the scope of the ISMS"
         iso_4_3_scope_desc: "Documented ISMS scope with boundaries and applicability"
         iso_4_4_isms: "Information security management system"
-        iso_4_4_isms_desc: "ISMS established, implemented, maintained and improved"
+        iso_4_4_isms_desc: "ISMS established, implemented, maintained and improved: every check of clauses 4–10 reaches at least 60 %"
         iso_5_1_commitment: "Leadership and commitment"
         iso_5_1_commitment_desc: "Top management approved policy, resources and objectives"
         iso_5_2_policy: "Information security policy"
@@ -514,13 +523,13 @@ wizard:
         iso_7_5_documentation: "Documented information"
         iso_7_5_documentation_desc: "Creation, updating and control of documents"
         iso_8_1_planning: "Operational planning and control"
-        iso_8_1_planning_desc: "Planning, implementation and control of processes"
+        iso_8_1_planning_desc: "Planned duties (deadlines and duty calendar) are done on time"
         iso_8_2_risk_exec: "Performing risk assessment"
         iso_8_2_risk_exec_desc: "Regular performance of risk assessment"
         iso_8_3_treatment_exec: "Performing risk treatment"
         iso_8_3_treatment_exec_desc: "Implementation of risk treatment plan"
         iso_9_1_monitoring: "Monitoring, measurement, analysis and evaluation"
-        iso_9_1_monitoring_desc: "Determination of what, how and when to monitor"
+        iso_9_1_monitoring_desc: "Objectives are measured on time (the tool measures objectives with a KPI), control effectiveness tests are not overdue"
         iso_9_2_audit: "Internal audit"
         iso_9_2_audit_desc: "Planned internal audits at regular intervals"
         iso_9_3_review: "Management review"
@@ -592,11 +601,11 @@ wizard:
 
         # DORA specific checks
         dora_5_management: "Management Accountability (Art. 5)"
-        dora_5_management_desc: "Management body bears overall responsibility for ICT risk management"
+        dora_5_management_desc: "Management body approves ICT risk management framework, resilience strategy and resources (management decisions)"
         dora_6_framework: "ICT Risk Management Framework (Art. 6)"
-        dora_6_framework_desc: "Documented ICT risk management framework"
+        dora_6_framework_desc: "ICT risk management framework approved by the management body and confirmed every year"
         dora_6_strategy: "ICT Strategy (Art. 6)"
-        dora_6_strategy_desc: "ICT strategy with clear objectives and goals"
+        dora_6_strategy_desc: "Digital operational resilience strategy approved by the management body"
         dora_7_inventory: "ICT Inventory (Art. 7)"
         dora_7_inventory_desc: "Complete inventory of all ICT assets and systems"
         dora_7_network: "Network Documentation (Art. 7)"
@@ -630,13 +639,13 @@ wizard:
         dora_13_training: "ICT Training (Art. 13)"
         dora_13_training_desc: "Regular ICT security training conducted"
         dora_14_plans: "Communication Plans (Art. 14)"
-        dora_14_plans_desc: "Communication policies and emergency communication"
+        dora_14_plans_desc: "BC plans contain a communication plan"
         dora_17_process: "Incident Process (Art. 17)"
         dora_17_process_desc: "ICT incident management process established"
         dora_17_classification: "Incident Classification (Art. 17)"
-        dora_17_classification_desc: "Classification scheme for ICT incidents"
+        dora_17_classification_desc: "Incidents of the last 12 months are classified as event or incident"
         dora_18_criteria: "Classification Criteria (Art. 18)"
-        dora_18_criteria_desc: "Criteria for major ICT-related incidents defined"
+        dora_18_criteria_desc: "Classified incidents record clients affected and economic impact"
         dora_19_initial: "Initial Notification (Art. 19)"
         dora_19_initial_desc: "Initial notification of major incidents within 4 hours"
         dora_19_intermediate: "Intermediate Report (Art. 19)"
@@ -652,13 +661,13 @@ wizard:
         dora_26_tlpt: "TLPT (Art. 26)"
         dora_26_tlpt_desc: "Threat-Led Penetration Testing (if required)"
         dora_28_strategy: "Third-Party Strategy (Art. 28)"
-        dora_28_strategy_desc: "Strategy for ICT third-party risk"
+        dora_28_strategy_desc: "Strategy on ICT third-party risk approved by the management body"
         dora_29_concentration: "Concentration Risk (Art. 29)"
         dora_29_concentration_desc: "Assessment of ICT concentration risks"
         dora_28_register: "Information Register (Art. 28)"
         dora_28_register_desc: "Register of all contractual arrangements with ICT third-party providers"
         dora_30_contracts: "Contract Requirements (Art. 30)"
-        dora_30_contracts_desc: "Contracts with ICT third-party providers meet requirements"
+        dora_30_contracts_desc: "Contracts with ICT third-party providers name service, locations, data protection and service levels"
         dora_30_exit: "Exit Strategies (Art. 30)"
         dora_30_exit_desc: "Exit strategies for critical ICT third-party providers"
 

@@ -20,6 +20,9 @@ management_decision:
         nis2_measures: 'NIS-2 risk management measures'
         resources: 'Resources'
         objectives: 'Information security objectives'
+        dora_ict_framework: 'DORA ICT risk management framework'
+        dora_strategy: 'Digital operational resilience strategy'
+        dora_third_party: 'Strategy on ICT third-party risk'
         other: 'Other decision'
     status:
         pending: 'Open'
@@ -95,6 +98,10 @@ management_decision:
             soa: 'No approval of the Statement of Applicability in force (ISO 27001 6.1.3 d).'
             objectives: 'No approval of the security objectives in force (ISO 27001 6.2).'
             nis2_measures: 'Risk management measures not approved (NIS-2 Art. 20(1)).'
+            resources: 'No decision on resources for the ISMS (ISO 27001 5.1 c, 7.1).'
+            dora_ict_framework: 'ICT risk management framework not approved (DORA Art. 5(2), 6(1)).'
+            dora_strategy: 'Resilience strategy not approved (DORA Art. 6(8)).'
+            dora_third_party: 'Strategy on ICT third-party risk not approved (DORA Art. 28(2)).'
     proposal:
         title:
             policy: 'Approve information security policy and scope'
@@ -103,6 +110,9 @@ management_decision:
             objectives: 'Approve information security objectives'
             resources: 'Provide resources for the ISMS'
             nis2_measures: 'Approve NIS-2 risk management measures'
+            dora_ict_framework: 'Approve DORA ICT risk management framework'
+            dora_strategy: 'Approve digital operational resilience strategy'
+            dora_third_party: 'Approve strategy on ICT third-party risk'
             other: 'Decision of top management'
             risk_acceptance: 'Risk acceptance'
             auto_policy: 'Automatic risk acceptance'
@@ -127,3 +137,9 @@ management_decision:
             empty: 'Describe the resources needed (staff, budget, tools).'
         nis2_measures:
             body: '%implemented% of %applicable% applicable measures are implemented. Top management approves the risk management measures and oversees their implementation (NIS-2 Art. 20(1)).'
+        dora_ict_framework:
+            body: '%implemented% of %applicable% applicable controls are implemented. The management body approves the ICT risk management framework, oversees its implementation and has it reviewed at least once a year (DORA Art. 5(2), 6(5)).'
+        dora_strategy:
+            body: 'Objectives of digital operational resilience, risk tolerance for ICT risk, key indicators and responsibilities (DORA Art. 6(8)). Add how the strategy supports the business strategy.'
+        dora_third_party:
+            body: '%total% ICT third-party service providers in the register of information, %critical% of them for critical or important functions, %exit% with an exit strategy. The management body approves the strategy on ICT third-party risk and reviews it regularly (DORA Art. 28(2)).'

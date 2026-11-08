@@ -172,6 +172,15 @@ wizard:
         no_register_entries: 'Register ohne Einträge'
         register_incomplete: 'Register unvollständig'
         register_incomplete_desc: '%overdue% Einträge sind überfällig zur Prüfung, %missing% Vorschläge sind noch nicht übernommen.'
+        no_clause_checks: 'Keine Prüfungen der Klauseln 4–10 aktiv'
+        clauses_open: 'ISMS noch nicht in allen Klauseln etabliert'
+        clauses_open_desc: '%open% Prüfungen unter %min% %: %clauses%.'
+        no_planned_duties: 'Keine geplanten Pflichten'
+        duties_overdue: 'Pflichten überfällig'
+        duties_overdue_desc: '%overdue% von %total% offenen Pflichten sind überfällig (%types%).'
+        no_records: 'Keine Datensätze vorhanden'
+        records_incomplete: 'Angaben fehlen'
+        records_incomplete_desc: 'Bei %open% von %total% Datensätzen fehlen Pflichtangaben.'
         no_management_decision: 'Keine Leitungsentscheidung erfasst'
         management_decision_missing: 'Leitungsentscheidung fehlt oder läuft ab'
         management_decision_missing_desc: '%effective% von %total% Entscheidungen der Leitung sind in Kraft.'
@@ -486,7 +495,7 @@ wizard:
         iso_4_3_scope: "Festlegen des Anwendungsbereichs des ISMS"
         iso_4_3_scope_desc: "Dokumentierter ISMS-Scope mit Grenzen und Anwendbarkeit"
         iso_4_4_isms: "Informationssicherheitsmanagementsystem"
-        iso_4_4_isms_desc: "ISMS eingerichtet, implementiert, aufrechterhalten und verbessert"
+        iso_4_4_isms_desc: "ISMS eingerichtet, umgesetzt, aufrechterhalten und verbessert: jede Prüfung der Klauseln 4–10 erreicht mindestens 60 %"
         iso_5_1_commitment: "Führung und Verpflichtung"
         iso_5_1_commitment_desc: "Leitung hat Leitlinie, Ressourcen und Ziele freigegeben"
         iso_5_2_policy: "Informationssicherheitsrichtlinie"
@@ -514,13 +523,13 @@ wizard:
         iso_7_5_documentation: "Dokumentierte Information"
         iso_7_5_documentation_desc: "Erstellung, Aktualisierung und Lenkung von Dokumenten"
         iso_8_1_planning: "Betriebliche Planung und Steuerung"
-        iso_8_1_planning_desc: "Planung, Implementierung und Steuerung von Prozessen"
+        iso_8_1_planning_desc: "Geplante Pflichten (Fristen und Pflichtenkalender) werden fristgerecht erledigt"
         iso_8_2_risk_exec: "Durchführung der Risikobeurteilung"
         iso_8_2_risk_exec_desc: "Regelmäßige Durchführung der Risikobeurteilung"
         iso_8_3_treatment_exec: "Durchführung der Risikobehandlung"
         iso_8_3_treatment_exec_desc: "Implementierung des Risikobehandlungsplans"
         iso_9_1_monitoring: "Überwachung, Messung, Analyse und Bewertung"
-        iso_9_1_monitoring_desc: "Bestimmung was, wie und wann überwacht wird"
+        iso_9_1_monitoring_desc: "Ziele werden fristgerecht gemessen (Ziele mit Kennzahl misst das Tool), Wirksamkeitstests der Controls sind nicht überfällig"
         iso_9_2_audit: "Internes Audit"
         iso_9_2_audit_desc: "Geplante interne Audits in regelmäßigen Abständen"
         iso_9_3_review: "Managementbewertung"
@@ -592,11 +601,11 @@ wizard:
 
         # DORA specific checks
         dora_5_management: "Management-Verantwortung (Art. 5)"
-        dora_5_management_desc: "Leitungsorgan trägt Gesamtverantwortung für IKT-Risikomanagement"
+        dora_5_management_desc: "Leitungsorgan billigt IKT-Risikomanagementrahmen, Resilienzstrategie und Ressourcen (Leitungsentscheidungen)"
         dora_6_framework: "IKT-Risikomanagementrahmenwerk (Art. 6)"
-        dora_6_framework_desc: "Dokumentiertes IKT-Risikomanagement-Rahmenwerk"
+        dora_6_framework_desc: "IKT-Risikomanagementrahmen vom Leitungsorgan gebilligt und jährlich bestätigt"
         dora_6_strategy: "IKT-Strategie (Art. 6)"
-        dora_6_strategy_desc: "IKT-Strategie mit klaren Zielen und Vorgaben"
+        dora_6_strategy_desc: "Strategie für die digitale operationale Resilienz vom Leitungsorgan gebilligt"
         dora_7_inventory: "IKT-Inventar (Art. 7)"
         dora_7_inventory_desc: "Vollständiges Inventar aller IKT-Assets und -Systeme"
         dora_7_network: "Netzwerkdokumentation (Art. 7)"
@@ -630,13 +639,13 @@ wizard:
         dora_13_training: "IKT-Schulungen (Art. 13)"
         dora_13_training_desc: "Regelmäßige IKT-Sicherheitsschulungen durchgeführt"
         dora_14_plans: "Kommunikationspläne (Art. 14)"
-        dora_14_plans_desc: "Kommunikationsrichtlinien und Notfallkommunikation"
+        dora_14_plans_desc: "Notfallpläne enthalten einen Kommunikationsplan"
         dora_17_process: "Incident-Prozess (Art. 17)"
         dora_17_process_desc: "IKT-Incident-Management-Prozess etabliert"
         dora_17_classification: "Incident-Klassifizierung (Art. 17)"
-        dora_17_classification_desc: "Klassifizierungsschema für IKT-Vorfälle"
+        dora_17_classification_desc: "Vorfälle der letzten 12 Monate sind als Ereignis oder Vorfall eingestuft"
         dora_18_criteria: "Klassifizierungskriterien (Art. 18)"
-        dora_18_criteria_desc: "Kriterien für schwerwiegende IKT-Vorfälle definiert"
+        dora_18_criteria_desc: "Eingestufte Vorfälle enthalten betroffene Kunden und wirtschaftliche Auswirkung"
         dora_19_initial: "Erstmeldung (Art. 19)"
         dora_19_initial_desc: "Erstmeldung schwerwiegender Vorfälle innerhalb 4 Stunden"
         dora_19_intermediate: "Zwischenbericht (Art. 19)"
@@ -652,13 +661,13 @@ wizard:
         dora_26_tlpt: "TLPT (Art. 26)"
         dora_26_tlpt_desc: "Threat-Led Penetration Testing (falls erforderlich)"
         dora_28_strategy: "Drittanbieter-Strategie (Art. 28)"
-        dora_28_strategy_desc: "Strategie für IKT-Drittanbieterrisiko"
+        dora_28_strategy_desc: "Strategie für das IKT-Drittparteienrisiko vom Leitungsorgan gebilligt"
         dora_29_concentration: "Konzentrationsrisiko (Art. 29)"
         dora_29_concentration_desc: "Bewertung von IKT-Konzentrationsrisiken"
         dora_28_register: "Informationsregister (Art. 28)"
         dora_28_register_desc: "Register aller vertraglichen Vereinbarungen mit IKT-Drittanbietern"
         dora_30_contracts: "Vertragsanforderungen (Art. 30)"
-        dora_30_contracts_desc: "Verträge mit IKT-Drittanbietern erfüllen Anforderungen"
+        dora_30_contracts_desc: "Verträge mit IKT-Drittdienstleistern nennen Leistung, Standorte, Datenschutz und Service-Level"
         dora_30_exit: "Exit-Strategien (Art. 30)"
         dora_30_exit_desc: "Exit-Strategien für kritische IKT-Drittanbieter"
 
