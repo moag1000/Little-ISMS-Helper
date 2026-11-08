@@ -1556,7 +1556,7 @@ class DashboardStatisticsService
         // Filter for ICT-related risks (assuming category or tag)
         $ictRisks = array_filter(
             $allRisks,
-            fn($r): bool => method_exists($r, 'getCategory') && stripos($r->getCategory() ?? '', 'ICT') !== false
+            fn(Risk $r): bool => stripos($r->getCategory() ?? '', 'ICT') !== false
         );
 
         return [
@@ -1568,9 +1568,9 @@ class DashboardStatisticsService
             ],
             'ict_risks_high' => [
                 'label' => 'kpi.dora.ict_risks_high',
-                'value' => count(array_filter($ictRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin($r->getTenant()))),
+                'value' => count(array_filter($ictRisks, fn(Risk $r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin($r->getTenant()))),
                 'unit' => '',
-                'status' => count(array_filter($ictRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin($r->getTenant()))) > 0 ? 'warning' : 'good',
+                'status' => count(array_filter($ictRisks, fn(Risk $r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin($r->getTenant()))) > 0 ? 'warning' : 'good',
             ],
         ];
     }
