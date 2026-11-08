@@ -225,10 +225,15 @@ final class RiskType extends AbstractType implements SectionMapInterface
                     'placeholder' => 'risk.placeholder.treatment_description',
                 ],
             ])
+            // Who accepted and when is written by RiskAcceptanceWorkflowService
+            // (approval by the level's role, ISO 27005 / 27001 6.1.3 f) and only
+            // shown here — typing an approval by hand would forge the evidence.
             ->add('acceptanceApprovedByUser', OwnerUserType::class, [
                 'label' => 'risk.field.acceptance_approved_by',
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
+                'disabled' => true,
+                'help' => 'risk.help.acceptance_set_by_workflow',
                 'placeholder' => 'risk.placeholder.acceptance_approved_by_user',
             ])
             ->add('acceptanceApprovedBy', TextType::class, [
@@ -238,13 +243,15 @@ final class RiskType extends AbstractType implements SectionMapInterface
                     'maxlength' => 100,
                     'placeholder' => 'risk.placeholder.acceptance_approved_by',
                 ],
-                'help' => 'risk.help.acceptance_approved_by',
+                'disabled' => true,
+                'help' => 'risk.help.acceptance_set_by_workflow',
             ])
             ->add('acceptanceApprovedAt', DateType::class, [
                 'label' => 'risk.field.acceptance_approved_at',
                 'widget' => 'single_text',
                 'required' => false,
-                'help' => 'risk.help.acceptance_approved_at',
+                'disabled' => true,
+                'help' => 'risk.help.acceptance_set_by_workflow',
             ])
             ->add('acceptanceJustification', TextareaType::class, [
                 'label' => 'risk.field.acceptance_justification',
