@@ -350,6 +350,8 @@ class BulkImportOrchestrator
 
             try {
                 $entityData = $mapper->toEntityData($createRow['data'], $batch->getColumnMapping(), $tenant);
+                // Evidence is written by its action, not by an import row (S11).
+                $entityData = EvidenceFieldFilter::forCreate('App\\Entity\\' . $batch->getEntityType(), $entityData);
                 $entity     = $this->instantiateEntity($batch->getEntityType(), $entityData, $tenant);
 
                 $this->em->persist($entity);

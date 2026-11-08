@@ -162,6 +162,33 @@ final class RestoreDataPurgerTest extends TestCase
     // Helpers
     // ────────────────────────────────────────────────────────────────────────
 
+    // ────────────────────────────────────────────────────────────────────────
+    // verifiedRecordedScope (S11): the file's tenant_scope is checked, not believed
+    // ────────────────────────────────────────────────────────────────────────
+
+    #[Test]
+    public function a_recorded_scope_is_cut_to_the_roots_tree(): void
+    {
+        $child = $this->createTenantWithId(6);
+        $root = $this->createTenantWithSubsidiaries(5, [$child]);
+        $this->entityManager->method('find')->willReturnCallback(
+            static fn (string $class, mixed $id): ?Tenant => match ((int) $id) { 5 => $root, 6 => $child, 7, 8 => new Tenant(), default => null },
+        );
+
+        // A hand-edited file claims two unrelated organisations (7, 8) next to its own tree.
+        self::assertSame([5, 6], $this->purger->verifiedRecordedScope([5, 6, 7, 8]));
+    }
+
+    #[Test]
+    public function without_the_root_here_only_unknown_ids_remain(): void
+    {
+        $this->entityManager->method('find')->willReturnCallback(
+            static fn (string $class, mixed $id): ?Tenant => (int) $id === 3 ? new Tenant() : null,
+        );
+
+        self::assertSame([9, 10], $this->purger->verifiedRecordedScope([9, 3, 10]));
+    }
+
     private function createTenantWithId(int $id): Tenant
     {
         $tenant = $this->createMock(Tenant::class);

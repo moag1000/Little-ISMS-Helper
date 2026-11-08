@@ -88,7 +88,55 @@ final class ReportBuilderService
         private readonly DashboardStatisticsService $dashboardStatisticsService,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
+    }
+
+    /**
+     * S11: a widget shows data of one module; with the module off, its pages are closed
+     * (RequiresModule) and the widget returns no data either — in the designer, the
+     * preview and the PDF. Widgets without an entry are plain text.
+     * tests/Security/ReportWidgetModuleTest fails on a widget type without an entry.
+     */
+    public const array WIDGET_MODULES = [
+        self::WIDGET_KPI_RISK_COUNT => 'risks',
+        self::WIDGET_KPI_HIGH_RISKS => 'risks',
+        self::WIDGET_KPI_CONTROL_COUNT => 'controls',
+        self::WIDGET_KPI_CONTROL_IMPLEMENTATION => 'controls',
+        self::WIDGET_KPI_ASSET_COUNT => 'assets',
+        self::WIDGET_KPI_INCIDENT_COUNT => 'incidents',
+        self::WIDGET_KPI_OPEN_INCIDENTS => 'incidents',
+        self::WIDGET_KPI_COMPLIANCE_SCORE => 'compliance',
+        self::WIDGET_KPI_OVERDUE_TREATMENTS => 'risks',
+        self::WIDGET_KPI_BCM_COVERAGE => 'bcm',
+        self::WIDGET_CHART_RISK_MATRIX => 'risks',
+        self::WIDGET_CHART_RISK_BY_CATEGORY => 'risks',
+        self::WIDGET_CHART_RISK_TREND => 'risks',
+        self::WIDGET_CHART_CONTROL_STATUS => 'controls',
+        self::WIDGET_CHART_COMPLIANCE_RADAR => 'compliance',
+        self::WIDGET_CHART_INCIDENT_TREND => 'incidents',
+        self::WIDGET_CHART_ASSET_CRITICALITY => 'assets',
+        self::WIDGET_CHART_FRAMEWORK_COMPARISON => 'compliance',
+        self::WIDGET_TABLE_TOP_RISKS => 'risks',
+        self::WIDGET_TABLE_RECENT_INCIDENTS => 'incidents',
+        self::WIDGET_TABLE_OVERDUE_CONTROLS => 'controls',
+        self::WIDGET_TABLE_CRITICAL_ASSETS => 'assets',
+        self::WIDGET_TABLE_AUDIT_FINDINGS => 'audits',
+        self::WIDGET_TABLE_BC_PLANS => 'bcm',
+        self::WIDGET_STATUS_RAG => null,
+        self::WIDGET_TEXT_SUMMARY => null,
+        self::WIDGET_TEXT_HEADER => null,
+        self::WIDGET_TEXT_CUSTOM => null,
+    ];
+
+    public function isWidgetAvailable(string $widgetType): bool
+    {
+        if (!array_key_exists($widgetType, self::WIDGET_MODULES)) {
+            return false;
+        }
+        $module = self::WIDGET_MODULES[$widgetType];
+
+        return $module === null || $this->moduleConfiguration->isModuleActive($module);
     }
 
     /**
@@ -348,6 +396,10 @@ final class ReportBuilderService
      */
     public function getWidgetData(string $widgetType, array $config = [], array $filters = []): array
     {
+        if (array_key_exists($widgetType, self::WIDGET_MODULES) && !$this->isWidgetAvailable($widgetType)) {
+            return ['error' => $this->translator->trans('report_builder.error.module_inactive', [], 'report_builder')];
+        }
+
         return match ($widgetType) {
             // KPI Widgets
             self::WIDGET_KPI_RISK_COUNT => $this->getKpiRiskCount(),

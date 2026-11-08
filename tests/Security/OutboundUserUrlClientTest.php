@@ -28,9 +28,8 @@ final class OutboundUserUrlClientTest extends TestCase
         'src/Http/UserUrlHttpClient.php' => 'the guard itself',
         'src/Service/Ai/OpenAiCompatibleClient.php' => 'wraps external endpoints in NoPrivateNetworkHttpClient; local models are an explicit instance setting',
         'src/Service/Vulnerability/EuvdConnector.php' => 'fixed base URL from a container parameter (app.euvd.base_url)',
-        // Found by T (wave 7): minishlink/web-push builds its own Guzzle client for the subscription's endpoint URL.
-        // S11 routes it through the guard; drop this entry with that change.
-        'src/Service/WebPushService.php' => 'TEMPORARY until S11 (wave 7): push endpoint URL comes from the browser subscription',
+        // Found by T (wave 7), closed by S11: the library's own Guzzle client is replaced.
+        'src/Service/WebPushService.php' => 'builds WebPush with new Psr18Client(UserUrlHttpClient); endpoints checked first by PushEndpointPolicy (tests/Security/WebPushEndpointTest)',
     ];
 
     /**

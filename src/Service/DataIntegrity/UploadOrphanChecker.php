@@ -26,7 +26,8 @@ final class UploadOrphanChecker
     }
 
     /**
-     * Scans public/uploads/ and returns files not referenced by any entity.
+     * Scans public/uploads/ and the evidence areas below var/uploads/ and returns files
+     * not referenced by any entity.
      *
      * @return array{
      *     files: list<array{path: string, relative: string, size: int, mtime: int}>,
@@ -42,61 +43,71 @@ final class UploadOrphanChecker
             return $empty;
         }
         $uploadsDir = $this->projectDir . '/public/uploads';
-        if (!is_dir($uploadsDir)) {
+        // Evidence (documents, training materials) lives below var/uploads/<area> since S7;
+        // those areas are scanned too (not the import scratch folders next to them).
+        // Stored values are '/uploads/<area>/<file>' in both trees. [dir to walk, base].
+        $roots = [[$uploadsDir, $uploadsDir]];
+        foreach (\App\Service\Upload\ProtectedUploads::AREAS as $area) {
+            $roots[] = [$this->projectDir . '/var/uploads/' . $area, $this->projectDir . '/var/uploads'];
+        }
+        $roots = array_values(array_filter($roots, static fn (array $r): bool => is_dir($r[0])));
+        if ($roots === []) {
             return $empty;
         }
 
         // 1. Collect referenced file paths from entity columns.
         $referenced = $this->collectReferencedUploadPaths();
 
-        // 2. Walk the uploads/ tree and flag every regular file that is
+        // 2. Walk the uploads trees and flag every regular file that is
         //    NOT in the referenced-set. Skip .gitkeep and dot-files.
         $orphans = [];
         $scanned = 0;
-        try {
-            $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($uploadsDir, \FilesystemIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::LEAVES_ONLY,
-            );
-        } catch (\Throwable) {
-            return $empty;
-        }
-
-        $basePath = rtrim((string) realpath($uploadsDir), '/');
-        foreach ($iterator as $fileInfo) {
-            if (!$fileInfo instanceof \SplFileInfo || !$fileInfo->isFile()) {
-                continue;
-            }
-            $name = $fileInfo->getFilename();
-            if ($name === '.gitkeep' || str_starts_with($name, '.')) {
-                continue;
-            }
-            $scanned++;
-
-            $realPath = (string) $fileInfo->getRealPath();
-            if ($realPath === '' || !str_starts_with($realPath, $basePath)) {
-                continue;
-            }
-            // Build the relative path the way entities store it (with or without leading slash).
-            $relative = '/uploads' . substr($realPath, strlen($basePath));
-            $relativeNoSlash = ltrim($relative, '/');
-
-            if (isset($referenced[$relative]) || isset($referenced[$relativeNoSlash])) {
-                continue;
-            }
-            // tenants/ and users/ logos can be stored either with or without
-            // the `uploads/` prefix — the BackupService comments document this.
-            $logoStyle = preg_replace('#^/uploads/#', '', $relative);
-            if (is_string($logoStyle) && isset($referenced[$logoStyle])) {
+        foreach ($roots as [$root, $base]) {
+            try {
+                $iterator = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::LEAVES_ONLY,
+                );
+            } catch (\Throwable) {
                 continue;
             }
 
-            $orphans[] = [
-                'path' => $realPath,
-                'relative' => $relative,
-                'size' => (int) $fileInfo->getSize(),
-                'mtime' => (int) $fileInfo->getMTime(),
-            ];
+            $basePath = rtrim((string) realpath($base), '/');
+            foreach ($iterator as $fileInfo) {
+                if (!$fileInfo instanceof \SplFileInfo || !$fileInfo->isFile()) {
+                    continue;
+                }
+                $name = $fileInfo->getFilename();
+                if ($name === '.gitkeep' || str_starts_with($name, '.')) {
+                    continue;
+                }
+                $scanned++;
+
+                $realPath = (string) $fileInfo->getRealPath();
+                if ($realPath === '' || !str_starts_with($realPath, $basePath . '/')) {
+                    continue;
+                }
+                // Build the relative path the way entities store it (with or without leading slash).
+                $relative = '/uploads' . substr($realPath, strlen($basePath));
+                $relativeNoSlash = ltrim($relative, '/');
+
+                if (isset($referenced[$relative]) || isset($referenced[$relativeNoSlash])) {
+                    continue;
+                }
+                // tenants/ and users/ logos can be stored either with or without
+                // the `uploads/` prefix — the BackupService comments document this.
+                $logoStyle = preg_replace('#^/uploads/#', '', $relative);
+                if (is_string($logoStyle) && isset($referenced[$logoStyle])) {
+                    continue;
+                }
+
+                $orphans[] = [
+                    'path' => $realPath,
+                    'relative' => $relative,
+                    'size' => (int) $fileInfo->getSize(),
+                    'mtime' => (int) $fileInfo->getMTime(),
+                ];
+            }
         }
 
         // Cap the response list — typical orphan counts after a few backup
@@ -163,6 +174,47 @@ final class UploadOrphanChecker
                 }
             }
         }
+        // Training materials are a JSON list on the training (filename per entry); the
+        // stored form is '/uploads/training-materials/<file>' (ProtectedUploads). Without
+        // them every material was reported — and quarantined — as an orphan.
+        try {
+            $rows = $this->entityManager->createQueryBuilder()
+                ->select('t.materialFiles AS files')
+                ->from(\App\Entity\Training::class, 't')
+                ->where('t.materialFiles IS NOT NULL')
+                ->getQuery()
+                ->getArrayResult();
+        } catch (\Throwable) {
+            $rows = [];
+        }
+
+        return $set + self::trainingMaterialPaths($rows);
+    }
+
+    /**
+     * Stored forms of the training materials listed in the given rows ({files: json list}).
+     *
+     * @param list<array<string, mixed>> $rows
+     *
+     * @return array<string, true>
+     */
+    public static function trainingMaterialPaths(array $rows): array
+    {
+        $set = [];
+        foreach ($rows as $row) {
+            $files = $row['files'] ?? null;
+            if (is_string($files)) {
+                $files = json_decode($files, true);
+            }
+            foreach (is_array($files) ? $files : [] as $file) {
+                $name = is_array($file) ? basename((string) ($file['filename'] ?? '')) : '';
+                if ($name !== '') {
+                    $set['/uploads/' . \App\Service\Upload\ProtectedUploads::TRAINING_MATERIALS . '/' . $name] = true;
+                    $set['uploads/' . \App\Service\Upload\ProtectedUploads::TRAINING_MATERIALS . '/' . $name] = true;
+                }
+            }
+        }
+
         return $set;
     }
 }
