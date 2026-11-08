@@ -247,7 +247,7 @@
                                 <small class="text-muted ms-1">({{ entry.step_name|workflow_step_label }})</small>
                             {% endif %}
                         </span>
-                        <span class="isms-trail__meta">{{ entry.timestamp|date('d.m.Y H:i:s') }}</span>
+                        <span class="isms-trail__meta">{{ entry.timestamp|fa_datetime(true) }}</span>
                     </div>
                     <div class="isms-trail__body">
                         {% set actor = entry.approver_name|default(entry.user|default(null)) %}

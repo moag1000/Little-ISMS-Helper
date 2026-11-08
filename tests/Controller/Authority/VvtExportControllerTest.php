@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
  *  - CSV endpoint streams a valid CSV response
  *  - PDF endpoint returns a PDF response
  *  - 404 when no ProcessingActivities are recorded (friendly error page)
- *  - 403 for non-DPO users
+ *  - 403 for users without ROLE_DPO or ROLE_MANAGER
  *  - Anonymous users are redirected to login
  */
 #[AllowMockObjectsWithoutExpectations]

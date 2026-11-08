@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -27,11 +28,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *  - PDF  (BfDI layout via DomPDF / Twig)
  *
  * All downloads are logged via AuditLogger for compliance traceability.
- * Requires module 'privacy' + ROLE_DPO (inherits ROLE_MANAGER).
+ * Requires module 'privacy' + ROLE_DPO or ROLE_MANAGER — the same rule as the other
+ * VVT exports (ProcessingActivityController) and the authority hub that links here.
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/verfahrensverzeichnis/export', name: 'app_vvt_export_')]
-#[IsGranted('ROLE_DPO')]
+#[IsGranted(new Expression('is_granted("ROLE_DPO") or is_granted("ROLE_MANAGER")'))]
 final class VvtExportController extends AbstractController
 {
     use ModuleGatedControllerTrait;

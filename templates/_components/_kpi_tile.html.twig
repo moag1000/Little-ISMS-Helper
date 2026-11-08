@@ -10,12 +10,13 @@
  #}
 {% macro render(key, opts = {}) %}
     {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+    {% import '_components/_status_vocabulary.html.twig' as _status %}
     {% set _k = kpi(key) %}
     {% if _k is not null %}
         {{ _fa_feature_card.render({
             label: opts.label ?? ('dashboard.kpi.' ~ key)|trans({}, 'dashboard'),
             value: _k|kpi_value,
-            variant: {good: 'success', warning: 'warning', danger: 'danger'}[_k.status] ?? 'primary',
+            variant: _k.status ? _status.tone('kpi_status', _k.status)|trim : 'primary',
             icon: opts.icon ?? null,
             hint: opts.hint ?? null,
             href: opts.href ?? null,

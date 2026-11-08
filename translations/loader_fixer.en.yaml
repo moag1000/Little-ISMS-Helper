@@ -24,7 +24,7 @@ loader_fixer:
     result:
         title: 'Loader Fixer result'
         total_added: '%total% requirement(s) added.'
-        ok: 'Success'
+        ok: 'OK'
         failed: 'Error'
         before: 'Before'
         after: 'After'

@@ -158,13 +158,13 @@
 
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section1.detection_datetime'|trans({}, 'nis2') }}</div>
-            <div class="field-value">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i:s') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+            <div class="field-value">{{ incident.detectedAt ? incident.detectedAt|fa_datetime(true) : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
         </div>
 
         {% if incident.occurredAt %}
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section1.occurred_at'|trans({}, 'nis2') }}</div>
-            <div class="field-value">{{ incident.occurredAt|date('d.m.Y H:i:s') }}</div>
+            <div class="field-value">{{ incident.occurredAt|fa_datetime(true) }}</div>
         </div>
         {% endif %}
 

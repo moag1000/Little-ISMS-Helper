@@ -4,13 +4,7 @@
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
    Edit is gated on ROLE_ADMIN, matching the full-page index behaviour. #}
 {% trans_default_domain 'management_review' %}
-{% set statusClass = {
-    'planned': 'warning',
-    'in_progress': 'info',
-    'completed': 'success',
-    'cancelled': 'danger',
-    'follow_up_required': 'warning'
-} %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 <tr id="management-review-row-{{ review.id }}">
     <td class="bulk-select-column">
         <input type="checkbox"
@@ -28,10 +22,7 @@
     </td>
     <td>{{ review.reviewDate|fa_date }}</td>
     <td>
-        {% include '_components/_badge.html.twig' with {
-            variant: statusClass[review.status] ?? 'secondary',
-            content: ('management_review.status.' ~ review.status)|trans({}, 'management_review')
-        } %}
+        {{ _status.pill('management_review', review.status, ('management_review.status.' ~ review.status)|trans({}, 'management_review')) }}
     </td>
     <td>
         {% if review.participants|length > 0 %}

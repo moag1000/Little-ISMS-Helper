@@ -17,6 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AllowMockObjectsWithoutExpectations]
 class IncidentBCMImpactServiceTest extends TestCase
@@ -36,7 +37,8 @@ class IncidentBCMImpactServiceTest extends TestCase
 
         $this->service = new IncidentBCMImpactService(
             $this->businessProcessRepository,
-            $this->tenantContext
+            $this->tenantContext,
+            $this->keyTranslator(),
         );
     }
 
@@ -263,7 +265,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $result = $this->service->suggestRecoveryPriority($incident, []);
 
         $this->assertSame('medium', $result['level']);
-        $this->assertStringContainsString('No business processes identified', $result['reasoning']);
+        $this->assertStringContainsString('incident.bcm_impact_page.reason.no_processes', $result['reasoning']);
         $this->assertNotEmpty($result['recommended_actions']);
     }
 
@@ -278,7 +280,7 @@ class IncidentBCMImpactServiceTest extends TestCase
 
         $this->assertSame('immediate', $result['level']);
         $this->assertGreaterThan(0, $result['critical_process_count']);
-        $this->assertContains('Activate crisis management team', $result['recommended_actions']);
+        $this->assertContains('incident.bcm_impact_page.action.activate_crisis_team', $result['recommended_actions']);
     }
 
     #[Test]
@@ -292,7 +294,7 @@ class IncidentBCMImpactServiceTest extends TestCase
 
         $this->assertSame('immediate', $result['level']);
         $this->assertSame(1, $result['lowest_rto_hours']);
-        $this->assertStringContainsString('RTO ≤ 1 hour', $result['reasoning']);
+        $this->assertStringContainsString('incident.bcm_impact_page.reason.rto_max', $result['reasoning']);
     }
 
     #[Test]
@@ -305,7 +307,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $result = $this->service->suggestRecoveryPriority($incident, [$process]);
 
         $this->assertSame('high', $result['level']);
-        $this->assertContains('Begin recovery procedures within 1 hour', $result['recommended_actions']);
+        $this->assertContains('incident.bcm_impact_page.action.recover_within_hour', $result['recommended_actions']);
     }
 
     #[Test]
@@ -318,7 +320,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $result = $this->service->suggestRecoveryPriority($incident, [$process]);
 
         $this->assertSame('high', $result['level']);
-        $this->assertStringContainsString('Critical severity incident', $result['reasoning']);
+        $this->assertStringContainsString('incident.bcm_impact_page.reason.critical_severity', $result['reasoning']);
     }
 
     #[Test]
@@ -331,7 +333,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $result = $this->service->suggestRecoveryPriority($incident, [$process]);
 
         $this->assertSame('medium', $result['level']);
-        $this->assertContains('Plan recovery within business hours', $result['recommended_actions']);
+        $this->assertContains('incident.bcm_impact_page.action.plan_business_hours', $result['recommended_actions']);
     }
 
     #[Test]
@@ -344,8 +346,8 @@ class IncidentBCMImpactServiceTest extends TestCase
         $result = $this->service->suggestRecoveryPriority($incident, [$process]);
 
         $this->assertSame('low', $result['level']);
-        $this->assertStringContainsString('RTO > 24 hours', $result['reasoning']);
-        $this->assertContains('Schedule recovery during maintenance window', $result['recommended_actions']);
+        $this->assertStringContainsString('incident.bcm_impact_page.reason.rto_above_day', $result['reasoning']);
+        $this->assertContains('incident.bcm_impact_page.action.maintenance_window', $result['recommended_actions']);
     }
 
     // =========================================================================
@@ -420,6 +422,22 @@ class IncidentBCMImpactServiceTest extends TestCase
     // =========================================================================
     // Helper Methods
     // =========================================================================
+
+    /** Returns the message id, so assertions check which text was chosen. */
+    private function keyTranslator(): TranslatorInterface
+    {
+        return new class implements TranslatorInterface {
+            public function trans(string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string
+            {
+                return $id;
+            }
+
+            public function getLocale(): string
+            {
+                return 'en';
+            }
+        };
+    }
 
     private function createIncident(string $number, string $severity, string $status): MockObject
     {

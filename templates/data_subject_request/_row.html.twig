@@ -33,15 +33,8 @@
         {% endif %}
     </td>
     <td class="fa-table__cell">
-        {% set status_class = {
-            'received': 'secondary',
-            'identity_verification': 'info',
-            'in_progress': 'primary',
-            'completed': 'success',
-            'rejected': 'danger',
-            'extended': 'warning'
-        }[dsr.status]|default('secondary') %}
-        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request') } only %}
+        {% import '_components/_status_vocabulary.html.twig' as _status %}
+        {{ _status.pill('dsr', dsr.status, ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request')) }}
         {% if dsr.overdue %}
             <br>{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'dsr.badge.overdue'|trans({}, 'data_subject_request') } only %}
         {% endif %}

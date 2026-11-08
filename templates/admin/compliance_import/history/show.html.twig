@@ -61,12 +61,12 @@
                 </dd>
 
                 <dt class="col-sm-3">{{ 'compliance_import.history.detail.uploaded_at'|trans({}, 'compliance_import') }}</dt>
-                <dd class="col-sm-9">{{ session.uploadedAt|date('Y-m-d H:i:s') }}</dd>
+                <dd class="col-sm-9">{{ session.uploadedAt|fa_datetime(true) }}</dd>
 
                 <dt class="col-sm-3">{{ 'compliance_import.history.col_committed_at'|trans({}, 'compliance_import') }}</dt>
                 <dd class="col-sm-9">
                     {% if session.committedAt %}
-                        {{ session.committedAt|date('Y-m-d H:i:s') }}
+                        {{ session.committedAt|fa_datetime(true) }}
                     {% else %}
                         <span class="text-muted">—</span>
                     {% endif %}

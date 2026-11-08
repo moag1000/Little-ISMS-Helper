@@ -124,15 +124,11 @@
         {% set isDataBreach = escalationLevel == 'data_breach' %}
 
         {# Determine alert level based on escalation #}
-        {% set alertClass = {
-            'low': 'info',
-            'medium': 'warning',
-            'high': 'warning',
-            'critical': 'danger',
-            'data_breach': 'danger'
-        }[escalationLevel] ?? 'info' %}
+        {% import '_components/_status_vocabulary.html.twig' as _vocab %}
+        {% set escalationTone = _vocab.tone('escalation', escalationLevel)|trim %}
+        {% set alertVariant = escalationTone == 'primary' ? 'info' : escalationTone %}
 
-        <div class="fa-alert fa-alert--{{ alertClass }} workflow-status-alert" role="alert">
+        <div class="fa-alert fa-alert--{{ alertVariant }} workflow-status-alert" role="alert">
             <div class="workflow-status-header">
                 <div class="workflow-status-title">
                     {# Dynamic workflow-state icon — Aurora mask (status-warning for data breach, nav-gear for default). #}
@@ -145,7 +141,7 @@
                         {% endif %}
                     </strong>
                 </div>
-                {% include '_components/_badge.html.twig' with { variant: alertClass, content: ('incident.workflow.escalation.' ~ escalationLevel)|trans({}, 'incident') } %}
+                {{ _vocab.pill('escalation', escalationLevel, ('incident.workflow.escalation.' ~ escalationLevel)|trans({}, 'incident')) }}
             </div>
 
             <div class="workflow-status-content">
@@ -524,13 +520,8 @@
                                 {% block card_body %}
                                     <div class="text-center">
                                         <div class="fs-5">
-                                            {% set priority_class = {
-                                                'immediate': 'danger',
-                                                'high': 'warning',
-                                                'medium': 'info',
-                                                'low': 'secondary'
-                                            }[incident.suggestedRecoveryPriority] %}
-                                            {% include '_components/_badge.html.twig' with { variant: priority_class, content: incident.suggestedRecoveryPriority|upper } %}
+                                            {% import '_components/_status_vocabulary.html.twig' as _vocab %}
+                                            {{ _vocab.pill('recovery_priority', incident.suggestedRecoveryPriority, ('incident.bcm_impact_page.level.' ~ incident.suggestedRecoveryPriority)|trans({}, 'incident')) }}
                                         </div>
                                         <small class="text-muted">{{ 'incident.bcm.recovery_priority'|trans({}, 'incident') }}</small>
                                     </div>

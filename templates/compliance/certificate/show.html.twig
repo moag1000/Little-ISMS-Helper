@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
+{% import '_components/_status_vocabulary.html.twig' as _vocab %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
@@ -24,7 +25,7 @@
     }) }}
 
     {% import '_components/_status_pill.html.twig' as _pill %}
-    {% set _status %}{{ _pill.render(('lifecycle.' ~ certificate.status)|trans({}, 'lifecycle'), {active: 'success', pending: 'warning', expired: 'danger', revoked: 'danger'}[certificate.status]|default('neutral')) }}{% endset %}
+    {% set _status %}{{ _vocab.pill('certificate', certificate.status, ('lifecycle.' ~ certificate.status)|trans({}, 'lifecycle')) }}{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         facts: [

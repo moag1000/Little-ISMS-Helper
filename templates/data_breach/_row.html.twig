@@ -5,13 +5,7 @@
    same (eye/edit) or bypass Turbo (pdf). Edit is gated on status + ROLE_MANAGER,
    matching the full-page edit() status-guard. #}
 {% trans_default_domain 'privacy' %}
-{% set status_class = {
-    'draft': 'secondary',
-    'under_assessment': 'info',
-    'authority_notified': 'success',
-    'subjects_notified': 'success',
-    'closed': 'dark'
-}[breach.status]|default('secondary') %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 {% set risk_class = pill_tone_severity(breach.riskLevel|default('')) %}
 <tr id="data-breach-row-{{ breach.id }}"
     class="{{ breach.isAuthorityNotificationOverdue ? 'table-danger' : '' }}">
@@ -35,7 +29,7 @@
         {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[breach.id] ?? {}) : workflow_state(breach)) }}
     </td>
     <td>
-        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
+        {{ _status.pill('data_breach', breach.status, ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy')) }}
     </td>
     <td>
         {% if breach.riskLevel %}

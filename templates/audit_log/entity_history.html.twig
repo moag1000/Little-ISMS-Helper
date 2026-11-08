@@ -35,7 +35,7 @@
                 : (log.action in ['update', 'modify', 'change', 'login_failed'] ? 'warning'
                 : 'info')) -%}
             {{ _fa_audit_row.render({
-                ts:     log.createdAt|date('Y-m-d H:i:s'),
+                ts:     log.createdAt|fa_datetime(true),
                 sev:    sev,
                 actor:  log.userName,
                 action: log.action,
