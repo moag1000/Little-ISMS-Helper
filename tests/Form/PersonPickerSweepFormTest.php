@@ -47,23 +47,20 @@ final class PersonPickerSweepFormTest extends KernelTestCase
      */
     #[Test]
     #[DataProvider('formProvider')]
-    public function formExposesOwnerClusterAndLegacyField(string $type, string $entity, string $base): void
+    public function formExposesOwnerClusterWithoutFreeText(string $type, string $entity, string $base): void
     {
         self::bootKernel();
         $deputies = str_starts_with($base, 'contact') ? 'contactDeputyPersons' : 'responsibleDeputyPersons';
         $factory = static::getContainer()->get(FormFactoryInterface::class);
-        self::assertFalse($factory->create($type, new $entity(), ['csrf_protection' => false])->has($base), 'empty legacy free-text field is hidden');
-        $record = new $entity();
-        $record->{'set' . ucfirst($base)}('Team alt');
-        $form = $factory->create($type, $record, ['csrf_protection' => false]);
+        $form = $factory->create($type, new $entity(), ['csrf_protection' => false]);
 
         self::assertTrue($form->has($base . 'User'));
         self::assertTrue($form->has($base . 'Ref'));
         self::assertTrue($form->has($deputies));
-        self::assertTrue($form->has($base), 'a filled legacy free-text field stays visible');
+        self::assertFalse($form->has($base), 'no free-text owner field');
 
         $sections = array_merge(...array_values($type::getSectionMap()));
-        foreach ([$base . 'User', $base . 'Ref', $deputies, $base] as $field) {
+        foreach ([$base . 'User', $base . 'Ref', $deputies] as $field) {
             self::assertContains($field, $sections, sprintf('%s missing from %s section map', $field, $type));
         }
     }

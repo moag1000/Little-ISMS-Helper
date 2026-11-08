@@ -318,7 +318,7 @@ class AuditControllerTest extends WebTestCase
             'internal_audit[scopeType]' => 'full_isms',
             'internal_audit[status]' => 'planned',
             'internal_audit[plannedDate]' => '2025-12-15',
-            'internal_audit[leadAuditor]' => 'Test Lead Auditor',
+            'internal_audit[leadAuditorUser]' => (string) $this->testUser->getId(),
         ]);
 
         // CRITICAL: Re-login immediately before form submission to maintain authentication

@@ -9,6 +9,7 @@ use App\Entity\AssetDependency;
 use App\Entity\DoraDataFlow;
 use App\Entity\DoraExitPlan;
 use App\Entity\DoraSubcontractor;
+use App\Entity\Person;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Enum\AssetDependencyCriticalityImpact;
@@ -324,6 +325,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $asset->setConfidentialityValue(5);
         $asset->setIntegrityValue(5);
         $asset->setAvailabilityValue(4);
+        $asset->setOwnerPerson((new Person())->setFullName('CIO Office'));
         $asset->setLocation('Frankfurt DC');
         $asset->setStatus('active');
 

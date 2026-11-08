@@ -105,24 +105,20 @@ final class StaticRegressionGuardTest extends KernelTestCase
     }
 
     /**
-     * #704 — BusinessProcess::$processOwner column was NOT NULL despite the
-     * Pattern A dual-state (User OR Person) replacing it. Form submission
-     * with only structured owner crashed at flush. Column must now be
-     * nullable.
+     * #704 — BusinessProcess::$processOwner once blocked Pattern A owners as a
+     * NOT NULL column. Since 2026-11 the free-text column is gone entirely:
+     * the owner is only User or Person.
      */
     #[Test]
-    public function businessProcessProcessOwnerNullable(): void
+    public function businessProcessHasNoFreeTextProcessOwner(): void
     {
         $src = file_get_contents(
             self::getContainer()->getParameter('kernel.project_dir')
             . '/src/Entity/BusinessProcess.php'
         );
         self::assertNotFalse($src);
-        self::assertMatchesRegularExpression(
-            '/#\[ORM\\\\Column\(length:\s*100,\s*nullable:\s*true\)\]\s*\n\s*private \?string \$processOwner/',
-            $src,
-            'BusinessProcess::$processOwner must be nullable for Pattern A owners (#704)'
-        );
+        self::assertStringNotContainsString('private ?string $processOwner', $src);
+        self::assertStringContainsString('$processOwnerUser', $src);
     }
 
     /**
