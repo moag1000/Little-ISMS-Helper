@@ -198,7 +198,7 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
 
     private function supplier(string $name, Tenant $tenant): Supplier
     {
-        $supplier = (new Supplier())->setName($name)->setDescription('Hosting')->setTenant($tenant);
+        $supplier = (new Supplier())->setName($name)->setServiceProvided('Hosting')->setTenant($tenant);
         $this->em->persist($supplier);
 
         return $supplier;
