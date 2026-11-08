@@ -50,6 +50,14 @@ Assets, Standorte, Prozesse und Lieferanten haben das Merkmal **„Im Geltungsbe
 Kontextseite zählen, was drin und was draußen ist. Die Leitlinie (5.2) wird im Kontext als Dokument
 verknüpft statt als Freitext gepflegt.
 
+Kennzahlen über das ISMS zählen nur, was im Geltungsbereich liegt: Klassifizierungsquote und Anzahl
+der Assets, kritische Prozesse und BIA-Abdeckung, kritische Lieferanten und Bewertungsquote, die
+Standort-Kennzahlen (`IsmsScopeFilter::inScope()`). Die SoA-Seite nennt den Geltungsbereich in ihrer
+Kopfzeile, das SoA-PDF, der Management-Bericht und das Ergebnis der Managementbewertung enthalten einen
+Abschnitt „Geltungsbereich“ mit dem Text aus dem Kontext und den Zahlen (Twig `isms_scope()` /
+`isms_scope_section()`). Das SoA-PDF zeigt als Freigabe nur noch die Leitungsentscheidung „SoA“, keinen
+angenommenen Status und keinen erfundenen Versionsverlauf.
+
 ## Prüfung
 
 Jeder Eintrag hat einen Verantwortlichen (Benutzer oder Person, dazu Vertretungen) und ein nächstes

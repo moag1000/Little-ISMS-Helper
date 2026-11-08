@@ -28,22 +28,16 @@ final class RecurringDutyServiceTest extends TestCase
     }
 
     #[Test]
-    public function objectivesAreMeasuredAtTheShortestCadenceOnRecord(): void
+    public function theDefaultIntervalIsTheNorms(): void
     {
-        $monthly = (new ISMSObjective())->setMeasurementFrequency('monthly');
-        $annual = (new ISMSObjective())->setMeasurementFrequency('annually');
-        $weekly = (new ISMSObjective())->setMeasurementFrequency('weekly'); // no month interval
-
-        $service = $this->service(['objectives'], [$annual, $monthly, $weekly]);
-
-        self::assertSame(1, $service->defaultInterval('objectives_measurement', new Tenant()));
-        self::assertSame(12, $service->defaultInterval('bia_review', new Tenant()));
+        self::assertSame(12, $this->service(['bcm'])->defaultInterval('bia_review', new Tenant()));
     }
 
     #[Test]
-    public function withoutCadenceOnRecordTheNormDefaultApplies(): void
+    public function objectivesAreMeasuredPerObjectiveNotAsCatalogueDuty(): void
     {
-        self::assertSame(3, $this->service(['objectives'])->defaultInterval('objectives_measurement', new Tenant()));
+        // ISO 27001 9.1: one deadline per objective (ObjectiveMeasurementSource), no second reminder.
+        self::assertFalse($this->service(['objectives'])->applies('objectives_measurement', new Tenant()));
     }
 
     /**

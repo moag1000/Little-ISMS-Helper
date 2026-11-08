@@ -37,6 +37,12 @@ register:
         bcm_officer: BCM officer
         dpo: Data protection
     scope:
+        col_inventory: 'Inventory'
+        col_in: 'In scope'
+        col_out: 'Out of scope'
+        exclusions: 'Exclusions'
+        no_statement: 'The context does not describe a scope yet.'
+        strip: 'Scope'
         title: Scope (ISO 27001 4.3)
         hint: Counted from the inventories. Mark out-of-scope items on the record.
         in: '%count% in scope'
