@@ -294,13 +294,36 @@ class CustomReport
 
     public function getStyles(): array
     {
-        return $this->styles;
+        return self::normaliseStyles($this->styles);
     }
 
     public function setStyles(array $styles): static
     {
-        $this->styles = $styles;
+        $this->styles = self::normaliseStyles($styles);
         return $this;
+    }
+
+    /**
+     * The styles land in the PDF's <style> block (and dompdf fetches url(…) there), so
+     * only the known keys with their own value shape are kept: a hex colour, booleans,
+     * one of two orientations.
+     *
+     * @param array<mixed> $styles
+     *
+     * @return array{primaryColor: string, headerLogo: bool, showGeneratedDate: bool, showFooter: bool, pageOrientation: string}
+     */
+    public static function normaliseStyles(array $styles): array
+    {
+        $color = $styles['primaryColor'] ?? null;
+
+        return [
+            'primaryColor' => is_string($color) && preg_match('/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/', $color) === 1
+                ? $color : '#0d6efd',
+            'headerLogo' => (bool) ($styles['headerLogo'] ?? true),
+            'showGeneratedDate' => (bool) ($styles['showGeneratedDate'] ?? true),
+            'showFooter' => (bool) ($styles['showFooter'] ?? true),
+            'pageOrientation' => ($styles['pageOrientation'] ?? 'portrait') === 'landscape' ? 'landscape' : 'portrait',
+        ];
     }
 
     public function isShared(): bool

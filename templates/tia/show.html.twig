@@ -144,8 +144,8 @@
         {% endblock %}
     {% endembed %}
 
-    {# Assess action (only for drafts) #}
-    {% if tia.status == 'draft' %}
+    {# Assess action (only for drafts, only for who may finalise: DPO / manager) #}
+    {% if tia.status == 'draft' and is_granted('lifecycle.transfer_impact_assessment_lifecycle.assess', tia) %}
         {% embed '_components/_card.html.twig' %}
             {% block card_body %}
                 {% trans_default_domain 'tia' %}

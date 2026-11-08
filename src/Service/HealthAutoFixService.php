@@ -649,38 +649,34 @@ final class HealthAutoFixService
     private function doFixUploadsPermissions(): array
     {
         try {
-            $uploadsDir = $this->projectDir . '/public/uploads';
-
-            $this->logger->info('Attempting to fix uploads/ directory permissions', [
-                'directory' => $uploadsDir,
-            ]);
-
-            if (!is_dir($uploadsDir)) {
-                // Create uploads directory if it doesn't exist
-                $this->filesystem->mkdir($uploadsDir, 0775);
-
-                $this->logger->info('uploads/ directory created successfully');
-                return [
-                    'success' => true,
-                    'message' => 'uploads/ directory created successfully',
-                ];
+            // Logos/avatars below public/uploads, evidence (documents, training materials)
+            // below var/uploads since S7 — both must be writable.
+            $failed = [];
+            foreach ([$this->projectDir . '/public/uploads', $this->projectDir . '/var/uploads'] as $uploadsDir) {
+                $this->logger->info('Attempting to fix uploads directory permissions', ['directory' => $uploadsDir]);
+                if (!is_dir($uploadsDir)) {
+                    $this->filesystem->mkdir($uploadsDir, str_contains($uploadsDir, '/var/') ? 0750 : 0775);
+                    continue;
+                }
+                if (!is_writable($uploadsDir)) {
+                    @chmod($uploadsDir, str_contains($uploadsDir, '/var/') ? 0770 : 0775);
+                }
+                if (!is_writable($uploadsDir)) {
+                    $failed[] = substr($uploadsDir, strlen($this->projectDir) + 1);
+                }
             }
 
-            if (!is_writable($uploadsDir)) {
-                @chmod($uploadsDir, 0775);
-
-                if (is_writable($uploadsDir)) {
-                    $this->logger->info('uploads/ directory permissions fixed successfully');
-                    return [
-                        'success' => true,
-                        'message' => 'uploads/ directory permissions fixed successfully',
-                    ];
-                }
+            if ($failed === []) {
+                $this->logger->info('uploads directories are writable');
+                return [
+                    'success' => true,
+                    'message' => 'uploads directories (public/uploads, var/uploads) are writable',
+                ];
             }
 
             return [
                 'success' => false,
-                'message' => 'uploads/ directory is not writable. Please check permissions manually.',
+                'message' => implode(', ', $failed) . ' not writable. Please check permissions manually.',
             ];
         } catch (Exception $e) {
             $this->logger->error('Failed to fix uploads/ permissions', [
@@ -758,6 +754,9 @@ final class HealthAutoFixService
     private function doClearOldUploads(int $daysToKeep = 90): array
     {
         try {
+            // Only loose files at the top of public/uploads (old scratch files). The
+            // evidence below var/uploads is never cleaned by age — retention is decided
+            // per record, and orphans go to quarantine (Data Repair), not to unlink().
             $uploadsDir = $this->projectDir . '/public/uploads';
 
             if (!is_dir($uploadsDir)) {

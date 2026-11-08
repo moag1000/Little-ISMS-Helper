@@ -24,7 +24,9 @@ framework:
                     from: draft
                     to: assessed
                     metadata:
-                        roles: [ROLE_USER]
+                        # Finalising is the DPO's or a manager's call (Art. 46 / Schrems II),
+                        # not every signed-in user's (S11; Gate 82 rejects ROLE_USER here).
+                        roles: [ROLE_DPO, ROLE_MANAGER]
                         module: privacy
                 reopen:
                     from: assessed

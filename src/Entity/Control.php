@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Attribute\ModuleField;
 use DateTimeInterface;
 use DateTimeImmutable;
@@ -129,8 +130,10 @@ class Control
     #[Groups(['control:read', 'control:write'])]
     private ?string $implementationNotes = null;
 
+    // Feeds the requirement fulfilment (FulfillmentRuleEngine::controlValue): set in the control
+    // form / SoA by a person, never by an API client or the assistant (S11).
     #[ORM\Column(length: 50)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read']), ApiReadOnlyEvidence('control form / SoA / reviewed bulk import (feeds requirement fulfilment)', importable: true)]
     #[Assert\NotBlank(message: 'control.validation.implementation_status_required')]
     #[Assert\Choice(
         choices: ['not_started', 'planned', 'in_progress', 'implemented', 'verified'],
@@ -159,7 +162,7 @@ class Control
     private ?array $mythosFlankingMhcs = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read']), ApiReadOnlyEvidence('control form / SoA / reviewed bulk import (feeds requirement fulfilment)', importable: true)]
     #[Assert\Range(
         notInRangeMessage: 'control.validation.implementation_percentage_range',
         min: 0,

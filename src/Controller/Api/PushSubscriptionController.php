@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Entity\User;
+use App\Http\PushEndpointPolicy;
+use App\Exception\Security\PushSubscriptionTakenException;
 use App\Service\TenantContext;
 use App\Service\WebPushService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -80,11 +82,18 @@ class PushSubscriptionController extends AbstractController
         $publicKey = $keys['p256dh'] ?? null;
         $authToken = $keys['auth'] ?? null;
 
-        if (!$endpoint || !$publicKey || !$authToken) {
+        if (!is_string($endpoint) || !is_string($publicKey) || !is_string($authToken)
+            || $endpoint === '' || $publicKey === '' || $authToken === ''
+        ) {
             return $this->json([
                 'error' => 'Missing required subscription data',
                 'required' => ['endpoint', 'keys.p256dh', 'keys.auth'],
             ], Response::HTTP_BAD_REQUEST);
+        }
+        if (!PushEndpointPolicy::accepts($endpoint) || strlen($publicKey) > 255 || strlen($authToken) > 255) {
+            return $this->json([
+                'error' => 'Endpoint is not a browser push service',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -110,10 +119,13 @@ class PushSubscriptionController extends AbstractController
                 'subscription_id' => $subscription->getId(),
                 'device' => $subscription->getDeviceName(),
             ], Response::HTTP_CREATED);
-        } catch (\Throwable $e) {
+        } catch (PushSubscriptionTakenException) {
+            return $this->json([
+                'error' => 'Endpoint is registered to another account',
+            ], Response::HTTP_CONFLICT);
+        } catch (\Throwable) {
             return $this->json([
                 'error' => 'Failed to create subscription',
-                'message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

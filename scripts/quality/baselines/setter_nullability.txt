@@ -5,7 +5,7 @@ src/Entity/Consent.php:444  setDocumentedAt(DateTimeImmutable $documentedAt (pro
 src/Entity/Consent.php:589  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/CorporateGovernance.php:152  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/CrisisTeam.php:723  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
-src/Entity/CustomReport.php:498  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
+src/Entity/CustomReport.php:521  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/DashboardLayout.php:115  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/DashboardLayout.php:126  setUpdatedAt(DateTimeImmutable $updatedAt (property nullable, setter not))
 src/Entity/DataSubjectRequest.php:576  setDeadlineAt(DateTimeImmutable $deadlineAt (property nullable, setter not))

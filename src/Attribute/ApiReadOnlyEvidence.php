@@ -19,8 +19,13 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final readonly class ApiReadOnlyEvidence
 {
+    /**
+     * @param bool $importable a current-state value a person may also set in a reviewed bulk import
+     *                         (preview, audit batch) — never a timestamp or approval of the past
+     */
     public function __construct(
         public string $writtenBy,
+        public bool $importable = false,
     ) {
     }
 }

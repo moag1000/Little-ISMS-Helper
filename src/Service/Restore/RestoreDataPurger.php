@@ -48,6 +48,36 @@ class RestoreDataPurger
     }
 
     /**
+     * The scope an organisation backup claims for itself (metadata.tenant_scope), checked
+     * against this instance (S11). The metadata is plain JSON — anyone can write
+     * [1, 2, 3, …] there, and "clear before restore" would then empty every listed
+     * organisation. A real organisation backup lists one organisation and its
+     * subsidiaries, root first, so only ids inside that root's current tree are kept;
+     * ids that do not exist here (restore into a fresh instance) have nothing to clear.
+     *
+     * @param list<int> $recorded
+     *
+     * @return list<int>
+     */
+    public function verifiedRecordedScope(array $recorded): array
+    {
+        $recorded = array_values(array_unique(array_map('intval', $recorded)));
+        if ($recorded === []) {
+            return [];
+        }
+        $root = $this->entityManager->find(Tenant::class, $recorded[0]);
+        if ($root instanceof Tenant) {
+            return array_values(array_intersect($recorded, $this->resolveTenantScopeIds($root)));
+        }
+
+        // Root not here: keep only ids no organisation of this instance carries.
+        return array_values(array_filter(
+            $recorded,
+            fn (int $id): bool => $this->entityManager->find(Tenant::class, $id) === null,
+        ));
+    }
+
+    /**
      * Filter an array of serialized entity data to only include entries
      * whose tenant_id is present in $scopeIds.
      *

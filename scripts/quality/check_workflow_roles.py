@@ -19,7 +19,11 @@ Checked:
 Rules:
   1. every role exists in config/packages/security.yaml (role_hierarchy keys
      or values) or in the pending list below;
-  2. no approval step and no approve/reject/verify transition is open to ROLE_USER.
+  2. no approval step and no approve/reject/verify transition is open to ROLE_USER;
+  3. (S11) a lifecycle transition open to ROLE_USER is a working step (start, submit,
+     triage, …) or listed in USER_TRANSITION_EXCEPTIONS with a reason. A transition
+     that finalises a record (assess, accept, publish, close, …) needs a real role —
+     the TIA `assess` was open to every signed-in user.
 
 A relation on the record ("the risk owner", "the document owner") is not a
 role: a step names it with the keyword `approver_role: owner`, which the
@@ -53,6 +57,21 @@ PENDING: set[str] = set()
 LOOKUP = re.compile(r"""\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\(\s*'(ROLE_[A-Z_]+)'""")
 SEEDER_ROLE = re.compile(r"""'(?:approverRole|role)'\s*=>\s*'(ROLE_[A-Z_]+)'""")
 SEEDER_TYPE = re.compile(r"""'stepType'\s*=>\s*'([a-z_]+)'""")
+
+
+# Transitions any signed-in user may fire: they move a record into work or hand it
+# to review; the decision comes in a later transition with a real role.
+USER_WORK_TRANSITIONS = {"start", "submit", "submit_for_review", "cancel_from_draft", "triage"}
+
+# Workflows the system drives (delivery bookkeeping); roles only gate manual retries.
+SYSTEM_WORKFLOWS = {"notification_delivery_lifecycle"}
+
+# workflow.transition → why ROLE_USER is right there.
+USER_TRANSITION_EXCEPTIONS = {
+    "consent_lifecycle.revoke": "records the data subject's own withdrawal (GDPR Art. 7(3)); nobody decides it",
+    "consent_lifecycle.expire": "records that the consent period ran out; a fact, not a decision",
+    "isms_objective_lifecycle.achieve": "the objective owner records the measured result; ISO 9.3 reviews it",
+}
 
 
 # Keyword for "whoever is responsible for the workflow's record" (WorkflowInstanceAdapter::APPROVER_OWNER).
@@ -96,6 +115,11 @@ def check_yaml(known: set[str]) -> list[str]:
                 if t_name.startswith(("approve", "reject", "verify")) and "ROLE_USER" in roles:
                     errors.append(f"{rel(path)}:{yaml_line(lines, t_name + ':')}: transition {wf_name}.{t_name} "
                                   "is open to ROLE_USER (every signed-in user)")
+                elif ("ROLE_USER" in roles and t_name not in USER_WORK_TRANSITIONS
+                      and wf_name not in SYSTEM_WORKFLOWS and f"{wf_name}.{t_name}" not in USER_TRANSITION_EXCEPTIONS):
+                    errors.append(f"{rel(path)}:{yaml_line(lines, t_name + ':')}: transition {wf_name}.{t_name} "
+                                  "finalises a record but is open to ROLE_USER; name a real role or add it to "
+                                  "USER_TRANSITION_EXCEPTIONS with a reason")
             meta = (wf.get("metadata") or {}).get("regulatory_metadata") or {}
             esc = meta.get("escalation_role")
             if esc and esc not in known:
@@ -109,6 +133,17 @@ def check_yaml(known: set[str]) -> list[str]:
                     errors.append(f"{rel(path)}:{line}: approval step \"{step.get('name')}\" is open to ROLE_USER "
                                   "(every signed-in user)")
     return errors
+
+
+def stale_exceptions() -> set[str]:
+    used: set[str] = set()
+    for path in sorted(WORKFLOWS.rglob("*.yaml")):
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for wf_name, wf in ((data.get("framework") or {}).get("workflows") or {}).items():
+            for t_name, transition in (wf.get("transitions") or {}).items():
+                if "ROLE_USER" in (((transition or {}).get("metadata") or {}).get("roles") or []):
+                    used.add(f"{wf_name}.{t_name}")
+    return set(USER_TRANSITION_EXCEPTIONS) - used
 
 
 def check_seeders(known: set[str]) -> list[str]:
@@ -151,6 +186,8 @@ def main() -> int:
     defined = known_roles()
     known = defined | PENDING
     errors = check_yaml(known) + check_seeders(known) + check_lookups(known)
+    errors += [f"{rel(Path(__file__))}: USER_TRANSITION_EXCEPTIONS entry {key} matches no ROLE_USER transition"
+               for key in sorted(stale_exceptions())]
 
     for role in sorted(PENDING & defined):
         print(f"note: {role} is defined in security.yaml now; remove it from PENDING in {rel(Path(__file__))}")

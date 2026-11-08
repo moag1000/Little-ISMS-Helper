@@ -37,6 +37,15 @@ class BackupService
         'Tenant'          => 'logoPath',   // stored as 'uploads/tenants/logo.png'
         'TenantBranding'  => 'logoPath',   // separate branding overrides (subsidiaries)
     ];
+
+    /**
+     * File lists per entity: [entityName => [jsonField, filenameKey, ProtectedUploads area]].
+     * Training materials (ISO 27001 7.2/7.3 evidence) are a JSON list on the training.
+     * tests/Service/BackupFileReferencesTest fails on a ProtectedUploads area no entry carries.
+     */
+    public const array FILE_LIST_FIELDS = [
+        'Training' => ['materialFiles', 'filename', ProtectedUploads::TRAINING_MATERIALS],
+    ];
     // Entities that contain productive user data
     // Order matters: entities with foreign keys must come after their dependencies.
     //
@@ -934,7 +943,14 @@ class BackupService
      * Folders below public/uploads/ that a backup archive carries ({@see collectFileReferences()}).
      * Nothing else is ever written from an archive.
      */
-    private const array ARCHIVE_FILE_FOLDERS = ['documents', 'document_versions', 'tenant_logos'];
+    private const array ARCHIVE_FILE_FOLDERS = ['documents', 'document_versions', 'tenant_logos', 'training_materials'];
+
+    /** Archive folders whose files go below var/uploads/<area> (outside the web root). */
+    private const array ARCHIVE_PROTECTED_FOLDERS = [
+        'documents' => ProtectedUploads::DOCUMENTS,
+        'document_versions' => ProtectedUploads::DOCUMENTS,
+        'training_materials' => ProtectedUploads::TRAINING_MATERIALS,
+    ];
 
     /**
      * Load backup from file.
@@ -1113,8 +1129,7 @@ class BackupService
             return 0;
         }
         $uploadsBase = (string) realpath($uploadsDir) . '/';
-        $documentsDir = (new ProtectedUploads($this->projectDir))->directory(ProtectedUploads::DOCUMENTS);
-        $documentsBase = (string) realpath($documentsDir) . '/';
+        $protected = new ProtectedUploads($this->projectDir);
 
         $written = 0;
         $skipped = 0;
@@ -1140,10 +1155,11 @@ class BackupService
                 continue;
             }
 
-            // Documents (and versions, stored as /uploads/documents/<file>) go outside the web root.
-            $isDocument = in_array($folder, ['documents', 'document_versions'], true);
-            $base = $isDocument ? $documentsBase : $uploadsBase;
-            $targetPath = $isDocument ? $base . basename($relativePath) : $base . $relativePath;
+            // Documents (and versions, stored as /uploads/documents/<file>) and training
+            // materials go outside the web root.
+            $area = self::ARCHIVE_PROTECTED_FOLDERS[$folder] ?? null;
+            $base = $area !== null ? (string) realpath($protected->directory($area)) . '/' : $uploadsBase;
+            $targetPath = $area !== null ? $base . basename($relativePath) : $base . $relativePath;
             $targetDir = dirname($targetPath);
             if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
                 $skipped++;
@@ -1246,6 +1262,19 @@ class BackupService
                 };
 
                 $refs[$zipEntry] = $absPath;
+            }
+        }
+
+        $protected = new ProtectedUploads($this->projectDir);
+        foreach (self::FILE_LIST_FIELDS as $entityName => [$field, $key, $area]) {
+            foreach ($data[$entityName] ?? [] as $entityData) {
+                foreach (is_array($entityData[$field] ?? null) ? $entityData[$field] : [] as $file) {
+                    $name = is_array($file) ? (string) ($file[$key] ?? '') : '';
+                    $absPath = $name === '' ? null : $protected->resolve($protected->storedPath($area, $name));
+                    if ($absPath !== null) {
+                        $refs[str_replace('-', '_', $area) . '/' . basename($absPath)] = $absPath;
+                    }
+                }
             }
         }
 

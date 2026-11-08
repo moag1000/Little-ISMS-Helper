@@ -780,6 +780,8 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       Outbound URLs a user can set carry `#[NoInternalIp]` (SSRF) and are fetched only through
       `App\Http\UserUrlHttpClient` (no private addresses after DNS, no redirects; `->guzzle()` for OAuth
       libraries) — `OutboundUserUrlClientTest` rejects any other raw HTTP client in `src/`.
+- [ ] Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed reader type, zip
+      limits, read filter) — never `IOFactory::createReaderForFile()`/`load()` (`SpreadsheetUploadReaderTest`).
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training
       materials) stored and read only via `App\Service\Upload\ProtectedUploads` (`var/uploads`, never `public/`),
       served by a voter-checked download action (`EvidenceOutsideWebRootTest`). Setup wizard after completion and
