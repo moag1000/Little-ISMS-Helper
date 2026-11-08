@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use Symfony\Component\Serializer\Attribute\SerializedName;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use Symfony\Component\Serializer\Attribute\Groups;
+use App\Attribute\RequiresModule;
 use App\Enum\ComplianceRequirementFulfillmentStatus;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Service\OwnerResolver;
@@ -37,6 +45,27 @@ use Doctrine\ORM\Mapping as ORM;
  * @see ComplianceFramework For framework definitions
  * @see ComplianceRequirement For requirement definitions
  */
+/*
+ * REST: read-only. FulfillmentDerivationService is the only writer of the
+ * percentage/status; hand values are overrides with reason and review date in
+ * the UI. derivationBasis stays internal (it names records of other modules).
+ */
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            description: 'Fulfilment per requirement for the organisation: derived value, override, status',
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'framework' => new QueryParameter(filter: new ExactFilter(), property: 'requirement.framework.code'),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'overrideSource' => new QueryParameter(filter: new ExactFilter()),
+            ],
+        ),
+        new Get(security: "is_granted('API_VIEW', object)"),
+    ],
+    normalizationContext: ['groups' => ['fulfillment:read']],
+)]
+#[RequiresModule('compliance')]
 #[ORM\Entity(repositoryClass: ComplianceRequirementFulfillmentRepository::class)]
 #[ORM\Table(name: 'compliance_requirement_fulfillment')]
 #[ORM\UniqueConstraint(name: 'unique_tenant_requirement', columns: ['tenant_id', 'requirement_id'])]
@@ -49,6 +78,7 @@ class ComplianceRequirementFulfillment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['fulfillment:read'])]
     private ?int $id = null;
 
     /**
@@ -70,6 +100,7 @@ class ComplianceRequirementFulfillment
      * Organizations can declare requirements as not applicable with justification.
      */
     #[ORM\Column]
+    #[Groups(['fulfillment:read'])]
     private bool $applicable = true;
 
     /**
@@ -77,6 +108,7 @@ class ComplianceRequirementFulfillment
      * Required when applicable = false (ISO 27001 Statement of Applicability)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?string $applicabilityJustification = null;
 
     /**
@@ -84,6 +116,7 @@ class ComplianceRequirementFulfillment
      * ISO 27001: Used for compliance gap analysis
      */
     #[ORM\Column]
+    #[Groups(['fulfillment:read'])]
     private int $fulfillmentPercentage = 0;
 
     /**
@@ -104,6 +137,7 @@ class ComplianceRequirementFulfillment
      * ISO 27001: Annual reviews required
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?DateTimeImmutable $lastReviewDate = null;
 
     /**
@@ -111,6 +145,7 @@ class ComplianceRequirementFulfillment
      * ISO 27001: Scheduled compliance reviews
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?DateTimeImmutable $nextReviewDate = null;
 
     /**
@@ -157,12 +192,14 @@ class ComplianceRequirementFulfillment
      * Implementation status
      */
     #[ORM\Column(length: 50)]
+    #[Groups(['fulfillment:read'])]
     private string $status = 'not_started'; // not_started, in_progress, implemented, verified
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?DateTimeImmutable $updatedAt = null;
 
     /**
@@ -329,6 +366,8 @@ class ComplianceRequirementFulfillment
     /**
      * Effective responsible person: prefer User, then Person, then null.
      */
+    #[Groups(['fulfillment:read'])]
+    #[SerializedName('responsible')]
     public function getEffectiveResponsiblePerson(): ?string
     {
         return OwnerResolver::resolveEffective($this->responsiblePersonUser, $this->responsiblePerson, null);
@@ -613,10 +652,12 @@ class ComplianceRequirementFulfillment
 
     /** Rule result (0-100), null while no rule applies to the requirement. */
     #[ORM\Column(nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?int $derivedPercentage = null;
 
     /** Rule kind that produced derivedPercentage: controls, mapping, maturity, checks. */
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?string $derivationKind = null;
 
     /** @var list<array<string, mixed>>|null contributors shown as "why" */
@@ -624,16 +665,20 @@ class ComplianceRequirementFulfillment
     private ?array $derivationBasis = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?DateTimeImmutable $derivedAt = null;
 
     /** manual | legacy | certificate | inheritance; null = the rule value is in effect. */
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?string $overrideSource = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?string $overrideReason = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['fulfillment:read'])]
     private ?DateTimeImmutable $overrideReviewDue = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
@@ -682,6 +727,28 @@ class ComplianceRequirementFulfillment
         return $this;
     }
 
+    /** Framework code of the global requirement (e.g. ISO27001, NIS2) — REST only. */
+    #[Groups(['fulfillment:read'])]
+    public function getFrameworkCode(): ?string
+    {
+        return $this->requirement?->getFramework()?->getCode();
+    }
+
+    /** Requirement number within its framework (e.g. A.5.1) — REST only. */
+    #[Groups(['fulfillment:read'])]
+    public function getRequirementNumber(): ?string
+    {
+        return $this->requirement?->getRequirementId();
+    }
+
+    #[Groups(['fulfillment:read'])]
+    public function getRequirementTitle(): ?string
+    {
+        return $this->requirement?->getTitle();
+    }
+
+    #[Groups(['fulfillment:read'])]
+    #[SerializedName('overridden')]
     public function isOverridden(): bool
     {
         return $this->overrideSource !== null;

@@ -43,6 +43,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(security: "is_granted('API_EDIT', object)"),
         new Delete(security: "is_granted('API_DELETE', object)"),
     ],
+    normalizationContext: ['groups' => ['bc_exercise:read']],
+    denormalizationContext: ['groups' => ['bc_exercise:write']],
     processor: TenantAwareStateProcessor::class
 )]
 #[ORM\Entity(repositoryClass: BCExerciseRepository::class)]
@@ -239,7 +241,7 @@ class BCExercise
      */
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['planned', 'in_progress', 'completed', 'cancelled'])]
-    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[Groups(['bc_exercise:read'])]
     private string $status = 'planned';
 
     /**

@@ -18,7 +18,8 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * voter with tenant checks (Supplier, Training, ChangeRequest, Location,
  * Person, BusinessContinuityPlan, InterestedParty, ThreatIntelligence,
  * ISMSObjective, BCExercise, InternalAudit, ISMSContext, CryptographicOperation,
- * PhysicalAccessLog).
+ * PhysicalAccessLog, and the read-only ManagementDecision, IsmsRegisterEntry,
+ * ComplianceRequirementFulfillment).
  *
  * Entities with dedicated voters (Asset, Risk, Incident, Control, Document)
  * are NOT handled here — their voters take precedence via supports().

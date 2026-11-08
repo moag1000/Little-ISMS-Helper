@@ -9,6 +9,7 @@ use App\Entity\BCExercise;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\InterestedParty;
 use App\Entity\ChangeRequest;
+use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Risk;
@@ -100,6 +101,7 @@ final class ApiResourceModuleListenerTest extends TestCase
         yield 'Location' => [Location::class, 'locations'];
         yield 'ChangeRequest' => [ChangeRequest::class, 'change_requests'];
         yield 'ThreatIntelligence' => [ThreatIntelligence::class, 'vulnerability_intel'];
+        yield 'ComplianceRequirementFulfillment' => [ComplianceRequirementFulfillment::class, 'compliance'];
     }
 
     /**
@@ -132,7 +134,17 @@ final class ApiResourceModuleListenerTest extends TestCase
         return new ApiResourceModuleListener($modules, $translator);
     }
 
-    private function event(string $resourceClass): RequestEvent
+    #[Test]
+    public function subRequestsAreGatedToo(): void
+    {
+        $event = $this->event(BCExercise::class, HttpKernelInterface::SUB_REQUEST);
+
+        $this->listener([])->onRequest($event);
+
+        self::assertSame(Response::HTTP_FORBIDDEN, $event->getResponse()?->getStatusCode());
+    }
+
+    private function event(string $resourceClass, int $type = HttpKernelInterface::MAIN_REQUEST): RequestEvent
     {
         $request = Request::create('/api/resources');
         $request->attributes->set('_api_resource_class', $resourceClass);
@@ -140,7 +152,7 @@ final class ApiResourceModuleListenerTest extends TestCase
         return new RequestEvent(
             $this->createStub(HttpKernelInterface::class),
             $request,
-            HttpKernelInterface::MAIN_REQUEST,
+            $type,
         );
     }
 }

@@ -147,7 +147,7 @@ class Incident
     private ?IncidentSeverity $severity = null;
 
     #[ORM\Column(type: 'string', length: 50, enumType: IncidentStatus::class)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read'])]
     #[Assert\NotNull(message: 'incident.validation.status_required')]
     private ?IncidentStatus $status = IncidentStatus::Reported;
 
