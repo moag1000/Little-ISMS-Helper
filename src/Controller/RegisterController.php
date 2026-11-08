@@ -44,7 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 final class RegisterController extends AbstractController
 {
-    private const string TYPE_PATTERN = 'issue_external|issue_internal|opportunity|legal_requirement|scope_interface|role|competence|communication|improvement';
+    private const string TYPE_PATTERN = 'issue_external|issue_internal|opportunity|legal_requirement|scope_interface|role|competence|communication|improvement|monitoring_source';
 
     public function __construct(
         private readonly IsmsRegisterEntryRepository $entries,
