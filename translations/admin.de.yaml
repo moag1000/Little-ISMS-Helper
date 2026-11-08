@@ -1747,7 +1747,7 @@ admin:
         job_status:
             pending: 'Pending'
             running: 'Läuft'
-            succeeded: 'Erfolgreich'
+            succeeded: 'Abgeschlossen'
             failed: 'Fehlgeschlagen'
             unknown: 'Unbekannt'
         banner:

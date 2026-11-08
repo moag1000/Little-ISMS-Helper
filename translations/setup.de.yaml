@@ -127,7 +127,7 @@ setup:
         cannot_proceed: 'Voraussetzungen nicht erfüllt'
         detailed_checks: 'Detaillierte Prüfungen:'
         status:
-            success: 'erfolgreich'
+            success: 'bestanden'
             warnings: 'Warnungen'
             critical_errors: 'kritische Fehler'
         php:

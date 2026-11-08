@@ -40,6 +40,16 @@
         bsi_gap_state: { gedeckt: 'success', partiell: 'warning', iso_offen: 'primary', ungemappt_unbewertet: 'neutral', ungemappt_eigenstaendig: 'neutral' },
         bsi_trust: { amtlich: 'success', amtlich_gestuetzt: 'success', ki_validiert: 'primary', bestaetigt: 'primary', heuristisch: 'warning' },
         suggestion_origin: { rule: 'primary', inheritance: 'primary', import: 'neutral', ai: 'accent' },
+        threat: { new: 'primary', analyzing: 'warning', mitigated: 'success', monitoring: 'primary', closed: 'neutral' },
+        data_breach: { draft: 'neutral', under_assessment: 'primary', authority_notified: 'success', subjects_notified: 'success', closed: 'neutral' },
+        dsr: { received: 'neutral', identity_verification: 'primary', in_progress: 'primary', completed: 'success', rejected: 'danger', extended: 'warning' },
+        dpia: { draft: 'neutral', in_review: 'primary', approved: 'success', rejected: 'danger', requires_revision: 'warning' },
+        management_review: { planned: 'warning', in_progress: 'primary', completed: 'success', cancelled: 'neutral', follow_up_required: 'warning' },
+        objective: { not_started: 'warning', in_progress: 'primary', achieved: 'success', delayed: 'danger', cancelled: 'neutral' },
+        certificate: { active: 'success', pending: 'warning', expired: 'danger', revoked: 'danger' },
+        recovery_priority: { immediate: 'danger', high: 'warning', medium: 'primary', low: 'neutral' },
+        kpi_status: { good: 'success', warning: 'warning', danger: 'danger' },
+        escalation: { low: 'primary', medium: 'warning', high: 'warning', critical: 'danger', data_breach: 'danger' },
     } %}
     {{- (_tones[vocabulary] ?? {})[status] ?? 'neutral' -}}
 {% endmacro %}

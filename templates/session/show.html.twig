@@ -120,7 +120,7 @@
                                                 <p class="mb-1 mt-2 text-muted small">{{ activity.description }}</p>
                                             {% endif %}
                                         </div>
-                                        <small class="text-muted">{{ activity.createdAt|date('H:i:s') }}</small>
+                                        <small class="text-muted">{{ activity.createdAt|fa_time(true) }}</small>
                                     </div>
                                     {% if activity.ipAddress %}
                                         <small class="text-muted">

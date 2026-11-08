@@ -95,7 +95,7 @@ final class AppDateFormatExtensionTest extends TestCase
     {
         $names = array_map(static fn ($f) => $f->getName(), $this->extension([])->getFilters());
 
-        self::assertSame(['fa_date', 'fa_datetime'], $names);
+        self::assertSame(['fa_date', 'fa_datetime', 'fa_time', 'fa_month'], $names);
     }
 
     #[Test]
@@ -106,5 +106,31 @@ final class AppDateFormatExtensionTest extends TestCase
 
         self::assertSame('01.01.2025 00:30', $ext->formatDateTime($utc));
         self::assertSame('31.12.2024', $ext->formatDate($utc));
+    }
+
+    #[Test]
+    public function secondsTimeAndMonth(): void
+    {
+        $ext = $this->extension(['application' => ['timezone' => 'Europe/Berlin']]);
+        $utc = new \DateTimeImmutable('2024-12-31 23:30:15', new \DateTimeZone('UTC'));
+
+        self::assertSame('01.01.2025 00:30:15', $ext->formatDateTime($utc, true));
+        self::assertSame('00:30', $ext->formatTime($utc));
+        self::assertSame('00:30:15', $ext->formatTime($utc, true));
+        self::assertSame('—', $ext->formatTime(null));
+
+        $ymd = $this->extension(['application' => ['datetime_format' => 'Y-m-d H:i:s']]);
+        self::assertSame('2024-12-31 23:30:15', $ymd->formatDateTime($utc, true));
+
+        if (class_exists(\IntlDateFormatter::class)) {
+            $previous = \Locale::getDefault();
+            \Locale::setDefault('de');
+            try {
+                self::assertSame('Dezember 2024', $this->extension([])->formatMonth(new \DateTimeImmutable('2024-12-01')));
+            } finally {
+                \Locale::setDefault($previous);
+            }
+        }
+        self::assertSame('—', $ext->formatMonth(null));
     }
 }

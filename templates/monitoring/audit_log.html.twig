@@ -116,7 +116,7 @@
                         {% for log in logs %}
                             <tr>
                                 <td>
-                                    <small>{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
+                                    <small>{{ log.createdAt|fa_datetime(true) }}</small>
                                 </td>
                                 <td>
                                     <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
@@ -161,7 +161,7 @@
                                             <div class="fa-modal__body">
                                                 <dl class="row">
                                                     <dt class="col-sm-3">{{ 'audit_log.table.timestamp'|trans({}, 'audit_log') }}:</dt>
-                                                    <dd class="col-sm-9">{{ log.createdAt|date('Y-m-d H:i:s') }}</dd>
+                                                    <dd class="col-sm-9">{{ log.createdAt|fa_datetime(true) }}</dd>
 
                                                     <dt class="col-sm-3">{{ 'audit_log.table.user'|trans({}, 'audit_log') }}:</dt>
                                                     <dd class="col-sm-9">{{ log.userName }}</dd>

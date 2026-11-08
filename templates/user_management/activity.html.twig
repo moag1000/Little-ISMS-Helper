@@ -66,7 +66,7 @@
                             {% for activity in daily_activities %}
                                 <div class="timeline-item mb-3 ps-4 border-start border-2 border-primary">
                                     <div class="timeline-marker">
-                                        <small class="text-muted">{{ activity.createdAt|date('H:i:s') }}</small>
+                                        <small class="text-muted">{{ activity.createdAt|fa_time(true) }}</small>
                                     </div>
                                     {% embed '_components/_card.html.twig' %}
                                         {% block card_body %}

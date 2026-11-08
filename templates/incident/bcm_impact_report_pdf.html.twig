@@ -1,0 +1,107 @@
+{# BCM impact analysis of one incident as PDF (ISO 22301 8.2.2, BIA data reused).
+ # Data: IncidentBCMImpactService::generateImpactReport(). #}
+{% trans_default_domain 'incident' %}
+{% set a = detailed_analysis %}
+{% set p = 'incident.bcm_impact_page.' %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('de') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ (p ~ 'title')|trans({}, 'incident') }} · {{ incident.number }}</title>
+    <style>
+        @page { size: A4 portrait; margin: 16mm 14mm 18mm 14mm; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; color: #0e0a1f; line-height: 1.45; }
+        h1 { font-size: 16pt; margin: 0 0 2pt; }
+        h2 { font-size: 11pt; margin: 14pt 0 6pt; padding-bottom: 3pt; border-bottom: 1px solid #dfe3f0; }
+        .meta { color: #4c4a73; margin: 0 0 10pt; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 4pt 5pt; border-bottom: 1px solid #dfe3f0; vertical-align: top; }
+        th { background: #f6f6fa; font-size: 7.5pt; text-transform: uppercase; color: #4c4a73; }
+        .kv td:first-child { width: 38%; color: #4c4a73; }
+        .danger { color: #b91c1c; font-weight: bold; }
+        .ok { color: #047857; }
+        ul { margin: 0; padding-left: 14pt; }
+        .rec { border-left: 2pt solid #d97706; padding: 3pt 0 3pt 7pt; margin: 0 0 6pt; }
+        .rec--high { border-left-color: #dc2626; }
+    </style>
+</head>
+<body>
+    <h1>{{ (p ~ 'title')|trans({}, 'incident') }}</h1>
+    <p class="meta">{{ incident.number }} · {{ incident.title }} · {{ (p ~ 'generated_at')|trans({}, 'incident') }} {{ report_generated_at|fa_datetime }}</p>
+
+    <h2>{{ (p ~ 'summary.title')|trans({}, 'incident') }}</h2>
+    <ul>
+        {% for finding in executive_summary.key_findings %}
+            <li>{{ finding }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>{{ (p ~ 'downtime.title')|trans({}, 'incident') }}</h2>
+    <table class="kv">
+        <tr><td>{{ (p ~ 'downtime.detected')|trans({}, 'incident') }}</td><td>{{ a.downtime.detected_at|fa_datetime }}</td></tr>
+        <tr><td>{{ (p ~ 'downtime.resolved')|trans({}, 'incident') }}</td><td>{{ a.downtime.resolved_at ? a.downtime.resolved_at|fa_datetime : (p ~ 'downtime.ongoing')|trans({}, 'incident') }}</td></tr>
+        <tr><td>{{ (p ~ 'downtime.total')|trans({}, 'incident') }}</td><td>{{ (p ~ 'downtime.hours')|trans({'%count%': a.downtime.actual_hours}, 'incident') }}{% if a.downtime.is_estimated %} · {{ (p ~ 'downtime.estimated')|trans({}, 'incident') }}{% endif %}</td></tr>
+        <tr><td>{{ (p ~ 'kpi.financial_impact')|trans({}, 'incident') }}</td><td>{{ a.financial_impact.total_eur|number_format(2, ',', '.') }} € ({{ (p ~ 'kpi.per_hour')|trans({'%amount%': a.financial_impact.per_hour_eur|number_format(2, ',', '.')}, 'incident') }})</td></tr>
+    </table>
+
+    <h2>{{ (p ~ 'processes.title')|trans({}, 'incident') }}</h2>
+    {% if a.affected_processes.processes|length > 0 %}
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ (p ~ 'processes.process')|trans({}, 'incident') }}</th>
+                    <th>{{ (p ~ 'processes.criticality')|trans({}, 'incident') }}</th>
+                    <th>{{ (p ~ 'processes.rto')|trans({}, 'incident') }}</th>
+                    <th>{{ (p ~ 'processes.financial_impact')|trans({}, 'incident') }}</th>
+                    <th>{{ (p ~ 'processes.impact_severity')|trans({}, 'incident') }}</th>
+                    <th>{{ (p ~ 'processes.compliance')|trans({}, 'incident') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for process in a.affected_processes.processes %}
+                    <tr>
+                        <td>{{ process.process_name }}<br><small>{{ (p ~ 'processes.owner')|trans({'%owner%': process.process_owner ?: '—'}, 'incident') }}</small></td>
+                        <td>{{ ('business_process.criticality.' ~ (process.criticality ?: 'unknown'))|trans({}, 'business_process') }}</td>
+                        <td>{{ process.bia_data.rto_hours }} h{% if process.rto_violated %}<br><span class="danger">{{ (p ~ 'processes.violated')|trans({'%hours%': process.rto_compliance.excess_hours}, 'incident') }}</span>{% endif %}</td>
+                        <td>{{ process.financial_impact|number_format(2, ',', '.') }} €</td>
+                        <td>{{ ('incident.severity.' ~ process.impact_severity)|trans({}, 'incident') }}</td>
+                        <td class="{{ process.rto_violated ? 'danger' : 'ok' }}">{{ process.rto_violated ? process.rto_compliance.compliance_percentage : 100 }} %</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ (p ~ 'processes.empty')|trans({}, 'incident') }}</p>
+    {% endif %}
+
+    <h2>{{ (p ~ 'priority.title')|trans({}, 'incident') }}: {{ (p ~ 'level.' ~ a.recovery_priority.level)|trans({}, 'incident') }}</h2>
+    <p><strong>{{ (p ~ 'priority.reasoning')|trans({}, 'incident') }}:</strong> {{ a.recovery_priority.reasoning }}</p>
+    <p><strong>{{ (p ~ 'priority.actions')|trans({}, 'incident') }}</strong></p>
+    <ul>
+        {% for action in a.recovery_priority.recommended_actions %}
+            <li>{{ action }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if a.recommendations|length > 0 %}
+        <h2>{{ (p ~ 'recommendations.title')|trans({}, 'incident') }}</h2>
+        {% for r in a.recommendations %}
+            <div class="rec{{ r.priority == 'high' ? ' rec--high' : '' }}">
+                <strong>{{ r.title }}</strong><br>
+                {{ r.description }}<br>
+                <em>{{ (p ~ 'recommendations.action')|trans({}, 'incident') }}:</em> {{ r.action }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if a.historical_context.total_past_incidents > 0 %}
+        <h2>{{ (p ~ 'history.title')|trans({}, 'incident') }}</h2>
+        <table class="kv">
+            <tr><td>{{ (p ~ 'history.incidents')|trans({}, 'incident') }}</td><td>{{ a.historical_context.total_past_incidents }}</td></tr>
+            <tr><td>{{ (p ~ 'history.downtime')|trans({}, 'incident') }}</td><td>{{ (p ~ 'downtime.hours')|trans({'%count%': a.historical_context.total_past_downtime_hours}, 'incident') }}</td></tr>
+            <tr><td>{{ (p ~ 'history.loss')|trans({}, 'incident') }}</td><td>{{ a.historical_context.total_past_financial_loss_eur|number_format(2, ',', '.') }} €</td></tr>
+            <tr><td>{{ (p ~ 'history.rto_violations')|trans({}, 'incident') }}</td><td>{{ a.historical_context.processes_with_rto_violations }}</td></tr>
+        </table>
+    {% endif %}
+</body>
+</html>

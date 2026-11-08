@@ -3,8 +3,7 @@
    a flex column; condensed, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'threat' %}
 {% set severity_variant = pill_tone_severity(threat.severity|default('')) %}
-{% set status_map = {'new':'primary','analyzing':'warning','mitigated':'success','monitoring':'info','closed':'secondary'} %}
-{% set status_variant = status_map[threat.status]|default('secondary') %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
@@ -19,7 +18,7 @@
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
             {% if threat.severity %}{% include '_components/_badge.html.twig' with { variant: severity_variant, content: ('severity.' ~ threat.severity)|trans({}, 'threat') } %}{% endif %}
-            {% if threat.status %}{% include '_components/_badge.html.twig' with { variant: status_variant, content: ('status_type.' ~ threat.status)|trans({}, 'threat') } %}{% endif %}
+            {% if threat.status %}{{ _status.pill('threat', threat.status, ('status_type.' ~ threat.status)|trans({}, 'threat')) }}{% endif %}
         </div>
         {% if threat.threatType %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.field.threat_type'|trans({}, 'threat') }}</span><span>{{ ('type.' ~ threat.threatType)|trans({}, 'threat') }}</span></div>{% endif %}
         {% if threat.source %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.field.source'|trans({}, 'threat') }}</span><span>{{ threat.source }}</span></div>{% endif %}

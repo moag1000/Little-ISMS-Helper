@@ -10,6 +10,7 @@ use DateTimeInterface;
 use App\Entity\Incident;
 use App\Entity\BusinessProcess;
 use App\Repository\BusinessProcessRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * CRITICAL-05: Incident ↔ BCM Integration Service
@@ -26,8 +27,21 @@ class IncidentBCMImpactService
 {
     public function __construct(
         private readonly BusinessProcessRepository $businessProcessRepository,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly TranslatorInterface $translator,
     ) {}
+
+    /** Texts of the analysis in the user's language (domain `incident`, keys below incident.bcm_impact_page). */
+    private function t(string $key, array $params = []): string
+    {
+        return $this->translator->trans('incident.bcm_impact_page.' . $key, $params, 'incident');
+    }
+
+    /** @return list<string> */
+    private function actions(string ...$keys): array
+    {
+        return array_map(fn(string $k): string => $this->t('action.' . $k), $keys);
+    }
 
     /**
      * Analyze complete business impact of an incident
@@ -276,12 +290,8 @@ class IncidentBCMImpactService
         if ($affectedProcesses === []) {
             return [
                 'level' => 'medium',
-                'reasoning' => 'No business processes identified - standard incident priority',
-                'recommended_actions' => [
-                    'Identify affected business processes',
-                    'Assess business impact',
-                    'Link affected assets to processes',
-                ],
+                'reasoning' => $this->t('reason.no_processes'),
+                'recommended_actions' => $this->actions('identify_processes', 'assess_impact', 'link_assets'),
             ];
         }
 
@@ -309,40 +319,23 @@ class IncidentBCMImpactService
         if ($lowestRTO <= 1 || $criticalCount > 0) {
             $level = 'immediate';
             $reasoning[] = $lowestRTO <= 1
-                ? "Process '{$mostCriticalProcess->getName()}' has RTO ≤ 1 hour"
-                : "{$criticalCount} critical business process(es) affected";
-            $actions = [
-                'Activate crisis management team',
-                'Implement recovery strategy immediately',
-                'Notify process owners and stakeholders',
-                'Monitor RTO compliance continuously',
-            ];
+                ? $this->t('reason.rto_max', ['%process%' => $mostCriticalProcess->getName(), '%hours%' => 1])
+                : $this->t('reason.critical_processes', ['%count%' => $criticalCount]);
+            $actions = $this->actions('activate_crisis_team', 'recover_now', 'notify_owners', 'monitor_rto');
         } elseif ($lowestRTO <= 4 || $incident->getSeverity() === IncidentSeverity::Critical) {
             $level = 'high';
             $reasoning[] = $lowestRTO <= 4
-                ? "Process '{$mostCriticalProcess->getName()}' has RTO ≤ 4 hours"
-                : 'Critical severity incident';
-            $actions = [
-                'Prioritize recovery resources',
-                'Begin recovery procedures within 1 hour',
-                'Notify stakeholders',
-                'Document recovery timeline',
-            ];
+                ? $this->t('reason.rto_max', ['%process%' => $mostCriticalProcess->getName(), '%hours%' => 4])
+                : $this->t('reason.critical_severity');
+            $actions = $this->actions('prioritize_resources', 'recover_within_hour', 'notify_stakeholders', 'document_timeline');
         } elseif ($lowestRTO <= 24) {
             $level = 'medium';
-            $reasoning[] = "Process '{$mostCriticalProcess->getName()}' has RTO ≤ 24 hours";
-            $actions = [
-                'Plan recovery within business hours',
-                'Coordinate with process owners',
-                'Prepare recovery resources',
-            ];
+            $reasoning[] = $this->t('reason.rto_max', ['%process%' => $mostCriticalProcess->getName(), '%hours%' => 24]);
+            $actions = $this->actions('plan_business_hours', 'coordinate_owners', 'prepare_resources');
         } else {
             $level = 'low';
-            $reasoning[] = "All affected processes have RTO > 24 hours";
-            $actions = [
-                'Schedule recovery during maintenance window',
-                'Minimal impact on business operations',
-            ];
+            $reasoning[] = $this->t('reason.rto_above_day');
+            $actions = $this->actions('maintenance_window', 'minimal_impact');
         }
 
         return [
@@ -478,12 +471,9 @@ class IncidentBCMImpactService
             $recommendations[] = [
                 'priority' => 'high',
                 'category' => 'rto_compliance',
-                'title' => 'RTO Violations Detected',
-                'description' => sprintf(
-                    '%d process(es) exceeded their Recovery Time Objectives. Review and update recovery strategies.',
-                    count($rtoViolations)
-                ),
-                'action' => 'Update BIA with realistic RTO values based on actual recovery times',
+                'title' => $this->t('recommendation.rto_violations.title'),
+                'description' => $this->t('recommendation.rto_violations.description', ['%count%' => count($rtoViolations)]),
+                'action' => $this->t('recommendation.rto_violations.action'),
             ];
         }
 
@@ -491,9 +481,9 @@ class IncidentBCMImpactService
             $recommendations[] = [
                 'priority' => 'medium',
                 'category' => 'process_mapping',
-                'title' => 'Incomplete Process Mapping',
-                'description' => 'Some affected assets are not linked to business processes in BIA.',
-                'action' => 'Complete Business Impact Analysis for all critical assets',
+                'title' => $this->t('recommendation.process_mapping.title'),
+                'description' => $this->t('recommendation.process_mapping.description'),
+                'action' => $this->t('recommendation.process_mapping.action'),
             ];
         }
 
@@ -502,9 +492,9 @@ class IncidentBCMImpactService
                 $recommendations[] = [
                     'priority' => 'medium',
                     'category' => 'recovery_planning',
-                    'title' => sprintf('Missing Recovery Strategy: %s', $process->getName()),
-                    'description' => 'Process has no documented recovery strategy.',
-                    'action' => 'Document and test recovery procedures',
+                    'title' => $this->t('recommendation.recovery_strategy.title', ['%process%' => $process->getName()]),
+                    'description' => $this->t('recommendation.recovery_strategy.description'),
+                    'action' => $this->t('recommendation.recovery_strategy.action'),
                 ];
             }
         }
@@ -527,19 +517,17 @@ class IncidentBCMImpactService
             'recovery_priority' => $analysis['recovery_priority']['level'],
             'rto_compliant' => $analysis['rto_compliance']['is_compliant'],
             'key_findings' => [
-                sprintf(
-                    '%d business process(es) affected with total estimated impact of €%s',
-                    $analysis['affected_processes']['total_count'],
-                    number_format($analysis['financial_impact']['total_eur'], 2)
-                ),
-                sprintf(
-                    'Recovery priority: %s (%s)',
-                    strtoupper((string) $analysis['recovery_priority']['level']),
-                    $analysis['recovery_priority']['reasoning']
-                ),
+                $this->t('finding.processes', [
+                    '%count%' => $analysis['affected_processes']['total_count'],
+                    '%amount%' => number_format((float) $analysis['financial_impact']['total_eur'], 2, ',', '.'),
+                ]),
+                $this->t('finding.priority', [
+                    '%level%' => $this->t('level.' . $analysis['recovery_priority']['level']),
+                    '%reason%' => $analysis['recovery_priority']['reasoning'],
+                ]),
                 $analysis['rto_compliance']['is_compliant']
-                    ? 'All RTO thresholds met'
-                    : sprintf('%d RTO violation(s) detected', $analysis['rto_compliance']['violations_count']),
+                    ? $this->t('finding.rto_met')
+                    : $this->t('finding.rto_violations', ['%count%' => $analysis['rto_compliance']['violations_count']]),
             ],
         ];
     }

@@ -97,6 +97,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <strong>{{ 'scheduled_report.form.preferred_time'|trans({}, 'scheduled_reports') }}:</strong><br>
+                            {# machine-date: time of day without a zone (TIME column) #}
                             {{ report.preferredTime ? report.preferredTime|date('H:i') : '08:00' }}
                         </div>
                         {% if report.schedule == 'weekly' %}

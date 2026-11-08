@@ -121,7 +121,7 @@ scheduled_report:
         time: 'Zeitpunkt'
         status: 'Status'
         message: 'Nachricht'
-        success: 'Erfolgreich'
+        success: 'Ausgeführt'
         failed: 'Fehlgeschlagen'
 
     # Next run

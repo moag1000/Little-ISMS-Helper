@@ -44,7 +44,7 @@
                 {% endif %}
             </h2>
             <p class="mb-0">
-                {{ 'monitoring.health.last_checked'|trans({}, 'monitoring') }}: {{ 'now'|date('Y-m-d H:i:s') }}
+                {{ 'monitoring.health.last_checked'|trans({}, 'monitoring') }}: {{ 'now'|fa_datetime(true) }}
             </p>
         {% endblock %}
     {% endembed %}

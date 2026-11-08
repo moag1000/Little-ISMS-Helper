@@ -151,7 +151,7 @@
         {% if dpia.approvalDate %}
             | <strong>{{ 'dpia.pdf_doc.approved'|trans({}, 'privacy') }}</strong> {{ dpia.approvalDate|fa_date }}
         {% endif %}
-        | <strong>{{ 'dpia.pdf_doc.generated'|trans({}, 'privacy') }}</strong> {{ "now"|date('Y-m-d H:i:s') }}<br>
+        | <strong>{{ 'dpia.pdf_doc.generated'|trans({}, 'privacy') }}</strong> {{ "now"|fa_datetime(true) }}<br>
         {% if dpia.conductor %}
             <strong>{{ 'dpia.pdf_doc.conductor'|trans({}, 'privacy') }}</strong> {{ dpia.conductor.firstName }} {{ dpia.conductor.lastName }}<br>
         {% endif %}

@@ -419,7 +419,8 @@
                 </span>
             </a>
             {% endif %}
-            {% if is_granted('PERSONA_DPO') %}
+            {# Same gate as VvtExportController (DPO or manager + privacy); the compliance manager's DPO preview alone is not enough. #}
+            {% if (is_granted('ROLE_DPO') or is_granted('ROLE_MANAGER')) and is_module_active('privacy') %}
             <a href="{{ path('app_vvt_export_xlsx') }}" class="fly-item {% if current_route starts with 'app_vvt_export_' %}is-active{% endif %}" data-turbo="false" data-turbo-prefetch="false" role="menuitem" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i></span>
                 <span class="fly-item__body">

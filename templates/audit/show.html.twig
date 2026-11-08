@@ -687,40 +687,17 @@
 } only %}
 
 {# Reject Modal with rejection_reason form (only when current state allows reject) #}
+{% import '_macros/workflow.html.twig' as _workflow %}
 {% if audit.status == 'reported' and is_granted('ROLE_AUDITOR') and not _reported_by_current %}
-<div class="fa-modal fa-modal--confirm fa-modal--danger" id="rejectModal"
-     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
-     role="alertdialog" aria-modal="true" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
-    <div class="fa-modal__container" data-fa-modal-target="dialog"><form method="post" action="{{ path('app_audit_reject_report', {id: audit.id}) }}" data-fa-modal-target="form">
-                <header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span><div class="fa-modal__heading"><h2 class="h5 modal-title" id="rejectModalLabel">
-                        {{ 'audit.action.reject_report'|trans({}, 'audit') }}
-                    </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
-                <div class="fa-modal__body">
-                    <p class="text-muted">{{ 'audit.help.rejection_reason'|trans({}, 'audit') }}</p>
-                    <div class="mb-3">
-                        <label for="rejection_reason_input" class="form-label">
-                            {{ 'audit.field.rejection_reason_required'|trans({}, 'audit') }}
-                        </label>
-                        <textarea id="rejection_reason_input"
-                                  name="rejection_reason"
-                                  class="form-control"
-                                  rows="5"
-                                  required
-                                  minlength="10"
-                                  placeholder="{{ 'audit.help.rejection_reason'|trans({}, 'audit') }}"></textarea>
-                    </div>
-                    <input type="hidden" name="_token" value="{{ csrf_token('audit_reject_report') }}">
-                </div>
-                <footer class="fa-modal__footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
-                        {{ 'audit.action.reject_report'|trans({}, 'audit') }}
-                    </button>
-                </footer>
-            </form></div>
-</div>
+{{ _workflow.decision_modal({
+    id: 'rejectModal', tone: 'danger',
+    title: 'audit.action.reject_report'|trans({}, 'audit'),
+    action: path('app_audit_reject_report', {id: audit.id}),
+    token: csrf_token('audit_reject_report'),
+    subject: audit.title,
+    intro: 'audit.help.rejection_reason'|trans({}, 'audit'),
+    field: { name: 'rejection_reason', label: 'audit.field.rejection_reason_required'|trans({}, 'audit'), required: true, rows: 5, minlength: 10 },
+}) }}
 {% endif %}
 
 {# Delete Confirmation Modal #}
