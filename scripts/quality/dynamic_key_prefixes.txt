@@ -31,6 +31,7 @@ asset_sub_type.source	1
 asset_sub_type.top_type	2
 audit.scope_type	5
 audit.status	6
+audit_finding	1
 audit_finding.severity	5
 audit_finding.status	5
 audit_finding.type	3
@@ -41,6 +42,7 @@ audit_program.status	3
 authority	1
 authority.bundesland	1
 authority.lfdi	1
+bc_exercise	1
 bc_exercises.exercise_type	4
 bc_exercises.status	4
 bc_plans.resource_list.empty	1
@@ -144,6 +146,7 @@ guided_tour.role	1
 import.entity	7
 import.hub.area	1
 import_session.status	1
+incident	1
 incident.category	4
 incident.nis2_category	1
 incident.nis2_compliance	1
@@ -282,6 +285,7 @@ register.persona_role	1
 register.rating	2
 register.scope	4
 register.section	1
+register.source	1
 register.source.context	1
 register.type	6
 report.doc.audience	1
