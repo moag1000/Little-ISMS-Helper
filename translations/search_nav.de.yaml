@@ -108,6 +108,12 @@ search_nav:
     app_dashboard_compliance_manager:
         label: 'Compliance-Manager-Dashboard'
         description: 'Framework-Status, offene Maßnahmen'
+    app_workflow_pending:
+        label: 'Offene Freigaben'
+        description: 'Freigaben, die auf Ihre Entscheidung warten, in Mein Tag'
+    app_four_eyes_inbox:
+        label: 'Vier-Augen-Freigaben'
+        description: 'Anfragen zur Zweitfreigabe, für die Sie zuständig sind'
     app_my_day:
         label: 'Mein Tag'
         description: 'Fällige Aufgaben, Freigaben und Reviews auf einen Blick'

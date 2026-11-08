@@ -462,13 +462,8 @@
                             {{ objective.targetDate|fa_date }}
                         </td>
                         <td>
-                            {% set statusClasses = {
-                                'achieved': 'success',
-                                'in_progress': 'info',
-                                'not_started': 'warning',
-                                'delayed': 'danger'
-                            } %}
-                            {% include '_components/_badge.html.twig' with { variant: statusClasses[objective.status] ?? 'secondary', content: objective.status|replace({'_': ' '})|title } %}
+                            {% import '_components/_status_vocabulary.html.twig' as _status %}
+                            {{ _status.pill('objective', objective.status, ('objective.status.' ~ objective.status)|trans({}, 'objective')) }}
                         </td>
                         <td>
                             <a href="{{ path('app_objective_show', {id: objective.id}) }}"

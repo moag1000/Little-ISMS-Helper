@@ -25,7 +25,7 @@ crypto:
         hashing: Hashing
         other: Sonstiges
     status_type:
-        success: Erfolgreich
+        success: Ausgeführt
         failed: Fehlgeschlagen
         pending: Ausstehend
         in_progress: 'In Bearbeitung'

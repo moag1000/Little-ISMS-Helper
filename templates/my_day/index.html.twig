@@ -267,24 +267,7 @@
             {% elseif item.decision.decidable ?? false %}
                 {{ workflow_macros.decision_modals(item.decision.id, item.decision.name, item.title, item.decision.summary ?? null) }}
             {% elseif item.acceptance_risk_id ?? false %}
-                {% for d in [
-                    { id: 'approveAcceptance', tone: 'success', route: 'app_risk_approve_acceptance', token: 'approve-acceptance',
-                      label: 'risk.acceptance.pending.approve', field: { name: 'comments', label: 'risk.acceptance.pending.comments'|trans({}, 'risk') } },
-                    { id: 'rejectAcceptance', tone: 'danger', route: 'app_risk_reject_acceptance', token: 'reject-acceptance',
-                      label: 'risk.acceptance.pending.reject', field: { name: 'reason', label: 'risk.acceptance.pending.reason'|trans({}, 'risk'), required: true } },
-                ] %}
-                    {{ workflow_macros.decision_modal({
-                        id: d.id ~ item.acceptance_risk_id,
-                        tone: d.tone,
-                        title: d.label|trans({}, 'risk'),
-                        action: path(d.route, {id: item.acceptance_risk_id}),
-                        token: csrf_token(d.token ~ item.acceptance_risk_id),
-                        subject: item.title,
-                        summary: item.subtitle,
-                        field: d.field,
-                        hidden: { _back: 'my_day' },
-                    }) }}
-                {% endfor %}
+                {% include 'risk/_acceptance_decide_modals.html.twig' with { riskId: item.acceptance_risk_id, subject: item.title, summary: item.subtitle, back: 'my_day' } only %}
             {% elseif (item.four_eyes_id ?? null) %}
                 {% include 'four_eyes/_reject_modal.html.twig' with { requestId: item.four_eyes_id } only %}
             {% endif %}

@@ -228,14 +228,8 @@
                                 <td>{{ breach.title }}</td>
                                 <td>{{ breach.detectedAt|fa_datetime }}</td>
                                 <td>
-                                    {% set status_class = {
-                                        'draft': 'secondary',
-                                        'under_assessment': 'info',
-                                        'authority_notified': 'success',
-                                        'subjects_notified': 'success',
-                                        'closed': 'dark'
-                                    }[breach.status] %}
-                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: breach.status|replace({'_': ' '})|upper } %}
+                                    {% import '_components/_status_vocabulary.html.twig' as _status %}
+                                    {{ _status.pill('data_breach', breach.status, ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy')) }}
                                 </td>
                                 <td>
                                     {% if breach.riskLevel %}

@@ -9,7 +9,9 @@ UI wave G. Four rules:
 - extra-h1: the page header macro renders the page's `<h1>`; a template that
   uses it and adds another `<h1>` has two.
 - status-map: a local colour map (`{% set <name>Colors|Tones|Variants = {...} %}`,
-  any name ending in colors/tones/variants) whose values are tone names
+  any name ending in colors/tones/variants, or any map literal looked up on the
+  spot like `{draft: 'secondary', …}[x.status]` or `{% set status_class = {…} %}`)
+  whose values are tone names
   (danger/warning/success/info/primary/secondary/neutral/accent) instead of
   `pill_tone_severity()` (severity/criticality/priority scales),
   _components/_status_vocabulary.html.twig (non-lifecycle statuses) or
@@ -41,6 +43,13 @@ H1 = re.compile(r"<h1[\s>]")
 STATUS_MAP = re.compile(
     r"\{%-?\s*set\s+_?(?!\w*(?:btn|button))\w*(?:[cC]olors?|[tT]ones?|[vV]ariants?)\s*=\s*\{([^{}]*)\}"
 )
+# Map literals looked up in place or stored under any name (`status_class`, `statusClass`, `x_map`).
+INDEXED_MAP = re.compile(r"\{([^{}%]*)\}\s*\[")
+SET_MAP = re.compile(r"\{%-?\s*set\s+(?!\w*(?:btn|button))\w+\s*=\s*\{([^{}]*)\}")
+# PDFs and mails style their own markup; button-variant maps are not statuses.
+IS_DOCUMENT = re.compile(r"(_pdf|/pdf/|/emails?/)")
+BUTTON_MAP = re.compile(r"btn|button")
+VOCABULARY = "templates/_components/_status_vocabulary.html.twig"
 TONE_VALUE = re.compile(r":\s*'(?:danger|warning|success|info|primary|secondary|neutral|accent)'")
 TOOLTIP = re.compile(r"<(\w+)\b[^>]*data-bs-toggle=\"tooltip\"[^>]*>", re.S)
 FOCUSABLE = {"a", "button", "input", "select", "textarea"}
@@ -53,7 +62,13 @@ def findings() -> list[str]:
     for p in sorted(TEMPLATES.rglob("*.html.twig")):
         rel = str(p.relative_to(ROOT))
         text = p.read_text(encoding="utf-8")
-        if any(TONE_VALUE.search(m.group(1)) for m in STATUS_MAP.finditer(text)):
+        if rel != VOCABULARY and (
+            any(TONE_VALUE.search(m.group(1)) for m in STATUS_MAP.finditer(text))
+            or (not IS_DOCUMENT.search(rel) and any(
+                len(TONE_VALUE.findall(m.group(1))) >= 2 and not BUTTON_MAP.search(text[text.rfind("\n", 0, m.start()):m.start()])
+                for rx in (INDEXED_MAP, SET_MAP) for m in rx.finditer(text)
+            ))
+        ):
             out.append(f"{rel}::status-map")
         for m in TOOLTIP.finditer(text):
             if m.group(1).lower() not in FOCUSABLE and "tabindex" not in m.group(0):

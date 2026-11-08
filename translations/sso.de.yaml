@@ -136,8 +136,8 @@ sso:
     audit:
         section:
         event:
-            sso_login_success: 'SSO-Login erfolgreich'
-            sso_login_failure: 'SSO-Login fehlgeschlagen'
+            sso_login_success: 'SSO-Anmeldung'
+            sso_login_failure: 'SSO-Anmeldung fehlgeschlagen'
             sso_jit_provisioned: 'JIT-Benutzer angelegt'
             sso_role_changed: 'Rolle geändert'
             sso_config_changed: 'Konfiguration geändert'

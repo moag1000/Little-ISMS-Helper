@@ -42,7 +42,7 @@
                         <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
                             <span>
                                 <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
-                                {{ monthKey|date('F Y') }}
+                                {{ monthDate|fa_month }}
                             </span>
                             <span class="fa-status-pill fa-status-pill--primary">
                                 {{ 'bsi_200_4_exercise.calendar.exercises_planned'|trans({'%count%': exercises|length}, 'bsi_200_4_exercise') }}

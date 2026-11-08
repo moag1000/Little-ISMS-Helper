@@ -1,2 +1,1 @@
 # Page-semantics offenders (Gate 78): <template>::nested-main|extra-h1|status-map|tooltip-unreachable. May only shrink.
-templates/incident/bcm_impact.html.twig::status-map

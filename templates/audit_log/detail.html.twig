@@ -26,7 +26,7 @@
             {% block table_body %}
                 <tr>
                     <td class="p-sm fw-bold w-200px">{{ 'audit_log.field.timestamp'|trans({}, 'audit_log') }}</td>
-                    <td class="p-sm">{{ auditLog.createdAt|date('d.m.Y H:i:s') }}</td>
+                    <td class="p-sm">{{ auditLog.createdAt|fa_datetime(true) }}</td>
                 </tr>
                 <tr>
                     <td class="p-sm fw-bold">{{ 'audit_log.field.action'|trans({}, 'audit_log') }}</td>

@@ -13,24 +13,21 @@
         <p class="fw-semibold mb-2">{{ risk_business_summary(risk) }}</p>
         <p class="mb-3"><span class="text-body-secondary">{{ 'risk.acceptance.pending.justification'|trans({}, 'risk') }}:</span> {{ risk.acceptanceJustification }}</p>
         {% if is_granted('risk_acceptance_approve', risk) %}
-            <div class="d-flex flex-wrap gap-3 align-items-start">
-                <form method="post" action="{{ path('app_risk_approve_acceptance', {id: risk.id}) }}" class="d-flex flex-wrap gap-2 align-items-end">
-                    <input type="hidden" name="_token" value="{{ csrf_token('approve-acceptance' ~ risk.id) }}">
-                    <div>
-                        <label for="acceptance-comments" class="form-label small mb-1">{{ 'risk.acceptance.pending.comments'|trans({}, 'risk') }}</label>
-                        <input type="text" id="acceptance-comments" name="comments" class="form-control form-control-sm" maxlength="500">
-                    </div>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'risk.acceptance.pending.approve'|trans({}, 'risk') }}</button>
-                </form>
-                <form method="post" action="{{ path('app_risk_reject_acceptance', {id: risk.id}) }}" class="d-flex flex-wrap gap-2 align-items-end">
-                    <input type="hidden" name="_token" value="{{ csrf_token('reject-acceptance' ~ risk.id) }}">
-                    <div>
-                        <label for="acceptance-reason" class="form-label small mb-1">{{ 'risk.acceptance.pending.reason'|trans({}, 'risk') }}</label>
-                        <input type="text" id="acceptance-reason" name="reason" class="form-control form-control-sm" maxlength="500" required>
-                    </div>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'risk.acceptance.pending.reject'|trans({}, 'risk') }}</button>
-                </form>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
+                        data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open"
+                        data-fa-modal-id="approveAcceptance{{ risk.id }}">
+                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                    {{ 'risk.acceptance.pending.approve'|trans({}, 'risk') }}
+                </button>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+                        data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open"
+                        data-fa-modal-id="rejectAcceptance{{ risk.id }}">
+                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                    {{ 'risk.acceptance.pending.reject'|trans({}, 'risk') }}
+                </button>
             </div>
+            {% include 'risk/_acceptance_decide_modals.html.twig' with { riskId: risk.id, subject: risk.title, summary: risk_business_summary(risk) } only %}
         {% else %}
             <p class="text-body-secondary small mb-0">{{ 'risk.acceptance.pending.waiting'|trans({}, 'risk') }}</p>
         {% endif %}

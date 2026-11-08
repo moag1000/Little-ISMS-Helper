@@ -146,7 +146,7 @@
                                 : (log.action in ['update', 'login_failed'] ? 'warning'
                                 : 'info')) -%}
                             {{ _fa_audit_row.render({
-                                ts:     log.createdAt|date('Y-m-d H:i:s'),
+                                ts:     log.createdAt|fa_datetime(true),
                                 sev:    sev,
                                 actor:  log.userName|default('system'),
                                 action: log.action,
@@ -188,7 +188,7 @@
                             : (log.action in ['create', 'login', 'export', 'import'] ? 'info'
                             : 'info')) -%}
                         {{ _fa_audit_row.render({
-                            ts: log.createdAt|date('H:i:s.') ~ (log.createdAt|date('u')|slice(0, 3)),
+                            ts: log.createdAt|fa_time(true),
                             sev: sev,
                             actor: log.userName|default('system'),
                             action: log.action,

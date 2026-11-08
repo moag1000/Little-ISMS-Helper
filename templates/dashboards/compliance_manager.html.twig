@@ -317,13 +317,6 @@
     {# What is waiting for this person — every deadline source, same list as My Day #}
     <div class="mb-4">{% include 'dashboards/_my_obligations.html.twig' %}</div>
 
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-    {% endif %}
-
     {% if dashboard.lifecycle_stuck is defined and dashboard.lifecycle_stuck|length > 0 %}
     <section class="fa-section mb-4" id="lifecycle-stuck">
         <div class="fa-section__header">

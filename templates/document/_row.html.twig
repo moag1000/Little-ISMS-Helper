@@ -103,7 +103,7 @@
         <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
         {{ document.uploadedAt|fa_date }}
         <br>
-        <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
+        <small class="text-muted">{{ document.uploadedAt|fa_time }}</small>
     </td>
     <td class="fa-table__cell fa-table__cell--actions text-right">
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">

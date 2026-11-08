@@ -4,10 +4,12 @@ check_date_display.py — Gate 77: dates are shown through |fa_date / |fa_dateti
 
 UI wave G: the review found four date formats side by side (31.10.2026 14:05,
 2026-10-31, 31.10.2026, 2026-10-31 14:05). Shown dates go through the
-filters that apply the admin-configured format and timezone. A hard-coded
-`|date('d.m.Y')`, `|date('Y-m-d')` (and the two H:i variants) in text output
-is a finding; inside HTML attributes, <script>, path()/url() or string
-concatenation it is left alone (machine formats).
+filters that apply the admin-configured format, timezone and locale:
+|fa_date, |fa_datetime (seconds: fa_datetime(true)), |fa_time, |fa_month.
+Any hard-coded `|date('…')` in text output is a finding (since W4 every format,
+not only the four, e.g. 'F Y' showed English month names); machine formats
+(U, u, c, ISO) and dates inside HTML attributes, <script>, path()/url() or
+lines marked `{# machine-date #}` are left alone.
 
 Per-file counts of templates not yet swept are baselined and may only shrink.
 

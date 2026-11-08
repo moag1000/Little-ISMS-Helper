@@ -1,0 +1,26 @@
+{# Approve / reject dialogs of one requested risk acceptance (ISO 27005 §8.4.4),
+ # used by the risk detail page and My Day. `back: 'my_day'` returns there. #}
+{% import '_macros/workflow.html.twig' as _workflow %}
+{% set hidden = back is defined and back ? { _back: back } : {} %}
+{{ _workflow.decision_modal({
+    id: 'approveAcceptance' ~ riskId,
+    tone: 'success',
+    title: 'risk.acceptance.pending.approve'|trans({}, 'risk'),
+    action: path('app_risk_approve_acceptance', {id: riskId}),
+    token: csrf_token('approve-acceptance' ~ riskId),
+    subject: subject,
+    summary: summary ?? null,
+    field: { name: 'comments', label: 'risk.acceptance.pending.comments'|trans({}, 'risk') },
+    hidden: hidden,
+}) }}
+{{ _workflow.decision_modal({
+    id: 'rejectAcceptance' ~ riskId,
+    tone: 'danger',
+    title: 'risk.acceptance.pending.reject'|trans({}, 'risk'),
+    action: path('app_risk_reject_acceptance', {id: riskId}),
+    token: csrf_token('reject-acceptance' ~ riskId),
+    subject: subject,
+    summary: summary ?? null,
+    field: { name: 'reason', label: 'risk.acceptance.pending.reason'|trans({}, 'risk'), required: true, rows: 4 },
+    hidden: hidden,
+}) }}

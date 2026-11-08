@@ -97,4 +97,24 @@ final class NavigationSearchTest extends TestCase
             }
         }
     }
+
+    /** The lists reminders and persona dashboards point to are findable by their usual names. */
+    #[Test]
+    public function findsPersonaLists(): void
+    {
+        $search = $this->search(true, true);
+        foreach ([
+            'Managementbewertung' => '/app_management_review_index',
+            'VVT' => '/app_processing_activity_index',
+            'DSFA' => '/app_dpia_index',
+            'Datenpanne' => '/app_data_breach_index',
+            'Betroffenenanfrage' => '/app_data_subject_request_index',
+            'Auditprogramm' => '/app_audit_program_index',
+            'Feststellungen' => '/app_audit_finding_index',
+            'Offene Freigaben' => '/app_workflow_pending',
+            'Vier-Augen' => '/app_four_eyes_inbox',
+        ] as $query => $url) {
+            self::assertContains($url, array_column($search->search($query), 'url'), $query);
+        }
+    }
 }
