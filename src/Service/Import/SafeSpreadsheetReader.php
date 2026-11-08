@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service\Import;
 
 use ErrorException;
-use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use PhpOffice\PhpSpreadsheet\Reader\IReadFilter;
 use PhpOffice\PhpSpreadsheet\Reader\Ods;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
@@ -68,7 +67,6 @@ final class SafeSpreadsheetReader
         }
 
         $class = self::READERS[$type];
-        /** @var IReader $reader */
         $reader = new $class();
         if (!$reader->canRead($filePath)) {
             throw new ErrorException(sprintf('File is not a valid %s workbook.', $type));

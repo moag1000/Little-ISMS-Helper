@@ -275,7 +275,7 @@ class ReportBuilderController extends AbstractController
         if (isset($data['category'])) {
             $report->setCategory($data['category']);
         }
-        if (isset($data['layout']) && is_array($data['layout'])) {
+        if (isset($data['layout']) && is_string($data['layout'])) {
             $report->setLayout($data['layout']);
         }
         if (isset($data['widgets']) && is_array($data['widgets'])) {
