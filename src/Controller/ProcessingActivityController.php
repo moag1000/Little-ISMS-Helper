@@ -444,28 +444,6 @@ class ProcessingActivityController extends AbstractController
         return $response;
     }
 
-    #[Route('/processing-activity/search', name: 'app_processing_activity_search', methods: ['GET'])]
-    public function search(Request $request): JsonResponse
-    {
-        $query = $request->query->get('q', '');
-
-        if (strlen($query) < 2) {
-            return $this->json(['results' => []]);
-        }
-
-        $results = $this->processingActivityService->search($query);
-
-        $formattedResults = array_map(fn(ProcessingActivity $processingActivity): array => [
-            'id' => $processingActivity->getId(),
-            'name' => $processingActivity->getName(),
-            'status' => $processingActivity->getStatus(),
-            'legal_basis' => $processingActivity->getLegalBasis(),
-            'completeness' => $processingActivity->getCompletenessPercentage(),
-        ], $results);
-
-        return $this->json(['results' => $formattedResults]);
-    }
-
     /**
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if a ProcessingActivity has linked Consents, DataBreaches, or DPIAs.
@@ -539,27 +517,6 @@ class ProcessingActivityController extends AbstractController
             'processing_activity' => $processingActivity,
             'compliance_report'   => $complianceReport,
             'tias'                => $tias,
-        ]);
-    }
-
-    #[Route('/processing-activity/{id}/compliance-report', name: 'app_processing_activity_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function complianceReport(ProcessingActivity $processingActivity): JsonResponse
-    {
-        $report = $this->processingActivityService->generateComplianceReport($processingActivity);
-
-        return $this->json($report);
-    }
-
-    #[Route('/processing-activity/{id}/validate', name: 'app_processing_activity_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function validate(ProcessingActivity $processingActivity): JsonResponse
-    {
-        $errors = $this->processingActivityService->validate($processingActivity);
-        $isCompliant = $errors === [];
-
-        return $this->json([
-            'is_compliant' => $isCompliant,
-            'errors' => $errors,
-            'completeness_percentage' => $processingActivity->getCompletenessPercentage(),
         ]);
     }
 

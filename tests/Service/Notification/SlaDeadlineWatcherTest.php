@@ -75,6 +75,23 @@ final class SlaDeadlineWatcherTest extends TestCase
     }
 
     #[Test]
+    public function statutoryReportsAreLeftToTheReminderPath(): void
+    {
+        $tenant  = new Tenant();
+        $monitor = $this->makeMonitor(new DateTimeImmutable('+20 hours'), [48, 24, 12, 4, 1], null, 'DataBreach');
+
+        $this->tenantRepo->method('findActive')->willReturn([$tenant]);
+        $this->monitorRepo->method('findApproachingDeadlines')->willReturn([$monitor]);
+        $this->monitorRepo->method('findMissedDeadlines')->willReturn([]);
+        $this->ruleRepo->method('findActiveByEventType')->willReturn([]);
+
+        $result = $this->watcher->tickAll();
+
+        self::assertSame(0, $result['approached']);
+        self::assertNull($monitor->getLastNotifiedAtHours());
+    }
+
+    #[Test]
     public function approachingCheckpointFiresWhenWithinWindow(): void
     {
         $tenant  = new Tenant();
@@ -269,11 +286,12 @@ final class SlaDeadlineWatcherTest extends TestCase
         DateTimeImmutable $deadlineAt,
         array $checkpoints,
         ?int $lastNotified,
+        string $entityType = 'AuditFinding',
     ): SlaDeadlineMonitor {
         $monitor = new SlaDeadlineMonitor();
-        $monitor->setEntityType('DataBreach');
+        $monitor->setEntityType($entityType);
         $monitor->setEntityId(1);
-        $monitor->setDeadlineType(SlaDeadlineType::GdprNotification72h);
+        $monitor->setDeadlineType($entityType === 'DataBreach' ? SlaDeadlineType::GdprNotification72h : SlaDeadlineType::IsoCorrectiveAction30d);
         $monitor->setTriggeredAt(new DateTimeImmutable('-52 hours'));
         $monitor->setDeadlineAt($deadlineAt);
         $monitor->setNotifyAtCheckpoints($checkpoints);

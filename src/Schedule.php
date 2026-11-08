@@ -10,6 +10,7 @@ use App\Message\Schedule\ExecuteScheduledTaskMessage;
 use App\Message\Schedule\GenerateComplianceReportMessage;
 use App\Message\Schedule\SyncEuvdFeedMessage;
 use App\Repository\ScheduledTaskRepository;
+use App\Service\RetentionEnforcementService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Messenger\RunCommandMessage;
@@ -54,7 +55,6 @@ class Schedule implements ScheduleProviderInterface
         ['0 2 * * 0', 'app:tisax:purge-old-ip-addresses'],
         ['30 5 * * *', 'app:suggestions:generate'],
         ['0 7 * * *', 'app:notification:send-digests'],
-        ['30 8 * * *', 'app:notify-overdue-controls'],
         ['0 5 * * *', 'app:evidence:expire'],
         ['30 5 * * *', 'app:risk:schedule-reviews'],
     ];
@@ -101,7 +101,10 @@ class Schedule implements ScheduleProviderInterface
         // Enforce data-retention weekly (Sundays at 4:00 AM) — GDPR Art. 5(1)(e):
         // per-tenant auto_delete policies + audit-log retention (NIS2 floor).
         $schedule->add(
-            RecurringMessage::cron('0 4 * * 0', new EnforceRetentionMessage())
+            RecurringMessage::cron(
+                sprintf('0 %d * * %d', RetentionEnforcementService::SWEEP_HOUR, RetentionEnforcementService::SWEEP_WEEKDAY),
+                new EnforceRetentionMessage(),
+            )
         );
 
         // Sync the ENISA EUVD feed daily at 5:00 AM (NIS2 Art. 12

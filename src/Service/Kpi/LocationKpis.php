@@ -68,8 +68,9 @@ readonly class LocationKpis
     /** @return array<string, array<string, mixed>> */
     private function locations(Tenant $tenant): array
     {
-        // Closed sites (inactive) keep their history but no longer count.
-        $sites = array_values(array_filter($this->posture->forTenant($tenant), static fn (array $s): bool => $s['active']));
+        // Closed sites (inactive) keep their history but no longer count; nor do sites
+        // outside the ISMS scope (ISO 27001 4.3).
+        $sites = array_values(array_filter($this->posture->forTenant($tenant), static fn (array $s): bool => $s['active'] && ($s['inScope'] ?? true)));
         if ($sites === []) {
             return [];
         }

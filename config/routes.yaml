@@ -26,6 +26,7 @@ app_routes:
         - '../src/Controller/MetricsController.php'
         - '../src/Controller/PublicPostureController.php'
         - '../src/Controller/PublicSupplierQuestionnaireController.php'
+        - '../src/Controller/McpController.php'
 
 # NOTE on ordering: the `exclude` list of app_routes is not honoured by the
 # path+namespace (PSR-4 directory) loader, so every controller is also loaded
@@ -108,4 +109,11 @@ public_posture_routes:
 # previously shared links. Token = access control — no auth required.
 public_supplier_questionnaire_routes:
     resource: ../src/Controller/PublicSupplierQuestionnaireController.php
+    type: attribute
+
+# Assistant connection (MCP, Streamable HTTP) WITHOUT locale prefix: /mcp is the
+# fixed URL that Claude Desktop / Claude Code / other MCP clients are configured
+# with; the bearer API token is the access control (see McpController).
+mcp_routes:
+    resource: ../src/Controller/McpController.php
     type: attribute

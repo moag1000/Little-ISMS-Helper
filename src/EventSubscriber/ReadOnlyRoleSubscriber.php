@@ -54,6 +54,7 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
         'api_alva_hint_',
         'api_push_',
         'app_api_tokens_',       // API tokens are read-only themselves
+        'app_mcp_',              // assistant connection: reads, drafts only into the suggestion queue
         'report_builder_',       // own report definitions
         'app_mapping_onboarding_',
         'app_workflow_instance_approve',
@@ -132,6 +133,12 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
     /** Whether a reviewer-role user may not call this route with this method. */
     public function isRestricted(string $route, string $method): bool
     {
+        // API Platform operations are named `_api_…` and would slip through the
+        // framework-internals prefix '_' below: the REST API is read-only for
+        // reviewer roles, whatever the resource.
+        if (str_starts_with($route, '_api_')) {
+            return !in_array($method, self::SAFE_METHODS, true);
+        }
         foreach (self::ALLOWED_PREFIXES as $prefix) {
             if (str_starts_with($route, $prefix)) {
                 return false;

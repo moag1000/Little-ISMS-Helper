@@ -98,7 +98,7 @@ class ObligationInbox
                         urgent: $due !== null && $profile->urgentHours !== null
                             && $due <= $now->modify(sprintf('+%d hours', $profile->urgentHours)),
                     );
-                    yield [$obligation, $this->responsibility->resolve($source->responsibleOf($record), $tenant)];
+                    yield [$obligation, $this->responsibility->recipients($source->responsibleOf($record), $tenant)];
                 }
             } catch (\Throwable $e) {
                 // One broken source must not empty everybody's inbox.

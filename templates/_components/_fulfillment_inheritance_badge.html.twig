@@ -2,15 +2,15 @@
  # Icons are semantic; text is always visible for screen readers and color-blind users. #}
 {% set status = log.reviewStatus %}
 {% set variants = {
-    'pending_review':    { class: 'bg-warning-subtle text-warning', icon: 'ui-hourglass', labelKey: 'compliance_inheritance.status.pending_review' },
-    'source_updated':    { class: 'bg-danger',            icon: 'util-refresh',    labelKey: 'compliance_inheritance.status.source_updated' },
-    'confirmed':         { class: 'bg-info-subtle text-info',  icon: 'link',      labelKey: 'compliance_inheritance.status.confirmed' },
-    'overridden':        { class: 'bg-secondary',              icon: 'ui-edit',   labelKey: 'compliance_inheritance.status.overridden' },
-    'rejected':          { class: 'bg-secondary text-body',    icon: 'status-critical',        labelKey: 'compliance_inheritance.status.rejected' },
-    'implemented':       { class: 'bg-success',           icon: 'status-ok',    labelKey: 'compliance_inheritance.status.implemented' },
+    'pending_review':    { tone: 'warning', icon: 'ui-hourglass', labelKey: 'compliance_inheritance.status.pending_review' },
+    'source_updated':    { tone: 'danger',            icon: 'util-refresh',    labelKey: 'compliance_inheritance.status.source_updated' },
+    'confirmed':         { tone: 'primary',  icon: 'link',      labelKey: 'compliance_inheritance.status.confirmed' },
+    'overridden':        { tone: 'neutral',              icon: 'ui-edit',   labelKey: 'compliance_inheritance.status.overridden' },
+    'rejected':          { tone: 'neutral',    icon: 'status-critical',        labelKey: 'compliance_inheritance.status.rejected' },
+    'implemented':       { tone: 'success',           icon: 'status-ok',    labelKey: 'compliance_inheritance.status.implemented' },
 } %}
 {% set variant = variants[status]|default(variants.pending_review) %}
-<span class="badge {{ variant.class }} d-inline-flex align-items-center gap-1"
+<span class="fa-status-pill fa-status-pill--{{ variant.tone }}"
       title="{{ variant.labelKey|trans({}, 'compliance_inheritance') }}">
     <i class="fa-icon fa-icon--{{ variant.icon }}" aria-hidden="true"></i>
     <span>{{ variant.labelKey|trans({}, 'compliance_inheritance') }}</span>

@@ -167,7 +167,6 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'control.placeholder.responsible_person_user',
-                'help' => 'control.help.responsible_person_user',
             ])
             ->add('responsiblePersonRef', EntityType::class, [
                 'label' => 'control.field.responsible_person_contact',

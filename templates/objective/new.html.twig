@@ -33,15 +33,15 @@
             },
             'target_metric': {
                 'label': 'form.section.target_metric'|trans({}, 'messages'),
-                'fields': ['measurableIndicators', 'targetValue', 'currentValue', 'unit']
+                'fields': ['measurableIndicators', 'kpiKey', 'kpiLocation', 'targetValue', 'currentValue', 'unit']
             },
             'monitoring': {
                 'label': 'form.section.monitoring'|trans({}, 'messages'),
-                'fields': ['measurementFrequency', 'measurementMethod']
+                'fields': ['measurementPerson', 'responsibleForMeasurement', 'measurementFrequency', 'measurementMethod']
             },
             'responsibility': {
                 'label': 'form.section.responsibility'|trans({}, 'messages'),
-                'fields': ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'responsibleForMeasurement', 'targetDate']
+                'fields': ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'targetDate']
             },
             'audit_metadata': {
                 'label': 'form.section.audit_metadata'|trans({}, 'messages'),
@@ -63,6 +63,7 @@
             'responsibleDeputyPersons': 12,
             'responsiblePerson': 6,
             'responsibleForMeasurement': 6,
+        'measurementPerson': 6,
             'targetDate': 6,
             'status': 6,
             'progressNotes': 12

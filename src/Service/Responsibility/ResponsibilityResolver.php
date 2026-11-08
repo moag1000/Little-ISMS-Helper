@@ -82,6 +82,28 @@ class ResponsibilityResolver implements ResetInterface
         return $responsibility->roles !== [] ? $this->usersHolding($tenant, ...$responsibility->roles) : [];
     }
 
+    /**
+     * Everybody a reminder of this duty goes to: whoever acts ({@see resolve()})
+     * plus the people and role holders kept informed.
+     *
+     * @return list<User>
+     */
+    public function recipients(Responsibility $responsibility, Tenant $tenant): array
+    {
+        $users = [];
+        foreach ([
+            $this->resolve($responsibility, $tenant),
+            $this->accounts($responsibility->informed, $tenant),
+            $responsibility->informedRoles !== [] ? $this->usersHolding($tenant, ...$responsibility->informedRoles) : [],
+        ] as $group) {
+            foreach ($group as $user) {
+                $users[$user->getId() !== null ? 'id' . $user->getId() : 'o' . spl_object_id($user)] ??= $user;
+            }
+        }
+
+        return array_values($users);
+    }
+
     public function isResponsible(User $user, Responsibility $responsibility, Tenant $tenant): bool
     {
         foreach ($this->resolve($responsibility, $tenant) as $candidate) {

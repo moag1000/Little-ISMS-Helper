@@ -1,0 +1,74 @@
+mcp:
+    instructions: >-
+        Du arbeitest mit dem ISMS der Organisation „%organisation%“ (Little ISMS Helper). Rufe zuerst get_context auf:
+        dort stehen deine Rollen (Personas), die aktiven Module und die Datensatz-Ressourcen. Lesen: my_day (offene Fristen
+        und Entscheidungen), compliance_fulfillment (Erfüllung je Norm mit „Warum dieser Wert?“), management_kpis,
+        duty_calendar, search, list_records/get_record (alle REST-Ressourcen), pending_suggestions. Schreiben gibt es nur als
+        Vorschlag: draft_options zeigt, welche Entwürfe zu einem Datensatz möglich sind, propose_draft legt sie in die
+        Vorschlags-Queue; eine verantwortliche Person übernimmt oder lehnt dort ab. Verweise auf Datensätze mit ihren Links,
+        nenne Normstellen und erfinde keine Werte: was die Werkzeuge nicht liefern, ist nicht erfasst.
+    prompt:
+        my_day_briefing:
+            title: 'Mein Tag'
+            description: 'Offene Fristen und Entscheidungen, nach Dringlichkeit geordnet'
+            text: >-
+                Fasse meinen Tag zusammen: Rufe my_day und pending_suggestions auf. Nenne zuerst Überfälliges und Entscheidungen,
+                dann die nächsten sieben Tage, je Punkt mit Normstelle und Link. Schlage pro Punkt den nächsten Schritt in einem Satz vor.
+        audit_readiness:
+            title: 'Audit-Bereitschaft'
+            description: 'Lücken einer Norm mit Begründung und Nachweisen'
+            text: >-
+                Prüfe die Audit-Bereitschaft für %framework%: Rufe compliance_fulfillment für %framework% auf und für die
+                zehn schwächsten anwendbaren Anforderungen jeweils die Begründung („Warum“). Nenne je Lücke, welche Controls,
+                Datensätze oder Nachweise fehlen, und was ich in der App konkret tun kann. Übersteuerte Werte mit Begründung
+                und Prüfdatum gesondert aufführen.
+        management_briefing:
+            title: 'Bericht für die Leitung'
+            description: 'Lage auf einer Seite für Geschäftsführung und Managementbewertung'
+            text: >-
+                Erstelle einen einseitigen Lagebericht für die Leitung (ISO 27001 9.3): Rufe management_kpis,
+                compliance_fulfillment (ohne Argumente), duty_calendar und my_day auf. Gliederung: Gesamtlage in drei Sätzen,
+                Kennzahlen mit Ampel, Erfüllung je Norm, überfällige Pflichten, Entscheidungen, die die Leitung treffen muss.
+                Keine Fachbegriffe ohne Erklärung.
+        draft_from_record:
+            title: 'Entwurf vorschlagen'
+            description: 'Entwurf zu einem Datensatz in die Vorschlags-Queue legen'
+            text: >-
+                Rufe draft_options für %resource% %id% auf. Wähle den passenden Entwurf, lies die Fakten, schreibe den Entwurf
+                genau mit den verlangten JSON-Schlüsseln und lege ihn mit propose_draft in die Vorschlags-Queue. Zeige mir den
+                Entwurf und den Link zur Queue.
+    prompt_argument:
+        framework: 'Norm-Code, z. B. ISO27001, NIS2, DORA'
+        resource: 'Art des Datensatzes, z. B. Incident, Control'
+        id: 'ID des Datensatzes'
+    admin:
+        title: 'KI-Assistent anbinden (MCP)'
+        intro: >-
+            Personen der Organisation können ihren eigenen KI-Assistenten (Claude Desktop, Claude Code oder einen anderen
+            MCP-Client) mit einem API-Token anbinden. Der Assistent liest mit den Rechten der Person und legt Entwürfe nur
+            in die Vorschlags-Queue; übernommen wird erst nach Freigabe in der App.
+        enabled: 'Assistenten-Zugang für diese Organisation erlauben'
+        privacy: >-
+            Gelesene Daten gehen an den Assistenten der Person und dessen Anbieter. Jeder Zugriff steht im Audit-Log
+            (Werkzeug, Datensatzart, ID), Tokens sind jederzeit widerrufbar. Ausgeschaltet antwortet /mcp jedem Token mit 403.
+        to_tokens: 'Zu den API-Tokens'
+    tokens:
+        title: 'KI-Assistent verbinden (MCP)'
+        status_on: 'Freigeschaltet'
+        status_off: 'Nicht freigeschaltet'
+        intro: >-
+            Mit einem Token dieser Seite liest dein KI-Assistent Fristen, Erfüllung, Risiken, Controls und weitere Datensätze
+            mit deinen Rechten und schlägt Entwürfe vor, die du in der App freigibst.
+        off_hint: 'Die Organisation hat den Assistenten-Zugang noch nicht freigeschaltet.'
+        off_admin_link: 'Jetzt freischalten'
+        endpoint: 'Adresse des MCP-Servers'
+        copy: 'Kopieren'
+        snippet:
+            claude_code: 'Claude Code'
+            claude_desktop: 'Claude Desktop'
+            project_file: 'Projektdatei .mcp.json'
+        snippet_help:
+            claude_code: 'Im Terminal ausführen.'
+            claude_desktop: 'In claude_desktop_config.json (Einstellungen > Entwickler > Konfiguration bearbeiten) einfügen, Claude Desktop neu starten. Benötigt Node.js.'
+            project_file: 'Für Teams: ohne Token einchecken, jede Person setzt die Umgebungsvariable ISMS_TOKEN.'
+        safety: 'Das Token steht nur einmal nach dem Erstellen im Klartext da und ersetzt in den Beispielen <TOKEN>. Ein Token je Gerät anlegen; verlorene Tokens sofort widerrufen.'

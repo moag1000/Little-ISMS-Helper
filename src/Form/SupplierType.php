@@ -175,7 +175,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
             ])
             ->add('lastSecurityAssessment', DateType::class, [
                 'label' => 'supplier.field.last_security_assessment',
-                'help' => 'supplier.help.last_assessment',
                 'widget' => 'single_text',
                 'required' => false,
             ])
@@ -226,7 +225,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
             ])
             ->add('hasISO27001', CheckboxType::class, [
                 'label' => 'supplier.field.has_iso27001',
-                'help' => 'supplier.help.has_iso27001',
                 'required' => false,
             ])
             ->add('hasISO22301', CheckboxType::class, [
@@ -604,13 +602,11 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.marisk.field.bafin_notification_date',
                 'widget' => 'single_text',
                 'required' => false,
-                'help' => 'supplier.marisk.help.bafin_notification_date',
             ])
             ->add('riskBearingCapacityImpact', TextareaType::class, [
                 'label' => 'supplier.marisk.field.risk_bearing_capacity_impact',
                 'required' => false,
                 'attr' => ['rows' => 3],
-                'help' => 'supplier.marisk.help.risk_bearing_capacity_impact',
             ])
             ->add('boardLevelRiskAcceptance', CheckboxType::class, [
                 'label' => 'supplier.marisk.field.board_level_risk_acceptance',
@@ -620,12 +616,10 @@ final class SupplierType extends AbstractType implements SectionMapInterface
             ->add('complianceFunctionInvolvement', CheckboxType::class, [
                 'label' => 'supplier.marisk.field.compliance_function_involvement',
                 'required' => false,
-                'help' => 'supplier.marisk.help.compliance_function_involvement',
             ])
             ->add('internalAuditFunctionInvolvement', CheckboxType::class, [
                 'label' => 'supplier.marisk.field.internal_audit_function_involvement',
                 'required' => false,
-                'help' => 'supplier.marisk.help.internal_audit_function_involvement',
             ])
         ;
     }

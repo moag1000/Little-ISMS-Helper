@@ -111,9 +111,12 @@ search_nav:
     app_suggestion_index:
         label: 'Suggestions'
         description: 'Accept or reject derived, inherited, imported and AI suggestions'
+    app_api_tokens:
+        label: 'API tokens and AI assistant (MCP)'
+        description: 'Create and revoke tokens for the REST API and AI assistants, configuration for Claude Desktop and Claude Code'
     admin_settings_ai:
         label: 'AI settings'
-        description: 'Local model or Mistral API for AI suggestions, privacy'
+        description: 'Local model or Mistral API for AI suggestions, assistant access (MCP), privacy'
     app_dashboard_risk_manager:
         label: 'Risk manager dashboard'
         description: 'Risk posture, treatment plans and due risk acceptances'

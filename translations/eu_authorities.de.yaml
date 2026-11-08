@@ -70,7 +70,6 @@ eu_authorities:
         help:
             legal_form: 'Rechtsform gem. Handelsregister, z.B. GmbH, AG, GbR'
             register_number: 'Handelsregisternummer, z.B. HRB 12345'
-            headcount: 'Anzahl der von der Einrichtung betroffenen Beschäftigten'
             turnover: 'Jährlicher Umsatz in EUR — relevant für Schwellenwertprüfung'
             ict_dependency: 'Kurzbeschreibung der kritischen IKT-Abhängigkeiten (max. 5 Sätze)'
             nace_codes: 'NACE-Rev.2-Codes Ihrer Haupttätigkeit'

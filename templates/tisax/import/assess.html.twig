@@ -162,11 +162,11 @@
                                     {# ── Requirement tiers M/S/H/VH/SGA (§9.2) ── #}
                                     {% set tierMap = req.dataSourceMapping ?? {} %}
                                     {% set tiers = [
-                                        { key: 'tisax_must',     abbr: 'must',     css: 'bg-secondary' },
-                                        { key: 'tisax_should',   abbr: 'should',   css: 'bg-secondary' },
-                                        { key: 'tisax_high',     abbr: 'high',     css: 'bg-warning text-dark' },
-                                        { key: 'tisax_veryHigh', abbr: 'very_high', css: 'bg-danger' },
-                                        { key: 'tisax_sga',      abbr: 'sga',      css: 'bg-info text-dark' }
+                                        { key: 'tisax_must',     abbr: 'must',     tone: 'neutral' },
+                                        { key: 'tisax_should',   abbr: 'should',   tone: 'neutral' },
+                                        { key: 'tisax_high',     abbr: 'high',     tone: 'warning' },
+                                        { key: 'tisax_veryHigh', abbr: 'very_high', tone: 'danger' },
+                                        { key: 'tisax_sga',      abbr: 'sga',      tone: 'primary' }
                                     ] %}
                                     <div class="d-flex gap-1 flex-wrap" role="group"
                                          aria-label="{{ 'tisax.import.assess.req_levels.aria'|trans({}, 'tisax_isa') }}">
@@ -174,7 +174,7 @@
                                         {% for tier in tiers %}
                                             {% if tierMap[tier.key] is defined and tierMap[tier.key] is not empty %}
                                                 {% set anyTier = true %}
-                                                <span class="badge {{ tier.css }}"
+                                                <span class="fa-status-pill fa-status-pill--{{ tier.tone }}"
                                                       title="{{ ('tisax.import.assess.req_level.' ~ tier.abbr ~ '_tooltip')|trans({}, 'tisax_isa') }}">
                                                     {{ ('tisax.import.assess.req_level.' ~ tier.abbr ~ '_abbr')|trans({}, 'tisax_isa') }}
                                                 </span>

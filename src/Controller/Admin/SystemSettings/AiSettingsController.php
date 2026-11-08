@@ -7,6 +7,7 @@ namespace App\Controller\Admin\SystemSettings;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\SuggestionOrigin;
+use App\Mcp\McpSettings;
 use App\Service\Ai\AiAssistant;
 use App\Service\Ai\AiSettings;
 use App\Service\AuditLogger;
@@ -43,6 +44,7 @@ class AiSettingsController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly ValidatorInterface $validator,
         private readonly TranslatorInterface $translator,
+        private readonly McpSettings $mcpSettings,
     ) {
     }
 
@@ -61,6 +63,7 @@ class AiSettingsController extends AbstractController
             'use_cases' => array_map(static fn ($k): string => $k->key(), $useCases),
             'default_local_endpoint' => AiSettings::DEFAULT_LOCAL_ENDPOINT,
             'default_external_endpoint' => AiSettings::DEFAULT_EXTERNAL_ENDPOINT,
+            'mcp_enabled' => $this->mcpSettings->isEnabled($tenant),
         ]);
     }
 
@@ -154,6 +157,30 @@ class AiSettingsController extends AbstractController
                 'suggestions',
             ));
         }
+
+        return $this->redirectToRoute('admin_settings_ai');
+    }
+
+    /**
+     * Assistant connection (MCP): the organisation's opt-in. Off by default;
+     * while off, /mcp refuses every token of the organisation.
+     */
+    #[Route('/mcp', name: 'admin_settings_ai_mcp', methods: ['POST'])]
+    #[IsCsrfTokenValid('admin_settings_ai_mcp')]
+    public function saveMcp(Request $request): Response
+    {
+        $tenant = $this->tenant();
+        $enabled = $request->request->getBoolean('mcp_enabled');
+        $before = $this->mcpSettings->isEnabled($tenant);
+        $this->mcpSettings->setEnabled($tenant, $enabled);
+        $this->auditLogger->logUpdate(
+            entityType: 'Tenant',
+            entityId: $tenant->getId(),
+            oldValues: ['mcp_enabled' => $before],
+            newValues: ['mcp_enabled' => $enabled],
+            description: 'Assistant connection (MCP) ' . ($enabled ? 'enabled' : 'disabled'),
+        );
+        $this->addFlash('success', 'suggestions.ai.flash.saved');
 
         return $this->redirectToRoute('admin_settings_ai');
     }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use App\Entity\ISMSObjective;
 use App\Service\Kpi\KpiCatalog;
+use App\Service\Kpi\ObjectiveKpiProgress;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Attribute\AsTwigFilter;
 use Twig\Attribute\AsTwigFunction;
@@ -19,7 +21,26 @@ final class KpiExtension
     public function __construct(
         private readonly KpiCatalog $catalog,
         private readonly RequestStack $requestStack,
+        private readonly ?ObjectiveKpiProgress $objectiveProgress = null,
     ) {
+    }
+
+    /**
+     * Progress of an ISMS objective (ISO 27001 6.2 d / 9.1) for lists, drawer and
+     * detail page: computed from the linked KPI, else from the value kept by hand.
+     *
+     * @return array{percent: int, current: float|string|null, computed: bool}
+     */
+    #[AsTwigFunction('objective_progress')]
+    public function objectiveProgress(ISMSObjective $objective): array
+    {
+        $key = $objective->getKpiKey();
+        $current = $key !== null ? $this->objectiveProgress?->current($objective) : null;
+        $percent = $key !== null ? ObjectiveKpiProgress::progress($key, $current, $objective->getTargetValue()) : null;
+
+        return $percent !== null
+            ? ['percent' => $percent, 'current' => $current, 'computed' => true]
+            : ['percent' => max(0, min(100, $objective->getProgressPercentage())), 'current' => $objective->getCurrentValue(), 'computed' => false];
     }
 
     /** @return array<string, mixed>|null */

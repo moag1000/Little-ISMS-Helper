@@ -540,7 +540,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     }
 
     // =========================================================================
-    // DPO Consultation Tests (Art. 35(4))
+    // DPO Consultation Tests (Art. 35(2))
     // =========================================================================
 
     #[Test]
@@ -716,7 +716,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
 
         $errors = $this->service->validate($dpia);
 
-        $this->assertContains('DPO should be consulted before approval (Art. 35(4))', $errors);
+        $this->assertContains('DPO should be consulted before approval (Art. 35(2))', $errors);
     }
 
     #[Test]

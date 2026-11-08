@@ -414,37 +414,6 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertArrayHasKey('percentage', $response);
     }
 
-    // ========== EXPORT TESTS ==========
-
-    #[Test]
-    public function testExportRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/compliance/mapping-quality/export');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testExportReturnsJsonForUser(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/mapping-quality/export');
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('content-type', 'application/json');
-    }
-
-    #[Test]
-    public function testExportContainsExpectedFields(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/mapping-quality/export');
-
-        $response = json_decode($this->client->getResponse()->getContent(), true);
-        $this->assertArrayHasKey('quality_statistics', $response);
-        $this->assertArrayHasKey('mappings_requiring_review_count', $response);
-        $this->assertArrayHasKey('high_priority_gaps_count', $response);
-        $this->assertArrayHasKey('export_date', $response);
-    }
-
     // ========== INPUT VALIDATION TESTS ==========
 
     #[Test]

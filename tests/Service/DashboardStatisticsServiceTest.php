@@ -290,6 +290,7 @@ class DashboardStatisticsServiceTest extends TestCase
         $asset->method('getConfidentialityValue')->willReturn($confidentialityValue);
         $asset->method('getStatus')->willReturn('active');
         $asset->method('isOperational')->willReturn(true);
+        $asset->method('isInIsmsScope')->willReturn(true);
         $asset->method('getId')->willReturn(random_int(100, 99999));
         return $asset;
     }

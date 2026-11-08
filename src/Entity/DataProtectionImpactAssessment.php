@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * - GDPR Art. 35: Data Protection Impact Assessment requirement
  * - GDPR Art. 35(1): High-risk processing identification
  * - GDPR Art. 35(3): DPIA required for certain types of processing
- * - GDPR Art. 35(4): DPO consultation requirement
+ * - GDPR Art. 35(2): DPO consultation requirement
  * - GDPR Art. 35(7): Minimum content requirements
  * - GDPR Art. 35(9): Review when circumstances change
  * - NIS2 Art. 21: Risk assessment integration
@@ -308,7 +308,7 @@ class DataProtectionImpactAssessment
     private ?string $sdmAssessmentSummary = null;
 
     // ============================================================================
-    // Stakeholder Consultation (Art. 35(4), 35(9))
+    // Stakeholder Consultation (Art. 35(2), 35(9))
     // ============================================================================
 
     /**
