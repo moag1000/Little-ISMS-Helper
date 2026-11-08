@@ -87,6 +87,69 @@ jobs:
           php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration | tee /tmp/second-run.txt
           grep -q "Already at the latest version" /tmp/second-run.txt
 
+  upgrade-migrations:
+    name: Upgrade migrations with data
+    runs-on: ubuntu-latest
+    # Fresh-install migrations run on an empty database, where a migration
+    # whose UPDATE only fails once a row matches stays green (issue #1171:
+    # strict mode turned `current_value <> ''` on a DECIMAL column into an
+    # error on every installation with objectives). This job does what an
+    # operator does: last stable release → data in every table → main.
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_DATABASE: isms_upgrade
+          MARIADB_USER: isms_user
+          MARIADB_PASSWORD: isms_password
+          MARIADB_ROOT_PASSWORD: root_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: mysql://isms_user:isms_password@127.0.0.1:3306/isms_upgrade?serverVersion=mariadb-11.0.0&charset=utf8mb4
+      APP_ENV: prod
+      APP_SECRET: ci_secret_for_upgrade
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, pdo, pdo_mysql, gd, zip, opcache, mbstring, xml
+          tools: composer:v2
+
+      - name: Migrate an empty database to the last stable release
+        run: |
+          release=$(git tag --list 'v*' --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+          echo "last stable release: $release"
+          git worktree add /tmp/release "$release"
+          mysql -h 127.0.0.1 -u root -proot_password -e "GRANT ALL PRIVILEGES ON isms_upgrade.* TO 'isms_user'@'%'; FLUSH PRIVILEGES;"
+          cd /tmp/release
+          composer install --prefer-dist --no-progress --no-interaction
+          php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+
+      - name: Put two rows into every table
+        run: php scripts/deployment/seed_every_table.php 'mysql:host=127.0.0.1;port=3306;dbname=isms_upgrade' isms_user isms_password
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Migrate the release database with data to this commit
+        run: |
+          php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+          php bin/console doctrine:migrations:up-to-date
+
   tests:
     name: Tests (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
