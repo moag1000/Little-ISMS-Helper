@@ -207,8 +207,8 @@ class SearchService
             return [];
         }
 
-        $qb = $this->assetRepository->createQueryBuilder('a')
-            ->where('a.name LIKE :query OR a.description LIKE :query OR a.owner LIKE :query')
+        $qb = $this->assetRepository->createQueryBuilder('a')->leftJoin('a.ownerUser', 'ou')->leftJoin('a.ownerPerson', 'op')
+            ->where("a.name LIKE :query OR a.description LIKE :query OR op.fullName LIKE :query OR CONCAT(ou.firstName, ' ', ou.lastName) LIKE :query")
             ->setParameter('query', '%' . $query . '%')
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 

@@ -41,7 +41,7 @@ final class ApiCollectionParametersTest extends KernelTestCase
     private const array LEGACY_FILTERS = [
         Asset::class => [
             'path' => '/api/assets',
-            'search' => ['name', 'assetType', 'owner', 'status'],
+            'search' => ['name', 'assetType', 'status'],
             'bool' => [],
             'date' => [],
             'order' => ['name', 'assetType', 'createdAt'],

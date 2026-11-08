@@ -45,7 +45,7 @@ final class SchemaDrivenMapperTest extends TestCase
                 setter: 'setStrategy',
                 type: ImportFieldSpec::TYPE_ENUM,
                 enumValues: ['accept', 'mitigate', 'transfer', 'avoid'],
-                enumClass: TreatmentStrategy::class,
+                relationClass: TreatmentStrategy::class,
             ),
             new ImportFieldSpec(name: 'score', setter: 'setScore', type: ImportFieldSpec::TYPE_DECIMAL),
         ]);

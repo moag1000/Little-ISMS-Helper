@@ -161,9 +161,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
                 'mapped' => false,
                 'choice_translation_domain' => 'audit',
             ])
-            // Pattern A dual-state lead auditor — structured
-            // User/Person preferred over legacy `leadAuditor` free-text. Legacy
-            // field kept as optional textfield for migration window.
+            // Lead auditor: User or Person.
             ->add('leadAuditorUser', OwnerUserType::class, [
                 'label' => 'audit.field.lead_auditor_user',
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
@@ -178,14 +176,6 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
                 'placeholder' => 'audit.placeholder.lead_auditor_person',
                 'required' => false,
                 'help' => 'audit.help.lead_auditor_person',
-            ])
-            ->add('leadAuditor', TextType::class, [
-                'label' => 'audit.field.lead_auditor_legacy',
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'audit.placeholder.lead_auditor',
-                ],
-                'help' => 'audit.help.lead_auditor_legacy',
             ])
             ->add('auditTeamMembers', EntityType::class, [
                 'label' => 'audit.field.audit_team_members',
@@ -307,10 +297,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
     }
 
     /**
-     * Lead auditor must be provided in at least one of
-     * the three Pattern-A states (User, Person, or legacy free-text). The
-     * legacy column is no longer NotBlank in the entity to allow the
-     * migration window — but at form level we still demand one of them.
+     * Lead auditor must be provided as User or Person.
      */
     public function validateLeadAuditorSlot(?InternalAudit $audit, ExecutionContextInterface $context): void
     {
@@ -321,10 +308,6 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
             return;
         }
         if ($audit->getLeadAuditorPerson() !== null) {
-            return;
-        }
-        $legacy = $audit->getLeadAuditor();
-        if ($legacy !== null && trim($legacy) !== '') {
             return;
         }
         $context->buildViolation('audit.error.lead_auditor_required')
@@ -341,7 +324,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
             'overview'         => ['title', 'status'],
             'scope_definition' => ['scope', 'scopeType', 'scopedAssets', 'location', 'objectives', 'scopedFramework', 'additionalScopedFrameworks', 'auditedSubsidiaries'],
             'schedule'         => ['plannedDate', 'actualDate'],
-            'team'             => ['leadAuditorUser', 'leadAuditorPerson', 'leadAuditor', 'auditTeamMembers', 'auditTeam'],
+            'team'             => ['leadAuditorUser', 'leadAuditorPerson', 'auditTeamMembers', 'auditTeam'],
             'results'          => ['findings', 'recommendations', 'conclusion'],
         ];
     }

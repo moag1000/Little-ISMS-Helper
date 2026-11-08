@@ -166,11 +166,6 @@ final class LocationImportSchemaProvider implements ImportSchemaProviderInterfac
                 ),
 
                 // ── Audit metadata ──────────────────────────────────────────────
-                new ImportFieldSpec(
-                    name: 'responsiblePerson',
-                    setter: 'setResponsiblePerson',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
                 ...OwnerImportFields::specs('responsiblePerson'),
                 new ImportFieldSpec(
                     name: 'active',

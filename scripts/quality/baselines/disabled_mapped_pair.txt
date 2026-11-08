@@ -1,8 +1,8 @@
 # check_disabled_mapped_pair.py baseline
 # Format: <relative-path>:<line>
 src/Form/BusinessContinuityPlanType.php:68
-src/Form/IncidentType.php:224
+src/Form/IncidentType.php:221
+src/Form/InternalAuditType.php:239
 src/Form/InternalAuditType.php:249
 src/Form/InternalAuditType.php:259
-src/Form/InternalAuditType.php:269
 src/Form/TrainingType.php:265

@@ -192,7 +192,6 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             'user_field'         => 'assignedTo',
             'person_field'       => 'assignedPerson',
             'deputies_field'     => 'assignedDeputyPersons',
-            'legacy_field'       => null,
             'translation_prefix' => 'audit_finding',
             'user_label'         => 'audit_finding.field.assigned_to',
             'user_placeholder'   => 'audit_finding.placeholder.assigned_to',

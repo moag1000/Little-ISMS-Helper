@@ -166,7 +166,6 @@ class AssetControllerTest extends WebTestCase
         $this->testAsset = new Asset();
         $this->testAsset->setName('Test Server ' . $uniqueId);
         $this->testAsset->setAssetType('hardware');
-        $this->testAsset->setOwner('Test Owner');
         $this->testAsset->setDescription('Test server for integration tests');
         $this->testAsset->setTenant($this->testTenant);
         $this->testAsset->setConfidentialityValue(3);
@@ -538,7 +537,6 @@ class AssetControllerTest extends WebTestCase
         $inheritedAsset = new Asset();
         $inheritedAsset->setName('Inherited Server ' . $uniqueId);
         $inheritedAsset->setAssetType('hardware');
-        $inheritedAsset->setOwner('Parent Owner');
         $inheritedAsset->setTenant($parentTenant);
         $inheritedAsset->setConfidentialityValue(3);
         $inheritedAsset->setIntegrityValue(3);
@@ -711,7 +709,6 @@ class AssetControllerTest extends WebTestCase
         $inheritedAsset = new Asset();
         $inheritedAsset->setName('Inherited Server 2 ' . $uniqueId);
         $inheritedAsset->setAssetType('hardware');
-        $inheritedAsset->setOwner('Parent Owner');
         $inheritedAsset->setTenant($parentTenant);
         $inheritedAsset->setConfidentialityValue(3);
         $inheritedAsset->setIntegrityValue(3);
@@ -764,7 +761,6 @@ class AssetControllerTest extends WebTestCase
         $asset2 = new Asset();
         $asset2->setName('Test Server 2');
         $asset2->setAssetType('hardware');
-        $asset2->setOwner('Test Owner 2');
         $asset2->setTenant($this->testTenant);
         $asset2->setConfidentialityValue(2);
         $asset2->setIntegrityValue(2);
@@ -819,7 +815,6 @@ class AssetControllerTest extends WebTestCase
         $otherAsset = new Asset();
         $otherAsset->setName('Other Tenant Asset ' . $uniqueId);
         $otherAsset->setAssetType('hardware');
-        $otherAsset->setOwner('Other Owner');
         $otherAsset->setTenant($otherTenant);
         $otherAsset->setConfidentialityValue(3);
         $otherAsset->setIntegrityValue(3);
@@ -920,7 +915,6 @@ class AssetControllerTest extends WebTestCase
         $otherAsset = new Asset();
         $otherAsset->setName('Other Tenant Server ' . $uniqueId);
         $otherAsset->setAssetType('hardware');
-        $otherAsset->setOwner('Other Owner');
         $otherAsset->setTenant($otherTenant);
         $otherAsset->setConfidentialityValue(3);
         $otherAsset->setIntegrityValue(3);
@@ -1010,7 +1004,7 @@ class AssetControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testNewAllowsEmptyLegacyOwner(): void
+    public function testNewRejectsMissingOwner(): void
     {
         $this->loginAsUser($this->testUser);
 
@@ -1027,7 +1021,7 @@ class AssetControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
-        // Tri-State validator requires at least ownerUser OR ownerPerson — legacy string alone is not sufficient.
+        // The validator requires ownerUser OR ownerPerson.
         // All empty → validator rejects with 422.
         $this->assertResponseStatusCodeSame(422);
     }

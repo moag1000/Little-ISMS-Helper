@@ -193,7 +193,7 @@ class BcmModuleBulkActionTest extends WebTestCase
     private function makePlan(string $name, Tenant $tenant): BusinessContinuityPlan
     {
         $bp = new BusinessProcess();
-        $bp->setName('BP ' . $name)->setProcessOwner('Owner')->setCriticality('high')
+        $bp->setName('BP ' . $name)->setCriticality('high')
            ->setRto(4)->setRpo(2)->setMtpd(24)
            ->setReputationalImpact(3)->setRegulatoryImpact(3)->setOperationalImpact(3)
            ->setCreatedAt(new \DateTimeImmutable())->setTenant($tenant);

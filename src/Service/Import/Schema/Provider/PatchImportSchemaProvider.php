@@ -173,11 +173,6 @@ final class PatchImportSchemaProvider implements ImportSchemaProviderInterface
                     setter: 'setDeployedDate',
                     type: ImportFieldSpec::TYPE_DATE,
                 ),
-                new ImportFieldSpec(
-                    name: 'responsiblePerson',
-                    setter: 'setResponsiblePerson',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
                 ...OwnerImportFields::specs('responsiblePerson'),
                 new ImportFieldSpec(
                     name: 'deploymentNotes',

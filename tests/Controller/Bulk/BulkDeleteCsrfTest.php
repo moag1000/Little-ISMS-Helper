@@ -240,7 +240,6 @@ final class BulkDeleteCsrfTest extends WebTestCase
         $asset = new Asset();
         $asset->setName($name . ' ' . uniqid());
         $asset->setAssetType('hardware');
-        $asset->setOwner('Owner');
         $asset->setTenant($tenant);
         $asset->setConfidentialityValue(2);
         $asset->setIntegrityValue(2);

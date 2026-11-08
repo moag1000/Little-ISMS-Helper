@@ -62,7 +62,7 @@ final class LocationMapControllerTest extends WebTestCase
             $this->em->persist($location);
         }
 
-        $this->asset = (new Asset())->setName('SPS ' . $this->uid)->setAssetType('hardware')->setOwner('OT')
+        $this->asset = (new Asset())->setName('SPS ' . $this->uid)->setAssetType('hardware')
             ->setStatus('active')->setTenant($this->tenant)->setConfidentialityValue(2)
             ->setIntegrityValue(4)->setAvailabilityValue(3)->setPhysicalLocation($this->room);
         $this->em->persist($this->asset);

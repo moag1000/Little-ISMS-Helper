@@ -23,7 +23,6 @@ class ISMSObjectiveTest extends TestCase
         $this->assertNull($objective->getTargetValue());
         $this->assertNull($objective->getCurrentValue());
         $this->assertNull($objective->getUnit());
-        $this->assertNull($objective->getResponsiblePerson());
         $this->assertNull($objective->getTargetDate());
         $this->assertEquals('in_progress', $objective->getStatus());
         $this->assertNull($objective->getProgressNotes());
@@ -97,15 +96,6 @@ class ISMSObjectiveTest extends TestCase
         $objective->setUnit('percent');
 
         $this->assertEquals('percent', $objective->getUnit());
-    }
-
-    #[Test]
-    public function testSetAndGetResponsiblePerson(): void
-    {
-        $objective = new ISMSObjective();
-        $objective->setResponsiblePerson('IT Operations Manager');
-
-        $this->assertEquals('IT Operations Manager', $objective->getResponsiblePerson());
     }
 
     #[Test]
@@ -241,7 +231,6 @@ class ISMSObjectiveTest extends TestCase
         $objective->setTargetValue('120'); // 2 hours in minutes
         $objective->setCurrentValue('180'); // Currently 3 hours
         $objective->setUnit('minutes');
-        $objective->setResponsiblePerson('Security Team Lead');
         $objective->setTargetDate(new \DateTime('2024-12-31'));
         $objective->setStatus('in_progress');
 

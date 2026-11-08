@@ -169,7 +169,7 @@ final class UserPickerTenantSweepControllerTest extends WebTestCase
     #[Test]
     public function riskOwnerOfAnotherOrganisationIsRejected(): void
     {
-        $asset = (new Asset())->setName('Asset ' . $this->uid)->setAssetType('hardware')->setOwner('IT')
+        $asset = (new Asset())->setName('Asset ' . $this->uid)->setAssetType('hardware')
             ->setStatus('active')->setTenant($this->tenant)->setConfidentialityValue(3)
             ->setIntegrityValue(3)->setAvailabilityValue(3);
         $this->em->persist($asset);

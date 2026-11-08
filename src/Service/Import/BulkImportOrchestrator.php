@@ -22,6 +22,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\FileUploadSecurityService;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\MessageBusInterface;
+use App\Service\Owner\OwnerText;
+use App\Service\Owner\OwnerTextResolver;
 
 /**
  * High-level orchestrator for the bulk-import pipeline.
@@ -62,6 +64,7 @@ class BulkImportOrchestrator
         private readonly FileUploadSecurityService $uploadSecurity,
         private readonly ?FteRecorderService $fteRecorder = null,
         private readonly ?EntityManagerRecovery $emRecovery = null,
+        private readonly ?OwnerTextResolver $ownerTexts = null,
     ) {}
 
     // -------------------------------------------------------------------------
@@ -389,7 +392,7 @@ class BulkImportOrchestrator
 
                 if ($existing !== null) {
                     try {
-                        $this->applyEntityData($existing, $entityData);
+                        $this->applyEntityData($existing, $entityData, $tenant);
                     } catch (\Throwable $e) {
                         // A setter threw after earlier ones ran: drop the half-applied
                         // row, or the next flush would write it without audit entry.
@@ -564,7 +567,7 @@ class BulkImportOrchestrator
             $entity->setTenant($tenant);
         }
 
-        $this->applyEntityData($entity, $entityData);
+        $this->applyEntityData($entity, $entityData, $tenant);
 
         return $entity;
     }
@@ -573,7 +576,9 @@ class BulkImportOrchestrator
      * Apply a flat property array to an existing entity via setter methods.
      *
      * Setter name: "set" + ucfirst($propertyName).
-     * Properties whose setter does not exist are silently skipped.
+     * Properties whose setter does not exist are silently skipped. An owner
+     * given as text that named nobody known ({@see OwnerText}) becomes a Person
+     * of the organisation here (or the User / Person created by an earlier row).
      * Every value is checked against its setter's parameter type before the first
      * setter runs, so a mismatch refuses the row without touching the entity.
      *
@@ -581,10 +586,17 @@ class BulkImportOrchestrator
      *
      * @throws ImportRowInvalidException when a value does not fit its setter
      */
-    private function applyEntityData(object $entity, array $entityData): void
+    private function applyEntityData(object $entity, array $entityData, Tenant $tenant): void
     {
         $setters = [];
         foreach ($entityData as $property => $value) {
+            if ($value instanceof OwnerText) {
+                $target = $this->ownerTexts?->resolve($tenant, $value->text);
+                if ($target !== null) {
+                    $setters[$target instanceof User ? $value->userSetter : $value->personSetter] = $target;
+                }
+                continue;
+            }
             $setter = 'set' . ucfirst($property);
             if (!method_exists($entity, $setter)) {
                 continue;

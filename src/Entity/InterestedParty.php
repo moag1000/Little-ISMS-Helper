@@ -28,6 +28,7 @@ use Doctrine\Common\Collections\Collection;
 use App\Validator\Constraint\SameTenantOwner;
 use App\Util\Cadence;
 use App\Util\LegalPeriod;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * Interested Party Entity for ISO 27001 Chapter 4.2
@@ -94,10 +95,6 @@ class InterestedParty
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $description = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['interested_party:read', 'interested_party:write'])]
-    private ?string $contactPerson = null;
 
     /**
      * Pattern A dual-state: preferred structured contact. Falls back to string contactPerson.
@@ -303,17 +300,6 @@ class InterestedParty
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-        return $this;
-    }
-
-    public function getContactPerson(): ?string
-    {
-        return $this->contactPerson;
-    }
-
-    public function setContactPerson(?string $contactPerson): static
-    {
-        $this->contactPerson = $contactPerson;
         return $this;
     }
 
@@ -639,14 +625,15 @@ class InterestedParty
 
     /**
      * Effective contactPerson: prefer contactPersonUser.fullName,
-     * then contactPersonRef (Person), fall back to legacy string.
+     * then contactPersonRef (Person).
      */
+    #[Groups(['interested_party:read'])]
+    #[SerializedName('contactPerson')]
     public function getEffectiveContactPerson(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->contactPersonUser,
             $this->contactPersonRef,
-            $this->contactPerson,
         );
     }
 
@@ -660,7 +647,6 @@ class InterestedParty
         return OwnerResolver::resolveAll(
             $this->contactPersonUser,
             $this->contactPersonRef,
-            $this->contactPerson,
             $this->contactDeputyPersons,
         );
     }

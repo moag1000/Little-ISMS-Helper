@@ -108,7 +108,6 @@ final class RiskIncidentLinkControllerTest extends WebTestCase
         $asset = new Asset();
         $asset->setName('RIL Asset ' . $uid);
         $asset->setAssetType('hardware');
-        $asset->setOwner('IT');
         $asset->setStatus('active');
         $asset->setTenant($this->tenant);
         $asset->setConfidentialityValue(3);
@@ -141,7 +140,6 @@ final class RiskIncidentLinkControllerTest extends WebTestCase
         $this->incident->setCategory('security');
         $this->incident->setStatus(IncidentStatus::Reported);
         $this->incident->setTenant($this->tenant);
-        $this->incident->setReportedBy($this->manager->getEmail() ?? 'test@test.com');
         $this->incident->setIncidentNumber('INC-RIL-' . substr($uid, 0, 8));
         $this->em->persist($this->incident);
 

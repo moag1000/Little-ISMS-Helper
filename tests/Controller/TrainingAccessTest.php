@@ -95,7 +95,6 @@ final class TrainingAccessTest extends WebTestCase
         $training->setTitle('Access training ' . uniqid());
         $training->setDescription('Training access test');
         $training->setTrainingType('security_awareness');
-        $training->setTrainer('Trainer');
         $training->setStatus('planned');
         $training->setMandatory(true);
         $training->setScheduledDate(new \DateTime('+1 month'));

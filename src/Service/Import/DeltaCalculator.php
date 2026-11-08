@@ -263,8 +263,8 @@ final class DeltaCalculator
             $oldValue = $old[$field];
 
             // Normalise to string for loose comparison
-            $oldNorm = $this->comparable($oldValue);
-            $newNorm = $this->comparable($newValue);
+            $oldNorm = self::comparable($oldValue);
+            $newNorm = self::comparable($newValue);
             $same    = is_numeric($oldNorm) && is_numeric($newNorm)
                 ? (float) $oldNorm === (float) $newNorm // DECIMAL "7.50" vs "7.5"
                 : $oldNorm === $newNorm;
@@ -282,16 +282,18 @@ final class DeltaCalculator
 
     /**
      * String form of a persisted or mapped value — mapped values carry enum cases,
-     * dates, related entities and lists, which a plain (string) cast cannot convert.
+     * dates, related entities (User / Person have no string form: by id) and lists,
+     * which a plain (string) cast cannot convert.
      */
-    private function comparable(mixed $value): string
+    private static function comparable(mixed $value): string
     {
         return match (true) {
             $value instanceof \BackedEnum        => (string) $value->value,
             $value instanceof \DateTimeInterface => $value->format(\DateTimeInterface::ATOM),
-            is_object($value)                    => is_callable([$value, 'getId'])
-                ? '#' . $value->getId() // same field → same class; proxies differ by class name
-                : spl_object_hash($value),
+            $value instanceof \Stringable        => (string) $value,
+            is_object($value) && is_callable([$value, 'getId'])
+                                                 => '#' . $value->getId(), // same field → same class
+            is_object($value)                    => spl_object_hash($value),
             is_array($value)                     => (string) json_encode($value),
             is_bool($value)                      => $value ? '1' : '0',
             default                              => (string) $value,

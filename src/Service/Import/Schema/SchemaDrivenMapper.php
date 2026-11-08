@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Service\Import\Schema;
 
 use App\Entity\Tenant;
+use App\Entity\User;
 use App\Exception\Import\ImportRowInvalidException;
 use App\Service\Import\Mapper\AbstractEntityMapper;
 use App\Service\ModuleConfigurationService;
+use App\Service\Owner\OwnerText;
+use App\Service\Owner\OwnerTextResolver;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -35,6 +38,7 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         EntityManagerInterface $em,
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly EntityImportSchema $schema,
+        private readonly ?OwnerTextResolver $ownerTexts = null,
     ) {
         parent::__construct($em);
     }
@@ -120,10 +124,15 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
     public function toEntityData(array $row, ?array $columnMapping = null, ?Tenant $tenant = null): array
     {
         $data = [];
+        $ownerTexts = [];
 
         foreach ($this->activeFields() as $field) {
             $raw = $this->resolveField($row, $field->name, $columnMapping);
             if ($raw === null || $raw === '') {
+                continue;
+            }
+            if ($field->type === ImportFieldSpec::TYPE_OWNER) {
+                $ownerTexts[] = [$field, trim((string) $raw)];
                 continue;
             }
 
@@ -162,7 +171,42 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
             }
         }
 
+        foreach ($ownerTexts as [$field, $text]) {
+            $this->applyOwnerText($data, $field, $text, $tenant);
+        }
+
         return $data;
+    }
+
+    /**
+     * An owner given as text fills the record's User or Person slot — unless
+     * the row also names the user or person in their own columns, which win.
+     * Known names resolve now (the preview shows the match); an unknown name
+     * travels as {@see OwnerText} and becomes a Person of the organisation on commit.
+     *
+     * @param array<string, mixed> $data
+     */
+    private function applyOwnerText(array &$data, ImportFieldSpec $field, string $text, ?Tenant $tenant): void
+    {
+        $userProperty = lcfirst(substr($field->setter, 3));
+        $personProperty = lcfirst(substr((string) $field->personSetter, 3));
+        if ($text === '' || $field->personSetter === null
+            || array_key_exists($userProperty, $data) || array_key_exists($personProperty, $data)
+        ) {
+            return;
+        }
+
+        $target = $this->ownerTexts?->find($tenant, $text);
+        if ($target instanceof User) {
+            $data[$userProperty] = $target;
+            $data[$personProperty] = null;
+        } elseif ($target !== null) {
+            $data[$userProperty] = null;
+            $data[$personProperty] = $target;
+        } else {
+            $data[$userProperty] = null;
+            $data[$personProperty] = new OwnerText($text, $field->setter, $field->personSetter);
+        }
     }
 
     public function findExisting(array $row, Tenant $tenant, ?array $columnMapping = null): ?object

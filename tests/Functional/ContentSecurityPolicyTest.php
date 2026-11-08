@@ -82,7 +82,6 @@ final class ContentSecurityPolicyTest extends WebTestCase
         $this->asset = new Asset();
         $this->asset->setName('CSP label asset');
         $this->asset->setAssetType('hardware');
-        $this->asset->setOwner('Owner');
         $this->asset->setTenant($this->tenant);
         $this->asset->setConfidentialityValue(2);
         $this->asset->setIntegrityValue(2);

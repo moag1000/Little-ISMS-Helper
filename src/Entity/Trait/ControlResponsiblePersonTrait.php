@@ -11,6 +11,7 @@ use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * Responsible person (Pattern A dual-state): User + Person + deputies + effective accessors.
@@ -96,14 +97,15 @@ trait ControlResponsiblePersonTrait
 
     /**
      * Effective responsiblePerson: prefer responsiblePersonUser.fullName,
-     * then responsiblePersonRef (Person), fall back to legacy string.
+     * then responsiblePersonRef (Person).
      */
+    #[Groups(['control:read'])]
+    #[SerializedName('responsiblePerson')]
     public function getEffectiveResponsiblePerson(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->responsiblePersonUser,
             $this->responsiblePersonRef,
-            $this->responsiblePerson,
         );
     }
 
@@ -117,7 +119,6 @@ trait ControlResponsiblePersonTrait
         return OwnerResolver::resolveAll(
             $this->responsiblePersonUser,
             $this->responsiblePersonRef,
-            $this->responsiblePerson,
             $this->responsibleDeputyPersons,
         );
     }

@@ -125,17 +125,6 @@ class PatchTest extends TestCase
     }
 
     #[Test]
-    public function testResponsiblePerson(): void
-    {
-        $patch = new Patch();
-
-        $this->assertNull($patch->getResponsiblePerson());
-
-        $patch->setResponsiblePerson('John Doe');
-        $this->assertEquals('John Doe', $patch->getResponsiblePerson());
-    }
-
-    #[Test]
     public function testNotes(): void
     {
         $patch = new Patch();

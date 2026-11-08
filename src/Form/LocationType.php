@@ -17,7 +17,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\Util\LegacyFreeTextField;
 
 final class LocationType extends AbstractType implements SectionMapInterface
 {
@@ -31,7 +30,7 @@ final class LocationType extends AbstractType implements SectionMapInterface
             'security_zone' => ['securityLevel'],
             'access_control'=> ['requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem'],
             'environmental' => ['capacity', 'squareMeters'],
-            'audit_metadata'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'active', 'notes'],
+            'audit_metadata'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'active', 'notes'],
         ];
     }
 
@@ -178,8 +177,7 @@ final class LocationType extends AbstractType implements SectionMapInterface
                 ],
             ]);
 
-        // Pattern A dual-state owner cluster (User + Person + deputies) via the
-        // shared trait; the legacy free-text field below keeps round-tripping.
+        // Owner cluster (User + Person + deputies) via the shared trait.
         $this->addOwnerPicker($builder, [
             'translation_prefix' => 'location',
             'user_field'         => 'responsiblePersonUser',
@@ -196,14 +194,6 @@ final class LocationType extends AbstractType implements SectionMapInterface
         ]);
 
         $builder
-            ->add('responsiblePerson', TextType::class, [
-                'label' => 'location.field.responsible_person_legacy',
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 255,
-                    'placeholder' => 'location.placeholder.responsible_person',
-                ],
-            ])
             ->add('capacity', IntegerType::class, [
                 'label' => 'location.field.capacity',
                 'required' => false,
@@ -235,7 +225,6 @@ final class LocationType extends AbstractType implements SectionMapInterface
                 ],
             ])
         ;
-        LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

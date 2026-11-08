@@ -303,19 +303,6 @@
                 href: path('admin_data_repair_health_index'),
             }) }}
         </div>
-
-        {# Legacy free-text owners tile — live COUNT, no scan cache #}
-        {% set legacyOwnerTotal = legacy_owner_open_count() %}
-        <div class="col-md-6 col-lg-3">
-            {{ _fa_feature_card.render({
-                variant: legacyOwnerTotal > 0 ? 'warning' : 'success',
-                icon: 'ui-person',
-                label: 'admin.legacy_owners.title'|trans({}, 'admin'),
-                value: legacyOwnerTotal,
-                hint: 'admin.legacy_owners.tile_hint'|trans({}, 'admin'),
-                href: path('admin_legacy_owner_index'),
-            }) }}
-        </div>
     </div>
 
     {# ====================================================================

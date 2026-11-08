@@ -189,13 +189,13 @@ class FourEyesApprovalRequest
 
     public function getEffectiveRequestedApprover(): ?string
     {
-        return OwnerResolver::resolveEffective($this->requestedApprover, $this->requestedApproverPerson, null);
+        return OwnerResolver::resolveEffective($this->requestedApprover, $this->requestedApproverPerson);
     }
 
     /** @return list<string> */
     public function getAllRequestedApproverOwners(): array
     {
-        return OwnerResolver::resolveAll($this->requestedApprover, $this->requestedApproverPerson, null, $this->requestedApproverDeputyPersons);
+        return OwnerResolver::resolveAll($this->requestedApprover, $this->requestedApproverPerson, $this->requestedApproverDeputyPersons);
     }
 
     public function getStatus(): string

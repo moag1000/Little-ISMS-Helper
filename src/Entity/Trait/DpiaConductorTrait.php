@@ -95,7 +95,6 @@ trait DpiaConductorTrait
         return OwnerResolver::resolveEffective(
             $this->conductor,
             $this->conductorPerson,
-            null,
         );
     }
 
@@ -109,7 +108,6 @@ trait DpiaConductorTrait
         return OwnerResolver::resolveAll(
             $this->conductor,
             $this->conductorPerson,
-            null,
             $this->conductorDeputyPersons,
         );
     }

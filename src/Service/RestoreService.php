@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use App\Service\Owner\OwnerTextResolver;
 
 /**
  * Facade for backup restore operations.
@@ -81,7 +82,7 @@ class RestoreService
 
     private function getEntityWriter(): RestoreEntityWriter
     {
-        return $this->entityWriter ?? new RestoreEntityWriter($this->entityManager, $this->logger);
+        return $this->entityWriter ?? new RestoreEntityWriter($this->entityManager, $this->logger, new OwnerTextResolver($this->entityManager));
     }
 
     private function getSecretsHandler(): RestoreSecretsHandler

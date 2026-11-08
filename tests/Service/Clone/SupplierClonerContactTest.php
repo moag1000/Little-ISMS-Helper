@@ -22,7 +22,6 @@ final class SupplierClonerContactTest extends TestCase
         return (new Supplier())
             ->setName('CloudCo')
             ->setTenant($tenant)
-            ->setContactPerson('Legacy Contact')
             ->setContactPersonUser(new User())
             ->setContactPersonRef((new Person())->setFullName('Ref'))
             ->addContactDeputyPerson($deputy);
@@ -36,7 +35,6 @@ final class SupplierClonerContactTest extends TestCase
 
         $clone = (new SupplierCloner($this->createStub(EntityManagerInterface::class)))->clone($source);
 
-        self::assertSame('Legacy Contact', $clone->getContactPerson());
         self::assertSame($source->getContactPersonUser(), $clone->getContactPersonUser());
         self::assertSame($source->getContactPersonRef(), $clone->getContactPersonRef());
         self::assertCount(1, $clone->getContactDeputyPersons());
@@ -51,7 +49,6 @@ final class SupplierClonerContactTest extends TestCase
 
         $clone = (new SupplierCloner($this->createStub(EntityManagerInterface::class)))->clone($source, new Tenant());
 
-        self::assertSame('Legacy Contact', $clone->getContactPerson(), 'free text travels along');
         self::assertNull($clone->getContactPersonUser());
         self::assertNull($clone->getContactPersonRef());
         self::assertCount(0, $clone->getContactDeputyPersons());

@@ -81,7 +81,8 @@ final class TrainingCloner implements EntityClonerInterface
         $clone->setDescription($source->getDescription());
         $clone->setTrainingType($source->getTrainingType());
         $clone->setDurationMinutes($source->getDurationMinutes());
-        $clone->setTrainer($source->getTrainer());
+        $clone->setTrainerUser($source->getTrainerUser());
+        $clone->setTrainerPerson($source->getTrainerPerson());
         $clone->setTargetAudience($source->getTargetAudience());
         $clone->setDeliveryMethod($source->getDeliveryMethod());
         $clone->setMandatory($source->isMandatory());

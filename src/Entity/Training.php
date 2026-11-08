@@ -32,6 +32,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 #[ORM\Index(name: 'idx_training_type', columns: ['training_type'])]
@@ -107,11 +108,6 @@ class Training
     #[Groups(['training:read', 'training:write'])]
     #[Assert\Positive(message: 'training.validation.duration_positive')]
     private ?int $durationMinutes = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['training:read', 'training:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'training.validation.trainer_max_length')]
-    private ?string $trainer = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
@@ -418,17 +414,6 @@ public function __construct()
     public function setDurationMinutes(?int $durationMinutes): static
     {
         $this->durationMinutes = $durationMinutes;
-        return $this;
-    }
-
-    public function getTrainer(): ?string
-    {
-        return $this->trainer;
-    }
-
-    public function setTrainer(?string $trainer): static
-    {
-        $this->trainer = $trainer;
         return $this;
     }
 
@@ -874,17 +859,19 @@ public function __construct()
     }
 
     /**
-     * Effective trainer: prefer trainerUser.fullName, then trainerPerson, fall back to legacy string.
+     * Effective trainer: prefer trainerUser.fullName, then trainerPerson.
      */
+    #[Groups(['training:read'])]
+    #[SerializedName('trainer')]
     public function getEffectiveTrainer(): ?string
     {
-        return OwnerResolver::resolveEffective($this->trainerUser, $this->trainerPerson, $this->trainer);
+        return OwnerResolver::resolveEffective($this->trainerUser, $this->trainerPerson);
     }
 
     /** @return list<string> */
     public function getAllTrainerOwners(): array
     {
-        return OwnerResolver::resolveAll($this->trainerUser, $this->trainerPerson, $this->trainer, $this->trainerDeputyPersons);
+        return OwnerResolver::resolveAll($this->trainerUser, $this->trainerPerson, $this->trainerDeputyPersons);
     }
 
     public function getProgramType(): ?string

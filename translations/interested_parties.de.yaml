@@ -67,7 +67,6 @@ interested_party:
         contact_person_user: 'Kontaktperson (Benutzer)'
         contact_person_ref: 'Kontaktperson (Person)'
         contact_deputies: 'Vertretungen'
-        contact_person_legacy: 'Kontaktperson (Freitext, veraltet)'
     empty:
         message: 'Keine interessierten Parteien vorhanden.'
         add_first: 'Erste Partei hinzufügen'

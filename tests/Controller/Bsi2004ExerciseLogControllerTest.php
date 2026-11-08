@@ -236,7 +236,6 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $this->foreignExercise->setScope('Foreign scope');
         $this->foreignExercise->setObjectives('Objective');
         $this->foreignExercise->setParticipants('Eve');
-        $this->foreignExercise->setFacilitator('Mallory');
         $this->foreignExercise->setStatus('planned');
         $this->foreignExercise->setExerciseDate(new \DateTime('+10 days'));
         $this->foreignExercise->setTenant($this->foreignTenant);
@@ -285,7 +284,6 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $this->exercise->setScope('Test scope');
         $this->exercise->setObjectives('Objective 1');
         $this->exercise->setParticipants('Alice, Bob');
-        $this->exercise->setFacilitator('Charlie');
         $this->exercise->setStatus('completed');
         $this->exercise->setExerciseDate(new \DateTime('-1 day'));
         $this->exercise->setTenant($this->tenant);
@@ -312,7 +310,6 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $exercise->setScope('Scope');
         $exercise->setObjectives('Objective');
         $exercise->setParticipants('Alice');
-        $exercise->setFacilitator('Charlie');
         $exercise->setStatus('completed');
         $exercise->setExerciseDate(new \DateTime('-1 day'));
         $exercise->setTenant($tenant);

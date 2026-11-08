@@ -172,7 +172,7 @@ final class RiskImportSchemaProvider implements ImportSchemaProviderInterface
                         'transfer',
                         'avoid',
                     ],
-                    enumClass: TreatmentStrategy::class,
+                    relationClass: TreatmentStrategy::class,
                 ),
                 new ImportFieldSpec(
                     name: 'treatmentDescription',
