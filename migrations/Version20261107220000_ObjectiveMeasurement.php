@@ -30,9 +30,22 @@ final class Version20261107220000_ObjectiveMeasurement extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE ismsobjective ADD measurement_person_id INT DEFAULT NULL, ADD last_measured_at DATE DEFAULT NULL');
-        $this->addSql('ALTER TABLE ismsobjective ADD CONSTRAINT FK_C67C53B80996524 FOREIGN KEY (measurement_person_id) REFERENCES person (id) ON DELETE SET NULL');
-        $this->addSql('CREATE INDEX IDX_C67C53B80996524 ON ismsobjective (measurement_person_id)');
+        // Re-runnable: the first release of this migration stopped after the
+        // DDL on databases with objectives (issue #1171), so the columns, the
+        // key and the index may already exist when it is applied again.
+        $table = $schema->getTable('ismsobjective');
+        if (!$table->hasColumn('measurement_person_id')) {
+            $this->addSql('ALTER TABLE ismsobjective ADD measurement_person_id INT DEFAULT NULL');
+        }
+        if (!$table->hasColumn('last_measured_at')) {
+            $this->addSql('ALTER TABLE ismsobjective ADD last_measured_at DATE DEFAULT NULL');
+        }
+        if (!$table->hasForeignKey('FK_C67C53B80996524')) {
+            $this->addSql('ALTER TABLE ismsobjective ADD CONSTRAINT FK_C67C53B80996524 FOREIGN KEY (measurement_person_id) REFERENCES person (id) ON DELETE SET NULL');
+        }
+        if (!$table->hasIndex('IDX_C67C53B80996524')) {
+            $this->addSql('CREATE INDEX IDX_C67C53B80996524 ON ismsobjective (measurement_person_id)');
+        }
 
         // Free text → person of the same organisation, only on an unambiguous name match.
         $this->addSql(
@@ -44,7 +57,9 @@ final class Version20261107220000_ObjectiveMeasurement extends AbstractMigration
             . ' WHERE o.measurement_person_id IS NULL AND o.responsible_for_measurement IS NOT NULL'
         );
         // Objectives with a value count as measured at their last change.
-        $this->addSql('UPDATE ismsobjective SET last_measured_at = DATE(COALESCE(updated_at, created_at)) WHERE current_value IS NOT NULL AND current_value <> \'\' AND last_measured_at IS NULL');
+        // current_value is DECIMAL: comparing it with '' makes strict mode
+        // fail the UPDATE as soon as a row exists (1292, issue #1171).
+        $this->addSql('UPDATE ismsobjective SET last_measured_at = DATE(COALESCE(updated_at, created_at)) WHERE current_value IS NOT NULL AND last_measured_at IS NULL');
     }
 
     public function down(Schema $schema): void

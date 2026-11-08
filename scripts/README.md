@@ -127,6 +127,20 @@ chmod +x deployment-check.sh
 
 **Dokumentation:** [docs/deployment/DEPLOYMENT_PLESK.md](../docs/deployment/DEPLOYMENT_PLESK.md)
 
+### deployment/seed_every_table.php
+
+**Zweck:** Zwei Zeilen in jede Tabelle einer migrierten Datenbank schreiben, damit die folgenden
+Migrationen auf Daten laufen statt auf einem leeren Schema (CI-Job „Upgrade migrations with data“:
+letzter Stable-Release → Daten → aktueller Stand). Zeile 1 trägt „leere“ Werte (`''`, `0`), Zeile 2
+normale; Fremdschlüssel zeigen auf die gleiche Zeilennummer der Zieltabelle. Hintergrund: Issue #1171,
+eine Migration scheiterte im Strict Mode nur, wenn Ziele existierten.
+
+```bash
+php scripts/deployment/seed_every_table.php 'mysql:host=127.0.0.1;dbname=isms_upgrade' user passwort
+```
+
+Nur gegen Wegwerf-Datenbanken verwenden.
+
 ---
 
 ## 🔍 Qualitätssicherung

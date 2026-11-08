@@ -840,6 +840,12 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
      **`doctrine:migrations:diff` does NOT add this override automatically** —
      after every diff-generated migration, manually inject the method before
      committing. Otherwise the next migration run on a non-trivial DB fails.
+   - **Data steps run against real rows**: never compare a numeric/date column with `''`
+     (strict mode turns the cast warning 1292 into an error once a row matches — #1171), and keep a
+     migration that mixes DDL and data re-runnable (`$schema->getTable()->hasColumn()` guards), since a
+     non-transactional migration that fails halfway leaves its DDL behind. CI job "Upgrade migrations with
+     data" migrates the last stable release, fills every table (`scripts/deployment/seed_every_table.php`)
+     and then migrates to HEAD.
    - **Recovery**: run `php bin/console app:schema:reconcile --dry-run` then
      `php bin/console app:schema:reconcile` to bring schema in sync with
      entity metadata. Non-destructive for additive changes.
