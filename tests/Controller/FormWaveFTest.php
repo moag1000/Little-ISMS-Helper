@@ -182,17 +182,16 @@ final class FormWaveFTest extends WebTestCase
     }
 
     #[Test]
-    public function emptyLegacyOwnerTextIsNotOffered(): void
+    public function ownerIsOnlyPickedAsUserOrPerson(): void
     {
         $this->client->request('GET', '/de/asset/new');
         self::assertResponseIsSuccessful();
         self::assertSelectorNotExists('[name="asset[owner]"]');
+        self::assertSelectorExists('[name="asset[ownerUser]"]');
 
-        $this->asset->setOwner('Team Web (alt)');
-        $this->em->flush();
         $this->client->request('GET', '/de/asset/' . $this->asset->getId() . '/edit');
         self::assertResponseIsSuccessful();
-        self::assertSelectorExists('[name="asset[owner]"][value="Team Web (alt)"]');
+        self::assertSelectorNotExists('[name="asset[owner]"]');
     }
 
     /** @return iterable<string, array{string, string}> */

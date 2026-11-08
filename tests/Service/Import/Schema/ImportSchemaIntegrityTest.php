@@ -68,6 +68,18 @@ final class ImportSchemaIntegrityTest extends KernelTestCase
                     );
                 }
 
+                if ($field->type === ImportFieldSpec::TYPE_OWNER) {
+                    self::assertNotNull($field->personSetter, "{$ctx}: owner text has no Person slot");
+                    self::assertTrue(
+                        method_exists($schema->entityClass, (string) $field->personSetter),
+                        "{$ctx}: Person setter {$field->personSetter}() missing on {$schema->entityClass}",
+                    );
+                    foreach ([$field->setter, (string) $field->personSetter] as $slotSetter) {
+                        $slot = lcfirst(substr($slotSetter, 3));
+                        self::assertTrue($meta->hasAssociation($slot), "{$ctx}: owner slot '{$slot}' is not an association");
+                    }
+                }
+
                 if ($field->unique) {
                     $property = lcfirst(substr($field->setter, 3));
                     self::assertTrue(

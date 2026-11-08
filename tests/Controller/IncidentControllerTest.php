@@ -410,7 +410,6 @@ class IncidentControllerTest extends TestCase
             $incident->setTitle('Critical Incident');
             $incident->setDescription('Test Description');
             $incident->setCategory('security');
-            $incident->setReportedBy('Test User');
             return $form;
         });
 
@@ -538,7 +537,6 @@ class IncidentControllerTest extends TestCase
         $incident->setTitle('Test Incident');
         $incident->setDescription('Test Description');
         $incident->setCategory('security');
-        $incident->setReportedBy('Test User');
 
         $form = $this->createMock(FormInterface::class);
         $admins = [$this->createUser(1, $tenant)];

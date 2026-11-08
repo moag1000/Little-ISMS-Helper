@@ -49,8 +49,8 @@ use App\Service\Import\Schema\ImportSchemaProviderInterface;
  *   - computed/derived accessors (readinessScore, completenessPercentage,
  *     bsiPhaseLabel, effective/all plan owners)
  *
- * Legacy free-text `planOwner` (the OwnerPicker legacy slot) is imported as a
- * plain string for backward compatibility with flat source files.
+ * The `planOwner` column takes the owner as text (name or e-mail): it resolves
+ * to a user or person of the organisation, an unknown name becomes a Person.
  */
 final class BusinessContinuityPlanImportSchemaProvider implements ImportSchemaProviderInterface
 {
@@ -200,7 +200,7 @@ final class BusinessContinuityPlanImportSchemaProvider implements ImportSchemaPr
                     type: ImportFieldSpec::TYPE_TEXT,
                 ),
 
-                // ── Plan owner (OwnerPicker — Person FK + legacy free-text) ──────
+                // ── Plan owner (Person FK + name as text) ──────
                 new ImportFieldSpec(
                     name: 'planOwnerPerson',
                     setter: 'setPlanOwnerPerson',
@@ -208,11 +208,7 @@ final class BusinessContinuityPlanImportSchemaProvider implements ImportSchemaPr
                     relationClass: Person::class,
                     relationLookup: 'fullName',
                 ),
-                new ImportFieldSpec(
-                    name: 'planOwner',
-                    setter: 'setPlanOwner',
-                    type: ImportFieldSpec::TYPE_STRING,
-                ),
+                OwnerImportFields::text('planOwner', 'planOwnerUser', 'planOwnerPerson'),
             ],
         );
     }

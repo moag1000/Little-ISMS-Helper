@@ -13,6 +13,9 @@ namespace App\Service\Import\Schema;
  *   - an enum (validated against allowed values)
  *   - a json list (comma/semicolon-separated → array)
  *   - a relation (resolved by looking up a related entity by a human field)
+ *   - an owner given as text: `setter` is the User slot, `personSetter` the
+ *     Person slot; the text resolves via {@see \App\Service\Owner\OwnerTextResolver}
+ *     (unknown names become a Person of the organisation on commit)
  *
  * `module` gates the field: when set, the field is only OFFERED and IMPORTED
  * when that module is active for the tenant — so a tenant without the DORA
@@ -30,6 +33,7 @@ final class ImportFieldSpec
     public const TYPE_ENUM     = 'enum';
     public const TYPE_LIST     = 'list';      // delimited string → array<string>
     public const TYPE_RELATION = 'relation';  // lookup related entity by a field
+    public const TYPE_OWNER    = 'owner';     // name or e-mail → User, else Person, else a new Person
 
     /**
      * @param list<string> $enumValues   allowed values when type = enum
@@ -40,6 +44,7 @@ final class ImportFieldSpec
      *                                    without error when any of them is given (user OR person OR text)
      * @param bool         $refuseIfUnresolved a given, non-empty value that does not resolve (relation) refuses
      *                                    the row instead of silently dropping it (owner columns)
+     * @param ?string      $personSetter  Person-slot setter when type = owner (`setter` is the User slot)
      */
     public function __construct(
         public readonly string $name,
@@ -56,6 +61,7 @@ final class ImportFieldSpec
         public readonly ?string $relationFallbackLookup = null,
         public readonly array $requiredUnlessAny = [],
         public readonly bool $refuseIfUnresolved = false,
+        public readonly ?string $personSetter = null,
     ) {
     }
 

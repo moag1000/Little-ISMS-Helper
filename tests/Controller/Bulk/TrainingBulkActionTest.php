@@ -179,7 +179,7 @@ class TrainingBulkActionTest extends WebTestCase
     private function makeTraining(string $title, Tenant $tenant): Training
     {
         $t = new Training();
-        $t->setTitle($title)->setTrainer('Trainer')->setTrainingType('internal')
+        $t->setTitle($title)->setTrainingType('internal')
           ->setScheduledDate(new \DateTime('+7 days'))
           ->setStatus('planned')->setTenant($tenant);
         $this->em->persist($t);

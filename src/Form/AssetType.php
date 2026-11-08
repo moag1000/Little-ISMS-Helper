@@ -141,13 +141,9 @@ final class AssetType extends AbstractType implements SectionMapInterface
             'user_field'         => 'ownerUser',
             'person_field'       => 'ownerPerson',
             'deputies_field'     => 'ownerDeputyPersons',
-            'legacy_field'       => 'owner',
             'translation_prefix' => 'asset',
             'user_label'         => 'asset.field.owner',
             'user_placeholder'   => 'asset.placeholder.owner_user',
-            'legacy_label'       => 'asset.field.owner_legacy',
-            'legacy_help'        => 'asset.help.owner',
-            'legacy_placeholder' => 'asset.placeholder.owner',
             // Owner pre-fill — UX-Polish
             'default_to_current_user' => true,
         ]);
@@ -502,7 +498,6 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 'ownerUser',
                 'ownerPerson',
                 'ownerDeputyPersons',
-                'owner',
                 'physicalLocation',
                 'dependsOn',
                 'processingActivities',

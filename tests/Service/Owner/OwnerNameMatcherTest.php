@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service\DataRepair;
+namespace App\Tests\Service\Owner;
 
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
-use App\Service\DataRepair\LegacyOwnerMatcher;
+use App\Service\Owner\OwnerNameMatcher;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class LegacyOwnerMatcherTest extends TestCase
+final class OwnerNameMatcherTest extends TestCase
 {
     private Tenant $tenant;
     private Tenant $other;
@@ -26,7 +26,7 @@ final class LegacyOwnerMatcherTest extends TestCase
     public function matchesUserByNameEmailAndReversedNameIgnoringCaseAndBlanks(): void
     {
         $max = $this->user('Max', 'Muster', 'max.muster@firma.test', $this->tenant);
-        $matcher = new LegacyOwnerMatcher([$max], []);
+        $matcher = new OwnerNameMatcher([$max], []);
 
         self::assertSame($max, $matcher->match('  max   MUSTER ', $this->tenant));
         self::assertSame($max, $matcher->match('Muster, Max', $this->tenant));
@@ -37,7 +37,7 @@ final class LegacyOwnerMatcherTest extends TestCase
     #[Test]
     public function staysInsideTheRecordsOrganisation(): void
     {
-        $matcher = new LegacyOwnerMatcher([$this->user('Max', 'Muster', 'm@x.test', $this->other)], []);
+        $matcher = new OwnerNameMatcher([$this->user('Max', 'Muster', 'm@x.test', $this->other)], []);
 
         self::assertNull($matcher->match('Max Muster', $this->tenant));
     }
@@ -45,7 +45,7 @@ final class LegacyOwnerMatcherTest extends TestCase
     #[Test]
     public function anAmbiguousNameGivesNoSuggestion(): void
     {
-        $matcher = new LegacyOwnerMatcher([
+        $matcher = new OwnerNameMatcher([
             $this->user('Max', 'Muster', 'm1@x.test', $this->tenant),
             $this->user('Max', 'Muster', 'm2@x.test', $this->tenant),
         ], [$this->person('Max Muster', $this->tenant)]);
@@ -58,7 +58,7 @@ final class LegacyOwnerMatcherTest extends TestCase
     {
         $inactive = $this->user('Eva', 'Extern', 'eva@x.test', $this->tenant)->setIsActive(false);
         $person = $this->person('Eva Extern', $this->tenant);
-        $matcher = new LegacyOwnerMatcher([$inactive], [$person]);
+        $matcher = new OwnerNameMatcher([$inactive], [$person]);
 
         self::assertSame($person, $matcher->match('eva extern', $this->tenant));
         self::assertNull($matcher->match('', $this->tenant));

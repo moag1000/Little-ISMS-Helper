@@ -12,21 +12,18 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use App\Validator\Constraint\SameTenantOwner;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
- * Supplier contact person: legacy free text + Pattern A dual-state owner cluster
+ * Supplier contact person: Pattern A owner cluster
  * (User FK + Person FK + deputies M2M + effective accessor).
  * Extracted from Supplier to keep the entity within its god-class budget.
  */
 trait SupplierContactPersonTrait
 {
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['supplier:read', 'supplier:write'])]
-    private ?string $contactPerson = null;
-
     /**
      * Pattern A dual-state: preferred structured contact (system user).
-     * Falls back to the legacy string $contactPerson.
+     * 
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'contact_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -59,17 +56,6 @@ trait SupplierContactPersonTrait
     private function initContactDeputyPersons(): void
     {
         $this->contactDeputyPersons = new ArrayCollection();
-    }
-
-    public function getContactPerson(): ?string
-    {
-        return $this->contactPerson;
-    }
-
-    public function setContactPerson(?string $contactPerson): static
-    {
-        $this->contactPerson = $contactPerson;
-        return $this;
     }
 
     public function getContactPersonUser(): ?User
@@ -116,14 +102,15 @@ trait SupplierContactPersonTrait
 
     /**
      * Effective contact person: prefer contactPersonUser.fullName,
-     * then contactPersonRef (Person), fall back to legacy string.
+     * then contactPersonRef (Person).
      */
+    #[Groups(['supplier:read'])]
+    #[SerializedName('contactPerson')]
     public function getEffectiveContactPerson(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->contactPersonUser,
             $this->contactPersonRef,
-            $this->contactPerson,
         );
     }
 
@@ -137,7 +124,6 @@ trait SupplierContactPersonTrait
         return OwnerResolver::resolveAll(
             $this->contactPersonUser,
             $this->contactPersonRef,
-            $this->contactPerson,
             $this->contactDeputyPersons,
         );
     }

@@ -755,13 +755,13 @@ class DataSubjectRequest
 
     public function getEffectiveAssignedTo(): ?string
     {
-        return OwnerResolver::resolveEffective($this->assignedTo, $this->assignedPerson, null);
+        return OwnerResolver::resolveEffective($this->assignedTo, $this->assignedPerson);
     }
 
     /** @return list<string> */
     public function getAllAssignedOwners(): array
     {
-        return OwnerResolver::resolveAll($this->assignedTo, $this->assignedPerson, null, $this->assignedDeputyPersons);
+        return OwnerResolver::resolveAll($this->assignedTo, $this->assignedPerson, $this->assignedDeputyPersons);
     }
 
     public function getDpoPerson(): ?Person

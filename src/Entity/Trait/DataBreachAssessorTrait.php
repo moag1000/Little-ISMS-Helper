@@ -93,7 +93,6 @@ trait DataBreachAssessorTrait
         return OwnerResolver::resolveEffective(
             $this->assessor,
             $this->assessorPerson,
-            null,
         );
     }
 
@@ -107,7 +106,6 @@ trait DataBreachAssessorTrait
         return OwnerResolver::resolveAll(
             $this->assessor,
             $this->assessorPerson,
-            null,
             $this->assessorDeputyPersons,
         );
     }

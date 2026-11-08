@@ -8,6 +8,7 @@ use App\Entity\InterestedParty;
 use App\Entity\ISMSObjective;
 use App\Entity\Location;
 use App\Entity\Patch;
+use App\Entity\Person;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Entity-level (API / service path) guards of the person-picker sweep:
- * SameTenantOwner on the User FK, plus the ISMSObjective owner rule and length.
+ * SameTenantOwner on the User FK, plus the ISMSObjective owner rule.
  */
 final class SameTenantOwnerEntityTest extends KernelTestCase
 {
@@ -95,19 +96,11 @@ final class SameTenantOwnerEntityTest extends KernelTestCase
         );
         self::assertContains('objective.validation.owner_required', $templates);
 
-        $objective->setResponsiblePerson('Legacy Owner');
+        $objective->setResponsiblePersonRef((new Person())->setFullName('Owner'));
         $templates = array_map(
             static fn ($v) => $v->getMessageTemplate(),
             iterator_to_array(self::validator()->validate($objective)),
         );
         self::assertNotContains('objective.validation.owner_required', $templates);
-    }
-
-    #[Test]
-    public function objectiveFreeTextOwnerIsLimitedTo100Characters(): void
-    {
-        $objective = (new ISMSObjective())->setResponsiblePerson(str_repeat('x', 101));
-
-        self::assertCount(1, self::validator()->validateProperty($objective, 'responsiblePerson'));
     }
 }

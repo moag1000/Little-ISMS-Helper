@@ -39,9 +39,9 @@ FORM_DIR = ROOT / "src" / "Form"
 
 INTERFACE_PATTERN = re.compile(r"implements\s+[^{]*\bSectionMapInterface\b")
 BUILDER_ADD_PATTERN = re.compile(r"->add\(\s*['\"]([A-Za-z_][A-Za-z0-9_]*)['\"]")
-# OwnerPickerFormTrait::addOwnerPicker(...) injects up to 4 child fields
+# OwnerPickerFormTrait::addOwnerPicker(...) injects up to 3 child fields
 # whose names come from config-keys user_field / person_field /
-# deputies_field / legacy_field. Parse those config arrays so the gate
+# deputies_field. Parse those config arrays so the gate
 # treats them as builder-added fields.
 OWNER_PICKER_PATTERN = re.compile(
     r"addOwnerPicker\s*\([^,]+,\s*\[(.*?)\]\s*\)\s*;",
@@ -51,7 +51,6 @@ OWNER_PICKER_FIELDS = (
     "user_field",
     "person_field",
     "deputies_field",
-    "legacy_field",
 )
 OWNER_PICKER_FIELD_PATTERN = re.compile(
     r"['\"](?:" + "|".join(OWNER_PICKER_FIELDS) + r")['\"]\s*=>\s*['\"]([A-Za-z_][A-Za-z0-9_]*)['\"]"

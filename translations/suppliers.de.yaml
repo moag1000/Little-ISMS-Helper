@@ -170,7 +170,6 @@ supplier:
         contact_person_user: 'Ansprechpartner (Benutzer)'
         contact_person_ref: 'Ansprechpartner (Person)'
         contact_deputies: 'Stellvertreter'
-        contact_person_legacy: 'Ansprechpartner (Freitext, veraltet)'
     lksg_risk:
         low: 'Niedrig'
         medium: 'Mittel'

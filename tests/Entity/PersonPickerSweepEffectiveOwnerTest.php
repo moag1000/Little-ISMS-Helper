@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Person-picker sweep: the 6 entities that gained the Pattern A dual-state
- * owner cluster resolve their effective owner as User > Person > free text,
+ * owner cluster resolve their effective owner as User > Person,
  * and expose primary + deputies through the roster accessor.
  */
 final class PersonPickerSweepEffectiveOwnerTest extends TestCase
@@ -51,13 +51,10 @@ final class PersonPickerSweepEffectiveOwnerTest extends TestCase
      */
     #[Test]
     #[DataProvider('entityProvider')]
-    public function freeTextIsTheFallbackWhenNoStructuredOwnerIsSet(string $class, string $base): void
+    public function noOwnerWhenNoUserOrPersonIsSet(string $class, string $base): void
     {
         $entity = new $class();
         self::assertNull($entity->{'getEffective' . $base}());
-
-        $entity->{'set' . $base}('Legacy Owner');
-        self::assertSame('Legacy Owner', $entity->{'getEffective' . $base}());
     }
 
     /**
@@ -65,10 +62,9 @@ final class PersonPickerSweepEffectiveOwnerTest extends TestCase
      */
     #[Test]
     #[DataProvider('entityProvider')]
-    public function personBeatsFreeText(string $class, string $base): void
+    public function personIsTheOwnerWithoutUser(string $class, string $base): void
     {
         $entity = new $class();
-        $entity->{'set' . $base}('Legacy Owner');
         $entity->{'set' . $base . 'Ref'}(self::person('Paula Person'));
 
         self::assertSame('Paula Person', $entity->{'getEffective' . $base}());
@@ -79,10 +75,9 @@ final class PersonPickerSweepEffectiveOwnerTest extends TestCase
      */
     #[Test]
     #[DataProvider('entityProvider')]
-    public function userBeatsPersonAndFreeText(string $class, string $base): void
+    public function userBeatsPerson(string $class, string $base): void
     {
         $entity = new $class();
-        $entity->{'set' . $base}('Legacy Owner');
         $entity->{'set' . $base . 'Ref'}(self::person('Paula Person'));
         $entity->{'set' . $base . 'User'}(self::user('Ulla', 'User'));
 

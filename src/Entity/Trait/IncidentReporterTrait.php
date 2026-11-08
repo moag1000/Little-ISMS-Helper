@@ -11,6 +11,7 @@ use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * Incident reporter (Pattern A dual-state): User + Person + deputies + effective accessors.
@@ -92,14 +93,15 @@ trait IncidentReporterTrait
     }
 
     /**
-     * Effective reportedBy: prefer reportedByUser.fullName, then Person, fall back to legacy string.
+     * Effective reportedBy: prefer reportedByUser.fullName, then Person.
      */
+    #[Groups(['incident:read'])]
+    #[SerializedName('reportedBy')]
     public function getEffectiveReportedBy(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->reportedByUser,
             $this->reportedByPerson,
-            $this->reportedBy,
         );
     }
 
@@ -113,7 +115,6 @@ trait IncidentReporterTrait
         return OwnerResolver::resolveAll(
             $this->reportedByUser,
             $this->reportedByPerson,
-            $this->reportedBy,
             $this->reportedByDeputyPersons,
         );
     }
