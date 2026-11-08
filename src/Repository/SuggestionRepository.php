@@ -59,6 +59,27 @@ class SuggestionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /** Rejections of one kind for one record since $since (assistant re-proposal limit). */
+    public function countRejectedForSubject(Tenant $tenant, string $kind, string $subjectClass, int $subjectId, \DateTimeImmutable $since): int
+    {
+        return (int) $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->where('s.tenant = :tenant')
+            ->andWhere('s.kind = :kind')
+            ->andWhere('s.status = :status')
+            ->andWhere('s.subjectClass = :class')
+            ->andWhere('s.subjectId = :id')
+            ->andWhere('s.decidedAt >= :since')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('kind', $kind)
+            ->setParameter('status', SuggestionStatus::Rejected)
+            ->setParameter('class', $subjectClass)
+            ->setParameter('id', $subjectId)
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /** @return list<Suggestion> decided in the last $days days, newest first */
     public function findDecided(Tenant $tenant, int $days = 90): array
     {

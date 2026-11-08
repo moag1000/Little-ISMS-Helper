@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Api;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Attribute\ApiReadOnlyEvidence;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Entity\ComplianceRequirementFulfillment;
@@ -41,7 +42,17 @@ final class ApiResourceContractTest extends TestCase
             'decisionApprovedByUser', 'decisionApprovalDate',
         ],
         \App\Entity\Supplier::class => ['boardLevelRiskAcceptance'],
-        \App\Entity\ChangeRequest::class => ['approvedBy', 'approvedDate', 'verifiedBy', 'verifiedDate'],
+        \App\Entity\ChangeRequest::class => [
+            'approvedBy', 'approvedDate', 'verifiedBy', 'verifiedDate',
+            'approvalComments', 'implementedBy', 'actualImplementationDate', 'closedDate',
+        ],
+        // S4 (2026-11): report times decide whether the NIS-2/DORA deadline was
+        // kept — written only by "Als gemeldet markieren", never by a request body.
+        \App\Entity\Incident::class => [
+            'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt',
+            'initialReportSubmittedAt', 'intermediateReportSubmittedAt', 'doraFinalReportSubmittedAt',
+            'nis2InterimRequestedAt', 'nis2InterimDueAt', 'nis2InterimReportedAt', 'resolvedAt', 'closedAt',
+        ],
     ];
 
     private const array READ_ONLY_RESOURCES = [
@@ -120,17 +131,39 @@ final class ApiResourceContractTest extends TestCase
     #[Test]
     public function approvalEvidenceIsNotWritableOverTheApi(): void
     {
+        // The known evidence fields must carry the attribute ...
         foreach (self::APPROVAL_FIELDS as $class => $properties) {
             $ref = new ReflectionClass($class);
             foreach ($properties as $property) {
                 self::assertTrue($ref->hasProperty($property), sprintf('%s::$%s no longer exists.', $class, $property));
-                foreach ($ref->getProperty($property)->getAttributes(Groups::class) as $attribute) {
+                self::assertNotSame(
+                    [],
+                    $ref->getProperty($property)->getAttributes(ApiReadOnlyEvidence::class),
+                    sprintf('%s::$%s is workflow/approval evidence: mark it #[ApiReadOnlyEvidence].', $class, $property),
+                );
+            }
+        }
+
+        // ... and no field carrying it, on any entity, is in a write group.
+        $checked = 0;
+        foreach (glob(dirname(__DIR__, 2) . '/src/Entity/*.php') ?: [] as $file) {
+            $class = 'App\\Entity\\' . basename($file, '.php');
+            if (!class_exists($class)) {
+                continue;
+            }
+            foreach ((new ReflectionClass($class))->getProperties() as $property) {
+                if ($property->getAttributes(ApiReadOnlyEvidence::class) === []) {
+                    continue;
+                }
+                ++$checked;
+                foreach ($property->getAttributes(Groups::class) as $attribute) {
                     foreach ($attribute->newInstance()->groups as $group) {
-                        self::assertStringEndsNotWith(':write', $group, sprintf('%s::$%s is API-writable.', $class, $property));
+                        self::assertStringEndsNotWith(':write', $group, sprintf('%s::$%s is API-writable.', $class, $property->getName()));
                     }
                 }
             }
         }
+        self::assertGreaterThanOrEqual(25, $checked);
     }
 
     /** @return iterable<string, array{class-string}> */

@@ -147,8 +147,11 @@ final class ISOComplianceIntelligenceService
     public function getISO27005Compliance(): array
     {
         $risks = $this->riskRepository->findAll();
-        $acceptedRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === TreatmentStrategy::Accept);
-        $pendingApproval = array_filter($acceptedRisks, fn(Risk $risk): bool => $risk->isAcceptanceApprovalRequired());
+        // "Accept" as strategy is a proposal; accepted is only what went
+        // through the formal acceptance (ISO 27001 6.1.3 f, risk owner).
+        $acceptRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === TreatmentStrategy::Accept);
+        $pendingApproval = array_filter($acceptRisks, fn(Risk $risk): bool => $risk->isAcceptanceApprovalRequired());
+        $acceptedRisks = array_filter($acceptRisks, fn(Risk $risk): bool => !$risk->isAcceptanceApprovalRequired());
 
         $score = 100;
 

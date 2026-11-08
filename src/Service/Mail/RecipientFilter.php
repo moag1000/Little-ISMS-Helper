@@ -39,11 +39,22 @@ final class RecipientFilter
      */
     public function filter(ScheduledReport $report): array
     {
+        return $this->filterEmails($report->getRecipients(), $report->getTenantId());
+    }
+
+    /**
+     * Same tenant + role + active check for any list of free-entered addresses
+     * (notification digests, ...). A null tenant id qualifies nobody.
+     *
+     * @param iterable<mixed> $emails
+     * @return array{valid: list<string>, dropped: list<array{email:string, reason:string}>}
+     */
+    public function filterEmails(iterable $emails, ?int $targetTenantId): array
+    {
         $valid = [];
         $dropped = [];
-        $targetTenantId = $report->getTenantId();
 
-        foreach ($report->getRecipients() as $email) {
+        foreach ($emails as $email) {
             $email = trim((string) $email);
             if ($email === '') {
                 continue;
@@ -56,7 +67,7 @@ final class RecipientFilter
             }
 
             $userTenantId = $user->getTenant()?->getId();
-            if ($userTenantId === null || $userTenantId !== $targetTenantId) {
+            if ($userTenantId === null || $targetTenantId === null || $userTenantId !== $targetTenantId) {
                 $dropped[] = ['email' => $email, 'reason' => self::REASON_CROSS_TENANT];
                 continue;
             }

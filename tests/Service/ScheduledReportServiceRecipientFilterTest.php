@@ -165,6 +165,32 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
         self::assertSame(RecipientFilter::REASON_UNKNOWN_USER, $this->filter->validateSingle('ghost@tenant-a.test', 1));
     }
 
+    #[Test]
+    public function testFilterEmailsAppliesTheSameRulesToDigestAddresses(): void
+    {
+        $manager = $this->makeUser('manager@tenant-a.test', $this->tenantA, ['ROLE_MANAGER']);
+        $this->userRepository->method('findOneBy')->willReturnCallback(
+            fn (array $criteria): ?User => $criteria['email'] === 'manager@tenant-a.test' ? $manager : null,
+        );
+
+        $result = $this->filter->filterEmails(['manager@tenant-a.test', 'outsider@example.org'], 1);
+
+        self::assertSame(['manager@tenant-a.test'], $result['valid']);
+        self::assertSame(RecipientFilter::REASON_UNKNOWN_USER, $result['dropped'][0]['reason']);
+    }
+
+    #[Test]
+    public function testFilterEmailsDropsEveryoneWithoutTargetTenant(): void
+    {
+        $manager = $this->makeUser('manager@tenant-a.test', $this->tenantA, ['ROLE_MANAGER']);
+        $this->userRepository->method('findOneBy')->willReturn($manager);
+
+        $result = $this->filter->filterEmails(['manager@tenant-a.test'], null);
+
+        self::assertSame([], $result['valid']);
+        self::assertSame(RecipientFilter::REASON_CROSS_TENANT, $result['dropped'][0]['reason']);
+    }
+
     private function makeReport(int $tenantId, array $recipients): ScheduledReport
     {
         $report = new ScheduledReport();

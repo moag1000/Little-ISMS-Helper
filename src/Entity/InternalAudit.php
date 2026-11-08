@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ModuleField;
 use DateTimeInterface;
 use DateTimeImmutable;
 use App\Entity\Location;
@@ -144,7 +145,7 @@ class InternalAudit
     /** Site the audit covers (scopeType "location"); feeds the audit layer of the location map. */
     #[ORM\ManyToOne(targetEntity: Location::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['audit:read', 'audit:write'])]
+    #[Groups(['audit:read', 'audit:write']), ModuleField('locations')]
     private ?Location $location = null;
 
     /**

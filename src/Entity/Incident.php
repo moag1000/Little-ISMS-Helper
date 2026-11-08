@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\{ApiReadOnlyEvidence, ModuleField};
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
@@ -17,10 +18,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
-use App\Entity\Trait\IncidentNis2ReportingTrait;
-use App\Entity\Trait\IncidentReporterTrait;
-use App\Entity\Trait\IncidentResponsiblePersonTrait;
-use App\Entity\Trait\IncidentRiskLinksTrait;
+use App\Entity\Trait\{IncidentNis2ReportingTrait, IncidentReporterTrait, IncidentResponsiblePersonTrait, IncidentRiskLinksTrait};
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
@@ -228,11 +226,11 @@ class Incident
     private ?string $lessonsLearned = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ApiReadOnlyEvidence('incident form (status is not API-writable either)')]
     private ?DateTimeInterface $resolvedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ApiReadOnlyEvidence('incident form (status is not API-writable either)')]
     private ?DateTimeInterface $closedAt = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
@@ -246,28 +244,28 @@ class Incident
      * ({@see getNis2SignificanceReasons()}) applies until the ISB decides.
      */
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?bool $notificationRequired = null;
 
     /**
      * NIS2 Article 23 - Early Warning Notification (24h deadline)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ModuleField('nis2_dora'), ApiReadOnlyEvidence('mark as reported (NIS-2 Art. 23)')]
     private ?DateTimeImmutable $earlyWarningReportedAt = null;
 
     /**
      * NIS2 Article 23 - Detailed Notification (72h deadline)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ModuleField('nis2_dora'), ApiReadOnlyEvidence('mark as reported (NIS-2 Art. 23)')]
     private ?DateTimeImmutable $detailedNotificationReportedAt = null;
 
     /**
      * NIS2 Article 23 - Final Report (1 month deadline)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ModuleField('nis2_dora'), ApiReadOnlyEvidence('mark as reported (NIS-2 Art. 23)')]
     private ?DateTimeImmutable $finalReportSubmittedAt = null;
 
     /**
@@ -282,42 +280,42 @@ class Incident
     #[Assert\Choice(
         choices: ['operational', 'security', 'privacy', 'availability'],
         message: 'incident.validation.nis2_category_invalid'
-    )]
+    ), ModuleField('nis2_dora')]
     private ?string $nis2Category = null;
 
     /**
      * Does this incident have cross-border impact? (NIS2 relevant)
      */
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private bool $crossBorderImpact = false;
 
     /**
      * Number of affected users/customers (NIS2 reporting)
      */
     #[ORM\Column(nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?int $affectedUsersCount = null;
 
     /**
      * Estimated financial impact in EUR (NIS2 reporting)
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?string $estimatedFinancialImpact = null;
 
     /**
      * National authority notified (e.g., BSI, ENISA)
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?string $nationalAuthorityNotified = null;
 
     /**
      * Reference number from authority
      */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?string $authorityReferenceNumber = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -350,7 +348,7 @@ class Incident
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'incident_failed_controls')]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('controls')]
     #[MaxDepth(1)]
     private Collection $failedControls;
 
@@ -1135,28 +1133,28 @@ class Incident
      * Allowed values: 'major_ict_incident' | 'significant_cyber_threat'
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?string $ictIncidentClassification = null;
 
     /**
      * DORA Art. 19(1)(a) — Data loss occurred during the incident.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private bool $dataLossOccurred = false;
 
     /**
      * DORA Art. 19(1)(d) — Data leakage (exfiltration) occurred.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private bool $dataLeakageOccurred = false;
 
     /**
      * DORA Art. 19(1)(c) — Reputational impact on scale 1-5.
      */
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     #[Assert\Range(min: 1, max: 5)]
     private ?int $reputationalImpact = null;
 
@@ -1167,7 +1165,7 @@ class Incident
      */
     #[ORM\ManyToMany(targetEntity: BusinessProcess::class)]
     #[ORM\JoinTable(name: 'incident_critical_services')]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     #[MaxDepth(1)]
     private Collection $criticalServicesAffected;
 
@@ -1175,14 +1173,14 @@ class Incident
      * DORA Art. 19(1)(f) — Recurring incident flag.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private bool $recurringIncident = false;
 
     /**
      * DORA Art. 19 — Number of clients/counterparties affected.
      */
     #[ORM\Column(nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     #[Assert\PositiveOrZero]
     private ?int $clientsAffected = null;
 
@@ -1190,42 +1188,42 @@ class Incident
      * DORA Art. 19 — Financial volume of clients affected (EUR, DECIMAL as string).
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?string $clientsAffectedFinancialVolume = null;
 
     /**
      * DORA Art. 19 — Service replicate / failover activated to contain impact.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private bool $replicationOfImpact = false;
 
     /**
      * DORA Art. 19(4)(a) — Initial report submitted (4-hour deadline, distinct from NIS2 24h).
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ModuleField('nis2_dora'), ApiReadOnlyEvidence('mark as reported (DORA Art. 19)')]
     private ?\DateTimeImmutable $initialReportSubmittedAt = null;
 
     /**
      * DORA Art. 19(4)(b) — Intermediate report submitted (72-hour deadline).
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ModuleField('nis2_dora'), ApiReadOnlyEvidence('mark as reported (DORA Art. 19)')]
     private ?\DateTimeImmutable $intermediateReportSubmittedAt = null;
 
     /**
      * DORA Art. 19(4)(c) — Final report submitted (one month after the intermediate report).
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read']), ModuleField('nis2_dora'), ApiReadOnlyEvidence('mark as reported (DORA Art. 19)')]
     private ?\DateTimeImmutable $doraFinalReportSubmittedAt = null;
 
     /**
      * DORA Art. 11(2) — Data recovery strategy / cross-ref to BCM continuity plan.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
     private ?string $dataRecoveryStrategy = null;
 
     // -------------------------------------------------------------------------

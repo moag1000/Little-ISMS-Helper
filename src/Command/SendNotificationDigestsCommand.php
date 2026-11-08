@@ -8,6 +8,7 @@ use App\Entity\Notification\NotificationChannel;
 use App\Entity\Notification\NotificationDelivery;
 use App\Repository\Notification\NotificationDeliveryRepository;
 use App\Service\AuditLogger;
+use App\Service\Mail\RecipientFilter;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -57,6 +58,7 @@ final class SendNotificationDigestsCommand
         private readonly EntityManagerInterface         $entityManager,
         private readonly MailerInterface                $mailer,
         private readonly AuditLogger                    $auditLogger,
+        private readonly RecipientFilter                $recipientFilter,
     ) {}
 
     public function __invoke(
@@ -97,17 +99,34 @@ final class SendNotificationDigestsCommand
             ));
 
             $config     = $channel->getConfig();
-            $recipients = (array) ($config['recipients'] ?? []);
+            $tenant     = $channel->getTenant();
+
+            // Free-entered addresses: only active, same-tenant users with at
+            // least ROLE_MANAGER receive digests (same rule as scheduled reports).
+            $filtered   = $this->recipientFilter->filterEmails((array) ($config['recipients'] ?? []), $tenant?->getId());
+            $recipients = $filtered['valid'];
+            foreach ($filtered['dropped'] as $drop) {
+                $symfonyStyle->text(sprintf('  Recipient %s dropped: %s', $drop['email'], $drop['reason']));
+                $this->auditLogger->withTenant($tenant, fn () => $this->auditLogger->logCustom(
+                    'notification.digest.recipient_dropped',
+                    'NotificationChannel',
+                    $channel->getId(),
+                    ['email' => $drop['email'], 'reason' => $drop['reason']],
+                    null,
+                    sprintf('Digest recipient %s dropped: %s', $drop['email'], $drop['reason']),
+                    'system:digest-cron',
+                ));
+            }
             $from       = (string) ($config['from'] ?? 'noreply@little-isms-helper.local');
 
             if ($recipients === []) {
                 $symfonyStyle->warning(sprintf(
-                    '  Skipping channel "%s" — no recipients configured.',
+                    '  Skipping channel "%s" — no qualifying recipients.',
                     $channel->getName(),
                 ));
 
                 foreach ($deliveries as $delivery) {
-                    $delivery->markFailed('No recipients configured for email channel (digest).');
+                    $delivery->markFailed('No qualifying recipients for email channel (digest).');
                 }
 
                 if (!$dryRun) {
@@ -158,7 +177,7 @@ final class SendNotificationDigestsCommand
                 $this->entityManager->flush();
 
                 // Single audit entry for the whole batch (ISO 27001 Cl. 7.5.3)
-                $this->auditLogger->logCustom(
+                $this->auditLogger->withTenant($tenant, fn () => $this->auditLogger->logCustom(
                     AuditLogger::ACTION_NOTIFICATION_DELIVERY_SUCCEEDED,
                     'NotificationDelivery',
                     null,
@@ -175,7 +194,7 @@ final class SendNotificationDigestsCommand
                         count($deliveries),
                     ),
                     'system:digest-cron',
-                );
+                ));
 
                 $symfonyStyle->text(sprintf(
                     '  Sent digest to %s (%d notifications batched).',
@@ -200,7 +219,7 @@ final class SendNotificationDigestsCommand
 
                 $this->entityManager->flush();
 
-                $this->auditLogger->logCustom(
+                $this->auditLogger->withTenant($tenant, fn () => $this->auditLogger->logCustom(
                     AuditLogger::ACTION_NOTIFICATION_DELIVERY_FAILED,
                     'NotificationDelivery',
                     null,
@@ -212,7 +231,7 @@ final class SendNotificationDigestsCommand
                     ],
                     sprintf('Digest email failed for channel "%s".', $channel->getName()),
                     'system:digest-cron',
-                );
+                ));
 
                 $totalSkipped += count($deliveries);
             }

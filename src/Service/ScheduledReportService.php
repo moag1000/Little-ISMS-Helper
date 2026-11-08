@@ -6,6 +6,7 @@ namespace App\Service;
 
 use DateTime;
 use App\Entity\ScheduledReport;
+use App\Entity\Tenant;
 use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\RiskRepository;
 use App\Repository\ScheduledReportRepository;
@@ -14,6 +15,7 @@ use App\Service\AuditLogger;
 use App\Service\Mail\MailerTlsChecker;
 use App\Service\Mail\RecipientFilter;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Report\ScheduledReportAuditTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -29,6 +31,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ScheduledReportService
 {
+    use ScheduledReportAuditTrait;
+
     public function __construct(
         private readonly ScheduledReportRepository $repository,
         private readonly EntityManagerInterface $entityManager,
@@ -148,8 +152,11 @@ final class ScheduledReportService
             ? 'application/pdf'
             : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
+        $tenantId = $report->getTenantId();
+        $tenant = $tenantId !== null ? $this->entityManager->find(Tenant::class, $tenantId) : null;
         foreach ($filterResult['valid'] as $recipient) {
             $this->sendReportEmail($report, $recipient, $content, $filename, $mimeType);
+            $this->auditSentReport($report, $recipient, $tenant);
         }
 
         // Update report status
@@ -209,31 +216,6 @@ final class ScheduledReportService
         ]);
 
         return $results;
-    }
-
-    private function auditDroppedRecipient(ScheduledReport $report, string $email, string $reason): void
-    {
-        $this->logger->warning('Scheduled report recipient dropped', [
-            'report_id' => $report->getId(),
-            'email' => $email,
-            'reason' => $reason,
-        ]);
-
-        try {
-            $this->auditLogger->logCustom(
-                action: 'scheduled_report.recipient_dropped',
-                entityType: 'ScheduledReport',
-                entityId: $report->getId(),
-                oldValues: ['email' => $email, 'reason' => $reason],
-                newValues: null,
-                description: sprintf('Recipient %s dropped: %s', $email, $reason),
-            );
-        } catch (\Throwable $e) {
-            // Audit-log failures must not break report sending; they are already logged above.
-            $this->logger->error('Audit log write failed for dropped recipient', [
-                'error' => $e->getMessage(),
-            ]);
-        }
     }
 
     /**

@@ -24,6 +24,7 @@ use App\Entity\User;
 use App\Mcp\ApiResourceGateway;
 use App\Mcp\McpSession;
 use App\Mcp\McpToolException;
+use App\Attribute\ModuleField;
 use App\Service\ModuleConfigurationService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -106,11 +107,33 @@ final class ApiResourceGatewayWriteTest extends TestCase
         self::assertTrue($resources['Populated']['update'], 'PUT with standard_put off populates the record');
     }
 
+    /** S4: an operation without write groups would accept every entity field. */
+    #[Test]
+    public function aResourceWithoutWriteGroupsIsNeverWritten(): void
+    {
+        $gateway = $this->gateway();
+        self::assertFalse($gateway->resources($this->session())['Ungrouped']['create']);
+
+        $this->expectException(McpToolException::class);
+        $gateway->write($this->session(), 'Ungrouped', null, ['title' => 'x']);
+    }
+
+    /** S4: a field of a module that is off is neither offered nor accepted. */
+    #[Test]
+    public function fieldsOfAnInactiveModuleAreNotWritable(): void
+    {
+        $gateway = $this->gateway();
+        self::assertNotContains('lossMagnitude', $gateway->writableFields($this->session(), 'Note'));
+
+        $this->expectException(McpToolException::class);
+        $gateway->write($this->session(), 'Note', null, ['lossMagnitude' => 5]);
+    }
+
     private function gateway(): ApiResourceGateway
     {
         $names = $this->createStub(ResourceNameCollectionFactoryInterface::class);
         $names->method('create')->willReturn(new ResourceNameCollection([
-            GatewayNote::class, GatewayCatalogue::class, GatewayReplaced::class, GatewayPopulated::class,
+            GatewayNote::class, GatewayCatalogue::class, GatewayReplaced::class, GatewayPopulated::class, GatewayUngrouped::class,
         ]));
 
         $write = ['groups' => ['x:write']];
@@ -130,6 +153,9 @@ final class ApiResourceGatewayWriteTest extends TestCase
                 GatewayReplaced::class => new ApiResource(shortName: 'Replaced', operations: [
                     'rep_put' => new Put(uriTemplate: '/replaced/{id}', shortName: 'Replaced', denormalizationContext: $write),
                 ]),
+                GatewayUngrouped::class => new ApiResource(shortName: 'Ungrouped', operations: [
+                    'ung_post' => new Post(uriTemplate: '/ungrouped', shortName: 'Ungrouped'),
+                ]),
                 default => new ApiResource(shortName: 'Populated', operations: [
                     'pop_put' => new Put(uriTemplate: '/populated/{id}', shortName: 'Populated', extraProperties: ['standard_put' => false], denormalizationContext: $write),
                 ]),
@@ -137,10 +163,10 @@ final class ApiResourceGatewayWriteTest extends TestCase
         ]));
 
         $properties = $this->createStub(PropertyNameCollectionFactoryInterface::class);
-        $properties->method('create')->willReturn(new PropertyNameCollection(['id', 'tenant', 'status', 'title', 'body', 'approvedBy']));
+        $properties->method('create')->willReturn(new PropertyNameCollection(['id', 'tenant', 'status', 'title', 'body', 'approvedBy', 'lossMagnitude']));
         $property = $this->createStub(PropertyMetadataFactoryInterface::class);
         $property->method('create')->willReturnCallback(
-            static fn (string $class, string $name): ApiProperty => (new ApiProperty())->withWritable(in_array($name, ['title', 'body', 'status', 'tenant'], true)),
+            static fn (string $class, string $name): ApiProperty => (new ApiProperty())->withWritable(in_array($name, ['title', 'body', 'status', 'tenant', 'lossMagnitude'], true)),
         );
 
         $urls = $this->createStub(UrlGeneratorInterface::class);
@@ -157,7 +183,7 @@ final class ApiResourceGatewayWriteTest extends TestCase
         });
 
         $modules = $this->createStub(ModuleConfigurationService::class);
-        $modules->method('isModuleActiveForTenant')->willReturn(true);
+        $modules->method('isModuleActiveForTenant')->willReturnCallback(static fn (string $module): bool => $module !== 'risk_quant');
 
         return new ApiResourceGateway($names, $metadata, $kernel, new RequestStack(), $urls, $modules, $properties, $property);
     }
@@ -171,6 +197,9 @@ final class ApiResourceGatewayWriteTest extends TestCase
 /** @internal tenant-owned test resource */
 final class GatewayNote
 {
+    #[ModuleField('risk_quant')]
+    private ?int $lossMagnitude = null;
+
     public function getTenant(): ?Tenant
     {
         return null;
@@ -201,6 +230,19 @@ final class GatewayReplaced
 
 /** @internal */
 final class GatewayPopulated
+{
+    public function getTenant(): ?Tenant
+    {
+        return null;
+    }
+
+    public function setTenant(?Tenant $tenant): void
+    {
+    }
+}
+
+/** @internal tenant-owned, but its Post names no denormalisation group */
+final class GatewayUngrouped
 {
     public function getTenant(): ?Tenant
     {

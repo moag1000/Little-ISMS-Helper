@@ -738,6 +738,11 @@ jobs:
         # ComplianceRequirement is global; getMappedControls() spans every organisation
         # outside an HTTP request. Baseline may only shrink.
         run: python3 scripts/quality/check_requirement_controls_scope.py
+      - name: "Gate 89: API fields of an optional module carry #[ModuleField]"
+        # A FormType adds a module's fields only while the module is active; REST and
+        # the assistant (MCP) ignore them while it is off only when the entity property
+        # names its module (App\Api\ModuleFieldContextBuilder). S4, 2026-11.
+        run: python3 scripts/quality/check_api_module_fields.py --quiet
       - name: "Gate 85: fulfilment values have one writer"
         # Percentage and status of a requirement fulfilment are written only by
         # FulfillmentDerivationService (rule, override, manual). A second writer
