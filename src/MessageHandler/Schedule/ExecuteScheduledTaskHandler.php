@@ -47,8 +47,47 @@ class ExecuteScheduledTaskHandler
         'app:four-eyes:cleanup-expired',
         // Schema & migrations
         'app:schema:reconcile',
-        'doctrine:migrations:migrate',
+        self::MIGRATE_COMMAND,
     ];
+
+    private const string MIGRATE_COMMAND = 'doctrine:migrations:migrate';
+
+    /**
+     * Splits stored task arguments into the ones passed on and the blocked ones.
+     *
+     * Blocked: the environment switch in every spelling bin/console reads it
+     * (`-e`, `-eprod`, `-e prod`, `--env`, `--env=prod`, `--env prod`; the
+     * separate value of a bare switch is dropped with it), `--kernel-class…`,
+     * and for doctrine:migrations:migrate every positional argument — its
+     * version argument (`first`, `prev`, a version number) migrates down.
+     *
+     * @param array<mixed> $arguments
+     * @return array{0: list<string>, 1: list<string>} [allowed, blocked]
+     */
+    public static function filterArguments(string $command, array $arguments): array
+    {
+        $allowed = [];
+        $blocked = [];
+        $dropNext = false;
+        foreach ($arguments as $raw) {
+            $arg = trim((string) $raw);
+            if ($dropNext) {
+                $dropNext = false;
+                $blocked[] = $arg;
+                continue;
+            }
+            $isSwitch = preg_match('/^(?:-e|--env|--kernel-class)/', $arg) === 1;
+            $isPositional = $arg === '' || $arg === '--' || !str_starts_with($arg, '-');
+            if ($isSwitch || ($isPositional && $command === self::MIGRATE_COMMAND)) {
+                $blocked[] = $arg;
+                $dropNext = in_array($arg, ['-e', '--env', '--kernel-class'], true);
+                continue;
+            }
+            $allowed[] = $arg;
+        }
+
+        return [$allowed, $blocked];
+    }
 
     public function __construct(
         private readonly ScheduledTaskRepository $taskRepository,
@@ -99,19 +138,14 @@ class ExecuteScheduledTaskHandler
         // Build command with sanitized arguments
         $commandParts = ['php', $this->projectDir . '/bin/console', $task->getCommand()];
 
-        if ($task->getArguments()) {
-            foreach ($task->getArguments() as $arg) {
-                // Block dangerous flags that could alter command behavior
-                if (preg_match('/^--env=|^--kernel-class=|^-e\s/', (string) $arg)) {
-                    $this->logger->warning('Blocked dangerous argument in scheduled task', [
-                        'task_id' => $task->getId(),
-                        'blocked_arg' => $arg,
-                    ]);
-                    continue;
-                }
-                $commandParts[] = (string) $arg;
-            }
+        [$allowedArgs, $blockedArgs] = self::filterArguments((string) $task->getCommand(), $task->getArguments() ?? []);
+        foreach ($blockedArgs as $arg) {
+            $this->logger->warning('Blocked dangerous argument in scheduled task', [
+                'task_id' => $task->getId(),
+                'blocked_arg' => $arg,
+            ]);
         }
+        array_push($commandParts, ...$allowedArgs);
 
         try {
             $process = new Process($commandParts);

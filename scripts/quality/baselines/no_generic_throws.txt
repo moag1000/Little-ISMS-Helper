@@ -8,7 +8,7 @@ src/Entity/AccessReviewCampaign.php:178
 src/Entity/AccessReviewItem.php:171
 src/Entity/ComplianceRequirement.php:557
 src/Repository/ComplianceMappingRepository.php:67
-src/Service/AccessReviewCampaignService.php:169
+src/Service/AccessReviewCampaignService.php:173
 src/Service/Audit/Generator/AccessReviewWorkbookGenerator.php:62
 src/Service/Compliance/FrameworkLoaderRegistry.php:49
 src/Service/ComplianceLoaderFixerService.php:116

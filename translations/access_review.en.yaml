@@ -99,6 +99,7 @@ access_review:
     bulk_decide_partial: '%done% saved, %skipped% skipped.'
     export_ok: XLSX export started.
     escalation_notified: 'Escalation notification sent for %count% item(s).'
+    self_review_refused: Your own access is decided by someone else (segregation of duties, ISO 27001 A.5.18).
 
   stats:
     total: Total
@@ -113,6 +114,7 @@ access_review:
     success: '%count% decision(s) saved.'
     partial: '%done% saved, %skipped% skipped (already decided or campaign closed).'
     none_selected: No items selected.
+    self_review_skipped: '%count% of them concern your own access and stay open for someone else.'
     tooltip: >
       Select multiple items using checkboxes, then click a bulk decision.
       Each item receives its own audit log entry.

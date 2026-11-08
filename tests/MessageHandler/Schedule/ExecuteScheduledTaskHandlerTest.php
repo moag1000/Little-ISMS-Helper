@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
@@ -134,6 +135,43 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
             ->method('flush');
 
         ($this->handler)($message);
+    }
+
+    /**
+     * @return iterable<string, array{string, list<string>, list<string>, list<string>}>
+     */
+    public static function argumentCases(): iterable
+    {
+        yield 'bare -e drops its value' => ['app:send-reminders', ['-e', 'prod', '-v'], ['-v'], ['-e', 'prod']];
+        yield 'glued -eprod' => ['app:send-reminders', ['-eprod'], [], ['-eprod']];
+        yield '-e with space value' => ['app:send-reminders', ['-e prod'], [], ['-e prod']];
+        yield '--env=prod' => ['app:send-reminders', ['--env=prod'], [], ['--env=prod']];
+        yield 'bare --env drops its value' => ['app:send-reminders', ['--env', 'prod', '--dry-run'], ['--dry-run'], ['--env', 'prod']];
+        yield '--environment prefix' => ['app:send-reminders', ['--environment=dev'], [], ['--environment=dev']];
+        yield '--kernel-class' => ['app:send-reminders', ['--kernel-class=Foo'], [], ['--kernel-class=Foo']];
+        yield 'harmless options stay' => ['app:backup:prune', ['--keep=5', '-v', '--no-interaction'], ['--keep=5', '-v', '--no-interaction'], []];
+        yield 'positional args of other commands stay' => ['app:generate-regulatory-workflows', ['data-breach'], ['data-breach'], []];
+        yield 'migrate refuses a version argument' => ['doctrine:migrations:migrate', ['first', '--no-interaction'], ['--no-interaction'], ['first']];
+        yield 'migrate refuses prev and a separator' => ['doctrine:migrations:migrate', ['--', 'prev'], [], ['--', 'prev']];
+    }
+
+    /**
+     * @param list<string> $arguments
+     * @param list<string> $expectedAllowed
+     * @param list<string> $expectedBlocked
+     */
+    #[Test]
+    #[DataProvider('argumentCases')]
+    public function filterArgumentsBlocksEnvironmentSwitchesAndMigrationVersions(
+        string $command,
+        array $arguments,
+        array $expectedAllowed,
+        array $expectedBlocked,
+    ): void {
+        [$allowed, $blocked] = ExecuteScheduledTaskHandler::filterArguments($command, $arguments);
+
+        self::assertSame($expectedAllowed, $allowed);
+        self::assertSame($expectedBlocked, $blocked);
     }
 
     #[Test]

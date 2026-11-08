@@ -8,6 +8,7 @@ use App\Entity\AccessReviewCampaign;
 use App\Entity\AccessReviewItem;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\BusinessRule\BusinessRuleException;
 use App\Repository\UserRepository;
 use App\Service\AccessReviewCampaignService;
 use App\Service\AuditLogger;
@@ -29,6 +30,7 @@ use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
  *   - Skip guard: items on a closed campaign are not decided
  *   - Return value when all items are skipped (no audit log)
  *   - Empty array input (no side-effects)
+ *   - Segregation of duties: nobody decides on their own access (single + bulk)
  *
  * All dependencies are mocked — no DB, no Kernel.
  */
@@ -166,6 +168,56 @@ class AccessReviewBulkDecideTest extends TestCase
         $this->assertSame(0, $result['skipped']);
     }
 
+    #[Test]
+    public function decide_refuses_a_reviewer_deciding_on_their_own_access(): void
+    {
+        $tenant   = $this->buildTenant(14);
+        $campaign = $this->buildCampaign($tenant);
+        $reviewer = $this->buildUser('self@example.com', 7);
+        $item     = $this->buildItem($campaign, $tenant, $reviewer);
+
+        $this->em->expects($this->never())->method('flush');
+        $this->auditLogger->expects($this->never())->method('logCustom');
+
+        try {
+            $this->service->decide($item, AccessReviewItem::DECISION_APPROVED, $reviewer);
+            self::fail('Self-review must be refused.');
+        } catch (BusinessRuleException $e) {
+            self::assertSame(AccessReviewCampaignService::RULE_SELF_REVIEW, $e->getRuleCode());
+        }
+        self::assertSame('pending', $item->getDecision());
+    }
+
+    #[Test]
+    public function decide_refuses_self_review_when_subject_is_another_instance_of_the_same_user(): void
+    {
+        $tenant   = $this->buildTenant(15);
+        $campaign = $this->buildCampaign($tenant);
+        $item     = $this->buildItem($campaign, $tenant, $this->buildUser('self@example.com', 8));
+
+        $this->expectException(BusinessRuleException::class);
+        $this->service->decide($item, AccessReviewItem::DECISION_APPROVED, $this->buildUser('self@example.com', 8));
+    }
+
+    #[Test]
+    public function bulkDecide_skips_items_about_the_reviewer_and_counts_them(): void
+    {
+        $tenant   = $this->buildTenant(16);
+        $campaign = $this->buildCampaign($tenant);
+        $reviewer = $this->buildUser('reviewer@example.com', 9);
+
+        $ownItem   = $this->buildItem($campaign, $tenant, $reviewer);
+        $otherItem = $this->buildItem($campaign, $tenant, $this->buildUser('other@example.com', 10));
+
+        $result = $this->service->bulkDecide([$ownItem, $otherItem], 'approved', $reviewer);
+
+        $this->assertSame(1, $result['decided']);
+        $this->assertSame(1, $result['skipped']);
+        $this->assertSame(1, $result['self_review']);
+        $this->assertSame('pending', $ownItem->getDecision(), 'Own access must stay pending');
+        $this->assertSame('approved', $otherItem->getDecision());
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // Helpers
     // ─────────────────────────────────────────────────────────────────────────
@@ -189,9 +241,9 @@ class AccessReviewBulkDecideTest extends TestCase
         return $campaign;
     }
 
-    private function buildItem(AccessReviewCampaign $campaign, Tenant $tenant): AccessReviewItem
+    private function buildItem(AccessReviewCampaign $campaign, Tenant $tenant, ?User $subjectUser = null): AccessReviewItem
     {
-        $subjectUser = $this->buildUser('subject@example.com');
+        $subjectUser ??= $this->buildUser('subject@example.com');
 
         $item = new AccessReviewItem();
         $item->setTenant($tenant);
@@ -201,9 +253,10 @@ class AccessReviewBulkDecideTest extends TestCase
         return $item;
     }
 
-    private function buildUser(string $email): User
+    private function buildUser(string $email, ?int $id = null): User
     {
         $user = $this->createMock(User::class);
+        $user->method('getId')->willReturn($id);
         $user->method('getEmail')->willReturn($email);
         $user->method('getRoles')->willReturn(['ROLE_USER', 'ROLE_ADMIN']);
         return $user;

@@ -388,6 +388,21 @@ scheitern. Baseline `baselines/requirement_controls_scope.txt` darf nur schrumpf
 
 ---
 
+### quality/check_fulfillment_single_writer.py (Gate 85)
+
+**Zweck:** Prozentwert und Status einer Anforderungs-Erfüllung schreibt nur
+`App\Service\Compliance\Fulfillment\FulfillmentDerivationService` (`apply()`, `override()`,
+`setManual()`). Das Gate prüft `src/` außerhalb von `src/Service/Compliance/Fulfillment/` und
+`src/Entity/` und scheitert an `->setStatus(` auf einer Aufrufkette, die eine Erfüllung nennt
+(`$fulfillment->…`, `getOrCreateFulfillment(…)->…`), und an `->setFulfillmentPercentage(` auf
+einer solchen Kette oder in einer Datei, die `ComplianceRequirementFulfillment` nennt. Andere
+Entities mit eigenem `setFulfillmentPercentage()` (PortfolioSnapshot) bleiben erlaubt. Eine
+begründete Ausnahme trägt `// @fulfillment-writer-ok: <Grund>` in der Zeile. Keine Baseline.
+
+**CI-Integration:** Gate 85 im `code-quality`-Job.
+
+---
+
 ### quality/check_kpi_catalog.py (Gate 74)
 
 **Zweck:** Management-Kennzahlen kommen nur aus dem KPI-Katalog

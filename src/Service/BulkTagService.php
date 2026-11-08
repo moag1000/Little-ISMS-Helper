@@ -61,6 +61,7 @@ final class BulkTagService
         $added = 0;
         $skipped = 0;
         $perTag = [];
+        $links = [];
         $appliedAt = new DateTimeImmutable();
 
         foreach ($entities as $entity) {
@@ -90,6 +91,7 @@ final class BulkTagService
                     ->setTaggedFrom($appliedAt);
 
                 $this->entityManager->persist($link);
+                $links[] = $link;
 
                 $perTag[$tagId]['added']++;
                 $added++;
@@ -98,21 +100,29 @@ final class BulkTagService
 
         $this->entityManager->flush();
 
-        if ($added > 0) {
-            $this->auditLogger->logCustom(
-                self::AUDIT_APPLIED,
-                'EntityTag',
-                null,
-                null,
-                [
+        // One batch entry + one row per new link (ISO 27001 Cl. 7.5.3).
+        $perEntityData = array_map(static fn (EntityTag $link): array => [
+            'action' => 'create',
+            'entity_id' => $link->getId(),
+            'new_values' => [
+                'tag_id' => $link->getTag()?->getId(),
+                'entity_class' => $link->getEntityClass(),
+                'entity_id' => $link->getEntityId(),
+            ],
+        ], $links);
+        if ($perEntityData !== []) {
+            $this->auditLogger->logBulk(
+                eventType: self::AUDIT_APPLIED,
+                entityType: 'EntityTag',
+                batchData: [
                     'actor_id' => $actor->getId(),
                     'tag_ids' => $tagIds,
                     'added' => $added,
                     'skipped' => $skipped,
                     'per_tag' => $perTag,
                 ],
-                sprintf('Bulk-tag applied: %d link(s) added, %d skipped', $added, $skipped),
-                $actor->getEmail(),
+                perEntityData: $perEntityData,
+                description: sprintf('Bulk-tag applied: %d link(s) added, %d skipped', $added, $skipped),
             );
         }
 

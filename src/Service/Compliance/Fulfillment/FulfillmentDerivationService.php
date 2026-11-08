@@ -96,6 +96,8 @@ class FulfillmentDerivationService
 
     /**
      * A person sets a value that differs from the rule — with reason and review date.
+     * $verified: the value is externally verified (e.g. a certificate), so 100 %
+     * becomes Verified instead of Implemented.
      */
     public function override(
         ComplianceRequirementFulfillment $fulfillment,
@@ -104,10 +106,11 @@ class FulfillmentDerivationService
         DateTimeImmutable $reviewDue,
         ?User $by,
         string $source = ComplianceRequirementFulfillment::OVERRIDE_MANUAL,
+        bool $verified = false,
     ): void {
         $old = $fulfillment->getFulfillmentPercentage();
         $fulfillment->markOverride($source, trim($reason), $reviewDue->setTime(0, 0), $by, new DateTimeImmutable());
-        $this->setEffective($fulfillment, $percentage);
+        $this->setEffective($fulfillment, $percentage, $verified);
         if ($by instanceof User) {
             $fulfillment->setLastUpdatedBy($by);
         }

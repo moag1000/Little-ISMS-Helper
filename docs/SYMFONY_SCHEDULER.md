@@ -159,6 +159,13 @@ Datenbank-Tasks werden via `ExecuteScheduledTaskMessage` ausgeführt:
    ```
 4. Speichert Ausgabe und Status in DB
 
+**Argument-Filter:** Nur Commands der Whitelist `ALLOWED_COMMANDS` laufen. Aus den
+Argumenten werden der Umgebungsschalter in jeder Schreibweise (`-e`, `-eprod`, `-e prod`,
+`--env`, `--env=prod`, `--env prod` samt Wert) und `--kernel-class…` entfernt; bei
+`doctrine:migrations:migrate` zusätzlich jedes Positionsargument (`first`/`prev`/eine
+Version würde zurückmigrieren). Entfernte Argumente landen als Warnung im Log
+(`ExecuteScheduledTaskHandler::filterArguments()`).
+
 **Timeout:** 1 Stunde (3600 Sekunden)
 
 ## Messenger Configuration

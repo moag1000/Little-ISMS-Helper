@@ -17,6 +17,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\MfaTokenRepository;
 use App\Security\UserAdministrationGuard;
 use App\Security\Voter\UserVoter;
+use App\Service\User\UserBulkActionService;
 use App\Service\User\UserListScope;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
@@ -159,7 +160,7 @@ class UserManagementController extends AbstractController
         Request $request,
         UserRepository $userRepository,
         RoleRepository $roleRepository,
-        EntityManagerInterface $entityManager,
+        UserBulkActionService $userBulkActionService,
         TranslatorInterface $translator
     ): Response {
 
@@ -177,110 +178,13 @@ class UserManagementController extends AbstractController
         }
 
         $users = $userRepository->findBy(['id' => $userIds]);
-        $count = 0;
-        $skippedCount = 0;
-        $skippedReasons = [];
-
-        foreach ($users as $user) {
-            $skipped = false;
-            $skipReason = null;
-
-            switch ($action) {
-                case 'activate':
-                    if ($this->isGranted(UserVoter::EDIT, $user)) {
-                        $user->setIsActive(true);
-                        $user->setUpdatedAt(new DateTimeImmutable());
-                        $count++;
-                    } else {
-                        $skipped = true;
-                        $skipReason = 'no_permission';
-                    }
-                    break;
-
-                case 'deactivate':
-                    if ($this->isGranted(UserVoter::EDIT, $user)) {
-                        // Protect initial setup admin and current user
-                        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
-                        $isCurrentUser = $this->getUser() instanceof UserInterface && $this->getUser()->getId() === $user->getId();
-
-                        if ($isInitialAdmin) {
-                            $skipped = true;
-                            $skipReason = 'initial_admin';
-                        } elseif ($isCurrentUser) {
-                            $skipped = true;
-                            $skipReason = 'current_user';
-                        } else {
-                            $user->setIsActive(false);
-                            $user->setUpdatedAt(new DateTimeImmutable());
-                            $count++;
-                        }
-                    } else {
-                        $skipped = true;
-                        $skipReason = 'no_permission';
-                    }
-                    break;
-
-                case 'assign_role':
-                    $roleId = $request->request->get('role_id');
-                    $role = $roleRepository->find($roleId);
-
-                    if ($role && !$this->userAdministrationGuard->mayAssignRoleName((string) $role->getName())) {
-                        // Security hotfix: privileged roles are SUPER_ADMIN-only.
-                        $skipped = true;
-                        $skipReason = 'no_permission';
-                    } elseif ($role && $this->isGranted(UserVoter::EDIT, $user)) {
-                        if (!$user->getCustomRoles()->contains($role)) {
-                            $user->addCustomRole($role);
-                            $user->setUpdatedAt(new DateTimeImmutable());
-                            $count++;
-                        } else {
-                            $skipped = true;
-                            $skipReason = 'already_has_role';
-                        }
-                    } else {
-                        $skipped = true;
-                        $skipReason = $role ? 'no_permission' : 'role_not_found';
-                    }
-                    break;
-
-                case 'delete':
-                    if ($this->isGranted(UserVoter::DELETE, $user)) {
-                        // Protect initial setup admin from deletion
-                        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
-
-                        if ($isInitialAdmin) {
-                            $skipped = true;
-                            $skipReason = 'initial_admin';
-                        } else {
-                            $entityManager->remove($user);
-                            $count++;
-                        }
-                    } else {
-                        $skipped = true;
-                        $skipReason = 'no_permission';
-                    }
-                    break;
-            }
-
-            if ($skipped) {
-                $skippedCount++;
-                if ($skipReason) {
-                    $skippedReasons[$skipReason] = ($skippedReasons[$skipReason] ?? 0) + 1;
-                }
-            }
-        }
-
-        $entityManager->flush();
-
-        // Log bulk action
-        $this->logger->info('Bulk action executed', [
-            'action' => $action,
-            'selected_users' => count($userIds),
-            'processed' => $count,
-            'skipped' => $skippedCount,
-            'skipped_reasons' => $skippedReasons,
-            'executor_id' => $this->getUser()?->getId(),
-        ]);
+        $actor = $this->getUser();
+        $roleId = $request->request->get('role_id');
+        $role = $action === 'assign_role' && $roleId !== null && $roleId !== '' ? $roleRepository->find($roleId) : null;
+        $result = $userBulkActionService->apply((string) $action, $users, $actor instanceof User ? $actor : null, $role);
+        $count = $result['count'];
+        $skippedCount = $result['skipped'];
+        $skippedReasons = $result['skipped_reasons'];
 
         // Success message
         if ($count > 0) {

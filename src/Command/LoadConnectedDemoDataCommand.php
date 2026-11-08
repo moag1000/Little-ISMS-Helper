@@ -211,13 +211,14 @@ class LoadConnectedDemoDataCommand
 
         if ($existing instanceof Asset) {
             if ($update) {
-                $existing->setAssetType($assetType) // @phpstan-ignore lifecycle.directSetStatus (demo data seeder — update path; 'active' is the asset_lifecycle initial_marking)
+                // The lifecycle status of an existing asset is left alone: it
+                // moves only through asset_lifecycle (retired/disposed stay so).
+                $existing->setAssetType($assetType)
                     ->setDescription($description)
                     ->setConfidentialityValue($confidentiality)
                     ->setIntegrityValue($integrity)
                     ->setAvailabilityValue($availability)
                     ->setDataClassification($dataClassification)
-                    ->setStatus(AssetStatus::Active)
                     ->setUpdatedAt(new DateTimeImmutable());
                 $stats['updated']++;
                 $io->text(sprintf('  Updated Asset: %s', $name));

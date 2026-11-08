@@ -734,6 +734,11 @@ jobs:
         # ComplianceRequirement is global; getMappedControls() spans every organisation
         # outside an HTTP request. Baseline may only shrink.
         run: python3 scripts/quality/check_requirement_controls_scope.py
+      - name: "Gate 85: fulfilment values have one writer"
+        # Percentage and status of a requirement fulfilment are written only by
+        # FulfillmentDerivationService (rule, override, manual). A second writer
+        # disagrees with the rule and is overwritten on the next recompute. No baseline.
+        run: python3 scripts/quality/check_fulfillment_single_writer.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
