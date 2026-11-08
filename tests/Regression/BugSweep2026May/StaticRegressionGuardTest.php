@@ -118,7 +118,8 @@ final class StaticRegressionGuardTest extends KernelTestCase
         );
         self::assertNotFalse($src);
         self::assertStringNotContainsString('private ?string $processOwner', $src);
-        self::assertStringContainsString('$processOwnerUser', $src);
+        self::assertFalse(property_exists(\App\Entity\BusinessProcess::class, 'processOwner'));
+        self::assertTrue(property_exists(\App\Entity\BusinessProcess::class, 'processOwnerUser'));
     }
 
     /**
