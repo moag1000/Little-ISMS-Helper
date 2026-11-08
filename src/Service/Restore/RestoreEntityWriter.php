@@ -611,8 +611,8 @@ class RestoreEntityWriter
         $count = 0;
         $tuples = 0;
         foreach ($entities as $data) {
-            $ownerId = $data['id'] ?? null;
-            if ($ownerId === null || !is_array($data[$idsKey] ?? null)) {
+            $ownerId = $data['id'];
+            if (!is_array($data[$idsKey] ?? null)) {
                 continue;
             }
             foreach ($data[$idsKey] as $target) {
