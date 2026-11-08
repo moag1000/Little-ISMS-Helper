@@ -67,7 +67,7 @@ class RiskApprovalConfig
     /**
      * What probability levels 1–5 mean here (e.g. "einmal in zehn Jahren").
      *
-     * @var array<string, string>|null
+     * @var array<int, string>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $probabilityCriteria = null;
@@ -75,7 +75,7 @@ class RiskApprovalConfig
     /**
      * What impact levels 1–5 mean here (e.g. "Schaden über 1 Mio. €").
      *
-     * @var array<string, string>|null
+     * @var array<int, string>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $impactCriteria = null;
@@ -141,21 +141,21 @@ class RiskApprovalConfig
     public function getBandMediumMin(): int { return $this->bandMediumMin; }
     public function setBandMediumMin(int $v): static { $this->bandMediumMin = $v; return $this; }
 
-    /** @return array<string, string>|null */
+    /** @return array<int, string>|null */
     public function getProbabilityCriteria(): ?array { return $this->probabilityCriteria; }
-    /** @param array<string, string>|null $v */
+    /** @param array<int, string>|null $v */
     public function setProbabilityCriteria(?array $v): static { $this->probabilityCriteria = self::cleanCriteria($v); return $this; }
 
-    /** @return array<string, string>|null */
+    /** @return array<int, string>|null */
     public function getImpactCriteria(): ?array { return $this->impactCriteria; }
-    /** @param array<string, string>|null $v */
+    /** @param array<int, string>|null $v */
     public function setImpactCriteria(?array $v): static { $this->impactCriteria = self::cleanCriteria($v); return $this; }
 
     /**
      * Levels 1–5 only, trimmed, empty ones dropped; null when nothing is left.
      *
      * @param array<mixed, mixed>|null $criteria
-     * @return array<string, string>|null
+     * @return array<int, string>|null
      */
     private static function cleanCriteria(?array $criteria): ?array
     {
@@ -163,7 +163,7 @@ class RiskApprovalConfig
         for ($level = 1; $level <= RiskMatrixThresholds::LEVELS; ++$level) {
             $text = $criteria[(string) $level] ?? $criteria[$level] ?? null;
             if (is_scalar($text) && trim((string) $text) !== '') {
-                $clean[(string) $level] = mb_substr(trim((string) $text), 0, 255);
+                $clean[$level] = mb_substr(trim((string) $text), 0, 255);
             }
         }
 

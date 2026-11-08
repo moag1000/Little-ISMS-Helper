@@ -62,7 +62,11 @@ class DecisionProposalBuilder
      * The values an approval of the acceptance criteria covers. Compared with
      * the current values before risks are accepted automatically.
      *
-     * @return array{automatic: int, manager: int, executive: int}
+     * @return array{
+     *     automatic: int, manager: int, executive: int,
+     *     band_critical: int, band_high: int, band_medium: int,
+     *     probability_criteria: array<int, string>, impact_criteria: array<int, string>
+     * }
      */
     public function criteriaSnapshot(Tenant $tenant): array
     {

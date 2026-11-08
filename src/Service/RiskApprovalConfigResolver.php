@@ -28,9 +28,9 @@ final readonly class RiskApprovalConfigView
         public int $bandCriticalMin = RiskMatrixThresholds::DEFAULT_CRITICAL_MIN,
         public int $bandHighMin = RiskMatrixThresholds::DEFAULT_HIGH_MIN,
         public int $bandMediumMin = RiskMatrixThresholds::DEFAULT_MEDIUM_MIN,
-        /** @var array<string, string> level => what it means here */
+        /** @var array<int, string> level => what it means here */
         public array $probabilityCriteria = [],
-        /** @var array<string, string> level => what it means here */
+        /** @var array<int, string> level => what it means here */
         public array $impactCriteria = [],
     ) {
     }
