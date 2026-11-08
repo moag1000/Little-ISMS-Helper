@@ -83,6 +83,15 @@ class SessionManager
         }
 
         try {
+            // A second authentication inside the same session (a token-authenticated
+            // sub-request, e.g. an assistant call through /mcp) must not insert the
+            // session id again: the unique key fails, and the failed flush closes the
+            // EntityManager for the rest of the request.
+            $existing = $this->userSessionRepository->findBySessionId($sessionId);
+            if ($existing instanceof UserSession && $existing->getUser()?->getId() === $user->getId()) {
+                return $existing;
+            }
+
             $request = $this->requestStack->getCurrentRequest();
 
             $userSession = new UserSession();
