@@ -179,12 +179,12 @@
 
         <div class="field-group">
             <div class="field-label">{{ 'dora.ict_incident_report.details.occurrence_datetime'|trans({}, 'dora') }}</div>
-            <div class="field-value">{{ incident.occurredAt ? incident.occurredAt|date('d.m.Y H:i:s') : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+            <div class="field-value">{{ incident.occurredAt ? incident.occurredAt|fa_datetime(true) : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
         </div>
 
         <div class="field-group">
             <div class="field-label">{{ 'dora.ict_incident_report.details.detection_datetime'|trans({}, 'dora') }}</div>
-            <div class="field-value">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i:s') : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+            <div class="field-value">{{ incident.detectedAt ? incident.detectedAt|fa_datetime(true) : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
         </div>
 
         <div class="field-group">

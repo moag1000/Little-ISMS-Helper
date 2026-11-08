@@ -352,7 +352,8 @@ read-only with `App\Form\Util\DerivedField::readOnlyWhen()`; changes come as a s
 `docs/user-guide/EINE_LISTE.md`.
 
 **Display conventions (UI wave G).** Dates in text output go through `|fa_date` / `|fa_datetime`
-(admin format + timezone, null → "-"; Gate 77) — `|date('Y-m-d')` only in attributes/URLs.
+(admin format + timezone, null → "-"; seconds `fa_datetime(true)`), times through `|fa_time`, months through
+`|fa_month` (Gate 77 rejects every other `|date()` format in text) — `|date('Y-m-d')` only in attributes/URLs.
 Statuses without a lifecycle (workflow instances, consents, import rows, compliance results) take
 their tone from `_components/_status_vocabulary.html.twig`, lifecycle entities from `_fa_status_chip`,
 severity/criticality/priority scales from `pill_tone_severity()`; the one empty-value placeholder

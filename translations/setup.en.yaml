@@ -127,7 +127,7 @@ setup:
         cannot_proceed: 'Prerequisites not met'
         detailed_checks: 'Detailed Checks:'
         status:
-            success: 'successful'
+            success: 'passed'
             warnings: 'warnings'
             critical_errors: 'critical errors'
         php:

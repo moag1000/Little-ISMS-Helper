@@ -24,7 +24,7 @@ loader_fixer:
     result:
         title: 'Ergebnis Loader-Fixer'
         total_added: '%total% Anforderung(en) ergänzt.'
-        ok: 'Erfolgreich'
+        ok: 'In Ordnung'
         failed: 'Fehler'
         before: 'Vorher'
         after: 'Nachher'

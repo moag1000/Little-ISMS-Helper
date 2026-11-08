@@ -1,24 +1,33 @@
-"""Shared detector for Gate 76: dates shown to users with a hard-coded |date format.
+r"""Shared detector for Gate 77: dates shown to users with a hard-coded |date format.
 
 A display date sits in `{{ ... }}` or `{% ... %}` (set/include hashes) in text content (not inside an HTML tag, so
-not in value=/min=/data-* attributes) and uses one of the four formats the UI
-review found side by side. Those go through |fa_date / |fa_datetime, which
-apply the admin-configured format and timezone.
+not in value=/min=/data-* attributes) and uses any |date() format except the machine ones
+(`U`, `u`, `c`, ISO `Y-m-d\TH:i…`). Those go through |fa_date / |fa_datetime (seconds:
+`fa_datetime(true)`), |fa_time and |fa_month, which apply the admin-configured format,
+timezone and locale.
 """
 
 from __future__ import annotations
 
 import re
 
-# format → replacement filter
+# format → replacement filter (--fix); any other display format becomes fa_date
 DISPLAY_FORMATS = {
     "d.m.Y H:i": "fa_datetime",
     "Y-m-d H:i": "fa_datetime",
+    "d.m.Y H:i:s": "fa_datetime(true)",
+    "Y-m-d H:i:s": "fa_datetime(true)",
     "d.m.Y": "fa_date",
     "Y-m-d": "fa_date",
+    "H:i": "fa_time",
+    "H:i:s": "fa_time(true)",
+    "F Y": "fa_month",
 }
 
-_DATE_CALL = re.compile(r"""\|\s*date\(\s*(['"])(d\.m\.Y H:i|Y-m-d H:i|d\.m\.Y|Y-m-d)\1\s*\)""")
+# Formats for machines (timestamps for comparisons, ISO values), never shown as text.
+MACHINE_FORMATS = re.compile(r"^(U|u|c|Y-m-d\\{1,2}TH:i(:s)?(P|O)?)$")
+
+_DATE_CALL = re.compile(r"""\|\s*date\(\s*(['"])([^'"]*)\1\s*(?:,[^)]*)?\)""")
 _OUTPUT = re.compile(r"\{\{.*?\}\}|\{%.*?%\}", re.S)
 
 
@@ -53,11 +62,13 @@ def display_dates(text: str):
         if "machine-date" in text[max(prev_start, 0) : out.start()]:
             continue
         for m in _DATE_CALL.finditer(body):
+            if MACHINE_FORMATS.match(m.group(2)):
+                continue
             yield out.start() + m.start(), out.start() + m.end(), m.group(2)
 
 
 def fix(text: str) -> tuple[str, int]:
     hits = list(display_dates(text))
     for start, end, fmt in reversed(hits):
-        text = text[:start] + "|" + DISPLAY_FORMATS[fmt] + text[end:]
+        text = text[:start] + "|" + DISPLAY_FORMATS.get(fmt, "fa_date") + text[end:]
     return text, len(hits)

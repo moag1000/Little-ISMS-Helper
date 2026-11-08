@@ -441,7 +441,7 @@
     <div class="footer">
         <p>
             Data Breach Report - {{ breach.referenceNumber }}<br>
-            Generated: {{ "now"|date('Y-m-d H:i:s') }}<br>
+            {{ 'common.generated'|trans({}, 'messages') }}: {{ "now"|fa_datetime(true) }}<br>
             GDPR Art. 33/34 Compliance Report
         </p>
     </div>

@@ -4,13 +4,7 @@
    Edit is only shown for breaches in draft or under_assessment status. #}
 {% trans_default_domain 'privacy' %}
 {% set can_edit = breach.status in ['draft', 'under_assessment'] and is_granted('ROLE_MANAGER') %}
-{% set status_class = {
-    'draft': 'secondary',
-    'under_assessment': 'info',
-    'authority_notified': 'success',
-    'subjects_notified': 'success',
-    'closed': 'dark'
-}[breach.status]|default('secondary') %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 {% set risk_class = pill_tone_severity(breach.riskLevel|default('')) %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
@@ -25,7 +19,7 @@
     </div>
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
-            {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
+            {{ _status.pill('data_breach', breach.status, ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy')) }}
             {% if breach.riskLevel %}
                 {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
             {% endif %}

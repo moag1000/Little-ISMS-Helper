@@ -101,16 +101,14 @@
                         <dt class="col-sm-4">{{ 'mfa_token.field.enrolled_at'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
-                            {{ mfa_token.enrolledAt|date('Y-m-d H:i:s') }}
-                            <small class="text-muted">({{ mfa_token.enrolledAt|date('r') }})</small>
+                            {{ mfa_token.enrolledAt|fa_datetime(true) }}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa_token.field.last_used'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.lastUsedAt %}
                                 <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
-                                {{ mfa_token.lastUsedAt|date('Y-m-d H:i:s') }}
-                                <small class="text-muted">({{ mfa_token.lastUsedAt|date('r') }})</small>
+                                {{ mfa_token.lastUsedAt|fa_datetime(true) }}
                             {% else %}
                                 <span class="text-muted">{{ 'mfa_token.never_used'|trans({}, 'mfa') }}</span>
                             {% endif %}
@@ -126,7 +124,7 @@
                             <dt class="col-sm-4">{{ 'mfa_token.field.expires_at'|trans({}, 'mfa') }}</dt>
                             <dd class="col-sm-8">
                                 <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                                {{ mfa_token.expiresAt|date('Y-m-d H:i:s') }}
+                                {{ mfa_token.expiresAt|fa_datetime(true) }}
                                 {% if mfa_token.isExpired %}
                                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'mfa_token.status.expired'|trans({}, 'mfa'), class: 'ms-2' } %}
                                 {% endif %}
@@ -224,11 +222,11 @@
                         <dd class="font-monospace">{{ mfa_token.id }}</dd>
 
                         <dt>{{ 'common.created_at'|trans({}, 'messages') }}</dt>
-                        <dd>{{ mfa_token.createdAt|date('Y-m-d H:i:s') }}</dd>
+                        <dd>{{ mfa_token.createdAt|fa_datetime(true) }}</dd>
 
                         {% if mfa_token.updatedAt %}
                             <dt>{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
-                            <dd>{{ mfa_token.updatedAt|date('Y-m-d H:i:s') }}</dd>
+                            <dd>{{ mfa_token.updatedAt|fa_datetime(true) }}</dd>
                         {% endif %}
                     </dl>
                 {% endblock %}

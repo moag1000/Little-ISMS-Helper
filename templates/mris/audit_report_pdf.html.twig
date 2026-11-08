@@ -517,7 +517,7 @@
     <p class="small">
         {{ 'mris.audit_report.signature.text'|trans({
             '%date%': generated_at|fa_date,
-            '%time%': generated_at|date('H:i'),
+            '%time%': generated_at|fa_time,
             '%user%': generated_by,
             '%tenant%': tenant_name
         }, 'mris') }}

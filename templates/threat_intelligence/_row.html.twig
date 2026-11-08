@@ -2,7 +2,7 @@
    that replaces/appends a row after an in-modal save. #}
 {% trans_default_domain 'threat' %}
 {% set severityVariant = pill_tone_severity(threat.severity|default('')) %}
-{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 <tr id="threat-intelligence-row-{{ threat.id }}">
     <td class="bulk-select-column">
         <input type="checkbox"
@@ -20,7 +20,7 @@
     </td>
     <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('type.' ~ threat.threatType)|trans({}, 'threat') } %}</td>
     <td class="text-center">{% include '_components/_badge.html.twig' with { variant: severityVariant, content: ('severity.' ~ threat.severity)|trans({}, 'threat') } %}</td>
-    <td class="text-center">{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ThreatIntelligence', status_key: threat.status, label: ('status_type.' ~ threat.status)|trans({}, 'threat') }) }}</td>
+    <td class="text-center">{{ _status.pill('threat', threat.status, ('status_type.' ~ threat.status)|trans({}, 'threat')) }}</td>
     <td>{{ threat.effectiveAssignedTo ?? '—' }}</td>
     <td>{{ threat.detectionDate|fa_date }}</td>
     <td class="text-center">

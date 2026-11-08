@@ -5,14 +5,7 @@
    it renders as a disabled control.
    GDPR SLA/due-date status is preserved: overdue styling + deadline display. #}
 {% trans_default_domain 'data_subject_request' %}
-{% set status_class = {
-    'received': 'secondary',
-    'identity_verification': 'info',
-    'in_progress': 'primary',
-    'completed': 'success',
-    'rejected': 'danger',
-    'extended': 'warning'
-}[dsr.status]|default('secondary') %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 {% set is_terminal = dsr.status in ['completed', 'rejected'] %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
@@ -27,7 +20,7 @@
     </div>
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
-            {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request') } only %}
+            {{ _status.pill('dsr', dsr.status, ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request')) }}
             {% if dsr.overdue %}
                 {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'dsr.badge.overdue'|trans({}, 'data_subject_request') } only %}
             {% endif %}

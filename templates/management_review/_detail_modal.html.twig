@@ -2,13 +2,7 @@
    Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
    flex column; condensed ISO 9.3 key fields, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'management_review' %}
-{% set statusClass = {
-    'planned': 'warning',
-    'in_progress': 'info',
-    'completed': 'success',
-    'cancelled': 'danger',
-    'follow_up_required': 'warning'
-} %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
@@ -22,10 +16,7 @@
     </div>
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
-            {% include '_components/_badge.html.twig' with {
-                variant: statusClass[review.status] ?? 'secondary',
-                content: ('management_review.status.' ~ review.status)|trans({}, 'management_review')
-            } %}
+            {{ _status.pill('management_review', review.status, ('management_review.status.' ~ review.status)|trans({}, 'management_review')) }}
         </div>
 
         <div class="fa-drawer__kv">

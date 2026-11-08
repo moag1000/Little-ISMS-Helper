@@ -3,7 +3,7 @@
    replaces/appends a row after an in-modal save. #}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-{% set status_class = {'draft':'secondary','in_review':'info','approved':'success','rejected':'danger','requires_revision':'warning'}[dpia.status] %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 <tr id="dpia-row-{{ dpia.id }}">
     <td class="bulk-select-column">
         <input type="checkbox" class="form-check-input" data-bulk-actions-target="item"
@@ -12,7 +12,7 @@
     </td>
     <td><a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link">{{ dpia.referenceNumber }}</a> {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[dpia.id] ?? {}) : workflow_state(dpia)) }}</td>
     <td>{{ dpia.title }}</td>
-    <td>{% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}</td>
+    <td>{{ _status.pill('dpia', dpia.status, ('dpia.status.' ~ dpia.status)|trans({}, 'privacy')) }}</td>
     <td>
         {% if dpia.riskLevel %}{% include '_components/_badge.html.twig' with { variant: pill_tone_severity(dpia.riskLevel|default('')), content: dpia.riskLevel|upper } %}
         {% else %}<span class="text-muted">—</span>{% endif %}

@@ -468,7 +468,7 @@
                                     </div>
                                 </div>
                                 {% include '_components/_badge.html.twig' with {
-                                    variant: {critical: 'danger', high: 'warning'}[risk_level_band(risk.probability * risk.impact, risk.tenant)] ?? 'info',
+                                    variant: pill_tone_severity(risk_level_band(risk.probability * risk.impact, risk.tenant)),
                                     class: 'ms-2',
                                     content: risk.probability * risk.impact
                                 } %}
@@ -643,7 +643,7 @@
 
     {# Last Updated Timestamp #}
     <div class="text-muted text-end small mt-3">
-        {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
+        {{ 'dashboard.last_updated'|trans({'%time%': 'now'|fa_time}, 'dashboard') }}
     </div>
 
     {# Restore Journey Progress Link (shown when journey has been dismissed) #}

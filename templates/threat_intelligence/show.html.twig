@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_status_vocabulary.html.twig' as _vocab %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 {% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
@@ -36,7 +37,7 @@
     }) }}
 
     {% set _status %}
-        {% include '_components/_badge.html.twig' with { variant: ({'new': 'primary','analyzing': 'warning','mitigated': 'success','monitoring': 'info','closed': 'secondary'}[threat.status] ?? 'secondary'), content: ('status_type.' ~ threat.status)|trans({}, 'threat') } %}
+        {{ _vocab.pill('threat', threat.status, ('status_type.' ~ threat.status)|trans({}, 'threat')) }}
     {% endset %}
     {% set _actions %}{{ _lifecycle_actions.dropdown(threat, 'threat-intelligence', 'threat_intelligence_lifecycle') }}{% endset %}
     {{ _fa_status_band.render({

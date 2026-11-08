@@ -111,6 +111,12 @@ search_nav:
     app_dashboard_compliance_manager:
         label: 'Compliance manager dashboard'
         description: 'Framework status, open measures'
+    app_workflow_pending:
+        label: 'Pending approvals'
+        description: 'Approvals waiting for your decision, in My Day'
+    app_four_eyes_inbox:
+        label: 'Four-eyes approvals'
+        description: 'Second-approval requests you are responsible for'
     app_my_day:
         label: 'My Day'
         description: 'Due tasks, approvals and reviews at a glance'

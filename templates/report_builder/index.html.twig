@@ -159,7 +159,7 @@
                             <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="text-decoration-none">
                                 {{ report.name }}
                             </a>
-                            <small class="text-muted">{{ report.lastUsedAt|date('d.m.') }}</small>
+                            <small class="text-muted">{{ report.lastUsedAt|fa_date }}</small>
                         </li>
                         {% endfor %}
                     </ul>

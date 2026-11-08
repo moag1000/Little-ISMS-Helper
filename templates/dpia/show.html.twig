@@ -198,8 +198,7 @@
                             {{ dpia.sdmCoveragePercent }}%
                             {% if dpia.sdmHighestRiskLevel %}
                                 · <strong>{{ 'privacy.sdm.highest_risk'|trans({}, 'privacy') }}:</strong>
-                                {% set sdm_risk_class = {'low': 'success', 'medium': 'warning', 'high': 'danger'}[dpia.sdmHighestRiskLevel] %}
-                                {% include '_components/_badge.html.twig' with { variant: sdm_risk_class, content: ('privacy.sdm.risk_level.' ~ dpia.sdmHighestRiskLevel)|trans({}, 'privacy') } %}
+                                                                {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(dpia.sdmHighestRiskLevel), content: ('privacy.sdm.risk_level.' ~ dpia.sdmHighestRiskLevel)|trans({}, 'privacy') } %}
                             {% endif %}
                         </p>
                         <ul class="list-unstyled small mb-2">
@@ -211,8 +210,7 @@
                                 <li class="mb-1">
                                     <strong>{{ ('privacy.sdm.goal.' ~ goal)|trans({}, 'privacy') }}:</strong>
                                     {% if entry and entry.risk_level is defined and entry.risk_level %}
-                                        {% set goal_class = {'low': 'success', 'medium': 'warning', 'high': 'danger'}[entry.risk_level] ?? 'secondary' %}
-                                        {% include '_components/_badge.html.twig' with { variant: goal_class, content: ('privacy.sdm.risk_level.' ~ entry.risk_level)|trans({}, 'privacy') } %}
+                                        {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(entry.risk_level|default('')), content: ('privacy.sdm.risk_level.' ~ entry.risk_level)|trans({}, 'privacy') } %}
                                         {% if entry.rationale is defined and entry.rationale %}
                                             <span class="text-muted">— {{ entry.rationale }}</span>
                                         {% endif %}
@@ -346,90 +344,33 @@
     </div>
 </div>
 
-{# Approve Modal — fa-modal--confirm/success #}
-<div class="fa-modal fa-modal--confirm fa-modal--success" id="approveModal"
-     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="success"
-     role="alertdialog" aria-modal="true" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
-    <div class="fa-modal__container" data-fa-modal-target="dialog">
-        <form action="{{ path('app_dpia_approve', {id: dpia.id}) }}" method="post" data-fa-modal-target="form">
-            <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ dpia.id) }}">
-            <header class="fa-modal__header">
-                <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-ok"></i></span>
-                <div class="fa-modal__heading">
-                    <h2 id="approveModalLabel" class="fa-modal__title">{{ 'dpia.modal.approve_title'|trans({}, 'privacy') }}</h2>
-                </div>
-                <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
-            </header>
-            <div class="fa-modal__body">
-                <div class="mb-3">
-                    <label for="approval_comments" class="form-label">{{ 'dpia.modal.approval_comments'|trans({}, 'privacy') }}</label>
-                    <textarea id="approval_comments" name="approval_comments" class="form-control fa-cyber-input__field" rows="3"></textarea>
-                </div>
-            </div>
-            <footer class="fa-modal__footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">{{ 'dpia.action.approve'|trans({}, 'privacy') }}</button>
-            </footer>
-        </form>
-    </div>
-</div>
-
-{# Reject Modal — fa-modal--confirm/danger #}
-<div class="fa-modal fa-modal--confirm fa-modal--danger" id="rejectModal"
-     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
-     role="alertdialog" aria-modal="true" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
-    <div class="fa-modal__container" data-fa-modal-target="dialog">
-        <form action="{{ path('app_dpia_reject', {id: dpia.id}) }}" method="post" data-fa-modal-target="form">
-            <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ dpia.id) }}">
-            <header class="fa-modal__header">
-                <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span>
-                <div class="fa-modal__heading">
-                    <h2 id="rejectModalLabel" class="fa-modal__title">{{ 'dpia.modal.reject_title'|trans({}, 'privacy') }}</h2>
-                </div>
-                <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
-            </header>
-            <div class="fa-modal__body">
-                <div class="mb-3">
-                    <label for="rejection_reason" class="form-label">{{ 'dpia.modal.rejection_reason'|trans({}, 'privacy') }} *</label>
-                    <textarea id="rejection_reason" name="rejection_reason" class="form-control fa-cyber-input__field" rows="3" required></textarea>
-                </div>
-            </div>
-            <footer class="fa-modal__footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">{{ 'dpia.action.reject'|trans({}, 'privacy') }}</button>
-            </footer>
-        </form>
-    </div>
-</div>
-
-{# Request Revision Modal — fa-modal--confirm/warning #}
-<div class="fa-modal fa-modal--confirm fa-modal--warning" id="revisionModal"
-     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="warning"
-     role="alertdialog" aria-modal="true" aria-labelledby="revisionModalLabel" aria-hidden="true">
-    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
-    <div class="fa-modal__container" data-fa-modal-target="dialog">
-        <form action="{{ path('app_dpia_request_revision', {id: dpia.id}) }}" method="post" data-fa-modal-target="form">
-            <input type="hidden" name="_token" value="{{ csrf_token('revision' ~ dpia.id) }}">
-            <header class="fa-modal__header">
-                <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-warning"></i></span>
-                <div class="fa-modal__heading">
-                    <h2 id="revisionModalLabel" class="fa-modal__title">{{ 'dpia.modal.revision_title'|trans({}, 'privacy') }}</h2>
-                </div>
-                <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
-            </header>
-            <div class="fa-modal__body">
-                <div class="mb-3">
-                    <label for="revision_reason" class="form-label">{{ 'dpia.modal.revision_reason'|trans({}, 'privacy') }} *</label>
-                    <textarea id="revision_reason" name="revision_reason" class="form-control fa-cyber-input__field" rows="3" required></textarea>
-                </div>
-            </div>
-            <footer class="fa-modal__footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">{{ 'dpia.action.request_revision'|trans({}, 'privacy') }}</button>
-            </footer>
-        </form>
-    </div>
-</div>
+{# Approve / reject / revision: the one decision dialog (UI wave H). #}
+{% import '_macros/workflow.html.twig' as _workflow %}
+{{ _workflow.decision_modal({
+    id: 'approveModal', tone: 'success',
+    title: 'dpia.modal.approve_title'|trans({}, 'privacy'),
+    submit_label: 'dpia.action.approve'|trans({}, 'privacy'),
+    action: path('app_dpia_approve', {id: dpia.id}),
+    token: csrf_token('approve' ~ dpia.id),
+    subject: dpia.title,
+    field: { name: 'approval_comments', label: 'dpia.modal.approval_comments'|trans({}, 'privacy') },
+}) }}
+{{ _workflow.decision_modal({
+    id: 'rejectModal', tone: 'danger',
+    title: 'dpia.modal.reject_title'|trans({}, 'privacy'),
+    submit_label: 'dpia.action.reject'|trans({}, 'privacy'),
+    action: path('app_dpia_reject', {id: dpia.id}),
+    token: csrf_token('reject' ~ dpia.id),
+    subject: dpia.title,
+    field: { name: 'rejection_reason', label: 'dpia.modal.rejection_reason'|trans({}, 'privacy'), required: true },
+}) }}
+{{ _workflow.decision_modal({
+    id: 'revisionModal', tone: 'warning', icon: 'status-warning',
+    title: 'dpia.modal.revision_title'|trans({}, 'privacy'),
+    submit_label: 'dpia.action.request_revision'|trans({}, 'privacy'),
+    action: path('app_dpia_request_revision', {id: dpia.id}),
+    token: csrf_token('revision' ~ dpia.id),
+    subject: dpia.title,
+    field: { name: 'revision_reason', label: 'dpia.modal.revision_reason'|trans({}, 'privacy'), required: true },
+}) }}
 {% endblock %}
