@@ -137,6 +137,8 @@
                             <dd class="col-sm-7">
                                 {% if profile.nis2EntityCategory == 'essential' %}
                                     <span class="fa-status-pill fa-status-pill--danger">{{ 'eu_authorities.nis2_registration.category.essential'|trans }}</span>
+                                {% elseif profile.notRegulated %}
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'eu_authorities.nis2_registration.category.not_regulated'|trans({}, 'eu_authorities') }}</span>
                                 {% else %}
                                     <span class="fa-status-pill fa-status-pill--warning">{{ 'eu_authorities.nis2_registration.category.important'|trans }}</span>
                                 {% endif %}

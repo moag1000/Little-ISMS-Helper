@@ -20,7 +20,8 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireServiceClosure;
  *
  *  - NIS-2 Art. 23 (module nis2_dora, incident reportable per
  *    {@see Incident::requiresNis2Reporting()}): early warning 24 h, incident
- *    notification 72 h, final report one month after the notification.
+ *    notification 72 h, final report one month after the notification;
+ *    an intermediate report only when the CSIRT asked for one (Art. 23 (4) (c)).
  *  - DORA Art. 19 (module nis2_dora, financial entity, incident classified as
  *    major): initial notification (24 h at the latest), intermediate report
  *    72 h after the initial one, final report one month after the intermediate.
@@ -79,6 +80,17 @@ final readonly class ReportingPlanner
                     $final,
                     $incident->getFinalReportSubmittedAt(),
                     'finalReportSubmittedAt',
+                );
+            }
+            // Art. 23 (4) (c): only when the CSIRT/authority asked for it.
+            $requested = $incident->getNis2InterimRequestedAt();
+            if ($requested !== null) {
+                $duties[] = new ReportingDuty(
+                    SlaDeadlineType::Nis2InterimOnRequest,
+                    $requested,
+                    $incident->getNis2InterimDueAt() ?? self::after($requested, SlaDeadlineType::Nis2InterimOnRequest),
+                    $incident->getNis2InterimReportedAt(),
+                    'nis2InterimReportedAt',
                 );
             }
         }

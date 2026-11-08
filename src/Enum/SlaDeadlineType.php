@@ -18,6 +18,7 @@ namespace App\Enum;
  *  - nis2_24h:               NIS2 Art. 23 (significant incidents — early warning)
  *  - nis2_72h:               NIS2 Art. 23 (significant incidents — incident notification)
  *  - nis2_1mo:               NIS2 Art. 23 (significant incidents — final report)
+ *  - nis2_interim:           NIS2 Art. 23 (4) (c) (intermediate report, only on request)
  *  - iso_corrective_action_30d: ISO 27001 Cl. 10.1 (corrective actions)
  *  - custom:                 Tenant-defined SLA
  */
@@ -30,6 +31,7 @@ enum SlaDeadlineType: string
     case Nis2EarlyWarning24h          = 'nis2_24h';
     case Nis2Notification72h          = 'nis2_72h';
     case Nis2FinalReport1mo           = 'nis2_1mo';
+    case Nis2InterimOnRequest         = 'nis2_interim';
     case IsoCorrectiveAction30d       = 'iso_corrective_action_30d';
     case Custom                       = 'custom';
 
@@ -48,6 +50,7 @@ enum SlaDeadlineType: string
             self::Nis2EarlyWarning24h        => 24,
             self::Nis2Notification72h        => 72,
             self::Nis2FinalReport1mo         => 720,   // legal: one calendar month, Incident::getFinalReportDeadline()
+            self::Nis2InterimOnRequest       => 72,    // fallback when the request names no date
             self::IsoCorrectiveAction30d     => 720,   // 30 days × 24h
             self::Custom                     => 0,     // caller must set deadlineAt explicitly
         };
@@ -63,6 +66,7 @@ enum SlaDeadlineType: string
             self::Nis2EarlyWarning24h        => 'NIS2 Art. 23 — 24h early warning',
             self::Nis2Notification72h        => 'NIS2 Art. 23 — 72h notification',
             self::Nis2FinalReport1mo         => 'NIS2 Art. 23 — 1-month final report',
+            self::Nis2InterimOnRequest       => 'NIS2 Art. 23 (4) (c) — intermediate report on request',
             self::IsoCorrectiveAction30d     => 'ISO 27001 Cl. 10.1 — 30d corrective action',
             self::Custom                     => 'Custom SLA',
         };

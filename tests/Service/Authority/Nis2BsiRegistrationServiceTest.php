@@ -101,7 +101,7 @@ final class Nis2BsiRegistrationServiceTest extends TestCase
     public function validateReturnsErrorsForEmptyProfile(): void
     {
         $profile = new Nis2RegistrationProfile();
-        $profile->setNis2EntityCategory('invalid_category');
+        $profile->setTenant((new Tenant())->setNis2Classification(Tenant::NIS2_NOT_REGULATED));
 
         $errors = $this->service->validate($profile);
 

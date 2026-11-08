@@ -54,6 +54,7 @@
                         <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.title'|trans({}, 'suppliers') }}</th>
                         <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.status'|trans({}, 'suppliers') }}</th>
                         <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.sent_at'|trans({}, 'suppliers') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'supplier.questionnaire.field.review'|trans({}, 'suppliers') }}</th>
                     </tr>
                 </thead>
                 <tbody class="fa-table__body">
@@ -63,6 +64,31 @@
                             <td class="fa-table__cell">{{ q.title }}</td>
                             <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ ('supplier.questionnaire.status.' ~ q.status)|trans({}, 'suppliers') }}</span></td>
                             <td class="fa-table__cell">{{ q.sentAt|fa_date }}</td>
+                            <td class="fa-table__cell">
+                                {% if q.status == 'completed' %}
+                                    <details>
+                                        <summary>{{ 'supplier.questionnaire.action.review'|trans({}, 'suppliers') }}</summary>
+                                        <dl class="mt-2 small">
+                                            {% for question in q.questions %}
+                                                <dt>{{ question.text }}</dt>
+                                                <dd>{{ q.answers[question.id] ?? '—' }}</dd>
+                                            {% endfor %}
+                                        </dl>
+                                        <form method="post" action="{{ path('supplier_questionnaire_review', {id: q.id, _locale: app.request.locale}) }}" class="d-flex flex-column gap-2">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('supplier_questionnaire_review_' ~ q.id) }}">
+                                            <label class="form-label mb-0" for="q-score-{{ q.id }}">{{ 'supplier.questionnaire.field.score'|trans({}, 'suppliers') }}</label>
+                                            <input type="number" min="0" max="100" step="1" class="form-control form-control-sm" id="q-score-{{ q.id }}" name="score" required>
+                                            <label class="form-label mb-0" for="q-findings-{{ q.id }}">{{ 'supplier.questionnaire.field.findings'|trans({}, 'suppliers') }}</label>
+                                            <textarea class="form-control form-control-sm" id="q-findings-{{ q.id }}" name="findings" rows="2"></textarea>
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary align-self-start">{{ 'supplier.questionnaire.action.save_review'|trans({}, 'suppliers') }}</button>
+                                        </form>
+                                    </details>
+                                {% elseif q.status == 'reviewed' and q.supplier and q.supplier.securityScore is not null %}
+                                    {{ q.supplier.securityScore }} / 100
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

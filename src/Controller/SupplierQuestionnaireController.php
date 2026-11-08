@@ -13,6 +13,7 @@ use App\Service\SupplierQuestionnaireService;
 use App\Service\TenantContext;
 use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -94,6 +95,30 @@ final class SupplierQuestionnaireController extends AbstractController
             \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL,
         );
         $this->addFlash('success', $link);
+
+        return $this->redirectToRoute('supplier_questionnaire_index', ['_locale' => $request->getLocale()]);
+    }
+
+    #[Route('/supplier-questionnaire/{id}/review', name: 'supplier_questionnaire_review', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid(new Expression('"supplier_questionnaire_review_" ~ args["questionnaire"].getId()'))]
+    public function review(Request $request, SupplierQuestionnaire $questionnaire): Response
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null || $questionnaire->getTenant()?->getId() !== $tenant->getId()) {
+            throw $this->createNotFoundException('Questionnaire not found.');
+        }
+        if ($questionnaire->getStatus() !== SupplierQuestionnaire::STATUS_COMPLETED) {
+            throw $this->createNotFoundException('Only answered questionnaires can be reviewed.');
+        }
+
+        $user = $this->getUser();
+        $this->service->review(
+            $questionnaire,
+            $request->request->getInt('score'),
+            (string) $request->request->get('findings', ''),
+            $user instanceof User ? $user : null,
+        );
+        $this->addFlash('success', 'supplier.questionnaire.flash.reviewed');
 
         return $this->redirectToRoute('supplier_questionnaire_index', ['_locale' => $request->getLocale()]);
     }

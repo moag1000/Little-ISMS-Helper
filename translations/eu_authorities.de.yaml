@@ -70,6 +70,7 @@ eu_authorities:
         help:
             legal_form: 'Rechtsform gem. Handelsregister, z.B. GmbH, AG, GbR'
             register_number: 'Handelsregisternummer, z.B. HRB 12345'
+            category: 'Nach Sektor, Beschäftigten und Umsatz: %suggestion% (NIS-2 Art. 3, BSIG § 28). Gilt für die ganze Organisation.'
             turnover: 'Jährlicher Umsatz in EUR — relevant für Schwellenwertprüfung'
             ict_dependency: 'Kurzbeschreibung der kritischen IKT-Abhängigkeiten (max. 5 Sätze)'
             nace_codes: 'NACE-Rev.2-Codes Ihrer Haupttätigkeit'
@@ -95,6 +96,7 @@ eu_authorities:
             nace_codes_required: 'Mindestens ein NACE-Code ist erforderlich'
             sector_required: 'NIS-2-Sektor ist Pflichtfeld'
             category_invalid: 'Ungültige Einrichtungskategorie'
+            not_regulated: 'Nach dieser Einstufung besteht keine Registrierungspflicht (BSIG § 33).'
             headcount_required: 'Beschäftigtenzahl muss größer als 0 sein'
             ict_description_required: 'IKT-Abhängigkeitsbeschreibung ist Pflichtfeld'
             incident_contact_required: 'Kontakt für Vorfallsmeldungen ist Pflichtfeld'
@@ -130,6 +132,7 @@ eu_authorities:
         category:
             essential: 'Wesentliche Einrichtung'
             important: 'Wichtige Einrichtung'
+            not_regulated: 'Nicht reguliert (unter den Schwellen)'
     hub:
         page:
             title: 'EU-Behörden-Reporting-Hub'

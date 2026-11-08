@@ -134,8 +134,8 @@ bc_plans:
     escalation_levels_json: 'JSON array with escalation levels per BSI 200-4 §6.2: [{"level":1,"trigger":"...","responder":"...","escalateAfter":"15min"}].'
     crisis_teams: 'Crisis teams responsible for this plan (ISO 22301 §8.4.2). Multiple selection possible.'
     crisis_teams_reusable: 'Optional — link reusable crisis teams across plans (ISO 22301 §8.4.2). The plan-specific team is maintained above via the response-team builder.'
-    rto: 'ISO 22301 Cl. 8.4.2 — maximum acceptable recovery time after an outage, in hours. Examples: critical=1, high=4, medium=24, low=72.'
-    rpo: 'ISO 22301 Cl. 8.4.2 — maximum tolerable data loss, measured in hours between last consistent backup and the start of the disruption.'
+    rto: 'ISO 22301 Cl. 8.4.2 — maximum acceptable recovery time after an outage, in hours. Examples: critical=1, high=4, medium=24, low=72. Empty = RTO from the business process BIA.'
+    rpo: 'ISO 22301 Cl. 8.4.2 — maximum tolerable data loss, measured in hours between last consistent backup and the start of the disruption. Empty = RPO from the business process BIA.'
     critical_assets: 'Assets essential for the recovery of this business process. Multiple selection possible.'
     status_readonly: 'Status is driven by the lifecycle workflow (Draft → Under review → Active → Archived; four-eyes principle on activation). Direct editing is disabled; use the status actions on the detail page.'
   placeholder:

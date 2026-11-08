@@ -37,14 +37,25 @@
         actions: _show_actions
     }) }}
 
-    {# DSGVO Art. 33 72h-deadline counter surfaced prominently — M-4 gated by privacy module #}
-    {% if is_module_active('privacy') and incident.dataBreachOccurred and incident.detectedAt %}
-        {% set sla72h = incident.detectedAt|date_modify('+72 hours') %}
-        <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
-            {{ _fa_deadline_counter.render({
-                deadline_at: sla72h,
-                label: 'incident.deadline.gdpr_art33'|trans({}, 'incident')
-            }) }}
+    {# DSGVO Art. 33: the linked data breach with its status and its 72 h report
+       (the breach's own duty), else the counter from detection — privacy module #}
+    {% set _breach = is_module_active('privacy') ? data_breach_of(incident) : null %}
+    {% if _breach or (is_module_active('privacy') and incident.dataBreachOccurred and incident.detectedAt) %}
+        {% set _gdpr = _breach ? reporting_duties(_breach)|first : null %}
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-3" data-testid="incident-data-breach">
+            {% if _breach %}
+                <a href="{{ path('app_data_breach_show', {id: _breach.id}) }}">{{ 'incident.data_breach.linked'|trans({'%ref%': _breach.referenceNumber ?: '#' ~ _breach.id}, 'incident') }}</a>
+                {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataBreach', status_key: _breach.status }) }}
+            {% endif %}
+            {% if _gdpr and _gdpr.reported %}
+                {% import '_components/_status_pill.html.twig' as _pill %}
+                {{ _pill.render('incident.deadline.gdpr_art33'|trans({}, 'incident') ~ ': ' ~ _gdpr.reportedAt|fa_datetime, 'success') }}
+            {% elseif _gdpr or (not _breach and incident.detectedAt) %}
+                {{ _fa_deadline_counter.render({
+                    deadline_at: _gdpr ? _gdpr.deadline : incident.detectedAt|date_modify('+72 hours'),
+                    label: 'incident.deadline.gdpr_art33'|trans({}, 'incident')
+                }) }}
+            {% endif %}
         </div>
         {% set _hint = alva_hint(incident) %}
         {% if _hint %}
@@ -344,6 +355,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {{ _rep.interim(incident) }}
 
                     {# NIS2 Impact Assessment #}
                     <div class="nis2-impact-grid">
