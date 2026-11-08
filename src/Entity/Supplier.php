@@ -755,7 +755,7 @@ class Supplier
 
         $avgRisk = $count > 0 ? $totalResidualRisk / $count : 0;
 
-        return RiskMatrixThresholds::classify((int) floor($avgRisk));
+        return RiskMatrixThresholds::classify((int) floor($avgRisk), $this->tenant);
     }
 
     public function supportsCriticalAssets(): bool

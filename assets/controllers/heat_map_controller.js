@@ -38,6 +38,10 @@ export default class extends Controller {
     static values = {
         url: String,
         locale: { type: String, default: 'de' },
+        // Band edges of the organisation's risk scale (RiskMatrixThresholds).
+        bandCriticalMin: { type: Number, default: 20 },
+        bandHighMin: { type: Number, default: 12 },
+        bandMediumMin: { type: Number, default: 6 },
     };
 
     connect() {
@@ -354,9 +358,9 @@ export default class extends Controller {
     }
 
     bandFromScore(score) {
-        if (score >= 20) return 'critical';
-        if (score >= 12) return 'high';
-        if (score >= 6)  return 'medium';
+        if (score >= this.bandCriticalMinValue) return 'critical';
+        if (score >= this.bandHighMinValue) return 'high';
+        if (score >= this.bandMediumMinValue) return 'medium';
         return 'low';
     }
 

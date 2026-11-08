@@ -789,7 +789,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function getInherentSeverityBand(): string
     {
-        return RiskMatrixThresholds::classify($this->getInherentRiskLevel());
+        return RiskMatrixThresholds::classify($this->getInherentRiskLevel(), $this->tenant);
     }
 
     /**
@@ -886,13 +886,13 @@ class Risk
             }
         }
         // High predicted risk should correlate with critical incidents
-        if ($predictedLevel >= RiskMatrixThresholds::HIGH_MIN) {
+        if ($predictedLevel >= RiskMatrixThresholds::highMin($this->tenant)) {
             // High or critical band
             return $criticalIncidents > 0;
         }
 
         // High predicted risk should correlate with critical incidents
-        if ($predictedLevel >= RiskMatrixThresholds::MEDIUM_MIN) {
+        if ($predictedLevel >= RiskMatrixThresholds::mediumMin($this->tenant)) {
             // Medium risk
             return $criticalIncidents === 0;
             // Should NOT have critical incidents
@@ -930,7 +930,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function isHighRisk(): bool
     {
-        return $this->getInherentRiskLevel() >= RiskMatrixThresholds::HIGH_MIN;
+        return $this->getInherentRiskLevel() >= RiskMatrixThresholds::highMin($this->tenant);
     }
 
     /**

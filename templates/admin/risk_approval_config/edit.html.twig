@@ -29,6 +29,26 @@
 
     <div class="row">
         <div class="col-lg-8">
+            {{ form_start(form) }}
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--heatmap" aria-hidden="true"></i>
+                        {{ 'risk_approval_config.section.scale'|trans({}, 'risk_approval_config') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <div class="row g-3">
+                        <div class="col-md-4">{{ form_row(form.bandMediumMin) }}</div>
+                        <div class="col-md-4">{{ form_row(form.bandHighMin) }}</div>
+                        <div class="col-md-4">{{ form_row(form.bandCriticalMin) }}</div>
+                    </div>
+                    <p class="small fa-text-muted mb-3">{{ 'risk_approval_config.hint.band_order'|trans({}, 'risk_approval_config') }}</p>
+                    {{ form_row(form.probabilityCriteria) }}
+                    {{ form_row(form.impactCriteria) }}
+                </div>
+            </section>
+
             <section class="fa-section mb-4">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
@@ -37,21 +57,21 @@
                     </h2>
                 </div>
                 <div class="fa-section__body">
-                    {{ form_start(form) }}
-                        {{ form_row(form.thresholdAutomatic) }}
-                        {{ form_row(form.thresholdManager) }}
-                        {{ form_row(form.thresholdExecutive) }}
-                        {{ form_row(form.note) }}
-                        {{ _fa_alert.render({ variant: 'info', class: 'small mb-3', body: 'risk_approval_config.hint.order'|trans({}, 'risk_approval_config') }) }}
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
-                                {{ 'common.save'|trans({}, 'messages') }}
-                            </button>
-                        </div>
-                    {{ form_end(form) }}
+                    {{ form_row(form.thresholdAutomatic) }}
+                    {{ form_row(form.thresholdManager) }}
+                    {{ form_row(form.thresholdExecutive) }}
+                    {{ form_row(form.note) }}
+                    <p class="small fa-text-muted mb-3">{{ 'risk_approval_config.hint.order'|trans({}, 'risk_approval_config') }}</p>
+                    {{ _fa_alert.render({ variant: 'info', class: 'small mb-3', body: 'risk_approval_config.approval.change_hint'|trans({}, 'risk_approval_config') }) }}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
+                            {{ 'common.save'|trans({}, 'messages') }}
+                        </button>
+                    </div>
                 </div>
             </section>
+            {{ form_end(form) }}
 
             {% if config.updatedAt %}
                 <section class="fa-section">

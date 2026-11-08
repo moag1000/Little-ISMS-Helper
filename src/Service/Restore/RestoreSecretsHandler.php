@@ -170,22 +170,25 @@ class RestoreSecretsHandler
      */
     public function setAdminPassword(string $password, array &$warnings, array $scopeIds = []): void
     {
+        // An organisation restore sets the password only on the accounts it created
+        // (applyAdminPasswordToUser). Picking "the first admin" of the scope would reset
+        // the password of a colleague's existing account.
+        if ($scopeIds !== []) {
+            return;
+        }
+
         try {
-            $qb = $this->entityManager->getRepository(User::class)->createQueryBuilder('u')
+            $adminUser = $this->entityManager->getRepository(User::class)->createQueryBuilder('u')
                 ->where('u.roles LIKE :role')
                 ->setParameter('role', '%"ROLE_ADMIN"%')
                 ->orderBy('u.id', \SortDirection::Ascending)
-                ->setMaxResults(1);
-            if ($scopeIds !== []) {
-                $qb->andWhere('u.tenant IN (:scope)')
-                    ->andWhere('u.roles NOT LIKE :super')
-                    ->setParameter('scope', $scopeIds)
-                    ->setParameter('super', '%"ROLE_SUPER_ADMIN"%');
-            }
-            $adminUser = $qb->getQuery()->getOneOrNullResult();
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
 
-            if ($adminUser === null && $scopeIds === []) {
-                $adminUser = $this->entityManager->getRepository(User::class)->findOneBy([], ['id' => 'ASC']);
+            if ($adminUser === null) {
+                $adminUser = $this->entityManager->getRepository(User::class)
+                    ->findOneBy([], ['id' => 'ASC']);
             }
 
             if ($adminUser !== null) {

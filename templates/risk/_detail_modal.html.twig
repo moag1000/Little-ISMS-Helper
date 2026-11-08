@@ -6,7 +6,7 @@
 {% trans_default_domain 'risk' %}
 {% set riskScore = risk.getRiskScore() %}
 {% set residual = risk.getResidualRiskLevel() %}
-{% set _band = riskScore >= 20 ? 'critical' : (riskScore >= 12 ? 'high' : (riskScore >= 6 ? 'medium' : 'low')) %}
+{% set _band = risk_level_band(riskScore) %}
 {% set _band_variant = pill_tone_severity(_band) %}
 {% set canEdit = canEdit|default(false) %}
 <turbo-frame id="fa-form-modal">

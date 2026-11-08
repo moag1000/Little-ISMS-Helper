@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Security\ApiTokenAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -57,6 +58,11 @@ final class SecurityEventSubscriber
      */
     public function onLoginSuccess(LoginSuccessEvent $loginSuccessEvent): void
     {
+        // An API token authenticates every single request anew: no login, no
+        // session record (token use is audited as mcp.* / lastUsedAt).
+        if ($loginSuccessEvent->getFirewallName() === ApiTokenAuthenticator::FIREWALL) {
+            return;
+        }
         $user = $loginSuccessEvent->getUser();
         $this->securityEventLogger->logLoginSuccess($user);
     }

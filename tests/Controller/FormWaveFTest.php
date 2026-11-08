@@ -134,7 +134,8 @@ final class FormWaveFTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertStringContainsString('Kundenportal', (string) $crawler->filter('input[name="risk[title]"]')->attr('value'));
         self::assertSame((string) $this->asset->getId(), $crawler->filter('select[name="risk[asset]"] option[selected]')->attr('value'));
-        self::assertSame('4', $crawler->filter('input[name="risk[impact]"]')->attr('value'));
+        // Levels are a select with the organisation's meaning (P8b, ISO 27001 6.1.2 d).
+        self::assertSame('4', $crawler->filter('select[name="risk[impact]"] option[selected]')->attr('value'));
     }
 
     #[Test]

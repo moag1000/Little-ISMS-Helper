@@ -1,0 +1,8 @@
+# Gate 87 — comparisons with 20/12/6 that are not risk bands (another scale).
+# Format: path:normalised line. May only shrink.
+# gap_analysis_report.html.twig: weighted gap score 0–100 of a framework, not the 5×5 risk scale.
+templates/pdf/gap_analysis_report.html.twig:tone: risk_score < 20 ? 'ok' : (risk_score < 50 ? 'warn' : 'danger') },
+templates/pdf/gap_analysis_report.html.twig:tone: risk_score < 20 ? 'success' : (risk_score < 50 ? 'warning' : 'danger') },
+templates/pdf/gap_analysis_report.html.twig:{% elseif risk_score >= 20 %}
+templates/pdf/gap_analysis_report.html.twig:~ (risk_score >= 50 ? 'rgba(220,38,38,.08)' : (risk_score >= 20 ? 'rgba(217,119,6,.08)' : 'var(--success-tint)'))
+templates/pdf/gap_analysis_report.html.twig:~ (risk_score >= 50 ? 'var(--danger)' : (risk_score >= 20 ? 'var(--warning)' : 'var(--success)'))

@@ -104,7 +104,7 @@
     {% include '_components/_fa_entity_links.html.twig' with { entity: risk } only %}
 
     {# ISO 27001 compliant thresholds: 20/12/6 #}
-    {% set riskClass = risk.inherentRiskLevel >= 20 ? 'critical' : (risk.inherentRiskLevel >= 12 ? 'high' : (risk.inherentRiskLevel >= 6 ? 'medium' : 'low')) %}
+    {% set riskClass = risk_level_band(risk.inherentRiskLevel) %}
 
     <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
@@ -160,7 +160,7 @@
 
                 {% if risk.residualProbability and risk.residualImpact %}
                 {# ISO 27001 compliant thresholds: 20/12/6 #}
-                {% set residualClass = risk.residualRiskLevel >= 20 ? 'critical' : (risk.residualRiskLevel >= 12 ? 'high' : (risk.residualRiskLevel >= 6 ? 'medium' : 'low')) %}
+                {% set residualClass = risk_level_band(risk.residualRiskLevel) %}
                 {% set residualLevel = _level_steps[risk_level_band(risk.residualRiskLevel)] %}
                 <div class="assessment-card">
                     <h3>{{ 'risk.assessment.residual_risk'|trans({}, 'risk') }}</h3>

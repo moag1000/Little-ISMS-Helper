@@ -51,6 +51,35 @@ class RiskApprovalConfig
     #[Assert\Range(min: 1, max: RiskMatrixThresholds::SCORE_MAX, notInRangeMessage: 'risk_approval_config.error.range')]
     private int $thresholdExecutive = 25;
 
+    /**
+     * Risk scale (ISO 27001 6.1.2 a/b): lowest score of the bands critical,
+     * high and medium — read everywhere via RiskMatrixThresholds.
+     */
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => RiskMatrixThresholds::DEFAULT_CRITICAL_MIN])]
+    private int $bandCriticalMin = RiskMatrixThresholds::DEFAULT_CRITICAL_MIN;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => RiskMatrixThresholds::DEFAULT_HIGH_MIN])]
+    private int $bandHighMin = RiskMatrixThresholds::DEFAULT_HIGH_MIN;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => RiskMatrixThresholds::DEFAULT_MEDIUM_MIN])]
+    private int $bandMediumMin = RiskMatrixThresholds::DEFAULT_MEDIUM_MIN;
+
+    /**
+     * What probability levels 1–5 mean here (e.g. "einmal in zehn Jahren").
+     *
+     * @var array<int, string>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $probabilityCriteria = null;
+
+    /**
+     * What impact levels 1–5 mean here (e.g. "Schaden über 1 Mio. €").
+     *
+     * @var array<int, string>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $impactCriteria = null;
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $updatedBy = null;
@@ -82,6 +111,11 @@ class RiskApprovalConfig
                 ->atPath('thresholdManager')
                 ->addViolation();
         }
+        if (!RiskMatrixThresholds::isValid($this->bandCriticalMin, $this->bandHighMin, $this->bandMediumMin)) {
+            $ctx->buildViolation('risk_approval_config.error.band_order')
+                ->atPath('bandHighMin')
+                ->addViolation();
+        }
     }
 
     public function getId(): ?int { return $this->id; }
@@ -97,6 +131,44 @@ class RiskApprovalConfig
 
     public function getThresholdExecutive(): int { return $this->thresholdExecutive; }
     public function setThresholdExecutive(int $v): static { $this->thresholdExecutive = $v; return $this; }
+
+    public function getBandCriticalMin(): int { return $this->bandCriticalMin; }
+    public function setBandCriticalMin(int $v): static { $this->bandCriticalMin = $v; return $this; }
+
+    public function getBandHighMin(): int { return $this->bandHighMin; }
+    public function setBandHighMin(int $v): static { $this->bandHighMin = $v; return $this; }
+
+    public function getBandMediumMin(): int { return $this->bandMediumMin; }
+    public function setBandMediumMin(int $v): static { $this->bandMediumMin = $v; return $this; }
+
+    /** @return array<int, string>|null */
+    public function getProbabilityCriteria(): ?array { return $this->probabilityCriteria; }
+    /** @param array<int, string>|null $v */
+    public function setProbabilityCriteria(?array $v): static { $this->probabilityCriteria = self::cleanCriteria($v); return $this; }
+
+    /** @return array<int, string>|null */
+    public function getImpactCriteria(): ?array { return $this->impactCriteria; }
+    /** @param array<int, string>|null $v */
+    public function setImpactCriteria(?array $v): static { $this->impactCriteria = self::cleanCriteria($v); return $this; }
+
+    /**
+     * Levels 1–5 only, trimmed, empty ones dropped; null when nothing is left.
+     *
+     * @param array<mixed, mixed>|null $criteria
+     * @return array<int, string>|null
+     */
+    private static function cleanCriteria(?array $criteria): ?array
+    {
+        $clean = [];
+        for ($level = 1; $level <= RiskMatrixThresholds::LEVELS; ++$level) {
+            $text = $criteria[(string) $level] ?? $criteria[$level] ?? null;
+            if (is_scalar($text) && trim((string) $text) !== '') {
+                $clean[$level] = mb_substr(trim((string) $text), 0, 255);
+            }
+        }
+
+        return $clean === [] ? null : $clean;
+    }
 
     public function getUpdatedBy(): ?User { return $this->updatedBy; }
     public function setUpdatedBy(?User $user): static { $this->updatedBy = $user; return $this; }

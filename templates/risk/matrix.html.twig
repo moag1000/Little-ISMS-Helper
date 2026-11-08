@@ -41,7 +41,7 @@
                                 {% set score = probability * impact %}
                                 {# 4-Tier Mapping aligned with App\Risk\RiskMatrixThresholds (SSoT, ISO 27001 Cl. 6.1.2 b).
                                    data-level 2..5 retained for CSS heat-map coloring continuity (low/medium/high/critical). #}
-                                {% set level = score >= 20 ? 5 : (score >= 12 ? 4 : (score >= 6 ? 3 : 2)) %}
+                                {% set level = {critical: 5, high: 4, medium: 3, low: 2}[risk_level_band(score)] %}
                                 <div class="isms-risk-cell"
                                      data-level="{{ level }}"
                                      data-probability="{{ probability }}"
@@ -64,6 +64,30 @@
                         <span class="isms-risk-legend__chip" data-level="5">{{ 'risk.matrix.level.critical'|trans({}, 'risk') }} ({{ risk_threshold('critical') }})</span>
                         <span class="ms-auto fa-mono fa-text-muted small">{{ risks|length }} {{ 'risk.matrix.risks_total'|trans({}, 'risk') }}</span>
                     </div>
+
+                    {# ISO 27001 6.1.2 a/b: the organisation's scale (Risikokriterien). #}
+                    {% set _p_criteria = risk_level_criteria('probability')|filter(t => t is not empty) %}
+                    {% set _i_criteria = risk_level_criteria('impact')|filter(t => t is not empty) %}
+                    {% if _p_criteria is not empty or _i_criteria is not empty %}
+                        <div class="row g-3 mt-2 small">
+                            {% for axis, criteria in {probability: _p_criteria, impact: _i_criteria} %}
+                                {% if criteria is not empty %}
+                                    <div class="col-md-6">
+                                        <div class="fw-semibold mb-1">{{ ('risk.matrix.criteria.' ~ axis)|trans({}, 'risk') }}</div>
+                                        <dl class="row mb-0">
+                                            {% for level, text in criteria %}
+                                                <dt class="col-2 fa-mono">{{ level }}</dt>
+                                                <dd class="col-10 mb-1">{{ text }}</dd>
+                                            {% endfor %}
+                                        </dl>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if is_granted('ADMIN_OWN_TENANT') %}
+                        <p class="small mt-2 mb-0"><a href="{{ path('app_admin_risk_approval_config') }}">{{ 'risk.matrix.criteria.edit'|trans({}, 'risk') }}</a></p>
+                    {% endif %}
                 </div>
             </div>
         </div>

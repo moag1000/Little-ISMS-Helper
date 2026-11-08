@@ -69,11 +69,7 @@ class RiskApprovalConfigController extends AbstractController
             $config->setThresholdExecutive(25);
         }
 
-        $oldValues = [
-            'threshold_automatic' => $config->getThresholdAutomatic(),
-            'threshold_manager' => $config->getThresholdManager(),
-            'threshold_executive' => $config->getThresholdExecutive(),
-        ];
+        $oldValues = self::auditValues($config);
 
         $form = $this->createForm(RiskApprovalConfigType::class, $config);
         $form->handleRequest($request);
@@ -89,16 +85,12 @@ class RiskApprovalConfigController extends AbstractController
             $this->entityManager->flush();
             $this->resolver->invalidate($tenant);
 
-            $newValues = [
-                'threshold_automatic' => $config->getThresholdAutomatic(),
-                'threshold_manager' => $config->getThresholdManager(),
-                'threshold_executive' => $config->getThresholdExecutive(),
-            ];
+            $newValues = self::auditValues($config);
 
             if ($isNew) {
-                $this->auditLogger->logCreate('RiskApprovalConfig', $config->getId(), $newValues, 'Risk-Approval-Schwellwerte initial gesetzt.');
+                $this->auditLogger->logCreate('RiskApprovalConfig', $config->getId(), $newValues, 'Risikokriterien initial gesetzt.');
             } else {
-                $this->auditLogger->logUpdate('RiskApprovalConfig', $config->getId(), $oldValues, $newValues, 'Risk-Approval-Schwellwerte aktualisiert.');
+                $this->auditLogger->logUpdate('RiskApprovalConfig', $config->getId(), $oldValues, $newValues, 'Risikokriterien aktualisiert.');
             }
 
             $this->addFlash('success', 'risk_approval_config.saved');
@@ -112,8 +104,23 @@ class RiskApprovalConfigController extends AbstractController
         return $this->render('admin/risk_approval_config/edit.html.twig', [
             'form' => $form,
             'config' => $config,
-            // ISO 27001 6.1.2 a: automatic acceptance needs top management's approval of these thresholds.
+            // ISO 27001 6.1.2 a: automatic acceptance needs top management's approval of these criteria.
             'criteria_approval' => $this->managementDecisions->criteriaApproval($tenant),
         ], new Response(status: $status));
+    }
+
+    /** @return array<string, mixed> */
+    private static function auditValues(RiskApprovalConfig $config): array
+    {
+        return [
+            'threshold_automatic' => $config->getThresholdAutomatic(),
+            'threshold_manager' => $config->getThresholdManager(),
+            'threshold_executive' => $config->getThresholdExecutive(),
+            'band_critical_min' => $config->getBandCriticalMin(),
+            'band_high_min' => $config->getBandHighMin(),
+            'band_medium_min' => $config->getBandMediumMin(),
+            'probability_criteria' => $config->getProbabilityCriteria(),
+            'impact_criteria' => $config->getImpactCriteria(),
+        ];
     }
 }

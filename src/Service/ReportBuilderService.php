@@ -560,7 +560,7 @@ final class ReportBuilderService
     private function getKpiHighRisks(): array
     {
         $risks = $this->riskRepository->findAll();
-        $highRisks = array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::HIGH_MIN);
+        $highRisks = array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::highMin());
         $count = count($highRisks);
         return [
             'value' => $count,
@@ -1036,7 +1036,7 @@ final class ReportBuilderService
         $totalControls = count($controls);
         $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
         $implementationRate = $totalControls > 0 ? ($implemented / $totalControls) * 100 : 0;
-        $highRisks = count(array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::HIGH_MIN));
+        $highRisks = count(array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::highMin()));
         // Determine RAG status
         if ($implementationRate >= 80 && $highRisks <= 3) {
             $status = 'green';

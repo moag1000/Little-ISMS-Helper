@@ -729,6 +729,7 @@ risk.validator.subject_required: 'At least one affected Asset / Person / Locatio
 risk.validator.treatment_strategy_required: 'Risk treatment strategy required (mitigate / transfer / accept / avoid) — for Risks beyond the Identified state ISO 27001 Cl. 6.1.3 a-b makes this mandatory.'
 risk_approval_config.error.automatic_lt_manager: 'Automatic threshold must be less than manager threshold.'
 risk_approval_config.error.manager_lt_executive: 'Manager threshold must be less than executive threshold.'
+risk_approval_config.error.band_order: 'The bands must ascend: medium from at least 2, high above it, critical above that, at most 25.'
 risk_treatment_plan.error.owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
 security.url.dns_resolution_failed: 'Hostname could not be resolved (potential DNS-pinning attack blocked).'
 training.error.owner_required_user_or_person: 'Trainer: User or master-data Person required (free-text alone is not sufficient).'

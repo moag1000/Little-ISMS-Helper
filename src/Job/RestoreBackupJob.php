@@ -61,7 +61,7 @@ final class RestoreBackupJob implements AsyncJobInterface
         $backup = $this->backupService->loadBackupFromFile($filepath);
 
         $ctx->message('Restoring entities (this may take several minutes)…');
-        $result = $this->restoreService->restoreFromBackup($backup, $options, $targetTenantScope);
+        $result = $this->restoreService->restoreFromBackup($backup, $options, $targetTenantScope, $filepath);
 
         $stats = $result['statistics'] ?? [];
         $totalRestored = 0;

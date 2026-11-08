@@ -344,9 +344,9 @@ final class ScheduledReportService
         foreach ($topRiskEntities as $risk) {
             $score = $risk->getInherentRiskLevel();
             $level = match (true) {
-                $score >= 20 => 'Critical',
-                $score >= 12 => 'High',
-                $score >= 6 => 'Medium',
+                $score >= \App\Risk\RiskMatrixThresholds::criticalMin() => 'Critical',
+                $score >= \App\Risk\RiskMatrixThresholds::highMin() => 'High',
+                $score >= \App\Risk\RiskMatrixThresholds::mediumMin() => 'Medium',
                 default => 'Low',
             };
             $topRisks[] = [
@@ -479,9 +479,9 @@ final class ScheduledReportService
         foreach ($report['risks'] as $risk) {
             $score = $risk->getRiskScore();
             $level = match (true) {
-                $score >= 20 => 'Critical',
-                $score >= 12 => 'High',
-                $score >= 6 => 'Medium',
+                $score >= \App\Risk\RiskMatrixThresholds::criticalMin() => 'Critical',
+                $score >= \App\Risk\RiskMatrixThresholds::highMin() => 'High',
+                $score >= \App\Risk\RiskMatrixThresholds::mediumMin() => 'Medium',
                 default => 'Low',
             };
 

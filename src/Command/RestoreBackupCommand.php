@@ -135,7 +135,7 @@ class RestoreBackupCommand extends Command
         // --- Execute restore ---
         $startMs = (int) round(microtime(true) * 1000);
         try {
-            $result = $this->restoreService->restoreFromBackup($backup, $options, $tenantScope);
+            $result = $this->restoreService->restoreFromBackup($backup, $options, $tenantScope, $filepath === '-' ? null : $resolvedPath);
         } catch (\Throwable $restoreException) {
             $durationMs = (int) round(microtime(true) * 1000) - $startMs;
             $this->logger->error('RestoreBackup: failed', [

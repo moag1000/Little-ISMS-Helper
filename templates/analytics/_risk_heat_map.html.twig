@@ -18,7 +18,10 @@
 <section class="fa-section heat-map-section{% if expanded is defined and expanded %} heat-map-section--expanded{% endif %}"
          data-controller="heat-map"
          data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}"
-         data-heat-map-locale-value="{{ app.request.locale|default('de') }}">
+         data-heat-map-locale-value="{{ app.request.locale|default('de') }}"
+         data-heat-map-band-critical-min-value="{{ risk_bands().critical.min }}"
+         data-heat-map-band-high-min-value="{{ risk_bands().high.min }}"
+         data-heat-map-band-medium-min-value="{{ risk_bands().medium.min }}">
 
     <div class="fa-section__header">
         <h2 class="fa-section__title">

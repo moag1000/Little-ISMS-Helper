@@ -186,9 +186,9 @@ class RiskController extends AbstractController
         }
 
         // Summary chips count the list as shown (view + filters + focus applied).
-        $criticalCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::CRITICAL_MIN));
-        $highCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::HIGH_MIN
-            && $r->getRiskScore() < RiskMatrixThresholds::CRITICAL_MIN));
+        $criticalCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::criticalMin()));
+        $highCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::highMin()
+            && $r->getRiskScore() < RiskMatrixThresholds::criticalMin()));
         $unownedCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskOwner() === null));
 
         return $this->render('risk/index.html.twig', [

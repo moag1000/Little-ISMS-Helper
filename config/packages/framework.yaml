@@ -9,6 +9,13 @@ framework:
         handler_id: session.handler.native_file
         save_path: '%kernel.project_dir%/var/sessions'
 
+        # Cookie name. Changed from PHP's default PHPSESSID with the API-token
+        # hotfix (wave 5, S1): before it, every API-token request opened a
+        # browser session whose cookie worked without the token. The new name
+        # retires all those sessions at once — everyone logs in once again
+        # (remember-me logs in on its own).
+        name: 'isms_session'
+
         # Session cookie security settings
         cookie_secure: 'auto'        # Only send cookie over HTTPS in production
         cookie_httponly: true         # Prevent JavaScript access to session cookie (XSS protection)
