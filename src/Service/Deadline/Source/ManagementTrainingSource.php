@@ -13,6 +13,7 @@ use App\Service\Responsibility\Responsibility;
 use App\Service\Responsibility\ResponsibilityResolver;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Leitungsschulung (NIS-2 Art. 20 (2), BSIG § 38 (3)): every member of top
@@ -25,7 +26,12 @@ final class ManagementTrainingSource implements DeadlineSource
 {
     public const int CADENCE_MONTHS = 12;
 
+    /**
+     * Lazy: the resolver itself collects all deadline sources, this one included
+     * (an eager reference would recurse while the container builds them).
+     */
     public function __construct(
+        #[Autowire(lazy: true)]
         private readonly ResponsibilityResolver $responsibility,
         private readonly TrainingParticipationRepository $participations,
     ) {
