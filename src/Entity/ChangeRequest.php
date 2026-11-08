@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
@@ -238,7 +239,7 @@ class ChangeRequest
      * Actual implementation date
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['change_request:read', 'change_request:write'])]
+    #[Groups(['change_request:read']), ApiReadOnlyEvidence('change request form (implementation evidence)')]
     private ?DateTimeInterface $actualImplementationDate = null;
 
     /**
@@ -246,7 +247,7 @@ class ChangeRequest
      * the form shows it only while it still holds a value.
      */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['change_request:read'])]
+    #[Groups(['change_request:read']), ApiReadOnlyEvidence('change request approval')]
     private ?string $approvedBy = null;
 
     /**
@@ -260,18 +261,18 @@ class ChangeRequest
     private ?Person $approverPerson = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['change_request:read'])]
+    #[Groups(['change_request:read']), ApiReadOnlyEvidence('change request approval')]
     private ?DateTimeInterface $approvedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['change_request:read', 'change_request:write'])]
+    #[Groups(['change_request:read']), ApiReadOnlyEvidence('change request form (approval evidence)')]
     private ?string $approvalComments = null;
 
     /**
      * Implementer
      */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['change_request:read', 'change_request:write'])]
+    #[Groups(['change_request:read']), ApiReadOnlyEvidence('change request form (implementation evidence)')]
     private ?string $implementedBy = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -282,11 +283,11 @@ class ChangeRequest
      * Verification
      */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['change_request:read'])]
+    #[Groups(['change_request:read']), ApiReadOnlyEvidence('change request verification')]
     private ?string $verifiedBy = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['change_request:read'])]
+    #[Groups(['change_request:read']), ApiReadOnlyEvidence('change request verification')]
     private ?DateTimeInterface $verifiedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -297,7 +298,7 @@ class ChangeRequest
      * Closure
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['change_request:read', 'change_request:write'])]
+    #[Groups(['change_request:read']), ApiReadOnlyEvidence('change request form (lifecycle)')]
     private ?DateTimeInterface $closedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -3,13 +3,13 @@
 # Format: <relative-path>:LOC=NNN deps=MMM
 # Entries may only be lowered or removed; CI rejects new or raised entries
 # (--ratchet-ref) and stale ones (--strict-shrink). See scripts/README.md.
-src/Entity/Risk.php:LOC=1889 deps=0
+src/Entity/Risk.php:LOC=1888 deps=0
 src/Controller/DeploymentWizardController.php:LOC=1753 deps=0
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1729 deps=17
 src/Service/DashboardStatisticsService.php:LOC=1677 deps=24
 src/Controller/ComplianceExportController.php:LOC=1591 deps=0
 src/Repository/ComplianceMappingRepository.php:LOC=1497 deps=0
-src/Entity/Incident.php:LOC=1442 deps=0
+src/Entity/Incident.php:LOC=1440 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1433 deps=18
 src/Entity/ProcessingActivity.php:LOC=1415 deps=0
 src/Controller/PolicyWizardController.php:LOC=1357 deps=0
@@ -34,12 +34,12 @@ src/Controller/AdminBackupController.php:LOC=778 deps=0
 src/Controller/ComplianceWizardController.php:LOC=778 deps=0
 src/Controller/AssetController.php:LOC=758 deps=0
 src/Controller/QuickFixController.php:LOC=730 deps=0
-src/Controller/ProcessingActivityController.php:LOC=713 deps=0
-src/Controller/DPIAController.php:LOC=682 deps=0
+src/Controller/ProcessingActivityController.php:LOC=703 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
+src/Controller/DPIAController.php:LOC=680 deps=0
 src/Controller/MonitoringController.php:LOC=646 deps=0
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=624 deps=0
-src/Service/ScheduledReportService.php:LOC=619 deps=21
+src/Service/ScheduledReportService.php:LOC=601 deps=21
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=453 deps=16
 src/Service/DataIntegrityService.php:LOC=438 deps=33
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=17

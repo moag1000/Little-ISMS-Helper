@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mcp\Tool;
 
 use App\Mcp\McpSession;
+use App\Security\Persona\PersonaResolver;
 use App\Service\Kpi\KpiCatalog;
 
 /**
@@ -14,8 +15,16 @@ use App\Service\Kpi\KpiCatalog;
  */
 final class ManagementKpisTool extends AbstractMcpTool
 {
-    public function __construct(private readonly KpiCatalog $kpis)
+    public function __construct(
+        private readonly KpiCatalog $kpis,
+        private readonly PersonaResolver $personas,
+    ) {
+    }
+
+    /** Same as the management dashboards in the UI: reviewers (ROLE_AUDITOR) and above. */
+    public function isAvailable(McpSession $session): bool
     {
+        return $this->personas->reaches($session->user, 'ROLE_AUDITOR');
     }
 
     public function name(): string

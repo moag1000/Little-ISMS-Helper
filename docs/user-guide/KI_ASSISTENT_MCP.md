@@ -62,12 +62,27 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
   Mandant, IDs und Freigabe-Nachweise (Risikoakzeptanz, Billigung, Genehmigung von Änderungen) sind dort nicht
   schreibbar und werden abgewiesen. Globale Kataloge (Normen, Rollen, Vorlagen) schreibt kein Organisations-Token.
   Gelöscht wird nie. Die REST-API selbst bleibt für jedes Token lesend.
+- **Gleiche Rechte wie das Formular** (S4, 2026-11): Kontext der Organisation und ISMS-Ziele schreibt nur, wer sie auch
+  in der App pflegen darf (ISB, CISO, Admin), Bedrohungsinformationen ab Manager. Felder eines ausgeschalteten Moduls
+  (DORA/NIS-2 am Vorfall, FAIR am Risiko, KI-Agent am Asset, …) bietet der Assistent nicht an und nimmt sie nicht
+  an. Meldezeitpunkte eines Vorfalls (NIS-2/DORA), Abschluss- und Lösungsdatum sowie Umsetzungs- und
+  Genehmigungsnachweise einer Änderung sind nur lesbar: gemeldet wird über „Als gemeldet markieren“ in der App.
+  Eine Ressource ohne Schreibgruppe schreibt der Assistent nie. Ob ein Werkzeug schreiben darf, prüft der Server
+  zentral vor dem Aufruf.
+- **Suche und Kennzahlen**: Treffer, die betroffene Personen nennen (Personen, Einwilligungen, Betroffenenanfragen,
+  Datenpannen), gibt die Suche nur an die Rolle Datenschutzbeauftragte(r) weiter — Datenminimierung nach DSGVO
+  Art. 5 (1) c, 25; alle anderen sehen sie in der App. `management_kpis` steht wie die Management-Dashboards ab der
+  Prüferrolle zur Verfügung.
+- **Abgelehnte Entwürfe**: Denselben abgelehnten Entwurf stellt der Assistent nicht noch einmal; nach drei Ablehnungen
+  einer Art für einen Datensatz in 30 Tagen schlägt er dort nichts mehr vor. In der App kann die Person jederzeit
+  neu anfragen.
 - **Was eine Entscheidung braucht**: Werte der Erfüllung, Status und Freigaben bleiben in der App (Übersteuerung mit
   Begründung, Lifecycle, Entscheidungsdialog) bzw. kommen als Entwurf über `propose_draft`.
 - **Datenfluss**: Was der Assistent liest, geht an ihn und seinen Anbieter (bei Claude: Anthropic). Deshalb ist der
   Zugang je Organisation standardmäßig aus; der Admin entscheidet. Personenbezogene Daten werden — anders als beim
   eigenen KI-Modell — nicht ersetzt, denn die Person liest ihre eigenen Daten.
-- **Audit-Log**: jeder Werkzeugaufruf als `mcp.read` / `mcp.propose` / `mcp.write` mit Werkzeug, Datensatzart, ID,
+- **Audit-Log**: jeder Werkzeugaufruf als `mcp.read` / `mcp.propose` / `mcp.write`, jeder abgewiesene als
+  `mcp.denied` (Werkzeug nicht verfügbar, Schreiben aus, Rolle oder Voter sagt nein), mit Werkzeug, Datensatzart, ID,
   Anzahl, bei Schreibvorgängen den Namen der geänderten Felder, und Token — nie mit Suchtext oder Inhalten. Die
   Änderung selbst (alt → neu) steht wie bei jeder Formular-Änderung im Änderungsprotokoll des Datensatzes.
 - **Widerruf**: *Profil > API-Tokens > Widerrufen* wirkt sofort; „Zuletzt benutzt“ zeigt, ob ein Token noch im Einsatz ist.

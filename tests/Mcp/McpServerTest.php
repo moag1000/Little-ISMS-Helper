@@ -11,6 +11,7 @@ use App\Mcp\McpPrompts;
 use App\Mcp\McpServer;
 use App\Mcp\McpSession;
 use App\Mcp\McpToolException;
+use App\Mcp\McpWriteAccess;
 use App\Mcp\Tool\AbstractMcpTool;
 use App\Service\AuditLogger;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -29,6 +30,8 @@ final class McpServerTest extends TestCase
 {
     /** @var list<array<string, mixed>> */
     private array $audited = [];
+
+    private ?string $writeDenied = null;
 
     #[Test]
     public function initializeNegotiatesTheProtocolVersion(): void
@@ -97,6 +100,32 @@ final class McpServerTest extends TestCase
         }
     }
 
+    /** S4: writing tools are gated centrally, refusals are audited as mcp.denied. */
+    #[Test]
+    public function writingToolsAreRefusedCentrallyWhenWritingIsOff(): void
+    {
+        $this->writeDenied = 'This API token is read-only.';
+        $server = $this->server([$this->tool('writer', result: ['saved' => true], writes: true)]);
+
+        $answer = $server->handle(['jsonrpc' => '2.0', 'id' => 12, 'method' => 'tools/call', 'params' => ['name' => 'writer']], $this->session());
+
+        self::assertTrue($answer['result']['isError']);
+        self::assertSame('This API token is read-only.', $answer['result']['content'][0]['text']);
+        self::assertSame('mcp.denied', $this->audited[0]['action'] ?? null);
+        self::assertSame('writer', $this->audited[0]['newValues']['tool'] ?? null);
+    }
+
+    #[Test]
+    public function deniedAccessAndUnavailableToolsAreAuditedAsDenied(): void
+    {
+        $server = $this->server([$this->tool('voter', error: 'Access denied: your role may not change this.', denied: true), $this->tool('hidden', available: false)]);
+
+        $server->handle(['jsonrpc' => '2.0', 'id' => 13, 'method' => 'tools/call', 'params' => ['name' => 'voter']], $this->session());
+        $server->handle(['jsonrpc' => '2.0', 'id' => 14, 'method' => 'tools/call', 'params' => ['name' => 'hidden']], $this->session());
+
+        self::assertSame(['mcp.denied', 'mcp.denied'], array_column($this->audited, 'action'));
+    }
+
     #[Test]
     public function promptsAreListedAndRendered(): void
     {
@@ -123,7 +152,10 @@ final class McpServerTest extends TestCase
             $this->audited[] = ['action' => $action, 'newValues' => $newValues];
         });
 
-        return new McpServer($tools, new McpPrompts($translator), $audit, new NullLogger());
+        $writeAccess = $this->createStub(McpWriteAccess::class);
+        $writeAccess->method('reasonDenied')->willReturn($this->writeDenied);
+
+        return new McpServer($tools, new McpPrompts($translator), $audit, new NullLogger(), $writeAccess);
     }
 
     private function session(): McpSession
@@ -135,12 +167,28 @@ final class McpServerTest extends TestCase
     }
 
     /** @param array<string, mixed> $result */
-    private function tool(string $name, bool $available = true, array $result = [], ?string $error = null): AbstractMcpTool
+    private function tool(string $name, bool $available = true, array $result = [], ?string $error = null, bool $writes = false, bool $denied = false): AbstractMcpTool
     {
-        return new class ($name, $available, $result, $error) extends AbstractMcpTool {
+        return new class ($name, $available, $result, $error, $writes, $denied) extends AbstractMcpTool {
             /** @param array<string, mixed> $result */
-            public function __construct(private string $toolName, private bool $available, private array $result, private ?string $error)
+            public function __construct(
+                private string $toolName,
+                private bool $available,
+                private array $result,
+                private ?string $error,
+                private bool $writes,
+                private bool $denied,
+            ) {
+            }
+
+            public function isReadOnly(): bool
             {
+                return !$this->writes;
+            }
+
+            public function auditAction(): string
+            {
+                return $this->writes ? 'mcp.write' : 'mcp.read';
             }
 
             public function name(): string
@@ -166,7 +214,7 @@ final class McpServerTest extends TestCase
             public function call(array $arguments, McpSession $session): array
             {
                 if ($this->error !== null) {
-                    throw new McpToolException($this->error);
+                    throw $this->denied ? McpToolException::denied($this->error) : new McpToolException($this->error);
                 }
 
                 return $this->result;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Entity\Asset;
 use App\Entity\Tenant;
 use App\Repository\TenantRepository;
 use App\Service\AuditLogger;
@@ -89,18 +90,14 @@ class RetentionEnforcementServiceTest extends TestCase
         $this->assertSame('no enforcer (manual cleanup required)', $report[0]['note']);
     }
 
-    #[Test]
-    public function testDryRunReportsExpiredCountWithoutDeleting(): void
+    /** @param list<object> $rows */
+    private function stubQuery(array $rows): void
     {
-        $this->tenantRepository->method('findAll')->willReturn([
-            $this->tenantWithPolicies(['asset' => ['retention_days' => 365, 'auto_delete' => true]]),
-        ]);
-
         $query = $this->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getResult'])
             ->getMock();
-        $query->method('getResult')->willReturn([new \stdClass(), new \stdClass()]);
+        $query->method('getResult')->willReturn($rows);
 
         $qb = $this->createMock(QueryBuilder::class);
         foreach (['select', 'from', 'where', 'andWhere', 'setParameter'] as $fluent) {
@@ -108,6 +105,20 @@ class RetentionEnforcementServiceTest extends TestCase
         }
         $qb->method('getQuery')->willReturn($query);
         $this->entityManager->method('createQueryBuilder')->willReturn($qb);
+    }
+
+    private function asset(string $status): Asset
+    {
+        return (new Asset())->setStatus($status);
+    }
+
+    #[Test]
+    public function testDryRunReportsOnlyEndStateRecordsAsExpired(): void
+    {
+        $this->tenantRepository->method('findAll')->willReturn([
+            $this->tenantWithPolicies(['asset' => ['retention_days' => 365, 'auto_delete' => true]]),
+        ]);
+        $this->stubQuery([$this->asset('disposed'), $this->asset('disposed'), $this->asset('active')]);
 
         // Dry run: nothing is removed.
         $this->entityManager->expects($this->never())->method('remove');
@@ -118,5 +129,55 @@ class RetentionEnforcementServiceTest extends TestCase
         $this->assertSame('asset', $report[0]['entity_type']);
         $this->assertSame(2, $report[0]['expired']);
         $this->assertSame(0, $report[0]['deleted']);
+        $this->assertStringContainsString('1 overdue for retention, still active', (string) $report[0]['note']);
+    }
+
+    #[Test]
+    public function testActiveRecordsAreNeverDeletedEndStateRecordsAre(): void
+    {
+        $tenant = $this->tenantWithPolicies(['asset' => ['retention_days' => 365, 'auto_delete' => true]]);
+        $this->tenantRepository->method('findAll')->willReturn([$tenant]);
+
+        $disposed = $this->asset('disposed');
+        $active = $this->asset('active');
+        $retired = $this->asset('retired'); // disposal still needs the four-eyes step
+        $this->stubQuery([$disposed, $active, $retired]);
+
+        $removed = [];
+        $this->entityManager->method('remove')->willReturnCallback(function (object $o) use (&$removed): void {
+            $removed[] = $o;
+        });
+
+        // Audit trail goes through logBulk, pinned to the tenant.
+        $this->auditLogger->expects($this->once())->method('withTenant')
+            ->with($tenant, $this->isCallable())
+            ->willReturnCallback(static fn ($t, callable $cb): mixed => $cb());
+        $this->auditLogger->expects($this->once())->method('logBulk')
+            ->with(
+                'retention.enforced',
+                Asset::class,
+                $this->callback(static fn (array $b): bool => $b['deleted'] === 1 && $b['tenant'] === 1),
+                $this->callback(static fn (array $rows): bool => count($rows) === 1 && $rows[0]['action'] === 'delete'),
+            )
+            ->willReturn('batch');
+        $this->auditLogger->expects($this->never())->method('logCustom');
+
+        $report = $this->service->enforce(true);
+
+        $this->assertSame([$disposed], $removed);
+        $this->assertSame(1, $report[0]['deleted']);
+        $this->assertStringContainsString('2 overdue for retention, still active', (string) $report[0]['note']);
+    }
+
+    #[Test]
+    public function testEveryEntityTypeHasEndStates(): void
+    {
+        $this->assertSame(
+            array_keys(RetentionEnforcementService::REGISTRY),
+            array_keys(RetentionEnforcementService::END_STATES),
+        );
+        foreach (RetentionEnforcementService::END_STATES as $states) {
+            $this->assertNotSame([], $states);
+        }
     }
 }

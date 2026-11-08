@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Property\Factory\PropertyNameCollectionFactoryInterface
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Metadata\Resource\Factory\ResourceNameCollectionFactoryInterface;
+use App\Attribute\ModuleField;
 use App\Attribute\RequiresModule;
 use App\Service\ModuleConfigurationService;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,7 +77,7 @@ class ApiResourceGateway
         $list = [];
         foreach ($this->all() as $name => $resource) {
             if ($this->moduleActive($resource['class'], $session)) {
-                $writable = self::tenantOwned($resource['class']);
+                $writable = self::tenantOwned($resource['class']) && $resource['write_groups'] !== [];
                 $list[$name] = [
                     'description' => $resource['description'],
                     'filters' => $resource['filters'],
@@ -149,7 +150,7 @@ class ApiResourceGateway
     {
         $meta = $this->resolve($session, $resource);
 
-        return $this->fieldsOf($meta);
+        return $this->fieldsOf($meta, $session);
     }
 
     /**
@@ -163,7 +164,9 @@ class ApiResourceGateway
     {
         $meta = $this->resolve($session, $resource);
         $operation = $id === null ? $meta['create'] : $meta['update'];
-        if ($operation === null || !self::tenantOwned($meta['class'])) {
+        // A write operation without a denormalisation group would accept every
+        // field of the entity — never through the assistant.
+        if ($operation === null || !self::tenantOwned($meta['class']) || $meta['write_groups'] === []) {
             throw new McpToolException(sprintf(
                 'The resource "%s" cannot be %s by the assistant.',
                 $resource,
@@ -182,7 +185,7 @@ class ApiResourceGateway
                 implode(', ', $forbidden),
             ));
         }
-        $fields = $this->fieldsOf($meta);
+        $fields = $this->fieldsOf($meta, $session);
         $unknown = array_values(array_diff(array_map('strval', array_keys($data)), $fields));
         if ($unknown !== []) {
             throw new McpToolException(sprintf(
@@ -214,15 +217,29 @@ class ApiResourceGateway
     }
 
     /**
+     * Write-group fields, minus the keys never written and the fields of a
+     * module the organisation has switched off ({@see ModuleField}).
+     *
      * @param array{class: class-string, write_groups: list<string>} $meta
      * @return list<string>
      */
-    private function fieldsOf(array $meta): array
+    private function fieldsOf(array $meta, McpSession $session): array
     {
-        $options = $meta['write_groups'] === [] ? [] : ['serializer_groups' => $meta['write_groups']];
+        if ($meta['write_groups'] === []) {
+            return [];
+        }
+        $options = ['serializer_groups' => $meta['write_groups']];
+        $offModule = [];
+        foreach ((new \ReflectionClass($meta['class']))->getProperties() as $reflected) {
+            foreach ($reflected->getAttributes(ModuleField::class) as $attribute) {
+                if (!$this->modules->isModuleActiveForTenant($attribute->newInstance()->module, $session->tenant)) {
+                    $offModule[] = $reflected->getName();
+                }
+            }
+        }
         $fields = [];
         foreach ($this->propertyNames->create($meta['class']) as $property) {
-            if (in_array($property, self::FORBIDDEN_KEYS, true)) {
+            if (in_array($property, self::FORBIDDEN_KEYS, true) || in_array($property, $offModule, true)) {
                 continue;
             }
             if ($this->propertyMetadata->create($meta['class'], $property, $options)->isWritable() === true) {
@@ -291,7 +308,7 @@ class ApiResourceGateway
         $response = $this->httpKernel->handle($sub, HttpKernelInterface::SUB_REQUEST);
         $status = $response->getStatusCode();
         if ($status === 401 || $status === 403) {
-            throw new McpToolException($method === 'GET' ? 'Access denied: your role may not read this.' : 'Access denied: your role may not change this.');
+            throw McpToolException::denied($method === 'GET' ? 'Access denied: your role may not read this.' : 'Access denied: your role may not change this.');
         }
         if ($status === 404) {
             throw new McpToolException('Not found in your organisation.');

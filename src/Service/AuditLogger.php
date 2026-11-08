@@ -97,6 +97,31 @@ class AuditLogger
         private readonly ?\Psr\Log\LoggerInterface $logger = null,
     ) {}
 
+    /** Tenant pinned by withTenant() for background runs (CLI / cron) that have no TenantContext. */
+    private ?\App\Entity\Tenant $pinnedTenant = null;
+
+    /**
+     * Run $callback with every audit row written inside it stamped with $tenant.
+     *
+     * For console commands and cron jobs: TenantContext is empty there, so rows
+     * would otherwise carry tenant = null and be invisible to the tenant's own
+     * audit view. HTTP callers do not need this. Nesting restores the outer pin.
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     */
+    public function withTenant(?\App\Entity\Tenant $tenant, callable $callback): mixed
+    {
+        $previous = $this->pinnedTenant;
+        $this->pinnedTenant = $tenant;
+        try {
+            return $callback();
+        } finally {
+            $this->pinnedTenant = $previous;
+        }
+    }
+
     /**
      * Log a create action
      */
@@ -280,7 +305,7 @@ class AuditLogger
         // Symfony-BP audit #5: capture tenant at write time. Future user-rename
         // or re-tenancy cannot leak this row across boundaries. Falls back to
         // the acting user's tenant if the context is empty (e.g. system actions).
-        $tenant = $this->tenantContext?->getCurrentTenant();
+        $tenant = $this->pinnedTenant ?? $this->tenantContext?->getCurrentTenant();
         if ($tenant === null) {
             $user = $this->security->getUser();
             if ($user instanceof \App\Entity\User) {
