@@ -359,13 +359,7 @@ class RestoreService
             $this->entityManager->beginTransaction();
             $this->logger->info('Started transaction for entity restoration');
 
-            if ($options['best_effort']) {
-                try {
-                    $connection->setNestTransactionsWithSavepoints(true);
-                } catch (\Throwable) {
-                    $this->logger->warning('Best-effort: driver does not support nested savepoints — row isolation disabled');
-                }
-            }
+            // DBAL 4 always nests transactions with savepoints (best-effort row isolation).
 
             // First pass: restore all scalar fields and single-valued associations
             foreach ($orderedEntities as $orderedEntity) {
