@@ -305,9 +305,7 @@ class AuditLogger
             $auditLog->setUserAgent($request->headers->get('User-Agent'));
             // DownloadAuditSubscriber writes a generic entry only for requests
             // whose controller logged nothing itself.
-            if (isset($request->attributes)) {
-                $request->attributes->set(self::REQUEST_LOGGED_ATTRIBUTE, true);
-            }
+            $request->attributes->set(self::REQUEST_LOGGED_ATTRIBUTE, true);
         }
 
         // Set values as JSON
