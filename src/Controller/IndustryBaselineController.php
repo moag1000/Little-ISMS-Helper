@@ -90,6 +90,7 @@ final class IndustryBaselineController extends AbstractController
             'baseline' => $baseline,
             'applied_record' => $appliedRecord,
             'inherited_record' => $inherited,
+            'scaleTenant' => $tenant, // preset risks shown in the scale of the organisation applying them
         ]);
     }
 

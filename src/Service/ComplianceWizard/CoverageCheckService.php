@@ -248,7 +248,7 @@ final class CoverageCheckService
                 $treatedRisks++;
             } else {
                 $riskLevel = $risk->getInherentRiskLevel();
-                if ($riskLevel >= \App\Risk\RiskMatrixThresholds::highMin()) { // High risk threshold
+                if ($riskLevel >= \App\Risk\RiskMatrixThresholds::highMin($risk->getTenant())) { // High risk threshold
                     $highUntreated[] = [
                         'id' => $risk->getId(),
                         'title' => $risk->getTitle(),

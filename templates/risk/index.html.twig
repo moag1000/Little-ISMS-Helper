@@ -92,10 +92,10 @@
             <select class="form-select fa-cyber-input__field" id="filter-level" name="level">
                 <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
                 {# Select-options pull labels from risk_level_label() (SSoT) #}
-                <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>{{ risk_level_label('critical') }} ({{ risk_threshold('critical') }})</option>
-                <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>{{ risk_level_label('high') }} ({{ risk_threshold('high') }})</option>
-                <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>{{ risk_level_label('medium') }} ({{ risk_threshold('medium') }})</option>
-                <option value="low" {{ app.request.query.get('level') == 'low' ? 'selected' : '' }}>{{ risk_level_label('low') }} ({{ risk_threshold('low') }})</option>
+                <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>{{ risk_level_label('critical') }} ({{ risk_threshold('critical', currentTenant) }})</option>
+                <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>{{ risk_level_label('high') }} ({{ risk_threshold('high', currentTenant) }})</option>
+                <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>{{ risk_level_label('medium') }} ({{ risk_threshold('medium', currentTenant) }})</option>
+                <option value="low" {{ app.request.query.get('level') == 'low' ? 'selected' : '' }}>{{ risk_level_label('low') }} ({{ risk_threshold('low', currentTenant) }})</option>
             </select>
         </div>
         <div class="col-md-3">

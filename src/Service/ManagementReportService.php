@@ -85,10 +85,12 @@ final class ManagementReportService
         }
 
         // Risk analysis
-        $criticalRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::criticalMin());
-        $highRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::highMin() && $r->getRiskScore() < RiskMatrixThresholds::criticalMin());
-        $mediumRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::mediumMin() && $r->getRiskScore() < RiskMatrixThresholds::highMin());
-        $lowRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() < RiskMatrixThresholds::mediumMin());
+        // Each risk in its own organisation's scale (ISO 27001 6.1.2 b).
+        $band = static fn(Risk $r): string => RiskMatrixThresholds::classify($r->getRiskScore(), $r->getTenant());
+        $criticalRisks = array_filter($risks, fn(Risk $r): bool => $band($r) === 'critical');
+        $highRisks = array_filter($risks, fn(Risk $r): bool => $band($r) === 'high');
+        $mediumRisks = array_filter($risks, fn(Risk $r): bool => $band($r) === 'medium');
+        $lowRisks = array_filter($risks, fn(Risk $r): bool => $band($r) === 'low');
 
         // Control analysis
         $implementedControls = array_filter($controls, fn(Control $c): bool => $c->getImplementationStatus() === 'implemented');
@@ -195,16 +197,7 @@ final class ManagementReportService
             'low' => [],
         ];
         foreach ($risks as $risk) {
-            $score = $risk->getRiskScore();
-            if ($score >= RiskMatrixThresholds::criticalMin()) {
-                $byLevel['critical'][] = $risk;
-            } elseif ($score >= RiskMatrixThresholds::highMin()) {
-                $byLevel['high'][] = $risk;
-            } elseif ($score >= RiskMatrixThresholds::mediumMin()) {
-                $byLevel['medium'][] = $risk;
-            } else {
-                $byLevel['low'][] = $risk;
-            }
+            $byLevel[RiskMatrixThresholds::classify($risk->getRiskScore(), $risk->getTenant())][] = $risk;
         }
 
         // Treatment plan summary
@@ -278,7 +271,7 @@ final class ManagementReportService
                 }
 
                 $existingAtMonthEnd++;
-                if ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::highMin()) {
+                if ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::highMin($risk->getTenant())) {
                     $highCriticalAtMonthEnd++;
                 }
             }

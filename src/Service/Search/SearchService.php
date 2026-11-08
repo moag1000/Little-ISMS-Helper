@@ -252,7 +252,7 @@ class SearchService
                 'icon' => 'fa-icon--nav-shield-alert',
                 'type' => 'risk',
                 // Band key from the one threshold source; the palette shows its label.
-                'band' => RiskMatrixThresholds::classify($e->getInherentRiskLevel()),
+                'band' => RiskMatrixThresholds::classify($e->getInherentRiskLevel(), $e->getTenant()),
             ];
         }, $qb->getQuery()->getResult());
     }

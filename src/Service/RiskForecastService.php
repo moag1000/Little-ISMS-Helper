@@ -72,10 +72,10 @@ class RiskForecastService
             $monthRisks = array_filter($risks, fn(Risk $risk) => $risk->getCreatedAt() <= $monthEnd);
 
             // Count by level
-            $low = count(array_filter($monthRisks, fn(Risk $r) => $r->getInherentRiskLevel() < RiskMatrixThresholds::mediumMin()));
-            $medium = count(array_filter($monthRisks, fn(Risk $r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::mediumMin() && $r->getInherentRiskLevel() < RiskMatrixThresholds::highMin()));
-            $high = count(array_filter($monthRisks, fn(Risk $r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::highMin() && $r->getInherentRiskLevel() < RiskMatrixThresholds::criticalMin()));
-            $critical = count(array_filter($monthRisks, fn(Risk $r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::criticalMin()));
+            $low = count(array_filter($monthRisks, fn(Risk $r) => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'low'));
+            $medium = count(array_filter($monthRisks, fn(Risk $r) => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'medium'));
+            $high = count(array_filter($monthRisks, fn(Risk $r) => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'high'));
+            $critical = count(array_filter($monthRisks, fn(Risk $r) => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'critical'));
 
             // open = not handled, closed = state Closed; handled-but-not-closed is in neither (open+closed ≠ total)
             $open = count(array_filter($monthRisks, fn(Risk $r) => $r->getStatus()?->isHandled() !== true));
@@ -646,10 +646,10 @@ class RiskForecastService
 
         // Count actual risks by level
         $actual = [
-            'low' => count(array_filter($risks, fn(Risk $r) => $r->getInherentRiskLevel() < RiskMatrixThresholds::mediumMin())),
-            'medium' => count(array_filter($risks, fn(Risk $r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::mediumMin() && $r->getInherentRiskLevel() < RiskMatrixThresholds::highMin())),
-            'high' => count(array_filter($risks, fn(Risk $r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::highMin() && $r->getInherentRiskLevel() < RiskMatrixThresholds::criticalMin())),
-            'critical' => count(array_filter($risks, fn(Risk $r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::criticalMin())),
+            'low' => count(array_filter($risks, fn(Risk $r) => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'low')),
+            'medium' => count(array_filter($risks, fn(Risk $r) => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'medium')),
+            'high' => count(array_filter($risks, fn(Risk $r) => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'high')),
+            'critical' => count(array_filter($risks, fn(Risk $r) => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'critical')),
         ];
 
         // Check compliance

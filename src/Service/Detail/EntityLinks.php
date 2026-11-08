@@ -327,7 +327,7 @@ class EntityLinks
             $record instanceof Risk => [
                 (string) $record->getTitle(),
                 null,
-                self::bandTone(RiskMatrixThresholds::classify($record->getResidualRiskLevel())),
+                self::bandTone(RiskMatrixThresholds::classify($record->getResidualRiskLevel(), $record->getTenant())),
                 (string) $record->getResidualRiskLevel(),
             ],
             $record instanceof Control => [

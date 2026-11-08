@@ -128,11 +128,11 @@
 ] %}
 
 {# Critical & High table #}
-{% set _critical_and_high = risks|filter(r => risk_level_band(r.riskScore) in ['critical', 'high']) %}
+{% set _critical_and_high = risks|filter(r => risk_level_band(r.riskScore, r.tenant) in ['critical', 'high']) %}
 {% set _ch_rows = [] %}
 {% for risk in _critical_and_high %}
-    {% set _level_label = risk_level_band(risk.riskScore) == 'critical' ? 'Critical' : 'High' %}
-    {% set _level_chip  = risk_level_band(risk.riskScore) == 'critical' ? 'confidential' : 'draft' %}
+    {% set _level_label = risk_level_band(risk.riskScore, risk.tenant) == 'critical' ? 'Critical' : 'High' %}
+    {% set _level_chip  = risk_level_band(risk.riskScore, risk.tenant) == 'critical' ? 'confidential' : 'draft' %}
     {% set _ch_rows = _ch_rows|merge([[
         risk.id,
         risk.title,
@@ -147,7 +147,7 @@
 {# All risks #}
 {% set _all_rows = [] %}
 {% for risk in risks %}
-    {% set _band = risk_level_band(risk.riskScore) %}
+    {% set _band = risk_level_band(risk.riskScore, risk.tenant) %}
     {% set _level_label = _band|capitalize %}
     {% set _level_chip  = {critical: 'confidential', high: 'draft'}[_band] ?? 'final' %}
     {% set _all_rows = _all_rows|merge([[

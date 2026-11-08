@@ -74,7 +74,7 @@ final class ExportRisksJob implements AsyncJobInterface
         if (is_string($level) && $level !== '') {
             $risks = array_filter(
                 $risks,
-                static fn(Risk $risk): bool => RiskMatrixThresholds::classify($risk->getRiskScore()) === $level,
+                static fn(Risk $risk): bool => RiskMatrixThresholds::classify($risk->getRiskScore(), $risk->getTenant()) === $level,
             );
         }
         if (is_string($statusFilter) && $statusFilter !== '') {
@@ -161,8 +161,8 @@ final class ExportRisksJob implements AsyncJobInterface
                 $riskScore = $risk->getRiskScore();
                 $residualScore = $risk->getResidualRiskLevel();
 
-                $riskLevel = self::BAND_LABELS[RiskMatrixThresholds::classify($riskScore)];
-                $residualRiskLevel = self::BAND_LABELS[RiskMatrixThresholds::classify($residualScore)];
+                $riskLevel = self::BAND_LABELS[RiskMatrixThresholds::classify($riskScore, $risk->getTenant())];
+                $residualRiskLevel = self::BAND_LABELS[RiskMatrixThresholds::classify($residualScore, $risk->getTenant())];
 
                 $treatmentValue = $risk->getTreatmentStrategy()?->value;
                 $statusValue = $risk->getStatus()?->value;

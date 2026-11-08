@@ -918,14 +918,7 @@ final class CertificationBundleExporter
 
         $risksByLevel = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
         foreach ($risks as $risk) {
-            $score = $risk->getRiskScore();
-            $level = match (true) {
-                $score >= \App\Risk\RiskMatrixThresholds::criticalMin() => 'critical',
-                $score >= \App\Risk\RiskMatrixThresholds::highMin() => 'high',
-                $score >= \App\Risk\RiskMatrixThresholds::mediumMin() => 'medium',
-                default => 'low',
-            };
-            $risksByLevel[$level]++;
+            $risksByLevel[\App\Risk\RiskMatrixThresholds::classify($risk->getRiskScore(), $risk->getTenant())]++;
         }
 
         return $this->pdfExportService->generatePdf(

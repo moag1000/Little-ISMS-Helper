@@ -69,6 +69,7 @@ final class RiskAggregationService
             $level = $this->riskMatrixService->calculateRiskLevel(
                 $risk->getProbability() ?? 1,
                 $risk->getImpact() ?? 1,
+                $risk->getTenant(),
             );
             if (isset($byLevel[$level])) {
                 $byLevel[$level]++;

@@ -1,0 +1,6 @@
+# Gate 87 — reads of the risk scale without the organisation of the data.
+# Since every organisation has its own scale (P8b), RiskMatrixThresholds::classify()/criticalMin()/
+# highMin()/mediumMin()/getBands() (src/) and risk_level_band()/risk_threshold()/risk_bands()
+# (templates/) name the tenant whose risks they classify. Only a file where the organisation in
+# scope is genuinely right may call them without one.
+# Format: path::reason (one per line). Keep it tiny; a stale entry fails the gate.

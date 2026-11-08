@@ -33,7 +33,7 @@ class RiskBusinessSummary
         $score = $risk->getResidualRiskLevel();
         $parts = [sprintf(
             '%s (%d)',
-            $this->translator->trans('risk.level.' . RiskMatrixThresholds::classify($score), [], 'risk'),
+            $this->translator->trans('risk.level.' . RiskMatrixThresholds::classify($score, $risk->getTenant()), [], 'risk'),
             $score,
         )];
 

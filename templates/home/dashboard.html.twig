@@ -468,7 +468,7 @@
                                     </div>
                                 </div>
                                 {% include '_components/_badge.html.twig' with {
-                                    variant: {critical: 'danger', high: 'warning'}[risk_level_band(risk.probability * risk.impact)] ?? 'info',
+                                    variant: {critical: 'danger', high: 'warning'}[risk_level_band(risk.probability * risk.impact, risk.tenant)] ?? 'info',
                                     class: 'ms-2',
                                     content: risk.probability * risk.impact
                                 } %}

@@ -163,12 +163,7 @@ class ManagementReportController extends AbstractController
 
         foreach ($riskReport['risks'] as $risk) {
             $score = $risk->getRiskScore();
-            $level = match (true) {
-                $score >= \App\Risk\RiskMatrixThresholds::criticalMin() => 'Critical',
-                $score >= \App\Risk\RiskMatrixThresholds::highMin() => 'High',
-                $score >= \App\Risk\RiskMatrixThresholds::mediumMin() => 'Medium',
-                default => 'Low',
-            };
+            $level = ucfirst(\App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()));
 
             $data[] = [
                 $risk->getId(),
@@ -430,12 +425,7 @@ class ManagementReportController extends AbstractController
         $topRisks = [];
         foreach ($topRiskEntities as $risk) {
             $score = $risk->getInherentRiskLevel();
-            $level = match (true) {
-                $score >= \App\Risk\RiskMatrixThresholds::criticalMin() => 'Critical',
-                $score >= \App\Risk\RiskMatrixThresholds::highMin() => 'High',
-                $score >= \App\Risk\RiskMatrixThresholds::mediumMin() => 'Medium',
-                default => 'Low',
-            };
+            $level = ucfirst(\App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()));
             $topRisks[] = [
                 'title' => $risk->getTitle(),
                 'level' => $level,

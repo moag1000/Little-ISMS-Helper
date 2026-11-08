@@ -100,7 +100,7 @@ class RiskAppetitePrioritizationService
         if (!$appetite instanceof RiskAppetite) {
             // Fall back to absolute risk level if no appetite defined
             $residualRisk = $risk->getResidualRiskLevel();
-            return $this->getAbsolutePriority($residualRisk);
+            return $this->getAbsolutePriority($residualRisk, $risk);
         }
 
         $residualRisk = $risk->getResidualRiskLevel();
@@ -134,10 +134,10 @@ class RiskAppetitePrioritizationService
             return [
                 'appetite' => null,
                 'within_appetite' => null, // Unknown
-                'priority' => $this->getAbsolutePriority($residualRisk),
+                'priority' => $this->getAbsolutePriority($residualRisk, $risk),
                 'exceedance' => 0,
                 'percentage' => 0.0,
-                'requires_action' => $residualRisk >= RiskMatrixThresholds::highMin(),
+                'requires_action' => $residualRisk >= RiskMatrixThresholds::highMin($risk->getTenant()),
                 'recommendation' => 'No risk appetite defined. Please set organizational risk appetite.'
             ];
         }
@@ -320,20 +320,12 @@ class RiskAppetitePrioritizationService
     }
 
     /**
-     * Get absolute priority when no appetite is defined
+     * Get absolute priority when no appetite is defined — in the scale of
+     * the risk's own organisation.
      */
-    private function getAbsolutePriority(int $riskLevel): string
+    private function getAbsolutePriority(int $riskLevel, Risk $risk): string
     {
-        if ($riskLevel >= RiskMatrixThresholds::criticalMin()) {
-            return 'critical';
-        }
-        if ($riskLevel >= RiskMatrixThresholds::highMin()) {
-            return 'high';
-        }
-        if ($riskLevel >= RiskMatrixThresholds::mediumMin()) {
-            return 'medium';
-        }
-        return 'low';
+        return RiskMatrixThresholds::classify($riskLevel, $risk->getTenant());
     }
 
     /**

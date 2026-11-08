@@ -560,7 +560,7 @@ final class ReportBuilderService
     private function getKpiHighRisks(): array
     {
         $risks = $this->riskRepository->findAll();
-        $highRisks = array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::highMin());
+        $highRisks = array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::highMin($r->getTenant()));
         $count = count($highRisks);
         return [
             'value' => $count,
@@ -684,11 +684,14 @@ final class ReportBuilderService
     private function getChartRiskMatrix(): array
     {
         $risks = $this->riskRepository->findAll();
+        $tenant = $this->tenantContext->getCurrentTenant(); // the organisation the report covers
         $matrix = [];
-        // Initialize 5x5 matrix
+        $bands = [];
+        // Initialize 5x5 matrix; cell bands in the reported organisation's scale (ISO 27001 6.1.2 b)
         for ($likelihood = 1; $likelihood <= 5; $likelihood++) {
             for ($impact = 1; $impact <= 5; $impact++) {
                 $matrix[$likelihood][$impact] = 0;
+                $bands[$likelihood][$impact] = RiskMatrixThresholds::classify($likelihood * $impact, $tenant);
             }
         }
         foreach ($risks as $risk) {
@@ -699,6 +702,7 @@ final class ReportBuilderService
         return [
             'type' => 'heatmap',
             'matrix' => $matrix,
+            'bands' => $bands,
             'labels' => [
                 'x' => ['Very Low', 'Low', 'Medium', 'High', 'Very High'],
                 'y' => ['Very Low', 'Low', 'Medium', 'High', 'Very High'],
@@ -1036,7 +1040,7 @@ final class ReportBuilderService
         $totalControls = count($controls);
         $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
         $implementationRate = $totalControls > 0 ? ($implemented / $totalControls) * 100 : 0;
-        $highRisks = count(array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::highMin()));
+        $highRisks = count(array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::highMin($r->getTenant())));
         // Determine RAG status
         if ($implementationRate >= 80 && $highRisks <= 3) {
             $status = 'green';

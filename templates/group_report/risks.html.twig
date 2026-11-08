@@ -24,8 +24,8 @@
         {% set _inherent = risk.inherentRiskLevel %}
         {% set _residual = risk.residualRiskLevel %}
         {% set _badge_map = {critical: 'confidential', high: 'confidential', medium: 'draft', low: 'final'} %}
-        {% set _ibadge = _badge_map[risk_level_band(_inherent)] %}
-        {% set _rbadge = _badge_map[risk_level_band(_residual)] %}
+        {% set _ibadge = _badge_map[risk_level_band(_inherent, risk.tenant)] %}
+        {% set _rbadge = _badge_map[risk_level_band(_residual, risk.tenant)] %}
         {% set _top_rows = _top_rows|merge([[
             loop.index,
             '<strong>' ~ risk.title|e ~ '</strong>' ~ (risk.category ? '<br><code style="font-size:.75em;color:var(--fg-3);">' ~ risk.category|e ~ '</code>' : ''),

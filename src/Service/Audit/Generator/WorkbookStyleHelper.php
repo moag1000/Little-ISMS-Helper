@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Audit\Generator;
 
+use App\Entity\Tenant;
 use App\Risk\RiskMatrixThresholds;
 use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -161,11 +162,12 @@ final class WorkbookStyleHelper
 
     /**
      * Apply risk-score fill colour to a single cell.
-     * Bands per RiskMatrixThresholds: low green, medium yellow, high orange, critical red.
+     * Bands per RiskMatrixThresholds in the scale of the risk's organisation
+     * ($tenant): low green, medium yellow, high orange, critical red.
      */
-    public static function applyRiskScoreColor(Worksheet $sheet, string $cellCoord, int $score): void
+    public static function applyRiskScoreColor(Worksheet $sheet, string $cellCoord, int $score, ?Tenant $tenant): void
     {
-        $bgColor = match (RiskMatrixThresholds::classify($score)) {
+        $bgColor = match (RiskMatrixThresholds::classify($score, $tenant)) {
             'low'    => self::RISK_GREEN,
             'medium' => self::RISK_YELLOW,
             'high'   => self::RISK_ORANGE,

@@ -49,7 +49,7 @@ final class DomainEventDetector
             ]),
             $entity instanceof Risk => array_filter([
                 new DomainEvent('risk.created', $tenant, $this->riskState($entity)),
-                RiskMatrixThresholds::classify($entity->getRiskScore()) === 'critical'
+                RiskMatrixThresholds::classify($entity->getRiskScore(), $tenant) === 'critical'
                     ? new DomainEvent('risk.score_critical', $tenant, $this->riskState($entity)) : null,
             ]),
             $entity instanceof DataBreach => [new DomainEvent('data_breach.created', $tenant, $this->dataBreachState($entity))],
@@ -125,8 +125,9 @@ final class DomainEventDetector
         $oldProb = isset($changeSet['probability']) ? (int) $changeSet['probability'][0] : (int) $risk->getProbability();
         $oldImp = isset($changeSet['impact']) ? (int) $changeSet['impact'][0] : (int) $risk->getImpact();
 
-        $newIsCritical = RiskMatrixThresholds::classify($risk->getRiskScore()) === 'critical';
-        $oldIsCritical = RiskMatrixThresholds::classify($oldProb * $oldImp) === 'critical';
+        $tenant = $risk->getTenant();
+        $newIsCritical = RiskMatrixThresholds::classify($risk->getRiskScore(), $tenant) === 'critical';
+        $oldIsCritical = RiskMatrixThresholds::classify($oldProb * $oldImp, $tenant) === 'critical';
 
         return $newIsCritical && !$oldIsCritical;
     }

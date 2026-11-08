@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Risk;
+use App\Entity\{Risk, Tenant};
 use App\Repository\RiskRepository;
 use App\Risk\RiskMatrixThresholds;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -56,7 +56,9 @@ final class RiskMatrixService
     }
 
     /**
-     * Generiert die Risk Assessment Matrix mit allen Risiken
+     * Generiert die Risk Assessment Matrix mit allen Risiken. Statistics
+     * count each risk in its own organisation's scale; the cell colours use
+     * the scale of $tenant (the organisation whose matrix is shown).
      *
      * @return array{
      *     matrix: array<int, array<int, array<Risk>>>,
@@ -65,7 +67,7 @@ final class RiskMatrixService
      *     riskLevels: array<int, array<int, string>>
      * }
      */
-    public function generateMatrix(?array $risks = null): array
+    public function generateMatrix(?array $risks = null, ?Tenant $tenant = null): array
     {
         if ($risks === null) {
             $risks = $this->riskRepository->findAll();
@@ -100,7 +102,7 @@ final class RiskMatrixService
             $statistics['total']++;
 
             // Calculate risk level via SSoT
-            $level = RiskMatrixThresholds::classify($likelihood * $impact);
+            $level = RiskMatrixThresholds::classify($likelihood * $impact, $risk->getTenant());
             $statistics[$level]++;
         }
 
@@ -108,7 +110,7 @@ final class RiskMatrixService
         $riskLevels = [];
         for ($likelihood = 1; $likelihood <= self::MATRIX_SIZE; $likelihood++) {
             for ($impact = 1; $impact <= self::MATRIX_SIZE; $impact++) {
-                $riskLevels[$likelihood][$impact] = $this->calculateRiskLevel($likelihood, $impact);
+                $riskLevels[$likelihood][$impact] = $this->calculateRiskLevel($likelihood, $impact, $tenant);
             }
         }
 
@@ -125,11 +127,12 @@ final class RiskMatrixService
 
     /**
      * Berechnet das Risikolevel basierend auf Likelihood und Impact.
-     * Delegiert an die SSoT {@see RiskMatrixThresholds::classify()}.
+     * Delegiert an die SSoT {@see RiskMatrixThresholds::classify()}, in der
+     * Skala der Organisation des Risikos ($tenant, ISO 27001 6.1.2 b).
      */
-    public function calculateRiskLevel(int $likelihood, int $impact): string
+    public function calculateRiskLevel(int $likelihood, int $impact, ?Tenant $tenant): string
     {
-        return RiskMatrixThresholds::classify($likelihood * $impact);
+        return RiskMatrixThresholds::classify($likelihood * $impact, $tenant);
     }
 
     /**
@@ -137,12 +140,12 @@ final class RiskMatrixService
      *
      * @return array{critical: int, high: int, medium: int}
      */
-    public function getThresholds(): array
+    public function getThresholds(?Tenant $tenant): array
     {
         return [
-            'critical' => RiskMatrixThresholds::criticalMin(),
-            'high' => RiskMatrixThresholds::highMin(),
-            'medium' => RiskMatrixThresholds::mediumMin(),
+            'critical' => RiskMatrixThresholds::criticalMin($tenant),
+            'high' => RiskMatrixThresholds::highMin($tenant),
+            'medium' => RiskMatrixThresholds::mediumMin($tenant),
         ];
     }
 
@@ -177,9 +180,9 @@ final class RiskMatrixService
     /**
      * Generiert Matrix-Daten für Chart.js Heatmap
      */
-    public function generateHeatmapData(?array $risks = null): array
+    public function generateHeatmapData(?array $risks = null, ?Tenant $tenant = null): array
     {
-        $matrixData = $this->generateMatrix($risks);
+        $matrixData = $this->generateMatrix($risks, $tenant);
         $data = [];
 
         for ($likelihood = 1; $likelihood <= self::MATRIX_SIZE; $likelihood++) {
@@ -231,7 +234,7 @@ final class RiskMatrixService
         foreach ($risks as $risk) {
             $likelihood = $risk->getProbability() ?? 3;
             $impact = $risk->getImpact() ?? 3;
-            $level = $this->calculateRiskLevel($likelihood, $impact);
+            $level = $this->calculateRiskLevel($likelihood, $impact, $risk->getTenant());
 
             $grouped[$level][] = $risk;
         }

@@ -276,7 +276,7 @@
                         {% for x in 1..5 %}
                         {% set count = data.matrix[y][x]|default(0) %}
                         {% set score = y * x %}
-                        {% set riskClass = 'risk-' ~ risk_level_band(score) %}
+                        {% set riskClass = 'risk-' ~ data.bands[y][x]|default('low') %}
                         <td class="{{ riskClass }}">{{ count > 0 ? count : '' }}</td>
                         {% endfor %}
                     </tr>

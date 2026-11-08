@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
-use App\Entity\Risk;
+use App\Entity\{Risk, Tenant};
 use App\Risk\RiskMatrixThresholds;
 use App\Risk\RiskScaleProvider;
 use App\Service\Risk\RiskBusinessSummary;
@@ -25,6 +25,11 @@ use Twig\Attribute\AsTwigFunction;
  * through `risk_level_label(band)` / `risk_level_band(score)` so all band
  * resolution flows through one code path that delegates to
  * RiskMatrixThresholds::classify().
+ *
+ * The scale is the record's organisation's (ISO 27001 6.1.2 b): templates
+ * pass the tenant of the risk they show (`risk_level_band(score, risk.tenant)`)
+ * or of the organisation whose matrix/legend they render; null = the
+ * organisation in scope. Gate 87 rejects calls without that argument.
  */
 final class RiskExtension
 {
@@ -48,9 +53,9 @@ final class RiskExtension
      * Empty string for unknown levels.
      */
     #[AsTwigFunction('risk_threshold')]
-    public function riskThreshold(string $level): string
+    public function riskThreshold(string $level, ?Tenant $tenant = null): string
     {
-        $bands = RiskMatrixThresholds::getBands();
+        $bands = RiskMatrixThresholds::getBands($tenant);
         if (!isset($bands[$level])) {
             return '';
         }
@@ -68,8 +73,7 @@ final class RiskExtension
     #[AsTwigFunction('risk_level_label')]
     public function riskLevelLabel(string $level): string
     {
-        $bands = RiskMatrixThresholds::getBands();
-        if (!isset($bands[$level])) {
+        if (!in_array($level, ['critical', 'high', 'medium', 'low'], true)) {
             return '';
         }
 
@@ -82,9 +86,9 @@ final class RiskExtension
      * that need to colour a value but only have the score in hand.
      */
     #[AsTwigFunction('risk_level_band')]
-    public function riskLevelBand(int|float|string|null $score): string
+    public function riskLevelBand(int|float|string|null $score, ?Tenant $tenant = null): string
     {
-        return RiskMatrixThresholds::classify((int) floor((float) $score));
+        return RiskMatrixThresholds::classify((int) floor((float) $score), $tenant);
     }
 
     /**
@@ -94,9 +98,9 @@ final class RiskExtension
      * @return array<string, array{min: int, max: int}>
      */
     #[AsTwigFunction('risk_bands')]
-    public function riskBands(): array
+    public function riskBands(?Tenant $tenant = null): array
     {
-        return RiskMatrixThresholds::getBands();
+        return RiskMatrixThresholds::getBands($tenant);
     }
 
     /**

@@ -53,8 +53,8 @@
         {% for risk in risks %}
         {% set score = risk.riskScore %}
         {% set residual = risk.residualRiskLevel %}
-        {% set level = risk_level_band(score) %}
-        {% set residualLevel = risk_level_band(residual) %}
+        {% set level = risk_level_band(score, risk.tenant) %}
+        {% set residualLevel = risk_level_band(residual, risk.tenant) %}
         <tr>
             <td>{{ risk.id }}</td>
             <td>{{ risk.title }}</td>
