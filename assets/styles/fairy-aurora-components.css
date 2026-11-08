@@ -7232,7 +7232,7 @@ a.fa-matrix-table__cell:focus-visible {
 /* ─── fa-json-builder family (P-9 visual macros) ──────────────────────────
    Shared shell for:
      .fa-team-role-builder, .fa-resource-list, .fa-escalation-chain,
-     .fa-success-criteria, .fa-subcontractor-chain
+     .fa-success-criteria
    Each is a card-like container with hidden raw-JSON textarea + visual editor.
 */
 .fa-json-builder {
@@ -7457,50 +7457,6 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-success-criteria__met-cell { text-align: center; }
-
-/* ─── fa-subcontractor-chain — indented tree builder ─── */
-.fa-subcontractor-chain__tree {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.fa-subcontractor-chain__node {
-    display: grid;
-    grid-template-columns: 1fr 80px 1fr 32px 40px 40px;
-    gap: 6px;
-    align-items: center;
-    padding: 8px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-}
-
-.fa-subcontractor-chain__node[data-depth="1"] { margin-left: 28px; border-left: 3px solid var(--primary); }
-.fa-subcontractor-chain__node[data-depth="2"] { margin-left: 56px; border-left: 3px solid var(--primary); }
-.fa-subcontractor-chain__node[data-depth="3"] { margin-left: 84px; border-left: 3px solid var(--primary-strong); }
-
-.fa-subcontractor-chain__critical {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-}
-
-.fa-subcontractor-chain__actions {
-    display: flex;
-    gap: 4px;
-}
-
-@media (max-width: 900px) {
-    .fa-subcontractor-chain__node {
-        grid-template-columns: 1fr 80px 32px 40px 40px;
-    }
-    .fa-subcontractor-chain__node > :nth-child(3) {
-        grid-column: 1 / -1;
-    }
-}
 
 /* ==========================================================================
    Norm-Bridge — Audit-S5 P-12

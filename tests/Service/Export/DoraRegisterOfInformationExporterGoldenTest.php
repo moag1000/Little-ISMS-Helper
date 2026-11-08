@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Export;
 
+use App\Entity\DoraSubcontractor;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Repository\SupplierRepository;
@@ -61,7 +62,9 @@ final class DoraRegisterOfInformationExporterGoldenTest extends TestCase
         $s1->setSubstitutability('hard');
         $s1->setProcessingLocations(['DE', 'IE', 'US']);
         $s1->setHasSubcontractors(true);
-        $s1->setSubcontractorChain(['Sub A', 'Sub B']);
+        foreach (['Sub A', 'Sub B'] as $subName) {
+            $s1->getSubcontractors()->add((new DoraSubcontractor())->setParentSupplier($s1)->setName($subName));
+        }
         $s1->setHasExitStrategy(true);
         $s1->setLastDoraAuditDate(new \DateTimeImmutable('2024-11-01'));
         $s1->setGdprProcessorStatus('processor');

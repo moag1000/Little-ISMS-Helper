@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Service\Restore;
 
 use App\Doctrine\EntityManagerRecovery;
+use App\Entity\Control;
+use App\Entity\Risk;
 use App\Service\Owner\LegacyOwnerColumns;
 use App\Service\Owner\OwnerTextResolver;
+use App\Service\Supplier\SubcontractorChainRows;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Id\AssignedGenerator;
@@ -559,6 +562,116 @@ class RestoreEntityWriter
     }
 
     /**
+     * Backups made before P5 carry two lists that are now one (see
+     * Version20261107230000): Incident.realizedRisks → risk-incident links
+     * (materialized), RiskTreatmentPlan.controls → the risk's control list.
+     *
+     * Written by plain SQL like the pivot rows, so both ends must lie in the restore scope.
+     *
+     * @param array<int, array<string, mixed>> $entities
+     * @param array<string, mixed>             $m2mStats
+     * @param string[]                         $warnings
+     * @param int[]                            $scopeIds
+     */
+    private function restoreMergedLists(
+        string $entityName,
+        string $entityClass,
+        array $entities,
+        array &$m2mStats,
+        array &$warnings,
+        array $scopeIds,
+    ): void {
+        $guard = $this->tenantGuard();
+        $entities = array_values(array_filter(
+            $entities,
+            static fn (array $data): bool => isset($data['id'])
+                && (is_int($data['id']) || is_string($data['id']))
+                && $guard->mayReference($entityClass, $data['id'], $scopeIds),
+        ));
+        if ($entityName === 'Supplier') {
+            $this->restoreSubcontractorChains($entities, $m2mStats);
+            return;
+        }
+        $sql = match ($entityName) {
+            'Incident' => ['realizedRisks_ids', "INSERT IGNORE INTO risk_incident_link (tenant_id, risk_id, incident_id, link_type, linked_at)
+                SELECT COALESCE(i.tenant_id, r.tenant_id), r.id, i.id, 'materialized', :linkedAt
+                FROM incident i JOIN risk r ON r.id = :target WHERE i.id = :owner AND COALESCE(i.tenant_id, r.tenant_id) IS NOT NULL"],
+            'RiskTreatmentPlan' => ['controls_ids', 'INSERT IGNORE INTO control_risk (control_id, risk_id)
+                SELECT c.id, p.risk_id FROM risk_treatment_plan p JOIN control c ON c.id = :target WHERE p.id = :owner AND p.risk_id IS NOT NULL'],
+            default => null,
+        };
+        if ($sql === null) {
+            return;
+        }
+        $targetClass = $entityName === 'Incident' ? Risk::class : Control::class;
+        $dropped = 0;
+        [$idsKey, $statement] = $sql;
+        $connection = $this->entityManager->getConnection();
+        $params = $entityName === 'Incident' ? ['linkedAt' => (new \DateTimeImmutable())->format('Y-m-d H:i:s')] : [];
+        $count = 0;
+        $tuples = 0;
+        foreach ($entities as $data) {
+            $ownerId = $data['id'];
+            if (!is_array($data[$idsKey] ?? null)) {
+                continue;
+            }
+            foreach ($data[$idsKey] as $target) {
+                $targetId = is_array($target) ? ($target['id'] ?? null) : $target;
+                if ($targetId !== null && (is_int($targetId) || is_string($targetId))
+                    && !$guard->mayReference($targetClass, $targetId, $scopeIds)) {
+                    ++$dropped;
+                    continue;
+                }
+                if ($targetId !== null) {
+                    ++$tuples;
+                    $count += (int) $connection->executeStatement($statement, [...$params, 'owner' => $ownerId, 'target' => $targetId]);
+                }
+            }
+        }
+        if ($dropped > 0) {
+            $warnings[] = sprintf('%d %s.%s link(s) dropped: they point to records of another organisation', $dropped, $entityName, $idsKey);
+        }
+        if ($tuples > 0) {
+            $m2mStats[$idsKey] = ['pivot' => 'merged (P5)', 'tuples' => $tuples, 'inserted' => $count];
+        }
+    }
+
+    /**
+     * Pre-P5 backups carry Supplier.subcontractorChain (JSON), which becomes dora_subcontractor rows,
+     * and a second AVV flag (gdprAvContract*), which folds into has_dpa / dpa_signed_date.
+     *
+     * @param array<int, array<string, mixed>> $entities
+     * @param array<string, mixed>             $m2mStats
+     */
+    private function restoreSubcontractorChains(array $entities, array &$m2mStats): void
+    {
+        $connection = $this->entityManager->getConnection();
+        $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $inserted = 0;
+        foreach ($entities as $data) {
+            if (isset($data['id']) && !empty($data['gdprAvContractSigned'])) {
+                // The second AVV flag of old backups folds into has_dpa (one flag).
+                $date = is_string($data['gdprAvContractDate'] ?? null) ? substr($data['gdprAvContractDate'], 0, 10) : null;
+                $connection->executeStatement(
+                    'UPDATE supplier SET has_dpa = 1, dpa_signed_date = COALESCE(dpa_signed_date, ?) WHERE id = ?',
+                    [$date, (int) $data['id']],
+                );
+            }
+            $chain = $data['subcontractorChain'] ?? null;
+            if (!isset($data['id']) || !is_array($chain) || $chain === []) {
+                continue;
+            }
+            $tenantId = $connection->fetchOne('SELECT tenant_id FROM supplier WHERE id = ?', [(int) $data['id']]);
+            $inserted += SubcontractorChainRows::insert(
+                $connection, (int) $data['id'], $tenantId !== false && $tenantId !== null ? (int) $tenantId : null, $chain, $now,
+            );
+        }
+        if ($inserted > 0) {
+            $m2mStats['subcontractorChain'] = ['pivot' => 'dora_subcontractor (P5)', 'tuples' => $inserted, 'inserted' => $inserted];
+        }
+    }
+
+    /**
      * A backup written before the free-text owner columns were dropped still
      * carries the owner as text ("owner": "Max Muster"). It becomes the User or
      * Person it names in the record's organisation, else a new Person — the same
@@ -607,6 +720,7 @@ class RestoreEntityWriter
 
         $connection = $this->entityManager->getConnection();
         $m2mStats = [];
+        $this->restoreMergedLists($entityName, $entityClass, $entities, $m2mStats, $warnings, $scopeIds);
 
         foreach ($classMetadata->getAssociationMappings() as $field => $mapping) {
             $type      = is_array($mapping) ? ($mapping['type'] ?? null)          : ($mapping->type          ?? null);

@@ -196,7 +196,7 @@ final class ISMSContextType extends AbstractType implements SectionMapInterface
 
         // Paket 9: issues, roles, legal requirements and the policy live in the
         // registers now; an empty legacy text field is no longer offered.
-        foreach (['externalIssues', 'internalIssues', 'legalRequirements', 'regulatoryRequirements',
+        foreach (['externalIssues', 'internalIssues', 'interestedPartiesRequirements', 'legalRequirements', 'regulatoryRequirements',
             'contractualObligations', 'ismsPolicy', 'rolesAndResponsibilities'] as $legacy) {
             LegacyFreeTextField::hideWhenEmpty($builder, $legacy);
         }

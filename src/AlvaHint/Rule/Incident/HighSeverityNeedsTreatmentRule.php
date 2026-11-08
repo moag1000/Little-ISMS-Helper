@@ -46,7 +46,7 @@ final class HighSeverityNeedsTreatmentRule extends AbstractAlvaHintRule
         if (!in_array($entity->getStatus(), [IncidentStatus::InResolution, IncidentStatus::Resolved, IncidentStatus::Closed], true)) {
             return false;
         }
-        if ($entity->getRealizedRisks()->count() > 0) {
+        if (!$entity->getRiskLinks()->isEmpty()) {
             return false;
         }
 

@@ -56,7 +56,7 @@
                     },
                     'approval': {
                         'label': 'change_request.section.approval'|trans({}, 'change_requests'),
-                        'fields': ['approvedBy', 'approvedDate', 'approvalComments']
+                        'fields': ['approverPerson', 'approvedBy', 'approvedDate', 'approvalComments']
                     },
                     'verification_closure': {
                         'label': 'change_request.section.verification_closure'|trans({}, 'change_requests'),
@@ -85,6 +85,7 @@
                     'actualImplementationDate': 6,
                     'implementedBy': 12,
                     'implementationNotes': 12,
+                    'approverPerson': 6,
                     'approvedBy': 6,
                     'approvedDate': 6,
                     'approvalComments': 12,

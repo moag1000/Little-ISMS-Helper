@@ -111,6 +111,15 @@
             <div class="detail-section">
                 <h3>{{ 'interested_party.section.requirements'|trans({}, 'interested_parties') }}</h3>
                 <p>{{ interested_party.requirements }}</p>
+                {% if interested_party.legalRequirements %}
+                <div class="fw-bold mt-3">{{ 'interested_party.field.legal_requirements'|trans({}, 'interested_parties') }}</div>
+                <ul class="mb-0">
+                    {% for item in interested_party.legalRequirements %}
+                        {% set label = item is iterable ? (item.title ?? item.name ?? item.requirement ?? item.description ?? '') : item %}
+                        <li>{{ label }}{% if item is iterable and item.reference ?? false %} <span class="text-muted">({{ item.reference }})</span>{% endif %}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
                 {% if interested_party.howAddressed %}
                 <div class="fw-bold mt-3">{{ 'interested_party.field.how_addressed'|trans({}, 'interested_parties') }}</div>
                 <p>{{ interested_party.howAddressed }}</p>

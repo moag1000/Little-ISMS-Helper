@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Import;
 
+use App\Entity\DoraSubcontractor;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Exception\Import\ImportFailedException;
@@ -92,6 +93,7 @@ final class DoraRegisterOfInformationImporter
                     if ($isNew) {
                         $this->entityManager->persist($supplier);
                     }
+                    $this->addSubcontractors($supplier, $tenant, $this->splitPipe((string) ($data['subcontractor_chain'] ?? '')));
                 }
 
                 $isNew ? $result['created']++ : $result['updated']++;
@@ -157,7 +159,6 @@ final class DoraRegisterOfInformationImporter
             'substitutability'                      => fn($v) => $supplier->setSubstitutability($v !== '' ? $v : null),
             'data_processing_locations'             => fn($v) => $supplier->setProcessingLocations($this->splitPipe($v)),
             'has_subcontractors'                    => fn($v) => $supplier->setHasSubcontractors($this->parseYn($v)),
-            'subcontractor_chain'                   => fn($v) => $supplier->setSubcontractorChain($this->splitPipe($v)),
             'has_exit_strategy'                     => fn($v) => $supplier->setHasExitStrategy($this->parseYn($v)),
             'last_dora_audit_date'                  => fn($v) => $supplier->setLastDoraAuditDate($this->parseDate($v)),
             'gdpr_processor_status'                 => fn($v) => $supplier->setGdprProcessorStatus($v !== '' ? $v : null),
@@ -174,6 +175,33 @@ final class DoraRegisterOfInformationImporter
     }
 
     /** @return list<list<string>> */
+    /**
+     * The chain column names subcontractors; each new name becomes a DoraSubcontractor
+     * row of the supplier (P5: one list). Existing names are kept as they are.
+     *
+     * @param list<string> $names
+     */
+    private function addSubcontractors(Supplier $supplier, Tenant $tenant, array $names): void
+    {
+        $known = [];
+        foreach ($supplier->getSubcontractors() as $existing) {
+            $known[mb_strtolower(trim((string) $existing->getName()))] = true;
+        }
+        foreach ($names as $name) {
+            $key = mb_strtolower(trim($name));
+            if ($key === '' || isset($known[$key])) {
+                continue;
+            }
+            $sub = (new DoraSubcontractor())
+                ->setTenant($tenant)
+                ->setParentSupplier($supplier)
+                ->setName(mb_substr(trim($name), 0, 255));
+            $supplier->getSubcontractors()->add($sub);
+            $this->entityManager->persist($sub);
+            $known[$key] = true;
+        }
+    }
+
     private function parseCsv(string $csv): array
     {
         $handle = fopen('php://temp', 'w+');

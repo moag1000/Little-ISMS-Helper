@@ -134,8 +134,8 @@ class RiskTest extends TestCase
         $incident1 = new Incident();
         $incident2 = new Incident();
 
-        $risk->addIncident($incident1);
-        $risk->addIncident($incident2);
+        $incident1->addRealizedRisk($risk);
+        $incident2->addRealizedRisk($risk);
 
         $this->assertEquals(2, $risk->getIncidentCount());
     }
@@ -149,9 +149,9 @@ class RiskTest extends TestCase
         $incident2 = new Incident();
         $incident3 = new Incident();
 
-        $risk->addIncident($incident1);
-        $risk->addIncident($incident2);
-        $risk->addIncident($incident3);
+        $incident1->addRealizedRisk($risk);
+        $incident2->addRealizedRisk($risk);
+        $incident3->addRealizedRisk($risk);
 
         $this->assertEquals(3, $risk->getRealizationCount());
     }
@@ -179,8 +179,8 @@ class RiskTest extends TestCase
         $incident2 = new Incident();
         $incident2->setSeverity(\App\Enum\IncidentSeverity::High);
 
-        $risk->addIncident($incident1);
-        $risk->addIncident($incident2);
+        $incident1->addRealizedRisk($risk);
+        $incident2->addRealizedRisk($risk);
 
         // High risk assessment was accurate (incidents did occur)
         $this->assertTrue($risk->isAssessmentAccurate());
@@ -209,7 +209,7 @@ class RiskTest extends TestCase
         $incident = new Incident();
         $incident->setSeverity(\App\Enum\IncidentSeverity::Critical);
 
-        $risk->addIncident($incident);
+        $incident->addRealizedRisk($risk);
 
         // Low risk assessment was NOT accurate (critical incident occurred)
         $this->assertFalse($risk->isAssessmentAccurate());
@@ -225,7 +225,7 @@ class RiskTest extends TestCase
         $incident = new Incident();
         $incident->setSeverity(\App\Enum\IncidentSeverity::Low);
 
-        $risk->addIncident($incident);
+        $incident->addRealizedRisk($risk);
 
         // High risk but only low-severity incident = overassessed
         $this->assertFalse($risk->isAssessmentAccurate());
@@ -256,11 +256,11 @@ class RiskTest extends TestCase
 
         $this->assertEquals(0, $risk->getIncidents()->count());
 
-        $risk->addIncident($incident);
+        $incident->addRealizedRisk($risk);
         $this->assertEquals(1, $risk->getIncidents()->count());
         $this->assertTrue($risk->getIncidents()->contains($incident));
 
-        $risk->removeIncident($incident);
+        $incident->removeRealizedRisk($risk);
         $this->assertEquals(0, $risk->getIncidents()->count());
         $this->assertFalse($risk->getIncidents()->contains($incident));
     }

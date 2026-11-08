@@ -13,8 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
  * RiskIncidentLink
  *
  * Structured cross-link between a Risk register entry and an Incident report.
- * Replaces the implicit ManyToMany realizedRisks relation with an explicit
- * join-entity that carries linkType, notes, timestamp and the linking user.
+ * The one list of risks of an incident (P5): the former ManyToMany
+ * realizedRisks (incident_risk) was migrated into links of type materialized.
+ * Carries linkType, notes, timestamp and the linking user.
  *
  * linkType values (enum-string):
  *   materialized      — the risk actually materialised (loss event confirmed)
@@ -31,6 +32,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_tenant_link_type', columns: ['tenant_id', 'link_type'])]
 class RiskIncidentLink
 {
+    public const string TYPE_MATERIALIZED = 'materialized';
+    public const string TYPE_MITIGATION_FAILED = 'mitigation_failed';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -40,11 +44,11 @@ class RiskIncidentLink
     #[ORM\JoinColumn(name: 'tenant_id', nullable: false)]
     private ?Tenant $tenant = null;
 
-    #[ORM\ManyToOne(targetEntity: Risk::class)]
+    #[ORM\ManyToOne(targetEntity: Risk::class, inversedBy: 'incidentLinks')]
     #[ORM\JoinColumn(name: 'risk_id', nullable: false, onDelete: 'CASCADE')]
     private ?Risk $risk = null;
 
-    #[ORM\ManyToOne(targetEntity: Incident::class)]
+    #[ORM\ManyToOne(targetEntity: Incident::class, inversedBy: 'riskLinks')]
     #[ORM\JoinColumn(name: 'incident_id', nullable: false, onDelete: 'CASCADE')]
     private ?Incident $incident = null;
 
@@ -163,5 +167,13 @@ class RiskIncidentLink
             'mitigation_failed'=> 'Mitigation Failed',
             default            => 'Related',
         };
+    }
+
+    /**
+     * The risk occurred in the incident (not only suspected or thematically related).
+     */
+    public function isRealized(): bool
+    {
+        return in_array($this->linkType, [self::TYPE_MATERIALIZED, self::TYPE_MITIGATION_FAILED], true);
     }
 }

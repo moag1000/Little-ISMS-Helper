@@ -149,13 +149,10 @@ supplier:
         substitutability: 'Substitutability'
         has_exit_strategy: 'Exit strategy documented'
         has_subcontractors: 'Uses subcontractors'
-        subcontractor_chain: 'Subcontractor chain'
         processing_locations: 'Processing locations (ISO-3166)'
         last_dora_audit_date: 'Last DORA audit'
         # GDPR — Art. 28 Processor
         gdpr_processor_status: 'Data protection role (GDPR Art. 28)'
-        gdpr_av_contract_signed: 'DPA signed (GDPR Art. 28)'
-        gdpr_av_contract_date: 'DPA signed on'
         gdpr_transfer_mechanism: 'Third-country transfer mechanism'
         lksg_reporting_obligation: 'LkSG due-diligence obligation'
         lksg_risk_category: 'LkSG risk category'
@@ -225,14 +222,11 @@ supplier:
         ict_function_type: 'Type of ICT service (e.g. Cloud, SaaS, Managed Service, Data Center).'
         substitutability: 'How easily can this supplier be replaced? Relevant for DORA Exit Strategy.'
         has_subcontractors: 'Does the supplier use subcontractors (supply-chain risk per DORA Art. 28.6)?'
-        subcontractor_chain: 'List of all subcontractors in the supply chain, one per line.'
         processing_locations: 'Countries/regions where data is processed (GDPR Art. 44 ff. third-country transfer).'
         last_dora_audit_date: 'Date of the last DORA compliance review of this supplier.'
         has_exit_strategy: 'Is a documented exit strategy available (DORA Art. 28.8 requirement for critical services)?'
         gdpr_processor_status: 'Supplier role per GDPR Art. 4 (Processor, Controller, Joint Controller).'
         gdpr_transfer_mechanism: 'Legal mechanism for third-country data transfer (SCC, Adequacy Decision, BCR).'
-        gdpr_av_contract_signed: 'Is a Data Processing Agreement signed per GDPR Art. 28.3?'
-        gdpr_av_contract_date: 'Date the Data Processing Agreement was signed.'
         lksg_reporting_obligation: 'Supplier falls under the LkSG due-diligence scope (tenant ≥ 1000 employees; expansion to ≥ 250 expected).'
         lksg_risk_category: 'Aggregated LkSG risk category (low/medium/high/critical) — outcome of the risk analysis.'
         lksg_human_rights_risk_score: 'Human-rights related risk score 0–100 (higher = more risk).'
@@ -264,7 +258,6 @@ supplier:
         nace_code: 'e.g. 62.01'
         country_of_head_office: 'DE'
         ict_function_type: 'e.g. Cloud / SaaS / Managed Service'
-        subcontractor_chain: "Provider A\nProvider B\nProvider C"
         processing_locations: 'DE, IE, US'
         contact_person_user: 'Select a user…'
         contact_person_ref: 'Select a person…'
@@ -293,13 +286,6 @@ supplier:
         placeholder:
             name: 'e.g. Acme Hosting GmbH'
             service: 'e.g. Cloud Hosting, Backup service'
-    subcontractor_chain:
-        aria: 'Subcontractor chain — structured editor (DORA Art. 28, max 4 tiers)'
-        help: 'Capture the sub-outsourcing chain per DORA Art. 28. Maximum nesting depth: 4 tiers. Flag critical subcontractors for concentration reporting.'
-        remove: 'Remove subcontractor'
-        raw_toggle: 'Edit as JSON'
-        raw_label: 'Raw JSON (power-user)'
-        raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
     status:
         active: Active
         inactive: Inactive
@@ -378,8 +364,6 @@ supplier:
         field:
             gdpr_processor_status: 'GDPR Art. 28 role'
             gdpr_transfer_mechanism: 'Transfer mechanism (third-country)'
-            gdpr_av_contract_signed: 'Data processing agreement signed'
-            gdpr_av_contract_date: 'DPA signed on'
         processor_status:
             controller: Controller
             processor: Processor

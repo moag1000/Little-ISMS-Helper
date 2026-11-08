@@ -331,6 +331,14 @@ keys are listed in `App\Service\Owner\LegacyOwnerColumns::FIELDS`. Remaining fre
 person slot (context, management review) use `App\Form\Util\LegacyFreeTextField::hideWhenEmpty()`. Mapping screens include
 `compliance/mapping/_hub_tabs.html.twig` (one menu entry, four tabs).
 
+**One list, not two (P5).** A risk's controls live only on the risk (`Control.risks`); a treatment plan's
+`getControls()`/`addControl()` read and write that list. Risks of an incident are only `RiskIncidentLink`
+rows (`Incident::getRiskLinks()`, `getLinkedRisks()`; `getRealizedRisks()` = types materialized /
+mitigation_failed). A supplier's subcontractors are only `DoraSubcontractor` rows
+(`Supplier::getSubcontractorChain()` derives the array view); the AVV is only `hasDPA`/`dpaSignedDate`. A value the tool derives (plan progress, asset availability from the BIA) is made
+read-only with `App\Form\Util\DerivedField::readOnlyWhen()`; changes come as a suggestion. Guide:
+`docs/user-guide/EINE_LISTE.md`.
+
 **Display conventions (UI wave G).** Dates in text output go through `|fa_date` / `|fa_datetime`
 (admin format + timezone, null → "-"; Gate 77) — `|date('Y-m-d')` only in attributes/URLs.
 Statuses without a lifecycle (workflow instances, consents, import rows, compliance results) take

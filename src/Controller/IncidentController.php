@@ -255,7 +255,7 @@ class IncidentController extends AbstractController
                 };
                 $incident->setSeverity($severity);
                 $incident->setStatus(IncidentStatus::Reported); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'reported' is the incident_lifecycle initial_marking)
-                // Link back to the originating risk via realizedRisks
+                // Link back to the originating risk (RiskIncidentLink, materialized)
                 $incident->addRealizedRisk($sourceRisk);
             }
         }
@@ -708,7 +708,7 @@ class IncidentController extends AbstractController
      * the Risk-Edit screen so they can update probability / impact /
      * controls based on the realised incident.
      *
-     * Risk must be among the incident's realizedRisks (security guard);
+     * Risk must be linked to the incident (security guard);
      * otherwise the request is treated as tampered.
      */
     #[Route('/incident/{id}/risk/{riskId}/reassess', name: 'app_incident_risk_reassess', requirements: ['id' => '\d+', 'riskId' => '\d+'], methods: ['POST'])]
@@ -727,7 +727,7 @@ class IncidentController extends AbstractController
         }
 
         // Guard: risk must be linked to this incident.
-        if (!$incident->getRealizedRisks()->contains($risk)) {
+        if (!$incident->getLinkedRisks()->contains($risk)) {
             $this->addFlash('error', $this->translator->trans('incident.fv5.not_linked', [], 'incident'));
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }

@@ -947,7 +947,7 @@ HELP
                     'autoProgressConditions' => [
                         'type' => 'field_completion',
                         'entity' => 'Supplier',
-                        'fields' => ['gdprAvContractSigned'],
+                        'fields' => ['hasDPA'],
                         'condition' => 'gdprProcessorStatus != none',
                     ],
                 ],

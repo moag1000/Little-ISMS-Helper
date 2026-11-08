@@ -28,6 +28,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use App\Form\Util\DerivedField;
+use App\Service\ProtectionRequirementService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -41,6 +43,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
+        private readonly ProtectionRequirementService $protectionRequirements,
     ) {
     }
 
@@ -52,6 +55,20 @@ final class AssetType extends AbstractType implements SectionMapInterface
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // P5: availability follows the BIA of the supported business process (BSI 200-2,
+        // RTO → availability); raising it comes as a suggestion, so the field is read-only.
+        DerivedField::readOnlyWhen($builder, 'availabilityValue', function (Asset $asset): ?array {
+            if ($asset->getId() === null) {
+                return null;
+            }
+            $bia = $this->protectionRequirements->calculateAvailabilityRequirement($asset);
+            $process = $bia['process'] ?? null;
+            if (($bia['source'] ?? null) !== 'bcm' || $process === null
+                || (int) $asset->getAvailabilityValue() > (int) $bia['value']) {
+                return null;
+            }
+            return ['asset.help.availability_from_bia', ['%process%' => (string) $process->getName(), '%rto%' => (int) $process->getRto()]];
+        });
         $builder
             ->add('name', TextType::class, [
                 'label' => 'asset.field.name',

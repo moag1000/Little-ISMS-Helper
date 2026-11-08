@@ -17,6 +17,7 @@ use App\Enum\TreatmentStrategy;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
 use App\Form\Type\OwnerUserType;
+use App\Form\Util\LegacyFreeTextField;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -317,6 +318,10 @@ final class RiskType extends AbstractType implements SectionMapInterface
         // niche capability (NIS2 Art. 21.2(e) + DORA Art. 22 use-case).
         if ($this->isModuleActive('vulnerability_intel')) {
             $this->addVulnerabilityIntelFields($builder);
+            // P5: with the threat catalogue and the vulnerability register at hand, the
+            // free texts stay only while filled — one list, not two.
+            LegacyFreeTextField::hideWhenEmpty($builder, 'threat');
+            LegacyFreeTextField::hideWhenEmpty($builder, 'vulnerability');
         }
 
         // ── Quantitative Risk (SLE/ARO/ALE) — only when 'risk_quant' module active.

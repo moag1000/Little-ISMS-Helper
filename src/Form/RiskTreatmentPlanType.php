@@ -11,6 +11,7 @@ use App\Entity\RiskTreatmentPlan;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
+use App\Form\Util\DerivedField;
 use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -172,6 +173,8 @@ final class RiskTreatmentPlanType extends AbstractType implements SectionMapInte
                 'choice_label' => fn(Control $control): string => $control->getControlId() . ': ' . $control->getName(),
                 'multiple' => true,
                 'required' => false,
+                // One list with the risk (P5): writes go through addControl()/removeControl().
+                'by_reference' => false,
                 'attr' => [
                     'size' => 8
                 ],
@@ -200,6 +203,12 @@ final class RiskTreatmentPlanType extends AbstractType implements SectionMapInte
                 'help' => 'risk_treatment_plan.help.implementation_notes'
             ])
         ;
+        // P5: with controls the progress is their implementation share (suggestion
+        // "Fortschritt aus Maßnahmen"), so the field is read-only.
+        DerivedField::readOnlyWhen($builder, 'completionPercentage', static fn (RiskTreatmentPlan $plan): ?array =>
+            $plan->getControls()->count() > 0
+                ? ['risk_treatment_plan.help.completion_derived', ['%count%' => $plan->getControls()->count()]]
+                : null);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

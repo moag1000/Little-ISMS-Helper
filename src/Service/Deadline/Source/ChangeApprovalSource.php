@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Change requests waiting for approval (ISO 27001 A.8.32): a decision for the
- * security officers, due by the planned implementation date.
+ * named approver (else the security officers), due by the planned implementation date.
  *
  * One change request belongs to one source at a time: this one while it waits
  * for approval, {@see \App\Service\Planning\Source\Adapter\ChangeRequestAdapter}
@@ -87,7 +87,10 @@ final class ChangeApprovalSource extends EntityDeadlineSource
 
     public function responsibleOf(object $item): Responsibility
     {
-        return Responsibility::roles('ROLE_ISB', 'ROLE_CISO');
+        assert($item instanceof ChangeRequest);
+
+        // The named approver first (P5), the security roles when none is set.
+        return Responsibility::holders($item->getApproverPerson())->orRoles('ROLE_ISB', 'ROLE_CISO');
     }
 
     public function linkOf(object $item): RecordLink

@@ -78,6 +78,7 @@ asset:
     is_dora_relevant: 'DORA-relevant (Art. 28 IKT-Asset)'
     tisax_information_classification: 'TISAX-Informationsklassifizierung'
   help:
+    availability_from_bia: 'Aus der BIA abgeleitet: Prozess %process% mit RTO %rto% h. Änderungen kommen als Vorschlag.'
     in_isms_scope: 'ISO 27001 Kap. 4.3: Geltungsbereich des ISMS.'
     name: Eindeutiger Name des Assets
     type: Kategorie des Assets (Hardware, Software, Daten, etc.)

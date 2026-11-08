@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
  * JSON-array column may be hydrated by *either* a JSON document *or* a
  * newline-delimited list of strings. The actual decode logic typically lives in
  * a FormType-local POST_SUBMIT listener (see e.g. SupplierType for
- * subcontractorChain + processingLocations), so the field stays `mapped=false`
+ * processingLocations), so the field stays `mapped=false`
  * here.
  *
  * Purpose:

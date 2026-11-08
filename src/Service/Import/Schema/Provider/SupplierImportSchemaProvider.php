@@ -187,18 +187,6 @@ final class SupplierImportSchemaProvider implements ImportSchemaProviderInterfac
                     type: ImportFieldSpec::TYPE_STRING,
                     module: 'privacy',
                 ),
-                new ImportFieldSpec(
-                    name: 'gdprAvContractSigned',
-                    setter: 'setGdprAvContractSigned',
-                    type: ImportFieldSpec::TYPE_BOOL,
-                    module: 'privacy',
-                ),
-                new ImportFieldSpec(
-                    name: 'gdprAvContractDate',
-                    setter: 'setGdprAvContractDate',
-                    type: ImportFieldSpec::TYPE_DATE,
-                    module: 'privacy',
-                ),
 
                 // ── DORA Register-of-Information — nis2_dora module ──────────────
                 new ImportFieldSpec(
@@ -262,12 +250,6 @@ final class SupplierImportSchemaProvider implements ImportSchemaProviderInterfac
                     name: 'hasSubcontractors',
                     setter: 'setHasSubcontractors',
                     type: ImportFieldSpec::TYPE_BOOL,
-                    module: 'nis2_dora',
-                ),
-                new ImportFieldSpec(
-                    name: 'subcontractorChain',
-                    setter: 'setSubcontractorChain',
-                    type: ImportFieldSpec::TYPE_LIST,
                     module: 'nis2_dora',
                 ),
                 new ImportFieldSpec(

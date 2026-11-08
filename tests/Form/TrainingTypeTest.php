@@ -123,11 +123,14 @@ final class TrainingTypeTest extends KernelTestCase
     }
 
     #[Test]
-    public function legacyParticipantsTextareaStillPresent(): void
+    public function legacyParticipantsTextareaOnlyShownWhenFilled(): void
     {
-        $form = $this->formFactory->create(TrainingType::class, new Training());
+        $empty = $this->formFactory->create(TrainingType::class, new Training());
+        self::assertFalse($empty->has('participants'), 'P5: new trainings record attendees, not the free text');
 
-        self::assertTrue($form->has('participants'), 'Legacy participants textarea must remain (migration display)');
+        $legacy = (new Training())->setParticipants("Anna\nBen");
+        $form = $this->formFactory->create(TrainingType::class, $legacy);
+        self::assertTrue($form->has('participants'), 'Old free text stays visible until it is cleared');
     }
 
     #[Test]

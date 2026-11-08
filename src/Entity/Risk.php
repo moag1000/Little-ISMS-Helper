@@ -411,18 +411,14 @@ class Risk
     #[MaxDepth(1)]
     private Collection $controls;
 
-    /**
-     * @var Collection<int, Incident>
-     */
-    #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'realizedRisks')]
-    #[Groups(['risk:read'])]
-    #[MaxDepth(1)]
-    private Collection $incidents;
+    /** @var Collection<int, RiskIncidentLink> one list with the incident side (P5) */
+    #[ORM\OneToMany(targetEntity: RiskIncidentLink::class, mappedBy: 'risk')]
+    private Collection $incidentLinks;
 
     public function __construct()
     {
         $this->controls = new ArrayCollection();
-        $this->incidents = new ArrayCollection();
+        $this->incidentLinks = new ArrayCollection();
         $this->riskOwnerDeputyPersons = new ArrayCollection();
         $this->ictAssetDependency = new ArrayCollection();
         $this->ictIncidentHistory = new ArrayCollection();
@@ -825,29 +821,29 @@ class Risk
         return round((($inherent - $residual) / $inherent) * 100, 2);
     }
 
+    /** @return Collection<int, RiskIncidentLink> */
+    public function getIncidentLinks(): Collection
+    {
+        return $this->incidentLinks;
+    }
+
     /**
+     * Incidents in which this risk occurred (link type materialized or mitigation_failed).
+     *
      * @return Collection<int, Incident>
      */
+    #[Groups(['risk:read'])]
+    #[MaxDepth(1)]
     public function getIncidents(): Collection
     {
-        return $this->incidents;
-    }
-
-    public function addIncident(Incident $incident): static
-    {
-        if (!$this->incidents->contains($incident)) {
-            $this->incidents->add($incident);
-            $incident->addRealizedRisk($this);
+        $incidents = [];
+        foreach ($this->incidentLinks as $link) {
+            $incident = $link->getIncident();
+            if ($incident !== null && $link->isRealized()) {
+                $incidents[spl_object_id($incident)] = $incident;
+            }
         }
-        return $this;
-    }
-
-    public function removeIncident(Incident $incident): static
-    {
-        if ($this->incidents->removeElement($incident)) {
-            $incident->removeRealizedRisk($this);
-        }
-        return $this;
+        return new ArrayCollection(array_values($incidents));
     }
 
     /**
@@ -857,7 +853,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function hasBeenRealized(): bool
     {
-        return !$this->incidents->isEmpty();
+        return !$this->getIncidents()->isEmpty();
     }
 
     /**
@@ -867,7 +863,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function getRealizationCount(): int
     {
-        return $this->incidents->count();
+        return $this->getIncidents()->count();
     }
 
     /**
@@ -877,7 +873,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function isAssessmentAccurate(): ?bool
     {
-        if ($this->incidents->isEmpty()) {
+        if ($this->getIncidents()->isEmpty()) {
             return null; // Cannot validate without incidents
         }
 
@@ -885,7 +881,7 @@ class Risk
 
         // Compare with average incident severity
         $criticalIncidents = 0;
-        foreach ($this->incidents as $incident) {
+        foreach ($this->getIncidents() as $incident) {
             if (in_array($incident->getSeverity(), [IncidentSeverity::Critical, IncidentSeverity::High])) {
                 $criticalIncidents++;
             }
@@ -914,12 +910,12 @@ class Risk
     #[Groups(['risk:read'])]
     public function getMostRecentIncident(): ?Incident
     {
-        if ($this->incidents->isEmpty()) {
+        if ($this->getIncidents()->isEmpty()) {
             return null;
         }
 
         $latest = null;
-        foreach ($this->incidents as $incident) {
+        foreach ($this->getIncidents() as $incident) {
             if ($latest === null || $incident->getDetectedAt() > $latest->getDetectedAt()) {
                 $latest = $incident;
             }
@@ -1404,7 +1400,7 @@ class Risk
 
     /**
      * ICT incident history M2M (DORA Art. 17-19).
-     * NOTE: Risk already has $incidents (ManyToMany, mappedBy). This separate collection
+     * NOTE: Risk already has incidentLinks (RiskIncidentLink). This separate collection
      * tracks ICT-specific incident references for DORA reporting.
      *
      * @var Collection<int, Incident>

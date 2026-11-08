@@ -21,6 +21,7 @@ use App\Entity\Location;
 use App\Entity\Patch;
 use App\Entity\ProcessingActivity;
 use App\Entity\Risk;
+use App\Entity\RiskIncidentLink;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Supplier;
 use App\Entity\ThreatIntelligence;
@@ -142,7 +143,10 @@ class EntityLinks
                 'asset' => [self::unique([$entity->getAsset(), ...$entity->getIctAssetDependency()]), null],
                 'control' => [self::unique([...$entity->getControls()]), null],
                 'evidence' => [self::evidenceOf([...$entity->getControls()]), 'control'],
-                'incident' => [self::unique([...$entity->getIncidents()]), null],
+                'incident' => [self::unique(array_map(
+                    static fn (RiskIncidentLink $l): ?Incident => $l->getIncident(),
+                    [...$entity->getIncidentLinks()],
+                )), null],
                 'vulnerability' => [self::unique([$entity->getLinkedVulnerability()]), null],
             ],
             $entity instanceof Control => [
@@ -159,7 +163,7 @@ class EntityLinks
             ],
             $entity instanceof Incident => [
                 'asset' => [self::unique([...$entity->getAffectedAssets()]), null],
-                'risk' => [self::unique([...$entity->getRealizedRisks()]), null],
+                'risk' => [self::unique([...$entity->getLinkedRisks()]), null],
                 'control' => [self::unique([...$entity->getRelatedControls(), ...$entity->getFailedControls()]), null],
                 'vulnerability' => [self::unique([...$entity->getRelatedVulnerabilities()]), null],
             ],

@@ -46,6 +46,7 @@ interested_party:
         feedback: 'Feedback & Zufriedenheit'
         meta: Metadaten
     field:
+        legal_requirements: 'Rechtliche, regulatorische und vertragliche Anforderungen'
         name: Name
         party_type: Partei‑Typ
         importance: Bedeutung
@@ -73,6 +74,7 @@ interested_party:
         title: 'Keine interessierten Parteien vorhanden.'
         body: 'Erfassen Sie Kunden, Aufsichtsbehörden, Lieferanten und andere Stakeholder, deren Anforderungen Sie im ISMS berücksichtigen müssen. Pro Partei dokumentieren Sie Anforderungen, Kommunikationsfrequenz und Engagement-Score.'
     help:
+        legal_requirements: 'Je Zeile eine Pflicht (ISO 27001 4.2 c). Jede Zeile wird ein Vorschlag für das Register Rechtliche Anforderungen.'
         empty_link: '/de/help/glossary#glossary-interested-parties'
         last_communication: 'Wann zuletzt aktiv mit dieser Partei kommuniziert wurde (Meeting, Anruf, E-Mail). Leer = noch nie dokumentiert.'
         next_communication: 'Geplanter nächster Kontakt. Leer = keine Folgekommunikation eingeplant — Risiko für Stakeholder-Drift.'
@@ -120,6 +122,12 @@ interested_party:
         contact_person_user: 'Benutzer auswählen …'
         contact_person_ref: 'Person auswählen …'
         contact_person: 'Name der Kontaktperson'
+    json_builder:
+        legal_requirements:
+            add: 'Anforderung hinzufügen'
+            title: 'Anforderung'
+            reference: 'Fundstelle'
+            reference_placeholder: 'z. B. DSGVO Art. 28, Vertrag § 7'
 iso_9001_bridge:
     party: 'Identisch mit ISO 9001 Klausel 4.2 "Verstehen der Erfordernisse und Erwartungen interessierter Parteien". Die 9001-Begriffe Interessierte Partei und Stakeholder werden synonym verwendet.'
     expectation: 'In ISO 9001 sind das die "Erfordernisse und Erwartungen relevanter interessierter Parteien" (Klausel 4.2.b).'

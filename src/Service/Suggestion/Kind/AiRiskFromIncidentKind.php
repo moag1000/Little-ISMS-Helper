@@ -74,7 +74,7 @@ final class AiRiskFromIncidentKind extends AbstractAiKind
     protected function isCandidate(object $record): bool
     {
         return $record instanceof Incident
-            && $record->getRealizedRisks()->count() === 0
+            && $record->getRiskLinks()->isEmpty()
             && mb_strlen((string) $record->getDescription()) >= 40;
     }
 

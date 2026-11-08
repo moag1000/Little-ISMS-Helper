@@ -46,6 +46,7 @@ interested_party:
         feedback: 'Feedback & Satisfaction'
         meta: Metadata
     field:
+        legal_requirements: 'Legal, regulatory and contractual requirements'
         name: Name
         party_type: 'Party type'
         importance: Importance
@@ -73,6 +74,7 @@ interested_party:
         title: 'No interested parties yet.'
         body: 'Capture customers, regulators, suppliers, and other stakeholders whose requirements you must account for in your ISMS. Each party documents requirements, communication frequency, and an engagement score.'
     help:
+        legal_requirements: 'One obligation per row (ISO 27001 4.2 c). Each row becomes a proposal for the legal requirements register.'
         empty_link: '/en/help/glossary#glossary-interested-parties'
         last_communication: 'When you last actively communicated with this party (meeting, call, email). Empty = never documented.'
         next_communication: 'Planned next contact. Empty = no follow-up scheduled — risk of stakeholder drift.'
@@ -120,6 +122,12 @@ interested_party:
         contact_person_user: 'Select a user …'
         contact_person_ref: 'Select a person …'
         contact_person: 'Contact person name'
+    json_builder:
+        legal_requirements:
+            add: 'Add requirement'
+            title: 'Requirement'
+            reference: 'Reference'
+            reference_placeholder: 'e.g. GDPR Art. 28, contract § 7'
 iso_9001_bridge:
     party: 'Identical to ISO 9001 Clause 4.2 "Understanding the needs and expectations of interested parties". The 9001 terms "interested party" and "stakeholder" are used synonymously.'
     expectation: 'In ISO 9001 these are the "needs and expectations of relevant interested parties" (Clause 4.2.b).'

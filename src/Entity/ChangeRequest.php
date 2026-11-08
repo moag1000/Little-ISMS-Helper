@@ -17,6 +17,7 @@ use App\Enum\ChangeRequestStatus;
 use App\Attribute\RequiresModule;
 use App\Repository\ChangeRequestRepository;
 use App\State\TenantAwareStateProcessor;
+use App\Validator\Constraint\SameTenantOwner;
 use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -241,11 +242,22 @@ class ChangeRequest
     private ?DateTimeInterface $actualImplementationDate = null;
 
     /**
-     * Approver
+     * Legacy free-text approver (P5): read-only once the approver is a Person;
+     * the form shows it only while it still holds a value.
      */
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['change_request:read'])]
     private ?string $approvedBy = null;
+
+    /**
+     * The person who approves the change (ISO 27001 A.8.32) — holder of the
+     * approval duty (ChangeApprovalSource) before the security roles.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'approver_person_id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['change_request:read'])]
+    #[SameTenantOwner]
+    private ?Person $approverPerson = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['change_request:read'])]
@@ -663,6 +675,23 @@ class ChangeRequest
     {
         $this->approvedBy = $approvedBy;
         return $this;
+    }
+
+    public function getApproverPerson(): ?Person
+    {
+        return $this->approverPerson;
+    }
+
+    public function setApproverPerson(?Person $approverPerson): static
+    {
+        $this->approverPerson = $approverPerson;
+        return $this;
+    }
+
+    /** Approver name for display: the person, else the legacy free text. */
+    public function getEffectiveApprovedBy(): ?string
+    {
+        return $this->approverPerson?->getFullName() ?? $this->approvedBy;
     }
 
     public function getApprovedDate(): ?DateTimeInterface

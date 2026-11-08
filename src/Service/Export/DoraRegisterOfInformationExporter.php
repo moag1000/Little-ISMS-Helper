@@ -108,7 +108,7 @@ final class DoraRegisterOfInformationExporter
      */
     private function buildRow(Supplier $supplier, string $entityLei): array
     {
-        $chain = $supplier->getSubcontractorChain() ?? [];
+        $chain = $supplier->getSubcontractorChain();
         $locations = $supplier->getProcessingLocations() ?? [];
         $exitDoc = $supplier->getExitStrategyDocument();
 
@@ -124,7 +124,7 @@ final class DoraRegisterOfInformationExporter
             $this->joinPipe($locations),
             $this->boolYn($supplier->hasSubcontractors()),
             (string) count($chain),
-            $this->joinPipe($chain),
+            $this->joinPipe(array_column($chain, 'name')),
             $this->boolYn($supplier->hasExitStrategy()),
             $exitDoc !== null ? (string) $exitDoc->getId() : '',
             $this->formatDate($supplier->getLastDoraAuditDate()),

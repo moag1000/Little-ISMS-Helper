@@ -1,7 +1,6 @@
 {#
- # Read-only tree visualisation of Supplier.subcontractorChain.
- # Entries may be strings (legacy) or structured dicts:
- #   { tier, name, lei, country, service, criticality }
+ # Read-only tree of Supplier.subcontractorChain — derived from the
+ # DoraSubcontractor rows (P5): { id, tier, name, lei, country, service, criticality }
  # Grouped by tier for the tree effect.
  #
  # Expected caller variable: chain (array|null)
@@ -35,7 +34,11 @@
                         {% set crit = entry.criticality|default('') %}
                         <li class="py-1 border-start border-2 ps-2 mb-1">
                             <div>
-                                <strong>{{ entry.name|default('—') }}</strong>
+                                {% if entry.id|default(null) %}
+                                    <a href="{{ path('app_dora_subcontractor_show', {id: entry.id}) }}"><strong>{{ entry.name|default('—') }}</strong></a>
+                                {% else %}
+                                    <strong>{{ entry.name|default('—') }}</strong>
+                                {% endif %}
                                 {% if entry.country|default('') %}
                                     <span class="border fa-status-pill fa-status-pill--neutral ms-1">{{ entry.country }}</span>
                                 {% endif %}

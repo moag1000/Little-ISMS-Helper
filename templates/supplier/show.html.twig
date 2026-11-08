@@ -565,6 +565,9 @@
                             <dt class="col-sm-4">{{ 'supplier.dora.field.subcontractor_chain'|trans({}, 'suppliers') }}</dt>
                             <dd class="col-sm-8">
                                 {% include 'supplier/_subcontractor_chain_tree.html.twig' with { chain: supplier.subcontractorChain } %}
+                                {% if is_granted('ROLE_MANAGER') %}
+                                    <a href="{{ path('app_dora_subcontractor_new', {supplier: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm mt-2">{{ 'supplier.subcontractor.add'|trans({}, 'suppliers') }}</a>
+                                {% endif %}
                             </dd>
 
                             <dt class="col-sm-4">{{ 'supplier.dora.field.processing_locations'|trans({}, 'suppliers') }}</dt>
@@ -645,24 +648,6 @@
 
                         <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_transfer_mechanism'|trans({}, 'suppliers') }}</dt>
                         <dd class="col-sm-8">{{ supplier.gdprTransferMechanism ?: ('supplier.value.na'|trans({}, 'suppliers')) }}</dd>
-
-                        <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_av_contract_signed'|trans({}, 'suppliers') }}</dt>
-                        <dd class="col-sm-8">
-                            {% if supplier.gdprAvContractSigned %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'supplier.value.signed'|trans({}, 'suppliers') } %}
-                            {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-warning', content: 'supplier.value.not_signed'|trans({}, 'suppliers') } %}
-                            {% endif %}
-                        </dd>
-
-                        <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_av_contract_date'|trans({}, 'suppliers') }}</dt>
-                        <dd class="col-sm-8">
-                            {% if supplier.gdprAvContractDate %}
-                                {{ supplier.gdprAvContractDate|fa_date }}
-                            {% else %}
-                                <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
-                            {% endif %}
-                        </dd>
                     </dl>
                 </div>
                 {% endif %} {# /M-4 privacy tab #}

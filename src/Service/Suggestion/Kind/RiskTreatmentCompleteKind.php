@@ -6,7 +6,6 @@ namespace App\Service\Suggestion\Kind;
 
 use App\Entity\Control;
 use App\Entity\Risk;
-use App\Entity\RiskTreatmentPlan;
 use App\Entity\Suggestion;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -14,7 +13,6 @@ use App\Enum\RiskStatus;
 use App\Enum\SuggestionOrigin;
 use App\Lifecycle\LifecycleService;
 use App\Repository\RiskRepository;
-use App\Repository\RiskTreatmentPlanRepository;
 use App\Service\Suggestion\AbstractSuggestionKind;
 use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
@@ -23,8 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * "In treatment" → "treated" (ISO 27001 8.3) when every control of the
- * risk's treatment plans (or, without a plan, every control linked to the
- * risk) is implemented. Accepting runs the lifecycle transition, so roles,
+ * risk is implemented. Risk and treatment plan share one control list (P5). Accepting runs the lifecycle transition, so roles,
  * audit log and four-eyes rules of risk_lifecycle apply unchanged.
  */
 final class RiskTreatmentCompleteKind extends AbstractSuggestionKind
@@ -33,7 +30,6 @@ final class RiskTreatmentCompleteKind extends AbstractSuggestionKind
 
     public function __construct(
         private readonly RiskRepository $risks,
-        private readonly RiskTreatmentPlanRepository $plans,
         private readonly LifecycleService $lifecycle,
         private readonly EntityManagerInterface $entityManager,
         private readonly SuggestionText $text,
@@ -62,17 +58,11 @@ final class RiskTreatmentCompleteKind extends AbstractSuggestionKind
 
     public function generate(Tenant $tenant): iterable
     {
-        $plansByRisk = [];
-        foreach ($this->plans->findBy(['tenant' => $tenant]) as $plan) {
-            if ($plan->getStatus() !== 'cancelled' && $plan->getRisk() !== null) {
-                $plansByRisk[(int) $plan->getRisk()->getId()][] = $plan;
-            }
-        }
         foreach ($this->risks->findByTenant($tenant) as $risk) {
             if ($risk->getStatus() !== RiskStatus::InTreatment) {
                 continue;
             }
-            $controls = self::controlsOf($risk, $plansByRisk[(int) $risk->getId()] ?? []);
+            $controls = array_values($risk->getControls()->toArray());
             if ($controls === [] || array_filter($controls, static fn (Control $c): bool => !ControlState::isImplemented($c)) !== []) {
                 continue;
             }
@@ -86,27 +76,6 @@ final class RiskTreatmentCompleteKind extends AbstractSuggestionKind
                 dedupKey: 'risk:' . (int) $risk->getId(),
             );
         }
-    }
-
-    /**
-     * @param list<RiskTreatmentPlan> $plans
-     * @return list<Control>
-     */
-    private static function controlsOf(Risk $risk, array $plans): array
-    {
-        $controls = [];
-        foreach ($plans as $plan) {
-            foreach ($plan->getControls() as $control) {
-                $controls[(int) $control->getId()] = $control;
-            }
-        }
-        if ($controls === []) {
-            foreach ($risk->getControls() as $control) {
-                $controls[(int) $control->getId()] = $control;
-            }
-        }
-
-        return array_values($controls);
     }
 
     public function apply(Suggestion $suggestion, User $by, ?string $editedText): object

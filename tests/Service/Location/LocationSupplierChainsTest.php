@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Location;
 
+use App\Entity\DoraSubcontractor;
 use App\Entity\Supplier;
 use App\Service\Location\LocationGeocoder;
 use App\Service\Location\LocationLayers;
@@ -32,12 +33,10 @@ final class LocationSupplierChainsTest extends TestCase
     public function thirdCountryLinkWithoutSafeguardIsTheWorstLink(): void
     {
         $supplier = (new Supplier())->setName('Cloud AG')
-            ->setProcessingLocations(['Deutschland', 'USA'])
-            ->setSubcontractorChain([
-                ['tier' => 2, 'name' => 'Support Ltd', 'country' => 'India', 'service' => 'Helpdesk'],
-                ['tier' => 1, 'name' => 'Hosting GmbH', 'country' => 'Schweiz'],
-                ['tier' => 1, 'name' => ''],
-            ]);
+            ->setProcessingLocations(['Deutschland', 'USA']);
+        self::sub($supplier, 3, 'Support Ltd', 'IN', 'Helpdesk');
+        self::sub($supplier, 2, 'Hosting GmbH', 'CH');
+        self::sub($supplier, 2, '');
 
         $row = $this->chains->chain($supplier);
 
@@ -52,8 +51,8 @@ final class LocationSupplierChainsTest extends TestCase
     public function safeguardLowersTheThirdCountryBand(): void
     {
         $supplier = (new Supplier())->setName('Cloud AG')->setTransferSafeguards('scc')
-            ->setCountryOfHeadOffice('USA')
-            ->setSubcontractorChain([['tier' => 1, 'name' => 'Support Ltd', 'country' => 'India']]);
+            ->setCountryOfHeadOffice('USA');
+        self::sub($supplier, 2, 'Support Ltd', 'IN');
 
         $row = $this->chains->chain($supplier);
 
@@ -83,5 +82,12 @@ final class LocationSupplierChainsTest extends TestCase
         self::assertSame('warn', $out[2]['band']);
         self::assertSame('dpf', $out[3]['zone']);
         self::assertSame('none', $out[4]['band']);
+    }
+
+    /** Subcontractors are DoraSubcontractor rows (P5: one list). */
+    private static function sub(Supplier $supplier, int $tier, string $name, ?string $country = null, ?string $service = null): void
+    {
+        $supplier->getSubcontractors()->add((new DoraSubcontractor())->setParentSupplier($supplier)->setTier($tier)
+            ->setName($name)->setCountry($country)->setServiceDescription($service));
     }
 }

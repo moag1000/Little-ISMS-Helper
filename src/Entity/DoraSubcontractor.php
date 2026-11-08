@@ -50,7 +50,7 @@ class DoraSubcontractor
      * subcontractors (tier ≥ 3) point at the root prime so a single JOIN
      * yields the whole chain for a given supplier.
      */
-    #[ORM\ManyToOne(targetEntity: Supplier::class)]
+    #[ORM\ManyToOne(targetEntity: Supplier::class, inversedBy: 'subcontractors')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull(message: 'dora_subcontractor.validation.parent_supplier_required')]
     private ?Supplier $parentSupplier = null;
