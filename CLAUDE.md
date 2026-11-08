@@ -606,6 +606,10 @@ default, redaction, audit without content) — or, from outside, through the per
 
 `POST /mcp` (`McpController`, `App\Mcp\McpServer`: stateless Streamable HTTP, JSON-RPC, no SSE) for Claude Desktop/Code:
 bearer API token only, opt-in per organisation (`McpSettings`, admin page AI settings), token user's roles and tenant.
+API tokens authenticate only in the stateless `api_token` firewall (`App\Security\Token\ApiTokenRequest`) and only on
+`/api` + `/mcp` (401 elsewhere, never a session/cookie — `RequestScopedSession`); bearer writes are 405 everywhere but
+`/mcp`. `App\Security\UserChecker` on every firewall refuses deactivated users; deactivation revokes their tokens and
+ends open sessions (`DeactivatedUserSubscriber`). A new firewall needs `user_checker` (`ApiTokenBoundaryTest`).
 Few generic tools (`src/Mcp/Tool/`, tag `app.mcp_tool`) over the existing services: REST resources via
 `ApiResourceGateway` (API Platform operations as sub-requests — a new API resource needs no new tool), `my_day`
 (ObligationInbox), `compliance_fulfillment` (derivation basis = "why"), KPIs, duty calendar, search, suggestions.

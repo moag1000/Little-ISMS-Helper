@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\ApiToken;
 use App\Entity\User;
+use App\EventSubscriber\ReadOnlyRoleSubscriber;
 use App\Mcp\McpClientConfig;
 use App\Mcp\McpSettings;
 use App\Repository\ApiTokenRepository;
@@ -29,6 +30,7 @@ final class ApiTokenController extends AbstractController
         private readonly ApiTokenRepository $repository,
         private readonly ApiTokenManager $manager,
         private readonly McpSettings $mcpSettings,
+        private readonly ReadOnlyRoleSubscriber $readOnlyRoles,
     ) {
     }
 
@@ -47,7 +49,8 @@ final class ApiTokenController extends AbstractController
         $expiresRaw = $request->request->get('expires_days');
         $expiresDays = is_numeric($expiresRaw) ? (int) $expiresRaw : null;
 
-        $canWrite = $request->request->getBoolean('can_write');
+        // Reviewer roles stay read-only: they never get a writing token.
+        $canWrite = $request->request->getBoolean('can_write') && !$this->readOnlyRoles->isReadOnlyUser();
 
         $plain = $this->manager->mint($user, $label, $expiresDays, $canWrite);
 
@@ -81,7 +84,8 @@ final class ApiTokenController extends AbstractController
             'page'        => ListPage::fromRequest($this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']), $request),
             'new_token'   => $newToken,
             'mcp_enabled' => $tenant !== null && $this->mcpSettings->isEnabled($tenant),
-            'mcp_write_enabled' => $tenant !== null && $this->mcpSettings->isWriteEnabled($tenant),
+            'mcp_write_enabled' => $tenant !== null && $this->mcpSettings->isWriteEnabled($tenant)
+                && !$this->readOnlyRoles->isReadOnlyUser(),
             'mcp_url'     => $mcpUrl,
             'mcp_snippets' => McpClientConfig::snippets($mcpUrl, $newToken),
         ]);
