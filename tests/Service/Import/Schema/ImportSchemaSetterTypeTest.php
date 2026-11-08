@@ -67,6 +67,9 @@ final class ImportSchemaSetterTypeTest extends TestCase
                 if ($field->type === ImportFieldSpec::TYPE_RELATION) {
                     continue; // resolved to an entity of relationClass; covered by ImportSchemaIntegrityTest
                 }
+                if ($field->type === ImportFieldSpec::TYPE_OWNER) {
+                    continue; // User or Person via OwnerTextResolver, filled on commit; covered by the owner-text tests
+                }
                 $ctx  = "{$schema->entityType}.{$field->name}";
                 $type = $this->parameterType($schema->entityClass, $field->setter);
                 if ($type === null) {
