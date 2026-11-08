@@ -172,3 +172,183 @@
     .fa-cyber-btn:hover:not(.is-disabled) { transform: none; }
     .user-avatar:hover { transform: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Phone navigation (< 768px, iPhone portrait 375–430 px)
+   One nav system: header + off-canvas sidebar (sidebar-toggle) + flyouts
+   (mega-menu) — here only made usable on a phone. Loaded after
+   fairy-aurora-components.css, whose `.app-sidebar { position: relative }`
+   used to beat app.css' mobile `position: fixed`: the hidden sidebar then
+   still took ~660 px of height above every page.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* The header is sticky on every viewport: anchored jumps and the detail
+   anchor bar stop below it instead of sliding underneath */
+:root { --fa-header-h: 52px; }
+html { scroll-padding-top: calc(var(--fa-header-h) + 8px); }
+.fa-anchor-bar { top: var(--fa-header-h); }
+
+@media (max-width: 767.98px) {
+    :root { --fa-header-h: calc(56px + env(safe-area-inset-top, 0px)); }
+
+    /* Header: sticky like on desktop, above sidebar + backdrop so ☰/✕ stays tappable */
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: calc(var(--z-fixed) + 2);
+        min-height: var(--fa-header-h);
+        padding: env(safe-area-inset-top, 0) max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px));
+    }
+    .header-container { gap: 8px; }
+    .header-logo { flex-shrink: 0; gap: 8px; }
+    .header-actions { gap: 4px; min-width: 0; justify-content: flex-end; }
+    .header-actions > * { flex-shrink: 0; }
+    /* DE/EN lives in the user menu on a phone (header had no room: it squeezed ☰ under the search button) */
+    .header-actions > .language-switcher { display: none; }
+    .header-logo .fa-brand { min-width: 44px; min-height: 44px; justify-content: center; }
+    .global-search-trigger .fa-icon { width: 18px; height: 18px; }
+    .user-dropdown-item { min-height: 44px; }
+    .user-dropdown-lang { display: flex; gap: 4px; padding: 4px 8px; }
+    .user-dropdown-lang .lang-btn { flex: 1; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+
+    .mobile-menu-btn {
+        width: 44px;
+        height: 44px;
+        margin-right: 0;
+        padding: 14px 11px;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .mobile-menu-btn span { width: 22px; }
+    .mobile-menu-btn.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .mobile-menu-btn.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Off-canvas sidebar below the header */
+    .app-sidebar {
+        position: fixed;
+        top: var(--fa-header-h);
+        bottom: 0;
+        left: 0;
+        width: min(320px, 86vw);
+        height: auto;
+        max-height: none;
+        /* desktop's align-self:flex-start would size the fixed box to its content
+           and (box alignment for abspos) push it back to y=0 under the header */
+        align-self: stretch;
+        padding: var(--spacing-md) 0 calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        visibility: hidden;
+        transition: transform var(--t-base) var(--ease-out), visibility 0s linear var(--t-base);
+    }
+    .app-sidebar.open,
+    .app-sidebar.pull-revealing {
+        visibility: visible;
+        transition: transform var(--t-base) var(--ease-out), visibility 0s;
+    }
+    .sidebar-backdrop { top: var(--fa-header-h); height: auto; bottom: 0; }
+
+    /* Sidebar rows: 44 px touch targets */
+    .sb-link,
+    .sb-prominent__item { min-height: 48px; }
+    .sb-density__opt { min-height: 44px; }
+
+    /* Flyout = full-height sheet over the sidebar; ✕ becomes "back to menu" */
+    .flyout {
+        top: var(--fa-header-h);
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        padding: var(--spacing-md) max(16px, env(safe-area-inset-right, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+        z-index: calc(var(--z-fixed) + 1);
+        overscroll-behavior: contain;
+        transform: translateX(24px);
+        visibility: hidden;
+        transition: opacity 0.16s var(--ease-out), transform 0.16s var(--ease-out), visibility 0s linear 0.16s;
+    }
+    .flyout.is-open {
+        transform: none;
+        visibility: visible;
+        transition: opacity 0.16s var(--ease-out), transform 0.16s var(--ease-out), visibility 0s;
+    }
+    .flyout__close {
+        position: static;
+        width: 44px;
+        height: 44px;
+        margin-bottom: var(--spacing-sm);
+        font-size: 0;
+    }
+    .flyout__close::before { content: "←"; font-size: 20px; line-height: 1; }
+    .flyout__sections { grid-template-columns: 1fr; gap: 12px; }
+    .fly-item { min-height: 48px; }
+    .fly-item__title { font-size: 15px; }
+    .fly-item__sub { font-size: 12px; }
+
+    /* Search overlay: top of the screen, so the list stays above the keyboard;
+       16 px input text stops iOS from zooming in on focus */
+    .command-palette-modal { padding: calc(8px + env(safe-area-inset-top, 0px)) 8px 0; }
+    .command-palette-container { width: 100%; max-height: calc(100dvh - 16px - env(safe-area-inset-top, 0px)); }
+    .command-palette-input { font-size: 16px; }
+
+    /* User menu is longer than a phone screen with all tours: scroll inside it */
+    .user-dropdown { max-height: calc(100dvh - var(--fa-header-h) - 16px); overflow-y: auto; overscroll-behavior: contain; }
+}
+
+/* Phone landscape (600–767 px): two flyout columns again */
+@media (min-width: 600px) and (max-width: 767.98px) {
+    .flyout__sections { grid-template-columns: 1fr 1fr; }
+}
+
+/* 320 px (iPhone SE 1st gen): no room for the colour-mode button; "System" follows iOS */
+@media (max-width: 359.98px) {
+    .header-actions > .fa-mode-switch { display: none; }
+}
+
+/* Header shortcut to My Day: phone only (desktop has it at the top of the sidebar) */
+.header-my-day { display: none; }
+
+@media (max-width: 767.98px) {
+    .header-my-day {
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--r-md);
+        color: var(--fg-2);
+        text-decoration: none;
+    }
+    .header-my-day[aria-current="page"] { color: var(--primary); background: var(--primary-tint); }
+    .header-my-day .fa-icon { width: 20px; height: 20px; }
+    .header-my-day__badge {
+        position: absolute;
+        top: 4px;
+        right: 2px;
+        min-width: 18px;
+        padding: 0 5px;
+        border-radius: var(--r-pill);
+        background: var(--primary);
+        color: var(--on-primary);
+        font: 600 11px/18px var(--font-sans);
+        text-align: center;
+        display: none;
+    }
+    .header-my-day__badge.is-visible { display: block; }
+}
+
+/* iPhone landscape (768–1023 px): sidebar stays inline, flyout must not run off-screen */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+    .flyout { left: 220px; width: calc(100vw - 220px); }
+}
+
+/* Touch screens: no keyboard, so no floating shortcut button over the content */
+@media (hover: none) and (pointer: coarse) {
+    .keyboard-shortcuts-trigger { display: none; }
+    .command-palette-footer { display: none; }
+    /* the iOS keyboard has no ESC key: the hint becomes a 44 px close button */
+    .command-palette-hint { min-width: 44px; height: 44px; font-size: 0; cursor: pointer; }
+    .command-palette-hint::before { content: "✕"; font-size: 16px; }
+    .fly-item:hover { transform: none; }
+}

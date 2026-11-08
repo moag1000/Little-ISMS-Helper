@@ -307,7 +307,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterverwendet werden:
 
-- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand
+- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand; Navigation am iPhone mit fester Kopfzeile, "Mein Tag" in einem Tipp, Untermenüs per Tipp mit Zurück-Pfeil und 44-px-Tippzielen
 - **Eine Menüstelle pro Seite** -- Persona-Dashboards unter "Mein Cockpit", ein Import-Hub, CI-Gate gegen doppelte Menüeinträge
 - **Ein Listen-Aufbau** -- alle 74 Listen mit derselben Reihenfolge: Suche und Filter (teilbare URL), Zusammenfassungs-Chips statt KPI-Kacheln, Tabelle, Seitenumbruch (25/50/100), Leerzustand "Keine X vorhanden."; laufende Freigaben stehen als "In Freigabe" / "Freigabe überfällig" direkt in der Zeile
 - **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder 20/12/6
