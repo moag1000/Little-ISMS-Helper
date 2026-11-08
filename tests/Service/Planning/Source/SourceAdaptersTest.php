@@ -801,6 +801,22 @@ final class SourceAdaptersTest extends TestCase
     }
 
     #[Test]
+    public function testDsrAdapterDueDateFollowsTheExtension(): void
+    {
+        $adapter = new DataSubjectRequestAdapter(
+            $this->createStub(DataSubjectRequestRepository::class),
+        );
+
+        $extended = new DateTimeImmutable('2026-11-30');
+        $item = (new DataSubjectRequest())
+            ->setRequestType('access')
+            ->setDeadlineAt(new DateTimeImmutable('2026-09-30'))
+            ->setExtendedDeadlineAt($extended);
+
+        self::assertSame($extended, $adapter->dueDateOf($item));
+    }
+
+    #[Test]
     public function testDsrAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new DataSubjectRequestAdapter(
