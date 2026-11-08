@@ -8,13 +8,13 @@ use Twig\Attribute\AsTwigFilter;
 use Twig\Markup;
 
 /**
- * Output escaping helpers (S10, Gate 91 `check_raw_output.py`).
+ * Output escaping helpers (S10, Gate 92 `check_raw_output.py`).
  *
  * Components print every slot escaped; HTML reaches a slot only as Twig Markup.
  *
  *   `|fa_html`  marks reviewed HTML as Markup so a component prints it as HTML.
  *               Use it on translator HTML (`'k'|trans({'%x%': rec|e})|fa_html`) —
- *               never on record text. Gate 91 treats it like `|raw`: parameters must
+ *               never on record text. Gate 92 treats it like `|raw`: parameters must
  *               be escaped, anything else needs an allowlist entry with a reason.
  *               Prefer a `{% set x %}…{% endset %}` capture for mixed markup: it
  *               escapes the record values inside it and yields Markup by itself.

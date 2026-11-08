@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-check_raw_output.py — Gate 91: output is escaped unless a reviewed source says otherwise.
+check_raw_output.py — Gate 92: output is escaped unless a reviewed source says otherwise.
 
 The fifth norm assessment (S10, 2026-11) found Twig components that printed their
 text slots with `|raw` (`_fa_alert` body, `_fa_modal` message, `_fa_table` cells,
@@ -487,12 +487,12 @@ def main() -> int:
             errors.append(f"{ALLOWLIST.name}: stale entry (no such raw output any more): {key[0]} | {key[1]}")
 
     if errors:
-        print(f"Gate 91 (raw output): {len(errors)} finding(s)")
+        print(f"Gate 92 (raw output): {len(errors)} finding(s)")
         for e in errors:
             print("  " + e)
         return 1
     if not args.quiet:
-        print(f"Gate 91 (raw output): OK — {len(files)} templates, {len(allow)} allowlisted raw outputs")
+        print(f"Gate 92 (raw output): OK — {len(files)} templates, {len(allow)} allowlisted raw outputs")
     return 0
 
 

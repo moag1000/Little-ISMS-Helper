@@ -12,7 +12,7 @@ use Twig\Environment;
 use Twig\Markup;
 
 /**
- * S10 (Gate 91): components print record text escaped; HTML reaches a slot only as Markup.
+ * S10 (Gate 92): components print record text escaped; HTML reaches a slot only as Markup.
  *
  * Renders the real components with a record value that carries a form, a link and a
  * Stimulus action — the stored-XSS payload of the fifth assessment — and checks that

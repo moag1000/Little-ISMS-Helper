@@ -1,4 +1,4 @@
-"""Self-test for Gate 91 (check_raw_output.py): raw output, component slots, DOCX, Markup.
+"""Self-test for Gate 92 (check_raw_output.py): raw output, component slots, DOCX, Markup.
 
 Run: python3 -m unittest discover -s scripts/quality/tests
 """

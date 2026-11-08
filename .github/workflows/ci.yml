@@ -816,7 +816,7 @@ jobs:
         # Exports, backups and reports keep status + result under var/jobs/<uuid>.json;
         # a known id must not open another person's file (#[IsGranted(AsyncJobVoter::ACCESS)]). S6, 2026-11.
         run: python3 scripts/quality/check_job_id_access.py --quiet
-      - name: "Gate 91: output escaped unless reviewed (|raw allowlist, |fa_json, DocxDocumentFactory, Markup)"
+      - name: "Gate 92: output escaped unless reviewed (|raw allowlist, |fa_json, DocxDocumentFactory, Markup)"
         # Components escape their text slots; HTML reaches them only as Markup (capture, macro,
         # |fa_html on a reviewed translation). |raw needs an allowlist entry with a reason;
         # PhpWord documents come only from DocxDocumentFactory (output escaping on). S10, 2026-11.

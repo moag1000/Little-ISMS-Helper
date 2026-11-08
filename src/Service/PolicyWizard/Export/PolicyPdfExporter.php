@@ -231,7 +231,7 @@ class PolicyPdfExporter
 
     /**
      * The rendered body as Twig Markup: `_fa_policy_doc` prints its `body_html` slot
-     * escaped unless it is Markup (S10, Gate 91). markdownToHtml() escapes every text
+     * escaped unless it is Markup (S10, Gate 92). markdownToHtml() escapes every text
      * run before it adds tags, so the result is safe to print as HTML.
      */
     public function renderBodyMarkup(Document $doc, bool $withFallback = true): ?Markup

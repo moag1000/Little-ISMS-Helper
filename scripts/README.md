@@ -452,7 +452,7 @@ PropertyAccessor/Reflection), rohes SQL auf `compliance_requirement_fulfillments
 
 ---
 
-### quality/check_raw_output.py (Gate 91)
+### quality/check_raw_output.py (Gate 92)
 
 **Zweck:** Datensatztext wird nie als HTML ausgegeben (gespeichertes XSS, XML-Injection in Word-Exporten).
 Komponenten unter `templates/_components/` geben ihre Text-Slots escaped aus; HTML erreicht sie nur als
@@ -472,7 +472,7 @@ Regeln:
 Veraltete Allowlist-Einträge lassen das Gate scheitern. Vor dem Fix meldete es 309 Funde.
 Selbsttest: `scripts/quality/tests/test_check_raw_output.py`; Render-Test `tests/Twig/OutputEscapingTest.php`.
 
-**CI-Integration:** Gate 91 im `code-quality`-Job.
+**CI-Integration:** Gate 92 im `code-quality`-Job.
 
 ---
 

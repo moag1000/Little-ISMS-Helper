@@ -73,7 +73,7 @@
     {% if kind == 'widget' %}
         {# Markup passthrough — pre-rendered Symfony FormType widgets
            (capture `{% set w %}{{ form_widget(f) }}{% endset %}`);
-           a plain string is escaped (Gate 91). #}
+           a plain string is escaped (Gate 92). #}
         {{ row.widget|default('') }}
 
     {% elseif kind == 'toggle' %}

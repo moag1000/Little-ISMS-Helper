@@ -1,4 +1,4 @@
-# Gate 91 (check_raw_output.py): reviewed raw outputs. One line per output:
+# Gate 92 (check_raw_output.py): reviewed raw outputs. One line per output:
 #   <path> | <expression before |raw> | <why the value cannot carry record text or is already escaped>
 # The list only shrinks: a stale line fails the gate. A new line needs a reason a reviewer can check.
 templates/base.html.twig | _page_title | block('title') output, already escaped by the block; |trim turns the Markup into a string
