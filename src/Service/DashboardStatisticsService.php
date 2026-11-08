@@ -436,7 +436,7 @@ class DashboardStatisticsService
 
         return count(array_filter(
             $allRisks,
-            fn($risk): bool => $risk->getInherentRiskLevel() >= 12
+            fn($risk): bool => $risk->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin()
         ));
     }
 
@@ -868,7 +868,7 @@ class DashboardStatisticsService
 
         if (in_array('risks', $activeModules, true)) {
             $risks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
-            $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= \App\Risk\RiskMatrixThresholds::CRITICAL_MIN));
+            $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= \App\Risk\RiskMatrixThresholds::criticalMin()));
             $high = count(array_filter($risks, fn($r): bool => \App\Risk\RiskMatrixThresholds::classify($r->getResidualRiskLevel()) === 'high'));
             $riskScore = $risks === [] ? 0.0 : max(0.0, 100.0 - ($critical * 15.0) - ($high * 5.0));
             $components['risk_exposure'] = [0.25, round($riskScore, 1)];
@@ -1049,8 +1049,8 @@ class DashboardStatisticsService
         $allRisks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
 
         $totalRisks = count($allRisks);
-        $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::HIGH_MIN));
-        $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::CRITICAL_MIN));
+        $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin()));
+        $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::criticalMin()));
         $treatedRisks = count(array_filter($allRisks, fn($r): bool => $r->getTreatmentStrategy() !== null));
         $treatmentRate = $totalRisks > 0 ? (int) round(($treatedRisks / $totalRisks) * 100) : 0;
 
@@ -1065,9 +1065,9 @@ class DashboardStatisticsService
         foreach ($allRisks as $risk) {
             $residual = $risk->getResidualRiskLevel();
             $residualSum += $residual;
-            if ($residual >= \App\Risk\RiskMatrixThresholds::CRITICAL_MIN) {
+            if ($residual >= \App\Risk\RiskMatrixThresholds::criticalMin()) {
                 $residualCritical++;
-            } elseif ($residual >= \App\Risk\RiskMatrixThresholds::HIGH_MIN) {
+            } elseif ($residual >= \App\Risk\RiskMatrixThresholds::highMin()) {
                 $residualHigh++;
             }
             $category = $risk->getCategory();
@@ -1568,9 +1568,9 @@ class DashboardStatisticsService
             ],
             'ict_risks_high' => [
                 'label' => 'kpi.dora.ict_risks_high',
-                'value' => count(array_filter($ictRisks, fn($r): bool => $r->getInherentRiskLevel() >= 12)),
+                'value' => count(array_filter($ictRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin())),
                 'unit' => '',
-                'status' => count(array_filter($ictRisks, fn($r): bool => $r->getInherentRiskLevel() >= 12)) > 0 ? 'warning' : 'good',
+                'status' => count(array_filter($ictRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::highMin())) > 0 ? 'warning' : 'good',
             ],
         ];
     }

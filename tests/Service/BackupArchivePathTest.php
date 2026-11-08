@@ -30,6 +30,11 @@ final class BackupArchivePathTest extends TestCase
         yield 'double extension' => ['tenants/1/shell.php.jpg'];
         yield 'phar' => ['tenants/1/x.PHAR'];
         yield 'empty segment' => ['tenants//x.pdf'];
+        // Served from the application's origin: stored XSS
+        yield 'html' => ['documents/report.html'];
+        yield 'svg' => ['tenant_logos/logo.svg'];
+        yield 'javascript' => ['documents/app.js'];
+        yield 'no extension' => ['documents/README'];
     }
 
     #[Test]

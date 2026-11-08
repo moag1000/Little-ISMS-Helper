@@ -137,7 +137,7 @@ class RiskAppetitePrioritizationService
                 'priority' => $this->getAbsolutePriority($residualRisk),
                 'exceedance' => 0,
                 'percentage' => 0.0,
-                'requires_action' => $residualRisk >= RiskMatrixThresholds::HIGH_MIN,
+                'requires_action' => $residualRisk >= RiskMatrixThresholds::highMin(),
                 'recommendation' => 'No risk appetite defined. Please set organizational risk appetite.'
             ];
         }
@@ -324,13 +324,13 @@ class RiskAppetitePrioritizationService
      */
     private function getAbsolutePriority(int $riskLevel): string
     {
-        if ($riskLevel >= 20) {
+        if ($riskLevel >= RiskMatrixThresholds::criticalMin()) {
             return 'critical';
         }
-        if ($riskLevel >= 12) {
+        if ($riskLevel >= RiskMatrixThresholds::highMin()) {
             return 'high';
         }
-        if ($riskLevel >= 6) {
+        if ($riskLevel >= RiskMatrixThresholds::mediumMin()) {
             return 'medium';
         }
         return 'low';

@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\ApiToken;
 use App\Entity\User;
+use App\EventSubscriber\ApiRateLimitSubscriber;
 use App\Mcp\McpServer;
 use App\Mcp\McpSession;
 use App\Mcp\McpSettings;
@@ -33,10 +34,14 @@ final class McpController extends AbstractController
 {
     private const int MAX_BODY_BYTES = 1_000_000;
 
+    /** Messages per JSON-RPC batch; each one also counts against the API rate limit. */
+    public const int MAX_BATCH = 20;
+
     public function __construct(
         private readonly McpServer $server,
         private readonly McpSettings $settings,
         private readonly LocaleSwitcher $localeSwitcher,
+        private readonly ApiRateLimitSubscriber $rateLimit,
     ) {
     }
 
@@ -82,6 +87,16 @@ final class McpController extends AbstractController
 
         if (array_is_list($message)) {
             // JSON-RPC batch (protocol versions before 2025-06-18)
+            if (count($message) > self::MAX_BATCH) {
+                return new JsonResponse(
+                    self::error(sprintf('Batch too large: at most %d messages.', self::MAX_BATCH), -32600),
+                    Response::HTTP_REQUEST_ENTITY_TOO_LARGE,
+                );
+            }
+            // The request itself was counted once; the other messages count too.
+            if (!$this->rateLimit->consume($request, count($message) - 1)) {
+                return new JsonResponse(self::error('Too many requests.', -32000), Response::HTTP_TOO_MANY_REQUESTS);
+            }
             $answers = array_values(array_filter(array_map(
                 fn (mixed $m): ?array => is_array($m) ? $this->server->handle($m, $session) : self::error('Invalid request', -32600),
                 $message,

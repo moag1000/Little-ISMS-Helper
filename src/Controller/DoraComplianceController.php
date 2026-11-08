@@ -168,8 +168,8 @@ class DoraComplianceController extends AbstractController
         });
 
         $totalIctRisks = count($ictRisks);
-        $highIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::HIGH_MIN));
-        $criticalIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::CRITICAL_MIN));
+        $highIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::highMin()));
+        $criticalIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::criticalMin()));
         $treatedIctRisks = count(array_filter($ictRisks, fn($r) => $r->getTreatmentStrategy() !== null));
         $treatmentRate = $totalIctRisks > 0 ? round(($treatedIctRisks / $totalIctRisks) * 100) : 0;
 

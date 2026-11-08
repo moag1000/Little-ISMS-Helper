@@ -12,6 +12,7 @@ use App\Enum\ManagementDecisionStatus;
 use App\Enum\ManagementDecisionType;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\ManagementDecisionRepository;
+use App\Risk\RiskMatrixThresholds;
 use App\Service\AuditLogger;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -175,14 +176,43 @@ class ManagementDecisionService
             }
             $snapshot = $decision->getSubjectSnapshot() ?? [];
 
-            return ((int) ($snapshot['automatic'] ?? -1) === $current['automatic']
-                && (int) ($snapshot['manager'] ?? -1) === $current['manager']
-                && (int) ($snapshot['executive'] ?? -1) === $current['executive'])
-                ? $decision
-                : null;
+            return self::sameCriteria($snapshot, $current) ? $decision : null;
         }
 
         return null;
+    }
+
+    /**
+     * Whether an approved snapshot still covers the current criteria. Band
+     * edges and level meanings count from P8b on; approvals from before
+     * (without them) cover the default scale 20/12/6 without own meanings.
+     *
+     * @param array<string, mixed> $approved
+     * @param array<string, mixed> $current
+     */
+    private static function sameCriteria(array $approved, array $current): bool
+    {
+        $defaults = [
+            'band_critical' => RiskMatrixThresholds::DEFAULT_CRITICAL_MIN,
+            'band_high' => RiskMatrixThresholds::DEFAULT_HIGH_MIN,
+            'band_medium' => RiskMatrixThresholds::DEFAULT_MEDIUM_MIN,
+        ];
+        foreach (['automatic', 'manager', 'executive', 'band_critical', 'band_high', 'band_medium'] as $key) {
+            if ((int) ($approved[$key] ?? $defaults[$key] ?? -1) !== (int) ($current[$key] ?? $defaults[$key] ?? -2)) {
+                return false;
+            }
+        }
+        foreach (['probability_criteria', 'impact_criteria'] as $key) {
+            $a = is_array($approved[$key] ?? null) ? $approved[$key] : [];
+            $b = is_array($current[$key] ?? null) ? $current[$key] : [];
+            ksort($a);
+            ksort($b);
+            if (array_map('strval', $a) !== array_map('strval', $b)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** The approval in force of a type (newest), or null. */

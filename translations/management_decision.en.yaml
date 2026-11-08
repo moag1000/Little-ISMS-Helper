@@ -12,7 +12,7 @@ management_decision:
         overdue: '%count% overdue'
     type:
         policy: 'Information security policy and scope'
-        risk_criteria: 'Risk acceptance criteria'
+        risk_criteria: 'Risk criteria'
         risk_acceptance: 'Risk acceptance'
         auto_policy: 'Automatic risk acceptance'
         soa: 'Statement of Applicability'
@@ -105,7 +105,7 @@ management_decision:
     proposal:
         title:
             policy: 'Approve information security policy and scope'
-            risk_criteria: 'Approve risk acceptance criteria'
+            risk_criteria: 'Approve risk criteria (scale and acceptance)'
             soa: 'Approve Statement of Applicability'
             objectives: 'Approve information security objectives'
             resources: 'Provide resources for the ISMS'
@@ -118,6 +118,9 @@ management_decision:
             auto_policy: 'Automatic risk acceptance'
             mgmt_review: 'Approve management review results'
         risk_criteria:
+            bands: 'Risk scale (score = likelihood × impact, 1–5 each): medium from %medium%, high from %high%, critical from %critical%.'
+            probability: 'Meaning of the likelihood levels:'
+            impact: 'Meaning of the impact levels:'
             thresholds: 'Approval levels for residual risks (score = likelihood × impact): up to %automatic% accepted automatically, up to %manager% risk management decides, up to %executive% top management.'
             appetite: 'Risk appetite per category (highest acceptable score):'
             appetite_global: 'Overall'

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\Restore;
 
+use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Security\RoleNames;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -23,8 +25,13 @@ use Doctrine\ORM\EntityManagerInterface;
  *    organisation is skipped, never updated, moved or deleted;
  *  - references (ManyToOne and ManyToMany) to records of other organisations
  *    are dropped;
- *  - existing audit-log rows are never rewritten;
- *  - ROLE_SUPER_ADMIN is never granted, and an existing super admin is never touched.
+ *  - audit-log rows are evidence: never rewritten, never added, never cleared;
+ *  - no privileged role (RoleNames::PRIVILEGED: super admin, impersonation, holding
+ *    roles) is granted, neither in User.roles nor through a custom role, and an
+ *    existing super admin is never touched;
+ *  - credentials and identity links (password hash, SSO subject ids) and the
+ *    organisation's place in the instance (parent, holding flag, active state,
+ *    Azure tenant, API quota) keep their live values — a file cannot set them.
  *
  * A restore without scope (SUPER_ADMIN, instance-wide) is not restricted.
  */
@@ -36,8 +43,22 @@ final class RestoreTenantGuard
     /** Records that are evidence: an existing row is never overwritten by a restore. */
     private const array IMMUTABLE_ENTITIES = ['AuditLog'];
 
-    /** Roles an organisation restore may never grant. */
-    private const array INSTANCE_ROLES = ['ROLE_SUPER_ADMIN'];
+    /**
+     * Fields an organisation restore never takes from the file: an existing record keeps
+     * its live value, a new record its default. Credentials and identity links would let
+     * a crafted file log in as someone (or bind an SSO subject to another account); the
+     * Tenant fields decide what the organisation is in the instance, which only the
+     * instance operator sets.
+     */
+    private const array PROTECTED_FIELDS = [
+        'User' => ['password', 'authProvider', 'azureObjectId', 'azureTenantId', 'azureMetadata', 'ssoExternalId'],
+        'Tenant' => ['isActive', 'status', 'isCorporateParent', 'azureTenantId', 'apiRateLimitPerMinute', 'ssoEnforced'],
+    ];
+
+    /** Associations an organisation restore never takes from the file (see PROTECTED_FIELDS). */
+    private const array PROTECTED_ASSOCIATIONS = [
+        'Tenant' => ['parent'],
+    ];
 
     /** @var array<string, array<int|string, int|null>> class → id → tenant id (null = no tenant) */
     private array $tenantOfCache = [];
@@ -73,7 +94,68 @@ final class RestoreTenantGuard
      */
     public function isRestorableInScope(string $entityName, string $entityClass): bool
     {
+        if (self::isEvidence($entityName)) {
+            return false;
+        }
+
         return $entityName === 'Tenant' || $this->hasTenantField($entityClass);
+    }
+
+    /**
+     * Records that are evidence (the audit trail). A scoped restore neither adds, rewrites
+     * nor clears them: added rows would be forged evidence, cleared rows lost evidence.
+     */
+    public static function isEvidence(string $entityName): bool
+    {
+        return in_array($entityName, self::IMMUTABLE_ENTITIES, true);
+    }
+
+    /**
+     * Whether a scalar field is kept at its live value in a scoped restore.
+     *
+     * @param int[] $scopeIds
+     */
+    public static function isProtectedField(string $entityName, string $fieldName, array $scopeIds): bool
+    {
+        return $scopeIds !== [] && in_array($fieldName, self::PROTECTED_FIELDS[$entityName] ?? [], true);
+    }
+
+    /**
+     * Whether an association keeps its live value in a scoped restore.
+     *
+     * @param int[] $scopeIds
+     */
+    public static function isProtectedAssociation(string $entityName, string $field, array $scopeIds): bool
+    {
+        return $scopeIds !== [] && in_array($field, self::PROTECTED_ASSOCIATIONS[$entityName] ?? [], true);
+    }
+
+    /**
+     * Whether a link $entityName.$field → $targetClass#$targetId may be restored: the
+     * target lies in scope (mayReference), the association is not protected and a custom
+     * role does not carry a privileged role name.
+     *
+     * @param int[] $scopeIds
+     */
+    public function mayLink(string $entityName, string $field, string $targetClass, int|string $targetId, array $scopeIds): bool
+    {
+        if ($scopeIds === []) {
+            return true;
+        }
+        if (self::isProtectedAssociation($entityName, $field, $scopeIds)) {
+            return false;
+        }
+        if ($targetClass === Role::class) {
+            $name = $this->entityManager->getConnection()->fetchOne(
+                sprintf('SELECT name FROM %s WHERE id = ?', $this->entityManager->getClassMetadata(Role::class)->getTableName()),
+                [$targetId],
+            );
+            if ($name === false || RoleNames::isPrivileged(is_string($name) ? $name : null)) {
+                return false;
+            }
+        }
+
+        return $this->mayReference($targetClass, $targetId, $scopeIds);
     }
 
     /**
@@ -89,7 +171,9 @@ final class RestoreTenantGuard
         if (in_array($entityName, self::IMMUTABLE_ENTITIES, true)) {
             return false;
         }
-        if ($existing instanceof User && in_array('ROLE_SUPER_ADMIN', $existing->getRoles(), true)) {
+        // An account with a privileged role is the instance operator's (or the holding's):
+        // a restore could otherwise change its e-mail and take it over via password reset.
+        if ($existing instanceof User && array_filter($existing->getRoles(), RoleNames::isPrivileged(...)) !== []) {
             return false;
         }
         if ($existing instanceof Tenant) {
@@ -135,7 +219,7 @@ final class RestoreTenantGuard
         }
         $data['roles'] = array_values(array_filter(
             $data['roles'],
-            static fn (mixed $role): bool => !in_array($role, self::INSTANCE_ROLES, true),
+            static fn (mixed $role): bool => is_string($role) && !RoleNames::isPrivileged($role),
         ));
 
         return $data;

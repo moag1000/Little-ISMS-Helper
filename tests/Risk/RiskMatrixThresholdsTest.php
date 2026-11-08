@@ -17,12 +17,73 @@ use PHPUnit\Framework\TestCase;
  */
 final class RiskMatrixThresholdsTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        RiskMatrixThresholds::useProvider(null);
+    }
+
+    #[Test]
+    public function theOrganisationsScaleMovesTheBands(): void
+    {
+        RiskMatrixThresholds::useProvider(static fn (): array => ['critical' => 16, 'high' => 9, 'medium' => 4]);
+
+        self::assertSame(16, RiskMatrixThresholds::criticalMin());
+        self::assertSame('critical', RiskMatrixThresholds::classify(16));
+        self::assertSame('high', RiskMatrixThresholds::classify(9));
+        self::assertSame('medium', RiskMatrixThresholds::classify(4));
+        self::assertSame('low', RiskMatrixThresholds::classify(3));
+        self::assertSame(['min' => 9, 'max' => 15], RiskMatrixThresholds::getBands()['high']);
+        self::assertSame(['min' => 1, 'max' => 3], RiskMatrixThresholds::getBands()['low']);
+    }
+
+    #[Test]
+    public function aRecordIsClassifiedWithItsOwnOrganisationsScale(): void
+    {
+        // No tenant in scope (command, worker, holding view): the record's
+        // organisation decides, not the viewer's.
+        $own = new \App\Entity\Tenant();
+        RiskMatrixThresholds::useProvider(static fn (?\App\Entity\Tenant $t): ?array => $t === $own
+            ? ['critical' => 16, 'high' => 9, 'medium' => 4]
+            : null);
+
+        $risk = (new \App\Entity\Risk())->setTenant($own)->setProbability(4)->setImpact(4);
+        self::assertSame('critical', $risk->getInherentSeverityBand());
+
+        $other = (new \App\Entity\Risk())->setTenant(new \App\Entity\Tenant())->setProbability(4)->setImpact(4);
+        self::assertSame('high', $other->getInherentSeverityBand());
+        self::assertSame('high', RiskMatrixThresholds::classify(16));
+    }
+
+    #[Test]
+    public function anInvalidOrMissingScaleFallsBackToTheDefaults(): void
+    {
+        RiskMatrixThresholds::useProvider(static fn (): array => ['critical' => 10, 'high' => 12, 'medium' => 6]);
+        self::assertSame(20, RiskMatrixThresholds::criticalMin());
+
+        RiskMatrixThresholds::useProvider(static fn (): ?array => null);
+        self::assertSame(12, RiskMatrixThresholds::highMin());
+
+        RiskMatrixThresholds::useProvider(static function (): array {
+            throw new \RuntimeException('no table yet');
+        });
+        self::assertSame(6, RiskMatrixThresholds::mediumMin());
+    }
+
+    #[Test]
+    public function everyBandKeepsAtLeastOneScore(): void
+    {
+        self::assertTrue(RiskMatrixThresholds::isValid(25, 24, 2));
+        self::assertFalse(RiskMatrixThresholds::isValid(26, 12, 6));
+        self::assertFalse(RiskMatrixThresholds::isValid(20, 12, 1));
+        self::assertFalse(RiskMatrixThresholds::isValid(12, 12, 6));
+    }
+
     #[Test]
     public function testConstantsArePinnedToSsotValues(): void
     {
-        self::assertSame(20, RiskMatrixThresholds::CRITICAL_MIN);
-        self::assertSame(12, RiskMatrixThresholds::HIGH_MIN);
-        self::assertSame(6, RiskMatrixThresholds::MEDIUM_MIN);
+        self::assertSame(20, RiskMatrixThresholds::DEFAULT_CRITICAL_MIN);
+        self::assertSame(12, RiskMatrixThresholds::DEFAULT_HIGH_MIN);
+        self::assertSame(6, RiskMatrixThresholds::DEFAULT_MEDIUM_MIN);
         self::assertSame(1, RiskMatrixThresholds::LOW_MIN);
         self::assertSame(25, RiskMatrixThresholds::SCORE_MAX);
     }

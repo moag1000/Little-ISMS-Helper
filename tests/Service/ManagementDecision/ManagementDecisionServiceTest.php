@@ -65,6 +65,29 @@ final class ManagementDecisionServiceTest extends TestCase
     }
 
     #[Test]
+    public function aChangedRiskScaleEndsTheCoverage(): void
+    {
+        // ISO 27001 6.1.2 b: the bands are part of the approved criteria.
+        $this->repository->method('findApproved')->willReturn([$this->approved([
+            'automatic' => 3, 'manager' => 7, 'executive' => 25,
+            'band_critical' => 16, 'band_high' => 12, 'band_medium' => 6,
+        ])]);
+
+        self::assertNull($this->service->criteriaApproval($this->tenant));
+    }
+
+    #[Test]
+    public function aChangedLevelMeaningEndsTheCoverage(): void
+    {
+        $this->repository->method('findApproved')->willReturn([$this->approved([
+            'automatic' => 3, 'manager' => 7, 'executive' => 25,
+            'impact_criteria' => ['5' => 'Schaden über 1 Mio. €'],
+        ])]);
+
+        self::assertNull($this->service->criteriaApproval($this->tenant));
+    }
+
+    #[Test]
     public function anExpiredApprovalDoesNotCover(): void
     {
         $approval = $this->approved(['automatic' => 3, 'manager' => 7, 'executive' => 25]);

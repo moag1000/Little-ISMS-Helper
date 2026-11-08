@@ -762,7 +762,9 @@ class RestoreEntityWriter
                     if ($targetId === null) {
                         continue;
                     }
-                    if (!$guard->mayReference($targetClass, $targetId, $scopeIds)) {
+                    if (!(is_int($targetId) || is_string($targetId))
+                        || !$guard->mayLink($entityName, $field, $targetClass, $targetId, $scopeIds)
+                    ) {
                         $dropped++;
                         continue;
                     }
@@ -771,7 +773,7 @@ class RestoreEntityWriter
             }
             if ($dropped > 0) {
                 $warnings[] = sprintf(
-                    '%d %s.%s link(s) dropped: they point to records of another organisation',
+                    '%d %s.%s link(s) dropped: they point to records of another organisation or grant a privileged role',
                     $dropped,
                     $entityName,
                     $field,
@@ -946,8 +948,15 @@ class RestoreEntityWriter
         array $options,
         array &$warnings,
     ): void {
+        $scopeIds = RestoreTenantGuard::scopeFromOptions($options);
         foreach ($meta->getFieldNames() as $fieldName) {
             if ($fieldName === 'id' && $existingEntity !== null) {
+                continue;
+            }
+
+            // Credentials, identity links and the organisation's place in the instance
+            // are never taken from the file of an organisation restore.
+            if (RestoreTenantGuard::isProtectedField($entityName, $fieldName, $scopeIds)) {
                 continue;
             }
 
@@ -1168,12 +1177,17 @@ class RestoreEntityWriter
                 continue;
             }
 
-            if (!$this->tenantGuard()->mayReference($targetClass, $assocId, $scopeIds)) {
+            if (RestoreTenantGuard::isProtectedAssociation($entityName, $assocName, $scopeIds)) {
+                continue;
+            }
+            if (!(is_int($assocId) || is_string($assocId))
+                || !$this->tenantGuard()->mayLink($entityName, $assocName, $targetClass, $assocId, $scopeIds)
+            ) {
                 $warnings[] = sprintf(
-                    'Reference %s.%s → ID %s dropped: the target belongs to another organisation',
+                    'Reference %s.%s → ID %s dropped: the target belongs to another organisation or is set by the instance operator only',
                     $entityName,
                     $assocName,
-                    (string) $assocId,
+                    is_scalar($assocId) ? (string) $assocId : '?',
                 );
                 continue;
             }

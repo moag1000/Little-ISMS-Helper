@@ -19,6 +19,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Service\Owner\OwnerTextResolver;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 
 /**
  * Facade for backup restore operations.
@@ -62,7 +63,42 @@ class RestoreService
         private readonly ?RestoreDataPurger $purger = null,
         private readonly ?RestoreEntityWriter $entityWriter = null,
         private readonly ?RestoreSecretsHandler $secretsHandler = null,
+        private readonly ?BackupService $backupService = null,
+        private readonly ?FulfillmentDerivationService $fulfillmentDerivation = null,
     ) {
+    }
+
+    /**
+     * Steps that need the committed data: the embedded files (only now, never on preview,
+     * validation or dry run) and, for an organisation restore, the fulfilment values —
+     * the file may carry any percentage, the rule engine derives them from the restored
+     * controls and records again (hand overrides stay overrides).
+     *
+     * @param int[] $scopeIds
+     */
+    private function afterCommittedRestore(?string $archivePath, array $scopeIds): void
+    {
+        if ($archivePath !== null && $this->backupService !== null) {
+            $this->backupService->extractArchiveFiles($archivePath, $scopeIds, $this->warnings);
+        }
+        if ($scopeIds === [] || $this->fulfillmentDerivation === null || !$this->entityManager->isOpen()) {
+            return;
+        }
+        foreach ($scopeIds as $tenantId) {
+            $tenant = $this->entityManager->find(Tenant::class, $tenantId);
+            if ($tenant === null) {
+                continue;
+            }
+            try {
+                $this->fulfillmentDerivation->refreshTenant($tenant);
+            } catch (\Throwable $e) {
+                $this->warnings[] = sprintf(
+                    'Erfüllungsgrade für Organisation %d nicht neu berechnet (%s) — die nächtliche Neuberechnung holt das nach.',
+                    $tenantId,
+                    $e->getMessage(),
+                );
+            }
+        }
     }
 
     // ------------------------------------------------------------------
@@ -194,11 +230,17 @@ class RestoreService
      * @param array       $backup            Backup data
      * @param array       $options           Restore options
      * @param Tenant|null $targetTenantScope When set, restricts restore to this tenant's data
+     * @param string|null $archivePath       The ZIP the backup was read from: its embedded files
+     *                                       are written after a successful (not dry-run) restore
      * @return array Restore result with statistics
      * @throws \Doctrine\DBAL\Exception
      */
-    public function restoreFromBackup(array $backup, array $options = [], ?Tenant $targetTenantScope = null): array
-    {
+    public function restoreFromBackup(
+        array $backup,
+        array $options = [],
+        ?Tenant $targetTenantScope = null,
+        ?string $archivePath = null,
+    ): array {
         $this->statistics = [];
         $this->warnings   = [];
         $this->failures   = [];
@@ -596,6 +638,10 @@ class RestoreService
                 }
             }
             $success = $options['best_effort'] || $errorsTotal === 0;
+
+            if ($success && !$options['dry_run']) {
+                $this->afterCommittedRestore($archivePath, $targetScopeIds);
+            }
 
             return [
                 'success'      => $success,

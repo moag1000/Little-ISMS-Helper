@@ -140,9 +140,9 @@ final class RiskMatrixService
     public function getThresholds(): array
     {
         return [
-            'critical' => RiskMatrixThresholds::CRITICAL_MIN,
-            'high' => RiskMatrixThresholds::HIGH_MIN,
-            'medium' => RiskMatrixThresholds::MEDIUM_MIN,
+            'critical' => RiskMatrixThresholds::criticalMin(),
+            'high' => RiskMatrixThresholds::highMin(),
+            'medium' => RiskMatrixThresholds::mediumMin(),
         ];
     }
 

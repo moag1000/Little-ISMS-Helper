@@ -248,9 +248,9 @@ class IncidentController extends AbstractController
                 // Map inherent risk level → incident severity
                 $level = $sourceRisk->getInherentRiskLevel();
                 $severity = match (true) {
-                    $level >= 20 => IncidentSeverity::Critical,
-                    $level >= 12 => IncidentSeverity::High,
-                    $level >= 6 => IncidentSeverity::Medium,
+                    $level >= \App\Risk\RiskMatrixThresholds::criticalMin() => IncidentSeverity::Critical,
+                    $level >= \App\Risk\RiskMatrixThresholds::highMin() => IncidentSeverity::High,
+                    $level >= \App\Risk\RiskMatrixThresholds::mediumMin() => IncidentSeverity::Medium,
                     default => IncidentSeverity::Low,
                 };
                 $incident->setSeverity($severity);

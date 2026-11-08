@@ -71,7 +71,11 @@ class DecisionProposalBuilder
      * The values an approval of the acceptance criteria covers. Compared with
      * the current values before risks are accepted automatically.
      *
-     * @return array{automatic: int, manager: int, executive: int}
+     * @return array{
+     *     automatic: int, manager: int, executive: int,
+     *     band_critical: int, band_high: int, band_medium: int,
+     *     probability_criteria: array<int, string>, impact_criteria: array<int, string>
+     * }
      */
     public function criteriaSnapshot(Tenant $tenant): array
     {
@@ -81,17 +85,42 @@ class DecisionProposalBuilder
             'automatic' => $view->thresholdAutomatic,
             'manager' => $view->thresholdManager,
             'executive' => $view->thresholdExecutive,
+            // Risk scale (ISO 27001 6.1.2 b): band edges and level meanings
+            // are part of the criteria top management approves.
+            'band_critical' => $view->bandCriticalMin,
+            'band_high' => $view->bandHighMin,
+            'band_medium' => $view->bandMediumMin,
+            'probability_criteria' => $view->probabilityCriteria,
+            'impact_criteria' => $view->impactCriteria,
         ];
     }
 
     private function riskCriteria(Tenant $tenant, ?string $locale): DecisionProposal
     {
         $snapshot = $this->criteriaSnapshot($tenant);
-        $lines = [$this->t('proposal.risk_criteria.thresholds', [
+        $lines = [
+            $this->t('proposal.risk_criteria.bands', [
+                '%medium%' => $snapshot['band_medium'],
+                '%high%' => $snapshot['band_high'],
+                '%critical%' => $snapshot['band_critical'],
+            ], $locale),
+        ];
+        foreach (['probability' => $snapshot['probability_criteria'], 'impact' => $snapshot['impact_criteria']] as $axis => $criteria) {
+            if ($criteria === []) {
+                continue;
+            }
+            $lines[] = $this->t('proposal.risk_criteria.' . $axis, [], $locale);
+            ksort($criteria);
+            foreach ($criteria as $level => $text) {
+                $lines[] = sprintf('- %s: %s', $level, $text);
+            }
+        }
+        $lines[] = '';
+        $lines[] = $this->t('proposal.risk_criteria.thresholds', [
             '%automatic%' => $snapshot['automatic'],
             '%manager%' => $snapshot['manager'],
             '%executive%' => $snapshot['executive'],
-        ], $locale)];
+        ], $locale);
 
         $appetites = $this->riskAppetiteRepository->findAllActiveForTenant($tenant);
         if ($appetites !== []) {

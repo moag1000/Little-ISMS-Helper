@@ -18,6 +18,8 @@ use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
 use App\Form\Type\OwnerUserType;
 use App\Form\Util\LegacyFreeTextField;
+use App\Risk\RiskMatrixThresholds;
+use App\Risk\RiskScaleProvider;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -32,6 +34,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class RiskType extends AbstractType implements SectionMapInterface
 {
@@ -41,7 +44,38 @@ final class RiskType extends AbstractType implements SectionMapInterface
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly Security $security,
+        private readonly RiskScaleProvider $riskScale,
+        private readonly TranslatorInterface $translator,
     ) {
+    }
+
+    /**
+     * A 1–5 level select: "3 – Möglich · einmal im Jahr" (generic label plus
+     * what the level means in this organisation, when defined).
+     *
+     * @return array<string, mixed>
+     */
+    private function levelField(string $axis, string $label, string $help, bool $required): array
+    {
+        $criteria = $this->riskScale->criteria()[$axis];
+        $prefix = $axis === 'impact' ? 'risk.matrix.impact_label.' : 'risk.matrix.likelihood.';
+        $choices = [];
+        for ($level = 1; $level <= RiskMatrixThresholds::LEVELS; ++$level) {
+            $text = sprintf('%d – %s', $level, $this->translator->trans($prefix . $level, [], 'risk'));
+            if (($criteria[$level] ?? '') !== '') {
+                $text .= ' · ' . $criteria[$level];
+            }
+            $choices[$text] = $level;
+        }
+
+        return [
+            'label' => $label,
+            'required' => $required,
+            'choices' => $choices,
+            'choice_translation_domain' => false,
+            'placeholder' => $required ? 'risk.placeholder.level' : 'risk.placeholder.level_optional',
+            'help' => $help,
+        ];
     }
 
     // Owner pre-fill — UX-Polish
@@ -145,30 +179,12 @@ final class RiskType extends AbstractType implements SectionMapInterface
                     'class' => 'risk-subject-field',
                 ],
             ])
-            ->add('probability', IntegerType::class, [
-                'label' => 'risk.field.probability',
-                'required' => true,
-                'attr' => ['min' => 1, 'max' => 5],
-                'help' => 'risk.help.probability',
-            ])
-            ->add('impact', IntegerType::class, [
-                'label' => 'risk.field.impact',
-                'required' => true,
-                'attr' => ['min' => 1, 'max' => 5],
-                'help' => 'risk.help.impact',
-            ])
-            ->add('residualProbability', IntegerType::class, [
-                'label' => 'risk.field.residual_probability',
-                'required' => false,
-                'attr' => ['min' => 1, 'max' => 5],
-                'help' => 'risk.help.residual_probability',
-            ])
-            ->add('residualImpact', IntegerType::class, [
-                'label' => 'risk.field.residual_impact',
-                'required' => false,
-                'attr' => ['min' => 1, 'max' => 5],
-                'help' => 'risk.help.residual_impact',
-            ])
+            // ISO 27001 6.1.2 b/d: levels carry the organisation's meaning
+            // (Risikokriterien), so two assessors pick the same level.
+            ->add('probability', ChoiceType::class, $this->levelField('probability', 'risk.field.probability', 'risk.help.probability', true))
+            ->add('impact', ChoiceType::class, $this->levelField('impact', 'risk.field.impact', 'risk.help.impact', true))
+            ->add('residualProbability', ChoiceType::class, $this->levelField('probability', 'risk.field.residual_probability', 'risk.help.residual_probability', false))
+            ->add('residualImpact', ChoiceType::class, $this->levelField('impact', 'risk.field.residual_impact', 'risk.help.residual_impact', false))
         ;
 
         // ── Risk Owner cluster ───────────────────────────────
