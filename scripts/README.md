@@ -372,6 +372,20 @@ ohne Datensatztext markieren `// @csv-sanitize-exempt: <Grund>`. Keine Baseline.
 
 ---
 
+### quality/check_risk_band_literals.py (Gate 87)
+
+**Zweck:** Die Stufengrenzen der Risikoskala (mittel/hoch/kritisch) gehören seit P8b der
+Organisation (ISO 27001 6.1.2 a/b, *Admin > Risikokriterien*, Billigung durch die Leitung).
+Gelesen werden sie über `App\Risk\RiskMatrixThresholds` (`classify()`, `criticalMin()`,
+`highMin()`, `mediumMin()`), in Twig über `risk_level_band()` / `risk_bands()`, in Stimulus über
+`band-*-min`-Values. Das Gate meldet in `src/`, `templates/` und `assets/controllers/` jeden
+Vergleich eines Risikowerts mit 20, 12 oder 6. Andere Skalen mit denselben Zahlen stehen mit
+Grund in `baselines/risk_band_literals.txt`; die Baseline darf nur schrumpfen.
+
+**CI-Integration:** Gate 87 im `code-quality`-Job.
+
+---
+
 ### quality/check_requirement_controls_scope.py (Gate 86)
 
 **Zweck:** `ComplianceRequirement` ist globaler Katalog; `getMappedControls()` enthält

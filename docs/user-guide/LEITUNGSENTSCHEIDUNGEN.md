@@ -23,7 +23,7 @@ gültige Billigung besteht. Die Vorlage ist vorbefüllt:
 | Art | Vorbefüllt aus | Gilt |
 |---|---|---|
 | Leitlinie und Geltungsbereich | Kontext der Organisation | 12 Monate |
-| Risikoakzeptanzkriterien | Freigabe-Schwellwerte und Risikoappetit | 12 Monate, endet bei Schwellwertänderung |
+| Risikokriterien | Risikoskala (Stufengrenzen, Bedeutung der Stufen 1–5), Freigabestufen und Risikoappetit | 12 Monate, endet bei jeder Änderung an Skala, Stufenbedeutung oder Freigabestufen |
 | Erklärung zur Anwendbarkeit | Controls (anwendbar, ausgeschlossen, umgesetzt), letzter SoA-Stand | 12 Monate |
 | Sicherheitsziele | offene Ziele mit Sollwert und Termin | 12 Monate |
 | Ressourcen | Ressourcenbedarf der letzten Managementbewertung | — |
@@ -37,11 +37,34 @@ Abschluss einer Managementbewertung und jede automatische Risikoakzeptanz.
 ## Automatische Risikoakzeptanz
 
 Restrisiken bis zur ersten Freigabestufe werden nur dann automatisch
-akzeptiert, wenn die Leitung die aktuellen Schwellwerte gebilligt hat. Ohne
-Billigung, oder nach einer Änderung eines Schwellwerts, entscheidet das
-Risikomanagement. Jede automatische Akzeptanz verweist auf die Billigung, auf
-der sie beruht. Die Seite Admin > Freigabe-Schwellwerte zeigt den Stand und
-legt die Billigung mit einem Klick vor.
+akzeptiert, wenn die Leitung die aktuellen Risikokriterien gebilligt hat. Ohne
+Billigung, oder nach einer Änderung an Skala, Stufenbedeutung oder
+Freigabestufen, entscheidet das Risikomanagement. Jede automatische Akzeptanz
+verweist auf die Billigung, auf der sie beruht. Die Seite Admin >
+Risikokriterien zeigt den Stand und legt die Billigung mit einem Klick vor.
+
+## Risikoskala (ISO 27001 6.1.2 a/b)
+
+Die Skala gehört der Organisation und wird unter **Admin > Risikokriterien**
+gepflegt (Suche: „Risikoskala“):
+
+- **Stufengrenzen**: ab welchem Wert (Wahrscheinlichkeit × Auswirkung, je
+  1–5) ein Risiko mittel, hoch oder kritisch ist. Standard 6 / 12 / 20; jede
+  Stufe behält mindestens einen Wert. Die Matrix bleibt 5 × 5, damit
+  bestehende Bewertungen vergleichbar bleiben.
+- **Bedeutung der Stufen**: was Wahrscheinlichkeit 1–5 und Auswirkung 1–5
+  hier heißen (z. B. „5 = Schaden über 1 Mio. €“). Das Risikoformular zeigt
+  den Text in der Stufenauswahl, die Risikomatrix darunter.
+
+Die Grenzen gelten überall gleich: Matrix, Filter, Risikoliste, Dashboards,
+Kennzahlen, Berichte, PDFs, Exporte und die Heatmaps (Code liest sie nur über
+`App\Risk\RiskMatrixThresholds`, Gate 87 verhindert feste 20/12/6). Eine
+Tochtergesellschaft ist nie laxer als ihre Holding: es gilt je Grenze der
+niedrigere Wert.
+
+Skala, Stufenbedeutung und Freigabestufen billigt die Leitung zusammen als
+„Risikokriterien“. Jede Änderung beendet die Billigung; bis zur neuen
+Billigung pausiert die automatische Akzeptanz.
 
 Risikoakzeptanzen oberhalb der Manager-Stufe entscheidet die Leitung
 (`ROLE_TOP_MGMT`).

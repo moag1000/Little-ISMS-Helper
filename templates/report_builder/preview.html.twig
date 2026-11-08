@@ -103,8 +103,9 @@
                                 {% for x in 1..5 %}
                                 {% set count = data.matrix[y][x]|default(0) %}
                                 {% set score = y * x %}
-                                {% set bgClass = score >= 15 ? 'bg-danger' : (score >= 8 ? 'bg-warning' : (score >= 4 ? 'bg-info' : 'bg-success')) %}
-                                {% set fgClass = score >= 8 and score < 15 ? '' : 'text-white' %}
+                                {% set _band = risk_level_band(score) %}
+                                {% set bgClass = {critical: 'bg-danger', high: 'bg-warning', medium: 'bg-info'}[_band] ?? 'bg-success' %}
+                                {% set fgClass = _band == 'high' ? '' : 'text-white' %}
                                 <td class="fa-table__cell fa-table__cell--center {{ bgClass }} {{ fgClass }}">{{ count > 0 ? count : '' }}</td>
                                 {% endfor %}
                             </tr>

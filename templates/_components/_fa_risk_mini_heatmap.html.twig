@@ -20,9 +20,10 @@
  #
  # Norm-Bezug: ISO 27005 (Risk-Matrix). Cell-band uses risk_threshold() SSoT.
  #}
-{% set _critical_min = 20 %}
-{% set _high_min = 12 %}
-{% set _medium_min = 6 %}
+{% set _bands = risk_bands() %}
+{% set _critical_min = _bands.critical.min %}
+{% set _high_min = _bands.high.min %}
+{% set _medium_min = _bands.medium.min %}
 {% set _residual = residual|default(false) %}
 
 <div class="fa-risk-mini-heatmap{% if _residual %} fa-risk-mini-heatmap--residual{% endif %}"

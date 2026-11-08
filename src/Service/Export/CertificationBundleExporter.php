@@ -920,9 +920,9 @@ final class CertificationBundleExporter
         foreach ($risks as $risk) {
             $score = $risk->getRiskScore();
             $level = match (true) {
-                $score >= 20 => 'critical',
-                $score >= 12 => 'high',
-                $score >= 6 => 'medium',
+                $score >= \App\Risk\RiskMatrixThresholds::criticalMin() => 'critical',
+                $score >= \App\Risk\RiskMatrixThresholds::highMin() => 'high',
+                $score >= \App\Risk\RiskMatrixThresholds::mediumMin() => 'medium',
                 default => 'low',
             };
             $risksByLevel[$level]++;

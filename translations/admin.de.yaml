@@ -134,7 +134,7 @@ admin:
             audit_log: { label: 'Audit-Log', desc: 'Tamper-evident Activity-Trail' }
             audit_retention: { label: 'Retention-Policy', desc: 'Aufbewahrungsfristen Audit-Log' }
             compliance_policy: { label: 'Compliance-Policy', desc: 'Inheritance-Regeln, Review-Pflichten' }
-            risk_approval_config: { label: 'Risk-Approval-Schwellen', desc: 'Eskalationsstufen für Risiko-Akzeptanz' }
+            risk_approval_config: { label: 'Risikokriterien', desc: 'Risikoskala, Stufenbedeutung und Freigabestufen für Risikoakzeptanz' }
             incident_sla: { label: 'Incident-SLAs', desc: 'Reaktionszeiten pro Severity' }
             audit_log_monitoring: { label: 'Audit-Log-Monitoring', desc: 'Live-Stream + Anomalie-Filter' }
             workflow_definitions: { label: 'Workflow-Definitionen', desc: 'Genehmigungs-Lifecycles entwerfen und aktivieren' }
@@ -440,8 +440,8 @@ admin:
             title: 'Organisations-Compliance-Einstellungen'
             description: 'Locale, TLP-Einstufung, DSB-Kontakt, Risiko-Methodik und JSON-Standardwerte je Organisation'
         risk_approval:
-            title: 'Risikogenehmigungsschwellen'
-            description: 'Eskalationsstufen und Akzeptanzschwellen für Risk-Governance (ISO 27001 Kap. 6.1.3)'
+            title: 'Risikokriterien'
+            description: 'Risikoskala, Bedeutung der Stufen und Freigabestufen für Risikoakzeptanz (ISO 27001 6.1.2 a)'
         incident_sla:
             title: 'Incident-SLAs'
             description: 'Reaktionszeitenziele je Schweregrad (ISO 27001 Anhang A 5.26)'

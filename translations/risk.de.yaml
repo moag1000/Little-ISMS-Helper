@@ -271,10 +271,8 @@ risk:
     requires_dpia: 'Wenn aktiviert, sollte eine Datenschutz-Folgenabschätzung (DSFA) unter Privacy/GDPR → DPIA erstellt werden. Dies löst KEINE automatische DPIA-Erstellung aus — erstellen Sie die DPIA separat und verknüpfen Sie sie.'
     data_subject_impact: Auswirkung auf die Rechte und Freiheiten betroffener Personen
     inherent: Das inhärente Risiko (Brutto-Risiko) vor Anwendung von Maßnahmen
-    probability: 'Eintrittswahrscheinlichkeit: Wie wahrscheinlich ist es, dass dieses
-      Risiko eintritt? (1-5)'
-    impact: 'Schadensauswirkung: Wie schwerwiegend wären die Folgen bei Eintritt?
-      (1-5)'
+    probability: 'Wie wahrscheinlich tritt das Risiko ein? Was die Stufen bedeuten, legt Ihre Organisation unter Risikokriterien fest (ISO 27001 6.1.2 d).'
+    impact: 'Wie schwer wären die Folgen? Was die Stufen bedeuten, legt Ihre Organisation unter Risikokriterien fest (ISO 27001 6.1.2 d).'
     residual: Das verbleibende Restrisiko (Netto-Risiko) nach Anwendung von Maßnahmen
     residual_probability: 'Wahrscheinlichkeit NACH Maßnahmen (Restrisiko). Beispiel:
       Inherent=4, nach Firewall+SIEM=2. Leer = Maßnahmen noch nicht bewertet — Risk-KPIs zeigen dann Inherent-Score.'
@@ -393,6 +391,10 @@ risk:
       probability: 'Eintrittswahrscheinlichkeit'
       impact: 'Auswirkung'
   matrix:
+    criteria:
+      probability: 'Wahrscheinlichkeit: was die Stufen bedeuten'
+      impact: 'Auswirkung: was die Stufen bedeuten'
+      edit: 'Skala und Stufenbedeutung unter Risikokriterien pflegen'
     title: Risikomatrix
     back_to_risks: Zurück zur Risikoliste
     header: Risikomatrix-Übersicht (ISO 27005)
@@ -493,6 +495,8 @@ risk:
     accept: Akzeptieren
     avoid: Vermeiden
   placeholder:
+    level: 'Stufe wählen'
+    level_optional: 'Noch nicht bewertet'
     title: z.B. Datenverlust durch Ransomware-Angriff
     category: -- Kategorie wählen --
     treatment_strategy: -- Behandlungsstrategie wählen (später ergänzbar) --

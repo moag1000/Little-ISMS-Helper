@@ -12,7 +12,7 @@ management_decision:
         overdue: '%count% überfällig'
     type:
         policy: 'Informationssicherheitsleitlinie und Geltungsbereich'
-        risk_criteria: 'Risikoakzeptanzkriterien'
+        risk_criteria: 'Risikokriterien'
         risk_acceptance: 'Risikoakzeptanz'
         auto_policy: 'Automatische Risikoakzeptanz'
         soa: 'Erklärung zur Anwendbarkeit'
@@ -98,7 +98,7 @@ management_decision:
     proposal:
         title:
             policy: 'Informationssicherheitsleitlinie und Geltungsbereich billigen'
-            risk_criteria: 'Risikoakzeptanzkriterien billigen'
+            risk_criteria: 'Risikokriterien billigen (Skala und Akzeptanz)'
             soa: 'Erklärung zur Anwendbarkeit billigen'
             objectives: 'Informationssicherheitsziele billigen'
             resources: 'Ressourcen für das ISMS bereitstellen'
@@ -108,6 +108,9 @@ management_decision:
             auto_policy: 'Automatische Risikoakzeptanz'
             mgmt_review: 'Ergebnisse der Managementbewertung billigen'
         risk_criteria:
+            bands: 'Risikoskala (Wert = Wahrscheinlichkeit × Auswirkung, je 1–5): mittel ab %medium%, hoch ab %high%, kritisch ab %critical%.'
+            probability: 'Bedeutung der Wahrscheinlichkeitsstufen:'
+            impact: 'Bedeutung der Auswirkungsstufen:'
             thresholds: 'Freigabestufen für Restrisiken (Wert = Wahrscheinlichkeit × Auswirkung): bis %automatic% automatisch akzeptiert, bis %manager% entscheidet das Risikomanagement, bis %executive% die Leitung.'
             appetite: 'Risikoappetit je Kategorie (höchster akzeptabler Wert):'
             appetite_global: 'Gesamt'

@@ -28,6 +28,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Risk\RiskMatrixThresholds;
 
 /**
  * Management Report Service
@@ -84,10 +85,10 @@ final class ManagementReportService
         }
 
         // Risk analysis
-        $criticalRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= 20);
-        $highRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= 12 && $r->getRiskScore() < 20);
-        $mediumRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= 6 && $r->getRiskScore() < 12);
-        $lowRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() < 6);
+        $criticalRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::criticalMin());
+        $highRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::highMin() && $r->getRiskScore() < RiskMatrixThresholds::criticalMin());
+        $mediumRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::mediumMin() && $r->getRiskScore() < RiskMatrixThresholds::highMin());
+        $lowRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() < RiskMatrixThresholds::mediumMin());
 
         // Control analysis
         $implementedControls = array_filter($controls, fn(Control $c): bool => $c->getImplementationStatus() === 'implemented');
@@ -195,11 +196,11 @@ final class ManagementReportService
         ];
         foreach ($risks as $risk) {
             $score = $risk->getRiskScore();
-            if ($score >= 20) {
+            if ($score >= RiskMatrixThresholds::criticalMin()) {
                 $byLevel['critical'][] = $risk;
-            } elseif ($score >= 12) {
+            } elseif ($score >= RiskMatrixThresholds::highMin()) {
                 $byLevel['high'][] = $risk;
-            } elseif ($score >= 6) {
+            } elseif ($score >= RiskMatrixThresholds::mediumMin()) {
                 $byLevel['medium'][] = $risk;
             } else {
                 $byLevel['low'][] = $risk;
@@ -277,7 +278,7 @@ final class ManagementReportService
                 }
 
                 $existingAtMonthEnd++;
-                if ($risk->getInherentRiskLevel() >= 12) {
+                if ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::highMin()) {
                     $highCriticalAtMonthEnd++;
                 }
             }

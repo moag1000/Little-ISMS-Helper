@@ -264,6 +264,7 @@ privacy.sdm.risk_level	1
 processing_activity.legal_basis	3
 processing_activity.risk_level	1
 processing_activity.status	1
+proposal.risk_criteria	1
 proposal.title	1
 prototype_protection.label	2
 prototype_protection.result	4
@@ -292,10 +293,12 @@ risk.export	1
 risk.index.treatment	2
 risk.level	1
 risk.link_incident.link_type	2
+risk.matrix.criteria	1
 risk.matrix.impact_label	1
 risk.matrix.likelihood	2
+risk.status	1
 risk.subject	1
-risk.treatment	1
+risk.treatment	2
 risk_treatment_plan.priority	5
 risk_treatment_plan.status	6
 role_management.permissions.action	1
