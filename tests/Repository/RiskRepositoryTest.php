@@ -473,9 +473,9 @@ class RiskRepositoryTest extends TestCase
         $threshold1 = $findHighRisksParams[1]->getDefaultValue();
         $threshold2 = $findHighRisksByTenantParams[1]->getDefaultValue();
 
-        // Both should default to 12
-        $this->assertEquals(12, $threshold1);
-        $this->assertEquals(12, $threshold2);
+        // Both default to null = the organisation's band „hoch“ (RiskMatrixThresholds::highMin())
+        $this->assertNull($threshold1);
+        $this->assertNull($threshold2);
         $this->assertEquals($threshold1, $threshold2,
             'High risk threshold should be consistent across methods');
     }
