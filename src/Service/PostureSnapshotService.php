@@ -74,7 +74,7 @@ final class PostureSnapshotService
                 'code' => (string) $fw->getCode(),
                 'name' => (string) $fw->getName(),
             ];
-            $applicable = $stats['applicable'] ?? 0;
+            $applicable = $stats['applicable'];
             $fulfilled  = $stats['fulfilled'] ?? 0;
             $percent    = $applicable > 0 ? round(($fulfilled / $applicable) * 100, 1) : 0.0;
 
