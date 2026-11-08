@@ -126,6 +126,10 @@ final class McpControllerTest extends WebTestCase
     {
         $this->enable();
         $token = static::getContainer()->get(ApiTokenManager::class)->mint($this->user, 'Schreiben', canWrite: true);
+        // Before the first request: the client reboots the kernel per request.
+        $owner = (new Person())->setFullName('Bea Buchhaltung')->setTenant($this->tenant);
+        $this->em->persist($owner);
+        $this->em->flush();
 
         $context = $this->rpc('tools/call', ['name' => 'get_context'], $token)['result']['structuredContent'] ?? [];
         self::assertTrue($context['writing']['direct'] ?? false);
@@ -139,13 +143,6 @@ final class McpControllerTest extends WebTestCase
             self::assertNotContains($never, $writable, $never . ' must not be writable through the assistant');
         }
 
-        // The client's requests reset the entity manager: work with a fresh, managed tenant.
-        $this->em = $this->freshEm();
-        $tenant = $this->em->find(Tenant::class, $this->tenant->getId());
-        self::assertInstanceOf(Tenant::class, $tenant);
-        $owner = (new Person())->setFullName('Bea Buchhaltung')->setTenant($tenant);
-        $this->em->persist($owner);
-        $this->em->flush();
         $ownerIri = static::getContainer()->get(IriConverterInterface::class)->getIriFromResource($owner);
 
         $created = $this->rpc('tools/call', ['name' => 'save_record', 'arguments' => ['resource' => 'Risk', 'data' => [
