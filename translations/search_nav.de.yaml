@@ -9,6 +9,9 @@ search_nav:
     tenant_management_index:
         label: 'Organisations-Einstellungen'
         description: 'Organisationen verwalten: Name, Kontakt, ISMS-Scope'
+    app_admin_risk_approval_config:
+        label: 'Risikokriterien'
+        description: 'Risikoskala, Bedeutung der Stufen 1–5 und Freigabestufen pflegen'
     app_admin_tenant_email_branding:
         label: 'Branding & Logo'
         description: 'Logo, Farben, CI, E-Mail-Design anpassen'

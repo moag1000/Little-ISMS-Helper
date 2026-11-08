@@ -6,6 +6,7 @@ namespace App\Twig;
 
 use App\Entity\Risk;
 use App\Risk\RiskMatrixThresholds;
+use App\Risk\RiskScaleProvider;
 use App\Service\Risk\RiskBusinessSummary;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Attribute\AsTwigFunction;
@@ -30,6 +31,7 @@ final class RiskExtension
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly RiskBusinessSummary $businessSummary,
+        private readonly RiskScaleProvider $scaleProvider,
     ) {
     }
 
@@ -80,8 +82,32 @@ final class RiskExtension
      * that need to colour a value but only have the score in hand.
      */
     #[AsTwigFunction('risk_level_band')]
-    public function riskLevelBand(int $score): string
+    public function riskLevelBand(int|float|string|null $score): string
     {
-        return RiskMatrixThresholds::classify($score);
+        return RiskMatrixThresholds::classify((int) floor((float) $score));
+    }
+
+    /**
+     * The organisation's bands, e.g. risk_bands().critical.min — for
+     * Stimulus values and legends (ISO 27001 6.1.2 b).
+     *
+     * @return array<string, array{min: int, max: int}>
+     */
+    #[AsTwigFunction('risk_bands')]
+    public function riskBands(): array
+    {
+        return RiskMatrixThresholds::getBands();
+    }
+
+    /**
+     * What the levels 1–5 of an axis mean in this organisation
+     * ('probability' or 'impact'); empty string = generic label only.
+     *
+     * @return array<int, string>
+     */
+    #[AsTwigFunction('risk_level_criteria')]
+    public function riskLevelCriteria(string $axis): array
+    {
+        return $this->scaleProvider->criteria()[$axis === 'impact' ? 'impact' : 'probability'];
     }
 }

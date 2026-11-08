@@ -151,11 +151,11 @@ class HomeController extends AbstractController
             : [];
         foreach ($allRisks as $risk) {
             $level = $risk->getInherentRiskLevel();
-            if ($level >= 20) {
+            if ($level >= \App\Risk\RiskMatrixThresholds::criticalMin()) {
                 $risksByLevel['critical']++;
-            } elseif ($level >= 12) {
+            } elseif ($level >= \App\Risk\RiskMatrixThresholds::highMin()) {
                 $risksByLevel['high']++;
-            } elseif ($level >= 6) {
+            } elseif ($level >= \App\Risk\RiskMatrixThresholds::mediumMin()) {
                 $risksByLevel['medium']++;
             } else {
                 $risksByLevel['low']++;

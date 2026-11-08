@@ -150,15 +150,16 @@ class RiskRepositoryTest extends TestCase
         $this->assertEquals(Tenant::class, $parameters[0]->getType()->getName());
         $this->assertFalse($parameters[0]->isOptional());
 
-        // Second parameter: threshold (optional, default 12)
+        // Second parameter: threshold (optional; null = the organisation's band „hoch“)
         $this->assertEquals('threshold', $parameters[1]->getName());
         $this->assertTrue($parameters[1]->isOptional());
-        $this->assertEquals(12, $parameters[1]->getDefaultValue());
+        $this->assertNull($parameters[1]->getDefaultValue());
 
         // Verify parameter type
         $paramType = $parameters[1]->getType();
         $this->assertNotNull($paramType);
         $this->assertEquals('int', $paramType->getName());
+        $this->assertTrue($paramType->allowsNull());
 
         // Verify return type is array
         $returnType = $method->getReturnType();
@@ -348,10 +349,10 @@ class RiskRepositoryTest extends TestCase
         $this->assertEquals(Tenant::class, $parameters[0]->getType()->getName());
         $this->assertFalse($parameters[0]->isOptional());
 
-        // Second parameter: threshold (optional, default 12)
+        // Second parameter: threshold (optional; null = the organisation's band „hoch“)
         $this->assertEquals('threshold', $parameters[1]->getName());
         $this->assertTrue($parameters[1]->isOptional());
-        $this->assertEquals(12, $parameters[1]->getDefaultValue());
+        $this->assertNull($parameters[1]->getDefaultValue());
 
         // Verify parameter type
         $paramType = $parameters[1]->getType();

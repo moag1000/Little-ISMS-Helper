@@ -98,13 +98,13 @@ class RiskTest extends TestCase
         $risk->setImpact(5); // 25
         $this->assertTrue($risk->isHighRisk());
 
-        // Boundary: below RiskMatrixThresholds::HIGH_MIN (12) -> medium (11 is not a 5x5 product, 10 is the nearest)
+        // Boundary: below RiskMatrixThresholds::DEFAULT_HIGH_MIN (12) -> medium (11 is not a 5x5 product, 10 is the nearest)
         $risk->setProbability(2);
         $risk->setImpact(5); // 10
         $this->assertFalse($risk->isHighRisk());
         $risk->setProbability(3);
         $risk->setImpact(4); // 12 == HIGH_MIN
-        $this->assertSame(RiskMatrixThresholds::HIGH_MIN, $risk->getInherentRiskLevel());
+        $this->assertSame(RiskMatrixThresholds::DEFAULT_HIGH_MIN, $risk->getInherentRiskLevel());
         $this->assertTrue($risk->isHighRisk());
     }
 

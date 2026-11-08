@@ -106,7 +106,7 @@ final class AuroraMacroTextTest extends KernelTestCase
         yield 'matrix legend' => [
             "{% import '_components/_fa_matrix_table.html.twig' as m %}{{ m.render({rows: [], cols: [], cells: {}, legend: true}) }}",
             'de',
-            ['Schweregrad-Legende', 'Kritisch (&gt;16)'],
+            ['Schweregrad-Legende', 'Kritisch (20–25)'],
         ];
     }
 

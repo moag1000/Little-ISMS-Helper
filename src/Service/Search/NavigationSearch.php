@@ -272,6 +272,15 @@ class NavigationSearch
             ],
             // ── Risk ──────────────────────────────────────────────────────────
             [
+                'route' => 'app_admin_risk_approval_config',
+                'label' => 'search_nav.app_admin_risk_approval_config.label',
+                'description' => 'search_nav.app_admin_risk_approval_config.description',
+                'aliases' => ['Risikokriterien', 'Risikoskala', 'Risikomatrix', 'Bewertungskriterien', 'Akzeptanzkriterien', 'Schwellwerte', 'Risk criteria', 'Risk scale', '6.1.2'],
+                'icon' => 'fa-icon--heatmap',
+                'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
+            ],
+            [
                 'route' => 'app_risk_appetite_index',
                 'label' => 'search_nav.app_risk_appetite_index.label',
                 'description' => 'search_nav.app_risk_appetite_index.description',

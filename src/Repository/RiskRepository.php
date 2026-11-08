@@ -12,6 +12,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Risk\RiskMatrixThresholds;
 
 /**
  * Risk Repository
@@ -35,16 +36,16 @@ class RiskRepository extends ServiceEntityRepository
     /**
      * Find risks with high risk scores (probability × impact >= threshold).
      *
-     * @param int $threshold Minimum risk score to consider as high risk (default: 12)
+     * @param int|null $threshold Minimum risk score to consider as high risk (default: the organisation's band „hoch“)
      * @return Risk[] Array of Risk entities sorted by severity
      */
-    public function findHighRisks(Tenant $tenant, int $threshold = 12): array
+    public function findHighRisks(Tenant $tenant, ?int $threshold = null): array
     {
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->andWhere('(r.probability * r.impact) >= :threshold')
             ->setParameter('tenant', $tenant)
-            ->setParameter('threshold', $threshold)
+            ->setParameter('threshold', $threshold ?? RiskMatrixThresholds::highMin())
             ->orderBy('r.probability', \SortDirection::Descending)
             ->addOrderBy('r.impact', \SortDirection::Descending)
             ->getQuery()
@@ -173,9 +174,9 @@ class RiskRepository extends ServiceEntityRepository
         foreach ($risks as $risk) {
             $riskScore = ($risk->getProbability() ?? 0) * ($risk->getImpact() ?? 0);
 
-            if ($riskScore >= 12) {
+            if ($riskScore >= RiskMatrixThresholds::highMin()) {
                 $stats['high']++;
-            } elseif ($riskScore >= 6) {
+            } elseif ($riskScore >= RiskMatrixThresholds::mediumMin()) {
                 $stats['medium']++;
             } else {
                 $stats['low']++;
@@ -189,16 +190,16 @@ class RiskRepository extends ServiceEntityRepository
      * Find high risks for a specific tenant
      *
      * @param Tenant $tenant The tenant
-     * @param int $threshold Minimum risk score threshold (default: 12)
+     * @param int|null $threshold Minimum risk score threshold (default: the organisation's band „hoch“)
      * @return Risk[] Array of high-risk entities
      */
-    public function findHighRisksByTenant(Tenant $tenant, int $threshold = 12): array
+    public function findHighRisksByTenant(Tenant $tenant, ?int $threshold = null): array
     {
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->andWhere('(r.probability * r.impact) >= :threshold')
             ->setParameter('tenant', $tenant)
-            ->setParameter('threshold', $threshold)
+            ->setParameter('threshold', $threshold ?? RiskMatrixThresholds::highMin())
             ->orderBy('r.probability', \SortDirection::Descending)
             ->addOrderBy('r.impact', \SortDirection::Descending)
             ->getQuery()

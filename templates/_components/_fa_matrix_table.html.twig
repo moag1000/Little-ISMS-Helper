@@ -5,7 +5,8 @@
  #
  #   mode: 'severity' (default) — ISO-27005-style risk heatmap. Y-axis =
  #     probability rows, X-axis = impact cols. Severity is auto-derived from
- #     cell.score (≤3 low · ≤6 moderate · ≤9 medium · ≤16 high · >16 critical).
+ #     cell.score via risk_level_band() — the bands of the organisation's
+ #     risk scale (Risikokriterien; default 1–5 low · 6–11 medium · 12–19 high · 20–25 critical).
  #     Override per cell via cell.severity. Count-pill rendered when
  #     cell.count > 0. Cell becomes a link when cell.href is set.
  #
@@ -42,12 +43,9 @@
  #                                      label:  cell label (e.g. row × col)
  #                                      hint:   tooltip text (overrides default)
  #
- # Severity-mapping (severity mode, auto from score):
- #   score ≤  3  → low (green)
- #   score ≤  6  → moderate
- #   score ≤  9  → medium
- #   score ≤ 16  → high (amber)
- #   score >  16 → critical (red)
+ # Severity-mapping (severity mode, auto from score): risk_level_band(score)
+ #   → low (green) · medium · high (amber) · critical (red), edges from
+ #   the organisation's risk scale (RiskMatrixThresholds).
  #
  # RAG-mapping (rag mode):
  #   status='green' → low      (success palette)
@@ -78,13 +76,9 @@
  #   }) }}
  #}
 
+{# Bands of the organisation's risk scale (Risikokriterien, ISO 27001 6.1.2 b). #}
 {% macro _severity(score) -%}
-    {%- if score <= 3 %}low
-    {%- elseif score <= 6 %}moderate
-    {%- elseif score <= 9 %}medium
-    {%- elseif score <= 16 %}high
-    {%- else %}critical
-    {%- endif -%}
+    {{- risk_level_band(score) -}}
 {% endmacro %}
 
 {# Map RAG status → fa-matrix-table severity class (reuses Aurora token palette). #}
@@ -248,23 +242,19 @@
                 <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="{{ 'ui.component.matrix_legend.severity'|trans({}, 'ui') }}">
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--low">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.low'|trans({}, 'ui') }}
-                    </span>
-                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--moderate">
-                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.moderate'|trans({}, 'ui') }}
+                        {{ 'ui.component.matrix_legend.low'|trans({'%range%': risk_threshold('low')}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--medium">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.medium'|trans({}, 'ui') }}
+                        {{ 'ui.component.matrix_legend.medium'|trans({'%range%': risk_threshold('medium')}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--high">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.high'|trans({}, 'ui') }}
+                        {{ 'ui.component.matrix_legend.high'|trans({'%range%': risk_threshold('high')}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--critical">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        {{ 'ui.component.matrix_legend.critical'|trans({}, 'ui') }}
+                        {{ 'ui.component.matrix_legend.critical'|trans({'%range%': risk_threshold('critical')}, 'ui') }}
                     </span>
                 </div>
             {% endif %}

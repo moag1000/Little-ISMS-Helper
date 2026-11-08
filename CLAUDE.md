@@ -275,7 +275,9 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `Kpi\KpiCatalog` - the one source of management KPIs (stable keys, tenant KPI thresholds applied,
   euro KPIs from the risk quant fields). Dashboards pick tiles by key: Twig `kpi('<key>')`,
   `_components/_kpi_tile.html.twig`; never call `DashboardStatisticsService::getManagementKPIs()`
-  directly (Gate 74). Risk bands come only from `App\Risk\RiskMatrixThresholds` (20/12/6).
+  directly (Gate 74). Risk bands come only from `App\Risk\RiskMatrixThresholds`
+  (`classify()`, `criticalMin()/highMin()/mediumMin()`; Twig `risk_level_band()`, `risk_bands()`): the edges are the
+  organisation's (Admin > Risikokriterien, `RiskScaleProvider`, default 20/12/6) — never literal 20/12/6 (Gate 87).
 
 **Core Entities:** Asset, Risk, Control (93 ISO 27001 controls), Incident, Document, ComplianceFramework, User, Tenant, Role, Permission, Workflow, WorkflowInstance, WorkflowStep, DataBreach
 

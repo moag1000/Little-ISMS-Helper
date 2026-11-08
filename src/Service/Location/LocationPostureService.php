@@ -404,7 +404,7 @@ class LocationPostureService implements ResetInterface
             'cia' => $site['cia'],
             'assets' => $site['assets'],
             'risks' => count($risks),
-            'highRisks' => count(array_filter($risks, static fn (Risk $r): bool => self::currentScore($r) >= RiskMatrixThresholds::HIGH_MIN)),
+            'highRisks' => count(array_filter($risks, static fn (Risk $r): bool => self::currentScore($r) >= RiskMatrixThresholds::highMin())),
             'score' => $score,
             'riskBand' => $risks !== [] ? RiskMatrixThresholds::classify($score) : 'none',
             'checks' => $checks,

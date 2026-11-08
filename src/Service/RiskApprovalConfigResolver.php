@@ -7,8 +7,10 @@ namespace App\Service;
 use App\Entity\RiskApprovalConfig;
 use App\Entity\Tenant;
 use App\Repository\RiskApprovalConfigRepository;
+use App\Risk\RiskMatrixThresholds;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Read-only Value-Object für aufgelöste Approval-Schwellwerte.
@@ -23,6 +25,13 @@ final readonly class RiskApprovalConfigView
         public int $thresholdAutomatic,
         public int $thresholdManager,
         public int $thresholdExecutive,
+        public int $bandCriticalMin = RiskMatrixThresholds::DEFAULT_CRITICAL_MIN,
+        public int $bandHighMin = RiskMatrixThresholds::DEFAULT_HIGH_MIN,
+        public int $bandMediumMin = RiskMatrixThresholds::DEFAULT_MEDIUM_MIN,
+        /** @var array<string, string> level => what it means here */
+        public array $probabilityCriteria = [],
+        /** @var array<string, string> level => what it means here */
+        public array $impactCriteria = [],
     ) {
     }
 
@@ -30,6 +39,25 @@ final readonly class RiskApprovalConfigView
     {
         // Synchron mit alten RiskAcceptanceWorkflowService-Konstanten.
         return new self(3, 7, 25);
+    }
+
+    /**
+     * The stricter of two configurations: lower thresholds and lower band
+     * edges (a risk reaches a higher band sooner). Level descriptions are the
+     * subsidiary's own, the holding's where it has none.
+     */
+    public function stricter(self $other): self
+    {
+        return new self(
+            min($this->thresholdAutomatic, $other->thresholdAutomatic),
+            min($this->thresholdManager, $other->thresholdManager),
+            min($this->thresholdExecutive, $other->thresholdExecutive),
+            min($this->bandCriticalMin, $other->bandCriticalMin),
+            min($this->bandHighMin, $other->bandHighMin),
+            min($this->bandMediumMin, $other->bandMediumMin),
+            $this->probabilityCriteria + $other->probabilityCriteria,
+            $this->impactCriteria + $other->impactCriteria,
+        );
     }
 
     /** Approval level for a residual risk score: 'automatic', 'manager' or 'executive'. */
@@ -57,6 +85,11 @@ final readonly class RiskApprovalConfigView
             $entity->getThresholdAutomatic(),
             $entity->getThresholdManager(),
             $entity->getThresholdExecutive(),
+            $entity->getBandCriticalMin(),
+            $entity->getBandHighMin(),
+            $entity->getBandMediumMin(),
+            $entity->getProbabilityCriteria() ?? [],
+            $entity->getImpactCriteria() ?? [],
         );
     }
 }
@@ -74,7 +107,8 @@ final readonly class RiskApprovalConfigView
  * Ceiling-Merge mit Holding-Hierarchie:
  * Ein Holding-Parent setzt Maximum-Schwellwerte. Child-Tenants dürfen
  * nur NIEDRIGERE (strengere) Werte setzen, nie höhere (laxere).
- * Merge-Semantik: min(child, parent) für alle drei Threshold-Felder.
+ * Merge-Semantik: min(child, parent) für die drei Threshold-Felder und die
+ * drei Stufengrenzen der Risikoskala ({@see RiskApprovalConfigView::stricter()}).
  *
  * Cache-Invalidation: Admin-Controller ruft invalidate() für den
  * betroffenen Tenant auf. Da Ancestor-Werte in den Child-Cache
@@ -82,7 +116,7 @@ final readonly class RiskApprovalConfigView
  * Child-Cache invalidiert werden. Empfehlung: nach Speichern einer
  * Ancestor-Config alle bekannten Subsidiaries invalidieren.
  */
-class RiskApprovalConfigResolver
+class RiskApprovalConfigResolver implements ResetInterface
 {
     /** @var array<int, RiskApprovalConfigView> */
     private array $cache = [];
@@ -103,7 +137,7 @@ class RiskApprovalConfigResolver
         // Eigene Config des Child-Tenants (oder Defaults wenn keine vorhanden)
         $childEntity = $this->repository->findByTenant($tenant);
         if (!$childEntity instanceof RiskApprovalConfig) {
-            $this->logger->warning('No RiskApprovalConfig for tenant — using defaults', [
+            $this->logger->debug('No RiskApprovalConfig for tenant — using defaults', [
                 'tenant_id' => $tenantId,
             ]);
             $view = RiskApprovalConfigView::defaults();
@@ -119,11 +153,7 @@ class RiskApprovalConfigResolver
                 continue;
             }
             $ancestorView = RiskApprovalConfigView::fromEntity($ancestorEntity);
-            $view = new RiskApprovalConfigView(
-                thresholdAutomatic: min($view->thresholdAutomatic, $ancestorView->thresholdAutomatic),
-                thresholdManager:   min($view->thresholdManager,   $ancestorView->thresholdManager),
-                thresholdExecutive: min($view->thresholdExecutive, $ancestorView->thresholdExecutive),
-            );
+            $view = $view->stricter($ancestorView);
             $this->logger->debug('RiskApprovalConfigResolver: ceiling-merge with ancestor', [
                 'tenant_id' => $tenantId,
                 'ancestor_id' => $ancestor->getId(),
@@ -143,6 +173,12 @@ class RiskApprovalConfigResolver
      * Child-Tenant-Caches invalidiert werden, da deren aufgelöste Werte
      * vom Ancestor abhängen.
      */
+    /** Workers: forget cached configurations between messages (kernel.reset). */
+    public function reset(): void
+    {
+        $this->cache = [];
+    }
+
     public function invalidate(Tenant $tenant): void
     {
         $tenantId = $tenant->getId();

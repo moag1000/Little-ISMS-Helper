@@ -96,7 +96,7 @@
 {# ── Build table rows with score badges and level badges ── #}
 {% set _risk_rows = [] %}
 {% for risk in risks %}
-    {% set riskLevel = risk.riskScore >= 20 ? 'critical' : (risk.riskScore >= 12 ? 'high' : (risk.riskScore >= 6 ? 'medium' : 'low')) %}
+    {% set riskLevel = risk_level_band(risk.riskScore) %}
     {% set _level_badge_class = riskLevel == 'critical' ? 'badge-danger' : (riskLevel == 'high' ? 'badge-warning' : (riskLevel == 'medium' ? 'badge-info' : 'badge-success')) %}
     {% set _risk_rows = _risk_rows|merge([[
         risk.id,
