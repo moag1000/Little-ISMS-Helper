@@ -131,6 +131,26 @@ chmod +x deployment-check.sh
 
 ## 🔍 Qualitätssicherung
 
+### Mutationsgegenprobe der Dauertests (T, Welle 7)
+
+Frage je Test und Gate: Wird er rot, wenn man die geschützte Eigenschaft absichtlich bricht? Wer
+einen der Tests oder ein Gate ändert, wiederholt die Gegenprobe für seine Änderung. Ein Test, der eine
+Lücke festschreibt, wird umgedreht, nicht gelöscht.
+
+| Test / Gate | Gegenprobe (absichtlich gebrochen → rot) | Vorher übersehen |
+|---|---|---|
+| `DeadlineLinkReachabilityTest` | Je Fristquelle eigene Organisation nur mit ihren Modulen, je Empfängerrolle (Rückfallrollen, Inhaber als User/Person) ein Konto, das `ResponsibilityResolver::recipients()` wirklich nennt; GET auf den Link, bis zu 5 Weiterleitungen, rot bei ≠ 200 oder Landung auf Dashboard/Login/MFA/Setup. Selbsttest `checkerSeesEveryKindOfGate`: eigenes Risiko ok; Rolle zu klein, Leitung auf Formular, DSB auf Admin-Seite, fremde Organisation → jeweils rot | `grants()` ließ jedes Voter-Attribut durch, nur GET ohne Weiterleitung, Quellen ohne Link übersprungen, PERSONA_* falsch abgebildet. Fund: 6 Quellen ohne Modul (Link führte bei abgeschaltetem Modul aufs Dashboard); DORA-TLPT hat keine Seite (`WITHOUT_LINK`, offen) |
+| `WizardReferencesHitCatalogueTest` | „6.1.1/6.1.2 / 9.99" und zusätzliche Anforderung `ISO27001-6.1.9` → rot | Ein Treffer deckte alle Referenzen eines Checks; `clause_coverage`-Unterchecks und `requirements`-Ids nicht geprüft |
+| `ApiEvidenceFieldNamesTest` | Feld des Entity-Formulars mit Nachweisnamen ohne Markierung → rot; `#[ApiReadOnlyEvidence]`-Feld als freies Formularfeld → rot (`evidenceFieldsAreNotEditableInTheEntityForm`) | Formular-Ausnahme verbarg genau die Freigabefelder; nur `src/Entity/*.php` ohne Unterordner. Fund: Risikoakzeptanz (wer/wann) war im Formular frei eintragbar → jetzt schreibgeschützt; 23 weitere Nachweisfelder im Formular als „open since T" gelistet |
+| `McpReadOnlyToolsWriteNothingTest` (neu) | Jedes Tool mit `readOnlyHint` wird über `/mcp` aufgerufen (Ressourcen, Id, Suchbegriff), ein Doctrine-onFlush-Spion zählt Schreibzugriffe; `theSpySeesAWrite` beweist den Spion | `McpToolClassificationTest` sah nur Quelltext per Regex, Schreiben über aufgerufene Dienste blieb unsichtbar |
+| `OutboundUserUrlClientTest` | Guzzle-Brücke muss `NetworkExceptionInterface` mit `TransportException` des Wächters werfen (Positivkontrolle: öffentliche Adresse geht durch); Scan erkennt Guzzle, PSR-18, curl, Sockets, SOAP, Web-Push, Stream-Wrapper auf URLs (`theScanRecognisesEveryKindOfClient`) | Jede `\Throwable` zählte als Abwehr; Regex kannte nur `HttpClientInterface`. Fund: Web-Push (S11 behebt) |
+| Gate 62, 71–75, 77–81, 83–87, 89, 90 | Je Gate eine Mutation pro Schreibweise (andere Anführungszeichen, umgekehrte Klassenreihenfolge, Macro-Hash, Zeilenumbruch im Aufruf, Yoda-Vergleich, nullsafe/first-class callable, Alias-Variable, Partial statt Seite) | Funde behoben: Seitensemantik/Stimulus/Datumsanzeige in Templates, CSV-Zelle in `TisaxConsolidateCommand`, Risikostufen-Literale in Alva-Hinweisen und Risikoregister-Export (jetzt Skala der Organisation), globale `mappedControls` in 2 Templates, Gate 89 Negationsfehler |
+
+Bekannte Restlücken (bewusst nicht erkannt, je Gate): 87 Variablen namens `$rating`; 84 `get…Id`/`…Number`-Getter,
+`fwrite`/`implode`; 72 Factory/`clone`; 73 `list.html.twig`; 75 Marker-Missbrauch, `detail.html.twig`; 77 `<textarea>`;
+78 Tonketten per Ternär (62 Templates) und `<h1>` in Partials; 62 `templates/dev`; 89 Modulschlüssel als Konstante
+einer anderen Klasse; 90 direkte Dateizugriffe auf `var/jobs`.
+
 ### quality/check_translations.py
 
 **Zweck:** Überprüfung der Übersetzungskonsistenz (DE/EN)
