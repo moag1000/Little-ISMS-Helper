@@ -12,6 +12,7 @@ objective:
         responsibility: 'Responsibility & Timeline'
         status_progress: 'Status & Progress'
     action:
+        confirm_measurement: 'Measured today, value unchanged'
         add_new: 'New Objective'
         create: 'Create Objective'
     field:
@@ -25,7 +26,8 @@ objective:
         current_value: 'Current value'
         unit: Unit
         responsible_person: 'Responsible person'
-        responsible_for_measurement: 'Responsible for measurement'
+        responsible_for_measurement: 'Responsible for measurement (free text, outdated)'
+        measurement_person: 'Measured by'
         measurement_frequency: 'Measurement frequency'
         measurement_method: 'Measurement method'
         target_date: 'Target date'
@@ -37,6 +39,7 @@ objective:
         responsible_deputies: 'Deputies'
         responsible_person_legacy: 'Responsible person (free text, legacy)'
     placeholder:
+        measurement_person: 'Choose a person'
         kpi_key: 'Maintained manually'
         kpi_location: 'Whole organisation'
         title: 'e.g. Improvement of information security'
@@ -52,10 +55,11 @@ objective:
         responsible_person_user: 'Select user…'
         responsible_person_ref: 'Select person…'
     help:
+        confirm_measurement: 'A changed current value sets the measurement date itself.'
         kpi_key: 'With a KPI the current value is computed instead of maintained by hand (ISO 27001 6.2 d).'
         kpi_location: 'Location KPIs only: applies to one site instead of all.'
         target_date: 'Target date for achieving the objective'
-        responsible_for_measurement: 'ISO 27001 §6.2.b — who actually performs the measurement (may differ from the responsible person).'
+        measurement_person: 'ISO 27001 6.2 b / 9.1 — gets the measurement deadline from the cadence. Empty: the responsible person.'
         measurement_frequency: 'ISO 27001 §6.2.b — how often the value is measured / updated.'
         measurement_method: 'ISO 27001 §6.2.b — description of the measurement method (data source, tool, process).'
         status_readonly: 'Status is driven by the lifecycle workflow (Not started → In progress → Achieved / Delayed / Cancelled). Direct editing is disabled; use the status actions on the detail page.'
@@ -102,6 +106,9 @@ objective:
         new: New
         create_new: 'Create New'
     label:
+        from_kpi: 'from KPI'
+        next_measurement: 'Next measurement'
+        last_measured: 'Last measured'
         kpi_computed: 'Current value computed from %kpi%, scope: %scope%.'
         kpi_scope_all: 'whole organisation'
         kpi_on_map: 'Show on map'
@@ -125,3 +132,5 @@ objective:
         employees: 'Employees'
         euro: 'Euro (€)'
         points: 'Points'
+    flash:
+        measured: 'Measurement recorded.'

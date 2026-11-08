@@ -119,7 +119,7 @@ my_day:
         control_implementation_due: 'Control-Umsetzung — Zieldatum (ISO 27001 8.3)'
         bc_plan_test_due: 'BC-Plan — Test fällig (ISO 22301 8.5)'
         audit_program_due: 'Auditprogramm — Zeitraum endet (ISO 27001 9.2.2)'
-        objectives_due: 'ISMS-Ziele — Zieltermin (ISO 27001 6.2)'
+        objectives_due: 'ISMS-Ziele — Zieltermin und Messung (ISO 27001 6.2, 9.1)'
         access_reviews_due: 'Zugriffsreview — fällig (A.5.18)'
         certificates_expiring: 'Zertifikate — Ablauf in 90 Tagen'
         context_review_due: 'ISMS-Kontext — Review fällig (ISO 27001 4.1–4.3)'

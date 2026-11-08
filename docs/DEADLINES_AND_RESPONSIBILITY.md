@@ -66,7 +66,7 @@ Organisations classified as not regulated have no such duty.
 Duties the norms repeat but no record carries a date for live in
 `RecurringDutyCatalog` (key, module, NIS-2/DORA scope, norm reference, default
 interval, fallback roles): risk acceptance criteria (6.1.2), SoA review
-(6.1.3 d), objective measurement (6.2 / 9.1), key rotation (A.8.24), access
+(6.1.3 d), key rotation (A.8.24), access
 recertification (A.5.18), BIA (ISO 22301 8.2.2), BC exercise (8.5), TOM review
 (DSGVO Art. 32), NIS-2 management training (Art. 20) and measures review
 (Art. 21), DORA register of information and exit plans (Art. 28).
@@ -85,8 +85,14 @@ Cadence words stored on records (`AuditProgram.frequency`,
 `InterestedParty.communicationFrequency`, `ISMSObjective.measurementFrequency`)
 are read as months only through `App\Util\Cadence`: the next communication
 falls back to last communication + frequency, a completed audit programme
-with a frequency asks for its successor, and the objective measurement duty
-takes the shortest measurement frequency on record as its default interval.
+with a frequency asks for its successor, and every ISMS objective measured by
+hand is due again one cadence after its last measurement
+(`ObjectiveMeasurementSource`, ISO 27001 6.2 b / 9.1; `ISMSObjective::getNextMeasurementDue()`).
+The measuring `Person` receives it, else the objective's owner; a changed current
+value or "Heute gemessen, Wert unverändert" on the objective sets `lastMeasuredAt`.
+Objectives linked to a KPI are measured by the tool and carry no duty. (Until
+P8 this was one catalogue duty for all objectives; it is gone so nobody is
+reminded twice.)
 
 ## Responsibility (`App\Service\Responsibility\ResponsibilityResolver`)
 

@@ -260,6 +260,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Offline-Geokodierung** -- Koordinaten aus PLZ (DE/AT/CH) oder Ort (weltweit) ohne Online-Dienst; optional eigener Nominatim-Dienst, Standard aus
 - **Steuerung** -- Standort-Kennzahlen aus dem KPI-Katalog, Vergleich mit ähnlichen Standorten (nur Standorte, keine Personen), größte Hebel, Sammelaktionen mit Audit-Log und FTE-Erfassung, Lagebild als Excel und einseitiges PDF mit Kartenbild
 - **Überall dieselben Zahlen** -- ISMS-Ziele mit Katalog-Kennzahl je Standort, offene Prüfungen in *Mein Tag*, Kachel auf den Dashboards von CISO, ISB und Compliance, Steckbrief auf der Standortseite
+- **Ziele messen (ISO 27001 6.2 / 9.1)** -- Fortschritt in Liste, Seitenblatt und Detail aus der verknüpften Kennzahl; von Hand gemessene Ziele haben eine Person, die misst, und eine eigene Messfrist nach dem Messrhythmus in *Mein Tag*; Kennzahlen, SoA und Berichte zählen nur, was im Geltungsbereich liegt ([Register](docs/user-guide/REGISTER.md))
 - **Einstellungen je Organisation** -- Vergleich aus, ohne oder mit Namen der Verantwortlichen (§ 87 BetrVG), einzelne Prüfungen abschaltbar, Koordinaten auf Karte und im Export auf etwa 1 km gerundet; Auditoren sehen die Karte nur lesend
 
 ### KPI und Reporting
