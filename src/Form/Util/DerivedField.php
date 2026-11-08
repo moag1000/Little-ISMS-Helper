@@ -36,6 +36,7 @@ final class DerivedField
             }
             $config = $form->get($field)->getConfig();
             $keep = array_intersect_key($config->getOptions(), array_flip(self::KEPT_OPTIONS));
+            // @intentional-bind: disabled fields are not submitted, the stored value stays and is shown read-only
             $form->add($field, $config->getType()->getInnerType()::class, [
                 ...$keep,
                 'disabled' => true,
