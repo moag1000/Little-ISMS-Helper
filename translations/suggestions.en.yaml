@@ -212,6 +212,7 @@ suggestions:
             rationale: 'Inherent %inherent%, residual %from% → %to%. %basis%'
             no_controls: No implemented control, residual risk equals inherent risk.
             controls: 'Implemented: %implemented%. Effective: %effective%.'
+            interim: 'Interim value: treatment is not finished yet; further implemented controls bring a new proposal.'
         risk_treatment_complete:
             title: 'Complete treatment of %risk%'
             rationale: 'All controls are implemented: %controls%.'

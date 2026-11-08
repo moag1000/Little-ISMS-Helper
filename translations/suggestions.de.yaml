@@ -212,6 +212,7 @@ suggestions:
             rationale: 'Inhärent %inherent%, Restrisiko %from% → %to%. %basis%'
             no_controls: Keine umgesetzte Maßnahme, Restrisiko gleich inhärentem Risiko.
             controls: 'Umgesetzt: %implemented%. Wirksam: %effective%.'
+            interim: 'Zwischenstand: Die Behandlung ist noch nicht abgeschlossen; nach weiteren umgesetzten Maßnahmen kommt ein neuer Vorschlag.'
         risk_treatment_complete:
             title: 'Behandlung von %risk% abschließen'
             rationale: 'Alle Maßnahmen sind umgesetzt: %controls%.'

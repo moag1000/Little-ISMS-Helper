@@ -11,9 +11,11 @@ use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Asset;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Util\DerivedField;
 use App\Form\Type\OwnerUserType;
 use App\Repository\RiskRepository;
 use App\Service\ModuleConfigurationService;
+use App\Service\Suggestion\Kind\ControlState;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -43,6 +45,23 @@ final class ControlType extends AbstractType implements SectionMapInterface
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // P5 / ISO 27001 9.1: without a current effectiveness test the rating comes from the incidents on
+        // the protected assets (ControlEffectivenessKind proposes it); a test of the last 12 months makes
+        // the tester's rating editable again.
+        DerivedField::readOnlyWhen($builder, 'effectiveness', static function (Control $control): ?array {
+            $tested = $control->getLastEffectivenessTest();
+            if ($control->getId() === null || !ControlState::isImplemented($control)
+                || (int) $control->getImplementationPercentage() < 100
+                || $control->getProtectedAssets()->count() === 0
+                || ($tested !== null && $tested >= new \DateTimeImmutable('-12 months'))) {
+                return null;
+            }
+
+            return ['control.help.effectiveness_derived', [
+                '%assets%' => $control->getProtectedAssets()->count(),
+                '%score%' => (int) round($control->getEffectivenessScore()),
+            ]];
+        });
         $builder
             ->add('controlId', TextType::class, [
                 'label' => 'control.field.control_id',

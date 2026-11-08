@@ -22,14 +22,19 @@ use Doctrine\ORM\EntityManagerInterface;
  * linked to the risk: no implemented control → residual equals inherent;
  * implemented controls lower likelihood by one step, effective ones by two;
  * an implemented corrective or recovery control lowers impact by one step.
- * Only for risks in treatment or later — earlier there is nothing to
- * derive. The risk owner confirms.
+ * For risks in treatment or later, and for assessed risks that already have
+ * implemented controls (existing controls, ISO 27005 8.4) — while treatment
+ * is still under way the proposal says it is an interim value. The risk
+ * owner confirms.
  */
 final class RiskResidualKind extends AbstractSuggestionKind
 {
     public const string KEY = 'risk.residual';
 
-    private const array TREATED_STATES = [RiskStatus::InTreatment, RiskStatus::Treated, RiskStatus::Monitored];
+    private const array TREATED_STATES = [RiskStatus::InTreatment, RiskStatus::Treated, RiskStatus::Mitigated, RiskStatus::Monitored];
+
+    /** States in which the residual risk is an interim value: treatment not finished. */
+    private const array INTERIM_STATES = [RiskStatus::Assessed, RiskStatus::InTreatment];
 
     public function __construct(
         private readonly RiskRepository $risks,
@@ -61,7 +66,11 @@ final class RiskResidualKind extends AbstractSuggestionKind
     public function generate(Tenant $tenant): iterable
     {
         foreach ($this->risks->findByTenant($tenant) as $risk) {
-            if (!in_array($risk->getStatus(), self::TREATED_STATES, true)) {
+            $assessed = $risk->getStatus() === RiskStatus::Assessed;
+            if (!$assessed && !in_array($risk->getStatus(), self::TREATED_STATES, true)) {
+                continue;
+            }
+            if ($assessed && (self::derive($risk)['implemented'] ?? []) === []) {
                 continue;
             }
             $draft = $this->draftFor($risk, $tenant);
@@ -131,7 +140,9 @@ final class RiskResidualKind extends AbstractSuggestionKind
                 '%to%' => sprintf('%d × %d', $to[0], $to[1]),
                 '%inherent%' => sprintf('%d × %d', (int) $risk->getProbability(), (int) $risk->getImpact()),
                 '%basis%' => $basis,
-            ]),
+            ]) . (in_array($risk->getStatus(), self::INTERIM_STATES, true)
+                ? ' ' . $this->text->t($tenant, 'suggestions.text.risk_residual.interim')
+                : ''),
             payload: ['probability' => $to[0], 'impact' => $to[1], 'from' => $from],
             dedupKey: sprintf('risk:%d:%d:%d:%d:%d', (int) $risk->getId(), $from[0], $from[1], $to[0], $to[1]),
         );
