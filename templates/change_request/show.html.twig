@@ -77,8 +77,8 @@
             <div class="card-header">
                 <h2>{{ 'change_request.details.title'|trans({}, 'change_requests') }}</h2>
                 <div>
-                    <span class="badge badge-{{ change_request.changeType }}">{{ change_request.changeType }}</span>
-                    <span class="badge badge-{{ change_request.priority }}">{{ change_request.priority }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral">{{ ('change_request.change_type.' ~ change_request.changeType)|trans({}, 'change_requests') }}</span>
+                    <span class="fa-status-pill fa-status-pill--{{ pill_tone_severity(change_request.priority) }}">{{ ('change_request.priority.' ~ change_request.priority)|trans({}, 'change_requests') }}</span>
                 </div>
             </div>
         {% endblock %}

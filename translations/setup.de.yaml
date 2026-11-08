@@ -153,7 +153,6 @@ setup:
 
     # Step 2: Database Configuration
     database:
-        user_help: 'Benutzername für die Datenbankverbindung'
         unix_socket_help: 'Pfad zum MySQL/MariaDB Unix-Socket (leer lassen für TCP-Verbindung)'
         type_help: 'Wählen Sie den Typ Ihrer Datenbank'
         port_help: 'Port des Datenbankservers (wird automatisch gesetzt wenn leer)'

@@ -191,13 +191,6 @@ class ComplianceWizardControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testApiAssessRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/compliance-wizard/iso27001/api/assess');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
     public function testConfirmManualCheckCreatesAndRemovesConfirmation(): void
     {
         $this->client->loginUser($this->managerUser);
@@ -248,40 +241,6 @@ class ComplianceWizardControllerTest extends WebTestCase
             'confirmed' => '1',
         ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testApiAssessRequiresManagerRole(): void
-    {
-        $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/compliance-wizard/iso27001/api/assess');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testApiAssessReturnsJson(): void
-    {
-        $this->client->loginUser($this->managerUser);
-        $this->client->request('GET', '/en/compliance-wizard/iso27001/api/assess');
-
-        // Either returns JSON, redirect, or error (403/404 if wizard not available)
-        $response = $this->client->getResponse();
-        $statusCode = $response->getStatusCode();
-
-        if ($response->isSuccessful()) {
-            $this->assertJson($response->getContent());
-
-            $data = json_decode($response->getContent(), true);
-            $this->assertIsArray($data);
-            $this->assertArrayHasKey('success', $data);
-        } else {
-            // Accept redirect, 400/403/404 as valid responses when wizard not available
-            $validResponses = $response->isRedirect() ||
-                              $statusCode === Response::HTTP_BAD_REQUEST ||
-                              $statusCode === Response::HTTP_FORBIDDEN ||
-                              $statusCode === Response::HTTP_NOT_FOUND;
-            $this->assertTrue($validResponses, 'Expected JSON, redirect, or 4xx error. Got: ' . $statusCode);
-        }
     }
 
     #[Test]

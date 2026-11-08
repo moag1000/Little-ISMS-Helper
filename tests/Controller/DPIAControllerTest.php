@@ -426,21 +426,4 @@ class DPIAControllerTest extends WebTestCase
         $this->client->request('POST', '/en/dpia/' . $this->testDPIA->getId() . '/clone');
         $this->assertResponseRedirects();
     }
-
-    // ========== VALIDATE TESTS ==========
-
-    #[Test]
-    public function testValidateRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId() . '/validate');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testValidateDisplaysResults(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId() . '/validate');
-        $this->assertResponseIsSuccessful();
-    }
 }

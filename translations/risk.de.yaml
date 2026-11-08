@@ -37,8 +37,6 @@ risk:
     note_from_incident: '(Diese Erfassung wurde aus Vorfall ID=%id% abgeleitet.)'
     title_from_asset: 'Risiko für %name%'
     note_from_asset: '(Diese Erfassung wurde aus Asset ID=%id% abgeleitet.)'
-  preview:
-    title: Risiko-Informationen
   filter:
     owner_placeholder: Suche nach Verantwortlichem...
     level_label: Risikolevel
@@ -254,8 +252,6 @@ risk:
     title: Eindeutige Bezeichnung des Risikos für interne Referenzierung
     category: Kategorisierung des Risikos (finanziell, operativ, compliance, etc.)
     asset: Das von diesem Risiko betroffene Asset (Hardware, Software, Daten, Prozess)
-    location: Der von diesem Risiko betroffene Standort
-    supplier: Der von diesem Risiko betroffene Lieferant
     description: Detaillierte Beschreibung des Risikoszenarios und möglicher Folgen
     threat: Die Bedrohung bzw. Gefährdung (z.B. Cyberangriff, Naturkatastrophe, menschliches
       Versagen)
@@ -291,16 +287,13 @@ risk:
       ist
     risk_owner_person: 'Person ohne System-Login als Risikoverantwortlichen wählen. Reihenfolge&#58; User &gt; Person.'
     risk_owner_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
-    treatment_description: Detaillierte Beschreibung der geplanten oder umgesetzten
       Behandlungsmaßnahmen
     acceptance_approved_by: Person, die das Restrisiko formal akzeptiert hat (erforderlich
       für Risikoakzeptanz)
     acceptance_approved_at: Datum der formalen Risikoakzeptanz durch die verantwortliche
       Person
-    acceptance_justification: Begründung, warum das Restrisiko akzeptiert wird
     acceptance_expiry_date: 'ISO 27001 Kl. 8.3 — Datum, bis zu dem die Risikoakzeptanz gilt. Danach muss neu bewertet werden. Pflicht laut Audit, sonst gilt die Akzeptanz als unbefristet (Audit-Mangel).'
     review_date: Datum der nächsten geplanten Risikoüberprüfung
-    acceptance_approved_by_user: Person die die Risikoakzeptanz genehmigt hat.
     likelihood_justification: 'ISO 27001:2022 Kl. 6.1.2.d — Begründen Sie, warum diese Eintrittswahrscheinlichkeit vergeben wurde (auditpflichtiger Nachweis).'
     impact_justification: 'ISO 27001:2022 Kl. 6.1.2.d — Begründen Sie, warum dieses Schadensausmaß bewertet wurde (auditpflichtiger Nachweis).'
     decision_rationale: 'ISO 31000 §6.5.4 — Begründung für die getroffene Risikobehandlungsentscheidung (Mitigieren / Akzeptieren / Übertragen / Vermeiden).'
@@ -678,25 +671,7 @@ dora:
 # ── FAIR Quantitative Risk-Modul-Felder (gegatete Felder: quantitative_risk) ─
 fair:
   field:
-    lef_min: 'Schadensereignishäufigkeit — Min (LEF)'
-    lef_max: 'Schadensereignishäufigkeit — Max (LEF)'
-    lef_mode: 'Schadensereignishäufigkeit — Modus (LEF)'
-    tef_min: 'Bedrohungsereignishäufigkeit — Min (TEF)'
-    tef_max: 'Bedrohungsereignishäufigkeit — Max (TEF)'
-    tef_mode: 'Bedrohungsereignishäufigkeit — Modus (TEF)'
-    vulnerability_probability: 'Schwachstellenwahrscheinlichkeit (%)'
-    plm_min: 'Primärer Schadensbetrag — Min (€)'
-    plm_max: 'Primärer Schadensbetrag — Max (€)'
-    plm_mode: 'Primärer Schadensbetrag — Modus (€)'
-    slm_min: 'Sekundärer Schadensbetrag — Min (€)'
-    slm_max: 'Sekundärer Schadensbetrag — Max (€)'
-    slm_mode: 'Sekundärer Schadensbetrag — Modus (€)'
   help:
-    lef: 'FAIR: Loss Event Frequency — erwartete Häufigkeit eines Schadenseignisses pro Jahr (Min/Max/Modus).'
-    tef: 'FAIR: Threat Event Frequency — wie oft ein Bedrohungsakteur pro Jahr gegen ein Asset vorgeht (Min/Max/Modus).'
-    vulnerability_probability: 'FAIR: Wahrscheinlichkeit (0,0–1,0), dass ein Bedrohungsereignis zu einem Schadensereignis führt.'
-    plm: 'FAIR: Primärer Schadensbetrag — direkter finanzieller Schaden in € (Min/Max/Modus).'
-    slm: 'FAIR: Sekundärer Schadensbetrag — indirekter Schaden in € inkl. Reputationsschaden und Bußgelder (Min/Max/Modus).'
 
 # ── F46 Quantitative Risk (SLE/ARO/ALE) — Modul risk_quant ─────────────────
 

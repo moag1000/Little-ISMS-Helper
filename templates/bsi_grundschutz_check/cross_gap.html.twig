@@ -149,7 +149,7 @@
                                         </span>
                                     </td>
                                     <td class="fa-table__cell">
-                                        <span class="badge {% if item.state == 'iso_offen' %}bg-primary{% else %}bg-warning text-dark{% endif %}">
+                                        <span class="fa-status-pill fa-status-pill--{% if item.state == 'iso_offen' %}primary{% else %}warning{% endif %}">
                                             {{ ('bsi.cross_gap.state.' ~ item.state)|trans({}, 'compliance') }}
                                         </span>
                                     </td>
@@ -249,6 +249,7 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% import '_components/_status_vocabulary.html.twig' as _status %}
                             {% trans_default_domain 'compliance' %}
                             {% for item in items %}
                                 <tr class="fa-table__row">
@@ -257,33 +258,18 @@
                                     </td>
                                     <td class="fa-table__cell">
                                         {%- set tierLabel = ('bsi.cross_gap.tier.' ~ item.tier)|trans({}, 'compliance') -%}
-                                        {%- set tierClass = item.tier == 'basis' ? 'bg-info text-dark' : (item.tier == 'standard' ? 'bg-primary' : 'bg-danger') -%}
-                                        <span class="badge {{ tierClass }}">{{ tierLabel }}</span>
+                                        <span class="fa-status-pill fa-status-pill--{{ _status.tone('bsi_tier', item.tier)|trim }}">{{ tierLabel }}</span>
                                     </td>
                                     <td class="fa-table__cell">
                                         {%- set stateLabel = ('bsi.cross_gap.state.' ~ item.state)|trans({}, 'compliance') -%}
-                                        {%- set stateClass = {
-                                            'gedeckt': 'bg-success',
-                                            'partiell': 'bg-warning text-dark',
-                                            'iso_offen': 'bg-primary',
-                                            'ungemappt_unbewertet': 'bg-secondary',
-                                            'ungemappt_eigenstaendig': 'bg-secondary',
-                                        }[item.state] ?? 'bg-secondary' -%}
-                                        <span class="badge {{ stateClass }}">{{ stateLabel }}</span>
+                                        <span class="fa-status-pill fa-status-pill--{{ _status.tone('bsi_gap_state', item.state)|trim }}">{{ stateLabel }}</span>
                                         {% if item.delta > 0 %}
                                             <small class="text-muted ms-1">−{{ item.delta }}%</small>
                                         {% endif %}
                                     </td>
                                     <td class="fa-table__cell">
                                         {%- set trustLabel = ('bsi.cross_gap.trust.' ~ item.trust)|trans({}, 'compliance') -%}
-                                        {%- set trustClass = {
-                                            'amtlich': 'bg-success',
-                                            'ki_validiert': 'bg-info text-dark',
-                                            'bestaetigt': 'bg-primary',
-                                            'heuristisch': 'bg-warning text-dark',
-                                            '-': 'bg-secondary',
-                                        }[item.trust] ?? 'bg-secondary' -%}
-                                        <span class="badge {{ trustClass }}">{{ trustLabel }}</span>
+                                        <span class="fa-status-pill fa-status-pill--{{ _status.tone('bsi_trust', item.trust)|trim }}">{{ trustLabel }}</span>
                                     </td>
                                     <td class="fa-table__cell">
                                         {% if item.isoControl %}

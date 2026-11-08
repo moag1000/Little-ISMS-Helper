@@ -217,7 +217,6 @@ final class CrisisTeamType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
-                'help' => 'crisis_team.help.next_training_at',
             ])
             ->add('businessContinuityPlans', EntityType::class, [
                 'label' => 'crisis_team.field.business_continuity_plans',

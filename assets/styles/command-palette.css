@@ -19,7 +19,6 @@
 .command-palette-modal.command-palette-open { display: flex; }
 
 /* ── Container ────────────────────────────────────────────────────── */
-.fa-cmdp,
 .command-palette-container {
     width: min(94%, 720px); max-height: 80vh;
     background: var(--surface);
@@ -92,7 +91,6 @@
     padding: 0;
 }
 /* ── Item ─────────────────────────────────────────────────────────── */
-.fa-cmdp__item,
 .command-item {
     display: grid; grid-template-columns: 36px 1fr auto;
     gap: 12px; align-items: center;
@@ -106,15 +104,12 @@
     position: relative;
     border: 0;
 }
-.fa-cmdp__item::before,
 .command-item::before {
     content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px;
     background: var(--primary) /* Kanon H4 */;
     border-radius: 1px;
     opacity: 0; transition: opacity 0.12s var(--ease-out);
 }
-.fa-cmdp__item:hover,
-.fa-cmdp__item.is-selected,
 .command-item:hover,
 .command-item.selected {
     background: color-mix(in oklab, var(--primary) 10%, transparent);
@@ -122,8 +117,6 @@
     box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent); /* Kanon H5 */
     border-color: transparent;
 }
-.fa-cmdp__item:hover::before,
-.fa-cmdp__item.is-selected::before,
 .command-item:hover::before,
 .command-item.selected::before { opacity: 1; }
 
@@ -224,7 +217,6 @@
 
 /* ── Responsive ────────────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
-    .fa-cmdp,
     .command-palette-container {
         width: calc(100vw - 32px);
         max-height: 84vh;
@@ -234,11 +226,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .fa-cmdp,
     .command-palette-container { animation: none; }
-    .fa-cmdp__item,
     .command-item { transition: none; }
-    .fa-cmdp__item:hover,
     .command-item:hover,
     .command-item.selected { transform: none; }
 }

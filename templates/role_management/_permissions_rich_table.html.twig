@@ -127,16 +127,7 @@
                             {{ perm.frameworkReference ?? '—' }}
                         </td>
                         <td class="fa-table__td">
-                            <span class="badge rounded-pill
-                                {% if action_key == 'view' %}text-bg-info
-                                {% elseif action_key == 'create' %}text-bg-success
-                                {% elseif action_key == 'edit' %}text-bg-warning
-                                {% elseif action_key == 'delete' %}text-bg-danger
-                                {% elseif action_key == 'approve' %}text-bg-primary
-                                {% elseif action_key == 'export' %}text-bg-secondary
-                                {% else %}text-bg-secondary
-                                {% endif %}
-                                fw-normal text-uppercase" style="font-size:.65em;letter-spacing:.04em;">
+                            <span class="fa-status-pill fa-status-pill--{% if action_key == 'view' or action_key == 'approve' %}primary{% elseif action_key == 'create' %}success{% elseif action_key == 'edit' %}warning{% elseif action_key == 'delete' %}danger{% else %}neutral{% endif %} fa-status-pill--sm">
                                 {{ action_label }}
                             </span>
                         </td>

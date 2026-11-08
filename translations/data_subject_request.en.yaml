@@ -96,7 +96,6 @@ dsr:
             request_type: "Art. 15 Access, Art. 16 Rectification, Art. 17 Erasure, Art. 18 Restriction, Art. 20 Data Portability, Art. 21 Objection, Art. 22 Automated Decision-Making"
             received_at: "Date and time the request was received"
             data_subject_identifier: "Any identifier to locate the person in your systems"
-            processing_activity: "Link to a relevant processing activity from the VVT"
             notes: "Internal notes are not shared with the data subject"
             assigned_person: "Person without system login as responsible. Order: User > Person > empty."
             assigned_deputy_persons: "Additional persons with deputy or shared responsibility."

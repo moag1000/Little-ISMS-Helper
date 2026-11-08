@@ -247,7 +247,7 @@ final class DataProtectionImpactAssessmentService
     }
 
     /**
-     * Find DPIAs awaiting DPO consultation (Art. 35(4))
+     * Find DPIAs awaiting DPO consultation (Art. 35(2))
      */
     public function findAwaitingDPOConsultation(): array
     {
@@ -468,7 +468,7 @@ final class DataProtectionImpactAssessmentService
     }
 
     // ============================================================================
-    // DPO Consultation (Art. 35(4))
+    // DPO Consultation (Art. 35(2))
     // ============================================================================
 
     /**
@@ -659,9 +659,9 @@ final class DataProtectionImpactAssessmentService
             $errors[] = 'Organizational measures to mitigate risks are required (Art. 35(7)(d))';
         }
 
-        // Art. 35(4) - DPO consultation warning
+        // Art. 35(2) - DPO consultation warning
         if ($dataProtectionImpactAssessment->getStatus() === DpiaStatus::InReview->value && !$dataProtectionImpactAssessment->getDpoConsultationDate()) {
-            $errors[] = 'DPO should be consulted before approval (Art. 35(4))';
+            $errors[] = 'DPO should be consulted before approval (Art. 35(2))';
         }
 
         // Art. 36 - Supervisory authority consultation check
