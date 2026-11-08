@@ -88,6 +88,8 @@ eu_authorities:
             overdue: 'Registrierung ÜBERFÄLLIG'
             overdue_body: 'Deadline war %date% — sofortige Einreichung erforderlich (BSIG § 33).'
             never_reported: 'Noch nicht beim BSI gemeldet'
+            change_pending: 'Geänderte Registrierungsdaten melden'
+            change_pending_body: 'Daten seit %changed% geändert — bis %date% beim BSI melden (NIS-2 Art. 3 Abs. 4, BSIG § 33).'
         error:
             legal_name_required: 'Juristischer Name ist Pflichtfeld'
             legal_form_required: 'Rechtsform ist Pflichtfeld'

@@ -14,8 +14,9 @@ use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * NIS-2-Registrierung (BSIG § 33): getNextDueAt() of the organisation's
- * registration profile. An organisation with the NIS-2 module and no profile
+ * NIS-2-Registrierung (BSIG § 33): the yearly confirmation of the organisation's
+ * registration profile, or earlier, two weeks after its reported data changed
+ * (NIS-2 Art. 3 (4), Art. 27 (3)). An organisation with the NIS-2 module and no profile
  * yet is due at once — the profile is built on the spot (not stored) from
  * the organisation's own registration date, if it has one. Done for good when
  * the organisation classifies itself as not regulated.
@@ -61,7 +62,7 @@ final class Nis2RegistrationSource extends EntityDeadlineSource
     {
         assert($item instanceof Nis2RegistrationProfile);
 
-        return $item->getNextDueAt();
+        return $item->getEffectiveDueAt();
     }
 
     public function titleOf(object $item): string
@@ -101,6 +102,6 @@ final class Nis2RegistrationSource extends EntityDeadlineSource
 
     public function profile(): DeadlineProfile
     {
-        return new DeadlineProfile(bucket: 'nis2_registration_due', leadDays: 30, normReference: 'NIS-2 Art. 3 Abs. 4 / BSIG § 33');
+        return new DeadlineProfile(bucket: 'nis2_registration_due', leadDays: 30, normReference: 'NIS-2 Art. 3 Abs. 4, Art. 27 / BSIG § 33');
     }
 }

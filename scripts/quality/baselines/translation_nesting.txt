@@ -216,10 +216,10 @@ translations/dpa_template.en.yaml:75:subprocessors
 translations/dpa_template.en.yaml:80:third_country
 translations/dpa_template.en.yaml:86:signatures
 translations/dpa_template.en.yaml:94:footer
-translations/eu_authorities.de.yaml:234:authority
-translations/eu_authorities.de.yaml:411:dora
-translations/eu_authorities.en.yaml:234:authority
-translations/eu_authorities.en.yaml:411:dora
+translations/eu_authorities.de.yaml:236:authority
+translations/eu_authorities.de.yaml:413:dora
+translations/eu_authorities.en.yaml:236:authority
+translations/eu_authorities.en.yaml:413:dora
 translations/incident.de.yaml:1:incident_management
 translations/incident.de.yaml:8:deadline_counter
 translations/incident.de.yaml:567:iso_9001_bridge
@@ -412,8 +412,8 @@ translations/validators.en.yaml:386:risk_approval_config
 translations/validators.en.yaml:391:gstool_import
 translations/vulnerabilities.de.yaml:1:vulnerability
 translations/vulnerabilities.en.yaml:1:vulnerability
-translations/wizard.de.yaml:1712:compliance_check
-translations/wizard.en.yaml:1712:compliance_check
+translations/wizard.de.yaml:1722:compliance_check
+translations/wizard.en.yaml:1722:compliance_check
 translations/workflows.de.yaml:1:workflow
 translations/workflows.de.yaml:294:workflow_instance
 translations/workflows.de.yaml:301:workflow_step

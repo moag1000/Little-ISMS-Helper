@@ -41,6 +41,8 @@
             { label: 'tia.field.destination_country'|trans({}, 'tia'), value: tia.destinationCountry },
             { label: 'tia.field.assessed_at'|trans({}, 'tia'), value: tia.assessedAt ? tia.assessedAt|fa_date : null },
             { label: 'tia.field.assessed_by'|trans({}, 'tia'), value: tia.assessedBy ? tia.assessedBy.userIdentifier : null },
+            { label: 'tia.field.owner'|trans({}, 'tia'), value: tia.owner ? tia.owner.fullName : null },
+            { label: 'tia.field.next_review_date'|trans({}, 'tia'), value: tia.nextReviewDate ? tia.nextReviewDate|fa_date : null },
         ],
         workflow: workflow_state(tia),
     }) }}

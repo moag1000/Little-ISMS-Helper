@@ -202,9 +202,8 @@ class FulfillmentDerivationService
                 continue;
             }
             foreach ($this->requirementRepository->findBy(['framework' => $framework]) as $requirement) {
-                $number = RecordCheckRule::requirementNumber($code, (string) $requirement->getRequirementId());
                 foreach ($refs as $ref) {
-                    if ($number !== '' && RecordCheckRule::covers($ref, $number)) {
+                    if (RecordCheckRule::matches($ref, (string) $code, (string) $requirement->getRequirementId())) {
                         $requirements[] = $requirement;
                         break;
                     }

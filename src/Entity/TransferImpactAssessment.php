@@ -7,6 +7,7 @@ namespace App\Entity;
 use DateTimeImmutable;
 use DateTimeInterface;
 use App\Repository\TransferImpactAssessmentRepository;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -181,6 +182,22 @@ class TransferImpactAssessment
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $assessedBy = null;
+
+    /**
+     * Who keeps the assessment current (EDPB Rec. 01/2020 step 6: re-evaluate
+     * at appropriate intervals) — holder of the review duty before the DPO.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'owner_id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
+    private ?User $owner = null;
+
+    /**
+     * Re-evaluation date (deadline type `tia_review`); set to one year after
+     * the assessment when left empty.
+     */
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $nextReviewDate = null;
 
     // ============================================================================
     // Optimistic locking (Lifecycle X.1)
@@ -439,6 +456,30 @@ class TransferImpactAssessment
     public function setUpdatedBy(?User $user): static
     {
         $this->updatedBy = $user;
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getNextReviewDate(): ?DateTimeInterface
+    {
+        return $this->nextReviewDate;
+    }
+
+    public function setNextReviewDate(?DateTimeInterface $nextReviewDate): static
+    {
+        $this->nextReviewDate = $nextReviewDate;
+
         return $this;
     }
 }

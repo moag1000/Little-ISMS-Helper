@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace App\Service\Compliance\Fulfillment;
 
 use App\Entity\AuditChecklist;
+use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\BusinessContinuityPlan;
+use App\Entity\ChangeRequest;
 use App\Entity\ComplianceRequirement;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
+use App\Entity\InternalAudit;
+use App\Entity\ISMSObjective;
 use App\Entity\IsmsRegisterEntry;
 use App\Entity\ManagementDecision;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
+use App\Entity\ThreatIntelligence;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
@@ -46,7 +51,18 @@ final class RecordChangeCollector implements ResetInterface
         DataBreach::class => ['reporting_duty'],
         BusinessContinuityPlan::class => ['record_completeness'],
         Supplier::class => ['record_completeness'],
+        ChangeRequest::class => ['record_completeness'],
+        ThreatIntelligence::class => ['record_completeness'],
+        InternalAudit::class => ['audit_status'],
+        ISMSObjective::class => ['deadline_adherence'],
+        Nis2RegistrationProfile::class => ['deadline_adherence'],
     ];
+
+    /**
+     * Check types that sum up other checks (ISO 27001 4.4 over clauses 4–10):
+     * recomputed whenever any record check above changed.
+     */
+    public const array SUMMARY_CHECK_TYPES = ['clause_coverage'];
 
     /** @var array<int, array{tenant: Tenant, types: array<string, true>, audited: array<int, ComplianceRequirement>}> */
     private array $pending = [];
@@ -85,7 +101,7 @@ final class RecordChangeCollector implements ResetInterface
                     continue;
                 }
                 $this->pending[$key] ??= ['tenant' => $tenant, 'types' => [], 'audited' => []];
-                foreach ($types as $type) {
+                foreach ([...$types, ...self::SUMMARY_CHECK_TYPES] as $type) {
                     $this->pending[$key]['types'][$type] = true;
                 }
             }
@@ -128,7 +144,9 @@ final class RecordChangeCollector implements ResetInterface
             $entity instanceof IsmsRegisterEntry, $entity instanceof ManagementDecision, $entity instanceof Training,
             $entity instanceof TrainingParticipation, $entity instanceof Incident, $entity instanceof DataBreach,
             $entity instanceof AuditChecklist, $entity instanceof BusinessContinuityPlan,
-            $entity instanceof Supplier => $entity->getTenant(),
+            $entity instanceof Supplier, $entity instanceof ChangeRequest, $entity instanceof ThreatIntelligence,
+            $entity instanceof InternalAudit, $entity instanceof ISMSObjective,
+            $entity instanceof Nis2RegistrationProfile => $entity->getTenant(),
             default => null,
         };
     }

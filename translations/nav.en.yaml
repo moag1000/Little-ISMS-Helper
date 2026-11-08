@@ -96,6 +96,7 @@ nav:
     privacy_hub: 'Privacy Hub'
     vvt: 'RoPA – Records of Processing Activities (Art. 30)'
     dpia: 'DPIA – Data Protection Impact Assessment (Art. 35)'
+    tia: 'TIA – Third-country transfers (Art. 46)'
     data_breaches: 'Data Breaches (Art. 33/34)'
     consents: 'Consents (Art. 7)'
     # Audit-V3 ME-1..ME-12: Module discoverability fix.

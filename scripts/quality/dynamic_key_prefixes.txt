@@ -346,7 +346,8 @@ tags.type	1
 tenant.action	1
 threat_intelligence.tlp	1
 tia.mechanism	4
-tia.risk	4
+tia.risk	5
+tia.status	1
 tisax.import.assess.level	2
 tisax.import.assess.req_level	1
 tisax.import.validate.col_label	1

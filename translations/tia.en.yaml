@@ -3,6 +3,8 @@ tia:
     title: 'Transfer Impact Assessment'
 
   page:
+    overview_title: 'Transfer Impact Assessments'
+    overview_subtitle: 'Which third-country transfers need a new assessment.'
     title: 'Transfer Impact Assessments (TIA)'
     subtitle: 'Third-country transfer reviews under GDPR Art. 46/49 + Schrems-II'
     new_title: 'New Transfer Impact Assessment'
@@ -10,6 +12,7 @@ tia:
     edit_title: 'Edit TIA'
 
   help:
+    next_review_date: 'EDPB Recommendations 01/2020 step 6: re-evaluate when the law in the destination country changes. Empty = one year after the assessment.'
     concept_title: 'What is a TIA?'
     concept_body: >
       A Transfer Impact Assessment (TIA) checks whether a third-country recipient –
@@ -37,6 +40,8 @@ tia:
     conclusion: 'Overall conclusion and any conditions for the transfer'
 
   field:
+    owner: 'Owner'
+    next_review_date: 'Next review'
     destination_country: 'Destination country'
     recipient_name: 'Recipient'
     transfer_mechanism: 'Transfer mechanism (Art. 46/49)'
@@ -50,6 +55,7 @@ tia:
     processing_activity: 'Processing activity'
 
   section:
+    review: 'Re-evaluation (EDPB Step 6)'
     overview: 'Transfer details'
     assessment: 'Schrems-II assessment (EDPB Steps 3–4)'
     conclusion: 'Outcome (EDPB Step 5)'
@@ -68,14 +74,17 @@ tia:
     high: 'High – transfer MUST be suspended'
 
   status:
+    review_due: 'Review due'
     draft: 'Draft'
     assessed: 'Assessed'
 
   placeholder:
+    owner: '– Please select –'
     transfer_mechanism: '– Please select –'
     residual_risk_rating: '– Please select –'
 
   action:
+    to_processing_activities: 'To processing activities'
     new: 'New TIA'
     edit: 'Edit TIA'
     save: 'Save'
@@ -89,6 +98,7 @@ tia:
     delete: 'Delete TIA'
 
   empty:
+    overview_body: 'A TIA is created on the processing activity with the third-country transfer.'
     title: 'No TIAs yet.'
     body: 'No Transfer Impact Assessment has been created for this processing activity. Create a TIA now to document the third-country transfer.'
 

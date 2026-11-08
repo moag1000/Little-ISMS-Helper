@@ -378,3 +378,32 @@ parameters:
             bucket: tisax_assessment_due
             lead_days: 60
             norm: VDA ISA 8 (Prototypenschutz)
+
+        # ── W2 (2026-11): date fields that reached nobody ─────────────
+        nonconformity_correction:
+            label: Korrekturmaßnahme Nichtkonformität
+            entity: App\Entity\AuditFinding
+            due: ncCorrectionDueDate
+            # Verified or closed findings need no correction any more.
+            done: "item.isDone() or item.getNcVerifiedAt() != null"
+            title: "item.getTitle() ?? ('Finding #' ~ item.getId())"
+            holders: [assignedTo, assignedPerson]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_audit_finding_show
+            bucket: findings
+            norm: ISO 27001 10.2 c)
+
+        tia_review:
+            label: TIA-Überprüfung
+            entity: App\Entity\TransferImpactAssessment
+            module: privacy
+            due: nextReviewDate
+            # Drafts are still being written; the review duty starts with the assessment.
+            done: "item.getStatus() != 'assessed'"
+            title: "words('TIA', item.getRecipientName(), item.getDestinationCountry(), '#' ~ item.getId())"
+            holders: [owner, assessedBy]
+            roles: [ROLE_DPO]
+            link: app_tia_open
+            bucket: tia_review_due
+            lead_days: 30
+            norm: DSGVO Art. 46 / EDPB 01/2020

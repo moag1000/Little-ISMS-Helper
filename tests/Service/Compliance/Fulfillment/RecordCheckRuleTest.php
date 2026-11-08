@@ -70,6 +70,39 @@ final class RecordCheckRuleTest extends TestCase
     }
 
     #[Test]
+    public function catalogueRowsNumberedApartFromTheArticleAreNamedById(): void
+    {
+        $this->results['early_warning'] = ['score' => 90.0, 'details' => ['total' => 2]];
+        $rule = $this->rule();
+
+        $thematic = $rule->derive($this->requirement('NIS2', 'NIS2-23.1'), $this->tenant);
+        self::assertSame(90, $thematic?->percentage, 'NIS2-23.1 is the early warning of Art. 23 (4) (a)');
+        self::assertCount(1, $thematic->basis, 'named by article and by id: counted once');
+        self::assertSame(90, $rule->derive($this->requirement('NIS2', 'Art.23.2'), $this->tenant)?->percentage);
+        self::assertNull($rule->derive($this->requirement('NIS2', 'NIS2-23.4'), $this->tenant), '23.4 (threats) is not the early warning');
+        self::assertNull($rule->derive($this->requirement('NIS2', 'Art.23.4'), $this->tenant));
+        self::assertSame(['23.4.a', '23.1', '#NIS2-23.1', '#Art.23.2'], RecordCheckRule::referencesOfCheck(
+            ['article' => '23(4)(a)/23.1', 'requirements' => ['NIS2-23.1', 'Art.23.2']],
+        ));
+    }
+
+    #[Test]
+    public function articleStyleRequirementIdsCountAsTheirNumber(): void
+    {
+        self::assertSame('21.2.a', RecordCheckRule::requirementNumber('NIS2', 'Art.21.2.a'));
+        self::assertSame('21.2.c', RecordCheckRule::requirementNumber('NIS2', 'NIS2-ART21-C'));
+        self::assertSame('5', RecordCheckRule::requirementNumber('GDPR', 'Art.5'));
+        self::assertTrue(RecordCheckRule::matches('21.2.b', 'NIS2', 'Art.21.2.b'));
+        self::assertTrue(RecordCheckRule::matches('#NIS2-23.1', 'NIS2', 'NIS2-23.1'));
+        self::assertFalse(RecordCheckRule::matches('#NIS2-23.1', 'NIS2', 'NIS2-23.10'));
+        self::assertSame(['risk', 'gc.12'], RecordCheckRule::referencesOfCheck(['article' => 'RISK, GC.12']));
+
+        $this->results['incident'] = ['score' => 60.0, 'details' => ['total' => 3]];
+        $this->results['incident_controls'] = ['score' => 100.0, 'details' => ['total' => 5]];
+        self::assertSame(80, $this->rule()->derive($this->requirement('NIS2', 'Art.21.2.b'), $this->tenant)?->percentage);
+    }
+
+    #[Test]
     public function manualChecksInactiveModulesAndEmptyRecordsGiveNoRule(): void
     {
         $this->results['bcm'] = ['score' => 100.0, 'details' => []];
@@ -186,6 +219,10 @@ final class RecordCheckRuleTest extends TestCase
                         'incident_handling' => ['article' => '21(2)(b)', 'checks' => [
                             'incident' => ['name' => 'incident', 'type' => 'incident_process'],
                             'incident_controls' => ['name' => 'incident_controls', 'type' => 'control_coverage'],
+                        ]],
+                        'reporting' => ['article' => '23', 'checks' => [
+                            'early_warning' => ['name' => 'early_warning', 'type' => 'reporting_duty', 'article' => '23(4)(a)/23.1',
+                                'requirements' => ['NIS2-23.1', 'Art.23.2']],
                         ]],
                     ]],
                     'dora' => ['code' => 'DORA', 'categories' => [

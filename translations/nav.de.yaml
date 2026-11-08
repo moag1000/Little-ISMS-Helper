@@ -96,6 +96,7 @@ nav:
     privacy_hub: Datenschutz-Kern
     vvt: 'VVT – Verarbeitungsverzeichnis (Art. 30)'
     dpia: 'DSFA – Datenschutz-Folgenabschätzung (Art. 35)'
+    tia: 'TIA – Drittlandübermittlungen (Art. 46)'
     data_breaches: 'Datenschutzverletzungen (Art. 33/34)'
     consents: 'Einwilligungen (Art. 7)'
     # Audit-V3 ME-1..ME-12: Module discoverability fix.
