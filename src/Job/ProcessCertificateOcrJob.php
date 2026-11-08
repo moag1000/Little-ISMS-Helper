@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Job;
 
+use App\Service\Upload\ProtectedUploads;
 use App\Entity\ComplianceCertificate;
 use App\Exception\Module\ModuleNotActiveException;
 use App\Repository\ComplianceCertificateRepository;
@@ -100,8 +101,8 @@ final class ProcessCertificateOcrJob implements AsyncJobInterface
     /**
      * Build the absolute on-disk path from the linked Document.
      *
-     * Mirrors CertificateUploadService: the file lives under public/ and the
-     * Document stores a web-relative path like "/uploads/documents/<file>".
+     * Mirrors CertificateUploadService: the Document stores "/uploads/documents/<file>",
+     * the file lives below var/uploads (ProtectedUploads).
      */
     private function resolveDocumentPath(ComplianceCertificate $cert): string
     {
@@ -116,7 +117,7 @@ final class ProcessCertificateOcrJob implements AsyncJobInterface
             ));
         }
 
-        return $this->projectDir . '/public' . $filePath;
+        return (new ProtectedUploads($this->projectDir))->resolve($filePath) ?? $this->projectDir . '/var/uploads' . $filePath;
     }
 
     /**

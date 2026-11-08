@@ -168,7 +168,7 @@ security:
     access_control:
         # Setup wizard - access control is handled by SetupSecuritySubscriber
         # Before setup: PUBLIC_ACCESS
-        # After setup: ROLE_ADMIN required (enforced by subscriber)
+        # After setup: ROLE_SUPER_ADMIN required (SetupSecuritySubscriber + SetupAccessVoter)
         # IMPORTANT: Must match both /setup and /{locale}/setup/ patterns
         - { path: ^/setup, roles: PUBLIC_ACCESS }
         - { path: '^/(de|en)/setup', roles: PUBLIC_ACCESS }

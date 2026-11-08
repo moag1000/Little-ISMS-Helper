@@ -555,7 +555,8 @@ class DocumentControllerTest extends TestCase
         $this->authorizationChecker->method('isGranted')->willReturn(true);
 
         // Create a temporary file for testing
-        $uploadDir = $this->projectDir . '/public/uploads/documents';
+        // S7: uploads live outside the web root (ProtectedUploads → var/uploads/documents).
+        $uploadDir = $this->projectDir . '/var/uploads/documents';
         @mkdir($uploadDir, 0777, true);
         $filePath = $uploadDir . '/test.pdf';
         file_put_contents($filePath, 'Test content');
@@ -563,12 +564,13 @@ class DocumentControllerTest extends TestCase
         $response = $this->controller->download($document);
 
         $this->assertInstanceOf(BinaryFileResponse::class, $response);
+        $this->assertSame(realpath($filePath), $response->getFile()->getRealPath());
 
         // Cleanup
         @unlink($filePath);
         @rmdir($uploadDir);
-        @rmdir($this->projectDir . '/public/uploads');
-        @rmdir($this->projectDir . '/public');
+        @rmdir($this->projectDir . '/var/uploads');
+        @rmdir($this->projectDir . '/var');
         @rmdir($this->projectDir);
     }
 

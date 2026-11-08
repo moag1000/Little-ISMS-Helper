@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Export;
 
+use App\Service\Upload\ProtectedUploads;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Document;
 use App\Entity\Tenant;
@@ -26,7 +27,19 @@ final class EvidenceDocuments
         private readonly RequirementEvidence $requirementEvidence,
         private readonly ?WorkflowInstanceRepository $workflowInstanceRepository = null,
         private readonly ?LoggerInterface $logger = null,
+        private readonly ?ProtectedUploads $uploads = null,
     ) {
+    }
+
+    /** The readable file of an uploaded document (var/uploads, not yet moved, bulk import), or null. */
+    public function file(Document $doc): ?string
+    {
+        if ($this->uploads !== null) {
+            return $this->uploads->resolve($doc->getFilePath());
+        }
+        $path = (string) $doc->getFilePath();
+
+        return $path !== '' && is_file($path) && is_readable($path) ? $path : null;
     }
 
     /**
@@ -147,8 +160,8 @@ final class EvidenceDocuments
             return $stored;
         }
 
-        $filePath = (string) $doc->getFilePath();
-        if ($filePath !== '' && is_file($filePath) && is_readable($filePath)) {
+        $filePath = $this->file($doc);
+        if ($filePath !== null) {
             $hash = hash_file('sha256', $filePath);
             if (is_string($hash)) {
                 return $hash;

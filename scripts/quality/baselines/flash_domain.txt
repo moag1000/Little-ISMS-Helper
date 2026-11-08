@@ -10,9 +10,6 @@ src/Controller/CrisisTeamController.php:80
 src/Controller/CrisisTeamController.php:115
 src/Controller/CrisisTeamController.php:138
 src/Controller/CrisisTeamController.php:153
-src/Controller/DeploymentWizardController.php:461
-src/Controller/DeploymentWizardController.php:1518
-src/Controller/DeploymentWizardController.php:1627
 src/Controller/LocationController.php:60
 src/Controller/LocationController.php:98
 src/Controller/LocationController.php:119

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Certificate;
 
+use App\Service\Upload\ProtectedUploads;
 use App\Entity\ComplianceCertificate;
 use App\Entity\Document;
 use App\Entity\Tenant;
@@ -112,7 +113,7 @@ final class CertificateUploadService
         $mimeType = $file->getClientMimeType();
         $fileSize = $file->getSize();
 
-        $uploadDir = $this->projectDir . '/public/uploads/documents';
+        $uploadDir = (new ProtectedUploads($this->projectDir))->directory(ProtectedUploads::DOCUMENTS);
         $file->move($uploadDir, $safeFilename);
 
         $filePath = $uploadDir . '/' . $safeFilename;
