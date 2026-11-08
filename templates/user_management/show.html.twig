@@ -425,7 +425,7 @@
     <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
     <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-trash"></i></span><div class="fa-modal__heading"><h2  id="deleteModalLabel" class="fa-modal__title">{{ 'user.modal.delete_user'|trans({}, 'user') }}</h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
             <div class="fa-modal__body">
-                {{ 'user.modal.delete_confirm'|trans({'%name%': user.firstName ~ ' ' ~ user.lastName}, 'user')|raw }}
+                {{ 'user.modal.delete_confirm'|trans({'%name%': (user.firstName ~ ' ' ~ user.lastName)|e}, 'user')|raw }}
                 <br><br>
                 <strong>{{ 'user.modal.delete_warning'|trans({}, 'user') }}</strong>
             </div>

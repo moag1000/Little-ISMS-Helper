@@ -102,11 +102,7 @@
 {% set _clause_rows = [] %}
 {% for key, clause in clause_compliance %}
     {% set _cs = clause.score >= 80 ? 'success' : (clause.score >= 40 ? 'warning' : 'danger') %}
-    {% set _status_badge = clause.status == 'complete'
-        ? '<span class="badge badge-success">' ~ ('management_reports.cert_readiness.status.complete'|trans({}, 'management_reports')) ~ '</span>'
-        : (clause.status == 'partial'
-            ? '<span class="badge badge-warning">' ~ ('management_reports.cert_readiness.status.partial'|trans({}, 'management_reports')) ~ '</span>'
-            : '<span class="badge badge-danger">' ~ ('management_reports.cert_readiness.status.not_started'|trans({}, 'management_reports')) ~ '</span>') %}
+    {% set _status_badge %}{% if clause.status == 'complete' %}<span class="badge badge-success">{{ ('management_reports.cert_readiness.status.complete'|trans({}, 'management_reports')) }}</span>{% else %}{% if clause.status == 'partial' %}<span class="badge badge-warning">{{ ('management_reports.cert_readiness.status.partial'|trans({}, 'management_reports')) }}</span>{% else %}<span class="badge badge-danger">{{ ('management_reports.cert_readiness.status.not_started'|trans({}, 'management_reports')) }}</span>{% endif %}{% endif %}{% endset %}
     {% set _clause_rows = _clause_rows|merge([[
         clause.name|trans({}, 'wizard'),
         clause.score ~ '%',
@@ -116,27 +112,33 @@
 {% endfor %}
 
 {# Controls table #}
+{% set _cell_html5 %}<strong>{{ control_percentage }}%</strong>{% endset %}
+{% set _cell_html4 %}<strong style="color:var(--danger);">{{ control_stats.not_started }}</strong>{% endset %}
+{% set _cell_html3 %}<strong style="color:var(--warning);">{{ control_stats.in_progress }}</strong>{% endset %}
+{% set _cell_html2 %}<strong style="color:var(--success);">{{ control_stats.implemented }}</strong>{% endset %}
+{% set _cell_html1 %}<strong>{{ control_stats.total }}</strong>{% endset %}
 {% set _ctrl_rows = [
-    [ 'management_reports.cert_readiness.controls.total'|trans({}, 'management_reports'), '<strong>' ~ control_stats.total ~ '</strong>' ],
-    [ 'management_reports.cert_readiness.controls.implemented'|trans({}, 'management_reports'), '<strong style="color:var(--success);">' ~ control_stats.implemented ~ '</strong>' ],
-    [ 'management_reports.cert_readiness.controls.in_progress'|trans({}, 'management_reports'), '<strong style="color:var(--warning);">' ~ control_stats.in_progress ~ '</strong>' ],
-    [ 'management_reports.cert_readiness.controls.not_started'|trans({}, 'management_reports'), '<strong style="color:var(--danger);">' ~ control_stats.not_started ~ '</strong>' ],
+    [ 'management_reports.cert_readiness.controls.total'|trans({}, 'management_reports'), _cell_html1 ],
+    [ 'management_reports.cert_readiness.controls.implemented'|trans({}, 'management_reports'), _cell_html2 ],
+    [ 'management_reports.cert_readiness.controls.in_progress'|trans({}, 'management_reports'), _cell_html3 ],
+    [ 'management_reports.cert_readiness.controls.not_started'|trans({}, 'management_reports'), _cell_html4 ],
     [ 'management_reports.cert_readiness.controls.not_applicable'|trans({}, 'management_reports'), control_stats.not_applicable ],
-    [ 'management_reports.cert_readiness.controls.implementation_rate'|trans({}, 'management_reports'), '<strong>' ~ control_percentage ~ '%</strong>' ],
+    [ 'management_reports.cert_readiness.controls.implementation_rate'|trans({}, 'management_reports'), _cell_html5 ],
 ] %}
 
 {% set _pending_ctrl_text = '' %}
 {% if controls_not_started|length > 0 %}
-    {% set _pending_ctrl_text = '<p><strong style="color:var(--danger);">' ~ ('management_reports.cert_readiness.section.controls_not_started'|trans({}, 'management_reports')) ~ ' (' ~ controls_not_started|length ~ '):</strong> ' %}
+    {% set _pending_ctrl_text %}<p><strong style="color:var(--danger);">{{ ('management_reports.cert_readiness.section.controls_not_started'|trans({}, 'management_reports')) }} ({{ controls_not_started|length }}):</strong> {% endset %}
     {% for control in controls_not_started[:15] %}
         {% set _pending_ctrl_text = _pending_ctrl_text ~ control.id ~ (not loop.last ? ', ' : '') %}
     {% endfor %}
     {% if controls_not_started|length > 15 %}
         {% set _pending_ctrl_text = _pending_ctrl_text ~ '… ' ~ ('management_reports.cert_readiness.and_more'|trans({'%n%': controls_not_started|length - 15}, 'management_reports')) %}
     {% endif %}
-    {% set _pending_ctrl_text = _pending_ctrl_text ~ '</p>' %}
+    {% set _pending_ctrl_text %}{{ _pending_ctrl_text }}</p>{% endset %}
 {% endif %}
 
+{% set _methodology_html %}<p>Overall score: weighted average of clause score (60%) and Annex A coverage (40%). Thresholds: READY ≥85%, CONDITIONAL 70-84%, NOT READY &lt;70%.</p>{% endset %}
 {{ _fa_report_doc.render({
     report: {
         title:        'management_reports.cert_readiness.title'|trans({}, 'management_reports'),
@@ -190,7 +192,7 @@
         },
     ],
     appendix: {
-        methodology: '<p>Overall score: weighted average of clause score (60%) and Annex A coverage (40%). Thresholds: READY ≥85%, CONDITIONAL 70-84%, NOT READY &lt;70%.</p>',
+        methodology: _methodology_html,
         sources: [
             { label: 'ComplianceWizardRepository', detail: 'ISO 27001 wizard clause results' },
             { label: 'ControlRepository', detail: 'findByTenant() — implementation status per Annex A control' },

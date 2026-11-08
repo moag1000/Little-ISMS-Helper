@@ -80,17 +80,21 @@
 {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
 {# Severity breakdown table #}
+{% set _cell_html4 %}<span class="badge badge-success">{{ ('management_reports.severity.low'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html3 %}<span class="badge badge-info">{{ ('management_reports.severity.medium'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html2 %}<span class="badge badge-warning">{{ ('management_reports.severity.high'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html1 %}<span class="badge badge-danger">{{ ('management_reports.severity.critical'|trans({}, 'management_reports')) }}</span>{% endset %}
 {% set _severity_rows = [
-    [ '<span class="badge badge-danger">' ~ ('management_reports.severity.critical'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html1,
       report.by_severity.critical,
       report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-warning">' ~ ('management_reports.severity.high'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html2,
       report.by_severity.high,
       report.total_breaches > 0 ? (report.by_severity.high / report.total_breaches * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-info">' ~ ('management_reports.severity.medium'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html3,
       report.by_severity.medium,
       report.total_breaches > 0 ? (report.by_severity.medium / report.total_breaches * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-success">' ~ ('management_reports.severity.low'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html4,
       report.by_severity.low,
       report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100)|round(1) ~ '%' : '0%' ],
 ] %}
@@ -108,24 +112,19 @@
 {% for breach in report.breaches %}
     {% set _sev = breach.severity|default('medium') %}
     {% set _sev_badge = _sev == 'critical' ? 'badge-danger' : (_sev == 'high' ? 'badge-warning' : (_sev == 'medium' ? 'badge-info' : 'badge-success')) %}
-    {% set _notif_cell = breach.notificationDate
-        ? breach.notificationDate|fa_date
-        : (breach.notificationRequired
-            ? '<span class="badge badge-warning">' ~ ('management_reports.gdpr.pending'|trans({}, 'management_reports')) ~ '</span>'
-            : '—') %}
+    {% set _notif_cell %}{% if breach.notificationDate %}{{ breach.notificationDate|fa_date }}{% else %}{% if breach.notificationRequired %}<span class="badge badge-warning">{{ ('management_reports.gdpr.pending'|trans({}, 'management_reports')) }}</span>{% else %}—{% endif %}{% endif %}{% endset %}
+    {% set _cell_html5 %}<span class="badge {{ _sev_badge }}">{{ _sev }}</span>{% endset %}
     {% set _breach_rows = _breach_rows|merge([[
         breach.id,
         breach.title|length > 28 ? breach.title[:28] ~ '…' : breach.title,
-        '<span class="badge ' ~ _sev_badge ~ '">' ~ _sev ~ '</span>',
+        _cell_html5,
         breach.discoveredAt|fa_date,
         breach.notificationRequired ? 'management_reports.gdpr.yes'|trans({}, 'management_reports') : 'management_reports.gdpr.no'|trans({}, 'management_reports'),
         _notif_cell,
     ]]) %}
 {% endfor %}
 
-{% set _pending_alert = report.notification_status.pending > 0
-    ? '<p style="background:rgba(220,38,38,.10);border:1pt solid var(--danger);padding:6pt;border-radius:3pt;font-size:8pt;color:var(--danger-strong);"><strong>' ~ ('management_reports.gdpr.urgent_attention'|trans({}, 'management_reports')) ~ ':</strong> ' ~ ('management_reports.gdpr.pending_notification_warning'|trans({'%count%': report.notification_status.pending}, 'management_reports')) ~ ' ' ~ ('management_reports.gdpr.art33_72h_note'|trans({}, 'management_reports')) ~ '</p>'
-    : '' %}
+{% set _pending_alert %}{% if report.notification_status.pending > 0 %}<p style="background:rgba(220,38,38,.10);border:1pt solid var(--danger);padding:6pt;border-radius:3pt;font-size:8pt;color:var(--danger-strong);"><strong>{{ ('management_reports.gdpr.urgent_attention'|trans({}, 'management_reports')) }}:</strong> {{ ('management_reports.gdpr.pending_notification_warning'|trans({'%count%': report.notification_status.pending}, 'management_reports')) }} {{ ('management_reports.gdpr.art33_72h_note'|trans({}, 'management_reports')) }}</p>{% endif %}{% endset %}
 
 {% set _sections = [
     {
@@ -201,7 +200,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: 'management_reports.gdpr.methodology'|trans({}, 'management_reports'),
+        methodology: 'management_reports.gdpr.methodology'|trans({}, 'management_reports')|fa_html,
         sources: [
             { label: 'DataBreachRepository', detail: 'findByTenant() — all breach records with notification status' },
         ],

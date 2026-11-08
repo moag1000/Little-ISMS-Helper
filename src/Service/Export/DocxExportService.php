@@ -53,7 +53,8 @@ final class DocxExportService
      */
     public function exportDocument(Document $document): string
     {
-        $phpWord = new PhpWord();
+        // Escaping on (S10): titles and text reach the XML only as text, never as markup.
+        $phpWord = DocxDocumentFactory::create();
         $phpWord->getDocInfo()->setTitle((string) ($document->getFilename() ?? 'Document'));
 
         $section = $phpWord->addSection();
@@ -73,7 +74,8 @@ final class DocxExportService
         } catch (\Throwable) {
             // PhpWord's HTML reader is strict; on any parse hiccup fall back to
             // a plain-text paragraph so the export never hard-fails.
-            $section->addText(strip_tags($html));
+            // The HTML is entity-encoded; decode so the writer escapes it exactly once.
+            $section->addText(html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         }
 
         return $this->writeToString($phpWord);

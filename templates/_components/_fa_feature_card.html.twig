@@ -64,7 +64,7 @@
         {# Optional sparkline SVG #}
         {% if props.sparkline is defined and props.sparkline %}
             <div class="fa-feature-card__sparkline" aria-hidden="true">
-                {{ props.sparkline|raw }}
+                {{ props.sparkline }}
             </div>
         {% endif %}
 

@@ -1,0 +1,13 @@
+# Gate 92 (check_raw_output.py): reviewed raw outputs. One line per output:
+#   <path> | <expression before |raw> | <why the value cannot carry record text or is already escaped>
+# The list only shrinks: a stale line fails the gate. A new line needs a reason a reviewer can check.
+templates/base.html.twig | _page_title | block('title') output, already escaped by the block; |trim turns the Markup into a string
+templates/base_auth.html.twig | _page_title | block('title') output, already escaped by the block; |trim turns the Markup into a string
+templates/base_public.html.twig | _page_title | block('title') output, already escaped by the block; |trim turns the Markup into a string
+templates/form/fa_cyber_input.html.twig | date_pattern|replace({ '{{ year }}': form_widget(form.year), '{{ month }}': form_widget(form.month), '{{ day }}': form_widget(form.day) }) | Symfony form theme: date_pattern comes from IntlDateFormatter, the replacements are form_widget() output (same as form_div_layout)
+templates/policy_wizard/export/_pdf_document.html.twig | header_html | TenantBranding.headerHtml: no form/API field writes it; printed only into Dompdf with isRemoteEnabled=false (no scripts, no remote fetch)
+templates/policy_wizard/export/_pdf_footer.html.twig | footer_html | TenantBranding.footerHtml: no form/API field writes it; printed only into Dompdf with isRemoteEnabled=false (no scripts, no remote fetch)
+templates/policy_wizard/konzern_rollup/_one_pager_pdf.html.twig | header_html | TenantBranding.headerHtml: no form/API field writes it; printed only into Dompdf with isRemoteEnabled=false
+templates/policy_wizard/konzern_rollup/_one_pager_pdf.html.twig | footer_html | TenantBranding.footerHtml: no form/API field writes it; printed only into Dompdf with isRemoteEnabled=false
+templates/policy_wizard/konzern_rollup/_one_pager_pdf.html.twig | sparkline_svg | KonzernOnePagerPdfService::buildSparkline() builds the SVG from numbers only
+templates/dev/design_system.html.twig | sec.html | dev environment only; spec sections are HTML files from the repository

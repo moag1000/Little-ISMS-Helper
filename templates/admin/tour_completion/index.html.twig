@@ -111,5 +111,5 @@
         {% endblock %}
     {% endembed %}
 
-    {{ _fa_alert.render({ variant: 'info', class: 'small mt-3', body: 'admin.tour_completion.audit_hint'|trans({}, 'admin')|raw }) }}
+    {{ _fa_alert.render({ variant: 'info', class: 'small mt-3', body: 'admin.tour_completion.audit_hint'|trans({}, 'admin')|fa_html }) }}
 {% endblock %}

@@ -209,7 +209,7 @@
            the template stays declarative + the controller does not need a
            DOM-walk to extract user list. #}
         <script type="application/json" data-capa-builder-target="userChoicesJson">
-            {{ userChoices|json_encode|raw }}
+            {{ userChoices|fa_json }}
         </script>
     </div>
 {% endmacro %}

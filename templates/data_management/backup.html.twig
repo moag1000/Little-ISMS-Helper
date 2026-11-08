@@ -359,11 +359,11 @@
     <script nonce="{{ csp_nonce() }}">
         // Pre-rendered translations for JS dynamic HTML (avoids Twig-in-string render bug)
         var _t = {
-            totalRecordsLabel: {{ 'data_management.backup.preview.total_records'|trans({}, 'admin')|json_encode|raw }},
-            errorLabel: {{ 'data_management.backup.message.error'|trans({}, 'admin')|json_encode|raw }},
-            fileLabel: {{ 'data_management.backup.message.file'|trans({}, 'admin')|json_encode|raw }},
-            savedEntriesLabel: {{ 'data_management.backup.message.saved_entries'|trans({}, 'admin')|json_encode|raw }},
-            closeLabel: {{ 'action.close'|trans({}, 'messages')|json_encode|raw }},
+            totalRecordsLabel: {{ 'data_management.backup.preview.total_records'|trans({}, 'admin')|fa_json }},
+            errorLabel: {{ 'data_management.backup.message.error'|trans({}, 'admin')|fa_json }},
+            fileLabel: {{ 'data_management.backup.message.file'|trans({}, 'admin')|fa_json }},
+            savedEntriesLabel: {{ 'data_management.backup.message.saved_entries'|trans({}, 'admin')|fa_json }},
+            closeLabel: {{ 'action.close'|trans({}, 'messages')|fa_json }},
             previewTotalRecordsAlert: function(count) {
                 return '<div class="fa-alert fa-alert--info" role="alert"><div class="fa-alert__body"><p class="fa-alert__message"><strong>' + _t.totalRecordsLabel + ':</strong> ' + count + '</p></div></div>';
             },

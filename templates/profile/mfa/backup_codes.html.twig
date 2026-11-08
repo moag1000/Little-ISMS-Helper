@@ -114,7 +114,7 @@
     <script nonce="{{ csp_nonce() }}">
     // Turbo re-eval guard: IIFE prevents re-declare crash on body-swap navigation
     (function () {
-    const backupCodes = {{ backup_codes|json_encode|raw }};
+    const backupCodes = {{ backup_codes|fa_json }};
     const userEmail = '{{ mfa_token.user.email }}';
 
     function copyBackupCodes() {

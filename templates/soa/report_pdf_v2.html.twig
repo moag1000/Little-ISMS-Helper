@@ -86,7 +86,7 @@
 <div class="mb-large">
     <h2>{{ 'report.pdf.section_summary'|trans({}, 'soa') }}</h2>
     <p>
-        {{ 'report.pdf.intro_line1'|trans({'%tenant%': '<strong>' ~ tenant_name|default('report.pdf.default_tenant'|trans({}, 'soa')) ~ '</strong>'}, 'soa')|raw }}
+        {{ 'report.pdf.intro_line1'|trans({'%tenant%': '<strong>' ~ (tenant_name|default('report.pdf.default_tenant'|trans({}, 'soa')))|e ~ '</strong>'}, 'soa')|raw }}
     </p>
     <p>
         {{ 'report.pdf.intro_line2'|trans({}, 'soa') }}

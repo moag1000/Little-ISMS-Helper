@@ -47,7 +47,8 @@
     {% endif %}
 
     {# ISO 27001 Clause Information #}
-    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'management_review.iso_requirement'|trans({}, 'management_review'), body: '<span class="small">' ~ 'management_review.iso_clause_info'|trans({}, 'management_review') ~ '</span>' }) }}
+    {% set _body_html %}<span class="small">{{ 'management_review.iso_clause_info'|trans({}, 'management_review') }}</span>{% endset %}
+    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'management_review.iso_requirement'|trans({}, 'management_review'), body: _body_html }) }}
 
     {% embed '_components/_fa_list_page.html.twig' with {
         page: page,
@@ -61,7 +62,7 @@
                 { label: 'management_review.create_first'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new'), attrs: { 'data-turbo-action': 'advance' } }
             ] : [],
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/management-review"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/management-review' },
     } %}
         {% block list_filters %}
             <div class="col-md-4">

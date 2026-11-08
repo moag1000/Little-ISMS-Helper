@@ -23,18 +23,18 @@
     {% for tenant in tenants %}
         {% set _class = tenant.nis2Classification|default('unknown') %}
         {% set _cbadge = _class == 'essential' ? 'confidential' : (_class == 'important' ? 'draft' : 'final') %}
-        {% set _reg_cell = tenant.nis2RegisteredAt
-            ? '<span style="color:var(--success);font-weight:700;">' ~ tenant.nis2RegisteredAt|fa_date ~ '</span>'
-            : (tenant.isNis2Regulated
-                ? '<span style="color:var(--danger);font-weight:700;">' ~ ('group_report.nis2.registration.missing'|trans({}, 'group_report')) ~ '</span>'
-                : '<span style="color:var(--fg-3);">—</span>') %}
+        {% set _reg_cell %}{% if tenant.nis2RegisteredAt %}<span style="color:var(--success);font-weight:700;">{{ tenant.nis2RegisteredAt|fa_date }}</span>{% else %}{% if tenant.isNis2Regulated %}<span style="color:var(--danger);font-weight:700;">{{ ('group_report.nis2.registration.missing'|trans({}, 'group_report')) }}</span>{% else %}<span style="color:var(--fg-3);">—</span>{% endif %}{% endif %}{% endset %}
+        {% set _cell_html4 %}{% if tenant.naceCode %}<code>{{ tenant.naceCode|e }}</code>{% else %}—{% endif %}{% endset %}
+        {% set _cell_html3 %}<span class="report-doc__chip report-doc__chip--status-{{ _cbadge }}">{{ ('group_report.nis2.class.' ~ _class)|trans({}, 'group_report') }}</span>{% endset %}
+        {% set _cell_html2 %}{% if tenant.legalName %}{{ tenant.legalName|e }}{{ (tenant.legalForm ? ' (' ~ tenant.legalForm|e ~ ')' : '') }}{% else %}<span style="color:var(--fg-3);">—</span>{% endif %}{% endset %}
+        {% set _cell_html1 %}<strong>{{ tenant.name|e }}</strong><br><code style="font-size:.75em;color:var(--fg-3);">{{ tenant.code|e }}</code>{% endset %}
         {% set _nis2_rows = _nis2_rows|merge([[
-            '<strong>' ~ tenant.name|e ~ '</strong><br><code style="font-size:.75em;color:var(--fg-3);">' ~ tenant.code|e ~ '</code>',
-            tenant.legalName ? (tenant.legalName|e ~ (tenant.legalForm ? ' (' ~ tenant.legalForm|e ~ ')' : '')) : '<span style="color:var(--fg-3);">—</span>',
-            '<span class="report-doc__chip report-doc__chip--status-' ~ _cbadge ~ '">' ~ ('group_report.nis2.class.' ~ _class)|trans({}, 'group_report') ~ '</span>',
-            tenant.nis2Sector ? tenant.nis2Sector|e : '—',
-            tenant.naceCode ? '<code>' ~ tenant.naceCode|e ~ '</code>' : '—',
-            tenant.nis2ContactPoint ? tenant.nis2ContactPoint|e : '—',
+            _cell_html1,
+            _cell_html2,
+            _cell_html3,
+            tenant.nis2Sector ?: '—',
+            _cell_html4,
+            tenant.nis2ContactPoint ?: '—',
             _reg_cell,
         ]]) %}
     {% endfor %}
@@ -65,7 +65,7 @@
         sections: [
             {
                 heading: 'group_report.nis2.matrix.title'|trans({}, 'group_report'),
-                intro: 'group_report.nis2.intro'|trans({}, 'group_report'),
+                intro: 'group_report.nis2.intro'|trans({}, 'group_report')|fa_html,
                 table: {
                     headers: [
                         'group_report.nis2.col.tenant'|trans({}, 'group_report'),
@@ -81,7 +81,7 @@
             },
         ],
         appendix: {
-            methodology: 'group_report.nis2.methodology'|trans({}, 'group_report'),
+            methodology: 'group_report.nis2.methodology'|trans({}, 'group_report')|fa_html,
             sources: [
                 { label: 'TenantRepository', detail: 'findGroupTenants() — NIS2 classification + registration fields' },
             ],

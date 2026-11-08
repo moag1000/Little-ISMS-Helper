@@ -268,11 +268,10 @@
                     { label: 'asset.label.current_value'|trans({}, 'asset'), value: asset.currentValue ? asset.currentValue ~ ' EUR' : '—' }
                 ] %}
                 {# MonetaryValue column dropped. acquisitionValue + currentValue are canonical. #}
+                {% set _value_html1 %}{% if asset.risks|length > 0 %}<a href="#links" class="{{ badge_score(asset.risks|length, 5, 3) }}">{{ asset.risks|length }}</a>{% else %}<span class="text-muted">0</span>{% endif %}{% endset %}
                 {% set valuationItems = valuationItems|merge([
                     { label: 'asset.label.total_value'|trans({}, 'asset'), value: asset.totalValue ~ ' EUR', dataReuse: true },
-                    { label: 'asset.label.risks'|trans({}, 'asset'), raw: true, dataReuse: true, value: asset.risks|length > 0
-                        ? '<a href="#links" class="' ~ badge_score(asset.risks|length, 5, 3) ~ '">' ~ asset.risks|length ~ '</a>'
-                        : '<span class="text-muted">0</span>' }
+                    { label: 'asset.label.risks'|trans({}, 'asset'), raw: true, dataReuse: true, value: _value_html1 }
                 ]) %}
                 {% include '_components/_detail_group.html.twig' with { items: valuationItems } only %}
             </div>

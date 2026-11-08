@@ -23,7 +23,7 @@
     </header>
 
     {% if error %}
-        {{ faAlert.render(error, 'danger', { withAlva: true })|raw }}
+        {{ faAlert.render(error, 'danger', { withAlva: true }) }}
     {% endif %}
 
     <form method="post"

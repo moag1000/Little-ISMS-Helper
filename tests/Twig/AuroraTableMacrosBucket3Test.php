@@ -139,12 +139,12 @@ final class AuroraTableMacrosBucket3Test extends KernelTestCase
     // ── fa-settings-table widget kind ─────────────────────────────────────
 
     #[Test]
-    public function settingsTableWidgetKindPassesThroughRawHtml(): void
+    public function settingsTableWidgetKindPassesThroughMarkup(): void
     {
         $output = $this->twig->createTemplate(
             "{% import '_components/_fa_settings_table.html.twig' as s %}"
-            . "{{ s.render({ rows: [ { kind: 'widget', label: 'Header A', name: 'col_0', "
-            . "widget: '<select name=\"col_0\"><option>X</option></select>' } ] }) }}"
+            . "{% set w %}<select name=\"col_0\"><option>X</option></select>{% endset %}"
+            . "{{ s.render({ rows: [ { kind: 'widget', label: 'Header A', name: 'col_0', widget: w } ] }) }}"
         )->render([]);
 
         self::assertStringContainsString('<select name="col_0">', $output);
@@ -156,9 +156,9 @@ final class AuroraTableMacrosBucket3Test extends KernelTestCase
     {
         $output = $this->twig->createTemplate(
             "{% import '_components/_fa_settings_table.html.twig' as s %}"
+            . "{% set w %}<select></select>{% endset %}{% set t %}<span>chip</span>{% endset %}"
             . "{{ s.render({ headers: [{label: 'Source'},{label: 'Target'},{label: 'Confidence'}], "
-            . "rows: [ { kind: 'widget', label: 'name', name: 'col_0', "
-            . "widget: '<select></select>', trailing: '<span>chip</span>' } ] }) }}"
+            . "rows: [ { kind: 'widget', label: 'name', name: 'col_0', widget: w, trailing: t } ] }) }}"
         )->render([]);
 
         self::assertStringContainsString('fa-settings-table__head', $output);

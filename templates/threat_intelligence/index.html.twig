@@ -34,7 +34,7 @@
             { label: 'threat.action.create'|trans({}, 'threat'), variant: 'primary', icon: 'plus', href: path('app_threat_intelligence_new') }
         ]
     },
-    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/threat-intelligence"',
+    card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/threat-intelligence' },
 } %}
     {% block list_filters %}
             <div class="col-md-3">

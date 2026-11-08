@@ -86,20 +86,19 @@
 {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
 {# ── Metrics table rows ── #}
+{% set _cell_html3 %}{% if data.audits_this_year >= 2 %}<span class="badge badge-success">{{ ('pdf.dashboard.status.compliant'|trans({}, 'reports')) }}</span>{% else %}<span class="badge badge-warning">{{ ('pdf.dashboard.status.review'|trans({}, 'reports')) }}</span>{% endif %}{% endset %}
+{% set _cell_html2 %}<span class="badge badge-success">{{ ('pdf.dashboard.status.active'|trans({}, 'reports')) }}</span>{% endset %}
+{% set _cell_html1 %}{% if data.open_incidents > 5 %}<span class="badge badge-warning">{{ ('pdf.dashboard.status.attention'|trans({}, 'reports')) }}</span>{% else %}<span class="badge badge-success">{{ ('pdf.dashboard.status.normal'|trans({}, 'reports')) }}</span>{% endif %}{% endset %}
 {% set _metrics_rows = [
     [ 'pdf.dashboard.metrics.open_incidents'|trans({}, 'reports'),
       data.open_incidents,
-      data.open_incidents > 5
-        ? '<span class="badge badge-warning">' ~ ('pdf.dashboard.status.attention'|trans({}, 'reports')) ~ '</span>'
-        : '<span class="badge badge-success">' ~ ('pdf.dashboard.status.normal'|trans({}, 'reports')) ~ '</span>' ],
+      _cell_html1 ],
     [ 'pdf.dashboard.metrics.total_trainings'|trans({}, 'reports'),
       data.total_trainings,
-      '<span class="badge badge-success">' ~ ('pdf.dashboard.status.active'|trans({}, 'reports')) ~ '</span>' ],
+      _cell_html2 ],
     [ 'pdf.dashboard.metrics.audits_this_year'|trans({}, 'reports'),
       data.audits_this_year,
-      data.audits_this_year >= 2
-        ? '<span class="badge badge-success">' ~ ('pdf.dashboard.status.compliant'|trans({}, 'reports')) ~ '</span>'
-        : '<span class="badge badge-warning">' ~ ('pdf.dashboard.status.review'|trans({}, 'reports')) ~ '</span>' ],
+      _cell_html3 ],
 ] %}
 
 {{ _fa_report_doc.render({

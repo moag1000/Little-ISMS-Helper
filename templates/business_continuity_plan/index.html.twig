@@ -74,7 +74,7 @@
             ],
             help_link: 'bc_plans.help.empty_link'|trans({}, 'bc_plans')
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/business-continuity-plan"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/business-continuity-plan' },
     } %}
         {% block list_table %}
             {% embed '_components/_table.html.twig' with {

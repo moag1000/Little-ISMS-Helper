@@ -25,7 +25,8 @@
         subtitle: 'admin.sample_data.description'|trans({}, 'admin'),
     }) }}
 
-    {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'admin.sample_data.tenant_label'|trans({}, 'admin') ~ ':</strong> ' ~ tenant.name ~ ' — ' ~ 'admin.sample_data.total_imported'|trans({'%count%': totalImported}, 'admin') }) }}
+    {% set _body_html %}<strong>{{ 'admin.sample_data.tenant_label'|trans({}, 'admin') }}:</strong> {{ tenant.name }} — {{ 'admin.sample_data.total_imported'|trans({'%count%': totalImported}, 'admin') }}{% endset %}
+    {{ _fa_alert.render({ variant: 'info', body: _body_html }) }}
 
     <section class="fa-section mb-4">
         <div class="fa-section__header">
@@ -135,6 +136,7 @@
         </div>
     </section>
 
-    {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'admin.sample_data.note_title'|trans({}, 'admin') ~ ':</strong> ' ~ 'admin.sample_data.note_message'|trans({}, 'admin') }) }}
+    {% set _body_html2 %}<strong>{{ 'admin.sample_data.note_title'|trans({}, 'admin') }}:</strong> {{ 'admin.sample_data.note_message'|trans({}, 'admin') }}{% endset %}
+    {{ _fa_alert.render({ variant: 'warning', body: _body_html2 }) }}
 </div>
 {% endblock %}

@@ -213,7 +213,7 @@
                 </button>
                 {% endif %}
                 {% import '_components/_brand.html.twig' as faBrand %}
-                {{ faBrand.render(size='md', link=path('app_home'))|raw }}
+                {{ faBrand.render(size='md', link=path('app_home')) }}
             </div>
             <div class="header-actions">
                 {# PWA Install Button - Hidden by default, shown when installable #}
@@ -405,7 +405,7 @@
                         {# Flash types are the alert tones; 'error' → danger, anything else → info. #}
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
-                                {{ faAlert.render(message|fa_flash|e, label in ['success', 'danger', 'warning', 'info'] ? label : (label == 'error' ? 'danger' : 'info'), { withAlva: true, dismissible: true })|raw }}
+                                {{ faAlert.render(message|fa_flash, label in ['success', 'danger', 'warning', 'info'] ? label : (label == 'error' ? 'danger' : 'info'), { withAlva: true, dismissible: true }) }}
                             {% endfor %}
                         {% endfor %}
                     </div>
@@ -522,7 +522,7 @@
              data-alva-dock-size-value="{{ _dockSize }}"
              data-alva-dock-enabled-value="true"
              data-turbo-permanent>
-            {{ faAlvaDock.render('idle', { size: _dockPx[_dockSize]|default(80), decorative: true })|raw }}
+            {{ faAlvaDock.render('idle', { size: _dockPx[_dockSize]|default(80), decorative: true }) }}
         </div>
     {% endif %}
 

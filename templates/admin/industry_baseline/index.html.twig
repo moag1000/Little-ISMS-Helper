@@ -27,7 +27,7 @@
     {% if frameworks|length == 0 %}
         {{ _fa_empty_state.render({
             mood: 'thinking',
-            title: 'framework_baseline.no_frameworks'|trans,
+            title: 'framework_baseline.no_frameworks'|trans|fa_html,
         }) }}
     {% else %}
         <section class="fa-section">

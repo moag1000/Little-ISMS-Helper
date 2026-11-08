@@ -37,7 +37,7 @@
                 { label: 'change_request.empty.create_first'|trans({}, 'change_requests'), variant: 'primary', icon: 'plus', href: path('app_change_request_new') }
             ]
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/change-request"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/change-request' },
     } %}
         {% block list_summary %}
             {% if statistics.pending_approval|default(0) > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'change_request.summary.pending_approval'|trans({'%count%': statistics.pending_approval}, 'change_requests') }}</span>{% endif %}

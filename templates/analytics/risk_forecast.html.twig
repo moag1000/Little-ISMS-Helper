@@ -470,7 +470,7 @@
             // Forecast Chart
             const forecastCtx = document.getElementById('forecastChart');
             if (forecastCtx) {
-                const forecastData = {{ forecast|json_encode|raw }};
+                const forecastData = {{ forecast|fa_json }};
                 const historical = forecastData.historical || [];
                 const predicted = forecastData.forecast || [];
 
@@ -507,7 +507,7 @@
             // Velocity Chart - showing historical data as bar chart
             const velocityCtx = document.getElementById('velocityChart');
             if (velocityCtx) {
-                const forecastData = {{ forecast|json_encode|raw }};
+                const forecastData = {{ forecast|fa_json }};
                 const historical = forecastData.historical || [];
 
                 // Calculate velocity from historical data (changes between months)
@@ -543,7 +543,7 @@
             // Appetite Gauge
             const appetiteCtx = document.getElementById('appetiteGauge');
             if (appetiteCtx) {
-                const appetiteData = {{ appetite|json_encode|raw }};
+                const appetiteData = {{ appetite|fa_json }};
                 const score = appetiteData.compliance_score || 0;
                 const __existingAppetite = Chart.getChart(appetiteCtx); if (__existingAppetite) { __existingAppetite.destroy(); }
                 new Chart(appetiteCtx, {

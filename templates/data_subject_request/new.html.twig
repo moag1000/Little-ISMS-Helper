@@ -32,31 +32,37 @@
                 {% endblock %}
                 {% block card_body %}
                     {{ form_start(form) }}
+                        {% set _label_html6 %}<i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> {{ 'dsr.section.internal_notes'|trans({}, 'data_subject_request') }}{% endset %}
+                        {% set _label_html5 %}<i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'dsr.section.response_tracking'|trans({}, 'data_subject_request') }}{% endset %}
+                        {% set _label_html4 %}<i class="fa-icon fa-icon--role" aria-hidden="true"></i> {{ 'dsr.section.assignment'|trans({}, 'data_subject_request') }}{% endset %}
+                        {% set _label_html3 %}<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'dsr.section.identity_verification'|trans({}, 'data_subject_request') }}{% endset %}
+                        {% set _label_html2 %}<i class="fa-icon fa-icon--user" aria-hidden="true"></i> {{ 'dsr.section.data_subject_info'|trans({}, 'data_subject_request') }}{% endset %}
+                        {% set _label_html %}<i class="fa-icon fa-icon--policy" aria-hidden="true"></i> {{ 'dsr.section.request_details'|trans({}, 'data_subject_request') }}{% endset %}
                         {% include '_components/_auto_form.html.twig' with {
                             'form': form,
                             'sections': {
                                 'request_details': {
-                                    'label': '<i class="fa-icon fa-icon--policy" aria-hidden="true"></i> ' ~ 'dsr.section.request_details'|trans({}, 'data_subject_request'),
+                                    'label': _label_html,
                                     'fields': ['requestType', 'receivedAt', 'description']
                                 },
                                 'data_subject_info': {
-                                    'label': '<i class="fa-icon fa-icon--user" aria-hidden="true"></i> ' ~ 'dsr.section.data_subject_info'|trans({}, 'data_subject_request'),
+                                    'label': _label_html2,
                                     'fields': ['dataSubjectName', 'dataSubjectEmail', 'dataSubjectIdentifier']
                                 },
                                 'identity_verification': {
-                                    'label': '<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ' ~ 'dsr.section.identity_verification'|trans({}, 'data_subject_request'),
+                                    'label': _label_html3,
                                     'fields': ['identityVerified', 'identityVerificationMethod']
                                 },
                                 'assignment': {
-                                    'label': '<i class="fa-icon fa-icon--role" aria-hidden="true"></i> ' ~ 'dsr.section.assignment'|trans({}, 'data_subject_request'),
+                                    'label': _label_html4,
                                     'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dpoPerson', 'processingActivity']
                                 },
                                 'response_tracking': {
-                                    'label': '<i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> ' ~ 'dsr.section.response_tracking'|trans({}, 'data_subject_request'),
+                                    'label': _label_html5,
                                     'fields': ['responseAt', 'responseMethod', 'responseDocument', 'extendedDeadlineAt', 'extensionReason', 'rejectionReason']
                                 },
                                 'internal': {
-                                    'label': '<i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> ' ~ 'dsr.section.internal_notes'|trans({}, 'data_subject_request'),
+                                    'label': _label_html6,
                                     'fields': ['notes']
                                 }
                             },

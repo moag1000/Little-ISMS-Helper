@@ -85,6 +85,12 @@
 {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
 {# ── Bidirectional Coverage rows ──────────────────────────────────────── #}
+{% set _cell_html6 %}<strong>{{ symmetric_coverage }}%</strong>{% endset %}
+{% set _cell_html5 %}<strong>Symmetric Coverage (Minimum)</strong>{% endset %}
+{% set _cell_html4 %}<strong>{{ bidirectional_overlap }}%</strong>{% endset %}
+{% set _cell_html3 %}<strong>Bidirectional Overlap (Average)</strong>{% endset %}
+{% set _cell_html2 %}<strong style="color:{{ (coverage_f2_to_f1 >= 70 ? 'var(--success-strong)' : (coverage_f2_to_f1 >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)')) }};">{{ coverage_f2_to_f1 }}%</strong>{% endset %}
+{% set _cell_html1 %}<strong style="color:{{ (coverage_f1_to_f2 >= 70 ? 'var(--success-strong)' : (coverage_f1_to_f2 >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)')) }};">{{ coverage_f1_to_f2 }}%</strong>{% endset %}
 {% set _bidi_rows = [
     [
         'Total Requirements (Source)',
@@ -98,17 +104,17 @@
     ],
     [
         'Coverage Percentage',
-        '<strong style="color:' ~ (coverage_f1_to_f2 >= 70 ? 'var(--success-strong)' : (coverage_f1_to_f2 >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)')) ~ ';">' ~ coverage_f1_to_f2 ~ '%</strong>',
-        '<strong style="color:' ~ (coverage_f2_to_f1 >= 70 ? 'var(--success-strong)' : (coverage_f2_to_f1 >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)')) ~ ';">' ~ coverage_f2_to_f1 ~ '%</strong>',
+        _cell_html1,
+        _cell_html2,
     ],
     [
-        '<strong>Bidirectional Overlap (Average)</strong>',
-        '<strong>' ~ bidirectional_overlap ~ '%</strong>',
+        _cell_html3,
+        _cell_html4,
         '',
     ],
     [
-        '<strong>Symmetric Coverage (Minimum)</strong>',
-        '<strong>' ~ symmetric_coverage ~ '%</strong>',
+        _cell_html5,
+        _cell_html6,
         '',
     ],
 ] %}
@@ -123,61 +129,71 @@
 {% endif %}
 
 {# ── Mapping Quality Distribution rows ────────────────────────────────── #}
+{% set _cell_html16 %}<strong>{{ avg_mapping_quality }}%</strong>{% endset %}
+{% set _cell_html15 %}<strong>Average Mapping Quality</strong>{% endset %}
+{% set _cell_html14 %}<strong>{{ quality_distribution.weak }}</strong>{% endset %}
+{% set _cell_html13 %}<span class="badge badge-danger">Weak</span>{% endset %}
+{% set _cell_html12 %}<strong>{{ quality_distribution.medium }}</strong>{% endset %}
+{% set _cell_html11 %}<span class="badge badge-warning">Medium</span>{% endset %}
+{% set _cell_html10 %}<strong>{{ quality_distribution.good }}</strong>{% endset %}
+{% set _cell_html9 %}<span class="badge badge-info">Good</span>{% endset %}
+{% set _cell_html8 %}<strong>{{ quality_distribution.excellent }}</strong>{% endset %}
+{% set _cell_html7 %}<span class="badge badge-success">Excellent</span>{% endset %}
 {% set _qual_rows = [
     [
-        '<span class="badge badge-success">Excellent</span>',
+        _cell_html7,
         '90-100%',
-        '<strong>' ~ quality_distribution.excellent ~ '</strong>',
+        _cell_html8,
         (mapped_count > 0 ? ((quality_distribution.excellent / mapped_count * 100)|round(1)) : 0) ~ '%',
         'Precise mappings, high reliability',
     ],
     [
-        '<span class="badge badge-info">Good</span>',
+        _cell_html9,
         '70-89%',
-        '<strong>' ~ quality_distribution.good ~ '</strong>',
+        _cell_html10,
         (mapped_count > 0 ? ((quality_distribution.good / mapped_count * 100)|round(1)) : 0) ~ '%',
         'pdf.framework_comparison.solid_mappings_minor'|trans({}, 'messages'),
     ],
     [
-        '<span class="badge badge-warning">Medium</span>',
+        _cell_html11,
         '50-69%',
-        '<strong>' ~ quality_distribution.medium ~ '</strong>',
+        _cell_html12,
         (mapped_count > 0 ? ((quality_distribution.medium / mapped_count * 100)|round(1)) : 0) ~ '%',
         'Partial alignment, review recommended',
     ],
     [
-        '<span class="badge badge-danger">Weak</span>',
+        _cell_html13,
         '&lt;50%',
-        '<strong>' ~ quality_distribution.weak ~ '</strong>',
+        _cell_html14,
         (mapped_count > 0 ? ((quality_distribution.weak / mapped_count * 100)|round(1)) : 0) ~ '%',
         'Low alignment, optimization needed',
     ],
     [
-        '<strong>Average Mapping Quality</strong>',
+        _cell_html15,
         '',
         '',
-        '<strong>' ~ avg_mapping_quality ~ '%</strong>',
+        _cell_html16,
         '',
     ],
 ] %}
 
 {% set excellent_good_pct = mapped_count > 0 ? (((quality_distribution.excellent + quality_distribution.good) / mapped_count * 100)|round(1)) : 0 %}
-{% set _qual_insight = '<strong>Quality Assessment:</strong> '
-    ~ excellent_good_pct ~ '% of mappings are good or better (≥70%).' %}
+{% set _qual_insight %}<strong>Quality Assessment:</strong> {{ excellent_good_pct }}% of mappings are good or better (≥70%).{% endset %}
 {% if quality_distribution.weak > 0 %}
-    {% set _qual_insight = _qual_insight
-        ~ '<br><strong>Recommendation:</strong> Review and improve ' ~ quality_distribution.weak ~ ' weak mappings (&lt;50% quality) for better framework alignment.' %}
+    {% set _qual_insight %}{{ _qual_insight }}<br><strong>Recommendation:</strong> Review and improve {{ quality_distribution.weak }} weak mappings (&lt;50% quality) for better framework alignment.{% endset %}
 {% endif %}
 
 {# ── Category Coverage tables (F1→F2 and F2→F1) ──────────────────────── #}
 {% set _cat_f1_rows = [] %}
 {% for category, stats in category_coverage_f1_to_f2 %}
     {% set _cov_color = stats.coverage >= 70 ? 'var(--success-strong)' : (stats.coverage >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
+    {% set _cell_html18 %}<strong style="color:{{ _cov_color }};">{{ stats.coverage }}%</strong>{% endset %}
+    {% set _cell_html17 %}<strong>{{ category }}</strong>{% endset %}
     {% set _cat_f1_rows = _cat_f1_rows|merge([[
-        '<strong>' ~ category ~ '</strong>',
+        _cell_html17,
         stats.total,
         stats.mapped,
-        '<strong style="color:' ~ _cov_color ~ ';">' ~ stats.coverage ~ '%</strong>',
+        _cell_html18,
         stats.avg_quality ~ '%',
     ]]) %}
 {% endfor %}
@@ -185,11 +201,13 @@
 {% set _cat_f2_rows = [] %}
 {% for category, stats in category_coverage_f2_to_f1 %}
     {% set _cov_color = stats.coverage >= 70 ? 'var(--success-strong)' : (stats.coverage >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
+    {% set _cell_html20 %}<strong style="color:{{ _cov_color }};">{{ stats.coverage }}%</strong>{% endset %}
+    {% set _cell_html19 %}<strong>{{ category }}</strong>{% endset %}
     {% set _cat_f2_rows = _cat_f2_rows|merge([[
-        '<strong>' ~ category ~ '</strong>',
+        _cell_html19,
         stats.total,
         stats.mapped,
-        '<strong style="color:' ~ _cov_color ~ ';">' ~ stats.coverage ~ '%</strong>',
+        _cell_html20,
         stats.avg_quality ~ '%',
     ]]) %}
 {% endfor %}
@@ -197,25 +215,24 @@
 {# ── Detailed Requirement Mapping rows ────────────────────────────────── #}
 {% set _detail_rows = [] %}
 {% for detail in comparison_details %}
-    {% set _status_badge = detail.mapped
-        ? '<span class="badge badge-success">Mapped</span>'
-        : '<span class="badge badge-info">Not Mapped</span>' %}
+    {% set _status_badge %}{% if detail.mapped %}<span class="badge badge-success">Mapped</span>{% else %}<span class="badge badge-info">Not Mapped</span>{% endif %}{% endset %}
 
     {% set _qual_cell = '-' %}
     {% if detail.matchQuality is not null %}
         {% set _qual_color = detail.matchQuality >= 90 ? 'var(--success-strong)' : (detail.matchQuality >= 70 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
-        {% set _qual_cell = '<strong style="color:' ~ _qual_color ~ ';">' ~ detail.matchQuality ~ '%</strong>' %}
+        {% set _qual_cell %}<strong style="color:{{ _qual_color }};">{{ detail.matchQuality }}%</strong>{% endset %}
     {% endif %}
 
     {% set _f2_desc = '' %}
     {% if detail.framework2Requirement %}
         {% set _f2_desc = (detail.framework2Requirement.description|slice(0, 60)) ~ (detail.framework2Requirement.description|length > 60 ? '...' : '') %}
     {% else %}
-        {% set _f2_desc = '<span style="color:var(--fg-3);">No mapping</span>' %}
+        {% set _f2_desc %}<span style="color:var(--fg-3);">No mapping</span>{% endset %}
     {% endif %}
 
+    {% set _cell_html21 %}<strong>{{ detail.framework1Requirement.requirementId }}</strong>{% endset %}
     {% set _detail_rows = _detail_rows|merge([[
-        '<strong>' ~ detail.framework1Requirement.requirementId ~ '</strong>',
+        _cell_html21,
         ((detail.framework1Requirement.description ?? '')|slice(0, 60)) ~ ((detail.framework1Requirement.description ?? '')|length > 60 ? '...' : ''),
         _status_badge,
         _qual_cell,
@@ -224,6 +241,9 @@
 {% endfor %}
 
 {# ── Build sections array ─────────────────────────────────────────────── #}
+{% set _body_html_html24 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Category Insights:</strong> Categories with coverage &lt;50% should be prioritized for improved mapping quality and completeness.</div>{% endset %}
+{% set _body_html_html23 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">{{ _qual_insight }}</div>{% endset %}
+{% set _body_html_html22 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Analysis:</strong> {{ _bidi_analysis }}</div>{% endset %}
 {% set _sections = [
     {
         heading: 'Bidirectional Coverage Analysis',
@@ -231,7 +251,7 @@
             headers: ['Metric', framework1.code ~ ' → ' ~ framework2.code, framework2.code ~ ' → ' ~ framework1.code],
             rows: _bidi_rows,
         },
-        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Analysis:</strong> ' ~ _bidi_analysis ~ '</div>',
+        body_html: _body_html_html22,
     },
     {
         heading: 'Mapping Quality Distribution',
@@ -239,7 +259,7 @@
             headers: ['Quality Level', 'Range', 'Count', 'Percentage', 'Assessment'],
             rows: _qual_rows,
         },
-        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">' ~ _qual_insight ~ '</div>',
+        body_html: _body_html_html23,
     },
     {
         heading: 'Category Coverage: ' ~ framework1.code ~ ' → ' ~ framework2.code,
@@ -254,7 +274,7 @@
             headers: ['Category', 'Total', 'Mapped', 'Coverage', 'Avg. Quality'],
             rows: _cat_f2_rows,
         },
-        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Category Insights:</strong> Categories with coverage &lt;50% should be prioritized for improved mapping quality and completeness.</div>',
+        body_html: _body_html_html24,
     },
     {
         heading: 'Detailed Requirement Mapping',
@@ -265,6 +285,7 @@
     },
 ] %}
 
+{% set _methodology_html %}<p>Framework comparison analyzes bidirectional requirement mappings between two compliance frameworks. Coverage = mapped requirements / total requirements per direction. Mapping quality scored 0-100% based on semantic similarity. Symmetric coverage = minimum of both directional coverages (conservative measure). Quality levels: Excellent (90-100%), Good (70-89%), Medium (50-69%), Weak (&lt;50%).</p>{% endset %}
 {{ _fa_report_doc.render({
     report: {
         title:        'Framework Comparison Report',
@@ -296,7 +317,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: '<p>Framework comparison analyzes bidirectional requirement mappings between two compliance frameworks. Coverage = mapped requirements / total requirements per direction. Mapping quality scored 0-100% based on semantic similarity. Symmetric coverage = minimum of both directional coverages (conservative measure). Quality levels: Excellent (90-100%), Good (70-89%), Medium (50-69%), Weak (&lt;50%).</p>',
+        methodology: _methodology_html,
         sources: [
             { label: 'FrameworkComparisonService', detail: 'compareFrameworks() — bidirectional mapping analysis' },
         ],

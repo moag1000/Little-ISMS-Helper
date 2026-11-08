@@ -19,7 +19,7 @@
     </p>
 
     {% if scope_tenant %}
-        {{ _fa_alert.render({ variant: 'info', class: 'small', body: 'admin.tour_content.scope_tenant_hint'|trans({'%tenant%': scope_tenant.name}, 'admin') }) }}
+        {{ _fa_alert.render({ variant: 'info', class: 'small', body: 'admin.tour_content.scope_tenant_hint'|trans({'%tenant%': scope_tenant.name|e}, 'admin')|fa_html }) }}
     {% endif %}
 
     {# The save-form must not wrap the reset-form (nested <form>

@@ -14,7 +14,7 @@
  #   dismissible: boolean — fügt Close-Button + data-controller="aurora-alert"
  #   icon:        bi-* icon class (default: derived from tone)
  #   title:       optional bold-header above body
- #   actions:     raw HTML (z.B. Undo-Link)
+ #   actions:     HTML als Markup (Capture), z.B. Undo-Link — Strings werden escaped
  #}
 
 {% macro _iconFor(tone) %}
@@ -57,9 +57,9 @@
         <div class="fa-alert__body">
             {% if title %}<div class="fa-alert__title">{{ title }}</div>{% endif %}
             <div class="fa-alert__message">
-                {% if message is iterable %}{{ message|join(', ') }}{% else %}{{ message|raw }}{% endif %}
+                {% if message is iterable %}{{ message|join(', ') }}{% else %}{{ message }}{% endif %}
             </div>
-            {% if actions %}<div class="fa-alert__actions">{{ actions|raw }}</div>{% endif %}
+            {% if actions %}<div class="fa-alert__actions">{{ actions }}</div>{% endif %}
         </div>
 
         {% if dismissible %}

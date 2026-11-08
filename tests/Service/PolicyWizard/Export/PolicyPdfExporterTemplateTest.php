@@ -130,7 +130,6 @@ final class PolicyPdfExporterTemplateTest extends TestCase
         $reflector = new \ReflectionClass($exporter);
         $coverFn = $reflector->getMethod('buildCoverContext');
         $footerFn = $reflector->getMethod('buildFooterContext');
-        $bodyFn = $reflector->getMethod('renderBodyHtml');
 
         return $this->twig->render(
             'policy_wizard/export/_pdf_document.html.twig',
@@ -139,7 +138,7 @@ final class PolicyPdfExporterTemplateTest extends TestCase
                 'tenant'      => $doc->getTenant(),
                 'branding'    => null,
                 'cover'       => $coverFn->invoke($exporter, $doc, $variables),
-                'body_html'   => $bodyFn->invoke($exporter, $doc),
+                'body_html'   => $exporter->renderBodyMarkup($doc, true),
                 'footer'      => $footerFn->invoke($exporter, $doc, $variables),
                 'primary'     => '#0d6efd',
                 'secondary'   => '#6c757d',

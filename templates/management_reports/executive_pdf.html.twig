@@ -85,52 +85,59 @@
 {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
 {# Risk distribution table #}
+{% set _cell_html4 %}<span class="badge badge-success">{{ ('management_reports.risk_level.low'|trans({}, 'management_reports')) }} (&lt;6)</span>{% endset %}
+{% set _cell_html3 %}<span class="badge badge-info">{{ ('management_reports.risk_level.medium'|trans({}, 'management_reports')) }} (6-11)</span>{% endset %}
+{% set _cell_html2 %}<span class="badge badge-warning">{{ ('management_reports.risk_level.high'|trans({}, 'management_reports')) }} (12-19)</span>{% endset %}
+{% set _cell_html1 %}<span class="badge badge-danger">{{ ('management_reports.risk_level.critical'|trans({}, 'management_reports')) }} (≥20)</span>{% endset %}
 {% set _risk_rows = [
-    [ '<span class="badge badge-danger">' ~ ('management_reports.risk_level.critical'|trans({}, 'management_reports')) ~ ' (≥20)</span>',
+    [ _cell_html1,
       summary.risk_distribution.critical,
       summary.summary.total_risks > 0 ? (summary.risk_distribution.critical / summary.summary.total_risks * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-warning">' ~ ('management_reports.risk_level.high'|trans({}, 'management_reports')) ~ ' (12-19)</span>',
+    [ _cell_html2,
       summary.risk_distribution.high,
       summary.summary.total_risks > 0 ? (summary.risk_distribution.high / summary.summary.total_risks * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-info">' ~ ('management_reports.risk_level.medium'|trans({}, 'management_reports')) ~ ' (6-11)</span>',
+    [ _cell_html3,
       summary.risk_distribution.medium,
       summary.summary.total_risks > 0 ? (summary.risk_distribution.medium / summary.summary.total_risks * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-success">' ~ ('management_reports.risk_level.low'|trans({}, 'management_reports')) ~ ' (&lt;6)</span>',
+    [ _cell_html4,
       summary.risk_distribution.low,
       summary.summary.total_risks > 0 ? (summary.risk_distribution.low / summary.summary.total_risks * 100)|round(1) ~ '%' : '0%' ],
 ] %}
 
 {# Control status table #}
+{% set _cell_html7 %}<span class="badge badge-info">{{ ('management_reports.control_status.not_started'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html6 %}<span class="badge badge-warning">{{ ('management_reports.control_status.in_progress'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html5 %}<span class="badge badge-success">{{ ('management_reports.control_status.implemented'|trans({}, 'management_reports')) }}</span>{% endset %}
 {% set _ctrl_rows = [
-    [ '<span class="badge badge-success">' ~ ('management_reports.control_status.implemented'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html5,
       summary.control_status.implemented,
       summary.summary.total_controls > 0 ? (summary.control_status.implemented / summary.summary.total_controls * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-warning">' ~ ('management_reports.control_status.in_progress'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html6,
       summary.control_status.in_progress,
       summary.summary.total_controls > 0 ? (summary.control_status.in_progress / summary.summary.total_controls * 100)|round(1) ~ '%' : '0%' ],
-    [ '<span class="badge badge-info">' ~ ('management_reports.control_status.not_started'|trans({}, 'management_reports')) ~ '</span>',
+    [ _cell_html7,
       summary.control_status.not_started,
       summary.summary.total_controls > 0 ? (summary.control_status.not_started / summary.summary.total_controls * 100)|round(1) ~ '%' : '0%' ],
 ] %}
 
 {# Operational metrics #}
+{% set _cell_html11 %}<span class="badge badge-success">{{ ('management_reports.executive.status.active'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html10 %}{% if summary.audit_summary.completed_this_year >= 1 %}<span class="badge badge-success">{{ ('management_reports.audit.compliant'|trans({}, 'management_reports')) }}</span>{% else %}<span class="badge badge-warning">{{ ('management_reports.audit.pending'|trans({}, 'management_reports')) }}</span>{% endif %}{% endset %}
+{% set _cell_html9 %}<span class="badge badge-info">{{ ('management_reports.executive.status.tracked'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html8 %}{% if summary.incident_summary.open > 5 %}<span class="badge badge-warning">{{ ('management_reports.executive.status.attention'|trans({}, 'management_reports')) }}</span>{% else %}<span class="badge badge-success">{{ ('management_reports.executive.status.normal'|trans({}, 'management_reports')) }}</span>{% endif %}{% endset %}
 {% set _ops_rows = [
     [ 'management_reports.executive.open_incidents_12m'|trans({}, 'management_reports'),
       summary.incident_summary.open,
-      summary.incident_summary.open > 5
-        ? '<span class="badge badge-warning">' ~ ('management_reports.executive.status.attention'|trans({}, 'management_reports')) ~ '</span>'
-        : '<span class="badge badge-success">' ~ ('management_reports.executive.status.normal'|trans({}, 'management_reports')) ~ '</span>' ],
+      _cell_html8 ],
     [ 'management_reports.executive.total_incidents_12m'|trans({}, 'management_reports'),
       summary.incident_summary.total_12_months,
-      '<span class="badge badge-info">' ~ ('management_reports.executive.status.tracked'|trans({}, 'management_reports')) ~ '</span>' ],
+      _cell_html9 ],
     [ 'management_reports.executive.audits_completed'|trans({}, 'management_reports'),
       summary.audit_summary.completed_this_year,
-      summary.audit_summary.completed_this_year >= 1
-        ? '<span class="badge badge-success">' ~ ('management_reports.audit.compliant'|trans({}, 'management_reports')) ~ '</span>'
-        : '<span class="badge badge-warning">' ~ ('management_reports.audit.pending'|trans({}, 'management_reports')) ~ '</span>' ],
+      _cell_html10 ],
     [ 'management_reports.executive.total_trainings'|trans({}, 'management_reports'),
       summary.training_summary.total_trainings,
-      '<span class="badge badge-success">' ~ ('management_reports.executive.status.active'|trans({}, 'management_reports')) ~ '</span>' ],
+      _cell_html11 ],
 ] %}
 
 {# Risk trends section #}
@@ -229,7 +236,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: 'management_reports.executive.methodology'|trans({}, 'management_reports'),
+        methodology: 'management_reports.executive.methodology'|trans({}, 'management_reports')|fa_html,
         sources: [
             { label: 'ManagementReportService', detail: 'getExecutiveSummary() — aggregated cross-module KPIs' },
         ],

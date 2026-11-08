@@ -27,28 +27,29 @@
         {% set _cchip = crit == 'critical' ? 'confidential' : (crit == 'high' ? 'draft' : (crit == 'medium' ? 'auditor-only' : 'final')) %}
 
         {# Supplier / identity cell #}
-        {% set _id_cell = group.has_lei
-            ? '<code>' ~ rep.leiCode|e ~ '</code> <span class="report-doc__chip report-doc__chip--status-final" style="font-size:.7em;">LEI</span>'
-            : '<span style="color:var(--fg-3);font-size:.75em;" title="' ~ ('group_report.suppliers.no_lei_help'|trans({}, 'group_report')) ~ '">' ~ ('group_report.suppliers.matched_by_name'|trans({}, 'group_report')) ~ '</span>' %}
+        {% set _id_cell %}{% if group.has_lei %}<code>{{ rep.leiCode|e }}</code> <span class="report-doc__chip report-doc__chip--status-final" style="font-size:.7em;">LEI</span>{% else %}<span style="color:var(--fg-3);font-size:.75em;" title="{{ ('group_report.suppliers.no_lei_help'|trans({}, 'group_report')) }}">{{ ('group_report.suppliers.matched_by_name'|trans({}, 'group_report')) }}</span>{% endif %}{% endset %}
 
         {# Used-by tenants cell #}
         {% set _tenants_cell = '' %}
         {% if refCount >= 2 %}
-            {% set _tenants_cell = '<span class="report-doc__chip report-doc__chip--status-auditor-only" style="font-size:.7em;">' ~ refCount ~ '×</span> ' %}
+            {% set _tenants_cell %}<span class="report-doc__chip report-doc__chip--status-auditor-only" style="font-size:.7em;">{{ refCount }}×</span> {% endset %}
         {% endif %}
         {% for code in group.tenant_codes %}
-            {% set _tenants_cell = _tenants_cell ~ '<code style="font-size:.75em;">' ~ code|e ~ '</code> ' %}
+            {% set _tenants_cell %}{{ _tenants_cell }}<code style="font-size:.75em;">{{ code|e }}</code> {% endset %}
         {% endfor %}
 
+        {% set _cell_html3 %}{% if crit %}<span class="report-doc__chip report-doc__chip--status-{{ _cchip }}">{{ crit }}</span>{% else %}<span style="color:var(--fg-3);">—</span>{% endif %}{% endset %}
+        {% set _cell_html2 %}<strong>{{ rep.name|e }}</strong>{% if rep.effectiveContactPerson %}<br><span style="font-size:.75em;color:var(--fg-3);">{{ rep.effectiveContactPerson|e }}</span>{% endif %}{% endset %}
         {% set _sup_rows = _sup_rows|merge([[
-            '<strong>' ~ rep.name|e ~ '</strong>' ~ (rep.effectiveContactPerson ? '<br><span style="font-size:.75em;color:var(--fg-3);">' ~ rep.effectiveContactPerson|e ~ '</span>' : ''),
+            _cell_html2,
             _id_cell,
-            crit ? '<span class="report-doc__chip report-doc__chip--status-' ~ _cchip ~ '">' ~ crit ~ '</span>' : '<span style="color:var(--fg-3);">—</span>',
+            _cell_html3,
             _tenants_cell,
-            rep.serviceProvided ? (rep.serviceProvided|length > 80 ? rep.serviceProvided|slice(0, 80) ~ '…' : rep.serviceProvided)|e : '—',
+            rep.serviceProvided ? (rep.serviceProvided|length > 80 ? rep.serviceProvided|slice(0, 80) ~ '…' : rep.serviceProvided) : '—',
         ]]) %}
     {% endfor %}
 
+    {% set _body_html_html1 %}{% if _sup_rows|length == 0 %}<p style="color:var(--fg-3);font-style:italic;">{{ ('group_report.suppliers.none'|trans({}, 'group_report')) }}</p>{% else %}{{ null }}{% endif %}{% endset %}
     {{ _fa_report_doc.render({
         report: {
             title:        'group_report.suppliers.title'|trans({}, 'group_report'),
@@ -73,7 +74,7 @@
         sections: [
             {
                 heading: 'group_report.suppliers.title'|trans({}, 'group_report'),
-                intro: 'group_report.suppliers.intro'|trans({}, 'group_report'),
+                intro: 'group_report.suppliers.intro'|trans({}, 'group_report')|fa_html,
                 table: _sup_rows|length > 0 ? {
                     headers: [
                         'group_report.suppliers.col.supplier'|trans({}, 'group_report'),
@@ -84,9 +85,7 @@
                     ],
                     rows: _sup_rows,
                 } : null,
-                body_html: _sup_rows|length == 0
-                    ? '<p style="color:var(--fg-3);font-style:italic;">' ~ ('group_report.suppliers.none'|trans({}, 'group_report')) ~ '</p>'
-                    : null,
+                body_html: _body_html_html1,
             },
         ],
         appendix: {

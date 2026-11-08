@@ -26,32 +26,29 @@
 
     {% set _soa_rows = [] %}
     {% for cid in control_ids %}
-        {% set _row = [ '<code>' ~ cid|e ~ '</code>' ] %}
+        {% set _cell_html1 %}<code>{{ cid|e }}</code>{% endset %}
+        {% set _row = [ _cell_html1 ] %}
         {% for tenant in tenants %}
             {% set control = matrix[cid][tenant.code]|default(null) %}
             {% if control is null %}
-                {% set _row = _row|merge([ '<span style="color:var(--fg-3);">·</span>' ]) %}
+                {% set _cell_html2 %}<span style="color:var(--fg-3);">·</span>{% endset %}
+                {% set _row = _row|merge([ _cell_html2 ]) %}
             {% elseif not control.applicable %}
-                {% set _row = _row|merge([ '<span style="font-size:.75em;color:var(--fg-3);">N/A</span>' ]) %}
+                {% set _cell_html3 %}<span style="font-size:.75em;color:var(--fg-3);">N/A</span>{% endset %}
+                {% set _row = _row|merge([ _cell_html3 ]) %}
             {% else %}
                 {% set status = control.implementationStatus %}
                 {% set _chip = status == 'implemented' ? 'final' : (status == 'in_progress' ? 'draft' : (status == 'planned' ? 'auditor-only' : 'confidential')) %}
                 {% set _sym = status == 'implemented' ? '✓' : (status == 'in_progress' ? '◐' : (status == 'planned' ? '◯' : '–')) %}
-                {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status|e ~ '">' ~ _sym ~ '</span>' ]) %}
+                {% set _cell_html4 %}<span class="report-doc__chip report-doc__chip--status-{{ _chip }}" title="{{ status|e }}">{{ _sym }}</span>{% endset %}
+                {% set _row = _row|merge([ _cell_html4 ]) %}
             {% endif %}
         {% endfor %}
         {% set _soa_rows = _soa_rows|merge([_row]) %}
     {% endfor %}
 
     {# Legend body_html #}
-    {% set _legend_html = '<p style="font-size:8pt;color:var(--fg-2);">'
-        ~ '<strong>' ~ ('group_report.soa.legend.title'|trans({}, 'group_report')) ~ ':</strong> '
-        ~ '✓ ' ~ ('group_report.soa.legend.implemented'|trans({}, 'group_report'))
-        ~ ' · ◐ ' ~ ('group_report.soa.legend.in_progress'|trans({}, 'group_report'))
-        ~ ' · ◯ ' ~ ('group_report.soa.legend.planned'|trans({}, 'group_report'))
-        ~ ' · – ' ~ ('group_report.soa.legend.not_started'|trans({}, 'group_report'))
-        ~ ' · N/A ' ~ ('group_report.soa.legend.not_applicable'|trans({}, 'group_report'))
-        ~ '</p>' %}
+    {% set _legend_html %}<p style="font-size:8pt;color:var(--fg-2);"><strong>{{ ('group_report.soa.legend.title'|trans({}, 'group_report')) }}:</strong> ✓ {{ ('group_report.soa.legend.implemented'|trans({}, 'group_report')) }} · ◐ {{ ('group_report.soa.legend.in_progress'|trans({}, 'group_report')) }} · ◯ {{ ('group_report.soa.legend.planned'|trans({}, 'group_report')) }} · – {{ ('group_report.soa.legend.not_started'|trans({}, 'group_report')) }} · N/A {{ ('group_report.soa.legend.not_applicable'|trans({}, 'group_report')) }}</p>{% endset %}
 
     {{ _fa_report_doc.render({
         report: {

@@ -20,7 +20,7 @@
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
-            {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message|fa_flash|e }) }}
+            {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message|fa_flash }) }}
         {% endfor %}
     {% endfor %}
 
@@ -32,7 +32,8 @@
         <p class="text-muted mb-0">{{ 'existing_frameworks.description'|trans({}, 'setup_wizard') }}</p>
     </header>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'ui-lightbulb', body: '<strong>' ~ ('existing_frameworks.info.title'|trans({}, 'setup_wizard')) ~ '</strong> ' ~ ('existing_frameworks.info.message'|trans({}, 'setup_wizard')) }) }}
+    {% set _body_html2 %}<strong>{{ ('existing_frameworks.info.title'|trans({}, 'setup_wizard')) }}</strong> {{ ('existing_frameworks.info.message'|trans({}, 'setup_wizard')) }}{% endset %}
+    {{ _fa_alert.render({ variant: 'info', icon: 'ui-lightbulb', body: _body_html2 }) }}
 
     {{ form_start(form, {
         'attr': {
@@ -198,8 +199,8 @@
         if (!previewBox || !previewUrl) { return; }
 
         var idleHtml = previewBox.innerHTML;
-        var noNewlyHtml = {{ ('existing_frameworks.preview.no_newly_added'|trans({}, 'setup_wizard'))|json_encode|raw }};
-        var errorHtml = {{ ('existing_frameworks.preview.error'|trans({}, 'setup_wizard'))|json_encode|raw }};
+        var noNewlyHtml = {{ ('existing_frameworks.preview.no_newly_added'|trans({}, 'setup_wizard'))|fa_json }};
+        var errorHtml = {{ ('existing_frameworks.preview.error'|trans({}, 'setup_wizard'))|fa_json }};
 
         var debounceTimer = null;
 

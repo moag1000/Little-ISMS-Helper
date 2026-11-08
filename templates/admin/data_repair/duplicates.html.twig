@@ -69,9 +69,10 @@
     {% if not hasDuplicates %}
         {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.duplicates.all_ok'|trans({}, 'admin') }) }}
     {% else %}
+        {% set _body_html %}<strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.duplicates.description'|trans({}, 'admin') }}{% endset %}
         {{ _fa_alert.render({
             variant: 'warning',
-            body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.duplicates.description'|trans({}, 'admin'),
+            body: _body_html,
         }) }}
 
         {# Summary pills #}

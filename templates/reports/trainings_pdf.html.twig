@@ -88,9 +88,7 @@
 {# ── Build table rows with mandatory badge ── #}
 {% set _training_rows = [] %}
 {% for training in trainings %}
-    {% set _mandatory_html = training.mandatory
-        ? '<span class="badge badge-warning">' ~ ('pdf.common.yes'|trans({}, 'reports')) ~ '</span>'
-        : ('pdf.common.no'|trans({}, 'reports')) %}
+    {% set _mandatory_html %}{% if training.mandatory %}<span class="badge badge-warning">{{ ('pdf.common.yes'|trans({}, 'reports')) }}</span>{% else %}{{ 'pdf.common.no'|trans({}, 'reports') }}{% endif %}{% endset %}
     {% set _training_rows = _training_rows|merge([[
         training.id,
         training.title|length > 35 ? training.title|slice(0, 35) ~ '...' : training.title,

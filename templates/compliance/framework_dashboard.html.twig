@@ -213,7 +213,7 @@
             'description': 'compliance.next_action.critical_desc'|trans({'%count%': dashboard.gaps.critical}, 'compliance'),
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&priority=critical&sort=fulfillment',
             'action_text': 'compliance.next_action.critical_action'|trans({}, 'compliance'),
-            'icon': '<i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>',
+            'icon': 'status-warning text-danger',
             'priority': 'high'
         } %}
     {% elseif dashboard.statistics.applicable < dashboard.statistics.total %}
@@ -222,7 +222,7 @@
             'description': 'compliance.next_action.applicability_desc'|trans({'%count%': dashboard.statistics.total - dashboard.statistics.applicable}, 'compliance'),
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id,
             'action_text': 'compliance.dashboard.action.review_requirements'|trans({}, 'compliance'),
-            'icon': '<i class="fa-icon fa-icon--ui-edit text-primary" aria-hidden="true"></i>',
+            'icon': 'ui-edit text-primary',
             'priority': 'medium'
         } %}
     {% elseif dashboard.gaps.total > 0 %}
@@ -231,7 +231,7 @@
             'description': 'compliance.next_action.gaps_desc'|trans({'%count%': dashboard.gaps.total}, 'compliance'),
             'action_url': path('app_compliance_gaps', {id: framework.id}),
             'action_text': 'compliance.next_action.gaps_action'|trans({}, 'compliance'),
-            'icon': '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>',
+            'icon': 'status-warning',
             'priority': 'medium'
         } %}
     {% elseif dashboard.compliance_percentage < 100 %}
@@ -240,14 +240,14 @@
             'description': 'compliance.next_action.rest_desc'|trans({'%percent%': dashboard.compliance_percentage}, 'compliance'),
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&sort=fulfillment',
             'action_text': 'compliance.next_action.rest_action'|trans({}, 'compliance'),
-            'icon': '<i class="fa-icon fa-icon--nav-bullseye text-success" aria-hidden="true"></i>',
+            'icon': 'nav-bullseye text-success',
             'priority': 'low'
         } %}
     {% endif %}
 
     {% if next_action %}
     <div class="next-action-card priority-{{ next_action.priority }}">
-        <div class="next-action-icon">{{ next_action.icon|raw }}</div>
+        <div class="next-action-icon"><i class="fa-icon fa-icon--{{ next_action.icon }}" aria-hidden="true"></i></div>
         <div class="next-action-content">
             <p class="fw-bold fs-4">{{ next_action.title }}</p>
             <p>{{ next_action.description }}</p>

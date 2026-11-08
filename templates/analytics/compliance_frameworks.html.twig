@@ -360,7 +360,7 @@
             // Framework Comparison Chart
             const comparisonCtx = document.getElementById('frameworkComparisonChart');
             if (comparisonCtx) {
-                const comparisonData = {{ comparison.frameworks|json_encode|raw }};
+                const comparisonData = {{ comparison.frameworks|fa_json }};
                 const __existingComparison = Chart.getChart(comparisonCtx); if (__existingComparison) { __existingComparison.destroy(); }
                 new Chart(comparisonCtx, {
                     type: 'bar',
@@ -398,7 +398,7 @@
             // Overlap Chart
             const overlapCtx = document.getElementById('overlapChart');
             if (overlapCtx) {
-                const overlapData = {{ overlap|json_encode|raw }};
+                const overlapData = {{ overlap|fa_json }};
                 const totalShared = overlapData.overlaps.reduce((sum, o) => sum + o.shared_controls, 0);
                 const totalFrameworks = overlapData.frameworks.length;
                 const __existingOverlap = Chart.getChart(overlapCtx); if (__existingOverlap) { __existingOverlap.destroy(); }

@@ -21,18 +21,14 @@
     {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
     {# Sort navigation — preserved as body_html prefix #}
-    {% set _sort_html = '<div style="margin-bottom:1rem;display:flex;gap:.5rem;flex-wrap:wrap;">'
-        ~ '<a href="' ~ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'effort'}) ~ '" class="fa-cyber-btn fa-cyber-btn--sm ' ~ (sort == 'effort' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost') ~ '">'
-        ~ ('gap_report.sort.effort'|trans({}, 'gap_report'))
-        ~ '</a>'
-        ~ '<a href="' ~ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'quick-wins'}) ~ '" class="fa-cyber-btn fa-cyber-btn--sm ' ~ (sort == 'quick-wins' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost') ~ '">'
-        ~ ('gap_report.sort.quick_wins'|trans({}, 'gap_report'))
-        ~ '</a>'
-        ~ '</div>' %}
+    {% set _sort_html %}<div style="margin-bottom:1rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+        <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'effort'}) }}" class="fa-cyber-btn fa-cyber-btn--sm {{ sort == 'effort' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">{{ 'gap_report.sort.effort'|trans({}, 'gap_report') }}</a>
+        <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'quick-wins'}) }}" class="fa-cyber-btn fa-cyber-btn--sm {{ sort == 'quick-wins' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">{{ 'gap_report.sort.quick_wins'|trans({}, 'gap_report') }}</a>
+    </div>{% endset %}
 
     {# Capture gap report body partial (includes Stimulus budget-simulator) #}
     {% set _body_partial %}
-        {{ _sort_html|raw }}
+        {{ _sort_html }}
         {% include 'compliance_wizard/_gap_report_body.html.twig' with {
             wizard: wizard,
             effort_table: effort_table,

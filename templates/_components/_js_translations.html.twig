@@ -8,5 +8,5 @@
  # assets/js/fa-i18n.js — controller texts, dialog buttons, errors.
  #}
 <script nonce="{{ csp_nonce() }}">
-    window.translations = {{ {ui: js_ui_translations()}|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }};
+    window.translations = {{ {ui: js_ui_translations()}|fa_json(constant('JSON_UNESCAPED_UNICODE')) }};
 </script>

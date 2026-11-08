@@ -111,7 +111,7 @@
                 { label: 'training.create_first'|trans({}, 'training'), variant: 'primary', icon: 'plus', href: path('app_training_new') }
             ] : []
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/training"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/training' },
     } %}
         {% block list_filters %}
             {% if currentTenant %}

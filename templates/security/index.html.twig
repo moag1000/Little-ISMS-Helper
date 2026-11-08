@@ -145,7 +145,7 @@
                             </a>
                             </div>
                     {% else %}
-                        {{ _fa_alert.render({ variant: 'warning', class: 'mb-0', body: 'security_reports.info.regenerate_hint'|trans({}, 'security_reports') }) }}
+                        {{ _fa_alert.render({ variant: 'warning', class: 'mb-0', body: 'security_reports.info.regenerate_hint'|trans({}, 'security_reports')|fa_html }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -214,7 +214,7 @@
                             </a>
                         </div>
                     {% else %}
-                        {{ _fa_alert.render({ variant: 'warning', class: 'mb-0', body: 'security_reports.info.regenerate_hint'|trans({}, 'security_reports') }) }}
+                        {{ _fa_alert.render({ variant: 'warning', class: 'mb-0', body: 'security_reports.info.regenerate_hint'|trans({}, 'security_reports')|fa_html }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}

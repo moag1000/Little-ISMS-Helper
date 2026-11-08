@@ -233,7 +233,7 @@
 
                     {% if section.body_html is defined and section.body_html %}
                         <div class="report-doc__section-body">
-                            {{ section.body_html|raw }}
+                            {{ section.body_html }}
                         </div>
                     {% endif %}
 
@@ -257,7 +257,7 @@
                                     {% for row in _tbl.rows|default([]) %}
                                         <tr>
                                             {% for cell in row %}
-                                                <td>{{ cell|raw }}</td>
+                                                <td>{{ cell }}</td>
                                             {% endfor %}
                                         </tr>
                                     {% endfor %}
@@ -281,7 +281,7 @@
                 {% if _appendix.methodology is defined and _appendix.methodology %}
                     <div class="report-doc__appendix-block">
                         <h3 class="report-doc__appendix-subheading">{{ 'report.doc.appendix.methodology'|trans({}, 'reports') }}</h3>
-                        <div class="report-doc__appendix-body">{{ _appendix.methodology|raw }}</div>
+                        <div class="report-doc__appendix-body">{{ _appendix.methodology }}</div>
                     </div>
                 {% endif %}
 
@@ -338,7 +338,7 @@
 
             <div class="report-doc__disclaimer-text">
                 {% if _disclaimer %}
-                    {{ _disclaimer|raw }}
+                    {{ _disclaimer }}
                 {% else %}
                     {{ 'report.doc.footer.default_disclaimer'|trans({}, 'reports') }}
                 {% endif %}

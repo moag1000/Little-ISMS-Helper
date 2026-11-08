@@ -65,7 +65,7 @@
         {% endfor %}
     </ol>
 
-    {{ _fa_alert.render({ variant: 'info', class: 'small mt-4 d-print-none', body: 'help.tour.role.footer_hint'|trans({}, 'help')|raw }) }}
+    {{ _fa_alert.render({ variant: 'info', class: 'small mt-4 d-print-none', body: 'help.tour.role.footer_hint'|trans({}, 'help')|fa_html }) }}
 
     {# Print-only footer — ISO A.6.3 Awareness-Training-Nachweis #}
     <div class="d-none d-print-block mt-5">

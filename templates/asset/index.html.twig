@@ -42,7 +42,7 @@
         help_link: path('app_help_glossary') ~ '#glossary-asset',
         actions: [{ label: 'asset.action.create'|trans({}, 'asset'), variant: 'primary', icon: 'plus', href: path('app_asset_new') }],
     },
-    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/asset" data-bulk-actions-entity-label="' ~ 'asset.modern.header.title'|trans({}, 'asset') ~ '"',
+    card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/asset', 'data-bulk-actions-entity-label': 'asset.modern.header.title'|trans({}, 'asset') },
 } %}
     {% block list_filters %}
         {% include '_components/_isms_scope_filter.html.twig' %}

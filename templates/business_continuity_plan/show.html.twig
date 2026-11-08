@@ -94,7 +94,8 @@
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% set readiness = bc_plan.getReadinessScore() %}
             {% set readinessVariant = readiness >= 80 ? 'success' : (readiness >= 60 ? 'info' : 'warning') %}
-            {{ _fa_alert.render({ variant: readinessVariant, body: '<strong>' ~ 'bc_plans.message.readiness_score'|trans({'%score%': readiness}, 'bc_plans') ~ '</strong>' }) }}
+            {% set _body_html %}<strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': readiness}, 'bc_plans') }}</strong>{% endset %}
+            {{ _fa_alert.render({ variant: readinessVariant, body: _body_html }) }}
 
             <div class="detail-grid">
                 <div class="detail-item">

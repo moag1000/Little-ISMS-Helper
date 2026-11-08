@@ -116,7 +116,7 @@
 {# ---------------------------------------------------------------------------
  # Render-API macro (data-driven mode) — used when you don't need cell-level
  # control. Pass { headers, rows } where row is an array of cells matching
- # header order. Cells may be raw HTML strings.
+ # header order. Cells are escaped text; pass HTML as Markup (capture or macro output).
  # ------------------------------------------------------------------------ #}
 {% macro render(props) %}
     {% set headers    = props.headers|default([]) %}
@@ -150,7 +150,7 @@
                                 class="{{ thCls|join(' ') }}"
                                 {% if h.key is defined %}data-sort-key="{{ h.key }}"{% endif %}
                                 {% if h.sortable|default(false) %}tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort"{% endif %}>
-                                {{ h.label|raw }}
+                                {{ h.label }}
                             </th>
                         {% endfor %}
                     </tr>
@@ -164,12 +164,12 @@
                         <tr class="fa-table__row">
                             {% if row is iterable and row.cells is not defined %}
                                 {% for cell in row %}
-                                    <td class="fa-table__cell">{{ cell|raw }}</td>
+                                    <td class="fa-table__cell">{{ cell }}</td>
                                 {% endfor %}
                             {% else %}
                                 {% for cell in row.cells|default([]) %}
                                     <td class="fa-table__cell{% if cell.align|default('') == 'right' %} fa-table__cell--num{% endif %}{% if cell.align|default('') == 'center' %} fa-table__cell--center{% endif %}">
-                                        {{ cell.value|default(cell)|raw }}
+                                        {{ cell.value|default(cell) }}
                                     </td>
                                 {% endfor %}
                             {% endif %}

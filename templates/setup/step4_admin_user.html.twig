@@ -12,11 +12,11 @@
     {% for label, messages in app.flashes %}
         {% set tone = label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')) %}
         {% for message in messages %}
-            {{ faAlert.render(message|fa_flash|e, tone, { dismissible: true })|raw }}
+            {{ faAlert.render(message|fa_flash, tone, { dismissible: true }) }}
         {% endfor %}
     {% endfor %}
 
-    {{ step_header.render(5, 12, step.kind, 'setup.admin.header'|trans({}, 'setup'), 'setup.admin.description'|trans({}, 'setup'))|raw }}
+    {{ step_header.render(5, 12, step.kind, 'setup.admin.header'|trans({}, 'setup'), 'setup.admin.description'|trans({}, 'setup')) }}
 
     {{ form_start(form, {'attr': {'class': 'fa-setup-form', 'novalidate': 'novalidate', 'data-turbo': 'false', 'data-controller': 'wizard-busy', 'data-wizard-busy-message-value': 'setup.alva.busy.admin'|trans({}, 'setup')}}) }}
 
@@ -93,13 +93,13 @@
             <li>{{ 'setup.admin.password_requirements.number'|trans({}, 'setup') }}</li>
         </ul>
     {% endset %}
-    {{ faAlert.render(pwReqs, 'info', { title: 'setup.admin.password_requirements.title'|trans({}, 'setup'), icon: 'nav-shield-lock' })|raw }}
+    {{ faAlert.render(pwReqs, 'info', { title: 'setup.admin.password_requirements.title'|trans({}, 'setup'), icon: 'nav-shield-lock' }) }}
 
     {{ faAlert.render(
         'setup.admin.security_note.message'|trans({}, 'setup'),
         'warning',
         { title: 'setup.admin.security_note.title'|trans({}, 'setup'), withAlva: true }
-    )|raw }}
+    ) }}
 
     <div class="fa-nav-bar">
         <div class="fa-nav-bar__left">
@@ -116,5 +116,5 @@
         'setup.admin.next_steps.description'|trans({}, 'setup'),
         'info',
         { title: 'setup.admin.next_steps.title'|trans({}, 'setup'), icon: 'status-info' }
-    )|raw }}
+    ) }}
 {% endblock %}

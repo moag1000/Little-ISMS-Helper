@@ -111,7 +111,7 @@
             {% endblock %}
         {% endembed %}
     {% else %}
-        {{ _fa_alert.render({ variant: 'success', body: 'data_breach.dashboard.empty_state'|trans({}, 'privacy') }) }}
+        {{ _fa_alert.render({ variant: 'success', body: 'data_breach.dashboard.empty_state'|trans({}, 'privacy')|fa_html }) }}
     {% endif %}
 
     {# Statistics by Status #}

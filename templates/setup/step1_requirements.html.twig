@@ -11,21 +11,21 @@
     {% import '_components/_status_pill.html.twig' as pill %}
     {% import '_components/_nav_bar.html.twig' as nav %}
 
-    {{ step_header.render(2, 12, step.kind, 'setup.step1.header'|trans({}, 'setup'), results.overall.message)|raw }}
+    {{ step_header.render(2, 12, step.kind, 'setup.step1.header'|trans({}, 'setup'), results.overall.message) }}
 
     {# Status-Summary mit Pills #}
     <div style="display:flex; gap:6px; flex-wrap:wrap; margin:8px 0 20px;">
-        {{ pill.render(results.overall.success ~ ' ' ~ 'setup.step1.status.success'|trans({}, 'setup'), 'success')|raw }}
+        {{ pill.render(results.overall.success ~ ' ' ~ 'setup.step1.status.success'|trans({}, 'setup'), 'success') }}
         {% if results.overall.warnings > 0 %}
-            {{ pill.render(results.overall.warnings ~ ' ' ~ 'setup.step1.status.warnings'|trans({}, 'setup'), 'warning')|raw }}
+            {{ pill.render(results.overall.warnings ~ ' ' ~ 'setup.step1.status.warnings'|trans({}, 'setup'), 'warning') }}
         {% endif %}
         {% if results.overall.critical_errors > 0 %}
-            {{ pill.render(results.overall.critical_errors ~ ' ' ~ 'setup.step1.status.critical_errors'|trans({}, 'setup'), 'danger')|raw }}
+            {{ pill.render(results.overall.critical_errors ~ ' ' ~ 'setup.step1.status.critical_errors'|trans({}, 'setup'), 'danger') }}
         {% endif %}
     </div>
 
     {% if not results.overall.can_proceed %}
-        {{ faAlert.render(results.overall.message, 'danger', { withAlva: true, title: 'setup.step1.cannot_proceed'|trans({}, 'setup')|default('Voraussetzungen nicht erfüllt') })|raw }}
+        {{ faAlert.render(results.overall.message, 'danger', { withAlva: true, title: 'setup.step1.cannot_proceed'|trans({}, 'setup')|default('Voraussetzungen nicht erfüllt') }) }}
     {% endif %}
 
     <h2 class="fa-setup-section-title">
@@ -40,20 +40,20 @@
         label: 'setup.step1.php.title'|trans({}, 'setup'),
         value: results.php.current,
         hint: results.php.message ~ ' · ' ~ 'setup.step1.php.required'|trans({'%version%': results.php.required}, 'setup')
-    })|raw }}
+    }) }}
 
     {{ row.render({
         status: statusMap[results.extensions.status]|default('idle'),
         label: 'setup.step1.extensions.title'|trans({}, 'setup'),
         value: results.extensions.missing|length == 0 ? 'OK' : (results.extensions.missing|length ~ ' ' ~ 'setup.step1.extensions.missing_count'|trans({}, 'setup')),
         hint: results.extensions.missing|length > 0 ? results.extensions.missing|join(', ') : results.extensions.message
-    })|raw }}
+    }) }}
 
     {{ row.render({
         status: statusMap[results.database.status]|default('idle'),
         label: 'setup.step1.database.title'|trans({}, 'setup'),
         hint: results.database.message
-    })|raw }}
+    }) }}
 
     {{ row.render({
         status: statusMap[results.permissions.status]|default('idle'),
@@ -61,32 +61,32 @@
         hint: results.permissions.not_writable|length > 0
             ? ('setup.step1.permissions.not_writable'|trans({}, 'setup') ~ ': ' ~ results.permissions.not_writable|join(', '))
             : results.permissions.message
-    })|raw }}
+    }) }}
 
     {{ row.render({
         status: statusMap[results.memory.status]|default('idle'),
         label: 'setup.step1.memory.title'|trans({}, 'setup'),
         value: results.memory.current,
         hint: 'setup.step1.memory.recommended'|trans({'%value%': results.memory.required}, 'setup')
-    })|raw }}
+    }) }}
 
     {{ row.render({
         status: statusMap[results.execution_time.status]|default('idle'),
         label: 'setup.step1.execution_time.title'|trans({}, 'setup'),
         value: results.execution_time.current ~ 's',
         hint: 'setup.step1.execution_time.recommended'|trans({'%value%': results.execution_time.required}, 'setup')
-    })|raw }}
+    }) }}
 
     {{ row.render({
         status: statusMap[results.symfony.status]|default('idle'),
         label: 'setup.step1.symfony.title'|trans({}, 'setup'),
         hint: results.symfony.message
-    })|raw }}
+    }) }}
 
     {{ nav.render({
         back: { url: path('setup_step0_welcome'), label: 'setup.common.back'|trans({}, 'setup') },
         next: can_proceed
             ? { url: path('setup_step2_database_config'), label: 'setup.next_step'|trans({'%step%': 2, '%name%': 'setup.steps.database'|trans({}, 'setup')}, 'messages') }
             : { label: 'setup.fix_errors_first'|trans({}, 'setup'), disabled: true }
-    })|raw }}
+    }) }}
 {% endblock %}

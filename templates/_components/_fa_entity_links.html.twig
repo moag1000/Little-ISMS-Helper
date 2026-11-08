@@ -19,13 +19,12 @@
 {% set _suggestions = pending_suggestions(entity) %}
 {% if _suggestions is not empty %}
     {% set _first = _suggestions|first %}
+    {% set _body_html %}{{ ('suggestions.hint.record'|trans({'%count%': _suggestions|length, '%title%': _first.title}, 'suggestions'))|e }} <a href="{{ path('app_suggestion_index', {subject: _first.subjectClass ~ '#' ~ _first.subjectId})|e('html_attr') }}">{{ ('suggestions.hint.open'|trans({}, 'suggestions'))|e }}</a>{% endset %}
     {{ _fa_alert.render({
         variant: 'info',
         icon: 'nav-magic',
         class: 'mb-3',
-        body: ('suggestions.hint.record'|trans({'%count%': _suggestions|length, '%title%': _first.title}, 'suggestions'))|e
-            ~ ' <a href="' ~ path('app_suggestion_index', {subject: _first.subjectClass ~ '#' ~ _first.subjectId})|e('html_attr') ~ '">'
-            ~ ('suggestions.hint.open'|trans({}, 'suggestions'))|e ~ '</a>',
+        body: _body_html,
     }) }}
 {% endif %}
 {# Drafts the user may ask for on this record (P6) — rule drafts at once, model drafts in the background; both land in the queue. #}

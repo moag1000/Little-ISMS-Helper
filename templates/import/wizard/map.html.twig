@@ -65,12 +65,12 @@
                         {% set suggestion = autoMappings[header] ?? null %}
                         {% set conf       = suggestion ? (suggestion.confidence)|default(0) : 0 %}
                         {% set chipVariant = conf >= 0.9 ? 'success' : (conf >= 0.6 ? 'warning' : 'danger') %}
-                        {% set widgetHtml = form_widget(form[fieldName], { attr: {
+                        {% set widgetHtml %}{{ form_widget(form[fieldName], { attr: {
                             'data-column-mapping-target': 'dropdown',
                             'data-action': 'change->column-mapping#onSelect',
                             'data-source-column': header,
                             'class': 'form-select form-select-sm'
-                        }}) ~ form_errors(form[fieldName]) %}
+                        }}) }}{{ form_errors(form[fieldName]) }}{% endset %}
                         {% set trailingHtml %}
                             {% if suggestion %}
                                 <span data-column-mapping-target="confidenceBadge"
@@ -87,11 +87,12 @@
                                 </span>
                             {% endif %}
                         {% endset %}
+                        {% set _widget_html1 %}<div style="min-width:220px;">{{ widgetHtml }}</div>{% endset %}
                         {% set _mapRows = _mapRows|merge([{
                             kind:     'widget',
                             label:    header,
                             name:     fieldName,
-                            widget:   '<div style="min-width:220px;">' ~ widgetHtml ~ '</div>',
+                            widget:   _widget_html1,
                             trailing: trailingHtml,
                         }]) %}
                     {% endfor %}

@@ -65,7 +65,7 @@
         <header class="fa-form-layout__header">
             <div>
                 {% if eyebrow %}
-                    <div class="fa-form-layout__eyebrow">{{ eyebrow|raw }}</div>
+                    <div class="fa-form-layout__eyebrow">{{ eyebrow }}</div>
                 {% endif %}
                 {% if title %}<h2 class="fa-form-layout__title">{{ title }}</h2>{% endif %}
                 {% if subtitle %}
@@ -123,7 +123,7 @@
                                         {{ loop_index }}
                                     {%- endif -%}
                                 </span>
-                                <span class="fa-form-layout__outline-label">{{ section.title|raw }}</span>
+                                <span class="fa-form-layout__outline-label">{{ section.title }}</span>
                                 <span class="fa-form-layout__outline-count"
                                       data-section-count="{{ section.id }}">{{ sectionFilled }}/{{ sectionFields }}</span>
                             </a>
@@ -159,7 +159,7 @@
                                 {%- endif -%}
                             </span>
                             <div class="fa-form-section__heading">
-                                <h3 class="fa-form-section__title">{{ loop.index }} · {{ section.title|raw }}</h3>
+                                <h3 class="fa-form-section__title">{{ loop.index }} · {{ section.title }}</h3>
                                 <span class="fa-form-section__meta"
                                       data-section-meta="{{ section.id }}"
                                       {% if sectionStatus == 'error' %}style="color: var(--danger);"{% endif %}>
@@ -177,7 +177,7 @@
 
                         <div class="fa-form-section__body">
                             {% if section.body is defined and section.body %}
-                                {{ section.body|raw }}
+                                {{ section.body }}
                             {% endif %}
                         </div>
 
@@ -195,7 +195,7 @@
            OUTSIDE the form (nested <form> is invalid HTML). #}
         {% if extrasBeforeActions %}
             <div class="fa-form-layout__extras">
-                {{ extrasBeforeActions|raw }}
+                {{ extrasBeforeActions }}
             </div>
         {% endif %}
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Twig;
 
 use PHPUnit\Framework\Attributes\Test;
+use Twig\Markup;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Twig\Environment;
 use Twig\Loader\ChainLoader;
@@ -319,7 +320,7 @@ final class ModalWizardMacroTest extends KernelTestCase
                     'title'          => '1. Schweregradeinstufung',
                     'required'       => true,
                     'validationHint' => 'Schweregrad auswählen und Systemanzahl angeben.',
-                    'body'           => '<select name="severity" required><option value="">—</option><option>Hoch</option></select>',
+                    'body'           => new Markup('<select name="severity" required><option value="">—</option><option>Hoch</option></select>', 'UTF-8'),
                 ],
                 [
                     'id'             => 'step-notification',
@@ -327,14 +328,14 @@ final class ModalWizardMacroTest extends KernelTestCase
                     'title'          => '2. Meldepflicht',
                     'required'       => true,
                     'validationHint' => 'Option auswählen.',
-                    'body'           => '<input type="radio" name="notification" value="yes" required>',
+                    'body'           => new Markup('<input type="radio" name="notification" value="yes" required>', 'UTF-8'),
                 ],
                 [
                     'id'       => 'step-review',
                     'label'    => 'Prüfen',
                     'title'    => '3. Prüfen & Absenden',
                     'required' => false,
-                    'body'     => '<p>Zusammenfassung</p>',
+                    'body'     => new Markup('<p>Zusammenfassung</p>', 'UTF-8'),
                 ],
             ],
             'actions'  => [

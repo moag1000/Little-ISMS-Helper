@@ -67,20 +67,23 @@
                     {{ _fa_progress.render({ value: pct, tone: pct == 100 ? 'success' : 'primary', showText: false }) }}
                 </div>
             {% endset %}
-            {% set tableRows = tableRows|merge([[
-                { content: '<a href="' ~ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) ~ '">' ~ c.name|e ~ '</a>', raw: true },
-                { content: ('access_review.scope.' ~ c.scope)|trans({}, 'access_review') },
-                { content: c.dueDate|fa_date },
-                { content: '<span class="fa-status-pill fa-status-pill--' ~ (c.status == 'open' ? 'success' : 'neutral') ~ '">' ~ ('access_review.status.' ~ c.status)|trans({}, 'access_review') ~ '</span>', raw: true },
-                { content: c.totalCount ~ ' (' ~ c.pendingCount ~ ' ' ~ 'access_review.field.pending'|trans({}, 'access_review') ~ ')' },
-                { content: progressCell, raw: true },
-                { content: '<a class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" href="' ~ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) ~ '">' ~ 'common.view'|trans({}, 'messages') ~ '</a>', raw: true }
-            ]]) %}
+            {% set _content_html3 %}<a class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" href="{{ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) }}">{{ 'common.view'|trans({}, 'messages') }}</a>{% endset %}
+            {% set _content_html2 %}<span class="fa-status-pill fa-status-pill--{{ (c.status == 'open' ? 'success' : 'neutral') }}">{{ ('access_review.status.' ~ c.status)|trans({}, 'access_review') }}</span>{% endset %}
+            {% set _content_html1 %}<a href="{{ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) }}">{{ c.name }}</a>{% endset %}
+            {% set tableRows = tableRows|merge([{ cells: [
+                { value: _content_html1 },
+                { value: ('access_review.scope.' ~ c.scope)|trans({}, 'access_review') },
+                { value: c.dueDate|fa_date },
+                { value: _content_html2 },
+                { value: c.totalCount ~ ' (' ~ c.pendingCount ~ ' ' ~ 'access_review.field.pending'|trans({}, 'access_review') ~ ')' },
+                { value: progressCell },
+                { value: _content_html3 }
+            ] }]) %}
         {% endfor %}
 
         {{ _fa_table.render({
             caption: 'access_review.table_caption'|trans({}, 'access_review'),
-            head: [
+            headers: [
                 { label: 'access_review.field.name'|trans({}, 'access_review') },
                 { label: 'access_review.field.scope'|trans({}, 'access_review') },
                 { label: 'access_review.field.due_date'|trans({}, 'access_review') },

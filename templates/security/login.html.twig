@@ -18,15 +18,15 @@
     </header>
 
     {% if error %}
-        {{ faAlert.render(error.messageKey|trans(error.messageData, 'security'), 'danger', { withAlva: true, dismissible: false })|raw }}
+        {{ faAlert.render(error.messageKey|trans(error.messageData, 'security'), 'danger', { withAlva: true, dismissible: false }) }}
     {% endif %}
 
     {% if app.user %}
+        {% set _message_html %}{{ 'login.already_logged_in'|trans({'%user%': app.user.userIdentifier}, 'messages') }} <a href="{{ path('app_home') }}">{{ ('common.to_home'|trans({}, 'messages')) }}</a>{% endset %}
         {{ faAlert.render(
-            'login.already_logged_in'|trans({'%user%': app.user.userIdentifier}, 'messages')
-            ~ ' <a href="' ~ path('app_home') ~ '">' ~ ('common.to_home'|trans({}, 'messages')) ~ '</a>',
+            _message_html,
             'info', { withAlva: true }
-        )|raw }}
+        ) }}
     {% else %}
         <form method="post"
               action="{{ path('app_login') }}"
