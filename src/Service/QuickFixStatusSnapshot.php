@@ -60,7 +60,7 @@ class QuickFixStatusSnapshot
     {
         return [
             'status' => $this->maintenance->getMaintenanceStatus(),
-            'pending_fs' => array_values($this->maintenance->listPendingMigrationVersionsFromFileSystem()),
+            'pending_fs' => $this->maintenance->listPendingMigrationVersionsFromFileSystem(),
             'clean' => $this->maintenance->verifyClean(),
         ];
     }

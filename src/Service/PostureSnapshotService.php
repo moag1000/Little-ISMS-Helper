@@ -67,7 +67,7 @@ final class PostureSnapshotService
             // Only the frameworks this organisation works on (own applicable fulfilment rows):
             // a public page must not list every catalogue loaded on the instance as its scope.
             $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($fw, $tenant);
-            if (($stats['applicable'] ?? 0) === 0) {
+            if ($stats['applicable'] === 0) {
                 continue;
             }
             $frameworks[] = [
