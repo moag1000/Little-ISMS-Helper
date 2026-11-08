@@ -213,6 +213,27 @@ register:
                 incident: Vorfall
                 exercise: Übung
                 other: Sonstige
+        monitoring_source:
+            title: Überwachte Quellen
+            purpose: Welche Netze, Systeme und Anwendungen auf auffälliges Verhalten überwacht werden, wie oft und von wem (ISO 27001 A.8.16).
+            new: Quelle erfassen
+            empty: Keine überwachten Quellen vorhanden.
+            field:
+                title: Quelle
+                description: Was überwacht wird und welche Auffälligkeiten gemeldet werden
+                owner: Wertet aus
+                category: Art
+                reference: Werkzeug
+            help:
+                reference: Zum Beispiel SIEM, EDR oder das Monitoring des Cloud-Anbieters.
+            category:
+                network: Netzwerk
+                system: Server und Endgeräte
+                application: Anwendung
+                cloud: Cloud-Dienst
+                identity: Identitäten und Anmeldungen
+                physical: Physische Zugänge
+                other: Sonstige
     field:
         frequency: Rhythmus
         next_date: Nächster Termin
@@ -330,6 +351,7 @@ register:
         bcm_officer: Business Continuity Management nach ISO 22301
     proposal:
         interface_title: Schnittstelle zu %name%
+        monitoring_title: Monitoring des Cloud-Dienstes %name%
     communication:
         parties_title: Termine mit interessierten Parteien
         parties_hint: Externer Teil des Plans, gepflegt an der jeweiligen Partei.

@@ -81,4 +81,14 @@ final class DeadlineSourceRegistry
 
         return null;
     }
+
+    /**
+     * Every source that knows the record (a risk: review, acceptance request, …).
+     *
+     * @return list<DeadlineSource>
+     */
+    public function allForRecord(object $record): array
+    {
+        return array_values(array_filter($this->bySlug, static fn (DeadlineSource $s): bool => $s->supports($record)));
+    }
 }

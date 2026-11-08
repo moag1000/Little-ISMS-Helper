@@ -100,13 +100,11 @@ final class Nis2RegistrationController extends AbstractController
         $profile = $this->profileFor($tenant);
         $this->denyAccessUnlessGranted(Nis2RegistrationProfileVoter::EDIT, $profile);
 
-        $before = $profile->fingerprint();
         $form = $this->createForm(Nis2RegistrationProfileType::class, $profile);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // NIS-2 Art. 3 (4): a change to reported data is reported within two weeks.
-            $profile->noteChange($before);
+            // NIS-2 Art. 3 (4): the profile notes a change of reported data itself at flush.
             $this->auditLogger->logCustom(
                 action: AuditLogger::ACTION_NIS2_REGISTRATION_UPDATED,
                 entityType: 'Nis2RegistrationProfile',

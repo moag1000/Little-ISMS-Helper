@@ -187,6 +187,9 @@ wizard:
         no_training_participation: 'Keine Schulungsteilnahmen erfasst'
         training_participation_open: 'Schulungsteilnahmen offen'
         training_participation_open_desc: '%completed% von %total% zugewiesenen Personen haben ihre Schulung abgeschlossen.'
+        no_privileged_accounts: 'Keine Administratorkonten mit lokaler Anmeldung'
+        accounts_without_mfa: 'Administratorkonten ohne zweiten Faktor'
+        accounts_without_mfa_desc: '%open% von %total% Administratorkonten melden sich ohne zweiten Faktor an.'
         no_role_holders: 'Niemand hat die Rolle der Leitung'
         role_training_missing: 'Leitungsschulung fehlt'
         role_training_missing_desc: 'Ohne abgeschlossene Schulung in den letzten %months% Monaten: %names%.'
@@ -546,6 +549,10 @@ wizard:
         iso_annex_a5_7_threat_intel_desc: "Bedrohungsmeldungen der letzten 12 Monate haben Schweregrad und Empfehlung"
         iso_annex_a5_30_ict_readiness: "IKT-Bereitschaft für Business Continuity (A.5.30)"
         iso_annex_a5_30_ict_readiness_desc: "Aktive BC-Pläne haben RTO, RPO und einen Test"
+        iso_annex_a5_23_cloud_services: "Cloud-Dienste (A.5.23)"
+        iso_annex_a5_23_cloud_services_desc: "Genutzte Cloud-Dienste sind bewertet, mit Sicherheitsanforderungen und Exit-Strategie"
+        iso_annex_a8_16_monitoring: "Überwachungsaktivitäten (A.8.16)"
+        iso_annex_a8_16_monitoring_desc: "Register der überwachten Quellen: was, wie oft, wer auswertet"
         iso_annex_a6: "Personelle Controls (A.6)"
         iso_annex_a6_desc: "8 personenbezogene Maßnahmen implementiert"
         iso_annex_a7: "Physische Controls (A.7)"
@@ -596,6 +603,8 @@ wizard:
         nis2_21_2i_assets_desc: "Anlagen und Vermögenswerte werden verwaltet"
         nis2_21_2j_mfa: "Multi-Faktor-Authentifizierung (Art. 21.2.j)"
         nis2_21_2j_mfa_desc: "MFA oder kontinuierliche Authentifizierung implementiert"
+        nis2_21_2j_mfa_accounts: "MFA der Administratorkonten"
+        nis2_21_2j_mfa_accounts_desc: "Anteil der Administratorkonten mit zweitem Faktor (SSO-Konten zählen nicht)"
         nis2_21_2j_comms: "Sichere Kommunikation (Art. 21.2.j)"
         nis2_21_2j_comms_desc: "Gesicherte Sprach-, Video- und Textkommunikation"
         nis2_23_early_warning: "Frühwarnung (Art. 23.4.a)"

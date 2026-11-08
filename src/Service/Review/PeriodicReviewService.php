@@ -9,6 +9,7 @@ use App\Entity\Document;
 use App\Entity\Risk;
 use App\Entity\Supplier;
 use App\Enum\SupplierStatus;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\AuditLogger;
 use App\Service\RiskReviewService;
 use DateTime;
@@ -158,9 +159,8 @@ final class PeriodicReviewService
     /**
      * Confirm the review of the given records in one transaction with one
      * AuditLogger::logBulk() batch (ISO 27001 Cl. 7.5.3). The caller has
-     * already checked the tenant scope; this checks the `edit` voter (Risk,
-     * Control — Document and Supplier keep the role rule of their other
-     * bulk actions) and whether each record takes part in the review.
+     * already checked the tenant scope; this checks who may confirm each record
+     * ({@see mayConfirm()}) and whether it takes part in the review.
      *
      * @param list<object> $entities
      * @param list<array{id: int|null, reason: string}> $rejected Rejections collected by the caller.
@@ -176,8 +176,7 @@ final class PeriodicReviewService
         try {
             foreach ($entities as $entity) {
                 $id = method_exists($entity, 'getId') ? $entity->getId() : null;
-                if (($entity instanceof Risk || $entity instanceof Control)
-                    && !$this->authorizationChecker->isGranted('edit', $entity)) {
+                if (!$this->mayConfirm($entity)) {
                     $rejected[] = ['id' => $id, 'reason' => 'access_denied'];
                     continue;
                 }
@@ -213,6 +212,22 @@ final class PeriodicReviewService
         }
 
         return ['ok' => true, 'changed' => count($perEntity), 'rejected' => $rejected, 'batch_id' => $batchId];
+    }
+
+    /**
+     * Risk, Control: the `edit` voter (managers and owners). Document, Supplier:
+     * managers, or whoever the review reminder reaches (RECORD_RESPONSIBLE —
+     * the document owner, the supplier's contact), so My Day's "in Liste
+     * prüfen" works for them too.
+     */
+    private function mayConfirm(object $entity): bool
+    {
+        if ($entity instanceof Risk || $entity instanceof Control) {
+            return $this->authorizationChecker->isGranted('edit', $entity);
+        }
+
+        return $this->authorizationChecker->isGranted('ROLE_MANAGER')
+            || $this->authorizationChecker->isGranted(RecordResponsibleVoter::RESPONSIBLE, $entity);
     }
 
     /**

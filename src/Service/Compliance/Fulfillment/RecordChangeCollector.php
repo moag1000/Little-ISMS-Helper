@@ -15,16 +15,24 @@ use App\Entity\InternalAudit;
 use App\Entity\ISMSObjective;
 use App\Entity\IsmsRegisterEntry;
 use App\Entity\ManagementDecision;
+use App\Entity\MfaToken;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\ThreatIntelligence;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
+use App\Entity\User;
+use App\Service\Deadline\DeadlineSourceRegistry;
+use Closure;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\UnitOfWork;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireServiceClosure;
 use Symfony\Contracts\Service\ResetInterface;
 
 /**
@@ -33,7 +41,9 @@ use Symfony\Contracts\Service\ResetInterface;
  * 7.2, NIS-2 Art. 20 (1), Art. 23, …), not only after the nightly refresh.
  *
  * The record ↔ check-type table below is the only wiring: a new record check
- * reading another entity adds one line. An audit checklist verdict
+ * reading another entity adds one line. `deadline_adherence` (ISO 27001 8.1,
+ * 9.1) needs no line: any record a deadline source knows recomputes it when
+ * it is created, deleted, or a date or its status changes. An audit checklist verdict
  * recomputes its own requirement ({@see AuditResultRule}). Like {@see ControlChangeCollector}, a
  * failure never undoes the user's save; the nightly task catches up.
  */
@@ -53,10 +63,24 @@ final class RecordChangeCollector implements ResetInterface
         Supplier::class => ['record_completeness'],
         ChangeRequest::class => ['record_completeness'],
         ThreatIntelligence::class => ['record_completeness'],
+        User::class => ['account_mfa'],
+        MfaToken::class => ['account_mfa'],
         InternalAudit::class => ['audit_status'],
-        ISMSObjective::class => ['deadline_adherence'],
-        Nis2RegistrationProfile::class => ['deadline_adherence'],
     ];
+
+    /**
+     * Records saved often for other reasons (a sign-in stamps the account):
+     * only a change of these fields counts, besides creation and deletion.
+     */
+    private const array CHECK_FIELDS = [
+        User::class => ['roles', 'isActive', 'authProvider'],
+    ];
+
+    /** Fields whose change can move a duty's date or close it (besides every date field). */
+    private const array DEADLINE_FIELDS = ['status', 'isActive', 'archived'];
+
+    /** Bookkeeping timestamps: written on every save, never a duty's date. */
+    private const array BOOKKEEPING_FIELDS = ['createdAt', 'updatedAt', 'derivedAt', 'lastLoginAt'];
 
     /**
      * Check types that sum up other checks (ISO 27001 4.4 over clauses 4–10):
@@ -69,9 +93,17 @@ final class RecordChangeCollector implements ResetInterface
 
     private bool $running = false;
 
+    /** @var array<class-string, bool> whether any deadline source knows records of the class */
+    private array $hasDeadlines = [];
+
+    /**
+     * @param Closure(): DeadlineSourceRegistry $deadlines lazy: the sources reach services that use this listener's EntityManager
+     */
     public function __construct(
         private readonly FulfillmentDerivationService $derivation,
         private readonly LoggerInterface $logger,
+        #[AutowireServiceClosure(DeadlineSourceRegistry::class)]
+        private readonly ?Closure $deadlines = null,
     ) {
     }
 
@@ -96,16 +128,67 @@ final class RecordChangeCollector implements ResetInterface
                 }
                 continue;
             }
-            foreach (self::CHECK_TYPES as $class => $types) {
-                if (!$entity instanceof $class) {
-                    continue;
-                }
-                $this->pending[$key] ??= ['tenant' => $tenant, 'types' => [], 'audited' => []];
-                foreach ([...$types, ...self::SUMMARY_CHECK_TYPES] as $type) {
-                    $this->pending[$key]['types'][$type] = true;
+            $types = [];
+            foreach (self::CHECK_TYPES as $class => $classTypes) {
+                if ($entity instanceof $class && self::relevantChange($entity, $class, $uow)) {
+                    $types = [...$types, ...$classTypes];
                 }
             }
+            if ($this->touchesDeadline($entity, $args->getObjectManager())) {
+                $types[] = 'deadline_adherence';
+            }
+            if ($types === []) {
+                continue;
+            }
+            $this->pending[$key] ??= ['tenant' => $tenant, 'types' => [], 'audited' => []];
+            foreach ([...$types, ...self::SUMMARY_CHECK_TYPES] as $type) {
+                $this->pending[$key]['types'][$type] = true;
+            }
         }
+    }
+
+    /** @param class-string $class */
+    private static function relevantChange(object $entity, string $class, UnitOfWork $uow): bool
+    {
+        $fields = self::CHECK_FIELDS[$class] ?? null;
+        if ($fields === null || !$uow->isScheduledForUpdate($entity)) {
+            return true;
+        }
+
+        return array_intersect(array_keys($uow->getEntityChangeSet($entity)), $fields) !== [];
+    }
+
+    /**
+     * A record of a deadline source that is new, deleted, or got another date
+     * or status: the share of duties done on time may have moved.
+     */
+    private function touchesDeadline(object $entity, EntityManagerInterface $em): bool
+    {
+        if ($this->deadlines === null) {
+            return false;
+        }
+        $class = $entity::class;
+        if (!($this->hasDeadlines[$class] ??= ($this->deadlines)()->allForRecord($entity) !== [])) {
+            return false;
+        }
+        $uow = $em->getUnitOfWork();
+        if (!$uow->isScheduledForUpdate($entity)) {
+            return true;
+        }
+        $metadata = $em->getClassMetadata($class);
+        foreach (array_keys($uow->getEntityChangeSet($entity)) as $field) {
+            if (in_array($field, self::BOOKKEEPING_FIELDS, true)) {
+                continue;
+            }
+            if (in_array($field, self::DEADLINE_FIELDS, true)
+                || ($metadata->hasField($field) && in_array($metadata->getTypeOfField($field), [
+                    Types::DATE_MUTABLE, Types::DATE_IMMUTABLE, Types::DATETIME_MUTABLE, Types::DATETIME_IMMUTABLE,
+                ], true))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function postFlush(PostFlushEventArgs $args): void
@@ -147,6 +230,9 @@ final class RecordChangeCollector implements ResetInterface
             $entity instanceof Supplier, $entity instanceof ChangeRequest, $entity instanceof ThreatIntelligence,
             $entity instanceof InternalAudit, $entity instanceof ISMSObjective,
             $entity instanceof Nis2RegistrationProfile => $entity->getTenant(),
+            $entity instanceof MfaToken => $entity->getUser()?->getTenant(),
+            // Any other tenant-owned record (deadline sources: risks, controls, documents, …).
+            is_callable([$entity, 'getTenant']) => ($t = $entity->getTenant()) instanceof Tenant ? $t : null,
             default => null,
         };
     }
@@ -154,6 +240,7 @@ final class RecordChangeCollector implements ResetInterface
     public function reset(): void
     {
         $this->pending = [];
+        $this->hasDeadlines = [];
         $this->running = false;
     }
 }

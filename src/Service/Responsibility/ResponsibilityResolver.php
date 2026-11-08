@@ -20,8 +20,14 @@ use Symfony\Contracts\Service\ResetInterface;
  *      linked account) — the risk owner gets their risks, nobody else
  *   2. deputies, when no holder resolves to an active account of the tenant
  *   3. users who hold one of the fallback roles themselves (role hierarchy,
- *      but not merely because they are admins)
- *   4. the tenant's admins, so a duty never reaches nobody
+ *      but not merely because they are admins), then the wider circle of
+ *      {@see Responsibility::thenRoles()}
+ *   4. the tenant's admins, so a duty never reaches nobody — unless only the
+ *      role may act ({@see Responsibility::withoutAdminFallback()})
+ *
+ * A record several deadline sources know (a supplier due for reassessment
+ * whose contract ends) is the responsibility of everybody the strongest step
+ * of any of them names — not of whichever source was registered first.
  *
  * My Day, the digest mail, the urgent mail and workflow approvers ask only
  * this class. Persona questions ("which dashboard") stay with PersonaResolver.
@@ -56,8 +62,32 @@ class ResponsibilityResolver implements ResetInterface
      */
     public function resolve(Responsibility $responsibility, Tenant $tenant): array
     {
-        return $this->resolveSteps($responsibility, $tenant, 0)
-            ?: ($this->usersHolding($tenant, ...self::ADMIN_ROLES) ?: $this->usersReaching($tenant, ...self::ADMIN_ROLES));
+        $users = $this->resolveSteps($responsibility, $tenant, 0);
+        if ($users !== [] || !$this->allowsAdminFallback($responsibility, 0)) {
+            return $users;
+        }
+
+        return $this->usersHolding($tenant, ...self::ADMIN_ROLES) ?: $this->usersReaching($tenant, ...self::ADMIN_ROLES);
+    }
+
+    /** False when the duty (or every source of the record it points to) may only be discharged by its role. */
+    private function allowsAdminFallback(Responsibility $responsibility, int $depth): bool
+    {
+        if (!$responsibility->adminFallback) {
+            return false;
+        }
+        if ($responsibility->record === null || $depth >= 3
+            || $responsibility->holders !== [] || $responsibility->deputies !== [] || $responsibility->roles !== []) {
+            return true;
+        }
+        $sources = $this->sources->allForRecord($responsibility->record);
+        foreach ($sources as $source) {
+            if ($this->allowsAdminFallback($source->responsibleOf($responsibility->record), $depth + 1)) {
+                return true;
+            }
+        }
+
+        return $sources === [];
     }
 
     /**
@@ -67,23 +97,55 @@ class ResponsibilityResolver implements ResetInterface
      */
     private function resolveSteps(Responsibility $responsibility, Tenant $tenant, int $depth): array
     {
+        return $this->resolveTiered($responsibility, $tenant, $depth)[1];
+    }
+
+    /**
+     * Steps 0-3 with the step that answered (1 holders, 2 deputies, 3 roles,
+     * 4 wider roles; 0 = none). For a record several sources know, the
+     * strongest step any of them reaches wins and everybody named on that
+     * step counts: the risk owner of the review and the owner the acceptance
+     * names are both responsible, the risk managers a source falls back to
+     * are not while an owner is set.
+     *
+     * @return array{int, list<User>}
+     */
+    private function resolveTiered(Responsibility $responsibility, Tenant $tenant, int $depth): array
+    {
         if ($responsibility->record !== null && $depth < 3) {
-            $source = $this->sources->forRecord($responsibility->record);
-            if ($source !== null) {
-                $viaRecord = $this->resolveSteps($source->responsibleOf($responsibility->record), $tenant, $depth + 1);
-                if ($viaRecord !== []) {
-                    return $viaRecord;
+            $best = 0;
+            $viaRecord = [];
+            foreach ($this->sources->allForRecord($responsibility->record) as $source) {
+                [$tier, $users] = $this->resolveTiered($source->responsibleOf($responsibility->record), $tenant, $depth + 1);
+                if ($tier === 0 || ($best !== 0 && $tier > $best)) {
+                    continue;
+                }
+                if ($best === 0 || $tier < $best) {
+                    $best = $tier;
+                    $viaRecord = [];
+                }
+                foreach ($users as $user) {
+                    $viaRecord[$user->getId() !== null ? 'id' . $user->getId() : 'o' . spl_object_id($user)] ??= $user;
                 }
             }
+            if ($viaRecord !== []) {
+                return [$best, array_values($viaRecord)];
+            }
         }
-        foreach ([$responsibility->holders, $responsibility->deputies] as $people) {
+        foreach ([1 => $responsibility->holders, 2 => $responsibility->deputies] as $tier => $people) {
             $accounts = $this->accounts($people, $tenant);
             if ($accounts !== []) {
-                return $accounts;
+                return [$tier, $accounts];
+            }
+        }
+        foreach ([3 => $responsibility->roles, 4 => $responsibility->fallbackRoles] as $tier => $roles) {
+            $holding = $roles !== [] ? $this->usersHolding($tenant, ...$roles) : [];
+            if ($holding !== []) {
+                return [$tier, $holding];
             }
         }
 
-        return $responsibility->roles !== [] ? $this->usersHolding($tenant, ...$responsibility->roles) : [];
+        return [0, []];
     }
 
     /**
@@ -120,20 +182,21 @@ class ResponsibilityResolver implements ResetInterface
     }
 
     /**
-     * Who is responsible for this record, via the deadline source it belongs to.
+     * Who is responsible for this record: everybody the deadline sources that
+     * know it name on the strongest step any of them reaches (the answer must
+     * not depend on the order sources are registered).
      * Empty when no source knows the record or it has no tenant.
      *
      * @return list<User>
      */
     public function responsibleFor(object $record): array
     {
-        $source = $this->sources->forRecord($record);
         $tenant = method_exists($record, 'getTenant') ? $record->getTenant() : null;
-        if ($source === null || !$tenant instanceof Tenant) {
+        if ($this->sources->allForRecord($record) === [] || !$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->resolve($source->responsibleOf($record), $tenant);
+        return $this->resolve(Responsibility::ofRecord($record), $tenant);
     }
 
     /**
