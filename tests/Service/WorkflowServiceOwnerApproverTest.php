@@ -13,8 +13,8 @@ use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\UserRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Repository\WorkflowRepository;
+use App\Service\Deadline\Configured\ConfiguredDeadlineSources;
 use App\Service\Deadline\DeadlineSourceRegistry;
-use App\Service\Deadline\Source\RiskReviewSource;
 use App\Service\EmailNotificationService;
 use App\Service\Planning\Source\Adapter\WorkflowInstanceAdapter;
 use App\Service\Responsibility\ResponsibilityResolver;
@@ -89,7 +89,7 @@ final class WorkflowServiceOwnerApproverTest extends TestCase
         $users->method('findByIdsInTenant')->willReturn([]);
 
         $adapter = new WorkflowInstanceAdapter($this->createStub(WorkflowInstanceRepository::class), $users, $entityManager);
-        $registry = new DeadlineSourceRegistry([$adapter, new RiskReviewSource($entityManager)]);
+        $registry = new DeadlineSourceRegistry([$adapter, ConfiguredDeadlineSources::fromFile($entityManager)->get('risk_review')]);
         $resolver = new ResponsibilityResolver($users, PersonaResolverFactory::create(), $registry);
 
         $security = $this->createStub(Security::class);

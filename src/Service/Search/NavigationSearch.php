@@ -477,6 +477,15 @@ class NavigationSearch
                 'requiresModule' => null,
             ],
             [
+                'route' => 'admin_deadline_type_index',
+                'label' => 'search_nav.admin_deadline_type_index.label',
+                'description' => 'search_nav.admin_deadline_type_index.description',
+                'aliases' => ['Fristtypen', 'Deadline types', 'Fristen', 'Deadlines', 'Erinnerungen', 'Reminders', 'Vorlauf', 'Lead time'],
+                'icon' => 'fa-icon--nav-calendar-check',
+                'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
+            ],
+            [
                 'route' => 'app_recurring_duty_index',
                 'label' => 'search_nav.app_recurring_duty_index.label',
                 'description' => 'search_nav.app_recurring_duty_index.description',

@@ -1,0 +1,380 @@
+# Deadline types ("Fristtypen") as configuration.
+#
+# Every entry is one deadline source: a date field of one tenant-owned
+# entity. My Day, the morning digest, the urgent mail and the duty overview
+# (Admin > Fristtypen) read them like the sources written as classes.
+# A new duty of this shape is a new entry here — no class, no service.
+# Duties with logic of their own (computed dates, several records, rules
+# across records) stay a class implementing App\Service\Deadline\DeadlineSource.
+#
+# Keys (slug = the entry's key, unique across all sources):
+#   label      type name (shown in My Day and the digest when no norm is set)
+#   entity     tenant-owned entity class (records are read per organisation)
+#   module     module that must be active (omit = always on)
+#   due        property path of the date; ~ = open without a date (shown while open)
+#   done       expression over `item`: true = no duty (closed, archived, …); default false
+#   title      expression over `item`; words(a, b, …) joins the non-empty parts
+#   holders    property paths to User / Person on the record (who acts)
+#   deputies   property paths to deputies (used when no holder has an account)
+#   roles      fallback roles
+#   inform     kept informed: ROLE_* names or property paths (self = the record)
+#   link       route of the record page (gets {id}); link_id: false for a page without id
+#   bucket     My Day group; needs my_day.section.<bucket> + my_day.kpi.<bucket> (DE + EN)
+#   lead_days  days before the date the duty shows up (default 14; ~ = while open)
+#   norm       norm reference shown in the digest
+#
+# tests/Service/Deadline/Configured/ checks every entry (entity, paths, expressions,
+# route, labels). Order matters only for records with several types: the
+# first matching type answers "who is responsible for this record".
+
+parameters:
+    app.deadline_types:
+        # ── ISO 27001 core ────────────────────────────────────────────
+        isms_context_review:
+            label: Kontext-Review
+            entity: App\Entity\ISMSContext
+            due: nextReviewDate
+            title: "item.getOrganizationName() ?? 'ISMS-Kontext'"
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_context_index
+            link_id: false
+            bucket: context_review_due
+            lead_days: 30
+            norm: ISO 27001 4.1–4.3
+
+        interested_party_communication:
+            label: Kommunikation interessierte Partei
+            entity: App\Entity\InterestedParty
+            module: interested_parties
+            due: effectiveNextCommunication
+            done: "item.getStatus() in ['draft', 'archived']"
+            title: "item.getName() ?? ('Interested party #' ~ item.getId())"
+            holders: [contactPersonUser, contactPersonRef]
+            deputies: [contactDeputyPersons]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_interested_party_show
+            bucket: interested_party_communication_due
+            norm: ISO 27001 4.2 / 7.4
+
+        isms_objective:
+            label: ISMS-Ziel
+            entity: App\Entity\ISMSObjective
+            module: objectives
+            due: targetDate
+            done: "item.getStatus() in ['achieved', 'cancelled']"
+            title: "item.getTitle() ?? ('Objective #' ~ item.getId())"
+            holders: [responsiblePersonUser, responsiblePersonRef]
+            deputies: [responsibleDeputyPersons]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_objective_show
+            bucket: objectives_due
+            lead_days: 30
+            norm: ISO 27001 6.2
+
+        risk_review:
+            label: Risiko-Review
+            entity: App\Entity\Risk
+            due: reviewDate
+            # One review rule for the whole app: every risk except a closed one (ISO 27001 8.2).
+            done: "not (item.getStatus()?.requiresPeriodicReview() ?? true)"
+            title: "item.getTitle() ?? ('Risk #' ~ item.getId())"
+            holders: [riskOwner, riskOwnerPerson]
+            deputies: [riskOwnerDeputyPersons]
+            roles: [ROLE_RISK_MANAGER]
+            link: app_risk_show
+            bucket: risk_review_overdue
+            norm: ISO 27001 6.1.3 / 8.2
+
+        risk_acceptance_no_expiry:
+            label: Risikoakzeptanz ohne Ablaufdatum
+            entity: App\Entity\Risk
+            due: ~
+            # Accepted risks need an expiry date (re-assessment), closed ones do not.
+            done: "not (item.getTreatmentStrategy()?.value == 'accept' or item.getStatus()?.value == 'accepted') or item.getStatus()?.value == 'closed' or item.getAcceptanceExpiryDate() != null"
+            title: "item.getTitle() ?? ('Risk #' ~ item.getId())"
+            holders: [riskOwner, riskOwnerPerson]
+            deputies: [riskOwnerDeputyPersons]
+            roles: [ROLE_RISK_MANAGER]
+            link: app_risk_show
+            bucket: risk_acceptance_no_expiry
+            lead_days: ~
+            norm: ISO 27001 6.1.3 f
+
+        risk_treatment_plan:
+            label: Behandlungsplan
+            entity: App\Entity\RiskTreatmentPlan
+            due: targetCompletionDate
+            done: "item.getStatus() in ['completed', 'cancelled']"
+            title: "item.getTitle() ?? ('Treatment plan #' ~ item.getId())"
+            holders: [responsiblePersonUser, responsiblePerson]
+            roles: [ROLE_RISK_MANAGER]
+            link: app_risk_treatment_plan_show
+            bucket: treatment_plans_due
+            norm: ISO 27001 6.1.3 / 8.3
+
+        control_implementation:
+            label: Control-Umsetzung
+            entity: App\Entity\Control
+            due: targetDate
+            done: "item.isApplicable() === false or item.getImplementationStatus() == 'implemented'"
+            title: "words(item.getControlId(), item.getName())"
+            holders: [responsiblePersonUser, responsiblePersonRef]
+            deputies: [responsibleDeputyPersons]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_soa_show
+            bucket: control_implementation_due
+            norm: ISO 27001 6.1.3 / 8.3
+
+        control_review:
+            label: Control-Review
+            entity: App\Entity\Control
+            due: nextReviewDate
+            done: "item.isApplicable() === false"
+            title: "words(item.getControlId(), item.getName())"
+            holders: [responsiblePersonUser, responsiblePersonRef]
+            deputies: [responsibleDeputyPersons]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_soa_show
+            bucket: control_review_due
+            norm: ISO 27001 9.1 / A.5.36
+
+        control_effectiveness:
+            label: Wirksamkeitstest
+            entity: App\Entity\Control
+            due: nextEffectivenessTest
+            done: "item.isApplicable() === false"
+            title: "words(item.getControlId(), item.getName())"
+            holders: [responsiblePersonUser, responsiblePersonRef]
+            deputies: [responsibleDeputyPersons]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_soa_show
+            bucket: control_effectiveness_overdue
+            norm: ISO 27001 9.1
+
+        team_validity:
+            label: Team läuft aus
+            entity: App\Entity\Team
+            module: resource_planning
+            due: validUntil
+            done: "not item.isActive()"
+            title: "item.getName()"
+            holders: [teamLead, teamLeadPerson]
+            roles: [ROLE_MANAGER]
+            link: app_planning_team_edit
+            bucket: teams_expiring
+            lead_days: 30
+            norm: ISO 27001 7.1
+
+        evidence_reverification:
+            label: Nachweis-Reverifizierung
+            entity: App\Entity\EvidenceReverificationTask
+            due: dueDate
+            done: "item.getCompletedAt() != null"
+            title: "'Evidence re-verification #' ~ item.getId()"
+            holders: [assignedTo]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_evidence_reverification_show
+            bucket: evidence_reverification_due
+            norm: ISO 27001 7.5.3
+
+        capa_effectiveness_review:
+            label: Wirksamkeitsprüfung Korrekturmaßnahme
+            entity: App\Entity\CorrectiveAction
+            due: effectivenessReviewDate
+            # Due once the measure is completed.
+            done: "item.getStatus() != 'completed'"
+            title: "item.getTitle() ?? ('CAPA #' ~ item.getId())"
+            holders: [responsiblePersonUser, responsiblePerson]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_corrective_action_show
+            bucket: capa_effectiveness_due
+            norm: ISO 27001 10.2 f
+
+        certificate_expiry:
+            label: Zertifikatsablauf
+            entity: App\Entity\ComplianceCertificate
+            due: validUntil
+            done: "item.getStatus() != 'active'"
+            title: "words(item.getFrameworkCode(), item.getCertNumber(), item.getCertBody())"
+            roles: [ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_CISO]
+            link: app_compliance_certificate_index
+            link_id: false
+            bucket: certificates_expiring
+            lead_days: 90
+            norm: ISO/IEC 17021-1 (Rezertifizierung)
+
+        # ── Annex A ───────────────────────────────────────────────────
+        access_review:
+            label: Zugriffsreview
+            entity: App\Entity\AccessReviewCampaign
+            module: access_review
+            due: dueDate
+            done: "item.getStatus() == 'closed'"
+            title: "item.getName() ?? ('Access review #' ~ item.getId())"
+            holders: [createdBy]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_access_review_show
+            bucket: access_reviews_due
+            norm: ISO 27001 A.5.18
+
+        person_access_expiry:
+            label: Zugang endet
+            entity: App\Entity\Person
+            due: accessValidUntil
+            done: "item.isActive() === false"
+            title: "item.getFullName()"
+            roles: [ROLE_ADMIN]
+            # The person whose access ends is told too.
+            inform: [self]
+            link: app_person_show
+            bucket: access_expiring
+            norm: ISO 27001 A.5.18, A.6.5
+
+        supplier_assessment:
+            label: Lieferantenbewertung
+            entity: App\Entity\Supplier
+            due: nextAssessmentDate
+            done: "item.getStatus() in ['inactive', 'terminated']"
+            title: "item.getName() ?? ('Supplier #' ~ item.getId())"
+            holders: [contactPersonUser, contactPersonRef]
+            deputies: [contactDeputyPersons]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_supplier_show
+            bucket: supplier_reassessment_due
+            lead_days: 30
+            norm: ISO 27001 A.5.22 / NIS-2 Art. 21 (2) d
+
+        supplier_contract_end:
+            label: Lieferantenvertrag endet
+            entity: App\Entity\Supplier
+            module: suppliers
+            due: contractEndDate
+            done: "item.getStatus() in ['inactive', 'terminated']"
+            title: "item.getName()"
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_supplier_show
+            bucket: supplier_contracts_ending
+            lead_days: 90
+            norm: ISO 27001 A.5.20 / DORA Art. 28 (7)
+
+        patch_deployment:
+            label: Patch-Frist
+            entity: App\Entity\Patch
+            module: patches
+            due: deploymentDeadline
+            done: "item.getStatusEnum()?.value in ['deployed', 'not_applicable']"
+            title: "item.getTitle()"
+            holders: [responsiblePersonUser, responsiblePersonRef]
+            deputies: [responsibleDeputyPersons]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_patch_show
+            bucket: patches_due
+            norm: ISO 27001 A.8.8
+
+        # ── BCM (ISO 22301) ───────────────────────────────────────────
+        bc_plan_review:
+            label: BC-Plan-Review
+            entity: App\Entity\BusinessContinuityPlan
+            module: bcm
+            due: nextReviewDate
+            done: "item.getStatus() in ['draft', 'archived']"
+            title: "item.getName() ?? ('BC plan #' ~ item.getId())"
+            holders: [planOwnerUser, planOwnerPerson]
+            deputies: [planOwnerDeputyPersons]
+            roles: [ROLE_BCM_OFFICER]
+            link: app_bc_plan_show
+            bucket: bc_plan_review_overdue
+            lead_days: 30
+            norm: ISO 22301 8.4 / 9.1
+
+        bc_plan_test:
+            label: BC-Plan-Test
+            entity: App\Entity\BusinessContinuityPlan
+            module: bcm
+            due: nextTestDate
+            done: "item.getStatus() in ['draft', 'archived']"
+            title: "item.getName() ?? ('BC plan #' ~ item.getId())"
+            holders: [planOwnerUser, planOwnerPerson]
+            deputies: [planOwnerDeputyPersons]
+            roles: [ROLE_BCM_OFFICER]
+            link: app_bc_plan_show
+            bucket: bc_plan_test_due
+            lead_days: 30
+            norm: ISO 22301 8.5
+
+        crisis_team_training:
+            label: Krisenstab-Training
+            entity: App\Entity\CrisisTeam
+            module: bcm
+            due: nextTrainingAt
+            done: "not item.isActive()"
+            title: "item.getTeamName()"
+            holders: [teamLeader, teamLeaderPerson]
+            deputies: [deputyLeader, deputyLeaderPerson, teamLeaderDeputyPersons]
+            roles: [ROLE_BCM_OFFICER]
+            link: app_crisis_team_show
+            bucket: crisis_team_training_due
+            lead_days: 30
+            norm: ISO 22301 7.2, 8.4.2
+
+        # ── Data protection (DSGVO) ───────────────────────────────────
+        processing_activity_review:
+            label: VVT-Review
+            entity: App\Entity\ProcessingActivity
+            module: privacy
+            due: nextReviewDate
+            done: "item.getStatus() in ['draft', 'archived']"
+            title: "item.getName() ?? ('Processing activity #' ~ item.getId())"
+            holders: [contactPersonUser, contactPerson]
+            deputies: [contactDeputyPersons]
+            roles: [ROLE_DPO]
+            link: app_processing_activity_show
+            bucket: processing_activity_review_due
+            lead_days: 30
+            norm: DSGVO Art. 30 / 32 Abs. 1 d
+
+        dpia_review:
+            label: DSFA-Review
+            entity: App\Entity\DataProtectionImpactAssessment
+            module: privacy
+            due: nextReviewDate
+            done: "item.getStatus() != 'approved'"
+            title: "item.getTitle() ?? ('DPIA #' ~ item.getId())"
+            holders: [conductor, conductorPerson]
+            deputies: [conductorDeputyPersons]
+            roles: [ROLE_DPO]
+            link: app_dpia_show
+            bucket: dpia_review_overdue
+            lead_days: 30
+            norm: DSGVO Art. 35 Abs. 11
+
+        consent_expiry:
+            label: Einwilligung läuft ab
+            entity: App\Entity\Consent
+            module: privacy
+            due: expiresAt
+            done: "item.getStatus() != 'active' or item.isRevoked() or item.getWithdrawnAt() != null"
+            # No data-subject identifier in the title (it travels in mails).
+            title: "words(item.getProcessingActivity()?.getName(), '#' ~ item.getId())"
+            roles: [ROLE_DPO]
+            link: app_consent_show
+            bucket: consents_expiring
+            lead_days: 30
+            norm: DSGVO Art. 7
+
+        # ── TISAX ─────────────────────────────────────────────────────
+        prototype_protection_reassessment:
+            label: TISAX-Prototypenschutz neu bewerten
+            entity: App\Entity\PrototypeProtectionAssessment
+            module: tisax
+            due: nextAssessmentDue
+            # Drafts and reviews are still being written; rejected ones are not in force.
+            done: "item.getStatus() not in ['approved', 'expired']"
+            title: "item.getTitle()"
+            holders: [assessor, assessorPerson]
+            deputies: [assessorDeputyPersons]
+            roles: [ROLE_ISB, ROLE_CISO]
+            link: app_prototype_protection_show
+            bucket: tisax_assessment_due
+            lead_days: 60
+            norm: VDA ISA 8 (Prototypenschutz)

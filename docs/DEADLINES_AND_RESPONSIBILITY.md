@@ -1,6 +1,6 @@
 # Fristen und Zuständigkeit (Deadlines and responsibility)
 
-Stand 2026-11-08. One mechanism answers two questions for every duty the tool
+Stand 2026-11-08 (deadline types as configuration). One mechanism answers two questions for every duty the tool
 reminds people of: **what is due when** and **who has to act**.
 
 ## Deadline sources (`App\Service\Deadline\DeadlineSource`)
@@ -17,6 +17,52 @@ supplier reassessment, approvals, … A source answers:
 | `linkOf()` | the record's page (`RecordLink`) |
 | `profile()` | `DeadlineProfile`: My Day bucket, lead days, norm reference, decision flag, hour deadline |
 
+**Deadline types as configuration** (`config/deadline_types.yaml`). Most
+duties have the same shape: one date field of one tenant-owned entity, a
+"done" condition, holders on the record, fallback roles, a page, a My Day
+bucket, lead days, a norm. These are entries in `config/deadline_types.yaml`,
+not classes. One generic `App\Service\Deadline\Configured\ConfiguredDeadlineSource`
+reads each entry (`DeadlineTypeDefinition`); `DeadlineSourceRegistry` adds them
+after the class sources. 25 types live there (risk review, risk acceptance
+without expiry, treatment plan, the three control dates, objectives, context
+review, interested-party communication, CAPA effectiveness, certificates,
+evidence re-verification, access review, access end of a person, supplier
+reassessment and contract end, patch deadline, BC plan review and test,
+crisis-team training, VVT and DPIA review, consent expiry, TISAX prototype
+protection, team validity).
+
+```yaml
+consent_expiry:
+    label: Einwilligung läuft ab
+    entity: App\Entity\Consent
+    module: privacy
+    due: expiresAt                      # property path; ~ = open without a date
+    done: "item.getStatus() != 'active' or item.isRevoked() or item.getWithdrawnAt() != null"
+    title: "words(item.getProcessingActivity()?.getName(), '#' ~ item.getId())"
+    holders: [contactPersonUser]        # User/Person on the record (collections allowed)
+    deputies: [contactDeputyPersons]
+    roles: [ROLE_DPO]                   # fallback
+    inform: [ROLE_ISB]                  # ROLE_* or property path, self = the record
+    link: app_consent_show              # gets {id}; link_id: false for an index page
+    bucket: consents_expiring
+    lead_days: 30                       # default 14; ~ = while open
+    norm: DSGVO Art. 7
+```
+
+`done` and `title` are Symfony expressions over `item` (`words(a, b, …)` joins
+the non-empty parts). A new duty of this shape is one entry plus the My Day
+labels; `tests/Service/Deadline/Configured/DeadlineTypesConfigTest.php` checks
+entity, getters, expressions, labels and slug, the controller test checks the
+route. Duties with logic of their own stay classes: computed dates (training
+refresh, audit programme follow-up, TLPT, DORA exit plan, NIS-2 registration,
+management training), several records or rules across records (Maßnahmen,
+change approval, mapping validity, retention, reporting duties, objective
+measurement with its conditional owner) and every planner adapter.
+
+Admin > Benachrichtigungen > **Fristtypen** (`/admin/deadline-types`, read-only)
+lists every type — configured and programmed — with norm, date field, lead
+time, who acts and module.
+
 Sources are tagged `app.deadline_source` automatically and collected by
 `DeadlineSourceRegistry`. Sources the action planner may turn into Maßnahmen
 implement `App\Service\Planning\Source\SourceAdapter`, which extends
@@ -26,13 +72,14 @@ Example of a recurring review without a planner step: `App\Service\Register\Regi
 (norm registers, owner → deputies → the register's maintaining persona).
 
 **Every date field that carries a duty has a source** (Stand 2026-11-07, P2):
-besides the reviews and approvals there are consent expiry (`ConsentExpirySource`,
-DPO), team validity (`TeamValiditySource`, team lead), end of a person's access
-(`PersonAccessExpirySource`, admins, the person informed), patch deadline
-(`PatchDeploymentSource`, responsible person), supplier contract end
-(`SupplierContractEndSource`, 90 days), crisis-team training
-(`CrisisTeamTrainingSource`, team lead → deputies → BCM), TISAX prototype
-protection (`PrototypeProtectionReassessmentSource`, assessor), own mappings'
+besides the reviews and approvals there are consent expiry (`consent_expiry`,
+DPO), team validity (`team_validity`, team lead), end of a person's access
+(`person_access_expiry`, admins, the person informed), patch deadline
+(`patch_deployment`, responsible person), supplier contract end
+(`supplier_contract_end`, 90 days), crisis-team training
+(`crisis_team_training`, team lead → deputies → BCM), TISAX prototype
+protection (`prototype_protection_reassessment`, assessor) — all entries in
+`config/deadline_types.yaml` — own mappings'
 validity (`MappingValiditySource`, only mappings of uploaded requirements),
 TLPT (`ThreatLedPenetrationTestSource`: planned end of a running test, else
 three years after the last one), DORA exit-plan test (`DoraExitPlanTestSource`:
@@ -74,9 +121,11 @@ The NIS-2 significance thresholds (financial loss, affected persons) are set per
 organisation under Admin > Incident-SLAs. DORA reports export as JSON per phase
 (`DoraIncidentReportExport`, Art. 19 / RTS 2025/302).
 
-**Adding a norm** means adding sources for its duties. A DE + EN label
-`my_day.section.<bucket>` / `my_day.kpi.<bucket>` is required;
-`tests/Service/Deadline/DeadlineSourceContractTest.php` checks every source.
+**Adding a norm** means adding sources for its duties — an entry in
+`config/deadline_types.yaml` where the duty is a date field, a class otherwise.
+A DE + EN label `my_day.section.<bucket>` / `my_day.kpi.<bucket>` is required;
+`tests/Service/Deadline/DeadlineSourceContractTest.php` checks every class source,
+`tests/Service/Deadline/Configured/DeadlineTypesConfigTest.php` every entry.
 
 ## Duty calendar (`App\Service\RecurringDuty`)
 

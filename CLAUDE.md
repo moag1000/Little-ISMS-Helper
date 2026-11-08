@@ -265,7 +265,10 @@ systemctl enable isms-worker && systemctl start isms-worker
   inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.
 - `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
   `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
-  My Day and reminder mails read only from these; a new norm = new sources. Doc: `docs/DEADLINES_AND_RESPONSIBILITY.md`
+  My Day and reminder mails read only from these; a new norm = new sources. A duty that is one date field of one
+  entity is an entry in `config/deadline_types.yaml` (generic `Deadline\Configured\ConfiguredDeadlineSource`,
+  admin overview `/admin/deadline-types`), never a new class; classes only for computed dates or cross-record logic.
+  Doc: `docs/DEADLINES_AND_RESPONSIBILITY.md`
 - `Reminder\ObligationReminderService` - the one reminder path (`app:send-reminders`, scheduler every 15 min):
   daily digest at the tenant's hour (`ReminderSettings`, default 07:00, user opt-out), hour deadlines at once,
   each sent duty stored as `ObligationNotice` (bell "Meine Erinnerungen"). Never add a per-duty reminder command.

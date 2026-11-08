@@ -434,6 +434,15 @@ final class AdminHubCatalog
                         'route' => 'admin_notification_template_index',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
                     ],
+                    // scope: read-only overview of every deadline type (config + classes)
+                    [
+                        'key' => 'deadline_types',
+                        'icon' => 'fa-icon--nav-calendar-check',
+                        'label' => 'admin.hub.module.deadline_types.label',
+                        'description' => 'admin.hub.module.deadline_types.desc',
+                        'route' => 'admin_deadline_type_index',
+                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                    ],
                 ],
             ],
             [

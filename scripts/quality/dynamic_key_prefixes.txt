@@ -9,6 +9,7 @@ access_review.scope	2
 access_review.status	1
 admin.data_repair.cascade.category	1
 admin.data_retention.entity	2
+admin.deadline_type.origin	1
 admin.location_map.peer	1
 admin.location_map.precision	1
 admin.queue.job_status	1
@@ -203,7 +204,7 @@ mris.wizard.ai_risk.class	1
 my_day.badge_value	1
 my_day.hint	1
 my_day.kpi	1
-my_day.section	3
+my_day.section	4
 nis2.art21.measure	1
 nis2.dashboard.letter	1
 nis2.dashboard.status	1

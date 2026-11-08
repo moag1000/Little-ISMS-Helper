@@ -47,6 +47,10 @@ zusätzlich eine Eilmail. Meldepflichten erscheinen bei der Person, die den Vorf
 verantwortet, und immer auch beim ISB. Ein anstehendes Management-Review sieht auch
 die Leitung.
 
+Welche Fristtypen es gibt, mit Norm, Datumsfeld, Vorlauf und wer handelt, zeigt
+**Admin > Benachrichtigungen > Fristtypen** (nur lesen). Die meisten sind Einträge in
+`config/deadline_types.yaml`; ein neuer Fristtyp dieser Art braucht keinen Code.
+
 Freigaben tragen den Namen des Datensatzes ("Risiko: Kundendaten Online-Shop"), der
 Workflow und der aktuelle Schritt stehen darunter.
 

@@ -48,6 +48,9 @@ search_nav:
     app_analytics_dashboard:
         label: 'Analytics'
         description: 'KPI-Übersicht, Diagramme, Trend-Auswertungen'
+    admin_deadline_type_index:
+        label: 'Fristtypen'
+        description: 'Welche Fristen wen erinnern, mit Vorlauf und Norm'
     admin_kpi_threshold_index:
         label: 'KPI-Schwellenwerte'
         description: 'KPI-Grenzwerte und Zielwerte konfigurieren'
