@@ -154,7 +154,7 @@ final class McpControllerTest extends WebTestCase
             'riskOwnerPerson' => $ownerIri,
             'person' => $ownerIri,
         ]]], $token)['result'] ?? [];
-        self::assertFalse($created['isError'] ?? true, (string) ($created['content'][0]['text'] ?? ''));
+        self::assertFalse($created['isError'] ?? true, (string) ($created['content'][0]['text'] ?? '') . $this->recentLogProblems());
         self::assertSame('created', $created['structuredContent']['operation'] ?? null);
         $id = $created['structuredContent']['record']['id'] ?? null;
         self::assertIsInt($id);
@@ -232,6 +232,25 @@ final class McpControllerTest extends WebTestCase
         $em->clear();
 
         return $em;
+    }
+
+    /** Warnings and errors at the end of the test log, so a failure in a sub-request shows its cause. */
+    private function recentLogProblems(): string
+    {
+        $file = static::getContainer()->getParameter('kernel.logs_dir') . '/test.log';
+        if (!is_file($file)) {
+            return '';
+        }
+        $handle = fopen($file, 'rb');
+        if ($handle === false) {
+            return '';
+        }
+        fseek($handle, max(0, filesize($file) - 200_000));
+        $tail = (string) stream_get_contents($handle);
+        fclose($handle);
+        $lines = array_filter(explode("\n", $tail), static fn (string $l): bool => (bool) preg_match('/\.(WARNING|ERROR|CRITICAL):/', $l));
+
+        return "\n" . implode("\n", array_map(static fn (string $l): string => mb_substr($l, 0, 1500), array_slice($lines, -8)));
     }
 
     private function tokenId(string $label): ?int

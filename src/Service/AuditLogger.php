@@ -91,6 +91,7 @@ class AuditLogger
         private readonly Security $security,
         private readonly ?AuditLogIntegrityService $integrityService = null,
         private readonly ?\App\Service\TenantContext $tenantContext = null,
+        private readonly ?\Psr\Log\LoggerInterface $logger = null,
     ) {}
 
     /**
@@ -342,8 +343,15 @@ class AuditLogger
             if ($strict) {
                 throw $e;
             }
-            // Silent skip — audit log will be missing this row but the
-            // calling operation (mark-all-phantom-diff, etc.) must not abort.
+            // Skip — the audit log misses this row but the calling operation
+            // (mark-all-phantom-diff, etc.) must not abort. Logged, because a
+            // failed flush closes the EntityManager and the caller's next
+            // write then fails with an unrelated "EntityManager is closed".
+            $this->logger?->warning('Audit log row not written', [
+                'action' => $action,
+                'entity_type' => $entityType,
+                'error' => $e::class . ': ' . $e->getMessage(),
+            ]);
         }
     }
 
