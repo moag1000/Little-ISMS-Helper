@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Risk;
 
+use App\Entity\Tenant;
+
 /**
  * Single source of truth for risk-matrix score thresholds.
  *
@@ -38,41 +40,44 @@ final class RiskMatrixThresholds
     /** Levels per axis (probability and impact). */
     public const int LEVELS = 5;
 
-    /** @var (\Closure(): ?array{critical: int, high: int, medium: int})|null */
+    /** @var (\Closure(?Tenant): ?array{critical: int, high: int, medium: int})|null */
     private static ?\Closure $provider = null;
 
     /**
-     * Registers the source of the current organisation's band edges (Kernel
-     * boot). The closure returns null when no organisation scale applies.
+     * Registers the source of an organisation's band edges (Kernel boot). The
+     * closure gets the record's organisation (null = the one in scope) and
+     * returns null when no organisation scale applies.
      *
-     * @param (\Closure(): ?array{critical: int, high: int, medium: int})|null $provider
+     * @param (\Closure(?Tenant): ?array{critical: int, high: int, medium: int})|null $provider
      */
     public static function useProvider(?\Closure $provider): void
     {
         self::$provider = $provider;
     }
 
-    public static function criticalMin(): int
+    public static function criticalMin(?Tenant $tenant = null): int
     {
-        return self::edges()['critical'];
+        return self::edges($tenant)['critical'];
     }
 
-    public static function highMin(): int
+    public static function highMin(?Tenant $tenant = null): int
     {
-        return self::edges()['high'];
+        return self::edges($tenant)['high'];
     }
 
-    public static function mediumMin(): int
+    public static function mediumMin(?Tenant $tenant = null): int
     {
-        return self::edges()['medium'];
+        return self::edges($tenant)['medium'];
     }
 
     /**
-     * Classify a numeric risk score into a band identifier.
+     * Classify a numeric risk score into a band identifier. Pass the record's
+     * organisation where it is known: the scale is the record's, not the
+     * viewer's (holding views, commands and workers without a tenant context).
      */
-    public static function classify(int $score): string
+    public static function classify(int $score, ?Tenant $tenant = null): string
     {
-        $edges = self::edges();
+        $edges = self::edges($tenant);
 
         return match (true) {
             $score >= $edges['critical'] => 'critical',
@@ -87,9 +92,9 @@ final class RiskMatrixThresholds
      *
      * @return array<string, array{min: int, max: int}>
      */
-    public static function getBands(): array
+    public static function getBands(?Tenant $tenant = null): array
     {
-        $edges = self::edges();
+        $edges = self::edges($tenant);
 
         return [
             'critical' => ['min' => $edges['critical'], 'max' => self::SCORE_MAX],
@@ -116,11 +121,11 @@ final class RiskMatrixThresholds
     }
 
     /** @return array{critical: int, high: int, medium: int} */
-    private static function edges(): array
+    private static function edges(?Tenant $tenant = null): array
     {
         if (self::$provider !== null) {
             try {
-                $edges = (self::$provider)();
+                $edges = (self::$provider)($tenant);
             } catch (\Throwable) {
                 // No database yet (setup, before the migration): defaults.
                 $edges = null;

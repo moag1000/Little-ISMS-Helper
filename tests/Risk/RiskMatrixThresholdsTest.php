@@ -37,6 +37,24 @@ final class RiskMatrixThresholdsTest extends TestCase
     }
 
     #[Test]
+    public function aRecordIsClassifiedWithItsOwnOrganisationsScale(): void
+    {
+        // No tenant in scope (command, worker, holding view): the record's
+        // organisation decides, not the viewer's.
+        $own = new \App\Entity\Tenant();
+        RiskMatrixThresholds::useProvider(static fn (?\App\Entity\Tenant $t): ?array => $t === $own
+            ? ['critical' => 16, 'high' => 9, 'medium' => 4]
+            : null);
+
+        $risk = (new \App\Entity\Risk())->setTenant($own)->setProbability(4)->setImpact(4);
+        self::assertSame('critical', $risk->getInherentSeverityBand());
+
+        $other = (new \App\Entity\Risk())->setTenant(new \App\Entity\Tenant())->setProbability(4)->setImpact(4);
+        self::assertSame('high', $other->getInherentSeverityBand());
+        self::assertSame('high', RiskMatrixThresholds::classify(16));
+    }
+
+    #[Test]
     public function anInvalidOrMissingScaleFallsBackToTheDefaults(): void
     {
         RiskMatrixThresholds::useProvider(static fn (): array => ['critical' => 10, 'high' => 12, 'medium' => 6]);

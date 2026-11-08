@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Entity\Tenant;
 use App\Risk\RiskMatrixThresholds;
 use App\Risk\RiskScaleProvider;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -18,15 +19,20 @@ class Kernel extends BaseKernel
         parent::boot();
 
         // The risk bands are the organisation's (ISO 27001 6.1.2 a): every
-        // RiskMatrixThresholds::classify() reads them from the tenant in scope.
+        // RiskMatrixThresholds::classify() reads them from the record's
+        // organisation, else from the tenant in scope.
         $container = $this->getContainer();
-        RiskMatrixThresholds::useProvider(static function () use ($container): ?array {
+        RiskMatrixThresholds::useProvider(static function (?Tenant $tenant) use ($container): ?array {
             if (!$container->has(RiskScaleProvider::class)) {
                 return null;
             }
             $provider = $container->get(RiskScaleProvider::class);
 
-            return $provider instanceof RiskScaleProvider ? $provider->currentEdges() : null;
+            if (!$provider instanceof RiskScaleProvider) {
+                return null;
+            }
+
+            return $tenant instanceof Tenant ? $provider->edgesFor($tenant) : $provider->currentEdges();
         });
     }
 

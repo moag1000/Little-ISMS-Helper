@@ -532,14 +532,14 @@ class BusinessProcess
         }
 
         $avgResidualRisk = $totalResidualRisk / $count;
-        if ($avgResidualRisk >= RiskMatrixThresholds::criticalMin()) {
+        if ($avgResidualRisk >= RiskMatrixThresholds::criticalMin($this->tenant)) {
             return 'critical';
         }
-        if ($avgResidualRisk >= RiskMatrixThresholds::highMin()) {
+        if ($avgResidualRisk >= RiskMatrixThresholds::highMin($this->tenant)) {
             return 'high';
         }
 
-        if ($avgResidualRisk >= RiskMatrixThresholds::mediumMin()) {
+        if ($avgResidualRisk >= RiskMatrixThresholds::mediumMin($this->tenant)) {
             return 'medium';
         }
         return 'low';
@@ -602,7 +602,7 @@ class BusinessProcess
     public function hasUnmitigatedHighRisks(): bool
     {
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus()?->isHandled() !== true && $identifiedRisk->getResidualRiskLevel() >= RiskMatrixThresholds::highMin()) {
+            if ($identifiedRisk->getStatus()?->isHandled() !== true && $identifiedRisk->getResidualRiskLevel() >= RiskMatrixThresholds::highMin($this->tenant)) {
                 return true;
             }
         }
