@@ -84,6 +84,40 @@ Diese Datei wurde bereits erstellt und sollte folgendes enthalten:
 - Sicherheitseinstellungen
 - Front Controller Handling
 
+### Schritt 2b: Hochgeladene Nachweise sperren (seit S7, 2026-11)
+
+Dokumente, Dokumentversionen und Schulungsmaterial liegen unter `var/uploads/` – außerhalb
+des Web-Roots. Ausgeliefert werden sie nur über die Download-Aktionen der Anwendung
+(Anmeldung, Prüfung der Organisation, Audit-Log-Eintrag). Ältere Installationen hatten sie
+unter `public/uploads/documents`, `public/uploads/document_versions` und
+`public/uploads/training-materials`, wo der Webserver sie ohne Anmeldung auslieferte.
+
+- **Umzug:** die Migration `Version20261108140000_ProtectUploads` (über `/quick-fix` →
+  „Ausstehende Migrationen anwenden“) verschiebt die Dateien. Der Scheduler wiederholt das
+  nachts um 04:10 (`app:uploads:protect`) für Reste. Nichts wird überschrieben; die
+  Datensätze bleiben unverändert.
+- **Sperre:** `public/.htaccess` beantwortet die alten Pfade mit 403. Liefert nginx in Plesk
+  statische Dateien selbst aus („Statische Dateien direkt über nginx bereitstellen“), greift
+  die `.htaccess` dort nicht. Dann unter *Apache & nginx-Einstellungen → Zusätzliche
+  nginx-Anweisungen* eintragen:
+
+  ```nginx
+  location ~ ^/uploads/(documents|document_versions|training-materials)/ {
+      deny all;
+      return 403;
+  }
+  ```
+
+  Prüfen: `https://<ihre-domain>/uploads/documents/irgendwas.pdf` muss 403 liefern.
+- **Sofortmaßnahme vor dem Update:** dieselbe nginx-Regel jetzt schon eintragen; sie
+  schadet der laufenden Version nicht, nur deren Dokument-Links öffnen dann nicht mehr
+  direkt (der Download-Button funktioniert weiter).
+- Docker: `var/` muss als Volume persistent sein (wie in `docker-compose.prod.yml`). Ist nur
+  `public/uploads` ein Volume, verschiebt die Migration nichts und meldet das.
+
+Logos und Profilbilder bleiben unter `public/uploads/` (sie erscheinen auf der Anmeldeseite
+und in E-Mails).
+
 ### Schritt 3: Dateirechte überprüfen
 
 Stellen Sie sicher, dass die Dateien die richtigen Berechtigungen haben:

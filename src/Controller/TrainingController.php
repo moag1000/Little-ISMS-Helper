@@ -271,7 +271,7 @@ class TrainingController extends AbstractController
      *
      * Validate every uploaded file via {@see FileUploadSecurityService}
      * (MIME / magic-byte / extension / size whitelist), move to
-     * `public/uploads/training-materials/` and append the resulting
+     * `var/uploads/training-materials/` (outside the web root) and append the resulting
      * metadata entry to {@see Training::$materialFiles}. Invalid files
      * are silently skipped with a flash-error to avoid aborting the
      * whole save — the existing entity changes still persist.
@@ -287,7 +287,7 @@ class TrainingController extends AbstractController
             return; // Defensive: services not wired (unit-test scenario).
         }
         $files = is_iterable($uploaded) ? $uploaded : [$uploaded];
-        $uploadDir = rtrim($this->projectDir, '/') . '/public/uploads/training-materials';
+        $uploadDir = (new \App\Service\Upload\ProtectedUploads($this->projectDir))->directory('training-materials');
         foreach ($files as $uploadedFile) {
             if (!$uploadedFile instanceof UploadedFile) {
                 continue;

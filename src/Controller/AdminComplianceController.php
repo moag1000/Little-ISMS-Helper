@@ -109,6 +109,8 @@ class AdminComplianceController extends AbstractController
      */
     #[Route('/admin/compliance/frameworks/delete/{code}', name: 'admin_compliance_delete_framework', methods: ['POST'])]
     #[IsGranted('COMPLIANCE_MANAGE')]
+    // The cascade removes requirements, mappings and fulfilment of EVERY organisation.
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function deleteFramework(string $code, Request $request): JsonResponse
     {
         // Validate CSRF token

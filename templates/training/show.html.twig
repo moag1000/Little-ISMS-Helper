@@ -182,7 +182,7 @@
                         <ul class="list-unstyled mb-0">
                             {% for file in training.materialFiles %}
                                 <li class="mb-2">
-                                    <a href="{{ asset('uploads/training-materials/' ~ file.filename) }}" target="_blank" rel="noopener">
+                                    <a href="{{ path('app_training_material_download', {id: training.id, filename: file.filename}) }}">
                                         <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
                                         {{ file.originalName }}
                                     </a>

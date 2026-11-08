@@ -769,7 +769,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 - [ ] Input validated by form constraints (`#[Assert\…]` / FormType); no `|raw` on user
       content — Twig auto-escaping is the XSS defence, Doctrine parameter binding the SQL one.
       Outbound URLs a user can set carry `#[NoInternalIp]` (SSRF).
-- [ ] File uploads checked via `FileUploadSecurityService`
+- [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training
+      materials) stored and read only via `App\Service\Upload\ProtectedUploads` (`var/uploads`, never `public/`),
+      served by a voter-checked download action (`EvidenceOutsideWebRootTest`). Setup wizard after completion and
+      instance-wide catalogue deletes: `ROLE_SUPER_ADMIN` only (`SetupAccessChecker::ACCESS`, `ADMIN_GLOBAL_OP`).
 - [ ] Spreadsheet/CSV cells with record text go through `CsvSanitizer::sanitize()`
       (formula injection); flash messages are plain text, escaped where rendered.
       Flashes render once, in `base.html.twig`, through `|fa_flash`: a bare key

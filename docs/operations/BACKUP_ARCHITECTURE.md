@@ -438,8 +438,12 @@ Only two entities carry file paths that are packaged into ZIP backups:
 ### Extraction (loadFromZip)
 
 1. `backup.json` is extracted and parsed
-2. All entries under `files/` are extracted to `public/uploads/` with path-traversal protection:
-   - `realpath(public/uploads) + "/" + relativePath` must stay inside `public/uploads/`
+2. Entries under `files/` are extracted with path-traversal protection: `documents/` and
+   `document_versions/` to `var/uploads/documents/` (outside the web root, see
+   `App\Service\Upload\ProtectedUploads`), logos to `public/uploads/<folder>/`; the resolved
+   target must stay inside its base folder. Since S7 a restore also writes only the entity
+   names a backup contains (`BackupService::restorableEntityNames()`); anything else in the
+   file (e.g. `ApiToken`) is dropped with a warning.
 3. `metadata._extracted_file_count` is set for callers to read
 4. File extraction happens **before** entity restore so that restored `Document.filePath` values immediately resolve to real files
 

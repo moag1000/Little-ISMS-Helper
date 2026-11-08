@@ -11,8 +11,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
 /**
- * The files of a ZIP backup land in public/uploads/, which every organisation shares and
- * which the application serves from its own origin. Loading a backup (preview, validation,
+ * The files of a ZIP backup land in shared upload folders (documents in var/uploads/documents
+ * since S7, outside the web root; logos in public/uploads/). Loading a backup (preview, validation,
  * dry run) used to write them before any check; an organisation admin could overwrite
  * another organisation's evidence or plant an .html/.svg file (stored XSS).
  * Now only the restore writes them, after commit — see BackupService::extractArchiveFiles().
@@ -29,6 +29,7 @@ final class BackupArchiveExtractionTest extends TestCase
         }
         $this->projectDir = sys_get_temp_dir() . '/backup_extract_' . uniqid();
         mkdir($this->projectDir . '/public/uploads/documents', 0755, true);
+        mkdir($this->projectDir . '/var/uploads/documents', 0750, true);
         $this->service = new BackupService(
             $this->createStub(EntityManagerInterface::class),
             new NullLogger(),
@@ -52,6 +53,7 @@ final class BackupArchiveExtractionTest extends TestCase
 
         self::assertArrayHasKey('data', $backup);
         self::assertFileDoesNotExist($this->projectDir . '/public/uploads/documents/new.pdf');
+        self::assertFileDoesNotExist($this->projectDir . '/var/uploads/documents/new.pdf');
     }
 
     #[Test]
@@ -68,7 +70,7 @@ final class BackupArchiveExtractionTest extends TestCase
     #[Test]
     public function organisationRestoreWritesOnlyNewAllowedFiles(): void
     {
-        $foreign = $this->projectDir . '/public/uploads/documents/foreign.pdf';
+        $foreign = $this->projectDir . '/var/uploads/documents/foreign.pdf';
         file_put_contents($foreign, '%PDF evidence of another organisation');
         $zip = $this->archive([
             'files/documents/foreign.pdf' => '%PDF overwritten',
@@ -85,10 +87,11 @@ final class BackupArchiveExtractionTest extends TestCase
 
         self::assertSame(1, $written);
         self::assertStringEqualsFile($foreign, '%PDF evidence of another organisation', 'an existing file is never replaced');
-        self::assertFileExists($this->projectDir . '/public/uploads/documents/new.pdf');
-        self::assertFileDoesNotExist($this->projectDir . '/public/uploads/documents/xss.html');
+        self::assertFileExists($this->projectDir . '/var/uploads/documents/new.pdf');
+        self::assertFileDoesNotExist($this->projectDir . '/public/uploads/documents/new.pdf', 'evidence never lands in the web root');
+        self::assertFileDoesNotExist($this->projectDir . '/var/uploads/documents/xss.html');
         self::assertFileDoesNotExist($this->projectDir . '/public/uploads/tenant_logos/logo.svg');
-        self::assertFileDoesNotExist($this->projectDir . '/public/uploads/documents/x.js');
+        self::assertFileDoesNotExist($this->projectDir . '/var/uploads/documents/x.js');
         self::assertFileDoesNotExist($this->projectDir . '/public/uploads/other/elsewhere.pdf');
         self::assertFileDoesNotExist($this->projectDir . '/public/uploads/escape.pdf');
         self::assertCount(2, $warnings, 'skipped and kept files are reported');
@@ -97,7 +100,7 @@ final class BackupArchiveExtractionTest extends TestCase
     #[Test]
     public function instanceRestoreReplacesExistingFiles(): void
     {
-        $existing = $this->projectDir . '/public/uploads/documents/policy.pdf';
+        $existing = $this->projectDir . '/var/uploads/documents/policy.pdf';
         file_put_contents($existing, '%PDF old');
         $zip = $this->archive(['files/documents/policy.pdf' => '%PDF restored']);
 

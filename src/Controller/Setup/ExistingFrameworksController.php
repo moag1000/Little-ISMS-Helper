@@ -6,6 +6,7 @@ namespace App\Controller\Setup;
 
 use App\Form\Setup\ExistingFrameworksType;
 use App\Service\ComplianceFrameworkLoaderService;
+use App\Security\SetupAccessChecker;
 use App\Service\Setup\ReuseEstimationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * WS-8: "Was hast du schon?"-Step im Setup-Wizard.
@@ -21,6 +23,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/setup/existing-frameworks', name: 'setup_wizard_existing_frameworks')]
+#[IsGranted(SetupAccessChecker::ACCESS)] // after setup: super admin only
 final class ExistingFrameworksController extends AbstractController
 {
     public function __construct(

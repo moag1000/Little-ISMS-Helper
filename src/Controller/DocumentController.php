@@ -25,6 +25,7 @@ use App\Service\Evidence\EvidenceCascadeInvalidationService;
 use App\Service\Evidence\DocumentReuseAnalyticsService;
 use App\Repository\EntityTagRepository;
 use App\Service\DocumentService;
+use App\Service\Upload\ProtectedUploads;
 use App\Service\FileUploadSecurityService;
 use App\Service\InverseCoverageService;
 use App\Service\TenantContext;
@@ -321,10 +322,8 @@ class DocumentController extends AbstractController
                 $fileSize = $uploadedFile->getSize();
 
                 // Move file to secure upload directory
-                $uploadedFile->move(
-                    $this->projectDir . '/public/uploads/documents',
-                    $safeFilename
-                );
+                $uploadDir = (new ProtectedUploads($this->projectDir))->directory(ProtectedUploads::DOCUMENTS);
+                $uploadedFile->move($uploadDir, $safeFilename);
 
                 // Store file information
                 $document->setFilename($safeFilename);
@@ -486,12 +485,8 @@ class DocumentController extends AbstractController
             }
 
             // Legacy uploaded file.
-            $path = (string) $doc->getFilePath();
-            $publicPath = $this->projectDir . '/public/' . ltrim($path, '/');
-            if (is_file($publicPath)) {
-                $path = $publicPath;
-            }
-            if (is_file($path) && is_readable($path)) {
+            $path = (new ProtectedUploads($this->projectDir))->resolve($doc->getFilePath());
+            if ($path !== null) {
                 $zip->addFile($path, $safeName);
                 $packed++;
             }
@@ -760,23 +755,13 @@ class DocumentController extends AbstractController
             ]);
         }
 
-        // Security: Validate filename to prevent path traversal attacks
-        $fileName = $document->getFileName();
-        if (!$fileName || preg_match('/[\/\\\\]/', $fileName)) {
+        // Files live outside the web root (var/uploads); resolve() rejects traversal and
+        // paths outside the upload areas.
+        $uploads = new ProtectedUploads($this->projectDir);
+        $filePath = $uploads->resolve($document->getFilePath())
+            ?? $uploads->resolve($uploads->storedPath(ProtectedUploads::DOCUMENTS, (string) $document->getFileName()));
+        if ($filePath === null || $document->getFileName() === null) {
             throw $this->createNotFoundException('Invalid file');
-        }
-
-        // Security: Use realpath to prevent path traversal
-        $uploadDir = realpath($this->projectDir . '/public/uploads/documents');
-        $filePath = $uploadDir . DIRECTORY_SEPARATOR . basename($fileName);
-
-        // Security: Verify the resolved path is still within upload directory
-        if (!$uploadDir || !str_starts_with(realpath($filePath) ?: '', $uploadDir)) {
-            throw $this->createNotFoundException('Invalid file path');
-        }
-
-        if (!file_exists($filePath)) {
-            throw $this->createNotFoundException('File not found');
         }
 
         $binaryFileResponse = new BinaryFileResponse($filePath);
@@ -1128,12 +1113,8 @@ class DocumentController extends AbstractController
 
         $this->denyAccessUnlessGranted('download', $version);
 
-        $fullPath = $this->projectDir . '/public' . $version->getFilePath();
-        if (!file_exists($fullPath)) {
-            $fullPath = $version->getFilePath();
-        }
-
-        if (!file_exists($fullPath)) {
+        $fullPath = (new ProtectedUploads($this->projectDir))->resolve($version->getFilePath());
+        if ($fullPath === null) {
             throw $this->createNotFoundException('Version file not found on disk.');
         }
 

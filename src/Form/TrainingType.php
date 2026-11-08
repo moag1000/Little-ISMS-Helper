@@ -220,7 +220,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
             // File-Upload statt Freitext-Pfade.
             // Multi-file upload widget. Files are validated via
             // FileUploadSecurityService inside the controller, moved to
-            // public/uploads/training-materials/ and tracked as JSON metadata
+            // var/uploads/training-materials/ (ProtectedUploads) and tracked as JSON metadata
             // in Training.materialFiles. The 'mapped' => false flag keeps the
             // form clean of Doctrine concerns — the controller is responsible
             // for invoking ->addMaterialFile() after a successful upload.
