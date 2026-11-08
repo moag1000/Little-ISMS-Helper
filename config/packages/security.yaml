@@ -17,9 +17,28 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        # API tokens (REST + assistant/MCP): every request with an
+        # `Authorization: Bearer` header lands here, whatever its path.
+        # Stateless — the token is never written into a session, so no cookie
+        # can stand in for it later. The token counts only on /api and /mcp;
+        # everywhere else (web UI pages and forms) the answer is 401.
+        # Writes: ReadOnlyApiSubscriber (405 except /mcp) + McpWriteAccess.
+        api_token:
+            request_matcher: App\Security\Token\ApiTokenRequest
+            stateless: true
+            provider: app_user_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\ApiTokenAuthenticator
+            entry_point: App\Security\ApiTokenAuthenticator
+
         main:
             lazy: true
             provider: app_user_provider
+            # Refuses deactivated users on every login path (form, SSO,
+            # remember-me, impersonation); open sessions of a deactivated user
+            # are ended by DeactivatedUserSubscriber.
+            user_checker: App\Security\UserChecker
 
             # Form login for local users
             # Note: Symfony automatically regenerates the session on successful authentication
@@ -49,12 +68,9 @@ security:
                 # Security: Invalidate session on logout (default: true)
                 invalidate_session: true
 
-            # Custom authenticators for Azure OAuth, SAML, and generic SSO (OIDC)
-            # plus read-only API Bearer-token auth (activates only when an
-            # `Authorization: Bearer` header is present — session/form login
-            # and the browsable API are unaffected).
+            # Custom authenticators for Azure OAuth, SAML, and generic SSO (OIDC).
+            # API tokens are NOT accepted here — see the api_token firewall.
             custom_authenticators:
-                - App\Security\ApiTokenAuthenticator
                 - App\Security\AzureOAuthAuthenticator
                 - App\Security\AzureSamlAuthenticator
                 - App\Security\GenericOidcAuthenticator
@@ -199,7 +215,7 @@ security:
         - { path: '^/(de|en)/admin/jobs/[0-9a-f-]{36}/(status|progress)$', roles: ROLE_USER }
 
         # REST API, its OpenAPI docs and JSON-LD contexts: logged-in session or
-        # API token (ApiTokenAuthenticator runs before this check). Without the
+        # API token (api_token firewall, authenticated before this check). Without the
         # rule /api/docs published the whole schema to anonymous visitors.
         - { path: ^/api, roles: IS_AUTHENTICATED_REMEMBERED }
 

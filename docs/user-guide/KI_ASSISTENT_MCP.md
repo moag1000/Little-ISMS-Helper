@@ -71,6 +71,14 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
   Anzahl, bei Schreibvorgängen den Namen der geänderten Felder, und Token — nie mit Suchtext oder Inhalten. Die
   Änderung selbst (alt → neu) steht wie bei jeder Formular-Änderung im Änderungsprotokoll des Datensatzes.
 - **Widerruf**: *Profil > API-Tokens > Widerrufen* wirkt sofort; „Zuletzt benutzt“ zeigt, ob ein Token noch im Einsatz ist.
+- **Ein Token ist nur ein Token**: Es gilt nur für `/api` und `/mcp`. Jede Seite der Weboberfläche antwortet einem
+  Token mit 401, und es entsteht nie eine Browser-Sitzung (kein Cookie, das später ohne Token weiterarbeitet). Schreiben
+  geht mit einem Token nur über `save_record` in `/mcp`; die REST-API und alle anderen Pfade bleiben lesend (405).
+- **Deaktivierte Personen**: Wird ein Konto deaktiviert, sind alle seine Tokens sofort widerrufen; auch nach dem
+  Reaktivieren bleiben sie tot, die Person legt neue an. Eine offene Browser-Sitzung endet beim nächsten Klick, jeder
+  neue Login (Formular, SSO, „Angemeldet bleiben“) wird abgewiesen.
+- **Grenzen**: 100 Anfragen pro Minute je Token (eine JSON-RPC-Batch zählt jede Nachricht, höchstens 20 je Batch).
+  Prüferrollen bekommen kein schreibendes Token, der Haken „Assistent darf schreiben“ fehlt bei ihnen.
 
 ## Betreiber-Hinweis
 
@@ -79,6 +87,10 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
 - Hinter Proxy/CDN muss `Authorization` durchgereicht werden (bei Apache ggf. `CGIPassAuth On` bzw.
   `SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1`, wie für die REST API). `SYMFONY_TRUSTED_PROXIES` setzen, damit
   die Links in den Antworten den öffentlichen Host tragen.
+- Seit dem Token-Hotfix (Welle 5, S1) heißt das Sitzungs-Cookie `isms_session`: Alle offenen Sitzungen enden beim
+  Update einmal, jede Person meldet sich neu an. Keine Migration; bestehende Tokens laufen weiter, Tokens bereits
+  deaktivierter Personen sind ab jetzt abgewiesen. Ein Skript, das mit Token Seiten der Weboberfläche aufrief, bekommt
+  jetzt 401 und muss die REST-API nutzen.
 - Migration `Version20261108120000_ApiTokenCanWrite` (Spalte `can_write` an `api_tokens`) über `/quick-fix` anwenden;
   bestehende Tokens bleiben lesend.
 - claude.ai-„Connectors“ im Browser verlangen OAuth und werden (noch) nicht unterstützt; Claude Desktop und Claude Code
@@ -89,6 +101,13 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
 - Endpoint `App\Controller\McpController` (`POST /mcp`, GET/DELETE → 405), Protokoll `App\Mcp\McpServer`
   (JSON-RPC 2.0; Methoden `initialize`, `ping`, `tools/*`, `prompts/*`; Versionen 2025-11-25 … 2024-11-05).
   Nur Bearer-Tokens (`ApiTokenAuthenticator` setzt `_api_token`), Session-Cookies werden abgewiesen, `Origin` wird geprüft.
+- Tokens laufen in der eigenen zustandslosen Firewall `api_token` (security.yaml, Matcher
+  `App\Security\Token\ApiTokenRequest`: jede Anfrage mit Bearer-Header). Der Authenticator nimmt Tokens nur auf
+  `/api` und `/mcp` an und prüft, dass Token- und Personen-Organisation gleich sind; `App\Security\UserChecker` weist
+  deaktivierte Personen in beiden Firewalls ab. `ApiTokenSessionSubscriber` gibt Token-Anfragen eine Sitzung nur im
+  Speicher (`RequestScopedSession`), `SecurityEventSubscriber` schreibt für Tokens keinen Login-Eintrag.
+  `DeactivatedUserSubscriber` beendet offene Sitzungen deaktivierter Personen, `RevokeApiTokensOnDeactivationListener`
+  widerruft ihre Tokens. Tests: `tests/Security/ApiTokenBoundaryTest.php`.
 - Werkzeuge: `src/Mcp/Tool/*` (Tag `app.mcp_tool`). Ein neues Werkzeug nur, wenn kein generisches passt —
   neue REST-Ressourcen, Fristenquellen und Vorschlagsarten erscheinen ohne Code hier.
 - `App\Mcp\ApiResourceGateway` liest die Ressourcen aus den API-Platform-Metadaten und führt deren Get/GetCollection als

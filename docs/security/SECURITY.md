@@ -29,6 +29,12 @@ This document describes the security features implemented in Little ISMS Helper,
     actions, DPIA decisions and the Art. 15/20 personal-data export are `ROLE_MANAGER`
     (incl. DPO); `tests/Security/WriteActionRoleGateTest.php` pins them.
   - `^/api` (REST API, OpenAPI docs, JSON-LD contexts) requires a session or API token.
+  - API tokens authenticate only in the stateless `api_token` firewall and only on `/api` and `/mcp`:
+    any other path answers 401, a token request never creates a session or cookie, and a token
+    writes nowhere except through `save_record` on `/mcp` (`ReadOnlyApiSubscriber`, `McpWriteAccess`).
+  - `App\Security\UserChecker` refuses deactivated users on every login path (form, SSO,
+    remember-me, impersonation, token); `DeactivatedUserSubscriber` ends their open sessions and
+    deactivation revokes their tokens. Pinned by `tests/Security/ApiTokenBoundaryTest.php`.
   - The lifecycle history (`/lifecycle/{type}/{id}/history`) checks the record's
     organisation itself — the tenant filter does not cover every lifecycle type.
   - Holding actions that read or write subsidiary rows go through
@@ -110,7 +116,8 @@ bin/console debug:voter AssetVoter
     in 15 minutes (form login, API token, SSO)
   - Re-authentication (password confirm): 5 attempts per user in 15 minutes
   - MFA codes: 5 attempts per token in 15 minutes (TOTP and backup codes)
-  - API: 100 requests per minute per IP
+  - API and `/mcp`: 100 requests per minute per API token (else per user, else per IP);
+    an MCP JSON-RPC batch counts each message, at most 20 per batch
   - Public token URLs (Trust Center, supplier questionnaire): 60 requests per minute per IP
   - Document upload: 20 uploads per hour per user
   - Client IPs come from `X-Forwarded-For` only behind trusted proxies (loopback and
@@ -280,7 +287,7 @@ curl -F "file=@malicious.php.jpg" http://localhost/document/new
 2. **Access Control:**
 ```bash
 # Try accessing other tenant's resources
-curl -H "Cookie: PHPSESSID=..." http://localhost/asset/1
+curl -H "Cookie: isms_session=..." http://localhost/asset/1
 ```
 
 3. **Rate Limiting:**

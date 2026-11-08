@@ -16,10 +16,14 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * Enforces READ-ONLY access for Bearer-API-token requests.
  *
- * When a request to /api carries a valid Bearer token, only safe HTTP methods
- * (GET, HEAD, OPTIONS) are permitted; any write verb is rejected with 405. This
- * is independent of the per-resource voters so the read-only guarantee holds
- * regardless of how individual API resources are secured.
+ * When a request carries a valid Bearer token, only safe HTTP methods (GET,
+ * HEAD, OPTIONS) are permitted on every path; any write verb is rejected with
+ * 405. The one exception is the assistant endpoint POST /mcp, where writing is
+ * decided per tool call by {@see \App\Mcp\McpWriteAccess} (organisation
+ * switch, "Assistent darf schreiben" on the token, no reviewer role). This is
+ * independent of the per-resource voters and of the firewall, which accepts
+ * tokens only on /api and /mcp anyway, so the read-only guarantee holds
+ * regardless of how individual routes are secured.
  */
 final class ReadOnlyApiSubscriber implements EventSubscriberInterface
 {
@@ -44,8 +48,8 @@ final class ReadOnlyApiSubscriber implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        if (!str_starts_with($request->getPathInfo(), '/api')) {
-            return;
+        if ($request->getPathInfo() === '/mcp') {
+            return; // McpWriteAccess decides per tool call
         }
 
         $auth = (string) $request->headers->get('Authorization', '');
