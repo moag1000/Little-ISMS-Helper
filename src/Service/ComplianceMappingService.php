@@ -44,7 +44,7 @@ class ComplianceMappingService
     {
         $tenant = $this->tenantContext->getCurrentTenant();
 
-        return $tenant === null ? [] : array_values($this->fulfillmentRuleEngine->controlsFor($complianceRequirement, $tenant));
+        return $tenant === null ? [] : $this->fulfillmentRuleEngine->controlsFor($complianceRequirement, $tenant);
     }
 
     /**
