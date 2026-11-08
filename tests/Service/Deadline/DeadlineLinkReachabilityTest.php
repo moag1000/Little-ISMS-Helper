@@ -212,7 +212,8 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
         $this->em()->flush();
 
         $resolver = static::getContainer()->get(ResponsibilityResolver::class);
-        $resolver->reset();
+        // Forget answers of earlier records (a test-wide service; called by name, the gate takes it for an action).
+        call_user_func([$resolver, 'reset']);
         if (!in_array($user, $resolver->recipients($source->responsibleOf($item), $this->managed($tenant)), true)) {
             return 'test setup: the reminder does not go to this account (fix the role/holder list, not the app)';
         }
