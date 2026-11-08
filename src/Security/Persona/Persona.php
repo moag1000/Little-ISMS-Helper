@@ -173,8 +173,11 @@ enum Persona: string
     {
         return match ($this) {
             self::CISO, self::ADMIN => 'ciso',
-            self::ISB, self::RISK_MANAGER, self::BCM_OFFICER, self::MANAGER => 'isb',
-            self::COMPLIANCE_MANAGER, self::DPO => 'cm',
+            self::ISB, self::MANAGER => 'isb',
+            self::RISK_MANAGER => 'risk_manager',
+            self::BCM_OFFICER => 'bcm',
+            self::DPO => 'dpo',
+            self::COMPLIANCE_MANAGER => 'cm',
             self::TOP_MANAGEMENT, self::GROUP_CISO => 'board',
             self::AUDITOR, self::KONZERN_AUDITOR => 'auditor',
             self::RISK_OWNER => 'risk_owner',

@@ -9294,6 +9294,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 .sb-link {
     display: grid; grid-template-columns: 20px 1fr 14px; gap: 12px;
     align-items: center;
+    text-align: left; /* <button> defaults to centre — labels sat mid-row */
     padding: 11px 10px;
     border-radius: var(--r-md);
     /* Reset browser <button> defaults — prevents gray ButtonFace in dark mode */

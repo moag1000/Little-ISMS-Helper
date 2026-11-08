@@ -198,27 +198,6 @@ class SearchControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
-    #[Test]
-    public function testAssetPreviewRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/api/asset/1/preview');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testRiskPreviewRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/api/risk/1/preview');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testIncidentPreviewRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/api/incident/1/preview');
-        $this->assertResponseRedirects();
-    }
-
     // -------------------------------------------------------------------------
     // Basic response shape
     // -------------------------------------------------------------------------

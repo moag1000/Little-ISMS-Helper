@@ -12,7 +12,7 @@ den Datensatz. Das ist der Nachweis für ISO 27001 5.1, 6.1.2 a, 6.1.3 d/f,
 | Wer | Tut |
 |---|---|
 | CISO / ISB (`ROLE_MANAGER`) | legt eine Vorlage vor; sie ist aus den Daten vorbefüllt |
-| Leitung (`ROLE_TOP_MGMT`, Admin erbt sie) | billigt oder lehnt ab, im Entscheidungsdialog |
+| Leitung (`ROLE_TOP_MGMT`, ausdrücklich zugewiesen; Admins erben sie nicht) | billigt oder lehnt ab, im Entscheidungsdialog |
 | Auditor | liest alles, lädt die Managementbewertung als PDF |
 
 ## Vorlagen
@@ -53,6 +53,8 @@ Risikoakzeptanzen oberhalb der Manager-Stufe entscheidet die Leitung
   Entscheidungen“.
 - **Mein Tag**: Kategorie „Leitungsentscheidungen“ (aus der Fristenquelle), mit denselben Knöpfen.
 - **Fristenquellen**: offene Vorschläge (`management_decision`, an `ROLE_TOP_MGMT`) und offene Aufgaben aus der Managementbewertung (`management_review_action`, an die verantwortliche Person, sonst ISB/CISO) melden sich als Fristenquelle; Mein Tag und die Sammelmail lesen sie von dort.
+- **Vorbereiten**: Billigungen, die fehlen oder in 60 Tagen enden (Leitlinie, Risikokriterien, SoA, Ziele, Ressourcen, mit NIS-2 auch die Maßnahmen nach Art. 20), stehen beim ISB/CISO in Mein Tag („Leitungsentscheidungen vorbereiten“, Quelle `standing_approval`), bis eine Vorlage eingereicht ist. Das Leitungs-Dashboard zeigt dieselbe Liste unter „fehlt“.
+- **Management-Review anstehend**: die Leitung wird mitinformiert, vorbereitet wird es vom eingetragenen Prüfer, sonst vom ISB/CISO.
 - **Board-One-Pager**: Abschnitt „Entscheidungen der Leitung“.
 
 ## Managementbewertung (ISO 27001 9.3)

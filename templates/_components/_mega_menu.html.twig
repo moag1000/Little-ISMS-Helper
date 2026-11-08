@@ -111,8 +111,8 @@
     { p: 'tenant_management_', c: 'admin' },
     { p: 'admin_', c: 'admin' },
     { p: 'app_my_day', c: 'help' },
-    { p: 'app_suggestion_', c: 'help' },
-    { p: 'app_recurring_duty_', c: 'help' },
+    { p: 'app_suggestion_', c: 'operations' },
+    { p: 'app_recurring_duty_', c: 'operations' },
     { p: 'app_help_', c: 'help' },
 ] %}
 {% for _m in _nav_map %}{% if nav_active is null and (current_route == _m.p or current_route starts with _m.p) %}{% set nav_active = _m.c %}{% endif %}{% endfor %}

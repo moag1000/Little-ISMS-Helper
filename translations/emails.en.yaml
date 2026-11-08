@@ -151,7 +151,7 @@ emails:
         urgent:
             subject: 'Deadline running: %title%'
             title: 'Statutory deadline running'
-            intro: 'A deadline in hours runs for these tasks. Please act now.'
+            intro: 'A statutory deadline for these tasks ends within hours or days.'
             note: 'You get this notice once per deadline, independent of the digest.'
         due: 'Due: %date%'
         overdue: 'overdue since %date%'

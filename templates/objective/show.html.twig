@@ -18,7 +18,7 @@
     } %}
 
     {% set _show_actions = [] %}
-    {% if is_granted('ROLE_ADMIN') %}
+    {% if is_granted('ISMS_STEERING_EDIT') %}
         {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_objective_edit', {id: objective.id}) }]) %}
     {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_objective_index') }]) %}
@@ -28,7 +28,8 @@
         actions: _show_actions
     }) }}
 
-    {% set _pct = kpi_progress ?? objective.progressPercentage %}
+    {% set _progress = objective_progress(objective) %}
+    {% set _pct = _progress.percent %}
     {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ISMSObjective', status_key: objective.status }) }}{% endset %}
     {% set _actions %}{{ _lifecycle_actions.dropdown(objective, 'isms-objective', 'isms_objective_lifecycle') }}{% endset %}
     {{ _fa_status_band.render({
@@ -37,7 +38,8 @@
         facts: [
             { label: 'show.status.owner'|trans({}, 'messages'), value: objective.effectiveResponsiblePerson },
             { label: 'show.status.target_date'|trans({}, 'messages'), value: objective.targetDate ? objective.targetDate|fa_date : null },
-            { label: 'show.status.progress'|trans({}, 'messages'), value: _pct is not null ? _pct ~ ' %' : null },
+            { label: 'show.status.progress'|trans({}, 'messages'), value: _pct ~ ' %' },
+            { label: 'objective.label.next_measurement'|trans({}, 'objective'), value: objective.nextMeasurementDue ? objective.nextMeasurementDue|fa_date : null },
         ],
         workflow: workflow_state(objective),
     }) }}
@@ -71,11 +73,25 @@
                     {% endif %}
 
                     <div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.table.progress'|trans({}, 'objective') }}</div>
-                    {% set _pct = kpi_progress ?? objective.progressPercentage %}
+                    {% set _progress = objective_progress(objective) %}
+                    {% set _pct = _progress.percent %}
                     {{ _fa_progress.render({ value: _pct, tone: _pct >= 75 ? 'success' : (_pct >= 50 ? 'warning' : 'danger'), showText: true, class: 'mb-2' }) }}
-                    <p><strong>{{ 'objective.label.current'|trans({}, 'objective') }}:</strong> {{ kpi_current ?? objective.currentValue }} {{ objective.unit }} / <strong>{{ 'objective.label.target'|trans({}, 'objective') }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
+                    <p><strong>{{ 'objective.label.current'|trans({}, 'objective') }}:</strong> {{ _progress.current ?? '—' }} {{ objective.unit }} / <strong>{{ 'objective.label.target'|trans({}, 'objective') }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
                     {% if objective.kpiKey %}
                         <p class="text-muted-color small">{{ 'objective.label.kpi_computed'|trans({ '%kpi%': ('dashboard.kpi.' ~ objective.kpiKey)|trans({}, 'dashboard'), '%scope%': objective.kpiLocation ? objective.kpiLocation.name : 'objective.label.kpi_scope_all'|trans({}, 'objective') }, 'objective') }}{% if objective.kpiLocation %} · <a href="{{ path('app_location_map', { site: objective.kpiLocation.id }) }}">{{ 'objective.label.kpi_on_map'|trans({}, 'objective') }}</a>{% endif %}</p>
+                    {% endif %}
+
+                    <div class="row mb-3 small">
+                        <div class="col-md-4"><span class="text-muted-color">{{ 'objective.field.measurement_person'|trans({}, 'objective') }}:</span> {{ objective.effectiveResponsibleForMeasurement ?? '—' }}</div>
+                        <div class="col-md-4"><span class="text-muted-color">{{ 'objective.field.measurement_frequency'|trans({}, 'objective') }}:</span> {{ objective.measurementFrequency ? ('objective.frequency.' ~ objective.measurementFrequency)|trans({}, 'objective') : '—' }}</div>
+                        <div class="col-md-4"><span class="text-muted-color">{{ 'objective.label.last_measured'|trans({}, 'objective') }}:</span> {{ objective.lastMeasuredAt|fa_date }}</div>
+                    </div>
+                    {% if not objective.kpiKey and is_granted('ISMS_OBJECTIVE_MEASURE', objective) %}
+                        <form method="post" action="{{ path('app_objective_measured', { id: objective.id }) }}" class="mb-3">
+                            <input type="hidden" name="_token" value="{{ csrf_token('objective_measured_' ~ objective.id) }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'objective.action.confirm_measurement'|trans({}, 'objective') }}</button>
+                            <span class="text-muted-color small ms-2">{{ 'objective.help.confirm_measurement'|trans({}, 'objective') }}</span>
+                        </form>
                     {% endif %}
 
                     {% if objective.progressNotes %}

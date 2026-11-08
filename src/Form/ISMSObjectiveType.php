@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\ISMSObjective;
 use App\Entity\Location;
+use App\Entity\Person;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Service\Kpi\ObjectiveKpiProgress;
 use App\Service\ModuleConfigurationService;
@@ -45,8 +46,8 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
         return [
             'overview'      => ['title', 'description', 'category'],
             'target_metric' => ['measurableIndicators', 'kpiKey', 'kpiLocation', 'targetValue', 'currentValue', 'unit'],
-            'monitoring'    => ['measurementFrequency', 'measurementMethod'],
-            'responsibility'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'responsibleForMeasurement', 'targetDate'],
+            'monitoring'    => ['measurementPerson', 'responsibleForMeasurement', 'measurementFrequency', 'measurementMethod'],
+            'responsibility'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'targetDate'],
             'audit_metadata'=> ['status', 'progressNotes'],
         ];
     }
@@ -175,11 +176,20 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
                     'placeholder' => 'objective.placeholder.responsible_person',
                 ],
             ])
+            // ISO 27001 6.2 / 9.1: who measures — receives the measurement deadline.
+            ->add('measurementPerson', EntityType::class, [
+                'label' => 'objective.field.measurement_person',
+                'class' => Person::class,
+                'choice_label' => static fn (Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'objective.placeholder.measurement_person',
+                'help' => 'objective.help.measurement_person',
+                'attr' => ['data-controller' => 'tom-select'],
+            ])
             ->add('responsibleForMeasurement', TextType::class, [
                 'label' => 'objective.field.responsible_for_measurement',
                 'required' => false,
-                'help' => 'objective.help.responsible_for_measurement',
-                                'constraints' => [
+                'constraints' => [
                     new Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')
                 ],
             ])
@@ -246,6 +256,7 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
         ;
 
         LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
+        LegacyFreeTextField::hideWhenEmpty($builder, 'responsibleForMeasurement');
 
         if ($this->isModuleActive('locations')) {
             $builder->add('kpiLocation', EntityType::class, [

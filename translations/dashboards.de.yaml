@@ -375,3 +375,19 @@ tisax:
     empty:
         no_tisax_title: 'Keine TISAX-Anforderungen'
         no_tisax_text:  'Bisher wurden keine VDA-ISA-Anforderungen hochgeladen.'
+
+# Persona dashboard building blocks (P3, 2026-11): obligations + downloads
+dashboards:
+    obligations:
+        title: 'Was bei dir ansteht'
+        overdue: '%count% überfällig'
+        empty: 'Keine offenen Pflichten.'
+        all: 'Alle %count% in Mein Tag'
+    reports:
+        title: 'Downloads'
+        certification_bundle: 'Zertifizierungspaket und Audit-Paket'
+        certification_readiness: 'Zertifizierungsreife'
+        evidence_package: 'Nachweispaket'
+        review_output: 'Ergebnis der Managementbewertung (PDF)'
+        quarterly_trend: 'Quartalstrend'
+        board_one_pager: 'Leitungs-One-Pager (PDF)'

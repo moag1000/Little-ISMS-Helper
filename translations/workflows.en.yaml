@@ -300,9 +300,6 @@ workflow_instance:
         cancelled: Cancelled
 workflow_step:
     type:
-        approval: 'Approval / Authorization'
-        notification: Notification
-        auto_action: 'Automated Action'
 sla:
     progress_label: 'SLA Progress'
     time_remaining: 'Time remaining'

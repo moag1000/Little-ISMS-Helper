@@ -70,7 +70,6 @@ eu_authorities:
         help:
             legal_form: 'Legal form as registered, e.g. GmbH, AG'
             register_number: 'Commercial register number, e.g. HRB 12345'
-            headcount: 'Number of employees affected by this registration'
             turnover: 'Annual turnover in EUR — relevant for threshold assessment'
             ict_dependency: 'Brief description of critical ICT dependencies (max. 5 sentences)'
             nace_codes: 'NACE Rev.2 codes for your primary business activity'

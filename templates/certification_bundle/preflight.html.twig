@@ -93,7 +93,7 @@
                         <i class="fa-icon fa-icon--ui-close text-danger flex-shrink-0" aria-hidden="true"></i>
                     {% endif %}
                     <span>{{ (checkLabels[checkKey])|default(checkKey)|trans }}</span>
-                    <span class="ms-auto badge {% if passed %}text-bg-success{% else %}text-bg-danger{% endif %}">
+                    <span class="ms-auto fa-status-pill fa-status-pill--{{ passed ? 'success' : 'danger' }}">
                         {{ passed ? 'cert_bundle.preflight.checks.passed'|trans : 'cert_bundle.preflight.checks.failed'|trans }}
                     </span>
                 </li>

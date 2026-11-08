@@ -1,12 +1,12 @@
 {# Single ISMSObjective table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
-   Edit action is gated on ROLE_ADMIN, matching the full-page index behaviour. #}
+   Edit action is gated on ISMS_STEERING_EDIT (ISB/CISO), matching the full-page index behaviour. #}
 {% trans_default_domain 'objective' %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <tr id="objective-row-{{ objective.id }}"
     data-objective-id="{{ objective.id }}">
-    {% if is_granted('ROLE_ADMIN') %}
+    {% if is_granted('ISMS_STEERING_EDIT') %}
     <td class="bulk-select-column">
         <input type="checkbox"
                class="form-check-input"
@@ -26,11 +26,13 @@
     </td>
     <td>{{ objective.targetDate|fa_date }}</td>
     <td>
+        {% set _progress = objective_progress(objective) %}
         {{ _fa_progress.render({
-            value: objective.progressPercentage,
-            tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'),
+            value: _progress.percent,
+            tone: _progress.percent >= 75 ? 'success' : (_progress.percent >= 50 ? 'warning' : 'danger'),
             showText: true
         }) }}
+        {% if _progress.computed %}<span class="text-muted-color small">{{ 'objective.label.from_kpi'|trans({}, 'objective') }}</span>{% endif %}
     </td>
     <td>
         {% include '_components/_badge.html.twig' with {
@@ -47,7 +49,7 @@
                aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
             </a>
-            {% if is_granted('ROLE_ADMIN') %}
+            {% if is_granted('ISMS_STEERING_EDIT') %}
             <a href="{{ path('app_objective_edit', {id: objective.id}) }}"
                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                data-turbo-frame="fa-form-modal"

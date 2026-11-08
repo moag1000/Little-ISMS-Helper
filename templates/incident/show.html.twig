@@ -28,6 +28,9 @@
     {% if is_nis2_active() and incident.requiresNis2Reporting %}
         {% set _show_actions = _show_actions|merge([{ label: 'incident.action.download_nis2_report'|trans({}, 'incident'), variant: 'accent', icon: 'nav-file-pdf', href: path('app_incident_nis2_report', {id: incident.id}), attrs: { 'data-turbo': 'false' } }]) %}
     {% endif %}
+    {% if is_module_active('nis2_dora') and is_granted('ROLE_MANAGER') and reporting_duties(incident)|filter(d => d.type.value starts with 'dora_')|length > 0 %}
+        {% set _show_actions = _show_actions|merge([{ label: 'incident.action.download_dora_report'|trans({}, 'incident'), variant: 'ghost', href: path('app_dora_ict_incident_report_pdf', {id: incident.id}), attrs: { 'data-turbo': 'false' } }]) %}
+    {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'incident.action.back_to_list'|trans({}, 'incident'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_incident_index') }]) %}
     {{ _fa_page_header.render({
         title: incident.title,

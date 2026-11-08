@@ -10,10 +10,10 @@ use DateTime;
 use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ISMSObjective;
-use App\Service\Kpi\ObjectiveKpiProgress;
 use App\Enum\ISMSObjectiveStatus;
 use App\Form\ISMSObjectiveType;
 use App\Repository\ISMSObjectiveRepository;
+use App\Security\Voter\IsmsSteeringVoter;
 use App\Service\TenantContext;
 use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,6 +25,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Symfony\Component\ExpressionLanguage\Expression;
+use App\Service\Objective\ObjectiveMeasurement;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ISMSObjectiveController extends AbstractController
@@ -38,7 +41,6 @@ class ISMSObjectiveController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
-        private readonly ObjectiveKpiProgress $kpiProgress,
     ) {}
     #[Route('/objective', name: 'app_objective_index', methods: ['GET'])]
     public function index(Request $request): Response
@@ -59,7 +61,7 @@ class ISMSObjectiveController extends AbstractController
         ]);
     }
     #[Route('/objective/new', name: 'app_objective_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(IsmsSteeringVoter::EDIT)]
     public function new(Request $request): Response
     {
         $ismsObjective = new ISMSObjective();
@@ -108,16 +110,12 @@ class ISMSObjectiveController extends AbstractController
             ]);
         }
 
-        $kpiCurrent = $this->kpiProgress->current($ismsObjective);
-
         return $this->render('objective/show.html.twig', [
             'objective' => $ismsObjective,
-            'kpi_current' => $kpiCurrent,
-            'kpi_progress' => ObjectiveKpiProgress::progress((string) $ismsObjective->getKpiKey(), $kpiCurrent, $ismsObjective->getTargetValue()),
         ]);
     }
     #[Route('/objective/{id}/edit', name: 'app_objective_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(IsmsSteeringVoter::EDIT)]
     public function edit(Request $request, ISMSObjective $ismsObjective): Response
     {
         $form = $this->createForm(ISMSObjectiveType::class, $ismsObjective);
@@ -159,7 +157,7 @@ class ISMSObjectiveController extends AbstractController
         ], new Response(status: $status));
     }
     #[Route('/objective/{id}/delete', name: 'app_objective_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(IsmsSteeringVoter::EDIT)]
     public function delete(Request $request, ISMSObjective $ismsObjective): Response
     {
         if ($this->isCsrfTokenValid('delete'.$ismsObjective->getId(), $request->request->get('_token'))) {
@@ -170,6 +168,18 @@ class ISMSObjectiveController extends AbstractController
         }
 
         return $this->redirectToRoute('app_objective_index');
+    }
+
+    /** ISO 27001 9.1: measured today, value unchanged — closes the measurement deadline. */
+    #[Route('/objective/{id}/measured', name: 'app_objective_measured', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(IsmsSteeringVoter::MEASURE, subject: 'ismsObjective')]
+    #[IsCsrfTokenValid(new Expression('"objective_measured_" ~ args["ismsObjective"].getId()'))]
+    public function measured(ISMSObjective $ismsObjective, ObjectiveMeasurement $measurement): Response
+    {
+        $measurement->confirm($ismsObjective);
+        $this->addFlash('success', 'objective.flash.measured');
+
+        return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
     }
 
     /** Turbo Stream after a successful in-modal ISMSObjective save (row replace/append). */

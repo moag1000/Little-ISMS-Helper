@@ -166,6 +166,9 @@
     },
 ] %}
 
+{# ISO 27001 4.3: the scope these figures describe (counted from the inventories). #}
+{% set _sections = isms_scope_section()|merge(_sections) %}
+
 {{ _fa_report_doc.render({
     report: {
         title:          'management_reports.review_output.pdf_title'|trans({}, 'management_reports'),

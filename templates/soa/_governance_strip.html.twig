@@ -1,0 +1,27 @@
+{#
+ # SoA governance: the yearly review (duty calendar, ISO 27001 6.1.3 d) and the
+ # approval by top management (management decision of type "soa", 5.1 / 6.1.3).
+ # One line instead of a card; the approval state comes from the decision register.
+ # The scope (ISO 27001 4.3) the SoA applies to, counted from the inventories.
+ #}
+{% set _soa_approval = management_approval('soa') %}
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3 small">
+    <span class="text-muted">{{ 'soa.governance.approval'|trans({}, 'soa') }}:</span>
+    {% if _soa_approval %}
+        <a href="{{ path('app_management_decision_show', { id: _soa_approval.id }) }}"
+           class="fa-status-pill fa-status-pill--success">{{ 'soa.governance.approved_on'|trans({ '%date%': _soa_approval.decidedAt|fa_date }, 'soa') }}</a>
+    {% else %}
+        <span class="fa-status-pill fa-status-pill--warning">{{ 'soa.governance.not_approved'|trans({}, 'soa') }}</span>
+        {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_management_decision_new', { type: 'soa' }) }}">{{ 'soa.governance.propose'|trans({}, 'soa') }}</a>
+        {% endif %}
+    {% endif %}
+    <span class="text-muted ms-2">{{ 'soa.governance.review'|trans({}, 'soa') }}:</span>
+    <a href="{{ path('app_recurring_duty_index', { q: 'recurring_duty.duty.soa_review.title'|trans({}, 'recurring_duty') }) }}">{{ 'soa.governance.review_link'|trans({}, 'soa') }}</a>
+    <a href="{{ path('app_soa_snapshot_index') }}" class="ms-2">{{ 'soa.governance.snapshots'|trans({}, 'soa') }}</a>
+    {% set _scope = isms_scope() %}
+    {% if _scope %}
+        <span class="text-muted ms-2">{{ 'register.scope.strip'|trans({}, 'register') }}:</span>
+        <a href="{{ path('app_context_index') }}">{% for key, s in _scope.counts %}{{ s.in }} {{ ('register.scope.' ~ key)|trans({}, 'register') }}{% if not loop.last %} · {% endif %}{% endfor %}</a>
+    {% endif %}
+</div>

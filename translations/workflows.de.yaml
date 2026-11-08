@@ -300,9 +300,6 @@ workflow_instance:
         cancelled: Abgebrochen
 workflow_step:
     type:
-        approval: 'Freigabe / Genehmigung'
-        notification: Benachrichtigung
-        auto_action: 'Automatische Aktion'
 sla:
     progress_label: 'SLA-Fortschritt'
     time_remaining: 'Verbleibende Zeit'

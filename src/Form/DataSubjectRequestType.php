@@ -165,7 +165,6 @@ final class DataSubjectRequestType extends AbstractType implements SectionMapInt
                 'placeholder' => 'dsr.form.placeholder.processing_activity',
                 'required' => false,
                 'attr' => ['data-controller' => 'tom-select'],
-                'help' => 'dsr.form.help.processing_activity',
             ])
 
             // ================================================================

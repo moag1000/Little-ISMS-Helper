@@ -121,7 +121,6 @@ final class RiskTreatmentPlanType extends AbstractType implements SectionMapInte
                 'label' => 'risk_treatment_plan.field.target_completion_date',
                 'widget' => 'single_text',
                 'required' => true,
-                                'help' => 'risk_treatment_plan.help.target_completion_date',
                 'constraints' => [
                     new Assert\NotNull(message: 'risk_treatment_plan.validation.target_completion_date_required')
                 ]

@@ -383,7 +383,7 @@ class DPIAController extends AbstractController
     // ============================================================================
 
     /**
-     * Record DPO consultation (Art. 35(4))
+     * Record DPO consultation (Art. 35(2))
      */
     #[Route('/dpia/{id}/dpo-consultation', name: 'app_dpia_dpo_consultation', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -595,20 +595,6 @@ class DPIAController extends AbstractController
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
             'Content-Length' => (string) strlen($pdf),
-        ]);
-    }
-
-    #[Route('/dpia/{id}/validate', name: 'app_dpia_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function validate(DataProtectionImpactAssessment $dataProtectionImpactAssessment): JsonResponse
-    {
-        $errors = $this->dataProtectionImpactAssessmentService->validate($dataProtectionImpactAssessment);
-        $isCompliant = $errors === [];
-
-        return $this->json([
-            'is_compliant' => $isCompliant,
-            'errors' => $errors,
-            'completeness_percentage' => $dataProtectionImpactAssessment->getCompletenessPercentage(),
-            'is_complete' => $dataProtectionImpactAssessment->isComplete(),
         ]);
     }
 

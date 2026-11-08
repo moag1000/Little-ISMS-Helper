@@ -171,7 +171,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 | Bereich | Neuerung |
 |---|---|
-| **Role-Scope-Architektur** | `TenantScopedAdminVoter` -- `ROLE_ADMIN` ist auf den eigenen Tenant beschraenkt, `ROLE_SUPER_ADMIN` tenant-uebergreifend; Persona-Rollen (`ROLE_CISO`, `ROLE_ISB`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`, `ROLE_BCM_OFFICER`, Leitung `ROLE_TOP_MGMT`) gaten je eigenes Dashboard unter `/dashboards/<persona>`; ein `PersonaResolver` entscheidet Landeseite, Tour und Berichts-Downloads |
+| **Role-Scope-Architektur** | `TenantScopedAdminVoter` -- `ROLE_ADMIN` ist auf den eigenen Tenant beschraenkt, `ROLE_SUPER_ADMIN` tenant-uebergreifend; Persona-Rollen (`ROLE_CISO`, `ROLE_ISB`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`, `ROLE_BCM_OFFICER`, Leitung `ROLE_TOP_MGMT`, von `ROLE_ADMIN` nicht geerbt) gaten je eigenes Dashboard unter `/dashboards/<persona>`; ein `PersonaResolver` entscheidet Landeseite, Tour und Berichts-Downloads |
 | **Lifecycle-Foundation (Symfony Workflow)** | `LifecycleService::transition()`-Facade als Pflicht-Einstieg; produktive Workflows u.a. `document`, `processing_activity`, `isms_objective`, `policy_template`, `asset` (Definitionen in `config/workflows/`); Tenant-Overrides via `/admin/lifecycle-overrides` |
 | **Status-Enums** | Erste-Klasse-Status-Lifecycle: `DocumentStatus`, `IncidentStatus`, `RiskStatus`, `DataBreachStatus`, etc.; Server-erzwungene 5-Transition-Matrix; bulk-status-change-Support via canonical `_bulk_action_bar.html.twig` |
 | **YAML-Workflows** | Regulatorische Workflows als YAML-Source-of-Truth (`config/workflows/regulatory/*.yaml`) -- GDPR Data Breach, Incident Response, Risk Treatment, DPIA, DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC-Plan Activation, Document Review, Incident Post-Mortem; Event-getriebene Auto-Progression via Doctrine-Listener |
@@ -215,7 +215,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Periodische Reviews** -- Automatisierte Erinnerungen nach ISO 27001 Clause 6.1.3.d
 - **Meldepflichten** -- Ein Planer für NIS-2 (24 h / 72 h / 1 Monat), DORA (4–24 h / 72 h / 1 Monat) und DSGVO Art. 33 (72 h ab Entdeckung): das Tool prüft „erheblich“ mit sichtbaren Gründen vor, der ISB bestätigt, „Als gemeldet markieren“ schließt die Frist; eine Datenpanne am Vorfall legt den Entwurf der Datenschutzverletzung automatisch an
 - **Pflichtenkalender** -- Wiederkehrende Normpflichten ohne Datum am Datensatz (Risikoakzeptanzkriterien, SoA-Review, BIA, BC-Übung, Schlüsselrotation, TOM-Review, NIS-2-Leitungsschulung, DORA-Register u. a.) erscheinen je aktivem Modul automatisch; „Erledigt“ mit Nachweis schiebt die nächste Fälligkeit, Intervall und Zuständigkeit je Organisation einstellbar
-- **Erinnerungen** -- Jede Frist erscheint einmal, bei der zuständigen Person: in „Mein Tag“, als tägliche Sammelmail (Uhrzeit je Organisation, im Profil abwählbar) und in der Glocke; Meldefristen in Stunden gehen sofort raus
+- **Erinnerungen** -- Jede Frist erscheint einmal, bei der zuständigen Person: in „Mein Tag“, als tägliche Sammelmail (Uhrzeit je Organisation, im Profil abwählbar) und in der Glocke; Meldefristen in Stunden gehen sofort raus. Jedes Datumsfeld mit Pflicht hat eine Quelle (auch Einwilligungsablauf, Vertragsende, Patch-Frist, Zugangsende, Krisenstab-Training, TLPT, Exit-Plan-Test, angekündigte Löschungen); wer nur informiert wird (ISB bei Meldepflichten, Leitung beim Management-Review), sieht die Frist ebenfalls
 - **Vulnerability- und Patch-Management** -- CVE/CVSS-Tracking (NIS2-konform)
 
 ### GDPR / Datenschutz
@@ -260,6 +260,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Offline-Geokodierung** -- Koordinaten aus PLZ (DE/AT/CH) oder Ort (weltweit) ohne Online-Dienst; optional eigener Nominatim-Dienst, Standard aus
 - **Steuerung** -- Standort-Kennzahlen aus dem KPI-Katalog, Vergleich mit ähnlichen Standorten (nur Standorte, keine Personen), größte Hebel, Sammelaktionen mit Audit-Log und FTE-Erfassung, Lagebild als Excel und einseitiges PDF mit Kartenbild
 - **Überall dieselben Zahlen** -- ISMS-Ziele mit Katalog-Kennzahl je Standort, offene Prüfungen in *Mein Tag*, Kachel auf den Dashboards von CISO, ISB und Compliance, Steckbrief auf der Standortseite
+- **Ziele messen (ISO 27001 6.2 / 9.1)** -- Fortschritt in Liste, Seitenblatt und Detail aus der verknüpften Kennzahl; von Hand gemessene Ziele haben eine Person, die misst, und eine eigene Messfrist nach dem Messrhythmus in *Mein Tag*; Kennzahlen, SoA und Berichte zählen nur, was im Geltungsbereich liegt ([Register](docs/user-guide/REGISTER.md))
 - **Einstellungen je Organisation** -- Vergleich aus, ohne oder mit Namen der Verantwortlichen (§ 87 BetrVG), einzelne Prüfungen abschaltbar, Koordinaten auf Karte und im Export auf etwa 1 km gerundet; Auditoren sehen die Karte nur lesend
 
 ### KPI und Reporting
@@ -303,11 +304,13 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Vorschlags-Queue** -- Ableitungen (Schutzbedarf, Restrisiko, Wirksamkeit, CVSS→Risiko, Risiko nach Vorfall), Vererbung, Import-Treffer und KI-Vorschläge (lokales Modell oder Mistral-API, personenbezogene Daten standardmäßig ersetzt) in einer Liste; Annehmen/Ablehnen mit Begründung und Audit-Log, nächtlich vorbereitet oder per „Entwurf vorschlagen“ am Datensatz (Meldetext NIS-2/DORA, Meldung Art. 33, Antwort an Betroffene, Zusammenfassung für die Leitung, Abweichungstext, Fragebogenauswertung, SoA-Begründung aus Verknüpfungen) ([Anleitung](docs/user-guide/VORSCHLAEGE.md))
 - **Eine Liste statt zwei** -- Maßnahmen von Risiko und Behandlungsplan, Risiken eines Vorfalls nur über Verknüpfungen, Change-Freigabe als Person (in „Mein Tag“), rechtliche Anforderungen am Stakeholder; abgeleitete Werte (Fortschritt, Verfügbarkeit aus BIA) nur lesbar ([Anleitung](docs/user-guide/EINE_LISTE.md))
 
+- **KI-Assistent anbinden (MCP)** -- Little ISMS Helper ist MCP-Server unter `/mcp`: Claude Desktop, Claude Code oder ein anderer MCP-Client liest mit dem API-Token der Person Fristen (Mein Tag), Erfüllung je Norm mit „Warum dieser Wert?“, KPIs, Pflichtenkalender, Suche und jede REST-Ressource; schreiben nur als Entwurf in die Vorschlags-Queue. Opt-in je Organisation, Audit-Log je Zugriff, Konfiguration zum Kopieren auf der Token-Seite ([Anleitung](docs/user-guide/KI_ASSISTENT_MCP.md))
+
 ### Bedienung: einheitlich, schnell, sinnvoll
 
 Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterverwendet werden:
 
-- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand
+- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand; Navigation am iPhone mit fester Kopfzeile, "Mein Tag" in einem Tipp, Untermenüs per Tipp mit Zurück-Pfeil und 44-px-Tippzielen
 - **Eine Menüstelle pro Seite** -- Persona-Dashboards unter "Mein Cockpit", ein Import-Hub, CI-Gate gegen doppelte Menüeinträge
 - **Ein Listen-Aufbau** -- alle 74 Listen mit derselben Reihenfolge: Suche und Filter (teilbare URL), Zusammenfassungs-Chips statt KPI-Kacheln, Tabelle, Seitenumbruch (25/50/100), Leerzustand "Keine X vorhanden."; laufende Freigaben stehen als "In Freigabe" / "Freigabe überfällig" direkt in der Zeile
 - **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder 20/12/6
@@ -317,6 +320,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 - **Review bestätigen** -- Risiken, Controls (SoA), Dokumente und Lieferanten: Chip "Review fällig" filtert die Liste, mehrere Einträge auswählen, ein Klick bestätigt das periodische Review (heutiges Datum, nächster Termin nach dem Prüfintervall des Eintrags, ein Audit-Log-Batch, ab Manager); aus "Mein Tag" führt "In der Liste bestätigen" direkt dorthin
 - **Ein Such- und Befehlsfenster** -- ⌘K, ⌘P und `/` öffnen dasselbe Fenster für Datensätze, Seiten und Befehle; angeboten wird nur, was Modul und Rolle erlauben
 - **Einheitliche Anzeige** -- Datum und Uhrzeit im Format und in der Zeitzone aus den Admin-Einstellungen, ein Status-Vokabular statt lokaler Farbtabellen, ein Hauptbereich und eine Seitenüberschrift pro Seite (CI-Gates 77 und 78)
+- **Aufgeräumt** -- keine Hilfetexte, die nur das Label wiederholen; keine toten Routen, Templates, Übersetzungen und CSS-Klassen (Gate 69 für Templates, Gate 62 auch für dynamisch gebaute Bootstrap-Badges); Toasts als Partizip ohne „erfolgreich“ und „!“ (Gate 71)
 - **Ein Baustein pro Interaktion** -- Dialoge über `fa-modal`, Bestätigungen über `ui-actions#confirm`, Mehrfachauswahl über `bulk-actions`, Seitenleisten über `fa-drawer`, Diagramme über `chart`; CI-Gate 79 prüft jede Stimulus-Verdrahtung (Controller, Methode, Target, Wert) und meldet nie angehängte Controller
 
 ### Design und Barrierefreiheit
@@ -606,6 +610,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |
+| [KI-Assistent (MCP)](docs/user-guide/KI_ASSISTENT_MCP.md) | Claude Desktop/Code anbinden, Werkzeuge, Prompts, Rechte, Datenschutz, Betreiber-Hinweis |
 | [Modulverwaltung](docs/user-guide/MODULE_AKTIVIERUNG.md) | Module aktivieren und konfigurieren (User-Guide) |
 
 ### Setup und Deployment

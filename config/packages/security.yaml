@@ -112,8 +112,10 @@ security:
         #   (inherits ROLE_AUDITOR), changes nothing operational; approvals that
         #   belong to top management check ROLE_TOP_MGMT explicitly (policy
         #   wizard bulk approval, document sections, workflow steps).
+        #   ROLE_ADMIN deliberately does NOT inherit it (2026-11): the norm asks
+        #   top management to approve, so the role is assigned to those people.
         ROLE_TOP_MGMT:              ROLE_AUDITOR
-        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_BCM_OFFICER, ROLE_TOP_MGMT]
+        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_BCM_OFFICER]
         ROLE_SUPER_ADMIN:       [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR]
         # Holding-Rollen für Konzern-Strukturen.
         #
@@ -200,6 +202,11 @@ security:
         # API token (ApiTokenAuthenticator runs before this check). Without the
         # rule /api/docs published the whole schema to anonymous visitors.
         - { path: ^/api, roles: IS_AUTHENTICATED_REMEMBERED }
+
+        # Assistant connection (MCP): bearer API token only — McpController
+        # answers 401 itself (JSON-RPC error + WWW-Authenticate) instead of the
+        # login redirect, and refuses session cookies.
+        - { path: ^/mcp$, roles: PUBLIC_ACCESS }
 
         # Admin routes (with locale prefix) - specific locale pattern for better security
         - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }

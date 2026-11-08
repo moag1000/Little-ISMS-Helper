@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\RecurringDuty;
 
-use App\Entity\ISMSObjective;
 use App\Entity\RecurringDuty;
 use App\Entity\Tenant;
 use App\Repository\RecurringDutyRepository;
 use App\Service\ModuleConfigurationService;
-use App\Util\Cadence;
 use App\Util\LegalPeriod;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -57,23 +55,10 @@ class RecurringDutyService
             && $this->modules->isModuleActiveForTenant($duty['module'], $tenant);
     }
 
-    /** Default interval: the norm's, for objectives the shortest measurement cadence on record. */
+    /** Default interval of a duty: the norm's (ISO objectives are measured per objective, see ObjectiveMeasurementSource). */
     public function defaultInterval(string $key, Tenant $tenant): int
     {
-        $months = RecurringDutyCatalog::get($key)['months'] ?? 12;
-        if ($key !== 'objectives_measurement') {
-            return $months;
-        }
-
-        $cadences = [];
-        foreach ($this->entityManager->getRepository(ISMSObjective::class)->findBy(['tenant' => $tenant]) as $objective) {
-            if (in_array($objective->getStatus(), ['not_started', 'in_progress', 'delayed'], true)) {
-                $cadences[] = Cadence::months($objective->getMeasurementFrequency());
-            }
-        }
-        $cadences = array_filter($cadences);
-
-        return $cadences === [] ? $months : min($cadences);
+        return RecurringDutyCatalog::get($key)['months'] ?? 12;
     }
 
     /**

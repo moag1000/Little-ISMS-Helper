@@ -147,7 +147,6 @@ audit:
         audit_team: 'List of audit team members'
         scoped_framework: 'If audit is limited to a framework (e.g. ISO 27001 only)'
         additional_scoped_frameworks: 'Multi-select — e.g. 27001 + NIS2 + DORA in one audit pass. Findings are mapped transitively to all covered frameworks.'
-        audited_subsidiaries: 'For corporate audits: Which subsidiaries are included?'
         findings: 'Audit findings (positive and negative results)'
         recommendations: 'Recommendations from the audit team'
         conclusion: 'Overall conclusion and audit summary'

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Twig;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Security\Persona\Persona;
 use App\Security\Persona\PersonaResolver;
 use App\Service\GuidedTourService;
@@ -18,6 +19,9 @@ use Twig\Attribute\AsTwigFunction;
  * - persona_landing_route(): route the user lands on after login
  * - persona_tours(): tours for the tour menu, own persona first
  * - suggested_tour(): meta of the persona's tour while it is not completed
+ * - top_management_unassigned(): an admin's organisation has nobody with the
+ *   Leitung role (ROLE_TOP_MGMT) — admins no longer inherit it, so approvals
+ *   reserved for top management would wait for nobody
  */
 final readonly class PersonaExtension
 {
@@ -25,6 +29,7 @@ final readonly class PersonaExtension
         private PersonaResolver $personaResolver,
         private GuidedTourService $guidedTourService,
         private Security $security,
+        private UserRepository $userRepository,
     ) {
     }
 
@@ -62,5 +67,17 @@ final readonly class PersonaExtension
         $tour = $this->guidedTourService->autoDetectTour($user);
 
         return $user->hasCompletedTour($tour) ? null : $this->guidedTourService->metaFor($tour);
+    }
+
+    #[AsTwigFunction('top_management_unassigned')]
+    public function topManagementUnassigned(): bool
+    {
+        $user = $this->security->getUser();
+        if (!$user instanceof User || !$this->security->isGranted('ROLE_ADMIN')) {
+            return false;
+        }
+        $tenant = $user->getTenant();
+
+        return $tenant !== null && $this->userRepository->findByRoleInTenant('ROLE_TOP_MGMT', $tenant) === [];
     }
 }

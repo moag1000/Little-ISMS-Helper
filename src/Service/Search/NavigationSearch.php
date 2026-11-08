@@ -161,6 +161,25 @@ class NavigationSearch
                 'roles' => ['ROLE_USER'],
                 'requiresModule' => 'controls',
             ],
+            // ── ISMS foundation (ISO 27001 4.1–4.3, 6.2) ──────────────────────
+            [
+                'route' => 'app_context_index',
+                'label' => 'search_nav.app_context_index.label',
+                'description' => 'search_nav.app_context_index.description',
+                'aliases' => ['Kontext', 'Context', 'Organisation', 'Anwendungsbereich', 'Scope', 'Geltungsbereich', 'ISO 27001 4', 'Interne Themen', 'Externe Themen'],
+                'icon' => 'fa-icon--nav-process',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => 'core',
+            ],
+            [
+                'route' => 'app_objective_index',
+                'label' => 'search_nav.app_objective_index.label',
+                'description' => 'search_nav.app_objective_index.description',
+                'aliases' => ['Ziele', 'Objectives', 'Sicherheitsziele', 'Informationssicherheitsziele', 'ISO 27001 6.2', 'Messung', 'KPI'],
+                'icon' => 'fa-icon--nav-bullseye',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => 'objectives',
+            ],
             // ── Norm registers (Paket 9) ──────────────────────────────────────
             [
                 'route' => 'app_register_index',
@@ -467,10 +486,19 @@ class NavigationSearch
                 'requiresModule' => null,
             ],
             [
+                'route' => 'app_api_tokens',
+                'label' => 'search_nav.app_api_tokens.label',
+                'description' => 'search_nav.app_api_tokens.description',
+                'aliases' => ['API-Token', 'API token', 'MCP', 'Claude', 'KI-Assistent', 'AI assistant', 'Claude Desktop', 'Claude Code', 'REST API'],
+                'icon' => 'fa-icon--nav-key',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
+            ],
+            [
                 'route' => 'admin_settings_ai',
                 'label' => 'search_nav.admin_settings_ai.label',
                 'description' => 'search_nav.admin_settings_ai.description',
-                'aliases' => ['KI', 'AI', 'Mistral', 'Ollama', 'LLM', 'Sprachmodell', 'Language model', 'API-Schlüssel'],
+                'aliases' => ['KI', 'AI', 'Mistral', 'Ollama', 'LLM', 'Sprachmodell', 'Language model', 'API-Schlüssel', 'MCP', 'Assistent freischalten'],
                 'icon' => 'fa-icon--nav-magic',
                 'roles' => ['ROLE_ADMIN'],
                 'requiresModule' => null,

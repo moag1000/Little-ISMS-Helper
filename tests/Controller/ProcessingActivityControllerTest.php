@@ -254,23 +254,6 @@ class ProcessingActivityControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
-    // ========== COMPLIANCE REPORT TESTS ==========
-
-    #[Test]
-    public function testComplianceReportRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/processing-activity/' . $this->testActivity->getId() . '/compliance-report');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testComplianceReportDisplays(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/processing-activity/' . $this->testActivity->getId() . '/compliance-report');
-        $this->assertResponseIsSuccessful();
-    }
-
     // ========== EMPTY STATE TESTS ==========
 
     #[Test]

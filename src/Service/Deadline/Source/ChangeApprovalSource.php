@@ -16,6 +16,11 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Change requests waiting for approval (ISO 27001 A.8.32): a decision for the
  * named approver (else the security officers), due by the planned implementation date.
+ *
+ * One change request belongs to one source at a time: this one while it waits
+ * for approval, {@see \App\Service\Planning\Source\Adapter\ChangeRequestAdapter}
+ * (implementation by the planned date) afterwards. Both answer supports()
+ * by status, so "who is responsible for this change" has one answer.
  */
 final class ChangeApprovalSource extends EntityDeadlineSource
 {
@@ -41,6 +46,19 @@ final class ChangeApprovalSource extends EntityDeadlineSource
         return 'Change-Freigabe';
     }
 
+    /** Statuses in which a change waits for its approval. */
+    public const array PENDING = ['submitted', 'under_review'];
+
+    public function requiredModule(): string
+    {
+        return 'change_requests';
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof ChangeRequest && in_array($item->getStatus(), self::PENDING, true);
+    }
+
     public function findOpen(Tenant $tenant): iterable
     {
         return $this->changeRequests->findPendingApprovalByTenant($tenant);
@@ -64,7 +82,7 @@ final class ChangeApprovalSource extends EntityDeadlineSource
     {
         assert($item instanceof ChangeRequest);
 
-        return !in_array($item->getStatus(), ['submitted', 'under_review'], true);
+        return !in_array($item->getStatus(), self::PENDING, true);
     }
 
     public function responsibleOf(object $item): Responsibility
