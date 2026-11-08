@@ -6,6 +6,7 @@ namespace App\Mcp\Tool;
 
 use App\Mcp\ApiResourceGateway;
 use App\Mcp\McpSession;
+use App\Mcp\McpWriteAccess;
 use App\Security\Persona\Persona;
 use App\Security\Persona\PersonaResolver;
 use App\Service\ModuleConfigurationService;
@@ -22,6 +23,7 @@ final class GetContextTool extends AbstractMcpTool
         private readonly ModuleConfigurationService $modules,
         private readonly ApiResourceGateway $gateway,
         private readonly SuggestionQueue $suggestions,
+        private readonly McpWriteAccess $writeAccess,
     ) {
     }
 
@@ -33,8 +35,9 @@ final class GetContextTool extends AbstractMcpTool
     public function description(): string
     {
         return 'Who you act for: user, organisation, personas (ISB, risk manager, top management, …), active modules, '
-            . 'the record resources list_records/get_record can read (with filter names) and the number of suggestions '
-            . 'waiting for this person. Call this first.';
+            . 'the record resources list_records/get_record can read (with filter names, and whether save_record may create '
+            . 'or update them), whether you may write directly, and the number of suggestions waiting for this person. '
+            . 'Call this first.';
     }
 
     public function inputSchema(McpSession $session): array
@@ -45,6 +48,7 @@ final class GetContextTool extends AbstractMcpTool
     public function call(array $arguments, McpSession $session): array
     {
         $user = $session->user;
+        $direct = $this->writeAccess->allows($session);
 
         return [
             'user' => ['name' => $user->getFullName(), 'email' => $user->getEmail()],
@@ -54,7 +58,15 @@ final class GetContextTool extends AbstractMcpTool
             'resources' => $this->gateway->resources($session),
             'pending_suggestions' => count($this->suggestions->pendingFor($session->tenant)),
             'app_url' => $session->url('/'),
-            'writing' => 'Records are changed only in the app. propose_draft adds a draft to the suggestion queue; a person accepts or rejects it there.',
+            'writing' => [
+                'direct' => $direct,
+                'note' => $direct
+                    ? 'save_record creates and changes records with your rights (resources with create/update = true). Status '
+                        . 'changes, approvals, risk acceptance and management decisions are not written directly: propose_draft '
+                        . 'adds a draft to the suggestion queue, a person accepts or rejects it there.'
+                    : (string) $this->writeAccess->reasonDenied($session) . ' propose_draft still adds drafts to the suggestion '
+                        . 'queue; a person accepts or rejects them there.',
+            ],
         ];
     }
 }

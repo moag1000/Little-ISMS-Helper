@@ -1,6 +1,6 @@
 api_token:
     title: 'API-Tokens'
-    intro: 'API-Zugriff per Bearer-Token für eigene Skripte und KI-Assistenten (MCP): lesen mit deinen Rechten, Entwürfe nur als Vorschlag. Der Klartext wird nur einmal bei Erstellung angezeigt.'
+    intro: 'API-Zugriff per Bearer-Token für eigene Skripte und KI-Assistenten (MCP), immer mit deinen Rechten. Die REST-API bleibt lesend; schreiben darf nur der Assistent mit einem Token, das schreiben darf. Der Klartext wird nur einmal bei Erstellung angezeigt.'
     created_once: 'Token erstellt — jetzt kopieren, es wird nicht erneut angezeigt:'
     empty: 'Keine API-Tokens vorhanden.'
     field:
@@ -10,9 +10,15 @@ api_token:
         last_used: 'Zuletzt benutzt'
         expires: Ablauf
         status: Status
+        access: Zugriff
+        can_write: 'Assistent darf schreiben'
+        can_write_help: 'Der KI-Assistent darf damit Datensätze anlegen und ändern, mit deinen Rechten. Freigaben und Statuswechsel bleiben Vorschläge, die eine Person bestätigt.'
     status:
         active: Aktiv
         revoked: Widerrufen
+    access:
+        read: Lesen
+        write: 'Lesen + Schreiben (Assistent)'
     action:
         create: Erstellen
         revoke: Widerrufen

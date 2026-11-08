@@ -3,10 +3,13 @@ mcp:
         Du arbeitest mit dem ISMS der Organisation „%organisation%“ (Little ISMS Helper). Rufe zuerst get_context auf:
         dort stehen deine Rollen (Personas), die aktiven Module und die Datensatz-Ressourcen. Lesen: my_day (offene Fristen
         und Entscheidungen), compliance_fulfillment (Erfüllung je Norm mit „Warum dieser Wert?“), management_kpis,
-        duty_calendar, search, list_records/get_record (alle REST-Ressourcen), pending_suggestions. Schreiben gibt es nur als
-        Vorschlag: draft_options zeigt, welche Entwürfe zu einem Datensatz möglich sind, propose_draft legt sie in die
-        Vorschlags-Queue; eine verantwortliche Person übernimmt oder lehnt dort ab. Verweise auf Datensätze mit ihren Links,
-        nenne Normstellen und erfinde keine Werte: was die Werkzeuge nicht liefern, ist nicht erfasst.
+        duty_calendar, search, list_records/get_record (alle REST-Ressourcen), pending_suggestions. Schreiben: save_record
+        legt Datensätze an oder ändert sie (nur wenn get_context writing.direct = true meldet), mit den Rechten der Person
+        und den Prüfungen des Formulars. Status, Freigaben, Risikoakzeptanz und Leitungsentscheidungen setzt du nie direkt:
+        draft_options zeigt, welche Entwürfe zu einem Datensatz möglich sind, propose_draft legt sie in die Vorschlags-Queue,
+        eine verantwortliche Person übernimmt oder lehnt dort ab. Vor dem Schreiben sagst du der Person, was du anlegst oder
+        änderst. Verweise auf Datensätze mit ihren Links, nenne Normstellen und erfinde keine Werte: was die Werkzeuge
+        nicht liefern, ist nicht erfasst.
     prompt:
         my_day_briefing:
             title: 'Mein Tag'
@@ -45,12 +48,14 @@ mcp:
         title: 'KI-Assistent anbinden (MCP)'
         intro: >-
             Personen der Organisation können ihren eigenen KI-Assistenten (Claude Desktop, Claude Code oder einen anderen
-            MCP-Client) mit einem API-Token anbinden. Der Assistent liest mit den Rechten der Person und legt Entwürfe nur
-            in die Vorschlags-Queue; übernommen wird erst nach Freigabe in der App.
+            MCP-Client) mit einem API-Token anbinden. Der Assistent liest und schreibt mit den Rechten der Person; Status,
+            Freigaben und Leitungsentscheidungen legt er nur als Vorschlag in die Vorschlags-Queue.
         enabled: 'Assistenten-Zugang für diese Organisation erlauben'
         privacy: >-
             Gelesene Daten gehen an den Assistenten der Person und dessen Anbieter. Jeder Zugriff steht im Audit-Log
             (Werkzeug, Datensatzart, ID), Tokens sind jederzeit widerrufbar. Ausgeschaltet antwortet /mcp jedem Token mit 403.
+        write: 'Assistent darf Datensätze anlegen und ändern'
+        write_help: 'Zusätzlich muss die Person beim Token „Assistent darf schreiben“ wählen. Prüfer-Rollen bleiben lesend, Löschen gibt es über den Assistenten nicht.'
         to_tokens: 'Zu den API-Tokens'
     tokens:
         title: 'KI-Assistent verbinden (MCP)'
@@ -58,7 +63,8 @@ mcp:
         status_off: 'Nicht freigeschaltet'
         intro: >-
             Mit einem Token dieser Seite liest dein KI-Assistent Fristen, Erfüllung, Risiken, Controls und weitere Datensätze
-            mit deinen Rechten und schlägt Entwürfe vor, die du in der App freigibst.
+            mit deinen Rechten. Mit einem Token, das schreiben darf, legt er auch Datensätze an und ändert sie; Freigaben und
+            Statuswechsel schlägt er nur vor.
         off_hint: 'Die Organisation hat den Assistenten-Zugang noch nicht freigeschaltet.'
         off_admin_link: 'Jetzt freischalten'
         endpoint: 'Adresse des MCP-Servers'

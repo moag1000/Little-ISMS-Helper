@@ -18,6 +18,11 @@ abstract class AbstractMcpTool implements McpTool
         return true;
     }
 
+    public function auditAction(): string
+    {
+        return $this->isReadOnly() ? 'mcp.read' : 'mcp.propose';
+    }
+
     public function isAvailable(McpSession $session): bool
     {
         return true;

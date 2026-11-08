@@ -10,7 +10,8 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Mint + revoke read-only API tokens. Only the SHA-256 hash is stored; the
+ * Mint + revoke API tokens (read-only for the REST API; optionally allowed to
+ * write through the assistant connection, MCP). Only the SHA-256 hash is stored; the
  * plaintext is returned once at mint time and never persisted. Shared by the
  * CLI command and the self-service UI.
  */
@@ -25,7 +26,7 @@ final class ApiTokenManager
     /**
      * Create a token for $user; returns the PLAINTEXT (shown once).
      */
-    public function mint(User $user, string $label, ?int $expiresDays = null): string
+    public function mint(User $user, string $label, ?int $expiresDays = null, bool $canWrite = false): string
     {
         $plain = bin2hex(random_bytes(32));
 
@@ -34,6 +35,7 @@ final class ApiTokenManager
         $token->setTenant($user->getTenant());
         $token->setTokenHash(hash('sha256', $plain));
         $token->setLabel($label !== '' ? $label : 'API token');
+        $token->setCanWrite($canWrite);
         if ($expiresDays !== null && $expiresDays > 0) {
             $token->setExpiresAt((new DateTimeImmutable())->modify(sprintf('+%d days', $expiresDays)));
         }
@@ -45,7 +47,12 @@ final class ApiTokenManager
             action: 'api_token.created',
             entityType: 'ApiToken',
             entityId: $token->getId(),
-            description: sprintf('Read-only API token "%s" created for %s', $token->getLabel(), $user->getUserIdentifier()),
+            description: sprintf(
+                '%s API token "%s" created for %s',
+                $canWrite ? 'Assistant-write' : 'Read-only',
+                $token->getLabel(),
+                $user->getUserIdentifier(),
+            ),
         );
 
         return $plain;

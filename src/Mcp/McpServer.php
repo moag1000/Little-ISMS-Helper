@@ -179,7 +179,7 @@ class McpServer
     private function audit(McpTool $tool, McpSession $session, array $details): void
     {
         $this->auditLogger->logCustom(
-            action: $tool->isReadOnly() ? 'mcp.read' : 'mcp.propose',
+            action: $tool->auditAction(),
             entityType: 'ApiToken',
             entityId: $session->token->getId(),
             newValues: ['tool' => $tool->name()] + array_filter($details, static fn ($v): bool => is_scalar($v) || $v === null),

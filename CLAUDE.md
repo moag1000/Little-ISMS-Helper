@@ -596,8 +596,11 @@ bearer API token only, opt-in per organisation (`McpSettings`, admin page AI set
 Few generic tools (`src/Mcp/Tool/`, tag `app.mcp_tool`) over the existing services: REST resources via
 `ApiResourceGateway` (API Platform operations as sub-requests — a new API resource needs no new tool), `my_day`
 (ObligationInbox), `compliance_fulfillment` (derivation basis = "why"), KPIs, duty calendar, search, suggestions.
-The only writing tool is `propose_draft` (suggestion queue). Every call is audit-logged (`mcp.read`/`mcp.propose`, no
-arguments). Guide: `docs/user-guide/KI_ASSISTENT_MCP.md`.
+Writing: `save_record` runs a resource's Post / Patch / Put (`standard_put: false`) as sub-request — tenant-owned classes
+only, write-group fields only, never `status`/`tenant`/`id`, never Delete; allowed only when `McpWriteAccess` says so
+(org switch `McpSettings::isWriteEnabled()`, `ApiToken::canWrite()`, not a read-only reviewer). Anything needing a
+decision goes through `propose_draft` (suggestion queue). Every call is audit-logged (`mcp.read`/`mcp.propose`/
+`mcp.write`, no contents). Guide: `docs/user-guide/KI_ASSISTENT_MCP.md`.
 
 ## Module-Awareness
 
