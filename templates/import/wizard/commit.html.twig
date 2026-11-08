@@ -62,11 +62,12 @@
 
         {# ── Context alert ─────────────────────────────────────────────────── #}
         {% if batch.status == 'failed' %}
+            {% set _body_html %}{{ 'import.commit.failed_body'|trans({}, 'data_import') }}{% if batch.notes %} <code>{{ batch.notes|e }}</code>{% endif %}{% endset %}
             {{ _fa_alert.render({
                 variant: 'danger',
                 icon:    'status-critical',
                 title:   'import.commit.failed_heading'|trans({}, 'data_import'),
-                body:    'import.commit.failed_body'|trans({}, 'data_import') ~ (batch.notes ? ' <code>' ~ batch.notes|e ~ '</code>' : '')
+                body:    _body_html
             }) }}
         {% elseif isCompleted %}
             {{ _fa_alert.render({
@@ -147,7 +148,7 @@
        also do a client-side JS redirect after polling detects completion.       #}
     document.addEventListener('turbo:load', function () {
         var statusEl = document.querySelector('[data-import-progress-status-value]');
-        var diffUrl  = {{ path('app_bulk_import_diff', { _locale: app.request.locale, entityType: entityType, batchId: batch.id })|json_encode|raw }};
+        var diffUrl  = {{ path('app_bulk_import_diff', { _locale: app.request.locale, entityType: entityType, batchId: batch.id })|fa_json }};
 
         function checkStatus() {
             var current = statusEl ? statusEl.dataset.importProgressStatusValue : null;

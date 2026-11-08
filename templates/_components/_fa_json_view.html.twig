@@ -23,7 +23,7 @@
             {%- set _scalars = true -%}
             {%- for item in value -%}{%- if item is iterable -%}{%- set _scalars = false -%}{%- endif -%}{%- endfor -%}
             {%- if _scalars -%}
-                {{ value|map(v => _self_view.scalar(v))|join(', ')|raw }}
+                {%- for v in value -%}{{ _self_view.scalar(v) }}{{ not loop.last ? ', ' }}{%- endfor -%}
             {%- else -%}
                 <ul class="fa-json-view__list">
                     {%- for item in value -%}

@@ -54,7 +54,7 @@
             text: 'dsr.empty.message'|trans({}, 'data_subject_request'),
             actions: [{ label: 'dsr.action.new'|trans({}, 'data_subject_request'), href: path('app_data_subject_request_new'), variant: 'primary' }],
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/data-subject-request"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/data-subject-request' },
     } %}
         {% block list_filters %}
             <div class="col-md-4">

@@ -64,7 +64,8 @@
                         {% endblock %}
                     {% endembed %}
 
-                    {{ _fa_alert.render({ variant: 'info', body: '<strong><i class="fa-icon fa-icon--user" aria-hidden="true"></i> ' ~ 'user.field.email'|trans({}, 'user') ~ ':</strong> ' ~ user.email ~ '<br><strong><i class="fa-icon fa-icon--asset-endpoint" aria-hidden="true"></i> ' ~ 'mfa.field.device_name'|trans({}, 'mfa') ~ ':</strong> ' ~ mfa_token.deviceName }) }}
+                    {% set _body_html %}<strong><i class="fa-icon fa-icon--user" aria-hidden="true"></i> {{ 'user.field.email'|trans({}, 'user') }}:</strong> {{ user.email }}<br><strong><i class="fa-icon fa-icon--asset-endpoint" aria-hidden="true"></i> {{ 'mfa.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}{% endset %}
+                    {{ _fa_alert.render({ variant: 'info', body: _body_html }) }}
                 {% endblock %}
             {% endembed %}
 

@@ -189,13 +189,14 @@
         {% endif %}
     {% endfor %}
 
+    {% set _extrasBeforeActions_html1 %}<a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ ('common.cancel'|trans({}, 'messages')) }}</a>{% endset %}
     {{ _fa_form.render({
         eyebrow: control.controlId,
         title: 'soa.action.edit'|trans({}, 'soa'),
         subtitle: control.name,
         progress: { done: done_count, total: fa_sections|length },
         sections: fa_sections,
-        extrasBeforeActions: ('<a href="' ~ path('app_soa_show', {id: control.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">' ~ ('common.cancel'|trans({}, 'messages')) ~ '</a>'),
+        extrasBeforeActions: _extrasBeforeActions_html1,
         actions: {
             submit: { label: 'common.save_changes'|trans({}, 'messages'), variant: 'primary' }
         }

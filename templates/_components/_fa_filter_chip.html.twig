@@ -48,14 +48,14 @@
     {% set chipAttrs %}{% for k, v in props.attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}{% endset %}
 
     {% if props.href is defined and props.href %}
-        <a href="{{ props.href }}" class="{{ chipClass }}"{{ chipAttrs|raw }}>
+        <a href="{{ props.href }}" class="{{ chipClass }}"{{ chipAttrs }}>
             {% if props.icon is defined and props.icon %}
                 <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
             {% endif %}
             {{ label }}
         </a>
     {% else %}
-        <button type="{{ props.type|default('button') }}" class="{{ chipClass }}"{{ chipAttrs|raw }}>
+        <button type="{{ props.type|default('button') }}" class="{{ chipClass }}"{{ chipAttrs }}>
             {% if props.icon is defined and props.icon %}
                 <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
             {% endif %}
@@ -88,12 +88,12 @@
 
             {% if item.href is defined and item.href %}
                 <a href="{{ item.href }}" class="{{ chipClass }}"
-                   {% if isActive %}aria-current="true"{% endif %}{{ itemAttrs|raw }}>
+                   {% if isActive %}aria-current="true"{% endif %}{{ itemAttrs }}>
                     {{ item.label }}
                 </a>
             {% else %}
                 <button type="button" class="{{ chipClass }}"
-                        {% if isActive %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}{{ itemAttrs|raw }}>
+                        {% if isActive %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}{{ itemAttrs }}>
                     {{ item.label }}
                 </button>
             {% endif %}

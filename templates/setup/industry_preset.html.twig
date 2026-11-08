@@ -24,10 +24,10 @@
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             {{ faAlert.render(
-                message|fa_flash|e,
+                message|fa_flash,
                 label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')),
                 { dismissible: true }
-            )|raw }}
+            ) }}
         {% endfor %}
     {% endfor %}
 
@@ -37,13 +37,13 @@
         step.kind,
         'setup.preset.header'|trans({}, 'setup'),
         'setup.preset.intro'|trans({}, 'setup')
-    )|raw }}
+    ) }}
 
     {{ faAlert.render(
         'setup.preset.info.message'|trans({}, 'setup'),
         'info',
         { title: 'setup.preset.info.title'|trans({}, 'setup'), icon: 'ui-lightbulb', withAlva: true }
-    )|raw }}
+    ) }}
 
     <form method="post" action="{{ path('setup_industry_preset_apply') }}" class="fa-setup-preset-form mt-3"
           data-controller="wizard-busy"
@@ -123,6 +123,6 @@
         {{ nav.render({
             back: { url: path('setup_step6_organisation_info'), label: 'setup.common.back'|trans({}, 'setup') },
             next: { submit: true, label: 'setup.preset.actions.apply'|trans({}, 'setup'), icon: 'rocket-takeoff' }
-        })|raw }}
+        }) }}
     </form>
 {% endblock %}

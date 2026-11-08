@@ -81,13 +81,15 @@
                         {% if mapping.gapWarning %}
                             <dt class="col-sm-4">{{ 'admin.mapping_quality.field.gap_warning'|trans({}, 'admin') }}</dt>
                             <dd class="col-sm-8">
-                                {{ _fa_alert.render({ variant: 'warning', class: 'mb-0 small', body: mapping.gapWarning|nl2br }) }}
+                                {% set _gap_html %}{{ mapping.gapWarning|nl2br }}{% endset %}
+                                {{ _fa_alert.render({ variant: 'warning', class: 'mb-0 small', body: _gap_html }) }}
                             </dd>
                         {% endif %}
 
                         {% if mapping.auditEvidenceHint %}
                             <dt class="col-sm-4">{{ 'admin.mapping_quality.field.audit_evidence'|trans({}, 'admin') }}</dt>
-                            <dd class="col-sm-8">{{ _fa_alert.render({ variant: 'info', class: 'mb-0 small', body: mapping.auditEvidenceHint|nl2br }) }}</dd>
+                            {% set _evidence_html %}{{ mapping.auditEvidenceHint|nl2br }}{% endset %}
+                            <dd class="col-sm-8">{{ _fa_alert.render({ variant: 'info', class: 'mb-0 small', body: _evidence_html }) }}</dd>
                         {% endif %}
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.version'|trans({}, 'admin') }}</dt>

@@ -69,7 +69,7 @@
                 { label: 'bc_exercises.message.schedule_first'|trans({}, 'bc_exercises'), variant: 'primary', icon: 'plus', href: path('app_bc_exercise_new') }
             ]
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/bc-exercise"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/bc-exercise' },
     } %}
         {% block list_summary %}
             {% if completed_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'bc_exercises.summary.completed'|trans({'%count%': completed_count}, 'bc_exercises') }}</span>{% endif %}

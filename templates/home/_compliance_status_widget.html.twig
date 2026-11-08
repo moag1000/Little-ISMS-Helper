@@ -33,7 +33,8 @@
         {# Critical Gaps Alert #}
         {% if compliance_summary.critical_gaps_total > 0 %}
         {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-        {{ _fa_alert.render({ variant: 'danger', class: 'mb-3', body: '<span class="small">' ~ 'wizard.critical_gaps_count'|trans({'%count%': compliance_summary.critical_gaps_total}, 'wizard') ~ '</span>' }) }}
+        {% set _body_html %}<span class="small">{{ 'wizard.critical_gaps_count'|trans({'%count%': compliance_summary.critical_gaps_total}, 'wizard') }}</span>{% endset %}
+        {{ _fa_alert.render({ variant: 'danger', class: 'mb-3', body: _body_html }) }}
         {% endif %}
 
         {# Framework Status List #}

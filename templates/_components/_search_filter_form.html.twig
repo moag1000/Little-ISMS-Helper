@@ -110,7 +110,7 @@
             {% endif %}
 
             {# Advanced filters - collapsible to keep the UI calm when there are many #}
-            {% set _filters_markup = filters_html|default('') is not empty ? filters_html : block('filters') %}
+            {% set _filters_markup %}{% if filters_html|default('') is not empty %}{{ filters_html }}{% else %}{{ block('filters') }}{% endif %}{% endset %}
             {% if _filters_markup|trim is not empty %}
                 <details class="search-filter-advanced mt-3"
                          {% if advanced_open or active_count > 0 %}open{% endif %}>
@@ -123,7 +123,7 @@
                         {% endif %}
                     </summary>
                     <div class="row g-3 mt-2" id="{{ form_id }}-advanced">
-                        {% if filters_html|default('') is not empty %}{{ filters_html|raw }}{% else %}{% block filters %}{% endblock %}{% endif %}
+                        {% if filters_html|default('') is not empty %}{{ filters_html }}{% else %}{% block filters %}{% endblock %}{% endif %}
                     </div>
                 </details>
             {% endif %}

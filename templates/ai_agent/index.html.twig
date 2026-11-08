@@ -26,7 +26,7 @@
 
     {# High-Risk Warning #}
     {% if high_risk_incomplete|length > 0 %}
-        {{ _fa_alert.render({ variant: 'danger', class: 'mb-4', body: 'mris.ai_agent.index.high_risk_incomplete'|trans({'%count%': high_risk_incomplete|length}, 'mris') }) }}
+        {{ _fa_alert.render({ variant: 'danger', class: 'mb-4', body: 'mris.ai_agent.index.high_risk_incomplete'|trans({'%count%': high_risk_incomplete|length}, 'mris')|fa_html }) }}
     {% endif %}
 
     {% embed '_components/_fa_list_page.html.twig' with {
@@ -93,6 +93,6 @@
         {% endblock %}
     {% endembed %}
 
-    {{ _fa_alert.render({ variant: 'info', class: 'mt-4 small', body: 'mris.ai_agent.index.required_fields'|trans({}, 'mris') }) }}
+    {{ _fa_alert.render({ variant: 'info', class: 'mt-4 small', body: 'mris.ai_agent.index.required_fields'|trans({}, 'mris')|fa_html }) }}
 </div>
 {% endblock %}

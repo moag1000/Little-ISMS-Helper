@@ -26,7 +26,7 @@
         </button>
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', class: 'small d-print-none', body: 'help.tour.index.hint'|trans({}, 'help')|raw }) }}
+    {{ _fa_alert.render({ variant: 'info', class: 'small d-print-none', body: 'help.tour.index.hint'|trans({}, 'help')|fa_html }) }}
 
     <div class="row g-3">
         {% for tour in tours %}

@@ -114,7 +114,8 @@
                         </div>
 
                         {% if _applicability == 'conditional' and framework.applicability_condition_key %}
-                            {{ _fa_alert.render({ variant: 'warning', class: 'small py-2 px-3 mb-2', body: '<strong>' ~ 'admin.compliance.applicability.applies_when'|trans({}, 'compliance') ~ ':</strong> ' ~ framework.applicability_condition_key|trans({}, 'compliance') }) }}
+                            {% set _body_html %}<strong>{{ 'admin.compliance.applicability.applies_when'|trans({}, 'compliance') }}:</strong> {{ framework.applicability_condition_key|trans({}, 'compliance') }}{% endset %}
+                            {{ _fa_alert.render({ variant: 'warning', class: 'small py-2 px-3 mb-2', body: _body_html }) }}
                         {% endif %}
 
                         <p class="framework-description">{{ framework.description }}</p>

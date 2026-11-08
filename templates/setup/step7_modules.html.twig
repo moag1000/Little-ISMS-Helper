@@ -31,14 +31,14 @@
     'collection': 'nav-collection'
 } %}
 
-    {{ step_header.render(8, 12, step.kind, 'setup.step7.header'|trans({}, 'setup'), 'setup.step7.intro'|trans({}, 'setup'))|raw }}
+    {{ step_header.render(8, 12, step.kind, 'setup.step7.header'|trans({}, 'setup'), 'setup.step7.intro'|trans({}, 'setup')) }}
 
     {% if recommended_modules is defined and recommended_modules|length > 0 %}
         {{ faAlert.render(
-            'setup.step7.recommendations.description'|trans({}, 'setup'),
+            'setup.step7.recommendations.description'|trans({}, 'setup')|fa_html,
             'info',
             { title: 'setup.step7.recommendations.title'|trans({}, 'setup'), icon: 'ui-lightbulb' }
-        )|raw }}
+        ) }}
     {% endif %}
 
     <form method="post" action="{{ path('setup_step7_modules_save') }}" class="fa-setup-modules-form"
@@ -115,7 +115,7 @@
                                 <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
                                 <span style="color: var(--warning-text);">{{ 'setup.step7.dependencies'|trans({}, 'setup') }}</span>
                                 {% for dep in module.dependencies %}
-                                    {{ pill.render(module_name(dep, all_modules[dep].name), 'warning', { size: 'sm', noDot: true })|raw }}
+                                    {{ pill.render(module_name(dep, all_modules[dep].name), 'warning', { size: 'sm', noDot: true }) }}
                                 {% endfor %}
                             </div>
                         {% endif %}

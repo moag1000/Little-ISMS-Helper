@@ -781,6 +781,13 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       materials) stored and read only via `App\Service\Upload\ProtectedUploads` (`var/uploads`, never `public/`),
       served by a voter-checked download action (`EvidenceOutsideWebRootTest`). Setup wizard after completion and
       instance-wide catalogue deletes: `ROLE_SUPER_ADMIN` only (`SetupAccessChecker::ACCESS`, `ADMIN_GLOBAL_OP`).
+- [ ] Record text is never output as HTML (Gate 91, `check_raw_output.py`): components escape their text slots;
+      pass HTML only as Markup — a `{% set x %}…{% endset %}` capture, macro output, or a reviewed translation
+      `'key'|trans|fa_html` (trans parameters `|e`). JSON into pages/scripts via `|fa_json`, never
+      `json_encode|raw`. Any other `|raw` needs a reason in `scripts/quality/baselines/raw_output_allowlist.txt`;
+      `new Markup()` in PHP needs `// @markup-safe: <reason>`. Word documents only from
+      `Export\DocxDocumentFactory::create()` (output escaping on). JS builds HTML with `escapeHtml()`/`safeUrl()`
+      from `assets/js/fa-escape.js`, never innerHTML with server text.
 - [ ] Spreadsheet/CSV cells with record text go through `CsvSanitizer::sanitize()`
       (formula injection); flash messages are plain text, escaped where rendered.
       Flashes render once, in `base.html.twig`, through `|fa_flash`: a bare key

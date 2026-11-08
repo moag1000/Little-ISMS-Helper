@@ -181,7 +181,8 @@
         {% block card_body %}
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% if gap_summary %}
-                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'mapping_review.gap.total_impact'|trans({}, 'compliance') ~ ':</strong> ' ~ gap_summary.total_impact ~ '% | <strong>' ~ 'mapping_review.gap.total_effort'|trans({}, 'compliance') ~ ':</strong> ' ~ gap_summary.total_effort ~ 'h | <strong>' ~ 'mapping_review.gap.high_confidence'|trans({}, 'compliance') ~ ':</strong> ' ~ gap_summary.high_confidence_gaps ~ '/' ~ gap_summary.total_gaps }) }}
+                {% set _body_html %}<strong>{{ 'mapping_review.gap.total_impact'|trans({}, 'compliance') }}:</strong> {{ gap_summary.total_impact }}% | <strong>{{ 'mapping_review.gap.total_effort'|trans({}, 'compliance') }}:</strong> {{ gap_summary.total_effort }}h | <strong>{{ 'mapping_review.gap.high_confidence'|trans({}, 'compliance') }}:</strong> {{ gap_summary.high_confidence_gaps }}/{{ gap_summary.total_gaps }}{% endset %}
+                {{ _fa_alert.render({ variant: 'warning', body: _body_html }) }}
             {% endif %}
 
             {% for gap in gap_items %}

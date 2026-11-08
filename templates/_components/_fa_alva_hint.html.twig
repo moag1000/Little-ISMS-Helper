@@ -33,7 +33,7 @@
         <i class="fa-icon fa-icon--ui-stars fa-alert__icon" aria-hidden="true"></i>
         <div class="fa-alert__body">
             <div class="fa-alert__title">{{ title }}</div>
-            <p class="fa-alert__message mb-2">{{ body|raw }}</p>
+            <p class="fa-alert__message mb-2">{{ body }}</p>
             <div class="d-flex flex-wrap gap-2 align-items-center">
                 {% if hint.actionRoute is not null and hint.actionLabelTranslationKey is not null %}
                     {% if hint.actionMethod == 'GET' %}

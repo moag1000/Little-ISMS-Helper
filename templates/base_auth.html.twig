@@ -62,18 +62,18 @@
 
 <div class="fa-auth-shell">
     <aside class="fa-auth-left" aria-label="{{ 'auth.companion'|trans({}, 'messages')|default('Alva — Begleiterin') }}">
-        {{ techBg.render(0.75)|raw }}
+        {{ techBg.render(0.75) }}
         <span class="fa-setup-left__tick fa-setup-left__tick--tl" aria-hidden="true"></span>
         <span class="fa-setup-left__tick fa-setup-left__tick--tr" aria-hidden="true"></span>
         <span class="fa-setup-left__tick fa-setup-left__tick--bl" aria-hidden="true"></span>
         <span class="fa-setup-left__tick fa-setup-left__tick--br" aria-hidden="true"></span>
 
         <div class="fa-auth-left__brand">
-            {{ faBrand.render(size='lg', link=path('app_home'))|raw }}
+            {{ faBrand.render(size='lg', link=path('app_home')) }}
         </div>
 
         <div class="fa-auth-left__middle">
-            {{ onFairy.render((block('auth_mood') ?: 'focused')|trim)|raw }}
+            {{ onFairy.render((block('auth_mood') ?: 'focused')|trim) }}
             <div>
                 <div class="fa-setup-left__alva-label">Alva · {{ 'auth.companion_short'|trans({}, 'messages')|default('Begleiterin') }}</div>
                 <div class="fa-auth-left__line">

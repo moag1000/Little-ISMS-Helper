@@ -111,7 +111,7 @@
                 { label: 'supplier.empty.add_first'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') }
             ]
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/supplier"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/supplier' },
     } %}
         {% block list_filters %}
         {% include '_components/_isms_scope_filter.html.twig' %}

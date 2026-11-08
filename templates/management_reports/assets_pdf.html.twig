@@ -101,7 +101,8 @@
     {% set _is_known = _code in ['public','internal','confidential','restricted'] %}
     {% set _label = _is_known ? ('asset.classification.' ~ _code)|trans({}, 'asset') : classification %}
     {% set _badge = (_code in ['confidential','restricted']) ? 'badge-danger' : (_code == 'internal' ? 'badge-warning' : 'badge-success') %}
-    {% set _class_rows = _class_rows|merge([[ '<span class="badge ' ~ _badge ~ '">' ~ _label ~ '</span>', count ]]) %}
+    {% set _cell_html1 %}<span class="badge {{ _badge }}">{{ _label }}</span>{% endset %}
+    {% set _class_rows = _class_rows|merge([[ _cell_html1, count ]]) %}
 {% endfor %}
 
 {% set _asset_rows = [] %}
@@ -110,11 +111,12 @@
     {% set _is_known = _code in ['public','internal','confidential','restricted'] %}
     {% set _label = _is_known ? ('asset.classification.' ~ _code)|trans({}, 'asset') : ('management_reports.assets.no_classification'|trans({}, 'management_reports')) %}
     {% set _badge = (_code in ['confidential','restricted']) ? 'badge-danger' : (_code == 'internal' ? 'badge-warning' : (_code == 'public' ? 'badge-success' : 'badge-secondary')) %}
+    {% set _cell_html2 %}<span class="badge {{ _badge }}">{{ _label }}</span>{% endset %}
     {% set _asset_rows = _asset_rows|merge([[
         asset.id,
         asset.name|length > 30 ? asset.name[:30] ~ '…' : asset.name,
         asset.assetType,
-        '<span class="badge ' ~ _badge ~ '">' ~ _label ~ '</span>',
+        _cell_html2,
         (asset.effectiveOwner ?? '—')|slice(0, 20),
         asset.status|default('Active'),
     ]]) %}
@@ -179,7 +181,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: 'management_reports.assets.methodology'|trans({}, 'management_reports'),
+        methodology: 'management_reports.assets.methodology'|trans({}, 'management_reports')|fa_html,
         sources: [
             { label: 'AssetRepository', detail: 'findByTenant() — ordered by type' },
         ],

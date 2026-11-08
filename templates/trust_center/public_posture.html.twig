@@ -22,11 +22,12 @@
 
     {# Freshness note #}
     <div class="mb-4">
+        {% set _body_html %}{{ 'trust_center.snapshot_freshness'|trans({
+                '%date%': snapshot.snapshotAt|fa_datetime
+            }, 'trust_center')|e }}{% endset %}
         {{ _fa_alert.render({
             variant: 'info',
-            body: 'trust_center.snapshot_freshness'|trans({
-                '%date%': snapshot.snapshotAt|fa_datetime
-            }, 'trust_center')|e
+            body: _body_html
         }) }}
     </div>
 
@@ -128,6 +129,6 @@
     {{ _fa_alert.render({
         variant: 'info',
         title: 'trust_center.disclosure.heading'|trans({}, 'trust_center'),
-        body: 'trust_center.disclosure.body'|trans({}, 'trust_center')|e
+        body: 'trust_center.disclosure.body'|trans({}, 'trust_center')
     }) }}
 {% endblock %}

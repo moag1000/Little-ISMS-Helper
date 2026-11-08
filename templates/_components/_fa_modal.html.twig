@@ -95,7 +95,7 @@
                 <div class="fa-modal__heading">
                     <h2 class="fa-modal__title" id="{{ id }}-title">{{ props.title }}</h2>
                     {% if props.sub is defined and props.sub %}
-                        <p class="fa-modal__sub">{{ props.sub|raw }}</p>
+                        <p class="fa-modal__sub">{{ props.sub }}</p>
                     {% endif %}
                 </div>
                 <button type="button"
@@ -108,7 +108,7 @@
 
             <div class="fa-modal__body">
                 {% if props.message is defined and props.message %}
-                    <p class="fa-modal__message">{{ props.message|raw }}</p>
+                    <p class="fa-modal__message">{{ props.message }}</p>
                 {% endif %}
 
                 {% if props.diff is defined and props.diff|length > 0 %}
@@ -137,7 +137,11 @@
                     {% if hasTypeConfirm %}
                         <label class="fa-modal__field">
                             <span class="fa-modal__field-hint">
-                                {{- (props.confirmHint ?? 'ui.component.modal.type_to_confirm'|trans({'%phrase%': props.typeToConfirm|e}, 'ui'))|raw -}}
+                                {%- if props.confirmHint is defined and props.confirmHint is not null -%}
+                                    {{- props.confirmHint -}}
+                                {%- else -%}
+                                    {{- 'ui.component.modal.type_to_confirm'|trans({'%phrase%': props.typeToConfirm|e}, 'ui')|raw -}}
+                                {%- endif -%}
                             </span>
                             <input type="text"
                                    class="fa-modal__field-input"
@@ -212,7 +216,7 @@
                 <div class="fa-modal__heading">
                     <h2 class="fa-modal__title" id="{{ id }}-title">{{ props.title }}</h2>
                     {% if props.subtitle is defined and props.subtitle %}
-                        <p class="fa-modal__sub">{{ props.subtitle|raw }}</p>
+                        <p class="fa-modal__sub">{{ props.subtitle }}</p>
                     {% endif %}
                 </div>
                 <button type="button"
@@ -233,7 +237,7 @@
                     {% endif %}
 
                     <div class="fa-modal__body">
-                        {{ props.body|raw }}
+                        {{ props.body }}
                     </div>
 
                     <footer class="fa-modal__footer">
@@ -252,7 +256,7 @@
                 </form>
             {% else %}
                 <div class="fa-modal__body">
-                    {{ props.body|raw }}
+                    {{ props.body }}
                 </div>
 
                 <footer class="fa-modal__footer">

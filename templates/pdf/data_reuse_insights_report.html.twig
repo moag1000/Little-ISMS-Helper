@@ -97,16 +97,18 @@
     {% set analysis = item.analysis %}
     {% set _reuse_badge = '' %}
     {% if value.reuse_percentage >= 80 %}
-        {% set _reuse_badge = '<span class="badge badge-success">' ~ value.reuse_percentage|round ~ '%</span>' %}
+        {% set _reuse_badge %}<span class="badge badge-success">{{ value.reuse_percentage|round }}%</span>{% endset %}
     {% elseif value.reuse_percentage >= 50 %}
-        {% set _reuse_badge = '<span class="badge badge-warning">' ~ value.reuse_percentage|round ~ '%</span>' %}
+        {% set _reuse_badge %}<span class="badge badge-warning">{{ value.reuse_percentage|round }}%</span>{% endset %}
     {% else %}
         {% set _reuse_badge = value.reuse_percentage|round ~ '%' %}
     {% endif %}
+    {% set _cell_html2 %}<span class="badge badge-info">{{ (req.category ?? '—') }}</span>{% endset %}
+    {% set _cell_html1 %}<strong>{{ req.requirementId }}</strong>{% endset %}
     {% set _top_reuse_rows = _top_reuse_rows|merge([[
-        '<strong>' ~ req.requirementId ~ '</strong>',
+        _cell_html1,
         req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title,
-        '<span class="badge badge-info">' ~ (req.category ?? '—') ~ '</span>',
+        _cell_html2,
         (analysis.reusable_data ?? [])|length,
         _reuse_badge,
         value.estimated_hours_saved|round(1),
@@ -126,34 +128,46 @@
             {% set sources = sources|merge([data.source ?? '—']) %}
         {% endfor %}
     {% endif %}
+    {% set _cell_html5 %}<strong>{{ value.estimated_hours_saved|round(1) }}</strong>{% endset %}
+    {% set _cell_html4 %}<span class="badge badge-success">{{ value.reuse_percentage|round }}%</span>{% endset %}
+    {% set _cell_html3 %}<strong>{{ req.requirementId }}</strong>{% endset %}
     {% set _qw_rows = _qw_rows|merge([[
-        '<strong>' ~ req.requirementId ~ '</strong>',
+        _cell_html3,
         req.title,
         sources|slice(0, 3)|join(', '),
-        '<span class="badge badge-success">' ~ value.reuse_percentage|round ~ '%</span>',
-        '<strong>' ~ value.estimated_hours_saved|round(1) ~ '</strong>',
+        _cell_html4,
+        _cell_html5,
     ]]) %}
 {% endfor %}
 
 {# ── Implementation Plan table rows ───────────────────────────────────── #}
+{% set _cell_html9 %}<span class="badge badge-info">Vision</span>{% endset %}
+{% set _cell_html8 %}<strong>Long-term 30-50%</strong>{% endset %}
+{% set _cell_html7 %}<strong>Month 3-6</strong>{% endset %}
+{% set _cell_html6 %}<span class="badge badge-warning">Planning</span>{% endset %}
+{% set _cell_html5 %}<strong>{{ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong>{% endset %}
+{% set _cell_html4 %}<strong>Week 3-8</strong>{% endset %}
+{% set _cell_html3 %}<span class="badge badge-success">Start Now</span>{% endset %}
+{% set _cell_html2 %}<strong>{{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong>{% endset %}
+{% set _cell_html1 %}<strong>Week 1-2</strong>{% endset %}
 {% set _plan_rows = [
     [
-        '<strong>Week 1-2</strong>',
+        _cell_html1,
         'Implement Quick Wins (' ~ quick_wins|length ~ ' req.), identify existing data/evidence, create cross-references',
-        '<strong>' ~ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h</strong>',
-        '<span class="badge badge-success">Start Now</span>',
+        _cell_html2,
+        _cell_html3,
     ],
     [
-        '<strong>Week 3-8</strong>',
+        _cell_html4,
         'Leverage mid-term potentials (' ~ medium_reuse|length ~ ' req.), adapt/reuse templates, implement common controls',
-        '<strong>' ~ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h</strong>',
-        '<span class="badge badge-warning">Planning</span>',
+        _cell_html5,
+        _cell_html6,
     ],
     [
-        '<strong>Month 3-6</strong>',
+        _cell_html7,
         'Build data repository, establish standardization &amp; versioning, establish automation',
-        '<strong>Long-term 30-50%</strong>',
-        '<span class="badge badge-info">Vision</span>',
+        _cell_html8,
+        _cell_html9,
     ],
 ] %}
 
@@ -171,44 +185,27 @@
 
 {# Quick Wins section #}
 {% if quick_wins|length > 0 %}
+    {% set _body_html_html10 %}<div style="border-left:3pt solid var(--success);padding:8pt 10pt;margin:0 0 8pt;background:var(--success-tint);"><strong>{{ quick_wins|length }} Quick Win Opportunities Identified!</strong><br>These requirements have ≥80% reuse potential with high confidence. Estimated total savings: <strong>{{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }} hours</strong></div>{% endset %}
     {% set _sections = _sections|merge([{
         heading: 'Quick Wins - Immediate Reuse Opportunities',
-        body_html: '<div style="border-left:3pt solid ' ~ 'var(--success)' ~ ';padding:8pt 10pt;margin:0 0 8pt;background:var(--success-tint);">'
-            ~ '<strong>' ~ quick_wins|length ~ ' Quick Win Opportunities Identified!</strong><br>'
-            ~ 'These requirements have ≥80% reuse potential with high confidence. '
-            ~ 'Estimated total savings: <strong>' ~ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ ' hours</strong>'
-            ~ '</div>',
+        body_html: _body_html_html10,
         table: {
             headers: ['ID', 'Requirement', 'Data Sources', 'Reuse %', 'Time (h)'],
             rows: _qw_rows,
         },
     }]) %}
 {% else %}
+    {% set _body_html_html6 %}<p>{{ ('pdf.data_reuse.no_quick_wins'|trans({}, 'messages')) }}</p>{% endset %}
     {% set _sections = _sections|merge([{
         heading: 'Quick Wins - Immediate Reuse Opportunities',
-        body_html: '<p>' ~ ('pdf.data_reuse.no_quick_wins'|trans({}, 'messages')) ~ '</p>',
+        body_html: _body_html_html6,
     }]) %}
 {% endif %}
 
 {# Recommendations section #}
-{% set _rec_body = '<p><strong>Status:</strong> '
-    ~ total_requirements ~ ' requirements analyzed, '
-    ~ high_reuse|length ~ ' with ≥50% reuse potential, '
-    ~ quick_wins|length ~ ' Quick Wins identified. '
-    ~ '<strong>Total savings: ' ~ total_time_savings|round(1) ~ 'h (' ~ total_days_savings|round(1) ~ ' days)</strong></p>'
-    ~ '<h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 1: Realize Quick Wins Immediately (Week 1-2)</h3>'
-    ~ '<div style="border-left:3pt solid var(--success);padding:8pt 10pt;margin:4pt 0 8pt;background:var(--success-tint);font-size:9pt;">'
-    ~ '<strong>Priority: Very High</strong> - ' ~ quick_wins|length ~ ' Quick Wins immediately actionable: Reuse documentation/evidence, set references to existing controls, leverage cross-framework mappings. '
-    ~ '<strong>Time savings: ' ~ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h</strong> | ROI: Very High</div>'
-    ~ '<h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 2: Leverage Mid-Term Potentials (Week 3-8)</h3>'
-    ~ '<div style="border-left:3pt solid var(--warning);padding:8pt 10pt;margin:4pt 0 8pt;background:rgba(217,119,6,.12);font-size:9pt;">'
-    ~ '<strong>Priority: High</strong> - ' ~ medium_reuse|length ~ ' requirements with 50-80% reuse potential: Adapt/extend data, reuse templates, identify common control implementations. '
-    ~ '<strong>Time savings: ' ~ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h</strong> | Effort: Medium</div>'
-    ~ '<h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 3: Build Data Repository (Long-term)</h3>'
-    ~ '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:4pt 0 8pt;background:var(--surface-2);font-size:9pt;">'
-    ~ '<strong>Strategic Initiative:</strong> Build central data repository with standardized templates, versioning &amp; change tracking, automatic reuse opportunity identification, best-practice library. '
-    ~ '<strong>Long-term savings: 30-50% reduction in compliance effort</strong></div>' %}
+{% set _rec_body %}<p><strong>Status:</strong> {{ total_requirements }} requirements analyzed, {{ high_reuse|length }} with ≥50% reuse potential, {{ quick_wins|length }} Quick Wins identified. <strong>Total savings: {{ total_time_savings|round(1) }}h ({{ total_days_savings|round(1) }} days)</strong></p><h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 1: Realize Quick Wins Immediately (Week 1-2)</h3><div style="border-left:3pt solid var(--success);padding:8pt 10pt;margin:4pt 0 8pt;background:var(--success-tint);font-size:9pt;"><strong>Priority: Very High</strong> - {{ quick_wins|length }} Quick Wins immediately actionable: Reuse documentation/evidence, set references to existing controls, leverage cross-framework mappings. <strong>Time savings: {{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong> | ROI: Very High</div><h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 2: Leverage Mid-Term Potentials (Week 3-8)</h3><div style="border-left:3pt solid var(--warning);padding:8pt 10pt;margin:4pt 0 8pt;background:rgba(217,119,6,.12);font-size:9pt;"><strong>Priority: High</strong> - {{ medium_reuse|length }} requirements with 50-80% reuse potential: Adapt/extend data, reuse templates, identify common control implementations. <strong>Time savings: {{ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong> | Effort: Medium</div><h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 3: Build Data Repository (Long-term)</h3><div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:4pt 0 8pt;background:var(--surface-2);font-size:9pt;"><strong>Strategic Initiative:</strong> Build central data repository with standardized templates, versioning &amp; change tracking, automatic reuse opportunity identification, best-practice library. <strong>Long-term savings: 30-50% reduction in compliance effort</strong></div>{% endset %}
 
+{% set _body_html_html11 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Next Steps (Start This Week):</strong> (1) Prioritize Top 5 Quick Wins &amp; assign owners, (2) Identify existing documentation/evidence, (3) Enter cross-references in compliance system, (4) Start template library, (5) Establish weekly review meeting.<br><strong>Pro Tip:</strong> Implement Top 3 Quick Wins within 2 weeks = {{ quick_wins|slice(0, 3)|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h savings!</div>{% endset %}
 {% set _sections = _sections|merge([
     {
         heading: 'pdf.data_reuse.recommendations_title'|trans({}, 'messages'),
@@ -220,9 +217,7 @@
             headers: ['Timeframe', 'Activities', 'Expected Savings', 'Status'],
             rows: _plan_rows,
         },
-        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">'
-            ~ '<strong>Next Steps (Start This Week):</strong> (1) Prioritize Top 5 Quick Wins &amp; assign owners, (2) Identify existing documentation/evidence, (3) Enter cross-references in compliance system, (4) Start template library, (5) Establish weekly review meeting.'
-            ~ '<br><strong>Pro Tip:</strong> Implement Top 3 Quick Wins within 2 weeks = ' ~ quick_wins|slice(0, 3)|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h savings!</div>',
+        body_html: _body_html_html11,
     },
 ]) %}
 
@@ -256,7 +251,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: 'pdf.data_reuse.methodology'|trans({}, 'messages'),
+        methodology: 'pdf.data_reuse.methodology'|trans({}, 'messages')|fa_html,
         sources: [
             { label: 'DataReuseAnalysisService', detail: 'analyzeFrameworkReuse() — per-requirement reuse potential' },
         ],

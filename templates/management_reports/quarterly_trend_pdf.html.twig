@@ -87,25 +87,23 @@
     {% if metric.delta is not null %}
         {% if metric.delta > 0 %}
             {% set _better = metric.higher_is_better ? 'style="color:var(--success);"' : 'style="color:var(--danger);"' %}
-            {% set _delta_cell = '<span ' ~ _better ~ '>+' ~ metric.delta ~ metric.unit ~ '</span>' %}
+            {% set _delta_cell %}<span {{ _better }}>+{{ metric.delta }}{{ metric.unit }}</span>{% endset %}
         {% elseif metric.delta < 0 %}
             {% set _better = metric.higher_is_better ? 'style="color:var(--danger);"' : 'style="color:var(--success);"' %}
-            {% set _delta_cell = '<span ' ~ _better ~ '>' ~ metric.delta ~ metric.unit ~ '</span>' %}
+            {% set _delta_cell %}<span {{ _better }}>{{ metric.delta }}{{ metric.unit }}</span>{% endset %}
         {% else %}
             {% set _delta_cell = '0' %}
         {% endif %}
     {% else %}
         {% set _delta_cell = '-' %}
     {% endif %}
-    {% set _trend_badge = metric.trend == 'better'
-        ? '<span class="badge badge-success">' ~ ('management_reports.quarterly_trend.better'|trans({}, 'management_reports')) ~ '</span>'
-        : (metric.trend == 'worse'
-            ? '<span class="badge badge-danger">' ~ ('management_reports.quarterly_trend.worse'|trans({}, 'management_reports')) ~ '</span>'
-            : '<span class="badge badge-secondary">' ~ ('management_reports.quarterly_trend.stable'|trans({}, 'management_reports')) ~ '</span>') %}
+    {% set _trend_badge %}{% if metric.trend == 'better' %}<span class="badge badge-success">{{ ('management_reports.quarterly_trend.better'|trans({}, 'management_reports')) }}</span>{% else %}{% if metric.trend == 'worse' %}<span class="badge badge-danger">{{ ('management_reports.quarterly_trend.worse'|trans({}, 'management_reports')) }}</span>{% else %}<span class="badge badge-secondary">{{ ('management_reports.quarterly_trend.stable'|trans({}, 'management_reports')) }}</span>{% endif %}{% endif %}{% endset %}
+    {% set _cell_html2 %}<strong>{{ metric.current }}{{ metric.unit }}</strong>{% endset %}
+    {% set _cell_html1 %}<strong>{{ (metric.label|trans({}, 'management_reports')) }}</strong>{% endset %}
     {% set _trend_rows = _trend_rows|merge([[
-        '<strong>' ~ (metric.label|trans({}, 'management_reports')) ~ '</strong>',
+        _cell_html1,
         metric.previous is not null ? metric.previous ~ metric.unit : '—',
-        '<strong>' ~ metric.current ~ metric.unit ~ '</strong>',
+        _cell_html2,
         _delta_cell,
         _trend_badge,
     ]]) %}
@@ -147,7 +145,7 @@
         },
     ],
     appendix: {
-        methodology: 'management_reports.quarterly_trend.methodology'|trans({}, 'management_reports'),
+        methodology: 'management_reports.quarterly_trend.methodology'|trans({}, 'management_reports')|fa_html,
         sources: [
             { label: 'ManagementReportService', detail: 'getQuarterlyTrendMetrics() — aggregated KPIs per quarter' },
         ],

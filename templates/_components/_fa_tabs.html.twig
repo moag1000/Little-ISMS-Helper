@@ -163,7 +163,7 @@
                      tabindex="0"
                      data-{{ controller }}-target="panel"
                      data-tab-id="{{ tabId }}">
-                    {{- tab.body|default('')|raw -}}
+                    {{- tab.body|default('') -}}
                 </div>
             {%- endfor -%}
         </div>

@@ -95,24 +95,30 @@
         ? ('management_reports.bcm.minimum_met'|trans({}, 'management_reports'))
         : ('management_reports.bcm.non_compliant'|trans({}, 'management_reports'))) %}
 
+{% set _cell_html1 %}<span class="badge {{ _exercises_status }}">{{ _exercises_label }}</span>{% endset %}
 {% set _exercise_rows = [
     [ 'management_reports.bcm.total_exercises'|trans({}, 'management_reports'), report.exercises.total, '-' ],
     [ 'management_reports.bcm.exercises_12m'|trans({}, 'management_reports'),
       report.exercises.last_12_months,
-      '<span class="badge ' ~ _exercises_status ~ '">' ~ _exercises_label ~ '</span>' ],
+      _cell_html1 ],
 ] %}
 
+{% set _cell_html2 %}<span class="badge badge-danger">{{ report.business_processes.critical }}</span>{% endset %}
 {% set _process_rows = [
     [ 'management_reports.bcm.total_processes'|trans({}, 'management_reports'), report.business_processes.total ],
     [ 'management_reports.bcm.critical_processes'|trans({}, 'management_reports'),
-      '<span class="badge badge-danger">' ~ report.business_processes.critical ~ '</span>' ],
+      _cell_html2 ],
 ] %}
 
+{% set _cell_html6 %}<span class="badge badge-success">{{ ('management_reports.criticality.low'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html5 %}<span class="badge badge-info">{{ ('management_reports.criticality.medium'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html4 %}<span class="badge badge-warning">{{ ('management_reports.criticality.high'|trans({}, 'management_reports')) }}</span>{% endset %}
+{% set _cell_html3 %}<span class="badge badge-danger">{{ ('management_reports.criticality.critical'|trans({}, 'management_reports')) }}</span>{% endset %}
 {% set _bia_rows = [
-    [ '<span class="badge badge-danger">' ~ ('management_reports.criticality.critical'|trans({}, 'management_reports')) ~ '</span>', bia.by_criticality.critical ],
-    [ '<span class="badge badge-warning">' ~ ('management_reports.criticality.high'|trans({}, 'management_reports')) ~ '</span>',    bia.by_criticality.high ],
-    [ '<span class="badge badge-info">' ~ ('management_reports.criticality.medium'|trans({}, 'management_reports')) ~ '</span>',    bia.by_criticality.medium ],
-    [ '<span class="badge badge-success">' ~ ('management_reports.criticality.low'|trans({}, 'management_reports')) ~ '</span>',   bia.by_criticality.low ],
+    [ _cell_html3, bia.by_criticality.critical ],
+    [ _cell_html4,    bia.by_criticality.high ],
+    [ _cell_html5,    bia.by_criticality.medium ],
+    [ _cell_html6,   bia.by_criticality.low ],
 ] %}
 
 {{ _fa_report_doc.render({
@@ -173,7 +179,7 @@
         },
     ],
     appendix: {
-        methodology: 'management_reports.bcm.methodology'|trans({}, 'management_reports'),
+        methodology: 'management_reports.bcm.methodology'|trans({}, 'management_reports')|fa_html,
         sources: [
             { label: 'BcPlanRepository', detail: 'findByTenant() — all BC plans' },
             { label: 'BcExerciseRepository', detail: 'findByTenant() — exercises last 12 months' },

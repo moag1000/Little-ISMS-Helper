@@ -67,7 +67,7 @@
                 <div class="fa-alert__title">{{ props.title }}</div>
             {%- endif -%}
             {%- if props.body is defined and props.body -%}
-                <p class="fa-alert__message">{{ props.body|raw }}</p>
+                <p class="fa-alert__message">{{ props.body }}</p>
             {%- endif -%}
             {% block alert_body %}{% endblock %}
         </div>
@@ -99,7 +99,7 @@
                 <div class="fa-alert__title">{{ props.title }}</div>
             {%- endif -%}
             {%- if props.body is defined and props.body -%}
-                <p class="fa-alert__message">{{ props.body|raw }}</p>
+                <p class="fa-alert__message">{{ props.body }}</p>
             {%- endif -%}
         </div>
         {%- if props.dismissible is defined and props.dismissible -%}

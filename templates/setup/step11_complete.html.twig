@@ -13,7 +13,7 @@
     <div class="fa-setup-complete">
         {# Celebrating Alva #}
         <div class="fa-setup-complete__hero">
-            {{ alva.render('celebrating', { size: 140, decorative: true })|raw }}
+            {{ alva.render('celebrating', { size: 140, decorative: true }) }}
             <h1 class="fa-setup-complete__title">{{ 'setup.complete.system_ready'|trans({}, 'setup') }}</h1>
             <p class="fa-setup-complete__subtitle">{{ 'setup.complete.all_components_ready'|trans({}, 'setup') }}</p>
         </div>
@@ -62,7 +62,7 @@
             </h2>
             <div style="display:flex; flex-wrap:wrap; gap:6px;">
                 {% for moduleKey in selected_modules %}
-                    {{ pill.render(moduleKey, 'primary', { size: 'sm', noDot: true })|raw }}
+                    {{ pill.render(moduleKey, 'primary', { size: 'sm', noDot: true }) }}
                 {% endfor %}
             </div>
         </section>
@@ -107,6 +107,6 @@
             'setup.complete.help_documentation.description'|trans({}, 'setup'),
             'info',
             { title: 'setup.complete.help_documentation.title'|trans({}, 'setup'), icon: 'question-circle' }
-        )|raw }}
+        ) }}
     </div>
 {% endblock %}

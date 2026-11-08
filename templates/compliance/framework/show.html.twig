@@ -231,10 +231,11 @@
 
             <div id="requirements" class="fa-show-section">
             {# Requirements by Category #}
+            {% set _actions_html %}<a href="{{ path('app_compliance_requirement_index', {framework: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'common.view_all'|trans({}, 'messages') }}</a>{% endset %}
             {% embed '_components/_card.html.twig' with {
                 'title': 'show.anchor.requirements',
                 'headerIcon': 'nav-list-check',
-                'actions': '<a href="' ~ path('app_compliance_requirement_index', {framework: framework.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> ' ~ 'common.view_all'|trans({}, 'messages') ~ '</a>',
+                'actions': _actions_html,
                 'class': 'mb-4'
             } %}
                 {% block card_body %}

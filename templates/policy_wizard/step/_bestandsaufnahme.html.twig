@@ -279,7 +279,7 @@
                                     variant: 'warning',
                                     icon: 'nav-collection',
                                     title: 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.title'|trans,
-                                    body: 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.body'|trans,
+                                    body: 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.body'|trans|fa_html,
                                     class: 'py-2 small mb-2'
                                 }) }}
                             {% elseif is_top_level %}
@@ -423,7 +423,7 @@
                 {{ _fa_alert.render({
                     variant: 'info',
                     title: 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_title'|trans,
-                    body: 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_body'|trans({'%mime%': '__MIME__'}, 'policy_wizard')|replace({'__MIME__': '<code data-bestandsaufnahme-drawer-target="mimeNote"></code>'})
+                    body: 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_body'|trans({'%mime%': '<code data-bestandsaufnahme-drawer-target="mimeNote"></code>'}, 'policy_wizard')|fa_html
                 }) }}
             </div>
 

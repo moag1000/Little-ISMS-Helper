@@ -273,7 +273,8 @@
                 </div>
 
                 {% if metrics.unmitigated_high_risks %}
-                    {{ _fa_alert.render({ variant: 'danger', class: 'mt-3', body: '<strong>' ~ 'business_process.show.warning'|trans({}, 'business_process') ~ ':</strong> ' ~ 'business_process.show.unmitigated_high_risks'|trans({}, 'business_process') }) }}
+                    {% set _body_html %}<strong>{{ 'business_process.show.warning'|trans({}, 'business_process') }}:</strong> {{ 'business_process.show.unmitigated_high_risks'|trans({}, 'business_process') }}{% endset %}
+                    {{ _fa_alert.render({ variant: 'danger', class: 'mt-3', body: _body_html }) }}
                 {% endif %}
             </div>
 

@@ -289,7 +289,7 @@
                 success: T('--success'),
             };
 
-            const probabilityData = {{ incident_probability|json_encode|raw }};
+            const probabilityData = {{ incident_probability|fa_json }};
 
             // Criticality Distribution Chart
             const criticalityCtx = document.getElementById('criticalityDistributionChart');

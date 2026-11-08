@@ -88,7 +88,8 @@
             </div>
 
             {% if analysis.overallLevel is defined %}
-            {{ _fa_alert.render({ variant: 'info', class: 'mt-3', body: '<strong>' ~ 'bcm.field.overall_protection_level'|trans({}, 'bcm') ~ ':</strong> ' ~ ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm') }) }}
+            {% set _body_html %}<strong>{{ 'bcm.field.overall_protection_level'|trans({}, 'bcm') }}:</strong> {{ ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm') }}{% endset %}
+            {{ _fa_alert.render({ variant: 'info', class: 'mt-3', body: _body_html }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

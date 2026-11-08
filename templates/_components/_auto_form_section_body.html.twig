@@ -30,7 +30,7 @@
 {% if section_intro is not null and section_intro is not empty %}
     <div class="fa-alert fa-alert--info fa-section-intro mb-3" role="note">
         <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
-        <div class="fa-alert__body">{{ section_intro|raw }}</div>
+        <div class="fa-alert__body">{{ section_intro }}</div>
     </div>
 {% endif %}
 
@@ -47,7 +47,7 @@
             {# Flush current row before rendering a full-width checkbox #}
             {% if current_row_fields|length > 0 %}
                 <div class="row">
-                    {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+                    {% for row_field in current_row_fields %}{{ row_field }}{% endfor %}
                 </div>
                 {% set current_row_fields = [] %}
                 {% set current_row_width  = 0 %}
@@ -66,7 +66,7 @@
             {# Start a new row if adding this field would exceed 12 columns #}
             {% if current_row_width + col_width > 12 %}
                 <div class="row">
-                    {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+                    {% for row_field in current_row_fields %}{{ row_field }}{% endfor %}
                 </div>
                 {% set current_row_fields = [] %}
                 {% set current_row_width  = 0 %}
@@ -101,6 +101,6 @@
 {# Flush any remaining fields in the last partial row #}
 {% if current_row_fields|length > 0 %}
     <div class="row">
-        {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+        {% for row_field in current_row_fields %}{{ row_field }}{% endfor %}
     </div>
 {% endif %}

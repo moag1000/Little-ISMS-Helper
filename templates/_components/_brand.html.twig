@@ -36,8 +36,8 @@
     {% endset %}
 
     {% if link %}
-        <a href="{{ link }}" class="fa-brand" data-turbo-action="advance">{{ inner|raw }}</a>
+        <a href="{{ link }}" class="fa-brand" data-turbo-action="advance">{{ inner }}</a>
     {% else %}
-        <div class="fa-brand">{{ inner|raw }}</div>
+        <div class="fa-brand">{{ inner }}</div>
     {% endif %}
 {% endmacro %}

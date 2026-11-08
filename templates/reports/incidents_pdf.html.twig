@@ -90,10 +90,11 @@
 {% for incident in incidents %}
     {% set _sev = incident.severity ? incident.severity.value : '' %}
     {% set _sev_badge_class = _sev == 'critical' ? 'badge-danger' : (_sev == 'high' ? 'badge-warning' : (_sev == 'medium' ? 'badge-info' : 'badge-success')) %}
+    {% set _cell_html1 %}<span class="badge {{ _sev_badge_class }}">{{ _sev|upper }}</span>{% endset %}
     {% set _incident_rows = _incident_rows|merge([[
         incident.id,
         incident.title|length > 30 ? incident.title|slice(0, 30) ~ '...' : incident.title,
-        '<span class="badge ' ~ _sev_badge_class ~ '">' ~ _sev|upper ~ '</span>',
+        _cell_html1,
         incident.category,
         incident.detectedAt|fa_date,
         incident.resolvedAt ? incident.resolvedAt|fa_date : ('pdf.common.open'|trans({}, 'reports')),

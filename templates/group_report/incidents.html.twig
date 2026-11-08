@@ -23,15 +23,20 @@
     {% for incident in incidents %}
         {% set _sev = incident.severity ? incident.severity.value : '' %}
         {% set _sbadge = _sev == 'critical' ? 'confidential' : (_sev == 'high' ? 'draft' : (_sev == 'medium' ? 'auditor-only' : 'final')) %}
+        {% set _cell_html5 %}<code style="font-size:.75em;">{{ (incident.status ? incident.status.value : '') }}</code>{% endset %}
+        {% set _cell_html4 %}<span class="report-doc__chip report-doc__chip--status-{{ _sbadge }}">{{ _sev }}</span>{% endset %}
+        {% set _cell_html3 %}<code style="font-size:.75em;">{{ incident.tenant.code|e }}</code>{% endset %}
+        {% set _cell_html2 %}<code style="font-size:.7em;">{{ incident.incidentNumber|e }}</code> <strong>{{ incident.title|e }}</strong>{% if incident.category %}<br><span style="font-size:.75em;color:var(--fg-3);">{{ incident.category|e }}</span>{% endif %}{% endset %}
         {% set _inc_rows = _inc_rows|merge([[
             incident.detectedAt|fa_datetime,
-            '<code style="font-size:.7em;">' ~ incident.incidentNumber|e ~ '</code> <strong>' ~ incident.title|e ~ '</strong>' ~ (incident.category ? '<br><span style="font-size:.75em;color:var(--fg-3);">' ~ incident.category|e ~ '</span>' : ''),
-            '<code style="font-size:.75em;">' ~ incident.tenant.code|e ~ '</code>',
-            '<span class="report-doc__chip report-doc__chip--status-' ~ _sbadge ~ '">' ~ _sev ~ '</span>',
-            '<code style="font-size:.75em;">' ~ (incident.status ? incident.status.value : '') ~ '</code>',
+            _cell_html2,
+            _cell_html3,
+            _cell_html4,
+            _cell_html5,
         ]]) %}
     {% endfor %}
 
+    {% set _body_html_html1 %}{% if _inc_rows|length == 0 %}<p style="color:var(--fg-3);font-style:italic;">{{ ('group_report.incidents.none'|trans({}, 'group_report')) }}</p>{% else %}{{ null }}{% endif %}{% endset %}
     {{ _fa_report_doc.render({
         report: {
             title:        'group_report.incidents.title'|trans({}, 'group_report'),
@@ -58,7 +63,7 @@
         sections: [
             {
                 heading: 'group_report.incidents.title'|trans({}, 'group_report'),
-                intro: 'group_report.incidents.intro'|trans({}, 'group_report'),
+                intro: 'group_report.incidents.intro'|trans({}, 'group_report')|fa_html,
                 table: _inc_rows|length > 0 ? {
                     headers: [
                         'group_report.incidents.col.detected_at'|trans({}, 'group_report'),
@@ -69,7 +74,7 @@
                     ],
                     rows: _inc_rows,
                 } : null,
-                body_html: _inc_rows|length == 0 ? '<p style="color:var(--fg-3);font-style:italic;">' ~ ('group_report.incidents.none'|trans({}, 'group_report')) ~ '</p>' : null,
+                body_html: _body_html_html1,
             },
         ],
         appendix: {

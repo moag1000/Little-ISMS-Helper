@@ -22,23 +22,17 @@
     {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
     {# Back-link as body_html prefix #}
-    {% set _back_html = '<div style="margin-bottom:1rem;">'
-        ~ '<a href="' ~ path('app_management_reports_portfolio', {_locale: app.request.locale, stichtag: stichtag|date('Y-m-d')}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">'
-        ~ '← ' ~ ('portfolio_report.drill.back'|trans({}, 'portfolio_report'))
-        ~ '</a></div>' %}
+    {% set _back_html %}<div style="margin-bottom:1rem;"><a href="{{ path('app_management_reports_portfolio', {_locale: app.request.locale, stichtag: stichtag|date('Y-m-d')}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">← {{ ('portfolio_report.drill.back'|trans({}, 'portfolio_report')) }}</a></div>{% endset %}
 
     {# Build drill table rows #}
     {% set _drill_rows = [] %}
     {% for row in rows %}
-        {% set _fulf = row.fulfillment is null ? '<span style="color:var(--fg-3);">—</span>' : '<strong>' ~ row.pct ~ '%</strong>' %}
-        {% set _appl = row.applicable
-            ? '<span style="color:var(--success);">✓</span>'
-            : '<span style="color:var(--fg-3);">n/a</span>' %}
-        {% set _link = '<a href="' ~ path('app_compliance_requirement_show', {id: row.requirement.id, _locale: app.request.locale}) ~ '" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">'
-            ~ ('portfolio_report.drill.table.link'|trans({}, 'portfolio_report'))
-            ~ '</a>' %}
+        {% set _fulf %}{% if row.fulfillment is null %}<span style="color:var(--fg-3);">—</span>{% else %}<strong>{{ row.pct }}%</strong>{% endif %}{% endset %}
+        {% set _appl %}{% if row.applicable %}<span style="color:var(--success);">✓</span>{% else %}<span style="color:var(--fg-3);">n/a</span>{% endif %}{% endset %}
+        {% set _link %}<a href="{{ path('app_compliance_requirement_show', {id: row.requirement.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ ('portfolio_report.drill.table.link'|trans({}, 'portfolio_report')) }}</a>{% endset %}
+        {% set _cell_html1 %}<code>{{ row.requirement.requirementId }}</code>{% endset %}
         {% set _drill_rows = _drill_rows|merge([[
-            '<code>' ~ row.requirement.requirementId ~ '</code>',
+            _cell_html1,
             row.requirement.title,
             _fulf,
             _appl,

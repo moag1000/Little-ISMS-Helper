@@ -344,7 +344,7 @@
         {% endfor %}
         {% if _present_section_fields|length > 0 %}
             <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ section.label|raw }}</legend>
+                <legend class="h5 mb-3">{{ section.label }}</legend>
 
                 {% include '_components/_auto_form_section_body.html.twig' with {
                     'form':               form,

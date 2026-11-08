@@ -26,20 +26,25 @@
         {% set _badge_map = {critical: 'confidential', high: 'confidential', medium: 'draft', low: 'final'} %}
         {% set _ibadge = _badge_map[risk_level_band(_inherent, risk.tenant)] %}
         {% set _rbadge = _badge_map[risk_level_band(_residual, risk.tenant)] %}
+        {% set _cell_html4 %}{% if _residual > 0 %}<span class="report-doc__chip report-doc__chip--status-{{ _rbadge }}">{{ _residual }}</span>{% else %}<span style="color:var(--fg-3);">—</span>{% endif %}{% endset %}
+        {% set _cell_html3 %}<span class="report-doc__chip report-doc__chip--status-{{ _ibadge }}">{{ _inherent }}</span>{% endset %}
+        {% set _cell_html2 %}<code style="font-size:.75em;">{{ risk.tenant.code|e }}</code>{% endset %}
+        {% set _cell_html1 %}<strong>{{ risk.title|e }}</strong>{% if risk.category %}<br><code style="font-size:.75em;color:var(--fg-3);">{{ risk.category|e }}</code>{% endif %}{% endset %}
         {% set _top_rows = _top_rows|merge([[
             loop.index,
-            '<strong>' ~ risk.title|e ~ '</strong>' ~ (risk.category ? '<br><code style="font-size:.75em;color:var(--fg-3);">' ~ risk.category|e ~ '</code>' : ''),
-            '<code style="font-size:.75em;">' ~ risk.tenant.code|e ~ '</code>',
-            '<span class="report-doc__chip report-doc__chip--status-' ~ _ibadge ~ '">' ~ _inherent ~ '</span>',
-            _residual > 0 ? '<span class="report-doc__chip report-doc__chip--status-' ~ _rbadge ~ '">' ~ _residual ~ '</span>' : '<span style="color:var(--fg-3);">—</span>',
+            _cell_html1,
+            _cell_html2,
+            _cell_html3,
+            _cell_html4,
         ]]) %}
     {% endfor %}
 
     {# Build distribution-by-tenant rows #}
     {% set _dist_rows = [] %}
     {% for tenant in tenants %}
+        {% set _cell_html5 %}<strong>{{ tenant.name|e }}</strong> <code style="font-size:.75em;color:var(--fg-3);">{{ tenant.code|e }}</code>{% endset %}
         {% set _dist_rows = _dist_rows|merge([[
-            '<strong>' ~ tenant.name|e ~ '</strong> <code style="font-size:.75em;color:var(--fg-3);">' ~ tenant.code|e ~ '</code>',
+            _cell_html5,
             risks_by_tenant[tenant.code]|default(0),
         ]]) %}
     {% endfor %}

@@ -59,7 +59,7 @@
             title: 'dpia.index.none'|trans({}, 'privacy'),
             actions: [{ label: 'dpia.index.create_first_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }],
         },
-        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/dpia"',
+        card_attrs: { 'data-controller': 'bulk-actions', 'data-bulk-actions-endpoint-value': '/' ~ app.request.locale ~ '/dpia' },
     } %}
         {% block list_filters %}
             <div class="col-md-4">

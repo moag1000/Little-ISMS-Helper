@@ -95,7 +95,8 @@
                 {% endblock %}
             {% endembed %}
         {% else %}
-            {{ _fa_alert.render({ variant: 'info', body: 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') ~ ' <strong>' ~ hours|number_format ~ ' ' ~ 'privacy.data_breach.field.hours'|trans({}, 'privacy') ~ '</strong> (' ~ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') ~ ': ' ~ breach.authorityNotificationDeadline|fa_datetime ~ ').' }) }}
+            {% set _body_html %}{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong> ({{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}: {{ breach.authorityNotificationDeadline|fa_datetime }}).{% endset %}
+            {{ _fa_alert.render({ variant: 'info', body: _body_html }) }}
         {% endif %}
     {% endif %}
 
@@ -258,7 +259,8 @@
                         {% endif %}
                         <p><strong>{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }}:</strong> {{ breach.notificationMethod }}</p>
                         {% if breach.notificationDelayReason %}
-                            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') ~ ':</strong> ' ~ breach.notificationDelayReason }) }}
+                            {% set _body_html2 %}<strong>{{ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') }}:</strong> {{ breach.notificationDelayReason }}{% endset %}
+                            {{ _fa_alert.render({ variant: 'warning', body: _body_html2 }) }}
                         {% endif %}
                     {% elseif breach.requiresAuthorityNotification %}
                         <p class="text-danger"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
@@ -332,10 +334,12 @@
                 <p>{% for category in breach.dataSubjectCategories %}{{ ('data_breach.data_subject_categories.' ~ category)|trans({}, 'privacy') }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
             {% endif %}
             {% if breach.specialCategoriesAffected %}
-                {{ _fa_alert.render({ variant: 'warning', icon: 'nav-shield-lock', body: '<strong>' ~ 'privacy.data_breach.field.special_categories_affected'|trans({}, 'privacy') ~ '</strong>' }) }}
+                {% set _body_html3 %}<strong>{{ 'privacy.data_breach.field.special_categories_affected'|trans({}, 'privacy') }}</strong>{% endset %}
+                {{ _fa_alert.render({ variant: 'warning', icon: 'nav-shield-lock', body: _body_html3 }) }}
             {% endif %}
             {% if breach.criminalDataAffected %}
-                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'privacy.data_breach.field.criminal_data_affected'|trans({}, 'privacy') ~ '</strong>' }) }}
+                {% set _body_html4 %}<strong>{{ 'privacy.data_breach.field.criminal_data_affected'|trans({}, 'privacy') }}</strong>{% endset %}
+                {{ _fa_alert.render({ variant: 'warning', body: _body_html4 }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

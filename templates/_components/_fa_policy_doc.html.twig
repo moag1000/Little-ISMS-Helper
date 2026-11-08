@@ -269,7 +269,7 @@
         {# ── Slot 4 · Body ───────────────────────────────────────── #}
         <main class="policy-doc__body">
             {% if body_html is not empty %}
-                {{ body_html|raw }}
+                {{ body_html }}
             {% else %}
                 <p class="policy-doc__body-empty">{{ cover.body_empty|default('—') }}</p>
             {% endif %}
@@ -302,7 +302,7 @@
                             <div class="policy-doc__signature-line" aria-hidden="true"></div>
                             <p class="policy-doc__signature-name">{{ sig.name|default('—') }}</p>
                             {% if sig.meta is defined and sig.meta %}
-                                <p class="policy-doc__signature-meta">{{ sig.meta|raw }}</p>
+                                <p class="policy-doc__signature-meta">{{ sig.meta }}</p>
                             {% endif %}
                         </div>
                     {% endfor %}

@@ -507,7 +507,7 @@
             // Status Distribution Chart
             const statusCtx = document.getElementById('statusDistributionChart');
             if (statusCtx) {
-                const statusData = {{ dashboard.implementation_status|json_encode|raw }};
+                const statusData = {{ dashboard.implementation_status|fa_json }};
                 const __existingStatus = Chart.getChart(statusCtx); if (__existingStatus) { __existingStatus.destroy(); }
                 new Chart(statusCtx, {
                     type: 'doughnut',
@@ -543,7 +543,7 @@
             // Category Performance Chart
             const categoryCtx = document.getElementById('categoryPerformanceChart');
             if (categoryCtx) {
-                const categoryData = {{ category_performance|json_encode|raw }};
+                const categoryData = {{ category_performance|fa_json }};
                 const __existingCategory = Chart.getChart(categoryCtx); if (__existingCategory) { __existingCategory.destroy(); }
                 new Chart(categoryCtx, {
                     type: 'bar',
@@ -572,7 +572,7 @@
             // Aging Distribution Chart
             const agingCtx = document.getElementById('agingDistributionChart');
             if (agingCtx) {
-                const agingData = {{ dashboard.aging_analysis.distribution|json_encode|raw }};
+                const agingData = {{ dashboard.aging_analysis.distribution|fa_json }};
                 const __existingAging = Chart.getChart(agingCtx); if (__existingAging) { __existingAging.destroy(); }
                 new Chart(agingCtx, {
                     type: 'pie',

@@ -98,14 +98,16 @@
 {% for risk in risks %}
     {% set riskLevel = risk_level_band(risk.riskScore, risk.tenant) %}
     {% set _level_badge_class = riskLevel == 'critical' ? 'badge-danger' : (riskLevel == 'high' ? 'badge-warning' : (riskLevel == 'medium' ? 'badge-info' : 'badge-success')) %}
+    {% set _cell_html2 %}<span class="badge {{ _level_badge_class }}">{{ riskLevel|upper }}</span>{% endset %}
+    {% set _cell_html1 %}<span class="score-badge score-{{ riskLevel }}">{{ risk.riskScore }}</span>{% endset %}
     {% set _risk_rows = _risk_rows|merge([[
         risk.id,
         risk.title|length > 40 ? risk.title|slice(0, 40) ~ '...' : risk.title,
         risk.category,
         risk.probability,
         risk.impact,
-        '<span class="score-badge score-' ~ riskLevel ~ '">' ~ risk.riskScore ~ '</span>',
-        '<span class="badge ' ~ _level_badge_class ~ '">' ~ riskLevel|upper ~ '</span>',
+        _cell_html1,
+        _cell_html2,
         risk.treatmentDescription|length > 25 ? risk.treatmentDescription|slice(0, 25) ~ '...' : risk.treatmentDescription|default('—'),
         risk.status ? risk.status.value : '',
         (risk.effectiveRiskOwner ?? '—')|slice(0, 20),
@@ -113,7 +115,7 @@
 {% endfor %}
 
 {# ── Legend HTML for body_html slot ── #}
-{% set _legend_html = '<div class="legend-box"><strong>' ~ ('pdf.risk.legend'|trans({}, 'reports')) ~ ':</strong> ' ~ ('pdf.risk.legend_text'|trans({}, 'reports')) ~ '</div>' %}
+{% set _legend_html %}<div class="legend-box"><strong>{{ ('pdf.risk.legend'|trans({}, 'reports')) }}:</strong> {{ ('pdf.risk.legend_text'|trans({}, 'reports')) }}</div>{% endset %}
 
 {{ _fa_report_doc.render({
     report: {

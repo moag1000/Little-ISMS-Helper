@@ -269,7 +269,8 @@
 
             {# Realised before: the incidents are listed in the links block above #}
             {% if risk.incidents|length > 0 %}
-                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') ~ '</strong> ' ~ 'risk.realization.review_suggestion'|trans({}, 'risk') }) }}
+                {% set _body_html %}<strong>{{ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') }}</strong> {{ 'risk.realization.review_suggestion'|trans({}, 'risk') }}{% endset %}
+                {{ _fa_alert.render({ variant: 'warning', body: _body_html }) }}
             {% endif %}
 
             {# Risk Subject: Asset, Person, Location, or Supplier #}
@@ -293,7 +294,8 @@
                                 {% set assetValue = risk.asset.currentValue %}
                                 {% if assetValue %}
                                     <p><strong>{{ 'asset.field.current_value'|trans({}, 'asset') }}:</strong> €{{ assetValue|number_format(2, ',', '.') }}</p>
-                                    {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '<small>' ~ 'risk.subject.asset.monetary_value_hint'|trans({}, 'risk') ~ '</small>' }) }}
+                                    {% set _body_html2 %}<small>{{ 'risk.subject.asset.monetary_value_hint'|trans({}, 'risk') }}</small>{% endset %}
+                                    {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: _body_html2 }) }}
                                 {% endif %}
                                 {% if risk.asset.dataClassification %}
                                     <p><strong>{{ 'asset.field.classification'|trans({}, 'asset') }}:</strong>
