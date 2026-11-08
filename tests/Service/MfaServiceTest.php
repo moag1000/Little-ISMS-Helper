@@ -223,6 +223,20 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function aTotpCodeCountsOnlyOnce(): void
+    {
+        // S8: before, the same code opened a second login for about 90 s.
+        $secret = \OTPHP\TOTP::generate()->getSecret();
+        $token = (new MfaToken())->setUser($this->createUser(1, 'user@example.com'))->setTokenType('totp')
+            ->setSecret($this->mfaEncryptionService->encrypt($secret))->setIsActive(true);
+        $code = \OTPHP\TOTP::createFromSecret($secret)->now();
+
+        self::assertTrue($this->service->verifyTotp($token, $code));
+        self::assertNotNull($token->getLastTotpStep());
+        self::assertFalse($this->service->verifyTotp($token, $code), 'The same code is refused the second time.');
+    }
+
+    #[Test]
     public function testVerifyBackupCodeSuccess(): void
     {
         $user = $this->createUser(1, 'user@example.com');

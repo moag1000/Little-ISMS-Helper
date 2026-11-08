@@ -105,3 +105,24 @@ class ModuleFieldTraitTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+mfa = load("check_mfa_login_state")
+
+
+class MfaLoginStateGateTest(unittest.TestCase):
+    def test_session_key_outside_the_state_class_fails(self):
+        php = "$session->set('_security.mfa_verified', true);"
+        self.assertTrue(mfa.problems_in("src/Controller/X.php", php))
+        self.assertFalse(mfa.problems_in(mfa.STATE_CLASS, php))
+
+    def test_hand_made_login_needs_the_state_class(self):
+        raw = "$this->tokenStorage->setToken($token);"
+        self.assertTrue(mfa.problems_in("src/Controller/X.php", raw))
+        self.assertFalse(mfa.problems_in("src/Controller/X.php", "use App\\Security\\Mfa\\MfaSessionState;\n" + raw))
+        self.assertFalse(mfa.problems_in("src/Controller/X.php", "$this->tokenStorage->setToken(null);"))
+
+    def test_setup_may_not_be_always_allowed(self):
+        php = "private const ALLOWED_PREFIXES = [\n '/logout',\n '/setup',\n];"
+        self.assertTrue(mfa.problems_in(mfa.ENFORCERS[0], php))
+        self.assertFalse(mfa.problems_in(mfa.ENFORCERS[0], php.replace(" '/setup',\n", "")))

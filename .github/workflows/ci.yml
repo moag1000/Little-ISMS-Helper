@@ -753,6 +753,10 @@ jobs:
         # Exports, backups and reports keep status + result under var/jobs/<uuid>.json;
         # a known id must not open another person's file (#[IsGranted(AsyncJobVoter::ACCESS)]). S6, 2026-11.
         run: python3 scripts/quality/check_job_id_access.py --quiet
+      - name: "Gate 91: one MFA state per login, no hand-made login, /setup closed while MFA is outstanding"
+        # S8, 2026-11: remember-me, a second login and the password re-auth each skipped the TOTP
+        # code because every path kept its own session flags. MfaSessionState is the only holder.
+        run: python3 scripts/quality/check_mfa_login_state.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

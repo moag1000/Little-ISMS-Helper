@@ -6,6 +6,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\AuditLog;
 use App\Entity\MfaToken;
+use App\Tests\Support\LoginWithSecondFactor;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\UserSession;
@@ -200,7 +201,8 @@ final class MfaSessionAdminScopeTest extends WebTestCase
     #[Test]
     public function superAdminSeesAndManagesAllTokens(): void
     {
-        $this->client->loginUser($this->superA);
+        // superA has an active TOTP device: without the second factor every page leads to the challenge (S8).
+        LoginWithSecondFactor::login($this->client, $this->superA);
         $this->client->request('GET', '/en/admin/mfa');
         self::assertResponseIsSuccessful();
         $html = (string) $this->client->getResponse()->getContent();
