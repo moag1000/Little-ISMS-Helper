@@ -154,7 +154,7 @@ final class AiLegalRequirementFromPartyKind extends AbstractAiKind
             RegisterType::LEGAL_REQUIREMENT,
             (string) $p['title'],
             (string) ($editedText ?? $suggestion->getEditableText()),
-            self::origin($party),
+            self::originKey($party),
             'register.source.interested_party',
             ownerUserId: $by->getId(),
             category: (string) ($p['category'] ?? 'contract'),
@@ -174,10 +174,10 @@ final class AiLegalRequirementFromPartyKind extends AbstractAiKind
             }
         }
 
-        return in_array(self::origin($party), $this->entries->origins($tenant, RegisterType::LEGAL_REQUIREMENT), true);
+        return in_array(self::originKey($party), $this->entries->origins($tenant, RegisterType::LEGAL_REQUIREMENT), true);
     }
 
-    private static function origin(InterestedParty $party): string
+    private static function originKey(InterestedParty $party): string
     {
         return 'ai.party.' . (int) $party->getId();
     }
