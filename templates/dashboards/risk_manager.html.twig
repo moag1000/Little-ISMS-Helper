@@ -62,6 +62,9 @@
 
     {% include '_components/_risk_exposure.html.twig' %}
 
+    {# What is waiting for this person (risk reviews, acceptances, treatment plans) — same list as My Day #}
+    <div class="mb-4">{% include 'dashboards/_my_obligations.html.twig' %}</div>
+
     <div class="row g-4">
         {# Treatment Pipeline #}
         <div class="col-lg-6">
@@ -382,5 +385,7 @@
         </div>
     </div>
 
+
+    {% include 'dashboards/_report_downloads.html.twig' %}
 </div>
 {% endblock %}

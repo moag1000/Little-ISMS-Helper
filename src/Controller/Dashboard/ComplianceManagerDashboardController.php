@@ -114,7 +114,6 @@ class ComplianceManagerDashboardController extends AbstractController
         $mappingCoverage = $frameworkComparison['summary']['cross_mapping_coverage'] ?? null;
 
         // Z.0 — workflow transparency
-        $pendingApprovals = $this->roleDashboardService->getPendingApprovals();
         $lifecycleStuck   = $this->roleDashboardService->getLifecycleStuck();
 
         // TISAX full per-tier aggregate (IS + PP + DP) for compliance overview
@@ -145,7 +144,6 @@ class ComplianceManagerDashboardController extends AbstractController
                 'frameworks_active'  => count($frameworks),
                 'avg_compliance'     => $frameworkComparison['summary']['average_compliance'] ?? 0,
                 'at_risk_count'      => $frameworkComparison['summary']['at_risk'] ?? 0,
-                'pending_approvals'  => $pendingApprovals,
                 'lifecycle_stuck'    => $lifecycleStuck,
                 'tisax_aggregate'    => $tisaxAggregate,
             ],

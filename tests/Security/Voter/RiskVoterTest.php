@@ -8,6 +8,7 @@ use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\Voter\RiskVoter;
+use App\Service\Responsibility\ResponsibilityResolver;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -213,5 +214,40 @@ class RiskVoterTest extends TestCase
         $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
 
         $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $risk, [RiskVoter::VIEW]));
+    }
+
+    /** W1: a plain user edits only the risks they have to act on (owner via ResponsibilityResolver). */
+    #[Test]
+    public function userEditsOnlyRisksTheyAreResponsibleFor(): void
+    {
+        $user = $this->createUser(['ROLE_USER'], $this->tenant);
+        $own = $this->createRisk($this->tenant);
+        $foreign = $this->createRisk($this->tenant);
+        $resolver = $this->createStub(ResponsibilityResolver::class);
+        $resolver->method('isResponsibleFor')->willReturnCallback(
+            static fn (User $u, object $record): bool => $record === $own,
+        );
+        $voter = new RiskVoter(VoterTestHelper::createRoleHierarchy(), $resolver);
+        $token = $this->createToken($user);
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $voter->vote($token, $own, [RiskVoter::EDIT]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $voter->vote($token, $foreign, [RiskVoter::EDIT]));
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $voter->vote($token, $foreign, [RiskVoter::VIEW]));
+    }
+
+    #[Test]
+    public function managerEditsEveryRiskOfTheOrganisation(): void
+    {
+        $token = $this->createToken($this->createUser(['ROLE_MANAGER'], $this->tenant));
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $this->createRisk($this->tenant), [RiskVoter::EDIT]));
+    }
+
+    #[Test]
+    public function userWithoutResponsibilityCannotEdit(): void
+    {
+        $token = $this->createToken($this->createUser(['ROLE_USER'], $this->tenant));
+
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->createRisk($this->tenant), [RiskVoter::EDIT]));
     }
 }

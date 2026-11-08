@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace App\Tests\EventSubscriber;
 
 use App\EventSubscriber\ReadOnlyRoleSubscriber;
+use App\Security\Voter\RecordResponsibleVoter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\User\InMemoryUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ReadOnlyRoleSubscriberTest extends TestCase
 {
@@ -81,6 +84,19 @@ final class ReadOnlyRoleSubscriberTest extends TestCase
         self::assertSame('original', ($manager->getController())());
     }
 
+    /** W1: an action guarded by "role OR responsible" lets the responsible reviewer through; the voter decides. */
+    #[Test]
+    public function aRoleOrResponsibleActionIsLeftToTheVoter(): void
+    {
+        $responsible = $this->event('app_planning_action_item_edit', 'POST', HttpKernelInterface::MAIN_REQUEST, [new ResponsibleFixture(), 'act']);
+        $this->subscriber(reviewer: true)->onController($responsible);
+        self::assertSame('acted', ($responsible->getController())());
+
+        $managerOnly = $this->event('app_planning_action_item_edit', 'POST', HttpKernelInterface::MAIN_REQUEST, [new ResponsibleFixture(), 'managerOnly']);
+        $this->subscriber(reviewer: true)->onController($managerOnly);
+        self::assertNotSame('acted', ($managerOnly->getController())());
+    }
+
     private function subscriber(bool $reviewer): ReadOnlyRoleSubscriber
     {
         $security = $this->createStub(Security::class);
@@ -92,7 +108,7 @@ final class ReadOnlyRoleSubscriberTest extends TestCase
         return new ReadOnlyRoleSubscriber($security);
     }
 
-    private function event(string $route, string $method, int $type): ControllerEvent
+    private function event(string $route, string $method, int $type, ?callable $controller = null): ControllerEvent
     {
         $request = Request::create('/api/risks', $method);
         $request->attributes->set('_route', $route);
@@ -100,9 +116,25 @@ final class ReadOnlyRoleSubscriberTest extends TestCase
 
         return new ControllerEvent(
             $this->createStub(HttpKernelInterface::class),
-            static fn (): string => 'original',
+            $controller ?? static fn (): string => 'original',
             $request,
             $type,
         );
+    }
+}
+
+/** Controller fixture: one "role OR responsible" action, one manager-only action. */
+final class ResponsibleFixture
+{
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'record')]
+    public function act(): string
+    {
+        return 'acted';
+    }
+
+    #[IsGranted('ROLE_MANAGER')]
+    public function managerOnly(): string
+    {
+        return 'acted';
     }
 }

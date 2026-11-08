@@ -127,9 +127,10 @@
                 </div>
             </div>
 
-            {# Workflow Actions #}
+            {# Workflow Actions — managers and whoever handles the breach (W1, RecordResponsibleVoter) #}
+            {% set _can_act = is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', breach) %}
             <div class="mt-3">
-                {% if breach.status == 'draft' and breach.isComplete %}
+                {% if _can_act and breach.status == 'draft' and breach.isComplete %}
                     <form action="{{ path('app_data_breach_submit_for_assessment', {id: breach.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('submit' ~ breach.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
@@ -138,31 +139,31 @@
                     </form>
                 {% endif %}
 
-                {% if breach.status in ['draft', 'under_assessment'] %}
+                {% if _can_act and breach.status in ['draft', 'under_assessment'] %}
                     <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'privacy.data_breach.action.edit'|trans({}, 'privacy') }}
                     </a>
                 {% endif %}
 
-                {% if is_granted('ROLE_MANAGER') and breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
+                {% if _can_act and breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="authorityModal">
                         <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
-                {% if is_granted('ROLE_MANAGER') and breach.requiresSubjectNotification and not breach.dataSubjectsNotifiedAt and breach.supervisoryAuthorityNotifiedAt %}
+                {% if _can_act and breach.requiresSubjectNotification and not breach.dataSubjectsNotifiedAt and breach.supervisoryAuthorityNotifiedAt %}
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="subjectsModal">
                         <i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
-                {% if is_granted('ROLE_MANAGER') and not breach.requiresSubjectNotification and not breach.noSubjectNotificationReason %}
+                {% if _can_act and not breach.requiresSubjectNotification and not breach.noSubjectNotificationReason %}
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="exemptionModal">
                         <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
-                {% if is_granted('ROLE_MANAGER') and breach.status in ['authority_notified', 'subjects_notified'] %}
+                {% if _can_act and breach.status in ['authority_notified', 'subjects_notified'] %}
                     <form action="{{ path('app_data_breach_close', {id: breach.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('close' ~ breach.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">

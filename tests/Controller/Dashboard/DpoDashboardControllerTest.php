@@ -12,6 +12,7 @@ use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
+use App\Repository\DataSubjectRequestRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
@@ -103,6 +104,7 @@ class DpoDashboardControllerTest extends TestCase
             $this->tisaxAssessment,
             $this->frameworkRepository,
             $this->moduleConfiguration,
+            $this->createStub(DataSubjectRequestRepository::class),
         );
         $this->controller->setContainer($this->container);
     }
@@ -134,9 +136,9 @@ class DpoDashboardControllerTest extends TestCase
             'activities_needing_dpia',
             'activities_due_review',
             'third_country_transfers',
-            // Z.0 — workflow transparency keys
-            'pending_approvals',
+            // Z.0 — workflow transparency; open approvals moved to the "Meine Pflichten" panel (W1)
             'lifecycle_stuck',
+            'open_dsrs',
         ];
         foreach ($requiredKeys as $key) {
             $this->assertArrayHasKey($key, $this->renderedDashboard, "Missing dashboard key: $key");

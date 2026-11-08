@@ -134,7 +134,7 @@ final class RetentionDeletionSource implements DeadlineSource
 
     public function linkOf(object $item): RecordLink
     {
-        return new RecordLink('admin_settings_data_retention', []);
+        return new RecordLink('app_data_retention_overview', []);
     }
 
     public function profile(): DeadlineProfile

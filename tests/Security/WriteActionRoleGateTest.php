@@ -9,6 +9,7 @@ use App\Controller\DataSubjectRequestController;
 use App\Controller\DPIAController;
 use App\Controller\AdminLicensingController;
 use App\Controller\IndustryBaselineController;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Controller\SecurityReportController;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -49,10 +50,15 @@ final class WriteActionRoleGateTest extends TestCase
     public function actionNeedsRole(string $class, string $method, string $role): void
     {
         $roles = array_map(
-            static fn(\ReflectionAttribute $a): mixed => $a->newInstance()->attribute,
+            static fn(\ReflectionAttribute $a): string => (string) $a->newInstance()->attribute,
             (new ReflectionMethod($class, $method))->getAttributes(IsGranted::class),
         );
 
-        self::assertContains($role, $roles, sprintf('%s::%s() must require %s.', $class, $method, $role));
+        // W1: "manager or the one responsible for the record" is the manager gate
+        // plus the named person (DPO handling a request, breach owner) — still
+        // never the read-only auditor role on its own.
+        $accepted = $role === 'ROLE_MANAGER' ? [$role, RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE] : [$role];
+
+        self::assertNotSame([], array_intersect($accepted, $roles), sprintf('%s::%s() must require %s.', $class, $method, $role));
     }
 }

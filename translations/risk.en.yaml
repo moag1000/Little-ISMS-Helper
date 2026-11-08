@@ -415,6 +415,7 @@ risk:
       4: 'Major'
       5: 'Catastrophic'
   acceptance:
+    request_action: Request acceptance
     title: 'Request Risk Acceptance'
     request: 'Risk Acceptance Request'
     justification_label: 'Justification for risk acceptance'

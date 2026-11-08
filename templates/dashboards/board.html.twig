@@ -32,6 +32,9 @@
     {# What top management decides (ISO 27001 5.1, 9.3.3; NIS-2 Art. 20) — first, it is the board's job. #}
     {% include 'management_decision/_board_panel.html.twig' %}
 
+    {# Everything else waiting for this member of top management (risk acceptances, review tasks, training) — same list as My Day #}
+    <div class="mb-4">{% include 'dashboards/_my_obligations.html.twig' %}</div>
+
     {# Executive RAG Status Overview — Aurora .fa-rag-card via macro #}
     <div class="row g-3 mb-4">
         <div class="col-md-3">{{ _fa_rag_card.render({ status: dashboard.rag_status.security,    title: 'board.rag.security'|trans({}, 'dashboards'),    detail: dashboard.rag_details.security }) }}</div>
@@ -325,6 +328,8 @@
             {% endembed %}
         </div>
     </div>
+
+    {% include 'dashboards/_report_downloads.html.twig' %}
 
     {# Last Updated Timestamp #}
     <div class="text-muted text-end small mt-3">

@@ -7,6 +7,8 @@ namespace App\Security\Voter\Authority;
 use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\User;
 use App\Security\Voter\HoldingTreeAccessTrait;
+use App\Service\Responsibility\ResponsibilityResolver;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -30,6 +32,10 @@ final class Nis2RegistrationProfileVoter extends Voter
 
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
+        // The named security / reporting contacts (and their deputy) are reminded
+        // to keep the registration current, so they may view and edit it.
+        #[Autowire(lazy: true)]
+        private readonly ?ResponsibilityResolver $responsibility = null,
     ) {
     }
 
@@ -68,7 +74,8 @@ final class Nis2RegistrationProfileVoter extends Voter
         }
 
         return match ($attribute) {
-            self::VIEW, self::EDIT, self::EXPORT => $this->hasReachableRole($user, 'ROLE_MANAGER'),
+            self::VIEW, self::EDIT, self::EXPORT => $this->hasReachableRole($user, 'ROLE_MANAGER')
+                || ($this->responsibility?->isResponsibleFor($user, $profile) ?? false),
             self::MARK_REPORTED                  => $this->hasReachableRole($user, 'ROLE_ADMIN'),
             default                              => false,
         };

@@ -1,4 +1,9 @@
 training:
+  filter:
+    participant: 'Schulungen von %name%'
+  prefill:
+    board_title: 'Leitungsschulung (NIS-2 Art. 20 Abs. 2)'
+    board_action: 'Leitungsschulung anlegen'
   title: Schulungen
   new: Neue Schulung
   edit: Schulung bearbeiten

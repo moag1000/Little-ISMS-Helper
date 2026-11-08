@@ -8,6 +8,7 @@ my_day:
         review_in_list: 'Confirm in the list'
         standard_dashboard: 'Standard Dashboard'
 
+    board_unassigned_title: 'No top management assigned: give the role "Top management" (ROLE_TOP_MGMT) in user management, or board decisions stay open'
     retention_title: '%count% × %type% will be deleted'
 
     kpi:

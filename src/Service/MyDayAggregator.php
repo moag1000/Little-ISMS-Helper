@@ -19,6 +19,7 @@ use App\Repository\WorkflowInstanceRepository;
 use App\Security\Persona\PersonaResolver;
 use App\Service\Deadline\Obligation;
 use App\Service\Deadline\ObligationInbox;
+use App\Service\Risk\RiskAcceptanceRequest;
 use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -159,10 +160,13 @@ final class MyDayAggregator
             'subtitle'    => $obligation->profile()->normReference ?? $obligation->source->label(),
             'badge'       => $badge,
             'hours_countdown' => $obligation->profile()->urgentHours !== null,
-        ] + ($record instanceof ManagementDecision
+        ] + match (true) {
             // decided right here with the decision dialog (top management)
-            ? ['management_decision_id' => $record->getId()]
-            : []);
+            $record instanceof ManagementDecision => ['management_decision_id' => $record->getId()],
+            // requested risk acceptance: approve/reject dialog (MyDayInboxEnricher keeps it for approvers only)
+            $record instanceof RiskAcceptanceRequest => ['acceptance_risk_id' => $record->risk->getId(), 'priority' => 'high'],
+            default => [],
+        };
     }
 
     /**

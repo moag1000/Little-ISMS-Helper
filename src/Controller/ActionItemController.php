@@ -8,6 +8,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\ActionItem;
 use App\Form\ActionItemType;
 use App\Repository\ActionItemRepository;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\ModuleConfigurationService;
 use App\Service\Planning\ActionItemStatusService;
 use App\Service\Planning\InvalidActionItemTransitionException;
@@ -16,6 +17,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -138,7 +140,7 @@ class ActionItemController extends AbstractController
     }
 
     #[Route('/planning/measures/{id}/edit', name: 'app_planning_action_item_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('edit', 'actionItem')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::EDIT_OR_RESPONSIBLE), 'actionItem')]
     public function edit(Request $request, ActionItem $actionItem): Response
     {
         if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
@@ -188,7 +190,7 @@ class ActionItemController extends AbstractController
     }
 
     #[Route('/planning/measures/{id}/transition', name: 'app_planning_action_item_transition', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('edit', 'actionItem')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::EDIT_OR_RESPONSIBLE), 'actionItem')]
     public function transition(Request $request, ActionItem $actionItem): Response
     {
         if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
