@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Restore;
 
 use App\Doctrine\EntityManagerRecovery;
+use App\Entity\Control;
+use App\Entity\Risk;
 use App\Service\Owner\LegacyOwnerColumns;
 use App\Service\Owner\OwnerTextResolver;
 use App\Service\Supplier\SubcontractorChainRows;
@@ -564,11 +566,28 @@ class RestoreEntityWriter
      * Version20261107230000): Incident.realizedRisks → risk-incident links
      * (materialized), RiskTreatmentPlan.controls → the risk's control list.
      *
+     * Written by plain SQL like the pivot rows, so both ends must lie in the restore scope.
+     *
      * @param array<int, array<string, mixed>> $entities
      * @param array<string, mixed>             $m2mStats
+     * @param string[]                         $warnings
+     * @param int[]                            $scopeIds
      */
-    private function restoreMergedLists(string $entityName, array $entities, array &$m2mStats): void
-    {
+    private function restoreMergedLists(
+        string $entityName,
+        string $entityClass,
+        array $entities,
+        array &$m2mStats,
+        array &$warnings,
+        array $scopeIds,
+    ): void {
+        $guard = $this->tenantGuard();
+        $entities = array_values(array_filter(
+            $entities,
+            static fn (array $data): bool => isset($data['id'])
+                && (is_int($data['id']) || is_string($data['id']))
+                && $guard->mayReference($entityClass, $data['id'], $scopeIds),
+        ));
         if ($entityName === 'Supplier') {
             $this->restoreSubcontractorChains($entities, $m2mStats);
             return;
@@ -584,6 +603,8 @@ class RestoreEntityWriter
         if ($sql === null) {
             return;
         }
+        $targetClass = $entityName === 'Incident' ? Risk::class : Control::class;
+        $dropped = 0;
         [$idsKey, $statement] = $sql;
         $connection = $this->entityManager->getConnection();
         $params = $entityName === 'Incident' ? ['linkedAt' => (new \DateTimeImmutable())->format('Y-m-d H:i:s')] : [];
@@ -596,11 +617,19 @@ class RestoreEntityWriter
             }
             foreach ($data[$idsKey] as $target) {
                 $targetId = is_array($target) ? ($target['id'] ?? null) : $target;
+                if ($targetId !== null && (is_int($targetId) || is_string($targetId))
+                    && !$guard->mayReference($targetClass, $targetId, $scopeIds)) {
+                    ++$dropped;
+                    continue;
+                }
                 if ($targetId !== null) {
                     ++$tuples;
                     $count += (int) $connection->executeStatement($statement, [...$params, 'owner' => $ownerId, 'target' => $targetId]);
                 }
             }
+        }
+        if ($dropped > 0) {
+            $warnings[] = sprintf('%d %s.%s link(s) dropped: they point to records of another organisation', $dropped, $entityName, $idsKey);
         }
         if ($tuples > 0) {
             $m2mStats[$idsKey] = ['pivot' => 'merged (P5)', 'tuples' => $tuples, 'inserted' => $count];
@@ -691,7 +720,7 @@ class RestoreEntityWriter
 
         $connection = $this->entityManager->getConnection();
         $m2mStats = [];
-        $this->restoreMergedLists($entityName, $entities, $m2mStats);
+        $this->restoreMergedLists($entityName, $entityClass, $entities, $m2mStats, $warnings, $scopeIds);
 
         foreach ($classMetadata->getAssociationMappings() as $field => $mapping) {
             $type      = is_array($mapping) ? ($mapping['type'] ?? null)          : ($mapping->type          ?? null);

@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Entity\Asset;
 use App\Entity\Role;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\BackupService;
@@ -117,6 +118,60 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
         self::assertNotNull($ownAsset->getId());
     }
 
+    /**
+     * Old backups carry lists that P5 merged (second AVV flag, subcontractor JSON, realized
+     * risks, plan controls). They are written by plain SQL, so a row carrying a foreign id
+     * must not reach the foreign record either.
+     */
+    #[Test]
+    public function mergedListsOfOldBackupsStayInsideTheOrganisation(): void
+    {
+        $own = $this->tenant('own');
+        $foreign = $this->tenant('foreign');
+        $ownSupplier = $this->supplier('Own Cloud', $own);
+        $foreignSupplier = $this->supplier('Foreign Cloud', $foreign);
+        $this->em->flush();
+        $ownSupplierId = (int) $ownSupplier->getId();
+        $foreignSupplierId = (int) $foreignSupplier->getId();
+
+        $backup = self::getContainer()->get(BackupService::class)->createBackup(false, false, false, $own);
+        $rows = $backup['data']['Supplier'] ?? [];
+        self::assertNotEmpty($rows, 'own supplier is in the organisation backup');
+        $oldFields = [
+            'gdprAvContractSigned' => true,
+            'gdprAvContractDate' => '2026-01-15',
+            'subcontractorChain' => [['name' => 'Sub GmbH', 'country' => 'DE']],
+        ];
+        foreach ($rows as $i => $row) {
+            if (($row['id'] ?? null) === $ownSupplierId) {
+                $rows[$i] = $oldFields + $row;
+            }
+        }
+        $crafted = $oldFields + $rows[0];
+        $crafted['id'] = $foreignSupplierId;
+        $crafted['subcontractorChain'] = [['name' => 'Injected Ltd']];
+        $rows[] = $crafted;
+        $backup['data']['Supplier'] = $rows;
+        $backup['metadata']['sha256'] = hash('sha256', (string) json_encode($backup['data']));
+
+        self::getContainer()->get(RestoreService::class)
+            ->restoreFromBackup($backup, ['best_effort' => true], $own);
+        $this->em->clear();
+
+        $connection = $this->em->getConnection();
+        $countRows = static fn (int $supplierId): int => (int) $connection->fetchOne(
+            'SELECT COUNT(*) FROM dora_subcontractor WHERE supplier_id = ?',
+            [$supplierId],
+        );
+        self::assertSame(0, $countRows($foreignSupplierId), 'no subcontractor rows on the foreign supplier');
+        self::assertFalse(
+            $this->em->find(Supplier::class, $foreignSupplierId)?->isHasDPA() ?? true,
+            'the foreign AVV flag is not set',
+        );
+        self::assertGreaterThan(0, $countRows($ownSupplierId), 'the own old chain becomes rows');
+        self::assertTrue($this->em->find(Supplier::class, $ownSupplierId)?->isHasDPA() ?? false, 'the own old AVV flag folds in');
+    }
+
     private function tenant(string $label): Tenant
     {
         $suffix = substr(uniqid(), -8);
@@ -139,5 +194,13 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
         $this->em->persist($asset);
 
         return $asset;
+    }
+
+    private function supplier(string $name, Tenant $tenant): Supplier
+    {
+        $supplier = (new Supplier())->setName($name)->setDescription('Hosting')->setTenant($tenant);
+        $this->em->persist($supplier);
+
+        return $supplier;
     }
 }
