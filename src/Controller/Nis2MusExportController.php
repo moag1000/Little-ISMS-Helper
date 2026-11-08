@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Attribute\RequiresModule;
 use App\Entity\Incident;
+use App\Service\Incident\DoraIncidentReportExport;
 use App\Service\Nis2MusExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * Download endpoints for the BSI MUS (Meldeumgebung) NIS2 Article 23
- * incident-reporting payloads in JSON form.
+ * incident-reporting payloads and the DORA Art. 19 reports in JSON form.
  */
 #[IsGranted('ROLE_MANAGER')]
 #[RequiresModule('nis2_dora')]
@@ -22,6 +23,7 @@ class Nis2MusExportController extends AbstractController
 {
     public function __construct(
         private readonly Nis2MusExportService $nis2MusExportService,
+        private readonly DoraIncidentReportExport $doraExport,
     ) {
     }
 
@@ -86,6 +88,29 @@ class Nis2MusExportController extends AbstractController
         ];
 
         return $this->jsonDownload($payload, $incident, 'bundle');
+    }
+
+    /**
+     * DORA Art. 19 (4): initial notification, intermediate or final report
+     * of a major ICT-related incident as JSON for the supervisor's template.
+     */
+    #[Route(
+        '/dora/incident-report/{id}/{phase}',
+        name: 'app_dora_incident_report_export',
+        requirements: ['id' => '\d+', 'phase' => 'initial|intermediate|final'],
+        methods: ['GET'],
+    )]
+    public function doraReport(Incident $incident, string $phase): JsonResponse
+    {
+        $response = new JsonResponse($this->doraExport->build($incident, $phase));
+        $response->setEncodingOptions(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $response->headers->set('Content-Disposition', sprintf(
+            'attachment; filename="dora-%s-%s.json"',
+            $phase,
+            $incident->getIncidentNumber() ?? (string) $incident->getId(),
+        ));
+
+        return $response;
     }
 
     /**

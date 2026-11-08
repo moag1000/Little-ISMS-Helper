@@ -28,3 +28,9 @@ incident_sla:
     saved: 'SLA saved.'
     hint:
         regulatory: 'Regulatory deadlines (GDPR Art. 33, NIS2 Art. 23, DORA Art. 19) apply additionally and remain fixed. Values set here are internal business SLAs.'
+    saved_significance: 'Thresholds saved.'
+    significance:
+        title: 'NIS-2 pre-check: thresholds for significant incidents'
+        hint: 'From these values the pre-check on an incident suggests the reporting duty (NIS-2 Art. 23 (3)). Default: EUR 500,000 and 100 persons per Implementing Regulation (EU) 2024/2690 Art. 3. The entity decides.'
+        financial_loss_eur: 'Financial loss from (EUR)'
+        affected_persons: 'Affected persons from'

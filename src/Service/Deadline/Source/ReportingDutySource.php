@@ -31,6 +31,7 @@ final class ReportingDutySource extends EntityDeadlineSource
         'nis2_24h' => 'NIS-2-Frühwarnung (24 h)',
         'nis2_72h' => 'NIS-2-Meldung (72 h)',
         'nis2_1mo' => 'NIS-2-Abschlussbericht (1 Monat)',
+        'nis2_interim' => 'NIS-2-Zwischenbericht auf Anforderung',
         'dora_4h' => 'DORA-Erstmeldung',
         'dora_72h' => 'DORA-Zwischenbericht (72 h)',
         'dora_1mo' => 'DORA-Abschlussbericht (1 Monat)',

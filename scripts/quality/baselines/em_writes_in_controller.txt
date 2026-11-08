@@ -21,8 +21,8 @@ src/Controller/Admin/DataRepairController.php:659
 src/Controller/Admin/DataRepairController.php:708
 src/Controller/Admin/DataRepairController.php:1072
 src/Controller/Admin/DataRepairController.php:1077
-src/Controller/Admin/IncidentSlaConfigController.php:55
-src/Controller/Admin/IncidentSlaConfigController.php:103
+src/Controller/Admin/IncidentSlaConfigController.php:58
+src/Controller/Admin/IncidentSlaConfigController.php:107
 src/Controller/Admin/KpiThresholdConfigController.php:107
 src/Controller/Admin/KpiThresholdConfigController.php:108
 src/Controller/Admin/KpiThresholdConfigController.php:144

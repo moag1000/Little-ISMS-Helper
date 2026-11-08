@@ -59,6 +59,29 @@
                 {% endblock %}
             {% endembed %}
             {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'small mb-0 mt-3', body: 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }) }}
+
+            {% if is_module_active('nis2_dora') %}
+                <section id="nis2-significance" class="card mt-4">
+                    <div class="card-body">
+                        <h2 class="h5">{{ 'incident_sla.significance.title'|trans({}, 'incident_sla') }}</h2>
+                        <p class="text-muted small">{{ 'incident_sla.significance.hint'|trans({}, 'incident_sla') }}</p>
+                        <form method="post" action="{{ path('app_admin_incident_sla_significance') }}" class="row g-3 align-items-end">
+                            <input type="hidden" name="_token" value="{{ csrf_token('incident_sla_significance') }}">
+                            <div class="col-md-4">
+                                <label class="form-label" for="nis2-financial-loss">{{ 'incident_sla.significance.financial_loss_eur'|trans({}, 'incident_sla') }}</label>
+                                <input type="number" min="1" step="1" class="form-control" id="nis2-financial-loss" name="financial_loss_eur" value="{{ nis2_significance.financial_loss_eur }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="nis2-affected-persons">{{ 'incident_sla.significance.affected_persons'|trans({}, 'incident_sla') }}</label>
+                                <input type="number" min="1" step="1" class="form-control" id="nis2-affected-persons" name="affected_persons" value="{{ nis2_significance.affected_persons }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'common.save'|trans({}, 'messages') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            {% endif %}
         </div>
     </div>
 </div>
