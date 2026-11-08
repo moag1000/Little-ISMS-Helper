@@ -64,18 +64,19 @@ final class ComplianceMappingBulkLifecycleTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        // One flush per row: a row that cannot go (audit-log FK of a user) must not keep the
+        // mappings behind, they would count in other tests' organisation statistics.
+        $this->em->clear();
         foreach (array_reverse($this->created) as $entity) {
             try {
                 $row = $this->em->find($entity::class, $entity->getId());
                 if ($row !== null) {
                     $this->em->remove($row);
+                    $this->em->flush();
                 }
             } catch (\Throwable) {
+                $this->em->clear();
             }
-        }
-        try {
-            $this->em->flush();
-        } catch (\Throwable) {
         }
         parent::tearDown();
     }
