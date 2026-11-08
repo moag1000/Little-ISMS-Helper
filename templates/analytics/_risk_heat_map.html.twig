@@ -19,9 +19,9 @@
          data-controller="heat-map"
          data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}"
          data-heat-map-locale-value="{{ app.request.locale|default('de') }}"
-         data-heat-map-band-critical-min-value="{{ risk_bands(scaleTenant|default(null)).critical.min }}"
-         data-heat-map-band-high-min-value="{{ risk_bands(scaleTenant|default(null)).high.min }}"
-         data-heat-map-band-medium-min-value="{{ risk_bands(scaleTenant|default(null)).medium.min }}">
+         data-heat-map-band-critical-min-value="{{ risk_bands(scaleTenant).critical.min }}"
+         data-heat-map-band-high-min-value="{{ risk_bands(scaleTenant).high.min }}"
+         data-heat-map-band-medium-min-value="{{ risk_bands(scaleTenant).medium.min }}">
 
     <div class="fa-section__header">
         <h2 class="fa-section__title">

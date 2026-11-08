@@ -83,7 +83,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <ul class="list-unstyled small">
-                        <li><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ requirement.mappedControls|length }} {{ 'compliance.requirement.info.mapped_controls'|trans({}, 'compliance') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ mapped_controls|length }} {{ 'compliance.requirement.info.mapped_controls'|trans({}, 'compliance') }}</li>
                         <li><i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} {{ 'compliance.requirement.info.sub_requirements'|trans({}, 'compliance') }}</li>
                         <li><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ 'common.created'|trans({}, 'messages') }} {{ requirement.createdAt|fa_date }}</li>
                     </ul>

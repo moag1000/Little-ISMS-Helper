@@ -25,7 +25,7 @@
         actions: [
             { label: 'processing_activity.button.dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-dashboard', href: path('app_processing_activity_dashboard') },
             { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-file-pdf', href: path('app_processing_activity_export_pdf'), attrs: { 'data-turbo': 'false' } },
-            { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#vvtExportModal', 'data-turbo': 'false' } },
+            { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: '#', attrs: { 'data-controller': 'fa-modal-dispatcher', 'data-action': 'click->fa-modal-dispatcher#open', 'data-fa-modal-id': 'vvtExportModal', 'data-turbo': 'false' } },
             { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}

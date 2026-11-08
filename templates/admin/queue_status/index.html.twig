@@ -170,7 +170,7 @@
                                     </td>
                                     <td class="fa-table__cell">
                                         {% if job.updated_at %}
-                                            <time datetime="{{ job.updated_at|date('c') }}" title="{{ job.updated_at|date('Y-m-d H:i:s') }}">
+                                            <time datetime="{{ job.updated_at|date('c') }}" title="{{ job.updated_at|fa_datetime(true) }}">
                                                 {{ job.updated_at|fa_datetime(true) }}
                                             </time>
                                         {% else %}

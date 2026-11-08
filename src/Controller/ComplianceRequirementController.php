@@ -365,7 +365,7 @@ class ComplianceRequirementController extends AbstractController
 
         return $this->render('compliance/requirement/edit.html.twig', [
             'requirement' => $complianceRequirement,
-            'form' => $form,
+            'form' => $form, 'mapped_controls' => ($tenant = $this->tenantContext->getCurrentTenant()) === null ? [] : $this->fulfillmentRuleEngine->controlsFor($complianceRequirement, $tenant), // the organisation's controls, never the global requirement's
         ], new Response(status: $status));
     }
 

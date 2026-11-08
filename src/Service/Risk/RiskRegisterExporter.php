@@ -26,11 +26,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class RiskRegisterExporter
 {
-    /** Risk score at or above which a risk counts as critical / high / medium. */
-    private const int CRITICAL = 15;
-    private const int HIGH = 8;
-    private const int MEDIUM = 4;
-
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly ExcelExportService $excelExportService,
@@ -81,12 +76,8 @@ class RiskRegisterExporter
     public function buildCsv(array $risks): string
     {
         $t = fn(string $key): string => $this->translator->trans('risk.export.' . $key, [], 'risk');
-        $level = static fn(int $score): string => match (true) {
-            $score >= self::CRITICAL => $t('level.critical'),
-            $score >= self::HIGH => $t('level.high'),
-            $score >= self::MEDIUM => $t('level.medium'),
-            default => $t('level.low'),
-        };
+        // Band edges are the risk's organisation's (Risikokriterien), see RiskMatrixThresholds.
+        $level = static fn(int $score, Risk $risk): string => $t('level.' . RiskMatrixThresholds::classify($score, $risk->getTenant()));
 
         $rows = [array_map($t, [
             'header.id', 'header.title', 'header.description', 'header.threat', 'header.vulnerability',
@@ -109,11 +100,11 @@ class RiskRegisterExporter
                 $risk->getProbability(),
                 $risk->getImpact(),
                 $riskScore,
-                $level($riskScore),
+                $level($riskScore, $risk),
                 $risk->getResidualProbability(),
                 $risk->getResidualImpact(),
                 $residualScore,
-                $level($residualScore),
+                $level($residualScore, $risk),
                 $this->translatedOrRaw('risk.export.treatment.', $risk->getTreatmentStrategy()->value ?? ''),
                 $this->translatedOrRaw('risk.export.status.', $risk->getStatus()->value ?? ''),
                 $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
@@ -188,7 +179,7 @@ class RiskRegisterExporter
         $conditionalFormatting = [6 => $levelColors, 10 => $levelColors];
 
         $sheets = ['Alle Risiken' => $risks];
-        $criticalHigh = array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= self::HIGH);
+        $criticalHigh = array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::highMin($r->getTenant()));
         if ($criticalHigh !== []) {
             $sheets['Kritische & Hohe Risiken'] = $criticalHigh;
         }
@@ -257,12 +248,7 @@ class RiskRegisterExporter
         $counts = ['total' => count($risks), 'critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
         foreach ($risks as $risk) {
             $score = $risk->getRiskScore();
-            $counts[match (true) {
-                $score >= self::CRITICAL => 'critical',
-                $score >= self::HIGH => 'high',
-                $score >= self::MEDIUM => 'medium',
-                default => 'low',
-            }]++;
+            $counts[RiskMatrixThresholds::classify($score, $risk->getTenant())]++;
         }
 
         return $counts;
@@ -273,10 +259,10 @@ class RiskRegisterExporter
      */
     private function excelRow(Risk $risk): array
     {
-        $level = static fn(int $score): string => match (true) {
-            $score >= self::CRITICAL => 'Kritisch',
-            $score >= self::HIGH => 'Hoch',
-            $score >= self::MEDIUM => 'Mittel',
+        $level = static fn(int $score): string => match (RiskMatrixThresholds::classify($score, $risk->getTenant())) {
+            'critical' => 'Kritisch',
+            'high' => 'Hoch',
+            'medium' => 'Mittel',
             default => 'Niedrig',
         };
         $riskScore = $risk->getRiskScore();
@@ -289,11 +275,11 @@ class RiskRegisterExporter
             $risk->getProbability(),
             $risk->getImpact(),
             $riskScore,
-            $level($riskScore),
+            $level($riskScore, $risk),
             $risk->getResidualProbability(),
             $risk->getResidualImpact(),
             $residualScore,
-            $level($residualScore),
+            $level($residualScore, $risk),
             match ($risk->getTreatmentStrategy()) {
                 TreatmentStrategy::Accept => 'Akzeptieren',
                 TreatmentStrategy::Mitigate => 'Mindern',

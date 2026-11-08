@@ -29,7 +29,7 @@
         subtitle: 'processing_activity.show.subtitle'|trans({}, 'privacy'),
         actions: [
             { label: 'Edit',         variant: 'primary', icon: 'ui-edit',     href: path('app_processing_activity_edit', {id: processing_activity.id}) },
-            { label: 'Clone',        variant: 'ghost',   icon: 'files',      href: '#', attrs: { 'data-action': 'clone' } },
+            { label: 'Clone',        variant: 'ghost',   icon: 'files',      href: '#', attrs: { 'data-pa-action': 'clone' } },
             { label: 'Back to List', variant: 'ghost',   icon: 'util-arrow-left', href: path('app_processing_activity_index') }
         ]
     }) }}
@@ -452,7 +452,7 @@
     </form>
 
 <script nonce="{{ csp_nonce() }}">
-document.querySelector('[data-action="clone"]')?.addEventListener('click', async (e) => {
+document.querySelector('[data-pa-action="clone"]')?.addEventListener('click', async (e) => {
     e.preventDefault();
     if (await window.faConfirm('{{ 'processing_activity.confirm.clone'|trans({}, 'privacy') }}')) {
         document.getElementById('cloneForm').submit();
