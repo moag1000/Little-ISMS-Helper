@@ -343,7 +343,7 @@ class ApiResourceGateway
     }
 
     /**
-     * @return array<string, array{class: class-string, collection: ?string, item: ?string, description: ?string, filters: list<string>}>
+     * @return array<string, array{class: class-string, collection: ?string, item: ?string, description: ?string, filters: list<string>, create: ?string, update: ?string, update_method: ?string, write_groups: list<string>}>
      */
     private function all(): array
     {
