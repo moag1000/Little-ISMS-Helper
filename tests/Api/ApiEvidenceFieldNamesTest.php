@@ -54,6 +54,8 @@ final class ApiEvidenceFieldNamesTest extends KernelTestCase
     private const array FORM_EDITABLE_EVIDENCE = [
         'App\Entity\Risk::decisionApprovedByUser' => 'no workflow writes it: the form is where the 6.1.3 decision approval is documented',
         'App\Entity\Risk::decisionApprovalDate' => 'no workflow writes it: the form is where the 6.1.3 decision approval is documented',
+        'App\Entity\Control::implementationStatus' => 'S11: set by a person in the control form / SoA (feeds fulfilment); API and assistant may not',
+        'App\Entity\Control::implementationPercentage' => 'S11: set by a person in the control form / SoA (feeds fulfilment); API and assistant may not',
         // Pre-existing at T (wave 7): the form documents by hand what a workflow or action also writes.
         // Whether each stays hand-editable is open (reported to the coordination); a NEW one fails.
         'App\Entity\Incident::closedAt' => 'open since T',
