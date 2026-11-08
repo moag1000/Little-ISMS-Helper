@@ -26,6 +26,7 @@ enum RegisterType: string
     case ROLE = 'role';
     case COMPETENCE = 'competence';
     case COMMUNICATION = 'communication';
+    case IMPROVEMENT = 'improvement';
 
     /** Optional entry fields, besides title, description, owner and review date. */
     public const array OPTIONAL_FIELDS = ['category', 'rating', 'reference', 'frequency', 'effectiveFrom'];
@@ -40,6 +41,7 @@ enum RegisterType: string
             self::ROLE => 'ISO 27001 5.3 · NIS-2 Art. 20',
             self::COMPETENCE => 'ISO 27001 7.2 · NIS-2 Art. 20 (2)',
             self::COMMUNICATION => 'ISO 27001 7.4',
+            self::IMPROVEMENT => 'ISO 27001 10.1 · 9.3.2 g',
         };
     }
 
@@ -58,6 +60,7 @@ enum RegisterType: string
             self::ROLE => ['effectiveFrom'],
             self::COMPETENCE => ['category', 'reference'],
             self::COMMUNICATION => ['category', 'frequency', 'reference'],
+            self::IMPROVEMENT => ['category', 'rating'],
         };
     }
 
@@ -80,6 +83,7 @@ enum RegisterType: string
             self::SCOPE_INTERFACE => ['supplier', 'customer', 'group', 'authority', 'it_service', 'other'],
             self::COMPETENCE => ['basic', 'intermediate', 'expert'],
             self::COMMUNICATION => ['email', 'meeting', 'intranet', 'training', 'report', 'other'],
+            self::IMPROVEMENT => ['management_review', 'audit', 'incident', 'exercise', 'other'],
             default => [],
         };
     }
@@ -105,6 +109,7 @@ enum RegisterType: string
             self::ROLE => ['competence_entry', 'document'],
             self::COMPETENCE => ['training'],
             self::COMMUNICATION => ['interested_party', 'document'],
+            self::IMPROVEMENT => ['risk', 'objective', 'document'],
         };
     }
 
@@ -125,7 +130,7 @@ enum RegisterType: string
     public function reviewMonths(): int
     {
         return match ($this) {
-            self::COMMUNICATION => 3,
+            self::COMMUNICATION, self::IMPROVEMENT => 3,
             default => 12,
         };
     }
@@ -140,6 +145,7 @@ enum RegisterType: string
             self::ROLE => 'nav-users',
             self::COMPETENCE => 'nav-stars',
             self::COMMUNICATION => 'nav-chat-quote',
+            self::IMPROVEMENT => 'util-arrow-up',
         };
     }
 

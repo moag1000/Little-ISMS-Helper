@@ -10,6 +10,7 @@ use App\Entity\ISMSObjective;
 use App\Entity\ManagementReview;
 use App\Entity\RiskApprovalConfig;
 use App\Entity\SoaSnapshot;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Enum\ManagementDecisionType;
 use App\Repository\ControlRepository;
@@ -19,6 +20,7 @@ use App\Repository\ManagementReviewRepository;
 use App\Repository\RiskAppetiteRepository;
 use App\Repository\RiskApprovalConfigRepository;
 use App\Repository\SoaSnapshotRepository;
+use App\Repository\SupplierRepository;
 use App\Service\RiskApprovalConfigResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -42,6 +44,7 @@ class DecisionProposalBuilder
         private readonly ISMSObjectiveRepository $objectiveRepository,
         private readonly ManagementReviewRepository $reviewRepository,
         private readonly SoaSnapshotRepository $soaSnapshotRepository,
+        private readonly ?SupplierRepository $supplierRepository = null,
     ) {
     }
 
@@ -54,6 +57,12 @@ class DecisionProposalBuilder
             ManagementDecisionType::Objectives => $this->objectives($tenant, $locale),
             ManagementDecisionType::Resources => $this->resources($tenant, $locale),
             ManagementDecisionType::Nis2Measures => $this->nis2Measures($tenant, $locale),
+            ManagementDecisionType::DoraIctFramework => $this->doraFramework($tenant, $locale),
+            ManagementDecisionType::DoraStrategy => new DecisionProposal(
+                $this->t('proposal.title.dora_strategy', [], $locale),
+                $this->t('proposal.dora_strategy.body', [], $locale),
+            ),
+            ManagementDecisionType::DoraThirdParty => $this->doraThirdParty($tenant, $locale),
             default => new DecisionProposal($this->t('proposal.title.' . $type->value, [], $locale), ''),
         };
     }
@@ -250,6 +259,37 @@ class DecisionProposalBuilder
             $this->t('proposal.nis2_measures.body', [
                 '%implemented%' => count($implemented),
                 '%applicable%' => count($applicable),
+            ], $locale),
+        );
+    }
+
+    private function doraFramework(Tenant $tenant, ?string $locale): DecisionProposal
+    {
+        $applicable = array_filter(
+            $this->controlRepository->findBy(['tenant' => $tenant]),
+            static fn (Control $c): bool => $c->isApplicable() !== false,
+        );
+        $implemented = array_filter($applicable, static fn (Control $c): bool => $c->getImplementationStatus() === 'implemented');
+
+        return new DecisionProposal(
+            $this->t('proposal.title.dora_ict_framework', [], $locale),
+            $this->t('proposal.dora_ict_framework.body', [
+                '%implemented%' => count($implemented),
+                '%applicable%' => count($applicable),
+            ], $locale),
+        );
+    }
+
+    private function doraThirdParty(Tenant $tenant, ?string $locale): DecisionProposal
+    {
+        $suppliers = $this->supplierRepository?->findByTenantAndDoraRelevant($tenant) ?? [];
+
+        return new DecisionProposal(
+            $this->t('proposal.title.dora_third_party', [], $locale),
+            $this->t('proposal.dora_third_party.body', [
+                '%total%' => count($suppliers),
+                '%critical%' => count(array_filter($suppliers, static fn (Supplier $s): bool => $s->getIctCriticality() === 'critical')),
+                '%exit%' => count(array_filter($suppliers, static fn (Supplier $s): bool => $s->hasExitStrategy())),
             ], $locale),
         );
     }

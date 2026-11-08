@@ -20,7 +20,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Standing approvals the norms expect from top management (policy, risk
- * criteria, SoA, objectives, resources; NIS-2 measures) that are missing or
+ * criteria, SoA, objectives, resources; NIS-2 measures; DORA framework,
+ * strategy and third-party strategy) that are missing or
  * end within 60 days, and no proposal is waiting yet. The ISB prepares the
  * proposal; the board then decides it through {@see ManagementDecisionDeadlineSource}.
  * The board panel reads the same list ({@see self::missing()}).
@@ -71,6 +72,9 @@ final class StandingApprovalSource implements DeadlineSource
         $types = self::STANDING;
         if ($this->modules !== null && in_array('nis2_dora', ($this->modules)()->getActiveModulesForTenant($tenant), true)) {
             $types[] = ManagementDecisionType::Nis2Measures;
+            if ($tenant->isDoraObligated()) {
+                array_push($types, ...ManagementDecisionType::dora());
+            }
         }
 
         return $types;

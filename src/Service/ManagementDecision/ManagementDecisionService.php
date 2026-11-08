@@ -44,6 +44,9 @@ class ManagementDecisionService
         ManagementDecisionType::Soa,
         ManagementDecisionType::Nis2Measures,
         ManagementDecisionType::Objectives,
+        ManagementDecisionType::DoraIctFramework,
+        ManagementDecisionType::DoraStrategy,
+        ManagementDecisionType::DoraThirdParty,
     ];
 
     public function __construct(

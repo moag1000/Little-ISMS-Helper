@@ -6,7 +6,7 @@ namespace App\Enum;
 
 /**
  * What top management decides on (ISO 27001 5.1, 5.2, 6.1.2, 6.1.3, 6.2, 7.1,
- * 9.3.3; NIS-2 Art. 20 (1)). One record type for every decision the norms
+ * 9.3.3; NIS-2 Art. 20 (1); DORA Art. 5 (2)). One record type for every decision the norms
  * reserve for top management, so the board sees them in one list with evidence.
  */
 enum ManagementDecisionType: string
@@ -29,6 +29,12 @@ enum ManagementDecisionType: string
     case Resources = 'resources';
     /** Information security objectives (5.1 a, 6.2). */
     case Objectives = 'objectives';
+    /** ICT risk-management framework approved by the management body (DORA Art. 5 (2), 6 (1)). */
+    case DoraIctFramework = 'dora_ict_framework';
+    /** Digital operational resilience strategy (DORA Art. 6 (8)). */
+    case DoraStrategy = 'dora_strategy';
+    /** Strategy on ICT third-party risk (DORA Art. 28 (2)). */
+    case DoraThirdParty = 'dora_third_party';
     case Other = 'other';
 
     public function label(): string
@@ -48,6 +54,9 @@ enum ManagementDecisionType: string
             self::Nis2Measures => 'NIS-2 Art. 20 (1)',
             self::Resources => 'ISO 27001 5.1 c, 7.1',
             self::Objectives => 'ISO 27001 5.1 a, 6.2',
+            self::DoraIctFramework => 'DORA Art. 5 (2), 6 (1)',
+            self::DoraStrategy => 'DORA Art. 6 (8)',
+            self::DoraThirdParty => 'DORA Art. 28 (2)',
             self::Other => 'ISO 27001 5.1',
         };
     }
@@ -56,7 +65,9 @@ enum ManagementDecisionType: string
     public function validityMonths(): ?int
     {
         return match ($this) {
-            self::Policy, self::RiskCriteria, self::Soa, self::Nis2Measures, self::Objectives => 12,
+            // DORA Art. 6 (5), 28 (2): framework and third-party strategy are reviewed at least once a year.
+            self::Policy, self::RiskCriteria, self::Soa, self::Nis2Measures, self::Objectives,
+            self::DoraIctFramework, self::DoraStrategy, self::DoraThirdParty => 12,
             default => null,
         };
     }
@@ -69,14 +80,27 @@ enum ManagementDecisionType: string
      *
      * @return list<self>
      */
-    public static function proposable(bool $nis2Active): array
+    public static function proposable(bool $nis2Active, bool $doraObligated = false): array
     {
         $types = [self::Policy, self::RiskCriteria, self::Soa, self::Objectives, self::Resources];
         if ($nis2Active) {
             $types[] = self::Nis2Measures;
         }
+        if ($nis2Active && $doraObligated) {
+            array_push($types, ...self::dora());
+        }
         $types[] = self::Other;
 
         return $types;
+    }
+
+    /**
+     * What DORA reserves for the management body (Art. 5 (2)).
+     *
+     * @return list<self>
+     */
+    public static function dora(): array
+    {
+        return [self::DoraIctFramework, self::DoraStrategy, self::DoraThirdParty];
     }
 }

@@ -51,7 +51,7 @@ final class RegisterCatalog
     private const array TYPE_ORDER = [
         'issue_external' => '4.1', 'issue_internal' => '4.1', 'legal_requirement' => '4.2',
         'scope_interface' => '4.3', 'role' => '5.3', 'opportunity' => '6.1.1',
-        'competence' => '7.2', 'communication' => '7.4',
+        'competence' => '7.2', 'communication' => '7.4', 'improvement' => '10.1',
     ];
 
     public function __construct(

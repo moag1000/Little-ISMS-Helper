@@ -6,13 +6,23 @@ namespace App\Service\Suggestion;
 
 use App\Entity\Asset;
 use App\Entity\AuditFinding;
+use App\Entity\BCExercise;
+use App\Entity\BusinessContinuityPlan;
+use App\Entity\BusinessProcess;
+use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use App\Entity\CorrectiveAction;
 use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\Incident;
+use App\Entity\InternalAudit;
+use App\Entity\InterestedParty;
+use App\Entity\IsmsRegisterEntry;
+use App\Entity\ManagementDecision;
+use App\Entity\ProcessingActivity;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Suggestion;
+use App\Entity\Supplier;
 use App\Entity\Vulnerability;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -32,6 +42,16 @@ final readonly class SuggestionLinks
         Vulnerability::class => 'app_vulnerability_show',
         AuditFinding::class => 'app_audit_finding_show',
         CorrectiveAction::class => 'app_corrective_action_show',
+        BusinessProcess::class => 'app_business_process_show',
+        BusinessContinuityPlan::class => 'app_bc_plan_show',
+        BCExercise::class => 'app_bc_exercise_show',
+        InterestedParty::class => 'app_interested_party_show',
+        IsmsRegisterEntry::class => 'app_register_entry_show',
+        ComplianceRequirement::class => 'app_compliance_requirement_show',
+        Supplier::class => 'app_supplier_show',
+        ProcessingActivity::class => 'app_processing_activity_show',
+        InternalAudit::class => 'app_audit_show',
+        ManagementDecision::class => 'app_management_decision_show',
     ];
 
     public function __construct(private UrlGeneratorInterface $urls)

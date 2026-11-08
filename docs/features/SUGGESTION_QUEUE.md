@@ -81,6 +81,18 @@ field headed "Label:"; a removed heading keeps the drafted value), e.g.
 | `ai.board_summary` | ManagementReview | `summary` (≥ 3 inputs of 9.3.2) |
 | `ai.nonconformity_statement` | AuditFinding (major/minor NC) | `description` (unchanged notes only), `evidence` if empty |
 | `ai.questionnaire_evaluation` | Supplier (latest answered questionnaire) | appended to `assessmentFindings` |
+| `ai.bc_plan_from_bia` | BusinessProcess (BIA, no plan) | creates a `BusinessContinuityPlan` in draft: activation criteria, recovery procedures, communication; RTO/RPO via `BusinessContinuityPlanType::takeTargetsFromBia()`. ROLE_BCM_OFFICER, `bcm` |
+| `ai.bc_exercise_evaluation` | BCExercise (held, completed/in progress) | empty `results`, `whatWentWell`, `lessonsLearned` only. ROLE_BCM_OFFICER, `bcm` |
+| `ai.legal_requirement_from_party` | InterestedParty (free-text requirements, no `legalRequirements`, no register entry) | one `IsmsRegisterEntry` (LEGAL_REQUIREMENT) via `RegisterProposalAdopter`, origin `ai.party.<id>`, linked to the party. ROLE_COMPLIANCE_MANAGER/ISB, `interested_parties` |
+| `ai.requirement_mapping` | ComplianceRequirement of an active framework without own control (nightly only: a catalogue row has no tenant, so no draft button) | links ≤ 5 own controls (model sees ≤ 40) through `ControlRequirementLinkKind::link()`; never a global `ComplianceMapping` row. `compliance` |
+| `ai.vvt_from_supplier` | Supplier (`hasDPA`, no ProcessingActivity names it) | creates a `ProcessingActivity` in draft, supplier as processor; purpose, data subjects/categories from the form's value lists, retention; legal basis defaults to contract. ROLE_DPO, `privacy` |
+| `ai.evidence_fit` | Control with evidence documents | a `Comment` ("Control") with verdict + audit note; stale when the evidence list changed. ROLE_ISB/CISO, `audits` |
+| `ai.audit_sample` | InternalAudit (planned / in progress) | appends the sample (controls and scoped assets with reason) to `observations`. ROLE_ISB/CISO, `audits` |
+| `ai.risk_acceptance_explained` | Risk (strategy accept, justification given, not formally accepted) | a `Comment` ("Risk") with the plain-language explanation; never accepts the risk. ROLE_RISK_MANAGER/CISO (+ risk owner), `risks` |
+| `ai.decision_rationale` | ManagementDecision (pending, empty `proposal`) | fills `proposal` only while empty; status stays with the decision workflow. ROLE_ISB/CISO, `core` |
+
+Auditors are read-only (`ReadOnlyRoleSubscriber` does not allow `app_suggestion_*`), so audit drafts are decided
+by ISB/CISO. Accepted notes become comments through `SuggestionNote`.
 
 ## Rules
 

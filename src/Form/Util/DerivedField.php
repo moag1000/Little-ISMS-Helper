@@ -10,13 +10,18 @@ use Symfony\Component\Form\FormEvents;
 
 /**
  * A value the tool derives from other records (P5): treatment progress from
- * the controls, asset availability from the BIA. While a derivation applies
+ * the controls, asset availability from the BIA, control effectiveness from
+ * the incidents on its assets. While a derivation applies
  * the field is read-only and says where the value comes from; changes arrive
  * as a suggestion in the queue. Without a derivation the field stays editable.
  */
 final class DerivedField
 {
-    private const array KEPT_OPTIONS = ['label', 'attr', 'row_attr', 'label_attr', 'translation_domain'];
+    /** Options carried over; choice options only exist on choice fields and drop out for the others. */
+    private const array KEPT_OPTIONS = [
+        'label', 'attr', 'row_attr', 'label_attr', 'translation_domain',
+        'choices', 'choice_translation_domain', 'choice_label', 'placeholder',
+    ];
 
     /**
      * @param callable(mixed): (array{0: string, 1: array<string, string|int>}|null) $derivedFrom

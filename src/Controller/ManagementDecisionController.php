@@ -81,7 +81,7 @@ final class ManagementDecisionController extends AbstractController
     public function new(Request $request): Response
     {
         $tenant = $this->tenant();
-        $proposable = ManagementDecisionType::proposable($this->modules->isModuleActive('nis2_dora'));
+        $proposable = ManagementDecisionType::proposable($this->modules->isModuleActive('nis2_dora'), $tenant->isDoraObligated());
         $type = ManagementDecisionType::tryFrom((string) $request->query->get('type', ''));
         if ($type === null || !in_array($type, $proposable, true)) {
             return $this->render('management_decision/new.html.twig', [
