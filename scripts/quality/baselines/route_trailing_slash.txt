@@ -15,7 +15,7 @@ src/Controller/ComplianceRequirementController.php:44:/compliance/requirement/
 src/Controller/ContextController.php:30:/context/
 src/Controller/CrisisTeamController.php:36:/crisis-team/
 src/Controller/DPIAController.php:56:/dpia/
-src/Controller/DeploymentWizardController.php:83:/setup/
+src/Controller/DeploymentWizardController.php:82:/setup/
 src/Controller/DocumentController.php:77:/document/
 src/Controller/ISMSObjectiveController.php:34:/objective/
 src/Controller/IncidentController.php:64:/incident/

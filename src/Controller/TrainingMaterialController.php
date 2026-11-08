@@ -42,23 +42,21 @@ final class TrainingMaterialController extends AbstractController
     {
         $entry = null;
         foreach ($training->getMaterialFiles() as $file) {
-            if (($file['filename'] ?? null) === $filename) {
+            if ($file['filename'] === $filename) {
                 $entry = $file;
                 break;
             }
         }
         $uploads = new ProtectedUploads($this->projectDir);
-        $path = $entry !== null
-            ? $uploads->resolve($uploads->storedPath(ProtectedUploads::TRAINING_MATERIALS, $filename))
-            : null;
-        if ($path === null) {
+        $path = $uploads->resolve($uploads->storedPath(ProtectedUploads::TRAINING_MATERIALS, $filename));
+        if ($entry === null || $path === null) {
             throw $this->createNotFoundException('Material not found.');
         }
 
         $response = new BinaryFileResponse($path);
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            (string) preg_replace('/[^\w\s.\-]/', '', (string) ($entry['originalName'] ?? $filename)) ?: $filename,
+            (string) preg_replace('/[^\w\s.\-]/', '', $entry['originalName']) ?: $filename,
         );
 
         return $response;

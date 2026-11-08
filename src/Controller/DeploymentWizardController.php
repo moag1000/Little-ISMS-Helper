@@ -67,7 +67,6 @@ class DeploymentWizardController extends AbstractController
         private readonly IncidentRepository $incidentRepository,
         private readonly FrameworkApplicabilityService $applicabilityService,
         private readonly SetupJobStatusService $setupJobStatusService,
-        private readonly \Symfony\Bundle\SecurityBundle\Security $security,
         private readonly SetupIndustryPresetService $industryPresetService,
         private readonly DatabaseProvisioner $databaseProvisioner,
         private readonly SetupConsoleRunner $setupConsoleRunner,

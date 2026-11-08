@@ -5,7 +5,7 @@
 # (--ratchet-ref) and stale ones (--strict-shrink). See scripts/README.md.
 src/Entity/Risk.php:LOC=1888 deps=0
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1729 deps=17
-src/Controller/DeploymentWizardController.php:LOC=1722 deps=0
+src/Controller/DeploymentWizardController.php:LOC=1721 deps=0
 src/Service/DashboardStatisticsService.php:LOC=1677 deps=24
 src/Controller/ComplianceExportController.php:LOC=1591 deps=0
 src/Repository/ComplianceMappingRepository.php:LOC=1497 deps=0
