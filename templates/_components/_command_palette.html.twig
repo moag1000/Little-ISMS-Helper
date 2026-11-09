@@ -127,7 +127,7 @@
 {% if is_granted('ADMIN_GLOBAL_OP') %}{% set _cmds = _cmds|merge([
     { id: 'admin-data-repair', label: 'admin.nav.data_repair'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-tools', url: path('admin_data_repair_index'), keywords: ['repair', 'reparatur', 'integrity']  }
 ]) %}{% endif %}
-{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+{% if is_granted('MONITORING_VIEW') %}{% set _cmds = _cmds|merge([
     { id: 'admin-health', label: 'admin.nav.system_health'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-heart-pulse', url: path('monitoring_health'), keywords: ['health', 'status']  }
 ]) %}{% endif %}
 {% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
@@ -139,7 +139,7 @@
 {% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
     { id: 'admin-compliance-policy', label: 'admin.nav.compliance_policy'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-sliders', url: path('admin_compliance_policy_index'), keywords: ['policy', 'richtlinie', 'compliance']  }
 ]) %}{% endif %}
-{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+{% if is_granted('ROLE_ADMIN') and is_granted('GLOBAL_CATALOGUE_WRITE') %}{% set _cmds = _cmds|merge([
     { id: 'admin-loader-fixer', label: 'admin.nav.loader_fixer'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'ui-refresh', url: path('admin_loader_fixer_index'), keywords: ['loader', 'fixer', 'idempotent']  }
 ]) %}{% endif %}
 {% if is_granted('ROLE_ADMIN') and is_granted('GLOBAL_CATALOGUE_WRITE') %}{% set _cmds = _cmds|merge([

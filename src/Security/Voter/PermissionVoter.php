@@ -89,6 +89,25 @@ final class PermissionVoter extends Voter
     public const string BACKUP_CREATE = 'BACKUP_CREATE';
     public const string BACKUP_RESTORE = 'BACKUP_RESTORE';
 
+    /**
+     * Permissions that act on the whole instance (shared database, code base, cache, logs
+     * of every organisation, full restore). Only the super admin holds them: neither the
+     * ROLE_ADMIN fallback nor a custom role an organisation admin builds can grant them,
+     * because an organisation admin would otherwise act for every organisation (S13).
+     */
+    private const array INSTANCE_PERMISSIONS = [
+        self::MONITORING_VIEW,
+        self::MONITORING_MANAGE,
+        self::MONITORING_EXPORT,
+        self::BACKUP_RESTORE,
+    ];
+
+    /** @return list<string> the permissions only the super admin holds (tests, docs). */
+    public static function instancePermissions(): array
+    {
+        return self::INSTANCE_PERMISSIONS;
+    }
+
     protected function supports(string $attribute, mixed $subject): bool
     {
         // Check if this voter supports the permission
@@ -146,6 +165,10 @@ final class PermissionVoter extends Voter
             return true;
         }
 
+        if (in_array($attribute, self::INSTANCE_PERMISSIONS, true)) {
+            return false;
+        }
+
         // Check if user has the permission through their roles
         return $this->hasPermission($user, $attribute);
     }
@@ -168,14 +191,8 @@ final class PermissionVoter extends Voter
         // Fallback: ROLE_ADMIN has broad permissions for backward compatibility
         $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
         if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
-            // ROLE_ADMIN can access most things except sensitive operations
-            $restrictedPermissions = [
-                self::BACKUP_RESTORE,  // Only super admin can restore
-            ];
-
-            if (!in_array($permissionName, $restrictedPermissions, true)) {
-                return true;
-            }
+            // Instance permissions never reach this point (voteOnAttribute()).
+            return true;
         }
 
         return false;

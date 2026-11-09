@@ -98,6 +98,33 @@ class PermissionVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    /** S13: an organisation admin must not act on the whole instance (shared DB, code, logs). */
+    #[Test]
+    public function testInstancePermissionsAreSuperAdminOnly(): void
+    {
+        $this->assertContains(PermissionVoter::MONITORING_MANAGE, PermissionVoter::instancePermissions());
+        foreach (PermissionVoter::instancePermissions() as $permission) {
+            $admin = $this->createUser(['ROLE_ADMIN']);
+            $this->assertSame(
+                VoterInterface::ACCESS_DENIED,
+                $this->voter->vote($this->createToken($admin), null, [$permission]),
+                $permission . ' reached ROLE_ADMIN through the fallback',
+            );
+            // A custom role the organisation admin builds does not grant it either.
+            $custom = $this->createUser(['ROLE_ADMIN'], [$permission]);
+            $this->assertSame(
+                VoterInterface::ACCESS_DENIED,
+                $this->voter->vote($this->createToken($custom), null, [$permission]),
+                $permission . ' reached a custom role',
+            );
+            $super = $this->createUser(['ROLE_SUPER_ADMIN']);
+            $this->assertSame(
+                VoterInterface::ACCESS_GRANTED,
+                $this->voter->vote($this->createToken($super), null, [$permission]),
+            );
+        }
+    }
+
     #[Test]
     public function testUserWithPermissionCanAccess(): void
     {

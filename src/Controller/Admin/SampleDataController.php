@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Repository\SampleDataImportRepository;
+use App\Security\Voter\GlobalCatalogueVoter;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\DataImportService;
 use App\Service\ModuleConfigurationService;
@@ -120,6 +121,8 @@ class SampleDataController extends AbstractController
                 'count' => $rawCount,
                 'imported' => $imported,
                 'removable' => isset($data['file']) || ($isCommandWithMappedFramework && $imported && $this->isGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)),
+                // Command entries load catalogues every organisation shares (DataImportService skips them).
+                'shared_catalogue_locked' => isset($data['command']) && !$this->isGranted(GlobalCatalogueVoter::WRITE),
             ];
         }
 

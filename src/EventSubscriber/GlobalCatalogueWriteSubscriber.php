@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\ComplianceMapping;
+use App\Entity\MappingGapItem;
 use App\Security\Voter\GlobalCatalogueVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -45,6 +46,16 @@ final class GlobalCatalogueWriteSubscriber implements EventSubscriberInterface
         'app_compliance_framework_migrate',
         'app_mapping_quality_batch_analyze',
         'app_compliance_wizard_import_mapping_library',
+        // Seed commands run as their own `bin/console` process, past the Doctrine backstop.
+        'app_compliance_mapping_seeds_apply',
+        // Loader fixer adds requirements to the shared framework catalogue.
+        'admin_loader_fixer_run_one',
+        'admin_loader_fixer_run_all',
+    ];
+
+    /** Routes whose `{id}` is a MappingGapItem: the gap belongs to its mapping. */
+    private const array GAP_ROUTES = [
+        'app_mapping_quality_gap_update',
     ];
 
     public function __construct(
@@ -61,7 +72,7 @@ final class GlobalCatalogueWriteSubscriber implements EventSubscriberInterface
     /** @return list<string> every route this subscriber guards (tests, docs). */
     public static function guardedRoutes(): array
     {
-        return [...self::MAPPING_ROUTES, ...self::CATALOGUE_ROUTES];
+        return [...self::MAPPING_ROUTES, ...self::CATALOGUE_ROUTES, ...self::GAP_ROUTES];
     }
 
     public function onController(ControllerEvent $event): void
@@ -76,6 +87,13 @@ final class GlobalCatalogueWriteSubscriber implements EventSubscriberInterface
         } elseif (in_array($route, self::MAPPING_ROUTES, true)) {
             $id = $request->attributes->get('id');
             $subject = is_numeric($id) ? $this->entityManager->find(ComplianceMapping::class, (int) $id) : null;
+            if ($subject === null) {
+                return; // the controller answers 404
+            }
+        } elseif (in_array($route, self::GAP_ROUTES, true)) {
+            $id = $request->attributes->get('id');
+            $gap = is_numeric($id) ? $this->entityManager->find(MappingGapItem::class, (int) $id) : null;
+            $subject = $gap?->getMapping();
             if ($subject === null) {
                 return; // the controller answers 404
             }
