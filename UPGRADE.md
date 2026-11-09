@@ -16,9 +16,11 @@ eine Handlung verlangt oder Verhalten bricht.
 
 ## Nach 3.16.1 (nächstes Release)
 
-31 neue Migrationen, alle über `/quick-fix`. Zwei davon verschieben Daten: Freitext-Verantwortliche
+32 neue Migrationen, alle über `/quick-fix`. Drei davon verändern Daten: Freitext-Verantwortliche
 werden Personen (`Version20261108100000_OwnerTextToPersons`, danach entfallen die Textspalten) und
-Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`).
+Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`);
+`Version20261109020000_DropWorkflowStepOverlays` löscht die nie angewendeten Schritt-Overrides
+(`workflow:*`/`step:*`-Zeilen in `lifecycle_config`).
 
 ### Vor dem Update
 
@@ -90,6 +92,13 @@ Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`)
   Holding-Rollen (auch `ROLE_GROUP_BCM_OFFICER`) vergibt nur der Super-Admin; Org-Admins sehen Konten
   mit Holding-Rolle nur an. Admins richten kein TOTP mehr für andere ein, die Person macht das im
   Profil. Der CSV-Benutzerimport verlangt Passwörter mit der Mindestlänge der Organisation.
+- **Freigaben und Lifecycle:** `/admin/workflows` ist nur noch eine Leseansicht („Freigabeketten“);
+  wer freigibt, steuert die Rollenvergabe in der Benutzerverwaltung. Lifecycle-Overrides dürfen nur
+  verschärfen: Overrides, die eine Norm-Pflicht lockerten (Freitextrollen wie `ROLE_USER`,
+  Vier-Augen aus, Leitungs- oder DSB-Übergang umgehängt), wirken nicht mehr; die Seite zeigt sie als
+  „Aktueller Wert“ und entfernt sie beim Speichern. Einwilligungs-Widerrufe dokumentieren nur DSB oder
+  Manager, Ziele als erreicht markieren Manager oder die verantwortliche Person, Meldungszustellungen
+  setzt nur das System.
 - **Instanzbetrieb:** Setup-Assistent nach Abschluss und das Löschen eines Frameworks nur
   `ROLE_SUPER_ADMIN`; Super-Admins können keine Super-Admins imitieren. Ein Restore übernimmt keine
   Instanzrollen, Passwort-Hashes, SSO-Kennungen, API-Tokens oder Audit-Zeilen aus der Datei.
