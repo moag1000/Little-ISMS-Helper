@@ -95,7 +95,8 @@ class AuditLogger
         private readonly ?AuditLogIntegrityService $integrityService = null,
         private readonly ?\App\Service\TenantContext $tenantContext = null,
         private readonly ?\Psr\Log\LoggerInterface $logger = null,
-    ) {}
+    ) {
+    }
 
     /** Tenant pinned by withTenant() for background runs (CLI / cron) that have no TenantContext. */
     private ?\App\Entity\Tenant $pinnedTenant = null;
@@ -376,7 +377,7 @@ class AuditLogger
                 $tenant = $user->getTenant();
             }
         }
-        $auditLog->setTenant($tenant);
+        $auditLog->setTenant($this->managedTenant($tenant));
 
         // Capture actor's highest role at time of action.
         $auditLog->setActorRole($this->getCurrentActorRole());
@@ -438,6 +439,11 @@ class AuditLogger
             if ($strict) {
                 throw $e;
             }
+            // A row that failed to flush must not stay scheduled: the next
+            // flush of the caller would fail on it again.
+            if ($this->entityManager->isOpen() && $this->entityManager->contains($auditLog)) {
+                $this->entityManager->detach($auditLog);
+            }
             // Skip — the audit log misses this row but the calling operation
             // (mark-all-phantom-diff, etc.) must not abort. Logged, because a
             // failed flush closes the EntityManager and the caller's next
@@ -448,6 +454,24 @@ class AuditLogger
                 'error' => $e::class . ': ' . $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * The organisation as the EntityManager knows it. The tenant context can hold
+     * an organisation from before an EntityManager::clear(); a row pointing at
+     * that detached copy would fail every later flush ("new entity found").
+     */
+    private function managedTenant(?\App\Entity\Tenant $tenant): ?\App\Entity\Tenant
+    {
+        if ($tenant === null || $this->entityManager->contains($tenant)) {
+            return $tenant;
+        }
+        $id = $tenant->getId();
+        if ($id === null) {
+            return null;
+        }
+
+        return $this->entityManager->find(\App\Entity\Tenant::class, $id);
     }
 
     /**
