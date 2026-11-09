@@ -13,9 +13,10 @@ parameters:
     default_trusted_proxies: '127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fc00::/7'
     tisax.delta.pre_fill_target: '%env(int:TISAX_PRE_FILL_TARGET)%'
     # Env-configured Azure OAuth/SAML: link an existing account by e-mail when
-    # its object id is unknown (AZURE_ALLOW_EMAIL_LINKING). Default true for
-    # existing single-tenant setups; privileged accounts are never linked.
-    app.azure_allow_email_linking_default: true
+    # its object id is unknown (AZURE_ALLOW_EMAIL_LINKING). Off by default since
+    # S9; even when on, only a verified e-mail (Entra optional claim xms_edov)
+    # is linked, and privileged accounts never are (SsoClaimPolicy).
+    app.azure_allow_email_linking_default: false
     # Application Configuration Parameters
     # Following Symfony Best Practice: Use 'app.' prefix for application parameters
 

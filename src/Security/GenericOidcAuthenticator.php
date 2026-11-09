@@ -36,6 +36,8 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
 {
     public const SESSION_STATE_KEY = '_sso_oidc_state';
     public const SESSION_VERIFIER_KEY = '_sso_oidc_verifier';
+    /** OIDC nonce sent with the authorize request; the ID token must echo it (S9). */
+    public const SESSION_NONCE_KEY = '_sso_oidc_nonce';
     public const SESSION_PROVIDER_KEY = '_sso_oidc_provider';
     /** Provider id chosen at start — the callback never re-resolves the slug. */
     public const SESSION_PROVIDER_ID_KEY = '_sso_oidc_provider_id';
@@ -73,16 +75,18 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
 
         $expectedState = (string) $session->get(self::SESSION_STATE_KEY, '');
         $verifier = (string) $session->get(self::SESSION_VERIFIER_KEY, '');
+        $nonce = (string) $session->get(self::SESSION_NONCE_KEY, '');
         $providerSlug = (string) $session->get(self::SESSION_PROVIDER_KEY, '');
         $providerId = (int) $session->get(self::SESSION_PROVIDER_ID_KEY, 0);
         if ($expectedState === '' || !hash_equals($expectedState, $state)) {
             throw new AuthenticationException('SSO state mismatch.');
         }
-        if ($verifier === '' || $providerSlug === '' || $providerId <= 0) {
+        if ($verifier === '' || $nonce === '' || $providerSlug === '' || $providerId <= 0) {
             throw new AuthenticationException('SSO session lost.');
         }
         $session->remove(self::SESSION_STATE_KEY);
         $session->remove(self::SESSION_VERIFIER_KEY);
+        $session->remove(self::SESSION_NONCE_KEY);
         $session->remove(self::SESSION_PROVIDER_KEY);
         $session->remove(self::SESSION_PROVIDER_ID_KEY);
 
@@ -99,7 +103,7 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
         }
 
         $redirectUri = $this->router->generate('app_sso_callback', ['slug' => $slug], RouterInterface::ABSOLUTE_URL);
-        $result = $this->flow->handleCallback($provider, $redirectUri, $code, $verifier);
+        $result = $this->flow->handleCallback($provider, $redirectUri, $code, $verifier, $nonce);
 
         if ($result instanceof SsoUserApproval) {
             // Stash for the failure handler so it can show a friendly screen.
