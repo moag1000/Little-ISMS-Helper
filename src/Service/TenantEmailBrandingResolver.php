@@ -11,14 +11,13 @@ use App\Repository\SystemSettingsRepository;
  * Aufgelöstes E-Mail-Branding (Value-Object).
  *
  * `fromAddress` und `fromName` sind garantiert gesetzt (Fallback auf
- * Hardcoded-Default). Logo/Footer/Support sind optional.
+ * Hardcoded-Default). Footer/Support sind optional.
  */
 final readonly class EmailBranding
 {
     public function __construct(
         public string $fromAddress,
         public string $fromName,
-        public ?string $logoUrl,
         public ?string $footerText,
         public ?string $supportAddress,
     ) {
@@ -67,9 +66,6 @@ class TenantEmailBrandingResolver
             ?? $this->fromSystemSettings('default_from_name')
             ?? self::DEFAULT_FROM_NAME;
 
-        $logoUrl = $this->walk($tenant, fn (Tenant $t) => $t->getEmailLogoUrl())
-            ?? $this->fromSystemSettings('default_logo_url');
-
         $footerText = $this->walk($tenant, fn (Tenant $t) => $t->getEmailFooterText())
             ?? $this->fromSystemSettings('default_footer_text');
 
@@ -79,7 +75,6 @@ class TenantEmailBrandingResolver
         return $this->cache[$cacheKey] = new EmailBranding(
             $fromAddress,
             $fromName,
-            $logoUrl,
             $footerText,
             $supportAddress,
         );

@@ -39,7 +39,7 @@
         status: _status,
         actions: _actions,
         facts: [
-            { label: 'show.status.criticality'|trans({}, 'messages'), value: supplier.criticality ? supplier.criticality|upper : null },
+            { label: 'show.status.criticality'|trans({}, 'messages'), value: supplier.criticality ? supplier_criticality(supplier).label : null },
             { label: 'show.status.in_isms_scope'|trans({}, 'messages'), value: (supplier.inIsmsScope ? 'common.yes' : 'common.no')|trans({}, 'messages') },
             { label: 'supplier.field.contact_person'|trans({}, 'suppliers'), value: supplier.effectiveContactPerson },
             { label: 'supplier.field.next_assessment'|trans({}, 'suppliers'), value: supplier.nextAssessmentDate ? supplier.nextAssessmentDate|fa_date : null },
@@ -143,7 +143,8 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
                 <div>
-                    {% include '_components/_badge.html.twig' with { variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')), content: supplier.criticality|upper } %}
+                    {% set _criticality = supplier_criticality(supplier) %}
+                    {% include '_components/_badge.html.twig' with { variant: _criticality.tone, content: _criticality.label } %}
                 </div>
             </div>
         {% endblock %}
@@ -238,7 +239,7 @@
                         </div>
                         <div class="detail-item">
                             <span class="label">{{ 'supplier.field.criticality'|trans({}, 'suppliers') }}:</span>
-                            <span class="value">{{ supplier.criticality|upper }}</span>
+                            <span class="value">{{ supplier_criticality(supplier).label }}</span>
                         </div>
                         <div class="detail-item">
                             <span class="label">{{ 'supplier.field.status'|trans({}, 'suppliers') }}:</span>

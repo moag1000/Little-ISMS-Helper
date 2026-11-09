@@ -61,6 +61,8 @@ class Schedule implements ScheduleProviderInterface
         ['0 7 * * *', 'app:notification:send-digests'],
         ['0 5 * * *', 'app:evidence:expire'],
         ['30 5 * * *', 'app:risk:schedule-reviews'],
+        // Open policy acknowledgements follow audience and version (late joiners, new versions) before the 07:00 digest.
+        ['40 5 * * *', 'app:policy-wizard:send-ack-requests'],
     ];
 
     public function __construct(

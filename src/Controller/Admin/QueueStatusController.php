@@ -71,7 +71,9 @@ final class QueueStatusController extends AbstractController
             'snapshot' => $snapshot,
             'recent_jobs' => $recent,
             'cron_command' => '* * * * * cd ' . $this->projectDir
-                . ' && php bin/console messenger:consume async --time-limit=55 --limit=20 --quiet',
+                // Same transports as the Docker worker: the Symfony Scheduler (reminders, nightly
+                // jobs), routed schedule messages and the async queue (mails, admin jobs).
+                . ' && php bin/console messenger:consume scheduler_default scheduler async --time-limit=55 --limit=20 --quiet',
         ]);
     }
 

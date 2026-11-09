@@ -60,9 +60,7 @@ final class MrisKpiController extends AbstractController
 
         // Featureflag: standardmäßig aktiv. Mandanten-Admins können MRIS-KPIs
         // deaktivieren wenn nicht relevant (z. B. nicht-DORA, nicht-NIS2).
-        $settings = $tenant->getSettings() ?? [];
-        $enabled = $settings['mris']['kpis_enabled'] ?? true;
-        if ($enabled === false) {
+        if (!$tenant->isMrisKpisEnabled()) {
             $this->flashInfo('kpi.mris.disabled');
             return $this->redirectToRoute('app_dashboard');
         }

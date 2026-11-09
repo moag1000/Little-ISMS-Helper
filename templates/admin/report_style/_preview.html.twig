@@ -16,46 +16,22 @@
  #}
 {% trans_default_domain 'admin' %}
 
-{% set _font = style_config.font_family|default('Inter') %}
-{% set _cover = style_config.cover_pattern|default('branded') %}
-{% set _audience = style_config.default_audience|default('internal') %}
-{% set _orientation = style_config.page_orientation|default('auto') %}
-{% set _chart_scheme = style_config.chart_color_scheme|default('aurora') %}
 {% set _watermark_on = style_config.watermark_enabled|default(true) %}
-{% set _watermark_op = style_config.watermark_opacity|default(0.08) %}
 {% set _show_exec = style_config.show_exec_summary|default(true) %}
 {% set _show_appendix = style_config.show_appendix|default(true) %}
 {% set _show_distribution = style_config.show_distribution_list|default(true) %}
 {% set _disclaimer = style_config.footer_disclaimer|default('') %}
 {% set _primary = style_config.primary_color|default('#0d6efd') %}
 {% set _secondary = style_config.secondary_color|default('#6c757d') %}
-{% set _custom_css = style_config.custom_css|default('') %}
 
-{# Audience-driven layout flags drive watermark text + cover label. #}
-{% set _audience_label = {
-    'vorstand': 'admin.report_style.audience.vorstand',
-    'auditor': 'admin.report_style.audience.auditor',
-    'aufsicht': 'admin.report_style.audience.aufsicht',
-    'internal': 'admin.report_style.audience.internal'
-}[_audience]|default('admin.report_style.audience.internal') %}
-
-{% set _chart_palette = {
-    'aurora': ['#22d3ee','#a855f7','#10b981','#f59e0b','#ef4444'],
-    'audit': ['#1e293b','#334155','#64748b','#94a3b8','#cbd5e1'],
-    'print-friendly': ['#000000','#404040','#808080','#a0a0a0','#d0d0d0'],
-    'colorblind-safe': ['#0072B2','#E69F00','#009E73','#CC79A7','#F0E442']
-}[_chart_scheme]|default(['#22d3ee','#a855f7','#10b981','#f59e0b','#ef4444']) %}
-
-<div class="report-doc-preview report-doc-preview--cover-{{ _cover }} report-doc-preview--audience-{{ _audience }} report-doc-preview--orientation-{{ _orientation }}"
-     style="--rd-font: '{{ _font }}', system-ui, sans-serif;
-            --rd-primary: {{ _primary }};
+<div class="report-doc-preview"
+     style="--rd-primary: {{ _primary }};
             --rd-secondary: {{ _secondary }};
-            --rd-watermark-opacity: {{ _watermark_op }};
-            --rd-chart-1: {{ _chart_palette[0] }};
-            --rd-chart-2: {{ _chart_palette[1] }};
-            --rd-chart-3: {{ _chart_palette[2] }};
-            --rd-chart-4: {{ _chart_palette[3] }};
-            --rd-chart-5: {{ _chart_palette[4] }};">
+            --rd-chart-1: #22d3ee;
+            --rd-chart-2: #a855f7;
+            --rd-chart-3: #10b981;
+            --rd-chart-4: #f59e0b;
+            --rd-chart-5: #ef4444;">
 
     {# --- Slot 1: Cover --- #}
     <article class="report-doc-preview__page report-doc-preview__page--cover">
@@ -76,15 +52,12 @@
         </header>
 
         <div class="report-doc-preview__cover-body">
-            <p class="report-doc-preview__eyebrow">{{ _audience_label|trans }}</p>
             <h1 class="report-doc-preview__title">{{ sample.report_title|default('ISMS-Management-Review') }}</h1>
             <dl class="report-doc-preview__meta">
                 <dt>{{ 'admin.report_style.preview.period'|trans }}</dt>
                 <dd>{{ sample.report_period|default('—') }}</dd>
                 <dt>{{ 'admin.report_style.preview.classification'|trans }}</dt>
                 <dd>{{ sample.classification|default('TLP:AMBER') }}</dd>
-                <dt>{{ 'admin.report_style.preview.audience'|trans }}</dt>
-                <dd>{{ _audience_label|trans }}</dd>
             </dl>
         </div>
     </article>
@@ -116,7 +89,7 @@
             </section>
         {% endfor %}
 
-        {# Mini bar-chart preview using the active color scheme #}
+        {# Mini bar-chart preview in the design-system chart palette #}
         <div class="report-doc-preview__chart-mock" aria-hidden="true">
             {% for i in 1..5 %}
                 <span class="report-doc-preview__bar" style="--bar-bg: var(--rd-chart-{{ i }}); --bar-h: {{ 30 + (i * 12) }}%;"></span>
@@ -163,18 +136,9 @@
     </footer>
 </div>
 
-{# Custom-CSS preview (inert; only applied to real export to avoid
-   layout-breaking the configurator). #}
-{% if _custom_css %}
-    <details class="mt-3">
-        <summary class="text-muted small">{{ 'admin.report_style.preview.custom_css_inert'|trans }}</summary>
-        <pre class="border rounded p-2 small bg-body-tertiary"><code>{{ _custom_css }}</code></pre>
-    </details>
-{% endif %}
-
 <style>
 .report-doc-preview {
-    font-family: var(--rd-font);
+    font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     background: var(--surface, #fff);
     border: 1px solid var(--border, #dee2e6);
     border-radius: 6px;
@@ -183,7 +147,6 @@
     transform: scale(0.92);
     transform-origin: top center;
 }
-.report-doc-preview--orientation-landscape { aspect-ratio: 1.41 / 1; }
 .report-doc-preview__page {
     padding: 18mm 16mm;
     border-bottom: 1px dashed var(--border, #dee2e6);
@@ -201,7 +164,7 @@
     font-weight: 800;
     letter-spacing: 0.5rem;
     color: var(--rd-primary);
-    opacity: var(--rd-watermark-opacity);
+    opacity: 0.08;
     pointer-events: none;
     transform: rotate(-30deg);
     user-select: none;
@@ -218,13 +181,6 @@
 }
 .report-doc-preview__tenant { font-weight: 700; margin: 0; font-size: 1.1rem; }
 .report-doc-preview__doccode { margin: 0; font-size: 0.85rem; }
-.report-doc-preview__eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    font-size: 0.75rem;
-    color: var(--rd-secondary);
-    margin: 0 0 0.5rem 0;
-}
 .report-doc-preview__title {
     font-size: 1.65rem;
     color: var(--rd-primary);
@@ -300,29 +256,4 @@
     background: var(--surface-2, #f8f9fa);
     border-top: 1px solid var(--border, #dee2e6);
 }
-
-/* Cover-pattern variants */
-.report-doc-preview--cover-minimal .report-doc-preview__title {
-    color: var(--rd-secondary); border: 0;
-}
-.report-doc-preview--cover-minimal .report-doc-preview__h2 { border-color: var(--rd-secondary); }
-.report-doc-preview--cover-board-formal .report-doc-preview__title {
-    font-family: 'Merriweather', serif;
-    text-align: center;
-    letter-spacing: 0.02em;
-}
-.report-doc-preview--cover-board-formal .report-doc-preview__cover-header {
-    justify-content: center; text-align: center; flex-direction: column;
-}
-.report-doc-preview--cover-auditor-formal .report-doc-preview__title {
-    font-family: 'Merriweather', serif;
-}
-.report-doc-preview--cover-auditor-formal .report-doc-preview__h2 {
-    text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.95rem;
-}
-
-/* Audience-driven cover labels (eyebrow color) */
-.report-doc-preview--audience-vorstand .report-doc-preview__eyebrow { color: var(--rd-primary); font-weight: 700; }
-.report-doc-preview--audience-auditor .report-doc-preview__eyebrow { color: #1e293b; }
-.report-doc-preview--audience-aufsicht .report-doc-preview__eyebrow { color: #b91c1c; }
 </style>

@@ -28,10 +28,8 @@
     </td>
     <td>{{ supplier.serviceProvided ? supplier.serviceProvided|slice(0, 50) ~ '...' : '' }}</td>
     <td>
-        {% include '_components/_badge.html.twig' with {
-            variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')),
-            content: supplier.criticality|upper
-        } %}
+        {% set _criticality = supplier_criticality(supplier) %}
+        {% include '_components/_badge.html.twig' with { variant: _criticality.tone, content: _criticality.label } %}
     </td>
     <td>
         <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>

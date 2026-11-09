@@ -323,9 +323,6 @@ tenant:
         logo_format: 'The logo must be in JPG, PNG, GIF or WebP format'
         owner_other_tenant: 'The selection belongs to a different organization.'
         nace_code_format: 'NACE code must match format A.NN.NN (NACE Rev.2 classification).'
-    email:
-        logo_url:
-            https_only: 'HTTPS URLs only (mixed content is blocked by HTML email clients)'
 user:
     validation:
         avatar_format: 'The profile picture must be in JPG, PNG, GIF or WebP format'

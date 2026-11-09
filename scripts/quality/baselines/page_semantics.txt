@@ -99,8 +99,6 @@ templates/setup/step6_organisation_info.html.twig::ternary-tone
 templates/setup/step8_compliance_frameworks.html.twig::ternary-tone
 templates/setup_wizard/existing_frameworks.html.twig::ternary-tone
 templates/suggestion/index.html.twig::ternary-tone
-templates/supplier/_detail_modal.html.twig::ternary-tone
-templates/supplier/_row.html.twig::ternary-tone
 templates/supplier/show.html.twig::ternary-tone
 templates/tia/_detail_modal.html.twig::ternary-tone
 templates/tia/_row.html.twig::ternary-tone

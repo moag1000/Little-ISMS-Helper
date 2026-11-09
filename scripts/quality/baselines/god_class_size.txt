@@ -19,10 +19,10 @@ src/Controller/DocumentController.php:LOC=1244 deps=0
 src/Entity/Supplier.php:LOC=1194 deps=0
 src/Controller/Admin/DataRepairController.php:LOC=1147 deps=0
 src/Entity/BusinessContinuityPlan.php:LOC=1009 deps=0
-src/Entity/Tenant.php:LOC=1007 deps=0
+src/Entity/Tenant.php:LOC=1005 deps=0
 src/Service/Search/SearchService.php:LOC=968 deps=32
 src/Controller/RiskController.php:LOC=954 deps=0
-src/Controller/TenantManagementController.php:LOC=949 deps=0
+src/Controller/TenantManagementController.php:LOC=943 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=917 deps=0
 src/Service/ComplianceWizard/CoverageCheckService.php:LOC=888 deps=17
 src/Command/TisaxConsolidateCommand.php:LOC=886 deps=0

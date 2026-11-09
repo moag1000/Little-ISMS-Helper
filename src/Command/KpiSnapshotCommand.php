@@ -280,9 +280,7 @@ class KpiSnapshotCommand
         // MRIS-Mythos-KPIs (3 automatisch berechenbar). Manuelle KPIs werden
         // nicht gesnapshotted — sie ändern sich nur per Hand-Eingabe.
         // Nur berücksichtigen wenn Mandant MRIS aktiviert hat.
-        $settings = $tenant->getSettings() ?? [];
-        $mrisEnabled = $settings['mris']['kpis_enabled'] ?? true;
-        if ($mrisEnabled) {
+        if ($tenant->isMrisKpisEnabled()) {
             try {
                 foreach ($this->mrisKpiService->computeAll($tenant) as $kpi) {
                     if ($kpi['computable'] === true && $kpi['value'] !== null) {

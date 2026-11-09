@@ -211,9 +211,8 @@ planning:
             saved: 'Planung gespeichert.'
     settings:
         title: 'Planungs-Einstellungen'
-        subtitle: 'Standardwerte für Roadmap, Wiederholung und Geltungsbereiche'
+        subtitle: 'Standardwerte für Roadmap, Arbeitszeit und Geltungsbereiche'
         field:
-            default_recurrence_months: 'Standard-Wiederholung (Monate)'
             roadmap_horizon_weeks: 'Roadmap-Horizont (Wochen)'
             overbooking_threshold_pct: 'Überbuchungs-Schwelle (%)'
             full_time_hours_per_week: 'Vollzeit-Stunden pro Woche'

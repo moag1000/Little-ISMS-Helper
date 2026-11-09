@@ -6,11 +6,9 @@ namespace App\EventListener;
 
 use App\Doctrine\PostFlushWriter;
 use App\Entity\Document;
-use App\Entity\PolicyAcknowledgement;
-use App\Entity\User;
 use App\Enum\DocumentStatus;
-use App\Repository\UserRepository;
 use App\Service\AutoReactionService;
+use App\Service\PolicyWizard\PolicyAcknowledgementService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
@@ -24,8 +22,13 @@ use Psr\Log\LoggerInterface;
  * (status=pending) for every active user in the tenant — closing
  * ISO 27001 A.6.3 ("policy must be communicated and acknowledged").
  *
+ * Audience and version come from {@see PolicyAcknowledgementService} (picked audience,
+ * Policy-Wizard override, topic, else every active user; template version or file hash), the
+ * same the acknowledgement uses — a campaign row stored under another version never closed (W8).
+ * People who join later and new versions are picked up by the nightly
+ * `app:policy-wizard:send-ack-requests`.
+ *
  * fix:
- *   - Tenant-scoped active-user query (was: cross-tenant {@see UserRepository::findBy(['isActive'=>true])}).
  *   - Real persistence: rows of {@see PolicyAcknowledgement} with
  *     STATUS_PENDING are now created (was: counter-only, no DB writes
  *     — campaign trigger was a silent no-op).
@@ -49,6 +52,7 @@ final class AutoReactionAcknowledgementCampaignListener
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
         private readonly PostFlushWriter $postFlushWriter,
+        private readonly PolicyAcknowledgementService $acknowledgements,
     ) {
     }
 
@@ -61,77 +65,15 @@ final class AutoReactionAcknowledgementCampaignListener
         if ($document->getStatus() !== DocumentStatus::Approved->value) {
             return;
         }
-        // GetRequiresAcknowledgement() / getVersion() now live
-        // on Document — drop the method_exists() defence that previously
-        // short-circuited the listener silently.
-        if (!$document->getRequiresAcknowledgement()) {
+        if (!PolicyAcknowledgementService::needsAcknowledgement($document)) {
             return;
         }
 
         try {
-            $em = $args->getObjectManager();
-            $tenant = $document->getTenant();
-            if (!$tenant) {
-                return;
-            }
-
-            $version = trim($document->getVersion());
-            if ($version === '') {
-                // Defensive: setVersion() normalises empty input to '1.0',
-                // but a NULL row from a pre-migration backfill could
-                // theoretically land here. Cannot satisfy unique
-                // constraint (tenant, doc, user, version) without one.
-                $this->logger->warning('Auto-Acknowledgement-Campaign skipped: document has no version', [
-                    'document_id' => $document->getId(),
-                ]);
-                return;
-            }
-            /** @var \App\Repository\PolicyAcknowledgementRepository $repo */
-            $repo = $em->getRepository(PolicyAcknowledgement::class);
-
-            // Tenant-scoped active-user query.
-            //
-            // ISO 27001 Cl. 7.3 +
-            // A.6.3: when the document carries an explicit
-            // `acknowledgementAudience` selection, the campaign fan-out
-            // restricts to that list. Empty selection preserves the
-            // legacy behaviour of fanning out to every active tenant user.
-            $audience = $document->getAcknowledgementAudience();
-            if (!$audience->isEmpty()) {
-                $users = [];
-                foreach ($audience as $user) {
-                    /** @var User $user */
-                    if ($user->isActive() && $user->getTenant() === $tenant) {
-                        $users[] = $user;
-                    }
-                }
-            } else {
-                $userRepo = $em->getRepository(User::class);
-                $users = $userRepo->findBy([
-                    'isActive' => true,
-                    'tenant' => $tenant,
-                ]);
-            }
-
+            // One version function and one audience for the campaign, the acknowledgement and the
+            // nightly sweep (PolicyAcknowledgementService) — a pending row is the one the click closes.
             $created = 0;
-            foreach ($users as $user) {
-                /** @var User $user */
-                $existing = $repo->findOneFor($tenant, $document, $user, $version);
-                if ($existing instanceof PolicyAcknowledgement) {
-                    continue;
-                }
-
-                $pending = new PolicyAcknowledgement();
-                $pending->setTenant($tenant);
-                $pending->setDocument($document);
-                $pending->setUser($user);
-                $pending->setDocumentVersion($version);
-                // Constructor pre-fills both requestedAt + acknowledgedAt;
-                // for a pending row we clear acknowledgedAt + method.
-                $pending->setStatus(PolicyAcknowledgement::STATUS_PENDING);
-                $pending->setAcknowledgedAt(null);
-                $pending->setAcknowledgementMethod(null);
-
+            foreach ($this->acknowledgements->missingRequests($document) as $pending) {
                 $this->postFlushWriter->persist($pending);
                 $created++;
             }
@@ -139,8 +81,8 @@ final class AutoReactionAcknowledgementCampaignListener
             if ($created > 0) {
                 $this->logger->info('Auto-Acknowledgement campaign persisted pending rows', [
                     'document_id' => $document->getId(),
-                    'document_version' => $version,
-                    'tenant_id' => $tenant->getId(),
+                    'document_version' => PolicyAcknowledgementService::versionOf($document),
+                    'tenant_id' => $document->getTenant()?->getId(),
                     'pending_user_count' => $created,
                 ]);
             }

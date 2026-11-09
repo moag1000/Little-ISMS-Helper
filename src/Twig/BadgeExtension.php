@@ -182,7 +182,22 @@ final class BadgeExtension
      */
     private function resolveAuroraTone(string $bsColor): string
     {
-        return self::BS_TO_AURORA[$bsColor] ?? 'neutral';
+        return self::auroraTone($bsColor);
+    }
+
+    /**
+     * Aurora pill tone for a Bootstrap colour name or an Aurora tone (admin-configured colours
+     * such as the supplier criticality levels'): info → primary, secondary/light/dark → neutral,
+     * Aurora tones pass through, unknown → neutral.
+     */
+    public static function auroraTone(?string $color): string
+    {
+        $color = strtolower((string) $color);
+        if (in_array($color, ['primary', 'accent', 'success', 'warning', 'danger', 'neutral'], true)) {
+            return $color;
+        }
+
+        return self::BS_TO_AURORA[$color] ?? 'neutral';
     }
 
     /* ─── pill_tone_*() — Aurora tone-name companions ─────────────────── */

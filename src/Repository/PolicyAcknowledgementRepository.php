@@ -69,4 +69,21 @@ class PolicyAcknowledgementRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Ids of documents that still carry pending requests (nightly sweep, all organisations).
+     *
+     * @return list<int>
+     */
+    public function findDocumentIdsWithPendingRows(): array
+    {
+        $rows = $this->createQueryBuilder('a')
+            ->select('DISTINCT IDENTITY(a.document) AS documentId')
+            ->where('a.status = :status')
+            ->setParameter('status', PolicyAcknowledgement::STATUS_PENDING)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_values(array_map(static fn (array $r): int => (int) $r['documentId'], $rows));
+    }
 }

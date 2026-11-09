@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\Job;
 
 use App\Service\Job\WorkerHealthService;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -168,23 +168,60 @@ final class WorkerHealthServiceTest extends TestCase
 
     // ── helpers ───────────────────────────────────────────────────────────
 
-    private function makeService(int $queueDepth): WorkerHealthService
+    /**
+     * A real messenger_messages table (SQLite): the queue name the Doctrine transport writes is
+     * `default` when MESSENGER_TRANSPORT_DSN names none — a stubbed SQL string hid that the
+     * service counted `async` and always saw 0.
+     *
+     * @param int $staleMails mails older than 15 minutes on top of $queueDepth fresh rows
+     */
+    private function makeService(int $queueDepth, int $staleMails = 0): WorkerHealthService
     {
         $kernel = $this->createMock(KernelInterface::class);
         $kernel->method('getProjectDir')->willReturn($this->tmpDir);
 
-        $connection = $this->createMock(Connection::class);
-        $connection->method('fetchOne')->willReturnCallback(
-            static function (string $sql) use ($queueDepth): int {
-                if (str_contains($sql, "queue_name = 'async'")) {
-                    return $queueDepth;
-                }
-                // failed-queue lookup
-                return 0;
-            },
-        );
+        $connection = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+        $connection->executeStatement('CREATE TABLE messenger_messages (id INTEGER PRIMARY KEY AUTOINCREMENT,
+            body TEXT NOT NULL, headers TEXT NOT NULL, queue_name VARCHAR(190) NOT NULL,
+            created_at DATETIME NOT NULL, available_at DATETIME NOT NULL, delivered_at DATETIME DEFAULT NULL)');
+        $insert = static function (string $queue, string $type, string $createdAt, ?string $deliveredAt = null) use ($connection): void {
+            $connection->insert('messenger_messages', [
+                'body' => '{}', 'headers' => json_encode(['type' => $type]), 'queue_name' => $queue,
+                'created_at' => $createdAt, 'available_at' => $createdAt, 'delivered_at' => $deliveredAt,
+            ]);
+        };
+        $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $old = (new \DateTimeImmutable('-1 hour'))->format('Y-m-d H:i:s');
+        for ($n = 0; $n < $queueDepth; ++$n) {
+            $insert('default', 'App\\Message\\Job\\ExecuteJobMessage', $now);
+        }
+        for ($n = 0; $n < $staleMails; ++$n) {
+            $insert('default', 'Symfony\\Component\\Mailer\\Messenger\\SendEmailMessage', $old);
+        }
+        // Never counted: other transports, and a row a worker is handling right now.
+        $insert('scheduler', 'Symfony\\Component\\Mailer\\Messenger\\SendEmailMessage', $old);
+        $insert('failed', 'Symfony\\Component\\Mailer\\Messenger\\SendEmailMessage', $old);
+        $insert('default', 'Symfony\\Component\\Mailer\\Messenger\\SendEmailMessage', $old, $now);
 
         return new WorkerHealthService($kernel, $connection);
+    }
+
+    #[Test]
+    public function theQueueDepthCountsTheTransportsDefaultQueue(): void
+    {
+        self::assertSame(3, $this->makeService(queueDepth: 3)->snapshot()['queue_depth']);
+    }
+
+    #[Test]
+    public function mailsWaitingLongerThanFifteenMinutesAreRedEvenWithAFreshHeartbeat(): void
+    {
+        $this->writeHeartbeat(time() - 5);
+        $snapshot = $this->makeService(queueDepth: 1, staleMails: 2)->snapshot();
+
+        self::assertSame(WorkerHealthService::STATUS_RED, $snapshot['status']);
+        self::assertSame('mails_stuck', $snapshot['reason']);
+        self::assertSame(2, $snapshot['stale_mails']);
+        self::assertSame(3, $snapshot['queue_depth']);
     }
 
     private function writeHeartbeat(int $mtime): void

@@ -147,28 +147,19 @@ tenant:
     organisation_context:
         title: Organisationsprofil
         header: 'Organisationsprofil bearbeiten'
-        description: 'Bearbeiten Sie die Branchenzuordnung, Unternehmensgröße und Standort Ihrer Organisation. Diese Daten beeinflussen Compliance-Empfehlungen.'
+        description: 'Die Unternehmensgröße bestimmt die Richtwerte der Einführungs-Reise (Assets, Risiken, Controls). Branchen, Standort und Beschreibung pflegen Sie im Kontext der Organisation.'
         name_info: 'Der Organisationsname wird aus der Organisations-Konfiguration übernommen.'
         current_config: 'Aktuelle Konfiguration'
         active_modules: 'Aktive Module'
         active_frameworks: 'Aktive Frameworks'
         setup_date: 'Setup abgeschlossen am'
         last_modified: 'Zuletzt geändert'
-        impact_warning:
-            title: 'Hinweis zur Auswirkung'
-            message: 'Änderungen am Organisationsprofil beeinflussen zukünftige Empfehlungen für Module und Compliance-Frameworks. Bereits aktivierte Module bleiben unverändert.'
         info:
             title: 'Über das Organisationsprofil'
-            description: 'Das Organisationsprofil bestimmt, welche regulatorischen Anforderungen für Ihre Organisation relevant sind.'
-            industries: 'Mehrfachauswahl ermöglicht Konzernstrukturen mit verschiedenen Geschäftsfeldern'
-            size: 'Unternehmensgröße beeinflusst NIS2 und andere größenabhängige Regulierungen'
-            country: 'Standort bestimmt nationale Regulierungen (z.B. KRITIS, TKG für Deutschland)'
-            corporate: 'Bei Konzernstrukturen können Tochtergesellschaften unterschiedliche Branchen abdecken'
+            description: 'Die Angaben aus dem Setup-Assistenten wurden einmalig in den Kontext der Organisation (ISO 27001 4.1/4.3) übernommen und werden dort gepflegt.'
+            context_link: 'Zum Kontext der Organisation'
         field:
-            industries: Industries
-            employee_count: 'Employee Count'
-            country: Country
-            description: Beschreibung
+            employee_count: 'Unternehmensgröße (Beschäftigte)'
     setup_progress:
         title: 'Einrichtungsfortschritt'
         org_profile: 'Organisationsprofil konfiguriert'
@@ -210,7 +201,7 @@ tenant:
     name: Name
     email:
         title: 'E-Mail-Branding'
-        subtitle: 'Absender, Logo und Footer für ausgehende E-Mails. Leere Felder werden aus Parent-Organisation oder SystemSettings geerbt.'
+        subtitle: 'Absender, Footer und Support-Adresse für ausgehende E-Mails. Leere Felder werden aus Parent-Organisation oder SystemSettings geerbt.'
         section:
             branding: 'Branding-Einstellungen'
             effective: 'Effektive Werte (nach Fallback-Kaskade)'
@@ -220,16 +211,12 @@ tenant:
         field:
             from_name: 'Absender-Name'
             from_address: 'Absender-E-Mail-Adresse'
-            logo_url: 'Logo-URL (HTTPS)'
             support_address: 'Support-E-Mail-Adresse'
             footer_text: 'Footer-Text'
-        logo_url:
-            https_only: 'Nur HTTPS-URLs erlaubt (sonst Mixed-Content in HTML-E-Mails).'
         saved: 'E-Mail-Branding gespeichert.'
         help:
             from_name: 'Erscheint im „Von"-Feld. Beispiel: ACME GmbH Compliance.'
             from_address: 'Absender-Adresse. Muss im E-Mail-Server freigeschaltet sein (SPF/DKIM).'
-            logo_url: 'Vollständige HTTPS-URL zum Logo (erscheint oben in HTML-E-Mails).'
             footer_text: 'Rechtliche Hinweise / Unterschrift unter der E-Mail. Max. 2000 Zeichen, einfacher Text.'
             support_address: 'Reply-To bzw. Support-Kontakt — kann sich von Absender unterscheiden.'
 corporate:
@@ -351,7 +338,7 @@ corporate:
             delete: Löschen
     email:
         title: 'E-Mail-Branding'
-        subtitle: 'Absender, Logo und Footer für E-Mails pro Organisation. Leere Felder erben vom Holding-Parent, dann SystemSettings, dann Default.'
+        subtitle: 'Absender, Footer und Support-Adresse für E-Mails pro Organisation. Leere Felder erben vom Holding-Parent, dann SystemSettings, dann Default.'
         section:
             branding: 'Branding-Einstellungen'
             effective: 'Effektive Werte (nach Fallback-Kaskade)'
@@ -359,10 +346,7 @@ corporate:
         field:
             from_name: 'Absender-Name'
             from_address: 'Absender-E-Mail-Adresse'
-            logo_url: 'Logo-URL (HTTPS)'
             support_address: 'Support-E-Mail-Adresse'
         hint:
             fallback: 'Leeres Feld → Parent-Organisation → SystemSettings (category=email) → Hardcoded-Default.'
-        logo_url:
-            https_only: 'Nur HTTPS-URLs erlaubt (sonst Mixed-Content in HTML-E-Mails).'
         saved: 'E-Mail-Branding gespeichert.'

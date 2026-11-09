@@ -147,28 +147,19 @@ tenant:
     organisation_context:
         title: 'Organization Profile'
         header: 'Edit Organization Profile'
-        description: 'Edit the industry assignment, company size and location of your organization. This data influences compliance recommendations.'
+        description: 'The company size sets the targets of the implementation journey (assets, risks, controls). Industries, location and description are kept in the context of the organisation.'
         name_info: 'The organization name is taken from the organization configuration.'
         current_config: 'Current Configuration'
         active_modules: 'Active Modules'
         active_frameworks: 'Active Frameworks'
         setup_date: 'Setup completed on'
         last_modified: 'Last modified'
-        impact_warning:
-            title: 'Impact Notice'
-            message: 'Changes to the organization profile affect future recommendations for modules and compliance frameworks. Already activated modules remain unchanged.'
         info:
-            title: 'About Organization Profile'
-            description: 'The organization profile determines which regulatory requirements are relevant to your organization.'
-            industries: 'Multiple selection enables corporate structures with different business areas'
-            size: 'Company size affects NIS2 and other size-dependent regulations'
-            country: 'Location determines national regulations (e.g. KRITIS, TKG for Germany)'
-            corporate: 'In corporate structures, subsidiaries can cover different industries'
+            title: 'About the organisation profile'
+            description: 'The setup wizard copied its answers once into the context of the organisation (ISO 27001 4.1/4.3); they are maintained there.'
+            context_link: 'Go to the context of the organisation'
         field:
-            industries: Industries
-            employee_count: 'Employee Count'
-            country: Country
-            description: Description
+            employee_count: 'Company size (employees)'
     setup_progress:
         title: 'Setup Progress'
         org_profile: 'Organization profile configured'
@@ -210,7 +201,7 @@ tenant:
     name: Name
     email:
         title: 'Email Branding'
-        subtitle: 'Sender, logo, and footer for outgoing emails. Empty fields are inherited from the parent organization or SystemSettings.'
+        subtitle: 'Sender, footer and support address for outgoing emails. Empty fields are inherited from the parent organization or SystemSettings.'
         section:
             branding: 'Branding Settings'
             effective: 'Effective Values (after fallback cascade)'
@@ -220,16 +211,12 @@ tenant:
         field:
             from_name: 'Sender Name'
             from_address: 'Sender Email Address'
-            logo_url: 'Logo URL (HTTPS)'
             support_address: 'Support Email Address'
             footer_text: 'Footer Text'
-        logo_url:
-            https_only: 'HTTPS URLs only (otherwise mixed content in HTML emails).'
         saved: 'Email branding saved.'
         help:
             from_name: 'Appears in the "From" field. Example: ACME Inc. Compliance.'
             from_address: 'Sender address. Must be authorized in the mail server (SPF/DKIM).'
-            logo_url: 'Full HTTPS URL to the logo (shown at the top of HTML emails).'
             footer_text: 'Legal notes / signature below email. Max 2000 characters, plain text.'
             support_address: 'Reply-to / support contact — may differ from sender.'
 corporate:
@@ -351,7 +338,7 @@ corporate:
             delete: Delete
     email:
         title: 'Email Branding'
-        subtitle: 'Sender, logo, and footer for emails per organization. Empty fields inherit from the holding parent, then SystemSettings, then default.'
+        subtitle: 'Sender, footer and support address for emails per organization. Empty fields inherit from the holding parent, then SystemSettings, then default.'
         section:
             branding: 'Branding Settings'
             effective: 'Effective Values (after fallback cascade)'
@@ -359,10 +346,7 @@ corporate:
         field:
             from_name: 'Sender Name'
             from_address: 'Sender Email Address'
-            logo_url: 'Logo URL (HTTPS)'
             support_address: 'Support Email Address'
         hint:
             fallback: 'Empty field → parent organization → SystemSettings (category=email) → hardcoded default.'
-        logo_url:
-            https_only: 'HTTPS URLs only (otherwise mixed content in HTML emails).'
         saved: 'Email branding saved.'

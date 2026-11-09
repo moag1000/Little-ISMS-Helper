@@ -52,6 +52,8 @@ final class PolicyAcknowledgementServiceTest extends TestCase
         $doc->method('getTenant')->willReturn($tenant);
         $doc->method('getSha256Hash')->willReturn($hash);
         $doc->method('getSubstitutionVariables')->willReturn(['_template_version' => 3]);
+        $doc->method('getAcknowledgementAudience')->willReturn(new \Doctrine\Common\Collections\ArrayCollection());
+        $doc->method('getRequiresAcknowledgement')->willReturn(true);
         return $doc;
     }
 

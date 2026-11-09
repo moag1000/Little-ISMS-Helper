@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\GlobalCatalogueVoter;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ComplianceFrameworkLoaderService;
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,6 +45,8 @@ class AdminComplianceController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
+        private readonly FulfillmentRuleEngine $fulfillmentRuleEngine,
+        private readonly TenantContext $tenantContext,
     ) {
     }
     /**
@@ -184,6 +189,7 @@ class AdminComplianceController extends AbstractController
     public function statistics(): Response
     {
         $statistics = $this->complianceFrameworkLoaderService->getFrameworkStatistics();
+        $tenant = $this->tenantContext->getCurrentTenant();
         $availableFrameworks = $this->complianceFrameworkLoaderService->getAvailableFrameworks();
 
         // Calculate compliance percentages per framework
@@ -198,10 +204,13 @@ class AdminComplianceController extends AbstractController
                     $compliant = 0;
 
                     foreach ($requirements as $requirement) {
-                        if ($requirement->getMappedControls()->count() > 0) {
+                        // The organisation's controls behind the global requirement — not
+                        // getMappedControls(), which holds every organisation's controls.
+                        $controls = $tenant instanceof Tenant ? $this->fulfillmentRuleEngine->controlsFor($requirement, $tenant) : [];
+                        if ($controls !== []) {
                             $assessed++;
                             // Check if at least one mapped control is implemented
-                            foreach ($requirement->getMappedControls() as $control) {
+                            foreach ($controls as $control) {
                                 if ($control->getImplementationStatus() === 'implemented') {
                                     $compliant++;
                                     break;

@@ -26,6 +26,21 @@ final class NotificationRuleEvaluatorTest extends TestCase
         return $rule;
     }
 
+    #[Test]
+    public function theSeverityFilterRestrictsTheRuleToOneLevel(): void
+    {
+        $rule = $this->ruleWith([]);
+        $rule->setSeverityFilter('high');
+
+        self::assertTrue($this->evaluator->evaluate($rule, ['severity' => 'high']));
+        self::assertTrue($this->evaluator->evaluate($rule, ['severity' => 'HIGH']));
+        self::assertFalse($this->evaluator->evaluate($rule, ['severity' => 'low']));
+        self::assertFalse($this->evaluator->evaluate($rule, ['status' => 'open']), 'no severity, no match');
+
+        $rule->setSeverityFilter(null);
+        self::assertTrue($this->evaluator->evaluate($rule, ['severity' => 'low']));
+    }
+
     // --- Operator coverage ---
 
     #[Test]
