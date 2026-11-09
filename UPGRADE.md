@@ -185,6 +185,8 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   eine andere Organisation nutzt, und kein Kopf-/Fußzeilen-HTML des Brandings. Abgewiesene Pfade stehen
   als Warnung im Restore-Ergebnis („Dateipfad … nicht übernommen“); der Datensatz behält seinen Wert.
   Logos aus ZIP-Sicherungen landen jetzt dort, wo der Datensatz sie sucht (`public/uploads/tenants/`).
+  ZIP-Sicherungen enthalten jetzt auch die Profilbilder (`files/user_avatars/`, zurück nach
+  `public/uploads/users/`); ältere Sicherungen bringen keine mit.
   Der Setup-Assistent gilt als abgeschlossen, sobald ein Konto existiert, auch ohne
   `var/setup_complete.lock` (die Datei wird dann neu geschrieben). Kein Handlungsbedarf.
 - **Exporte** und Downloads verlangen überall eine Rolle (`#[IsGranted]`), auch die

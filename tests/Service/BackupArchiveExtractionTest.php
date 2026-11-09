@@ -148,6 +148,34 @@ final class BackupArchiveExtractionTest extends TestCase
         self::assertFileDoesNotExist($this->projectDir . '/public/uploads/document_versions/policy_v2.pdf');
     }
 
+    /** B2: profile pictures were missing from ZIP backups; they go back where profilePicture points. */
+    #[Test]
+    public function profilePicturesTravelInTheArchive(): void
+    {
+        mkdir($this->projectDir . '/public/uploads/users', 0755, true);
+        $avatar = $this->projectDir . '/public/uploads/users/avatar_7_abc.png';
+        file_put_contents($avatar, 'PNG avatar');
+        file_put_contents($this->projectDir . '/.env.local', 'APP_SECRET=x');
+
+        $collect = new \ReflectionMethod(BackupService::class, 'collectFileReferences');
+        $refs = $collect->invoke($this->service, ['User' => [
+            ['id' => 7, 'profilePicture' => 'uploads/users/avatar_7_abc.png'],
+            ['id' => 8, 'profilePicture' => 'uploads/users/../../../.env.local'],
+            ['id' => 9, 'profilePicture' => null],
+        ]]);
+
+        self::assertSame(['user_avatars/avatar_7_abc.png' => realpath($avatar)], $refs);
+    }
+
+    #[Test]
+    public function restoredProfilePicturesLandWhereTheUserPoints(): void
+    {
+        $zip = $this->archive(['files/user_avatars/avatar_7_abc.png' => 'PNG avatar']);
+
+        self::assertSame(1, $this->service->extractArchiveFiles($zip, [7]));
+        self::assertStringEqualsFile($this->projectDir . '/public/uploads/users/avatar_7_abc.png', 'PNG avatar');
+    }
+
     #[Test]
     public function everyArchiveFolderButLogosIsRestoredOutsideTheWebRoot(): void
     {
@@ -155,9 +183,9 @@ final class BackupArchiveExtractionTest extends TestCase
         $folders = $class->getConstant('ARCHIVE_FILE_FOLDERS');
         $protected = $class->getConstant('ARCHIVE_PROTECTED_FOLDERS');
 
-        // Tenant logos are shown on the login page and in mails, so they stay public (ProtectedUploads).
+        // Tenant logos (login page, mails) and profile pictures (header) stay public.
         self::assertSame(
-            array_values(array_diff($folders, ['tenant_logos'])),
+            array_values(array_diff($folders, ['tenant_logos', 'user_avatars'])),
             array_keys($protected),
             'An archive folder with evidence must map to a ProtectedUploads area.',
         );
