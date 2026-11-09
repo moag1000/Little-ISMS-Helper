@@ -152,14 +152,6 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Exporte und Downloads werden protokolliert; jeder Datenschutz-Export (VVT, DSFA, Datenpanne, Betroffenenanfrage, Einwilligung, Behörden-VVT) trägt dieselbe Regel `PrivacyExportAccess::RULE` (DSB oder Manager) | `DownloadAuditSubscriber`, `tests/Security/PrivacyExportAccessTest` (findet die Routen selbst) |
 
 
-## Nachweise aus der Wiederherstellung (S26)
-
-Platzhalter (B3): Inhalt schreibt Paket S26 — welche Nachweis-Entitäten und -Felder eine
-Organisationswiederherstellung nie ändert und welcher Test das belegt.
-
-| Invariante | Beleg |
-|---|---|
-
 ## Löschvertrag (S29)
 
 Platzhalter (B3): Inhalt schreibt Paket S29 — welche Datensätze mit Endzustand oder Aufbewahrungspflicht wie
