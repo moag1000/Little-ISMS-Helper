@@ -52,10 +52,10 @@
                 <span>{{ fulfillment.fulfillmentPercentage }}% · {{ fulfillment.status }}</span>
             </div>
         {% endif %}
-        {% if requirement.maturityCurrent is not null or requirement.maturityTarget is not null %}
+        {% if maturity.current is not null or maturity.target is not null %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'compliance.requirement.mris.current'|trans({}, 'compliance') }} / {{ 'compliance.requirement.mris.target'|trans({}, 'compliance') }}</span>
-                <span>{{ requirement.maturityCurrent|default('—') }} / {{ requirement.maturityTarget|default('—') }}</span>
+                <span>{{ maturity.current|default('—') }} / {{ maturity.target|default('—') }}</span>
             </div>
         {% endif %}
         {% if fulfillment and fulfillment.responsiblePersonUser %}

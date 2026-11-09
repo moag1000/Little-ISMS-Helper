@@ -6,11 +6,14 @@ namespace App\Tests\Service;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
 use App\Service\MrisBaselineService;
+use App\Service\Compliance\RequirementMaturity;
 use App\Service\MrisMaturityService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Exception\BusinessRule\BusinessRuleException;
@@ -41,7 +44,12 @@ final class MrisBaselineServiceTest extends TestCase
         );
 
         $audit = $this->createStub(AuditLogger::class);
-        $maturity = new MrisMaturityService($em, $audit);
+        $fulfillmentRepo = $this->createStub(ComplianceRequirementFulfillmentRepository::class);
+        $fulfillmentRepo->method('findOrCreateForTenantAndRequirement')->willReturnCallback(
+            static fn(Tenant $t, ComplianceRequirement $r): ComplianceRequirementFulfillment
+                => (new ComplianceRequirementFulfillment())->setTenant($t)->setRequirement($r),
+        );
+        $maturity = new MrisMaturityService($em, $audit, new RequirementMaturity($fulfillmentRepo, $em));
 
         return new MrisBaselineService($em, $frameworkRepo, $reqRepo, $maturity, new RequestStack(), $this->projectDir);
     }

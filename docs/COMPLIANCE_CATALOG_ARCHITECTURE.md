@@ -121,7 +121,7 @@ nur Session/`Tenant.settings`. **Lädt NICHTS.** Laden bleibt manuelle Admin-Akt
 | Requirement anlegen | POST `/compliance/requirement/new` | Einzel-Req erstellen (ROLE_USER) | UI-Form | global, kaum Validierung |
 | Requirement editieren | POST `/compliance/requirement/{id}/edit` | title/desc/priority/category/type/parent | UI-Form | bearbeitet auch system rows global |
 | Requirement löschen | POST `/compliance/requirement/{id}` | hard delete (ROLE_ADMIN) | UI-Button | **lässt ComplianceMapping verwaisen** |
-| MRIS-Reifegrad | POST `/compliance/requirement/{id}/mris-maturity` | current/target (MRIS) | UI-Form | ROLE_MANAGER, audit |
+| MRIS-Reifegrad | POST `/compliance/requirement/{id}/mris-maturity` | current/target (MRIS) der eigenen Organisation, an ihrer Erfüllungszeile (S18, `RequirementMaturity`) | UI-Form | ROLE_MANAGER, audit |
 | Framework-Version migrieren | CLI `app:migrate-framework-version --from --to` | erzeugt Mapping-„Bridges" (kein Re-Key); `--dry-run` | **CLI-only** | kein UI-Button |
 | Mapping-Reqs sicherstellen | CLI `app:mapping:ensure-requirements` | legt Stub-Requirements an für danglende Mapping-IDs | **CLI-only** | non-destructive |
 | Framework löschen | POST `/compliance/framework/{id}/delete` | löscht Framework+Reqs (cascade) | UI-Button | **Mappings verwaisen** (FK ohne onDelete) |

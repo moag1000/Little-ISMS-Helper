@@ -276,7 +276,13 @@ final class MrisVersionMigrationCommandTest extends TestCase
 
     private function buildTester(): CommandTester
     {
-        $maturityService = new MrisMaturityService($this->entityManager, $this->auditLogger);
+        $fulfillmentRepo = $this->createStub(\App\Repository\ComplianceRequirementFulfillmentRepository::class);
+        $fulfillmentRepo->method('findBy')->willReturn([]);
+        $maturityService = new MrisMaturityService(
+            $this->entityManager,
+            $this->auditLogger,
+            new \App\Service\Compliance\RequirementMaturity($fulfillmentRepo, $this->entityManager),
+        );
 
         $command = new MrisVersionMigrationCommand(
             $this->entityManager,

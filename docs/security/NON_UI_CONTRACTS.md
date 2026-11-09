@@ -27,6 +27,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Benachrichtigungs-Mails gehen nur an Konten der Organisation (`RecipientFilter`) und tragen nur Kurzfelder (`NotificationMailSummary`), nie den ganzen Datensatz | `tests/Service/Notification/Channel/EmailChannelTest` |
 | Der Aktivitäts-Feed zeigt Audit-Zeilen nur Admins | `tests/Service/ActivityFeedTest::aNonAdminSeesNoAuditRows` |
 | `/lifecycle/*` nur angemeldet; erlaubte Übergänge und Übergänge nur für Datensätze der eigenen Organisation (sonst 404) | `tests/Controller/LifecycleControllerHistoryTest` |
+| Ein Reifegrad (MRIS Ist/Soll, Branchen-Baseline-Soll) gehört der Organisation: er liegt an ihrer Erfüllungszeile, nie an der gemeinsamen Katalog-Anforderung; Schreiben in A ändert B nicht. Code liest und schreibt ihn nur über `RequirementMaturity` (S18) | `tests/Contract/MaturityPerOrganisationContractTest`, `tests/Security/RequirementMaturityAccessTest`, `tests/Service/MrisMaturityServiceTest` |
 | Die Trust-Seite nennt nur Frameworks, an denen die Organisation arbeitet | `tests/Service/PostureSnapshotServiceTest::aFrameworkTheOrganisationDoesNotWorkOnIsNotListed` |
 
 ## Token und Anmeldung
