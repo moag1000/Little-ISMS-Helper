@@ -75,7 +75,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
-                    'accept' => 'image/jpeg,image/png,image/svg+xml,image/gif,image/webp',
+                    'accept' => 'image/jpeg,image/png,image/gif,image/webp',
                 ],
                 'constraints' => [
                     new Assert\File(
@@ -83,7 +83,6 @@ final class TenantType extends AbstractType implements SectionMapInterface
                         mimeTypes: [
                             'image/jpeg',
                             'image/png',
-                            'image/svg+xml',
                             'image/gif',
                             'image/webp',
                         ],

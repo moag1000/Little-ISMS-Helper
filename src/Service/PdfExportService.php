@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use App\Service\Pdf\PdfRenderer;
 use Twig\Environment;
 
 /**
@@ -28,7 +27,8 @@ use Twig\Environment;
 class PdfExportService
 {
     public function __construct(
-        private readonly Environment $twigEnvironment
+        private readonly Environment $twigEnvironment,
+        private readonly ?PdfRenderer $pdfRenderer = null,
     ) {
     }
 
@@ -79,22 +79,16 @@ class PdfExportService
             $html = str_replace('</head>', "<style>{$watermarkCss}</style></head>", $html);
         }
 
-        $pdfOptions = new Options();
-        $pdfOptions->set('defaultFont', 'DejaVu Sans');
-        // Security: Disable remote resources to prevent SSRF attacks (OWASP Top 10 #10)
-        $pdfOptions->set('isRemoteEnabled', false);
-        $pdfOptions->set('isHtml5ParserEnabled', true);
+        return $this->renderer()->render(
+            $html,
+            $options['paper'] ?? 'A4',
+            $options['orientation'] ?? 'portrait',
+        );
+    }
 
-        if (isset($options['orientation'])) {
-            $pdfOptions->set('orientation', $options['orientation']);
-        }
-
-        $dompdf = new Dompdf($pdfOptions);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper($options['paper'] ?? 'A4', $options['orientation'] ?? 'portrait');
-        $dompdf->render();
-
-        return $dompdf->output();
+    private function renderer(): PdfRenderer
+    {
+        return $this->pdfRenderer ?? new PdfRenderer();
     }
 
     public function downloadPdf(string $template, array $data, string $filename, array $options = []): void

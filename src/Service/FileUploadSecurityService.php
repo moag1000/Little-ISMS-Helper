@@ -22,12 +22,16 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
  * their own whitelist instead of bypassing the service:
  *  - PROFILE_BACKUP          backup restore files (.json / .gz / .zip)
  *  - PROFILE_TABULAR_IMPORT  bulk-import spreadsheets (.csv / .xlsx / .xls / .ods)
+ *  - PROFILE_IMAGE           logos and avatars (.jpg / .jpeg / .png / .gif / .webp) — they
+ *                            land in public/uploads and are served without login, so no
+ *                            document, archive or text type (S25)
  */
 class FileUploadSecurityService
 {
     public const string PROFILE_DEFAULT = 'default';
     public const string PROFILE_BACKUP = 'backup';
     public const string PROFILE_TABULAR_IMPORT = 'tabular_import';
+    public const string PROFILE_IMAGE = 'image';
 
     /**
      * Non-default profiles: extension whitelist, server-detected MIME
@@ -62,6 +66,11 @@ class FileUploadSecurityService
                 'application/vnd.oasis.opendocument.spreadsheet',
             ],
             'max_size' => 10 * 1024 * 1024,
+        ],
+        self::PROFILE_IMAGE => [
+            'extensions' => ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+            'mime_types' => ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+            'max_size' => 2 * 1024 * 1024,
         ],
     ];
 
@@ -100,18 +109,31 @@ class FileUploadSecurityService
     // Security: Maximum file size (10MB default)
     private const int|float MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 
-    // Security: Magic bytes for file type verification
+    // Security: Magic bytes for file type verification (hex prefix of the first
+    // 12 bytes; "." stands for any hex digit)
     private const array MAGIC_BYTES = [
         'pdf' => ['25504446'],  // %PDF
-        'jpg' => ['ffd8ffe0', 'ffd8ffe1', 'ffd8ffe2'],  // JPEG
+        'jpg' => ['ffd8ff'],  // JPEG (every APPn / DQT marker)
+        'jpeg' => ['ffd8ff'],
         'png' => ['89504e47'],  // PNG
         'gif' => ['47494638'],  // GIF
+        'webp' => ['52494646........57454250'],  // RIFF....WEBP
         'zip' => ['504b0304', '504b0506'],  // ZIP
         'docx' => ['504b0304'],  // DOCX (ZIP-based)
         'xlsx' => ['504b0304'],  // XLSX (ZIP-based)
         'ods' => ['504b0304'],  // ODS (ZIP-based)
         'gz' => ['1f8b'],  // gzip
     ];
+
+    /**
+     * Logos and avatars: PROFILE_IMAGE (they are served from public/uploads without login).
+     *
+     * @return array{valid: bool, error: string|null}
+     */
+    public function validateImage(UploadedFile $uploadedFile): array
+    {
+        return $this->validateUpload($uploadedFile, self::PROFILE_IMAGE);
+    }
 
     /**
      * Security: Validate uploaded file and return result array
@@ -252,13 +274,16 @@ class FileUploadSecurityService
             throw new FileException('Unable to read file for validation');
         }
 
-        // Read first 8 bytes for magic byte verification
-        $fileHeader = fread($handle, 8);
+        // Read first 12 bytes for magic byte verification
+        $fileHeader = fread($handle, 12);
         fclose($handle);
 
         $fileHeaderHex = bin2hex($fileHeader);
         $expectedMagicBytes = self::MAGIC_BYTES[$extension];
-        $isValid = array_any($expectedMagicBytes, fn($magicByte): bool => str_starts_with($fileHeaderHex, (string) $magicByte));
+        $isValid = array_any(
+            $expectedMagicBytes,
+            static fn (string $magicByte): bool => preg_match('/^' . $magicByte . '/', $fileHeaderHex) === 1,
+        );
 
         if (!$isValid) {
             throw new FileException(

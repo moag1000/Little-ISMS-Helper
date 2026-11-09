@@ -8,6 +8,7 @@ use App\Entity\IdentityProvider;
 use App\Entity\User;
 use App\Service\Sso\SsoAccountLinkPolicy;
 use App\Security\GenericOidcAuthenticator;
+use App\Http\PublicUrlGenerator;
 use App\Repository\IdentityProviderRepository;
 use App\Service\Sso\OidcAuthenticationFlow;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +16,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Public SSO routes — `/sso/{slug}/start` triggers the auth flow,
@@ -29,7 +29,7 @@ final class SsoController extends AbstractController
     public function __construct(
         private readonly IdentityProviderRepository $providerRepo,
         private readonly OidcAuthenticationFlow $flow,
-        private readonly RouterInterface $router,
+        private readonly PublicUrlGenerator $publicUrls,
     ) {
     }
 
@@ -69,7 +69,8 @@ final class SsoController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $redirectUri = $this->router->generate('app_sso_callback', ['slug' => $slug], RouterInterface::ABSOLUTE_URL);
+        // S25: the redirect_uri comes from DEFAULT_URI, never from the Host header.
+        $redirectUri = $this->publicUrls->generate('app_sso_callback', ['slug' => $slug]);
         $authReq = $this->flow->buildAuthorizationRequest($provider, $redirectUri);
 
         $session = $request->getSession();

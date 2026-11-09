@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service\PolicyWizard\Export;
 
+use App\Service\Pdf\PdfRenderer;
 use App\Entity\Document;
 use App\Entity\TenantBranding;
 use App\Repository\EntityTagRepository;
 use App\Repository\TenantBrandingRepository;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Twig\Environment as TwigEnvironment;
 use Twig\Markup;
 
@@ -38,6 +37,7 @@ class PolicyPdfExporter
         private readonly TwigEnvironment $twig,
         private readonly ?TenantBrandingRepository $brandingRepository = null,
         private readonly ?EntityTagRepository $entityTagRepository = null,
+        private readonly ?PdfRenderer $pdfRenderer = null,
     ) {
     }
 
@@ -500,20 +500,9 @@ class PolicyPdfExporter
 
     private function renderPdf(string $html): string
     {
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', false);
-        $options->set('defaultPaperSize', 'A4');
-        $options->set('defaultFont', 'Helvetica');
         // Avoid touching the filesystem for fonts when the host has none.
-        $options->set('isFontSubsettingEnabled', false);
-
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html, 'UTF-8');
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        return $dompdf->output();
+        return ($this->pdfRenderer ?? new PdfRenderer())
+            ->render($html, 'A4', 'portrait', 'Helvetica', ['isFontSubsettingEnabled' => false]);
     }
 
     private function stringOrNull(mixed $value): ?string

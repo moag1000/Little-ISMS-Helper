@@ -183,25 +183,25 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # Setup wizard - access control is handled by SetupSecuritySubscriber
-        # Before setup: PUBLIC_ACCESS
-        # After setup: ROLE_SUPER_ADMIN required (SetupSecuritySubscriber + SetupAccessVoter)
-        # IMPORTANT: Must match both /setup and /{locale}/setup/ patterns
-        - { path: ^/setup, roles: PUBLIC_ACCESS }
+        # Every route reachable without login is pinned, with its guard, in
+        # tests/Security/PublicRoutesInventoryTest (S25) — a PUBLIC_ACCESS rule that
+        # matches no route fails there, so keep the paths the real ones.
+
+        # Setup wizard (/{locale}/setup) - access is decided by SetupAccessVoter
+        # (SETUP_ACCESS): public before setup, ROLE_SUPER_ADMIN after.
         - { path: '^/(de|en)/setup', roles: PUBLIC_ACCESS }
 
-        # Public routes (security routes are now WITHOUT locale prefix)
         - { path: ^/$, roles: PUBLIC_ACCESS }
         # Infra probe endpoints — unauthenticated, locale-independent (no /{_locale} prefix)
         - { path: ^/health$, roles: PUBLIC_ACCESS }
         - { path: ^/readyz$, roles: PUBLIC_ACCESS }
         - { path: ^/metrics$, roles: PUBLIC_ACCESS }
-        - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/logout$, roles: PUBLIC_ACCESS }
-        - { path: ^/oauth, roles: PUBLIC_ACCESS }
-        - { path: ^/saml, roles: PUBLIC_ACCESS }
-        - { path: ^/sso, roles: PUBLIC_ACCESS }
-        - { path: '^/(de|en)/sso/', roles: PUBLIC_ACCESS }
+        # SecurityController routes carry the locale prefix (config/routes.yaml):
+        # /de/login, /de/oauth/azure/*, /de/saml/* — the IdP must reach ACS and
+        # metadata without a session.
+        - { path: '^/(de|en)/(oauth|saml)/', roles: PUBLIC_ACCESS }
+        # Generic OIDC (SsoController) has no locale prefix.
+        - { path: ^/sso/, roles: PUBLIC_ACCESS }
 
         # Quick-Fix fallback: must remain reachable when schema-error blocks
         # the user-table query the firewall would otherwise need. Per-request
@@ -222,9 +222,7 @@ security:
         # IS_AUTHENTICATED_REMEMBERED: a RememberMe user must be able to reach these.
         - { path: '^/(de|en)/reauth/', roles: IS_AUTHENTICATED_REMEMBERED }
 
-        # Defensive safeguard: Prevent locale-prefixed security routes from requiring authentication
-        # These routes should NEVER exist (SecurityController is excluded from locale routing),
-        # but if accidentally created, this ensures they remain public to prevent redirect loops
+        # Login and logout (locale-prefixed, SecurityController).
         - { path: '^/(de|en)/(login|logout)$', roles: PUBLIC_ACCESS }
 
         # Async-job status polling + shared progress page are also used by

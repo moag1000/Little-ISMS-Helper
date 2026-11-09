@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service\PolicyWizard\Rollup;
 
+use App\Service\Pdf\PdfRenderer;
 use App\Entity\Tenant;
 use App\Entity\TenantBranding;
 use App\Repository\TenantBrandingRepository;
 use DateTimeImmutable;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Twig\Environment as TwigEnvironment;
 
 /**
@@ -37,6 +36,7 @@ final class KonzernOnePagerPdfService
         private readonly KonzernRollupAggregator $rollupAggregator,
         private readonly KonzernTrendCalculator $trendCalculator,
         private readonly ?TenantBrandingRepository $brandingRepository = null,
+        private readonly ?PdfRenderer $pdfRenderer = null,
     ) {
     }
 
@@ -202,19 +202,9 @@ SVG;
 
     private function renderPdf(string $html): string
     {
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', false);
-        $options->set('defaultPaperSize', 'A4');
-        $options->set('defaultFont', 'Helvetica');
-        $options->set('isFontSubsettingEnabled', false);
-
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html, 'UTF-8');
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        return $dompdf->output();
+        // Avoid touching the filesystem for fonts when the host has none.
+        return ($this->pdfRenderer ?? new PdfRenderer())
+            ->render($html, 'A4', 'portrait', 'Helvetica', ['isFontSubsettingEnabled' => false]);
     }
 
     private function resolveAppVersion(): string

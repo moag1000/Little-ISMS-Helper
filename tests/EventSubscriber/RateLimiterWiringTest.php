@@ -7,7 +7,7 @@ namespace App\Tests\EventSubscriber;
 use App\Controller\DocumentController;
 use App\Controller\Security\ReauthController;
 use App\EventSubscriber\ApiRateLimitSubscriber;
-use App\EventSubscriber\PublicTokenRateLimitSubscriber;
+use App\EventSubscriber\PublicPathRateLimitSubscriber;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use ReflectionProperty;
@@ -22,14 +22,18 @@ use Symfony\Component\RateLimiter\RateLimiterFactory;
 final class RateLimiterWiringTest extends KernelTestCase
 {
     /**
-     * @return iterable<string, array{class-string, string, int}>
+     * @return iterable<string, array{0: class-string, 1: string, 2: int, 3?: string}>
      */
     public static function consumers(): iterable
     {
         yield 'api' => [ApiRateLimitSubscriber::class, 'apiLimiter', 100];
         yield 'document upload' => [DocumentController::class, 'documentUploadLimiter', 20];
         yield 'reauth' => [ReauthController::class, 'reauthLimiter', 5];
-        yield 'public token urls' => [PublicTokenRateLimitSubscriber::class, 'publicTokenLimiter', 60];
+        yield 'public token urls' => [PublicPathRateLimitSubscriber::class, 'limiters', 60, 'token'];
+        // test env raises the other public limits (functional tests from 127.0.0.1)
+        yield 'public probes' => [PublicPathRateLimitSubscriber::class, 'limiters', 100000, 'probe'];
+        yield 'public sso' => [PublicPathRateLimitSubscriber::class, 'limiters', 100000, 'sso'];
+        yield 'public quick-fix' => [PublicPathRateLimitSubscriber::class, 'limiters', 100000, 'quick_fix'];
         // test env raises the limit (the suite fails many tokens from one IP); the throttle has its own test
         yield 'failed bearer attempts' => [\App\Security\ApiTokenAuthenticator::class, 'apiAuthFailureLimiter', 100000];
     }
@@ -39,12 +43,15 @@ final class RateLimiterWiringTest extends KernelTestCase
      */
     #[Test]
     #[DataProvider('consumers')]
-    public function consumerGetsItsOwnLimiter(string $class, string $property, int $limit): void
+    public function consumerGetsItsOwnLimiter(string $class, string $property, int $limit, ?string $key = null): void
     {
         self::bootKernel();
         $service = self::getContainer()->get($class);
 
         $factory = (new ReflectionProperty($class, $property))->getValue($service);
+        if ($key !== null) {
+            $factory = $factory[$key];
+        }
         self::assertInstanceOf(RateLimiterFactory::class, $factory);
 
         $rateLimit = $factory->create('wiring-test-' . bin2hex(random_bytes(4)))->consume(0);

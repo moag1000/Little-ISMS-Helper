@@ -491,6 +491,9 @@ services:
     Symfony\Component\RateLimiter\RateLimiterFactory $apiLimiter: '@limiter.api'
     Symfony\Component\RateLimiter\RateLimiterFactory $reauthLimiter: '@limiter.reauth'
     Symfony\Component\RateLimiter\RateLimiterFactory $publicTokenLimiter: '@limiter.public_token'
+    Symfony\Component\RateLimiter\RateLimiterFactory $publicProbeLimiter: '@limiter.public_probe'
+    Symfony\Component\RateLimiter\RateLimiterFactory $publicSsoLimiter: '@limiter.public_sso'
+    Symfony\Component\RateLimiter\RateLimiterFactory $publicQuickFixLimiter: '@limiter.public_quick_fix'
     Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter: '@limiter.document_upload'
     Symfony\Component\RateLimiter\RateLimiterFactory $mfaVerifyLimiter: '@limiter.mfa_verify'
 

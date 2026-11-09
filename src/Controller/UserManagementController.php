@@ -808,7 +808,7 @@ class UserManagementController extends AbstractController
     {
         try {
             // Security validation using FileUploadSecurityService
-            $validation = $this->fileUploadSecurityService->validateUpload($uploadedFile);
+            $validation = $this->fileUploadSecurityService->validateImage($uploadedFile);
 
             if (!$validation['valid']) {
                 $this->addFlash('warning', 'Avatar upload failed: ' . $validation['error']);
