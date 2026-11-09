@@ -102,6 +102,7 @@ final class DataImportService
         private readonly string $projectDir,
         private readonly ?ManagerRegistry $managerRegistry = null,
         private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
+        private readonly ?\App\Security\Voter\GlobalCatalogueVoter $globalCatalogue = null,
     ) {
     }
 
@@ -241,7 +242,18 @@ final class DataImportService
             }
 
             // Führe Import durch
-            if (isset($data['command'])) {
+            if (isset($data['command'])
+                && $this->globalCatalogue !== null
+                && !$this->globalCatalogue->userMayWrite($importedBy)
+            ) {
+                // The command entries load framework catalogues every organisation shares (S13).
+                $results[] = [
+                    'name' => $data['name'],
+                    'status' => 'skipped',
+                    'message' => 'Kataloge gelten für alle Organisationen; laden darf sie nur der Super-Admin.',
+                    'removable' => false,
+                ];
+            } elseif (isset($data['command'])) {
                 // Commands tracken wir (noch) nicht — keine Entity-IDs zurück.
                 $result = $this->executeCommand($data['command']);
                 $results[] = [

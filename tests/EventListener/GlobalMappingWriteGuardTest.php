@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\EventListener;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
+use App\Entity\MappingGapItem;
+use App\Entity\Tenant;
 use App\EventListener\GlobalMappingWriteGuard;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -42,8 +45,55 @@ final class GlobalMappingWriteGuardTest extends TestCase
         $this->addToAssertionCount(3);
     }
 
-    private function flush(bool $signedIn, bool $granted, bool $inRequest = true): void
+    /** S13: the rest of the shared catalogue — loaders, seeds, presets, gap items. */
+    #[Test]
+    public function sharedCatalogueRowsAreRefusedWithoutTheRight(): void
     {
+        $globalMapping = (new ComplianceMapping())
+            ->setSourceRequirement(new ComplianceRequirement())
+            ->setTargetRequirement(new ComplianceRequirement());
+        $gap = new MappingGapItem();
+        $gap->setMapping($globalMapping);
+        $cases = [
+            'new shared requirement' => [[new ComplianceRequirement()], [], []],
+            'deleted shared requirement' => [[], [], [new ComplianceRequirement()]],
+            'changed framework' => [[], [new ComplianceFramework()], []],
+            'deleted framework' => [[], [], [new ComplianceFramework()]],
+            'gap of a global mapping' => [[], [$gap], []],
+        ];
+        foreach ($cases as $label => [$inserts, $updates, $deletes]) {
+            try {
+                $this->flush(signedIn: true, granted: false, inserts: $inserts, updates: $updates, deletes: $deletes);
+                self::fail($label . ' passed the backstop');
+            } catch (AccessDeniedException) {
+                $this->addToAssertionCount(1);
+            }
+            $this->flush(signedIn: true, granted: true, inserts: $inserts, updates: $updates, deletes: $deletes);
+        }
+    }
+
+    #[Test]
+    public function rowsOfTheOrganisationPass(): void
+    {
+        $own = (new ComplianceRequirement())->setUploadTenant(new Tenant());
+        // A requirement update passes (maturity still lives on the row until S18).
+        $this->flush(signedIn: true, granted: false, inserts: [$own], updates: [new ComplianceRequirement()], deletes: [$own]);
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @param list<object>|null $inserts
+     * @param list<object>|null $updates
+     * @param list<object>|null $deletes
+     */
+    private function flush(
+        bool $signedIn,
+        bool $granted,
+        bool $inRequest = true,
+        ?array $inserts = null,
+        ?array $updates = null,
+        ?array $deletes = null,
+    ): void {
         $mapping = (new ComplianceMapping())
             ->setSourceRequirement(new ComplianceRequirement())
             ->setTargetRequirement(new ComplianceRequirement());
@@ -53,9 +103,9 @@ final class GlobalMappingWriteGuardTest extends TestCase
         $security->method('isGranted')->willReturn($granted);
 
         $uow = $this->createStub(UnitOfWork::class);
-        $uow->method('getScheduledEntityInsertions')->willReturn([]);
-        $uow->method('getScheduledEntityUpdates')->willReturn([$mapping]);
-        $uow->method('getScheduledEntityDeletions')->willReturn([]);
+        $uow->method('getScheduledEntityInsertions')->willReturn($inserts ?? []);
+        $uow->method('getScheduledEntityUpdates')->willReturn($updates ?? [$mapping]);
+        $uow->method('getScheduledEntityDeletions')->willReturn($deletes ?? []);
         $em = $this->createStub(EntityManagerInterface::class);
         $em->method('getUnitOfWork')->willReturn($uow);
 

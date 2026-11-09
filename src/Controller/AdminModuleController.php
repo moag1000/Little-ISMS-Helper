@@ -217,6 +217,8 @@ class AdminModuleController extends AbstractController
                 $this->addFlash('success', $importResult['name'] . ': ' . $importResult['message']);
             } elseif ($importResult['status'] === 'error') {
                 $this->addFlash('error', $importResult['name'] . ': ' . $importResult['message']);
+            } elseif ($importResult['status'] === 'skipped') {
+                $this->addFlash('warning', $importResult['name'] . ': ' . $importResult['message']);
             }
         }
 
