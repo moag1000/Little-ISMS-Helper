@@ -221,7 +221,15 @@ cp .env.prod.example .env.local
 APP_ENV=prod
 APP_SECRET=CHANGE_ME_TO_A_SECURE_RANDOM_STRING
 DATABASE_URL="mysql://user:password@localhost:3306/database?serverVersion=8.0&charset=utf8mb4"
+DEFAULT_URI=https://isms.example.org
+SYMFONY_TRUSTED_HOSTS='^isms\.example\.org$'
 ```
+
+`DEFAULT_URI` ist die öffentliche Adresse: alle Links in Mails, Lieferantenfragebögen,
+Trust Center und QR-Labels werden daraus gebaut, nie aus dem Host-Header der Anfrage.
+`SYMFONY_TRUSTED_HOSTS` lässt nur die eigenen Hostnamen zu (Muster mit `^…$`), jede andere
+Anfrage bekommt 400. Ohne Shell: Admin > Überwachung > Health, Karte „Umgebung“, Knopf
+„… als öffentliche Adresse übernehmen“ (Super-Admin) schreibt beides in `.env.local`.
 
 **APP_SECRET generieren:**
 ```bash

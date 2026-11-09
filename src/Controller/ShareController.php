@@ -59,7 +59,7 @@ class ShareController extends AbstractController
     {
         $title = $request->request->get('title') ?? $request->query->get('title', '');
         $text = $request->request->get('text') ?? $request->query->get('text', '');
-        $url = $request->request->get('url') ?? $request->query->get('url', '');
+        $url = self::webUrlOrEmpty($request->request->get('url') ?? $request->query->get('url', ''));
 
         // Handle uploaded files
         $uploadedFiles = [];
@@ -118,7 +118,7 @@ class ShareController extends AbstractController
         $action = $request->request->get('action');
         $title = $request->request->get('title', '');
         $text = $request->request->get('text', '');
-        $url = $request->request->get('url', '');
+        $url = self::webUrlOrEmpty($request->request->get('url', ''));
 
         switch ($action) {
             case 'incident':
@@ -245,5 +245,16 @@ class ShareController extends AbstractController
         });
 
         return $context;
+    }
+
+    /**
+     * Shared URLs become a link on the page and text in new records: only http(s).
+     * A shared `javascript:` or `data:` URL would run on click (S16).
+     */
+    public static function webUrlOrEmpty(mixed $url): string
+    {
+        $url = trim((string) $url);
+
+        return preg_match('#^https?://[^\s]+$#i', $url) === 1 ? $url : '';
     }
 }

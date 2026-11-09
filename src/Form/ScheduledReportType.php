@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ScheduledReport;
+use App\Form\Trait\ModuleAwareFormTrait;
 use App\Service\Mail\RecipientFilter;
+use App\Service\ModuleConfigurationService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -21,13 +23,37 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class ScheduledReportType extends AbstractType implements SectionMapInterface
 {
+    use ModuleAwareFormTrait;
+
     public function __construct(
         private readonly RecipientFilter $recipientFilter,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
+    }
+
+    /**
+     * Report types whose module is active (S16): a GDPR report needs `privacy`, a BCM
+     * report `bcm`, … (ScheduledReport::TYPE_MODULES). A stored type of a module that
+     * was switched off stays selectable so editing the report does not fail.
+     *
+     * @return array<string, string> label => type
+     */
+    private function reportTypeChoices(?string $current): array
+    {
+        $choices = [];
+        foreach (ScheduledReport::getReportTypes() as $type => $label) {
+            $module = ScheduledReport::TYPE_MODULES[$type] ?? null;
+            if ($module === null || $type === $current || $this->isModuleActive($module)) {
+                $choices[$label] = $type;
+            }
+        }
+
+        return $choices;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $current = $options['data'] instanceof ScheduledReport ? $options['data']->getReportType() : null;
         $builder
             ->add('name', TextType::class, [
                 'label' => 'scheduled_report.form.name',
@@ -39,7 +65,7 @@ final class ScheduledReportType extends AbstractType implements SectionMapInterf
             ])
             ->add('reportType', ChoiceType::class, [
                 'label' => 'scheduled_report.form.report_type',
-                'choices' => array_flip(ScheduledReport::getReportTypes()),
+                'choices' => $this->reportTypeChoices($current),
                 'placeholder' => 'scheduled_report.form.select_type',
             ])
             ->add('schedule', ChoiceType::class, [

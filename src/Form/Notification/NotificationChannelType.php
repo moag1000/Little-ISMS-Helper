@@ -15,6 +15,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Form type for creating and editing NotificationChannel entities.
@@ -81,6 +83,16 @@ final class NotificationChannelType extends AbstractType
                     'placeholder'  => 'notification.channel.field.secret_placeholder',
                 ],
                 'help'     => 'notification.channel.help.secret',
+                // S16: a webhook without secret would go out unsigned; WebhookChannel refuses it.
+                'constraints' => [new Assert\Callback(static function (mixed $value, ExecutionContextInterface $context): void {
+                    $channel = $context->getRoot()->getData();
+                    if ($channel instanceof NotificationChannel
+                        && $channel->getType() === NotificationChannel::TYPE_WEBHOOK
+                        && ($value === null || $value === '')
+                        && $channel->getSecretEncrypted() === null) {
+                        $context->buildViolation('validators.notification.webhook_secret_required')->addViolation();
+                    }
+                })],
             ])
             ->add('isActive', CheckboxType::class, [
                 'label'    => 'notification.channel.field.is_active',

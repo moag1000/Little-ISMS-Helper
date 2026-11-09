@@ -744,3 +744,4 @@ workflow_instance.validation.entity_id_positive: 'Die Entitäts-ID muss eine pos
 'validators.asset_sub_type.name_unique': 'Dieser Untertyp existiert für den Asset-Obertyp bereits.'
 'validators.supplier_criticality.code_unique': 'Diesen Code gibt es bereits.'
 'register.validation.title_required': 'Titel ist erforderlich.'
+'validators.notification.webhook_secret_required': 'Ein Webhook braucht ein HMAC-Geheimnis. Ohne Signatur kann der Empfänger gefälschte Meldungen nicht erkennen; unsignierte Webhooks werden nicht gesendet.'

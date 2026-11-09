@@ -11,22 +11,19 @@ function mountOfflinePage() {
     document.body.innerHTML = body;
 }
 
-describe('offline.js — cached page list', () => {
-    it('finds the versioned isms-dynamic-* cache without a hard-coded version', async () => {
+describe('offline.js — offline page', () => {
+    it('lists no cached pages: the service worker stores none since S16', async () => {
         mountOfflinePage();
         const opened = [];
         globalThis.caches = {
-            keys: async () => ['isms-static-v3.0.0-fa', 'isms-dynamic-v3.0.0-fa'],
-            open: async (name) => {
-                opened.push(name);
-                return { keys: async () => [{ url: 'https://x.test/de/dashboard' }, { url: 'https://x.test/api/foo' }] };
-            },
+            keys: async () => ['isms-static-v3.1.0-s16', 'isms-dynamic-v3.0.0-fa'],
+            open: async (name) => { opened.push(name); return { keys: async () => [] }; },
         };
         vi.resetModules();
         await import('../../public/offline.js');
-        await vi.waitFor(() => expect(document.querySelectorAll('#cachedPagesList li').length).toBe(1));
-        expect(opened).toEqual(['isms-dynamic-v3.0.0-fa']);
-        expect(document.getElementById('cachedPages').hidden).toBe(false);
+        await new Promise((r) => setTimeout(r, 0));
+        expect(opened).toEqual([]);
+        expect(document.getElementById('cachedPagesList')).toBeNull();
     });
 
     it('wires the retry button from the external script (no inline handler)', async () => {

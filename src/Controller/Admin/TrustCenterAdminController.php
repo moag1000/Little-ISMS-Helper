@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Http\PublicUrlGenerator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Entity\Tenant;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
@@ -34,6 +36,8 @@ class TrustCenterAdminController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
+        // Public address (DEFAULT_URI), never the request's Host header — App\Http\PublicUrlGenerator.
+        #[Autowire(service: PublicUrlGenerator::class)]
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {}
 

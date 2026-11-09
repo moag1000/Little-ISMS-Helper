@@ -36,6 +36,17 @@ class ScheduledReport
     public const TYPE_PORTFOLIO = 'portfolio';  // WS-7: cross-framework matrix
     public const TYPE_BOARD = 'board';
 
+    /** Report type => module it reports on; types not listed only need the core (S16). */
+    public const TYPE_MODULES = [
+        self::TYPE_RISK => 'risks',
+        self::TYPE_BCM => 'bcm',
+        self::TYPE_COMPLIANCE => 'compliance',
+        self::TYPE_AUDIT => 'audits',
+        self::TYPE_ASSETS => 'assets',
+        self::TYPE_GDPR => 'privacy',
+        self::TYPE_PORTFOLIO => 'compliance',
+    ];
+
     public const SCHEDULE_DAILY = 'daily';
     public const SCHEDULE_WEEKLY = 'weekly';
     public const SCHEDULE_MONTHLY = 'monthly';

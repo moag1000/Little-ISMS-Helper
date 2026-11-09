@@ -77,9 +77,9 @@ src/Controller/Admin/TagController.php:138
 src/Controller/Admin/TagController.php:139
 src/Controller/Admin/TenantComplianceSettingsController.php:83
 src/Controller/Admin/TenantEmailBrandingController.php:55
-src/Controller/Admin/TrustCenterAdminController.php:75
-src/Controller/Admin/TrustCenterAdminController.php:100
-src/Controller/Admin/TrustCenterAdminController.php:126
+src/Controller/Admin/TrustCenterAdminController.php:79
+src/Controller/Admin/TrustCenterAdminController.php:104
+src/Controller/Admin/TrustCenterAdminController.php:130
 src/Controller/Admin/WorkflowOverlayController.php:246
 src/Controller/Admin/WorkflowOverlayController.php:497
 src/Controller/Admin/WorkflowOverlayController.php:515

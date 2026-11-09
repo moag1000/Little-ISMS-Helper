@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Reminder;
 
+use App\Http\PublicUrlGenerator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Entity\ObligationNotice;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -45,6 +47,8 @@ class ObligationReminderService
         private readonly ObligationNoticeRepository $notices,
         private readonly EmailNotificationService $mail,
         private readonly EntityManagerInterface $entityManager,
+        // Public address (DEFAULT_URI), never the request's Host header — App\Http\PublicUrlGenerator.
+        #[Autowire(service: PublicUrlGenerator::class)]
         private readonly UrlGeneratorInterface $urls,
         private readonly TranslatorInterface $translator,
         private readonly DomainEventNotifier $events,

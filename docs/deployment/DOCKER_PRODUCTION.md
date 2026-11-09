@@ -64,7 +64,8 @@ Der Wizard führt dich durch:
 | `MYSQL_USER` | `isms` | DB-Benutzer |
 | `MYSQL_PASSWORD` | (auto) | DB-Passwort (leer = auto-generiert) |
 | `MAILER_DSN` | (leer) | SMTP-Konfiguration |
-| `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL, z. B. `https://isms.example.com` — Links in E-Mails aus Cron-Jobs (Erinnerungen) werden damit gebaut |
+| `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL, z. B. `https://isms.example.com` — alle Links in E-Mails, Lieferantenfragebögen, Trust Center und QR-Labels werden damit gebaut, nie aus dem Host-Header. Ohne Wert zeigt Überwachung > Health eine Warnung mit Knopf „Adresse übernehmen“ |
+| `SYMFONY_TRUSTED_HOSTS` | (leer) | Erlaubte Hostnamen als verankerte Muster, z. B. `'^isms\.example\.com$,^localhost$'` (localhost für den Container-Healthcheck); jeder andere Host-Header bekommt 400 |
 
 ### Automatisches DB-Passwort
 
