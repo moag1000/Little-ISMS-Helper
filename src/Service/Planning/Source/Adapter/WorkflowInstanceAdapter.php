@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Planning\Source\Adapter;
 
+use App\Security\Authority\ExplicitRole;
 use App\Entity\Tenant;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
@@ -135,9 +136,9 @@ final class WorkflowInstanceAdapter implements SourceAdapter
             return Responsibility::ofRecord($this->subjectOf($instance))->orRoles('ROLE_MANAGER');
         }
 
-        if ($role === 'ROLE_TOP_MGMT') {
-            // Only top management decides (WorkflowService skips the admin override here too):
-            // admins are not reminded of a step they cannot approve.
+        if (in_array($role, ExplicitRole::ASSIGNED_ONLY_STEP_ROLES, true)) {
+            // Only top management / the DPO decides (WorkflowService skips the admin override
+            // here too, S27): admins are not reminded of a step they cannot approve.
             return Responsibility::roles($role)->withoutAdminFallback();
         }
 

@@ -14,6 +14,7 @@ use App\Repository\AuditFindingRepository;
 use App\Repository\CommentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\UserRepository;
+use App\Security\Voter\AuditWorkVoter;
 use App\Service\AuditLogger;
 use App\Controller\Trait\InPageFormTrait;
 use App\Service\Clone\AuditFindingCloner;
@@ -149,6 +150,8 @@ class AuditFindingController extends AbstractController
         // Pre-link to parent audit when ?audit=<id> is provided (e.g. from audit show-page).
         // Validate tenant scope before accepting the param.
         $prelinkedAudit = $this->resolveAuditParam($request, $tenant);
+        // S27 (ISO 27001 9.2.2): findings are audit work — auditors, managers, the audit's team.
+        $this->denyAccessUnlessGranted(AuditWorkVoter::AUDIT_WORK, $prelinkedAudit);
         $auditLocked = false;
         if ($prelinkedAudit instanceof InternalAudit) {
             $finding->setAudit($prelinkedAudit);
@@ -231,6 +234,7 @@ class AuditFindingController extends AbstractController
         if (!$audit instanceof InternalAudit || $audit->getTenant()?->getId() !== $tenant->getId()) {
             throw $this->createNotFoundException('Audit not found or access denied.');
         }
+        $this->denyAccessUnlessGranted(AuditWorkVoter::AUDIT_WORK, $audit);
 
         $title = trim((string) $request->request->get('title', ''));
         if ($title === '') {
@@ -347,6 +351,7 @@ class AuditFindingController extends AbstractController
      * controls, linked requirements), resets lifecycle + nc-verification.
      */
     #[Route('/{id}/clone', name: 'clone', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted(AuditWorkVoter::AUDIT_WORK, subject: 'finding')]
     public function clone(Request $request, AuditFinding $finding): Response
     {
         $this->denyIfWrongTenant($finding);
@@ -377,6 +382,7 @@ class AuditFindingController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted(AuditWorkVoter::AUDIT_WORK, subject: 'finding')]
     public function edit(Request $request, AuditFinding $finding): Response
     {
         $this->denyIfWrongTenant($finding);
@@ -456,12 +462,9 @@ class AuditFindingController extends AbstractController
 
     private function denyIfWrongTenant(AuditFinding $finding): void
     {
-        // S29 (F6): the organisation's own findings only — an organisation admin is no
-        // exception (before, ROLE_ADMIN passed whenever the tenant filter let a row through).
-        // Instance operators act everywhere, as in BulkDeleteService.
+        // No admin exception (S27): a finding of another organisation is refused for everybody.
         $tenant = $this->tenantContext->getCurrentTenant();
-        $own = $tenant instanceof Tenant && $finding->getTenant()?->getId() === $tenant->getId();
-        if (!$own && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$tenant instanceof Tenant || $finding->getTenant()?->getId() !== $tenant->getId()) {
             throw $this->createAccessDeniedException('Finding belongs to a different tenant.');
         }
     }

@@ -38,7 +38,7 @@ Next to the status-pill you will find an **Aktionen** button (or a dropdown chev
 
 If a transition is shown but greyed out, one of these prerequisites is not yet met:
 
-- **4-eyes requirement:** A second authorized user must confirm the transition before it executes. The dropdown will show "Warte auf Vier-Augen-Freigabe" and the entity enters a pending state.
+- **4-eyes requirement:** A second authorized user must confirm the transition before it executes. Choosing it in the dropdown files a counter-sign request ("Gegenzeichnung angefragt") and the status stays as it is; the second person confirms it signed in, in "Mein Tag" / the four-eyes inbox, and only then the step runs — with both names in the evidence. Nobody can name a confirmer on someone else's behalf (S27). In an organisation where nobody else holds the role, the step runs at once with the offline counter-signature documented in the reason.
 - **Module not activated:** The transition requires an optional module (e.g. `privacy` for GDPR-related ProcessingActivity transitions) that is not enabled for your tenant. Contact your admin.
 - **Reason required, not yet provided:** Some transitions open a reason-prompt before executing (see below).
 
@@ -145,7 +145,7 @@ Nobody decides on their own access (segregation of duties, ISO 27001 A.5.18): a 
 ### Organisation (tenant)
 `draft` → `active` ⇄ `suspended` → `terminated` → `archived`
 
-Suspending and reactivating an organisation is done in the "Organisation status" section of the organisation page (SUPER_ADMIN only). Both need a reason and a second super admin as four-eyes approver; if the organisation has no second super admin, document the offline counter-signature in the reason. The organisation edit form has no "active" switch.
+Suspending and reactivating an organisation is done in the "Organisation status" section of the organisation page (SUPER_ADMIN only). Both need a reason and a second super admin of the same organisation, who confirms the counter-sign request in the four-eyes inbox; the organisation's status changes only then. If there is no second super admin, the step runs at once and the reason documents the offline counter-signature. The organisation edit form has no "active" switch.
 
 ### Compliance mapping (global catalogue data)
 `draft` → `review` → `approved` → `published` → `deprecated`, restore → `published`
@@ -167,6 +167,15 @@ Not role-checked: steps nobody takes by hand (an objective reaching its target v
 nightly jobs), steps whose approver an approval chain or the risk-acceptance tier already chose, and a few steps
 without roles that only their own feature runs (policy-section sign-off, the supplier answering a questionnaire,
 the notification pipeline).
+
+Approval chains (workflow instances) are decided only step by step in the approval itself ("Mein Tag", workflow
+page): the step's approver role or named approvers decide, top-management steps only `ROLE_TOP_MGMT` and data
+protection steps only `ROLE_DPO` — without the admin override other steps have. The generic status button offers no
+step of a chain (S27).
+
+Audit work (checklist verdicts, report, findings, verifications, SoA snapshots, effectiveness reviews) is for
+auditors and managers (`AUDIT_WORK`, `App\Security\Voter\AuditWorkVoter`) and the lead auditor / audit team of the
+audit. Top management, the group CISO and the group auditor inherit `ROLE_AUDITOR` only to read (S27).
 
 Internal audits: submitting and reworking the report need `ROLE_AUDITOR`, approving, rejecting and closing need
 `ROLE_CISO` (four eyes on approval). Who reported, approved and closed — and the rejection reason — are written by
