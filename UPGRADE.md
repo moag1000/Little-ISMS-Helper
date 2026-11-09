@@ -86,6 +86,10 @@ Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`)
 - **Instanzbetrieb:** Setup-Assistent nach Abschluss und das Löschen eines Frameworks nur
   `ROLE_SUPER_ADMIN`; Super-Admins können keine Super-Admins imitieren. Ein Restore übernimmt keine
   Instanzrollen, Passwort-Hashes, SSO-Kennungen, API-Tokens oder Audit-Zeilen aus der Datei.
+  Systemzustand, Schema-Update, composer, Cache/Logs löschen, Fehlerlog und Performance-Seite sind auf
+  jeder Instanz nur noch dem Super-Admin offen (der erste Setup-Account ist Super-Admin). Bei mehreren
+  Organisationen ändert nur der Super-Admin den geteilten Katalog (Mappings, Frameworks,
+  Branchen-Presets, Mapping-Seeds); Org-Admins sehen einen Hinweis.
 - **Löschen:** Assets nur nach Entsorgung oder binnen 24 h nach Anlage; die Aufbewahrungs-Löschung
   entfernt nur Datensätze im Endzustand. `app:sample-data:purge` verlangt `--tenant-id`.
 - **Fristen:** Alle Erinnerungen laufen über einen Weg: „Mein Tag“, Glocke und tägliche Sammelmail
