@@ -815,6 +815,12 @@ jobs:
         # S23, 2026-11: the worker runs scheduled commands and jobs in one container; a report or KPI
         # snapshot left its organisation pinned and the nightly instance backup held only that one.
         run: python3 scripts/quality/check_tenant_pin_restore.py --quiet
+      - name: "Gate 103: accessibility — markup rules and WCAG AA contrast of the design tokens"
+        # W11, 2026-11: status pills 2.95:1, muted text in dark mode 2.8–4.0:1, input borders 1.28:1,
+        # 162 <th> without scope, 26 charts and 22 icon buttons without a name, a second role="banner".
+        run: |
+          python3 scripts/quality/check_a11y_static.py --quiet
+          python3 scripts/quality/check_token_contrast.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

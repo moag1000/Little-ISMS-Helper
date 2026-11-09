@@ -282,7 +282,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="chart-container">
-                        <canvas id="confidenceChart"></canvas>
+                        <canvas role="img" aria-label="{{ 'compliance.mapping_quality.charts.confidence_distribution'|trans({}, 'compliance') }}" id="confidenceChart"></canvas>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -300,7 +300,7 @@
                         <p class="text-muted text-center">{{ 'compliance.mapping_quality.no_gap_data'|trans({}, 'compliance') }}</p>
                     {% else %}
                         <div class="chart-container">
-                            <canvas id="gapStatsChart"></canvas>
+                            <canvas role="img" aria-label="{{ 'compliance.mapping_quality.charts.gap_stats_priority'|trans({}, 'compliance') }}" id="gapStatsChart"></canvas>
                         </div>
                     {% endif %}
                 {% endblock %}
@@ -448,7 +448,7 @@
             danger:  '#dc2626',   // --danger   (Low confidence / HIGH gaps)
             dangerStrong: '#b91c1c', // --danger-strong (CRITICAL gaps)
             info:    '#0284c7',   // --info
-            fg3:     '#6d6b92'    // --fg-3 (neutral / LOW gaps)
+            fg3:     '#656388'    // --fg-3 (neutral / LOW gaps)
         };
 
         // Resolve an Aurora token to a concrete colour, preferring the live

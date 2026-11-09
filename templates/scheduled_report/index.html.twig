@@ -61,14 +61,14 @@
             {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
                 {% block table_head %}
                     <tr>
-                        <th class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'scheduled_report.table.name'|trans({}, 'scheduled_reports') }}</th>
-                        <th class="fa-table__th">{{ 'scheduled_report.table.type'|trans({}, 'scheduled_reports') }}</th>
-                        <th class="fa-table__th">{{ 'scheduled_report.table.schedule'|trans({}, 'scheduled_reports') }}</th>
-                        <th class="fa-table__th">{{ 'scheduled_report.table.format'|trans({}, 'scheduled_reports') }}</th>
-                        <th class="fa-table__th">{{ 'scheduled_report.table.status'|trans({}, 'scheduled_reports') }}</th>
-                        <th class="fa-table__th fa-table__th--sortable" data-sort-key="next_run" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'scheduled_report.table.next_run'|trans({}, 'scheduled_reports') }}</th>
-                        <th class="fa-table__th">{{ 'scheduled_report.table.recipients'|trans({}, 'scheduled_reports') }}</th>
-                        <th class="fa-table__th fa-table__th--actions">{{ 'scheduled_report.table.actions'|trans({}, 'scheduled_reports') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'scheduled_report.table.name'|trans({}, 'scheduled_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'scheduled_report.table.type'|trans({}, 'scheduled_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'scheduled_report.table.schedule'|trans({}, 'scheduled_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'scheduled_report.table.format'|trans({}, 'scheduled_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'scheduled_report.table.status'|trans({}, 'scheduled_reports') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="next_run" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'scheduled_report.table.next_run'|trans({}, 'scheduled_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'scheduled_report.table.recipients'|trans({}, 'scheduled_reports') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'scheduled_report.table.actions'|trans({}, 'scheduled_reports') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body_attrs %}id="scheduled-report-rows"{% endblock %}

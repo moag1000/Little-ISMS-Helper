@@ -83,10 +83,13 @@ export default class extends Controller {
     static values = {
         type: String,
         data: Object,
-        options: Object
+        options: Object,
+        // Required text alternative (WCAG 1.1.1, W11): what the chart shows, in one line.
+        label: String
     };
 
     connect() {
+        this.applyTextAlternative();
         this.createChart();
 
         // Listen for theme changes
@@ -262,6 +265,20 @@ export default class extends Controller {
             this.chart.destroy();
         }
         this.createChart();
+    }
+
+    /**
+     * A canvas is an image to assistive technology: role="img" plus a name.
+     * Markup may set aria-label itself; otherwise the label value names it.
+     * Gate 103 (check_a11y_static.py) rejects a chart canvas without either.
+     */
+    applyTextAlternative() {
+        this.element.setAttribute('role', 'img');
+        if (this.hasLabelValue && this.labelValue !== '') {
+            this.element.setAttribute('aria-label', this.labelValue);
+        } else if (!this.element.hasAttribute('aria-label') && !this.element.hasAttribute('aria-labelledby')) {
+            console.error('chart controller: data-chart-label-value is required (text alternative of the chart)', this.element);
+        }
     }
 
     disconnect() {

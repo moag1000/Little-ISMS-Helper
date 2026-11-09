@@ -30,15 +30,15 @@
     <h2>{{ 'audits.audit_package.section.summary'|trans }}</h2>
     <table>
         <tr>
-            <th>{{ 'audits.audit_package.table.requirements_total'|trans }}</th>
+            <th scope="row">{{ 'audits.audit_package.table.requirements_total'|trans }}</th>
             <td>{{ requirements|length }}</td>
         </tr>
         <tr>
-            <th>{{ 'audits.audit_package.table.evidence_docs'|trans }}</th>
+            <th scope="row">{{ 'audits.audit_package.table.evidence_docs'|trans }}</th>
             <td>{{ document_count }}</td>
         </tr>
         <tr>
-            <th>{{ 'audits.audit_package.table.requirements_without_evidence'|trans }}</th>
+            <th scope="row">{{ 'audits.audit_package.table.requirements_without_evidence'|trans }}</th>
             <td>
                 {% if missing_count > 0 %}
                     <span class="st-open">{{ missing_count }} — {{ 'audits.audit_package.status.missing'|trans }}</span>
@@ -53,12 +53,12 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 15%;">{{ 'audits.audit_package.col.id'|trans }}</th>
-                <th>{{ 'audit.field.title'|trans }}</th>
-                <th style="width: 12%;">{{ 'audits.audit_package.col.category'|trans }}</th>
-                <th style="width: 10%;">{{ 'audit.field.status'|trans }}</th>
-                <th style="width: 10%;">{{ 'audits.audit_package.col.fulfillment'|trans }}</th>
-                <th style="width: 10%;">{{ 'audits.audit_package.col.evidence'|trans }}</th>
+                <th scope="col" style="width: 15%;">{{ 'audits.audit_package.col.id'|trans }}</th>
+                <th scope="col">{{ 'audit.field.title'|trans }}</th>
+                <th scope="col" style="width: 12%;">{{ 'audits.audit_package.col.category'|trans }}</th>
+                <th scope="col" style="width: 10%;">{{ 'audit.field.status'|trans }}</th>
+                <th scope="col" style="width: 10%;">{{ 'audits.audit_package.col.fulfillment'|trans }}</th>
+                <th scope="col" style="width: 10%;">{{ 'audits.audit_package.col.evidence'|trans }}</th>
             </tr>
         </thead>
         <tbody>

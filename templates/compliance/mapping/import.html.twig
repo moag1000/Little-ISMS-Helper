@@ -190,10 +190,10 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
                         {% embed '_components/_fa_table.html.twig' with { compact: true, striped: true, wrap: false } %}
                             {% block table_head %}
                                 <tr>
-                                    <th class="fa-table__th">Row</th>
-                                    <th class="fa-table__th">Source</th>
-                                    <th class="fa-table__th">Target</th>
-                                    <th class="fa-table__th">Reason</th>
+                                    <th scope="col" class="fa-table__th">Row</th>
+                                    <th scope="col" class="fa-table__th">Source</th>
+                                    <th scope="col" class="fa-table__th">Target</th>
+                                    <th scope="col" class="fa-table__th">Reason</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}

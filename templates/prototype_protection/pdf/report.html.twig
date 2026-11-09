@@ -105,7 +105,7 @@
 
     <table class="meta-table">
         <tr>
-            <th>{{ 'prototype_protection.field.status'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.status'|trans({}, 'prototype_protection') }}</th>
             <td>
                 <span class="badge">
                     {{ ('prototype_protection.status.' ~ assessment.status)|trans({}, 'prototype_protection') }}
@@ -113,11 +113,11 @@
             </td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.field.tisax_level'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.tisax_level'|trans({}, 'prototype_protection') }}</th>
             <td>{{ assessment.tisaxLevel ?? '—' }}</td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</th>
             <td>
                 {% if assessment.overallResult %}
                     {% set resultClass = {
@@ -136,7 +136,7 @@
             </td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.field.required_labels'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.required_labels'|trans({}, 'prototype_protection') }}</th>
             <td>
                 {% if assessment.requiredLabels %}
                     {% for label in assessment.requiredLabels %}
@@ -148,27 +148,27 @@
             </td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.field.supplier'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.supplier'|trans({}, 'prototype_protection') }}</th>
             <td>{{ assessment.supplier ? assessment.supplier.name : '—' }}</td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.field.location'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.location'|trans({}, 'prototype_protection') }}</th>
             <td>{{ assessment.location ? assessment.location.name : '—' }}</td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.field.assessor'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.assessor'|trans({}, 'prototype_protection') }}</th>
             <td>{{ assessment.assessor ? assessment.assessor.fullName|default(assessment.assessor.email) : '—' }}</td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
             <td>{{ assessment.assessmentDate|fa_date }}</td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
             <td>{{ assessment.nextAssessmentDue|fa_date }}</td>
         </tr>
         <tr>
-            <th>{{ 'prototype_protection.pdf.generated_at'|trans({}, 'prototype_protection') }}</th>
+            <th scope="row">{{ 'prototype_protection.pdf.generated_at'|trans({}, 'prototype_protection') }}</th>
             <td>{{ generated_at|fa_datetime }}</td>
         </tr>
     </table>
@@ -215,10 +215,10 @@
     <table class="signature-table">
         <thead>
             <tr>
-                <th style="width: 30%;">{{ 'prototype_protection.pdf.signature.role'|trans({}, 'prototype_protection') }}</th>
-                <th style="width: 30%;">{{ 'prototype_protection.pdf.signature.name'|trans({}, 'prototype_protection') }}</th>
-                <th style="width: 20%;">{{ 'prototype_protection.pdf.signature.date'|trans({}, 'prototype_protection') }}</th>
-                <th style="width: 20%;">{{ 'prototype_protection.pdf.signature.signature'|trans({}, 'prototype_protection') }}</th>
+                <th scope="col" style="width: 30%;">{{ 'prototype_protection.pdf.signature.role'|trans({}, 'prototype_protection') }}</th>
+                <th scope="col" style="width: 30%;">{{ 'prototype_protection.pdf.signature.name'|trans({}, 'prototype_protection') }}</th>
+                <th scope="col" style="width: 20%;">{{ 'prototype_protection.pdf.signature.date'|trans({}, 'prototype_protection') }}</th>
+                <th scope="col" style="width: 20%;">{{ 'prototype_protection.pdf.signature.signature'|trans({}, 'prototype_protection') }}</th>
             </tr>
         </thead>
         <tbody>

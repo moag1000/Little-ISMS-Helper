@@ -30,11 +30,11 @@
         {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
             {% block table_head %}
                 <tr>
-                    <th class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'tags.form.name'|trans({}, 'tags') }}</th>
-                    <th class="fa-table__th">{{ 'tags.form.type'|trans({}, 'tags') }}</th>
-                    <th class="fa-table__th">{{ 'tags.form.framework_code'|trans({}, 'tags') }}</th>
-                    <th class="fa-table__th">{{ 'tags.admin.scope'|trans({}, 'tags') }}</th>
-                    <th class="fa-table__th fa-table__th--actions">{{ 'tags.admin.actions'|trans({}, 'tags') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'tags.form.name'|trans({}, 'tags') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'tags.form.type'|trans({}, 'tags') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'tags.form.framework_code'|trans({}, 'tags') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'tags.admin.scope'|trans({}, 'tags') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'tags.admin.actions'|trans({}, 'tags') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}

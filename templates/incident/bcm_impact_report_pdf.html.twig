@@ -49,12 +49,12 @@
         <table>
             <thead>
                 <tr>
-                    <th>{{ (p ~ 'processes.process')|trans({}, 'incident') }}</th>
-                    <th>{{ (p ~ 'processes.criticality')|trans({}, 'incident') }}</th>
-                    <th>{{ (p ~ 'processes.rto')|trans({}, 'incident') }}</th>
-                    <th>{{ (p ~ 'processes.financial_impact')|trans({}, 'incident') }}</th>
-                    <th>{{ (p ~ 'processes.impact_severity')|trans({}, 'incident') }}</th>
-                    <th>{{ (p ~ 'processes.compliance')|trans({}, 'incident') }}</th>
+                    <th scope="col">{{ (p ~ 'processes.process')|trans({}, 'incident') }}</th>
+                    <th scope="col">{{ (p ~ 'processes.criticality')|trans({}, 'incident') }}</th>
+                    <th scope="col">{{ (p ~ 'processes.rto')|trans({}, 'incident') }}</th>
+                    <th scope="col">{{ (p ~ 'processes.financial_impact')|trans({}, 'incident') }}</th>
+                    <th scope="col">{{ (p ~ 'processes.impact_severity')|trans({}, 'incident') }}</th>
+                    <th scope="col">{{ (p ~ 'processes.compliance')|trans({}, 'incident') }}</th>
                 </tr>
             </thead>
             <tbody>

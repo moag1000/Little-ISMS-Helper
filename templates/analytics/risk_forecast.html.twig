@@ -131,7 +131,7 @@
                         {% endblock %}
                         {% block card_body %}
                             <div style="height: 300px; position: relative;">
-                                <canvas id="forecastChart"></canvas>
+                                <canvas role="img" aria-label="{{ 'analytics.forecast.chart.risk_forecast'|trans({}, 'analytics') }}" id="forecastChart"></canvas>
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -188,7 +188,7 @@
                         {% endblock %}
                         {% block card_body %}
                             <div style="height: 300px; position: relative;">
-                                <canvas id="velocityChart"></canvas>
+                                <canvas role="img" aria-label="{{ 'analytics.forecast.velocity.chart_title'|trans({}, 'analytics') }}" id="velocityChart"></canvas>
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -292,7 +292,7 @@
                                 </div>
                                 <p class="text-muted">{{ 'analytics.forecast.appetite.score_description'|trans({}, 'analytics') }}</p>
                                 <div style="height: 150px; position: relative;">
-                                    <canvas id="appetiteGauge"></canvas>
+                                    <canvas role="img" aria-label="{{ 'analytics.forecast.appetite.score_description'|trans({}, 'analytics') }}" id="appetiteGauge"></canvas>
                                 </div>
                             </div>
                         {% endblock %}

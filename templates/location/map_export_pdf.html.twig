@@ -60,12 +60,12 @@
         <table class="list">
             <thead>
                 <tr>
-                    <th>{{ 'location.field.name'|trans({}, 'locations') }}</th>
-                    <th class="num">{{ 'location.map.col.protection'|trans({}, 'locations') }}</th>
-                    <th class="num">{{ 'location.map.col.risk'|trans({}, 'locations') }}</th>
-                    <th>{{ 'location.map.col.gaps'|trans({}, 'locations') }}</th>
-                    {% if peerMode != 'off' %}<th>{{ 'location.map.export.col.peer'|trans({}, 'locations') }}</th>{% endif %}
-                    {% if money %}<th class="num">{{ 'location.map.export.col.ale'|trans({}, 'locations') }}</th>{% endif %}
+                    <th scope="col">{{ 'location.field.name'|trans({}, 'locations') }}</th>
+                    <th scope="col" class="num">{{ 'location.map.col.protection'|trans({}, 'locations') }}</th>
+                    <th scope="col" class="num">{{ 'location.map.col.risk'|trans({}, 'locations') }}</th>
+                    <th scope="col">{{ 'location.map.col.gaps'|trans({}, 'locations') }}</th>
+                    {% if peerMode != 'off' %}<th scope="col">{{ 'location.map.export.col.peer'|trans({}, 'locations') }}</th>{% endif %}
+                    {% if money %}<th scope="col" class="num">{{ 'location.map.export.col.ale'|trans({}, 'locations') }}</th>{% endif %}
                 </tr>
             </thead>
             <tbody>

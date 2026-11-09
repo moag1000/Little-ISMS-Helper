@@ -4,8 +4,9 @@
     {% for item in items %}
         <div class="checklist-item {{ item.verificationStatus }}" data-controller="toggle">
             {# Compact View - Always Visible #}
-            <div class="checklist-header" data-action="click->toggle#toggleContent">
-                <div class="requirement-info">
+            <div class="checklist-header">
+                {# The header holds the status select, so only the text part is the toggle (no nested controls in a button, W11). #}
+                <div class="requirement-info" role="button" tabindex="0" aria-expanded="false" data-action="click->toggle#toggleContent keydown.enter->toggle#toggleContent keydown.space->toggle#toggleContent">
                     <span class="req-id">{{ item.requirement.requirementId }}</span>
                     <span class="req-title">{{ item.requirement.title|length > 80 ? item.requirement.title|slice(0, 80) ~ '...' : item.requirement.title }}</span>
                 </div>

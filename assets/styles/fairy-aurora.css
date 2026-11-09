@@ -95,11 +95,12 @@
     /* — Ränder — */
     --border:        #dfe3f0;
     --border-strong: #b9bfd6;
+    --input-border:  #7581ae;   /* form fields: 3:1 on every surface (WCAG 1.4.11) */
 
     /* — Vordergrund / Text — */
     --fg:   #1e1b4b;
     --fg-2: #4c4a73;
-    --fg-3: #6d6b92;
+    --fg-3: #656388;   /* 4.5:1 on every surface incl. --surface-3 */
     --fg-1: var(--fg);   /* Alias, in vielen Templates verwendet */
 
     /* — Primär (Cyan) — */
@@ -118,11 +119,11 @@
 
     /* — Semantic — */
     --success:        #059669;
-    --success-strong: #047857;   /* WCAG-AA button-bg (5.48:1 white) */
+    --success-strong: #046c4e;   /* AA text on every surface, button-bg (white on it >= 6:1) */
     --success-glow:   rgba(5, 150, 105, 0.2);
     --warning:        #d97706;   /* display (icons, borders) */
-    --warning-strong: #b45309;   /* WCAG-AA body-text (4.65:1 on bg) */
-    --warning-text:   #b45309;
+    --warning-strong: #9c4807;   /* AA text on every surface (>= 5:1 on --surface-3) */
+    --warning-text:   #9c4807;
     --warning-glow:   rgba(217, 119, 6, 0.2);
     --danger:         #dc2626;   /* AA 4.83:1 with white → OK */
     --danger-strong:  #b91c1c;   /* stronger hover / critical-CTA */
@@ -306,10 +307,11 @@ html[data-theme="dark"] {
 
     --border:        #232845;
     --border-strong: #3d4270;
+    --input-border:  #6d74b0;
 
     --fg:   #e9eaf5;
     --fg-2: #b9bad4;
-    --fg-3: #6d6f99;
+    --fg-3: #9394b3;
 
     --primary:        #38bdf8;
     --primary-strong: #38bdf8;   /* dark-mode: hell auf dunkel = AAA, strong == primary */
@@ -421,9 +423,10 @@ html[data-theme="dark"] {
         --surface-3:   #282d48;
         --border:        #232845;
         --border-strong: #3d4270;
+        --input-border:  #6d74b0;
         --fg:   #e9eaf5;
         --fg-2: #b9bad4;
-        --fg-3: #6d6f99;
+        --fg-3: #9394b3;
         --primary:        #38bdf8; --primary-strong: #38bdf8;
         --primary-hover:  #7dd3fc;
         --primary-glow:   rgba(56, 189, 248, 0.3);
@@ -698,7 +701,7 @@ html * {
     --bs-form-select-color:         var(--fg);
     --bs-form-select-disabled-bg:   var(--surface-2);
     --bs-form-check-input-bg:       var(--surface);
-    --bs-form-check-input-border:   var(--border-strong);
+    --bs-form-check-input-border:   var(--input-border);
     --bs-focus-ring-color:          var(--primary-glow);
     --bs-input-btn-focus-box-shadow: 0 0 0 3px var(--primary-glow);
 }

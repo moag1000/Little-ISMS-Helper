@@ -80,7 +80,7 @@
                 </div>
             {% endblock %}
             {% block card_body %}
-                <canvas id="reuseTrendChart" height="90"
+                <canvas role="img" aria-label="{{ 'portfolio_report.reuse_trend.title'|trans({}, 'portfolio_report') }}" id="reuseTrendChart" height="90"
                         data-labels="{{ reuse_trend|map(p => p.day)|json_encode }}"
                         data-fte="{{ reuse_trend|map(p => p.fte_saved)|json_encode }}"
                         data-pct="{{ reuse_trend|map(p => p.inheritance_pct)|json_encode }}"></canvas>

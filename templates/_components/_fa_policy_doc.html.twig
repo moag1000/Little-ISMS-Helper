@@ -256,11 +256,11 @@
                 <table class="policy-doc__history-table">
                     <thead>
                         <tr>
-                            <th>{{ cover.history_col_version|default(('policy_wizard.export.history.col_version'|trans({}, 'policy_wizard'))) }}</th>
-                            <th>{{ cover.history_col_date|default(('policy_wizard.export.history.col_date'|trans({}, 'policy_wizard'))) }}</th>
-                            <th>{{ cover.history_col_change|default(('policy_wizard.export.history.col_change'|trans({}, 'policy_wizard'))) }}</th>
-                            <th>{{ cover.history_col_author|default(('policy_wizard.export.history.col_author'|trans({}, 'policy_wizard'))) }}</th>
-                            <th>{{ cover.history_col_approver|default(('policy_wizard.export.history.col_approver'|trans({}, 'policy_wizard'))) }}</th>
+                            <th scope="col">{{ cover.history_col_version|default(('policy_wizard.export.history.col_version'|trans({}, 'policy_wizard'))) }}</th>
+                            <th scope="col">{{ cover.history_col_date|default(('policy_wizard.export.history.col_date'|trans({}, 'policy_wizard'))) }}</th>
+                            <th scope="col">{{ cover.history_col_change|default(('policy_wizard.export.history.col_change'|trans({}, 'policy_wizard'))) }}</th>
+                            <th scope="col">{{ cover.history_col_author|default(('policy_wizard.export.history.col_author'|trans({}, 'policy_wizard'))) }}</th>
+                            <th scope="col">{{ cover.history_col_approver|default(('policy_wizard.export.history.col_approver'|trans({}, 'policy_wizard'))) }}</th>
                         </tr>
                     </thead>
                     <tbody>

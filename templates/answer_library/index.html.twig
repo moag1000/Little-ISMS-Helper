@@ -74,7 +74,7 @@
             {% block table_head %}
                 <tr>
                     {% if is_granted('ROLE_MANAGER') %}
-                        <th class="fa-table__th fa-table__th--checkbox">
+                        <th scope="col" class="fa-table__th fa-table__th--checkbox">
                             <input type="checkbox"
                                    data-action="bulk-actions#selectAll"
                                    data-bulk-actions-target="selectAllCheckbox"
@@ -96,7 +96,7 @@
                     <th scope="col" class="fa-table__th">
                         {{ 'answer_library.field.last_used_at'|trans({}, 'answer_library') }}
                     </th>
-                    <th class="fa-table__th fa-table__th--actions">
+                    <th scope="col" class="fa-table__th fa-table__th--actions">
                         <span class="visually-hidden">{{ 'common.actions'|trans({}, 'messages') }}</span>
                     </th>
                 </tr>

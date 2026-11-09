@@ -66,7 +66,7 @@
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.provenance'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-8">
                             {{ mapping.provenanceSource ?: '—' }}
-                            {% if mapping.provenanceUrl %}<a href="{{ mapping.provenanceUrl }}" class="ms-2" rel="noopener" target="_blank"><i class="fa-icon fa-icon--export" aria-hidden="true"></i></a>{% endif %}
+                            {% if mapping.provenanceUrl %}<a aria-label="{{ 'common.open_source'|trans({}, 'messages') }}" href="{{ mapping.provenanceUrl }}" class="ms-2" rel="noopener" target="_blank"><i class="fa-icon fa-icon--export" aria-hidden="true"></i></a>{% endif %}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.methodology'|trans({}, 'admin') }}</dt>

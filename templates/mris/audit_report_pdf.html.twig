@@ -258,11 +258,11 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 26%;">{{ 'mris.audit_report.breakdown_col.dimension'|trans({}, 'mris') }}</th>
-                    <th style="width: 32%;">{{ 'mris.audit_report.breakdown_col.source'|trans({}, 'mris') }}</th>
-                    <th class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.value'|trans({}, 'mris') }}</th>
-                    <th class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.weight'|trans({}, 'mris') }}</th>
-                    <th class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.contribution'|trans({}, 'mris') }}</th>
+                    <th scope="col" style="width: 26%;">{{ 'mris.audit_report.breakdown_col.dimension'|trans({}, 'mris') }}</th>
+                    <th scope="col" style="width: 32%;">{{ 'mris.audit_report.breakdown_col.source'|trans({}, 'mris') }}</th>
+                    <th scope="col" class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.value'|trans({}, 'mris') }}</th>
+                    <th scope="col" class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.weight'|trans({}, 'mris') }}</th>
+                    <th scope="col" class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.contribution'|trans({}, 'mris') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -289,9 +289,9 @@
 <table>
     <thead>
         <tr>
-            <th style="width: 50%;">{{ 'mris.audit_report.section_col.category'|trans({}, 'mris') }}</th>
-            <th class="num" style="width: 25%;">{{ 'mris.audit_report.section_col.count'|trans({}, 'mris') }}</th>
-            <th class="num" style="width: 25%;">{{ 'mris.audit_report.section_col.share'|trans({}, 'mris') }}</th>
+            <th scope="col" style="width: 50%;">{{ 'mris.audit_report.section_col.category'|trans({}, 'mris') }}</th>
+            <th scope="col" class="num" style="width: 25%;">{{ 'mris.audit_report.section_col.count'|trans({}, 'mris') }}</th>
+            <th scope="col" class="num" style="width: 25%;">{{ 'mris.audit_report.section_col.share'|trans({}, 'mris') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -322,10 +322,10 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 14%;">{{ 'mris.audit_report.friction_col.control_id'|trans({}, 'mris') }}</th>
-                <th style="width: 38%;">{{ 'mris.audit_report.friction_col.name'|trans({}, 'mris') }}</th>
-                <th style="width: 12%;">{{ 'mris.audit_report.friction_col.category'|trans({}, 'mris') }}</th>
-                <th style="width: 36%;">{{ 'mris.audit_report.friction_col.flanking_mhcs'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 14%;">{{ 'mris.audit_report.friction_col.control_id'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 38%;">{{ 'mris.audit_report.friction_col.name'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 12%;">{{ 'mris.audit_report.friction_col.category'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 36%;">{{ 'mris.audit_report.friction_col.flanking_mhcs'|trans({}, 'mris') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -361,12 +361,12 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 10%;">{{ 'mris.audit_report.maturity_col.mhc'|trans({}, 'mris') }}</th>
-                <th style="width: 46%;">{{ 'mris.audit_report.maturity_col.title'|trans({}, 'mris') }}</th>
-                <th style="width: 14%;">{{ 'mris.audit_report.maturity_col.target'|trans({}, 'mris') }}</th>
-                <th style="width: 14%;">{{ 'mris.audit_report.maturity_col.actual'|trans({}, 'mris') }}</th>
-                <th class="num" style="width: 8%;">{{ 'mris.audit_report.maturity_col.delta'|trans({}, 'mris') }}</th>
-                <th style="width: 8%;">{{ 'mris.audit_report.maturity_col.status'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 10%;">{{ 'mris.audit_report.maturity_col.mhc'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 46%;">{{ 'mris.audit_report.maturity_col.title'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 14%;">{{ 'mris.audit_report.maturity_col.target'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 14%;">{{ 'mris.audit_report.maturity_col.actual'|trans({}, 'mris') }}</th>
+                <th scope="col" class="num" style="width: 8%;">{{ 'mris.audit_report.maturity_col.delta'|trans({}, 'mris') }}</th>
+                <th scope="col" style="width: 8%;">{{ 'mris.audit_report.maturity_col.status'|trans({}, 'mris') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -409,8 +409,8 @@
 <table>
     <thead>
         <tr>
-            <th style="width: 60%;">{{ 'mris.audit_report.ai_col.metric'|trans({}, 'mris') }}</th>
-            <th class="num" style="width: 40%;">{{ 'mris.audit_report.ai_col.value'|trans({}, 'mris') }}</th>
+            <th scope="col" style="width: 60%;">{{ 'mris.audit_report.ai_col.metric'|trans({}, 'mris') }}</th>
+            <th scope="col" class="num" style="width: 40%;">{{ 'mris.audit_report.ai_col.value'|trans({}, 'mris') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -454,13 +454,13 @@
 <table>
     <thead>
         <tr>
-            <th style="width: 8%;">{{ 'mris.audit_report.kpi_col.mhc'|trans({}, 'mris') }}</th>
-            <th style="width: 30%;">{{ 'mris.audit_report.kpi_col.metric'|trans({}, 'mris') }}</th>
-            <th class="num" style="width: 12%;">{{ 'mris.audit_report.kpi_col.value'|trans({}, 'mris') }}</th>
-            <th style="width: 6%;">{{ 'mris.audit_report.kpi_col.unit'|trans({}, 'mris') }}</th>
-            <th style="width: 8%;">{{ 'mris.audit_report.kpi_col.type'|trans({}, 'mris') }}</th>
-            <th style="width: 16%;">{{ 'mris.audit_report.kpi_col.trend'|trans({}, 'mris') }}</th>
-            <th style="width: 20%;">{{ 'mris.audit_report.kpi_col.source'|trans({}, 'mris') }}</th>
+            <th scope="col" style="width: 8%;">{{ 'mris.audit_report.kpi_col.mhc'|trans({}, 'mris') }}</th>
+            <th scope="col" style="width: 30%;">{{ 'mris.audit_report.kpi_col.metric'|trans({}, 'mris') }}</th>
+            <th scope="col" class="num" style="width: 12%;">{{ 'mris.audit_report.kpi_col.value'|trans({}, 'mris') }}</th>
+            <th scope="col" style="width: 6%;">{{ 'mris.audit_report.kpi_col.unit'|trans({}, 'mris') }}</th>
+            <th scope="col" style="width: 8%;">{{ 'mris.audit_report.kpi_col.type'|trans({}, 'mris') }}</th>
+            <th scope="col" style="width: 16%;">{{ 'mris.audit_report.kpi_col.trend'|trans({}, 'mris') }}</th>
+            <th scope="col" style="width: 20%;">{{ 'mris.audit_report.kpi_col.source'|trans({}, 'mris') }}</th>
         </tr>
     </thead>
     <tbody>

@@ -35,11 +35,11 @@
                 {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
                     {% block table_head %}
                         <tr>
-                            <th class="fa-table__th fa-table__th--sortable" data-sort-key="kpi_key" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'kpi_threshold.field.kpi_key'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__th">{{ 'kpi_threshold.field.good_threshold'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__th">{{ 'kpi_threshold.field.warning_threshold'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__th fa-table__th--sortable" data-sort-key="updated" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'kpi_threshold.field.updated_at'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="kpi_key" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'kpi_threshold.field.kpi_key'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'kpi_threshold.field.good_threshold'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'kpi_threshold.field.warning_threshold'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="updated" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'kpi_threshold.field.updated_at'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -53,7 +53,7 @@
                                 <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning">≥ {{ c.warningThreshold }}</span></td>
                                 <td class="fa-table__cell" data-sort-value="{{ c.updatedAt ? c.updatedAt|date('Y-m-d H:i') : c.createdAt|date('Y-m-d H:i') }}">{{ c.updatedAt ? c.updatedAt|fa_datetime : c.createdAt|fa_datetime }}</td>
                                 <td class="fa-table__cell fa-table__cell--actions">
-                                    <a href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                    <a aria-label="{{ 'common.edit'|trans({}, 'messages') }}" href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                     </a>
                                     <form method="post" action="{{ path('admin_kpi_threshold_delete', {id: c.id}) }}" class="d-inline"
@@ -62,7 +62,7 @@
                                           data-ui-actions-message-param="{{ 'kpi_threshold.confirm.delete'|trans({}, 'admin') }}"
                                           data-ui-actions-tone-param="danger">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_kth_' ~ c.id) }}">
-                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
+                                        <button aria-label="{{ 'common.delete'|trans({}, 'messages') }}" type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                             <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                         </button>
                                     </form>

@@ -57,7 +57,7 @@
                             tension: 0.3
                         }]
                     } %}
-                    <canvas id="wizard-trend-chart"
+                    <canvas data-chart-label-value="{{ 'wizard.history.trend.title'|trans({}, 'wizard') }}" id="wizard-trend-chart"
                             data-controller="chart"
                             data-chart-type-value="line"
                             data-chart-data-value="{{ _trend|json_encode|e('html_attr') }}"

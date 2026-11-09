@@ -189,6 +189,9 @@ common:
     view_details: 'Details ansehen'
     view_all: 'Alle anzeigen'
     edit: Bearbeiten
+    font_smaller: 'Schrift verkleinern'
+    font_larger: 'Schrift vergrößern'
+    open_source: 'Quelle öffnen'
     clone:
         label: 'Duplizieren'
         help: 'Erzeugt eine bearbeitbare Kopie mit zurückgesetzten Status-/Ausführungsfeldern. Nützlich für wiederkehrende Zyklen, Vorlagen und Multi-Site-Rollouts.'

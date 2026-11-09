@@ -102,7 +102,7 @@
 
     <table class="meta-table">
         <tr>
-            <th>{{ 'management_review.field.status'|trans({}, 'management_review') }}</th>
+            <th scope="row">{{ 'management_review.field.status'|trans({}, 'management_review') }}</th>
             <td>
                 <span class="badge status-{{ review.status|default('planned') }}">
                     {{ ('management_review.status.' ~ review.status|default('planned'))|trans({}, 'management_review') }}
@@ -110,12 +110,12 @@
             </td>
         </tr>
         <tr>
-            <th>{{ 'management_review.field.tenant'|trans({}, 'management_review') }}</th>
+            <th scope="row">{{ 'management_review.field.tenant'|trans({}, 'management_review') }}</th>
             <td>{{ review.tenant ? review.tenant.name : '—' }}</td>
         </tr>
         {% if review.tenant is not null and is_module_active('nis2_dora') %}
         <tr>
-            <th>{{ 'management_review.field.dora_obligation'|trans({}, 'management_review') }}</th>
+            <th scope="row">{{ 'management_review.field.dora_obligation'|trans({}, 'management_review') }}</th>
             <td>
                 {% set _doraCategory = review.tenant.doraEntityCategory %}
                 {{ ('management_review.dora_category.' ~ _doraCategory)|trans({}, 'management_review') }}
@@ -123,11 +123,11 @@
         </tr>
         {% endif %}
         <tr>
-            <th>{{ 'management_review.field.reviewed_by'|trans({}, 'management_review') }}</th>
+            <th scope="row">{{ 'management_review.field.reviewed_by'|trans({}, 'management_review') }}</th>
             <td>{{ review.reviewedBy ? review.reviewedBy.fullName|default(review.reviewedBy.email) : '—' }}</td>
         </tr>
         <tr>
-            <th>{{ 'management_review.field.participants'|trans({}, 'management_review') }}</th>
+            <th scope="row">{{ 'management_review.field.participants'|trans({}, 'management_review') }}</th>
             <td>
                 {% if review.participants|length > 0 %}
                     {% for p in review.participants %}
@@ -139,7 +139,7 @@
             </td>
         </tr>
         <tr>
-            <th>{{ 'management_review.field.generated_at'|trans({}, 'management_review') }}</th>
+            <th scope="row">{{ 'management_review.field.generated_at'|trans({}, 'management_review') }}</th>
             <td>{{ generated_at|fa_datetime }}</td>
         </tr>
     </table>
@@ -198,10 +198,10 @@
             <table>
                 <thead>
                     <tr>
-                        <th>{{ 'management_review.task.field.title'|trans({}, 'management_review') }}</th>
-                        <th>{{ 'management_review.task.field.responsible'|trans({}, 'management_review') }}</th>
-                        <th>{{ 'management_review.task.field.due'|trans({}, 'management_review') }}</th>
-                        <th>{{ 'management_review.task.field.status'|trans({}, 'management_review') }}</th>
+                        <th scope="col">{{ 'management_review.task.field.title'|trans({}, 'management_review') }}</th>
+                        <th scope="col">{{ 'management_review.task.field.responsible'|trans({}, 'management_review') }}</th>
+                        <th scope="col">{{ 'management_review.task.field.due'|trans({}, 'management_review') }}</th>
+                        <th scope="col">{{ 'management_review.task.field.status'|trans({}, 'management_review') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -233,10 +233,10 @@
     <table class="signature-table">
         <thead>
             <tr>
-                <th style="width: 30%;">{{ 'management_review.pdf.signature.role'|trans({}, 'management_review') }}</th>
-                <th style="width: 30%;">{{ 'management_review.pdf.signature.name'|trans({}, 'management_review') }}</th>
-                <th style="width: 20%;">{{ 'management_review.pdf.signature.date'|trans({}, 'management_review') }}</th>
-                <th style="width: 20%;">{{ 'management_review.pdf.signature.signature'|trans({}, 'management_review') }}</th>
+                <th scope="col" style="width: 30%;">{{ 'management_review.pdf.signature.role'|trans({}, 'management_review') }}</th>
+                <th scope="col" style="width: 30%;">{{ 'management_review.pdf.signature.name'|trans({}, 'management_review') }}</th>
+                <th scope="col" style="width: 20%;">{{ 'management_review.pdf.signature.date'|trans({}, 'management_review') }}</th>
+                <th scope="col" style="width: 20%;">{{ 'management_review.pdf.signature.signature'|trans({}, 'management_review') }}</th>
             </tr>
         </thead>
         <tbody>

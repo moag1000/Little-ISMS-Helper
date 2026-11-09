@@ -114,6 +114,11 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Geändertes Verhalten
 
+- **Kontraste und Barrierefreiheit (W11):** Gedämpfter Text, Erfolgs- und Warntext sowie Status-Pills sind
+  etwas dunkler (hell) bzw. heller (dunkel), Formularfelder haben einen kräftigeren Rahmen — alles erreicht jetzt
+  WCAG AA. Screenreader lesen Fehlermeldungen am Feld, Diagramm-Titel und Icon-Schaltflächen vor; Abschnitte langer
+  Formulare und Prüfpunkte der Audit-Checkliste klappen auch per Tastatur (Enter/Leertaste) auf. Keine Aktion nötig.
+  Nebenbei behoben: Details der Audit-Checkliste und der Framework-Anforderungen ließen sich gar nicht aufklappen.
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
   `auto_action` auf `ROLE_USER` — jede angemeldete Person hätte eine Richtlinie abschließend freigeben können.
   Er ist jetzt ein Benachrichtigungsschritt (läuft von selbst durch, informiert die Manager). Bestehende Zeilen

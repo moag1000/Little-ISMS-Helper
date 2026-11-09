@@ -27,7 +27,7 @@
 }
 .keyboard-shortcuts-trigger:hover,
 .keyboard-shortcuts-trigger:focus-visible {
-    color: var(--primary);
+    color: var(--primary-strong);
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--primary-tint), 0 2px 8px rgb(0, 0, 0, 0.1); /* design-spec: kbd focus ring composite */
     outline: none;
@@ -223,7 +223,7 @@ kbd {
 }
 
 .keyboard-shortcuts-footer i {
-    color: var(--warning);
+    color: var(--warning-text);
 }
 
 /* Scrollbar */

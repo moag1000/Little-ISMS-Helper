@@ -61,7 +61,7 @@
 }
 
 .command-palette-search-icon {
-    width: 18px; height: 18px; color: var(--primary);
+    width: 18px; height: 18px; color: var(--primary-strong);
     flex-shrink: 0;
 }
 .command-palette-input {
@@ -124,7 +124,7 @@
     width: 32px; height: 32px;
     border-radius: var(--r-sm);
     background: color-mix(in oklab, var(--primary) 15%, transparent);
-    color: var(--primary);
+    color: var(--primary-strong);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     transition: background 0.12s var(--ease-out), box-shadow 0.12s var(--ease-out);

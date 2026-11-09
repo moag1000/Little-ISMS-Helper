@@ -189,6 +189,9 @@ common:
     view_details: 'View Details'
     view_all: 'View All'
     edit: Edit
+    font_smaller: 'Decrease font size'
+    font_larger: 'Increase font size'
+    open_source: 'Open the source'
     clone:
         label: 'Duplicate'
         help: 'Create an editable copy with status / execution fields reset. Useful for recurring cycles, templates, and multi-site rollouts.'
