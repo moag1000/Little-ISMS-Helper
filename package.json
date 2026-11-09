@@ -2,6 +2,7 @@
     "name": "little-isms-helper",
     "private": true,
     "devDependencies": {
+        "@axe-core/playwright": "^4.14.0",
         "@hotwired/stimulus": "^3.2.2",
         "@playwright/test": "^1.65.0",
         "@types/node": "^26.6.6",
