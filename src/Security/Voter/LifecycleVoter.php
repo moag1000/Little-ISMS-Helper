@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Security\Voter;
 
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -20,13 +20,17 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
  * A transition with `responsible: true` in its YAML metadata is also open to the person
  * responsible for the record (`RECORD_RESPONSIBLE`, the holder the reminders go to) —
  * "role OR responsible", e.g. the objective owner recording an objective as achieved (S15).
+ *
+ * Roles and responsibility are decided on the voted token, never on the
+ * logged-in one, so `Security::isGrantedForUser()` answers for the person the
+ * LifecycleService checks (S21, {@see \App\Lifecycle\TransitionAccess}).
  */
 final class LifecycleVoter extends Voter
 {
     public const string ATTRIBUTE_PREFIX = 'lifecycle.';
 
     public function __construct(
-        private readonly Security $security,
+        private readonly AccessDecisionManagerInterface $accessDecisionManager,
         private readonly LifecycleConfigResolverInterface $resolver,
     ) {}
 
@@ -48,7 +52,7 @@ final class LifecycleVoter extends Voter
         $allowedRoles = $effective['roles'] ?? [];
 
         if (($effective['responsible'] ?? false) === true
-            && $this->security->isGranted(RecordResponsibleVoter::RESPONSIBLE, $subject)) {
+            && $this->accessDecisionManager->decide($token, [RecordResponsibleVoter::RESPONSIBLE], $subject)) {
             return true;
         }
 
@@ -58,7 +62,7 @@ final class LifecycleVoter extends Voter
         }
 
         foreach ($allowedRoles as $role) {
-            if ($this->security->isGranted($role)) {
+            if ($this->accessDecisionManager->decide($token, [$role])) {
                 return true;
             }
         }

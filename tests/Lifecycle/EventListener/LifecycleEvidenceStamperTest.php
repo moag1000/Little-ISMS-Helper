@@ -8,6 +8,7 @@ use App\Entity\BCExercise;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\ChangeRequest;
 use App\Entity\Incident;
+use App\Entity\InternalAudit;
 use App\Entity\User;
 use App\Lifecycle\EventListener\LifecycleEvidenceStamper;
 use DateTime;
@@ -140,6 +141,32 @@ final class LifecycleEvidenceStamperTest extends KernelTestCase
     }
 
     /** @param array<string, mixed> $context */
+    #[Test]
+    public function internalAuditStepsStampReporterApproverAndCloser(): void
+    {
+        // S21: the audit controller no longer writes these before the step runs.
+        $audit = new InternalAudit();
+        $auditor = $this->user('Ada', 'Auditor');
+        $ciso = $this->user('Cleo', 'Ciso');
+
+        $this->complete($audit, 'report', ['user' => $auditor]);
+        self::assertSame($auditor, $audit->getReportedBy());
+        self::assertNotNull($audit->getReportedAt());
+
+        $this->complete($audit, 'reject', ['user' => $ciso, 'reason' => ' Nachweise fehlen. ']);
+        self::assertSame('Nachweise fehlen.', $audit->getRejectionReason());
+        self::assertNull($audit->getApprovedBy());
+
+        $this->complete($audit, 'approve', ['user' => $auditor, 'four_eyes_approver' => $ciso]);
+        self::assertSame($ciso, $audit->getApprovedBy(), 'with four eyes the second person approves');
+        self::assertNotNull($audit->getApprovedAt());
+        self::assertNull($audit->getRejectionReason());
+
+        $this->complete($audit, 'close', ['user' => $ciso]);
+        self::assertSame($ciso, $audit->getClosedBy());
+        self::assertNotNull($audit->getClosedAt());
+    }
+
     private function complete(object $subject, string $transition, array $context): void
     {
         $workflow = $this->createStub(WorkflowInterface::class);

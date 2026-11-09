@@ -477,7 +477,7 @@
                         {{ 'audit.help.approval_workflow'|trans({}, 'audit') }}
                     </p>
                     <div class="d-grid gap-2">
-                        {% if _can_submit and is_granted('ROLE_USER') %}
+                        {% if _can_submit and is_granted('lifecycle.internal_audit_lifecycle.report', audit) %}
                             <form method="post" action="{{ path('app_audit_submit_report', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_submit_report') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
@@ -487,7 +487,7 @@
                             </form>
                         {% endif %}
 
-                        {% if _can_resubmit and is_granted('ROLE_USER') %}
+                        {% if _can_resubmit and is_granted('lifecycle.internal_audit_lifecycle.rework', audit) %}
                             <form method="post" action="{{ path('app_audit_resubmit_report', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_resubmit_report') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
@@ -497,7 +497,7 @@
                             </form>
                         {% endif %}
 
-                        {% if _can_approve and is_granted('ROLE_AUDITOR') %}
+                        {% if _can_approve and is_granted('lifecycle.internal_audit_lifecycle.approve', audit) %}
                             <form method="post" action="{{ path('app_audit_approve_report', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_approve_report') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
@@ -507,7 +507,7 @@
                             </form>
                         {% endif %}
 
-                        {% if _can_reject and is_granted('ROLE_AUDITOR') %}
+                        {% if _can_reject and is_granted('lifecycle.internal_audit_lifecycle.reject', audit) %}
                             <button type="button"
                                     class="fa-cyber-btn fa-cyber-btn--danger" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="rejectModal">
                                 <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
@@ -515,7 +515,7 @@
                             </button>
                         {% endif %}
 
-                        {% if _can_close and is_granted('ROLE_MANAGER') %}
+                        {% if _can_close and is_granted('lifecycle.internal_audit_lifecycle.close', audit) %}
                             <form method="post" action="{{ path('app_audit_close', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_close') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
@@ -688,7 +688,7 @@
 
 {# Reject Modal with rejection_reason form (only when current state allows reject) #}
 {% import '_macros/workflow.html.twig' as _workflow %}
-{% if audit.status == 'reported' and is_granted('ROLE_AUDITOR') and not _reported_by_current %}
+{% if audit.status == 'reported' and is_granted('lifecycle.internal_audit_lifecycle.reject', audit) and not _reported_by_current %}
 {{ _workflow.decision_modal({
     id: 'rejectModal', tone: 'danger',
     title: 'audit.action.reject_report'|trans({}, 'audit'),
