@@ -135,7 +135,7 @@ final class StatusVocabulary
         'finding_severity' => ['major_nc' => 'danger', 'minor_nc' => 'warning', 'observation' => 'primary', 'opportunity' => 'success'],
         // higher is better
         'confidence' => ['high' => 'success', 'medium' => 'warning', 'low' => 'neutral'],
-        'maturity_level' => ['0' => 'neutral', '1' => 'danger', '2' => 'warning', '3' => 'primary', '4' => 'accent', '5' => 'success', 'initial' => 'danger', 'managed' => 'success', 'defined' => 'primary'],
+        'maturity_level' => ['0' => 'neutral', '1' => 'danger', '2' => 'warning', '3' => 'primary', '4' => 'accent', '5' => 'success', 'initial' => 'neutral', 'managed' => 'success', 'defined' => 'primary'],
         // DORA Art. 28 (exit strategy): low substitutability is the risk
         'substitutability' => ['low' => 'danger', 'medium' => 'warning', 'high' => 'success'],
         'person_type' => ['employee' => 'success', 'contractor' => 'primary', 'visitor' => 'warning', 'vendor' => 'primary', 'auditor' => 'danger', 'consultant' => 'primary'],
@@ -143,7 +143,7 @@ final class StatusVocabulary
         'kpi_status' => ['good' => 'success', 'warning' => 'warning', 'danger' => 'danger'],
         'trend' => ['good' => 'success', 'bad' => 'danger', 'positive' => 'success', 'negative' => 'danger', 'decreasing' => 'success', 'increasing' => 'danger', 'stable' => 'neutral'],
         'rag' => ['green' => 'success', 'amber' => 'warning', 'yellow' => 'warning', 'red' => 'danger', 'grey' => 'neutral', 'gray' => 'neutral'],
-        'roadmap' => ['on_track' => 'success', 'completed' => 'success', 'at_risk' => 'warning', 'in_progress' => 'primary', 'off_track' => 'danger', 'delayed' => 'danger', 'critical' => 'danger'],
+        'roadmap' => ['on_track' => 'success', 'completed' => 'success', 'at_risk' => 'warning', 'in_progress' => 'primary', 'off_track' => 'danger', 'delayed' => 'danger', 'critical' => 'danger', 'planning' => 'neutral'],
         // control review age (ControlEffectivenessService): critical is older than overdue
         'review_due' => ['current' => 'success', 'due_soon' => 'primary', 'overdue' => 'warning', 'critical' => 'danger', 'never_reviewed' => 'neutral'],
         'readiness' => ['ready' => 'success', 'conditional' => 'warning', 'not_ready' => 'danger'],
@@ -160,6 +160,14 @@ final class StatusVocabulary
         'bsi_gap_state' => ['gedeckt' => 'success', 'partiell' => 'warning', 'iso_offen' => 'primary', 'ungemappt_unbewertet' => 'neutral', 'ungemappt_eigenstaendig' => 'neutral'],
         'bsi_trust' => ['amtlich' => 'success', 'amtlich_gestuetzt' => 'success', 'ki_validiert' => 'primary', 'bestaetigt' => 'primary', 'heuristisch' => 'warning'],
         'suggestion_origin' => ['rule' => 'primary', 'inheritance' => 'primary', 'import' => 'neutral', 'ai' => 'accent'],
+        // where a catalogue row comes from: shipped with the tool vs. made by the organisation
+        'origin' => ['config' => 'primary', 'builtin' => 'primary', 'system' => 'primary', 'catalog' => 'primary', 'preset' => 'primary', 'custom' => 'neutral', 'tenant' => 'neutral', 'code' => 'neutral'],
+        'override_source' => ['legacy' => 'warning', 'manual' => 'neutral', 'certificate' => 'neutral', 'inheritance' => 'neutral'],
+        'visibility' => ['all' => 'primary', 'team' => 'neutral', 'private' => 'neutral'],
+        'app_env' => ['prod' => 'success', 'dev' => 'warning', 'test' => 'warning'],
+        // next status action of an organisation (TenantStatusService) as button tone
+        'tenant_action' => ['activate' => 'primary', 'reactivate' => 'primary', 'suspend' => 'warning'],
+        'tab' => ['active' => 'primary', 'inactive' => 'neutral'],
         'journey' => ['complete' => 'success', 'partial' => 'primary', 'not_started' => 'primary', 'locked' => 'neutral', 'dismissed' => 'neutral'],
     ];
 

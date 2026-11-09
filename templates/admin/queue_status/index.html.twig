@@ -22,7 +22,7 @@
 
     {# Status banner (RED/YELLOW state explanation) #}
     {% set st = snapshot.status %}
-    {% set bannerVariant = st == 'red' ? 'danger' : (st == 'yellow' ? 'warning' : (st == 'green' ? 'success' : 'info')) %}
+    {% set bannerVariant = st in ['red', 'yellow', 'green'] ? status_tone('rag', st) : 'info' %}
     {{ _fa_alert.render({
         variant: bannerVariant,
         dismissible: false,
@@ -33,7 +33,7 @@
     }) }}
 
     {# KPI tiles — Aurora feature-cards #}
-    {% set heartbeatVariant = st == 'green' ? 'success' : (st == 'yellow' ? 'warning' : (st == 'red' ? 'danger' : 'primary')) %}
+    {% set heartbeatVariant = status_tone('rag', st) %}
     {% set queueVariant = snapshot.queue_depth == 0 ? 'success' : (snapshot.queue_depth < 20 ? 'primary' : (snapshot.queue_depth < 50 ? 'warning' : 'danger')) %}
     {% set pendingVariant = snapshot.pending_jobs == 0 ? 'success' : (snapshot.pending_jobs < 10 ? 'warning' : 'danger') %}
     {% set failedVariant = snapshot.failed_jobs_24h == 0 ? 'success' : (snapshot.failed_jobs_24h < 5 ? 'warning' : 'danger') %}
@@ -145,10 +145,7 @@
                         <tbody class="fa-table__body">
                             {% for job in recent_jobs %}
                                 {% set jobStatus = job.status|default('unknown') %}
-                                {% set statusTone = jobStatus == 'succeeded' ? 'success'
-                                    : (jobStatus == 'failed' ? 'danger'
-                                    : (jobStatus == 'running' ? 'primary'
-                                    : (jobStatus == 'pending' ? 'warning' : 'neutral'))) %}
+                                {% set statusTone = status_tone('async_job', jobStatus) %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell">
                                         <code class="small">{{ job.name|default('—') }}</code>

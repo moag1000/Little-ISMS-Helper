@@ -32,8 +32,7 @@
     {# Executive Summary KPIs — Aurora _fa_feature_card with icon-chip #}
     {% set complianceVariant = dashboard.summary.overall_compliance >= 80 ? 'success'
                             : dashboard.summary.overall_compliance >= 60 ? 'warning' : 'danger' %}
-    {% set trendVariant = dashboard.summary.risk_trend == 'increasing' ? 'danger'
-                       : dashboard.summary.risk_trend == 'decreasing' ? 'success' : 'warning' %}
+    {% set trendVariant = status_tone('trend', dashboard.summary.risk_trend) %}
     {% set trendLabel = dashboard.summary.risk_trend == 'increasing' ? 'trend.increasing'|trans({}, 'dashboards')
                      : dashboard.summary.risk_trend == 'decreasing' ? 'trend.decreasing'|trans({}, 'dashboards')
                      : 'trend.stable'|trans({}, 'dashboards') %}
@@ -210,7 +209,7 @@
                             {% for key, kpi in category_kpis %}
                                 <div class="col-md-4">
                                     <div class="border rounded p-3 text-center">
-                                        <div class="h4 mb-1 text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'info')) }}">
+                                        <div class="h4 mb-1 text-{{ status_tone('kpi_status', kpi.status) }}">
                                             {{ kpi.value }}{{ kpi.unit }}
                                         </div>
                                         <small class="text-muted">{{ kpi.label|trans({}, 'dashboard') }}</small>

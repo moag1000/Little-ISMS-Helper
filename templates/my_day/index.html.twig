@@ -148,7 +148,7 @@
                         <i class="fa-icon fa-icon--nav-info-circle text-muted my-day-section__hint-icon d-none d-sm-inline"
                            title="{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}" aria-label="{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}"></i>
                     {% endif %}
-                    {{ pill.render(c.count, c.tone == 'danger' ? 'danger' : 'neutral', {class: 'ms-1'}) }}
+                    {{ pill.render(c.count, c.tone == 'danger' ? c.tone : 'neutral', {class: 'ms-1'}) }}
                 </span>
             </summary>
             <div class="fa-section__body">
@@ -208,10 +208,7 @@
                             </div>
                             <div class="my-day-item__side">
                                 {% if item.badge %}
-                                    {% set pillTone = item.tone == 'danger' ? 'danger'
-                                        : (item.tone == 'warning' ? 'warning'
-                                        : (item.tone == 'success' ? 'success'
-                                        : 'primary')) %}
+                                    {% set pillTone = pill_tone_bs(item.tone) %}
                                     {{ pill.render(item.badge, pillTone) }}
                                 {% endif %}
                                 {% if item.priority == 'high' %}

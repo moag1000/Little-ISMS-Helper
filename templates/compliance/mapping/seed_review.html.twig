@@ -90,7 +90,7 @@
                                 <div class="small text-muted">{{ m.targetRequirement.title|u.truncate(60, '…') }}</div>
                             </td>
                             <td class="fa-table__cell">
-                                {% set _mr_tone = m.mappingBadgeClass == 'secondary' ? 'neutral' : (m.mappingBadgeClass == 'info' ? 'primary' : m.mappingBadgeClass) %}
+                                {% set _mr_tone = pill_tone_bs(m.mappingBadgeClass) %}
                                 {{ pill.render(m.mappingType, _mr_tone) }}
                                 <div class="small text-muted">{{ m.finalPercentage }}%</div>
                             </td>

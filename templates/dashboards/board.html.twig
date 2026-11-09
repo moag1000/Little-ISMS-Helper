@@ -160,7 +160,7 @@
                                         <small class="text-muted">{{ milestone.type }}</small>
                                     </div>
                                     {% include '_components/_badge.html.twig' with {
-                                        variant: milestone.status == 'on_track' ? 'success' : (milestone.status == 'at_risk' ? 'warning' : 'danger'),
+                                        variant: status_tone('roadmap', milestone.status),
                                         content: milestone.date|fa_date
                                     } %}
                                 </div>
@@ -251,11 +251,11 @@
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span>{{ initiative.name }}</span>
                             {% include '_components/_badge.html.twig' with {
-                                variant: initiative.status == 'on_track' ? 'success' : (initiative.status == 'at_risk' ? 'warning' : 'danger'),
+                                variant: status_tone('roadmap', initiative.status),
                                 content: initiative.progress ~ '%'
                             } %}
                         </div>
-                        {{ _fa_progress.render({ value: initiative.progress, tone: initiative.status == 'on_track' ? 'success' : (initiative.status == 'at_risk' ? 'warning' : 'danger') }) }}
+                        {{ _fa_progress.render({ value: initiative.progress, tone: status_tone('roadmap', initiative.status) }) }}
                         {% endfor %}
                     {% else %}
                         {{ _fa_empty_state.render({
