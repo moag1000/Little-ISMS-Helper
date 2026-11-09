@@ -113,7 +113,7 @@ final class EnvironmentWriter
      */
     public function writeEnvVariables(array $variables): void
     {
-        $envFilePath = $this->getEnvLocalPath();
+        $envFilePath = $this->writeTarget();
 
         // Validate variable names
         foreach (array_keys($variables) as $key) {
@@ -247,7 +247,7 @@ final class EnvironmentWriter
         $databaseUrl = $envVars['DATABASE_URL'];
 
         // Replace ${VAR} references with actual values from envVars
-        $databaseUrl = preg_replace_callback('/\$\{([A-Z_]+)\}/', fn($matches) => $envVars[$matches[1]] ?? $matches[0], (string) $databaseUrl);
+        $databaseUrl = preg_replace_callback('/\$\{([A-Z_]+)\}/', fn ($matches) => $envVars[$matches[1]] ?? $matches[0], (string) $databaseUrl);
 
         // Parse DATABASE_URL: mysql://user:pass@host:port/dbname?serverVersion=X&charset=Y
         // Example: mysql://banda:MeinSicheresPw987%21@127.0.0.1:3306/LittleHelper?serverVersion=11.4.1-MariaDB
@@ -390,7 +390,7 @@ final class EnvironmentWriter
      */
     private function createBackup(): void
     {
-        $envFilePath = $this->getEnvLocalPath();
+        $envFilePath = $this->writeTarget();
         $backupPath = $envFilePath . self::BACKUP_SUFFIX;
 
         copy($envFilePath, $backupPath);
@@ -414,6 +414,26 @@ final class EnvironmentWriter
     public function getEnvLocalPath(): string
     {
         return $this->projectDir . self::ENV_LOCAL_FILE;
+    }
+
+    /**
+     * The file a write replaces. In the Docker image `.env.local` is a link to
+     * `var/.env.local` on the data volume (docker/scripts/init-mysql.sh), so settings
+     * written from the UI survive a container update. The atomic rename must replace
+     * the file the link points to, not the link itself.
+     */
+    private function writeTarget(): string
+    {
+        $path = $this->getEnvLocalPath();
+        if (!is_link($path)) {
+            return $path;
+        }
+        $target = readlink($path);
+        if ($target === false) {
+            return $path;
+        }
+
+        return str_starts_with($target, '/') ? $target : dirname($path) . '/' . $target;
     }
 
     /**
