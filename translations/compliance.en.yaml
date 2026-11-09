@@ -152,6 +152,7 @@ compliance:
     delete_framework: 'Delete Framework'
     load_framework: 'Load Framework'
     load_framework_super_admin: 'Catalogues are shared by every organisation of this instance; the super admin loads them.'
+    shared_catalogue_super_admin: 'Shared by every organisation of this instance; the super admin changes it.'
     open_framework: 'Open framework'
     confirm_load: 'Do you really want to load this framework?'
     loading: 'Loading...'

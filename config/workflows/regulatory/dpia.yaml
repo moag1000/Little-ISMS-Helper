@@ -53,6 +53,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "DPIA - Data Protection Impact Assessment"
+                    description: "Data Protection Impact Assessment workflow for high-risk processing activities (GDPR Art. 35/36)"
+                    entity_type: DPIA
                     standard: "GDPR Art. 35/36"
                     sla_hours: null
                     escalation_threshold_hours: null
@@ -102,8 +106,3 @@ framework:
                         step_type: approval
                         days_to_complete: 2
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataProtectionImpactAssessment
-                            fields: [residualRiskLevel]
-                            condition: "(residualRiskLevel = low OR residualRiskLevel = medium) OR ((residualRiskLevel = high OR residualRiskLevel = critical) AND supervisoryConsultationDate != null)"

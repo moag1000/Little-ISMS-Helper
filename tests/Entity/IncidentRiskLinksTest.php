@@ -67,7 +67,10 @@ final class IncidentRiskLinksTest extends TestCase
         $responsibility = $source->responsibleOf($change);
         self::assertSame([$approver], $responsibility->holders);
         self::assertSame(['ROLE_ISB', 'ROLE_CISO'], $responsibility->roles);
-        self::assertSame('Alex Muster', $change->getEffectiveApprovedBy());
+        // S12: approvedBy is written only by the approve step, so the person who
+        // actually approved is shown before the designated approver.
+        self::assertSame('alt', $change->getEffectiveApprovedBy());
+        self::assertSame('Alex Muster', (new ChangeRequest())->setApproverPerson($approver)->getEffectiveApprovedBy());
 
         $unnamed = $source->responsibleOf(new ChangeRequest());
         self::assertSame([], $unnamed->holders);

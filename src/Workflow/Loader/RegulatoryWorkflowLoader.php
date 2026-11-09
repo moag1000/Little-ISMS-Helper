@@ -62,20 +62,16 @@ class RegulatoryWorkflowLoader
 
         $workflowMetadata = $definition->getMetadataStore()->getWorkflowMetadata();
 
-        // Steps live under regulatory_metadata.steps (spec D5)
-        $steps = $workflowMetadata['regulatory_metadata']['steps'] ?? null;
+        $steps = self::stepsOf($workflowMetadata);
 
-        if (!is_array($steps) || $steps === []) {
+        if ($steps === null) {
             // Workflow exists in registry but has no steps block (entity-stage SM, not approval chain)
             return null;
         }
 
-        // Normalise numeric keys — the YAML list may have integer keys
-        $normalised = array_values($steps);
+        $this->cache[$workflowName] = $steps;
 
-        $this->cache[$workflowName] = $normalised;
-
-        return $normalised;
+        return $steps;
     }
 
     /**
@@ -114,8 +110,7 @@ class RegulatoryWorkflowLoader
 
         foreach ($this->getAllWorkflowDefinitions() as $name => $definition) {
             $workflowMetadata = $definition->getMetadataStore()->getWorkflowMetadata();
-            $steps = $workflowMetadata['regulatory_metadata']['steps'] ?? null;
-            if (is_array($steps) && $steps !== []) {
+            if (self::stepsOf($workflowMetadata) !== null) {
                 $names[] = $name;
             }
         }
@@ -134,6 +129,22 @@ class RegulatoryWorkflowLoader
     // -------------------------------------------------------------------------
     // Internal helpers
     // -------------------------------------------------------------------------
+
+    /**
+     * The approval steps of a workflow: `metadata.steps`, beside `metadata.regulatory_metadata`
+     * (the layout of every config/workflows/regulatory/*.yaml). The older nesting
+     * `metadata.regulatory_metadata.steps` is still read, but Gate 82 rejects it in the
+     * repository — one layout, so the loader, the gate and the overlay editor see the same steps.
+     *
+     * @param array<string, mixed> $workflowMetadata
+     * @return list<array<string, mixed>>|null
+     */
+    public static function stepsOf(array $workflowMetadata): ?array
+    {
+        $steps = $workflowMetadata['steps'] ?? ($workflowMetadata['regulatory_metadata']['steps'] ?? null);
+
+        return is_array($steps) && $steps !== [] ? array_values($steps) : null;
+    }
 
     /**
      * Find a Symfony Workflow Definition by name using the Registry.

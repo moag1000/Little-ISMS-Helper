@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="expires_days">{{ 'api_token.field.expires_days'|trans({}, 'api_token') }}</label>
-                    <input type="number" min="1" class="form-control" id="expires_days" name="expires_days" placeholder="—">
+                    <input type="number" min="1" max="{{ constant('App\\Entity\\ApiToken::MAX_LIFETIME_DAYS') }}" class="form-control" id="expires_days" name="expires_days" placeholder="{{ constant('App\\Entity\\ApiToken::MAX_LIFETIME_DAYS') }}">
                 </div>
                 {% if mcp_write_enabled %}
                     <div class="col-12">
@@ -108,7 +108,7 @@
                         <tr class="fa-table__row">
                             <td class="fa-table__cell">{{ token.label }}</td>
                             <td class="fa-table__cell">{{ token.createdAt|fa_date }}</td>
-                            <td class="fa-table__cell">{{ token.expiresAt|fa_date }}</td>
+                            <td class="fa-table__cell">{{ token.effectiveExpiresAt|fa_date }}</td>
                             <td class="fa-table__cell">{{ token.lastUsedAt|fa_datetime }}</td>
                             <td class="fa-table__cell">{{ (token.canWrite ? 'api_token.access.write' : 'api_token.access.read')|trans({}, 'api_token') }}</td>
                             <td class="fa-table__cell">

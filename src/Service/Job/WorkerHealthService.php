@@ -94,11 +94,13 @@ final class WorkerHealthService
 
     /**
      * Returns at most RECENT_JOBS_LIMIT job-status snapshots, newest first,
-     * read from `var/jobs/*.json`.
+     * read from `var/jobs/*.json`. With an owner organisation only that
+     * organisation's jobs (`owner_tenant_id`); jobs without owner belong to the
+     * instance operator and are left out.
      *
      * @return list<array<string,mixed>>
      */
-    public function recentJobs(int $limit = self::RECENT_JOBS_LIMIT): array
+    public function recentJobs(int $limit = self::RECENT_JOBS_LIMIT, ?int $ownerTenantId = null): array
     {
         $dir = $this->kernel->getProjectDir() . '/var/jobs';
         if (!is_dir($dir)) {
@@ -108,16 +110,21 @@ final class WorkerHealthService
         $files = glob($dir . '/*.json') ?: [];
         // Sort newest-first by mtime
         usort($files, static fn (string $a, string $b): int => filemtime($b) <=> filemtime($a));
-        $files = array_slice($files, 0, $limit);
 
         $out = [];
         foreach ($files as $file) {
+            if (count($out) >= $limit) {
+                break;
+            }
             $raw = @file_get_contents($file);
             if ($raw === false) {
                 continue;
             }
             $data = json_decode($raw, true);
             if (!is_array($data)) {
+                continue;
+            }
+            if ($ownerTenantId !== null && ($data['owner_tenant_id'] ?? null) !== $ownerTenantId) {
                 continue;
             }
             $out[] = $data;

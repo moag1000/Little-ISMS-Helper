@@ -42,6 +42,7 @@ admin:
         reset: 'Einstellung "%key%" zurückgesetzt.'
     industry_preset:
         applied: 'Preset "%name%" angewendet: %modules% Module, %frameworks% Frameworks, %controls% Controls, %documents% Dokumente.'
+        frameworks_super_admin_only: 'Frameworks gelten für alle Organisationen und bleiben unverändert; aktivieren darf sie nur der Super-Admin.'
         error:
             not_found: 'Preset wurde nicht gefunden.'
             invalid_csrf: 'Ungültiges CSRF-Token.'
@@ -70,7 +71,7 @@ admin:
             approval_not_pending: 'Freigabe-Anfrage ist nicht mehr offen.'
             approval_user_exists: 'Es existiert bereits ein Benutzer mit der E-Mail %email%.'
             discovery_failed: 'Discovery fehlgeschlagen: %message%'
-            privileged_role_mapping: 'Rollen-Mappings nicht gespeichert: Nur Instanz-Administratoren (Super-Admin) dürfen privilegierte Rollen (%roles%) zuweisen.'
+            privileged_role_mapping: 'Rollen-Mappings nicht gespeichert: %roles% ist keine vergebbare Rolle. Konzern- und Super-Admin-Rollen kommen nie aus SSO-Claims, andere Rollen nur bis zur eigenen Rolle.'
     title: Administration
     cancel: 'Abbrechen'
     tenant_management:

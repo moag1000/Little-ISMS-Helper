@@ -42,6 +42,7 @@ admin:
         reset: 'Setting "%key%" reset.'
     industry_preset:
         applied: 'Preset "%name%" applied: %modules% modules, %frameworks% frameworks, %controls% controls, %documents% documents.'
+        frameworks_super_admin_only: 'Frameworks are shared by all organisations and stay unchanged; only the super admin activates them.'
         error:
             not_found: 'Preset not found.'
             invalid_csrf: 'Invalid CSRF token.'
@@ -70,7 +71,7 @@ admin:
             approval_not_pending: 'Approval request is no longer pending.'
             approval_user_exists: 'A user with the email %email% already exists.'
             discovery_failed: 'Discovery failed: %message%'
-            privileged_role_mapping: 'Role mappings not saved: only instance administrators (super admin) may assign privileged roles (%roles%).'
+            privileged_role_mapping: 'Role mappings not saved: %roles% is not an assignable role. Group and super admin roles never come from SSO claims, other roles only up to your own role.'
     title: Administration
     cancel: 'Cancel'
     tenant_management:

@@ -59,11 +59,13 @@ class IndustryPresetApplier
      * @param array<string, mixed> $config Parsed preset YAML
      * @return array{modules_activated: list<string>, frameworks_activated: int, controls_created: int, documents_created: int}
      */
-    public function apply(string $presetId, array $config, ?Tenant $tenant): array
+    public function apply(string $presetId, array $config, ?Tenant $tenant, bool $activateFrameworks = true): array
     {
         $result = [
             'modules_activated' => $this->activateModules($config, $tenant),
-            'frameworks_activated' => $this->activateFrameworks($config),
+            // Frameworks are shared by every organisation: the caller passes false when the
+            // acting user may not write the global catalogue (GlobalCatalogueVoter, S13).
+            'frameworks_activated' => $activateFrameworks ? $this->activateFrameworks($config) : 0,
             'controls_created' => 0,
             'documents_created' => 0,
         ];

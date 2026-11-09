@@ -119,18 +119,22 @@ class MfaTokenControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * S14: an admin does not enrol or regenerate a second factor for another
+     * person — the person does it on their profile. The admin pages only list,
+     * reset and delete tokens.
+     */
     #[Test]
-    public function testSetupTotpRequiresAuthentication(): void
+    public function testAdminCannotEnrolASecondFactorForSomeoneElse(): void
     {
-        $this->client->request('GET', '/en/admin/mfa/user/' . $this->testUser->getId() . '/setup-totp');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testSetupTotpRequiresPermission(): void
-    {
-        $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/admin/mfa/user/' . $this->testUser->getId() . '/setup-totp');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $routes = static::getContainer()->get('router')->getRouteCollection();
+        foreach (['admin_mfa_setup_totp', 'admin_mfa_verify', 'admin_mfa_regenerate_backup'] as $name) {
+            self::assertNull($routes->get($name), $name . ' must not exist on the admin MFA pages');
+        }
+        foreach ($routes as $name => $route) {
+            if (str_starts_with($route->getPath(), '/{_locale}/admin/mfa') || str_starts_with($route->getPath(), '/admin/mfa')) {
+                self::assertDoesNotMatchRegularExpression('#setup|verify|regenerate#', $route->getPath(), $name);
+            }
+        }
     }
 }

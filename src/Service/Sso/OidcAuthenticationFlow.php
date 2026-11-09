@@ -53,11 +53,17 @@ final class OidcAuthenticationFlow
 
     /**
      * Apply the provider's claim→role mapping to the user. Only an explicitly
-     * MATCHED mapping rule overrides the current role — when no rule fires the
-     * role is left untouched (so unmapped users keep their default/existing
-     * role and are never silently demoted). On a role change for an existing
-     * user the sso.role.changed HMAC audit event is emitted, closing the
-     * "role drift via re-login" audit gap.
+     * MATCHED mapping rule changes a role — when no rule fires the roles are
+     * left untouched (unmapped users are never silently demoted).
+     *
+     * The provider maintains only the roles it can hand out itself (S14:
+     * roles of its mappings, default and fallback role,
+     * {@see ClaimToRoleResolver::managedRoles()}); every other role of the
+     * account — top management, a persona role, a holding role granted in
+     * the user administration — survives each login. Privileged roles never
+     * come from claims ({@see SsoAccountLinkPolicy::mayAssignRole()}). A
+     * changed role on an existing user emits the sso.role.changed HMAC audit
+     * event.
      *
      * @param array<string,mixed> $claims
      */
@@ -67,24 +73,30 @@ final class OidcAuthenticationFlow
         if (!$result->matched) {
             return;
         }
-        // A tenant-owned provider never hands out a privileged role, even if
-        // such a mapping row exists (created before the security hotfix).
         if (!SsoAccountLinkPolicy::mayAssignRole($provider, $result->role)) {
-            $this->logger->warning('SSO: privileged mapped role ignored for tenant-owned provider', [
+            $this->logger->warning('SSO: mapped role ignored (privileged or unknown)', [
                 'provider' => $provider->getSlug(),
                 'role' => $result->role,
             ]);
             return;
         }
 
-        $oldRole = $user->getStoredRoles()[0] ?? 'ROLE_USER';
-        if ($result->role === $oldRole) {
+        $managed = array_values(array_unique([...$this->roleResolver->managedRoles($provider), 'ROLE_USER']));
+        $stored = $user->getStoredRoles();
+        $oldRole = array_values(array_intersect($stored, $managed))[0] ?? 'ROLE_USER';
+        $newStored = array_values(array_unique([...array_diff($stored, $managed), $result->role]));
+
+        $sortedOld = $stored;
+        $sortedNew = $newStored;
+        sort($sortedOld);
+        sort($sortedNew);
+        if ($sortedOld === $sortedNew) {
             return;
         }
 
-        $user->setRoles([$result->role]);
+        $user->setRoles($newStored);
 
-        if (!$isNew) {
+        if (!$isNew && $oldRole !== $result->role) {
             $this->eventLogger->logRoleChanged($provider, $user, $oldRole, $result->role);
         }
     }
@@ -186,13 +198,13 @@ final class OidcAuthenticationFlow
             }
             SsoAccountLinkPolicy::assertMayLinkByEmail($provider, $byEmail, $this->logger, $externalId);
             // Only an e-mail the IdP verified links an existing account (S9).
-            if (!SsoClaimPolicy::isEmailVerified($claims)) {
+            if (!SsoClaimPolicy::isEmailVerified($claims, $email)) {
                 $this->logger->warning('SSO: login refused, e-mail not verified by the IdP, no link by e-mail', [
                     'provider' => $provider->getSlug(),
                     'target_user_id' => $byEmail->getId(),
                 ]);
                 $this->eventLogger->logLoginFailure($provider, $email, 'email_not_verified');
-                SsoClaimPolicy::assertEmailVerifiedForLinking($claims);
+                SsoClaimPolicy::assertEmailVerifiedForLinking($claims, $email);
             }
             $byEmail->setSsoProvider($provider);
             $byEmail->setSsoExternalId($externalId);

@@ -52,6 +52,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "Data Subject Request Processing (GDPR Art. 12-22)"
+                    description: "Workflow for processing data subject rights requests with 30-day response deadline"
+                    entity_type: DataSubjectRequest
                     standard: "GDPR Art. 12(3) / Art. 12-22"
                     sla_hours: 720
                     escalation_threshold_hours: 600
@@ -65,10 +69,6 @@ framework:
                         step_type: approval
                         days_to_complete: 3
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataSubjectRequest
-                            fields: [identityVerified, identityVerificationMethod]
                     -   name: "Request Processing"
                         description: "Process the data subject request: gather data, prepare response"
                         order: 2
@@ -76,10 +76,6 @@ framework:
                         step_type: approval
                         days_to_complete: 14
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataSubjectRequest
-                            fields: [responseDescription]
                     -   name: "DPO Review & Approval"
                         description: "DPO reviews the prepared response for completeness and legal compliance"
                         order: 3
@@ -94,10 +90,6 @@ framework:
                         step_type: approval
                         days_to_complete: 3
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataSubjectRequest
-                            fields: [completedAt]
                     -   name: "Deadline Extension (Art. 12(3))"
                         description: "If complex request requires more time: notify data subject of extension within original 30-day period"
                         order: 5
@@ -105,8 +97,3 @@ framework:
                         step_type: notification
                         days_to_complete: 0
                         is_required: false
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataSubjectRequest
-                            fields: [extensionReason, extendedDeadlineAt]
-                            condition: "extensionReason != null"
