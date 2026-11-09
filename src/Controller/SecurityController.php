@@ -8,6 +8,8 @@ use App\Security\LandingRoute;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use App\Security\SamlAuthFactory;
+use App\Security\SamlMessageGuard;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Service\Sso\SsoProviderRegistry;
 use App\Service\TenantContext;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -22,6 +24,7 @@ class SecurityController extends AbstractController
 {
     public function __construct(
         private readonly SamlAuthFactory $samlAuthFactory,
+        private readonly SamlMessageGuard $samlMessageGuard,
         private readonly TranslatorInterface $translator,
         private readonly SsoProviderRegistry $ssoRegistry,
         private readonly TenantContext $tenantContext,
@@ -109,14 +112,16 @@ class SecurityController extends AbstractController
      * SAML Login - Initiate SSO
      */
     #[Route('/saml/login', name: 'saml_login', methods: ['GET'])]
-    public function samlLogin(Request $request): Response
+    public function samlLogin(): Response
     {
         try {
-            $samlAuth = $this->samlAuthFactory->createAuth($request);
-            $samlAuth->login();
+            $samlAuth = $this->samlAuthFactory->createAuth();
+            // stay=true: OneLogin returns the URL instead of exit()ing, so the
+            // request id can be remembered for the ACS (SamlMessageGuard).
+            $url = $samlAuth->login(null, [], false, false, true);
+            $this->samlMessageGuard->rememberRequest((string) $samlAuth->getLastRequestID());
 
-            // This will never be reached as login() redirects
-            return new Response('Redirecting to SAML IdP...');
+            return new RedirectResponse((string) $url);
         } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('security.error.saml_login_error', [], 'messages') . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
@@ -138,10 +143,10 @@ class SecurityController extends AbstractController
      * SAML Metadata
      */
     #[Route('/saml/metadata', name: 'saml_metadata', methods: ['GET'])]
-    public function samlMetadata(Request $request): Response
+    public function samlMetadata(): Response
     {
         try {
-            $samlAuth = $this->samlAuthFactory->createAuth($request);
+            $samlAuth = $this->samlAuthFactory->createAuth();
             $settings = $samlAuth->getSettings();
             $metadata = $settings->getSPMetadata();
             $errors = $settings->validateMetadata($metadata);
@@ -165,10 +170,10 @@ class SecurityController extends AbstractController
      */
     // @csrf-exempt: IdP-initiated logout, authenticated by the signed SAML message
     #[Route('/saml/sls', name: 'saml_sls', methods: ['GET', 'POST'])]
-    public function samlSls(Request $request): Response
+    public function samlSls(): Response
     {
         try {
-            $samlAuth = $this->samlAuthFactory->createAuth($request);
+            $samlAuth = $this->samlAuthFactory->createAuth();
             $samlAuth->processSLO();
 
             $errors = $samlAuth->getErrors();

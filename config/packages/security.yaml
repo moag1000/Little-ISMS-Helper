@@ -67,6 +67,12 @@ security:
                 target: app_login
                 # Security: Invalidate session on logout (default: true)
                 invalidate_session: true
+                # S9: a link on another site must not sign the person out. Links
+                # use logout_path(), which appends the token. Session-bound id
+                # (not the stateless 'logout'): a plain link click carries no
+                # double-submit cookie, and a stripped Referer must not break it.
+                enable_csrf: true
+                csrf_token_id: logout_link
                 # S16: the browser drops its HTTP cache, service-worker caches and
                 # localStorage/IndexedDB (offline drafts) — on a shared device the next
                 # person must not open a page or report of the previous one from cache.
