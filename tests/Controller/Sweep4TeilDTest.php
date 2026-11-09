@@ -46,6 +46,8 @@ final class Sweep4TeilDTest extends WebTestCase
             $c->executeStatement('DELETE FROM supplier WHERE tenant_id IN (?, ?)', [$this->tenant->getId(), $this->other->getId()]);
             $c->executeStatement('DELETE FROM tag WHERE name LIKE ?', ['s4d%']);
             $c->executeStatement('DELETE FROM users WHERE email LIKE ?', ['%' . $this->uid . '@x.test']);
+            // S29: an erased account keeps its row with an anonymous address.
+            $c->executeStatement('DELETE FROM users WHERE tenant_id IN (?, ?)', [$this->tenant->getId(), $this->other->getId()]);
             $c->executeStatement('DELETE FROM tenant WHERE id IN (?, ?)', [$this->tenant->getId(), $this->other->getId()]);
         } catch (\Throwable) {
         }

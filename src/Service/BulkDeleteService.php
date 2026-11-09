@@ -122,7 +122,12 @@ class BulkDeleteService
                 ];
             }
             if ($removed !== []) {
-                $this->entityManager->flush();
+                $this->auditLogger->beginCallerLoggedDeletes();
+                try {
+                    $this->entityManager->flush();
+                } finally {
+                    $this->auditLogger->endCallerLoggedDeletes();
+                }
                 // Inside the transaction: the trail commits with the deletions,
                 // and a row that cannot be written aborts the batch (strict).
                 $batchId = $this->auditLogger->logBulk(

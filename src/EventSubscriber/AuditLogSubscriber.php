@@ -8,11 +8,13 @@ use App\Entity\AuditLog;
 use App\Lifecycle\DeletionPolicy;
 use App\Service\AuditLogger;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\UnitOfWork;
 
 /**
  * Audit Log Subscriber
@@ -211,10 +213,32 @@ final class AuditLogSubscriber
 
     private function isAuditedOnDelete(object $entity, PostRemoveEventArgs $args): bool
     {
-        $metadata = $args->getObjectManager()->getClassMetadata($entity::class);
+        if ($this->auditLogger->areDeletesLoggedByCaller()) {
+            return false; // the caller's logBulk batch / reasoned entry is the trail
+        }
+        $em = $args->getObjectManager();
+        $metadata = $em->getClassMetadata($entity::class);
+        if (!DeletionPolicy::isTenantOwned($metadata)
+            || in_array($this->auditLogger->getEntityTypeName($entity), self::TRANSIENT_ON_DELETE, true)) {
+            return false;
+        }
+        // The whole organisation goes (tenant deletion, logged itself): its rows
+        // cannot carry a tenant that is leaving in the same flush.
+        $tenant = $metadata->getFieldValue($entity, 'tenant');
+        if (!is_object($tenant)) {
+            return true;
+        }
+        $uow = $em->getUnitOfWork();
+        if ($uow->getEntityState($tenant) !== UnitOfWork::STATE_MANAGED || $uow->isScheduledForDelete($tenant)) {
+            return false;
+        }
+        try {
+            $uow->initializeObject($tenant); // removed by plain SQL meanwhile → nothing to log against
+        } catch (EntityNotFoundException) {
+            return false;
+        }
 
-        return DeletionPolicy::isTenantOwned($metadata)
-            && !in_array($this->auditLogger->getEntityTypeName($entity), self::TRANSIENT_ON_DELETE, true);
+        return true;
     }
 
     /**

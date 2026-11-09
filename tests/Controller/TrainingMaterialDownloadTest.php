@@ -44,6 +44,7 @@ final class TrainingMaterialDownloadTest extends WebTestCase
         @unlink($this->file);
         $connection = $this->em->getConnection();
         if ($this->trainingId !== null) {
+            $connection->delete('training_participation', ['training_id' => $this->trainingId]); // RESTRICT (S29)
             $connection->delete('training', ['id' => $this->trainingId]);
         }
         foreach ($this->userIds as $id) {

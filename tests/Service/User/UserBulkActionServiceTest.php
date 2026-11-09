@@ -13,6 +13,7 @@ use App\Service\AuditLogger;
 use App\Service\InitialAdminService;
 use App\Service\TenantContext;
 use App\Service\User\UserBulkActionService;
+use App\Service\User\UserErasure;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -31,6 +32,7 @@ final class UserBulkActionServiceTest extends TestCase
 {
     private MockObject&EntityManagerInterface $em;
     private MockObject&AuditLogger $auditLogger;
+    private MockObject&UserErasure $erasure;
     private UserBulkActionService $service;
 
     protected function setUp(): void
@@ -44,6 +46,7 @@ final class UserBulkActionServiceTest extends TestCase
 
         $this->em = $this->createMock(EntityManagerInterface::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
+        $this->erasure = $this->createMock(UserErasure::class);
         $this->service = new UserBulkActionService(
             $security,
             $this->em,
@@ -57,6 +60,7 @@ final class UserBulkActionServiceTest extends TestCase
                 new RoleCeiling(VoterTestHelper::createRoleHierarchy()),
                 $this->createStub(AuditLogger::class),
             ),
+            $this->erasure,
         );
     }
 
@@ -74,7 +78,7 @@ final class UserBulkActionServiceTest extends TestCase
     {
         $actor = $this->user(1);
 
-        $this->em->expects(self::never())->method('remove');
+        $this->erasure->expects(self::never())->method('erase');
         $this->auditLogger->expects(self::never())->method('logBulk');
 
         $result = $this->service->apply('delete', [$actor], $actor);
@@ -85,12 +89,13 @@ final class UserBulkActionServiceTest extends TestCase
     }
 
     #[Test]
-    public function bulkDeleteRemovesOthersAndWritesOneAuditBatch(): void
+    public function bulkDeleteErasesOthersAndWritesOneAuditBatch(): void
     {
         $actor = $this->user(1);
         $other = $this->user(2);
 
-        $this->em->expects(self::once())->method('remove')->with($other);
+        // S29: deleting a person is the erasure (anonymised, evidence kept).
+        $this->erasure->expects(self::once())->method('erase')->with($other)->willReturn(true);
         $this->auditLogger->expects(self::once())->method('logBulk')
             ->with(
                 'bulk_user_delete',

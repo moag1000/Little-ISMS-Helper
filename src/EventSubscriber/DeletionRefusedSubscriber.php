@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Lifecycle\DeletionRefusedException;
+use App\Security\SafeRedirectTarget;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -65,13 +67,13 @@ final class DeletionRefusedSubscriber implements EventSubscriberInterface
         if ($session instanceof FlashBagAwareSessionInterface) {
             $session->getFlashBag()->add('warning', $this->translator->trans($refusal->translationKey, $refusal->parameters, 'lifecycle'));
         }
-        $event->setResponse(new RedirectResponse($this->backUrl($request->headers->get('referer'), $request->getSchemeAndHttpHost())));
+        $event->setResponse(new RedirectResponse($this->backUrl($request->headers->get('referer'), $request)));
     }
 
-    /** Only back to this application; else the dashboard. */
-    private function backUrl(?string $referer, string $host): string
+    /** Only back to this application ({@see SafeRedirectTarget}); else the dashboard. */
+    private function backUrl(?string $referer, Request $request): string
     {
-        if ($referer !== null && str_starts_with($referer, $host . '/')) {
+        if ($referer !== null && SafeRedirectTarget::isSafe($referer, $request)) {
             return $referer;
         }
 

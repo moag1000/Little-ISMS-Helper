@@ -6,6 +6,8 @@ namespace App\Tests\Service;
 
 use App\Entity\Asset;
 use App\Entity\Tenant;
+use App\Lifecycle\DeletionPolicy;
+use App\Lifecycle\DeletionRefusal;
 use App\Service\AuditLogger;
 use App\Security\TenantOwnership;
 use App\Service\BulkDeleteService;
@@ -371,16 +373,31 @@ final class BulkDeleteServiceTest extends TestCase
     }
 
     #[Test]
-    public function anAssetInUseIsNotDeletedAroundTheFourEyesDisposal(): void
+    public function bulkDeleteAsksTheDeletionPolicy(): void
     {
         $tenant = $this->tenant(1);
         $inUse = $this->asset(10, $tenant, 'Server', 'in_use');
         $this->em->expects(self::never())->method('remove');
+        // S29: the rule itself (from the asset workflow) is DeletionPolicyTest; here: bulk asks it.
+        $policy = $this->createStub(DeletionPolicy::class);
+        $policy->method('refusal')->willReturnCallback(static fn (object $e): ?DeletionRefusal => $e === $inUse
+            ? new DeletionRefusal('leaves only through its lifecycle', 'lifecycle.errors.delete_needs_end_state', [])
+            : null);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $service = new BulkDeleteService(
+            $this->em,
+            $this->auditLogger,
+            $this->authChecker,
+            $this->createStub(TranslatorInterface::class),
+            $this->tenantContext,
+            null,
+            $policy,
+        );
 
-        $result = $this->actingIn($tenant)->delete('Asset', [10], static fn (int $id): ?object => $id === 10 ? $inUse : null);
+        $result = $service->delete('Asset', [10], static fn (int $id): ?object => $id === 10 ? $inUse : null);
 
         self::assertSame(0, $result['deleted']);
-        self::assertStringContainsString('four-eyes disposal', implode(' ', $result['errors']));
+        self::assertStringContainsString('leaves only through its lifecycle', implode(' ', $result['errors']));
     }
 
     private function asset(int $id, Tenant $tenant, string $name, string $status = 'disposed'): Asset

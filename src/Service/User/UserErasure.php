@@ -14,9 +14,9 @@ use App\Entity\Person;
 use App\Entity\PushSubscription;
 use App\Entity\User;
 use App\Entity\UserSession;
-use App\Entity\UserTenantAssignment;
 use App\Service\AuditLogger;
 use App\Service\Upload\StoredFilePath;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -40,7 +40,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * Durable test: tests/Service/User/UserErasureTest.php (every foreign key on
  * `users` either a personal setting or surviving the erasure).
  */
-final readonly class UserErasure
+readonly class UserErasure
 {
     /**
      * Rows that belong to the account alone: their foreign key to `users` is
@@ -53,7 +53,6 @@ final readonly class UserErasure
         ApiToken::class,
         MfaToken::class,
         UserSession::class,
-        UserTenantAssignment::class,
         IdentityProviderUserMapping::class,
         DashboardLayout::class,
         AlvaHintDismissal::class,
@@ -146,8 +145,18 @@ final readonly class UserErasure
         if ($this->referenceCount($user) !== 0) {
             return false;
         }
-        $this->entityManager->remove($user);
-        $this->entityManager->flush();
+        // Plain DELETE: a key Doctrine does not map (a plugin table, a hand-made
+        // reference) refuses it without closing the entity manager — the account
+        // then stays, anonymised.
+        try {
+            $this->entityManager->getConnection()->delete(
+                $this->entityManager->getClassMetadata(User::class)->getTableName(),
+                ['id' => $id],
+            );
+        } catch (ForeignKeyConstraintViolationException) {
+            return false;
+        }
+        $this->entityManager->detach($user);
 
         return true;
     }

@@ -42,6 +42,8 @@ final class TrainingAccessTest extends WebTestCase
         // Plain DBAL: requests arm the tenant filter on the shared entity manager.
         $connection = $this->em->getConnection();
         foreach ($this->trainingIds as $id) {
+            // S29: participations are RESTRICT (evidence), no cascade from the training.
+            $connection->delete('training_participation', ['training_id' => $id]);
             $connection->delete('training', ['id' => $id]);
         }
         foreach ($this->userIds as $id) {

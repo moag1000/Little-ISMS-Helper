@@ -515,6 +515,7 @@ class TrainingControllerTest extends WebTestCase
         // Raw SQL: the CSRF warm-up request rebooted the kernel (EM cleared) and
         // the tenant filter hides the foreign row from find().
         $conn = $this->entityManager->getConnection();
+        $conn->executeStatement('DELETE FROM training_participation WHERE training_id = ?', [$otherTraining->getId()]);
         $conn->executeStatement('DELETE FROM training WHERE id = ?', [$otherTraining->getId()]);
         $conn->executeStatement('DELETE FROM tenant WHERE id = ?', [$otherTenant->getId()]);
 

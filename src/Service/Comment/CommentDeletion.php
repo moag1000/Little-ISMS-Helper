@@ -35,7 +35,12 @@ final readonly class CommentDeletion
         $entityId = $comment->getEntityId();
 
         $this->entityManager->remove($comment);
-        $this->entityManager->flush();
+        $this->auditLogger->beginCallerLoggedDeletes(); // comment_deleted below, with the reason
+        try {
+            $this->entityManager->flush();
+        } finally {
+            $this->auditLogger->endCallerLoggedDeletes();
+        }
         $this->auditLogger->logCustom(
             action: 'comment_deleted',
             entityType: $entityType,

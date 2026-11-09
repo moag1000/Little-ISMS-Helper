@@ -49,7 +49,7 @@ use Symfony\Component\Workflow\WorkflowInterface;
  * holds it at the flush for whatever a person deletes in a request.
  * Gate 100: tests/Lifecycle/EndStateDeletionContractTest.php.
  */
-final class DeletionPolicy
+class DeletionPolicy
 {
     /**
      * Records without a lifecycle that are evidence in their own right. With the
@@ -74,6 +74,17 @@ final class DeletionPolicy
         Bsi2004ExerciseLog::class,      // ISO 22301 8.5 exercise record
         AuditFreeze::class,             // ISO 27001 9.2 frozen audit state
         SoaSnapshot::class,             // ISO 27001 6.1.3 d SoA version
+    ];
+
+    /**
+     * Evidence rows that are only an open assignment until a date is set: an
+     * assigned, not yet attended training is no competence record. Open ones do
+     * not block the delete and go with their record ({@see openChildrenOf()}).
+     *
+     * @var array<class-string, string> class => field that makes the row evidence
+     */
+    public const array EVIDENCE_ONCE_SET = [
+        TrainingParticipation::class => 'completedAt',
     ];
 
     /** @var array<class-string, list<string>> end-state places per class */
@@ -223,21 +234,60 @@ final class DeletionPolicy
         return $this->children[$class] = $found;
     }
 
-    private function countChildren(string $childClass, string $field, object $record): int
+    /**
+     * Open assignments ({@see EVIDENCE_ONCE_SET}) that point at the record and
+     * are removed with it.
+     *
+     * @return list<object>
+     */
+    public function openChildrenOf(object $record): array
     {
-        $metadata = $this->entityManager->getClassMetadata($record::class);
-        $id = $metadata->getIdentifierValues($record);
-        if ($id === [] || \in_array(null, $id, true)) {
-            return 0; // never stored
+        if (!$this->isStored($record)) {
+            return [];
+        }
+        $open = [];
+        foreach ($this->evidenceChildrenOf($record::class) as $child) {
+            $doneField = self::EVIDENCE_ONCE_SET[$child['class']] ?? null;
+            if ($doneField === null) {
+                continue;
+            }
+            $rows = $this->entityManager->createQueryBuilder()
+                ->select('c')
+                ->from($child['class'], 'c')
+                ->where(sprintf('c.%s = :record', $child['field']))
+                ->andWhere(sprintf('c.%s IS NULL', $doneField))
+                ->setParameter('record', $record)
+                ->getQuery()
+                ->getResult();
+            array_push($open, ...$rows);
         }
 
-        return (int) $this->entityManager->createQueryBuilder()
+        return $open;
+    }
+
+    private function countChildren(string $childClass, string $field, object $record): int
+    {
+        if (!$this->isStored($record)) {
+            return 0;
+        }
+        $query = $this->entityManager->createQueryBuilder()
             ->select('COUNT(c)')
             ->from($childClass, 'c')
             ->where(sprintf('c.%s = :record', $field))
-            ->setParameter('record', $record)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('record', $record);
+        $doneField = self::EVIDENCE_ONCE_SET[$childClass] ?? null;
+        if ($doneField !== null) {
+            $query->andWhere(sprintf('c.%s IS NOT NULL', $doneField));
+        }
+
+        return (int) $query->getQuery()->getSingleScalarResult();
+    }
+
+    private function isStored(object $record): bool
+    {
+        $id = $this->entityManager->getClassMetadata($record::class)->getIdentifierValues($record);
+
+        return $id !== [] && !\in_array(null, $id, true);
     }
 
     private function workflowOf(string $class, ?object $subject = null): ?WorkflowInterface

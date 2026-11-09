@@ -356,7 +356,12 @@ final class RetentionEnforcementService
             foreach ($expired as $entity) {
                 $this->entityManager->remove($entity);
             }
-            $this->entityManager->flush();
+            $this->auditLogger->beginCallerLoggedDeletes(); // the logBulk batch below is the trail
+            try {
+                $this->entityManager->flush();
+            } finally {
+                $this->auditLogger->endCallerLoggedDeletes();
+            }
             $this->auditLogger->withTenant($tenant, fn () => $this->auditLogger->logBulk(
                 eventType: 'retention.enforced',
                 entityType: self::REGISTRY[$type][0],

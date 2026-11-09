@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *   {@see DeletionRefusedException} before anything is written. Console,
  *   scheduler and workers act for nobody (as {@see WriteRuleGuard}); the
  *   system paths that delete (retention, Quick-Fix) ask the policy themselves.
+ * - Always: open assignments (an assigned, not attended training) go with
+ *   their record ({@see DeletionPolicy::openChildrenOf()}).
  * - Always: comments on a deleted record go with it (no orphan rows that keep
  *   personal data and resurface on a reused id). Their deletion is audited
  *   without the text (AuditLogSubscriber).
@@ -59,6 +61,14 @@ final class DeletionGuard
                 if ($refusal !== null) {
                     $class = $em->getClassMetadata($record::class)->getName();
                     throw new DeletionRefusedException($refusal, substr((string) strrchr($class, '\\'), 1));
+                }
+            }
+        }
+
+        foreach ($deletions as $record) {
+            foreach ($this->policy->openChildrenOf($record) as $open) {
+                if (!$uow->isScheduledForDelete($open)) {
+                    $em->remove($open);
                 }
             }
         }

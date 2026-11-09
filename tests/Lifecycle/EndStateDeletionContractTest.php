@@ -265,7 +265,9 @@ final class EndStateDeletionContractTest extends KernelTestCase
             $tokenStorage->setToken(new UsernamePasswordToken($actor, 'main', ['ROLE_ADMIN']));
             $requestStack->push(Request::create('/de/audit/delete'));
 
-            foreach ([$reported, $withFinding] as $audit) {
+            foreach ([$reported->getId(), $withFinding->getId()] as $auditId) {
+                $audit = $this->em->find(InternalAudit::class, $auditId);
+                self::assertNotNull($audit);
                 $this->em->remove($audit);
                 try {
                     $this->em->flush();
@@ -273,8 +275,7 @@ final class EndStateDeletionContractTest extends KernelTestCase
                 } catch (DeletionRefusedException) {
                     $this->em->clear();
                 }
-                $audit = $this->em->find(InternalAudit::class, $audit->getId());
-                self::assertNotNull($audit);
+                self::assertNotNull($this->em->find(InternalAudit::class, $auditId), 'kept');
             }
 
             $draftId = $draft->getId();
