@@ -447,6 +447,19 @@ web UI for this.
   from. With a single organisation the screens' own role rules apply as
   before. Mappings of an organisation's own uploaded requirements stay that
   organisation's. Console commands run as the operator and are not checked.
+  Since S13 the same rule covers the rest of the shared catalogue: mapping
+  seeds (they start `bin/console` as a separate process, so they are on the
+  route list), the loader fixer, catalogue commands in sample data and module
+  data (skipped with a hint), framework activation by industry presets, and
+  gap items of global mappings. The backstop also refuses new or deleted
+  requirements without upload organisation and changed or deleted frameworks.
+  `tests/Security/InstanceScopeRoutesTest` finds the writing routes itself.
+- **Instance operations** (system health, schema update of the shared
+  database, composer install, cache and log clean-up, the instance error log
+  and performance page) are super-admin only on every instance: the
+  permissions in `PermissionVoter::instancePermissions()` reach neither
+  ROLE_ADMIN through the fallback nor a custom role. The setup wizard makes the
+  first account super admin, so a single-organisation operator keeps them.
 - **Seeded workflow definitions** (`app:seed:incident-workflows` and other
   definitions without an organisation) are shared rows
   (`SharedTenantRowsInterface`): every organisation's records start them and

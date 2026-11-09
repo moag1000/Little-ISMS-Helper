@@ -20,6 +20,11 @@
 
     {# POST action (CSRF form) — fa-page-header actions only render links, so the
      # run-all form stays as a toolbar row directly below the header. #}
+    {% set _mayRun = is_granted('GLOBAL_CATALOGUE_WRITE') %}
+    {% if not _mayRun %}
+        {# The loaders add requirements to the catalogue every organisation shares (S13). #}
+        <p class="text-muted small">{{ 'compliance.shared_catalogue_super_admin'|trans({}, 'compliance') }}</p>
+    {% else %}
     <div class="d-flex justify-content-end gap-2 mb-3">
         <form method="post" action="{{ path('admin_loader_fixer_run_all') }}"
               data-controller="ui-actions"
@@ -33,6 +38,7 @@
             </button>
         </form>
     </div>
+    {% endif %}
 
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'd-flex gap-2' } } %}
         {% block alert_body %}<div> <strong>{{ 'loader_fixer.hint.heading'|trans({}, 'loader_fixer') }}</strong> <div class="small">{{ 'loader_fixer.hint.body'|trans({}, 'loader_fixer') }}</div> </div>{% endblock %}
@@ -74,6 +80,7 @@
                         {% endif %}
                     </td>
                     <td class="fa-table__cell fa-table__cell--actions">
+                        {% if is_granted('GLOBAL_CATALOGUE_WRITE') %}
                         <form method="post" class="d-inline"
                               action="{{ path('admin_loader_fixer_run_one', { code: row.code }) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_' ~ row.code) }}">
@@ -82,6 +89,7 @@
                                 {{ 'loader_fixer.action.run_one'|trans({}, 'loader_fixer') }}
                             </button>
                         </form>
+                        {% else %}—{% endif %}
                     </td>
                 </tr>
             {% endfor %}

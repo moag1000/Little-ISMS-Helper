@@ -78,10 +78,14 @@
                                        name="samples[{{ sample.key }}]"
                                        value="1"
                                        id="sample_{{ sample.key }}"
-                                       {% if not sample.modules_ok %}disabled{% endif %}>
+                                       {% if not sample.modules_ok or sample.shared_catalogue_locked %}disabled{% endif %}>
                             </td>
                             <td class="fa-table__cell">
                                 <label for="sample_{{ sample.key }}" class="fw-semibold mb-0">{{ module_data_text(sample, 'name') }}</label>
+                                {% if sample.shared_catalogue_locked %}
+                                    {# Catalogue loads are shared by every organisation (S13). #}
+                                    <div class="text-muted small">{{ 'compliance.load_framework_super_admin'|trans({}, 'compliance') }}</div>
+                                {% endif %}
                             </td>
                             <td class="fa-table__cell text-muted small">{{ module_data_text(sample, 'description') }}</td>
                             <td class="fa-table__cell">

@@ -59,7 +59,13 @@ final class QueueStatusController extends AbstractController
     public function index(): Response
     {
         $snapshot = $this->workerHealth->snapshot();
-        $recent = $this->workerHealth->recentJobs();
+        // Job names and messages belong to the organisation that started them (S13).
+        $user = $this->getUser();
+        $recent = $this->isGranted('ROLE_SUPER_ADMIN')
+            ? $this->workerHealth->recentJobs()
+            : $this->workerHealth->recentJobs(
+                ownerTenantId: $user instanceof \App\Entity\User ? ($user->getTenant()?->getId() ?? 0) : 0,
+            );
 
         return $this->render('admin/queue_status/index.html.twig', [
             'snapshot' => $snapshot,

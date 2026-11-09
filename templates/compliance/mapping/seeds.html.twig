@@ -76,6 +76,9 @@
                             <button type="button" class="fa-cyber-btn fa-cyber-btn--primary w-100" disabled>
                                 {{ 'compliance.mapping.seeds.action.apply'|trans({}, 'compliance') }}
                             </button>
+                        {% elseif not is_granted('GLOBAL_CATALOGUE_WRITE') %}
+                            {# Seeds write the mappings every organisation uses (S13): the super admin applies them. #}
+                            <p class="text-muted small mb-0">{{ 'compliance.shared_catalogue_super_admin'|trans({}, 'compliance') }}</p>
                         {% else %}
                             <form method="post"
                                   action="{{ path('app_compliance_mapping_seeds_apply', { id: seed.id }) }}">
