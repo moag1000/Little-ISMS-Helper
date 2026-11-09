@@ -98,6 +98,26 @@ class NotificationRule
     public function setName(string $name): static { $this->name = $name; return $this; }
 
     public function getEventType(): string { return $this->eventType; }
+
+    /** Event-type prefix => module the event belongs to (S32: no notification outlives its module). */
+    public const EVENT_MODULES = [
+        'data_breach.' => 'privacy',
+        'incident.' => 'incidents',
+        'risk.' => 'risks',
+        'control.' => 'controls',
+        'audit.' => 'audits',
+    ];
+
+    public static function moduleOfEvent(string $eventType): ?string
+    {
+        foreach (self::EVENT_MODULES as $prefix => $module) {
+            if (str_starts_with($eventType, $prefix)) {
+                return $module;
+            }
+        }
+
+        return null;
+    }
     public function setEventType(string $eventType): static { $this->eventType = $eventType; return $this; }
 
     /** @return array<int, array<string, mixed>> */

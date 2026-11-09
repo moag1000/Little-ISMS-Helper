@@ -361,12 +361,12 @@ class AnalyticsController extends AbstractController
         ExportAnalyticsJob $exportAnalyticsJob,
         \App\Service\Job\JobTenantScope $jobTenantScope,
     ): Response {
+        if (!in_array($type, ExportAnalyticsJob::ALLOWED_TYPES, true)) {
+            throw $this->createNotFoundException(); // never echo the route text into a header (S32)
+        }
         $filename = 'analytics_' . $type . '_' . date('Y-m-d') . '.csv';
         // Same organisation scope as the async export; denied without one unless SUPER_ADMIN.
-        $tenant = $jobTenantScope->currentUserScope();
-        $data = in_array($type, ExportAnalyticsJob::ALLOWED_TYPES, true)
-            ? $exportAnalyticsJob->rows($type, $tenant)
-            : [];
+        $data = $exportAnalyticsJob->rows($type, $jobTenantScope->currentUserScope());
 
         // Close session to prevent blocking other requests during CSV generation
         $request->getSession()->save();

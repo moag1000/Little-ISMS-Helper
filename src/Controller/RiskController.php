@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Service\Location\LocationScope;
 use App\Security\Voter\RiskAcceptanceVoter;
 use App\Security\Voter\RiskVoter;
@@ -204,7 +205,7 @@ class RiskController extends AbstractController
             'focus' => $focus,
         ]);
     }
-    #[Route('/risk/export', name: 'app_risk_export', methods: ['GET'])]
+    #[Route('/risk/export', name: 'app_risk_export', methods: ['GET']), RequiresModule('risks')]
     #[IsGranted('ROLE_USER')]
     public function export(Request $request): Response
     {
@@ -251,7 +252,7 @@ class RiskController extends AbstractController
      * integration that already targets it; new UI traffic should use this
      * dispatch endpoint to avoid PHP-FPM timeout on large registers.
      */
-    #[Route('/risk/export/dispatch', name: 'app_risk_export_dispatch', methods: ['POST'])]
+    #[Route('/risk/export/dispatch', name: 'app_risk_export_dispatch', methods: ['POST']), RequiresModule('risks')]
     #[IsGranted('ROLE_USER')]
     public function exportDispatch(
         Request $request,
@@ -307,7 +308,7 @@ class RiskController extends AbstractController
      * it from disk afterwards. The job ID UUID-v4 is the canonical filename
      * stem so we can derive the path without any user-controlled string.
      */
-    #[Route('/risk/export/download/{id}', name: 'app_risk_export_download', methods: ['GET'])]
+    #[Route('/risk/export/download/{id}', name: 'app_risk_export_download', methods: ['GET']), RequiresModule('risks')]
     #[IsGranted('ROLE_USER')]
     #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
@@ -350,7 +351,7 @@ class RiskController extends AbstractController
         return $response;
     }
 
-    #[Route('/risk/export/excel', name: 'app_risk_export_excel', methods: ['GET'])]
+    #[Route('/risk/export/excel', name: 'app_risk_export_excel', methods: ['GET']), RequiresModule('risks')]
     #[IsGranted('ROLE_USER')]
     public function exportExcel(Request $request): Response
     {
@@ -364,7 +365,7 @@ class RiskController extends AbstractController
 
         return $response;
     }
-    #[Route('/risk/export/pdf', name: 'app_risk_export_pdf', methods: ['GET'])]
+    #[Route('/risk/export/pdf', name: 'app_risk_export_pdf', methods: ['GET']), RequiresModule('risks')]
     #[IsGranted('ROLE_USER')]
     public function exportPdf(Request $request): Response
     {
@@ -557,7 +558,7 @@ class RiskController extends AbstractController
 
     #[Route('/risk/{id}', name: 'app_risk_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(Request $request, Risk $risk): Response
+    public function show(Request $request, Risk $risk, TenantContext $tenantContext): Response
     {
         // Get current user's tenant
         $user = $this->security->getUser();
@@ -594,11 +595,10 @@ class RiskController extends AbstractController
         // Inverse-Coverage Impact-Analyse
         $impactCoverage = $this->inverseCoverageService?->forRisk($risk) ?? ['total' => 0, 'frameworks' => []];
 
-        // Comment-Thread (C7) — load thread for this Risk.
-        $comments = [];
-        if ($this->commentRepository !== null && $tenant !== null && $risk->getId() !== null) {
-            $comments = $this->commentRepository->findThread($tenant, 'Risk', $risk->getId());
-        }
+        // Comment thread (C7) of the organisation the comment form writes to (S32), not the home organisation.
+        $threadTenant = $tenantContext->getCurrentTenant();
+        $comments = $this->commentRepository !== null && $threadTenant !== null && $risk->getId() !== null
+            ? $this->commentRepository->findThread($threadTenant, 'Risk', $risk->getId()) : [];
 
         // Structured incident cross-links
         $riskIncidentLinks = $this->riskIncidentLinkRepository?->findByRisk($risk) ?? [];
@@ -846,7 +846,7 @@ class RiskController extends AbstractController
      * Bulk CSV export of selected risks.
      * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
-    #[Route('/risk/bulk-export', name: 'app_risk_bulk_export', methods: ['POST'])]
+    #[Route('/risk/bulk-export', name: 'app_risk_bulk_export', methods: ['POST']), RequiresModule('risks')]
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {

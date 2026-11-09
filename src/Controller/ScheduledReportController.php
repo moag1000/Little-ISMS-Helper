@@ -9,7 +9,8 @@ use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ScheduledReport;
 use App\Form\ScheduledReportType;
 use App\Repository\ScheduledReportRepository;
-use App\Service\ScheduledReportService;
+use App\Service\Report\ScheduledReportRunner;
+use App\Service\Report\ScheduledReportSkippedException;
 use App\Service\TenantContext;
 use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,7 +37,7 @@ class ScheduledReportController extends AbstractController
         private readonly ScheduledReportRepository $repository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
-        private readonly ScheduledReportService $scheduledReportService,
+        private readonly ScheduledReportRunner $runner,
     ) {
     }
 
@@ -46,7 +47,7 @@ class ScheduledReportController extends AbstractController
         $tenantId = $this->tenantContext->getCurrentTenantId();
         $reports = $this->repository->findByTenant($tenantId);
         $statistics = $this->repository->getStatistics($tenantId);
-        $dueReports = $this->repository->findDueReports();
+        $dueReports = $tenantId !== null ? $this->repository->findDueReports($tenantId) : [];
 
         return $this->render('scheduled_report/index.html.twig', [
             'page' => ListPage::fromRequest(
@@ -55,7 +56,7 @@ class ScheduledReportController extends AbstractController
                 static fn(ScheduledReport $r): array => [$r->getName(), $r->getReportType()],
             ),
             'statistics' => $statistics,
-            'due_reports' => array_filter($dueReports, fn($r) => $r->getTenantId() === $tenantId),
+            'due_reports' => $dueReports,
         ]);
     }
 
@@ -186,12 +187,12 @@ class ScheduledReportController extends AbstractController
         $this->checkAccess($report);
 
         if ($this->isCsrfTokenValid('trigger' . $report->getId(), $request->request->get('_token'))) {
-            try {
-                $this->scheduledReportService->triggerReport($report);
-                $this->addFlash('success', 'scheduled_report.flash.triggered');
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'scheduled_report.flash.trigger_failed');
-            }
+            [$outcome, $message] = $this->runner->run($report);
+            match ($outcome) {
+                ScheduledReportRunner::OUTCOME_SENT => $this->addFlash('success', 'scheduled_report.flash.triggered'),
+                ScheduledReportRunner::OUTCOME_SKIPPED => $this->addFlash('warning', $message),
+                default => $this->addFlash('error', 'scheduled_report.flash.trigger_failed'),
+            };
         }
 
         return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
@@ -203,7 +204,7 @@ class ScheduledReportController extends AbstractController
         $this->checkAccess($report);
 
         try {
-            $content = $this->scheduledReportService->previewReport($report);
+            $content = $this->runner->preview($report);
             $filename = $report->getReportType() . '_preview.' . ($report->getFormat() === 'pdf' ? 'pdf' : 'xlsx');
             $mimeType = $report->getFormat() === 'pdf'
                 ? 'application/pdf'
@@ -213,7 +214,10 @@ class ScheduledReportController extends AbstractController
                 'Content-Type' => $mimeType,
                 'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             ]);
-        } catch (\Exception $e) {
+        } catch (ScheduledReportSkippedException $e) {
+            $this->addFlash('warning', $e->getMessage());
+            return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
+        } catch (\Throwable $e) {
             $this->addFlash('error', 'scheduled_report.flash.preview_failed');
             return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
         }

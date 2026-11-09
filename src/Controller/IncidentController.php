@@ -819,7 +819,7 @@ class IncidentController extends AbstractController
      * Bulk CSV export of selected incidents.
      * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
-    #[Route('/incident/bulk-export', name: 'app_incident_bulk_export', methods: ['POST'])]
+    #[Route('/incident/bulk-export', name: 'app_incident_bulk_export', methods: ['POST']), RequiresModule('incidents')]
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {

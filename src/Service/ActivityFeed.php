@@ -43,7 +43,27 @@ final class ActivityFeed
         private readonly TenantContext $tenantContext,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly ?\Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorization = null,
+        private readonly ?ModuleConfigurationService $moduleConfiguration = null,
     ) {
+    }
+
+    /**
+     * S32: a source is listed only while the module that owns its records is active (modules.yaml `entities`);
+     * a running approval of a DataBreach must not surface once privacy is switched off.
+     */
+    private function moduleActiveFor(string $entityShortName): bool
+    {
+        $entityShortName = (string) preg_replace('#^.*\\\\#', '', $entityShortName);
+        if ($this->moduleConfiguration === null || $entityShortName === '') {
+            return true;
+        }
+        foreach ($this->moduleConfiguration->getAllModules() as $key => $module) {
+            if (in_array($entityShortName, (array) ($module['entities'] ?? []), true)) {
+                return $this->moduleConfiguration->isModuleActive((string) $key);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -115,6 +135,9 @@ final class ActivityFeed
             : [];
         foreach (array_slice($activeWorkflows, 0, 25) as $instance) {
             /** @var WorkflowInstance $instance */
+            if (!$this->moduleActiveFor((string) $instance->getEntityType())) {
+                continue;
+            }
             if ($scope === 'compliance') {
                 $wfEntityType = $instance->getEntityType() ?? '';
                 if (!$this->isComplianceWorkflow($wfEntityType)) {
@@ -137,7 +160,7 @@ final class ActivityFeed
         }
 
         // 3. Recent Document changes (always compliance-relevant).
-        if ($tenant) {
+        if ($tenant && $this->moduleActiveFor('Document')) {
             $docs = $this->documentRepo->createQueryBuilder('d')
                 ->andWhere('d.tenant = :tenant')
                 ->setParameter('tenant', $tenant)
@@ -161,7 +184,7 @@ final class ActivityFeed
         }
 
         // 4. Recent Risks — excluded from compliance scope (operational, not compliance-specific).
-        if ($tenant && $scope !== 'compliance') {
+        if ($tenant && $scope !== 'compliance' && $this->moduleActiveFor('Risk')) {
             $risks = $this->riskRepo->createQueryBuilder('r')
                 ->andWhere('r.tenant = :tenant')
                 ->setParameter('tenant', $tenant)

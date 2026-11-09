@@ -114,6 +114,27 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Geändertes Verhalten
 
+- **Berichte, Exporte und Benachrichtigungen folgen den Modulen (S32):** Ist das Modul eines Berichts aus
+  (Risiken, Assets, Vorfälle, Controls, Audits, Compliance, Datenschutz, BCM, Portfolio), antworten seine Download-,
+  PDF-, Excel- und Export-Routen nicht mehr (Weiterleitung zum Dashboard bzw. 404), und die Kacheln dazu fehlen.
+  Geplante Berichte prüfen Modul, Organisation und Ersteller bei jedem Lauf: ist das Modul aus, die Organisation
+  deaktiviert oder der Ersteller nicht mehr aktiver Manager, wird der Bericht übersprungen („Übersprungen“ mit
+  Grund auf der Berichtsseite). Der Portfolio-Bericht braucht jetzt das Modul `portfolio_reports`, wie die
+  Portfolio-Seiten. Schlägt ein Bericht fehl, versucht der Lauf ihn nach 1, 2, 4 … Stunden (höchstens 24, nie nach
+  dem regulären Termin) erneut statt stündlich, und die Berichte anderer Organisationen laufen weiter; die
+  Berichtsseite zeigt einen festen Hinweis statt Fehlertext (Details im Anwendungsprotokoll). Neue Spalte
+  `failed_runs`: Migration `Version20261109200000` über Quick-Fix „Ausstehende Migrationen anwenden“.
+  Der Board-One-Pager darf auch an Personen mit `ROLE_TOP_MGMT` gehen; versendet wird an die Adresse des Kontos.
+- **Sicherheitsbericht neu erzeugen (S32)** (Über > Sicherheit) nur noch für den Super-Admin und als
+  Hintergrundjob; die Antwort enthält keine Skriptausgabe mehr.
+- **Benachrichtigungszentrale (S32):** Regel-Benachrichtigungen der Organisation (Kanal „In-App“) sehen nur noch
+  Manager und nur bei aktivem Modul des Ereignisses; alle anderen sehen ihre eigenen Erinnerungen. Der
+  Aktivitäts-Feed zeigt Freigaben, Risiken und Dokumente nur bei aktivem Modul.
+- **Berichts-Baukasten (S32):** „Geteilt“, „Vorlage“ und Verantwortliche in den Einstellungen eines Berichts setzt
+  nur ein Manager (wie „Als Vorlage speichern“).
+- **Kommentare (S32):** höchstens 10.000 Zeichen; der Kommentarverlauf zeigt die Kommentare der gerade gewählten
+  Organisation.
+
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
   `auto_action` auf `ROLE_USER` — jede angemeldete Person hätte eine Richtlinie abschließend freigeben können.
   Er ist jetzt ein Benachrichtigungsschritt (läuft von selbst durch, informiert die Manager). Bestehende Zeilen

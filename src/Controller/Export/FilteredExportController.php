@@ -6,6 +6,7 @@ namespace App\Controller\Export;
 
 use App\Service\Export\EntityListExporter;
 use App\Service\Export\FilterStateService;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,10 +30,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_MANAGER')]
 final class FilteredExportController extends AbstractController
 {
+    /** Exportable entity type => module that owns it (S32: an export never outlives its module). */
+    public const ENTITY_MODULES = [
+        'asset' => 'assets',
+        'risk' => 'risks',
+        'supplier' => 'suppliers',
+        'control' => 'controls',
+        'business_process' => 'bcm',
+        'document' => 'documents',
+        'incident' => 'incidents',
+        'audit_finding' => 'audits',
+    ];
+
     public function __construct(
         private readonly EntityListExporter $exporter,
         private readonly FilterStateService $filterStateService,
         private readonly TenantContext $tenantContext,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -50,6 +64,9 @@ final class FilteredExportController extends AbstractController
     ])]
     public function exportEntity(Request $request, string $entityType, string $format): Response
     {
+        if (!$this->moduleConfiguration->isModuleActive(self::ENTITY_MODULES[$entityType])) {
+            throw $this->createNotFoundException('Module not active.');
+        }
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             throw $this->createNotFoundException('No tenant context available.');

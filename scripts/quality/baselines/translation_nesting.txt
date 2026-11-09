@@ -325,9 +325,9 @@ translations/risk_treatment_plan.en.yaml:107:iso_9001_bridge
 translations/role_management.de.yaml:120:role
 translations/role_management.en.yaml:120:role
 translations/scheduled_reports.de.yaml:3:scheduled_report
-translations/scheduled_reports.de.yaml:173:email
-translations/scheduled_reports.de.yaml:178:form
-translations/scheduled_reports.de.yaml:185:flash
+translations/scheduled_reports.de.yaml:181:email
+translations/scheduled_reports.de.yaml:186:form
+translations/scheduled_reports.de.yaml:193:flash
 translations/security.de.yaml:23:reauth
 translations/security.en.yaml:23:reauth
 translations/setup_wizard.de.yaml:1:existing_frameworks

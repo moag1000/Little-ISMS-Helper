@@ -59,6 +59,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% if is_granted('ADMIN_GLOBAL_OP') %}
                     <div class="d-grid gap-2">
                         <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-controller="report-regenerate"
@@ -70,6 +71,7 @@
                             <i class="fa-icon me-1 fa-icon--ui-refresh" aria-hidden="true"></i>{{ 'security_reports.action.regenerate'|trans({}, 'security_reports') }}
                         </button>
                     </div>
+                    {% endif %}
                     <div class="mt-3">
                         <small class="text-muted">
                             <i class="fa-icon me-1 fa-icon--status-info" aria-hidden="true"></i>

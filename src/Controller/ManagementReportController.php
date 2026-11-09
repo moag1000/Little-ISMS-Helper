@@ -115,7 +115,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== RISK MANAGEMENT REPORTS =====================
 
-    #[Route('/risk', name: 'app_management_reports_risk', methods: ['GET'])]
+    #[Route('/risk', name: 'app_management_reports_risk', methods: ['GET']), RequiresModule('risks')]
     public function riskManagement(Request $request): Response
     {
         [$from, $to] = $this->parseDateRange($request);
@@ -129,7 +129,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/risk/pdf', name: 'app_management_reports_risk_pdf', methods: ['GET'])]
+    #[Route('/risk/pdf', name: 'app_management_reports_risk_pdf', methods: ['GET']), RequiresModule('risks')]
     public function riskManagementPdf(Request $request): Response
     {
         $riskReport = $this->reportService->getRiskManagementReport();
@@ -151,7 +151,7 @@ class ManagementReportController extends AbstractController
         return $this->pdfDownload($pdf, 'risk_management_report_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
-    #[Route('/risk/excel', name: 'app_management_reports_risk_excel', methods: ['GET'])]
+    #[Route('/risk/excel', name: 'app_management_reports_risk_excel', methods: ['GET']), RequiresModule('risks')]
     public function riskManagementExcel(Request $request): Response
     {
         $riskReport = $this->reportService->getRiskManagementReport();
@@ -209,8 +209,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== BCM REPORTS =====================
 
-    #[Route('/bcm', name: 'app_management_reports_bcm', methods: ['GET'])]
-    #[RequiresModule('bcm')]
+    #[Route('/bcm', name: 'app_management_reports_bcm', methods: ['GET']), RequiresModule('bcm')]
     public function bcm(): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -222,8 +221,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/bcm/pdf', name: 'app_management_reports_bcm_pdf', methods: ['GET'])]
-    #[RequiresModule('bcm')]
+    #[Route('/bcm/pdf', name: 'app_management_reports_bcm_pdf', methods: ['GET']), RequiresModule('bcm')]
     public function bcmPdf(Request $request): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -247,7 +245,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== COMPLIANCE REPORTS =====================
 
-    #[Route('/compliance', name: 'app_management_reports_compliance', methods: ['GET'])]
+    #[Route('/compliance', name: 'app_management_reports_compliance', methods: ['GET']), RequiresModule('compliance')]
     public function compliance(Request $request): Response
     {
         [$from, $to] = $this->parseDateRange($request);
@@ -259,7 +257,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/compliance/pdf', name: 'app_management_reports_compliance_pdf', methods: ['GET'])]
+    #[Route('/compliance/pdf', name: 'app_management_reports_compliance_pdf', methods: ['GET']), RequiresModule('compliance')]
     public function compliancePdf(Request $request): Response
     {
         $complianceReport = $this->reportService->getComplianceStatusReport();
@@ -281,7 +279,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== AUDIT REPORTS =====================
 
-    #[Route('/audit', name: 'app_management_reports_audit', methods: ['GET'])]
+    #[Route('/audit', name: 'app_management_reports_audit', methods: ['GET']), RequiresModule('audits')]
     public function audit(): Response
     {
         $auditReport = $this->reportService->getAuditManagementReport();
@@ -291,7 +289,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/audit/pdf', name: 'app_management_reports_audit_pdf', methods: ['GET'])]
+    #[Route('/audit/pdf', name: 'app_management_reports_audit_pdf', methods: ['GET']), RequiresModule('audits')]
     public function auditPdf(Request $request): Response
     {
         $auditReport = $this->reportService->getAuditManagementReport();
@@ -313,7 +311,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== ASSET REPORTS =====================
 
-    #[Route('/assets', name: 'app_management_reports_assets', methods: ['GET'])]
+    #[Route('/assets', name: 'app_management_reports_assets', methods: ['GET']), RequiresModule('assets')]
     public function assets(): Response
     {
         $assetReport = $this->reportService->getAssetManagementReport();
@@ -323,7 +321,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/assets/pdf', name: 'app_management_reports_assets_pdf', methods: ['GET'])]
+    #[Route('/assets/pdf', name: 'app_management_reports_assets_pdf', methods: ['GET']), RequiresModule('assets')]
     public function assetsPdf(Request $request): Response
     {
         $assetReport = $this->reportService->getAssetManagementReport();
@@ -343,7 +341,7 @@ class ManagementReportController extends AbstractController
         return $this->pdfDownload($pdf, 'asset_inventory_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
-    #[Route('/assets/excel', name: 'app_management_reports_assets_excel', methods: ['GET'])]
+    #[Route('/assets/excel', name: 'app_management_reports_assets_excel', methods: ['GET']), RequiresModule('assets')]
     public function assetsExcel(Request $request): Response
     {
         $assetReport = $this->reportService->getAssetManagementReport();
@@ -373,8 +371,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== GDPR / DATA BREACH REPORTS =====================
 
-    #[Route('/gdpr', name: 'app_management_reports_gdpr', methods: ['GET'])]
-    #[RequiresModule('privacy')]
+    #[Route('/gdpr', name: 'app_management_reports_gdpr', methods: ['GET']), RequiresModule('privacy')]
     public function gdpr(): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -384,8 +381,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/gdpr/pdf', name: 'app_management_reports_gdpr_pdf', methods: ['GET'])]
-    #[RequiresModule('privacy')]
+    #[Route('/gdpr/pdf', name: 'app_management_reports_gdpr_pdf', methods: ['GET']), RequiresModule('privacy')]
     public function gdprPdf(Request $request): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -607,8 +603,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== BCM EXCEL EXPORT =====================
 
-    #[Route('/bcm/excel', name: 'app_management_reports_bcm_excel', methods: ['GET'])]
-    #[RequiresModule('bcm')]
+    #[Route('/bcm/excel', name: 'app_management_reports_bcm_excel', methods: ['GET']), RequiresModule('bcm')]
     public function bcmExcel(Request $request): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -681,7 +676,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== COMPLIANCE EXCEL EXPORT =====================
 
-    #[Route('/compliance/excel', name: 'app_management_reports_compliance_excel', methods: ['GET'])]
+    #[Route('/compliance/excel', name: 'app_management_reports_compliance_excel', methods: ['GET']), RequiresModule('compliance')]
     public function complianceExcel(Request $request): Response
     {
         $complianceReport = $this->reportService->getComplianceStatusReport();
@@ -729,7 +724,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== AUDIT EXCEL EXPORT =====================
 
-    #[Route('/audit/excel', name: 'app_management_reports_audit_excel', methods: ['GET'])]
+    #[Route('/audit/excel', name: 'app_management_reports_audit_excel', methods: ['GET']), RequiresModule('audits')]
     public function auditExcel(Request $request): Response
     {
         $auditReport = $this->reportService->getAuditManagementReport();
@@ -759,8 +754,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== GDPR EXCEL EXPORT =====================
 
-    #[Route('/gdpr/excel', name: 'app_management_reports_gdpr_excel', methods: ['GET'])]
-    #[RequiresModule('privacy')]
+    #[Route('/gdpr/excel', name: 'app_management_reports_gdpr_excel', methods: ['GET']), RequiresModule('privacy')]
     public function gdprExcel(Request $request): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();

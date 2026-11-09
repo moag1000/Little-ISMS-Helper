@@ -9,7 +9,6 @@ use App\Entity\ScheduledReport;
 use App\Entity\Tenant;
 use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\RiskRepository;
-use App\Repository\ScheduledReportRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Mail\MailerTlsChecker;
@@ -34,7 +33,6 @@ final class ScheduledReportService
     use ScheduledReportAuditTrait;
 
     public function __construct(
-        private readonly ScheduledReportRepository $repository,
         private readonly EntityManagerInterface $entityManager,
         private readonly ManagementReportService $reportService,
         private readonly PdfExportService $pdfExportService,
@@ -59,67 +57,8 @@ final class ScheduledReportService
     }
 
     /**
-     * Process all due scheduled reports
-     *
-     * @return array Results of processing
-     */
-    public function processDueReports(): array
-    {
-        // ISB MINOR-4: verify mailer TLS ONCE before batch run. If the DSN is
-        // plain SMTP without encryption, refuse to process anything and surface
-        // the failure on each due report's run record.
-        try {
-            $this->tlsChecker->assertTlsConfigured();
-        } catch (\RuntimeException $tlsException) {
-            return $this->recordBatchTlsFailure($tlsException);
-        }
-
-        $dueReports = $this->repository->findDueReports();
-        $results = [
-            'processed' => 0,
-            'success' => 0,
-            'failed' => 0,
-            'details' => [],
-        ];
-
-        foreach ($dueReports as $report) {
-            try {
-                $this->tenantContext->runAs($report->getTenantId(), fn () => $this->processReport($report));
-
-                $results['success']++;
-                $results['details'][] = [
-                    'id' => $report->getId(),
-                    'name' => $report->getName(),
-                    'status' => 'success',
-                ];
-            } catch (\Exception $e) {
-                $results['failed']++;
-                $results['details'][] = [
-                    'id' => $report->getId(),
-                    'name' => $report->getName(),
-                    'status' => 'failed',
-                    'error' => $e->getMessage(),
-                ];
-
-                $this->logger->error('Failed to process scheduled report', [
-                    'report_id' => $report->getId(),
-                    'error' => $e->getMessage(),
-                ]);
-
-                // Update report with error status
-                $report->setLastRunStatus(0);
-                $report->setLastRunMessage($e->getMessage());
-                $this->entityManager->flush();
-            }
-
-            $results['processed']++;
-        }
-
-        return $results;
-    }
-
-    /**
-     * Process a single scheduled report
+     * Generate and send one report. Called by Report\ScheduledReportRunner only, which checks module, organisation
+     * and creator first and records failures; throws on any failure.
      */
     public function processReport(ScheduledReport $report): void
     {
@@ -157,15 +96,7 @@ final class ScheduledReportService
             $this->auditSentReport($report, $recipient, $tenant);
         }
 
-        // Update report status
-        $report->setLastRunAt(new DateTime());
-        $report->setLastRunStatus(1);
-        $report->setLastRunMessage(sprintf(
-            'Report generated and sent successfully to %d qualifying recipient(s); %d dropped.',
-            count($filterResult['valid']),
-            count($filterResult['dropped']),
-        ));
-        $report->calculateNextRunAt();
+        $report->recordRun(ScheduledReport::RUN_SENT, Report\ScheduledReportRunner::MSG_SENT);
 
         $this->entityManager->flush();
 
@@ -174,46 +105,6 @@ final class ScheduledReportService
             'recipients_sent' => count($filterResult['valid']),
             'recipients_dropped' => count($filterResult['dropped']),
         ]);
-    }
-
-    /**
-     * Mark all due reports as failed when the mailer DSN fails the TLS check.
-     * The TLS assertion ran exactly once at the top of processDueReports().
-     */
-    private function recordBatchTlsFailure(\RuntimeException $tlsException): array
-    {
-        $dueReports = $this->repository->findDueReports();
-        $results = [
-            'processed' => 0,
-            'success' => 0,
-            'failed' => 0,
-            'details' => [],
-        ];
-
-        foreach ($dueReports as $report) {
-            $report->setLastRunAt(new DateTime());
-            $report->setLastRunStatus(0);
-            $report->setLastRunMessage($tlsException->getMessage());
-            $results['failed']++;
-            $results['processed']++;
-            $results['details'][] = [
-                'id' => $report->getId(),
-                'name' => $report->getName(),
-                'status' => 'failed',
-                'error' => $tlsException->getMessage(),
-            ];
-        }
-
-        if ($dueReports !== []) {
-            $this->entityManager->flush();
-        }
-
-        $this->logger->error('Scheduled report batch aborted: mailer DSN fails TLS policy', [
-            'error' => $tlsException->getMessage(),
-            'affected_reports' => count($dueReports),
-        ]);
-
-        return $results;
     }
 
     /**
@@ -328,8 +219,8 @@ final class ScheduledReportService
      */
     private function getBoardReportData(): array
     {
-        $tenant = $this->security->getUser()?->getTenant()
-            ?? $this->tenantContext->getCurrentTenant()
+        // The report's organisation (runAs), never the clicking user's home organisation (S32, R8-12).
+        $tenant = $this->tenantContext->getCurrentTenant()
             ?? throw new TenantOrphanException(null, 'Board report requires a tenant context.');
         $kpis = $this->kpiCatalog->managementKpis($tenant); // explicit tenant (cron: no user)
         $boardData = $this->roleDashboardService->getBoardDashboard();
@@ -567,14 +458,6 @@ final class ScheduledReportService
             return false;
         }
         return array_keys($arr) !== range(0, count($arr) - 1);
-    }
-
-    /**
-     * Manually trigger a scheduled report (for testing)
-     */
-    public function triggerReport(ScheduledReport $report): void
-    {
-        $this->tenantContext->runAs($report->getTenantId(), fn () => $this->processReport($report));
     }
 
     /**

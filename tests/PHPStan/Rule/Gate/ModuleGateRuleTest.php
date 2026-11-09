@@ -30,4 +30,10 @@ final class ModuleGateRuleTest extends GateRuleTestCase
     {
         $this->assertFixture('src/Controller/GateFixture/DpiaController.php');
     }
+
+    #[Test]
+    public function downloadsOfASwitchableRecordTypeAreGated(): void
+    {
+        $this->assertFixture('src/Controller/GateFixture/RecordExportController.php');
+    }
 }

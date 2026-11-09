@@ -76,6 +76,14 @@ scheduled_report.last_run.status: Status
 scheduled_report.last_run.message: Message
 scheduled_report.last_run.success: Success
 scheduled_report.last_run.failed: Failed
+scheduled_report.last_run.skipped: Skipped
+scheduled_report.last_run.msg_sent: 'Sent to the qualifying recipients.'
+scheduled_report.last_run.msg_failed: 'Generation or delivery failed. Retried at growing intervals, details in the application log.'
+scheduled_report.last_run.msg_no_recipients: 'No recipient belongs to the organisation and holds the required role.'
+scheduled_report.last_run.msg_tls: 'Delivery blocked: the mail server is not configured for TLS.'
+scheduled_report.last_run.msg_module_inactive: 'Skipped: the module of this report is switched off.'
+scheduled_report.last_run.msg_tenant_inactive: 'Skipped: the organisation is deactivated.'
+scheduled_report.last_run.msg_creator_not_entitled: 'Skipped: the creator is no longer active or no longer a manager of this organisation.'
 scheduled_report.next_run: 'Next Run'
 scheduled_report.actions.title: Actions
 scheduled_report.metadata.title: Metadata
