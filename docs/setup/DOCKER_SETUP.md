@@ -5,13 +5,11 @@
 | File | Purpose |
 |---|---|
 | `docker-compose.prod.yml` | Self-contained single container: nginx + PHP 8.5-FPM + embedded MariaDB + scheduler worker. Use this for production **and** for a quick local test. Guide: [DOCKER_PRODUCTION.md](../deployment/DOCKER_PRODUCTION.md) |
-| `docker-compose.yml` | App container with an external database service, MailHog and pgAdmin |
+| `docker-compose.yml` | App container with a MariaDB 11.4 service and MailHog |
 | `docker-compose.dev.yml` | Override for `docker-compose.yml`: `development` build stage (Xdebug), source bind mount |
 
 > **Database:** the application supports MySQL 8 / MariaDB 10.6+ only (migrations use MySQL DDL,
-> restore uses `SET FOREIGN_KEY_CHECKS`; CI tests MariaDB 11). `docker-compose.yml` currently starts
-> PostgreSQL 16, on which the migrations fail. Until that file is switched to MariaDB, use
-> `docker-compose.prod.yml` (embedded MariaDB) or point `DATABASE_URL` at a MySQL/MariaDB server.
+> restore uses `SET FOREIGN_KEY_CHECKS`; CI tests MariaDB 11).
 
 ## Prerequisites
 
@@ -32,18 +30,19 @@ migrations, creates the admin, loads modules, frameworks and (optionally) sample
 ([QUICKSTART.md](../QUICKSTART.md#5-setup-wizard-durchlaufen)).
 
 The `isms_data` volume (`/var/www/html/var`) keeps the database, `var/uploads` (evidence files),
-backups and the generated `APP_SECRET` across restarts. Logos and profile pictures live in
-`public/uploads/` and need their own volume (see DOCKER_PRODUCTION.md).
+backups, the generated `APP_SECRET` and `var/.env.local` (what the setup wizard and admin pages
+write; `/var/www/html/.env.local` links to it) across updates. Logos and profile pictures live in
+the `isms_uploads` volume (`public/uploads/`). Set `DEFAULT_URI` (public address) before the first
+start; see DOCKER_PRODUCTION.md.
 
-## Development with an external MySQL/MariaDB
+## Development with a separate MariaDB container
 
-`docker-compose.yml` + `docker-compose.dev.yml` set `EMBEDDED_DB=none`; the app then uses
-`DATABASE_URL` and does not start its own MariaDB. Set `DATABASE_URL` for the `app` service in an
-override file to a MySQL/MariaDB server, e.g.
-`mysql://isms:secret@db-host:3306/isms?serverVersion=mariadb-11.4.0&charset=utf8mb4`, then:
+`docker-compose.yml` starts MariaDB 11.4 (`db`), the app with `EMBEDDED_DB=none` and MailHog;
+`docker-compose.dev.yml` adds the `development` build stage and the source bind mount. Credentials
+come from `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_ROOT_PASSWORD` (defaults for local use only).
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.override.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 ```
 
 Services from `docker-compose.yml`:
@@ -51,8 +50,8 @@ Services from `docker-compose.yml`:
 | Service | URL | Notes |
 |---|---|---|
 | app | http://localhost:8000 | `isms-app`; API docs at `/api/docs` |
+| db | `127.0.0.1:3306` | MariaDB 11.4, volume `db_data` |
 | mailhog | http://localhost:8025 (SMTP `mailhog:1025`) | Catches all outgoing mail |
-| pgadmin | http://localhost:5050 | Only useful with the PostgreSQL service |
 
 ## Common Commands
 

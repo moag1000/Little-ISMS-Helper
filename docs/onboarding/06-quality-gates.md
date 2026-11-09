@@ -30,7 +30,7 @@ be clean first ("brownfield ratchet").
 python3 scripts/quality/check_god_class_size.py
 
 # Individual gate (shell)
-bash scripts/quality/check_migration_transactional.sh
+bash scripts/quality/check_migration_reserved_words.sh
 
 # PHP DQL check
 php scripts/quality/check-dql-mismatches.php
