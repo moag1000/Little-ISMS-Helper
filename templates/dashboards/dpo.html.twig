@@ -83,7 +83,7 @@
                                     {{ breach.detectedAt|fa_datetime }}
                                 </small>
                             </div>
-                            {{ pill.render(breach.status|default('open'), breach.severity|default('medium') == 'high' ? 'danger' : 'warning', {size: 'sm'}) }}
+                            {{ pill.render(breach.status|default('open'), pill_tone_severity(breach.severity|default('medium')), {size: 'sm'}) }}
                         </a>
                     {% endfor %}
                 </div>
@@ -112,7 +112,7 @@
                                 <strong>{{ dpia.title|default('DPIA #' ~ dpia.id) }}</strong>
                                 <small class="d-block text-muted">{{ dpia.status|default('draft') }}</small>
                             </div>
-                            {{ pill.render(dpia.riskLevel|default('medium'), dpia.riskLevel|default('medium') == 'high' ? 'danger' : 'warning', {size: 'sm'}) }}
+                            {{ pill.render(dpia.riskLevel|default('medium'), pill_tone_severity(dpia.riskLevel|default('medium')), {size: 'sm'}) }}
                         </a>
                     {% endfor %}
                 </div>

@@ -158,7 +158,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 1 | `check_twig_macro_imports.py` | Twig macro import-order |
 | 2 | `check_twig_embed_domain.py` | Embed-block trans_default_domain |
 | 3 | `check_migration_reserved_words.sh` | MariaDB-11 reserved-words in migrations |
-| 4 | `check_migration_transactional.sh` | DDL-migrations isTransactional()=false |
+| 4 | — | entfallen: Gate 20 prüft dieselbe Regel auf allen Migrationen |
 | 5 | `check_aurora_anti_patterns.py` | Aurora anti-patterns on cards |
 | 6 | `check_missing_translations.py` | Missing translation keys |
 | 7 | `check_no_competitor_names.sh` | No competitor names |
@@ -242,6 +242,12 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 91 | `check_mfa_login_state.py` | one MFA state per login, no hand-made login, /setup closed while MFA is outstanding |
 | 92 | `check_raw_output.py` | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
 | 93 | `check_sso_claim_policy.py` | every SSO path checks its claims through SsoClaimPolicy |
+| 97 | `check_tenant_pin_restore.py` | an organisation pinned in TenantContext is put back (runAs / try-finally) |
+
+Code-Stil: Job „Code Quality“ führt `vendor/bin/php-cs-fixer fix --dry-run` mit `.php-cs-fixer.dist.php` (PSR-12,
+`src/` + `tests/`) aus und schlägt fehl, sobald eine Datei abweicht. Ausgenommen sind die Dateien in
+`baselines/php_cs_fixer.txt` (Altlast vor Einführung): eine davon mit
+`vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php <datei>` richten und die Zeile löschen, nie Zeilen ergänzen.
 
 ### Mutationsgegenprobe der Dauertests (T, Welle 7; T2, Welle 8)
 
@@ -268,7 +274,7 @@ Lücke festschreibt, wird umgedreht, nicht gelöscht.
 | Gate 65 (T2) | `$ok = isCsrfTokenValid()` ohne Verwendung, nackter Aufruf, `methods: 'POST'` als String, `createForm()` ohne `handleRequest`+`isSubmitted` → rot; veralteter Baseline-Eintrag → rot | Jeder Aufruf zählte, auch mit verworfenem Ergebnis; nur Array-Schreibweise |
 | Modul-Gate (T2) | NIS-2-Feld in `isModuleActive('core')`, TISAX-Feld in `privacy`, nacktes `$this->checkModuleActive('privacy');` → rot | Irgendein Modul-If galt als Gate; verworfener Redirect galt als Prüfung |
 | Gate 84 (T2) | `getAuthorityReferenceNumber()` (string) roh in `fputcsv`, `fwrite($h, implode(';', [$s->getName()]))` und über eine Variable → rot | Getter auf `…Number`/`…Id` galten als Zahl; handgebaute CSV-Zeilen unsichtbar. `setCellValueExplicit(…, TYPE_STRING)` gilt jetzt als sicher (Textzelle) |
-| Gate 78 (T2) | `x.status == 'open' ? 'danger' : (… ? 'success' : 'neutral')` mehrzeilig → `ternary-tone`; `pill.render(x, 'info')` → `pill-tone` | 110 Templates mit Ternär-Tonketten stehen in der Baseline (dürfen nur schrumpfen) |
+| Gate 78 (T2) | `x.status == 'open' ? 'danger' : (… ? 'success' : 'neutral')` mehrzeilig → `ternary-tone`; `pill.render(x, 'info')` → `pill-tone` | W7: Töne aus `App\Twig\StatusVocabulary` (eine Tabelle; `StatusToneConsistencyTest`); Baseline nur noch die 3 Lieferanten-Kritikalitäts-Templates aus W8 |
 | Gates 73, 75, 77, 87, 89, 90 (T2) | `list.html.twig` / `detail.html.twig` / `view.html.twig` ohne Skelett, Marker „no record“ auf einer Seite mit Kommentaren/Status-Band, Datum in `<textarea>`, `$rating >= 20`, `isModuleActive(Modules::PRIVACY)`, `'/var/jobs/'` außerhalb `JobStatusService`/`WorkerHealthService` → je rot | Dateinamen, Marker, Textarea, Variablenname, Fremdkonstante und direkte Jobdateien waren Restlücken |
 | `CrossTenantApiContractTest`, `ApiResourceContractTest` (T2) | Ressource in `src/Entity/<Ordner>/`, Ressource ohne `$tenant` ohne Grund, Operation mit weiterer URI-Variable ohne Grund, Custom-`Post /{id}/…` ohne `object`-Abstimmung → rot; Custom-Post mit fremder Id wird geprobt | `glob('src/Entity/*.php')`, Sub-Ressourcen still übersprungen, jeder Post galt als Anlage |
 | `CrossTenantMcpContractTest` (T2) | Werkzeug ohne Probe und ohne Grund in `NOT_PROBED` → rot; KPI-Zähler, der Datensätze anderer Organisationen mitzählt → rot (drei weitere fremde Datensätze je Ressource dürfen keine Zahl ändern) | Werkzeuge nur mit `id`/Pflichtparametern fielen durch; Zähler tragen keinen Marker |
@@ -276,7 +282,7 @@ Lücke festschreibt, wird umgedreht, nicht gelöscht.
 | `BackupArchiveExtractionTest`, `SpreadsheetUploadReaderTest` (T2) | `document_versions` aus `ARCHIVE_PROTECTED_FOLDERS` entfernt → rot; `new Reader\Xlsx()`, `IOFactory::createReader('Xlsx')`, Reader per `use … as` → rot | Versionen landeten unbemerkt im Web-Root; Scan kannte nur `IOFactory::load`/`createReaderForFile` |
 | `TisaxConsolidateCommandTest` (T2, aus S18) | Bewertung einer Organisation auf die gemeinsame Katalogzeile verschoben → rot | Befehl schrieb Upload-Organisation und Reifegrad der ersten Organisation auf die Zeile aller |
 
-Bekannte Restlücken (bewusst nicht erkannt, je Gate): 78 `<h1>` in Partials und die 110 Templates der
+Bekannte Restlücken (bewusst nicht erkannt, je Gate): 78 `<h1>` in Partials und die 3 Lieferanten-Templates der
 `ternary-tone`-Baseline; 62 `templates/dev`; 75 ein Marker „no record“ auf einer Datensatzseite ohne Kommentar,
 Status-Band, Freigabe oder Historie; 84 Getter-Namen, die in einer Klasse Zahl und in einer anderen Text sind
 (gelten als Text); 90 Jobdateien über einen anderen Pfadbau als `var/jobs`.
@@ -657,6 +663,21 @@ ohne Request-ID (SAML InResponseTo ungeprüft), (3) `getSchemeAndHttpHost()` im 
 `tests/Security/Sso/SsoClaimContractTest` (neuer Authenticator ohne Vertrag = rot). Keine Baseline.
 
 **CI-Integration:** Gate 93 im `code-quality`-Job.
+
+---
+
+### quality/check_tenant_pin_restore.py (Gate 97)
+
+**Zweck:** Eine in `TenantContext` gepinnte Organisation wird zurückgesetzt (S23, 2026-11). Der
+Messenger-Worker führt geplante Befehle und Jobs in einem Container aus; ein Pin ohne Restore scopte den
+nächsten Befehl (Instanz-Backup mit einer Organisation, Erinnerungen der anderen fehlten). Rot bei jedem
+`->setCurrentTenant(`/`->setCurrentTenantById(`/`->setNoOrganisation(` in `src/`, der weder in einem
+`try` derselben Funktion steht, dessen `finally` den Kontext zurücksetzt, noch selbst dieser Restore ist,
+noch `// @tenant-pin-ok: <Grund>` trägt. Weg der Wahl: `TenantContext::runAs()` /
+`runWithoutOrganisation()`. Keine Baseline. Selbsttest `scripts/quality/tests/test_check_tenant_pin_restore.py`;
+das Verhalten pinnt `tests/Scheduler/ScheduledCommandsTenantIsolationTest`.
+
+**CI-Integration:** Gate 97 im `code-quality`-Job.
 
 ---
 

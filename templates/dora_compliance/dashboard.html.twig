@@ -37,18 +37,18 @@
     {# Overall Compliance Score #}
     <div class="row mb-4">
         <div class="col-12">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ (overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger')) } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ status_tone('compliance_result', overall_score.status) } %}
                 {% block card_body %}
                     {% trans_default_domain 'dora' %}
                     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="text-center py-4">
                         <h2 class="h4 mb-3">{{ 'dora.dashboard.overall_compliance'|trans }}</h2>
-                        <div class="display-1 fw-bold text-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}">
+                        <div class="display-1 fw-bold text-{{ status_tone('compliance_result', overall_score.status) }}">
                             {{ overall_score.score }}%
                         </div>
-                        {{ _fa_progress.render({ value: overall_score.score, tone: overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger'), class: 'mt-3 mx-auto' }) }}
+                        {{ _fa_progress.render({ value: overall_score.score, tone: status_tone('compliance_result', overall_score.status), class: 'mt-3 mx-auto' }) }}
                         <p class="mt-3 mb-0">
-                            {% include '_components/_badge.html.twig' with { variant: overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : (overall_score.status == 'in_progress' ? 'info' : 'danger')), class: 'fa-status-pill--lg', content: ('dora.status.' ~ overall_score.status)|trans } %}
+                            {% include '_components/_badge.html.twig' with { variant: status_tone('compliance_result', overall_score.status), class: 'fa-status-pill--lg', content: ('dora.status.' ~ overall_score.status)|trans } %}
                         </p>
                     </div>
                 {% endblock %}

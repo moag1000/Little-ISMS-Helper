@@ -15,7 +15,7 @@
         </h3>
         <div class="widget-actions">
             {% include '_components/_badge.html.twig' with {
-                variant: compliance_summary.status == 'compliant' ? 'success' : (compliance_summary.status == 'partial' ? 'warning' : (compliance_summary.status == 'in_progress' ? 'info' : 'danger')),
+                variant: status_tone('compliance_result', compliance_summary.status),
                 content: compliance_summary.average_score ~ '%'
             } %}
         </div>
@@ -27,7 +27,7 @@
                 <span class="small text-muted">{{ 'wizard.overall_compliance'|trans({}, 'wizard') }}</span>
                 <span class="fw-bold">{{ compliance_summary.average_score }}%</span>
             </div>
-            {{ _fa_progress.render({ value: compliance_summary.average_score, tone: compliance_summary.status == 'compliant' ? 'success' : (compliance_summary.status == 'partial' ? 'warning' : (compliance_summary.status == 'in_progress' ? 'info' : 'danger')) }) }}
+            {{ _fa_progress.render({ value: compliance_summary.average_score, tone: status_tone('compliance_result', compliance_summary.status) }) }}
         </div>
 
         {# Critical Gaps Alert #}
@@ -60,7 +60,7 @@
                     } %}
                     {% endif %}
                     {% include '_components/_badge.html.twig' with {
-                        variant: framework.status == 'compliant' ? 'success' : (framework.status == 'partial' ? 'warning' : (framework.status == 'in_progress' ? 'info' : 'danger')),
+                        variant: status_tone('compliance_result', framework.status),
                         content: framework.score ~ '%'
                     } %}
                 </div>

@@ -19,10 +19,10 @@ framework:
                 - App\Entity\InterestedParty
             initial_marking: draft
             places:
-                - draft
-                - active
-                - in_review
-                - archived
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: active, metadata: { tone: success } }
+                - { name: in_review, metadata: { tone: primary } }
+                - { name: archived, metadata: { tone: neutral } }
             transitions:
                 # Initial publish — the stakeholder record is approved and
                 # available for the Mgmt-Review input bundle.

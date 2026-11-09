@@ -30,7 +30,7 @@
     </div>
 
     {# Overall Status Banner #}
-    {% set healthVariant = overall_status == 'healthy' ? 'success' : (overall_status == 'warning' ? 'warning' : 'danger') %}
+    {% set healthVariant = status_tone('health', overall_status) %}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: healthVariant, class: 'mb-4' } } %}
         {% block alert_body %}
             <h2 class="mb-1">
@@ -54,7 +54,7 @@
         {# Database Health #}
         <div class="col-md-6 mb-4">
             {% set db_status = health_checks.database.status %}
-            {% set db_color = db_status == 'healthy' ? 'success' : 'danger' %}
+            {% set db_color = status_tone('health', db_status) %}
             {% set db_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-4">{{ 'monitoring.database.status'|trans({}, 'monitoring') }}:</dt>
@@ -84,7 +84,7 @@
         {# Schema Validation #}
         <div class="col-md-6 mb-4">
             {% set schema_status = health_checks.schema.status %}
-            {% set schema_color = schema_status == 'healthy' ? 'success' : (schema_status == 'warning' ? 'warning' : 'danger') %}
+            {% set schema_color = status_tone('health', schema_status) %}
             {% set schema_content %}
                 <dl class="row mb-2">
                     <dt class="col-sm-6">{{ 'monitoring.schema.mapping'|trans({}, 'monitoring') }}:</dt>
@@ -174,7 +174,7 @@
         {# Disk Space #}
         <div class="col-md-6 mb-4">
             {% set disk_status = health_checks.disk.status %}
-            {% set disk_color = disk_status == 'healthy' ? 'success' : 'warning' %}
+            {% set disk_color = status_tone('health', disk_status) %}
             {% set disk_content %}
                 <dl class="row mb-3">
                     <dt class="col-sm-4">{{ 'monitoring.disk.free'|trans({}, 'monitoring') }}:</dt>
@@ -207,7 +207,7 @@
         {# PHP Info #}
         <div class="col-md-6 mb-4">
             {% set php_status = health_checks.php.status %}
-            {% set php_color = php_status == 'healthy' ? 'success' : 'danger' %}
+            {% set php_color = status_tone('health', php_status) %}
             {% set php_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-5">{{ 'monitoring.php.version'|trans({}, 'monitoring') }}:</dt>
@@ -251,7 +251,7 @@
 
                     <dt class="col-sm-5">{{ 'monitoring.symfony.environment'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
-                        {% include '_components/_badge.html.twig' with { variant: health_checks.symfony.environment == 'prod' ? 'success' : 'warning', content: health_checks.symfony.environment|upper } %}
+                        {% include '_components/_badge.html.twig' with { variant: status_tone('app_env', health_checks.symfony.environment), content: health_checks.symfony.environment|upper } %}
                     </dd>
 
                     <dt class="col-sm-5">{{ 'monitoring.symfony.debug'|trans({}, 'monitoring') }}:</dt>
@@ -266,7 +266,7 @@
         {# Cache #}
         <div class="col-md-6 mb-4">
             {% set cache_status = health_checks.cache.status %}
-            {% set cache_color = cache_status == 'healthy' ? 'success' : 'danger' %}
+            {% set cache_color = status_tone('health', cache_status) %}
             {% set cache_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-4">{{ 'monitoring.database.status'|trans({}, 'monitoring') }}:</dt>
@@ -317,7 +317,7 @@
         {# Logs #}
         <div class="col-md-6 mb-4">
             {% set logs_status = health_checks.logs.status %}
-            {% set logs_color = logs_status == 'healthy' ? 'success' : 'danger' %}
+            {% set logs_color = status_tone('health', logs_status) %}
             {% set logs_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-4">{{ 'monitoring.database.status'|trans({}, 'monitoring') }}:</dt>
@@ -377,7 +377,7 @@
         {% if health_checks.permissions is defined %}
         <div class="col-md-6 mb-4">
             {% set perms_status = health_checks.permissions.status %}
-            {% set perms_color = perms_status == 'healthy' ? 'success' : 'danger' %}
+            {% set perms_color = status_tone('health', perms_status) %}
             {% set perms_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-5">var/ {{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
@@ -442,7 +442,7 @@
         {% if health_checks.composer is defined %}
         <div class="col-md-6 mb-4">
             {% set composer_status = health_checks.composer.status %}
-            {% set composer_color = composer_status == 'healthy' ? 'success' : 'danger' %}
+            {% set composer_color = status_tone('health', composer_status) %}
             {% set composer_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-5">{{ 'monitoring.database.status'|trans({}, 'monitoring') }}:</dt>
@@ -494,7 +494,7 @@
         {% if health_checks.environment is defined %}
         <div class="col-md-6 mb-4">
             {% set env_status = health_checks.environment.status %}
-            {% set env_color = env_status == 'healthy' ? 'success' : (env_status == 'warning' ? 'warning' : 'danger') %}
+            {% set env_color = status_tone('health', env_status) %}
             {% set env_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-5">.env File:</dt>
@@ -561,7 +561,7 @@
         {% if health_checks.php_config is defined %}
         <div class="col-md-6 mb-4">
             {% set phpconf_status = health_checks.php_config.status %}
-            {% set phpconf_color = phpconf_status == 'healthy' ? 'success' : 'warning' %}
+            {% set phpconf_color = status_tone('health', phpconf_status) %}
             {% set phpconf_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-5">OPcache:</dt>
@@ -601,7 +601,7 @@
         {% if health_checks.sessions is defined %}
         <div class="col-md-6 mb-4">
             {% set sessions_status = health_checks.sessions.status %}
-            {% set sessions_color = sessions_status == 'healthy' ? 'success' : 'danger' %}
+            {% set sessions_color = status_tone('health', sessions_status) %}
             {% set sessions_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-5">Handler:</dt>

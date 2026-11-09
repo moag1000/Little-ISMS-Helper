@@ -1,23 +1,25 @@
 services:
-  # PostgreSQL Database
+  # MariaDB — the application runs on MySQL 8 / MariaDB 10.6+ only (migrations use MySQL DDL)
   db:
-    image: postgres:16-alpine
+    image: mariadb:11.4
     container_name: isms-db
     restart: unless-stopped
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-little_isms}
-      POSTGRES_USER: ${POSTGRES_USER:-isms_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-isms_password}
+      MARIADB_DATABASE: ${DB_NAME:-isms}
+      MARIADB_USER: ${DB_USER:-isms}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-isms_password}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-isms_root_password}
     ports:
       # ✅ Security: Port nur auf localhost verfügbar
-      - "127.0.0.1:${DB_PORT:-5432}:5432"
+      - "127.0.0.1:${DB_PORT:-3306}:3306"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-isms_user} -d ${POSTGRES_DB:-little_isms}"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
     networks:
       - isms-network
     # Security: Resource Limits
@@ -62,7 +64,7 @@ services:
       APP_DEBUG: ${APP_DEBUG:-0}
       # External-DB mode — skip embedded MariaDB bootstrap in init-mysql.sh
       EMBEDDED_DB: none
-      DATABASE_URL: "postgresql://${POSTGRES_USER:-isms_user}:${POSTGRES_PASSWORD:-isms_password}@db:5432/${POSTGRES_DB:-little_isms}?serverVersion=16&charset=utf8"
+      DATABASE_URL: "mysql://${DB_USER:-isms}:${DB_PASSWORD:-isms_password}@db:3306/${DB_NAME:-isms}?serverVersion=mariadb-11.4.0&charset=utf8mb4"
       # MailHog für Email-Testing
       MAILER_DSN: smtp://mailhog:1025
     networks:
@@ -120,46 +122,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # pgAdmin - Database Management (Optional - nur für Development!)
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: isms-pgadmin
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
-    ports:
-      # ✅ Security: Port nur auf localhost verfügbar
-      - "127.0.0.1:${PGADMIN_PORT:-5050}:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    networks:
-      - isms-network
-    depends_on:
-      - db
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/misc/ping"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    # Security: Resource Limits
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 128M
-    # Logging configuration
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
 volumes:
   # ✅ Alle Volumes sind persistent - überleben docker-compose down und Reboot!
   db_data:
@@ -167,8 +129,6 @@ volumes:
   var_cache:
     driver: local
   var_log:
-    driver: local
-  pgadmin_data:
     driver: local
 
 networks:

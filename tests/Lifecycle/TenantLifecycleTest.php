@@ -84,7 +84,7 @@ final class TenantLifecycleTest extends TestCase
     #[Test]
     public function yamlDefinesExactlyFivePlaces(): void
     {
-        $places = $this->workflowConfig()['places'];
+        $places = array_column($this->workflowConfig()['places'], 'name');
         $this->assertEqualsCanonicalizing(
             ['draft', 'active', 'suspended', 'terminated', 'archived'],
             $places,

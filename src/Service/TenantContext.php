@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Doctrine\TenantFilterState;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\TenantRepository;
@@ -11,14 +12,23 @@ use App\Security\TenantOwnership;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Tenant Context Service
  *
  * Manages the current tenant context for multi-tenancy support.
  * Automatically determines the active tenant based on the logged-in user.
+ *
+ * One container serves many units of work in a Messenger worker (scheduled
+ * commands, async jobs): the context is a {@see ResetInterface} service and
+ * {@see \App\EventSubscriber\TenantContextResetSubscriber} resets it after
+ * every message and command, so no organisation sticks to the next one.
+ * Code that scopes work to one organisation uses {@see runAs()} /
+ * {@see runWithoutOrganisation()}, which put the previous state back —
+ * Gate 97 (`check_tenant_pin_restore.py`) rejects a bare pin.
  */
-class TenantContext
+class TenantContext implements ResetInterface
 {
     private ?Tenant $currentTenant = null;
     private bool $initialized = false;
@@ -271,13 +281,91 @@ class TenantContext
     }
 
     /**
-     * Reset the tenant context (useful for testing)
+     * Reset the tenant context to "not initialised" and the tenant filter to
+     * unscoped (the state of a fresh process). Runs as kernel.reset between
+     * requests and Messenger messages and after every console command; a
+     * request re-arms the filter in TenantFilterSubscriber, a background unit
+     * of work names its organisation explicitly.
+     *
+     * A suspended filter is left alone: its owner restores it.
      */
     public function reset(): void
     {
         $this->currentTenant = null;
         $this->noOrganisation = false;
         $this->initialized = false;
+
+        $filters = $this->entityManager->getFilters();
+        if ($filters->isEnabled('tenant_filter')) {
+            $filters->getFilter('tenant_filter')->setParameter('tenant_id', \App\Doctrine\TenantFilter::UNSCOPED);
+        }
+    }
+
+    /**
+     * Run $fn scoped to one organisation (context + tenant filter) and put the
+     * previous state back afterwards — also on an exception, and also the
+     * filter value a request armed itself.
+     *
+     * @template T
+     * @param callable(): T $fn
+     * @return T
+     */
+    public function runAs(Tenant|int|null $tenant, callable $fn): mixed
+    {
+        $restore = $this->capture();
+        try {
+            if ($tenant instanceof Tenant || $tenant === null) {
+                $this->setCurrentTenant($tenant); // @tenant-pin-ok: restored in finally
+            } else {
+                $this->setCurrentTenantById($tenant); // @tenant-pin-ok: restored in finally
+            }
+
+            return $fn();
+        } finally {
+            $restore();
+        }
+    }
+
+    /**
+     * Like {@see runAs()}, in the no-organisation scope of
+     * {@see setNoOrganisation()}.
+     *
+     * @template T
+     * @param callable(): T $fn
+     * @return T
+     */
+    public function runWithoutOrganisation(callable $fn): mixed
+    {
+        $restore = $this->capture();
+        try {
+            $this->setNoOrganisation(); // @tenant-pin-ok: restored in finally
+
+            return $fn();
+        } finally {
+            $restore();
+        }
+    }
+
+    /**
+     * The current context and tenant filter as a closure that puts them back.
+     * For the console reset ({@see \App\EventSubscriber\TenantContextResetSubscriber});
+     * scoped work uses {@see runAs()}.
+     *
+     * @return \Closure(): void
+     */
+    public function capture(): \Closure
+    {
+        $tenant = $this->currentTenant;
+        $initialized = $this->initialized;
+        $noOrganisation = $this->noOrganisation;
+        $filter = TenantFilterState::capture($this->entityManager);
+
+        return function () use ($tenant, $initialized, $noOrganisation, $filter): void {
+            $this->currentTenant = $tenant;
+            $this->initialized = $initialized;
+            $this->noOrganisation = $noOrganisation;
+            TenantFilterState::restore($this->entityManager, $filter);
+        };
     }
 
     /**

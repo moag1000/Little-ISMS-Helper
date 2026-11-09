@@ -18,10 +18,10 @@ framework:
                 - App\Entity\SupplierQuestionnaire
             initial_marking: draft
             places:
-                - draft
-                - sent
-                - completed
-                - reviewed
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: sent, metadata: { tone: success } }
+                - { name: completed, metadata: { tone: success } }
+                - { name: reviewed, metadata: { tone: success } }
             transitions:
                 send:
                     from: draft

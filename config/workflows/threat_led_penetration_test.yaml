@@ -17,12 +17,12 @@ framework:
                 - App\Entity\ThreatLedPenetrationTest
             initial_marking: planned
             places:
-                - planned
-                - scoping
-                - red_team
-                - reporting
-                - closed
-                - cancelled
+                - { name: planned, metadata: { tone: primary } }
+                - { name: scoping, metadata: { tone: primary } }
+                - { name: red_team, metadata: { tone: primary } }
+                - { name: reporting, metadata: { tone: primary } }
+                - { name: closed, metadata: { tone: neutral } }
+                - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 start_scoping:
                     from: planned

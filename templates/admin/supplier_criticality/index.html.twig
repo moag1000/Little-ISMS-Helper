@@ -51,7 +51,7 @@
                             <td class="fa-table__cell">{{ level.labelEn }}</td>
                             <td class="fa-table__cell">
                                 {% if level.color %}
-                                    {% set _ctone = level.color in ['info'] ? 'primary' : (level.color in ['secondary','light','dark'] ? 'neutral' : level.color) %}
+                                    {% set _ctone = pill_tone_bs(level.color) %}
                                     {{ pill.render(level.color, _ctone, {size: 'sm'}) }}
                                 {% else %}
                                     <span class="text-muted">—</span>

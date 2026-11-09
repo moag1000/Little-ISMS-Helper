@@ -320,20 +320,17 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: intl, pdo, pdo_pgsql, gd, zip
-          tools: composer:v2, phpstan, php-cs-fixer
+          extensions: intl, pdo, pdo_mysql, gd, zip
+          tools: composer:v2
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Run PHP CS Fixer (dry-run)
-        run: |
-          if [ -f vendor/bin/php-cs-fixer ]; then
-            vendor/bin/php-cs-fixer fix --dry-run --diff
-          else
-            echo "PHP CS Fixer not available, skipping"
-          fi
-        continue-on-error: true
+      # PSR-12 for src/ and tests/ (.php-cs-fixer.dist.php). Files listed in
+      # scripts/quality/baselines/php_cs_fixer.txt are older style debt and skipped;
+      # fix one with `vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php <file>`.
+      - name: PHP CS Fixer (PSR-12, dry-run)
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no --config=.php-cs-fixer.dist.php
 
       - name: Run PHPStan
         run: |
@@ -391,12 +388,8 @@ jobs:
       - name: "Gate 3: MariaDB-11 reserved-words in migrations"
         run: bash scripts/quality/check_migration_reserved_words.sh
 
-      # Gate 4 — DDL-migrations isTransactional()=false (BLOCKING)
-      #   Only enforced for migrations created on/after 2026-05-08.
-      #   83 pre-existing legacy migrations are exempt (cutoff documented in script).
-      #   Prevents: SAVEPOINT errors when running multiple DDL migrations.
-      - name: "Gate 4: DDL-migrations isTransactional()=false"
-        run: bash scripts/quality/check_migration_transactional.sh
+      # Gate 4 — retired: Gate 20 (check_ddl_transactional.py) checks the same rule on
+      #   every migration without the old date cutoff.
 
       # Gate 5 — Aurora v4 anti-patterns on cards (BLOCKING)
       #   Detects Bootstrap bg-*/text-white on .card/.card-header.
@@ -829,6 +822,10 @@ jobs:
         # S9, 2026-11: SAML URLs from the Host header and replayable responses, Azure tid unchecked with
         # e-mail linking on, OIDC tokens without issuer/exp/nonce and UserInfo overwriting sub/email.
         run: python3 scripts/quality/check_sso_claim_policy.py --quiet
+      - name: "Gate 97: an organisation pinned in TenantContext is put back (runAs / try-finally)"
+        # S23, 2026-11: the worker runs scheduled commands and jobs in one container; a report or KPI
+        # snapshot left its organisation pinned and the nightly instance backup held only that one.
+        run: python3 scripts/quality/check_tenant_pin_restore.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

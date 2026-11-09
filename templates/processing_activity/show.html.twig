@@ -383,7 +383,7 @@
                                         </td>
                                         <td>
                                             {% if tia.residualRiskRating %}
-                                                {% set riskVariant = tia.residualRiskRating == 'high' ? 'danger' : (tia.residualRiskRating == 'medium' ? 'warning' : 'success') %}
+                                                {% set riskVariant = pill_tone_severity(tia.residualRiskRating) %}
                                                 {% include '_components/_badge.html.twig' with {
                                                     variant: riskVariant,
                                                     content: ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia')

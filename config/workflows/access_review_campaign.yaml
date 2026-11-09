@@ -15,8 +15,8 @@ framework:
                 - App\Entity\AccessReviewCampaign
             initial_marking: open
             places:
-                - open
-                - closed
+                - { name: open, metadata: { tone: warning } }
+                - { name: closed, metadata: { tone: neutral } }
             transitions:
                 close:
                     from: open

@@ -11,7 +11,7 @@
                        data-turbo-frame="fa-form-modal"
                        class="fa-row-link text-decoration-none">{{ program.name }}</a>
                 </h5>
-                <span class="fa-status-pill fa-status-pill--{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'neutral') }} ms-2">
+                <span class="fa-status-pill fa-status-pill--{{ lifecycle_tone('App\\Entity\\AuditProgram', program.status) }} ms-2">
                     {{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}
                 </span>
             </div>

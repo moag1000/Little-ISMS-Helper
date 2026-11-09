@@ -225,15 +225,6 @@ class AuditProgram
         return $this;
     }
 
-    public function getStatusTone(): string
-    {
-        return match ($this->status) {
-            self::STATUS_ACTIVE    => 'primary',
-            self::STATUS_COMPLETED => 'success',
-            default                => 'neutral',
-        };
-    }
-
     public function getProgrammeOwner(): ?User
     {
         return $this->programmeOwner;

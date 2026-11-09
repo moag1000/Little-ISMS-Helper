@@ -125,7 +125,7 @@
                                 <td class="fa-table__cell">
                                     {% for ctrl in controls_by_requirement[req.id] ?? [] %}
                                         {% set implStatus = ctrl.implementationStatus|default('unknown') %}
-                                        {% set tone = implStatus in ['implemented','operational'] ? 'success' : (implStatus == 'partially_implemented' ? 'warning' : 'neutral') %}
+                                        {% set tone = status_tone('control_implementation', implStatus) %}
                                         {{ pill.render(ctrl.controlId|default(ctrl.id), tone, {size: 'sm', class: 'me-1', title: implStatus}) }}
                                     {% else %}
                                         <span class="text-muted small">—</span>

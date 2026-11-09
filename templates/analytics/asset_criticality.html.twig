@@ -160,7 +160,7 @@
                             {{ _fa_progress.render({ value: asset.incident_probability, tone: asset.incident_probability >= 70 ? 'danger' : (asset.incident_probability >= 40 ? 'warning' : 'info'), showText: true }) }}
                         </td>
                         <td class="fa-table__cell">
-                            {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}
+                            {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(asset.criticality_level), content: asset.criticality_level|title } %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -251,7 +251,7 @@
                         <td class="fa-table__cell fa-table__cell--center">{{ asset.historical_incidents }}</td>
                         <td class="fa-table__cell fa-table__cell--center">{{ asset.incident_probability }}%</td>
                         <td class="fa-table__cell">
-                            {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}
+                            {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(asset.criticality_level), content: asset.criticality_level|title } %}
                         </td>
                     </tr>
                     {% endfor %}

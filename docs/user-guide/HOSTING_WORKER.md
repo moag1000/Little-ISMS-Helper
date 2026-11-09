@@ -127,9 +127,10 @@ Admin → "Queue-Status" (`/admin/queue-status`, Route `admin_queue_status`):
 
 - Heartbeat-Ampel: grün (< 60 s), gelb (60–300 s), rot (> 300 s)
 - Warteschlangen-Tiefe, letzte 20 Jobs
-- Button "Queue jetzt verarbeiten"
+- Button "Queue jetzt verarbeiten" (nur Super-Admin: die Warteschlange enthält Jobs und Mails aller Organisationen)
 
-Jeder Worker-Lauf setzt den Heartbeat, auch bei leerer Warteschlange.
+Jeder Worker-Lauf setzt den Heartbeat, auch bei leerer Warteschlange. Nach jeder Aufgabe setzt der
+Worker den Organisationskontext zurück; keine Aufgabe erbt die Organisation der vorigen.
 
 ### Log-Datei (bei `>> var/log/worker.log 2>&1`)
 
@@ -150,7 +151,7 @@ in die Queue `default`. Steigt die Zahl dauerhaft, läuft kein Worker.
 
 - **"Queue jetzt verarbeiten"** auf `/admin/queue-status` startet einen kurzen Lauf
   (`--time-limit=25 --limit=5`) im Request. Er arbeitet nur `async` ab — geplante
-  Aufgaben laufen damit nicht.
+  Aufgaben laufen damit nicht. Nur für den Super-Admin.
 - Ohne Cron und ohne Dauer-Worker laufen keine Erinnerungen, keine Fristen-Workflows
   und keine nächtlichen Backups. Einen Hoster mit Cron-Zugang wählen.
 

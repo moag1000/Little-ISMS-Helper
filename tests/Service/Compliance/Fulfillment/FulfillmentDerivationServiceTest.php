@@ -18,6 +18,7 @@ use App\Service\Compliance\Fulfillment\FulfillmentDerivation;
 use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use DateTimeImmutable;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -136,7 +137,16 @@ final class FulfillmentDerivationServiceTest extends TestCase
             $this->createStub(ComplianceFrameworkRepository::class),
             $this->createStub(EntityManagerInterface::class),
             $audit,
+            $this->runningTenantContext(),
         );
+    }
+
+    private function runningTenantContext(): TenantContext
+    {
+        $context = $this->createStub(TenantContext::class);
+        $context->method('runAs')->willReturnCallback(static fn ($tenant, callable $fn): mixed => $fn());
+
+        return $context;
     }
 
     private function fulfillment(bool $stored = false): ComplianceRequirementFulfillment

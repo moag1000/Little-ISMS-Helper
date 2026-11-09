@@ -30,10 +30,7 @@
     {# Aurora fa-audit-feed (CRUD change-log) #}
     <div class="fa-audit-feed mt-3">
         {% for log in auditLogs %}
-            {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
-                : (log.action in ['error', 'failed'] ? 'danger'
-                : (log.action in ['update', 'login_failed'] ? 'warning'
-                : 'info')) -%}
+            {%- set sev = pill_tone_action(log.action) -%}
             {{ _fa_audit_row.render({
                 ts:     log.createdAt|fa_datetime(true),
                 sev:    sev,

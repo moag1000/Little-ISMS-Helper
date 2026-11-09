@@ -73,7 +73,7 @@
                     </td>
                     <td>
                         {% include '_components/_badge.html.twig' with {
-                            variant: task.visibility == 'all' ? 'info' : 'secondary',
+                            variant: status_tone('visibility', task.visibility),
                             content: ('planning.visibility.' ~ task.visibility)|trans({}, 'planning')
                         } %}
                     </td>

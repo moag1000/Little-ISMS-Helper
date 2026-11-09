@@ -53,6 +53,18 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Zustellprotokoll). Am Kanal unter Benachrichtigungen ein Secret hinterlegen.
 - **Docker:** Der Worker im Image arbeitet jetzt auch die Queue `async` ab. Vorher blieben Mails
   liegen; nach dem Update gehen auch die aufgestauten raus.
+- **Docker (`docker-compose.prod.yml`):** Was Setup-Assistent und Admin-Seiten in `.env.local`
+  schreiben (öffentliche Adresse, erlaubte Hostnamen, Mailversand), liegt jetzt auf dem Volume
+  (`var/.env.local`) und übersteht Updates. Bisher ging es beim Neuerstellen des Containers verloren:
+  nach diesem Update unter Admin > Überwachung > Health prüfen und fehlende Werte einmal neu setzen.
+  Alternativ `DEFAULT_URI` (und bei Bedarf `SYMFONY_TRUSTED_HOSTS`) in der `.env` neben der
+  Compose-Datei setzen; der Start übernimmt sie, die Hostnamen werden sonst aus der Adresse abgeleitet.
+  Logos und Profilbilder liegen jetzt im Volume `isms_uploads` (wer es schon per Override
+  eingebunden hat, behält es). Ohne Volume gingen sie bei jedem Neuerstellen verloren; fehlt ein Bild,
+  einmal neu hochladen.
+- **Docker (`docker-compose.yml`):** startet jetzt MariaDB 11.4 statt PostgreSQL (auf dem die
+  Migrationen ohnehin scheiterten). Variablen `DB_NAME`, `DB_USER`, `DB_PASSWORD` statt `POSTGRES_*`;
+  pgAdmin ist entfallen.
 
 ### Einmal nach dem Update
 
@@ -159,6 +171,20 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Audit-Checkliste (S20, ISO 27001 9.2):** Urteile speichern nur Auditoren, Manager und Leitauditor
   oder Auditteam des Audits. Ein Urteil wirkt erst auf die Erfüllung, wenn das Audit berichtet ist
   (Status „berichtet“, „freigegeben“, „abgeschlossen“); Urteile laufender Audits zeigen sich danach.
+- **Hintergrundaufgaben je Organisation:** Der Worker setzt nach jeder Aufgabe den
+  Organisationskontext zurück. Bisher konnte ein geplanter Bericht, der KPI-Snapshot oder ein
+  Admin-Job die Organisation für die nächste Aufgabe festhalten: das nächtliche Instanz-Backup enthielt
+  dann nur eine Organisation, Erinnerungen und SLA-Hinweise der anderen kamen zu spät. Kein Klick nötig;
+  Instanz-Backups, die vor dem Update auf Mehr-Organisations-Instanzen nachts entstanden sind, nach dem
+  Update durch ein neues ersetzen (Admin > Backup), bevor `app:backup:prune` die älteren vollständigen
+  löscht. Die nächtliche Erfüllungsberechnung bewertet die Wizard-Prüfungen jetzt mit dem Scope der
+  jeweiligen Organisation; Werte können sich einmalig ändern.
+- **Audit-Log-Aufbewahrung:** Die nächtliche Bereinigung (02:45) löscht jetzt wirklich (geplant mit
+  `--force`; ohne Terminal antwortete die Rückfrage bisher immer „nein“). Gelöscht wird nur, was älter
+  ist als die Frist unter Admin > Audit-Log > Aufbewahrung (mindestens 365 Tage).
+- **„Warteschlange jetzt abarbeiten“** (Admin > Worker-Status) nur noch für den Super-Admin: die
+  Warteschlange enthält Jobs und Mails aller Organisationen. Der wöchentliche Log-Eintrag
+  „Compliance report generated“ entfällt (er zählte instanzweit und ging an niemanden).
 
 ### SSO (Azure, SAML, OIDC)
 

@@ -9,11 +9,11 @@ framework:
                 - App\Entity\ThreatIntelligence
             initial_marking: new
             places:
-                - new
-                - analyzing
-                - mitigated
-                - monitoring
-                - closed
+                - { name: new, metadata: { tone: primary } }
+                - { name: analyzing, metadata: { tone: primary } }
+                - { name: mitigated, metadata: { tone: success } }
+                - { name: monitoring, metadata: { tone: primary } }
+                - { name: closed, metadata: { tone: neutral } }
             transitions:
                 # NIS2 Art. 21(2)e + ISO 27001 A.5.7 — Threat-Intel-Lifecycle.
                 # Operativer Workflow, kein SoD-Zwang. `closed` braucht reason

@@ -16,7 +16,7 @@
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
             {% import '_components/_status_pill.html.twig' as _pill %}
-            {{ _pill.render(('audit_program.status.' ~ program.status)|trans({}, 'audit_program'), program.statusTone) }}
+            {{ _pill.render(('audit_program.status.' ~ program.status)|trans({}, 'audit_program'), lifecycle_tone('App\\Entity\\AuditProgram', program.status)) }}
             {% if program.frequency %}
                 <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ ('audit_program.frequency.' ~ program.frequency)|trans({}, 'audit_program') }}</span>
             {% endif %}

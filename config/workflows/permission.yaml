@@ -25,10 +25,10 @@ framework:
                 - App\Entity\Permission
             initial_marking: draft
             places:
-                - draft
-                - active
-                - deprecated
-                - archived
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: active, metadata: { tone: success } }
+                - { name: deprecated, metadata: { tone: neutral } }
+                - { name: archived, metadata: { tone: neutral } }
             transitions:
                 # Initial publish — a freshly-defined permission becomes
                 # operational and can be granted to roles.

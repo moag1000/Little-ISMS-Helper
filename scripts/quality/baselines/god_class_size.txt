@@ -39,7 +39,7 @@ src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
 src/Controller/DPIAController.php:LOC=680 deps=0
 src/Controller/MonitoringController.php:LOC=643 deps=0
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=624 deps=0
-src/Service/ScheduledReportService.php:LOC=591 deps=21
+src/Service/ScheduledReportService.php:LOC=590 deps=21
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=453 deps=16
 src/Service/DataIntegrityService.php:LOC=438 deps=33
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=17

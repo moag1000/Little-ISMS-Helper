@@ -34,16 +34,17 @@ class ValidateSoACommand
         #[Argument(description: 'Tenant code to validate (optional, defaults to current context)')] ?string $tenant = null,
         ?SymfonyStyle $symfonyStyle = null,
     ): int {
+        $tenantEntity = null;
         if ($tenant !== null) {
             $tenantEntity = $this->entityManager->getRepository(Tenant::class)->findOneBy(['code' => $tenant]);
             if (!$tenantEntity instanceof Tenant) {
                 $symfonyStyle?->error(sprintf('Tenant with code "%s" not found.', $tenant));
                 return Command::FAILURE;
             }
-            $this->tenantContext->setCurrentTenant($tenantEntity);
         }
 
-        $issues = $this->soaReportService->validateSoACompleteness();
+        $validate = fn (): array => $this->soaReportService->validateSoACompleteness();
+        $issues = $tenantEntity instanceof Tenant ? $this->tenantContext->runAs($tenantEntity, $validate) : $validate();
 
         if ($issues === []) {
             $symfonyStyle?->success('SoA is complete — no issues detected.');

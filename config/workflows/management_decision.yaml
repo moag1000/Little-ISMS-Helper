@@ -17,11 +17,11 @@ framework:
                 - App\Entity\ManagementDecision
             initial_marking: pending
             places:
-                - pending
-                - approved
-                - rejected
-                - withdrawn
-                - superseded
+                - { name: pending, metadata: { tone: warning } }
+                - { name: approved, metadata: { tone: success } }
+                - { name: rejected, metadata: { tone: danger } }
+                - { name: withdrawn, metadata: { tone: neutral } }
+                - { name: superseded, metadata: { tone: neutral } }
             transitions:
                 approve:
                     from: pending
