@@ -78,12 +78,9 @@ final class RestoreEvidencePolicy
                 $fields[$field] = ['status' => false, 'fresh' => self::read($meta, $blank, $field)];
             }
         }
+        // Doctrine reads and writes an enum field through its backing value, so the place name fits as is.
         foreach ($this->lifecycleStatusFields($meta) as $field => $initial) {
-            $enum = $meta->getFieldMapping($field)->enumType ?? null;
-            $fields[$field] = [
-                'status' => true,
-                'fresh' => $enum !== null && is_subclass_of($enum, \BackedEnum::class) ? $enum::from($initial) : $initial,
-            ];
+            $fields[$field] = ['status' => true, 'fresh' => $initial];
         }
 
         return $this->fieldCache[$class] = $fields;
@@ -188,7 +185,7 @@ final class RestoreEvidencePolicy
         return match (true) {
             $value === null => null,
             $value instanceof \DateTimeInterface => 'd:' . $value->format('Y-m-d H:i:s'),
-            $value instanceof \BackedEnum => 'e:' . $value->value,
+            $value instanceof \BackedEnum => 's:' . $value->value, // same as the backing value Doctrine returns
             $value instanceof \UnitEnum => 'e:' . $value->name,
             is_bool($value) => 'b:' . (int) $value,
             is_scalar($value) => 's:' . $value,

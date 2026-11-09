@@ -65,10 +65,12 @@ class DoraRegisterOfInformation
     private string $reportingScope = self::SCOPE_YEARLY_FULL;
 
     #[ORM\Column(name: 'submitted_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[\App\Attribute\ApiReadOnlyEvidence('submit action (DORA Art. 28(3), S26)')]
     private ?DateTimeImmutable $submittedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'submitted_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[\App\Attribute\ApiReadOnlyEvidence('submit action (DORA Art. 28(3), S26)')]
     private ?User $submittedBy = null;
 
     /** SHA-256 hash of the XBRL payload for audit-trail integrity */
@@ -77,6 +79,7 @@ class DoraRegisterOfInformation
 
     /** Authority-issued confirmation number after successful submission */
     #[ORM\Column(name: 'confirmation_number', type: Types::STRING, length: 100, nullable: true)]
+    #[\App\Attribute\ApiReadOnlyEvidence('submit action (DORA Art. 28(3), S26)')]
     private ?string $confirmationNumber = null;
 
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE)]
