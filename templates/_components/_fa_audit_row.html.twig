@@ -49,7 +49,7 @@
         {% if props.ts is defined %}
             <span class="fa-audit-row__ts">{{ props.ts }}</span>
         {% endif %}
-        <span class="fa-audit-row__sev fa-audit-row__sev--{{ sev }}" aria-label="{{ sev }}"></span>
+        <span class="fa-audit-row__sev fa-audit-row__sev--{{ sev }}" role="img" aria-label="{{ sev }}"></span>
         {% if props.actor is defined %}
             <span class="fa-audit-row__actor">{{ props.actor }}</span>
         {% endif %}

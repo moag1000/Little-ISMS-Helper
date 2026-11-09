@@ -22,19 +22,18 @@
             data-notification-bell-target="button"
             aria-label="{{ 'notification.bell.label'|trans }}"
             aria-expanded="false"
-            aria-haspopup="true">
+            aria-haspopup="dialog">
         <i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i>
         <span class="notification-badge d-none position-absolute top-0 start-100 translate-middle fa-status-pill fa-status-pill--danger fa-status-pill--sm"
               data-notification-bell-target="badge"
-              aria-live="polite"
-              aria-atomic="true">
+              aria-hidden="true">
             0
         </span>
     </button>
 
     <div class="notification-bell-dropdown d-none"
          data-notification-bell-target="dropdown"
-         role="menu"
+         role="dialog"
          aria-label="{{ 'notification.bell.label'|trans }}">
         <div class="notification-bell-dropdown-header d-flex align-items-center justify-content-between p-2 border-bottom">
             <span class="fw-semibold small">{{ 'notification.bell.label'|trans }}</span>

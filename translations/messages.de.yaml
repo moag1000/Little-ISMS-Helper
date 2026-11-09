@@ -191,6 +191,7 @@ common:
     edit: Bearbeiten
     font_smaller: 'Schrift verkleinern'
     font_larger: 'Schrift vergrößern'
+    progress: 'Fortschritt'
     open_source: 'Quelle öffnen'
     clone:
         label: 'Duplizieren'

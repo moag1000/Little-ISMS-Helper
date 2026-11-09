@@ -191,6 +191,7 @@ common:
     edit: Edit
     font_smaller: 'Decrease font size'
     font_larger: 'Increase font size'
+    progress: 'Progress'
     open_source: 'Open the source'
     clone:
         label: 'Duplicate'

@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  *   1. role="menubar" present on the <nav> element
  *   2. aria-orientation="vertical" present on the <nav> element
  *   3. All L1 trigger buttons have role="menuitem"
- *   4. All L1 trigger buttons have aria-haspopup="menu" (not just "true")
+ *   4. All L1 trigger buttons have aria-haspopup="dialog" (the flyout is a dialog panel, W11)
  *   5. All L1 trigger buttons have aria-expanded="false" initially
  *   6. Badge spans have aria-live="polite" for live-region compliance
  *   7. Badge spans have aria-atomic="true"
@@ -72,9 +72,9 @@ final class MegaMenuKeyboardNavTest extends TestCase
     public function triggerButtonsHaveMenuAriaHaspopup(): void
     {
         self::assertStringContainsString(
-            'aria-haspopup="menu"',
+            'aria-haspopup="dialog"',
             $this->templateContent,
-            'Expected aria-haspopup="menu" (not just "true") on trigger buttons'
+            'Expected aria-haspopup="dialog" on trigger buttons (the flyout panel is a dialog with heading, close button and link sections, W11)'
         );
     }
 

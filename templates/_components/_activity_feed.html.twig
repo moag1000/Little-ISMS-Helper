@@ -16,7 +16,7 @@
 
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-<div class="activity-feed">
+<div class="activity-feed" role="region" tabindex="0" aria-label="{{ 'dashboard.activity_feed.title'|trans({}, 'dashboard') }}">
     {% if activities is defined and activities|length > 0 %}
         {% for activity in activities %}
         <div class="activity-item">
