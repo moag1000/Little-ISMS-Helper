@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Security\Voter\GlobalCatalogueVoter;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
@@ -107,7 +108,11 @@ class IndustryPresetController extends AbstractController
             return $this->redirectToRoute('app_admin_industry_preset_index');
         }
 
-        $result = $this->presetApplier->apply($preset, $config, $tenant);
+        $mayActivateFrameworks = $this->isGranted(GlobalCatalogueVoter::WRITE);
+        $result = $this->presetApplier->apply($preset, $config, $tenant, $mayActivateFrameworks);
+        if (!$mayActivateFrameworks && ($config['frameworks'] ?? []) !== []) {
+            $this->addFlash('info', 'admin.industry_preset.frameworks_super_admin_only');
+        }
         $modulesActivated = $result['modules_activated'];
         $frameworksActivated = $result['frameworks_activated'];
         $controlsCreated = $result['controls_created'];

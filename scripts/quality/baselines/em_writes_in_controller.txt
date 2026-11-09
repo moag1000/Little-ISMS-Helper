@@ -47,8 +47,8 @@ src/Controller/Admin/Notification/NotificationRuleController.php:250
 src/Controller/Admin/Notification/NotificationTemplateController.php:92
 src/Controller/Admin/RiskApprovalConfigController.php:84
 src/Controller/Admin/RiskApprovalConfigController.php:85
-src/Controller/Admin/SampleDataController.php:203
-src/Controller/Admin/SampleDataController.php:204
+src/Controller/Admin/SampleDataController.php:206
+src/Controller/Admin/SampleDataController.php:207
 src/Controller/Admin/SsoProviderController.php:157
 src/Controller/Admin/SsoProviderController.php:158
 src/Controller/Admin/SsoProviderController.php:175

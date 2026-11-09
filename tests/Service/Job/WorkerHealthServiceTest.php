@@ -152,6 +152,20 @@ final class WorkerHealthServiceTest extends TestCase
         self::assertSame('aa', $recent[2]['id']);
     }
 
+    /** S13: an organisation admin sees only the jobs of the own organisation. */
+    #[Test]
+    public function recentJobsOfOneOrganisationOnly(): void
+    {
+        $now = time();
+        $this->writeJobFile('own', $now - 100, 7);
+        $this->writeJobFile('other', $now - 50, 8);
+        $this->writeJobFile('operator', $now - 10);
+
+        $recent = $this->makeService(queueDepth: 0)->recentJobs(10, ownerTenantId: 7);
+
+        self::assertSame(['own'], array_column($recent, 'id'));
+    }
+
     // ── helpers ───────────────────────────────────────────────────────────
 
     private function makeService(int $queueDepth): WorkerHealthService
@@ -178,10 +192,10 @@ final class WorkerHealthServiceTest extends TestCase
         touch($this->heartbeatPath, $mtime);
     }
 
-    private function writeJobFile(string $id, int $mtime): void
+    private function writeJobFile(string $id, int $mtime, ?int $ownerTenantId = null): void
     {
         $path = $this->tmpDir . '/var/jobs/' . $id . '.json';
-        file_put_contents($path, json_encode(['id' => $id, 'status' => 'succeeded']));
+        file_put_contents($path, json_encode(['id' => $id, 'status' => 'succeeded', 'owner_tenant_id' => $ownerTenantId]));
         touch($path, $mtime);
     }
 
