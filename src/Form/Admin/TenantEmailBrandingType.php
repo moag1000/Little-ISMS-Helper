@@ -9,7 +9,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,17 +28,6 @@ final class TenantEmailBrandingType extends AbstractType
                 'help' => 'tenant.email.help.from_address',
                 'required' => false,
                 'attr' => ['maxlength' => 180],
-            ])
-            ->add('emailLogoUrl', UrlType::class, [
-                'label' => 'tenant.email.field.logo_url',
-                'help' => 'tenant.email.help.logo_url',
-                'required' => false,
-                'attr' => ['maxlength' => 500, 'placeholder' => 'https://...'],
-                'default_protocol' => 'https',
-                'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: true),
-                    new \App\Validator\Constraint\NoInternalIp(),
-                ],
             ])
             ->add('emailFooterText', TextareaType::class, [
                 'label' => 'tenant.email.field.footer_text',

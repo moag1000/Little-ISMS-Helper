@@ -19,6 +19,7 @@ use App\Repository\WorkflowInstanceRepository;
 use App\Security\Persona\PersonaResolver;
 use App\Service\Deadline\Obligation;
 use App\Service\Deadline\ObligationInbox;
+use App\Service\PolicyWizard\PolicyAcknowledgementService;
 use App\Service\Risk\RiskAcceptanceRequest;
 use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -227,7 +228,7 @@ final class MyDayAggregator
         foreach ($allApproved as $document) {
             /** @var Document $document */
             // Only documents that require ack (best-effort field check)
-            if (!$document->getRequiresAcknowledgement()) {
+            if (!PolicyAcknowledgementService::needsAcknowledgement($document)) {
                 continue;
             }
             // Check if ack exists for this user + version. 
@@ -235,7 +236,7 @@ final class MyDayAggregator
             // the document on the user's My-Day list — only ACKNOWLEDGED
             // rows close the item.
             $version = $document->getVersion();
-            $existing = $this->policyAckRepo->findOneFor($tenant, $document, $user, $version);
+            $existing = $this->policyAckRepo->findOneFor($tenant, $document, $user, PolicyAcknowledgementService::versionOf($document));
             if ($existing instanceof PolicyAcknowledgement
                 && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
                 continue;

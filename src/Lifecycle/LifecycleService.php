@@ -18,16 +18,22 @@ use Symfony\Component\Workflow\Registry;
  * Callers must pass a `$workflowName` registered in
  * `config/workflows/*.yaml`. The marking_store is `method`, so the
  * entity must expose `getStatus()/setStatus()`.
+ *
+ * Every non-automatic call checks the acting person against the transition's
+ * effective roles first ({@see TransitionAccess}, S21) — callers need no own
+ * `lifecycle.*` check, and a missing one cannot open a step.
  */
 final class LifecycleService implements LifecycleTransitionInterface
 {
     public function __construct(
         private readonly Registry $workflowRegistry,
         private readonly EntityManagerInterface $entityManager,
+        private readonly TransitionAccess $access,
     ) {}
 
     /**
      * @throws InvalidTransitionException
+     * @throws \App\Lifecycle\Exception\TransitionAccessDeniedException
      * @throws \App\Lifecycle\Exception\ReasonRequiredException
      * @throws \App\Lifecycle\Exception\FourEyesRequiredException
      */
@@ -52,6 +58,18 @@ final class LifecycleService implements LifecycleTransitionInterface
         }
 
         $workflow = $this->workflowRegistry->get($entity, $workflowName);
+
+        // S21: the role check lives here, not in each caller.
+        $this->access->assertAllowed(
+            $entity,
+            $workflowName,
+            $transitionName,
+            $user,
+            $fourEyesApprover,
+            $approverAuthorityVerified,
+            $automatic,
+        );
+
         $current = (string) $entity->getStatus();
 
         try {

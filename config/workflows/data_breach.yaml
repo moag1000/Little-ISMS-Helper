@@ -20,11 +20,17 @@ framework:
                     to: under_assessment
                     metadata:
                         roles: [ROLE_DPO]
+                        # S21: the responsible person acts too — the controller opens the step to
+                        # MANAGER_OR_RESPONSIBLE and the deadline reminder goes to them.
+                        responsible: true
                 notify_authority:
                     from: under_assessment
                     to: authority_notified
                     metadata:
                         roles: [ROLE_DPO, ROLE_CISO]
+                        # S21: the responsible person acts too — the controller opens the step to
+                        # MANAGER_OR_RESPONSIBLE and the deadline reminder goes to them.
+                        responsible: true
                         four_eyes: true
                         module: privacy
                         reason_required: true
@@ -33,12 +39,18 @@ framework:
                     to: subjects_notified
                     metadata:
                         roles: [ROLE_DPO]
+                        # S21: the responsible person acts too — the controller opens the step to
+                        # MANAGER_OR_RESPONSIBLE and the deadline reminder goes to them.
+                        responsible: true
                         module: privacy
                 close:
                     from: [authority_notified, subjects_notified]
                     to: closed
                     metadata:
                         roles: [ROLE_DPO]
+                        # S21: the responsible person acts too — the controller opens the step to
+                        # MANAGER_OR_RESPONSIBLE and the deadline reminder goes to them.
+                        responsible: true
                 reopen:
                     from: closed
                     to: under_assessment

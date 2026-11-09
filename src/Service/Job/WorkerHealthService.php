@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Job;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -13,8 +14,12 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * Three signals feed a tri-state traffic light (GREEN/YELLOW/RED):
  *  1. Heartbeat file `var/jobs/.heartbeat` — updated by HeartbeatMiddleware
  *     after every successfully handled async message
- *  2. Queue depth — `COUNT(*) FROM messenger_messages WHERE queue_name='async'`
+ *  2. Queue depth — undelivered rows of the async transport in `messenger_messages`
+ *     (every queue except `scheduler` and `failed`: MESSENGER_TRANSPORT_DSN names no
+ *     queue_name, so the Doctrine transport writes `default`)
  *  3. Pending job count — `var/jobs/*.json` with status='pending'
+ *  4. Mails waiting longer than 15 minutes — nobody consumes the queue, so nothing
+ *     reaches anybody (reminders, approvals, incident mails): RED
  *
  * Designed for shared-hosting context (1-minute cron slot). Thresholds:
  *  - GREEN: heartbeat <60s old
@@ -36,6 +41,9 @@ final class WorkerHealthService
     private const RED_QUEUE_DEPTH_THRESHOLD = 50;
     private const FAILED_LOOKBACK_SECONDS = 86400;
     private const RECENT_JOBS_LIMIT = 20;
+    private const STALE_MAIL_SECONDS = 900;
+    /** Transports of their own; everything else in messenger_messages is the async queue. */
+    private const NON_ASYNC_QUEUES = ['scheduler', 'failed'];
 
     public function __construct(
         private readonly KernelInterface $kernel,
@@ -52,6 +60,7 @@ final class WorkerHealthService
      *     queue_depth: int,
      *     pending_jobs: int,
      *     failed_jobs_24h: int,
+     *     stale_mails: int,
      *     heartbeat_at: ?int,
      *     heartbeat_age_seconds: ?int,
      *     reason: string,
@@ -64,14 +73,18 @@ final class WorkerHealthService
         $queueDepth = $this->queueDepth();
         $pendingJobs = $this->pendingJobCount();
         $failed24h = $this->failedJobs24h();
+        $staleMails = $this->staleMails();
 
-        [$status, $reason] = $this->classify($heartbeatAge, $queueDepth);
+        [$status, $reason] = $staleMails > 0
+            ? [self::STATUS_RED, 'mails_stuck']
+            : $this->classify($heartbeatAge, $queueDepth);
 
         return [
             'status' => $status,
             'queue_depth' => $queueDepth,
             'pending_jobs' => $pendingJobs,
             'failed_jobs_24h' => $failed24h,
+            'stale_mails' => $staleMails,
             'heartbeat_at' => $heartbeatAt,
             'heartbeat_age_seconds' => $heartbeatAge,
             'reason' => $reason,
@@ -176,11 +189,31 @@ final class WorkerHealthService
     private function queueDepth(): int
     {
         try {
-            $sql = "SELECT COUNT(*) FROM messenger_messages WHERE queue_name = 'async'";
-            $value = $this->connection->fetchOne($sql);
+            $sql = 'SELECT COUNT(*) FROM messenger_messages WHERE queue_name NOT IN (:other) AND delivered_at IS NULL';
+            $value = $this->connection->fetchOne($sql, ['other' => self::NON_ASYNC_QUEUES], ['other' => ArrayParameterType::STRING]);
             return is_numeric($value) ? (int) $value : 0;
         } catch (\Throwable) {
             // Table may not exist yet (fresh install before messenger:setup).
+            return 0;
+        }
+    }
+
+    /** Mails (SendEmailMessage) still undelivered in the async queue after 15 minutes. */
+    private function staleMails(): int
+    {
+        try {
+            $sql = 'SELECT COUNT(*) FROM messenger_messages
+                    WHERE queue_name NOT IN (:other) AND delivered_at IS NULL
+                      AND created_at < :cutoff AND headers LIKE :mail';
+            $cutoff = (new \DateTimeImmutable('-' . self::STALE_MAIL_SECONDS . ' seconds'))->format('Y-m-d H:i:s');
+            $value = $this->connection->fetchOne(
+                $sql,
+                ['other' => self::NON_ASYNC_QUEUES, 'cutoff' => $cutoff, 'mail' => '%SendEmailMessage%'],
+                ['other' => ArrayParameterType::STRING],
+            );
+
+            return is_numeric($value) ? (int) $value : 0;
+        } catch (\Throwable) {
             return 0;
         }
     }

@@ -7,6 +7,7 @@ namespace App\Service;
 use DateTimeImmutable;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\Tenant;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -82,13 +83,16 @@ class ComplianceAssessmentService
     public function assessRequirement(ComplianceRequirement $complianceRequirement): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement);
+        // Without an organisation (instance admin) there is nothing to assess — no 500 (W8/B1).
+        $fulfillment = $tenant instanceof Tenant
+            ? $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement)
+            : null;
 
-        if (!$fulfillment->isApplicable()) {
+        if ($fulfillment === null || !$fulfillment->isApplicable()) {
             return [
                 'requirement_id' => $complianceRequirement->getRequirementId(),
                 'calculated_fulfillment' => 0,
-                'reason' => 'Not applicable',
+                'reason' => $fulfillment === null ? 'No organisation' : 'Not applicable',
                 'data_sources' => [],
             ];
         }

@@ -187,13 +187,13 @@ class SupplierCriticalityLevel
 
     /**
      * Returns the localized label based on the given locale.
-     * Falls back to EN if DE not set.
+     * German for 'de', English otherwise; a missing label falls back to the other one, then the code.
      */
     public function getLabel(string $locale = 'de'): string
     {
         if ($locale === 'de' && $this->labelDe !== null) {
             return $this->labelDe;
         }
-        return $this->labelEn ?? $this->code ?? '';
+        return $this->labelEn ?? $this->labelDe ?? $this->code ?? '';
     }
 }

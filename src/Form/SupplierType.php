@@ -6,13 +6,11 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\Supplier;
-use App\Entity\SupplierCriticalityLevel;
-use App\Entity\Tenant;
 use App\Form\DataTransformer\CommaOrLinesListTransformer;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\JsonOrLinesTextareaType;
 use App\Repository\AssetRepository;
-use App\Repository\SupplierCriticalityLevelRepository;
+use App\Service\Supplier\SupplierCriticalityLabels;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use App\Form\Trait\OwnerPickerFormTrait;
@@ -26,6 +24,8 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class SupplierType extends AbstractType implements SectionMapInterface
@@ -35,7 +35,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
     use ModuleAwareFormTrait;
 
     public function __construct(
-        private readonly SupplierCriticalityLevelRepository $criticalityRepo,
+        private readonly SupplierCriticalityLabels $criticalityLabels,
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
@@ -46,7 +46,19 @@ final class SupplierType extends AbstractType implements SectionMapInterface
         // Legacy free text: shown only while it still holds a value (UI wave F).
         // Build dynamic criticality choices from tenant-specific levels.
         $tenant = $this->tenantContext->getCurrentTenant();
-        $criticalityChoices = $this->buildCriticalityChoices($tenant);
+        $criticalityChoices = $this->criticalityLabels->choices($tenant);
+
+        // A new supplier starts on the level the admin marked as default (Admin > Lieferanten-Kritikalität);
+        // the entity's own default 'medium' applies only without configured levels.
+        $defaultCriticality = $this->criticalityLabels->defaultCode($tenant);
+        if ($defaultCriticality !== null) {
+            $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event) use ($defaultCriticality): void {
+                $supplier = $event->getData();
+                if ($supplier instanceof Supplier && $supplier->getId() === null && $supplier->getCriticality() === 'medium') {
+                    $supplier->setCriticality($defaultCriticality);
+                }
+            });
+        }
         $builder
             ->add('name', TextType::class, [
                 'label' => 'supplier.field.name',
@@ -701,34 +713,5 @@ final class SupplierType extends AbstractType implements SectionMapInterface
             'data_class' => Supplier::class,
             'translation_domain' => 'suppliers',
         ]);
-    }
-
-    /**
-     * Build criticality choices from tenant-specific levels.
-     * Falls back to hardcoded 4-level defaults when no levels are configured
-     * (ensures the form always works even on fresh/legacy tenants).
-     *
-     * @return array<string, string>
-     */
-    private function buildCriticalityChoices(?Tenant $tenant): array
-    {
-        if ($tenant instanceof Tenant) {
-            $levels = $this->criticalityRepo->findActiveByTenant($tenant);
-            if (!empty($levels)) {
-                $choices = [];
-                foreach ($levels as $level) {
-                    $choices[$level->getLabelDe()] = $level->getCode();
-                }
-                return $choices;
-            }
-        }
-
-        // Fallback to canonical 4-level defaults (matches seeded records).
-        return [
-            'Kritisch' => 'critical',
-            'Hoch' => 'high',
-            'Mittel' => 'medium',
-            'Gering' => 'low',
-        ];
     }
 }

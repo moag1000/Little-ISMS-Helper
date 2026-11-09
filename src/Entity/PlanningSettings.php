@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Per-tenant resource-planning configuration (Engineering-Spec §8): defaults the
- * roadmap horizon, recurrence interval, over-booking threshold, and the
+ * roadmap horizon, over-booking threshold, working hours, and the
  * configurable Geltungsbereich (scope) list that ActionItems draw from.
  */
 #[ORM\Entity(repositoryClass: PlanningSettingsRepository::class)]
@@ -23,10 +23,6 @@ class PlanningSettings
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(type: Types::INTEGER, options: ['default' => 12])]
-    #[Assert\Positive]
-    private int $defaultRecurrenceMonths = 12;
 
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 12])]
     #[Assert\Range(min: 1, max: 52)]
@@ -63,17 +59,6 @@ class PlanningSettings
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDefaultRecurrenceMonths(): int
-    {
-        return $this->defaultRecurrenceMonths;
-    }
-
-    public function setDefaultRecurrenceMonths(int $months): static
-    {
-        $this->defaultRecurrenceMonths = $months;
-        return $this;
     }
 
     public function getRoadmapHorizonWeeks(): int

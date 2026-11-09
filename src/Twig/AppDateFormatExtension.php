@@ -8,13 +8,15 @@ use App\Repository\SystemSettingsRepository;
 use DateTimeInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Service\ResetInterface;
+use App\Service\TenantContext;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 /**
  * Formats dates with the admin-configured formats from /admin/settings/application
  * (SystemSettings application.date_format / application.datetime_format).
- * fa_datetime also converts to application.timezone; fa_date does not, because
+ * fa_datetime also converts to the time zone — the organisation's (Tenant.timezone, organisation
+ * settings) when set, else the instance's application.timezone; fa_date does not, because
  * date-only columns are midnight values and a zone shift would change the day.
  *
  * Usage:
@@ -47,6 +49,7 @@ final class AppDateFormatExtension extends AbstractExtension implements ResetInt
     public function __construct(
         private readonly SystemSettingsRepository $systemSettingsRepository,
         private readonly ?RequestStack $requestStack = null,
+        private readonly ?TenantContext $tenantContext = null,
     ) {
     }
 
@@ -168,7 +171,11 @@ final class AppDateFormatExtension extends AbstractExtension implements ResetInt
         if (!$this->timezoneResolved) {
             $this->timezoneResolved = true;
             try {
-                $value = $this->systemSettingsRepository->getSetting('application', 'timezone', null);
+                // The organisation's zone first (multi-org instance across zones), then the instance's.
+                $value = $this->tenantContext?->getCurrentTenant()?->getTimezone();
+                if (!\is_string($value) || $value === '' || !\in_array($value, \DateTimeZone::listIdentifiers(), true)) {
+                    $value = $this->systemSettingsRepository->getSetting('application', 'timezone', null);
+                }
                 $this->timezone = (\is_string($value) && $value !== '') ? new \DateTimeZone($value) : null;
             } catch (\Throwable) {
                 $this->timezone = null;

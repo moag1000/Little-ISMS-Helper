@@ -402,6 +402,8 @@ class WorkflowService
             'reject',
             $user,
             $reason,
+            // canUserApprove() checked $user against the step's approver_role / approver_users (S21).
+            approverAuthorityVerified: true,
         );
 
         return true;

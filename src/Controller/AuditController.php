@@ -8,7 +8,7 @@ use App\Controller\Trait\BulkActionTrait;
 use App\Util\InputDate;
 use App\Service\BulkDeleteService;
 use DateTime;
-use DateTimeImmutable;
+use App\Security\Voter\RecordResponsibleVoter;
 use Exception;
 use App\Entity\InternalAudit;
 use App\Entity\User;
@@ -30,6 +30,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -82,7 +83,7 @@ class AuditController extends AbstractController
         ]);
     }
     #[Route('/audit/new', name: 'app_audit_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
         $internalAudit = new InternalAudit();
@@ -200,7 +201,7 @@ class AuditController extends AbstractController
         ]);
     }
     #[Route('/audit/{id}/edit', name: 'app_audit_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'internalAudit')]
     public function edit(Request $request, InternalAudit $internalAudit): Response
     {
         $form = $this->createForm(InternalAuditType::class, $internalAudit);
@@ -240,7 +241,7 @@ class AuditController extends AbstractController
      * must stay intact).
      */
     #[Route('/audit/{id}/clone', name: 'app_audit_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_MANAGER')]
     public function clone(Request $request, InternalAudit $internalAudit): Response
     {
         if (!$this->isCsrfTokenValid('clone_audit_' . $internalAudit->getId(), (string) $request->request->get('_token'))) {
@@ -299,7 +300,7 @@ class AuditController extends AbstractController
      * Audit is read-only for fields after this transition.
      */
     #[Route('/audit/{id}/submit-report', name: 'app_audit_submit_report', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('lifecycle.internal_audit_lifecycle.report', subject: 'internalAudit')]
     #[IsCsrfTokenValid('audit_submit_report', tokenKey: '_token')]
     public function submitReport(InternalAudit $internalAudit): Response
     {
@@ -312,11 +313,7 @@ class AuditController extends AbstractController
         $currentUser = $this->getCurrentUserOrThrow();
         $oldStatus = (string) $internalAudit->getStatus();
 
-        $internalAudit->setReportedBy($currentUser);
-        $internalAudit->setReportedAt(new DateTimeImmutable());
-        $internalAudit->setUpdatedAt(new DateTimeImmutable());
-
-        $this->entityManager->flush();
+        // reportedBy/At are stamped by the step itself (LifecycleEvidenceStamper, S21).
         $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'report', $currentUser);
 
         $this->auditLogger->logCustom(
@@ -339,7 +336,7 @@ class AuditController extends AbstractController
      * (or higher in the role hierarchy).
      */
     #[Route('/audit/{id}/approve', name: 'app_audit_approve_report', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('lifecycle.internal_audit_lifecycle.approve', subject: 'internalAudit')]
     #[IsCsrfTokenValid('audit_approve_report', tokenKey: '_token')]
     public function approveReport(InternalAudit $internalAudit): Response
     {
@@ -359,13 +356,8 @@ class AuditController extends AbstractController
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
-        $internalAudit->setApprovedBy($currentUser);
-        $internalAudit->setApprovedAt(new DateTimeImmutable());
-        // Clear any previous rejection reason — the report is now approved.
-        $internalAudit->setRejectionReason(null);
-        $internalAudit->setUpdatedAt(new DateTimeImmutable());
-
-        $this->entityManager->flush();
+        // approvedBy/At (the second person) are stamped by the step itself,
+        // which also clears an earlier rejection reason (LifecycleEvidenceStamper, S21).
         // 4-eyes context: the prior reporter is the workflow-chain initiator,
         // $currentUser is the second pair of eyes (the approver). The controller
         // already enforced reporter ≠ currentUser above; passing them as
@@ -400,7 +392,7 @@ class AuditController extends AbstractController
      * — auditor can revise and resubmit (rejected → reported).
      */
     #[Route('/audit/{id}/reject', name: 'app_audit_reject_report', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('lifecycle.internal_audit_lifecycle.reject', subject: 'internalAudit')]
     #[IsCsrfTokenValid('audit_reject_report', tokenKey: '_token')]
     public function rejectReport(Request $request, InternalAudit $internalAudit): Response
     {
@@ -419,11 +411,7 @@ class AuditController extends AbstractController
 
         $currentUser = $this->getCurrentUserOrThrow();
 
-        $internalAudit->setRejectionReason($reason);
-        // approvedBy/approvedAt stay null — a rejection is not an approval.
-        $internalAudit->setUpdatedAt(new DateTimeImmutable());
-
-        $this->entityManager->flush();
+        // The step stores the rejection reason; approvedBy/At stay null (LifecycleEvidenceStamper, S21).
         $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'reject', $currentUser, $reason);
 
         $this->auditLogger->logCustom(
@@ -446,7 +434,7 @@ class AuditController extends AbstractController
      * 4-eyes-check against the *current* submitter is meaningful.
      */
     #[Route('/audit/{id}/resubmit', name: 'app_audit_resubmit_report', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('lifecycle.internal_audit_lifecycle.rework', subject: 'internalAudit')]
     #[IsCsrfTokenValid('audit_resubmit_report', tokenKey: '_token')]
     public function resubmitReport(InternalAudit $internalAudit): Response
     {
@@ -459,12 +447,8 @@ class AuditController extends AbstractController
         $currentUser = $this->getCurrentUserOrThrow();
         $oldStatus = (string) $internalAudit->getStatus();
 
-        $internalAudit->setReportedBy($currentUser);
-        $internalAudit->setReportedAt(new DateTimeImmutable());
-        $internalAudit->setUpdatedAt(new DateTimeImmutable());
-
-        $this->entityManager->flush();
-        // Workflow: rejected → reported via the 'rework' transition (single hop per workflow YAML)
+        // Workflow: rejected → reported via the 'rework' transition (single hop per workflow YAML);
+        // the step stamps the current submitter as reportedBy/At (LifecycleEvidenceStamper, S21).
         $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'rework', $currentUser);
 
         $this->auditLogger->logCustom(
@@ -486,7 +470,7 @@ class AuditController extends AbstractController
      * no further state changes possible.
      */
     #[Route('/audit/{id}/close', name: 'app_audit_close', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('lifecycle.internal_audit_lifecycle.close', subject: 'internalAudit')]
     #[IsCsrfTokenValid('audit_close', tokenKey: '_token')]
     public function closeAudit(InternalAudit $internalAudit): Response
     {
@@ -498,11 +482,7 @@ class AuditController extends AbstractController
 
         $currentUser = $this->getCurrentUserOrThrow();
 
-        $internalAudit->setClosedBy($currentUser);
-        $internalAudit->setClosedAt(new DateTimeImmutable());
-        $internalAudit->setUpdatedAt(new DateTimeImmutable());
-
-        $this->entityManager->flush();
+        // closedBy/At are stamped by the step itself (LifecycleEvidenceStamper, S21).
         $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'close', $currentUser);
 
         $this->auditLogger->logCustom(

@@ -167,13 +167,9 @@ class StatementOfApplicabilityController extends AbstractController
             }
         }
 
-        // MRIS-Filter is gated by the
-        // `mris` module AND the tenant-level kpis_enabled toggle. Both must
-        // be true for the filter/column to render. Defaults to OFF — MRIS is
-        // a niche custom framework (Peddi 2026, MRIS v1.5), most tenants
-        // never need it.
-        $mrisEnabled = $this->moduleConfiguration->isModuleActive('mris')
-            && (($tenant->getSettings() ?? [])['mris']['kpis_enabled'] ?? false) === true;
+        // MRIS-Filter is gated by the `mris` module AND the organisation's MRIS KPI
+        // toggle (on unless switched off, same reading as the KPI page).
+        $mrisEnabled = $this->moduleConfiguration->isModuleActive('mris') && $tenant->isMrisKpisEnabled();
 
         return $this->render('soa/index.html.twig', [
             'controls' => $controls,

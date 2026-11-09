@@ -67,7 +67,8 @@
 {% if is_module_active('training') and is_granted('ROLE_MANAGER') %}{% set _cmds = _cmds|merge([
     { id: 'create-board-training', label: 'ui.command_palette.command.create_board_training'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: path('app_training_new', {forBoard: 1}), keywords: ['leitung', 'board', 'geschäftsführung', 'nis2', 'art. 20', 'schulung']  }
 ]) %}{% endif %}
-{% if is_module_active('audits') %}{% set _cmds = _cmds|merge([
+{# Creating an audit is a manager task (AuditController::new, S21). #}
+{% if is_module_active('audits') and is_granted('ROLE_MANAGER') %}{% set _cmds = _cmds|merge([
     { id: 'create-audit', label: 'ui.command_palette.command.create_audit'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: path('app_audit_new'), keywords: ['new', 'audit']  }
 ]) %}{% endif %}
 {% set _cmds = _cmds|merge([

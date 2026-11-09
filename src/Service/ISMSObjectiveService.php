@@ -183,6 +183,8 @@ final class ISMSObjectiveService
                     $ismsObjective,
                     'isms_objective_lifecycle',
                     'achieve',
+                    // Derived from the measured value reaching the target, nobody decides (S21).
+                    automatic: true,
                 );
                 $ismsObjective->setAchievedDate(new DateTime());
             }

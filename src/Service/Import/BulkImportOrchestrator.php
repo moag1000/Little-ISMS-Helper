@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Service\Owner\OwnerText;
 use App\Service\Owner\OwnerTextResolver;
+use App\Service\Upload\ProtectedUploads;
 
 /**
  * High-level orchestrator for the bulk-import pipeline.
@@ -65,6 +66,7 @@ class BulkImportOrchestrator
         private readonly ?FteRecorderService $fteRecorder = null,
         private readonly ?EntityManagerRecovery $emRecovery = null,
         private readonly ?OwnerTextResolver $ownerTexts = null,
+        private readonly ?ProtectedUploads $protectedUploads = null,
     ) {}
 
     // -------------------------------------------------------------------------
@@ -524,17 +526,17 @@ class BulkImportOrchestrator
     }
 
     /**
-     * The stored upload of a batch: its source document's file, confined to the
-     * upload directory. Batches from before the source document fall back to a
-     * SHA-256 scan of the directory.
+     * The stored upload of a batch: its source document's file, resolved by
+     * ProtectedUploads (S19) and confined to the upload directory. Batches from
+     * before the source document fall back to a SHA-256 scan of the directory.
      *
      * @throws ImportFailedException when no matching file is found
      */
     public function storedFilePath(BulkImportBatch $batch): string
     {
         $root = realpath($this->uploadDir);
-        $path = realpath((string) $batch->getSourceDocument()?->getFilePath());
-        if ($root !== false && $path !== false && str_starts_with($path, $root . DIRECTORY_SEPARATOR) && is_file($path)) {
+        $path = $this->protectedUploads?->resolve($batch->getSourceDocument()?->getFilePath());
+        if ($root !== false && $path !== null && str_starts_with($path, $root . DIRECTORY_SEPARATOR)) {
             return $path;
         }
 

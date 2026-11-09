@@ -99,8 +99,6 @@ export default class extends Controller {
      */
     _collectPayload() {
         const map = {
-            'tenant_policy_style[policyDocFontFamily]': 'font_family',
-            'tenant_policy_style[policyDocCoverPattern]': 'cover_pattern',
             'tenant_policy_style[policyDocCoverLogoSize]': 'cover_logo_size',
             'tenant_policy_style[policyDocPageMargin]': 'page_margin',
             'tenant_policy_style[policyDocWatermarkEnabled]': 'watermark_enabled',

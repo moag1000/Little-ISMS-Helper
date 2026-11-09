@@ -179,9 +179,9 @@ final class FourEyesValidator
 
         // Approver MUST carry one of the YAML `roles` for this transition.
         // Otherwise a regular USER could rubber-stamp a CISO-only transition
-        // by submitting their own ID as approver. Defence-in-depth — the
-        // LifecycleVoter already gates the INITIATOR by role; this gates the
-        // APPROVER.
+        // by submitting their own ID as approver. Defence-in-depth —
+        // TransitionAccess (S21) already gates the acting person through the
+        // LifecycleVoter; this keeps the rule for the approver on its own.
         if ($requiredRoles !== [] && !$this->approverHasAnyRole($approver, $requiredRoles)) {
             throw FourEyesRequiredException::approverLacksRole(
                 $workflowName,

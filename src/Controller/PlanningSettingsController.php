@@ -54,17 +54,12 @@ final class PlanningSettingsController extends AbstractController
         $settings = $this->settingsRepository->getOrCreate($tenant);
 
         $form = $this->createFormBuilder([
-                'defaultRecurrenceMonths' => $settings->getDefaultRecurrenceMonths(),
                 'roadmapHorizonWeeks' => $settings->getRoadmapHorizonWeeks(),
                 'overbookingThresholdPct' => $settings->getOverbookingThresholdPct(),
                 'fullTimeHoursPerWeek' => $settings->getFullTimeHoursPerWeek() ?? 40.0,
                 'hoursPerDay' => $settings->getHoursPerDay() ?? 8.0,
                 'scopes' => implode("\n", $settings->getScopes()),
             ], ['translation_domain' => 'planning'])
-            ->add('defaultRecurrenceMonths', IntegerType::class, [
-                'label' => 'planning.settings.field.default_recurrence_months',
-                'attr' => ['min' => 1],
-            ])
             ->add('roadmapHorizonWeeks', IntegerType::class, [
                 'label' => 'planning.settings.field.roadmap_horizon_weeks',
                 'attr' => ['min' => 1, 'max' => 52],
@@ -99,7 +94,6 @@ final class PlanningSettingsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $settings->setDefaultRecurrenceMonths((int) $data['defaultRecurrenceMonths']);
             $settings->setRoadmapHorizonWeeks((int) $data['roadmapHorizonWeeks']);
             $settings->setOverbookingThresholdPct((int) $data['overbookingThresholdPct']);
             $settings->setFullTimeHoursPerWeek($data['fullTimeHoursPerWeek'] !== null ? (float) $data['fullTimeHoursPerWeek'] : null);

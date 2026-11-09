@@ -63,9 +63,14 @@ class PolicyPdfExporter
                 'primary'     => $branding?->getPrimaryColor() ?? '#0d6efd',
                 'secondary'   => $branding?->getSecondaryColor() ?? '#6c757d',
                 'font_family' => $branding?->getFontFamily() ?? 'Inter',
-                'logo_path'   => $branding?->getLogoPath(),
+                'logo_path'   => \App\Service\Upload\StoredFilePath::isPublicUpload($branding?->getLogoPath(), \App\Service\Upload\StoredFilePath::TENANT_LOGOS)
+                ? $branding?->getLogoPath() : null, // S19: only a logo below uploads/tenants/
                 'header_html' => $branding?->getHeaderHtml(),
                 'footer_html' => $branding?->getFooterHtml(),
+                // Policy style (Admin > Policy-Stil); the macro reads the rest from `branding`.
+                'footer_text' => $branding?->getPolicyDocFooterText(),
+                'page_margin' => $branding?->getPolicyDocPageMargin() ?? 'standard',
+                'watermark_opacity' => $branding?->getPolicyDocWatermarkOpacity() ?? 0.07,
             ],
         );
 

@@ -36,7 +36,8 @@
             --font-mono: "Menlo", "Consolas", monospace;
         }
 
-        @page { size: A4 portrait; margin: 18mm 16mm 22mm 16mm; }
+        {# Page margin from the organisation's policy style (compact / standard / wide). #}
+        @page { size: A4 portrait; margin: {{ {'compact': '12mm 10mm 16mm 10mm', 'wide': '26mm 24mm 30mm 24mm'}[page_margin|default('standard')]|default('18mm 16mm 22mm 16mm') }}; }
         body {
             font-family: "{{ font_family|default('Inter')|e('html_attr') }}", "Helvetica", "Arial", sans-serif;
             font-size: 10.5pt;
@@ -114,7 +115,7 @@
             font-size: 80pt;
             font-weight: 800;
             letter-spacing: 0.08em;
-            color: rgba(220, 38, 38, 0.07);
+            color: rgba(220, 38, 38, {{ watermark_opacity|default(0.07) }});
             transform: rotate(-30deg);
             pointer-events: none;
             z-index: 1;
@@ -135,6 +136,8 @@
             font-weight: 700; font-size: 16pt; vertical-align: middle;
             margin-right: 8pt;
         }
+        .policy-doc__logo--small { width: 24pt; height: 24pt; line-height: 24pt; font-size: 12pt; }
+        .policy-doc__logo--large { width: 48pt; height: 48pt; line-height: 48pt; font-size: 24pt; }
         .policy-doc__logo img { max-width: 100%; max-height: 100%; }
         .policy-doc__brand-name { font-weight: 700; font-size: 11pt; color: var(--fg-1); display: inline-block; vertical-align: middle; }
         .policy-doc__brand-meta { font-size: 8pt; color: var(--fg-3); }
@@ -340,6 +343,6 @@
 
     {# ---- Footer (still rendered outside the policy-doc article so
          dompdf places it after the signature page). ---- #}
-    {% include 'policy_wizard/export/_pdf_footer.html.twig' with { footer: footer, footer_html: footer_html, secondary: secondary } only %}
+    {% include 'policy_wizard/export/_pdf_footer.html.twig' with { footer: footer, footer_html: footer_html, footer_text: footer_text|default(null), secondary: secondary } only %}
 </body>
 </html>

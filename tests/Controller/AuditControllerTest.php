@@ -281,21 +281,22 @@ class AuditControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testNewAllowsAnyAuthenticatedUser(): void
+    public function testNewIsAManagerTask(): void
     {
-        // Any authenticated user should be able to access the new audit form
-        // (This matches current security configuration)
+        // S21: a plain user may not open an audit and name themselves lead auditor.
         $this->loginAsUser($this->testUser);
-
         $this->client->request('GET', '/en/audit/new');
+        $this->assertResponseStatusCodeSame(403);
 
+        $this->loginAsUser($this->adminUser);
+        $this->client->request('GET', '/en/audit/new');
         $this->assertResponseIsSuccessful();
     }
 
     #[Test]
     public function testNewDisplaysForm(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request('GET', '/en/audit/new');
 
@@ -306,7 +307,7 @@ class AuditControllerTest extends WebTestCase
     #[Test]
     public function testNewCreatesAuditWithValidData(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request('GET', '/en/audit/new');
 
@@ -322,7 +323,7 @@ class AuditControllerTest extends WebTestCase
         ]);
 
         // CRITICAL: Re-login immediately before form submission to maintain authentication
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $this->client->submit($form);
 
         // Check if response is a redirect (could be 302 or 200 if form has errors)
@@ -344,13 +345,13 @@ class AuditControllerTest extends WebTestCase
     #[Test]
     public function testNewAuditFormSubmitSucceeds(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request('GET', '/en/audit/new');
         $form = $crawler->filter('form[name="internal_audit"]')->form();
 
         // Re-authenticate before form submission to ensure session persists
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $uniqueTitle = 'Test Audit for Submission ' . uniqid();
 
@@ -373,7 +374,7 @@ class AuditControllerTest extends WebTestCase
     #[Test]
     public function testNewAuditFormDisplaysCorrectFields(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request('GET', '/en/audit/new');
 
@@ -389,7 +390,7 @@ class AuditControllerTest extends WebTestCase
     #[Test]
     public function testNewFormValidation(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request('GET', '/en/audit/new');
 
@@ -454,9 +455,9 @@ class AuditControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testEditAllowsAnyAuthenticatedUser(): void
+    public function testEditAllowsTheLeadAuditor(): void
     {
-        // Any authenticated user with ROLE_USER can access the edit page
+        // The lead auditor (a plain ROLE_USER here) may edit the audit — MANAGER_OR_RESPONSIBLE (S21)
         $this->loginAsUser($this->testUser);
 
         $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/edit');

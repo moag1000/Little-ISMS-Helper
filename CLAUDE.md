@@ -508,7 +508,11 @@ Translation Quality:
 
 ## Lifecycle (Symfony Workflow Foundation P-4b)
 
-Every entity with a `status` field that goes through staged transitions uses **Symfony Workflow** as the canonical state-machine engine. The `LifecycleService` facade exposes `transition($entity, $workflowName, $transitionName, $user, $reason)` — call-sites MUST go through this facade, NOT through direct `setStatus()`.
+Every entity with a `status` field that goes through staged transitions uses **Symfony Workflow** as the canonical state-machine engine. The `LifecycleService` facade exposes `transition($entity, $workflowName, $transitionName, $user, $reason)` — call-sites MUST go through this facade, NOT through direct `setStatus()`. The facade checks the acting person's roles itself (S21, `Lifecycle\TransitionAccess` →
+`LifecycleVoter` via `isGrantedForUser`: four-eyes approver, else `$user`, else the logged-in user); system callers pass
+`automatic: true`, callers that checked a narrower rule (approval-chain step, risk-acceptance tier) pass
+`approverAuthorityVerified: true`; transitions without roles are service-only. Durable test
+`tests/Lifecycle/LifecycleServiceRoleContractTest`.
 
 **Two-layer config:**
 - Static baseline: `config/workflows/<entity>.yaml` (places + transition wiring — immutable at runtime)
@@ -833,6 +837,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       `PublicLinksFromDefaultUriTest` finds every absolute URL in `src/`. Logout sends `Clear-Site-Data`; `public/sw.js`
       caches only fixed build files, never pages/`.json`/API (`tests/js/service_worker.test.js`). Webhooks only signed.
       Every export/download action carries `#[IsGranted]` (`ExportRoutesGatedTest`).
+- [ ] A file path stored on a record (logo, avatar, audit-freeze PDF, document) is data: turn it into a file only
+      via `App\Service\Upload\StoredFilePath` (public uploads, fixed folders) or `ProtectedUploads` (evidence) —
+      never `$dir . '/' . $entity->getXPath()`. A new path column goes into `StoredFilePath::FIELDS` (restore checks
+      it) or `NOT_FILE_PATHS` (Gate 94, `tests/Security/StoredFilePathContractTest`).
 - [ ] Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed reader type, zip
       limits, read filter) — never `IOFactory::createReaderForFile()`/`load()` (`SpreadsheetUploadReaderTest`).
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training

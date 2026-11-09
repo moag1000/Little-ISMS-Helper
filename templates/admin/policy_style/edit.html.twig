@@ -75,14 +75,7 @@
                             icon: 'nav-file-earmark-text',
                             body: include('admin/policy_style/_tab_content.html.twig', { form: form })
                         },
-                    ]|merge(
-                        form.policyDocCustomCss is defined ? [{
-                            id: 'advanced',
-                            label: 'admin.policy_style.tab.advanced'|trans({}, 'admin'),
-                            icon: 'nav-sliders',
-                            body: include('admin/policy_style/_tab_advanced.html.twig', { form: form })
-                        }] : []
-                    )
+                    ]
                 }) }}
 
                 <div class="d-flex flex-wrap gap-2 mt-4">

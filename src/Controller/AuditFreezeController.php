@@ -36,7 +36,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/audit-freeze')]
-#[IsGranted('ROLE_MANAGER')]
+// Auditors read the frozen SoA snapshots and their PDFs (ISO 27001 9.2: the audit works on
+// evidence); creating a snapshot or its PDF stays with managers.
+#[IsGranted('ROLE_AUDITOR')]
 class AuditFreezeController extends AbstractController
 {
     private const PDF_SUBDIR = 'audit_freezes';
@@ -82,6 +84,7 @@ class AuditFreezeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_audit_freeze_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -163,6 +166,7 @@ class AuditFreezeController extends AbstractController
 
     #[Route('/{id}/generate-pdf', name: 'app_audit_freeze_generate_pdf', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsCsrfTokenValid(new Expression('"audit_freeze_generate_pdf_" ~ args["id"]'))]
+    #[IsGranted('ROLE_MANAGER')]
     public function generatePdf(int $id): Response
     {
         $freeze = $this->loadForTenant($id);
@@ -204,8 +208,8 @@ class AuditFreezeController extends AbstractController
             return $this->redirectToRoute('app_audit_freeze_show', ['id' => $id]);
         }
 
-        $fullPath = $this->projectDir . '/var/' . self::PDF_SUBDIR . '/' . $freeze->getPdfPath();
-        if (!is_file($fullPath)) {
+        $fullPath = \App\Service\Upload\StoredFilePath::inDirectory($this->projectDir . '/var/' . self::PDF_SUBDIR, $freeze->getPdfPath());
+        if ($fullPath === null) { // S19: only a file name directly in var/audit_freezes/ (value may come from a backup)
             $this->addFlash('warning', 'audit_freeze.flash.pdf_missing_on_disk');
             return $this->redirectToRoute('app_audit_freeze_show', ['id' => $id]);
         }

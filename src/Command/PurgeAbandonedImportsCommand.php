@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\BulkImportBatch;
 use App\Service\AuditLogger;
+use App\Service\Upload\ProtectedUploads;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -22,8 +23,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * --days (30). Nothing was imported from it, so the file is no evidence; a
  * committed batch keeps its file as the import evidence (ISO 27001 7.5.3).
  *
- * The batch row stays (history), its source document is deleted. Paths are
- * only unlinked inside var/import-uploads. One audit batch per organisation.
+ * The batch row stays (history), its source document is deleted. A file is
+ * unlinked only when ProtectedUploads resolves it (S19) inside var/import-uploads. One audit batch per organisation.
  */
 #[AsCommand(
     name: 'app:import:purge-abandoned',
@@ -42,6 +43,7 @@ final class PurgeAbandonedImportsCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
+        private readonly ProtectedUploads $protectedUploads,
         #[Autowire('%kernel.project_dir%/var/import-uploads')]
         private readonly string $uploadDir,
     ) {
@@ -81,12 +83,12 @@ final class PurgeAbandonedImportsCommand extends Command
             if ($document === null) {
                 continue;
             }
-            $path = realpath((string) $document->getFilePath());
+            $path = $this->protectedUploads->resolve($document->getFilePath());
             $io->writeln(sprintf('#%d %s (%s)', (int) $batch->getId(), $batch->getSourceFileName(), $batch->getStatus()));
             if ($dryRun) {
                 continue;
             }
-            if ($root !== false && $path !== false && str_starts_with($path, $root . DIRECTORY_SEPARATOR)) {
+            if ($root !== false && $path !== null && str_starts_with($path, $root . DIRECTORY_SEPARATOR)) {
                 @unlink($path);
             }
             $batch->setSourceDocument(null);
