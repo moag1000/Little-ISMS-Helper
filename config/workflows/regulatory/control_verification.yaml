@@ -50,6 +50,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "Control Implementation Verification (ISO 27001 Cl. 8)"
+                    description: "Multi-tier verification when a control status changes to implemented"
+                    entity_type: Control
                     standard: "ISO 27001:2022 Cl. 8 / Annex A"
                     sla_hours: null
                     escalation_threshold_hours: null

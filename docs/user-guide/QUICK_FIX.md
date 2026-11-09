@@ -173,6 +173,34 @@ Bestaetigung (`--yes` fuer Skripte) und schreibt einen Audit-Log-Eintrag.
 
 ---
 
+### 6. Freigabeketten abgleichen (regulatorische Workflows)
+
+```
+Schaltfläche: "Workflow-Definitionen abgleichen"
+```
+
+Die 15 Freigabeketten (Datenpanne, Vorfall, Risikobehandlung, DSFA, CAPA …) sind in
+`config/workflows/regulatory/*.yaml` definiert. Eine laufende Freigabe liest den
+zuständigen Freigeber aber aus der Datenbank. Nach einem Update kann die Datenbank
+hinter der Definition liegen (Beispiel: die Risikobehandlung wartet noch auf den
+Risikomanager statt auf den Risikoeigner).
+
+Der Abschnitt **Freigabeketten** zeigt jede abweichende Kette mit den Unterschieden
+(`step 1 role: ROLE_RISK_MANAGER → owner`). Die Schaltfläche schreibt die Datenbank
+aus den Definitionen:
+
+- vorhandene Schritte werden an Ort und Stelle geändert, laufende Freigaben bleiben
+  auf ihrem Schritt;
+- ein Schritt, den die Definition nicht mehr hat, bleibt stehen, solange eine Freigabe
+  darauf wartet (Hinweis nach dem Abgleich);
+- fehlende Ketten werden angelegt.
+
+Der Abgleich läuft auch jede Nacht um 04:20 (Scheduler) und beim ersten Start einer
+Freigabe, deren Kette noch keine Zeile hat. Nur Super-Admin oder Installer-Token;
+Audit-Log-Eintrag `quick_fix.workflows_synced`.
+
+---
+
 ## Wann brauche ich stattdessen die CLI?
 
 Die Quick-Fix-UI deckt 95 % der Betriebsfaelle ab. Die CLI ist vorzuziehen, wenn:

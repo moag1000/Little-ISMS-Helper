@@ -8,6 +8,7 @@ use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\TenantRepository;
+use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -16,8 +17,10 @@ use Symfony\Bundle\SecurityBundle\Security;
  * Server-side guard for user administration (security hotfix, admin scope).
  *
  * Single source of truth for:
- *  - which roles count as "privileged" (only a ROLE_SUPER_ADMIN actor may
- *    grant or revoke them), and
+ *  - which roles the actor may grant or revoke: the role ceiling of
+ *    {@see RoleCeiling} (privileged roles only ROLE_SUPER_ADMIN, otherwise
+ *    only roles the actor holds itself, plus top management / function owner
+ *    for admins; ROLE_TOP_MGMT never to oneself), and
  *  - which tenants an actor may assign to a user (SUPER_ADMIN: any;
  *    everyone else: own tenant + descendants via TenantContext).
  *
@@ -38,7 +41,16 @@ final class UserAdministrationGuard
         private readonly TenantContext $tenantContext,
         private readonly TenantRepository $tenantRepository,
         private readonly LoggerInterface $logger,
+        private readonly RoleCeiling $roleCeiling,
+        private readonly AuditLogger $auditLogger,
     ) {
+    }
+
+    private function actor(): ?User
+    {
+        $actor = $this->security->getUser();
+
+        return $actor instanceof User ? $actor : null;
     }
 
     public function canManagePrivilegedRoles(): bool
@@ -51,10 +63,52 @@ final class UserAdministrationGuard
      * Role entities whose name equals a privileged role (User::getRoles()
      * merges custom role names into the effective roles).
      */
-    public function mayAssignRoleName(string $roleName): bool
+    public function mayAssignRoleName(string $roleName, ?User $target = null): bool
     {
-        return !in_array(strtoupper(trim($roleName)), self::PRIVILEGED_ROLES, true)
-            || $this->canManagePrivilegedRoles();
+        $actor = $this->actor();
+        if (!$actor instanceof User) {
+            return !RoleNames::isPrivileged($roleName) && !RoleNames::isReserved($roleName);
+        }
+        if ($target instanceof User && RoleCeiling::isSameUser($actor, $target)
+            && RoleCeiling::isSelfGrantForbidden($roleName)) {
+            return false;
+        }
+
+        return $this->roleCeiling->mayChange($actor, $roleName);
+    }
+
+    /**
+     * The system roles of $candidates the user form offers to the actor for
+     * $target (null = new account). Roles the target holds but the actor may
+     * not change are carried over on submit ({@see enforceSubmittedValues()}).
+     *
+     * @param array<array-key, string> $candidates
+     * @return array<array-key, string>
+     */
+    public function grantableRoles(array $candidates, ?User $target = null): array
+    {
+        $actor = $this->actor();
+        if (!$actor instanceof User) {
+            return [];
+        }
+
+        return $this->roleCeiling->grantable($actor, $candidates, $target);
+    }
+
+    /**
+     * Roles an SSO claim mapping may hand out: reserved, non-privileged roles
+     * within the configuring actor's ceiling. Never free text (S14).
+     *
+     * @return list<string>
+     */
+    public function ssoMappableRoles(): array
+    {
+        $candidates = array_values(array_filter(
+            RoleNames::RESERVED,
+            static fn (string $role): bool => !RoleNames::isPrivileged($role),
+        ));
+
+        return array_values($this->grantableRoles($candidates));
     }
 
     /**
@@ -71,7 +125,7 @@ final class UserAdministrationGuard
             return true;
         }
 
-        return !RoleNames::isPrivileged($role->getName())
+        return $this->mayAssignRoleName((string) $role->getName())
             && RoleNames::isGrantedByCustomRole($role->getName(), $role->isSystemRole());
     }
 
@@ -162,11 +216,14 @@ final class UserAdministrationGuard
     }
 
     /**
-     * Server-side enforcement on submitted user data (non-SUPER_ADMIN actors):
-     *  - privileged roles cannot be granted or revoked; stored privileged roles
-     *    the (filtered) form does not expose are carried over, not dropped;
+     * Server-side enforcement on submitted user data:
+     *  - roles beyond the actor's ceiling ({@see RoleCeiling}) cannot be
+     *    granted or revoked; held ones the (filtered) form does not expose
+     *    are carried over, not dropped;
+     *  - nobody grants ROLE_TOP_MGMT to themselves;
      *  - a new user without tenant gets the actor's tenant;
-     *  - the tenant may only be set to one inside the actor's tree.
+     *  - the tenant may only be set to one inside the actor's tree
+     *    (SUPER_ADMIN: any).
      * On a violation the managed entity is restored, so no later flush can
      * persist the tampered values. The caller must reject the submit.
      *
@@ -175,15 +232,19 @@ final class UserAdministrationGuard
      */
     public function enforceSubmittedValues(User $user, array $before, bool $isNew): array
     {
-        if ($this->canManagePrivilegedRoles()) {
-            return [];
+        $actor = $this->actor();
+        if (!$actor instanceof User) {
+            return ['user.validation.privileged_role_forbidden'];
         }
         $violations = [];
+        $mayChange = fn (string $role): bool => $this->roleCeiling->mayChange($actor, $role);
 
+        // Roles above the actor's ceiling the (filtered) form does not expose
+        // are carried over, not dropped.
         $storedRoles = $user->getStoredRoles();
-        foreach (self::privilegedRolesIn($before['storedRoles']) as $privilegedRole) {
-            if (!in_array($privilegedRole, $storedRoles, true)) {
-                $storedRoles[] = $privilegedRole;
+        foreach ($before['storedRoles'] as $heldRole) {
+            if (!$mayChange($heldRole) && !in_array($heldRole, $storedRoles, true)) {
+                $storedRoles[] = $heldRole;
             }
         }
         $user->setRoles($storedRoles);
@@ -195,16 +256,18 @@ final class UserAdministrationGuard
         }
 
         // Compare effective roles plus (normalised) custom role names, so a
-        // custom Role named like a privileged role cannot be (un)assigned even
-        // where User::getRoles() would not let it grant anything.
-        $customNames = static fn (array $customRoles): array => array_map(
-            static fn (Role $r): string => strtoupper(trim((string) $r->getName())),
-            $customRoles,
-        );
-        if (self::privilegedRolesChanged(
-            [...$before['roles'], ...$customNames($before['customRoles'])],
-            [...$user->getRoles(), ...$customNames($user->getCustomRoles()->toArray())],
-        )) {
+        // custom Role named like a reserved role cannot be (un)assigned beyond
+        // the ceiling even where User::getRoles() would not let it grant anything.
+        $beforeNames = self::roleNameSet($before['roles'], $before['customRoles']);
+        $afterNames = self::roleNameSet($user->getRoles(), $user->getCustomRoles()->toArray());
+        $changed = array_merge(array_diff($beforeNames, $afterNames), array_diff($afterNames, $beforeNames));
+        $granted = array_diff($afterNames, $beforeNames);
+
+        $beyondCeiling = array_filter($changed, static fn (string $role): bool => !$mayChange($role));
+        $selfGrant = !$isNew && RoleCeiling::isSameUser($actor, $user)
+            && array_filter($granted, RoleCeiling::isSelfGrantForbidden(...)) !== [];
+
+        if ($beyondCeiling !== [] || $selfGrant) {
             $user->setRoles($before['storedRoles']);
             foreach ($user->getCustomRoles()->toArray() as $customRole) {
                 $user->removeCustomRole($customRole);
@@ -212,7 +275,9 @@ final class UserAdministrationGuard
             foreach ($before['customRoles'] as $customRole) {
                 $user->addCustomRole($customRole);
             }
-            $violations[] = 'user.validation.privileged_role_forbidden';
+            $violations[] = $selfGrant && $beyondCeiling === []
+                ? 'user.validation.self_grant_forbidden'
+                : 'user.validation.privileged_role_forbidden';
         }
 
         if ($isNew && $user->getTenant() === null) {
@@ -235,5 +300,55 @@ final class UserAdministrationGuard
         }
 
         return $violations;
+    }
+
+    /**
+     * Writes one audit event per grant or revoke of a role in
+     * {@see RoleNames::AUDITED_GRANTS} (top management, admin, instance and
+     * holding roles) — call after the flush that stored $user.
+     *
+     * @param array{roles: list<string>, storedRoles: list<string>, customRoles: list<Role>, tenant: ?Tenant}|null $before null for a new account
+     */
+    public function auditSensitiveRoleChanges(User $user, ?array $before): void
+    {
+        $beforeNames = $before === null ? [] : self::roleNameSet($before['roles'], $before['customRoles']);
+        $afterNames = self::roleNameSet($user->getRoles(), $user->getCustomRoles()->toArray());
+
+        foreach (RoleNames::AUDITED_GRANTS as $role) {
+            $had = in_array($role, $beforeNames, true);
+            $has = in_array($role, $afterNames, true);
+            if ($had === $has) {
+                continue;
+            }
+            $this->auditLogger->logCustom(
+                'user.sensitive_role_changed',
+                'User',
+                $user->getId(),
+                ['role' => $role, 'held' => $had],
+                ['role' => $role, 'held' => $has],
+                sprintf(
+                    'Role %s %s %s by %s',
+                    $role,
+                    $has ? 'granted to' : 'revoked from',
+                    $user->getUserIdentifier(),
+                    $this->actor()?->getUserIdentifier() ?? 'system',
+                ),
+            );
+        }
+    }
+
+    /**
+     * @param array<array-key, mixed> $roles
+     * @param iterable<Role> $customRoles
+     * @return list<string> normalised, unique
+     */
+    private static function roleNameSet(array $roles, iterable $customRoles): array
+    {
+        $names = array_map(static fn (mixed $r): string => RoleNames::normalise(is_scalar($r) ? (string) $r : ''), $roles);
+        foreach ($customRoles as $customRole) {
+            $names[] = RoleNames::normalise($customRole->getName());
+        }
+
+        return array_values(array_unique(array_filter($names, static fn (string $n): bool => $n !== '')));
     }
 }

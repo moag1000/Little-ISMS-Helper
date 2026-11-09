@@ -173,7 +173,7 @@ user:
     validation:
         avatar_format: 'Please upload a valid image (JPEG, PNG, GIF or WebP)'
         password_min_length: 'The password must be at least {{ limit }} characters long.'
-        privileged_role_forbidden: 'Only a super administrator may grant or revoke the roles Super Admin, Group CISO and Group Auditor. The change was not saved.'
+        privileged_role_forbidden: 'This role change is above your own role: group and super admin roles are granted only by a super administrator, other roles only by someone who holds them. The change was not saved.'
         tenant_not_assignable: 'You can only assign organizations you administer. The change was not saved.'
         import_email_unavailable: 'Skipped: %email% cannot be imported (e-mail address not available).'
         import_invalid_email: 'Skipped: invalid e-mail address "%email%".'
@@ -181,7 +181,9 @@ user:
         import_file_rejected: 'The file was rejected.'
         import_missing_fields: 'Row skipped: e-mail, first name or last name missing.'
         import_no_organisation: 'Skipped: no organisation can be assigned to %email%.'
-        import_role_skipped: 'Privileged role %role% not assigned to %email%.'
+        import_role_skipped: 'Role %role% not assigned to %email% (above your own role).'
+        self_grant_forbidden: 'You cannot give yourself the top management role. Another administrator grants it. The change was not saved.'
+        import_password_too_short: 'Skipped: the password for %email% is shorter than %min% characters.'
         import_row_failed: 'Row not imported: %error%'
     auth_provider:
         local: 'Local Authentication'

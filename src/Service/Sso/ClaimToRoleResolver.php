@@ -44,7 +44,7 @@ class ClaimToRoleResolver
 
             if (!SsoAccountLinkPolicy::mayAssignRole($provider, $mapping->getAssignedRole())) {
                 $traceLines[] = sprintf(
-                    'skip mapping priority=%d: privileged role %s not assignable by a tenant-owned provider',
+                    'skip mapping priority=%d: role %s is privileged or unknown, never assigned from claims',
                     $mapping->getPriority(),
                     $mapping->getAssignedRole(),
                 );
@@ -86,5 +86,25 @@ class ClaimToRoleResolver
             matched: false,
             trace: implode('; ', $traceLines),
         );
+    }
+
+    /**
+     * The roles this provider can hand out at login (active mappings, default
+     * and fallback role) — the only roles a login may add or remove on an
+     * account (S14). Privileged and unknown names are left out.
+     *
+     * @return list<string>
+     */
+    public function managedRoles(IdentityProvider $provider): array
+    {
+        $roles = [$provider->getDefaultRole(), (string) $provider->getDefaultFallbackRole()];
+        foreach ($this->repo->findActiveByProvider($provider) as $mapping) {
+            $roles[] = $mapping->getAssignedRole();
+        }
+
+        return array_values(array_unique(array_filter(
+            $roles,
+            static fn (string $role): bool => SsoAccountLinkPolicy::mayAssignRole($provider, $role),
+        )));
     }
 }

@@ -40,6 +40,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Service\User\UserCsvImporter;
 use App\Util\CsvSanitizer;
 use App\Util\ListPage;
 
@@ -122,6 +123,7 @@ class UserManagementController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
+            $this->userAdministrationGuard->auditSensitiveRoleChanges($user, null);
 
             // Audit log
             $this->auditLogger->logCustom(
@@ -377,9 +379,7 @@ class UserManagementController extends AbstractController
     #[IsGranted(UserVoter::CREATE)]
     public function import(
         Request $request,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $userPasswordHasher,
-        RoleRepository $roleRepository,
+        UserCsvImporter $userCsvImporter,
         TranslatorInterface $translator
     ): Response {
         if ($request->isMethod('POST')) {
@@ -401,85 +401,8 @@ class UserManagementController extends AbstractController
                 $this->addFlash('danger', $translator->trans('user.validation.import_file_rejected', [], 'user'));
                 return $this->redirectToRoute('user_management_import');
             }
-            $header = fgetcsv($handle, escape: '\\'); // Skip header
-
-            $imported = 0;
-            $errors = [];
-            $seenEmails = [];
-
-            while (($row = fgetcsv($handle, escape: '\\')) !== false) {
-                try {
-                    // Expected CSV format: email, first_name, last_name, password, is_active, roles
-                    $email = $row[0] ?? null;
-                    $firstName = $row[1] ?? null;
-                    $lastName = $row[2] ?? null;
-                    $password = $row[3] ?? null;
-                    $isActive = ($row[4] ?? 'yes') === 'yes';
-                    $roleNames = isset($row[5]) ? explode(',', $row[5]) : [];
-
-                    if (!$email || !$firstName || !$lastName) {
-                        $errors[] = $translator->trans('user.validation.import_missing_fields', [], 'user');
-                        continue;
-                    }
-
-                    // Invalid address or the same e-mail twice in one file (both rows would hit the unique key).
-                    $email = trim((string) $email);
-                    $emailKey = mb_strtolower($email);
-                    if (filter_var($email, FILTER_VALIDATE_EMAIL) === false || isset($seenEmails[$emailKey])) {
-                        $errors[] = $translator->trans(isset($seenEmails[$emailKey]) ? 'user.validation.import_duplicate_in_file' : 'user.validation.import_invalid_email', ['%email%' => $email], 'user');
-                        continue;
-                    }
-                    $seenEmails[$emailKey] = true;
-
-                    // Check if user already exists. Security hotfix: e-mail is
-                    // unique instance-wide, so the message must not tell a
-                    // tenant admin whether the account lives in another tenant.
-                    $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-                    if ($existingUser instanceof User) {
-                        $errors[] = $translator->trans('user.validation.import_email_unavailable', ['%email%' => $email], 'user');
-                        continue;
-                    }
-
-                    $user = new User();
-                    $user->setEmail($email);
-                    $user->setFirstName($firstName);
-                    $user->setLastName($lastName);
-                    $user->setIsActive($isActive);
-                    $user->setAuthProvider('local');
-                    // Security hotfix (admin scope): tenant admins import into
-                    // their own tenant (not tenantless/invisible users).
-                    if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-                        $actorTenant = $this->userAdministrationGuard->getActorTenant();
-                        if (!$this->userAdministrationGuard->canAssignTenant($actorTenant)) {
-                            $errors[] = $translator->trans('user.validation.import_no_organisation', ['%email%' => $email], 'user');
-                            continue;
-                        }
-                        $user->setTenant($actorTenant);
-                    }
-
-                    $user->setPassword($userPasswordHasher->hashPassword($user, $password ?: bin2hex(random_bytes(16))));
-
-                    foreach ($roleNames as $roleName) {
-                        $roleName = trim($roleName);
-                        $role = $roleRepository->findOneBy(['name' => $roleName]);
-                        if ($role && !$this->userAdministrationGuard->mayAssignRoleName((string) $role->getName())) {
-                            $errors[] = $translator->trans('user.validation.import_role_skipped', ['%role%' => $roleName, '%email%' => $email], 'user');
-                            continue;
-                        }
-                        if ($role) {
-                            $user->addCustomRole($role);
-                        }
-                    }
-
-                    $entityManager->persist($user);
-                    $imported++;
-                } catch (Exception $e) {
-                    $errors[] = $translator->trans('user.validation.import_row_failed', ['%error%' => $e->getMessage()], 'user');
-                }
-            }
-
+            ['imported' => $imported, 'errors' => $errors] = $userCsvImporter->import($handle);
             fclose($handle);
-            $entityManager->flush();
 
             $this->addFlash('success', $translator->trans('user.success.imported', ['count' => $imported], 'messages'));
 
@@ -608,6 +531,7 @@ class UserManagementController extends AbstractController
 
             $user->setUpdatedAt(new DateTimeImmutable());
             $entityManager->flush();
+            $this->userAdministrationGuard->auditSensitiveRoleChanges($user, $guardSnapshot);
 
             // Audit log with before/after values
             $newValues = [

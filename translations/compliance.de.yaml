@@ -152,6 +152,7 @@ compliance:
     delete_framework: 'Framework löschen'
     load_framework: 'Framework laden'
     load_framework_super_admin: 'Kataloge gelten für alle Organisationen dieser Instanz; laden kann sie der Super-Admin.'
+    shared_catalogue_super_admin: 'Gilt für alle Organisationen dieser Instanz; ändern kann es der Super-Admin.'
     open_framework: 'Framework öffnen'
     confirm_load: 'Möchten Sie dieses Framework wirklich laden?'
     loading: 'Wird geladen...'

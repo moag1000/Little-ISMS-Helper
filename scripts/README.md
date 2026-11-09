@@ -159,6 +159,7 @@ Lücke festschreibt, wird umgedreht, nicht gelöscht.
 | `ApiEvidenceFieldNamesTest` | Feld des Entity-Formulars mit Nachweisnamen ohne Markierung → rot; `#[ApiReadOnlyEvidence]`-Feld als freies Formularfeld → rot (`evidenceFieldsAreNotEditableInTheEntityForm`) | Formular-Ausnahme verbarg genau die Freigabefelder; nur `src/Entity/*.php` ohne Unterordner. Fund: Risikoakzeptanz (wer/wann) war im Formular frei eintragbar → jetzt schreibgeschützt; 23 weitere Nachweisfelder im Formular als „open since T" gelistet |
 | `McpReadOnlyToolsWriteNothingTest` (neu) | Jedes Tool mit `readOnlyHint` wird über `/mcp` aufgerufen (Ressourcen, Id, Suchbegriff), ein Doctrine-onFlush-Spion zählt Schreibzugriffe; `theSpySeesAWrite` beweist den Spion | `McpToolClassificationTest` sah nur Quelltext per Regex, Schreiben über aufgerufene Dienste blieb unsichtbar |
 | `OutboundUserUrlClientTest` | Guzzle-Brücke muss `NetworkExceptionInterface` mit `TransportException` des Wächters werfen (Positivkontrolle: öffentliche Adresse geht durch); Scan erkennt Guzzle, PSR-18, curl, Sockets, SOAP, Web-Push, Stream-Wrapper auf URLs (`theScanRecognisesEveryKindOfClient`) | Jede `\Throwable` zählte als Abwehr; Regex kannte nur `HttpClientInterface`. Fund: Web-Push (S11 behebt) |
+| Gate 82 + `RegulatoryWorkflowRegistryTest` (S17) | `approver_role: ROLE_CAPA_OWNER` in `capa.yaml` → Gate rot; Schritte unter `regulatory_metadata.steps` verschoben → Gate rot; Datenbankschritt auf `ROLE_RISK_MANAGER` gesetzt → `aDriftedRoleIsReportedAndAlignedInPlace` meldet die Abweichung | Gate und Loader lasen `regulatory_metadata.steps`, die YAMLs haben `metadata.steps`: kein Schritt geprüft, Loader lieferte null; Tests nutzten ein Stub im Loader-Layout |
 | Gate 62, 71–75, 77–81, 83–87, 89, 90 | Je Gate eine Mutation pro Schreibweise (andere Anführungszeichen, umgekehrte Klassenreihenfolge, Macro-Hash, Zeilenumbruch im Aufruf, Yoda-Vergleich, nullsafe/first-class callable, Alias-Variable, Partial statt Seite) | Funde behoben: Seitensemantik/Stimulus/Datumsanzeige in Templates, CSV-Zelle in `TisaxConsolidateCommand`, Risikostufen-Literale in Alva-Hinweisen und Risikoregister-Export (jetzt Skala der Organisation), globale `mappedControls` in 2 Templates, Gate 89 Negationsfehler |
 
 Bekannte Restlücken (bewusst nicht erkannt, je Gate): 87 Variablen namens `$rating`; 84 `get…Id`/`…Number`-Getter,
@@ -380,6 +381,9 @@ u. a.) gegen `role_hierarchy` in `config/packages/security.yaml`. Eine unbekannt
 wird nie vergeben: der Schritt wartet auf niemanden, niemand wird benachrichtigt. Außerdem
 darf kein Freigabeschritt und keine approve/reject/verify-Transition `ROLE_USER` tragen
 (das hat jede angemeldete Person). Ein Eigner am Datensatz ist eine Beziehung, keine Rolle.
+Seit S17 liest das Gate die Schritte dort, wo der Loader sie liest (`metadata.steps`), lehnt die
+verschachtelte Form `regulatory_metadata.steps` ab und verlangt für jede Datei unter
+`config/workflows/regulatory/` Schritte, `title` und `entity_type`.
 `PENDING` im Skript nimmt Rollen auf, die eine andere Änderung gerade einführt. Keine Baseline.
 
 **CI-Integration:** Gate 82 im `code-quality`-Job.

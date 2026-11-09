@@ -368,6 +368,20 @@ Hinweise für den Betrieb:
 - **Abmelden** braucht ein CSRF-Token im Link (`logout_path()`); ein nackter Aufruf von `/logout`
   meldet nicht mehr ab.
 
+### Rollen aus SSO (S14)
+
+- Das Claim-zu-Rollen-Mapping (Admin > SSO > Anbieter) ist eine Auswahlliste: nur bekannte,
+  nicht privilegierte Rollen bis zur eigenen Rolle. Konzern- und Super-Admin-Rollen kommen nie aus
+  Claims, auch nicht über einen globalen Anbieter; sie vergibt der Super-Admin in der Benutzerverwaltung.
+  Bestehende Mappings mit einer solchen oder einer frei getippten Rolle werden bei der Anmeldung
+  übergangen und auf der Anbieterseite als Warnung gezeigt.
+- Bei jeder Anmeldung ändert der Anbieter nur die Rollen, die er selbst vergeben kann (Mapping-, Standard-
+  und Fallback-Rolle). Leitung, Persona- und andere Rollen aus der Benutzerverwaltung bleiben erhalten.
+- `email_verified` gilt für den Claim `email`. Wird das Konto über einen anderen (gemappten) Claim
+  gefunden, verknüpft es nur, wenn dieser dieselbe Adresse trägt.
+- SAML: die Anmeldung setzt ein kurzlebiges Cookie `saml_binding` (`SameSite=None; Secure`, 10 Minuten);
+  eine Antwort, die in einem anderen Browser ankommt, wird abgewiesen (Login-CSRF). SAML braucht HTTPS.
+
 ## Troubleshooting
 
 ### OAuth-Fehler

@@ -199,15 +199,16 @@ final class UserType extends AbstractType implements SectionMapInterface
             if (!$isEdit) {
                 $rolesOptions['data'] = ['ROLE_USER'];
             }
-            // Security hotfix (admin scope): privileged roles are offered to
-            // SUPER_ADMIN only. The controller enforces this server-side too.
+            // Role ceiling (S14): only roles the actor may grant to this
+            // account are offered (privileged ones to SUPER_ADMIN only, never
+            // ROLE_TOP_MGMT to oneself). The controller enforces it server-side
+            // and carries hidden roles the account already holds over.
             $canManagePrivileged = $this->userAdministrationGuard->canManagePrivilegedRoles();
-            if (!$canManagePrivileged) {
-                $rolesOptions['choices'] = array_filter(
-                    $rolesOptions['choices'],
-                    static fn (string $role): bool => !in_array($role, UserAdministrationGuard::PRIVILEGED_ROLES, true),
-                );
-            }
+            $target = $builder->getData();
+            $rolesOptions['choices'] = $this->userAdministrationGuard->grantableRoles(
+                $rolesOptions['choices'],
+                $target instanceof User && $target->getId() !== null ? $target : null,
+            );
             // Non-SUPER_ADMIN actors may only assign tenants of their own tree.
             $assignableTenantIds = $canManagePrivileged ? null : ($this->userAdministrationGuard->assignableTenantIds() ?: [0]);
 
