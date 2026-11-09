@@ -50,7 +50,7 @@ person:
         badge: 'e.g. 123456'
     help:
         badge_id: 'Unique badge/ID number for access control'
-        linked_user: 'Optional: Link this person to a user account in the system'
+        linked_user: 'The person acts through this account (owner, DPO, approver). Only managers link it.'
         access_valid_from: 'From when is access valid for this person?'
         access_valid_until: 'Until when is access valid? (Empty = unlimited)'
         badge: 'Internal ID/badge number (optional)'

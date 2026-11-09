@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Compliance\Fulfillment;
 
 use App\Entity\AuditChecklist;
+use App\Repository\AuditChecklistRepository;
 use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\ChangeRequest;
@@ -128,6 +129,9 @@ final class RecordChangeCollector implements ResetInterface
                 }
                 continue;
             }
+            if ($entity instanceof InternalAudit) {
+                $this->collectReportedVerdicts($entity, $uow, $args->getObjectManager(), $tenant, $key);
+            }
             $types = [];
             foreach (self::CHECK_TYPES as $class => $classTypes) {
                 if ($entity instanceof $class && self::relevantChange($entity, $class, $uow)) {
@@ -143,6 +147,32 @@ final class RecordChangeCollector implements ResetInterface
             $this->pending[$key] ??= ['tenant' => $tenant, 'types' => [], 'audited' => []];
             foreach ([...$types, ...self::SUMMARY_CHECK_TYPES] as $type) {
                 $this->pending[$key]['types'][$type] = true;
+            }
+        }
+    }
+
+    /**
+     * S20: verdicts count from the report on ({@see AuditChecklistRepository::REPORTED_AUDIT_STATUSES}) —
+     * an audit that reaches or leaves that state moves the fulfilment of the requirements it judged.
+     */
+    private function collectReportedVerdicts(InternalAudit $audit, UnitOfWork $uow, EntityManagerInterface $em, Tenant $tenant, int $key): void
+    {
+        if (!$uow->isScheduledForUpdate($audit)) {
+            return;
+        }
+        $change = $uow->getEntityChangeSet($audit)['status'] ?? null;
+        if ($change === null) {
+            return;
+        }
+        $reported = AuditChecklistRepository::REPORTED_AUDIT_STATUSES;
+        if (in_array($change[0], $reported, true) === in_array($change[1], $reported, true)) {
+            return;
+        }
+        foreach ($em->getRepository(AuditChecklist::class)->findBy(['audit' => $audit]) as $item) {
+            $requirement = $item->getRequirement();
+            if ($requirement instanceof ComplianceRequirement && $item->getVerifiedAt() !== null) {
+                $this->pending[$key] ??= ['tenant' => $tenant, 'types' => [], 'audited' => []];
+                $this->pending[$key]['audited'][(int) $requirement->getId()] = $requirement;
             }
         }
     }

@@ -149,6 +149,16 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Laden die alten Caches. Offline erscheint nur noch die Offline-Seite.
 - **Exporte** und Downloads verlangen überall eine Rolle (`#[IsGranted]`), auch die
   Compliance-Exporte. Geplante Berichte bieten nur Berichtsarten aktiver Module an.
+- **Zuständigkeit (S20):** Wer an einem Datensatz verantwortlich ist, darf dort handeln (Freigaben,
+  Meldung, Abschluss). Deshalb verknüpft nur noch ein Manager eine Person mit einem Benutzerkonto (das
+  Feld ist für andere schreibgeschützt, jede Änderung steht im Audit-Log), und wer kein Manager ist,
+  trägt sich an einem bestehenden Datensatz nicht selbst als Eigner, Bearbeiter, Freigeber oder
+  Vertretung ein — außer er hält ihn schon. Das gilt für Formular, REST, MCP und Import (Formular:
+  Fehlermeldung, sonst 403). Beim Anlegen darf man sich weiter selbst eintragen. Bitte nach dem Update
+  in Personen prüfen, ob jede Verknüpfung mit einem Konto stimmt.
+- **Audit-Checkliste (S20, ISO 27001 9.2):** Urteile speichern nur Auditoren, Manager und Leitauditor
+  oder Auditteam des Audits. Ein Urteil wirkt erst auf die Erfüllung, wenn das Audit berichtet ist
+  (Status „berichtet“, „freigegeben“, „abgeschlossen“); Urteile laufender Audits zeigen sich danach.
 
 ### SSO (Azure, SAML, OIDC)
 

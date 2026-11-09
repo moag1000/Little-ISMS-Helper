@@ -8,6 +8,7 @@ use App\Entity\AuditChecklist;
 use App\Entity\InternalAudit;
 use App\Entity\User;
 use App\Repository\AuditChecklistRepository;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\Audit\AuditChecklistGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +29,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class AuditChecklistController extends AbstractController
 {
     private const array LOCKED_STATUSES = ['reported', 'approved', 'closed'];
+
+    /**
+     * S20 (ISO 27001 9.2.2 objectivity): verdicts come from the audit's lead auditor and team
+     * (RECORD_RESPONSIBLE of the audit) or an auditor — never from anybody of the organisation.
+     */
+    public const string AUDIT_WORK = 'is_granted("ROLE_AUDITOR") or is_granted("' . RecordResponsibleVoter::RESPONSIBLE . '", subject)';
     private const array STATUSES = ['not_checked', 'compliant', 'partial', 'non_compliant', 'not_applicable'];
 
     public function __construct(
@@ -66,14 +73,15 @@ final class AuditChecklistController extends AbstractController
             'checklist_items' => $items,
             'grouped_items' => $grouped,
             'stats' => $stats,
-            'locked' => $locked,
+            // read-only for whoever may not judge (S20): no save or generate button
+            'locked' => $locked || !$this->isGranted(new Expression(self::AUDIT_WORK), $internalAudit),
             'frameworks' => $this->generator->frameworksFor($internalAudit),
         ]);
     }
 
     /** After the scope changed: adds the items of new requirements, keeps every verdict. */
     #[Route('/audit/{id}/checklist/generate', name: 'app_audit_checklist_generate', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(new Expression(self::AUDIT_WORK), subject: 'internalAudit')]
     #[IsCsrfTokenValid(new Expression('"audit_checklist_generate_" ~ args["internalAudit"].getId()'))]
     public function generate(InternalAudit $internalAudit): Response
     {
@@ -91,7 +99,7 @@ final class AuditChecklistController extends AbstractController
     }
 
     #[Route('/audit/{id}/checklist/save', name: 'app_audit_checklist_save', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(new Expression(self::AUDIT_WORK), subject: 'internalAudit')]
     public function checklistSave(Request $request, InternalAudit $internalAudit): Response
     {
         $data = json_decode($request->getContent(), true) ?? [];
