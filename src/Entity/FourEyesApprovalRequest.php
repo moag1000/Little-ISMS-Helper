@@ -29,6 +29,8 @@ class FourEyesApprovalRequest
     public const ACTION_MAPPING_OVERRIDE = 'mapping_override';
     public const ACTION_BULK_TAG_REMOVAL = 'bulk_tag_removal';
     public const ACTION_IMPORT_LARGE_COMMIT = 'import_large_commit';
+    /** S27: a four-eyes lifecycle transition waiting for the second person's own confirmation. */
+    public const ACTION_LIFECYCLE_TRANSITION = 'lifecycle_transition';
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_APPROVED = 'approved';

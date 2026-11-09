@@ -167,6 +167,12 @@ export default class extends Controller {
                 this.#notify(data.message ?? faT('error_status', { '%status%': res.status }), 'danger');
                 return;
             }
+            // 202: four eyes — a counter-sign request waits for the second person (S27);
+            // the status stays until that person confirms.
+            if (res.status === 202) {
+                this.#notify(data.message ?? '', 'info');
+                return;
+            }
             // Success — reload to reflect new status
             window.location.reload();
         } catch (err) {

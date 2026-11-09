@@ -62,6 +62,11 @@ php bin/console doctrine:migrations:diff  # after entity changes
 php bin/phpunit
 php bin/phpunit tests/Service/RiskServiceTest.php  # specific test
 
+# Cloud threads (PHP 8.3, GitHub only over git): vendor/ in ~30 s, then PHPStan as in CI
+python3 scripts/setup/cloud_vendor.py
+vendor/bin/phpstan analyse -c phpstan.cloud.neon --memory-limit=2G --no-progress
+# own PHPStan rules use static reflection only (no is_subclass_of/class_exists) — scripts/README.md "Cloud-Threads"
+
 # Workflows (Regulatory Compliance)
 php bin/console app:generate-regulatory-workflows  # Align DB rows with the YAML (operators: /quick-fix)
 php bin/console app:generate-regulatory-workflows --dry-run  # Only list what differs
@@ -520,7 +525,14 @@ Every entity with a `status` field that goes through staged transitions uses **S
 `LifecycleVoter` via `isGrantedForUser`: four-eyes approver, else `$user`, else the logged-in user); system callers pass
 `automatic: true`, callers that checked a narrower rule (approval-chain step, risk-acceptance tier) pass
 `approverAuthorityVerified: true`; transitions without roles are service-only. Durable test
-`tests/Lifecycle/LifecycleServiceRoleContractTest`.
+`tests/Lifecycle/LifecycleServiceRoleContractTest`. S27: approval-chain steps (`workflow_instance_lifecycle`, not
+`start`) run only through `WorkflowService` (`canUserApprove`; ROLE_TOP_MGMT / ROLE_DPO steps without admin
+override, `Security\Authority\ExplicitRole`); a four-eyes approver is never taken from the request — the step files a
+counter-sign request (`Lifecycle\FourEyes\LifecycleCountersign`) that the second person confirms signed in, and
+`TransitionAccess` refuses an approver who is not the session user (`GenericEndpointRespectsStepAuthorityTest`,
+`EvidenceNamesActorTest`). Audit work is `AUDIT_WORK` (`AuditWorkVoter`: auditors, managers, the audit's
+responsible people), never a bare `ROLE_AUDITOR`, which top management and the group roles inherit to read
+(`tests/Security/AuditWorkPathsTest`).
 
 **Two-layer config:**
 - Static baseline: `config/workflows/<entity>.yaml` (places + transition wiring — immutable at runtime)

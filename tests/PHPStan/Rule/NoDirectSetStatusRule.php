@@ -57,9 +57,12 @@ final class NoDirectSetStatusRule implements Rule
 
         $classNames = $type->getObjectClassNames();
         $isLifecycleEntity = false;
-        foreach ($classNames as $className) {
+        // Static reflection (ClassReflection::is), never is_subclass_of(): that autoloads
+        // the analysed class at run time and fails when PHPStan runs on an older PHP
+        // than the code (cloud threads, scripts/README.md "Cloud-Threads").
+        foreach ($type->getObjectClassReflections() as $reflection) {
             foreach (EntityTypeRegistry::managedEntityClasses() as $managed) {
-                if ($className === $managed || is_subclass_of($className, $managed)) {
+                if ($reflection->is($managed)) {
                     $isLifecycleEntity = true;
                     break 2;
                 }
