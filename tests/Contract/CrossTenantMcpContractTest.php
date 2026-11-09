@@ -41,6 +41,7 @@ final class CrossTenantMcpContractTest extends WebTestCase
     private Tenant $own;
     private Tenant $foreign;
     private string $token;
+    private User $tokenUser;
     private string $marker;
     private string $base;
 
@@ -70,6 +71,7 @@ final class CrossTenantMcpContractTest extends WebTestCase
         $settings->setEnabled($this->own, true);
         $settings->setWriteEnabled($this->own, true);
 
+        $this->tokenUser = $user;
         $this->token = static::getContainer()->get(ApiTokenManager::class)->mint($user, 'Contract', canWrite: true);
     }
 
@@ -177,6 +179,10 @@ final class CrossTenantMcpContractTest extends WebTestCase
             }
         }
         $this->em()->flush();
+        // The probes above use up most of a token's 100 calls per minute (`api` limiter); the second
+        // round runs on a fresh token of the same person, so a 429 never passes for a changed number.
+        $this->token = static::getContainer()->get(ApiTokenManager::class)
+            ->mint($this->em()->find(User::class, $this->tokenUser->getId()) ?? $this->tokenUser, 'Contract 2', canWrite: true);
         foreach ($counters as $name => $before) {
             $after = $this->call($name);
             self::assertSame($before, self::numbers($after), $name . ' counts records of another organisation: ' . mb_substr((string) json_encode($after), 0, 1500));
