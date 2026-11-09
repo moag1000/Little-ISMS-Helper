@@ -2,6 +2,7 @@
 {% trans_default_domain 'tisax_isa' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_table.html.twig' as _fa_table %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
@@ -78,6 +79,10 @@
                 }) }}
             </div>
         </div>
+
+        {% if catalogueNote %}
+            {{ _fa_alert.render({ variant: 'warning', class: 'mt-3', body: catalogueNote|trans({}, 'tisax_isa') }) }}
+        {% endif %}
 
         <div class="d-flex gap-2 mt-3">
             <form method="post" action="{{ path('app_tisax_import_preview', { _locale: app.request.locale }) }}">

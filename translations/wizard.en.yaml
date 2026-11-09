@@ -179,6 +179,7 @@ wizard:
         duties_overdue: 'Duties overdue'
         duties_overdue_desc: '%overdue% of %total% open duties are overdue (%types%).'
         no_records: 'No records'
+        tlpt_not_recent: 'No closed TLPT within the last 36 months'
         records_incomplete: 'Details missing'
         records_incomplete_desc: '%open% of %total% records lack required details.'
         no_management_decision: 'No top-management decision recorded'
@@ -678,7 +679,7 @@ wizard:
         dora_25_pentest: "Penetration Tests (Art. 25)"
         dora_25_pentest_desc: "Penetration tests conducted"
         dora_26_tlpt: "TLPT (Art. 26)"
-        dora_26_tlpt_desc: "Threat-Led Penetration Testing (if required)"
+        dora_26_tlpt_desc: "Closed threat-led penetration test with report within the last 36 months (if required)"
         dora_28_strategy: "Third-Party Strategy (Art. 28)"
         dora_28_strategy_desc: "Strategy on ICT third-party risk approved by the management body"
         dora_29_concentration: "Concentration Risk (Art. 29)"

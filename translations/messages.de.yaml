@@ -590,31 +590,6 @@ data:
         error:
             invalid_token: 'Ungültiges CSRF-Token'
             no_entities: 'Keine Entitäten ausgewählt'
-    import:
-        title: 'Daten importieren'
-        upload: 'Import-Datei hochladen'
-        preview: Import-Vorschau
-        execute: 'Import ausführen'
-        select_file: 'JSON-Datei auswählen'
-        upload_and_preview: 'Hochladen und Vorschau'
-        process: Import-Prozess
-        requirements: Import-Anforderungen
-        file_format: Dateiformat
-        before_importing: 'Vor dem Import'
-        limitations: Einschränkungen
-        warning:
-            critical: 'Kritische Warnung: Datenimport kann bestehende Daten überschreiben.'
-            backup_first: 'Erstellen Sie immer ein Backup vor dem Import'
-            preview_mode: 'Dieses Feature befindet sich im Vorschaumodus'
-            not_implemented: 'Import-Funktionalität ist noch nicht vollständig implementiert'
-        stats:
-            total_entities: 'Entitäten gesamt'
-            total_records: 'Datensätze gesamt'
-            status: Status
-        error:
-            invalid_token: 'Ungültiges CSRF-Token'
-            no_file: 'Keine Datei hochgeladen'
-            invalid_file: 'Ungültige Datei: %error%'
     setup:
         title: Setup-Assistent
         link: 'Link zum bestehenden Deployment-Assistenten'
@@ -1542,18 +1517,6 @@ clause:
     9: 'Klausel 9 - Bewertung der Leistung'
     10: 'Klausel 10 - Verbesserung'
 data_management:
-    import:
-        step_upload: 'Schritt 1: Datei hochladen'
-        step_preview: 'Schritt 2: Vorschau prüfen'
-        step_confirm: 'Schritt 3: Import bestätigen'
-        step_validate: 'Schritt 4: Daten validieren'
-        format_json: 'Format: JSON (aus Little ISMS Helper Export)'
-        format_export: 'Verwenden Sie nur Export-Dateien aus demselben System'
-        ensure_disk_space: 'Stellen Sie ausreichend Speicherplatz sicher'
-        plan_downtime: 'Planen Sie Wartungsfenster für große Imports'
-        test_small: 'Testen Sie zuerst mit kleinem Datensatz'
-        validation_required: 'Validierung ist erforderlich vor dem Import'
-        no_duplicate_detection: 'Keine automatische Duplikatserkennung - Überprüfen Sie manuell'
     export:
         includes_all_records: 'Export enthält alle Datensätze der Organisation'
         sensitive_data_warning: 'WARNUNG: Export kann vertrauliche Daten enthalten (DSGVO-relevant)'

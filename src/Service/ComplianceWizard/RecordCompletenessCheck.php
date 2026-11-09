@@ -24,7 +24,8 @@ use Doctrine\ORM\QueryBuilder;
  *
  * Config (from the category provider, never from input): `entity` (class),
  * `where` (field => value, or field => list of values), `since` ({field, months}: only recent records),
- * `fields` (all must be filled: text not empty, flag true, other — dates, to-one relations — not null).
+ * `fields` (all must be filled: text not empty, flag true, other — dates, to-one relations — not null),
+ * `gap_title` (gap shown when no record matches, e.g. "no closed TLPT within 36 months").
  * Score = share of complete records. No record is "no data".
  */
 final class RecordCompletenessCheck
@@ -43,13 +44,14 @@ final class RecordCompletenessCheck
         $class = (string) ($check['entity'] ?? '');
         $fields = array_values(array_filter((array) ($check['fields'] ?? []), 'is_string'));
         $details = ['type' => 'record_completeness', 'entity' => $class, 'fields' => $fields];
+        $noData = (string) ($check['gap_title'] ?? 'wizard.gap.no_records');
         if (!$tenant instanceof Tenant || !class_exists($class) || $fields === []) {
-            return NoDataResult::build('wizard.gap.no_records', (string) ($check['route'] ?? 'app_dashboard'), $check, $details + ['total' => 0]);
+            return NoDataResult::build($noData, (string) ($check['route'] ?? 'app_dashboard'), $check, $details + ['total' => 0]);
         }
 
         $total = $this->count($this->base($class, $check, $tenant, $today ?? new DateTimeImmutable('today')));
         if ($total === 0) {
-            return NoDataResult::build('wizard.gap.no_records', (string) ($check['route'] ?? 'app_dashboard'), $check, $details + ['total' => 0]);
+            return NoDataResult::build($noData, (string) ($check['route'] ?? 'app_dashboard'), $check, $details + ['total' => 0]);
         }
 
         $complete = $this->base($class, $check, $tenant, $today ?? new DateTimeImmutable('today'));

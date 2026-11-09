@@ -207,6 +207,8 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
     {
         $tenant = $this->tenant($source);
         $user = $this->user($actor, $tenant);
+        // Building the record is test setup, not an act of the previous request's account (S20 guard).
+        static::getContainer()->get('security.token_storage')->setToken(null);
         $connection = $this->em()->getConnection();
         $connection->beginTransaction(); // savepoint: a failed insert must not abort the test's transaction
         try {

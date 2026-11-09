@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Library;
 
 use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceRequirement;
+use App\Entity\Tenant;
 use App\Repository\ComplianceRequirementRepository;
 use App\Util\CsvSanitizer;
 use Symfony\Component\Yaml\Yaml;
@@ -34,9 +36,9 @@ final class LibraryRoundtripService
      * BSI and TISAX importers. Root-level requirements become "bausteine"
      * with their children as "anforderungen".
      */
-    public function exportYaml(ComplianceFramework $framework): string
+    public function exportYaml(ComplianceFramework $framework, ?Tenant $tenant = null): string
     {
-        $data = $this->buildExportData($framework);
+        $data = $this->buildExportData($framework, $tenant);
 
         return Yaml::dump($data, 8, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
     }
@@ -48,7 +50,7 @@ final class LibraryRoundtripService
      *          requirement_id, parent_requirement_id, title, description,
      *          category, priority, requirement_type
      */
-    public function exportCsv(ComplianceFramework $framework): string
+    public function exportCsv(ComplianceFramework $framework, ?Tenant $tenant = null): string
     {
         $rows = [];
 
@@ -66,10 +68,7 @@ final class LibraryRoundtripService
             'requirement_type',
         ];
 
-        $requirements = $this->requirementRepository->findBy(
-            ['framework' => $framework],
-            ['requirementId' => 'ASC'],
-        );
+        $requirements = $this->requirementsOf($framework, $tenant);
 
         foreach ($requirements as $req) {
             $rows[] = [
@@ -107,7 +106,7 @@ final class LibraryRoundtripService
      *
      * @return array<string, mixed>
      */
-    public function buildExportData(ComplianceFramework $framework): array
+    public function buildExportData(ComplianceFramework $framework, ?Tenant $tenant = null): array
     {
         $metadata = [
             'code' => $framework->getCode(),
@@ -119,10 +118,7 @@ final class LibraryRoundtripService
         ];
 
         // Load all requirements and organise hierarchically
-        $allRequirements = $this->requirementRepository->findBy(
-            ['framework' => $framework],
-            ['requirementId' => 'ASC'],
-        );
+        $allRequirements = $this->requirementsOf($framework, $tenant);
 
         // Separate root (core) and children (detailed)
         $roots = [];
@@ -167,5 +163,24 @@ final class LibraryRoundtripService
             'metadata' => $metadata,
             'bausteine' => $bausteine,
         ];
+    }
+
+    /**
+     * The catalogue rows plus the exporting organisation's own uploads. A row
+     * another organisation uploaded (TISAX self-assessment, `uploadTenant`) is
+     * that organisation's data — the Doctrine tenant filter does not know the
+     * column, so the export filters it here.
+     *
+     * @return list<ComplianceRequirement>
+     */
+    private function requirementsOf(ComplianceFramework $framework, ?Tenant $tenant): array
+    {
+        $rows = $this->requirementRepository->findBy(['framework' => $framework], ['requirementId' => 'ASC']);
+
+        return array_values(array_filter(
+            $rows,
+            static fn (ComplianceRequirement $r): bool => $r->getUploadTenant() === null
+                || ($tenant !== null && $r->getUploadTenant()->getId() === $tenant->getId()),
+        ));
     }
 }

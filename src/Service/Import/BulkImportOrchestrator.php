@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Service\Owner\OwnerText;
 use App\Service\Owner\OwnerTextResolver;
+use App\Service\Upload\ProtectedUploads;
 
 /**
  * High-level orchestrator for the bulk-import pipeline.
@@ -65,6 +66,7 @@ class BulkImportOrchestrator
         private readonly ?FteRecorderService $fteRecorder = null,
         private readonly ?EntityManagerRecovery $emRecovery = null,
         private readonly ?OwnerTextResolver $ownerTexts = null,
+        private readonly ?ProtectedUploads $protectedUploads = null,
     ) {}
 
     // -------------------------------------------------------------------------
@@ -182,7 +184,7 @@ class BulkImportOrchestrator
         // The file is located in the upload dir; we find it by listing files
         // matching the batch's source-file hash (best-effort) or fall back to
         // scanning for a file with hash that matches.
-        $storedPath = $this->resolveStoredFilePath($batch->getSourceFileHash());
+        $storedPath = $this->storedFilePath($batch);
 
         $parsed = $this->parser->parse($storedPath);
 
@@ -318,7 +320,7 @@ class BulkImportOrchestrator
      */
     private function doCommit(BulkImportBatch $batch): void
     {
-        $storedPath = $this->resolveStoredFilePath($batch->getSourceFileHash());
+        $storedPath = $this->storedFilePath($batch);
         $parsed     = $this->parser->parse($storedPath);
 
         $config = new DeltaConfig(
@@ -524,11 +526,23 @@ class BulkImportOrchestrator
     }
 
     /**
-     * Locate the stored file on disk by scanning the upload directory for a
-     * file whose SHA-256 matches the batch's source-file hash.
+     * The stored upload of a batch: its source document's file, resolved by
+     * ProtectedUploads (S19) and confined to the upload directory. Batches from
+     * before the source document fall back to a SHA-256 scan of the directory.
      *
-     * @throws \RuntimeException when no matching file is found
+     * @throws ImportFailedException when no matching file is found
      */
+    public function storedFilePath(BulkImportBatch $batch): string
+    {
+        $root = realpath($this->uploadDir);
+        $path = $this->protectedUploads?->resolve($batch->getSourceDocument()?->getFilePath());
+        if ($root !== false && $path !== null && str_starts_with($path, $root . DIRECTORY_SEPARATOR)) {
+            return $path;
+        }
+
+        return $this->resolveStoredFilePath($batch->getSourceFileHash());
+    }
+
     private function resolveStoredFilePath(string $fileHash): string
     {
         if (!is_dir($this->uploadDir)) {

@@ -24,6 +24,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AuditChecklistRepository extends ServiceEntityRepository
 {
+    /** Audits whose verdicts feed fulfilment: the report is out (rework after rejection does not count). */
+    public const array REPORTED_AUDIT_STATUSES = ['reported', 'approved', 'closed', 'completed'];
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, AuditChecklist::class);
@@ -250,12 +253,16 @@ class AuditChecklistRepository extends ServiceEntityRepository
     public function findVerdictsSince(\App\Entity\Tenant $tenant, \DateTimeInterface $since): array
     {
         return $this->createQueryBuilder('ac')
+            ->innerJoin('ac.audit', 'a')
             ->where('ac.tenant = :tenant')
             ->andWhere('ac.verifiedAt >= :since')
             ->andWhere('ac.verificationStatus IN (:verdicts)')
+            // S20: a verdict counts once the audit is reported — not while anybody could still change it
+            ->andWhere('a.status IN (:reported)')
             ->setParameter('tenant', $tenant)
             ->setParameter('since', $since)
             ->setParameter('verdicts', ['compliant', 'partial', 'non_compliant'])
+            ->setParameter('reported', self::REPORTED_AUDIT_STATUSES)
             ->orderBy('ac.verifiedAt', \SortDirection::Descending)
             ->addOrderBy('ac.id', \SortDirection::Descending)
             ->getQuery()

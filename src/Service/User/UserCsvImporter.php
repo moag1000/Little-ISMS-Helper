@@ -9,9 +9,9 @@ use App\Entity\User;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Security\UserAdministrationGuard;
+use App\Service\AuditLogger;
 use App\Service\PasswordPolicyResolver;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
@@ -24,8 +24,10 @@ use Throwable;
  * ceiling ({@see UserAdministrationGuard::mayAssignRoleName()}), a given
  * password must meet the organisation's minimum length
  * ({@see PasswordPolicyResolver}); an empty password column becomes a random
- * one (the person resets it). Tenant admins import into their own
- * organisation.
+ * one (the person resets it). Every imported user belongs to the importing
+ * person's current organisation — the super admin's too (W9: users without an
+ * organisation are invisible to every organisation and outside the tenant
+ * filter); one audit batch for the file.
  */
 final class UserCsvImporter
 {
@@ -36,8 +38,8 @@ final class UserCsvImporter
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly UserAdministrationGuard $userAdministrationGuard,
         private readonly PasswordPolicyResolver $passwordPolicyResolver,
-        private readonly Security $security,
         private readonly TranslatorInterface $translator,
+        private readonly AuditLogger $auditLogger,
     ) {
     }
 
@@ -51,37 +53,52 @@ final class UserCsvImporter
     {
         fgetcsv($handle, escape: '\\'); // header
 
-        $imported = 0;
+        /** @var list<User> $imported */
+        $imported = [];
         $errors = [];
         $seenEmails = [];
-        $isSuperAdmin = $this->security->isGranted('ROLE_SUPER_ADMIN');
         $actorTenant = $this->userAdministrationGuard->getActorTenant();
 
         while (($row = fgetcsv($handle, escape: '\\')) !== false) {
             try {
-                $error = $this->importRow($row, $seenEmails, $isSuperAdmin, $actorTenant, $errors);
+                $error = $this->importRow($row, $seenEmails, $actorTenant, $errors, $imported);
                 if ($error !== null) {
                     $errors[] = $error;
-                    continue;
                 }
-                $imported++;
             } catch (Throwable $e) {
                 $errors[] = $this->trans('user.validation.import_row_failed', ['%error%' => $e->getMessage()]);
             }
         }
 
         $this->entityManager->flush();
+        if ($imported !== []) {
+            $this->auditLogger->logBulk(
+                'user.imported',
+                'User',
+                ['count' => count($imported), 'source' => 'csv'],
+                array_map(static fn (User $u): array => [
+                    'action' => 'user.imported',
+                    'entity_id' => $u->getId(),
+                    'new_values' => [
+                        'is_active' => $u->isActive(),
+                        'roles' => array_values(array_map(static fn ($r): ?string => $r->getName(), $u->getCustomRoles()->toArray())),
+                    ],
+                ], $imported),
+                sprintf('CSV import: %d users', count($imported)),
+            );
+        }
 
-        return ['imported' => $imported, 'errors' => $errors];
+        return ['imported' => count($imported), 'errors' => $errors];
     }
 
     /**
      * @param array<int, string|null> $row
      * @param array<string, true> $seenEmails
      * @param list<string> $errors receives non-fatal notes (skipped roles)
+     * @param list<User> $imported receives the persisted user
      * @return string|null error that skips the row, null = imported
      */
-    private function importRow(array $row, array &$seenEmails, bool $isSuperAdmin, ?Tenant $actorTenant, array &$errors): ?string
+    private function importRow(array $row, array &$seenEmails, ?Tenant $actorTenant, array &$errors, array &$imported): ?string
     {
         $email = $row[0] ?? null;
         $firstName = $row[1] ?? null;
@@ -111,15 +128,12 @@ final class UserCsvImporter
             return $this->trans('user.validation.import_email_unavailable', ['%email%' => $email]);
         }
 
-        $tenant = null;
-        if (!$isSuperAdmin) {
-            if (!$this->userAdministrationGuard->canAssignTenant($actorTenant)) {
-                return $this->trans('user.validation.import_no_organisation', ['%email%' => $email]);
-            }
-            $tenant = $actorTenant;
+        if (!$actorTenant instanceof Tenant || !$this->userAdministrationGuard->canAssignTenant($actorTenant)) {
+            return $this->trans('user.validation.import_no_organisation', ['%email%' => $email]);
         }
+        $tenant = $actorTenant;
 
-        $minLength = $this->minPasswordLength($tenant ?? $actorTenant);
+        $minLength = $this->minPasswordLength($tenant);
         if ($password !== '' && mb_strlen($password) < $minLength) {
             return $this->trans('user.validation.import_password_too_short', ['%email%' => $email, '%min%' => $minLength]);
         }
@@ -130,9 +144,7 @@ final class UserCsvImporter
         $user->setLastName($lastName);
         $user->setIsActive($isActive);
         $user->setAuthProvider('local');
-        if ($tenant !== null) {
-            $user->setTenant($tenant);
-        }
+        $user->setTenant($tenant);
         $user->setPassword($this->passwordHasher->hashPassword($user, $password !== '' ? $password : bin2hex(random_bytes(16))));
 
         foreach ($roleNames as $roleName) {
@@ -149,13 +161,14 @@ final class UserCsvImporter
         }
 
         $this->entityManager->persist($user);
+        $imported[] = $user;
 
         return null;
     }
 
-    private function minPasswordLength(?Tenant $tenant): int
+    private function minPasswordLength(Tenant $tenant): int
     {
-        return $tenant instanceof Tenant ? $this->passwordPolicyResolver->resolveFor($tenant) : 8;
+        return $this->passwordPolicyResolver->resolveFor($tenant);
     }
 
     /**

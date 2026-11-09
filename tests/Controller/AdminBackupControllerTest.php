@@ -678,98 +678,16 @@ class AdminBackupControllerTest extends WebTestCase
         self::assertStringContainsString('App\\Entity\\Risk"', $content);
     }
 
-    // ========== IMPORT TESTS ==========
+    // ========== IMPORT (removed in W9) ==========
 
     #[Test]
-    public function testImportIndexRequiresAuthentication(): void
+    public function testRemovedJsonImportRoutesAreGone(): void
     {
-        $this->client->request('GET', '/en/admin/data/import');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testImportIndexRequiresAdminRole(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/admin/data/import');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testImportIndexDisplaysForAdmin(): void
-    {
+        // The JSON import never wrote anything (stub); the import hub is the one import entry.
         $this->loginAsUser($this->adminUser);
-        $this->client->request('GET', '/en/admin/data/import');
-        $this->assertResponseIsSuccessful();
-    }
-
-    #[Test]
-    public function testImportUploadRequiresAuthentication(): void
-    {
-        $this->client->request('POST', '/en/admin/data/import/upload');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testImportUploadRequiresAdminRole(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('POST', '/en/admin/data/import/upload');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testImportUploadRequiresPost(): void
-    {
-        $this->loginAsUser($this->adminUser);
-        $this->client->request('GET', '/en/admin/data/import/upload');
-        $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
-    }
-
-    #[Test]
-    public function testImportPreviewRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/admin/data/import/preview');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testImportPreviewRequiresAdminRole(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/admin/data/import/preview');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testImportPreviewRedirectsWithoutData(): void
-    {
-        $this->loginAsUser($this->adminUser);
-        $this->client->request('GET', '/en/admin/data/import/preview');
-        // Should redirect to import index if no data in session
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testImportExecuteRequiresAuthentication(): void
-    {
-        $this->client->request('POST', '/en/admin/data/import/execute');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testImportExecuteRequiresAdminRole(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('POST', '/en/admin/data/import/execute');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testImportExecuteRequiresPost(): void
-    {
-        $this->loginAsUser($this->adminUser);
-        $this->client->request('GET', '/en/admin/data/import/execute');
-        $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
+        foreach (['/en/admin/data/import', '/en/admin/data/import/preview'] as $url) {
+            $this->client->request('GET', $url);
+            $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        }
     }
 }

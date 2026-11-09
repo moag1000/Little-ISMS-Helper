@@ -608,31 +608,6 @@ data:
         error:
             invalid_token: 'Invalid CSRF token'
             no_entities: 'No entities selected'
-    import:
-        title: 'Data Import'
-        upload: 'Upload Import File'
-        preview: 'Import Preview'
-        execute: 'Execute Import'
-        select_file: 'Select JSON File'
-        upload_and_preview: 'Upload and Preview'
-        process: 'Import Process'
-        requirements: 'Import Requirements'
-        file_format: 'File Format'
-        before_importing: 'Before Importing'
-        limitations: Limitations
-        warning:
-            critical: 'Critical Warning: Data import can overwrite existing data.'
-            backup_first: 'Always create a backup before importing'
-            preview_mode: 'This feature is currently in preview mode'
-            not_implemented: 'Import functionality is not yet fully implemented'
-        stats:
-            total_entities: 'Total Entities'
-            total_records: 'Total Records'
-            status: Status
-        error:
-            invalid_token: 'Invalid CSRF token'
-            no_file: 'No file uploaded'
-            invalid_file: 'Invalid file: %error%'
     setup:
         title: 'Setup Wizard'
         link: 'Link to existing Deployment Wizard'
@@ -1809,18 +1784,6 @@ clause:
     9: 'Clause 9 - Performance evaluation'
     10: 'Clause 10 - Improvement'
 data_management:
-    import:
-        step_upload: 'Step 1: Upload file'
-        step_preview: 'Step 2: Review preview'
-        step_confirm: 'Step 3: Confirm import'
-        step_validate: 'Step 4: Validate data'
-        format_json: 'Format: JSON (from Little ISMS Helper export)'
-        format_export: 'Only use export files from the same system'
-        ensure_disk_space: 'Make sure there is sufficient disk space'
-        plan_downtime: 'Plan a maintenance window for large imports'
-        test_small: 'Test with a small data set first'
-        validation_required: 'Validation is required before import'
-        no_duplicate_detection: 'No automatic duplicate detection - please check manually'
     export:
         includes_all_records: 'The export contains all records of the organization'
         sensitive_data_warning: 'WARNING: The export may contain confidential data (GDPR-relevant)'

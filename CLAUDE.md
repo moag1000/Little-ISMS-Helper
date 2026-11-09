@@ -262,14 +262,15 @@ systemctl enable isms-worker && systemctl start isms-worker
   category's; controls AND records behind one requirement average, kind `controls_records`) → mappings. Record
   check types for norm data: `register_coverage`, `management_decision`, `training_participation`,
   `reporting_duty`, `deadline_adherence` (duties of the deadline sources done on time, ISO 8.1/9.1),
-  `record_completeness` (fields on existing records, DORA 14/17/18/30, ISO A.5.23 cloud suppliers), `account_mfa`
+  `record_completeness` (fields on existing records, DORA 14/17/18/26/30 — Art. 26 = closed TLPT within 36 months, ISO A.5.23 cloud suppliers; `gap_title` for "nothing recent"), `account_mfa`
   (privileged local accounts with a second factor, NIS-2 21(2)(j)) (`ComplianceWizard\RecordCheck`, defs via
   `RecordCheck::register()/decision()/deadlines()/fields()`); `clause_coverage` = ISO 4.4 from clauses 4–10; a check whose
   catalogue numbers rows apart from the article names them in `requirements` (exact ids; NIS-2 Art. 23, thematic DORA) —
   `WizardReferencesHitCatalogueTest` fails on a clause/article that hits no loaded requirement or a type without handler; a new record
   type that feeds them adds one line to `RecordChangeCollector::CHECK_TYPES` (`deadline_adherence` needs none: any
   record a deadline source knows triggers it on create/delete/date or status change). On top, `AuditResultRule` caps the
-  value with the newest audit-checklist verdict (12 months; compliant at 100 % → Verified); the checklist is built
+  value with the newest audit-checklist verdict of a reported audit (12 months; compliant at 100 % → Verified; saved only by
+  auditors/managers/lead auditor+team); the checklist is built
   from the audit scope by `Audit\AuditChecklistGenerator`. Evidence behind a
   requirement comes only from `RequirementEvidence` (requirement + fulfilment + controls, tenant-filtered; exports use
   `Export\EvidenceDocuments`) — never `getEvidenceDocuments()`/`getMappedControls()` of a global requirement.
@@ -288,6 +289,9 @@ systemctl enable isms-worker && systemctl start isms-worker
   Who is reminded may act there: `RecordResponsibleVoter` (`RECORD_RESPONSIBLE`), actions take
   `#[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'x')]` ("role OR
   responsible"); `DeadlineLinkReachabilityTest` fails when a source's link shuts out who it reminds.
+  Responsibility is a right, so nobody without ROLE_MANAGER makes themselves responsible for an existing record
+  (`EventListener\SelfAssignmentGuard` on flush, slots found by `ResponsibleSlotWriteContractTest`) and only a
+  manager sets `Person.linkedUser` (S20).
 - `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
   `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
   My Day and reminder mails read only from these; a new norm = new sources. A duty that is one date field of one
