@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use App\Security\AzureOAuthAuthenticator;
 use App\Security\AzureSamlAuthenticator;
 use App\Service\Sso\SsoAccountLinkPolicy;
+use App\Tests\Support\SsoTestKit;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
@@ -121,6 +122,22 @@ final class AzureEmailLinkingTest extends TestCase
     }
 
     #[Test]
+    public function oauthRefusesToLinkAnUnverifiedEmailEvenWhenLinkingIsOn(): void
+    {
+        // S9: the Entra `mail` claim is not proof of identity; without the
+        // directory's verification (xms_edov) no existing account is linked.
+        $target = (new User())->setEmail('jane@example.com')->setRoles(['ROLE_USER']);
+
+        try {
+            $this->login('oauth', null, $target, allowEmailLinking: true, emailVerified: false);
+            self::fail('an unverified e-mail must not link an account');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertNull($target->getAzureObjectId());
+    }
+
+    #[Test]
     public function samlWithoutObjectIdMatchesTheStoredNameIdBinding(): void
     {
         // #1059 M-c: no objectidentifier claim → no object id is ever stored.
@@ -135,7 +152,7 @@ final class AzureEmailLinkingTest extends TestCase
         $this->login('saml', null, $unbound, allowEmailLinking: false, withObjectId: false);
     }
 
-    private function login(string $flow, ?User $byObjectId, ?User $byEmail, bool $allowEmailLinking, bool $withObjectId = true): User
+    private function login(string $flow, ?User $byObjectId, ?User $byEmail, bool $allowEmailLinking, bool $withObjectId = true, bool $emailVerified = true): User
     {
         $users = $this->createStub(UserRepository::class);
         $users->method('findByAzureObjectId')->willReturn($byObjectId);
@@ -150,12 +167,13 @@ final class AzureEmailLinkingTest extends TestCase
             $client->method('getAccessToken')->willReturn($token);
             $client->method('fetchUserFromToken')->willReturn(new AzureResourceOwner([
                 'oid' => 'object-1',
-                'tid' => 'azure-tenant-1',
+                'tid' => SsoTestKit::AZURE_TENANT,
                 'email' => 'jane@example.com',
+                'xms_edov' => $emailVerified,
             ], $token));
             $registry = $this->createStub(ClientRegistry::class);
             $registry->method('getClient')->willReturn($client);
-            $authenticator = new AzureOAuthAuthenticator($registry, $em, $users, $router, $tenants, $allowEmailLinking);
+            $authenticator = new AzureOAuthAuthenticator($registry, $em, $users, $router, $tenants, $allowEmailLinking, null, SsoTestKit::AZURE_TENANT);
         } else {
             $auth = $this->createStub(Auth::class);
             $auth->method('isAuthenticated')->willReturn(true);
@@ -163,11 +181,14 @@ final class AzureEmailLinkingTest extends TestCase
             $auth->method('getAttributes')->willReturn($withObjectId ? [
                 'http://schemas.microsoft.com/identity/claims/objectidentifier' => ['object-1'],
             ] : []);
-            $authenticator = new AzureSamlAuthenticator($em, $users, $router, $tenants, $allowEmailLinking);
-            (new \ReflectionProperty(AzureSamlAuthenticator::class, 'samlAuth'))->setValue($authenticator, $auth);
+            $auth->method('getLastAssertionId')->willReturn('_assertion_' . bin2hex(random_bytes(4)));
+            $guard = SsoTestKit::samlGuard();
+            $authenticator = new AzureSamlAuthenticator($em, $users, $router, $tenants, SsoTestKit::samlFactory(), $guard, $allowEmailLinking);
+            SsoTestKit::injectAuth($authenticator, $auth);
+            $request = SsoTestKit::acsRequest($guard);
         }
 
-        $user = $authenticator->authenticate(new Request())->getBadge(UserBadge::class)->getUser();
+        $user = $authenticator->authenticate($request ?? new Request())->getBadge(UserBadge::class)->getUser();
         self::assertInstanceOf(User::class, $user);
 
         return $user;

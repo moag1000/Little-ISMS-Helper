@@ -44,8 +44,10 @@ final class OidcAuthenticationFlow
         private readonly LoggerInterface $logger,
         private readonly ClaimToRoleResolver $roleResolver,
         private readonly SsoEventLogger $eventLogger,
+        // Token and UserInfo calls go to provider-configured URLs: always
+        // through the SSRF-guarded client, never a bare Guzzle (S9).
+        private readonly \App\Http\UserUrlHttpClient $userUrlClient,
         private readonly ?\App\Repository\TenantRepository $tenantRepository = null,
-        private readonly ?\App\Http\UserUrlHttpClient $userUrlClient = null,
     ) {
     }
 
@@ -88,16 +90,17 @@ final class OidcAuthenticationFlow
     }
 
     /**
-     * Returns array{ url: string, state: string, codeVerifier: string }.
-     * Caller must persist state + codeVerifier in the session and check on callback.
+     * Caller must persist state, codeVerifier and nonce in the session; the
+     * callback checks state and hands codeVerifier + nonce to handleCallback().
      *
-     * @return array{url: string, state: string, codeVerifier: string}
+     * @return array{url: string, state: string, codeVerifier: string, nonce: string}
      */
     public function buildAuthorizationRequest(IdentityProvider $provider, string $redirectUri): array
     {
         $client = $this->buildClient($provider, $redirectUri);
 
         $state = bin2hex(random_bytes(16));
+        $nonce = bin2hex(random_bytes(16));
         $verifier = $this->randomUrlSafe(64);
         $challenge = rtrim(strtr(base64_encode(hash('sha256', $verifier, true)), '+/', '-_'), '=');
 
@@ -106,9 +109,10 @@ final class OidcAuthenticationFlow
             'scope' => implode(' ', $provider->getScopes() ?: ['openid', 'profile', 'email']),
             'code_challenge' => $challenge,
             'code_challenge_method' => 'S256',
+            'nonce' => $nonce,
         ]);
 
-        return ['url' => $url, 'state' => $state, 'codeVerifier' => $verifier];
+        return ['url' => $url, 'state' => $state, 'codeVerifier' => $verifier, 'nonce' => $nonce];
     }
 
     /**
@@ -123,6 +127,7 @@ final class OidcAuthenticationFlow
         string $redirectUri,
         string $code,
         string $codeVerifier,
+        string $nonce,
     ): User|SsoUserApproval {
         $client = $this->buildClient($provider, $redirectUri);
 
@@ -136,7 +141,7 @@ final class OidcAuthenticationFlow
             throw new AuthenticationException('Token exchange failed: ' . $e->getMessage(), 0, $e);
         }
 
-        $claims = $this->extractClaims($provider, $client, $token);
+        $claims = $this->extractClaims($provider, $client, $token, $nonce);
 
         return $this->resolveUserFromClaims($provider, $claims);
     }
@@ -180,6 +185,15 @@ final class OidcAuthenticationFlow
                 $this->eventLogger->logLoginFailure($provider, $email, 'subject_changed');
             }
             SsoAccountLinkPolicy::assertMayLinkByEmail($provider, $byEmail, $this->logger, $externalId);
+            // Only an e-mail the IdP verified links an existing account (S9).
+            if (!SsoClaimPolicy::isEmailVerified($claims)) {
+                $this->logger->warning('SSO: login refused, e-mail not verified by the IdP, no link by e-mail', [
+                    'provider' => $provider->getSlug(),
+                    'target_user_id' => $byEmail->getId(),
+                ]);
+                $this->eventLogger->logLoginFailure($provider, $email, 'email_not_verified');
+                SsoClaimPolicy::assertEmailVerifiedForLinking($claims);
+            }
             $byEmail->setSsoProvider($provider);
             $byEmail->setSsoExternalId($externalId);
             $byEmail->setAuthProvider('sso:' . $provider->getSlug());
@@ -270,29 +284,36 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
             'urlAccessToken' => $tokenUrl,
             'urlResourceOwnerDetails' => $userinfoUrl ?? $tokenUrl,
             'scopes' => implode(' ', $provider->getScopes() ?: ['openid', 'profile', 'email']),
-        ], $this->userUrlClient !== null ? ['httpClient' => $this->userUrlClient->guzzle()] : []);
+        ], ['httpClient' => $this->userUrlClient->guzzle()]);
     }
 
     /**
      * @return array<string,mixed>
      */
-    private function extractClaims(IdentityProvider $provider, GenericProvider $client, AccessTokenInterface $token): array
+    private function extractClaims(IdentityProvider $provider, GenericProvider $client, AccessTokenInterface $token, string $nonce): array
     {
         $claims = [];
         $values = $token->getValues();
-        if (isset($values['id_token']) && is_string($values['id_token']) && $provider->getType() === IdentityProvider::TYPE_OIDC) {
-            $claims = $this->verifyIdToken($provider, $values['id_token']);
+        if ($provider->getType() === IdentityProvider::TYPE_OIDC) {
+            // An OIDC provider must answer with a signed ID token; UserInfo
+            // alone (unsigned, fetched with the access token) is not enough.
+            if (!isset($values['id_token']) || !is_string($values['id_token'])) {
+                throw new AuthenticationException('IdP returned no ID-Token.');
+            }
+            $claims = $this->verifyIdToken($provider, $values['id_token'], $nonce);
         }
 
         // getResourceOwner() is typed to the concrete AccessToken; the
         // interface returned by getAccessToken() is narrowed here.
         if ($provider->getUserinfoEndpoint() !== null && $token instanceof AccessToken) {
             try {
-                $owner = $client->getResourceOwner($token);
-                $claims = array_merge($claims, $owner->toArray());
+                $userInfo = $client->getResourceOwner($token)->toArray();
             } catch (\Throwable $e) {
+                $userInfo = [];
                 $this->logger->warning('UserInfo fetch failed', ['provider' => $provider->getSlug(), 'error' => $e->getMessage()]);
             }
+            // UserInfo adds claims, never changes the subject or a signed claim.
+            $claims = SsoClaimPolicy::mergeUserInfo($claims, $userInfo);
         }
 
         if ($claims === []) {
@@ -305,7 +326,7 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
     /**
      * @return array<string,mixed>
      */
-    private function verifyIdToken(IdentityProvider $provider, string $jwt): array
+    private function verifyIdToken(IdentityProvider $provider, string $jwt, string $nonce): array
     {
         $parts = explode('.', $jwt);
         if (count($parts) !== 3) {
@@ -351,25 +372,16 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
             throw new AuthenticationException('ID-Token signature verification failed.');
         }
 
-        $now = (new DateTimeImmutable())->getTimestamp();
-        $exp = isset($payload['exp']) ? (int) $payload['exp'] : 0;
-        $iat = isset($payload['iat']) ? (int) $payload['iat'] : 0;
-        if ($exp !== 0 && $exp + 30 < $now) {
-            throw new AuthenticationException('ID-Token has expired.');
+        // No issuer configured: take it from discovery once; still none → refused.
+        if (($provider->getIssuer() ?? '') === '' && ($provider->getDiscoveryUrl() ?? '') !== '') {
+            try {
+                $this->discovery->applyDiscoveryToProvider($provider);
+                $this->em->flush();
+            } catch (\Throwable $e) {
+                $this->logger->warning('SSO: issuer discovery failed', ['provider' => $provider->getSlug(), 'error' => $e->getMessage()]);
+            }
         }
-        if ($iat !== 0 && $iat - 60 > $now) {
-            throw new AuthenticationException('ID-Token issued-at is in the future.');
-        }
-        $iss = $payload['iss'] ?? null;
-        if ($provider->getIssuer() !== null && $iss !== $provider->getIssuer()) {
-            throw new AuthenticationException('ID-Token issuer mismatch.');
-        }
-        $aud = $payload['aud'] ?? null;
-        $clientId = $provider->getClientId();
-        $audMatches = is_array($aud) ? in_array($clientId, $aud, true) : $aud === $clientId;
-        if (!$audMatches) {
-            throw new AuthenticationException('ID-Token audience does not include client_id.');
-        }
+        SsoClaimPolicy::assertIdToken($payload, $provider->getIssuer(), (string) $provider->getClientId(), $nonce);
 
         return $payload;
     }
