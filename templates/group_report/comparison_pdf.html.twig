@@ -1,7 +1,7 @@
 {# Organisationsvergleich as landscape PDF (dompdf) — same tables as the page. #}
 {% import 'group_report/_comparison_macros.html.twig' as _cmp %}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{{ 'group_report.comparison.title'|trans({}, 'group_report') }}</title>

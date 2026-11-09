@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ report.name }}</title>
-    <style>
+    {% set _primary_color = report.styles.primaryColor|default('var(--primary)') %}
+<style>
         :root {
             --primary:       var(--primary);
             --surface:       #ffffff;
@@ -36,14 +37,14 @@
         }
 
         .report-header {
-            border-bottom: 2px solid {{ report.styles.primaryColor|default('var(--primary)') }};
+            border-bottom: 2px solid {{ _primary_color }};
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
 
         .report-header h1 {
             font-size: 18pt;
-            color: {{ report.styles.primaryColor|default('var(--primary)') }};
+            color: {{ _primary_color }};
             margin-bottom: 5px;
         }
 
@@ -69,7 +70,7 @@
             font-size: 11pt;
             font-weight: bold;
             margin-bottom: 10px;
-            color: {{ report.styles.primaryColor|default('var(--primary)') }};
+            color: {{ _primary_color }};
         }
 
         /* KPI Widgets */
@@ -339,7 +340,7 @@
 
             {# Text Widgets #}
             {% elseif widgetType == 'text_header' %}
-            <div class="text-header">{{ data.text|default(meta.config.text|default('Header')) }}</div>
+            <div class="text-header">{{ data.text|default(meta.config.text|default('report_builder.widget.text_header'|trans({}, 'report_builder'))) }}</div>
 
             {% elseif widgetType == 'text_summary' %}
             <div class="text-summary">{{ data.text }}</div>

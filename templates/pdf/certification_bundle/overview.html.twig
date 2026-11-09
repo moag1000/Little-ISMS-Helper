@@ -2,18 +2,18 @@
 {% extends 'pdf/_base_document.html.twig' %}
 
 {% block document_type %}{{ 'certification_bundle.pdf.overview.title'|trans({}, 'certification_bundle') }}{% endblock %}
-{% block document_id %}DOC-CERT-OVW{% endblock %}
+{% block document_id %}{{ 'DOC-CERT-OVW'|e }}{% endblock %}
 {% block document_title %}{{ 'certification_bundle.pdf.overview.title'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block document_version %}{{ version }}{% endblock %}
-{% block document_status_class %}approved{% endblock %}
-{% block document_status %}GENERATED{% endblock %}
-{% block classification_class %}confidential{% endblock %}
+{% block document_status_class %}{{ 'approved'|e }}{% endblock %}
+{% block document_status %}{{ 'pdf.doc_base.status_value.generated'|trans({}, 'messages') }}{% endblock %}
+{% block classification_class %}{{ 'confidential'|e }}{% endblock %}
 {% block document_classification %}{{ 'certification_bundle.pdf.confidential'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block organization_name %}{{ tenant_name }}{% endblock %}
 {% block header_left %}{{ tenant_name }}{% endblock %}
 {% block header_center %}{{ 'certification_bundle.pdf.overview.title'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block header_right %}{{ 'certification_bundle.pdf.confidential'|trans({}, 'certification_bundle') }}{% endblock %}
-{% block footer_left %}DOC-CERT-OVW | Version {{ version }}{% endblock %}
+{% block footer_left %}{{ 'DOC-CERT-OVW'|e }} | {{ 'pdf.doc_base.version'|trans({}, 'messages')|trim(':') }} {{ version }}{% endblock %}
 {% block footer_center %}{{ tenant_name }}{% endblock %}
 {% block footer_version %}{{ version }}{% endblock %}
 {% block created_date %}{{ generated_at|fa_date }}{% endblock %}
@@ -119,10 +119,10 @@
             <td>{{ plan.title }}</td>
             <td>
                 <span class="status-badge {% if plan.priority == 'critical' %}status-review{% elseif plan.priority == 'high' %}status-draft{% else %}status-approved{% endif %}">
-                    {{ plan.priority|upper }}
+                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan') }}
                 </span>
             </td>
-            <td>{{ plan.status|replace({'_': ' '})|capitalize }}</td>
+            <td>{{ ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') }}</td>
             <td>{{ plan.completionPercentage }}%</td>
             <td>{{ plan.targetCompletionDate|fa_date }}</td>
         </tr>
@@ -141,31 +141,31 @@
     </thead>
     <tbody>
         <tr>
-            <td>00_ISMS_OVERVIEW.pdf</td>
+            <td>{{ '00_ISMS_OVERVIEW.pdf'|e }}</td>
             <td>{{ 'certification_bundle.pdf.overview.bundle.overview_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
-            <td>01_STATEMENT_OF_APPLICABILITY.pdf</td>
+            <td>{{ '01_STATEMENT_OF_APPLICABILITY.pdf'|e }}</td>
             <td>{{ 'certification_bundle.pdf.overview.bundle.soa_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
-            <td>02_RISK_TREATMENT_PLAN.pdf</td>
+            <td>{{ '02_RISK_TREATMENT_PLAN.pdf'|e }}</td>
             <td>{{ 'certification_bundle.pdf.overview.bundle.rtp_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
-            <td>03_ASSET_REGISTER.pdf</td>
+            <td>{{ '03_ASSET_REGISTER.pdf'|e }}</td>
             <td>{{ 'certification_bundle.pdf.overview.bundle.asset_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
-            <td>04_EVIDENCE/</td>
+            <td>{{ '04_EVIDENCE/'|e }}</td>
             <td>{{ 'certification_bundle.pdf.overview.bundle.evidence_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
-            <td>05_GAP_ANALYSIS.csv</td>
+            <td>{{ '05_GAP_ANALYSIS.csv'|e }}</td>
             <td>{{ 'certification_bundle.pdf.overview.bundle.gap_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
-            <td>METADATA.json</td>
+            <td>{{ 'METADATA.json'|e }}</td>
             <td>{{ 'certification_bundle.pdf.overview.bundle.metadata_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
     </tbody>

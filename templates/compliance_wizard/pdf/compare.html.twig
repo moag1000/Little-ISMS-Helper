@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -189,7 +189,7 @@
                         {% if available_wizards[key] is defined %}
                             <span class="badge muted">{{ available_wizards[key].code }}</span>
                         {% else %}
-                            <span class="badge muted">{{ key|upper }}</span>
+                            <span class="badge muted">{{ key }}</span>
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -207,7 +207,7 @@
             {% set cls = score >= 80 ? 'score-success' : (score >= 60 ? 'score-warning' : 'score-danger') %}
             {% set bcls = score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger') %}
             <div class="framework-card">
-                <div class="fw-name">{{ result.framework_name ?? (available_wizards[key].name ?? key|upper) }}</div>
+                <div class="fw-name">{{ result.framework_name ?? (available_wizards[key].name ?? key) }}</div>
                 <div class="fw-score {{ cls }}">{{ score }}%</div>
                 <div class="fw-status">
                     <span class="badge {{ bcls }}">
@@ -236,7 +236,7 @@
                 <th scope="col">{{ 'wizard.category'|trans({}, 'wizard') }}</th>
                 {% for key, result in results %}
                     <th scope="col" class="num">
-                        {{ available_wizards[key].code ?? key|upper }}
+                        {{ available_wizards[key].code ?? key }}
                     </th>
                 {% endfor %}
             </tr>

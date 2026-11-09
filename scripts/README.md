@@ -789,6 +789,25 @@ das Verhalten pinnt `tests/Scheduler/ScheduledCommandsTenantIsolationTest`.
 
 ---
 
+### quality/check_pdf_i18n.py (Gate 102)
+
+**Zweck:** Nachweis-PDFs sprechen eine Sprache (W10, 2026-11). VVT (Art. 30), Datenpanne (Art. 33/34), DSFA und
+die Compliance-Exporte mischten deutsche Titel, englische Feldlabels und rohe Enum-Schlüssel; vier PDFs trugen
+fest `lang="de"`, drei gar keins. Das Skript findet alle PDF-Vorlagen selbst (Name oder Ordner enthält `pdf`) und
+meldet je Datei: Textknoten außerhalb von Twig (`text`), gedruckte Literale in `{{ }}` ohne `|trans`
+(`literal`, z. B. `x ? 'YES' : 'NO'`, `?? 'Not specified'`), `<html>` ohne `lang="{{ app.locale }}"` (`lang`;
+`app.locale` folgt dem `LocaleSwitcher`, also auch in Jobs und geplanten Berichten), rohe Enum-Ausgabe über
+`|upper`/`|title`/`|capitalize`/`|replace({'_': ' '})` (`enum`) und feste „Seite x von y“ im `@page`-CSS (`page`).
+Sprachneutrale Tokens (Normnummern, Akronyme wie ISO/NIS-2/DORA) sind erlaubt; Attributwerte (CSS-Klassen)
+werden nicht gelesen. Zähler je Datei in `baselines/pdf_i18n.txt`, nur schrumpfend (eine veraltete Zeile ist
+ebenfalls rot). Details einer Datei: `--show <template>`. Selbsttest `scripts/quality/tests/test_check_pdf_i18n.py`.
+PHP-Teil: `tests/Contract/ExportLocaleContractTest` (jeder `*Export*Job` bekommt die Locale des Auslösers, beide
+Runner führen den Job unter ihr aus, der Anhang eines geplanten Berichts folgt dessen Sprache).
+
+**CI-Integration:** Gate 102 im `code-quality`-Job.
+
+---
+
 ### quality/check_api_module_fields.py (Gate 89)
 
 **Zweck:** Felder eines optionalen Moduls an einem Datensatz eines anderen Moduls (DORA am

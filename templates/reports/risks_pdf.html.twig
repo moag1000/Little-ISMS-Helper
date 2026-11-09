@@ -4,7 +4,7 @@
    Status:   final
    ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'pdf.risk.title'|trans({}, 'reports') }}</title>
@@ -98,7 +98,7 @@
 {% for risk in risks %}
     {% set riskLevel = risk_level_band(risk.riskScore, risk.tenant) %}
     {% set _level_badge_class = riskLevel == 'critical' ? 'badge-danger' : (riskLevel == 'high' ? 'badge-warning' : (riskLevel == 'medium' ? 'badge-info' : 'badge-success')) %}
-    {% set _cell_html2 %}<span class="badge {{ _level_badge_class }}">{{ riskLevel|upper }}</span>{% endset %}
+    {% set _cell_html2 %}<span class="badge {{ _level_badge_class }}">{{ risk_level_label(riskLevel) }}</span>{% endset %}
     {% set _cell_html1 %}<span class="score-badge score-{{ riskLevel }}">{{ risk.riskScore }}</span>{% endset %}
     {% set _risk_rows = _risk_rows|merge([[
         risk.id,

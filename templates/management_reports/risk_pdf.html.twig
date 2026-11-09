@@ -4,7 +4,7 @@
    Status:   auditor-only
    ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'management_reports.risk.title'|trans({}, 'management_reports') }}</title>
@@ -184,7 +184,10 @@
     }]) %}
 {% endif %}
 
-{% set _methodology_html %}<p>Risk score = Likelihood × Impact (1-25). ISO 27005 thresholds: Critical ≥20, High 12-19, Medium 6-11, Low &lt;6. Treatment plans tracked via RiskTreatmentPlanRepository.</p>{% endset %}
+{# the matrix of the organisation whose risks are listed (scheduled runs have no user) #}
+{% set _scale_tenant = (report.risks ?? [])|first ? ((report.risks ?? [])|first).tenant : null %}
+{% set _bands = risk_bands(_scale_tenant) %}
+{% set _methodology_html = 'management_reports.risk.methodology'|trans({'%critical%': _bands.critical.min|e, '%high_min%': _bands.high.min|e, '%high_max%': _bands.high.max|e, '%medium_min%': _bands.medium.min|e, '%medium_max%': _bands.medium.max|e}, 'management_reports')|fa_html %}
 {{ _fa_report_doc.render({
     report: {
         title:        'management_reports.risk.title'|trans({}, 'management_reports'),

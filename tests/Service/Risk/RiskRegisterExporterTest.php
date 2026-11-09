@@ -16,7 +16,12 @@ use App\Service\TenantContext;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use App\Repository\SystemSettingsRepository;
+use App\Twig\AppDateFormatExtension;
 use Symfony\Component\Translation\IdentityTranslator;
+use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Symfony\Component\Translation\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class RiskRegisterExporterTest extends TestCase
 {
@@ -34,7 +39,21 @@ final class RiskRegisterExporterTest extends TestCase
 
     private ?Spreadsheet $generated = null;
 
-    private function exporter(?PdfExportService $pdf = null, ?string $methodology = null): RiskRegisterExporter
+    /** German catalogue of the `risk` domain, for the Excel layout assertions. */
+    private function germanTranslator(): TranslatorInterface
+    {
+        $translator = new Translator('de');
+        $translator->addLoader('yaml', new YamlFileLoader());
+        $translator->addResource('yaml', \dirname(__DIR__, 3) . '/translations/risk.de.yaml', 'de', 'risk');
+
+        return $translator;
+    }
+
+    private function exporter(
+        ?PdfExportService $pdf = null,
+        ?string $methodology = null,
+        bool $german = false,
+    ): RiskRegisterExporter
     {
         $test = $this;
         $tenantContext = $this->createStub(TenantContext::class);
@@ -55,10 +74,11 @@ final class RiskRegisterExporterTest extends TestCase
         };
 
         return new RiskRegisterExporter(
-            new IdentityTranslator(),
+            $german ? $this->germanTranslator() : new IdentityTranslator(),
             $excel,
             $pdf ?? $this->createStub(PdfExportService::class),
             $tenantContext,
+            new AppDateFormatExtension($this->createStub(SystemSettingsRepository::class)),
         );
     }
 
@@ -112,7 +132,7 @@ final class RiskRegisterExporterTest extends TestCase
     #[Test]
     public function excelHasSummaryAllRisksAndCriticalHighTabs(): void
     {
-        $content = $this->exporter()->buildExcel([
+        $content = $this->exporter(german: true)->buildExcel([
             $this->risk('high', 4, 3, RiskStatus::InTreatment),
             $this->risk('low', 1, 1, RiskStatus::Identified),
         ]);
@@ -139,7 +159,7 @@ final class RiskRegisterExporterTest extends TestCase
     #[Test]
     public function excelSummaryDocumentsTheTenantRiskMethodology(): void
     {
-        $this->exporter(null, 'nist_800_30')->buildExcel([$this->risk('low', 1, 1)]);
+        $this->exporter(null, 'nist_800_30', true)->buildExcel([$this->risk('low', 1, 1)]);
         $summary = $this->generated?->getSheetByName('Zusammenfassung');
         self::assertNotNull($summary);
         $found = null;
@@ -148,8 +168,7 @@ final class RiskRegisterExporterTest extends TestCase
                 $found = $row[1];
             }
         }
-        // IdentityTranslator has no label → raw methodology value.
-        self::assertSame('nist_800_30', $found);
+        self::assertSame('NIST SP 800-30', $found);
     }
 
     #[Test]
@@ -169,7 +188,7 @@ final class RiskRegisterExporterTest extends TestCase
     #[Test]
     public function excelOmitsCriticalHighTabWhenNoneQualify(): void
     {
-        $this->exporter()->buildExcel([$this->risk('low', 1, 1)]);
+        $this->exporter(german: true)->buildExcel([$this->risk('low', 1, 1)]);
         self::assertSame(['Zusammenfassung', 'Alle Risiken'], $this->generated?->getSheetNames());
     }
 

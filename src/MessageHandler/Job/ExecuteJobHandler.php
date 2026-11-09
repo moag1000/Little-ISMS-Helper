@@ -8,6 +8,7 @@ use App\Job\AsyncJobInterface;
 use App\Job\JobContext;
 use App\Message\Job\ExecuteJobMessage;
 use App\Exception\Tenant\TenantNotFoundException;
+use App\Service\Job\JobLocale;
 use App\Service\Job\JobStatusService;
 use App\Service\TenantContext;
 use Psr\Container\ContainerInterface;
@@ -34,6 +35,7 @@ final class ExecuteJobHandler
         private readonly TenantContext $tenantContext,
         #[AutowireLocator('app.async_job')]
         private readonly ContainerInterface $jobs,
+        private readonly ?JobLocale $jobLocale = null,
     ) {
     }
 
@@ -88,7 +90,12 @@ final class ExecuteJobHandler
 
             $job = $this->resolveJob($message->jobClass);
             $ctx = new JobContext($id, $this->jobStatusService, $message->args);
-            $job->run($ctx);
+            if ($this->jobLocale !== null) {
+                // W10: a worker runs in app.default_locale; the job keeps the dispatcher's language.
+                $this->jobLocale->run($message->args, static fn () => $job->run($ctx));
+            } else {
+                $job->run($ctx);
+            }
             $this->jobStatusService->markSucceeded($id);
         } catch (\Throwable $e) {
             $trace = sprintf(
