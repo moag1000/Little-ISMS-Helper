@@ -74,7 +74,7 @@
         <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
             <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
         </button>
-        {% if is_granted('ROLE_USER') %}
+        {% if is_granted('AUDIT_WORK', finding) %}
             <a href="{{ path('app_audit_finding_edit', {id: finding.id}) }}"
                data-turbo-frame="fa-form-modal"
                class="fa-cyber-btn fa-cyber-btn--md">

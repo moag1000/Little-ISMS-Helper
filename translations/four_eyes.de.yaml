@@ -9,6 +9,7 @@ four_eyes:
         mapping_override: 'Mapping-Override'
         bulk_tag_removal: 'Bulk-Tag-Entfernung'
         import_large_commit: 'Großer Import-Commit'
+        lifecycle_transition: 'Statuswechsel gegenzeichnen'
 
     action_type: 'Aktionstyp'
 

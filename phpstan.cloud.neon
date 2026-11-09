@@ -1,0 +1,7 @@
+# Cloud threads (host PHP 8.3): analyse as PHP 8.4 like CI. Everything else is phpstan.dist.neon.
+# vendor/ via scripts/setup/cloud_vendor.py; see scripts/README.md "Cloud-Threads".
+includes:
+    - phpstan.dist.neon
+
+parameters:
+    phpVersion: 80400
