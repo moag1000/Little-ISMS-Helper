@@ -80,7 +80,7 @@ final class PolicyAudienceResolver
         $picked = [];
         $selection = $document->getAcknowledgementAudience();
         foreach ($selection as $user) {
-            if ($user instanceof User && $user->isActive() && $this->userBelongsToTenant($user, $tenant)) {
+            if ($user->isActive() && $this->userBelongsToTenant($user, $tenant)) {
                 $picked[(int) $user->getId()] = $user;
             }
         }

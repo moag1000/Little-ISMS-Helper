@@ -89,9 +89,6 @@ HELP);
         $published = [];
         $totalPending = 0;
         foreach ($documents as $document) {
-            if (!$document instanceof Document) {
-                continue;
-            }
             $published[(int) $document->getId()] = true;
             if (!PolicyAcknowledgementService::needsAcknowledgement($document)) {
                 // Its stale requests (switch turned off) are withdrawn, nobody is asked.
@@ -146,9 +143,6 @@ HELP);
     {
         $ids = $this->acknowledgementRepository->findDocumentIdsWithPendingRows();
 
-        return $ids === [] ? [] : array_values(array_filter(
-            $this->documentRepository->findBy(['id' => $ids]),
-            static fn (mixed $d): bool => $d instanceof Document,
-        ));
+        return $ids === [] ? [] : array_values($this->documentRepository->findBy(['id' => $ids]));
     }
 }

@@ -119,7 +119,7 @@ final class PolicyAcknowledgementService
         $rows = [];
         $seen = [];
         foreach ($audience as $user) {
-            if (!$user instanceof User || !$user->isActive() || isset($seen[spl_object_id($user)])) {
+            if (!$user->isActive() || isset($seen[spl_object_id($user)])) {
                 continue;
             }
             $seen[spl_object_id($user)] = true;
@@ -167,7 +167,7 @@ final class PolicyAcknowledgementService
         $version = self::versionOf($document);
         $audienceIds = [];
         foreach ($audience as $user) {
-            if ($user instanceof User && $user->isActive() && $user->getId() !== null) {
+            if ($user->isActive() && $user->getId() !== null) {
                 $audienceIds[$user->getId()] = true;
             }
         }
