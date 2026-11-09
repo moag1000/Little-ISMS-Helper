@@ -272,9 +272,13 @@ with only the source's modules (`requiredModule()`, `module:` in
 user and top management as record holders, and a record that
 `ResponsibilityResolver::recipients()` really sends to that account. It then
 opens the source's link as that account, follows redirects, and fails on any
-answer other than 200 or a landing on dashboard, login, MFA or setup. A source
-with a duty but no page (DORA TLPT) is listed in `WITHOUT_LINK` with the reason.
-A new source whose link the reminded person cannot open fails CI.
+answer other than 200 or a landing on dashboard, login, MFA, setup or a
+"module not active" page. Since W6 (wave 8) every source has a page (DORA TLPT:
+`/tlpt`, `WITHOUT_LINK` is empty), and for review duties (`MAIN_ACTION`:
+records of processing, DPIA, TIA, risk and control reviews) the test also
+submits the page's main form ("Review abschließen") as that person and fails
+when it answers 403 or lands elsewhere. A new source whose link the reminded
+person cannot open, or whose main action they cannot take, fails CI.
 
 Two duties live here because nothing else carried them:
 `RiskAcceptanceRequestSource` (a requested risk acceptance, to the approval

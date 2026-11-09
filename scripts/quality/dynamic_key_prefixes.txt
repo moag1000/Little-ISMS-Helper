@@ -119,6 +119,7 @@ document.evidence.type	1
 document.status	6
 document.type	1
 dora.status	1
+dora.tlpt.provider	2
 dora_data_flow.direction	3
 dora_exit_plan.trigger	3
 dora_subcontractor.criticality	2

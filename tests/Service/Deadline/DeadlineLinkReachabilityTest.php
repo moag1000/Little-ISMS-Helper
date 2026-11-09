@@ -66,7 +66,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *      ResponsibilityResolver must name exactly that account as responsible
  *      (otherwise the test setup, not the app, is wrong and the test says so),
  *   3. that account opens linkOf(record) with GET; redirects are followed and the
- *      page must answer 200 at the link's own path.
+ *      page must answer 200 at the link's own path (not a "module not active" page),
+ *   4. for review duties (MAIN_ACTION) it submits the page's main form as that
+ *      person — the reminder is about doing the review, not about reading it.
  *
  * So every gate counts as it does in production: #[IsGranted] with the real
  * voters (record voters, RECORD_RESPONSIBLE, PERSONA_*), checks inside the
@@ -102,13 +104,34 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
         SuggestionDeadlineSource::class => 'suggestionRoles',
     ];
 
-    /** Sources whose items have no page of their own: slug => reason. */
-    private const array WITHOUT_LINK = [
-        'tlpt' => 'DORA TLPT has no page yet (API/MCP only) — reported with wave 7 T; drop this entry when the page exists',
+    /**
+     * Sources whose items have no page of their own: slug => reason. Empty since
+     * W6 (the TLPT page); a new entry needs a reason.
+     *
+     * @var array<string, string>
+     */
+    private const array WITHOUT_LINK = [];
+
+    /**
+     * W6: the action that settles the duty, on the page the reminder opens —
+     * slug => POST route. The reminded person must find its form there (the
+     * button is not hidden from them) and submitting it must not be refused.
+     * Duties settled by editing the record or by a lifecycle step (menu built
+     * in JS) are not listed; the GET above covers them.
+     */
+    private const array MAIN_ACTION = [
+        'processing_activity_review' => 'app_processing_activity_complete_review',
+        'dpia_review' => 'app_dpia_complete_review',
+        'tia_review' => 'app_tia_complete_review',
+        'risk_review' => 'app_risk_review_confirm',
+        'control_review' => 'app_soa_review_confirm',
     ];
 
     /** Routes a refused or redirected-away person lands on. */
     private const string REFUSED_LANDING = '/^(app_dashboard|app_home|app_login|app_mfa_|mfa_|app_setup|app_persona_dashboard)/';
+
+    /** Part of messages:common.module_not_active (DE), the soft "module off" page of show templates. */
+    private const string MODULE_OFF_MARKER = 'ist nicht aktiviert. Bitte Setup';
 
     private KernelBrowser $client;
     private UrlGeneratorInterface $router;
@@ -125,7 +148,9 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
         $registry = static::getContainer()->get(DeadlineSourceRegistry::class);
         $failures = [];
         $checked = 0;
+        $slugs = [];
         foreach ($registry->all() as $source) {
+            $slugs[] = $source->slug();
             [$roles, $holderPaths] = $this->describe($source);
             $holders = isset(self::HOLDER_MIN_ROLE[$source->slug()]) ? [self::HOLDER_MIN_ROLE[$source->slug()]] : self::HOLDER_ACTORS;
             $actors = [];
@@ -149,6 +174,7 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
         }
 
         self::assertGreaterThan(150, $checked, 'too few source/role combinations found — did the parsing break?');
+        self::assertSame([], array_values(array_diff(array_keys(self::MAIN_ACTION), $slugs)), 'MAIN_ACTION names a source that does not exist');
         self::assertSame([], $failures, "Reminder links the reminded person cannot open:\n" . implode("\n", $failures));
     }
 
@@ -223,7 +249,60 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
             return isset(self::WITHOUT_LINK[$source->slug()]) ? null : 'linkOf() is null: the reminder has no page — give it one or list it in WITHOUT_LINK';
         }
 
-        return $this->opens($user, $link);
+        return $this->opens($user, $link) ?? $this->acts($source);
+    }
+
+    /**
+     * After opens(): the page the person landed on carries the form of the
+     * source's main action, and submitting it is not refused (403, or a
+     * redirect to where refused people land).
+     */
+    private function acts(DeadlineSource $source): ?string
+    {
+        $route = self::MAIN_ACTION[$source->slug()] ?? null;
+        if ($route === null) {
+            return null;
+        }
+        $crawler = $this->client->getCrawler();
+        $form = null;
+        // Action routes are POST-only: match them in a POST context.
+        $context = clone $this->router->getContext();
+        $context->setMethod('POST');
+        $matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($this->router->getRouteCollection(), $context);
+        foreach ($crawler->filter('form') as $node) {
+            $action = (string) parse_url((string) $node->getAttribute('action'), PHP_URL_PATH);
+            try {
+                $matched = $matcher->match($action)['_route'] ?? null;
+            } catch (\Throwable) {
+                continue;
+            }
+            if ($matched === $route && strtolower($node->getAttribute('method')) === 'post') {
+                $form = (new \Symfony\Component\DomCrawler\Crawler($node, $this->client->getRequest()->getUri()))->form();
+                break;
+            }
+        }
+        if ($form === null) {
+            return 'the page has no form for its main action ' . $route . ' (button hidden from the reminded person?)';
+        }
+
+        $this->client->submit($form);
+        $hops = [];
+        for ($i = 0; $i < 5 && $this->client->getResponse()->isRedirection(); ++$i) {
+            $hops[] = (string) $this->client->getResponse()->headers->get('Location');
+            $this->client->followRedirect();
+        }
+        $status = $this->client->getResponse()->getStatusCode();
+        $landed = (string) parse_url((string) $this->client->getRequest()->getUri(), PHP_URL_PATH);
+        $landedRoute = '';
+        try {
+            $landedRoute = (string) ($this->router->match($landed)['_route'] ?? '');
+        } catch (\Throwable) {
+        }
+        if ($status === 200 && preg_match(self::REFUSED_LANDING, $landedRoute) !== 1) {
+            return null;
+        }
+
+        return sprintf('POST %s → %d%s', $route, $status, $hops !== [] ? ' via ' . implode(' → ', $hops) : '');
     }
 
     private function opens(User $user, RecordLink $link): ?string
@@ -255,6 +334,11 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
         try {
             $landedRoute = (string) ($this->router->match($landed)['_route'] ?? '');
         } catch (\Throwable) {
+        }
+        // W6: a 200 that only says "module not active" is no page to act on — the source needs the
+        // page's module (module: in config/deadline_types.yaml, requiredModule() in a class).
+        if ($status === 200 && str_contains((string) $this->client->getResponse()->getContent(), self::MODULE_OFF_MARKER)) {
+            return sprintf('GET %s → 200 but the page says its module is off', $target);
         }
         if ($status === 200 && ($landed === $target || preg_match(self::REFUSED_LANDING, $landedRoute) !== 1)) {
             return null;
@@ -297,6 +381,12 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
             'fulfillment_override_review' => $item->markOverride('manual', 'dlr', new \DateTimeImmutable('-1 day'), null, new \DateTimeImmutable('-30 days')),
             'reporting_duty' => $item->setEntityType('Incident')->setEntityId((int) $this->flushed($this->complete($factory->create(Incident::class, $tenant, 'dlr')))->getId()),
             'register_review' => $item->setType($this->registerTypeFor($actor)),
+            // Reviews are due only on records in force (the entries' done: expressions).
+            'processing_activity_review' => $item->setStatus('published')->setNextReviewDate(new \DateTime('-1 day')),
+            'dpia_review' => $item->setStatus('approved')->setNextReviewDate(new \DateTime('-1 day')),
+            // A TIA is created under its processing activity (its page lives there).
+            'tia_review' => $item->setStatus('assessed')->setNextReviewDate(new \DateTime('-1 day'))
+                ->setProcessingActivity($this->flushed($factory->create(\App\Entity\ProcessingActivity::class, $tenant, 'dlr'))),
             default => null,
         };
         $this->complete($item);

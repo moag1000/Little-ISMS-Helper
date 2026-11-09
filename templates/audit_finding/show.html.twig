@@ -31,7 +31,7 @@
     {% set hint = alva_hint(finding) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
     {{ _fa_page_header.render({
-        badge:    { icon: 'status-critical', label: finding.(findingNumber ?? ('#' ~ finding.id)) },
+        badge:    { icon: 'status-critical', label: finding.findingNumber ?? ('#' ~ finding.id) },
         title:    finding.title,
         subtitle: finding.clauseReference|default(null),
         actions: [

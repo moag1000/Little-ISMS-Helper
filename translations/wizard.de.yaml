@@ -187,9 +187,9 @@ wizard:
         no_training_participation: 'Keine Schulungsteilnahmen erfasst'
         training_participation_open: 'Schulungsteilnahmen offen'
         training_participation_open_desc: '%completed% von %total% zugewiesenen Personen haben ihre Schulung abgeschlossen.'
-        no_privileged_accounts: 'Keine Administratorkonten mit lokaler Anmeldung'
-        accounts_without_mfa: 'Administratorkonten ohne zweiten Faktor'
-        accounts_without_mfa_desc: '%open% von %total% Administratorkonten melden sich ohne zweiten Faktor an.'
+        no_privileged_accounts: 'Keine privilegierten Konten (Admin, CISO, ISB) mit lokaler Anmeldung'
+        accounts_without_mfa: 'Privilegierte Konten ohne zweiten Faktor'
+        accounts_without_mfa_desc: '%open% von %total% privilegierten Konten (Admin, CISO, ISB) melden sich ohne zweiten Faktor an.'
         no_role_holders: 'Niemand hat die Rolle der Leitung'
         role_training_missing: 'Leitungsschulung fehlt'
         role_training_missing_desc: 'Ohne abgeschlossene Schulung in den letzten %months% Monaten: %names%.'
@@ -603,8 +603,8 @@ wizard:
         nis2_21_2i_assets_desc: "Anlagen und Vermögenswerte werden verwaltet"
         nis2_21_2j_mfa: "Multi-Faktor-Authentifizierung (Art. 21.2.j)"
         nis2_21_2j_mfa_desc: "MFA oder kontinuierliche Authentifizierung implementiert"
-        nis2_21_2j_mfa_accounts: "MFA der Administratorkonten"
-        nis2_21_2j_mfa_accounts_desc: "Anteil der Administratorkonten mit zweitem Faktor (SSO-Konten zählen nicht)"
+        nis2_21_2j_mfa_accounts: "MFA der privilegierten Konten"
+        nis2_21_2j_mfa_accounts_desc: "Anteil der Konten von Admin, CISO und ISB mit zweitem Faktor (SSO-Konten zählen nicht)"
         nis2_21_2j_comms: "Sichere Kommunikation (Art. 21.2.j)"
         nis2_21_2j_comms_desc: "Gesicherte Sprach-, Video- und Textkommunikation"
         nis2_23_early_warning: "Frühwarnung (Art. 23.4.a)"

@@ -471,7 +471,7 @@ class DPIAController extends AbstractController
      * Complete review (Art. 35(11))
      */
     #[Route('/dpia/{id}/complete-review', name: 'app_dpia_complete_review', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(\App\Security\Voter\RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataProtectionImpactAssessment')]
     public function completeReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('complete-review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {

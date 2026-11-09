@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% set _title = tlpt.id ? tlpt.engagementNumber ~ ' · ' ~ 'dora.tlpt.action.edit'|trans({}, 'dora') : 'dora.tlpt.action.new'|trans({}, 'dora') %}
+{% block title %}{{ _title }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'dora.tlpt.page.title'|trans({}, 'dora'), url: path('app_tlpt_index') },
+            { label: _title }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: _title,
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), href: tlpt.id ? path('app_tlpt_show', {id: tlpt.id}) : path('app_tlpt_index'), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
+
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        form: form,
+        eyebrow: 'DORA Art. 26 · TLPT',
+        title: _title,
+        translation_domain: 'dora',
+        exclude: [],
+        strict_whitelist: true,
+        col_widths: {
+            engagementNumber: 4,
+            title: 8,
+            providerType: 4,
+            testProvider: 8,
+            plannedStartDate: 6,
+            plannedEndDate: 6,
+        },
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</div>
+{% endblock %}

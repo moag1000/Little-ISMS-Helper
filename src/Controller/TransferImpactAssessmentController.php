@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+// @em-write-allowed: Lightweight TIA controller — no independent service yet; mirrors DPIAController pattern. Extract to TransferImpactAssessmentService when bulk/export ops are added.
+
 use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
@@ -20,14 +22,15 @@ use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Security\Voter\RecordResponsibleVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
-// @em-write-allowed: Lightweight TIA controller — no independent service yet; mirrors DPIAController pattern. Extract to TransferImpactAssessmentService when bulk/export ops are added.
 
 /**
  * CRUD controller for Transfer Impact Assessments (TIA).
@@ -46,6 +49,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Minimum role: ROLE_USER (read/create); ROLE_MANAGER (delete).
  */
 #[IsGranted('ROLE_USER')]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/processing-activity/{paId}/tia', name: 'app_tia_', requirements: ['paId' => '\d+'])]
 class TransferImpactAssessmentController extends AbstractController
 {
@@ -413,6 +417,45 @@ class TransferImpactAssessmentController extends AbstractController
             ['paId' => $paId, 'id' => $id],
             Response::HTTP_SEE_OTHER
         );
+    }
+
+    /**
+     * Confirm the periodic re-evaluation of an assessed TIA (EDPB Rec. 01/2020
+     * step 6): the legal situation in the destination country is unchanged,
+     * the next review is due in a year. Whoever the TIA review reminder goes
+     * to (owner, assessor, DPO) confirms it here (W6). A changed situation is
+     * a reopen through the lifecycle instead.
+     */
+    #[Route('/{id}/complete-review', name: 'complete_review', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'tia')]
+    #[IsCsrfTokenValid(new Expression('"tia_review_" ~ args["tia"].getId()'))]
+    public function completeReview(int $paId, TransferImpactAssessment $tia): Response
+    {
+        if ($redirect = $this->checkModuleActive('privacy')) {
+            return $redirect;
+        }
+        $tia = $this->getTia((int) $tia->getId(), $this->getProcessingActivity($paId));
+        if ($tia->getStatus() !== 'assessed') {
+            $this->flashWarning('tia.warning.review_needs_assessment');
+
+            return $this->redirectToRoute('app_tia_show', ['paId' => $paId, 'id' => $tia->getId()]);
+        }
+
+        $previous = $tia->getNextReviewDate()?->format('Y-m-d');
+        $tia->setNextReviewDate(new DateTime('+1 year'));
+        $tia->setUpdatedBy($this->currentUser());
+        $this->entityManager->flush();
+
+        $this->auditLogger?->logCustom(
+            'tia.review_completed',
+            TransferImpactAssessment::class,
+            $tia->getId(),
+            oldValues: ['nextReviewDate' => $previous],
+            newValues: ['nextReviewDate' => $tia->getNextReviewDate()?->format('Y-m-d')],
+        );
+        $this->flashSuccess('tia.success.review_completed');
+
+        return $this->redirectToRoute('app_tia_show', ['paId' => $paId, 'id' => $tia->getId()], Response::HTTP_SEE_OTHER);
     }
 
     /**

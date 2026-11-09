@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Group;
 
+use App\Doctrine\HoldingIncidentFilter;
 use App\Entity\Tenant;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +25,10 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
  *    that resolve the tenant from the context (module set, framework
  *    statistics, KPI catalog) compute that organisation's values. The
  *    previous context is always restored.
+ *
+ * Both arm {@see HoldingIncidentFilter} for the organisation looking (W6): its
+ * own incidents count, another organisation's only when released to the
+ * holding (visibleToHolding). Every number of a group view follows that rule.
  */
 class HoldingScope
 {
@@ -47,9 +52,13 @@ class HoldingScope
         if ($suspend) {
             $filters->suspend(self::FILTER);
         }
+        $armed = $this->armIncidentLens();
         try {
             return $fn();
         } finally {
+            if ($armed) {
+                $filters->disable(HoldingIncidentFilter::NAME);
+            }
             if ($suspend) {
                 $filters->restore(self::FILTER);
             }
@@ -66,10 +75,14 @@ class HoldingScope
         $before = $this->tenantContext->snapshot();
         $previous = $before['initialized'] ? $this->tenantContext->getCurrentTenant() : null;
         $parameter = $this->filterParameter();
+        $armed = $this->armIncidentLens();
         $this->tenantContext->setCurrentTenant($tenant);
         try {
             return $fn();
         } finally {
+            if ($armed) {
+                $this->entityManager->getFilters()->disable(HoldingIncidentFilter::NAME);
+            }
             if ($before['initialized']) {
                 $this->tenantContext->setCurrentTenant($previous);
             } else {
@@ -83,6 +96,23 @@ class HoldingScope
                     ->setParameter('tenant_id', $parameter['value'], $parameter['type']);
             }
         }
+    }
+
+    /**
+     * Arms the incident lens for the organisation looking (the context before
+     * any pinning). False when it was armed already (nested call keeps the
+     * outer viewer) or there is no filter to arm.
+     */
+    private function armIncidentLens(): bool
+    {
+        $filters = $this->entityManager->getFilters();
+        if ($filters->isEnabled(HoldingIncidentFilter::NAME) || !$filters->has(HoldingIncidentFilter::NAME)) {
+            return false;
+        }
+        $viewer = $this->tenantContext->getCurrentTenant();
+        $filters->enable(HoldingIncidentFilter::NAME)->setParameter('viewer_tenant_id', (string) ($viewer?->getId() ?? ''));
+
+        return true;
     }
 
     /** @return array{value: mixed, type: ?string}|null the armed tenant_id, unquoted */

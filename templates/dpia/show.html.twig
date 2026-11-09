@@ -38,7 +38,10 @@
     {{ _lifecycle_pending_banner.render(workflow_info|default({})) }}
 
     {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataProtectionImpactAssessment', status_key: dpia.status }) }}{% endset %}
-    {% set _actions %}{{ _lifecycle_actions.dropdown(dpia, 'dpia', 'dpia_lifecycle') }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(dpia, 'dpia', 'dpia_lifecycle') }}{% if dpia.status == 'approved' %}{% include '_components/_review_confirm_button.html.twig' with {
+        entity: dpia, route: 'app_dpia_complete_review', token_id: 'complete-review' ~ dpia.id,
+        can: is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', dpia),
+    } only %}{% endif %}{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         actions: _actions,

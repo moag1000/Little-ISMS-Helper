@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Location;
 
+use App\Doctrine\HoldingIncidentFilter;
 use App\Entity\Asset;
 use App\Entity\EntityTag;
 use App\Entity\Incident;
@@ -69,7 +70,10 @@ class LocationPostureService implements ResetInterface
      */
     public function forTenant(Tenant $tenant, ?User $viewer = null): array
     {
-        return $this->memo[$tenant->getId() . ':' . $viewer?->getId()] ??= $this->compute($tenant, $viewer);
+        // The holding lens (HoldingScope) hides unreleased incidents of other organisations: own memo entry.
+        $lens = $this->em->getFilters()->isEnabled(HoldingIncidentFilter::NAME) ? ':lens' : '';
+
+        return $this->memo[$tenant->getId() . ':' . $viewer?->getId() . $lens] ??= $this->compute($tenant, $viewer);
     }
 
     /**

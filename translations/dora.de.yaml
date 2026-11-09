@@ -170,6 +170,63 @@ dora:
         page: "Seite"
 
 # RT_04 — Subdienstleisterkette (DORA Art. 28)
+    # DORA Art. 26 threat-led penetration tests (TLPT)
+    tlpt:
+        page:
+            title: 'Threat-Led Penetration Tests (TLPT)'
+            subtitle: 'Bedrohungsgeleitete Tests nach DORA Art. 26, mindestens alle drei Jahre.'
+        list:
+            title: 'Tests'
+        empty:
+            title: 'Keine TLPT vorhanden.'
+            text: 'Finanzunternehmen, die die Aufsicht benennt, testen mindestens alle drei Jahre bedrohungsgeleitet (DORA Art. 26).'
+        summary:
+            running: '%count% laufend'
+            closed: '%count% abgeschlossen'
+        action:
+            new: 'TLPT planen'
+            edit: 'Bearbeiten'
+            delete: 'Löschen'
+        section:
+            results: 'Ergebnis'
+        field:
+            engagement_number: 'Nummer'
+            title: 'Titel'
+            scope: 'Umfang (kritische oder wichtige Funktionen)'
+            threat_intelligence_basis: 'Bedrohungsszenarien'
+            jurisdictions: 'Länder'
+            provider_type: 'Tester'
+            test_provider: 'Testdienstleister'
+            planned_start_date: 'Geplanter Beginn'
+            planned_end_date: 'Geplantes Ende'
+            planned_period: 'Geplant'
+            actual_period: 'Durchgeführt'
+            executive_summary: 'Zusammenfassung'
+            findings: 'Feststellungen'
+            status: 'Status'
+        help:
+            scope: 'DORA Art. 26 Abs. 2: kritische oder wichtige Funktionen in Produktivsystemen, auch ausgelagerte.'
+            threat_intelligence_basis: 'Bedrohungsanalyse als Grundlage der Szenarien, z. B. TIBER-EU Targeted Threat Intelligence.'
+            jurisdictions: 'Länder, in denen die getesteten Funktionen betrieben werden (RTS TLPT Art. 3).'
+            provider_type: 'Interne Tester höchstens jedes zweite Mal (DORA Art. 27 Abs. 2).'
+            planned_end_date: 'Bis zu diesem Datum erinnert „Mein Tag“ an den laufenden Test.'
+            executive_summary: 'Zusammenfassung und Behebungsplan für die Aufsicht (DORA Art. 26 Abs. 6).'
+            findings: 'Feststellungen des Tests; ihre Behebung läuft über Korrekturmaßnahmen.'
+        provider:
+            external: 'Externer Testdienstleister'
+            internal: 'Interne Tester'
+        show:
+            no_findings: 'Keine Feststellungen verknüpft.'
+            cadence_title: 'Nächster Test'
+            cadence_text: 'Mit dem Abschluss beginnt die Drei-Jahres-Frist für den nächsten TLPT (DORA Art. 26 Abs. 1). Beginn und Ende der Durchführung setzt der Statuswechsel.'
+            delete_confirm: 'Diesen geplanten Test löschen?'
+        flash:
+            created: 'TLPT angelegt.'
+            updated: 'Gespeichert.'
+            deleted: 'Gelöscht.'
+            final: 'Abgeschlossene oder abgebrochene Tests sind nicht mehr änderbar.'
+            delete_only_planned: 'Nur geplante Tests lassen sich löschen; einen begonnenen Test brechen Sie über den Status ab.'
+
 dora_subcontractor:
     badge: "RT_04 Kette"
     subtitle: "Erfasse 4th- und 5th-Party-Subdienstleister, auf die primäre IKT-Anbieter zurückgreifen (DORA Art. 28(2))."
