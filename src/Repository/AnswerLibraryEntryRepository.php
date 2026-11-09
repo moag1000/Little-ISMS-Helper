@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use App\Entity\AnswerLibraryEntry;
 use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -72,7 +73,7 @@ class AnswerLibraryEntryRepository extends ServiceEntityRepository
             ->andWhere('a.tenant = :tenant')
             ->andWhere('(a.question LIKE :kw OR a.answer LIKE :kw)')
             ->setParameter('tenant', $tenant)
-            ->setParameter('kw', '%' . $keyword . '%')
+            ->setParameter('kw', LikePattern::contains($keyword))
             ->orderBy('a.useCount', \SortDirection::Descending)
             ->addOrderBy('a.createdAt', \SortDirection::Descending);
 

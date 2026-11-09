@@ -3,11 +3,7 @@
    that replaces/appends a row after an in-modal save. The title link and eye/edit
    actions all target the fa-form-modal Turbo Frame. Loop variable: `action`. #}
 {% trans_default_domain 'audits' %}
-{% set _statusVariant = action.status == 'verified_effective' ? 'success'
-    : (action.status == 'verified_ineffective' ? 'danger'
-    : (action.status in ['completed', 'closed'] ? 'success'
-    : (action.status == 'in_progress' ? 'warning'
-    : (action.status == 'planned' ? 'info' : 'neutral')))) %}
+{% set _statusVariant = lifecycle_tone('App\\Entity\\CorrectiveAction', action.status) %}
 {% set _meta = [] %}
 {% if action.finding %}
     {% set _meta = _meta|merge([action.finding.findingNumber ?? ('#' ~ action.finding.id)]) %}

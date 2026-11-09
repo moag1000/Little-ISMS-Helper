@@ -76,8 +76,9 @@ class HoldingScope
         $previous = $before['initialized'] ? $this->tenantContext->getCurrentTenant() : null;
         $parameter = $this->filterParameter();
         $armed = $this->armIncidentLens();
-        $this->tenantContext->setCurrentTenant($tenant);
         try {
+            $this->tenantContext->setCurrentTenant($tenant);
+
             return $fn();
         } finally {
             if ($armed) {

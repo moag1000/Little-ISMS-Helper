@@ -4,37 +4,15 @@ declare(strict_types=1);
 
 namespace App\Service\Search;
 
+use App\Util\LikePattern;
 use App\Risk\RiskMatrixThresholds;
-use App\Entity\Asset;
-use App\Entity\AuditFinding;
-use App\Entity\BCExercise;
-use App\Entity\BusinessContinuityPlan;
-use App\Entity\BusinessProcess;
-use App\Entity\ChangeRequest;
-use App\Entity\ComplianceFramework;
-use App\Entity\ComplianceRequirement;
-use App\Entity\Consent;
-use App\Entity\Control;
-use App\Entity\CorrectiveAction;
-use App\Entity\CrisisTeam;
-use App\Entity\DataBreach;
-use App\Entity\DataProtectionImpactAssessment;
-use App\Entity\DataSubjectRequest;
-use App\Entity\Document;
-use App\Entity\Incident;
-use App\Entity\InterestedParty;
-use App\Entity\InternalAudit;
-use App\Entity\ISMSObjective;
-use App\Entity\ManagementReview;
-use App\Entity\Patch;
-use App\Entity\Person;
-use App\Entity\ProcessingActivity;
-use App\Entity\Risk;
-use App\Entity\Supplier;
-use App\Entity\ThreatIntelligence;
-use App\Entity\Tenant;
-use App\Entity\Training;
-use App\Entity\Vulnerability;
+use App\Entity\{
+    Asset, AuditFinding, BCExercise, BusinessContinuityPlan, BusinessProcess, ChangeRequest, ComplianceFramework,
+    ComplianceRequirement, Consent, Control, CorrectiveAction, CrisisTeam, DataBreach,
+    DataProtectionImpactAssessment, DataSubjectRequest, Document, Incident, InterestedParty, InternalAudit,
+    ISMSObjective, ManagementReview, Patch, Person, ProcessingActivity, Risk, Supplier, ThreatIntelligence, Tenant,
+    Training, Vulnerability
+};
 use App\Repository\AssetRepository;
 use App\Repository\AuditFindingRepository;
 use App\Repository\BCExerciseRepository;
@@ -209,7 +187,7 @@ class SearchService
 
         $qb = $this->assetRepository->createQueryBuilder('a')->leftJoin('a.ownerUser', 'ou')->leftJoin('a.ownerPerson', 'op')
             ->where("a.name LIKE :query OR a.description LIKE :query OR op.fullName LIKE :query OR CONCAT(ou.firstName, ' ', ou.lastName) LIKE :query")
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -235,7 +213,7 @@ class SearchService
 
         $qb = $this->riskRepository->createQueryBuilder('r')
             ->where('r.title LIKE :query OR r.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -265,7 +243,7 @@ class SearchService
 
         $qb = $this->controlRepository->createQueryBuilder('c')
             ->where('c.controlId LIKE :query OR c.name LIKE :query OR c.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -291,7 +269,7 @@ class SearchService
 
         $qb = $this->incidentRepository->createQueryBuilder('i')
             ->where('i.title LIKE :query OR i.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -317,7 +295,7 @@ class SearchService
 
         $qb = $this->trainingRepository->createQueryBuilder('t')
             ->where('t.title LIKE :query OR t.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -343,7 +321,7 @@ class SearchService
 
         $qb = $this->documentRepository->createQueryBuilder('d')
             ->where('d.originalFilename LIKE :query OR d.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -369,7 +347,7 @@ class SearchService
 
         $qb = $this->supplierRepository->createQueryBuilder('s')
             ->where('s.name LIKE :query OR s.description LIKE :query OR s.serviceProvided LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -395,7 +373,7 @@ class SearchService
 
         $qb = $this->processingActivityRepository->createQueryBuilder('pa')
             ->where('pa.name LIKE :query OR pa.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -421,7 +399,7 @@ class SearchService
 
         $qb = $this->dpiaRepository->createQueryBuilder('dp')
             ->where('dp.title LIKE :query OR dp.processingDescription LIKE :query OR dp.processingPurposes LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -447,7 +425,7 @@ class SearchService
 
         $qb = $this->dataBreachRepository->createQueryBuilder('db')
             ->where('db.title LIKE :query OR db.breachNature LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -473,7 +451,7 @@ class SearchService
 
         $qb = $this->auditFindingRepository->createQueryBuilder('af')
             ->where('af.title LIKE :query OR af.description LIKE :query OR af.clauseReference LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -499,7 +477,7 @@ class SearchService
 
         $qb = $this->correctiveActionRepository->createQueryBuilder('ca')
             ->where('ca.title LIKE :query OR ca.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -525,7 +503,7 @@ class SearchService
 
         $qb = $this->changeRequestRepository->createQueryBuilder('cr')
             ->where('cr.title LIKE :query OR cr.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -551,7 +529,7 @@ class SearchService
 
         $qb = $this->internalAuditRepository->createQueryBuilder('ia')
             ->where('ia.title LIKE :query OR ia.scope LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -577,7 +555,7 @@ class SearchService
 
         $qb = $this->businessProcessRepository->createQueryBuilder('bp')
             ->where('bp.name LIKE :query OR bp.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -603,7 +581,7 @@ class SearchService
 
         $qb = $this->bcPlanRepository->createQueryBuilder('bc')
             ->where('bc.name LIKE :query OR bc.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -629,7 +607,7 @@ class SearchService
 
         $qb = $this->bcExerciseRepository->createQueryBuilder('bce')
             ->where('bce.name LIKE :query OR bce.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -655,7 +633,7 @@ class SearchService
 
         $qb = $this->crisisTeamRepository->createQueryBuilder('ct')
             ->where('ct.teamName LIKE :query OR ct.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -681,7 +659,7 @@ class SearchService
 
         $qb = $this->managementReviewRepository->createQueryBuilder('mr')
             ->where('mr.title LIKE :query OR mr.decisions LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -703,7 +681,7 @@ class SearchService
     {
         $qb = $this->ismsObjectiveRepository->createQueryBuilder('o')
             ->where('o.title LIKE :query OR o.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -729,7 +707,7 @@ class SearchService
 
         $qb = $this->vulnerabilityRepository->createQueryBuilder('v')
             ->where('v.cveId LIKE :query OR v.title LIKE :query OR v.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -755,7 +733,7 @@ class SearchService
 
         $qb = $this->patchRepository->createQueryBuilder('p')
             ->where('p.title LIKE :query OR p.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -781,7 +759,7 @@ class SearchService
 
         $qb = $this->threatIntelligenceRepository->createQueryBuilder('ti')
             ->where('ti.title LIKE :query OR ti.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -807,7 +785,7 @@ class SearchService
 
         $qb = $this->personRepository->createQueryBuilder('pe')
             ->where('pe.fullName LIKE :query OR pe.email LIKE :query OR pe.jobTitle LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -833,7 +811,7 @@ class SearchService
 
         $qb = $this->interestedPartyRepository->createQueryBuilder('ip')
             ->where('ip.name LIKE :query OR ip.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -859,7 +837,7 @@ class SearchService
 
         $qb = $this->consentRepository->createQueryBuilder('co')
             ->where('co.dataSubjectIdentifier LIKE :query OR co.consentText LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -885,7 +863,7 @@ class SearchService
 
         $qb = $this->dataSubjectRequestRepository->createQueryBuilder('dsr')
             ->where('dsr.dataSubjectName LIKE :query OR dsr.description LIKE :query OR dsr.dataSubjectIdentifier LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         if ($tenant !== null) {
@@ -914,7 +892,7 @@ class SearchService
 
         $qb = $this->complianceFrameworkRepository->createQueryBuilder('cf')
             ->where('cf.name LIKE :query OR cf.version LIKE :query OR cf.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         return array_map(fn(ComplianceFramework $e): array => [
@@ -939,7 +917,7 @@ class SearchService
 
         $qb = $this->complianceRequirementRepository->createQueryBuilder('req')
             ->where('req.requirementId LIKE :query OR req.title LIKE :query OR req.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
 
         return array_map(fn(ComplianceRequirement $e): array => [

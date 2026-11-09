@@ -9,11 +9,11 @@ framework:
                 - App\Entity\RiskTreatmentPlan
             initial_marking: planned
             places:
-                - planned
-                - in_progress
-                - completed
-                - cancelled
-                - on_hold
+                - { name: planned, metadata: { tone: primary } }
+                - { name: in_progress, metadata: { tone: primary } }
+                - { name: completed, metadata: { tone: success } }
+                - { name: cancelled, metadata: { tone: neutral } }
+                - { name: on_hold, metadata: { tone: warning } }
             transitions:
                 start:
                     from: planned

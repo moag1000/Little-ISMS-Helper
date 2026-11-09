@@ -42,7 +42,7 @@
                 {% for tag in page %}
                     <tr class="fa-table__row">
                         <td class="fa-table__cell" data-sort-value="{{ tag.name }}">
-                            {% set _ttone = tag.color in ['info'] ? 'primary' : (tag.color in ['secondary','light','dark'] ? 'neutral' : tag.color) %}
+                            {% set _ttone = pill_tone_bs(tag.color) %}
                             {{ pill.render(tag.name, _ttone, {size: 'sm'}) }}
                             {% if tag.description %}
                                 <br><small class="text-muted">{{ tag.description }}</small>

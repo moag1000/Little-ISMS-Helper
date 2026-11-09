@@ -39,7 +39,7 @@
 
     {% set _status %}
         {% include '_components/_badge.html.twig' with {
-            variant: patch.status == 'deployed' ? 'success' : (patch.status == 'failed' or patch.status == 'rolled_back' ? 'danger' : 'info'),
+            variant: lifecycle_tone('App\\Entity\\Patch', patch.status),
             content: ('patch.status.' ~ patch.status)|trans({}, 'patches')
         } only %}
         {% if patch.overdue %}
@@ -99,7 +99,7 @@
                         <dt class="col-sm-4">{{ 'patch.field.priority'|trans({}, 'patches') }}</dt>
                         <dd class="col-sm-8">
                             {% include '_components/_badge.html.twig' with {
-                                variant: patch.priority == 'critical' ? 'danger' : (patch.priority == 'high' ? 'warning' : (patch.priority == 'medium' ? 'info' : 'secondary')),
+                                variant: pill_tone_severity(patch.priority),
                                 content: ('patch.priority.' ~ patch.priority)|trans({}, 'patches')
                             } only %}
                         </dd>

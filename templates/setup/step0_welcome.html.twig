@@ -12,7 +12,7 @@
     {% for label, messages in app.flashes %}
         {% import '_components/_alert.html.twig' as faAlert %}
         {% for message in messages %}
-            {{ faAlert.render(message|fa_flash, label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')), { dismissible: true }) }}
+            {{ faAlert.render(message|fa_flash, flash_tone(label), { dismissible: true }) }}
         {% endfor %}
     {% endfor %}
 

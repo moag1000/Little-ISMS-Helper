@@ -68,14 +68,14 @@
                             <td>
                                 {% if tia.residualRiskRating %}
                                     {% include '_components/_badge.html.twig' with {
-                                        variant: tia.residualRiskRating == 'high' ? 'danger' : (tia.residualRiskRating == 'medium' ? 'warning' : 'success'),
+                                        variant: pill_tone_severity(tia.residualRiskRating),
                                         content: ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia')
                                     } %}
                                 {% else %}—{% endif %}
                             </td>
                             <td>
                                 {% include '_components/_badge.html.twig' with {
-                                    variant: tia.status == 'assessed' ? 'success' : 'secondary',
+                                    variant: lifecycle_tone('App\\Entity\\TransferImpactAssessment', tia.status),
                                     content: ('tia.status.' ~ tia.status)|trans({}, 'tia')
                                 } %}
                             </td>

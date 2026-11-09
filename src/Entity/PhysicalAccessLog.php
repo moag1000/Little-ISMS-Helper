@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\PersonalDataResource;
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
@@ -23,10 +24,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_physical_access_type', columns: ['access_type'])]
 #[ORM\Index(name: 'idx_physical_location', columns: ['location'])]
 #[ORM\Index(name: 'idx_physical_person', columns: ['person_name'])]
+// Badge and movement history of people: no UI reads it, the assistant never gets it (S24).
+#[PersonalDataResource(assistant: false)]
 #[ApiResource(
     operations: [
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('API_VIEW', object)"),
+        // ROLE_ADMIN: there is no page for these logs, and personal data is not read by every employee account.
+        new GetCollection(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('ROLE_ADMIN') and is_granted('API_VIEW', object)"),
         new Post(securityPostDenormalize: "is_granted('API_CREATE', object)"),
     ],
     normalizationContext: ['groups' => ['physical_access:read']],

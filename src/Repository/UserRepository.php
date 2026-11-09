@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -335,7 +336,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 $queryBuilder->expr()->like('u.lastName', ':query'),
                 $queryBuilder->expr()->like('u.email', ':query')
             ))
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->orderBy('u.lastName', \SortDirection::Ascending)
             ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()

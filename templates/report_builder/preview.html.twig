@@ -160,8 +160,7 @@
             {# Status Widgets #}
             {% elseif widgetType == 'status_rag' %}
             <div class="status-widget text-center p-4">
-                {% import '_components/_status_vocabulary.html.twig' as _status %}
-                {% set statusColor = _status.tone('coverage', data.status == 'green' ? 'good' : (data.status == 'amber' ? 'warning' : 'danger'))|trim %}
+                {% set statusColor = status_tone('rag', data.status) %}
                 <div class="display-1">
                     <i class="fa-icon text-{{ statusColor }} fa-icon--status-pending" aria-hidden="true"></i>
                 </div>

@@ -225,9 +225,7 @@
         <div class="isms-trail">
             {% for entry in instance.approvalHistory|reverse %}
                 {% set isAutoApproved = entry.action == 'auto_approved' or (entry.auto_progression is defined and entry.auto_progression) %}
-                {% set tone = entry.action in ['approved', 'auto_approved'] ? 'success'
-                    : (entry.action == 'rejected' ? 'danger'
-                    : (entry.action in ['cancelled', 'expired'] ? 'neutral' : 'warning')) %}
+                {% set tone = status_tone('workflow_action', entry.action) %}
                 {% set icon = entry.action in ['approved', 'auto_approved'] ? 'fa-icon--ui-check'
                     : (entry.action == 'rejected' ? 'fa-icon--ui-close'
                     : (entry.action == 'cancelled' ? 'fa-icon--status-critical'

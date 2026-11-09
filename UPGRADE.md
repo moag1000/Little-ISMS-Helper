@@ -99,6 +99,15 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Tokens laufen höchstens 365 Tage; Tokens ohne Ablauf enden ein Jahr nach Erstellung. Eine
   Rollenänderung widerruft die Tokens der Person. Neue Tokens nur nach voller Anmeldung (nicht über
   „Angemeldet bleiben“).
+- **REST-API und MCP, Datenminimierung (S24):** `?pagination=false` gilt nicht mehr — API-Clients
+  blättern (`hydra:view` → `next`, höchstens 100 je Seite mit `itemsPerPage`). Zutrittslog
+  (`/api/physical_access_logs`) und Krypto-Operationen (`/api/cryptographic_operations`) lesen nur
+  Admins; der KI-Assistent bekommt sie nie. Felder ausgeschalteter Module fehlen jetzt auch in der
+  Antwort, ein Filter oder eine Sortierung darauf antwortet 400. Der KI-Assistent bekommt Personen ohne
+  E-Mail, Telefon, Ausweis, Notizen und Zutrittszeitraum, Lieferanten und interessierte Parteien ohne
+  E-Mail und Telefon, und keine Datenpannen, Betroffenenanfragen
+  oder Einwilligungen (auch nicht in der Suche) — außer mit der Rolle Datenschutzbeauftragte(r).
+  Die Suche wertet `%` und `_` als normale Zeichen.
 - **Ausgehende Adressen:** Geokodierer, OIDC-Discovery und Webhooks erreichen keine internen
   Adressen mehr. Ein eigener Nominatim-Dienst im LAN funktioniert deshalb nicht mehr; Web-Push nur zu
   Browser-Push-Diensten (fremde Abos werden beim nächsten Versand abgeschaltet).
@@ -172,6 +181,20 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Laden die alten Caches. Offline erscheint nur noch die Offline-Seite.
 - **Exporte** und Downloads verlangen überall eine Rolle (`#[IsGranted]`), auch die
   Compliance-Exporte. Geplante Berichte bieten nur Berichtsarten aktiver Module an.
+- **Hintergrundaufgaben je Organisation:** Der Worker setzt nach jeder Aufgabe den
+  Organisationskontext zurück. Bisher konnte ein geplanter Bericht, der KPI-Snapshot oder ein
+  Admin-Job die Organisation für die nächste Aufgabe festhalten: das nächtliche Instanz-Backup enthielt
+  dann nur eine Organisation, Erinnerungen und SLA-Hinweise der anderen kamen zu spät. Kein Klick nötig;
+  Instanz-Backups, die vor dem Update auf Mehr-Organisations-Instanzen nachts entstanden sind, nach dem
+  Update durch ein neues ersetzen (Admin > Backup), bevor `app:backup:prune` die älteren vollständigen
+  löscht. Die nächtliche Erfüllungsberechnung bewertet die Wizard-Prüfungen jetzt mit dem Scope der
+  jeweiligen Organisation; Werte können sich einmalig ändern.
+- **Audit-Log-Aufbewahrung:** Die nächtliche Bereinigung (02:45) löscht jetzt wirklich (geplant mit
+  `--force`; ohne Terminal antwortete die Rückfrage bisher immer „nein“). Gelöscht wird nur, was älter
+  ist als die Frist unter Admin > Audit-Log > Aufbewahrung (mindestens 365 Tage).
+- **„Warteschlange jetzt abarbeiten“** (Admin > Worker-Status) nur noch für den Super-Admin: die
+  Warteschlange enthält Jobs und Mails aller Organisationen. Der wöchentliche Log-Eintrag
+  „Compliance report generated“ entfällt (er zählte instanzweit und ging an niemanden).
 
 ### SSO (Azure, SAML, OIDC)
 

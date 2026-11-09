@@ -24,7 +24,7 @@
                 {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
             {% endif %}
             {% if breach.severity %}
-                {% include '_components/_badge.html.twig' with { variant: breach.severity in ['high','critical'] ? 'danger' : (breach.severity == 'medium' ? 'warning' : 'success'), content: ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') } %}
+                {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(breach.severity), content: ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') } %}
             {% endif %}
         </div>
 

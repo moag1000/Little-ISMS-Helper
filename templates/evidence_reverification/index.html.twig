@@ -51,7 +51,7 @@
         {% block list_table %}
             <div class="px-3">
                 {% for task in page %}
-                    {% set status_variant = task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'neutral' : (task.isOverdue ? 'danger' : 'warning')) %}
+                    {% set status_variant = status_tone('evidence_task', task.isOverdue and task.status not in ['completed', 'skipped'] ? 'overdue' : task.status) %}
                     <div class="d-flex align-items-start gap-3 py-3{{ not loop.last ? ' border-bottom' : '' }}">
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2 mb-1">

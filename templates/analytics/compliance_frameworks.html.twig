@@ -308,7 +308,7 @@
                                 <td class="fa-table__cell fa-table__cell--center">{{ item.gaps_remaining }}</td>
                                 <td class="fa-table__cell fa-table__cell--center">{{ item.estimated_weeks }}</td>
                                 <td class="fa-table__cell">
-                                    {% set status_variant = item.status == 'completed' ? 'success' : (item.status == 'on_track' ? 'info' : (item.status in ['in_progress', 'at_risk'] ? 'warning' : (item.status == 'critical' ? 'danger' : 'secondary'))) %}
+                                    {% set status_variant = status_tone('roadmap', item.status) %}
                                     {% include '_components/_badge.html.twig' with { variant: status_variant, content: item.status|replace({'_': ' '})|title } %}
                                 </td>
                                 <td class="fa-table__cell">

@@ -24,7 +24,7 @@
         ])
     }) }}
 
-    {% set _status %}<span class="fa-status-pill fa-status-pill--{{ role.status == 'active' ? 'success' : 'neutral' }}">{{ ('lifecycle.' ~ role.status)|trans({}, 'lifecycle') }}</span>{% endset %}
+    {% set _status %}<span class="fa-status-pill fa-status-pill--{{ lifecycle_tone('App\\Entity\\Role', role.status) }}">{{ ('lifecycle.' ~ role.status)|trans({}, 'lifecycle') }}</span>{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         facts: [

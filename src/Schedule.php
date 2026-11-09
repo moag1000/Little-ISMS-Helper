@@ -7,7 +7,6 @@ namespace App;
 use App\Message\Schedule\CleanupExpiredSessionsMessage;
 use App\Message\Schedule\EnforceRetentionMessage;
 use App\Message\Schedule\ExecuteScheduledTaskMessage;
-use App\Message\Schedule\GenerateComplianceReportMessage;
 use App\Message\Schedule\SyncEuvdFeedMessage;
 use App\Repository\ScheduledTaskRepository;
 use App\Service\RetentionEnforcementService;
@@ -49,7 +48,7 @@ class Schedule implements ScheduleProviderInterface
         ['30 1 * * *', 'app:reuse:capture-snapshot'],
         ['0 2 * * *', 'app:backup:create'],
         ['30 2 * * *', 'app:backup:prune'],
-        ['45 2 * * *', 'app:audit-log:cleanup'],
+        ['45 2 * * *', 'app:audit-log:cleanup --force'],
         ['0 3 * * *', 'app:four-eyes:cleanup-expired'],
         // Evidence that still (or again) lies in public/uploads/ moves outside the web root.
         ['10 4 * * *', 'app:uploads:protect'],
@@ -97,11 +96,6 @@ class Schedule implements ScheduleProviderInterface
             RecurringMessage::cron('0 3 * * *', new CleanupExpiredSessionsMessage())
         );
 
-        // Generate compliance report weekly (Mondays at 6:00 AM)
-        $schedule->add(
-            RecurringMessage::cron('0 6 * * 1', new GenerateComplianceReportMessage())
-        );
-
         // Enforce data-retention weekly (Sundays at 4:00 AM) — GDPR Art. 5(1)(e):
         // per-tenant auto_delete policies + audit-log retention (NIS2 floor).
         $schedule->add(
@@ -122,7 +116,7 @@ class Schedule implements ScheduleProviderInterface
         }
 
         $this->logger->info('Built-in scheduled tasks loaded', [
-            'count' => 4 + count(self::COMMAND_TASKS),
+            'count' => 3 + count(self::COMMAND_TASKS),
         ]);
     }
 

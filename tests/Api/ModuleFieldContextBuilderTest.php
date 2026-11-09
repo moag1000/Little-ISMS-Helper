@@ -17,7 +17,8 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 /**
  * S4 (2026-11): a module's fields on another module's record (DORA on an
  * incident, FAIR on a risk) are ignored in an API request body while that
- * module is off — as the web form leaves them out.
+ * module is off — as the web form leaves them out. S24: and left out of the
+ * answer (this test used to assert that reads stayed untouched).
  */
 final class ModuleFieldContextBuilderTest extends TestCase
 {
@@ -33,13 +34,21 @@ final class ModuleFieldContextBuilderTest extends TestCase
     }
 
     #[Test]
-    public function activeModulesAndReadsAreUntouched(): void
+    public function fieldsOfAnInactiveModuleAreLeftOutOfTheAnswer(): void
+    {
+        $reading = $this->builder(active: ['incidents'])->createFromRequest(new Request(), true);
+
+        self::assertContains('ictIncidentClassification', $reading[AbstractNormalizer::IGNORED_ATTRIBUTES]);
+        self::assertContains('keep', $reading[AbstractNormalizer::IGNORED_ATTRIBUTES]);
+        self::assertNotContains('title', $reading[AbstractNormalizer::IGNORED_ATTRIBUTES]);
+    }
+
+    #[Test]
+    public function activeModulesAreUntouched(): void
     {
         $builder = $this->builder(active: ['incidents', 'nis2_dora', 'controls']);
         self::assertSame(['keep'], $builder->createFromRequest(new Request(), false)[AbstractNormalizer::IGNORED_ATTRIBUTES]);
-
-        $reading = $this->builder(active: [])->createFromRequest(new Request(), true);
-        self::assertSame(['keep'], $reading[AbstractNormalizer::IGNORED_ATTRIBUTES]);
+        self::assertSame(['keep'], $builder->createFromRequest(new Request(), true)[AbstractNormalizer::IGNORED_ATTRIBUTES]);
     }
 
     #[Test]

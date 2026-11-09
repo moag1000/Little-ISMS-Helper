@@ -9,11 +9,11 @@ framework:
                 - App\Entity\DataBreach
             initial_marking: draft
             places:
-                - draft
-                - under_assessment
-                - authority_notified
-                - subjects_notified
-                - closed
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: under_assessment, metadata: { tone: primary } }
+                - { name: authority_notified, metadata: { tone: success } }
+                - { name: subjects_notified, metadata: { tone: success } }
+                - { name: closed, metadata: { tone: neutral } }
             transitions:
                 assess:
                     from: draft

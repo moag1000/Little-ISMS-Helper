@@ -2,11 +2,7 @@
    Uses drawer chrome (header/body/footer/kv). Shows description, owner, status,
    due-date, effectiveness, linked finding. Full-page link via data-turbo="false". #}
 {% trans_default_domain 'audits' %}
-{% set _statusVariant = action.status == 'verified_effective' ? 'success'
-    : (action.status == 'verified_ineffective' ? 'danger'
-    : (action.status in ['completed', 'closed'] ? 'success'
-    : (action.status == 'in_progress' ? 'warning'
-    : (action.status == 'planned' ? 'info' : 'neutral')))) %}
+{% set _statusVariant = lifecycle_tone('App\\Entity\\CorrectiveAction', action.status) %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">

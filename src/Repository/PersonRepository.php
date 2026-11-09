@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use DateTime;
 use App\Entity\Person;
 use App\Entity\Tenant;
@@ -100,7 +101,7 @@ class PersonRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.company LIKE :company')
-            ->setParameter('company', '%' . $company . '%')
+            ->setParameter('company', LikePattern::contains($company))
             ->orderBy('p.fullName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
@@ -113,7 +114,7 @@ class PersonRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.fullName LIKE :name')
-            ->setParameter('name', '%' . $name . '%')
+            ->setParameter('name', LikePattern::contains($name))
             ->orderBy('p.fullName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();

@@ -822,6 +822,10 @@ jobs:
         # S9, 2026-11: SAML URLs from the Host header and replayable responses, Azure tid unchecked with
         # e-mail linking on, OIDC tokens without issuer/exp/nonce and UserInfo overwriting sub/email.
         run: python3 scripts/quality/check_sso_claim_policy.py --quiet
+      - name: "Gate 97: an organisation pinned in TenantContext is put back (runAs / try-finally)"
+        # S23, 2026-11: the worker runs scheduled commands and jobs in one container; a report or KPI
+        # snapshot left its organisation pinned and the nightly instance backup held only that one.
+        run: python3 scripts/quality/check_tenant_pin_restore.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

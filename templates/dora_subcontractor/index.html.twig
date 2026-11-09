@@ -70,9 +70,9 @@
             {% if sub.country %}
                 <span class="fa-status-pill fa-status-pill--neutral">{{ sub.country }}</span>
             {% endif %}
-            {% set critVariant = sub.criticality == 'critical' ? 'danger' : (sub.criticality == 'important' ? 'warning' : 'primary') %}
+            {% set critVariant = pill_tone_severity(sub.criticality) %}
             <span class="fa-status-pill fa-status-pill--{{ critVariant }}">{{ ('dora_subcontractor.criticality.' ~ sub.criticality)|trans({}, 'dora') }}</span>
-            {% set substVariant = sub.substitutability == 'low' ? 'danger' : (sub.substitutability == 'medium' ? 'warning' : 'success') %}
+            {% set substVariant = status_tone('substitutability', sub.substitutability) %}
             <span class="fa-status-pill fa-status-pill--{{ substVariant }}">
                 {{ 'dora_subcontractor.field.substitutability'|trans({}, 'dora') }}:
                 {{ ('dora_subcontractor.substitutability.' ~ sub.substitutability)|trans({}, 'dora') }}

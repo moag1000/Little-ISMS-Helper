@@ -312,26 +312,27 @@ class InternalAudit
     // ==========================================================================
 
     /**
-     * Lifecycle stages with allowed transitions and Aurora tone.
-     * Reads as: status => { transitions: [next…], tone: <aurora-tone> }.
+     * Lifecycle stages with allowed transitions (the pill tone is the workflow place's
+     * `metadata.tone`, see LifecycleRegistry).
+     * Reads as: status => { transitions: [next…] }.
      *
      * Server-side enforcement: any setStatus()-via-controller must check the
      * `transitions` entry of the current status against the requested target.
      *
-     * @var array<string, array{transitions: list<string>, tone: string}>
+     * @var array<string, array{transitions: list<string>}>
      */
     public const array LIFECYCLE_STAGES = [
-        'planned'   => ['transitions' => ['conducted', 'cancelled'], 'tone' => 'primary'],
-        'conducted' => ['transitions' => ['reported', 'cancelled'], 'tone' => 'warning'],
-        'reported'  => ['transitions' => ['approved', 'rejected'], 'tone' => 'accent'],
-        'approved'  => ['transitions' => ['closed'], 'tone' => 'success'],
-        'rejected'  => ['transitions' => ['reported'], 'tone' => 'danger'],
-        'closed'    => ['transitions' => [], 'tone' => 'neutral'],
-        'cancelled' => ['transitions' => [], 'tone' => 'neutral'],
+        'planned'   => ['transitions' => ['conducted', 'cancelled']],
+        'conducted' => ['transitions' => ['reported', 'cancelled']],
+        'reported'  => ['transitions' => ['approved', 'rejected']],
+        'approved'  => ['transitions' => ['closed']],
+        'rejected'  => ['transitions' => ['reported']],
+        'closed'    => ['transitions' => []],
+        'cancelled' => ['transitions' => []],
         // legacy buckets — no transitions wired; UI hides approval actions
-        'in_progress' => ['transitions' => ['completed', 'reported', 'cancelled'], 'tone' => 'warning'],
-        'completed'   => ['transitions' => ['reported'], 'tone' => 'success'],
-        'postponed'   => ['transitions' => ['planned', 'cancelled'], 'tone' => 'neutral'],
+        'in_progress' => ['transitions' => ['completed', 'reported', 'cancelled']],
+        'completed'   => ['transitions' => ['reported']],
+        'postponed'   => ['transitions' => ['planned', 'cancelled']],
     ];
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -935,15 +936,6 @@ public function __construct()
     {
         $this->closedAt = $closedAt;
         return $this;
-    }
-
-    /**
-     * Return the Aurora tone (`primary`, `accent`, `success`, …) for the
-     * current status. Used by `_fa_status_chip` / `_status_pill` macros.
-     */
-    public function getStatusTone(): string
-    {
-        return self::LIFECYCLE_STAGES[$this->status]['tone'] ?? 'neutral';
     }
 
     /**

@@ -33,10 +33,10 @@
                         {% block table_body %}
                             {% import '_components/_status_pill.html.twig' as pill %}
                             {% for config in page %}
-                                {% set variant = (config.severity == 'breach' or config.severity == 'critical') ? 'danger' : (config.severity == 'high' ? 'warning' : (config.severity == 'medium' ? 'info' : 'secondary')) %}
+                                {% set variant = pill_tone_severity(config.severity) %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell" data-sort-value="{{ config.severity }}">
-                                        {% set _svtone = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
+                                        {% set _svtone = variant %}
                                         {{ pill.render(('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla'), _svtone, {size: 'sm'}) }}
                                     </td>
                                     <td class="fa-table__cell fa-table__cell--num" data-sort-value="{{ config.responseHours }}"><strong>{{ config.responseHours }}h</strong></td>

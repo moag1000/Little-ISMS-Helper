@@ -53,6 +53,7 @@ final class PublicSupplierQuestionnaireController extends AbstractController
 
         // Anonymous request: the questionnaire's own tenant is the context
         // for this submission (lifecycle TenantGuard, tenant filter).
+        // @tenant-pin-ok: web request only, kernel.reset clears it before the next request
         $this->tenantContext->setCurrentTenant($questionnaire->getTenant());
 
         /** @var array<string, string> $answers */

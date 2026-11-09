@@ -9,11 +9,11 @@ framework:
                 - App\Entity\WorkflowInstance
             initial_marking: pending
             places:
-                - pending
-                - in_progress
-                - approved
-                - rejected
-                - cancelled
+                - { name: pending, metadata: { tone: warning } }
+                - { name: in_progress, metadata: { tone: primary } }
+                - { name: approved, metadata: { tone: success } }
+                - { name: rejected, metadata: { tone: danger } }
+                - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 start:
                     from: pending

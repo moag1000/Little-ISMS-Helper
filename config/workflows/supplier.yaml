@@ -15,10 +15,10 @@ framework:
                 - App\Entity\Supplier
             initial_marking: evaluation
             places:
-                - evaluation
-                - active
-                - inactive
-                - terminated
+                - { name: evaluation, metadata: { tone: primary } }
+                - { name: active, metadata: { tone: success } }
+                - { name: inactive, metadata: { tone: neutral } }
+                - { name: terminated, metadata: { tone: neutral } }
             transitions:
                 # ISO 27001 A.5.19-A.5.22 — Supplier-Lifecycle. Onboarding endet
                 # mit `activate` (Vertrag unterschrieben). Termination ist

@@ -36,7 +36,7 @@
     </td>
     <td>
         {% include '_components/_badge.html.twig' with {
-            variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'),
+            variant: lifecycle_tone('App\\Entity\\ISMSObjective', objective.status),
             content: ('objective.status.' ~ objective.status)|trans({}, 'objective')
         } %}
     </td>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\PersonalDataResource;
 use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
@@ -36,6 +37,8 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
  * Understanding the needs and expectations of interested parties
  */
 #[RequiresModule('interested_parties')]
+// Contact details may name a person: to the assistant only for the DPO role (S24).
+#[PersonalDataResource(fields: ['email', 'phone'])]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('API_VIEW', object)"),

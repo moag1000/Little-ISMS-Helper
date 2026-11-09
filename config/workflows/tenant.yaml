@@ -31,11 +31,11 @@ framework:
                 - App\Entity\Tenant
             initial_marking: draft
             places:
-                - draft
-                - active
-                - suspended
-                - terminated
-                - archived
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: active, metadata: { tone: success } }
+                - { name: suspended, metadata: { tone: warning } }
+                - { name: terminated, metadata: { tone: neutral } }
+                - { name: archived, metadata: { tone: neutral } }
             transitions:
                 # Onboarding finished — the tenant is operational. SUPER_ADMIN
                 # only: tenant creation is a platform-level decision, not

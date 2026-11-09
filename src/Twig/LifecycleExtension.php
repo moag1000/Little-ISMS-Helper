@@ -13,8 +13,8 @@ use Twig\Attribute\AsTwigFunction;
  *
  * Exposes three functions:
  *  - `lifecycle_tone(entityClass, statusKey)` — Aurora-v4 status-pill
- *    tone for a given (entityClass, status) pair. Maps semantic registry
- *    values like `info`/`muted` to valid Aurora variants.
+ *    tone of the status: `metadata.tone` of the place in the entity's
+ *    workflow (config/workflows/*.yaml).
  *  - `lifecycle_transitions(entityClass, currentStatus)` — list of
  *    allowed target statuses for bulk-action-bar dropdowns.
  *  - `lifecycle_can(entity, workflowName, transitionName)` — true when
@@ -22,23 +22,6 @@ use Twig\Attribute\AsTwigFunction;
  */
 final class LifecycleExtension
 {
-    /**
-     * Semantic registry tone → Aurora status-pill variant. Aurora v4
-     * supports only `primary | accent | success | warning | danger |
-     * neutral`. Bootstrap-style `info` is folded into `primary`, the
-     * archived `muted` reads as `neutral` (no-emphasis).
-     */
-    private const array TONE_TO_AURORA = [
-        'primary' => 'primary',
-        'accent' => 'accent',
-        'success' => 'success',
-        'warning' => 'warning',
-        'danger' => 'danger',
-        'neutral' => 'neutral',
-        'info' => 'primary',
-        'muted' => 'neutral',
-    ];
-
     public function __construct(
         private readonly LifecycleRegistry $registry,
         private readonly Security $security,
@@ -51,8 +34,7 @@ final class LifecycleExtension
     #[AsTwigFunction('lifecycle_tone')]
     public function lifecycleTone(string $entityClass, string $statusKey): string
     {
-        $tone = $this->registry->getTone($entityClass, $statusKey);
-        return self::TONE_TO_AURORA[$tone] ?? 'neutral';
+        return $this->registry->getTone($entityClass, $statusKey);
     }
 
     /**

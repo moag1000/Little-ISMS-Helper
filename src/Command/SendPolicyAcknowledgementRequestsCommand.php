@@ -21,8 +21,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * not acknowledged yet.
  *
  * Idempotent — the underlying service skips users that already
- * acknowledged the current document version. Safe to run on a tight
- * cron interval (e.g. every 4 hours).
+ * acknowledged the current document version. It only reports: open
+ * acknowledgements reach people through My Day and the reminder digest
+ * (app:send-reminders), so this command is not scheduled.
  *
  * Closes the auditor's predicted ISO 27001 A.6.3 NC by ensuring that no
  * published policy "stalls" without anyone being asked to acknowledge.
@@ -51,8 +52,11 @@ This command iterates all published policy documents and computes the
 pending acknowledgement count per document. It is idempotent — users
 who already acknowledged the current document version are skipped.
 
+Open acknowledgements reach people through My Day and the reminder
+digest; this command only reports and needs no cron line.
+
 <info>Examples:</info>
-  # Production cron (every 4 hours)
+  # Report pending acknowledgements
   <comment>php bin/console app:policy-wizard:send-ack-requests</comment>
 
   # Inspect what would happen — no side effects

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use App\Entity\CustomReport;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -253,7 +254,7 @@ class CustomReportRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('tenantId', $tenantId)
             ->setParameter('notTemplate', false)
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->orderBy('r.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();

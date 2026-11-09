@@ -108,7 +108,7 @@ final class SupplierWorkflowTest extends TestCase
     #[Test]
     public function yamlDefinesExactlyFourPlaces(): void
     {
-        $places = $this->workflowConfig()['places'];
+        $places = array_column($this->workflowConfig()['places'], 'name');
         $this->assertEqualsCanonicalizing(
             ['evaluation', 'active', 'inactive', 'terminated'],
             $places,

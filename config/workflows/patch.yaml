@@ -9,13 +9,13 @@ framework:
                 - App\Entity\Patch
             initial_marking: pending
             places:
-                - pending
-                - testing
-                - approved
-                - deployed
-                - failed
-                - rolled_back
-                - not_applicable
+                - { name: pending, metadata: { tone: warning } }
+                - { name: testing, metadata: { tone: primary } }
+                - { name: approved, metadata: { tone: success } }
+                - { name: deployed, metadata: { tone: success } }
+                - { name: failed, metadata: { tone: danger } }
+                - { name: rolled_back, metadata: { tone: warning } }
+                - { name: not_applicable, metadata: { tone: neutral } }
             transitions:
                 # ISO 27001 A.8.32 (Change-Mgmt) + A.8.8 (Vulnerability-Mgmt).
                 # Patch-Approve und -Deploy sind Prod-Eingriffe → 4-Augen Pflicht.

@@ -172,6 +172,12 @@ kernel.request) and never fall back to `findAll()`. `JobStatusService::create()`
 records the dispatching user + tenant; every download / status endpoint for a
 job id carries `#[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]` (owner or
 SUPER_ADMIN only).
+Code that needs an organisation in `TenantContext` (services reading it, the audit log) scopes it with
+`TenantContext::runAs($tenant, fn)` / `runWithoutOrganisation(fn)`, which put the previous state back —
+the worker runs the next command in the same container; it resets the context after every message
+(`TenantContextResetSubscriber`). A bare `setCurrentTenant*()` / `setNoOrganisation()` fails Gate 97
+(`check_tenant_pin_restore.py`) unless it sits in a restoring `finally` or carries `// @tenant-pin-ok: <reason>`;
+`tests/Scheduler/ScheduledCommandsTenantIsolationTest` runs every scheduled command in one kernel (S23).
 
 ### Advanced — Messenger worker (opt-in, for dedicated infra)
 
@@ -367,8 +373,10 @@ read-only with `App\Form\Util\DerivedField::readOnlyWhen()`; changes come as a s
 (admin format + timezone, null → "-"; seconds `fa_datetime(true)`), times through `|fa_time`, months through
 `|fa_month` (Gate 77 rejects every other `|date()` format in text) — `|date('Y-m-d')` only in attributes/URLs.
 Statuses without a lifecycle (workflow instances, consents, import rows, compliance results) take
-their tone from `_components/_status_vocabulary.html.twig`, lifecycle entities from `_fa_status_chip`,
-severity/criticality/priority scales from `pill_tone_severity()`; the one empty-value placeholder
+their tone from `_components/_status_vocabulary.html.twig` (`status_tone(vocabulary, x)`), lifecycle entities from
+`_fa_status_chip` (tone = `metadata.tone` of the workflow place), severity/criticality/priority scales from
+`pill_tone_severity()`, stored Bootstrap colours from `pill_tone_bs()`, flash labels from `flash_tone()`; all tables live
+in `App\Twig\StatusVocabulary` — one tone per value (`StatusToneConsistencyTest`, W7); the one empty-value placeholder
 is `—` (`|fa_date` renders it for null);
 no local `statusColors` maps and no inline tone chains (`x == 'open' ? 'danger' : …`, rule `ternary-tone`),
 status pills only in primary/accent/success/warning/danger/neutral, no own `<main>`, one `<h1>` (the page header's),
@@ -528,7 +536,8 @@ Every entity with a `status` field that goes through staged transitions uses **S
 `tests/PHPStan/Rule/NoDirectSetStatusRule.php` derives its entity list from `EntityTypeRegistry::managedEntityClasses()` — registering an entity automatically bans direct `setStatus()` on it.
 
 **Adding a new entity to the lifecycle:**
-1. `config/workflows/<entity>.yaml` — workflow definition (copy document.yaml as template)
+1. `config/workflows/<entity>.yaml` — workflow definition (copy document.yaml as template); each place is
+   `- { name: x, metadata: { tone: <tone of x in StatusVocabulary::STATUS_WORDS> } }`
 2. Add to `config/packages/workflow.yaml` imports
 3. Add slug to `src/Lifecycle/EntityTypeRegistry.php` MAP constant
 4. Refactor existing `setStatus()` call-sites to `LifecycleService::transition()`
@@ -663,7 +672,11 @@ Few generic tools (`src/Mcp/Tool/`, tag `app.mcp_tool`) over the existing servic
 Writing: `save_record` runs a resource's Post / Patch / Put (`standard_put: false`) as sub-request — tenant-owned classes
 only, write-group fields only, never `status`/`tenant`/`id`, never Delete; allowed only when `McpWriteAccess` says so
 (org switch `McpSettings::isWriteEnabled()`, `ApiToken::canWrite()`, not a read-only reviewer). Anything needing a
-decision goes through `propose_draft` (suggestion queue). Every call is audit-logged (`mcp.read`/`mcp.propose`/
+decision goes through `propose_draft` (suggestion queue). Personal data reaches the assistant only by
+`#[PersonalDataResource]` on the entity (`App\Mcp\PersonalDataPolicy`, one rule for gateway, search and drafts:
+`assistant: false` never, `fields` stripped / whole class withheld below ROLE_DPO); a resource that shows contact,
+badge or IP fields to every ROLE_USER without the marker fails `ApiFilterExposureContractTest`, which also checks every
+REST filter (read-group fields only) and that `?pagination=false` stays off. Every call is audit-logged (`mcp.read`/`mcp.propose`/
 `mcp.write`, no contents). Guide: `docs/user-guide/KI_ASSISTENT_MCP.md`.
 
 ## Module-Awareness

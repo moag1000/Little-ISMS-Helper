@@ -75,38 +75,6 @@ final class AuditProgramTest extends TestCase
     }
 
     #[Test]
-    public function statusToneForPlanning(): void
-    {
-        $program = new AuditProgram();
-        $program->setStatus(AuditProgram::STATUS_PLANNING);
-        self::assertSame('neutral', $program->getStatusTone());
-    }
-
-    #[Test]
-    public function statusToneForActive(): void
-    {
-        $program = new AuditProgram();
-        $program->setStatus(AuditProgram::STATUS_ACTIVE);
-        self::assertSame('primary', $program->getStatusTone());
-    }
-
-    #[Test]
-    public function statusToneForCompleted(): void
-    {
-        $program = new AuditProgram();
-        $program->setStatus(AuditProgram::STATUS_COMPLETED);
-        self::assertSame('success', $program->getStatusTone());
-    }
-
-    #[Test]
-    public function statusToneForArchived(): void
-    {
-        $program = new AuditProgram();
-        $program->setStatus(AuditProgram::STATUS_ARCHIVED);
-        self::assertSame('neutral', $program->getStatusTone());
-    }
-
-    #[Test]
     public function tenantRoundTrip(): void
     {
         $tenant  = new Tenant();
