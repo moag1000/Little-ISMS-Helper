@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Security;
 
 use App\Entity\ApiToken;
+use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\ApiTokenRepository;
@@ -139,6 +140,58 @@ final class ApiTokenBoundaryTest extends WebTestCase
         $this->em->flush();
         $this->client->request('GET', '/api', server: ['HTTP_AUTHORIZATION' => 'Bearer ' . $second, 'HTTP_ACCEPT' => 'application/ld+json']);
         self::assertResponseStatusCodeSame(401);
+    }
+
+    /**
+     * S14: a role change revokes the tokens (stored role or custom role, any
+     * path) — a token created for reading must not silently gain new rights.
+     */
+    #[Test]
+    public function aRoleChangeRevokesAllTokens(): void
+    {
+        $user = $this->em->find(User::class, $this->user->getId());
+        self::assertInstanceOf(User::class, $user);
+        $user->setRoles(['ROLE_ISB', 'ROLE_DPO']);
+        $this->em->flush();
+        $this->em->clear();
+        $this->bearer('GET', '/api');
+        self::assertResponseStatusCodeSame(401);
+
+        // A request reboots the kernel: use its entity manager from here on.
+        $this->em = static::getContainer()->get(EntityManagerInterface::class);
+        $user = $this->em->find(User::class, $this->user->getId());
+        self::assertInstanceOf(User::class, $user);
+        $fresh = static::getContainer()->get(ApiTokenManager::class)->mint($user, 'After role change');
+        $role = (new Role())->setName('Prüfteam ' . uniqid())->setDescription('S14');
+        $this->em->persist($role);
+        $user->addCustomRole($role);
+        $this->em->flush();
+        $this->em->clear();
+        $this->client->request('GET', '/api', server: ['HTTP_AUTHORIZATION' => 'Bearer ' . $fresh, 'HTTP_ACCEPT' => 'application/ld+json']);
+        self::assertResponseStatusCodeSame(401);
+
+        // Saving the account without a role change keeps the token.
+        $this->em = static::getContainer()->get(EntityManagerInterface::class);
+        $user = $this->em->find(User::class, $this->user->getId());
+        self::assertInstanceOf(User::class, $user);
+        $kept = static::getContainer()->get(ApiTokenManager::class)->mint($user, 'Unchanged');
+        $user->setRoles(array_reverse($user->getStoredRoles()))->setFirstName('Tona');
+        $this->em->flush();
+        $this->client->request('GET', '/api', server: ['HTTP_AUTHORIZATION' => 'Bearer ' . $kept, 'HTTP_ACCEPT' => 'application/ld+json']);
+        self::assertResponseIsSuccessful();
+    }
+
+    /** S14: tokens are minted only after a real login, never from a remember-me session. */
+    #[Test]
+    public function tokenPagesNeedAFullLogin(): void
+    {
+        foreach (['index', 'create'] as $action) {
+            $granted = array_map(
+                static fn (\ReflectionAttribute $a): mixed => $a->newInstance()->attribute,
+                (new \ReflectionMethod(\App\Controller\ApiTokenController::class, $action))->getAttributes(\Symfony\Component\Security\Http\Attribute\IsGranted::class),
+            );
+            self::assertContains('IS_AUTHENTICATED_FULLY', $granted, $action);
+        }
     }
 
     #[Test]

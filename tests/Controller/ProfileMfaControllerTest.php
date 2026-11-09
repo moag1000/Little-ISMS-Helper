@@ -132,6 +132,37 @@ class ProfileMfaControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * S14: the GET only shows the start form; the secret is minted by the
+     * POST with CSRF (a link prefetch must not create or discard enrolments).
+     */
+    #[Test]
+    public function testSetupTotpCreatesTheTokenOnlyOnPost(): void
+    {
+        $this->loginAsUser($this->testUser);
+        $repo = $this->entityManager->getRepository(\App\Entity\MfaToken::class);
+
+        $crawler = $this->client->request('GET', '/en/profile/mfa/setup-totp');
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(0, $repo->findBy(['user' => $this->testUser]));
+
+        $this->client->request('POST', '/en/profile/mfa/setup-totp', ['device_name' => 'Phone', '_token' => 'forged']);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertCount(0, $repo->findBy(['user' => $this->testUser]));
+
+        $token = (string) $crawler->filter('form[action$="/profile/mfa/setup-totp"] input[name="_token"]')->attr('value');
+        $this->client->request('POST', '/en/profile/mfa/setup-totp', ['device_name' => 'Phone', '_token' => $token]);
+        $this->assertResponseIsSuccessful();
+        $tokens = $repo->findBy(['user' => $this->testUser]);
+        $this->assertCount(1, $tokens);
+        $this->assertSame('Phone', $tokens[0]->getDeviceName());
+
+        foreach ($tokens as $mfaToken) {
+            $this->entityManager->remove($mfaToken);
+        }
+        $this->entityManager->flush();
+    }
+
     // ========== VERIFY TESTS ==========
 
     #[Test]

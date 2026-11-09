@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\User;
 use App\Service\InitialAdminService;
+use App\Security\RoleCeiling;
 use App\Service\TenantContext;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -45,7 +46,9 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *   own tenant; ROLE_GROUP_CISO / ROLE_KONZERN_AUDITOR may additionally VIEW
  *   (never edit/delete) users of descendant tenants
  * - Users without a tenant are reachable by ROLE_SUPER_ADMIN only
- * - A non-SUPER_ADMIN actor can never EDIT/DELETE a ROLE_SUPER_ADMIN account
+ * - Role ceiling ({@see RoleCeiling}): EDIT/DELETE of another account only
+ *   when every reserved role it holds is within the actor's ceiling — so a
+ *   non-SUPER_ADMIN never edits a SUPER_ADMIN or holding-role account
  * - Self VIEW/EDIT is always allowed (self-service); self DELETE stays in the
  *   own-tenant record scope
  * - UserTenantAssignment is an unmapped spec skeleton (no table, no writer);
@@ -61,6 +64,7 @@ final class UserVoter extends Voter
         private readonly InitialAdminService $initialAdminService,
         private readonly RoleHierarchyInterface $roleHierarchy,
         private readonly TenantContext $tenantContext,
+        private readonly RoleCeiling $roleCeiling,
     ) {
     }
 
@@ -158,8 +162,11 @@ final class UserVoter extends Voter
                 : null;
         }
 
-        // A SUPER_ADMIN account may only be viewed by non-SUPER_ADMIN actors.
-        if ($attribute !== self::VIEW && in_array('ROLE_SUPER_ADMIN', $target->getRoles(), true)) {
+        // Role ceiling (S14): an account holding a role above the actor's own
+        // (SUPER_ADMIN, holding roles such as Konzern-ISB/-Auditor, ROLE_ADMIN
+        // for a manager with `user.edit`) is only viewed — never edited,
+        // deleted or given a new password / e-mail / second factor.
+        if ($attribute !== self::VIEW && !$this->roleCeiling->mayAdminister($actor, $target)) {
             return false;
         }
 

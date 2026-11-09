@@ -13,7 +13,9 @@ use Doctrine\ORM\EntityManagerInterface;
  * Mint + revoke API tokens (read-only for the REST API; optionally allowed to
  * write through the assistant connection, MCP). Only the SHA-256 hash is stored; the
  * plaintext is returned once at mint time and never persisted. Shared by the
- * CLI command and the self-service UI.
+ * CLI command and the self-service UI. Every token expires after at most
+ * {@see ApiToken::MAX_LIFETIME_DAYS} days; a role change of the owner revokes
+ * all of their tokens ({@see \App\EventListener\RevokeApiTokensOnDeactivationListener}).
  */
 final class ApiTokenManager
 {
@@ -36,9 +38,11 @@ final class ApiTokenManager
         $token->setTokenHash(hash('sha256', $plain));
         $token->setLabel($label !== '' ? $label : 'API token');
         $token->setCanWrite($canWrite);
-        if ($expiresDays !== null && $expiresDays > 0) {
-            $token->setExpiresAt((new DateTimeImmutable())->modify(sprintf('+%d days', $expiresDays)));
-        }
+        // Every token expires (S14): no value or one above the limit becomes the limit.
+        $days = $expiresDays !== null && $expiresDays > 0
+            ? min($expiresDays, ApiToken::MAX_LIFETIME_DAYS)
+            : ApiToken::MAX_LIFETIME_DAYS;
+        $token->setExpiresAt((new DateTimeImmutable())->modify(sprintf('+%d days', $days)));
 
         $this->entityManager->persist($token);
         $this->entityManager->flush();
