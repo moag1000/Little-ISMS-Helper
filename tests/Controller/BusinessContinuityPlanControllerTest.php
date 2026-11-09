@@ -433,7 +433,8 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
     #[Test]
     public function testEditUpdatesPlanWithValidData(): void
     {
-        $this->loginAsUser($this->testUser);
+        // S22: RTO/RPO and the plan owner are manager (or holder) data; a plain user is refused
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request('GET', '/en/business-continuity-plan/' . $this->testPlan->getId() . '/edit');
         $form = $crawler->filter('form[name="business_continuity_plan"]')->form([
