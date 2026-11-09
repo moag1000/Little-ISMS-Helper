@@ -172,6 +172,12 @@ kernel.request) and never fall back to `findAll()`. `JobStatusService::create()`
 records the dispatching user + tenant; every download / status endpoint for a
 job id carries `#[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]` (owner or
 SUPER_ADMIN only).
+Code that needs an organisation in `TenantContext` (services reading it, the audit log) scopes it with
+`TenantContext::runAs($tenant, fn)` / `runWithoutOrganisation(fn)`, which put the previous state back —
+the worker runs the next command in the same container; it resets the context after every message
+(`TenantContextResetSubscriber`). A bare `setCurrentTenant*()` / `setNoOrganisation()` fails Gate 97
+(`check_tenant_pin_restore.py`) unless it sits in a restoring `finally` or carries `// @tenant-pin-ok: <reason>`;
+`tests/Scheduler/ScheduledCommandsTenantIsolationTest` runs every scheduled command in one kernel (S23).
 
 ### Advanced — Messenger worker (opt-in, for dedicated infra)
 

@@ -165,6 +165,9 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
                 $seen[] = $t;
             },
         );
+        $context->method('capture')->willReturn(static function () use (&$seen): void {
+            $seen[] = 'restored';
+        });
         // Not a FourEyesRequiredException: nothing in the command catches it.
         $this->workflowService->method('assertAutomaticApprovalAllowed')
             ->willThrowException(new \RuntimeException('boom'));
@@ -175,13 +178,13 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
         } catch (\RuntimeException) {
         }
 
-        self::assertSame([$tenant, null], $seen, 'pinned for the instance, then reset');
+        self::assertSame([$tenant, 'restored'], $seen, 'pinned for the instance, then the previous context back');
     }
 
     /**
      * The cron pins each instance's organisation in TenantContext before
      * processing it (review M-2), so lifecycle guards and tenant-scoped
-     * reads see the right organisation; it is cleared afterwards.
+     * reads see the right organisation; the previous context comes back afterwards.
      */
     #[Test]
     public function eachInstanceIsProcessedInItsOwnTenantContext(): void
@@ -195,16 +198,19 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
 
         $seen = [];
         $context = $this->createMock(\App\Service\TenantContext::class);
-        $context->expects(self::atLeast(3))->method('setCurrentTenant')->willReturnCallback(
+        $context->expects(self::exactly(2))->method('setCurrentTenant')->willReturnCallback(
             static function (?\App\Entity\Tenant $t) use (&$seen): void {
                 $seen[] = $t;
             },
         );
+        $context->method('capture')->willReturn(static function () use (&$seen): void {
+            $seen[] = 'restored';
+        });
         $this->workflowService->expects(self::never())->method('moveToNextStep');
 
         $this->runCommandWith([$a, $b], $context);
 
-        self::assertSame([$tenantA, $tenantB, null], $seen);
+        self::assertSame([$tenantA, $tenantB, 'restored'], $seen);
     }
 
     #[Test]
