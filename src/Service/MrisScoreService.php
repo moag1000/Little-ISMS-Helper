@@ -10,6 +10,7 @@ use App\Repository\AssetRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
+use App\Service\Compliance\RequirementMaturity;
 
 /**
  * Berechnet einen aggregierten Mythos-Resilience-Indikator (MRI) als
@@ -45,6 +46,7 @@ final class MrisScoreService
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly AssetRepository $assetRepository,
         private readonly AiAgentInventoryService $aiAgentInventoryService,
+        private readonly RequirementMaturity $requirementMaturity,
     ) {
     }
 
@@ -59,7 +61,7 @@ final class MrisScoreService
     {
         $standfestPct = $this->standfestShare($tenant);
         $reibungPct = $this->reibungShare($tenant);
-        $maturityPct = $this->avgMaturity();
+        $maturityPct = $this->avgMaturity($tenant);
         $manualPct = $this->manualKpiFillRate($tenant);
         $aiPct = $this->avgAiAgentCompleteness($tenant);
 
@@ -137,20 +139,21 @@ final class MrisScoreService
         return round(($reibung / count($controls)) * 100.0, 1);
     }
 
-    private function avgMaturity(): float
+    /** The organisation's own Ist per MHC (S18), never the shared catalogue row's. */
+    private function avgMaturity(Tenant $tenant): float
     {
         $framework = $this->frameworkRepository->findOneBy(['code' => self::FRAMEWORK_CODE]);
         if (!$framework instanceof ComplianceFramework) {
             return 0.0;
         }
-        $reqs = $this->requirementRepository->findBy(['framework' => $framework]);
+        $reqs = $this->requirementRepository->findBy(['framework' => $framework, 'uploadTenant' => null]);
         if (count($reqs) === 0) {
             return 0.0;
         }
         $sum = 0;
         $counted = 0;
         foreach ($reqs as $r) {
-            $current = $r->getMaturityCurrent();
+            $current = $this->requirementMaturity->current($r, $tenant);
             if ($current !== null && isset(self::STAGE_WEIGHT[$current])) {
                 $sum += self::STAGE_WEIGHT[$current];
                 $counted++;

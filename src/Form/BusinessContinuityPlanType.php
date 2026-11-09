@@ -191,11 +191,13 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'attr' => ['maxlength' => 20],
                 'help' => 'bc_plans.help.version',
             ])
+            // @intentional-bind: S12 — written when an exercise testing this plan is completed, shown read-only
             ->add('lastTested', DateType::class, [
                 'label' => 'bc_plans.field.last_tested',
                 'widget' => 'single_text',
                 'required' => false,
-                'help' => 'bc_plans.help.last_tested',
+                'disabled' => true,
+                'help' => 'bc_plans.help.last_tested_from_exercise',
             ])
             ->add('nextTestDate', DateType::class, [
                 'label' => 'bc_plans.field.next_test_date',

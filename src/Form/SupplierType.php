@@ -575,10 +575,12 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
+            // @intentional-bind: S12 — set only by an approved Leitungsentscheidung (ManagementDecisionService), shown read-only
             ->add('boardLevelRiskAcceptance', CheckboxType::class, [
                 'label' => 'supplier.marisk.field.board_level_risk_acceptance',
                 'required' => false,
-                'help' => 'supplier.marisk.help.board_level_risk_acceptance',
+                'disabled' => true,
+                'help' => 'supplier.marisk.help.board_level_risk_acceptance_decision',
             ])
             ->add('complianceFunctionInvolvement', CheckboxType::class, [
                 'label' => 'supplier.marisk.field.compliance_function_involvement',

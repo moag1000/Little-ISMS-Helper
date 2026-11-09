@@ -5,17 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\Location\LocationScope;
-use App\Security\Voter\RecordResponsibleVoter;
 use App\Security\Voter\RiskAcceptanceVoter;
 use App\Security\Voter\RiskVoter;
-use Symfony\Component\ExpressionLanguage\Expression;
 use App\Security\Voter\AsyncJobVoter;
 use App\Service\BulkDeleteService;
 use App\Entity\User;
 use App\Enum\TreatmentStrategy;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Traversable;
-use DomainException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\TenantOriginStatsTrait;
@@ -794,76 +791,6 @@ class RiskController extends AbstractController
         }
 
         return $this->redirectToRoute('app_risk_index');
-    }
-    /**
-     * Request formal risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
-     * ISO 27005:2022 Section 8.4.4
-     */
-    #[Route('/risk/{id}/request-acceptance', name: 'app_risk_request_acceptance', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'risk')]
-    public function requestAcceptance(Request $request, Risk $risk): Response
-    {
-        $user = $this->security->getUser();
-
-        // Check if risk has "accept" treatment strategy
-        if ($risk->getTreatmentStrategy() !== TreatmentStrategy::Accept) {
-            $this->flashError('risk.acceptance.error.wrong_strategy');
-            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
-        }
-
-        // Check if already formally accepted
-        if ($risk->isFormallyAccepted()) {
-            $this->flashWarning('risk.acceptance.error.already_accepted');
-            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
-        }
-
-        // Handle form submission
-        if ($request->isMethod('POST')) {
-            // CSRF token validation
-            if (!$this->isCsrfTokenValid('request-acceptance'.$risk->getId(), $request->request->get('_token'))) {
-                $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid', [], 'messages'));
-                return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
-            }
-
-            $justification = $request->request->get('justification');
-
-            if (empty($justification)) {
-                $this->flashError('risk.acceptance.error.justification_required');
-            } else {
-                try {
-                    $result = $this->riskAcceptanceWorkflowService->requestAcceptance(
-                        $risk,
-                        $user,
-                        $justification
-                    );
-
-                    if ($result['status'] === 'accepted') {
-                        // Automatic acceptance
-                        $this->flashSuccess('risk.acceptance.success.auto_accepted');
-                    } else {
-                        // Pending approval
-                        $this->flashSuccess(
-                            'risk.acceptance.success.approval_requested',
-                            ['%approver%' => $result['approver'], '%level%' => $result['approval_level']]
-                        );
-                    }
-
-                    return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
-                } catch (DomainException $e) {
-                    $this->addFlash('error', $e->getMessage());
-                }
-            }
-        }
-
-        // Get approval thresholds for display
-        $thresholds = $this->riskAcceptanceWorkflowService->getApprovalThresholds($risk);
-        $requiredLevel = $this->riskAcceptanceWorkflowService->determineApprovalLevel($risk);
-
-        return $this->render('risk/request_acceptance.html.twig', [
-            'risk' => $risk,
-            'thresholds' => $thresholds,
-            'required_level' => $requiredLevel,
-        ]);
     }
     /** Approve a requested risk acceptance (ISO 27005 §8.4.4); tier check in RiskAcceptanceVoter. */
     #[Route('/risk/{id}/approve-acceptance', name: 'app_risk_approve_acceptance', requirements: ['id' => '\d+'], methods: ['POST'])]

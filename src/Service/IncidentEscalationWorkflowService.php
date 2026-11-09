@@ -14,6 +14,7 @@ use App\Entity\WorkflowInstance;
 use App\Entity\Incident;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Workflow\Loader\RegulatoryWorkflowLoader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -51,6 +52,20 @@ class IncidentEscalationWorkflowService
     private const IncidentSeverity SEVERITY_CRITICAL = IncidentSeverity::Critical;
 
 
+    /**
+     * Regulatory approval chain per escalation level (config/workflows/regulatory). Until S15 the
+     * service started chains by legacy names ('Critical Incident Response', …) that only the CLI
+     * seeder `app:seed-incident-workflows` ever wrote: on an instance without that seed no response
+     * approval started. The data breach itself (GDPR Art. 33) runs its own chain on the DataBreach
+     * record; the incident's response follows the high/critical chain.
+     */
+    private const array ESCALATION_WORKFLOWS = [
+        'data_breach' => 'incident_high_severity',
+        'critical' => 'incident_high_severity',
+        'high' => 'incident_high_severity',
+        'medium' => 'incident_low_severity',
+    ];
+
     public function __construct(
         private readonly WorkflowService $workflowService,
         private readonly EmailNotificationService $emailNotificationService,
@@ -61,6 +76,7 @@ class IncidentEscalationWorkflowService
         #[Autowire(service: PublicUrlGenerator::class)]
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly IncidentSlaConfigResolver $slaResolver,
+        private readonly ?RegulatoryWorkflowLoader $workflowLoader = null,
     ) {}
 
     /**
@@ -137,7 +153,7 @@ class IncidentEscalationWorkflowService
         $workflowInstance = $this->workflowService->startWorkflow(
             'Incident',
             $incident->getId(),
-            'Data Breach Notification'
+            self::ESCALATION_WORKFLOWS['data_breach']
         );
 
         if (!$workflowInstance instanceof WorkflowInstance) {
@@ -203,7 +219,7 @@ class IncidentEscalationWorkflowService
         $workflowInstance = $this->workflowService->startWorkflow(
             'Incident',
             $incident->getId(),
-            'Critical Incident Response'
+            self::ESCALATION_WORKFLOWS['critical']
         );
 
         if (!$workflowInstance instanceof WorkflowInstance) {
@@ -280,7 +296,7 @@ class IncidentEscalationWorkflowService
         $workflowInstance = $this->workflowService->startWorkflow(
             'Incident',
             $incident->getId(),
-            'High Severity Incident'
+            self::ESCALATION_WORKFLOWS['high']
         );
 
         if (!$workflowInstance instanceof WorkflowInstance) {
@@ -342,7 +358,7 @@ class IncidentEscalationWorkflowService
         $workflowInstance = $this->workflowService->startWorkflow(
             'Incident',
             $incident->getId(),
-            'Medium Severity Incident'
+            self::ESCALATION_WORKFLOWS['medium']
         );
 
         if (!$workflowInstance instanceof WorkflowInstance) {
@@ -562,13 +578,10 @@ class IncidentEscalationWorkflowService
         $escalationLevel = $this->determineEscalationLevel($incident);
 
         // Determine workflow name based on escalation level
-        $workflowName = match ($escalationLevel) {
-            'data_breach' => 'Data Breach Notification',
-            'critical' => 'Critical Incident Response',
-            'high' => 'High Severity Incident',
-            'medium' => 'Medium Severity Incident',
-            default => null,
-        };
+        $workflowKey = self::ESCALATION_WORKFLOWS[$escalationLevel] ?? null;
+        $workflowName = $workflowKey === null
+            ? null
+            : ($this->workflowLoader?->getRegulatoryMetadata($workflowKey)['title'] ?? $workflowKey);
 
         // Determine if escalation will occur
         $willEscalate = in_array($severity, [self::SEVERITY_MEDIUM, self::SEVERITY_HIGH, self::SEVERITY_CRITICAL]) || $isDataBreach;

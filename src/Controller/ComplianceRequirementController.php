@@ -19,6 +19,7 @@ use App\Repository\PersonRepository;
 use App\Repository\UserRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\MrisMaturityService;
+use App\Service\Compliance\RequirementMaturity;
 use App\Service\TenantContext;
 use App\Service\CrossFrameworkLookupService;
 use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
@@ -50,6 +51,7 @@ class ComplianceRequirementController extends AbstractController
         private readonly FulfillmentRuleEngine $fulfillmentRuleEngine,
         private readonly FulfillmentDerivationService $fulfillmentDerivationService,
         private readonly MrisMaturityService $mrisMaturityService,
+        private readonly RequirementMaturity $requirementMaturity,
         private readonly UserRepository $userRepository,
         private readonly PersonRepository $personRepository,
         private readonly TranslatorInterface $translator,
@@ -229,6 +231,11 @@ class ComplianceRequirementController extends AbstractController
                 'requirement' => $complianceRequirement,
                 'fulfillment' => $fulfillment,
                 'canEdit' => $canEdit,
+                // The organisation's own Reifegrad (S18), not the shared catalogue row's.
+                'maturity' => $tenant instanceof Tenant ? [
+                    'current' => $this->requirementMaturity->current($complianceRequirement, $tenant),
+                    'target' => $this->requirementMaturity->target($complianceRequirement, $tenant),
+                ] : ['current' => null, 'target' => null],
             ]);
         }
 
@@ -254,13 +261,14 @@ class ComplianceRequirementController extends AbstractController
         // MRIS: Reifegrad-Stufen (nur für MHC-Requirements gefüllt)
         $isMris = $complianceRequirement->getFramework()?->getCode() === 'MRIS-v1.5';
         $mrisData = null;
-        if ($isMris) {
+        if ($isMris && $tenant instanceof Tenant) {
+            // The organisation's own Ist/Soll (S18), never the shared catalogue row's.
             $mrisData = [
-                'current'    => $complianceRequirement->getMaturityCurrent(),
-                'target'     => $complianceRequirement->getMaturityTarget(),
-                'reviewedAt' => $complianceRequirement->getMaturityReviewedAt(),
-                'gapStatus'  => $this->mrisMaturityService->gapStatus($complianceRequirement),
-                'delta'      => $this->mrisMaturityService->delta($complianceRequirement),
+                'current'    => $this->requirementMaturity->current($complianceRequirement, $tenant),
+                'target'     => $this->requirementMaturity->target($complianceRequirement, $tenant),
+                'reviewedAt' => $this->requirementMaturity->reviewedAt($complianceRequirement, $tenant),
+                'gapStatus'  => $this->mrisMaturityService->gapStatus($complianceRequirement, $tenant),
+                'delta'      => $this->mrisMaturityService->delta($complianceRequirement, $tenant),
                 'stages'     => MrisMaturityService::STAGES,
             ];
         }
@@ -318,11 +326,17 @@ class ComplianceRequirementController extends AbstractController
         $current = $current === '' ? null : $current;
         $target  = $target === '' ? null : $target;
 
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant instanceof Tenant) {
+            $this->flashError('compliance.requirement.error.mris_only');
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
+        }
+
         try {
-            $this->mrisMaturityService->setTarget($complianceRequirement, $target);
-            $this->mrisMaturityService->setCurrent($complianceRequirement, $current);
+            $this->mrisMaturityService->setTarget($complianceRequirement, $tenant, $target);
+            $this->mrisMaturityService->setCurrent($complianceRequirement, $tenant, $current);
             $this->flashSuccess('compliance.requirement.success.mris_saved');
-        } catch (\DomainException $e) {
+        } catch (\App\Exception\AppException | \DomainException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 

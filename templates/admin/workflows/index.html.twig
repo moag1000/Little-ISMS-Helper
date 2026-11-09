@@ -27,7 +27,7 @@
     {% set lifecycleRows = workflows|filter(w => w.type == 'lifecycle') %}
     {% set regulatoryRows = workflows|filter(w => w.type == 'regulatory') %}
 
-    {# Regulatory workflows (with step editing) #}
+    {# Regulatory approval chains (read-only, S15) #}
     <div class="row mb-4">
         <div class="col-lg-10">
             <section class="fa-section">
@@ -52,7 +52,6 @@
                                 <tr>
                                     <th class="fa-table__th">{{ 'admin.workflows.col.name'|trans }}</th>
                                     <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.steps'|trans }}</th>
-                                    <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.overrides'|trans }}</th>
                                     <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                                 </tr>
                             {% endblock %}
@@ -70,18 +69,10 @@
                                                 <span class="fa-table__cell--muted">—</span>
                                             {% endif %}
                                         </td>
-                                        <td class="fa-table__cell fa-table__cell--num">
-                                            {% if wf.override_count > 0 %}
-                                                <span class="fa-status-pill fa-status-pill--warning">{{ wf.override_count }}</span>
-                                            {% else %}
-                                                <span class="fa-table__cell--muted">—</span>
-                                            {% endif %}
-                                        </td>
                                         <td class="fa-table__cell fa-table__cell--actions">
                                             <a href="{{ path('admin_workflow_overlay_show', {name: wf.name}) }}"
                                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                                aria-label="{{ 'admin.workflows.action.show'|trans }}">
-                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                                 {{ 'admin.workflows.action.show'|trans }}
                                             </a>
                                         </td>
@@ -119,7 +110,6 @@
                                 {% trans_default_domain 'admin' %}
                                 <tr>
                                     <th class="fa-table__th">{{ 'admin.workflows.col.name'|trans }}</th>
-                                    <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.overrides'|trans }}</th>
                                     <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                                 </tr>
                             {% endblock %}
@@ -129,13 +119,6 @@
                                     <tr class="fa-table__row">
                                         <td class="fa-table__cell">
                                             <code class="text-body">{{ wf.name }}</code>
-                                        </td>
-                                        <td class="fa-table__cell fa-table__cell--num">
-                                            {% if wf.override_count > 0 %}
-                                                <span class="fa-status-pill fa-status-pill--warning">{{ wf.override_count }}</span>
-                                            {% else %}
-                                                <span class="fa-table__cell--muted">—</span>
-                                            {% endif %}
                                         </td>
                                         <td class="fa-table__cell fa-table__cell--actions">
                                             <a href="{{ path('admin_lifecycle_overrides_show', {workflowName: wf.name}) }}"

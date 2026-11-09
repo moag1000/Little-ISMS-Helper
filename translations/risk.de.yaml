@@ -248,6 +248,9 @@ risk:
     treatment_plans_none: 'Keine Maßnahmenpläne vorhanden.'
     # V3 W2-FV-2 — Unified Asset-overview on Risk-Show
   help:
+    acceptance_set_by_request: 'Wird mit „Akzeptanz anfordern“ bzw. „Neu bewerten oder verlängern“ auf der Risikoseite gesetzt und mit der Akzeptanz freigegeben.'
+    decision_approved_by_action: 'Wird mit „Behandlung freigeben“ auf der Risikoseite gesetzt (ISO 27001 6.1.3 f).'
+    residual_frozen_while_accepted: 'Akzeptiertes Restrisiko. Neue Bewertung über „Neu bewerten oder verlängern“ auf der Risikoseite (ISO 27001 8.3).'
     status_readonly: 'Status wird vom Risk-Lifecycle-Workflow gesteuert (identified → assessed → in_treatment → treated/accepted/closed). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite (LifecycleService::transition).'
     title: Eindeutige Bezeichnung des Risikos für interne Referenzierung
     category: Kategorisierung des Risikos (finanziell, operativ, compliance, etc.)
@@ -421,6 +424,10 @@ risk:
       4: 'Hoch'
       5: 'Katastrophal'
   acceptance:
+    reevaluate_action: Neu bewerten oder verlängern
+    expiry_label: Akzeptanz gültig bis
+    expiry_help: 'Bis dahin wird die Akzeptanz überprüft (ISO 27001 8.3), höchstens %months% Monate. Die Freigabe gilt für dieses Datum.'
+    reevaluation_notice: 'Dieses Risiko ist akzeptiert. Mit dem neuen Antrag endet die bestehende Akzeptanz; die neue Begründung, Restbewertung und Frist gibt die zuständige Stufe frei.'
     request_action: Akzeptanz anfordern
     title: Risikoakzeptanz beantragen
     request: Antrag auf Risikoakzeptanz
@@ -435,6 +442,7 @@ risk:
       manager: Manager-Genehmigung erforderlich
       executive: Geschäftsführungs-Genehmigung erforderlich
     error:
+      expiry_invalid: 'Gültig-bis-Datum fehlt oder liegt nicht zwischen morgen und %months% Monaten.'
       wrong_strategy: 'Risikoakzeptanz ist nur für Risiken mit Behandlungsstrategie „Akzeptieren" möglich.'
       already_accepted: 'Dieses Risiko wurde bereits formal akzeptiert.'
       justification_required: 'Begründung ist erforderlich (ISO 27005:2022 Kl. 8.4.4).'
@@ -452,6 +460,17 @@ risk:
       reason: Ablehnungsgrund
       reject: Ablehnen
       waiting: Wartet auf Entscheidung durch die zuständige Genehmigungsstufe.
+  decision:
+    approved_by: 'Behandlungsentscheidung freigegeben von %name% am %date%.'
+    not_approved: 'Behandlungsentscheidung noch nicht freigegeben.'
+    confirm: 'Die gewählte Behandlung und ihre Begründung freigeben? Name und Datum werden aus Ihrer Anmeldung übernommen (ISO 27001 6.1.3 f).'
+    comment: Kommentar (optional)
+    action:
+      approve: Behandlung freigeben
+    error:
+      rationale_required: 'Zuerst Behandlungsstrategie und Begründung eintragen.'
+    flash:
+      approved: Behandlung freigegeben.
   business:
     ale_per_year: 'ca. %amount% €/Jahr'
     asset: 'Asset: %asset%'

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Form\Admin;
 
 use App\Form\Admin\LifecycleOverrideType;
-use App\Form\Admin\WorkflowStepOverlayType;
 use App\Service\ModuleConfigurationService;
 use App\Validator\Constraint\JsonShapeValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -18,17 +17,16 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * The module override in both admin overlay forms only accepts keys from
+ * The module override of the lifecycle override form only accepts keys from
  * config/modules.yaml. A free-text key that names no module would make
- * ModuleGateGuard block the transition/step permanently.
+ * ModuleGateGuard block the transition permanently. (The step overlay form went
+ * away in S15: nothing applied its values.)
  */
 final class LifecycleModuleChoiceTypeTest extends TypeTestCase
 {
     protected function getExtensions(): array
     {
         $modules = new ModuleConfigurationService(\dirname(__DIR__, 3));
-        // WorkflowStepOverlayType also carries a JsonBuilderType field whose
-        // JsonShape validator needs the translator; wire it explicitly.
         $validators = new ConstraintValidatorFactory([
             JsonShapeValidator::class => new JsonShapeValidator($this->createStub(TranslatorInterface::class)),
         ]);
@@ -36,7 +34,6 @@ final class LifecycleModuleChoiceTypeTest extends TypeTestCase
         return [
             new PreloadedExtension([
                 new LifecycleOverrideType($modules),
-                new WorkflowStepOverlayType($modules),
             ], []),
             new ValidatorExtension(
                 Validation::createValidatorBuilder()->setConstraintValidatorFactory($validators)->getValidator(),
@@ -48,7 +45,6 @@ final class LifecycleModuleChoiceTypeTest extends TypeTestCase
     public static function formTypes(): iterable
     {
         yield 'lifecycle override' => [LifecycleOverrideType::class];
-        yield 'workflow step overlay' => [WorkflowStepOverlayType::class];
     }
 
     #[Test]

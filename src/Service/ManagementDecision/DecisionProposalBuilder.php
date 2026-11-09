@@ -295,6 +295,25 @@ class DecisionProposalBuilder
     }
 
     /** @param array<string, int|string> $params */
+    /** S12: board acceptance of one outsourcing risk, bound to the supplier. */
+    public function supplierRisk(Supplier $supplier, ?string $locale = null): DecisionProposal
+    {
+        $none = '—';
+
+        return new DecisionProposal(
+            $this->t('proposal.title.supplier_risk', ['%name%' => (string) $supplier->getName()], $locale),
+            $this->t('proposal.supplier_risk.body', [
+                '%name%' => (string) $supplier->getName(),
+                '%classification%' => $supplier->getOutsourcingClassification() ?? $none,
+                '%criticality%' => $supplier->getCriticality() ?? $none,
+                '%impact%' => $supplier->getRiskBearingCapacityImpact() ?? $none,
+            ], $locale),
+            'Supplier',
+            $supplier->getId(),
+            ['supplier' => $supplier->getName(), 'classification' => $supplier->getOutsourcingClassification()],
+        );
+    }
+
     private function t(string $key, array $params, ?string $locale): string
     {
         return $this->translator->trans('management_decision.' . $key, $params, 'management_decision', $locale);

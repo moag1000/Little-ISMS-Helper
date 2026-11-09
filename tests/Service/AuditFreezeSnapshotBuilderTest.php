@@ -60,6 +60,10 @@ final class AuditFreezeSnapshotBuilderTest extends TestCase
             $this->controlRepo,
             $this->riskRepo,
             $this->portfolioRepo,
+            new \App\Service\Compliance\RequirementMaturity(
+                $this->createStub(ComplianceRequirementFulfillmentRepository::class),
+                $this->createStub(\Doctrine\ORM\EntityManagerInterface::class),
+            ),
         );
 
         $this->tenant = new Tenant();
@@ -80,6 +84,7 @@ final class AuditFreezeSnapshotBuilderTest extends TestCase
         $req->setRequirementId('1.1.1');
         $req->setTitle('Information Security Policy');
         $req->setCategory('information_security');
+        $req->setUploadTenant($this->tenant); // the organisation's own workbook row
         $req->setMaturityCurrent('managed');
         $req->setMaturityTarget('established');
         $req->setMaturityReviewedAt($reviewedAt);
@@ -131,6 +136,7 @@ final class AuditFreezeSnapshotBuilderTest extends TestCase
         $req->setTitle('Data Subject Rights');
         $req->setCategory('data_protection');
         $req->setAssessmentStateDp('compliant');
+        $req->setUploadTenant($this->tenant);
         $req->setMaturityReviewedAt(new DateTimeImmutable('2026-05-20'));
         $req->setDataSourceMapping(['maturityRaw' => 'OK']);
 

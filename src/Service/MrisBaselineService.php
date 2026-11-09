@@ -173,6 +173,7 @@ final class MrisBaselineService
             $requirement = $this->requirementRepository->findOneBy([
                 'framework' => $framework,
                 'requirementId' => $mhcId,
+                'uploadTenant' => null,
             ]);
             if ($requirement === null) {
                 $missing[] = $mhcId;
@@ -180,7 +181,7 @@ final class MrisBaselineService
             }
 
             if (!$dryRun) {
-                $this->maturityService->setTarget($requirement, $target);
+                $this->maturityService->setTarget($requirement, $tenant, $target);
             }
             $applied++;
         }

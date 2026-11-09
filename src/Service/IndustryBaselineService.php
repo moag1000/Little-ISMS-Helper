@@ -9,6 +9,7 @@ use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\Compliance\RequirementMaturity;
 use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -40,6 +41,7 @@ final class IndustryBaselineService
         private readonly RequestStack $requestStack,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        private readonly RequirementMaturity $maturity,
     ) {
     }
 
@@ -172,8 +174,10 @@ final class IndustryBaselineService
     /**
      * Apply a baseline to all matching requirements of a framework.
      *
-     * Sets `maturityTarget` only — the current/measured value (`maturityCurrent`)
-     * is left untouched so existing self-assessments are preserved.
+     * Sets the organisation's Soll only — the current/measured value is left untouched so
+     * existing self-assessments are preserved. The Soll goes to the organisation's own
+     * fulfilment row (S18), never onto the shared catalogue requirement; a requirement the
+     * organisation uploaded itself (TISAX workbook) is preferred over the global row.
      *
      * @return array{baseline: string, applied: int, skipped: int, missing: array<int, string>}
      */
@@ -203,6 +207,11 @@ final class IndustryBaselineService
             $requirement = $this->requirementRepository->findOneBy([
                 'framework' => $framework,
                 'requirementId' => (string) $reqId,
+                'uploadTenant' => $tenant,
+            ]) ?? $this->requirementRepository->findOneBy([
+                'framework' => $framework,
+                'requirementId' => (string) $reqId,
+                'uploadTenant' => null,
             ]);
             if (!$requirement instanceof ComplianceRequirement) {
                 $missing[] = (string) $reqId;
@@ -210,7 +219,7 @@ final class IndustryBaselineService
             }
 
             if (!$dryRun) {
-                $requirement->setMaturityTarget($target);
+                $this->maturity->setTarget($requirement, $tenant, $target);
             }
             $applied++;
         }

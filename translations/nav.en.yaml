@@ -89,7 +89,7 @@ nav:
     crisis_team: 'Crisis Team'
     workflows: Workflows
     workflow_definitions: 'Workflow Definitions'
-    workflow_overlay: 'Workflow Overlay Editor'
+    workflow_overlay: 'Approval chains'
     training: Training
     management_review: 'Management Review'
     admin_portal: 'Admin Portal'
@@ -236,7 +236,7 @@ nav:
             change_requests: 'Change management workflow'
             workflows: 'Automated business workflows'
             workflow_definitions: 'Manage workflow templates and steps'
-            workflow_overlay: 'Per-tenant workflow step overrides for regulatory and lifecycle configurations'
+            workflow_overlay: 'Steps, roles and deadlines of the regulatory approvals'
             incidents: 'Security incident management'
             vulnerabilities: 'Vulnerability tracking'
             patches: 'Patch management system'
