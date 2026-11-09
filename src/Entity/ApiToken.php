@@ -63,13 +63,30 @@ class ApiToken
         $this->createdAt = new DateTimeImmutable();
     }
 
+    /**
+     * Longest lifetime of any token (S14). Applies to tokens minted before
+     * the limit as well: a token without an expiry ends one year after its
+     * creation.
+     */
+    public const int MAX_LIFETIME_DAYS = 365;
+
     public function isValid(DateTimeImmutable $now): bool
     {
         if ($this->revoked) {
             return false;
         }
 
-        return $this->expiresAt === null || $this->expiresAt > $now;
+        return $this->getEffectiveExpiresAt() > $now;
+    }
+
+    /**
+     * The earlier of the chosen expiry and creation + {@see MAX_LIFETIME_DAYS}.
+     */
+    public function getEffectiveExpiresAt(): DateTimeImmutable
+    {
+        $cap = $this->createdAt->modify(sprintf('+%d days', self::MAX_LIFETIME_DAYS));
+
+        return $this->expiresAt !== null && $this->expiresAt < $cap ? $this->expiresAt : $cap;
     }
 
     public function getId(): ?int

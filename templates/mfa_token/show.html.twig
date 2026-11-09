@@ -149,15 +149,6 @@
                                 <strong>{{ 'mfa_token.backup_codes.remaining'|trans({}, 'mfa') }}:</strong>
                                 {% include '_components/_badge.html.twig' with { variant: remaining_backup_codes > 2 ? 'success' : (remaining_backup_codes > 0 ? 'warning' : 'danger'), content: remaining_backup_codes ~ ' / 10' } %}
                             </div>
-                            <form method="post" action="{{ path('admin_mfa_regenerate_backup', {id: mfa_token.id}) }}"
-                                  data-controller="ui-actions"
-                                  data-action="submit->ui-actions#confirm"
-                                  data-ui-actions-message-param="{{ 'mfa_token.backup_codes.regenerate_confirm'|trans({}, 'mfa') }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('regenerate_backup_' ~ mfa_token.id) }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
-                                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.regenerate'|trans({}, 'mfa') }}
-                                </button>
-                            </form>
                         </div>
 
                         {% if remaining_backup_codes <= 2 %}

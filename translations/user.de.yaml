@@ -173,7 +173,7 @@ user:
     validation:
         avatar_format: 'Bitte laden Sie ein gültiges Bild hoch (JPEG, PNG, GIF oder WebP)'
         password_min_length: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
-        privileged_role_forbidden: 'Nur ein Super-Administrator darf die Rollen Super-Admin, Konzern-CISO und Konzern-Auditor vergeben oder entziehen. Die Änderung wurde nicht gespeichert.'
+        privileged_role_forbidden: 'Diese Rollenänderung liegt über Ihrer eigenen Rolle: Konzern- und Super-Admin-Rollen vergibt nur ein Super-Administrator, andere Rollen nur, wer sie selbst hat. Die Änderung wurde nicht gespeichert.'
         tenant_not_assignable: 'Sie können nur Organisationen zuweisen, die Sie selbst verwalten. Die Änderung wurde nicht gespeichert.'
         import_email_unavailable: 'Übersprungen: %email% kann nicht importiert werden (E-Mail-Adresse nicht verfügbar).'
         import_invalid_email: 'Übersprungen: Ungültige E-Mail-Adresse „%email%“.'
@@ -181,7 +181,9 @@ user:
         import_file_rejected: 'Die Datei wurde abgelehnt.'
         import_missing_fields: 'Zeile übersprungen: E-Mail, Vorname oder Nachname fehlt.'
         import_no_organisation: 'Übersprungen: Für %email% ist keine Organisation zuweisbar.'
-        import_role_skipped: 'Privilegierte Rolle %role% für %email% nicht zugewiesen.'
+        import_role_skipped: 'Rolle %role% für %email% nicht zugewiesen (über Ihrer eigenen Rolle).'
+        self_grant_forbidden: 'Die Rolle Leitung können Sie sich nicht selbst geben. Eine andere Administratorin oder ein anderer Administrator vergibt sie. Die Änderung wurde nicht gespeichert.'
+        import_password_too_short: 'Übersprungen: Das Passwort für %email% ist kürzer als %min% Zeichen.'
         import_row_failed: 'Zeile nicht importiert: %error%'
     auth_provider:
         local: 'Lokale Authentifizierung'

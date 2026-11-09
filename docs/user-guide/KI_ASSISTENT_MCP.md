@@ -18,7 +18,9 @@ Assistent nur als Entwurf in die [Vorschlags-Queue](VORSCHLAEGE.md); eine verant
    Entwürfe.
 2. **Token anlegen**: *Profil > API-Tokens* (Suche: „MCP“), Bezeichnung z. B. „Laptop“, bei Bedarf **„Assistent darf
    schreiben“** anhaken, Erstellen. Ohne Haken bleibt das Token lesend. Das Token steht nur jetzt im Klartext da; die
-   Konfigurationsbeispiele darunter enthalten es bereits. Die Spalte „Zugriff“ zeigt je Token „Lesen“ oder
+   Konfigurationsbeispiele darunter enthalten es bereits. Jedes Token läuft nach höchstens 365 Tagen ab
+   (Feld „Gültig (Tage)“ leer = 365); ändern sich deine Rollen, wird es widerrufen und du legst ein neues an.
+   Nach einer Anmeldung über „Angemeldet bleiben“ fragt die Seite zuerst nach dem Passwort. Die Spalte „Zugriff“ zeigt je Token „Lesen“ oder
    „Lesen + Schreiben (Assistent)“.
 3. **Beispiel kopieren und einfügen** (Knopf „Kopieren“):
    - **Claude Code**: Befehl im Terminal ausführen —

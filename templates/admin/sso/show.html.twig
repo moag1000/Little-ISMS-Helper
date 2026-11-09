@@ -114,7 +114,8 @@
 
             <form method="post"
                   action="{{ path('admin_sso_role_mappings_save', {id: provider.id}) }}"
-                  data-controller="sso-role-mapping">
+                  data-controller="sso-role-mapping"
+                  data-sso-role-mapping-roles-value="{{ role_choices|fa_json }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('sso_role_mappings') }}">
 
                 <div class="row g-1 fw-semibold small text-muted px-1 mb-1 d-none d-md-flex">

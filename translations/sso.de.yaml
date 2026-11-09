@@ -129,6 +129,7 @@ sso:
             priority: 'Priorität (0 = höchste)'
             is_active: 'Aktiv'
             audit_description: 'Beschreibung (Audit)'
+        not_assignable: 'nicht vergebbar'
         action:
             add: 'Mapping hinzufügen'
             remove: 'Entfernen'

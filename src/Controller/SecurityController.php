@@ -112,16 +112,20 @@ class SecurityController extends AbstractController
      * SAML Login - Initiate SSO
      */
     #[Route('/saml/login', name: 'saml_login', methods: ['GET'])]
-    public function samlLogin(): Response
+    public function samlLogin(Request $request): Response
     {
         try {
             $samlAuth = $this->samlAuthFactory->createAuth();
             // stay=true: OneLogin returns the URL instead of exit()ing, so the
             // request id can be remembered for the ACS (SamlMessageGuard).
             $url = $samlAuth->login(null, [], false, false, true);
-            $this->samlMessageGuard->rememberRequest((string) $samlAuth->getLastRequestID());
+            $nonce = $this->samlMessageGuard->rememberRequest((string) $samlAuth->getLastRequestID());
+            $response = new RedirectResponse((string) $url);
+            if ($nonce !== '') {
+                $response->headers->setCookie(SamlMessageGuard::bindingCookie($nonce, $request->isSecure()));
+            }
 
-            return new RedirectResponse((string) $url);
+            return $response;
         } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('security.error.saml_login_error', [], 'messages') . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_login');

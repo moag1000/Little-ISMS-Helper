@@ -61,11 +61,24 @@ class ProfileMfaController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/mfa/setup-totp', name: 'app_profile_mfa_setup_totp', methods: ['GET'])]
+    /**
+     * GET shows the start form, only the POST (CSRF) creates the pending
+     * token (S14): a link prefetch or a foreign page must not mint a secret
+     * or discard an enrolment that is in progress.
+     */
+    #[Route('/profile/mfa/setup-totp', name: 'app_profile_mfa_setup_totp', methods: ['GET', 'POST'])]
     public function setupTotp(Request $request): Response
     {
         $user = $this->getUser();
-        $deviceName = mb_substr((string) $request->query->get('device_name', $this->translator->trans('mfa.default_device_name', [], 'mfa')), 0, 255);
+        $defaultName = $this->translator->trans('mfa.default_device_name', [], 'mfa');
+        if (!$request->isMethod('POST')) {
+            return $this->render('profile/mfa/setup_totp_start.html.twig', ['default_device_name' => $defaultName]);
+        }
+        if (!$this->isCsrfTokenValid('mfa_setup_totp', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        $deviceName = trim((string) $request->request->get('device_name', ''));
+        $deviceName = mb_substr($deviceName !== '' ? $deviceName : $defaultName, 0, 255);
 
         // Generate TOTP secret
         $mfaToken = $this->mfaService->generateTotpSecret($user, $deviceName);

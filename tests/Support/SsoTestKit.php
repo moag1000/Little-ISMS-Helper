@@ -28,16 +28,19 @@ final class SsoTestKit
      * ACS request whose SAMLResponse answers $requestId. $remember = false
      * builds an unsolicited / unknown-request response.
      */
-    public static function acsRequest(SamlMessageGuard $guard, string $requestId = 'ONELOGIN_req_1', bool $remember = true, bool $withInResponseTo = true): Request
+    public static function acsRequest(SamlMessageGuard $guard, string $requestId = 'ONELOGIN_req_1', bool $remember = true, bool $withInResponseTo = true, bool $sameBrowser = true): Request
     {
-        if ($remember) {
-            $guard->rememberRequest($requestId);
-        }
+        $nonce = $remember ? $guard->rememberRequest($requestId) : '';
         $attr = $withInResponseTo ? ' InResponseTo="' . htmlspecialchars($requestId, ENT_XML1) . '"' : '';
         $xml = '<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_r1" Version="2.0"'
             . $attr . '></samlp:Response>';
 
-        return new Request(request: ['SAMLResponse' => base64_encode($xml)]);
+        // The browser that started the login carries the binding cookie (S14);
+        // $sameBrowser = false posts the response into another browser.
+        return new Request(
+            request: ['SAMLResponse' => base64_encode($xml)],
+            cookies: $sameBrowser && $nonce !== '' ? [SamlMessageGuard::BINDING_COOKIE => $nonce] : [],
+        );
     }
 
     /**

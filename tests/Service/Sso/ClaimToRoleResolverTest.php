@@ -157,13 +157,18 @@ final class ClaimToRoleResolverTest extends TestCase
         self::assertFalse($fallback->matched);
     }
 
+    /** S14: privileged and free-text roles never come from claims, not even via a global provider. */
     #[Test]
-    public function globalProviderKeepsPrivilegedMapping(): void
+    public function globalProviderNeverHandsOutPrivilegedOrUnknownRoles(): void
     {
         $provider = $this->makeProvider();
-        $this->repo->method('findActiveByProvider')
-            ->willReturn([$this->makeMapping('groups', 'ops', 'ROLE_SUPER_ADMIN')]);
+        $this->repo->method('findActiveByProvider')->willReturn([
+            $this->makeMapping('groups', 'ops', 'ROLE_SUPER_ADMIN', 1),
+            $this->makeMapping('groups', 'ops', 'ROLE_TYPED_BY_HAND', 2),
+            $this->makeMapping('groups', 'ops', 'ROLE_MANAGER', 3),
+        ]);
 
-        self::assertSame('ROLE_SUPER_ADMIN', $this->resolver->resolve($provider, ['groups' => ['ops']])->role);
+        self::assertSame('ROLE_MANAGER', $this->resolver->resolve($provider, ['groups' => ['ops']])->role);
+        self::assertSame(['ROLE_USER', 'ROLE_MANAGER'], $this->resolver->managedRoles($provider));
     }
 }
