@@ -15,6 +15,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
+use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -42,6 +43,7 @@ class FulfillmentDerivationService
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly EntityManagerInterface $em,
         private readonly AuditLogger $auditLogger,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -276,6 +278,17 @@ class FulfillmentDerivationService
      * @return array{derived: int, overridden: int, manual: int, changed: int}
      */
     public function refreshTenant(Tenant $tenant): array
+    {
+        // The compliance wizard's category providers (record checks) read the
+        // organisation from TenantContext: the nightly command and the restore
+        // have none (or another one), so pin this one and put the previous back.
+        return $this->tenantContext->runAs($tenant, fn (): array => $this->refreshPinnedTenant($tenant));
+    }
+
+    /**
+     * @return array{derived: int, overridden: int, manual: int, changed: int}
+     */
+    private function refreshPinnedTenant(Tenant $tenant): array
     {
         $this->engine->forgetTenant($tenant);
         $inUse = $this->finder->frameworkIdsInUse($tenant);

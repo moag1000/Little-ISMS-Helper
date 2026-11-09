@@ -242,6 +242,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 91 | `check_mfa_login_state.py` | one MFA state per login, no hand-made login, /setup closed while MFA is outstanding |
 | 92 | `check_raw_output.py` | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
 | 93 | `check_sso_claim_policy.py` | every SSO path checks its claims through SsoClaimPolicy |
+| 97 | `check_tenant_pin_restore.py` | an organisation pinned in TenantContext is put back (runAs / try-finally) |
 
 ### Mutationsgegenprobe der Dauertests (T, Welle 7; T2, Welle 8)
 
@@ -657,6 +658,21 @@ ohne Request-ID (SAML InResponseTo ungeprüft), (3) `getSchemeAndHttpHost()` im 
 `tests/Security/Sso/SsoClaimContractTest` (neuer Authenticator ohne Vertrag = rot). Keine Baseline.
 
 **CI-Integration:** Gate 93 im `code-quality`-Job.
+
+---
+
+### quality/check_tenant_pin_restore.py (Gate 97)
+
+**Zweck:** Eine in `TenantContext` gepinnte Organisation wird zurückgesetzt (S23, 2026-11). Der
+Messenger-Worker führt geplante Befehle und Jobs in einem Container aus; ein Pin ohne Restore scopte den
+nächsten Befehl (Instanz-Backup mit einer Organisation, Erinnerungen der anderen fehlten). Rot bei jedem
+`->setCurrentTenant(`/`->setCurrentTenantById(`/`->setNoOrganisation(` in `src/`, der weder in einem
+`try` derselben Funktion steht, dessen `finally` den Kontext zurücksetzt, noch selbst dieser Restore ist,
+noch `// @tenant-pin-ok: <Grund>` trägt. Weg der Wahl: `TenantContext::runAs()` /
+`runWithoutOrganisation()`. Keine Baseline. Selbsttest `scripts/quality/tests/test_check_tenant_pin_restore.py`;
+das Verhalten pinnt `tests/Scheduler/ScheduledCommandsTenantIsolationTest`.
+
+**CI-Integration:** Gate 97 im `code-quality`-Job.
 
 ---
 
