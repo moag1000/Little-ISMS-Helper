@@ -53,6 +53,18 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Zustellprotokoll). Am Kanal unter Benachrichtigungen ein Secret hinterlegen.
 - **Docker:** Der Worker im Image arbeitet jetzt auch die Queue `async` ab. Vorher blieben Mails
   liegen; nach dem Update gehen auch die aufgestauten raus.
+- **Docker (`docker-compose.prod.yml`):** Was Setup-Assistent und Admin-Seiten in `.env.local`
+  schreiben (öffentliche Adresse, erlaubte Hostnamen, Mailversand), liegt jetzt auf dem Volume
+  (`var/.env.local`) und übersteht Updates. Bisher ging es beim Neuerstellen des Containers verloren:
+  nach diesem Update unter Admin > Überwachung > Health prüfen und fehlende Werte einmal neu setzen.
+  Alternativ `DEFAULT_URI` (und bei Bedarf `SYMFONY_TRUSTED_HOSTS`) in der `.env` neben der
+  Compose-Datei setzen; der Start übernimmt sie, die Hostnamen werden sonst aus der Adresse abgeleitet.
+  Logos und Profilbilder liegen jetzt im Volume `isms_uploads` (wer es schon per Override
+  eingebunden hat, behält es). Ohne Volume gingen sie bei jedem Neuerstellen verloren; fehlt ein Bild,
+  einmal neu hochladen.
+- **Docker (`docker-compose.yml`):** startet jetzt MariaDB 11.4 statt PostgreSQL (auf dem die
+  Migrationen ohnehin scheiterten). Variablen `DB_NAME`, `DB_USER`, `DB_PASSWORD` statt `POSTGRES_*`;
+  pgAdmin ist entfallen.
 
 ### Einmal nach dem Update
 
