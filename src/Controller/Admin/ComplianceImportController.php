@@ -22,6 +22,7 @@ use App\Service\CompliancePolicyService;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\BsiProfileXmlImporter;
 use App\Service\Import\ComplianceMappingRowRules;
+use App\Service\Import\ImportCommitApproval;
 use App\Service\Import\ImportSessionRecorder;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -78,7 +79,7 @@ final class ComplianceImportController extends AbstractController
         'validated_by',
     ];
 
-    private const SESSION_KEY = 'compliance_import.preview';
+    public const SESSION_KEY = 'compliance_import.preview';
     private const FORMAT_CSV = 'csv_generic_v1';
     private const FORMAT_BSI_XML = 'bsi_profile_xml_v1';
     private const SUPPORTED_FORMATS = [self::FORMAT_CSV, self::FORMAT_BSI_XML];
@@ -91,6 +92,7 @@ final class ComplianceImportController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly LoggerInterface $logger,
         private readonly CompliancePolicyService $policy,
+        private readonly ImportCommitApproval $commitApproval,
         private readonly BsiProfileXmlImporter $bsiProfileXmlImporter,
         private readonly ImportSessionRecorder $importSessionRecorder,
         private readonly ImportSessionRepository $importSessionRepository,
@@ -134,32 +136,20 @@ final class ComplianceImportController extends AbstractController
             $format = (string) $form->get('format')->getData();
 
             if (!$file instanceof UploadedFile) {
-                $this->addFlash('error', $this->translator->trans(
-                    'compliance_import.flash.no_file',
-                    [],
-                    'compliance_import'
-                ));
+                $this->addFlash('error', 'compliance_import.flash.no_file');
 
                 return $this->redirectToRoute('admin_compliance_import_upload');
             }
 
             if (!in_array($format, self::SUPPORTED_FORMATS, true)) {
-                $this->addFlash('error', $this->translator->trans(
-                    'compliance_import.flash.unsupported_format',
-                    [],
-                    'compliance_import'
-                ));
+                $this->addFlash('error', 'compliance_import.flash.unsupported_format');
 
                 return $this->redirectToRoute('admin_compliance_import_upload');
             }
 
             $uploadDir = $this->projectDir . '/var/uploads/compliance-import';
             if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-                $this->addFlash('error', $this->translator->trans(
-                    'compliance_import.flash.upload_dir_failed',
-                    [],
-                    'compliance_import'
-                ));
+                $this->addFlash('error', 'compliance_import.flash.upload_dir_failed');
 
                 return $this->redirectToRoute('admin_compliance_import_upload');
             }
@@ -182,11 +172,7 @@ final class ComplianceImportController extends AbstractController
                 $this->logger->error('Compliance-Import upload failed', [
                     'error' => $exception->getMessage(),
                 ]);
-                $this->addFlash('error', $this->translator->trans(
-                    'compliance_import.flash.upload_failed',
-                    [],
-                    'compliance_import'
-                ));
+                $this->addFlash('error', 'compliance_import.flash.upload_failed');
 
                 return $this->redirectToRoute('admin_compliance_import_upload');
             }
@@ -243,18 +229,14 @@ final class ComplianceImportController extends AbstractController
     {
         $session = $request->getSession()->get(self::SESSION_KEY);
         if (!is_array($session) || !is_file($session['stored_path'] ?? '')) {
-            $this->addFlash('warning', $this->translator->trans(
-                'compliance_import.flash.no_session',
-                [],
-                'compliance_import'
-            ));
+            $this->addFlash('warning', 'compliance_import.flash.no_session');
 
             return $this->redirectToRoute('admin_compliance_import_upload');
         }
 
         $format = (string) ($session['format'] ?? self::FORMAT_CSV);
         $analysis = $this->dispatchAnalyse($format, (string) $session['stored_path']);
-        $fourEyesThreshold = $this->policy->getInt(CompliancePolicyService::KEY_IMPORT_FOUR_EYES_ROW_THRESHOLD, 50);
+        $request->getSession()->set(self::SESSION_KEY, ['row_count' => count($analysis['rows'])] + $session);
 
         return $this->render('admin/compliance_import/preview.html.twig', [
             'active_step' => 2,
@@ -262,8 +244,8 @@ final class ComplianceImportController extends AbstractController
             'rows' => $analysis['rows'],
             'summary' => $analysis['summary'],
             'header_error' => $analysis['header_error'],
-            'four_eyes_threshold' => $fourEyesThreshold,
-            'requires_four_eyes' => count($analysis['rows']) >= $fourEyesThreshold,
+            'four_eyes_threshold' => $this->commitApproval->threshold(),
+            'four_eyes_state' => $this->commitApproval->state((string) $session['stored_path'], count($analysis['rows'])),
         ]);
     }
 
@@ -271,34 +253,35 @@ final class ComplianceImportController extends AbstractController
     public function commit(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('compliance_import_commit', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans(
-                'compliance_import.flash.csrf_invalid',
-                [],
-                'compliance_import'
-            ));
+            $this->addFlash('error', 'compliance_import.flash.csrf_invalid');
 
             return $this->redirectToRoute('admin_compliance_import_preview');
         }
 
         $session = $request->getSession()->get(self::SESSION_KEY);
         if (!is_array($session) || !is_file($session['stored_path'] ?? '')) {
-            $this->addFlash('warning', $this->translator->trans(
-                'compliance_import.flash.no_session',
-                [],
-                'compliance_import'
-            ));
+            $this->addFlash('warning', 'compliance_import.flash.no_session');
 
             return $this->redirectToRoute('admin_compliance_import_upload');
         }
 
         $format = (string) ($session['format'] ?? self::FORMAT_CSV);
+        $path = (string) $session['stored_path'];
+        // "Import 4-Augen-Pflicht ab Zeilen" is a duty, not a hint: no commit without the approval of this file.
+        $fourEyes = $this->commitApproval->state($path, count($this->dispatchAnalyse($format, $path)['rows']));
+        if (!in_array($fourEyes, [ImportCommitApproval::STATE_NOT_REQUIRED, ImportCommitApproval::STATE_APPROVED], true)) {
+            $this->addFlash('warning', 'compliance_import.flash.four_eyes_required');
+
+            return $this->redirectToRoute('admin_compliance_import_preview');
+        }
 
         $importSession = null;
         if (isset($session['import_session_id']) && is_int($session['import_session_id'])) {
             $importSession = $this->importSessionRepository->find($session['import_session_id']);
         }
 
-        $result = $this->dispatchImport($format, (string) $session['stored_path'], $importSession);
+        $result = $this->dispatchImport($format, $path, $importSession);
+        $this->commitApproval->consume($path);
 
         // Finalise the per-row audit trail (counts + committedAt timestamp).
         if ($importSession instanceof ImportSession) {
@@ -313,7 +296,7 @@ final class ComplianceImportController extends AbstractController
         }
 
         // Remove uploaded file + session record after commit.
-        @unlink((string) $session['stored_path']);
+        @unlink($path);
         $request->getSession()->remove(self::SESSION_KEY);
 
         $this->addFlash(
@@ -342,11 +325,7 @@ final class ComplianceImportController extends AbstractController
     public function cancel(Request $request): RedirectResponse
     {
         if (!$this->isCsrfTokenValid('compliance_import_cancel', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans(
-                'compliance_import.flash.csrf_invalid',
-                [],
-                'compliance_import'
-            ));
+            $this->addFlash('error', 'compliance_import.flash.csrf_invalid');
 
             return $this->redirectToRoute('admin_compliance_import_preview');
         }
@@ -375,11 +354,7 @@ final class ComplianceImportController extends AbstractController
         }
         $request->getSession()->remove(self::SESSION_KEY);
 
-        $this->addFlash('info', $this->translator->trans(
-            'compliance_import.flash.cancelled',
-            [],
-            'compliance_import'
-        ));
+        $this->addFlash('info', 'compliance_import.flash.cancelled');
 
         return $this->redirectToRoute('admin_compliance_import_upload');
     }

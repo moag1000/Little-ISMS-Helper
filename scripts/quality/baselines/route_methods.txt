@@ -8,4 +8,3 @@ src/Controller/ComplianceCertificateController.php:51
 src/Controller/DpaController.php:38
 src/Controller/EffectivenessMonitorController.php:31
 src/Controller/MappingOnboardingController.php:17
-src/Controller/Tisax/TisaxImportWizardController.php:48

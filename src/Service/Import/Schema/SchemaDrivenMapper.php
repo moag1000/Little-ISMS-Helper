@@ -316,10 +316,14 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
 
         $value      = trim((string) $raw);
         $repository = $this->em->getRepository($field->relationClass);
-        $found      = $repository->findOneBy([$field->relationLookup => $value, 'tenant' => $tenant]);
+        // A global catalogue (e.g. ComplianceFramework for an audit's scope) has no
+        // tenant column: look it up as is — it is only referenced, never written.
+        $metadata = $this->em->getClassMetadata($field->relationClass);
+        $scope    = $metadata->hasAssociation('tenant') || $metadata->hasField('tenant') ? ['tenant' => $tenant] : [];
+        $found    = $repository->findOneBy([$field->relationLookup => $value] + $scope);
 
         if ($found === null && $field->relationFallbackLookup !== null && str_contains($value, '@')) {
-            $found = $repository->findOneBy([$field->relationFallbackLookup => $value, 'tenant' => $tenant]);
+            $found = $repository->findOneBy([$field->relationFallbackLookup => $value] + $scope);
         }
 
         return $found;

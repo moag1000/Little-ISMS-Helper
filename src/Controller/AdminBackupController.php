@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Security\Voter\AsyncJobVoter;
 use App\Controller\Trait\LocalizedFlashTrait;
-use Exception;
 use InvalidArgumentException;
 use App\Job\CreateBackupJob;
 use App\Job\RestoreBackupJob;
@@ -20,7 +19,6 @@ use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\RestoreService;
 use App\Service\TenantContext;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -630,98 +628,6 @@ class AdminBackupController extends AbstractController
             return $this->createJsonExportResponse($exportData);
         }
         return $this->createCsvExportResponse($exportData);
-    }
-
-    #[Route('/admin/data/import', name: 'data_import_index', methods: ['GET'])]
-    public function importIndex(): Response
-    {
-        return $this->render('data_management/import.html.twig');
-    }
-
-    #[Route('/admin/data/import/upload', name: 'data_import_upload', methods: ['POST'])]
-    public function importUpload(
-        Request $request,
-        TranslatorInterface $translator
-    ): Response {
-        if (!$this->isCsrfTokenValid('data_import', $request->request->get('_token'))) {
-            $this->addFlash('error', $translator->trans('data.import.error.invalid_token', [], 'messages'));
-            return $this->redirectToRoute('data_import_index');
-        }
-
-        $file = $request->files->get('import_file');
-
-        if (!$file) {
-            $this->addFlash('error', $translator->trans('data.import.error.no_file', [], 'messages'));
-            return $this->redirectToRoute('data_import_index');
-        }
-
-        try {
-            $content = file_get_contents($file->getPathname());
-            $data = json_decode($content, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                // @intentional-assertion: JSON-parse failure on import upload
-                throw new Exception('Invalid JSON: ' . json_last_error_msg());
-            }
-
-            // Store data in session for preview
-            $request->getSession()->set('import_preview_data', $data);
-
-            return $this->redirectToRoute('data_import_preview');
-        } catch (\Throwable $e) {
-            $this->addFlash('error', $translator->trans('data.import.error.invalid_file', [
-                '%error%' => $e->getMessage(),
-            ], 'messages'));
-            return $this->redirectToRoute('data_import_index');
-        }
-    }
-
-    #[Route('/admin/data/import/preview', name: 'data_import_preview', methods: ['GET'])]
-    public function importPreview(Request $request): Response
-    {
-        $data = $request->getSession()->get('import_preview_data');
-
-        if (!$data) {
-            $this->flashError('admin.backup.error.no_import_data');
-            return $this->redirectToRoute('data_import_index');
-        }
-
-        $stats = [];
-        foreach ($data as $entityName => $entities) {
-            $stats[$entityName] = count($entities);
-        }
-
-        return $this->render('data_management/import_preview.html.twig', [
-            'stats' => $stats,
-            'data' => $data,
-        ]);
-    }
-
-    #[Route('/admin/data/import/execute', name: 'data_import_execute', methods: ['POST'])]
-    public function importExecute(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
-    ): Response {
-        if (!$this->isCsrfTokenValid('data_import_execute', $request->request->get('_token'))) {
-            $this->addFlash('error', $translator->trans('data.import.error.invalid_token', [], 'messages'));
-            return $this->redirectToRoute('data_import_index');
-        }
-
-        $data = $request->getSession()->get('import_preview_data');
-
-        if (!$data) {
-            $this->flashError('admin.backup.error.no_import_data');
-            return $this->redirectToRoute('data_import_index');
-        }
-
-        // NOTE: This is a simplified implementation
-        // In production, you'd need proper entity creation, validation, and relationship handling
-
-        $this->addFlash('warning', $translator->trans('data.import.warning.not_implemented', [], 'messages'));
-        $request->getSession()->remove('import_preview_data');
-
-        return $this->redirectToRoute('data_import_index');
     }
 
     /**

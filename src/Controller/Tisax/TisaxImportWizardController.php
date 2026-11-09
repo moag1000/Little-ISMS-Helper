@@ -7,13 +7,12 @@ namespace App\Controller\Tisax;
 use App\Attribute\RequiresModule;
 use App\Form\Tisax\TisaxLegalConfirmationType;
 use App\Form\Tisax\VdaIsaUploadType;
-use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
 use App\Service\TenantContext;
 use App\Service\Tisax\EnxScheduleExporter;
 use App\Service\Tisax\TisaxConfirmationService;
-use App\Service\Tisax\TisaxEvidenceLinker;
+use App\Service\Tisax\TisaxImportCommitter;
 use App\Service\Tisax\TisaxImportSupportService;
 use App\Service\Tisax\RequirementLevelMetadataLoader;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -45,6 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   5 — Assess     (TisaxMaturityAssessmentService — Reifegrad 0-5)
  */
 #[IsGranted('ROLE_MANAGER')]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/tisax-import', name: 'app_tisax_import_')]
 #[RequiresModule('tisax')]
 final class TisaxImportWizardController extends AbstractController
@@ -74,10 +74,8 @@ final class TisaxImportWizardController extends AbstractController
         private readonly TisaxImportSupportService $importSupport,
         private readonly EnxScheduleExporter $enxExporter,
         private readonly FileUploadSecurityService $uploadSecurity,
-        private readonly AuditLogger $auditLogger,
         private readonly TisaxConfirmationService $confirmationService,
-        private readonly TisaxEvidenceLinker $evidenceLinker,
-        private readonly \App\Service\Tisax\TisaxFulfillmentSync $fulfillmentSync,
+        private readonly TisaxImportCommitter $committer,
         private readonly TranslatorInterface $translator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly \App\Service\Tisax\TisaxCatalogueVersionDetector $versionDetector,
@@ -293,7 +291,8 @@ final class TisaxImportWizardController extends AbstractController
         }
 
         $tenant    = $this->tenantContext->getCurrentTenant();
-        $framework = $this->mapper->findOrCreateFramework($this->catalogueVersion($request));
+        // Read only: the shared framework row is created on commit, never on a GET.
+        $framework = $this->mapper->findFramework($this->catalogueVersion($request));
         $delta     = $this->mapper->computeDelta($controls, $framework, $tenant);
 
         if ($request->isMethod('POST')) {
@@ -319,6 +318,7 @@ final class TisaxImportWizardController extends AbstractController
             'previewRows' => $previewRows,
             'totalRows'   => count($controls),
             'framework'   => $framework,
+            'catalogueNote' => $this->committer->catalogueNote($framework),
             'stepIndex'   => 3,
         ]);
     }
@@ -336,7 +336,9 @@ final class TisaxImportWizardController extends AbstractController
         }
 
         $tenant    = $this->tenantContext->getCurrentTenant();
-        $framework = $this->mapper->findOrCreateFramework($this->catalogueVersion($request));
+        $version   = $this->catalogueVersion($request);
+        $framework = $this->mapper->findFramework($version);
+        $catalogueNote = $this->committer->catalogueNote($framework);
 
         $workbookCompany = $request->getSession()->get(self::SESSION_WORKBOOK_COMPANY);
         $workbookCompany = is_string($workbookCompany) ? $workbookCompany : null;
@@ -357,45 +359,14 @@ final class TisaxImportWizardController extends AbstractController
                 return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
             }
 
-            $result = $this->mapper->mapRows($controls, $framework, $tenant);
-
-            // Selective Reifegrad-overwrite: apply only the diff rows the user
-            // explicitly ticked, overwriting the stored assessment with the
-            // workbook value (audited separately below).
-            /** @var \App\Entity\User $user */
-            $user        = $this->getUser();
-            $applyIds    = array_map('strval', (array) $request->request->all('apply_maturity'));
-            $overwritten = $this->importSupport->applyMaturityOverwrites($applyIds, $controls, $framework, $tenant, $user);
-
-            // Evidence linkage: resolve the imported "Referenz Dokumentation"
-            // free-text citations to real Document evidence (exact/normalised
-            // filename match only). Unmatched citations land in the typed
-            // dataSourceMapping.unlinked_citations review list, never dropped.
-            $evidence = ['linked' => 0, 'unlinked' => 0, 'requirements_with_unlinked' => 0];
-            if ($tenant !== null) {
-                $evidence = $this->evidenceLinker->linkBatch($result['entities'], $tenant);
-                $this->em->flush();
-                // Materialise ComplianceRequirementFulfillment from the imported
-                // maturity so catalogue coverage / SoA / cross-framework
-                // inheritance actually reflect the assessment (otherwise the
-                // import set maturity but had no further effect).
-                $this->fulfillmentSync->sync($framework, $tenant);
+            if ($catalogueNote !== null) {
+                $this->addFlash('warning', $this->transTisax($catalogueNote));
+                return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
             }
-
-            $this->auditLogger->logImport(
-                'ComplianceRequirement',
-                $result['created'] + $result['updated'],
-                sprintf(
-                    'TISAX BYO import: %d created, %d updated, %d Reifegrad overwritten, '
-                    . '%d evidence linked, %d citations unlinked — framework %s',
-                    $result['created'],
-                    $result['updated'],
-                    $overwritten,
-                    $evidence['linked'],
-                    $evidence['unlinked'],
-                    $framework->getCode(),
-                ),
-            );
+            /** @var \App\Entity\User $user */
+            $user      = $this->getUser();
+            $applyIds  = array_map('strval', (array) $request->request->all('apply_maturity'));
+            $framework = $this->committer->commit($controls, $framework, $version, $tenant, $user, $applyIds);
 
             // Clean up workbook temp file
             $workbookPath = $request->getSession()->get(self::SESSION_WORKBOOK_PATH);
@@ -421,6 +392,8 @@ final class TisaxImportWizardController extends AbstractController
             'delta'           => $delta,
             'maturityDiff'    => $maturityDiff,
             'framework'       => $framework,
+            'frameworkName'   => $framework?->getName() ?? $this->catalogueProvider->getMetadata($version)['name'],
+            'catalogueNote'   => $catalogueNote,
             'stepIndex'       => 4,
             'workbookCompany' => $workbookCompany,
             'tenantName'      => $tenant?->getName(),
