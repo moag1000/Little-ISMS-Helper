@@ -131,6 +131,10 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Stunden (Meldepflichten), die ganze Liste je Organisation einmal am Tag zur Digest-Stunde; nach jeder
   Organisation gibt er den Speicher frei. „Mein Tag“ baut die Liste einmal je Seitenaufruf und lädt je
   Fristtyp nur Einträge, die in der Vorlaufzeit fällig sind.
+- **Nachweise in einer Sprache (W10):** VVT-, Datenpannen-, DSFA-, Compliance-Export-, SoA- und Bündel-PDFs sowie
+  die Excel/CSV-Exporte erscheinen vollständig in der gewählten Sprache (bisher deutsch-englisch gemischt). Exporte
+  im Hintergrund (auch im Messenger-Modus) kommen in der Sprache der Person, die sie gestartet hat; der Anhang eines
+  geplanten Berichts in der Sprache, die am Bericht eingestellt ist (bisher nur der Mailtext). Keine Handlung nötig.
 - **Freigaben nur durch Berechtigte, selbst bestätigt (S27):**
   - Vier-Augen-Schritte (Dokument veröffentlichen, Asset entsorgen, Organisation sperren …) legen eine
     Gegenzeichnungsanfrage an; die zweite Person bestätigt sie angemeldet in „Mein Tag“. Bis dahin bleibt der
@@ -147,6 +151,12 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
     angemeldete Person.
   - „Auditprogramm ableiten“ im Konzernbericht braucht zusätzlich `ROLE_MANAGER`.
   - Beim Sperren einer Organisation kommt die zweite Person aus derselben Organisation.
+
+- **Audit-Log-Kette (B3):** Die Migration `Version20261109200000_AuditLogHmacLegacyCutoff` (Quick-Fix) merkt sich
+  den letzten Eintrag mit altem Signaturformat. Die Signatur deckte bisher Sekundenbruchteile ab, die die Datenbank
+  nie speichert — „HMAC-Kette verifizieren“ meldete deshalb jeden Eintrag als manipuliert. Neue Einträge sind voll
+  prüfbar, ältere nur in ihrer Verkettung; die Prüfung nennt ihre Anzahl. Jede Organisation hat jetzt ihre eigene
+  Kette, die Prüfung läuft als Hintergrundjob mit Fortschrittsseite. Nichts zu tun.
 
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
   `auto_action` auf `ROLE_USER` — jede angemeldete Person hätte eine Richtlinie abschließend freigeben können.

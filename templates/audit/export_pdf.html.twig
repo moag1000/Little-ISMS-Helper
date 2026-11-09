@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ audit.title }} - {{ 'pdf.title'|trans({}, 'audit') }}</title>
@@ -260,8 +260,8 @@
                 {% for asset in audit.scopedAssets %}
                 <tr>
                     <td>{{ asset.name }}</td>
-                    <td>{{ asset.assetType|default('-')|replace({'_': ' '})|title }}</td>
-                    <td>{{ asset.status|default('—') }}</td>
+                    <td>{{ asset.assetType ? ('asset.type.' ~ asset.assetType)|trans({}, 'asset') : '—' }}</td>
+                    <td>{{ asset.status ? ('asset.status.' ~ asset.status)|trans({}, 'asset') : '—' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

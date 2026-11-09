@@ -50,6 +50,7 @@ class InRequestJobRunner
         #[AutowireLocator('app.async_job')]
         private readonly ContainerInterface $jobs,
         private readonly LoggerInterface $logger,
+        private readonly ?JobLocale $jobLocale = null,
     ) {
     }
 
@@ -107,7 +108,11 @@ class InRequestJobRunner
         try {
             $job = $this->resolveJob($jobClass);
             $ctx = new JobContext($jobId, $this->jobStatusService, $args);
-            $job->run($ctx);
+            if ($this->jobLocale !== null) {
+                $this->jobLocale->run($args, static fn () => $job->run($ctx));
+            } else {
+                $job->run($ctx);
+            }
             // Read current state — don't clobber a terminal status that the
             // job set itself (e.g. via $ctx->message() right before return).
             $current = $this->jobStatusService->read($jobId);

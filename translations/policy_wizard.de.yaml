@@ -1027,6 +1027,8 @@ policy_wizard:
         changed_no: 'Unverändert'
 
     konzern_rollup:
+        pdf:
+            default_name: 'Konzern'
         title: 'Konzern Roll-Up'
         subtitle: 'Compliance-Übersicht über alle Tochtergesellschaften der Holding.'
         alva_tipp: 'Tipp: Wechseln Sie über die Tabs zwischen Coverage, Aktionen, Heatmap, Compliance, Abweichungen und Bestätigung. Die Abweichungs-Spalte zeigt sofort, wo eine Tochter strenger oder lascher als die Konzern-Vorgabe arbeitet.'
@@ -1430,6 +1432,11 @@ policy_wizard:
 
     # W7-A — PDF + ZIP Export (TenantBranding-Briefkopf, Audit-Pack).
     export:
+        doc:
+            default_title: 'Richtliniendokument'
+            document_title: 'Dokument'
+            attribution: 'Erstellt mit Little ISMS Helper'
+            empty_body: '_(kein Inhalt)_'
         pdf:
             title: 'Als PDF herunterladen'
             download_button: 'PDF herunterladen'

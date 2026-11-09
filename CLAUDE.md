@@ -65,6 +65,7 @@ php bin/phpunit tests/Service/RiskServiceTest.php  # specific test
 # Cloud threads (PHP 8.3, GitHub only over git): vendor/ in ~30 s, then PHPStan as in CI
 python3 scripts/setup/cloud_vendor.py
 vendor/bin/phpstan analyse -c phpstan.cloud.neon --memory-limit=2G --no-progress
+bash scripts/setup/cloud_phpunit.sh   # PHPUnit: PHP 8.5 + Postgres from conda-forge, then PATH=/opt/cloudphp/wrap:$PATH
 # own PHPStan rules use static reflection only (no is_subclass_of/class_exists) — scripts/README.md "Cloud-Threads"
 
 # Workflows (Regulatory Compliance)
@@ -168,6 +169,12 @@ session is read-only and the original request is gone. Pass everything you
 need (tenantId, userId, …) through `$args` at dispatch time — see
 `ExportRisksJob` as the reference pattern. The shared EntityManager
 keeps working after detach.
+
+**Language (W10):** `JobDispatcher` stamps the dispatching person's locale into the args (`locale`, a job may
+name its own) and both runners run the job under `LocaleSwitcher` (`App\Service\Job\JobLocale`); scheduled
+report attachments render in the schedule's language (`Report\ScheduledReportAttachment`). PDFs carry
+`<html lang="{{ app.locale }}">` (not `app.request.locale`: jobs have no request) and no text outside `|trans`
+(Gate 102, `check_pdf_i18n.py` + `tests/Contract/ExportLocaleContractTest`).
 
 **Tenant scope + ownership (security):** jobs that read tenant data take the
 scope from `JobTenantScope::argsForCurrentUser()` at dispatch and call
@@ -923,7 +930,7 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Privacy exports (VVT, DSFA, breach, DSR, consent) carry
       `#[IsGranted(new Expression(PrivacyExportAccess::RULE))]`; a record with an end state is deleted only via
-      `DeletionPolicy::refusal()` (asset: disposed); evidence fields (`#[ApiReadOnlyEvidence]`) are kept on
+      `DeletionPolicy::refusal()` (asset: disposed) — not yet true for every delete path, until S29 (Welle 10) lands; evidence fields (`#[ApiReadOnlyEvidence]`) are kept on
       import updates (`EvidenceFieldFilter::forUpdate()`).
 - [ ] Sensitive data excluded from audit logs
 - [ ] Non-UI paths (REST, MCP, restore, exports, jobs) are covered by contract tests that discover every

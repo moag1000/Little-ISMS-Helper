@@ -1,6 +1,6 @@
 {# Standort-Lagebild as a one-page PDF (dompdf) — input for the management review, ISO 27001 9.3. #}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{{ 'location.map.export.title'|trans({}, 'locations') }}</title>

@@ -119,7 +119,7 @@ final class PolicyPdfExporterTemplateTest extends TestCase
      */
     private function renderWrapperHtml(Document $doc): string
     {
-        $exporter = new PolicyPdfExporter($this->twig);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator());
         $variables = $doc->getSubstitutionVariables() ?? [];
 
         // Mirror the exporter's context-build (inner private accessors

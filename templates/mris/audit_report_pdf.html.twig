@@ -10,7 +10,7 @@
     Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5.
 #}
 <!DOCTYPE html>
-<html lang="de">
+<html lang="{{ app.locale }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{{ 'mris.audit_report.title'|trans({}, 'mris') }} — {{ tenant_name }}</title>
@@ -49,7 +49,7 @@
                 color: var(--fg);
             }
             @bottom-right {
-                content: "Seite " counter(page) " / " counter(pages);
+                content: "{{ 'pdf.doc_base.page'|trans({}, 'messages') }} " counter(page) " / " counter(pages);
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
                 color: var(--fg);
