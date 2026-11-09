@@ -2,6 +2,15 @@ audit_log:
     pagination:
         page_counter: 'Page %current% of %total%'
 audit:
+    export:
+        sheet: 'Audits'
+        header:
+            id: 'ID'
+            title: 'Title'
+            scope: 'Scope'
+            status: 'Status'
+            planned_date: 'Planned Date'
+            actual_date: 'Actual Date'
     success:
         created: Audit created.
         updated: Audit updated.

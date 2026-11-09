@@ -1,0 +1,1 @@
+# PDF templates with untranslated text, fixed lang or raw enum output (Gate 102): path<TAB>count. May only shrink.

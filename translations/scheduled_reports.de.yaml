@@ -45,6 +45,8 @@ scheduled_report:
         audit: 'Audit-Bericht'
         assets: 'Asset-Bericht'
         gdpr: 'DSGVO-Bericht'
+        portfolio: 'Portfolio-Bericht (frameworkübergreifend)'
+        board: 'Board-One-Pager'
 
     # Schedule options
     schedule:
@@ -166,6 +168,23 @@ scheduled_report:
 
             Mit freundlichen Grüßen,
             Ihr ISMS-System
+
+    # W10: the attached file speaks the schedule's language
+    attachment:
+        sheet:
+            risk: 'Risiken'
+            assets: 'Assets'
+        summary:
+            metric: 'Kennzahl'
+            value: 'Wert'
+            items: '%count% Einträge'
+        asset:
+            id: 'ID'
+            name: 'Name'
+            type: 'Typ'
+            classification: 'Klassifizierung'
+            owner: 'Eigentümer'
+            status: 'Status'
 
 # ISB MINOR-4 (DSGVO Art. 32, ISO 27001:2022 A.5.34):
 # Generic email shape + form-time role/tenant gate. Keys live at the

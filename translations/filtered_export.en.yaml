@@ -19,3 +19,4 @@ filtered_export:
     error:
         unsupported_type: 'Unsupported entity type: %type%'
         unsupported_format: 'Unsupported format: %format%'
+    no_data: 'No data available.'

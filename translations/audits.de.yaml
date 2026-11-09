@@ -2,6 +2,19 @@ audits:
     page:
         title: Audits
     audit_package:
+        readme:
+            requirement: 'Anforderung'
+            title: 'Titel'
+            category: 'Kategorie'
+            priority: 'Priorität'
+            fulfillment: 'Erfüllungsgrad (%)'
+            description: 'Beschreibung'
+            controls: 'Zugeordnete Controls'
+            control_line: '%id% — %name% (Status: %status%, %pct%%)'
+            evidence: 'Nachweisdokumente'
+            none: '(keine)'
+            empty_path: '(leer)'
+            missing_file: 'Dokument-ID %id% ist in der Datenbank registriert, die Datei konnte aber nicht von der Festplatte gelesen werden (Pfad: %path%).'
         cover:
             title: 'Audit-Paket'
             label:

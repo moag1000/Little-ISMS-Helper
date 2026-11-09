@@ -4,10 +4,10 @@
    Status:   final
    ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('en') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
-    <title>Gap Analysis Report - {{ framework.name }}</title>
+    <title>{{ 'compliance.export_pdf.gap.title'|trans({}, 'compliance') }} - {{ framework.name }}</title>
     <style>
         :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
         @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
@@ -87,16 +87,17 @@
 {# ── Risk Assessment body HTML ────────────────────────────────────────── #}
 {% set _risk_status = '' %}
 {% if risk_score >= 50 %}
-    {% set _risk_status %}<strong>Status: CRITICAL</strong> - Immediate action required{% endset %}
+    {% set _risk_status %}<strong>{{ 'compliance.export_pdf.gap.status_critical'|trans({}, 'compliance') }}</strong> - {{ 'compliance.export_pdf.gap.action_critical'|trans({}, 'compliance') }}{% endset %}
 {% elseif risk_score >= 20 %}
-    {% set _risk_status %}<strong>Status: HIGH</strong> - Urgent attention needed{% endset %}
+    {% set _risk_status %}<strong>{{ 'compliance.export_pdf.gap.status_high'|trans({}, 'compliance') }}</strong> - {{ 'compliance.export_pdf.gap.action_high'|trans({}, 'compliance') }}{% endset %}
 {% elseif risk_score > 0 %}
-    {% set _risk_status %}<strong>Status: MEDIUM</strong> - Planned gap closure recommended{% endset %}
+    {% set _risk_status %}<strong>{{ 'compliance.export_pdf.gap.status_medium'|trans({}, 'compliance') }}</strong> - {{ 'compliance.export_pdf.gap.action_medium'|trans({}, 'compliance') }}{% endset %}
 {% else %}
-    {% set _risk_status %}<strong>Status: LOW</strong> - Good compliance status{% endset %}
+    {% set _risk_status %}<strong>{{ 'compliance.export_pdf.gap.status_low'|trans({}, 'compliance') }}</strong> - {{ 'compliance.export_pdf.gap.action_low'|trans({}, 'compliance') }}{% endset %}
 {% endif %}
 
-{% set _risk_body %}<div style="border-left:3pt solid {{ (risk_score >= 50 ? 'var(--danger)' : (risk_score >= 20 ? 'var(--warning)' : 'var(--success)')) }};padding:8pt 10pt;margin:0 0 8pt;background:{{ (risk_score >= 50 ? 'rgba(220,38,38,.08)' : (risk_score >= 20 ? 'rgba(217,119,6,.08)' : 'var(--success-tint)')) }};font-size:9pt;"><strong>Overall Risk Score: {{ risk_score }}</strong> (Calculation: {{ (uncovered_critical ?? [])|length }} critical &times; 10 + {{ (uncovered_high ?? [])|length }} high &times; 5)<br>{{ _risk_status }}</div>{% endset %}
+{% set _risk_border = risk_score >= 50 ? 'var(--danger)' : (risk_score >= 20 ? 'var(--warning)' : 'var(--success)') %}{% set _risk_bg = risk_score >= 50 ? 'rgba(220,38,38,.08)' : (risk_score >= 20 ? 'rgba(217,119,6,.08)' : 'var(--success-tint)') %}
+{% set _risk_body %}<div style="border-left:3pt solid {{ _risk_border }};padding:8pt 10pt;margin:0 0 8pt;background:{{ _risk_bg }};font-size:9pt;"><strong>{{ 'compliance.export_pdf.gap.overall_risk_score'|trans({'%score%': risk_score}, 'compliance') }}</strong> ({{ 'compliance.export_pdf.gap.calculation'|trans({'%critical%': (uncovered_critical ?? [])|length, '%high%': (uncovered_high ?? [])|length}, 'compliance') }})<br>{{ _risk_status }}</div>{% endset %}
 
 {# ── Compliance Scores Comparison rows ────────────────────────────────── #}
 {% set _comp_diff = weighted_compliance_score - compliance_score %}
@@ -105,7 +106,7 @@
 {% set _cell_html1 %}<strong>{{ weighted_compliance_score }}%</strong>{% endset %}
 {% set _comp_rows = [
     [
-        'Compliance Score',
+        'compliance.export_pdf.gap.compliance_score'|trans({}, 'compliance'),
         compliance_score ~ '%',
         _cell_html1,
         _cell_html2,
@@ -114,28 +115,28 @@
 
 {% set _comp_interpretation = '' %}
 {% if weighted_compliance_score < compliance_score %}
-    {% set _comp_interpretation = 'The weighted score is lower, indicating that critical/high priority requirements are less well met than medium/low requirements. Focus on high-impact gaps required.' %}
+    {% set _comp_interpretation = 'compliance.export_pdf.gap.interp_lower'|trans({}, 'compliance') %}
 {% elseif weighted_compliance_score > compliance_score %}
-    {% set _comp_interpretation = 'The weighted score is higher - critical requirements are better met. Good prioritization!' %}
+    {% set _comp_interpretation = 'compliance.export_pdf.gap.interp_higher'|trans({}, 'compliance') %}
 {% else %}
-    {% set _comp_interpretation = 'Balanced compliance across all priority levels.' %}
+    {% set _comp_interpretation = 'compliance.export_pdf.gap.interp_equal'|trans({}, 'compliance') %}
 {% endif %}
 
 {# ── Gap Distribution by Severity rows ────────────────────────────────── #}
-{% set _cell_html16 %}<strong>Risk Score: {{ risk_score }}</strong>{% endset %}
+{% set _cell_html16 %}<strong>{{ 'compliance.export_pdf.gap.risk_score'|trans({'%n%': risk_score}, 'compliance') }}</strong>{% endset %}
 {% set _cell_html15 %}<strong>100%</strong>{% endset %}
 {% set _cell_html14 %}<strong>{{ total_gaps }}</strong>{% endset %}
-{% set _cell_html13 %}<strong>Total</strong>{% endset %}
+{% set _cell_html13 %}<strong>{{ 'compliance.export_pdf.common.total'|trans({}, 'compliance') }}</strong>{% endset %}
 {% set _cell_html12 %}<strong>{{ priority_distribution.low }}</strong>{% endset %}
-{% set _cell_html11 %}<span class="badge badge-info">Low</span>{% endset %}
+{% set _cell_html11 %}<span class="badge badge-info">{{ ('compliance.export_pdf.common.priority.' ~ 'low')|trans({}, 'compliance') }}</span>{% endset %}
 {% set _cell_html10 %}<strong>{{ priority_distribution.medium }}</strong>{% endset %}
-{% set _cell_html9 %}<span class="badge badge-success">Medium</span>{% endset %}
+{% set _cell_html9 %}<span class="badge badge-success">{{ ('compliance.export_pdf.common.priority.' ~ 'medium')|trans({}, 'compliance') }}</span>{% endset %}
 {% set _cell_html8 %}<strong style="color:var(--warning-strong);">{{ uncovered_high|length * 5 }}</strong>{% endset %}
 {% set _cell_html7 %}<strong>{{ uncovered_high|length }}</strong>{% endset %}
-{% set _cell_html6 %}<span class="badge badge-warning">High</span>{% endset %}
+{% set _cell_html6 %}<span class="badge badge-warning">{{ ('compliance.export_pdf.common.priority.' ~ 'high')|trans({}, 'compliance') }}</span>{% endset %}
 {% set _cell_html5 %}<strong style="color:var(--danger-strong);">{{ uncovered_critical|length * 10 }}</strong>{% endset %}
 {% set _cell_html4 %}<strong>{{ uncovered_critical|length }}</strong>{% endset %}
-{% set _cell_html3 %}<span class="badge badge-danger">Critical</span>{% endset %}
+{% set _cell_html3 %}<span class="badge badge-danger">{{ ('compliance.export_pdf.common.priority.' ~ 'critical')|trans({}, 'compliance') }}</span>{% endset %}
 {% set _sev_rows = [
     [
         _cell_html3,
@@ -175,16 +176,16 @@
 ] %}
 
 {# ── Build sections array ─────────────────────────────────────────────── #}
-{% set _body_html_html17 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Interpretation:</strong> {{ _comp_interpretation }}</div>{% endset %}
+{% set _body_html_html17 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>{{ 'compliance.export_pdf.gap.interpretation'|trans({}, 'compliance') }}</strong> {{ _comp_interpretation }}</div>{% endset %}
 {% set _sections = [
     {
-        heading: 'Risk Assessment',
+        heading: 'compliance.export_pdf.gap.sec_risk'|trans({}, 'compliance'),
         body_html: _risk_body,
     },
     {
-        heading: 'Compliance Scores Comparison',
+        heading: 'compliance.export_pdf.gap.sec_scores'|trans({}, 'compliance'),
         table: {
-            headers: ['Metric', 'Standard Score', 'Weighted Score', 'Difference'],
+            headers: ['compliance.export_pdf.gap.col_metric'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_standard'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_weighted'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_difference'|trans({}, 'compliance')],
             rows: _comp_rows,
         },
         body_html: _body_html_html17,
@@ -192,7 +193,7 @@
     {
         heading: 'pdf.gap_analysis.distribution_by_severity'|trans({}, 'messages'),
         table: {
-            headers: ['Severity Level', 'Gap Count', 'Percentage', 'Risk Weight', 'Total Risk'],
+            headers: ['compliance.export_pdf.gap.col_severity'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_gap_count'|trans({}, 'compliance'), 'compliance.export_pdf.common.col_percentage'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_risk_weight'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_total_risk'|trans({}, 'compliance')],
             rows: _sev_rows,
         },
     },
@@ -201,13 +202,13 @@
 {# ── Root Cause Analysis section ──────────────────────────────────────── #}
 {% if root_cause_analysis is defined %}
     {% set _cell_html25 %}<strong>{{ root_cause_analysis.summary.missing_evidence_count }}</strong>{% endset %}
-    {% set _cell_html24 %}<span class="badge badge-info">Missing Evidence</span>{% endset %}
+    {% set _cell_html24 %}<span class="badge badge-info">{{ 'compliance.export_pdf.gap.rc_missing_evidence'|trans({}, 'compliance') }}</span>{% endset %}
     {% set _cell_html23 %}<strong>{{ root_cause_analysis.summary.incomplete_implementation_count }}</strong>{% endset %}
-    {% set _cell_html22 %}<span class="badge badge-warning">Incomplete Implementation</span>{% endset %}
+    {% set _cell_html22 %}<span class="badge badge-warning">{{ 'compliance.export_pdf.gap.rc_incomplete'|trans({}, 'compliance') }}</span>{% endset %}
     {% set _cell_html21 %}<strong>{{ root_cause_analysis.summary.missing_control_count }}</strong>{% endset %}
-    {% set _cell_html20 %}<span class="badge badge-warning">Missing Control</span>{% endset %}
+    {% set _cell_html20 %}<span class="badge badge-warning">{{ 'compliance.export_pdf.gap.rc_missing_control'|trans({}, 'compliance') }}</span>{% endset %}
     {% set _cell_html19 %}<strong>{{ root_cause_analysis.summary.not_started_count }}</strong>{% endset %}
-    {% set _cell_html18 %}<span class="badge badge-danger">Not Started</span>{% endset %}
+    {% set _cell_html18 %}<span class="badge badge-danger">{{ 'compliance.export_pdf.gap.rc_not_started'|trans({}, 'compliance') }}</span>{% endset %}
     {% set _rc_rows = [
         [
             _cell_html18,
@@ -231,14 +232,14 @@
             _cell_html24,
             _cell_html25,
             (total_gaps > 0 ? ((root_cause_analysis.summary.missing_evidence_count / total_gaps * 100)|round(1)) : 0) ~ '%',
-            'High fulfillment (80-99%) - control exists but documentation lacking',
+            'compliance.export_pdf.gap.rc_missing_evidence_desc'|trans({}, 'compliance'),
         ],
     ] %}
 
     {% set _sections = _sections|merge([{
-        heading: 'Root Cause Analysis',
+        heading: 'compliance.export_pdf.gap.sec_root_cause'|trans({}, 'compliance'),
         table: {
-            headers: ['Root Cause', 'Count', 'Percentage', 'Description'],
+            headers: ['compliance.export_pdf.gap.col_root_cause'|trans({}, 'compliance'), 'compliance.export_pdf.common.col_count'|trans({}, 'compliance'), 'compliance.export_pdf.common.col_percentage'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_description'|trans({}, 'compliance')],
             rows: _rc_rows,
         },
     }]) %}
@@ -248,22 +249,22 @@
     {% for category, pattern in category_patterns|slice(0, 5) %}
         {% set _rc_badge = '' %}
         {% if pattern.dominant_root_cause == 'not_started' %}
-            {% set _rc_badge %}<span class="badge badge-danger">Not Started</span>{% endset %}
+            {% set _rc_badge %}<span class="badge badge-danger">{{ 'compliance.export_pdf.gap.rc_not_started'|trans({}, 'compliance') }}</span>{% endset %}
         {% elseif pattern.dominant_root_cause == 'missing_control' %}
-            {% set _rc_badge %}<span class="badge badge-warning">Missing Control</span>{% endset %}
+            {% set _rc_badge %}<span class="badge badge-warning">{{ 'compliance.export_pdf.gap.rc_missing_control'|trans({}, 'compliance') }}</span>{% endset %}
         {% elseif pattern.dominant_root_cause == 'incomplete_implementation' %}
-            {% set _rc_badge %}<span class="badge badge-warning">Incomplete</span>{% endset %}
+            {% set _rc_badge %}<span class="badge badge-warning">{{ 'compliance.export_pdf.gap.rc_incomplete_short'|trans({}, 'compliance') }}</span>{% endset %}
         {% else %}
-            {% set _rc_badge %}<span class="badge badge-info">Missing Evidence</span>{% endset %}
+            {% set _rc_badge %}<span class="badge badge-info">{{ 'compliance.export_pdf.gap.rc_missing_evidence'|trans({}, 'compliance') }}</span>{% endset %}
         {% endif %}
 
         {% set _severity_label = '' %}
         {% if pattern.count >= 5 %}
-            {% set _severity_label %}<strong style="color:var(--danger-strong);">Critical Cluster</strong>{% endset %}
+            {% set _severity_label %}<strong style="color:var(--danger-strong);">{{ 'compliance.export_pdf.gap.pattern_cluster'|trans({}, 'compliance') }}</strong>{% endset %}
         {% elseif pattern.count >= 3 %}
-            {% set _severity_label %}<strong style="color:var(--warning-strong);">Significant Pattern</strong>{% endset %}
+            {% set _severity_label %}<strong style="color:var(--warning-strong);">{{ 'compliance.export_pdf.gap.pattern_significant'|trans({}, 'compliance') }}</strong>{% endset %}
         {% else %}
-            {% set _severity_label = 'Moderate' %}
+            {% set _severity_label = 'compliance.export_pdf.gap.pattern_moderate'|trans({}, 'compliance') %}
         {% endif %}
 
         {% set _cell_html26 %}<strong>{{ category }}</strong>{% endset %}
@@ -278,13 +279,13 @@
 
     {% set _rc_quick_win_body = '' %}
     {% if root_cause_analysis.summary.missing_evidence_count > 0 %}
-        {% set _rc_quick_win_body %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Quick Wins:</strong> {{ root_cause_analysis.summary.missing_evidence_count }} gaps have missing documentation only. A documentation sprint can close these gaps in 30-60 days!</div>{% endset %}
+        {% set _rc_quick_win_body %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>{{ 'compliance.export_pdf.gap.quick_wins_label'|trans({}, 'compliance') }}</strong> {{ 'compliance.export_pdf.gap.quick_wins_text'|trans({'%n%': root_cause_analysis.summary.missing_evidence_count}, 'compliance') }}</div>{% endset %}
     {% endif %}
 
     {% set _sections = _sections|merge([{
-        heading: 'Category-Specific Patterns (Top 5)',
+        heading: 'compliance.export_pdf.gap.sec_patterns'|trans({}, 'compliance'),
         table: {
-            headers: ['Category', 'Gap Count', 'Avg. Fulfillment', 'Dominant Root Cause', 'Pattern Severity'],
+            headers: ['compliance.export_pdf.common.category'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_gap_count'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_avg_fulfillment'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_dominant'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_pattern_severity'|trans({}, 'compliance')],
             rows: _cat_rows,
         },
         body_html: _rc_quick_win_body,
@@ -296,22 +297,22 @@
     {% set _road_rows = [] %}
     {% for rec in gap_recommendations %}
         {% set _cell_html29 %}<strong style="color:var(--success-strong);">-{{ rec.risk_reduction }}</strong>{% endset %}
-        {% set _cell_html28 %}<strong>{{ rec.action }}</strong>{% endset %}
-        {% set _cell_html27 %}<span class="badge badge-{{ rec.priority|lower }}">{{ rec.priority }}</span>{% endset %}
+        {% set _rec_key = 'compliance.export_pdf.gap.roadmap.' ~ rec.priority|lower %}
+        {% set _cell_html28 %}<strong>{{ (_rec_key ~ '.action')|trans({'%count%': rec.count}, 'compliance') }}</strong>{% endset %}
+        {% set _cell_html27 %}<span class="badge badge-{{ rec.priority|lower }}">{{ ('compliance.export_pdf.common.priority.' ~ rec.priority|lower)|trans({}, 'compliance') }}</span>{% endset %}
         {% set _road_rows = _road_rows|merge([[
             _cell_html27,
             _cell_html28,
             rec.count,
-            rec.timeline,
+            (_rec_key ~ '.timeline')|trans({}, 'compliance'),
             _cell_html29,
-            rec.effort,
         ]]) %}
     {% endfor %}
 
     {% set _sections = _sections|merge([{
-        heading: 'Priority-Weighted Gap Closure Roadmap',
+        heading: 'compliance.export_pdf.gap.sec_roadmap'|trans({}, 'compliance'),
         table: {
-            headers: ['Priority', 'Action', 'Affected Gaps', 'Timeline', 'Risk Reduction', 'Effort'],
+            headers: ['compliance.export_pdf.common.priority'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_action'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_affected'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_timeline'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_risk_reduction'|trans({}, 'compliance')],
             rows: _road_rows,
         },
     }]) %}
@@ -326,7 +327,7 @@
     {% set _prio = requirement.priority|default('medium') %}
     {% set _ful_color = fulfillmentPct >= 80 ? 'var(--success-strong)' : (fulfillmentPct >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
     {% set _cell_html32 %}<strong style="color:{{ _ful_color }};">{{ fulfillmentPct }}%</strong>{% endset %}
-    {% set _cell_html31 %}<span class="badge badge-{{ _prio }}">{{ _prio|upper }}</span>{% endset %}
+    {% set _cell_html31 %}<span class="badge badge-{{ _prio }}">{{ ('compliance.export_pdf.common.priority.' ~ _prio)|trans({}, 'compliance') }}</span>{% endset %}
     {% set _cell_html30 %}<strong>{{ requirement.requirementId }}</strong>{% endset %}
     {% set _gap_rows = _gap_rows|merge([[
         _cell_html30,
@@ -338,50 +339,53 @@
 {% endfor %}
 
 {% set _sections = _sections|merge([{
-    heading: 'Detailed Gap List',
+    heading: 'compliance.export_pdf.gap.sec_gap_list'|trans({}, 'compliance'),
     table: {
-        headers: ['Requirement ID', 'Requirement', 'Priority', 'Fulfillment', 'Category'],
+        headers: ['compliance.export_pdf.gap.col_req_id'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_req'|trans({}, 'compliance'), 'compliance.export_pdf.common.priority'|trans({}, 'compliance'), 'compliance.export_pdf.gap.col_fulfillment'|trans({}, 'compliance'), 'compliance.export_pdf.common.category'|trans({}, 'compliance')],
         rows: _gap_rows,
     },
 }]) %}
 
-{% set _methodology_html %}<p>Gap analysis compares framework requirements against implemented controls. Compliance Score = met requirements / total requirements. Weighted score applies priority multipliers (Critical &times;10, High &times;5). Risk Score = (critical gaps &times; 10) + (high gaps &times; 5). Root cause classification: Not Started (0%), Missing Control (&lt;30%), Incomplete Implementation (30-79%), Missing Evidence (80-99%).</p>{% endset %}
+{% set _methodology_html %}<p>{{ 'compliance.export_pdf.gap.methodology'|trans({}, 'compliance') }}</p>{% endset %}
+{% set _findings = [
+    { label: 'compliance.export_pdf.gap.f_total'|trans({'%n%': total_requirements}, 'compliance'), tone: 'ok' },
+    { label: 'compliance.export_pdf.gap.f_met'|trans({'%n%': met_requirements}, 'compliance'), tone: 'ok' },
+    { label: 'compliance.export_pdf.gap.f_gaps'|trans({'%n%': total_gaps}, 'compliance'),
+      tone: total_gaps == 0 ? 'ok' : (total_gaps <= 5 ? 'warn' : 'danger') },
+    { label: 'compliance.export_pdf.gap.f_score'|trans({'%n%': compliance_score}, 'compliance'),
+      tone: compliance_score >= 80 ? 'ok' : (compliance_score >= 60 ? 'warn' : 'danger') },
+    { label: 'compliance.export_pdf.gap.risk_score'|trans({}, 'compliance'),
+      tone: risk_score < 20 ? 'ok' : (risk_score < 50 ? 'warn' : 'danger') },
+] %}
+{% set _kpis = [
+    { label: 'compliance.export_pdf.gap.k_total'|trans({}, 'compliance'), value: total_requirements,  tone: 'neutral' },
+    { label: 'compliance.export_pdf.gap.k_met'|trans({}, 'compliance'),   value: met_requirements,    tone: 'success' },
+    { label: 'compliance.export_pdf.gap.k_gaps'|trans({}, 'compliance'),    value: total_gaps,
+      tone: total_gaps == 0 ? 'success' : (total_gaps <= 5 ? 'warning' : 'danger') },
+    { label: 'compliance.export_pdf.gap.compliance_score'|trans({}, 'compliance'),   value: compliance_score ~ '%',
+      tone: compliance_score >= 80 ? 'success' : (compliance_score >= 60 ? 'warning' : 'danger') },
+    { label: 'compliance.export_pdf.gap.k_risk'|trans({}, 'compliance'),         value: risk_score,
+      tone: risk_score < 20 ? 'success' : (risk_score < 50 ? 'warning' : 'danger') },
+] %}
+{% set _sources = [
+    { label: 'GapAnalysisService', detail: 'compliance.export_pdf.gap.source_detail'|trans({}, 'compliance') },
+] %}
 {{ _fa_report_doc.render({
     report: {
-        title:        'Gap Analysis Report',
+        title:        'compliance.export_pdf.gap.title'|trans({}, 'compliance'),
         subtitle:     framework.name ~ ' (' ~ framework.code ~ ')',
-        kicker:       'Compliance · Gap Analysis',
+        kicker:       'compliance.export_pdf.gap.kicker'|trans({}, 'compliance'),
         status:       'final',
         audience:     'auditor',
         generated_at: pdf_generation_date|fa_datetime,
     },
     brand_name: 'Little ISMS Helper',
-    key_findings: [
-        { label: 'Total Requirements: ' ~ total_requirements, tone: 'ok' },
-        { label: 'Met Requirements: ' ~ met_requirements, tone: 'ok' },
-        { label: 'Identified Gaps: ' ~ total_gaps,
-          tone: total_gaps == 0 ? 'ok' : (total_gaps <= 5 ? 'warn' : 'danger') },
-        { label: 'Compliance Score: ' ~ compliance_score ~ '%',
-          tone: compliance_score >= 80 ? 'ok' : (compliance_score >= 60 ? 'warn' : 'danger') },
-        { label: 'Risk Score: ' ~ risk_score,
-          tone: risk_score < 20 ? 'ok' : (risk_score < 50 ? 'warn' : 'danger') },
-    ],
-    kpis: [
-        { label: 'Total Requirements', value: total_requirements,  tone: 'neutral' },
-        { label: 'Met Requirements',   value: met_requirements,    tone: 'success' },
-        { label: 'Identified Gaps',    value: total_gaps,
-          tone: total_gaps == 0 ? 'success' : (total_gaps <= 5 ? 'warning' : 'danger') },
-        { label: 'Compliance Score',   value: compliance_score ~ '%',
-          tone: compliance_score >= 80 ? 'success' : (compliance_score >= 60 ? 'warning' : 'danger') },
-        { label: 'Risk Score',         value: risk_score,
-          tone: risk_score < 20 ? 'success' : (risk_score < 50 ? 'warning' : 'danger') },
-    ],
+    key_findings: _findings,
+    kpis: _kpis,
     sections: _sections,
     appendix: {
         methodology: _methodology_html,
-        sources: [
-            { label: 'GapAnalysisService', detail: 'analyzeGaps() — per-requirement fulfillment assessment' },
-        ],
+        sources: _sources,
     },
 }) }}
 </body>

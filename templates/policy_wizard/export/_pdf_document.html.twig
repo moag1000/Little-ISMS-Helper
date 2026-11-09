@@ -9,10 +9,11 @@
    Spec: docs/design_system/sections/policy-templates.html. #}
 {% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="utf-8">
     <title>{{ cover.title|default(document.originalFilename) }}</title>
+    {% set _page_margin = {'compact': '12mm 10mm 16mm 10mm', 'wide': '26mm 24mm 30mm 24mm'}[page_margin|default('standard')] ?? '18mm 16mm 22mm 16mm' %}
     <style>
         /* ── Aurora-token defaults pinned for dompdf (no CSS-vars cascade). ── */
         :root {
@@ -37,7 +38,7 @@
         }
 
         {# Page margin from the organisation's policy style (compact / standard / wide). #}
-        @page { size: A4 portrait; margin: {{ {'compact': '12mm 10mm 16mm 10mm', 'wide': '26mm 24mm 30mm 24mm'}[page_margin|default('standard')]|default('18mm 16mm 22mm 16mm') }}; }
+        @page { size: A4 portrait; margin: {{ _page_margin }}; }
         body {
             font-family: "{{ font_family|default('Inter')|e('html_attr') }}", "Helvetica", "Arial", sans-serif;
             font-size: 10.5pt;
