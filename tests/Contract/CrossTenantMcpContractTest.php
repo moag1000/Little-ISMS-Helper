@@ -178,7 +178,8 @@ final class CrossTenantMcpContractTest extends WebTestCase
         }
         $this->em()->flush();
         foreach ($counters as $name => $before) {
-            self::assertSame($before, self::numbers($this->call($name)), $name . ' counts records of another organisation');
+            $after = $this->call($name);
+            self::assertSame($before, self::numbers($after), $name . ' counts records of another organisation: ' . mb_substr((string) json_encode($after), 0, 1500));
         }
 
         // save_record must not link A's records to B's (IRI references in the body).
@@ -273,7 +274,11 @@ final class CrossTenantMcpContractTest extends WebTestCase
             'jsonrpc' => '2.0', 'id' => 1, 'method' => $method, 'params' => $params === [] ? new \stdClass() : $params,
         ]));
 
-        return (array) json_decode((string) $this->client->getResponse()->getContent(), true);
+        $response = $this->client->getResponse();
+        $decoded = json_decode((string) $response->getContent(), true);
+        self::assertIsArray($decoded, sprintf('%s %s answered %d: %s', $method, (string) json_encode($params), $response->getStatusCode(), mb_substr((string) $response->getContent(), 0, 2000)));
+
+        return $decoded;
     }
 
     private function fresh(string $class, int $id): ?object
