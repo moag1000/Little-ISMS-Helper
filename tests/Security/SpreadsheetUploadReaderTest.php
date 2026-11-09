@@ -39,13 +39,58 @@ final class SpreadsheetUploadReaderTest extends TestCase
             ) {
                 continue;
             }
-            $source = (string) file_get_contents($file->getPathname());
-            if (preg_match('/IOFactory::(createReaderForFile|load|identify)\s*\(/', $source) === 1) {
+            if (self::opensWorkbooksItself((string) file_get_contents($file->getPathname()))) {
                 $offenders[] = substr($file->getPathname(), strlen($root) + 1);
             }
         }
 
         self::assertSame([], $offenders, 'Open uploaded workbooks via App\Service\Import\SafeSpreadsheetReader.');
+    }
+
+    /**
+     * T2: `new Reader\Xlsx()->load()` and `IOFactory::createReader('Xlsx')` passed the scan, a reader
+     * built by hand skips the zip limits and the read filter just the same. CSV has no archive and
+     * stays allowed.
+     */
+    #[Test]
+    public function theScanRecognisesEveryWayToBuildAReader(): void
+    {
+        foreach ([
+            '$s = IOFactory::load($path);',
+            '$r = IOFactory::createReaderForFile($path);',
+            '$r = IOFactory::createReader(\'Xlsx\');',
+            '$s = new \\PhpOffice\\PhpSpreadsheet\\Reader\\Xlsx()->load($path);',
+            "use PhpOffice\\PhpSpreadsheet\\Reader\\Ods;\n\$r = new Ods();",
+            "use PhpOffice\\PhpSpreadsheet\\Reader\\Xls as LegacyReader;\n\$r = new LegacyReader();",
+            "use PhpOffice\\PhpSpreadsheet\\Reader;\n\$r = new Reader\\Xlsx();",
+        ] as $source) {
+            self::assertTrue(self::opensWorkbooksItself("<?php\n" . $source), $source);
+        }
+        foreach ([
+            "use PhpOffice\\PhpSpreadsheet\\Writer\\Xlsx;\n\$w = new Xlsx(\$s);",
+            "use PhpOffice\\PhpSpreadsheet\\Reader\\Csv as CsvReader;\n\$r = new CsvReader();",
+        ] as $source) {
+            self::assertFalse(self::opensWorkbooksItself("<?php\n" . $source), $source);
+        }
+    }
+
+    private static function opensWorkbooksItself(string $source): bool
+    {
+        if (preg_match('/IOFactory::(createReaderForFile|createReader|load|identify)\s*\(/', $source) === 1) {
+            return true;
+        }
+        $readers = 'Xlsx|Xls|Ods|Html|Slk|Gnumeric|Xml';
+        if (preg_match('/new\s+\\\\?(?:PhpOffice\\\\PhpSpreadsheet\\\\)?Reader\\\\(' . $readers . ')\s*\(/', $source) === 1) {
+            return true;
+        }
+        preg_match_all('/^use\s+PhpOffice\\\\PhpSpreadsheet\\\\Reader\\\\(' . $readers . ')(?:\s+as\s+(\w+))?\s*;/m', $source, $uses, PREG_SET_ORDER);
+        foreach ($uses as $use) {
+            if (preg_match('/new\s+' . preg_quote((($use[2] ?? '') !== '') ? $use[2] : $use[1], '/') . '\s*\(/', $source) === 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     #[Test]

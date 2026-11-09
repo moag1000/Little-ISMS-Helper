@@ -363,8 +363,9 @@ Statuses without a lifecycle (workflow instances, consents, import rows, complia
 their tone from `_components/_status_vocabulary.html.twig`, lifecycle entities from `_fa_status_chip`,
 severity/criticality/priority scales from `pill_tone_severity()`; the one empty-value placeholder
 is `—` (`|fa_date` renders it for null);
-no local `statusColors` maps, no own `<main>`, one `<h1>` (the page header's), Bootstrap tooltips
-only on focusable elements (Gate 78). Search and commands are one overlay
+no local `statusColors` maps and no inline tone chains (`x == 'open' ? 'danger' : …`, rule `ternary-tone`),
+status pills only in primary/accent/success/warning/danger/neutral, no own `<main>`, one `<h1>` (the page header's),
+Bootstrap tooltips only on focusable elements (Gate 78). Search and commands are one overlay
 (`_command_palette.html.twig`, ⌘K/⌘P/`/`, triggers carry `data-command-palette-open`); its
 commands use `path()` and are gated by module and role. Page hits come from
 `App\Service\Search\NavigationSearch` (texts in the `search_nav` domain, DE + EN; `roles` = the attribute the
@@ -780,7 +781,9 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       `setTenant()` — the TenantFilter hides tenant-less rows from their own
       organisation. Rows meant for all organisations need
       `SharedTenantRowsInterface` plus a voter that keeps them read-only for
-      tenant admins (Gate 72, `check_tenant_null_rows.py`).
+      tenant admins (Gate 72, `check_tenant_null_rows.py`; at run time
+      `EventListener\TenantlessInsertGuard` fails the flush in tests and logs elsewhere when a
+      request of an organisation saves a tenant-owned row without tenant — factories and `clone` included).
 - [ ] CSRF token validated for every state-changing action (forms and
       fetch()/JSON endpoints): `#[IsCsrfTokenValid('id')]`, for fetch() with
       `tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER`
@@ -832,7 +835,8 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       prefix goes on the subscriber's allow list (audit work, comments, profile, decisions, exports).
 - [ ] The second factor lives only in `App\Security\Mfa\MfaSessionState` (one state per login, bound to the
       person's id; `MfaLoginListener` starts it on every login of the web firewall, the enforcer fails closed).
-      A path that puts a token into the token storage by hand calls `MfaSessionState::begin()`; remember-me
+      A method that puts a token into the token storage (or `_security_<firewall>` into the session) by hand calls
+      `MfaSessionState::begin()` in the same method; only the `main` firewall logs people in; remember-me
       cookies come only after the code (Gate 91, `tests/Security/Mfa/MfaLoginPathsTest` — a new authenticator
       needs its MFA decision there).
 - [ ] SSO claims are checked only by `App\Service\Sso\SsoClaimPolicy` (OIDC issuer/`exp`/audience/`nonce`,

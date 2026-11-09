@@ -55,6 +55,12 @@ final class MfaLoginPathsTest extends TestCase
         'App\Security\GenericOidcAuthenticator' => 'sso',
     ];
 
+    /** The class behind a built-in key: the listener sees this instance in the LoginSuccessEvent. */
+    private const array CLASS_OF = [
+        'form_login' => \Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator::class,
+        'remember_me' => \Symfony\Component\Security\Http\Authenticator\RememberMeAuthenticator::class,
+    ];
+
     /** Symfony's built-in authenticator keys of a firewall. */
     private const array BUILT_IN = ['form_login', 'json_login', 'http_basic', 'login_link', 'remember_me',
         'x509', 'remote_user', 'access_token'];
@@ -81,21 +87,54 @@ final class MfaLoginPathsTest extends TestCase
         self::assertSame($decided, $configured, 'A login path of the web firewall without an MFA decision.');
     }
 
-    /** @return iterable<string, array{string}> */
-    public static function authenticators(): iterable
+    /**
+     * T2: a second firewall (`partner:` with form_login) logged people in past the listener, which
+     * starts the MFA state for the web firewall only. Besides it, only the stateless token firewall
+     * may authenticate, and only with the API token.
+     */
+    #[Test]
+    public function noOtherFirewallLogsAPersonIn(): void
     {
-        foreach (self::DECIDED as $name => $kind) {
-            yield $name => [$kind];
+        $config = Yaml::parseFile(dirname(__DIR__, 3) . '/config/packages/security.yaml');
+        foreach ($config['security']['firewalls'] as $name => $firewall) {
+            if ($name === MfaLoginListener::FIREWALL || ($firewall['security'] ?? true) === false) {
+                continue;
+            }
+            $logins = array_values(array_intersect(self::BUILT_IN, array_keys((array) $firewall)));
+            $custom = $firewall['custom_authenticators'] ?? [];
+            if ($name === 'api_token') {
+                self::assertTrue($firewall['stateless'] ?? false, 'api_token stays stateless');
+                self::assertSame([], $logins, 'api_token: no login form');
+                self::assertSame(['App\Security\ApiTokenAuthenticator'], $custom, 'api_token: the API token only');
+                continue;
+            }
+            self::assertSame([], array_merge($logins, $custom), sprintf(
+                'Firewall "%s" logs people in without the MFA state of "%s".', $name, MfaLoginListener::FIREWALL,
+            ));
         }
     }
 
+    /** @return iterable<string, array{string, class-string}> */
+    public static function authenticators(): iterable
+    {
+        foreach (self::DECIDED as $name => $kind) {
+            yield $name => [$kind, self::CLASS_OF[$name] ?? $name];
+        }
+    }
+
+    /**
+     * The event carries the real authenticator class (T2: with a stub, an `instanceof
+     * AzureOAuthAuthenticator` skip in the listener stayed green).
+     *
+     * @param class-string $authenticator
+     */
     #[Test]
     #[DataProvider('authenticators')]
-    public function aPersonWithSecondFactorReachesNoPageWithoutIt(string $kind): void
+    public function aPersonWithSecondFactorReachesNoPageWithoutIt(string $kind, string $authenticator): void
     {
         $user = self::user(1, mfa: true);
         $session = self::session();
-        $event = $this->login($user, $kind, $session, remember: true);
+        $event = $this->login($user, $kind, $session, remember: true, authenticator: $authenticator);
 
         $page = $this->enforce($user, $session, '/de/dashboard', $kind === 'cookie' ? self::cookieToken($user) : null);
 
@@ -197,8 +236,14 @@ final class MfaLoginPathsTest extends TestCase
 
     // ── helpers ─────────────────────────────────────────────────────────
 
-    private function login(User $user, string $kind, SessionInterface $session, bool $remember = false): LoginSuccessEvent
-    {
+    /** @param class-string|null $authenticator */
+    private function login(
+        User $user,
+        string $kind,
+        SessionInterface $session,
+        bool $remember = false,
+        ?string $authenticator = null,
+    ): LoginSuccessEvent {
         $badges = [];
         if ($kind !== 'cookie') {
             $badge = new RememberMeBadge();
@@ -210,7 +255,11 @@ final class MfaLoginPathsTest extends TestCase
         $passport = new SelfValidatingPassport(new UserBadge((string) $user->getEmail(), static fn () => $user), $badges);
         $token = $kind === 'cookie' ? self::cookieToken($user) : new PostAuthenticationToken($user, 'main', ['ROLE_USER']);
 
-        $event = new LoginSuccessEvent($this->createStub(AuthenticatorInterface::class), $passport, $token,
+        $instance = $authenticator !== null
+            ? new \ReflectionClass($authenticator)->newInstanceWithoutConstructor()
+            : $this->createStub(AuthenticatorInterface::class);
+        self::assertInstanceOf(AuthenticatorInterface::class, $instance);
+        $event = new LoginSuccessEvent($instance, $passport, $token,
             self::request($session), new RedirectResponse('/de/target'), 'main');
         $this->listener()->onLoginSuccess($event);
 
