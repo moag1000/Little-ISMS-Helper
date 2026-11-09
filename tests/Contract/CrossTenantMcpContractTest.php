@@ -29,10 +29,19 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class CrossTenantMcpContractTest extends WebTestCase
 {
+    /**
+     * Tools no probe below reaches, each with the reason. T2: a tool that took only an `id`, or had
+     * required parameters besides `resource`/`query`, used to be skipped without a word.
+     *
+     * @var array<string, string>
+     */
+    private const array NOT_PROBED = [];
+
     private KernelBrowser $client;
     private Tenant $own;
     private Tenant $foreign;
     private string $token;
+    private User $tokenUser;
     private string $marker;
     private string $base;
 
@@ -62,6 +71,7 @@ final class CrossTenantMcpContractTest extends WebTestCase
         $settings->setEnabled($this->own, true);
         $settings->setWriteEnabled($this->own, true);
 
+        $this->tokenUser = $user;
         $this->token = static::getContainer()->get(ApiTokenManager::class)->mint($user, 'Contract', canWrite: true);
     }
 
@@ -99,6 +109,8 @@ final class CrossTenantMcpContractTest extends WebTestCase
         $ownIds = array_map(static fn (object $record): int => (int) $record->getId(), $own);
 
         $probed = 0;
+        $probedTools = [];
+        $counters = [];
         foreach ($tools as $tool) {
             $properties = $tool['inputSchema']['properties'] ?? [];
             $name = (string) $tool['name'];
@@ -117,6 +129,7 @@ final class CrossTenantMcpContractTest extends WebTestCase
                     }
                     $this->assertNoLeak($name . ' ' . $resource . '#' . $ids[$resource], $this->call($name, $arguments));
                     ++$probed;
+                    $probedTools[$name] = true;
                 }
                 continue;
             }
@@ -128,6 +141,7 @@ final class CrossTenantMcpContractTest extends WebTestCase
                         self::assertStringContainsString($this->base . 'own', (string) json_encode($page), $name . ' must list the own records (the probe is not vacuous)');
                     }
                     ++$probed;
+                    $probedTools[$name] = true;
                 }
                 continue;
             }
@@ -137,14 +151,42 @@ final class CrossTenantMcpContractTest extends WebTestCase
                 $this->assertNoLeak($name, $hits);
                 self::assertStringContainsString($this->base . 'own', (string) json_encode($hits), $name . ' must find the own records (the probe is not vacuous)');
                 ++$probed;
+                $probedTools[$name] = true;
                 continue;
             }
             if (($tool['annotations']['readOnlyHint'] ?? false) === true && ($tool['inputSchema']['required'] ?? []) === []) {
-                $this->assertNoLeak($name, $this->call($name));
+                $answer = $this->call($name);
+                $this->assertNoLeak($name, $answer);
+                $counters[$name] = self::numbers($answer);
                 ++$probed;
+                $probedTools[$name] = true;
             }
         }
         self::assertGreaterThan(count($ids), $probed);
+        $unprobed = array_values(array_diff(array_column($tools, 'name'), array_keys($probedTools), array_keys(self::NOT_PROBED)));
+        self::assertSame([], $unprobed, 'MCP tool without a cross-organisation probe; probe it or give the reason in NOT_PROBED.');
+        self::assertSame([], array_values(array_diff(array_keys(self::NOT_PROBED), array_column($tools, 'name'))), 'Stale NOT_PROBED entry.');
+
+        // Counters carry no marker (T2: a KPI counting every organisation's rows stayed green). More
+        // records of B must not move a single number A sees.
+        self::assertArrayHasKey('management_kpis', $counters);
+        foreach ($resources as $name) {
+            $class = 'App\\Entity\\' . $name;
+            if (class_exists($class) && property_exists($class, 'tenant')) {
+                for ($i = 0; $i < 3; ++$i) {
+                    $factory->create($class, $this->em()->find(Tenant::class, $this->foreign->getId()), $this->marker . 'n' . $i);
+                }
+            }
+        }
+        $this->em()->flush();
+        // The probes above use up most of a token's 100 calls per minute (`api` limiter); the second
+        // round runs on a fresh token of the same person, so a 429 never passes for a changed number.
+        $this->token = static::getContainer()->get(ApiTokenManager::class)
+            ->mint($this->em()->find(User::class, $this->tokenUser->getId()) ?? $this->tokenUser, 'Contract 2', canWrite: true);
+        foreach ($counters as $name => $before) {
+            $after = $this->call($name);
+            self::assertSame($before, self::numbers($after), $name . ' counts records of another organisation: ' . mb_substr((string) json_encode($after), 0, 1500));
+        }
 
         // save_record must not link A's records to B's (IRI references in the body).
         $iris = static::getContainer()->get(IriConverterInterface::class);
@@ -182,6 +224,29 @@ final class CrossTenantMcpContractTest extends WebTestCase
         }
     }
 
+    /**
+     * Every number of an answer by its path, without clock values (durations, timestamps).
+     *
+     * @param array<mixed> $answer
+     * @return array<string, int|float>
+     */
+    private static function numbers(array $answer, string $path = ''): array
+    {
+        $out = [];
+        foreach ($answer as $key => $value) {
+            $at = $path . '/' . $key;
+            if (is_array($value)) {
+                $out += self::numbers($value, $at);
+            } elseif ((is_int($value) || is_float($value)) && preg_match('/(_at|At|date|Date|time|Time|generated|duration|_ms)$/', (string) $key) !== 1) {
+                $out[$at] = $value;
+            } elseif (is_string($value) && $key === 'text' && str_starts_with(ltrim($value), '{')) {
+                $out += self::numbers((array) json_decode($value, true), $at); // MCP content blocks carry the JSON as text
+            }
+        }
+
+        return $out;
+    }
+
     /** @param array<string, mixed> $result */
     private function assertNoLeak(string $what, array $result): void
     {
@@ -215,7 +280,11 @@ final class CrossTenantMcpContractTest extends WebTestCase
             'jsonrpc' => '2.0', 'id' => 1, 'method' => $method, 'params' => $params === [] ? new \stdClass() : $params,
         ]));
 
-        return (array) json_decode((string) $this->client->getResponse()->getContent(), true);
+        $response = $this->client->getResponse();
+        $decoded = json_decode((string) $response->getContent(), true);
+        self::assertIsArray($decoded, sprintf('%s %s answered %d: %s', $method, (string) json_encode($params), $response->getStatusCode(), mb_substr((string) $response->getContent(), 0, 2000)));
+
+        return $decoded;
     }
 
     private function fresh(string $class, int $id): ?object

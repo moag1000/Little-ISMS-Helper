@@ -243,7 +243,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 92 | `check_raw_output.py` | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
 | 93 | `check_sso_claim_policy.py` | every SSO path checks its claims through SsoClaimPolicy |
 
-### Mutationsgegenprobe der Dauertests (T, Welle 7)
+### Mutationsgegenprobe der Dauertests (T, Welle 7; T2, Welle 8)
 
 Frage je Test und Gate: Wird er rot, wenn man die geschützte Eigenschaft absichtlich bricht? Wer
 einen der Tests oder ein Gate ändert, wiederholt die Gegenprobe für seine Änderung. Ein Test, der eine
@@ -261,11 +261,25 @@ Lücke festschreibt, wird umgedreht, nicht gelöscht.
 | Gate 82 + `RegulatoryWorkflowRegistryTest` (S17) | `approver_role: ROLE_CAPA_OWNER` in `capa.yaml` → Gate rot; Schritte unter `regulatory_metadata.steps` verschoben → Gate rot; Datenbankschritt auf `ROLE_RISK_MANAGER` gesetzt → `aDriftedRoleIsReportedAndAlignedInPlace` meldet die Abweichung | Gate und Loader lasen `regulatory_metadata.steps`, die YAMLs haben `metadata.steps`: kein Schritt geprüft, Loader lieferte null; Tests nutzten ein Stub im Loader-Layout |
 | Gate 82 + `AdminSettingConsumersTest` + `LifecycleConfigResolverTest` (S15) | `submit_for_review` mit `to: published` → Gate rot; `roles: [ROLE_USER]` in `notification_delivery.yaml` → rot (keine Pauschalausnahme mehr); `PUBLIC_ACCESS` auf `consent.revoke` → rot; zweiter Schreiber von `new LifecycleConfig()` oder Override-Schlüssel ohne Leser → Test rot; gespeicherter Override `four_eyes: false` / `roles: [ROLE_USER]` / `ROLE_ADMIN` auf Leitungsübergang → Resolver ignoriert ihn | Gate prüfte Arbeitsschritte nur nach Namen und nahm die Zustellung pauschal aus; Schritt-Overlays unter `/admin/workflows` wurden gespeichert, aber nie angewendet; Override-Seite nahm Freitextrollen und schaltete Vier-Augen ab; Resolver nahm den aktuellen statt den Mandanten des Datensatzes |
 | Gate 62, 71–75, 77–81, 83–87, 89, 90 | Je Gate eine Mutation pro Schreibweise (andere Anführungszeichen, umgekehrte Klassenreihenfolge, Macro-Hash, Zeilenumbruch im Aufruf, Yoda-Vergleich, nullsafe/first-class callable, Alias-Variable, Partial statt Seite) | Funde behoben: Seitensemantik/Stimulus/Datumsanzeige in Templates, CSV-Zelle in `TisaxConsolidateCommand`, Risikostufen-Literale in Alva-Hinweisen und Risikoregister-Export (jetzt Skala der Organisation), globale `mappedControls` in 2 Templates, Gate 89 Negationsfehler |
+| Gate 91 + `MfaLoginPathsTest` (T2, Welle 8) | `MfaSessionState` nur im Kommentar/`use`, `->setToken ($t)`, `$session->set('_security_main', …)`, `begin()` in einer anderen Methode → Gate rot; zweite Firewall `partner:` mit `form_login` → `noOtherFirewallLogsAPersonIn` rot; `instanceof AzureOAuthAuthenticator`-Ausnahme im `MfaLoginListener` → rot (Ereignis trägt jetzt die echte Authenticator-Klasse) | Kommentar befreite die ganze Datei; nur `main` geprüft; Test nutzte einen Stub-Authenticator |
+| Gate 92 (T2) | `{% autoescape false %}`, `use Twig\Markup as Html; new Html(…)`, `'is_safe_callback'` → rot | Block-Abschaltung, Alias und Callback sah die Regel nicht |
+| Gate 82 (T2) | `findByRoleInTenant (\n "ROLE_X"` mit Leerzeichen, Zeilenumbruch, `"` → rot | Suche lief zeilenweise |
+| Gate 72 + `TenantlessInsertGuard` (T2) | `tenant IN (:t) OR tenant IS NULL`, `new Asset()` in `src/Command/`, veralteter Baseline-Eintrag → rot; Zeile ohne Mandant in einem Request (auch Factory/`clone`/Hilfsdienst) → Flush scheitert im Test (`TenantlessInsertGuardTest`) | Konsolenbefehle ausgenommen; nur Regex über `new`; Baseline durfte veralten. Fund: `isms:load-annex-a-controls` legte Controls ohne Mandant an und setzte Controls anderer Organisationen zurück (jetzt je Organisation, `LoadAnnexAControlsCommandTest`) |
+| Gate 65 (T2) | `$ok = isCsrfTokenValid()` ohne Verwendung, nackter Aufruf, `methods: 'POST'` als String, `createForm()` ohne `handleRequest`+`isSubmitted` → rot; veralteter Baseline-Eintrag → rot | Jeder Aufruf zählte, auch mit verworfenem Ergebnis; nur Array-Schreibweise |
+| Modul-Gate (T2) | NIS-2-Feld in `isModuleActive('core')`, TISAX-Feld in `privacy`, nacktes `$this->checkModuleActive('privacy');` → rot | Irgendein Modul-If galt als Gate; verworfener Redirect galt als Prüfung |
+| Gate 84 (T2) | `getAuthorityReferenceNumber()` (string) roh in `fputcsv`, `fwrite($h, implode(';', [$s->getName()]))` und über eine Variable → rot | Getter auf `…Number`/`…Id` galten als Zahl; handgebaute CSV-Zeilen unsichtbar. `setCellValueExplicit(…, TYPE_STRING)` gilt jetzt als sicher (Textzelle) |
+| Gate 78 (T2) | `x.status == 'open' ? 'danger' : (… ? 'success' : 'neutral')` mehrzeilig → `ternary-tone`; `pill.render(x, 'info')` → `pill-tone` | 110 Templates mit Ternär-Tonketten stehen in der Baseline (dürfen nur schrumpfen) |
+| Gates 73, 75, 77, 87, 89, 90 (T2) | `list.html.twig` / `detail.html.twig` / `view.html.twig` ohne Skelett, Marker „no record“ auf einer Seite mit Kommentaren/Status-Band, Datum in `<textarea>`, `$rating >= 20`, `isModuleActive(Modules::PRIVACY)`, `'/var/jobs/'` außerhalb `JobStatusService`/`WorkerHealthService` → je rot | Dateinamen, Marker, Textarea, Variablenname, Fremdkonstante und direkte Jobdateien waren Restlücken |
+| `CrossTenantApiContractTest`, `ApiResourceContractTest` (T2) | Ressource in `src/Entity/<Ordner>/`, Ressource ohne `$tenant` ohne Grund, Operation mit weiterer URI-Variable ohne Grund, Custom-`Post /{id}/…` ohne `object`-Abstimmung → rot; Custom-Post mit fremder Id wird geprobt | `glob('src/Entity/*.php')`, Sub-Ressourcen still übersprungen, jeder Post galt als Anlage |
+| `CrossTenantMcpContractTest` (T2) | Werkzeug ohne Probe und ohne Grund in `NOT_PROBED` → rot; KPI-Zähler, der Datensätze anderer Organisationen mitzählt → rot (drei weitere fremde Datensätze je Ressource dürfen keine Zahl ändern) | Werkzeuge nur mit `id`/Pflichtparametern fielen durch; Zähler tragen keinen Marker |
+| `ApiTokenBoundaryTest` (T2) | `str_contains($path, '/api/')` im Matcher → `aTokenIsAcceptedOnlyOnApiPlatformAndMcpRoutes` rot (alle Router-Routen; POST auf die app-eigenen `…/api/`-Endpunkte wird abgewiesen) | Nur vier feste Pfade geprüft |
+| `BackupArchiveExtractionTest`, `SpreadsheetUploadReaderTest` (T2) | `document_versions` aus `ARCHIVE_PROTECTED_FOLDERS` entfernt → rot; `new Reader\Xlsx()`, `IOFactory::createReader('Xlsx')`, Reader per `use … as` → rot | Versionen landeten unbemerkt im Web-Root; Scan kannte nur `IOFactory::load`/`createReaderForFile` |
+| `TisaxConsolidateCommandTest` (T2, aus S18) | Bewertung einer Organisation auf die gemeinsame Katalogzeile verschoben → rot | Befehl schrieb Upload-Organisation und Reifegrad der ersten Organisation auf die Zeile aller |
 
-Bekannte Restlücken (bewusst nicht erkannt, je Gate): 87 Variablen namens `$rating`; 84 `get…Id`/`…Number`-Getter,
-`fwrite`/`implode`; 72 Factory/`clone`; 73 `list.html.twig`; 75 Marker-Missbrauch, `detail.html.twig`; 77 `<textarea>`;
-78 Tonketten per Ternär (62 Templates) und `<h1>` in Partials; 62 `templates/dev`; 89 Modulschlüssel als Konstante
-einer anderen Klasse; 90 direkte Dateizugriffe auf `var/jobs`.
+Bekannte Restlücken (bewusst nicht erkannt, je Gate): 78 `<h1>` in Partials und die 110 Templates der
+`ternary-tone`-Baseline; 62 `templates/dev`; 75 ein Marker „no record“ auf einer Datensatzseite ohne Kommentar,
+Status-Band, Freigabe oder Historie; 84 Getter-Namen, die in einer Klasse Zahl und in einer anderen Text sind
+(gelten als Text); 90 Jobdateien über einen anderen Pfadbau als `var/jobs`.
 
 ### quality/check_translations.py
 
@@ -394,8 +408,9 @@ an Ort und Stelle nachgeschlagene Map wie `{draft: 'secondary', …}[x.status]` 
 `{% set status_class = {…} %}` mit zwei Ton-Werten; PDFs und Mails ausgenommen), stattdessen
 `pill_tone_severity()` für Schweregrad/Kritikalität/Priorität,
 `_components/_status_vocabulary.html.twig` (`pill()` / `tone()`) oder `_fa_status_chip`
-(`status-map`; Button-Varianten-Maps mit `btn`/`button` im Namen sind ausgenommen); Bootstrap-Tooltips nur auf fokussierbaren
-Elementen (`tooltip-unreachable`).
+(`status-map`; Button-Varianten-Maps mit `btn`/`button` im Namen sind ausgenommen); seit T2 auch keine
+Ton-Kette per Ternär auf einem String-Vergleich (`ternary-tone`, Zahl-Schwellen ausgenommen) und keine Pill-Töne
+`info`/`secondary` (`pill-tone`); Bootstrap-Tooltips nur auf fokussierbaren Elementen (`tooltip-unreachable`).
 
 **CI-Integration:** Gate 78 im `code-quality`-Job, Baseline `baselines/page_semantics.txt`
 (darf nur sinken).
@@ -697,16 +712,18 @@ Einstellungsformulare, Statusseiten), stehen mit Begründung in
 ### quality/check_tenant_null_rows.py (Gate 72)
 
 **Zweck:** Datensätze ohne Mandant, die der `TenantFilter` versteckt. Zwei Regeln:
-`new-no-tenant` meldet Controller/Services, die eine mandantenbezogene Entity mit
+`new-no-tenant` meldet Controller/Services und seit T2 auch Konsolenbefehle, die eine mandantenbezogene Entity mit
 `new X()` anlegen, ohne in derselben Methode `setTenant()` aufzurufen (so gingen
 Workflow-Instanzen und Risikoappetit für die eigene Organisation verloren).
 `shared-query` meldet Abfragen „eigene ODER globale Zeilen“
-(`x.tenant = :t OR x.tenant IS NULL`) auf Entities ohne
+(`x.tenant = :t OR x.tenant IS NULL`, auch `x.tenant IN (:ids) OR …`) auf Entities ohne
 `SharedTenantRowsInterface`: Unter dem Filter trifft der globale Zweig nie.
+Was der Regex nicht sieht (Factory, `clone`, Hilfsdienst), fängt zur Laufzeit
+`App\EventListener\TenantlessInsertGuard`: im Testlauf scheitert der Flush, sonst steht eine Warnung im Log.
 
 **Baseline:** `scripts/quality/baselines/tenant_null_rows.txt`, Einträge
 `<datei>::<regel>::<detail>  # Grund` (z. B. Formularobjekt, dessen Service den
-Mandanten setzt). Veraltete Einträge werden gemeldet, schlagen aber nicht fehl.
+Mandanten setzt). Veraltete Einträge schlagen seit T2 fehl, die Liste schrumpft nur.
 
 **CI-Integration:** Gate 72 im `code-quality`-Job.
 

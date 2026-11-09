@@ -134,6 +134,35 @@ final class BackupArchiveExtractionTest extends TestCase
         self::assertFileDoesNotExist($this->projectDir . '/public/uploads/training_materials/kurs.pdf');
     }
 
+    /**
+     * T2: dropping `document_versions` from ARCHIVE_PROTECTED_FOLDERS stayed green — a restored
+     * version then landed in public/uploads/document_versions/, inside the web root.
+     */
+    #[Test]
+    public function restoredDocumentVersionsLandOutsideTheWebRoot(): void
+    {
+        $zip = $this->archive(['files/document_versions/policy_v2.pdf' => '%PDF version 2']);
+
+        self::assertSame(1, $this->service->extractArchiveFiles($zip, [7]));
+        self::assertFileExists($this->projectDir . '/var/uploads/documents/policy_v2.pdf');
+        self::assertFileDoesNotExist($this->projectDir . '/public/uploads/document_versions/policy_v2.pdf');
+    }
+
+    #[Test]
+    public function everyArchiveFolderButLogosIsRestoredOutsideTheWebRoot(): void
+    {
+        $class = new \ReflectionClass(BackupService::class);
+        $folders = $class->getConstant('ARCHIVE_FILE_FOLDERS');
+        $protected = $class->getConstant('ARCHIVE_PROTECTED_FOLDERS');
+
+        // Tenant logos are shown on the login page and in mails, so they stay public (ProtectedUploads).
+        self::assertSame(
+            array_values(array_diff($folders, ['tenant_logos'])),
+            array_keys($protected),
+            'An archive folder with evidence must map to a ProtectedUploads area.',
+        );
+    }
+
     #[Test]
     public function everyProtectedUploadAreaIsBackedUp(): void
     {

@@ -69,14 +69,32 @@ final class ApiResourceContractTest extends TestCase
         ComplianceRequirementFulfillment::class,
     ];
 
+    /**
+     * Every entity class below src/Entity/, subfolders included (T2: `glob('src/Entity/*.php')`
+     * missed a resource in src/Entity/<Folder>/).
+     *
+     * @return list<class-string>
+     */
+    private static function entityClasses(): array
+    {
+        $base = dirname(__DIR__, 2) . '/src/Entity/';
+        $classes = [];
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($base, \FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            $class = 'App\\Entity\\' . str_replace('/', '\\', substr((string) $file->getPathname(), strlen($base), -4));
+            if ($file->getExtension() === 'php' && class_exists($class)) {
+                $classes[] = $class;
+            }
+        }
+        sort($classes);
+
+        return $classes;
+    }
+
     /** @return iterable<string, array{class-string}> */
     public static function apiResources(): iterable
     {
-        foreach (glob(dirname(__DIR__, 2) . '/src/Entity/*.php') ?: [] as $file) {
-            $class = 'App\\Entity\\' . basename($file, '.php');
-            if (!class_exists($class)) {
-                continue;
-            }
+        foreach (self::entityClasses() as $class) {
             if ((new ReflectionClass($class))->getAttributes(ApiResource::class) !== []) {
                 yield (new ReflectionClass($class))->getShortName() => [$class];
             }
@@ -154,11 +172,7 @@ final class ApiResourceContractTest extends TestCase
 
         // ... and no field carrying it, on any entity, is in a write group.
         $checked = 0;
-        foreach (glob(dirname(__DIR__, 2) . '/src/Entity/*.php') ?: [] as $file) {
-            $class = 'App\\Entity\\' . basename($file, '.php');
-            if (!class_exists($class)) {
-                continue;
-            }
+        foreach (self::entityClasses() as $class) {
             foreach ((new ReflectionClass($class))->getProperties() as $property) {
                 if ($property->getAttributes(ApiReadOnlyEvidence::class) === []) {
                     continue;
@@ -219,7 +233,9 @@ final class ApiResourceContractTest extends TestCase
             $expression = $operation->getSecurity() ?? $operation->getSecurityPostDenormalize();
             $label = sprintf('%s %s', $class, $operation::class);
             self::assertNotNull($expression, $label . ': every operation needs security or securityPostDenormalize.');
-            if (!$operation instanceof GetCollection && !$operation instanceof \ApiPlatform\Metadata\Post) {
+            // A Post creates a record — unless it acts on one (`/risks/{id}/accept`, T2): then it votes on it.
+            $createsRecord = $operation instanceof \ApiPlatform\Metadata\Post && ($operation->getUriVariables() ?? []) === [];
+            if (!$operation instanceof GetCollection && !$createsRecord) {
                 self::assertStringContainsString('object', (string) $operation->getSecurity(), $label . ': an item operation votes on the record (object).');
             }
         }
@@ -264,11 +280,7 @@ final class ApiResourceContractTest extends TestCase
     {
         $credential = '/password|secret|token|mfa|totp|backup_?code|reset_?(code|token)|api_?key|private_?key|sso_?external|credential/i';
         $checked = 0;
-        foreach (glob(dirname(__DIR__, 2) . '/src/Entity/*.php') ?: [] as $file) {
-            $class = 'App\\Entity\\' . basename($file, '.php');
-            if (!class_exists($class)) {
-                continue;
-            }
+        foreach (self::entityClasses() as $class) {
             foreach ((new ReflectionClass($class))->getProperties() as $property) {
                 if (preg_match($credential, $property->getName()) !== 1) {
                     continue;

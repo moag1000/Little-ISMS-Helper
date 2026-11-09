@@ -9,6 +9,7 @@ use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\ApiTokenRepository;
+use App\Security\Token\ApiTokenRequest;
 use App\Service\ApiTokenManager;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -287,6 +288,48 @@ final class ApiTokenBoundaryTest extends WebTestCase
             $config['security']['firewalls']['main']['custom_authenticators'] ?? [],
             'API tokens belong to the stateless api_token firewall only.',
         );
+    }
+
+    /**
+     * T2: a matcher widened to `str_contains($path, '/api/')` stayed green and opened the
+     * session endpoints below /de/api/… (quick-create, glossary, corporate tree) to tokens. Every
+     * route of the router is checked: the token paths carry API Platform operations, the API docs
+     * and the assistant endpoint only; and a token POST to the app's own /…/api/ endpoints is refused.
+     */
+    #[Test]
+    public function aTokenIsAcceptedOnlyOnApiPlatformAndMcpRoutes(): void
+    {
+        $router = static::getContainer()->get('router');
+        $wrong = [];
+        $appApiPosts = [];
+        foreach ($router->getRouteCollection()->all() as $name => $route) {
+            $path = (string) preg_replace_callback(
+                '/\{(\w+)[^}]*\}/',
+                static fn (array $m): string => $m[1] === '_locale' ? 'de' : ($m[1] === '_format' ? 'jsonld' : '1'),
+                $route->getPath(),
+            );
+            $isApi = $route->getDefault('_api_resource_class') !== null || $route->getDefault('_api_operation_name') !== null
+                || str_starts_with((string) $name, 'api_doc') || str_starts_with((string) $name, 'api_entrypoint')
+                || str_starts_with((string) $name, 'api_genid') || str_starts_with((string) $name, 'api_jsonld_context')
+                || str_starts_with((string) $name, 'api_validation_errors')
+                || str_starts_with((string) $route->getDefault('_controller'), 'App\Controller\McpController')
+                // Glossary definitions (config/glossary.yaml): the same text for everybody, GET only, no record data.
+                || $name === 'app_api_glossary';
+            if (ApiTokenRequest::acceptsTokenOn($path) && !$isApi) {
+                $wrong[] = $name . ' ' . $path;
+            }
+            if (!$isApi && str_contains($path, '/api/') && array_intersect(['POST', 'PUT', 'PATCH', 'DELETE'], $route->getMethods()) !== []) {
+                $appApiPosts[$name] = $path;
+            }
+        }
+
+        self::assertSame([], $wrong, 'These session endpoints would accept an API token.');
+        self::assertNotEmpty($appApiPosts, 'the app has its own POST endpoints below …/api/');
+        foreach ($appApiPosts as $name => $path) {
+            $this->bearer('POST', $path, '{}');
+            // 401: not a token path; 405: bearer writes are refused before routing (ReadOnlyApiSubscriber)
+            self::assertContains($this->client->getResponse()->getStatusCode(), [401, 405], $name . ' ' . $path);
+        }
     }
 
     private function bearer(string $method, string $path, ?string $body = null): void

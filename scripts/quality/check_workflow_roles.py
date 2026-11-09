@@ -65,7 +65,7 @@ SEEDERS = [
 # names the change; delete the line once the role is in security.yaml.
 PENDING: set[str] = set()
 
-LOOKUP = re.compile(r"""\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\(\s*['"](ROLE_[A-Z_]+)['"]""")
+LOOKUP = re.compile(r"""\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\s*\(\s*['"](ROLE_[A-Z_]+)['"]""")
 SEEDER_ROLE = re.compile(r"""'(?:approverRole|role)'\s*=>\s*'(ROLE_[A-Z_]+)'""")
 SEEDER_TYPE = re.compile(r"""'stepType'\s*=>\s*'([a-z_]+)'""")
 
@@ -268,11 +268,11 @@ def check_seeders(known: set[str]) -> list[str]:
 def check_lookups(known: set[str]) -> list[str]:
     errors: list[str] = []
     for path in sorted((ROOT / "src").rglob("*.php")):
-        for i, line in enumerate(path.read_text(encoding="utf-8").splitlines()):
-            for m in LOOKUP.finditer(line):
-                if m.group(1) not in known:
-                    errors.append(f"{rel(path)}:{i + 1}: recipient look-up on unknown role {m.group(1)} "
-                                  "finds nobody")
+        text = path.read_text(encoding="utf-8")
+        for m in LOOKUP.finditer(text):  # whole file: the role may sit on the next line
+            if m.group(1) not in known:
+                errors.append(f"{rel(path)}:{text.count(chr(10), 0, m.start()) + 1}: recipient look-up on "
+                              f"unknown role {m.group(1)} finds nobody")
     return errors
 
 

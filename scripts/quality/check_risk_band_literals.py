@@ -46,7 +46,7 @@ SKIP = {"src/Risk/RiskMatrixThresholds.php"}
 
 # A risk-score-ish operand, then a comparison with a literal band edge.
 OPERAND = (r"(?:risk_?score|riskscore|risklevel|risk_level|inherentrisk|residualrisk|inherent|residual"
-           r"|\bscore\b|probability\s*\*\s*\w*\.?impact|\$level\b|\blevel\b)")
+           r"|\bscore\b|\$rating\b|\brating\b|probability\s*\*\s*\w*\.?impact|\$level\b|\blevel\b)")
 # One line break inside the window is fine (`$score\n    >= 20`).
 GAP = r"(?:[^;\n{}]|\n(?!\s*\n)){0,40}?"
 PATTERN = re.compile(

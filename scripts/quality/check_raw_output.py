@@ -29,13 +29,17 @@ Rules (templates/**/*.twig, src/**/*.twig):
            (`path | expression | reason`), each entry with its reason.
       `|raw` on a macro call is rejected as redundant (macro output is Markup)
       and `|json_encode|raw` is rejected in favour of `|fa_json`.
+      `{% autoescape false %}` (or `autoescape` with any strategy but html/js/
+      css/url/html_attr) is rejected: it turns every `{{ }}` of the block into
+      raw output without a single `|raw` to review (T2).
   R2  an argument passed to a component (`_components/*`, `_macros/*`) carries
       no HTML string literal and no translation that contains HTML unless the
       value ends in `|fa_html` — the component escapes it, the tags would show.
 Rules (src/**/*.php):
   R3  `new PhpWord(` only in src/Service/Export/DocxDocumentFactory.php, no
       `TemplateProcessor`, never `setOutputEscapingEnabled(false)`.
-  R4  `new Markup(` and Twig callables declared `is_safe` carry a
+  R4  `new Markup(` (also through a `use Twig\\Markup as X` alias) and Twig
+      callables declared `is_safe` / `is_safe_callback` carry a
       `// @markup-safe: <reason>` comment (same or previous line) that names
       how record text is escaped before it becomes HTML.
 
@@ -58,6 +62,10 @@ DOCX_FACTORY = "src/Service/Export/DocxDocumentFactory.php"
 MARKUP_FILTERS = "src/Twig/OutputEscapingExtension.php"
 
 RAW = re.compile(r"\|\s*(raw|fa_html)\b")
+AUTOESCAPE_OFF = re.compile(
+    r"""\{%-?\s*autoescape\s+(?!(?:'(?:html|js|css|url|html_attr)'|"(?:html|js|css|url|html_attr)"|true)\s*-?%\})[^%]*-?%\}"""
+)
+MARKUP_ALIAS = re.compile(r"^\s*use\s+\\?Twig\\Markup\s+as\s+(\w+)\s*;", re.M)
 SAFE_PARAM_TAIL = re.compile(
     r"\|\s*(e|escape|length|number_format|round|abs|format_number|fa_date|fa_datetime|fa_time|fa_month)"
     r"(\([^()]*\))?\s*$"
@@ -283,6 +291,10 @@ def check_r1(files: list[Path], allow: dict, used: set) -> list[str]:
         # Twig comments never render
         code = re.sub(r"\{#.*?#\}", lambda m: re.sub(r"[^\n]", " ", m.group(0)), src, flags=re.S)
         aliases = macro_aliases(code)
+        for m in AUTOESCAPE_OFF.finditer(code):
+            line = code.count("\n", 0, m.start()) + 1
+            errors.append(f"{rel}:{line}: `{norm(m.group(0))}` — switches escaping off for a whole block; "
+                          "print escaped and pass Markup where HTML is meant")
         for m in RAW.finditer(code):
             line = code.count("\n", 0, m.start()) + 1
             op = operand_before(code, m.start())
@@ -444,6 +456,8 @@ def check_r3() -> list[str]:
         rel = f.relative_to(ROOT).as_posix()
         src = f.read_text(encoding="utf-8")
         lines = src.splitlines()
+        markup_names = ["(?:\\\\?(?:Twig\\\\)?Markup)"] + [re.escape(a) for a in MARKUP_ALIAS.findall(src)]
+        new_markup = re.compile(r"new\s+(?:" + "|".join(markup_names) + r")\s*\(")
         for i, line in enumerate(lines, 1):
             if re.search(r"new\s+\\?(PhpOffice\\PhpWord\\)?PhpWord\s*\(", line) and rel != DOCX_FACTORY:
                 errors.append(f"{rel}:{i}: PhpWord document created outside DocxDocumentFactory::create() — output escaping may be off")
@@ -454,12 +468,12 @@ def check_r3() -> list[str]:
             if rel == MARKUP_FILTERS:
                 continue
             marked = "@markup-safe:" in line or (i > 1 and "@markup-safe:" in lines[i - 2])
-            if re.search(r"new\s+\\?(Twig\\)?Markup\s*\(", line) and not marked:
+            if new_markup.search(line) and not marked:
                 errors.append(
                     f"{rel}:{i}: `new Markup()` — record text would print as HTML; escape it first and say how in "
                     "a `// @markup-safe: <reason>` comment on this or the previous line"
                 )
-            if re.search(r"""['"]is_safe['"]\s*=>|\bisSafe\s*:""", line) and not marked:
+            if re.search(r"""['"]is_safe(_callback)?['"]\s*=>|\bisSafe(Callback)?\s*:""", line) and not marked:
                 errors.append(
                     f"{rel}:{i}: Twig callable marked is_safe — its output is printed unescaped; "
                     "add `// @markup-safe: <reason>` once it escapes record text itself"

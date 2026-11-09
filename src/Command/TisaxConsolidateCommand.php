@@ -30,7 +30,8 @@ use Symfony\Component\Yaml\Yaml;
  *  - All TISAX requirement rows are snapshotted to var/backups/ (timestamped)
  *    BEFORE any write — pre-migration rollback safety.
  *  - tenant_upload rows under the legacy code `TISAX-VDA-ISA-6` are migrated to
- *    the canonical `TISAX` framework: matched by crosswalk-normalised control id,
+ *    the canonical `TISAX` framework: matched by crosswalk-normalised control id
+ *    against canonical rows of the same organisation only (T2),
  *    moving the full assessment (maturityCurrent/Target, dataSourceMapping incl.
  *    implementation / referenceDocumentation / maturityRaw / iso27001 + tisax_*
  *    tiers, uploadTenant, maturityReviewedAt). No canonical row → re-home the row
@@ -332,9 +333,11 @@ final class TisaxConsolidateCommand extends Command
         // already the canonical numeric form — otherwise the move can target the
         // ISA stub, which the seed-junk cleanup then deletes, losing the moved
         // assessment (data-loss bug caught by the E2E run).
+        // Keyed by organisation (0 = shared row): never move an assessment onto the shared one (T2).
         $canonicalByNormId = [];
         if ($canonical !== null) {
             foreach ($this->requirementsOf($canonical) as $req) {
+                $owner = $req->getUploadTenant()?->getId() ?? 0;
                 $rawId = (string) $req->getRequirementId();
                 $norm = $this->normaliseId(
                     $rawId,
@@ -343,12 +346,12 @@ final class TisaxConsolidateCommand extends Command
                 if ($norm['id'] === null) {
                     continue;
                 }
-                $existing = $canonicalByNormId[$norm['id']] ?? null;
+                $existing = $canonicalByNormId[$owner][$norm['id']] ?? null;
                 $rawIsCanonical = ($rawId === $norm['id']);
                 $existingIsCanonical = $existing !== null
                     && (string) $existing->getRequirementId() === $norm['id'];
                 if ($existing === null || ($rawIsCanonical && !$existingIsCanonical)) {
-                    $canonicalByNormId[$norm['id']] = $req;
+                    $canonicalByNormId[$owner][$norm['id']] = $req;
                 }
             }
         }
@@ -394,7 +397,7 @@ final class TisaxConsolidateCommand extends Command
                     continue;
                 }
 
-                $match = $canonicalByNormId[$norm['id']] ?? null;
+                $match = $tenantId !== 0 ? ($canonicalByNormId[$tenantId][$norm['id']] ?? null) : null;
                 if ($match !== null && $match !== $req) {
                     $perTenant[$tenantId]['move'][] = [
                         'req' => $req,
@@ -403,11 +406,7 @@ final class TisaxConsolidateCommand extends Command
                         'kind' => $norm['kind'],
                     ];
                 } else {
-                    $perTenant[$tenantId]['rehome'][] = [
-                        'req' => $req,
-                        'target_id' => $norm['id'],
-                        'kind' => $norm['kind'],
-                    ];
+                    $perTenant[$tenantId]['rehome'][] = ['req' => $req, 'target_id' => $norm['id'], 'kind' => $norm['kind']];
                 }
             }
         }
@@ -782,8 +781,9 @@ final class TisaxConsolidateCommand extends Command
         if ($this->isEmpty($dst->getAssessmentStateDp()) && !$this->isEmpty($src->getAssessmentStateDp())) {
             $dst->setAssessmentStateDp($src->getAssessmentStateDp());
         }
-        if ($dst->getUploadTenant() === null && $src->getUploadTenant() !== null) {
-            $dst->setUploadTenant($src->getUploadTenant());
+        if ($dst->getUploadTenant() !== $src->getUploadTenant()) {
+            // @intentional-assertion: moving an assessment across organisations is a programming error
+            throw new \LogicException(sprintf('TISAX row %s belongs to another organisation.', (string) $dst->getRequirementId()));
         }
         $dst->setRequirementSource('tenant_upload');
         // Preserve the assessment DIMENSION as the category — otherwise the

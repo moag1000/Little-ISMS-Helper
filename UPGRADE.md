@@ -136,6 +136,14 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Anzeige:** Datensatztext, der früher als HTML erschien, steht jetzt wörtlich da; Word-Exporte
   maskieren allen Text.
 - **KI-Funktionen** sind standardmäßig aus (Admin > KI-Vorschläge).
+- **`isms:load-annex-a-controls`** legt die 93 Annex-A-Controls je Organisation an (fehlende ergänzen,
+  vorhandene bleiben unverändert); `--tenant=<code>` für genau eine Organisation. Früher entstanden Controls
+  ohne Organisation, und Controls anderer Organisationen wurden zurückgesetzt.
+- **`app:tisax:consolidate`** verschiebt eine TISAX-Bewertung nur noch auf eine Zeile derselben Organisation,
+  nie mehr auf die gemeinsame Katalogzeile; ohne passende Zeile zieht die Altzeile selbst um.
+- **Log-Warnung „saved without an organisation“:** Ein Bearbeitungsschritt hat einen Datensatz ohne
+  Organisation gespeichert, den die eigene Organisation nicht sieht. Kein Handlungsbedarf beim Update; bitte
+  als Fehler melden (Klasse steht in der Meldung).
 - **Abmelden** leert Browser-Cache und Speicher der Seite (`Clear-Site-Data`); der Service Worker
   speichert nur noch Build-Dateien, keine Seiten, Berichte oder API-Antworten, und löscht beim ersten
   Laden die alten Caches. Offline erscheint nur noch die Offline-Seite.

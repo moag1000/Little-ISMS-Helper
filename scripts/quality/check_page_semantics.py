@@ -2,7 +2,7 @@
 """
 check_page_semantics.py — Gate 78: page semantics and one status vocabulary.
 
-UI wave G. Four rules:
+UI wave G. Six rules:
 - nested-main: base.html.twig renders `<main id="main-content">`; a template
   that extends it and opens its own `<main>` nests landmarks (screen readers
   announce two main regions).
@@ -16,6 +16,14 @@ UI wave G. Four rules:
   `pill_tone_severity()` (severity/criticality/priority scales),
   _components/_status_vocabulary.html.twig (non-lifecycle statuses) or
   _fa_status_chip (lifecycle entities).
+- ternary-tone (T2): a tone chosen by a ternary chain on a string comparison,
+  `x.status == 'open' ? 'danger' : (x.status == 'done' ? 'success' : 'neutral')`,
+  is the same local status map written inline (two or more tone literals in
+  one `?:` expression with `==`/`!=`/`in`, across lines too). Numeric
+  thresholds (`n < 10 ? 'warning' : 'danger'`) are not statuses and pass.
+- pill-tone (T2): the status pill knows primary/accent/success/warning/danger/
+  neutral only; `pill.render(label, 'info')` / `'secondary'` renders an
+  unstyled pill.
 - tooltip-unreachable: a `data-bs-toggle="tooltip"` on an element that is not
   focusable (no tabindex, not a/button/input) can only be read by mouse.
 
@@ -58,12 +66,47 @@ TONE_VALUE = re.compile(
     r""":\s*['"](?:(?:text-bg-|bg-|badge-|text-)?)(?:danger|warning|success|info|primary|secondary|neutral|accent)['"]"""
 )
 TWIG_EXPR = re.compile(r"\{\{.*?\}\}|\{%.*?%\}", re.S)
+TONE_WORD = r"(?:text-bg-|bg-|badge-|text-|fa-status-pill--)?(?:danger|warning|success|info|primary|secondary|neutral|accent)"
+# `== 'open' ? 'danger'` / `in ['a', 'b']) ? 'success'`
+TERNARY_TONE = re.compile(
+    r"""(?:==|!=|\bin)\s*(?:'[\w-]*'|"[\w-]*"|\[[^\]]*\])\s*\)?\s*\?\s*['"]""" + TONE_WORD + r"""['"]"""
+)
+ELSE_TONE = re.compile(r""":\s*['"]""" + TONE_WORD + r"""['"]""")
+PILL_IMPORT = re.compile(r"""import\s+['"]_components/_status_pill\.html\.twig['"]\s+as\s+(\w+)""")
+PILL_BAD_TONE = re.compile(r"""['"](info|secondary)['"]""")
+COMPARISON_OPERAND = re.compile(r"""(?:==|!=|\bin|\bnot in)\s*(?:'[^']*'|"[^"]*"|\[[^\]]*\])""")
 TOOLTIP = re.compile(r"""<(\w+)\b[^>]*data-bs-toggle\s*=\s*["']tooltip["'][^>]*>""", re.S)
 TABINDEX = re.compile(r"\stabindex\s*=")
 DISABLED = re.compile(r"\sdisabled\b")
 FOCUSABLE = {"a", "button", "input", "select", "textarea"}
 # Print-only copies and JS print windows are not part of the page outline.
 PRINT_ONLY = re.compile(r"<(div|header|section)[^>]*\bd-none d-print-block\b.*?</\1>|<script\b.*?</script>", re.S)
+
+
+def _call_args(text: str, start: int) -> list[str]:
+    """Top-level arguments of the call whose `(` ends right before `start`."""
+    depth, cur, out, quote = 1, [], [], None
+    for ch in text[start:]:
+        if quote:
+            cur.append(ch)
+            if ch == quote:
+                quote = None
+            continue
+        if ch in "'\"":
+            quote = ch
+        elif ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+            if depth == 0:
+                out.append("".join(cur))
+                return out
+        elif ch == "," and depth == 1:
+            out.append("".join(cur))
+            cur = []
+            continue
+        cur.append(ch)
+    return out
 
 
 def findings() -> list[str]:
@@ -79,6 +122,18 @@ def findings() -> list[str]:
             ))
         ):
             out.append(f"{rel}::status-map")
+        if rel != VOCABULARY and not IS_DOCUMENT.search(rel):
+            for m in TWIG_EXPR.finditer(text):
+                hits = len(TERNARY_TONE.findall(m.group(0)))
+                if hits >= 2 or (hits == 1 and ELSE_TONE.search(m.group(0))):
+                    out.append(f"{rel}::ternary-tone")
+                    break
+        for alias in PILL_IMPORT.findall(text):
+            for m in re.finditer(r"\b" + re.escape(alias) + r"\.render\(", text):
+                args = _call_args(text, m.end())
+                if len(args) > 1 and PILL_BAD_TONE.search(COMPARISON_OPERAND.sub("", args[1])):
+                    out.append(f"{rel}::pill-tone")
+                    break
         # Mask Twig expressions so a `>` inside `{{ a > b }}` does not end the tag early.
         masked = TWIG_EXPR.sub(lambda m: "_" * len(m.group(0)), text)
         for m in TOOLTIP.finditer(masked):
@@ -113,7 +168,7 @@ def main() -> int:
     current = findings()
     if args.write_baseline:
         Path(args.write_baseline).write_text(
-            "# Page-semantics offenders (Gate 78): <template>::nested-main|extra-h1|status-map|tooltip-unreachable. May only shrink.\n"
+            "# Page-semantics offenders (Gate 78): <template>::nested-main|extra-h1|status-map|ternary-tone|pill-tone|tooltip-unreachable. May only shrink.\n"
             + "".join(f"{f}\n" for f in current),
             encoding="utf-8",
         )

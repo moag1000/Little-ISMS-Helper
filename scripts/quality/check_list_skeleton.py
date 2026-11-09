@@ -2,7 +2,7 @@
 """
 check_list_skeleton.py — Gate 73: list pages use the one list skeleton.
 
-UI wave C: every list page (`templates/**/index.html.twig`) renders through
+UI wave C: every list page (`templates/**/index.html.twig`, since T2 also `list.html.twig`) renders through
 `_components/_fa_list_page.html.twig` (filter bar, table card, pager, empty
 state in a fixed order). Lists not migrated yet are listed in the baseline and
 may only shrink; a migrated list that leaves the baseline is reported as stale.
@@ -71,7 +71,7 @@ def has_tiles(text: str, seen: frozenset[str] = frozenset(), depth: int = 0) -> 
 def list_templates() -> list[Path]:
     out = []
     skip = not_lists()
-    for p in sorted(TEMPLATES.rglob("index.html.twig")):
+    for p in sorted(q for name in ("index.html.twig", "list.html.twig") for q in TEMPLATES.rglob(name)):
         rel = p.relative_to(TEMPLATES)
         if rel.parts[0] in EXCLUDE_DIRS or str(p.relative_to(ROOT)) in skip:
             continue

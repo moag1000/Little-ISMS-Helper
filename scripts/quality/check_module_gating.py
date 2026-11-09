@@ -96,6 +96,38 @@ REGULATORY_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"^internalAuditFunctionInvolvement$"),
 ]
 
+# Which module a regulatory field belongs to (T2: `if ($this->isModuleActive('core'))` around a
+# NIS-2 field used to count as a gate). A field matches the first entry; the gate must name one
+# of its modules. Fields of no entry accept any module gate.
+FIELD_MODULES: list[tuple[re.Pattern[str], set[str]]] = [
+    (re.compile(r"gdpr|dpia|^legalBasis|^processingActivities$", re.I), {"privacy"}),
+    (re.compile(r"tisax", re.I), {"tisax"}),
+    (re.compile(r"lksg", re.I), {"lksg"}),
+    (re.compile(r"dora|nis2|bafin|^leiCode$|^naceCode$|^outsourcing|marisk|^riskBearingCapacityImpact$"
+                r"|^boardLevelRiskAcceptance$|^complianceFunctionInvolvement$|^internalAuditFunctionInvolvement$",
+                re.I), {"nis2_dora", "marisk"}),
+]
+RE_GATE_KEYS = re.compile(r"\$this->is(?:Any)?ModuleActive\(([^)]*)\)")
+
+
+def field_modules(name: str) -> set[str]:
+    for pattern, modules in FIELD_MODULES:
+        if pattern.search(name):
+            return modules
+    return set()
+
+
+def gate_modules(line: str) -> set[str] | None:
+    """Module keys a gate line names; None when a key is dynamic (`$moduleKey`)."""
+    keys: set[str] = set()
+    for m in RE_GATE_KEYS.finditer(line):
+        args = m.group(1)
+        if "$" in args:
+            return None
+        keys |= set(re.findall(r"['\"]([a-z0-9_]+)['\"]", args))
+    return keys
+
+
 # Helper-methods that count as "module-gated safe-zone" when their bodies host
 # regulatory `->add(...)` calls AND when the method is invoked at least once
 # from a gated context. Matched against the bare method name.
@@ -246,6 +278,7 @@ def check_file(path: Path) -> list[tuple[int, str, str]]:
     # Brace-depth tracker mirroring _scan_helper_safety, plus current helper.
     brace_depth = 0
     gate_depths: list[int] = []
+    gate_keys: list[set[str] | None] = []
     # Stack of (body_min_depth, method_name). A method body starts AT THE
     # FIRST `{` AFTER the declaration. We register a pending function on
     # decl-line and bind body_min_depth = brace_depth + 1 at the next
@@ -304,11 +337,20 @@ def check_file(path: Path) -> list[tuple[int, str, str]]:
             # (c) — wired through addModuleGatedField on the same line? The
             # builder may chain multiple `->add()` calls, but if the line
             # contains addModuleGatedField the field is considered safe.
-            if RE_ADD_MODULE_GATED.search(line):
+            expected = field_modules(field_name)
+            gated_call = re.search(r"\$this->addModuleGatedField\(\s*\$\w+\s*,\s*['\"]([a-z0-9_]+)['\"]", line)
+            if gated_call and (not expected or gated_call.group(1) in expected):
+                continue
+            if RE_ADD_MODULE_GATED.search(line) and not gated_call:
                 continue
 
-            # (a)/(b) — currently inside an isModuleActive-if-block?
-            if gate_depths:
+            # (a)/(b) — currently inside an isModuleActive-if-block of the field's module?
+            if gate_depths and any(k is None or not expected or (k & expected) for k in gate_keys):
+                continue
+            if gate_depths or gated_call:
+                violations.append((line_no, field_name,
+                                   f"regulatory field '{field_name}' is gated by another module than "
+                                   f"{'/'.join(sorted(expected))}"))
                 continue
 
             # (d) — currently inside a safe helper-body?
@@ -327,6 +369,7 @@ def check_file(path: Path) -> list[tuple[int, str, str]]:
         # Now update brace-state for the next iteration.
         if opens_gate:
             gate_depths.append(brace_depth)
+            gate_keys.append(gate_modules(line))
 
         # If a function was pending AND this line has an opening brace, bind
         # the function body at brace_depth + 1 (since the brace on this line
@@ -347,6 +390,7 @@ def check_file(path: Path) -> list[tuple[int, str, str]]:
 
         while gate_depths and brace_depth <= gate_depths[-1]:
             gate_depths.pop()
+            gate_keys.pop()
         while func_stack and brace_depth < func_stack[-1][0]:
             func_stack.pop()
 
@@ -406,6 +450,24 @@ RE_ROUTE_ATTR = re.compile(r"#\[Route\(\s*(?:path:\s*)?['\"]([^'\"]*)['\"](?:[^\
 RE_REQUIRES_MODULE = re.compile(r"#\[RequiresModule\(\s*(?:module:\s*)?['\"]([a-z0-9_]+)['\"]")
 RE_BODY_MODULE_CHECK = re.compile(r"(?:checkModuleActive|isModuleActive)\(\s*['\"]([a-z0-9_]+)['\"]")
 RE_PUBLIC_METHOD = re.compile(r"\bpublic\s+(?:static\s+)?function\s+(\w+)\s*\(")
+
+
+def deciding_body_checks(body: str) -> set[str]:
+    """Modules of checkModuleActive()/isModuleActive() calls whose result is used (T2: a bare
+    `$this->checkModuleActive('privacy');` drops the redirect and gates nothing)."""
+    code = re.sub(r"/\*.*?\*/|(?<![:\"'])//[^\n]*", " ", body, flags=re.S)
+    keys: set[str] = set()
+    for m in RE_BODY_MODULE_CHECK.finditer(code):
+        stmt_start = max(code.rfind(";", 0, m.start()), code.rfind("{", 0, m.start()), code.rfind("}", 0, m.start()))
+        prefix = code[stmt_start + 1:m.start()]
+        if re.fullmatch(r"\s*(?:\$this->|\$\w+->)?\s*", prefix):
+            continue  # bare call, result dropped
+        assigned = re.fullmatch(r"\s*(\$\w+)\s*=\s*(?:\$this->|\$\w+->)?\s*", prefix)
+        if assigned and not re.search(r"(?:\bif\b|\breturn\b|&&|\|\||\?|=>)[^;{]*" + re.escape(assigned.group(1)) + r"\b",
+                                      code[m.end():]):
+            continue
+        keys.add(m.group(1))
+    return keys
 
 
 def _expected_modules(haystack: str) -> set[str]:
@@ -479,7 +541,7 @@ def check_controller_file(path: Path) -> list[tuple[str, str]]:
         if class_exempt or RE_ANNOTATION.search(preamble):
             continue
 
-        gated = class_modules | set(RE_REQUIRES_MODULE.findall(preamble)) | set(RE_BODY_MODULE_CHECK.findall(body))
+        gated = class_modules | set(RE_REQUIRES_MODULE.findall(preamble)) | deciding_body_checks(body)
         for route_path, route_name in routes:
             full_path = f"{class_prefix}{route_path}"
             haystack = f"{class_name} {full_path} {class_route_name}{route_name}"

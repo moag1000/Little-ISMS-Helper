@@ -37,7 +37,7 @@ private helpers; writes hidden in other services (`$service->doIt()` that
 flushes internally) cannot be seen — those stay a review concern.
 
 Baseline entries (`<relative-path>::<method>`) cover files owned by in-flight
-work; stale entries are reported but never fail the gate.
+work; stale entries fail too (T2), so the list only shrinks.
 """
 from __future__ import annotations
 
@@ -50,12 +50,21 @@ ROOT = Path(__file__).resolve().parents[2]
 CONTROLLER_DIR = ROOT / "src" / "Controller"
 
 RE_METHOD = re.compile(r"^\s*(public|protected|private)\s+(static\s+)?function\s+(\w+)\s*\(", re.M)
-RE_ROUTE_METHODS = re.compile(r"#\[Route\((?:(?!\)\]).)*?methods:\s*\[([^\]]*)\]", re.S)
-RE_WRITE_VERB = re.compile(r"['\"](POST|PUT|PATCH|DELETE)['\"]")
-RE_PROTECTION = re.compile(
-    r"IsCsrfTokenValid|isCsrfTokenValid\s*\(|isBulkCsrfTokenValid\s*\(|handleBulkDelete\s*\("
-    r"|isTokenValid\s*\(\s*new\s+CsrfToken|createForm\s*\(|createFormBuilder\s*\(|handleRequest\s*\("
+RE_ROUTE_METHODS = re.compile(
+    r"#\[Route\((?:(?!\)\]).)*?methods:\s*(?:\[([^\]]*)\]|(['\"][A-Za-z|]+['\"]))", re.S
 )
+RE_WRITE_VERB = re.compile(r"['\"](POST|PUT|PATCH|DELETE)['\"]")
+# Protections that work by being called (attribute, bulk helpers).
+RE_PROTECTION = re.compile(r"IsCsrfTokenValid|handleBulkDelete\s*\(")
+# Token checks that return a bool: they only protect when the result decides something (T2:
+# `$ok = $this->isCsrfTokenValid(...)` without using $ok passed before).
+RE_TOKEN_CHECK = re.compile(r"(?:isCsrfTokenValid|isBulkCsrfTokenValid)\s*\(|isTokenValid\s*\(\s*new\s+CsrfToken")
+RE_PHP_COMMENT = re.compile(r"/\*.*?\*/|(?<![:\"'])//[^\n]*", re.S)
+RE_ASSIGNED = re.compile(r"^\s*(\$\w+)\s*=")
+# A Symfony form protects only when the request is handled and its result checked (T2: `createForm()`
+# alone, never submitted, passed before).
+RE_FORM_HANDLED = re.compile(r"(?:handleRequest|->submit)\s*\(")
+RE_FORM_CHECKED = re.compile(r"isSubmitted\s*\(|isValid\s*\(")
 RE_EXEMPT = re.compile(r"@csrf-exempt:\s*\S")
 RE_THIS_CALL = re.compile(r"\$this->(\w+)\s*\(")
 RE_GET_WRITE = re.compile(r"(?:entityManager|\$em|->em|[mM]anager|registry)\s*->\s*(?:flush|persist|remove)\s*\(")
@@ -71,6 +80,34 @@ def split_methods(text: str) -> list[tuple[str, str, int, int]]:
         end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
         out.append((m.group(3), m.group(1), m.start(), end))
     return out
+
+
+def token_check_decides(body: str) -> bool:
+    """True when a CSRF token check's result decides what the action does.
+
+    Fails only on the two shapes that check nothing: a bare call as its own statement,
+    and `$ok = …check…` whose variable is never used in a condition afterwards.
+    """
+    body = RE_PHP_COMMENT.sub(" ", body)
+    for m in RE_TOKEN_CHECK.finditer(body):
+        stmt_start = max(body.rfind(";", 0, m.start()), body.rfind("{", 0, m.start()), body.rfind("}", 0, m.start()))
+        prefix = body[stmt_start + 1:m.start()]
+        assigned = RE_ASSIGNED.match(prefix)
+        if assigned and re.fullmatch(r"\s*\$\w+\s*=\s*(?:\$this->|\$\w+->)?\s*", prefix):
+            if re.search(r"(?:\bif\b|\breturn\b|&&|\|\||\?|=>|\bthrow\b)[^;{]*" + re.escape(assigned.group(1)) + r"\b",
+                         body[m.end():]):
+                return True
+            continue
+        if re.fullmatch(r"\s*(?:\$this->|\$\w+->)?\s*", prefix):
+            continue  # bare call, result dropped
+        return True
+    return False
+
+
+def protected(code: str) -> bool:
+    if RE_PROTECTION.search(code) or token_check_decides(code):
+        return True
+    return bool(RE_FORM_HANDLED.search(code) and RE_FORM_CHECKED.search(code))
 
 
 def preamble(text: str, start: int) -> str:
@@ -110,7 +147,8 @@ def scan(path: Path) -> list[str]:
         if RE_LITERAL_PLACEHOLDER.search(pre):
             violations.append(f"{name}#literal-id")
         m = RE_ROUTE_METHODS.search(pre)
-        if "#[Route" in pre and (not m or not RE_WRITE_VERB.search(m.group(1))):
+        verbs = (m.group(1) or m.group(2)) if m else ""
+        if "#[Route" in pre and (not m or not RE_WRITE_VERB.search(verbs.upper().replace("|", "','"))):
             body = text[start:end]
             helpers = {h for h in RE_THIS_CALL.findall(body) if h in bodies and h != name}
             if not RE_GET_WRITE_OK.search(pre) and (
@@ -123,11 +161,11 @@ def scan(path: Path) -> list[str]:
         if class_level or RE_EXEMPT.search(pre):
             continue
         body = text[start:end]
-        if RE_PROTECTION.search(pre) or RE_PROTECTION.search(body):
+        if RE_PROTECTION.search(pre) or protected(body):
             continue
         # One level of same-class helper calls (e.g. approve() → transition()).
         helpers = {h for h in RE_THIS_CALL.findall(body) if h in bodies and h != name}
-        if any(RE_PROTECTION.search(bodies[h]) for h in helpers):
+        if any(protected(bodies[h]) for h in helpers):
             continue
         violations.append(name)
     return violations
@@ -178,11 +216,13 @@ def main() -> int:
     new = [v for v in found if v not in baseline]
     stale = sorted(baseline - set(found))
 
-    if stale and not args.quiet:
+    if stale:
         print("check_csrf_state_changing: stale baseline entries (now protected, remove them):")
         for s in stale:
             print(f"  {s}")
 
+    if not new and stale:
+        return 1
     if not new:
         print(f"check_csrf_state_changing: OK — {len(found)} unprotected action(s), all baselined.")
         return 0

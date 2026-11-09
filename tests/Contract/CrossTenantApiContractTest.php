@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\IriConverterInterface;
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Metadata\UrlGeneratorInterface;
@@ -45,6 +46,23 @@ final class CrossTenantApiContractTest extends WebTestCase
     private const array DENIED = [403, 404];
     /** 405: a bearer token never writes over REST (the assistant writes through /mcp). */
     private const array DENIED_WRITE = [403, 404, 405];
+
+    /**
+     * API resources without an organisation (global catalogues), each with the reason the
+     * organisation check does not apply. T2: a resource without `$tenant` used to drop out of the
+     * discovery silently.
+     *
+     * @var array<class-string, string>
+     */
+    private const array WITHOUT_TENANT = [];
+
+    /**
+     * Operations the probe cannot address (URI variables besides `id`), each with the reason it is
+     * safe. T2: sub-resource routes were skipped without a word.
+     *
+     * @var array<string, string> "<Class> <METHOD> <uriTemplate>" => reason
+     */
+    private const array UNPROBED_OPERATIONS = [];
 
     private KernelBrowser $client;
     private Tenant $own;
@@ -82,22 +100,66 @@ final class CrossTenantApiContractTest extends WebTestCase
     /** @return iterable<string, array{class-string}> */
     public static function tenantOwnedResources(): iterable
     {
-        foreach (glob(dirname(__DIR__, 2) . '/src/Entity/*.php') ?: [] as $file) {
-            $class = 'App\\Entity\\' . basename($file, '.php');
-            if (!class_exists($class)) {
-                continue;
-            }
-            $ref = new ReflectionClass($class);
-            if ($ref->getAttributes(ApiResource::class) !== [] && $ref->hasProperty('tenant')) {
-                yield $ref->getShortName() => [$class];
+        foreach (self::apiResources() as $class) {
+            if (new ReflectionClass($class)->hasProperty('tenant')) {
+                yield $class => [$class];
             }
         }
+    }
+
+    /**
+     * Every class with #[ApiResource] below src/Entity/, subfolders included (T2: a resource in
+     * src/Entity/<Folder>/ was never probed).
+     *
+     * @return list<class-string>
+     */
+    public static function apiResources(): array
+    {
+        $base = dirname(__DIR__, 2) . '/src/Entity/';
+        $classes = [];
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($base, \FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+            $class = 'App\\Entity\\' . str_replace('/', '\\', substr((string) $file->getPathname(), strlen($base), -4));
+            if (class_exists($class) && new ReflectionClass($class)->getAttributes(ApiResource::class) !== []) {
+                $classes[] = $class;
+            }
+        }
+        sort($classes);
+
+        return $classes;
+    }
+
+    #[Test]
+    public function everyApiResourceBelongsToAnOrganisationOrSaysWhyNot(): void
+    {
+        $without = array_values(array_filter(self::apiResources(), static fn (string $c): bool => !new ReflectionClass($c)->hasProperty('tenant')));
+        self::assertSame([], array_values(array_diff($without, array_keys(self::WITHOUT_TENANT))), 'API resource without $tenant and without a reason in WITHOUT_TENANT.');
+        self::assertSame([], array_values(array_diff(array_keys(self::WITHOUT_TENANT), $without)), 'Stale WITHOUT_TENANT entry.');
+    }
+
+    /** Operations with URI variables besides `id` reach records the probe never creates. */
+    #[Test]
+    public function everyOperationIsProbedOrSaysWhyNot(): void
+    {
+        $unprobed = [];
+        foreach (iterator_to_array(self::tenantOwnedResources()) as [$class]) {
+            foreach ($this->operations($class, all: true) as $operation) {
+                if (array_diff(array_keys($operation->getUriVariables() ?? []), ['id']) !== []) {
+                    $unprobed[] = sprintf('%s %s %s', $class, $operation->getMethod(), $operation->getUriTemplate());
+                }
+            }
+        }
+        self::assertSame([], array_values(array_diff($unprobed, array_keys(self::UNPROBED_OPERATIONS))), 'Sub-resource operation the cross-tenant probe skips; probe it or give the reason.');
+        self::assertSame([], array_values(array_diff(array_keys(self::UNPROBED_OPERATIONS), $unprobed)), 'Stale UNPROBED_OPERATIONS entry.');
     }
 
     #[Test]
     public function everyApiResourceIsCovered(): void
     {
-        $covered = iterator_count(self::tenantOwnedResources());
+        $covered = count(iterator_to_array(self::tenantOwnedResources()));
         self::assertGreaterThanOrEqual(18, $covered, 'the resource discovery found fewer resources than exist');
     }
 
@@ -143,6 +205,16 @@ final class CrossTenantApiContractTest extends WebTestCase
                 if ($field !== null) {
                     $after = $this->fresh($class, $foreignId);
                     self::assertNotSame('contract-overwritten', (new ReflectionClass($class))->getProperty($field)->getValue($after));
+                }
+                continue;
+            }
+            // A custom item action (`POST /risks/{id}/accept`, T2): another organisation's id is refused.
+            if ($operation instanceof Post && array_key_exists('id', $operation->getUriVariables() ?? [])) {
+                $path = static::getContainer()->get(IriConverterInterface::class)
+                    ->getIriFromResource($foreign, UrlGeneratorInterface::ABS_PATH, $operation);
+                foreach (['bearer', 'session'] as $via) {
+                    $this->send($via, 'POST', $path, '{}');
+                    self::assertContains($this->httpStatus(), self::DENIED_WRITE, sprintf('%s POST %s on another organisation (%s): %s', $class, $path, $via, $this->body()));
                 }
                 continue;
             }
@@ -207,7 +279,7 @@ final class CrossTenantApiContractTest extends WebTestCase
     }
 
     /** @return list<HttpOperation> */
-    private function operations(string $class): array
+    private function operations(string $class, bool $all = false): array
     {
         $operations = [];
         foreach (static::getContainer()->get(ResourceMetadataCollectionFactoryInterface::class)->create($class) as $resource) {
@@ -215,8 +287,8 @@ final class CrossTenantApiContractTest extends WebTestCase
                 if (!$operation instanceof HttpOperation) {
                     continue;
                 }
-                if (array_diff(array_keys($operation->getUriVariables() ?? []), ['id']) !== []) {
-                    continue; // sub-resource routes with further variables
+                if (!$all && array_diff(array_keys($operation->getUriVariables() ?? []), ['id']) !== []) {
+                    continue; // sub-resource routes: listed by everyOperationIsProbedOrSaysWhyNot()
                 }
                 $operations[] = $operation;
             }

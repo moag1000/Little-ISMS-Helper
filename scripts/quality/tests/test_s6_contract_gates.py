@@ -124,7 +124,9 @@ class MfaLoginStateGateTest(unittest.TestCase):
     def test_hand_made_login_needs_the_state_class(self):
         raw = "$this->tokenStorage->setToken($token);"
         self.assertTrue(mfa.problems_in("src/Controller/X.php", raw))
-        self.assertFalse(mfa.problems_in("src/Controller/X.php", "use App\\Security\\Mfa\\MfaSessionState;\n" + raw))
+        # T2: importing the class is not using it; begin() must run in the same method
+        self.assertTrue(mfa.problems_in("src/Controller/X.php", "use App\\Security\\Mfa\\MfaSessionState;\n" + raw))
+        self.assertFalse(mfa.problems_in("src/Controller/X.php", raw + "\n$this->mfaState->begin($session, $user);"))
         self.assertFalse(mfa.problems_in("src/Controller/X.php", "$this->tokenStorage->setToken(null);"))
 
     def test_setup_may_not_be_always_allowed(self):
