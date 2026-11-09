@@ -15,6 +15,7 @@ use App\Repository\KpiSnapshotRepository;
 use App\Service\AiAgentInventoryService;
 use App\Service\MrisKpiService;
 use App\Service\MrisMaturityService;
+use App\Service\Compliance\RequirementMaturity;
 use App\Service\MrisScoreService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -55,6 +56,7 @@ final class MrisAuditReportController extends AbstractController
         private readonly MrisScoreService $scoreService,
         private readonly MrisKpiService $kpiService,
         private readonly MrisMaturityService $maturityService,
+        private readonly RequirementMaturity $requirementMaturity,
         private readonly AiAgentInventoryService $aiAgentInventoryService,
         private readonly ControlRepository $controlRepository,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
@@ -79,7 +81,7 @@ final class MrisAuditReportController extends AbstractController
         $controls = $this->controlRepository->findByTenant($tenant);
         $categoryDistribution = $this->buildCategoryDistribution($controls);
         $frictionControls = $this->buildFrictionControls($controls);
-        $maturityRows = $this->buildMaturityRows();
+        $maturityRows = $this->buildMaturityRows($tenant);
         $aiInventory = $this->aiAgentInventoryService->inventoryStats($tenant);
         $kpis = $this->kpiService->computeAll($tenant);
         $trends = $this->buildTrends($tenant, array_values(self::KPI_SPARK_IDS), 90);
@@ -196,22 +198,23 @@ final class MrisAuditReportController extends AbstractController
      *
      * @return list<array{mhc: string, title: string, target: ?string, current: ?string, delta: ?int, gap_status: string}>
      */
-    private function buildMaturityRows(): array
+    private function buildMaturityRows(Tenant $tenant): array
     {
         $framework = $this->frameworkRepository->findOneBy(['code' => MrisScoreService::FRAMEWORK_CODE]);
         if (!$framework instanceof ComplianceFramework) {
             return [];
         }
-        $reqs = $this->requirementRepository->findBy(['framework' => $framework]);
+        $reqs = $this->requirementRepository->findBy(['framework' => $framework, 'uploadTenant' => null]);
         $rows = [];
         foreach ($reqs as $req) {
             $rows[] = [
                 'mhc' => (string) ($req->getRequirementId() ?? ''),
                 'title' => (string) ($req->getTitle() ?? ''),
-                'target' => $req->getMaturityTarget(),
-                'current' => $req->getMaturityCurrent(),
-                'delta' => $this->maturityService->delta($req),
-                'gap_status' => $this->maturityService->gapStatus($req),
+                // The organisation's own Ist/Soll (S18), never the shared catalogue row's.
+                'target' => $this->requirementMaturity->target($req, $tenant),
+                'current' => $this->requirementMaturity->current($req, $tenant),
+                'delta' => $this->maturityService->delta($req, $tenant),
+                'gap_status' => $this->maturityService->gapStatus($req, $tenant),
             ];
         }
         usort($rows, static fn(array $a, array $b): int => strnatcmp($a['mhc'], $b['mhc']));

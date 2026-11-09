@@ -25,8 +25,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  *  - a gap item of such a mapping (no organisation): create, change, delete;
  *  - a requirement of the shared catalogue (no upload organisation): create, delete;
  *  - a framework: change, delete (its `active` flag and texts are the same for everyone).
- * Requirement texts are guarded by their screens; maturity fields still live on the
- * requirement row (open point of the sixth assessment), so updates of requirements pass.
+ *  - the Reifegrad fields of such a requirement (S18): an organisation's Ist/Soll lives on its
+ *    fulfilment row (`RequirementMaturity`); on the shared row only the catalogue default Soll
+ *    remains, written by catalogue loaders.
+ * Requirement texts are guarded by their screens, so other updates of requirements pass.
  *
  * Only inside a request with a signed-in user. Console commands, scheduler, setup and
  * Messenger workers run as the instance operator and are not checked.
@@ -34,6 +36,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 #[AsDoctrineListener(event: Events::onFlush)]
 final class GlobalMappingWriteGuard
 {
+    private const MATURITY_FIELDS = ['maturityCurrent' => true, 'maturityTarget' => true, 'maturityReviewedAt' => true];
+
     public function __construct(
         private readonly Security $security,
         private readonly RequestStack $requestStack,
@@ -56,6 +60,13 @@ final class GlobalMappingWriteGuard
         }
         foreach ([...$uow->getScheduledEntityInsertions(), ...$uow->getScheduledEntityDeletions()] as $entity) {
             if ($entity instanceof ComplianceRequirement && $entity->getUploadTenant() === null) {
+                $this->refuseUnlessGranted(null);
+            }
+        }
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof ComplianceRequirement && $entity->getUploadTenant() === null
+                && array_intersect_key($uow->getEntityChangeSet($entity), self::MATURITY_FIELDS) !== []
+            ) {
                 $this->refuseUnlessGranted(null);
             }
         }

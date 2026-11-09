@@ -6,14 +6,18 @@ namespace App\Tests\Service;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Control;
 use App\Entity\Tenant;
 use App\Repository\AssetRepository;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Service\AiAgentInventoryService;
+use App\Service\Compliance\RequirementMaturity;
 use App\Service\MrisScoreService;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -24,6 +28,7 @@ final class MrisScoreServiceTest extends TestCase
         ?ComplianceFramework $framework = null,
         array $requirements = [],
         array $aiStats = ['total' => 0, 'avg_completeness' => 0.0],
+        ?Tenant $tenant = null,
     ): MrisScoreService {
         $controlRepo = $this->createStub(ControlRepository::class);
         $controlRepo->method('findByTenant')->willReturn($controls);
@@ -48,7 +53,22 @@ final class MrisScoreServiceTest extends TestCase
             }
         };
 
-        return new MrisScoreService($controlRepo, $fwRepo, $reqRepo, $assetRepo, $aiInventory);
+        // S18: the Ist is the organisation's (fulfilment row), never the shared requirement's.
+        // A test writes it on the requirement for brevity; it is moved to $tenant here.
+        $fulfillmentRepo = $this->createStub(ComplianceRequirementFulfillmentRepository::class);
+        $fulfillmentRepo->method('findOrCreateForTenantAndRequirement')->willReturnCallback(
+            static fn(Tenant $t, ComplianceRequirement $r): ComplianceRequirementFulfillment
+                => (new ComplianceRequirementFulfillment())->setTenant($t)->setRequirement($r),
+        );
+        $maturity = new RequirementMaturity($fulfillmentRepo, $this->createStub(EntityManagerInterface::class));
+        foreach ($requirements as $requirement) {
+            if ($tenant !== null && $requirement->getMaturityCurrent() !== null) {
+                $maturity->setCurrent($requirement, $tenant, $requirement->getMaturityCurrent());
+                $requirement->setMaturityCurrent(null);
+            }
+        }
+
+        return new MrisScoreService($controlRepo, $fwRepo, $reqRepo, $assetRepo, $aiInventory, $maturity);
     }
 
     private function makeControl(string $resilience): Control
@@ -133,7 +153,8 @@ final class MrisScoreServiceTest extends TestCase
         $r3 = new ComplianceRequirement();
         // r3 ohne maturity_current — wird ignoriert
 
-        $score = $this->makeService([], $framework, [$r1, $r2, $r3])->compute(new Tenant());
+        $tenant = new Tenant();
+        $score = $this->makeService([], $framework, [$r1, $r2, $r3], tenant: $tenant)->compute($tenant);
         // (33 + 100) / 2 = 66.5
         self::assertSame(66.5, $score['breakdown']['maturity']['value']);
     }
@@ -192,6 +213,7 @@ final class MrisScoreServiceTest extends TestCase
             $framework,
             [$r],
             ['total' => 1, 'avg_completeness' => 100.0],
+            $tenant,
         )->compute($tenant);
 
         // Alle 5 Dimensionen = 100 → score = 100
