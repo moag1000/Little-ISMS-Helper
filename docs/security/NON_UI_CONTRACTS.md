@@ -159,14 +159,6 @@ Organisationswiederherstellung nie ändert und welcher Test das belegt.
 | Invariante | Beleg |
 |---|---|
 
-## Freigabeweg (S27)
-
-Platzhalter (B3): Inhalt schreibt Paket S27 — Freigaben nur über `WorkflowService::canUserApprove`, Vier-Augen nur
-durch Selbstbestätigung der zweiten Person, und der Test, der jeden Freigabeweg findet.
-
-| Invariante | Beleg |
-|---|---|
-
 ## Löschvertrag (S29)
 
 Platzhalter (B3): Inhalt schreibt Paket S29 — welche Datensätze mit Endzustand oder Aufbewahrungspflicht wie
