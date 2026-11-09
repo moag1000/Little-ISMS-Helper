@@ -194,12 +194,18 @@ final class SsoAccountLinkPolicy
      *  - a privileged account (RoleNames::PRIVILEGED) is NEVER linked by
      *    e-mail, whatever the setting — the e-mail claim of the directory is
      *    not proof of identity for the instance operator;
-     *  - with AZURE_ALLOW_EMAIL_LINKING=false, or when $target is already
-     *    bound to another Azure object id or to an IdentityProvider record,
-     *    the login is refused with the same message as provider-record logins.
+     *  - with AZURE_ALLOW_EMAIL_LINKING=false (the default since S9), with an
+     *    e-mail the directory did not verify ({@see SsoClaimPolicy::isEmailVerified()}),
+     *    or when $target is already bound to another Azure object id or to an
+     *    IdentityProvider record, the login is refused with the same message
+     *    as provider-record logins.
      */
-    public static function assertMayLinkAzureByEmail(User $target, bool $allowEmailLinking, ?LoggerInterface $logger = null): void
-    {
+    public static function assertMayLinkAzureByEmail(
+        User $target,
+        bool $allowEmailLinking,
+        ?LoggerInterface $logger = null,
+        bool $emailVerified = false,
+    ): void {
         $context = ['target_user_id' => $target->getId(), 'provider' => 'azure_env'];
         if (UserAdministrationGuard::privilegedRolesIn($target->getRoles()) !== []) {
             $logger?->warning('SSO: login refused, privileged account is never linked by e-mail', $context);
@@ -209,7 +215,7 @@ final class SsoAccountLinkPolicy
         // Bound to another Azure object id or to a provider record: never re-bound.
         $boundProvider = $target->getSsoProvider();
         $boundToProvider = $boundProvider !== null && self::isUsableBinding($boundProvider, $target);
-        if (!$allowEmailLinking || $target->getAzureObjectId() !== null || $boundToProvider) {
+        if (!$allowEmailLinking || !$emailVerified || $target->getAzureObjectId() !== null || $boundToProvider) {
             $logger?->warning('SSO: login refused, automatic link by e-mail is not allowed', $context);
 
             throw new CustomUserMessageAuthenticationException(self::EMAIL_LINKING_DISABLED_MESSAGE);
