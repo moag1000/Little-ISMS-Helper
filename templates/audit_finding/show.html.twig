@@ -34,10 +34,11 @@
         badge:    { icon: 'status-critical', label: finding.findingNumber ?? ('#' ~ finding.id) },
         title:    finding.title,
         subtitle: finding.clauseReference|default(null),
-        actions: [
-            { label: 'common.edit'|trans({}, 'messages'),                       variant: 'ghost',   icon: 'ui-edit', href: path('app_audit_finding_edit',     {id: finding.id}) },
+        actions: (is_granted('AUDIT_WORK', finding) ? [
+            { label: 'common.edit'|trans({}, 'messages'),                       variant: 'ghost',   icon: 'ui-edit', href: path('app_audit_finding_edit',     {id: finding.id}) }
+        ] : [])|merge([
             { label: 'corrective_action.action.new'|trans({}, 'audits'),        variant: 'primary', icon: 'plus',   href: path('app_corrective_action_new', {findingId: finding.id}) }
-        ]
+        ])
     }) }}
 
     {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\AuditFinding', status_key: finding.status }) }}{% endset %}
@@ -220,7 +221,7 @@
     </div>
 
     <div class="d-flex gap-2 mt-4">
-        {% if is_granted('ROLE_USER') %}
+        {% if is_granted('AUDIT_WORK', finding) %}
             <form method="post" action="{{ path('app_audit_finding_clone', {id: finding.id}) }}" class="d-inline" data-turbo="false">
                 <input type="hidden" name="_token" value="{{ csrf_token('clone_audit_finding_' ~ finding.id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm" title="{{ 'common.clone.help'|trans({}, 'messages') }}">

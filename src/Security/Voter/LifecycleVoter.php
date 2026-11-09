@@ -21,6 +21,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
  * responsible for the record (`RECORD_RESPONSIBLE`, the holder the reminders go to) —
  * "role OR responsible", e.g. the objective owner recording an objective as achieved (S15).
  *
+ * A transition role ROLE_AUDITOR means audit work (S27): it is decided as
+ * {@see AuditWorkVoter::AUDIT_WORK} on the record — auditors, managers and the
+ * audit team, not top management or the group roles that inherit ROLE_AUDITOR
+ * only for reading.
+ *
  * Roles and responsibility are decided on the voted token, never on the
  * logged-in one, so `Security::isGrantedForUser()` answers for the person the
  * LifecycleService checks (S21, {@see \App\Lifecycle\TransitionAccess}).
@@ -62,6 +67,12 @@ final class LifecycleVoter extends Voter
         }
 
         foreach ($allowedRoles as $role) {
+            if ($role === 'ROLE_AUDITOR') {
+                if ($this->accessDecisionManager->decide($token, [AuditWorkVoter::AUDIT_WORK], $subject)) {
+                    return true;
+                }
+                continue;
+            }
             if ($this->accessDecisionManager->decide($token, [$role])) {
                 return true;
             }

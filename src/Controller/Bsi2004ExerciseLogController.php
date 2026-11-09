@@ -10,6 +10,7 @@ use App\Entity\Bsi2004ExerciseLog;
 use App\Form\Bsi2004ExerciseLogType;
 use App\Repository\BCExerciseRepository;
 use App\Repository\Bsi2004ExerciseLogRepository;
+use App\Security\Voter\AuditWorkVoter;
 use App\Security\Voter\Bsi2004ExerciseLogVoter;
 use App\Service\AuditLogger;
 use App\Service\Bsi2004ExerciseLogService;
@@ -244,7 +245,7 @@ class Bsi2004ExerciseLogController extends AbstractController
     // -------------------------------------------------------------------------
 
     #[Route('/{id}/confirm', name: 'confirm', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted(AuditWorkVoter::AUDIT_WORK)] // S27: auditors and managers, not the read-only reviewer roles
     #[IsGranted(Bsi2004ExerciseLogVoter::CONFIRM, subject: 'log')]
     public function confirm(#[MapEntity(id: 'id')] Bsi2004ExerciseLog $log, Request $request): Response
     {
