@@ -368,7 +368,7 @@
                         {{ 'document.effectiveness.never_reviewed'|trans({}, 'document') }}
                     </p>
                 {% endif %}
-                {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
+                {% if is_granted('AUDIT_WORK') and (canEdit is not defined or canEdit) %}
                     <button type="button"
                             class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="effectivenessReviewModal">
                         <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
@@ -472,7 +472,7 @@
     } only %}
     </div>
 
-    {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
+    {% if is_granted('AUDIT_WORK') and (canEdit is not defined or canEdit) %}
         {# Effectiveness-Review Modal — Bootstrap modal (lazy-loaded
            via the existing modal-pattern documented in CLAUDE.md). #}
         <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="effectivenessReviewModal"

@@ -958,9 +958,9 @@ class DocumentController extends AbstractController
      * review is the audit evidence that the decision was reviewed,
      * not the decision itself.
      *
-     * Authorisation: ROLE_AUDITOR (covers AUDITOR + MANAGER + ADMIN +
-     * SUPER_ADMIN per security.yaml hierarchy). USERs can read but
-     * not record reviews.
+     * Authorisation: audit work (S27, {@see \App\Security\Voter\AuditWorkVoter}) — auditors and
+     * managers; top management and the group roles read only. USERs can
+     * read but not record reviews.
      */
     #[Route(
         '/document/{id}/mark-effectiveness-reviewed',
@@ -968,7 +968,7 @@ class DocumentController extends AbstractController
         requirements: ['id' => '\d+'],
         methods: ['POST'],
     )]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted(\App\Security\Voter\AuditWorkVoter::AUDIT_WORK)]
     public function markEffectivenessReviewed(Request $request, Document $document): Response
     {
         $user = $this->security->getUser();

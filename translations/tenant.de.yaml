@@ -107,7 +107,8 @@ tenant:
         suspended: 'Organisation gesperrt'
         reactivated: 'Organisation reaktiviert'
         reason_required: 'Für diese Statusänderung ist eine Begründung erforderlich.'
-        four_eyes_required: 'Vier-Augen-Prinzip: Bitte einen zweiten Super-Admin als Freigebenden auswählen. Ohne zweiten Super-Admin in der Organisation muss die Begründung die Offline-Gegenzeichnung dokumentieren.'
+        four_eyes_required: 'Vier-Augen-Prinzip: Der zweite Super-Admin muss aus der eigenen Organisation kommen. Ohne zweiten Super-Admin in der Organisation dokumentiert die Begründung die Offline-Gegenzeichnung.'
+        countersign_requested: 'Gegenzeichnung angefragt. Der Status ändert sich, sobald der zweite Super-Admin im Vier-Augen-Eingang bestätigt.'
         transition_not_allowed: 'Diese Statusänderung ist im aktuellen Status der Organisation nicht möglich.'
         csrf_error: 'Sicherheitstoken ungültig. Bitte die Seite neu laden und erneut versuchen.'
         transition_forbidden: 'Diese Statusänderung ist nur für Super-Admins erlaubt.'
@@ -120,9 +121,9 @@ tenant:
         title: 'Status der Organisation'
         reason: Begründung
         reason_help: 'Wird dauerhaft im Audit-Log gespeichert (ISO 27001 Kap. 7.5.3).'
-        approver: 'Zweiter Freigebender (Vier-Augen-Prinzip)'
+        approver: 'Gegenzeichnung anfragen bei (Vier-Augen-Prinzip)'
         approver_none: 'Kein zweiter Super-Admin verfügbar'
-        approver_help: 'Sperren und Reaktivieren erfordern einen zweiten Super-Admin. Ist keiner vorhanden, die Offline-Gegenzeichnung in der Begründung dokumentieren.'
+        approver_help: 'Sperren und Reaktivieren bestätigt ein zweiter Super-Admin in seiner eigenen Sitzung (Vier-Augen-Eingang). Ohne Auswahl kann jeder zweite Super-Admin der Organisation bestätigen. Ist keiner vorhanden, die Offline-Gegenzeichnung in der Begründung dokumentieren.'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diese Organisation löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
         toggle: 'Möchten Sie den Status dieser Organisation wirklich ändern?'

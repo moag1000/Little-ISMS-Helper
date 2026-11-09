@@ -339,6 +339,7 @@
                                 </div>
                             {% endfor %}
                         </div>
+                        {% if is_granted('AUDIT_WORK', audit) %}{# S27: findings are audit work #}
                         <div class="mt-3 d-flex gap-2 flex-wrap">
                             {# Inline quick-capture: opens modal without leaving the page #}
                             <button type="button"
@@ -355,6 +356,7 @@
                                 {{ 'audit_finding.action.new_full_form'|trans({}, 'audits') }}
                             </a>
                         </div>
+                        {% endif %}
                     {% endblock %}
                 {% endembed %}
             {% endif %}
@@ -418,6 +420,7 @@
                     </div>
                     {% endif %}
 
+                    {% if is_granted('AUDIT_WORK', audit) %}
                     <div class="mt-2 d-flex gap-2 flex-wrap">
                         {# Inline quick-capture from legacy free-text section #}
                         <button type="button"
@@ -434,6 +437,7 @@
                             {{ 'audit_finding.action.new_full_form'|trans({}, 'audits') }}
                         </a>
                     </div>
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
             {% endif %}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\AuditLog;
+use App\Entity\FourEyesApprovalRequest;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\TenantType;
@@ -72,9 +73,12 @@ final class TenantStatusLifecycleTest extends WebTestCase
     }
 
     #[Test]
-    public function suspendWithReasonAndSecondApproverSuspendsAndAudits(): void
+    public function suspendWaitsForTheSecondSuperAdminAndAudits(): void
     {
         $this->toggle($this->superAdmin, 'Billing dispute, ticket 4711', $this->secondSuperAdmin);
+        self::assertSame(Tenant::STATUS_ACTIVE, $this->reload()->getStatus(), 'naming the second person is no approval (S27)');
+
+        $this->confirmAs($this->secondSuperAdmin);
 
         $tenant = $this->reload();
         self::assertSame(Tenant::STATUS_SUSPENDED, $tenant->getStatus());
@@ -90,7 +94,9 @@ final class TenantStatusLifecycleTest extends WebTestCase
     public function reactivateNeedsTheSameControls(): void
     {
         $this->toggle($this->superAdmin, 'Billing dispute', $this->secondSuperAdmin);
+        $this->confirmAs($this->secondSuperAdmin);
         $this->toggle($this->secondSuperAdmin, 'Dispute settled', $this->superAdmin);
+        $this->confirmAs($this->superAdmin);
 
         $tenant = $this->reload();
         self::assertSame(Tenant::STATUS_ACTIVE, $tenant->getStatus());
@@ -103,16 +109,21 @@ final class TenantStatusLifecycleTest extends WebTestCase
         $this->toggle($this->superAdmin, '', $this->secondSuperAdmin);
 
         self::assertSame(Tenant::STATUS_ACTIVE, $this->reload()->getStatus());
+        self::assertNull($this->pendingRequest(), 'no counter-sign request without the reason');
     }
 
     #[Test]
-    public function suspendWithoutSecondApproverIsRejectedWhenOneExists(): void
+    public function theRequesterCannotConfirmTheirOwnRequest(): void
     {
         $this->toggle($this->superAdmin, 'Security incident', null);
         self::assertSame(Tenant::STATUS_ACTIVE, $this->reload()->getStatus());
+        self::assertNotNull($this->pendingRequest(), 'without a choice any second super admin may confirm');
+
+        $this->confirmAs($this->superAdmin);
+        self::assertSame(Tenant::STATUS_ACTIVE, $this->reload()->getStatus(), 'self-approval is not four-eyes');
 
         $this->toggle($this->superAdmin, 'Security incident', $this->superAdmin);
-        self::assertSame(Tenant::STATUS_ACTIVE, $this->reload()->getStatus(), 'self-approval is not four-eyes');
+        self::assertSame(Tenant::STATUS_ACTIVE, $this->reload()->getStatus(), 'naming oneself is not four-eyes');
     }
 
     #[Test]
@@ -154,6 +165,37 @@ final class TenantStatusLifecycleTest extends WebTestCase
             return;
         }
         self::assertResponseRedirects('/en/admin/tenants/' . $this->target->getId());
+    }
+
+    private function confirmAs(User $as): void
+    {
+        $request = $this->pendingRequest();
+        self::assertNotNull($request, 'a counter-sign request waits for the second person');
+
+        $this->client->loginUser($as);
+        $this->client->request('GET', '/');
+        $session = $this->client->getRequest()->getSession();
+        $token = (new UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/four_eyes_approve_' . $request->getId(), $token);
+        $session->save();
+
+        $this->client->request('POST', '/en/four-eyes/' . $request->getId() . '/approve', ['_token' => $token]);
+        self::assertResponseRedirects();
+    }
+
+    private function pendingRequest(): ?FourEyesApprovalRequest
+    {
+        $this->em->clear();
+        foreach ($this->em->getRepository(FourEyesApprovalRequest::class)->findBy([
+            'actionType' => FourEyesApprovalRequest::ACTION_LIFECYCLE_TRANSITION,
+            'status' => FourEyesApprovalRequest::STATUS_PENDING,
+        ]) as $request) {
+            if (($request->getPayload()['entity_id'] ?? null) === $this->target->getId()) {
+                return $request;
+            }
+        }
+
+        return null;
     }
 
     private function reload(): Tenant

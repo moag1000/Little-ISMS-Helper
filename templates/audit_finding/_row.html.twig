@@ -45,7 +45,7 @@
                title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
             </a>
-            {% if is_granted('ROLE_USER') %}
+            {% if is_granted('AUDIT_WORK', finding) %}
             <a href="{{ path('app_audit_finding_edit', {id: finding.id}) }}"
                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                data-turbo-frame="fa-form-modal"

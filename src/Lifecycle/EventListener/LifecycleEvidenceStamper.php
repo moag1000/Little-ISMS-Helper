@@ -29,7 +29,8 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
  * - change request (ISO 27001 A.8.32): approve → approval date, approver,
  *   comment (the decision reason); implement → implementation date and
  *   implementer; verify → verifier and date; close → closing date. With four
- *   eyes, the second person is the approver / implementer.
+ *   eyes, the second person is the approver / implementer — once they
+ *   confirmed in their own session (S27, counter-sign request).
  * - incident: close / false_positive → closing time.
  * - BC exercise (ISO 22301 8.5): complete → each tested plan counts as tested
  *   on the exercise date ("report completed" is derived by the exercise itself,
@@ -159,14 +160,17 @@ final class LifecycleEvidenceStamper
 
     /**
      * The person who carries the step: with four eyes the second person (the
-     * approver), otherwise the one who applied it.
+     * approver) — only when that person confirmed it in their own session
+     * (`four_eyes_confirmed`, set by LifecycleService, S27) — otherwise the one
+     * who applied it. A second person merely named by somebody else never
+     * appears as approver, verifier or closer.
      *
      * @param array<string, mixed> $context
      */
     private static function actor(array $context): ?User
     {
         $approver = $context['four_eyes_approver'] ?? null;
-        if ($approver instanceof User) {
+        if ($approver instanceof User && ($context['four_eyes_confirmed'] ?? false) === true) {
             return $approver;
         }
         $user = $context['user'] ?? null;
