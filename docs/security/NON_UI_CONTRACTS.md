@@ -25,6 +25,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Jobs lesen nur im Mandanten des Auftraggebers; Status und Download eines Jobs nur für den Auftraggeber (oder Super-Admin) | Gate 90 `check_job_id_access.py`, `AsyncJobVoter` |
 | Word-Exporte escapen jeden Text (kein XML-/Feld-Einschleusen wie `INCLUDEPICTURE` mit UNC-Pfad); Seiten geben Datensatztext nie als HTML aus | Gate 92 (`check_raw_output.py` für Twig, PHPStan-Regel `MarkupOutputRule` für PHP), `DocxDocumentFactory`, `tests/Service/Export/DocxExportServiceTest::titleAndBodyAreEscapedInTheXml`, `tests/Twig/OutputEscapingTest` |
 | Das Audit-Log der Konsole trägt die Organisation des Datensatzes — auch ohne Pin: Reihenfolge Pin → Kontext → Datensatz (`AuditLogger::aboutRecord()`) → Person; Ablauf von Vier-Augen-Anfragen und Einwilligungs-Sync protokollieren je Organisation | `tests/Service/AuditLoggerTenantPinTest` |
+| Jede Organisation hat ihre eigene Audit-Log-Kette (Vorgänger = neueste signierte Zeile derselben Organisation, gelesen am Mandantenfilter vorbei); die Prüfung läuft als Job über die Kette der eigenen Organisation (Super-Admin ohne Organisation: alle), meldet geänderte und gelöschte Zeilen, hält den Speicher flach. Die Signatur deckt genau den gespeicherten Zeitpunkt ab (ganze Sekunden); ältere Zeilen bis `audit_log.hmac_legacy_until_id` zählen als „nur Verkettung prüfbar“ (B3) | `tests/Service/AuditLogIntegrityServiceTest` |
 | Benachrichtigungs-Mails gehen nur an Konten der Organisation (`RecipientFilter`) und tragen nur Kurzfelder (`NotificationMailSummary`), nie den ganzen Datensatz | `tests/Service/Notification/Channel/EmailChannelTest` |
 | Der Aktivitäts-Feed zeigt Audit-Zeilen nur Admins | `tests/Service/ActivityFeedTest::aNonAdminSeesNoAuditRows` |
 | `/lifecycle/*` nur angemeldet; erlaubte Übergänge und Übergänge nur für Datensätze der eigenen Organisation (sonst 404) | `tests/Controller/LifecycleControllerHistoryTest` |
@@ -130,7 +131,7 @@ Ein Nachweis bleibt. Was abgeschlossen ist, wird archiviert, nicht gelöscht (IS
 |---|---|
 | Ein Datensatz in einem Endzustand (`end_state: true` am Ort in `config/workflows/<entität>.yaml`) wird nicht gelöscht — Formular, Massenlöschung, REST, MCP und Datenreparatur fragen `DeletionPolicy::refusal()`, `DeletionGuard` (onFlush) fängt jeden anderen Weg einer angemeldeten Person; die Ablehnung nennt den Grund (HTML: Hinweis, API: 422). Jeder Ort, dessen Name nach Nachweis klingt (reported, closed, notified, approved …), ist markiert oder mit Grund ausgenommen | Gate 100 `tests/Lifecycle/EndStateDeletionContractTest` (liest jede Workflow-YAML), `tests/Lifecycle/DeletionPolicyTest` |
 | Ein Asset wird nur im Endzustand `disposed` aufbewahrt, sonst nur in den ersten 24 h als Korrektur gelöscht (`delete_only_within_hours`) | `tests/Lifecycle/DeletionPolicyTest` |
-| Ein Datensatz, auf den ein Nachweis zeigt (Behandlungsplan, Feststellung, Teilnahme, Kenntnisnahme, Version, Risiko-Vorfall-Verknüpfung, Prüfprotokoll …), wird mit Grund abgelehnt; Nachweis-Fremdschlüssel sind RESTRICT, keine ORM-Kaskade und kein `orphanRemoval` in eine Nachweisklasse | `EndStateDeletionContractTest` (aus den Doctrine-Metadaten), Migration `Version20261109200000_EvidenceForeignKeysRestrict` |
+| Ein Datensatz, auf den ein Nachweis zeigt (Behandlungsplan, Feststellung, Teilnahme, Kenntnisnahme, Version, Risiko-Vorfall-Verknüpfung, Prüfprotokoll …), wird mit Grund abgelehnt; Nachweis-Fremdschlüssel sind RESTRICT, keine ORM-Kaskade und kein `orphanRemoval` in eine Nachweisklasse | `EndStateDeletionContractTest` (aus den Doctrine-Metadaten), Migration `Version20261109210000_EvidenceForeignKeysRestrict` |
 | Massenlöschen verlangt mindestens die Rolle der Einzellöschung | `EndStateDeletionContractTest` |
 | Ein Konto wird gelöscht nur, wenn nichts darauf zeigt; sonst anonymisiert (`UserErasure`: E-Mail, Name, Telefon, Bild, SSO-Kennungen, Rollen weg, inaktiv) — Kommentare, Teilnahmen, Kenntnisnahmen und Freigaben behalten ihren (anonymen) Autor. Nur persönliche Einstellungen (`UserErasure::PERSONAL_SETTINGS`) hängen per CASCADE am Konto | `tests/Service/User/UserErasureTest` (aus den Metadaten) |
 | Jede Löschung einer organisationseigenen Klasse steht im Audit-Log (außer reinen Zwischenständen in `AuditLogSubscriber::TRANSIENT_ON_DELETE`); Kommentartexte nie | `AuditLogSubscriber::isAuditedOnDelete()` |
@@ -163,6 +164,23 @@ Ein Nachweis bleibt. Was abgeschlossen ist, wird archiviert, nicht gelöscht (IS
 | Controls hinter einer Anforderung nur aus der eigenen Organisation | Gate 86 |
 | Risikostufen aus der Skala der Organisation des Datensatzes | Gate 87, `tests/Risk/RiskScaleOfRecordOrganisationTest` |
 | Exporte und Downloads werden protokolliert; jeder Datenschutz-Export (VVT, DSFA, Datenpanne, Betroffenenanfrage, Einwilligung, Behörden-VVT) trägt dieselbe Regel `PrivacyExportAccess::RULE` (DSB oder Manager) | `DownloadAuditSubscriber`, `tests/Security/PrivacyExportAccessTest` (findet die Routen selbst) |
+
+
+## Nachweise aus der Wiederherstellung (S26)
+
+Platzhalter (B3): Inhalt schreibt Paket S26 — welche Nachweis-Entitäten und -Felder eine
+Organisationswiederherstellung nie ändert und welcher Test das belegt.
+
+| Invariante | Beleg |
+|---|---|
+
+## Vorschlagsvertrag (S30)
+
+Platzhalter (B3): Inhalt schreibt Paket S30 — was eine `SuggestionKind` erzeugen und anwenden darf und welcher Test
+jede Art prüft.
+
+| Invariante | Beleg |
+|---|---|
 
 Gegenprobe: mit abgeschaltetem Organisationsfilter (`TenantFilter`) werden 25 der Vertragstests rot; die Tests prüfen außerdem, dass der eigene Datensatz in Liste und Suche auftaucht, damit eine leere Antwort nicht als Erfolg zählt.
 

@@ -2,7 +2,12 @@ audit_log:
     integrity:
         verify_button: 'HMAC-Kette verifizieren'
         disabled: 'Audit-Log-Integritätsprüfung ist deaktiviert (APP_AUDIT_HMAC_KEY fehlt).'
-        intact: 'Audit-Log-Kette intakt — keine Manipulationen erkannt.'
+        intact_count: 'Audit-Log-Kette intakt: %count% Einträge geprüft, keine Manipulation erkannt.'
+        violations: 'Audit-Log-Kette gebrochen: %count% Verstöße. Erste Einträge: %entries%'
+        unverifiable: '%count% ältere Einträge sind nur in ihrer Verkettung prüfbar: ihre Signatur deckte Sekundenbruchteile ab, die die Datenbank nie gespeichert hat.'
+        job_running: 'Prüfe die HMAC-Kette …'
+        job_label: 'HMAC-Kette verifizieren'
+        job_subtitle: 'Prüft jede Signatur und jedes Kettenglied der eigenen Organisation.'
     page:
         title: 'Audit Log'
         subtitle: 'Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit'

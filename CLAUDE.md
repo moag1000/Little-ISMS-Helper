@@ -65,6 +65,7 @@ php bin/phpunit tests/Service/RiskServiceTest.php  # specific test
 # Cloud threads (PHP 8.3, GitHub only over git): vendor/ in ~30 s, then PHPStan as in CI
 python3 scripts/setup/cloud_vendor.py
 vendor/bin/phpstan analyse -c phpstan.cloud.neon --memory-limit=2G --no-progress
+bash scripts/setup/cloud_phpunit.sh   # PHPUnit: PHP 8.5 + Postgres from conda-forge, then PATH=/opt/cloudphp/wrap:$PATH
 # own PHPStan rules use static reflection only (no is_subclass_of/class_exists) — scripts/README.md "Cloud-Threads"
 
 # Workflows (Regulatory Compliance)

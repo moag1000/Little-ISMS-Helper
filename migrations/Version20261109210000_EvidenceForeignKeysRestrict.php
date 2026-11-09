@@ -17,7 +17,7 @@ use Doctrine\Migrations\AbstractMigration;
  * them by hand), so each key is looked up by its column and re-created under
  * the name it already has.
  */
-final class Version20261109200000_EvidenceForeignKeysRestrict extends AbstractMigration
+final class Version20261109210000_EvidenceForeignKeysRestrict extends AbstractMigration
 {
     /** table => columns whose foreign key becomes RESTRICT */
     private const array KEYS = [

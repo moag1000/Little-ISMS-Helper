@@ -16,7 +16,7 @@ eine Handlung verlangt oder Verhalten bricht.
 
 ## Nach 3.16.1 (nächstes Release)
 
-35 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
+36 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
 werden Personen (`Version20261108100000_OwnerTextToPersons`, danach entfallen die Textspalten),
 Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`);
 `Version20261109020000_DropWorkflowStepOverlays` löscht die nie angewendeten Schritt-Overrides
@@ -85,7 +85,7 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Personen prüfen:** Einen Freitext-Verantwortlichen ohne passenden Benutzer oder Person legt die
   Migration als neue Person an. Die Personenliste auf Dubletten durchsehen.
 
-- **Nachweis-Fremdschlüssel (S29):** `Version20261109200000_EvidenceForeignKeysRestrict` (Quick-Fix
+- **Nachweis-Fremdschlüssel (S29):** `Version20261109210000_EvidenceForeignKeysRestrict` (Quick-Fix
   „Ausstehende Migrationen anwenden“) stellt 22 Fremdschlüssel von `ON DELETE CASCADE` auf RESTRICT um
   (Feststellungen am Audit, Teilnahmen, Kenntnisnahmen, Dokumentversionen, Behandlungspläne am Risiko u. a.).
   Daten ändern sich nicht.
@@ -141,6 +141,12 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
     angemeldete Person.
   - „Auditprogramm ableiten“ im Konzernbericht braucht zusätzlich `ROLE_MANAGER`.
   - Beim Sperren einer Organisation kommt die zweite Person aus derselben Organisation.
+
+- **Audit-Log-Kette (B3):** Die Migration `Version20261109200000_AuditLogHmacLegacyCutoff` (Quick-Fix) merkt sich
+  den letzten Eintrag mit altem Signaturformat. Die Signatur deckte bisher Sekundenbruchteile ab, die die Datenbank
+  nie speichert — „HMAC-Kette verifizieren“ meldete deshalb jeden Eintrag als manipuliert. Neue Einträge sind voll
+  prüfbar, ältere nur in ihrer Verkettung; die Prüfung nennt ihre Anzahl. Jede Organisation hat jetzt ihre eigene
+  Kette, die Prüfung läuft als Hintergrundjob mit Fortschrittsseite. Nichts zu tun.
 
 - **Nachweise bleiben (S29):** Ein Datensatz in einem Endzustand (Audit berichtet/abgeschlossen, Vorfall
   gelöst/geschlossen, Datenpanne gemeldet, Risiko behandelt/akzeptiert, Dokument freigegeben/veröffentlicht,

@@ -151,11 +151,13 @@ class AuditLogTest extends TestCase
     #[Test]
     public function testConstructorSetsCreatedAt(): void
     {
-        $before = new \DateTimeImmutable();
+        // Whole seconds: the column stores no fraction and the HMAC covers what is stored (B3).
+        $before = new \DateTimeImmutable('@' . time());
         $auditLog = new AuditLog();
         $after = new \DateTimeImmutable();
 
         $createdAt = $auditLog->getCreatedAt();
+        $this->assertSame('000000', $createdAt?->format('u'));
 
         $this->assertGreaterThanOrEqual($before, $createdAt);
         $this->assertLessThanOrEqual($after, $createdAt);
