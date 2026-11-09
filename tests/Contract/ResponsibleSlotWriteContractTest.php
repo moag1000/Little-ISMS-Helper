@@ -138,7 +138,9 @@ final class ResponsibleSlotWriteContractTest extends KernelTestCase
 
         foreach (self::MUST_FIND as $slot) {
             self::assertArrayHasKey($slot, $tested, sprintf(
-                'Slot %s was not probed (skipped: %s)', $slot, json_encode($skipped, JSON_UNESCAPED_SLASHES),
+                'Slot %s was not probed (skipped: %s)',
+                $slot,
+                json_encode($skipped, JSON_UNESCAPED_SLASHES),
             ));
         }
         self::assertGreaterThanOrEqual(25, count($tested), 'Too few slots probed: ' . implode(', ', array_keys($tested)));

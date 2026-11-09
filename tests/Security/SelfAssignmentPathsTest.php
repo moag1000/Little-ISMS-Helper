@@ -132,15 +132,23 @@ final class SelfAssignmentPathsTest extends WebTestCase
         $body = (string) json_encode(['_token' => 'none', 'items' => []]);
 
         LoginWithSecondFactor::login($this->client, $em->find(User::class, $this->user->getId()));
-        $this->client->request('POST', $router->generate('app_audit_checklist_save', ['id' => $foreign->getId(), '_locale' => 'de']),
-            server: ['CONTENT_TYPE' => 'application/json'], content: $body);
+        $this->client->request(
+            'POST',
+            $router->generate('app_audit_checklist_save', ['id' => $foreign->getId(), '_locale' => 'de']),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: $body
+        );
         self::assertSame(403, $this->client->getResponse()->getStatusCode());
         self::assertStringNotContainsString('json', (string) $this->client->getResponse()->headers->get('Content-Type'), 'denied by the role gate, not by the token check');
 
         // As lead auditor the gate opens (the request then fails only on the missing CSRF token).
         LoginWithSecondFactor::login($this->client, $this->em()->find(User::class, $this->user->getId()));
-        $this->client->request('POST', $router->generate('app_audit_checklist_save', ['id' => $own->getId(), '_locale' => 'de']),
-            server: ['CONTENT_TYPE' => 'application/json'], content: $body);
+        $this->client->request(
+            'POST',
+            $router->generate('app_audit_checklist_save', ['id' => $own->getId(), '_locale' => 'de']),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: $body
+        );
         self::assertSame(['error' => 'Invalid CSRF token'], json_decode((string) $this->client->getResponse()->getContent(), true));
     }
 
