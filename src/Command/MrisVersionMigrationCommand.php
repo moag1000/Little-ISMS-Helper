@@ -32,8 +32,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *   - Renamed/Changed: gleiche requirement_id, anderer title oder description →
  *               Update vorgemerkt.
  *   - Maturity-Stages-Wechsel: pro MHC werden die definierten Reifegradstufen
- *               verglichen; bei Änderung wird das lokale maturityCurrent als
- *               unbestimmt markiert (User muss neu setzen).
+ *               verglichen; bei Änderung wird das Ist jeder Organisation als
+ *               unbestimmt markiert (Organisation muss neu setzen).
  * Forward- und Reverse-Mapping-YAMLs werden ebenfalls verglichen.
  *
  * Sicher per Default: ohne --apply wird nur der Migrationsplan gedruckt.
@@ -432,8 +432,8 @@ final class MrisVersionMigrationCommand extends Command
             if (!$req instanceof ComplianceRequirement) {
                 continue;
             }
-            // MrisMaturityService loggt selbst.
-            $this->maturityService->setCurrent($req, null);
+            // Ist jeder Organisation passt nicht mehr zur geänderten MHC; der Service loggt selbst.
+            $this->maturityService->resetCurrentEverywhere($req, sprintf('MRIS-Migration %s → %s', $from, $to));
             $applied++;
         }
 

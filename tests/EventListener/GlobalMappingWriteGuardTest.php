@@ -72,11 +72,27 @@ final class GlobalMappingWriteGuardTest extends TestCase
         }
     }
 
+    /** S18: an organisation's Reifegrad never lands on the shared requirement row. */
+    #[Test]
+    public function maturityOnASharedRequirementIsRefusedWithoutTheRight(): void
+    {
+        foreach (['maturityCurrent', 'maturityTarget', 'maturityReviewedAt'] as $field) {
+            try {
+                $this->flush(signedIn: true, granted: false, updates: [new ComplianceRequirement()], changeSet: [$field => [null, 'x']]);
+                self::fail($field . ' on a shared requirement passed the backstop');
+            } catch (AccessDeniedException) {
+                $this->addToAssertionCount(1);
+            }
+        }
+        $own = (new ComplianceRequirement())->setUploadTenant(new Tenant());
+        $this->flush(signedIn: true, granted: false, updates: [$own], changeSet: ['maturityCurrent' => [null, 'managed']]);
+    }
+
     #[Test]
     public function rowsOfTheOrganisationPass(): void
     {
         $own = (new ComplianceRequirement())->setUploadTenant(new Tenant());
-        // A requirement update passes (maturity still lives on the row until S18).
+        // A text update of a shared requirement passes (its screens guard it).
         $this->flush(signedIn: true, granted: false, inserts: [$own], updates: [new ComplianceRequirement()], deletes: [$own]);
         $this->addToAssertionCount(1);
     }
@@ -93,6 +109,7 @@ final class GlobalMappingWriteGuardTest extends TestCase
         ?array $inserts = null,
         ?array $updates = null,
         ?array $deletes = null,
+        array $changeSet = [],
     ): void {
         $mapping = (new ComplianceMapping())
             ->setSourceRequirement(new ComplianceRequirement())
@@ -106,6 +123,7 @@ final class GlobalMappingWriteGuardTest extends TestCase
         $uow->method('getScheduledEntityInsertions')->willReturn($inserts ?? []);
         $uow->method('getScheduledEntityUpdates')->willReturn($updates ?? [$mapping]);
         $uow->method('getScheduledEntityDeletions')->willReturn($deletes ?? []);
+        $uow->method('getEntityChangeSet')->willReturn($changeSet);
         $em = $this->createStub(EntityManagerInterface::class);
         $em->method('getUnitOfWork')->willReturn($uow);
 

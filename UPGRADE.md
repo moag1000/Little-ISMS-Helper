@@ -16,11 +16,15 @@ eine Handlung verlangt oder Verhalten bricht.
 
 ## Nach 3.16.1 (nächstes Release)
 
-32 neue Migrationen, alle über `/quick-fix`. Drei davon verändern Daten: Freitext-Verantwortliche
-werden Personen (`Version20261108100000_OwnerTextToPersons`, danach entfallen die Textspalten) und
+33 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
+werden Personen (`Version20261108100000_OwnerTextToPersons`, danach entfallen die Textspalten),
 Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`);
 `Version20261109020000_DropWorkflowStepOverlays` löscht die nie angewendeten Schritt-Overrides
-(`workflow:*`/`step:*`-Zeilen in `lifecycle_config`).
+(`workflow:*`/`step:*`-Zeilen in `lifecycle_config`);
+`Version20261109010000_RequirementMaturityPerOrganisation` legt MRIS-Ist/Soll und das Soll aus
+Branchen-Baselines je Organisation an die Erfüllungszeile. Jede Organisation behält den Wert, den sie
+bisher sah; auf Mehr-Organisations-Instanzen sind die Werte danach getrennt. Die globale Anforderung
+behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Vor dem Update
 

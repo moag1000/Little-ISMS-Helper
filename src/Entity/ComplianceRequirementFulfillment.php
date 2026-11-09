@@ -810,4 +810,55 @@ class ComplianceRequirementFulfillment
         $this->overriddenAt = null;
         return $this;
     }
+
+    // ── S18: Reifegrad je Organisation ───────────────────────────────────
+    // The Ist/Soll Reifegrad of a GLOBAL requirement (MRIS MHC, industry
+    // baseline target) is the organisation's own assessment and lives here,
+    // never on the shared catalogue row. Read and write only through
+    // App\Service\Compliance\RequirementMaturity (tenant-owned TISAX rows
+    // keep theirs on the requirement).
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['fulfillment:read'])]
+    private ?string $maturityCurrent = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['fulfillment:read'])]
+    private ?string $maturityTarget = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $maturityReviewedAt = null;
+
+    public function getMaturityCurrent(): ?string
+    {
+        return $this->maturityCurrent;
+    }
+
+    public function setMaturityCurrent(?string $maturityCurrent): static
+    {
+        $this->maturityCurrent = $maturityCurrent;
+        return $this;
+    }
+
+    public function getMaturityTarget(): ?string
+    {
+        return $this->maturityTarget;
+    }
+
+    public function setMaturityTarget(?string $maturityTarget): static
+    {
+        $this->maturityTarget = $maturityTarget;
+        return $this;
+    }
+
+    public function getMaturityReviewedAt(): ?DateTimeImmutable
+    {
+        return $this->maturityReviewedAt;
+    }
+
+    public function setMaturityReviewedAt(?DateTimeImmutable $maturityReviewedAt): static
+    {
+        $this->maturityReviewedAt = $maturityReviewedAt;
+        return $this;
+    }
 }

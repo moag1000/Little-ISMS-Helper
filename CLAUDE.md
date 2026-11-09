@@ -269,6 +269,8 @@ systemctl enable isms-worker && systemctl start isms-worker
   `Export\EvidenceDocuments`) — never `getEvidenceDocuments()`/`getMappedControls()` of a global requirement.
   `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
   Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
+  A Reifegrad (Ist/Soll: MRIS, industry baselines) of a global requirement is the organisation's: read/write only via
+  `Compliance\RequirementMaturity` (fulfilment row; own TISAX upload rows keep theirs) — `RequirementMaturityAccessTest`.
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
   inheritance; `thenRoles()` = wider circle) → admins (not for `withoutAdminFallback()`: board decisions wait for
