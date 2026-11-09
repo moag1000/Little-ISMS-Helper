@@ -23,6 +23,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 )]
 class RestoreBackupCommand extends Command
 {
+    /** Environment variable for --admin-password without a terminal (never a command-line value: shell history). */
+    public const string ADMIN_PASSWORD_ENV = 'ISMS_RESTORE_ADMIN_PASSWORD';
+
     public function __construct(
         private readonly BackupService    $backupService,
         private readonly RestoreService   $restoreService,
@@ -48,7 +51,14 @@ class RestoreBackupCommand extends Command
             ->addOption('clear-before-restore', null, InputOption::VALUE_NONE, 'Delete all existing data before restoring')
             ->addOption('skip-entities', null, InputOption::VALUE_REQUIRED, 'Comma-separated list of entity types to skip (e.g. AuditLog,UserSession)')
             ->addOption('tenant', null, InputOption::VALUE_REQUIRED, 'Tenant code to scope the restore to a specific tenant')
-            ->addOption('json', null, InputOption::VALUE_NONE, 'Output machine-readable JSON instead of human-readable text');
+            ->addOption('json', null, InputOption::VALUE_NONE, 'Output machine-readable JSON instead of human-readable text')
+            ->addOption(
+                'admin-password',
+                null,
+                InputOption::VALUE_NONE,
+                'Set a new password for the admin account after the restore (backups carry no passwords). '
+                . 'Asked interactively; without a terminal it is read from ' . self::ADMIN_PASSWORD_ENV . '.'
+            );
     }
 
     #[\Override]
@@ -116,6 +126,18 @@ class RestoreBackupCommand extends Command
             return Command::FAILURE;
         }
 
+        $adminPassword = null;
+        if ((bool) $input->getOption('admin-password')) {
+            $adminPassword = $this->adminPassword($input, $io, $filepath === '-');
+            if ($adminPassword === null) {
+                $this->writeError($output, $io, $jsonOutput, sprintf(
+                    'No admin password given (prompt, or %s without a terminal).',
+                    self::ADMIN_PASSWORD_ENV,
+                ));
+                return Command::FAILURE;
+            }
+        }
+
         $options = [
             'dry_run'             => $dryRun,
             'best_effort'         => $bestEffort,
@@ -124,6 +146,10 @@ class RestoreBackupCommand extends Command
             'missing_field_strategy' => RestoreService::STRATEGY_USE_DEFAULT,
             'existing_data_strategy' => RestoreService::EXISTING_UPDATE,
         ];
+        if ($adminPassword !== null) {
+            // Same option the web restore uses (RestoreService → RestoreSecretsHandler).
+            $options['admin_password'] = $adminPassword;
+        }
 
         $this->logger->info('RestoreBackup: starting', [
             'filepath'     => $resolvedPath,
@@ -174,6 +200,28 @@ class RestoreBackupCommand extends Command
         }
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * The new admin password: hidden prompt (twice) on a terminal, otherwise the
+     * environment variable. Stdin carrying the backup ('-') rules out the prompt.
+     */
+    private function adminPassword(InputInterface $input, SymfonyStyle $io, bool $stdinIsBackup): ?string
+    {
+        if ($input->isInteractive() && !$stdinIsBackup) {
+            $first = (string) $io->askHidden('New admin password');
+            $second = (string) $io->askHidden('Repeat the new admin password');
+            if ($first === '' || $first !== $second) {
+                $io->error('The passwords are empty or do not match.');
+                return null;
+            }
+
+            return $first;
+        }
+
+        $fromEnv = getenv(self::ADMIN_PASSWORD_ENV);
+
+        return is_string($fromEnv) && $fromEnv !== '' ? $fromEnv : null;
     }
 
     /**

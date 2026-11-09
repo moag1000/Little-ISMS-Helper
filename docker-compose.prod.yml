@@ -26,6 +26,8 @@ services:
       # ✅ REQUIRED: Persistente Daten (inkl. embedded MariaDB unter var/mysql)
       # Ohne dieses Volume gehen alle Daten bei Container-Neustart verloren!
       - isms_data:/var/www/html/var
+      # Logos und Profilbilder (public/uploads/tenants, public/uploads/users)
+      - isms_uploads:/var/www/html/public/uploads
     environment:
       # ⚠️ WICHTIG: Diese müssen in .env.docker.local gesetzt werden!
       APP_ENV: prod
@@ -36,6 +38,12 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-}
       # MAILER_DSN muss für echte SMTP konfiguriert werden
       MAILER_DSN: ${MAILER_DSN:-}
+      # Öffentliche Adresse, z. B. https://isms.example.org — alle Links in Mails,
+      # Fragebögen und QR-Labels werden daraus gebaut. Der Start schreibt sie nach
+      # var/.env.local, dazu die erlaubten Hostnamen (Host + localhost für den
+      # Healthcheck). Leer = unverändert (z. B. über Überwachung > Health gesetzt).
+      ISMS_PUBLIC_URL: ${DEFAULT_URI:-}
+      ISMS_TRUSTED_HOSTS: ${SYMFONY_TRUSTED_HOSTS:-}
       # Docker-Flag (für Setup-Wizard Detection)
       DOCKER_CONTAINER: "1"
     healthcheck:
@@ -65,4 +73,6 @@ volumes:
   # ✅ Production Volumes - persistent und performant
   # REQUIRED: Enthält App-Daten UND embedded MariaDB!
   isms_data:
+    driver: local
+  isms_uploads:
     driver: local
