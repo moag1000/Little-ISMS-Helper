@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Security\SetupAccessChecker;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,25 +32,40 @@ class DeploymentWizardControllerTest extends WebTestCase
     private KernelBrowser $client;
     private string $lockFile;
     private ?string $lockBackup = null;
+    private string $varLockFile;
+    private ?string $varLockBackup = null;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $projectDir = (string) static::getContainer()->getParameter('kernel.project_dir');
 
-        $this->lockFile = static::getContainer()
-            ->getParameter('kernel.project_dir') . '/config/setup_complete.lock';
+        $this->lockFile = $projectDir . '/config/setup_complete.lock';
         if (file_exists($this->lockFile)) {
             $this->lockBackup = file_get_contents($this->lockFile) ?: '';
             @unlink($this->lockFile);
         }
+        $this->varLockFile = $projectDir . '/var/setup_complete.lock';
+        if (file_exists($this->varLockFile)) {
+            $this->varLockBackup = file_get_contents($this->varLockFile) ?: '';
+            @unlink($this->varLockFile);
+        }
+
+        // A fresh instance: no lock and no database yet. The test database holds fixture
+        // accounts, and since S19 an instance with accounts counts as set up — so the
+        // checker here sees no database (SetupLockWithoutFileTest covers the account case).
+        $this->client->disableReboot();
+        static::getContainer()->set(SetupAccessChecker::class, new SetupAccessChecker($projectDir, 'test'));
     }
 
     protected function tearDown(): void
     {
-        if ($this->lockBackup !== null) {
-            file_put_contents($this->lockFile, $this->lockBackup);
-        } elseif (file_exists($this->lockFile)) {
-            @unlink($this->lockFile);
+        foreach ([[$this->lockFile, $this->lockBackup], [$this->varLockFile, $this->varLockBackup]] as [$file, $backup]) {
+            if ($backup !== null) {
+                file_put_contents($file, $backup);
+            } elseif (file_exists($file)) {
+                @unlink($file);
+            }
         }
         parent::tearDown();
     }
