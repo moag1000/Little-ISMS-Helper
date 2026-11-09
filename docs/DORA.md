@@ -1,6 +1,6 @@
 # DORA — Digital Operational Resilience Act (EU) 2022/2554
 
-Stand: v3.5 (2026-05). Gilt fuer das Modul `nis2_dora` (Aktivierungskey in `config/modules.yaml`).
+Gilt fuer das Modul `nis2_dora` (Aktivierungskey in `config/modules.yaml`).
 
 > **Hinweis:** VAIT, BAIT, KAIT und ZAIT sind seit dem 17. Januar 2025 durch DORA
 > als sektorale Aufsichtsvorschriften abgeloest. Das Tool implementiert keine
@@ -36,7 +36,7 @@ php bin/console app:load-dora-rts-its-full
 php bin/console app:seed-dora-iso27001-mappings
 
 # Seed DORA Policy-Templates
-php bin/console app:seed-dora-policy-templates
+php bin/console app:policy-wizard:seed-dora
 ```
 
 ---
@@ -299,7 +299,7 @@ sind nullable; fehlender LEI im Export erzeugt den ESA-Sentinel `N/A`.
 
 ## 10. Compliance-Wizard
 
-Route: `/{locale}/compliance/wizard/dora`
+Route: `/{locale}/compliance-wizard/dora`
 
 Datei: `src/Service/ComplianceWizard/Check/PolicyWizard/Dora/`
 
@@ -318,10 +318,7 @@ Durchgefuehrte Checks:
 
 ## 11. Modul-Aktivierung
 
-```yaml
-# config/active_modules.yaml
-nis2_dora: true
-```
+Admin → Module (`/admin/modules`), siehe [MODULE_AKTIVIERUNG.md](user-guide/MODULE_AKTIVIERUNG.md).
 
 Controller-Pattern:
 

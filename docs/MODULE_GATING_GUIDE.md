@@ -18,108 +18,77 @@ The system has three layers:
 
 ---
 
-## 21 Module Keys
+## Module keys
 
-### 12 Core Modules (always existed)
+The authoritative list is `config/modules.yaml` (45 keys). Required (always active, cannot be
+switched off): `core`, `authentication`, `audit_logging`, `notifications`, `documents`, `objectives`, `workflows`.
 
-| Key | Name | Trigger |
+Optional modules:
+
+| Key | Name | Depends on |
 |---|---|---|
-| `core` | Core ISMS | Required — always active |
-| `assets` | Asset Management | ISO 27001 §8.1 |
-| `risks` | Risk Management | ISO 27001 §6.1 |
-| `controls` | Control Management (SoA) | ISO 27001 Annex A |
-| `incidents` | Incident Management | ISO 27001 A.5.26 |
-| `audits` | Audit Management | ISO 27001 §9.2 |
-| `training` | Training & Awareness | ISO 27001 A.6.3 |
-| `reviews` | Management Review | ISO 27001 §9.3 |
-| `bcm` | Business Continuity Management | ISO 22301 |
-| `compliance` | Multi-Framework Compliance | Framework import active |
-| `authentication` | User & Role Management | Always active |
-| `audit_logging` | Audit Logging | Always active |
+| `assets` | Asset Management | — |
+| `risks` | Risk Management | `assets` |
+| `controls` | Control Management (SoA) | — |
+| `incidents` | Incident Management | `controls` |
+| `audits` | Audit Management | `controls` |
+| `training` | Training & Awareness | — |
+| `access_review` | Zugriffsrezertifizierung (UAR) | `authentication`, `audit_logging` |
+| `reviews` | Management Review | `audits` |
+| `bcm` | Business Continuity Management | `assets` |
+| `compliance` | Multi-Framework Compliance | `controls` |
+| `privacy` | Privacy & Datenschutz (GDPR + ISO 27701) | `assets` |
+| `nis2_dora` | NIS2 & DORA Compliance | `incidents`, `risks`, `controls` |
+| `ai_governance` | AI Governance (EU AI Act + ISO 42001) | `assets` |
+| `cloud_security` | Cloud Security (ISO 27017/18, BSI C5/AIC4) | `controls`, `assets` |
+| `vulnerability_intel` | Vulnerability & Threat Intelligence | `risks` |
+| `marisk` | MaRisk (DACH-Banken/Versicherer) | `risks`, `compliance` |
+| `lksg` | LkSG (Lieferkettensorgfaltspflichten) | `suppliers` |
+| `tisax` | TISAX (Auto-Industrie) | `controls` |
+| `risk_quant` | Quantitative Risikoanalyse (SLE/ARO/ALE) | `risks` |
+| `eu_authority_reporting` | EU-Behörden-Reporting-Hub | `compliance` |
+| `answer_library` | Antwort-Bibliothek (Sicherheits-Fragebögen) | `core` |
+| `suppliers` | Lieferanten & Drittparteien | `risks`, `assets` |
+| `locations` | Standorte & Infrastruktur | `assets` |
+| `persons` | Personen & Kontakte | `core` |
+| `interested_parties` | Interessierte Parteien | `core` |
+| `change_requests` | Change Management | `controls` |
+| `patches` | Patch Management | `vulnerability_intel` |
+| `corrective_actions` | Korrekturmaßnahmen | `audits` |
+| `risk_appetite` | Risikoappetit & Toleranz | `risks` |
+| `risk_treatment_plans` | Risikobehandlungspläne | `risks`, `controls` |
+| `analytics` | Analytics & KPI-Dashboard | `core` |
+| `report_builder` | Report Builder | `core` |
+| `scheduled_reports` | Geplante Berichte | `report_builder` |
+| `portfolio_reports` | Portfolio- & Konzern-Reports | `core` |
+| `mris` | MRIS — Mythos-resistente Informationssicherheit | `core`, `controls` |
+| `bsi_grundschutz` | BSI IT-Grundschutz | `controls`, `compliance` |
+| `resource_planning` | Ressourcenplanung | `core` |
+| `ocr_processing` | OCR-Verarbeitung (Compliance-Zertifikate) | `compliance` |
 
-### 8 New Module Keys (T31 Sprint 1 — added 2026-05)
-
-| Key | Name | Setup-Wizard Question | Consolidates |
-|---|---|---|---|
-| `privacy` | Privacy & Datenschutz | "Verarbeiten Sie personenbezogene Daten?" | GDPR + ISO 27701 |
-| `nis2_dora` | NIS2 & DORA Compliance | "EU-Cyber-Resilience-pflichtig (KRITIS/Bank/Vers)?" | NIS2 + DORA |
-| `ai_governance` | AI Governance | "Setzen Sie KI-Systeme ein?" | EU AI Act + ISO 42001 |
-| `cloud_security` | Cloud Security | "Cloud-Provider/User?" | ISO 27017/18, BSI C5/AIC4 |
-| `vulnerability_intel` | Vulnerability & Threat Intelligence | "Aktives Vuln-/Threat-Mgmt?" | Vuln-Mgmt + MITRE ATT&CK |
-| `marisk` | MaRisk (DACH-Banken/Versicherer) | "Bank/Versicherung in DACH?" | MaRisk outsourcing rules |
-| `tisax` | TISAX (Auto-Industrie) | "Auto-Industrie-Lieferkette?" | VDA ISA |
-| `quantitative_risk` | Quantitative Risk (FAIR/CRQ) | "Quantitative Risk-Analyse gewünscht?" | FAIR methodology |
-
-### 14 Operational Modules (added v3.5)
-
-These modules gate features that were previously always-on but are now
-selectively activatable per tenant to reduce UI noise for smaller deployments.
-
-| Key | Name | Gated Feature Area |
-|---|---|---|
-| `bcm_plans` | BC-Plaene | Business-Continuity-Plan CRUD + Exercise scheduling |
-| `crisis_team` | Krisenstab | Crisis team roles + escalation paths (BSI 200-4) |
-| `bc_exercises` | BCM-Uebungen | Exercise management + post-exercise reporting |
-| `patch_mgmt` | Patch-Management | CVE/CVSS-Tracking, patch deadlines, NIS2 Art. 21(2)(e) |
-| `vulnerability_mgmt` | Schwachstellenmanagement | Vulnerability lifecycle, CVSS scoring, remediation |
-| `threat_intel` | Threat Intelligence | MITRE ATT&CK mapping, threat actor tracking |
-| `change_requests` | Aenderungsmanagement | Change-Request workflow, impact assessment |
-| `physical_access` | Physischer Zugang | Physical access logs, zone management |
-| `crypto_mgmt` | Kryptographie-Management | Key lifecycle, cipher registry (ISO 27001 A.8.24) |
-| `prototype_protection` | Prototypenschutz | TISAX-spezifisch: prototype and R&D asset protection |
-| `monitoring` | Security-Monitoring | Security event tracking, alert rules |
-| `scheduled_reports` | Geplante Berichte | Automated report scheduling + email delivery |
-| `supplier_mgmt` | Lieferantenmanagement | Supplier assessment, contract review, ISO 27001 A.5.19 |
-| `locations` | Standortverwaltung | Physical locations + asset-location-mapping |
-
-### 1 Standalone Module
-
-| Key | Name | Notes |
-|---|---|---|
-| `bsi_grundschutz` | BSI IT-Grundschutz | Eigenständige BSI-Methodik, separates Modul |
+A module key that is not in `config/modules.yaml` is never active — gate only on keys from this list.
 
 ---
 
-## Wizard-Module-Mapping
+## Where modules are switched on
 
-Compliance-Wizards activate relevant modules automatically upon completion
-(with user confirmation). The `IndustryPresetService` activates modules
-for Industry-Preset-Express-Path selections without a full wizard run.
+- **Setup wizard**, step "Module" (`/setup/step7-modules`): recommendations from industry and size
+  (`App\Service\Setup\SetupRecommendationEngine`).
+- **Admin → Module** (`/admin/modules`, `AdminModuleController`, voter attribute `MODULE_MANAGE`):
+  activation pulls in dependencies.
+- **Industry presets** (`fixtures/library/presets/*.yaml`, `IndustryPresetApplier`, admin page or
+  `LoadIndustryPresetCommand`): add the preset's modules to the organisation's selection, never remove any.
 
-| Wizard | Auto-activated Modules |
-|---|---|
-| GDPR / ISO 27701 | `privacy` |
-| DORA / NIS2 | `nis2_dora` |
-| BSI IT-Grundschutz | `bsi_grundschutz` |
-| ISO 42001 / EU AI Act | `ai_governance` |
-| ISO 27017 / BSI C5 / C5:2026 | `cloud_security` |
-| ISO 22301 / BCM | `bcm`, `bcm_plans`, `bc_exercises` |
-| TISAX | `tisax`, `prototype_protection` |
-| Industry-Preset (Finance) | `nis2_dora`, `marisk`, `vulnerability_intel` |
-| Industry-Preset (Healthcare / KRITIS) | `nis2_dora`, `privacy`, `bcm` |
-| Industry-Preset (Cloud/Hosting) | `cloud_security`, `nis2_dora`, `vulnerability_intel` |
-| Industry-Preset (Automotive) | `tisax`, `prototype_protection` |
-
----
-
-## Industry-Preset-Service Auto-Activation
-
-`IndustryPresetService` reads the three Express-Path answers (industry,
-size, existing certifications) and calls `ModuleConfigurationService::activateModules()`
-with the corresponding module set. Modules are activated for the current
-tenant and persisted to `config/active_modules.yaml` (or the DB override
-table if multi-tenant overrides are enabled).
-
-All auto-activated modules generate an audit log entry
-(`module.auto_activated`) with the triggering preset name.
+Compliance wizards do not activate modules; a wizard whose modules are inactive is not offered.
 
 ---
 
 ## ModuleConfigurationService
 
-`App\Service\ModuleConfigurationService` reads `config/modules.yaml` and
-`config/active_modules.yaml` (per-tenant override) to determine which modules
-are active for the current tenant.
+`App\Service\ModuleConfigurationService` reads `config/modules.yaml` and the organisation's own
+selection (`Tenant::getActiveModules()`); an organisation without a selection inherits the instance
+default in `config/active_modules.yaml`. Required modules are always active.
+`isModuleActiveForTenant($key, $tenant)` answers outside the request (commands, jobs).
 
 ```php
 // Direct injection (services, controllers)
@@ -328,7 +297,7 @@ entity gets the attribute exactly when its HTML controllers are module-gated;
 the ISO 27001 backbone entities (Asset, Risk, Control, Incident,
 InternalAudit) stay ungated, as their HTML controllers are.
 
-- **Fields of another module (S4, 2026-11).** A field that a FormType adds
+- **Fields of another module.** A field that a FormType adds
   only inside `if ($this->isModuleActive('<m>'))` carries
   `#[ModuleField('<m>')]` on the entity property when it is in a `:write`
   group. `App\Api\ModuleFieldContextBuilder` then ignores it in REST request
@@ -388,7 +357,7 @@ to conditionally render UI sections.
 {# GDPR section — only when privacy module is active #}
 {% if is_module_active('privacy') %}
 <div class="card">
-    <div class="card-header">{{ 'risk.section.gdpr'|trans }}</div>
+    <div class="card-header">{{ 'risk.section.gdpr'|trans({}, 'risk') }}</div>
     <div class="card-body">
         {{ risk.involvesPersonalData ? 'Yes' : 'No' }}
     </div>
@@ -433,7 +402,7 @@ $builder->add('involvesSpecialCategoryData', CheckboxType::class, [
 ]);
 ```
 
-The Stimulus `form-conditional` controller reads `data-depends-on` and toggles
+The Stimulus `conditional-fields` controller reads `data-depends-on` and toggles
 visibility. For `<select>` triggers, `data-depends-on-value` is the option value
 string (e.g., `'ai_agent'` for an asset type select).
 
@@ -465,18 +434,14 @@ For the "module not active" flash message, use the `messages` domain:
 ```yaml
 # translations/messages.de.yaml
 common:
-  module_not_active: "Das Modul '%module%' ist für Ihren Tenant nicht aktiviert."
-
-# translations/messages.en.yaml
-common:
-  module_not_active: "The module '%module%' is not active for your tenant."
+  module_not_active: 'Modul "%module%" ist nicht aktiviert. Bitte Setup → Module aktivieren.'
 ```
 
 ---
 
 ## Adding a New Module-Gated Field
 
-1. **Check which module key applies** — see the 21 Module Keys table above.
+1. **Check which module key applies** — see the module keys above (`config/modules.yaml`).
 2. **Add the entity field** + migration (`isTransactional(): false` for DDL).
 3. **Add to the FormType** behind `if ($this->isModuleActive('key'))`.
 4. **Add `is_module_active('key')` to show/edit templates** if the field needs display.
@@ -507,6 +472,6 @@ $this->assertSelectorNotExists('[name="risk_form[ictRiskCategory]"]');
 - [CONTRIBUTING.md](../CONTRIBUTING.md#module-gating-pattern) — Form Standards with Module-Gating subsection
 - [user-guide/MODULE_AKTIVIERUNG.md](user-guide/MODULE_AKTIVIERUNG.md) — User-facing setup guide
 - `config/modules.yaml` — Module definitions and metadata
-- `config/active_modules.yaml` — Per-tenant activation overrides
+- `config/active_modules.yaml` — instance default for organisations without their own selection
 - `src/Form/Trait/ModuleAwareFormTrait.php` — Trait source
 - `src/Controller/Trait/ModuleGatedControllerTrait.php` — Controller trait source

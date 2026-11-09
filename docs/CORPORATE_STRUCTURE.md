@@ -22,29 +22,31 @@ Das Corporate Structure Management ermöglicht die Verwaltung von **hierarchisch
 1. **Hierarchische Strukturen**: Unbegrenzte Verschachtelung von Parent-Child-Beziehungen
 2. **Granulare Governance**: Pro Scope (z.B. pro Control) individuelle Governance-Regeln
 3. **ISMS-Kontext-Vererbung**: Automatische Propagierung von ISMS-Kontexten
-4. **Multi-Tenant-Check**: Automatisches Ausblenden wenn nur 1 Mandant existiert
+4. **Multi-Tenant-Check**: Hinweis auf der Konzernstruktur-Seite, wenn nur 1 Mandant aktiv ist
+
+Zugriff: `ROLE_ADMIN` für die eigene Organisation und ihre Töchter; Mandanten anlegen und
+Muttergesellschaft setzen/lösen nur `ROLE_SUPER_ADMIN` (Rechte-Tabelle in
+[`admin/TENANT_SYSTEM.md`](admin/TENANT_SYSTEM.md#admin-portal-access)). Holding-Rollen
+(`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) lesen Datensätze der Töchter, schreiben nie.
 
 ---
 
 ## Features
 
 ### ✅ Feature 1: Multi-Tenant-Check
-**Commit:** `f3dea58`
 
-- Prüft ob mehrere aktive Mandanten existieren
-- Blendet Corporate-Structure-Menü bei nur 1 Mandant aus
-- Zeigt Info-Alert auf Corporate-Structure-Seite
+- `MultiTenantCheckService::isMultiTenant()` prüft, ob mehrere aktive Mandanten existieren
+- Die Corporate-Structure-Seite zeigt bei nur 1 Mandant einen Info-Hinweis; der Admin-Hub-Eintrag
+  bleibt sichtbar (`AdminHubCatalog`, Attribut `ADMIN_OWN_TENANT`)
 
 **Betroffene Dateien:**
 - `src/Service/MultiTenantCheckService.php`
-- `src/Twig/MultiTenantExtension.php`
-- `templates/admin/layout.html.twig`
+- `src/Twig/MultiTenantExtension.php` (Twig-Global `is_multi_tenant_environment`)
 - `templates/admin/tenants/corporate_structure.html.twig`
 
 ### ✅ Feature 2: Granulare Governance
-**Commits:** `6254d96` (API), `e447ebc` (UI)
 
-- **Scopes**: `default`, `control`, `isms_context`, `risk`, `asset`, `process`
+- **Scopes**: `default`, `control`, `isms_context`, `risk`, `asset`, `process`, `document`
 - **Pro Scope**: Individuelles Governance-Modell definierbar
 - **Fallback-Chain**: ScopeID → Scope → Default
 
@@ -62,7 +64,6 @@ DELETE /api/corporate-structure/{tenantId}/governance/{scope}/{scopeId}
 - `templates/admin/tenants/show.html.twig`
 
 ### ✅ Feature 3: ISMS-Kontext-Vererbung
-**Commit:** `a0eab59`
 
 - Anzeige des effektiven ISMS-Kontexts (eigen vs. geerbt)
 - Propagierungs-Funktion für Muttergesellschaften
@@ -78,38 +79,14 @@ POST /api/corporate-structure/propagate-context/{id}
 
 ## Installation & Setup
 
-### 1. Migration ausführen
+Keine eigenen Schritte: Tabelle `corporate_governance` kommt mit `doctrine:migrations:migrate`
+(bzw. `/quick-fix`), die Services sind autowired.
 
-```bash
-php bin/console doctrine:migrations:migrate
-```
-
-**Was passiert:**
-- Tabelle `corporate_governance` wird erstellt
-- Bestehende `governance_model` Daten werden migriert
-- Foreign Keys werden gesetzt (CASCADE DELETE)
-
-### 2. Services prüfen
-
-Alle Services werden automatisch registriert via Symfony's `autoconfigure: true`.
-
-**Überprüfen:**
-```bash
-php bin/console debug:container MultiTenantCheckService
-php bin/console debug:container CorporateStructureService
-```
-
-### 3. Routes testen
-
-```bash
-php bin/console debug:router | grep corporate
-```
-
-**Erwartete Routen:**
-- `tenant_management_corporate_structure` (GET)
-- `tenant_management_set_parent` (POST)
-- `tenant_management_update_governance` (POST)
-- `api_corporate_structure_*` (10 API-Routen)
+**Routen** (alle mit Locale-Präfix, `/de/…`):
+- `tenant_management_corporate_structure` (GET `/admin/tenants/corporate-structure`)
+- `tenant_management_set_parent` (POST, `ROLE_SUPER_ADMIN`)
+- `tenant_management_update_governance` (POST, Admin der Muttergesellschaft)
+- `api_corporate_structure_*` (11 JSON-Routen in `CorporateStructureController`, `ROLE_ADMIN`)
 
 ---
 
@@ -151,6 +128,14 @@ php bin/console debug:router | grep corporate
 ---
 
 ## API-Endpoints
+
+JSON-Endpunkte des Admin-UI (`CorporateStructureController`), keine API-Platform-Ressourcen.
+Pfade tragen das Locale-Präfix (`/de/api/corporate-structure/…`). Schreibende Aufrufe (POST,
+PATCH, DELETE) brauchen eine Browser-Sitzung und den CSRF-Token `corporate_structure` im Header
+`X-CSRF-Token`.
+
+Weitere Routen: `GET …/groups`, `POST …/set-parent`, `PATCH …/governance-model/{id}`,
+`GET …/governance-models`, `GET …/check-access/{targetId}`.
 
 ### Corporate Structure Tree
 ```http
@@ -260,7 +245,7 @@ POST /api/corporate-structure/propagate-context/{id}
 
 ### Tenant Detail Seite
 
-**Route:** `/admin/tenants/show/{id}`
+**Route:** `/admin/tenants/{id}`
 
 **Neue Sektionen:**
 
@@ -326,24 +311,7 @@ CREATE TABLE corporate_governance (
 3. Cache leeren:
    ```bash
    php bin/console cache:clear
-   php bin/console doctrine:cache:clear-metadata
    ```
-
-### Problem: Migration schlägt fehl
-
-**Ursache:** Bestehende Daten inkonsistent
-
-**Lösung:**
-```bash
-# Rollback
-php bin/console doctrine:migrations:migrate prev
-
-# Daten bereinigen
-php bin/console doctrine:query:sql "DELETE FROM corporate_governance"
-
-# Erneut migrieren
-php bin/console doctrine:migrations:migrate
-```
 
 ### Problem: Governance-Rules werden nicht geladen
 
@@ -355,7 +323,7 @@ php bin/console doctrine:migrations:migrate
 3. API-Response analysieren
 
 **Typische Fehler:**
-- 403 Forbidden → Fehlende ROLE_ADMIN
+- 403 Forbidden → Fehlende ROLE_ADMIN, Tenant außerhalb des eigenen Baums oder CSRF-Token fehlt
 - 404 Not Found → Tenant existiert nicht
 - 500 Server Error → Prüfe Logs: `var/log/dev.log`
 
@@ -367,7 +335,7 @@ php bin/console doctrine:migrations:migrate
 
 **Manuell prüfen:**
 ```bash
-php bin/console doctrine:query:sql "
+php bin/console dbal:run-sql "
 SELECT t1.id, t1.name, t2.id as parent_id, t2.name as parent_name
 FROM tenant t1
 LEFT JOIN tenant t2 ON t1.parent_id = t2.id
@@ -406,49 +374,15 @@ WHERE t1.id = t1.parent_id
 
 #### Test 4: Multi-Tenant-Check
 1. Deaktiviere alle Tenants außer einem
-2. Navigiere zu `/admin/tenants`
-3. **Erwartung:** Kein "Konzernstrukturen"-Menüpunkt sichtbar
-4. Aktiviere zweiten Tenant
-5. **Erwartung:** Menüpunkt erscheint wieder
+2. Navigiere zu `/admin/tenants/corporate-structure`
+3. **Erwartung:** Info-Hinweis „nur ein Mandant“
 
-### Automated Tests (Empfohlen)
-
-```php
-// tests/Functional/CorporateStructureTest.php
-public function testSetParentCreatesGovernance(): void
-{
-    $client = static::createClient();
-    $this->loginAsAdmin($client);
-
-    $client->request('POST', '/admin/tenants/1/set-parent', [
-        'parent_id' => 2,
-        'governance_model' => 'hierarchical'
-    ]);
-
-    $this->assertResponseRedirects();
-
-    $governance = $this->entityManager
-        ->getRepository(CorporateGovernance::class)
-        ->findDefaultGovernance($tenant);
-
-    $this->assertNotNull($governance);
-    $this->assertEquals('hierarchical', $governance->getGovernanceModel()->value);
-}
-```
-
-### Performance Tests
-
-**Große Hierarchien (1000+ Tenants):**
+### Automatisierte Tests
 
 ```bash
-# Generiere Testdaten
-php bin/console app:generate-test-tenants 1000
-
-# Messe Performance
-time curl http://localhost/admin/tenants/corporate-structure
+php bin/phpunit tests/Controller/CorporateStructureControllerTest.php \
+    tests/Service/CorporateStructureServiceTest.php tests/Entity/CorporateGovernanceTest.php
 ```
-
-**Erwartete Ladezeit:** < 2 Sekunden
 
 ---
 
@@ -457,40 +391,4 @@ time curl http://localhost/admin/tenants/corporate-structure
 1. **Keine Drag & Drop UI** für Hierarchie-Änderungen
 2. **Keine Bulk-Operations** für Governance-Rules
 3. **Keine Visualisierung** als Baum-Diagramm
-4. **Keine Historie** von Governance-Änderungen
-5. **Keine Benachrichtigungen** bei Propagierung
-
----
-
-## Roadmap
-
-### Version 1.1
-- [ ] Visueller Struktur-Baum mit D3.js
-- [ ] Audit-Log für alle Änderungen
-- [ ] Export als PDF/JSON
-- [ ] Bulk-Import via CSV
-
-### Version 1.2
-- [ ] Rollen-basierte Governance
-- [ ] Workflows für Genehmigungen
-- [ ] Auto-Propagierung bei Changes
-- [ ] Performance-Optimierung (Caching)
-
----
-
-## Support
-
-**Fragen?** Erstelle ein Issue auf GitHub.
-
-**Bugs?** Bitte mit folgenden Infos:
-- Symfony Version
-- PHP Version
-- Browser & Version
-- Fehlermeldung aus `var/log/dev.log`
-- Steps to reproduce
-
----
-
-**Version:** 1.0.0
-**Letzte Aktualisierung:** 2025-01-13
-**Autor:** Claude AI & Development Team
+4. **Keine Benachrichtigungen** bei Propagierung

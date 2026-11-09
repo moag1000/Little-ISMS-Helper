@@ -1,8 +1,5 @@
 # Disaster Recovery Runbook — Little ISMS Helper
 
-**Version:** 1.0  
-**Sprache:** Deutsch (Ops-Team)  
-**Stand:** 2026-04-24  
 **Referenz (Entwickler):** [BACKUP_ARCHITECTURE.md](BACKUP_ARCHITECTURE.md)
 
 ---
@@ -31,25 +28,28 @@
 
 | Kategorie | Enthalten | Hinweis |
 |-----------|-----------|---------|
-| Alle produktiven DB-Zeilen (54 Entities) | Ja | Vollständige Wiederherstellung aller ISMS-Daten |
-| Audit-Log (`AuditLog`) | Ja, wenn `--include-audit-log` | Standard: aktiviert in Admin-UI |
-| User-Sessions (`UserSession`) | Nur wenn explizit gewählt | Standard: deaktiviert |
-| Organisations-Einstellungen (Datensatz `Tenant`) | Ja, auch im Organisations-Backup | Seit 2026-11; ältere Organisations-Backups enthalten sie nicht |
-| Hochgeladene Dateien (Dokumente, Tenant-Logos) | Ja, wenn Backup als ZIP erstellt | `files_included: true` in Metadaten |
+| Alle produktiven DB-Zeilen (`BackupService::PRODUCTIVE_ENTITIES`) | Ja | Vollständige Wiederherstellung aller ISMS-Daten |
+| Audit-Log (`AuditLog`) | Standard: ja | CLI `--no-include-audit-log` schaltet ab |
+| User-Sessions (`UserSession`) | Nur wenn explizit gewählt | Standard: aus |
+| Organisations-Einstellungen (Datensatz `Tenant`) | Ja, auch im Organisations-Backup | Organisations-Backups vor 2026-11 enthalten sie nicht |
+| Nachweisdateien: Dokumente, Dokumentversionen, Schulungsmaterial (`var/uploads/`) | Ja, im ZIP | `files_included: true` in Metadaten |
+| Logos (`public/uploads/`) | Ja, im ZIP | |
 | ManyToMany-Pivot-Tabellen | Ja | Zweiter Pass im Restore |
 
 ### Was ist NICHT im Backup enthalten?
 
 | Kategorie | Nicht enthalten | Grund |
 |-----------|-----------------|-------|
-| `APP_SECRET` | Nein | Sicherheitskritisch, gehört in `.env.local` |
+| `APP_SECRET`, `MFA_ENCRYPTION_KEY`, `APP_AUDIT_HMAC_KEY` | Nein | Schlüssel für verschlüsselte Einstellungen, MFA-Geheimnisse und Audit-Log-Signatur; separat sichern (`.env.local`, in Docker `var/app_secret`) |
 | `.env.local` | Nein | Umgebungsspezifisch |
+| Profilbilder (`public/uploads/`) | Nein | Nach Restore neu hochladen |
+| API-Tokens | Nein | Nach Restore neu erzeugen (`app:api-token:create`) |
 | `var/cache/` | Nein | Regenerierbar via `php bin/console cache:clear` |
 | `var/log/` | Nein | Operational Logs, kein Restore-Bedarf |
 | Benutzerpasswörter | Nein | Sicherheitsfeature — Felder `password`, `salt`, `mfaSecret` werden explizit ausgeschlossen |
 | `resetToken`, `resetTokenExpiresAt` | Nein | Nicht persistent relevant |
 
-> **Hinweis zu Passwörtern:** Nach einem Restore müssen alle Benutzer ihr Passwort neu setzen oder es muss über die CLI ein Admin-Passwort gesetzt werden (siehe [Szenario B](#szenario-b-gleicher-host-frische-db--db-korrupt-oder-gelöscht)).
+> **Hinweis zu Passwörtern:** Benutzer, die in der Ziel-Datenbank schon existieren, behalten ihr Passwort. Benutzer, die der Restore neu anlegt, erhalten das Passwort aus dem Restore-Formular ("Admin-Passwort"). Der CLI-Restore setzt keins.
 
 ---
 
@@ -57,46 +57,44 @@
 
 ### 2.1 Über die Admin-UI
 
-1. In der Anwendung anmelden als `ROLE_SUPER_ADMIN` (globales Backup) oder `ROLE_ADMIN` (Tenant-Backup)
+1. In der Anwendung anmelden als `ROLE_SUPER_ADMIN` (globales Backup) oder `ROLE_ADMIN` (Backup der eigenen Organisation)
 2. Navigieren zu **Admin > Datenverwaltung > Backup**
 3. Optionen wählen:
    - **Audit-Log einschließen** (empfohlen: aktiviert)
    - **User-Sessions einschließen** (Standard: deaktiviert)
    - **Tenant-Scope** (leer = global; nur SUPER_ADMIN kann global)
 4. Auf **Backup erstellen** klicken
-5. Download des erzeugten `.zip` oder `.json.gz` über den Download-Button
+5. Der Job läuft im Hintergrund; danach Download des `.zip` (oder `.json.gz` ohne Dateien) über den Download-Button
 
 **URL:** `/admin/data/backup` (lokale Instanz: `https://isms.example.com/admin/data/backup`)
 
-### 2.2 CLI-Backup via `app:backup:create` und `app:backup:restore`
+### 2.2 Automatisches Backup und CLI
 
-Die Backup-Funktionalität ist über die Admin-UI (`AdminBackupController`) sowie über dedizierte Symfony-Console-Commands erreichbar:
+Der Scheduler erstellt jede Nacht um 02:00 ein instanzweites Backup (`app:backup:create`) und
+löscht um 02:30 Backups älter als 30 Tage; die letzten 10 bleiben immer (`app:backup:prune`).
+Voraussetzung: ein laufender Worker ([HOSTING_WORKER.md](../user-guide/HOSTING_WORKER.md)).
+`var/backups/` liegt auf demselben Server — täglich auf externen Speicher kopieren.
 
 ```bash
-# Backup über CLI erstellen
-php bin/console app:backup:create
+# Backup von Hand
+php bin/console app:backup:create                    # instanzweit, mit Audit-Log und Dateien
+php bin/console app:backup:create --tenant=ACME      # nur eine Organisation (Kennung)
+php bin/console app:backup:create --notify=ops@example.com
 
-# Backup über CLI wiederherstellen
-php bin/console app:backup:restore var/backups/backup_YYYY-MM-DD_HH-MM-SS.json.gz
+# Restore von Hand
+php bin/console app:backup:restore var/backups/backup_YYYY-MM-DD_HH-ii-ss.zip --dry-run
+php bin/console app:backup:restore var/backups/backup_YYYY-MM-DD_HH-ii-ss.zip --clear-before-restore
+# weitere Optionen: --tenant=<Kennung>, --skip-entities=AuditLog,UserSession, --best-effort, --json
+
+# Beschädigtes Backup reparieren
+php bin/console app:backup:repair --help
 ```
 
-Für automatisierte (cron-basierte) Backups kann die API direkt aufgerufen werden:
+**Ergänzend: Datenbank-Dump und Dateien**
 
 ```bash
-# Backup über HTTP-API (erfordert gültige Session / CSRF-Token)
-# Empfohlen: Backup über Admin-UI + anschließend Download per curl
-curl -u admin:password \
-  -X POST "https://isms.example.com/admin/data/backup/create" \
-  -d "_token=CSRF_TOKEN&include_audit_log=1&include_user_sessions=0" \
-  -o backup_$(date +%Y-%m-%d).zip
-```
-
-**Alternativ: Datenbank-Dump als Ergänzung**
-
-```bash
-# MySQL-Dump als einfaches Backup
-mysqldump -h localhost -u DB_USER -pDB_PASS DB_NAME \
-  | gzip > /backup/isms_db_$(date +%Y-%m-%d).sql.gz
+mysqldump --single-transaction -u DB_USER -p DB_NAME | gzip > /backup/isms_db_$(date +%F).sql.gz
+tar czf /backup/isms_uploads_$(date +%F).tar.gz var/uploads public/uploads
 ```
 
 ### 2.3 Backup-Dateinamen und Speicherort
@@ -105,7 +103,7 @@ Backups werden in `var/backups/` gespeichert:
 
 | Format | Dateinamen-Muster | Beschreibung |
 |--------|-------------------|--------------|
-| ZIP mit Dateien | `backup_YYYY-MM-DD_HH-ii-ss.zip` | Format 2.0, enthält DB + Uploads |
+| ZIP mit Dateien | `backup_YYYY-MM-DD_HH-ii-ss.zip` | Format 2.0, enthält DB + Dateien |
 | Komprimiertes JSON | `backup_YYYY-MM-DD_HH-ii-ss.json.gz` | Format 2.0/1.0, nur DB |
 | JSON (unkomprimiert) | `backup_YYYY-MM-DD_HH-ii-ss.json` | Fallback ohne ext-zlib |
 | Hochgeladenes Backup | `uploaded_YYYY-MM-DD_HH-ii-ss.*` | Extern hochgeladene Backups |
@@ -176,16 +174,16 @@ cp /mnt/backup/backup_2026-04-20_03-00-00.zip var/backups/
 #    - "Admin-Passwort nach Restore setzen": neues temporäres Passwort eintragen
 #    - Dry-Run: erst testen, dann echten Restore starten
 
-# 6. Admin-Passwort alternativ über CLI setzen:
+# 6. Fehlt danach ein Login: neuen Admin anlegen (nur für eine noch nicht vorhandene E-Mail)
 php bin/console app:setup-permissions \
-  --admin-email=admin@example.com \
-  --admin-password=TemporarySecurePassword123!
+  --admin-email=notfall-admin@example.com \
+  --admin-password='TemporarySecurePassword123'
 
 # 7. Cache leeren und Anwendung prüfen
 php bin/console cache:clear
 ```
 
-> **Wichtig:** Benutzerpasswörter werden aus Sicherheitsgründen nicht im Backup gespeichert. Alle Benutzer müssen ihre Passwörter nach dem Restore zurücksetzen.
+> **Wichtig:** Benutzerpasswörter stehen nicht im Backup. Alle neu angelegten Benutzer erhalten das temporäre Passwort aus Schritt 5 und müssen es ändern.
 
 ---
 
@@ -196,9 +194,9 @@ php bin/console cache:clear
 ```bash
 # === AUF QUELL-HOST (alter Server) ===
 
-# 1. APP_SECRET sichern — wird für Entschlüsselung von SystemSettings benötigt
-grep APP_SECRET .env.local
-# Beispiel-Output: APP_SECRET=a1b2c3d4e5f6...
+# 1. Schlüssel sichern — APP_SECRET (SystemSettings), MFA_ENCRYPTION_KEY (MFA), APP_AUDIT_HMAC_KEY (Audit-Log)
+grep -E '^(APP_SECRET|MFA_ENCRYPTION_KEY|APP_AUDIT_HMAC_KEY|DEFAULT_URI)=' .env.local
+# Docker: docker compose exec app cat /var/www/html/var/app_secret
 
 # 2. Aktuelles Backup erstellen (Admin-UI oder Datenbank-Dump)
 #    Backup-Datei herunterladen / auf Ziel-Host übertragen
@@ -214,10 +212,13 @@ cd /var/www/isms
 composer install --no-dev --optimize-autoloader
 php bin/console importmap:install
 
-# 4. .env.local anlegen — APP_SECRET vom Quell-Host übertragen!
+# 4. .env.local anlegen — Schlüssel vom Quell-Host übernehmen
 cat > .env.local << 'EOF'
-APP_SECRET=a1b2c3d4e5f6...       # MUSS identisch mit Quell-Host sein!
+APP_SECRET=a1b2c3d4e5f6...            # identisch mit Quell-Host
+MFA_ENCRYPTION_KEY=...                # falls auf dem Quell-Host gesetzt
+APP_AUDIT_HMAC_KEY=...                # falls auf dem Quell-Host gesetzt
 DATABASE_URL=mysql://user:pass@localhost:3306/isms_new
+DEFAULT_URI=https://isms.example.com  # öffentliche URL, für Links in Mails
 EOF
 
 # 5. Neue DB + Schema
@@ -228,19 +229,20 @@ php bin/console doctrine:migrations:migrate --no-interaction
 mkdir -p var/backups
 cp /tmp/backup_2026-04-24_*.zip var/backups/
 
-# 7. Restore über Admin-UI oder nach erstem Setup:
-#    Zuerst Setup-Wizard durchlaufen (erstellt initialen Admin-User)
-#    Dann: Admin > Datenverwaltung > Backup > Backup hochladen > Wiederherstellen
-#    "Bestehende Daten löschen": JA
-#    "Admin-Passwort": temporäres Passwort setzen
+# 7. Restore im Setup-Wizard: /setup → Schritt 3 "Backup wiederherstellen"
+#    (Backup hochladen, temporäres Admin-Passwort für die wiederhergestellten Benutzer)
+#    Alternativ nach erstem Setup: Admin > Datenverwaltung > Backup > hochladen > Wiederherstellen,
+#    "Bestehende Daten löschen": JA, "Admin-Passwort": temporäres Passwort
 
-# 8. Datei-Uploads synchronisieren (falls Backup kein ZIP mit Dateien)
+# 8. Dateien synchronisieren (falls Backup kein ZIP mit Dateien; Profilbilder immer)
+rsync -av user@old-server:/var/www/isms/var/uploads/ /var/www/isms/var/uploads/
 rsync -av user@old-server:/var/www/isms/public/uploads/ /var/www/isms/public/uploads/
 
 # 9. Cache leeren
 php bin/console cache:clear
 
-# 10. Webserver-Konfiguration anpassen (document root: public/)
+# 10. Webserver-Konfiguration anpassen (document root: public/), Worker-Cron einrichten
+#     (../user-guide/HOSTING_WORKER.md)
 ```
 
 ---
@@ -291,10 +293,9 @@ Bei einem tenant-scoped Backup wurden globale Entitäten (Role, Permission, Syst
 # Entities angelegt, ManyToMany-Pivot-Tabellen befüllt),
 # rollt aber die Transaktion am Ende zurück → keine Daten werden geändert.
 
-# Typische Ausgabe nach Dry-Run:
-# ✅ "Testlauf erfolgreich abgeschlossen (keine Daten wurden geändert)"
-# ⚠️  Warnungen: Schema-Versionsunterschiede, fehlende optionale Felder
-# ❌ Fehler: Ungültige Backup-Version, beschädigte Daten
+# Ergebnis nach Dry-Run: Statistik pro Entity, Warnungen (Schema-Versionsunterschiede,
+# fehlende optionale Felder) und Fehler (ungültige Backup-Version, beschädigte Daten).
+# CLI: php bin/console app:backup:restore <datei> --dry-run
 ```
 
 **Validierungsschritte (Dry-Run + Validate):**
@@ -344,17 +345,10 @@ echo "APP_SECRET=abc123..." >> .env.local
 php bin/console cache:clear
 ```
 
-**Option 2 — Verschlüsselte SystemSettings beim Restore überspringen:**
+**Option 2 — SystemSettings beim Restore überspringen:**
 ```bash
-# Via RestoreService-Options: 'skip_entities' => ['SystemSettings']
-# Oder Admin-UI-Checkbox "SystemSettings überspringen" (falls gesetzt).
-# Nach Restore: Admin > Einstellungen > SystemSettings manuell befüllen.
-```
-
-**Option 3 — Backup ohne verschlüsselte Felder erstellen (bei bekannten Problemen):**
-```bash
-# Wenn BackupEncryptionService nicht konfiguriert ist, werden Felder
-# unverschlüsselt gespeichert. Backup dann auf sicherem Kanal übertragen.
+php bin/console app:backup:restore <datei> --skip-entities=SystemSettings
+# Danach die Einstellungen (SMTP, API-Keys, OAuth) in der Admin-UI neu eintragen.
 ```
 
 ---
@@ -469,7 +463,7 @@ php bin/console doctrine:migrations:execute \
 | `Encrypted secret could not be decrypted` | APP_SECRET stimmt nicht überein | Siehe [Abschnitt 4](#4-app_secret-bei-wiederherstellung) |
 | `EntityManager is closed` | DB-Constraint-Verletzung während Restore | Option "Bestehende Daten löschen" aktivieren und erneut versuchen |
 | `ZIP backup does not contain backup.json` | Beschädigte ZIP-Datei | Backup neu herunterladen |
-| `Cannot decompress backup: ext-zlib not available` | PHP-Extension fehlt | `apt install php8.4-zip` / `yum install php-zlib` |
+| `Cannot decompress backup: ext-zlib not available` | PHP-Extension fehlt | PHP mit zlib/zip installieren (z. B. `apt install php8.4-zip`) |
 | `Backup file not found` | Falscher Pfad oder Datei gelöscht | Backup erneut hochladen oder von Backup-Storage kopieren |
 | Schema-Version-Warnung | Backup älter/neuer als aktuelles Schema | Nicht blockierend — Felder mit Defaults befüllen |
 | `Cross-Tenant-Restore-Warnung` | Backup-Tenant != Ziel-Tenant | Bei Absicht: ignorieren; sonst falsches Backup gewählt |
@@ -505,7 +499,7 @@ php bin/console cache:clear --env=prod
 
 | Aktion | Häufigkeit | Verantwortlich |
 |--------|-----------|----------------|
-| Automatisches Backup erstellen | Täglich (Cron via HTTP oder mysqldump) | Ops |
+| Automatisches Backup erstellen | Täglich 02:00 (Scheduler, `app:backup:create`) | Ops: Worker läuft |
 | Backup-Datei in externen Speicher kopieren | Täglich | Ops |
 | Restore-Drill in Staging | Monatlich | ISMS-Admin |
 | Vollständiger Disaster-Recovery-Test | Quartalsweise | ISMS-Admin + IT |
@@ -526,9 +520,9 @@ php bin/console cache:clear --env=prod
 # 6. Funktionsprüfung nach Restore:
 #    - Anmeldung möglich (temporäres Passwort)
 #    - Risiken, Assets, Compliance-Daten vorhanden
-#    - Dokumente abrufbar (falls ZIP-Backup)
+#    - Dokumente und Schulungsmaterial abrufbar (falls ZIP-Backup)
 #    - Audit-Log vorhanden (falls eingeschlossen)
-# 7. Ergebnis im ISMS-Dokument festhalten (ISO 27001 Clause 8.7)
+# 7. Ergebnis im ISMS-Dokument festhalten (ISO 27001 A.8.13)
 ```
 
 ### RTO / RPO Orientierungswerte

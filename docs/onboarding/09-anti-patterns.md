@@ -91,8 +91,8 @@ document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
 }));
 ```
 
-**Gate:** `check_aurora_anti_patterns.py` catches direct Bootstrap Modal JS
-instantiation outside approved patterns.
+**Gate:** `check_aurora_legacy_markup.py` (Gate 62) rejects `data-bs-toggle="modal"` and
+`bootstrap.Modal` where the `fa-modal` dispatcher applies.
 
 ---
 
@@ -295,6 +295,6 @@ $lifecycleService->transition(
 );
 ```
 
-**Gate:** `check_status_enum_yaml_parity.py` — catches direct status
-assignments that bypass the lifecycle. PHPStan custom rule in
-`tools/phpstan/Rule/` also enforces this at static analysis time.
+**Gate:** PHPStan rule `tests/PHPStan/Rule/NoDirectSetStatusRule.php` (entity list from
+`EntityTypeRegistry::managedEntityClasses()`). `check_status_enum_yaml_parity.py` (Gate 42) only checks
+that status enum cases match the workflow YAML places.

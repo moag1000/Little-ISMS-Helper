@@ -145,6 +145,104 @@ Nur gegen Wegwerf-Datenbanken verwenden.
 
 ## 🔍 Qualitätssicherung
 
+### Gate-Übersicht
+
+Alle Gates laufen im `code-quality`-Job von `.github/workflows/ci.yml`; die Nummer steht im Step-Namen.
+Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `check_twig_macro_scope.py`,
+`check-dql-mismatches.php` und `check_twig_entity_properties.py`. Nicht in CI (Handwerkzeuge):
+`check_translations.py`, `verify_translations_v2.py`, `check_missing_translations.sh`, `check_aurora_icons_only.py`,
+`check_aurora_v4.sh`, `audit_eu_mappings.py`.
+
+| Gate | Skript (`scripts/quality/`) | Prüft |
+|---|---|---|
+| 1 | `check_twig_macro_imports.py` | Twig macro import-order |
+| 2 | `check_twig_embed_domain.py` | Embed-block trans_default_domain |
+| 3 | `check_migration_reserved_words.sh` | MariaDB-11 reserved-words in migrations |
+| 4 | `check_migration_transactional.sh` | DDL-migrations isTransactional()=false |
+| 5 | `check_aurora_anti_patterns.py` | Aurora anti-patterns on cards |
+| 6 | `check_missing_translations.py` | Missing translation keys |
+| 7 | `check_no_competitor_names.sh` | No competitor names |
+| 8 | `check_double_locale_prefix.py` | No double /{_locale}/ prefix in controllers |
+| 9 | `check_alva_hint_placeholders.py` | Alva-Hint placeholder consistency |
+| 10 | `check_route_wildcard_collisions.py` | No wildcard-vs-literal route collisions |
+| 11 | `check_module_gating.py` | Module-gating discipline (P-6) |
+| 12 | `check_flash_domain.py` | Flash translation-domain (P-5) |
+| 13 | `check_freetext_legacy.py` | Freetext-legacy heuristic (P-15) |
+| 14 | `check_workflow_configs.sh` | Workflow configs valid |
+| 15 | `check_aurora_icon_names.py` | Aurora icon-name validity |
+| 16 | `check_no_bi_classes.py` | No Bootstrap-Icons bi-* classes |
+| 17 | `check_nested_forms.py` | No nested <form> tags |
+| 18 | `check_route_methods.py` | #[Route] requires methods: arg |
+| 19 | `check_legacy_route_import.py` | Forbid legacy Routing\\Annotation\\Route import |
+| 20 | `check_ddl_transactional.py` | DDL migrations need isTransactional()=false |
+| 21 | `check_bool_accessor_usage.py` | Bool-property accessor mismatch |
+| 22 | `check_no_generic_throws.py` | Forbid generic exception throws |
+| 23 | `check_translation_dynamic_keys.py` | Translation dynamic-key prefix registry |
+| 24 | `check_audit_log_tenant.py` | AuditLog must set tenant |
+| 25 | `check_god_class_size.py` | God-class size ratchet (baseline may only shrink) |
+| 26 | `check_translation_nesting.py` | Translation top-level keys match domain |
+| 27 | `check_em_writes_in_controller.py` | No EntityManager writes in controllers |
+| 28 | `check_currentuser_test_args.py` | #[CurrentUser] action test-arg count |
+| 29 | `check_form_render_completeness.py` | Form-render-completeness (fields flowing past submit) |
+| 30 | `check_macro_arg_arity.py` | Twig macro positional-arg arity |
+| 31 | `check_nested_twig_in_string.py` | Nested Twig print-expr inside string-literal macro args |
+| 32 | `check_version_column_explicit.py` | #[ORM\\Version] columns require explicit type + name |
+| 33 | `check_no_prepare_execute_migrations.py` | No PREPARE/EXECUTE dynamic SQL in migrations |
+| 34 | `check_raw_json_textarea.py` | No raw TextareaType for JSON+array entity columns |
+| 35 | `check_aurora_utility_misuse.py` | No Bootstrap size utilities on Aurora components |
+| 36 | `check_route_trailing_slash.py` | #[Route] paths must not have trailing slash |
+| 37 | `check_dql_non_portable.py` | No non-portable DQL date functions |
+| 40 | `check_auto_form_field_whitelist.py` | _auto_form include requires explicit field whitelist |
+| 41 | `check_admin_role_scope.py` | Admin controllers declare consistent role-scope guard |
+| 42 | `check_status_enum_yaml_parity.py` | Status-Enum cases match Symfony Workflow YAML places |
+| 43 | `check_backup_entity_coverage.py` | Backup entity coverage (every src/Entity/*.php is backed up or has documented exclusion) |
+| 44 | `check_translation_issues.py` | Translation issues (hardcoded text / missing domains in Twig) — baseline-gated |
+| 45 | `check_form_template_fields.py` | FormType <-> Template field-reference drift |
+| 46 | `check_setter_nullability.py` | Entity setter param nullability matches property |
+| 47 | `check_notblank_on_not_null.py` | NotBlank/NotNull Assert on NOT NULL scalar columns |
+| 48 | `check_entity_reserved_words.py` | No SQL reserved-keyword column names in entities |
+| 50 | `check_disabled_mapped_pair.py` | disabled FormField without mapped=>false |
+| 52 | `check_twig_unsupported_tags.py` | unsupported Twig 3.x tags (continue / break) |
+| 53 | `check_template_entity_getters.py` | renamed entity getters used in templates |
+| 54 | `check_nav_area_parity.py` | sidebar main-area highlight parity |
+| 55 | `check_breadcrumb_url_key.py` | breadcrumb crumbs must link via url: |
+| 56 | `check_template_route_refs.py` | template path()/url() routes must exist |
+| 57 | `check_no_direct_job_messenger.py` | controllers must not dispatch ExecuteJobMessage directly |
+| 58 | `check_compliance_catalog.py` | compliance-catalog wiring consistency |
+| 59 | `check_form_sections.py` | FormType SectionPolicy |
+| 60 | `check_fixture_unread_keys.py` | fixture keys no loader reads |
+| 61 | `check_design_tokens_sync.py` | CSS tokens in sync with design-system artifact |
+| 62 | `check_aurora_legacy_markup.py` | Aurora legacy-markup ratchet |
+| 63 | `check_yaml_duplicates.py` | no duplicate keys in translation YAML |
+| 64 | `check_json_catch_throwable.py` | JSON actions catch Throwable |
+| 65 | `check_csrf_state_changing.py` | state-changing actions need CSRF |
+| 67 | `check_native_dialogs.py` | no native browser dialogs, no inline JavaScript |
+| 68 | `check_entity_manager_reset.py` | closed EntityManager recovered only via EntityManagerRecovery |
+| 69 | `check_unreferenced_ui.py` | no unreferenced templates |
+| 70 | `check_settings_readers.py` | every admin setting has a reader |
+| 71 | `check_copy_slop.py` | UI copy rules (no 'erfolgreich'/'successfully', no '!', title suffix only in base) |
+| 72 | `check_tenant_null_rows.py` | no tenant-less rows the TenantFilter hides |
+| 73 | `check_list_skeleton.py` | list pages use the list skeleton (_fa_list_page) |
+| 74 | `check_kpi_catalog.py` | management KPIs only via the KPI catalog |
+| 75 | `check_show_skeleton.py` | detail pages use the detail skeleton |
+| 76 | `check_trans_default_masking.py` | no \|trans\|default over a missing key |
+| 77 | `check_date_display.py` | shown dates use \|fa_date / \|fa_datetime |
+| 78 | `check_page_semantics.py` | page semantics and one status vocabulary |
+| 79 | `check_stimulus_wiring.py` | every Stimulus reference resolves, no dead controllers |
+| 80 | `check_gdpr_transfer_zones.py` | GDPR transfer zones current and in one place |
+| 81 | `check_orm_sort_direction.py` | ORM sort directions use SortDirection |
+| 82 | `check_workflow_roles.py` | workflow approvers and recipients are real roles |
+| 83 | `check_entity_method_exists.py` | no method_exists() on typed entities |
+| 84 | `check_csv_formula_injection.py` | spreadsheet cells go through CsvSanitizer |
+| 85 | `check_fulfillment_single_writer.py` | fulfilment values have one writer |
+| 86 | `check_requirement_controls_scope.py` | controls behind a requirement come from the tenant-scoped engine |
+| 87 | `check_risk_band_literals.py` | risk bands come from the organisation's risk scale |
+| 89 | `check_api_module_fields.py` | API fields of an optional module carry #[ModuleField] |
+| 90 | `check_job_id_access.py` | every route that reads an async job by id checks its owner |
+| 91 | `check_mfa_login_state.py` | one MFA state per login, no hand-made login, /setup closed while MFA is outstanding |
+| 92 | `check_raw_output.py` | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
+| 93 | `check_sso_claim_policy.py` | every SSO path checks its claims through SsoClaimPolicy |
+
 ### Mutationsgegenprobe der Dauertests (T, Welle 7)
 
 Frage je Test und Gate: Wird er rot, wenn man die geschützte Eigenschaft absichtlich bricht? Wer
@@ -184,7 +282,7 @@ python3 check_translations.py
 - ✅ Ungenutzte Schlüssel
 - ✅ Formatierungs-Probleme
 
-**Dokumentation:** [docs/reports/TRANSLATION_CONSISTENCY_REPORT.md](../docs/reports/TRANSLATION_CONSISTENCY_REPORT.md)
+**CI-Integration:** keine (Handwerkzeug).
 
 ---
 
@@ -204,7 +302,7 @@ python3 verify_translations_v2.py
 - ✅ HTML-Tag-Konsistenz
 - ✅ Parameter-Matching
 
-**Dokumentation:** [docs/reports/TRANSLATION_VERIFICATION_REPORT.md](../docs/reports/TRANSLATION_VERIFICATION_REPORT.md)
+**CI-Integration:** keine (Handwerkzeug).
 
 ---
 
@@ -862,11 +960,11 @@ python3 check_translation_issues.py > translation_report.txt
 ```
 
 **Findet:**
-- ✅ **Hardcoded Text** - Text der übersetzt werden sollte (156 Issues)
-- ✅ **Untranslated Attributes** - title, aria-label, placeholder ohne Übersetzung (41 Issues)
-- ✅ **Missing Trans Params** - `|trans` ohne `({}, 'domain')` (4.340 Issues)
-- ✅ **Missing Domain** - Übersetzungen ohne explizite Domain (78 Issues)
-- ✅ **Invalid Domain** - Verwendung nicht existierender Domänen (4 Issues)
+- ✅ **Hardcoded Text** - Text der übersetzt werden sollte
+- ✅ **Untranslated Attributes** - title, aria-label, placeholder ohne Übersetzung
+- ✅ **Missing Trans Params** - `|trans` ohne `({}, 'domain')`
+- ✅ **Missing Domain** - Übersetzungen ohne explizite Domain
+- ✅ **Invalid Domain** - Verwendung nicht existierender Domänen
 
 **Output-Beispiel:**
 ```
@@ -874,21 +972,16 @@ python3 check_translation_issues.py > translation_report.txt
    Line 42: Hardcoded text: 'Dashboard'
    💡 Suggestion: Use translation: {{ 'key'|trans({}, 'domain') }}
 
-SUMMARY BY TYPE
-  HARDCODED_TEXT..........................  156 issue(s)
-  MISSING_TRANS_PARAMS.................... 4340 issue(s)
-  NO_DOMAIN...............................   78 issue(s)
-  UNTRANSLATED_ATTRIBUTE..................   41 issue(s)
-  INVALID_DOMAIN..........................    4 issue(s)
-  TOTAL................................... 4619 issue(s)
 ```
 
 **Features:**
 - Erkennt Hardcoded English text automatisch
-- Validiert gegen 49 bekannte Translation Domains
+- Validiert gegen die vorhandenen Translation Domains (`translations/*.yaml`)
 - Prüft Accessibility-Attribute (aria-label, etc.)
 - Gibt konkrete Verbesserungsvorschläge
 - Gruppiert Issues nach Typ und Datei
+
+**CI-Integration:** Gate 44 im `code-quality`-Job: jeder Fund (Datei:Zeile) muss in `baselines/translation_issues.txt` stehen.
 
 **Best Practices Guide:** Siehe Output für Beispiele und `CLAUDE.md` für Domain-Liste
 
@@ -909,7 +1002,7 @@ chmod +x license-report.sh
 
 **Generiert:**
 - ✅ Detaillierter Lizenz-Report (docs/reports/license-report.md)
-- ✅ Compliance-Status (163 Packages)
+- ✅ Compliance-Status aller Packages
 - ✅ Lizenzübersicht (MIT, BSD, Apache, LGPL)
 
 **Dokumentation:** [docs/setup/SETUP_TOOLS.md#4-license-reportsh](../docs/setup/SETUP_TOOLS.md#4-license-reportsh)
@@ -1017,8 +1110,3 @@ cd scripts/deployment && chmod +x deployment-check.sh && ./deployment-check.sh
 - **Deployment-Dokumentation:** [../docs/deployment/](../docs/deployment/)
 - **Issue Tracker:** [GitHub Issues](https://github.com/moag1000/Little-ISMS-Helper/issues)
 
----
-
-**Stand:** 2025-11-12
-**Version:** 1.0
-**Autor:** Little ISMS Helper Team

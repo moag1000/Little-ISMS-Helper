@@ -1,5 +1,9 @@
 # 🚀 UI/UX Quick Start Guide
 
+> **Stand 2025, teils veraltet.** Aktuelle Komponenten: Aurora-v4-Makros `templates/_components/_fa_*.html.twig`
+> (Liste in `CLAUDE.md`, "Aurora v4 Components"), Live-Vorschau `/dev/design-system`. Bootstrap-Markup (`btn btn-*`, `badge bg-*`,
+> `alert alert-*`) lässt CI-Gate 62 scheitern.
+
 ## Was ist neu?
 
 Das Little-ISMS-Helper hat ein **komplettes UI/UX-Upgrade** erhalten mit modernen 2024/2025 Best Practices.
@@ -73,9 +77,9 @@ g + i = Incidents
 
 ## 📚 Mehr Infos
 
-**Vollständige Dokumentation**: Siehe `docs/UI_UX_IMPLEMENTATION.md`
+**Vollständige Dokumentation**: Siehe [`UI_UX_IMPLEMENTATION.md`](UI_UX_IMPLEMENTATION.md)
 
-**Beispiel-Implementation**: Siehe `templates/asset/index_modern.html.twig`
+**Beispiel-Implementation**: Siehe `templates/asset/index.html.twig`
 
 ---
 
@@ -137,7 +141,7 @@ Prüfe, ob die CSS-Datei in `templates/_aurora_styles.html.twig` (und in gleiche
 1. ✅ **Lerne die Shortcuts**: Drücke `?`
 2. ✅ **Nutze Command Palette**: Drücke `⌘P`
 3. ✅ **Modernisiere deine Module**: Nutze die Komponenten
-4. ✅ **Lies die Vollständige Doku**: `docs/UI_UX_IMPLEMENTATION.md`
+4. ✅ **Lies die Vollständige Doku**: `docs/ui-ux/UI_UX_IMPLEMENTATION.md`
 
 ---
 

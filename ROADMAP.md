@@ -1514,13 +1514,14 @@ Die Roadmap oben endet erzählerisch bei Phase 8G (Apr 2026). Seither sind die R
 > Quelldokumente: interne Plan-Docs (Markt-Positionierungs- und DACH-Tiefen-Review, Jun 2026), nicht im Repository.
 
 ### Code-Härtung (Markt-Review P2/P3)
-- 📅 Per-Tenant-Modul-Gating (`isModuleActive` ist aktuell global) → Voraussetzung für Holding-Framework-Mandat
-- 📅 API-M2M-Auth (aktuell nur Session) → Enterprise-Integrationsfähigkeit
+- ✅ Per-Tenant-Modul-Gating (`ModuleConfigurationService`, Modulauswahl je Organisation)
+- ✅ API-M2M-Auth (Bearer-API-Tokens, Firewall `api_token`, auch für `/mcp`)
 - 📅 Evidence-Kaskade: CRF-Leg verdrahten (aktuell `return []`-Stub) → echtes Cross-Framework-Re-Verify
 - 📅 Maturity-Aggregation/Heatmap rendern · ROI-Counter verdrahten · Custom-Rollen tenant-scopen · Hardcoded-DE-Leaks bereinigen
 
 ### Notification-Follow-ups (P1-4)
-- 📅 Durabler Retry + E-Mail-Digest — brauchen `entityState`-Persistenz auf `NotificationDelivery` (Schema-Add)
+- ✅ E-Mail-Digest (`ObligationReminderService`, Tages-Digest je Organisation)
+- 📅 Durabler Retry für Benachrichtigungen
 
 ### DACH-Vertiefung (Moat) — priorisiert
 - 📅 DORA Major-Incident-Auto-Klassifizierer (CDR 2024/1772) + 4h-Initial-Report-Deadline-Tracking
@@ -1535,7 +1536,7 @@ Die Roadmap oben endet erzählerisch bei Phase 8G (Apr 2026). Seither sind die R
 - 📅 GSTOOL-Migrationspfad als Pitch (Alt-Tool-Sunset 2027)
 
 ### Tool-Feature in Vorbereitung
-- 🚧 **Ressourcenplanung auf Zeitstrahl** (ISO 27001 Cl. 6.2 Ziele-Planung + Cl. 7.1 Ressourcen) — personen-/team-zentrischer Zeitstrahl, der Maßnahmen-Tracking (16 Quellen via `MyDayAggregator`) mit ISMS-Zielen + `requiredResources` verheiratet. **Design-Vorbereitung läuft.**
+- ✅ **Ressourcenplanung** (ISO 27001 Cl. 6.2 + 7.1) — Planungsbereich `/planning` (Teams, Roadmap-Gruppen, Kapazität; Quellen über `Planning\Source`).
 
 ---
 
@@ -1566,7 +1567,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 | Metrik | Aktuell | Ziel | Status |
 |--------|---------|------|--------|
-| **Test Coverage** | ~65% | 80%+ | 🔄 In Arbeit |
+| **Test Coverage** | CI-Ausgabe (Warnschwelle 40 %) | 60 %+ | 🔄 In Arbeit |
 | **Test Success Rate** | 100% | 100% | ✅ Erreicht |
 | **PHP Syntax Errors** | 0 | 0 | ✅ Erreicht |
 | **Twig Template Errors** | 0 | 0 | ✅ Erreicht |
@@ -1574,8 +1575,8 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 | **i18n Abdeckung** | 100% | 100% | ✅ Erreicht |
 
 ### Test Coverage Verbesserung (Backlog)
-- 📅 Service Tests für alle 130+ Services
-- 📅 Controller Tests für alle 112 Controllers
+- 📅 Service Tests für alle Services
+- 📅 Controller Tests für alle Controller
 - 📅 Repository Tests für komplexe Queries
 - 📅 Integration Tests für Workflows
 
@@ -1634,8 +1635,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 ---
 
-**Stand:** 2026-06-06
-**Version:** Release-Linie `v3.x` (letzter getaggter Release `v3.10.0`, 2026-05-31; `v3.11` im Zulauf). `main` @ #901.
+**Version:** Release-Linie `v3.x` (aktueller Stand: `.release-please-manifest.json`, Details: [CHANGELOG.md](CHANGELOG.md)).
 **Letzte großen Stränge:** FairyAurora-v4-Design-System · Lifecycle-Foundation + Workflow-YAML-Unification (15 reg. Workflows) · schema-getriebener Bulk-Import (26 Entities) · Alva-Hint-System + Deep-Links (#895/#897) · Sicherheits-Härtung / Dead-Config geschlossen (MFA-/SSO-Enforcement, SSO-Role-Sync, Notification-Event-Bus — #900/#901) · DACH-Regulatorik-Tiefe (C5:2026, KRITIS, NIS2-UmsuCG, DORA RoI+TLPT, TISAX, BDSG) · Datenschutz-Audit abgeschlossen. Details: [CHANGELOG.md](CHANGELOG.md).
 **Backlog:** siehe „Strategischer Backlog (Jun 2026)" oben — gespeist aus Markt-Positionierungs- und DACH-Tiefen-Audit (interne Plan-Docs).
-**Nächste Aktualisierung:** Nach Cutting `v3.11.0` bzw. Abschluss eines Backlog-Strangs.
+**Nächste Aktualisierung:** nach Abschluss eines Backlog-Strangs.

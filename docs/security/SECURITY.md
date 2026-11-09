@@ -7,7 +7,7 @@ This document describes the security features implemented in Little ISMS Helper,
 ### A01:2021 – Broken Access Control ✅
 
 **Implementation:**
-- **Voters for fine-grained access control:**
+- **Voters for fine-grained access control** (`src/Security/Voter/`, selection):
   - `DocumentVoter` - Document access control with multi-tenancy
   - `AssetVoter` - Asset access control with multi-tenancy
   - `RiskVoter` - Risk access control with multi-tenancy
@@ -19,19 +19,33 @@ This document describes the security features implemented in Little ISMS Helper,
   - `RoleVoter` - Role management access control
   - `TagVoter` - Tag access control
   - `UserVoter` - User management access control
+  - `RecordResponsibleVoter` - "role OR responsible" for reminded actions
+  - `AsyncJobVoter` - job status and downloads only for the job's owner (or `ROLE_SUPER_ADMIN`)
+  - `ReportAccessVoter`, `GlobalCatalogueVoter`, `TenantScopedAdminVoter`, `SwitchUserVoter`
 
 - **Authorization checks:**
-  - `#[IsGranted('ROLE_USER')]` on all controllers
-  - `$this->denyAccessUnlessGranted('view', $entity)` for resource-level permissions
-  - Multi-tenancy support in all voters
-  - `ROLE_AUDITOR` (and `ROLE_GROUP_CISO` / `ROLE_KONZERN_AUDITOR`, which inherit it) is
-    read-only: state-changing actions need `ROLE_MANAGER` or a persona role. GDPR breach
-    actions, DPIA decisions and the Art. 15/20 personal-data export are `ROLE_MANAGER`
-    (incl. DPO); `tests/Security/WriteActionRoleGateTest.php` pins them.
+  - `access_control`: every locale-prefixed route needs `ROLE_USER`, `/(de|en)/admin` needs `ROLE_ADMIN`
+  - `#[IsGranted(...)]` attributes on controllers and actions, voters for record-level permissions
+  - Multi-tenancy support in all voters (`HoldingTreeAccessTrait::decideTenantScope()`)
+  - `ROLE_AUDITOR`, `ROLE_GROUP_CISO` and `ROLE_KONZERN_AUDITOR` are read-only: writes and
+    create/edit forms answer 403 without `ROLE_MANAGER` (`ReadOnlyRoleSubscriber`, also for API
+    sub-requests). GDPR breach actions, DPIA decisions and the Art. 15/20 personal-data export are
+    `ROLE_MANAGER` (incl. DPO); `tests/Security/WriteActionRoleGateTest.php` pins them.
+  - `ROLE_TOP_MGMT` (top management) reads everything and approves only what belongs to top
+    management; `ROLE_ADMIN` does not inherit it.
+  - Privacy exports carry `#[IsGranted(new Expression(PrivacyExportAccess::RULE))]`.
   - `^/api` (REST API, OpenAPI docs, JSON-LD contexts) requires a session or API token.
   - API tokens authenticate only in the stateless `api_token` firewall and only on `/api` and `/mcp`:
     any other path answers 401, a token request never creates a session or cookie, and a token
-    writes nowhere except through `save_record` on `/mcp` (`ReadOnlyApiSubscriber`, `McpWriteAccess`).
+    writes nowhere except through `save_record` on `/mcp` (`ReadOnlyApiSubscriber`: 405 elsewhere).
+    `save_record` needs the organisation switch (`McpSettings`), a token with `canWrite` and a
+    non-reviewer user (`McpWriteAccess`); status, approvals and other decisions stay proposals in the
+    suggestion queue.
+  - REST and MCP write with the same rights as the form: only `<entity>:write` serialization groups,
+    entity voters, `#[SameTenantOwner]` on owner fields. Evidence fields (`#[ApiReadOnlyEvidence]`:
+    approvals, NIS-2/DORA report timestamps, Control `implementationStatus`/`implementationPercentage`)
+    are never writable over the API; `tests/Api/ApiResourceContractTest.php` locks it. Details:
+    [`NON_UI_CONTRACTS.md`](NON_UI_CONTRACTS.md), [`../setup/API_SETUP.md`](../setup/API_SETUP.md).
   - `App\Security\UserChecker` refuses deactivated users on every login path (form, SSO,
     remember-me, impersonation, token); `DeactivatedUserSubscriber` ends their open sessions and
     deactivation revokes their tokens. Pinned by `tests/Security/ApiTokenBoundaryTest.php`.
@@ -44,14 +58,15 @@ This document describes the security features implemented in Little ISMS Helper,
 
 **Testing:**
 ```bash
-# Test voter permissions
-bin/console debug:voter AssetVoter
+# Access-control tests (voters, token boundary, read-only roles)
+php bin/phpunit tests/Security/
 ```
 
 ### A02:2021 – Cryptographic Failures ✅
 
 **Implementation:**
 - **Enhanced Session Security** (`config/packages/framework.yaml`):
+  - Cookie name `isms_session`
   - `cookie_secure: 'auto'` - HTTPS only in production
   - `cookie_httponly: true` - Prevents JavaScript access to session cookie (XSS protection)
   - `cookie_samesite: 'lax'` - CSRF protection (cookie sent with same-site and top-level navigation requests)
@@ -66,10 +81,11 @@ bin/console debug:voter AssetVoter
   - `httponly: true` - No JavaScript access
   - `samesite: 'lax'` - CSRF protection
   - `lifetime: 604800` - 1 week maximum
+  - Issued only after the second factor; the signature covers password and active MFA devices
+    (`signature_properties: [password, mfaRememberMeMarker]`)
 
 - **TLS/HTTPS Enforcement**:
-  - HSTS header with 6 months max-age
-  - Automatic HTTP to HTTPS upgrade in CSP policy
+  - HSTS header with 6 months max-age (`max-age=15768000`)
 
 ### A03:2021 – Injection ✅
 
@@ -82,9 +98,11 @@ bin/console debug:voter AssetVoter
 2. **XSS Prevention:**
    - Twig auto-escaping enabled (`autoescape: 'html'`)
    - CSP headers in production
-   - No `|raw` on user content
-   - Flash messages are escaped where they are rendered (`message|e`): the alert macros
-     output their body raw, and flashes can carry record names or exception text
+   - Record text is never output as HTML (Gate 92, `check_raw_output.py`): components escape
+     their text slots; any other `|raw` needs an entry in
+     `scripts/quality/baselines/raw_output_allowlist.txt`; JSON into pages via `|fa_json`
+   - Flashes render once in `base.html.twig` through `|fa_flash` (plain text, escaped)
+   - Word documents only from `Export\DocxDocumentFactory::create()` (output escaping on)
 
 3. **File Upload Injection:**
    - `FileUploadSecurityService`:
@@ -93,6 +111,12 @@ bin/console debug:voter AssetVoter
      - Extension whitelist
      - File size limits (10MB)
      - Safe filename generation
+   - Evidence files (documents, versions, training materials) live below `var/uploads/`
+     (`App\Service\Upload\ProtectedUploads`), outside the web root; they are served only by
+     voter-checked, audit-logged download actions (`tests/Security/EvidenceOutsideWebRootTest.php`).
+     Tenant logos and avatars stay in `public/uploads/`.
+   - Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed
+     reader type, zip limits, read filter; `tests/Security/SpreadsheetUploadReaderTest.php`)
 
 4. **Email Header Injection:**
    - `EmailNotificationService::sanitizeEmailSubject()`
@@ -105,15 +129,17 @@ bin/console debug:voter AssetVoter
      through `CsvSanitizer` (audit workbooks, VVT, list exports, bulk CSV, LkSG, TISAX)
 
 6. **Path Traversal:**
-   - `DocumentController::download()` with realpath validation
+   - Stored paths are resolved by `ProtectedUploads::resolve()` (only inside the upload areas)
    - Filename sanitization
 
 ### A04:2021 – Insecure Design ✅
 
 **Implementation:**
 - Rate limiting for brute force prevention:
-  - Login: firewall `login_throttling` — 5 failed attempts per username+IP and 25 per IP
-    in 15 minutes (form login, API token, SSO)
+  - Login: firewall `login_throttling` of the `main` firewall — 5 failed attempts per
+    username+IP and 25 per IP in 15 minutes
+  - API tokens: 20 failed token attempts per client IP in 10 minutes → 429
+    (`api_auth_failure`, `ApiTokenAuthenticator`)
   - Re-authentication (password confirm): 5 attempts per user in 15 minutes
   - MFA codes: 5 attempts per token in 15 minutes (TOTP and backup codes); a TOTP code is
     accepted once (last accepted time step per token)
@@ -143,7 +169,7 @@ bin/console debug:voter AssetVoter
   - `Referrer-Policy`
 
 - Custom error pages (prevents information disclosure):
-  - `templates/bundles/TwigBundle/Exception/error{403,404,500}.html.twig`
+  - `templates/bundles/TwigBundle/Exception/error{403,404,429,500,503}.html.twig`
 
 - Production configuration:
   - Session security hardening
@@ -166,8 +192,15 @@ symfony check:security
 **Implementation:**
 - **Login Rate Limiting** (`config/packages/security.yaml`, firewall `login_throttling`):
   - 5 failed attempts per username+IP, 25 per IP, within 15 minutes; reset on success
-  - Checked while the firewall verifies the credentials. A limiter inside the login
-    controller (before 2026-11) never saw the POST and only counted page views.
+  - Checked while the firewall verifies the credentials (not in the login controller)
+
+- **Multi-Factor Authentication** (TOTP + backup codes, NIS-2 Art. 21(2)(j)):
+  - One state per login, bound to the person's id (`App\Security\Mfa\MfaSessionState`),
+    started by `MfaLoginListener` on every login of the web firewall; the enforcer fails closed
+  - Password re-authentication starts a new state and asks for the code again (`ReauthController`)
+  - A TOTP code is accepted once (last accepted time step per token, `MfaService`)
+  - Remember-me cookie only after the code (see A02)
+  - A new authenticator needs its MFA decision in `tests/Security/Mfa/MfaLoginPathsTest` (Gate 91)
 
 - **Session Security** (see A02 above):
   - 1-hour session lifetime with garbage collection
@@ -176,17 +209,15 @@ symfony check:security
   - Session invalidation on logout
 
 - **Password Security**:
-  - Automatic bcrypt/argon2 hashing
-  - High cost factor for production
-  - Password hashing algorithm: auto (uses best available)
+  - Hashing algorithm `auto` (best available, bcrypt/argon2)
+  - Password policy: `PasswordPolicyResolver`
 
 - **CSRF Protection**:
-  - Enabled on all forms (`enable_csrf: true`)
+  - Login form `enable_csrf: true`; every state-changing action `#[IsCsrfTokenValid]`
+    (fetch() via `X-CSRF-Token` header), enforced by CI Gate 65
   - SameSite cookie attribute (`lax`)
-  - Token validation on form submissions
 
 **Recommendations:**
-- Implement progressive account lockout after failed attempts
 - Add password breach detection (HaveIBeenPwned API)
 
 ### A08:2021 – Software and Data Integrity Failures ⚠️
@@ -228,9 +259,12 @@ $this->securityLogger->logAccessDenied($resource, $action, $user);
 
 **Implementation:**
 - PDF generation: `isRemoteEnabled: false` (prevents SSRF)
-- User-configurable outbound URLs (webhooks) validated by `#[NoInternalIp]` (`src/Validator/Constraint/NoInternalIp.php`)
-- Webhooks do not follow redirects (`max_redirects: 0`), so a 302 cannot carry the POST
-  to an internal address after the URL check
+- User-configurable outbound URLs carry `#[NoInternalIp]` (`src/Validator/Constraint/NoInternalIp.php`)
+  and are fetched only through `App\Http\UserUrlHttpClient`: no private addresses after DNS
+  resolution, no redirects. `tests/Security/OutboundUserUrlClientTest.php` rejects other raw HTTP
+  clients in `src/`.
+- Web push goes only to known browser push services (`App\Http\PushEndpointPolicy`,
+  `tests/Security/WebPushEndpointTest.php`)
 
 ## Services Overview
 
@@ -265,9 +299,9 @@ $this->securityLogger->logFileUpload($filename, $mimeType, $size, $success);
 $this->securityLogger->logSuspiciousActivity($description, $details);
 ```
 
-## Security Headers (Production Only)
+## Security Headers
 
-All security headers are automatically applied in production environment:
+Applied in every environment except `dev` (`SecurityHeadersSubscriber`):
 
 - **CSP**: Restricts resource loading
 - **HSTS**: Forces HTTPS (6 months)
@@ -342,7 +376,8 @@ SELECT * FROM audit_log WHERE created_at > 'incident_time';
 
 3. **Block attacker:**
 ```yaml
-# config/packages/rate_limiter.yaml
+# config/packages/rate_limiter.yaml (API, re-auth, public token URLs, uploads, MFA)
+# config/packages/security.yaml (login_throttling)
 # Reduce limits temporarily
 ```
 
@@ -353,21 +388,12 @@ grep "SUSPICIOUS_ACTIVITY\|ACCESS_DENIED" var/log/prod.log
 
 ## Future Enhancements
 
-Priority improvements:
-
-1. ✅ **Multi-Factor Authentication (MFA)** - IMPLEMENTED. One state per login
-   (`App\Security\Mfa\MfaSessionState`, bound to the person's id), started by
-   `MfaLoginListener` on every login of the web firewall (form, SSO, remember-me) and by the
-   password re-authentication; the enforcer fails closed. SSO logins ask for the local factor
-   too when the person enrolled one. "Stay logged in" issues its cookie only after the second
-   factor; the cookie signature covers the active devices. Gate 91, `tests/Security/Mfa/`.
-2. ✅ **Password complexity requirements** - IMPLEMENTED (PasswordPolicyResolver)
-3. **Account lockout mechanism**
-4. **IP whitelisting for admin panel**
-5. **API authentication (JWT/OAuth)**
-6. ✅ **Enhanced audit logging (database)** - IMPLEMENTED
-7. **Real-time security monitoring**
-8. **Automated vulnerability scanning**
+1. Account lockout beyond the login throttling window
+2. IP allow-listing for the admin panel
+3. OAuth for browser-based assistant connectors
+4. Real-time security monitoring
+5. Automated vulnerability scanning
+6. Subresource Integrity for CDN resources
 
 ## References
 

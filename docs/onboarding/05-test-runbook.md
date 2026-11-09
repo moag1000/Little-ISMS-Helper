@@ -2,16 +2,21 @@
 
 ## Overview
 
-The test suite uses PHPUnit 13.1 with `#[Test]` attributes. Two base classes:
+The test suite uses PHPUnit 13 with `#[Test]` attributes. Two base classes:
 
 | Base Class | When to use |
 |---|---|
 | `WebTestCase` | HTTP-layer tests (controller, form submission, redirects) |
 | `KernelTestCase` | Service tests (inject and call services directly) |
 
-The `APP_ENV=test` environment is configured in `phpunit.xml.dist`. Tests use
-an isolated database (set `DATABASE_URL` in `.env.test.local` or rely on
-the in-memory SQLite config in `config/packages/test/`).
+The `APP_ENV=test` environment is configured in `phpunit.xml.dist`. One-time local setup — without it
+many controller tests fail with a misleading "Response is successful" error:
+
+1. `.env.test.local` with real MySQL/MariaDB credentials (`.env.local` is ignored in the test env); the
+   database name carries the `_test` suffix PHPUnit appends.
+2. `cp config/active_modules.yaml.dist config/active_modules.yaml` — with modules missing,
+   module-gated pages redirect to `/dashboard`.
+3. `config/setup_complete.lock` must exist, or the setup wizard intercepts requests.
 
 ---
 
@@ -75,7 +80,7 @@ php bin/phpunit tests/Quality/
 ```bash
 php bin/phpunit tests/Service/RiskServiceTest.php
 php bin/phpunit tests/Controller/ComplianceControllerTest.php
-php bin/phpunit tests/Lifecycle/DocumentLifecycleTest.php
+php bin/phpunit tests/Lifecycle/AssetWorkflowTest.php
 ```
 
 ### By PHPUnit filter (single test method)

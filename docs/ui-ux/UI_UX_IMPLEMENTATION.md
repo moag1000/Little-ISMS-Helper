@@ -1,5 +1,9 @@
 # UI/UX Implementation Guide
 
+> **Stand 2025, teils veraltet.** Aktuelle Komponenten: Aurora-v4-Makros `templates/_components/_fa_*.html.twig`
+> (Liste in `CLAUDE.md`, "Aurora v4 Components"), Live-Vorschau `/dev/design-system`. Bootstrap-Markup (`btn btn-*`, `badge bg-*`,
+> `alert alert-*`) lässt CI-Gate 62 scheitern.
+
 ## 🎯 Übersicht
 
 Dieses Dokument beschreibt die neu implementierten modernen UI/UX-Features für das Little-ISMS-Helper Projekt basierend auf 2024/2025 Best Practices.
@@ -64,7 +68,7 @@ document.dispatchEvent(new CustomEvent('toast:show', {
 ```
 
 **Files**:
-- `assets/controllers/toast_controller.js`
+- `assets/controllers/fa_toast_controller.js`
 - `_components/_fa_toast.html.twig` (toast.css removed 2026-11)
 
 ---
@@ -197,11 +201,9 @@ shortcuts = [
 
 **Files**:
 - `templates/_components/_breadcrumb.html.twig`
-- `templates/_components/_kpi_card.html.twig`
-- `templates/_components/_page_header.html.twig`
+- `templates/_components/_fa_feature_card.html.twig`
+- `templates/_components/_fa_page_header.html.twig`
 - `templates/_components/_empty_state.html.twig`
-- `templates/_components/_floating_toolbar.html.twig`
-- `templates/_components/_related_items.html.twig`
 - `assets/styles/app.css` (formerly ui-components.css)
 
 ---

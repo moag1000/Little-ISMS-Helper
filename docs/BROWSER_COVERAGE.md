@@ -6,11 +6,11 @@ and produces a single HTML report.
 
 ## Why
 
-The existing `tests/E2e/specs/` suite covers 15 critical golden-paths
+The existing `tests/E2e/specs/` suite covers critical golden-paths
 (login, asset CRUD, risk create, …). It does NOT cover the breadth of the
 app — a new bug in `/de/training/123/edit` lands in production unnoticed.
 L1 closes that gap with a cheap, broad sweep: every navigable route,
-every persona, every night.
+every persona.
 
 ## What it produces
 
@@ -80,10 +80,8 @@ to refresh `routes.json`.
 
 ## CI
 
-`.github/workflows/browser-coverage.yml` runs nightly at 02:00 UTC and
-on PRs labelled `browser-coverage`. The job is `continue-on-error: true`
-— never blocks. The HTML report uploads as the
-`browser-coverage-report` artifact (retained 14 days).
+Not wired into CI: there is no browser-coverage workflow in `.github/workflows/`, and the Playwright
+suites (`npm run e2e`, `e2e:smoke`, `e2e:scenarios`) run only locally.
 
 ## Limitations (by design, for L1)
 

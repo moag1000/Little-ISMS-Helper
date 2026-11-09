@@ -102,7 +102,7 @@ Dazu der **Konzern-Rollup**: Policy-Coverage über alle Tochtergesellschaften, O
 
 ## Industry-Presets-Admin
 
-Branchen-Bundles als versionierte Artefakte. KMU-Mittelstand, KRITIS, Healthcare, B2C-SaaS, OT/IEC 62443. Aktivieren ein Preset → lädt Frameworks + Mappings + initiale Controls auf einen Schlag.
+Branchen-Bundles als versionierte Artefakte (`fixtures/library/presets/`): Mittelstand NIS-2, Healthcare DORA, KRITIS Energie, SaaS ISO 27001. Ein Preset (`/admin/industry-presets`) ergänzt Module und Frameworks und legt die initialen Controls und Dokument-Entwürfe an; vorhandene Datensätze bleiben unverändert. Mappings kommen getrennt aus der Mapping-Bibliothek.
 
 ![Industry-Presets](img/compliance-manager/industry-presets.png)
 

@@ -1,7 +1,5 @@
 # Admin Panel User Guide
 
-**Version:** 1.0
-**Last Updated:** 2025-01-12
 **Target Audience:** System Administrators
 
 ## Table of Contents
@@ -69,7 +67,7 @@ The admin panel integrates seamlessly into the main application navigation:
 | Compliance Management | `/admin/compliance` | Manage compliance frameworks |
 | License Management | `/admin/licensing` | View license information |
 | User Management | `/admin/users` | Manage users and roles |
-| System Monitoring | `/admin/monitoring` | System health dashboard |
+| System Monitoring | `/admin/monitoring/health` | System health dashboard |
 | Data Management | `/admin/data/backup` | Backup and data operations |
 
 ---
@@ -154,9 +152,14 @@ Manage compliance frameworks including ISO 27001, NIST CSF, BSI IT-Grundschutz, 
 5. Wait for loading confirmation
 6. Framework requirements will be imported into database
 
+Framework catalogues and global mappings are shared by every organisation of the instance. With more than one
+organisation, only `ROLE_SUPER_ADMIN` loads a framework (or the starter pack) or changes global mappings
+(`GlobalCatalogueVoter::WRITE`); with a single organisation the admin may.
+
 ### Deleting a Framework
 
-**⚠️ Warning**: Deleting a framework removes all associated requirements and mappings.
+**Warning**: Deleting a framework removes all associated requirements and mappings for every organisation.
+Only `ROLE_SUPER_ADMIN` may delete (`ADMIN_GLOBAL_OP`).
 
 1. Locate loaded framework
 2. Click **Delete Framework** button
@@ -173,10 +176,13 @@ Manage compliance frameworks including ISO 27001, NIST CSF, BSI IT-Grundschutz, 
    - Compliance percentage
    - Progress bar visualization
 
-**Compliance Calculation**:
-- **Assessed**: Requirements with at least one mapping
-- **Compliant**: Requirements with at least one "implemented" mapping
+**Compliance Calculation** (this page only):
+- **Assessed**: Requirements with at least one mapped control
+- **Compliant**: Requirements with at least one mapped control in status "implemented"
 - **Compliance Rate**: (Compliant / Total) × 100%
+
+The fulfilment shown on requirements, dashboards and reports is derived per organisation instead, see
+[ERFUELLUNG_AUS_DATEN.md](user-guide/ERFUELLUNG_AUS_DATEN.md).
 
 ---
 
@@ -255,13 +261,14 @@ Track user activity including:
 
 Manage Multi-Factor Authentication tokens:
 - View all MFA tokens per user
-- Token types: TOTP, WebAuthn, SMS, Hardware, Backup
+- Token types: TOTP, WebAuthn, SMS, backup codes
 - Reset MFA tokens for locked-out users
 - Monitor token usage and last use
 
 #### User Impersonation
 
-**Admin feature**: Impersonate users for troubleshooting:
+Impersonate users for troubleshooting (needs `ROLE_ALLOWED_TO_SWITCH`, which only `ROLE_SUPER_ADMIN` has; a
+super admin is never a target, and nobody may become a user with roles they do not reach, `SwitchUserVoter`):
 1. Navigate to user details
 2. Click **Impersonate** button
 3. Session switches to target user
@@ -281,12 +288,9 @@ Manage role hierarchy and permissions:
    - Set role hierarchy
 
 2. **Role Templates**
-   - Auditor: Read-only access to compliance data
-   - Risk Manager: Risk assessment and mitigation
-   - Compliance Manager: Compliance frameworks and assessments
-   - Security Officer: Security controls and incidents
-   - Administrator: Full system access
-   - Viewer: Read-only system access
+   (`/admin/roles/templates`): Auditor, Risk Manager, Compliance Officer, Incident Manager, Asset Manager,
+   Read-only. Persona roles (CISO, ISB, DPO, …, Leitung) are system roles assigned on the user form; see
+   [PERSONA_DASHBOARDS.md](user-guide/PERSONA_DASHBOARDS.md).
 
 3. **Role Comparison**
    - Compare permissions across roles
@@ -306,7 +310,7 @@ Monitor active user sessions:
 - Session tracking based on login events
 - User activity timeline
 - Session termination (requires database session storage). "Sitzung beenden" signs the browser out on its next
-  request (`TerminatedSessionSubscriber`, since 2026-11); the same holds for sessions closed by the limit of five
+  request (`TerminatedSessionSubscriber`); the same holds for sessions closed by the limit of five
   concurrent sessions. Rows the idle cleanup marks `timeout` do not sign anybody out — PHP's own session lifetime
   handles idleness; the last activity is refreshed at most every five minutes.
 
@@ -347,7 +351,7 @@ Access recent errors at `/admin/monitoring/errors`:
 
 #### Audit Log Integration
 
-View comprehensive audit trail:
+The audit log (`/admin/audit-log`, menu entry for admins only, `ROLE_ADMIN`) shows:
 - User actions and changes
 - Timestamp and user identification
 - IP address tracking
@@ -357,46 +361,18 @@ View comprehensive audit trail:
 
 ## Data Management
 
-### Database Backup
+### Backup and restore
 
-Create and manage PostgreSQL backups:
+Backups are application-level (JSON), not database dumps, and belong to the organisation of the admin who
+creates or uploads them.
 
-#### Creating a Backup
+1. **Data Management** > **Backup** (`/admin/data/backup`) → **Create Backup** starts an async job.
+2. The file lands in `var/backups/` as `backup_YYYY-MM-DD_HH-ii-ss.zip` (`backup.json` plus evidence files) or
+   `.json.gz` without files.
+3. Download, upload, validate, preview and restore run on the same page (`RestoreService`).
 
-1. Navigate to **Data Management** > **Backup** (`/admin/data/backup`)
-2. Click **Create Backup** button
-3. System creates backup using `pg_dump`
-4. Backup stored in `var/backups/` directory
-5. Filename format: `backup_YYYY-MM-DD_HH-MM-SS.sql`
-
-#### Backup Retention Policy
-
-- **Automatic**: System keeps last 7 backups
-- **Manual cleanup**: Delete individual backups via UI
-
-#### Downloading Backups
-
-1. Locate backup in backup list
-2. Click **Download** button
-3. Save `.sql` file to local machine
-
-#### Restoring Backups
-
-**⚠️ Critical**: Backup restoration is a manual process requiring database access.
-
-```bash
-# Download backup file
-# Access PostgreSQL server with admin privileges
-
-# Drop existing database (optional)
-DROP DATABASE your_database;
-
-# Create new database
-CREATE DATABASE your_database;
-
-# Restore backup
-psql -U postgres -d your_database -f backup_YYYY-MM-DD_HH-MM-SS.sql
-```
+Scheduler: `app:backup:create` daily at 02:00, `app:backup:prune` at 02:30 (keeps files of the last 30 days and
+always the 10 newest; `--keep-days`, `--keep-last`). CLI: `app:backup:restore`, `app:backup:repair`.
 
 ### Data Export
 
@@ -416,15 +392,12 @@ Export application data in JSON or CSV format:
 
 ### Data Import
 
-**Status**: Preview mode only (execution not implemented)
+**Status**: preview only. **Execute Import** writes nothing and shows a "not implemented" notice. To move data
+between instances use backup and restore.
 
 1. Navigate to **Data Import** (`/admin/data/import`)
 2. Upload JSON export file
 3. Preview import data and statistics
-4. Review entity breakdown
-5. **Execute Import** button currently disabled
-
-**Future Implementation**: Full import validation and execution planned.
 
 ### Bulk Import (spreadsheet wizard)
 
@@ -476,7 +449,7 @@ Rows with another value are shown as error in the preview ("Ungültiger Wert") a
 
 3. **Data Protection**
    - Create backups before major system changes
-   - Store backups securely (encrypted, off-site)
+   - Store backups securely (encrypted, off-site); `var/backups/` is outside the web root
    - Test backup restoration periodically
 
 ### Module Management
@@ -532,7 +505,7 @@ Rows with another value are shown as error in the preview ("Ungültiger Wert") a
 
 **Solutions**:
 - Check dependency requirements
-- Run `php bin/console doctrine:migrations:migrate`
+- Apply pending migrations (`/quick-fix` or `php bin/console doctrine:migrations:migrate`)
 - Verify file permissions
 
 #### 2. Framework Loading Fails
@@ -551,17 +524,16 @@ Rows with another value are shown as error in the preview ("Ungültiger Wert") a
 
 #### 3. Backup Creation Fails
 
-**Symptoms**: Error creating database backup
+**Symptoms**: The backup job ends in status *failed*
 
 **Causes**:
-- PostgreSQL `pg_dump` not accessible
-- Insufficient disk space
-- Database connection parameters incorrect
+- `var/backups/` not writable or disk full
+- Job interrupted (PHP-FPM worker killed)
 
 **Solutions**:
-- Verify `pg_dump` in system PATH
-- Check available disk space
-- Verify `DATABASE_URL` in `.env`
+- Check permissions and free space of `var/backups/`
+- Read the error on the job status page and in `var/log/`
+- Run `php bin/console app:backup:create` on the CLI
 
 #### 4. License Report Generation Fails
 
@@ -624,7 +596,7 @@ Rows with another value are shown as error in the preview ("Ungültiger Wert") a
 
 ### Keyboard Shortcuts
 
-Currently no keyboard shortcuts implemented. Navigate using mouse/trackpad.
+⌘K / Strg+K, ⌘P / Strg+P or `/` open search and commands; `?` lists all shortcuts.
 
 ### API Endpoints
 
@@ -652,57 +624,8 @@ Admin API endpoints (require `ROLE_ADMIN`):
 
 ---
 
-## Quick-Fix Fallback (Schema-Upgrade nach Composer-Install)
+## Quick-Fix (schema upgrade without CLI)
 
-Nach `composer install` / `git pull` ohne Container-Neustart kann das Schema
-gegenüber den Entity-Definitionen veralten und einen 500-Fehler produzieren
-(`TableNotFoundException`, `Unknown column …`, `MappingException`). Statt
-500 leitet die App auf `/quick-fix` — eine standalone Seite mit einem Button
-"Migrationen jetzt anwenden". Funktioniert ohne Login.
-
-### Drei Deployment-Szenarien
-
-| Szenario | Hauptlösung | Quick-Fix-Rolle |
-|---|---|---|
-| Docker / Self-Host (`docker compose up -d`) | Entrypoint `init-mysql.sh` ruft `migrate` beim Start auf | Nicht nötig — Safety-Net |
-| VPS mit SSH | `php bin/console doctrine:migrations:migrate` nach Code-Update | Safety-Net falls vergessen |
-| Shared Hosting / FTP-only | Quick-Fix-UI ist die einzige Lösung | Hauptlösung — Token-Mode empfohlen |
-
-### Konfiguration
-
-Admin-Settings unter `/admin/quick-fix-settings`:
-
-| Setting | Default | Bedeutung |
-|---|---|---|
-| `fallback_ui_enabled` | true | Master-Schalter. Off = 500er wie zuvor (audit-kritische Prod) |
-| `require_installer_token` | false | Token aus `var/setup-token` muss übergeben werden |
-| `allow_in_dev_only` | false | Nur erreichbar wenn `APP_ENV=dev` |
-| `ip_allowlist` | leer | Komma-Liste erlaubter Client-IPs |
-
-Token wird beim `composer install` automatisch in `var/setup-token` (mode 0640)
-geschrieben. Per FTP/SFTP auslesbar. Cookie-Persist nach erstem Aufruf via
-`?token=…`, sodass POST-Apply nicht erneut den Token braucht.
-
-### Was angewendet wird
-
-Nur Migrationen aus dem aktuellen Build (`migrations/` Verzeichnis) werden
-ausgeführt — kein manueller SQL, keine Schema-Reconcile (das verlangt
-weiterhin `app:schema:reconcile` per CLI durch einen Admin).
-
----
-
-## Changelog
-
-### Version 1.0 (2025-01-12)
-- Initial admin guide creation
-- Documented all Phase 6L features
-- Added troubleshooting section
-- Best practices guidelines
-
-### Version 1.1 (2026-04-28)
-- Added Quick-Fix fallback section (composer-deployment scenario)
-
----
-
-**Document Maintainer**: Little ISMS Helper Development Team
-**Feedback**: Create an issue on GitHub for guide improvements
+After a code update without migrations the app redirects schema errors to `/quick-fix` (pending migrations,
+schema reconcile, data repair). Settings: `/admin/quick-fix-settings`. Guide:
+[QUICK_FIX.md](user-guide/QUICK_FIX.md).

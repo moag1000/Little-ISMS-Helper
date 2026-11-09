@@ -1,7 +1,7 @@
 # Fairy Aurora v4 — Cheatsheet
 
-> 1-Seite-Referenz für Developer. Vollständige Doku: [`design-system.html`](design-system.html).
-> Tokens-Source: [`assets/styles/fairy-aurora.css`](../assets/styles/fairy-aurora.css).
+> 1-Seite-Referenz für Developer. Design-Quelle: claude.ai-Design-System-Artefakt ([`artifact/SOURCE.md`](artifact/SOURCE.md)), Live-Vorschau `/dev/design-system` (dev).
+> Tokens: [`assets/styles/fairy-aurora.css`](../../assets/styles/fairy-aurora.css).
 > Prinzip: **Tokens sind Gesetz.** Hardcodierte Hex-Werte sind Bugs.
 
 ---
@@ -401,7 +401,7 @@ Stimulus-Controller `fa-typewriter` schreibt Zeichen für Zeichen; mit `prefers-
 ## 6.1 Admin Panel
 
 System-Administration (36 Module in 7 Gruppen) — eigene Component-Familie `.fa-admin-*`.
-Live-Beispiele: [`design-system.html#admin-intro`](design-system.html#admin-intro) · Prototype: [`admin/Admin Panel.html`](../admin/Admin%20Panel.html).
+Live-Beispiele: `/dev/design-system` und das Design-System-Artefakt.
 
 **Variante A (gewählt):** Settings-Hub mit Card-Grid-Landing in der normalen App-Shell. Ein Sidebar-Eintrag „Administration", dahinter durchsuchbares Modul-Grid.
 
@@ -1084,11 +1084,8 @@ Native HTML-Semantik, **kein JS nötig**. Header mit Icon · Title · Badge · C
 
 ## 7. Iconography — `.fa-icon`
 
-**281 Klassen · 232 SVGs** (49 als Aliase auf bestehende Geometrien) in 13 Kategorien. CSS-Mask, einfärbbar via `currentColor`. Stil: Outline 1.4, monochrom.
-
-> **Update Mai 2026:** Gate&nbsp;11 hat 64 fehlende Icons aus den Templates aufgedeckt —
-> 39 davon als neue SVGs ergänzt (Quick-Wins, Stepper-Digits, ISMS-Kompositionen), 46 als Aliase
-> auf bestehende Geometrien gemappt. Vollständige Galerie: [`design-system.html#icons-gallery`](design-system.html#icons-gallery) · Phase-Reviews: [`/decisions/icons-inventory.html`](../decisions/icons-inventory.html).
+CSS-Mask-Icons (`assets/icons/*.svg`, teils Aliase auf bestehende Geometrien), einfärbbar via `currentColor`. Stil: Outline 1.4, monochrom.
+Unbekannte Icon-Namen in Templates lässt Gate&nbsp;15 (`check_aurora_icon_names.py`) scheitern. Galerie: `/dev/design-system`.
 
 ```html
 <i class="fa-icon fa-icon--audit-trail"></i>                       <!-- 1em (Default) -->
@@ -1212,12 +1209,10 @@ Drei Modi: `light` · `dark` · `system`. Jedes Token hat Light- und Dark-Werte 
 | `data-theme="auto"` | `data-theme="system"` |
 | `.kpi-card` | `fa-feature-card` (Legacy emitiert dev-warning) |
 | `.bulk-action-bar*` | `.fa-bulk-bar*` (BEM, canonical) |
-| `<table class="table">` | `fa-table` macro (80+ adopted) |
-| `.progress > .progress-bar` | `fa-progress` macro (54 adopted) |
+| `<table class="table">` | `fa-table` macro |
+| `.progress > .progress-bar` | `fa-progress` macro |
 
-Voll: [`FAIRY_AURORA_MIGRATION.md`](FAIRY_AURORA_MIGRATION.md).
-12 Token-Layer-Entscheidungen aus Mai 2026: [`/decisions/index.html`](../decisions/index.html).
-23-Macro-Inventar: [`/decisions/macros-inventory.html`](../decisions/macros-inventory.html).
+Bootstrap → Aurora für Markup: [`AURORA_v4_FULL_MIGRATION_PLAN.md`](AURORA_v4_FULL_MIGRATION_PLAN.md).
 
 ---
 
@@ -1225,22 +1220,18 @@ Voll: [`FAIRY_AURORA_MIGRATION.md`](FAIRY_AURORA_MIGRATION.md).
 
 | Pfad | Zweck |
 |---|---|
-| `assets/styles/fairy-aurora.css` | **Tokens-Canon** — Source-of-Truth |
+| `assets/styles/fairy-aurora.css` | Tokens (light + dark) |
 | `assets/styles/fairy-aurora-components.css` | Alle `.fa-*`-Komponenten |
 | `assets/styles/fairy-aurora-edge.css` | Edge-Components (filter-state-chip, stepper, dropdown-panel, banner, …) |
-| `assets/styles/fairy-aurora-icons.css` | 190 Icon-Mask-Klassen + Framework-Lockup |
-| `colors_and_type.css` | Deprecation-Bridge — Legacy-Aliase auf Aurora |
-| `assets/tokens.jsx` | JS-Tokens (D12) — `useTokens()`-Hook + Legacy `window.T` |
-| `assets/icons/*.svg` | 232 Icon-Source-Files (24×24 Outline 1.4) · 281 fa-icon--* Klassen inkl. Aliase |
+| `assets/styles/fairy-aurora-icons.css` | Icon-Mask-Klassen + Framework-Lockup |
+| `assets/icons/*.svg` | Icon-Source-Files (24×24 Outline 1.4) |
 | `templates/form/fa_cyber_input.html.twig` | Symfony Form-Theme |
-| `states/FairyCharacter.jsx` | React-Companion (9 Moods, Tokens-Props) |
-| `docs/design-system.html` | Interaktive Doku (mit Icon-Gallery + Admin-Panel) |
-| `admin/aurora-canon.css` | Admin-spezifische Tokens (gescoped auf `.admin-panel`, D10) |
-| `admin/Admin Panel.html` | Live-Prototype (Hub + Detail-Templates) |
-| `docs/FAIRY_AURORA_MIGRATION.md` | Migration v3 → v4 |
-| `docs/FAIRY_AURORA_v4_ROADMAP.md` | Roadmap |
-| `docs/DESIGN_SYSTEM.md` | Diese Datei |
-| `decisions/index.html` | Token-Layer-Decisions (Mai 2026, alle approved) |
+| `templates/_components/_fa_*.html.twig` | Macro-Bibliothek |
+| `docs/design_system/artifact/` | Token-Snapshot des Design-System-Artefakts (CI-Gate 61, siehe `SOURCE.md`) |
+| `docs/design_system/DESIGN_SYSTEM.md` | Diese Datei |
+
+Design-Quelle ist das claude.ai-Design-System-Artefakt (Link in `CLAUDE.md` und
+[`artifact/SOURCE.md`](artifact/SOURCE.md)); Live-Vorschau mit Snippets unter `/dev/design-system` (nur dev).
 
 ---
 

@@ -28,7 +28,7 @@ Kein Klausel-Wortlaut. Kein Field-Level-Detail. Eine Aufgabe, eine Entscheidung 
 
 ![Workflows-Inbox](img/risk-owner-business/workflows-inbox.png)
 
-Workflow-System löst Approvals event-driven aus — sobald die ISB die Daten ausgefüllt hat, landet die Risk-Owner-Freigabe automatisch hier (siehe [Workflow-Auto-Progression](../WORKFLOW_AUTO_PROGRESSION.md)).
+Freigabe-Schritte mit `approver_role: owner` landen beim Verantwortlichen des Datensatzes in „Mein Tag“ und in der Sammelmail (siehe [Workflow-Auto-Progression](../WORKFLOW_AUTO_PROGRESSION.md)).
 
 ---
 

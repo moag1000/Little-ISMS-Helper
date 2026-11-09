@@ -83,8 +83,9 @@ Die Software implementiert ein **datenzentrisches ISMS-Managementsystem mit inte
 - **Frontend**: Twig Templates, Symfony UX (Turbo, Stimulus)
 - **Charts**: Chart.js für Analytics-Visualisierungen
 - **Authentication**: Lokale Auth + Azure AD (OAuth 2.0, SAML)
-- **Export**: TCPDF (PDF), PhpSpreadsheet (Excel)
-- **Testing**: PHPUnit mit 4,067+ Tests
+- **Export**: Dompdf (PDF), PhpSpreadsheet (Excel), PhpWord (DOCX)
+- **API**: API Platform (REST), MCP-Endpunkt `/mcp` für KI-Assistenten
+- **Testing**: PHPUnit
 
 ### Architektur-Prinzipien
 
@@ -921,9 +922,7 @@ Der **Little ISMS Helper** adressiert die Herausforderung der Mehrfacherfassung 
 ### Kernmerkmale
 
 ✅ **Data Reuse Architecture** - 4 Core Services für intelligente Datenwiederverwendung
-✅ **78 Entities** - Vollständiges ISMS-Datenmodell mit 23 Compliance-Frameworks
-✅ **130 Services** - Geschäftslogik für Compliance, Risk Intelligence, Protection Requirements
-✅ **112 Controller** - Komplette Web-UI für alle ISMS-Prozesse
+✅ **ISMS-Datenmodell** - Entities für alle ISMS-Prozesse, Compliance-Frameworks als Katalog
 ✅ **Multi-Framework Support** - ISO 27001, TISAX, DORA mit Cross-Framework-Mappings
 ✅ **Workflow Engine** - Automatisierte Genehmigungs- und Eskalationsprozesse
 ✅ **Analytics Dashboard** - Risk Heat Maps, Compliance Radar, Trend Charts
@@ -943,10 +942,10 @@ Die Lösung ist primär für **kleine und mittelständische Unternehmen** konzip
 ### Technologie
 
 - **Modern**: PHP 8.4, Symfony 7.4, PostgreSQL/MySQL
-- **Getestet**: 4,067+ PHPUnit-Tests für Core-Funktionalität
+- **Getestet**: PHPUnit-Suite, Quality-Gates in CI
 - **Sicher**: RBAC, Audit Logging, CSRF-Protection, Input Validation
 - **Skalierbar**: Multi-Tenancy-fähig für SaaS-Betrieb
-- **Integrierbar**: REST API (in Vorbereitung) für Integrationen
+- **Integrierbar**: REST API (API Platform) und MCP für Integrationen
 
 ### Geschätzte ROI
 
@@ -958,5 +957,3 @@ Bei einem mittelständischen Unternehmen mit typischer ISMS-Nutzung:
 ---
 
 **Version:** 1.0
-**Stand:** 2025-11-07
-**Geprüft gegen:** claude/cleanup-git-repo-011CUtNvJ1WfHESJXV4Dmhbe Branch

@@ -6,6 +6,9 @@ Guidelines for Claude Code in this repository.
 
 **Before EVERY commit:**
 - Update relevant documentation (prefer editing existing files over creating new ones)
+- Anything an operator must do or will notice on update (env var, web-server rule, data-moving
+  migration, re-login, breaking API/MCP change, changed role rights) goes into the next-release
+  section of `UPGRADE.md` — the one place for operator notes
 - Run `php bin/console lint:twig templates/` for template validation
 - Optional: Run `python3 scripts/quality/check_translation_issues.py` for translation quality check
 
@@ -17,7 +20,7 @@ Guidelines for Claude Code in this repository.
 
 ## Quick Reference
 
-**Stack:** Symfony 7.4 LTS, PHP 8.4+ (8.5 tested), Doctrine ORM 3.6, Doctrine-Migrations-Bundle 4.0, Twig 3.24, Stimulus 3.2 / Turbo 8, Bootstrap 5.3, FairyAurora v4 Design System, PHPUnit 13.1, Chart.js 4, API Platform 4.3
+**Stack:** Symfony 7.4 LTS, PHP 8.4+ (8.5 tested), Doctrine ORM 3.7, Doctrine-Migrations-Bundle 4.0, Twig 3.30, Stimulus 3.2 / Turbo 8, Bootstrap 5.3, FairyAurora v4 Design System, PHPUnit 13, Chart.js 4, API Platform 5
 
 **Multi-tenancy:** Tenant-owned entities carry a `tenant_id` field (most of them); global catalogues
 (frameworks, requirements, roles, permissions, policy templates, …) and child/join rows that inherit
@@ -550,7 +553,7 @@ $lifecycleService->transition($entity, 'foo_lifecycle', 'approve', $user, 'reaso
 
 > **Y.4 (2026-06):** YAML is the canonical source of truth for all regulatory
 > workflow definitions. `App\Entity\Workflow` and `App\Entity\WorkflowStep` are
-> `@deprecated`. The PHPStan rule `tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php`
+> `@deprecated`. The PHPStan rule `tests/PHPStan/Rule/NoNewWorkflowOrWorkflowStepRule.php`
 > prevents new instantiations in `src/` outside Repository/Command namespaces.
 > ADR: `docs/decisions/2026-05-17-workflow-yaml-unification.md`
 
@@ -769,7 +772,7 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 **Entities:** PHP 8 attributes (`#[ORM\Entity]`), no annotations. Typed properties. `Collection<int, T>` generics.
 **Repositories:** `ServiceEntityRepository` pattern. Autowired.
 **Forms:** Single-action with `handleRequest()`. Translation domain via FormType.
-**Testing:** PHPUnit 13.1. Use `#[Test]` attribute. `WebTestCase` for HTTP, `KernelTestCase` for services.
+**Testing:** PHPUnit 13. Use `#[Test]` attribute. `WebTestCase` for HTTP, `KernelTestCase` for services.
 **Templates:** FairyAurora v4 macros (`_fa_page_header`, `_fa_empty_state`, `_fa_alert`). `_breadcrumb.html.twig` for navigation. Every `|trans` call names its domain explicitly (`|trans({}, 'risk')`) — enforced by Gate 44; a file-level `trans_default_domain` is optional and never a substitute (it does not reach into `{% embed %}`, see pitfall 10b).
 **Translations:** one domain per feature area, DE + EN. Check `debug:translation --only-missing` before commit. No YAML duplicate keys (Gate 63).
 **PHP 8.5:** `readonly` properties, `match` expressions, `enum` types where appropriate.

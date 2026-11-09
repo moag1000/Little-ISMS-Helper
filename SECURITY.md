@@ -79,79 +79,30 @@ list reporters in the project's `Hall of Fame` once one exists.
 
 ---
 
-## Security Hardening — v3.5 Audit Notes
+## Security Architecture
 
-### CSRF Hardening (v3.5)
+The implementation guide is [`docs/security/SECURITY.md`](docs/security/SECURITY.md) (OWASP
+Top 10 mapping, headers, rate limits, MFA, uploads). The non-UI paths (REST, MCP, restore,
+exports, jobs) and the tests that lock them are listed in
+[`docs/security/NON_UI_CONTRACTS.md`](docs/security/NON_UI_CONTRACTS.md).
 
-16 form endpoints and 6 controller actions were hardened in the v3.5 cycle:
+Points reporters most often ask about:
 
-- All state-changing form endpoints now use Symfony 7.1+
-  `#[IsCsrfTokenValid('token_id')]` attribute.
-- Legacy `$this->isCsrfTokenValid()` calls were replaced with the attribute
-  pattern across the affected controllers.
-- WebTestCase coverage was added for each hardened endpoint; CSRF token
-  generation requires an active session (`GET` before `getToken()`).
-
-### Cross-Tenant Validation — CommentController (V4-LB-9)
-
-`CommentController` performs two checks before accepting a comment submission:
-
-1. **Entity existence check:** The referenced parent entity (Risk, Incident,
-   Asset, etc.) must exist in the database.
-2. **Tenant scope check:** The parent entity's `tenant_id` must match the
-   authenticated user's active tenant context.
-
-This prevents cross-tenant comment injection where an attacker holding a valid
-session in Tenant A could reference an entity ID from Tenant B.
-
-Implementation: `src/Controller/CommentController.php` via
-`TenantContext::assertEntityBelongsToCurrentTenant()`.
-
-### AuditLogger::logBulk() — ISO 27001 Clause 7.5.3
-
-Bulk operations (mass-delete, bulk-import, batch-status-change) must use
-`AuditLogger::logBulk()`. This method:
-
-- Writes one batch-level audit entry with a UUIDv4 `batch_id`.
-- Writes one per-entity audit entry for each affected record.
-- Returns the `batch_id` for downstream correlation.
-
-Direct `EntityManager::executeStatement()` calls that bypass Doctrine lifecycle
-events are prohibited unless an explicit `AuditLogger::logBulk()` call follows.
-
-```php
-$batchId = $this->auditLogger->logBulk(
-    action: 'bulk_delete',
-    entityType: 'Risk',
-    entityIds: $deletedIds,
-    context: ['reason' => 'user-initiated bulk delete']
-);
-```
-
-### QuickFix-Guard Security Options
-
-The `/quick-fix` operator UI is protected by `QuickFixGuard`. Available
-hardening options (via environment variables):
-
-| Variable | Purpose |
-|---|---|
-| `QUICK_FIX_TOKEN` | Bearer token required in `Authorization` header |
-| `QUICK_FIX_IP_ALLOWLIST` | CIDR-based IP allowlist (e.g. `10.0.0.0/8`) |
-| `QUICK_FIX_DEV_ONLY` | Restrict to `APP_ENV=dev` only |
-
-Recommended for production: set both `QUICK_FIX_TOKEN` and
-`QUICK_FIX_IP_ALLOWLIST`. See `docs/user-guide/QUICK_FIX.md` for full
-configuration reference.
-
-### Tenant Isolation — Doctrine SQLFilter
-
-All tenant-scoped entities are filtered at the Doctrine DBAL layer via
-`TenantFilter` (a Doctrine `SQLFilter`). This filter appends
-`AND tenant_id = :tenant_id` to every SELECT query for entities that
-implement `TenantAwareInterface`.
-
-The filter is activated automatically in `TenantContext::setCurrentTenant()`
-and cannot be bypassed within normal application code. Administrative
-operations that require cross-tenant access must explicitly disable the filter
-via `TenantContext::runWithoutTenantFilter(callable $callback)`, which logs
-the access to the audit trail.
+- **Tenant isolation.** Tenant-owned entities are filtered by the Doctrine SQL filter
+  `App\Doctrine\TenantFilter` (`tenant_id = :tenant_id` on every entity with a `tenant`
+  relation; `Tenant` and `User` are not filtered). `TenantContext` arms it per request; jobs
+  pass the tenant explicitly (`JobTenantScope`). Record voters check the organisation again
+  (`HoldingTreeAccessTrait::decideTenantScope()`). Comments re-check the target's organisation,
+  module and voter (`CommentController`).
+- **Read-only roles.** `ROLE_AUDITOR`, `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR` cannot write
+  (`ReadOnlyRoleSubscriber`). `ROLE_TOP_MGMT` (top management) is not inherited by `ROLE_ADMIN`.
+- **API tokens** authenticate only on `/api` and `/mcp` (stateless, no cookie), are read-only
+  except for `/mcp` tools, and are refused for deactivated users.
+- **CSRF** on every state-changing action (`#[IsCsrfTokenValid]`, CI Gate 65).
+- **Audit trail.** Bulk operations write `AuditLogger::logBulk()` (one batch entry with a
+  UUIDv4 `batch_id` plus one entry per record, ISO 27001 7.5.3).
+- **`/quick-fix`** (operator recovery UI, `QuickFixGuard`): the status page and "apply pending
+  migrations" are open by default so a broken login can be recovered; everything that changes
+  data or drops schema needs a logged-in `ROLE_SUPER_ADMIN` or the installer token
+  (`var/setup-token`). Optional settings in category `quick_fix`: `require_installer_token`,
+  `allow_in_dev_only`, `ip_allowlist`. See [`docs/user-guide/QUICK_FIX.md`](docs/user-guide/QUICK_FIX.md).

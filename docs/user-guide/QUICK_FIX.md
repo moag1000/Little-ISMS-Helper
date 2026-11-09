@@ -1,4 +1,4 @@
-# Quick-Fix-Operator-UI — Betriebshandbuch (v3.5)
+# Quick-Fix-Operator-UI — Betriebshandbuch
 
 Dieses Dokument beschreibt die web-basierte Operator-UI unter `/quick-fix`. Sie richtet
 sich an Personen mit Administratorzugriff auf den Server (Self-Hosted-Betrieb).
@@ -7,18 +7,20 @@ sich an Personen mit Administratorzugriff auf den Server (Self-Hosted-Betrieb).
 
 ## Wann greift `/quick-fix`?
 
-Die Quick-Fix-UI tritt in Kraft, wenn das System beim Start eine der folgenden
-Situationen erkennt und deshalb den normalen Betrieb verweigert:
+Wirft eine Seite einen Schema-Fehler (fehlende Tabelle, fehlende Spalte, z. B.
+nach einem Update mit noch nicht angewandten Migrationen), leitet
+`SchemaExceptionSubscriber` den Browser auf `/quick-fix` statt eine 500-Seite zu
+zeigen. Die Seite ist auch direkt aufrufbar, etwa nach jedem Update oder bei:
 
-| Erkannte Situation | Typisches Symptom |
+| Situation | Typisches Symptom |
 |---|---|
-| Noch nicht angewandte Doctrine-Migrations | Seiten brechen mit `Column not found` oder `Table does not exist` |
-| Schema-Drift zwischen Entity-Metadata und Datenbank | Felder in der Oberflaechezeigen keine Werte obwohl Daten vorhanden sind |
-| Waggon-/Orphan-Datensaetze ohne gueltigen Tenant | Compliance-Berichte fehlen Zeilen; Multi-Tenant-Scoping liefert falsches Ergebnis |
-| Datenduplikate durch abgebrochene Imports | Eindeutige-Constraint-Fehler bei Neuanlage |
+| Noch nicht angewandte Doctrine-Migrations | `Column not found` oder `Table does not exist` |
+| Schema-Drift zwischen Entity-Metadata und Datenbank | Felder zeigen keine Werte, obwohl Daten vorhanden sind |
+| Datensaetze ohne gueltige Organisation (Orphans) | Berichte fehlen Zeilen |
+| Duplikate durch abgebrochene Imports | Unique-Constraint-Fehler bei Neuanlage |
 
-Der `QuickFixGuard` (Middleware) faengt diese Zustaende ab und leitet den Browser
-direkt auf `/quick-fix` weiter, bevor die Anwendung regulaer antwortet.
+Ist die Fallback-UI in den Quick-Fix-Einstellungen abgeschaltet, erscheint die
+normale Fehlerseite.
 
 ---
 
@@ -31,15 +33,10 @@ Schaltflaeche: "Ausstehende Migrationen anwenden"
 ```
 
 Fuehrt `doctrine:migrations:migrate --no-interaction` aus. Nach dem Durchlauf
-startet automatisch ein Schema-Reconcile (siehe Punkt 2), um eventuelle
-PREPARE/EXECUTE-Altmigrationen auszugleichen.
+startet automatisch ein additives Schema-Reconcile (siehe Punkt 2), wenn danach
+noch nicht-destruktive Abweichungen bestehen.
 
-**Wann nutzen:** Immer nach einem Update des Containers oder nach dem Ziehen
-eines neuen Release-Tags.
-
-**Hinweis:** Migrationen mit DDL (`ALTER TABLE`, `CREATE TABLE`) setzen intern
-`isTransactional()=false`. Dieser Modus ist in der UI sichtbar als
-"Nicht-transaktionaler Schritt" im Live-Log.
+**Wann nutzen:** Nach jedem Update (Container-Image oder neuer Release-Stand).
 
 ---
 
@@ -69,14 +66,19 @@ Checkbox: "Ich bestatige destructive Aenderungen (DROP TABLE / TRUNCATE)"
 
 ### 3. Daten-Integritaet pruefen und reparieren
 
-Die folgenden Aktionen sind verfuegbar:
+Auf `/quick-fix`:
 
 | Aktion | Beschreibung |
 |---|---|
-| **Orphans bereinigen** | Entfernt Datensaetze ohne Elterntenant (z. B. nach fehlgeschlagenem Tenant-Delete) |
-| **Tenant-Mismatches korrigieren** | Setzt `tenant_id` auf Basis des naechsten erreichbaren Elternobjekts (Asset --> Risk-Link etc.) |
-| **Duplikate zusammenfuehren** | Fasst identische Eintraege (gleicher Name + gleicher Tenant) zu einem zusammen; behaelt den aeltesten Datensatz |
-| **Verwaiste Datei-Uploads in Quarantaene** | Verschiebt Dateien aus `public/uploads/`, die in keiner Doctrine-Entity referenziert werden, nach `var/quarantine/<datum>/`. Niemals direkt `unlink`. |
+| **Orphans zuordnen** | Ordnet Datensaetze ohne Organisation einer Organisation zu (nur bei genau einer Organisation, siehe unten) |
+| **Tenant-Mismatches korrigieren** | Setzt `tenant_id` auf Basis des Elternobjekts (Asset → Risk-Link etc.) |
+| **Duplikate zusammenfuehren** | Fasst identische Eintraege (gleicher Name + gleiche Organisation) zusammen; behaelt den aeltesten Datensatz |
+
+Weitere Pruefungen unter **Admin → Datenreparatur** (`/admin/data-repair`):
+
+| Aktion | Beschreibung |
+|---|---|
+| **Verwaiste Datei-Uploads in Quarantaene** | Verschiebt Dateien aus `public/uploads/` und `var/uploads/`, die kein Datensatz referenziert, nach `var/quarantine/<datum>/`. Nie direkt `unlink`. |
 | **Cascade-Cleanup** | Loescht dangling Referenzen (WorkflowInstance ohne Ziel, abgelaufene MfaToken, SsoUserApproval ohne Reviewer, EvidenceReverificationTask ohne Anker, NotificationDelivery ohne Rule) unter einem Audit-Batch. Begruendung >= 20 Zeichen erforderlich. |
 | **JSON-Schema-Validierung** | Nur Erkennung — listet Tenant.settings / TenantPolicySetting.value / NotificationRule.conditions / WorkflowStep.metadata-Verletzungen. Keine Auto-Reparatur. |
 | **Audit-Log-Integritaet** | Nur Erkennung — Bulk-Batch-Mismatches, Tages-Luecken im AuditLog, NULL-Tenant-Eintraege. Keine Auto-Reparatur. |
@@ -98,9 +100,7 @@ zuordnen* und *Alles sicher reparieren* nichts mehr „der ersten Organisation�
 zu; der Lauf verweist auf Admin → Datenreparatur, wo pro Datensatz die
 Organisation gewaehlt wird.
 
-Jede Aktion zeigt zuerst einen Vorschau-Bericht an. Sie muessen den Bericht
-bestaetigen, bevor Aenderungen gespeichert werden. Die letzten drei
-Kategorien sind detection-only — eine versteckte automatische Reparatur
+Die letzten drei Kategorien sind detection-only — eine versteckte automatische Reparatur
 koennte echte Lifecycle-Bugs verbergen.
 
 **Orphans einer Organisation zuordnen:** Jeder Datensatz wird mit seinem
@@ -135,15 +135,13 @@ erreichen Erinnerungen und Mein Tag die Person.
 Schaltflaeche: "Alles sicher reparieren"
 ```
 
-Fuehrt in dieser Reihenfolge aus:
+Fuehrt in dieser Reihenfolge aus, jeden Schritt mit eigenem Audit-Eintrag:
 
-1. Ausstehende Migrationen anwenden
-2. Schema-Reconcile ohne destructive Aktionen
-3. Orphans bereinigen (nur mit genau einer Organisation, siehe oben)
-4. Tenant-Mismatches korrigieren
+1. Orphans zuordnen (nur mit genau einer Organisation, siehe oben)
+2. Tenant-Mismatches korrigieren
+3. Duplikate zusammenfuehren (alle unterstuetzten Typen)
 
-Duplikate-Zusammenfuehrung ist *nicht* Teil dieses Buttons, da sie
-anwendungsspezifisch geprueft werden sollte.
+Migrationen und Schema-Reconcile sind nicht Teil dieses Buttons (Punkte 1 und 2).
 
 ---
 
@@ -206,7 +204,7 @@ Audit-Log-Eintrag `quick_fix.workflows_synced`.
 Die Quick-Fix-UI deckt 95 % der Betriebsfaelle ab. Die CLI ist vorzuziehen, wenn:
 
 - Ein Reconcile-Dry-Run Aenderungen anzeigt, die Sie vor der Ausfuehrung
-  im Detail in der Shell pruefe moechten.
+  im Detail in der Shell pruefen moechten.
 - Sie eine Backup-Wiederherstellung durchfuehren (-> `docs/operations/DISASTER_RECOVERY.md`).
 - Die Quick-Fix-UI selbst nicht erreichbar ist (Webserver-Fehler auf PHP-Ebene).
 
@@ -216,19 +214,17 @@ Relevante CLI-Befehle:
 # Dry-Run ohne Aenderungen
 php bin/console app:schema:reconcile --dry-run
 
-# Anwenden (additive, kein DROP)
-php bin/console app:schema:reconcile
+# Nur additive Aenderungen, DROP-Statements werden uebersprungen
+php bin/console app:schema:reconcile --non-destructive-only
 
-# Mit destructiven Aktionen (Vorsicht!)
-php bin/console app:schema:reconcile --allow-destructive
+# Alle Aenderungen; vor jedem DROP fragt der Befehl nach
+php bin/console app:schema:reconcile
 
 # Datenbankstatus pruefen
 php bin/console doctrine:migrations:status
-
-# Orphan-Bereinigung separat
-php bin/console app:data:repair-orphans --dry-run
-php bin/console app:data:repair-orphans
 ```
+
+Orphans und Duplikate repariert man ohne CLI unter Admin → Datenreparatur.
 
 ---
 
@@ -243,8 +239,8 @@ zwei Stufen:
 | Ansehen + Migrationen | Statusseite, „Ausstehende Migrationen anwenden“, additiver Schema-Abgleich, Job-Fortschritt | Guard-Einstellungen unten (Standard: offen) |
 | Daten und destruktives Schema | destruktiver Schema-Abgleich (DROP/TRUNCATE), Migration als ausgeführt markieren, Phantom-Diff markieren, Schema-Force-Update, alle Daten-Reparaturen | zusätzlich Anmeldung als Super-Admin **oder** Installer-Token aus `var/setup-token` (Feld auf der Sperrseite, wird als Sitzungs-Cookie gemerkt) |
 
-Die erste Stufe lässt sich unter **Admin > Einstellungen > Quick-Fix** weiter
-einschränken (Kategorie `quick_fix` der Systemeinstellungen):
+Die erste Stufe lässt sich unter **Admin > Quick-Fix-Einstellungen**
+(`/admin/quick-fix-settings`) weiter einschränken (Kategorie `quick_fix` der Systemeinstellungen):
 
 | Einstellung | Standard | Wirkung |
 |---|---|---|
@@ -260,28 +256,16 @@ Guard die Proxy-IP.
 
 ## Audit-Trail der Quick-Fix-Aktionen
 
-Alle Aktionen werden im System-Audit-Log eingetragen (`AuditLogger`-Kategorie
-`system.quickfix`). Ein Eintrag enthaelt:
-
-- Ausloesender Nutzer (oder `SYSTEM` fuer automatische Checks)
-- Zeitstempel
-- Durchgefuehrte Aktion (Migration-IDs, Anzahl reparierter Zeilen)
-- Ergebnis (`success` / `partial` / `failed`)
-
-Die Eintraege sind via `/de/admin/audit-log?category=system.quickfix` abrufbar.
-
----
-
-## Weiterleitung nach erfolgreicher Reparatur
-
-Nach Abschluss aller Aktionen zeigt die UI eine Zusammenfassung und einen
-"Jetzt zur Anwendung"-Link. Dieser leitet auf `/de/dashboard` (oder den
-urspruenglich angeforderten Pfad) weiter.
+Reparaturen und Phantom-Markierungen schreiben Audit-Eintraege mit Aktionen
+`quick_fix.*` (z. B. `quick_fix.repair.orphan_assigned`,
+`quick_fix.repair.tenant_mismatch_fixed`, `quick_fix.repair.duplicates_merged`,
+`quick_fix.force_mark_migration_executed`). Filter: Admin → Audit-Log
+(`/admin/audit-log?action=quick_fix.repair.orphan_assigned`).
 
 ---
 
 ## Verwandte Dokumente
 
-- `docs/operations/DISASTER_RECOVERY.md` — Backup-Restore-Runbook
-- `docs/MIGRATION_GUIDE.md` — Migrations-Strategie und DDL-Regeln
-- `docs/ADMIN_GUIDE.md` — Admin-Portal-Referenz
+- [DISASTER_RECOVERY.md](../operations/DISASTER_RECOVERY.md) — Backup-Restore-Runbook
+- [HOSTING_WORKER.md](HOSTING_WORKER.md) — Worker und geplante Aufgaben
+- [ADMIN_GUIDE.md](../ADMIN_GUIDE.md) — Admin-Portal-Referenz

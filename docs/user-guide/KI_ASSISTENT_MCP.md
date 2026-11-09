@@ -55,6 +55,8 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
 
 ## Rechte, Datenschutz, Nachvollziehbarkeit
 
+- **Besitzer sind Personen**: Verantwortliche sind Verweise auf Personen (`/api/people/7`) bzw. Benutzer, kein Freitext —
+  die alten Freitext-Besitzerfelder gibt es nicht mehr.
 - **Rechte**: Der Assistent sieht und ändert genau, was die Person des Tokens in der App sieht und ändern darf
   (Rollen, Voter, Mandant, aktive Module). Prüfer- und Leitungsrollen ohne Manager-Rechte bleiben lesend, auch mit
   schreibendem Token; Entwürfe darf anlegen, wer über sie entscheiden darf.
@@ -65,7 +67,7 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
   schreibbar und werden abgewiesen; ebenso der Umsetzungsstand eines Controls (Status und Prozent, speist die
   Erfüllung — gesetzt im Control-Formular, in der SoA oder im geprüften Massenimport). Globale Kataloge (Normen, Rollen, Vorlagen) schreibt kein Organisations-Token.
   Gelöscht wird nie. Die REST-API selbst bleibt für jedes Token lesend.
-- **Gleiche Rechte wie das Formular** (S4, 2026-11): Kontext der Organisation und ISMS-Ziele schreibt nur, wer sie auch
+- **Gleiche Rechte wie das Formular**: Kontext der Organisation und ISMS-Ziele schreibt nur, wer sie auch
   in der App pflegen darf (ISB, CISO, Admin), Bedrohungsinformationen ab Manager. Felder eines ausgeschalteten Moduls
   (DORA/NIS-2 am Vorfall, FAIR am Risiko, KI-Agent am Asset, …) bietet der Assistent nicht an und nimmt sie nicht
   an. Meldezeitpunkte eines Vorfalls (NIS-2/DORA), Abschluss- und Lösungsdatum sowie Umsetzungs- und
@@ -96,6 +98,7 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
   Reaktivieren bleiben sie tot, die Person legt neue an. Eine offene Browser-Sitzung endet beim nächsten Klick, jeder
   neue Login (Formular, SSO, „Angemeldet bleiben“) wird abgewiesen.
 - **Grenzen**: 100 Anfragen pro Minute je Token (eine JSON-RPC-Batch zählt jede Nachricht, höchstens 20 je Batch).
+  Nach 20 fehlgeschlagenen Token-Versuchen von einer Adresse in 10 Minuten antwortet der Server mit 429.
   Prüferrollen bekommen kein schreibendes Token, der Haken „Assistent darf schreiben“ fehlt bei ihnen.
 
 ## Betreiber-Hinweis
@@ -105,10 +108,8 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
 - Hinter Proxy/CDN muss `Authorization` durchgereicht werden (bei Apache ggf. `CGIPassAuth On` bzw.
   `SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1`, wie für die REST API). `SYMFONY_TRUSTED_PROXIES` setzen, damit
   die Links in den Antworten den öffentlichen Host tragen.
-- Seit dem Token-Hotfix (Welle 5, S1) heißt das Sitzungs-Cookie `isms_session`: Alle offenen Sitzungen enden beim
-  Update einmal, jede Person meldet sich neu an. Keine Migration; bestehende Tokens laufen weiter, Tokens bereits
-  deaktivierter Personen sind ab jetzt abgewiesen. Ein Skript, das mit Token Seiten der Weboberfläche aufrief, bekommt
-  jetzt 401 und muss die REST-API nutzen.
+- Das Sitzungs-Cookie heißt `isms_session`. Ein Skript, das mit Token Seiten der Weboberfläche aufruft, bekommt 401
+  und muss die REST-API nutzen.
 - Migration `Version20261108120000_ApiTokenCanWrite` (Spalte `can_write` an `api_tokens`) über `/quick-fix` anwenden;
   bestehende Tokens bleiben lesend.
 - claude.ai-„Connectors“ im Browser verlangen OAuth und werden (noch) nicht unterstützt; Claude Desktop und Claude Code

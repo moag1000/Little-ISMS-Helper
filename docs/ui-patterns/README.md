@@ -1,5 +1,10 @@
 # UI/UX Pattern Library - Little ISMS Helper
 
+> **Outdated markup (2025-11).** The Bootstrap examples here (`btn btn-*`, `badge bg-*`, `alert alert-*`, Bootstrap modals)
+> fail CI Gate 62. Current components: Aurora v4 macros in `templates/_components/_fa_*.html.twig`, listed in `CLAUDE.md`
+> ("Aurora v4 Components"), live preview `/dev/design-system`, mapping in
+> [`AURORA_v4_FULL_MIGRATION_PLAN.md`](../design_system/AURORA_v4_FULL_MIGRATION_PLAN.md). The accessibility rules still apply.
+
 **Version:** 1.0
 **Date:** 2025-11-24
 **Purpose:** Centralized UI/UX guidelines for consistent, accessible design
@@ -37,7 +42,6 @@ This pattern library provides comprehensive guidelines for implementing UI compo
 | Guide | Status | Description |
 |-------|--------|-------------|
 | [ACCESSIBILITY.md](ACCESSIBILITY.md) | ✅ Complete | WCAG 2.1 AA guidelines, testing |
-| [FAIRY_PATTERNS.md](FAIRY_PATTERNS.md) | ✅ Complete | Cyberpunk Fairy - automation indicators |
 | CARD_PATTERNS.md | 🔄 Planned | Card component standardization |
 | NAVIGATION_PATTERNS.md | 🔄 Planned | Navigation consistency |
 
@@ -214,8 +218,7 @@ All UI patterns support dark mode via CSS variables:
 ## Resources
 
 ### Internal
-- [UI/UX Comprehensive Audit](../audits/UI_UX_AUDIT.md) - Original audit findings
-- [ROADMAP.md](../../ROADMAP.md) - Phase 6 UI/UX improvements
+- [ROADMAP.md](../../ROADMAP.md)
 - [CLAUDE.md](../../CLAUDE.md) - Development guidelines
 
 ### External

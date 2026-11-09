@@ -1,9 +1,6 @@
 # Backup Architecture — Technical Reference
 
-**Version:** 1.0  
 **Audience:** Developers  
-**Language:** English  
-**Updated:** 2026-04-24  
 **Ops runbook:** [DISASTER_RECOVERY.md](DISASTER_RECOVERY.md)
 
 ---
@@ -35,7 +32,7 @@ Backups are produced by `BackupService::createBackup()` and serialized by `Backu
 {
   "metadata": {
     "version":          "2.0",
-    "app_version":      "1.0.0",
+    "app_version":      "3.16.1",
     "schema_version":   "20260420140000",
     "php_version":      "8.4.x",
     "symfony_version":  "7.4.x",
@@ -86,13 +83,15 @@ Backups are produced by `BackupService::createBackup()` and serialized by `Backu
 
 ```
 backup_2026-04-24_03-00-00.zip
-├── backup.json          # full JSON as above
+├── backup.json             # full JSON as above
 └── files/
-    ├── documents/       # Document.filePath uploads
-    │   └── <uuid>.pdf
-    └── tenant_logos/    # Tenant.logoPath uploads
-        └── logo.png
+    ├── documents/          # Document.filePath          (from var/uploads/documents/)
+    ├── document_versions/  # DocumentVersion.filePath   (from var/uploads/documents/)
+    ├── training_materials/ # Training.materialFiles[]   (from var/uploads/training-materials/)
+    └── tenant_logos/       # Tenant/TenantBranding.logoPath (from public/uploads/)
 ```
+
+Not in the archive: profile pictures (`User.profilePicture`, `public/uploads/`).
 
 When no files exist on disk, the service falls back to a legacy `.json.gz` (or `.json` when ext-zlib is unavailable).
 
@@ -103,8 +102,6 @@ ZIP archives are detected by magic bytes (`PK\x03\x04`), not by file extension. 
 ---
 
 ## 2. Tenant Scope Modes
-
-Introduced in commit `2fe2e938` (Prio C — Multi-Tenant-Isolation).
 
 | `scope_type` | Meaning | Which entities are backed up |
 |---|---|---|
@@ -120,7 +117,7 @@ if ($tenantScope->getAllSubsidiaries() !== [])             return 'holding';
 return 'single';
 ```
 
-**Organisation records** (`Tenant`) of the scope are always included in scoped backups (`id IN scope`). They hold every organisation setting — branding and logo, TLP default, authorities/CSIRT, on-call, DPO data, methodology, maturity target, the `settings` JSON (e.g. location map) and active modules. Before 2026-11 they were skipped like global entities, so an organisation backup restored an unconfigured organisation.
+**Organisation records** (`Tenant`) of the scope are always included in scoped backups (`id IN scope`). They hold every organisation setting — branding and logo, TLP default, authorities/CSIRT, on-call, DPO data, methodology, maturity target, the `settings` JSON (e.g. location map) and active modules. Organisation backups made before 2026-11 do not contain them.
 
 **Entities without tenant association** (e.g., `Role`, `Permission`, `SystemSettings`) are silently skipped in scoped backups and listed in `metadata.skipped_global_entities`. They are only included in global backups.
 
@@ -142,93 +139,27 @@ return 'single';
 
 When you add a new entity in `src/Entity/`, the CI gate will fail until you have explicitly classified it. There is no "default include" or "default exclude" — the decision must be explicit, which prevents silent backup gaps.
 
-**EXCLUDED_FROM_BACKUP** (entities deliberately skipped, with reason):
+**EXCLUDED_FROM_BACKUP** (entities deliberately skipped, reason inline in the constant):
 
 | Entity | Reason |
 |---|---|
-| `IndustryBaseline` | Global seeded catalogue, re-loadable via `LoadIndustryBaseline*` commands |
-| `IndustryPresetBundle` | Global seeded catalogue (no tenant_id) — wizard preset bundles |
-| `ElementaryThreat` | Global BSI threat catalogue, re-loadable via `LoadElementaryThreats` command |
-| `PortfolioSnapshot` | Derived trend-cache, re-computable from primary entities |
-| `ReuseTrendSnapshot` | Derived trend-cache, re-computable from primary entities |
+| `UserTenantAssignment` | Stub, schema migration deferred |
+| `IndustryBaseline`, `IndustryPresetBundle`, `ElementaryThreat`, `IctProviderLibrary`, `CertificateCoverageRule` | Global seeded catalogues, re-loadable via `Load*` commands / fixtures |
+| `ObligationNotice` | Reminder log, rebuilt by the next `app:send-reminders` run |
+| `PortfolioSnapshot`, `ReuseTrendSnapshot` | Derived trend caches |
+| `ApiToken` | Security credential (token hashes), re-create via `app:api-token:create` |
 
-**Implicit-coverage** (handled outside PRODUCTIVE_ENTITIES via dedicated flags):
+**Implicit coverage** (outside PRODUCTIVE_ENTITIES, via flags):
 
-- `AuditLog` — backed up via `$includeAuditLog` parameter
-- `UserSession` — backed up via `$includeUserSessions` parameter
+- `AuditLog` — `$includeAuditLog` (`--include-audit-log`, default on)
+- `UserSession` — `$includeUserSessions` (`--include-user-sessions`, default off)
 
-### Complete Entity List (as of 2026-04-24)
+### Entity list
 
-| Priority Group | Entity | Notes |
-|---|---|---|
-| Core (no deps) | `Tenant` | Root entity |
-| | `Role` | RBAC |
-| | `Permission` | RBAC |
-| | `User` | References Tenant |
-| | `Person` | |
-| | `Location` | |
-| | `Supplier` | |
-| | `SystemSettings` | Sensitive values AES-encrypted |
-| Config | `RiskApprovalConfig` | Phase 8L.F1 |
-| | `IncidentSlaConfig` | Phase 8L.F2 |
-| | `SupplierCriticalityLevel` | Phase 8 QW-5 |
-| | `KpiThresholdConfig` | |
-| | `Tag` | FK: Tenant |
-| | `EntityTag` | FK: Tag, User |
-| ISMS Core | `Asset` | |
-| | `Control` | ISO 27001 Annex A (93 controls) |
-| | `Risk` | FK: Asset |
-| | `RiskAppetite` | |
-| | `RiskTreatmentPlan` | |
-| | `Incident` | |
-| | `Vulnerability` | |
-| | `Patch` | |
-| | `ThreatIntelligence` | |
-| BCM | `BusinessProcess` | |
-| | `BusinessContinuityPlan` | |
-| | `BCExercise` | |
-| | `CrisisTeam` | |
-| Compliance | `ComplianceFramework` | |
-| | `ComplianceRequirement` | |
-| | `ComplianceMapping` | |
-| | `ComplianceRequirementFulfillment` | |
-| | `MappingGapItem` | |
-| GDPR/Privacy | `ProcessingActivity` | |
-| | `DataProtectionImpactAssessment` | |
-| | `DataBreach` | GDPR Art. 33/34 |
-| | `Consent` | |
-| | `DataSubjectRequest` | GDPR Art. 15-22; FK: Tenant, User, ProcessingActivity |
-| Docs & Training | `Document` | file path stored; file in ZIP |
-| | `Training` | |
-| Audits & Reviews | `InternalAudit` | |
-| | `AuditChecklist` | |
-| | `AuditFinding` | H-01; FK: Tenant, InternalAudit, Control, User |
-| | `CorrectiveAction` | FK: Tenant, AuditFinding, User |
-| | `AuditFreeze` | Tamper-evident (H-01) |
-| | `ManagementReview` | |
-| DORA | `ThreatLedPenetrationTest` | DORA Art. 26; ManyToMany: AuditFinding |
-| Context | `ISMSContext` | |
-| | `ISMSObjective` | |
-| | `InterestedParty` | |
-| | `CorporateGovernance` | |
-| Operations | `ChangeRequest` | |
-| | `CryptographicOperation` | |
-| | `PhysicalAccessLog` | |
-| | `FourEyesApprovalRequest` | FK: Tenant, User (requester/approver/reviewer) |
-| Workflows | `Workflow` | |
-| | `WorkflowStep` | |
-| | `WorkflowInstance` | |
-| Reports | `ScheduledReport` | |
-| | `CustomReport` | |
-| | `AppliedBaseline` | FK: Tenant, User |
-| | `KpiSnapshot` | FK: Tenant |
-| User Prefs | `DashboardLayout` | |
-| | `MfaToken` | |
-| | `ScheduledTask` | |
-| Optional | `AuditLog` | Only if `--include-audit-log` |
-| | `UserSession` | Only if `--include-user-sessions` |
-
-**Total entities in a full backup:** up to 54 entity types (+ AuditLog + UserSession).
+The list itself (129 entries as of 3.16.1) lives only in `BackupService::PRODUCTIVE_ENTITIES`, grouped
+by comment (core, config, ISMS core, BCM, compliance, privacy, documents/training, audits, DORA, context,
+operations, workflows, reports, user prefs). Restore writes only names from that list
+(`BackupService::restorableEntityNames()`); anything else in a file is dropped with a warning.
 
 ---
 
@@ -238,32 +169,10 @@ When you add a new entity in `src/Entity/`, the CI gate will fail until you have
 
 This ensures that when entity A has a ManyToOne reference to entity B, entity B's rows are already in the database when entity A is inserted.
 
-### Priority Table
-
-| Priority | Entities |
-|---|---|
-| 1 | Tenant |
-| 2 | Role |
-| 3 | Permission |
-| 4 | User |
-| 5–8 | Person, Location, Supplier, SystemSettings |
-| 9 | RiskApprovalConfig, IncidentSlaConfig, SupplierCriticalityLevel, KpiThresholdConfig, Tag, EntityTag |
-| 10–11 | ComplianceFramework, Control |
-| 15–16 | Asset, InterestedParty |
-| 20–21 | ComplianceRequirement, ComplianceRequirementFulfillment |
-| 25–31 | Risk, RiskAppetite, RiskTreatmentPlan, Incident, Vulnerability, Patch, ThreatIntelligence |
-| 35–38 | BusinessProcess, BusinessContinuityPlan, BCExercise, CrisisTeam |
-| 40–44 | ProcessingActivity, DPIA, DataBreach, Consent, DataSubjectRequest |
-| 45–46 | Document, Training |
-| 50–55 | InternalAudit, AuditChecklist, AuditFinding, CorrectiveAction, AuditFreeze, ManagementReview |
-| 56 | ThreatLedPenetrationTest |
-| 58–60 | ISMSContext, ISMSObjective, CorporateGovernance |
-| 62–65 | ChangeRequest, CryptographicOperation, PhysicalAccessLog, FourEyesApprovalRequest |
-| 67–68 | ComplianceMapping, MappingGapItem |
-| 70–72 | Workflow, WorkflowStep, WorkflowInstance |
-| 75–78 | ScheduledReport, CustomReport, AppliedBaseline, KpiSnapshot |
-| 80–82 | DashboardLayout, MfaToken, ScheduledTask |
-| 90–91 | AuditLog, UserSession (last — logs reference everything) |
+The priority map is `$priorityOrder` in `RestoreEntityWriter::orderEntitiesByDependency()`
+(`Tenant` 1, `Role` 2, `Permission` 3, `User` 4, then configuration, catalogues, ISMS core, BCM, privacy,
+documents, audits, workflows, reports; `AuditLog`/`UserSession` last). A new entity with ManyToOne
+references needs an entry there.
 
 **Unknown entities** (not in the priority map) default to priority 50.
 
@@ -272,8 +181,6 @@ This ensures that when entity A has a ManyToOne reference to entity B, entity B'
 ---
 
 ## 5. ManyToMany Second-Pass Restore
-
-Introduced and stabilized in commit `f977043a`.
 
 ### Problem
 
@@ -324,13 +231,11 @@ $platform = $connection->getDatabasePlatform()::class;
 $isMysql = stripos($platform, 'MySQL') !== false || stripos($platform, 'MariaDB') !== false;
 ```
 
-**Note:** The application is MySQL-only by design (platform guard added in commit `f9ddfe33`).
+**Note:** The application is MySQL/MariaDB-only by design.
 
 ---
 
 ## 7. SHA-256 Integrity Seal
-
-Added in commit `03d83abb` (Prio A).
 
 ```php
 // In BackupService::createBackup(), computed AFTER all data is serialized:
@@ -382,13 +287,11 @@ private const array EXCLUDED_FIELDS = [
 ];
 ```
 
-This is a security feature — credentials must be re-set after restore via the CLI:
-
-```bash
-php bin/console app:setup-permissions \
-  --admin-email=admin@example.com \
-  --admin-password=NewSecurePassword!
-```
+This is a security feature. Users that already exist in the target database keep their password. Users the
+restore creates get the password entered in the restore form (`admin_password` option,
+`RestoreSecretsHandler::applyAdminPasswordToUser()`); without it they cannot log in until an admin sets one.
+The CLI `app:backup:restore` has no such option. MFA secrets (`MfaToken`) are stored encrypted with
+`MFA_ENCRYPTION_KEY` (fallback `APP_SECRET`) and need the same key on the target host.
 
 ---
 
@@ -421,12 +324,18 @@ Missing fields in restored entities are handled by `missing_field_strategy`:
 
 ### File Entities
 
-Only two entities carry file paths that are packaged into ZIP backups:
+`BackupService::FILE_REFERENCE_FIELDS` and `FILE_LIST_FIELDS`:
 
-| Entity | Field | ZIP subfolder |
-|---|---|---|
-| `Document` | `filePath` (e.g., `/uploads/documents/uuid.pdf`) | `files/documents/` |
-| `Tenant` | `logoPath` (e.g., `uploads/tenants/logo.png`) | `files/tenant_logos/` |
+| Entity | Field | Source on disk | ZIP subfolder |
+|---|---|---|---|
+| `Document` | `filePath` (`/uploads/documents/<file>`) | `var/uploads/documents/` | `files/documents/` |
+| `DocumentVersion` | `filePath` | `var/uploads/documents/` | `files/document_versions/` |
+| `Training` | `materialFiles[].filename` | `var/uploads/training-materials/` | `files/training_materials/` |
+| `Tenant`, `TenantBranding` | `logoPath` (`uploads/tenants/logo.png`) | `public/uploads/` | `files/tenant_logos/` |
+
+Evidence paths are resolved through `App\Service\Upload\ProtectedUploads`, which still finds a file left
+in the old `public/uploads/` folder. `tests/Service/BackupArchiveExtractionTest` fails when a `ProtectedUploads`
+area has no entry.
 
 ### Packaging (saveBackupToFile)
 
@@ -435,17 +344,15 @@ Only two entities carry file paths that are packaged into ZIP backups:
 3. If at least one file exists → `saveAsZip()` is called; otherwise → `saveAsJson()` (legacy .json.gz)
 4. ZIP entry paths are sanitized by `sanitizeZipEntryPath()` — rejects paths with `..`, absolute segments, or non-alphanumeric characters
 
-### Extraction (loadFromZip)
+### Extraction
 
-1. `backup.json` is extracted and parsed
-2. Entries under `files/` are extracted with path-traversal protection: `documents/` and
-   `document_versions/` to `var/uploads/documents/` (outside the web root, see
-   `App\Service\Upload\ProtectedUploads`), logos to `public/uploads/<folder>/`; the resolved
-   target must stay inside its base folder. Since S7 a restore also writes only the entity
-   names a backup contains (`BackupService::restorableEntityNames()`); anything else in the
-   file (e.g. `ApiToken`) is dropped with a warning.
-3. `metadata._extracted_file_count` is set for callers to read
-4. File extraction happens **before** entity restore so that restored `Document.filePath` values immediately resolve to real files
+1. `loadBackupFromFile()` / `loadFromZip()` only read `backup.json`; preview, validation and dry run
+   write nothing.
+2. After the data has been committed, the restore calls `extractArchiveFiles()`: only the folders in
+   `ARCHIVE_FILE_FOLDERS` are written, with path-traversal protection and a size cap
+   (`MAX_ARCHIVE_TOTAL_BYTES`, 4 GiB). `documents/` and `document_versions/` go to
+   `var/uploads/documents/`, `training_materials/` to `var/uploads/training-materials/`, logos to
+   `public/uploads/<folder>/`. The resolved target must stay inside its base folder.
 
 ---
 
@@ -454,7 +361,8 @@ Only two entities carry file paths that are packaged into ZIP backups:
 | Class | Location | Responsibility |
 |---|---|---|
 | `BackupService` | `src/Service/BackupService.php` | Create, save, load, list backups |
-| `RestoreService` | `src/Service/RestoreService.php` | Validate, preview, restore backups |
+| `RestoreService` | `src/Service/RestoreService.php` | Facade: validate, preview, restore |
+| `Restore\*` | `src/Service/Restore/` | `RestoreValidator` (version, SHA-256), `RestoreEntityWriter` (order, hydration, M2M), `RestoreDataPurger` (scope filter, clear), `RestoreSecretsHandler`, `RestoreTenantGuard` |
 | `BackupEncryptionService` | `src/Service/BackupEncryptionService.php` | AES-256-GCM envelope for sensitive fields |
 | `AdminBackupController` | `src/Controller/AdminBackupController.php` | HTTP endpoints for backup/restore UI |
 
@@ -479,13 +387,18 @@ Only two entities carry file paths that are packaged into ZIP backups:
 
 ### AdminBackupController — HTTP Endpoints
 
-| Route | Method | Auth | Description |
-|---|---|---|---|
-| `GET /admin/data/backup` | GET | SUPER_ADMIN | Backup list UI |
-| `POST /admin/data/backup/create` | POST | ADMIN | Create backup (CSRF protected) |
-| `GET /admin/data/backup/download/{filename}` | GET | SUPER_ADMIN | Download backup file |
-| `POST /admin/data/backup/upload` | POST | SUPER_ADMIN | Upload external backup (CSRF protected) |
-| `POST /admin/data/backup/validate/{filename}` | POST | SUPER_ADMIN | Validate backup structure |
-| `GET /admin/data/backup/preview/{filename}` | GET | SUPER_ADMIN | Preview restore statistics |
-| `POST /admin/data/backup/restore/{filename}` | POST | ADMIN | Execute restore (CSRF protected) |
-| `POST /admin/data/backup/delete/{filename}` | POST | SUPER_ADMIN | Delete backup file |
+The controller requires `ROLE_ADMIN`; every action checks `TenantScopedAdminVoter::ADMIN_OWN_TENANT`
+(`ROLE_SUPER_ADMIN` everywhere, `ROLE_ADMIN` only inside its own organisation tree). Create and restore run
+as async jobs.
+
+| Route | Method | Description |
+|---|---|---|
+| `/admin/data/backup` | GET | Backup list UI |
+| `/admin/data/backup/create` | POST | Create backup (CSRF) |
+| `/admin/data/backup/progress/{id}` | GET | Job progress |
+| `/admin/data/backup/download/{filename}` | GET | Download backup file |
+| `/admin/data/backup/upload` | POST | Upload external backup (CSRF) |
+| `/admin/data/backup/validate/{filename}` | POST | Validate backup structure |
+| `/admin/data/backup/preview/{filename}` | GET | Preview restore statistics |
+| `/admin/data/backup/restore/{filename}` | POST | Execute restore (CSRF) |
+| `/admin/data/backup/delete/{filename}` | POST/DELETE | Delete backup file |

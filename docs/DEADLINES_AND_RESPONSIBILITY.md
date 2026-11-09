@@ -1,6 +1,6 @@
 # Fristen und Zuständigkeit (Deadlines and responsibility)
 
-Stand 2026-11-08 (deadline types as configuration). One mechanism answers two questions for every duty the tool
+One mechanism answers two questions for every duty the tool
 reminds people of: **what is due when** and **who has to act**.
 
 ## Deadline sources (`App\Service\Deadline\DeadlineSource`)
@@ -82,7 +82,7 @@ A duty without a date that stays open while a condition holds: `CompetenceGapSou
 sources answer ISO 27001 8.1 and 9.1 in the compliance wizard (`deadline_adherence`: share of open
 duties not overdue).
 
-**Every date field that carries a duty has a source** (Stand 2026-11-07, P2):
+**Every date field that carries a duty has a source**:
 besides the reviews and approvals there are consent expiry (`consent_expiry`,
 DPO), team validity (`team_validity`, team lead), end of a person's access
 (`person_access_expiry`, admins, the person informed), patch deadline
@@ -136,7 +136,7 @@ suggests it from sector, staff and turnover (P7).
 holder of ROLE_TOP_MGMT in an NIS-2 regulated organisation is due twelve months
 after their last completed training (at once if never trained), the ISB/CISO
 informed. The compliance check for Art. 20 (2) counts the same people
-(`training_participation` with `roles`). The former catalogue duty is gone.
+(`training_participation` with `roles`).
 
 **Statutory reports on an incident** (`ReportingDutySource`, `ReportingPlanner`):
 besides the NIS-2 24 h / 72 h / one-month and DORA reports, an intermediate report
@@ -190,9 +190,7 @@ hand is due again one cadence after its last measurement
 (`ObjectiveMeasurementSource`, ISO 27001 6.2 b / 9.1; `ISMSObjective::getNextMeasurementDue()`).
 The measuring `Person` receives it, else the objective's owner; a changed current
 value or "Heute gemessen, Wert unverändert" on the objective sets `lastMeasuredAt`.
-Objectives linked to a KPI are measured by the tool and carry no duty. (Until
-P8 this was one catalogue duty for all objectives; it is gone so nobody is
-reminded twice.)
+Objectives linked to a KPI are measured by the tool and carry no duty.
 
 ## Responsibility (`App\Service\Responsibility\ResponsibilityResolver`)
 
@@ -220,8 +218,8 @@ A record several sources know (a supplier with assessment and contract end,
 a risk with review and acceptance expiry) is the responsibility of everybody
 the sources name on the strongest step any of them reaches (`responsibleFor()`,
 `RECORD_RESPONSIBLE`): two holders both count, a source that only names a
-fallback role does not widen an owner step. The order in which sources are
-registered no longer matters.
+fallback role does not widen an owner step; the order in which sources are
+registered does not matter.
 
 ```php
 return Responsibility::holders($risk->getRiskOwner(), $risk->getRiskOwnerPerson())
@@ -259,14 +257,14 @@ anyway accept "role OR responsible":
   `edit` voter, read-only reviewer roles only when responsible.
 - `RiskVoter`, `ControlVoter` and `Nis2RegistrationProfileVoter` answer EDIT
   (VIEW for NIS-2) the same way: manager scope, the permission, or responsible.
-  A plain user no longer edits every risk of the organisation, only their own.
+  A plain user edits only their own risks, not every risk of the organisation.
 
 `ReadOnlyRoleSubscriber` lets such actions through for reviewer roles (top
 management named on a task marks it done); the voter has checked the
 assignment.
 
 **Permanent check:** `tests/Service/Deadline/DeadlineLinkReachabilityTest.php`
-runs end to end (since T, wave 7): for every source it creates an organisation
+runs end to end: for every source it creates an organisation
 with only the source's modules (`requiredModule()`, `module:` in
 `deadline_types.yaml`), one account per role of `responsibleOf()` plus a plain
 user and top management as record holders, and a record that
@@ -301,7 +299,7 @@ is asked for. Reminders and approvals still go through the resolver.
 ## Reminders (`App\Service\Reminder\ObligationReminderService`)
 
 One path sends every reminder: `app:send-reminders`, run by the scheduler every
-15 minutes. There is no reminder command per duty any more.
+15 minutes. There is no reminder command per duty.
 
 - **Daily digest**: one mail per person with everything in their My Day list
   that is due within the source's lead days or overdue. It goes out at the
@@ -319,9 +317,7 @@ One path sends every reminder: `app:send-reminders`, run by the scheduler every
   older than 90 days are purged.
 
 Rule-based notifications (`NotificationRule`, webhooks) stay separate; they
-react to events, not to deadlines. The former time-driven rule event
-`control.overdue` (`app:notify-overdue-controls`) is gone — overdue control
-reviews are a deadline source — and the SLA watcher no longer sends
-"approaching" notices for statutory reports of incidents and breaches; it still
-marks missed clocks. Rules that forward hour deadlines listen to
+react to events, not to deadlines. Overdue control reviews are a deadline
+source, not a rule event; the SLA watcher sends no "approaching" notices for
+statutory reports of incidents and breaches, it only marks missed clocks. Rules that forward hour deadlines listen to
 `obligation.urgent`.

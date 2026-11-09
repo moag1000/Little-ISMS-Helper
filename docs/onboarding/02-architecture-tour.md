@@ -77,8 +77,8 @@ current request. All repository queries that return user-visible data must
 include a `WHERE tenant_id = :tenantId` clause. Missing this filter is a
 security defect, not just a bug.
 
-The `AuditTenantVoter` and entity-specific voters (`AssetVoter`,
-`ControlVoter`, etc.) enforce cross-tenant access prevention at the HTTP layer.
+Entity-specific voters (`AssetVoter`, `ControlVoter`, etc.) and the Doctrine
+`TenantFilter` enforce cross-tenant access prevention at the HTTP layer.
 
 ### Module Gating
 
