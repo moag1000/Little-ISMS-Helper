@@ -825,6 +825,10 @@ jobs:
         # |fa_html on a reviewed translation). |raw needs an allowlist entry with a reason;
         # PhpWord documents come only from DocxDocumentFactory (output escaping on). S10, 2026-11.
         run: python3 scripts/quality/check_raw_output.py --quiet
+      - name: "Gate 93: every SSO login goes through SsoClaimPolicy, SAML only answers own requests"
+        # S9, 2026-11: SAML URLs from the Host header and replayable responses, Azure tid unchecked with
+        # e-mail linking on, OIDC tokens without issuer/exp/nonce and UserInfo overwriting sub/email.
+        run: python3 scripts/quality/check_sso_claim_policy.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

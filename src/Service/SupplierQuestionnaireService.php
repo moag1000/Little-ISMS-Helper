@@ -73,7 +73,7 @@ final class SupplierQuestionnaireService
      * Record the supplier's answers (public submission). Idempotent-safe: only
      * accepts a response while the questionnaire is open.
      *
-     * @param array<string, string> $answers questionId => answerText
+     * @param array<string, mixed> $answers questionId => answerText (non-scalar values are ignored)
      */
     public function submitResponse(SupplierQuestionnaire $questionnaire, array $answers): bool
     {
@@ -85,6 +85,11 @@ final class SupplierQuestionnaireService
         $validIds = array_column($questionnaire->getQuestions(), 'id');
         $clean = [];
         foreach ($answers as $qid => $text) {
+            // A nested field (answers[x][]) is no answer text: skipped, not
+            // cast to "Array".
+            if (!is_scalar($text)) {
+                continue;
+            }
             if (in_array($qid, $validIds, true)) {
                 $clean[$qid] = mb_substr((string) $text, 0, 5000);
             }
