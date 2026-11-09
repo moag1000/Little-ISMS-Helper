@@ -20,15 +20,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Admin UI for workflow step-level overlay editor.
  *
- * Reads canonical step definitions from:
- *   1. RegulatoryWorkflowLoader::getStepsForWorkflow() (the service may not exist)
- *   2. Fallback: parse metadata.steps from config/workflows/regulatory/*.yaml directly
- *   3. Lifecycle workflows: config/workflows/*.yaml (no steps, but listed for cross-link)
+ * Reads canonical step definitions only through RegulatoryWorkflowLoader (metadata.steps of
+ * config/workflows/regulatory/*.yaml). Lifecycle workflows (config/workflows/*.yaml) have no steps
+ * but are listed for the cross-link.
  *
  * Overwrideable step fields per tenant are persisted into lifecycle_config with:
  *   workflowName  = 'workflow:{name}'
@@ -344,79 +342,14 @@ final class WorkflowOverlayController extends AbstractController
     }
 
     /**
-     * Load steps for a workflow name.
-     *
-     * Uses RegulatoryWorkflowLoader (injected via constructor) as the primary source.
-     * Falls back to parsing the YAML metadata.steps block directly when the loader
-     * returns null (workflow not registered in the Symfony Workflow Registry).
+     * Steps of a workflow, from the one reader of config/workflows/regulatory (S17:
+     * `metadata.steps`, {@see RegulatoryWorkflowLoader::stepsOf()}). Lifecycle workflows have none.
      *
      * @return list<array<string, mixed>>
      */
     private function loadStepsForWorkflow(string $name): array
     {
-        $steps = $this->workflowLoader->getStepsForWorkflow($name);
-        if (!empty($steps)) {
-            return $steps;
-        }
-
-        return $this->parseStepsFromYaml($name);
-    }
-
-    /**
-     * Parse metadata.steps from a regulatory YAML file as fallback.
-     *
-     * @return list<array<string, mixed>>
-     */
-    private function parseStepsFromYaml(string $name): array
-    {
-        $yamlFile = $this->findYamlFile($name);
-        if ($yamlFile === null || !file_exists($yamlFile)) {
-            return [];
-        }
-
-        try {
-            $data = Yaml::parseFile($yamlFile);
-        } catch (\Throwable) {
-            return [];
-        }
-
-        // Regulatory YAML: framework.workflows.{name}.metadata.steps
-        $steps = $data['framework']['workflows'][$name]['metadata']['steps'] ?? [];
-        if (!is_array($steps)) {
-            return [];
-        }
-
-        return array_values($steps);
-    }
-
-    /**
-     * Find the YAML file for a given workflow name.
-     * Checks config/workflows/regulatory/ first, then config/workflows/.
-     */
-    private function findYamlFile(string $name): ?string
-    {
-        $base = \dirname(__DIR__, 3) . '/config/workflows/';
-
-        // Regulatory workflows may be stored under regulatory/ subdirectory
-        $regulatory = $base . 'regulatory/' . $name . '.yaml';
-        if (file_exists($regulatory)) {
-            return $regulatory;
-        }
-
-        // Lifecycle workflows: name may end in _lifecycle or be stripped
-        $plain = $base . $name . '.yaml';
-        if (file_exists($plain)) {
-            return $plain;
-        }
-
-        // Try stripping _lifecycle suffix for files like document.yaml
-        $stripped = str_replace('_lifecycle', '', $name);
-        $strippedFile = $base . $stripped . '.yaml';
-        if (file_exists($strippedFile)) {
-            return $strippedFile;
-        }
-
-        return null;
+        return $this->workflowLoader->getStepsForWorkflow($name) ?? [];
     }
 
     /**

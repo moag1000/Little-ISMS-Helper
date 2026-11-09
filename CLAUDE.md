@@ -60,8 +60,8 @@ php bin/phpunit
 php bin/phpunit tests/Service/RiskServiceTest.php  # specific test
 
 # Workflows (Regulatory Compliance)
-php bin/console app:generate-regulatory-workflows  # Generate all workflows
-php bin/console app:generate-regulatory-workflows --workflow=data-breach  # Specific workflow
+php bin/console app:generate-regulatory-workflows  # Align DB rows with the YAML (operators: /quick-fix)
+php bin/console app:generate-regulatory-workflows --dry-run  # Only list what differs
 php bin/console app:process-timed-workflows  # Process time-based auto-progression
 php bin/console app:process-timed-workflows --dry-run  # Test without changes
 
@@ -557,22 +557,34 @@ Auto-progression is handled by `FieldCompletionAutoTransition` (Doctrine `postUp
 - **DPIA** — `dpia.yaml` — GDPR Art. 35/36, 6 steps
 - Plus further workflows: DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC Plan Activation, Document Review, Incident Post-Mortem
 
-**Auto-Progression (canonical pattern since Y.1):**
-Auto-progression fires automatically via Doctrine event listener when entity fields are saved.
-Define conditions in the YAML step metadata — no code changes needed:
+**Auto-Progression (what really moves, S17):**
+- Record-driven: entity lifecycle transitions fire from `config/packages/lifecycle.yaml`
+  (`FieldCompletionAutoTransition`, `required_fields` or an AND/OR `conditions` tree) on postUpdate.
+- Approval chains (`config/workflows/regulatory/*.yaml`): a person approves each step. Only
+  `auto_progress_conditions: {type: time_based, delay: …}` advances on its own (`app:process-timed-workflows`),
+  `step_type: notification` steps pass by themselves, `reject_action: loop_back` + `reject_target_step` sends a
+  rejection back to an earlier step. Gate 82 rejects every other step key or condition type (27 never-evaluated
+  field_completion/auto/risk_appetite conditions were removed in S17).
 
 ```yaml
-# config/workflows/regulatory/my_workflow.yaml
+# config/workflows/regulatory/my_workflow.yaml — steps sit at metadata.steps, beside regulatory_metadata
 metadata:
     regulatory_metadata:
-        steps:
-            - name: "Initial Assessment"
-              approver_role: ROLE_DPO
-              auto_progress_conditions:
-                  type: field_completion
-                  entity: DataBreach
-                  fields: [severity, affectedDataSubjectsCount, notificationRequired]
+        title: "My Workflow (Norm X)"   # name of the database row (RegulatoryWorkflowMirror)
+        entity_type: DataBreach
+    steps:
+        - name: "Initial Assessment"
+          order: 1
+          approver_role: ROLE_DPO
+          days_to_complete: 1
 ```
+
+**One layout, one writer (S17):** `RegulatoryWorkflowLoader::stepsOf()` reads `metadata.steps` (Gate 82 rejects
+`regulatory_metadata.steps`, a regulatory YAML without steps, title or entity_type, and unknown roles in steps).
+Running approvals read the approver from their `WorkflowStep` row; those rows are written only by
+`Workflow\Mirror\RegulatoryWorkflowMirror` (Quick-Fix "Workflow-Definitionen abgleichen", nightly
+`app:generate-regulatory-workflows` 04:20, and `WorkflowService::startWorkflow()` when a chain has no row yet).
+Durable test: `tests/Workflow/RegulatoryWorkflowRegistryTest`.
 
 **Verification CLI:**
 ```bash

@@ -26,16 +26,15 @@ The Workflow Auto-Progression System enables **event-driven workflows** where wo
 ### Components
 
 1. **FieldCompletionAutoTransition** (`src/Lifecycle/EventListener/FieldCompletionAutoTransition.php`) — **canonical since Y.1**
-   - Doctrine `postUpdate` listener that evaluates auto-progression rules
-   - Evaluates field_completion, auto, risk_appetite rule types
-   - Supports AND/OR condition DSL
-   - Automatically approves steps when conditions are met
-   - Rules are configured in `config/workflows/regulatory/*.yaml` step metadata
+   - Doctrine `postUpdate` listener for **entity lifecycle transitions** (not approval steps)
+   - Rules live in `config/packages/lifecycle.yaml` (`required_fields` or an AND/OR `conditions` tree)
 
-2. **WorkflowStep Metadata** (YAML) — **canonical since Y.2**
-   - Step definitions live in `config/workflows/regulatory/*.yaml`
-   - The `metadata.steps[].auto_progress_conditions` key replaces the DB `metadata` JSON field
-   - DB `workflow_steps.metadata` column preserved read-only for historical display
+2. **Approval-chain steps** (YAML, `config/workflows/regulatory/*.yaml`, `metadata.steps`)
+   - A person approves each step. Evaluated step keys only (Gate 82): `time_based`
+     `auto_progress_conditions` (`app:process-timed-workflows`), `step_type: notification`
+     (passes by itself), `reject_action: loop_back` + `reject_target_step`
+   - S17 removed 27 field_completion/auto/risk_appetite step conditions that nothing evaluated
+   - The database rows (`workflow_steps`) are written from the YAML by `RegulatoryWorkflowMirror`
 
 3. **Integration Points**
    - `DataBreachService::update()` - Checks auto-progression after DataBreach updates
@@ -122,17 +121,21 @@ Examples:
 
 ## Regulatory-Compliant Workflows
 
-### Generate Pre-Configured Workflows
+### Database rows of the chains (S17)
+
+The chains are defined only in `config/workflows/regulatory/*.yaml` (steps at `metadata.steps`).
+A running approval reads its approver from a `WorkflowStep` row; `RegulatoryWorkflowMirror` writes
+these rows from the YAML, in place (running approvals keep their step):
+
+- Quick-Fix page `/quick-fix` → section "Freigabeketten" → **Workflow-Definitionen abgleichen**
+  (shows which chains differ, e.g. `step 1 role: ROLE_RISK_MANAGER → owner`);
+- nightly scheduler task `app:generate-regulatory-workflows` (04:20);
+- `WorkflowService::startWorkflow()` creates a missing row on the first approval.
 
 ```bash
-# Generate all regulatory workflows
-php bin/console app:generate-regulatory-workflows
-
-# Generate specific workflow
-php bin/console app:generate-regulatory-workflows --workflow=data-breach
-
-# Overwrite existing definitions
-php bin/console app:generate-regulatory-workflows --overwrite
+php bin/console app:generate-regulatory-workflows             # align all chains
+php bin/console app:generate-regulatory-workflows --dry-run   # only list what differs
+php bin/console app:generate-regulatory-workflows --workflow=gdpr_data_breach
 ```
 
 ### Available Workflows
@@ -178,21 +181,28 @@ php bin/console app:generate-regulatory-workflows --overwrite
 Auto-progression is now **automatic via Doctrine event listener**. You do NOT need to
 inject any service or call `checkAndProgressWorkflow()` explicitly.
 
-**Step 1**: Define step conditions in the workflow YAML
+**Step 1**: Define the rule in `config/packages/lifecycle.yaml` (entity lifecycle, not an approval step)
 
 ```yaml
-# config/workflows/regulatory/my_workflow.yaml
-metadata:
-    regulatory_metadata:
-        steps:
-            - name: "Initial Assessment"
-              order: 1
-              approver_role: ROLE_MANAGER
-              days_to_complete: 3
-              auto_progress_conditions:
-                  type: field_completion
-                  entity: Incident
-                  fields: [rootCause, containmentMeasures]
+# config/packages/lifecycle.yaml
+parameters:
+    lifecycle.auto_transition_rules:
+        App\Entity\Incident:
+            review_when_analysed:
+                workflow: incident_lifecycle
+                transition: review
+                required_fields: [rootCause, containmentMeasures]
+```
+
+Approval chains (`config/workflows/regulatory/*.yaml`) stay with a person; only a `time_based`
+condition advances a step on its own:
+
+```yaml
+    steps:                        # at metadata.steps, beside regulatory_metadata (Gate 82)
+        - name: "Grace period"
+          order: 1
+          approver_role: ROLE_MANAGER
+          auto_progress_conditions: {type: time_based, delay: "24 hours"}
 ```
 
 **Step 2**: Save the entity — auto-progression fires automatically
@@ -287,9 +297,9 @@ Workflows can be configured for different entities, severities, and compliance r
 
 ### Manual Testing
 
-1. **Generate Data Breach Workflow**
+1. **Align the Data Breach chain** (or /quick-fix → Workflow-Definitionen abgleichen)
    ```bash
-   php bin/console app:generate-regulatory-workflows --workflow=data-breach
+   php bin/console app:generate-regulatory-workflows --workflow=gdpr_data_breach
    ```
 
 2. **Create Data Breach Entity**

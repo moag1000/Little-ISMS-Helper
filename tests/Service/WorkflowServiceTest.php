@@ -341,6 +341,36 @@ class WorkflowServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    /** S17: `reject_action: loop_back` sends the chain back instead of ending it (CAPA 10.1 f). */
+    #[Test]
+    public function aRejectionOnALoopBackStepReturnsToTheTargetStep(): void
+    {
+        $workflow = new Workflow();
+        $steps = [];
+        foreach ([1 => null, 2 => null, 3 => ['rejectAction' => 'loop_back', 'rejectTargetStep' => 1]] as $order => $metadata) {
+            $step = (new WorkflowStep())->setName('Step ' . $order)->setStepOrder($order)
+                ->setApproverRole('ROLE_MANAGER')->setDaysToComplete(5)->setMetadata($metadata);
+            $workflow->addStep($step);
+            $steps[$order] = $step;
+        }
+        $instance = new WorkflowInstance();
+        $instance->setWorkflow($workflow);
+        $instance->setStatus('in_progress'); // @lifecycle-initial-state (unit fixture)
+        $instance->setCurrentStep($steps[3]);
+        $instance->setCurrentStepIndex(2);
+        $user = $this->createUser(1, 'Jane', 'Smith');
+        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_MANAGER');
+
+        $this->lifecycleService->expects($this->never())->method('transition');
+
+        self::assertTrue($this->service->rejectStep($instance, $user, 'Not effective'));
+        self::assertSame($steps[1], $instance->getCurrentStep());
+        self::assertSame(0, $instance->getCurrentStepIndex());
+        self::assertSame('in_progress', $instance->getStatus());
+        self::assertNull($instance->getCompletedAt());
+        self::assertSame('rejected', $instance->getApprovalHistory()[0]['action'] ?? null);
+    }
+
     #[Test]
     public function testRejectStepFailsIfNotInProgress(): void
     {

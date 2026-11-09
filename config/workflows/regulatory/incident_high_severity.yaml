@@ -51,6 +51,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "Incident Response - High/Critical Severity"
+                    description: "Escalated incident response workflow for high and critical severity security incidents (ISO 27001:2022)"
+                    entity_type: Incident
                     standard: "ISO 27001:2022 Cl. 5.24-5.28"
                     sla_hours: 24
                     escalation_threshold_hours: 12

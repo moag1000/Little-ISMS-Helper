@@ -18,6 +18,7 @@ app_routes:
         - '../src/Controller/HomeController.php'
         - '../src/Controller/QuickFixController.php'
         - '../src/Controller/QuickFixJobStatusController.php'
+        - '../src/Controller/QuickFixWorkflowController.php'
         - '../src/Controller/SsoController.php'
         - '../src/Controller/LifecycleController.php'
         - '../src/Controller/GlossaryApiController.php'
@@ -46,6 +47,10 @@ quick_fix_routes:
 
 quick_fix_job_status_routes:
     resource: ../src/Controller/QuickFixJobStatusController.php
+    type: attribute
+
+quick_fix_workflow_routes:
+    resource: ../src/Controller/QuickFixWorkflowController.php
     type: attribute
 
 # Root redirect (smart locale detection, no prefix) + dashboard routes that carry

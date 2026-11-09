@@ -60,6 +60,17 @@ quick_fix:
         token_submit: 'Mit Token freischalten'
         privileged_body: 'Diese Aktion ändert Daten oder entfernt Schema-Teile. Sie läuft nur mit Anmeldung als Super-Admin oder mit dem Installer-Token.'
         privileged_hint: 'Reparaturen und destruktive Schema-Änderungen brauchen eine Anmeldung als Super-Admin oder das Installer-Token. Ausstehende Migrationen lassen sich ohne Anmeldung anwenden.'
+    workflows:
+        title: 'Freigabeketten (regulatorische Workflows)'
+        intro: 'Laufende Freigaben lesen ihre Rollen aus der Datenbank; nach einem Update kann sie von config/workflows/regulatory abweichen. Abgleichen behält laufende Freigaben bei und läuft nachts auch von selbst.'
+        drift: 'Abweichende Ketten'
+        state_missing: 'fehlt in der Datenbank'
+        state_differs: 'weicht ab'
+        button: 'Workflow-Definitionen abgleichen'
+        empty: 'Alle Freigabeketten entsprechen ihrer Definition.'
+        flash:
+            synced: 'Workflow-Definitionen abgeglichen.'
+            kept_steps: 'Entfernte Schritte bleiben, bis die laufenden Freigaben darauf abgeschlossen sind.'
     repair:
         section:
             title: 'Daten-Integrität'
