@@ -21,6 +21,11 @@ nis2:
         incident_number: "Vorfallnummer"
         classification: "Klassifizierung"
         severity: "Schweregrad"
+        severity_value:
+            low: "Niedrig"
+            medium: "Mittel"
+            high: "Hoch"
+            critical: "Kritisch"
         status: "Status"
         category: "Kategorie"
         nis2_category: "NIS2-Kategorie"
@@ -64,6 +69,7 @@ nis2:
             financial_impact: "Geschätzter finanzieller Schaden"
             iocs: "Indicators of Compromise (IoCs)"
             related_vulnerabilities: "Verwandte Schwachstellen"
+            vulnerability_fallback: "Schwachstelle Nr. %id%"
             initial_actions: "Ergriffene Sofortmaßnahmen"
             authority_notified: "Benachrichtigte nationale Behörde"
             authority_reference: "Behörden-Referenznummer"
@@ -96,6 +102,7 @@ nis2:
             early_warning: "Frühwarnung"
             notification: "Vorfallmeldung"
             final_report: "Abschlussbericht"
+            final_report_due: "Abschlussbericht (1 Monat)"
 
         # Footer
         footer: "Vertraulich - NIS2 Art. 23 Sicherheitsvorfall-Meldung"

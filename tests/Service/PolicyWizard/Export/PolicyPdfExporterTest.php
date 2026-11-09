@@ -141,7 +141,7 @@ final class PolicyPdfExporterTest extends TestCase
         $tenant = $this->makeTenant();
         $doc = $this->makeDocument($tenant, $this->makeTemplate());
 
-        $exporter = new PolicyPdfExporter($this->twig);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator());
 
         $pdf = $exporter->exportDocument($doc, null);
 
@@ -157,7 +157,7 @@ final class PolicyPdfExporterTest extends TestCase
         $branding = $this->makeBranding($tenant);
         $doc = $this->makeDocument($tenant, $this->makeTemplate());
 
-        $exporter = new PolicyPdfExporter($this->twig);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator());
 
         $pdf = $exporter->exportDocument($doc, $branding);
 
@@ -181,7 +181,7 @@ final class PolicyPdfExporterTest extends TestCase
         $brandingRepo = $this->createMock(TenantBrandingRepository::class);
         $brandingRepo->method('findOneByTenant')->willReturn(null);
 
-        $exporter = new PolicyPdfExporter($this->twig, $brandingRepo);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator(), $brandingRepo);
 
         $pdf = $exporter->exportDocument($doc, null);
 
@@ -203,7 +203,7 @@ final class PolicyPdfExporterTest extends TestCase
             ['approval.chain' => ['ROLE_DPO: Anna Müller', 'ROLE_CISO: Bob Tester', 'ROLE_TOP_MGMT: Cara Chief']],
         );
 
-        $exporter = new PolicyPdfExporter($this->twig);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator());
         $pdf = $exporter->exportDocument($doc, null);
 
         $haystack = $this->extractText($pdf);
@@ -222,7 +222,7 @@ final class PolicyPdfExporterTest extends TestCase
             ['audit_trail.batch_id' => 'BATCH-2026-05-08-001'],
         );
 
-        $exporter = new PolicyPdfExporter($this->twig);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator());
         $pdf = $exporter->exportDocument($doc, null);
 
         $haystack = $this->extractText($pdf);

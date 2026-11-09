@@ -164,6 +164,12 @@ need (tenantId, userId, …) through `$args` at dispatch time — see
 `ExportRisksJob` as the reference pattern. The shared EntityManager
 keeps working after detach.
 
+**Language (W10):** `JobDispatcher` stamps the dispatching person's locale into the args (`locale`, a job may
+name its own) and both runners run the job under `LocaleSwitcher` (`App\Service\Job\JobLocale`); scheduled
+report attachments render in the schedule's language (`Report\ScheduledReportAttachment`). PDFs carry
+`<html lang="{{ app.locale }}">` (not `app.request.locale`: jobs have no request) and no text outside `|trans`
+(Gate 102, `check_pdf_i18n.py` + `tests/Contract/ExportLocaleContractTest`).
+
 **Tenant scope + ownership (security):** jobs that read tenant data take the
 scope from `JobTenantScope::argsForCurrentUser()` at dispatch and call
 `JobTenantScope::resolve($ctx)` in `run()`, passing the tenant into every

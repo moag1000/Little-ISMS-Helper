@@ -114,6 +114,10 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Geändertes Verhalten
 
+- **Nachweise in einer Sprache (W10):** VVT-, Datenpannen-, DSFA-, Compliance-Export-, SoA- und Bündel-PDFs sowie
+  die Excel/CSV-Exporte erscheinen vollständig in der gewählten Sprache (bisher deutsch-englisch gemischt). Exporte
+  im Hintergrund (auch im Messenger-Modus) kommen in der Sprache der Person, die sie gestartet hat; der Anhang eines
+  geplanten Berichts in der Sprache, die am Bericht eingestellt ist (bisher nur der Mailtext). Keine Handlung nötig.
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
   `auto_action` auf `ROLE_USER` — jede angemeldete Person hätte eine Richtlinie abschließend freigeben können.
   Er ist jetzt ein Benachrichtigungsschritt (läuft von selbst durch, informiert die Manager). Bestehende Zeilen
