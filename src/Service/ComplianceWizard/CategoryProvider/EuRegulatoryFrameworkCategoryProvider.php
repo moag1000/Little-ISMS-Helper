@@ -9,6 +9,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\Incident;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
+use App\Entity\ThreatLedPenetrationTest;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExitStrategyDocumentedCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExtensionCoverageCheck;
@@ -26,6 +27,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\GdprSectionCoverageC
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\PrivacyPolicyPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\RopaMethodologyPresentCheck;
 use App\Service\ComplianceWizard\RecordCheck;
+use App\Service\Deadline\Source\ThreatLedPenetrationTestSource;
 use App\Service\TenantContext;
 
 /**
@@ -907,15 +909,15 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'weight' => 1.5,
                 'article' => '26-27',
                 'checks' => [
-                    'tlpt_program' => [
-                        'name' => 'wizard.check.dora_26_tlpt',
-                        'description' => 'wizard.check.dora_26_tlpt_desc',
-                        'type' => 'entity_presence',
-                        'entity' => 'tlpt',
-                        'priority' => 'high',
-                        'article' => '26(1)',
-                        'route' => 'app_tlpt_index',
-                    ],
+                    // Art. 26(1): a TLPT at least every three years — a planned row is not evidence,
+                    // only a closed test whose end lies within 36 months (cadence shared with the
+                    // deadline source) and that carries its summary report.
+                    'tlpt_program' => RecordCheck::fields('dora_26_tlpt', ThreatLedPenetrationTest::class, ['actualEndDate', 'executiveSummary'], '26(1)', 'app_tlpt_index', 'high', [
+                        'module' => 'nis2_dora',
+                        'where' => ['status' => ThreatLedPenetrationTest::STATUS_CLOSED],
+                        'since' => ['field' => 'actualEndDate', 'months' => ThreatLedPenetrationTestSource::CADENCE_MONTHS],
+                        'gap_title' => 'wizard.gap.tlpt_not_recent',
+                    ]),
                 ],
             ],
 

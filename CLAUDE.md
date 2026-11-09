@@ -256,7 +256,7 @@ systemctl enable isms-worker && systemctl start isms-worker
   category's; controls AND records behind one requirement average, kind `controls_records`) → mappings. Record
   check types for norm data: `register_coverage`, `management_decision`, `training_participation`,
   `reporting_duty`, `deadline_adherence` (duties of the deadline sources done on time, ISO 8.1/9.1),
-  `record_completeness` (fields on existing records, DORA 14/17/18/30, ISO A.5.23 cloud suppliers), `account_mfa`
+  `record_completeness` (fields on existing records, DORA 14/17/18/26/30 — Art. 26 = closed TLPT within 36 months, ISO A.5.23 cloud suppliers; `gap_title` for "nothing recent"), `account_mfa`
   (privileged local accounts with a second factor, NIS-2 21(2)(j)) (`ComplianceWizard\RecordCheck`, defs via
   `RecordCheck::register()/decision()/deadlines()/fields()`); `clause_coverage` = ISO 4.4 from clauses 4–10; a check whose
   catalogue numbers rows apart from the article names them in `requirements` (exact ids; NIS-2 Art. 23, thematic DORA) —

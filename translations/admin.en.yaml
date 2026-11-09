@@ -57,7 +57,6 @@ admin:
             no_file_uploaded: 'No file uploaded.'
             invalid_file_format: 'Invalid file format. Only .json, .gz or .zip files are allowed.'
             upload_failed: 'File upload failed: %message%'
-            no_import_data: 'No import data found.'
     sso_provider:
         success:
             deleted: 'SSO provider deleted.'

@@ -149,6 +149,20 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Laden die alten Caches. Offline erscheint nur noch die Offline-Seite.
 - **Exporte** und Downloads verlangen überall eine Rolle (`#[IsGranted]`), auch die
   Compliance-Exporte. Geplante Berichte bieten nur Berichtsarten aktiver Module an.
+- **Importe (W9):** Erreicht ein Compliance-Mapping-Import die „Import 4-Augen-Pflicht ab Zeilen“
+  (Admin > Compliance-Richtlinien, Standard 50, 0 = aus), lässt er sich erst nach der Freigabe genau
+  dieser Datei durch eine zweite Person festschreiben („Freigabe anfordern“ in der Vorschau, Freigabe im
+  4-Augen-Posteingang); bisher war das nur ein Hinweis. Der TISAX-Import legt das gemeinsame
+  TISAX-Framework nur noch an, wer den Katalog schreiben darf (bei mehreren Organisationen der
+  Super-Admin), und schaltet ein deaktiviertes nicht wieder ein; Vorschau und Bestätigungsseite schreiben
+  nichts mehr. Der Bibliotheks-Export enthält keine TISAX-Zeilen anderer Organisationen. Der
+  CSV-Benutzerimport legt auch beim Super-Admin Konten in der aktuellen Organisation an. Die alte
+  JSON-Seite `/admin/data/import` (schrieb nie etwas) ist entfallen; Einstieg ist der Import-Hub.
+  Upload-Dateien nie festgeschriebener Bulk-Importe löscht der Scheduler nach 30 Tagen
+  (`app:import:purge-abandoned`, 03:35).
+- **DORA Art. 26:** Der Compliance-Wizard wertet TLPT nur noch als erfüllt, wenn ein abgeschlossener
+  TLPT mit Enddatum und Zusammenfassung in den letzten 36 Monaten vorliegt; ein geplanter Eintrag reicht
+  nicht mehr. Die DORA-Erfüllung kann dadurch sinken.
 
 ### SSO (Azure, SAML, OIDC)
 

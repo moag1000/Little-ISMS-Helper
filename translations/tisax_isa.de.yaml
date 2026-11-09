@@ -152,6 +152,8 @@ tisax:
       company_mismatch_body: 'Das Self-Assessment ist auf „%workbook%" ausgestellt, Ihre Organisation heißt hier „%org%". Oft ist das nur eine andere Schreibweise — kein Grund zur Sorge. Prüfen Sie nur kurz, dass es Ihre Datei ist, und bestätigen Sie.'
       company_confirm_label: 'Ich bestätige, dass das Self-Assessment von „%workbook%" zu unserer Organisation gehört und importiert werden soll.'
       company_confirm_required: 'Bitte bestätigen Sie die abweichende Organisation, bevor der Import festgeschrieben wird.'
+      catalogue_missing: 'Der TISAX-Katalog ist auf dieser Instanz noch nicht angelegt. Die Super-Administration lädt ihn unter Admin > Bibliothek, danach kann der Import festgeschrieben werden.'
+      catalogue_inactive: 'Die Super-Administration hat den TISAX-Katalog deaktiviert. Ein Import schaltet ihn nicht wieder ein.'
       maturity_diff_title: 'Reifegrad-Abweichungen (%count%)'
       maturity_diff_body: 'Für diese Anforderungen weicht der Reifegrad im Workbook vom bereits gespeicherten Stand ab. Wählen Sie aus, welche Workbook-Werte den aktuellen Stand überschreiben sollen. Nicht angehakte Anforderungen behalten ihren bisherigen Reifegrad.'
       maturity_diff_select_all: 'Alle übernehmen'

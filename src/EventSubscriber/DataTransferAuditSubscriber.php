@@ -30,7 +30,6 @@ final class DataTransferAuditSubscriber implements EventSubscriberInterface
         'data_backup_restore'  => 'backup.restore',
         'data_backup_delete'   => 'backup.delete',
         'data_export_execute'  => 'data.export',
-        'data_import_execute'  => 'data.import',
     ];
 
     public function __construct(

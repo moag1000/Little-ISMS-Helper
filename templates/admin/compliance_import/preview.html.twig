@@ -122,8 +122,15 @@
             </div>
         </section>
 
-        {% if requires_four_eyes|default(false) %}
-            {{ _fa_alert.render({ variant: 'warning', class: 'd-flex gap-2', title: 'compliance_import.preview.four_eyes_warning_title'|trans({}, 'compliance_import'), body: 'compliance_import.preview.four_eyes_warning_body'|trans({'%rows%': rows|length, '%threshold%': four_eyes_threshold}, 'compliance_import') }) }}
+        {% set fourEyesState = four_eyes_state|default('not_required') %}
+        {% set fourEyesOpen = fourEyesState in ['missing', 'pending'] %}
+        {% if fourEyesState != 'not_required' %}
+            {% set fourEyesAlert = { class: 'd-flex gap-2', title: ('compliance_import.preview.four_eyes_' ~ fourEyesState ~ '_title')|trans({}, 'compliance_import'), body: 'compliance_import.preview.four_eyes_warning_body'|trans({'%rows%': rows|length, '%threshold%': four_eyes_threshold}, 'compliance_import') } %}
+            {% if fourEyesState == 'approved' %}
+                {{ _fa_alert.render(fourEyesAlert|merge({ variant: 'success' })) }}
+            {% else %}
+                {{ _fa_alert.render(fourEyesAlert|merge({ variant: 'warning' })) }}
+            {% endif %}
         {% endif %}
 
         {# Action bar #}
@@ -135,10 +142,18 @@
                     {{ 'compliance_import.common.cancel'|trans({}, 'compliance_import') }}
                 </button>
             </form>
+            {% if fourEyesState == 'missing' %}
+                <form method="post" action="{{ path('admin_compliance_import_request_approval') }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('compliance_import_four_eyes') }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--secondary">
+                        {{ 'compliance_import.preview.four_eyes_request'|trans({}, 'compliance_import') }}
+                    </button>
+                </form>
+            {% endif %}
             <form method="post" action="{{ path('admin_compliance_import_commit') }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('compliance_import_commit') }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary"
-                        {% if rows is empty %}disabled aria-disabled="true"{% endif %}>
+                        {% if rows is empty or fourEyesOpen %}disabled aria-disabled="true"{% endif %}>
                     <i class="fa-icon fa-icon--approve" aria-hidden="true"></i>
                     {{ 'compliance_import.preview.commit'|trans({}, 'compliance_import') }}
                 </button>

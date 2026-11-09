@@ -1,13 +1,13 @@
 # check_translation_nesting.py baseline
 # Format: <relative-path>:<line>:<key>
-translations/admin.de.yaml:1709:data_management
-translations/admin.de.yaml:1817:setup
-translations/admin.de.yaml:1888:kpi_threshold
-translations/admin.de.yaml:1932:industry_preset
-translations/admin.en.yaml:1693:data_management
-translations/admin.en.yaml:1802:setup
-translations/admin.en.yaml:1873:kpi_threshold
-translations/admin.en.yaml:1917:industry_preset
+translations/admin.de.yaml:1708:data_management
+translations/admin.de.yaml:1816:setup
+translations/admin.de.yaml:1887:kpi_threshold
+translations/admin.de.yaml:1931:industry_preset
+translations/admin.en.yaml:1692:data_management
+translations/admin.en.yaml:1801:setup
+translations/admin.en.yaml:1872:kpi_threshold
+translations/admin.en.yaml:1916:industry_preset
 translations/alva.de.yaml:60:vulnerability
 translations/alva.de.yaml:66:data_subject_request
 translations/alva.de.yaml:72:asset
@@ -412,8 +412,8 @@ translations/validators.en.yaml:387:risk_approval_config
 translations/validators.en.yaml:392:gstool_import
 translations/vulnerabilities.de.yaml:1:vulnerability
 translations/vulnerabilities.en.yaml:1:vulnerability
-translations/wizard.de.yaml:1731:compliance_check
-translations/wizard.en.yaml:1731:compliance_check
+translations/wizard.de.yaml:1732:compliance_check
+translations/wizard.en.yaml:1732:compliance_check
 translations/workflows.de.yaml:1:workflow
 translations/workflows.de.yaml:294:workflow_instance
 translations/workflows.de.yaml:301:workflow_step
