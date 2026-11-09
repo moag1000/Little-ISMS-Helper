@@ -165,12 +165,11 @@ final class AdminPolicyStyleControllerTest extends WebTestCase
         $token = $m[1];
 
         $payload = [
-            'cover_pattern' => 'engineering',
+            'page_margin' => 'wide',
             'watermark_opacity' => 0.25,
             'signature_lines' => 4,
             'show_history' => false,
             'show_toc' => true,
-            'font_family' => 'Roboto',
             '_preview_token' => $token,
         ];
 
@@ -194,8 +193,8 @@ final class AdminPolicyStyleControllerTest extends WebTestCase
         self::assertIsArray($body);
         self::assertArrayHasKey('html', $body);
         self::assertStringContainsString('policy-doc-preview', $body['html']);
-        // The preview should reflect the engineering cover pattern.
-        self::assertStringContainsString('cover-engineering', $body['html']);
+        // The preview should reflect the posted page margin.
+        self::assertStringContainsString('policy-doc-preview--margin-wide', $body['html']);
     }
 
     #[Test]
@@ -209,7 +208,7 @@ final class AdminPolicyStyleControllerTest extends WebTestCase
             'POST',
             '/de/admin/policy-style/preview',
             server: ['CONTENT_TYPE' => 'application/json'],
-            content: json_encode(['cover_pattern' => 'minimal'], JSON_THROW_ON_ERROR),
+            content: json_encode(['page_margin' => 'compact'], JSON_THROW_ON_ERROR),
         );
 
         // Missing CSRF token → AccessDenied → 403; some test envs translate
@@ -246,7 +245,7 @@ final class AdminPolicyStyleControllerTest extends WebTestCase
                 'HTTP_X_CSRF_TOKEN' => $token,
             ],
             content: json_encode([
-                'cover_pattern' => 'branded',
+                'page_margin' => 'standard',
                 'custom_css' => $marker,
                 '_preview_token' => $token,
             ], JSON_THROW_ON_ERROR),

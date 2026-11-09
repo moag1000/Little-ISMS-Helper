@@ -6,13 +6,11 @@ namespace App\Form\Admin;
 
 use App\Form\SectionMapInterface;
 use App\Entity\TenantBranding;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,57 +19,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Per-tenant Policy-Doc Style Configurator.
  *
- * Edits the 12 `policyDoc*` fields on TenantBranding that drive the
- * `_fa_policy_doc.html.twig` macro (font, cover pattern, watermark,
- * signature lines, TOC/history/Annex-A toggles, page margin, cover
- * logo size, custom-CSS override).
+ * Edits the `policyDoc*` fields on TenantBranding that drive the
+ * `_fa_policy_doc.html.twig` macro (watermark, signature lines,
+ * TOC/history/Annex-A toggles, page margin, cover logo size, footer text).
  *
- * Custom-CSS field is only rendered for ROLE_ADMIN. Watermark opacity
- * is exposed as 0–100 % via the `policy_style_preview` Stimulus
+ * Watermark opacity is exposed as 0–100 % via the `policy_style_preview` Stimulus
  * controller and persisted as a 0.0–1.0 float.
  */
 // SectionMap replaced by fa-tabs in edit.html.twig (live-preview compat).
-// Fields are grouped into General/Branding/Layout/Content/Advanced tabs.
+// Fields are grouped into General/Branding/Content tabs.
 // Preview panel is a sibling col alongside the fa-tabs container.
 final class TenantPolicyStyleType extends AbstractType implements SectionMapInterface
 {
-    public function __construct(
-        private readonly Security $security,
-    ) {
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('policyDocFontFamily', ChoiceType::class, [
-                'label' => 'admin.policy_style.field.font_family',
-                'help' => 'admin.policy_style.help.font_family',
-                'choices' => [
-                    'Inter' => 'Inter',
-                    'Roboto' => 'Roboto',
-                    'Source Sans 3' => 'Source Sans 3',
-                    'Lato' => 'Lato',
-                    'Open Sans' => 'Open Sans',
-                    'Merriweather (Serif)' => 'Merriweather',
-                    'IBM Plex Sans' => 'IBM Plex Sans',
-                    'System UI' => 'system-ui',
-                ],
-                'required' => true,
-                'translation_domain' => 'admin',
-            ])
-            ->add('policyDocCoverPattern', ChoiceType::class, [
-                'label' => 'admin.policy_style.field.cover_pattern',
-                'help' => 'admin.policy_style.help.cover_pattern',
-                'choices' => [
-                    'admin.policy_style.cover.minimal' => 'minimal',
-                    'admin.policy_style.cover.branded' => 'branded',
-                    'admin.policy_style.cover.auditor_formal' => 'auditor-formal',
-                    'admin.policy_style.cover.engineering' => 'engineering',
-                ],
-                'required' => true,
-                'translation_domain' => 'admin',
-                'choice_translation_domain' => 'admin',
-            ])
             ->add('policyDocCoverLogoSize', ChoiceType::class, [
                 'label' => 'admin.policy_style.field.cover_logo_size',
                 'choices' => [
@@ -149,19 +111,6 @@ final class TenantPolicyStyleType extends AbstractType implements SectionMapInte
                 'translation_domain' => 'admin',
                 'constraints' => [new Assert\Length(max: 500)],
             ]);
-
-        // Advanced: full CSS override — gated to ROLE_ADMIN to limit
-        // blast-radius (paste-only, rendered |raw inside the doc style).
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            $builder->add('policyDocCustomCss', TextareaType::class, [
-                'label' => 'admin.policy_style.field.custom_css',
-                'help' => 'admin.policy_style.help.custom_css',
-                'required' => false,
-                'translation_domain' => 'admin',
-                'attr' => ['rows' => 8, 'spellcheck' => 'false', 'class' => 'font-monospace'],
-                'constraints' => [new Assert\Length(max: 16000)],
-            ]);
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -179,11 +128,9 @@ final class TenantPolicyStyleType extends AbstractType implements SectionMapInte
     public static function getSectionMap(): array
     {
         return [
-            'typography' => ['policyDocFontFamily'],
-            'layout'     => ['policyDocCoverPattern', 'policyDocCoverLogoSize', 'policyDocPageMargin'],
+            'layout'     => ['policyDocCoverLogoSize', 'policyDocPageMargin'],
             'branding'   => ['policyDocWatermarkEnabled', 'policyDocWatermarkOpacity'],
             'content'    => ['policyDocSignatureLines', 'policyDocShowToc', 'policyDocShowHistory', 'policyDocShowAnnexARefs', 'policyDocFooterText'],
-            'advanced'   => ['policyDocCustomCss'],
         ];
     }
 }

@@ -15,7 +15,6 @@ admin.location_map.peer	1
 admin.location_map.precision	1
 admin.queue.job_status	1
 admin.queue.status	1
-admin.report_style.chart	1
 alva.mood	1
 annex.authority	1
 annex.value_label	1

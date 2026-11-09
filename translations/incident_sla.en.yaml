@@ -22,8 +22,8 @@ incident_sla:
         note: 'Note'
     help:
         response_hours: 'Deadline for first response after detection. Must be greater than 0.'
-        escalation_hours: 'Optional: after this time escalate if no acknowledgement.'
-        resolution_hours: 'Optional: soft KPI for dashboard. No automatic escalation.'
+        escalation_hours: 'Optional: when the incident is still open this long after detection, ISB and CISO also get it in My Day and in the reminder.'
+        resolution_hours: 'Optional: deadline for resolution, counted from detection. Shows in My Day and in the reminders of the responsible person.'
     updated_at: 'Last updated'
     saved: 'SLA saved.'
     hint:

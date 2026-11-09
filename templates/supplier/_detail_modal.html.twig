@@ -20,10 +20,8 @@
     </div>
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
-            {% include '_components/_badge.html.twig' with {
-                variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')),
-                content: ('supplier.criticality.' ~ supplier.criticality)|trans({}, 'suppliers')
-            } %}
+            {% set _criticality = supplier_criticality(supplier) %}
+            {% include '_components/_badge.html.twig' with { variant: _criticality.tone, content: _criticality.label } %}
             <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>
             {% if supplier.isDoraRelevant %}
                 {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA' } %}

@@ -22,8 +22,8 @@ incident_sla:
         note: 'Notiz'
     help:
         response_hours: 'Frist für die erste Reaktion nach Detection. Muss größer als 0 sein.'
-        escalation_hours: 'Optional: nach dieser Zeit wird eskaliert wenn kein Acknowledgement.'
-        resolution_hours: 'Optional: Soft-KPI für Dashboard. Wird nicht automatisch eskaliert.'
+        escalation_hours: 'Optional: ist der Vorfall nach dieser Zeit seit Entdeckung noch offen, erhalten ISB und CISO ihn zusätzlich in Mein Tag und in der Erinnerung.'
+        resolution_hours: 'Optional: Frist bis zur Lösung, ab Entdeckung. Erscheint in Mein Tag und in den Erinnerungen der verantwortlichen Person.'
     updated_at: 'Zuletzt geändert'
     saved: 'SLA gespeichert.'
     hint:

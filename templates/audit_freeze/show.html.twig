@@ -51,7 +51,7 @@
         <div class="d-flex justify-content-end mb-3">
             {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_audit_freeze_download_pdf', route_params: {id: freeze.id}} only %}
         </div>
-    {% else %}
+    {% elseif is_granted('ROLE_MANAGER') %}
         <div class="d-flex justify-content-end mb-3">
             <form method="post" action="{{ path('app_audit_freeze_generate_pdf', {id: freeze.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('audit_freeze_generate_pdf_' ~ freeze.id) }}">

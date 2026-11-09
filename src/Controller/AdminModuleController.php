@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Controller\Trait\LocalizedFlashTrait;
 use Symfony\Component\Yaml\Yaml;
 use App\Security\Voter\TenantScopedAdminVoter;
+use App\Service\AuditLogger;
 use App\Service\DataImportService;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,8 +35,28 @@ class AdminModuleController extends AbstractController
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly DataImportService $dataImportService,
         private readonly TranslatorInterface $translator,
-        private readonly \App\Service\TenantContext $tenantContext
+        private readonly \App\Service\TenantContext $tenantContext,
+        private readonly AuditLogger $auditLogger,
     ) {
+    }
+
+    /**
+     * Switching a module on or off changes which norm duties, fields and pages exist for the
+     * organisation — an ISMS change that belongs in the audit trail (ISO 27001 6.3, 7.5.3).
+     *
+     * @param list<string> $modules
+     */
+    private function logModuleChange(string $action, string $moduleKey, array $modules, bool $active): void
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $this->auditLogger->logCustom(
+            $action,
+            'Module',
+            null,
+            ['module' => $moduleKey, 'active' => !$active],
+            ['module' => $moduleKey, 'active' => $active, 'modules' => $modules, 'tenant_id' => $tenant?->getId()],
+            sprintf('Module %s %s', $moduleKey, $active ? 'activated' : 'deactivated'),
+        );
     }
 
     protected function getFlashDomain(): string
@@ -97,6 +118,7 @@ class AdminModuleController extends AbstractController
         $result = $this->moduleConfigurationService->activateModule($moduleKey);
 
         if ($result['success']) {
+            $this->logModuleChange('module.activated', $moduleKey, array_values(array_map('strval', $result['added_modules'] ?? [$moduleKey])), true);
             $this->addFlash('success', $result['message']);
 
             // Show added dependencies
@@ -127,6 +149,7 @@ class AdminModuleController extends AbstractController
         $result = $this->moduleConfigurationService->deactivateModule($moduleKey);
 
         if ($result['success']) {
+            $this->logModuleChange('module.deactivated', $moduleKey, [$moduleKey], false);
             $this->addFlash('success', $result['message']);
         } else {
             $this->addFlash('error', $result['error']);

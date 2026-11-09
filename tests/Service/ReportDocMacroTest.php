@@ -37,6 +37,8 @@ final class ReportDocMacroTest extends TestCase
         $this->twig->addFilter(new TwigFilter('trans', static function ($value): string {
             return (string) $value;
         }));
+        // The organisation's report style (Admin > Report-Optik) — none in these tests.
+        $this->twig->addFunction(new \Twig\TwigFunction('tenant_branding', static fn (): ?object => null));
     }
 
     /**

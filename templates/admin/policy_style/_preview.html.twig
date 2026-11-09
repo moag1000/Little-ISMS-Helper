@@ -14,8 +14,6 @@
  #}
 {% trans_default_domain 'admin' %}
 
-{% set _font = style_config.font_family|default('Inter') %}
-{% set _cover = style_config.cover_pattern|default('branded') %}
 {% set _logo_size = style_config.cover_logo_size|default('medium') %}
 {% set _margin = style_config.page_margin|default('standard') %}
 {% set _watermark_on = style_config.watermark_enabled|default(true) %}
@@ -27,7 +25,6 @@
 {% set _footer = style_config.footer_text|default('') %}
 {% set _primary = style_config.primary_color|default('#0d6efd') %}
 {% set _secondary = style_config.secondary_color|default('#6c757d') %}
-{% set _custom_css = style_config.custom_css|default('') %}
 
 {% set _margin_px = {
     'compact': '12mm',
@@ -41,9 +38,8 @@
     'large': '88px'
 }[_logo_size]|default('64px') %}
 
-<div class="policy-doc-preview policy-doc-preview--cover-{{ _cover }} policy-doc-preview--margin-{{ _margin }}"
-     style="--pd-font: '{{ _font }}', system-ui, sans-serif;
-            --pd-primary: {{ _primary }};
+<div class="policy-doc-preview policy-doc-preview--margin-{{ _margin }}"
+     style="--pd-primary: {{ _primary }};
             --pd-secondary: {{ _secondary }};
             --pd-margin: {{ _margin_px }};
             --pd-logo-size: {{ _logo_px }};
@@ -161,18 +157,9 @@
     </footer>
 </div>
 
-{# Custom-CSS: rendered |raw inside a scoped <style> tag (only used in the
-   real export — preview shows it inert to avoid layout-breaking). #}
-{% if _custom_css %}
-    <details class="mt-3">
-        <summary class="text-muted small">{{ 'admin.policy_style.preview.custom_css_inert'|trans }}</summary>
-        <pre class="border rounded p-2 small bg-body-tertiary"><code>{{ _custom_css }}</code></pre>
-    </details>
-{% endif %}
-
 <style>
 .policy-doc-preview {
-    font-family: var(--pd-font);
+    font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     background: var(--surface, #fff);
     border: 1px solid var(--border, #dee2e6);
     border-radius: 6px;
@@ -306,10 +293,4 @@
     background: var(--surface-2, #f8f9fa);
     border-top: 1px solid var(--border, #dee2e6);
 }
-.policy-doc-preview--cover-minimal .policy-doc-preview__title { color: var(--pd-secondary); border: 0; }
-.policy-doc-preview--cover-minimal .policy-doc-preview__h2 { border-color: var(--pd-secondary); }
-.policy-doc-preview--cover-auditor-formal .policy-doc-preview__title { font-family: 'Merriweather', serif; }
-.policy-doc-preview--cover-auditor-formal .policy-doc-preview__h2 { text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.95rem; }
-.policy-doc-preview--cover-engineering .policy-doc-preview__title { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; }
-.policy-doc-preview--cover-engineering .policy-doc-preview__doccode::before { content: '// '; }
 </style>

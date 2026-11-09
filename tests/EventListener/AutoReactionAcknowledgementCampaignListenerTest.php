@@ -11,7 +11,10 @@ use App\Entity\User;
 use App\EventListener\AutoReactionAcknowledgementCampaignListener;
 use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\UserRepository;
+use App\Service\AuditLogger;
 use App\Service\AutoReactionService;
+use App\Service\PolicyWizard\PolicyAcknowledgementService;
+use App\Service\PolicyWizard\PolicyAudienceResolver;
 use App\Doctrine\PostFlushWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostFlushEventArgs;
@@ -46,7 +49,24 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
         $this->reactions = $this->createMock(AutoReactionService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->writer = new PostFlushWriter(new NullLogger());
-        $this->listener = new AutoReactionAcknowledgementCampaignListener($this->reactions, $this->logger, $this->writer);
+        $this->ackRepo = $this->createStub(PolicyAcknowledgementRepository::class);
+        $this->ackRepo->method('findOneFor')->willReturn(null);
+        $this->userRepo = $this->createStub(UserRepository::class);
+        $this->rebuildListener();
+    }
+
+    private PolicyAcknowledgementRepository $ackRepo;
+    private UserRepository $userRepo;
+
+    private function rebuildListener(): void
+    {
+        $service = new PolicyAcknowledgementService(
+            $this->createStub(EntityManagerInterface::class),
+            $this->ackRepo,
+            new PolicyAudienceResolver($this->userRepo),
+            $this->createStub(AuditLogger::class),
+        );
+        $this->listener = new AutoReactionAcknowledgementCampaignListener($this->reactions, $this->logger, $this->writer, $service);
     }
 
     #[Test]
@@ -114,38 +134,6 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
     }
 
     #[Test]
-    public function approvedDocumentWithEmptyVersionLogsWarning(): void
-    {
-        // V3 W2-Bug2: setVersion('') normalises to '1.0' on the entity;
-        // however a row migrated from pre-Bug2 data could in theory still
-        // hold a NULL/empty value via reflection. Pin the warning branch.
-        $this->reactions->method('isEnabled')->willReturn(true);
-
-        $tenant = $this->createTenant(11);
-        $document = new Document();
-        $document->setTenant($tenant);
-        $document->setStatus('approved');
-        $document->setRequiresAcknowledgement(true);
-        // Bypass the setter normalisation to simulate a legacy row.
-        $versionProp = (new \ReflectionClass($document))->getProperty('version');
-        $versionProp->setValue($document, '   ');
-
-        $em = $this->createMock(EntityManagerInterface::class);
-        $em->expects($this->never())->method('persist');
-        $em->expects($this->never())->method('flush');
-
-        $loggedWarning = false;
-        $this->logger->method('warning')->willReturnCallback(static function () use (&$loggedWarning) {
-            $loggedWarning = true;
-        });
-
-        $args = $this->createPostUpdateArgs($document, $em);
-        $this->listener->postUpdate($document, $args);
-
-        $this->assertTrue($loggedWarning, 'Listener should warn when document version is blank');
-    }
-
-    #[Test]
     public function approvedDocumentPersistsPendingRowsForActiveUsers(): void
     {
         // V3 W2-Bug2 strict-success path:
@@ -159,23 +147,20 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
         $document->setRequiresAcknowledgement(true);
         $document->setVersion('1.0');
 
+        $document->setSha256Hash(str_repeat('ab', 32));
+
         $u1 = $this->makeUser(101);
+        $u1->setTenant($tenant);
+        $u1->setIsActive(true);
         $u2 = $this->makeUser(102);
+        $u2->setTenant($tenant);
+        $u2->setIsActive(true);
 
-        $userRepo = $this->createMock(UserRepository::class);
-        $userRepo->method('findBy')->willReturn([$u1, $u2]);
-
-        $ackRepo = $this->createMock(PolicyAcknowledgementRepository::class);
-        $ackRepo->method('findOneFor')->willReturn(null);
+        $this->userRepo = $this->createStub(UserRepository::class);
+        $this->userRepo->method('findActiveUsers')->willReturn([$u1, $u2]);
+        $this->rebuildListener();
 
         $em = $this->createMock(EntityManagerInterface::class);
-        $em->method('getRepository')->willReturnCallback(static function (string $class) use ($userRepo, $ackRepo) {
-            return match ($class) {
-                User::class => $userRepo,
-                PolicyAcknowledgement::class => $ackRepo,
-                default => null,
-            };
-        });
 
         $persisted = [];
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
@@ -200,7 +185,9 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
         foreach ($ackRows as $row) {
             $this->assertSame(PolicyAcknowledgement::STATUS_PENDING, $row->getStatus());
             $this->assertSame($document, $row->getDocument());
-            $this->assertSame('1.0', $row->getDocumentVersion());
+            // The version the acknowledgement looks up — not the free-text "1.0" (W8).
+            $this->assertSame(PolicyAcknowledgementService::versionOf($document), $row->getDocumentVersion());
+            $this->assertSame('abababababababab', $row->getDocumentVersion());
             $this->assertNull($row->getAcknowledgedAt());
             $this->assertNull($row->getAcknowledgementMethod());
         }
@@ -232,23 +219,16 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
         // Add only u1 to the audience — u2 must be skipped.
         $document->addAcknowledgementAudience($u1);
 
-        $ackRepo = $this->createMock(PolicyAcknowledgementRepository::class);
-        $ackRepo->method('findOneFor')->willReturn(null);
+        $userRepoSentinel = false;
+        $this->userRepo = $this->createStub(UserRepository::class);
+        $this->userRepo->method('findActiveUsers')->willReturnCallback(static function () use (&$userRepoSentinel, $u1, $u2): array {
+            $userRepoSentinel = true;
+
+            return [$u1, $u2];
+        });
+        $this->rebuildListener();
 
         $em = $this->createMock(EntityManagerInterface::class);
-        $userRepoSentinel = false;
-        $em->method('getRepository')->willReturnCallback(static function (string $class) use ($ackRepo, &$userRepoSentinel) {
-            if ($class === User::class) {
-                $userRepoSentinel = true;
-                throw new \RuntimeException(
-                    'Listener fell back to tenant-wide user query despite explicit audience'
-                );
-            }
-            return match ($class) {
-                PolicyAcknowledgement::class => $ackRepo,
-                default => null,
-            };
-        });
 
         $persisted = [];
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });

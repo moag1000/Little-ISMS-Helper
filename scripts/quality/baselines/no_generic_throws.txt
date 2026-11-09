@@ -1,7 +1,7 @@
 # check_no_generic_throws.py baseline
 # Format: <relative-path>:<line>
-src/Controller/AuditFreezeController.php:180
-src/Controller/AuditFreezeController.php:186
+src/Controller/AuditFreezeController.php:184
+src/Controller/AuditFreezeController.php:190
 src/Controller/ManagementReportController.php:912
 src/Entity/AccessReviewCampaign.php:149
 src/Entity/AccessReviewCampaign.php:178

@@ -67,6 +67,10 @@ class PolicyPdfExporter
                 ? $branding?->getLogoPath() : null, // S19: only a logo below uploads/tenants/
                 'header_html' => $branding?->getHeaderHtml(),
                 'footer_html' => $branding?->getFooterHtml(),
+                // Policy style (Admin > Policy-Stil); the macro reads the rest from `branding`.
+                'footer_text' => $branding?->getPolicyDocFooterText(),
+                'page_margin' => $branding?->getPolicyDocPageMargin() ?? 'standard',
+                'watermark_opacity' => $branding?->getPolicyDocWatermarkOpacity() ?? 0.07,
             ],
         );
 

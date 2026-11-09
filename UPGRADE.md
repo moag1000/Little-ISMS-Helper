@@ -16,7 +16,7 @@ eine Handlung verlangt oder Verhalten bricht.
 
 ## Nach 3.16.1 (nächstes Release)
 
-33 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
+34 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
 werden Personen (`Version20261108100000_OwnerTextToPersons`, danach entfallen die Textspalten),
 Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`);
 `Version20261109020000_DropWorkflowStepOverlays` löscht die nie angewendeten Schritt-Overrides
@@ -189,6 +189,53 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   `var/setup_complete.lock` (die Datei wird dann neu geschrieben). Kein Handlungsbedarf.
 - **Exporte** und Downloads verlangen überall eine Rolle (`#[IsGranted]`), auch die
   Compliance-Exporte. Geplante Berichte bieten nur Berichtsarten aktiver Module an.
+- **Einstellungen ohne Wirkung entfernt** (`Version20261109093000_DropUnusedAdminSettings` löscht die
+  Spalten): Policy-Optik ohne Schriftart, Deckblatt-Muster und Custom-CSS; Report-Optik ohne
+  Deckblatt-Muster, Standard-Zielgruppe, Wasserzeichen-Deckkraft, Schriftart, Seitenausrichtung,
+  Diagramm-Farbschema und Custom-CSS (Tabs „Allgemein“, „Typografie“, „Erweitert“ entfallen);
+  E-Mail-Branding ohne Logo-URL (auch der SystemSettings-Schlüssel `email.default_logo_url` wird nicht
+  mehr gelesen); Planungs-Einstellungen ohne „Standard-Wiederholung“. Keiner dieser Werte wurde je
+  ausgewertet; Dokumente und Mails sehen nach dem Update gleich aus.
+- **Einstellungen, die jetzt wirken** (vorher gespeichert, aber nie gelesen):
+  - Ein **deaktivierter Benachrichtigungskanal** oder eine deaktivierte Regel stellt nichts mehr zu,
+    auch nicht bereits eingereihte Zustellungen oder Digests (sie werden als fehlgeschlagen markiert).
+    Der **Schweregrad-Filter** einer Regel greift.
+  - **Incident-SLA:** Die Lösungsfrist ist die Frist des Vorfalls in „Mein Tag“ und den Erinnerungen;
+    nach Ablauf der Eskalationsfrist werden ISB und CISO mit informiert.
+  - **Lieferanten-Kritikalität:** Listen, Filter, Formular und Detailseite zeigen die eigenen Stufen
+    (Bezeichnung, Farbe); neue Lieferanten starten mit der Standard-Stufe.
+  - **Zeitzone der Organisation** (Admin > Organisationen) gilt für alle angezeigten Zeiten und hat
+    Vorrang vor der Instanz-Zeitzone. Wer abweichende Organisations-Zeitzonen gepflegt hat, sieht
+    Zeiten nun in dieser Zone.
+  - **Policy- und Report-Optik:** Inhaltsverzeichnis, Historie, Annex-A-Bezüge, Unterschriftszeilen,
+    Logo-Größe, Wasserzeichen, Seitenrand, Fußzeile, Management-Summary, Anhang, Verteiler und
+    Haftungshinweis wirken in Vorschau, HTML und PDF.
+  - **E-Mail-Branding:** Fußzeilentext und Support-Adresse stehen unter jeder ausgehenden Mail;
+    die Support-Adresse ist Reply-To, wenn die Mail keine eigene nennt.
+  - **Vererbung über Mappings** (Admin > Compliance-Richtlinien) wird bei der Framework-Aktivierung
+    gelesen; der Container-Parameter entfällt.
+  - **MRIS-KPIs** sind überall an, bis sie in den Organisations-Einstellungen abgeschaltet werden
+    (die SoA blendete sie bisher ohne Einstellung aus).
+  - **Organisationsprofil** unter Admin > Organisationen fragt nur noch die Unternehmensgröße ab;
+    Branche, Land und Beschreibung pflegt der Organisationskontext (ISO 27001 4.1).
+- **Lifecycle-Automatik:** Die Regel, die Risiken innerhalb des Risikoappetits automatisch
+  akzeptierte, entfällt (sie lief nie: Akzeptanz braucht vier Augen). Die Incident-Regel heißt
+  `investigate_when_assessed` und startet die Untersuchung, sobald die Bewertung vollständig ist.
+- **Richtlinien-Bestätigungen schließen:** Kampagne, Bestätigung, Posteingang und „Mein Tag“ nutzen
+  eine Version. Bisher blieb die offene Anfrage nach dem Klick stehen und erinnerte weiter. Der
+  nächtliche Lauf `app:policy-wizard:send-ack-requests` (05:40, neu im Scheduler) legt Anfragen für
+  später hinzugekommene Personen an und zieht unschließbare zurück (alte Version, Zielgruppe
+  verlassen, deaktiviert, Dokument nicht mehr veröffentlicht); alte offene Zeilen werden so in der
+  ersten Nacht bereinigt, ohne Klick. Erledigte Bestätigungen bleiben als Nachweis. Der
+  Bestätigungs-Posteingang zeigt nur noch Dokumente mit „Bestätigung erforderlich“ oder aus dem
+  Policy-Wizard, und die auf der Dokumentseite gewählte Zielgruppe gilt überall.
+- **Audit-Freeze** ist für Auditoren lesbar; Anlegen und PDF-Erzeugung bleiben Managern vorbehalten.
+- **Compliance-Exporte** brauchen das Modul `compliance`, wie die Seiten, aus denen sie kommen.
+- **Modul an/aus** steht im Audit-Log (`module.activated` / `module.deactivated`).
+- **Worker-Modus (Messenger):** Die Cron-Zeile verarbeitet auch `scheduler_default`
+  (`messenger:consume scheduler_default scheduler async …`, Admin > Queue-Status zeigt sie); ohne
+  liefen die eingebauten Zeitpläne in diesem Modus nicht. Mails, die länger als 15 Minuten in der
+  Warteschlange liegen, färben den Worker-Status rot.
 - **Hintergrundaufgaben je Organisation:** Der Worker setzt nach jeder Aufgabe den
   Organisationskontext zurück. Bisher konnte ein geplanter Bericht, der KPI-Snapshot oder ein
   Admin-Job die Organisation für die nächste Aufgabe festhalten: das nächtliche Instanz-Backup enthielt

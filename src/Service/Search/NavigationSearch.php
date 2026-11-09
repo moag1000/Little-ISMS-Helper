@@ -148,7 +148,7 @@ class NavigationSearch
                 'description' => 'search_nav.app_audit_freeze_index.description',
                 'aliases' => ['Audit-Freeze', 'Freeze', 'Einfrieren', 'Read-Only', 'Auditierung sperren', 'Zertifizierung', 'Snapshot'],
                 'icon' => 'fa-icon--nav-clipboard-check',
-                'roles' => ['ROLE_MANAGER'],
+                'roles' => ['ROLE_AUDITOR'],
                 'requiresModule' => null,
             ],
             // ── SoA / Controls ────────────────────────────────────────────────

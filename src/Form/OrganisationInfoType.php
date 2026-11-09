@@ -122,6 +122,13 @@ final class OrganisationInfoType extends AbstractType
                 ],
                 'help' => 'setup.organisation.description_help',
             ]);
+
+        // Admin > Organisationsprofil edits the size only: industries, country and description
+        // seed the ISMS context once at setup (SetupTenantBootstrapper); afterwards they live in
+        // "Kontext der Organisation" (ISO 27001 4.1/4.3), where they are read.
+        if ($options['size_only']) {
+            $builder->remove('industries')->remove('country')->remove('description');
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -132,7 +139,9 @@ final class OrganisationInfoType extends AbstractType
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'organisation_info',
             'include_name' => true, // Set to false when editing tenant context (name comes from Tenant entity)
+            'size_only' => false,
             'translation_domain' => 'setup',
         ]);
+        $resolver->setAllowedTypes('size_only', 'bool');
     }
 }

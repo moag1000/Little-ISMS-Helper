@@ -20,9 +20,16 @@ use Symfony\Component\Finder\Finder;
  *  - lifecycle_config: only LifecycleOverridesController creates rows, only with the keys
  *    of {@see LifecycleOverridePolicy::KEYS}, and each key is read by a runtime consumer
  *    (voter, guard or validator) through the resolver;
- *  - system_settings: every literal `setSetting('<category>', '<key>')` has a reader outside
- *    the controllers (`getSetting('<category>', '<key>')`, a loop `getSetting('<category>', $key)`
- *    over a list naming the key, or the dotted `'<category>.<key>'` a resolver uses).
+ *  - system_settings: every `setSetting('<category>', '<key>')` has a reader outside
+ *    the controllers and admin templates (`getSetting('<category>', '<key>')`, a loop
+ *    `getSetting('<category>', $key)` over a list naming the key, or the dotted
+ *    `'<category>.<key>'` a resolver uses). Writers naming the category by a class constant
+ *    (`self::CATEGORY`) or looping over a literal key list count too (W8);
+ *  - the admin config entities (W8: branding, incident SLA, supplier criticality, notification
+ *    rules/channels, planning, the organisation's mail and time zone columns): every stored
+ *    field is read outside the entity, its form, repository, the admin pages and the
+ *    backup/clone plumbing. Seven dead branding fields, a "deactivated" channel that still
+ *    delivered and an SLA nothing measured got past every review that way.
  */
 final class AdminSettingConsumersTest extends TestCase
 {
@@ -82,6 +89,59 @@ final class AdminSettingConsumersTest extends TestCase
         self::assertSame(LifecycleOverridePolicy::KEYS, $keys[1]);
     }
 
+    /**
+     * Source with `self::CONST` / `static::CONST` replaced by the string the class declares.
+     */
+    private static function withConstants(string $code): string
+    {
+        preg_match_all("/const\\s+(?:string\\s+)?([A-Z_]+)\\s*=\\s*'([^']*)'/", $code, $consts, PREG_SET_ORDER);
+        foreach ($consts as [, $name, $value]) {
+            $code = preg_replace('/(?:self|static)::' . $name . '\\b/', "'" . $value . "'", $code) ?? $code;
+        }
+
+        return $code;
+    }
+
+    /**
+     * (category, key) pairs a file writes: literal keys, and `foreach ($list as $key => …)`
+     * loops whose `$list = [ 'key' => … ]` literal names them.
+     *
+     * @return list<array{string, string}>
+     */
+    private static function settingWrites(string $code): array
+    {
+        $code = self::withConstants($code);
+        $pairs = [];
+        preg_match_all('/setSetting\(\s*(?:category:\s*)?\'([a-z_]+)\',\s*(?:key:\s*)?(?:\'([a-z_]+)\'|\$(\w+))/', $code, $matches, PREG_SET_ORDER);
+        foreach ($matches as $m) {
+            if (($m[2] ?? '') !== '') {
+                $pairs[] = [$m[1], $m[2]];
+                continue;
+            }
+            $keyVar = $m[3];
+            self::assertMatchesRegularExpression(
+                '/foreach\s*\(\$\w+\s+as\s+\$' . $keyVar . '\s*=>/',
+                $code,
+                sprintf('setSetting(\'%s\', $%s) writes a key the scan cannot name — loop over a literal list', $m[1], $keyVar),
+            );
+            preg_match('/foreach\s*\(\$(\w+)\s+as\s+\$' . $keyVar . '\s*=>/', $code, $loop);
+            preg_match('/\$' . $loop[1] . '\s*=\s*\[(.*?)\];/s', $code, $list);
+            self::assertNotEmpty($list, sprintf('the key list $%s is a literal array', $loop[1]));
+            preg_match_all("/^\\s*'([a-z_]+)'\\s*=>/m", $list[1], $keys);
+            foreach ($keys[1] as $key) {
+                $pairs[] = [$m[1], $key];
+            }
+        }
+
+        return $pairs;
+    }
+
+    /** Admin pages and controllers show and save settings; they are not what makes one work. */
+    private static function isAdminSurface(string $path): bool
+    {
+        return str_contains($path, '/Controller/') || str_contains($path, '/templates/admin/');
+    }
+
     #[Test]
     public function everySystemSettingWrittenHasAReader(): void
     {
@@ -89,14 +149,14 @@ final class AdminSettingConsumersTest extends TestCase
         foreach ((new Finder())->files()->in([self::root() . '/src', self::root() . '/templates'])->name(['*.php', '*.twig']) as $file) {
             $files[$file->getRealPath()] = $file->getContents();
         }
+        $readable = array_map(self::withConstants(...), $files);
 
-        $write = '/setSetting\(\s*(?:category:\s*)?\'([a-z_]+)\',\s*(?:key:\s*)?\'([a-z_]+)\'/';
         $checked = 0;
         foreach ($files as $path => $code) {
-            if (!preg_match_all($write, $code, $matches, PREG_SET_ORDER)) {
+            if (!str_contains($code, 'setSetting(')) {
                 continue;
             }
-            foreach ($matches as [, $category, $key]) {
+            foreach (self::settingWrites($code) as [$category, $key]) {
                 ++$checked;
                 $read = sprintf(
                     '/getSetting\(\s*\'%1$s\',\s*\'%2$s\'|[\'"]%1$s\.%2$s[\'"]/',
@@ -106,11 +166,11 @@ final class AdminSettingConsumersTest extends TestCase
                 // A reader that loops over keys (`getSetting('application', $key)`) names the key elsewhere.
                 $loopRead = static fn (string $other): bool => str_contains($other, "getSetting('" . $category . "', \$")
                     && str_contains($other, "'" . $key . "'");
+                // A service may write and read the same key (AiSettings); a controller may not count.
                 $readers = array_filter(
-                    $files,
-                    static fn (string $other, string $otherPath): bool => $otherPath !== $path
-                        && (preg_match($read, $other) === 1 || $loopRead($other))
-                        && !str_contains($otherPath, '/Controller/'),
+                    $readable,
+                    static fn (string $other, string $otherPath): bool => (preg_match($read, $other) === 1 || $loopRead($other))
+                        && !self::isAdminSurface($otherPath),
                     ARRAY_FILTER_USE_BOTH,
                 );
                 self::assertNotSame(
@@ -121,5 +181,132 @@ final class AdminSettingConsumersTest extends TestCase
             }
         }
         self::assertGreaterThan(0, $checked, 'the scan found the settings pages');
+    }
+
+    /**
+     * Admin-configured entities and the fields they store. Fields left out are listed in
+     * NOT_SETTINGS with the reason.
+     *
+     * @var list<string>
+     */
+    private const array CONFIG_ENTITIES = [
+        'TenantBranding',
+        'IncidentSlaConfig',
+        'SupplierCriticalityLevel',
+        'Notification/NotificationRule',
+        'Notification/NotificationChannel',
+        'PlanningSettings',
+    ];
+
+    /** Columns that are bookkeeping, not a setting. */
+    private const array NOT_SETTINGS = ['id', 'tenant', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'updatedByUser', 'lockVersion'];
+
+    /** Fields read another way than a getter, each with where. */
+    private const array READ_ELSEWHERE = [
+        'SupplierCriticalityLevel::$isDefault' => 'SupplierCriticalityLevelRepository::findDefaultForTenant() → SupplierCriticalityLabels::defaultCode() presets new suppliers',
+        'Notification/NotificationRule::$evaluationCount' => 'statistics the evaluator writes, shown on the rule page — not a setting',
+        'Notification/NotificationRule::$lastEvaluatedAt' => 'statistics the evaluator writes, shown on the rule page — not a setting',
+        'Notification/NotificationChannel::$rules' => 'inverse side of NotificationRule.channels, which the dispatcher reads',
+    ];
+
+    /** Tenant columns an admin page sets that have to work somewhere. */
+    private const array TENANT_SETTING_COLUMNS = [
+        'emailFromName', 'emailFromAddress', 'emailFooterText', 'emailSupportAddress', 'timezone',
+    ];
+
+    /** @return array<string, string> path => code of everything that may count as a reader */
+    private static function readerFiles(): array
+    {
+        $files = [];
+        foreach ((new Finder())->files()->in([self::root() . '/src', self::root() . '/templates'])->name(['*.php', '*.twig']) as $file) {
+            $path = str_replace('\\', '/', (string) $file->getRealPath());
+            if (self::isAdminSurface($path)
+                || str_contains($path, '/src/Form/')
+                || str_contains($path, '/src/Repository/')
+                || str_contains($path, '/src/Entity/')
+                || preg_match('#/src/(?:Service|Command)/(?:Backup|Restore|Clone|DataIntegrity)|/Backup[^/]*\.php$|/Restore[^/]*\.php$|Cloner\.php$#', $path) === 1
+            ) {
+                continue;
+            }
+            $files[$path] = $file->getContents();
+        }
+
+        return $files;
+    }
+
+    /** @return list<string> */
+    private static function columnsOf(string $entityFile): array
+    {
+        $code = (string) file_get_contents($entityFile);
+        preg_match_all('/#\[ORM\\\\(?:Column|ManyToOne|OneToOne|ManyToMany)\b[^\n]*\n(?:\s*#\[[^\n]*\n)*\s*(?:private|protected)\s+[^$]*\$(\w+)/', $code, $m);
+
+        return array_values(array_diff($m[1], self::NOT_SETTINGS));
+    }
+
+    private static function isRead(string $field, array $files): bool
+    {
+        $ucfirst = ucfirst($field);
+        $php = '/->(?:get|is|has)' . $ucfirst . '\(/';
+        $twig = '/\.(?:' . preg_quote($field, '/') . '|get' . $ucfirst . '|is' . $ucfirst . '|has' . $ucfirst . ')\b/';
+        foreach ($files as $path => $code) {
+            if (preg_match($php, $code) === 1 || (str_ends_with($path, '.twig') && preg_match($twig, $code) === 1)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Public methods of the entity that use the field — a view such as getPolicyDocStyleConfig()
+     * or getLabel($locale) that bundles several columns for the readers.
+     *
+     * @return list<string>
+     */
+    private static function entityViewsOf(string $field, string $entityCode): array
+    {
+        preg_match_all('/public function (\w+)\([^)]*\)[^{]*\{(.*?)\n    \}/s', $entityCode, $methods, PREG_SET_ORDER);
+        $views = [];
+        foreach ($methods as [, $name, $body]) {
+            if (preg_match('/\$this->' . $field . '\b/', $body) === 1 && preg_match('/^(?:get|is|has)/', $name) === 1
+                && strcasecmp($name, 'get' . $field) !== 0 && strcasecmp($name, 'is' . $field) !== 0) {
+                $views[] = lcfirst((string) preg_replace('/^(?:get|is|has)/', '', $name));
+            }
+        }
+
+        return $views;
+    }
+
+    #[Test]
+    public function everyStoredAdminConfigFieldHasAReader(): void
+    {
+        $files = self::readerFiles();
+        $unread = [];
+        foreach (self::CONFIG_ENTITIES as $entity) {
+            $entityFile = self::root() . '/src/Entity/' . $entity . '.php';
+            $entityCode = (string) file_get_contents($entityFile);
+            $columns = self::columnsOf($entityFile);
+            self::assertNotSame([], $columns, $entity . ' has columns');
+            foreach ($columns as $field) {
+                if (isset(self::READ_ELSEWHERE[$entity . '::$' . $field])) {
+                    continue;
+                }
+                $viaView = array_filter(self::entityViewsOf($field, $entityCode), static fn (string $view): bool => self::isRead($view, $files));
+                if ($viaView === [] && !self::isRead($field, $files)) {
+                    $unread[] = $entity . '::$' . $field;
+                }
+            }
+        }
+        foreach (self::TENANT_SETTING_COLUMNS as $field) {
+            if (!self::isRead($field, $files)) {
+                $unread[] = 'Tenant::$' . $field;
+            }
+        }
+
+        self::assertSame(
+            [],
+            $unread,
+            'Admin settings stored but never read outside the admin pages — wire them where the norm or persona needs them, or drop the field (migration + UPGRADE.md)',
+        );
     }
 }
