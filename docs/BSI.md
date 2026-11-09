@@ -28,7 +28,7 @@ Das Tool implementiert drei BSI-Produkte:
 Ladebefehl (einheitlicher Command, ersetzt alle frueheren einzelnen Loader):
 
 ```bash
-php bin/console app:load-bsi-it-grundschutz-catalogue [--layer=SCHICHT]
+php bin/console app:load-bsi-grundschutz-catalogue [--layer=SCHICHT] [--update]
 ```
 
 Datei: `src/Command/LoadBsiItGrundschutzCatalogueCommand.php`
@@ -86,11 +86,11 @@ Der Grundschutz-Wizard unterstuetzt zwei Varianten:
 
 | Variante | Befehl | Anwendungsfall |
 |---|---|---|
-| Kern-Absicherung | `app:load-bsi-it-grundschutz-requirements --variant=kern` | Schnelleinstieg |
-| Standard-Variante | `app:load-bsi-it-grundschutz-requirements --variant=standard` | Vollstaendige Umsetzung |
+| Basis-Absicherung | `app:load-bsi-grundschutz-requirements` | Schnelleinstieg |
+| Standard- und Kern-Absicherung | `app:load-bsi-grundschutz-variants` | Vollstaendige Umsetzung bzw. Kronjuwelen |
 
-Wizard-Route: `/{locale}/compliance/wizard/bsi_grundschutz_kern` bzw.
-`/{locale}/compliance/wizard/bsi_grundschutz_standard`
+Wizard-Route: `/{locale}/compliance-wizard/bsi_grundschutz_kern` bzw.
+`/{locale}/compliance-wizard/bsi_grundschutz_standard`
 
 Dateien:
 ```
@@ -105,7 +105,7 @@ src/Service/BsiGrundschutzCheckService.php
 
 8 Policy-Koerper (policy bodies) sind in v3.5 verfasst und seeded.
 
-Ladebefehl: `php bin/console app:seed-bsi-policy-templates`
+Ladebefehl: `php bin/console app:policy-wizard:seed-bsi`
 
 Datei: `src/Command/SeedBsiPolicyTemplatesCommand.php`
 
@@ -165,7 +165,7 @@ Datei: `src/Command/LoadC52026RequirementsCommand.php`
 
 ### 7.1 BSI C5:2026 ↔ ISO 27001:2022
 
-Seed-Befehl: `php bin/console app:seed-c5-2026-iso27001-mappings`
+Seed-Befehl: `php bin/console app:seed-c52026-iso27001-mappings`
 
 Datei: `src/Command/SeedC52026Iso27001MappingsCommand.php`
 
@@ -202,7 +202,7 @@ Cross-Mapping ableitbar aus: `SeedC52026Iso27001MappingsCommand` + `SeedNis2Iso2
 Seit v3.5 sind 15 weitere Bausteine aus den Schichten APP, SYS, NET, INF und IND
 mit Policy-Templates hinterlegt.
 
-Ladebefehl: `php bin/console app:seed-bsi-extra-bausteine`
+Ladebefehl: `php bin/console app:policy-wizard:seed-bsi-extra`
 
 Datei: `src/Command/SeedBsiExtraBausteineCommand.php`
 
@@ -249,17 +249,13 @@ Framework — keine MaRisk-Wizards.
 
 Dokumentation: `docs/archive/MRIS_INTEGRATION_PLAN.md`, `docs/MRIS_HELP_TEXTS_JUNIOR_REQUEST.md`
 
-Routen: `/dev/mris/*` (intern, nicht im Kundenmenue)
+Routen: `/mris/*` (Modul `mris`; KPIs im Menü, sobald das Modul aktiv ist)
 
 ---
 
 ## 12. Modul-Aktivierung
 
-```yaml
-# config/active_modules.yaml
-bsi_grundschutz: true
-bsi_c5: true
-```
+Modul `bsi_grundschutz` für IT-Grundschutz, `cloud_security` für BSI C5. Admin → Module (`/admin/modules`), siehe [MODULE_AKTIVIERUNG.md](user-guide/MODULE_AKTIVIERUNG.md).
 
 Twig:
 
@@ -271,11 +267,11 @@ Twig:
 
 Compliance-Wizard-Routen:
 
-- `/{locale}/compliance/wizard/bsi_grundschutz`
-- `/{locale}/compliance/wizard/bsi_grundschutz_kern`
-- `/{locale}/compliance/wizard/bsi_grundschutz_standard`
-- `/{locale}/compliance/wizard/bsi_c5`
-- `/{locale}/compliance/wizard/bsi_c5_2026`
+- `/{locale}/compliance-wizard/bsi_grundschutz`
+- `/{locale}/compliance-wizard/bsi_grundschutz_kern`
+- `/{locale}/compliance-wizard/bsi_grundschutz_standard`
+- `/{locale}/compliance-wizard/bsi_c5`
+- `/{locale}/compliance-wizard/bsi_c5_2026`
 
 ---
 

@@ -15,6 +15,11 @@ den Datensatz. Das ist der Nachweis für ISO 27001 5.1, 6.1.2 a, 6.1.3 d/f,
 | Leitung (`ROLE_TOP_MGMT`, ausdrücklich zugewiesen; Admins erben sie nicht) | billigt oder lehnt ab, im Entscheidungsdialog |
 | Auditor | liest alles, lädt die Managementbewertung als PDF |
 
+Hat niemand in der Organisation die Rolle Leitung, bleiben Leitungsentscheidungen
+liegen; sie fallen nie an Admins zurück. Admins erhalten in Mein Tag die Pflicht
+„Keine Leitung zugewiesen“ (ISB und CISO werden informiert), das Register zeigt
+den Hinweis mit „Rolle Leitung zuweisen“ (für Admins mit Link zur Benutzerverwaltung).
+
 ## Vorlagen
 
 „Entscheidung vorlegen“ zeigt die Arten mit ihrem Normbezug und ob eine
@@ -49,7 +54,8 @@ Die Skala gehört der Organisation und wird unter **Admin > Risikokriterien**
 gepflegt (Suche: „Risikoskala“):
 
 - **Stufengrenzen**: ab welchem Wert (Wahrscheinlichkeit × Auswirkung, je
-  1–5) ein Risiko mittel, hoch oder kritisch ist. Standard 6 / 12 / 20; jede
+  1–5) ein Risiko mittel, hoch oder kritisch ist. Vorgabe 6 / 12 / 20, die
+  Organisation legt ihre eigenen fest; jede
   Stufe behält mindestens einen Wert. Die Matrix bleibt 5 × 5, damit
   bestehende Bewertungen vergleichbar bleiben.
 - **Bedeutung der Stufen**: was Wahrscheinlichkeit 1–5 und Auswirkung 1–5
@@ -75,7 +81,8 @@ Skala, Stufenbedeutung und Freigabestufen billigt die Leitung zusammen als
 Billigung pausiert die automatische Akzeptanz.
 
 Risikoakzeptanzen oberhalb der Manager-Stufe entscheidet die Leitung
-(`ROLE_TOP_MGMT`).
+(`ROLE_TOP_MGMT`). Wer wann akzeptiert hat, entsteht nur über die Freigabe
+(Entscheidungsdialog), nicht über ein Formularfeld.
 
 ## Wo die Leitung entscheidet
 
@@ -106,14 +113,9 @@ Risikoakzeptanzen oberhalb der Manager-Stufe entscheidet die Leitung
   Der Abschluss erscheint als Entscheidung im Register.
 - Anlegen und Bearbeiten: CISO/ISB (`ROLE_MANAGER`); Löschen: Admin.
 
-Die Felder „Kontextänderungen“, „Bewertung von Nichtkonformitäten“,
-„Verbesserungschancen“ und „Ressourcen benötigt“ waren doppelt; die Migration
-hat ihren Text in das jeweilige 9.3.2-Feld übernommen. Die frühere
-strukturierte Maßnahmenliste wurde zu Aufgaben.
-
 ## Korrekturmaßnahmen (ISO 27001 10.2)
 
-- Ein Befund braucht kein Audit mehr: Nichtkonformitäten aus
+- Ein Befund braucht kein Audit: Nichtkonformitäten aus
   Managementbewertung, Vorfall oder Selbstbewertung werden ohne Audit erfasst.
 - Wird eine Korrekturmaßnahme als wirksam bestätigt und sind alle
   Maßnahmen des Befunds wirksam oder abgebrochen, wird der Befund

@@ -84,7 +84,7 @@ Diese Datei wurde bereits erstellt und sollte folgendes enthalten:
 - Sicherheitseinstellungen
 - Front Controller Handling
 
-### Schritt 2b: Hochgeladene Nachweise sperren (seit S7, 2026-11)
+### Schritt 2b: Hochgeladene Nachweise sperren
 
 Dokumente, Dokumentversionen und Schulungsmaterial liegen unter `var/uploads/` – außerhalb
 des Web-Roots. Ausgeliefert werden sie nur über die Download-Aktionen der Anwendung
@@ -125,14 +125,16 @@ Stellen Sie sicher, dass die Dateien die richtigen Berechtigungen haben:
 ```bash
 # Via SSH (falls verfügbar)
 chmod -R 755 /var/www/vhosts/yourdomain.com/httpdocs
-chmod -R 775 var/cache var/log
+chmod -R 775 var/
 ```
+
+`var/` (Cache, Logs, Sessions, `var/uploads`, `var/backups`, `var/jobs`) und `public/uploads/`
+müssen für den PHP-FPM-User und den Cron-User beschreibbar sein.
 
 Oder in Plesk:
 1. **Dateimanager öffnen**
 2. **Rechte für Verzeichnisse:**
-   - `var/cache`: 775
-   - `var/log`: 775
+   - `var/` (rekursiv) und `public/uploads/`: 775
    - Alle anderen: 755
 
 ### Schritt 4: PHP-Einstellungen in Plesk prüfen
@@ -142,7 +144,7 @@ Oder in Plesk:
 3. **PHP-Handler:** "FPM durch Apache bedient" auswählen
 4. **Erforderliche PHP-Erweiterungen aktivieren:**
    - pdo
-   - pdo_pgsql (oder pdo_mysql, je nach Datenbank)
+   - pdo_mysql
    - intl
    - zip
    - opcache
@@ -221,7 +223,13 @@ cp .env.prod.example .env.local
 APP_ENV=prod
 APP_SECRET=CHANGE_ME_TO_A_SECURE_RANDOM_STRING
 DATABASE_URL="mysql://user:password@localhost:3306/database?serverVersion=8.0&charset=utf8mb4"
+DEFAULT_URI=https://yourdomain.com
+MAILER_DSN=smtp://user:pass@smtp.yourdomain.com:587
 ```
+
+`DEFAULT_URI` ist die öffentliche URL; Links in Erinnerungsmails aus dem Scheduler werden damit
+gebaut. Plesks nginx vor Apache läuft lokal und gilt als vertrauenswürdiger Proxy;
+`SYMFONY_TRUSTED_PROXIES` ist nur bei einem CDN/Proxy mit öffentlicher IP nötig.
 
 **APP_SECRET generieren:**
 ```bash
@@ -243,7 +251,11 @@ Alternativ in Plesk:
 SetEnv APP_ENV prod
 SetEnv APP_SECRET your-secret-key-here
 SetEnv DATABASE_URL "mysql://user:password@localhost:3306/database?serverVersion=8.0&charset=utf8mb4"
+SetEnv DEFAULT_URI https://yourdomain.com
 ```
+
+Apache-Variablen erreichen nur Web-Requests, nicht den Cron-Worker. Für den Worker deshalb
+Option A (`.env.local`) verwenden.
 
 ⚠️ **ACHTUNG:** Ohne `APP_ENV=prod` wird Symfony im Dev-Modus laufen und DebugBundle laden wollen, was nicht installiert ist!
 
@@ -251,25 +263,21 @@ SetEnv DATABASE_URL "mysql://user:password@localhost:3306/database?serverVersion
 
 ### Datenbank-Konfiguration
 
-Strato bietet in den meisten Tarifen PostgreSQL an:
+Die Anwendung läuft nur mit MySQL 8 / MariaDB 10.6+ (kein PostgreSQL):
 
 1. **Plesk > Datenbanken**
-2. **Neue Datenbank erstellen**
-3. **Zugangsdaten notieren:**
-   - Host: `localhost` oder `127.0.0.1`
-   - Port: `5432` (PostgreSQL) oder `3306` (MySQL)
-   - Datenbank-Name
-   - Benutzername
-   - Passwort
-
+2. **Neue Datenbank erstellen** (Typ MySQL/MariaDB)
+3. **Zugangsdaten notieren:** Host (`localhost`), Port `3306`, Datenbank-Name, Benutzer, Passwort
 4. **DATABASE_URL in .env.local setzen:**
 ```
-# PostgreSQL
-DATABASE_URL="postgresql://username:password@localhost:5432/dbname?serverVersion=14&charset=utf8"
-
-# MySQL (alternative)
 DATABASE_URL="mysql://username:password@localhost:3306/dbname?serverVersion=8.0&charset=utf8mb4"
+# MariaDB: serverVersion=mariadb-10.11.0
 ```
+
+### Geplante Aufgaben (Pflicht)
+
+Erinnerungen, Fristen-Workflows, Mails und nächtliche Backups brauchen eine Cron-Zeile
+(Plesk → Domain → "Geplante Aufgaben"). Anleitung: [HOSTING_WORKER.md](../user-guide/HOSTING_WORKER.md#plesk-obsidian--18x).
 
 ### SSH-Zugang aktivieren
 
@@ -842,8 +850,11 @@ php bin/console about
 # Besitzer auf Web-Server User setzen
 chown -R <plesk-user>:psacln /var/www/vhosts/yourdomain.com/httpdocs
 chmod -R 755 /var/www/vhosts/yourdomain.com/httpdocs
-chmod -R 775 var/cache var/log
+chmod -R 775 var/
 ```
+
+`var/` (Cache, Logs, Sessions, `var/uploads`, `var/backups`, `var/jobs`) und `public/uploads/`
+müssen für den PHP-FPM-User und den Cron-User beschreibbar sein.
 
 Ersetzen Sie `<plesk-user>` mit Ihrem Plesk-Benutzernamen (z.B. aus `ls -la` ersichtlich).
 
@@ -897,7 +908,7 @@ php bin/console cache:warmup --env=prod
 
 **⚡ QUICK CHECK:** Führen Sie das automatische Check-Script aus:
 ```bash
-./deployment-check.sh
+scripts/deployment/deployment-check.sh
 ```
 
 Dieses Script überprüft automatisch alle kritischen Punkte unten und gibt detailliertes Feedback.
@@ -914,7 +925,10 @@ Dieses Script überprüft automatisch alle kritischen Punkte unten und gibt deta
 - [ ] DATABASE_URL korrekt konfiguriert
 - [ ] Dateirechte korrekt gesetzt (755/775)
 - [ ] Datenbank erstellt und erreichbar
-- [ ] Migrations ausgeführt
+- [ ] Migrations ausgeführt (oder über `/quick-fix`)
+- [ ] `DEFAULT_URI` und `MAILER_DSN` in `.env.local`
+- [ ] Cron-Zeile für den Worker eingerichtet
+- [ ] `https://<domain>/uploads/documents/x.pdf` liefert 403
 - [ ] Cache geleert und aufgewärmt (`php bin/console cache:clear --env=prod`)
 - [ ] Umgebung verifiziert (`php bin/console about` zeigt "Environment: prod")
 
@@ -941,12 +955,10 @@ Oder aktivieren Sie "Permanent SEO-sichere 301-Weiterleitung von HTTP auf HTTPS"
 
 ### Sicherheit
 
-1. **Setup-Routen blockieren nach Ersteinrichtung:**
-
-   In `.htaccess` im `public` Verzeichnis hinzufügen:
+1. **Setup-Wizard nach Ersteinrichtung:** Die Anwendung lässt ihn danach nur noch für
+   `ROLE_SUPER_ADMIN` zu. Wer ihn zusätzlich am Webserver sperren will:
    ```apache
-   # Block setup routes in production
-   RewriteRule ^setup - [F,L]
+   RewriteRule ^(de/|en/)?setup - [F,L]
    ```
 
 2. **.env Dateien schützen:**
@@ -998,7 +1010,8 @@ Bei weiteren Problemen:
 5. **⚠️ KRITISCH: Externe Pakete laden** → `php bin/console importmap:install` (Bootstrap Icons!)
 6. **⚠️ KRITISCH: Assets kompilieren** → `php bin/console asset-map:compile`
 7. Cache leeren → `php bin/console cache:clear --env=prod`
-8. Dateirechte → `chmod -R 775 var/cache var/log`
+8. Dateirechte → `chmod -R 775 var/`
+9. Cron-Zeile für den Worker ([HOSTING_WORKER.md](../user-guide/HOSTING_WORKER.md))
 
 **⚠️ WICHTIG - Reihenfolge der Asset-Befehle:**
 - Schritt 5 (importmap:install) MUSS VOR Schritt 6 (asset-map:compile) ausgeführt werden!

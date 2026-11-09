@@ -10,8 +10,8 @@ workflow automation — all under one roof, without SaaS lock-in.
 
 ## Tech Stack
 
-Symfony 7.4 LTS · PHP 8.4+ · Doctrine ORM 3.6 · MySQL 8+ · Twig 3 · Stimulus 3 / Turbo 8
-· Bootstrap 5.3 · FairyAurora v4 design system · PHPUnit 13.1 · API Platform 4.3
+Symfony 7.4 LTS · PHP 8.4+ · Doctrine ORM 3.7 · MySQL 8+ · Twig 3 · Stimulus 3 / Turbo 8
+· Bootstrap 5.3 · FairyAurora v4 design system · PHPUnit 13 · API Platform 5
 
 ## Hard Requirements
 

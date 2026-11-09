@@ -1,188 +1,72 @@
-# Compliance-Wizard-System — Benutzerhandbuch (v3.5)
+# Compliance-Wizard — Benutzerhandbuch
 
-Der Compliance-Wizard fuehrt Nutzer strukturiert durch die Anforderungen eines
-Compliance-Frameworks. Antworten werden als Session-Snapshot gespeichert und koennen
-mit frueheren Laeufen verglichen werden.
+Der Compliance-Wizard (`/de/compliance-wizard`, ab `ROLE_AUDITOR`) prüft je Framework, was die Daten der
+Organisation schon belegen: Controls, Register, Leitungsentscheidungen, Schulungen, Fristen, Meldungen und
+weitere Datensätze. Jede Prüfung nennt ihre Klausel oder ihren Artikel; dieselben Prüfungen speisen den
+Erfüllungsgrad der Anforderungen, siehe [ERFUELLUNG_AUS_DATEN.md](ERFUELLUNG_AUS_DATEN.md).
 
----
+## Verfügbare Wizards
 
-## 22 verfuegbare Wizards
+ISO 27001:2022, NIS2, DORA, TISAX, DSGVO, ISO 22301, ISO 27701, ISO 27017, ISO 27018, ISO 42001,
+BSI IT-Grundschutz (Basis-, Standard- und Kern-Absicherung), BSI Grundschutz++ (Standard 300-1),
+BSI C5:2020, BSI C5:2026, NIST CSF 2.0, KRITIS / NIS2-DE-Umsetzung, PCI-DSS 4.0.1, SOC 2, EU AI Act,
+ENISA EUCS, EU Cyber Resilience Act — 23 Wizards.
 
-| Wizard | Standard / Regulierung | Maturity-Varianten |
-|---|---|---|
-| ISO 27001:2022 | ISO 27001 Annex A + Clauses 4-10 | Baseline / Enhanced |
-| NIS2 | EU-Richtlinie 2022/2555 + NIS2-UmsuCG (BGBl. 2025) | Baseline / Enhanced |
-| DORA | EU 2022/2554 (Level-1 + Level-2 RTS/ITS) | Baseline / Enhanced |
-| TISAX | VDA ISA 6.0 | Baseline / Enhanced |
-| GDPR / DSGVO | DSGVO + BDSG | Baseline / Enhanced |
-| ISO 22301 | Business Continuity (BCM) | Standard |
-| ISO 27701 | Datenschutz-ISMS | Standard |
-| ISO 27017 | Cloud Security (CLD-Erweiterungen) | Standard |
-| ISO 27018 | PII-Schutz in Public Clouds | Standard |
-| ISO 42001 | KI-Management-System | Baseline / Enhanced |
-| BSI IT-Grundschutz | BSI 200-1/2/3/4 | Standard |
-| BSI C5:2020 | Cloud-Sicherheit BSI | Standard |
-| BSI C5:2026 | Cloud-Sicherheit BSI (Neue Fassung) | Standard |
-| NIST CSF 2.0 | NIST Cybersecurity Framework | Standard |
-| KRITIS | BSI-Kritis-Dachgesetz | Standard |
-| PCI-DSS 4.0.1 | Zahlungskartenindustrie | Standard |
-| SOC 2 | AICPA Trust Services Criteria | Standard |
-| EU AI Act | EU 2024/1689 (alle 113 Artikel) | Baseline / Enhanced |
-| EUCS | ENISA EU Cloud Security Scheme | Standard |
-| EU CRA | Cyber Resilience Act (Annex I) | Standard |
-| MRIS v1.5 | Branchen-Reife-Referenz (intern) | Standard |
-| Industry-Baseline-Express | Kombinations-Wizard (Tag-1-Onboarding) | Preset-basiert |
+Ein Wizard erscheint nur, wenn seine Module aktiv sind (meist `controls`; NIS2 zusätzlich `incidents`,
+DORA `bcm` und `incidents`, TISAX `assets`, ISO 22301 `bcm`). Die Übersicht nennt bei nicht verfügbaren
+Wizards den Grund.
 
----
+## Ablauf
 
-## WizardSession — 22 Slots
+1. **Start** (`/compliance-wizard/{wizard}`): Überblick, Hinweis auf passende Mapping-Bibliotheken
+   („Datenübernahme“; Import ab `ROLE_MANAGER`).
+2. **Bewertung** (`/{wizard}/assess`) und je Kategorie (`/{wizard}/category/{category}`): Ergebnis jeder
+   Prüfung mit Link auf die fehlenden Daten.
+3. **Manuelle Prüfungen** (Klauseln ohne Datensatz, z. B. ISO 27001 5.1): `ROLE_MANAGER` bestätigt sie;
+   bestätigt zählen sie nicht mehr als Lücke.
+4. **Gap-Report** (`/{wizard}/gap-report`, sortierbar nach Aufwand oder Quick Wins) mit FTE-Schätzung je
+   Anforderung; eine eigene Schätzung braucht `ROLE_MANAGER`, eine Begründung (mind. 20 Zeichen) und landet im
+   Audit-Log.
+5. **PDF-Export** (`/{wizard}/export/pdf`, `ROLE_MANAGER`).
 
-Jeder Wizard speichert seinen Zustand in einer eigenen `WizardSession`-Instanz
-(Doctrine-Entity, tenant-scoped). Ein Slot entspricht einem Wizard-Typ.
+Das Ergebnis zeigt den Wizard-Score und die Katalogabdeckung („X von Y Anforderungen erfüllt“, aus den
+Erfüllungen der Organisation).
 
-- Pro Nutzer und Tenant wird ein Session-Objekt pro Wizard-Typ angelegt.
-- Beim neuerlichen Starten des Wizards wird der letzte Snapshot geladen.
-- Ein "Neu beginnen"-Button setzt den Slot zurueck und archiviert den alten
-  Snapshot (er bleibt in der History abrufbar).
+## Stichtage, Verlauf und Vergleich
 
-Sessions werden in `wizard_sessions` gespeichert; die History in `wizard_session_history`.
-
----
-
-## Wizard-History-Diff-View (V4-EF-3)
-
-Nach mindestens zwei abgeschlossenen Wizard-Laeufen erscheint der Tab "Verlauf".
-
-**Funktion:** Zwei Snapshots auswaehlen und nebeneinander vergleichen.
-
-- Antwort-Unterschiede werden farbig hervorgehoben (alt / neu).
-- Score-Delta wird oben als `+5 Punkte / -3 Anforderungen erfullt` angezeigt.
-- Der Diff kann als PDF exportiert werden (siehe "Compare-PDF-Export").
-
-Typische Anwendungsfaelle:
-
-- Nachweis der Reife-Verbesserung vor einem Audit
-- Vergleich vor/nach einem neuen Kontroll-Set
-- Management-Reporting ueber Fortschritt im Quartal
-
----
-
-## Industry-Preset Express-Path (Tag-1-Onboarding)
-
-Der Express-Wizard ist ein Sonderfall: Er fragt nicht einzelne Anforderungen ab,
-sondern drei hochrangige Fragen:
-
-1. Branche (9 Optionen: Produktion, Finanzdienstleister, Gesundheitswesen,
-   Automotive, Cloud/Hosting, IT-Dienstleister, KRITIS, MSP, Generisch)
-2. Unternehmensgroesse (KMU < 250 / Mittelstand 250-1.000 / Enterprise > 1.000)
-3. Vorhandene Zertifizierungen (ISO 9001, ISO 27001, etc.)
-
-Aus diesen Antworten aktiviert der `IndustryPresetService` automatisch:
-
-- Relevante Compliance-Module (z. B. `nis2_dora` fuer KRITIS-Branchen)
-- Einen vorausgefuellten Framework-Katalog mit empfohlenen Controls
-- Einen Branchen-Reife-Baseline als Soll-Profil fuer das Dashboard
-
-Der Express-Path kann jederzeit durch einen vollstaendigen Wizard-Lauf
-verfeinert werden.
-
----
-
-## Compare-PDF-Export
-
-Aus dem History-Diff-View heraus kann ein PDF-Bericht erstellt werden.
-
-Inhalt des Compare-PDF:
-
-- Deckblatt mit Tenant-Name, Erstellungsdatum, Wizard-Typ, Snapshot-Daten
-- Executive Summary (Score-Delta, Anzahl neu erfuellter / weggefallener Anforderungen)
-- Detailseiten: eine Zeile pro Anforderung mit Alt-/Neu-Antwort und Ampelstatus
-- Unterschriften-Zeile fuer Freigabe durch Management
-
-Exportiert via `ComplianceExportService` -> DomPDF.
-
----
-
-## Catalogue-Coverage-KPI
-
-Am Ende jedes Wizards zeigt das Ergebnis zwei Kennzahlen:
-
-1. **Score** (Maturity-Punkte, 0-100): Wie reif ist die Umsetzung?
-2. **Catalogue-Coverage**: `X / Y Anforderungen aus dem Framework-Katalog erfuellt`
-   als Fortschrittsbalken.
-
-Beide KPIs fliessen in das ISMS-Health-Score-Dashboard ein.
-
----
+- **Snapshot** (`ROLE_MANAGER`): speichert Abdeckung, Lücken und Kennzahlen als `WizardSession` der
+  Organisation (je Wizard ein eigener Verlauf).
+- **Verlauf** (`/{wizard}/history`): alle Snapshots mit Trend.
+- **Diff** (`/{wizard}/diff/{fromId}/{toId}`): zwei Snapshots nebeneinander; beide müssen zur eigenen
+  Organisation gehören.
+- **Framework-Vergleich** (`/compliance-wizard/compare`): mehrere Frameworks nebeneinander, als PDF
+  (`/compare/export/pdf`, `ROLE_MANAGER`, höchstens 10 Frameworks).
 
 ## Cross-Framework-Mapping-Hub
 
-Unter `/de/compliance/mapping/hub` (Menü: Compliance → Mapping-Hub) liegen alle
-Mapping-Werkzeuge hinter einer Tab-Leiste, die jede Mapping-Seite oben zeigt:
+Unter `/de/compliance/mapping/hub` (Menü: Compliance → Mapping-Hub) liegen alle Mapping-Werkzeuge hinter einer
+Tab-Leiste:
 
 | Tab | Inhalt |
 |---|---|
 | Übersicht | Kennzahlen, Einstiege, Data-Reuse-Heatmap, Mapping-Onboarding |
 | Mappings | Liste, Detail, Anlegen/Bearbeiten, Wizard, Seed-Pakete, Import, Seed-Review |
 | Qualität | Review-Queue, Kennzahlen, Lücken |
-| Vergleich | Framework-Vergleich, Cross-Framework, Transitiv, Abdeckung (ab Auditor) als Ansichten derselben Matrix |
+| Vergleich | Framework-Vergleich, Cross-Framework, Transitiv, Abdeckung (ab Auditor) |
 
+Mappings durchlaufen `draft → review → approved → published` (`deprecated`, wiederherstellbar). Manager reichen
+ein oder schicken zurück; freigeben, veröffentlichen und zurückziehen braucht `ROLE_ADMIN`. Globale Mappings
+gelten für alle Organisationen der Instanz: mit mehr als einer Organisation ändert sie nur `ROLE_SUPER_ADMIN`.
+Ein freigegebenes Mapping überträgt die Erfüllung einer Anforderung auf die gemappte (Quelle „Mapping“).
 
-| Kennzahl | Wert (v3.5) |
-|---|---|
-| Persistente Mappings | ~3.543 |
-| Mapping-Bibliotheken (YAML-Fixtures) | 56 |
-| Lifecycle-Stufen | draft → review → approved → published |
-| Lex-Specialis-Markierungen | DORA <-> NIS2, NIS2-UmsuCG <-> DORA (DE-Finanz) |
+## Module
 
-Transitive Ableitung: Ein Nachweis (Evidence) kann mehrere Frameworks gleichzeitig
-erfullen, wenn ein Mapping existiert. Das System berechnet die Coverage automatisch
-und zeigt im Wizard "Bereits durch [ISO 27001 Control A.8.7] abgedeckt" an.
-
-Neue Mappings durchlaufen den 4-Stufen-Lifecycle. `ROLE_COMPLIANCE_MANAGER` kann
-Mappings aus dem Status `review` in `approved` ueberleiten.
-
----
-
-## Maturity-Varianten (Baseline / Enhanced)
-
-Wizards mit zwei Varianten stellen je nach gewaehlter Variante unterschiedliche
-Narrative bereit:
-
-- **Baseline (KMU-pragmatisch):** Minimal-Anforderungen fuer eine erste Umsetzung,
-  pragmatisch formuliert, ISO-9001-Analogien fuer Quereinsteiger.
-- **Enhanced (audit-ready):** Vollstaendige Nachweispflichten, Referenz auf
-  spezifische Normparagraphen, Hinweise fuer Zertifizierungs-Audits.
-
-Die Variante kann zwischen Wizard-Laeufen gewechselt werden; der Score wird
-entsprechend neu berechnet.
-
----
-
-## Wizard-Module-Mapping
-
-Wizards aktivieren beim Abschluss automatisch relevante Module, sofern der Nutzer
-dies bestaetigt:
-
-| Wizard | Aktivierte Module |
-|---|---|
-| GDPR-Wizard | `privacy` |
-| DORA-Wizard | `nis2_dora` |
-| NIS2-Wizard | `nis2_dora` |
-| BSI IT-Grundschutz | `bsi_grundschutz` |
-| ISO 42001 / EU AI Act | `ai_governance` |
-| ISO 27017 / C5 / C5:2026 | `cloud_security` |
-| BCM / ISO 22301 | `bcm` |
-| TISAX | `tisax` |
-
-Der `IndustryPresetService` kann Module auch im Express-Path aktivieren, ohne
-dass ein vollstaendiger Wizard-Lauf erforderlich ist.
-
----
+Wizards aktivieren keine Module. Module schaltet der Admin unter Admin → Module, siehe
+[MODULE_AKTIVIERUNG.md](MODULE_AKTIVIERUNG.md).
 
 ## Verwandte Dokumente
 
+- `docs/user-guide/ERFUELLUNG_AUS_DATEN.md` — welche Daten welche Klausel belegen
 - `docs/user-guide/PERSONA_DASHBOARDS.md` — Rollenspezifische Dashboards
-- `docs/user-guide/MODULE_AKTIVIERUNG.md` — Modulverwaltung fuer Administratoren
-- `docs/MODULE_GATING_GUIDE.md` — Entwickler-Referenz fuer Module-Gating
+- `docs/MODULE_GATING_GUIDE.md` — Entwickler-Referenz für Module-Gating
 - `docs/architecture/CROSS_FRAMEWORK_MAPPINGS.md` — Mapping-Architektur

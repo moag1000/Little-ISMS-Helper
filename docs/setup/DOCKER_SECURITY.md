@@ -1,297 +1,87 @@
-# Docker Security Best Practices - Little ISMS Helper
+# Docker Security - Little ISMS Helper
 
-## 🔒 Security Überblick
+Gilt für das Production-Image (`docker-compose.prod.yml`, eingebettete MariaDB). Betrieb,
+Volumes und Reverse Proxy: [DOCKER_PRODUCTION.md](../deployment/DOCKER_PRODUCTION.md).
 
-Dieses Dokument beschreibt Security Best Practices für Docker-Deployments von Little ISMS Helper.
+## Was persistent ist
 
-## ✅ Datenpersistenz nach Reboot
+| Pfad im Container | Inhalt | Volume |
+|---|---|---|
+| `/var/www/html/var` | MariaDB (`var/mysql`), Nachweisdateien (`var/uploads`), Backups (`var/backups`), `var/app_secret`, `var/mysql_password.txt`, `var/setup_complete.lock`, Sessions, Logs | `isms_data` (Pflicht) |
+| `/var/www/html/public/uploads` | Logos, Profilbilder | eigenes Volume nötig |
 
-### Was wird persistiert?
+`.env.local` liegt im Image-Layer und wird bei jedem Start neu geschrieben (`APP_SECRET` aus
+`var/app_secret`, `DATABASE_URL` der eingebetteten MariaDB). Weitere Einstellungen gehören in
+`environment:` der Compose-Datei, nicht in `.env.local` im Container.
 
-**✅ Vollständig persistent:**
-- **Datenbank-Daten** (`db_data` Volume) - PostgreSQL-Datenbank
-- **.env.local** (Bind-Mount `./:/var/www/html`) - Wizard-Konfiguration
-- **config/setup_complete.lock** (Bind-Mount) - Setup-Status
-- **var/log/** (Bind-Mount) - Application Logs
-- **pgAdmin-Einstellungen** (`pgadmin_data` Volume)
-
-**🔄 Nach Reboot verfügbar:**
-Nach `docker-compose down` und System-Reboot:
-```bash
-# System neu starten
-sudo reboot
-
-# Nach Reboot - alle Daten sind noch da!
-docker-compose up -d
-```
-
-Ihre Konfiguration (`.env.local`), Datenbank und Setup-Status bleiben erhalten!
-
-### Volume-Persistenz testen
+Persistenz prüfen:
 
 ```bash
-# 1. Setup durchführen
-docker-compose up -d
-# Browser: http://localhost:8000/setup -> Wizard durchlaufen
-
-# 2. Container stoppen
-docker-compose down
-
-# 3. Prüfen ob .env.local existiert
-cat .env.local
-# ✅ Sollte APP_SECRET und DATABASE_URL enthalten
-
-# 4. Container neu starten
-docker-compose up -d
-
-# 5. Prüfen
-# Browser: http://localhost:8000 -> Sollte direkt zur Login-Seite gehen (Setup abgeschlossen)
+docker compose -f docker-compose.prod.yml down
+docker compose -f docker-compose.prod.yml up -d
+# Login-Seite erscheint, kein Setup-Wizard
 ```
 
-## 🛡️ Security-Probleme & Lösungen
+## Checkliste vor dem Go-Live
 
-### 1. Hardcoded Credentials (KRITISCH)
+- [ ] `APP_ENV=prod`, `APP_DEBUG=0` (Standard in `docker-compose.prod.yml`)
+- [ ] `MYSQL_PASSWORD` gesetzt oder das generierte Passwort aus `var/mysql_password.txt` sicher abgelegt
+- [ ] `APP_SECRET` stabil: entweder generiert in `var/app_secret` (Volume) oder fest gesetzt — ein
+      Wechsel macht verschlüsselte Backup-Felder und MFA-Geheimnisse unlesbar
+- [ ] Optional `APP_AUDIT_HMAC_KEY` (≥ 32 Byte) für signierte Audit-Log-Zeilen und
+      `MFA_ENCRYPTION_KEY` für einen eigenen MFA-Schlüssel
+- [ ] `DEFAULT_URI` = öffentliche URL
+- [ ] HTTPS über einen Reverse Proxy; `SYMFONY_TRUSTED_PROXIES` nur ergänzen, wenn der Proxy eine
+      öffentliche IP hat
+- [ ] Echter SMTP-Server in `MAILER_DSN`
+- [ ] Nur Port 80/443 (bzw. der Proxy-Port) erreichbar; die eingebettete MariaDB hat keinen Port nach außen
+- [ ] `/quick-fix` per IP-Allowlist einschränken (Admin → Quick-Fix-Einstellungen,
+      [QUICK_FIX.md](../user-guide/QUICK_FIX.md))
+- [ ] `var/backups/` regelmäßig vom Host wegkopieren
+- [ ] Log-Rotation: in `docker-compose.prod.yml` gesetzt (`json-file`, 10 MB × 5)
 
-**❌ Problem:** Passwörter sind in docker-compose.yml hardcoded
-```yaml
-POSTGRES_PASSWORD: isms_password  # ❌ Unsicher!
-```
-
-**✅ Lösung:** Verwenden Sie `.env.docker.local`:
+Firewall (Beispiel UFW):
 
 ```bash
-# 1. Erstellen Sie .env.docker.local
-cp .env.docker .env.docker.local
-
-# 2. Ändern Sie die Passwörter
-nano .env.docker.local
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable
 ```
 
-```env
-# .env.docker.local (NICHT in Git committen!)
-POSTGRES_PASSWORD=$(openssl rand -base64 32)
-PGADMIN_DEFAULT_PASSWORD=$(openssl rand -base64 20)
-```
+## Prozesse und Rechte
+
+`supervisord` läuft als root und startet nginx, PHP-FPM (Worker als `www-data`), MariaDB
+(`mysql`) und den Scheduler-Worker (`www-data`). Das Image setzt keine `USER`-Direktive.
+
+## Prüfen
 
 ```bash
-# 3. Starten Sie mit .env.docker.local
-docker-compose --env-file .env.docker.local up -d
-```
+# Schwachstellen (Trivy läuft auch in der CI nach jedem Release-Build)
+trivy image moag2000/little-isms-helper:3.16.1
 
-### 2. Offene Ports (MITTEL)
-
-**❌ Problem:** Alle Ports sind öffentlich erreichbar
-
-**Development (OK):**
-- 8000 (App)
-- 5432 (PostgreSQL) - ⚠️ Sollte nur lokal sein
-- 8025 (MailHog)
-- 5050 (pgAdmin) - ⚠️ Sollte nur lokal sein
-
-**✅ Lösung für Produktion:**
-
-```yaml
-# docker-compose.prod.yml
-db:
-  expose:
-    - "5432"  # Nur im Docker-Netzwerk, NICHT öffentlich!
-  # KEIN ports: Mapping!
-```
-
-Oder für Development nur localhost:
-```bash
-# .env.docker.local
-DB_PORT=127.0.0.1:5432:5432    # Nur von localhost erreichbar
-PGADMIN_PORT=127.0.0.1:5050:80  # Nur von localhost erreichbar
-```
-
-### 3. Debug Mode (KRITISCH für Produktion)
-
-**❌ Problem:** `APP_DEBUG=1` zeigt Stack Traces
-
-**✅ Lösung:**
-
-```bash
-# .env.docker.local (Produktion)
-APP_ENV=prod
-APP_DEBUG=0
-```
-
-### 4. Resource Limits (MITTEL)
-
-**❌ Problem:** Container können unlimitiert Resources nutzen
-
-**✅ Lösung:** In docker-compose.yml bereits implementiert:
-
-```yaml
-deploy:
-  resources:
-    limits:
-      cpus: '2'
-      memory: 2G
-    reservations:
-      cpus: '0.5'
-      memory: 512M
-```
-
-### 5. Root User in Containern (MITTEL)
-
-**❌ Problem:** Container laufen als root
-
-**✅ Lösung:** Im Dockerfile bereits implementiert:
-```dockerfile
-# Dockerfile
-USER www-data
-```
-
-## 🔐 Produkt​ions-Deployment Checklist
-
-### Vor dem Go-Live:
-
-- [ ] **Passwörter ändern** in `.env.docker.local`
-  ```bash
-  POSTGRES_PASSWORD=$(openssl rand -base64 32)
-  ```
-
-- [ ] **HTTPS aktivieren** (Reverse Proxy)
-  ```bash
-  # nginx.conf
-  server {
-    listen 443 ssl;
-    ssl_certificate /etc/ssl/cert.pem;
-    ssl_certificate_key /etc/ssl/key.pem;
-
-    location / {
-      proxy_pass http://localhost:8000;
-    }
-  }
-  ```
-
-- [ ] **Debug Mode deaktivieren**
-  ```env
-  APP_ENV=prod
-  APP_DEBUG=0
-  ```
-
-- [ ] **pgAdmin entfernen**
-  ```bash
-  docker-compose -f docker-compose.prod.yml up -d
-  # pgAdmin ist nicht in prod enthalten
-  ```
-
-- [ ] **MailHog entfernen** und echten SMTP konfigurieren
-  ```env
-  MAILER_DSN=smtp://smtp.example.com:587?encryption=tls&auth_mode=login&username=...&password=...
-  ```
-
-- [ ] **Ports einschränken**
-  - Nur Port 80/443 öffentlich (via Reverse Proxy)
-  - Datenbank-Port NICHT öffentlich
-
-- [ ] **Firewall konfigurieren**
-  ```bash
-  # UFW (Ubuntu)
-  sudo ufw allow 80/tcp
-  sudo ufw allow 443/tcp
-  sudo ufw deny 5432/tcp  # PostgreSQL
-  sudo ufw enable
-  ```
-
-- [ ] **Backups einrichten**
-  ```bash
-  # Siehe DOCKER_SETUP.md -> Backup Strategy
-  docker-compose exec -T db pg_dump -U isms_user little_isms > backup.sql
-  ```
-
-- [ ] **Docker Security Scanning**
-  ```bash
-  docker scan isms-app:latest
-  ```
-
-- [ ] **Log Rotation** konfigurieren
-  ```yaml
-  # docker-compose.prod.yml
-  logging:
-    driver: "json-file"
-    options:
-      max-size: "10m"
-      max-file: "3"
-  ```
-
-- [ ] **Health Monitoring** einrichten
-  - Verwenden Sie die eingebauten Health Checks
-  - Monitoring-Tool (z.B. Prometheus, Grafana)
-
-## 🔍 Security Audit
-
-### Container-Sicherheit prüfen
-
-```bash
-# 1. Schwachstellen scannen
-docker scan isms-app:latest
-docker scan postgres:16-alpine
-
-# 2. Container-Konfiguration prüfen
-docker inspect isms-app | jq '.[0].HostConfig.SecurityOpt'
-
-# 3. Offene Ports prüfen
+# Offene Ports
 docker ps --format "table {{.Names}}\t{{.Ports}}"
 
-# 4. Resource-Nutzung überwachen
-docker stats
-
-# 5. Logs auf Fehler prüfen
-docker-compose logs --tail=100 app | grep -i error
+# Fehler im Log
+docker compose -f docker-compose.prod.yml logs --tail=100 app | grep -i error
 ```
 
-### Netzwerk-Sicherheit prüfen
+## Sicherheitsvorfall
 
-```bash
-# Welche Ports sind öffentlich?
-sudo netstat -tulpn | grep docker
+1. Container stoppen: `docker compose -f docker-compose.prod.yml stop`
+2. Logs sichern: `docker compose -f docker-compose.prod.yml logs > incident-logs.txt`; dazu
+   `var/log/` aus dem Volume
+3. Passwörter und Schlüssel wechseln (DB-Passwort, SMTP, API-Tokens unter Profil → API-Tokens, `/profile/api-tokens`)
+4. Neu starten und Audit-Log prüfen (Admin → Audit-Log → Integrität prüfen)
 
-# Nur localhost-Ports sind sicher:
-# 127.0.0.1:5432  ✅ Nur lokal erreichbar
-# 0.0.0.0:5432    ❌ Öffentlich erreichbar!
-```
+## Development-Compose
 
-## 🚨 Security Incidents
+`docker-compose.yml` (MailHog, pgAdmin, externe DB) ist nur für die Entwicklung. Die
+Nebendienste binden ihre Ports an `127.0.0.1`. Die Standardpasswörter dort über
+`--env-file .env.docker.local` überschreiben. Siehe [DOCKER_SETUP.md](DOCKER_SETUP.md).
 
-### Was tun bei Sicherheitsvorfall?
+## Weitere Ressourcen
 
-1. **Sofort:** Container stoppen
-   ```bash
-   docker-compose down
-   ```
-
-2. **Logs sichern**
-   ```bash
-   docker-compose logs > incident-logs.txt
-   ```
-
-3. **Passwörter ändern**
-   ```bash
-   # Neue Passwörter in .env.docker.local
-   # Datenbank-User-Passwort ändern
-   docker-compose exec db psql -U postgres -c "ALTER USER isms_user WITH PASSWORD 'new_password';"
-   ```
-
-4. **Volumes prüfen**
-   ```bash
-   docker volume inspect isms_db_data
-   ```
-
-5. **Neu deployen** mit neuer Konfiguration
-
-## 📚 Weitere Ressourcen
-
-- [Docker Security Best Practices](https://docs.docker.com/engine/security/)
+- [Docker Security](https://docs.docker.com/engine/security/)
 - [CIS Docker Benchmark](https://www.cisecurity.org/benchmark/docker)
-- [OWASP Docker Security](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)
-
-## 🆘 Support
-
-Bei Sicherheitsfragen:
-1. Prüfen Sie [DOCKER_SETUP.md](DOCKER_SETUP.md)
-2. Konsultieren Sie die Docker-Logs
-3. Erstellen Sie ein Issue (OHNE sensitive Daten!)
+- [OWASP Docker Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)

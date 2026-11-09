@@ -39,7 +39,15 @@ Das System protokolliert Änderungen an folgenden Entitäten:
 - InterestedParty
 - BusinessContinuityPlan
 - BCExercise
+- RecurringDuty
 - ChangeRequest
+- IdentityProvider
+- Vulnerability
+- IsmsRegisterEntry
+
+Maßgeblich ist die Liste in `AuditLogSubscriber::shouldAudit()`. Weitere Einträge schreiben Services
+direkt über den `AuditLogger` (Lifecycle-Übergänge, Bulk-Aktionen, Quick-Fix, Backups, Downloads,
+Datentransfers, MCP-Aufrufe).
 
 ### Erfasste Informationen
 
@@ -49,7 +57,7 @@ Für jeden Protokolleintrag werden folgende Informationen erfasst:
 - **Aktion**: Art der Aktion (create, update, delete, etc.)
 - **Entitätstyp**: Welcher Typ von Entität betroffen war
 - **Entitäts-ID**: ID der betroffenen Entität
-- **Benutzer**: Wer die Aktion ausgeführt hat
+- **Benutzer**: E-Mail des angemeldeten Benutzers, sonst `system` (CLI, Scheduler)
 - **IP-Adresse**: Von welcher IP-Adresse die Aktion kam
 - **User Agent**: Welcher Browser/Client verwendet wurde
 - **Alte Werte**: Werte vor der Änderung (bei Updates und Deletes)
@@ -170,13 +178,17 @@ $auditLogger->logCustom(
 
 ### UI-Zugriff
 
-Das System stellt eine benutzerfreundliche Web-Oberfläche zur Verfügung:
+Alle Seiten unter `/admin/audit-log` (Rolle `ROLE_ADMIN`; mit Sprachpräfix `/{locale}/admin/audit-log`):
 
-- **Hauptübersicht**: `/audit-log/` - Zeigt alle Protokolleinträge mit Filterfunktionen
-- **Entitätsverlauf**: `/audit-log/entity/{entityType}/{entityId}` - Zeigt alle Änderungen einer bestimmten Entität
-- **Benutzeraktivität**: `/audit-log/user/{userName}` - Zeigt alle Aktivitäten eines Benutzers
-- **Statistiken**: `/audit-log/statistics` - Zeigt Statistiken und Diagramme
-- **Details**: `/audit-log/{id}` - Zeigt Details eines einzelnen Protokolleintrags
+- **Hauptübersicht**: `/admin/audit-log` — alle Einträge mit Filtern (`entityType`, `action`, Benutzer, Zeitraum)
+- **Entitätsverlauf**: `/admin/audit-log/entity/{entityType}/{entityId}`
+- **Benutzeraktivität**: `/admin/audit-log/user/{userName}`
+- **Statistiken**: `/admin/audit-log/statistics`
+- **Details**: `/admin/audit-log/{id}`
+- **Integrität prüfen**: Button "HMAC-Kette verifizieren" (`POST /admin/audit-log/verify`)
+- **Aufbewahrung**: `/admin/audit-log/retention`
+
+Detailseiten zeigen den Verlauf ihres Datensatzes im Abschnitt "Historie" (`show_history(entity)`).
 
 ### Filtermöglichkeiten
 
@@ -226,15 +238,22 @@ $recentActivity = $auditLogRepository->getRecentActivity(24); // Letzte 24 Stund
 
 Der AuditLogger sanitiert automatisch sensible Daten:
 
-- Passwortfelder werden als `***` gespeichert
-- Token werden ebenfalls maskiert
-- Sehr lange Strings werden abgeschnitten (max. 1000 Zeichen)
+- Felder, deren Name `password` oder `token` enthält, werden als `***` gespeichert
+- Bei Datenschutz-Entitäten (`DataBreach`, `ProcessingActivity`, `DataSubjectRequest`, `Consent`,
+  `Person`, `DataProtectionImpactAssessment`) werden Werte personenbezogener Felder geschwärzt;
+  der Feldname bleibt erhalten
+- Sehr lange Strings werden abgeschnitten (max. 1000 Byte)
 
 ### Unveränderlichkeit
 
-- Audit-Log-Einträge verwenden `DateTimeImmutable` für Zeitstempel
-- Es gibt keine UI oder API zum Bearbeiten oder Löschen von Logs
-- Nur Lesezugriff ist über die UI möglich
+- Es gibt keine UI oder API zum Bearbeiten von Logs
+- **HMAC-Kette:** Mit `APP_AUDIT_HMAC_KEY` (≥ 32 Byte Zufall, in `.env.local` bzw. Container-Umgebung)
+  wird jeder Eintrag signiert und mit dem vorherigen verkettet (`AuditLogIntegrityService`). Ohne den
+  Schlüssel wird nicht signiert und die Prüfung meldet "deaktiviert". Den Schlüssel nicht wechseln und
+  bei einem Serverumzug mitnehmen ([DISASTER_RECOVERY.md](../operations/DISASTER_RECOVERY.md)).
+- **Aufbewahrung:** Standard 730 Tage, Minimum 365 (NIS-2), einstellbar unter
+  `/admin/audit-log/retention`. Gelöscht wird nachts um 02:45 durch `app:audit-log:cleanup`
+  (Scheduler, [SYMFONY_SCHEDULER.md](../SYMFONY_SCHEDULER.md)).
 
 ### Indizierung
 
@@ -264,20 +283,11 @@ Das Audit Logging System erfüllt folgende Compliance-Anforderungen:
 - TISAX: Anforderungen an Nachvollziehbarkeit
 - BSI IT-Grundschutz: Protokollierung sicherheitsrelevanter Ereignisse
 
-## Migration
-
-Die Datenbanktabelle wird durch die Migration `Version20251105000004` erstellt:
-
-```bash
-# Migration ausführen
-php bin/console doctrine:migrations:migrate
-```
-
 ## Erweiterte Konfiguration
 
 ### Neue Entitäten hinzufügen
 
-Um weitere Entitäten zur Protokollierung hinzuzufügen, bearbeiten Sie die Methode `shouldAudit()` in `src/EventSubscriber/AuditLogSubscriber.php`:
+Weitere Entitäten in `shouldAudit()` in `src/EventSubscriber/AuditLogSubscriber.php` ergänzen:
 
 ```php
 private function shouldAudit(object $entity): bool
@@ -295,44 +305,17 @@ private function shouldAudit(object $entity): bool
 }
 ```
 
-### Benutzererkennung anpassen
-
-Derzeit verwendet das System einen einfachen Mechanismus zur Benutzererkennung. Um die tatsächliche Benutzer-ID aus dem Security-System zu verwenden, passen Sie die Methode `getCurrentUserName()` in `src/Service/AuditLogger.php` an:
-
-```php
-use Symfony\Bundle\SecurityBundle\Security;
-use App\Service\AuditLogIntegrityService;
-
-public function __construct(
-    private EntityManagerInterface $entityManager,
-    private RequestStack $requestStack,
-    private Security $security, // bereits injiziert
-    private AuditLogIntegrityService $integrityService // bereits injiziert
-) {}
-
-private function getCurrentUserName(): string
-{
-    $user = $this->security->getUser();
-
-    if ($user) {
-        return $user->getUserIdentifier();
-    }
-
-    return 'system';
-}
-```
-
 ## Performance-Überlegungen
 
-- Audit-Logs werden in einer separaten Transaktion gespeichert
 - Indizes optimieren Abfragen
-- Für sehr große Datenmengen kann eine Archivierungsstrategie implementiert werden
-- Erwägen Sie regelmäßige Bereinigung sehr alter Logs (z.B. > 7 Jahre)
+- Bulk-Aktionen schreiben über `AuditLogger::logBulk()` einen Batch-Eintrag plus je einen Eintrag pro
+  Datensatz (gemeinsame `batch_id`)
+- Alte Einträge entfernt die Aufbewahrungsregel (siehe oben)
 
 ## Best Practices
 
 1. **Regelmäßige Überprüfung**: Überprüfen Sie die Audit-Logs regelmäßig auf ungewöhnliche Aktivitäten
-2. **Backup**: Sichern Sie die Audit-Logs separat von den Anwendungsdaten
+2. **Backup**: Das Audit-Log ist standardmäßig im Backup enthalten (`--include-audit-log`)
 3. **Retention**: Definieren Sie eine klare Aufbewahrungsrichtlinie gemäß gesetzlicher Anforderungen
 4. **Monitoring**: Implementieren Sie Alarme für kritische Ereignisse
 5. **Training**: Schulen Sie Mitarbeiter über die Bedeutung von Audit-Logs
@@ -343,9 +326,9 @@ private function getCurrentUserName(): string
 
 Überprüfen Sie:
 
-1. Ist der `AuditLogSubscriber` registriert?
-2. Ist die Entität in der `shouldAudit()`-Methode aufgeführt?
-3. Gibt es Datenbankfehler im Log?
+1. Ist die Entität in `shouldAudit()` aufgeführt?
+2. Gibt es Datenbankfehler im Log?
+3. Fehlt bei CLI-Einträgen die Organisation: `withTenant()` verwenden (siehe oben)
 
 ### Performance-Probleme
 
@@ -355,11 +338,3 @@ Bei Performance-Problemen:
 2. Implementieren Sie Paginierung
 3. Archivieren Sie alte Logs
 4. Optimieren Sie Datenbankabfragen
-
-## Support und Weiterentwicklung
-
-Für Fragen oder Verbesserungsvorschläge zum Audit Logging System:
-
-- Erstellen Sie ein Issue im Repository
-- Kontaktieren Sie das Entwicklerteam
-- Konsultieren Sie die Symfony- und Doctrine-Dokumentation

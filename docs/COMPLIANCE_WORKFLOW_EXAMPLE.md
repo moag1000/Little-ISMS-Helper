@@ -275,5 +275,5 @@ Visueller Überblick über alle Frameworks:
 
 Bei Fragen:
 - Check: `docs/COMPLIANCE_FRAMEWORKS_GUIDE.md`
-- CLI Commands: `php bin/console app:compliance:load --help`
+- CLI Commands: `php bin/console list app` (Loader: `app:load-*`)
 - UI: Admin Panel → Compliance → Statistics

@@ -1,7 +1,10 @@
 # Setup Tools Documentation
 
-**Date:** 2025-11-07
-**Purpose:** Comprehensive database setup and validation tools
+**Purpose:** Shell scripts for database setup, validation and license reporting.
+
+The recommended installation path is the setup wizard at `/setup` ([QUICKSTART.md](../QUICKSTART.md)).
+These scripts are for developers and for hosts where the wizard cannot run. The application runs on
+PHP 8.4+ and MySQL 8 / MariaDB 10.6+ only.
 
 ## Overview
 
@@ -22,7 +25,7 @@ This project provides complementary scripts for database setup, validation, and 
 | `scripts/tools/license-report.sh` | Generate license report | Before releases, compliance audits |
 | `bin/license-report.js` | Core license analysis | Called by wrapper script |
 
-> **Note:** Backward-compatible wrappers available in root directory (e.g., `./validate-setup.sh`, `./reset-database.sh`, `./license-report.sh`)
+> **Note:** Wrappers in the root directory: `./validate-setup.sh`, `./create-database.sh`, `./reset-database.sh`.
 
 ---
 
@@ -48,8 +51,8 @@ chmod +x validate-setup.sh
 ### Checks Performed
 
 **Prerequisites (Checks 1-4):**
-- ✓ PHP version >= 8.2
-- ✓ Required PHP extensions (pdo, pdo_mysql, pdo_sqlite, mbstring, xml, ctype, iconv, intl, json)
+- ✓ PHP version (the script still accepts >= 8.2; the application needs 8.4)
+- ✓ Required PHP extensions (pdo_mysql, pdo_sqlite, mbstring, xml, ctype, iconv, intl, json — `pdo_sqlite` is checked but not used)
 - ✓ Composer installed
 - ✓ Composer dependencies (vendor/ directory)
 
@@ -136,9 +139,9 @@ Creates a fresh database from scratch with complete setup. Safe to run on fresh 
 ### Features
 - ✅ Prerequisites checking (PHP, Composer, .env files)
 - ✅ Automatic APP_SECRET generation if missing
-- ✅ Database type detection (SQLite, MySQL, PostgreSQL)
+- ✅ Database type detection (the script also knows SQLite/PostgreSQL; the application supports MySQL/MariaDB only)
 - ✅ Safe handling of existing databases (asks for confirmation)
-- ✅ Complete migration execution (10 migrations)
+- ✅ Complete migration execution
 - ✅ Optional admin user creation
 - ✅ Optional ISO 27001 controls loading
 - ✅ Schema validation after setup
@@ -193,17 +196,16 @@ chmod +x create-database.sh
 
 **Step 2: Database Creation**
 - Detects database type
-- Creates var/ directory for SQLite
 - Runs `doctrine:database:create`
 
 **Step 3: Migrations**
-- Executes all 10 migrations
+- Executes all migrations
 - Shows progress
 
 **Step 4: Roles & Permissions**
 - Runs `app:setup-permissions`
 - Creates admin user (if requested)
-- Sets up 4 roles and 42 permissions
+- Sets up roles and permissions
 
 **Step 5: ISO Controls**
 - Optionally loads 93 Annex A controls
@@ -515,37 +517,7 @@ scripts/tools/license-report.sh
 
 ### Integration with CI/CD
 
-Add to your CI/CD pipeline to catch license issues early:
-
-```yaml
-# .github/workflows/license-check.yml
-name: License Compliance
-
-on: [pull_request]
-
-jobs:
-  license-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-      - name: Generate License Report
-        run: |
-          chmod +x scripts/tools/license-report.sh
-          scripts/tools/license-report.sh
-      - name: Check for problematic licenses
-        run: |
-          if grep -q "nicht erlaubt\|Unbekannt" docs/reports/license-report.md; then
-            echo "⚠️ Problematic licenses found!"
-            exit 1
-          fi
-      - name: Upload Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: license-report
-          path: docs/reports/license-report.md
-```
+The workflow `.github/workflows/license-compliance.yml` runs the report in CI.
 
 ### Compliance Workflow
 
@@ -683,7 +655,6 @@ cat docs/reports/license-report.md
 ```bash
 # In your CI/CD script
 scripts/setup/validate-setup.sh || exit 1
-scripts/setup/create-database.sh --non-interactive  # (if implemented)
 scripts/tools/license-report.sh
 ```
 
@@ -693,24 +664,11 @@ scripts/tools/license-report.sh
 
 ### validate-setup.sh Reports Errors
 
-**"PHP version too old"**
-```bash
-# Install PHP 8.2 or higher
-# Ubuntu/Debian:
-sudo apt install php8.2
-
-# macOS:
-brew install php@8.2
-```
+**"PHP version too old"** — install PHP 8.4 or 8.5 (`sudo apt install php8.4`, `brew install php@8.4`).
 
 **"Missing extensions"**
 ```bash
-# Install missing PHP extensions
-# Ubuntu/Debian:
-sudo apt install php8.2-{pdo,mysql,sqlite3,mbstring,xml,intl}
-
-# macOS:
-brew install php@8.2-{extensions}
+sudo apt install php8.4-{mysql,sqlite3,mbstring,xml,intl,zip}
 ```
 
 **"APP_SECRET is empty"**
@@ -723,13 +681,13 @@ echo "APP_SECRET=$(openssl rand -hex 32)" >> .env.local
 
 **"Database creation failed"**
 - Check DATABASE_URL in .env.local
-- Ensure database server is running (MySQL/PostgreSQL)
+- Ensure the MySQL/MariaDB server is running
 - Check database user permissions
 
 **"Migration failed"**
 - Run: `./validate-setup.sh` to identify issues
 - Check migration files in `migrations/`
-- See MIGRATION_FIX.md for known issues
+- Schema drift: `php bin/console app:schema:reconcile --dry-run` or `/quick-fix` ([QUICK_FIX.md](../user-guide/QUICK_FIX.md))
 
 ### reset-database.sh Issues
 
@@ -739,10 +697,6 @@ echo "APP_SECRET=$(openssl rand -hex 32)" >> .env.local
 
 **"Permission denied"**
 - Check database user has CREATE/DROP permissions
-- For SQLite, ensure var/ directory is writable:
-  ```bash
-  chmod -R 775 var/
-  ```
 
 ---
 
@@ -769,35 +723,21 @@ scripts/setup/reset-database.sh
 
 > **Alternative:** You can use the backward-compatible root wrappers: `./validate-setup.sh`, `./create-database.sh`, `./reset-database.sh`
 
-### Automation (Non-Interactive)
-
-For CI/CD pipelines, you can pre-set environment variables:
-
-```bash
-# Example: Automated setup
-export ADMIN_EMAIL="admin@ci-cd.com"
-export ADMIN_PASSWORD="SecurePassword123!"
-export AUTO_CONFIRM="yes"
-
-# Then modify scripts to read these variables
-# (Implementation would require script modifications)
-```
+The scripts are interactive; there is no non-interactive mode.
 
 ---
 
 ## Files Created/Modified
 
 ### Database Files
-- **SQLite**: `var/data.db` (or path in DATABASE_URL)
-- **MySQL/PostgreSQL**: Database named in DATABASE_URL
+- MySQL/MariaDB database named in `DATABASE_URL`
 
 ### Migration Tracking
 - `migrations/` directory - All migration files
 - `doctrine_migration_versions` table - Tracks executed migrations
 
 ### Generated Data
-- Roles: ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_ADMIN
-- Permissions: 42 permissions across categories
+- Roles and permissions from `app:setup-permissions`
 - Admin user: As specified during setup
 - ISO Controls: 93 Annex A controls (if loaded)
 
@@ -805,33 +745,7 @@ export AUTO_CONFIRM="yes"
 
 ## Related Documentation
 
-- **MIGRATION_FIX.md** - Documents 5 critical migration errors and fixes
-- **ENTITY_TABLE_MAPPING.md** - Maps all entities to database tables
-- **SETUP_VALIDATION.md** - Original setup validation report
-- **README.md** - Main project documentation with setup instructions
-- **docs/reports/license-report.md** - Generated license compliance report (create with `./license-report.sh`)
-
----
-
-## Version History
-
-### Version 1.1 (2025-11-10)
-- Added license compliance reporting tool
-- New: `license-report.sh` for generating license reports
-- New: `bin/license-report.js` for license analysis
-- Analyzes Composer, ImportMap, and manual packages
-- Comprehensive compliance documentation
-- CI/CD integration examples
-
-### Version 1.0 (2025-11-07)
-- Initial release
-- Three complementary scripts
-- 18+ validation checks
-- Interactive setup workflow
-- Comprehensive error handling
-
----
-
-**Status:** ✅ Production Ready
-**Last Updated:** 2025-11-10
-**Tested On:** PHP 8.2+, Symfony 7.3, MySQL 8.0, PostgreSQL 16, SQLite 3, Node.js 18+
+- [ENTITY_TABLE_MAPPING.md](../architecture/ENTITY_TABLE_MAPPING.md) — entities and their tables
+- [DATABASE_SETUP.md](../DATABASE_SETUP.md) — fresh vs. development database
+- [QUICKSTART.md](../QUICKSTART.md) — installation with the setup wizard
+- `docs/reports/license-report.md` — generated by `scripts/tools/license-report.sh`

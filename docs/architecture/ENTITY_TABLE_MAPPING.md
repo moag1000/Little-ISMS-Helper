@@ -1,5 +1,9 @@
 # Entity to Table Mapping
 
+> **Historical (2025-11), covers only the early entities.** Schema completeness is checked today by
+> `php bin/console doctrine:schema:validate` / `app:schema:reconcile --dry-run` and by the CI jobs
+> "fresh-install-migrations" and "upgrade-migrations" in `.github/workflows/ci.yml`, which run the full migration chain.
+
 ## Purpose
 Complete verification that every Entity has a corresponding database table created in migrations.
 

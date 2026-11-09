@@ -25,7 +25,7 @@ Erweiterte Setup-Optionen (Docker, Plesk, Production-Hardening): [docs/setup/](s
 ## 1. Code holen + Abhängigkeiten
 
 ```bash
-git clone https://github.com/<owner>/Little-ISMS-Helper.git
+git clone https://github.com/moag1000/Little-ISMS-Helper.git
 cd Little-ISMS-Helper
 
 composer install
@@ -44,7 +44,9 @@ APP_SECRET=<32-byte-zufalls-string>
 DATABASE_URL="mysql://user:pass@127.0.0.1:3306/isms_helper?serverVersion=10.6&charset=utf8mb4"
 ```
 
-`APP_SECRET` generieren: `php -r 'echo bin2hex(random_bytes(32));'`. Wird für Backup-Verschlüsselung verwendet — bei Verlust sind alte Backups nicht mehr lesbar.
+`APP_SECRET` generieren: `php -r 'echo bin2hex(random_bytes(32));'`. Er verschlüsselt geheime Einstellungen in Backups und (ohne `MFA_ENCRYPTION_KEY`) die MFA-Geheimnisse — bei Verlust sind diese nicht mehr lesbar.
+
+Für Produktion zusätzlich `APP_ENV=prod`, `DEFAULT_URI=https://<öffentliche-url>` (Links in Mails aus dem Scheduler) und `MAILER_DSN`; Vorlage: `.env.prod.example`.
 
 ---
 
@@ -55,7 +57,7 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-Migrations dauern beim ersten Lauf 30–60 Sekunden (many entities and migrations).
+Migrations dauern beim ersten Lauf 30–60 Sekunden.
 
 ---
 
@@ -67,6 +69,15 @@ symfony server:start --daemon --port=8000
 ```
 
 Browser: <http://127.0.0.1:8000> — der **Setup-Wizard** öffnet sich automatisch.
+
+Erinnerungen, Fristen-Workflows, Mails und nächtliche Backups brauchen einen Worker
+(`messenger:consume scheduler_default async`). Für einen Test reicht ein zweites Terminal:
+
+```bash
+php bin/console messenger:consume scheduler_default async -vv
+```
+
+Dauerbetrieb (Cron-Zeile, systemd): [HOSTING_WORKER.md](user-guide/HOSTING_WORKER.md).
 
 ---
 
@@ -107,7 +118,7 @@ Erster User. **ROLE_SUPER_ADMIN** — kann alles, inklusive andere User anlegen,
 | Feld | Hinweis |
 |---|---|
 | E-Mail | später für SSO-Mapping verwendet (Azure OAuth/SAML) |
-| Passwort | min. 12 Zeichen, mindestens 1 Großbuchstabe, 1 Zahl, 1 Sonderzeichen. PHP-Hash via Symfony PasswordHasher (Auto). |
+| Passwort | min. 8 Zeichen, mindestens 1 Klein-, 1 Großbuchstabe und 1 Zahl |
 | Vor-/Nachname | Pflicht — wird in Audit-Log und Reports angezeigt |
 
 ### Schritt 5 — E-Mail-Konfiguration (optional)
@@ -201,8 +212,8 @@ Setup legt automatisch den ersten Tenant an. Falls Sie als ROLE_SUPER_ADMIN eing
 ### "Compliance-Wizard sagt 'Keine Frameworks verfügbar'"
 Schritt 8 wurde übersprungen oder Datenbank-Migration unvollständig. Manuelles Laden:
 ```bash
-php bin/console app:load-iso-27001
-php bin/console app:load-nis2-framework
+php bin/console app:load-iso27001-requirements
+php bin/console app:load-nis2-full
 # alle verfügbaren Loader: php bin/console list app:load
 ```
 
@@ -233,7 +244,7 @@ Details siehe [`CLAUDE.md` Common Pitfalls #6](../CLAUDE.md).
 
 ## Support
 
-- Bug-Reports: [GitHub Issues](https://github.com/anthropics/claude-code/issues) — bitte mit Reproduktionsschritten
+- Bug-Reports: [GitHub Issues](https://github.com/moag1000/Little-ISMS-Helper/issues) — bitte mit Reproduktionsschritten
 - Discussions: GitHub Discussions Tab
 - Dev-Doku: [`CLAUDE.md`](../CLAUDE.md) (für Beiträger)
 

@@ -2,13 +2,13 @@
 
 ## 🚀 In 5 Minuten zur ersten Konzernstruktur
 
-### Schritt 1: Migration ausführen (einmalig)
+Voraussetzung: Schritte 2 und 3 macht ein **Instanz-Betreiber** (`ROLE_SUPER_ADMIN`); Governance-Regeln
+und Kontext-Verteilung (Schritte 4 und 5) auch der `ROLE_ADMIN` der Muttergesellschaft.
 
-```bash
-php bin/console doctrine:migrations:migrate
-```
+### Schritt 1: Datenbank aktuell (einmalig)
 
-✅ Tabelle `corporate_governance` wurde erstellt
+Ausstehende Migrationen über `/quick-fix` oder `php bin/console doctrine:migrations:migrate` anwenden
+(legt u. a. die Tabelle `corporate_governance` an).
 
 ---
 
@@ -16,7 +16,7 @@ php bin/console doctrine:migrations:migrate
 
 Erstelle mindestens 2 Tenants:
 
-1. Gehe zu **Admin → Mandanten** → **Neuer Mandant**
+1. Gehe zu **Admin → Mandanten** (`/de/admin/tenants`) → **Neuer Mandant**
 2. Erstelle "Parent Corp" (z.B. Code: `PARENT`)
 3. Erstelle "Subsidiary A" (z.B. Code: `SUBA`)
 
@@ -24,7 +24,7 @@ Erstelle mindestens 2 Tenants:
 
 ### Schritt 3: Konzernstruktur aufbauen
 
-1. Gehe zu **Admin → Konzernstrukturen**
+1. Gehe zu **Admin → Konzernstruktur** (`/de/admin/tenants/corporate-structure`)
 2. Bei "Subsidiary A" klicke **"Muttergesellschaft zuweisen"**
 3. Wähle:
    - **Muttergesellschaft:** Parent Corp
@@ -143,10 +143,7 @@ Subsidiary hat Default-Governance: **Geteilt**
 
 ### Test 1: Hierarchie funktioniert
 
-```bash
-# Via Browser
-http://localhost/admin/tenants/corporate-structure
-```
+Im Browser: `http://localhost/de/admin/tenants/corporate-structure`
 
 **Erwartung:** Subsidiary erscheint eingerückt unter Parent
 
@@ -154,9 +151,11 @@ http://localhost/admin/tenants/corporate-structure
 
 ### Test 2: API-Test
 
+Die JSON-Endpunkte brauchen eine angemeldete Browser-Sitzung (`ROLE_ADMIN`) und tragen das Locale-Präfix.
+
 ```bash
 # Hole Governance-Rules
-curl http://localhost/api/corporate-structure/2/governance
+curl -b "isms_session=<cookie>" http://localhost/de/api/corporate-structure/2/governance
 
 # Erwartete Response:
 {
@@ -177,7 +176,7 @@ curl http://localhost/api/corporate-structure/2/governance
 
 ```bash
 # Hole effektiven Kontext
-curl http://localhost/api/corporate-structure/effective-context/2
+curl -b "isms_session=<cookie>" http://localhost/de/api/corporate-structure/effective-context/2
 
 # Erwartete Response bei Hierarchical:
 {
@@ -193,70 +192,25 @@ curl http://localhost/api/corporate-structure/effective-context/2
 
 ## ⚡ Tipps & Tricks
 
-### Tipp 1: Multi-Tenant-Check nutzen
+### Tipp 1: Multi-Tenant-Check
 
-Bei nur 1 Mandant wird das Konzernstruktur-Menü automatisch ausgeblendet.
-
-**Aktiviere Second-Tenant:**
-```sql
-UPDATE tenant SET is_active = 1 WHERE id = 2;
-```
-
-→ Menü erscheint automatisch
+Bei nur einem aktiven Mandanten zeigt die Konzernstruktur-Seite einen Hinweis. Zweiten Mandanten unter
+**Admin → Mandanten** aktivieren (Aktivieren/Deaktivieren, `ROLE_SUPER_ADMIN`).
 
 ---
 
-### Tipp 2: Schnelles Testen mit cURL
+### Tipp 2: Schreibende API-Aufrufe
 
-```bash
-# Set Parent via API
-curl -X POST http://localhost/api/corporate-structure/set-parent \
-  -H "Content-Type: application/json" \
-  -d '{
-    "tenantId": 2,
-    "parentId": 1,
-    "governanceModel": "hierarchical"
-  }'
-```
+`POST`/`PATCH`/`DELETE` auf `/de/api/corporate-structure/…` brauchen zusätzlich den CSRF-Token
+`corporate_structure` im Header `X-CSRF-Token` — praktisch also die UI. Struktur nicht per SQL ändern:
+das umgeht Validierung (Zyklen) und Audit-Log.
 
 ---
 
-### Tipp 3: Bulk-Import via SQL
+### Tipp 3: Debugging
 
-```sql
--- Erstelle 10 Subsidiaries unter Parent 1
-INSERT INTO corporate_governance (tenant_id, parent_id, scope, scope_id, governance_model, created_at)
-SELECT
-    t.id,
-    1 as parent_id,
-    'default' as scope,
-    NULL as scope_id,
-    'shared' as governance_model,
-    NOW() as created_at
-FROM tenant t
-WHERE t.id BETWEEN 2 AND 11;
-
--- Setze Parent-Beziehung
-UPDATE tenant
-SET parent_id = 1
-WHERE id BETWEEN 2 AND 11;
-```
-
----
-
-### Tipp 4: Debugging mit Browser-Console
-
-```javascript
-// In Browser-Console (F12):
-// Teste loadGovernanceRules()
-loadGovernanceRules();
-
-// Teste saveGovernanceRule()
-document.getElementById('ruleScope').value = 'control';
-document.getElementById('ruleScopeId').value = 'A.5.1';
-document.getElementById('ruleGovernance').value = 'hierarchical';
-saveGovernanceRule();
-```
+Die Governance-Regeln auf der Mandanten-Detailseite lädt der Stimulus-Controller `tenant-governance`
+(`assets/controllers/tenant-governance_controller.js`); Fehler stehen im Network-Tab (F12).
 
 ---
 
@@ -297,38 +251,15 @@ saveGovernanceRule();
 ## 📚 Weiterführende Dokumentation
 
 - **Vollständige Dokumentation:** [CORPORATE_STRUCTURE.md](./CORPORATE_STRUCTURE.md)
-- **Migration Guide:** [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)
+- **Rechte und Mandantentrennung:** [admin/TENANT_SYSTEM.md](./admin/TENANT_SYSTEM.md)
 - **API-Referenz:** [CORPORATE_STRUCTURE.md#api-endpoints](./CORPORATE_STRUCTURE.md#api-endpoints)
 
 ---
 
 ## 🆘 Hilfe benötigt?
 
-**Logs prüfen:**
 ```bash
 tail -f var/log/dev.log | grep -i corporate
 ```
 
-**Debug-Modus aktivieren:**
-```yaml
-# config/packages/monolog.yaml
-monolog:
-    channels: ['corporate']
-    handlers:
-        corporate:
-            type: stream
-            path: "%kernel.logs_dir%/corporate.log"
-            level: debug
-            channels: ["corporate"]
-```
-
-**Community:**
-- GitHub Issues: [https://github.com/your-repo/issues](https://github.com/your-repo/issues)
-- Slack Channel: #isms-helper-support
-
----
-
-**Happy Corporate Structuring! 🎉**
-
-**Version:** 1.0.0
-**Letzte Aktualisierung:** 2025-01-13
+GitHub Issues: <https://github.com/moag1000/Little-ISMS-Helper/issues>

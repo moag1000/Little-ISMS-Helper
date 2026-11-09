@@ -204,7 +204,7 @@ help:
                 definition: "Eine eigenständige Organisation im Tool mit eigenen Assets, Risiken, Controls und Benutzern, strikt getrennt von anderen Organisationen. Ermöglicht den Betrieb mehrerer ISMS in einer Installation."
             module:
                 name: "Modul"
-                definition: "Funktional abgegrenzter Baustein des Tools der unabhängig aktiviert/deaktiviert werden kann. Beispiele: Asset Management, Risk Management, BCM, Multi-Framework Compliance. Pflichtmodule (Core ISMS, User Management) immer aktiv. Optionale Module je nach Bedarf."
+                definition: "Funktional abgegrenzter Baustein des Tools der unabhängig aktiviert/deaktiviert werden kann. Beispiele: Asset Management, Risk Management, BCM, Multi-Framework Compliance. Pflichtmodule (Core ISMS, Benutzerverwaltung, Audit-Log, Dokumente, Ziele, Benachrichtigungen, Workflows) immer aktiv. Optionale Module je nach Bedarf."
             guided_tour:
                 name: "Gefuehrte Tour"
                 definition: "Interaktive Einfuehrung die wichtige Bereiche Schritt für Schritt erklaert. Highlight-Rahmen zeigt auf UI-Elemente mit Erklaertext. Verschiedene Touren je Rolle (Junior, ISB, CISO, Auditor). Jederzeit ueber Benutzermenue neu startbar."
@@ -437,7 +437,7 @@ help:
                 analogy: "Wie ein Lichtschalter der bereits an ist — nochmal druecken aendert nichts."
             workflow_auto_progression:
                 name: "Automatische Workflow-Weiterleitung"
-                definition: "Workflows ruecken automatisch zum naechsten Schritt vor sobald die noetigen Felder ausgefuellt sind. Beispiel: DSB traegt Schweregrad ein → Schritt 'DSB-Bewertung' gilt als erledigt → weiter zu CISO. Kein manuelles Genehmigen noetig."
+                definition: "Der Status eines Datensatzes rueckt automatisch weiter, sobald die noetigen Felder ausgefuellt sind. Beispiel: DSB traegt Schweregrad, Betroffene und Datenkategorien ein → Datenpanne geht in 'In Bewertung'. Freigabeschritte entscheiden Personen; zeitgesteuerte Schritte ruecken nach Ablauf selbst vor, Vier-Augen-Freigaben nie automatisch."
                 analogy: "Wie ein Pruefplan im QMS der automatisch zum naechsten Schritt springt wenn der vorherige vollstaendig ist."
             workflow_template_instance:
                 name: "Workflow-Vorlage vs. Workflow-Instanz"
@@ -610,13 +610,13 @@ help:
 
             risk_matrix:
                 name: "Risikomatrix (Heatmap)"
-                definition: "5x5-Bewertungsraster: Eintrittswahrscheinlichkeit (Y) gegen Schadensauswirkung (X). Risk Score 1-25 mit Farbcodierung: Gruen (1-3), Gelb (4-9), Orange (10-15), Rot (16-25). Im Tool als interaktive Heatmap mit klickbaren Zellen."
+                definition: "5x5-Bewertungsraster: Eintrittswahrscheinlichkeit (Y) gegen Schadensauswirkung (X). Risk Score 1-25, eingestuft in niedrig, mittel, hoch und kritisch. Die Grenzen legt die Organisation unter Admin > Risikokriterien fest (Vorgabe: mittel ab 6, hoch ab 12, kritisch ab 20). Im Tool als interaktive Heatmap mit klickbaren Zellen."
             likelihood:
                 name: "Eintrittswahrscheinlichkeit (Likelihood)"
-                definition: "Wie wahrscheinlich tritt das Risiko ein? Skala 1-5: Selten (1), Unwahrscheinlich (2), Moeglich (3), Wahrscheinlich (4), Fast sicher (5). Das Tool passt die Wahrscheinlichkeit automatisch an wenn verknüpfte Incidents auftreten."
+                definition: "Wie wahrscheinlich tritt das Risiko ein? Skala 1-5: Selten (1), Unwahrscheinlich (2), Moeglich (3), Wahrscheinlich (4), Fast sicher (5). Nach einem verknüpften Vorfall schlägt das Tool eine neue Bewertung vor; uebernommen wird sie erst nach Bestaetigung."
             impact_risk:
                 name: "Schadensauswirkung (Impact)"
-                definition: "Wie schwer ist der Schaden bei Risikoeintritt? Skala 1-5: Vernachlaessigbar (1), Gering (2), Moderat (3), Erheblich (4), Kritisch (5). Das Tool leitet den Impact automatisch aus dem Wert verknüpfter Assets ab."
+                definition: "Wie schwer ist der Schaden bei Risikoeintritt? Skala 1-5: Vernachlaessigbar (1), Gering (2), Moderat (3), Erheblich (4), Kritisch (5). Der Schutzbedarf verknüpfter Assets dient als Vorschlag fuer den Impact."
             risk_score:
                 name: "Risikobewertungszahl (Risk Score)"
                 definition: "Produkt aus Wahrscheinlichkeit x Auswirkung (1-25). Bestimmt die Position in der Risikomatrix und Dringlichkeit der Behandlung. Wird für Brutto- (vor Massnahmen) und Netto-Risiko (nach Massnahmen) berechnet."
@@ -628,7 +628,7 @@ help:
                 definition: "Konkreter Massnahmenplan: Was wird getan, wer ist verantwortlich, bis wann, mit welchem Budget. Enthaelt verknüpfte ISO 27001 Controls. Status: Geplant → In Umsetzung → Abgeschlossen → Verifiziert."
             risk_acceptance_formal:
                 name: "Formale Risikoakzeptanz"
-                definition: "Dokumentierte Entscheidung ein Restrisiko bewusst zu tragen — mit Begruendung, Bedingungen und Genehmigung auf passender Managementebene. Im Tool als Vier-Augen-Workflow. Muss mindestens jaehrlich ueberprueft werden."
+                definition: "Dokumentierte Entscheidung ein Restrisiko bewusst zu tragen — mit Begruendung, Bedingungen und Genehmigung auf passender Managementebene. Im Tool ueber „Akzeptanz anfordern“: bis zur Manager-Schwelle entscheidet das Risikomanagement, darueber die Leitung (ROLE_TOP_MGMT). Wer wann akzeptiert hat, schreibt nur die Freigabe. Muss mindestens jaehrlich ueberprueft werden."
             risk_category:
                 name: "Risikokategorie"
                 definition: "Gruppierung: Strategisch (Geschaeftsmodell), Operativ (Betriebsunterbrechungen), Finanziell (Verluste, Bussgelder), Compliance (Normverstoesse), Technisch (IT-Ausfaelle, Cyberangriffe), Reputational (Imageschaeden). Hilft bei Aggregation und Reporting."
@@ -637,10 +637,10 @@ help:
                 definition: "Zusammenfassende Betrachtung aller Risiken: Verteilung ueber Kategorien, Klumpenrisiken, Trends. Im Tool als Dashboard-Heatmap und Portfolio-Report mit 12-Monats-Trend."
             schutzbedarfsvererbung:
                 name: "Schutzbedarfsvererbung (Maximumprinzip)"
-                definition: "BSI-Prinzip: Wenn Asset A von Asset B abhaengt, erbt A mindestens den Schutzbedarf von B. Das Tool berechnet dies automatisch ueber Asset-Abhaengigkeiten."
+                definition: "BSI-Prinzip: Wenn Asset A von Asset B abhaengt, erbt A mindestens den Schutzbedarf von B. Das Tool schlaegt eine Anhebung vor, wenn Abhaengigkeiten oder die BIA mehr verlangen; abgesenkt wird nur von Hand."
             asset_risk_link:
                 name: "Asset-Risiko-Verknuepfung"
-                definition: "Assets werden direkt mit Risiken verknüpft. Ermoeglicht automatische Impact-Berechnung aus Asset-Wert, automatische Schutzbedarfs-Uebernahme und zeigt im Asset-Detail welche Risiken darauf lasten. Data Reuse: einmal erfasst, ueberall sichtbar."
+                definition: "Assets werden direkt mit Risiken verknüpft. Liefert Vorschlaege fuer Impact und Schutzbedarf und zeigt im Asset-Detail welche Risiken darauf lasten. Data Reuse: einmal erfasst, ueberall sichtbar."
             kri:
                 name: "KRI (Key Risk Indicator)"
                 definition: "Fruehwarnindikatoren die auf steigende Risiken hinweisen BEVOR sie eintreten. Beispiele: fehlgeschlagene Logins, Patch-Rueckstand, ueberfaellige Behandlungen. Im Tool als Dashboard-Metriken mit Ampelfarben und Trend-Pfeilen."
@@ -649,7 +649,7 @@ help:
                 definition: "Regelmaessige Pruefung ob Bewertung und Behandlung noch aktuell sind. Ausloser: planmaessig (mind. jaehrlich), nach Vorfaellen, nach wesentlichen Aenderungen. Das Tool zeigt ueberfaellige Reviews im Dashboard."
             control_effectiveness:
                 name: "Massnahmenwirksamkeit (Control Effectiveness)"
-                definition: "Wie gut reduziert eine Massnahme das Risiko (0-100%)? Das Tool berechnet daraus automatisch das Restrisiko. Muss nach jedem Vorfall und Audit ueberprueft werden."
+                definition: "Wie gut reduziert eine Massnahme das Risiko (0-100%)? Aus den umgesetzten und wirksamen Controls schlaegt das Tool das Restrisiko vor; der Risikoverantwortliche bestaetigt. Muss nach jedem Vorfall und Audit ueberprueft werden."
             risk_appetite_statement:
                 name: "Risikoappetit-Erklaerung"
                 definition: "Formales Dokument der Geschaeftsleitung: Wie viel Risiko pro Kategorie tragbar? Definiert Schwellenwerte auf der Risikomatrix. Im Tool pro Organisation konfigurierbar mit automatischer Pruefung bei jeder Bewertung."

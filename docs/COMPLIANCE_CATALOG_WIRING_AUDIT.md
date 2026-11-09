@@ -4,7 +4,9 @@ Vollständige Karte: welcher Framework-Katalog wo verdrahtet ist, wie er eingef�
 wird, welche Loader tot/orphan sind, und wo Code-Kollisionen + Coverage-Lücken
 liegen. Erstellt nach Audit aller ~90 Katalog-Commands.
 
-> **Status:** Bestandsaufnahme/Diagnose. Noch keine Code-Änderung. Fixes siehe §7.
+> **Status:** Bestandsaufnahme vom 2026-06-13 (historisch). Fixes siehe §7 und
+> `docs/superpowers/plans/2026-06-13-compliance-catalog-remediation.md`; die Verdrahtung prüft seither
+> CI-Gate 58 (`scripts/quality/check_compliance_catalog.py`).
 
 ---
 

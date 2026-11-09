@@ -103,7 +103,6 @@ Console commands in `src/Command/`:
 | **Import** | `ImportBsiKompendiumXmlCommand`, `ImportGstoolXmlCommand`, `ImportDoraRegisterCommand` |
 | **Verify / validate** | `AuditLogVerifyCommand`, `ValidateSoACommand`, `ValidateFrameworkModulesCommand` |
 | **Process / schedule** | `ProcessTimedWorkflowsCommand`, `GenerateRegulatoryWorkflowsCommand`, `KpiSnapshotCommand` |
-| **Export** | `Nis2MusExportCommand`, `SiemExportCommand` |
 | **Maintenance** | `SchemaReconcileCommand`, `AuditLogCleanupCommand`, `CleanupExpiredFourEyesCommand` |
 
 ---
@@ -170,7 +169,7 @@ templates/
 | File / Directory | Purpose |
 |---|---|
 | `config/modules.yaml` | Module keys + metadata (required vs optional) |
-| `config/active_modules.yaml` | Per-tenant module activation overrides |
+| `config/active_modules.yaml` | Local module activation (gitignored; copy from `active_modules.yaml.dist`) |
 | `config/services.yaml` | Service definitions, tagged services |
 | `config/packages/security.yaml` | Firewalls, access control, password hasher |
 | `config/packages/workflow.yaml` | Imports all lifecycle YAML definitions |

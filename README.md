@@ -152,22 +152,12 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ---
 
-## Was ist neu in v3.9?
+## Update
 
-v3.9 ist ein grosses Sammel-Release -- viele Wochen an Fixes und Verbesserungen
-gebuendelt in eine Version. Schwerpunkte:
+Was Betreiber bei einem Update tun müssen (Migrationen, nginx-Regel, Neuanmeldung, geänderte
+API-Rechte): [**UPGRADE.md**](UPGRADE.md). Alle Änderungen: [CHANGELOG.md](CHANGELOG.md).
 
-- **Navigation-Korrektheit** -- Hauptbereichs-Hervorhebung und Breadcrumbs nach dem Sidebar-Umbau konsolidiert (ein geordneter Resolver als Single-Source-of-Truth)
-- **Async-Export-Jobs** -- Zertifizierungs-Paket, VVT, DORA-Register, Nutzer-/Policy-/Analytics-Export laufen zuverlaessig (In-Request-Runner statt haengender Messenger-Queue)
-- **Charts** -- kein externes CDN mehr, registriertes + Aurora-gestyltes Chart.js global; Tab-Charts rendern korrekt
-- **Onboarding** -- Glossar-Tooltips auf Norm-Begriffen, ISB-Tour-Risikoschritt, Inline-Form-Hinweise
-- **CI-Qualitaets-Gates** -- neue Guards gegen Navigations-Drift, tote Breadcrumb-Links, ungueltige Routen-Referenzen und Fehl-Dispatch von Jobs
-
-> Hinweis: 3.8.0 wurde als defekt zurueckgezogen -- bitte 3.9.0 oder neuer verwenden.
-
-Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
-
-### Grundlagen (seit v3.7)
+### Grundlagen
 
 | Bereich | Neuerung |
 |---|---|
@@ -322,7 +312,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 - **Ein Listen-Aufbau** -- alle 74 Listen mit derselben Reihenfolge: Suche und Filter (teilbare URL), Zusammenfassungs-Chips statt KPI-Kacheln, Tabelle, Seitenumbruch (25/50/100), Leerzustand "Keine X vorhanden."; laufende Freigaben stehen als "In Freigabe" / "Freigabe überfällig" direkt in der Zeile
 - **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder aus der Risikoskala der Organisation (Admin > Risikokriterien, Standard 20/12/6, Billigung durch die Leitung)
 - **Ein Detailseiten-Aufbau** -- Statusband, Ankerleiste, Nachweiskette Asset → Risiko → Control → Nachweis → Vorfall → Schwachstelle als erster Block, Historie und Kommentare
-- **Formulare** -- große Formulare zeigen zuerst den Kern (Rest eingeklappt mit Füllstand), Warnung bei ungespeicherten Änderungen, Vorbelegung aus dem Kontext ("Risiko ableiten" am Asset, "Behandlungsplan" am Risiko), alte Freitext-Personenfelder nur noch wenn befüllt
+- **Formulare** -- große Formulare zeigen zuerst den Kern (Rest eingeklappt mit Füllstand), Warnung bei ungespeicherten Änderungen, Vorbelegung aus dem Kontext ("Risiko ableiten" am Asset, "Behandlungsplan" am Risiko)
 - **Mapping-Hub** -- alle Mapping-Werkzeuge hinter vier Tabs: Übersicht, Mappings, Qualität, Vergleich
 - **Review bestätigen** -- Risiken, Controls (SoA), Dokumente und Lieferanten: Chip "Review fällig" filtert die Liste, mehrere Einträge auswählen, ein Klick bestätigt das periodische Review (heutiges Datum, nächster Termin nach dem Prüfintervall des Eintrags, ein Audit-Log-Batch, ab Manager); aus "Mein Tag" führt "In der Liste bestätigen" direkt dorthin
 - **Ein Such- und Befehlsfenster** -- ⌘K, ⌘P und `/` öffnen dasselbe Fenster für Datensätze, Seiten und Befehle; angeboten wird nur, was Modul und Rolle erlauben
@@ -337,7 +327,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 - **Dark Mode** -- Vollstaendige Theme-Unterstuetzung
 - **Aufgeräumtes CSS** -- Tokens in `fairy-aurora.css`, Komponenten in `fairy-aurora-components.css`, App-Layer in einer `app.css` (früher fünf Dateien); ungenutzte Klassen und überschriebene Doppel-Deklarationen entfernt, ein Test prüft, dass jedes Stylesheet geladen wird
 - **WCAG 2.2 AA** -- ARIA, Keyboard-Navigation, Focus-Management, Skip-Links
-- **i18n** -- Deutsch und Englisch, 276 Uebersetzungsdateien in 138 Domaenen
+- **i18n** -- Deutsch und Englisch, eine Uebersetzungsdatei je Domaene und Sprache
 
 ---
 
@@ -410,23 +400,23 @@ docker run -d \
   -p 8080:80 \
   -v isms_data:/var/www/html/var \
   -v isms_uploads:/var/www/html/public/uploads \
-  moag2000/little-isms-helper:3.9.0
+  moag2000/little-isms-helper:3.16.1
 
 # ... oder GitHub Container Registry (Mirror)
-#   ghcr.io/moag1000/little-isms-helper:3.9.0
+#   ghcr.io/moag1000/little-isms-helper:3.16.1
 
 # Oeffnen: http://localhost:8080/setup
 ```
 
-Verfuegbare Tags: `:3.9.0` (genaue Version -- fuer Produktion empfohlen),
-`:3.9`, `:latest`. Pinne in Produktion auf die exakte Version.
+Verfuegbare Tags: `:3.16.1` (genaue Version -- fuer Produktion empfohlen),
+`:3.16`, `:latest`. Pinne in Produktion auf die exakte Version.
 
 **Docker Compose:**
 
 ```yaml
 services:
   isms:
-    image: moag2000/little-isms-helper:3.9.0
+    image: moag2000/little-isms-helper:3.16.1
     ports:
       - "8080:80"
     volumes:
@@ -499,12 +489,12 @@ Neu im Projekt? Lies **[ONBOARDING.md](ONBOARDING.md)** und die Dokumente unter 
 
 | Komponente | Technologie |
 |---|---|
-| Backend | PHP 8.4+ (8.5 tested), Symfony 7.4 LTS, Doctrine ORM 3.6, Doctrine-Migrations-Bundle 4.0 |
-| Frontend | Twig 3.24, Bootstrap 5.3, Stimulus 3.2, Turbo 8 (Hotwire), Chart.js 4 |
-| API | API Platform 4.3, OpenAPI 3.0 |
+| Backend | PHP 8.4+ (8.5 tested), Symfony 7.4 LTS, Doctrine ORM 3.7, Doctrine-Migrations-Bundle 4.0 |
+| Frontend | Twig 3.30, Bootstrap 5.3, Stimulus 3.2, Turbo 8 (Hotwire), Chart.js 4 |
+| API | API Platform 5, OpenAPI 3; MCP-Server unter `/mcp` |
 | Datenbank | PostgreSQL 16+ / MySQL 8.0+ / MariaDB 10.11+ |
 | Export | Dompdf >=3.1.5 (PDF), PhpSpreadsheet >=5.7 (Excel) |
-| Testing | PHPUnit 13.1 |
+| Testing | PHPUnit 13 |
 | Design | FairyAurora v4 |
 
 ### Projektstruktur
@@ -573,26 +563,12 @@ php bin/phpunit tests/Service/RiskServiceTest.php
 php bin/phpunit --testdox
 ```
 
-### Test-Datenbank einrichten
+### Test-Umgebung einrichten
 
-```bash
-php bin/console doctrine:database:create --env=test
-php bin/console doctrine:migrations:migrate --env=test --no-interaction
-php bin/console app:setup-permissions --admin-email=test@example.com --admin-password=test123 --env=test
-php bin/console isms:load-annex-a-controls --env=test
-```
-
-### Statistiken
-
-| Metrik | Wert |
-|---|---|
-| Testdateien | 816 |
-| Test-LOC | ~75.500 |
-| Controller-Tests | ~1.100 |
-| Service-Tests | ~900 |
-| Repository-Tests | ~400 |
-| Entity-Tests | ~128 |
-| Lifecycle-Tests | unter `tests/Lifecycle/` |
+Einmalig: `.env.test.local` mit einer Datenbank mit Suffix `_test`,
+`cp config/active_modules.yaml.dist config/active_modules.yaml` und `config/setup_complete.lock`
+anlegen -- ohne diese drei Schritte schlagen Controller-Tests irrefuehrend fehl. Details:
+[`CLAUDE.md`](CLAUDE.md) (Essential Commands) und [Test-Runbook](docs/onboarding/05-test-runbook.md).
 
 ---
 
@@ -606,7 +582,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Sichtwechsel](docs/sichtwechsel/README.md) | Sieben Persona-Perspektiven aufs Tool — ISB, CISO, Compliance-Manager, Junior, Risk-Owner, Auditor, Tool-Tester |
 | [Junior-Walkthrough](docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md) | Detail-Walkthrough aus 9001-Quereinsteiger-Sicht |
 
-### Benutzerhandbuecher (v3.5 neu)
+### Benutzerhandbuecher
 
 | Dokument | Thema |
 |---|---|
@@ -620,6 +596,13 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |
 | [KI-Assistent (MCP)](docs/user-guide/KI_ASSISTENT_MCP.md) | Claude Desktop/Code anbinden, Werkzeuge, Prompts, Rechte, Datenschutz, Betreiber-Hinweis |
 | [Modulverwaltung](docs/user-guide/MODULE_AKTIVIERUNG.md) | Module aktivieren und konfigurieren (User-Guide) |
+| [Fristen und Zuständigkeit](docs/DEADLINES_AND_RESPONSIBILITY.md) | Wer erinnert wird und handeln darf, Fristtypen als Konfiguration, Sammelmail |
+| [Erfüllung aus Daten](docs/user-guide/ERFUELLUNG_AUS_DATEN.md) | Wie der Erfüllungsgrad je Anforderung aus Controls, Datensätzen und Audits entsteht, Overrides |
+| [Vorschläge](docs/user-guide/VORSCHLAEGE.md) | Vorschlags-Queue: Ableitungen, Vererbung, Importe, KI-Entwürfe annehmen oder ablehnen |
+| [Eine Liste statt zwei](docs/user-guide/EINE_LISTE.md) | Wo Maßnahmen, Vorfall-Risiken, AVV und Unterauftragnehmer gepflegt werden |
+| [Status-Lebenszyklus](docs/user-guide/STATUS_LIFECYCLE.md) | Statusübergänge, Vier-Augen-Prinzip, Overrides je Organisation |
+| [TISAX-Einstieg](docs/user-guide/TISAX_ONBOARDING.md) | TISAX-Assessment vorbereiten |
+| [GSTOOL-Import](docs/features/GSTOOL_IMPORT.md) | Grundschutz-Altbestände übernehmen |
 
 ### Setup und Deployment
 
@@ -631,6 +614,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Plesk Deployment](docs/deployment/DEPLOYMENT_PLESK.md) | Strato/Plesk-spezifisches Setup |
 | [Authentication](docs/setup/AUTHENTICATION_SETUP.md) | RBAC, Azure OAuth, SAML |
 | [API Setup](docs/setup/API_SETUP.md) | REST API, Swagger UI |
+| [Hintergrundaufgaben](docs/user-guide/HOSTING_WORKER.md) | Scheduler: eine Cron-Zeile oder ein Worker |
 
 ### Architektur und Compliance
 
@@ -646,6 +630,7 @@ php bin/console isms:load-annex-a-controls --env=test
 
 | Dokument | Thema |
 |---|---|
+| [Upgrade-Hinweise](UPGRADE.md) | Was bei einem Update zu tun ist, geänderte Schnittstellen |
 | [Disaster Recovery](docs/operations/DISASTER_RECOVERY.md) | Backup-Scope, Restore-Szenarien, APP_SECRET |
 | [Backup Architecture](docs/operations/BACKUP_ARCHITECTURE.md) | Format 2.0, Entity-Coverage, Dependency-Order |
 | [Audit Logging](docs/setup/AUDIT_LOGGING.md) | HMAC-Chain, Verifikation |
@@ -664,6 +649,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | Dokument | Thema |
 |---|---|
 | [Security Architecture](docs/security/SECURITY.md) | Sicherheitsarchitektur |
+| [Nicht-UI-Verträge](docs/security/NON_UI_CONTRACTS.md) | Invarianten für REST, MCP, Restore, Exporte, Jobs und Anmeldung mit den Tests, die sie halten |
 | [OWASP Audit](docs/reports/security-audit-owasp-2025-rc1.md) | Security Audit Report |
 | [License Report](docs/reports/license-report.md) | Third-Party-Lizenz-Compliance |
 

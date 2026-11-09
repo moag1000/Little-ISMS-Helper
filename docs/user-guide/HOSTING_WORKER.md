@@ -1,271 +1,202 @@
-# Worker auf Shared-Hosting (ohne systemd / Docker)
+# Worker und geplante Aufgaben
 
-Stand: 2026-05-19 · Zielgruppe: Admins, die Little-ISMS-Helper auf einem
-klassischen Webhosting-Paket (cPanel, Plesk, ISPConfig, generischer PHP-FPM-
-Host) betreiben — also ohne Root-Zugriff, ohne systemd, ohne Docker.
+Zielgruppe: Admins, die Little-ISMS-Helper selbst betreiben — auf Shared-Hosting
+(cPanel, Plesk, ISPConfig, generischer PHP-FPM-Host) oder auf einem eigenen Server
+ohne Docker. Im Docker-Image startet `supervisord` den Scheduler-Worker selbst; zur
+Mail-Queue dort siehe [DOCKER_PRODUCTION.md](../deployment/DOCKER_PRODUCTION.md#4-setup-wizard-aufrufen).
 
-## Geplante Aufgaben — immer nötig (seit 2026-11)
+## Was der Worker erledigt
 
-Fristen-Workflows (NIS2/DSGVO), Erinnerungen, Digest-Mails, KPI-/Portfolio-Snapshots,
-Backup + Aufräumen laufen über den Symfony-Scheduler (`src/Schedule.php`,
-Liste `Schedule::COMMAND_TASKS`). Der Scheduler tickt nur, wenn ein Worker seinen
-Transport `scheduler_default` abarbeitet. **Eine** Cron-Zeile genügt — sie bedient
-zugleich die `async`-Warteschlange:
+Ein Worker ist ein `messenger:consume`-Lauf. Er arbeitet zwei Transporte ab:
+
+| Transport | Inhalt | Ohne Worker |
+|---|---|---|
+| `scheduler_default` | Geplante Aufgaben aus `src/Schedule.php` (siehe [SYMFONY_SCHEDULER.md](../SYMFONY_SCHEDULER.md)): Fristen-Workflows, Erinnerungen (`app:send-reminders`), Digest-Mails, Snapshots, Backup + Aufräumen, `app:uploads:protect` | Nichts davon läuft |
+| `async` | Ausgehende E-Mails (Mailer-Nachrichten), bei `APP_ASYNC_JOB_RUNNER=messenger` auch die Admin-Jobs | Mails bleiben in der Tabelle `messenger_messages` liegen |
+
+Admin-Jobs (Backup, Export, Schema-Reconcile, Daten-Reparatur) laufen standardmäßig
+**ohne** Worker: der Runner `in_request` gibt die Antwort an den Browser zurück und
+arbeitet danach im selben PHP-FPM-Prozess weiter (`fastcgi_finish_request()`).
+Nur bei `APP_ASYNC_JOB_RUNNER=messenger` übernimmt der Worker sie.
+
+## Der Cron-Eintrag
+
+Genau eine Zeile genügt. Sie startet jede Minute einen Worker für 55 s:
 
 ```cron
 * * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
 ```
 
-Verpasste Läufe holt der Scheduler einmal nach. Docker bringt den Worker per
-`supervisord` mit, dort ist nichts zu tun.
-
-**Umstieg von Einzel-Crons:** Wer bisher einzelne Zeilen wie
-`app:process-timed-workflows` oder `app:audit-log:cleanup` im Crontab hatte,
-entfernt sie — sonst laufen sie doppelt. Die alten Erinnerungs-Commands
-(`app:send-notifications`, `app:review:send-reminders`, `app:training-send-reminders`,
-`app:dpia-reminder`, `app:risk:acceptance-expiry-reminder`,
-`app:risk:monitor-treatment-plans`, `app:nis2-registration-reminder`) gibt es nicht mehr;
-eigene Cron-Zeilen dafür schlagen fehl und gehören gelöscht. Alle Erinnerungen
-verschickt jetzt `app:send-reminders` über den Scheduler.
-
-## Warum braucht der Helper einen "Worker"?
-
-Viele Admin-Operationen laufen mittlerweile **asynchron** (Async-Admin-Jobs
-Phase 1–3): Backup erzeugen, Schema-Reconcile, Daten-Reparatur, CSV-Exports
-großer Mandanten, DORA-RoI-Export usw. Der Grund:
-
-- PHP-FPM bricht Requests nach **30 Sekunden** ab.
-- Ein Backup, eine schema:reconcile-Sitzung, ein vollständiger DSGVO-Export
-  kann je nach Daten-Volumen Minuten dauern.
-- Synchrone Ausführung würde mitten in der Arbeit abreißen, halbe Backups
-  hinterlassen oder Daten korrumpieren.
-
-Die Lösung: Der Controller legt einen **Job-Datensatz** an, schickt eine
-Symfony-Messenger-Message in die `async`-Warteschlange (Doctrine-Tabelle
-`messenger_messages`) und antwortet sofort mit einer Progress-Seite.
-Die eigentliche Arbeit erledigt ein **Worker-Prozess**, der die Warteschlange
-abarbeitet.
-
-Auf "großen" Servern läuft dieser Worker als Daemon (`messenger:consume`
-mit `systemd`-Unit oder `supervisord`). Auf Shared-Hosting ist das nicht
-möglich — dort ersetzen wir den Daemon durch einen **Cron-Job, der den
-Worker im Minutentakt für 55 s startet**.
-
-## Der Cron-Eintrag (Standard-Fall)
-
-Genau eine Zeile in den Cron-Einträgen des Hosting-Panels:
-
-```cron
-* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
-```
-
-Was die Flags bedeuten:
-
 | Flag | Wert | Bedeutung |
 |---|---|---|
-| `--time-limit` | `55` | Worker beendet sich nach 55 s — sicher unter dem 60-s-Cron-Slot |
-| `--limit` | `20` | Höchstens 20 Messages pro Lauf — verhindert „endloses Schlucken" |
-| `--quiet` | — | Keine STDOUT-Ausgaben, damit der Cron-Daemon keine Mail-Flut erzeugt |
-| `--memory-limit` | `256M` | (optional) Worker stoppt, wenn PHP-Memory das Limit reißt |
+| `--time-limit` | `55` | Worker beendet sich nach 55 s, vor dem nächsten Cron-Slot |
+| `--limit` | `20` | Höchstens 20 Nachrichten pro Lauf |
+| `--quiet` | — | Keine Ausgabe, damit der Cron-Daemon keine Mails verschickt |
+| `--memory-limit` | `256M` | (optional) Worker stoppt bei Überschreitung |
 
-Komplett-Beispiel mit Memory-Limit und Log-File:
+Mit Log-Datei:
 
 ```cron
-* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume async --time-limit=55 --limit=20 --memory-limit=256M --quiet >> var/log/worker.log 2>&1
+* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --memory-limit=256M --quiet >> var/log/worker.log 2>&1
 ```
+
+Verpasste Läufe holt der Scheduler einmal nach.
 
 Wichtig:
 
-- Pfad zu `php` an Host anpassen (`which php` oder `/usr/local/bin/php8.4`)
-- Arbeitsverzeichnis (`cd …`) muss die Helper-Installation sein (Pfad zur
-  `bin/console`)
-- Der Hosting-Account, unter dem der Cron läuft, muss Schreibrechte auf
-  `var/jobs/` und `var/log/` besitzen — gleicher User wie PHP-FPM
+- Pfad zu `php` an den Host anpassen (`which php`, z. B. `/usr/local/bin/php8.4`).
+- Das Arbeitsverzeichnis ist die Installation (dort liegt `bin/console`).
+- Der Cron läuft unter demselben User wie PHP-FPM und braucht Schreibrechte auf `var/`.
+- `DEFAULT_URI` in `.env.local` muss die öffentliche URL sein
+  (`DEFAULT_URI=https://isms.example.com`). Der Worker hat keinen Request; Links in
+  Erinnerungs- und Digest-Mails werden mit diesem Wert gebaut.
+- Alte Einzel-Cron-Zeilen (`app:process-timed-workflows`, `app:audit-log:cleanup`,
+  `app:send-notifications`, `app:review:send-reminders` u. a.) entfernen. Die Commands
+  laufen über den Scheduler oder existieren nicht mehr; eigene Zeilen dafür laufen
+  doppelt oder schlagen fehl.
 
 ## Panel-spezifische Anleitung
 
 ### cPanel
 
-1. Im cPanel → "Cron Jobs"
+1. cPanel → "Cron Jobs"
 2. Common Settings: "Once Per Minute (\* \* \* \* \*)"
-3. Command-Feld:
+3. Command:
    ```
-   cd /home/USERNAME/public_html && /usr/local/bin/php bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
+   cd /home/USERNAME/public_html && /usr/local/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
    ```
 4. "Add New Cron Job"
-5. Optional: E-Mail-Adresse für Fehler-Benachrichtigungen leer lassen,
-   da `--quiet` aktiv ist
 
 ### Plesk (Obsidian / 18.x)
 
-1. Domain → "Scheduled Tasks"
-2. "Add Task"
-3. Task type: "Run a command"
-4. Command:
+1. Domain → "Scheduled Tasks" → "Add Task"
+2. Task type: "Run a command"
+3. Command:
    ```
-   /usr/bin/php /var/www/vhosts/example.com/httpdocs/bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
+   /usr/bin/php /var/www/vhosts/example.com/httpdocs/bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
    ```
-5. Run: "Cron style" → `* * * * *`
-6. Notify: "Errors only"
+4. Run: "Cron style" → `* * * * *`
+5. Notify: "Errors only"
 
 ### ISPConfig 3
 
-1. Sites → Cron
-2. Add new cron
-3. Cron command:
+1. Sites → Cron → Add new cron
+2. Command:
    ```
-   /usr/bin/php /var/www/clients/client1/web1/web/bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
+   /usr/bin/php /var/www/clients/client1/web1/web/bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
    ```
-4. Schedule: Min `*`, Hour `*`, Day `*`, Month `*`, Weekday `*`
-5. Type: "Chrooted" oder "Full" nach Site-Konfiguration
+3. Schedule: Min `*`, Hour `*`, Day `*`, Month `*`, Weekday `*`
+4. Type: "Chrooted" oder "Full" nach Site-Konfiguration
 
-### DirectAdmin / Generisch (crontab -e)
+### DirectAdmin / generisch (crontab -e)
 
 ```cron
-* * * * * cd /home/user/domains/example.com/public_html && /usr/bin/php bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
+* * * * * cd /home/user/domains/example.com/public_html && /usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
 ```
 
-## Verifizieren, dass es läuft
+### Eigener Server mit systemd
 
-Drei Wege:
+Statt Cron ein Dauer-Worker:
 
-### 1. Worker-Health-UI (empfohlen)
+```ini
+# /etc/systemd/system/isms-worker.service
+[Unit]
+Description=Little ISMS Helper Worker
+After=network.target
 
-Login als Admin → Admin-Panel → "Queue-Status" (oder direkt
-`/admin/queue-status`). Diese Seite zeigt:
+[Service]
+User=www-data
+WorkingDirectory=/var/www/isms-helper
+ExecStart=/usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=3600 --memory-limit=256M
+Restart=always
+RestartSec=5
 
-- **Heartbeat-Ampel**: GRÜN (<60 s), GELB (60–300 s), ROT (>300 s)
-- Aktuelle Queue-Tiefe
-- Letzte 20 verarbeiteten Jobs
-- Manueller "Jetzt verarbeiten"-Button (Fallback ohne Cron)
-
-Wenn die Ampel **GRÜN** ist, läuft der Cron korrekt.
-
-### 2. Log-File (bei `>> var/log/worker.log 2>&1` im Cron)
-
+[Install]
+WantedBy=multi-user.target
 ```
+
+```bash
+systemctl enable --now isms-worker
+```
+
+## Prüfen, ob er läuft
+
+### Worker-Status-Seite
+
+Admin → "Queue-Status" (`/admin/queue-status`, Route `admin_queue_status`):
+
+- Heartbeat-Ampel: grün (< 60 s), gelb (60–300 s), rot (> 300 s)
+- Warteschlangen-Tiefe, letzte 20 Jobs
+- Button "Queue jetzt verarbeiten"
+
+Jeder Worker-Lauf setzt den Heartbeat, auch bei leerer Warteschlange.
+
+### Log-Datei (bei `>> var/log/worker.log 2>&1`)
+
+```bash
 tail -f var/log/worker.log
 ```
 
-Erwartung: alle Minute eine kurze Notiz; im Job-Fall mehr Output.
-
-### 3. Datenbank direkt
+### Datenbank
 
 ```sql
-SELECT COUNT(*) FROM messenger_messages WHERE queue_name = 'async';
+SELECT queue_name, COUNT(*) FROM messenger_messages GROUP BY queue_name;
 ```
 
-Wenn der Wert dauerhaft steigt und nie zurück auf 0 geht, läuft der Worker
-NICHT. Wenn er minütlich auf 0 fällt: alles okay.
+Der Transport `async` schreibt mit dem Standard-DSN (`doctrine://default?auto_setup=0`)
+in die Queue `default`. Steigt die Zahl dauerhaft, läuft kein Worker.
 
-## Was tun, wenn Cron nicht zur Verfügung steht?
+## Ohne Cron
 
-Manche Hoster bieten keine 1-Minuten-Frequenz oder gar keinen Cron-Zugang.
-Drei Auswege, in absteigender Empfehlung:
+- **"Queue jetzt verarbeiten"** auf `/admin/queue-status` startet einen kurzen Lauf
+  (`--time-limit=25 --limit=5`) im Request. Er arbeitet nur `async` ab — geplante
+  Aufgaben laufen damit nicht.
+- Ohne Cron und ohne Dauer-Worker laufen keine Erinnerungen, keine Fristen-Workflows
+  und keine nächtlichen Backups. Einen Hoster mit Cron-Zugang wählen.
 
-### a) "Jetzt verarbeiten"-Button
-
-Im Worker-Health-UI gibt es einen Button **„Queue jetzt verarbeiten"**.
-Dieser startet einen begrenzten `messenger:consume`-Lauf
-(`--time-limit=25 --limit=5`) direkt im PHP-FPM-Request — bleibt sicher
-unter dem 30-s-Limit und drainiert 5 Messages pro Klick. Für manuelle
-Bedienung kleinerer Queues ausreichend.
-
-### b) Web-Cron / Ping-Service
-
-Externe Services (eigene Wahl) können regelmäßig eine URL aufrufen, die
-einen Worker-Lauf triggert. Dazu eine eigene Route mit Token-Auth
-einrichten — siehe `docs/operations/EXTERNAL_PING.md` (falls vorhanden)
-oder via `scheduled-tasks`-Admin-UI konfigurieren.
-
-### c) Symfony Scheduler (für reichhaltigere Planung)
-
-Wer Komfort über reine Minuten-Cron hinaus möchte (Backoff, Conditional
-Schedules, gemischte Tasks), kann den Symfony-Scheduler-Component
-(`symfony/scheduler`) als zweite Schicht über Messenger nutzen. Dafür
-muss ein dauerhafter Worker laufen, was auf Shared-Hosting wieder
-voraussetzungsvoll ist — meist nicht praktikabel. Doku:
-<https://symfony.com/doc/current/scheduler.html>.
-
-## Speicher- und Zeit-Tuning
-
-Defaults sind für die meisten Shared-Hoster sicher gewählt. Anpassen,
-wenn:
+## Tuning
 
 | Symptom | Anpassung |
 |---|---|
-| Worker bricht mit „Allowed memory size exhausted" ab | `--memory-limit=512M` oder höher; PHP `memory_limit` in `php.ini` anheben |
-| Große Backups timed out trotz Async | `--time-limit=300` (5 min) — braucht **separaten** Cron-Eintrag, der NICHT minütlich läuft, sonst stapeln sich Worker |
-| Queue läuft voll, weil Last hoch | `--limit=50`, oder zweiten Cron-Slot (z. B. alle 30 s mit 2 separaten Crons à `*/1` versetzt 30 s) |
-| Worker frisst CPU | `--sleep=2` (2 s zwischen Messages) — auf Shared-Hosting selten nötig |
+| "Allowed memory size exhausted" | `--memory-limit=512M`; PHP `memory_limit` anheben |
+| Warteschlange läuft voll | `--limit=50` oder eine zweite, gleiche Cron-Zeile |
+| Worker belastet die CPU | `--sleep=2` |
 
-## Mehrere Worker parallel (Advanced)
-
-Wer mehrere Jobs gleichzeitig abarbeiten will (z. B. ein Backup blockiert
-nicht den DSGVO-Export), kann mehrere Cron-Einträge parallel laufen
-lassen — Doctrine-Transport unterstützt **Row-Locking**, sodass dieselbe
-Message nicht doppelt verarbeitet wird:
-
-```cron
-* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
-* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
-```
-
-Faustregel: nicht mehr Worker als der Host an PHP-CLI-Prozessen erlaubt
-(meist 5–10 auf Shared-Hosting).
+Mehrere Worker parallel sind möglich: der Doctrine-Transport sperrt Zeilen, eine
+Nachricht wird nicht doppelt verarbeitet. Nicht mehr Worker als der Host an
+PHP-CLI-Prozessen erlaubt (meist 5–10).
 
 ## Sicherheit
 
-- Der Cron-Job läuft als der Hosting-User, NICHT als root — keine
-  zusätzlichen Rechte nötig
-- Worker-Output bei `--quiet` kann nichts leaken; nur bei aktivem
-  Logging Datei-Permissions auf `var/log/worker.log` beschränken
-  (`chmod 640`)
-- Im Job-Datensatz (`var/jobs/<uuid>.json`) stehen Payloads — die
-  Datei-Permissions auf `var/jobs/` sind bereits restriktiv
-  (`0775` für Schreiben durch FPM + Cron)
-- **Mandanten-Scope im Worker (fail closed):** Jede Job-Nachricht trägt die
-  Organisation des Auftraggebers. Ohne Organisation läuft ein Job nur dann
+- Der Cron läuft als Hosting-User, nicht als root.
+- Bei Logging die Rechte auf `var/log/worker.log` beschränken (`chmod 640`).
+- Job-Datensätze (`var/jobs/<uuid>.json`) enthalten Payloads; `var/` liegt außerhalb
+  des Web-Roots.
+- **Mandanten-Scope im Job (fail closed):** Jede Job-Nachricht trägt die Organisation
+  des Auftraggebers. Ohne Organisation läuft ein Job nur dann
   organisationsübergreifend, wenn die Nachricht das ausdrücklich erlaubt
-  (Instanz-Operator `ROLE_SUPER_ADMIN`; ein `allTenants`-Export nur, wenn der im
-  Job-Datensatz eingetragene Auftraggeber Instanz-Operator ist). Sonst sieht der
-  Job nur Datensätze ohne Organisation.
-
-**Upgrade-Hinweis (#1059):** Nachrichten, die *vor* dem Update in die Queue
-gestellt wurden, kennen diese Freigabe noch nicht und laufen deshalb im
-Scope "keine Organisation". Ein vor dem Update eingereihter instanzweiter Job
-eines Instanz-Operators (z.B. ein Export über alle Organisationen) endet dann
-ohne Fehlermeldung mit (fast) leerem Ergebnis. Vor dem Update die Queue
-leeren lassen (`messenger:consume async` bis "keine Nachrichten") oder solche
-Jobs nach dem Update neu anstoßen.
+  (Instanz-Operator `ROLE_SUPER_ADMIN`). Sonst sieht der Job nur Datensätze ohne
+  Organisation.
 
 ## Troubleshooting
 
 | Problem | Diagnose | Behebung |
 |---|---|---|
-| Queue-UI zeigt ROT, Jobs bleiben „pending" | Cron läuft nicht oder PHP-Pfad falsch | Cron-Log prüfen (`/var/log/cron`), `which php` testen, Pfade absolut setzen |
-| Worker startet, bricht aber sofort ab | Database-Connect-Fehler, `.env.local` fehlt | `php bin/console doctrine:query:sql 'SELECT 1'` lokal testen |
-| Memory-Exhausted | Großer Daten-Repair-Job | `--memory-limit=512M` oder Job in kleineren Batches re-dispatchen |
-| Doppel-Worker frisst dieselben Messages | Doctrine-Transport-Lock greift, kein Problem | Nur Log-Rauschen — kein Daten-Risiko |
-| `messenger_messages`-Tabelle existiert nicht | Doctrine-Migration noch nicht angewendet | `php bin/console messenger:setup-transports` oder `doctrine:migrations:migrate` |
+| Ampel rot, Jobs bleiben "pending" | Cron läuft nicht oder PHP-Pfad falsch | Cron-Log prüfen, `which php`, absolute Pfade |
+| Worker bricht sofort ab | DB-Verbindung, `.env.local` fehlt | `php bin/console dbal:run-sql 'SELECT 1'` |
+| Mails kommen nicht an | `async` wird nicht abgearbeitet oder `MAILER_DSN` falsch | Cron-Zeile mit `async` prüfen, `MAILER_DSN` in `.env.local` |
+| Links in Mails zeigen auf `localhost` | `DEFAULT_URI` nicht gesetzt | `DEFAULT_URI=https://…` in `.env.local`, `cache:clear` |
+| Tabelle `messenger_messages` fehlt | Migrationen nicht angewendet | `php bin/console doctrine:migrations:migrate` oder `/quick-fix` |
 
-## Stichworte für die Hosting-Support-Anfrage
+## Für die Anfrage beim Hoster
 
-Falls der Hoster fragt, was du brauchst:
-
-- "Cron-Job mit Frequenz `* * * * *` (1× pro Minute)"
-- "PHP-CLI-Zugriff (Console-Aufruf von `php`)"
-- "Schreibrechte auf das Verzeichnis `var/` im Web-Root"
-- "Verbindung von CLI-PHP zur Datenbank (gleiche Credentials wie Web)"
-
-Keine speziellen Module nötig — die Lösung nutzt **nur Symfony-Bordmittel**
-(Messenger + Console + Doctrine-Transport).
+- Cron-Job mit Frequenz `* * * * *`
+- PHP-CLI-Zugriff
+- Schreibrechte auf `var/`
+- Verbindung von PHP-CLI zur Datenbank (gleiche Zugangsdaten wie Web)
 
 ## Querverweise
 
-- [`docs/user-guide/QUICK_FIX.md`](QUICK_FIX.md) — UI für destruktive
-  Operationen ohne CLI
-- [`CLAUDE.md`](../../CLAUDE.md) §"Async Admin Jobs" — Entwickler-
-  Perspektive
-- Worker-Health-UI: `/admin/queue-status` (Route-Name
-  `admin_queue_status`)
+- [SYMFONY_SCHEDULER.md](../SYMFONY_SCHEDULER.md) — Liste der geplanten Aufgaben
+- [QUICK_FIX.md](QUICK_FIX.md) — Migrationen und Reparaturen ohne CLI
+- [CLAUDE.md](../../CLAUDE.md) §"Async Admin Jobs" — Entwickler-Perspektive

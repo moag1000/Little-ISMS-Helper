@@ -71,7 +71,7 @@ See `src/Service/RestoreService.php` and `docs/user-guide/QUICK_FIX.md` for deta
 ### Critical: backup the HMAC key
 
 `APP_AUDIT_HMAC_KEY` is the key for the HMAC-chained audit log. If you restore the database
-but use a different key, the `app:audit:verify-chain` command will report chain breaks.
+but use a different key, the `app:audit-log:verify` command will report chain breaks.
 The HMAC key must be backed up separately from the database (store in a secrets manager,
 not in the database backup file itself).
 
@@ -179,8 +179,8 @@ The VDA-ISA workbook has a hierarchical question structure with maturity levels 
 level 3 questions are a superset of level 2, which is a superset of level 1. The TISAX import
 wizard preserves this hierarchy. When a new VDA-ISA version is published:
 1. Download the new workbook from ENX portal.
-2. Compare column structure against `config/tisax_column_maps.yaml`.
-3. Add a new version entry to the column map if columns changed.
+2. Compare the column headers against the header aliases in `src/Service/Tisax/VdaIsaWorkbookParser.php`.
+3. Add the new headers as aliases if columns changed.
 4. Test with a sample import before releasing.
 
 The TISAX assessment types (AL1/AL2/AL3, with/without prototype protection, with/without
@@ -203,7 +203,7 @@ regulatory thresholds in PHP constants. BaFin may issue supplementary national g
 
 ### ISO 27001:2022 Internal Audit Defensibility
 
-The internal audit module (`src/Controller/Audits/`, `templates/audits/`) implements:
+The internal audit module (`src/Controller/AuditController.php`, `AuditProgramController.php`, `AuditFindingController.php`; `templates/audit*/`) implements:
 - Audit programme (ISO 27001 Cl. 9.2.1)
 - Audit plan per programme
 - Audit findings with NC classification (major/minor/observation)
@@ -268,7 +268,7 @@ treat these as your first documentation tasks.
   (these JSON files contain job state, potentially including tenant names).
 - The production `APP_AUDIT_HMAC_KEY` is stored in a Bitwarden vault (shared to co-maintainers
   if there are any). If you take over and don't have access, generate a new key and run
-  `app:audit:verify-chain` — this will show all existing entries as "unverifiable" (expected after
+  `app:audit-log:verify` — this will show all existing entries as "unverifiable" (expected after
   key rotation). New entries from that point forward will form a valid chain.
 
 ### Technical decisions made but not ADR'd

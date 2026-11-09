@@ -70,7 +70,7 @@ Tour-Modus für Onboarding. Alva (die ISMS-Fee/Maskotchen-Figur) führt durch da
 
 ![Hilfe-Tour](img/implementer-junior/help-tour.png)
 
-Persona-spezifische Tour-Inhalte (Junior, ISB, CISO, Risk-Owner — siehe `app:admin_tour_content_*` Routes) erlauben mehrere Touren parallel zu pflegen.
+Tour-Inhalte je Persona pflegt der Admin unter `/admin/tours/content`.
 
 ---
 

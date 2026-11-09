@@ -13,7 +13,8 @@ The project uses two related but distinct "persona" concepts:
 
 ## RBAC Persona-Roles (Application Level)
 
-Six persona-roles exist alongside the main privilege hierarchy:
+Seven persona-roles exist alongside the main privilege hierarchy (the one answer to "which persona am I" is
+`App\Security\Persona\PersonaResolver`, table in the `Persona` enum):
 
 | Role | Dashboard route | Typical holder |
 |---|---|---|
@@ -22,14 +23,15 @@ Six persona-roles exist alongside the main privilege hierarchy:
 | `ROLE_DPO` | `/dashboards/dpo` | Data Protection Officer |
 | `ROLE_COMPLIANCE_MANAGER` | `/dashboards/compliance-manager` | Head of GRC |
 | `ROLE_ISB` | `/dashboards/isb` | Informationssicherheitsbeauftragter |
-| `ROLE_BCM_OFFICER` | `/dashboards/bcm-officer` | Business Continuity Manager |
+| `ROLE_BCM_OFFICER` | `/dashboards/bcm` | Business Continuity Manager |
+| `ROLE_TOP_MGMT` | `/dashboards/board` | Top management (read-only board view; `ROLE_ADMIN` does not inherit it) |
 
 These roles are additive — a user can hold multiple persona-roles. The dashboards
 aggregate KPIs, pending approvals, and action items relevant to each role.
 
 ### Assigning persona-roles
 
-Via the admin panel: `/admin/users/{id}/roles` — tick the persona checkboxes.
+Via the admin panel: `/admin/users/{id}/edit` — tick the persona checkboxes.
 
 Via console (for demo/test users):
 ```bash
@@ -131,6 +133,7 @@ Beyond persona-skills, several specialist skills provide deep domain knowledge:
 | `bcm-specialist` | ISO 22301 business continuity |
 | `dpo-specialist` | GDPR, BDSG, Art. 37 DPO obligations |
 | `pentester-specialist` | Application security review |
+| `docker-specialist` | Docker images, compose, container deployment |
 
 These activate automatically on keyword detection (e.g. typing "ISO 27001" or
 "BSI IT-Grundschutz" triggers the relevant specialist).
