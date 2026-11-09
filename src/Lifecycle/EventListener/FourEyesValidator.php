@@ -192,6 +192,21 @@ final class FourEyesValidator
     }
 
     /**
+     * True when somebody besides $initiator could confirm the four-eyes
+     * transition — the counter-sign request then waits for that person
+     * (S27). False in the single-approver organisation: the initiator signs
+     * alone with a documented reason (escape above).
+     */
+    public function hasOtherApprover(object $subject, string $workflowName, string $transitionName, User $initiator): bool
+    {
+        $effective = $this->resolver->resolve($subject, $workflowName, $transitionName);
+        /** @var array<int, string> $roles */
+        $roles = array_values(array_filter((array) ($effective['roles'] ?? []), 'is_string'));
+
+        return !$this->isSingleApproverTenant($initiator, $roles);
+    }
+
+    /**
      * True when nobody in the initiator's tenant besides the initiator could
      * act as the second approver. KMU-pragma documented in class doc-block.
      *

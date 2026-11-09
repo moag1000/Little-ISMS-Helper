@@ -10,6 +10,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\User;
 use App\Form\FourEyesApprovalRequestType;
+use App\Lifecycle\FourEyes\LifecycleCountersign;
 use App\Service\FourEyesApprovalService;
 use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\TenantContext;
@@ -30,6 +31,7 @@ final class FourEyesController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
+        private readonly LifecycleCountersign $lifecycleCountersign,
     ) {
     }
 
@@ -45,7 +47,13 @@ final class FourEyesController extends AbstractController
         $user = $this->getUser();
 
         try {
-            $this->service->approve($request, $user);
+            // S27: a lifecycle counter-sign request applies the transition with this
+            // person — logged in here — as the second person.
+            if ($request->getActionType() === FourEyesApprovalRequest::ACTION_LIFECYCLE_TRANSITION) {
+                $this->lifecycleCountersign->confirm($request, $user);
+            } else {
+                $this->service->approve($request, $user);
+            }
             $this->addFlash('success', $this->translator->trans('four_eyes.flash.approved', [], 'four_eyes'));
         } catch (\Throwable $e) {
             $this->addFlash('danger', $e->getMessage());

@@ -250,8 +250,8 @@ class WorkflowServiceTest extends TestCase
             ->with($nextStep);
 
         // Mock security to allow approval (check both ROLE_ADMIN and ROLE_MANAGER)
-        $this->security->method('isGranted')
-            ->willReturnCallback(function ($role) {
+        $this->security->method('isGrantedForUser')
+            ->willReturnCallback(function ($u, $role) {
                 return $role === 'ROLE_ADMIN' || $role === 'ROLE_MANAGER';
             });
 
@@ -331,8 +331,8 @@ class WorkflowServiceTest extends TestCase
             ->with($instance, 'workflow_instance_lifecycle', 'reject', $user, 'Does not meet requirements');
 
         // Mock security to allow rejection (check both ROLE_ADMIN and ROLE_MANAGER)
-        $this->security->method('isGranted')
-            ->willReturnCallback(function ($role) {
+        $this->security->method('isGrantedForUser')
+            ->willReturnCallback(function ($u, $role) {
                 return $role === 'ROLE_ADMIN' || $role === 'ROLE_MANAGER';
             });
 
@@ -359,7 +359,7 @@ class WorkflowServiceTest extends TestCase
         $instance->setCurrentStep($steps[3]);
         $instance->setCurrentStepIndex(2);
         $user = $this->createUser(1, 'Jane', 'Smith');
-        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_MANAGER');
+        $this->security->method('isGrantedForUser')->willReturnCallback(static fn ($u, $role): bool => $role === 'ROLE_MANAGER');
 
         $this->lifecycleService->expects($this->never())->method('transition');
 
@@ -460,7 +460,7 @@ class WorkflowServiceTest extends TestCase
         $step->method('getApproverRole')->willReturn('ROLE_DPO');
         $step->method('getApproverUsers')->willReturn(['7']);
         $instance = $this->createWorkflowInstance('in_progress', $step, $this->createWorkflow('T', 'Risk', [$step]));
-        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_DPO');
+        $this->security->method('isGrantedForUser')->willReturnCallback(static fn ($u, $role): bool => $role === 'ROLE_DPO');
 
         $captured = null;
         $this->lifecycleService->expects($this->once())->method('transition')
@@ -485,11 +485,10 @@ class WorkflowServiceTest extends TestCase
         self::assertTrue($captured[6], 'approver authority verified against the step');
         $eligible = $captured[7];
         self::assertInstanceOf(\App\Lifecycle\EligibleApprovers::class, $eligible);
-        // ROLE_ADMIN may approve any step, the step role qualifies (the
-        // validator resolves both through the role hierarchy), and so does
+        // A DPO step is the DPO's alone (S27: no admin override), and so is
         // every user named in approver_users. The transition role
         // (ROLE_MANAGER) alone is not enough.
-        self::assertSame(['ROLE_ADMIN', 'ROLE_DPO'], $eligible->roles);
+        self::assertSame(['ROLE_DPO'], $eligible->roles);
         self::assertSame([7], $eligible->userIds);
     }
 
@@ -504,7 +503,7 @@ class WorkflowServiceTest extends TestCase
         $step = $this->createWorkflowStep(9, 'Leitung billigt', 5);
         $step->method('getApproverRole')->willReturn('ROLE_TOP_MGMT');
         $step->method('getApproverUsers')->willReturn([]);
-        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_ADMIN');
+        $this->security->method('isGrantedForUser')->willReturnCallback(static fn ($u, $role): bool => $role === 'ROLE_ADMIN');
 
         self::assertFalse($this->service->canUserApprove($admin, $step));
     }
@@ -516,7 +515,7 @@ class WorkflowServiceTest extends TestCase
         $step = $this->createWorkflowStep(9, 'Leitung billigt', 5);
         $step->method('getApproverRole')->willReturn('ROLE_TOP_MGMT');
         $step->method('getApproverUsers')->willReturn([]);
-        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_TOP_MGMT');
+        $this->security->method('isGrantedForUser')->willReturnCallback(static fn ($u, $role): bool => $role === 'ROLE_TOP_MGMT');
 
         self::assertTrue($this->service->canUserApprove($board, $step));
     }
@@ -525,12 +524,25 @@ class WorkflowServiceTest extends TestCase
     public function adminStillApprovesOrdinarySteps(): void
     {
         $admin = $this->createUser(3, 'Ada', 'Admin');
+        $step = $this->createWorkflowStep(10, 'CISO sign-off', 5);
+        $step->method('getApproverRole')->willReturn('ROLE_CISO');
+        $step->method('getApproverUsers')->willReturn([]);
+        $this->security->method('isGrantedForUser')->willReturnCallback(static fn ($u, $role): bool => $role === 'ROLE_ADMIN');
+
+        self::assertTrue($this->service->canUserApprove($admin, $step));
+    }
+
+    /** S27: a DPO step is the data protection officer's — the admin override does not reach it. */
+    #[Test]
+    public function adminCannotApproveAStepReservedForTheDpo(): void
+    {
+        $admin = $this->createUser(3, 'Ada', 'Admin');
         $step = $this->createWorkflowStep(10, 'DPO sign-off', 5);
         $step->method('getApproverRole')->willReturn('ROLE_DPO');
         $step->method('getApproverUsers')->willReturn([]);
-        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_ADMIN');
+        $this->security->method('isGrantedForUser')->willReturnCallback(static fn ($u, $role): bool => $role === 'ROLE_ADMIN');
 
-        self::assertTrue($this->service->canUserApprove($admin, $step));
+        self::assertFalse($this->service->canUserApprove($admin, $step));
     }
 
     private function createUser(int $id, string $firstName, string $lastName): MockObject

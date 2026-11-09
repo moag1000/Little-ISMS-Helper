@@ -43,7 +43,8 @@
 
             {# Last cell: derive action form — preserved as interactive element #}
             {% set _form_html %}<form method="post" action="{{ path('app_group_report_audit_program_derive', {id: program.id}) }}" class="d-inline" data-controller="ui-actions" data-action="submit->ui-actions#confirm" data-ui-actions-message-param="{{ ('group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report')) }}" data-ui-actions-tone-param="danger"><input type="hidden" name="_token" value="{{ csrf_token('audit_program_derive_' ~ program.id) }}"><button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ ('group_report.audit_program.action.derive'|trans({}, 'group_report')) }}</button></form>{% endset %}
-            {% if is_granted('ROLE_GROUP_CISO') %}
+            {# S27: deriving writes into the subsidiaries — group CISO with a writing role #}
+            {% if is_granted('ROLE_GROUP_CISO') and is_granted('ROLE_MANAGER') %}
                 {% set _row = _row|merge([ _form_html ]) %}
             {% endif %}
 
@@ -58,7 +59,7 @@
             {% set _headers = _headers|merge([ sub.code ]) %}
         {% endfor %}
     {% endif %}
-    {% if is_granted('ROLE_GROUP_CISO') %}
+    {% if is_granted('ROLE_GROUP_CISO') and is_granted('ROLE_MANAGER') %}
         {% set _headers = _headers|merge([ 'group_report.audit_program.col.actions'|trans({}, 'group_report') ]) %}
     {% endif %}
 
