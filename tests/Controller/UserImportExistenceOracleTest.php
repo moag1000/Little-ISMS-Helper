@@ -106,6 +106,46 @@ final class UserImportExistenceOracleTest extends WebTestCase
     }
 
     /**
+     * S14: the CSV import follows the user form — a given password meets the
+     * organisation's minimum length, holding roles stay with the super admin.
+     */
+    #[Test]
+    public function importAppliesPasswordPolicyAndRoleCeiling(): void
+    {
+        $holding = $this->em->getRepository(\App\Entity\Role::class)->findOneBy(['name' => 'ROLE_GROUP_BCM_OFFICER'])
+            ?? (new \App\Entity\Role())->setName('ROLE_GROUP_BCM_OFFICER')->setIsSystemRole(true);
+        $this->em->persist($holding);
+        $this->em->flush();
+
+        $this->client->loginUser($this->adminA);
+        $this->client->request('GET', '/en/admin/users/import');
+        $session = $this->client->getRequest()->getSession();
+        $token = bin2hex(random_bytes(16));
+        $session->set('_csrf/user_import', $token);
+        $session->save();
+
+        $this->csvPath = (string) tempnam(sys_get_temp_dir(), 'imp');
+        file_put_contents($this->csvPath, implode("\n", [
+            'email,first_name,last_name,password,is_active,roles',
+            $this->email('shortpw') . ',Short,Password,abc,yes,',
+            $this->email('holding') . ',Holding,Role,,yes,ROLE_GROUP_BCM_OFFICER',
+        ]) . "\n");
+        $file = new UploadedFile($this->csvPath, 'users.csv', 'text/csv', null, true);
+        $this->client->request('POST', '/en/admin/users/import', ['_token' => $token], ['import_file' => $file]);
+        self::assertResponseRedirects();
+
+        $this->em->clear();
+        $users = $this->em->getRepository(User::class);
+        self::assertNull($users->findOneBy(['email' => $this->email('shortpw')]), 'too short a password is not imported');
+        $imported = $users->findOneBy(['email' => $this->email('holding')]);
+        self::assertInstanceOf(User::class, $imported);
+        self::assertNotContains('ROLE_GROUP_BCM_OFFICER', $imported->getRoles(), 'an organisation admin grants no holding role');
+
+        $this->em->remove($imported);
+        $this->em->flush();
+    }
+
+    /**
      * @param list<string> $roles
      */
     private function user(string $label, array $roles, Tenant $tenant): User

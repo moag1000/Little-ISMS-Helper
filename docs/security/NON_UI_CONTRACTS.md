@@ -73,6 +73,11 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | MCP schreibt nur mit Schreib-Token, Organisationsschalter und Nicht-Prüferrolle; jedes nicht lesende Tool ist als solches klassifiziert, und ein als lesend erklärtes Tool enthält keinen schreibenden Aufruf und schreibt beim Aufruf nichts (Doctrine-Spion) | `tests/Mcp/McpServerTest`, `tests/Mcp/McpToolClassificationTest`, `tests/Mcp/McpReadOnlyToolsWriteNothingTest`, `tests/Controller/McpControllerTest` |
 | PUT ersetzt nicht, ausgelassene Felder behalten ihren Wert | `tests/Api/ApiPutSemanticsTest` |
 
+| Rollen-Obergrenze: niemand vergibt, entzieht oder verwaltet eine Rolle über der eigenen; Konzernrollen (jede `ROLE_GROUP_*`/`ROLE_KONZERN_*` der Hierarchie) nur der Super-Admin; Leitung nie an sich selbst; Konten über der Obergrenze nur lesbar (Passwort, E-Mail, MFA) — Formular, Sammelaktion, CSV-Import, SSO-Mapping | `tests/Security/RoleCeilingTest` (echte `role_hierarchy`), `tests/Security/UserAdministrationGuardTest`, `tests/Security/Voter/UserVoterTenantScopeTest::accountsAboveTheActorsRoleAreViewOnly`, `tests/Controller/UserImportExistenceOracleTest` |
+| SSO-Anmeldung vergibt nur bekannte, nicht privilegierte Rollen und pflegt nur die Rollen des Anbieters; das Mapping ist eine Auswahlliste | `tests/Service/Sso/OidcAuthenticationFlowRoleSyncTest`, `tests/Controller/Admin/SsoAccountTakeoverTest` |
+| API-Tokens laufen höchstens 365 Tage, entstehen nur nach voller Anmeldung und werden bei Rollenwechsel widerrufen | `tests/Service/ApiTokenManagerTest`, `tests/Security/ApiTokenBoundaryTest` |
+| SAML-Antworten gelten nur im Browser, der die Anmeldung begonnen hat (Bindungs-Cookie, Login-CSRF) | `tests/Security/Sso/SsoClaimContractTest::samlRefusesUnsolicitedAndUnknownResponses` |
+
 ## Wiederherstellung, globale Daten, Quick-Fix
 
 | Invariante | Beleg |

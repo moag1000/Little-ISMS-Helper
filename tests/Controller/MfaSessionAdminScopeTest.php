@@ -93,31 +93,23 @@ final class MfaSessionAdminScopeTest extends WebTestCase
 
     // ------------------------------------------------------------------ MFA
 
+    /**
+     * S14: nobody enrols a second factor for another person — not a tenant
+     * admin, not the super admin, not in the own organisation. The person
+     * does it on the profile page.
+     */
     #[Test]
-    public function tenantAdminCannotSetupTotpForForeignTenantUser(): void
+    public function nobodyEnrolsASecondFactorForSomeoneElse(): void
     {
-        $this->client->loginUser($this->adminA);
-        $this->client->request('GET', '/en/admin/mfa/user/' . $this->userB->getId() . '/setup-totp');
+        LoginWithSecondFactor::login($this->client, $this->superA);
+        foreach ([$this->userA, $this->userB] as $target) {
+            $this->client->request('GET', '/en/admin/mfa/user/' . $target->getId() . '/setup-totp');
+            self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        }
 
-        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function tenantAdminCannotSetupTotpForSuperAdminInOwnTenant(): void
-    {
-        $this->client->loginUser($this->adminA);
-        $this->client->request('GET', '/en/admin/mfa/user/' . $this->superA->getId() . '/setup-totp');
-
-        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function tenantAdminCanSetupTotpForOwnTenantUser(): void
-    {
         $this->client->loginUser($this->adminA);
         $this->client->request('GET', '/en/admin/mfa/user/' . $this->userA->getId() . '/setup-totp');
-
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     #[Test]
@@ -212,8 +204,6 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         $this->client->request('GET', '/en/admin/mfa/' . $this->tokenB->getId());
         self::assertResponseIsSuccessful();
 
-        $this->client->request('GET', '/en/admin/mfa/user/' . $this->userB->getId() . '/setup-totp');
-        self::assertResponseIsSuccessful();
     }
 
     // ------------------------------------------------------------- Sessions

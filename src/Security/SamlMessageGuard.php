@@ -6,6 +6,7 @@ namespace App\Security;
 
 use OneLogin\Saml2\Utils;
 use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
@@ -17,8 +18,13 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
  *    the login starts (10 minutes). The session cannot carry it: the IdP posts
  *    the response cross-site, and the SameSite=Lax session cookie is not sent
  *    with that POST.
+ *    Since S14 the request is also bound to the browser that started it: a
+ *    random nonce goes into a short-lived `SameSite=None; Secure` cookie
+ *    ({@see bindingCookie()}) and next to the id in the cache. A response for
+ *    the attacker's own login, posted into a victim's browser (login CSRF),
+ *    carries no matching cookie and is refused.
  *  - {@see consumeRequestId()}: the response's InResponseTo must name such a
- *    request; the id is used up on first sight. Unsolicited (IdP-initiated)
+ *    request of this browser; the id is used up on first sight. Unsolicited (IdP-initiated)
  *    responses are refused. OneLogin then verifies the signed InResponseTo
  *    against it in `processResponse($requestId)`.
  *  - {@see assertFirstUse()}: the assertion id is remembered until its
@@ -30,6 +36,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 class SamlMessageGuard
 {
     public const int REQUEST_TTL = 600;
+    public const string BINDING_COOKIE = 'saml_binding';
     /** Kept when the assertion names no NotOnOrAfter. */
     public const int ASSERTION_FALLBACK_TTL = 8 * 3600;
 
@@ -38,15 +45,37 @@ class SamlMessageGuard
     ) {
     }
 
-    public function rememberRequest(string $requestId): void
+    /**
+     * Remembers the AuthnRequest id; returns the browser binding nonce the
+     * caller sets as {@see bindingCookie()} ('' when there is no id).
+     */
+    public function rememberRequest(string $requestId): string
     {
         if ($requestId === '') {
-            return;
+            return '';
         }
+        $nonce = bin2hex(random_bytes(16));
         $item = $this->cache->getItem($this->key('req', $requestId));
-        $item->set(true);
+        $item->set($nonce);
         $item->expiresAfter(self::REQUEST_TTL);
         $this->cache->save($item);
+
+        return $nonce;
+    }
+
+    /**
+     * The cookie that binds the sign-in request to this browser. SameSite=None
+     * because the IdP posts the response cross-site; HttpOnly.
+     */
+    public static function bindingCookie(string $nonce, bool $secure = true): Cookie
+    {
+        return Cookie::create(self::BINDING_COOKIE)
+            ->withValue($nonce)
+            ->withExpires(time() + self::REQUEST_TTL)
+            ->withPath('/')
+            ->withSecure($secure)
+            ->withHttpOnly(true)
+            ->withSameSite($secure ? Cookie::SAMESITE_NONE : Cookie::SAMESITE_LAX);
     }
 
     /**
@@ -61,8 +90,14 @@ class SamlMessageGuard
             throw new AuthenticationException('SAML response does not answer a sign-in request of this installation.');
         }
         $key = $this->key('req', $inResponseTo);
-        if (!$this->cache->getItem($key)->isHit()) {
+        $item = $this->cache->getItem($key);
+        if (!$item->isHit()) {
             throw new AuthenticationException('SAML response answers an unknown or already used sign-in request.');
+        }
+        $nonce = $item->get();
+        $cookie = (string) $request->cookies->get(self::BINDING_COOKIE, '');
+        if (!is_string($nonce) || $nonce === '' || !hash_equals($nonce, $cookie)) {
+            throw new AuthenticationException('SAML response answers a sign-in request started in another browser.');
         }
         $this->cache->deleteItem($key);
 

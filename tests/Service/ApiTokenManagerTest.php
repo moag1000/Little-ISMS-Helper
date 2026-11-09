@@ -47,20 +47,34 @@ final class ApiTokenManagerTest extends TestCase
         self::assertNotNull($persisted->getExpiresAt());
     }
 
+    /**
+     * S14: every token expires — no value or one above the limit becomes the
+     * limit (365 days); old tokens without an expiry end a year after creation.
+     */
     #[Test]
-    public function mintWithoutExpiryHasNoExpiresAt(): void
+    public function everyTokenExpiresWithinTheMaximumLifetime(): void
     {
         $em = $this->createMock(EntityManagerInterface::class);
-        $captured = null;
+        $captured = [];
         $em->method('persist')->willReturnCallback(function (object $e) use (&$captured): void {
-            $captured = $e;
+            $captured[] = $e;
         });
 
         $this->manager($em)->mint(new User(), '', null);
+        $this->manager($em)->mint(new User(), 'long', 5000);
 
-        self::assertInstanceOf(ApiToken::class, $captured);
-        self::assertNull($captured->getExpiresAt());
-        self::assertSame('API token', $captured->getLabel()); // empty label → default
+        $limit = (new \DateTimeImmutable())->modify('+' . ApiToken::MAX_LIFETIME_DAYS . ' days +1 minute');
+        foreach ($captured as $token) {
+            self::assertInstanceOf(ApiToken::class, $token);
+            self::assertNotNull($token->getExpiresAt());
+            self::assertLessThan($limit, $token->getExpiresAt());
+        }
+        self::assertSame('API token', $captured[0]->getLabel()); // empty label → default
+
+        $legacy = new ApiToken(); // minted before the limit, no expiry stored
+        (new \ReflectionProperty(ApiToken::class, 'createdAt'))->setValue($legacy, new \DateTimeImmutable('-400 days'));
+        self::assertFalse($legacy->isValid(new \DateTimeImmutable()));
+        self::assertTrue((new ApiToken())->isValid(new \DateTimeImmutable()));
     }
 
     #[Test]

@@ -6,7 +6,9 @@ namespace App\Tests\Service\User;
 
 use App\Entity\User;
 use App\Repository\TenantRepository;
+use App\Security\RoleCeiling;
 use App\Security\UserAdministrationGuard;
+use App\Tests\Security\Voter\VoterTestHelper;
 use App\Service\AuditLogger;
 use App\Service\InitialAdminService;
 use App\Service\TenantContext;
@@ -52,6 +54,8 @@ final class UserBulkActionServiceTest extends TestCase
                 $this->createMock(TenantContext::class),
                 $this->createMock(TenantRepository::class),
                 new NullLogger(),
+                new RoleCeiling(VoterTestHelper::createRoleHierarchy()),
+                $this->createStub(AuditLogger::class),
             ),
         );
     }

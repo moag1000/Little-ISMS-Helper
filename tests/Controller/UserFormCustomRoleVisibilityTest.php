@@ -60,7 +60,7 @@ final class UserFormCustomRoleVisibilityTest extends WebTestCase
     protected function tearDown(): void
     {
         $this->em->clear();
-        foreach (['admina', 'usera', 'super'] as $label) {
+        foreach (['admina', 'usera', 'super', 'plain'] as $label) {
             $user = $this->em->getRepository(User::class)->findOneBy(['email' => $label . '_' . $this->uid . '@example.com']);
             if ($user !== null) {
                 $this->em->remove($user);
@@ -82,29 +82,41 @@ final class UserFormCustomRoleVisibilityTest extends WebTestCase
     }
 
     #[Test]
-    public function tenantAdminIsNotOfferedPrivilegedCustomRoleAndEditKeepsIt(): void
+    public function tenantAdminIsNotOfferedPrivilegedCustomRole(): void
     {
+        $plain = $this->user('plain', ['ROLE_USER']);
+        $this->em->flush();
+
         $this->client->loginUser($this->adminA);
-        $url = '/en/admin/users/' . $this->userA->getId() . '/edit';
-        $crawler = $this->client->request('GET', $url);
+        $crawler = $this->client->request('GET', '/en/admin/users/' . $plain->getId() . '/edit');
         self::assertResponseIsSuccessful();
 
         self::assertCount(0, $crawler->filter($this->checkbox($this->holding)), 'privileged custom role must not be offered');
         self::assertCount(1, $crawler->filter($this->checkbox($this->ordinary)), 'ordinary custom role stays assignable');
+    }
 
-        $values = $crawler->filter('form[name="user"]')->form()->getPhpValues();
-        $values['user']['firstName'] = 'Kept';
-        $this->client->request('POST', $url, $values);
-        self::assertResponseRedirects();
+    /**
+     * S14: an account holding a holding role (here via a system custom role)
+     * is above a tenant admin's role — view only, the edit form answers 403
+     * and the role stays.
+     */
+    #[Test]
+    public function tenantAdminCannotEditAnAccountWithAHoldingRole(): void
+    {
+        $this->client->loginUser($this->adminA);
+        $url = '/en/admin/users/' . $this->userA->getId() . '/edit';
+        $this->client->request('GET', $url);
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('POST', $url, ['user' => ['firstName' => 'Changed']]);
+        self::assertResponseStatusCodeSame(403);
 
         $this->em->clear();
         $reloaded = $this->em->find(User::class, $this->userA->getId());
         self::assertInstanceOf(User::class, $reloaded);
-        self::assertSame('Kept', $reloaded->getFirstName());
+        self::assertSame('Usera', $reloaded->getFirstName());
         self::assertContains(
             $this->holding->getId(),
             array_map(static fn (Role $r): ?int => $r->getId(), $reloaded->getCustomRoles()->toArray()),
-            'hidden role held by the target is carried over, not revoked',
         );
     }
 

@@ -291,6 +291,7 @@ final class SsoProviderController extends AbstractController
         return $this->render('admin/sso/show.html.twig', [
             'provider'    => $provider,
             'mappings'    => $mappings,
+            'role_choices' => $this->userAdministrationGuard->ssoMappableRoles(),
             'ignored_privileged_roles' => SsoAccountLinkPolicy::ignoredPrivilegedRoles($provider, $mappings),
         ]);
     }
@@ -306,14 +307,15 @@ final class SsoProviderController extends AbstractController
 
         $data   = $request->request->all('role_mappings') ?: [];
 
-        // Only a SUPER_ADMIN may map claims to a privileged role. Validate
-        // BEFORE the existing mappings are removed, so a rejected save
-        // changes nothing.
+        // Roles only from the assignable list (S14): reserved, non-privileged
+        // roles within the admin's own ceiling — no free text. Validate BEFORE
+        // the existing mappings are removed, so a rejected save changes nothing.
+        $assignable = $this->userAdministrationGuard->ssoMappableRoles();
         $forbidden = [];
         foreach ($data as $row) {
             $role = trim((string) ($row['assignedRole'] ?? ''));
-            if ($role !== '' && !$this->userAdministrationGuard->mayAssignRoleName($role)) {
-                $forbidden[] = strtoupper($role);
+            if ($role !== '' && !in_array($role, $assignable, true)) {
+                $forbidden[] = $role;
             }
         }
         if ($forbidden !== []) {
