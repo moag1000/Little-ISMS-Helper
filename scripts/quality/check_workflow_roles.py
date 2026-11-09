@@ -107,7 +107,8 @@ def decided_places(wf: dict) -> set[str]:
     outgoing: set[str] = set()
     for t in transitions.values():
         outgoing.update(as_list((t or {}).get("from")))
-    places = set(as_list(wf.get("places")))
+    # places are names or `{name, metadata: {tone}}` maps (W7: the tone of each place lives in its metadata)
+    places = {p["name"] if isinstance(p, dict) else p for p in as_list(wf.get("places"))}
     for t in transitions.values():
         places.update(as_list((t or {}).get("to")))
     decided = {p for p in places if p not in outgoing}

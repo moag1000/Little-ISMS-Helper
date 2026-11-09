@@ -1,12 +1,4 @@
 # Page-semantics offenders (Gate 78): <template>::nested-main|extra-h1|status-map|ternary-tone|pill-tone|tooltip-unreachable. May only shrink.
-templates/_components/_badge.html.twig::ternary-tone
-templates/_components/_bulk_action_bar.html.twig::ternary-tone
-templates/_components/_fa_confirm.html.twig::ternary-tone
-templates/_components/_fa_matrix_table.html.twig::ternary-tone
-templates/_components/_fa_modal.html.twig::ternary-tone
-templates/_components/_fa_rag_card.html.twig::ternary-tone
-templates/_components/_isms_journey.html.twig::ternary-tone
-templates/_macros/cards.html.twig::ternary-tone
 templates/access_review/index.html.twig::ternary-tone
 templates/admin/asset_sub_type/index.html.twig::ternary-tone
 templates/admin/deadline_type/index.html.twig::ternary-tone
@@ -31,7 +23,6 @@ templates/audit_log/index.html.twig::ternary-tone
 templates/audit_log/user_activity.html.twig::ternary-tone
 templates/audit_program/_row.html.twig::ternary-tone
 templates/audit_program/show.html.twig::ternary-tone
-templates/base.html.twig::ternary-tone
 templates/bsi_grundschutz_check/index.html.twig::ternary-tone
 templates/compliance/framework_dashboard.html.twig::ternary-tone
 templates/compliance/fulfillment/overrides.html.twig::ternary-tone
@@ -90,14 +81,6 @@ templates/risk_treatment_plan/_detail_modal.html.twig::ternary-tone
 templates/risk_treatment_plan/_row.html.twig::ternary-tone
 templates/risk_treatment_plan/show.html.twig::ternary-tone
 templates/role_management/show.html.twig::ternary-tone
-templates/setup/industry_preset.html.twig::ternary-tone
-templates/setup/step0_welcome.html.twig::ternary-tone
-templates/setup/step2_database_config.html.twig::ternary-tone
-templates/setup/step4_admin_user.html.twig::ternary-tone
-templates/setup/step5_email_config.html.twig::ternary-tone
-templates/setup/step6_organisation_info.html.twig::ternary-tone
-templates/setup/step8_compliance_frameworks.html.twig::ternary-tone
-templates/setup_wizard/existing_frameworks.html.twig::ternary-tone
 templates/suggestion/index.html.twig::ternary-tone
 templates/supplier/_detail_modal.html.twig::ternary-tone
 templates/supplier/_row.html.twig::ternary-tone

@@ -100,7 +100,7 @@ final class YamlWorkflowLifecycle implements LifecycleTransitionInterface
             throw new \LogicException(sprintf('Workflow "%s" not found in config/workflows.', $workflowName));
         }
 
-        $builder = new DefinitionBuilder($config['places']);
+        $builder = new DefinitionBuilder(array_column($config['places'], 'name'));
         $builder->setInitialPlaces([$config['initial_marking']]);
         $reasonRequired = [];
         foreach ($config['transitions'] as $name => $t) {

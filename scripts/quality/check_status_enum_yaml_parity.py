@@ -120,7 +120,7 @@ def parse_workflow(yaml_path: Path) -> list[tuple[str, str, list[str]]]:
         if not isinstance(places, list):
             continue
         for entity_fqcn in supports:
-            result.append((str(wf_name), str(entity_fqcn), sorted(str(p) for p in places)))
+            result.append((str(wf_name), str(entity_fqcn), sorted(str(p["name"] if isinstance(p, dict) else p) for p in places)))
     return result
 
 

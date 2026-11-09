@@ -22,9 +22,9 @@ framework:
                 - App\Entity\Role
             initial_marking: draft
             places:
-                - draft
-                - active
-                - archived
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: active, metadata: { tone: success } }
+                - { name: archived, metadata: { tone: neutral } }
             transitions:
                 # Initial publish — a freshly-defined role becomes
                 # available for user assignments.

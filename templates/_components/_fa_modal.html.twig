@@ -67,7 +67,7 @@
     {%- set cooldownSeconds = props.cooldownSeconds ?? 0 -%}
     {%- set formMethod      = props.formMethod ?? 'post' -%}
     {%- set hasTypeConfirm  = props.typeToConfirm is defined and props.typeToConfirm -%}
-    {%- set submitVariant   = tone == 'danger' ? 'danger' : (tone == 'warning' ? 'warning' : (tone == 'success' ? 'primary' : 'primary')) -%}
+    {%- set submitVariant   = tone in ['danger', 'warning'] ? tone : 'primary' -%}
 
     <div id="{{ id }}"
          class="fa-modal fa-modal--confirm fa-modal--{{ tone }}"

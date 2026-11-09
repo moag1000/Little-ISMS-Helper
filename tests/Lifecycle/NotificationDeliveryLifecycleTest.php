@@ -114,7 +114,7 @@ final class NotificationDeliveryLifecycleTest extends TestCase
     #[Test]
     public function yamlDefinesExactlySevenPlaces(): void
     {
-        $places = $this->workflowConfig()['places'];
+        $places = array_column($this->workflowConfig()['places'], 'name');
         $this->assertEqualsCanonicalizing(
             // Six canonical delivery states + pending_digest (F3 email-digest mode).
             ['pending', 'pending_digest', 'sent', 'delivered', 'failed', 'retrying', 'archived'],
