@@ -26,7 +26,10 @@ use Doctrine\ORM\EntityManagerInterface;
  *    organisation is skipped, never updated, moved or deleted;
  *  - references (ManyToOne and ManyToMany) to records of other organisations
  *    are dropped;
- *  - audit-log rows are evidence: never rewritten, never added, never cleared;
+ *  - evidence records (#[EvidenceRecord]: audit log, management decisions, audit freezes,
+ *    SoA snapshots, acknowledgements, approval requests and runs, published versions) are
+ *    never rewritten, never added, never cleared, and evidence fields / lifecycle status of
+ *    other records keep their live value (RestoreEvidencePolicy, S26);
  *  - no privileged role (RoleNames::PRIVILEGED: super admin, impersonation, holding
  *    roles) is granted, neither in User.roles nor through a custom role, and an
  *    existing super admin is never touched;
@@ -47,9 +50,6 @@ final class RestoreTenantGuard
 {
     /** Option key under which RestoreService passes the scope to the writer. */
     public const string OPTION_SCOPE = '_tenant_scope_ids';
-
-    /** Records that are evidence: an existing row is never overwritten by a restore. */
-    private const array IMMUTABLE_ENTITIES = ['AuditLog'];
 
     /**
      * Fields an organisation restore never takes from the file: an existing record keeps
@@ -185,12 +185,13 @@ final class RestoreTenantGuard
     }
 
     /**
-     * Records that are evidence (the audit trail). A scoped restore neither adds, rewrites
-     * nor clears them: added rows would be forged evidence, cleared rows lost evidence.
+     * Records that are evidence as a whole (#[EvidenceRecord]: the audit trail, management
+     * decisions, audit freezes, …). A scoped restore neither adds, rewrites nor clears them:
+     * added rows would be forged evidence, cleared rows lost evidence (S26).
      */
     public static function isEvidence(string $entityName): bool
     {
-        return in_array($entityName, self::IMMUTABLE_ENTITIES, true);
+        return RestoreEvidencePolicy::isEvidenceRecord('App\\Entity\\' . $entityName);
     }
 
     /**
@@ -251,7 +252,7 @@ final class RestoreTenantGuard
         if ($scopeIds === []) {
             return true;
         }
-        if (in_array($entityName, self::IMMUTABLE_ENTITIES, true)) {
+        if (self::isEvidence($entityName)) {
             return false;
         }
         // An account with a privileged role is the instance operator's (or the holding's):

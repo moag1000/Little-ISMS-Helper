@@ -371,6 +371,15 @@ creates or uploads them.
    `.json.gz` without files.
 3. Download, upload, validate, preview and restore run on the same page (`RestoreService`).
 
+An **organisation restore** (an organisation admin, or a super admin who picks an organisation) changes no
+evidence (S26): records that are evidence as a whole (`#[EvidenceRecord]`: audit log, management decisions,
+audit freezes, SoA snapshots, policy acknowledgements, four-eyes requests, approval runs, document versions, …)
+are neither added, overwritten nor cleared; on every other record the step-written fields
+(`#[ApiReadOnlyEvidence]`: approved/reported/closed by and at, risk acceptance, …) and the lifecycle status keep
+their live value, and "clear before restore" keeps the records that carry them. A record the restore creates
+starts without evidence in the workflow's initial status. The restore log names what was not taken. Only an
+**instance restore** by the super admin (no organisation picked) brings evidence back as it is in the file.
+
 Scheduler: `app:backup:create` daily at 02:00, `app:backup:prune` at 02:30 (keeps files of the last 30 days and
 always the 10 newest; `--keep-days`, `--keep-last`). CLI: `app:backup:restore`, `app:backup:repair`.
 

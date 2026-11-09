@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Repository\AccessReviewItemRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -92,9 +93,11 @@ class AccessReviewItem
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'decided_by_id', nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('access review decision action (S26)')]
     private ?User $decidedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('access review decision action (S26)')]
     private ?DateTimeImmutable $decidedAt = null;
 
     /**
