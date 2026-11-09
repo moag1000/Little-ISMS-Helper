@@ -429,7 +429,7 @@ final class EnvironmentWriter
             return $path;
         }
         $target = readlink($path);
-        if ($target === false || $target === '') {
+        if ($target === false) {
             return $path;
         }
 
