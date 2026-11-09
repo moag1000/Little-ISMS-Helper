@@ -40,10 +40,8 @@
    .badge + .bg-{variant} appended ONE final release as BC-tail so
    inline-styling consumers (Bootstrap-spacing utilities etc.) still work.
    Aurora has 6 canonical tones — non-canonical Bootstrap variants
-   (info/secondary/light/dark) collapse to neutral/primary. #}
-{% set faVariant = variant in ['info']                    ? 'primary'
-                : variant in ['secondary','light','dark'] ? 'neutral'
-                : variant %}
+   (info/secondary/light/dark) collapse to neutral/primary (pill_tone_bs). #}
+{% set faVariant = pill_tone_bs(variant) %}
 {% set badgeClasses = ['fa-status-pill', 'fa-status-pill--' ~ faVariant] %}
 {% if size == 'sm' %}
     {% set badgeClasses = badgeClasses|merge(['fa-status-pill--sm']) %}

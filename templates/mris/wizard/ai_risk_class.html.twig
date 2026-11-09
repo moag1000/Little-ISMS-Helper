@@ -80,10 +80,7 @@
                     {% for tool in matrix.tools %}
                         {% set classKey = tool.class|default('minimal')|lower %}
                         {% set badgeVariant =
-                            classKey == 'prohibited' ? 'dark'
-                            : (classKey == 'high' ? 'danger'
-                            : (classKey == 'limited' ? 'warning'
-                            : 'success')) %}
+                            status_tone('ai_act', classKey) %}
                         <tr class="fa-table__row">
                             <td class="fa-table__cell"><strong>{{ tool.tool }}</strong></td>
                             <td class="fa-table__cell">

@@ -100,7 +100,7 @@
                                     link.linkedBy ? link.linkedBy.fullName ?? link.linkedBy.email : null
                                 ]|filter(v => v is not null),
                                 href:    path('app_incident_show', {id: incident.id}),
-                                status:  { variant: incident.status.value == 'closed' ? 'neutral' : 'warning', label: incident.status.value|upper|replace({'_': ' '}) },
+                                status:  { variant: lifecycle_tone('App\\Entity\\Incident', incident.status.value), label: incident.status.value|upper|replace({'_': ' '}) },
                                 compact: true
                             }) }}
                             {% if link.notes %}

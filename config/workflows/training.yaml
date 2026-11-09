@@ -9,11 +9,11 @@ framework:
                 - App\Entity\Training
             initial_marking: planned
             places:
-                - planned
-                - scheduled
-                - in_progress
-                - completed
-                - cancelled
+                - { name: planned, metadata: { tone: primary } }
+                - { name: scheduled, metadata: { tone: primary } }
+                - { name: in_progress, metadata: { tone: primary } }
+                - { name: completed, metadata: { tone: success } }
+                - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 schedule:
                     from: planned

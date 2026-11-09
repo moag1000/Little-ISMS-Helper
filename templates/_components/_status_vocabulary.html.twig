@@ -1,61 +1,25 @@
 {#
- # One status → tone map per vocabulary (UI wave G). Statuses without a
- # lifecycle workflow (workflow instances, consents, import rows, compliance
- # results, coverage levels, protection levels, security zones, requirement
- # results, suggestions) get their pill tone here instead of a local colour map in each
- # template. Lifecycle entities use _fa_status_chip (tone from the registry).
+ # One status → tone map per vocabulary (UI wave G, W7). The tables live in
+ # App\Twig\StatusVocabulary (status words, severity scale, named vocabularies);
+ # statuses without a lifecycle workflow (consents, import rows, compliance
+ # results, coverage, health, async jobs, RAG, …) get their pill tone here
+ # instead of a local colour map or a ternary chain in each template.
+ # Lifecycle entities use _fa_status_chip (tone from the workflow place).
  #
  # Usage:
  #   {% import '_components/_status_vocabulary.html.twig' as _status %}
  #   {{ _status.pill('workflow', instance.status, ('workflow.status.' ~ instance.status)|trans({}, 'workflows')) }}
  #   {{ _status.pill('consent', consent.status, label, { size: 'sm' }) }}
  #
- #   {% set tone = _status.tone('coverage', row.status)|trim %}   (tone name only, e.g. for a card border)
+ #   {% set tone = status_tone('coverage', row.status) %}   (tone name only, e.g. for a card border)
  #
  # Unknown vocabulary or status → neutral. Props are those of _status_pill.
  #}
 {% macro tone(vocabulary, status) %}
-    {% set _tones = {
-        workflow: { pending: 'warning', in_progress: 'primary', approved: 'success', rejected: 'danger', cancelled: 'neutral' },
-        consent: { pending_verification: 'warning', active: 'success', revoked: 'danger' },
-        import_row: { new: 'success', update: 'primary', conflict: 'warning', error: 'danger' },
-        compliance_result: { compliant: 'success', partial: 'warning', in_progress: 'primary', needs_work: 'danger', not_started: 'danger', non_compliant: 'danger' },
-        coverage: { good: 'success', warning: 'warning', danger: 'danger', info: 'primary', na: 'neutral' },
-        protection_level: { very_high: 'danger', high: 'warning', normal: 'primary', low: 'neutral' },
-        security_zone: { public: 'neutral', restricted: 'primary', controlled: 'warning', secure: 'warning', high_security: 'danger' },
-        prototype_assessment: { draft: 'neutral', in_review: 'primary', approved: 'success', rejected: 'danger', expired: 'warning' },
-        import_session: { committed: 'success', preview: 'warning', cancelled: 'neutral' },
-        import_decision: { import: 'success', update: 'primary', merge: 'primary', skip: 'warning', error: 'danger' },
-        governance_model: { hierarchical: 'primary', shared: 'warning' },
-        finding_severity: { major_nc: 'danger', minor_nc: 'warning', observation: 'primary', opportunity: 'success' },
-        confidence: { high: 'success', medium: 'warning', low: 'neutral' },
-        maturity_level: { 0: 'neutral', 1: 'danger', 2: 'warning', 3: 'primary', 4: 'accent', 5: 'success' },
-        person_type: { employee: 'success', contractor: 'primary', visitor: 'warning', vendor: 'primary', auditor: 'danger', consultant: 'primary' },
-        action_item: { open: 'neutral', planned: 'primary', in_progress: 'primary', done: 'success', dismissed: 'neutral' },
-        requirement_result: { not_applicable: 'neutral', not_met: 'danger', partial: 'warning', met: 'success', exceeded: 'success' },
-        suggestion: { pending: 'warning', accepted: 'success', rejected: 'danger', superseded: 'neutral' },
-        notification_delivery: { sent: 'success', delivered: 'success', failed: 'danger', pending: 'warning', retrying: 'warning', archived: 'neutral' },
-        bc_exercise: { planned: 'primary', in_progress: 'warning', completed: 'success', cancelled: 'neutral' },
-        bsi_tier: { basis: 'primary', standard: 'primary', kern: 'danger' },
-        bsi_gap_state: { gedeckt: 'success', partiell: 'warning', iso_offen: 'primary', ungemappt_unbewertet: 'neutral', ungemappt_eigenstaendig: 'neutral' },
-        bsi_trust: { amtlich: 'success', amtlich_gestuetzt: 'success', ki_validiert: 'primary', bestaetigt: 'primary', heuristisch: 'warning' },
-        suggestion_origin: { rule: 'primary', inheritance: 'primary', import: 'neutral', ai: 'accent' },
-        threat: { new: 'primary', analyzing: 'warning', mitigated: 'success', monitoring: 'primary', closed: 'neutral' },
-        data_breach: { draft: 'neutral', under_assessment: 'primary', authority_notified: 'success', subjects_notified: 'success', closed: 'neutral' },
-        dsr: { received: 'neutral', identity_verification: 'primary', in_progress: 'primary', completed: 'success', rejected: 'danger', extended: 'warning' },
-        dpia: { draft: 'neutral', in_review: 'primary', approved: 'success', rejected: 'danger', requires_revision: 'warning' },
-        management_review: { planned: 'warning', in_progress: 'primary', completed: 'success', cancelled: 'neutral', follow_up_required: 'warning' },
-        objective: { not_started: 'warning', in_progress: 'primary', achieved: 'success', delayed: 'danger', cancelled: 'neutral' },
-        certificate: { active: 'success', pending: 'warning', expired: 'danger', revoked: 'danger' },
-        recovery_priority: { immediate: 'danger', high: 'warning', medium: 'primary', low: 'neutral' },
-        kpi_status: { good: 'success', warning: 'warning', danger: 'danger' },
-        escalation: { low: 'primary', medium: 'warning', high: 'warning', critical: 'danger', data_breach: 'danger' },
-    } %}
-    {{- (_tones[vocabulary] ?? {})[status] ?? 'neutral' -}}
+    {{- status_tone(vocabulary, status) -}}
 {% endmacro %}
 
 {% macro pill(vocabulary, status, label, props = {}) %}
-    {% import _self as _vocab %}
     {% import '_components/_status_pill.html.twig' as _pill %}
-    {{ _pill.render(label, _vocab.tone(vocabulary, status)|trim, props) }}
+    {{ _pill.render(label, status_tone(vocabulary, status), props) }}
 {% endmacro %}

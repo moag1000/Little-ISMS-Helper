@@ -16,7 +16,7 @@
 
     {% set severity = diff.severity() %}
     {% set severityLabel = ('policy_wizard.diff.severity_' ~ severity)|trans({}, 'policy_wizard') %}
-    {% set severityVariant = severity == 'major' ? 'danger' : (severity == 'moderate' ? 'warning' : 'info') %}
+    {% set severityVariant = pill_tone_severity(severity) %}
 
     {{ _fa_page_header.render({
         title: 'policy_wizard.diff.title'|trans({}, 'policy_wizard'),
@@ -182,8 +182,7 @@
                     {% endblock %}
                     {% block table_body %}
                         {% for change in diff.variableChanges %}
-                            {% set chipVariant = change.change_type == 'added' ? 'success'
-                                : (change.change_type == 'removed' ? 'danger' : 'warning') %}
+                            {% set chipVariant = status_tone('diff_change', change.change_type) %}
                         <tr>
                             <td><code>{{ change.key }}</code></td>
                             <td>

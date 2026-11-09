@@ -9,10 +9,10 @@ framework:
                 - App\Entity\BCExercise
             initial_marking: planned
             places:
-                - planned
-                - in_progress
-                - completed
-                - cancelled
+                - { name: planned, metadata: { tone: primary } }
+                - { name: in_progress, metadata: { tone: primary } }
+                - { name: completed, metadata: { tone: success } }
+                - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 # ISO 22301 Cl. 8.5 — BC-Exercise als Audit-Evidenz für die
                 # Krisenfähigkeit. `complete` versiegelt die Übungs-Aufzeichnung

@@ -92,7 +92,7 @@ final class InterestedPartyLifecycleTest extends TestCase
     #[Test]
     public function yamlDefinesExactlyFourPlaces(): void
     {
-        $places = $this->workflowConfig()['places'];
+        $places = array_column($this->workflowConfig()['places'], 'name');
         $this->assertEqualsCanonicalizing(
             ['draft', 'active', 'in_review', 'archived'],
             $places,

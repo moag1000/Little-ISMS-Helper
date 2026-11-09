@@ -167,10 +167,7 @@
                                                 : (status == 'amber') ? 'status-warning'
                                                 : (status == 'red') ? 'status-critical'
                                                 : null -%}
-                                {%- set iconTone = (status == 'green') ? 'success'
-                                                 : (status == 'amber') ? 'warning'
-                                                 : (status == 'red') ? 'danger'
-                                                 : 'muted' -%}
+                                {%- set iconTone = icon ? status_tone('rag', status) : 'muted' -%}
                             {%- else -%}
                                 {%- set score   = cell.score|default(0) -%}
                                 {%- set sev     = cell.severity|default(_self._severity(score, scaleTenant)|trim) -%}

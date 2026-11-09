@@ -48,7 +48,7 @@
                         {% include '_components/_badge.html.twig' with { variant: 'info', content: mapping.sourceRequirement.category } %}
                     {% endif %}
                     {% if mapping.sourceRequirement.priority %}
-                        {% include '_components/_badge.html.twig' with { variant: mapping.sourceRequirement.priority == 'critical' ? 'danger' : (mapping.sourceRequirement.priority == 'high' ? 'warning' : 'secondary'), content: mapping.sourceRequirement.priority|upper } %}
+                        {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(mapping.sourceRequirement.priority), content: mapping.sourceRequirement.priority|upper } %}
                     {% endif %}
                 </div>
                 <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
@@ -63,7 +63,7 @@
                         {% include '_components/_badge.html.twig' with { variant: 'info', content: mapping.targetRequirement.category } %}
                     {% endif %}
                     {% if mapping.targetRequirement.priority %}
-                        {% include '_components/_badge.html.twig' with { variant: mapping.targetRequirement.priority == 'critical' ? 'danger' : (mapping.targetRequirement.priority == 'high' ? 'warning' : 'secondary'), content: mapping.targetRequirement.priority|upper } %}
+                        {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(mapping.targetRequirement.priority), content: mapping.targetRequirement.priority|upper } %}
                     {% endif %}
                 </div>
             </div>

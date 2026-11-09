@@ -2,8 +2,8 @@
    Frame. Uses the drawer chrome (header/body/footer/kv) which renders cleanly as
    a flex column; condensed, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'risk_treatment_plan' %}
-{% set status_variant = plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) %}
-{% set priority_variant = plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) %}
+{% set status_variant = lifecycle_tone('App\\Entity\\RiskTreatmentPlan', plan.status) %}
+{% set priority_variant = pill_tone_severity(plan.priority) %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">

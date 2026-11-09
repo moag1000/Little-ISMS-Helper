@@ -29,15 +29,15 @@ framework:
                 - App\Entity\CorrectiveAction
             initial_marking: planned
             places:
-                - planned
-                - in_progress
-                - completed
+                - { name: planned, metadata: { tone: primary } }
+                - { name: in_progress, metadata: { tone: primary } }
+                - { name: completed, metadata: { tone: success } }
                 # NEW intermediate
                 # state — verifier has opened verification but not yet decided.
-                - verified
-                - verified_effective
-                - verified_ineffective
-                - cancelled
+                - { name: verified, metadata: { tone: success } }
+                - { name: verified_effective, metadata: { tone: success } }
+                - { name: verified_ineffective, metadata: { tone: danger } }
+                - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 start:
                     from: planned

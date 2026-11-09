@@ -3,9 +3,7 @@
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
 {% trans_default_domain 'audits' %}
-{% set _statusVariant = finding.status == 'open' ? 'warning'
-    : (finding.done ? 'success'
-    : (finding.status == 'in_progress' ? 'info' : 'secondary')) %}
+{% set _statusVariant = lifecycle_tone('App\\Entity\\AuditFinding', finding.status) %}
 {% set _findingNumber = finding.findingNumber ?? ('#' ~ finding.id) %}
 <tr class="fa-table__row" id="audit-finding-row-{{ finding.id }}"
     data-finding-id="{{ finding.id }}"
@@ -21,9 +19,7 @@
         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('audit_finding.type.' ~ finding.type)|trans({}, 'audits') } %}
     </td>
     <td class="fa-table__cell fa-table__cell--center">
-        {% set _sevVariant = finding.severity == 'critical' ? 'danger'
-            : (finding.severity == 'high' ? 'warning'
-            : (finding.severity == 'medium' ? 'warning' : 'secondary')) %}
+        {% set _sevVariant = pill_tone_severity(finding.severity) %}
         {% include '_components/_badge.html.twig' with { variant: _sevVariant, content: ('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits') } %}
     </td>
     <td class="fa-table__cell fa-table__cell--center">

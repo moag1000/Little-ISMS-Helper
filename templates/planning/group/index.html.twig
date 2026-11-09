@@ -51,7 +51,7 @@
                     <td class="text-center">{{ group.sortOrder }}</td>
                     <td>
                         {% include '_components/_badge.html.twig' with {
-                            variant: group.defaultVisibility == 'all' ? 'info' : 'secondary',
+                            variant: status_tone('visibility', group.defaultVisibility),
                             content: ('planning.visibility.' ~ group.defaultVisibility)|trans({}, 'planning')
                         } %}
                     </td>

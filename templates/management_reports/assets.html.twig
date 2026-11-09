@@ -145,7 +145,7 @@
                             {% set code = (asset.dataClassification ?? '')|lower %}
                             {% set is_known = code in ['public','internal','confidential','restricted'] %}
                             {% set label = is_known ? ('asset.classification.' ~ code)|trans({}, 'asset') : ('management_reports.assets.no_classification'|trans({}, 'management_reports')) %}
-                            {% set variant = (code in ['confidential','restricted']) ? 'danger' : (code == 'internal' ? 'warning' : (code == 'public' ? 'success' : 'secondary')) %}
+                            {% set variant = pill_tone_classification(code) %}
                             {% include '_components/_badge.html.twig' with { variant: variant, content: label } %}
                         </td>
                         <td class="fa-table__cell">{{ asset.effectiveOwner ?? '—' }}</td>

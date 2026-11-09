@@ -108,7 +108,7 @@
 
     {# Sidebar: Approval Level Information #}
     <div class="col-lg-4">
-        {% set approval_variant = required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') %}
+        {% set approval_variant = status_tone('approval_level', required_level) %}
         {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ approval_variant } %}
             {% block card_header %}
                 <div class="card-header">
