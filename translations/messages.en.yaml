@@ -1573,6 +1573,7 @@ workflow:
 security:
     error:
         saml_login_error: 'SAML login error'
+        azure_login_error: 'Azure sign-in not available'
         saml_logout_error: 'SAML logout error'
     csrf_token_invalid: 'Invalid CSRF token - please reload the page'
     url:

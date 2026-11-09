@@ -1736,6 +1736,7 @@ workflow:
 security:
     error:
         saml_login_error: SAML-Anmeldefehler
+        azure_login_error: Azure-Anmeldung nicht verfügbar
         saml_logout_error: SAML-Abmeldefehler
     csrf_token_invalid: 'Ungültiges CSRF-Token - bitte laden Sie die Seite neu'
     url:
