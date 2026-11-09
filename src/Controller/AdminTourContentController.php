@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\GuidedTourStepOverride;
-use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\GuidedTourStepOverrideRepository;
 use App\Service\GuidedTourService;
@@ -223,7 +222,7 @@ class AdminTourContentController extends AbstractController
      * (e.g. after their organisation was deleted) must not write them — only a
      * SUPER_ADMIN may (S25).
      */
-    private function writableTenant(): ?Tenant
+    private function writableTenant(): ?\App\Entity\Tenant
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null && !$this->isGranted('ROLE_SUPER_ADMIN')) {

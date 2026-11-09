@@ -126,7 +126,8 @@ final class SsoWizardController extends AbstractController
         }
 
         // The URL the IdP must register = the one SsoController sends (DEFAULT_URI).
-        $callbackUrl = $this->publicUrls->generate('app_sso_callback', ['slug' => $provider->getSlug() ?: '{slug}']);
+        $slug = $provider->getSlug() ?: '{slug}';
+        $callbackUrl = $this->publicUrls->generate('app_sso_callback', ['slug' => $slug]);
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
@@ -187,7 +188,8 @@ final class SsoWizardController extends AbstractController
         }
 
         // The URL the IdP must register = the one SsoController sends (DEFAULT_URI).
-        $callbackUrl = $this->publicUrls->generate('app_sso_callback', ['slug' => $provider->getSlug() ?: '{slug}']);
+        $slug = $provider->getSlug() ?: '{slug}';
+        $callbackUrl = $this->publicUrls->generate('app_sso_callback', ['slug' => $slug]);
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY

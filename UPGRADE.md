@@ -187,6 +187,13 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Logos aus ZIP-Sicherungen landen jetzt dort, wo der Datensatz sie sucht (`public/uploads/tenants/`).
   Der Setup-Assistent gilt als abgeschlossen, sobald ein Konto existiert, auch ohne
   `var/setup_complete.lock` (die Datei wird dann neu geschrieben). Kein Handlungsbedarf.
+- **Öffentliche Wege (S25):** Alle Seiten ohne Anmeldung sind je IP gedrosselt: Probes
+  (`/health`, `/readyz`, `/metrics`) 120 Aufrufe pro Minute, SSO/SAML/OAuth 300, Quick-Fix 120,
+  Trust Center und Lieferantenfragebogen wie bisher 60; darüber antwortet die Seite 429. Ein Monitor,
+  der öfter als alle halbe Sekunde prüft, muss langsamer werden. Logo und Profilbild nehmen nur noch
+  Bilder (JPG, PNG, GIF, WebP); bereits hochgeladene Dateien bleiben. PDFs lesen lokale Dateien nur noch
+  aus `public/` — Logos in Richtlinien-PDFs erscheinen dadurch jetzt, vorher fehlten sie. Globale
+  Tour-Texte ändert nur der Super-Admin. Kein Handlungsbedarf.
 - **Exporte** und Downloads verlangen überall eine Rolle (`#[IsGranted]`), auch die
   Compliance-Exporte. Geplante Berichte bieten nur Berichtsarten aktiver Module an.
 - **Einstellungen ohne Wirkung entfernt** (`Version20261109093000_DropUnusedAdminSettings` löscht die
@@ -254,6 +261,11 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 ### SSO (Azure, SAML, OIDC)
 
 - `DEFAULT_URI` muss die öffentliche Adresse tragen, sonst bricht SAML ab (Entity-ID `<DEFAULT_URI>/saml/metadata`).
+  Seit S25 gilt das auch für OIDC: die `redirect_uri` ist `<DEFAULT_URI>/sso/<slug>/callback` (der
+  SSO-Assistent zeigt sie so an). Steht beim Anbieter eine andere Adresse (z. B. mit internem
+  Hostnamen), dort die angezeigte eintragen.
+- `/de/saml/*` (Metadaten, ACS) und `/de/oauth/azure/*` sind jetzt ohne Anmeldung erreichbar; vorher
+  leitete die Sicherheitsregel auf die Anmeldeseite um (die Regel nannte Pfade ohne Sprachpräfix).
 - IdP-initiierte SAML-Anmeldung („Meine Apps“-Kachel) wird abgewiesen; Anmeldung über den SAML-Knopf.
 - Azure (env): `AZURE_TENANT_ID` muss eine GUID sein oder `AZURE_ALLOWED_TENANT_IDS` gesetzt.
   E-Mail-Verknüpfung ist standardmäßig aus und braucht den Claim `xms_edov`.

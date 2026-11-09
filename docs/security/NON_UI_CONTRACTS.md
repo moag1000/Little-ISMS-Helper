@@ -116,6 +116,17 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Ein globales Framework löscht (Kaskade über alle Organisationen) nur der Super-Admin (`ADMIN_GLOBAL_OP`) | `tests/Security/InstanceOperatorOnlyTest` |
 | Nachweisdateien (Dokumente, Versionen, Schulungsmaterial) liegen unter `var/uploads`, nie unter `public/`; Download nur über eine voter-geprüfte, protokollierte Aktion | `tests/Service/Upload/ProtectedUploadsTest`, `tests/Controller/TrainingMaterialDownloadTest`, `tests/Security/EvidenceOutsideWebRootTest` |
 
+## Öffentliche Wege (S25)
+
+| Invariante | Beleg |
+|---|---|
+| Welche Routen ohne Anmeldung erreichbar sind, steht fest: erste passende `access_control`-Regel `PUBLIC_ACCESS` (oder keine) und kein `#[IsGranted]` mit Rolle am Controller. Jede solche Route steht mit ihrem Schutz (Token, QuickFixGuard, Probe, Anmeldeverfahren) in der Liste; der Setup-Assistent zählt über `SETUP_ACCESS`. Eine `PUBLIC_ACCESS`-Regel, die keine Route trifft, ist rot (so lagen `/de/saml/*` und `/de/oauth/*` hinter der Anmeldung) | `tests/Security/PublicRoutesInventoryTest` |
+| Jede öffentliche Route ist je IP gedrosselt: Token-Seiten 60/min, Probes 120/min, SSO/SAML/OAuth 300/min, Quick-Fix 120/min (`PublicPathRateLimitSubscriber`), Anmeldung über `login_throttling`, MCP über das API-Limit; ein unbekanntes Token antwortet 404 | `PublicRoutesInventoryTest::everyAnonymousRouteIsThrottled`, `…unknownBearerTokensAnswerNotFound`, `tests/EventSubscriber/PublicPathRateLimitSubscriberTest` |
+| Jedes PDF entsteht in `App\Service\Pdf\PdfRenderer`: kein Netz (nur `data:`/`file:`), kein Inline-PHP, kein PDF-JavaScript, lokale Dateien nur unter `public/` — wiederhergestelltes Branding-HTML oder Berichtsstile lesen weder `.env.local` noch `var/`; kein `new Dompdf`/`new Options` außerhalb | `tests/Security/DompdfOptionsContractTest` |
+| Logo und Profilbild nehmen nur Bilder an (jpg/jpeg/png/gif/webp, Signatur geprüft), weil sie ohne Anmeldung aus `public/uploads` ausgeliefert werden (`FileUploadSecurityService::PROFILE_IMAGE`) | `tests/Service/FileUploadSecurityServiceTest::imageProfileAcceptsImagesOnly` |
+| Globale Tour-Texte (Zeilen ohne Organisation) schreibt nur der Super-Admin, auch ein Admin ohne Organisation nicht | `tests/Controller/Admin/TourContentGlobalScopeTest` |
+| Die OIDC-`redirect_uri` (Start, Callback, Anzeige im SSO-Assistenten) kommt aus `DEFAULT_URI`, nie aus dem Host-Header | `tests/Security/PublicLinksFromDefaultUriTest` (SSO-Dateien nicht mehr ausgenommen) |
+
 ## Exporte und abgeleitete Werte
 
 | Invariante | Beleg |
