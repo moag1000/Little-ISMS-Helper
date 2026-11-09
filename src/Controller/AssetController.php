@@ -513,7 +513,7 @@ class AssetController extends AbstractController
     }
     #[Route('/asset/{id}/delete', name: 'app_asset_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, int $id): Response
+    public function delete(Request $request, int $id, \App\Lifecycle\DeletionPolicy $deletionPolicy): Response
     {
         // Bypass the tenant filter so inherited-from-parent-tenant assets are
         // also visible to this action; the inheritance check below decides
@@ -542,8 +542,8 @@ class AssetController extends AbstractController
             return $this->redirectToRoute('app_asset_index');
         }
 
-        if (\App\Lifecycle\DeletionPolicy::refusal($asset) !== null) { // way out: retire → dispose (4 eyes)
-            $this->addFlash('warning', 'lifecycle.errors.delete_needs_end_state');
+        if (($refusal = $deletionPolicy->refusal($asset)) !== null) { // retire → dispose (4 eyes), then kept
+            $this->addFlash('warning', $this->translator->trans($refusal->translationKey, $refusal->parameters, 'lifecycle'));
         } elseif ($this->isCsrfTokenValid('delete'.$asset->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($asset);
             $this->entityManager->flush();

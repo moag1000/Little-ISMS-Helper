@@ -51,7 +51,7 @@ class DoraSubcontractor
      * yields the whole chain for a given supplier.
      */
     #[ORM\ManyToOne(targetEntity: Supplier::class, inversedBy: 'subcontractors')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'dora_subcontractor.validation.parent_supplier_required')]
     private ?Supplier $parentSupplier = null;
 

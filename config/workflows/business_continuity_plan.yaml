@@ -12,7 +12,7 @@ framework:
                 - { name: draft, metadata: { tone: neutral } }
                 - { name: under_review, metadata: { tone: primary } }
                 - { name: active, metadata: { tone: success } }
-                - { name: archived, metadata: { tone: neutral } }
+                - { name: archived, metadata: { tone: neutral, end_state: true } }
             transitions:
                 submit_for_review:
                     from: draft

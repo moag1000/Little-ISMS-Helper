@@ -72,7 +72,7 @@ Auf `/quick-fix`:
 |---|---|
 | **Orphans zuordnen** | Ordnet Datensaetze ohne Organisation einer Organisation zu (nur bei genau einer Organisation, siehe unten) |
 | **Tenant-Mismatches korrigieren** | Setzt `tenant_id` auf Basis des Elternobjekts (Asset → Risk-Link etc.) |
-| **Duplikate zusammenfuehren** | Fasst identische Eintraege (gleicher Name + gleiche Organisation) zusammen; behaelt den aeltesten Datensatz |
+| **Duplikate** | Zaehlt Eintraege mit gleichem Schluessel (Titel, Name, Nummer, Dateiname) je Organisation. Seit S29 nur ein Bericht: gleicher Titel heisst nicht doppelt (zwei Vorfaelle "Phishing" sind zwei Vorfaelle). Pruefen unter Admin → Datenreparatur → Duplikate, dann ueber den Datensatz archivieren oder loeschen; Nachweise bleiben (DeletionPolicy). |
 
 Weitere Pruefungen unter **Admin → Datenreparatur** (`/admin/data-repair`):
 
@@ -139,7 +139,7 @@ Fuehrt in dieser Reihenfolge aus, jeden Schritt mit eigenem Audit-Eintrag:
 
 1. Orphans zuordnen (nur mit genau einer Organisation, siehe oben)
 2. Tenant-Mismatches korrigieren
-3. Duplikate zusammenfuehren (alle unterstuetzten Typen)
+3. Duplikate zaehlen (nur Bericht, nichts wird geloescht)
 
 Migrationen und Schema-Reconcile sind nicht Teil dieses Buttons (Punkte 1 und 2).
 
@@ -258,7 +258,7 @@ Guard die Proxy-IP.
 
 Reparaturen und Phantom-Markierungen schreiben Audit-Eintraege mit Aktionen
 `quick_fix.*` (z. B. `quick_fix.repair.orphan_assigned`,
-`quick_fix.repair.tenant_mismatch_fixed`, `quick_fix.repair.duplicates_merged`,
+`quick_fix.repair.tenant_mismatch_fixed`,
 `quick_fix.force_mark_migration_executed`). Filter: Admin → Audit-Log
 (`/admin/audit-log?action=quick_fix.repair.orphan_assigned`).
 

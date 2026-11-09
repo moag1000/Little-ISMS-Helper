@@ -10,7 +10,6 @@ use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Service\DataIntegrity\DuplicateFinder;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -19,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 #[AllowMockObjectsWithoutExpectations]
 final class DuplicateFinderTest extends TestCase
 {
-    private MockObject $entityManager;
     private MockObject $auditRepository;
     private MockObject $assetRepository;
     private MockObject $riskRepository;
@@ -29,7 +27,6 @@ final class DuplicateFinderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->entityManager      = $this->createMock(EntityManagerInterface::class);
         $this->auditRepository    = $this->createMock(InternalAuditRepository::class);
         $this->assetRepository    = $this->createMock(AssetRepository::class);
         $this->riskRepository     = $this->createMock(RiskRepository::class);
@@ -37,7 +34,6 @@ final class DuplicateFinderTest extends TestCase
         $this->documentRepository = $this->createMock(DocumentRepository::class);
 
         $this->finder = new DuplicateFinder(
-            $this->entityManager,
             $this->auditRepository,
             $this->assetRepository,
             $this->riskRepository,
@@ -98,20 +94,6 @@ final class DuplicateFinderTest extends TestCase
         $result = $this->finder->findDuplicateEntities();
 
         self::assertArrayNotHasKey('assets', $result);
-    }
-
-    #[Test]
-    public function merge_duplicates_returns_zero_when_no_duplicates(): void
-    {
-        $this->auditRepository->method('findAll')->willReturn([]);
-        $this->assetRepository->method('findAll')->willReturn([]);
-        $this->riskRepository->method('findAll')->willReturn([]);
-        $this->incidentRepository->method('findAll')->willReturn([]);
-        $this->documentRepository->method('findAll')->willReturn([]);
-
-        $deleted = $this->finder->mergeDuplicates('audits');
-
-        self::assertSame(0, $deleted);
     }
 
     // ────────────────────────────────────────────────────────────────────────

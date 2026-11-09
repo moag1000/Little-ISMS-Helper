@@ -57,11 +57,11 @@ class PolicyAcknowledgement
     private ?Tenant $tenant = null;
 
     #[ORM\ManyToOne(targetEntity: Document::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Document $document = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     /**

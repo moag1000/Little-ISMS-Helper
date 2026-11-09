@@ -16,7 +16,7 @@ eine Handlung verlangt oder Verhalten bricht.
 
 ## Nach 3.16.1 (nächstes Release)
 
-34 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
+35 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
 werden Personen (`Version20261108100000_OwnerTextToPersons`, danach entfallen die Textspalten),
 Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`);
 `Version20261109020000_DropWorkflowStepOverlays` löscht die nie angewendeten Schritt-Overrides
@@ -85,6 +85,11 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Personen prüfen:** Einen Freitext-Verantwortlichen ohne passenden Benutzer oder Person legt die
   Migration als neue Person an. Die Personenliste auf Dubletten durchsehen.
 
+- **Nachweis-Fremdschlüssel (S29):** `Version20261109200000_EvidenceForeignKeysRestrict` (Quick-Fix
+  „Ausstehende Migrationen anwenden“) stellt 22 Fremdschlüssel von `ON DELETE CASCADE` auf RESTRICT um
+  (Feststellungen am Audit, Teilnahmen, Kenntnisnahmen, Dokumentversionen, Behandlungspläne am Risiko u. a.).
+  Daten ändern sich nicht.
+
 ### Geänderte Schnittstellen (BREAKING)
 
 - **REST-API und MCP:** Die alten Freitextfelder für Verantwortliche gibt es nicht mehr; Clients
@@ -114,6 +119,22 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Geändertes Verhalten
 
+- **Nachweise bleiben (S29):** Ein Datensatz in einem Endzustand (Audit berichtet/abgeschlossen, Vorfall
+  gelöst/geschlossen, Datenpanne gemeldet, Risiko behandelt/akzeptiert, Dokument freigegeben/veröffentlicht,
+  Schulung abgeschlossen …) lässt sich nicht mehr löschen — weder einzeln noch per Massenlöschung, REST oder
+  Assistent; er wird archiviert. Ebenso ein Datensatz, auf den ein Nachweis zeigt (z. B. Risiko mit
+  Behandlungsplan): die Meldung nennt den Grund, die API antwortet 422.
+- **Benutzer löschen = anonymisieren (S29):** Ein Konto, auf das Kommentare, Teilnahmen, Kenntnisnahmen oder
+  Freigaben zeigen, wird anonymisiert („Anonymisiert #id“, inaktiv, ohne Rollen, E-Mail, Telefon, Bild,
+  SSO-Kennung); die Nachweise bleiben. Nur ein Konto ohne Spuren verschwindet ganz.
+- **Mindestaufbewahrung (S29):** Admin > Aufbewahrung nimmt keine kürzeren Fristen mehr an: Vorfälle, Risiken,
+  Feststellungen, Dokumente und Freigabeläufe 3 Jahre, Assets und VVT 1 Jahr. Kürzere gespeicherte Werte gelten
+  ab sofort als diese Untergrenze (0 = unbegrenzt bleibt). Datensätze mit Nachweis-Kindern bleiben stehen.
+- **Dubletten nur noch Bericht (S29):** Quick-Fix und Datenreparatur führen Dubletten nicht mehr automatisch
+  zusammen; sie listen sie zur Prüfung, Bereinigung von Hand.
+- **Weitere Rechte (S29):** Massenlöschen von BC-Übungen, BC-Plänen, Änderungsanträgen und Bedrohungsmeldungen
+  nur Admin; ein archiviertes Dokument wiederherstellen braucht vier Augen; einen Kommentar löscht nur ein
+  Admin, mit Grund.
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
   `auto_action` auf `ROLE_USER` — jede angemeldete Person hätte eine Richtlinie abschließend freigeben können.
   Er ist jetzt ein Benachrichtigungsschritt (läuft von selbst durch, informiert die Manager). Bestehende Zeilen

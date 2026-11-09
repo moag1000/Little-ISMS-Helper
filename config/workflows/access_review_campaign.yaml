@@ -16,7 +16,7 @@ framework:
             initial_marking: open
             places:
                 - { name: open, metadata: { tone: warning } }
-                - { name: closed, metadata: { tone: neutral } }
+                - { name: closed, metadata: { tone: neutral, end_state: true } }
             transitions:
                 close:
                     from: open

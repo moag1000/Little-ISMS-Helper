@@ -10,10 +10,10 @@ framework:
             initial_marking: pending_verification
             places:
                 - { name: pending_verification, metadata: { tone: warning } }
-                - { name: active, metadata: { tone: success } }
-                - { name: revoked, metadata: { tone: danger } }
-                - { name: expired, metadata: { tone: danger } }
-                - { name: rejected, metadata: { tone: danger } }
+                - { name: active, metadata: { tone: success, end_state: true } }
+                - { name: revoked, metadata: { tone: danger, end_state: true } }
+                - { name: expired, metadata: { tone: danger, end_state: true } }
+                - { name: rejected, metadata: { tone: danger, end_state: true } }
             transitions:
                 verify:
                     from: pending_verification

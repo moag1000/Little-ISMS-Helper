@@ -31,12 +31,12 @@ framework:
             places:
                 - { name: planned, metadata: { tone: primary } }
                 - { name: in_progress, metadata: { tone: primary } }
-                - { name: completed, metadata: { tone: success } }
+                - { name: completed, metadata: { tone: success, end_state: true } }
                 # NEW intermediate
                 # state — verifier has opened verification but not yet decided.
-                - { name: verified, metadata: { tone: success } }
-                - { name: verified_effective, metadata: { tone: success } }
-                - { name: verified_ineffective, metadata: { tone: danger } }
+                - { name: verified, metadata: { tone: success, end_state: true } }
+                - { name: verified_effective, metadata: { tone: success, end_state: true } }
+                - { name: verified_ineffective, metadata: { tone: danger, end_state: true } }
                 - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 start:

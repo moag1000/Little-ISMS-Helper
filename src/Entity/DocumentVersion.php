@@ -41,7 +41,7 @@ class DocumentVersion
      * Parent document this version belongs to.
      */
     #[ORM\ManyToOne(targetEntity: Document::class, inversedBy: 'versions')]
-    #[ORM\JoinColumn(name: 'document_id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'document_id', nullable: false)]
     private ?Document $document = null;
 
     /**

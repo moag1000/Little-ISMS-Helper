@@ -71,7 +71,7 @@ class AuditFinding
      * ISO 27001 10.2 does not tie a nonconformity to an audit).
      */
     #[ORM\ManyToOne(targetEntity: InternalAudit::class, inversedBy: 'structuredFindings')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?InternalAudit $audit = null;
 
     #[ORM\Column(length: 50)]
@@ -181,7 +181,7 @@ class AuditFinding
     private ?DateTimeInterface $closedAt = null;
 
     /** @var Collection<int, CorrectiveAction> */
-    #[ORM\OneToMany(targetEntity: CorrectiveAction::class, mappedBy: 'finding', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: CorrectiveAction::class, mappedBy: 'finding', cascade: ['persist'])] // S29: kept with the finding
     private Collection $correctiveActions;
 
     /**

@@ -1580,6 +1580,7 @@ user:
         imported: Users imported
         updated: User updated
         deleted: User deleted
+        anonymised: User anonymised, evidence kept.
         activated: User activated
         deactivated: User deactivated
     error:
@@ -1588,7 +1589,6 @@ user:
         cannot_deactivate_initial_admin: 'The initial administrator cannot be deactivated'
         cannot_remove_admin_role_from_initial_admin: 'The administrator role cannot be removed from the initial administrator'
         cannot_delete_initial_admin: 'The initial administrator cannot be deleted'
-        delete_referenced: 'The user is still referenced by other records and cannot be deleted. Deactivate the user instead'
     info:
         bulk_skipped_initial_admin: 'Initial administrator was skipped'
         bulk_skipped_current_user: 'Current user was skipped'
@@ -2286,6 +2286,12 @@ comments:
     label: 'Comment'
     placeholder: 'Write a comment...'
     submit: 'Send'
+    delete:
+        summary: 'Remove comment'
+        reason: 'Reason (logged; the text is not)'
+        submit: 'Remove'
+        done: 'Comment removed.'
+        reason_required: 'Not removed. A reason is required.'
 
 # SSO admin / approvals UI
 sso:

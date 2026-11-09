@@ -240,7 +240,7 @@ user:
     modal:
         delete_user: 'Delete User'
         delete_confirm: 'Do you really want to delete user <strong>%name%</strong>?'
-        delete_warning: 'Warning: This action cannot be undone.'
+        delete_warning: 'Cannot be undone. Name, e-mail, SSO identifier and contact data are erased (GDPR Art. 17); acknowledgements, training participations, comments and approvals stay with an anonymous author.'
         impersonate_confirm: 'Impersonate %name%? All actions are performed as this user and are logged.'
     confirm:
         delete: 'Do you really want to delete user %name%?'

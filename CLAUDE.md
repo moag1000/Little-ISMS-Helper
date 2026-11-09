@@ -903,9 +903,17 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Privacy exports (VVT, DSFA, breach, DSR, consent) carry
-      `#[IsGranted(new Expression(PrivacyExportAccess::RULE))]`; a record with an end state is deleted only via
-      `DeletionPolicy::refusal()` (asset: disposed); evidence fields (`#[ApiReadOnlyEvidence]`) are kept on
+      `#[IsGranted(new Expression(PrivacyExportAccess::RULE))]`; evidence fields (`#[ApiReadOnlyEvidence]`) are kept on
       import updates (`EvidenceFieldFilter::forUpdate()`).
+- [ ] Deletion (S29, Gate 100): a record in an end state (`end_state: true` on the place in
+      `config/workflows/<entity>.yaml`) is archived, never deleted; a record evidence points at (owning to-one of an
+      evidence class) is refused with a reason. `Lifecycle\DeletionPolicy::refusal()` is the one rule — UI, bulk, REST,
+      MCP and data repair ask it, `EventListener\DeletionGuard` enforces it on flush for every logged-in request.
+      Evidence children use RESTRICT, never CASCADE / `orphanRemoval`. A person is erased only via
+      `User\UserErasure` (anonymised, evidence keeps its author; only `PERSONAL_SETTINGS` cascade). Retention never
+      goes below `RetentionEnforcementService::MIN_RETENTION_DAYS`. Duplicates are reported, never merged. Comments
+      are deleted only by an admin with a reason (`Comment\CommentDeletion`). `tests/Lifecycle/EndStateDeletionContractTest`,
+      `tests/Service/User/UserErasureTest`.
 - [ ] Sensitive data excluded from audit logs
 - [ ] Non-UI paths (REST, MCP, restore, exports, jobs) are covered by contract tests that discover every
       resource/tool themselves (`tests/Contract/`, list in `docs/security/NON_UI_CONTRACTS.md`); a route that reads

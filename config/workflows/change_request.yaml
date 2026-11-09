@@ -12,12 +12,12 @@ framework:
                 - { name: draft, metadata: { tone: neutral } }
                 - { name: submitted, metadata: { tone: warning } }
                 - { name: under_review, metadata: { tone: primary } }
-                - { name: approved, metadata: { tone: success } }
-                - { name: rejected, metadata: { tone: danger } }
-                - { name: scheduled, metadata: { tone: primary } }
-                - { name: implemented, metadata: { tone: success } }
-                - { name: verified, metadata: { tone: success } }
-                - { name: closed, metadata: { tone: neutral } }
+                - { name: approved, metadata: { tone: success, end_state: true } }
+                - { name: rejected, metadata: { tone: danger, end_state: true } }
+                - { name: scheduled, metadata: { tone: primary, end_state: true } }
+                - { name: implemented, metadata: { tone: success, end_state: true } }
+                - { name: verified, metadata: { tone: success, end_state: true } }
+                - { name: closed, metadata: { tone: neutral, end_state: true } }
                 - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 # ISO 27001 A.8.32 — Change-Management. Approve, Implemented und

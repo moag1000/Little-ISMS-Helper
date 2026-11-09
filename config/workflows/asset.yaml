@@ -11,6 +11,11 @@ framework:
             supports:
                 - App\Entity\Asset
             initial_marking: draft
+            # S29: an asset leaves the inventory through retire → dispose (four eyes,
+            # ISO 27001 A.5.11 / A.7.14) and then stays as disposal evidence (end_state).
+            # A plain delete is only a correction of a record created less than 24 h ago.
+            metadata:
+                delete_only_within_hours: 24
             places:
                 - { name: draft, metadata: { tone: neutral } }
                 - { name: active, metadata: { tone: success } }
@@ -18,7 +23,7 @@ framework:
                 - { name: in_use, metadata: { tone: success } }
                 - { name: returned, metadata: { tone: neutral } }
                 - { name: retired, metadata: { tone: neutral } }
-                - { name: disposed, metadata: { tone: neutral } }
+                - { name: disposed, metadata: { tone: neutral, end_state: true } }
             transitions:
                 activate:
                     from: draft

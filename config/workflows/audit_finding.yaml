@@ -12,8 +12,8 @@ framework:
                 - { name: open, metadata: { tone: warning } }
                 - { name: in_progress, metadata: { tone: primary } }
                 - { name: resolved, metadata: { tone: success } }
-                - { name: verified, metadata: { tone: success } }
-                - { name: closed, metadata: { tone: neutral } }
+                - { name: verified, metadata: { tone: success, end_state: true } }
+                - { name: closed, metadata: { tone: neutral, end_state: true } }
             transitions:
                 start:
                     from: open

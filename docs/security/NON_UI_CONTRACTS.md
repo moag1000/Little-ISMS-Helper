@@ -64,7 +64,6 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Gespeicherte JSON-Bodies (Dashboard-Layout, Berichtsdefinition) sind größen- und tiefenbegrenzt | `DashboardLayoutController::MAX_LAYOUT_BYTES`, `ReportBuilderController::MAX_SAVE_BYTES` |
 | Ein Import, der bestehende Datensätze aktualisiert (auch Delta-Import), überschreibt keine Nachweisfelder (`EvidenceFieldFilter::forUpdate()`); ein neu angelegter Datensatz bringt auch keine mit (`forCreate()`, S11) — nur `importable` markierte Ist-Werte wie der Umsetzungsstand eines Controls | `tests/Service/Import/EvidenceFieldFilterTest` |
 | Der Umsetzungsstand eines Controls (`implementationStatus`, `implementationPercentage`) speist die Erfüllung und ist über REST/MCP nur lesbar | `ApiResourceContractTest::approvalEvidenceIsNotWritableOverTheApi`, `EvidenceFieldFilterTest::theImplementationStatusIsApiReadOnlyButImportable` |
-| Ein Asset wird nur im Endzustand `disposed` gelöscht (oder in den ersten 24 h als Korrektur) — Formular, Massenlöschung und API (`DeletionPolicy::refusal()`) | `tests/Lifecycle/DeletionPolicyTest` |
 | Prüferrollen ändern nichts im Audit-Bereich außer Checkliste, Feststellungen, Arbeitsmappe und Berichtseinreichung; der AVV-Picker braucht Manager | `tests/EventSubscriber/ReadOnlyRoleSubscriberTest` |
 | Maschinenprotokolle (Krypto-Operationen, Zutrittslog) schreibt über die API nur ein Admin | `ApiTenantVoter::WRITE_ROLES`, `tests/Api/ApiWriteRoleParityTest` |
 | Freigabe- und Meldenachweise (`#[ApiReadOnlyEvidence]`) sind über die API nicht schreibbar | `ApiResourceContractTest::approvalEvidenceIsNotWritableOverTheApi` |
@@ -108,7 +107,6 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Instanzbetrieb (Schema-Update der gemeinsamen Datenbank, composer, Cache, Logs löschen, Fehlerlog aller Organisationen, Performance) nur für den Super-Admin: die Instanz-Berechtigungen (`PermissionVoter::instancePermissions()`: MONITORING_*, BACKUP_RESTORE) gibt weder die ROLE_ADMIN-Rückfallregel noch eine eigene Rolle (S13) | `tests/Security/InstanceScopeRoutesTest::instanceOperationsNeedTheSuperAdmin` (jede Route unter /admin/monitoring und jede mit Instanz-Service), `PermissionVoterTest::testInstancePermissionsAreSuperAdminOnly` |
 | Quick-Fix lässt geteilte Zeilen ohne Organisation in Ruhe | `tests/Controller/QuickFixControllerTest`, `tests/Service/DataIntegrity/OrphanFinderTest` |
 | Identitätswechsel nur auf Konten mit weniger Rechten | `tests/Security/Voter/SwitchUserVoterTest` |
-| Aufbewahrung löscht nur Datensätze im Endzustand, und die Frist läuft ab Abschluss bzw. letzter Änderung (Abschlussfelder, `updatedAt`, letzte Audit-Zeile), nicht ab Anlage | `tests/Service/RetentionEnforcementServiceTest` |
 | Eine Instanz-Wiederherstellung glaubt `metadata.tenant_scope` der Datei nicht: nur Organisationen im aktuellen Baum der ersten genannten (oder hier unbekannte) — eine präparierte Liste leert keine fremde Organisation | `tests/Service/Restore/RestoreDataPurgerTest::a_recorded_scope_is_cut_to_the_roots_tree` |
 | ZIP-Sicherungen tragen jede Nachweis-Ablage (`ProtectedUploads::AREAS`, auch Schulungsmaterial); der Verwaist-Scan sieht `var/uploads/<Bereich>` und kennt Schulungsmaterial, damit es nicht in Quarantäne geht | `BackupArchiveExtractionTest::everyProtectedUploadAreaIsBackedUp`, `tests/Service/DataIntegrity/UploadOrphanCheckerTest` |
 | Wiederhergestellte Freigabe- und Nachweisfelder werden je Typ als `restore.evidence`-Batch protokolliert (Herkunft sichtbar); das Admin-Passwort der Wiederherstellung trifft nie „den ersten Nutzer“ | `tests/Service/Restore/RestoredEvidenceTrailTest` |
@@ -120,6 +118,23 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Eine Wiederherstellung nimmt nur Entitäten des Sicherungsformats an (`BackupService::restorableEntityNames()`), fremde Namen wie `ApiToken` werden mit Warnung verworfen | `tests/Service/RestoreForeignEntityTest` |
 | Ein globales Framework löscht (Kaskade über alle Organisationen) nur der Super-Admin (`ADMIN_GLOBAL_OP`) | `tests/Security/InstanceOperatorOnlyTest` |
 | Nachweisdateien (Dokumente, Versionen, Schulungsmaterial) liegen unter `var/uploads`, nie unter `public/`; Download nur über eine voter-geprüfte, protokollierte Aktion | `tests/Service/Upload/ProtectedUploadsTest`, `tests/Controller/TrainingMaterialDownloadTest`, `tests/Security/EvidenceOutsideWebRootTest` |
+
+## Löschvertrag (S29)
+
+Ein Nachweis bleibt. Was abgeschlossen ist, wird archiviert, nicht gelöscht (ISO 27001 7.5.3, DSGVO Art. 5(2)).
+
+| Invariante | Beleg |
+|---|---|
+| Ein Datensatz in einem Endzustand (`end_state: true` am Ort in `config/workflows/<entität>.yaml`) wird nicht gelöscht — Formular, Massenlöschung, REST, MCP und Datenreparatur fragen `DeletionPolicy::refusal()`, `DeletionGuard` (onFlush) fängt jeden anderen Weg einer angemeldeten Person; die Ablehnung nennt den Grund (HTML: Hinweis, API: 422). Jeder Ort, dessen Name nach Nachweis klingt (reported, closed, notified, approved …), ist markiert oder mit Grund ausgenommen | Gate 100 `tests/Lifecycle/EndStateDeletionContractTest` (liest jede Workflow-YAML), `tests/Lifecycle/DeletionPolicyTest` |
+| Ein Asset wird nur im Endzustand `disposed` aufbewahrt, sonst nur in den ersten 24 h als Korrektur gelöscht (`delete_only_within_hours`) | `tests/Lifecycle/DeletionPolicyTest` |
+| Ein Datensatz, auf den ein Nachweis zeigt (Behandlungsplan, Feststellung, Teilnahme, Kenntnisnahme, Version, Risiko-Vorfall-Verknüpfung, Prüfprotokoll …), wird mit Grund abgelehnt; Nachweis-Fremdschlüssel sind RESTRICT, keine ORM-Kaskade und kein `orphanRemoval` in eine Nachweisklasse | `EndStateDeletionContractTest` (aus den Doctrine-Metadaten), Migration `Version20261109200000_EvidenceForeignKeysRestrict` |
+| Massenlöschen verlangt mindestens die Rolle der Einzellöschung | `EndStateDeletionContractTest` |
+| Ein Konto wird gelöscht nur, wenn nichts darauf zeigt; sonst anonymisiert (`UserErasure`: E-Mail, Name, Telefon, Bild, SSO-Kennungen, Rollen weg, inaktiv) — Kommentare, Teilnahmen, Kenntnisnahmen und Freigaben behalten ihren (anonymen) Autor. Nur persönliche Einstellungen (`UserErasure::PERSONAL_SETTINGS`) hängen per CASCADE am Konto | `tests/Service/User/UserErasureTest` (aus den Metadaten) |
+| Jede Löschung einer organisationseigenen Klasse steht im Audit-Log (außer reinen Zwischenständen in `AuditLogSubscriber::TRANSIENT_ON_DELETE`); Kommentartexte nie | `AuditLogSubscriber::isAuditedOnDelete()` |
+| Aufbewahrung löscht nur Datensätze im Endzustand, ohne Nachweis-Kinder, nicht unter der Mindestfrist (`RetentionEnforcementService::MIN_RETENTION_DAYS`: Vorfälle, Risiken, Feststellungen, Dokumente, Freigabeläufe 3 Jahre; Assets, VVT 1 Jahr), in einer Transaktion mit Batch-Protokoll; die Frist läuft ab Abschluss bzw. letzter Änderung | `tests/Service/RetentionEnforcementServiceTest` |
+| Dubletten werden gemeldet, nicht zusammengeführt (Quick-Fix und Datenreparatur zeigen sie zur Prüfung) | `tests/Controller/QuickFixControllerTest`, `tests/Service/DataIntegrity/DuplicateFinderTest` |
+| Einen Kommentar löscht nur ein Admin, nur mit Grund (Audit-Zeile ohne Text); Kommentare eines gelöschten Datensatzes gehen mit | `CommentController::delete`, `DeletionGuard` |
+| Eine Feststellung eines anderen Mandanten sieht nur der Super-Admin; Dokument wiederherstellen braucht vier Augen | `AuditFindingController::denyIfWrongTenant`, `config/workflows/document.yaml` |
 
 ## Öffentliche Wege (S25)
 

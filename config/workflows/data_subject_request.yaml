@@ -13,8 +13,8 @@ framework:
                 - { name: identity_verification, metadata: { tone: primary } }
                 - { name: in_progress, metadata: { tone: primary } }
                 - { name: extended, metadata: { tone: warning } }
-                - { name: completed, metadata: { tone: success } }
-                - { name: rejected, metadata: { tone: danger } }
+                - { name: completed, metadata: { tone: success, end_state: true } }
+                - { name: rejected, metadata: { tone: danger, end_state: true } }
             transitions:
                 process:
                     from: received

@@ -9,20 +9,21 @@ use App\Repository\DocumentRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Detects and merges duplicate entities within the same tenant.
+ * Detects possible duplicate entities within the same tenant — a report only.
+ * S29: nothing is merged or deleted automatically. Two incidents titled
+ * "Phishing" or two documents with the same file name are usually two real
+ * records; a person reviews each group and archives or deletes through the
+ * record's own lifecycle (DeletionPolicy applies).
  *
  * Extracted from DataIntegrityService to isolate duplicate-detection concerns.
  *
  * @see \App\Service\DataIntegrityService::findDuplicateEntities()
- * @see \App\Service\DataIntegrityService::mergeDuplicates()
  */
 final class DuplicateFinder
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
         private readonly InternalAuditRepository $auditRepository,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
@@ -141,52 +142,5 @@ final class DuplicateFinder
         }
 
         return $duplicates;
-    }
-
-    /**
-     * Merge duplicate entities for a given entity type, keeping the entity
-     * with the lowest ID (oldest) and removing the rest.
-     *
-     * Returns the number of deleted duplicate entities.
-     *
-     * Supported entity types: audits, assets, risks, incidents, documents
-     */
-    public function mergeDuplicates(string $entityType): int
-    {
-        $duplicates = $this->findDuplicateEntities();
-
-        if (!isset($duplicates[$entityType]) || count($duplicates[$entityType]) === 0) {
-            return 0;
-        }
-
-        $deleted = 0;
-
-        foreach ($duplicates[$entityType] as $group) {
-            // Normalise: groups for audits/assets/risks have an 'entities' key;
-            // incidents/documents groups are plain entity arrays.
-            $entities = is_array($group) && isset($group['entities'])
-                ? $group['entities']
-                : (array) $group;
-
-            if (count($entities) < 2) {
-                continue;
-            }
-
-            // Sort ascending by ID so the oldest survives
-            usort($entities, fn($a, $b) => ($a->getId() ?? 0) <=> ($b->getId() ?? 0));
-
-            // Keep the first (lowest ID), delete the rest
-            $toDelete = array_slice($entities, 1);
-            foreach ($toDelete as $entity) {
-                $this->entityManager->remove($entity);
-                $deleted++;
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return $deleted;
     }
 }

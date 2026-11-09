@@ -376,7 +376,7 @@ class BCExercise
      * BSI-Standard 200-4 Übungs-Logbuch
      * Nullable: a BCExercise can exist without a log entry yet.
      */
-    #[ORM\OneToOne(targetEntity: Bsi2004ExerciseLog::class, mappedBy: 'bcExercise', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Bsi2004ExerciseLog::class, mappedBy: 'bcExercise', cascade: ['persist'])] // S29: the exercise record stays
     private ?Bsi2004ExerciseLog $exerciseLog = null;
 
     public function __construct()

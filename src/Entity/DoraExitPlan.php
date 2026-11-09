@@ -65,7 +65,7 @@ class DoraExitPlan
      * DB-level. ON DELETE CASCADE: removing the supplier wipes the plan.
      */
     #[ORM\ManyToOne(targetEntity: Supplier::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'dora_exit_plan.validation.supplier_required')]
     private ?Supplier $supplier = null;
 

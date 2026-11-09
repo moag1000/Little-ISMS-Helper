@@ -1731,6 +1731,7 @@ user:
         imported: Benutzer importiert
         updated: Benutzer aktualisiert
         deleted: Benutzer gelöscht
+        anonymised: Benutzer anonymisiert, Nachweise bleiben erhalten.
         activated: Benutzer aktiviert
         deactivated: Benutzer deaktiviert
     error:
@@ -1739,7 +1740,6 @@ user:
         cannot_deactivate_initial_admin: 'Der initiale Administrator kann nicht deaktiviert werden'
         cannot_remove_admin_role_from_initial_admin: 'Die Administrator-Rolle kann dem initialen Administrator nicht entzogen werden'
         cannot_delete_initial_admin: 'Der initiale Administrator kann nicht gelöscht werden'
-        delete_referenced: 'Der Benutzer wird noch von anderen Datensätzen referenziert und kann nicht gelöscht werden. Bitte deaktivieren Sie ihn stattdessen'
     info:
         bulk_skipped_initial_admin: 'Initialer Administrator wurde übersprungen'
         bulk_skipped_current_user: 'Aktueller Benutzer wurde übersprungen'
@@ -2294,6 +2294,12 @@ comments:
     label: 'Kommentar'
     placeholder: 'Kommentar verfassen...'
     submit: 'Senden'
+    delete:
+        summary: 'Kommentar entfernen'
+        reason: 'Begründung (wird protokolliert, der Text nicht)'
+        submit: 'Entfernen'
+        done: 'Kommentar entfernt.'
+        reason_required: 'Nicht entfernt. Eine Begründung ist nötig.'
 
 # SSO admin / approvals UI
 sso:

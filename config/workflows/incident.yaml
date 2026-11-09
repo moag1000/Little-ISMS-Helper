@@ -15,8 +15,8 @@ framework:
                 - { name: reported, metadata: { tone: warning } }
                 - { name: in_investigation, metadata: { tone: primary } }
                 - { name: in_resolution, metadata: { tone: primary } }
-                - { name: resolved, metadata: { tone: success } }
-                - { name: closed, metadata: { tone: neutral } }
+                - { name: resolved, metadata: { tone: success, end_state: true } }
+                - { name: closed, metadata: { tone: neutral, end_state: true } }
             transitions:
                 start_investigation:
                     from: reported

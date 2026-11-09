@@ -11,8 +11,8 @@ framework:
             places:
                 - { name: planning, metadata: { tone: primary } }
                 - { name: active, metadata: { tone: success } }
-                - { name: completed, metadata: { tone: success } }
-                - { name: archived, metadata: { tone: neutral } }
+                - { name: completed, metadata: { tone: success, end_state: true } }
+                - { name: archived, metadata: { tone: neutral, end_state: true } }
             transitions:
                 activate:
                     from: planning

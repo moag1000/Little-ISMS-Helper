@@ -109,18 +109,7 @@
                                 <p class="small text-muted mb-2">
                                     {{ 'admin.data_repair.duplicates.group_info'|trans({'%groups%': groups|length, '%items%': totalDupItems}, 'admin') }}
                                 </p>
-                                <p class="small mb-3">{{ 'admin.data_repair.duplicates.merge_hint'|trans({}, 'admin') }}</p>
-                                <form method="post"
-                                      action="{{ path('admin_data_repair_fix_duplicates', {entityType: typeKey}) }}"
-                                      data-controller="ui-actions"
-                                      data-action="submit->ui-actions#confirm"
-                                      data-ui-actions-message-param="{{ 'admin.data_repair.duplicates.confirm_merge'|trans({'%type%': typeKey, '%count%': groups|length}, 'admin') }}">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('fix_duplicates_' ~ typeKey) }}">
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--full">
-                                        <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i>
-                                        {{ 'admin.data_repair.duplicates.merge_button'|trans({'%count%': groups|length}, 'admin') }}
-                                    </button>
-                                </form>
+                                <p class="small mb-0">{{ 'admin.data_repair.duplicates.review_hint'|trans({}, 'admin') }}</p>
                             </div>
                         </section>
                     </div>

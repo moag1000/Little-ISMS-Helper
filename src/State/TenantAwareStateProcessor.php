@@ -32,6 +32,7 @@ final readonly class TenantAwareStateProcessor implements ProcessorInterface
         private ProcessorInterface $removeProcessor,
         private TenantContext $tenantContext,
         private Security $security,
+        private \App\Lifecycle\DeletionPolicy $deletionPolicy,
     ) {
     }
 
@@ -54,8 +55,8 @@ final readonly class TenantAwareStateProcessor implements ProcessorInterface
 
         // Delegate to appropriate inner processor
         if ($operation instanceof \ApiPlatform\Metadata\Delete) {
-            // Same rule as the form and the bulk action (four-eyes disposal).
-            $refusal = is_object($data) ? \App\Lifecycle\DeletionPolicy::refusal($data) : null;
+            // Same rule as the form and the bulk action (S29: evidence is archived, not deleted).
+            $refusal = is_object($data) ? $this->deletionPolicy->refusal($data) : null;
             if ($refusal !== null) {
                 throw new \Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException('Not deleted: ' . $refusal . '.');
             }

@@ -72,7 +72,7 @@ class CorrectiveAction
      * `sourceType` + `sourceIncident`.
      */
     #[ORM\ManyToOne(targetEntity: AuditFinding::class, inversedBy: 'correctiveActions')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?AuditFinding $finding = null;
 
     /**

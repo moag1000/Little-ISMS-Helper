@@ -174,6 +174,9 @@ class RestoreEntityWriter
             'AuthorityTemplate' => 9,
             // Late / cross-cutting
             'Comment' => 85,
+            // S29: items point at their campaign (RESTRICT): restored after it, cleared before it.
+            'AccessReviewCampaign' => 86,
+            'AccessReviewItem' => 87,
             'WizardRun' => 85,
             'WizardSession' => 85,
             'BulkImportBatch' => 85,

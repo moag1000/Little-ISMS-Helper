@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\AuditLog;
+use App\Lifecycle\DeletionPolicy;
 use App\Service\AuditLogger;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -55,6 +56,22 @@ use Doctrine\ORM\Events;
 final class AuditLogSubscriber
 {
     private array $pendingUpdates = [];
+
+    /**
+     * Tenant-owned classes whose rows are operational, not records: reminders
+     * sent, deliveries, caches, personal settings, sessions. They are deleted by
+     * routine cleanups in bulk and would only flood the trail.
+     */
+    private const array TRANSIENT_ON_DELETE = [
+        'AlvaHintDismissal', 'AlvaHintRenderCount', 'DashboardLayout', 'PushSubscription', 'ObligationNotice',
+        'NotificationDelivery', 'SlaDeadlineMonitor', 'KpiSnapshot', 'PortfolioSnapshot', 'ReuseTrendSnapshot',
+        'ImportSession', 'BulkImportBatch', 'WizardSession', 'WizardRun', 'Suggestion', 'ApiToken', 'UserSession',
+    ];
+
+    /** Fields whose text is the personal data a delete removes (Art. 17): the row is logged without them. */
+    private const array NOT_LOGGED_ON_DELETE = [
+        'Comment' => ['body'],
+    ];
 
     public function __construct(
         private readonly AuditLogger $auditLogger
@@ -171,14 +188,18 @@ final class AuditLogSubscriber
             return;
         }
 
-        // Check if entity should be audited
-        if (!$this->shouldAudit($entity)) {
+        // S29: every delete of an organisation's record leaves a trail (ISO 27001
+        // 7.5.3), not only the classes audited on create/update.
+        if (!$this->shouldAudit($entity) && !$this->isAuditedOnDelete($entity, $postRemoveEventArgs)) {
             return;
         }
 
         $entityType = $this->auditLogger->getEntityTypeName($entity);
         $entityId = $this->getEntityId($entity);
-        $values = $this->auditLogger->extractEntityValues($entity);
+        $values = array_diff_key(
+            $this->auditLogger->extractEntityValues($entity),
+            array_flip(self::NOT_LOGGED_ON_DELETE[$entityType] ?? []),
+        );
 
         $this->auditLogger->aboutRecord($entity, fn () => $this->auditLogger->logDelete(
             $entityType,
@@ -186,6 +207,14 @@ final class AuditLogSubscriber
             $values,
             sprintf('%s deleted', $entityType)
         ));
+    }
+
+    private function isAuditedOnDelete(object $entity, PostRemoveEventArgs $args): bool
+    {
+        $metadata = $args->getObjectManager()->getClassMetadata($entity::class);
+
+        return DeletionPolicy::isTenantOwned($metadata)
+            && !in_array($this->auditLogger->getEntityTypeName($entity), self::TRANSIENT_ON_DELETE, true);
     }
 
     /**

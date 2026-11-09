@@ -63,11 +63,11 @@ class TrainingParticipation
     private ?Tenant $tenant = null;
 
     #[ORM\ManyToOne(targetEntity: Training::class, cascade: ['persist'], inversedBy: 'participations')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Training $training = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     #[ORM\Column(length: 24)]

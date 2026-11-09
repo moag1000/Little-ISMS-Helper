@@ -56,7 +56,6 @@ final class PublicRoutesInventoryTest extends WebTestCase
         'app_quick_fix_mark_all_phantom_diff' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
         'app_quick_fix_repair_orphans' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
         'app_quick_fix_repair_mismatches' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
-        'app_quick_fix_repair_duplicates' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
         'app_quick_fix_repair_all' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
         'app_quick_fix_force_schema_update' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
         'app_quick_fix_job_status' => 'Quick-Fix job polling; quick-fix jobs only',

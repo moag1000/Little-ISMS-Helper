@@ -61,7 +61,7 @@ class DoraDataFlow
     private ?Tenant $tenant = null;
 
     #[ORM\ManyToOne(targetEntity: Supplier::class)]
-    #[ORM\JoinColumn(name: 'supplier_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'supplier_id', referencedColumnName: 'id', nullable: false)]
     #[Assert\NotNull(message: 'dora_data_flow.validation.supplier_required')]
     private ?Supplier $supplier = null;
 

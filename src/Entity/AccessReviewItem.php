@@ -56,14 +56,14 @@ class AccessReviewItem
     private ?Tenant $tenant = null;
 
     #[ORM\ManyToOne(targetEntity: AccessReviewCampaign::class, inversedBy: 'items')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?AccessReviewCampaign $campaign = null;
 
     /**
      * The user whose access is being reviewed.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'subject_user_id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'subject_user_id', nullable: false)]
     private ?User $subjectUser = null;
 
     /**

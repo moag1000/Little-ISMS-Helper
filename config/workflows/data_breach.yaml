@@ -11,9 +11,9 @@ framework:
             places:
                 - { name: draft, metadata: { tone: neutral } }
                 - { name: under_assessment, metadata: { tone: primary } }
-                - { name: authority_notified, metadata: { tone: success } }
-                - { name: subjects_notified, metadata: { tone: success } }
-                - { name: closed, metadata: { tone: neutral } }
+                - { name: authority_notified, metadata: { tone: success, end_state: true } }
+                - { name: subjects_notified, metadata: { tone: success, end_state: true } }
+                - { name: closed, metadata: { tone: neutral, end_state: true } }
             transitions:
                 assess:
                     from: draft

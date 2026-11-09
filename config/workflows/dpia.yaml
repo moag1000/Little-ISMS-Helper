@@ -11,8 +11,8 @@ framework:
             places:
                 - { name: draft, metadata: { tone: neutral } }
                 - { name: in_review, metadata: { tone: primary } }
-                - { name: approved, metadata: { tone: success } }
-                - { name: rejected, metadata: { tone: danger } }
+                - { name: approved, metadata: { tone: success, end_state: true } }
+                - { name: rejected, metadata: { tone: danger, end_state: true } }
                 - { name: requires_revision, metadata: { tone: warning } }
             transitions:
                 submit:

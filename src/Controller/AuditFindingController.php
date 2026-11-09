@@ -456,11 +456,13 @@ class AuditFindingController extends AbstractController
 
     private function denyIfWrongTenant(AuditFinding $finding): void
     {
+        // S29 (F6): the organisation's own findings only — an organisation admin is no
+        // exception (before, ROLE_ADMIN passed whenever the tenant filter let a row through).
+        // Instance operators act everywhere, as in BulkDeleteService.
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant instanceof Tenant || $finding->getTenant()?->getId() !== $tenant->getId()) {
-            if (!$this->isGranted('ROLE_ADMIN')) {
-                throw $this->createAccessDeniedException('Finding belongs to a different tenant.');
-            }
+        $own = $tenant instanceof Tenant && $finding->getTenant()?->getId() === $tenant->getId();
+        if (!$own && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+            throw $this->createAccessDeniedException('Finding belongs to a different tenant.');
         }
     }
 

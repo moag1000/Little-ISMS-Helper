@@ -317,3 +317,5 @@ lifecycle:
         role_required: 'Nicht ausgeführt. Für diesen Schritt fehlt die nötige Rolle.'
         invalid_transition: 'Ungültiger Statusübergang von "%from%" zu "%to%". Erlaubte Folgezustände: %allowed%.'
         delete_needs_end_state: 'Nicht gelöscht. Ein Asset verlässt den Bestand über Ausmustern und Entsorgen (Vier-Augen-Prinzip); nur in den ersten 24 Stunden nach der Anlage lässt es sich direkt löschen.'
+        delete_end_state: 'Nicht gelöscht. Der Datensatz ist im Status „%status%“ ein Nachweis und bleibt erhalten; archivieren Sie ihn über den Status.'
+        delete_has_evidence: 'Nicht gelöscht. %count% Nachweis-Datensätze (%type%) verweisen noch darauf.'

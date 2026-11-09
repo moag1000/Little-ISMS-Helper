@@ -9,7 +9,6 @@ use App\Job\AssignOrphansJob;
 use App\Job\ExecutePendingMigrationsJob;
 use App\Job\FixAllOrphansJob;
 use App\Job\FixTenantMismatchesJob;
-use App\Job\MergeDuplicatesJob;
 use App\Job\ReassignEntityJob;
 use App\Job\ReconcileSchemaJob;
 use App\Job\RunFullIntegrityCheckJob;
@@ -826,62 +825,6 @@ class DataRepairController extends AbstractController
     }
 
     /**
-     * Merges duplicate entities for a given entity type.
-     * Keeps the entity with the lowest ID (oldest) and removes newer duplicates.
-     *
-     * Supported entity types: audits, assets, risks, incidents, documents
-     *
-     * Dispatches {@see MergeDuplicatesJob} via Symfony Messenger so very large
-     * duplicate groups (>10 k rows on legacy imports) don't hit the PHP-FPM
-     * 30 s timeout. Audit-log is written from the job.
-     */
-    #[Route('/admin/data-repair/fix-duplicates/{entityType}', name: 'admin_data_repair_fix_duplicates', methods: ['POST'])]
-    #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function fixDuplicates(
-        Request $request,
-        string $entityType,
-        #[CurrentUser] User $user,
-    ): Response {
-        $allowedTypes = ['audits', 'assets', 'risks', 'incidents', 'documents'];
-
-        if (!$this->isCsrfTokenValid('fix_duplicates_' . $entityType, $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
-            return $this->redirectToRoute('admin_data_repair_index');
-        }
-
-        if (!in_array($entityType, $allowedTypes, true)) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type', [], 'admin'));
-            return $this->redirectToRoute('admin_data_repair_index');
-        }
-
-        $actor = (string) ($user->getEmail() ?? 'admin');
-
-        $jobId = $this->jobStatusService->create(
-            'admin.data_repair.merge_duplicates',
-            [
-                'entityType' => $entityType,
-                'actor' => $actor,
-                '_label' => $this->translator->trans('admin.data_repair.job.merge_duplicates_label', ['%type%' => $entityType], 'admin'),
-                '_subtitle' => $this->translator->trans('admin.data_repair.job.merge_duplicates_subtitle', [], 'admin'),
-            ],
-        );
-
-        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
-        $response = $this->redirectToRoute('admin_job_progress_page', [
-            'id'     => $jobId,
-            'return' => $this->generateUrl('admin_data_repair_index'),
-        ], Response::HTTP_SEE_OTHER);
-
-        return $this->jobDispatcher->dispatch(
-            MergeDuplicatesJob::class,
-            ['entityType' => $entityType, 'actor' => $actor],
-            $jobId,
-            $response,
-            $request->getSession(),
-        );
-    }
-
-    /**
      * Executes every pending Doctrine migration. Idempotent — when no
      * migration is pending the route returns a neutral flash and the
      * Migrator is not even spun up.
@@ -1020,7 +963,7 @@ class DataRepairController extends AbstractController
      */
     #[Route('/admin/data-repair/cleanup-dangling-refs', name: 'admin_data_repair_cleanup_dangling_refs', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
-    public function cleanupDanglingRefs(Request $request): Response
+    public function cleanupDanglingRefs(Request $request, \App\Lifecycle\DeletionPolicy $deletionPolicy): Response
     {
         if (!$this->isCsrfTokenValid('cleanup_dangling_refs', (string) $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
@@ -1049,7 +992,7 @@ class DataRepairController extends AbstractController
 
         $perEntity = [];
         $deleted = 0;
-        $this->withoutTenantFilter(function () use ($categoryClassMap, &$perEntity, &$deleted): void {
+        $this->withoutTenantFilter(function () use ($categoryClassMap, $deletionPolicy, &$perEntity, &$deleted): void {
             $cascadeOrphans = $this->dataIntegrityService->findCascadeOrphans();
             foreach ($categoryClassMap as $category => $fqcn) {
                 $items = $cascadeOrphans[$category] ?? [];
@@ -1059,7 +1002,8 @@ class DataRepairController extends AbstractController
                         continue;
                     }
                     $entity = $this->entityManager->find($fqcn, $id);
-                    if ($entity === null) {
+                    // S29: a decided approval run is evidence even without its record — it stays.
+                    if ($entity === null || $deletionPolicy->refusal($entity) !== null) {
                         continue;
                     }
                     $perEntity[] = [
