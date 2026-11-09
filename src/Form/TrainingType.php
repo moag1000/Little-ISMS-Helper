@@ -283,10 +283,13 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'training.help.feedback',
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('completionDate', DateType::class, [
+                'disabled' => true,
                 'label' => 'training.field.completion_date',
                 'widget' => 'single_text',
                 'required' => false,
+                'help' => 'training.step_evidence.completion_date',
             ])
             // Awareness recurrence
             // (ISO 27001 A.6.3). NULL = one-off, integer >=1 = months cadence

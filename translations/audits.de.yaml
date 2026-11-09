@@ -277,6 +277,9 @@ pdf:
     default_scope: 'Gesamtes ISMS'
 
 audit_finding:
+    step_evidence:
+        nc_verified_at: 'Wird beim Schritt „Verifizieren“ gesetzt (ISO 27001 10.2).'
+        nc_verified_by: 'Wer verifiziert hat, setzt der Schritt „Verifizieren“.'
     page:
         title: 'Audit-Feststellungen'
         subtitle: 'ISO 27001:2022 Clause 10.1 — Nonconformity & Corrective Action'
@@ -467,6 +470,9 @@ audit_finding:
             suggest: 'Hinweis: Geringfügige Findings werden üblicherweise als Observation oder Opportunity for Improvement dokumentiert — Major-NC wirkt überzogen.'
 
 corrective_action:
+    step_evidence:
+        actual_completion_date: 'Wird beim Schritt „Abschließen“ gesetzt.'
+        effectiveness_review_date: 'Wird gesetzt, wenn die Wirksamkeit bestätigt oder verneint wird.'
     page:
         title: 'Korrekturmaßnahmen'
         new: 'Neue Korrekturmaßnahme'

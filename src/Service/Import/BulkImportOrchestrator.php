@@ -22,8 +22,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\FileUploadSecurityService;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\MessageBusInterface;
-use App\Service\Owner\OwnerText;
-use App\Service\Owner\OwnerTextResolver;
 use App\Service\Upload\ProtectedUploads;
 
 /**
@@ -65,7 +63,7 @@ class BulkImportOrchestrator
         private readonly FileUploadSecurityService $uploadSecurity,
         private readonly ?FteRecorderService $fteRecorder = null,
         private readonly ?EntityManagerRecovery $emRecovery = null,
-        private readonly ?OwnerTextResolver $ownerTexts = null,
+        private readonly ?ImportEntityWriter $writer = null,
         private readonly ?ProtectedUploads $protectedUploads = null,
     ) {}
 
@@ -354,7 +352,8 @@ class BulkImportOrchestrator
                 $entityData = $mapper->toEntityData($createRow['data'], $batch->getColumnMapping(), $tenant);
                 // Evidence is written by its action, not by an import row (S11).
                 $entityData = EvidenceFieldFilter::forCreate('App\\Entity\\' . $batch->getEntityType(), $entityData);
-                $entity     = $this->instantiateEntity($batch->getEntityType(), $entityData, $tenant);
+                // S22: the row is validated like every other writer before it is stored.
+                $entity     = $this->writer()->create($batch->getEntityType(), $entityData, $tenant);
 
                 $this->em->persist($entity);
 
@@ -396,15 +395,8 @@ class BulkImportOrchestrator
 
                 if ($existing !== null) {
                     $entityData = EvidenceFieldFilter::forUpdate($existing::class, $entityData);
-                    try {
-                        $this->applyEntityData($existing, $entityData, $tenant);
-                    } catch (\Throwable $e) {
-                        // A setter threw after earlier ones ran: drop the half-applied
-                        // row, or the next flush would write it without audit entry.
-                        $this->em->refresh($existing);
-
-                        throw $e;
-                    }
+                    // Refused rows (type, constraint, derived value) leave the record as loaded (S22).
+                    $this->writer()->update($existing, $entityData, $tenant);
                     $this->em->persist($existing);
 
                     $bulkRow = $this->buildBulkRow($batch, $rowNumber, BulkImportRow::STATUS_UPDATED, BulkImportRow::ACTION_UPDATE, $updateRow['data'], $updateRow['oldValues'], $entityData);
@@ -566,91 +558,12 @@ class BulkImportOrchestrator
         ));
     }
 
-    /**
-     * Instantiate a new entity of the given type and apply property values via
-     * setters (camelCase property name → setSomeProperty convention).
-     *
-     * The tenant property is always set if the entity has a setTenant() method.
-     *
-     * @param array<string, mixed> $entityData
-     */
-    private function instantiateEntity(string $entityType, array $entityData, Tenant $tenant): object
+
+
+
+    private function writer(): ImportEntityWriter
     {
-        $fqcn   = 'App\\Entity\\' . $entityType;
-        $entity = new $fqcn();
-
-        // Inject tenant first so downstream setters have context
-        if (method_exists($entity, 'setTenant')) {
-            $entity->setTenant($tenant);
-        }
-
-        $this->applyEntityData($entity, $entityData, $tenant);
-
-        return $entity;
-    }
-
-    /**
-     * Apply a flat property array to an existing entity via setter methods.
-     *
-     * Setter name: "set" + ucfirst($propertyName).
-     * Properties whose setter does not exist are silently skipped. An owner
-     * given as text that named nobody known ({@see OwnerText}) becomes a Person
-     * of the organisation here (or the User / Person created by an earlier row).
-     * Every value is checked against its setter's parameter type before the first
-     * setter runs, so a mismatch refuses the row without touching the entity.
-     *
-     * @param array<string, mixed> $entityData
-     *
-     * @throws ImportRowInvalidException when a value does not fit its setter
-     */
-    private function applyEntityData(object $entity, array $entityData, Tenant $tenant): void
-    {
-        $setters = [];
-        foreach ($entityData as $property => $value) {
-            if ($value instanceof OwnerText) {
-                $target = $this->ownerTexts?->resolve($tenant, $value->text);
-                if ($target !== null) {
-                    $setters[$target instanceof User ? $value->userSetter : $value->personSetter] = $target;
-                }
-                continue;
-            }
-            $setter = 'set' . ucfirst($property);
-            if (!method_exists($entity, $setter)) {
-                continue;
-            }
-            $type = ((new \ReflectionMethod($entity, $setter))->getParameters()[0] ?? null)?->getType();
-            if ($type instanceof \ReflectionNamedType && !self::fitsType($type, $value)) {
-                $message = sprintf('Field "%s": a %s value does not fit %s.', $property, get_debug_type($value), $type);
-
-                throw new ImportRowInvalidException(0, [$message], $message);
-            }
-            $setters[$setter] = $value;
-        }
-
-        foreach ($setters as $setter => $value) {
-            $entity->$setter($value);
-        }
-    }
-
-    /** Whether $value passes a strict-types call to a parameter of this type. */
-    private static function fitsType(\ReflectionNamedType $type, mixed $value): bool
-    {
-        if ($value === null) {
-            return $type->allowsNull();
-        }
-        $name = $type->getName();
-        if (!$type->isBuiltin()) {
-            return in_array($name, ['self', 'static'], true) || $value instanceof $name;
-        }
-
-        return match ($name) {
-            'int'               => is_int($value),
-            'float'             => is_int($value) || is_float($value),
-            'string'            => is_string($value),
-            'bool'              => is_bool($value),
-            'array', 'iterable' => is_array($value),
-            default             => true, // mixed, object, …
-        };
+        return $this->writer ?? new ImportEntityWriter(em: $this->em);
     }
 
     /**

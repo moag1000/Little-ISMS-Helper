@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Attribute\{ApiReadOnlyEvidence, ModuleField, PersonalDataResource, RequiresModule};
+use App\Attribute\{ApiReadOnlyEvidence, ModuleField, PersonalDataResource, RequiresModule, ManagerOrResponsibleField};
 use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
@@ -131,7 +131,7 @@ class Supplier
      */
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
-    #[Groups(['supplier:read', 'supplier:write'])]
+    #[Groups(['supplier:read', 'supplier:write']), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private ?string $criticality = 'medium';
 
     /**
@@ -156,15 +156,15 @@ class Supplier
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Assert\Range(min: 0, max: 100)]
-    #[Groups(['supplier:read', 'supplier:write'])]
+    #[Groups(['supplier:read']), ApiReadOnlyEvidence('supplier questionnaire review (S22)')]
     private ?int $securityScore = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['supplier:read', 'supplier:write'])]
+    #[Groups(['supplier:read']), ApiReadOnlyEvidence('supplier questionnaire review / "Review bestätigen" (S22)')]
     private ?DateTimeInterface $lastSecurityAssessment = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['supplier:read', 'supplier:write'])]
+    #[Groups(['supplier:read', 'supplier:write']), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private ?DateTimeInterface $nextAssessmentDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -224,18 +224,18 @@ class Supplier
      * as an ICT third-party service provider (Art. 28 ICT-Drittdienstleister).
      */
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['supplier:read', 'supplier:write']), ModuleField('nis2_dora')]
+    #[Groups(['supplier:read', 'supplier:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private bool $isDoraRelevant = false;
 
     /**
      * Data processing agreement (GDPR)
      */
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['supplier:read', 'supplier:write']), ModuleField('privacy')]
+    #[Groups(['supplier:read', 'supplier:write']), ModuleField('privacy'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private bool $hasDPA = false;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['supplier:read', 'supplier:write']), ModuleField('privacy')]
+    #[Groups(['supplier:read', 'supplier:write']), ModuleField('privacy'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private ?DateTimeInterface $dpaSignedDate = null;
 
     /**
@@ -806,7 +806,7 @@ class Supplier
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $leiCode = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private ?string $ictCriticality = null;  // non_ict|important|critical
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -821,7 +821,7 @@ class Supplier
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $processingLocations = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private ?\DateTimeInterface $lastDoraAuditDate = null;
 
     #[ORM\Column]
@@ -1007,21 +1007,21 @@ class Supplier
      * Note: separate from DORA's "critical or important" classification.
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk')]
+    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private ?string $outsourcingClassification = null;
 
     /**
      * Whether the initial due diligence was completed before outsourcing (MaRisk AT 9.2).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk')]
+    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private bool $outsourcingDueDiligenceCompleted = false;
 
     /**
      * Date on which due diligence was completed.
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk')]
+    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private ?\DateTimeImmutable $outsourcingDueDiligenceDate = null;
 
     /**
@@ -1035,14 +1035,14 @@ class Supplier
      * Whether BaFin notification is required (MaRisk AT 9.7 + § 24 Abs. 1 Nr. 12 KWG).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk')]
+    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private bool $bafinNotificationRequired = false;
 
     /**
      * Date when BaFin was notified.
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk')]
+    #[Groups(['supplier:read', 'supplier:write']), ModuleField('marisk'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private ?\DateTimeImmutable $bafinNotificationDate = null;
 
     /**
@@ -1056,7 +1056,7 @@ class Supplier
      * Whether the management board has explicitly accepted this outsourcing risk (MaRisk AT 4.3).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['supplier:read']), ApiReadOnlyEvidence('management decision (ManagementDecisionService)')]
+    #[Groups(['supplier:read']), ApiReadOnlyEvidence('management decision (ManagementDecisionService)'), ManagerOrResponsibleField('supplier assessment: ISO 27001 A.5.19-A.5.22, DORA Art. 28, GDPR Art. 28')]
     private bool $boardLevelRiskAcceptance = false;
 
     /**

@@ -1,4 +1,6 @@
 patch:
+    step_evidence:
+        deployed_date: 'Wird beim Schritt „Ausrollen“ gesetzt.'
     edit: 'Patch bearbeiten'
     new: 'Neuer Patch'
     title: Patch-Verwaltung

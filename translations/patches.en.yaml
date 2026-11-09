@@ -1,4 +1,6 @@
 patch:
+    step_evidence:
+        deployed_date: 'Set by the "deploy" step.'
     edit: 'Edit Patch'
     new: 'New Patch'
     title: 'Patch Management'

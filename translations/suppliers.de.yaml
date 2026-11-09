@@ -1,4 +1,7 @@
 supplier:
+    step_evidence:
+        security_score: 'Kommt aus der Auswertung des Lieferantenfragebogens.'
+        last_security_assessment: 'Wird mit der Fragebogen-Auswertung oder „Review bestätigen“ gesetzt.'
     title: Lieferanten
     ict_library:
         applied: 'Lieferant „%name%“ aus der ICT-Provider-Bibliothek angelegt. Bitte Angaben prüfen und ergänzen.'

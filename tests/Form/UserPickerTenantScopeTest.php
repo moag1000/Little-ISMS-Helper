@@ -136,7 +136,7 @@ final class UserPickerTenantScopeTest extends KernelTestCase
         yield 'Training trainer (owner picker)' => [TrainingType::class, Training::class, 'trainerUser', false];
         yield 'WorkflowInstance initiatedBy' => [WorkflowInstanceType::class, WorkflowInstance::class, 'initiatedBy', false];
         yield 'PrototypeProtection assessor' => [PrototypeProtectionAssessmentType::class, PrototypeProtectionAssessment::class, 'assessor', false];
-        yield 'AuditFinding ncVerifiedBy' => [AuditFindingType::class, AuditFinding::class, 'ncVerifiedBy', false];
+        // AuditFinding ncVerifiedBy: no picker since S22, the verify step stamps the actor (field disabled)
         yield 'AuditFinding assignedTo (owner picker)' => [AuditFindingType::class, AuditFinding::class, 'assignedTo', false];
         yield 'RiskTreatmentPlan responsible' => [RiskTreatmentPlanType::class, RiskTreatmentPlan::class, 'responsiblePersonUser', false];
         yield 'CustomReport owner' => [CustomReportType::class, CustomReport::class, 'owner', false];

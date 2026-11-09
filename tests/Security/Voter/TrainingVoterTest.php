@@ -35,6 +35,13 @@ final class TrainingVoterTest extends TestCase
     }
 
     #[Test]
+    public function plainUserMayReadButNotEdit(): void
+    {
+        // S22 (M5): editing needs the manager scope or being the trainer (resolver, not wired here).
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->vote(['ROLE_USER'], $this->tenant, TrainingVoter::EDIT));
+    }
+
+    #[Test]
     public function foreignTenantTrainingIsDenied(): void
     {
         self::assertSame(VoterInterface::ACCESS_DENIED, $this->vote(['ROLE_MANAGER'], $this->otherTenant, TrainingVoter::EDIT));

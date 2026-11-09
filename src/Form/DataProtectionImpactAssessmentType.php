@@ -301,10 +301,13 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
                     'data-controller' => 'tom-select',
                 ],
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('dpoConsultationDate', DateType::class, [
+                'disabled' => true,
                 'label' => 'dpia.form.dpo_consultation_date',
                 'widget' => 'single_text',
                 'required' => false,
+                'help' => 'dpia.step_evidence.dpo_consultation_date',
             ])
             ->add('dpoAdvice', TextareaType::class, [
                 'label' => 'dpia.form.dpo_advice',
@@ -341,10 +344,13 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
                 'required' => false,
                     'choice_translation_domain' => 'privacy',
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('supervisoryConsultationDate', DateType::class, [
+                'disabled' => true,
                 'label' => 'dpia.form.supervisory_consultation_date',
                 'widget' => 'single_text',
                 'required' => false,
+                'help' => 'dpia.step_evidence.supervisory_consultation_date',
             ])
             ->add('supervisoryAuthorityFeedback', TextareaType::class, [
                 'label' => 'dpia.form.supervisory_authority_feedback',

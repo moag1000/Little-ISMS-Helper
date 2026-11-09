@@ -3,6 +3,9 @@
 
 # Page titles
 dsr:
+    step_evidence:
+        response_at: 'Set by "complete" or "reject" (GDPR Art. 12(3)).'
+        extension_notified_at: 'Set by "extend deadline".'
     page:
         index_title: "Data Subject Requests"
         index_subtitle: "Manage GDPR data subject rights requests (Art. 15-22)"

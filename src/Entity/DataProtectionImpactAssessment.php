@@ -342,7 +342,7 @@ class DataProtectionImpactAssessment
     /**
      * Date DPO was consulted
      */
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true), \App\Attribute\ApiReadOnlyEvidence('DPO consultation action (S22, GDPR Art. 35(2))')]
     private ?DateTimeInterface $dpoConsultationDate = null;
 
     /**
@@ -382,7 +382,7 @@ class DataProtectionImpactAssessment
     /**
      * Date supervisory authority was consulted
      */
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true), \App\Attribute\ApiReadOnlyEvidence('supervisory consultation action (S22, GDPR Art. 36)')]
     private ?DateTimeInterface $supervisoryConsultationDate = null;
 
     /**

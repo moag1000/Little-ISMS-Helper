@@ -87,6 +87,7 @@ risk_treatment_plan:
         responsible_person: 'Kontaktperson (Personenstamm) als Verantwortliche'
         responsible_deputy_persons: 'Stellvertretende Kontaktpersonen für diesen Behandlungsplan'
         controls: 'Dieselbe Liste wie am Risiko: Änderungen hier ändern die Maßnahmen des Risikos (STRG für Mehrfachauswahl)'
+        controls_risk_owner: 'Dieselbe Liste wie am Risiko: ändern darf sie, wer das Risiko bearbeiten darf (Manager oder Risikoeigner).'
         completion_percentage: 'Fortschritt der Umsetzung in Prozent (0-100)'
         completion_derived: 'Aus den Maßnahmen abgeleitet: Anteil umgesetzter Maßnahmen (%count%). Änderungen kommen als Vorschlag.'
         implementation_notes: 'Notizen zur Umsetzung, Fortschritt, Hindernisse und Lösungen'
@@ -100,6 +101,7 @@ risk_treatment_plan:
         budget_positive: 'Das Budget muss 0 oder größer sein'
         completion_percentage_range: 'Der Fertigstellungsgrad muss zwischen 0 und 100 liegen'
     error:
+        controls_risk_owner: 'Die Maßnahmen des Risikos ändert nur, wer das Risiko bearbeiten darf (Manager oder Risikoeigner).'
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
 
 iso_9001_bridge:

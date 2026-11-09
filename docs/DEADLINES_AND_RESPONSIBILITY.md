@@ -275,6 +275,16 @@ the record on, creating a record with oneself as owner stays allowed, and
 manager. `tests/Contract/ResponsibleSlotWriteContractTest` finds the slots
 itself from the deadline sources; a new slot needs no list entry.
 
+**Nobody hands on a record they do not hold (S22).** S20 still let two plain
+users name each other. `App\EventListener\WriteRuleGuard` (onFlush, every
+writer) now refuses any change of a User/Person reference that changes the
+resolver's answer unless the actor is a manager or was responsible before the
+change (`App\Service\WriteRule\WriteRuleCheck`). The same guard keeps the
+classification of a record (`#[ManagerOrResponsibleField]`: severity, reporting
+flags, protection need, criticality, RTO/RPO, …) with managers and the holder,
+and `#[CreateOnly]` fields (detection time) with managers. Gate 96
+`tests/Security/WritePathParityTest`.
+
 **Permanent check:** `tests/Service/Deadline/DeadlineLinkReachabilityTest.php`
 runs end to end: for every source it creates an organisation
 with only the source's modules (`requiredModule()`, `module:` in

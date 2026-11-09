@@ -87,6 +87,7 @@ risk_treatment_plan:
         responsible_person: 'Contact person (person directory) as responsible party'
         responsible_deputy_persons: 'Deputy contact persons for this treatment plan'
         controls: 'Same list as on the risk: changes here change the risk''s controls (CTRL for multiple selection)'
+        controls_risk_owner: 'The same list as on the risk: whoever may edit the risk (manager or risk owner) changes it.'
         completion_percentage: 'Implementation progress in percent (0-100)'
         completion_derived: 'Derived from the controls: share of implemented controls (%count%). Changes arrive as a suggestion.'
         implementation_notes: 'Notes on implementation, progress, obstacles and solutions'
@@ -100,6 +101,7 @@ risk_treatment_plan:
         budget_positive: 'Budget must be 0 or greater'
         completion_percentage_range: 'Completion percentage must be between 0 and 100'
     error:
+        controls_risk_owner: 'Only whoever may edit the risk (manager or risk owner) changes its controls.'
         owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
 
 iso_9001_bridge:

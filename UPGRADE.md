@@ -199,6 +199,24 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Audit-Checkliste (S20, ISO 27001 9.2):** Urteile speichern nur Auditoren, Manager und Leitauditor
   oder Auditteam des Audits. Ein Urteil wirkt erst auf die Erfüllung, wenn das Audit berichtet ist
   (Status „berichtet“, „freigegeben“, „abgeschlossen“); Urteile laufender Audits zeigen sich danach.
+- **Schreibregeln für jeden Weg (S22):** Einstufung und Zuständigkeit sind Manager-Daten. An einem
+  bestehenden Datensatz ändern Schwere, Meldepflicht-Kennzeichen, Schutzbedarf (C/I/A,
+  Klassifizierung), Kritikalität von Lieferanten, RTO/RPO, Sicherheitsstufe von Standorten, Fristen von
+  Schwachstellen und Patches u. ä. nur Manager oder die für den Datensatz verantwortliche Person;
+  andere sehen das Feld schreibgeschützt (Formular) bzw. bekommen 403 (REST, Assistent, Import).
+  Erzählende Felder bleiben für alle bearbeitbar. Wer einen fremden Datensatz nicht hält, gibt ihn
+  auch nicht an jemand anderen weiter (bisher konnten sich zwei Nicht-Manager gegenseitig eintragen).
+  Der Entdeckungszeitpunkt von Vorfällen und Datenpannen sowie der Risikobezug eines
+  Behandlungsplans werden beim Anlegen gesetzt und nur von Managern korrigiert; ein Import-Update
+  überschreibt sie nicht. Schulungen bearbeiten nur Manager und die Trainerin/der Trainer. Abschluss-,
+  Wirksamkeits-, Verifizierungs-, Behebungs-, Ausroll- und Antwortzeitpunkte (Maßnahmen,
+  Audit-Feststellungen, Schwachstellen, Patches, Schulungen, Betroffenenanfragen) setzt der
+  jeweilige Statusschritt; im Formular sind sie schreibgeschützt, Import und REST schreiben sie
+  nicht mehr (REST: `completionDate` von Schulungen, `securityScore`/`lastSecurityAssessment` von
+  Lieferanten, `lastReviewDate` von Controls). Der Massenimport prüft jede Zeile mit denselben
+  Regeln wie das Formular schon in der Vorschau; ungültige Zeilen erscheinen dort als Fehler. Die
+  Verfügbarkeit eines Assets fällt beim Import (auch GSTOOL) nicht unter den Wert aus der BIA.
+  Keine Migration, kein Klick.
 - **Importe (W9):** Erreicht ein Compliance-Mapping-Import die „Import 4-Augen-Pflicht ab Zeilen“
   (Admin > Compliance-Richtlinien, Standard 50, 0 = aus), lässt er sich erst nach der Freigabe genau
   dieser Datei durch eine zweite Person festschreiben („Freigabe anfordern“ in der Vorschau, Freigabe im

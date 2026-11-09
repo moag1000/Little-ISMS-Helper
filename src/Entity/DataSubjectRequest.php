@@ -18,6 +18,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Attribute\ApiReadOnlyEvidence;
 
 /**
  * GDPR Data Subject Request (Betroffenenantrag)
@@ -217,6 +218,7 @@ class DataSubjectRequest
      * Actual date/time the response was sent to the data subject (Art. 12(3))
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('complete / reject action (S22, GDPR Art. 12(3))')]
     private ?\DateTimeImmutable $responseAt = null;
 
     /**
@@ -238,6 +240,7 @@ class DataSubjectRequest
      * extension is internally documented but not provably communicated.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('extend action (S22, GDPR Art. 12(3))')]
     private ?DateTimeImmutable $extensionNotifiedAt = null;
 
     /**
@@ -437,7 +440,8 @@ class DataSubjectRequest
      *
      * - extendedDeadlineAt set → extensionReason required
      * - responseAt set         → responseMethod required
-     * - rejectionReason set    → responseAt required (rejection is itself a response)
+     * - rejected               → responseAt required (rejection is itself a response;
+     *                            S22: the reject step writes it, so a typed reason alone is no rejection)
      */
     public static function validateResponseTracking(self $entity, ExecutionContextInterface $context): void
     {
@@ -453,7 +457,7 @@ class DataSubjectRequest
                 ->addViolation();
         }
 
-        if (!empty($entity->getRejectionReason()) && $entity->getResponseAt() === null) {
+        if ($entity->getStatus() === 'rejected' && $entity->getResponseAt() === null) {
             $context->buildViolation('dsr.error.response_at_required_when_rejected')
                 ->atPath('responseAt')
                 ->addViolation();

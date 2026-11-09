@@ -1,4 +1,6 @@
 vulnerability:
+    step_evidence:
+        remediated_date: 'Set by the "patched" or "mitigated" step.'
     title: Vulnerabilities
     new: 'New Vulnerability'
     prefill:

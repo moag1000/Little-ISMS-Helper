@@ -1,4 +1,6 @@
 control:
+  step_evidence:
+    last_review_date: 'Wird mit „Review bestätigen“ gesetzt.'
   title:
     plural: Maßnahmen
   section:

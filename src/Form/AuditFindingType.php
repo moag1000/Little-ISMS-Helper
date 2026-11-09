@@ -261,19 +261,23 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'help' => 'audit_finding.help.nc_correction_due_date',
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('ncVerifiedAt', DateTimeType::class, [
+                'disabled' => true,
                 'label' => 'audit_finding.field.nc_verified_at',
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
-                'help' => 'audit_finding.help.nc_verified_at',
+                'help' => 'audit_finding.step_evidence.nc_verified_at',
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('ncVerifiedBy', OwnerUserType::class, [
+                'disabled' => true,
                 'label' => 'audit_finding.field.nc_verified_by',
                 'choice_label' => fn(User $u): string => $u->getEmail() ?? (string) $u->getId(),
                 'placeholder' => 'audit_finding.placeholder.nc_verified_by',
                 'required' => false,
-                'help' => 'audit_finding.help.nc_verified_by',
+                'help' => 'audit_finding.step_evidence.nc_verified_by',
             ])
             // CAPA Hybrid JSON field. Wired via
             // JsonStructuredType (TextareaType parent w/ JsonArrayTransformer)

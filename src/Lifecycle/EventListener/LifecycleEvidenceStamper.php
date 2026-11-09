@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace App\Lifecycle\EventListener;
 
+use App\Entity\AuditFinding;
 use App\Entity\BCExercise;
 use App\Entity\ChangeRequest;
+use App\Entity\CorrectiveAction;
 use App\Entity\Incident;
 use App\Entity\InternalAudit;
+use App\Entity\Patch;
+use App\Entity\Training;
 use App\Entity\User;
+use App\Entity\Vulnerability;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -33,6 +38,12 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
  *   approve → approver (the second person) and time, rejection reason cleared;
  *   reject → the reason; close → who closed and when. Stamped only after the
  *   step succeeded, so a refused step leaves no evidence behind.
+ * - S22 (wave 9, before typed in a form or an import row):
+ *   corrective action (ISO 27001 10.2) complete → actual completion date;
+ *   confirm_effective / confirm_ineffective → effectiveness review date;
+ *   audit finding verify → nonconformity verified at / by (the auditor);
+ *   vulnerability patch / mitigate → remediated date (A.8.8);
+ *   patch deploy → deployed date; training complete → completion date (A.6.3).
  *
  * Tests: tests/Lifecycle/LifecycleEvidenceStamperTest.php; the forms show the
  * fields read-only (tests/Api/ApiEvidenceFieldNamesTest.php).
@@ -55,6 +66,21 @@ final class LifecycleEvidenceStamper
             $subject instanceof Incident => $this->incident($subject, $transition, $now),
             $subject instanceof BCExercise => $this->exercise($subject, $transition, $now),
             $subject instanceof InternalAudit => $this->internalAudit($subject, $transition, $context, $now),
+            $subject instanceof CorrectiveAction => match ($transition) {
+                'complete' => $subject->setActualCompletionDate($now),
+                'confirm_effective', 'confirm_ineffective' => $subject->setEffectivenessReviewDate($now),
+                default => null,
+            },
+            $subject instanceof AuditFinding => $transition === 'verify'
+                ? $subject->setNcVerifiedAt($now)->setNcVerifiedBy(self::actor($context))
+                : null,
+            $subject instanceof Vulnerability => in_array($transition, ['patch', 'mitigate'], true)
+                ? $subject->setRemediatedDate($now)
+                : null,
+            $subject instanceof Patch => $transition === 'deploy' ? $subject->setDeployedDate($now) : null,
+            $subject instanceof Training => $transition === 'complete'
+                ? $subject->setCompletionDate(DateTime::createFromImmutable($now))
+                : null,
             default => null,
         };
     }

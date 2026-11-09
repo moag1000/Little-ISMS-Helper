@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Attribute\ManagerOrResponsibleField;
 
 /**
  * Crisis Team Entity for BSI IT-Grundschutz 200-4 Compliance (Kapitel 4.3)
@@ -195,12 +196,14 @@ class CrisisTeam
      * Last activation date
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ManagerOrResponsibleField('crisis team record: ISO 22301 8.4.2, set by the BCM officer or the team leader')]
     private ?DateTimeImmutable $lastActivatedAt = null;
 
     /**
      * Last training/exercise date
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ManagerOrResponsibleField('crisis team record: ISO 22301 8.4.2, set by the BCM officer or the team leader')]
     private ?DateTimeImmutable $lastTrainingAt = null;
 
     /**
@@ -230,6 +233,7 @@ class CrisisTeam
      * Number of real activations — BSI 200-4 §7.2
      */
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    #[ManagerOrResponsibleField('crisis team record: ISO 22301 8.4.2, set by the BCM officer or the team leader')]
     private int $activationCount = 0;
 
     /**

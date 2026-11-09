@@ -1098,6 +1098,9 @@ data_breach:
         action:
             submit: 'Register data breach'
 dpia:
+    step_evidence:
+        dpo_consultation_date: 'Set by the DPO consultation action (GDPR Art. 35(2)).'
+        supervisory_consultation_date: 'Set by the supervisory consultation action (GDPR Art. 36).'
     error:
         invalid_csrf: 'Invalid CSRF token.'
         rejection_reason_required: 'Rejection reason is required.'

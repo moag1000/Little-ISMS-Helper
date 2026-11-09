@@ -13,6 +13,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Attribute\ManagerOrResponsibleField;
 
 /**
  * Consent Entity - GDPR Art. 7 Compliance
@@ -86,6 +87,7 @@ class Consent
     #[ORM\ManyToOne(targetEntity: ProcessingActivity::class, inversedBy: 'consents')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull(message: 'consent.validation.processing_activity_required')]
+    #[ManagerOrResponsibleField('Proof of consent (GDPR Art. 7(1)) is kept by the DPO or the person responsible for it')]
     private ?ProcessingActivity $processingActivity = null;
 
     /**
@@ -105,6 +107,7 @@ class Consent
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Assert\NotNull(message: 'consent.validation.granted_at_required')]
+    #[ManagerOrResponsibleField('Proof of consent (GDPR Art. 7(1)) is kept by the DPO or the person responsible for it')]
     private ?DateTimeImmutable $grantedAt = null;
 
     /**
@@ -145,6 +148,7 @@ class Consent
      */
     #[ORM\ManyToOne(targetEntity: Document::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ManagerOrResponsibleField('Proof of consent (GDPR Art. 7(1)) is kept by the DPO or the person responsible for it')]
     private ?Document $proofDocument = null;
 
     /**

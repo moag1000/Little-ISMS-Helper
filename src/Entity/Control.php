@@ -175,7 +175,8 @@ class Control
     private ?DateTimeInterface $targetDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['control:read', 'control:write'])]
+    #[Groups(['control:read'])]
+    #[ApiReadOnlyEvidence('"Review bestätigen" (S22)')]
     private ?DateTimeInterface $lastReviewDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]

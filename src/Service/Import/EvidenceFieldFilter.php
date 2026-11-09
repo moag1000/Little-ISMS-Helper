@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Import;
 
 use App\Attribute\ApiReadOnlyEvidence;
+use App\Service\WriteRule\WriteRules;
 
 /**
  * Evidence is written by the action that produces it (mark as reported, approve,
@@ -64,7 +65,12 @@ final class EvidenceFieldFilter
      */
     public static function forUpdate(string $class, array $entityData): array
     {
-        return array_diff_key($entityData, array_flip(self::importProtectedFields($class)));
+        // S22: create-only values (an incident's detectedAt, the risk of a treatment plan) stay
+        // where they were set; the deadlines that run from them are not moved by a spreadsheet.
+        return array_diff_key($entityData, array_flip([
+            ...self::importProtectedFields($class),
+            ...WriteRules::createOnlyFields($class),
+        ]));
     }
 
     /**
@@ -76,6 +82,6 @@ final class EvidenceFieldFilter
      */
     public static function forCreate(string $class, array $entityData): array
     {
-        return self::forUpdate($class, $entityData);
+        return array_diff_key($entityData, array_flip(self::importProtectedFields($class)));
     }
 }

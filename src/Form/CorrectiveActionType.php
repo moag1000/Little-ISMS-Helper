@@ -133,18 +133,23 @@ final class CorrectiveActionType extends AbstractType implements SectionMapInter
                 'input' => 'datetime_immutable',
                 'required' => false,
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('actualCompletionDate', DateType::class, [
+                'disabled' => true,
                 'label' => 'corrective_action.field.actual_completion_date',
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
+                'help' => 'corrective_action.step_evidence.actual_completion_date',
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('effectivenessReviewDate', DateType::class, [
+                'disabled' => true,
                 'label' => 'corrective_action.field.effectiveness_review_date',
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
-                'help' => 'corrective_action.help.effectiveness_review_date',
+                'help' => 'corrective_action.step_evidence.effectiveness_review_date',
             ])
             ->add('effectivenessNotes', TextareaType::class, [
                 'label' => 'corrective_action.field.effectiveness_notes',

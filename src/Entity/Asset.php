@@ -32,6 +32,7 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Serializer\Attribute\SerializedName;
+use App\Attribute\ManagerOrResponsibleField;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
 #[ORM\Index(name: 'idx_asset_type', columns: ['asset_type'])]
@@ -126,6 +127,7 @@ class Asset
         choices: [null, 'prohibited', 'high_risk', 'limited_risk', 'minimal_risk'],
         message: 'asset.validation.ai_classification_invalid',
     ), ModuleField('ai_governance')]
+    #[ManagerOrResponsibleField('protection need: ISO 27001 A.5.9, A.5.12')]
     private ?string $aiAgentClassification = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -181,18 +183,21 @@ class Asset
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'asset.validation.confidentiality_required')]
     #[Assert\Range(notInRangeMessage: 'asset.validation.confidentiality_range', min: 1, max: 5)]
+    #[ManagerOrResponsibleField('protection need: ISO 27001 A.5.9, A.5.12')]
     private ?int $confidentialityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'asset.validation.integrity_required')]
     #[Assert\Range(notInRangeMessage: 'asset.validation.integrity_range', min: 1, max: 5)]
+    #[ManagerOrResponsibleField('protection need: ISO 27001 A.5.9, A.5.12')]
     private ?int $integrityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'asset.validation.availability_required')]
     #[Assert\Range(notInRangeMessage: 'asset.validation.availability_range', min: 1, max: 5)]
+    #[ManagerOrResponsibleField('protection need: ISO 27001 A.5.9, A.5.12')]
     private ?int $availabilityValue = null;
 
     // ISO 27001 Compliance Fields
@@ -213,6 +218,7 @@ class Asset
         choices: ['public', 'internal', 'confidential', 'restricted'],
         message: 'asset.validation.data_classification_invalid'
     )]
+    #[ManagerOrResponsibleField('protection need: ISO 27001 A.5.9, A.5.12')]
     private ?string $dataClassification = null;
 
     /**
@@ -227,6 +233,7 @@ class Asset
         choices: ['public', 'internal', 'confidential', 'strictly_confidential', 'prototype'],
         message: 'asset.validation.tisax_classification_invalid'
     ), ModuleField('tisax')]
+    #[ManagerOrResponsibleField('protection need: ISO 27001 A.5.9, A.5.12')]
     private ?string $tisaxInformationClassification = null;
 
     /**
@@ -257,6 +264,7 @@ class Asset
      */
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['asset:read', 'asset:write']), ModuleField('nis2_dora')]
+    #[ManagerOrResponsibleField('protection need: ISO 27001 A.5.9, A.5.12')]
     private bool $isDoraRelevant = false;
 
     #[ORM\Column(length: 50)]
