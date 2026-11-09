@@ -6,6 +6,7 @@ namespace App\Tests\Service\Library;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\Tenant;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\Library\LibraryRoundtripService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -139,6 +140,37 @@ final class LibraryRoundtripServiceTest extends TestCase
         self::assertNotEmpty($data['bausteine']);
         $baustein = $data['bausteine'][0];
         self::assertSame('erhoeht', $baustein['anforderungen'][0]['level']);
+    }
+
+    #[Test]
+    public function exportLeavesOutRowsAnotherOrganisationUploaded(): void
+    {
+        $framework = $this->buildSampleFramework();
+        [$shared] = $this->buildSampleRequirements($framework);
+        $own = $this->tenant(1);
+        $foreign = $this->tenant(2);
+
+        $ownRow = (new ComplianceRequirement())->setFramework($framework)->setRequirementId('ISA-1.1')
+            ->setTitle('Own')->setRequirementType('core')->setUploadTenant($own);
+        $foreignRow = (new ComplianceRequirement())->setFramework($framework)->setRequirementId('ISA-1.2')
+            ->setTitle('Foreign')->setRequirementType('core')->setUploadTenant($foreign);
+        $this->requirementRepo->method('findBy')->willReturn([$shared, $ownRow, $foreignRow]);
+
+        $csv = $this->service->exportCsv($framework, $own);
+        self::assertStringContainsString('ISMS.1', $csv);
+        self::assertStringContainsString('ISA-1.1', $csv);
+        self::assertStringNotContainsString('ISA-1.2', $csv);
+
+        $ids = array_column($this->service->buildExportData($framework, null)['bausteine'], 'id');
+        self::assertSame(['ISMS.1'], $ids, 'without an organisation only the shared catalogue is exported');
+    }
+
+    private function tenant(int $id): Tenant
+    {
+        $tenant = new Tenant();
+        (new \ReflectionProperty(Tenant::class, 'id'))->setValue($tenant, $id);
+
+        return $tenant;
     }
 
     private function buildSampleFramework(): ComplianceFramework

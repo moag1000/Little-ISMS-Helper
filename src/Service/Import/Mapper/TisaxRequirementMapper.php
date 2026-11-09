@@ -92,6 +92,13 @@ final class TisaxRequirementMapper
         return $this->catalogueProvider->upsertFramework($version);
     }
 
+    /** The existing framework row of a catalogue version, or null — never writes. */
+    public function findFramework(
+        string $version = \App\Service\Tisax\TisaxCatalogueProvider::VERSION_ISA6,
+    ): ?ComplianceFramework {
+        return $this->catalogueProvider->findFramework($version);
+    }
+
     /**
      * Map a list of parsed rows to ComplianceRequirement entities.
      *
@@ -167,13 +174,15 @@ final class TisaxRequirementMapper
      */
     public function computeDelta(
         array $rows,
-        ComplianceFramework $framework,
+        ?ComplianceFramework $framework,
         Tenant $tenant,
     ): array {
         $repo     = $this->em->getRepository(ComplianceRequirement::class);
         $existing = 0;
+        $total    = count($rows);
 
-        foreach ($rows as $row) {
+        // No framework row yet: every row is new (the commit creates the row).
+        foreach ($framework === null ? [] : $rows as $row) {
             if ($repo->findOneBy([
                 'framework'    => $framework,
                 'requirementId' => $row->controlId,
@@ -183,7 +192,6 @@ final class TisaxRequirementMapper
             }
         }
 
-        $total = count($rows);
         return [
             'new'      => $total - $existing,
             'existing' => $existing,
@@ -204,12 +212,15 @@ final class TisaxRequirementMapper
      */
     public function computeMaturityDiff(
         array $rows,
-        ComplianceFramework $framework,
+        ?ComplianceFramework $framework,
         Tenant $tenant,
     ): array {
         $repo    = $this->em->getRepository(ComplianceRequirement::class);
         $reverse = array_flip(self::LEVEL_MAP); // 'established' => 3, …
         $diff    = [];
+        if ($framework === null) {
+            return $diff; // nothing stored yet → nothing to overwrite
+        }
 
         foreach ($rows as $row) {
             $workbookLevel = $this->resolvePrefilledLevel($row);

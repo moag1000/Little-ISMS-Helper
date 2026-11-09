@@ -55,6 +55,8 @@ class Schedule implements ScheduleProviderInterface
         // The database rows of the regulatory approval chains follow their YAML after a deploy (S17).
         ['20 4 * * *', 'app:generate-regulatory-workflows'],
         ['15 3 * * *', 'app:policy-wizard:purge-sandboxes'],
+        // Upload files of bulk imports never committed (30 days); committed ones stay as evidence.
+        ['35 3 * * *', 'app:import:purge-abandoned'],
         ['0 2 * * 0', 'app:tisax:purge-old-ip-addresses'],
         ['30 5 * * *', 'app:suggestions:generate'],
         ['0 7 * * *', 'app:notification:send-digests'],

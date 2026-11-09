@@ -179,6 +179,7 @@ wizard:
         duties_overdue: 'Pflichten überfällig'
         duties_overdue_desc: '%overdue% von %total% offenen Pflichten sind überfällig (%types%).'
         no_records: 'Keine Datensätze vorhanden'
+        tlpt_not_recent: 'Kein abgeschlossener TLPT in den letzten 36 Monaten'
         records_incomplete: 'Angaben fehlen'
         records_incomplete_desc: 'Bei %open% von %total% Datensätzen fehlen Pflichtangaben.'
         no_management_decision: 'Keine Leitungsentscheidung erfasst'
@@ -678,7 +679,7 @@ wizard:
         dora_25_pentest: "Penetrationstests (Art. 25)"
         dora_25_pentest_desc: "Penetrationstests durchgeführt"
         dora_26_tlpt: "TLPT (Art. 26)"
-        dora_26_tlpt_desc: "Threat-Led Penetration Testing (falls erforderlich)"
+        dora_26_tlpt_desc: "Abgeschlossener Threat-Led Penetration Test mit Bericht in den letzten 36 Monaten (falls erforderlich)"
         dora_28_strategy: "Drittanbieter-Strategie (Art. 28)"
         dora_28_strategy_desc: "Strategie für das IKT-Drittparteienrisiko vom Leitungsorgan gebilligt"
         dora_29_concentration: "Konzentrationsrisiko (Art. 29)"

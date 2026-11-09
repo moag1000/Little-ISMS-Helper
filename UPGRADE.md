@@ -199,6 +199,20 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Audit-Checkliste (S20, ISO 27001 9.2):** Urteile speichern nur Auditoren, Manager und Leitauditor
   oder Auditteam des Audits. Ein Urteil wirkt erst auf die Erfüllung, wenn das Audit berichtet ist
   (Status „berichtet“, „freigegeben“, „abgeschlossen“); Urteile laufender Audits zeigen sich danach.
+- **Importe (W9):** Erreicht ein Compliance-Mapping-Import die „Import 4-Augen-Pflicht ab Zeilen“
+  (Admin > Compliance-Richtlinien, Standard 50, 0 = aus), lässt er sich erst nach der Freigabe genau
+  dieser Datei durch eine zweite Person festschreiben („Freigabe anfordern“ in der Vorschau, Freigabe im
+  4-Augen-Posteingang); bisher war das nur ein Hinweis. Der TISAX-Import legt das gemeinsame
+  TISAX-Framework nur noch an, wer den Katalog schreiben darf (bei mehreren Organisationen der
+  Super-Admin), und schaltet ein deaktiviertes nicht wieder ein; Vorschau und Bestätigungsseite schreiben
+  nichts mehr. Der Bibliotheks-Export enthält keine TISAX-Zeilen anderer Organisationen. Der
+  CSV-Benutzerimport legt auch beim Super-Admin Konten in der aktuellen Organisation an. Die alte
+  JSON-Seite `/admin/data/import` (schrieb nie etwas) ist entfallen; Einstieg ist der Import-Hub.
+  Upload-Dateien nie festgeschriebener Bulk-Importe löscht der Scheduler nach 30 Tagen
+  (`app:import:purge-abandoned`, 03:35).
+- **DORA Art. 26:** Der Compliance-Wizard wertet TLPT nur noch als erfüllt, wenn ein abgeschlossener
+  TLPT mit Enddatum und Zusammenfassung in den letzten 36 Monaten vorliegt; ein geplanter Eintrag reicht
+  nicht mehr. Die DORA-Erfüllung kann dadurch sinken.
 - **Einstellungen ohne Wirkung entfernt** (`Version20261109093000_DropUnusedAdminSettings` löscht die
   Spalten): Policy-Optik ohne Schriftart, Deckblatt-Muster und Custom-CSS; Report-Optik ohne
   Deckblatt-Muster, Standard-Zielgruppe, Wasserzeichen-Deckkraft, Schriftart, Seitenausrichtung,
