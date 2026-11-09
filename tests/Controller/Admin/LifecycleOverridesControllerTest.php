@@ -194,8 +194,83 @@ final class LifecycleOverridesControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
 
         $html = (string) $this->client->getResponse()->getContent();
-        // Form must render with the roles field
-        self::assertStringContainsString('roles_raw', $html);
+        // S15: roles are checkboxes from the role list, no free text
+        self::assertStringContainsString('lifecycle_override[roles][]', $html);
+        self::assertStringNotContainsString('value="ROLE_USER"', $html);
+    }
+
+    #[Test]
+    public function testRolesOutsideTheListAreRejected(): void
+    {
+        $this->client->loginUser($this->adminUser);
+        $crawler = $this->client->request('GET', '/de/admin/lifecycle-overrides/document_lifecycle/publish/edit');
+        $values = $crawler->filter('form[name="lifecycle_override"]')->form()->getPhpValues();
+        $values['lifecycle_override']['roles'] = ['ROLE_USER'];
+        $this->client->request('POST', '/de/admin/lifecycle-overrides/document_lifecycle/publish/edit', $values);
+
+        self::assertSame(Response::HTTP_UNPROCESSABLE_ENTITY, $this->client->getResponse()->getStatusCode());
+        self::assertSame(0, $this->countOverrides('document_lifecycle', 'publish'));
+    }
+
+    #[Test]
+    public function testFourEyesRequiredByTheDefinitionCannotBeSwitchedOff(): void
+    {
+        // asset.yaml dispose: four_eyes: true (ISO A.7.14 secure disposal)
+        $this->client->loginUser($this->adminUser);
+        $crawler = $this->client->request('GET', '/de/admin/lifecycle-overrides/asset_lifecycle/dispose/edit');
+        $values = $crawler->filter('form[name="lifecycle_override"]')->form()->getPhpValues();
+        $values['lifecycle_override']['four_eyes_override'] = '1';
+        unset($values['lifecycle_override']['four_eyes']);
+        $this->client->request('POST', '/de/admin/lifecycle-overrides/asset_lifecycle/dispose/edit', $values);
+
+        self::assertSame(Response::HTTP_UNPROCESSABLE_ENTITY, $this->client->getResponse()->getStatusCode());
+        self::assertSame(0, $this->countOverrides('asset_lifecycle', 'dispose'));
+    }
+
+    #[Test]
+    public function testManagementDecisionKeepsItsRoles(): void
+    {
+        // management_decision.yaml approve: ROLE_TOP_MGMT only — an org admin must not hand it to ROLE_ADMIN.
+        $this->client->loginUser($this->adminUser);
+        $crawler = $this->client->request('GET', '/de/admin/lifecycle-overrides/management_decision_lifecycle/approve/edit');
+        self::assertResponseIsSuccessful();
+        $values = $crawler->filter('form[name="lifecycle_override"]')->form()->getPhpValues();
+        $values['lifecycle_override']['roles'] = ['ROLE_ADMIN'];
+        $this->client->request('POST', '/de/admin/lifecycle-overrides/management_decision_lifecycle/approve/edit', $values);
+
+        $this->em->clear();
+        self::assertSame(0, $this->em->getRepository(LifecycleConfig::class)->count([
+            'tenant' => $this->tenant->getId(),
+            'workflowName' => 'management_decision_lifecycle',
+            'transitionName' => 'approve',
+            'configKey' => 'roles',
+        ]));
+    }
+
+    #[Test]
+    public function testTighteningIsSaved(): void
+    {
+        $this->client->loginUser($this->adminUser);
+        $crawler = $this->client->request('GET', '/de/admin/lifecycle-overrides/document_lifecycle/submit_for_review/edit');
+        $values = $crawler->filter('form[name="lifecycle_override"]')->form()->getPhpValues();
+        $values['lifecycle_override']['roles'] = ['ROLE_MANAGER'];
+        $values['lifecycle_override']['reason_required_override'] = '1';
+        $values['lifecycle_override']['reason_required'] = '1';
+        $this->client->request('POST', '/de/admin/lifecycle-overrides/document_lifecycle/submit_for_review/edit', $values);
+
+        self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        self::assertSame(2, $this->countOverrides('document_lifecycle', 'submit_for_review'));
+    }
+
+    private function countOverrides(string $workflow, string $transition): int
+    {
+        $this->em->clear();
+
+        return $this->em->getRepository(LifecycleConfig::class)->count([
+            'tenant' => $this->tenant->getId(),
+            'workflowName' => $workflow,
+            'transitionName' => $transition,
+        ]);
     }
 
     #[Test]

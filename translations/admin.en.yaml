@@ -144,7 +144,7 @@ admin:
             api_doc: { label: 'API documentation', desc: 'OpenAPI / Swagger UI for integrations' }
             setup_wizard: { label: 'Setup wizard', desc: 'Re-run initial configuration' }
             lifecycle_overrides: { label: 'Lifecycle Overrides', desc: 'Configure workflow transition metadata per tenant' }
-            workflow_overlay: { label: 'Workflow Step Editor', desc: 'Edit per-tenant step-level overrides for regulatory approval lifecycles' }
+            workflow_overlay: { label: 'Approval chains', desc: 'View steps, roles and deadlines of the regulatory approvals' }
             supplier_criticality: { label: 'Supplier criticalities', desc: 'Custom levels for supplier classification' }
             tour_content: { label: 'Guided-tour content', desc: 'Edit step texts and order' }
             tour_completion: { label: 'Tour completion', desc: 'Completion rates + reset tools' }
@@ -1512,6 +1512,15 @@ admin:
         no_transitions: 'No transitions found in this workflow.'
         yaml_baseline: 'YAML baseline'
         current_value: 'Current value'
+        yaml_roles: 'Roles of the workflow definition'
+        violation:
+            roles_locked: 'The roles of this transition are fixed (management or privacy).'
+            roles_invalid: 'Only roles from the list, not ROLE_USER or reviewer roles.'
+            four_eyes_locked: 'Four eyes are required for this transition and cannot be switched off.'
+            reason_required_locked: 'A reason is required for this transition and cannot be switched off.'
+            module_locked: 'The transition belongs to a module; its module gate cannot be replaced.'
+            module_invalid: 'Unknown module.'
+            unknown_key: 'Unknown setting.'
         save_success: 'Lifecycle override saved.'
         reset_success: 'Lifecycle override reset — YAML baseline will be used again.'
         reset_confirm: 'Really reset all overrides for this transition?'
@@ -1538,7 +1547,8 @@ admin:
             reset: 'Reset'
         form:
             roles: 'Roles'
-            roles_help: 'Comma-separated ROLE_* values, e.g. ROLE_MANAGER, ROLE_ADMIN. Leave empty to use YAML default.'
+            roles_help: 'No selection = roles of the workflow definition.'
+            roles_locked_help: 'Management and privacy transitions keep their roles (ISO 27001 5.1, GDPR Art. 38/39).'
             reason_required: 'Reason required'
             reason_required_value: 'Require reason'
             four_eyes: 'Four-eyes principle'
@@ -1550,7 +1560,7 @@ admin:
         help:
             roles:
                 title: 'Roles'
-                body: 'Defines which ROLE_* roles are allowed to trigger the transition. Overrides the YAML baseline.'
+                body: 'Which roles may fire the transition. Overrides may tighten but never loosen a norm duty: four eyes and reason stay on where the definition requires them.'
             reason_required:
                 title: 'Reason required'
                 body: 'When enabled, the user must provide a reason when triggering the transition.'
@@ -1582,104 +1592,41 @@ admin:
             file_not_found: "Export file not found (already downloaded or expired)."
 
     workflows:
-        title: 'Workflow Step Editor'
-        subtitle: 'Edit per-tenant step-level overrides for regulatory approval lifecycles and lifecycle configurations'
-        no_regulatory: 'No regulatory workflow configuration files found.'
-        no_lifecycle: 'No lifecycle configuration files found.'
-        no_steps: 'No steps defined for this workflow. Lifecycle configurations use transition-level overrides.'
-        no_yaml_baseline: 'No YAML baseline data available for this step.'
-        yaml_baseline: 'YAML baseline'
-        yaml_value: 'YAML value'
-        current_override: 'Current override'
-        save_success: 'Workflow step override saved.'
-        reset_success: 'Workflow step override reset — YAML baseline will be used again.'
-        reset_confirm: 'Really reset all overrides for this step?'
+        title: 'Approval chains'
+        subtitle: 'Which steps an approval goes through and who approves it.'
+        no_regulatory: 'No approval chains.'
+        no_lifecycle: 'No lifecycle configurations.'
+        no_steps: 'This workflow has no approval steps.'
         section:
-            regulatory: 'Regulatory Workflows'
-            regulatory_desc: 'Approval chain workflows with per-step overrides for roles, SLA, and auto-progress conditions.'
-            lifecycle: 'Lifecycle Configurations'
-            lifecycle_desc: 'Entity status state machines — configure transition-level overrides via the Lifecycle Overrides editor.'
-            steps: 'Approval Steps'
-            steps_desc: '%count% steps defined in YAML'
-            override_fields: 'Override Fields'
-            yaml_baseline: 'YAML Baseline'
-            help: 'Help'
+            regulatory: 'Regulatory approval chains'
+            regulatory_desc: 'Steps, roles and deadlines come from the norm definition and apply to every organisation.'
+            lifecycle: 'Lifecycle configurations'
+            lifecycle_desc: 'Status transitions of records — roles, four eyes and reason per organisation under lifecycle overrides.'
+            steps: 'Approval steps'
+            steps_desc: '%count% steps'
         col:
             name: 'Workflow'
             steps: 'Steps'
-            overrides: 'Active Overrides'
             step_name: 'Step'
-            approver_role: 'Approver Role'
+            approver_role: 'Approved by'
             days: 'Days'
-            overridden_keys: 'Overridden Keys'
         step:
             unnamed: '(unnamed step)'
-            overridden: 'overridden'
-            override_active: 'Override active'
+            notification: 'Notification'
+            owner: 'Responsible person of the record'
         show:
             title: 'Workflow: %workflow%'
-            subtitle: 'Step structure and tenant overrides'
-        edit:
-            title: 'Edit Step %step% — %workflow%'
-            breadcrumb: 'Step %step%'
-            hint: 'Empty fields use the YAML baseline value. Only populated fields are stored in the database.'
+            subtitle: 'Steps of the approval chain'
         action:
-            show: 'Manage steps'
+            show: 'Show steps'
             back: 'Back'
-            reset: 'Reset'
             transition_overrides: 'Transition overrides'
             edit_transitions: 'Edit transition overrides'
-            lifecycle_overrides: 'Lifecycle Overrides'
-        form:
-            approver_role: 'Approver role'
-            approver_role_help: 'ROLE_* value or "owner" (whoever is responsible for the record, e.g. the risk owner) that overrides the YAML approver role for this step. Leave empty to use YAML default.'
-            approver_users: 'Approvers'
-            approver_users_help: 'Users of this organisation who may approve the step. Leave empty to use the YAML default.'
-            days_to_complete: 'Days to complete'
-            days_to_complete_help: 'SLA days override. Leave empty to use YAML default.'
-            auto_progress_conditions: 'Auto-progress conditions'
-            auto_progress_conditions_help: 'When the step moves on automatically. Leave empty to use the YAML default.'
-            reason_required: 'Reason required'
-            reason_required_value: 'Require reason'
-            four_eyes: 'Four-eyes principle'
-            four_eyes_value: 'Enable four-eyes'
-            module: 'Module gate'
-            module_help: 'Module key (e.g. privacy, documents). Leave empty for no restriction.'
-            enable_override: 'Enable override'
-        conditions:
-            type: 'Condition type'
-            type_field_completion: 'Fields completed'
-            type_auto: 'Expression met'
-            type_risk_appetite: 'Within risk appetite'
-            type_time_based: 'Time elapsed'
-            entity: 'Entity'
-            entity_help: 'Short entity name, e.g. DataBreach, Incident, Risk.'
-            fields: 'Required fields'
-            fields_help: 'Field names that must be filled (press Enter after each).'
-            condition: 'Expression'
-            condition_help: 'e.g. severity >= high AND affectedDataSubjectsCount > 100'
-            risk_score_field: 'Risk score field'
-            delay: 'Delay'
-            delay_help: 'Time elapsed only, e.g. 24h, 3d.'
+            lifecycle_overrides: 'Lifecycle overrides'
         hint:
-            yaml_baseline: 'Missing overrides automatically use the YAML baseline value from the workflow configuration.'
-            lifecycle_redirect: 'Lifecycle configurations use transition-level overrides. Click "Transition overrides" to configure them.'
-            lifecycle_has_transitions: 'This is a lifecycle configuration. Use the Lifecycle Overrides editor to configure transition-level metadata.'
-        validation:
-            days_non_negative: 'Days to complete must be 0 or greater.'
-        help:
-            approver_role:
-                title: 'Approver role'
-                body: 'Overrides the ROLE_* value that is required to approve this step. Takes precedence over the YAML definition.'
-            days_to_complete:
-                title: 'Days to complete'
-                body: 'Override the SLA deadline for this step. Affects the overdue-monitoring cron job.'
-            auto_progress:
-                title: 'Auto-progress conditions'
-                body: 'When all conditions evaluate to true (field_completion / risk_appetite / auto), the step is auto-approved without user action.'
-            four_eyes:
-                title: 'Four-eyes principle'
-                body: 'When enabled, a second person must confirm the transition (four-eyes principle).'
+            who_approves: 'The people holding the named role in your organisation approve (user management). You decide there who holds the role; the steps and deadlines are the same for every organisation.'
+            lifecycle_redirect: 'Roles, four eyes and reason of the status transitions are set under transition overrides.'
+            lifecycle_has_transitions: 'This is a lifecycle configuration. Adjust its transitions under lifecycle overrides.'
     queue:
         title: 'Queue Status'
         badge: 'Async Worker'

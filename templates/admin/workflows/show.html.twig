@@ -70,77 +70,33 @@
                                     <th class="fa-table__th">{{ 'admin.workflows.col.step_name'|trans }}</th>
                                     <th class="fa-table__th">{{ 'admin.workflows.col.approver_role'|trans }}</th>
                                     <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.days'|trans }}</th>
-                                    <th class="fa-table__th">{{ 'admin.workflows.col.overridden_keys'|trans }}</th>
-                                    <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
                                 {% trans_default_domain 'admin' %}
                                 {% for step in steps %}
-                                    <tr class="fa-table__row{% if step.has_overrides %} fa-table__row--highlighted{% endif %}">
+                                    <tr class="fa-table__row">
                                         <td class="fa-table__cell fa-table__cell--num text-muted">
                                             {{ step.index + 1 }}
                                         </td>
                                         <td class="fa-table__cell">
-                                            <strong>{{ step.effective.name ?? step.yaml.name ?? ('admin.workflows.step.unnamed'|trans) }}</strong>
-                                            {% if step.has_overrides %}
-                                                <span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm ms-1">
-                                                    {{ 'admin.workflows.step.overridden'|trans }}
-                                                </span>
+                                            <strong>{{ step.yaml.name ?? ('admin.workflows.step.unnamed'|trans) }}</strong>
+                                            {% if (step.yaml.step_type ?? 'approval') == 'notification' %}
+                                                <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm ms-1">{{ 'admin.workflows.step.notification'|trans }}</span>
                                             {% endif %}
                                         </td>
                                         <td class="fa-table__cell">
-                                            {% set role = step.effective.approver_role ?? step.effective.approverRole ?? null %}
-                                            {% if role %}
+                                            {% set role = step.yaml.approver_role ?? null %}
+                                            {% if role == 'owner' %}
+                                                {{ 'admin.workflows.step.owner'|trans }}
+                                            {% elseif role %}
                                                 <code class="text-primary small">{{ role }}</code>
                                             {% else %}
                                                 <span class="fa-table__cell--muted">—</span>
                                             {% endif %}
-                                            {% if step.overrides.approverRole is defined %}
-                                                <i class="fa-icon fa-icon--status-warning ms-1" aria-label="{{ 'admin.workflows.step.override_active'|trans }}" title="{{ 'admin.workflows.step.override_active'|trans }}"></i>
-                                            {% endif %}
                                         </td>
                                         <td class="fa-table__cell fa-table__cell--num">
-                                            {% set days = step.effective.days_to_complete ?? step.effective.daysToComplete ?? null %}
-                                            {% if days is not null %}
-                                                {{ days }}
-                                                {% if step.overrides.daysToComplete is defined %}
-                                                    <i class="fa-icon fa-icon--status-warning ms-1" aria-label="{{ 'admin.workflows.step.override_active'|trans }}"></i>
-                                                {% endif %}
-                                            {% else %}
-                                                <span class="fa-table__cell--muted">—</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="fa-table__cell">
-                                            {% if step.overrides is not empty %}
-                                                {% for key, val in step.overrides %}
-                                                    <span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm me-1">{{ key }}</span>
-                                                {% endfor %}
-                                            {% else %}
-                                                <span class="fa-table__cell--muted">{{ 'admin.workflows.yaml_baseline'|trans }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="fa-table__cell fa-table__cell--actions d-flex gap-1">
-                                            <a href="{{ path('admin_workflow_overlay_edit', {name: workflowName, stepIndex: step.index}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                               aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                            </a>
-                                            {% if step.has_overrides %}
-                                                <form method="post"
-                                                      action="{{ path('admin_workflow_overlay_reset', {name: workflowName, stepIndex: step.index}) }}"
-                                                      data-controller="ui-actions"
-                      data-action="submit->ui-actions#confirm"
-                      data-ui-actions-message-param="{{ 'admin.workflows.reset_confirm'|trans({}, 'admin') }}">
-                                                    <input type="hidden" name="_token"
-                                                           value="{{ csrf_token('workflow_step_reset_' ~ workflowName ~ '_' ~ step.index) }}">
-                                                    <button type="submit"
-                                                            class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
-                                                            aria-label="{{ 'admin.workflows.action.reset'|trans }}">
-                                                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                            {% endif %}
+                                            {{ step.yaml.days_to_complete ?? '—' }}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -150,7 +106,7 @@
                             variant: 'info',
                             icon: 'status-info',
                             class: 'mt-3 small',
-                            body: 'admin.workflows.hint.yaml_baseline'|trans,
+                            body: 'admin.workflows.hint.who_approves'|trans,
                         }) }}
                     </div>
                 </section>

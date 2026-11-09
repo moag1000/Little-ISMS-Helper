@@ -16,6 +16,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
  * Subject MUST be the entity (`Document`, `Risk`, ...). Resolver returns
  * the effective `roles` array (YAML + tenant DB-overlay). User wins if
  * holding ANY listed role.
+ *
+ * A transition with `responsible: true` in its YAML metadata is also open to the person
+ * responsible for the record (`RECORD_RESPONSIBLE`, the holder the reminders go to) —
+ * "role OR responsible", e.g. the objective owner recording an objective as achieved (S15).
  */
 final class LifecycleVoter extends Voter
 {
@@ -42,6 +46,11 @@ final class LifecycleVoter extends Voter
 
         $effective = $this->resolver->resolve($subject, $workflowName, $transitionName);
         $allowedRoles = $effective['roles'] ?? [];
+
+        if (($effective['responsible'] ?? false) === true
+            && $this->security->isGranted(RecordResponsibleVoter::RESPONSIBLE, $subject)) {
+            return true;
+        }
 
         if ($allowedRoles === []) {
             // Empty roles list = nobody can perform this transition by default.

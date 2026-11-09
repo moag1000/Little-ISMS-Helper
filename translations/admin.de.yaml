@@ -160,7 +160,7 @@ admin:
             api_doc: { label: 'API-Dokumentation', desc: 'OpenAPI / Swagger-UI für integrationen' }
             setup_wizard: { label: 'Setup-Wizard', desc: 'Erst-Einrichtung erneut durchlaufen' }
             lifecycle_overrides: { label: 'Lifecycle-Overrides', desc: 'Workflow-Transition-Metadaten organisationsspezifisch konfigurieren' }
-            workflow_overlay: { label: 'Workflow-Schritt-Editor', desc: 'Organisationsspezifische Schritt-Overrides für regulatorische Genehmigungs-Lifecycles bearbeiten' }
+            workflow_overlay: { label: 'Freigabeketten', desc: 'Schritte, Rollen und Fristen der regulatorischen Freigaben ansehen' }
             supplier_criticality: { label: 'Lieferanten-Kritikalitäten', desc: 'Eigene Levels für Supplier-Klassifikation' }
             tour_content: { label: 'Guided-Tour-Inhalte', desc: 'Schritt-Texte und Reihenfolge bearbeiten' }
             tour_completion: { label: 'Tour-Completion', desc: 'Abschluss-Quoten + Reset-Werkzeuge' }
@@ -1528,6 +1528,15 @@ admin:
         no_transitions: 'Keine Transitionen in diesem Workflow gefunden.'
         yaml_baseline: 'YAML-Standard'
         current_value: 'Aktueller Wert'
+        yaml_roles: 'Rollen laut Workflow-Definition'
+        violation:
+            roles_locked: 'Die Rollen dieses Übergangs sind festgelegt (Leitung oder Datenschutz).'
+            roles_invalid: 'Nur Rollen aus der Liste, nicht ROLE_USER oder Prüferrollen.'
+            four_eyes_locked: 'Das Vier-Augen-Prinzip ist für diesen Übergang vorgeschrieben und lässt sich nicht abschalten.'
+            reason_required_locked: 'Die Begründung ist für diesen Übergang vorgeschrieben und lässt sich nicht abschalten.'
+            module_locked: 'Der Übergang gehört zu einem Modul; das Modul-Gate lässt sich nicht ersetzen.'
+            module_invalid: 'Unbekanntes Modul.'
+            unknown_key: 'Unbekannte Einstellung.'
         save_success: 'Lifecycle-Override gespeichert.'
         reset_success: 'Lifecycle-Override zurückgesetzt — YAML-Baseline wird wieder verwendet.'
         reset_confirm: 'Alle Overrides für diese Transition wirklich zurücksetzen?'
@@ -1554,7 +1563,8 @@ admin:
             reset: 'Zurücksetzen'
         form:
             roles: 'Rollen'
-            roles_help: 'Kommagetrennte ROLE_*-Werte, z.B. ROLE_MANAGER, ROLE_ADMIN. Leer lassen für YAML-Standard.'
+            roles_help: 'Keine Auswahl = Rollen aus der Workflow-Definition.'
+            roles_locked_help: 'Leitungs- und Datenschutz-Übergänge behalten ihre Rollen (ISO 27001 5.1, DSGVO Art. 38/39).'
             reason_required: 'Begründung erforderlich'
             reason_required_value: 'Begründung verlangen'
             four_eyes: 'Vier-Augen-Prinzip'
@@ -1566,7 +1576,7 @@ admin:
         help:
             roles:
                 title: 'Rollen'
-                body: 'Definiert, welche ROLE_*-Rollen die Transition auslösen dürfen. Überschreibt die YAML-Baseline.'
+                body: 'Welche Rollen den Übergang auslösen dürfen. Überschreibungen dürfen verschärfen, aber keine Norm-Pflicht lockern: Vier-Augen und Begründung bleiben an, wo die Definition sie verlangt.'
             reason_required:
                 title: 'Begründung erforderlich'
                 body: 'Wenn aktiviert, muss der Benutzer beim Auslösen der Transition eine Begründung eingeben.'
@@ -1598,104 +1608,41 @@ admin:
             file_not_found: "Export-Datei nicht gefunden (möglicherweise bereits heruntergeladen oder abgelaufen)."
 
     workflows:
-        title: 'Workflow-Schritt-Editor'
-        subtitle: 'Organisationsspezifische Schritt-Overrides für regulatorische Genehmigungs-Lifecycles und Lifecycle-Konfigurationen bearbeiten'
-        no_regulatory: 'Keine regulatorischen Workflow-Konfigurationsdateien gefunden.'
-        no_lifecycle: 'Keine Lifecycle-Konfigurationsdateien gefunden.'
-        no_steps: 'Für diesen Workflow sind keine Schritte definiert. Lifecycle-Konfigurationen verwenden Transitions-Overrides.'
-        no_yaml_baseline: 'Keine YAML-Baseline-Daten für diesen Schritt verfügbar.'
-        yaml_baseline: 'YAML-Baseline'
-        yaml_value: 'YAML-Wert'
-        current_override: 'Aktueller Override'
-        save_success: 'Workflow-Schritt-Override gespeichert.'
-        reset_success: 'Workflow-Schritt-Override zurückgesetzt — YAML-Baseline wird wieder verwendet.'
-        reset_confirm: 'Wirklich alle Overrides für diesen Schritt zurücksetzen?'
+        title: 'Freigabeketten'
+        subtitle: 'Welche Schritte eine Freigabe durchläuft und wer sie freigibt.'
+        no_regulatory: 'Keine Freigabeketten vorhanden.'
+        no_lifecycle: 'Keine Lifecycle-Konfigurationen vorhanden.'
+        no_steps: 'Dieser Workflow hat keine Freigabeschritte.'
         section:
-            regulatory: 'Regulatorische Workflows'
-            regulatory_desc: 'Genehmigungsketten-Workflows mit schrittweisen Overrides für Rollen, SLA und Auto-Progress-Bedingungen.'
+            regulatory: 'Regulatorische Freigabeketten'
+            regulatory_desc: 'Schritte, Rollen und Fristen kommen aus der Norm-Definition und gelten für alle Organisationen.'
             lifecycle: 'Lifecycle-Konfigurationen'
-            lifecycle_desc: 'Entitäts-Status-Automaten — Transitions-Overrides über den Lifecycle-Overrides-Editor konfigurieren.'
-            steps: 'Genehmigungsschritte'
-            steps_desc: '%count% Schritte in YAML definiert'
-            override_fields: 'Override-Felder'
-            yaml_baseline: 'YAML-Baseline'
-            help: 'Hilfe'
+            lifecycle_desc: 'Status-Übergänge der Datensätze — Rollen, Vier-Augen und Begründung je Organisation unter Lifecycle-Overrides.'
+            steps: 'Freigabeschritte'
+            steps_desc: '%count% Schritte'
         col:
             name: 'Workflow'
             steps: 'Schritte'
-            overrides: 'Aktive Overrides'
             step_name: 'Schritt'
-            approver_role: 'Genehmiger-Rolle'
+            approver_role: 'Freigabe durch'
             days: 'Tage'
-            overridden_keys: 'Überschriebene Felder'
         step:
             unnamed: '(unbenannter Schritt)'
-            overridden: 'überschrieben'
-            override_active: 'Override aktiv'
+            notification: 'Benachrichtigung'
+            owner: 'Verantwortliche Person des Datensatzes'
         show:
             title: 'Workflow: %workflow%'
-            subtitle: 'Schrittstruktur und Organisations-Overrides'
-        edit:
-            title: 'Schritt %step% bearbeiten — %workflow%'
-            breadcrumb: 'Schritt %step%'
-            hint: 'Leere Felder verwenden den YAML-Baseline-Wert. Nur befüllte Felder werden in der Datenbank gespeichert.'
+            subtitle: 'Schritte der Freigabekette'
         action:
-            show: 'Schritte verwalten'
+            show: 'Schritte anzeigen'
             back: 'Zurück'
-            reset: 'Zurücksetzen'
             transition_overrides: 'Transitions-Overrides'
             edit_transitions: 'Transitions-Overrides bearbeiten'
             lifecycle_overrides: 'Lifecycle-Overrides'
-        form:
-            approver_role: 'Genehmiger-Rolle'
-            approver_role_help: 'ROLE_*-Wert oder „owner“ (die oder der Verantwortliche des Datensatzes, z. B. Risk Owner), der die YAML-Genehmiger-Rolle für diesen Schritt überschreibt. Leer lassen für YAML-Standard.'
-            approver_users: 'Genehmiger'
-            approver_users_help: 'Benutzer dieser Organisation, die den Schritt genehmigen dürfen. Leer lassen für YAML-Standard.'
-            days_to_complete: 'Tage bis Abschluss'
-            days_to_complete_help: 'SLA-Tage-Override. Leer lassen für YAML-Standard.'
-            auto_progress_conditions: 'Auto-Progress-Bedingungen'
-            auto_progress_conditions_help: 'Wann der Schritt automatisch weiterläuft. Leer lassen für YAML-Standard.'
-            reason_required: 'Begründung erforderlich'
-            reason_required_value: 'Begründung verlangen'
-            four_eyes: 'Vier-Augen-Prinzip'
-            four_eyes_value: 'Vier-Augen aktivieren'
-            module: 'Modul-Gate'
-            module_help: 'Modul-Schlüssel (z.B. privacy, documents). Leer für keine Einschränkung.'
-            enable_override: 'Override aktivieren'
-        conditions:
-            type: 'Art der Bedingung'
-            type_field_completion: 'Felder ausgefüllt'
-            type_auto: 'Ausdruck erfüllt'
-            type_risk_appetite: 'Innerhalb Risikoappetit'
-            type_time_based: 'Zeitablauf'
-            entity: 'Entität'
-            entity_help: 'Kurzname der Entität, z. B. DataBreach, Incident, Risk.'
-            fields: 'Pflichtfelder'
-            fields_help: 'Feldnamen, die gefüllt sein müssen (Enter nach jedem Feld).'
-            condition: 'Ausdruck'
-            condition_help: 'z. B. severity >= high AND affectedDataSubjectsCount > 100'
-            risk_score_field: 'Risikowert-Feld'
-            delay: 'Verzögerung'
-            delay_help: 'Nur bei Zeitablauf, z. B. 24h, 3d.'
         hint:
-            yaml_baseline: 'Fehlende Overrides verwenden automatisch den YAML-Baseline-Wert aus der Workflow-Konfiguration.'
-            lifecycle_redirect: 'Lifecycle-Konfigurationen verwenden Transitions-Overrides. Klicken Sie auf "Transitions-Overrides" zur Konfiguration.'
-            lifecycle_has_transitions: 'Dies ist eine Lifecycle-Konfiguration. Verwenden Sie den Lifecycle-Overrides-Editor für Transitions-Metadaten.'
-        validation:
-            days_non_negative: 'Tage bis Abschluss muss 0 oder größer sein.'
-        help:
-            approver_role:
-                title: 'Genehmiger-Rolle'
-                body: 'Überschreibt die ROLE_*-Anforderung für diesen Schritt. Hat Vorrang vor der YAML-Definition.'
-            days_to_complete:
-                title: 'Tage bis Abschluss'
-                body: 'Überschreibt die SLA-Frist für diesen Schritt. Beeinflusst den Überfälligkeits-Cron-Job.'
-            auto_progress:
-                title: 'Auto-Progress-Bedingungen'
-                body: 'Wenn alle Bedingungen zutreffen (field_completion / risk_appetite / auto), wird der Schritt ohne Benutzeraktion genehmigt.'
-            four_eyes:
-                title: 'Vier-Augen-Prinzip'
-                body: 'Wenn aktiviert, muss eine zweite Person die Transition bestätigen.'
+            who_approves: 'Freigeben dürfen die Personen, die in Ihrer Organisation die genannte Rolle haben (Benutzerverwaltung). Wer die Rolle trägt, legen Sie dort fest; Schritte und Fristen selbst sind für alle Organisationen gleich.'
+            lifecycle_redirect: 'Rollen, Vier-Augen und Begründung der Status-Übergänge legen Sie unter Transitions-Overrides fest.'
+            lifecycle_has_transitions: 'Dies ist eine Lifecycle-Konfiguration. Ihre Übergänge passen Sie unter Lifecycle-Overrides an.'
     queue:
         title: 'Queue-Status'
         badge: 'Async-Worker'

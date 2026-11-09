@@ -293,7 +293,8 @@ class ConsentController extends AbstractController
     }
 
     #[Route('/{id}/revoke', name: 'app_consent_revoke', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    // S15: the transition's roles decide (consent.yaml revoke: DPO or manager, tenant overrides apply).
+    #[IsGranted('lifecycle.consent_lifecycle.revoke', subject: 'consent')]
     public function revoke(Request $request, Consent $consent): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;

@@ -123,7 +123,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         // Medium severity should start workflow
         $this->workflowService->expects($this->once())
             ->method('startWorkflow')
-            ->with('Incident', 2, 'Medium Severity Incident')
+            ->with('Incident', 2, 'incident_low_severity')
             ->willReturn($workflowInstance);
 
         $this->emailService->expects($this->once())
@@ -159,7 +159,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
 
         $this->workflowService->expects($this->once())
             ->method('startWorkflow')
-            ->with('Incident', 3, 'High Severity Incident')
+            ->with('Incident', 3, 'incident_high_severity')
             ->willReturn($workflowInstance);
 
         // Expect two email notifications: Incident Manager + CISO
@@ -199,7 +199,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
 
         $this->workflowService->expects($this->once())
             ->method('startWorkflow')
-            ->with('Incident', 4, 'Critical Incident Response')
+            ->with('Incident', 4, 'incident_high_severity')
             ->willReturn($workflowInstance);
 
         // Expect 4 email notifications: Incident Manager + CISO + 2 Managers
@@ -236,7 +236,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
 
         $this->workflowService->expects($this->once())
             ->method('startWorkflow')
-            ->with('Incident', 5, 'Data Breach Notification')
+            ->with('Incident', 5, 'incident_high_severity')
             ->willReturn($workflowInstance);
 
         // Expect 3 data breach notifications: DPO + CISO + CEO
@@ -414,7 +414,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $newWorkflowInstance = $this->createWorkflowInstance('in_progress');
         $this->workflowService->expects($this->once())
             ->method('startWorkflow')
-            ->with('Incident', 11, 'Critical Incident Response')
+            ->with('Incident', 11, 'incident_high_severity')
             ->willReturn($newWorkflowInstance);
 
         // Escalate critical incident should create workflow

@@ -11,7 +11,6 @@ use App\Entity\Notification\NotificationChannel;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use App\Form\Admin\TenantComplianceSettingsType;
-use App\Form\Admin\WorkflowStepOverlayType;
 use App\Form\CrisisTeamType;
 use App\Form\IdentityProviderType;
 use App\Form\ManagementReviewType;
@@ -117,32 +116,6 @@ final class JsonBuilderFieldsRoundTripTest extends KernelTestCase
         $form->submit(['configJson' => $view['configJson']->vars['value']], false);
         self::assertTrue($form->get('configJson')->isValid());
         self::assertSame($channel->getConfig(), $form->get('configJson')->getData());
-    }
-
-    #[Test]
-    public function workflowOverlayConditionsAndApproversAreStructured(): void
-    {
-        $conditions = ['type' => 'field_completion', 'entity' => 'DataBreach', 'fields' => ['severity', 'notificationRequired'], 'condition' => 'severity >= high'];
-        $form = $this->createForm(WorkflowStepOverlayType::class, [
-            'approverUsers' => [7],
-            'autoProgressConditions' => $conditions,
-        ], ['user_choices' => ['Alice (alice@example.com)' => 7, 'Bob (bob@example.com)' => 9]]);
-
-        $view = $form->createView();
-        self::assertSame($conditions, json_decode($view['autoProgressConditions']->vars['value'], true));
-
-        $form->submit([
-            'approverUsers' => ['7', '9'],
-            'autoProgressConditions' => $view['autoProgressConditions']->vars['value'],
-        ], false);
-
-        self::assertTrue($form->isValid(), (string) $form->getErrors(true));
-        self::assertSame([7, 9], $form->get('approverUsers')->getData());
-        self::assertSame($conditions, $form->get('autoProgressConditions')->getData());
-
-        $form = $this->createForm(WorkflowStepOverlayType::class, [], ['user_choices' => []]);
-        $form->submit(['autoProgressConditions' => json_encode(['type' => 'unknown_type'])], false);
-        self::assertFalse($form->get('autoProgressConditions')->isValid());
     }
 
     #[Test]
