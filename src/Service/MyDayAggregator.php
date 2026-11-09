@@ -7,7 +7,6 @@ namespace App\Service;
 use App\Entity\Document;
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\ManagementDecision;
-use App\Entity\PolicyAcknowledgement;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WizardSession;
@@ -225,20 +224,18 @@ final class MyDayAggregator
             ->getQuery()
             ->getResult();
 
+        $acknowledged = $allApproved === [] ? [] : $this->policyAckRepo->acknowledgedKeysFor($tenant, $user);
         foreach ($allApproved as $document) {
             /** @var Document $document */
             // Only documents that require ack (best-effort field check)
             if (!PolicyAcknowledgementService::needsAcknowledgement($document)) {
                 continue;
             }
-            // Check if ack exists for this user + version. 
             // PENDING rows (created by Auto-Acknowledgement-Campaign) keep
             // the document on the user's My-Day list — only ACKNOWLEDGED
-            // rows close the item.
+            // rows of this version close the item. One query for all documents (S31).
             $version = $document->getVersion();
-            $existing = $this->policyAckRepo->findOneFor($tenant, $document, $user, PolicyAcknowledgementService::versionOf($document));
-            if ($existing instanceof PolicyAcknowledgement
-                && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
+            if (isset($acknowledged[$document->getId() . '|' . PolicyAcknowledgementService::versionOf($document)])) {
                 continue;
             }
 

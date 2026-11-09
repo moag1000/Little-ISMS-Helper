@@ -6,10 +6,7 @@ namespace App\Controller;
 
 use App\Attribute\RequiresModule;
 use App\Enum\IncidentSeverity;
-use DateTime;
 use App\Entity\Risk;
-use App\Entity\Asset;
-use App\Entity\Incident;
 use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
@@ -33,6 +30,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Util\BoundedQuery;
 use App\Util\CsvSanitizer;
 
 /**
@@ -46,6 +44,9 @@ use App\Util\CsvSanitizer;
 #[RequiresModule('analytics')]
 class AnalyticsController extends AbstractController
 {
+    /** Longest trend period in months (S31: the period sizes loops and queries). */
+    public const int MAX_TREND_MONTHS = 36;
+
     public function __construct(
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
@@ -240,16 +241,12 @@ class AnalyticsController extends AbstractController
     #[Route('/api/trends', name: 'app_analytics_trends_data', methods: ['GET'])]
     public function getTrendsData(Request $request): JsonResponse
     {
-        $period = $request->query->get('period', '12'); // months
+        // Months; bounded (S31): the period sizes three loops and queries.
+        $period = BoundedQuery::int($request, 'period', 12, 1, self::MAX_TREND_MONTHS);
 
-        // Risk Trend
-        $riskTrend = $this->getRiskTrend((int)$period);
-
-        // Asset Trend
-        $assetTrend = $this->getAssetTrend((int)$period);
-
-        // Incident Trend
-        $incidentTrend = $this->getIncidentTrend((int)$period);
+        $riskTrend = $this->getRiskTrend($period);
+        $assetTrend = $this->getAssetTrend($period);
+        $incidentTrend = $this->getIncidentTrend($period);
 
         return new JsonResponse([
             'risks' => $riskTrend,
@@ -430,56 +427,79 @@ class AnalyticsController extends AbstractController
         }
         return $trend;
     }
+    /**
+     * Assets that existed at the end of each month — one query for the whole
+     * period (the tenant filter scopes it), counted per month in PHP.
+     */
     private function getAssetTrend(int $months): array
     {
+        $created = array_map(
+            static fn (array $row): ?\DateTimeInterface => $row['createdAt'] ?? null,
+            $this->assetRepository->createQueryBuilder('a')->select('a.createdAt')->getQuery()->getArrayResult(),
+        );
+
         $trend = [];
-        $now = new DateTime();
-
-        for ($i = $months - 1; $i >= 0; $i--) {
-            $date = (clone $now)->modify("-{$i} months");
-            $monthEnd = (clone $date)->modify('last day of this month')->setTime(23, 59, 59);
-
-            $assets = $this->assetRepository->findAll();
-            $monthAssets = array_filter($assets, fn(Asset $asset): bool => $asset->getCreatedAt() <= $monthEnd);
-
+        foreach (self::monthsBack($months) as [$monthStart, $monthEnd]) {
             $trend[] = [
-                'month' => $date->format('M Y'),
-                'count' => count($monthAssets)
+                'month' => $monthStart->format('M Y'),
+                'count' => count(array_filter($created, static fn (?\DateTimeInterface $at): bool => $at !== null && $at <= $monthEnd)),
             ];
         }
 
         return $trend;
     }
+    /**
+     * Incidents per month and severity — one query for the period.
+     */
     private function getIncidentTrend(int $months): array
     {
+        $periodStart = self::monthsBack($months)[0][0];
+        $rows = $this->incidentRepository->createQueryBuilder('i')
+            ->select('i.occurredAt', 'i.severity')
+            ->andWhere('i.occurredAt >= :start')
+            ->setParameter('start', $periodStart)
+            ->getQuery()
+            ->getArrayResult();
+
         $trend = [];
-        $now = new DateTime();
-
-        for ($i = $months - 1; $i >= 0; $i--) {
-            $date = (clone $now)->modify("-{$i} months");
-            $monthStart = (clone $date)->modify('first day of this month')->setTime(0, 0);
-            $monthEnd = (clone $date)->modify('last day of this month')->setTime(23, 59, 59);
-
-            $incidents = $this->incidentRepository->findAll();
-            $monthIncidents = array_filter($incidents, function(Incident $incident) use ($monthStart, $monthEnd): bool {
-                $occuredAt = $incident->getOccurredAt();
-                return $occuredAt >= $monthStart && $occuredAt <= $monthEnd;
-            });
-
-            $countBySeverity = static fn(IncidentSeverity $severity): int => count(array_filter($monthIncidents,
-                static fn(Incident $incident): bool => $incident->getSeverity() === $severity));
+        foreach (self::monthsBack($months) as [$monthStart, $monthEnd]) {
+            $month = array_values(array_filter($rows, static fn (array $row): bool => ($row['occurredAt'] ?? null) instanceof \DateTimeInterface
+                && $row['occurredAt'] >= $monthStart && $row['occurredAt'] <= $monthEnd));
+            $countBySeverity = static fn (IncidentSeverity $severity): int => count(array_filter(
+                $month,
+                static fn (array $row): bool => ($row['severity'] instanceof IncidentSeverity
+                    ? $row['severity']
+                    : IncidentSeverity::tryFrom((string) $row['severity'])) === $severity,
+            ));
 
             $trend[] = [
-                'month' => $date->format('M Y'),
+                'month' => $monthStart->format('M Y'),
                 'low' => $countBySeverity(IncidentSeverity::Low),
                 'medium' => $countBySeverity(IncidentSeverity::Medium),
                 'high' => $countBySeverity(IncidentSeverity::High),
                 'critical' => $countBySeverity(IncidentSeverity::Critical),
-                'total' => count($monthIncidents)
+                'total' => count($month),
             ];
         }
 
         return $trend;
+    }
+    /**
+     * The last $months calendar months, oldest first, as [first second, last second].
+     * "first day of" keeps the 31st from skipping a month.
+     *
+     * @return list<array{0: \DateTimeImmutable, 1: \DateTimeImmutable}>
+     */
+    private static function monthsBack(int $months): array
+    {
+        $now = new \DateTimeImmutable('first day of this month 00:00');
+        $list = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $start = $now->modify(sprintf('-%d months', $i));
+            $list[] = [$start, $start->modify('last day of this month')->setTime(23, 59, 59)];
+        }
+
+        return $list;
     }
     // ========== Private Helper Methods ==========
 

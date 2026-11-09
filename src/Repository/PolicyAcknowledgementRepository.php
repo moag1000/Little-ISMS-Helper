@@ -37,6 +37,32 @@ class PolicyAcknowledgementRepository extends ServiceEntityRepository
     }
 
     /**
+     * The user's ACKNOWLEDGED rows of the tenant as "documentId|version" keys — one query
+     * for a whole list of documents instead of {@see findOneFor()} per document (S31).
+     *
+     * @return array<string, true>
+     */
+    public function acknowledgedKeysFor(Tenant $tenant, User $user): array
+    {
+        $rows = $this->createQueryBuilder('a')
+            ->select('IDENTITY(a.document) AS documentId', 'a.documentVersion AS version')
+            ->andWhere('a.tenant = :tenant')
+            ->andWhere('a.user = :user')
+            ->andWhere('a.status = :status')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('user', $user)
+            ->setParameter('status', PolicyAcknowledgement::STATUS_ACKNOWLEDGED)
+            ->getQuery()
+            ->getScalarResult();
+        $keys = [];
+        foreach ($rows as $row) {
+            $keys[$row['documentId'] . '|' . $row['version']] = true;
+        }
+
+        return $keys;
+    }
+
+    /**
      * @return PolicyAcknowledgement[]
      *
      * Returns only completed ACKNOWLEDGED rows for

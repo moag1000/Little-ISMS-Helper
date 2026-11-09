@@ -752,6 +752,23 @@ das Verhalten pinnt `tests/Scheduler/ScheduledCommandsTenantIsolationTest`.
 
 ---
 
+### quality/check_unbounded_loads.py (Gate 101)
+
+**Zweck:** Keine ungebremsten Ladevorgänge auf dem Request-Weg (S31, 2026-11). Eine große Organisation hat
+20 000 Assets; Controller, Fristquellen, Exporte, Report-Services, Twig und MCP-Werkzeuge, die eine ganze
+Tabelle laden und in PHP filtern oder blättern, halten je Aufruf einen PHP-Worker sekundenlang. Gezählt je Datei:
+`->findAll()`, `->findBy([... 'tenant' ...])` ohne Limit-Argument und `ListPage::fromRequest(` (nur Controller;
+`fromSlice()` blättert in SQL). Ratchet gegen `scripts/quality/baselines/unbounded_loads.txt` wie Gate 25:
+neue Datei oder höhere Zahl rot, `--strict-shrink` verlangt das Senken eines Eintrags, `--ratchet-ref` lässt
+die Baseline gegenüber dem PR-Ziel nicht wachsen. Ein von Natur aus kleiner Katalog trägt
+`// @bounded-load: <Grund>`. Senken: `--write-baseline scripts/quality/baselines/unbounded_loads.txt`.
+Selbsttest `scripts/quality/tests/test_check_unbounded_loads.py`; das Verhalten pinnt
+`tests/Performance/ObligationInboxQueryBudgetTest` (Mein Tag gleich viele Abfragen bei 5 und 2 000 Assets).
+
+**CI-Integration:** Gate 101 im `code-quality`-Job.
+
+---
+
 ### quality/check_api_module_fields.py (Gate 89)
 
 **Zweck:** Felder eines optionalen Moduls an einem Datensatz eines anderen Moduls (DORA am

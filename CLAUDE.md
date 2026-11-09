@@ -764,6 +764,13 @@ Compliance audit trail: [`docs/archive/FORM_AUDIT_2026-05.md`](docs/archive/FORM
   (`reportUnmatched`, so a fixed one must be removed) or as a marker comment with a reason. Each rule has a fixture
   whose `// expect:` lines are its mutation table. Tests that read `security.yaml` use
   `tests/Support/ResolvedSecurityConfig` (every env incl. `when@*`, as Symfony resolves it).
+- Load (S31, Gate 101 `check_unbounded_loads.py`, ratchet like Gate 25): no `findAll()` / tenant `findBy()` without
+  limit / `ListPage::fromRequest()` added on the request path (controllers, deadline sources, exports, report
+  services, Twig, MCP); a small global catalogue carries `// @bounded-load: <reason>`. Numbers from the request that
+  size work go through `App\Util\BoundedQuery` (`int()` → 400 outside the range, `clamped()`); bulk `ids` are capped
+  at 500 (`BulkIdsLimitSubscriber`), export/PDF/preview/analytics routes count per person (`HeavyRequestRateLimitSubscriber`,
+  by route name). A deadline source with a date column implements `HorizonFilteredSource` (filter in SQL);
+  `ObligationInbox` builds once per request (`ResetInterface`). `tests/Performance/ObligationInboxQueryBudgetTest`.
 - File size is ratcheted (Gate 25, `check_god_class_size.py`): every file in `src/` has a per-kind
   LOC limit (controller 600, service 1500 / 15 ctor deps, entity 1000, repository 600, command 800,
   rest 800). Files already over it are listed in `scripts/quality/baselines/god_class_size.txt` and

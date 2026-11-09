@@ -397,7 +397,7 @@ class MonitoringController extends AbstractController
         $availableChannels = [];
 
         if (file_exists($logFile)) {
-            $limit = (int) $request->query->get('limit', 100);
+            $limit = \App\Util\BoundedQuery::clamped($request, 'limit', 100, 1, 1000);
             $errors = $this->parseLogFile($logFile, $limit, $filters, $availableLevels, $availableChannels);
 
             // Calculate statistics
@@ -439,7 +439,7 @@ class MonitoringController extends AbstractController
     ): Response {
         // Quick filters
         $filter = $request->query->get('filter', 'all');
-        $limit = (int) $request->query->get('limit', 100);
+        $limit = \App\Util\BoundedQuery::clamped($request, 'limit', 100, 1, 1000);
 
         $logs = match ($filter) {
             'today' => $auditLogRepository->getRecentActivity(24),

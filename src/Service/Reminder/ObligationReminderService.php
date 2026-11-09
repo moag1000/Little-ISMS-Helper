@@ -64,7 +64,7 @@ class ObligationReminderService
     {
         $now ??= new DateTimeImmutable();
         $sent = 0;
-        foreach ($this->tenants->findActive() as $tenant) {
+        foreach ($this->activeTenants() as $tenant) {
             $local = $now->setTimezone($this->timezoneOf($tenant));
             if (!$force && (int) $local->format('G') !== ReminderSettings::digestHour($tenant)) {
                 continue;
@@ -82,9 +82,9 @@ class ObligationReminderService
                 }
                 ++$sent;
             }
+            $this->endOrganisation($dryRun);
         }
         if (!$dryRun) {
-            $this->entityManager->flush();
             $this->notices->purgeOlderThan($now->modify(sprintf('-%d days', self::RETENTION_DAYS)));
         }
 
@@ -99,9 +99,10 @@ class ObligationReminderService
     {
         $now ??= new DateTimeImmutable();
         $sent = 0;
-        foreach ($this->tenants->findActive() as $tenant) {
+        foreach ($this->activeTenants() as $tenant) {
             $fired = [];
-            foreach ($this->inbox->byRecipient($tenant, $now) as ['user' => $user, 'items' => $items]) {
+            // Only sources with hour deadlines: the full inbox is built once a day, for the digest.
+            foreach ($this->inbox->byRecipient($tenant, $now, urgentOnly: true) as ['user' => $user, 'items' => $items]) {
                 $urgent = array_values(array_filter(
                     $items,
                     static fn (Obligation $o): bool => $o->profile()->urgentHours !== null && ($o->urgent || $o->overdue),
@@ -133,12 +134,37 @@ class ObligationReminderService
                     'severity' => 'critical',
                 ]);
             }
-        }
-        if (!$dryRun) {
-            $this->entityManager->flush();
+            $this->endOrganisation($dryRun);
         }
 
         return $sent;
+    }
+
+    /**
+     * The active organisations, each loaded fresh: {@see endOrganisation()} clears the
+     * entity manager after every organisation, so one run does not keep the records
+     * of fifty organisations in memory (S31).
+     *
+     * @return iterable<Tenant>
+     */
+    private function activeTenants(): iterable
+    {
+        $ids = array_map(static fn (Tenant $tenant): int => (int) $tenant->getId(), $this->tenants->findActive());
+        foreach ($ids as $id) {
+            $tenant = $this->tenants->find($id);
+            if ($tenant instanceof Tenant) {
+                yield $tenant;
+            }
+        }
+    }
+
+    private function endOrganisation(bool $dryRun): void
+    {
+        if (!$dryRun) {
+            $this->entityManager->flush();
+        }
+        $this->entityManager->clear();
+        $this->inbox->reset();
     }
 
     /** @param list<Obligation> $items */

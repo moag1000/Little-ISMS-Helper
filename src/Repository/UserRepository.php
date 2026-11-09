@@ -525,7 +525,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findActiveByTenant(\App\Entity\Tenant $tenant): array
     {
         /** @var list<User> $users */
+        // Custom roles come along: role checks over all users (who is reminded, who may
+        // approve) read them per user otherwise — one query per person (S31).
         $users = $this->createQueryBuilder('u')
+            ->leftJoin('u.customRoles', 'customRole')
+            ->addSelect('customRole')
             ->andWhere('u.tenant = :tenant')
             ->andWhere('u.isActive = :active')
             ->setParameter('tenant', $tenant)
