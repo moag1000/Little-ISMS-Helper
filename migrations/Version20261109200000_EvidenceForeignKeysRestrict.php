@@ -69,7 +69,8 @@ final class Version20261109200000_EvidenceForeignKeysRestrict extends AbstractMi
                 continue; // module table never created on this installation
             }
             foreach ($schema->getTable($table)->getForeignKeys() as $key) {
-                $local = array_map(static fn ($name): string => $name->toString(), $key->getReferencingColumnNames());
+                $referencing = $key->getReferencingColumnNames();
+                $local = array_map(static fn ($name): string => $name->getIdentifier()->getValue(), $referencing);
                 if (\count($local) !== 1 || !\in_array($local[0], $columns, true) || $key->getObjectName() === null) {
                     continue;
                 }
@@ -78,15 +79,16 @@ final class Version20261109200000_EvidenceForeignKeysRestrict extends AbstractMi
                 if (($onDelete === null && $restrict) || $current === $onDelete) {
                     continue; // already as wanted (re-run)
                 }
-                $name = $key->getObjectName()->toString();
+                // toSQL() quotes for the platform (backticks on MySQL/MariaDB); toString() is ANSI.
+                $name = $key->getObjectName()->toSQL($this->platform);
                 $this->addSql(sprintf('ALTER TABLE %s DROP FOREIGN KEY %s', $table, $name));
                 $this->addSql(sprintf(
                     'ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s (%s)%s',
                     $table,
                     $name,
-                    $local[0],
-                    $key->getReferencedTableName()->toString(),
-                    implode(', ', array_map(static fn ($name): string => $name->toString(), $key->getReferencedColumnNames())),
+                    $referencing[0]->toSQL($this->platform),
+                    $key->getReferencedTableName()->toSQL($this->platform),
+                    implode(', ', array_map(fn ($name): string => $name->toSQL($this->platform), $key->getReferencedColumnNames())),
                     $onDelete !== null ? ' ON DELETE ' . $onDelete : '',
                 ));
             }
