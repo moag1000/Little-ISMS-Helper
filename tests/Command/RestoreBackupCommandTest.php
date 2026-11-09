@@ -58,12 +58,18 @@ class RestoreBackupCommandTest extends TestCase
             'filepath' => '/absolutely/nonexistent/backup.json',
         ]);
 
-        $this->assertSame(1, $this->commandTester->getStatusCode(),
-            'Exit code must be 1 when the backup file does not exist');
+        $this->assertSame(
+            1,
+            $this->commandTester->getStatusCode(),
+            'Exit code must be 1 when the backup file does not exist'
+        );
 
         $display = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('not found', strtolower($display),
-            'Output must mention that the file was not found');
+        $this->assertStringContainsString(
+            'not found',
+            strtolower($display),
+            'Output must mention that the file was not found'
+        );
     }
 
     /**
@@ -104,8 +110,11 @@ class RestoreBackupCommandTest extends TestCase
 
         @unlink($tmpFile);
 
-        $this->assertSame(1, $this->commandTester->getStatusCode(),
-            'Exit code must be 1 when the tenant code is not found');
+        $this->assertSame(
+            1,
+            $this->commandTester->getStatusCode(),
+            'Exit code must be 1 when the tenant code is not found'
+        );
     }
 
     /**
@@ -134,8 +143,11 @@ class RestoreBackupCommandTest extends TestCase
 
         @unlink($tmpFile);
 
-        $this->assertSame(0, $this->commandTester->getStatusCode(),
-            'Exit code must be 0 on successful restore');
+        $this->assertSame(
+            0,
+            $this->commandTester->getStatusCode(),
+            'Exit code must be 0 on successful restore'
+        );
     }
 
     /**
@@ -174,12 +186,18 @@ class RestoreBackupCommandTest extends TestCase
 
         @unlink($tmpFile);
 
-        $this->assertSame(0, $this->commandTester->getStatusCode(),
-            'Best-effort partial restore must exit 0');
+        $this->assertSame(
+            0,
+            $this->commandTester->getStatusCode(),
+            'Best-effort partial restore must exit 0'
+        );
 
         $display = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Skipped rows', $display,
-            'Output must list skipped rows when failures are present');
+        $this->assertStringContainsString(
+            'Skipped rows',
+            $display,
+            'Output must list skipped rows when failures are present'
+        );
     }
 
     /**
@@ -215,8 +233,10 @@ class RestoreBackupCommandTest extends TestCase
         @unlink($tmpFile);
 
         $this->assertSame(0, $this->commandTester->getStatusCode());
-        $this->assertTrue($capturedOptions['dry_run'],
-            'dry_run must be true when --dry-run flag is passed');
+        $this->assertTrue(
+            $capturedOptions['dry_run'],
+            'dry_run must be true when --dry-run flag is passed'
+        );
     }
 
     /**
@@ -252,8 +272,10 @@ class RestoreBackupCommandTest extends TestCase
         @unlink($tmpFile);
 
         $this->assertSame(0, $this->commandTester->getStatusCode());
-        $this->assertTrue($capturedOptions['best_effort'],
-            'best_effort must be true when --best-effort flag is passed');
+        $this->assertTrue(
+            $capturedOptions['best_effort'],
+            'best_effort must be true when --best-effort flag is passed'
+        );
     }
 
     /**
@@ -291,5 +313,77 @@ class RestoreBackupCommandTest extends TestCase
         $this->assertSame(0, $this->commandTester->getStatusCode());
         $this->assertContains('AuditLog', $capturedOptions['skip_entities']);
         $this->assertContains('UserSession', $capturedOptions['skip_entities']);
+    }
+
+    /** Without a terminal the admin password comes from the environment, never from argv. */
+    #[Test]
+    public function testAdminPasswordFromEnvironmentReachesRestoreService(): void
+    {
+        $capturedOptions = $this->runWithAdminPassword(['interactive' => false], [], 'from-env-Secret1');
+
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertSame('from-env-Secret1', $capturedOptions['admin_password'] ?? null);
+    }
+
+    #[Test]
+    public function testAdminPasswordPromptedTwice(): void
+    {
+        $capturedOptions = $this->runWithAdminPassword([], ['Prompted-Secret1', 'Prompted-Secret1'], null);
+
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertSame('Prompted-Secret1', $capturedOptions['admin_password'] ?? null);
+    }
+
+    #[Test]
+    public function testAdminPasswordMismatchAbortsBeforeRestore(): void
+    {
+        $this->restoreService->expects($this->never())->method('restoreFromBackup');
+
+        $this->runWithAdminPassword([], ['one-Secret1', 'other-Secret1'], null);
+
+        $this->assertSame(1, $this->commandTester->getStatusCode());
+    }
+
+    #[Test]
+    public function testWithoutAdminPasswordOptionNoPasswordIsPassed(): void
+    {
+        $capturedOptions = $this->runWithAdminPassword(null, [], 'ignored-Secret1');
+
+        $this->assertArrayNotHasKey('admin_password', $capturedOptions);
+    }
+
+    /**
+     * @param array<string, bool>|null $executeOptions null = run without --admin-password
+     * @param list<string>             $inputs
+     * @return array<string, mixed>|null options handed to the restore service
+     */
+    private function runWithAdminPassword(?array $executeOptions, array $inputs, ?string $env): ?array
+    {
+        $tmpFile = tempnam(sys_get_temp_dir(), 'restore_test_');
+        $backupData = ['metadata' => ['version' => '1.0'], 'data' => []];
+        file_put_contents($tmpFile, json_encode($backupData));
+        $this->backupService->method('loadBackupFromFile')->willReturn($backupData);
+
+        $capturedOptions = null;
+        $this->restoreService->method('restoreFromBackup')
+            ->willReturnCallback(function ($backup, $options) use (&$capturedOptions) {
+                $capturedOptions = $options;
+                return ['success' => true, 'statistics' => [], 'warnings' => [], 'failures' => [], 'dry_run' => false];
+            });
+
+        putenv(RestoreBackupCommand::ADMIN_PASSWORD_ENV . ($env === null ? '' : '=' . $env));
+        try {
+            $this->commandTester->setInputs($inputs);
+            $arguments = ['filepath' => $tmpFile];
+            if ($executeOptions !== null) {
+                $arguments['--admin-password'] = true;
+            }
+            $this->commandTester->execute($arguments, $executeOptions ?? []);
+        } finally {
+            putenv(RestoreBackupCommand::ADMIN_PASSWORD_ENV);
+            @unlink($tmpFile);
+        }
+
+        return $capturedOptions;
     }
 }

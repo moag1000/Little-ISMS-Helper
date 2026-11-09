@@ -130,6 +130,21 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('OLD_VALUE=123', $backupContent);
     }
 
+    /** Docker: .env.local links to var/.env.local on the volume; a UI write must land there. */
+    #[Test]
+    public function testWriteEnvVariablesKeepsTheLinkToThePersistedFile(): void
+    {
+        file_put_contents($this->testDir . '/var/.env.local', "APP_SECRET=abc\n");
+        symlink('var/.env.local', $this->testEnvFile);
+
+        $this->service->writeEnvVariables(['DEFAULT_URI' => 'https://isms.example.org']);
+
+        $this->assertTrue(is_link($this->testEnvFile));
+        $persisted = (string) file_get_contents($this->testDir . '/var/.env.local');
+        $this->assertStringContainsString('APP_SECRET=abc', $persisted);
+        $this->assertMatchesRegularExpression('#^DEFAULT_URI="?https://isms\.example\.org"?$#m', $persisted);
+    }
+
     #[Test]
     public function testWriteEnvVariablesThrowsExceptionForInvalidVariableName(): void
     {
