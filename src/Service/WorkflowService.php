@@ -175,7 +175,7 @@ class WorkflowService
         $workflow = $this->findDefinition($entityType, $workflowName, $this->resolveOwningTenant($entityType, $entityId, null));
         // A regulatory chain without its database row yet (fresh install, nobody aligned the
         // definitions): write the row from the YAML instead of starting no approval at all (S17).
-        if (!$workflow && $yamlSteps !== null && $yamlWorkflowName !== null) {
+        if (!$workflow && $yamlSteps !== null) {
             $workflow = $this->regulatoryWorkflowMirror?->ensure($yamlWorkflowName);
         }
 
