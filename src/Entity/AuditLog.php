@@ -18,6 +18,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_created_at', columns: ['created_at'])]
 #[ORM\Index(name: 'idx_audit_actor_role', columns: ['actor_role'])]
 #[ORM\Index(name: 'idx_audit_tenant', columns: ['tenant_id'])]
+// S31: the list, the dropdowns and the statistics filter by organisation and sort or group by these columns.
+#[ORM\Index(name: 'idx_audit_tenant_created', columns: ['tenant_id', 'created_at'])]
+#[ORM\Index(name: 'idx_audit_tenant_action', columns: ['tenant_id', 'action'])]
+#[ORM\Index(name: 'idx_audit_tenant_entity_type', columns: ['tenant_id', 'entity_type'])]
 class AuditLog
 {
     #[ORM\Id]

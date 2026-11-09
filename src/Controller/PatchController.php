@@ -16,7 +16,7 @@ use App\Repository\PatchRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
-use App\Util\ListPage;
+use App\Util\ListQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -60,37 +60,30 @@ class PatchController extends AbstractController
         // Get view filter parameter
         $view = $request->query->get('view', 'own'); // Default: inherited
 
-        // Get patches based on view filter
+        // S31: filter, count and page in SQL.
+        $list = ListQuery::of($this->patchRepository->createQueryBuilder('p')->orderBy('p.releaseDate', \SortDirection::Descending));
         if ($tenant) {
-            $patches = match ($view) {
-                'own' => $this->patchRepository->findByTenant($tenant),
-                'subsidiaries' => $this->patchRepository->findByTenantIncludingSubsidiaries($tenant),
-                default => $this->patchRepository->findByTenantIncludingParent($tenant),
-            };
+            $list->tenants(ListQuery::viewTenants($tenant, in_array($view, ['orphaned', 'all'], true) ? 'inherited' : $view));
             $inheritanceInfo = [
                 'hasParent' => $tenant->getParent() !== null,
                 'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
                 'currentView' => $view
             ];
         } else {
-            $patches = $this->patchRepository->findAll();
             $inheritanceInfo = [
                 'hasParent' => false,
                 'hasSubsidiaries' => false,
                 'currentView' => 'own'
             ];
         }
+        $list->search($request, ['p.patchId', 'p.title']);
 
         // Summary chips count the list as shown (view applied).
-        $pendingCount = count(array_filter($patches, static fn(Patch $p): bool => in_array($p->getStatus(), ['available', 'tested', 'approved'], true)));
-        $deployedCount = count(array_filter($patches, static fn(Patch $p): bool => $p->getStatus() === PatchStatus::Deployed->value));
+        $pendingCount = $list->countWhere("p.status IN ('available', 'tested', 'approved')");
+        $deployedCount = $list->countWhere('p.status = :deployed', ['deployed' => PatchStatus::Deployed->value]);
 
         return $this->render('patch/index.html.twig', [
-            'page' => ListPage::fromRequest(
-                $patches,
-                $request,
-                static fn(Patch $p): array => [$p->getPatchId(), $p->getTitle()],
-            ),
+            'page' => $list->page($request),
             'pending_count' => $pendingCount,
             'deployed_count' => $deployedCount,
             'inheritanceInfo' => $inheritanceInfo,

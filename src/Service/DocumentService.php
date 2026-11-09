@@ -48,30 +48,34 @@ class DocumentService
      */
     public function getDocumentsForTenant(Tenant $tenant): array
     {
-        $parent = $tenant->getParent();
+        return $this->inheritsParentDocuments($tenant)
+            ? $this->documentRepository->findByTenantIncludingParent($tenant, $tenant->getParent())
+            : $this->documentRepository->findByTenant($tenant);
+    }
 
-        // No parent or no corporate structure service - return own documents only
-        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
-            return $this->documentRepository->findByTenant($tenant);
+    /**
+     * Organisations whose documents the tenant sees in its default ("inherited") view: its own, plus every
+     * ancestor's when the document governance is hierarchical. The document list filters on it in SQL (S31).
+     *
+     * @return list<Tenant>
+     */
+    public function tenantsVisibleTo(Tenant $tenant): array
+    {
+        return $this->inheritsParentDocuments($tenant) ? array_values([$tenant, ...$tenant->getAllAncestors()]) : [$tenant];
+    }
+
+    /** Hierarchical document governance (scope "document", else the default) under a parent organisation. */
+    private function inheritsParentDocuments(Tenant $tenant): bool
+    {
+        if (!$tenant->getParent() instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
+            return false;
         }
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'document')
+            ?? $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+        $model = $governance?->getGovernanceModel();
 
-        // Check governance model for documents
-        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'document');
-
-        if (!$governance instanceof CorporateGovernance) {
-            // No specific governance for documents - use default
-            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
-        }
-
-        $governanceModel = $governance?->getGovernanceModel();
-
-        // If hierarchical governance, include parent documents
-        if ($governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical') {
-            return $this->documentRepository->findByTenantIncludingParent($tenant, $parent);
-        }
-
-        // For shared or independent, return only own documents
-        return $this->documentRepository->findByTenant($tenant);
+        // Shared or independent governance: own documents only
+        return $model instanceof GovernanceModel && $model->value === 'hierarchical';
     }
 
     /**

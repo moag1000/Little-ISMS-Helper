@@ -50,6 +50,7 @@ class ComplianceExportController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ComplianceRequirementFulfillmentRepository $complianceRequirementFulfillmentRepository,
         private readonly AppDateFormatExtension $dateFormat,
+        private readonly \App\Service\Compliance\Pairs\CrossFrameworkPairLoader $pairLoader,
         private readonly ?TranslatorInterface $translator = null,
     ) {}
 
@@ -746,39 +747,30 @@ class ComplianceExportController extends AbstractController
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
         $frameworkRelationships = [];
+        // S31: every pair from data loaded once (was ~6 queries per pair).
+        $pairs = $this->pairLoader->load($frameworks, $this->tenantContext->getCurrentTenant());
 
-        // Build transitive analysis data (same as in transitiveCompliance method)
         foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
                 if ($framework->id === $targetFramework->id) {
                     continue;
                 }
 
-                // Calculate coverage
-                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage(
-                    $framework,
-                    $targetFramework
-                );
-
-                // Get transitive analysis
-                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework, $this->tenantContext->getCurrentTenant());
+                $coverage = $pairs->coverage($framework, $targetFramework);
+                $transitive = $pairs->transitive($framework, $targetFramework);
 
                 if (($transitive['requirements_helped'] ?? 0) > 0) {
                     $transitiveAnalysis[] = $transitive;
                 }
 
-                // Get detailed cross-framework mappings
-                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings(
-                    $framework,
-                    $targetFramework
-                );
+                $mappings = $pairs->mappings($framework, $targetFramework);
 
                 if ($mappings !== [] && ($coverage['coverage_percentage'] ?? 0) > 0) {
                     $frameworkRelationships[] = [
                         'sourceFramework' => $framework,
                         'targetFramework' => $targetFramework,
                         'mappedRequirements' => $coverage['covered_requirements'] ?? 0,
-                        'totalRequirements' => $coverage['total_requirements'] ?? 0,
+                        'totalRequirements' => $coverage['total_target_requirements'],
                         'coveragePercentage' => round($coverage['coverage_percentage'] ?? 0, 2),
                     ];
                 }
@@ -861,29 +853,29 @@ class ComplianceExportController extends AbstractController
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
         $frameworkRelationships = [];
+        $pairs = $this->pairLoader->load($frameworks, $this->tenantContext->getCurrentTenant());
 
-        // Build data
         foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
                 if ($framework->id === $targetFramework->id) {
                     continue;
                 }
 
-                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage($framework, $targetFramework);
-                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework, $this->tenantContext->getCurrentTenant());
+                $coverage = $pairs->coverage($framework, $targetFramework);
+                $transitive = $pairs->transitive($framework, $targetFramework);
 
                 if (($transitive['requirements_helped'] ?? 0) > 0) {
                     $transitiveAnalysis[] = $transitive;
                 }
 
-                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings($framework, $targetFramework);
+                $mappings = $pairs->mappings($framework, $targetFramework);
 
                 if ($mappings !== [] && ($coverage['coverage_percentage'] ?? 0) > 0) {
                     $frameworkRelationships[] = [
                         'source' => $framework,
                         'target' => $targetFramework,
                         'mapped' => $coverage['covered_requirements'] ?? 0,
-                        'total' => $coverage['total_requirements'] ?? 0,
+                        'total' => $coverage['total_target_requirements'],
                         'coverage' => round($coverage['coverage_percentage'] ?? 0, 1),
                     ];
                 }
@@ -962,6 +954,7 @@ class ComplianceExportController extends AbstractController
         $transitiveAnalysis = [];
         $frameworkRelationships = [];
         $totalHelped = 0;
+        $pairs = $this->pairLoader->load($frameworks, $this->tenantContext->getCurrentTenant());
 
         // Build data with impact scoring
         $quickWins = [];
@@ -984,32 +977,30 @@ class ComplianceExportController extends AbstractController
                     continue;
                 }
 
-                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage($framework, $targetFramework);
-                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework, $this->tenantContext->getCurrentTenant());
+                $coverage = $pairs->coverage($framework, $targetFramework);
+                $transitive = $pairs->transitive($framework, $targetFramework);
 
                 if ($transitive['requirements_helped'] > 0) {
                     $transitiveAnalysis[] = $transitive;
                     $totalHelped += $transitive['requirements_helped'];
                 }
 
-                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings($framework, $targetFramework);
+                $mappings = $pairs->mappings($framework, $targetFramework);
 
                 // Calculate quality distribution for these mappings
                 foreach ($mappings as $mapping) {
                     $quality = $mapping->getMappingPercentage();
-                    if ($quality !== null) {
-                        $qualitySum += $quality;
-                        $qualityCount++;
+                    $qualitySum += $quality;
+                    $qualityCount++;
 
-                        if ($quality >= 90) {
-                            $qualityDistribution['excellent']++;
-                        } elseif ($quality >= 70) {
-                            $qualityDistribution['good']++;
-                        } elseif ($quality >= 50) {
-                            $qualityDistribution['medium']++;
-                        } else {
-                            $qualityDistribution['weak']++;
-                        }
+                    if ($quality >= 90) {
+                        $qualityDistribution['excellent']++;
+                    } elseif ($quality >= 70) {
+                        $qualityDistribution['good']++;
+                    } elseif ($quality >= 50) {
+                        $qualityDistribution['medium']++;
+                    } else {
+                        $qualityDistribution['weak']++;
                     }
                 }
 
@@ -1020,14 +1011,16 @@ class ComplianceExportController extends AbstractController
                     $impactAnalysis = $this->complianceMappingRepository->calculateFrameworkImpactScore(
                         $framework,
                         $targetFramework,
-                        $coveragePercentage
+                        $coveragePercentage,
+                        $pairs->topLevelCount($framework),
+                        $pairs->topLevelCount($targetFramework),
                     );
 
                     $relationship = [
                         'source' => $framework,
                         'target' => $targetFramework,
                         'mapped' => $coverage['covered_requirements'] ?? 0,
-                        'total' => $coverage['total_requirements'] ?? 0,
+                        'total' => $coverage['total_target_requirements'],
                         'coverage' => $coveragePercentage,
                         'impact_score' => $impactAnalysis['impact_score'],
                         'roi' => $impactAnalysis['roi'],
@@ -1135,40 +1128,13 @@ class ComplianceExportController extends AbstractController
         // Build detailed comparison data
         $comparisonDetails = [];
 
+        // S31: one mapping query for the pair instead of two per requirement.
+        $pairs = $this->pairLoader->load([$framework1, $framework2], null);
         foreach ($framework1->requirements as $requirement) {
-            $mappedRequirement = null;
-            $matchQuality = null;
-            $isMapped = false;
-
-            // Find mappings where req1 is the source
-            $sourceMappings = $this->complianceMappingRepository->findBy([
-                'sourceRequirement' => $requirement
-            ]);
-
-            foreach ($sourceMappings as $sourceMapping) {
-                if ($sourceMapping->getTargetRequirement()->getFramework()->id === $framework2->id) {
-                    $mappedRequirement = $sourceMapping->getTargetRequirement();
-                    $matchQuality = $sourceMapping->getMappingPercentage();
-                    $isMapped = true;
-                    break;
-                }
-            }
-
-            // Also check reverse mappings where req1 is the target
-            if (!$isMapped) {
-                $targetMappings = $this->complianceMappingRepository->findBy([
-                    'targetRequirement' => $requirement
-                ]);
-
-                foreach ($targetMappings as $targetMapping) {
-                    if ($targetMapping->getSourceRequirement()->getFramework()->id === $framework2->id) {
-                        $mappedRequirement = $targetMapping->getSourceRequirement();
-                        $matchQuality = $targetMapping->getMappingPercentage();
-                        $isMapped = true;
-                        break;
-                    }
-                }
-            }
+            $counterpart = $pairs->counterpart($requirement, $framework2);
+            $isMapped = $counterpart !== null;
+            $mappedRequirement = $counterpart['requirement'] ?? null;
+            $matchQuality = $counterpart['quality'] ?? null;
 
             $comparisonDetails[] = [
                 'framework1Requirement' => $requirement,
@@ -1265,34 +1231,15 @@ class ComplianceExportController extends AbstractController
         $comparisonDetails = [];
         $mappedCount = 0;
 
+        // S31: one mapping query for the pair instead of two per requirement.
+        $pairs = $this->pairLoader->load([$framework1, $framework2], null);
         foreach ($framework1->requirements as $requirement) {
-            $mappedRequirement = null;
-            $matchQuality = null;
-            $isMapped = false;
-
-            // Find mappings
-            $sourceMappings = $this->complianceMappingRepository->findBy(['sourceRequirement' => $requirement]);
-            foreach ($sourceMappings as $sourceMapping) {
-                if ($sourceMapping->getTargetRequirement()->getFramework()->id === $framework2->id) {
-                    $mappedRequirement = $sourceMapping->getTargetRequirement();
-                    $matchQuality = $sourceMapping->getMappingPercentage();
-                    $isMapped = true;
-                    $mappedCount++;
-                    break;
-                }
-            }
-
-            if (!$isMapped) {
-                $targetMappings = $this->complianceMappingRepository->findBy(['targetRequirement' => $requirement]);
-                foreach ($targetMappings as $targetMapping) {
-                    if ($targetMapping->getSourceRequirement()->getFramework()->id === $framework2->id) {
-                        $mappedRequirement = $targetMapping->getSourceRequirement();
-                        $matchQuality = $targetMapping->getMappingPercentage();
-                        $isMapped = true;
-                        $mappedCount++;
-                        break;
-                    }
-                }
+            $counterpart = $pairs->counterpart($requirement, $framework2);
+            $isMapped = $counterpart !== null;
+            $mappedRequirement = $counterpart['requirement'] ?? null;
+            $matchQuality = $counterpart['quality'] ?? null;
+            if ($isMapped) {
+                $mappedCount++;
             }
 
             $comparisonDetails[] = [
@@ -1444,39 +1391,17 @@ class ComplianceExportController extends AbstractController
         $mappedCount = 0;
         $highQualityMappings = 0;
 
+        // S31: one mapping query for the pair instead of two per requirement.
+        $pairs = $this->pairLoader->load([$framework1, $framework2], null);
         foreach ($framework1->requirements as $requirement) {
-            $mappedRequirement = null;
-            $matchQuality = null;
-            $isMapped = false;
-
-            // Find mappings
-            $sourceMappings = $this->complianceMappingRepository->findBy(['sourceRequirement' => $requirement]);
-            foreach ($sourceMappings as $sourceMapping) {
-                if ($sourceMapping->getTargetRequirement()->getFramework()->id === $framework2->id) {
-                    $mappedRequirement = $sourceMapping->getTargetRequirement();
-                    $matchQuality = $sourceMapping->getMappingPercentage();
-                    $isMapped = true;
-                    $mappedCount++;
-                    if ($matchQuality >= 80) {
-                        $highQualityMappings++;
-                    }
-                    break;
-                }
-            }
-
-            if (!$isMapped) {
-                $targetMappings = $this->complianceMappingRepository->findBy(['targetRequirement' => $requirement]);
-                foreach ($targetMappings as $targetMapping) {
-                    if ($targetMapping->getSourceRequirement()->getFramework()->id === $framework2->id) {
-                        $mappedRequirement = $targetMapping->getSourceRequirement();
-                        $matchQuality = $targetMapping->getMappingPercentage();
-                        $isMapped = true;
-                        $mappedCount++;
-                        if ($matchQuality >= 80) {
-                            $highQualityMappings++;
-                        }
-                        break;
-                    }
+            $counterpart = $pairs->counterpart($requirement, $framework2);
+            $isMapped = $counterpart !== null;
+            $mappedRequirement = $counterpart['requirement'] ?? null;
+            $matchQuality = $counterpart['quality'] ?? null;
+            if ($isMapped) {
+                $mappedCount++;
+                if ($matchQuality >= 80) {
+                    $highQualityMappings++;
                 }
             }
 

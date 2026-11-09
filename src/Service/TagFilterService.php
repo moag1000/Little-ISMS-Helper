@@ -38,18 +38,11 @@ class TagFilterService
     public function filterByTagName(iterable $entities, string $entityClass, ?string $tagName): array
     {
         $list = is_array($entities) ? array_values($entities) : iterator_to_array($entities, false);
-
-        $tagName = $tagName !== null ? trim($tagName) : '';
-        if ($tagName === '') {
+        $ids = $this->idsWithTagName($entityClass, $tagName);
+        if ($ids === null) {
             return $list;
         }
-
-        $tag = $this->resolveTag($tagName);
-        if (!$tag instanceof Tag) {
-            return [];
-        }
-
-        $activeIds = array_flip($this->entityTagRepository->findEntityIdsWithTag($tag, $entityClass));
+        $activeIds = array_flip($ids);
 
         return array_values(array_filter(
             $list,
@@ -61,6 +54,26 @@ class TagFilterService
                 return is_int($id) && isset($activeIds[$id]);
             },
         ));
+    }
+
+    /**
+     * Ids of `$entityClass` records currently tagged with `$tagName`, for a filter in SQL (S31):
+     * null when no tag is asked for, an empty list when the tag does not exist.
+     *
+     * @param class-string $entityClass
+     * @return list<int>|null
+     */
+    public function idsWithTagName(string $entityClass, ?string $tagName): ?array
+    {
+        $tagName = $tagName !== null ? trim($tagName) : '';
+        if ($tagName === '') {
+            return null;
+        }
+        $tag = $this->resolveTag($tagName);
+
+        return $tag instanceof Tag
+            ? array_values(array_map('intval', $this->entityTagRepository->findEntityIdsWithTag($tag, $entityClass)))
+            : [];
     }
 
     private function resolveTag(string $name): ?Tag

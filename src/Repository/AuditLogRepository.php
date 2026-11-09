@@ -85,7 +85,7 @@ class AuditLogRepository extends ServiceEntityRepository
     /**
      * Find audit logs by entity
      */
-    public function findByEntity(string $entityType, int $entityId): array
+    public function findByEntity(string $entityType, int $entityId, int $limit = 500): array
     {
         return $this->createQueryBuilder('a')
             ->where('a.entityType = :entityType')
@@ -93,6 +93,7 @@ class AuditLogRepository extends ServiceEntityRepository
             ->setParameter('entityType', $entityType)
             ->setParameter('entityId', $entityId)
             ->orderBy('a.createdAt', \SortDirection::Descending)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }
@@ -256,7 +257,7 @@ class AuditLogRepository extends ServiceEntityRepository
     /**
      * Get recent activity (last 24 hours)
      */
-    public function getRecentActivity(int $hours = 24): array
+    public function getRecentActivity(int $hours = 24, int $limit = 500): array
     {
         $since = new DateTime("-{$hours} hours");
 
@@ -264,8 +265,109 @@ class AuditLogRepository extends ServiceEntityRepository
             ->where('a.createdAt >= :since')
             ->setParameter('since', $since)
             ->orderBy('a.createdAt', \SortDirection::Descending)
+            ->setMaxResults(max(1, min(1000, $limit)))
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Distinct non-empty values of one column, for filter dropdowns (S31: never load the table for them).
+     *
+     * @param string $field `entityType` or `action` (fixed list — the name goes into DQL)
+     * @return list<string>
+     */
+    public function distinctValues(string $field): array
+    {
+        if (!in_array($field, ['entityType', 'action'], true)) {
+            // @intentional-assertion: fixed whitelist of two columns
+            throw new \InvalidArgumentException('Unsupported field ' . $field);
+        }
+        $rows = $this->createQueryBuilder('a')
+            ->select("DISTINCT a.$field AS v")
+            ->where("a.$field IS NOT NULL")
+            ->orderBy('v', \SortDirection::Ascending)
+            ->setMaxResults(1000)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_values(array_filter(
+            array_map(static fn (array $r): string => (string) $r['v'], $rows),
+            static fn (string $v): bool => $v !== '',
+        ));
+    }
+
+    /**
+     * Activity of the last N hours as aggregates: total, distinct users, per action and per entity type
+     * (S31: GROUP BY queries instead of hydrating every row of the window).
+     *
+     * @return array{total: int, users: int, actions: array<string, int>, entityTypes: array<string, int>}
+     */
+    public function recentActivitySummary(int $hours = 24): array
+    {
+        $since = new DateTimeImmutable("-{$hours} hours");
+        $totals = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id) AS total', 'COUNT(DISTINCT a.userName) AS users')
+            ->where('a.createdAt >= :since')
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleResult();
+
+        return [
+            'total' => (int) $totals['total'],
+            'users' => (int) $totals['users'],
+            'actions' => $this->countsSince('action', $since),
+            'entityTypes' => $this->countsSince('entityType', $since),
+        ];
+    }
+
+    /** @return array<string, int> */
+    private function countsSince(string $field, DateTimeImmutable $since): array
+    {
+        $rows = $this->createQueryBuilder('a')
+            ->select("a.$field AS k", 'COUNT(a.id) AS n')
+            ->where('a.createdAt >= :since')
+            ->andWhere("a.$field IS NOT NULL")
+            ->setParameter('since', $since)
+            ->groupBy("a.$field")
+            ->orderBy('n', \SortDirection::Descending)
+            ->setMaxResults(50)
+            ->getQuery()
+            ->getScalarResult();
+        $out = [];
+        foreach ($rows as $row) {
+            $out[(string) $row['k']] = (int) $row['n'];
+        }
+
+        return $out;
+    }
+
+    /**
+     * Number of entries per calendar day for the last $days days (oldest first), in one query.
+     *
+     * @return array<string, int> Y-m-d => count
+     */
+    public function countPerDay(int $days, ?DateTimeImmutable $today = null): array
+    {
+        $days = max(1, min(366, $days));
+        $start = ($today ?? new DateTimeImmutable('today'))->setTime(0, 0)->modify('-' . ($days - 1) . ' days');
+        $perDay = $this->createQueryBuilder('a')
+            ->where('a.createdAt >= :start')
+            ->setParameter('start', $start);
+        $keys = [];
+        $columns = [];
+        for ($i = 0; $i < $days; ++$i) {
+            $from = $start->modify("+$i days");
+            $keys["d$i"] = $from->format('Y-m-d');
+            $columns[] = sprintf('SUM(CASE WHEN a.createdAt >= :f%1$d AND a.createdAt < :t%1$d THEN 1 ELSE 0 END) AS d%1$d', $i);
+            $perDay->setParameter("f$i", $from)->setParameter("t$i", $from->modify('+1 day'));
+        }
+        $row = $perDay->select($columns)->getQuery()->getSingleResult();
+        $out = [];
+        foreach ($keys as $alias => $date) {
+            $out[$date] = (int) ($row[$alias] ?? 0);
+        }
+
+        return $out;
     }
 
     /**
