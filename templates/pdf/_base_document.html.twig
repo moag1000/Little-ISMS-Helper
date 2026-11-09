@@ -18,7 +18,7 @@
   Dies ist NICHT die Template-Version, sondern die Version des generierten Dokuments.
 #}
 <!DOCTYPE html>
-<html lang="de">
+<html lang="{{ app.locale }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{% block pdf_title %}{{ document_title|default('pdf.doc_base.default_document'|trans({}, 'messages')) }}{% endblock %}</title>
@@ -27,7 +27,7 @@
         @page {
             margin: 3cm 2cm 3cm 2cm;
             @top-left {
-                content: "{% block header_left %}{{ tenant_name|default('Organization') }}{% endblock %}";
+                content: "{% block header_left %}{{ tenant_name|default('pdf.doc_base.default_organisation'|trans({}, 'messages')) }}{% endblock %}";
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 8pt;
                 color: #64748b;
@@ -40,20 +40,20 @@
                 font-weight: bold;
             }
             @top-right {
-                content: "{% block header_right %}{{ classification|default('Internal') }}{% endblock %}";
+                content: "{% block header_right %}{{ ('pdf.doc_base.classification_value.' ~ (classification|default('internal')|lower))|trans({}, 'messages') }}{% endblock %}";
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 8pt;
                 color: #ef4444;
                 font-weight: bold;
             }
             @bottom-left {
-                content: "{% block footer_left %}{{ document_id|default('DOC-XXX') }}{% endblock %} | Version {% block footer_version %}{{ version }}{% endblock %}";
+                content: "{% block footer_left %}{{ document_id|default('—') }}{% endblock %} | Version {% block footer_version %}{{ version }}{% endblock %}";
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
                 color: #64748b;
             }
             @bottom-center {
-                content: "{% block footer_center %}{{ tenant_name|default('Organization') }}{% endblock %}";
+                content: "{% block footer_center %}{{ tenant_name|default('pdf.doc_base.default_organisation'|trans({}, 'messages')) }}{% endblock %}";
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
                 color: #64748b;
@@ -370,13 +370,13 @@
     {# Document Control Block - Always on first page #}
     <div class="document-control">
         <div class="document-control-header">
-            {% block document_type %}Dokument{% endblock %}
+            {% block document_type %}{{ 'pdf.doc_base.default_document'|trans({}, 'messages') }}{% endblock %}
         </div>
 
         <div class="doc-meta-grid">
             <div class="doc-meta-row">
                 <div class="doc-meta-label">{{ 'pdf.doc_base.document_id'|trans({}, 'messages') }}</div>
-                <div class="doc-meta-value">{% block document_id %}{{ document_id|default('DOC-XXX-XXX') }}{% endblock %}</div>
+                <div class="doc-meta-value">{% block document_id %}{{ document_id|default('—') }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
                 <div class="doc-meta-label">{{ 'pdf.doc_base.title'|trans({}, 'messages') }}</div>
@@ -390,7 +390,7 @@
                 <div class="doc-meta-label">{{ 'pdf.doc_base.status'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">
                     <span class="status-badge status-{% block document_status_class %}{{ status|default('draft') }}{% endblock %}">
-                        {% block document_status %}{{ status|default('Draft')|upper }}{% endblock %}
+                        {% block document_status %}{{ ('pdf.doc_base.status_value.' ~ (status|default('draft')|lower))|trans({}, 'messages') }}{% endblock %}
                     </span>
                 </div>
             </div>
@@ -398,7 +398,7 @@
                 <div class="doc-meta-label">{{ 'pdf.doc_base.classification'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">
                     <span class="classification classification-{% block classification_class %}{{ classification|default('internal')|lower }}{% endblock %}">
-                        {% block document_classification %}{{ classification|default('Internal')|upper }}{% endblock %}
+                        {% block document_classification %}{{ ('pdf.doc_base.classification_value.' ~ (classification|default('internal')|lower))|trans({}, 'messages') }}{% endblock %}
                     </span>
                 </div>
             </div>
@@ -424,7 +424,7 @@
             </div>
             <div class="doc-meta-row">
                 <div class="doc-meta-label">{{ 'pdf.doc_base.next_review'|trans({}, 'messages') }}</div>
-                <div class="doc-meta-value">{% block next_review %}{{ next_review_date|default('TBD') }}{% endblock %}</div>
+                <div class="doc-meta-value">{% block next_review %}{{ next_review_date|default('—') }}{% endblock %}</div>
             </div>
         </div>
     </div>

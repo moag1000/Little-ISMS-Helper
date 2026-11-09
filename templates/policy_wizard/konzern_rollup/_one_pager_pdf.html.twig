@@ -4,7 +4,7 @@
    Inherits TenantBranding letterhead pattern from
    templates/policy_wizard/export/_pdf_document.html.twig. #}
 <!DOCTYPE html>
-<html lang="{{ app.request is defined ? app.request.locale|default('de') : 'de' }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="utf-8">
     <title>{{ 'policy_wizard.konzern_rollup.one_pager.title'|trans({}, 'policy_wizard') }} — {{ konzern.legalName|default(konzern.name)|default('') }}</title>
@@ -107,9 +107,9 @@
     <div class="header">
         <div class="logo-cell">
             {% if logo_path is not empty %}
-                <img src="{{ logo_path }}" alt="{{ konzern.legalName|default(konzern.name)|default('Konzern') }}">
+                <img src="{{ logo_path }}" alt="{{ konzern.legalName|default(konzern.name)|default('policy_wizard.konzern_rollup.pdf.default_name'|trans({}, 'policy_wizard')) }}">
             {% else %}
-                <strong style="font-size: 12pt; color: {{ primary }};">{{ konzern.legalName|default(konzern.name)|default('Konzern') }}</strong>
+                <strong style="font-size: 12pt; color: {{ primary }};">{{ konzern.legalName|default(konzern.name)|default('policy_wizard.konzern_rollup.pdf.default_name'|trans({}, 'policy_wizard')) }}</strong>
             {% endif %}
         </div>
         <div class="name-cell">

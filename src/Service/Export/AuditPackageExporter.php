@@ -17,6 +17,7 @@ use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Service\PdfExportService;
 use DateTimeImmutable;
 use App\Util\CsvSanitizer;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Audit-Paket-Export — one-click ZIP containing every ComplianceRequirement
@@ -49,6 +50,7 @@ final class AuditPackageExporter
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
         private readonly EvidenceDocuments $evidence,
         private readonly FulfillmentRuleEngine $ruleEngine,
+        private readonly TranslatorInterface $translator,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?IsmsRegisterEntryRepository $registerEntries = null,
     ) {
@@ -205,12 +207,10 @@ final class AuditPackageExporter
         $path = (string) $this->evidence->file($doc);
         if ($path === '' || !is_file($path) || !is_readable($path)) {
             // File missing on disk — record a stub so the auditor sees the gap.
-            $stub = sprintf(
-                "Document id=%d is registered in the database but the underlying file\n" .
-                "could not be read from disk (path: %s).\n",
-                $doc->getId() ?? 0,
-                $path !== '' ? $path : '(empty)'
-            );
+            $stub = $this->t('missing_file', [
+                '%id%' => $doc->getId() ?? 0,
+                '%path%' => $path !== '' ? $path : $this->t('empty_path'),
+            ]) . "\n";
             $zip->addFromString($folder . '/' . $zipName . '.MISSING.txt', $stub);
             return $zipName . '.MISSING.txt';
         }
@@ -225,37 +225,36 @@ final class AuditPackageExporter
     private function buildReadme(ComplianceRequirement $req, Tenant $tenant, array $evidence, int $fulfillmentPct): string
     {
         $lines = [
-            'Requirement: ' . (string) $req->getRequirementId(),
-            'Title: ' . (string) $req->getTitle(),
-            'Category: ' . (string) $req->getCategory(),
-            'Priority: ' . (string) $req->getPriority(),
-            'Fulfillment (%): ' . $fulfillmentPct,
+            $this->t('requirement') . ': ' . (string) $req->getRequirementId(),
+            $this->t('title') . ': ' . (string) $req->getTitle(),
+            $this->t('category') . ': ' . (string) $req->getCategory(),
+            $this->t('priority') . ': ' . (string) $req->getPriority(),
+            $this->t('fulfillment') . ': ' . $fulfillmentPct,
             '',
-            'Description:',
+            $this->t('description') . ':',
             (string) $req->getDescription(),
             '',
-            'Mapped Controls:',
+            $this->t('controls') . ':',
         ];
 
         $controls = $this->ruleEngine->controlsFor($req, $tenant);
         if ($controls === []) {
-            $lines[] = '  (none)';
+            $lines[] = '  ' . $this->t('none');
         } else {
             foreach ($controls as $control) {
-                $lines[] = sprintf(
-                    '  - %s — %s (status: %s, %d%%)',
-                    (string) $control->getControlId(),
-                    (string) $control->getName(),
-                    (string) $control->getImplementationStatus(),
-                    (int) ($control->getImplementationPercentage() ?? 0)
-                );
+                $lines[] = '  - ' . $this->t('control_line', [
+                    '%id%' => (string) $control->getControlId(),
+                    '%name%' => (string) $control->getName(),
+                    '%status%' => (string) $control->getImplementationStatus(),
+                    '%pct%' => (int) ($control->getImplementationPercentage() ?? 0),
+                ]);
             }
         }
 
         $lines[] = '';
-        $lines[] = 'Evidence Documents:';
+        $lines[] = $this->t('evidence') . ':';
         if ($evidence === []) {
-            $lines[] = '  (none)';
+            $lines[] = '  ' . $this->t('none');
         } else {
             foreach ($evidence as $doc) {
                 $lines[] = '  - ' . (string) ($doc->getOriginalFilename() ?? 'document-' . $doc->getId());
@@ -263,6 +262,12 @@ final class AuditPackageExporter
         }
 
         return implode("\n", $lines) . "\n";
+    }
+
+    /** @param array<string, scalar> $params */
+    private function t(string $key, array $params = []): string
+    {
+        return $this->translator->trans('audits.audit_package.readme.' . $key, $params, 'audits');
     }
 
     private function requirementFolderName(ComplianceRequirement $req): string

@@ -9,8 +9,10 @@ use App\Repository\Fte\FteTrackingMetricRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\RiskQuantSummaryInterface;
+use App\Twig\AppDateFormatExtension;
 use DateInterval;
 use DateTimeImmutable;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
@@ -32,6 +34,8 @@ final class BoardReportGenerator
         private readonly Environment $twig,
         private readonly RiskQuantSummaryInterface $riskQuantSummary,
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly TranslatorInterface $translator,
+        private readonly AppDateFormatExtension $dateFormat,
     ) {
     }
 
@@ -112,30 +116,39 @@ final class BoardReportGenerator
      */
     public function renderAsCsv(array $data): string
     {
+        $t = fn (string $key, array $params = []): string => $this->translator->trans(
+            'fte_tracking.csv.' . $key,
+            $params,
+            'fte_tracking',
+        );
         $lines = [];
-        $lines[] = $this->csvRow(['FTE Savings Report', $data['month_label'], 'Generated: ' . $data['generated_at']->format('Y-m-d H:i')]);
-        $lines[] = $this->csvRow(['Tenant', $data['tenant']->getName() ?? 'N/A']);
+        $lines[] = $this->csvRow([
+            $t('title'),
+            $data['month_label'],
+            $t('generated', ['%date%' => $this->dateFormat->formatDateTime($data['generated_at'])]),
+        ]);
+        $lines[] = $this->csvRow([$t('tenant'), $data['tenant']->getName() ?? $t('tenant_unknown')]);
         $lines[] = $this->csvRow([]);
-        $lines[] = $this->csvRow(['Total Savings (minutes)', $data['totals']['savings_minutes']]);
-        $lines[] = $this->csvRow(['Total Savings (hours)', $data['totals']['savings_hours']]);
+        $lines[] = $this->csvRow([$t('total_minutes'), $data['totals']['savings_minutes']]);
+        $lines[] = $this->csvRow([$t('total_hours'), $data['totals']['savings_hours']]);
 
         // Include ALE aggregate when module is active
         if (!empty($data['risk_quant_active'])) {
             $lines[] = $this->csvRow([]);
-            $lines[] = $this->csvRow(['Risk Quantification (ALE)', '']);
-            $lines[] = $this->csvRow(['Total Annual Loss Expectancy (EUR)', $data['risk_quant']['total_ale_eur']]);
-            $lines[] = $this->csvRow(['Quantified Risks (count)', $data['risk_quant']['quantified_risk_count']]);
+            $lines[] = $this->csvRow([$t('ale_title'), '']);
+            $lines[] = $this->csvRow([$t('ale_total'), $data['risk_quant']['total_ale_eur']]);
+            $lines[] = $this->csvRow([$t('ale_count'), $data['risk_quant']['quantified_risk_count']]);
         }
 
         $lines[] = $this->csvRow([]);
-        $lines[] = $this->csvRow(['Source', 'Savings (minutes)']);
+        $lines[] = $this->csvRow([$t('source'), $t('minutes')]);
 
         foreach ($data['by_source'] as $source => $minutes) {
             $lines[] = $this->csvRow([$source, $minutes]);
         }
 
         $lines[] = $this->csvRow([]);
-        $lines[] = $this->csvRow(['Month', 'Savings (minutes)']);
+        $lines[] = $this->csvRow([$t('month'), $t('minutes')]);
 
         foreach ($data['monthly_trend'] as $monthKey => $minutes) {
             $lines[] = $this->csvRow([$monthKey, $minutes]);

@@ -49,7 +49,18 @@ class BoardReportQuantTest extends TestCase
             $twig,
             $this->riskQuantSummary,
             $this->moduleConfig,
+            $this->englishTranslator(),
+            new \App\Twig\AppDateFormatExtension($this->createStub(\App\Repository\SystemSettingsRepository::class)),
         );
+    }
+
+    private function englishTranslator(): \Symfony\Contracts\Translation\TranslatorInterface
+    {
+        $translator = new \Symfony\Component\Translation\Translator('en');
+        $translator->addLoader('yaml', new \Symfony\Component\Translation\Loader\YamlFileLoader());
+        $translator->addResource('yaml', \dirname(__DIR__, 3) . '/translations/fte_tracking.en.yaml', 'en', 'fte_tracking');
+
+        return $translator;
     }
 
     #[Test]

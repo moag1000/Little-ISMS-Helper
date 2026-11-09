@@ -77,6 +77,7 @@ class ComplianceExportControllerTest extends TestCase
             $this->complianceRequirementFulfillmentService,
             $this->tenantContext,
             $this->createMock(\App\Repository\ComplianceRequirementFulfillmentRepository::class),
+            new \App\Twig\AppDateFormatExtension($this->createStub(\App\Repository\SystemSettingsRepository::class)),
             $this->translator
         );
 

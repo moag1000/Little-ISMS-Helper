@@ -815,6 +815,10 @@ jobs:
         # S23, 2026-11: the worker runs scheduled commands and jobs in one container; a report or KPI
         # snapshot left its organisation pinned and the nightly instance backup held only that one.
         run: python3 scripts/quality/check_tenant_pin_restore.py --quiet
+      - name: "Gate 102: evidence PDFs in one language (|trans, <html lang> from app.locale, no raw enums)"
+        # W10, 2026-11: VVT, breach and DPIA PDFs mixed German titles with English labels and raw keys;
+        # lang was fixed "de" or missing. Baseline may only shrink. PHP part: ExportLocaleContractTest.
+        run: python3 scripts/quality/check_pdf_i18n.py --baseline scripts/quality/baselines/pdf_i18n.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

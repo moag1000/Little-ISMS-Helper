@@ -8,7 +8,7 @@
    Class:    CONFIDENTIAL → Footer-Pill + per-page bei dompdf-render
    ─────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'board_one_pager.title'|trans({}, 'reports') }}</title>
@@ -161,7 +161,7 @@
     {% set _top_risks_rows = _top_risks_rows|merge([[
         loop.index,
         risk.title|length > 35 ? risk.title[:35] ~ '…' : risk.title,
-        risk.level,
+        ('risk.matrix.level.' ~ risk.level|lower)|trans({}, 'risk'),
     ]]) %}
 {% endfor %}
 

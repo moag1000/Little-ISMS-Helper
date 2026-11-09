@@ -4,7 +4,7 @@
    Status:   auditor-only
    ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'management_reports.cert_readiness.title'|trans({}, 'management_reports') }}</title>
@@ -138,7 +138,7 @@
     {% set _pending_ctrl_text %}{{ _pending_ctrl_text }}</p>{% endset %}
 {% endif %}
 
-{% set _methodology_html %}<p>Overall score: weighted average of clause score (60%) and Annex A coverage (40%). Thresholds: READY ≥85%, CONDITIONAL 70-84%, NOT READY &lt;70%.</p>{% endset %}
+{% set _methodology_html = 'management_reports.cert_readiness.methodology'|trans({}, 'management_reports')|fa_html %}
 {{ _fa_report_doc.render({
     report: {
         title:        'management_reports.cert_readiness.title'|trans({}, 'management_reports'),

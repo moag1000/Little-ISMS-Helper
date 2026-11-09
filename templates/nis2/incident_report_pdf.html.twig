@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'nis2.incident_report.title'|trans({}, 'nis2') }}</title>
@@ -121,13 +121,13 @@
             <div class="meta-label">{{ 'nis2.incident_report.severity'|trans({}, 'nis2') }}</div>
             <div class="meta-value">
                 {% if incident.severity and incident.severity.value == 'critical' %}
-                    <span class="badge badge-danger">{{ incident.severity.value|upper }}</span>
+                    <span class="badge badge-danger">{{ ('nis2.incident_report.severity_value.' ~ incident.severity.value)|trans({}, 'nis2') }}</span>
                 {% elseif incident.severity and incident.severity.value == 'high' %}
-                    <span class="badge badge-warning">{{ incident.severity.value|upper }}</span>
+                    <span class="badge badge-warning">{{ ('nis2.incident_report.severity_value.' ~ incident.severity.value)|trans({}, 'nis2') }}</span>
                 {% elseif incident.severity and incident.severity.value == 'medium' %}
-                    <span class="badge badge-info">{{ incident.severity.value|upper }}</span>
+                    <span class="badge badge-info">{{ ('nis2.incident_report.severity_value.' ~ incident.severity.value)|trans({}, 'nis2') }}</span>
                 {% else %}
-                    <span class="badge badge-success">{{ incident.severity ? incident.severity.value|upper : '' }}</span>
+                    <span class="badge badge-success">{{ incident.severity ? ('nis2.incident_report.severity_value.' ~ incident.severity.value)|trans({}, 'nis2') : '' }}</span>
                 {% endif %}
             </div>
         </div>
@@ -276,7 +276,7 @@
             <div class="field-value">
                 <ul style="margin: 0; padding-left: 15px;">
                     {% for vuln in incident.relatedVulnerabilities %}
-                        <li>{{ vuln.title ?? vuln.cveId ?? ('Vulnerability #' ~ vuln.id) }}</li>
+                        <li>{{ vuln.title ?? vuln.cveId ?? ('nis2.incident_report.section2.vulnerability_fallback'|trans({'%id%': vuln.id}, 'nis2')) }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -436,7 +436,7 @@
                 </td>
             </tr>
             <tr>
-                <td>{{ 'nis2.incident_report.timeline.final_report'|trans({}, 'nis2') }} (1 month)</td>
+                <td>{{ 'nis2.incident_report.timeline.final_report_due'|trans({}, 'nis2') }}</td>
                 <td>{{ incident.finalReportDeadline|fa_datetime }}</td>
                 <td>
                     {% if incident.finalReportSubmittedAt %}
