@@ -38,7 +38,8 @@ final class TransitionAccess
     public function __construct(
         private readonly Security $security,
         private readonly LifecycleConfigResolverInterface $resolver,
-    ) {}
+    ) {
+    }
 
     /**
      * @throws TransitionAccessDeniedException
