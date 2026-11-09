@@ -7,6 +7,8 @@ namespace App\Tests\Security\Logout;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 use Symfony\Component\Yaml\Yaml;
 
@@ -43,8 +45,16 @@ final class ClearSiteDataOnLogoutTest extends KernelTestCase
         foreach (array_keys($this->firewallsWithLogout()) as $name) {
             $dispatcher = $container->get('security.event_dispatcher.' . $name);
             $request = Request::create('/en/logout');
+            $request->setSession(new Session(new MockArraySessionStorage()));
+            // The remember-me listener clears its cookie on the main request.
+            $requestStack = $container->get('request_stack');
+            $requestStack->push($request);
             $event = new LogoutEvent($request, null);
-            $dispatcher->dispatch($event);
+            try {
+                $dispatcher->dispatch($event);
+            } finally {
+                $requestStack->pop();
+            }
 
             $response = $event->getResponse();
             self::assertNotNull($response, sprintf('firewall "%s": logout built no response', $name));

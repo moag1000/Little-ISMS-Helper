@@ -8,9 +8,7 @@ use App\Entity\Notification\NotificationChannel;
 use App\Form\Notification\NotificationChannelType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
-use Symfony\Component\Validator\ConstraintValidatorInterface;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Translation\IdentityTranslator;
 use App\Validator\Constraint\JsonShapeValidator;
@@ -23,15 +21,11 @@ final class NotificationChannelTypeTest extends TypeTestCase
 {
     protected function getExtensions(): array
     {
-        // JsonShapeValidator (configJson) needs a translator; everything else is plain.
-        $validators = new class implements ConstraintValidatorFactoryInterface {
-            public function getInstance(Constraint $constraint): ConstraintValidatorInterface
-            {
-                $class = $constraint->validatedBy();
-
-                return $class === JsonShapeValidator::class ? new JsonShapeValidator(new IdentityTranslator()) : new $class();
-            }
-        };
+        // JsonShapeValidator (configJson) needs a translator; the factory keeps one instance per
+        // validator class (FormValidator relies on that across nested forms).
+        $validators = new ConstraintValidatorFactory([
+            JsonShapeValidator::class => new JsonShapeValidator(new IdentityTranslator()),
+        ]);
 
         return [new ValidatorExtension(Validation::createValidatorBuilder()->setConstraintValidatorFactory($validators)->getValidator())];
     }
