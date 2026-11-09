@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Lifecycle\EventListener;
 
 use App\Entity\BCExercise;
-use App\Entity\BusinessContinuityPlan;
 use App\Entity\ChangeRequest;
 use App\Entity\Incident;
 use App\Entity\User;
@@ -94,9 +93,6 @@ final class LifecycleEvidenceStamper
         $exercise->deriveReportCompleted();
         $tested = $exercise->getExerciseDate() ?? DateTime::createFromImmutable($now);
         foreach ($exercise->getTestedPlans() as $plan) {
-            if (!$plan instanceof BusinessContinuityPlan) {
-                continue;
-            }
             $last = $plan->getLastTested();
             if (!$last instanceof DateTimeInterface || $last < $tested) {
                 $plan->setLastTested(DateTime::createFromInterface($tested));
