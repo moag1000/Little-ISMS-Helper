@@ -12,7 +12,7 @@ use Doctrine\Migrations\AbstractMigration;
  * same suggestion (double click, two people) cannot both apply it. Existing
  * rows start at 0.
  */
-final class Version20261109200000_SuggestionLockVersion extends AbstractMigration
+final class Version20261109213000_SuggestionLockVersion extends AbstractMigration
 {
     public function getDescription(): string
     {

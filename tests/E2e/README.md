@@ -142,6 +142,18 @@ high for it to live in the main e2e pipeline).
 Triggered on every PR and push to `main` via `.github/workflows/e2e.yml`.
 HTML report is uploaded as an artefact on failure.
 
+## Accessibility (axe)
+
+`specs/a11y-axe.spec.ts` runs axe-core (WCAG 2.0/2.1/2.2 A+AA) on ten core pages and writes
+`var/a11y/axe-<page>.json` plus `var/a11y/summary.json`. CI runs it only on release tags against the
+Docker Compose stack (job "Docker Build & Push", step "Accessibility (axe, 10 core pages)"), report-only
+(`continue-on-error`, artifact `axe-report`) until the first run is clean. Static counterpart: Gate 103 (W11).
+
+In a cloud thread: `bash scripts/setup/cloud_phpunit.sh`, `php bin/console app:create-screenshot-user --env=test`,
+`APP_ENV=test php -S 127.0.0.1:8000 -t public public/index.php`, then the spec with the preinstalled Chromium
+(`launchOptions.executablePath: '/opt/pw-browsers/chromium'`, `video: 'off'` in a local config). Vendor JS is
+missing there (importmap placeholders), so ARIA states set by JS may differ from CI.
+
 ## Open questions / deferred items
 
 - [ ] Per-test tenant isolation (currently shared screenshot-user tenant — see
