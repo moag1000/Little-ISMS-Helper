@@ -10,7 +10,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
 /**
  * Per-person budget for the expensive pages (S31): exports, PDFs, previews, the
@@ -31,7 +31,7 @@ final class HeavyRequestRateLimitSubscriber
     private const string LIGHT = '/(_status|_progress|_download|_poll|_cancel)$|^report_builder_widget_data$|^admin_job_/';
 
     public function __construct(
-        private readonly RateLimiterFactory $heavyRequestLimiter,
+        private readonly RateLimiterFactoryInterface $heavyRequestLimiter,
         private readonly Security $security,
     ) {
     }
