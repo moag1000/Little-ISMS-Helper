@@ -96,7 +96,7 @@ final class RoleLifecycleTest extends TestCase
     #[Test]
     public function yamlDefinesExactlyThreePlaces(): void
     {
-        $places = $this->workflowConfig()['places'];
+        $places = array_column($this->workflowConfig()['places'], 'name');
         $this->assertEqualsCanonicalizing(
             ['draft', 'active', 'archived'],
             $places,

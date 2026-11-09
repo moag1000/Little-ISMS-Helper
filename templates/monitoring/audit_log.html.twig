@@ -125,7 +125,7 @@
                                     {{ log.userName }}
                                 </td>
                                 <td>
-                                    {% include '_components/_badge.html.twig' with { variant: log.action in ['delete', 'destroy', 'remove'] ? 'danger' : (log.action in ['create', 'add'] ? 'success' : 'primary'), content: log.action } %}
+                                    {% include '_components/_badge.html.twig' with { variant: pill_tone_action(log.action), content: log.action } %}
                                 </td>
                                 <td>
                                     {% if log.entityType %}

@@ -558,7 +558,7 @@
                                     {{ _fa_progress.render({ value: plan.completionPercentage, tone: 'danger', class: 'mt-1' }) }}
                                 </div>
                                 {% include '_components/_badge.html.twig' with {
-                                    variant: plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : 'secondary'),
+                                    variant: pill_tone_severity(plan.priority),
                                     class: 'ms-2',
                                     content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')
                                 } %}

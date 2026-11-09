@@ -57,7 +57,7 @@
 #}
 {% macro stat_card(icon, bg_color, title, value, change_icon, change_text, change_type) %}
     {% set variant = bg_color|default('')|replace({'bg-': ''}) %}
-    {% set hintClass = change_type == 'positive' ? 'text-success' : (change_type == 'negative' ? 'text-danger' : 'text-muted') %}
+    {% set hintClass = change_type in ['positive', 'negative'] ? 'text-' ~ status_tone('trend', change_type) : 'text-muted' %}
     <article class="fa-feature-card fa-feature-card--{{ variant }}">
         {% if icon %}
             <div class="fa-feature-card__icon-chip" aria-hidden="true">

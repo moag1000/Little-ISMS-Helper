@@ -77,7 +77,7 @@
                             <td class="fa-table__cell">{{ f.fulfillmentPercentage }} %</td>
                             <td class="fa-table__cell">{{ f.derivedPercentage is not null ? f.derivedPercentage ~ ' %' : '—' }}</td>
                             <td class="fa-table__cell">
-                                {{ pill.render(('compliance.fulfillment_rule.source.override_' ~ f.overrideSource)|trans({}, 'compliance'), f.overrideSource == 'legacy' ? 'warning' : 'neutral', {size: 'sm'}) }}
+                                {{ pill.render(('compliance.fulfillment_rule.source.override_' ~ f.overrideSource)|trans({}, 'compliance'), status_tone('override_source', f.overrideSource), {size: 'sm'}) }}
                                 <div class="small">{{ f.overrideReason ?: ('compliance.fulfillment_rule.override.reason_' ~ f.overrideSource)|trans({}, 'compliance') }}</div>
                             </td>
                             <td class="fa-table__cell">

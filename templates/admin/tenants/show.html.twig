@@ -64,7 +64,7 @@
         </div>
         {# Activating, deleting and assigning users across organisations are instance-operator tasks #}
         {% if is_granted('ROLE_SUPER_ADMIN') and statusTransition and is_granted('lifecycle.tenant_lifecycle.' ~ statusTransition, tenant) %}
-            <a href="#tenant-status" class="fa-cyber-btn fa-cyber-btn--{{ statusTransition == 'suspend' ? 'warning' : 'primary' }}">
+            <a href="#tenant-status" class="fa-cyber-btn fa-cyber-btn--{{ status_tone('tenant_action', statusTransition) }}">
                 <i class="fa-icon fa-icon--{{ statusTransition == 'suspend' ? 'pause' : 'play' }}" aria-hidden="true"></i>
                 {{ ('tenant.action.' ~ statusTransition)|trans({}, 'tenant') }}
             </a>
@@ -101,7 +101,7 @@
                         <small id="tenant-status-approver-help" class="form-text text-muted">{{ 'tenant.lifecycle.approver_help'|trans({}, 'tenant') }}</small>
                     </div>
                 {% endif %}
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ statusTransition == 'suspend' ? 'warning' : 'primary' }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ status_tone('tenant_action', statusTransition) }}">
                     <i class="fa-icon fa-icon--{{ statusTransition == 'suspend' ? 'pause' : 'play' }}" aria-hidden="true"></i>
                     {{ ('tenant.action.' ~ statusTransition)|trans({}, 'tenant') }}
                 </button>

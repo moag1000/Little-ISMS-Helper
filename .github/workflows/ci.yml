@@ -826,6 +826,10 @@ jobs:
         # S19, 2026-11: a restored '../../.env.local' (audit-freeze PDF) was read, a restored
         # '../var/setup_complete.lock' (logo) deleted and setup reopened, any file zipped into backups.
         run: python3 scripts/quality/check_stored_file_paths.py --quiet
+      - name: "Gate 97: an organisation pinned in TenantContext is put back (runAs / try-finally)"
+        # S23, 2026-11: the worker runs scheduled commands and jobs in one container; a report or KPI
+        # snapshot left its organisation pinned and the nightly instance backup held only that one.
+        run: python3 scripts/quality/check_tenant_pin_restore.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

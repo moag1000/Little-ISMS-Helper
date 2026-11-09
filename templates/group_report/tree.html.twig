@@ -28,7 +28,7 @@
                 {% endif %}
             </div>
             <div>
-                <span class="fa-status-pill fa-status-pill--{{ class == 'essential' ? 'danger' : (class == 'important' ? 'warning' : 'neutral') }}">
+                <span class="fa-status-pill fa-status-pill--{{ status_tone('entity_class', class) }}">
                     {{ ('group_report.nis2.class.' ~ class)|trans({}, 'group_report') }}
                 </span>
                 {% if tenant.naceCode %}

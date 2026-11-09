@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\Job\WorkerHealthService;
 use Psr\Log\LoggerInterface;
@@ -84,8 +85,14 @@ final class QueueStatusController extends AbstractController
      *
      * Audit-logged because triggering the worker has side effects
      * (every queued admin job actually executes here).
+     *
+     * Instance operation (S23): the queue holds the jobs and mails of every
+     * organisation, so only the instance operator drains it. The jobs pin
+     * their organisation and put the request's scope back, so the audit row
+     * below lands in the operator's own trail.
      */
     #[Route('/admin/jobs/process-queue', name: 'admin_queue_process_now', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     #[IsCsrfTokenValid('admin_queue_process_now')]
     public function processQueueNow(Request $request): Response
     {

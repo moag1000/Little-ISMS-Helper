@@ -9,16 +9,16 @@ framework:
                 - App\Entity\ChangeRequest
             initial_marking: draft
             places:
-                - draft
-                - submitted
-                - under_review
-                - approved
-                - rejected
-                - scheduled
-                - implemented
-                - verified
-                - closed
-                - cancelled
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: submitted, metadata: { tone: warning } }
+                - { name: under_review, metadata: { tone: primary } }
+                - { name: approved, metadata: { tone: success } }
+                - { name: rejected, metadata: { tone: danger } }
+                - { name: scheduled, metadata: { tone: primary } }
+                - { name: implemented, metadata: { tone: success } }
+                - { name: verified, metadata: { tone: success } }
+                - { name: closed, metadata: { tone: neutral } }
+                - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 # ISO 27001 A.8.32 — Change-Management. Approve, Implemented und
                 # Closed sind die drei kritischen SoD-Gates: jeweils 4-Augen.

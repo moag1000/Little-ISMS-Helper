@@ -19,7 +19,7 @@
     {# Flash messages — keep the Aurora alert variant inside the step content. #}
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
+            {% set faVariant = flash_tone(label) %}
             {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message|fa_flash }) }}
         {% endfor %}
     {% endfor %}

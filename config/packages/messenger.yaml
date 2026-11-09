@@ -41,7 +41,6 @@ framework:
 
             # Scheduler messages
             App\Message\Schedule\CleanupExpiredSessionsMessage: scheduler
-            App\Message\Schedule\GenerateComplianceReportMessage: scheduler
             App\Message\Schedule\ExecuteScheduledTaskMessage: scheduler
 
             # Async admin jobs (file-backed status, Doctrine transport, no auto-retry)

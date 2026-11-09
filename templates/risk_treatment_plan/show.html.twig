@@ -37,7 +37,7 @@
     ]
 }) }}
 
-{% set _status %}{% set status_variant = plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) %}{% include '_components/_badge.html.twig' with { variant: status_variant, class: 'fa-status-pill--lg', content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') } %}{% endset %}
+{% set _status %}{% set status_variant = lifecycle_tone('App\\Entity\\RiskTreatmentPlan', plan.status) %}{% include '_components/_badge.html.twig' with { variant: status_variant, class: 'fa-status-pill--lg', content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') } %}{% endset %}
 {% set _actions %}{{ _lifecycle_actions.dropdown(plan, 'risk-treatment-plan', 'risk_treatment_plan_lifecycle') }}{% endset %}
 {{ _fa_status_band.render({
     status: _status,
@@ -202,7 +202,7 @@
                     </td>
                     <td>{{ control.title }}</td>
                     <td>
-                        {% set ctrl_variant = control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) %}
+                        {% set ctrl_variant = status_tone('control_implementation', control.implementationStatus) %}
                         {% include '_components/_badge.html.twig' with { variant: ctrl_variant, content: ('control.status.' ~ control.implementationStatus)|trans({}, 'control') } %}
                     </td>
                 </tr>

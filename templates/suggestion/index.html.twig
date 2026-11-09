@@ -52,8 +52,8 @@
         </div>
     {% endblock %}
     {% block list_summary %}
-        <a href="{{ path('app_suggestion_index') }}" class="fa-status-pill fa-status-pill--{{ view == 'open' ? 'primary' : 'neutral' }}"{% if view == 'open' %} aria-current="page"{% endif %}>{{ 'suggestions.view.open'|trans({}, 'suggestions') }}</a>
-        <a href="{{ path('app_suggestion_index', {view: 'decided'}) }}" class="fa-status-pill fa-status-pill--{{ view == 'decided' ? 'primary' : 'neutral' }}"{% if view == 'decided' %} aria-current="page"{% endif %}>{{ 'suggestions.view.decided'|trans({}, 'suggestions') }}</a>
+        <a href="{{ path('app_suggestion_index') }}" class="fa-status-pill fa-status-pill--{{ status_tone('tab', view == 'open' ? 'active' : 'inactive') }}"{% if view == 'open' %} aria-current="page"{% endif %}>{{ 'suggestions.view.open'|trans({}, 'suggestions') }}</a>
+        <a href="{{ path('app_suggestion_index', {view: 'decided'}) }}" class="fa-status-pill fa-status-pill--{{ status_tone('tab', view == 'decided' ? 'active' : 'inactive') }}"{% if view == 'decided' %} aria-current="page"{% endif %}>{{ 'suggestions.view.decided'|trans({}, 'suggestions') }}</a>
         {% if is_granted('ROLE_MANAGER') %}
             <form method="post" action="{{ path('app_suggestion_refresh') }}" class="ms-auto">
                 <input type="hidden" name="_token" value="{{ csrf_token('suggestion_refresh') }}">

@@ -158,6 +158,7 @@ HELP
 
         // The loop pins each instance's organisation; an exception must never
         // leave a tenant pinned for the SLA watcher or the next caller in this process.
+        $restoreContext = $this->tenantContext?->capture();
         try {
             foreach ($activeWorkflows as $workflowInstance) {
                 // No request: pin the instance's organisation (lifecycle guards, tenant filter).
@@ -258,7 +259,9 @@ HELP
                 }
             }
         } finally {
-            $this->tenantContext?->setCurrentTenant(null);
+            if ($restoreContext !== null) {
+                $restoreContext();
+            }
         }
 
         $io->newLine();

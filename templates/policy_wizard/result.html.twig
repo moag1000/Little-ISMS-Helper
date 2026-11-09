@@ -124,11 +124,7 @@
                                     {{ pill.render(('policy_wizard.standard_badge.' ~ doc.standard)|trans({}, 'policy_wizard'), 'neutral', {size: 'sm', class: 'ms-2'}) }}
                                 {% endif %}
                                 {% if doc.workflow_status is defined and doc.workflow_status is not null %}
-                                    {% set wf_tone = doc.workflow_status == 'approved'
-                                        ? 'success'
-                                        : (doc.workflow_status == 'rejected'
-                                            ? 'danger'
-                                            : (doc.workflow_status == 'in_progress' ? 'primary' : 'warning')) %}
+                                    {% set wf_tone = status_tone('workflow', doc.workflow_status) %}
                                     <a href="{{ path('app_workflow_instance_show', {id: doc.workflow_id}) }}"
                                        class="ms-2 text-decoration-none"
                                        target="_blank" rel="noopener">
@@ -178,8 +174,7 @@
                             <div class="mt-2 small">
                                 <span class="text-muted">{{ 'policy_wizard.result.document.approval_chain'|trans }}:</span>
                                 {% for entry in doc.approval_history|slice(0, 5) %}
-                                    {% set entry_tone = (entry.action|default('') == 'approved') ? 'success'
-                                        : ((entry.action|default('') == 'rejected') ? 'danger' : 'neutral') %}
+                                    {% set entry_tone = status_tone('workflow_action', entry.action|default('')) %}
                                     {{ pill.render(entry.role|default(entry.user|default('?')) ~ (entry.action is defined ? ' · ' ~ entry.action : ''), entry_tone, {size: 'sm', class: 'ms-1'}) }}
                                 {% endfor %}
                                 {% if doc.approval_history|length > 5 %}

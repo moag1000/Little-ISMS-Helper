@@ -12,19 +12,19 @@ framework:
                 - App\Entity\Risk
             initial_marking: identified
             places:
-                - identified
-                - assessed
-                - in_treatment
-                - treated
-                - monitored
-                - closed
-                - accepted
+                - { name: identified, metadata: { tone: warning } }
+                - { name: assessed, metadata: { tone: primary } }
+                - { name: in_treatment, metadata: { tone: primary } }
+                - { name: treated, metadata: { tone: success } }
+                - { name: monitored, metadata: { tone: primary } }
+                - { name: closed, metadata: { tone: neutral } }
+                - { name: accepted, metadata: { tone: success } }
                 # Legacy buckets retained as places to satisfy RiskStatus enum
                 # cases stored in historical rows. No transitions are wired
                 # for them — they are read-only carryover from pre-lifecycle
                 # data and exist purely so YAML↔Enum parity holds.
-                - mitigated
-                - open
+                - { name: mitigated, metadata: { tone: success } }
+                - { name: open, metadata: { tone: warning } }
             transitions:
                 assess:
                     from: identified

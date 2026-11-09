@@ -48,18 +48,16 @@ final class ExpireEvidenceCommand
         $expired = 0;
         // The audit log takes the tenant from TenantContext, which is empty in CLI:
         // set it per tenant so every row lands in its organisation's trail.
-        try {
-            foreach ($this->tenants->findActive() as $tenant) {
-                $this->tenantContext->setCurrentTenant($tenant);
+        foreach ($this->tenants->findActive() as $tenant) {
+            $this->tenantContext->runAs($tenant, function () use ($tenant, $now, $dryRun, &$flagged, &$expired): void {
                 if ($dryRun) {
                     $expired += count($this->certificates->findExpiredActive($tenant, $now));
-                    continue;
+
+                    return;
                 }
                 $flagged += $this->evidence->flagExpiredEvidence($tenant);
                 $expired += $this->expireLapsedCertificates($tenant, $now);
-            }
-        } finally {
-            $this->tenantContext->setCurrentTenant(null);
+            });
         }
 
         $io->success(sprintf(

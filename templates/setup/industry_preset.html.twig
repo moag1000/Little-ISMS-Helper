@@ -25,7 +25,7 @@
         {% for message in messages %}
             {{ faAlert.render(
                 message|fa_flash,
-                label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')),
+                flash_tone(label),
                 { dismissible: true }
             ) }}
         {% endfor %}

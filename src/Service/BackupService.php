@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use DateTime;
+use App\Doctrine\TenantFilterState;
+use App\Service\Backup\BackupVersionInfo;
 use App\Entity\Tenant;
 use App\Service\Upload\ProtectedUploads;
 use App\Service\Upload\StoredFilePath;
 use App\Entity\UserSession;
 use DateTimeInterface;
-use Composer\InstalledVersions;
 use App\Entity\AuditLog;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -300,6 +301,16 @@ class BackupService
         bool $includeFiles = true,
         ?Tenant $tenantScope = null
     ): array {
+        // Explicit scope, never the tenant filter: a worker pin made the instance backup one org's (S23).
+        return TenantFilterState::suspended(
+            $this->entityManager,
+            fn (): array => $this->collectBackup($includeAuditLog, $includeUserSessions, $includeFiles, $tenantScope),
+        );
+    }
+
+    private function collectBackup(
+        bool $includeAuditLog, bool $includeUserSessions, bool $includeFiles, ?Tenant $tenantScope,
+    ): array {
         // Determine scope tree (self + all subsidiaries for holding tenants)
         $scopeIds = $this->resolveScopeIds($tenantScope);
         $scopeType = $this->resolveScopeType($tenantScope);
@@ -317,11 +328,11 @@ class BackupService
         $backup = [
             'metadata' => [
                 'version'            => self::BACKUP_FORMAT_VERSION,
-                'app_version'        => $this->getApplicationVersion(),
-                'schema_version'     => $this->getSchemaVersion(),
+                'app_version'        => BackupVersionInfo::application($this->projectDir),
+                'schema_version'     => BackupVersionInfo::schema($this->entityManager),
                 'php_version'        => PHP_VERSION,
                 'symfony_version'    => \Symfony\Component\HttpKernel\Kernel::VERSION,
-                'doctrine_version'   => $this->getDoctrineVersion(),
+                'doctrine_version'   => BackupVersionInfo::doctrine(),
                 'files_included'     => false, // updated below if files are packaged
                 'file_count'         => 0,
                 'created_at'         => (new DateTime())->format('c'),
@@ -1407,59 +1418,6 @@ class BackupService
 
         file_put_contents($filepath . '.gz', $compressed);
         unlink($filepath); // Remove uncompressed file
-    }
-
-    /**
-     * Get application version from composer.json
-     */
-    private function getApplicationVersion(): string
-    {
-        $composerFile = $this->projectDir . '/composer.json';
-        if (file_exists($composerFile)) {
-            $composer = json_decode(file_get_contents($composerFile), true);
-            return $composer['version'] ?? 'unknown';
-        }
-        return 'unknown';
-    }
-
-    /**
-     * Get the latest applied Doctrine migration version.
-     *
-     * Reads from the doctrine_migration_versions table via DBAL to avoid
-     * Doctrine ORM entity manager overhead.
-     */
-    private function getSchemaVersion(): string
-    {
-        try {
-            $connection = $this->entityManager->getConnection();
-            $result = $connection->executeQuery(
-                'SELECT version FROM doctrine_migration_versions ORDER BY executed_at DESC LIMIT 1'
-            );
-            $row = $result->fetchAssociative();
-            if ($row !== false && isset($row['version'])) {
-                // Strip the namespace prefix for readability: keep only the timestamp part
-                return preg_replace('/^.*\\\\/', '', (string) $row['version']) ?? (string) $row['version'];
-            }
-        } catch (\Exception) {
-            // Table may not exist in test environments or on fresh installs
-        }
-        return 'unknown';
-    }
-
-    /**
-     * Get Doctrine version
-     */
-    private function getDoctrineVersion(): string
-    {
-        try {
-            if (class_exists(InstalledVersions::class)) {
-                $packages = InstalledVersions::getAllRawData()[0]['versions'] ?? [];
-                return $packages['doctrine/orm']['version'] ?? 'unknown';
-            }
-        } catch (\Exception) {
-            // Fallback if Composer runtime API is not available
-        }
-        return 'unknown';
     }
 
     /**

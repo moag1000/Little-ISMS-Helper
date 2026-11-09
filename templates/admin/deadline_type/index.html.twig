@@ -95,7 +95,7 @@
                                 {% endif %}
                             </td>
                             <td class="fa-table__cell">
-                                <span class="fa-status-pill fa-status-pill--{{ t.origin == 'config' ? 'primary' : 'neutral' }}">{{ ('admin.deadline_type.origin.' ~ t.origin)|trans({}, 'admin') }}</span>
+                                <span class="fa-status-pill fa-status-pill--{{ status_tone('origin', t.origin) }}">{{ ('admin.deadline_type.origin.' ~ t.origin)|trans({}, 'admin') }}</span>
                             </td>
                         </tr>
                     {% endfor %}

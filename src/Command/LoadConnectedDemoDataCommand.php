@@ -33,13 +33,20 @@ class LoadConnectedDemoDataCommand
     public function __invoke(
         #[Option(name: 'update', shortcut: 'u', description: 'Update existing demo entities instead of skipping them')]
         bool $update = false,
+        #[Option(name: 'tenant-id', description: 'Organisation (id) to load the scenario into; required with several')]
+        ?int $tenantId = null,
         ?SymfonyStyle $symfonyStyle = null
     ): int {
         $symfonyStyle->title('Loading Connected Demo Scenario');
         $symfonyStyle->text(sprintf('Mode: %s', $update ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
-        // Find first tenant
-        $tenant = $this->entityManager->getRepository(Tenant::class)->findOneBy([]);
+        // The named organisation; without --tenant-id only an instance with exactly one.
+        $tenants = $this->entityManager->getRepository(Tenant::class);
+        if ($tenantId === null && $tenants->count([]) > 1) {
+            $symfonyStyle->error('Several organisations exist: name one with --tenant-id.');
+            return Command::FAILURE;
+        }
+        $tenant = $tenantId !== null ? $tenants->find($tenantId) : $tenants->findOneBy([]);
         if (!$tenant instanceof Tenant) {
             $symfonyStyle->error('No tenant found. Please create a tenant first.');
             return Command::FAILURE;

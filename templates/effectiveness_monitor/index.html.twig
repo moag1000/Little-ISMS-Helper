@@ -136,7 +136,7 @@
                         <td class="fa-table__cell">{% if row.lastChecked %}{{ row.lastChecked|fa_date }}{% else %}<span class="fa-status-pill fa-status-pill--danger">{{ 'effectiveness_monitor.label.never'|trans({}, 'control') }}</span>{% endif %}</td>
                         <td class="fa-table__cell fa-table__cell--num">{{ row.overdueDays ? row.overdueDays ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control') : '—' }}</td>
                         <td class="fa-table__cell">{{ row.control.effectiveResponsiblePerson ?? '—' }}</td>
-                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--{{ row.control.implementationStatus == 'implemented' ? 'success' : (row.control.implementationStatus == 'in_progress' ? 'warning' : 'neutral') }}">{{ row.control.implementationStatus ?? '—' }}</span></td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--{{ status_tone('control_implementation', row.control.implementationStatus) }}">{{ row.control.implementationStatus ?? '—' }}</span></td>
                         <td class="fa-table__cell"><a href="{{ path('app_soa_show', {id: row.control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'effectiveness_monitor.action.view'|trans({}, 'control') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a></td>
                     </tr>
             {% else %}

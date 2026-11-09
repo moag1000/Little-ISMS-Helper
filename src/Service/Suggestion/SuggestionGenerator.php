@@ -36,11 +36,8 @@ class SuggestionGenerator
         $created = 0;
         $superseded = 0;
         $failed = [];
-        $previous = $this->tenantContext->getCurrentTenant();
         // Outside a request the Doctrine tenant filter is unarmed; scope it.
-        $this->tenantContext->setCurrentTenant($tenant);
-
-        try {
+        $generate = function () use ($tenant, $onlyKinds, &$created, &$superseded, &$failed): void {
             foreach ($this->queue->kinds() as $key => $kind) {
                 if ($onlyKinds !== null && !in_array($key, $onlyKinds, true)) {
                     continue;
@@ -73,9 +70,8 @@ class SuggestionGenerator
                     ]);
                 }
             }
-        } finally {
-            $this->tenantContext->setCurrentTenant($previous);
-        }
+        };
+        $this->tenantContext->runAs($tenant, $generate);
 
         return ['created' => $created, 'superseded' => $superseded, 'failed' => $failed];
     }
