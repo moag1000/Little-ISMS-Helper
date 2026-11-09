@@ -191,12 +191,21 @@
         box-shadow: 0 0 0 2px rgba(var(--bs-primary-rgb, 13, 110, 253), 0.15);
     }
 
-    .isms-journey__phase--locked {
+    /* Locked/dismissed: dashed frame + muted icon; the label keeps a readable text token
+       (opacity on the whole tile dropped it to 3.5:1, W11). */
+    .isms-journey__phase--locked,
+    .isms-journey__phase--dismissed {
+        border-style: dashed;
+    }
+
+    .isms-journey__phase--locked .isms-journey__phase-bi,
+    .isms-journey__phase--dismissed .isms-journey__phase-bi {
         opacity: 0.55;
     }
 
-    .isms-journey__phase--dismissed {
-        opacity: 0.5;
+    .isms-journey__phase--locked .isms-journey__phase-label,
+    .isms-journey__phase--dismissed .isms-journey__phase-label {
+        color: var(--fg-3);
     }
 
     .isms-journey__phase-icon {

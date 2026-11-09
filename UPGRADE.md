@@ -152,6 +152,8 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   WCAG AA. Screenreader lesen Fehlermeldungen am Feld, Diagramm-Titel und Icon-Schaltflächen vor; Abschnitte langer
   Formulare und Prüfpunkte der Audit-Checkliste klappen auch per Tastatur (Enter/Leertaste) auf. Die Glocke nennt die Zahl
   neuer Meldungen, Navigations-Flyouts und Glocken-Panel gelten als Dialog statt Menü, Fortschrittsbalken haben einen Namen.
+  Gesperrte Phasen der ISMS-Reise sind gestrichelt statt halbtransparent, die Zeilen im Compliance-Widget haben keinen
+  farbigen Hintergrund mehr (nur noch den farbigen Rand). Der axe-Lauf meldet auf den zehn Kernseiten 0 Verstöße.
   Keine Aktion nötig.
   Nebenbei behoben: Details der Audit-Checkliste und der Framework-Anforderungen ließen sich gar nicht aufklappen.
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
