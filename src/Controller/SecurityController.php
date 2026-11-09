@@ -91,9 +91,15 @@ class SecurityController extends AbstractController
     #[Route('/oauth/azure/connect', name: 'oauth_azure_connect', methods: ['GET'])]
     public function connectAzure(ClientRegistry $clientRegistry): Response
     {
-        return $clientRegistry
-            ->getClient('azure')
-            ->redirect(['openid', 'email', 'profile'], []);
+        // Public since S25 (the rule once missed the locale prefix): an instance without
+        // Azure configuration answers with the login page, not a 500.
+        try {
+            return $clientRegistry->getClient('azure')->redirect(['openid', 'email', 'profile'], []);
+        } catch (\Throwable) {
+            $this->addFlash('error', $this->translator->trans('security.error.azure_login_error', [], 'messages'));
+
+            return $this->redirectToRoute('app_login');
+        }
     }
 
     /**

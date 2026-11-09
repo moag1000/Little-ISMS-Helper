@@ -369,6 +369,31 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($this->createTestFile('a.csv', 'a,b'), 'nope');
     }
 
+    /**
+     * S25: logos and avatars land in public/uploads and are served without login —
+     * only image types, with their signature checked (webp included).
+     */
+    #[Test]
+    public function imageProfileAcceptsImagesOnly(): void
+    {
+        foreach (['logo.png' => $this->getPngContent(), 'logo.jpeg' => $this->getJpegContent(), 'logo.gif' => $this->getGifContent()] as $name => $content) {
+            self::assertTrue($this->service->validateUpload($this->createTestFile($name, $content), FileUploadSecurityService::PROFILE_IMAGE)['valid'], $name);
+        }
+        foreach (['logo.pdf' => $this->getPdfContent(), 'logo.zip' => $this->getZipContent(), 'logo.txt' => 'plain text', 'logo.svg' => '<svg/>'] as $name => $content) {
+            self::assertFalse($this->service->validateUpload($this->createTestFile($name, $content), FileUploadSecurityService::PROFILE_IMAGE)['valid'], $name);
+        }
+    }
+
+    #[Test]
+    public function jpegAndWebpSignaturesAreChecked(): void
+    {
+        $fakeJpeg = $this->createTestFile('photo.jpeg', $this->getPngContent());
+        self::assertFalse($this->service->validateUpload($fakeJpeg, FileUploadSecurityService::PROFILE_IMAGE)['valid']);
+
+        $fakeWebp = $this->createTestFile('photo.webp', 'RIFF' . str_repeat("\0", 4) . 'AVI LIST');
+        self::assertFalse($this->service->validateUpload($fakeWebp, FileUploadSecurityService::PROFILE_IMAGE)['valid']);
+    }
+
     private function createTestFile(string $filename, string $content): UploadedFile
     {
         $path = $this->tempDir . '/' . basename($filename);

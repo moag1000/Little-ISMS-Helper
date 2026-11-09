@@ -864,6 +864,12 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       (`addFlash('success', 'tenant.flash.created')`) is translated from the domain
       named by its first segment, then `messages`, then any domain — the key must
       exist in DE + EN. Pages do not render `app.flashes` again (base consumed them).
+- [ ] A route reachable without login (access_control `PUBLIC_ACCESS` or no rule, no role in `#[IsGranted]`) is
+      listed with its guard in `tests/Security/PublicRoutesInventoryTest` and throttled per IP
+      (`PublicPathRateLimitSubscriber::PATTERNS`, or its own throttle); a `PUBLIC_ACCESS` rule must match a real
+      route (SecurityController routes carry the locale prefix). PDFs only via `App\Service\Pdf\PdfRenderer`
+      (no remote, no PHP/JS, chroot `public/`; `DompdfOptionsContractTest`). Logo/avatar uploads use
+      `FileUploadSecurityService::validateImage()` (S25).
 - [ ] Dates from request input go through `App\Util\InputDate::parse()` / `::ymd()`
       (`new DateTime($userInput)` throws → 500 on `?date_from=x`).
 - [ ] `ROLE_AUDITOR` / `ROLE_GROUP_CISO` / `ROLE_KONZERN_AUDITOR` are read-only — a
