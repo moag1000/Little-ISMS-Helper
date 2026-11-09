@@ -197,13 +197,16 @@ class SecurityControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testSamlMetadataRequiresAuthentication(): void
+    public function testSamlMetadataIsPublicForTheIdentityProvider(): void
     {
-        // Act - SAML metadata route requires authentication
+        // S25: the IdP reads the SP metadata without a session. Before, the access rule named
+        // /saml without the locale prefix and this route redirected to the login page.
         $this->client->request('GET', '/en/saml/metadata');
 
-        // Assert - Should redirect to login when not authenticated
-        $this->assertResponseRedirects();
+        $response = $this->client->getResponse();
+        self::assertFalse($response->isRedirect(), 'metadata must not send the IdP to the login page');
+        // No SAML configuration in the test env → 404; configured → the XML.
+        self::assertContains($response->getStatusCode(), [200, 404]);
     }
 
     #[Test]

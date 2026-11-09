@@ -244,7 +244,7 @@ class ProfileController extends AbstractController
     {
         try {
             // Security validation using FileUploadSecurityService
-            $validation = $this->fileUploadSecurityService->validateUpload($uploadedFile);
+            $validation = $this->fileUploadSecurityService->validateImage($uploadedFile);
 
             if (!$validation['valid']) {
                 $this->addFlash('warning', $this->translator->trans('profile.error.avatar_upload_invalid', ['%error%' => (string) $validation['error']], 'user'));

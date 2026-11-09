@@ -7,6 +7,7 @@ namespace App\Security;
 use App\Entity\IdentityProvider;
 use App\Entity\SsoUserApproval;
 use App\Entity\User;
+use App\Http\PublicUrlGenerator;
 use App\Repository\IdentityProviderRepository;
 use App\Service\Sso\OidcAuthenticationFlow;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,6 +50,7 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
         private readonly EntityManagerInterface $em,
         private readonly RouterInterface $router,
         private readonly LoggerInterface $logger,
+        private readonly PublicUrlGenerator $publicUrls,
     ) {
     }
 
@@ -102,7 +104,8 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
             throw new AuthenticationException('SSO provider not found or disabled.');
         }
 
-        $redirectUri = $this->router->generate('app_sso_callback', ['slug' => $slug], RouterInterface::ABSOLUTE_URL);
+        // Same redirect_uri as SsoController::start(): from DEFAULT_URI (S25).
+        $redirectUri = $this->publicUrls->generate('app_sso_callback', ['slug' => $slug]);
         $result = $this->flow->handleCallback($provider, $redirectUri, $code, $verifier, $nonce);
 
         if ($result instanceof SsoUserApproval) {

@@ -9,6 +9,7 @@ use App\Entity\IdentityProvider;
 use App\Form\Step\Sso\SsoDiscoveryStepType;
 use App\Form\Step\Sso\SsoPresetStepType;
 use App\Form\Step\Sso\SsoTestStepType;
+use App\Http\PublicUrlGenerator;
 use App\Repository\IdentityProviderRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
@@ -58,6 +59,7 @@ final class SsoWizardController extends AbstractController
         private readonly AuditLogger $audit,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
+        private readonly PublicUrlGenerator $publicUrls,
     ) {
     }
 
@@ -123,11 +125,9 @@ final class SsoWizardController extends AbstractController
             return $this->redirectToRoute('admin_sso_wizard_step3');
         }
 
-        $callbackUrl = $this->generateUrl(
-            'app_sso_callback',
-            ['slug' => $provider->getSlug() ?: '{slug}'],
-            \Symfony\Component\Routing\RouterInterface::ABSOLUTE_URL
-        );
+        // The URL the IdP must register = the one SsoController sends (DEFAULT_URI).
+        $slug = $provider->getSlug() ?: '{slug}';
+        $callbackUrl = $this->publicUrls->generate('app_sso_callback', ['slug' => $slug]);
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
@@ -187,11 +187,9 @@ final class SsoWizardController extends AbstractController
             return $this->redirectToRoute('admin_sso_index');
         }
 
-        $callbackUrl = $this->generateUrl(
-            'app_sso_callback',
-            ['slug' => $provider->getSlug() ?: '{slug}'],
-            \Symfony\Component\Routing\RouterInterface::ABSOLUTE_URL
-        );
+        // The URL the IdP must register = the one SsoController sends (DEFAULT_URI).
+        $slug = $provider->getSlug() ?: '{slug}';
+        $callbackUrl = $this->publicUrls->generate('app_sso_callback', ['slug' => $slug]);
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY

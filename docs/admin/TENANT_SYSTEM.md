@@ -372,7 +372,8 @@ web UI for this.
     overrides).
   - **Files of a ZIP backup** are written only by the restore itself, after the
     data has been committed — never by preview, validation or dry run. Only the
-    folders a backup carries (`documents`, `document_versions`, `tenant_logos`),
+    folders a backup carries (`documents`, `document_versions`, `tenant_logos`,
+    `user_avatars`, `training_materials`),
     only file types the upload check accepts (no `.html`, `.svg`, `.js`), at most
     100 MB per file. An organisation restore never replaces an existing file
     (the upload folders are shared); skipped files are listed as warnings.

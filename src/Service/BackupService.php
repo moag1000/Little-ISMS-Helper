@@ -30,14 +30,22 @@ class BackupService
 
     /**
      * File-reference fields per entity: [entityName => fieldName].
-     * Values stored in the DB are relative paths under public/ (Document)
-     * or relative paths under public/ (Tenant logo).
+     * Documents carry '/uploads/documents/<file>' (resolved below var/uploads), logos and
+     * profile pictures 'uploads/<folder>/<file>' below public/uploads ({@see PUBLIC_UPLOAD_FOLDERS}).
      */
     private const array FILE_REFERENCE_FIELDS = [
         'Document'        => 'filePath',   // stored as '/uploads/documents/foo.pdf'
         'DocumentVersion' => 'filePath',   // version-specific upload (history)
         'Tenant'          => 'logoPath',   // stored as 'uploads/tenants/logo.png'
         'TenantBranding'  => 'logoPath',   // separate branding overrides (subsidiaries)
+        'User'            => 'profilePicture', // stored as 'uploads/users/avatar_7_x.png'
+    ];
+
+    /** Public upload folder (StoredFilePath) and archive folder per entity with a public file. */
+    private const array PUBLIC_UPLOAD_FOLDERS = [
+        'Tenant'         => [StoredFilePath::TENANT_LOGOS, 'tenant_logos'],
+        'TenantBranding' => [StoredFilePath::TENANT_LOGOS, 'tenant_logos'],
+        'User'           => [StoredFilePath::USER_AVATARS, 'user_avatars'],
     ];
 
     /**
@@ -547,7 +555,8 @@ class BackupService
      *   ├── backup.json
      *   └── files/
      *       ├── documents/uuid.pdf
-     *       └── tenant_logos/logo.png
+     *       ├── tenant_logos/logo.png
+     *       └── user_avatars/avatar_7_x.png
      *
      * When no files exist (or $includeFiles was false), the legacy .json.gz is produced.
      *
@@ -955,7 +964,7 @@ class BackupService
      * Folders below public/uploads/ that a backup archive carries ({@see collectFileReferences()}).
      * Nothing else is ever written from an archive.
      */
-    private const array ARCHIVE_FILE_FOLDERS = ['documents', 'document_versions', 'tenant_logos', 'training_materials'];
+    private const array ARCHIVE_FILE_FOLDERS = ['documents', 'document_versions', 'tenant_logos', 'user_avatars', 'training_materials'];
 
     /** Archive folders whose files go below var/uploads/<area> (outside the web root). */
     private const array ARCHIVE_PROTECTED_FOLDERS = [
@@ -1171,10 +1180,12 @@ class BackupService
             // materials go outside the web root.
             $area = self::ARCHIVE_PROTECTED_FOLDERS[$folder] ?? null;
             $base = $area !== null ? (string) realpath($protected->directory($area)) . '/' : $uploadsBase;
-            // Logos go where Tenant.logoPath points ('uploads/tenants/<file>').
+            // Logos and profile pictures go where Tenant.logoPath / User.profilePicture point
+            // ('uploads/tenants/<file>', 'uploads/users/<file>').
+            $publicFolder = array_column(self::PUBLIC_UPLOAD_FOLDERS, 0, 1)[$folder] ?? null;
             $targetPath = match (true) {
                 $area !== null => $base . basename($relativePath),
-                $folder === 'tenant_logos' => $base . StoredFilePath::TENANT_LOGOS . '/' . basename($relativePath),
+                $publicFolder !== null => $base . $publicFolder . '/' . basename($relativePath),
                 default => $base . $relativePath,
             };
             $targetDir = dirname($targetPath);
@@ -1260,24 +1271,23 @@ class BackupService
                 // Normalize: strip leading slash
                 $relativePath = ltrim((string) $relativePath, '/');
 
-                // Documents live below var/uploads (ProtectedUploads), logos below
-                // public/uploads/tenants/. Never a plain join: the stored value may come from
-                // a restored backup ('../../.env.local' would be packed into this one, S19).
-                $absPath = in_array($entityName, ['Document', 'DocumentVersion'], true)
+                // Documents live below var/uploads (ProtectedUploads), logos and profile
+                // pictures below public/uploads/<folder>/. Never a plain join: the stored value may
+                // come from a restored backup ('../../.env.local' would be packed into this one, S19).
+                $public = self::PUBLIC_UPLOAD_FOLDERS[$entityName] ?? null;
+                $absPath = $public === null
                     ? (string) (new ProtectedUploads($this->projectDir))->resolve($relativePath)
-                    : (string) (new StoredFilePath($this->projectDir))->publicUpload($relativePath, StoredFilePath::TENANT_LOGOS);
+                    : (string) (new StoredFilePath($this->projectDir))->publicUpload($relativePath, $public[0]);
 
                 if ($absPath === '' || !file_exists($absPath) || !is_file($absPath)) {
                     continue;
                 }
 
                 // Derive a safe ZIP entry path based on entity type
-                $zipEntry = match ($entityName) {
-                    'Document'        => 'documents/' . basename($absPath),
-                    'DocumentVersion' => 'document_versions/' . basename($absPath),
-                    'Tenant'          => 'tenant_logos/' . basename($absPath),
-                    'TenantBranding'  => 'tenant_logos/' . basename($absPath),
-                    default           => $entityName . '/' . basename($absPath),
+                $zipEntry = match (true) {
+                    $public !== null              => $public[1] . '/' . basename($absPath),
+                    $entityName === 'Document'    => 'documents/' . basename($absPath),
+                    default                       => 'document_versions/' . basename($absPath),
                 };
 
                 $refs[$zipEntry] = $absPath;

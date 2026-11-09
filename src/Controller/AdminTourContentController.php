@@ -125,7 +125,7 @@ class AdminTourContentController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->writableTenant();
         $useGlobal = $this->isGranted('ROLE_SUPER_ADMIN') && $request->request->getBoolean('scope_global');
         $scopeTenant = $useGlobal ? null : $tenant;
 
@@ -199,7 +199,7 @@ class AdminTourContentController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->writableTenant();
         $existing = $this->overrideRepository->findBy([
             'tenant' => $tenant,
             'tourId' => $tourId,
@@ -214,5 +214,21 @@ class AdminTourContentController extends AbstractController
         ], 'admin'));
 
         return $this->redirectToRoute('admin_tour_content_edit', ['tourId' => $tourId]);
+    }
+
+    /**
+     * The organisation whose overrides a write touches. Rows without an organisation
+     * are the global texts every organisation sees: an admin without an organisation
+     * (e.g. after their organisation was deleted) must not write them — only a
+     * SUPER_ADMIN may (S25).
+     */
+    private function writableTenant(): ?\App\Entity\Tenant
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+            throw $this->createAccessDeniedException('Global tour texts are SUPER_ADMIN only.');
+        }
+
+        return $tenant;
     }
 }

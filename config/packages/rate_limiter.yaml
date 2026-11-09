@@ -33,6 +33,25 @@ framework:
             limit: 60
             interval: '1 minute'
 
+        # Security (S25): the other anonymous paths, per client IP —
+        # PublicPathRateLimitSubscriber maps each path to one of these.
+        # Probes: a monitor polling every few seconds stays far below.
+        public_probe:
+            policy: 'sliding_window'
+            limit: 120
+            interval: '1 minute'
+        # SSO start/callback, SAML, OAuth: a whole office behind one NAT
+        # address logs in at nine o'clock, so the budget is wide.
+        public_sso:
+            policy: 'sliding_window'
+            limit: 300
+            interval: '1 minute'
+        # Quick-Fix page, its job polling (every 3 s) and actions.
+        public_quick_fix:
+            policy: 'sliding_window'
+            limit: 120
+            interval: '1 minute'
+
         # Security: Document upload rate limiting
         document_upload:
             policy: 'sliding_window'
@@ -56,3 +75,18 @@ when@test:
                 policy: 'sliding_window'
                 limit: 100000
                 interval: '10 minutes'
+            # Functional tests call probes, SSO and Quick-Fix many times from
+            # 127.0.0.1; the mapping has its own test
+            # (tests/EventSubscriber/PublicPathRateLimitSubscriberTest).
+            public_probe:
+                policy: 'sliding_window'
+                limit: 100000
+                interval: '1 minute'
+            public_sso:
+                policy: 'sliding_window'
+                limit: 100000
+                interval: '1 minute'
+            public_quick_fix:
+                policy: 'sliding_window'
+                limit: 100000
+                interval: '1 minute'
