@@ -384,6 +384,8 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
             // Reviews are due only on records in force (the entries' done: expressions).
             'processing_activity_review' => $item->setStatus('published')->setNextReviewDate(new \DateTime('-1 day')),
             'dpia_review' => $item->setStatus('approved')->setNextReviewDate(new \DateTime('-1 day')),
+            // Control duties are done for controls that do not apply (their done: expressions).
+            'control_implementation', 'control_review', 'control_effectiveness' => $item->setApplicable(true),
             // A TIA is created under its processing activity (its page lives there).
             'tia_review' => $item->setStatus('assessed')->setNextReviewDate(new \DateTime('-1 day'))
                 ->setProcessingActivity($this->flushed($factory->create(\App\Entity\ProcessingActivity::class, $tenant, 'dlr'))),
