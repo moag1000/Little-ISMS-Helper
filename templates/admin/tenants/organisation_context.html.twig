@@ -46,36 +46,11 @@
                         }) }}
                     </div>
 
-                    {# Industries Multi-Select #}
-                    <div class="row">
-                        <div class="col-md-12">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.industries,
-                                'label': 'tenant.organisation_context.field.industries'|trans({}, 'tenant')
-                            } %}
-                        </div>
-                    </div>
-
                     <div class="row">
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.employee_count,
                                 'label': 'tenant.organisation_context.field.employee_count'|trans({}, 'tenant')
-                            } %}
-                        </div>
-                        <div class="col-md-6">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.country,
-                                'label': 'tenant.organisation_context.field.country'|trans({}, 'tenant')
-                            } %}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.description,
-                                'label': 'tenant.organisation_context.field.description'|trans({}, 'tenant')
                             } %}
                         </div>
                     </div>
@@ -115,8 +90,6 @@
                     {% endembed %}
                     {% endif %}
 
-                    {# Impact Warning #}
-                    {{ _fa_alert.render({ variant: 'warning', title: 'tenant.organisation_context.impact_warning.title'|trans({}, 'tenant'), body: 'tenant.organisation_context.impact_warning.message'|trans({}, 'tenant') }) }}
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between mt-4">
@@ -149,12 +122,9 @@
                     <p class="small text-muted">
                         {{ 'tenant.organisation_context.info.description'|trans({}, 'tenant') }}
                     </p>
-                    <ul class="small text-muted mb-0">
-                        <li>{{ 'tenant.organisation_context.info.industries'|trans({}, 'tenant') }}</li>
-                        <li>{{ 'tenant.organisation_context.info.size'|trans({}, 'tenant') }}</li>
-                        <li>{{ 'tenant.organisation_context.info.country'|trans({}, 'tenant') }}</li>
-                        <li>{{ 'tenant.organisation_context.info.corporate'|trans({}, 'tenant') }}</li>
-                    </ul>
+                    <p class="small mb-0">
+                        <a href="{{ path('app_context_index') }}">{{ 'tenant.organisation_context.info.context_link'|trans({}, 'tenant') }}</a>
+                    </p>
                 </div>
             </section>
         </div>

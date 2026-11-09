@@ -61,6 +61,7 @@ final class PolicyAudienceResolverTest extends TestCase
         $doc->method('getTenant')->willReturn($tenant);
         $doc->method('getGeneratedFromTemplate')->willReturn($template);
         $doc->method('getSubstitutionVariables')->willReturn($substitutionVariables);
+        $doc->method('getAcknowledgementAudience')->willReturn(new \Doctrine\Common\Collections\ArrayCollection());
         return $doc;
     }
 

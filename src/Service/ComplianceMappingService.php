@@ -56,15 +56,19 @@ class ComplianceMappingService
      */
     public function getDataReuseAnalysis(ComplianceRequirement $complianceRequirement): array
     {
+        // An account without organisation (instance operator) has no fulfilment to show — 0 %,
+        // not a TypeError. getOrCreateFulfillment() only builds an unsaved row; nothing is written.
         $tenant = $this->tenantContext->getCurrentTenant();
-        $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement);
+        $percentage = $tenant === null
+            ? 0
+            : $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement)->getFulfillmentPercentage();
 
         $analysis = [
             'requirement_id' => $complianceRequirement->getRequirementId(),
             'title' => $complianceRequirement->getTitle(),
             'sources' => [],
             'confidence' => 'unknown',
-            'fulfillment_percentage' => $fulfillment->getFulfillmentPercentage(),
+            'fulfillment_percentage' => $percentage,
         ];
 
         $mapping = $complianceRequirement->getDataSourceMapping() ?? [];

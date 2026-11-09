@@ -29,6 +29,16 @@ class NotificationRuleEvaluator
      */
     public function evaluate(NotificationRule $rule, array $entityState): bool
     {
+        // The rule form's severity filter restricts the rule to one severity level; an event
+        // without a severity does not match a filtered rule.
+        $severityFilter = $rule->getSeverityFilter();
+        if ($severityFilter !== null && $severityFilter !== '') {
+            $severity = $entityState['severity'] ?? null;
+            if (!is_string($severity) || strtolower($severity) !== strtolower($severityFilter)) {
+                return false;
+            }
+        }
+
         $conditions = $rule->getConditions();
 
         // Extract optional _logic directive

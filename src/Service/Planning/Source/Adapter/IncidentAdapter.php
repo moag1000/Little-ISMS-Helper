@@ -8,18 +8,24 @@ use App\Entity\Incident;
 use App\Entity\Tenant;
 use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
+use App\Service\IncidentSlaConfigResolver;
 use App\Service\Deadline\DeadlineProfile;
 use App\Service\Deadline\RecordLink;
 use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
+use DateTimeImmutable;
 use DateTimeInterface;
 
 /**
  * SourceAdapter for Incident (ISO 27001 A.5.24–A.5.28, NIS2 Art. 23).
  *
- * Deadline field : detectedAt (the timestamp when the incident was first
- *                  observed — the most stable SLA anchor per ISO 27001 A.5.26 /
- *                  NIS2 Art. 23 72h window).
+ * Deadline       : detectedAt + the organisation's resolution SLA for the
+ *                  incident's severity (Admin > Incident-SLA, "Lösung"), when set.
+ *                  Without a resolution SLA an open incident has no deadline of
+ *                  its own; the statutory reporting deadlines are sources of their own.
+ * Escalation     : once the escalation SLA ("Eskalation") has passed and the
+ *                  incident is still open, ISB and CISO are kept informed besides
+ *                  the responsible person (ISO 27001 A.5.26).
  * Terminal statuses: Resolved, Closed
  *   (InResolution is intentionally NOT terminal — the incident is still
  *    being worked; only Resolved + Closed signal that all immediate
@@ -29,6 +35,7 @@ final class IncidentAdapter implements SourceAdapter
 {
     public function __construct(
         private readonly IncidentRepository $repository,
+        private readonly ?IncidentSlaConfigResolver $slaResolver = null,
     ) {}
 
     public function slug(): string
@@ -55,9 +62,44 @@ final class IncidentAdapter implements SourceAdapter
     public function dueDateOf(object $item): ?DateTimeInterface
     {
         assert($item instanceof Incident);
-        // An open incident has no deadline of its own; the statutory reporting
-        // deadlines (NIS-2, GDPR) are sources of their own.
-        return null;
+        $hours = $this->slaHours($item, 'resolution');
+        $detectedAt = $item->getDetectedAt();
+        if ($hours === null || !$detectedAt instanceof DateTimeInterface) {
+            // No resolution SLA: an open incident has no deadline of its own; the statutory
+            // reporting deadlines (NIS-2, GDPR) are sources of their own.
+            return null;
+        }
+
+        return DateTimeImmutable::createFromInterface($detectedAt)->modify(sprintf('+%d hours', $hours));
+    }
+
+    /**
+     * The organisation's SLA hours for the incident's severity ('resolution' or 'escalation'),
+     * null when none is set.
+     */
+    private function slaHours(Incident $item, string $kind): ?int
+    {
+        $tenant = $item->getTenant();
+        $severity = $item->getSeverity();
+        if (!$this->slaResolver instanceof IncidentSlaConfigResolver || !$tenant instanceof Tenant || $severity === null) {
+            return null;
+        }
+        $view = $this->slaResolver->resolveFor($tenant, $severity->value);
+        $hours = $kind === 'resolution' ? $view->resolutionHours : $view->escalationHours;
+
+        return $hours !== null && $hours > 0 ? $hours : null;
+    }
+
+    private function isEscalated(Incident $item): bool
+    {
+        $hours = $this->slaHours($item, 'escalation');
+        $detectedAt = $item->getDetectedAt();
+        if ($hours === null || !$detectedAt instanceof DateTimeInterface || $this->isCompleted($item)) {
+            return false;
+        }
+
+        return DateTimeImmutable::createFromInterface($detectedAt)->modify(sprintf('+%d hours', $hours))
+            <= new DateTimeImmutable();
     }
 
     public function titleOf(object $item): string
@@ -101,8 +143,12 @@ final class IncidentAdapter implements SourceAdapter
     {
         assert($item instanceof Incident);
 
-        return Responsibility::holders($item->getResponsiblePerson())
+        $responsibility = Responsibility::holders($item->getResponsiblePerson())
             ->orRoles('ROLE_ISB', 'ROLE_CISO');
+
+        return $this->isEscalated($item)
+            ? $responsibility->alsoInform('ROLE_ISB', 'ROLE_CISO')
+            : $responsibility;
     }
 
     public function linkOf(object $item): RecordLink

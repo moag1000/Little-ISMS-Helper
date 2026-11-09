@@ -8,7 +8,7 @@ use App\Entity\Document;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Security\Voter\LifecycleVoter;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use PHPUnit\Framework\Attributes\Test;
@@ -66,10 +66,12 @@ class LifecycleVoterTest extends TestCase
         $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
         $resolver->method('resolve')->willReturn(['roles' => $yamlRoles] + ($responsible ? ['responsible' => true] : []));
 
-        $security = $this->createStub(Security::class);
-        $security->method('isGranted')->willReturnCallback(fn (string $r) => in_array($r, $userRoles, true));
+        $decisions = $this->createStub(AccessDecisionManagerInterface::class);
+        $decisions->method('decide')->willReturnCallback(
+            fn (TokenInterface $token, array $attributes) => in_array($attributes[0], $userRoles, true),
+        );
 
-        return new LifecycleVoter($security, $resolver);
+        return new LifecycleVoter($decisions, $resolver);
     }
 
     private function mockToken(): TokenInterface

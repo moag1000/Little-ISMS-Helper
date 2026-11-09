@@ -135,10 +135,9 @@
                 <label for="filter-criticality" class="form-label">{{ 'supplier.table.criticality'|trans({}, 'suppliers') }}</label>
                 <select class="form-select fa-cyber-input__field" id="filter-criticality" name="criticality">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="critical" {{ app.request.query.get('criticality') == 'critical' ? 'selected' : '' }}>{{ 'supplier.criticality.critical'|trans({}, 'suppliers') }}</option>
-                    <option value="high" {{ app.request.query.get('criticality') == 'high' ? 'selected' : '' }}>{{ 'supplier.criticality.high'|trans({}, 'suppliers') }}</option>
-                    <option value="medium" {{ app.request.query.get('criticality') == 'medium' ? 'selected' : '' }}>{{ 'supplier.criticality.medium'|trans({}, 'suppliers') }}</option>
-                    <option value="low" {{ app.request.query.get('criticality') == 'low' ? 'selected' : '' }}>{{ 'supplier.criticality.low'|trans({}, 'suppliers') }}</option>
+                    {% for _label, _code in supplier_criticality_choices() %}
+                        <option value="{{ _code }}" {{ app.request.query.get('criticality') == _code ? 'selected' : '' }}>{{ _label }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="col-md-4">

@@ -102,7 +102,7 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
         $this->testTenant->setCode('p0_26_tenant_' . substr($uniqueId, -8));
         $this->entityManager->persist($this->testTenant);
 
-        // Auditor — reports the audit (ROLE_USER suffices to submit).
+        // Auditor — reports the audit (YAML report/rework: ROLE_AUDITOR).
         $this->auditorUser = new User();
         $this->auditorUser->setEmail('auditor_' . $uniqueId . '@example.com');
         $this->auditorUser->setFirstName('Audit');
@@ -125,7 +125,7 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
         $this->approverUser->setIsActive(true);
         $this->entityManager->persist($this->approverUser);
 
-        // Manager — closes the cycle.
+        // Manager — may NOT close (YAML close: ROLE_CISO), S21.
         $this->managerUser = new User();
         $this->managerUser->setEmail('manager_' . $uniqueId . '@example.com');
         $this->managerUser->setFirstName('Mana');
@@ -244,8 +244,8 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
             '4-eyes invariant: approver MUST differ from reporter.'
         );
 
-        // 3) Manager closes the audit (approved → closed).
-        $token = $this->loginAndCsrf($this->managerUser, 'audit_close');
+        // 3) The CISO closes the audit (approved → closed; YAML roles: ROLE_CISO).
+        $token = $this->loginAndCsrf($this->approverUser, 'audit_close');
         $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/close', [
             '_token' => $token,
         ]);
@@ -255,7 +255,84 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
         $audit = $this->entityManager->find(InternalAudit::class, $this->testAudit->getId());
         self::assertSame('closed', $audit->getStatus());
         self::assertNotNull($audit->getClosedBy());
-        self::assertSame($this->managerUser->getId(), $audit->getClosedBy()->getId());
+        self::assertSame($this->approverUser->getId(), $audit->getClosedBy()->getId());
+    }
+
+    // ==========================================================================
+    // S21 — the lifecycle roles of internal_audit.yaml decide, not ROLE_USER
+    // ==========================================================================
+
+    #[Test]
+    public function testPlainUserCannotSubmitTheReport(): void
+    {
+        $plain = new User();
+        $plain->setEmail('plain_' . uniqid('', true) . '@example.com');
+        $plain->setFirstName('Plain');
+        $plain->setLastName('User');
+        $plain->setRoles(['ROLE_USER']);
+        $plain->setPassword('hashed_password');
+        $plain->setTenant($this->testTenant);
+        $plain->setIsActive(true);
+        $this->entityManager->persist($plain);
+        $this->entityManager->flush();
+
+        try {
+            $token = $this->loginAndCsrf($plain, 'audit_submit_report');
+            $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/submit-report', [
+                '_token' => $token,
+            ]);
+            self::assertResponseStatusCodeSame(403);
+
+            $this->entityManager->clear();
+            $audit = $this->entityManager->find(InternalAudit::class, $this->testAudit->getId());
+            self::assertSame('conducted', $audit->getStatus());
+            self::assertNull($audit->getReportedBy(), 'A refused step must not leave the reporter stamped.');
+            self::assertNull($audit->getReportedAt());
+        } finally {
+            $this->entityManager->clear();
+            $stale = $this->entityManager->find(User::class, $plain->getId());
+            if ($stale !== null) {
+                $this->entityManager->remove($stale);
+                $this->entityManager->flush();
+            }
+        }
+    }
+
+    #[Test]
+    public function testManagerWithoutCisoRoleCannotCloseTheAudit(): void
+    {
+        $this->testAudit->setStatus('approved');
+        $this->entityManager->flush();
+
+        $token = $this->loginAndCsrf($this->managerUser, 'audit_close');
+        $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/close', [
+            '_token' => $token,
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
+        $this->entityManager->clear();
+        $audit = $this->entityManager->find(InternalAudit::class, $this->testAudit->getId());
+        self::assertSame('approved', $audit->getStatus());
+        self::assertNull($audit->getClosedBy());
+    }
+
+    #[Test]
+    public function testAuditorCannotRejectTheReport(): void
+    {
+        $this->testAudit->setStatus('reported');
+        $this->entityManager->flush();
+
+        $token = $this->loginAndCsrf($this->auditorUser, 'audit_reject_report');
+        $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/reject', [
+            '_token' => $token,
+            'rejection_reason' => 'Own report rejected by its auditor.',
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
+        $this->entityManager->clear();
+        $audit = $this->entityManager->find(InternalAudit::class, $this->testAudit->getId());
+        self::assertSame('reported', $audit->getStatus());
+        self::assertNull($audit->getRejectionReason());
     }
 
     // ==========================================================================
@@ -265,15 +342,15 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
     #[Test]
     public function testApproverMustDifferFromReporter(): void
     {
-        // Auditor submits.
-        $token = $this->loginAndCsrf($this->auditorUser, 'audit_submit_report');
+        // The CISO (who reaches ROLE_AUDITOR) submits the report …
+        $token = $this->loginAndCsrf($this->approverUser, 'audit_submit_report');
         $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/submit-report', [
             '_token' => $token,
         ]);
         $this->client->followRedirect();
 
-        // Same auditor tries to approve — must be rejected.
-        $token = $this->loginAndCsrf($this->auditorUser, 'audit_approve_report');
+        // … and tries to approve it — the 4-eyes guard must refuse.
+        $token = $this->loginAndCsrf($this->approverUser, 'audit_approve_report');
         $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/approve', [
             '_token' => $token,
         ]);
@@ -377,7 +454,7 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
         $this->testAudit->setStatus('reported');
         $this->entityManager->flush();
 
-        $token = $this->loginAndCsrf($this->managerUser, 'audit_close');
+        $token = $this->loginAndCsrf($this->approverUser, 'audit_close');
         $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/close', [
             '_token' => $token,
         ]);

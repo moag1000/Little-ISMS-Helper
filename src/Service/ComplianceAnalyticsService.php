@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\ComplianceFramework;
 use App\Entity\Control;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
@@ -30,6 +31,7 @@ class ComplianceAnalyticsService
         private readonly ComplianceAssessmentService $assessmentService,
         private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
         private readonly ?ComplianceRequirementFulfillmentRepository $fulfillmentRepository = null,
+        private readonly ?FulfillmentRuleEngine $ruleEngine = null,
     ) {
     }
 
@@ -209,6 +211,22 @@ class ComplianceAnalyticsService
     }
 
     /**
+     * The organisation's controls behind a global requirement (fulfilment engine) — never the
+     * requirement's getMappedControls(), which holds every organisation's controls.
+     *
+     * @return list<\App\Entity\Control>
+     */
+    private function controlsOf(\App\Entity\ComplianceRequirement $requirement): array
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null || $this->ruleEngine === null) {
+            return [];
+        }
+
+        return $this->ruleEngine->controlsFor($requirement, $tenant);
+    }
+
+    /**
      * Get all controls mapped to a framework
      */
     private function getFrameworkControls(ComplianceFramework $framework): array
@@ -217,7 +235,7 @@ class ComplianceAnalyticsService
         $controls = [];
 
         foreach ($requirements as $requirement) {
-            foreach ($requirement->getMappedControls() as $control) {
+            foreach ($this->controlsOf($requirement) as $control) {
                 $controls[] = $control->getControlId();
             }
         }
@@ -270,8 +288,8 @@ class ComplianceAnalyticsService
                     'priority' => $gap->getPriority(),
                     'fulfillment' => $percentage,
                     'gap_size' => 100 - $percentage,
-                    'has_mapped_controls' => !$gap->getMappedControls()->isEmpty(),
-                    'control_count' => count($gap->getMappedControls()),
+                    'has_mapped_controls' => $this->controlsOf($gap) !== [],
+                    'control_count' => count($this->controlsOf($gap)),
                 ];
             }
         }

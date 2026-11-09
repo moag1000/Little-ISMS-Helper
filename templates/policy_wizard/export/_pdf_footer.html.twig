@@ -7,6 +7,10 @@
     {% if footer_html is not empty %}
         <div class="footer-html">{{ footer_html|raw }}</div>
     {% endif %}
+    {% if footer_text is not empty %}
+        {# Footer line of the organisation's policy style (Admin > Policy-Stil). #}
+        <div class="footer-text">{{ footer_text }}</div>
+    {% endif %}
 
     <div>
         {{ footer.system_attribution }}

@@ -879,16 +879,15 @@ class TenantManagementController extends AbstractController
         $settings = $tenant->getSettings() ?? [];
         $orgSettings = $settings['organisation'] ?? [];
 
-        // Prepare form data
+        // Prepare form data — only the size is edited here (it sizes the implementation journey);
+        // industries, country and description belong to "Kontext der Organisation".
         $formData = [
-            'industries' => $orgSettings['industries'] ?? ['other'],
             'employee_count' => $orgSettings['employee_count'] ?? '1-10',
-            'country' => $orgSettings['country'] ?? 'DE',
-            'description' => $orgSettings['description'] ?? '',
         ];
 
         $form = $this->createForm(OrganisationInfoType::class, $formData, [
             'include_name' => false, // Name is managed via Tenant entity
+            'size_only' => true,
         ]);
         $form->handleRequest($request);
 
@@ -901,13 +900,8 @@ class TenantManagementController extends AbstractController
 
                 // Update organisation settings
                 $settings['organisation'] = [
-                    'industries' => $data['industries'] ?? ['other'],
+                    ...$orgSettings,
                     'employee_count' => $data['employee_count'],
-                    'country' => $data['country'],
-                    'description' => $data['description'] ?? '',
-                    'selected_modules' => $orgSettings['selected_modules'] ?? [],
-                    'selected_frameworks' => $orgSettings['selected_frameworks'] ?? [],
-                    'setup_completed_at' => $orgSettings['setup_completed_at'] ?? null,
                     'last_modified_at' => new DateTimeImmutable()->format('c'),
                 ];
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
@@ -28,9 +29,10 @@ use App\Util\CsvSanitizer;
 
 /**
  * Compliance exports (CSV, Excel, PDF): data reuse, gaps, transitive, comparison.
- * ROLE_USER like the compliance pages (S16/B1, tests/Security/ExportRoutesGatedTest).
+ * ROLE_USER + compliance module like the pages they come from (S16/B1, ExportRoutesGatedTest).
  */
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('compliance')]
 class ComplianceExportController extends AbstractController
 {
     use LocalizedFlashTrait;
@@ -96,7 +98,6 @@ class ComplianceExportController extends AbstractController
         // Close session to prevent blocking other requests during CSV generation
         $request->getSession()->save();
 
-        // Create CSV content
         $csv = [];
         $tr = $this->getTranslator();
 
@@ -268,7 +269,6 @@ class ComplianceExportController extends AbstractController
         $this->excelExportService->addFormattedDataRows($detailsSheet, $data, 2, $conditionalFormatting);
         $this->excelExportService->autoSizeColumns($detailsSheet);
 
-        // Generate
         $content = $this->excelExportService->generateExcel($spreadsheet);
 
         $filename = sprintf('data_reuse_insights_%s_%s.xlsx', $framework->getCode(), date('Y-m-d_His'));

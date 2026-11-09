@@ -58,22 +58,16 @@ parameters:
                 workflow: risk_lifecycle
                 transition: assess
                 required_fields: [probability, impact]
-            # Migrated from the legacy auto-progression rules: residual risk within appetite → auto-accept
-            # REMOVED: value_from: riskAppetiteThreshold — field never existed on Risk entity
-            # REMOVED: field: residualRisk — field never existed; use formallyAccepted instead
-            accept_within_appetite:
-                workflow: risk_lifecycle
-                transition: accept
-                conditions:
-                    any:
-                        - { field: formallyAccepted, comparison: "==", value: true }
+            # No automatic `accept`: accepting a risk is a four-eyes decision (risk acceptance
+            # request), never a field filled in. tests/Lifecycle/AutoTransitionRulesTest keeps it so.
 
         # ── Incident (ISO 27001 Cl. 6.1.2 c) ─────────────────────────────────
         App\Entity\Incident:
-            # Migrated from the legacy auto-progression rules: severity + immediate actions filled → begin review
-            review_when_assessed:
+            # Severity + immediate actions recorded → the investigation has started
+            # (the legacy rule named a `review` transition the workflow never had).
+            investigate_when_assessed:
                 workflow: incident_lifecycle
-                transition: review
+                transition: start_investigation
                 required_fields: [severity, immediateActions]
             # Migrated from the legacy auto-progression rules: corrective actions + root cause → resolve incident
             # REMOVED: field: containmentConfirmed — field never existed on Incident entity

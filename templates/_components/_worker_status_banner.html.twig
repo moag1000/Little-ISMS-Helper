@@ -13,10 +13,10 @@
     {% set _wbStatus = worker_status() %}
     <div class="container mt-3" role="alert" aria-live="polite">
         {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-        {% set _body_html %}<strong>{{ ('admin.queue.banner.title'|trans({}, 'admin')) }}</strong> {{ ('admin.queue.banner.message'|trans({
+        {% set _body_html %}<strong>{{ ('admin.queue.banner.title'|trans({}, 'admin')) }}</strong> {% if _wbStatus.reason == 'mails_stuck' %}{{ 'admin.queue.banner.mails_stuck'|trans({'%count%': _wbStatus.stale_mails}, 'admin') }}{% else %}{{ ('admin.queue.banner.message'|trans({
                     '%age%': _wbStatus.heartbeat_age_seconds|default(0),
                     '%depth%': _wbStatus.queue_depth,
-                }, 'admin')) }} <a href="{{ path('admin_queue_status') }}" class="alert-link">{{ ('admin.queue.banner.link'|trans({}, 'admin')) }}</a>{% endset %}
+                }, 'admin')) }}{% endif %} <a href="{{ path('admin_queue_status') }}" class="alert-link">{{ ('admin.queue.banner.link'|trans({}, 'admin')) }}</a>{% endset %}
         {{ _fa_alert.render({
             variant: 'danger',
             dismissible: false,

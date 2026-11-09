@@ -26,9 +26,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Per-tenant Policy-Doc Style Configurator.
  *
  * Lets ROLE_ADMIN / Konzern-CISO re-skin generated policy documents
- * (font, cover pattern, watermark, signature lines, TOC/history toggles,
- * page margin, cover logo size, optional custom-CSS override) without
- * touching code. Form persists to TenantBranding; Live-Preview-XHR
+ * (watermark, signature lines, TOC/history toggles, page margin, cover
+ * logo size, footer text) without touching code. Form persists to TenantBranding; Live-Preview-XHR
  * re-renders the `_fa_policy_doc.html.twig` macro with sample data.
  *
  * Tenant-isolation: every request is scoped to TenantContext->getCurrentTenant().
@@ -138,7 +137,7 @@ final class AdminPolicyStyleController extends AbstractController
     }
 
     /**
-     * Reset to defaults. POST-only; CSRF-guarded. Wipes all 12
+     * Reset to defaults. POST-only; CSRF-guarded. Wipes all
      * `policyDoc*` fields back to their defaults but keeps the rest of
      * TenantBranding (logo, header, primary color) untouched.
      */
@@ -152,8 +151,6 @@ final class AdminPolicyStyleController extends AbstractController
         $oldSnapshot = $branding->getPolicyDocStyleConfig();
 
         $branding
-            ->setPolicyDocFontFamily('Inter')
-            ->setPolicyDocCoverPattern('branded')
             ->setPolicyDocWatermarkEnabled(true)
             ->setPolicyDocWatermarkOpacity(0.08)
             ->setPolicyDocSignatureLines(3)
@@ -163,7 +160,6 @@ final class AdminPolicyStyleController extends AbstractController
             ->setPolicyDocFooterText(null)
             ->setPolicyDocCoverLogoSize('medium')
             ->setPolicyDocPageMargin('standard')
-            ->setPolicyDocCustomCss(null)
             ->setUpdatedAt(new DateTimeImmutable());
 
         $user = $this->getUser();
@@ -236,8 +232,6 @@ final class AdminPolicyStyleController extends AbstractController
     private function normalisePreviewPayload(array $payload): array
     {
         $allowed = [
-            'font_family' => 'string',
-            'cover_pattern' => 'string',
             'watermark_enabled' => 'bool',
             'watermark_opacity' => 'float',
             'signature_lines' => 'int',
@@ -247,9 +241,6 @@ final class AdminPolicyStyleController extends AbstractController
             'footer_text' => 'string_nullable',
             'cover_logo_size' => 'string',
             'page_margin' => 'string',
-            // custom_css NOT accepted via XHR — preview always uses the
-            // stored value to avoid arbitrary CSS injection from non-admin
-            // users with a forged payload.
         ];
 
         $patch = [];
@@ -269,10 +260,6 @@ final class AdminPolicyStyleController extends AbstractController
         }
 
         // Validate enum allow-lists.
-        if (isset($patch['cover_pattern'])
-            && !in_array($patch['cover_pattern'], TenantBranding::POLICY_DOC_COVER_PATTERNS, true)) {
-            $patch['cover_pattern'] = 'branded';
-        }
         if (isset($patch['cover_logo_size'])
             && !in_array($patch['cover_logo_size'], TenantBranding::POLICY_DOC_LOGO_SIZES, true)) {
             $patch['cover_logo_size'] = 'medium';

@@ -27,7 +27,11 @@ use App\Entity\Supplier;
 use App\Entity\ThreatIntelligence;
 use App\Entity\Training;
 use App\Entity\Vulnerability;
+use App\Entity\Tenant;
 use App\Repository\ControlRepository;
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
+use App\Service\Compliance\Fulfillment\RequirementEvidence;
+use App\Service\TenantContext;
 use App\Repository\RiskRepository;
 use App\Risk\RiskMatrixThresholds;
 use App\Service\ModuleConfigurationService;
@@ -78,7 +82,24 @@ class EntityLinks
         private readonly ModuleConfigurationService $modules,
         private readonly RiskRepository $riskRepository,
         private readonly ?ControlRepository $controlRepository = null,
+        private readonly ?TenantContext $tenantContext = null,
+        private readonly ?FulfillmentRuleEngine $ruleEngine = null,
+        private readonly ?RequirementEvidence $requirementEvidence = null,
     ) {
+    }
+
+    /** @return array<string, array{0: list<object>, 1: null}> */
+    private function requirementGroups(ComplianceRequirement $requirement): array
+    {
+        $tenant = $this->tenantContext?->getCurrentTenant();
+        if (!$tenant instanceof Tenant) {
+            return ['control' => [[], null], 'evidence' => [[], null]];
+        }
+
+        return [
+            'control' => [self::unique($this->ruleEngine?->controlsFor($requirement, $tenant) ?? []), null],
+            'evidence' => [self::unique($this->requirementEvidence?->documentsFor($requirement, $tenant) ?? []), null],
+        ];
     }
 
     /**
@@ -199,10 +220,9 @@ class EntityLinks
                 'control' => [self::unique([...$entity->getControls()]), null],
                 'evidence' => [self::unique([...$entity->getEvidenceDocuments()]), null],
             ],
-            $entity instanceof ComplianceRequirement => [
-                'control' => [self::unique([...$entity->getMappedControls()]), null],
-                'evidence' => [self::unique([...$entity->getEvidenceDocuments()]), null],
-            ],
+            // A requirement is global: its controls and evidence are the organisation's
+            // (fulfilment engine, RequirementEvidence), never the collections on the requirement.
+            $entity instanceof ComplianceRequirement => $this->requirementGroups($entity),
             $entity instanceof BusinessProcess => [
                 'asset' => [self::unique([...$entity->getSupportingAssets()]), null],
                 'risk' => [self::unique([...$entity->getIdentifiedRisks()]), null],

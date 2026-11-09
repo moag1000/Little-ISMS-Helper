@@ -142,7 +142,9 @@ class RiskAcceptanceWorkflowService
         $this->entityManager->flush();
 
         if ($risk->getStatus() === RiskStatus::Accepted) {
-            $this->lifecycleService->transition($risk, 'risk_lifecycle', 'revert_to_assessed', $user, $reason);
+            // The risk's manager or responsible person asks for a re-evaluation (controller gate);
+            // ending an acceptance only takes a permission away, so it needs no risk-manager role (S21).
+            $this->lifecycleService->transition($risk, 'risk_lifecycle', 'revert_to_assessed', $user, $reason, approverAuthorityVerified: true);
         }
         $this->auditLogger->logCustom(
             action: 'risk_acceptance_ended',
@@ -331,6 +333,8 @@ class RiskAcceptanceWorkflowService
             'accept',
             $user,
             'Automatically accepted (score ≤ threshold)',
+            // Authority = the acceptance criteria top management approved (6.1.3 f), not the requester's role (S21).
+            approverAuthorityVerified: true,
         );
 
         // Log acceptance
@@ -509,6 +513,8 @@ class RiskAcceptanceWorkflowService
             'accept',
             $user,
             'Risk acceptance approved: ' . ($comments !== '' ? $comments : 'no comments'),
+            // RiskAcceptanceVoter::APPROVE checked the approval tier (manager / CISO / top management).
+            approverAuthorityVerified: true,
         );
 
         // A board-level acceptance is a decision of top management (6.1.3 f).
@@ -591,6 +597,8 @@ class RiskAcceptanceWorkflowService
                 'revert_to_assessed',
                 $user,
                 'Risk acceptance rejected: ' . $reason,
+                // RiskAcceptanceVoter::APPROVE checked the approval tier.
+                approverAuthorityVerified: true,
             );
         }
 

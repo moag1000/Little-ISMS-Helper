@@ -12,7 +12,7 @@ use DateTimeImmutable;
 use DateTime;
 use App\Repository\AssetRepository;
 use App\Repository\AuditLogRepository;
-use App\Repository\ComplianceRequirementRepository;
+use App\Service\Compliance\CrossFrameworkControlReuse;
 use App\Repository\ControlRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\ISMSContextRepository;
@@ -53,7 +53,7 @@ class HomeController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
         private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
-        private readonly ?ComplianceRequirementRepository $complianceRequirementRepository = null,
+        private readonly ?CrossFrameworkControlReuse $crossFrameworkControlReuse = null,
         private readonly ?AuditLogRepository $auditLogRepository = null,
         private readonly ?EntityManagerInterface $entityManager = null,
         private readonly ?ControlRepository $controlRepository = null,
@@ -181,45 +181,9 @@ class HomeController extends AbstractController
 
         // Cross-Framework Control Mapping Data
         $crossFrameworkData = ['shared_controls' => 0, 'reuse_ratio' => 0, 'top_shared' => []];
-        if ($this->complianceRequirementRepository !== null && $tenant instanceof Tenant) {
+        if ($this->crossFrameworkControlReuse !== null && $tenant instanceof Tenant) {
             try {
-                $allRequirements = $this->complianceRequirementRepository->findAll();
-                $controlFrameworkMap = [];
-                foreach ($allRequirements as $req) {
-                    foreach ($req->getMappedControls() as $control) {
-                        $fw = $req->getFramework();
-                        if ($fw !== null) {
-                            $controlId = $control->getId();
-                            if (!isset($controlFrameworkMap[$controlId])) {
-                                $controlFrameworkMap[$controlId] = [
-                                    'count' => 0,
-                                    'control' => $control,
-                                    'frameworks' => [],
-                                ];
-                            }
-                            $fwCode = $fw->getCode();
-                            if (!isset($controlFrameworkMap[$controlId]['frameworks'][$fwCode])) {
-                                $controlFrameworkMap[$controlId]['frameworks'][$fwCode] = true;
-                                $controlFrameworkMap[$controlId]['count'] = count($controlFrameworkMap[$controlId]['frameworks']);
-                            }
-                        }
-                    }
-                }
-
-                $shared = array_filter($controlFrameworkMap, fn($c) => ($c['count'] ?? 0) >= 2);
-                usort($shared, fn($a, $b) => ($b['count'] ?? 0) - ($a['count'] ?? 0));
-
-                $crossFrameworkData = [
-                    'shared_controls' => count($shared),
-                    'reuse_ratio' => count($controlFrameworkMap) > 0
-                        ? round(count($shared) / count($controlFrameworkMap) * 100)
-                        : 0,
-                    'top_shared' => array_map(fn($c) => [
-                        'id' => $c['control']->getControlId(),
-                        'name' => $c['control']->getName(),
-                        'framework_count' => count($c['frameworks'] ?? []),
-                    ], array_slice($shared, 0, 5)),
-                ];
+                $crossFrameworkData = $this->crossFrameworkControlReuse->forTenant($tenant);
             } catch (\Throwable) {
                 // Compliance module may not be fully set up
             }

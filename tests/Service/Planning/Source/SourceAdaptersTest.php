@@ -63,6 +63,9 @@ use App\Service\Planning\Source\Adapter\RiskTreatmentAdapter;
 use App\Service\Planning\Source\Adapter\TrainingParticipationAdapter;
 use App\Service\Planning\Source\Adapter\VulnerabilityAdapter;
 use App\Service\Planning\Source\Adapter\WorkflowInstanceAdapter;
+use App\Enum\IncidentSeverity;
+use App\Service\IncidentSlaConfigResolver;
+use App\Service\IncidentSlaView;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -413,6 +416,30 @@ final class SourceAdaptersTest extends TestCase
 
         self::assertNull($adapter->dueDateOf($item), 'An open incident has no deadline of its own.');
         self::assertSame('Ransomware on file server', $adapter->titleOf($item));
+    }
+
+    #[Test]
+    public function theIncidentResolutionSlaIsTheDeadlineAndTheEscalationSlaInformsIsbAndCiso(): void
+    {
+        $resolver = $this->createStub(IncidentSlaConfigResolver::class);
+        $resolver->method('resolveFor')->willReturn(new IncidentSlaView('high', 8, 4, 48));
+        $adapter = new IncidentAdapter($this->createStub(IncidentRepository::class), $resolver);
+
+        $detected = new DateTimeImmutable('-10 hours');
+        $item = (new Incident())
+            ->setTenant(new Tenant())
+            ->setSeverity(IncidentSeverity::High)
+            ->setDetectedAt($detected)
+            ->setStatus(IncidentStatus::InInvestigation);
+
+        self::assertEquals($detected->modify('+48 hours'), $adapter->dueDateOf($item));
+        self::assertSame(['ROLE_ISB', 'ROLE_CISO'], $adapter->responsibleOf($item)->informedRoles, 'escalation SLA (4 h) passed');
+
+        $item->setDetectedAt(new DateTimeImmutable('-1 hour'));
+        self::assertSame([], $adapter->responsibleOf($item)->informedRoles, 'escalation SLA not reached yet');
+
+        $item->setDetectedAt($detected)->setStatus(IncidentStatus::Resolved);
+        self::assertSame([], $adapter->responsibleOf($item)->informedRoles, 'a resolved incident does not escalate');
     }
 
     #[Test]

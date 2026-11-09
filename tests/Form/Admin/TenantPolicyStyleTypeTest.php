@@ -6,17 +6,14 @@ namespace App\Tests\Form\Admin;
 
 use App\Entity\TenantBranding;
 use App\Form\Admin\TenantPolicyStyleType;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormFactoryInterface;
 
 /**
  * Sprint policy-style-admin — exercise the TenantPolicyStyleType form
- * happy-paths, validation, defaults, and ROLE-gated custom-CSS field.
+ * happy-paths, validation and defaults.
  */
-#[AllowMockObjectsWithoutExpectations]
 final class TenantPolicyStyleTypeTest extends KernelTestCase
 {
     private FormFactoryInterface $factory;
@@ -29,19 +26,15 @@ final class TenantPolicyStyleTypeTest extends KernelTestCase
         $this->factory = $factory;
     }
 
-    private function newType(bool $admin = true): TenantPolicyStyleType
+    private function newType(): TenantPolicyStyleType
     {
-        $security = $this->createMock(Security::class);
-        $security->method('isGranted')->willReturnCallback(
-            static fn(string $role): bool => $admin && $role === 'ROLE_ADMIN',
-        );
-        return new TenantPolicyStyleType($security);
+        return new TenantPolicyStyleType();
     }
 
     #[Test]
     public function happyPathSubmitsClean(): void
     {
-        $type = $this->newType(admin: true);
+        $type = $this->newType();
         $branding = new TenantBranding();
 
         // Use direct factory create with the constructed type to bypass DI.
@@ -55,8 +48,6 @@ final class TenantPolicyStyleTypeTest extends KernelTestCase
         $form->setData($branding);
 
         $form->submit([
-            'policyDocFontFamily' => 'Roboto',
-            'policyDocCoverPattern' => 'engineering',
             'policyDocCoverLogoSize' => 'large',
             'policyDocPageMargin' => 'wide',
             'policyDocWatermarkEnabled' => '1',
@@ -66,7 +57,6 @@ final class TenantPolicyStyleTypeTest extends KernelTestCase
             // policyDocShowHistory intentionally absent → unchecked
             'policyDocShowAnnexARefs' => '1',
             'policyDocFooterText' => 'Internal use',
-            'policyDocCustomCss' => '/* tenant override */',
         ]);
 
         self::assertTrue($form->isSynchronized());
@@ -75,8 +65,6 @@ final class TenantPolicyStyleTypeTest extends KernelTestCase
             iterator_to_array($form->getErrors(true)),
         )));
 
-        self::assertSame('Roboto', $branding->getPolicyDocFontFamily());
-        self::assertSame('engineering', $branding->getPolicyDocCoverPattern());
         self::assertSame('large', $branding->getPolicyDocCoverLogoSize());
         self::assertSame('wide', $branding->getPolicyDocPageMargin());
         self::assertTrue($branding->isPolicyDocWatermarkEnabled());
@@ -86,7 +74,6 @@ final class TenantPolicyStyleTypeTest extends KernelTestCase
         self::assertFalse($branding->isPolicyDocShowHistory());
         self::assertTrue($branding->isPolicyDocShowAnnexARefs());
         self::assertSame('Internal use', $branding->getPolicyDocFooterText());
-        self::assertSame('/* tenant override */', $branding->getPolicyDocCustomCss());
     }
 
     #[Test]
@@ -104,8 +91,6 @@ final class TenantPolicyStyleTypeTest extends KernelTestCase
         $form->setData($branding);
 
         $form->submit([
-            'policyDocFontFamily' => 'Inter',
-            'policyDocCoverPattern' => 'branded',
             'policyDocCoverLogoSize' => 'medium',
             'policyDocPageMargin' => 'standard',
             'policyDocWatermarkOpacity' => '1.42',
@@ -132,8 +117,6 @@ final class TenantPolicyStyleTypeTest extends KernelTestCase
         $form->setData($branding);
 
         $form->submit([
-            'policyDocFontFamily' => 'Inter',
-            'policyDocCoverPattern' => 'branded',
             'policyDocCoverLogoSize' => 'medium',
             'policyDocPageMargin' => 'standard',
             'policyDocWatermarkOpacity' => '0.08',
@@ -144,33 +127,18 @@ final class TenantPolicyStyleTypeTest extends KernelTestCase
     }
 
     #[Test]
-    public function customCssFieldHiddenForNonAdmin(): void
+    public function removedFieldsAreGone(): void
     {
-        $type = $this->newType(admin: false);
         $builder = $this->factory->createBuilder(
             \Symfony\Component\Form\Extension\Core\Type\FormType::class,
             null,
             ['data_class' => TenantBranding::class, 'csrf_protection' => false],
         );
-        $type->buildForm($builder, ['data_class' => TenantBranding::class]);
+        $this->newType()->buildForm($builder, ['data_class' => TenantBranding::class]);
         $form = $builder->getForm();
 
-        self::assertFalse($form->has('policyDocCustomCss'),
-            'Custom-CSS textarea must be ROLE_ADMIN-gated.');
-    }
-
-    #[Test]
-    public function customCssFieldVisibleForAdmin(): void
-    {
-        $type = $this->newType(admin: true);
-        $builder = $this->factory->createBuilder(
-            \Symfony\Component\Form\Extension\Core\Type\FormType::class,
-            null,
-            ['data_class' => TenantBranding::class, 'csrf_protection' => false],
-        );
-        $type->buildForm($builder, ['data_class' => TenantBranding::class]);
-        $form = $builder->getForm();
-
-        self::assertTrue($form->has('policyDocCustomCss'));
+        foreach (['policyDocFontFamily', 'policyDocCoverPattern', 'policyDocCustomCss'] as $name) {
+            self::assertFalse($form->has($name), "{$name} was removed (stored but never read).");
+        }
     }
 }
