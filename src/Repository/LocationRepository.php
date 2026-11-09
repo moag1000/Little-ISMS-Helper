@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use App\Entity\Location;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -159,7 +160,7 @@ class LocationRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.name LIKE :query OR l.code LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->orderBy('l.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();

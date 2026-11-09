@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\PersonalDataResource;
 use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
@@ -35,6 +36,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_person_badge', columns: ['badge_id'])]
 #[ORM\Index(name: 'idx_person_company', columns: ['company'])]
 #[RequiresModule('persons')]
+// Contact and access details travel to the assistant only for the DPO role; the name stays (S24).
+#[PersonalDataResource(
+    fields: ['email', 'phone', 'badgeId', 'notes', 'accessValidFrom', 'accessValidUntil', 'linkedUser'],
+    searchGroup: 'persons',
+)]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
