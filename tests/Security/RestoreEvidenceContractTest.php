@@ -323,14 +323,22 @@ final class RestoreEvidenceContractTest extends KernelTestCase
                     ] + $row;
                 }
             }
+            // A backup row always carries its id (clear-before-restore assigns ids), and a
+            // failing row would roll back its whole best-effort batch — so a complete row.
             $backup['data']['Risk'][] = [
+                'id' => $riskId + 1000000,
                 'title' => 'New accepted risk ' . $suffix,
+                'category' => 'operational',
+                'description' => 'Forged',
+                'probability' => 2,
+                'impact' => 2,
                 'status' => 'accepted',
                 'formallyAccepted' => true,
                 'acceptanceApprovedAt' => '2020-01-01 00:00:00',
                 'tenant_id' => ['id' => $ownId],
             ];
             $backup['data']['ManagementDecision'] = [[
+                'id' => $decisionId + 1000000,
                 'title' => 'Forged decision ' . $suffix,
                 'type' => 'policy',
                 'status' => 'approved',
@@ -344,17 +352,20 @@ final class RestoreEvidenceContractTest extends KernelTestCase
 
             $riskAfter = $em->find(Risk::class, $riskId);
             self::assertNotNull($riskAfter, 'a record with evidence is not cleared');
-            self::assertSame('Renamed risk ' . $suffix, $riskAfter->getTitle(), 'narrative fields are still restored');
+            $log = implode("\n", $restore->getWarnings()) . "\n" . json_encode(array_map(
+                static fn (array $f): array => [$f['entity'] ?? null, $f['row_id'] ?? null, $f['error_message'] ?? null],
+                $restore->getFailures(),
+            ));
+            self::assertSame('Renamed risk ' . $suffix, $riskAfter->getTitle(), "narrative fields are still restored\n" . $log);
             self::assertTrue($riskAfter->isFormallyAccepted(), 'the acceptance is not withdrawn by the file');
             self::assertSame('2026-03-01 09:00:00', $riskAfter->getAcceptanceApprovedAt()?->format('Y-m-d H:i:s'), 'the acceptance is not backdated');
             self::assertSame(RiskStatus::Accepted, $riskAfter->getStatus(), 'the status moves only through the lifecycle');
 
             $newRisk = $em->getRepository(Risk::class)->findOneBy(['title' => 'New accepted risk ' . $suffix]);
-            if ($newRisk !== null) {
-                self::assertFalse($newRisk->isFormallyAccepted(), 'a new record starts without acceptance');
-                self::assertNull($newRisk->getAcceptanceApprovedAt());
-                self::assertSame(RiskStatus::Identified, $newRisk->getStatus(), 'a new record starts in the initial place');
-            }
+            self::assertNotNull($newRisk, "the new risk of the file is created\n" . $log);
+            self::assertFalse($newRisk->isFormallyAccepted(), 'a new record starts without acceptance');
+            self::assertNull($newRisk->getAcceptanceApprovedAt());
+            self::assertSame(RiskStatus::Identified, $newRisk->getStatus(), 'a new record starts in the initial place');
 
             self::assertNotNull($em->find(ManagementDecision::class, $decisionId), 'a management decision is not cleared');
             self::assertNull(
