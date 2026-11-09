@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Workflow\Registry;
 
@@ -214,7 +215,7 @@ final class RestoreEvidenceContractTest extends KernelTestCase
     public function evidenceRecordsAreNotRestoredIntoAnOrganisation(): void
     {
         self::bootKernel();
-        $purger = self::getContainer()->get(RestoreDataPurger::class);
+        $purger = new RestoreDataPurger(self::getContainer()->get(EntityManagerInterface::class), new NullLogger());
         $checked = 0;
         foreach ($this->organisationClasses() as $meta) {
             if (!RestoreEvidencePolicy::isEvidenceRecord($meta->getName())) {
@@ -378,7 +379,20 @@ final class RestoreEvidenceContractTest extends KernelTestCase
             if ($value === null) {
                 continue;
             }
-            $meta->setFieldValue($entity, $field, $value);
+            try {
+                $meta->setFieldValue($entity, $field, $value);
+            } catch (\TypeError) {
+                if (!$value instanceof \DateTimeInterface) {
+                    continue;
+                }
+                // mutable/immutable as the property declares it
+                $other = $value instanceof \DateTimeImmutable ? \DateTime::createFromImmutable($value) : \DateTimeImmutable::createFromMutable($value);
+                try {
+                    $meta->setFieldValue($entity, $field, $other);
+                } catch (\TypeError) {
+                    continue;
+                }
+            }
             $forged[] = $field;
         }
 
