@@ -9,12 +9,14 @@ use App\Lifecycle\DeletionPolicy;
 use App\Service\AuditLogger;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\UnitOfWork;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Audit Log Subscriber
@@ -55,9 +57,15 @@ use Doctrine\ORM\UnitOfWork;
 #[AsDoctrineListener(event: Events::preUpdate)]
 #[AsDoctrineListener(event: Events::postUpdate)]
 #[AsDoctrineListener(event: Events::postRemove)]
-final class AuditLogSubscriber
+#[AsDoctrineListener(event: Events::postFlush)]
+final class AuditLogSubscriber implements ResetInterface
 {
     private array $pendingUpdates = [];
+
+    /** @var list<callable(): mixed> S29 delete entries, written after the flush */
+    private array $deferredDeletes = [];
+
+    private bool $drainingDeletes = false;
 
     /**
      * Tenant-owned classes whose rows are operational, not records: reminders
@@ -77,7 +85,8 @@ final class AuditLogSubscriber
 
     public function __construct(
         private readonly AuditLogger $auditLogger
-    ) {}
+    ) {
+    }
 
     /**
      * Log entity creation
@@ -192,7 +201,8 @@ final class AuditLogSubscriber
 
         // S29: every delete of an organisation's record leaves a trail (ISO 27001
         // 7.5.3), not only the classes audited on create/update.
-        if (!$this->shouldAudit($entity) && !$this->isAuditedOnDelete($entity, $postRemoveEventArgs)) {
+        $audited = $this->shouldAudit($entity);
+        if (!$audited && !$this->isAuditedOnDelete($entity, $postRemoveEventArgs)) {
             return;
         }
 
@@ -202,13 +212,46 @@ final class AuditLogSubscriber
             $this->auditLogger->extractEntityValues($entity),
             array_flip(self::NOT_LOGGED_ON_DELETE[$entityType] ?? []),
         );
-
-        $this->auditLogger->aboutRecord($entity, fn () => $this->auditLogger->logDelete(
+        $write = fn () => $this->auditLogger->aboutRecord($entity, fn () => $this->auditLogger->logDelete(
             $entityType,
             $entityId,
             $values,
             sprintf('%s deleted', $entityType)
         ));
+
+        if ($audited) {
+            $write();
+
+            return;
+        }
+        // S29 rows are written after the flush: a write inside the running commit
+        // stays pending and would carry its organisation into the next flush —
+        // the one that may delete that organisation.
+        $this->deferredDeletes[] = $write;
+    }
+
+    public function postFlush(PostFlushEventArgs $args): void
+    {
+        if ($this->drainingDeletes || $this->deferredDeletes === []) {
+            return;
+        }
+        $this->drainingDeletes = true;
+        try {
+            while (($write = array_shift($this->deferredDeletes)) !== null) {
+                if ($args->getObjectManager()->isOpen()) {
+                    $write();
+                }
+            }
+        } finally {
+            $this->drainingDeletes = false;
+            $this->deferredDeletes = [];
+        }
+    }
+
+    public function reset(): void
+    {
+        $this->deferredDeletes = [];
+        $this->drainingDeletes = false;
     }
 
     private function isAuditedOnDelete(object $entity, PostRemoveEventArgs $args): bool
