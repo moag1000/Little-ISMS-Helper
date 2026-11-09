@@ -52,7 +52,7 @@
             <div class="fa-cyber-input__header">
                 <label class="fa-cyber-input__label" for="{{ props.id|default('field-' ~ (props.name|default(''))) }}">
                     {{- props.label -}}
-                    {%- if props.required|default(false) %} <span class="fa-cyber-input__req" aria-hidden="true">*</span>{% endif -%}
+                    {%- if props.required|default(false) %} <span class="fa-cyber-input__req" aria-hidden="true">*</span><span class="visually-hidden"> {{ 'form.required'|trans({}, 'messages') }}</span>{% endif -%}
                 </label>
             </div>
         {%- endif %}
@@ -71,9 +71,19 @@
             </small>
         {%- endif %}
         {%- if props.error|default('') %}
-            <ul class="fa-cyber-input__errors"><li>{{ props.error }}</li></ul>
+            <ul class="fa-cyber-input__errors" id="{{ props.id|default('field-' ~ (props.name|default(''))) }}_errors" role="alert"><li>{{ props.error }}</li></ul>
         {%- endif %}
     </div>
+{% endmacro %}
+
+{#- help + error ids on the field, aria-invalid on error (W11, same rule as the form theme) -#}
+{% macro _aria(props) %}
+    {%- set fid = props.id|default('field-' ~ (props.name|default(''))) -%}
+    {%- set ids = [] -%}
+    {%- if props.help is defined and props.help %}{% set ids = ids|merge([fid ~ '_help']) %}{% endif -%}
+    {%- if props.error|default('') %}{% set ids = ids|merge([fid ~ '_errors']) %}{% endif -%}
+    {%- if ids|length > 0 %} aria-describedby="{{ ids|join(' ') }}"{% endif -%}
+    {%- if props.error|default('') %} aria-invalid="true"{% endif -%}
 {% endmacro %}
 
 {% macro text(name, props) %}
@@ -92,7 +102,7 @@
                 {% if props.max is defined %}maxlength="{{ props.max }}"{% endif %}
                 {% if props.min is defined %}minlength="{{ props.min }}"{% endif %}
                 {% if props.pattern is defined %}pattern="{{ props.pattern }}"{% endif %}
-                {% if props.help is defined and props.help %}aria-describedby="{{ props.id|default('field-' ~ name) }}_help"{% endif %}
+                {{- _self._aria(props) }}
                 {%- for k, v in props.extra_attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor -%}
             >
     {{ _self._frame_close(props) }}
@@ -111,7 +121,7 @@
                 {% if props.required|default(false) %}required{% endif %}
                 {% if props.disabled|default(false) %}disabled{% endif %}
                 {% if props.max is defined %}maxlength="{{ props.max }}"{% endif %}
-                {% if props.help is defined and props.help %}aria-describedby="{{ props.id|default('field-' ~ name) }}_help"{% endif %}
+                {{- _self._aria(props) }}
                 {%- for k, v in props.extra_attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor -%}
             >{{ props.value|default('') }}</textarea>
     {{ _self._frame_close(props) }}
@@ -127,6 +137,7 @@
                 class="fa-cyber-input__field {{ props.extra_class|default('') }}"
                 {% if props.required|default(false) %}required{% endif %}
                 {% if props.disabled|default(false) %}disabled{% endif %}
+                {{- _self._aria(props) }}
                 {%- for k, v in props.extra_attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor -%}
             >
                 {% if props.placeholder is defined %}<option value="">{{ props.placeholder }}</option>{% endif %}

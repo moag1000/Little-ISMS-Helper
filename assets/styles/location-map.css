@@ -319,8 +319,8 @@
     padding: 0.25rem 0;
 }
 
-.location-map__checks .is-ok .location-map__check-mark { color: var(--success); }
-.location-map__checks .is-gap .location-map__check-mark { color: var(--danger); font-weight: 700; }
+.location-map__checks .is-ok .location-map__check-mark { color: var(--success-strong); }
+.location-map__checks .is-gap .location-map__check-mark { color: var(--danger-strong); font-weight: 700; }
 
 .location-map__links {
     display: flex;

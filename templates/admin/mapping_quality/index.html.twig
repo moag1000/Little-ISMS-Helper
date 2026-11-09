@@ -74,7 +74,7 @@
                         <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.confidence'|trans({}, 'admin') }}</th>
                         <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.lifecycle'|trans({}, 'admin') }}</th>
                         <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.mapping_quality.col.mqs'|trans({}, 'admin') }}</th>
-                        <th class="fa-table__th fa-table__th--actions"></th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions"></th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -95,7 +95,7 @@
                                 <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '—' }}</span>
                             </td>
                             <td class="fa-table__cell fa-table__cell--actions">
-                                <a href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                <a aria-label="{{ 'common.view'|trans({}, 'messages') }}" href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                 </a>
                             </td>

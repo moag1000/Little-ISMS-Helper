@@ -27,7 +27,7 @@
 
 {# ─────────────── Dashboard ─────────────── #}
 <div class="flyout" id="flyout-dashboard" data-mega-menu-target="panel" data-category="dashboard"
-     role="menu" aria-label="{{ 'nav.mega.category.dashboard'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.dashboard'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i> {{ 'nav.mega.category.dashboard'|trans({}, 'nav') }}</div>
@@ -39,14 +39,14 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'nav.mega.section.overview'|trans({}, 'nav') }}</h3>
             </header>
-            <a href="{{ path('app_home') }}" class="fly-item {% if current_route starts with 'app_home' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_home') }}" class="fly-item {% if current_route starts with 'app_home' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-home" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.home'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.home'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_dashboard') }}" class="fly-item {% if current_route starts with 'app_dashboard' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_dashboard') }}" class="fly-item {% if current_route starts with 'app_dashboard' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.dashboard'|trans({}, 'nav') }}</span>
@@ -54,7 +54,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('app_analytics_dashboard') }}" class="fly-item {% if current_route starts with 'app_analytics_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_analytics_dashboard') }}" class="fly-item {% if current_route starts with 'app_analytics_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.analytics'|trans({}, 'nav') }}</span>
@@ -70,7 +70,7 @@
                 <span class="fly-section__norm">Cl. 9.3</span>
             </header>
             {% if is_granted('ROLE_AUDITOR') %}
-            <a href="{{ path('app_management_reports') }}" class="fly-item {% if current_route starts with 'app_management_reports' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_management_reports') }}" class="fly-item {% if current_route starts with 'app_management_reports' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.management_reports'|trans({}, 'nav') }}</span>
@@ -79,7 +79,7 @@
             </a>
             {% endif %}
             {% if is_module_active('analytics') and is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('analytics_fte_index', {_locale: _locale}) }}" class="fly-item {% if current_route starts with 'analytics_fte_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('analytics_fte_index', {_locale: _locale}) }}" class="fly-item {% if current_route starts with 'analytics_fte_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clock-history" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.fte_tracking'|trans({}, 'nav') }}</span>
@@ -95,7 +95,7 @@
 {# ─────────────── ISMS Kern ─────────────── #}
 {% if is_module_active('core') or is_module_active('controls') %}
 <div class="flyout" id="flyout-isms-core" data-mega-menu-target="panel" data-category="isms-core"
-     role="menu" aria-label="{{ 'nav.mega.category.isms_core'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.isms_core'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'nav.mega.category.isms_core'|trans({}, 'nav') }}</div>
@@ -109,21 +109,21 @@
                 <h3 class="fly-section__title">{{ 'nav.mega.section.foundation'|trans({}, 'nav') }}</h3>
                 <span class="fly-section__norm">Cl. 4–6</span>
             </header>
-            <a href="{{ path('app_context_index') }}" class="fly-item {% if current_route starts with 'app_context_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_context_index') }}" class="fly-item {% if current_route starts with 'app_context_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.context'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.context'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_interested_party_index') }}" class="fly-item {% if current_route starts with 'app_interested_party_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_interested_party_index') }}" class="fly-item {% if current_route starts with 'app_interested_party_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--group" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.interested_parties'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.interested_parties'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_register_index') }}" class="fly-item {% if current_route starts with 'app_register_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_register_index') }}" class="fly-item {% if current_route starts with 'app_register_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.registers'|trans({}, 'nav') }}</span>
@@ -140,7 +140,7 @@
                 <span class="fly-section__norm">Annex A</span>
             </header>
             {% if is_module_active('controls') %}
-            <a href="{{ path('app_soa_index') }}" class="fly-item {% if current_route starts with 'app_soa_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_soa_index') }}" class="fly-item {% if current_route starts with 'app_soa_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.soa'|trans({}, 'nav') }}</span>
@@ -148,7 +148,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_AUDITOR') %}
-            <a href="{{ path('app_effectiveness_monitor') }}" class="fly-item {% if current_route starts with 'app_effectiveness_monitor' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_effectiveness_monitor') }}" class="fly-item {% if current_route starts with 'app_effectiveness_monitor' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-speedometer" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.effectiveness_monitor'|trans({}, 'nav') }}</span>
@@ -157,7 +157,7 @@
             </a>
             {% endif %}
             {% if is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('app_import_hub') }}" class="fly-item {% if current_route == 'app_import_hub' or current_route starts with 'app_bulk_import_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_import_hub') }}" class="fly-item {% if current_route == 'app_import_hub' or current_route starts with 'app_bulk_import_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--ui-upload" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'import.hub.title'|trans({}, 'data_import') }}</span>
@@ -167,7 +167,7 @@
             {% endif %}
             {% endif %}
             {% if is_module_active('core') %}
-            <a href="{{ path('app_objective_index') }}" class="fly-item {% if current_route starts with 'app_objective_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_objective_index') }}" class="fly-item {% if current_route starts with 'app_objective_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.objectives'|trans({}, 'nav') }}</span>
@@ -185,7 +185,7 @@
 {# ─────────────── Assets & Risiken ─────────────── #}
 {% if is_module_active('assets') or is_module_active('risks') %}
 <div class="flyout" id="flyout-assets-risk" data-mega-menu-target="panel" data-category="assets-risk"
-     role="menu" aria-label="{{ 'nav.mega.category.assets_risk'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.assets_risk'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ 'nav.mega.category.assets_risk'|trans({}, 'nav') }}</div>
@@ -199,14 +199,14 @@
                 <h3 class="fly-section__title">{{ 'nav.mega.section.assets'|trans({}, 'nav') }}</h3>
                 <span class="fly-section__norm">A.5.9</span>
             </header>
-            <a href="{{ path('app_asset_index') }}" class="fly-item {% if current_route starts with 'app_asset_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_asset_index') }}" class="fly-item {% if current_route starts with 'app_asset_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.assets'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.assets'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_supplier_index') }}" class="fly-item {% if current_route starts with 'app_supplier_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_supplier_index') }}" class="fly-item {% if current_route starts with 'app_supplier_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.suppliers'|trans({}, 'nav') }}</span>
@@ -214,7 +214,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('supplier_questionnaire_index') }}" class="fly-item {% if current_route starts with 'supplier_questionnaire_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('supplier_questionnaire_index') }}" class="fly-item {% if current_route starts with 'supplier_questionnaire_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.supplier_questionnaire'|trans({}, 'nav') }}</span>
@@ -222,14 +222,14 @@
                 </span>
             </a>
             {% endif %}
-            <a href="{{ path('app_location_index') }}" class="fly-item {% if current_route starts with 'app_location_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_location_index') }}" class="fly-item {% if current_route starts with 'app_location_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.locations'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.locations'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_person_index') }}" class="fly-item {% if current_route starts with 'app_person_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_person_index') }}" class="fly-item {% if current_route starts with 'app_person_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.people'|trans({}, 'nav') }}</span>
@@ -245,28 +245,28 @@
                 <h3 class="fly-section__title">{{ 'nav.mega.section.risk'|trans({}, 'nav') }}</h3>
                 <span class="fly-section__norm">Cl. 6.1</span>
             </header>
-            <a href="{{ path('app_risk_index') }}" class="fly-item {% if current_route starts with 'app_risk_index' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_risk_index') }}" class="fly-item {% if current_route starts with 'app_risk_index' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.risks'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.risks'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_risk_matrix') }}" class="fly-item {% if current_route == 'app_risk_matrix' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_risk_matrix') }}" class="fly-item {% if current_route == 'app_risk_matrix' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.risk_matrix'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.risk_matrix'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_risk_appetite_index') }}" class="fly-item {% if current_route starts with 'app_risk_appetite_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_risk_appetite_index') }}" class="fly-item {% if current_route starts with 'app_risk_appetite_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.risk_appetite'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.risk_appetite'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_risk_treatment_plan_index') }}" class="fly-item {% if current_route starts with 'app_risk_treatment_plan_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_risk_treatment_plan_index') }}" class="fly-item {% if current_route starts with 'app_risk_treatment_plan_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--sop" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.treatment_plans'|trans({}, 'nav') }}</span>
@@ -283,7 +283,7 @@
 {# ─────────────── BCM ─────────────── #}
 {% if is_module_active('bcm') %}
 <div class="flyout" id="flyout-bcm" data-mega-menu-target="panel" data-category="bcm"
-     role="menu" aria-label="{{ 'nav.mega.category.bcm'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.bcm'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'nav.mega.category.bcm'|trans({}, 'nav') }}</div>
@@ -296,14 +296,14 @@
                 <h3 class="fly-section__title">{{ 'nav.mega.section.continuity'|trans({}, 'nav') }}</h3>
                 <span class="fly-section__norm">ISO 22301</span>
             </header>
-            <a href="{{ path('app_business_process_index') }}" class="fly-item {% if current_route starts with 'app_business_process_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_business_process_index') }}" class="fly-item {% if current_route starts with 'app_business_process_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.business_processes'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.business_processes'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_bc_plan_index') }}" class="fly-item {% if current_route starts with 'app_bc_plan_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_bc_plan_index') }}" class="fly-item {% if current_route starts with 'app_bc_plan_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--policy" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.bc_plans'|trans({}, 'nav') }}</span>
@@ -316,14 +316,14 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'nav.mega.section.testing'|trans({}, 'nav') }}</h3>
             </header>
-            <a href="{{ path('app_bc_exercise_index') }}" class="fly-item {% if current_route starts with 'app_bc_exercise_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_bc_exercise_index') }}" class="fly-item {% if current_route starts with 'app_bc_exercise_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.bc_exercises'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.bc_exercises'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_crisis_team_index') }}" class="fly-item {% if current_route starts with 'app_crisis_team_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_crisis_team_index') }}" class="fly-item {% if current_route starts with 'app_crisis_team_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-team" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.crisis_team'|trans({}, 'nav') }}</span>
@@ -331,14 +331,14 @@
                 </span>
             </a>
             {% if is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('bcm_exercise_log_index') }}" class="fly-item {% if current_route starts with 'bcm_exercise_log_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('bcm_exercise_log_index') }}" class="fly-item {% if current_route starts with 'bcm_exercise_log_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'bsi_200_4_exercise.nav.exercise_log'|trans({}, 'bsi_200_4_exercise') }}</span>
                     <span class="fly-item__sub">{{ 'bsi_200_4_exercise.nav.exercise_log_desc'|trans({}, 'bsi_200_4_exercise') }}</span>
                 </span>
             </a>
-            <a href="{{ path('bcm_exercise_log_calendar') }}" class="fly-item {% if current_route == 'bcm_exercise_log_calendar' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('bcm_exercise_log_calendar') }}" class="fly-item {% if current_route == 'bcm_exercise_log_calendar' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'bsi_200_4_exercise.nav.exercise_log_calendar'|trans({}, 'bsi_200_4_exercise') }}</span>
@@ -355,7 +355,7 @@
 {# ─────────────── Datenschutz & DSGVO ─────────────── #}
 {% if is_module_active('privacy') %}
 <div class="flyout" id="flyout-privacy" data-mega-menu-target="panel" data-category="privacy"
-     role="menu" aria-label="{{ 'nav.mega.category.privacy'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.privacy'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--persona-dpo" aria-hidden="true"></i> {{ 'nav.mega.category.privacy'|trans({}, 'nav') }}</div>
@@ -368,28 +368,28 @@
                 <h3 class="fly-section__title">{{ 'nav.mega.section.data_protection'|trans({}, 'nav') }}</h3>
                 <span class="fly-section__norm">DSGVO Art. 30</span>
             </header>
-            <a href="{{ path('app_processing_activity_index') }}" class="fly-item {% if current_route starts with 'app_processing_activity_' or (current_route starts with 'app_tia_' and current_route != 'app_tia_overview') %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_processing_activity_index') }}" class="fly-item {% if current_route starts with 'app_processing_activity_' or (current_route starts with 'app_tia_' and current_route != 'app_tia_overview') %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.processing_activities'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.processing_activities'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_dpia_index') }}" class="fly-item {% if current_route starts with 'app_dpia_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_dpia_index') }}" class="fly-item {% if current_route starts with 'app_dpia_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.dpia'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.dpia'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_tia_overview') }}" class="fly-item {% if current_route == 'app_tia_overview' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_tia_overview') }}" class="fly-item {% if current_route == 'app_tia_overview' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.tia'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.tia'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_data_breach_index') }}" class="fly-item {% if current_route starts with 'app_data_breach_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_data_breach_index') }}" class="fly-item {% if current_route starts with 'app_data_breach_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-breach-octagon" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.data_breaches'|trans({}, 'nav') }}</span>
@@ -403,14 +403,14 @@
                 <h3 class="fly-section__title">{{ 'nav.mega.section.data_subjects_authorities'|trans({}, 'nav') }}</h3>
                 <span class="fly-section__norm">Art. 7 / 15-22</span>
             </header>
-            <a href="{{ path('app_consent_index') }}" class="fly-item {% if current_route starts with 'app_consent_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_consent_index') }}" class="fly-item {% if current_route starts with 'app_consent_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.consent'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.consent'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_data_subject_request_index') }}" class="fly-item {% if current_route starts with 'app_data_subject_request_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_data_subject_request_index') }}" class="fly-item {% if current_route starts with 'app_data_subject_request_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--group" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.data_subject_request'|trans({}, 'nav') }}</span>
@@ -418,7 +418,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('app_privacy_import_hub') }}" class="fly-item {% if current_route starts with 'app_privacy_import_' or (current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') in ['processing_activity', 'data_subject_request', 'consent']) %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_privacy_import_hub') }}" class="fly-item {% if current_route starts with 'app_privacy_import_' or (current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') in ['processing_activity', 'data_subject_request', 'consent']) %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'privacy_import.hub.title'|trans({}, 'data_import') }}</span>
@@ -428,7 +428,7 @@
             {% endif %}
             {# Same gate as VvtExportController (DPO or manager + privacy); the compliance manager's DPO preview alone is not enough. #}
             {% if (is_granted('ROLE_DPO') or is_granted('ROLE_MANAGER')) and is_module_active('privacy') %}
-            <a href="{{ path('app_vvt_export_xlsx') }}" class="fly-item {% if current_route starts with 'app_vvt_export_' %}is-active{% endif %}" data-turbo="false" data-turbo-prefetch="false" role="menuitem" data-density="standard">
+            <a href="{{ path('app_vvt_export_xlsx') }}" class="fly-item {% if current_route starts with 'app_vvt_export_' %}is-active{% endif %}" data-turbo="false" data-turbo-prefetch="false" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'eu_authorities.vvt.title'|trans({}, 'eu_authorities') }}</span>
@@ -437,7 +437,7 @@
             </a>
             {% endif %}
             {% if is_granted('ROLE_MANAGER') and is_module_active('eu_authority_reporting') %}
-            <a href="{{ path('app_authority_notification_index') }}" class="fly-item {% if current_route starts with 'app_authority_notification_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_authority_notification_index') }}" class="fly-item {% if current_route starts with 'app_authority_notification_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'eu_authorities.nav.index_title'|trans({}, 'eu_authorities') }}</span>
@@ -446,7 +446,7 @@
             </a>
             {% endif %}
             {% if is_module_active('nis2_dora') and is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('nis2_registration_index') }}" class="fly-item {% if current_route starts with 'nis2_registration_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('nis2_registration_index') }}" class="fly-item {% if current_route starts with 'nis2_registration_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-shield-lock" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'eu_authorities.nis2_registration.page.title'|trans({}, 'eu_authorities') }}</span>
@@ -455,7 +455,7 @@
             </a>
             {% endif %}
             {% if is_module_active('eu_authority_reporting') and is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('authority_hub_index') }}" class="fly-item {% if current_route starts with 'authority_hub_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('authority_hub_index') }}" class="fly-item {% if current_route starts with 'authority_hub_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-building-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'eu_authorities.hub.page.title'|trans({}, 'eu_authorities') }}</span>
@@ -464,7 +464,7 @@
             </a>
             {% endif %}
             {% if is_module_active('nis2_dora') and is_granted('ROLE_MANAGER') and is_dora_obligated() %}
-            <a href="{{ path('dora_roi_index') }}" class="fly-item {% if current_route starts with 'dora_roi_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('dora_roi_index') }}" class="fly-item {% if current_route starts with 'dora_roi_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-file-earmark-spreadsheet" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'eu_authorities.dora_roi.page.title'|trans({}, 'eu_authorities') }}</span>
@@ -482,7 +482,7 @@
 {% from '_components/_fa_persona_cockpit_card.html.twig' import fa_persona_cockpit_card %}
 {% if is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('PERSONA_DPO') or is_granted('PERSONA_COMPLIANCE') or is_granted('PERSONA_ISB') or is_granted('PERSONA_BCM') or is_granted('PERSONA_BOARD') or is_granted('ROLE_AUDITOR') %}
 <div class="flyout" id="flyout-cockpit" data-mega-menu-target="panel" data-category="cockpit"
-     role="menu" aria-label="{{ 'nav.mega.category.cockpit'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.cockpit'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--persona" aria-hidden="true"></i> {{ 'nav.mega.category.cockpit'|trans({}, 'nav') }}</div>
@@ -527,7 +527,7 @@
 {# ─────────────── Tägliche Arbeit / Operations ─────────────── #}
 {% if is_module_active('core') or is_module_active('incidents') or is_module_active('vulnerability_intel') %}
 <div class="flyout" id="flyout-operations" data-mega-menu-target="panel" data-category="operations"
-     role="menu" aria-label="{{ 'nav.mega.category.daily_work'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.daily_work'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--workspace" aria-hidden="true"></i> {{ 'nav.mega.category.daily_work'|trans({}, 'nav') }}</div>
@@ -555,21 +555,21 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'nav.mega.section.documents'|trans({}, 'nav') }}</h3>
             </header>
-            <a href="{{ path('app_document_index') }}" class="fly-item {% if current_route starts with 'app_document_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_document_index') }}" class="fly-item {% if current_route starts with 'app_document_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.documents'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.documents'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_change_request_index') }}" class="fly-item {% if current_route starts with 'app_change_request_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_change_request_index') }}" class="fly-item {% if current_route starts with 'app_change_request_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-change" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.change_requests'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.change_requests'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_workflow_index') }}" class="fly-item {% if current_route == 'app_workflow_index' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_workflow_index') }}" class="fly-item {% if current_route == 'app_workflow_index' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.workflows'|trans({}, 'nav') }}</span>
@@ -577,7 +577,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('admin_workflow_overlay_index') }}" class="fly-item {% if current_route starts with 'admin_workflow_overlay' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('admin_workflow_overlay_index') }}" class="fly-item {% if current_route starts with 'admin_workflow_overlay' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.workflow_overlay'|trans({}, 'nav') }}</span>
@@ -595,7 +595,7 @@
                 <span class="fly-section__norm">A.5.24</span>
             </header>
             {% if is_module_active('incidents') %}
-            <a href="{{ path('app_incident_index') }}" class="fly-item {% if current_route starts with 'app_incident_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_incident_index') }}" class="fly-item {% if current_route starts with 'app_incident_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-incident-circle" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.incidents'|trans({}, 'nav') }}</span>
@@ -604,14 +604,14 @@
             </a>
             {% endif %}
             {% if is_module_active('vulnerability_intel') %}
-            <a href="{{ path('app_vulnerability_index') }}" class="fly-item {% if current_route starts with 'app_vulnerability_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_vulnerability_index') }}" class="fly-item {% if current_route starts with 'app_vulnerability_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--vulnerability" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.vulnerabilities'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.vulnerabilities'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_patch_index') }}" class="fly-item {% if current_route starts with 'app_patch_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_patch_index') }}" class="fly-item {% if current_route starts with 'app_patch_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-patch" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.patches'|trans({}, 'nav') }}</span>
@@ -620,7 +620,7 @@
             </a>
             {% endif %}
             {% if is_module_active('incidents') or is_module_active('vulnerability_intel') or is_module_active('risks') %}
-            <a href="{{ path('app_threat_intelligence_index') }}" class="fly-item {% if current_route starts with 'app_threat_intelligence_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_threat_intelligence_index') }}" class="fly-item {% if current_route starts with 'app_threat_intelligence_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--vulnerability" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.threat_intelligence'|trans({}, 'nav') }}</span>
@@ -639,28 +639,28 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'nav.mega.section.my_inbox'|trans({}, 'nav') }}</h3>
             </header>
-            <a href="{{ path('app_recurring_duty_index') }}" class="fly-item {% if current_route starts with 'app_recurring_duty_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_recurring_duty_index') }}" class="fly-item {% if current_route starts with 'app_recurring_duty_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.recurring_duties'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.recurring_duties'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_suggestion_index') }}" class="fly-item {% if current_route starts with 'app_suggestion_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_suggestion_index') }}" class="fly-item {% if current_route starts with 'app_suggestion_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.suggestions'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.suggestions'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_policy_ack_inbox') }}" class="fly-item {% if current_route starts with 'app_policy_ack_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_policy_ack_inbox') }}" class="fly-item {% if current_route starts with 'app_policy_ack_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--policy" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.policy_ack_inbox'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.policy_ack_inbox'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_four_eyes_inbox') }}" class="fly-item {% if current_route starts with 'app_four_eyes_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_four_eyes_inbox') }}" class="fly-item {% if current_route starts with 'app_four_eyes_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.four_eyes_inbox'|trans({}, 'nav') }}</span>
@@ -670,7 +670,7 @@
             {# Gap A (2026-05-27): Audit-Log — Senior-ISB P0. ISO 27001 Cl. 7.5.3.
                Same gate as AuditLogController (/admin, ROLE_ADMIN); auditors read a record's history on its detail page. #}
             {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_audit_log_index') }}" class="fly-item {% if current_route starts with 'app_audit_log_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_audit_log_index') }}" class="fly-item {% if current_route starts with 'app_audit_log_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--audit-log" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.audit_log'|trans({}, 'nav') }}</span>
@@ -678,7 +678,7 @@
                 </span>
             </a>
             {% endif %}
-            <a href="{{ path('app_alva_hint_inbox') }}" class="fly-item {% if current_route starts with 'app_alva_hint_inbox' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_alva_hint_inbox') }}" class="fly-item {% if current_route starts with 'app_alva_hint_inbox' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--ui-stars" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.alva_inbox'|trans({}, 'nav') }}</span>
@@ -686,7 +686,7 @@
                 </span>
             </a>
             {% if is_module_active('notifications') %}
-            <a href="{{ path('app_notification_center') }}" class="fly-item {% if current_route starts with 'app_notification_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_notification_center') }}" class="fly-item {% if current_route starts with 'app_notification_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'notification.center.title'|trans({}, 'notification') }}</span>
@@ -703,15 +703,15 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'notification.rule.index.title'|trans({}, 'notification') }}</h3>
             </header>
-            <a href="{{ path('admin_notification_rule_index') }}" class="fly-item {% if current_route starts with 'admin_notification_rule_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('admin_notification_rule_index') }}" class="fly-item {% if current_route starts with 'admin_notification_rule_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i></span>
                 <span class="fly-item__body"><span class="fly-item__title">{{ 'notification.rule.index.title'|trans({}, 'notification') }}</span></span>
             </a>
-            <a href="{{ path('admin_notification_channel_index') }}" class="fly-item {% if current_route starts with 'admin_notification_channel_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('admin_notification_channel_index') }}" class="fly-item {% if current_route starts with 'admin_notification_channel_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i></span>
                 <span class="fly-item__body"><span class="fly-item__title">{{ 'notification.channel.index.title'|trans({}, 'notification') }}</span></span>
             </a>
-            <a href="{{ path('admin_notification_template_index') }}" class="fly-item {% if current_route starts with 'admin_notification_template_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('admin_notification_template_index') }}" class="fly-item {% if current_route starts with 'admin_notification_template_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i></span>
                 <span class="fly-item__body"><span class="fly-item__title">{{ 'notification.template.index.title'|trans({}, 'notification') }}</span></span>
             </a>
@@ -725,7 +725,7 @@
 {# ─────────────── Compliance & Audits ─────────────── #}
 {% if is_module_active('audits') or is_module_active('compliance') %}
 <div class="flyout" id="flyout-compliance" data-mega-menu-target="panel" data-category="compliance"
-     role="menu" aria-label="{{ 'nav.mega.category.compliance_audits'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.compliance_audits'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--checklist-stamped" aria-hidden="true"></i> {{ 'nav.mega.category.compliance'|trans({}, 'nav') }}</div>
@@ -740,28 +740,28 @@
                 <span class="fly-section__norm">Cl. 6.1.3</span>
             </header>
             {% if is_module_active('compliance') %}
-            <a href="{{ path('app_compliance_index') }}" class="fly-item {% if current_route starts with 'app_compliance_index' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_compliance_index') }}" class="fly-item {% if current_route starts with 'app_compliance_index' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.compliance_frameworks'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.compliance_frameworks'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_compliance_mapping_hub') }}" class="fly-item {% if current_route starts with 'app_compliance_mapping_' or current_route starts with 'app_mapping_' or current_route in ['app_compliance_compare', 'app_compliance_cross_framework', 'app_compliance_transitive', 'app_compliance_wizard_compare', 'app_data_reuse_heatmap'] %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_compliance_mapping_hub') }}" class="fly-item {% if current_route starts with 'app_compliance_mapping_' or current_route starts with 'app_mapping_' or current_route in ['app_compliance_compare', 'app_compliance_cross_framework', 'app_compliance_transitive', 'app_compliance_wizard_compare', 'app_data_reuse_heatmap'] %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--coverage-matrix" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mapping_hub'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.mapping_hub'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_data_reuse_hub') }}" class="fly-item {% if current_route starts with 'app_data_reuse_' and current_route != 'app_data_reuse_heatmap' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_data_reuse_hub') }}" class="fly-item {% if current_route starts with 'app_data_reuse_' and current_route != 'app_data_reuse_heatmap' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--reuse-roi" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.data_reuse'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.data_reuse'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_industry_baseline_index') }}" class="fly-item {% if current_route starts with 'app_industry_baseline_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_industry_baseline_index') }}" class="fly-item {% if current_route starts with 'app_industry_baseline_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--industry-baseline" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.industry_baselines'|trans({}, 'nav') }}</span>
@@ -769,7 +769,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('app_compliance_certificate_index') }}" class="fly-item {% if current_route starts with 'app_compliance_certificate_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_compliance_certificate_index') }}" class="fly-item {% if current_route starts with 'app_compliance_certificate_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--checklist-stamped" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.certificates'|trans({}, 'nav') }}</span>
@@ -778,7 +778,7 @@
             </a>
             {% endif %}
             {% if is_granted('ROLE_AUDITOR') %}
-            <a href="{{ path('app_compliance_fulfillment_overrides') }}" class="fly-item {% if current_route starts with 'app_compliance_fulfillment_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_compliance_fulfillment_overrides') }}" class="fly-item {% if current_route starts with 'app_compliance_fulfillment_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.fulfillment_overrides'|trans({}, 'nav') }}</span>
@@ -787,7 +787,7 @@
             </a>
             {% endif %}
             {# Mapping-Tour starten — geführte Themen-Tour für beginners #}
-            <button type="button" class="fly-item w-100 text-start border-0 bg-transparent" role="menuitem"
+            <button type="button" class="fly-item w-100 text-start border-0 bg-transparent"
                     data-action="click->guided-tour#start"
                     data-guided-tour-role-param="mapping"
                     data-turbo="false">
@@ -798,7 +798,7 @@
                 </span>
             </button>
             {% endif %}
-            <a href="{{ path('app_evidence_reverification_index') }}" class="fly-item {% if current_route starts with 'app_evidence_reverification_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_evidence_reverification_index') }}" class="fly-item {% if current_route starts with 'app_evidence_reverification_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--shield-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">
@@ -819,14 +819,14 @@
                 <h3 class="fly-section__title">{{ 'nav.planning'|trans({}, 'nav') }}</h3>
                 <span class="fly-section__norm">Cl. 6.2</span>
             </header>
-            <a href="{{ path('app_planning_action_item_index') }}" class="fly-item {% if current_route starts with 'app_planning_action_item_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_planning_action_item_index') }}" class="fly-item {% if current_route starts with 'app_planning_action_item_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.planning_measures'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.planning_measures'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_planning_roadmap') }}" class="fly-item {% if current_route == 'app_planning_roadmap' or current_route == 'app_planning_roadmap_save' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_planning_roadmap') }}" class="fly-item {% if current_route == 'app_planning_roadmap' or current_route == 'app_planning_roadmap_save' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-data" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.planning_roadmap'|trans({}, 'nav') }}</span>
@@ -834,7 +834,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('app_planning_roadmap_report') }}" class="fly-item {% if current_route == 'app_planning_roadmap_report' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_planning_roadmap_report') }}" class="fly-item {% if current_route == 'app_planning_roadmap_report' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.planning_capacity_report'|trans({}, 'nav') }}</span>
@@ -842,7 +842,7 @@
                 </span>
             </a>
             {% endif %}
-            <a href="{{ path('app_planning_admin') }}" class="fly-item {% if current_route starts with 'app_planning_' and not (current_route starts with 'app_planning_action_item_') and current_route != 'app_planning_roadmap' and current_route != 'app_planning_roadmap_save' and current_route != 'app_planning_roadmap_report' and not (current_route starts with 'app_planning_team_') %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_planning_admin') }}" class="fly-item {% if current_route starts with 'app_planning_' and not (current_route starts with 'app_planning_action_item_') and current_route != 'app_planning_roadmap' and current_route != 'app_planning_roadmap_save' and current_route != 'app_planning_roadmap_report' and not (current_route starts with 'app_planning_team_') %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.planning_admin'|trans({}, 'nav') }}</span>
@@ -850,7 +850,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('app_planning_team_index') }}" class="fly-item {% if current_route starts with 'app_planning_team_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_planning_team_index') }}" class="fly-item {% if current_route starts with 'app_planning_team_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-team" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.planning_teams'|trans({}, 'nav') }}</span>
@@ -868,28 +868,28 @@
                 <span class="fly-section__norm">Cl. 9.2</span>
             </header>
             {% if is_module_active('audits') %}
-            <a href="{{ path('app_audit_program_index', {_locale: _locale}) }}" class="fly-item {% if current_route starts with 'app_audit_program_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_audit_program_index', {_locale: _locale}) }}" class="fly-item {% if current_route starts with 'app_audit_program_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.audit_programs'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.audit_programs'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_audit_index') }}" class="fly-item {% if current_route starts with 'app_audit_' and not (current_route starts with 'app_audit_program_') %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_audit_index') }}" class="fly-item {% if current_route starts with 'app_audit_' and not (current_route starts with 'app_audit_program_') %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-data" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.audits'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.audits'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_audit_finding_index') }}" class="fly-item {% if current_route starts with 'app_audit_finding_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_audit_finding_index') }}" class="fly-item {% if current_route starts with 'app_audit_finding_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-data" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.audit_findings'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.audit_findings'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_audit_freeze_index') }}" class="fly-item {% if current_route starts with 'app_audit_freeze_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_audit_freeze_index') }}" class="fly-item {% if current_route starts with 'app_audit_freeze_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.audit_freeze'|trans({}, 'nav') }}</span>
@@ -898,7 +898,7 @@
             </a>
             {% endif %}
             {% if is_module_active('training') %}
-            <a href="{{ path('app_training_index') }}" class="fly-item {% if current_route starts with 'app_training_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_training_index') }}" class="fly-item {% if current_route starts with 'app_training_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-book" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.training'|trans({}, 'nav') }}</span>
@@ -907,7 +907,7 @@
             </a>
             {% endif %}
             {% if is_granted('ROLE_AUDITOR') %}
-            <a href="{{ path('app_management_decision_index') }}" class="fly-item {% if current_route starts with 'app_management_decision_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_management_decision_index') }}" class="fly-item {% if current_route starts with 'app_management_decision_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--regulator" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.management_decisions'|trans({}, 'nav') }}</span>
@@ -916,7 +916,7 @@
             </a>
             {% endif %}
             {% if is_module_active('reviews') %}
-            <a href="{{ path('app_management_review_index') }}" class="fly-item {% if current_route starts with 'app_management_review_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_management_review_index') }}" class="fly-item {% if current_route starts with 'app_management_review_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--sop" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.management_reviews'|trans({}, 'nav') }}</span>
@@ -925,7 +925,7 @@
             </a>
             {% endif %}
             {% if is_module_active('audits') or is_module_active('core') %}
-            <a href="{{ path('app_corrective_action_index') }}" class="fly-item {% if current_route starts with 'app_corrective_action_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_corrective_action_index') }}" class="fly-item {% if current_route starts with 'app_corrective_action_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.corrective_actions'|trans({}, 'nav') }}</span>
@@ -941,14 +941,14 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'nav.mega.section.wizards'|trans({}, 'nav') }}</h3>
             </header>
-            <a href="{{ path('app_compliance_wizard_index') }}" class="fly-item {% if current_route starts with 'app_compliance_wizard_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_compliance_wizard_index') }}" class="fly-item {% if current_route starts with 'app_compliance_wizard_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.compliance_wizard'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.compliance_wizard'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_policy_wizard_index') }}" class="fly-item {% if current_route starts with 'app_policy_wizard_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_policy_wizard_index') }}" class="fly-item {% if current_route starts with 'app_policy_wizard_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--policy" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.policy_wizard'|trans({}, 'nav') }}</span>
@@ -956,7 +956,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_GROUP_BCM_OFFICER') %}
-            <a href="{{ path('app_policy_wizard_konzern_defaults') }}" class="fly-item {% if current_route starts with 'app_policy_wizard_konzern_defaults' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_policy_wizard_konzern_defaults') }}" class="fly-item {% if current_route starts with 'app_policy_wizard_konzern_defaults' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--policy" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.policy_wizard_konzern_defaults'|trans({}, 'nav') }}</span>
@@ -964,7 +964,7 @@
                 </span>
             </a>
             {% endif %}
-            <a href="{{ path('app_bsi_grundschutz_check') }}" class="fly-item {% if current_route starts with 'app_bsi_grundschutz_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_bsi_grundschutz_check') }}" class="fly-item {% if current_route starts with 'app_bsi_grundschutz_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.bsi_check'|trans({}, 'nav') }}</span>
@@ -972,7 +972,7 @@
                 </span>
             </a>
             {% if is_module_active('bsi_grundschutz') %}
-            <a href="{{ path('app_compliance_cross_gap', {_locale: _locale}) }}" class="fly-item {% if current_route == 'app_compliance_cross_gap' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_compliance_cross_gap', {_locale: _locale}) }}" class="fly-item {% if current_route == 'app_compliance_cross_gap' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.bsi_cross_gap'|trans({}, 'nav') }}</span>
@@ -981,7 +981,7 @@
             </a>
             {% endif %}
             {% if is_module_active('controls') %}
-            <a href="{{ path('app_prototype_protection_index') }}" class="fly-item {% if current_route starts with 'app_prototype_protection_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_prototype_protection_index') }}" class="fly-item {% if current_route starts with 'app_prototype_protection_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--control" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.prototype_protection'|trans({}, 'nav') }}</span>
@@ -990,7 +990,7 @@
             </a>
             {% endif %}
             {% if is_module_active('tisax') and is_granted('ROLE_MANAGER') %}
-            <a href="{{ path('app_tisax_import_disclaimer', {_locale: _locale}) }}" class="fly-item {% if current_route starts with 'app_tisax_import_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_tisax_import_disclaimer', {_locale: _locale}) }}" class="fly-item {% if current_route starts with 'app_tisax_import_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.tisax_import'|trans({}, 'nav') }}</span>
@@ -1007,7 +1007,7 @@
                 <h3 class="fly-section__title">{{ 'nav.mega.section.specialized_tools'|trans({}, 'nav') }}</h3>
             </header>
             {% if (is_module_active('nis2_dora') or is_module_active('compliance')) and is_dora_obligated() %}
-            <a href="{{ path('app_dora_compliance_dashboard') }}" class="fly-item {% if current_route starts with 'app_dora_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_dora_compliance_dashboard') }}" class="fly-item {% if current_route starts with 'app_dora_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-building-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.dora_compliance'|trans({}, 'nav') }}</span>
@@ -1016,7 +1016,7 @@
             </a>
             {% endif %}
             {% if is_module_active('nis2_dora') and is_dora_obligated() %}
-            <a href="{{ path('app_tlpt_index') }}" class="fly-item {% if current_route starts with 'app_tlpt_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_tlpt_index') }}" class="fly-item {% if current_route starts with 'app_tlpt_' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.tlpt'|trans({}, 'nav') }}</span>
@@ -1025,14 +1025,14 @@
             </a>
             {% endif %}
             {% if is_module_active('nis2_dora') %}
-            <a href="{{ path('app_nis2_compliance_dashboard') }}" class="fly-item {% if current_route == 'app_nis2_compliance_dashboard' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_nis2_compliance_dashboard') }}" class="fly-item {% if current_route == 'app_nis2_compliance_dashboard' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-building-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.nis2'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.nis2'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_nis2_art21_requirements') }}" class="fly-item {% if current_route == 'app_nis2_art21_requirements' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_nis2_art21_requirements') }}" class="fly-item {% if current_route == 'app_nis2_art21_requirements' %}is-active{% endif %}" data-turbo-action="advance" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.nis2_art21_requirements'|trans({}, 'nav') }}</span>
@@ -1041,42 +1041,42 @@
             </a>
             {% endif %}
             {% if is_module_active('mris') %}
-            <a href="{{ path('app_mris_kpis') }}" class="fly-item {% if current_route == 'app_mris_kpis' or current_route == 'app_mris_kpis_manual_save' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_mris_kpis') }}" class="fly-item {% if current_route == 'app_mris_kpis' or current_route == 'app_mris_kpis_manual_save' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mris_kpis'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.mris_kpis'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_mris_baselines_index') }}" class="fly-item {% if current_route starts with 'app_mris_baselines' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_mris_baselines_index') }}" class="fly-item {% if current_route starts with 'app_mris_baselines' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mris_baselines'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.mris_baselines'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_mris_glossar') }}" class="fly-item {% if current_route starts with 'app_mris_glossar' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_mris_glossar') }}" class="fly-item {% if current_route starts with 'app_mris_glossar' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--glossary" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mris_glossar'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.mris_glossar'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_mris_wizard_pure_friction') }}" class="fly-item {% if current_route == 'app_mris_wizard_pure_friction' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_mris_wizard_pure_friction') }}" class="fly-item {% if current_route == 'app_mris_wizard_pure_friction' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mris_wizard_pure_friction'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.mris_wizard_pure_friction'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_mris_wizard_maturity_evidence') }}" class="fly-item {% if current_route == 'app_mris_wizard_maturity_evidence' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_mris_wizard_maturity_evidence') }}" class="fly-item {% if current_route == 'app_mris_wizard_maturity_evidence' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mris_wizard_maturity_evidence'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.mris_wizard_maturity_evidence'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_mris_wizard_ai_risk_class') }}" class="fly-item {% if current_route == 'app_mris_wizard_ai_risk_class' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_mris_wizard_ai_risk_class') }}" class="fly-item {% if current_route == 'app_mris_wizard_ai_risk_class' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mris_wizard_ai_risk_class'|trans({}, 'nav') }}</span>
@@ -1084,7 +1084,7 @@
                 </span>
             </a>
             {% if is_granted('ROLE_AUDITOR') %}
-            <a href="{{ path('app_mris_audit_report') }}" class="fly-item {% if current_route == 'app_mris_audit_report' %}is-active{% endif %}" data-turbo="false" data-turbo-prefetch="false" role="menuitem" data-density="expert">
+            <a href="{{ path('app_mris_audit_report') }}" class="fly-item {% if current_route == 'app_mris_audit_report' %}is-active{% endif %}" data-turbo="false" data-turbo-prefetch="false" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mris_audit_report'|trans({}, 'nav') }}</span>
@@ -1094,7 +1094,7 @@
             {% endif %}
             {% endif %}
             {% if is_module_active('ai_governance') %}
-            <a href="{{ path('app_ai_agents_index') }}" class="fly-item {% if current_route starts with 'app_ai_agents_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_ai_agents_index') }}" class="fly-item {% if current_route starts with 'app_ai_agents_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.ai_agents'|trans({}, 'nav') }}</span>
@@ -1110,21 +1110,21 @@
                 <h3 class="fly-section__title">{{ 'nav.mega.section.reports'|trans({}, 'nav') }}</h3>
             </header>
             {% if (is_module_active('audits') or is_module_active('compliance')) and is_granted('REPORT_CERTIFICATION_BUNDLE') %}
-            <a href="{{ path('app_certification_bundle_index') }}" class="fly-item {% if current_route starts with 'app_certification_bundle_' or current_route starts with 'app_audit_package_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_certification_bundle_index') }}" class="fly-item {% if current_route starts with 'app_certification_bundle_' or current_route starts with 'app_audit_package_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.audit_package'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.audit_package'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('report_builder_index') }}" class="fly-item {% if current_route starts with 'report_builder_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('report_builder_index') }}" class="fly-item {% if current_route starts with 'report_builder_' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-edit" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.report_builder'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.report_builder'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_scheduled_report_index') }}" class="fly-item {% if current_route starts with 'app_scheduled_report_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_scheduled_report_index') }}" class="fly-item {% if current_route starts with 'app_scheduled_report_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.scheduled_reports'|trans({}, 'nav') }}</span>
@@ -1133,7 +1133,7 @@
             </a>
             {% endif %}
             {% if is_granted('ROLE_AUDITOR') %}
-            <a href="{{ path('app_audit_workbook_index') }}" class="fly-item {% if current_route starts with 'app_audit_workbook_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+            <a href="{{ path('app_audit_workbook_index') }}" class="fly-item {% if current_route starts with 'app_audit_workbook_' %}is-active{% endif %}" data-turbo-action="advance" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'audit_workbook.nav.title'|trans({}, 'audit_workbook') }}</span>
@@ -1152,7 +1152,7 @@
    Do NOT re-add section groups here. #}
 {% if is_granted('ROLE_ADMIN') %}
 <div class="flyout" id="flyout-admin" data-mega-menu-target="panel" data-category="admin"
-     role="menu" aria-label="{{ 'nav.mega.category.admin'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.admin'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--nav-gear" aria-hidden="true"></i> {{ 'nav.mega.category.admin'|trans({}, 'nav') }}</div>
@@ -1163,14 +1163,14 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'admin.section.overview'|trans({}, 'admin') }}</h3>
             </header>
-            <a href="{{ path('admin_hub_index') }}" class="fly-item {% if current_route == 'admin_hub_index' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('admin_hub_index') }}" class="fly-item {% if current_route == 'admin_hub_index' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'admin.hub.title'|trans({}, 'admin') }}</span>
                     <span class="fly-item__sub">{{ 'admin.hub.subtitle'|trans({'%count%': admin_hub_total_modules()}, 'admin') }}</span>
                 </span>
             </a>
-            <a href="{{ path('admin_dashboard') }}" class="fly-item {% if current_route == 'admin_dashboard' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('admin_dashboard') }}" class="fly-item {% if current_route == 'admin_dashboard' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'admin.nav.dashboard'|trans({}, 'admin') }}</span>
@@ -1183,7 +1183,7 @@
 
 {# ─────────────── Hilfe & Ressourcen ─────────────── #}
 <div class="flyout" id="flyout-help" data-mega-menu-target="panel" data-category="help"
-     role="menu" aria-label="{{ 'nav.mega.category.help'|trans({}, 'nav') }}">
+     role="dialog" aria-label="{{ 'nav.mega.category.help'|trans({}, 'nav') }}">
     <button class="flyout__close" aria-label="{{ 'nav.mega.close'|trans({}, 'nav') }}" data-action="click->mega-menu#closePanel">✕</button>
     <header class="flyout__head">
         <div class="flyout__eye"><i class="fa-icon fa-icon--glossary" aria-hidden="true"></i> {{ 'nav.mega.category.help'|trans({}, 'nav') }}</div>
@@ -1219,14 +1219,14 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'nav.mega.section.help_resources'|trans({}, 'nav') }}</h3>
             </header>
-            <a href="{{ path('app_help_iso9001_bridge') }}" class="fly-item {% if current_route == 'app_help_iso9001_bridge' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_help_iso9001_bridge') }}" class="fly-item {% if current_route == 'app_help_iso9001_bridge' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-change" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mega.help.iso9001_bridge'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.iso9001_bridge'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_help_glossary') }}" class="fly-item {% if current_route == 'app_help_glossary' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_help_glossary') }}" class="fly-item {% if current_route == 'app_help_glossary' %}is-active{% endif %}" data-turbo-action="advance">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--glossary" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mega.help.glossary'|trans({}, 'nav') }}</span>
@@ -1238,7 +1238,7 @@
                data-guided-tour-role-param="mris"
                data-turbo="false"
                class="fly-item"
-               role="menuitem">
+              >
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-stars" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mega.help.mris_tour'|trans({}, 'nav') }}</span>
@@ -1251,7 +1251,7 @@
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'nav.mega.section.shortcuts'|trans({}, 'nav') }}</h3>
             </header>
-            <a href="#" data-keyboard-shortcuts-open data-turbo="false" class="fly-item" role="menuitem">
+            <a href="#" data-keyboard-shortcuts-open data-turbo="false" class="fly-item">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mega.help.keyboard_shortcuts'|trans({}, 'nav') }}</span>

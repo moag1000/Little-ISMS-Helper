@@ -20,7 +20,7 @@ import { Controller } from '@hotwired/stimulus';
  *   - focus-visible rings: 3px solid outline + glow shadow on triggers and fly-items (CSS)
  *   - role="menubar" aria-orientation="vertical" on nav container (template)
  *   - role="menuitem" aria-haspopup="menu" aria-expanded on trigger buttons (template)
- *   - role="menu" / role="menuitem" on panels (template)
+ *   - role="dialog" on panels, plain links inside (template, W11)
  *   - ESC key closes open flyout and returns focus to trigger
  *   - ArrowDown on trigger opens panel and focuses first item
  *   - ArrowRight/Left between L1 triggers cycles focus + opens panel

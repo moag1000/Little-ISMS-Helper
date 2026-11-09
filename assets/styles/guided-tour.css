@@ -151,7 +151,7 @@
 }
 
 .guided-tour-close:hover {
-    color: var(--accent);
+    color: var(--accent-strong);
 }
 
 .guided-tour-title {
@@ -259,7 +259,7 @@
 
 .guided-tour-banner-icon {
     font-size: 1.75rem;
-    color: var(--accent);
+    color: var(--accent-strong);
     flex-shrink: 0;
     animation: fairy-pulse 2.5s ease-in-out infinite;
 }

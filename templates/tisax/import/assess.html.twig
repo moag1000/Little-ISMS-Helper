@@ -140,7 +140,7 @@
                             {% set isDataProtection = req.category == 'data_protection' %}
                             {% if req.category != prevCat %}
                                 <tr class="fa-table__row">
-                                    <th colspan="6" class="fa-table__cell bg-body-secondary py-2">
+                                    <th scope="col" colspan="6" class="fa-table__cell bg-body-secondary py-2">
                                         <i class="fa-icon fa-icon--ui-files me-1"></i>
                                         {{ dimLabels[req.category]|default(req.category|replace({'_': ' '})|capitalize) }}
                                         {% if isDataProtection %}<span class="text-muted fw-normal small ms-2">— {{ 'tisax.import.assess.dp_note'|trans({}, 'tisax_isa') }}</span>{% endif %}

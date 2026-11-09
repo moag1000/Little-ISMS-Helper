@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Repository\SupplierQuestionnaireRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -80,6 +81,7 @@ class SupplierQuestionnaire
     private ?DateTimeImmutable $sentAt = null;
 
     #[ORM\Column(name: 'completed_at', type: 'datetime_immutable', nullable: true)]
+    #[ApiReadOnlyEvidence('supplier submits the questionnaire (S26)')]
     private ?DateTimeImmutable $completedAt = null;
 
     public function __construct()

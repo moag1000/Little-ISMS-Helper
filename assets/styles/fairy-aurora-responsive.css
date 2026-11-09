@@ -320,7 +320,7 @@ html { scroll-padding-top: calc(var(--fa-header-h) + 8px); }
         color: var(--fg-2);
         text-decoration: none;
     }
-    .header-my-day[aria-current="page"] { color: var(--primary); background: var(--primary-tint); }
+    .header-my-day[aria-current="page"] { color: var(--primary-strong); background: var(--primary-tint); }
     .header-my-day .fa-icon { width: 20px; height: 20px; }
     .header-my-day__badge {
         position: absolute;

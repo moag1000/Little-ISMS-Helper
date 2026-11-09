@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Repository\ActionItemRepository;
 use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
@@ -108,6 +109,7 @@ class ActionItem
     private string $status = self::STATUS_OPEN;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('complete action (S26)')]
     private ?DateTimeImmutable $completedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Document::class)]

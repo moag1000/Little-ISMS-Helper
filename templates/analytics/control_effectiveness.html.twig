@@ -105,7 +105,7 @@
                         {% endblock %}
                         {% block card_body %}
                             <div style="height: 250px; position: relative;">
-                                <canvas id="statusDistributionChart"></canvas>
+                                <canvas role="img" aria-label="{{ 'analytics.controls.overview.status_distribution'|trans({}, 'analytics') }}" id="statusDistributionChart"></canvas>
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -120,7 +120,7 @@
                         {% endblock %}
                         {% block card_body %}
                             <div style="height: 250px; position: relative;">
-                                <canvas id="categoryPerformanceChart"></canvas>
+                                <canvas role="img" aria-label="{{ 'analytics.controls.overview.category_performance'|trans({}, 'analytics') }}" id="categoryPerformanceChart"></canvas>
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -371,7 +371,7 @@
                         {% endblock %}
                         {% block card_body %}
                             <div style="height: 250px; position: relative;">
-                                <canvas id="agingDistributionChart"></canvas>
+                                <canvas role="img" aria-label="{{ 'analytics.controls.aging.distribution_chart'|trans({}, 'analytics') }}" id="agingDistributionChart"></canvas>
                             </div>
                         {% endblock %}
                     {% endembed %}

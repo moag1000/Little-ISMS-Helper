@@ -42,13 +42,13 @@
             {% embed '_components/_fa_table.html.twig' with { hover: true } %}
                 {% block table_head %}
                     <tr>
-                        <th class="fa-table__th">{{ 'admin.deadline_type.column.type'|trans({}, 'admin') }}</th>
-                        <th class="fa-table__th">{{ 'admin.deadline_type.column.norm'|trans({}, 'admin') }}</th>
-                        <th class="fa-table__th">{{ 'admin.deadline_type.column.due'|trans({}, 'admin') }}</th>
-                        <th class="fa-table__th">{{ 'admin.deadline_type.column.lead'|trans({}, 'admin') }}</th>
-                        <th class="fa-table__th">{{ 'admin.deadline_type.column.responsible'|trans({}, 'admin') }}</th>
-                        <th class="fa-table__th">{{ 'admin.deadline_type.column.module'|trans({}, 'admin') }}</th>
-                        <th class="fa-table__th">{{ 'admin.deadline_type.column.origin'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.deadline_type.column.type'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.deadline_type.column.norm'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.deadline_type.column.due'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.deadline_type.column.lead'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.deadline_type.column.responsible'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.deadline_type.column.module'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.deadline_type.column.origin'|trans({}, 'admin') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}

@@ -11,9 +11,12 @@
     CSS lives in assets/styles/fairy-aurora-components.css (lines ~347-460 + appended rules).
 
     Blocks overridden here:
-      - form_row          Main wrapper + header + frame + tick marks + hint + errors
+      - form_row          Main wrapper + header + frame + tick marks + hint + errors;
+                          aria-describedby = hint + error ids, aria-invalid on error,
+                          compound fields as role="group" named by their label (W11)
       - form_label        Adds .fa-cyber-input__label class
-      - form_label_required  Renders the red asterisk as .fa-cyber-input__req
+      - form_label_required  Asterisk macro for callers; bootstrap_5_layout does not call it — the
+                             native `required` attribute tells assistive technology
       - form_widget_simple   Adds .fa-cyber-input__field (strips Bootstrap border)
       - textarea_widget      Same as above for <textarea>
       - choice_widget        Routes expanded (radio/checkbox) through Bootstrap, collapsed gets .fa-cyber-input__field
@@ -59,9 +62,19 @@
 
 {# ─── Main row wrapper ───────────────────────────────────────────────────── #}
 {% block form_row %}
-    {%- set widget_attr = {} -%}
-    {%- if help is not empty -%}
-        {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
+    {#- W11: help AND error list describe the field, an error marks it invalid (WCAG 1.3.1, 3.3.1);
+        a compound field (radio/checkbox group, date parts) is a named group. The field's own attr
+        is merged, never replaced. -#}
+    {%- set is_group = compound is defined and compound -%}
+    {%- set described_by = [] -%}
+    {%- if help is not empty -%}{%- set described_by = described_by|merge([id ~ '_help']) -%}{%- endif -%}
+    {%- if errors|length > 0 -%}{%- set described_by = described_by|merge([id ~ '_errors']) -%}{%- endif -%}
+    {%- set field_attr = attr -%}
+    {%- if not is_group and described_by|length > 0 -%}
+        {%- set field_attr = field_attr|merge({'aria-describedby': ((field_attr['aria-describedby'] ?? '') ~ ' ' ~ described_by|join(' '))|trim}) -%}
+    {%- endif -%}
+    {%- if not is_group and errors|length > 0 -%}
+        {%- set field_attr = field_attr|merge({'aria-invalid': 'true'}) -%}
     {%- endif -%}
 
     {%- set row_classes = ['fa-cyber-input'] -%}
@@ -72,10 +85,11 @@
         {%- set row_classes = row_classes|merge(['is-disabled']) -%}
     {%- endif -%}
 
-    <div class="{{ row_classes|join(' ') }}">
+    <div class="{{ row_classes|join(' ') }}"
+        {%- if is_group %} role="group"{% if label is not same as false %} aria-labelledby="{{ id }}_label"{% endif %}{% if described_by|length > 0 %} aria-describedby="{{ described_by|join(' ') }}"{% endif %}{% endif %}>
         {%- if label is not same as false -%}
         <div class="fa-cyber-input__header">
-            {{- form_label(form) -}}
+            {{- form_label(form, null, is_group ? {label_attr: label_attr|merge({id: id ~ '_label'})} : {}) -}}
         </div>
         {%- endif -%}
         <div class="fa-cyber-input__frame">
@@ -83,7 +97,7 @@
             <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
             <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
             <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
-            {{- form_widget(form, widget_attr) -}}
+            {{- form_widget(form, {attr: field_attr}) -}}
         </div>
         {%- if help is not empty -%}
             <small id="{{ id }}_help" class="fa-cyber-input__hint">
@@ -104,7 +118,8 @@
 
 {# ─── Required asterisk ──────────────────────────────────────────────────── #}
 {% block form_label_required %}
-    <span class="fa-cyber-input__req" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+    {#- The star is decoration; the word is read out (a span's aria-label is ignored). -#}
+    <span class="fa-cyber-input__req" aria-hidden="true">*</span><span class="visually-hidden"> {{ 'form.required'|trans({}, 'messages') }}</span>
 {% endblock %}
 
 {# ─── Simple inputs (text, email, password, number, tel, url, …) ─────────── #}
@@ -133,7 +148,7 @@
 {# ─── Error list ─────────────────────────────────────────────────────────── #}
 {% block form_errors %}
     {%- if errors|length > 0 -%}
-        <ul class="fa-cyber-input__errors" role="alert">
+        <ul class="fa-cyber-input__errors" id="{{ id }}_errors" role="alert">
             {%- for error in errors -%}
                 <li>{{ error.message }}</li>
             {%- endfor -%}

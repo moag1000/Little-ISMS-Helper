@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Attribute\ModuleField;
 use DateTimeInterface;
 use DateTimeImmutable;
@@ -338,19 +339,23 @@ class InternalAudit
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'reported_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['audit:read'])]
+    #[ApiReadOnlyEvidence('lifecycle step report (S21, S26)')]
     private ?User $reportedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['audit:read'])]
+    #[ApiReadOnlyEvidence('lifecycle step report (S21, S26)')]
     private ?DateTimeImmutable $reportedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'approved_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['audit:read'])]
+    #[ApiReadOnlyEvidence('lifecycle step approve (S21, S26)')]
     private ?User $approvedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['audit:read'])]
+    #[ApiReadOnlyEvidence('lifecycle step approve (S21, S26)')]
     private ?DateTimeImmutable $approvedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -360,10 +365,12 @@ class InternalAudit
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'closed_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['audit:read'])]
+    #[ApiReadOnlyEvidence('lifecycle step close (S21, S26)')]
     private ?User $closedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['audit:read'])]
+    #[ApiReadOnlyEvidence('lifecycle step close (S21, S26)')]
     private ?DateTimeImmutable $closedAt = null;
 
     // Audit Programme cross-link (ISO 19011 §5.4)

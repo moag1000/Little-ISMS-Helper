@@ -65,12 +65,12 @@
             {% trans_default_domain 'asset_sub_type' %}
             {% block table_head %}
                 <tr>
-                    <th class="fa-table__th">{{ 'asset_sub_type.field.top_type'|trans({}, 'asset_sub_type') }}</th>
-                    <th class="fa-table__th">{{ 'asset_sub_type.field.name'|trans({}, 'asset_sub_type') }}</th>
-                    <th class="fa-table__th">{{ 'asset_sub_type.field.description'|trans({}, 'asset_sub_type') }}</th>
-                    <th class="fa-table__th">{{ 'asset_sub_type.field.source'|trans({}, 'asset_sub_type') }}</th>
-                    <th class="fa-table__th">{{ 'asset_sub_type.field.is_active'|trans({}, 'asset_sub_type') }}</th>
-                    <th class="fa-table__th fa-table__th--actions">{{ 'asset_sub_type.field.actions'|trans({}, 'asset_sub_type') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'asset_sub_type.field.top_type'|trans({}, 'asset_sub_type') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'asset_sub_type.field.name'|trans({}, 'asset_sub_type') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'asset_sub_type.field.description'|trans({}, 'asset_sub_type') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'asset_sub_type.field.source'|trans({}, 'asset_sub_type') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'asset_sub_type.field.is_active'|trans({}, 'asset_sub_type') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'asset_sub_type.field.actions'|trans({}, 'asset_sub_type') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}

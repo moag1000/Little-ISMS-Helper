@@ -97,7 +97,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div style="height: 300px; position: relative;">
-                        <canvas id="criticalityDistributionChart"></canvas>
+                        <canvas role="img" aria-label="{{ 'analytics.assets.chart.criticality_distribution'|trans({}, 'analytics') }}" id="criticalityDistributionChart"></canvas>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -113,7 +113,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div style="height: 300px; position: relative;">
-                        <canvas id="probabilityDistributionChart"></canvas>
+                        <canvas role="img" aria-label="{{ 'analytics.assets.chart.probability_distribution'|trans({}, 'analytics') }}" id="probabilityDistributionChart"></canvas>
                     </div>
                 {% endblock %}
             {% endembed %}

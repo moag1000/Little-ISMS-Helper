@@ -41,18 +41,18 @@
 .fa-icon--48 { font-size: 48px; }
 
 /* ── Semantische Farben (für Status, RAG, etc.) ────────────────── */
-.fa-icon--success     { color: var(--success); }
-.fa-icon--warning     { color: var(--warning); }
-.fa-icon--danger      { color: var(--danger); }
-.fa-icon--info        { color: var(--primary); } /* Kanon H4: Info = Primary, Violett nur ✦/Alva */
+.fa-icon--success     { color: var(--success-strong); }
+.fa-icon--warning     { color: var(--warning-text); }
+.fa-icon--danger      { color: var(--danger-strong); }
+.fa-icon--info        { color: var(--primary-strong); } /* Kanon H4: Info = Primary, Violett nur ✦/Alva */
 .fa-icon--muted       { color: var(--fg-3); }
-.fa-icon--primary     { color: var(--primary); }
+.fa-icon--primary     { color: var(--primary-strong); }
 
 /* RAG-Status — feste Defaults für die Status-* Icons */
-.fa-icon--status-ok        { color: var(--success); }
-.fa-icon--status-warning   { color: var(--warning); }
-.fa-icon--status-critical  { color: var(--danger); }
-.fa-icon--status-info      { color: var(--primary); }
+.fa-icon--status-ok        { color: var(--success-strong); }
+.fa-icon--status-warning   { color: var(--warning-text); }
+.fa-icon--status-critical  { color: var(--danger-strong); }
+.fa-icon--status-info      { color: var(--primary-strong); }
 .fa-icon--status-pending   { color: var(--fg-3); }
 .fa-icon--status-archived  { color: var(--fg-3); }
 

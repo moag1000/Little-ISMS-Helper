@@ -156,6 +156,7 @@ class Nis2RegistrationProfile
     private ?User $backupSecurityContact = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[\App\Attribute\ApiReadOnlyEvidence('report action (NIS-2 Art. 27, S26)')]
     private ?DateTimeImmutable $lastReportedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -170,6 +171,7 @@ class Nis2RegistrationProfile
      * when it first differed from it (null = nothing unreported).
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true)]
+    #[\App\Attribute\ApiReadOnlyEvidence('report action (NIS-2 Art. 27, S26)')]
     private ?string $reportedFingerprint = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]

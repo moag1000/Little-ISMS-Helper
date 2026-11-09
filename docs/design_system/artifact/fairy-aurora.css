@@ -166,9 +166,10 @@ html[data-theme="dark"] {
         --surface-3:   #282d48;
         --border:        #232845;
         --border-strong: #3d4270;
+        --input-border:  #6d74b0;
         --fg:   #e9eaf5;
         --fg-2: #b9bad4;
-        --fg-3: #6d6f99;
+        --fg-3: #9394b3;
         --primary:        #38bdf8;
         --primary-rgb: 56, 189, 248; /* @kind color */
         --primary-strong: #38bdf8;
@@ -423,7 +424,7 @@ html * {
     --bs-form-select-color:         var(--fg);
     --bs-form-select-disabled-bg:   var(--surface-2);
     --bs-form-check-input-bg:       var(--surface);
-    --bs-form-check-input-border:   var(--border-strong);
+    --bs-form-check-input-border:   var(--input-border);
     --bs-focus-ring-color:          var(--primary-glow);
     --bs-input-btn-focus-box-shadow: 0 0 0 3px var(--primary-glow);
 }

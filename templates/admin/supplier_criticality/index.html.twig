@@ -38,7 +38,7 @@
                             <th scope="col" class="fa-table__th">{{ 'supplier_criticality.field.color'|trans({}, 'supplier_criticality') }}</th>
                             <th scope="col" class="fa-table__th">{{ 'supplier_criticality.field.is_default'|trans({}, 'supplier_criticality') }}</th>
                             <th scope="col" class="fa-table__th">{{ 'supplier_criticality.field.is_active'|trans({}, 'supplier_criticality') }}</th>
-                            <th class="fa-table__th fa-table__th--actions"></th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions"></th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -70,7 +70,7 @@
                                 {% endif %}
                             </td>
                             <td class="fa-table__cell fa-table__cell--actions">
-                                <a href="{{ path('app_admin_supplier_criticality_edit', {id: level.id}) }}"
+                                <a aria-label="{{ 'common.edit'|trans({}, 'messages') }}" href="{{ path('app_admin_supplier_criticality_edit', {id: level.id}) }}"
                                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                 </a>
@@ -82,7 +82,7 @@
                                       data-ui-actions-tone-param="danger">
                                     <input type="hidden" name="_token"
                                            value="{{ csrf_token('delete_supplier_criticality_' ~ level.id) }}">
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
+                                    <button aria-label="{{ 'common.delete'|trans({}, 'messages') }}" type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                     </button>
                                 </form>

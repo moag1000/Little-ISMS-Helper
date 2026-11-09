@@ -50,9 +50,9 @@
                             {% block table_head %}
                                 {% trans_default_domain 'admin' %}
                                 <tr>
-                                    <th class="fa-table__th">{{ 'admin.workflows.col.name'|trans }}</th>
-                                    <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.steps'|trans }}</th>
-                                    <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.workflows.col.name'|trans }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.steps'|trans }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
@@ -109,8 +109,8 @@
                             {% block table_head %}
                                 {% trans_default_domain 'admin' %}
                                 <tr>
-                                    <th class="fa-table__th">{{ 'admin.workflows.col.name'|trans }}</th>
-                                    <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.workflows.col.name'|trans }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}

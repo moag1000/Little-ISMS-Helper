@@ -8,7 +8,8 @@
  #
  # WCAG 2.2 AA Audit:
  #   - role="menubar" aria-orientation="vertical" on <nav>
- #   - role="menuitem" + aria-haspopup="menu" on L1 trigger buttons
+ #   - role="menuitem" + aria-haspopup="dialog" on L1 trigger buttons (the flyout is a panel with heading,
+ #     close button and link sections, not a menu: axe aria-required-children, W11)
  #   - Focus-visible rings bumped to 3px with glow-shadow (see CSS)
  # Live-Badges:
  #   - badge spans use data-controller="live-badge" for polling /api/live-counts
@@ -175,7 +176,7 @@
             data-mega-menu-target="trigger"
             data-category="cockpit"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-cockpit">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--persona" aria-hidden="true"></i></span>
@@ -204,7 +205,7 @@
             data-mega-menu-target="trigger"
             data-category="dashboard"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-dashboard">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i></span>
@@ -220,7 +221,7 @@
             data-mega-menu-target="trigger"
             data-category="isms-core"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-isms-core">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
@@ -237,7 +238,7 @@
             data-mega-menu-target="trigger"
             data-category="assets-risk"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-assets-risk">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i></span>
@@ -254,7 +255,7 @@
             data-mega-menu-target="trigger"
             data-category="bcm"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-bcm">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i></span>
@@ -271,7 +272,7 @@
             data-mega-menu-target="trigger"
             data-category="privacy"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-privacy">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--persona-dpo" aria-hidden="true"></i></span>
@@ -288,7 +289,7 @@
             data-mega-menu-target="trigger"
             data-category="operations"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-operations">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--workspace" aria-hidden="true"></i></span>
@@ -305,7 +306,7 @@
             data-mega-menu-target="trigger"
             data-category="compliance"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-compliance">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--checklist-stamped" aria-hidden="true"></i></span>
@@ -322,7 +323,7 @@
             data-mega-menu-target="trigger"
             data-category="admin"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-admin">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--nav-gear" aria-hidden="true"></i></span>
@@ -338,7 +339,7 @@
             data-mega-menu-target="trigger"
             data-category="help"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="flyout-help">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--glossary" aria-hidden="true"></i></span>

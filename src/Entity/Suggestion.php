@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Enum\SuggestionOrigin;
 use App\Enum\SuggestionStatus;
 use App\Repository\SuggestionRepository;
@@ -81,10 +82,12 @@ class Suggestion
     private DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('suggestion queue accept/reject (S26)')]
     private ?DateTimeImmutable $decidedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('suggestion queue accept/reject (S26)')]
     private ?User $decidedBy = null;
 
     /** Comment on acceptance, reason on rejection, cause on supersession. */

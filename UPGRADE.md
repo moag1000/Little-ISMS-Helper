@@ -158,6 +158,13 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   prüfbar, ältere nur in ihrer Verkettung; die Prüfung nennt ihre Anzahl. Jede Organisation hat jetzt ihre eigene
   Kette, die Prüfung läuft als Hintergrundjob mit Fortschrittsseite. Nichts zu tun.
 
+- **Kontraste und Barrierefreiheit (W11):** Gedämpfter Text, Erfolgs- und Warntext sowie Status-Pills sind
+  etwas dunkler (hell) bzw. heller (dunkel), Formularfelder haben einen kräftigeren Rahmen — alles erreicht jetzt
+  WCAG AA. Screenreader lesen Fehlermeldungen am Feld, Diagramm-Titel und Icon-Schaltflächen vor; Abschnitte langer
+  Formulare und Prüfpunkte der Audit-Checkliste klappen auch per Tastatur (Enter/Leertaste) auf. Die Glocke nennt die Zahl
+  neuer Meldungen, Navigations-Flyouts und Glocken-Panel gelten als Dialog statt Menü, Fortschrittsbalken haben einen Namen.
+  Keine Aktion nötig.
+  Nebenbei behoben: Details der Audit-Checkliste und der Framework-Anforderungen ließen sich gar nicht aufklappen.
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
   `auto_action` auf `ROLE_USER` — jede angemeldete Person hätte eine Richtlinie abschließend freigeben können.
   Er ist jetzt ein Benachrichtigungsschritt (läuft von selbst durch, informiert die Manager). Bestehende Zeilen
@@ -232,6 +239,16 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Abmelden** leert Browser-Cache und Speicher der Seite (`Clear-Site-Data`); der Service Worker
   speichert nur noch Build-Dateien, keine Seiten, Berichte oder API-Antworten, und löscht beim ersten
   Laden die alten Caches. Offline erscheint nur noch die Offline-Seite.
+- **Organisations-Restore ändert keine Nachweise mehr (S26):** Eine Wiederherstellung für eine Organisation
+  (Org-Admin, oder Super-Admin mit gewählter Organisation) übernimmt aus der Datei keine Nachweis-Datensätze
+  (Audit-Log, Leitungsentscheidungen, Audit-Freeze, SoA-Abbilder, Richtlinien-Kenntnisnahmen,
+  Vier-Augen-Anfragen, Freigabeläufe, Dokumentversionen …) und löscht sie auch mit „Vor Wiederherstellung
+  leeren“ nicht. Freigabe-, Melde- und Abschlussstempel (z. B. Risikoakzeptanz, Audit berichtet/freigegeben)
+  und der Lifecycle-Status bestehender Datensätze behalten ihren Wert; Datensätze, die der Restore neu anlegt,
+  beginnen ohne Nachweis im Anfangsstatus. Das Restore-Ergebnis nennt, was nicht übernommen wurde. Eine
+  vollständige Rückkehr samt Nachweisen (etwa nach Datenverlust) ist ein Instanz-Restore durch den Super-Admin
+  ohne gewählte Organisation — unverändert. Rund 40 weitere Schritt-Felder sind jetzt als Nachweis markiert
+  und kommen damit auch nicht mehr über den Massenimport. Kein Handlungsbedarf.
 - **Dateipfade aus Sicherungen (S19):** Eine Wiederherstellung übernimmt einen Logo-, Avatar-, PDF-
   oder Dokumentpfad nur in der erwarteten Form (`uploads/tenants/<datei>`, `uploads/users/<datei>`,
   `/uploads/documents/<datei>`, nur Dateiname); eine Organisationssicherung zusätzlich keinen Pfad, den

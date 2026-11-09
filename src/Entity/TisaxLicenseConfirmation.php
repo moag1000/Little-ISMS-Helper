@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use App\Repository\TisaxLicenseConfirmationRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -19,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  * can correlate the disclaimer step with the subsequent upload step
  * without storing the raw session credential.
  */
+#[EvidenceRecord('TISAX import wizard step 0 (ENX licence acceptance)')]
 #[ORM\Entity(repositoryClass: TisaxLicenseConfirmationRepository::class)]
 #[ORM\Table(name: 'tisax_license_confirmation')]
 #[ORM\Index(name: 'idx_tlc_tenant', columns: ['tenant_id'])]

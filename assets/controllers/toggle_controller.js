@@ -23,15 +23,24 @@ export default class extends Controller {
     }
 
     // Toggle content (for expandable sections)
-    toggleContent() {
-        if (this.hasContentTarget) {
-            const isHidden = this.contentTarget.style.display === 'none';
-            this.contentTarget.style.display = isHidden ? 'block' : 'none';
+    // Click, Enter or Space on the header (role="button", W11). The content starts
+    // hidden with `d-none`; the old inline-style check never showed it.
+    toggleContent(event) {
+        if (event?.type === 'keydown') {
+            event.preventDefault();
+        }
+        if (!this.hasContentTarget) {
+            return;
+        }
+        const content = this.contentTarget;
+        const isHidden = content.classList.contains('d-none') || content.style.display === 'none';
+        content.classList.toggle('d-none', !isHidden);
+        content.style.display = '';
+        event?.currentTarget?.setAttribute?.('aria-expanded', isHidden ? 'true' : 'false');
 
-            // Rotate expand icon if present
-            if (this.hasExpandIconTarget) {
-                this.element.classList.toggle('expanded');
-            }
+        // Rotate expand icon if present
+        if (this.hasExpandIconTarget) {
+            this.element.classList.toggle('expanded');
         }
     }
 

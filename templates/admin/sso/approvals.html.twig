@@ -26,12 +26,12 @@
             {% block table_head %}
                 {% trans_default_domain 'sso' %}
                 <tr>
-                    <th class="fa-table__th fa-table__th--sortable" data-sort-key="email" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.approvals.col.email'|trans }}</th>
-                    <th class="fa-table__th">{{ 'sso.approvals.col.provider'|trans }}</th>
-                    <th class="fa-table__th">{{ 'sso.approvals.col.tenant'|trans }}</th>
-                    <th class="fa-table__th fa-table__th--sortable" data-sort-key="requested" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.approvals.col.requested_at'|trans }}</th>
-                    <th class="fa-table__th">{{ 'sso.approvals.col.claims'|trans }}</th>
-                    <th class="fa-table__th fa-table__th--actions">{{ 'sso.approvals.col.actions'|trans }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="email" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.approvals.col.email'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'sso.approvals.col.provider'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'sso.approvals.col.tenant'|trans }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="requested" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.approvals.col.requested_at'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'sso.approvals.col.claims'|trans }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'sso.approvals.col.actions'|trans }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}

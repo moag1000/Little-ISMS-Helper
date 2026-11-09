@@ -243,7 +243,7 @@ body {
 
 /* Icon sparkle - elegant pulse, not hyperactive */
 .fairy-icon-sparkle {
-    color: var(--accent);
+    color: var(--accent-strong);
     display: inline-block;
     animation: fairy-pulse 2.5s ease-in-out infinite;
 }
@@ -277,7 +277,7 @@ body {
     align-items: center;
     gap: 0.375rem;
     font-size: 0.75rem;
-    color: var(--accent);
+    color: var(--accent-strong);
     margin-top: 0.25rem;
     opacity: 0.85;
 }
@@ -417,7 +417,7 @@ body {
     transform: translate(-50%, -50%);
     font-size: 8rem;
     opacity: 0.035;
-    color: var(--accent);
+    color: var(--accent-strong);
     pointer-events: none;
     z-index: 0; /* local stacking-context */
 }
@@ -686,7 +686,7 @@ body {
 }
 
 .app-sidebar nav:not(#main-navigation) a:hover i {
-    color: var(--primary);
+    color: var(--primary-strong);
     transform: scale(1.12) rotate(-5deg);
     filter: drop-shadow(0 0 8px var(--primary-glow));
 }
@@ -716,7 +716,7 @@ body {
 }
 
 .app-sidebar nav:not(#main-navigation) a.active i {
-    color: var(--primary);
+    color: var(--primary-strong);
     transform: scale(1.2);
     filter: drop-shadow(0 0 10px var(--primary-glow));
 }
@@ -898,7 +898,7 @@ h3 {
 .card-header h4 i,
 .card-header h3 i {
     margin-right: 0.5rem;
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 /* Card Actions (header buttons) */
@@ -1325,13 +1325,13 @@ tbody td {
 
 /* Required Field Indicator */
 .form-label .required {
-    color: var(--danger);
+    color: var(--danger-strong);
     margin-left: 0.25rem;
     font-weight: 700;
 }
 
 [data-theme="dark"] .form-label .required {
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 /* Required Field Legend */
@@ -1346,7 +1346,7 @@ tbody td {
 }
 
 .form-required-legend .required {
-    color: var(--danger);
+    color: var(--danger-strong);
     font-weight: 700;
     margin-right: 0.25rem;
 }
@@ -1433,7 +1433,7 @@ fieldset.nis2-fieldset legend.nis2-legend {
     display: none;
     margin-top: 0.5rem;
     font-size: 0.875rem;
-    color: var(--danger);
+    color: var(--danger-strong);
     font-weight: 500;
     line-height: 1.4;
     position: relative;
@@ -1694,7 +1694,7 @@ textarea.form-control {
 /* Detail Item with Data Reuse indicator */
 .detail-item.fairy-data-reuse .label::after {
     content: ' ✦';
-    color: var(--accent);
+    color: var(--accent-strong);
     font-size: 0.75rem;
 }
 
@@ -1786,12 +1786,12 @@ textarea.form-control {
 .user-dropdown-item i {
     width: 1.25rem;
     text-align: center;
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 .user-dropdown-item:hover {
     background: var(--primary-tint);
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 /* Footer with Dark Mode Support */
@@ -1838,12 +1838,12 @@ textarea.form-control {
 }
 
 .footer a {
-    color: var(--primary);
+    color: var(--primary-strong);
     transition: all var(--t-base) var(--ease-out);
 }
 
 .footer a:hover {
-    color: var(--accent);
+    color: var(--accent-strong);
     text-shadow: 0 0 8px var(--primary-glow);
 }
 
@@ -2076,11 +2076,11 @@ input.is-valid:focus {
 /* Dark mode adjustments */
 [data-theme="dark"] .invalid-feedback,
 [data-theme="dark"] .form-error {
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 [data-theme="dark"] .valid-feedback {
-    color: var(--success);
+    color: var(--success-strong);
 }
 
 [data-theme="dark"] .form-control.is-invalid,
@@ -2400,7 +2400,7 @@ table.table-borderless td {
 
 /* Required field asterisk */
 .required {
-    color: var(--danger);
+    color: var(--danger-strong);
     margin-left: 0.25rem;
     font-weight: 700;
     font-size: 1.1em;
@@ -2417,7 +2417,7 @@ table.table-borderless td {
 /* Dark mode - ensure asterisk is visible */
 [data-theme="dark"] .required,
 [data-bs-theme="dark"] .required {
-    color: var(--danger); /* Lighter red for better contrast in dark mode */
+    color: var(--danger-strong); /* Lighter red for better contrast in dark mode */
 }
 
 /* Accessibility: Screen reader text */
@@ -2502,16 +2502,16 @@ table.table-borderless td {
 .icon-xl { font-size: 2rem; }
 
 /* Semantic icon colors - use these for consistent meaning */
-.icon-success { color: var(--success); }
-.icon-danger { color: var(--danger); }
-.icon-warning { color: var(--warning); }
-.icon-info { color: var(--primary); }
+.icon-success { color: var(--success-strong); }
+.icon-danger { color: var(--danger-strong); }
+.icon-warning { color: var(--warning-text); }
+.icon-info { color: var(--primary-strong); }
 .icon-muted { color: var(--fg-3); }
 
 /* Action icon colors (for buttons/links) */
-.icon-edit { color: var(--primary); }
-.icon-delete { color: var(--danger); }
-.icon-view { color: var(--primary); }
+.icon-edit { color: var(--primary-strong); }
+.icon-delete { color: var(--danger-strong); }
+.icon-view { color: var(--primary-strong); }
 
 /* Icons in buttons should have consistent spacing */
 .btn .bi:not(:only-child) {
@@ -2762,7 +2762,7 @@ table.table-borderless td {
 }
 
 .modal:not(.fade) .modal-close:hover {
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 .notification {
@@ -2833,7 +2833,7 @@ table.table-borderless td {
 .filter-control input,
 .filter-control select {
     padding: var(--spacing-sm);
-    border: 1px solid var(--border);
+    border: 1px solid var(--input-border);
     border-radius: var(--r-sm);
     font-size: 1rem;
 }
@@ -2859,7 +2859,7 @@ table.table-borderless td {
 [data-theme="dark"] .filter-control select {
     background: var(--bg);
     color: var(--fg);
-    border-color: var(--border);
+    border-color: var(--input-border);
 }
 
 /* Collapsible Section */
@@ -3232,7 +3232,7 @@ table.table-borderless td {
 }
 
 .sla-timeline-compact.sla-overdue .sla-info-mini {
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 /* Print-friendly styles */
@@ -3336,7 +3336,7 @@ table.table-borderless td {
 }
 
 .breadcrumb-item a:hover {
-    color: var(--primary);
+    color: var(--primary-strong);
     text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
@@ -3428,22 +3428,22 @@ table.table-borderless td {
 }
 
 .kpi-card-success .kpi-card-icon {
-    color: var(--success);
+    color: var(--success-strong);
     background: var(--success-tint);
 }
 
 .kpi-card-warning .kpi-card-icon {
-    color: var(--warning);
+    color: var(--warning-text);
     background: var(--warning-tint);
 }
 
 .kpi-card-danger .kpi-card-icon {
-    color: var(--danger);
+    color: var(--danger-strong);
     background: var(--danger-tint);
 }
 
 .kpi-card-info .kpi-card-icon {
-    color: var(--primary);
+    color: var(--primary-strong);
     background: var(--primary-tint);
 }
 
@@ -3495,11 +3495,11 @@ table.table-borderless td {
 }
 
 .kpi-card-trend.trend-up {
-    color: var(--success);
+    color: var(--success-strong);
 }
 
 .kpi-card-trend.trend-down {
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 .kpi-card-link {
@@ -3608,17 +3608,17 @@ table.table-borderless td {
 
 .fs-15-warning {
     font-size: 1.5rem;
-    color: var(--warning);
+    color: var(--warning-text);
 }
 
 .fs-15-info {
     font-size: 1.5rem;
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 .fs-15-danger {
     font-size: 1.5rem;
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 /* .fs-2 removed - already matches Bootstrap 5 .fs-2 (2rem) */
@@ -3941,7 +3941,7 @@ table.table-borderless td {
 }
 
 .related-list-item a:hover {
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 .related-list-item a::before {
@@ -3954,7 +3954,7 @@ table.table-borderless td {
     display: inline-flex;
     align-items: center;
     font-size: 13px;
-    color: var(--primary);
+    color: var(--primary-strong);
     text-decoration: none;
     font-weight: 500;
     margin-top: var(--spacing-sm);
@@ -4033,36 +4033,36 @@ table.table-borderless td {
 /* Status icon styles - using theme colors */
 .audit-icon-planned {
     font-size: 2rem;
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 .audit-icon-in-progress {
     font-size: 2rem;
-    color: var(--warning);
+    color: var(--warning-text);
 }
 
 .audit-icon-completed {
     font-size: 2rem;
-    color: var(--success);
+    color: var(--success-strong);
 }
 
 /* Status count styles - using theme colors */
 .audit-count-planned {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 .audit-count-in-progress {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--warning);
+    color: var(--warning-text);
 }
 
 .audit-count-completed {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--success);
+    color: var(--success-strong);
 }
 
 /* ====================
@@ -4268,7 +4268,7 @@ table.table-borderless td {
 .fs-2-fw-bold-success {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--success);
+    color: var(--success-strong);
 }
 
 .fs-095-opacity-09 {
@@ -4329,13 +4329,13 @@ table.table-borderless td {
 .fs-2-fw-bold-warning {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--warning);
+    color: var(--warning-text);
 }
 
 .fs-2-fw-bold-secondary {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 .fs-2-primary-center-margin {
@@ -4643,17 +4643,17 @@ table.table-borderless td {
 }
 
 .h-info-no-mt {
-    color: var(--primary);
+    color: var(--primary-strong);
     margin-top: 0;
 }
 
 .h-success-no-mt {
-    color: var(--success);
+    color: var(--success-strong);
     margin-top: 0;
 }
 
 .h-warning-no-mt {
-    color: var(--warning);
+    color: var(--warning-text);
     margin-top: 0;
 }
 
@@ -4867,7 +4867,7 @@ table.table-borderless td {
 }
 
 .text-danger-color {
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 /* BCM Index Utilities */
@@ -4908,11 +4908,11 @@ table.table-borderless td {
 }
 
 .stat-value-success {
-    color: var(--success);
+    color: var(--success-strong);
 }
 
 .stat-value-danger {
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 .p-xl {
@@ -5381,27 +5381,27 @@ textarea.is-invalid {
 
 .activity-icon.icon-primary {
     background: var(--primary-tint);
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 .activity-icon.icon-success {
     background: var(--success-glow);
-    color: var(--success);
+    color: var(--success-strong);
 }
 
 .activity-icon.icon-warning {
     background: var(--warning-glow);
-    color: var(--warning);
+    color: var(--warning-text);
 }
 
 .activity-icon.icon-danger {
     background: var(--danger-glow);
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 .activity-icon.icon-info {
     background: var(--primary-tint);
-    color: var(--primary);
+    color: var(--primary-strong);
 }
 
 .activity-content {
@@ -5676,7 +5676,7 @@ textarea.is-invalid {
 .cia-value {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--accent-strong);
 }
 
 .cia-label {
@@ -5800,7 +5800,7 @@ textarea.is-invalid {
 
 .filter-preset-clear {
     border-color: var(--danger);
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
 .filter-preset-clear:hover {
@@ -5933,7 +5933,7 @@ textarea.is-invalid {
 
 .notification-bell-btn-header:hover {
     border-color: var(--primary);
-    color: var(--primary);
+    color: var(--primary-strong);
     background: var(--primary-tint);
 }
 
@@ -6262,7 +6262,7 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-bs-theme="dark"] .info-box {
     background-color: var(--primary-tint) !important;
     border-color: rgb(var(--primary-rgb), 0.5) !important;
-    color: var(--primary) !important;
+    color: var(--primary-strong) !important;
 }
 
 [data-theme="dark"] .warning-box,
@@ -6385,7 +6385,7 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-theme="dark"] .card-header i.bi,
 [data-bs-theme="dark"] .card-header .bi,
 [data-bs-theme="dark"] .card-header i.bi {
-    color: var(--primary) !important;
+    color: var(--primary-strong) !important;
     text-shadow: none;
     filter: none;
 }
@@ -6393,31 +6393,31 @@ html[data-bs-theme="dark"] .alert h6 {
 /* Icon glow for text-* utility classes */
 [data-theme="dark"] .text-primary .bi,
 [data-bs-theme="dark"] .text-primary .bi {
-    color: var(--primary) !important;
+    color: var(--primary-strong) !important;
     text-shadow: none;
 }
 
 [data-theme="dark"] .text-success .bi,
 [data-bs-theme="dark"] .text-success .bi {
-    color: var(--success) !important;
+    color: var(--success-strong) !important;
     text-shadow: none;
 }
 
 [data-theme="dark"] .text-danger .bi,
 [data-bs-theme="dark"] .text-danger .bi {
-    color: var(--danger) !important;
+    color: var(--danger-strong) !important;
     text-shadow: none;
 }
 
 [data-theme="dark"] .text-warning .bi,
 [data-bs-theme="dark"] .text-warning .bi {
-    color: var(--warning) !important;
+    color: var(--warning-text) !important;
     text-shadow: none;
 }
 
 [data-theme="dark"] .text-info .bi,
 [data-bs-theme="dark"] .text-info .bi {
-    color: var(--primary) !important;
+    color: var(--primary-strong) !important;
     text-shadow: none;
 }
 
@@ -6430,17 +6430,17 @@ html[data-bs-theme="dark"] .alert h6 {
 /* Special glow classes */
 [data-theme="dark"] .bi-glow-cyan,
 [data-bs-theme="dark"] .bi-glow-cyan {
-    color: var(--primary) !important;
+    color: var(--primary-strong) !important;
 }
 
 [data-theme="dark"] .bi-glow-pink,
 [data-bs-theme="dark"] .bi-glow-pink {
-    color: var(--accent) !important;
+    color: var(--accent-strong) !important;
 }
 
 [data-theme="dark"] .bi-glow-purple,
 [data-bs-theme="dark"] .bi-glow-purple {
-    color: var(--accent) !important;
+    color: var(--accent-strong) !important;
 }
 
 /* Hover glow intensification */

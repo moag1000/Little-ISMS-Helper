@@ -31,7 +31,7 @@ export default class extends Controller {
             primary:    t['--primary'],
             accent:     t['--accent'],
             text:       t['--fg']    || (isDark ? '#e9eaf5' : '#1e1b4b'),
-            textMuted:  t['--fg-3']  || (isDark ? '#6d6f99' : '#6d6b92'),
+            textMuted:  t['--fg-3']  || (isDark ? '#9394b3' : '#656388'),
             gridColor:  t['--border']|| (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)')
         };
     }

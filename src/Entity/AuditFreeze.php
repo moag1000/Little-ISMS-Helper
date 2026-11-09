@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use App\Repository\AuditFreezeRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -24,6 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
  * By-design immutable: there is no update / delete endpoint. A correction
  * produces a new freeze with a new name.
  */
+#[EvidenceRecord('audit freeze action (Stichtag snapshot + PDF)')]
 #[ORM\Entity(repositoryClass: AuditFreezeRepository::class)]
 #[ORM\Table(name: 'audit_freeze')]
 #[ORM\UniqueConstraint(
