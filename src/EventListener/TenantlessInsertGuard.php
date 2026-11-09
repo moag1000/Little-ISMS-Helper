@@ -73,7 +73,7 @@ final class TenantlessInsertGuard
         $this->logger->warning($message, ['classes' => array_values(array_unique($missing))]);
     }
 
-    /** @param \ReflectionClass<object> $class */
+    /** @param \ReflectionClass<covariant object> $class */
     public static function isTenantOwned(\ReflectionClass $class, bool $hasTenantAssociation): bool
     {
         return $hasTenantAssociation
