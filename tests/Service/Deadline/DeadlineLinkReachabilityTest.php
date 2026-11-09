@@ -125,6 +125,8 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
         'tia_review' => 'app_tia_complete_review',
         'risk_review' => 'app_risk_review_confirm',
         'control_review' => 'app_soa_review_confirm',
+        // T3: the review reminder reaches the entry's owner; confirming used to need ROLE_MANAGER.
+        'register_review' => 'app_register_entry_reviewed',
     ];
 
     /**
@@ -135,10 +137,18 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
      *
      * @var array<string, string>
      */
-    private const array NO_MAIN_ACTION = [];
+    private const array NO_MAIN_ACTION = [
+        'dpia' => 'deadline of the assessment itself, settled by finishing it; its periodic review is dpia_review',
+        'document_review' => 'settled by the document lifecycle (re-approval sets the next review date); the '
+            . 'effectiveness review on the page is a separate auditor step',
+        'competence_gap' => 'a gap closes with the training or qualification of the person, not with a register review',
+    ];
 
-    /** POST routes of the link's controller that settle a review duty (name or path). */
-    private const string REVIEW_ACTION_ROUTE = '/review|confirm/i';
+    /**
+     * POST routes of the link's controller that settle a review duty, by the route NAME's last part (the path
+     * and the controller prefix carry "review" for every management-review or access-review route).
+     */
+    private const string REVIEW_ACTION_ROUTE = '/(?:^|_)(?:reviewed|review_confirm|confirm_review|complete_review|mark_reviewed)$/';
 
     /** Routes a refused or redirected-away person lands on. */
     private const string REFUSED_LANDING = '/^(app_dashboard|app_home|app_login|app_mfa_|mfa_|app_setup|app_persona_dashboard)/';
@@ -334,7 +344,7 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
             if (!str_starts_with((string) $route->getDefault('_controller'), $class . '::')) {
                 continue;
             }
-            if (preg_match(self::REVIEW_ACTION_ROUTE, $name . ' ' . $route->getPath()) === 1) {
+            if (preg_match(self::REVIEW_ACTION_ROUTE, (string) $name) === 1) {
                 $found[] = $name;
             }
         }

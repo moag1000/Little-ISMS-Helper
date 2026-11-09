@@ -126,7 +126,10 @@ final class CrossTenantApiContractTest extends WebTestCase
             $names = self::getContainer()->get('api_platform.metadata.resource.name_collection_factory');
             $classes = [];
             foreach ($names->create() as $class) {
-                $classes[] = $class;
+                // API Platform serves its own error/validation resources too; the contract is about the app's
+                if (str_starts_with($class, 'App\\')) {
+                    $classes[] = $class;
+                }
             }
         } finally {
             self::ensureKernelShutdown();
@@ -179,8 +182,10 @@ final class CrossTenantApiContractTest extends WebTestCase
     #[Test]
     public function everyApiResourceIsAnEntityOrSaysWhyNot(): void
     {
+        $resources = self::apiResources();
+        // isTransient() asks the mapping driver; hasMetadataFor() only knew classes already loaded
         $metadata = $this->em()->getMetadataFactory();
-        $notEntities = array_values(array_filter(self::apiResources(), static fn (string $c): bool => !$metadata->hasMetadataFor($c)));
+        $notEntities = array_values(array_filter($resources, static fn (string $c): bool => $metadata->isTransient($c)));
 
         self::assertSame(
             [],

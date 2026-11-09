@@ -120,6 +120,9 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   richtet die Migration `Version20261109170000` (Quick-Fix „Ausstehende Migrationen anwenden“). Sieben Bericht-
   und PDF-Routen (SoA-Vorschau, Konzern-One-Pager, Sicherheits- und Berichtsübersicht) tragen jetzt ein
   ausdrückliches `ROLE_USER`; für Personen ändert sich nichts.
+- **Register: „Überprüft“ auch für die zuständige Person (T3):** Wen die Prüf-Erinnerung eines Registereintrags
+  erreicht (Eigner, Rückfallrolle), bestätigt die Prüfung jetzt selbst; bisher brauchte die Schaltfläche
+  `ROLE_MANAGER`.
 - **Statusschritte prüfen die Rollen überall (S21):** Jeder Statuswechsel prüft die Rollen aus der
   Workflow-Definition (und die strengeren Overrides der Organisation) selbst, egal ob er über die
   Lebenszyklus-Schaltfläche, eine Fachseite, REST, den Assistenten (MCP), einen Job oder einen
