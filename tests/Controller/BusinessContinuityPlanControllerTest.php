@@ -439,7 +439,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="business_continuity_plan"]')->form([
             'business_continuity_plan[name]' => 'Updated Test BC Plan',
             'business_continuity_plan[description]' => 'Updated description',
-            'business_continuity_plan[planOwnerUser]' => (string) $this->testUser->getId(),
+            'business_continuity_plan[planOwnerUser]' => (string) $this->adminUser->getId(),
             'business_continuity_plan[rto]' => '4',
             'business_continuity_plan[rpo]' => '1',
             'business_continuity_plan[version]' => '1.0',

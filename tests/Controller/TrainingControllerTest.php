@@ -334,7 +334,7 @@ class TrainingControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="training"]')->form([
             'training[title]' => 'Updated Test Training',
             'training[description]' => 'Updated description',
-            'training[trainerUser]' => (string) $this->testUser->getId(),
+            'training[trainerUser]' => (string) $this->adminUser->getId(),
         ]);
 
         $this->client->submit($form);
