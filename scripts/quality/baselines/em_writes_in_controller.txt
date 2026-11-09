@@ -99,7 +99,7 @@ src/Controller/AssetController.php:476
 src/Controller/AssetController.php:548
 src/Controller/AssetController.php:549
 src/Controller/AssetController.php:753
-src/Controller/Audit/AuditChecklistController.php:131
+src/Controller/Audit/AuditChecklistController.php:139
 src/Controller/AuditController.php:98
 src/Controller/AuditController.php:99
 src/Controller/AuditController.php:211
@@ -265,11 +265,11 @@ src/Controller/PatchController.php:121
 src/Controller/PatchController.php:178
 src/Controller/PatchController.php:223
 src/Controller/PatchController.php:224
-src/Controller/PersonController.php:87
-src/Controller/PersonController.php:88
-src/Controller/PersonController.php:147
-src/Controller/PersonController.php:167
-src/Controller/PersonController.php:168
+src/Controller/PersonController.php:89
+src/Controller/PersonController.php:90
+src/Controller/PersonController.php:154
+src/Controller/PersonController.php:191
+src/Controller/PersonController.php:192
 src/Controller/PlanningAdminController.php:168
 src/Controller/PlanningSettingsController.php:109
 src/Controller/PlanningSettingsController.php:111

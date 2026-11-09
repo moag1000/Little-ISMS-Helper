@@ -263,6 +263,18 @@ anyway accept "role OR responsible":
 management named on a task marks it done); the voter has checked the
 assignment.
 
+**Nobody takes responsibility for themselves (S20).** Because responsibility is
+a right, a person without `ROLE_MANAGER` cannot make themselves responsible for
+an existing record: `App\EventListener\SelfAssignmentGuard` (onFlush, so web
+form, REST, MCP `save_record` and imports alike) refuses a change of a
+User/Person reference after which the resolver names them and before which it
+did not (`App\Service\Responsibility\SelfAssignmentCheck`; the web form shows
+it as an error via `SelfAssignmentFormExtension`). The current holder may hand
+the record on, creating a record with oneself as owner stays allowed, and
+`Person.linkedUser` — the account a Person acts through — is set only by a
+manager. `tests/Contract/ResponsibleSlotWriteContractTest` finds the slots
+itself from the deadline sources; a new slot needs no list entry.
+
 **Permanent check:** `tests/Service/Deadline/DeadlineLinkReachabilityTest.php`
 runs end to end: for every source it creates an organisation
 with only the source's modules (`requiredModule()`, `module:` in

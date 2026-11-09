@@ -27,7 +27,9 @@ Die erste Quelle mit Daten gilt:
 ### Das Audit-Urteil deckelt
 
 Über allen Quellen steht das Urteil aus der Audit-Checkliste (ISO 27001 9.2): Das neueste
-Urteil der letzten zwölf Monate begrenzt den Wert. „Nicht konform“ setzt die Anforderung auf
+Urteil der letzten zwölf Monate aus einem berichteten Audit (Status „berichtet“, „freigegeben“ oder
+„abgeschlossen“) begrenzt den Wert; solange das Audit läuft, wirkt es noch nicht. Urteile speichern
+nur Auditoren, Manager sowie Leitauditor und Auditteam des Audits. „Nicht konform“ setzt die Anforderung auf
 0 %, „teilweise“ auf den Konformitätsgrad der Zeile (ohne Angabe 50 %), „konform“ lässt den
 Wert, wie er ist. Ist die Anforderung zu 100 % erfüllt und das Audit sagt „konform“, steht sie
 auf **Verifiziert**. Ohne andere Quelle gilt das Urteil allein (Quelle „Aus Audit“). „Nicht
@@ -94,7 +96,7 @@ Altbestand, für den eine Regel rechnet, wieder der Regel.
 
 - Sofort, wenn ein Control gespeichert wird (Status, Prozent, Anwendbarkeit, Begründung) oder wenn sich die verknüpften Controls einer Anforderung ändern. Gemappte Normen ziehen in derselben Anfrage nach.
 - Sofort, wenn ein Registereintrag, eine Leitungsentscheidung, eine Schulung, eine Schulungsteilnahme, ein Vorfall, eine Datenpanne, ein Lieferant, ein BC-Plan, ein Änderungsantrag, eine Bedrohungsmeldung, ein internes Audit oder ein Administratorkonto (Rollen, Aktivierung, Anmeldeart, MFA) gespeichert wird: Die Klauseln, die diese Datensätze lesen, rechnen neu (`RecordChangeCollector`). Fristtreue (ISO 27001 8.1, 9.1) rechnet neu, sobald ein Datensatz einer Fristenquelle angelegt, gelöscht oder in Datum oder Status geändert wird.
-- Sofort, wenn in der Audit-Checkliste ein Urteil gespeichert wird: die geprüfte Anforderung und alles, was von ihr erbt.
+- Sofort, wenn ein Audit berichtet wird (oder den Status wieder verlässt): die Anforderungen mit Urteil in seiner Checkliste und alles, was von ihnen erbt.
 - Beim Klick auf **„Neu berechnen“** im Framework-Dashboard.
 - Die regelmäßige Prüfung einer Erfüllung („Nächste Prüfung“, von Zertifikaten auf ihr Ablaufdatum gesetzt) erscheint 30 Tage vorher in „Mein Tag“ (Abschnitt „Erfüllung — Prüfung fällig“) bei der verantwortlichen Person der Anforderung, ersatzweise bei Compliance-Manager und ISB. Auf der Anforderung bestätigt **„Prüfung bestätigen“** die Prüfung und setzt die nächste (Vorgabe zwölf Monate); der Wert selbst bleibt bei der Regel.
 - Fällige Übersteuerungen erscheinen 14 Tage vor dem Prüfdatum in „Mein Tag“ (Abschnitt „Erfüllung — Übersteuerung prüfen“) und in der täglichen Sammelmail bei der verantwortlichen Person der Anforderung, ersatzweise bei Compliance-Manager und ISB.

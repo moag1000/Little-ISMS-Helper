@@ -743,3 +743,4 @@ workflow_instance.validation.entity_id_positive: 'Die Entitäts-ID muss eine pos
 'validators.supplier_criticality.code_unique': 'Diesen Code gibt es bereits.'
 'register.validation.title_required': 'Titel ist erforderlich.'
 'validators.notification.webhook_secret_required': 'Ein Webhook braucht ein HMAC-Geheimnis. Ohne Signatur kann der Empfänger gefälschte Meldungen nicht erkennen; unsignierte Webhooks werden nicht gesendet.'
+'responsibility.self_assignment': 'Sich selbst als Verantwortliche oder Verantwortlicher eintragen darf nur ein Manager oder wer den Datensatz schon verantwortet: Die Zuständigkeit gibt Rechte auf den Datensatz.'

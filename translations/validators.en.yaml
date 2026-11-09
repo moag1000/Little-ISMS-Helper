@@ -738,3 +738,4 @@ workflow_instance.validation.entity_id_positive: 'The entity ID must be a positi
 'validators.supplier_criticality.code_unique': 'This code already exists.'
 'register.validation.title_required': 'Title is required.'
 'validators.notification.webhook_secret_required': 'A webhook needs an HMAC secret. Without a signature the receiver cannot detect forged notifications; unsigned webhooks are not sent.'
+'responsibility.self_assignment': 'Only a manager or whoever already holds this record may put you in charge of it: responsibility grants rights on the record.'
