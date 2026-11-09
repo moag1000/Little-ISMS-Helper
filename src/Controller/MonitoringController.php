@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Http\PublicUrlGenerator;
 use Throwable;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -22,7 +23,7 @@ class MonitoringController extends AbstractController
 {
     #[Route('/admin/monitoring/health', name: 'monitoring_health', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]
-    public function health(Connection $connection, SchemaHealthService $schemaHealth): Response
+    public function health(Connection $connection, SchemaHealthService $schemaHealth, PublicUrlGenerator $publicUrls): Response
     {
         // Perform health checks
         $healthChecks = [];
@@ -157,24 +158,20 @@ class MonitoringController extends AbstractController
             'vendor_exists' => is_dir($vendorDir),
         ];
 
-        // 9. Environment Variables Check
-        $envFile = $projectDir . '/.env';
-        $envLocalFile = $projectDir . '/.env.local';
-
-        $requiredEnvVars = ['APP_ENV', 'APP_SECRET', 'DATABASE_URL'];
+        // 9. Environment Variables Check (+ public address: DEFAULT_URI, trusted hosts — S16)
         $missingEnvVars = [];
-
-        foreach ($requiredEnvVars as $requiredEnvVar) {
+        foreach (['APP_ENV', 'APP_SECRET', 'DATABASE_URL'] as $requiredEnvVar) {
             if (empty($_ENV[$requiredEnvVar]) && empty($_SERVER[$requiredEnvVar])) {
                 $missingEnvVars[] = $requiredEnvVar;
             }
         }
-
+        $addressIssues = $publicUrls->configurationIssues();
         $healthChecks['environment'] = [
-            'status' => $missingEnvVars === [] ? 'healthy' : 'error',
-            'env_file_exists' => file_exists($envFile),
-            'env_local_exists' => file_exists($envLocalFile),
+            'status' => $missingEnvVars !== [] ? 'error' : ($addressIssues === [] ? 'healthy' : 'warning'),
+            'env_file_exists' => file_exists($projectDir . '/.env'),
+            'env_local_exists' => file_exists($projectDir . '/.env.local'),
             'missing_vars' => $missingEnvVars,
+            'public_address_issues' => $addressIssues,
         ];
 
         // 10. PHP Configuration Check

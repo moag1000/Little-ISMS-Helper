@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use App\Entity\ScheduledReport;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -47,6 +48,18 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
 
         self::assertSame(['manager@tenant-a.test'], $result['valid']);
         self::assertSame([], $result['dropped']);
+    }
+
+    /** S16: persona roles reach ROLE_MANAGER through the hierarchy, not by name. */
+    #[Test]
+    public function personaRoleInheritingManagerIsAccepted(): void
+    {
+        $user = $this->makeUser('ciso@tenant-a.test', $this->tenantA, ['ROLE_CISO']);
+        $this->userRepository->method('findOneBy')->willReturn($user);
+        $filter = new RecipientFilter($this->userRepository, new RoleHierarchy(['ROLE_CISO' => ['ROLE_MANAGER']]));
+
+        self::assertSame(['ciso@tenant-a.test'], $filter->filter($this->makeReport(1, ['ciso@tenant-a.test']))['valid']);
+        self::assertNull($filter->validateSingle('ciso@tenant-a.test', 1));
     }
 
     #[Test]

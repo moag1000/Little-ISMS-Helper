@@ -2,20 +2,26 @@
  * Little ISMS Helper - Service Worker
  * Phase 8A: Progressive Web App Support
  *
- * Caching Strategy:
- * - Static Assets: Cache First (CSS, JS, Images, Fonts)
- * - API Calls: Network First with Cache Fallback
- * - HTML Pages: Network First with Offline Fallback
+ * Caching strategy (S16, 2026-11):
+ * - Only fixed public files are cached: the build assets (/assets/, /vendor/, /fonts/,
+ *   /icons/, /js/) and the offline page with its files (STATIC_ASSETS). Cache first.
+ * - Nothing else is ever stored: no HTML page, no API or .json answer, no download.
+ *   A cached page or report would outlive the logout and be shown to the next person
+ *   on a shared device (Art. 33 report, risk register). Pages go to the network; when
+ *   it is down, the offline page is shown.
+ * - Even a static path is not stored when the answer says Cache-Control no-store or
+ *   private, or is not a plain 200.
+ * - Logout sends Clear-Site-Data ("cache", "storage"), which also drops this cache;
+ *   activate removes every cache of an older CACHE_VERSION (including the page caches
+ *   of versions before S16). tests/js/service_worker.test.js keeps these rules.
  */
 
-const CACHE_VERSION = 'v3.0.1-fa';
+const CACHE_VERSION = 'v3.1.0-s16';
 const STATIC_CACHE = `isms-static-${CACHE_VERSION}`;
-const DYNAMIC_CACHE = `isms-dynamic-${CACHE_VERSION}`;
-const API_CACHE = `isms-api-${CACHE_VERSION}`;
 
-// Assets to cache immediately on install
+// Assets to cache immediately on install. No page of the application (not even "/"):
+// the start page redirects into the logged-in area.
 const STATIC_ASSETS = [
-    '/',
     // The offline fallback is fully static (no inline script/style), so it
     // never depends on a per-request CSP nonce that a cached copy would carry
     // stale. Its assets are cached with it.
@@ -40,29 +46,21 @@ const STATIC_ASSETS = [
     '/vendor/bootstrap-icons/font/bootstrap-icons.min.css'
 ];
 
-// Cache duration in milliseconds
-const CACHE_DURATION = {
-    api: 5 * 60 * 1000,      // 5 minutes for API responses
-    page: 60 * 60 * 1000,    // 1 hour for HTML pages
-    static: 7 * 24 * 60 * 60 * 1000  // 7 days for static assets
-};
+// Path prefixes of public build files. Everything else is personal or per-session.
+const STATIC_PREFIXES = ['/assets/', '/vendor/', '/fonts/', '/icons/', '/js/'];
+const STATIC_EXTENSIONS = [
+    '.css', '.js', '.mjs', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp',
+    '.woff', '.woff2', '.ttf', '.eot'
+];
 
 /**
  * Install Event - Cache static assets
  */
 self.addEventListener('install', (event) => {
-    console.log('[SW] Installing Service Worker...');
-
     event.waitUntil(
         caches.open(STATIC_CACHE)
-            .then((cache) => {
-                console.log('[SW] Caching static assets');
-                return cache.addAll(STATIC_ASSETS);
-            })
-            .then(() => {
-                console.log('[SW] Static assets cached');
-                return self.skipWaiting();
-            })
+            .then((cache) => cache.addAll(STATIC_ASSETS))
+            .then(() => self.skipWaiting())
             .catch((error) => {
                 console.error('[SW] Failed to cache static assets:', error);
             })
@@ -70,187 +68,118 @@ self.addEventListener('install', (event) => {
 });
 
 /**
- * Activate Event - Clean up old caches
+ * Activate Event - drop every cache that is not this version's static cache
+ * (older versions kept HTML pages and API answers in isms-dynamic-* / isms-api-*).
  */
 self.addEventListener('activate', (event) => {
-    console.log('[SW] Activating Service Worker...');
-
     event.waitUntil(
         caches.keys()
-            .then((cacheNames) => {
-                return Promise.all(
-                    cacheNames
-                        .filter((cacheName) => {
-                            return cacheName.startsWith('isms-') &&
-                                   !cacheName.includes(CACHE_VERSION);
-                        })
-                        .map((cacheName) => {
-                            console.log('[SW] Deleting old cache:', cacheName);
-                            return caches.delete(cacheName);
-                        })
-                );
-            })
-            .then(() => {
-                console.log('[SW] Old caches cleared');
-                return self.clients.claim();
-            })
+            .then((cacheNames) => Promise.all(
+                cacheNames
+                    .filter((cacheName) => cacheName.startsWith('isms-') && cacheName !== STATIC_CACHE)
+                    .map((cacheName) => caches.delete(cacheName))
+            ))
+            .then(() => self.clients.claim())
     );
 });
 
 /**
- * Fetch Event - Handle all network requests
+ * Fetch Event - static files from the cache, everything else from the network.
  */
 self.addEventListener('fetch', (event) => {
     const { request } = event;
-    const url = new URL(request.url);
 
-    // Skip non-GET requests
     if (request.method !== 'GET') {
         return;
     }
 
-    // Skip browser extensions and external URLs
-    if (!url.origin.includes(self.location.origin)) {
+    const url = new URL(request.url);
+    if (url.origin !== self.location.origin) {
         return;
     }
 
-    // Skip hot module replacement and webpack dev server
-    if (url.pathname.includes('hot-update') || url.pathname.includes('__webpack')) {
+    if (isStaticAsset(url)) {
+        event.respondWith(cacheFirstWithNetwork(request));
         return;
     }
 
-    // API requests - Network First with Cache Fallback
-    if (url.pathname.startsWith('/api/') || url.pathname.includes('/analytics/api/')) {
-        event.respondWith(networkFirstWithCache(request, API_CACHE));
-        return;
+    // Pages: network only, offline page when the network is down. Never stored.
+    if (request.mode === 'navigate' || request.headers.get('Accept')?.includes('text/html')) {
+        event.respondWith(networkWithOfflinePage(request));
     }
 
-    // Static assets - Cache First
-    if (isStaticAsset(url.pathname)) {
-        event.respondWith(cacheFirstWithNetwork(request, STATIC_CACHE));
-        return;
-    }
-
-    // HTML pages - Network First with Offline Fallback
-    if (request.headers.get('Accept')?.includes('text/html')) {
-        event.respondWith(networkFirstWithOffline(request));
-        return;
-    }
-
-    // Default - Network First
-    event.respondWith(networkFirstWithCache(request, DYNAMIC_CACHE));
+    // Everything else (API, .json, downloads, uploads): the browser handles it, no cache.
 });
 
 /**
- * Check if request is for a static asset
+ * Public build file? Fixed list or a static prefix with a static extension, no query
+ * string. .json is never static (API answers, exports, reports).
  */
-function isStaticAsset(pathname) {
-    const staticExtensions = [
-        '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico',
-        '.woff', '.woff2', '.ttf', '.eot', '.json'
-    ];
-    return staticExtensions.some(ext => pathname.endsWith(ext));
+function isStaticAsset(url) {
+    if (STATIC_ASSETS.includes(url.pathname)) {
+        return url.search === '';
+    }
+    if (url.search !== '' && !url.pathname.startsWith('/assets/')) {
+        return false;
+    }
+    return STATIC_PREFIXES.some((prefix) => url.pathname.startsWith(prefix))
+        && STATIC_EXTENSIONS.some((ext) => url.pathname.endsWith(ext));
+}
+
+/** May this answer be stored? Plain 200, same origin, no no-store/private. */
+function isStorable(response) {
+    if (!response || response.status !== 200 || response.type !== 'basic') {
+        return false;
+    }
+    const cacheControl = (response.headers.get('Cache-Control') || '').toLowerCase();
+    return !cacheControl.includes('no-store') && !cacheControl.includes('private');
 }
 
 /**
  * Cache First Strategy - Try cache, fallback to network
  */
-async function cacheFirstWithNetwork(request, cacheName) {
+async function cacheFirstWithNetwork(request) {
     const cachedResponse = await caches.match(request);
-
     if (cachedResponse) {
-        // Return cached response and update cache in background
-        updateCache(request, cacheName);
+        // Unhashed files (/vendor/, offline page) refresh in the background.
+        refreshInBackground(request);
         return cachedResponse;
     }
 
     try {
         const networkResponse = await fetch(request);
-        if (networkResponse.ok) {
-            const cache = await caches.open(cacheName);
-            cache.put(request, networkResponse.clone());
+        if (isStorable(networkResponse)) {
+            const cache = await caches.open(STATIC_CACHE);
+            await cache.put(request, networkResponse.clone());
         }
         return networkResponse;
     } catch (error) {
-        console.error('[SW] Network request failed:', error);
         return new Response('Offline - Asset not cached', { status: 503 });
     }
 }
 
-/**
- * Network First Strategy - Try network, fallback to cache
- */
-async function networkFirstWithCache(request, cacheName) {
+/** Stale-while-revalidate for a cached static file; failures keep the cached copy. */
+async function refreshInBackground(request) {
     try {
         const networkResponse = await fetch(request);
-
-        if (networkResponse.ok) {
-            const cache = await caches.open(cacheName);
-            cache.put(request, networkResponse.clone());
+        if (isStorable(networkResponse)) {
+            const cache = await caches.open(STATIC_CACHE);
+            await cache.put(request, networkResponse);
         }
-
-        return networkResponse;
     } catch (error) {
-        console.log('[SW] Network failed, trying cache...');
-        const cachedResponse = await caches.match(request);
-
-        if (cachedResponse) {
-            return cachedResponse;
-        }
-
-        return new Response(JSON.stringify({
-            error: 'Offline',
-            message: 'No cached data available'
-        }), {
-            status: 503,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        // offline: the cached copy stays
     }
 }
 
 /**
- * Network First with Offline Page Fallback
+ * Network only for pages; the offline page when the network is unreachable.
  */
-async function networkFirstWithOffline(request) {
+async function networkWithOfflinePage(request) {
     try {
-        const networkResponse = await fetch(request);
-
-        if (networkResponse.ok) {
-            const cache = await caches.open(DYNAMIC_CACHE);
-            cache.put(request, networkResponse.clone());
-        }
-
-        return networkResponse;
+        return await fetch(request);
     } catch (error) {
-        console.log('[SW] Network failed for page, checking cache...');
-
-        const cachedResponse = await caches.match(request);
-        if (cachedResponse) {
-            return cachedResponse;
-        }
-
-        // Return offline page
         const offlinePage = await caches.match('/offline.html');
-        if (offlinePage) {
-            return offlinePage;
-        }
-
-        return new Response('Offline', { status: 503 });
-    }
-}
-
-/**
- * Update cache in background (stale-while-revalidate)
- */
-async function updateCache(request, cacheName) {
-    try {
-        const networkResponse = await fetch(request);
-        if (networkResponse.ok) {
-            const cache = await caches.open(cacheName);
-            cache.put(request, networkResponse);
-        }
-    } catch (error) {
-        // Silently fail - we already have cached version
+        return offlinePage || new Response('Offline', { status: 503 });
     }
 }
 
@@ -556,42 +485,5 @@ self.addEventListener('message', (event) => {
         self.skipWaiting();
     }
 });
-
-/**
- * Periodic Background Sync (if supported)
- */
-self.addEventListener('periodicsync', (event) => {
-    console.log('[SW] Periodic sync:', event.tag);
-
-    if (event.tag === 'sync-dashboard-data') {
-        event.waitUntil(prefetchDashboardData());
-    }
-});
-
-/**
- * Prefetch dashboard data for offline access
- */
-async function prefetchDashboardData() {
-    console.log('[SW] Prefetching dashboard data...');
-
-    const endpoints = [
-        '/api/dashboard/stats',
-        '/api/risks/summary',
-        '/api/incidents/recent'
-    ];
-
-    const cache = await caches.open(API_CACHE);
-
-    for (const endpoint of endpoints) {
-        try {
-            const response = await fetch(endpoint);
-            if (response.ok) {
-                cache.put(endpoint, response);
-            }
-        } catch (error) {
-            console.error(`[SW] Failed to prefetch ${endpoint}:`, error);
-        }
-    }
-}
 
 console.log('[SW] Service Worker loaded with Background Sync support');

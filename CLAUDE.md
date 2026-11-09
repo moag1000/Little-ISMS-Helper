@@ -811,6 +811,11 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       Outbound URLs a user can set carry `#[NoInternalIp]` (SSRF) and are fetched only through
       `App\Http\UserUrlHttpClient` (no private addresses after DNS, no redirects; `->guzzle()` for OAuth
       libraries) — `OutboundUserUrlClientTest` rejects any other raw HTTP client in `src/`.
+- [ ] Links that leave the session (mail, supplier questionnaire, Trust Center, QR labels) come from
+      `App\Http\PublicUrlGenerator` (DEFAULT_URI, never the Host header; `SYMFONY_TRUSTED_HOSTS` rejects others) —
+      `PublicLinksFromDefaultUriTest` finds every absolute URL in `src/`. Logout sends `Clear-Site-Data`; `public/sw.js`
+      caches only fixed build files, never pages/`.json`/API (`tests/js/service_worker.test.js`). Webhooks only signed.
+      Every export/download action carries `#[IsGranted]` (`ExportRoutesGatedTest`).
 - [ ] Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed reader type, zip
       limits, read filter) — never `IOFactory::createReaderForFile()`/`load()` (`SpreadsheetUploadReaderTest`).
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training

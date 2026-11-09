@@ -125,37 +125,6 @@ p {
     50% { opacity: 0.3; }
 }
 
-.cached-pages {
-    margin-top: 30px;
-    text-align: left;
-}
-
-.cached-pages h3 {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.cached-pages ul {
-    list-style: none;
-}
-
-.cached-pages li {
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.cached-pages a {
-    color: var(--accent-cyan);
-    text-decoration: none;
-}
-
-.cached-pages a:hover {
-    text-decoration: underline;
-}
-
 @media (max-width: 480px) {
     .offline-container {
         padding: 30px 20px;
@@ -176,6 +145,3 @@ p {
     }
 }
 
-.cached-pages[hidden] {
-    display: none;
-}

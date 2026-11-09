@@ -42,8 +42,17 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Proxy:** Steht ein öffentlicher Proxy/CDN vor der Anwendung, dessen Adressen in
   `SYMFONY_TRUSTED_PROXIES` eintragen. Ohne Eintrag gelten nur Loopback und private Netze;
   Anmelde-Drosselung und Protokoll sehen sonst die Proxy-Adresse.
-- **`DEFAULT_URI`** auf die öffentliche Adresse setzen (`https://isms.example.com`). Links in
-  Erinnerungsmails werden damit gebaut.
+- **`DEFAULT_URI`** auf die öffentliche Adresse setzen (`https://isms.example.com`). Alle Links,
+  die die Sitzung verlassen (Mails, Lieferantenfragebogen, Trust Center, QR-Labels), werden nur noch
+  daraus gebaut, nie aus dem Host-Header. Ohne Shell: Admin > Überwachung > Health, Karte „Umgebung“,
+  Knopf „… als öffentliche Adresse übernehmen“ (Super-Admin, schreibt `.env.local`).
+- **`SYMFONY_TRUSTED_HOSTS`** (neu) mit den eigenen Hostnamen als verankerte Muster setzen, z. B.
+  `'^isms\.example\.com$,^localhost$'` (localhost für Container-Healthchecks). Andere Host-Header
+  bekommen 400. Der Health-Knopf kann den Wert mitsetzen.
+- **Webhooks** brauchen ein HMAC-Secret: Kanäle ohne Secret senden nicht mehr (Fehler im
+  Zustellprotokoll). Am Kanal unter Benachrichtigungen ein Secret hinterlegen.
+- **Docker:** Der Worker im Image arbeitet jetzt auch die Queue `async` ab. Vorher blieben Mails
+  liegen; nach dem Update gehen auch die aufgestauten raus.
 
 ### Einmal nach dem Update
 
@@ -127,6 +136,11 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Anzeige:** Datensatztext, der früher als HTML erschien, steht jetzt wörtlich da; Word-Exporte
   maskieren allen Text.
 - **KI-Funktionen** sind standardmäßig aus (Admin > KI-Vorschläge).
+- **Abmelden** leert Browser-Cache und Speicher der Seite (`Clear-Site-Data`); der Service Worker
+  speichert nur noch Build-Dateien, keine Seiten, Berichte oder API-Antworten, und löscht beim ersten
+  Laden die alten Caches. Offline erscheint nur noch die Offline-Seite.
+- **Exporte** und Downloads verlangen überall eine Rolle (`#[IsGranted]`), auch die
+  Compliance-Exporte. Geplante Berichte bieten nur Berichtsarten aktiver Module an.
 
 ### SSO (Azure, SAML, OIDC)
 

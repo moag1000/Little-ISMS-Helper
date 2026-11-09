@@ -218,7 +218,7 @@ class StatementOfApplicabilityController extends AbstractController
             'iso_27001_active' => $controlsModuleActive,
         ]);
     }
-    #[Route('/soa/report/export', name: 'app_soa_export', methods: ['GET'])]
+    #[Route('/soa/report/export', name: 'app_soa_export', methods: ['GET']), IsGranted('ROLE_USER')]
     public function export(Request $request): Response
     {
         $user = $this->security->getUser();
@@ -235,7 +235,7 @@ class StatementOfApplicabilityController extends AbstractController
             'generatedAt' => new DateTime(),
         ]);
     }
-    #[Route('/soa/report/pdf', name: 'app_soa_export_pdf', methods: ['GET'])]
+    #[Route('/soa/report/pdf', name: 'app_soa_export_pdf', methods: ['GET']), IsGranted('ROLE_USER')]
     public function exportPdf(Request $request): Response
     {
         // Close session to prevent blocking other requests during PDF generation

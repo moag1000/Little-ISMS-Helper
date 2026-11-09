@@ -2,6 +2,12 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    # Host names this installation answers to (SYMFONY_TRUSTED_HOSTS, comma-separated
+    # anchored regexes, e.g. '^isms\.example\.org$,^localhost$'); any other Host header
+    # gets 400. Empty accepts every host (development). Links that leave the session
+    # never use the Host header anyway (App\Http\PublicUrlGenerator, DEFAULT_URI).
+    trusted_hosts: '%env(default::SYMFONY_TRUSTED_HOSTS)%'
+
     # Security: Comprehensive session configuration
     # Protects against session hijacking and fixation attacks (OWASP A07:2021)
     session:

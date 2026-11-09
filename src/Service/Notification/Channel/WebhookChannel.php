@@ -23,7 +23,8 @@ use App\Http\UserUrlHttpClient;
  *
  * HMAC-SHA256 signature is computed over the JSON payload using the channel
  * secret (stored encrypted in secretEncrypted). Sent as
- * X-Signature: sha256=<hex-digest>
+ * X-Signature: sha256=<hex-digest>. A channel without secret delivers nothing
+ * (notification.error.webhook_no_secret); the channel form requires one.
  *
  * SSRF-protection: target URL is validated against NoInternalIp constraint
  * before every request. Refuses to fire if URL resolves to private/reserved IP.
@@ -68,17 +69,18 @@ class WebhookChannel
             'delivered_at' => (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM),
         ], JSON_THROW_ON_ERROR);
 
-        $headers = ['Content-Type' => 'application/json'];
-
-        // Attach HMAC signature when a secret is configured
+        // Unsigned deliveries are refused (S16): without the HMAC the receiver cannot
+        // tell our notification from a forged one that triggers its automation.
         $encryptedSecret = $channel->getSecretEncrypted();
-        if ($encryptedSecret !== null) {
-            $plainSecret = $this->encryption->decrypt($encryptedSecret);
-            if ($plainSecret !== null) {
-                $sig = hash_hmac('sha256', $payload, $plainSecret);
-                $headers['X-Signature'] = 'sha256=' . $sig;
-            }
+        $plainSecret = $encryptedSecret !== null ? $this->encryption->decrypt($encryptedSecret) : null;
+        if ($plainSecret === null || $plainSecret === '') {
+            $delivery->markFailed('notification.error.webhook_no_secret', ['url' => $url]);
+            return;
         }
+        $headers = [
+            'Content-Type' => 'application/json',
+            'X-Signature' => 'sha256=' . hash_hmac('sha256', $payload, $plainSecret),
+        ];
 
         try {
             $response = $this->httpClient->request('POST', $url, [

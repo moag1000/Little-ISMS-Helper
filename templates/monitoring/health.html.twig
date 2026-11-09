@@ -494,7 +494,7 @@
         {% if health_checks.environment is defined %}
         <div class="col-md-6 mb-4">
             {% set env_status = health_checks.environment.status %}
-            {% set env_color = env_status == 'healthy' ? 'success' : 'danger' %}
+            {% set env_color = env_status == 'healthy' ? 'success' : (env_status == 'warning' ? 'warning' : 'danger') %}
             {% set env_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-5">.env File:</dt>
@@ -528,7 +528,30 @@
                             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.present'|trans({}, 'monitoring') }}
                         </dd>
                     {% endif %}
+
+                    {% set address_issues = health_checks.environment.public_address_issues ?? [] %}
+                    <dt class="col-sm-5">{{ 'monitoring.public_address.label'|trans({}, 'monitoring') }}:</dt>
+                    <dd class="col-sm-7">
+                        {% if address_issues is empty %}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.public_address.ok'|trans({}, 'monitoring') }}
+                        {% else %}
+                            {% for issue in address_issues %}
+                                <div class="small"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ issue|trans({}, 'monitoring') }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    </dd>
                 </dl>
+                {% if address_issues is not empty and is_granted('ADMIN_GLOBAL_OP') %}
+                    {% set current_address = app.request.schemeAndHttpHost ~ app.request.basePath %}
+                    <form method="post" action="{{ path('admin_public_address_apply') }}" class="mt-3">
+                        <input type="hidden" name="_token" value="{{ csrf_token('public_address_apply') }}">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="trusted_hosts" value="1" id="public-address-trusted-hosts">
+                            <label class="form-check-label small" for="public-address-trusted-hosts">{{ 'monitoring.public_address.trusted_hosts_option'|trans({'%host%': app.request.host}, 'monitoring') }}</label>
+                        </div>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'monitoring.public_address.apply'|trans({'%address%': current_address}, 'monitoring') }}</button>
+                    </form>
+                {% endif %}
             {% endset %}
             {{ cards.status_card('monitoring.card.environment'|trans({}, 'monitoring'), 'file-earmark-text', env_status, env_color, env_content) }}
         </div>

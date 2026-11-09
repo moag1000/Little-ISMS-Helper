@@ -87,7 +87,8 @@ Bis das Image das mitbringt, die `async`-Queue zusätzlich abarbeiten, z. B. per
 | `MYSQL_USER` | `isms` | DB-Benutzer |
 | `MYSQL_PASSWORD` | (auto) | DB-Passwort (leer = auto-generiert) |
 | `MAILER_DSN` | (leer) | SMTP-Konfiguration |
-| `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL, z. B. `https://isms.example.com` — Links in E-Mails aus dem Scheduler (Erinnerungen) werden damit gebaut. Über `environment:` setzen |
+| `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL, z. B. `https://isms.example.com` — alle Links in E-Mails, Lieferantenfragebögen, Trust Center und QR-Labels werden damit gebaut, nie aus dem Host-Header. Ohne Wert zeigt Überwachung > Health eine Warnung mit Knopf „Adresse übernehmen“ |
+| `SYMFONY_TRUSTED_HOSTS` | (leer) | Erlaubte Hostnamen als verankerte Muster, z. B. `'^isms\.example\.com$,^localhost$'` (localhost für den Container-Healthcheck); jeder andere Host-Header bekommt 400 |
 | `APP_SECRET` | generiert | Wird beim ersten Start erzeugt und in `var/app_secret` gespeichert; ein gesetzter Wert hat Vorrang |
 | `SYMFONY_TRUSTED_PROXIES` | private Netze | Siehe [Vertrauenswürdige Proxys](#vertrauenswürdige-proxys-client-ip) |
 | `EMBEDDED_DB` | `mariadb` | `none` = keine eingebettete MariaDB, externe DB über `DATABASE_URL` |

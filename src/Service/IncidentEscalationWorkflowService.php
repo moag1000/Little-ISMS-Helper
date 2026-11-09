@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Http\PublicUrlGenerator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Enum\IncidentSeverity;
 use App\Enum\SlaDeadlineType;
 use DateMalformedStringException;
@@ -70,6 +72,8 @@ class IncidentEscalationWorkflowService
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
+        // Public address (DEFAULT_URI), never the request's Host header — App\Http\PublicUrlGenerator.
+        #[Autowire(service: PublicUrlGenerator::class)]
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly IncidentSlaConfigResolver $slaResolver,
         private readonly ?RegulatoryWorkflowLoader $workflowLoader = null,

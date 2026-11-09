@@ -73,6 +73,12 @@ security:
                 # double-submit cookie, and a stripped Referer must not break it.
                 enable_csrf: true
                 csrf_token_id: logout_link
+                # S16: the browser drops its HTTP cache, service-worker caches and
+                # localStorage/IndexedDB (offline drafts) — on a shared device the next
+                # person must not open a page or report of the previous one from cache.
+                # Not "cookies": session and remember-me cookies are removed anyway, the
+                # locale choice stays. tests/Security/Logout/ClearSiteDataOnLogoutTest.
+                clear_site_data: ['cache', 'storage']
 
             # Custom authenticators for Azure OAuth, SAML, and generic SSO (OIDC).
             # API tokens are NOT accepted here — see the api_token firewall.

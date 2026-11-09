@@ -22,20 +22,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Util\CsvSanitizer;
 
 /**
- * ComplianceExportController
- *
- * Handles all compliance export operations (CSV, Excel, PDF) for:
- * - Data-reuse insights exports
- * - Gap analysis exports
- * - Transitive compliance exports
- * - Framework comparison exports
- *
- * Extracted from ComplianceController god-class (was 2629 LOC).
+ * Compliance exports (CSV, Excel, PDF): data reuse, gaps, transitive, comparison.
+ * ROLE_USER like the compliance pages (S16/B1, tests/Security/ExportRoutesGatedTest).
  */
+#[IsGranted('ROLE_USER')]
 class ComplianceExportController extends AbstractController
 {
     use LocalizedFlashTrait;

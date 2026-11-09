@@ -171,3 +171,15 @@ monitoring:
     recent_entries_only: 'Nur aktuelle Einträge'
     full_log_analysis: 'Vollständige Log-Analyse'
     large_files_warning: 'Warnung: Große Log-Dateien können lange Ladezeiten verursachen'
+    public_address:
+        label: 'Öffentliche Adresse'
+        ok: 'DEFAULT_URI und SYMFONY_TRUSTED_HOSTS gesetzt'
+        default_uri_missing: 'DEFAULT_URI ist nicht gesetzt (localhost). Links in Mails, Lieferantenfragebögen und QR-Labels zeigen nicht auf diese Installation.'
+        trusted_hosts_missing: 'SYMFONY_TRUSTED_HOSTS ist leer. Die Installation antwortet auf jeden Host-Header.'
+        trusted_hosts_unanchored: 'SYMFONY_TRUSTED_HOSTS enthält ein Muster ohne ^ und $. Es lässt auch fremde Hostnamen durch, die den Namen enthalten.'
+        default_uri_not_trusted: 'Der Host aus DEFAULT_URI passt zu keinem Muster in SYMFONY_TRUSTED_HOSTS.'
+        apply: '%address% als öffentliche Adresse übernehmen'
+        trusted_hosts_option: 'Nur %host% und localhost zulassen (SYMFONY_TRUSTED_HOSTS). Andere Hostnamen und IP-Adressen erhalten danach 400.'
+        flash:
+            saved: 'Öffentliche Adresse in .env.local gespeichert.'
+            failed: '.env.local konnte nicht geschrieben werden. Prüfen Sie die Schreibrechte im Projektverzeichnis.'
