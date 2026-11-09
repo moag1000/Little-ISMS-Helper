@@ -814,6 +814,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       A path that puts a token into the token storage by hand calls `MfaSessionState::begin()`; remember-me
       cookies come only after the code (Gate 91, `tests/Security/Mfa/MfaLoginPathsTest` — a new authenticator
       needs its MFA decision there).
+- [ ] SSO claims are checked only by `App\Service\Sso\SsoClaimPolicy` (OIDC issuer/`exp`/audience/`nonce`,
+      UserInfo never changes `sub`, Azure `tid` from `AZURE_TENANT_ID`/`AZURE_ALLOWED_TENANT_IDS`, link by e-mail only
+      verified and opt-in); SAML responses only via `SamlMessageGuard` (own request id, assertion once), SAML URLs from
+      `DEFAULT_URI`. A new SSO authenticator needs its entry in `tests/Security/Sso/SsoClaimContractTest` (Gate 93).
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Privacy exports (VVT, DSFA, breach, DSR, consent) carry

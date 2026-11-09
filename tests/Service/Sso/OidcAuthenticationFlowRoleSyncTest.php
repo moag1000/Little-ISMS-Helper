@@ -95,6 +95,7 @@ final class OidcAuthenticationFlowRoleSyncTest extends TestCase
             $this->createMock(LoggerInterface::class),
             $resolver,
             $eventLogger,
+            new \App\Http\UserUrlHttpClient(new \Symfony\Component\HttpClient\MockHttpClient()),
         );
     }
 

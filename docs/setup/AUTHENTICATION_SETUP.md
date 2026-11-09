@@ -26,10 +26,19 @@ Das Little ISMS Helper Framework implementiert ein ausgefeiltes Benutzer-, Rolle
 Kopieren Sie `.env` nach `.env.local` und fügen Sie folgende Variablen hinzu:
 
 ```bash
+# Öffentliche Adresse der Installation — daraus entstehen SAML Entity-ID und ACS-URL
+DEFAULT_URI=https://isms.example.org
+
 # Azure OAuth2 Configuration
 AZURE_CLIENT_ID=your-azure-app-client-id
 AZURE_CLIENT_SECRET=your-azure-app-client-secret
+# Verzeichnis-ID (GUID). "common"/"organizations" lassen niemanden herein,
+# solange AZURE_ALLOWED_TENANT_IDS keine Verzeichnisse nennt.
 AZURE_TENANT_ID=your-azure-tenant-id
+AZURE_ALLOWED_TENANT_IDS=
+# Bestehende Konten per E-Mail verknüpfen: aus (Standard). Nur mit verifizierter
+# E-Mail (optionaler Claim xms_edov), privilegierte Konten nie.
+AZURE_ALLOW_EMAIL_LINKING=false
 
 # Azure SAML Configuration
 SAML_IDP_ENTITY_ID=https://sts.windows.net/your-tenant-id/
@@ -330,6 +339,34 @@ https://your-domain.com/?_switch_user=_exit
 5. **CSRF**: CSRF-Schutz ist standardmäßig aktiviert
 6. **Remember Me**: Remember-Me-Cookies verwenden einen sicheren Secret
 7. **Sitzungsverwaltung**: Symfony verwaltet Sitzungen sicher
+
+## SSO-Härtung (S9, 2026-11)
+
+Alle SSO-Wege prüfen die Angaben des Identity Providers über eine Regel
+(`App\Service\Sso\SsoClaimPolicy`, Vertragstest `tests/Security/Sso/SsoClaimContractTest`, Gate 93):
+
+| Weg | Prüfung |
+|---|---|
+| OIDC (Anbieter unter Admin > SSO) | ID-Token Pflicht; Issuer muss eingetragen sein (sonst aus der Discovery, sonst Abbruch); `exp` Pflicht; Audience = Client-ID; `nonce` aus der Anmeldung; UserInfo ergänzt nur, ändert weder `sub` noch Claims aus dem Token |
+| Azure OAuth (env) | `tid` muss `AZURE_TENANT_ID` oder einer aus `AZURE_ALLOWED_TENANT_IDS` sein |
+| Azure SAML (env) | nur Antworten auf eine Anfrage dieser Installation (InResponseTo, 10 Minuten, einmal), jede Assertion einmal; Entity-ID, ACS und Zieladresse aus `DEFAULT_URI`; `tenantid` (falls gesendet) wie bei OAuth |
+| alle | ein bestehendes lokales Konto wird nur mit **verifizierter** E-Mail verknüpft (`email_verified`, Entra: optionaler Claim `xms_edov`); Azure-Verknüpfung zusätzlich nur mit `AZURE_ALLOW_EMAIL_LINKING=true` |
+
+Hinweise für den Betrieb:
+
+- **DEFAULT_URI** muss die öffentliche Adresse tragen (z. B. `https://isms.example.org`), sonst bricht
+  SAML mit einem klaren Fehler ab. Die Entity-ID bleibt `<DEFAULT_URI>/saml/metadata`.
+- **IdP-initiierte SAML-Anmeldung** (Kachel in „Meine Apps“) wird abgewiesen; die Anmeldung startet
+  über den SAML-Knopf der Login-Seite.
+- **Mehrere Webserver:** Anfrage- und Assertion-IDs liegen im Anwendungs-Cache (`cache.app`). Hinter
+  einem Load-Balancer braucht er einen gemeinsamen Adapter (Redis/Datenbank), sonst schlägt die
+  Anmeldung auf dem anderen Server fehl.
+- **Entra und Verknüpfung per E-Mail:** In der App-Registrierung unter *Tokenkonfiguration* den
+  optionalen Claim `xms_edov` zum ID-Token hinzufügen; ohne ihn verknüpft nur ein bereits gebundenes
+  Konto (Objekt-ID) oder ein neues Konto.
+- **Lieferanten-Fragebogen:** der öffentliche Link gilt 90 Tage ab Versand.
+- **Abmelden** braucht ein CSRF-Token im Link (`logout_path()`); ein nackter Aufruf von `/logout`
+  meldet nicht mehr ab.
 
 ## Troubleshooting
 

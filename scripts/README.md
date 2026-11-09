@@ -618,6 +618,21 @@ Selbsttest: `scripts/quality/tests/test_s6_contract_gates.py`.
 
 ---
 
+### quality/check_sso_claim_policy.py (Gate 93)
+
+**Zweck:** Jede SSO-Anmeldung prüft ihre Claims über `App\Service\Sso\SsoClaimPolicy` (S9, 2026-11).
+Rot bei (1) einem `custom_authenticators`-Eintrag in `security.yaml` (außer dem API-Token), der
+`SsoClaimPolicy` weder selbst noch über eine importierte `App\`-Klasse nutzt, (2) `->processResponse()`
+ohne Request-ID (SAML InResponseTo ungeprüft), (3) `getSchemeAndHttpHost()` im SSO-Code
+(Host-Header), (4) `array_merge(` in `src/Service/Sso/` (UserInfo überschreibt signierte Claims),
+(5) E-Mail-Verknüpfung der env-Azure-Anmeldung standardmäßig an (`services.yaml`, `.env`,
+`.env.prod.example`, `$allowEmailLinking = true`). Das Verhalten pinnt
+`tests/Security/Sso/SsoClaimContractTest` (neuer Authenticator ohne Vertrag = rot). Keine Baseline.
+
+**CI-Integration:** Gate 93 im `code-quality`-Job.
+
+---
+
 ### quality/check_api_module_fields.py (Gate 89)
 
 **Zweck:** Felder eines optionalen Moduls an einem Datensatz eines anderen Moduls (DORA am

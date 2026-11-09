@@ -7,6 +7,7 @@ namespace App\Security;
 use DateTimeImmutable;
 use App\Entity\User;
 use App\Service\Sso\SsoAccountLinkPolicy;
+use App\Service\Sso\SsoClaimPolicy;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -36,9 +37,15 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
         private readonly UserRepository $userRepository,
         private readonly RouterInterface $router,
         private readonly TenantRepository $tenantRepository,
+        private readonly SamlAuthFactory $samlAuthFactory,
+        private readonly SamlMessageGuard $messageGuard,
         #[Autowire('%env(bool:default:app.azure_allow_email_linking_default:AZURE_ALLOW_EMAIL_LINKING)%')]
-        private readonly bool $allowEmailLinking = true,
+        private readonly bool $allowEmailLinking = false,
         private readonly ?LoggerInterface $logger = null,
+        #[Autowire('%env(default::AZURE_TENANT_ID)%')]
+        private readonly ?string $azureTenantId = null,
+        #[Autowire('%env(default::AZURE_ALLOWED_TENANT_IDS)%')]
+        private readonly ?string $azureAllowedTenantIds = null,
     ) {
     }
 
@@ -51,12 +58,16 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
     public function authenticate(Request $request): Passport
     {
         try {
-            $samlAuth = $this->getSamlAuth($request);
-            $samlAuth->processResponse();
+            $samlAuth = $this->getSamlAuth();
+            // S9: only a response to a request this installation sent, and
+            // each assertion once (SamlMessageGuard).
+            $requestId = $this->messageGuard->consumeRequestId($request);
+            $samlAuth->processResponse($requestId);
 
             if (!$samlAuth->isAuthenticated()) {
                 throw new AuthenticationException('SAML authentication failed: ' . implode(', ', $samlAuth->getErrors()));
             }
+            $this->messageGuard->assertFirstUse($samlAuth->getLastAssertionId(), $samlAuth->getLastAssertionNotOnOrAfter());
 
             $attributes = $samlAuth->getAttributes();
             $nameId = $samlAuth->getNameId();
@@ -69,6 +80,14 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
             $tenantId = $this->getSamlAttribute($attributes, 'http://schemas.microsoft.com/identity/claims/tenantid');
             $jobTitle = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/jobtitle');
             $department = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department');
+
+            // An Entra assertion names its directory: it must be a configured
+            // one (SsoClaimPolicy). Other IdPs send no tenantid; the signature
+            // against SAML_IDP_CERT already pins the IdP.
+            $allowedTenants = SsoClaimPolicy::allowedAzureTenants($this->azureTenantId, $this->azureAllowedTenantIds);
+            if ($tenantId !== null && $allowedTenants !== []) {
+                SsoClaimPolicy::assertAzureTenant($tenantId, $allowedTenants);
+            }
 
             return new SelfValidatingPassport(
                 new UserBadge($email, function() use ($email, $nameId, $firstName, $lastName, $objectId, $tenantId, $jobTitle, $department, $attributes) {
@@ -86,7 +105,10 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
                         // NameID counts as linked. Anything else is a
                         // link by e-mail and goes through the policy.
                         if ($user instanceof User && !$this->isBoundToNameId($user, $objectId, $nameId)) {
-                            SsoAccountLinkPolicy::assertMayLinkAzureByEmail($user, $this->allowEmailLinking, $this->logger);
+                            // The e-mail attribute is signed by the IdP pinned through
+                            // SAML_IDP_CERT (one directory per enterprise app), so it
+                            // counts as verified; linking still needs the opt-in.
+                            SsoAccountLinkPolicy::assertMayLinkAzureByEmail($user, $this->allowEmailLinking, $this->logger, emailVerified: true);
                         }
                     }
 
@@ -134,8 +156,11 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
                     return $user;
                 })
             );
-        } catch (Error $e) {
+        } catch (Error|\OneLogin\Saml2\ValidationError $e) {
             throw new AuthenticationException('SAML Error: ' . $e->getMessage());
+        } catch (\App\Exception\BusinessRule\BusinessRuleException $e) {
+            // DEFAULT_URI missing (SamlAuthFactory::baseUrl()).
+            throw new AuthenticationException($e->getMessage(), 0, $e);
         }
     }
 
@@ -158,64 +183,9 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
         );
     }
 
-    private function getSamlAuth(Request $request): Auth
+    private function getSamlAuth(): Auth
     {
-        if ($this->samlAuth instanceof Auth) {
-            return $this->samlAuth;
-        }
-
-        // Build SAML settings
-        $samlSettings = $this->buildSamlSettings($request);
-
-        $this->samlAuth = new Auth($samlSettings);
-        return $this->samlAuth;
-    }
-
-    private function buildSamlSettings(Request $request): array
-    {
-        $baseUrl = $request->getSchemeAndHttpHost();
-
-        return [
-            'strict' => true,
-            'debug' => $_ENV['APP_ENV'] === 'dev',
-            'sp' => [
-                'entityId' => $baseUrl . '/saml/metadata',
-                'assertionConsumerService' => [
-                    'url' => $baseUrl . $this->router->generate('saml_acs'),
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-                ],
-                'singleLogoutService' => [
-                    'url' => $baseUrl . $this->router->generate('saml_sls'),
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-                ],
-                'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-                'x509cert' => $_ENV['SAML_SP_CERT'] ?? '',
-                'privateKey' => $_ENV['SAML_SP_PRIVATE_KEY'] ?? '',
-            ],
-            'idp' => [
-                'entityId' => $_ENV['SAML_IDP_ENTITY_ID'] ?? 'https://sts.windows.net/' . ($_ENV['AZURE_TENANT_ID'] ?? '') . '/',
-                'singleSignOnService' => [
-                    'url' => $_ENV['SAML_IDP_SSO_URL'] ?? 'https://login.microsoftonline.com/' . ($_ENV['AZURE_TENANT_ID'] ?? '') . '/saml2',
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-                ],
-                'singleLogoutService' => [
-                    'url' => $_ENV['SAML_IDP_SLO_URL'] ?? 'https://login.microsoftonline.com/' . ($_ENV['AZURE_TENANT_ID'] ?? '') . '/saml2',
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-                ],
-                'x509cert' => $_ENV['SAML_IDP_CERT'] ?? '',
-            ],
-            'security' => [
-                'nameIdEncrypted' => false,
-                'authnRequestsSigned' => true,
-                'logoutRequestSigned' => true,
-                'logoutResponseSigned' => true,
-                'signMetadata' => true,
-                'wantMessagesSigned' => true,
-                'wantAssertionsSigned' => true,
-                'wantNameIdEncrypted' => false,
-                'requestedAuthnContext' => false,
-            ],
-        ];
+        return $this->samlAuth ??= $this->samlAuthFactory->createAuth();
     }
 
     /**
