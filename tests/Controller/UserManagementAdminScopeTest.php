@@ -165,24 +165,25 @@ final class UserManagementAdminScopeTest extends WebTestCase
         self::assertNull($this->findByEmail($email));
     }
 
+    /**
+     * S14: a holding-role account is above the organisation admin's role —
+     * the admin may not edit it (password, e-mail, roles); the role stays.
+     */
     #[Test]
-    public function adminEditKeepsExistingHoldingRoleItCannotSeeOrRevoke(): void
+    public function adminCannotEditAHoldingRoleAccount(): void
     {
         $holding = $this->user('holding_a', ['ROLE_GROUP_CISO'], $this->tenantA);
         $this->em->flush();
 
         $this->client->loginUser($this->adminA);
         $url = '/en/admin/users/' . $holding->getId() . '/edit';
-        $crawler = $this->client->request('GET', $url);
-        self::assertResponseIsSuccessful();
+        $this->client->request('GET', $url);
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('POST', $url, ['user' => ['firstName' => 'Changed']]);
+        self::assertResponseStatusCodeSame(403);
 
-        $values = $this->formValues($crawler);
-        $values['user']['firstName'] = 'Kept';
-        $this->client->request('POST', $url, $values);
-
-        self::assertResponseRedirects();
         $reloaded = $this->reload($holding);
-        self::assertSame('Kept', $reloaded->getFirstName());
+        self::assertNotSame('Changed', $reloaded->getFirstName());
         self::assertContains('ROLE_GROUP_CISO', $reloaded->getRoles());
     }
 
