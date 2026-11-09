@@ -358,7 +358,8 @@ final class RestoreEvidenceContractTest extends KernelTestCase
             ));
             self::assertSame('Renamed risk ' . $suffix, $riskAfter->getTitle(), "narrative fields are still restored\n" . $log);
             self::assertTrue($riskAfter->isFormallyAccepted(), 'the acceptance is not withdrawn by the file');
-            self::assertSame('2026-03-01 09:00:00', $riskAfter->getAcceptanceApprovedAt()?->format('Y-m-d H:i:s'), 'the acceptance is not backdated');
+            // a DATE column: the day is the evidence
+            self::assertSame('2026-03-01', $riskAfter->getAcceptanceApprovedAt()?->format('Y-m-d'), 'the acceptance is not backdated');
             self::assertSame(RiskStatus::Accepted, $riskAfter->getStatus(), 'the status moves only through the lifecycle');
 
             $newRisk = $em->getRepository(Risk::class)->findOneBy(['title' => 'New accepted risk ' . $suffix]);
