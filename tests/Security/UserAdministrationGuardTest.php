@@ -8,7 +8,11 @@ use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\TenantRepository;
+use App\Security\RoleCeiling;
+use App\Security\RoleNames;
 use App\Security\UserAdministrationGuard;
+use App\Service\AuditLogger;
+use App\Tests\Security\Voter\VoterTestHelper;
 use App\Service\TenantContext;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -28,12 +32,22 @@ final class UserAdministrationGuardTest extends TestCase
         $this->foreign = (new Tenant())->setName('foreign')->setCode('foreign');
     }
 
-    private function guard(bool $superAdmin): UserAdministrationGuard
+    private ?User $actor = null;
+
+    /**
+     * @param list<string>|null $actorRoles defaults to ROLE_SUPER_ADMIN / ROLE_ADMIN
+     */
+    private function guard(bool $superAdmin, ?array $actorRoles = null, ?AuditLogger $auditLogger = null): UserAdministrationGuard
     {
         $security = $this->createMock(Security::class);
         $security->method('isGranted')->willReturnCallback(
             static fn (string $attr): bool => $attr === 'ROLE_SUPER_ADMIN' ? $superAdmin : $attr === 'ROLE_ADMIN',
         );
+        $this->actor = (new User())->setEmail('actor@example.com')
+            ->setRoles($actorRoles ?? ($superAdmin ? ['ROLE_SUPER_ADMIN'] : ['ROLE_ADMIN']))
+            ->setTenant($this->own);
+        (new \ReflectionProperty(User::class, 'id'))->setValue($this->actor, 4711);
+        $security->method('getUser')->willReturn($this->actor);
         $tenantContext = $this->createMock(TenantContext::class);
         $tenantContext->method('getCurrentTenant')->willReturn($this->own);
         $tenantContext->method('canAccessTenant')->willReturnCallback(fn (Tenant $t): bool => $t === $this->own);
@@ -43,6 +57,8 @@ final class UserAdministrationGuardTest extends TestCase
             $tenantContext,
             $this->createMock(TenantRepository::class),
             new NullLogger(),
+            new RoleCeiling(VoterTestHelper::createRoleHierarchy()),
+            $auditLogger ?? $this->createStub(AuditLogger::class),
         );
     }
 
@@ -177,5 +193,79 @@ final class UserAdministrationGuardTest extends TestCase
         self::assertSame([], $guard->enforceSubmittedValues($user, $before, false));
         self::assertTrue($user->getCustomRoles()->contains($holding));
     }
-}
 
+    #[Test]
+    public function nobodyGrantsThemselvesTopManagementNotEvenASuperAdmin(): void
+    {
+        foreach ([false, true] as $superAdmin) {
+            $guard = $this->guard($superAdmin);
+            $self = $this->actor;
+            $before = $guard->snapshot($self);
+            $self->setRoles([...$self->getStoredRoles(), 'ROLE_TOP_MGMT']);
+
+            self::assertSame(['user.validation.self_grant_forbidden'], $guard->enforceSubmittedValues($self, $before, false));
+            self::assertNotContains('ROLE_TOP_MGMT', $self->getRoles());
+            self::assertFalse($guard->mayAssignRoleName('ROLE_TOP_MGMT', $self));
+            self::assertNotContains('ROLE_TOP_MGMT', $guard->grantableRoles(['ROLE_TOP_MGMT'], $self));
+
+            // Someone else may receive it from the admin.
+            $other = (new User())->setRoles(['ROLE_USER'])->setTenant($this->own);
+            $beforeOther = $guard->snapshot($other);
+            $other->setRoles(['ROLE_TOP_MGMT']);
+            self::assertSame([], $guard->enforceSubmittedValues($other, $beforeOther, false));
+        }
+    }
+
+    #[Test]
+    public function managerWithUserRightsGrantsNothingAboveManager(): void
+    {
+        $guard = $this->guard(false, ['ROLE_MANAGER']);
+        $user = (new User())->setRoles(['ROLE_USER'])->setTenant($this->own);
+        $before = $guard->snapshot($user);
+        $user->setRoles(['ROLE_ADMIN']);
+
+        self::assertSame(['user.validation.privileged_role_forbidden'], $guard->enforceSubmittedValues($user, $before, false));
+        self::assertSame(['ROLE_USER'], $user->getStoredRoles());
+        self::assertSame(['ROLE_AUDITOR', 'ROLE_MANAGER'], array_values($guard->grantableRoles(['ROLE_AUDITOR', 'ROLE_MANAGER', 'ROLE_CISO', 'ROLE_ADMIN', 'ROLE_TOP_MGMT'])));
+
+        // Revoking a role above the ceiling is refused the same way (hidden → carried over).
+        $admin = (new User())->setRoles(['ROLE_ADMIN'])->setTenant($this->own);
+        $beforeAdmin = $guard->snapshot($admin);
+        $admin->setRoles(['ROLE_USER']);
+        self::assertSame([], $guard->enforceSubmittedValues($admin, $beforeAdmin, false));
+        self::assertContains('ROLE_ADMIN', $admin->getStoredRoles());
+    }
+
+    #[Test]
+    public function ssoMappingOffersOnlyKnownNonPrivilegedRolesWithinTheCeiling(): void
+    {
+        $admin = $this->guard(false)->ssoMappableRoles();
+        self::assertContains('ROLE_MANAGER', $admin);
+        self::assertContains('ROLE_TOP_MGMT', $admin);
+        foreach (RoleNames::PRIVILEGED as $privileged) {
+            self::assertNotContains($privileged, $admin);
+            self::assertNotContains($privileged, $this->guard(true)->ssoMappableRoles());
+        }
+        self::assertNotContains('ROLE_ADMIN', $this->guard(false, ['ROLE_MANAGER'])->ssoMappableRoles());
+    }
+
+    #[Test]
+    public function grantOrRevokeOfTopManagementIsAnAuditEvent(): void
+    {
+        $audit = $this->createMock(AuditLogger::class);
+        $audit->expects(self::exactly(2))->method('logCustom')->with(
+            'user.sensitive_role_changed',
+            'User',
+            self::anything(),
+            self::anything(),
+            self::callback(static fn (array $new): bool => in_array($new['role'], ['ROLE_TOP_MGMT', 'ROLE_ADMIN'], true)),
+            self::anything(),
+        );
+        $guard = $this->guard(false, null, $audit);
+        $user = (new User())->setEmail('l@example.com')->setRoles(['ROLE_ADMIN'])->setTenant($this->own);
+        $before = $guard->snapshot($user);
+        $user->setRoles(['ROLE_TOP_MGMT', 'ROLE_DPO']);
+
+        $guard->auditSensitiveRoleChanges($user, $before); // TOP_MGMT granted, ADMIN revoked; DPO is not audited
+    }
+}

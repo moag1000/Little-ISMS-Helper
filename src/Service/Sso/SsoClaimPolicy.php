@@ -119,10 +119,20 @@ final class SsoClaimPolicy
      * Has the IdP vouched for the e-mail address? `email_verified` (OIDC) or
      * `xms_edov` (Entra: e-mail domain verified by the directory).
      *
+     * The flag vouches for the `email` claim only. When the account is
+     * matched through another (mapped) claim, pass that address as
+     * $matchedEmail: it counts as verified only when it is the same address
+     * as `email` (S14) — a verified `email` must not vouch for an unverified
+     * `upn` or custom attribute.
+     *
      * @param array<string, mixed> $claims
      */
-    public static function isEmailVerified(array $claims): bool
+    public static function isEmailVerified(array $claims, ?string $matchedEmail = null): bool
     {
+        if ($matchedEmail !== null
+            && strcasecmp(trim($matchedEmail), trim(is_scalar($claims['email'] ?? null) ? (string) $claims['email'] : '')) !== 0) {
+            return false;
+        }
         foreach (['email_verified', 'xms_edov'] as $claim) {
             $value = $claims[$claim] ?? null;
             if ($value === true || $value === 1 || $value === '1' || (is_string($value) && strtolower($value) === 'true')) {
@@ -141,9 +151,9 @@ final class SsoClaimPolicy
      * @param array<string, mixed> $claims
      * @throws CustomUserMessageAuthenticationException
      */
-    public static function assertEmailVerifiedForLinking(array $claims): void
+    public static function assertEmailVerifiedForLinking(array $claims, ?string $matchedEmail = null): void
     {
-        if (!self::isEmailVerified($claims)) {
+        if (!self::isEmailVerified($claims, $matchedEmail)) {
             throw new CustomUserMessageAuthenticationException(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE);
         }
     }

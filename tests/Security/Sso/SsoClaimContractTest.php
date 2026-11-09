@@ -154,6 +154,8 @@ final class SsoClaimContractTest extends TestCase
         foreach ([
             'unsolicited (IdP-initiated)' => SsoTestKit::acsRequest($guard, withInResponseTo: false),
             'unknown request' => SsoTestKit::acsRequest($guard, 'ONELOGIN_never_sent', remember: false),
+            // Login CSRF (S14): the attacker's own response posted into another browser.
+            'other browser' => SsoTestKit::acsRequest($guard, 'ONELOGIN_attacker', sameBrowser: false),
             'no response' => new Request(request: []),
         ] as $case => $request) {
             try {
@@ -279,6 +281,22 @@ final class SsoClaimContractTest extends TestCase
         $existing = (new User())->setEmail('jane@example.com')->setRoles(['ROLE_USER']);
         self::assertSame($existing, $this->resolveOidc($provider, $claims + ['email_verified' => true], $existing));
         self::assertSame('user-1', $existing->getSsoExternalId());
+    }
+
+    /** S14: a verified `email` does not vouch for another mapped claim (here `upn`). */
+    #[Test]
+    public function oidcVerifiedFlagDoesNotVouchForAnotherMappedClaim(): void
+    {
+        $provider = (new IdentityProvider())->setSlug('idp')->setAllowEmailLinking(true)
+            ->setAttributeMap(['upn' => 'email']);
+        $existing = (new User())->setEmail('boss@example.com')->setRoles(['ROLE_USER']);
+
+        $this->expectException(CustomUserMessageAuthenticationException::class);
+        try {
+            $this->resolveOidc($provider, ['sub' => 'user-2', 'email' => 'jane@example.com', 'upn' => 'boss@example.com', 'email_verified' => true], $existing);
+        } finally {
+            self::assertNull($existing->getSsoExternalId());
+        }
     }
 
     #[Test]

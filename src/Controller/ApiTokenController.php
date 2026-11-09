@@ -35,12 +35,17 @@ final class ApiTokenController extends AbstractController
     }
 
     #[Route('/profile/api-tokens', name: 'app_api_tokens', methods: ['GET'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(Request $request): Response
     {
         return $this->renderPage($request, null);
     }
 
+    // A remember-me session is challenged for the password first (S14, on the
+    // page and on the POST): a token outlives the browser session, so it is
+    // minted only after a real login.
     #[Route('/profile/api-tokens/create', name: 'app_api_tokens_create', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[IsCsrfTokenValid('api_token_create')]
     public function create(Request $request): Response
     {

@@ -127,6 +127,7 @@ mfa:
         verify_instructions: 'Enter the 6-digit code from your authenticator app to complete setup:'
         code_help: 'The code refreshes every 30 seconds'
         verify_button: 'Verify Code'
+        start_button: 'Start setup'
     setup:
         secret_key: 'Secret Key'
     backup_codes:

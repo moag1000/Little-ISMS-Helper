@@ -36,7 +36,7 @@ final class CreateApiTokenCommand extends Command
         $this
             ->addArgument('email', InputArgument::REQUIRED, 'Email of the user the token is issued for')
             ->addOption('label', null, InputOption::VALUE_REQUIRED, 'Human-readable label', 'API token')
-            ->addOption('expires-days', null, InputOption::VALUE_REQUIRED, 'Expiry in days (omit for no expiry)');
+            ->addOption('expires-days', null, InputOption::VALUE_REQUIRED, 'Expiry in days (omit for the maximum of 365)');
     }
 
     #[\Override]

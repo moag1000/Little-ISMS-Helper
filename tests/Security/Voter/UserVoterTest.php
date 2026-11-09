@@ -6,6 +6,7 @@ namespace App\Tests\Security\Voter;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Security\RoleCeiling;
 use App\Security\Voter\UserVoter;
 use App\Service\InitialAdminService;
 use App\Service\TenantContext;
@@ -31,7 +32,7 @@ class UserVoterTest extends TestCase
         $this->tenant = new Tenant();
         $tenantContext = $this->createMock(TenantContext::class);
         $tenantContext->method('canAccessTenant')->willReturnCallback(fn (Tenant $t): bool => $t === $this->tenant);
-        $this->voter = new UserVoter($this->initialAdminService, VoterTestHelper::createRoleHierarchy(), $tenantContext);
+        $this->voter = new UserVoter($this->initialAdminService, VoterTestHelper::createRoleHierarchy(), $tenantContext, new RoleCeiling(VoterTestHelper::createRoleHierarchy()));
     }
 
     private function createUser(

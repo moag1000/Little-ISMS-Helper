@@ -16,13 +16,11 @@ use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 /**
  * Admin UI for MFA-Token management (TOTP / WebAuthn / Backup codes).
@@ -36,8 +34,13 @@ use Throwable;
  * Security hotfix (admin scope): MfaToken has no tenant column, so every
  * action is additionally bound to the token owner via {@see UserVoter::EDIT}
  * (actor tenant tree, never a SUPER_ADMIN target for non-SUPER actors).
- * Token-id addressed actions answer 404 when out of scope (no oracle);
- * user-addressed setup answers 403.
+ * Token-id addressed actions answer 404 when out of scope (no oracle).
+ * Since S14 the voter applies the role ceiling, so holding-role accounts are
+ * only reset by a super admin.
+ *
+ * Admins only reset (disable / delete) a second factor. They never enrol a
+ * TOTP or regenerate backup codes for somebody else: whoever sees the secret
+ * owns the factor. The person enrols again under Profile > MFA.
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class MfaTokenController extends AbstractController
@@ -104,116 +107,6 @@ class MfaTokenController extends AbstractController
             'active_count' => $activeCount,
             'totp_count' => $totpCount,
             'webauthn_count' => $webauthnCount,
-        ]);
-    }
-    #[Route('/admin/mfa/user/{id}/setup-totp', name: 'admin_mfa_setup_totp', requirements: ['id' => '\d+'], methods: ['GET'])]
-    #[IsGranted('MFA_SETUP')]
-    public function setupTotp(User $user, Request $request): Response
-    {
-        $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
-
-        $deviceName = mb_substr((string) $request->query->get('device_name', 'Authenticator App'), 0, 255);
-
-        // Generate TOTP secret
-        $mfaToken = $this->mfaService->generateTotpSecret($user, $deviceName);
-
-        // Generate QR code
-        $qrCode = $this->mfaService->generateQrCode($mfaToken);
-
-        // Get backup codes (these are shown only once)
-        $backupCodes = $mfaToken->temporaryBackupCodes ?? [];
-
-        $this->logger->info('TOTP setup initiated', [
-            'admin_user' => $this->getUser()?->getUserIdentifier(),
-            'target_user' => $user->getEmail(),
-        ]);
-
-        $this->auditLogger->logCustom(
-            'mfa_totp_setup_initiated',
-            'MfaToken',
-            $mfaToken->getId(),
-            null,
-            ['user_email' => $user->getEmail()],
-            sprintf('TOTP setup initiated for user %s by admin', $user->getEmail())
-        );
-
-        return $this->render('mfa_token/setup_totp.html.twig', [
-            'mfa_token' => $mfaToken,
-            'user' => $user,
-            'qr_code' => $qrCode,
-            'backup_codes' => $backupCodes,
-            'secret' => $this->mfaService->getDecryptedSecret($mfaToken),
-        ]);
-    }
-    // @csrf-exempt: gated by a TOTP code only the device holder knows
-    #[Route('/admin/mfa/{id}/verify', name: 'admin_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('MFA_MANAGE')]
-    public function verify(MfaToken $mfaToken, Request $request): JsonResponse
-    {
-        $this->assertTokenInScope($mfaToken);
-
-        $code = $request->request->get('code');
-
-        if (!$code) {
-            return new JsonResponse(['success' => false, 'message' => 'Code is required'], Response::HTTP_BAD_REQUEST);
-        }
-
-        try {
-            $isValid = $this->mfaService->verifyTotp($mfaToken, $code, isSetup: true);
-
-            if ($isValid) {
-                $this->logger->info('MFA token verified and activated', [
-                    'admin_user' => $this->getUser()?->getUserIdentifier(),
-                    'token_id' => $mfaToken->getId(),
-                    'user' => $mfaToken->getUser()->getEmail(),
-                ]);
-
-                return new JsonResponse([
-                    'success' => true,
-                    'message' => 'MFA token successfully verified and activated',
-                ]);
-            }
-
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Invalid verification code',
-            ], Response::HTTP_BAD_REQUEST);
-
-        } catch (Throwable $e) {
-            $this->logger->error('MFA verification failed', [
-                'error' => $e->getMessage(),
-                'token_id' => $mfaToken->getId(),
-            ]);
-
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Verification failed: ' . $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-    #[Route('/admin/mfa/{id}/regenerate-backup-codes', name: 'admin_mfa_regenerate_backup', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('MFA_MANAGE')]
-    public function regenerateBackupCodes(MfaToken $mfaToken, Request $request): Response
-    {
-        $this->assertTokenInScope($mfaToken);
-
-        if (!$this->isCsrfTokenValid('regenerate_backup_' . $mfaToken->getId(), $request->request->get('_token'))) {
-            $this->flashError('mfa.token.error.invalid_csrf');
-            return $this->redirectToRoute('admin_mfa_show', ['id' => $mfaToken->getId()]);
-        }
-
-        $backupCodes = $this->mfaService->regenerateBackupCodes($mfaToken);
-
-        $this->flashSuccess('mfa.token.success.backup_regenerated');
-
-        $this->logger->info('Backup codes regenerated', [
-            'admin_user' => $this->getUser()?->getUserIdentifier(),
-            'user' => $mfaToken->getUser()->getEmail(),
-        ]);
-
-        return $this->render('mfa_token/backup_codes.html.twig', [
-            'mfa_token' => $mfaToken,
-            'backup_codes' => $backupCodes,
         ]);
     }
     #[Route('/admin/mfa/{id}', name: 'admin_mfa_show', requirements: ['id' => '\d+'], methods: ['GET'])]

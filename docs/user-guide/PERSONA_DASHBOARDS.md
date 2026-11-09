@@ -60,6 +60,29 @@ Regeln:
 Rollen vergibt der Administrator unter Administration → Benutzer → Bearbeiten →
 Systemrollen.
 
+**Wer welche Rolle vergeben darf (Rollen-Obergrenze, S14, `App\Security\RoleCeiling`):**
+
+- Niemand vergibt oder entzieht eine Rolle über der eigenen. Das Formular, die
+  Sammelaktion „Rolle zuweisen“, der CSV-Import und das SSO-Rollen-Mapping bieten
+  nur die Rollen an, die man selbst hat (über die Rollenhierarchie).
+- Konzern- und Instanzrollen (`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`,
+  `ROLE_GROUP_BCM_OFFICER`, `ROLE_SUPER_ADMIN`, Benutzerwechsel) vergibt nur der
+  Super-Admin. Konten mit einer solchen Rolle sieht der Organisations-Admin, ändert
+  aber weder Passwort noch E-Mail noch zweiten Faktor.
+- Leitung (`ROLE_TOP_MGMT`) und Fachbereichsleitung (`ROLE_FUNCTION_OWNER`)
+  vergibt der Admin, obwohl er sie nicht erbt — **aber nie sich selbst**. Eine
+  andere Administratorin oder ein anderer Administrator gibt sie.
+- Vergabe und Entzug von Leitung, Admin, Super-Admin und Konzernrollen stehen als
+  eigenes Ereignis im Audit-Log (`user.sensitive_role_changed`).
+- Ändern sich die Rollen eines Kontos, werden seine API-Tokens widerrufen; die
+  Sitzung meldet sich neu an.
+- Ein SSO-Anbieter pflegt bei der Anmeldung nur die Rollen, die er selbst vergeben
+  kann (Mapping, Standard- und Fallback-Rolle); Leitung, Persona- und Konzernrollen
+  aus der Benutzerverwaltung bleiben erhalten. Privilegierte Rollen kommen nie aus
+  Claims.
+- Den zweiten Faktor richtet jede Person selbst ein (Profil → MFA). Admins setzen
+  ihn nur zurück (deaktivieren, löschen).
+
 **Was jedes Persona-Dashboard zeigt (gleiche Bausteine):**
 
 - **„Was bei dir ansteht“** — die offenen Pflichten der Person aus allen

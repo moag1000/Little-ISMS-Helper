@@ -18,6 +18,8 @@ import { faT } from '../js/fa-i18n.js';
  */
 export default class extends Controller {
     static targets = ['collection'];
+    // Roles an admin may map (S14) — the select offers only these, no free text.
+    static values = { roles: Array };
 
     connect() {
         this._index = this.collectionTarget.querySelectorAll('.role-mapping-row').length;
@@ -59,9 +61,11 @@ export default class extends Controller {
                            aria-label="${t(faT('sso_role_mapping.claim_value'))}">
                 </div>
                 <div class="col-md-2">
-                    <input type="text" name="role_mappings[${idx}][assignedRole]"
-                           class="form-control form-control-sm" placeholder="ROLE_ADMIN"
-                           aria-label="${t(faT('sso_role_mapping.role'))}">
+                    <select name="role_mappings[${idx}][assignedRole]"
+                            class="form-select form-select-sm"
+                            aria-label="${t(faT('sso_role_mapping.role'))}">
+                        ${this.rolesValue.map((role) => `<option value="${t(role)}">${t(role)}</option>`).join('')}
+                    </select>
                 </div>
                 <div class="col-md-1">
                     <input type="number" name="role_mappings[${idx}][priority]"

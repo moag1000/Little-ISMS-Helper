@@ -224,19 +224,22 @@ final class SsoAccountLinkPolicy
 
     /**
      * May $provider assign $role at login (mapping rule, default role,
-     * fallback role)? Tenant-owned providers never assign privileged roles.
+     * fallback role)? Only known, non-privileged roles (S14): instance and
+     * holding roles never come from claims — not even through a global
+     * provider — and a free-text role name is no role. Privileged roles are
+     * granted in the user administration by a super admin.
      */
     public static function mayAssignRole(IdentityProvider $provider, ?string $role): bool
     {
-        return $provider->isGlobal() || !RoleNames::isPrivileged($role);
+        return RoleNames::isReserved($role) && !RoleNames::isPrivileged($role);
     }
 
     /**
      * Privileged roles configured on $provider (active claim→role mappings,
      * default role, fallback role) that {@see mayAssignRole()} silently
-     * drops at login because the provider is tenant-owned. Shown as a
+     * drops at login (privileged or unknown role names, S14). Shown as a
      * warning in the provider UI so the configuration does not look
-     * effective when it is not. Empty for global providers.
+     * effective when it is not.
      *
      * @param iterable<IdentityProviderRoleMapping> $mappings the provider's mappings as loaded from the
      *                                                    repository (inactive ones are skipped)
@@ -244,10 +247,6 @@ final class SsoAccountLinkPolicy
      */
     public static function ignoredPrivilegedRoles(IdentityProvider $provider, iterable $mappings): array
     {
-        if ($provider->isGlobal()) {
-            return [];
-        }
-
         $configured = [];
         foreach ($mappings as $mapping) {
             if ($mapping->isActive()) {

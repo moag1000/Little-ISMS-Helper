@@ -107,8 +107,9 @@ final readonly class UserBulkActionService
             },
             'assign_role' => match (true) {
                 !$role instanceof Role => 'role_not_found',
-                // Security hotfix: privileged roles are SUPER_ADMIN-only.
-                !$this->userAdministrationGuard->mayAssignRoleName((string) $role->getName()),
+                // Role ceiling (S14): only roles the actor may grant to this account.
+                !$this->userAdministrationGuard->mayOfferCustomRole($role)
+                    || !$this->userAdministrationGuard->mayAssignRoleName((string) $role->getName(), $user),
                 !$this->security->isGranted(UserVoter::EDIT, $user) => 'no_permission',
                 $user->getCustomRoles()->contains($role) => 'already_has_role',
                 default => null,
