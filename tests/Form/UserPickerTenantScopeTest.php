@@ -105,7 +105,8 @@ final class UserPickerTenantScopeTest extends KernelTestCase
     /** The account link of a Person is set by managers only (S20); for everybody else the field is read-only. */
     private function actAsManagerFor(string $field): void
     {
-        if ($field === 'linkedUser') {
+        // Manager-only pickers: Person.linkedUser (S20), report-builder owner (S32).
+        if (in_array($field, ['linkedUser', 'owner'], true)) {
             static::getContainer()->get('security.token_storage')
                 ->setToken(new UsernamePasswordToken($this->userA, 'main', ['ROLE_MANAGER']));
         }

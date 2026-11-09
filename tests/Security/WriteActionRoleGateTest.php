@@ -37,7 +37,7 @@ final class WriteActionRoleGateTest extends TestCase
             yield 'dpia ' . $m => [DPIAController::class, $m, 'ROLE_MANAGER'];
         }
         yield 'dsr personal data export' => [DataSubjectRequestController::class, 'exportPersonalData', 'ROLE_MANAGER'];
-        yield 'security report generator' => [SecurityReportController::class, 'generate', 'ROLE_ADMIN'];
+        yield 'security report generator' => [SecurityReportController::class, 'generate', TenantScopedAdminVoter::ADMIN_GLOBAL_OP];
         yield 'license report generator' => [AdminLicensingController::class, 'generate', TenantScopedAdminVoter::ADMIN_GLOBAL_OP];
         yield 'baseline on the whole subtree' => [IndustryBaselineController::class, 'applyRecursive', 'ROLE_ADMIN'];
     }
