@@ -238,7 +238,7 @@
                             <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
                         </td>
                         <td class="fa-table__cell">
-                            {% set statusVariant = (plan.status == 'active' or plan.status == 'approved') ? 'success' : (plan.status == 'draft' ? 'warning' : (plan.status == 'review' ? 'info' : 'secondary')) %}
+                            {% set statusVariant = pill_tone_status(plan.status) %}
                             {% include '_components/_badge.html.twig' with { variant: statusVariant, content: plan.status } %}
                         </td>
                         <td class="fa-table__cell">{{ plan.lastReviewDate|fa_date }}</td>

@@ -23,7 +23,7 @@
         subtitle: '#' ~ mapping.id,
     }) }}
 
-    {% set _status %}{{ pill.render(mapping.lifecycleState, mapping.lifecycleBadgeClass in ['info'] ? 'primary' : (mapping.lifecycleBadgeClass in ['secondary','light','dark'] ? 'neutral' : mapping.lifecycleBadgeClass), {size: 'sm'}) }}{% endset %}
+    {% set _status %}{{ pill.render(mapping.lifecycleState, lifecycle_tone('App\\Entity\\ComplianceMapping', mapping.lifecycleState), {size: 'sm'}) }}{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         facts: [
@@ -58,10 +58,10 @@
                         <dd class="col-sm-8">{% if mapping.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ mapping.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.confidence'|trans({}, 'admin') }}</dt>
-                        <dd class="col-sm-8">{{ pill.render(mapping.confidence, mapping.confidence == 'high' ? 'success' : (mapping.confidence == 'medium' ? 'warning' : 'neutral'), {size: 'sm'}) }}</dd>
+                        <dd class="col-sm-8">{{ pill.render(mapping.confidence, status_tone('confidence', mapping.confidence), {size: 'sm'}) }}</dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.lifecycle'|trans({}, 'admin') }}</dt>
-                        <dd class="col-sm-8">{{ pill.render(mapping.lifecycleState, mapping.lifecycleBadgeClass in ['info'] ? 'primary' : (mapping.lifecycleBadgeClass in ['secondary','light','dark'] ? 'neutral' : mapping.lifecycleBadgeClass), {size: 'sm'}) }}</dd>
+                        <dd class="col-sm-8">{{ pill.render(mapping.lifecycleState, lifecycle_tone('App\\Entity\\ComplianceMapping', mapping.lifecycleState), {size: 'sm'}) }}</dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.provenance'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-8">
@@ -150,8 +150,7 @@
                                         }) }}
                                     </div>
                                 {% endif %}
-                                {% set btnClass = state == 'published' ? 'success' : (state == 'deprecated' ? 'danger' : (state == 'approved' ? 'primary' : 'secondary')) %}
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost -{{ btnClass }} w-100">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
                                     <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ state }}
                                 </button>
                             </form>

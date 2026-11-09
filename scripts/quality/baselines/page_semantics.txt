@@ -1,11 +1,8 @@
 # Page-semantics offenders (Gate 78): <template>::nested-main|extra-h1|status-map|ternary-tone|pill-tone|tooltip-unreachable. May only shrink.
-templates/access_review/index.html.twig::ternary-tone
 templates/admin/asset_sub_type/index.html.twig::ternary-tone
 templates/admin/deadline_type/index.html.twig::ternary-tone
 templates/admin/gstool_import/index.html.twig::ternary-tone
 templates/admin/incident_sla_config/index.html.twig::ternary-tone
-templates/admin/mapping_quality/index.html.twig::ternary-tone
-templates/admin/mapping_quality/show.html.twig::ternary-tone
 templates/admin/queue_status/index.html.twig::ternary-tone
 templates/admin/supplier_criticality/index.html.twig::ternary-tone
 templates/admin/tag/index.html.twig::ternary-tone
@@ -14,15 +11,9 @@ templates/analytics/asset_criticality.html.twig::ternary-tone
 templates/analytics/compliance_frameworks.html.twig::ternary-tone
 templates/analytics/control_effectiveness.html.twig::ternary-tone
 templates/analytics/risk_forecast.html.twig::ternary-tone
-templates/asset/_detail_modal.html.twig::ternary-tone
-templates/asset/_row.html.twig::ternary-tone
-templates/audit_finding/_detail_modal.html.twig::ternary-tone
-templates/audit_finding/_row.html.twig::ternary-tone
 templates/audit_log/entity_history.html.twig::ternary-tone
 templates/audit_log/index.html.twig::ternary-tone
 templates/audit_log/user_activity.html.twig::ternary-tone
-templates/audit_program/_row.html.twig::ternary-tone
-templates/audit_program/show.html.twig::ternary-tone
 templates/bsi_grundschutz_check/index.html.twig::ternary-tone
 templates/compliance/framework_dashboard.html.twig::ternary-tone
 templates/compliance/fulfillment/overrides.html.twig::ternary-tone
@@ -30,8 +21,6 @@ templates/compliance/mapping/seed_review.html.twig::ternary-tone
 templates/compliance/mapping/show.html.twig::ternary-tone
 templates/compliance/mapping_quality/review.html.twig::ternary-tone
 templates/compliance_wizard/_gap_report_body.html.twig::ternary-tone
-templates/corrective_action/_detail_modal.html.twig::ternary-tone
-templates/corrective_action/_row.html.twig::ternary-tone
 templates/dashboards/board.html.twig::ternary-tone
 templates/dashboards/ciso.html.twig::ternary-tone
 templates/dashboards/cm_heatmap_drill.html.twig::ternary-tone
@@ -52,7 +41,6 @@ templates/home/_management_kpis_widget.html.twig::ternary-tone
 templates/home/dashboard.html.twig::ternary-tone
 templates/interested_party/show.html.twig::ternary-tone
 templates/management_reports/assets.html.twig::ternary-tone
-templates/management_reports/bcm.html.twig::ternary-tone
 templates/management_reports/certification_readiness.html.twig::ternary-tone
 templates/management_reports/gdpr.html.twig::ternary-tone
 templates/management_reports/risk.html.twig::ternary-tone
@@ -63,11 +51,6 @@ templates/mris/wizard/ai_risk_class.html.twig::ternary-tone
 templates/mris/wizard/maturity_evidence.html.twig::ternary-tone
 templates/my_day/index.html.twig::ternary-tone
 templates/notification_center/index.html.twig::ternary-tone
-templates/objective/_detail_modal.html.twig::ternary-tone
-templates/objective/_row.html.twig::ternary-tone
-templates/patch/_detail_modal.html.twig::ternary-tone
-templates/patch/show.html.twig::ternary-tone
-templates/permission/show.html.twig::ternary-tone
 templates/planning/group/index.html.twig::ternary-tone
 templates/planning/task/index.html.twig::ternary-tone
 templates/policy_wizard/diff/index.html.twig::ternary-tone
@@ -75,19 +58,13 @@ templates/policy_wizard/konzern_rollup/index.html.twig::ternary-tone
 templates/policy_wizard/result.html.twig::ternary-tone
 templates/processing_activity/show.html.twig::ternary-tone
 templates/report_builder/preview.html.twig::ternary-tone
-templates/risk/_linked_incidents.html.twig::ternary-tone
 templates/risk/request_acceptance.html.twig::ternary-tone
-templates/risk_treatment_plan/_detail_modal.html.twig::ternary-tone
-templates/risk_treatment_plan/_row.html.twig::ternary-tone
-templates/risk_treatment_plan/show.html.twig::ternary-tone
-templates/role_management/show.html.twig::ternary-tone
 templates/suggestion/index.html.twig::ternary-tone
 templates/supplier/_detail_modal.html.twig::ternary-tone
 templates/supplier/_row.html.twig::ternary-tone
 templates/supplier/show.html.twig::ternary-tone
 templates/tia/_detail_modal.html.twig::ternary-tone
 templates/tia/_row.html.twig::ternary-tone
-templates/tia/overview.html.twig::ternary-tone
 templates/tia/show.html.twig::ternary-tone
 templates/vulnerability/_row.html.twig::ternary-tone
 templates/vulnerability/show.html.twig::ternary-tone

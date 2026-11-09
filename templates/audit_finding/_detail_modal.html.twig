@@ -2,12 +2,8 @@
    Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
    flex column; condensed, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'audits' %}
-{% set _statusVariant = finding.status == 'open' ? 'warning'
-    : (finding.done ? 'success'
-    : (finding.status == 'in_progress' ? 'info' : 'secondary')) %}
-{% set _sevVariant = finding.severity == 'critical' ? 'danger'
-    : (finding.severity == 'high' ? 'warning'
-    : (finding.severity == 'medium' ? 'warning' : 'secondary')) %}
+{% set _statusVariant = lifecycle_tone('App\\Entity\\AuditFinding', finding.status) %}
+{% set _sevVariant = pill_tone_severity(finding.severity) %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
