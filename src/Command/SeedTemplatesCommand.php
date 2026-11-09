@@ -77,10 +77,19 @@ final class SeedTemplatesCommand extends Command
         if ($tenant === null && !$dryRun) {
             return Command::FAILURE;
         }
-        if ($tenant !== null) {
-            $this->tenantContext->setCurrentTenant($tenant);
+        if ($tenant === null) {
+            return $this->seed($io, $pattern, $language, $dryRun, null);
         }
 
+        // Put the previous context back: the command may run inside a worker or request.
+        return $this->tenantContext->runAs(
+            $tenant,
+            fn (): int => $this->seed($io, $pattern, $language, $dryRun, $tenant),
+        );
+    }
+
+    private function seed(SymfonyStyle $io, string $pattern, string $language, bool $dryRun, ?Tenant $tenant): int
+    {
         $matches = $this->registry->filter(
             fn (SystemTemplate $t): bool =>
                 $t->language === $language
@@ -122,7 +131,7 @@ final class SeedTemplatesCommand extends Command
                     // Drop the failed template's pending entities, keep the tenant attached.
                     $this->entityManager->clear();
                     $tenant = $this->tenantRepository->find($tenant->getId()) ?? $tenant;
-                    $this->tenantContext->setCurrentTenant($tenant);
+                    $this->tenantContext->setCurrentTenant($tenant); // @tenant-pin-ok: re-attach inside runAs()
                 }
             }
         }

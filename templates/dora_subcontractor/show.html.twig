@@ -80,13 +80,13 @@
 
                     <dt class="col-sm-3">{{ 'dora_subcontractor.field.criticality'|trans({}, 'dora') }}</dt>
                     <dd class="col-sm-9">
-                        {% set critVariant = subcontractor.criticality == 'critical' ? 'danger' : (subcontractor.criticality == 'important' ? 'warning' : 'primary') %}
+                        {% set critVariant = pill_tone_severity(subcontractor.criticality) %}
                         <span class="fa-status-pill fa-status-pill--{{ critVariant }}">{{ ('dora_subcontractor.criticality.' ~ subcontractor.criticality)|trans({}, 'dora') }}</span>
                     </dd>
 
                     <dt class="col-sm-3">{{ 'dora_subcontractor.field.substitutability'|trans({}, 'dora') }}</dt>
                     <dd class="col-sm-9">
-                        {% set substVariant = subcontractor.substitutability == 'low' ? 'danger' : (subcontractor.substitutability == 'medium' ? 'warning' : 'success') %}
+                        {% set substVariant = status_tone('substitutability', subcontractor.substitutability) %}
                         <span class="fa-status-pill fa-status-pill--{{ substVariant }}">{{ ('dora_subcontractor.substitutability.' ~ subcontractor.substitutability)|trans({}, 'dora') }}</span>
                     </dd>
 

@@ -12,13 +12,13 @@ framework:
                 - App\Entity\Asset
             initial_marking: draft
             places:
-                - draft
-                - active
-                - inactive
-                - in_use
-                - returned
-                - retired
-                - disposed
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: active, metadata: { tone: success } }
+                - { name: inactive, metadata: { tone: neutral } }
+                - { name: in_use, metadata: { tone: success } }
+                - { name: returned, metadata: { tone: neutral } }
+                - { name: retired, metadata: { tone: neutral } }
+                - { name: disposed, metadata: { tone: neutral } }
             transitions:
                 activate:
                     from: draft

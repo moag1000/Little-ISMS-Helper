@@ -9,11 +9,11 @@ framework:
                 - App\Entity\ProcessingActivity
             initial_marking: draft
             places:
-                - draft
-                - in_review
-                - approved
-                - published
-                - archived
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: in_review, metadata: { tone: primary } }
+                - { name: approved, metadata: { tone: success } }
+                - { name: published, metadata: { tone: success } }
+                - { name: archived, metadata: { tone: neutral } }
             transitions:
                 submit_for_review:
                     from: draft

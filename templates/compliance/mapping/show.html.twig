@@ -197,7 +197,7 @@
                                 <li class="list-group-item">
                                     <div class="d-flex justify-content-between">
                                         <strong>{{ gap.gapType }}</strong>
-                                        {% include '_components/_badge.html.twig' with { variant: gap.status == 'resolved' ? 'success' : 'warning', content: gap.status } %}
+                                        {% include '_components/_badge.html.twig' with { variant: status_tone('mapping_gap', gap.status), content: gap.status } %}
                                     </div>
                                     <p class="mb-1 small">{{ gap.description }}</p>
                                     <small class="text-muted">Impact: {{ gap.percentageImpact }}%</small>

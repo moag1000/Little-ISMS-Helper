@@ -73,7 +73,7 @@
                                 'defined': 'Defined',
                                 'managed': 'Managed'
                             } %}
-                                {% set variant = levelKey == 'managed' ? 'success' : (levelKey == 'defined' ? 'info' : 'secondary') %}
+                                {% set variant = status_tone('maturity_level', levelKey) %}
                                 <div class="col-md-4">
                                     {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                                         {% block card_body %}

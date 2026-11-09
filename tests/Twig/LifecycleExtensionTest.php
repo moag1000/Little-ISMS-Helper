@@ -28,12 +28,12 @@ final class LifecycleExtensionTest extends TestCase
     }
 
     #[Test]
-    public function lifecycleToneReturnsPrimaryForPublished(): void
+    public function lifecycleToneReturnsSuccessForPublished(): void
     {
         $security = $this->createMock(Security::class);
         $ext = $this->makeExtension($security);
 
-        $this->assertSame('primary', $ext->lifecycleTone(Document::class, 'published'));
+        $this->assertSame('success', $ext->lifecycleTone(Document::class, 'published'));
     }
 
     #[Test]

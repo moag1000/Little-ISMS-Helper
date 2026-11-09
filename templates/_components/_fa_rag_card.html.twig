@@ -20,7 +20,7 @@
 
 {% macro render(props = {}) %}
     {% set status = props.status|default('green') %}
-    {% set faVariant = status == 'green' ? 'success' : (status == 'amber' ? 'warning' : 'danger') %}
+    {% set faVariant = status_tone('rag', status) %}
     {% set icon = status == 'green' ? 'status-ok' : (status == 'amber' ? 'status-warning' : 'status-critical') %}
 
     <article class="fa-rag-card fa-rag-card--{{ status }}">

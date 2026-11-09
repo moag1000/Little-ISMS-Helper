@@ -4,7 +4,7 @@
    Edit button is only shown for draft TIAs with ROLE_USER. #}
 {% trans_default_domain 'tia' %}
 {% set _pa_id = processing_activity.id %}
-{% set _riskVariant = tia.residualRiskRating == 'high' ? 'danger' : (tia.residualRiskRating == 'medium' ? 'warning' : 'success') %}
+{% set _riskVariant = pill_tone_severity(tia.residualRiskRating) %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">

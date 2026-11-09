@@ -99,7 +99,7 @@
                                 <td>
                                     {% if sev in ['critical', 'high', 'medium', 'low'] %}
                                         {% include '_components/_badge.html.twig' with {
-                                            variant: sev == 'critical' ? 'danger' : (sev == 'high' ? 'warning' : (sev == 'medium' ? 'info' : 'secondary')),
+                                            variant: pill_tone_severity(sev),
                                             content: ('notification.severity.' ~ sev)|trans({}, 'notification')
                                         } %}
                                     {% else %}

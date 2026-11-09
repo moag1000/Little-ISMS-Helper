@@ -9,11 +9,11 @@ framework:
                 - App\Entity\PrototypeProtectionAssessment
             initial_marking: draft
             places:
-                - draft
-                - in_review
-                - approved
-                - rejected
-                - expired
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: in_review, metadata: { tone: primary } }
+                - { name: approved, metadata: { tone: success } }
+                - { name: rejected, metadata: { tone: danger } }
+                - { name: expired, metadata: { tone: danger } }
             transitions:
                 # TISAX VDA-ISA 6.0 Prototype-Protection-Assessment. Approve ist
                 # Vertraulichkeits-Zertifikat → 4-Augen Pflicht.

@@ -12,11 +12,11 @@ framework:
                 - App\Entity\Incident
             initial_marking: reported
             places:
-                - reported
-                - in_investigation
-                - in_resolution
-                - resolved
-                - closed
+                - { name: reported, metadata: { tone: warning } }
+                - { name: in_investigation, metadata: { tone: primary } }
+                - { name: in_resolution, metadata: { tone: primary } }
+                - { name: resolved, metadata: { tone: success } }
+                - { name: closed, metadata: { tone: neutral } }
             transitions:
                 start_investigation:
                     from: reported

@@ -21,7 +21,7 @@
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } %}
-            {% include '_components/_badge.html.twig' with { variant: asset.status == 'active' ? 'success' : 'secondary', content: ('asset.status.' ~ asset.status)|trans({}, 'asset') } %}
+            {% include '_components/_badge.html.twig' with { variant: lifecycle_tone('App\\Entity\\Asset', asset.status), content: ('asset.status.' ~ asset.status)|trans({}, 'asset') } %}
             {% if asset.isDoraRelevant %}
                 {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA' } %}
             {% endif %}

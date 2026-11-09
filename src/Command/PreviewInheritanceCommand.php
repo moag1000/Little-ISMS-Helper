@@ -63,7 +63,8 @@ final class PreviewInheritanceCommand extends Command
             return Command::FAILURE;
         }
 
-        $user = $this->userRepository->findOneBy([]);
+        // A user of this organisation, never one of another.
+        $user = $this->userRepository->findOneBy(['tenant' => $tenant]);
         if ($user === null) {
             $io->error('No user available to attribute the preview run to.');
             return Command::FAILURE;

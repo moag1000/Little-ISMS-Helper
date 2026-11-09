@@ -40,7 +40,7 @@ Commands stehen in `Schedule::COMMAND_TASKS`, Messages in `addBuiltInTasks()`.
 | `30 1 * * *` | `app:reuse:capture-snapshot` | Reuse-Trend-Snapshot |
 | `0 2 * * *` | `app:backup:create` | Instanzweites Backup nach `var/backups/` |
 | `30 2 * * *` | `app:backup:prune` | Backups älter als 30 Tage löschen, die letzten 10 bleiben |
-| `45 2 * * *` | `app:audit-log:cleanup` | Audit-Log nach Aufbewahrungsfrist bereinigen |
+| `45 2 * * *` | `app:audit-log:cleanup --force` | Audit-Log nach Aufbewahrungsfrist bereinigen |
 | `0 3 * * *` | `app:four-eyes:cleanup-expired` | Abgelaufene Vier-Augen-Anfragen markieren |
 | `0 3 * * *` | `CleanupExpiredSessionsMessage` | Abgelaufene Sessions löschen |
 | `15 3 * * *` | `app:policy-wizard:purge-sandboxes` | Sandbox-Läufe des Policy-Wizards löschen (> 7 Tage) |
@@ -52,7 +52,6 @@ Commands stehen in `Schedule::COMMAND_TASKS`, Messages in `addBuiltInTasks()`.
 | `0 5 * * *` | `SyncEuvdFeedMessage` | ENISA-EUVD-Feed abgleichen |
 | `30 5 * * *` | `app:suggestions:generate` | Vorschlags-Warteschlange füllen |
 | `30 5 * * *` | `app:risk:schedule-reviews` | Review-Termine für Risiken ohne Termin setzen |
-| `0 6 * * 1` | `GenerateComplianceReportMessage` | Compliance-Statistik ins Log |
 | `0 7 * * *` | `app:notification:send-digests` | Digest-Mails der Benachrichtigungskanäle |
 
 Jeder Command wird mit `--no-interaction` aufgerufen und begrenzt die

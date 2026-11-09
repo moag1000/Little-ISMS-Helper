@@ -22,7 +22,7 @@
 
     {# Status banner (RED/YELLOW state explanation) #}
     {% set st = snapshot.status %}
-    {% set bannerVariant = st == 'red' ? 'danger' : (st == 'yellow' ? 'warning' : (st == 'green' ? 'success' : 'info')) %}
+    {% set bannerVariant = st in ['red', 'yellow', 'green'] ? status_tone('rag', st) : 'info' %}
     {{ _fa_alert.render({
         variant: bannerVariant,
         dismissible: false,
@@ -33,7 +33,7 @@
     }) }}
 
     {# KPI tiles — Aurora feature-cards #}
-    {% set heartbeatVariant = st == 'green' ? 'success' : (st == 'yellow' ? 'warning' : (st == 'red' ? 'danger' : 'primary')) %}
+    {% set heartbeatVariant = status_tone('rag', st) %}
     {% set queueVariant = snapshot.queue_depth == 0 ? 'success' : (snapshot.queue_depth < 20 ? 'primary' : (snapshot.queue_depth < 50 ? 'warning' : 'danger')) %}
     {% set pendingVariant = snapshot.pending_jobs == 0 ? 'success' : (snapshot.pending_jobs < 10 ? 'warning' : 'danger') %}
     {% set failedVariant = snapshot.failed_jobs_24h == 0 ? 'success' : (snapshot.failed_jobs_24h < 5 ? 'warning' : 'danger') %}
@@ -91,6 +91,8 @@
         <div class="fa-section__body">
             <p>{{ 'admin.queue.process_now.description'|trans({}, 'admin') }}</p>
 
+            {# Instance operation: drains every organisation's queue (S23). #}
+            {% if is_granted('ADMIN_GLOBAL_OP') %}
             <form method="post"
                   action="{{ path('admin_queue_process_now') }}"
                   class="d-flex flex-wrap gap-3 align-items-center">
@@ -103,6 +105,7 @@
                     {{ 'admin.queue.process_now.fineprint'|trans({}, 'admin') }}
                 </span>
             </form>
+            {% endif %}
 
             <div class="mt-4">
                 <h3 class="h6 mb-2">{{ 'admin.queue.cron.title'|trans({}, 'admin') }}</h3>
@@ -145,10 +148,7 @@
                         <tbody class="fa-table__body">
                             {% for job in recent_jobs %}
                                 {% set jobStatus = job.status|default('unknown') %}
-                                {% set statusTone = jobStatus == 'succeeded' ? 'success'
-                                    : (jobStatus == 'failed' ? 'danger'
-                                    : (jobStatus == 'running' ? 'primary'
-                                    : (jobStatus == 'pending' ? 'warning' : 'neutral'))) %}
+                                {% set statusTone = status_tone('async_job', jobStatus) %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell">
                                         <code class="small">{{ job.name|default('—') }}</code>

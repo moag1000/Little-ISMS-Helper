@@ -23,7 +23,7 @@
 }) }}
 
 <div class="container-fluid py-4">
-    {% set _status %}<span class="fa-status-pill fa-status-pill--{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'neutral') }}">{{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}</span>{% endset %}
+    {% set _status %}<span class="fa-status-pill fa-status-pill--{{ lifecycle_tone('App\\Entity\\AuditProgram', program.status) }}">{{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}</span>{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         facts: [

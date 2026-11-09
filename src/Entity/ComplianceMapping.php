@@ -789,19 +789,5 @@ class ComplianceMapping
     public function getMqsBreakdown(): ?array { return $this->mqsBreakdown; }
     public function setMqsBreakdown(?array $breakdown): static { $this->mqsBreakdown = $breakdown; return $this; }
 
-    /**
-     * Lifecycle-State-Badge für UI.
-     */
-    public function getLifecycleBadgeClass(): string
-    {
-        return match ($this->lifecycleState) {
-            'published' => 'success',
-            'approved' => 'primary',
-            'review' => 'warning',
-            'draft' => 'secondary',
-            'deprecated' => 'danger',
-            default => 'secondary',
-        };
-    }
 }
 

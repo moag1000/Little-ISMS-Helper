@@ -141,10 +141,7 @@
                 <div class="tab-pane fade show active" id="table-view" role="tabpanel">
                     <div class="fa-audit-feed">
                         {% for log in page %}
-                            {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
-                                : (log.action in ['error', 'failed'] ? 'danger'
-                                : (log.action in ['update', 'login_failed'] ? 'warning'
-                                : 'info')) -%}
+                            {%- set sev = pill_tone_action(log.action) -%}
                             {{ _fa_audit_row.render({
                                 ts:     log.createdAt|fa_datetime(true),
                                 sev:    sev,
@@ -183,10 +180,7 @@
                 {# Compact View — tamper-evident log line per entry, mono-typed #}
                 <div class="tab-pane fade" id="compact-view" role="tabpanel">
                     {% for log in page %}
-                        {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
-                            : (log.action in ['update', 'login_failed'] ? 'warning'
-                            : (log.action in ['create', 'login', 'export', 'import'] ? 'info'
-                            : 'info')) -%}
+                        {%- set sev = pill_tone_action(log.action) -%}
                         {{ _fa_audit_row.render({
                             ts: log.createdAt|fa_time(true),
                             sev: sev,

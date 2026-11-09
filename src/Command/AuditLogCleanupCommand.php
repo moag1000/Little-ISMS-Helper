@@ -81,6 +81,8 @@ class AuditLogCleanupCommand
         bool $dryRun = false,
         #[Option(description: 'Number of days to retain audit logs (overrides SystemSettings)', name: 'retention-days')]
         ?int $retentionDays = null,
+        #[Option(description: 'Delete without asking (the scheduler runs without a terminal)', name: 'force')]
+        bool $force = false,
         ?SymfonyStyle $symfonyStyle = null
     ): int
     {
@@ -145,8 +147,9 @@ class AuditLogCleanupCommand
             ]);
             return Command::SUCCESS;
         }
-        // Confirm deletion
-        if (!$symfonyStyle->confirm(sprintf('Delete %d audit log entries?', $count), false)) {
+        // Confirm deletion — under --no-interaction confirm() answers its default
+        // (no), so the scheduled run passes --force or it never deletes.
+        if (!$force && !$symfonyStyle->confirm(sprintf('Delete %d audit log entries?', $count), false)) {
             $symfonyStyle->warning('Operation cancelled by user.');
             return Command::SUCCESS;
         }

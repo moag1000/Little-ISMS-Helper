@@ -158,7 +158,7 @@
        Wizard-generated docs; controller injects the auditorScore DTO. #}
     {% if document.generatedFromTemplate is not null and auditorScore is defined and auditorScore is not null %}
         {% set _score = auditorScore %}
-        {% set _variant = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning' : 'danger') %}
+        {% set _variant = status_tone('rag', _score.tier) %}
         {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'nav-shield-alert' : 'nav-shield-alert') %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: _variant, icon: _icon, class: 'mb-3' } } %}
             {% block alert_body %}

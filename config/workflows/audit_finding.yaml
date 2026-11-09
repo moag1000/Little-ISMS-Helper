@@ -9,11 +9,11 @@ framework:
                 - App\Entity\AuditFinding
             initial_marking: open
             places:
-                - open
-                - in_progress
-                - resolved
-                - verified
-                - closed
+                - { name: open, metadata: { tone: warning } }
+                - { name: in_progress, metadata: { tone: primary } }
+                - { name: resolved, metadata: { tone: success } }
+                - { name: verified, metadata: { tone: success } }
+                - { name: closed, metadata: { tone: neutral } }
             transitions:
                 start:
                     from: open

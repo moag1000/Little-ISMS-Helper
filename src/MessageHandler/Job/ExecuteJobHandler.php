@@ -51,16 +51,24 @@ final class ExecuteJobHandler
         // the Doctrine tenant_filter is unarmed and every findAll() would read
         // across all tenants. TenantContext::setCurrentTenantById() arms it.
         // ?? keeps messages queued before this field existed deserialisable.
+        // The previous context is put back afterwards: the worker handles the
+        // next message (another organisation's job, a scheduled command) in
+        // the same process.
         $tenantId = $message->tenantId ?? null;
+        $run = fn () => $this->runScoped($message, $tenantId);
         if ($tenantId !== null || $this->isUnscoped($message)) {
-            $this->tenantContext->setCurrentTenantById($tenantId);
+            $this->tenantContext->runAs($tenantId, $run);
         } else {
             // Dispatched by an account without an organisation that is no
             // instance operator: same NO_ORGANISATION scope as the request
             // filter of the in-request runner, never unscoped.
-            $this->tenantContext->setNoOrganisation();
+            $this->tenantContext->runWithoutOrganisation($run);
         }
+    }
 
+    private function runScoped(ExecuteJobMessage $message, ?int $tenantId): void
+    {
+        $id = $message->jobId;
         $this->jobStatusService->markRunning($id);
 
         try {

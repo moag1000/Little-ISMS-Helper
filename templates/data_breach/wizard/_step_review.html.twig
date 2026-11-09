@@ -29,7 +29,7 @@
         <span class="fa-modal--wizard__review-label">{{ 'data_breach.form.severity'|trans({}, 'privacy') }}</span>
         <span class="fa-modal--wizard__review-value">
             {% if data_breach.severity %}
-                <span class="fa-status-pill fa-status-pill--{{ data_breach.severity in ['high','critical'] ? 'danger' : (data_breach.severity == 'medium' ? 'warning' : 'success') }} fa-status-pill--sm">
+                <span class="fa-status-pill fa-status-pill--{{ pill_tone_severity(data_breach.severity) }} fa-status-pill--sm">
                     {{ ('data_breach.severity.' ~ data_breach.severity)|trans({}, 'privacy') }}
                 </span>
             {% else %}—{% endif %}

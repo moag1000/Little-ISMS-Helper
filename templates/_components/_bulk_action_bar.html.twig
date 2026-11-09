@@ -172,8 +172,7 @@
                                        data-bulk-actions-target="tagCheckbox"
                                        aria-label="{{ 'tags.bulk.aria.select_tag'|trans({'%name%': tag.name}, 'tags') }}">
                                 <label class="form-check-label" for="bulk-tag-{{ tag.id }}">
-                                    {% set _bapill = (tag.color|default('secondary')) in ['info'] ? 'primary' : ((tag.color|default('secondary')) in ['secondary','light','dark'] ? 'neutral' : (tag.color|default('secondary'))) %}
-                                    {{ pill.render(tag.name, _bapill) }}
+                                    {{ pill.render(tag.name, pill_tone_bs(tag.color)) }}
                                     {% if tag.frameworkCode %}
                                         <small class="text-muted">({{ tag.frameworkCode }})</small>
                                     {% endif %}

@@ -17,8 +17,8 @@ framework:
                 - App\Entity\TransferImpactAssessment
             initial_marking: draft
             places:
-                - draft
-                - assessed
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: assessed, metadata: { tone: primary } }
             transitions:
                 assess:
                     from: draft

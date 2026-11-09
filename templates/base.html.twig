@@ -405,7 +405,7 @@
                         {# Flash types are the alert tones; 'error' → danger, anything else → info. #}
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
-                                {{ faAlert.render(message|fa_flash, label in ['success', 'danger', 'warning', 'info'] ? label : (label == 'error' ? 'danger' : 'info'), { withAlva: true, dismissible: true }) }}
+                                {{ faAlert.render(message|fa_flash, flash_tone(label), { withAlva: true, dismissible: true }) }}
                             {% endfor %}
                         {% endfor %}
                     </div>

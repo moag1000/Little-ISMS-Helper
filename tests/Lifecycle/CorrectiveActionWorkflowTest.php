@@ -84,7 +84,7 @@ final class CorrectiveActionWorkflowTest extends TestCase
         // Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: pin the new 7-place
         // shape so any future drift (especially accidental drop of the
         // intermediate `verified` place) breaks the build.
-        $places = $this->workflowConfig()['places'];
+        $places = array_column($this->workflowConfig()['places'], 'name');
         $this->assertEqualsCanonicalizing(
             ['planned', 'in_progress', 'completed', 'verified', 'verified_effective', 'verified_ineffective', 'cancelled'],
             $places,

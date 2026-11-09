@@ -198,7 +198,7 @@
                                     <td class="fa-table__cell"><code class="small">{{ r.zielobjekt ?? '—' }}</code></td>
                                     <td class="fa-table__cell">
                                         {% set s = r.status %}
-                                        {{ pill.render(s, s == 'direct' ? 'success' : (s == 'split' ? 'warning' : (s == 'merged' ? 'primary' : (s == 'removed' ? 'danger' : (s == 'bcm' ? 'primary' : 'neutral')))), {size: 'sm'}) }}
+                                        {{ pill.render(s, status_tone('gstool_kind', s), {size: 'sm'}) }}
                                         {% if r.note %}<div class="small text-muted">{{ r.note }}</div>{% endif %}
                                     </td>
                                 </tr>

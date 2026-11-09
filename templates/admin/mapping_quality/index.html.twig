@@ -88,8 +88,8 @@
                                 <div class="small text-muted">{{ m.sourceRequirement.framework.name }} → {{ m.targetRequirement.framework.name }}</div>
                             </td>
                             <td class="fa-table__cell">{% if m.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ m.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</td>
-                            <td class="fa-table__cell">{{ pill.render(m.confidence, m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'neutral'), {size: 'sm'}) }}</td>
-                            <td class="fa-table__cell">{{ pill.render(m.lifecycleState, m.lifecycleBadgeClass in ['info'] ? 'primary' : (m.lifecycleBadgeClass in ['secondary','light','dark'] ? 'neutral' : m.lifecycleBadgeClass), {size: 'sm'}) }}</td>
+                            <td class="fa-table__cell">{{ pill.render(m.confidence, status_tone('confidence', m.confidence), {size: 'sm'}) }}</td>
+                            <td class="fa-table__cell">{{ pill.render(m.lifecycleState, lifecycle_tone('App\\Entity\\ComplianceMapping', m.lifecycleState), {size: 'sm'}) }}</td>
                             <td class="fa-table__cell fa-table__cell--num">
                                 {% set scoreClass = m.qualityScore >= 80 ? 'success' : (m.qualityScore >= 60 ? 'warning' : 'danger') %}
                                 <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '—' }}</span>

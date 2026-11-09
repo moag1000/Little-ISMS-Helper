@@ -210,7 +210,7 @@
                                         <li class="py-1 border-bottom">
                                             <div class="d-flex justify-content-between">
                                                 <span>
-                                                    <span class="fa-status-pill fa-status-pill--{{ req.type == 'muss' ? 'danger' : (req.type == 'sollte' ? 'warning' : 'primary') }}">
+                                                    <span class="fa-status-pill fa-status-pill--{{ status_tone('bsi_modality', req.type) }}">
                                                         {{ ('bsi_check.type.' ~ req.type)|trans({}, 'messages') }}
                                                     </span>
                                                     <code class="ms-1">{{ req.id }}</code>
