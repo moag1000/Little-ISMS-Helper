@@ -27,12 +27,18 @@ framework:
                     to: completed
                     metadata:
                         roles: [ROLE_DPO]
+                        # S21: the responsible person acts too — the controller opens the step to
+                        # MANAGER_OR_RESPONSIBLE and the deadline reminder goes to them.
+                        responsible: true
                         module: privacy
                 reject:
                     from: [in_progress, identity_verification, extended]
                     to: rejected
                     metadata:
                         roles: [ROLE_DPO]
+                        # S21: the responsible person acts too — the controller opens the step to
+                        # MANAGER_OR_RESPONSIBLE and the deadline reminder goes to them.
+                        responsible: true
                         four_eyes: true
                         reason_required: true
                         module: privacy
@@ -57,6 +63,9 @@ framework:
                     to: extended
                     metadata:
                         roles: [ROLE_DPO]
+                        # S21: the responsible person acts too — the controller opens the step to
+                        # MANAGER_OR_RESPONSIBLE and the deadline reminder goes to them.
+                        responsible: true
                         reason_required: true
                         module: privacy
                 # X.6: resume processing after extension

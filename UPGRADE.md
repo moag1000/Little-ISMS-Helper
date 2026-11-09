@@ -114,6 +114,17 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Geändertes Verhalten
 
+- **Statusschritte prüfen die Rollen überall (S21):** Jeder Statuswechsel prüft die Rollen aus der
+  Workflow-Definition (und die strengeren Overrides der Organisation) selbst, egal ob er über die
+  Lebenszyklus-Schaltfläche, eine Fachseite, REST, den Assistenten (MCP), einen Job oder einen
+  Vorschlag ausgelöst wird. Wer die Rolle nicht hat, bekommt „Für diesen Schritt fehlt die nötige
+  Rolle“ bzw. 403. Spürbar vor allem bei: interne Audits (Bericht einreichen/überarbeiten nur
+  `ROLE_AUDITOR`, Ablehnen und Abschließen nur `ROLE_CISO`; Anlegen und Kopieren nur Manager, Bearbeiten
+  Manager oder Leitender Auditor), DSFA (Einreichen `ROLE_DPO`, Freigeben/Ablehnen `ROLE_CISO`),
+  Transfer-Folgenabschätzung (`ROLE_DPO` oder Manager), Betroffenenanfragen und Datenpannen
+  (`ROLE_DPO` oder die zuständige Person), Vorschlag „Behandlung abschließen“ (`ROLE_RISK_MANAGER`).
+  Wer bisher einen solchen Schritt ohne die Rolle gemacht hat, braucht jetzt die Rolle unter
+  Admin > Benutzer. Keine Migration.
 - **Anmeldung:** Der zweite Faktor gilt je Anmeldung und Person, auch nach SSO und bei der
   Neuanmeldung mit Passwort; jeder TOTP-Code zählt einmal. Deaktivierte Benutzer und Mitglieder
   deaktivierter Organisationen sind überall abgewiesen, ihre Tokens widerrufen.

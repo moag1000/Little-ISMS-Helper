@@ -20,12 +20,15 @@ interface LifecycleTransitionInterface
      *                                     `four_eyes: true` in YAML metadata.
      *                                     Enforced by FourEyesValidator subscriber.
      * @param  bool      $approverAuthorityVerified True when the caller has already
-     *                                     verified $fourEyesApprover's authority
-     *                                     against a more specific rule than the
-     *                                     transition's `roles` (WorkflowService:
-     *                                     the step's approver_role / approver_users).
-     *                                     FourEyesValidator then skips its role
-     *                                     check; the distinct-user rule still applies.
+     *                                     verified the acting person's authority
+     *                                     ($fourEyesApprover, else $user) against a
+     *                                     more specific rule than the transition's
+     *                                     `roles` (WorkflowService: the step's
+     *                                     approver_role / approver_users; risk
+     *                                     acceptance: RiskAcceptanceVoter tier).
+     *                                     TransitionAccess and FourEyesValidator then
+     *                                     skip their role check; the distinct-user
+     *                                     rule still applies.
      * @param  EligibleApprovers|null $eligibleApprovers Who else could grant this
      *                                     four-eyes transition (WorkflowService: users
      *                                     eligible for the authorising step). The
@@ -43,8 +46,11 @@ interface LifecycleTransitionInterface
      *                                     with reason code `automatic_actor` — automatic
      *                                     progression never satisfies the two-person
      *                                     rule, the single-approver escape included.
+     *                                     Automatic calls skip the role check (S21).
      *
      * @throws InvalidTransitionException
+     * @throws \App\Lifecycle\Exception\TransitionAccessDeniedException acting person
+     *         (approver, else $user, else the logged-in user) lacks the effective roles
      * @throws \App\Lifecycle\Exception\ReasonRequiredException
      * @throws \App\Lifecycle\Exception\FourEyesRequiredException
      */

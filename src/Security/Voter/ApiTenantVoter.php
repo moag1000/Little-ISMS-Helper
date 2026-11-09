@@ -78,6 +78,9 @@ final class ApiTenantVoter extends Voter
         // ContextController::edit / ISMSObjectiveController::new|edit: ISMS_STEERING_EDIT
         \App\Entity\ISMSContext::class => IsmsSteeringVoter::STEERING_ROLES,
         \App\Entity\ISMSObjective::class => IsmsSteeringVoter::STEERING_ROLES,
+        // AuditController::new|clone: ROLE_MANAGER, edit: manager or lead auditor (S21). The API keeps
+        // to the manager — an audit's scope and lead auditor are not set by the audited.
+        \App\Entity\InternalAudit::class => ['ROLE_MANAGER'],
         // ThreatIntelligenceController::new|edit: ROLE_MANAGER
         \App\Entity\ThreatIntelligence::class => ['ROLE_MANAGER'],
         // Machine-fed logs (badge reader, HSM): written by the integration account the admin sets up,

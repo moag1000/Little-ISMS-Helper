@@ -6,7 +6,10 @@ namespace App\Tests\Lifecycle;
 
 use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleRegistry;
+use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\LifecycleService;
+use App\Lifecycle\TransitionAccess;
+use Symfony\Bundle\SecurityBundle\Security;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -55,7 +58,7 @@ final class LifecycleServiceTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->expects($this->once())->method('flush');
 
-        $service = new LifecycleService($registry, $em);
+        $service = new LifecycleService($registry, $em, $this->openAccess());
         $service->transition($entity, 'document_lifecycle', 'submit_for_review', null, 'test');
     }
 
@@ -90,7 +93,7 @@ final class LifecycleServiceTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->expects($this->never())->method('flush');
 
-        $service = new LifecycleService($registry, $em);
+        $service = new LifecycleService($registry, $em, $this->openAccess());
 
         try {
             $service->transition($entity, 'document_lifecycle', 'publish');
@@ -113,7 +116,7 @@ final class LifecycleServiceTest extends TestCase
         $registry = $this->createStub(Registry::class);
         $em = $this->createStub(EntityManagerInterface::class);
 
-        $service = new LifecycleService($registry, $em);
+        $service = new LifecycleService($registry, $em, $this->openAccess());
 
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('lacks getStatus()/setStatus()');
@@ -149,10 +152,19 @@ final class LifecycleServiceTest extends TestCase
 
         $em = $this->createStub(EntityManagerInterface::class);
 
-        $service = new LifecycleService($registry, $em);
+        $service = new LifecycleService($registry, $em, $this->openAccess());
         $service->transition($entity, 'document_lifecycle', 'submit_for_review', null, 'automated test');
 
         // If we get here without error, the service works without AuditLogger
         $this->addToAssertionCount(1);
+    }
+
+    /** Nobody logged in and no user passed: the role check has no person to check (S21). */
+    private function openAccess(): TransitionAccess
+    {
+        $security = $this->createStub(Security::class);
+        $security->method('getUser')->willReturn(null);
+
+        return new TransitionAccess($security, $this->createStub(LifecycleConfigResolverInterface::class));
     }
 }

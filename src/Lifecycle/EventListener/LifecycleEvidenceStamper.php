@@ -7,6 +7,7 @@ namespace App\Lifecycle\EventListener;
 use App\Entity\BCExercise;
 use App\Entity\ChangeRequest;
 use App\Entity\Incident;
+use App\Entity\InternalAudit;
 use App\Entity\User;
 use DateTime;
 use DateTimeImmutable;
@@ -28,6 +29,10 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
  * - BC exercise (ISO 22301 8.5): complete → each tested plan counts as tested
  *   on the exercise date ("report completed" is derived by the exercise itself,
  *   BCExercise::deriveReportCompleted()).
+ * - internal audit (ISO 27001 9.2.2, S21): report / rework → reporter and time;
+ *   approve → approver (the second person) and time, rejection reason cleared;
+ *   reject → the reason; close → who closed and when. Stamped only after the
+ *   step succeeded, so a refused step leaves no evidence behind.
  *
  * Tests: tests/Lifecycle/LifecycleEvidenceStamperTest.php; the forms show the
  * fields read-only (tests/Api/ApiEvidenceFieldNamesTest.php).
@@ -49,6 +54,7 @@ final class LifecycleEvidenceStamper
             $subject instanceof ChangeRequest => $this->changeRequest($subject, $transition, $context, $now),
             $subject instanceof Incident => $this->incident($subject, $transition, $now),
             $subject instanceof BCExercise => $this->exercise($subject, $transition, $now),
+            $subject instanceof InternalAudit => $this->internalAudit($subject, $transition, $context, $now),
             default => null,
         };
     }
@@ -85,6 +91,31 @@ final class LifecycleEvidenceStamper
         }
     }
 
+    /** @param array<string, mixed> $context */
+    private function internalAudit(InternalAudit $audit, string $transition, array $context, DateTimeImmutable $now): void
+    {
+        $actor = self::actor($context);
+        switch ($transition) {
+            case 'report':
+            case 'rework':
+                $audit->setReportedBy($actor)->setReportedAt($now);
+                break;
+            case 'approve':
+                $audit->setApprovedBy($actor)->setApprovedAt($now)->setRejectionReason(null);
+                break;
+            case 'reject':
+                $reason = $context['reason'] ?? null;
+                $audit->setRejectionReason(is_string($reason) && trim($reason) !== '' ? trim($reason) : null);
+                break;
+            case 'close':
+                $audit->setClosedBy($actor)->setClosedAt($now);
+                break;
+            default:
+                return;
+        }
+        $audit->setUpdatedAt($now);
+    }
+
     private function exercise(BCExercise $exercise, string $transition, DateTimeImmutable $now): void
     {
         if ($transition !== 'complete') {
@@ -106,10 +137,25 @@ final class LifecycleEvidenceStamper
      *
      * @param array<string, mixed> $context
      */
-    private static function actorName(array $context): ?string
+    private static function actor(array $context): ?User
     {
         $approver = $context['four_eyes_approver'] ?? null;
-        $user = $approver instanceof User ? $approver : ($context['user'] ?? null);
+        if ($approver instanceof User) {
+            return $approver;
+        }
+        $user = $context['user'] ?? null;
+
+        return $user instanceof User ? $user : null;
+    }
+
+    /**
+     * Display name of {@see self::actor()}.
+     *
+     * @param array<string, mixed> $context
+     */
+    private static function actorName(array $context): ?string
+    {
+        $user = self::actor($context);
         if (!$user instanceof User) {
             return null;
         }
