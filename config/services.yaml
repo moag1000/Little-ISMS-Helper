@@ -416,11 +416,6 @@ services:
                 gap_report.quick_win_effort_percentile: '%app.compliance.gap_report.quick_win_effort_percentile%'
                 gap_report.quick_win_min_gap_percent: '%app.compliance.gap_report.quick_win_min_gap_percent%'
 
-    # WS-1 activation service: inject feature flag bound parameter
-    App\Service\ComplianceFrameworkActivationService:
-        arguments:
-            $inheritanceEnabled: '%app.compliance.mapping_inheritance.enabled%'
-
     # ── Compliance-Certificate OCR — capability seam ───────────────
     # Production binds the availability verdict to the real detector; the test
     # env overrides this alias with a hermetic stub (config/packages/test).

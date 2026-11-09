@@ -25,10 +25,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Per-tenant Report-Doc Style Configurator.
  *
- * Lets ROLE_ADMIN re-skin generated report documents (cover pattern,
- * default audience, watermark, exec-summary/appendix/distribution-list
- * toggles, font, page orientation, chart color scheme, footer
- * disclaimer, optional custom-CSS override) without touching code.
+ * Lets ROLE_ADMIN re-skin generated report documents (watermark,
+ * exec-summary/appendix/distribution-list toggles, footer disclaimer)
+ * without touching code.
  * Form persists to TenantBranding; Live-Preview-XHR re-renders the
  * `_fa_report_doc.html.twig` macro with sample data.
  *
@@ -143,7 +142,7 @@ final class AdminReportStyleController extends AbstractController
     }
 
     /**
-     * Reset to defaults. POST-only; CSRF-guarded. Wipes all 12
+     * Reset to defaults. POST-only; CSRF-guarded. Wipes all
      * `reportDoc*` fields back to their defaults but keeps the rest of
      * TenantBranding (logo, header, primary color, policyDoc*) intact.
      */
@@ -157,18 +156,11 @@ final class AdminReportStyleController extends AbstractController
         $oldSnapshot = $branding->getReportDocStyleConfig();
 
         $branding
-            ->setReportDocCoverPattern('branded')
-            ->setReportDocDefaultAudience('internal')
             ->setReportDocWatermarkEnabled(true)
-            ->setReportDocWatermarkOpacity(0.08)
             ->setReportDocShowExecSummary(true)
             ->setReportDocShowAppendix(true)
             ->setReportDocShowDistributionList(true)
-            ->setReportDocFontFamily('Inter')
-            ->setReportDocPageOrientation('auto')
-            ->setReportDocChartColorScheme('aurora')
             ->setReportDocFooterDisclaimer(null)
-            ->setReportDocCustomCss(null)
             ->setUpdatedAt(new DateTimeImmutable());
 
         $user = $this->getUser();
@@ -241,20 +233,11 @@ final class AdminReportStyleController extends AbstractController
     private function normalisePreviewPayload(array $payload): array
     {
         $allowed = [
-            'cover_pattern' => 'string',
-            'default_audience' => 'string',
             'watermark_enabled' => 'bool',
-            'watermark_opacity' => 'float',
             'show_exec_summary' => 'bool',
             'show_appendix' => 'bool',
             'show_distribution_list' => 'bool',
-            'font_family' => 'string',
-            'page_orientation' => 'string',
-            'chart_color_scheme' => 'string',
             'footer_disclaimer' => 'string_nullable',
-            // custom_css NOT accepted via XHR — preview always uses the
-            // stored value to avoid arbitrary CSS injection from non-admin
-            // users with a forged payload.
         ];
 
         $patch = [];
@@ -265,30 +248,9 @@ final class AdminReportStyleController extends AbstractController
             $value = $payload[$key];
             $patch[$key] = match ($type) {
                 'bool' => (bool) $value,
-                'float' => max(0.0, min(1.0, (float) $value)),
-                'string' => is_string($value) ? substr($value, 0, 64) : '',
                 'string_nullable' => is_string($value) && trim($value) !== '' ? substr($value, 0, 1000) : null,
                 default => $value,
             };
-        }
-
-        // Validate enum allow-lists. Unknown values fall back to defaults
-        // so the preview never renders broken markup from a forged payload.
-        if (isset($patch['cover_pattern'])
-            && !in_array($patch['cover_pattern'], TenantBranding::REPORT_DOC_COVER_PATTERNS, true)) {
-            $patch['cover_pattern'] = 'branded';
-        }
-        if (isset($patch['default_audience'])
-            && !in_array($patch['default_audience'], TenantBranding::REPORT_DOC_AUDIENCES, true)) {
-            $patch['default_audience'] = 'internal';
-        }
-        if (isset($patch['page_orientation'])
-            && !in_array($patch['page_orientation'], TenantBranding::REPORT_DOC_PAGE_ORIENTATIONS, true)) {
-            $patch['page_orientation'] = 'auto';
-        }
-        if (isset($patch['chart_color_scheme'])
-            && !in_array($patch['chart_color_scheme'], TenantBranding::REPORT_DOC_CHART_COLOR_SCHEMES, true)) {
-            $patch['chart_color_scheme'] = 'aurora';
         }
 
         return $patch;

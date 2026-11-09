@@ -92,6 +92,18 @@ final class SendNotificationDigestsCommand
                 continue;
             }
 
+            // Channel switched off after the rows were collected: send nothing.
+            if (!$channel->isActive()) {
+                foreach ($deliveries as $delivery) {
+                    $delivery->markFailed('Channel deactivated before the digest was sent.');
+                }
+                if (!$dryRun) {
+                    $this->entityManager->flush();
+                }
+                $totalSkipped += count($deliveries);
+                continue;
+            }
+
             $symfonyStyle->section(sprintf(
                 'Channel "%s" (%d deliveries)',
                 $channel->getName(),

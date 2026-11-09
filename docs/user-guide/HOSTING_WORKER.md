@@ -7,12 +7,16 @@ Mail-Queue dort siehe [DOCKER_PRODUCTION.md](../deployment/DOCKER_PRODUCTION.md#
 
 ## Was der Worker erledigt
 
-Ein Worker ist ein `messenger:consume`-Lauf. Er arbeitet zwei Transporte ab:
+Ein Worker ist ein `messenger:consume`-Lauf. Er arbeitet drei Transporte ab:
 
 | Transport | Inhalt | Ohne Worker |
 |---|---|---|
 | `scheduler_default` | Geplante Aufgaben aus `src/Schedule.php` (siehe [SYMFONY_SCHEDULER.md](../SYMFONY_SCHEDULER.md)): Fristen-Workflows, Erinnerungen (`app:send-reminders`), Digest-Mails, Snapshots, Backup + Aufräumen, `app:uploads:protect` | Nichts davon läuft |
+| `scheduler` | Geplante Nachrichten, die die Anwendung selbst einreiht (Compliance-Berichte, geplante Aufgaben) | Diese Berichte entstehen nicht |
 | `async` | Ausgehende E-Mails (Mailer-Nachrichten), bei `APP_ASYNC_JOB_RUNNER=messenger` auch die Admin-Jobs | Mails bleiben in der Tabelle `messenger_messages` liegen |
+
+Warten E-Mails länger als 15 Minuten in der Warteschlange, zeigt die Anwendung Admins einen
+roten Hinweis (Queue-Status, „Queue jetzt abarbeiten“).
 
 Admin-Jobs (Backup, Export, Schema-Reconcile, Daten-Reparatur) laufen standardmäßig
 **ohne** Worker: der Runner `in_request` gibt die Antwort an den Browser zurück und
@@ -24,7 +28,7 @@ Nur bei `APP_ASYNC_JOB_RUNNER=messenger` übernimmt der Worker sie.
 Genau eine Zeile genügt. Sie startet jede Minute einen Worker für 55 s:
 
 ```cron
-* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
+* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume scheduler_default scheduler async --time-limit=55 --limit=20 --quiet
 ```
 
 | Flag | Wert | Bedeutung |
@@ -37,7 +41,7 @@ Genau eine Zeile genügt. Sie startet jede Minute einen Worker für 55 s:
 Mit Log-Datei:
 
 ```cron
-* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --memory-limit=256M --quiet >> var/log/worker.log 2>&1
+* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume scheduler_default scheduler async --time-limit=55 --limit=20 --memory-limit=256M --quiet >> var/log/worker.log 2>&1
 ```
 
 Verpasste Läufe holt der Scheduler einmal nach.
@@ -63,7 +67,7 @@ Wichtig:
 2. Common Settings: "Once Per Minute (\* \* \* \* \*)"
 3. Command:
    ```
-   cd /home/USERNAME/public_html && /usr/local/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
+   cd /home/USERNAME/public_html && /usr/local/bin/php bin/console messenger:consume scheduler_default scheduler async --time-limit=55 --limit=20 --quiet
    ```
 4. "Add New Cron Job"
 
@@ -73,7 +77,7 @@ Wichtig:
 2. Task type: "Run a command"
 3. Command:
    ```
-   /usr/bin/php /var/www/vhosts/example.com/httpdocs/bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
+   /usr/bin/php /var/www/vhosts/example.com/httpdocs/bin/console messenger:consume scheduler_default scheduler async --time-limit=55 --limit=20 --quiet
    ```
 4. Run: "Cron style" → `* * * * *`
 5. Notify: "Errors only"
@@ -83,7 +87,7 @@ Wichtig:
 1. Sites → Cron → Add new cron
 2. Command:
    ```
-   /usr/bin/php /var/www/clients/client1/web1/web/bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
+   /usr/bin/php /var/www/clients/client1/web1/web/bin/console messenger:consume scheduler_default scheduler async --time-limit=55 --limit=20 --quiet
    ```
 3. Schedule: Min `*`, Hour `*`, Day `*`, Month `*`, Weekday `*`
 4. Type: "Chrooted" oder "Full" nach Site-Konfiguration
@@ -91,7 +95,7 @@ Wichtig:
 ### DirectAdmin / generisch (crontab -e)
 
 ```cron
-* * * * * cd /home/user/domains/example.com/public_html && /usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
+* * * * * cd /home/user/domains/example.com/public_html && /usr/bin/php bin/console messenger:consume scheduler_default scheduler async --time-limit=55 --limit=20 --quiet
 ```
 
 ### Eigener Server mit systemd
@@ -107,7 +111,7 @@ After=network.target
 [Service]
 User=www-data
 WorkingDirectory=/var/www/isms-helper
-ExecStart=/usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=3600 --memory-limit=256M
+ExecStart=/usr/bin/php bin/console messenger:consume scheduler_default scheduler async --time-limit=3600 --memory-limit=256M
 Restart=always
 RestartSec=5
 

@@ -49,6 +49,15 @@
     {% set body_html = props.body_html|default('') %}
     {% set cover = props.cover|default({}) %}
 
+    {# The organisation's policy style (Admin > Policy-Stil, TenantBranding.policyDoc*). Without a
+       branding row the design-system defaults apply. #}
+    {% set _style = props.tenant_branding is defined and props.tenant_branding ? props.tenant_branding.policyDocStyleConfig : {} %}
+    {% set _show_toc = _style.show_toc ?? true %}
+    {% set _show_history = _style.show_history ?? true %}
+    {% set _show_annex_a = _style.show_annex_a_refs ?? true %}
+    {% set _signature_lines = _style.signature_lines ?? 3 %}
+    {% set _logo_size = _style.cover_logo_size ?? 'medium' %}
+
     {# Status-driven modifier + watermark text. Falls back to "draft" when
        Document.status is not one of the known values (draft/review/approved/retired). #}
     {% set _status = document is defined and document is not null ? document.status|default('draft') : (cover.status|default('draft')) %}
@@ -59,6 +68,9 @@
         'approved': '',
         'retired':  'Archiviert',
     }[_status_class]|default('') %}
+    {% if (_style.watermark_enabled ?? true) is same as(false) %}
+        {% set _watermark = '' %}
+    {% endif %}
 
     {# data-theme="light" forces the Aurora light-palette tokens inside the
        preview wrapper so it always renders as a white-paper document
@@ -75,7 +87,7 @@
         <header class="policy-doc__cover">
             <div class="policy-doc__cover-top">
                 <div class="policy-doc__brand">
-                    <div class="policy-doc__logo" aria-hidden="true">
+                    <div class="policy-doc__logo policy-doc__logo--{{ _logo_size }}" aria-hidden="true">
                         {% if props.tenant_branding is defined and props.tenant_branding and props.tenant_branding.logoPath %}
                             <img src="{{ props.tenant_branding.logoPath }}" alt="">
                         {% else %}
@@ -172,7 +184,7 @@
                         <dd class="policy-doc__cover-value"><time>{{ cover.generated_on }}</time></dd>
                     </div>
                 {% endif %}
-                {% if cover.annex_a_refs is defined and cover.annex_a_refs %}
+                {% if _show_annex_a and cover.annex_a_refs is defined and cover.annex_a_refs %}
                     <div style="grid-column: 1 / -1;">
                         <dt class="policy-doc__cover-label">{{ cover.annex_a_label|default(('policy_wizard.export.cover.annex_a'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value">{{ cover.annex_a_refs|join(' · ') }}</dd>
@@ -192,7 +204,7 @@
            dompdf's render context does not always carry). Empty TOC
            slot is suppressed entirely. #}
         {% set _headings_raw = body_html|default('')|split('<h2') %}
-        {% if _headings_raw|length > 1 %}
+        {% if _show_toc and _headings_raw|length > 1 %}
             <nav class="policy-doc__toc" aria-label="{{ cover.toc_label|default(('policy_wizard.export.toc.heading'|trans({}, 'policy_wizard'))) }}">
                 <h2 class="policy-doc__toc-heading">{{ cover.toc_label|default(('policy_wizard.export.toc.heading'|trans({}, 'policy_wizard'))) }}</h2>
                 <ol class="policy-doc__toc-list">
@@ -238,7 +250,7 @@
             {% endfor %}
         {% endif %}
 
-        {% if _history|length > 0 %}
+        {% if _show_history and _history|length > 0 %}
             <section class="policy-doc__history">
                 <h2 class="policy-doc__history-heading">{{ cover.history_label|default(('policy_wizard.export.history.heading'|trans({}, 'policy_wizard'))) }}</h2>
                 <table class="policy-doc__history-table">
@@ -289,6 +301,13 @@
             {% endfor %}
         {% endif %}
 
+        {# As many signature fields as the policy style names (1–6): approvers first, then blank lines. #}
+        {% set _signatures = _signatures|slice(0, _signature_lines) %}
+        {% if _signatures|length < _signature_lines %}
+            {% for _blank in range(1, _signature_lines - _signatures|length) %}
+                {% set _signatures = _signatures|merge([{role: '', name: ' ', meta: ''}]) %}
+            {% endfor %}
+        {% endif %}
         {% if _signatures|length > 0 %}
             <footer class="policy-doc__signature" data-signature-method="{{ cover.signature_method|default('internal') }}">
                 <p class="policy-doc__signature-intro">
@@ -296,7 +315,7 @@
                     {{ cover.signature_intro|default(('policy_wizard.export.signature.intro'|trans({}, 'policy_wizard'))) }}
                 </p>
                 <div class="policy-doc__signature-grid">
-                    {% for sig in _signatures|slice(0, 3) %}
+                    {% for sig in _signatures %}
                         <div class="policy-doc__signature-field" data-role="{{ sig.role|default('approver')|lower }}">
                             <p class="policy-doc__signature-role">{{ sig.role|default(('policy_wizard.export.history.col_approver'|trans({}, 'policy_wizard'))) }}</p>
                             <div class="policy-doc__signature-line" aria-hidden="true"></div>

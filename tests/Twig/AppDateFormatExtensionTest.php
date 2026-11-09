@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Twig;
 
+use App\Entity\Tenant;
 use App\Repository\SystemSettingsRepository;
+use App\Service\TenantContext;
 use App\Twig\AppDateFormatExtension;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -106,6 +108,24 @@ final class AppDateFormatExtensionTest extends TestCase
 
         self::assertSame('01.01.2025 00:30', $ext->formatDateTime($utc));
         self::assertSame('31.12.2024', $ext->formatDate($utc));
+    }
+
+    #[Test]
+    public function theOrganisationsTimeZoneWinsOverTheInstances(): void
+    {
+        $repo = $this->createStub(SystemSettingsRepository::class);
+        $repo->method('getSetting')->willReturnCallback(
+            static fn (string $category, string $key, mixed $default = null): mixed => $key === 'timezone' ? 'Europe/Berlin' : $default,
+        );
+        $context = $this->createStub(TenantContext::class);
+        $context->method('getCurrentTenant')->willReturn((new Tenant())->setTimezone('America/New_York'));
+        $utc = new \DateTimeImmutable('2024-12-31 23:30:00', new \DateTimeZone('UTC'));
+
+        self::assertSame('31.12.2024 18:30', (new AppDateFormatExtension($repo, null, $context))->formatDateTime($utc));
+
+        $invalid = $this->createStub(TenantContext::class);
+        $invalid->method('getCurrentTenant')->willReturn((new Tenant())->setTimezone('Mars/Olympus'));
+        self::assertSame('01.01.2025 00:30', (new AppDateFormatExtension($repo, null, $invalid))->formatDateTime($utc), 'unknown zone: the instance\'s');
     }
 
     #[Test]

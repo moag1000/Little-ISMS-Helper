@@ -56,13 +56,6 @@ class TenantBranding
     // can re-skin without touching code via /admin/policy-style.
     // ------------------------------------------------------------------
 
-    #[ORM\Column(length: 64, options: ['default' => 'Inter'])]
-    private string $policyDocFontFamily = 'Inter';
-
-    /** "minimal" | "branded" | "auditor-formal" | "engineering" */
-    #[ORM\Column(length: 32, options: ['default' => 'branded'])]
-    private string $policyDocCoverPattern = 'branded';
-
     #[ORM\Column(options: ['default' => true])]
     private bool $policyDocWatermarkEnabled = true;
 
@@ -98,13 +91,7 @@ class TenantBranding
     #[ORM\Column(length: 16, options: ['default' => 'standard'])]
     private string $policyDocPageMargin = 'standard';
 
-    /**
-     * Optional advanced CSS override (paste-only; rendered via
-     * `|raw` inside the policy-doc <style> block). Restricted to
-     * ROLE_ADMIN at the form layer.
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $policyDocCustomCss = null;
+    // ------------------------------------------------------------------
     // Report-Doc Style Configuration
     //
     // Per-tenant overrides for the `_fa_report_doc.html.twig` macro
@@ -117,20 +104,8 @@ class TenantBranding
     // Independent from the policyDoc* fields so the two configurators don't clash.
     // ------------------------------------------------------------------
 
-    /** "minimal" | "branded" | "board-formal" | "auditor-formal" */
-    #[ORM\Column(length: 32, options: ['default' => 'branded'])]
-    private string $reportDocCoverPattern = 'branded';
-
-    /** "vorstand" | "auditor" | "aufsicht" | "internal" */
-    #[ORM\Column(length: 16, options: ['default' => 'internal'])]
-    private string $reportDocDefaultAudience = 'internal';
-
     #[ORM\Column(options: ['default' => true])]
     private bool $reportDocWatermarkEnabled = true;
-
-    /** 0.0 – 1.0 (UI exposes 0–100 %). */
-    #[ORM\Column(type: Types::FLOAT, options: ['default' => 0.08])]
-    private float $reportDocWatermarkOpacity = 0.08;
 
     #[ORM\Column(options: ['default' => true])]
     private bool $reportDocShowExecSummary = true;
@@ -141,27 +116,8 @@ class TenantBranding
     #[ORM\Column(options: ['default' => true])]
     private bool $reportDocShowDistributionList = true;
 
-    #[ORM\Column(length: 64, options: ['default' => 'Inter'])]
-    private string $reportDocFontFamily = 'Inter';
-
-    /** "portrait" | "landscape" | "auto" */
-    #[ORM\Column(length: 16, options: ['default' => 'auto'])]
-    private string $reportDocPageOrientation = 'auto';
-
-    /** "aurora" | "audit" | "print-friendly" | "colorblind-safe" */
-    #[ORM\Column(length: 32, options: ['default' => 'aurora'])]
-    private string $reportDocChartColorScheme = 'aurora';
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reportDocFooterDisclaimer = null;
-
-    /**
-     * Optional advanced CSS override (paste-only; rendered via `|raw`
-     * inside the report-doc <style> block). Restricted to ROLE_ADMIN
-     * at the form layer.
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $reportDocCustomCss = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $updatedAt = null;
@@ -283,34 +239,8 @@ class TenantBranding
     // Policy-Doc style accessors
     // ------------------------------------------------------------------
 
-    public const POLICY_DOC_COVER_PATTERNS = ['minimal', 'branded', 'auditor-formal', 'engineering'];
     public const POLICY_DOC_LOGO_SIZES = ['small', 'medium', 'large'];
     public const POLICY_DOC_PAGE_MARGINS = ['compact', 'standard', 'wide'];
-
-    public function getPolicyDocFontFamily(): string
-    {
-        return $this->policyDocFontFamily;
-    }
-
-    public function setPolicyDocFontFamily(string $value): static
-    {
-        $this->policyDocFontFamily = $value;
-        return $this;
-    }
-
-    public function getPolicyDocCoverPattern(): string
-    {
-        return $this->policyDocCoverPattern;
-    }
-
-    public function setPolicyDocCoverPattern(string $value): static
-    {
-        if (!in_array($value, self::POLICY_DOC_COVER_PATTERNS, true)) {
-            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid cover pattern "%s".', $value));
-        }
-        $this->policyDocCoverPattern = $value;
-        return $this;
-    }
 
     public function isPolicyDocWatermarkEnabled(): bool
     {
@@ -430,53 +360,9 @@ class TenantBranding
         return $this;
     }
 
-    public function getPolicyDocCustomCss(): ?string
-    {
-        return $this->policyDocCustomCss;
-    }
-
-    public function setPolicyDocCustomCss(?string $value): static
-    {
-        $this->policyDocCustomCss = $value;
-        return $this;
-    }
-
     // ------------------------------------------------------------------
     // Report-Doc style accessors
     // ------------------------------------------------------------------
-
-    public const REPORT_DOC_COVER_PATTERNS = ['minimal', 'branded', 'board-formal', 'auditor-formal'];
-    public const REPORT_DOC_AUDIENCES = ['vorstand', 'auditor', 'aufsicht', 'internal'];
-    public const REPORT_DOC_PAGE_ORIENTATIONS = ['portrait', 'landscape', 'auto'];
-    public const REPORT_DOC_CHART_COLOR_SCHEMES = ['aurora', 'audit', 'print-friendly', 'colorblind-safe'];
-
-    public function getReportDocCoverPattern(): string
-    {
-        return $this->reportDocCoverPattern;
-    }
-
-    public function setReportDocCoverPattern(string $value): static
-    {
-        if (!in_array($value, self::REPORT_DOC_COVER_PATTERNS, true)) {
-            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid report cover pattern "%s".', $value));
-        }
-        $this->reportDocCoverPattern = $value;
-        return $this;
-    }
-
-    public function getReportDocDefaultAudience(): string
-    {
-        return $this->reportDocDefaultAudience;
-    }
-
-    public function setReportDocDefaultAudience(string $value): static
-    {
-        if (!in_array($value, self::REPORT_DOC_AUDIENCES, true)) {
-            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid report audience "%s".', $value));
-        }
-        $this->reportDocDefaultAudience = $value;
-        return $this;
-    }
 
     public function isReportDocWatermarkEnabled(): bool
     {
@@ -486,22 +372,6 @@ class TenantBranding
     public function setReportDocWatermarkEnabled(bool $value): static
     {
         $this->reportDocWatermarkEnabled = $value;
-        return $this;
-    }
-
-    public function getReportDocWatermarkOpacity(): float
-    {
-        return $this->reportDocWatermarkOpacity;
-    }
-
-    /**
-     * Setter clamps to [0.0, 1.0] to keep the form-binding contract
-     * compatible with the Range constraint (Symfony forms bind via the
-     * setter before validators run).
-     */
-    public function setReportDocWatermarkOpacity(float $value): static
-    {
-        $this->reportDocWatermarkOpacity = max(0.0, min(1.0, $value));
         return $this;
     }
 
@@ -538,45 +408,6 @@ class TenantBranding
         return $this;
     }
 
-    public function getReportDocFontFamily(): string
-    {
-        return $this->reportDocFontFamily;
-    }
-
-    public function setReportDocFontFamily(string $value): static
-    {
-        $this->reportDocFontFamily = $value;
-        return $this;
-    }
-
-    public function getReportDocPageOrientation(): string
-    {
-        return $this->reportDocPageOrientation;
-    }
-
-    public function setReportDocPageOrientation(string $value): static
-    {
-        if (!in_array($value, self::REPORT_DOC_PAGE_ORIENTATIONS, true)) {
-            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid page orientation "%s".', $value));
-        }
-        $this->reportDocPageOrientation = $value;
-        return $this;
-    }
-
-    public function getReportDocChartColorScheme(): string
-    {
-        return $this->reportDocChartColorScheme;
-    }
-
-    public function setReportDocChartColorScheme(string $value): static
-    {
-        if (!in_array($value, self::REPORT_DOC_CHART_COLOR_SCHEMES, true)) {
-            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid chart color scheme "%s".', $value));
-        }
-        $this->reportDocChartColorScheme = $value;
-        return $this;
-    }
-
     public function getReportDocFooterDisclaimer(): ?string
     {
         return $this->reportDocFooterDisclaimer;
@@ -585,17 +416,6 @@ class TenantBranding
     public function setReportDocFooterDisclaimer(?string $value): static
     {
         $this->reportDocFooterDisclaimer = $value;
-        return $this;
-    }
-
-    public function getReportDocCustomCss(): ?string
-    {
-        return $this->reportDocCustomCss;
-    }
-
-    public function setReportDocCustomCss(?string $value): static
-    {
-        $this->reportDocCustomCss = $value;
         return $this;
     }
 
@@ -609,8 +429,6 @@ class TenantBranding
     public function getPolicyDocStyleConfig(): array
     {
         return [
-            'font_family' => $this->policyDocFontFamily,
-            'cover_pattern' => $this->policyDocCoverPattern,
             'watermark_enabled' => $this->policyDocWatermarkEnabled,
             'watermark_opacity' => $this->policyDocWatermarkOpacity,
             'signature_lines' => $this->policyDocSignatureLines,
@@ -620,7 +438,6 @@ class TenantBranding
             'footer_text' => $this->policyDocFooterText,
             'cover_logo_size' => $this->policyDocCoverLogoSize,
             'page_margin' => $this->policyDocPageMargin,
-            'custom_css' => $this->policyDocCustomCss,
             // Shared branding so the macro does not need to query the entity twice.
             'primary_color' => $this->primaryColor,
             'secondary_color' => $this->secondaryColor,
@@ -641,18 +458,11 @@ class TenantBranding
     public function getReportDocStyleConfig(): array
     {
         return [
-            'cover_pattern' => $this->reportDocCoverPattern,
-            'default_audience' => $this->reportDocDefaultAudience,
             'watermark_enabled' => $this->reportDocWatermarkEnabled,
-            'watermark_opacity' => $this->reportDocWatermarkOpacity,
             'show_exec_summary' => $this->reportDocShowExecSummary,
             'show_appendix' => $this->reportDocShowAppendix,
             'show_distribution_list' => $this->reportDocShowDistributionList,
-            'font_family' => $this->reportDocFontFamily,
-            'page_orientation' => $this->reportDocPageOrientation,
-            'chart_color_scheme' => $this->reportDocChartColorScheme,
             'footer_disclaimer' => $this->reportDocFooterDisclaimer,
-            'custom_css' => $this->reportDocCustomCss,
             'primary_color' => $this->primaryColor,
             'secondary_color' => $this->secondaryColor,
             'logo_path' => $this->logoPath,

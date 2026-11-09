@@ -15,6 +15,8 @@ use App\Repository\UserRepository;
  * acknowledge the policy (ISO 27001 A.6.3: policies must be communicated and acknowledged).
  *
  * Strategy (priority order):
+ *   0. The audience picked on the document page (`Document.acknowledgementAudience`,
+ *      "Bestätigungs-Zielgruppe") — active users of the document's organisation.
  *   1. Explicit override carried by the Document itself in
  *      `Document.substitutionVariables._audience` — accepts a list of
  *      User IDs OR a list of role keys (`ROLE_*`). Lists may mix both.
@@ -72,6 +74,19 @@ final class PolicyAudienceResolver
         $tenant = $document->getTenant();
         if (!$tenant instanceof Tenant) {
             return [];
+        }
+
+        // Strategy 0 — the audience picked on the document page.
+        $picked = [];
+        $selection = $document->getAcknowledgementAudience();
+        foreach ($selection as $user) {
+            if ($user->isActive() && $this->userBelongsToTenant($user, $tenant)) {
+                $picked[(int) $user->getId()] = $user;
+            }
+        }
+        if (!$selection->isEmpty()) {
+            // A picked audience stays the audience even when all of them left.
+            return array_values($picked);
         }
 
         // Strategy 1 — explicit override on the Document itself.

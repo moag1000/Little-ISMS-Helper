@@ -14,9 +14,9 @@
     {{ _fa_page_header.render({
         title: 'audit_freeze.title'|trans({}, 'audit_freeze'),
         subtitle: 'audit_freeze.subtitle'|trans({}, 'audit_freeze'),
-        actions: [
+        actions: is_granted('ROLE_MANAGER') ? [
             { label: 'audit_freeze.action.create'|trans({}, 'audit_freeze'), href: path('app_audit_freeze_new'), variant: 'primary', icon: 'plus' }
-        ]
+        ] : []
     }) }}
     {% embed '_components/_fa_list_page.html.twig' with {
         page: page,

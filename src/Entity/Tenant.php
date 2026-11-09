@@ -107,11 +107,6 @@ class Tenant
     #[Assert\Length(max: 180)]
     private ?string $emailFromAddress = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
-    #[Assert\Url(requireTld: true)]
-    #[Assert\Regex(pattern: '#^https://#', message: 'tenant.email.logo_url.https_only')]
-    private ?string $emailLogoUrl = null;
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 2000)]
     private ?string $emailFooterText = null;
@@ -660,6 +655,12 @@ class Tenant
         return $this->settings;
     }
 
+    /** MRIS KPI toggle (Admin > Organisationen): on unless switched off — KPI page, snapshot, SoA filter. */
+    public function isMrisKpisEnabled(): bool
+    {
+        return ($this->settings['mris']['kpis_enabled'] ?? true) !== false;
+    }
+
     public function setSettings(?array $settings): static
     {
         $this->settings = $settings;
@@ -672,9 +673,6 @@ class Tenant
 
     public function getEmailFromAddress(): ?string { return $this->emailFromAddress; }
     public function setEmailFromAddress(?string $v): static { $this->emailFromAddress = $v; return $this; }
-
-    public function getEmailLogoUrl(): ?string { return $this->emailLogoUrl; }
-    public function setEmailLogoUrl(?string $v): static { $this->emailLogoUrl = $v; return $this; }
 
     public function getEmailFooterText(): ?string { return $this->emailFooterText; }
     public function setEmailFooterText(?string $v): static { $this->emailFooterText = $v; return $this; }

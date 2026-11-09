@@ -51,6 +51,7 @@ Commands stehen in `Schedule::COMMAND_TASKS`, Messages in `addBuiltInTasks()`.
 | `0 5 * * *` | `SyncEuvdFeedMessage` | ENISA-EUVD-Feed abgleichen |
 | `30 5 * * *` | `app:suggestions:generate` | Vorschlags-Warteschlange füllen |
 | `30 5 * * *` | `app:risk:schedule-reviews` | Review-Termine für Risiken ohne Termin setzen |
+| `40 5 * * *` | `app:policy-wizard:send-ack-requests` | Offene Richtlinien-Bestätigungen an Zielgruppe und Version angleichen |
 | `0 7 * * *` | `app:notification:send-digests` | Digest-Mails der Benachrichtigungskanäle |
 
 Jeder Command wird mit `--no-interaction` aufgerufen und begrenzt die

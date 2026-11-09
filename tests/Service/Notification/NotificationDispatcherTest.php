@@ -109,4 +109,29 @@ final class NotificationDispatcherTest extends TestCase
 
         self::assertCount(2, $deliveries);
     }
+
+    #[Test]
+    public function aDeactivatedChannelDeliversNothing(): void
+    {
+        $rule    = $this->makeRule(11);
+        $rule->setTenant(new Tenant());
+        $off     = $this->makeChannel(21)->setIsActive(false);
+        $on      = $this->makeChannel(22);
+        $rule->addChannel($off);
+        $rule->addChannel($on);
+
+        $sent = [];
+        $this->bus->method('dispatch')->willReturnCallback(static function ($message) use (&$sent) {
+            $sent[] = $message;
+
+            return new Envelope($message);
+        });
+
+        $deliveries = $this->dispatcher->dispatch($rule, ['severity' => 'high']);
+
+        self::assertCount(1, $deliveries);
+        self::assertSame($on, $deliveries[0]->getChannel());
+        self::assertCount(1, $sent);
+        self::assertSame(22, $sent[0]->channelId);
+    }
 }

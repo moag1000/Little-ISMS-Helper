@@ -154,6 +154,24 @@ Mappings are shared by all organisations. Managers may submit a draft for review
 
 ---
 
+## Who may take a step (S21)
+
+Every status change checks the roles of its transition in one place, the lifecycle service: the roles of the
+workflow definition, tightened by your organisation's overrides, through the role hierarchy. Transitions marked
+`responsible` are also open to the record's responsible person (objective achieved, data subject request
+completed, data breach assessed / reported / closed). It does not matter where the step is triggered — the
+**Aktionen** dropdown, a button on the record's page, REST, the assistant (MCP), a background job or an accepted
+suggestion. Without the role the step is refused with "Für diesen Schritt fehlt die nötige Rolle" (403).
+
+Not role-checked: steps nobody takes by hand (an objective reaching its target value, auto-progression, the
+nightly jobs), steps whose approver an approval chain or the risk-acceptance tier already chose, and a few steps
+without roles that only their own feature runs (policy-section sign-off, the supplier answering a questionnaire,
+the notification pipeline).
+
+Internal audits: submitting and reworking the report need `ROLE_AUDITOR`, approving, rejecting and closing need
+`ROLE_CISO` (four eyes on approval). Who reported, approved and closed — and the rejection reason — are written by
+the step itself. Creating and copying an audit is a manager task; editing is open to managers and the lead auditor.
+
 ## Evidence is written by the step, not typed in (S12)
 
 Who approved, implemented, verified, closed or reported something — and when — comes from the step that does it.

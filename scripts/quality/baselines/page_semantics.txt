@@ -1,4 +1,1 @@
 # Page-semantics offenders (Gate 78): <template>::nested-main|extra-h1|status-map|ternary-tone|pill-tone|tooltip-unreachable. May only shrink.
-templates/supplier/_detail_modal.html.twig::ternary-tone
-templates/supplier/_row.html.twig::ternary-tone
-templates/supplier/show.html.twig::ternary-tone

@@ -52,6 +52,14 @@ class DispatchNotificationHandler
             return;
         }
 
+        // Channel or rule switched off while the message sat in the queue: deliver nothing.
+        if (!$channel->isActive() || !$rule->isActive()) {
+            $delivery->markFailed('Channel or rule deactivated before delivery.');
+            $this->entityManager->flush();
+
+            return;
+        }
+
         $entityState = $message->entityState;
 
         match ($channel->getType()) {

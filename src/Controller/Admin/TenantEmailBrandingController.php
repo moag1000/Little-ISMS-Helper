@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Admin-UI für E-Mail-Branding (Absender, Logo, Footer).
+ * Admin-UI für E-Mail-Branding (Absender, Footer, Support-Adresse).
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/email-branding')]
@@ -43,7 +43,6 @@ class TenantEmailBrandingController extends AbstractController
         $oldValues = [
             'from_name' => $tenant->getEmailFromName(),
             'from_address' => $tenant->getEmailFromAddress(),
-            'logo_url' => $tenant->getEmailLogoUrl(),
             'footer_text' => $tenant->getEmailFooterText(),
             'support_address' => $tenant->getEmailSupportAddress(),
         ];
@@ -58,7 +57,6 @@ class TenantEmailBrandingController extends AbstractController
             $newValues = [
                 'from_name' => $tenant->getEmailFromName(),
                 'from_address' => $tenant->getEmailFromAddress(),
-                'logo_url' => $tenant->getEmailLogoUrl(),
                 'footer_text' => $tenant->getEmailFooterText(),
                 'support_address' => $tenant->getEmailSupportAddress(),
             ];

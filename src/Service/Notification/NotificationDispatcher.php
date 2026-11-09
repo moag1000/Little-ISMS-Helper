@@ -45,6 +45,10 @@ class NotificationDispatcher
         $deliveries = [];
 
         foreach ($rule->getChannels() as $channel) {
+            // A channel the admin switched off delivers nothing (no delivery row either).
+            if (!$channel->isActive()) {
+                continue;
+            }
             if ($channel->isDigestMode()) {
                 $delivery = $this->createDigestDelivery($rule, $channel, $entityState);
             } else {

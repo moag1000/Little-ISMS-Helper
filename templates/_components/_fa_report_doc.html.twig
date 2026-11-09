@@ -53,6 +53,11 @@
 
 {% macro render(props = {}) %}
     {% set report = props.report|default({}) %}
+    {# The organisation's report style (Admin > Report-Stil, TenantBranding.reportDoc*): a caller may
+       pass `tenant_branding`, otherwise the current organisation's branding applies. #}
+    {% set _branding = props.tenant_branding is defined and props.tenant_branding ? props.tenant_branding : null %}
+    {% set _style_branding = _branding ?? tenant_branding() %}
+    {% set _style = _style_branding ? _style_branding.reportDocStyleConfig : {} %}
     {% set _status_raw = report.status|default('draft')|lower %}
     {% set _status_class = _status_raw in ['draft', 'final', 'confidential', 'auditor-only'] ? _status_raw : 'draft' %}
     {% set _audience_raw = report.audience|default('vorstand')|lower %}
@@ -64,6 +69,9 @@
         'confidential':  'report.doc.watermark.confidential'|trans({}, 'reports'),
         'auditor-only':  'report.doc.watermark.auditor_only'|trans({}, 'reports'),
     }[_status_class]|default('') %}
+    {% if (_style.watermark_enabled ?? true) is same as(false) %}
+        {% set _watermark = '' %}
+    {% endif %}
 
     {% set _classification = report.classification|default('') %}
     {% set _audience_label = ('report.doc.audience.' ~ _audience_class)|trans({}, 'reports') %}
@@ -79,14 +87,14 @@
             <div class="report-doc__cover-top">
                 <div class="report-doc__brand">
                     <div class="report-doc__logo" aria-hidden="true">
-                        {% if props.tenant_branding is defined and props.tenant_branding and props.tenant_branding.logoPath is defined and props.tenant_branding.logoPath %}
-                            <img src="{{ props.tenant_branding.logoPath }}" alt="">
+                        {% if _branding and _branding.logoPath %}
+                            <img src="{{ _branding.logoPath }}" alt="">
                         {% else %}
                             {{ (props.brand_name|default('L'))|slice(0, 1)|upper }}
                         {% endif %}
                     </div>
                     <div>
-                        <div class="report-doc__brand-name">{{ props.brand_name|default(props.tenant_branding.brandName|default('')) }}</div>
+                        <div class="report-doc__brand-name">{{ props.brand_name|default(_branding ? _branding.brandName|default('') : '') }}</div>
                         <div class="report-doc__brand-meta">{{ props.brand_meta|default('report.doc.brand.default_meta'|trans({}, 'reports')) }}</div>
                     </div>
                 </div>
@@ -152,7 +160,7 @@
         {# ── Slot 2 · Executive Summary ──────────────────────────── #}
         {% set _findings = props.key_findings|default([]) %}
         {% set _kpis     = props.kpis|default([]) %}
-        {% if _findings|length > 0 or _kpis|length > 0 %}
+        {% if (_style.show_exec_summary ?? true) and (_findings|length > 0 or _kpis|length > 0) %}
             <section class="report-doc__exec-summary" aria-labelledby="report-doc-exec-summary-heading">
                 <h2 id="report-doc-exec-summary-heading" class="report-doc__exec-heading">{{ 'report.doc.exec_summary.heading'|trans({}, 'reports') }}</h2>
 
@@ -274,7 +282,7 @@
         {% set _has_appendix = (_appendix.methodology is defined and _appendix.methodology)
             or (_appendix.sources is defined and _appendix.sources|length > 0)
             or (_appendix.glossary is defined and _appendix.glossary|length > 0) %}
-        {% if _has_appendix %}
+        {% if (_style.show_appendix ?? true) and _has_appendix %}
             <section class="report-doc__appendix">
                 <h2 class="report-doc__appendix-heading">{{ 'report.doc.appendix.heading'|trans({}, 'reports') }}</h2>
 
@@ -319,8 +327,8 @@
         {% endif %}
 
         {# ── Slot 5 · Footer / Disclaimer ────────────────────────── #}
-        {% set _distribution = props.distribution|default([]) %}
-        {% set _disclaimer = props.disclaimer|default('') %}
+        {% set _distribution = (_style.show_distribution_list ?? true) ? props.distribution|default([]) : [] %}
+        {% set _disclaimer = props.disclaimer|default(_style.footer_disclaimer|default('')) %}
         <footer class="report-doc__footer-disclaimer">
             {% if _distribution|length > 0 %}
                 <div class="report-doc__distribution">
@@ -345,7 +353,7 @@
             </div>
 
             <div class="report-doc__footer-meta">
-                <span class="report-doc__footer-brand">{{ props.brand_name|default(props.tenant_branding.brandName|default('Little ISMS Helper')) }}</span>
+                <span class="report-doc__footer-brand">{{ props.brand_name|default(_branding ? _branding.brandName|default('Little ISMS Helper') : 'Little ISMS Helper') }}</span>
                 {% if report.generated_at is defined and report.generated_at %}
                     &middot; <span>{{ 'report.doc.footer.generated'|trans({}, 'reports') }}: {{ report.generated_at }}</span>
                 {% endif %}

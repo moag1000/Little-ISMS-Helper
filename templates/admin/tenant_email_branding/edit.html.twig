@@ -27,7 +27,6 @@
                     {{ form_start(form) }}
                         <div class="mb-3">{{ form_row(form.emailFromName, { attr: { class: 'form-control' } }) }}</div>
                         <div class="mb-3">{{ form_row(form.emailFromAddress, { attr: { class: 'form-control' } }) }}</div>
-                        <div class="mb-3">{{ form_row(form.emailLogoUrl, { attr: { class: 'form-control' } }) }}</div>
                         <div class="mb-3">{{ form_row(form.emailFooterText, { attr: { class: 'form-control' } }) }}</div>
                         <div class="mb-3">{{ form_row(form.emailSupportAddress, { attr: { class: 'form-control' } }) }}</div>
                         {{ _fa_alert.render({ variant: 'info', class: 'small mb-3', body: 'tenant.email.hint.fallback'|trans({}, 'tenant') }) }}
@@ -53,10 +52,6 @@
                         <dd class="col-sm-8"><code>{{ effective.fromName }}</code></dd>
                         <dt class="col-sm-4">{{ 'tenant.email.field.from_address'|trans({}, 'tenant') }}</dt>
                         <dd class="col-sm-8"><code>{{ effective.fromAddress }}</code></dd>
-                        {% if effective.logoUrl %}
-                            <dt class="col-sm-4">{{ 'tenant.email.field.logo_url'|trans({}, 'tenant') }}</dt>
-                            <dd class="col-sm-8"><code>{{ effective.logoUrl }}</code></dd>
-                        {% endif %}
                         {% if effective.supportAddress %}
                             <dt class="col-sm-4">{{ 'tenant.email.field.support_address'|trans({}, 'tenant') }}</dt>
                             <dd class="col-sm-8"><code>{{ effective.supportAddress }}</code></dd>
