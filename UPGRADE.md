@@ -69,6 +69,9 @@ Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`)
   außerhalb von `/mcp` antworten 405. Ein Token schreibt nur mit „Assistent darf schreiben“, und
   der KI-Assistent schreibt nur, wenn die Organisation es erlaubt
   ([KI-Assistent](docs/user-guide/KI_ASSISTENT_MCP.md)). 20 Fehlversuche in 10 Minuten → 429.
+  Tokens laufen höchstens 365 Tage; Tokens ohne Ablauf enden ein Jahr nach Erstellung. Eine
+  Rollenänderung widerruft die Tokens der Person. Neue Tokens nur nach voller Anmeldung (nicht über
+  „Angemeldet bleiben“).
 - **Ausgehende Adressen:** Geokodierer, OIDC-Discovery und Webhooks erreichen keine internen
   Adressen mehr. Ein eigener Nominatim-Dienst im LAN funktioniert deshalb nicht mehr; Web-Push nur zu
   Browser-Push-Diensten (fremde Abos werden beim nächsten Versand abgeschaltet).
@@ -83,6 +86,10 @@ Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`)
   handeln (Rolle ODER Verantwortlicher). Nicht-Manager bearbeiten nur eigene Risiken; das
   Audit-Log-Menü sehen nur Admins. VVT-/DSFA-Exporte ab Manager oder DSB, TIA „Bewerten“ nur DSB und
   Manager.
+- **Rollenvergabe:** Niemand vergibt eine Rolle über der eigenen oder sich selbst `ROLE_TOP_MGMT`.
+  Holding-Rollen (auch `ROLE_GROUP_BCM_OFFICER`) vergibt nur der Super-Admin; Org-Admins sehen Konten
+  mit Holding-Rolle nur an. Admins richten kein TOTP mehr für andere ein, die Person macht das im
+  Profil. Der CSV-Benutzerimport verlangt Passwörter mit der Mindestlänge der Organisation.
 - **Instanzbetrieb:** Setup-Assistent nach Abschluss und das Löschen eines Frameworks nur
   `ROLE_SUPER_ADMIN`; Super-Admins können keine Super-Admins imitieren. Ein Restore übernimmt keine
   Instanzrollen, Passwort-Hashes, SSO-Kennungen, API-Tokens oder Audit-Zeilen aus der Datei.
@@ -110,5 +117,10 @@ Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`)
   E-Mail-Verknüpfung ist standardmäßig aus und braucht den Claim `xms_edov`.
 - OIDC: Anbieter ohne Issuer und ohne Discovery lehnen Anmeldungen ab; bestehende Konten werden nur
   mit `email_verified` verknüpft, sonst verknüpft der Admin von Hand.
+- SAML braucht HTTPS (Binding-Cookie `SameSite=None; Secure`); die Antwort muss im selben Browser
+  ankommen.
+- SSO-Rollen-Mappings auf privilegierte Rollen oder Freitext werden ignoriert; Admin > SSO zeigt sie als
+  „nicht vergebbar“, dort neu aus der Liste wählen. Eine OIDC-Anmeldung ersetzt nur die vom Anbieter
+  verwalteten Rollen.
 - Mehrere Webserver brauchen einen gemeinsamen Cache. Ein nackter Aufruf von `/logout` meldet nicht
   mehr ab, der Menülink schon. Der Lieferanten-Fragebogen-Link gilt 90 Tage.
