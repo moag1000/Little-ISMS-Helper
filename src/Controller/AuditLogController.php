@@ -9,7 +9,10 @@ use App\Controller\Trait\LocalizedFlashTrait;
 use App\Util\InputDate;
 use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
+use App\Job\VerifyAuditLogChainJob;
 use App\Service\AuditLogIntegrityService;
+use App\Service\Job\AsyncJobDispatcher;
+use App\Service\Job\JobTenantScope;
 use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +30,8 @@ class AuditLogController extends AbstractController
     public function __construct(
         private readonly AuditLogRepository $auditLogRepository,
         private readonly TranslatorInterface $translator,
+        private readonly AsyncJobDispatcher $asyncJobDispatcher,
+        private readonly JobTenantScope $jobTenantScope,
         private readonly ?AuditLogIntegrityService $integrityService = null,
     ) {}
 
@@ -43,6 +48,8 @@ class AuditLogController extends AbstractController
     /**
      * HMAC-Chain Verify endpoint surfaced as Admin button.
      * Auditor's classic question "manipulationssicher?" → click & see green/red.
+     * Runs as async job (large logs take longer than a request) over the chain of
+     * the admin's organisation; a SUPER_ADMIN without organisation checks every chain.
      */
     #[Route('/admin/audit-log/verify', name: 'app_audit_log_verify', methods: ['POST'])]
     #[IsCsrfTokenValid('audit_log_verify')]
@@ -53,20 +60,17 @@ class AuditLogController extends AbstractController
             return $this->redirectToRoute('app_audit_log_index');
         }
 
-        $issues = $this->integrityService->verifyChain();
-        if ($issues === []) {
-            $this->flashSuccess('audit_log.integrity.intact');
-        } else {
-            $sample = array_slice($issues, 0, 5);
-            $msg = sprintf(
-                'Integrity violations: %d. First entries: %s',
-                count($issues),
-                implode(' · ', array_map(static fn(array $i): string => sprintf('#%s (%s)', $i['id'] ?? '?', $i['reason'] ?? '?'), $sample)),
-            );
-            $this->addFlash('error', $msg);
-        }
-
-        return $this->redirectToRoute('app_audit_log_index');
+        return $this->asyncJobDispatcher->dispatchWithProgress(
+            request: $request,
+            jobClass: VerifyAuditLogChainJob::class,
+            jobArgs: $this->jobTenantScope->argsForCurrentUser() + ['locale' => $request->getLocale()],
+            jobName: 'audit_log.verify_chain',
+            payload: [
+                '_label' => $this->translator->trans('audit_log.integrity.job_label', [], 'audit_log'),
+                '_subtitle' => $this->translator->trans('audit_log.integrity.job_subtitle', [], 'audit_log'),
+            ],
+            returnUrl: $this->generateUrl('app_audit_log_index'),
+        );
     }
 
     #[Route('/admin/audit-log', name: 'app_audit_log_index', methods: ['GET'])]
