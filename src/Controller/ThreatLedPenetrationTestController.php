@@ -68,7 +68,7 @@ class ThreatLedPenetrationTestController extends AbstractController
     public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        $tests = $tenant === null ? [] : $this->repository->findBy(['tenant' => $tenant], ['plannedStartDate' => \SortDirection::Descending, 'id' => \SortDirection::Descending]);
+        $tests = $tenant === null ? [] : $this->repository->findBy(['tenant' => $tenant], ['plannedStartDate' => 'DESC', 'id' => 'DESC']);
 
         $counts = ['running' => 0, 'closed' => 0];
         foreach ($tests as $test) {

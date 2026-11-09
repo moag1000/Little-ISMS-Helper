@@ -36,7 +36,7 @@ final readonly class ReviewTaskDeadlineSource implements DeadlineSource
     }
 
     /** The record page lives in this module; with it off the reminder would open a "module off" page (W6). */
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'reviews';
     }
