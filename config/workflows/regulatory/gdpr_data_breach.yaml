@@ -51,6 +51,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "GDPR Data Breach Notification (Art. 33/34)"
+                    description: "Regulatory-compliant workflow for GDPR data breach handling with 72-hour notification deadline"
+                    entity_type: DataBreach
                     standard: "GDPR Art. 33/34"
                     sla_hours: 72
                     escalation_threshold_hours: 60
@@ -64,10 +68,6 @@ framework:
                         step_type: approval
                         days_to_complete: 1
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataBreach
-                            fields: [severity, affectedDataSubjects, dataCategories, requiresAuthorityNotification]
                     -   name: "Technical Assessment (CISO)"
                         description: "Technical analysis of breach cause, scope, containment, and recovery measures"
                         order: 2
@@ -75,11 +75,6 @@ framework:
                         step_type: approval
                         days_to_complete: 1
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataBreach
-                            # REMOVED: affectedSystems, containmentMeasures, recoveryMeasures — fields never existed on DataBreach entity
-                            fields: [rootCause, measuresTaken, mitigationMeasures]
                     -   name: "Management Information"
                         description: "Notify executive management of high-risk breach for budget approval and PR strategy"
                         order: 3
@@ -87,9 +82,6 @@ framework:
                         step_type: notification
                         days_to_complete: 0
                         is_required: false
-                        auto_progress_conditions:
-                            type: auto
-                            condition: "severity >= high"
                     -   name: "Supervisory Authority Notification (DPO)"
                         description: "File official notification with supervisory authority within 72h deadline (GDPR Art. 33)"
                         order: 4
@@ -97,11 +89,6 @@ framework:
                         step_type: approval
                         days_to_complete: 1
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataBreach
-                            # REMOVED: authorityNotificationDate → supervisoryAuthorityNotifiedAt; authorityNotificationMethod → notificationMethod
-                            fields: [supervisoryAuthorityNotifiedAt, notificationMethod]
                     -   name: "Data Subject Notification (DPO)"
                         description: "Notify affected data subjects if high risk (GDPR Art. 34)"
                         order: 5
@@ -109,12 +96,6 @@ framework:
                         step_type: approval
                         days_to_complete: 1
                         is_required: false
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataBreach
-                            # REMOVED: dataSubjectNotificationDate → dataSubjectsNotifiedAt; dataSubjectNotificationMethod → subjectNotificationMethod; dataSubjectNotificationRequired → requiresSubjectNotification
-                            fields: [dataSubjectsNotifiedAt, subjectNotificationMethod]
-                            condition: "requiresSubjectNotification = true"
                     -   name: "Final Documentation (DPO)"
                         description: "Complete breach documentation and lessons learned (GDPR Art. 33 Abs. 5)"
                         order: 6
@@ -122,8 +103,3 @@ framework:
                         step_type: approval
                         days_to_complete: 7
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: DataBreach
-                            # REMOVED: processImprovements — field never existed; entity has followUpActions
-                            fields: [lessonsLearned, followUpActions]

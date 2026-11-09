@@ -51,6 +51,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "Management Review (ISO 27001 Cl. 9.3)"
+                    description: "Structured management review workflow with input preparation and action tracking"
+                    entity_type: ManagementReview
                     standard: "ISO 27001:2022 Cl. 9.3"
                     sla_hours: null
                     escalation_threshold_hours: null
@@ -63,10 +67,6 @@ framework:
                         step_type: approval
                         days_to_complete: 14
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: ManagementReview
-                            fields: [auditResults, changesRelevantToISMS]
                     -   name: "Review Execution"
                         description: "Management conducts the review meeting and documents decisions (Cl. 9.3.3)"
                         order: 2
@@ -74,10 +74,6 @@ framework:
                         step_type: approval
                         days_to_complete: 7
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: ManagementReview
-                            fields: [decisions, reviewDate]
                     -   name: "Action Planning"
                         description: "Create the tasks decided in the review with owner and due date (Cl. 9.3.3)"
                         order: 3

@@ -44,7 +44,9 @@ class NoNewWorkflowOrWorkflowStepRule implements Rule
      * Namespace prefixes that are allowed to instantiate the deprecated classes.
      *
      * - Repository: read-only ORM layer, allowed to persist/hydrate existing rows
-     * - Command: migration/verification commands (MigrateLegacyWorkflowsCommand, GenerateRegulatoryWorkflowsCommand)
+     * - Command: migration/verification commands (MigrateLegacyWorkflowsCommand, deprecated seeders)
+     * - Workflow\Mirror: RegulatoryWorkflowMirror, the one writer of the database rows of the
+     *   regulatory YAML chains (S17) — it copies config/workflows/regulatory/*.yaml, nothing else
      *
      * No controller is exempt: WorkflowStepApiController is read-only and its
      * former write endpoints answer 410 Gone.
@@ -52,6 +54,7 @@ class NoNewWorkflowOrWorkflowStepRule implements Rule
     private const EXEMPT_NAMESPACE_PREFIXES = [
         'App\\Repository\\',
         'App\\Command\\',
+        'App\\Workflow\\Mirror\\',
     ];
 
     public function getNodeType(): string

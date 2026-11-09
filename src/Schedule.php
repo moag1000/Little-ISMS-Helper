@@ -53,6 +53,8 @@ class Schedule implements ScheduleProviderInterface
         ['0 3 * * *', 'app:four-eyes:cleanup-expired'],
         // Evidence that still (or again) lies in public/uploads/ moves outside the web root.
         ['10 4 * * *', 'app:uploads:protect'],
+        // The database rows of the regulatory approval chains follow their YAML after a deploy (S17).
+        ['20 4 * * *', 'app:generate-regulatory-workflows'],
         ['15 3 * * *', 'app:policy-wizard:purge-sandboxes'],
         ['0 2 * * 0', 'app:tisax:purge-old-ip-addresses'],
         ['30 5 * * *', 'app:suggestions:generate'],

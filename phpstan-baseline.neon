@@ -141,12 +141,6 @@ parameters:
 			path: src/Command/DpiaReminderCommand.php
 
 		-
-			message: '#^Right side of && is always true\.$#'
-			identifier: booleanAnd.rightAlwaysTrue
-			count: 1
-			path: src/Command/GenerateRegulatoryWorkflowsCommand.php
-
-		-
 			message: '#^Offset ''requirements…'' on array\{bausteine_read\: int, requirements_read\: int, requirements_skipped_deprecated\: int, created\: int, skipped_existing\: int, errors\: list\<array\{context\: string, message\: string\}\>\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1

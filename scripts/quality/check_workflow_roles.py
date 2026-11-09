@@ -10,8 +10,10 @@ ROLE_USER, which every signed-in user holds, so anybody could approve a CAPA
 root cause or a document review.
 
 Checked:
-  * config/workflows/**/*.yaml — transition `roles`, step `approver_role`,
-    `escalation_role`;
+  * config/workflows/**/*.yaml — transition `roles`, step `approver_role`
+    (steps at `metadata.steps`, the layout the loader reads — S17),
+    `escalation_role`; every regulatory workflow has steps, a title and an
+    entity type;
   * the PHP seeders that write workflow steps (`'approverRole' =>`, `'role' =>`);
   * recipient look-ups in src/ (`findByRoleInTenant('ROLE_…'`,
     `findUserByRole('ROLE_…'`, `findUsersByRole('ROLE_…'`).
@@ -44,6 +46,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 SECURITY = ROOT / "config" / "packages" / "security.yaml"
 WORKFLOWS = ROOT / "config" / "workflows"
+REGULATORY = WORKFLOWS / "regulatory"
 SEEDERS = [
     ROOT / "src" / "Command" / "GenerateRegulatoryWorkflowsCommand.php",
     ROOT / "src" / "Command" / "SeedIncidentWorkflowsCommand.php",
@@ -72,6 +75,31 @@ USER_TRANSITION_EXCEPTIONS = {
     "consent_lifecycle.expire": "records that the consent period ran out; a fact, not a decision",
     "isms_objective_lifecycle.achieve": "the objective owner records the measured result; ISO 9.3 reviews it",
 }
+
+
+# Step keys the application evaluates (RegulatoryWorkflowMirror → WorkflowStep, WorkflowService).
+# S17: 27 `auto_progress_conditions` (field_completion, auto, risk_appetite) sat in the YAMLs and
+# nobody evaluated them — only `time_based` is (app:process-timed-workflows). Record-driven
+# progression belongs in config/packages/lifecycle.yaml (FieldCompletionAutoTransition).
+STEP_KEYS = {"name", "description", "order", "approver_role", "step_type", "days_to_complete",
+             "is_required", "auto_progress_conditions", "reject_action", "reject_target_step"}
+EVALUATED_CONDITION_TYPES = {"time_based"}
+REJECT_ACTIONS = {"loop_back"}
+
+
+def step_key_problems(step: dict) -> list[str]:
+    problems = [f"has key {key}, which nothing evaluates" for key in sorted(set(step) - STEP_KEYS)]
+    conditions = step.get("auto_progress_conditions")
+    if conditions is not None:
+        kind = (conditions or {}).get("type") if isinstance(conditions, dict) else None
+        if kind not in EVALUATED_CONDITION_TYPES:
+            problems.append(f"has auto_progress_conditions of type {kind!r}, which nothing evaluates "
+                            "(only time_based; record-driven progression goes into lifecycle.yaml)")
+    if "reject_action" in step and step.get("reject_action") not in REJECT_ACTIONS:
+        problems.append(f"has reject_action {step.get('reject_action')!r}; WorkflowService knows only loop_back")
+    if step.get("reject_action") == "loop_back" and not isinstance(step.get("reject_target_step"), int):
+        problems.append("loops back without reject_target_step (order of an earlier step)")
+    return problems
 
 
 # Keyword for "whoever is responsible for the workflow's record" (WorkflowInstanceAdapter::APPROVER_OWNER).
@@ -120,11 +148,31 @@ def check_yaml(known: set[str]) -> list[str]:
                     errors.append(f"{rel(path)}:{yaml_line(lines, t_name + ':')}: transition {wf_name}.{t_name} "
                                   "finalises a record but is open to ROLE_USER; name a real role or add it to "
                                   "USER_TRANSITION_EXCEPTIONS with a reason")
-            meta = (wf.get("metadata") or {}).get("regulatory_metadata") or {}
+            wf_meta = wf.get("metadata") or {}
+            meta = wf_meta.get("regulatory_metadata") or {}
             esc = meta.get("escalation_role")
             if esc and esc not in known:
                 errors.append(f"{rel(path)}:{yaml_line(lines, 'escalation_role')}: escalation_role {esc} is unknown")
-            for step in meta.get("steps") or []:
+            # S17: the steps sit at metadata.steps, beside regulatory_metadata — the one layout
+            # RegulatoryWorkflowLoader::stepsOf() reads. The gate once read regulatory_metadata.steps,
+            # matched nothing and checked no step at all.
+            if "steps" in meta:
+                errors.append(f"{rel(path)}:{yaml_line(lines, 'steps:')}: {wf_name} nests its steps under "
+                              "regulatory_metadata; put them at metadata.steps (RegulatoryWorkflowLoader::stepsOf)")
+            steps = wf_meta.get("steps") or meta.get("steps") or []
+            if path.parent == REGULATORY:
+                if not steps:
+                    errors.append(f"{rel(path)}:1: regulatory workflow {wf_name} has no approval steps at "
+                                  "metadata.steps — the loader would return null for it")
+                for key in ("title", "entity_type"):
+                    if not meta.get(key):
+                        errors.append(f"{rel(path)}:{yaml_line(lines, 'regulatory_metadata:')}: {wf_name} lacks "
+                                      f"regulatory_metadata.{key} (RegulatoryWorkflowMirror needs it for the "
+                                      "database row)")
+            for step in steps:
+                for problem in step_key_problems(step):
+                    step_line = yaml_line(lines, '"' + str(step.get("name")) + '"')
+                    errors.append(f"{rel(path)}:{step_line}: step \"{step.get('name')}\" {problem}")
                 role = step.get("approver_role")
                 line = yaml_line(lines, f'"{step.get("name")}"')
                 if role and role != OWNER and role not in known:

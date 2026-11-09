@@ -60,6 +60,17 @@ quick_fix:
         token_submit: 'Unlock with token'
         privileged_body: 'This action changes data or removes schema parts. It runs only for a super admin login or with the installer token.'
         privileged_hint: 'Repairs and destructive schema changes need a super admin login or the installer token. Pending migrations can be applied without logging in.'
+    workflows:
+        title: 'Approval chains (regulatory workflows)'
+        intro: 'Running approvals read their roles from the database, which can lag behind config/workflows/regulatory after an update. Aligning keeps running approvals on their step and also runs every night.'
+        drift: 'Chains that differ'
+        state_missing: 'missing in the database'
+        state_differs: 'differs'
+        button: 'Align workflow definitions'
+        empty: 'All approval chains match their definition.'
+        flash:
+            synced: 'Workflow definitions aligned.'
+            kept_steps: 'Removed steps stay until the running approvals on them are finished.'
     repair:
         section:
             title: 'Data Integrity'

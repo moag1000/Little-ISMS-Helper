@@ -22,6 +22,7 @@ use App\Repository\UserRepository;
 use App\Service\Planning\Source\Adapter\WorkflowInstanceAdapter;
 use App\Service\Responsibility\ResponsibilityResolver;
 use App\Workflow\Loader\RegulatoryWorkflowLoader;
+use App\Workflow\Mirror\RegulatoryWorkflowMirror;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -91,6 +92,7 @@ class WorkflowService
         private readonly ?FourEyesValidator $fourEyesValidator = null,
         private readonly ?ResponsibilityResolver $responsibility = null,
         private readonly ?WorkflowInstanceAdapter $workflowSource = null,
+        private readonly ?RegulatoryWorkflowMirror $regulatoryWorkflowMirror = null,
     ) {}
 
     /**
@@ -171,6 +173,11 @@ class WorkflowService
         // Even when a YAML workflow is used, we still look up the DB row so that
         // WorkflowInstance.workflow_id FK is set (required for history display).
         $workflow = $this->findDefinition($entityType, $workflowName, $this->resolveOwningTenant($entityType, $entityId, null));
+        // A regulatory chain without its database row yet (fresh install, nobody aligned the
+        // definitions): write the row from the YAML instead of starting no approval at all (S17).
+        if (!$workflow && $yamlSteps !== null && $yamlWorkflowName !== null) {
+            $workflow = $this->regulatoryWorkflowMirror?->ensure($yamlWorkflowName);
+        }
 
         // If neither YAML steps nor a DB workflow was found, give up
         if ($yamlSteps === null && !$workflow) {
@@ -200,10 +207,8 @@ class WorkflowService
         // The setStatus() call here is the only allowed direct setter: it seeds the
         // Symfony Workflow marking-store on a brand-new (pre-persist) entity.
         // All subsequent mutations go through LifecycleTransitionInterface::transition().
-        // When only YAML steps are available (no DB row), startWorkflow cannot create
-        // a WorkflowInstance that satisfies the nullable: false FK constraint on workflow_id.
-        // In that case we return null — callers must ensure a DB row exists (see
-        // GenerateRegulatoryWorkflowsCommand which seeds DB rows from the same YAML data).
+        // Without a DB row (no regulatory YAML chain either) the nullable: false FK on
+        // workflow_id cannot be satisfied: no approval starts.
         if (!$workflow) {
             return null;
         }
@@ -371,6 +376,22 @@ class WorkflowService
             'timestamp' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ]);
 
+        // A step with `reject_action: loop_back` (e.g. CAPA effectiveness check, ISO 27001 10.1 f)
+        // sends the chain back to an earlier step instead of ending it (S17).
+        $loopBackTarget = $this->loopBackTarget($workflowInstance, $currentStep);
+        if ($loopBackTarget !== null) {
+            [$targetIndex, $targetStep] = $loopBackTarget;
+            $workflowInstance->setCurrentStep($targetStep);
+            $workflowInstance->setCurrentStepIndex($targetIndex);
+            if ($targetStep->getDaysToComplete()) {
+                $workflowInstance->setDueDate(new DateTimeImmutable()->modify('+' . $targetStep->getDaysToComplete() . ' days'));
+            }
+            $this->entityManager->flush();
+            $this->handleStepAssignment($workflowInstance, $targetStep);
+
+            return true;
+        }
+
         $workflowInstance->setCompletedAt(new DateTimeImmutable());
         $workflowInstance->setComments($reason);
 
@@ -384,6 +405,28 @@ class WorkflowService
         );
 
         return true;
+    }
+
+    /**
+     * The earlier step a rejection returns to (`rejectAction: loop_back`, `rejectTargetStep` = step
+     * order), or null when the rejection ends the chain.
+     *
+     * @return array{0: int, 1: WorkflowStep}|null
+     */
+    private function loopBackTarget(WorkflowInstance $workflowInstance, WorkflowStep $currentStep): ?array
+    {
+        $metadata = $currentStep->getMetadata() ?? [];
+        if (($metadata['rejectAction'] ?? null) !== 'loop_back' || !isset($metadata['rejectTargetStep'])) {
+            return null;
+        }
+        $steps = array_values($workflowInstance->getWorkflow()?->getSteps()->toArray() ?? []);
+        foreach ($steps as $index => $step) {
+            if ($step->getStepOrder() === (int) $metadata['rejectTargetStep'] && $step !== $currentStep) {
+                return [$index, $step];
+            }
+        }
+
+        return null;
     }
 
     /**
