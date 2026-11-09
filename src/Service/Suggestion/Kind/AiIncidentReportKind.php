@@ -18,6 +18,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\IncidentController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * ISB under time pressure: an incident with an open NIS-2 or DORA report
@@ -45,6 +47,11 @@ final class AiIncidentReportKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(IncidentController::class, 'edit');
     }
 
     public function decisionRoles(): array

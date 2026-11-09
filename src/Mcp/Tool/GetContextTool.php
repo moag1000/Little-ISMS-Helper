@@ -6,6 +6,7 @@ namespace App\Mcp\Tool;
 
 use App\Mcp\ApiResourceGateway;
 use App\Mcp\McpSession;
+use App\Mcp\PersonalDataPolicy;
 use App\Mcp\McpWriteAccess;
 use App\Security\Persona\Persona;
 use App\Security\Persona\PersonaResolver;
@@ -24,6 +25,7 @@ final class GetContextTool extends AbstractMcpTool
         private readonly ApiResourceGateway $gateway,
         private readonly SuggestionQueue $suggestions,
         private readonly McpWriteAccess $writeAccess,
+        private readonly PersonalDataPolicy $personalData,
     ) {
     }
 
@@ -56,7 +58,7 @@ final class GetContextTool extends AbstractMcpTool
             'personas' => array_map(static fn (Persona $p): string => $p->value, $this->personas->personasOf($user)),
             'active_modules' => $this->modules->getActiveModulesForTenant($session->tenant),
             'resources' => $this->gateway->resources($session),
-            'pending_suggestions' => count($this->suggestions->pendingFor($session->tenant)),
+            'pending_suggestions' => count($this->personalData->suggestions($this->suggestions->pendingFor($session->tenant), $session)),
             'app_url' => $session->url('/'),
             'writing' => [
                 'direct' => $direct,

@@ -17,6 +17,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\BCExerciseController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * BCM officer (ISO 22301 8.5): an exercise that took place but has no
@@ -49,6 +51,11 @@ final class AiBcExerciseEvaluationKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(BCExerciseController::class, 'edit');
     }
 
     public function decisionRoles(): array

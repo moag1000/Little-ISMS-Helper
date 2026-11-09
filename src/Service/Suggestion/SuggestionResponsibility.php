@@ -15,7 +15,9 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  * (risk owner, asset owner, … through that record's deadline source), else the
  * kind's decision roles, else the admins (ResponsibilityResolver order).
  * Import matches (legacy owner texts) are data repair and stay with the
- * kind's roles.
+ * kind's roles, and so do kinds whose write needs a role in the UI that a
+ * record holder need not have (S30: the VVT entry, the register, the
+ * management review) — the holder would be reminded of what they may not do.
  */
 class SuggestionResponsibility
 {
@@ -28,13 +30,16 @@ class SuggestionResponsibility
     public function __construct(
         #[AutowireIterator('app.suggestion_kind')] private readonly iterable $kindIterator,
         private readonly EntityManagerInterface $entityManager,
+        private readonly ?SuggestionTargetAccess $targetAccess = null,
     ) {
     }
 
     public function of(Suggestion $suggestion): Responsibility
     {
-        $roles = $this->kind($suggestion->getKind())?->decisionRoles() ?? ['ROLE_MANAGER'];
-        if ($suggestion->getOrigin() === SuggestionOrigin::Import) {
+        $kind = $this->kind($suggestion->getKind());
+        $roles = $kind?->decisionRoles() ?? ['ROLE_MANAGER'];
+        if ($suggestion->getOrigin() === SuggestionOrigin::Import
+            || ($kind !== null && ($this->targetAccess?->roleFloor($kind) ?? []) !== [])) {
             return Responsibility::roles(...$roles);
         }
 

@@ -16,7 +16,9 @@ language-model output. User guide: `docs/user-guide/VORSCHLAEGE.md`.
 | UI | `SuggestionController` (`/suggestions`, list skeleton, `decision_modal()`, bulk bar `approve`/`reject` → `bulk-status-change`), detail hint in `_fa_entity_links.html.twig` (`pending_suggestions(entity)`), My Day via `SuggestionDeadlineSource` (bucket `suggestions`), SoA "Passt nicht" (`app_suggestion_mapping_reject`) |
 | AI | `src/Service/Ai/`: `AiSettings` (instance + tenant settings, keys encrypted), `OpenAiCompatibleClient` (`/chat/completions`, JSON mode, external calls through `NoPrivateNetworkHttpClient`), `PromptRedactor`, `AiAssistant`; admin page `AiSettingsController` |
 | Assistant (MCP) | `draft_options` / `propose_draft` (`src/Mcp/Tool/`): the person's own assistant drafts in place of the configured model — `RecordDrafts::kindsFor($record, byAssistant: true)`, `AbstractAiKind::assistantBrief()` (instruction + facts) and `draftFromAssistant()` (same `toDraft()` mapping, model `MCP: <token label>`), queued by `RecordDrafts::offer()`. Works while the organisation's AI is off; MCP opt-in per organisation |
-| Responsibility | `SuggestionResponsibility::of()` = `Responsibility::ofRecord(subject)->orRoles(kind roles)` (import kinds: roles only); `SuggestionQueue::canDecide()` = kind role **or** `ResponsibilityResolver::isResponsible()` |
+| Responsibility | `SuggestionResponsibility::of()` = `Responsibility::ofRecord(subject)->orRoles(kind roles)` (import kinds and kinds whose UI write needs a role above ROLE_USER: roles only); `SuggestionQueue::canDecide()` = the kind's UI write right (`targetAccess()`, S30) **and** (kind role **or** `ResponsibilityResolver::isResponsible()`) |
+| Visibility (S30) | `SuggestionQueue::isVisible()` / `visible()`: who decides; else a reading role (`ROLE_AUDITOR` line incl. managers), but suggestions about whole-class `#[PersonalDataResource]` records (breach, data subject request) only with `ROLE_DPO`. List (open + decided) use it; MCP `pending_suggestions` / `get_context` filter through `PersonalDataPolicy::suggestions()` |
+| Concurrency (S30) | `Suggestion` has `#[ORM\Version]`; `accept()` runs in a transaction and re-reads the row with a write lock, so a second accept finds it decided. AI kinds: `AbstractAiKind::stillApplies()` (= `isCandidate()` on `candidateOf()`) is asked before `apply()`; a closed record makes the suggestion stale |
 | Deadline source | `SuggestionDeadlineSource` (slug/bucket `suggestions`, decision, due `createdAt + 14 days`) — My Day and the digest list open suggestions for the responsible people |
 | Texts | `translations/suggestions.{de,en}.yaml`; titles and rationales are rendered in the tenant language when the suggestion is generated (`SuggestionText`) |
 
@@ -25,7 +27,10 @@ language-model output. User guide: `docs/user-guide/VORSCHLAEGE.md`.
 1. Class in `src/Service/Suggestion/Kind/` extending `AbstractSuggestionKind` (or
    `AbstractAiKind` for a language-model use case).
 2. `key()` (stable, e.g. `risk.residual`), `origin()`, `decisionRoles()` (roles from
-   `security.yaml`), `requiredModule()`.
+   `security.yaml`), `requiredModule()`, `targetAccess()`: the UI action that does the same
+   write (`TargetAccess::action(RiskController::class, 'edit')` — its `#[IsGranted]` is read
+   live with the suggestion's record as subject), or `TargetAccess::role()` with a reason
+   where no single action fits. `SuggestionKindAccessContractTest` checks every kind.
 3. `generate(Tenant)` yields `SuggestionDraft`s: subject record, title, rationale (via
    `SuggestionText`), `payload` with everything `apply()` needs, optional `editableText`,
    `confidence`, and a `dedupKey` that encodes the state the proposal was made for
@@ -59,7 +64,7 @@ maintaining persona). The register page and the queue write through the same
 
 `_fa_entity_links.html.twig` shows one button per kind from `draft_kinds(entity)`
 (`RecordDrafts::kindsFor()`): kind is a `RecordDraftKind`, module active, model available
-(AI kinds), the user may decide it (decision role or responsible for the record), no
+(AI kinds), the user may decide it (UI write right and decision role or responsible for the record), no
 pending suggestion of that kind for the record, `supportsRecord()`. `POST
 /suggestions/draft` (`SuggestionDraftController`, CSRF `suggestion_draft`) resolves the
 record only for a class in `subjectClasses()` and in the current organisation, runs rule

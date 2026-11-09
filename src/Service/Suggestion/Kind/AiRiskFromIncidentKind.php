@@ -17,6 +17,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\RiskController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Risk manager: a recent incident that no risk covers yet → the model drafts
@@ -41,6 +43,11 @@ final class AiRiskFromIncidentKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(RiskController::class, 'new');
     }
 
     public function decisionRoles(): array

@@ -20,6 +20,7 @@ use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Compliance manager after activating a framework: a requirement of an
@@ -65,6 +66,11 @@ final class AiRequirementMappingKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::role('ROLE_MANAGER', 'links several controls; the SoA link per control needs ControlVoter::EDIT');
     }
 
     public function decisionRoles(): array

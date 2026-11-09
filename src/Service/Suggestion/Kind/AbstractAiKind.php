@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Suggestion\Kind;
 
+use App\Entity\Suggestion;
 use App\Entity\Tenant;
 use App\Enum\SuggestionOrigin;
 use App\Repository\SuggestionRepository;
@@ -129,6 +130,25 @@ abstract class AbstractAiKind extends AbstractSuggestionKind implements RecordDr
         $target = $this->recordFor($record);
 
         return $target !== null && $this->isCandidate($target) ? $this->toDraft($target, $data, $model, $tenant) : null;
+    }
+
+    /**
+     * Does the record behind a pending suggestion still need it (S30, F5)?
+     * The queue asks before it applies: the same test as for drafting, so a
+     * breach already reported or a request already answered gets no text
+     * afterwards — the suggestion is withdrawn as stale instead.
+     */
+    public function stillApplies(Suggestion $suggestion, object $subject): bool
+    {
+        $candidate = $this->candidateOf($suggestion, $subject);
+
+        return $candidate !== null && $this->isCandidate($candidate);
+    }
+
+    /** The record isCandidate() tests for a suggestion (default: its subject). */
+    protected function candidateOf(Suggestion $suggestion, object $subject): ?object
+    {
+        return $subject;
     }
 
     /** The record the model reads for a detail page's record (null = nothing to draft). */
