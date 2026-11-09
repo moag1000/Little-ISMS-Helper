@@ -187,9 +187,9 @@ wizard:
         no_training_participation: 'No training participation recorded'
         training_participation_open: 'Training participation open'
         training_participation_open_desc: '%completed% of %total% assigned people completed their training.'
-        no_privileged_accounts: 'No administrator accounts with local sign-in'
-        accounts_without_mfa: 'Administrator accounts without a second factor'
-        accounts_without_mfa_desc: '%open% of %total% administrator accounts sign in without a second factor.'
+        no_privileged_accounts: 'No privileged accounts (admin, CISO, ISB) with local sign-in'
+        accounts_without_mfa: 'Privileged accounts without a second factor'
+        accounts_without_mfa_desc: '%open% of %total% privileged accounts (admin, CISO, ISB) sign in without a second factor.'
         no_role_holders: 'Nobody holds the top-management role'
         role_training_missing: 'Management training missing'
         role_training_missing_desc: 'No completed training in the last %months% months: %names%.'
@@ -603,8 +603,8 @@ wizard:
         nis2_21_2i_assets_desc: "Assets are managed and tracked"
         nis2_21_2j_mfa: "Multi-Factor Authentication (Art. 21.2.j)"
         nis2_21_2j_mfa_desc: "MFA or continuous authentication implemented"
-        nis2_21_2j_mfa_accounts: "MFA of administrator accounts"
-        nis2_21_2j_mfa_accounts_desc: "Share of administrator accounts with a second factor (SSO accounts do not count)"
+        nis2_21_2j_mfa_accounts: "MFA of privileged accounts"
+        nis2_21_2j_mfa_accounts_desc: "Share of admin, CISO and ISB accounts with a second factor (SSO accounts do not count)"
         nis2_21_2j_comms: "Secure Communication (Art. 21.2.j)"
         nis2_21_2j_comms_desc: "Secured voice, video and text communication"
         nis2_23_early_warning: "Early Warning (Art. 23.4.a)"

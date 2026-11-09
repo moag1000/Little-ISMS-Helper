@@ -106,11 +106,13 @@ tia:
     created: TIA created.
     updated: TIA updated.
     assessed: 'TIA marked as assessed.'
+    review_completed: 'Review confirmed, next one in a year.'
     deleted: 'TIA deleted.'
 
   warning:
     cannot_edit_assessed: 'Assessed TIAs cannot be edited.'
     already_assessed: 'This TIA has already been finalised.'
+    review_needs_assessment: 'Only assessed TIAs are reviewed.'
     high_risk_title: Critical transfer risk – action required
     high_risk_body: 'Residual risk has been rated HIGH. This transfer must be suspended immediately under GDPR Art. 58(2)(f) until equivalent protection can be demonstrated. A risk entry has been created automatically.'
 

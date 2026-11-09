@@ -13,13 +13,14 @@ use App\Service\Responsibility\ResponsibilityResolver;
  * A.8.5): share of the organisation's privileged accounts that sign in with a
  * second factor — the tool's own accounts as a second signal beside the
  * control's status. Privileged = active users reaching one of `roles`
- * (default ROLE_ADMIN, role hierarchy). Accounts that sign in through SSO
+ * (default: administrators and the security officers CISO/ISB, who hold
+ * manager rights over every security record — role hierarchy). Accounts that sign in through SSO
  * leave the factor to the identity provider and do not count.
  * No privileged local account is "no data".
  */
 final class AccountMfaCheck
 {
-    public const array DEFAULT_ROLES = ['ROLE_ADMIN'];
+    public const array DEFAULT_ROLES = ['ROLE_ADMIN', 'ROLE_CISO', 'ROLE_ISB'];
 
     public function __construct(
         private readonly ResponsibilityResolver $responsibility,

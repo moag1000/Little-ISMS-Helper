@@ -13,6 +13,7 @@ use App\Entity\Supplier;
 use App\Service\Review\PeriodicReviewService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Security\Voter\RecordResponsibleVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -88,7 +89,7 @@ final class BulkReviewController extends AbstractController
      * whoever is responsible for the record.
      */
     #[Route('/soa/{id}/review', name: 'app_soa_review_confirm', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('edit', subject: 'control')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::EDIT_OR_RESPONSIBLE), subject: 'control')]
     #[IsCsrfTokenValid(new Expression('"review_confirm_" ~ args["control"].getId()'))]
     #[RequiresModule('controls')]
     public function confirmControl(Control $control): Response
@@ -97,7 +98,7 @@ final class BulkReviewController extends AbstractController
     }
 
     #[Route('/risk/{id}/review', name: 'app_risk_review_confirm', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('edit', subject: 'risk')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::EDIT_OR_RESPONSIBLE), subject: 'risk')]
     #[IsCsrfTokenValid(new Expression('"review_confirm_" ~ args["risk"].getId()'))]
     #[RequiresModule('risks')]
     public function confirmRisk(Risk $risk): Response

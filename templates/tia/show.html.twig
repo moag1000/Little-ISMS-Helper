@@ -34,8 +34,13 @@
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'tia.status.draft'|trans({}, 'tia') } %}
         {% endif %}
     {% endset %}
+    {% set _actions %}{% if tia.status == 'assessed' %}{% include '_components/_review_confirm_button.html.twig' with {
+        entity: tia, route: 'app_tia_complete_review', route_params: {paId: processing_activity.id}, token_id: 'tia_review_' ~ tia.id,
+        can: is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', tia),
+    } only %}{% endif %}{% endset %}
     {{ _fa_status_band.render({
         status: _status,
+        actions: _actions,
         facts: [
             { label: 'tia.field.residual_risk_rating'|trans({}, 'tia'), value: tia.residualRiskRating ? ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia') : null },
             { label: 'tia.field.destination_country'|trans({}, 'tia'), value: tia.destinationCountry },

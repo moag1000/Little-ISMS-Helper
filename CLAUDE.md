@@ -271,6 +271,10 @@ systemctl enable isms-worker && systemctl start isms-worker
   Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
   A Reifegrad (Ist/Soll: MRIS, industry baselines) of a global requirement is the organisation's: read/write only via
   `Compliance\RequirementMaturity` (fulfilment row; own TISAX upload rows keep theirs) — `RequirementMaturityAccessTest`.
+- `Group\HoldingScope` - the one way to read across the corporate tree (`read()`, `asTenant()`); while it runs,
+  `App\Doctrine\HoldingIncidentFilter` hides other organisations' incidents with `visibleToHolding = false`, so group
+  views need no own flag check. The corporate structure (parent, governance rules) is written only by
+  `Group\CorporateStructureChange` (audit log with before/after), from both admin pages.
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
   inheritance; `thenRoles()` = wider circle) → admins (not for `withoutAdminFallback()`: board decisions wait for

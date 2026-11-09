@@ -253,6 +253,15 @@ class NavigationSearch
                 'roles' => ['ROLE_USER'],
                 'requiresModule' => 'objectives',
             ],
+            [
+                'route' => 'app_tlpt_index',
+                'label' => 'search_nav.app_tlpt_index.label',
+                'description' => 'search_nav.app_tlpt_index.description',
+                'aliases' => ['TLPT', 'Threat-Led Penetration Test', 'TIBER', 'TIBER-EU', 'Red Team', 'Penetrationstest', 'DORA Art. 26'],
+                'icon' => 'fa-icon--nav-shield',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => 'nis2_dora',
+            ],
             // ── Norm registers (Paket 9) ──────────────────────────────────────
             [
                 'route' => 'app_register_index',

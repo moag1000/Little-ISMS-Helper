@@ -49,9 +49,10 @@ final class RiskAcceptanceRequestSource implements DeadlineSource
         return 'Risikoakzeptanz zu entscheiden';
     }
 
-    public function requiredModule(): ?string
+    /** The record page lives in this module; with it off the reminder would open a "module off" page (W6). */
+    public function requiredModule(): string
     {
-        return null;
+        return 'risks';
     }
 
     /** @return list<RiskAcceptanceRequest> */
