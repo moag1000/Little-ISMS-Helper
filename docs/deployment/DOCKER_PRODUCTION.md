@@ -5,7 +5,7 @@
 ## 🎯 Vorteile
 
 - ✅ **Wirklich Standalone** - Nur 1 Container (App + embedded MariaDB)
-- ✅ **Minimal** - 1 Volume für `var/` (DB, Nachweisdateien, Backups), dazu `public/uploads` für Logos
+- ✅ **Minimal** - 1 Volume für `var/` (DB, Nachweisdateien, Backups, `.env.local`), dazu `isms_uploads` für Logos und Profilbilder
 - ✅ **Einfach** - Keine externe Datenbank nötig
 - ✅ **Performant** - Optimiert für Production
 - ✅ **Sicher** - Production-Mode mit konfigurierbaren Credentials
@@ -27,29 +27,24 @@ APP_PORT_HTTPS=443
 
 # Email Configuration (optional)
 MAILER_DSN=smtp://user:pass@smtp.example.com:587
+
+# Öffentliche Adresse (Links in Mails, Fragebögen, QR-Labels)
+DEFAULT_URI=https://isms.example.com
+# Optional, sonst aus DEFAULT_URI abgeleitet (Host + localhost für den Healthcheck)
+# SYMFONY_TRUSTED_HOSTS='^isms\.example\.com$,^localhost$'
 EOF
 ```
 
 `docker compose` liest diese Datei nur mit `--env-file`. `docker-compose.prod.yml` reicht
-`MYSQL_*` und `MAILER_DSN` an den Container weiter. `DEFAULT_URI` (öffentliche URL, Pflicht
-für Links in Erinnerungsmails) und ggf. `SYMFONY_TRUSTED_PROXIES` in einer
-`docker-compose.override.yml` ergänzen:
-
-```yaml
-services:
-  app:
-    environment:
-      DEFAULT_URI: https://isms.example.com
-    volumes:
-      - isms_uploads:/var/www/html/public/uploads   # Logos, Profilbilder
-volumes:
-  isms_uploads:
-```
+`MYSQL_*`, `MAILER_DSN`, `DEFAULT_URI` und `SYMFONY_TRUSTED_HOSTS` an den Container weiter. Die
+öffentliche Adresse schreibt der Start nach `var/.env.local` — nur wenn gesetzt; eine unter
+Überwachung > Health übernommene Adresse bleibt sonst stehen. `.env.local` im Container ist ein Link
+auf diese Datei im Volume: was Setup-Assistent und Admin-Seiten dort schreiben, übersteht Updates.
 
 ### 2. Container starten
 
 ```bash
-docker compose --env-file .env.docker.local -f docker-compose.prod.yml -f docker-compose.override.yml up -d --build
+docker compose --env-file .env.docker.local -f docker-compose.prod.yml up -d --build
 ```
 
 ### 3. Logs prüfen
@@ -66,14 +61,8 @@ Der Wizard führt durch Datenbank (embedded MariaDB, automatisch), optionalen
 Backup-Restore, Admin-User, Organisation, Module und Frameworks
 ([QUICKSTART.md](../QUICKSTART.md#5-setup-wizard-durchlaufen)).
 
-Geplante Aufgaben (Erinnerungen, Backups) laufen über den Scheduler-Worker, den
-`supervisord` im Container startet (`messenger-scheduler`). Er arbeitet derzeit nur die
-Transporte `scheduler_default` und `scheduler` ab, nicht `async` — dort liegen ausgehende Mails.
-Bis das Image das mitbringt, die `async`-Queue zusätzlich abarbeiten, z. B. per Host-Cron:
-
-```cron
-* * * * * docker compose -f /pfad/docker-compose.prod.yml exec -T -u www-data app php bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
-```
+Geplante Aufgaben (Erinnerungen, Backups) und ausgehende Mails (Queue `async`) arbeitet der
+Worker ab, den `supervisord` im Container startet (`messenger-scheduler`).
 
 ## 🔧 Konfiguration
 
@@ -87,8 +76,8 @@ Bis das Image das mitbringt, die `async`-Queue zusätzlich abarbeiten, z. B. per
 | `MYSQL_USER` | `isms` | DB-Benutzer |
 | `MYSQL_PASSWORD` | (auto) | DB-Passwort (leer = auto-generiert) |
 | `MAILER_DSN` | (leer) | SMTP-Konfiguration |
-| `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL, z. B. `https://isms.example.com` — alle Links in E-Mails, Lieferantenfragebögen, Trust Center und QR-Labels werden damit gebaut, nie aus dem Host-Header. Ohne Wert zeigt Überwachung > Health eine Warnung mit Knopf „Adresse übernehmen“ |
-| `SYMFONY_TRUSTED_HOSTS` | (leer) | Erlaubte Hostnamen als verankerte Muster, z. B. `'^isms\.example\.com$,^localhost$'` (localhost für den Container-Healthcheck); jeder andere Host-Header bekommt 400 |
+| `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL (im Container `ISMS_PUBLIC_URL`, beim Start nach `var/.env.local` geschrieben), z. B. `https://isms.example.com` — alle Links in E-Mails, Lieferantenfragebögen, Trust Center und QR-Labels werden damit gebaut, nie aus dem Host-Header. Ohne Wert zeigt Überwachung > Health eine Warnung mit Knopf „Adresse übernehmen“ |
+| `SYMFONY_TRUSTED_HOSTS` | aus `DEFAULT_URI` | Erlaubte Hostnamen als verankerte Muster, z. B. `'^isms\.example\.com$,^localhost$'` (localhost für den Container-Healthcheck); jeder andere Host-Header bekommt 400 |
 | `APP_SECRET` | generiert | Wird beim ersten Start erzeugt und in `var/app_secret` gespeichert; ein gesetzter Wert hat Vorrang |
 | `SYMFONY_TRUSTED_PROXIES` | private Netze | Siehe [Vertrauenswürdige Proxys](#vertrauenswürdige-proxys-client-ip) |
 | `EMBEDDED_DB` | `mariadb` | `none` = keine eingebettete MariaDB, externe DB über `DATABASE_URL` |
@@ -121,11 +110,11 @@ Das `isms_data` Volume enthält:
 ├── uploads/         # Nachweisdateien (Dokumente, Versionen, Schulungsmaterial)
 ├── backups/         # Backup-Dateien (nächtlich 02:00, 30 Tage)
 ├── app_secret       # Persistiertes APP_SECRET
+├── .env.local       # Einstellungen aus Setup-Assistent und Admin-Seiten (/var/www/html/.env.local zeigt hierher)
 └── mysql_password.txt  # Auto-generiertes DB-Passwort (falls nicht gesetzt)
 ```
 
-Logos und Profilbilder liegen in `public/uploads/` — ohne eigenes Volume gehen sie beim
-Neuerstellen des Containers verloren (siehe Override oben).
+Logos und Profilbilder liegen in `public/uploads/`, im Volume `isms_uploads`.
 
 ### Backup erstellen
 
@@ -222,7 +211,7 @@ SYMFONY_TRUSTED_PROXIES=127.0.0.1,10.0.0.0/8,203.0.113.0/24
 
 ```bash
 git pull
-docker compose --env-file .env.docker.local -f docker-compose.prod.yml -f docker-compose.override.yml up -d --build
+docker compose --env-file .env.docker.local -f docker-compose.prod.yml up -d --build
 ```
 
 Mit dem fertigen Image (`moag2000/little-isms-helper:<version>`, siehe

@@ -3,6 +3,40 @@
 
 set -e
 
+# .env.local holds what the setup wizard and the admin pages write (public address,
+# trusted hosts, mailer, APP_SECRET, DATABASE_URL). The image layer is replaced on every
+# update, so the real file lives on the data volume (var/.env.local) and .env.local is
+# a link to it (App\Service\EnvironmentWriter writes through the link).
+PERSISTED_ENV=/var/www/html/var/.env.local
+mkdir -p /var/www/html/var
+if [ -f /var/www/html/.env.local ] && [ ! -L /var/www/html/.env.local ]; then
+    # Container restarted (not recreated) after the update: keep what it already had.
+    [ -s "$PERSISTED_ENV" ] || cp /var/www/html/.env.local "$PERSISTED_ENV"
+    rm -f /var/www/html/.env.local
+fi
+ln -sfn var/.env.local /var/www/html/.env.local
+
+# Public address from the compose file (DEFAULT_URI there, ISMS_PUBLIC_URL in the
+# container): links in mails, questionnaires and QR labels are built from it. Only a
+# set value is written, so an address chosen on the health page is never reset.
+apply_public_address() {
+    [ -n "${ISMS_PUBLIC_URL:-}" ] || return 0
+    url=$(printf '%s' "$ISMS_PUBLIC_URL" | sed 's|/*$||')
+    host=$(printf '%s' "$url" | sed -E 's#^[A-Za-z]+://([^/:]+).*#\1#' | tr 'A-Z' 'a-z')
+    hosts="${ISMS_TRUSTED_HOSTS:-}"
+    if [ -z "$hosts" ]; then
+        hosts="^$(printf '%s' "$host" | sed 's/\./\\./g')\$,^localhost\$,^127\\.0\\.0\\.1\$"
+    fi
+    touch "$PERSISTED_ENV"
+    { grep -v -e '^DEFAULT_URI=' -e '^SYMFONY_TRUSTED_HOSTS=' "$PERSISTED_ENV" || true
+      printf 'DEFAULT_URI="%s"\n' "$url"
+      printf "SYMFONY_TRUSTED_HOSTS='%s'\n" "$hosts"
+    } > "$PERSISTED_ENV.tmp" && mv "$PERSISTED_ENV.tmp" "$PERSISTED_ENV"
+    chown www-data:www-data "$PERSISTED_ENV" 2>/dev/null || true
+    chmod 600 "$PERSISTED_ENV"
+    echo "Public address $url written to .env.local"
+}
+
 # Skip entire embedded-MariaDB bootstrap when running against an external DB
 # (postgres / external mysql). Used by the CI compose-smoke-test and any
 # deployment that wants to bring its own DB. Default behaviour
@@ -17,6 +51,7 @@ if [ "${EMBEDDED_DB:-mariadb}" = "none" ]; then
         chmod 775 "/var/www/html/$dir"
     done
 
+    apply_public_address
     cd /var/www/html
 
     # Wait briefly for external DB to accept connections (compose may start
@@ -138,7 +173,7 @@ fi
 # silently invalidating sessions/MFA and making previously-encrypted backups
 # undecryptable. Persist it on the volume (var/) and reuse it, exactly like the
 # MySQL password above. An explicit APP_SECRET env var still wins (12-factor).
-ENV_FILE=/var/www/html/.env.local
+ENV_FILE=$PERSISTED_ENV
 SECRET_FILE=/var/www/html/var/app_secret
 # The Dockerfile sets a build-time placeholder APP_SECRET (needed so cache:warmup
 # can run during the image build). It must NEVER be used at runtime — treat it
@@ -171,7 +206,7 @@ else
 fi
 
 # Update or add DATABASE_URL (preserving other variables)
-ENV_FILE=/var/www/html/.env.local
+ENV_FILE=$PERSISTED_ENV
 if grep -q "^DATABASE_URL=" "$ENV_FILE" 2>/dev/null; then
     # Update existing DATABASE_URL
     sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock\&serverVersion=mariadb-11.4.0\&charset=utf8mb4\"|" "$ENV_FILE"
@@ -183,6 +218,7 @@ fi
 chown www-data:www-data /var/www/html/.env.local
 chmod 600 /var/www/html/.env.local
 echo "DATABASE_URL configured in .env.local"
+apply_public_address
 
 # Bootstrap schema if database was just created
 if [ "$NEEDS_MIGRATION" = "1" ]; then

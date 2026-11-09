@@ -719,7 +719,8 @@ Compliance audit trail: [`docs/archive/FORM_AUDIT_2026-05.md`](docs/archive/FORM
 
 ## Coding Standards
 
-- PSR-12, Symfony conventions
+- PSR-12, Symfony conventions — CI runs `vendor/bin/php-cs-fixer fix --dry-run --config=.php-cs-fixer.dist.php` on
+  src/ + tests/; files in `scripts/quality/baselines/php_cs_fixer.txt` are older debt (fix one, delete its line, never add)
 - 4-space indent, max 120 char lines
 - Type hints and return types required
 - Commit format: `feat(scope): message` / `fix(scope): message`
