@@ -39,8 +39,15 @@ use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
  */
 final class ScheduledCommandsTenantIsolationTest extends KernelTestCase
 {
-    /** Commands that would touch files outside the test: run in their dry-run mode. */
-    private const array DRY_RUN = ['app:backup:prune'];
+    /**
+     * Extra options per command: prune only reports (keeps the developer's backups), the
+     * instance backup leaves out the audit log, which other tests have grown to a size
+     * that does not fit in memory — the organisation scope is the same either way.
+     */
+    private const array EXTRA_OPTIONS = [
+        'app:backup:prune' => ' --dry-run',
+        'app:backup:create' => ' --no-include-audit-log --no-include-files',
+    ];
 
     private EntityManagerInterface $em;
     private TenantContext $tenantContext;
@@ -97,19 +104,48 @@ final class ScheduledCommandsTenantIsolationTest extends KernelTestCase
     #[Test]
     public function everyScheduledCommandLeavesNoOrganisationBehindForTheNext(): void
     {
-        $handler = new RunCommandMessageHandler($this->application());
+        // Only A and B are active while the commands run: they loop every active
+        // organisation, and the suite leaves hundreds behind (minutes, > 1 GB).
+        $others = $this->deactivateOtherOrganisations();
+        try {
+            $handler = new RunCommandMessageHandler($this->application());
 
-        foreach (Schedule::COMMAND_TASKS as [, $line]) {
-            $command = explode(' ', $line)[0];
-            $extra = in_array($command, self::DRY_RUN, true) ? ' --dry-run' : '';
-            $context = $handler(new RunCommandMessage(
-                $line . $extra . ' --no-interaction',
-                throwOnFailure: false,
-                catchExceptions: true,
-            ));
+            foreach (Schedule::COMMAND_TASKS as [, $line]) {
+                $command = explode(' ', $line)[0];
+                $extra = self::EXTRA_OPTIONS[$command] ?? '';
+                $context = $handler(new RunCommandMessage(
+                    $line . $extra . ' --no-interaction',
+                    throwOnFailure: false,
+                    catchExceptions: true,
+                ));
 
-            // No worker reset in between: each command must put the context back itself.
-            $this->assertNoOrganisationSticks(sprintf('after "%s" (exit %d)', $command, $context->exitCode));
+                // No worker reset in between: each command must put the context back itself.
+                $this->assertNoOrganisationSticks(sprintf('after "%s" (exit %d)', $command, $context->exitCode));
+            }
+        } finally {
+            $this->setActive($others, true);
+        }
+    }
+
+    /** @return list<int> the organisations switched off */
+    private function deactivateOtherOrganisations(): array
+    {
+        $ids = array_map('intval', $this->em->createQueryBuilder()
+            ->select('t.id')->from(Tenant::class, 't')
+            ->where('t.isActive = true')->andWhere('t.id NOT IN (:ours)')
+            ->setParameter('ours', [$this->a->getId(), $this->b->getId()])
+            ->getQuery()->getSingleColumnResult());
+        $this->setActive($ids, false);
+
+        return $ids;
+    }
+
+    /** @param list<int> $ids */
+    private function setActive(array $ids, bool $active): void
+    {
+        if ($ids !== []) {
+            $this->em->createQuery('UPDATE ' . Tenant::class . ' t SET t.isActive = :active WHERE t.id IN (:ids)')
+                ->setParameter('active', $active)->setParameter('ids', $ids)->execute();
         }
     }
 
