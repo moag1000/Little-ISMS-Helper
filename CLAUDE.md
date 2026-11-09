@@ -523,6 +523,12 @@ Every entity with a `status` field that goes through staged transitions uses **S
 5. Add `#[ORM\Version] private int $lockVersion = 0;` to entity + migration (`isTransactional()=false`)
 6. Smoke tests in `tests/Lifecycle/`
 
+**Evidence comes from the step (S12).** Who/when of an approval, implementation, verification, closing or report
+is written by the transition or action that produces it — `Lifecycle\EventListener\LifecycleEvidenceStamper` for
+lifecycle steps, a dedicated action otherwise ("Als gemeldet markieren", "Behandlung freigeben", acceptance request,
+Leitungsentscheidung). Forms show such fields `disabled` (or `DerivedField::readOnlyWhen()` once approved);
+`tests/Api/ApiEvidenceFieldNamesTest` checks every FormType of the class, exceptions only with a reason.
+
 **Anti-pattern — never do this:**
 ```php
 $entity->setStatus('approved'); // direct setter bypasses audit-log, RBAC, tenant-guard

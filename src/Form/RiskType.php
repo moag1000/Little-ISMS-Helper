@@ -17,6 +17,7 @@ use App\Enum\TreatmentStrategy;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
 use App\Form\Type\OwnerUserType;
+use App\Form\Util\DerivedField;
 use App\Form\Util\LegacyFreeTextField;
 use App\Risk\RiskMatrixThresholds;
 use App\Risk\RiskScaleProvider;
@@ -186,6 +187,14 @@ final class RiskType extends AbstractType implements SectionMapInterface
             ->add('residualProbability', ChoiceType::class, $this->levelField('probability', 'risk.field.residual_probability', 'risk.help.residual_probability', false))
             ->add('residualImpact', ChoiceType::class, $this->levelField('impact', 'risk.field.residual_impact', 'risk.help.residual_impact', false))
         ;
+        // S12 / ISO 27001 6.1.3 f, 8.3: the residual risk is what the approver accepted. While the
+        // acceptance stands it does not change by editing; a new rating goes through a new
+        // acceptance request (re-evaluation ends the old acceptance).
+        foreach (['residualProbability', 'residualImpact'] as $field) {
+            DerivedField::readOnlyWhen($builder, $field, static fn (Risk $risk): ?array => $risk->isFormallyAccepted()
+                ? ['risk.help.residual_frozen_while_accepted', []]
+                : null);
+        }
 
         // ── Risk Owner cluster ───────────────────────────────
         // Replaces 3 hand-rolled add() calls (riskOwner / riskOwnerPerson /
@@ -256,22 +265,27 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'disabled' => true,
                 'help' => 'risk.help.acceptance_set_by_workflow',
             ])
+            // S12: reason and expiry belong to the acceptance request ("Akzeptanz beantragen")
+            // and are approved with it — typing them here faked a pending request or moved the
+            // expiry of a granted acceptance without a new approval.
+            // @intentional-bind: shown read-only, disabled fields are not submitted, the request's value stays
             ->add('acceptanceJustification', TextareaType::class, [
                 'label' => 'risk.field.acceptance_justification',
                 'required' => false,
-                'attr' => [
-                    'rows' => 3,
-                    'placeholder' => 'risk.placeholder.acceptance_justification',
-                ],
+                'disabled' => true,
+                'attr' => ['rows' => 3],
+                'help' => 'risk.help.acceptance_set_by_request',
             ])
             // ISO 27001 Cl. 8.3: acceptance must carry an
             // expiry / re-evaluation date so accepted risks do not "expire
             // silent" after the approver leaves the org or threat changes.
+            // @intentional-bind: shown read-only, disabled fields are not submitted, the request's value stays
             ->add('acceptanceExpiryDate', DateType::class, [
                 'label' => 'risk.field.acceptance_expiry_date',
                 'widget' => 'single_text',
                 'required' => false,
-                'help' => 'risk.help.acceptance_expiry_date',
+                'disabled' => true,
+                'help' => 'risk.help.acceptance_set_by_request',
             ])
             // ── Risk-Decision Audit-Trail (ISO 27001 Cl. 6.1.3) ──────────────
             // 5 entity-fields. Required for full
@@ -296,18 +310,25 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'help' => 'risk.help.decision_rationale',
                 'attr' => ['rows' => 3],
             ])
+            // S12 / ISO 27001 6.1.3 f: the treatment decision is approved with the action
+            // "Behandlung freigeben" on the risk page (who + when from the login), never picked here.
+            // @intentional-bind: shown read-only, disabled fields are not submitted, the action's value stays
             ->add('decisionApprovedByUser', OwnerUserType::class, [
                 'label' => 'risk.field.decision_approved_by_user',
                 'choice_label' => fn(User $u) => $u->getFullName() ?: $u->getEmail(),
                 'required' => false,
-                'help' => 'risk.help.decision_approved_by_user',
+                'disabled' => true,
+                'help' => 'risk.help.decision_approved_by_action',
                 'placeholder' => 'common.please_select',
             ])
+            // @intentional-bind: shown read-only, disabled fields are not submitted, the action's value stays
             ->add('decisionApprovalDate', DateType::class, [
                 'label' => 'risk.field.decision_approval_date',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
-                'help' => 'risk.help.decision_approval_date',
+                'disabled' => true,
+                'help' => 'risk.help.decision_approved_by_action',
             ])
             // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
             // Owned by `risk_lifecycle`. YAML 4-eyes on `accept`.

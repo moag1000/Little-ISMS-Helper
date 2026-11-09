@@ -22,6 +22,7 @@ management_decision:
         objectives: 'Information security objectives'
         dora_ict_framework: 'DORA ICT risk management framework'
         dora_strategy: 'Digital operational resilience strategy'
+        supplier_risk: 'Risk acceptance of an outsourcing'
         dora_third_party: 'Strategy on ICT third-party risk'
         other: 'Other decision'
     status:
@@ -112,6 +113,7 @@ management_decision:
             nis2_measures: 'Approve NIS-2 risk management measures'
             dora_ict_framework: 'Approve DORA ICT risk management framework'
             dora_strategy: 'Approve digital operational resilience strategy'
+            supplier_risk: 'Accept the outsourcing risk of "%name%"'
             dora_third_party: 'Approve strategy on ICT third-party risk'
             other: 'Decision of top management'
             risk_acceptance: 'Risk acceptance'
@@ -144,5 +146,7 @@ management_decision:
             body: '%implemented% of %applicable% applicable controls are implemented. The management body approves the ICT risk management framework, oversees its implementation and has it reviewed at least once a year (DORA Art. 5(2), 6(5)).'
         dora_strategy:
             body: 'Objectives of digital operational resilience, risk tolerance for ICT risk, key indicators and responsibilities (DORA Art. 6(8)). Add how the strategy supports the business strategy.'
+        supplier_risk:
+            body: 'Outsourcing "%name%" (classification: %classification%, criticality: %criticality%). Impact on risk-bearing capacity: %impact%. Top management explicitly accepts the risk of this outsourcing (MaRisk AT 4.3, AT 9; DORA Art. 28 (1)).'
         dora_third_party:
             body: '%total% ICT third-party service providers in the register of information, %critical% of them for critical or important functions, %exit% with an exit strategy. The management body approves the strategy on ICT third-party risk and reviews it regularly (DORA Art. 28(2)).'

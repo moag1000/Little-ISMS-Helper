@@ -360,12 +360,7 @@ final class SupplierImportSchemaProvider implements ImportSchemaProviderInterfac
                     type: ImportFieldSpec::TYPE_TEXT,
                     module: 'marisk',
                 ),
-                new ImportFieldSpec(
-                    name: 'boardLevelRiskAcceptance',
-                    setter: 'setBoardLevelRiskAcceptance',
-                    type: ImportFieldSpec::TYPE_BOOL,
-                    module: 'marisk',
-                ),
+                // S12: boardLevelRiskAcceptance is set only by an approved Leitungsentscheidung, never imported.
                 new ImportFieldSpec(
                     name: 'complianceFunctionInvolvement',
                     setter: 'setComplianceFunctionInvolvement',

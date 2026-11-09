@@ -133,7 +133,7 @@ final class UserPickerTenantScopeTest extends KernelTestCase
         yield 'DPIA DPO' => [DataProtectionImpactAssessmentType::class, DataProtectionImpactAssessment::class, 'dataProtectionOfficer', false];
         yield 'DPIA conductor' => [DataProtectionImpactAssessmentType::class, DataProtectionImpactAssessment::class, 'conductor', false];
         // Risk acceptance approver: read-only since T (wave 7), written by RiskAcceptanceWorkflowService only.
-        yield 'Risk decision approver' => [RiskType::class, Risk::class, 'decisionApprovedByUser', false];
+        // Risk decision approver: read-only since S12, written by "Behandlung freigeben" (RiskAcceptanceRequestController).
         yield 'Risk owner (owner picker)' => [RiskType::class, Risk::class, 'riskOwner', false];
         yield 'Person linked user' => [PersonType::class, Person::class, 'linkedUser', false];
         yield 'RiskQuick owner' => [RiskQuickType::class, Risk::class, 'riskOwner', false];

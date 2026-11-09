@@ -51,6 +51,9 @@ class RiskAcceptanceWorkflowService
     // hier sind identisch zu den vorherigen PHP-Constants und werden vom
     // Resolver gespiegelt (RiskApprovalConfigView::defaults()).
 
+    /** S12 / ISO 27001 8.3: an acceptance is reviewed within at most this many months. */
+    public const int MAX_ACCEPTANCE_MONTHS = 36;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly RiskAppetitePrioritizationService $riskAppetitePrioritizationService,
@@ -74,7 +77,7 @@ class RiskAcceptanceWorkflowService
      * @throws BusinessRuleException If risk does not qualify for acceptance
      * @return array Status information about the acceptance request
      */
-    public function requestAcceptance(Risk $risk, User $user, string $justification): array
+    public function requestAcceptance(Risk $risk, User $user, string $justification, ?\DateTimeInterface $expiry = null): array
     {
         $this->logger->info('Risk acceptance requested', [
             'risk_id' => $risk->getId(),
@@ -94,14 +97,86 @@ class RiskAcceptanceWorkflowService
         // 3. Determine required approval level
         $approvalLevel = $this->determineApprovalLevel($risk);
 
-        // 4. Set acceptance justification
+        // 4. Set acceptance justification and the review horizon the approver accepts (ISO 27001 8.3)
         $risk->setAcceptanceJustification($justification);
+        if ($expiry instanceof \DateTimeInterface) {
+            $risk->setAcceptanceExpiryDate(DateTime::createFromInterface($expiry));
+        }
 
         // 5. Handle based on approval level
         if ($approvalLevel === 'automatic') {
             return $this->processAutomaticAcceptance($risk, $user);
         }
         return $this->createApprovalWorkflow($risk, $user, $approvalLevel);
+    }
+
+    /**
+     * S12: re-evaluation or extension of a granted acceptance. The standing
+     * acceptance ends (audit log, lifecycle back to "assessed") and a new
+     * request with the new reason, residual rating and expiry goes to the
+     * approver of its level — an acceptance is never extended without one.
+     *
+     * @return array<string, mixed> same as requestAcceptance()
+     */
+    public function requestReevaluation(Risk $risk, User $user, string $justification, ?\DateTimeInterface $expiry = null): array
+    {
+        if ($risk->isFormallyAccepted()) {
+            $this->endAcceptance($risk, $user, 'Re-evaluation requested: ' . $justification);
+        }
+
+        return $this->requestAcceptance($risk, $user, $justification, $expiry);
+    }
+
+    /** Ends a granted acceptance; who accepted when stays in the audit log and lifecycle history. */
+    private function endAcceptance(Risk $risk, User $user, string $reason): void
+    {
+        $old = [
+            'accepted_by' => $risk->getAcceptanceApprovedByUser()?->getEmail() ?? $risk->getAcceptanceApprovedBy(),
+            'accepted_at' => $risk->getAcceptanceApprovedAt()?->format('Y-m-d'),
+            'expiry' => $risk->getAcceptanceExpiryDate()?->format('Y-m-d'),
+        ];
+        $risk->setFormallyAccepted(false);
+        $risk->setAcceptanceApprovedByUser(null);
+        $risk->setAcceptanceApprovedBy(null);
+        $risk->setAcceptanceApprovedAt(null);
+        $this->entityManager->flush();
+
+        if ($risk->getStatus() === RiskStatus::Accepted) {
+            $this->lifecycleService->transition($risk, 'risk_lifecycle', 'revert_to_assessed', $user, $reason);
+        }
+        $this->auditLogger->logCustom(
+            action: 'risk_acceptance_ended',
+            entityType: 'Risk',
+            entityId: $risk->getId(),
+            oldValues: $old,
+            newValues: null,
+            description: 'Risk acceptance ended for re-evaluation',
+            userName: $user->getEmail(),
+        );
+    }
+
+    /**
+     * S12 / ISO 27001 6.1.3 f: the risk owner (or a manager) approves the
+     * treatment decision; who and when come from the login.
+     */
+    public function approveTreatmentDecision(Risk $risk, User $user, ?string $comment = null): void
+    {
+        $old = $risk->getDecisionApprovedByUser();
+        $risk->setDecisionApprovedByUser($user)->setDecisionApprovalDate(new \DateTimeImmutable());
+        $this->entityManager->flush();
+        $this->auditLogger->logCustom(
+            action: 'risk_decision_approved',
+            entityType: 'Risk',
+            entityId: $risk->getId(),
+            oldValues: ['decision_approved_by' => $old?->getEmail()],
+            newValues: [
+                'decision_approved_by' => $user->getEmail(),
+                'treatment' => $risk->getTreatmentStrategy()?->value,
+                'comment' => $comment !== null && trim($comment) !== '' ? mb_substr(trim($comment), 0, 1000) : null,
+            ],
+            description: 'Risk treatment decision approved (ISO 27001 6.1.3 f)',
+            userName: $user->getEmail(),
+        );
     }
 
     /**

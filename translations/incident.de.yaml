@@ -269,6 +269,8 @@ incident:
     nis2_notification_required: 'NIS-2 Art. 23 Abs. 3: die Einrichtung bewertet, ob der Vorfall erheblich ist. Bis dahin gilt die Vorprüfung, und die Fristen laufen ab Erkennung.'
     dora_final_report_submitted_at: 'DORA Art. 19 Abs. 4 lit. c: ein Monat nach dem Zwischenbericht.'
     status_readonly: 'Status wird vom Incident-Lifecycle-Workflow gesteuert (detected → analyzed → contained → resolved → closed). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite (LifecycleService::transition).'
+    closed_by_lifecycle: 'Wird beim Lebenszyklus-Schritt „Schließen“ gesetzt.'
+    reported_via_mark: 'Wird über „Als gemeldet markieren“ im Abschnitt Meldepflichten gesetzt, auch rückwirkend mit Meldezeitpunkt (NIS-2 Art. 23, DORA Art. 19).'
     visible_to_holding: 'Standard ein: Holding-/Konzern-CISO kann diesen Vorfall sehen, um Konzern-Response zu koordinieren. Nur für vertrauliche Fälle (z. B. HR) deaktivieren.'
     severity: Bewerten Sie den Schweregrad basierend auf Auswirkung und Umfang (ISO
       27001 A.16.1.4)
@@ -539,6 +541,8 @@ incident:
     malicious: Verdacht auf böswillige Handlung
   reporting:
     mark_reported: Als gemeldet markieren
+    reported_at: Meldezeitpunkt
+    reported_at_hint: 'Leer = jetzt. Rückwirkend: Zeitpunkt, zu dem die Meldung rausging (nicht vor der Erkennung).'
     assessed: 'Bewertung der Einrichtung: %result%.'
     precheck_title: 'Vorprüfung: wahrscheinlich ein erheblicher Sicherheitsvorfall'
     precheck_body: 'Erfüllt: %reasons%. Die Fristen laufen ab Erkennung; die Bewertung trifft die Einrichtung (NIS-2 Art. 23 Abs. 3).'
@@ -562,6 +566,7 @@ incident:
     assessed_reportable: Als meldepflichtig bewertet.
     assessed_not_reportable: Als nicht meldepflichtig bewertet.
     marked_reported: Als gemeldet markiert.
+    reported_at_invalid: 'Meldezeitpunkt liegt in der Zukunft oder vor der Erkennung des Vorfalls.'
     interim_requested: Anforderung erfasst.
 # Junior-ISB-Audit P-12 rollout — 9001-bridge for Incident form.
 iso_9001_bridge:

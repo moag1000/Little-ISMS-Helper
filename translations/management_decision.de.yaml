@@ -22,6 +22,7 @@ management_decision:
         objectives: 'Informationssicherheitsziele'
         dora_ict_framework: 'IKT-Risikomanagementrahmen nach DORA'
         dora_strategy: 'Strategie für die digitale operationale Resilienz'
+        supplier_risk: 'Risikoakzeptanz einer Auslagerung'
         dora_third_party: 'Strategie für das IKT-Drittparteienrisiko'
         other: 'Sonstige Entscheidung'
     status:
@@ -112,6 +113,7 @@ management_decision:
             nis2_measures: 'Risikomanagementmaßnahmen nach NIS-2 billigen'
             dora_ict_framework: 'IKT-Risikomanagementrahmen nach DORA billigen'
             dora_strategy: 'Strategie für die digitale operationale Resilienz billigen'
+            supplier_risk: 'Auslagerungsrisiko „%name%“ akzeptieren'
             dora_third_party: 'Strategie für das IKT-Drittparteienrisiko billigen'
             other: 'Entscheidung der Leitung'
             risk_acceptance: 'Risikoakzeptanz'
@@ -144,5 +146,7 @@ management_decision:
             body: '%implemented% von %applicable% anwendbaren Controls sind umgesetzt. Das Leitungsorgan billigt den IKT-Risikomanagementrahmen, überwacht seine Umsetzung und lässt ihn mindestens jährlich überprüfen (DORA Art. 5 Abs. 2, Art. 6 Abs. 5).'
         dora_strategy:
             body: 'Ziele der digitalen operationalen Resilienz, Risikotoleranz für IKT-Risiken, Kennzahlen und Zuständigkeiten (DORA Art. 6 Abs. 8). Ergänzen Sie, wie die Strategie die Geschäftsstrategie stützt.'
+        supplier_risk:
+            body: 'Auslagerung „%name%“ (Klassifikation: %classification%, Kritikalität: %criticality%). Auswirkung auf die Risikotragfähigkeit: %impact%. Die Geschäftsleitung akzeptiert das Risiko dieser Auslagerung ausdrücklich (MaRisk AT 4.3, AT 9; DORA Art. 28 Abs. 1).'
         dora_third_party:
             body: '%total% IKT-Drittdienstleister im Informationsregister, davon %critical% für kritische oder wichtige Funktionen, %exit% mit Ausstiegsstrategie. Das Leitungsorgan billigt die Strategie für das IKT-Drittparteienrisiko und überprüft sie regelmäßig (DORA Art. 28 Abs. 2).'

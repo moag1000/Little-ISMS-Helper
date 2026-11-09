@@ -267,6 +267,8 @@ incident:
     nis2_notification_required: 'NIS-2 Art. 23 (3): the entity assesses whether the incident is significant. Until then the pre-check applies and the deadlines run from detection.'
     dora_final_report_submitted_at: 'DORA Art. 19 (4) (c): one month after the intermediate report.'
     status_readonly: 'Status is driven by the Incident lifecycle workflow (detected → analyzed → contained → resolved → closed). Direct edit disabled; use the status actions on the show page (LifecycleService::transition).'
+    closed_by_lifecycle: 'Set by the lifecycle step "Close".'
+    reported_via_mark: 'Set with "Mark as reported" in the reporting duties section, also afterwards with the time of the report (NIS-2 Art. 23, DORA Art. 19).'
     visible_to_holding: 'Default on: holding / group CISO can see this incident to coordinate group-level response. Disable only for confidential cases (e.g. HR).'
     severity: Assess severity based on impact and scope (ISO 27001 A.16.1.4)
     affected_systems: List all affected systems, applications and infrastructure
@@ -529,6 +531,8 @@ incident:
     malicious: suspected malicious act
   reporting:
     mark_reported: Mark as reported
+    reported_at: Time of report
+    reported_at_hint: 'Empty = now. Afterwards: the time the report went out (not before detection).'
     assessed: 'Assessment of the entity: %result%.'
     precheck_title: 'Pre-check: probably a significant incident'
     precheck_body: 'Met: %reasons%. The deadlines run from detection; the entity makes the assessment (NIS-2 Art. 23 (3)).'
@@ -552,6 +556,7 @@ incident:
     assessed_reportable: Assessed as reportable.
     assessed_not_reportable: Assessed as not reportable.
     marked_reported: Marked as reported.
+    reported_at_invalid: 'The time of report is in the future or before the incident was detected.'
     interim_requested: Request recorded.
 # Junior-ISB-Audit P-12 rollout — 9001 bridge for Incident form.
 iso_9001_bridge:
