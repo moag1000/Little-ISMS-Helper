@@ -40,6 +40,11 @@
         and (is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', risk)) %}
         {% set _show_actions = _show_actions|merge([{ label: 'risk.acceptance.request_action'|trans({}, 'risk'), variant: 'ghost', href: path('app_risk_request_acceptance', {id: risk.id}) }]) %}
     {% endif %}
+    {# S12 / ISO 27001 8.3: a granted acceptance is extended or re-rated only through a new request #}
+    {% if risk.formallyAccepted and risk.treatmentStrategy and risk.treatmentStrategy.value == 'accept'
+        and (is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', risk)) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'risk.acceptance.reevaluate_action'|trans({}, 'risk'), variant: 'ghost', href: path('app_risk_request_acceptance', {id: risk.id}) }]) %}
+    {% endif %}
     {% set _show_actions = _show_actions|merge([
         { label: 'action.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_risk_index') }
     ]) %}
@@ -251,6 +256,34 @@
 
                 {% if risk.reviewDate %}
                     <p>{{ 'risk.field.next_review'|trans({}, 'risk') }}: {{ risk.reviewDate|fa_date }}</p>
+                {% endif %}
+
+                {# S12 / ISO 27001 6.1.3 f: the treatment decision is approved here, never picked in the form #}
+                <p class="mb-2" data-testid="risk-decision-approval">
+                    {% if risk.decisionApprovedByUser %}
+                        {{ 'risk.decision.approved_by'|trans({'%name%': risk.decisionApprovedByUser.fullName, '%date%': risk.decisionApprovalDate|fa_date}, 'risk') }}
+                    {% else %}
+                        {{ 'risk.decision.not_approved'|trans({}, 'risk') }}
+                    {% endif %}
+                </p>
+                {% if risk.treatmentStrategy and risk.decisionRationale and (is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', risk)) %}
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                            data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open"
+                            data-fa-modal-id="approveDecision{{ risk.id }}">
+                        {{ 'risk.decision.action.approve'|trans({}, 'risk') }}
+                    </button>
+                    {% import '_macros/workflow.html.twig' as _workflow %}
+                    {{ _workflow.decision_modal({
+                        id: 'approveDecision' ~ risk.id,
+                        tone: 'success',
+                        title: 'risk.decision.action.approve'|trans({}, 'risk'),
+                        action: path('app_risk_approve_decision', {id: risk.id}),
+                        token: csrf_token('risk_approve_decision_' ~ risk.id),
+                        question: 'risk.decision.confirm'|trans({}, 'risk'),
+                        subject: risk.title,
+                        summary: risk.decisionRationale,
+                        field: { name: 'comment', label: 'risk.decision.comment'|trans({}, 'risk'), rows: 2 },
+                    }) }}
                 {% endif %}
             </div>
 

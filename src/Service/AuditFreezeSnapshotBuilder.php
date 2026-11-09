@@ -16,6 +16,7 @@ use App\Repository\RiskRepository;
 use App\Risk\RiskMatrixThresholds;
 use DateTimeImmutable;
 use DateTimeInterface;
+use App\Service\Compliance\RequirementMaturity;
 
 /**
  * Builds the JSON payload captured in an AuditFreeze.
@@ -47,6 +48,7 @@ final class AuditFreezeSnapshotBuilder
         private readonly ControlRepository $controlRepository,
         private readonly RiskRepository $riskRepository,
         private readonly PortfolioSnapshotRepository $portfolioSnapshotRepository,
+        private readonly RequirementMaturity $requirementMaturity,
     ) {
     }
 
@@ -202,7 +204,7 @@ final class AuditFreezeSnapshotBuilder
                 ->findTisaxAssessedByFrameworkAndTenant($framework, $tenant);
 
             foreach ($requirements as $requirement) {
-                $rows[] = $this->mapTisaxMaturityRow($framework, $requirement);
+                $rows[] = $this->mapTisaxMaturityRow($framework, $requirement, $tenant);
             }
         }
 
@@ -222,6 +224,7 @@ final class AuditFreezeSnapshotBuilder
     private function mapTisaxMaturityRow(
         ComplianceFramework $framework,
         ComplianceRequirement $requirement,
+        Tenant $tenant,
     ): array {
         $mapping = $requirement->getDataSourceMapping() ?? [];
 
@@ -233,15 +236,17 @@ final class AuditFreezeSnapshotBuilder
             }
         }
 
-        $reviewedAt = $requirement->getMaturityReviewedAt();
+        // The organisation's own Reifegrad (S18): its uploaded row, or its fulfilment row of a
+        // global catalogue requirement — never another organisation's value.
+        $reviewedAt = $this->requirementMaturity->reviewedAt($requirement, $tenant);
 
         return [
             'framework' => (string) $framework->getCode(),
             'requirement_id' => (string) $requirement->getRequirementId(),
             'title' => (string) $requirement->getTitle(),
             'category' => $requirement->getCategory(),
-            'maturity_current' => $requirement->getMaturityCurrent(),
-            'maturity_target' => $requirement->getMaturityTarget(),
+            'maturity_current' => $this->requirementMaturity->current($requirement, $tenant),
+            'maturity_target' => $this->requirementMaturity->target($requirement, $tenant),
             'maturity_reviewed_at' => $reviewedAt?->format(DATE_ATOM),
             'assessment_state_dp' => $requirement->getAssessmentStateDp(),
             'maturity_raw' => isset($mapping['maturityRaw']) ? (string) $mapping['maturityRaw'] : null,

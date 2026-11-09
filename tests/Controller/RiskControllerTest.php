@@ -490,6 +490,89 @@ class RiskControllerTest extends WebTestCase
         $this->assertEquals(\App\Enum\RiskStatus::Identified, $updatedRisk->getStatus());
     }
 
+    /**
+     * S12: approval evidence typed into the edit form is ignored — the fields are
+     * read-only, the values come from the acceptance request and the decision action.
+     */
+    #[Test]
+    public function testEditIgnoresPostedApprovalEvidence(): void
+    {
+        $this->loginAsUser($this->testUser);
+        $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/edit');
+        $form = $crawler->filter('form[name="risk"]')->form(['risk[title]' => 'Updated Risk Title']);
+        $values = $form->getPhpValues();
+        $values['risk']['decisionApprovedByUser'] = (string) $this->testUser->getId();
+        $values['risk']['decisionApprovalDate'] = '2026-01-01';
+        $values['risk']['acceptanceExpiryDate'] = '2030-01-01';
+        $values['risk']['acceptanceJustification'] = 'typed by hand';
+
+        $this->client->request('POST', $form->getUri(), $values);
+
+        $this->assertResponseRedirects();
+        $risk = $this->entityManager->getRepository(Risk::class)->find($this->testRisk->getId());
+        $this->entityManager->refresh($risk);
+        self::assertSame('Updated Risk Title', $risk->getTitle());
+        self::assertNull($risk->getDecisionApprovedByUser());
+        self::assertNull($risk->getDecisionApprovalDate());
+        self::assertNull($risk->getAcceptanceExpiryDate());
+        self::assertNull($risk->getAcceptanceJustification());
+    }
+
+    /** S12 / ISO 27001 6.1.3 f: the owner approves the treatment decision; who and when come from the login. */
+    #[Test]
+    public function testRiskOwnerApprovesTheTreatmentDecision(): void
+    {
+        $this->testRisk->setDecisionRationale('Mitigieren ist günstiger als der erwartete Schaden.');
+        $this->entityManager->flush();
+        $this->loginAsUser($this->testUser);
+
+        $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId());
+        $this->assertResponseIsSuccessful();
+        $token = $crawler->filter('#approveDecision' . $this->testRisk->getId() . ' input[name="_token"]')->attr('value');
+        $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/approve-decision', ['_token' => $token, 'comment' => 'ok']);
+
+        $this->assertResponseRedirects();
+        $risk = $this->entityManager->getRepository(Risk::class)->find($this->testRisk->getId());
+        $this->entityManager->refresh($risk);
+        self::assertSame($this->testUser->getId(), $risk->getDecisionApprovedByUser()?->getId());
+        self::assertNotNull($risk->getDecisionApprovalDate());
+    }
+
+    /** S12 / ISO 27001 8.3: the acceptance request carries the expiry the approver accepts. */
+    #[Test]
+    public function testAcceptanceRequestStoresTheExpiryAndRefusesAMissingOne(): void
+    {
+        $manager = new User();
+        $manager->setEmail('manager_' . uniqid('', true) . '@example.com');
+        $manager->setFirstName('Mara')->setLastName('Manager');
+        $manager->setRoles(['ROLE_MANAGER']);
+        $manager->setPassword('hashed_password');
+        $manager->setTenant($this->testTenant);
+        $manager->setIsActive(true);
+        $this->entityManager->persist($manager);
+        $this->testRisk->setTreatmentStrategy(\App\Enum\TreatmentStrategy::Accept);
+        $this->entityManager->flush();
+        $this->loginAsUser($this->testUser);
+
+        $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/request-acceptance');
+        $this->assertResponseIsSuccessful();
+        $token = $crawler->filter('form input[name="_token"]')->last()->attr('value');
+        $url = '/en/risk/' . $this->testRisk->getId() . '/request-acceptance';
+
+        $this->client->request('POST', $url, ['_token' => $token, 'justification' => 'Restrisiko tragbar', 'expiry_date' => '']);
+        $risk = $this->entityManager->getRepository(Risk::class)->find($this->testRisk->getId());
+        $this->entityManager->refresh($risk);
+        self::assertNull($risk->getAcceptanceJustification(), 'no request without an expiry');
+
+        $expiry = (new \DateTimeImmutable('today'))->modify('+6 months')->format('Y-m-d');
+        $this->client->request('POST', $url, ['_token' => $token, 'justification' => 'Restrisiko tragbar', 'expiry_date' => $expiry]);
+        $this->assertResponseRedirects();
+        $this->entityManager->refresh($risk);
+        self::assertSame('Restrisiko tragbar', $risk->getAcceptanceJustification());
+        self::assertSame($expiry, $risk->getAcceptanceExpiryDate()?->format('Y-m-d'));
+        self::assertFalse($risk->isFormallyAccepted(), 'the manager still has to approve');
+    }
+
     #[Test]
     public function testEditReturns404ForNonexistentRisk(): void
     {

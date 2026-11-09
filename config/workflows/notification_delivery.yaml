@@ -19,6 +19,11 @@
 #   - `archived`: retention-window expired; row stays for forensic-audit but
 #     is excluded from operational dashboards.
 #
+# S15 (2026-11): the delivery steps (dispatch, confirm_delivery, fail_*, retries) are
+# written only by the system — `roles: []` means no person can fire them through
+# /lifecycle/{type}/{id}/transition. They were open to ROLE_USER, so any user could
+# mark a notice as `delivered`, which is the delivery evidence (ISO 7.4, DORA Art. 19).
+#
 # Backward compatibility: the existing `markSent()`/`markFailed()` helpers on
 # the entity remain in place (hot path — every notification touches them).
 # This YAML adds the *option* to drive the lifecycle through
@@ -51,7 +56,7 @@ framework:
                     from: pending_digest
                     to: sent
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: []  # system-driven (channel adapter / digest run / ACK ingest), never by hand
                         module: notifications
                 # Channel adapter handed payload to transport (SMTP queued,
                 # webhook POST returned 2xx without ACK body, in-app row
@@ -60,7 +65,7 @@ framework:
                     from: pending
                     to: sent
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: []  # system-driven (channel adapter / digest run / ACK ingest), never by hand
                         module: notifications
                 # End-to-end ACK received (read-receipt, webhook ACK body
                 # parsed). Driven by the read-receipt listener / webhook
@@ -69,7 +74,7 @@ framework:
                     from: sent
                     to: delivered
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: []  # system-driven (channel adapter / digest run / ACK ingest), never by hand
                         module: notifications
                 # Transport reported a permanent error (SMTP 5xx, webhook
                 # 4xx/5xx body). Reason is captured in `error_message` on
@@ -80,13 +85,13 @@ framework:
                     from: pending
                     to: failed
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: []  # system-driven (channel adapter / digest run / ACK ingest), never by hand
                         module: notifications
                 fail_from_sent:
                     from: sent
                     to: failed
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: []  # system-driven (channel adapter / digest run / ACK ingest), never by hand
                         module: notifications
                 # Transient failure → re-queue. Backoff is the worker's
                 # job; the lifecycle just records the state.
@@ -94,14 +99,14 @@ framework:
                     from: failed
                     to: retrying
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: []  # system-driven (channel adapter / digest run / ACK ingest), never by hand
                         module: notifications
                 # Retry kicked off — back to in-flight.
                 resume_after_retry:
                     from: retrying
                     to: sent
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: []  # system-driven (channel adapter / digest run / ACK ingest), never by hand
                         module: notifications
                 # Retry exhausted attempts → terminal failure path stays
                 # in `failed`. Manager flips to archived only after the

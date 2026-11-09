@@ -8,6 +8,7 @@ use App\Entity\LifecycleConfig;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\Admin\LifecycleOverrideType;
+use App\Lifecycle\Config\LifecycleOverridePolicy;
 use App\Repository\LifecycleConfigRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
@@ -15,18 +16,22 @@ use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Workflow\Registry;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Per-tenant admin UI for lifecycle_config overrides.
  *
  * Allows ROLE_ADMIN to override workflow transition metadata (roles,
  * reason_required, four_eyes, module) without changing YAML source files.
- * All changes are tenant-scoped and audit-logged.
+ * All changes are tenant-scoped and audit-logged. What may change is decided by
+ * {@see LifecycleOverridePolicy} (S15: roles from the role list only, four eyes /
+ * reasons / module gates only tightened, Leitung and DSB transitions keep their roles).
  *
  * ROLE_ADMIN configures own tenant,
  * SUPER_ADMIN any. Tenant scope resolves via
@@ -38,11 +43,11 @@ use Symfony\Component\Workflow\Registry;
 final class LifecycleOverridesController extends AbstractController
 {
     public function __construct(
-        private readonly Registry $workflowRegistry,
         private readonly LifecycleConfigRepository $overrideRepo,
         private readonly EntityManagerInterface $em,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     #[Route('', name: 'admin_lifecycle_overrides_index', methods: ['GET'])]
@@ -109,71 +114,66 @@ final class LifecycleOverridesController extends AbstractController
             throw $this->createNotFoundException(sprintf('Unknown workflow "%s".', $workflowName));
         }
 
-        $transitions = $this->getTransitionsForWorkflow($workflowName);
-        if (!in_array($transitionName, $transitions, true)) {
+        $transitionMeta = $this->transitionMetadata($workflowName);
+        if (!array_key_exists($transitionName, $transitionMeta)) {
             throw $this->createNotFoundException(sprintf('Unknown transition "%s" in workflow "%s".', $transitionName, $workflowName));
         }
+        $yaml = $transitionMeta[$transitionName];
+        $rolesLocked = LifecycleOverridePolicy::rolesLocked($yaml);
 
         // Load existing overrides for this transition into form-ready data
         $existing = $this->overrideRepo->findOverridesForTransition($tenant, $workflowName, $transitionName);
 
         $formData = [
-            'roles_raw' => isset($existing['roles']) && is_array($existing['roles'])
-                ? implode(', ', $existing['roles'])
-                : ($existing['roles'] ?? null),
+            'roles' => array_values(array_intersect(
+                is_array($existing['roles'] ?? null) ? $existing['roles'] : [],
+                LifecycleOverridePolicy::assignableRoles(),
+            )),
             'reason_required' => $existing['reason_required'] ?? false,
             'four_eyes' => $existing['four_eyes'] ?? false,
             'module' => $existing['module'] ?? null,
         ];
 
-        $form = $this->createForm(LifecycleOverrideType::class, $formData);
+        $form = $this->createForm(LifecycleOverrideType::class, $formData, ['roles_locked' => $rolesLocked]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        // S15: the policy decides, not the form alone — tighten, never loosen a norm duty.
+        $values = [];
+        if ($form->isSubmitted()) {
             $data = $form->getData();
+            $roles = $rolesLocked ? [] : array_values((array) ($data['roles'] ?? []));
+            $values = [
+                'roles' => $roles === [] ? null : $roles,
+                'reason_required' => $form->get('reason_required_override')->getData()
+                    ? (bool) ($data['reason_required'] ?? false) : null,
+                'four_eyes' => $form->get('four_eyes_override')->getData()
+                    ? (bool) ($data['four_eyes'] ?? false) : null,
+                'module' => trim((string) ($data['module'] ?? '')) === '' ? null : trim((string) $data['module']),
+            ];
+            foreach ($values as $key => $value) {
+                if ($value === null) {
+                    continue;
+                }
+                $field = $key === 'reason_required' || $key === 'four_eyes' ? $key . '_override' : $key;
+                foreach (LifecycleOverridePolicy::violations($yaml, $key, $value) as $violation) {
+                    $form->get($field)->addError(new FormError($this->translator->trans($violation, [], 'admin')));
+                }
+            }
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->getUser();
             $now = new DateTimeImmutable();
 
             $oldValues = $existing;
             $newValues = [];
-
-            // -- roles --
-            $rolesRaw = trim((string) ($data['roles_raw'] ?? ''));
-            if ($rolesRaw !== '') {
-                $roles = array_values(array_filter(array_map('trim', explode(',', $rolesRaw))));
-                $this->upsertOverride($tenant, $workflowName, $transitionName, 'roles', $roles, $user, $now);
-                $newValues['roles'] = $roles;
-            } else {
-                $this->deleteOverrideKey($tenant, $workflowName, $transitionName, 'roles');
-            }
-
-            // -- reason_required (only if toggle enabled) --
-            $reasonOverrideEnabled = $form->get('reason_required_override')->getData();
-            if ($reasonOverrideEnabled) {
-                $val = (bool) ($data['reason_required'] ?? false);
-                $this->upsertOverride($tenant, $workflowName, $transitionName, 'reason_required', $val, $user, $now);
-                $newValues['reason_required'] = $val;
-            } else {
-                $this->deleteOverrideKey($tenant, $workflowName, $transitionName, 'reason_required');
-            }
-
-            // -- four_eyes (only if toggle enabled) --
-            $fourEyesOverrideEnabled = $form->get('four_eyes_override')->getData();
-            if ($fourEyesOverrideEnabled) {
-                $val = (bool) ($data['four_eyes'] ?? false);
-                $this->upsertOverride($tenant, $workflowName, $transitionName, 'four_eyes', $val, $user, $now);
-                $newValues['four_eyes'] = $val;
-            } else {
-                $this->deleteOverrideKey($tenant, $workflowName, $transitionName, 'four_eyes');
-            }
-
-            // -- module --
-            $module = trim((string) ($data['module'] ?? ''));
-            if ($module !== '') {
-                $this->upsertOverride($tenant, $workflowName, $transitionName, 'module', $module, $user, $now);
-                $newValues['module'] = $module;
-            } else {
-                $this->deleteOverrideKey($tenant, $workflowName, $transitionName, 'module');
+            foreach ($values as $key => $value) {
+                if ($value === null) {
+                    $this->deleteOverrideKey($tenant, $workflowName, $transitionName, $key);
+                    continue;
+                }
+                $this->upsertOverride($tenant, $workflowName, $transitionName, $key, $value, $user, $now);
+                $newValues[$key] = $value;
             }
 
             $this->em->flush();
@@ -201,6 +201,8 @@ final class LifecycleOverridesController extends AbstractController
             'workflowName' => $workflowName,
             'transitionName' => $transitionName,
             'existing' => $existing,
+            'yaml' => $yaml,
+            'rolesLocked' => $rolesLocked,
         ], new Response(status: $status));
     }
 
@@ -291,42 +293,30 @@ final class LifecycleOverridesController extends AbstractController
     }
 
     /**
-     * Returns the list of transition names defined in a workflow's YAML.
+     * Transition names of a workflow with their YAML metadata, read from config/workflows/<name>.yaml.
      *
-     * Uses the Symfony Workflow Registry. Requires a dummy subject instance
-     * matching the workflow's `supports` definition. Falls back to empty
-     * array if the workflow cannot be introspected.
-     *
-     * @return list<string>
+     * @return array<string, array<string, mixed>>
      */
+    private function transitionMetadata(string $workflowName): array
+    {
+        $yamlFile = \dirname(__DIR__, 3) . '/config/workflows/' . str_replace('_lifecycle', '', $workflowName) . '.yaml';
+        if (!is_file($yamlFile)) {
+            return [];
+        }
+        $parsed = Yaml::parseFile($yamlFile);
+        $transitions = $parsed['framework']['workflows'][$workflowName]['transitions'] ?? [];
+        $meta = [];
+        foreach (is_array($transitions) ? $transitions : [] as $name => $transition) {
+            $meta[(string) $name] = is_array($transition['metadata'] ?? null) ? $transition['metadata'] : [];
+        }
+
+        return $meta;
+    }
+
+    /** @return list<string> */
     private function getTransitionsForWorkflow(string $workflowName): array
     {
-        try {
-            $all = $this->workflowRegistry->all(new \stdClass());
-        } catch (\Throwable) {
-            $all = [];
-        }
-
-        // workflowRegistry->all() needs a subject that matches. Instead we
-        // parse the YAML directly — fastest and most reliable.
-        $yamlFile = \dirname(__DIR__, 3) . '/config/workflows/' . str_replace('_lifecycle', '', $workflowName) . '.yaml';
-        if (!file_exists($yamlFile)) {
-            return [];
-        }
-
-        $content = file_get_contents($yamlFile);
-        if ($content === false) {
-            return [];
-        }
-
-        // Minimal YAML parse: extract transition keys from "transitions:" block
-        $transitions = [];
-        if (preg_match('/\btransitions:\s*\n(.*?)(?=\n\s{4}\w|\z)/s', $content, $m)) {
-            preg_match_all('/^\s{16}(\w+):\s*$/m', $m[1], $tm);
-            $transitions = $tm[1] ?? [];
-        }
-
-        return array_values($transitions);
+        return array_keys($this->transitionMetadata($workflowName));
     }
 
     /**

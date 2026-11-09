@@ -21,11 +21,15 @@ framework:
                     metadata:
                         roles: [ROLE_USER, ROLE_MANAGER]
                         tone_target: info
+                # S15: recording an objective as achieved is the measured result ISO 6.2/9.3
+                # reviews — a manager or the objective's responsible person (LifecycleVoter
+                # `responsible`), not every signed-in user.
                 achieve:
                     from: in_progress
                     to: achieved
                     metadata:
-                        roles: [ROLE_USER, ROLE_MANAGER]
+                        roles: [ROLE_MANAGER]
+                        responsible: true
                         reason_required: false
                 mark_delayed:
                     from: in_progress

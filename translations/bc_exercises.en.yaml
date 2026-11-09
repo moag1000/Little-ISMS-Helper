@@ -106,6 +106,8 @@ bc_exercises:
         plan_updates_required: 'Which BC plans need to be updated based on exercise results?'
         success_rating: 'Overall rating of the exercise on a scale of 1-5'
         report_completed: 'Has the exercise report been completed?'
+        report_completed_derived: 'Set once the exercise is completed (lifecycle) and results and report date are filled in (ISO 22301 8.5).'
+        result_frozen_after_completion: 'Result of the completed exercise, no longer editable.'
         report_date: 'Date the exercise report was created'
         success_criteria_json: 'JSON object with success criteria per ISO 22301 §8.6 c: {"rtoMet":true,"rpoMet":true,"communicationEffective":true,"teamPrepared":true}.'
         actual_rto_achieved: 'Actual measured recovery time in hours (ISO 22301 §8.6 d). Compare with target RTO.'

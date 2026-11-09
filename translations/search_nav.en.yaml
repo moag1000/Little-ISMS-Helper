@@ -85,8 +85,8 @@ search_nav:
         label: 'Lifecycle overrides'
         description: 'Workflow settings per organisation (roles, four-eyes, mandatory reason)'
     admin_workflow_overlay_index:
-        label: 'Workflow configuration'
-        description: 'Manage regulatory workflows'
+        label: 'Approval chains'
+        description: 'View steps and roles of the regulatory approvals'
     admin_notification_channel_index:
         label: 'Notification channels'
         description: 'Configure email, Slack and webhook channels'

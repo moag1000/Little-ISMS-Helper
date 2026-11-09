@@ -266,6 +266,8 @@ systemctl enable isms-worker && systemctl start isms-worker
   `Export\EvidenceDocuments`) — never `getEvidenceDocuments()`/`getMappedControls()` of a global requirement.
   `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
   Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
+  A Reifegrad (Ist/Soll: MRIS, industry baselines) of a global requirement is the organisation's: read/write only via
+  `Compliance\RequirementMaturity` (fulfilment row; own TISAX upload rows keep theirs) — `RequirementMaturityAccessTest`.
 - `Group\HoldingScope` - the one way to read across the corporate tree (`read()`, `asTenant()`); while it runs,
   `App\Doctrine\HoldingIncidentFilter` hides other organisations' incidents with `visibleToHolding = false`, so group
   views need no own flag check. The corporate structure (parent, governance rules) is written only by
@@ -498,7 +500,11 @@ Every entity with a `status` field that goes through staged transitions uses **S
 
 **Two-layer config:**
 - Static baseline: `config/workflows/<entity>.yaml` (places + transition wiring — immutable at runtime)
-- Tenant overrides: `lifecycle_config` DB-table (admin UI at `/admin/lifecycle-overrides`) — overrides `roles`, `reason_required`, `four_eyes`, `module` metadata per tenant
+- Tenant overrides: `lifecycle_config` DB-table (admin UI at `/admin/lifecycle-overrides`) — overrides `roles`, `reason_required`, `four_eyes`, `module` metadata per tenant, only as far as
+  `LifecycleOverridePolicy` allows (tighten, never loosen: roles from `RoleNames` without ROLE_USER/reviewers, ROLE_TOP_MGMT/ROLE_DPO
+  transitions locked, YAML four eyes/reason/module stay); the resolver uses the RECORD's tenant. Transition metadata `responsible: true`
+  also opens it to `RECORD_RESPONSIBLE`. A new admin setting needs a consumer (`tests/Lifecycle/AdminSettingConsumersTest`); approval-chain
+  steps (`/admin/workflows`) are read-only, per-org step overlays were removed in S15
 
 **Effective metadata resolution:** `LifecycleConfigResolver::resolve()` merges YAML + DB-overrides. Voter / Guards / Listeners ALWAYS read via Resolver, never from YAML directly.
 
@@ -520,6 +526,12 @@ Every entity with a `status` field that goes through staged transitions uses **S
 4. Refactor existing `setStatus()` call-sites to `LifecycleService::transition()`
 5. Add `#[ORM\Version] private int $lockVersion = 0;` to entity + migration (`isTransactional()=false`)
 6. Smoke tests in `tests/Lifecycle/`
+
+**Evidence comes from the step (S12).** Who/when of an approval, implementation, verification, closing or report
+is written by the transition or action that produces it — `Lifecycle\EventListener\LifecycleEvidenceStamper` for
+lifecycle steps, a dedicated action otherwise ("Als gemeldet markieren", "Behandlung freigeben", acceptance request,
+Leitungsentscheidung). Forms show such fields `disabled` (or `DerivedField::readOnlyWhen()` once approved);
+`tests/Api/ApiEvidenceFieldNamesTest` checks every FormType of the class, exceptions only with a reason.
 
 **Anti-pattern — never do this:**
 ```php

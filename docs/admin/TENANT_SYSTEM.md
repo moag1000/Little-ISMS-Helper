@@ -474,7 +474,10 @@ web UI for this.
   workflows of organisation-owned records. Tenant, role, permission, policy
   template and global mapping workflows are instance-wide: not listed, and
   older stored overrides for them are ignored. Role and permission transitions
-  need `ROLE_SUPER_ADMIN`, like editing them.
+  need `ROLE_SUPER_ADMIN`, like editing them. Overrides only tighten (S15,
+  `LifecycleOverridePolicy`): roles from the role list, Leitung/DSB transitions
+  locked, four eyes / reasons / module gates of the definition stay; the
+  record's organisation decides which overrides apply.
 - **Custom roles:** custom roles are global. An organisation admin can only
   edit or delete a custom role if it may edit every holder; holders in other
   organisations are no longer shown. System roles are `ROLE_SUPER_ADMIN`

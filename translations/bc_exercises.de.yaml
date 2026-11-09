@@ -106,6 +106,8 @@ bc_exercises:
         plan_updates_required: 'Welche BC-Pläne müssen aufgrund der Übungsergebnisse aktualisiert werden?'
         success_rating: 'Gesamtbewertung der Übung auf einer Skala von 1-5'
         report_completed: 'Wurde der Übungsbericht fertiggestellt?'
+        report_completed_derived: 'Wird gesetzt, sobald die Übung abgeschlossen ist (Lebenszyklus) und Ergebnisse und Berichtsdatum eingetragen sind (ISO 22301 8.5).'
+        result_frozen_after_completion: 'Ergebnis der abgeschlossenen Übung, nicht mehr änderbar.'
         report_date: 'Datum, an dem der Übungsbericht erstellt wurde'
         success_criteria_json: 'JSON-Objekt mit Erfolgskriterien gemäß ISO 22301 §8.6 c: {"rtoMet":true,"rpoMet":true,"communicationEffective":true,"teamPrepared":true}.'
         actual_rto_achieved: 'Tatsächlich gemessene Wiederherstellungszeit in Stunden (ISO 22301 §8.6 d). Vergleich mit Ziel-RTO.'

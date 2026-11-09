@@ -385,6 +385,10 @@ supplier:
             internal_audit_function_involvement: 'Internal Audit Function Involvement (AT 4.4.3)'
         placeholder:
             outsourcing_classification: '-- Select classification --'
+        board_acceptance:
+            given: 'Top management accepted this outsourcing risk (management decision).'
+            missing: 'Not yet accepted by top management.'
+            propose: 'Put before top management'
         help:
             outsourcing_classification: 'Substantial outsourcing (AT 9.1) — separate from DORA "critical or important" classification'
             outsourcing_due_diligence_completed: 'Was an appropriate risk review conducted before contract conclusion?'
@@ -392,6 +396,7 @@ supplier:
             outsourcing_exit_strategy: 'Exit plan for the outsourcing relationship incl. transition measures (MaRisk AT 9.6)'
             bafin_notification_required: 'Is notification to BaFin required? (MaRisk AT 9.7 + § 24 para. 1 no. 12 KWG)'
             board_level_risk_acceptance: 'Has the management board explicitly accepted this outsourcing risk? (MaRisk AT 4.3)'
+            board_level_risk_acceptance_decision: 'Set only by an approved management decision (MaRisk AT 4.3). Use "Put before top management" on the supplier page.'
         outsourcing_classification:
             substantial: 'Substantial Outsourcing'
             non_substantial: 'Non-Substantial Outsourcing'

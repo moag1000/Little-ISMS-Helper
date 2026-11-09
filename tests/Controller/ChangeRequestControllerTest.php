@@ -182,6 +182,42 @@ class ChangeRequestControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    /**
+     * S12 / ISO 27001 A.8.32: approval, implementation, verification and closing
+     * are written by the lifecycle step. A user who posts them with the edit form
+     * changes nothing (before S12 any user could type "approved by X on Y").
+     */
+    #[Test]
+    public function testEditIgnoresPostedApprovalEvidence(): void
+    {
+        $this->client->loginUser($this->testUser);
+        $crawler = $this->client->request('GET', '/en/change-request/' . $this->testChangeRequest->getId() . '/edit');
+        $this->assertResponseIsSuccessful();
+        $form = $crawler->filter('form[name="change_request"]')->form();
+        $values = $form->getPhpValues();
+        foreach (['approvedDate' => '2026-01-01', 'approvalComments' => 'genehmigt',
+            'implementedBy' => 'Ich', 'actualImplementationDate' => '2026-01-02', 'verifiedBy' => 'Ich',
+            'verifiedDate' => '2026-01-03', 'closedDate' => '2026-01-04'] as $field => $value) {
+            $values['change_request'][$field] = $value;
+        }
+        $values['change_request']['title'] = 'Edited title';
+
+        $this->client->request('POST', $form->getUri(), $values);
+
+        $this->assertResponseRedirects();
+        $change = $this->entityManager->getRepository(ChangeRequest::class)->find($this->testChangeRequest->getId());
+        $this->entityManager->refresh($change);
+        self::assertSame('Edited title', $change->getTitle());
+        self::assertNull($change->getApprovedDate());
+        self::assertNull($change->getApprovalComments());
+        self::assertNull($change->getApprovedBy());
+        self::assertNull($change->getImplementedBy());
+        self::assertNull($change->getActualImplementationDate());
+        self::assertNull($change->getVerifiedBy());
+        self::assertNull($change->getVerifiedDate());
+        self::assertNull($change->getClosedDate());
+    }
+
     #[Test]
     public function testDeleteRequiresAuthentication(): void
     {

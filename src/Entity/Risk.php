@@ -34,7 +34,7 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-#[ORM\Entity(repositoryClass: RiskRepository::class)]
+#[ORM\Entity(repositoryClass: RiskRepository::class), \App\Validator\Constraint\AcceptedRiskUnchanged]
 #[ORM\Index(name: 'idx_risk_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_risk_created_at', columns: ['created_at'])]
 #[ORM\Index(name: 'idx_risk_review_date', columns: ['review_date'])]
@@ -306,7 +306,7 @@ class Risk
     private ?DateTimeInterface $acceptanceApprovedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read']), ApiReadOnlyEvidence('acceptance request (RiskAcceptanceRequestController), approved with the acceptance')]
     private ?string $acceptanceJustification = null;
 
     /**
@@ -319,7 +319,7 @@ class Risk
      * field as a tripwire for stale acceptances.
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read']), ApiReadOnlyEvidence('acceptance request (RiskAcceptanceRequestController), approved with the acceptance')]
     private ?DateTimeInterface $acceptanceExpiryDate = null;
 
     /**

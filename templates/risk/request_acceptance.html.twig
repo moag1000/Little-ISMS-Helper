@@ -58,6 +58,11 @@
                     </div>
                 </div>
 
+                {% if reevaluation %}
+                    <div class="fa-alert fa-alert--warning mb-3" role="status" data-testid="risk-acceptance-reevaluation">
+                        <div>{{ 'risk.acceptance.reevaluation_notice'|trans({}, 'risk') }}</div>
+                    </div>
+                {% endif %}
                 {# Acceptance Request Form #}
                 <form method="post" action="{{ path('app_risk_request_acceptance', {id: risk.id}) }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('request-acceptance' ~ risk.id) }}">
@@ -77,6 +82,13 @@
                         <div class="form-text">
                             {{ 'risk.acceptance.justification_help'|trans({}, 'risk') }}
                         </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="expiry_date" class="form-label required">{{ 'risk.acceptance.expiry_label'|trans({}, 'risk') }}</label>
+                        <input type="date" class="form-control fa-cyber-input__field w-auto" id="expiry_date" name="expiry_date" required
+                               value="{{ default_expiry|date('Y-m-d') }}" max="{{ max_expiry|date('Y-m-d') }}">
+                        <div class="form-text">{{ 'risk.acceptance.expiry_help'|trans({'%months%': max_months}, 'risk') }}</div>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">

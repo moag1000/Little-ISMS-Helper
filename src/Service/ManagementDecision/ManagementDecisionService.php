@@ -6,6 +6,7 @@ namespace App\Service\ManagementDecision;
 
 use App\Entity\ManagementDecision;
 use App\Entity\ManagementReview;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\ManagementDecisionStatus;
@@ -69,6 +70,28 @@ class ManagementDecisionService
             ->setType($type)
             ->setTitle($proposal->title)
             ->setProposal($proposal->text !== '' ? $proposal->text : null)
+            ->setSubject($proposal->subjectType, $proposal->subjectId)
+            ->setSubjectSnapshot($proposal->snapshot)
+            ->setRequestedBy($requester)
+            ->setDueDate(new DateTimeImmutable(sprintf('+%d days', self::DEFAULT_DUE_DAYS)));
+
+        return $decision;
+    }
+
+    /**
+     * S12: a proposal that top management accepts the risk of this outsourcing
+     * (MaRisk AT 4.3). Its approval — and only that — sets the supplier's
+     * board-level risk acceptance.
+     */
+    public function prepareForSupplier(Tenant $tenant, Supplier $supplier, ?User $requester, ?string $locale = null): ManagementDecision
+    {
+        $proposal = $this->proposalBuilder->supplierRisk($supplier, $locale);
+
+        $decision = new ManagementDecision();
+        $decision->setTenant($tenant)
+            ->setType(ManagementDecisionType::SupplierRiskAcceptance)
+            ->setTitle(mb_substr($proposal->title, 0, 255))
+            ->setProposal($proposal->text)
             ->setSubject($proposal->subjectType, $proposal->subjectId)
             ->setSubjectSnapshot($proposal->snapshot)
             ->setRequestedBy($requester)
@@ -154,6 +177,7 @@ class ManagementDecisionService
      */
     public function afterApproval(ManagementDecision $decision, ?User $user): void
     {
+        $this->applyToSubject($decision);
         if ($decision->getValidUntil() === null) {
             $decision->setValidUntil($this->defaultValidUntil(
                 $decision->getType(),
@@ -161,6 +185,20 @@ class ManagementDecisionService
             ));
         }
         $this->supersedeOlder($decision, $user);
+    }
+
+    /** S12: an approved supplier risk acceptance is the only writer of Supplier::boardLevelRiskAcceptance. */
+    private function applyToSubject(ManagementDecision $decision): void
+    {
+        if ($decision->getType() !== ManagementDecisionType::SupplierRiskAcceptance
+            || $decision->getSubjectType() !== 'Supplier' || $decision->getSubjectId() === null) {
+            return;
+        }
+        $supplier = $this->entityManager->find(Supplier::class, $decision->getSubjectId());
+        if (!$supplier instanceof Supplier || $supplier->getTenant()?->getId() !== $decision->getTenant()?->getId()) {
+            return;
+        }
+        $supplier->setBoardLevelRiskAcceptance(true);
     }
 
     /**

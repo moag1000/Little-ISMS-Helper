@@ -385,6 +385,20 @@ class BCExercise
         $this->createdAt = new DateTimeImmutable();
     }
 
+    /**
+     * S12 / ISO 22301 8.5: "report completed" is derived, never ticked by
+     * hand — the exercise is completed (lifecycle, four eyes) and its report
+     * is there (results and report date).
+     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function deriveReportCompleted(): void
+    {
+        $this->reportCompleted = $this->status === BCExerciseStatus::Completed->value
+            && $this->reportDate instanceof DateTimeInterface
+            && trim((string) $this->results) !== '';
+    }
+
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamps(): void

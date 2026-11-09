@@ -16,6 +16,9 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RequestStack;
+use App\Service\Compliance\RequirementMaturity;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Entity\ComplianceRequirementFulfillment;
 
 #[AllowMockObjectsWithoutExpectations]
 final class IndustryBaselineServiceTest extends TestCase
@@ -109,6 +112,7 @@ final class IndustryBaselineServiceTest extends TestCase
             $reqRepo,
             new RequestStack(),
             $this->projectDir,
+            $this->maturity(),
         );
 
         $tenant = new Tenant();
@@ -117,6 +121,38 @@ final class IndustryBaselineServiceTest extends TestCase
         self::assertSame('iso27001-kritis', $result['baseline']);
         self::assertGreaterThan(0, $result['applied']);
         self::assertNull($req->getMaturityTarget(), 'Dry-run must not mutate the entity');
+    }
+
+    /** S18: the Soll lands on the applying organisation's row, never on the shared requirement. */
+    #[Test]
+    public function applyBaselineWritesTheOrganisationsOwnTargetOnly(): void
+    {
+        $framework = (new ComplianceFramework())->setCode('ISO27001');
+        $req = (new ComplianceRequirement())->setRequirementId('A.5.1')->setFramework($framework);
+
+        $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
+        $frameworkRepo->method('findOneBy')->willReturn($framework);
+        $reqRepo = $this->createStub(ComplianceRequirementRepository::class);
+        $reqRepo->method('findOneBy')->willReturnCallback(
+            static fn (array $criteria) => $criteria['requirementId'] === 'A.5.1' && $criteria['uploadTenant'] === null ? $req : null,
+        );
+        $maturity = $this->maturity();
+        $service = new IndustryBaselineService(
+            $this->createStub(EntityManagerInterface::class),
+            $frameworkRepo,
+            $reqRepo,
+            new RequestStack(),
+            $this->projectDir,
+            $maturity,
+        );
+        $a = new Tenant();
+        $b = new Tenant();
+
+        $service->applyBaseline($a, 'ISO27001', 'iso27001-kritis');
+
+        self::assertNull($req->getMaturityTarget(), 'shared catalogue row untouched');
+        self::assertNotNull($maturity->target($req, $a));
+        self::assertNull($maturity->target($req, $b), 'another organisation sees no target');
     }
 
     #[Test]
@@ -133,6 +169,7 @@ final class IndustryBaselineServiceTest extends TestCase
             $reqRepo,
             new RequestStack(),
             $this->projectDir,
+            $this->maturity(),
         );
 
         $this->expectException(BusinessRuleException::class);
@@ -159,6 +196,18 @@ final class IndustryBaselineServiceTest extends TestCase
             $reqRepo,
             new RequestStack(),
             $this->projectDir,
+            $this->maturity(),
         );
+    }
+
+    private function maturity(): RequirementMaturity
+    {
+        $repo = $this->createStub(ComplianceRequirementFulfillmentRepository::class);
+        $repo->method('findOrCreateForTenantAndRequirement')->willReturnCallback(
+            static fn (Tenant $t, ComplianceRequirement $r): ComplianceRequirementFulfillment
+                => (new ComplianceRequirementFulfillment())->setTenant($t)->setRequirement($r),
+        );
+
+        return new RequirementMaturity($repo, $this->createStub(EntityManagerInterface::class));
     }
 }

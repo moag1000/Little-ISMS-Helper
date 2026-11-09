@@ -85,8 +85,8 @@ search_nav:
         label: 'Lifecycle Overrides'
         description: 'Workflow-Konfiguration pro Tenant (Rollen, 4-Augen, Pflichtbegründung)'
     admin_workflow_overlay_index:
-        label: 'Workflow-Konfiguration'
-        description: 'Regulatorische Workflows verwalten'
+        label: 'Freigabeketten'
+        description: 'Schritte und Rollen der regulatorischen Freigaben ansehen'
     admin_notification_channel_index:
         label: 'Benachrichtigungs-Kanäle'
         description: 'E-Mail-, Slack-, Webhook-Kanäle konfigurieren'

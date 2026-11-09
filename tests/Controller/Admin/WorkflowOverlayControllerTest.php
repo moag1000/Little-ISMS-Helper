@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\AuditLog;
-use App\Entity\LifecycleConfig;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -113,14 +111,14 @@ final class WorkflowOverlayControllerTest extends WebTestCase
             $collection->get('admin_workflow_overlay_show'),
             'Route admin_workflow_overlay_show is not registered.',
         );
-        self::assertNotNull(
-            $collection->get('admin_workflow_overlay_edit'),
-            'Route admin_workflow_overlay_edit is not registered.',
-        );
-        self::assertNotNull(
-            $collection->get('admin_workflow_overlay_reset'),
-            'Route admin_workflow_overlay_reset is not registered.',
-        );
+        // S15: the page is read-only — its step overrides were stored but never applied.
+        self::assertNull($collection->get('admin_workflow_overlay_edit'));
+        self::assertNull($collection->get('admin_workflow_overlay_reset'));
+        foreach ($collection->all() as $name => $route) {
+            if (str_starts_with($name, 'admin_workflow_overlay_')) {
+                self::assertSame(['GET'], $route->getMethods(), $name . ' must stay read-only');
+            }
+        }
     }
 
     #[Test]
@@ -225,70 +223,14 @@ final class WorkflowOverlayControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testEditLifecycleWorkflowWithNoStepsRedirects(): void
-    {
-        // document_lifecycle has no steps → step 0 → 404 (no steps defined)
-        $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/de/admin/workflows/document_lifecycle/0/edit');
-
-        // Expects 404 because no steps exist for lifecycle workflows
-        self::assertSame(
-            Response::HTTP_NOT_FOUND,
-            $this->client->getResponse()->getStatusCode(),
-        );
-    }
-
-    #[Test]
-    public function testResetRequiresValidCsrf(): void
+    public function testShowRegulatoryChainNamesTheApproverRoleWithoutEditing(): void
     {
         $this->client->loginUser($this->adminUser);
-        $this->client->request('POST', '/de/admin/workflows/document_lifecycle/0/reset', [
-            '_token' => 'invalid-token',
-        ]);
+        $this->client->request('GET', '/de/admin/workflows/capa');
 
-        // Should redirect back with error flash (CSRF invalid → redirect to show)
-        self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $location = (string) $this->client->getResponse()->headers->get('Location');
-        self::assertStringContainsString('workflows/document_lifecycle', $location);
-    }
-
-    #[Test]
-    public function testResetWithOverridesRedirectsAndWritesAuditEntry(): void
-    {
-        // Regression: logUpdate() received the "name/step/N" string as the
-        // ?int entityId — a TypeError after the delete, i.e. a 500 on every
-        // reset that actually removed overrides.
-        $override = (new LifecycleConfig())
-            ->setTenant($this->tenant)
-            ->setWorkflowName('workflow:document_lifecycle')
-            ->setTransitionName('step:0')
-            ->setConfigKey('roles')
-            ->setConfigValue(['ROLE_ADMIN'])
-            ->setUpdatedAt(new \DateTimeImmutable());
-        $this->em->persist($override);
-        $this->em->flush();
-
-        $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/de/dashboard');
-        $session = $this->client->getRequest()->getSession();
-        $token = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
-        $session->set('_csrf/workflow_step_reset_document_lifecycle_0', $token);
-        \call_user_func([$session, 'save']);
-
-        $this->client->request('POST', '/de/admin/workflows/document_lifecycle/0/reset', ['_token' => $token]);
-
-        self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $this->em->clear();
-        self::assertSame(0, $this->em->getRepository(LifecycleConfig::class)->count([
-            'tenant' => $this->tenant->getId(),
-            'workflowName' => 'workflow:document_lifecycle',
-        ]));
-        $entry = $this->em->getRepository(AuditLog::class)->findOneBy(
-            ['entityType' => 'WorkflowStepOverlay'],
-            ['id' => 'DESC'],
-        );
-        self::assertNotNull($entry);
-        self::assertNull($entry->getEntityId());
-        self::assertStringContainsString('document_lifecycle', (string) $entry->getDescription());
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('ROLE_', $html);
+        self::assertStringNotContainsString('/capa/0/edit', $html);
     }
 }
