@@ -70,7 +70,7 @@
             {# Risk Trend Chart #}
             <div class="trend-chart-wrapper" data-trend-chart-target="riskChart">
                 <h3 class="chart-title">{{ 'analytics.chart_title.risk_trends_last_12'|trans({}, 'analytics') }}</h3>
-                <canvas data-trend-chart-target="riskCanvas"
+                <canvas role="img" aria-label="{{ 'analytics.chart_title.risk_trends_last_12'|trans({}, 'analytics') }}" data-trend-chart-target="riskCanvas"
                         width="800"
                         height="300"></canvas>
                 <div class="chart-stats mt-3">
@@ -92,7 +92,7 @@
             {# Asset Trend Chart #}
             <div class="trend-chart-wrapper d-none" data-trend-chart-target="assetChart">
                 <h3 class="chart-title">{{ 'analytics.chart_title.asset_growth_last_12'|trans({}, 'analytics') }}</h3>
-                <canvas data-trend-chart-target="assetCanvas"
+                <canvas role="img" aria-label="{{ 'analytics.chart_title.asset_growth_last_12'|trans({}, 'analytics') }}" data-trend-chart-target="assetCanvas"
                         width="800"
                         height="300"></canvas>
                 <div class="chart-stats mt-3">
@@ -110,7 +110,7 @@
             {# Incident Trend Chart #}
             <div class="trend-chart-wrapper d-none" data-trend-chart-target="incidentChart">
                 <h3 class="chart-title">{{ 'analytics.chart_title.incident_trends_last_12'|trans({}, 'analytics') }}</h3>
-                <canvas data-trend-chart-target="incidentCanvas"
+                <canvas role="img" aria-label="{{ 'analytics.chart_title.incident_trends_last_12'|trans({}, 'analytics') }}" data-trend-chart-target="incidentCanvas"
                         width="800"
                         height="300"></canvas>
                 <div class="chart-stats mt-3">

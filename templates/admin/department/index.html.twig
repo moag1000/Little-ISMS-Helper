@@ -32,11 +32,11 @@
         {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
             {% block table_head %}
                 <tr>
-                    <th class="fa-table__th">{{ 'department.field.name'|trans({}, 'department') }}</th>
-                    <th class="fa-table__th">{{ 'department.field.code'|trans({}, 'department') }}</th>
-                    <th class="fa-table__th">{{ 'department.field.parent'|trans({}, 'department') }}</th>
-                    <th class="fa-table__th">{{ 'department.field.is_active'|trans({}, 'department') }}</th>
-                    <th class="fa-table__th fa-table__th--actions">{{ 'department.column.actions'|trans({}, 'department') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'department.field.name'|trans({}, 'department') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'department.field.code'|trans({}, 'department') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'department.field.parent'|trans({}, 'department') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'department.field.is_active'|trans({}, 'department') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'department.column.actions'|trans({}, 'department') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}

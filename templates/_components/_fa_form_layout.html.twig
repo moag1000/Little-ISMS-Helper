@@ -148,7 +148,8 @@
                              data-section-id="{{ section.id }}">
 
                         <header class="fa-form-section__head"
-                                data-action="click->{{ controller }}#toggleSection">
+                                role="button" tabindex="0" aria-expanded="{{ isOpen ? 'true' : 'false' }}"
+                                data-action="click->{{ controller }}#toggleSection keydown.enter->{{ controller }}#toggleSection keydown.space->{{ controller }}#toggleSection">
                             <span class="fa-form-section__num">
                                 {%- if sectionStatus == 'done' -%}
                                     <i class="fa-icon fa-icon--ui-check"></i>

@@ -456,6 +456,7 @@
         {% endblock %}
         {% block table_body %}
             {% for site in _sites %}
+                {# a11y-ok: the row's site link is the keyboard path; the click only centres the map #}
                 <tr data-location-map-target="row" data-site-id="{{ site.id }}" data-action="click->location-map#selectRow" class="location-map__row">
                     {% if group %}
                         <td>{{ site.tenantName }}</td>

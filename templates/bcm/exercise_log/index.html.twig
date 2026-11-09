@@ -99,11 +99,11 @@
                             </td>
                             <td class="fa-table__cell">{{ log.submittedAt|fa_date }}</td>
                             <td class="fa-table__cell fa-table__cell--actions">
-                                <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                <a aria-label="{{ 'common.view'|trans({}, 'messages') }}" href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                 </a>
                                 {% if not log.isSubmitted %}
-                                <a href="{{ path('bcm_exercise_log_edit', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                <a aria-label="{{ 'common.edit'|trans({}, 'messages') }}" href="{{ path('bcm_exercise_log_edit', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                 </a>
                                 {% endif %}

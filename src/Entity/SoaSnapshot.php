@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use App\Repository\SoaSnapshotRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -31,6 +32,7 @@ use Doctrine\ORM\Mapping as ORM;
  * asOfDate (`idx_soa_snapshot_tenant_asof`) for fast lookup of
  * "snapshot for tenant X as-of date Y".
  */
+#[EvidenceRecord('SoA snapshot action')]
 #[ORM\Entity(repositoryClass: SoaSnapshotRepository::class)]
 #[ORM\Table(name: 'soa_snapshot')]
 #[ORM\Index(name: 'idx_soa_snapshot_tenant_asof', columns: ['tenant_id', 'as_of_date'])]

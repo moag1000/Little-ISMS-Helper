@@ -43,10 +43,10 @@
                             {% block table_head %}
                                 {% trans_default_domain 'admin' %}
                                 <tr>
-                                    <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.transition'|trans }}</th>
-                                    <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.description'|trans }}</th>
-                                    <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.overridden_keys'|trans }}</th>
-                                    <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.lifecycle_overrides.col.transition'|trans }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.lifecycle_overrides.col.description'|trans }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.lifecycle_overrides.col.overridden_keys'|trans }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}

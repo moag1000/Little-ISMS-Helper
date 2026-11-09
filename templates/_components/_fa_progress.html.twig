@@ -3,7 +3,7 @@
  #   value:    int|float (0-100, oder 0-max wenn max gesetzt)
  #   max:      int|float (default 100)
  #   tone:     'primary'|'success'|'warning'|'danger'|'info'|'neutral' (default 'primary')
- #   label:    string (optional, screen-reader-friendly aria-label)
+ #   label:    string (screen-reader name; without it the bar is named "Fortschritt" — WCAG 4.1.2)
  #   showText: bool (default false, render percentage in bar)
  #   striped:  bool (default false)
  #   animated: bool (default false)
@@ -59,7 +59,7 @@
     <div class="progress fa-progress fa-progress--{{ size }} fa-progress--{{ tone }} {{ class }}"
          {% if args.id is defined and args.id %}id="{{ args.id }}"{% endif %}
          role="progressbar"
-         {% if label %}aria-label="{{ label }}"{% endif %}
+         aria-label="{{ label ?: 'common.progress'|trans({}, 'messages') }}"
          aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"
          style="--fa-progress-value: {{ pct }}%;"
          {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>

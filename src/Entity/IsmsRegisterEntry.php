@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -134,6 +135,7 @@ class IsmsRegisterEntry
 
     #[ORM\Column(nullable: true)]
     #[Groups(['isms_register:read'])]
+    #[ApiReadOnlyEvidence('"Review bestätigen" (S26)')]
     private ?DateTimeImmutable $lastReviewedAt = null;
 
     /** Set when the entry no longer applies; archived entries stay as evidence. */

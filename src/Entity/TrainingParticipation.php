@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Enum\TrainingParticipationStatus;
 use App\Repository\TrainingParticipationRepository;
 use DateTimeImmutable;
@@ -77,6 +78,7 @@ class TrainingParticipation
     private ?DateTimeInterface $assignedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('participation completion action (ISO 27001 7.3, S26)')]
     private ?DateTimeInterface $completedAt = null;
 
     /**

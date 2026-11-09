@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use App\Repository\FulfillmentInheritanceLogRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[EvidenceRecord('inheritance review with four eyes (FulfillmentInheritanceService)')]
 #[ORM\Entity(repositoryClass: FulfillmentInheritanceLogRepository::class)]
 #[ORM\Table(name: 'fulfillment_inheritance_log')]
 #[ORM\Index(name: 'idx_fil_fulfillment', columns: ['fulfillment_id'])]

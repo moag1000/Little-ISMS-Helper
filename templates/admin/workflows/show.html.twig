@@ -66,10 +66,10 @@
                             {% block table_head %}
                                 {% trans_default_domain 'admin' %}
                                 <tr>
-                                    <th class="fa-table__th fa-table__th--num" style="width:3rem">#</th>
-                                    <th class="fa-table__th">{{ 'admin.workflows.col.step_name'|trans }}</th>
-                                    <th class="fa-table__th">{{ 'admin.workflows.col.approver_role'|trans }}</th>
-                                    <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.days'|trans }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num" style="width:3rem">#</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.workflows.col.step_name'|trans }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.workflows.col.approver_role'|trans }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.days'|trans }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}

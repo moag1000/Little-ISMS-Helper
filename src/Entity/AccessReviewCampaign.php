@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Repository\AccessReviewCampaignRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -103,6 +104,7 @@ class AccessReviewCampaign
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('lifecycle step close (access_review_campaign_lifecycle, S26)')]
     private ?DateTimeImmutable $closedAt = null;
 
     public function __construct()

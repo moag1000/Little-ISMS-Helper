@@ -393,7 +393,7 @@
                     {% set core_requirements = requirements|filter(r => r.requirementType == 'core') %}
                     {% for requirement in core_requirements %}
                         <div class="requirement-item" data-controller="toggle">
-                            <div class="requirement-header" data-action="click->toggle#toggleContent">
+                            <div class="requirement-header" role="button" tabindex="0" aria-expanded="false" data-action="click->toggle#toggleContent keydown.enter->toggle#toggleContent keydown.space->toggle#toggleContent">
                                 <div class="requirement-info">
                                     <span class="requirement-id">{{ requirement.requirementId }}</span>
                                     <span class="requirement-title">{{ requirement.title }}</span>

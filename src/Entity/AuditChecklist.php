@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use DateTimeInterface;
 use DateTimeImmutable;
 use App\Entity\Tenant;
@@ -32,6 +33,7 @@ class AuditChecklist
     private ?ComplianceRequirement $requirement = null;
 
     #[ORM\Column(length: 50)]
+    #[ApiReadOnlyEvidence('checklist verdict action, auditors/audit team only (S20, S26)')]
     private string $verificationStatus = 'not_checked'; // not_checked, compliant, partial, non_compliant, not_applicable
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -53,6 +55,7 @@ class AuditChecklist
     private ?string $auditor = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('checklist verdict action (S20, S26)')]
     private ?DateTimeInterface $verifiedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

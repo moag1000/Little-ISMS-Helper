@@ -433,7 +433,18 @@ class RestoreService
                 }
 
                 $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
-                $evidenceTrail->collect($entityClass, $entities);
+                if ($targetScopeIds === []) {
+                    // An organisation restore takes no evidence from the file (S26), so only an
+                    // instance restore brings evidence in and needs the provenance trail.
+                    $evidenceTrail->collect($entityClass, $entities);
+                } elseif ($allEntities !== [] && RestoreTenantGuard::isEvidence($orderedEntity)) {
+                    $this->warnings[] = sprintf(
+                        '%s: %d Nachweis-Datensätze aus der Datei nicht übernommen — ein Organisations-Restore ändert keine '
+                        . 'Nachweise; vollständig stellt sie nur ein Instanz-Restore durch die Instanz-Administration wieder her.',
+                        $orderedEntity,
+                        count($allEntities),
+                    );
+                }
                 if ($targetScopeIds !== [] && $orderedEntity === 'Tenant') {
                     $entities = $purger->pinOrganisationIdentity($entities);
                 }

@@ -103,7 +103,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 
 | Invariante | Beleg |
 |---|---|
-| Eine präparierte Organisationssicherung vergibt keine privilegierte Rolle (alle `RoleNames::PRIVILEGED`, auch in anderer Schreibweise), kein Passwort, keine SSO-Kennung, keine Holding-Stellung, keine Audit-Log-Zeilen | `tests/Service/OrganisationRestoreTenantGuardTest` |
+| Eine präparierte Organisationssicherung vergibt keine privilegierte Rolle (alle `RoleNames::PRIVILEGED`, auch in anderer Schreibweise), kein Passwort, keine SSO-Kennung, keine Holding-Stellung, keine Audit-Log-Zeilen (Nachweise: S26, Zeile unten) | `tests/Service/OrganisationRestoreTenantGuardTest` |
 | Fremde Organisationen und Instanzzeilen bleiben bei der Wiederherstellung unberührt | `OrganisationRestoreTenantGuardTest::craftedOrganisationBackupCannotReachOtherOrganisationsOrInstanceData` |
 | ZIP-Pfade bleiben im Archiv, Dateien erst nach dem Commit, kein html/svg/js | `tests/Service/BackupArchivePathTest`, `BackupArchiveExtractionTest` |
 | Gespeicherte Dateipfade (Logo, Avatar, Audit-Freeze-PDF, Dokument, Version) werden nur über `StoredFilePath` bzw. `ProtectedUploads` zu Dateien, immer innerhalb ihres Ordners (realpath, nur Dateiname bzw. `uploads/<ordner>/<datei>`; absolute Dokumentpfade nur unter `var/uploads`/`var/import-uploads`); jede pfadartige Doctrine-Spalte ist registriert. Eine Wiederherstellung übernimmt keinen Pfad falscher Form, eine Organisationssicherung keinen Pfad, den ein Datensatz einer anderen Organisation nutzt, und kein Branding-HTML (S19) | `tests/Security/StoredFilePathContractTest` (Spalten aus den Metadaten), `OrganisationRestoreTenantGuardTest::craftedFilePathsAreNotRestored`, Gate 94 `check_stored_file_paths.py` |
@@ -117,6 +117,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Aufbewahrung löscht nur Datensätze im Endzustand, und die Frist läuft ab Abschluss bzw. letzter Änderung (Abschlussfelder, `updatedAt`, letzte Audit-Zeile), nicht ab Anlage | `tests/Service/RetentionEnforcementServiceTest` |
 | Eine Instanz-Wiederherstellung glaubt `metadata.tenant_scope` der Datei nicht: nur Organisationen im aktuellen Baum der ersten genannten (oder hier unbekannte) — eine präparierte Liste leert keine fremde Organisation | `tests/Service/Restore/RestoreDataPurgerTest::a_recorded_scope_is_cut_to_the_roots_tree` |
 | ZIP-Sicherungen tragen jede Nachweis-Ablage (`ProtectedUploads::AREAS`, auch Schulungsmaterial); der Verwaist-Scan sieht `var/uploads/<Bereich>` und kennt Schulungsmaterial, damit es nicht in Quarantäne geht | `BackupArchiveExtractionTest::everyProtectedUploadAreaIsBackedUp`, `tests/Service/DataIntegrity/UploadOrphanCheckerTest` |
+| Eine Organisationssicherung ändert keine Nachweise (S26): `#[EvidenceRecord]`-Klassen (Audit-Log, Leitungsentscheidung, Audit-Freeze, SoA-Abbild, Kenntnisnahme, Vier-Augen-Anfrage, Freigabelauf, Dokumentversion …) werden weder angelegt, überschrieben noch geleert; `#[ApiReadOnlyEvidence]`-Felder und der Lifecycle-Status (Marking jedes Symfony-Workflows) behalten bestehend ihren Wert, neu angelegt beginnen sie leer im Anfangszustand; „vorher leeren“ behält Datensätze mit Nachweis. Nur der Instanz-Restore stellt Nachweise wieder her | `tests/Security/RestoreEvidenceContractTest` (Workflows aus der Registry, Nachweis-Namen über alle Organisationsklassen, `keep()` je Klasse, präparierte Datei Ende-zu-Ende) |
 | Wiederhergestellte Freigabe- und Nachweisfelder werden je Typ als `restore.evidence`-Batch protokolliert (Herkunft sichtbar); das Admin-Passwort der Wiederherstellung trifft nie „den ersten Nutzer“ | `tests/Service/Restore/RestoredEvidenceTrailTest` |
 | Sicherungs-Metadaten werden größenbegrenzt gelesen; der Sichtbarkeitsbereich einer hochgeladenen Sicherung kommt vom Hochladenden, nicht aus der Datei | `BackupService::readBackupMetadata()`, `BackupService::recordUploadScope()` |
 | Beispieldaten-Bereinigung nur mit `--tenant-id`, ohne rohes SQL über Organisationen | `src/Command/SampleDataPurgeCommand.php` |
@@ -152,14 +153,6 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Risikostufen aus der Skala der Organisation des Datensatzes | Gate 87, `tests/Risk/RiskScaleOfRecordOrganisationTest` |
 | Exporte und Downloads werden protokolliert; jeder Datenschutz-Export (VVT, DSFA, Datenpanne, Betroffenenanfrage, Einwilligung, Behörden-VVT) trägt dieselbe Regel `PrivacyExportAccess::RULE` (DSB oder Manager) | `DownloadAuditSubscriber`, `tests/Security/PrivacyExportAccessTest` (findet die Routen selbst) |
 
-
-## Nachweise aus der Wiederherstellung (S26)
-
-Platzhalter (B3): Inhalt schreibt Paket S26 — welche Nachweis-Entitäten und -Felder eine
-Organisationswiederherstellung nie ändert und welcher Test das belegt.
-
-| Invariante | Beleg |
-|---|---|
 
 ## Löschvertrag (S29)
 

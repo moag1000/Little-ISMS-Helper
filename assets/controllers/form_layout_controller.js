@@ -109,6 +109,9 @@ export default class extends Controller {
     // ── Section collapse toggle ────────────────────────────────────────────
 
     toggleSection(event) {
+        if (event.type === 'keydown') {
+            event.preventDefault();
+        }
         const head = event.currentTarget;
         const section = head.closest('.fa-form-section');
         if (!section) return;
@@ -125,11 +128,13 @@ export default class extends Controller {
     _openSection(section) {
         section.classList.remove('fa-form-section--collapsed');
         section.classList.add('fa-form-section--open');
+        section.querySelector('.fa-form-section__head')?.setAttribute('aria-expanded', 'true');
     }
 
     _collapseSection(section) {
         section.classList.remove('fa-form-section--open');
         section.classList.add('fa-form-section--collapsed');
+        section.querySelector('.fa-form-section__head')?.setAttribute('aria-expanded', 'false');
     }
 
     // ── Jumplink + smooth-scroll ──────────────────────────────────────────

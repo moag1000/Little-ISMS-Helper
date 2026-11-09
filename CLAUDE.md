@@ -424,6 +424,14 @@ decides on the page or are omitted. Empty states: "Keine X vorhanden." / "Keine 
 Alva hints ≤ 140 characters, one action each. The `<title>` suffix lives only in
 `base.html.twig`. Icons only on primary, danger and icon-only buttons. The page-header badge carries record data (reference number, code, status), never the navigation level.
 
+**Accessibility (Gate 103, W11).** `check_a11y_static.py`: every `<th>` has `scope`, every `<canvas>` has
+`role="img"` + `aria-label` (chart controller: required `data-chart-label-value`), icon-only buttons/links carry
+`aria-label`, `role="banner"` only in base layouts, click handlers on non-interactive elements need `role="button"`
++ `tabindex="0"` + Enter/Space (`keydown.enter->…`). `check_token_contrast.py`: text tokens ≥ 4.5:1 on every surface in
+light and dark, `--input-border` ≥ 3:1; text never uses the display tokens (`color: var(--primary)` → `--primary-strong`,
+warning → `--warning-text`). The form theme links help + errors via `aria-describedby`, sets `aria-invalid`, and
+names compound fields as `role="group"`.
+
 **Inline JavaScript & CSP:** `script-src` has no `'unsafe-inline'` — every
 inline `<script>` needs `nonce="{{ csp_nonce() }}"`; no `on*=` handlers or
 `javascript:` URLs (use Stimulus `data-action`, generic helpers in
@@ -876,6 +884,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       via `App\Service\Upload\StoredFilePath` (public uploads, fixed folders) or `ProtectedUploads` (evidence) —
       never `$dir . '/' . $entity->getXPath()`. A new path column goes into `StoredFilePath::FIELDS` (restore checks
       it) or `NOT_FILE_PATHS` (Gate 94, `tests/Security/StoredFilePathContractTest`).
+- [ ] A record that is evidence as a whole (decision, snapshot, acknowledgement, approval run, log) carries
+      `#[EvidenceRecord]`; a field a step stamps carries `#[ApiReadOnlyEvidence]`. An organisation restore then
+      neither takes nor clears them, the lifecycle status keeps its live value too (`Restore\RestoreEvidencePolicy`,
+      S26 — `tests/Security/RestoreEvidenceContractTest` finds evidence-named fields/classes without one).
 - [ ] Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed reader type, zip
       limits, read filter) — never `IOFactory::createReaderForFile()`/`load()` (`SpreadsheetUploadReaderTest`).
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training

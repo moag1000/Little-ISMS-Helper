@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Enum\EvidenceReverificationTaskStatus;
 use App\Repository\EvidenceReverificationTaskRepository;
 use DateTimeImmutable;
@@ -90,6 +91,7 @@ class EvidenceReverificationTask
      * Timestamp when the task was marked completed or skipped.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('re-verification action (S26)')]
     private ?DateTimeImmutable $completedAt = null;
 
     /**

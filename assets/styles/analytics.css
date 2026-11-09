@@ -76,7 +76,7 @@
 }
 
 .analytics-tabs .nav-link:hover {
-    color: var(--primary);
+    color: var(--primary-strong);
     text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
@@ -85,7 +85,7 @@
 }
 
 .analytics-tabs .nav-link.active {
-    color: var(--primary);
+    color: var(--primary-strong);
     text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
