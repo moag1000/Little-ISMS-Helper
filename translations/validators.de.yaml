@@ -298,6 +298,7 @@ objective:
         status_required: 'Status ist erforderlich'
 risk:
     validation:
+        accepted_residual_frozen: 'Das Restrisiko ist akzeptiert und bleibt, bis eine neue Akzeptanz beantragt ist („Neu bewerten oder verlängern“, ISO 27001 8.3).'
         category_required: 'Eine Risikokategorie muss ausgewählt werden'
         category_invalid: 'Ungültige Risikokategorie'
         legal_basis_invalid: 'Ungültige Rechtsgrundlage gemäß Art. 6 DSGVO'

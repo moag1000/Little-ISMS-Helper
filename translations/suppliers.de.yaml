@@ -386,6 +386,10 @@ supplier:
             internal_audit_function_involvement: 'Interne Revision einbezogen (AT 4.4.3)'
         placeholder:
             outsourcing_classification: '-- Klassifikation wählen --'
+        board_acceptance:
+            given: 'Die Leitung hat dieses Auslagerungsrisiko gebilligt (Leitungsentscheidung).'
+            missing: 'Noch keine Billigung der Leitung.'
+            propose: 'Der Leitung vorlegen'
         help:
             outsourcing_classification: 'Wesentliche Auslagerung (AT 9.1) — separat von DORA-Klassifikation "critical or important"'
             outsourcing_due_diligence_completed: 'Wurde vor Vertragsschluss eine angemessene Risikoprüfung durchgeführt?'
@@ -393,6 +397,7 @@ supplier:
             outsourcing_exit_strategy: 'Ausstiegsplan für die Auslagerungsbeziehung inkl. Übergangsmaßnahmen (MaRisk AT 9.6)'
             bafin_notification_required: 'Ist die Auslagerung der BaFin meldepflichtig? (MaRisk AT 9.7 + § 24 Abs. 1 Nr. 12 KWG)'
             board_level_risk_acceptance: 'Hat die Geschäftsleitung dieses Auslagerungsrisiko explizit akzeptiert? (MaRisk AT 4.3)'
+            board_level_risk_acceptance_decision: 'Setzt nur eine gebilligte Leitungsentscheidung (MaRisk AT 4.3). Auf der Lieferantenseite „Der Leitung vorlegen“ wählen.'
         outsourcing_classification:
             substantial: 'Wesentliche Auslagerung'
             non_substantial: 'Nicht-wesentliche Auslagerung'

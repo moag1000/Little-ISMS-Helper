@@ -436,6 +436,37 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('pending_approval', $result['status']);
     }
 
+    /** S12 / ISO 27001 8.3: an acceptance is never extended without a new approval. */
+    #[Test]
+    public function reevaluationEndsTheStandingAcceptanceBeforeTheNewRequest(): void
+    {
+        $risk = $this->createRisk();
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
+        $risk->method('getProbability')->willReturn(3);
+        $risk->method('getImpact')->willReturn(3);
+        $risk->method('getResidualProbability')->willReturn(2);
+        $risk->method('getResidualImpact')->willReturn(3);
+        $risk->method('getResidualRiskLevel')->willReturn(6);
+        $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::Accepted);
+        $risk->method('isFormallyAccepted')->willReturnOnConsecutiveCalls(true, false);
+        $risk->expects($this->once())->method('setFormallyAccepted')->with(false);
+        $risk->expects($this->once())->method('setAcceptanceApprovedByUser')->with(null);
+        $risk->expects($this->once())->method('setAcceptanceExpiryDate')
+            ->with($this->callback(static fn (\DateTimeInterface $d): bool => $d->format('Y-m-d') === '2027-06-30'));
+        $this->lifecycleService->expects($this->once())->method('transition')
+            ->with($risk, 'risk_lifecycle', 'revert_to_assessed');
+        $this->auditLogger->expects($this->once())->method('logCustom')
+            ->with('risk_acceptance_ended');
+        $approver = $this->createMock(User::class);
+        $approver->method('getRoles')->willReturn(['ROLE_MANAGER']);
+        $this->userRepository->method('findBy')->willReturn([$approver]);
+        $this->riskAppetiteService->method('getApplicableAppetite')->willReturn(null);
+
+        $result = $this->service->requestReevaluation($risk, $this->createUser(), 'Neue Lage', new \DateTimeImmutable('2027-06-30'));
+
+        $this->assertSame('pending_approval', $result['status']);
+    }
+
     private function createRisk(): MockObject
     {
         $risk = $this->createMock(Risk::class);

@@ -493,7 +493,7 @@ alva_hint:
             action: 'BIA-Leitfaden öffnen'
         bcp_stale_exercise:
             title: 'BC-Plan länger als 12 Monate nicht geübt'
-            body: 'ISO 22301 Cl. 8.5: Übungen mindestens jährlich. BC-Plan ohne Übung in 12 Monaten = Major-NC-Kandidat. Übung terminieren, Datum nachtragen.'
+            body: 'ISO 22301 8.5: mindestens jährlich üben. Übung planen; ihr Abschluss setzt „Zuletzt getestet“.'
             action: 'BCM-Übungs-Doku öffnen'
         bcp_no_crisis_team:
             title: 'Kein Krisenteam definiert — wer aktiviert den Plan?'
@@ -504,8 +504,8 @@ alva_hint:
             body: 'Severity %severity%, Status %status%, ohne Ursachenanalyse. ISO 27001 Cl. 10.1 + 10.2 verlangen sie vor Closure, sonst unwirksam.'
             action: 'Root-Cause-Template öffnen'
         incident_nis2_early_warning_pending:
-            title: 'NIS2 24h-Frühwarnung läuft — earlyWarningReportedAt setzen'
-            body: 'NIS2 Art. 23 (4)(a): Frühwarnung binnen 24 Stunden nach Kenntnisnahme. earlyWarningReportedAt ist leer — Behörden-Kontakt vorbereiten.'
+            title: 'NIS-2-Frühwarnung (24 h) offen'
+            body: 'NIS-2 Art. 23 Abs. 4 a: Frühwarnung binnen 24 h. Nach der Meldung auf der Vorfallseite „Als gemeldet markieren“.'
             action: 'NIS2-Meldepflicht-Guide öffnen'
         document_review_interval_too_long:
             title: 'Review-Intervall (%months% Monate) länger als 24 Monate'
@@ -533,7 +533,7 @@ alva_hint:
             action: 'CAPA-Workflow öffnen'
         risk_acceptance_without_justification:
             title: 'Risk-Acceptance ohne Begründung'
-            body: 'accept ohne acceptanceJustification ist ein häufiger ISO-27001-NC. Cl. 8.3 + 6.1.3 f: Akzeptanz begründen und gegen Risk-Appetite prüfen.'
+            body: 'ISO 27001 6.1.3 f, 8.3: Akzeptanz mit Begründung und Frist über „Akzeptanz anfordern“ auf der Risikoseite beantragen.'
             action: 'Acceptance-Template öffnen'
         risk_residual_exceeds_initial:
             title: 'Residual-Score (%residual%) > Initial-Score (%initial%)'

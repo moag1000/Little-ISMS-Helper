@@ -7,6 +7,7 @@ namespace App\Controller;
 
 use App\Attribute\RequiresModule;
 use App\Entity\Incident;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\Incident\ReportingPlanner;
 use App\Util\InputDate;
 use DateTimeImmutable;
@@ -73,10 +74,15 @@ final class IncidentReportingController extends AbstractController
         return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId(), '_fragment' => 'nis2-reporting']);
     }
 
+    /**
+     * S12: the only way a report time gets onto the incident (the form shows it
+     * read-only). The person may give the time the report actually went out
+     * (not in the future, not before detection); without one it is now.
+     */
     #[Route('/incident/{id}/reporting/{field}/mark', name: 'app_incident_reporting_mark', requirements: ['id' => '\d+', 'field' => '[a-zA-Z]+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'incident')]
     #[IsCsrfTokenValid(new Expression('"incident_reporting_" ~ args["incident"].getId()'))]
-    public function markReported(Incident $incident, string $field): RedirectResponse
+    public function markReported(Request $request, Incident $incident, string $field): RedirectResponse
     {
         $duty = null;
         foreach ($this->planner->forIncident($incident) as $candidate) {
@@ -90,14 +96,22 @@ final class IncidentReportingController extends AbstractController
 
         if ($duty->reportedAt === null) {
             $now = new DateTimeImmutable();
+            $given = InputDate::parse($request->request->get('reported_at'));
+            $at = $given !== null ? DateTimeImmutable::createFromMutable($given) : $now;
+            $detected = $incident->getDetectedAt();
+            if ($at > $now || ($detected !== null && $at < $detected)) {
+                $this->addFlash('danger', 'incident.flash.reported_at_invalid');
+
+                return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId(), '_fragment' => 'nis2-reporting']);
+            }
             match ($field) {
-                'earlyWarningReportedAt' => $incident->setEarlyWarningReportedAt($now),
-                'detailedNotificationReportedAt' => $incident->setDetailedNotificationReportedAt($now),
-                'finalReportSubmittedAt' => $incident->setFinalReportSubmittedAt($now),
-                'initialReportSubmittedAt' => $incident->setInitialReportSubmittedAt($now),
-                'intermediateReportSubmittedAt' => $incident->setIntermediateReportSubmittedAt($now),
-                'doraFinalReportSubmittedAt' => $incident->setDoraFinalReportSubmittedAt($now),
-                'nis2InterimReportedAt' => $incident->setNis2InterimReportedAt($now),
+                'earlyWarningReportedAt' => $incident->setEarlyWarningReportedAt($at),
+                'detailedNotificationReportedAt' => $incident->setDetailedNotificationReportedAt($at),
+                'finalReportSubmittedAt' => $incident->setFinalReportSubmittedAt($at),
+                'initialReportSubmittedAt' => $incident->setInitialReportSubmittedAt($at),
+                'intermediateReportSubmittedAt' => $incident->setIntermediateReportSubmittedAt($at),
+                'doraFinalReportSubmittedAt' => $incident->setDoraFinalReportSubmittedAt($at),
+                'nis2InterimReportedAt' => $incident->setNis2InterimReportedAt($at),
                 default => throw new NotFoundHttpException('No such reporting duty on this incident.'),
             };
             $this->entityManager->flush();

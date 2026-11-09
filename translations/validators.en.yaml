@@ -298,6 +298,7 @@ objective:
         status_required: 'Status is required'
 risk:
     validation:
+        accepted_residual_frozen: 'The residual risk is accepted and stays until a new acceptance is requested ("Re-evaluate or extend", ISO 27001 8.3).'
         category_required: 'A risk category must be selected'
         category_invalid: 'Invalid risk category'
         legal_basis_invalid: 'Invalid legal basis according to Art. 6 GDPR'

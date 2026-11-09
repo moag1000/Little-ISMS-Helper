@@ -35,6 +35,12 @@ enum ManagementDecisionType: string
     case DoraStrategy = 'dora_strategy';
     /** Strategy on ICT third-party risk (DORA Art. 28 (2)). */
     case DoraThirdParty = 'dora_third_party';
+    /**
+     * S12: top management accepts the risk of one outsourcing (MaRisk AT 4.3, AT 9;
+     * DORA Art. 28 (1)). Bound to the supplier; its approval sets
+     * Supplier::boardLevelRiskAcceptance — the form no longer can.
+     */
+    case SupplierRiskAcceptance = 'supplier_risk';
     case Other = 'other';
 
     public function label(): string
@@ -57,6 +63,7 @@ enum ManagementDecisionType: string
             self::DoraIctFramework => 'DORA Art. 5 (2), 6 (1)',
             self::DoraStrategy => 'DORA Art. 6 (8)',
             self::DoraThirdParty => 'DORA Art. 28 (2)',
+            self::SupplierRiskAcceptance => 'MaRisk AT 4.3, AT 9; DORA Art. 28 (1)',
             self::Other => 'ISO 27001 5.1',
         };
     }

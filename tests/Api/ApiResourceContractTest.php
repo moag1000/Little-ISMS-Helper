@@ -40,6 +40,7 @@ final class ApiResourceContractTest extends TestCase
         \App\Entity\Risk::class => [
             'formallyAccepted', 'acceptanceApprovedBy', 'acceptanceApprovedByUser', 'acceptanceApprovedAt',
             'decisionApprovedByUser', 'decisionApprovalDate',
+            'acceptanceJustification', 'acceptanceExpiryDate', // S12: written by the acceptance request
         ],
         \App\Entity\Supplier::class => ['boardLevelRiskAcceptance'],
         \App\Entity\ChangeRequest::class => [
