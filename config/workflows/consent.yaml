@@ -32,12 +32,12 @@ framework:
                     from: active
                     to: revoked
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: [ROLE_DPO, ROLE_MANAGER]
                         module: privacy
                         reason_required: true
                 expire:
                     from: active
                     to: expired
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: [ROLE_DPO, ROLE_MANAGER]
                         module: privacy

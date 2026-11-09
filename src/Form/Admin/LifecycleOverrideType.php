@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Form\Admin;
 
+use App\Lifecycle\Config\LifecycleOverridePolicy;
 use App\Service\ModuleConfigurationService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,12 +16,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Form for editing a single transition's lifecycle_config overrides.
  *
  * The four editable keys are submitted as a flat DTO-style form:
- *   - roles_raw     : comma-separated string of ROLE_* values (nullable)
+ *   - roles         : roles from {@see LifecycleOverridePolicy::assignableRoles()} (S15: no free
+ *                     text — ROLE_USER, PUBLIC_ACCESS or a typo used to be accepted); disabled
+ *                     where the YAML roles are locked (Leitung, DSB)
  *   - reason_required (nullable bool tri-state via hidden checkbox pattern)
  *   - four_eyes      (nullable bool tri-state)
  *   - module         : module-gate string (nullable)
  *
- * Validation happens in the controller; null == "use YAML baseline".
+ * The controller validates every value with {@see LifecycleOverridePolicy::violations()};
+ * empty == "use YAML baseline".
  */
 final class LifecycleOverrideType extends AbstractType
 {
@@ -32,14 +35,20 @@ final class LifecycleOverrideType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('roles_raw', TextType::class, [
+            ->add('roles', ChoiceType::class, [
                 'label' => 'admin.lifecycle_overrides.form.roles',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'ROLE_MANAGER, ROLE_ADMIN',
-                    'autocomplete' => 'off',
-                ],
-                'help' => 'admin.lifecycle_overrides.form.roles_help',
+                'multiple' => true,
+                'expanded' => true,
+                'choices' => array_combine(
+                    LifecycleOverridePolicy::assignableRoles(),
+                    LifecycleOverridePolicy::assignableRoles(),
+                ),
+                'choice_translation_domain' => false,
+                'disabled' => $options['roles_locked'],
+                'help' => $options['roles_locked']
+                    ? 'admin.lifecycle_overrides.form.roles_locked_help'
+                    : 'admin.lifecycle_overrides.form.roles_help',
             ])
             ->add('reason_required', CheckboxType::class, [
                 'label' => 'admin.lifecycle_overrides.form.reason_required',
@@ -77,7 +86,9 @@ final class LifecycleOverrideType extends AbstractType
     {
         $resolver->setDefaults([
             'translation_domain' => 'admin',
+            'roles_locked' => false,
         ]);
+        $resolver->setAllowedTypes('roles_locked', 'bool');
     }
 
     /**

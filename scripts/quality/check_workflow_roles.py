@@ -26,6 +26,14 @@ Rules:
      triage, …) or listed in USER_TRANSITION_EXCEPTIONS with a reason. A transition
      that finalises a record (assess, accept, publish, close, …) needs a real role —
      the TIA `assess` was open to every signed-in user.
+  4. (S15) a working step open to ROLE_USER leads neither to an end state nor to a
+     place a decision transition leads to; PUBLIC_ACCESS / IS_AUTHENTICATED* count as
+     ROLE_USER; no workflow is exempt (notification delivery is system-only, roles: []).
+
+Per-organisation overrides (/admin/lifecycle-overrides) live in the database, out of
+reach of this gate: App\\Lifecycle\\Config\\LifecycleOverridePolicy applies the same line
+in PHP (only listed roles, never ROLE_USER, four eyes / reasons / module gates only
+tightened, Leitung and DSB transitions keep their roles).
 
 A relation on the record ("the risk owner", "the document owner") is not a
 role: a step names it with the keyword `approver_role: owner`, which the
@@ -57,24 +65,56 @@ SEEDERS = [
 # names the change; delete the line once the role is in security.yaml.
 PENDING: set[str] = set()
 
-LOOKUP = re.compile(r"""\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\(\s*'(ROLE_[A-Z_]+)'""")
+LOOKUP = re.compile(r"""\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\(\s*['"](ROLE_[A-Z_]+)['"]""")
 SEEDER_ROLE = re.compile(r"""'(?:approverRole|role)'\s*=>\s*'(ROLE_[A-Z_]+)'""")
 SEEDER_TYPE = re.compile(r"""'stepType'\s*=>\s*'([a-z_]+)'""")
 
 
 # Transitions any signed-in user may fire: they move a record into work or hand it
-# to review; the decision comes in a later transition with a real role.
-USER_WORK_TRANSITIONS = {"start", "submit", "submit_for_review", "cancel_from_draft", "triage"}
+# to review; the decision comes in a later transition with a real role. The name alone
+# is not enough (S15: `submit_for_review` with `to: published` stayed green) — a work
+# transition must also lead to a place that is neither an end state nor a place a
+# decision transition leads to (see decided_places()).
+USER_WORK_TRANSITIONS = {"start", "submit", "submit_for_review", "triage"}
 
-# Workflows the system drives (delivery bookkeeping); roles only gate manual retries.
-SYSTEM_WORKFLOWS = {"notification_delivery_lifecycle"}
+# Roles every signed-in (or anonymous) user passes — all of them count as ROLE_USER.
+EVERYONE = {"ROLE_USER", "PUBLIC_ACCESS", "IS_AUTHENTICATED", "IS_AUTHENTICATED_FULLY",
+            "IS_AUTHENTICATED_REMEMBERED"}
 
-# workflow.transition → why ROLE_USER is right there.
-USER_TRANSITION_EXCEPTIONS = {
-    "consent_lifecycle.revoke": "records the data subject's own withdrawal (GDPR Art. 7(3)); nobody decides it",
-    "consent_lifecycle.expire": "records that the consent period ran out; a fact, not a decision",
-    "isms_objective_lifecycle.achieve": "the objective owner records the measured result; ISO 9.3 reviews it",
+# Transition names that record a decision; the places they lead to are "decided".
+DECISION_PREFIXES = ("approve", "publish", "accept", "close", "verify", "complete", "achieve", "archive",
+                     "dispose", "retire", "confirm", "assess", "sign", "release", "reject", "revoke",
+                     "expire", "decide", "resolve", "activate")
+
+# workflow.transition → why ROLE_USER is right there. (S15 removed the pauschal exemption of
+# notification_delivery_lifecycle — its steps are system-driven, `roles: []` — and the consent
+# revoke/expire and objective achieve entries: DPO/manager resp. manager or responsible person.)
+USER_TRANSITION_EXCEPTIONS: dict[str, str] = {
+    "change_request_lifecycle.cancel_from_draft": "the requester withdraws their own draft before anybody "
+                                                  "decided; nothing is approved or closed",
 }
+
+
+def as_list(value) -> list:
+    if value is None:
+        return []
+    return value if isinstance(value, list) else [value]
+
+
+def decided_places(wf: dict) -> set[str]:
+    """End states plus the places a decision transition leads to."""
+    transitions = wf.get("transitions") or {}
+    outgoing: set[str] = set()
+    for t in transitions.values():
+        outgoing.update(as_list((t or {}).get("from")))
+    places = set(as_list(wf.get("places")))
+    for t in transitions.values():
+        places.update(as_list((t or {}).get("to")))
+    decided = {p for p in places if p not in outgoing}
+    for name, t in transitions.items():
+        if name.startswith(DECISION_PREFIXES):
+            decided.update(as_list((t or {}).get("to")))
+    return decided
 
 
 # Step keys the application evaluates (RegulatoryWorkflowMirror → WorkflowStep, WorkflowService).
@@ -134,20 +174,30 @@ def check_yaml(known: set[str]) -> list[str]:
         data = yaml.safe_load(text) or {}
         workflows = (data.get("framework") or {}).get("workflows") or {}
         for wf_name, wf in workflows.items():
+            decided = decided_places(wf)
             for t_name, transition in (wf.get("transitions") or {}).items():
-                roles = ((transition or {}).get("metadata") or {}).get("roles") or []
+                roles = as_list(((transition or {}).get("metadata") or {}).get("roles"))
                 for role in roles:
-                    if role not in known:
+                    if role not in known and role not in EVERYONE:
                         errors.append(f"{rel(path)}:{yaml_line(lines, t_name + ':')}: transition {wf_name}.{t_name} "
                                       f"names unknown role {role}")
-                if t_name.startswith(("approve", "reject", "verify")) and "ROLE_USER" in roles:
-                    errors.append(f"{rel(path)}:{yaml_line(lines, t_name + ':')}: transition {wf_name}.{t_name} "
-                                  "is open to ROLE_USER (every signed-in user)")
-                elif ("ROLE_USER" in roles and t_name not in USER_WORK_TRANSITIONS
-                      and wf_name not in SYSTEM_WORKFLOWS and f"{wf_name}.{t_name}" not in USER_TRANSITION_EXCEPTIONS):
-                    errors.append(f"{rel(path)}:{yaml_line(lines, t_name + ':')}: transition {wf_name}.{t_name} "
-                                  "finalises a record but is open to ROLE_USER; name a real role or add it to "
-                                  "USER_TRANSITION_EXCEPTIONS with a reason")
+                everyone = sorted(set(roles) & EVERYONE)
+                if not everyone:
+                    continue
+                where = f"{rel(path)}:{yaml_line(lines, t_name + ':')}: transition {wf_name}.{t_name}"
+                key = f"{wf_name}.{t_name}"
+                if t_name.startswith(("approve", "reject", "verify")):
+                    errors.append(f"{where} is open to {everyone[0]} (every signed-in user)")
+                elif key in USER_TRANSITION_EXCEPTIONS:
+                    continue
+                elif t_name not in USER_WORK_TRANSITIONS:
+                    errors.append(f"{where} finalises a record but is open to {everyone[0]}; name a real role or "
+                                  "add it to USER_TRANSITION_EXCEPTIONS with a reason")
+                else:
+                    targets = sorted(set(as_list((transition or {}).get("to"))) & decided)
+                    if targets:
+                        errors.append(f"{where} is a work step open to {everyone[0]} but leads to {targets[0]}, "
+                                      "an end state or a place a decision leads to")
             wf_meta = wf.get("metadata") or {}
             meta = wf_meta.get("regulatory_metadata") or {}
             esc = meta.get("escalation_role")
@@ -175,9 +225,9 @@ def check_yaml(known: set[str]) -> list[str]:
                     errors.append(f"{rel(path)}:{step_line}: step \"{step.get('name')}\" {problem}")
                 role = step.get("approver_role")
                 line = yaml_line(lines, f'"{step.get("name")}"')
-                if role and role != OWNER and role not in known:
+                if role and role != OWNER and role not in known and role not in EVERYONE:
                     errors.append(f"{rel(path)}:{line}: step \"{step.get('name')}\" waits on unknown role {role}")
-                if role == "ROLE_USER" and step.get("step_type", "approval") == "approval":
+                if role in EVERYONE and step.get("step_type", "approval") == "approval":
                     errors.append(f"{rel(path)}:{line}: approval step \"{step.get('name')}\" is open to ROLE_USER "
                                   "(every signed-in user)")
     return errors
@@ -189,7 +239,7 @@ def stale_exceptions() -> set[str]:
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         for wf_name, wf in ((data.get("framework") or {}).get("workflows") or {}).items():
             for t_name, transition in (wf.get("transitions") or {}).items():
-                if "ROLE_USER" in (((transition or {}).get("metadata") or {}).get("roles") or []):
+                if set(as_list(((transition or {}).get("metadata") or {}).get("roles"))) & EVERYONE:
                     used.add(f"{wf_name}.{t_name}")
     return set(USER_TRANSITION_EXCEPTIONS) - used
 

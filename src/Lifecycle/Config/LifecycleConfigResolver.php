@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lifecycle\Config;
 
+use App\Entity\Tenant;
 use App\Lifecycle\EntityTypeRegistry;
 use App\Repository\LifecycleConfigRepository;
 use App\Service\TenantContext;
@@ -13,14 +14,15 @@ use Symfony\Component\Workflow\WorkflowInterface;
 /**
  * Two-layer config resolver:
  *  1. Static YAML metadata is the canonical baseline.
- *  2. lifecycle_config rows (tenant-scoped) override individual metadata keys.
+ *  2. lifecycle_config rows of the RECORD's organisation override individual metadata keys,
+ *     as far as {@see LifecycleOverridePolicy} lets them (tighten, never loosen — S15).
  *
  * Voter / Guards / Listeners ALWAYS call this, never read YAML directly.
  *
- * Also support workflow-step-scoped overrides:
- *   resolveWorkflowStep($workflowName, $stepIndex) merges step YAML metadata
- *   with lifecycle_config rows keyed as:
- *     workflowName = 'workflow:{name}', transitionName = 'step:{index}'
+ * The organisation is the record's (`getTenant()`), falling back to the current one only for
+ * records without an organisation: a background job has no current tenant, and a holding user
+ * acting in another organisation must get that organisation's rules (S15 — it used the
+ * current tenant before).
  */
 final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
 {
@@ -32,7 +34,7 @@ final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
 
     /**
      * @return array<string, mixed>  Effective metadata for the given transition,
-     *                               YAML keys plus tenant overrides.
+     *                               YAML keys plus the permitted tenant overrides.
      */
     public function resolve(object $subject, string $workflowName, string $transitionName): array
     {
@@ -40,7 +42,7 @@ final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
         $transition = $this->findTransition($workflow, $transitionName);
         $yaml = $transition === null ? [] : $workflow->getMetadataStore()->getTransitionMetadata($transition);
 
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantOf($subject);
         if ($tenant === null || !EntityTypeRegistry::acceptsTenantOverrides($workflowName)) {
             return $yaml;
         }
@@ -51,7 +53,7 @@ final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
             $transitionName,
         );
 
-        return array_replace($yaml, $overrides);
+        return array_replace($yaml, LifecycleOverridePolicy::effective($yaml, $overrides));
     }
 
     public function get(object $subject, string $workflowName, string $transitionName, string $key, mixed $default = null): mixed
@@ -60,27 +62,17 @@ final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
         return $merged[$key] ?? $default;
     }
 
-    /**
-     * Resolve merged config for a workflow-step overlay.
-     *
-     * The YAML step baseline comes from the regulatory workflow's metadata.steps
-     * array (loaded via RegulatoryWorkflowLoader if available, or passed in directly).
-     * Tenant DB overrides are stored with:
-     *   workflowName = 'workflow:{name}',  transitionName = 'step:{index}'
-     *
-     * @param  array<string, mixed> $yamlStepBaseline  Step metadata from YAML (name, approver_role, days_to_complete, etc.)
-     * @return array<string, mixed>  Merged step config
-     */
-    public function resolveWorkflowStep(string $workflowName, int $stepIndex, array $yamlStepBaseline = []): array
+    private function tenantOf(object $subject): ?Tenant
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
-        if ($tenant === null) {
-            return $yamlStepBaseline;
+        // Generic subject (any lifecycle-managed entity), not a typed entity — Gate 83 n/a.
+        if (method_exists($subject, 'getTenant')) {
+            $tenant = $subject->getTenant();
+            if ($tenant instanceof Tenant) {
+                return $tenant;
+            }
         }
 
-        $overrides = $this->overrideRepository->findByWorkflowAndStep($tenant, $workflowName, $stepIndex);
-
-        return array_replace($yamlStepBaseline, $overrides);
+        return $this->tenantContext->getCurrentTenant();
     }
 
     private function findTransition(WorkflowInterface $workflow, string $transitionName): ?\Symfony\Component\Workflow\Transition

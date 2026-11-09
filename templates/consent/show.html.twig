@@ -33,7 +33,8 @@
     }) }}
 
     {# Modal-triggers (verify/revoke) and POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
-    {% set _has_secondary_actions = (is_granted('ROLE_DPO') and not consent.verifiedBy) or consent.status == 'active' or is_granted('ROLE_ADMIN') %}
+    {% set _can_revoke = consent.status == 'active' and is_granted('lifecycle.consent_lifecycle.revoke', consent) %}
+    {% set _has_secondary_actions = (is_granted('ROLE_DPO') and not consent.verifiedBy) or _can_revoke or is_granted('ROLE_ADMIN') %}
     {% if _has_secondary_actions %}
         <div class="d-flex justify-content-end gap-2 mb-3">
             {% if is_granted('ROLE_DPO') and not consent.verifiedBy %}
@@ -41,7 +42,7 @@
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
                 </button>
             {% endif %}
-            {% if consent.status == 'active' %}
+            {% if _can_revoke %}
                 <button class="fa-cyber-btn fa-cyber-btn--warning" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="revokeModal">
                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
                 </button>

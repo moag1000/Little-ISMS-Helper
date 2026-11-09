@@ -57,7 +57,62 @@ class LifecycleConfigResolverTest extends TestCase
         $this->assertSame('fallback', $resolver->get($doc, 'document_lifecycle', 'approve', 'unknown_key', 'fallback'));
     }
 
-    private function makeResolver(array $yamlMeta, array $overrides): LifecycleConfigResolver
+    #[Test]
+    public function overridesComeFromTheRecordsOrganisationNotTheCurrentOne(): void
+    {
+        // S15: a holding user acting in organisation B, or a job without a current
+        // tenant, must get the rules of the record's organisation.
+        $recordTenant = new Tenant();
+        $seen = [];
+        $resolver = $this->makeResolver(
+            yamlMeta: ['roles' => ['ROLE_MANAGER']],
+            overrides: ['roles' => ['ROLE_CISO']],
+            currentTenant: null,
+            seenTenants: $seen,
+        );
+        $doc = (new Document())->setTenant($recordTenant);
+
+        $effective = $resolver->resolve($doc, 'document_lifecycle', 'approve');
+
+        $this->assertSame(['ROLE_CISO'], $effective['roles']);
+        $this->assertSame([$recordTenant], $seen);
+    }
+
+    #[Test]
+    public function storedOverridesThatLoosenANormDutyAreIgnored(): void
+    {
+        // Rows written before S15 (free-text roles, four eyes switched off) have no effect.
+        $resolver = $this->makeResolver(
+            yamlMeta: ['roles' => ['ROLE_MANAGER'], 'four_eyes' => true, 'reason_required' => true, 'module' => 'documents'],
+            overrides: ['roles' => ['ROLE_USER'], 'four_eyes' => false, 'reason_required' => false, 'module' => 'core'],
+        );
+
+        $effective = $resolver->resolve(new Document(), 'document_lifecycle', 'approve');
+
+        $this->assertSame(['ROLE_MANAGER'], $effective['roles']);
+        $this->assertTrue($effective['four_eyes']);
+        $this->assertTrue($effective['reason_required']);
+        $this->assertSame('documents', $effective['module']);
+    }
+
+    #[Test]
+    public function managementRolesCannotBeHandedToAdmins(): void
+    {
+        $resolver = $this->makeResolver(
+            yamlMeta: ['roles' => ['ROLE_TOP_MGMT']],
+            overrides: ['roles' => ['ROLE_ADMIN']],
+        );
+
+        $this->assertSame(['ROLE_TOP_MGMT'], $resolver->resolve(new Document(), 'document_lifecycle', 'approve')['roles']);
+    }
+
+    /** @param list<Tenant|null> $seenTenants */
+    private function makeResolver(
+        array $yamlMeta,
+        array $overrides,
+        ?Tenant $currentTenant = new Tenant(),
+        array &$seenTenants = [],
+    ): LifecycleConfigResolver
     {
         $transition = new Transition('approve', ['in_review'], ['approved']);
 
@@ -75,10 +130,16 @@ class LifecycleConfigResolverTest extends TestCase
         $registry->addWorkflow($workflow, $strategy);
 
         $repo = $this->createStub(LifecycleConfigRepository::class);
-        $repo->method('findOverridesForTransition')->willReturn($overrides);
+        $repo->method('findOverridesForTransition')->willReturnCallback(
+            static function (Tenant $tenant) use ($overrides, &$seenTenants): array {
+                $seenTenants[] = $tenant;
+
+                return $overrides;
+            },
+        );
 
         $tenantContext = $this->createStub(TenantContext::class);
-        $tenantContext->method('getCurrentTenant')->willReturn(new Tenant());
+        $tenantContext->method('getCurrentTenant')->willReturn($currentTenant);
 
         return new LifecycleConfigResolver($registry, $repo, $tenantContext);
     }

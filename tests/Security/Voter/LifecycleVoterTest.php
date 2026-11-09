@@ -47,10 +47,24 @@ class LifecycleVoterTest extends TestCase
         $this->assertSame(Voter::ACCESS_ABSTAIN, $result);
     }
 
-    private function makeVoter(array $yamlRoles, array $userRoles): LifecycleVoter
+    #[Test]
+    public function responsiblePersonMayFireATransitionMarkedResponsible(): void
+    {
+        // S15: isms_objective achieve — manager OR the objective's responsible person.
+        $voter = $this->makeVoter(yamlRoles: ['ROLE_MANAGER'], userRoles: ['ROLE_USER', 'RECORD_RESPONSIBLE'], responsible: true);
+        $this->assertSame(Voter::ACCESS_GRANTED, $voter->vote($this->mockToken(), new Document(), ['lifecycle.document_lifecycle.approve']));
+
+        $notResponsible = $this->makeVoter(yamlRoles: ['ROLE_MANAGER'], userRoles: ['ROLE_USER'], responsible: true);
+        $this->assertSame(Voter::ACCESS_DENIED, $notResponsible->vote($this->mockToken(), new Document(), ['lifecycle.document_lifecycle.approve']));
+
+        $unmarked = $this->makeVoter(yamlRoles: ['ROLE_MANAGER'], userRoles: ['ROLE_USER', 'RECORD_RESPONSIBLE']);
+        $this->assertSame(Voter::ACCESS_DENIED, $unmarked->vote($this->mockToken(), new Document(), ['lifecycle.document_lifecycle.approve']));
+    }
+
+    private function makeVoter(array $yamlRoles, array $userRoles, bool $responsible = false): LifecycleVoter
     {
         $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
-        $resolver->method('resolve')->willReturn(['roles' => $yamlRoles]);
+        $resolver->method('resolve')->willReturn(['roles' => $yamlRoles] + ($responsible ? ['responsible' => true] : []));
 
         $security = $this->createStub(Security::class);
         $security->method('isGranted')->willReturnCallback(fn (string $r) => in_array($r, $userRoles, true));

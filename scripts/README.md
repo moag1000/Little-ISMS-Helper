@@ -159,6 +159,7 @@ Lücke festschreibt, wird umgedreht, nicht gelöscht.
 | `McpReadOnlyToolsWriteNothingTest` (neu) | Jedes Tool mit `readOnlyHint` wird über `/mcp` aufgerufen (Ressourcen, Id, Suchbegriff), ein Doctrine-onFlush-Spion zählt Schreibzugriffe; `theSpySeesAWrite` beweist den Spion | `McpToolClassificationTest` sah nur Quelltext per Regex, Schreiben über aufgerufene Dienste blieb unsichtbar |
 | `OutboundUserUrlClientTest` | Guzzle-Brücke muss `NetworkExceptionInterface` mit `TransportException` des Wächters werfen (Positivkontrolle: öffentliche Adresse geht durch); Scan erkennt Guzzle, PSR-18, curl, Sockets, SOAP, Web-Push, Stream-Wrapper auf URLs (`theScanRecognisesEveryKindOfClient`) | Jede `\Throwable` zählte als Abwehr; Regex kannte nur `HttpClientInterface`. Fund: Web-Push (S11 behebt) |
 | Gate 82 + `RegulatoryWorkflowRegistryTest` (S17) | `approver_role: ROLE_CAPA_OWNER` in `capa.yaml` → Gate rot; Schritte unter `regulatory_metadata.steps` verschoben → Gate rot; Datenbankschritt auf `ROLE_RISK_MANAGER` gesetzt → `aDriftedRoleIsReportedAndAlignedInPlace` meldet die Abweichung | Gate und Loader lasen `regulatory_metadata.steps`, die YAMLs haben `metadata.steps`: kein Schritt geprüft, Loader lieferte null; Tests nutzten ein Stub im Loader-Layout |
+| Gate 82 + `AdminSettingConsumersTest` + `LifecycleConfigResolverTest` (S15) | `submit_for_review` mit `to: published` → Gate rot; `roles: [ROLE_USER]` in `notification_delivery.yaml` → rot (keine Pauschalausnahme mehr); `PUBLIC_ACCESS` auf `consent.revoke` → rot; zweiter Schreiber von `new LifecycleConfig()` oder Override-Schlüssel ohne Leser → Test rot; gespeicherter Override `four_eyes: false` / `roles: [ROLE_USER]` / `ROLE_ADMIN` auf Leitungsübergang → Resolver ignoriert ihn | Gate prüfte Arbeitsschritte nur nach Namen und nahm die Zustellung pauschal aus; Schritt-Overlays unter `/admin/workflows` wurden gespeichert, aber nie angewendet; Override-Seite nahm Freitextrollen und schaltete Vier-Augen ab; Resolver nahm den aktuellen statt den Mandanten des Datensatzes |
 | Gate 62, 71–75, 77–81, 83–87, 89, 90 | Je Gate eine Mutation pro Schreibweise (andere Anführungszeichen, umgekehrte Klassenreihenfolge, Macro-Hash, Zeilenumbruch im Aufruf, Yoda-Vergleich, nullsafe/first-class callable, Alias-Variable, Partial statt Seite) | Funde behoben: Seitensemantik/Stimulus/Datumsanzeige in Templates, CSV-Zelle in `TisaxConsolidateCommand`, Risikostufen-Literale in Alva-Hinweisen und Risikoregister-Export (jetzt Skala der Organisation), globale `mappedControls` in 2 Templates, Gate 89 Negationsfehler |
 
 Bekannte Restlücken (bewusst nicht erkannt, je Gate): 87 Variablen namens `$rating`; 84 `get…Id`/`…Number`-Getter,
@@ -383,6 +384,10 @@ darf kein Freigabeschritt und keine approve/reject/verify-Transition `ROLE_USER`
 Seit S17 liest das Gate die Schritte dort, wo der Loader sie liest (`metadata.steps`), lehnt die
 verschachtelte Form `regulatory_metadata.steps` ab und verlangt für jede Datei unter
 `config/workflows/regulatory/` Schritte, `title` und `entity_type`.
+Seit S15: ein Arbeitsschritt für `ROLE_USER` (start/submit/…) darf weder in einen Endzustand noch in
+einen Zustand führen, in den eine Entscheidungs-Transition führt; `PUBLIC_ACCESS`/`IS_AUTHENTICATED*`
+zählen wie `ROLE_USER`; keine Pauschalausnahme mehr (Zustellungen sind systemgetrieben, `roles: []`).
+Mandanten-Overrides prüft `App\Lifecycle\Config\LifecycleOverridePolicy` in PHP (gleiche Linie).
 `PENDING` im Skript nimmt Rollen auf, die eine andere Änderung gerade einführt. Keine Baseline.
 
 **CI-Integration:** Gate 82 im `code-quality`-Job.

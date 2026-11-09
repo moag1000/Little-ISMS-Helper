@@ -46,18 +46,24 @@
                             <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
                             {{ 'admin.lifecycle_overrides.form.roles'|trans }}
                         </h5>
-                        <p class="text-muted small mb-2">{{ 'admin.lifecycle_overrides.form.roles_help'|trans }}</p>
+                        <p class="text-muted small mb-2">
+                            {{ (rolesLocked ? 'admin.lifecycle_overrides.form.roles_locked_help' : 'admin.lifecycle_overrides.form.roles_help')|trans }}
+                        </p>
+                        <p class="small mb-2">
+                            {{ 'admin.lifecycle_overrides.yaml_roles'|trans }}:
+                            <code>{{ (yaml.roles ?? [])|join(', ')|default('—') }}</code>
+                        </p>
                         <div class="row g-2 align-items-start">
                             <div class="col-md-10">
-                                {{ form_widget(form.roles_raw, { attr: { class: 'form-control' } }) }}
-                                {{ form_errors(form.roles_raw) }}
+                                {{ form_widget(form.roles) }}
+                                {{ form_errors(form.roles) }}
                             </div>
                         </div>
                         {% if existing.roles is defined %}
                             <div class="mt-1 small text-warning">
                                 <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                 {{ 'admin.lifecycle_overrides.current_value'|trans }}:
-                                <code>{{ existing.roles|json_encode }}</code>
+                                <code>{{ existing.roles is iterable ? existing.roles|join(', ') : existing.roles }}</code>
                             </div>
                         {% endif %}
                     </div>
@@ -72,6 +78,7 @@
                             <div class="col-auto">
                                 <div class="form-check">
                                     {{ form_widget(form.reason_required_override) }}
+                                    {{ form_errors(form.reason_required_override) }}
                                     <label class="form-check-label small text-muted" for="{{ form.reason_required_override.vars.id }}">
                                         {{ 'admin.lifecycle_overrides.form.enable_override'|trans }}
                                     </label>
@@ -105,6 +112,7 @@
                             <div class="col-auto">
                                 <div class="form-check">
                                     {{ form_widget(form.four_eyes_override) }}
+                                    {{ form_errors(form.four_eyes_override) }}
                                     <label class="form-check-label small text-muted" for="{{ form.four_eyes_override.vars.id }}">
                                         {{ 'admin.lifecycle_overrides.form.enable_override'|trans }}
                                     </label>
