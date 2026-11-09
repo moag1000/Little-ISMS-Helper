@@ -158,7 +158,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 1 | `check_twig_macro_imports.py` | Twig macro import-order |
 | 2 | `check_twig_embed_domain.py` | Embed-block trans_default_domain |
 | 3 | `check_migration_reserved_words.sh` | MariaDB-11 reserved-words in migrations |
-| 4 | `check_migration_transactional.sh` | DDL-migrations isTransactional()=false |
+| 4 | — | entfallen: Gate 20 prüft dieselbe Regel auf allen Migrationen |
 | 5 | `check_aurora_anti_patterns.py` | Aurora anti-patterns on cards |
 | 6 | `check_missing_translations.py` | Missing translation keys |
 | 7 | `check_no_competitor_names.sh` | No competitor names |
@@ -242,6 +242,11 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 91 | `check_mfa_login_state.py` | one MFA state per login, no hand-made login, /setup closed while MFA is outstanding |
 | 92 | `check_raw_output.py` | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
 | 93 | `check_sso_claim_policy.py` | every SSO path checks its claims through SsoClaimPolicy |
+
+Code-Stil: Job „Code Quality“ führt `vendor/bin/php-cs-fixer fix --dry-run` mit `.php-cs-fixer.dist.php` (PSR-12,
+`src/` + `tests/`) aus und schlägt fehl, sobald eine Datei abweicht. Ausgenommen sind die Dateien in
+`baselines/php_cs_fixer.txt` (Altlast vor Einführung): eine davon mit
+`vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php <datei>` richten und die Zeile löschen, nie Zeilen ergänzen.
 
 ### Mutationsgegenprobe der Dauertests (T, Welle 7; T2, Welle 8)
 
