@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Security;
 
+use App\Tests\Support\SsoTestKit;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\TenantRepository;
@@ -104,7 +105,7 @@ final class AzureSsoSoleOrganisationTest extends TestCase
         $client->method('getAccessToken')->willReturn($token);
         $client->method('fetchUserFromToken')->willReturn(new AzureResourceOwner([
             'oid' => 'object-1',
-            'tid' => 'azure-tenant-1',
+            'tid' => SsoTestKit::AZURE_TENANT,
             'email' => 'jane@example.com',
             'given_name' => 'Jane',
             'family_name' => 'Doe',
@@ -119,6 +120,7 @@ final class AzureSsoSoleOrganisationTest extends TestCase
             $this->users($existing),
             $this->createStub(RouterInterface::class),
             $tenants,
+            azureTenantId: SsoTestKit::AZURE_TENANT,
         );
 
         $user = $authenticator->authenticate(new Request())->getBadge(UserBadge::class)->getUser();
@@ -137,16 +139,20 @@ final class AzureSsoSoleOrganisationTest extends TestCase
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => ['Jane'],
         ]);
 
+        $auth->method('getLastAssertionId')->willReturn('_assertion_1');
+        $guard = SsoTestKit::samlGuard();
         $authenticator = new AzureSamlAuthenticator(
             $this->createStub(EntityManagerInterface::class),
             $this->users(null),
             $this->createStub(RouterInterface::class),
             $tenants,
+            SsoTestKit::samlFactory(),
+            $guard,
         );
         // The OneLogin Auth is built from env config on first use; inject a stub instead.
-        (new \ReflectionProperty(AzureSamlAuthenticator::class, 'samlAuth'))->setValue($authenticator, $auth);
+        SsoTestKit::injectAuth($authenticator, $auth);
 
-        $user = $authenticator->authenticate(new Request())->getBadge(UserBadge::class)->getUser();
+        $user = $authenticator->authenticate(SsoTestKit::acsRequest($guard))->getBadge(UserBadge::class)->getUser();
         self::assertInstanceOf(User::class, $user);
 
         return $user;

@@ -581,7 +581,9 @@ final class SsoAccountTakeoverTest extends WebTestCase
         $provider = $this->em->find(IdentityProvider::class, $provider->getId()) ?? $provider;
         $method = new \ReflectionMethod(OidcAuthenticationFlow::class, 'resolveUserFromClaims');
 
-        return $method->invoke($flow, $provider, ['email' => $email, 'sub' => $sub, ...$extraClaims]);
+        // A verified e-mail, so these cases test the trust boundary; the
+        // unverified case is pinned by tests/Security/Sso/SsoClaimContractTest (S9).
+        return $method->invoke($flow, $provider, ['email' => $email, 'sub' => $sub, 'email_verified' => true, ...$extraClaims]);
     }
 
     private function csrf(): string

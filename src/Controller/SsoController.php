@@ -75,6 +75,7 @@ final class SsoController extends AbstractController
         $session = $request->getSession();
         $session->set(GenericOidcAuthenticator::SESSION_STATE_KEY, $authReq['state']);
         $session->set(GenericOidcAuthenticator::SESSION_VERIFIER_KEY, $authReq['codeVerifier']);
+        $session->set(GenericOidcAuthenticator::SESSION_NONCE_KEY, $authReq['nonce']);
         $session->set(GenericOidcAuthenticator::SESSION_PROVIDER_KEY, $slug);
         $session->set(GenericOidcAuthenticator::SESSION_PROVIDER_ID_KEY, $provider->getId());
         // A new start never inherits an old target; only a same-origin
