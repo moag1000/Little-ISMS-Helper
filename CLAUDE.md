@@ -62,6 +62,11 @@ php bin/console doctrine:migrations:diff  # after entity changes
 php bin/phpunit
 php bin/phpunit tests/Service/RiskServiceTest.php  # specific test
 
+# Cloud threads (PHP 8.3, GitHub only over git): vendor/ in ~30 s, then PHPStan as in CI
+python3 scripts/setup/cloud_vendor.py
+vendor/bin/phpstan analyse -c phpstan.cloud.neon --memory-limit=2G --no-progress
+# own PHPStan rules use static reflection only (no is_subclass_of/class_exists) — scripts/README.md "Cloud-Threads"
+
 # Workflows (Regulatory Compliance)
 php bin/console app:generate-regulatory-workflows  # Align DB rows with the YAML (operators: /quick-fix)
 php bin/console app:generate-regulatory-workflows --dry-run  # Only list what differs
