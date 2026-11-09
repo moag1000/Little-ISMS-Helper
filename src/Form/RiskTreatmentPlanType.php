@@ -255,7 +255,7 @@ final class RiskTreatmentPlanType extends AbstractType implements SectionMapInte
             return false;
         }
         $ids = static function (array $list): array {
-            $ids = array_map(static fn (Control $c): int|string => $c->getId() ?? spl_object_id($c), array_values($list));
+            $ids = array_map(static fn (Control $c): int => $c->getId() ?? spl_object_id($c), array_values($list));
             sort($ids);
 
             return $ids;

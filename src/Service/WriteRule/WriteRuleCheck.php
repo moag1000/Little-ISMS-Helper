@@ -184,11 +184,11 @@ final class WriteRuleCheck
 
     /**
      * @param list<User> $users
-     * @return list<int|string>
+     * @return list<int>
      */
     private static function ids(array $users): array
     {
-        $ids = array_map(static fn (User $u): int|string => $u->getId() ?? spl_object_id($u), $users);
+        $ids = array_map(static fn (User $u): int => $u->getId() ?? spl_object_id($u), $users);
         sort($ids);
 
         return array_values(array_unique($ids));
