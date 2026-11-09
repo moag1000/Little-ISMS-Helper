@@ -127,7 +127,7 @@
                         <td class="fa-table__cell small">{{ row.category|default('—') }}</td>
                         <td class="fa-table__cell fa-table__cell--center">
                             {% if row.priority %}
-                                {% set _pp = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'primary' : 'neutral')) %}
+                                {% set _pp = pill_tone_severity(row.priority) %}
                                 {{ pill.render(row.priority, _pp) }}
                             {% else %}—{% endif %}
                         </td>

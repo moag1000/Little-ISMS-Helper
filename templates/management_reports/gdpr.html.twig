@@ -191,7 +191,7 @@
                         </td>
                         <td class="fa-table__cell">
                             {% set severity = breach.severity|default('medium') %}
-                            {% include '_components/_badge.html.twig' with { variant: severity == 'critical' ? 'danger' : (severity == 'high' ? 'warning' : (severity == 'medium' ? 'info' : 'success')), content: severity } %}
+                            {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(severity), content: severity } %}
                         </td>
                         <td class="fa-table__cell">{{ breach.discoveredAt|fa_date }}</td>
                         <td class="fa-table__cell">

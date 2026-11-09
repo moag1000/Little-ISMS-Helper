@@ -340,7 +340,7 @@
                         {% for recommendation in dashboard.recommendations %}
                             <div class="recommendation-item priority-{{ recommendation.priority }}">
                                 <div class="recommendation-header">
-                                    {% include '_components/_badge.html.twig' with { variant: recommendation.priority == 'high' ? 'danger' : (recommendation.priority == 'medium' ? 'warning' : 'info'), content: recommendation.priority|upper } %}
+                                    {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(recommendation.priority), content: recommendation.priority|upper } %}
                                     <strong>{{ recommendation.title }}</strong>
                                 </div>
                                 <p>{{ recommendation.description }}</p>
@@ -402,7 +402,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="requirement-status">
-                                    {% include '_components/_badge.html.twig' with { variant: requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary'), content: requirement.priority|upper } %}
+                                    {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(requirement.priority), content: requirement.priority|upper } %}
                                     {% set fulfillment = fulfillments[requirement.id] %}
                                     {{ _fa_progress.render({
                                         value: fulfillment.fulfillmentPercentage,
@@ -469,7 +469,7 @@
                                         <span class="requirement-id">{{ gap.requirementId }}</span>
                                         <strong>{{ gap.title }}</strong>
                                     </div>
-                                    {% include '_components/_badge.html.twig' with { variant: gap.priority == 'critical' ? 'danger' : 'warning', content: gap.priority|upper } %}
+                                    {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(gap.priority), content: gap.priority|upper } %}
                                 </div>
                                 <div class="gap-progress">
                                     {% set gapFulfillment = fulfillments[gap.id] %}

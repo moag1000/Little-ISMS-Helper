@@ -144,6 +144,8 @@ final class StatusVocabulary
         'trend' => ['good' => 'success', 'bad' => 'danger', 'positive' => 'success', 'negative' => 'danger', 'decreasing' => 'success', 'increasing' => 'danger', 'stable' => 'neutral'],
         'rag' => ['green' => 'success', 'amber' => 'warning', 'yellow' => 'warning', 'red' => 'danger', 'grey' => 'neutral', 'gray' => 'neutral'],
         'roadmap' => ['on_track' => 'success', 'completed' => 'success', 'at_risk' => 'warning', 'in_progress' => 'primary', 'off_track' => 'danger', 'delayed' => 'danger', 'critical' => 'danger'],
+        // control review age (ControlEffectivenessService): critical is older than overdue
+        'review_due' => ['current' => 'success', 'due_soon' => 'primary', 'overdue' => 'warning', 'critical' => 'danger', 'never_reviewed' => 'neutral'],
         'readiness' => ['ready' => 'success', 'conditional' => 'warning', 'not_ready' => 'danger'],
         'log_level' => ['emergency' => 'danger', 'alert' => 'danger', 'critical' => 'danger', 'error' => 'danger', 'warning' => 'warning', 'notice' => 'primary', 'info' => 'primary', 'debug' => 'neutral'],
         'audit_action' => ['create' => 'success', 'add' => 'success', 'login' => 'primary', 'update' => 'primary', 'modify' => 'primary', 'change' => 'primary', 'export' => 'primary', 'import' => 'primary', 'view' => 'neutral', 'login_failed' => 'warning', 'delete' => 'danger', 'force_delete' => 'danger', 'destroy' => 'danger', 'remove' => 'danger', 'error' => 'danger', 'failed' => 'danger'],

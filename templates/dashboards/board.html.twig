@@ -200,7 +200,7 @@
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         {% include '_components/_badge.html.twig' with {
-                                            variant: item.priority == 'critical' ? 'danger' : (item.priority == 'high' ? 'warning' : 'secondary'),
+                                            variant: pill_tone_severity(item.priority),
                                             content: item.priority|upper,
                                             class: 'me-2'
                                         } %}
