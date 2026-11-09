@@ -1,0 +1,66 @@
+# Reviewed exceptions of the gate rules (tests/PHPStan/Rule/Gate/, T3 2026-11) — the former Python baselines
+# csrf_state_changing.txt and tenant_null_rows.txt. Every entry carries its reason and `reportUnmatched: true`:
+# once the code is fixed, the stale entry fails the build, so the list only shrinks. A new exception is a
+# reviewed decision: prefer the marker in the code (`// @csrf-exempt: <reason>`, `// @get-write-ok: <reason>`).
+parameters:
+    ignoreErrors:
+        # Gate 65 — POST actions without a CSRF token
+        -
+            # Reads widget data for the report builder preview; computes, writes nothing. Review pending.
+            message: '#\[src/Controller/ReportBuilderController\.php::getWidgetData\#csrf\]#'
+            identifier: gate65.csrf
+            path: src/Controller/ReportBuilderController.php
+            reportUnmatched: true
+        -
+            # Web Share Target: the operating system's share sheet posts here and cannot carry a token. Review pending.
+            message: '#\[src/Controller/ShareController\.php::handleShare\#csrf\]#'
+            identifier: gate65.csrf
+            path: src/Controller/ShareController.php
+            reportUnmatched: true
+
+        # Gate 72 — new tenant-owned rows without setTenant()
+        -
+            # form object; AccessReviewCampaignService::createCampaign() sets the tenant
+            message: '#::new-no-tenant::new::AccessReviewCampaign\]#'
+            identifier: gate72.newNoTenant
+            path: src/Controller/AccessReviewController.php
+            reportUnmatched: true
+        -
+            # form object; AnswerLibraryService::createEntry() sets the tenant
+            message: '#::new-no-tenant::new::AnswerLibraryEntry\]#'
+            identifier: gate72.newNoTenant
+            path: src/Controller/AnswerLibraryController.php
+            reportUnmatched: true
+        -
+            # factory; create() sets the tenant on every built entity
+            message: '#::new-no-tenant::build(Asset::Asset|CrisisTeam::CrisisTeam|BusinessProcess::BusinessProcess)\]#'
+            identifier: gate72.newNoTenant
+            path: src/Controller/Api/QuickCreateController.php
+            count: 3
+            reportUnmatched: true
+        -
+            # form object; AuditFreezeService::create() builds the stored freeze with the tenant
+            message: '#::new-no-tenant::new::AuditFreeze\]#'
+            identifier: gate72.newNoTenant
+            path: src/Controller/AuditFreezeController.php
+            reportUnmatched: true
+        -
+            # form object; DataSubjectRequestService::create() sets the tenant
+            message: '#::new-no-tenant::new::DataSubjectRequest\]#'
+            identifier: gate72.newNoTenant
+            path: src/Controller/DataSubjectRequestController.php
+            reportUnmatched: true
+        -
+            # clone goes through create(), which sets the tenant
+            message: '#::new-no-tenant::clone::ProcessingActivity\]#'
+            identifier: gate72.newNoTenant
+            path: src/Service/ProcessingActivityService.php
+            reportUnmatched: true
+
+        # Gate 72 — "own OR global" query on an entity without SharedTenantRowsInterface
+        -
+            # approvals for global providers; decided together with #1086/#1087
+            message: '#::shared-query::SsoUserApproval\]#'
+            identifier: gate72.sharedQuery
+            path: src/Repository/SsoUserApprovalRepository.php
+            reportUnmatched: true

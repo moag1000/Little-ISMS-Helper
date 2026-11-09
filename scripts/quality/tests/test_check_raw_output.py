@@ -1,4 +1,4 @@
-"""Self-test for Gate 92 (check_raw_output.py): raw output, component slots, DOCX, Markup.
+"""Self-test for Gate 92 (check_raw_output.py): raw output, component slots, template_from_string.
 
 Run: python3 -m unittest discover -s scripts/quality/tests
 """
@@ -123,32 +123,19 @@ class ComponentSlotTest(unittest.TestCase):
         self.assertEqual([], r2(twig))
 
 
-class PhpRulesTest(unittest.TestCase):
-    def run_r3(self, php: str, name: str = "src/Service/X.php") -> list[str]:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            f = root / name
-            f.parent.mkdir(parents=True)
-            f.write_text(php, encoding="utf-8")
-            old = gate.ROOT
-            gate.ROOT = root
-            try:
-                return gate.check_r3()
-            finally:
-                gate.ROOT = old
+class T3MutationsTest(unittest.TestCase):
+    """The PHP rules moved to PHPStan (MarkupOutputRule); these are the Twig mutations T3 closed."""
 
-    def test_phpword_outside_factory_fails(self):
-        self.assertTrue(self.run_r3("<?php $w = new PhpWord();"))
-        self.assertEqual([], self.run_r3("<?php return new PhpWord();", gate.DOCX_FACTORY))
+    def test_template_from_string_fails(self):
+        self.assertTrue(r1("{{ include(template_from_string(record.description)) }}"))
 
-    def test_escaping_off_and_template_processor_fail(self):
-        self.assertTrue(self.run_r3("<?php Settings::setOutputEscapingEnabled(false);"))
-        self.assertTrue(self.run_r3("<?php $t = new TemplateProcessor($f);"))
-
-    def test_markup_needs_reason(self):
-        self.assertTrue(self.run_r3("<?php return new Markup($html, 'UTF-8');"))
-        ok = "<?php\n// @markup-safe: renderer escapes text first\nreturn new Markup($html, 'UTF-8');"
-        self.assertEqual([], self.run_r3(ok))
+    def test_every_branch_of_a_choice_must_be_escaped(self):
+        bad = "{{ 'k'|trans({'%n%': flag ? record.title : record.title|e}, 'd')|raw }}"
+        self.assertTrue(r1(bad))
+        self.assertTrue(r1("{{ 'k'|trans({'%n%': record.title ?? 'x'}, 'd')|raw }}"))
+        ok = "{{ 'k'|trans({'%n%': flag ? record.title|e : record.code|e}, 'd')|raw }}"
+        self.assertEqual([], r1(ok))
+        self.assertEqual([], r1("{{ 'k'|trans({'%n%': (record.title ?? '-')|e}, 'd')|raw }}"))
 
 
 if __name__ == "__main__":

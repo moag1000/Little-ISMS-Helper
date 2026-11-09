@@ -210,12 +210,13 @@ after `#[IsGranted]`). When the module is inactive for the current tenant:
 The former `routes:` lists in `config/modules.yaml` were never enforced and
 have been removed; the attribute on the controller is the single source.
 
-**CI gate (Gate "Module gating", `scripts/quality/check_module_gating.py`):**
-besides FormType fields, the gate scans every routed action in
+**CI gate (Gate 11, PHPStan rule `tests/PHPStan/Rule/Gate/ModuleGateRule.php`, since T3):**
+besides FormType fields (`->add()` of a regulatory field only inside `if ($this->isModuleActive(...))`,
+also through a private helper whose every caller is gated), the rule scans every routed action in
 `src/Controller/`. If the class name, route path or route name signals an
 optional module (DORA/NIS2/KRITIS, privacy/GDPR, BCM, TISAX, BSI, LkSG,
 MaRisk, MRIS, training, suppliers, resource planning, analytics, …; see
-`CONTROLLER_MODULE_KEYWORDS`), the action needs `#[RequiresModule]`, a
+`ModuleGateRule::CONTROLLER_MODULES`), the action needs `#[RequiresModule]`, a
 `checkModuleActive()`/`isModuleActive()` call for one of the matching
 modules, or a `// @no-module-gate-required: <reason>` comment above its
 attributes (class-level comment covers all actions). The ISO 27001 backbone
@@ -283,7 +284,7 @@ constructor injection).
 | `lksg` / `bsi_grundschutz` / `mris` | LksgReportExportController / BsiGrundschutzCheckController, Admin/GstoolImportController / Mris*Controller |
 | `training` / `suppliers` | TrainingController / SupplierQuestionnaireController, Admin/SupplierCriticalityController |
 
-`check_module_gating.py` is the authoritative inventory — this table lists examples.
+`ModuleGateRule` is the authoritative inventory — this table lists examples.
 
 ### API Platform resources and custom `/api` endpoints
 

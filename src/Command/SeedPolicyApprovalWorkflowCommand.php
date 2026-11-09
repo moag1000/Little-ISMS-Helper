@@ -99,8 +99,10 @@ class SeedPolicyApprovalWorkflowCommand extends Command
         [
             'name' => 'published',
             'description' => 'Policy is published and visible to acknowledgement audience.',
-            'stepType' => 'auto_action',
-            'approverRole' => 'ROLE_USER',
+            // A notification step passes by itself; any other type is an approval, and ROLE_USER would let every
+            // signed-in user sign the policy off (T3, Gate 82). The role names who is told.
+            'stepType' => 'notification',
+            'approverRole' => 'ROLE_MANAGER',
             'daysToComplete' => null,
             'isRequired' => true,
             'metadata' => ['stage' => 'published', 'terminal' => true],

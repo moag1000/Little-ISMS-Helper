@@ -32,6 +32,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from php_source import strip_comments as strip_php_comments, use_aliases  # noqa: E402
+
 BASELINE = ROOT / "scripts/quality/baselines/risk_band_literals.txt"
 ALLOW_NO_TENANT = ROOT / "scripts/quality/baselines/risk_scale_without_tenant.txt"
 
@@ -39,6 +42,14 @@ ALLOW_NO_TENANT = ROOT / "scripts/quality/baselines/risk_scale_without_tenant.tx
 PHP_CALLS = {"classify": 2, "criticalMin": 1, "highMin": 1, "mediumMin": 1, "getBands": 1}
 TWIG_CALLS = {"risk_level_band": 2, "risk_threshold": 2, "risk_bands": 1}
 PHP_CALL = re.compile(r"RiskMatrixThresholds::(" + "|".join(PHP_CALLS) + r")\s*\(")
+THRESHOLDS_CLASS = "App\\Risk\\RiskMatrixThresholds"
+
+
+def php_call_pattern(text: str) -> re.Pattern[str]:
+    """PHP_CALL for this file: also every local name (`use … as T`, group use) the thresholds class goes by."""
+    names = {"RiskMatrixThresholds"}
+    names |= {alias for alias, fqcn in use_aliases(text).items() if fqcn.endswith("RiskMatrixThresholds")}
+    return re.compile(r"(?<![\w$])(?:" + "|".join(sorted(map(re.escape, names))) + r")::(" + "|".join(PHP_CALLS) + r")\s*\(")
 TWIG_CALL = re.compile(r"(?<![\w.])(" + "|".join(TWIG_CALLS) + r")\s*\(")
 
 SCAN = [("src", "*.php"), ("templates", "*.twig"), ("assets", "*.js")]
@@ -54,12 +65,85 @@ PATTERN = re.compile(
     # Yoda order: `20 <= $score`
     r"|(?<![\w.$])(20|12|6)\s*(<=|<|>=|>)\s*" + GAP + OPERAND
 )
+# The edge one below (`> 19`, `<= 11`) is the same band written the other way round.
+EDGE_BELOW = re.compile(
+    r"(?i)(" + OPERAND + r")" + GAP + r"(?<![=\-])(>|<=)\s*(19|11|5)\b(?![\d.]|\s*%(?!}))"
+    r"|(?<![\w.$])(19|11|5)\s*(<|>=)\s*" + GAP + OPERAND
+)
+# `in_array($score, range(20, 25))`, `range(12, 19)`: a band as a list of scores.
+RANGE_BAND = re.compile(r"(?i)\brange\(\s*(?:20|12|6)\s*,\s*(?:2[0-5]|1[0-9]|[7-9])\s*\)")
+# `const BANDS = ['critical' => 20, 'high' => 12, 'medium' => 6]` and any array that maps band names to the edges.
+BAND_ARRAY = re.compile(
+    r"""(?i)['"](?:critical|kritisch|high|hoch|medium|mittel|elevated|severe)['"]\s*=>\s*(?:20|12|6)\s*[,\]\n)]"""
+    r"""|['"](?:20|12|6)['"]\s*=>\s*['"](?:critical|kritisch|high|hoch|medium|mittel)['"]"""
+)
+# What a variable must be filled from to count as "a risk score": the operand words, or a risk/score getter.
+# A plain accessor chain (`$r->getRiskScore()`, `risk.inherentRiskLevel`, `(int) $row['score'] ?? 0`), no arithmetic, filter or
+# count: `$exceedance = $score - $appetite` or `risks|length` is another quantity.
+ACCESSOR = re.compile(
+    r"^[\s(]*(?:\((?:int|float|string)\)\s*)?\$?[\w.]+(?:\s*\??->\s*\w+(?:\s*\([^()]*\))?|\.\w+|\[[^\]]*\])*"
+    r"\s*(?:\?\?\s*[\w$.'\"]+|\|\s*default\([^()]*\))?[\s)]*$"
+)
+RISKISH = re.compile(r"(?i)risk|score|rating|inherent|residual|level")
+RISK_NAME = re.compile(r"(?i)(?:risk|score|rating|level)$")
+PHP_ASSIGN = re.compile(r"\$(\w+)\s*=(?![=>])\s*([^;]*);")
+TWIG_SET = re.compile(r"\{%-?\s*set\s+(\w+)\s*=\s*(.*?)-?%\}", re.S)
+JS_ASSIGN = re.compile(r"\b(?:const|let|var)\s+(\w+)\s*=\s*([^;\n]*)")
 # `private const HIGH_MIN = 12;` in a risk file: an own scale the organisation cannot change.
 BAND_CONST = re.compile(r"\bconst\s+(?:int\s+)?(?!\w*CIA)\w*(?:CRITICAL|HIGH|MEDIUM)\w*\s*=\s*(?:[2-9]|1\d|2[0-5])\s*;", re.I)
 
 
 def normalise(line: str) -> str:
     return re.sub(r"\s+", " ", line.strip())
+
+
+# Cheap pre-filter: the heavy patterns only run in a window around a comparison with an edge number.
+EDGE_CMP = re.compile(r"(?:>=|<=|>|<)\s*(?:20|12|6|19|11|5)\b|\b(?:20|12|6|19|11|5)\s*(?:<=|<|>=|>)")
+WINDOW = 260
+
+
+def comparison_lines(text: str, patterns: tuple[re.Pattern[str], ...]) -> set[int]:
+    lines: set[int] = set()
+    for cmp_ in EDGE_CMP.finditer(text):
+        start = max(0, cmp_.start() - WINDOW)
+        end = min(len(text), cmp_.end() + WINDOW)
+        window = text[start:end]
+        for pattern in patterns:
+            for m in pattern.finditer(window):
+                at = m.start(2) if m.group(2) else m.start(5)
+                if start + at < cmp_.start() - 4 or start + at > cmp_.end() + 4:
+                    continue  # another comparison's match: found from its own window
+                lines.add(text.count("\n", 0, start + at) + 1)
+    return lines
+
+
+def alias_hits(text: str, glob: str) -> set[int]:
+    """Lines comparing a variable that was filled from a risk score with a band edge."""
+    assign = {"*.php": PHP_ASSIGN, "*.twig": TWIG_SET, "*.js": JS_ASSIGN}[glob]
+    found: set[int] = set()
+    for m in assign.finditer(text):
+        name, rhs = m.group(1), m.group(2)
+        if not RISKISH.search(rhs):
+            continue
+        last = re.findall(r"(?:->|\.|\[['\"]?)\s*(\w+)", rhs)
+        if (not ACCESSOR.match(rhs) or not (last or [rhs.strip(" ($")])
+                or not RISK_NAME.search((last or [rhs.strip(" ($")])[-1]) or not RISKISH.search(rhs)
+                or name.lower() in ("score", "level", "rating")):
+            continue  # not a plain read of a risk value / those names are operands already
+        sigil = r"\$" if glob == "*.php" else r"(?<![\w.$])"
+        var = sigil + re.escape(name) + r"\b"
+        edges = re.compile(
+            r"(" + var + r")" + GAP + r"(>=|<=|>|<)\s*(20|12|6|19|11|5)\b(?![\d.]|\s*%(?!}))"
+            r"|(?<![\w.$])(20|12|6|19|11|5)\s*(<=|<|>=|>)\s*" + GAP + var
+        )
+        for c in edges.finditer(text, m.end()):
+            edge = c.group(3) or c.group(4)
+            op = c.group(2) or c.group(5)
+            # the "one below" edges only mean a band as `>` / `<=` (value 19, 11, 5)
+            if edge in ("19", "11", "5") and op not in ((">", "<=") if c.group(2) else ("<", ">=")):
+                continue
+            found.add(text.count("\n", 0, c.start(2) if c.group(2) else c.start(5)) + 1)
+    return found
 
 
 def scan() -> list[tuple[str, int, str]]:
@@ -73,10 +157,13 @@ def scan() -> list[tuple[str, int, str]]:
             code = [("" if ln.strip().startswith(("//", "*", "#", "/*", "{#")) else ln) for ln in lines]
             text = "\n".join(code)
             # The line of the comparison operator (a match may start one line above it).
-            found = {text.count("\n", 0, m.start(2) if m.group(2) else m.start(5)) + 1
-                     for m in PATTERN.finditer(text)}
+            if glob == "*.php":
+                text = strip_php_comments(text)
+            found = comparison_lines(text, (PATTERN, EDGE_BELOW))
+            found |= alias_hits(text, glob)
             if glob == "*.php" and re.search(r"risk", text, re.I):
-                found |= {text.count("\n", 0, m.start()) + 1 for m in BAND_CONST.finditer(text)}
+                for pattern in (BAND_CONST, BAND_ARRAY, RANGE_BAND):
+                    found |= {text.count("\n", 0, m.start()) + 1 for m in pattern.finditer(text)}
             for no in sorted(found):
                 hits.append((rel, no, normalise(lines[no - 1])))
     return hits
@@ -163,6 +250,8 @@ def scan_without_tenant() -> list[tuple[str, int, str]]:
             if rel in SKIP:
                 continue
             text = strip_comments(path.read_text(encoding="utf-8", errors="replace"), twig=glob == "*.twig")
+            if glob == "*.php":
+                pattern = php_call_pattern(text)
             for m in pattern.finditer(text):
                 if glob == "*.php" and re.search(r"function\s+$", text[max(0, m.start() - 20):m.start()]):
                     continue

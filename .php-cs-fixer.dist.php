@@ -20,6 +20,8 @@ $finder = (new PhpCsFixer\Finder())
     ->exclude(['vendor', 'node_modules', 'var', 'public', 'assets', 'migrations', 'config', 'docs', 'translations', 'templates'])
     ->path(['#^src/#', '#^tests/#'])
     ->notPath($baseline)
+    // Gate rule fixtures keep the spellings they test (e.g. `TRUE` as a default): they are mutations, not code.
+    ->notPath('#^tests/PHPStan/Rule/Gate/Fixtures/#')
 ;
 
 return (new PhpCsFixer\Config())

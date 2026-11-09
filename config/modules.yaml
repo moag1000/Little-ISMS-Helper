@@ -1,7 +1,7 @@
 # Module definitions. Route/controller gating is declared on the controllers
 # themselves via #[App\Attribute\RequiresModule('<key>')] (enforced by
 # App\EventListener\RequiresModuleListener, checked by CI gate
-# scripts/quality/check_module_gating.py) — not here. See docs/MODULE_GATING_GUIDE.md.
+# the PHPStan rule tests/PHPStan/Rule/Gate/ModuleGateRule.php) — not here. See docs/MODULE_GATING_GUIDE.md.
 modules:
   core:
     name: 'Core ISMS'

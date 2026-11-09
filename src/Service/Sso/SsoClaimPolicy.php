@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
  * used (S9). Every SSO authenticator — env Azure OAuth, env Azure SAML and
  * the IdentityProvider records (generic OIDC / OAuth2) — goes through it;
  * `tests/Security/Sso/SsoClaimContractTest` checks that per authenticator and
- * Gate 93 (`check_sso_claim_policy.py`) that no authenticator skips it.
+ * Gate 93 (PHPStan rule `SsoClaimPolicyRule`) that no authenticator skips it.
  *
  *  - ID token: issuer configured and equal, `exp` present and not past,
  *    `iat`/`nbf` not in the future, audience contains the client id (`azp`

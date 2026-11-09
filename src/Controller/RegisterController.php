@@ -11,6 +11,7 @@ use App\Enum\RegisterType;
 use App\Form\IsmsRegisterEntryType;
 use App\Repository\InterestedPartyRepository;
 use App\Repository\IsmsRegisterEntryRepository;
+use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\ModuleConfigurationService;
 use App\Service\Register\CompetenceGapAnalysis;
 use App\Service\Register\IsmsScopeSummary;
@@ -184,7 +185,7 @@ final class RegisterController extends AbstractController
     }
 
     #[Route('/register/entry/{id}/reviewed', name: 'app_register_entry_reviewed', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'entry')]
     #[IsCsrfTokenValid(new Expression('"register_reviewed_" ~ args["entry"].getId()'))]
     public function reviewed(IsmsRegisterEntry $entry): Response
     {

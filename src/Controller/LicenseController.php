@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LicenseController extends AbstractController
@@ -36,6 +37,7 @@ class LicenseController extends AbstractController
 
     /** Legacy URL; the report lives in the admin area (single copy of the page). */
     #[Route('/about/licenses/report', name: 'app_licenses_report', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function report(): RedirectResponse
     {
         return $this->redirectToRoute('admin_licensing_report', [], Response::HTTP_MOVED_PERMANENTLY);

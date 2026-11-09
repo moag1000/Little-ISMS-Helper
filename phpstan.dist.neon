@@ -3,6 +3,8 @@ includes:
     # to NEW code immediately while the backlog is burned down over time.
     # Regenerate after fixing some: vendor/bin/phpstan analyse --generate-baseline
     - phpstan-baseline.neon
+    # Reviewed exceptions of the gate rules below (each with reason, stale entries fail).
+    - phpstan-gates-baseline.neon
 
 parameters:
     paths:
@@ -39,6 +41,40 @@ parameters:
             path: src/Entity/*
 
 services:
+    # T3 (2026-11) — the security core of the CI gates as AST rules (tests/PHPStan/Rule/Gate/). The regex gates
+    # took a comment for code and missed aliases, group use, line breaks, constants and sprintf; these rules read
+    # the parsed tree with resolved names. Mutation fixtures: tests/PHPStan/Rule/Gate/Fixtures/ (`// expect:`).
+    # Gate 65 — state-changing actions check a CSRF token, GET actions do not write
+    -
+        class: App\Tests\PHPStan\Rule\Gate\CsrfStateChangingActionRule
+        tags:
+            - phpstan.rules.rule
+    # Gate 72 — no tenant-less rows the TenantFilter hides
+    -
+        class: App\Tests\PHPStan\Rule\Gate\TenantlessRowRule
+        tags:
+            - phpstan.rules.rule
+    # Gate 91 — one MFA state per login, no hand-made login
+    -
+        class: App\Tests\PHPStan\Rule\Gate\MfaLoginStateRule
+        tags:
+            - phpstan.rules.rule
+    # Gate 92 (PHP part) — Markup, is_safe and PhpWord only reviewed
+    -
+        class: App\Tests\PHPStan\Rule\Gate\MarkupOutputRule
+        tags:
+            - phpstan.rules.rule
+    # Gate 93 (PHP part) — every SSO authenticator calls SsoClaimPolicy itself
+    -
+        class: App\Tests\PHPStan\Rule\Gate\SsoClaimPolicyRule
+        tags:
+            - phpstan.rules.rule
+    # Gate 11 — framework fields and routes behind their module
+    -
+        class: App\Tests\PHPStan\Rule\Gate\ModuleGateRule
+        tags:
+            - phpstan.rules.rule
+
     # X.5b — Prevents `setStatus()` outside src/Entity/ and src/Lifecycle/
     # (the rule skips those directories, migrations and tests on its own)
     -

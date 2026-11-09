@@ -1,9 +1,0 @@
-# Gate 72 baseline — check_tenant_null_rows.py. One entry per line, reason after '#'.
-src/Controller/AccessReviewController.php::new-no-tenant::new::AccessReviewCampaign  # form object; AccessReviewCampaignService::createCampaign() sets the tenant
-src/Controller/AnswerLibraryController.php::new-no-tenant::new::AnswerLibraryEntry  # form object; AnswerLibraryService::createEntry() sets the tenant
-src/Controller/Api/QuickCreateController.php::new-no-tenant::buildAsset::Asset  # factory; create() sets the tenant on every built entity
-src/Controller/Api/QuickCreateController.php::new-no-tenant::buildBusinessProcess::BusinessProcess  # factory; create() sets the tenant on every built entity
-src/Controller/Api/QuickCreateController.php::new-no-tenant::buildCrisisTeam::CrisisTeam  # factory; create() sets the tenant on every built entity
-src/Controller/DataSubjectRequestController.php::new-no-tenant::new::DataSubjectRequest  # form object; DataSubjectRequestService::create() sets the tenant
-src/Repository/SsoUserApprovalRepository.php::shared-query::SsoUserApproval  # approvals for global providers; decided together with #1086/#1087
-src/Service/ProcessingActivityService.php::new-no-tenant::clone::ProcessingActivity  # clone goes through create(), which sets the tenant

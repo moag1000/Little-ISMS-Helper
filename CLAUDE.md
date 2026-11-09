@@ -646,7 +646,8 @@ php bin/console app:migrate-legacy-workflows --archive
 - Create `new Workflow()` or `new WorkflowStep()` in `src/` outside Repository/Command (PHPStan blocks this)
 - Edit DB `workflow_steps` rows directly (read-only since Y.4)
 - Use a role in `approver_role` / transition `roles` that `security.yaml` does not define, or `ROLE_USER` on an
-  approval step — nobody gets it or everybody can approve (Gate 82, `check_workflow_roles.py`). An owner is a
+  approval step (every step whose `step_type` is not `notification` is one) — nobody gets it or everybody can approve
+  (Gate 82, `check_workflow_roles.py`). An owner is a
   relation on the record, not a role: write `approver_role: owner` (resolved via `Responsibility::ofRecord()`).
 
 **Documentation:**
@@ -723,7 +724,8 @@ class MyType extends AbstractType {
 
 **Quick pattern (Controller):** — preferred: attribute on class or action,
 enforced centrally by `RequiresModuleListener` (HTML → dashboard redirect + flash,
-JSON → 403). CI gate `check_module_gating.py` flags framework routes without a gate.
+JSON → 403). PHPStan rule `ModuleGateRule` (Gate 11) flags framework routes and form fields without a gate
+(`// @no-module-gate-required: <reason>` for the rare exception).
 ```php
 use App\Attribute\RequiresModule;
 #[RequiresModule('privacy')]
@@ -756,6 +758,12 @@ Compliance audit trail: [`docs/archive/FORM_AUDIT_2026-05.md`](docs/archive/FORM
   strings — `orderBy()`, `addOrderBy()` and `#[ORM\OrderBy]` (doctrine/orm 3.7 deprecation, Gate 81).
 - No `method_exists()` on a typed entity: call the getter. Always-false calls silently disabled features
   (Gate 83, `check_entity_method_exists.py`; it also rejects such entries in `phpstan-baseline.neon`).
+- The security gates 11 (module), 65 (CSRF), 72 (tenant rows), 91 (MFA), 92 (Markup, PHP part) and 93 (SSO, code
+  part) are PHPStan AST rules in `tests/PHPStan/Rule/Gate/` (T3, 2026-11): they read resolved names, not text, so a
+  comment, alias or line break neither satisfies nor hides them. Exceptions live in `phpstan-gates-baseline.neon`
+  (`reportUnmatched`, so a fixed one must be removed) or as a marker comment with a reason. Each rule has a fixture
+  whose `// expect:` lines are its mutation table. Tests that read `security.yaml` use
+  `tests/Support/ResolvedSecurityConfig` (every env incl. `when@*`, as Symfony resolves it).
 - File size is ratcheted (Gate 25, `check_god_class_size.py`): every file in `src/` has a per-kind
   LOC limit (controller 600, service 1500 / 15 ctor deps, entity 1000, repository 600, command 800,
   rest 800). Files already over it are listed in `scripts/quality/baselines/god_class_size.txt` and
@@ -814,7 +822,7 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       `setTenant()` — the TenantFilter hides tenant-less rows from their own
       organisation. Rows meant for all organisations need
       `SharedTenantRowsInterface` plus a voter that keeps them read-only for
-      tenant admins (Gate 72, `check_tenant_null_rows.py`; at run time
+      tenant admins (Gate 72, PHPStan rule `TenantlessRowRule`; at run time
       `EventListener\TenantlessInsertGuard` fails the flush in tests and logs elsewhere when a
       request of an organisation saves a tenant-owned row without tenant — factories and `clone` included).
 - [ ] CSRF token validated for every state-changing action (forms and
@@ -824,13 +832,13 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       List-view bulk actions use the shared `bulk_action` token
       (`BulkActionTrait::isBulkCsrfTokenValid()`); bulk deletes go through
       `BulkActionTrait::handleBulkDelete()` + `BulkDeleteService` (CSRF, tenant,
-      voter, one `logBulk()` batch). CI Gate 65
-      (`scripts/quality/check_csrf_state_changing.py`) fails on unprotected
-      POST/PUT/PATCH/DELETE actions; genuinely non-state-changing ones carry
+      voter, one `logBulk()` batch). Gate 65
+      (PHPStan rule `CsrfStateChangingActionRule`) fails on unprotected
+      POST/PUT/PATCH/DELETE actions and on GET actions that flush (`// @get-write-ok: <reason>`); genuinely non-state-changing ones carry
       `// @csrf-exempt: <reason>`. Per-entity ids need an Expression —
       `new Expression('"x_delete_" ~ args["entity"].getId()')`; a literal
       `'x_delete_{id}'` is never interpolated and always fails (Gate 65 flags
-      it as `#literal-id`). A failed attribute check answers 403
+      it as `gate65.literalId`). A failed attribute check answers 403
       (`ReauthEntryPoint`), not a redirect to /login.
 - [ ] User choice fields use `OwnerUserType` (users of the record's
       organisation; never `EntityType` + `User::class`), and owner/assignee
@@ -855,7 +863,7 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       materials) stored and read only via `App\Service\Upload\ProtectedUploads` (`var/uploads`, never `public/`),
       served by a voter-checked download action (`EvidenceOutsideWebRootTest`). Setup wizard after completion and
       instance-wide catalogue deletes: `ROLE_SUPER_ADMIN` only (`SetupAccessChecker::ACCESS`, `ADMIN_GLOBAL_OP`).
-- [ ] Record text is never output as HTML (Gate 92, `check_raw_output.py`): components escape their text slots;
+- [ ] Record text is never output as HTML (Gate 92: `check_raw_output.py` for Twig, PHPStan rule `MarkupOutputRule` for PHP): components escape their text slots;
       pass HTML only as Markup — a `{% set x %}…{% endset %}` capture, macro output, or a reviewed translation
       `'key'|trans|fa_html` (trans parameters `|e`). JSON into pages/scripts via `|fa_json`, never
       `json_encode|raw`. Any other `|raw` needs a reason in `scripts/quality/baselines/raw_output_allowlist.txt`;
@@ -885,12 +893,13 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       person's id; `MfaLoginListener` starts it on every login of the web firewall, the enforcer fails closed).
       A method that puts a token into the token storage (or `_security_<firewall>` into the session) by hand calls
       `MfaSessionState::begin()` in the same method; only the `main` firewall logs people in; remember-me
-      cookies come only after the code (Gate 91, `tests/Security/Mfa/MfaLoginPathsTest` — a new authenticator
+      cookies come only after the code (Gate 91, PHPStan rule `MfaLoginStateRule` + `tests/Security/Mfa/MfaLoginPathsTest` — a new authenticator
       needs its MFA decision there).
 - [ ] SSO claims are checked only by `App\Service\Sso\SsoClaimPolicy` (OIDC issuer/`exp`/audience/`nonce`,
       UserInfo never changes `sub`, Azure `tid` from `AZURE_TENANT_ID`/`AZURE_ALLOWED_TENANT_IDS`, link by e-mail only
       verified and opt-in); SAML responses only via `SamlMessageGuard` (own request id, assertion once), SAML URLs from
-      `DEFAULT_URI`. A new SSO authenticator needs its entry in `tests/Security/Sso/SsoClaimContractTest` (Gate 93).
+      `DEFAULT_URI`. A new SSO authenticator needs its entry in `tests/Security/Sso/SsoClaimContractTest` and in `SsoClaimPolicyRule::CLAIM_CHECKS` (Gate 93,
+      PHPStan; finds every authenticator class by type).
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Privacy exports (VVT, DSFA, breach, DSR, consent) carry

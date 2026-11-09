@@ -32,14 +32,17 @@
             ? _pill.render('register.state.review_overdue'|trans({}, 'register'), 'danger')
             : _pill.render('register.state.active'|trans({}, 'register'), 'success')) }}{% endset %}
     {% set _bandActions %}
-        {% if is_granted('ROLE_MANAGER') %}
+        {% set _canManage = is_granted('ROLE_MANAGER') %}
+        {% if _canManage or is_granted('RECORD_RESPONSIBLE', entry) %}
             <div class="d-flex gap-2 flex-wrap">
+                {# The person the review reminder goes to confirms the review here (T3) #}
                 {% if not entry.archived %}
                     <form method="post" action="{{ path('app_register_entry_reviewed', {id: entry.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('register_reviewed_' ~ entry.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm">{{ 'register.action.reviewed'|trans({}, 'register') }}</button>
                     </form>
                 {% endif %}
+                {% if _canManage %}
                 <form method="post" action="{{ path('app_register_entry_archive', {id: entry.id}) }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('register_archive_' ~ entry.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ (entry.archived ? 'register.action.restore' : 'register.action.archive')|trans({}, 'register') }}</button>
@@ -51,6 +54,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('register_delete_' ~ entry.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                     </form>
+                {% endif %}
                 {% endif %}
             </div>
         {% endif %}

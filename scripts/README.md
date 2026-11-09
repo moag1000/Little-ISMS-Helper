@@ -147,7 +147,9 @@ Nur gegen Wegwerf-Datenbanken verwenden.
 
 ### Gate-Übersicht
 
-Alle Gates laufen im `code-quality`-Job von `.github/workflows/ci.yml`; die Nummer steht im Step-Namen.
+Alle Gates laufen im `code-quality`-Job von `.github/workflows/ci.yml`; die Nummer steht im Step-Namen. Die
+sicherheitsrelevanten Kernregeln (11, 65, 72, 91, 92-PHP, 93-Code) sind seit T3 PHPStan-Regeln und laufen im Schritt
+„Run PHPStan“ (siehe „PHPStan-Gate-Regeln“ unten).
 Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `check_twig_macro_scope.py`,
 `check-dql-mismatches.php` und `check_twig_entity_properties.py`. Nicht in CI (Handwerkzeuge):
 `check_translations.py`, `verify_translations_v2.py`, `check_missing_translations.sh`, `check_aurora_icons_only.py`,
@@ -165,7 +167,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 8 | `check_double_locale_prefix.py` | No double /{_locale}/ prefix in controllers |
 | 9 | `check_alva_hint_placeholders.py` | Alva-Hint placeholder consistency |
 | 10 | `check_route_wildcard_collisions.py` | No wildcard-vs-literal route collisions |
-| 11 | `check_module_gating.py` | Module-gating discipline (P-6) |
+| 11 | PHPStan `ModuleGateRule` | Module-gating discipline (P-6): regulatory form fields and framework routes |
 | 12 | `check_flash_domain.py` | Flash translation-domain (P-5) |
 | 13 | `check_freetext_legacy.py` | Freetext-legacy heuristic (P-15) |
 | 14 | `check_workflow_configs.sh` | Workflow configs valid |
@@ -215,13 +217,13 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 62 | `check_aurora_legacy_markup.py` | Aurora legacy-markup ratchet |
 | 63 | `check_yaml_duplicates.py` | no duplicate keys in translation YAML |
 | 64 | `check_json_catch_throwable.py` | JSON actions catch Throwable |
-| 65 | `check_csrf_state_changing.py` | state-changing actions need CSRF |
+| 65 | PHPStan `CsrfStateChangingActionRule` | state-changing actions need CSRF, GET actions do not flush |
 | 67 | `check_native_dialogs.py` | no native browser dialogs, no inline JavaScript |
 | 68 | `check_entity_manager_reset.py` | closed EntityManager recovered only via EntityManagerRecovery |
 | 69 | `check_unreferenced_ui.py` | no unreferenced templates |
 | 70 | `check_settings_readers.py` | every admin setting has a reader |
 | 71 | `check_copy_slop.py` | UI copy rules (no 'erfolgreich'/'successfully', no '!', title suffix only in base) |
-| 72 | `check_tenant_null_rows.py` | no tenant-less rows the TenantFilter hides |
+| 72 | PHPStan `TenantlessRowRule` | no tenant-less rows the TenantFilter hides |
 | 73 | `check_list_skeleton.py` | list pages use the list skeleton (_fa_list_page) |
 | 74 | `check_kpi_catalog.py` | management KPIs only via the KPI catalog |
 | 75 | `check_show_skeleton.py` | detail pages use the detail skeleton |
@@ -239,9 +241,9 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 87 | `check_risk_band_literals.py` | risk bands come from the organisation's risk scale |
 | 89 | `check_api_module_fields.py` | API fields of an optional module carry #[ModuleField] |
 | 90 | `check_job_id_access.py` | every route that reads an async job by id checks its owner |
-| 91 | `check_mfa_login_state.py` | one MFA state per login, no hand-made login, /setup closed while MFA is outstanding |
-| 92 | `check_raw_output.py` | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
-| 93 | `check_sso_claim_policy.py` | every SSO path checks its claims through SsoClaimPolicy |
+| 91 | PHPStan `MfaLoginStateRule` | one MFA state per login, no hand-made login, /setup closed while MFA is outstanding |
+| 92 | `check_raw_output.py` (Twig) + PHPStan `MarkupOutputRule` (PHP) | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
+| 93 | PHPStan `SsoClaimPolicyRule` + `check_sso_claim_policy.py` (config) | every SSO path checks its claims through SsoClaimPolicy |
 | 96 | `tests/Security/WritePathParityTest.php` (PHPUnit) | a write rule on the entity (`#[CreateOnly]`, `#[ManagerOrResponsibleField]`, evidence) holds in every form, the import and the API groups |
 | 97 | `check_tenant_pin_restore.py` | an organisation pinned in TenantContext is put back (runAs / try-finally) |
 
@@ -250,7 +252,7 @@ Code-Stil: Job „Code Quality“ führt `vendor/bin/php-cs-fixer fix --dry-run`
 `baselines/php_cs_fixer.txt` (Altlast vor Einführung): eine davon mit
 `vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php <datei>` richten und die Zeile löschen, nie Zeilen ergänzen.
 
-### Mutationsgegenprobe der Dauertests (T, Welle 7; T2, Welle 8)
+### Mutationsgegenprobe der Dauertests (T, Welle 7; T2, Welle 8; T3, Welle 9)
 
 Frage je Test und Gate: Wird er rot, wenn man die geschützte Eigenschaft absichtlich bricht? Wer
 einen der Tests oder ein Gate ändert, wiederholt die Gegenprobe für seine Änderung. Ein Test, der eine
@@ -284,6 +286,23 @@ Lücke festschreibt, wird umgedreht, nicht gelöscht.
 | `ApiTokenBoundaryTest` (T2) | `str_contains($path, '/api/')` im Matcher → `aTokenIsAcceptedOnlyOnApiPlatformAndMcpRoutes` rot (alle Router-Routen; POST auf die app-eigenen `…/api/`-Endpunkte wird abgewiesen) | Nur vier feste Pfade geprüft |
 | `BackupArchiveExtractionTest`, `SpreadsheetUploadReaderTest` (T2) | `document_versions` aus `ARCHIVE_PROTECTED_FOLDERS` entfernt → rot; `new Reader\Xlsx()`, `IOFactory::createReader('Xlsx')`, Reader per `use … as` → rot | Versionen landeten unbemerkt im Web-Root; Scan kannte nur `IOFactory::load`/`createReaderForFile` |
 | `TisaxConsolidateCommandTest` (T2, aus S18) | Bewertung einer Organisation auf die gemeinsame Katalogzeile verschoben → rot | Befehl schrieb Upload-Organisation und Reifegrad der ersten Organisation auf die Zeile aller |
+
+**T3 (Welle 9, Bericht 9-mutations):** Alle Mutationen des Berichts sind rot. Für die PHPStan-Regeln steht jede
+Mutation als `// expect:`-Zeile in der Fixture der Regel (`tests/PHPStan/Rule/Gate/Fixtures/`), für die Python-Gates
+in `scripts/quality/tests/test_w9_gate_mutations.py`, `test_check_raw_output.py`, `test_check_sso_claim_policy.py`.
+
+| Punkt | Test / Gate | Gegenprobe (absichtlich gebrochen → rot) | Vorher übersehen |
+|---|---|---|---|
+| 1 | Gate 93 (`SsoClaimPolicyRule`) | Alle `SsoClaimPolicy`-Aufrufe aus `AzureOAuthAuthenticator` entfernt; Policy nur im Kommentar/Docblock; neuer Authenticator ohne Eintrag in `CLAIM_CHECKS`; `GenericOidcAuthenticator` ruft den Flow nicht; `processResponse()`/`(null)`; `getHttpHost()`/`getUri()` in SSO-Code; `[...$id, ...$ui]`, `array_replace`, `$ui + $id`; `$allowEmailLinking = TRUE`; `.env` `"true"`/`1` | Name im Docblock von `SsoAccountLinkPolicy` genügte; Authenticatoren nur aus der Blockliste von `security.yaml` |
+| 2 | Gates 65, 91, Modul-Gate (PHPStan) | `IsCsrfTokenValid` nur im Docblock/Kommentar; `// #[RequiresModule]`; `->begin(` auf einem anderen Objekt (`$this->stopwatch->begin()`); Marker ohne Grund | Kommentare und Namen zählten als Schutz |
+| 3 | `MfaLoginPathsTest`, `ApiTokenBoundaryTest`, `SsoClaimContractTest` | `when@prod: security: firewalls: main: custom_authenticator: …` (Singular) → alle drei rot | Tests lasen die Rohdatei; lesen jetzt die aufgelöste Konfiguration je Umgebung (`ResolvedSecurityConfig`) |
+| 4 | Gate 82 | `step_type: review`/`auto_action`/ohne Typ mit `ROLE_USER`; unbekannter Typ; `when@prod`-Workflow; Rolle über Konstante/Variable/benanntes Argument; Seeder mit `setApproverRole('ROLE_USER')` | Nur `approval` galt als Freigabe — echter Fund: Schritt „published“ der Policy-Freigabe stand auf `auto_action` + `ROLE_USER` (behoben, Migration) |
+| 5 | `ExportRoutesGatedTest` | `#[IsGranted('PUBLIC_ACCESS')]`/`IS_AUTHENTICATED_*`; csv/xlsx/pdf/print/report im Namen; „export“ nur im Klassenpräfix | Jedes Attribut galt als Gate — 7 Report-Routen ohne Attribut gefunden, tragen jetzt `ROLE_USER` |
+| 6 | `PublicLinksFromDefaultUriTest` | Datei erwähnt `PublicUrlGenerator`, baut daneben eine absolute URL | Erwähnung befreite die ganze Datei |
+| 7 | `DeadlineLinkReachabilityTest` | Fristquelle, deren Link auf keine Haupt-Action zeigt | feste Liste von 5 Quellen |
+| 8 | `CrossTenantApiContractTest`, `CrossTenantMcpContractTest` | Ressource in `src/ApiResource/`; Entity in einem Unterordner ohne MCP-Probe | Entdeckung nur über `src/Entity/*.php` |
+| 9 | `TenantlessInsertGuard` | Update setzt `tenant = null` → Flush scheitert im Test | Nur Inserts geprüft |
+| 10 | Gates 72, 84, 87, 90, 92 und Dauertests (`RequirementMaturityAccessTest`, `SpreadsheetUploadReaderTest`, `OutboundUserUrlClientTest`, `AdminSettingConsumersTest`, `RegulatoryWorkflowRegistryTest`) | Aliase, Group-Use, Zeilenumbruch nach `new`, `Markup::class`, Konstanten, `sprintf`, `$line = implode(';', …)`, `$s->name`, `> 19`, Alias-Variable eines Risikowerts, privater Job-Helfer, `'/var/'.'jobs/'`, Ternär-Zweig in `trans`-Parametern, `template_from_string()` | Textsuche zeilenweise |
 
 Bekannte Restlücken (bewusst nicht erkannt, je Gate): 78 `<h1>` in Partials und die 3 Lieferanten-Templates der
 `ternary-tone`-Baseline; 62 `templates/dev`; 75 ein Marker „no record“ auf einer Datensatzseite ohne Kommentar,
@@ -513,6 +532,12 @@ einen Zustand führen, in den eine Entscheidungs-Transition führt; `PUBLIC_ACCE
 zählen wie `ROLE_USER`; keine Pauschalausnahme mehr (Zustellungen sind systemgetrieben, `roles: []`).
 Mandanten-Overrides prüft `App\Lifecycle\Config\LifecycleOverridePolicy` in PHP (gleiche Linie).
 `PENDING` im Skript nimmt Rollen auf, die eine andere Änderung gerade einführt. Keine Baseline.
+Seit T3: Schritttypen sind nur `approval` und `notification`; jeder Schritt, der keine Benachrichtigung ist,
+ist eine Freigabe (so behandelt ihn `WorkflowService`) und darf nicht auf `ROLE_USER` stehen, ein unbekannter
+`step_type` ist rot. `when@*`-Workflows werden gelesen; Empfänger-Abfragen auch mit Klassenkonstante, Variable
+(alle Zuweisungen und Ternär-Zweige), benanntem `role:`-Argument; Seeder über ganz `src/Command`
+(`'approverRole' =>`, `approverRole:`, `setApproverRole()`, `'role' =>`). `php_source.py` (kein Gate) ist der
+gemeinsame Helfer der Gates 82/84/87/90: Kommentare raus, Aliase und Group-Use aufgelöst, Klammern ausbalanciert.
 
 **CI-Integration:** Gate 82 im `code-quality`-Job.
 
@@ -542,6 +567,11 @@ Funktion, die nie sanitisiert. Zahlen, Datumswerte (`->format()`), `->count()`, 
 Übersetzungen gehen durch. Eine Stelle ohne Datensatztext trägt
 `// @csv-sanitize-exempt: <Grund>` (in der Zeile oder darüber; in der Funktion gilt die Marke für
 deren bloße Variablen, z. B. Zählerblätter). Keine Baseline.
+Seit T3 zählen nur echte Sanitizer (`CsvSanitizer`, `csvCell`, `streamCsvExport`, `sanitizeFormulaInjection`,
+nicht `sanitizeHtml`); Eigenschaftszugriffe (`$s->name`) und untypisierte Getter gelten als Text; handgebaute
+Zeilen (`implode`/Verkettung/`sprintf`) werden bis zum Statement-Ende gelesen und über `fwrite`/`fputs`,
+`file_put_contents`, `setContent`, `new Response(` und `echo` verfolgt (außer `fwrite` nur in Dateien, die
+csv/xlsx/Trenner nennen).
 
 **CI-Integration:** Gate 84 im `code-quality`-Job.
 
@@ -566,6 +596,9 @@ Befehlen, Cron und Hintergrundjobs also 20/12/6, in Holding-Ansichten die Skala 
 Wo die Organisation im Scope wirklich richtig ist, steht die Datei mit Grund in
 `baselines/risk_scale_without_tenant.txt` (`pfad::grund`, derzeit leer); veraltete Einträge
 lassen das Gate scheitern.
+
+Seit T3 auch `> 19`/`> 11`/`> 5` und `<=`-Kanten, Alias-Variablen eines Risikowerts (PHP, Twig `{% set %}`,
+JS `const`), `range(20,25)`/`range(12,19)`, Band-Arrays und Aliase/Group-Use von `RiskMatrixThresholds`.
 
 **CI-Integration:** Gate 87 im `code-quality`-Job.
 
@@ -605,7 +638,7 @@ PropertyAccessor/Reflection), rohes SQL auf `compliance_requirement_fulfillments
 
 ---
 
-### quality/check_raw_output.py (Gate 92)
+### quality/check_raw_output.py (Gate 92, Twig-Teil)
 
 **Zweck:** Datensatztext wird nie als HTML ausgegeben (gespeichertes XSS, XML-Injection in Word-Exporten).
 Komponenten unter `templates/_components/` geben ihre Text-Slots escaped aus; HTML erreicht sie nur als
@@ -613,16 +646,17 @@ Komponenten unter `templates/_components/` geben ihre Text-Slots escaped aus; HT
 oder `'key'|trans|fa_html` für eine geprüfte Übersetzung. JSON in Seiten und Skripten geht durch `|fa_json`.
 Regeln:
 - **R1:** jedes `|raw` / `|fa_html` ist `'literal.key'|trans(...)` mit escapten Parametern (`|e`, Zahlen,
-  `path()`, `fa_date`) oder steht mit Grund in `baselines/raw_output_allowlist.txt` (`pfad | ausdruck | grund`).
-  `|raw` auf Macro-Ausgabe ist überflüssig, `json_encode|raw` → `|fa_json`.
+  `path()`, `fa_date`; bei `a ? b : c`, `?:` und `??` jeder Zweig) oder steht mit Grund in
+  `baselines/raw_output_allowlist.txt` (`pfad | ausdruck | grund`).
+  `|raw` auf Macro-Ausgabe ist überflüssig, `json_encode|raw` → `|fa_json`, `{% autoescape false %}` verboten.
 - **R2:** Komponenten-Argumente enthalten kein HTML-Stringliteral, keine HTML-Übersetzung ohne `|fa_html`,
   keine mit `=` gebaute HTML-Variable, keinen mit `|e` vorab escapten Wert (doppelt escaped), keine
   `|nl2br`/`form_widget()`/`block()`-Strings (Attribut-Maps `attrs`/`card_attrs` sind ausgenommen).
-- **R3:** `new PhpWord()` nur in `App\Service\Export\DocxDocumentFactory` (schaltet
-  `Settings::setOutputEscapingEnabled(true)` ein); `TemplateProcessor` und Escaping aus sind verboten.
-- **R4:** `new Markup(` und `is_safe` in `src/` brauchen `// @markup-safe: <Grund>`.
+- **R5 (T3):** `template_from_string()` ist verboten (SSTI, Ausgabe als HTML).
 
-Veraltete Allowlist-Einträge lassen das Gate scheitern. Vor dem Fix meldete es 309 Funde.
+Der PHP-Teil (`new PhpWord()` nur in `DocxDocumentFactory`, kein `TemplateProcessor`, Escaping nie aus,
+`new Markup`/`Markup::class`/`is_safe` nur mit `// @markup-safe: <Grund>`) ist seit T3 die PHPStan-Regel
+`MarkupOutputRule`. Veraltete Allowlist-Einträge lassen das Gate scheitern.
 Selbsttest: `scripts/quality/tests/test_check_raw_output.py`; Render-Test `tests/Twig/OutputEscapingTest.php`.
 
 **CI-Integration:** Gate 92 im `code-quality`-Job.
@@ -635,35 +669,55 @@ Selbsttest: `scripts/quality/tests/test_check_raw_output.py`; Render-Test `tests
 (`JobStatusService::read()/exists()/delete()`), trägt `#[IsGranted(AsyncJobVoter::ACCESS, subject: '<id>')]`
 an der Action oder Klasse — nur wer den Job gestartet hat (oder ein Super-Admin) sieht Status und
 Ergebnisdatei. Routen mit eigener Zugangsregel (Quick-Fix) tragen `// @job-access-ok: <Grund>`.
-Keine Baseline. Selbsttest: `scripts/quality/tests/test_s6_contract_gates.py`.
+Keine Baseline. Selbsttest: `scripts/quality/tests/test_s6_contract_gates.py`, `test_w9_gate_mutations.py`.
+Seit T3 liest das Gate alle Methoden (auch private Helfer, Tabs), folgt der Route-Id über `$this->helper($x)` und
+lokale Aliase in jeden `Job*`-Dienst, verlangt den Guard bei jedem Platzhalter `{jobId}`/`{job_id}`/`{jobUuid}`/
+`{job}` und erkennt `var/jobs`-Pfade auch zusammengesetzt (`'/var/'.'jobs/'`, `Path::join`, `implode`).
 
 **CI-Integration:** Gate 90 im `code-quality`-Job.
 
 ---
 
-### quality/check_mfa_login_state.py (Gate 91)
+### PHPStan-Gate-Regeln (T3: Gates 11, 65, 72, 91, 92, 93)
 
-**Zweck:** Der zweite Faktor hat einen Zustand und keine Seitentür (S8, 2026-11). Rot bei
-(1) einem `_security.mfa_*`-Sitzungsschlüssel außerhalb von `src/Security/Mfa/MfaSessionState.php`,
-(2) `->setToken($x)` (nicht `null`) in einer Datei ohne `MfaSessionState` — eine selbstgebaute
-Anmeldung ohne zweiten Faktor; Ausnahme mit `// @mfa-ok: <Grund>`, (3) `'/setup'` in den
-`ALLOWED_PREFIXES` der MFA-Enforcer. Das Verhalten pinnen `tests/Security/Mfa/`. Keine Baseline.
-Selbsttest: `scripts/quality/tests/test_s6_contract_gates.py`.
+**Zweck:** Die sicherheitsrelevanten Kernregeln lesen den Code, nicht Zeilen. Der Mutationsabgleich (Bericht
+9-mutations, Welle 9) fand in drei Runden in Folge neue Schreibweisen, an denen die Regex-Gates vorbeisahen:
+Namen im Kommentar zählten als Schutz, Aliase, Group-Use, Zeilenumbrüche, Konstanten und `sprintf` blieben
+unsichtbar. Die Regeln liegen in `tests/PHPStan/Rule/Gate/`, sind in `phpstan.dist.neon` registriert und laufen im
+CI-Schritt „Run PHPStan“ über `src/`:
 
-**CI-Integration:** Gate 91 im `code-quality`-Job.
+| Gate | Regel | Rot bei |
+|---|---|---|
+| 65 | `CsrfStateChangingActionRule` | POST/PUT/PATCH/DELETE-Action ohne entscheidende Token-Prüfung (Attribut, `isCsrfTokenValid()` in einer Bedingung, die die Action beendet oder den Rumpf schützt, behandeltes Formular mit CSRF, `handleBulkDelete`, Helfer eine Ebene tief); GET-Action, die über einen ObjectManager `flush/persist/remove` aufruft; `'x_{id}'` als Token-Id. Marker `// @csrf-exempt: <Grund>`, `// @get-write-ok: <Grund>` |
+| 72 | `TenantlessRowRule` | `new <mandantenbezogene Entity>` außerhalb von Entity/Fixtures/Restore ohne `setTenant(<nicht null>)` auf demselben Objekt (auch Fluent-Ketten); „eigene ODER globale Zeilen“-Abfrage (`OR … IS NULL`, `orWhere`, `orX`, `COALESCE`) auf einer Entity ohne `SharedTenantRowsInterface` |
+| 91 | `MfaLoginStateRule` | `setToken(<nicht null>)` (auch als Callable/String), `_security_*`-Sitzungsschlüssel (auch zusammengesetzt) oder `$_SESSION` ohne `begin()` auf einem `MfaSessionState` in derselben Methode; `_security.mfa_*` außerhalb von `MfaSessionState`; `/setup` in `ALLOWED_PREFIXES`. Marker `// @mfa-ok: <Grund>` an der Methode |
+| 92 | `MarkupOutputRule` | `new PhpWord` außerhalb von `DocxDocumentFactory`, `TemplateProcessor`, Escaping aus; `new Markup`, `Markup::class`, `is_safe`/`isSafe` ohne `// @markup-safe: <Grund>` |
+| 93 | `SsoClaimPolicyRule` | Authenticator-Klasse (per Typ gefunden) ohne Eintrag in `CLAIM_CHECKS`/`NON_SSO`; fehlender `SsoClaimPolicy`-Aufruf bzw. Flow-Aufruf; `processResponse()` ohne Request-Id; Host-Header im SSO-Code; Claims per `array_merge`/`array_replace`/`+`/Spread in `src/Service/Sso`; `$allowEmailLinking` standardmäßig an |
+| 11 | `ModuleGateRule` | regulatorisches Formularfeld ohne passendes `isModuleActive()`-If (auch über private Helfer); Framework-Route ohne `#[RequiresModule]` oder entscheidendes `checkModuleActive()`. Marker `// @no-module-gate-required: <Grund>` |
+
+Marker gelten nur als Kommentar mit Grund dahinter, Namen in Kommentaren oder Docblocks nie als Schutz.
+Bekannte Ausnahmen stehen in `phpstan-gates-baseline.neon` (je Eintrag `reportUnmatched: true`: ein behobener
+Eintrag muss raus). Jede Regel hat eine Fixture unter `tests/PHPStan/Rule/Gate/Fixtures/`, deren Zeilen mit
+`// expect: <identifier>` ihre Mutationstabelle sind (`GateRuleTestCase`); php-cs-fixer lässt die Fixtures aus,
+damit Schreibweisen wie `TRUE` erhalten bleiben.
+
+```bash
+vendor/bin/phpstan analyse --configuration phpstan.dist.neon      # wie CI
+vendor/bin/phpunit tests/PHPStan/Rule/Gate                          # Mutationstabellen der Regeln
+```
+
+**CI-Integration:** Schritt „Run PHPStan (incl. gate rules 11, 65, 72, 91, 92, 93)“ im `code-quality`-Job.
 
 ---
 
-### quality/check_sso_claim_policy.py (Gate 93)
+### quality/check_sso_claim_policy.py (Gate 93, Konfigurationsteil)
 
-**Zweck:** Jede SSO-Anmeldung prüft ihre Claims über `App\Service\Sso\SsoClaimPolicy` (S9, 2026-11).
-Rot bei (1) einem `custom_authenticators`-Eintrag in `security.yaml` (außer dem API-Token), der
-`SsoClaimPolicy` weder selbst noch über eine importierte `App\`-Klasse nutzt, (2) `->processResponse()`
-ohne Request-ID (SAML InResponseTo ungeprüft), (3) `getSchemeAndHttpHost()` im SSO-Code
-(Host-Header), (4) `array_merge(` in `src/Service/Sso/` (UserInfo überschreibt signierte Claims),
-(5) E-Mail-Verknüpfung der env-Azure-Anmeldung standardmäßig an (`services.yaml`, `.env`,
-`.env.prod.example`, `$allowEmailLinking = true`). Das Verhalten pinnt
-`tests/Security/Sso/SsoClaimContractTest` (neuer Authenticator ohne Vertrag = rot). Keine Baseline.
+**Zweck:** E-Mail-Verknüpfung der env-Azure-Anmeldung bleibt standardmäßig aus: rot bei
+`app.azure_allow_email_linking_default` oder `AZURE_ALLOW_EMAIL_LINKING` mit einem wahren Wert (true/1/yes/on, jede
+Schreibweise, mit oder ohne Anführungszeichen) in `config/services.yaml`, `.env`, `.env.prod.example`. Den Code-Teil
+prüft seit T3 die PHPStan-Regel `SsoClaimPolicyRule`; die Authenticatoren aller Firewalls aller Umgebungen prüft
+`tests/Security/Sso/SsoClaimContractTest` auf der aufgelösten Konfiguration (`tests/Support/ResolvedSecurityConfig`).
+Selbsttest: `scripts/quality/tests/test_check_sso_claim_policy.py`.
 
 **CI-Integration:** Gate 93 im `code-quality`-Job.
 
@@ -744,26 +798,6 @@ Einstellungsformulare, Statusseiten), stehen mit Begründung in
 `scripts/quality/baselines/list_skeleton_not_lists.txt` und werden nicht geprüft.
 
 **CI-Integration:** Gate 73 im `code-quality`-Job.
-
----
-
-### quality/check_tenant_null_rows.py (Gate 72)
-
-**Zweck:** Datensätze ohne Mandant, die der `TenantFilter` versteckt. Zwei Regeln:
-`new-no-tenant` meldet Controller/Services und seit T2 auch Konsolenbefehle, die eine mandantenbezogene Entity mit
-`new X()` anlegen, ohne in derselben Methode `setTenant()` aufzurufen (so gingen
-Workflow-Instanzen und Risikoappetit für die eigene Organisation verloren).
-`shared-query` meldet Abfragen „eigene ODER globale Zeilen“
-(`x.tenant = :t OR x.tenant IS NULL`, auch `x.tenant IN (:ids) OR …`) auf Entities ohne
-`SharedTenantRowsInterface`: Unter dem Filter trifft der globale Zweig nie.
-Was der Regex nicht sieht (Factory, `clone`, Hilfsdienst), fängt zur Laufzeit
-`App\EventListener\TenantlessInsertGuard`: im Testlauf scheitert der Flush, sonst steht eine Warnung im Log.
-
-**Baseline:** `scripts/quality/baselines/tenant_null_rows.txt`, Einträge
-`<datei>::<regel>::<detail>  # Grund` (z. B. Formularobjekt, dessen Service den
-Mandanten setzt). Veraltete Einträge schlagen seit T2 fehl, die Liste schrumpft nur.
-
-**CI-Integration:** Gate 72 im `code-quality`-Job.
 
 ---
 
@@ -871,32 +905,6 @@ Fix: move the {% import %} statement inside the {% block %} where it is used.
 **CI-Integration:** Läuft als `Twig Macro-Scope Check` im `code-quality`-Job in `.github/workflows/ci.yml`, direkt vor dem DQL-Field-Mismatch-Check.
 
 **Regression-Schutz für:** Commit `075e36a4` (Bulk-Fix von 48 Templates).
-
----
-
-### quality/check_module_gating.py (Audit-S5 / P-6)
-
-**Zweck:** Erzwingt Module-Gating-Disziplin für regulatorische FormType-Felder.
-Verhindert, dass DORA-/LkSG-/MaRisk-/NIS2-/TISAX-/GDPR-Felder ohne
-`isModuleActive()`-Gate / `addModuleGatedField()` / safe-helper ins
-Form-Layout rutschen.
-
-**Verwendung:**
-```bash
-# Repo-weit, gegen Baseline
-python3 scripts/quality/check_module_gating.py --baseline scripts/quality/baselines/module_gating.txt --quiet
-
-# Einzelne Datei
-python3 scripts/quality/check_module_gating.py --paths src/Form/SupplierType.php
-
-# Baseline neu schreiben (Snapshot-Modus)
-python3 scripts/quality/check_module_gating.py --write-baseline scripts/quality/baselines/module_gating.txt
-```
-
-**Whitelist-Annotation:** `// @no-module-gate-required: <reason>` direkt
-oberhalb des `->add(...)`-Calls.
-
-**CI-Integration:** Gate 11 im `code-quality`-Job (BLOCKING via baseline).
 
 ---
 

@@ -98,7 +98,7 @@ php bin/phpunit tests/Security/
 2. **XSS Prevention:**
    - Twig auto-escaping enabled (`autoescape: 'html'`)
    - CSP headers in production
-   - Record text is never output as HTML (Gate 92, `check_raw_output.py`): components escape
+   - Record text is never output as HTML (Gate 92: `check_raw_output.py` for Twig, PHPStan rule `MarkupOutputRule` for PHP): components escape
      their text slots; any other `|raw` needs an entry in
      `scripts/quality/baselines/raw_output_allowlist.txt`; JSON into pages via `|fa_json`
    - Flashes render once in `base.html.twig` through `|fa_flash` (plain text, escaped)

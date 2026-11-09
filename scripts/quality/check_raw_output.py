@@ -35,13 +35,12 @@ Rules (templates/**/*.twig, src/**/*.twig):
   R2  an argument passed to a component (`_components/*`, `_macros/*`) carries
       no HTML string literal and no translation that contains HTML unless the
       value ends in `|fa_html` — the component escapes it, the tags would show.
-Rules (src/**/*.php):
-  R3  `new PhpWord(` only in src/Service/Export/DocxDocumentFactory.php, no
-      `TemplateProcessor`, never `setOutputEscapingEnabled(false)`.
-  R4  `new Markup(` (also through a `use Twig\\Markup as X` alias) and Twig
-      callables declared `is_safe` / `is_safe_callback` carry a
-      `// @markup-safe: <reason>` comment (same or previous line) that names
-      how record text is escaped before it becomes HTML.
+  R5  `template_from_string()` is rejected: it renders record text as a template (SSTI) and
+      its output as HTML (T3).
+The PHP side (`new Markup`, `Markup::class`, `is_safe`, PhpWord only via DocxDocumentFactory, no
+TemplateProcessor, escaping never off) is the PHPStan rule
+tests/PHPStan/Rule/Gate/MarkupOutputRule.php since T3 - it reads the code, not lines, so aliases,
+group use, line breaks and comments no longer slip through.
 
 Stale allowlist entries fail too, so the list only shrinks.
 
@@ -58,14 +57,12 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 ALLOWLIST = ROOT / "scripts" / "quality" / "baselines" / "raw_output_allowlist.txt"
-DOCX_FACTORY = "src/Service/Export/DocxDocumentFactory.php"
-MARKUP_FILTERS = "src/Twig/OutputEscapingExtension.php"
 
 RAW = re.compile(r"\|\s*(raw|fa_html)\b")
 AUTOESCAPE_OFF = re.compile(
     r"""\{%-?\s*autoescape\s+(?!(?:'(?:html|js|css|url|html_attr)'|"(?:html|js|css|url|html_attr)"|true)\s*-?%\})[^%]*-?%\}"""
 )
-MARKUP_ALIAS = re.compile(r"^\s*use\s+\\?Twig\\Markup\s+as\s+(\w+)\s*;", re.M)
+TEMPLATE_FROM_STRING = re.compile(r"\btemplate_from_string\s*\(")
 SAFE_PARAM_TAIL = re.compile(
     r"\|\s*(e|escape|length|number_format|round|abs|format_number|fa_date|fa_datetime|fa_time|fa_month)"
     r"(\([^()]*\))?\s*$"
@@ -235,9 +232,44 @@ def macro_aliases(src: str) -> set[str]:
     return names
 
 
+def _branches(v: str) -> list[str] | None:
+    """The values a top-level `c ? a : b` / `a ?: b` / `a ?? b` can print, or None when v is no such choice."""
+    depth, quote, i = 0, "", 0
+    while i < len(v):
+        ch = v[i]
+        if quote:
+            if ch == "\\":
+                i += 2
+                continue
+            if ch == quote:
+                quote = ""
+        elif ch in "'\"":
+            quote = ch
+        elif ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+        elif depth == 0 and v.startswith("??", i):
+            return [v[:i], v[i + 2:]]
+        elif depth == 0 and ch == "?":
+            rest = v[i + 1:]
+            if rest.startswith(":"):
+                return [v[:i], rest[1:]]
+            parts = split_top(rest, ":")
+            return [parts[0], ":".join(parts[1:])] if len(parts) > 1 else None
+        i += 1
+    return None
+
+
 def _safe_value(v: str) -> bool:
-    """A literal, an escaped/numeric expression, or a generated URL."""
-    v = strip_parens(v.strip()) if v.strip().startswith("(") and not SAFE_PARAM_TAIL.search(v.strip()) else v.strip()
+    """A literal, an escaped/numeric expression, or a generated URL; for a choice, every value it can print."""
+    v = v.strip()
+    if v.startswith("(") and balanced_from(v, 0) == v:
+        v = strip_parens(v)
+    branches = _branches(v)
+    if branches is not None:
+        # `flag ? record.title : record.title|e`: the filter binds to the last branch only (T3)
+        return all(_safe_value(b) for b in branches)
     return bool(LITERAL.match(v) or SAFE_PARAM_TAIL.search(v) or re.match(r"^(path|url|csrf_token)\(", v))
 
 
@@ -291,6 +323,10 @@ def check_r1(files: list[Path], allow: dict, used: set) -> list[str]:
         # Twig comments never render
         code = re.sub(r"\{#.*?#\}", lambda m: re.sub(r"[^\n]", " ", m.group(0)), src, flags=re.S)
         aliases = macro_aliases(code)
+        for m in TEMPLATE_FROM_STRING.finditer(code):
+            line = code.count("\n", 0, m.start()) + 1
+            errors.append(f"{rel}:{line}: `template_from_string()` renders text as a template (SSTI) and prints it "
+                          "as HTML - render a template file and pass the text as a variable")
         for m in AUTOESCAPE_OFF.finditer(code):
             line = code.count("\n", 0, m.start()) + 1
             errors.append(f"{rel}:{line}: `{norm(m.group(0))}` — switches escaping off for a whole block; "
@@ -448,39 +484,6 @@ def check_r2(files: list[Path], html_keys: set[str], allow: dict, used: set) -> 
     return errors
 
 
-# ── R3 ─────────────────────────────────────────────────────────────────────
-
-def check_r3() -> list[str]:
-    errors = []
-    for f in sorted((ROOT / "src").rglob("*.php")):
-        rel = f.relative_to(ROOT).as_posix()
-        src = f.read_text(encoding="utf-8")
-        lines = src.splitlines()
-        markup_names = ["(?:\\\\?(?:Twig\\\\)?Markup)"] + [re.escape(a) for a in MARKUP_ALIAS.findall(src)]
-        new_markup = re.compile(r"new\s+(?:" + "|".join(markup_names) + r")\s*\(")
-        for i, line in enumerate(lines, 1):
-            if re.search(r"new\s+\\?(PhpOffice\\PhpWord\\)?PhpWord\s*\(", line) and rel != DOCX_FACTORY:
-                errors.append(f"{rel}:{i}: PhpWord document created outside DocxDocumentFactory::create() — output escaping may be off")
-            if re.search(r"\bTemplateProcessor\b", line) and not line.lstrip().startswith(("*", "//")):
-                errors.append(f"{rel}:{i}: PhpWord TemplateProcessor — setValue() writes XML unescaped unless output escaping is on; use DocxDocumentFactory")
-            if re.search(r"setOutputEscapingEnabled\s*\(\s*false", line):
-                errors.append(f"{rel}:{i}: PhpWord output escaping switched off")
-            if rel == MARKUP_FILTERS:
-                continue
-            marked = "@markup-safe:" in line or (i > 1 and "@markup-safe:" in lines[i - 2])
-            if new_markup.search(line) and not marked:
-                errors.append(
-                    f"{rel}:{i}: `new Markup()` — record text would print as HTML; escape it first and say how in "
-                    "a `// @markup-safe: <reason>` comment on this or the previous line"
-                )
-            if re.search(r"""['"]is_safe(_callback)?['"]\s*=>|\bisSafe(Callback)?\s*:""", line) and not marked:
-                errors.append(
-                    f"{rel}:{i}: Twig callable marked is_safe — its output is printed unescaped; "
-                    "add `// @markup-safe: <reason>` once it escapes record text itself"
-                )
-    return errors
-
-
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     ap.add_argument("--quiet", action="store_true")
@@ -495,7 +498,6 @@ def main() -> int:
     files = twig_files()
     errors += check_r1(files, allow, used)
     errors += check_r2(files, translation_html_keys(), allow, used)
-    errors += check_r3()
     for key in allow:
         if key[0] != "__malformed__" and key not in used:
             errors.append(f"{ALLOWLIST.name}: stale entry (no such raw output any more): {key[0]} | {key[1]}")

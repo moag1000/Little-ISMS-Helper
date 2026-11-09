@@ -92,6 +92,21 @@ final class RegulatoryWorkflowRegistryTest extends KernelTestCase
             $expected = array_map(static fn (array $step): string => (string) $step['approver_role'], $loader->getStepsForWorkflow($name) ?? []);
             $actual = array_map(static fn (WorkflowStep $step): string => (string) $step->getApproverRole(), array_values($row->getSteps()->toArray()));
             self::assertSame($expected, $actual, "{$name}: database approvers equal the YAML");
+
+            // W9: the type decides whether a step is an approval or passes by itself, the days drive the
+            // deadline — a mirror that hard-codes either would pass the approver comparison above.
+            $yamlSteps = array_values($loader->getStepsForWorkflow($name) ?? []);
+            $rowSteps = array_values($row->getSteps()->toArray());
+            self::assertSame(
+                array_map(static fn (array $step): string => (string) ($step['step_type'] ?? 'approval'), $yamlSteps),
+                array_map(static fn (WorkflowStep $step): string => $step->getStepType(), $rowSteps),
+                "{$name}: database step types equal the YAML",
+            );
+            self::assertSame(
+                array_map(static fn (array $step): ?int => isset($step['days_to_complete']) ? (int) $step['days_to_complete'] : null, $yamlSteps),
+                array_map(static fn (WorkflowStep $step): ?int => $step->getDaysToComplete(), $rowSteps),
+                "{$name}: database step days equal the YAML",
+            );
         }
     }
 

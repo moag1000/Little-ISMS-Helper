@@ -37,6 +37,14 @@ final class CrossTenantMcpContractTest extends WebTestCase
      */
     private const array NOT_PROBED = [];
 
+    /**
+     * Resource names an MCP tool offers that are no Doctrine entity, each with the reason. A name that is
+     * neither an entity nor listed here fails (W9: it used to be skipped without a word).
+     *
+     * @var array<string, string>
+     */
+    private const array NOT_ENTITY_RESOURCES = [];
+
     private KernelBrowser $client;
     private Tenant $own;
     private Tenant $foreign;
@@ -97,8 +105,8 @@ final class CrossTenantMcpContractTest extends WebTestCase
         $foreign = [];
         $own = [];
         foreach ($resources as $name) {
-            $class = 'App\\Entity\\' . $name;
-            if (class_exists($class) && property_exists($class, 'tenant')) {
+            $class = $this->entityClass($name);
+            if ($class !== null && property_exists($class, 'tenant')) {
                 $foreign[$name] = $factory->create($class, $foreignTenant, $this->marker);
                 $own[$name] = $factory->create($class, $ownTenant, $this->base . 'own');
             }
@@ -171,8 +179,8 @@ final class CrossTenantMcpContractTest extends WebTestCase
         // records of B must not move a single number A sees.
         self::assertArrayHasKey('management_kpis', $counters);
         foreach ($resources as $name) {
-            $class = 'App\\Entity\\' . $name;
-            if (class_exists($class) && property_exists($class, 'tenant')) {
+            $class = $this->entityClass($name);
+            if ($class !== null && property_exists($class, 'tenant')) {
                 for ($i = 0; $i < 3; ++$i) {
                     $factory->create($class, $this->em()->find(Tenant::class, $this->foreign->getId()), $this->marker . 'n' . $i);
                 }
@@ -306,6 +314,38 @@ final class CrossTenantMcpContractTest extends WebTestCase
                 self::assertArrayNotHasKey((new \ReflectionClass($class))->getShortName(), $dpoResources, 'assistant: false holds for every role');
             }
         }
+    }
+
+    /**
+     * The mapped entity class behind a resource name an MCP tool offers: matched by short name against every
+     * class Doctrine maps, so entities in src/Entity/<Folder>/ resolve too (W9: `'App\\Entity\\' . $name` made
+     * class_exists() false for them and the resource silently got no probe). An unknown or ambiguous name
+     * fails the test; a name that is no entity by design is listed in NOT_ENTITY_RESOURCES with its reason.
+     *
+     * @return class-string|null
+     */
+    private function entityClass(string $name): ?string
+    {
+        if (isset(self::NOT_ENTITY_RESOURCES[$name])) {
+            return null;
+        }
+        $matches = [];
+        foreach ($this->em()->getMetadataFactory()->getAllMetadata() as $metadata) {
+            $short = $metadata->getReflectionClass()->getShortName();
+            if (strcasecmp($short, $name) === 0 || strcasecmp($short, str_replace(['_', '-', ' '], '', $name)) === 0) {
+                $matches[] = $metadata->getName();
+            }
+        }
+        if (count($matches) !== 1) {
+            self::fail(sprintf(
+                'MCP resource "%s" resolves to %s — a resource without a Doctrine class gets no cross-organisation probe. '
+                . 'Fix the name or list it in NOT_ENTITY_RESOURCES with a reason.',
+                $name,
+                $matches === [] ? 'no mapped entity' : 'several entities (' . implode(', ', $matches) . ')',
+            ));
+        }
+
+        return $matches[0];
     }
 
     /** @return array<class-string, \App\Attribute\PersonalDataResource> */

@@ -52,22 +52,37 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from php_source import class_methods, matching_end, split_args, strip_comments  # noqa: E402
 SECURITY = ROOT / "config" / "packages" / "security.yaml"
 WORKFLOWS = ROOT / "config" / "workflows"
 REGULATORY = WORKFLOWS / "regulatory"
-SEEDERS = [
-    ROOT / "src" / "Command" / "GenerateRegulatoryWorkflowsCommand.php",
-    ROOT / "src" / "Command" / "SeedIncidentWorkflowsCommand.php",
-    ROOT / "src" / "Command" / "SeedPolicyApprovalWorkflowCommand.php",
-]
+COMMANDS = ROOT / "src" / "Command"
 
 # Roles in use whose definition is on its way in another change. Each line
 # names the change; delete the line once the role is in security.yaml.
 PENDING: set[str] = set()
 
-LOOKUP = re.compile(r"""\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\s*\(\s*['"](ROLE_[A-Z_]+)['"]""")
-SEEDER_ROLE = re.compile(r"""'(?:approverRole|role)'\s*=>\s*'(ROLE_[A-Z_]+)'""")
-SEEDER_TYPE = re.compile(r"""'stepType'\s*=>\s*'([a-z_]+)'""")
+# Recipient look-ups: the role is the first argument, or the one named `role:`.
+LOOKUP_CALL = re.compile(r"\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\s*\(")
+ROLE_LITERAL = re.compile(r"""['"](ROLE_[A-Z_]+)['"]""")
+CONST_REF = re.compile(r"^(?:self|static|[\\\w]+)::([A-Z_][A-Z0-9_]*)$")
+# A step role written into a seeder: the array key, a named argument or the setter.
+SEEDER_KEY = re.compile(r"""['"](?:approverRole|approver_role)['"]\s*=>\s*['"](ROLE_[A-Z_]+)['"]|"""
+                        r"""\bapproverRole\s*:\s*['"](ROLE_[A-Z_]+)['"]|"""
+                        r"""\bsetApproverRole\s*\(\s*['"](ROLE_[A-Z_]+)['"]""")
+SEEDER_ROLE_KEY = re.compile(r"""['"]role['"]\s*=>\s*['"](ROLE_[A-Z_]+)['"]""")
+SEEDER_MARKER = re.compile(r"\bWorkflowStep\b|\bsetApproverRole\b|['\"]approverRole['\"]|\bapproverRole\s*:|['\"]stepType['\"]")
+SEEDER_TYPE = re.compile(r"""['"](?:stepType|step_type)['"]\s*=>\s*['"]([a-z_]+)['"]|\bsetStepType\s*\(\s*['"]([a-z_]+)['"]""")
+
+# step_type values WorkflowService knows. It treats every step that is not `notification` as an approval
+# (handleStepAssignment, approvalWouldCloseWorkflow), so any other value is an approval with a mislabel.
+STEP_TYPES = {"approval", "notification"}
+NOTIFICATION = "notification"
+
+# Seeder steps on ROLE_USER that exist today and wait for a decision in the code. Each entry names the
+# file and step; the gate fails once the entry no longer matches (delete it with the fix).
+KNOWN_SEEDER_ROLE_USER: dict[str, str] = {}
 
 
 # Transitions any signed-in user may fire: they move a record into work or hand it
@@ -85,6 +100,11 @@ EVERYONE = {"ROLE_USER", "PUBLIC_ACCESS", "IS_AUTHENTICATED", "IS_AUTHENTICATED_
 DECISION_PREFIXES = ("approve", "publish", "accept", "close", "verify", "complete", "achieve", "archive",
                      "dispose", "retire", "confirm", "assess", "sign", "release", "reject", "revoke",
                      "expire", "decide", "resolve", "activate")
+
+# A transition with a real role that leads back or aside (reopen, retry, …) is not a decision; every other
+# one with a real role is, whatever it is called (S15 follow-up: `finalise` was no prefix and decided nothing).
+NON_DECISION_PREFIXES = ("reopen", "retry", "return", "reset", "revert", "restart", "resume", "back", "cancel",
+                         "withdraw", "defer", "pause", "request_change", "rework", "skip")
 
 # workflow.transition → why ROLE_USER is right there. (S15 removed the pauschal exemption of
 # notification_delivery_lifecycle — its steps are system-driven, `roles: []` — and the consent
@@ -113,7 +133,10 @@ def decided_places(wf: dict) -> set[str]:
         places.update(as_list((t or {}).get("to")))
     decided = {p for p in places if p not in outgoing}
     for name, t in transitions.items():
-        if name.startswith(DECISION_PREFIXES):
+        roles = set(as_list(((t or {}).get("metadata") or {}).get("roles")))
+        real_role = bool(roles - EVERYONE)
+        if name.startswith(DECISION_PREFIXES) or (
+                real_role and name not in USER_WORK_TRANSITIONS and not name.startswith(NON_DECISION_PREFIXES)):
             decided.update(as_list((t or {}).get("to")))
     return decided
 
@@ -160,6 +183,16 @@ def rel(path: Path) -> str:
     return str(path.relative_to(ROOT))
 
 
+def workflows_of(data: dict) -> dict:
+    """framework.workflows of a file, including every `when@<env>:` wrapper (config is merged per environment)."""
+    found = dict((data.get("framework") or {}).get("workflows") or {})
+    for key, value in data.items():
+        if str(key).startswith("when@") and isinstance(value, dict):
+            for name, wf in ((value.get("framework") or {}).get("workflows") or {}).items():
+                found[f"{key}.{name}"] = wf
+    return found
+
+
 def yaml_line(lines: list[str], needle: str, start: int = 0) -> int:
     for i in range(start, len(lines)):
         if needle in lines[i]:
@@ -173,7 +206,7 @@ def check_yaml(known: set[str]) -> list[str]:
         text = path.read_text(encoding="utf-8")
         lines = text.splitlines()
         data = yaml.safe_load(text) or {}
-        workflows = (data.get("framework") or {}).get("workflows") or {}
+        workflows = workflows_of(data)
         for wf_name, wf in workflows.items():
             decided = decided_places(wf)
             for t_name, transition in (wf.get("transitions") or {}).items():
@@ -228,7 +261,12 @@ def check_yaml(known: set[str]) -> list[str]:
                 line = yaml_line(lines, f'"{step.get("name")}"')
                 if role and role != OWNER and role not in known and role not in EVERYONE:
                     errors.append(f"{rel(path)}:{line}: step \"{step.get('name')}\" waits on unknown role {role}")
-                if role in EVERYONE and step.get("step_type", "approval") == "approval":
+                step_type = step.get("step_type", "approval")
+                if step_type not in STEP_TYPES:
+                    errors.append(f"{rel(path)}:{line}: step \"{step.get('name')}\" has step_type {step_type!r}; "
+                                  f"WorkflowService knows {sorted(STEP_TYPES)} and treats everything but "
+                                  "`notification` as an approval")
+                if role in EVERYONE and step_type != NOTIFICATION:
                     errors.append(f"{rel(path)}:{line}: approval step \"{step.get('name')}\" is open to ROLE_USER "
                                   "(every signed-in user)")
     return errors
@@ -238,42 +276,153 @@ def stale_exceptions() -> set[str]:
     used: set[str] = set()
     for path in sorted(WORKFLOWS.rglob("*.yaml")):
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        for wf_name, wf in ((data.get("framework") or {}).get("workflows") or {}).items():
+        for wf_name, wf in workflows_of(data).items():
             for t_name, transition in (wf.get("transitions") or {}).items():
                 if set(as_list(((transition or {}).get("metadata") or {}).get("roles"))) & EVERYONE:
                     used.add(f"{wf_name}.{t_name}")
     return set(USER_TRANSITION_EXCEPTIONS) - used
 
 
+def enclosing_array(code: str, pos: int) -> str:
+    """The innermost `[...]` literal around pos (a seeder's step definition), else a 600-char window."""
+    depth, i = 0, pos
+    while i > 0:
+        i -= 1
+        if code[i] == "]":
+            depth += 1
+        elif code[i] == "[":
+            if depth == 0:
+                return code[i:matching_end(code, i)]
+            depth -= 1
+    return code[max(0, pos - 600):pos + 600]
+
+
+def step_type_near(code: str, pos: int) -> str | None:
+    """The step type of the step definition around pos: its array literal, else the method it sits in."""
+    for scope in (enclosing_array(code, pos), _method_around(code, pos)):
+        m = SEEDER_TYPE.search(scope)
+        if m:
+            return m.group(1) or m.group(2)
+    return None
+
+
+def _method_around(code: str, pos: int) -> str:
+    _, methods = class_methods(code)
+    for method in methods:
+        if method.start <= pos < method.end:
+            return code[method.start:method.end]
+    return ""
+
+
+def seeder_files() -> list[Path]:
+    return sorted(COMMANDS.rglob("*.php")) if COMMANDS.exists() else []
+
+
 def check_seeders(known: set[str]) -> list[str]:
     errors: list[str] = []
-    for path in SEEDERS:
-        if not path.exists():
+    for path in seeder_files():
+        code = strip_comments(path.read_text(encoding="utf-8"))
+        if not SEEDER_MARKER.search(code):
             continue
-        lines = path.read_text(encoding="utf-8").splitlines()
-        for i, line in enumerate(lines):
-            m = SEEDER_ROLE.search(line)
-            if not m:
-                continue
-            role = m.group(1)
+        hits = [(m.start(), next(g for g in m.groups() if g)) for m in SEEDER_KEY.finditer(code)]
+        hits += [(m.start(), m.group(1)) for m in SEEDER_ROLE_KEY.finditer(code)]
+        for pos, role in sorted(hits):
+            line = code.count("\n", 0, pos) + 1
             if role not in known:
-                errors.append(f"{rel(path)}:{i + 1}: workflow step role {role} is unknown")
+                errors.append(f"{rel(path)}:{line}: workflow step role {role} is unknown")
             if role == "ROLE_USER":
-                window = "\n".join(lines[max(0, i - 6):i + 6])
-                step_type = SEEDER_TYPE.search(window)
-                if step_type is None or step_type.group(1) == "approval":
-                    errors.append(f"{rel(path)}:{i + 1}: approval step is open to ROLE_USER (every signed-in user)")
+                step_type = step_type_near(code, pos)
+                if step_type == NOTIFICATION:
+                    continue
+                name = re.search(r"""['"]name['"]\s*=>\s*['"]([^'"]+)['"]""", enclosing_array(code, pos))
+                key = f"{rel(path)}:{name.group(1) if name else line}"
+                if key in KNOWN_SEEDER_ROLE_USER:
+                    continue
+                errors.append(f"{rel(path)}:{line}: approval step is open to ROLE_USER (every signed-in user)"
+                              f" (step type {step_type or 'unset'}; only `notification` is not an approval)")
     return errors
+
+
+def stale_seeder_exceptions() -> set[str]:
+    live: set[str] = set()
+    for path in seeder_files():
+        code = strip_comments(path.read_text(encoding="utf-8"))
+        for m in SEEDER_KEY.finditer(code):
+            if "ROLE_USER" in m.groups() and step_type_near(code, m.start()) != NOTIFICATION:
+                name = re.search(r"""['"]name['"]\s*=>\s*['"]([^'"]+)['"]""", enclosing_array(code, m.start()))
+                if name:
+                    live.add(f"{rel(path)}:{name.group(1)}")
+    return set(KNOWN_SEEDER_ROLE_USER) - live
+
+
+_CONSTS: dict[str, str] | None = None
+
+
+def role_constants() -> dict[str, str]:
+    """`Class::NAME` / `NAME` -> ROLE_ value for every class constant in src/ that holds a role."""
+    global _CONSTS
+    if _CONSTS is None:
+        _CONSTS = {}
+        pattern = re.compile(r"""\bconst\s+(?:\w+\s+)?([A-Z_][A-Z0-9_]*)\s*=\s*['"](ROLE_[A-Z_]+)['"]""")
+        for path in (ROOT / "src").rglob("*.php"):
+            text = path.read_text(encoding="utf-8")
+            if "ROLE_" not in text:
+                continue
+            for m in pattern.finditer(strip_comments(text)):
+                _CONSTS.setdefault(m.group(1), m.group(2))
+                _CONSTS[f"{path.stem}::{m.group(1)}"] = m.group(2)
+    return _CONSTS
+
+
+def roles_named_by(argument: str, code: str) -> list[str]:
+    """ROLE_ strings an argument can hold: a literal, a class constant, or a variable assigned in the file."""
+    argument = argument.strip()
+    found = ROLE_LITERAL.findall(argument)
+    ref = CONST_REF.match(argument)
+    if ref:
+        consts = role_constants()
+        owner = argument.rsplit("::", 1)[0].rsplit("\\", 1)[-1]
+        value = consts.get(f"{owner}::{ref.group(1)}") or consts.get(ref.group(1))
+        found += [value] if value else []
+    var = re.fullmatch(r"\$(\w+)", argument)
+    if var:  # every value the file ever gives that variable (assignment, default, ternary branch)
+        for m in re.finditer(r"\$" + var.group(1) + r"\s*(?:\?\?)?=\s*([^;]+);", code):
+            found += ROLE_LITERAL.findall(m.group(1))
+        for m in re.finditer(r"\$" + var.group(1) + r"\s*=\s*['\"](ROLE_[A-Z_]+)['\"]\s*[,)]", code):
+            found.append(m.group(1))
+    return found
+
+
+def role_argument(call_args: list[str]) -> str | None:
+    for arg in call_args:
+        named = re.match(r"role\s*:(?!:)\s*(.*)$", arg, re.S)
+        if named:
+            return named.group(1)
+    return call_args[0] if call_args and not re.match(r"\w+\s*:(?!:)", call_args[0]) else None
+
+
+def lookups_in(code: str) -> list[tuple[int, str]]:
+    """(offset, role) of every recipient look-up whose role we can name."""
+    found: list[tuple[int, str]] = []
+    for m in LOOKUP_CALL.finditer(code):
+        args = split_args(code[m.end():matching_end(code, m.end() - 1) - 1])
+        arg = role_argument(args)
+        if arg is not None:
+            found += [(m.start(), role) for role in roles_named_by(arg, code)]
+    return found
 
 
 def check_lookups(known: set[str]) -> list[str]:
     errors: list[str] = []
     for path in sorted((ROOT / "src").rglob("*.php")):
         text = path.read_text(encoding="utf-8")
-        for m in LOOKUP.finditer(text):  # whole file: the role may sit on the next line
-            if m.group(1) not in known:
-                errors.append(f"{rel(path)}:{text.count(chr(10), 0, m.start()) + 1}: recipient look-up on "
-                              f"unknown role {m.group(1)} finds nobody")
+        if "ByRole" not in text and "UserByRole" not in text and "UsersByRole" not in text:
+            continue
+        code = strip_comments(text)  # whole file: the call may break across lines
+        for pos, role in lookups_in(code):
+            if role not in known:
+                errors.append(f"{rel(path)}:{code.count(chr(10), 0, pos) + 1}: recipient look-up on "
+                              f"unknown role {role} finds nobody")
     return errors
 
 
@@ -287,6 +436,8 @@ def main() -> int:
     errors = check_yaml(known) + check_seeders(known) + check_lookups(known)
     errors += [f"{rel(Path(__file__))}: USER_TRANSITION_EXCEPTIONS entry {key} matches no ROLE_USER transition"
                for key in sorted(stale_exceptions())]
+    errors += [f"{rel(Path(__file__))}: KNOWN_SEEDER_ROLE_USER entry {key} matches no step any more; delete it"
+               for key in sorted(stale_seeder_exceptions())]
 
     for role in sorted(PENDING & defined):
         print(f"note: {role} is defined in security.yaml now; remove it from PENDING in {rel(Path(__file__))}")

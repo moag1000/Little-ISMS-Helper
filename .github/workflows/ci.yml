@@ -332,13 +332,11 @@ jobs:
       - name: PHP CS Fixer (PSR-12, dry-run)
         run: vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no --config=.php-cs-fixer.dist.php
 
-      - name: Run PHPStan
-        run: |
-          if [ -f vendor/bin/phpstan ]; then
-            vendor/bin/phpstan analyse --configuration phpstan.dist.neon --no-progress
-          else
-            echo "PHPStan not available, skipping"
-          fi
+      # PHPStan carries the security core of the CI gates as AST rules since T3 (2026-11): Gate 65 CSRF,
+      # 72 tenant-less rows, 91 MFA state, 92 Markup/PhpWord, 93 SSO claim policy, 11 module gate
+      # (tests/PHPStan/Rule/Gate/, exceptions in phpstan-gates-baseline.neon). It must never be skipped.
+      - name: Run PHPStan (incl. gate rules 11, 65, 72, 91, 92, 93)
+        run: vendor/bin/phpstan analyse --configuration phpstan.dist.neon --no-progress
 
       # FairyAurora v3.0 — A11y-Kontrast-Gate (WCAG 2.2 AA)
       - name: FairyAurora A11y Contrast Audit
@@ -444,12 +442,7 @@ jobs:
       # the underlying issue is migrated. Annotation overrides documented in
       # each script's header.
       #
-      # Gate 11 — Module-gating discipline (P-6, BLOCKING via baseline)
-      #   Verifies regulatory fields (DORA/LkSG/MaRisk/NIS2/TISAX/GDPR) live
-      #   inside an isModuleActive() block, addModuleGatedField() call, or a
-      #   safe-helper method. Annotation: // @no-module-gate-required: <why>.
-      - name: "Gate 11: Module-gating discipline (P-6)"
-        run: python3 scripts/quality/check_module_gating.py --baseline scripts/quality/baselines/module_gating.txt --quiet
+      # Gate 11 — Module-gating discipline: PHPStan rule ModuleGateRule since T3 (step "Run PHPStan").
 
       # Gate 12 — Flash translation-domain (P-5, BLOCKING via baseline)
       #   Stops $this->translator->trans('key') without an explicit domain
@@ -695,12 +688,7 @@ jobs:
         # ArgumentCountError, ...) escape as an HTML 500 page the fetch() caller
         # cannot parse. Keys are path:method, so line shifts do not churn it.
         run: python3 scripts/quality/check_json_catch_throwable.py --baseline scripts/quality/baselines/json_catch_throwable.txt --quiet
-      - name: "Gate 65: state-changing actions need CSRF"
-        # Every POST/PUT/PATCH/DELETE action needs #[IsCsrfTokenValid], an inline
-        # isCsrfTokenValid(), a BulkActionTrait helper or a Symfony form — or a
-        # reviewed `// @csrf-exempt: <reason>` marker. Baseline = files of
-        # in-flight work only; stale entries are reported, never fail.
-        run: python3 scripts/quality/check_csrf_state_changing.py --baseline scripts/quality/baselines/csrf_state_changing.txt
+      # Gate 65 (state-changing actions need CSRF): PHPStan rule CsrfStateChangingActionRule since T3.
       - name: "Gate 67: no native browser dialogs, no inline JavaScript"
         # alert()/confirm()/prompt() are banned as UX — import faToast /
         # faConfirm / faPrompt from assets/js/fa-alerts.js (templates:
@@ -729,11 +717,8 @@ jobs:
         # Copy rules in CLAUDE.md "UI copy". Findings keyed by file::key, so
         # line shifts never touch the baseline; new entries need a reason.
         run: python3 scripts/quality/check_copy_slop.py --baseline scripts/quality/baselines/copy_slop.txt --quiet
-      - name: "Gate 72: no tenant-less rows the TenantFilter hides"
-        # New tenant-owned records must get a tenant; "own OR global" queries
-        # need SharedTenantRowsInterface on the entity. Findings keyed by
-        # file::rule::detail; baseline entries carry a reason.
-        run: python3 scripts/quality/check_tenant_null_rows.py --baseline scripts/quality/baselines/tenant_null_rows.txt --quiet
+      # Gate 72 (no tenant-less rows the TenantFilter hides): PHPStan rule TenantlessRowRule since T3,
+      # at run time EventListener\TenantlessInsertGuard (inserts and updates to tenant = null).
       - name: "Gate 73: list pages use the list skeleton (_fa_list_page)"
         # Filter bar, table card, pager and empty state in one fixed order;
         # unmigrated lists are baselined and may only shrink. No KPI tiles in lists.
@@ -809,18 +794,18 @@ jobs:
         # Exports, backups and reports keep status + result under var/jobs/<uuid>.json;
         # a known id must not open another person's file (#[IsGranted(AsyncJobVoter::ACCESS)]). S6, 2026-11.
         run: python3 scripts/quality/check_job_id_access.py --quiet
-      - name: "Gate 91: one MFA state per login, no hand-made login, /setup closed while MFA is outstanding"
-        # S8, 2026-11: remember-me, a second login and the password re-auth each skipped the TOTP
-        # code because every path kept its own session flags. MfaSessionState is the only holder.
-        run: python3 scripts/quality/check_mfa_login_state.py --quiet
-      - name: "Gate 92: output escaped unless reviewed (|raw allowlist, |fa_json, DocxDocumentFactory, Markup)"
+      # Gate 91 (one MFA state per login, no hand-made login): PHPStan rule MfaLoginStateRule since T3.
+      - name: "Gate 92: Twig output escaped unless reviewed (|raw allowlist, |fa_json, component slots)"
         # Components escape their text slots; HTML reaches them only as Markup (capture, macro,
-        # |fa_html on a reviewed translation). |raw needs an allowlist entry with a reason;
-        # PhpWord documents come only from DocxDocumentFactory (output escaping on). S10, 2026-11.
+        # |fa_html on a reviewed translation). |raw needs an allowlist entry with a reason. S10, 2026-11.
+        # The PHP part (new Markup, is_safe, PhpWord via DocxDocumentFactory) is the PHPStan rule
+        # MarkupOutputRule since T3.
         run: python3 scripts/quality/check_raw_output.py --quiet
-      - name: "Gate 93: every SSO login goes through SsoClaimPolicy, SAML only answers own requests"
+      - name: "Gate 93: SSO e-mail linking stays off by default (services.yaml, .env)"
         # S9, 2026-11: SAML URLs from the Host header and replayable responses, Azure tid unchecked with
         # e-mail linking on, OIDC tokens without issuer/exp/nonce and UserInfo overwriting sub/email.
+        # The code part (every authenticator calls SsoClaimPolicy, processResponse with request id, no
+        # Host header, no hand-merged claims) is the PHPStan rule SsoClaimPolicyRule since T3.
         run: python3 scripts/quality/check_sso_claim_policy.py --quiet
       - name: "Gate 94: stored file paths only through StoredFilePath / ProtectedUploads"
         # S19, 2026-11: a restored '../../.env.local' (audit-freeze PDF) was read, a restored

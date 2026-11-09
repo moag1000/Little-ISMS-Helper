@@ -40,7 +40,7 @@ class SupplierCriticalityController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'app_admin_supplier_criticality_index', methods: ['GET'])]
+    #[Route('', name: 'app_admin_supplier_criticality_index', methods: ['GET'])] // @get-write-ok: idempotent seed of defaults
     public function index(Request $request): Response
     {
         $tenant = $this->requireTenant($request);

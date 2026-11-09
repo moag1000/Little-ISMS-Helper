@@ -785,7 +785,7 @@ class TenantManagementController extends AbstractController
         return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
     }
     /**
-     * API endpoint to get ISMS Context for a tenant
+     * API endpoint to get ISMS Context for a tenant. @get-write-ok: copies the organisation name into it (idempotent)
      */
     #[Route('/admin/tenants/api/tenants/{id}/isms-context', name: 'api_tenant_isms_context', methods: ['GET'])]
     #[IsGranted(new Expression('is_granted("TENANT_VIEW")' . self::IN_SCOPE), 'tenant')]

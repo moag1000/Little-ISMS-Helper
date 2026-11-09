@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\EventListener;
 
+use App\Doctrine\SharedTenantRowsInterface;
 use App\Entity\Location;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Entity\Workflow;
 use App\EventListener\TenantlessInsertGuard;
 use App\Service\TenantContext;
 use App\Tests\Contract\Support\ContractRecordFactory;
@@ -69,6 +71,33 @@ final class TenantlessInsertGuardTest extends KernelTestCase
     }
 
     #[Test]
+    public function anExistingRowWhoseTenantIsSetToNullFailsTheFlush(): void
+    {
+        $location = $this->location();
+        $this->em->flush();
+        self::getContainer()->get(RequestStack::class)->push(Request::create('/de/location/1/edit', 'POST'));
+
+        $location->setTenant(null);
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('without an organisation');
+        $this->em->flush();
+    }
+
+    #[Test]
+    public function anUpdateKeepingTheTenantIsSaved(): void
+    {
+        $location = $this->location();
+        $this->em->flush();
+        self::getContainer()->get(RequestStack::class)->push(Request::create('/de/location/1/edit', 'POST'));
+
+        $location->setName('renamed');
+        $this->em->flush();
+
+        self::assertSame('renamed', $location->getName());
+    }
+
+    #[Test]
     public function outsideARequestNothingIsChecked(): void
     {
         $location = $this->location();
@@ -86,6 +115,14 @@ final class TenantlessInsertGuardTest extends KernelTestCase
         self::assertFalse(TenantlessInsertGuard::isTenantOwned(new \ReflectionClass(User::class), true));
         self::assertFalse(TenantlessInsertGuard::isTenantOwned(new \ReflectionClass(Tenant::class), true));
         self::assertFalse(TenantlessInsertGuard::isTenantOwned(new \ReflectionClass(Location::class), false));
+        self::assertFalse(
+            TenantlessInsertGuard::isTenantOwned(new \ReflectionClass(Workflow::class), true),
+            'rows meant for all organisations (SharedTenantRowsInterface) may carry no tenant',
+        );
+        self::assertTrue(
+            new \ReflectionClass(Workflow::class)->implementsInterface(SharedTenantRowsInterface::class),
+            'the fixture entity must really be a shared-rows entity',
+        );
     }
 
     private function location(): Location
