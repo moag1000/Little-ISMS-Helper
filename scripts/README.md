@@ -241,6 +241,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 90 | `check_job_id_access.py` | every route that reads an async job by id checks its owner |
 | 91 | `check_mfa_login_state.py` | one MFA state per login, no hand-made login, /setup closed while MFA is outstanding |
 | 92 | `check_raw_output.py` | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
+| 93 | `check_sso_claim_policy.py` | every SSO path checks its claims through SsoClaimPolicy |
 
 ### Mutationsgegenprobe der Dauertests (T, Welle 7)
 

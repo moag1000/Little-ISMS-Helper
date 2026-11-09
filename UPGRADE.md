@@ -98,9 +98,9 @@ Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`)
   maskieren allen Text.
 - **KI-Funktionen** sind standardmäßig aus (Admin > KI-Vorschläge).
 
-### Nach dem Merge von #1178 (SSO-Härtung, noch offen)
+### SSO (Azure, SAML, OIDC)
 
-- `DEFAULT_URI` muss die öffentliche Adresse tragen, sonst bricht SAML ab.
+- `DEFAULT_URI` muss die öffentliche Adresse tragen, sonst bricht SAML ab (Entity-ID `<DEFAULT_URI>/saml/metadata`).
 - IdP-initiierte SAML-Anmeldung („Meine Apps“-Kachel) wird abgewiesen; Anmeldung über den SAML-Knopf.
 - Azure (env): `AZURE_TENANT_ID` muss eine GUID sein oder `AZURE_ALLOWED_TENANT_IDS` gesetzt.
   E-Mail-Verknüpfung ist standardmäßig aus und braucht den Claim `xms_edov`.
