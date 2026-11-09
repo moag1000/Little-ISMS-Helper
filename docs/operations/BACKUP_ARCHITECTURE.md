@@ -88,7 +88,8 @@ backup_2026-04-24_03-00-00.zip
     ├── documents/          # Document.filePath          (from var/uploads/documents/)
     ├── document_versions/  # DocumentVersion.filePath   (from var/uploads/documents/)
     ├── training_materials/ # Training.materialFiles[]   (from var/uploads/training-materials/)
-    └── tenant_logos/       # Tenant/TenantBranding.logoPath (from public/uploads/)
+    ├── tenant_logos/       # Tenant/TenantBranding.logoPath (from public/uploads/tenants/)
+    └── user_avatars/       # User.profilePicture            (from public/uploads/users/)
 ```
 
 Not in the archive: profile pictures (`User.profilePicture`, `public/uploads/`).
@@ -332,6 +333,7 @@ Missing fields in restored entities are handled by `missing_field_strategy`:
 | `DocumentVersion` | `filePath` | `var/uploads/documents/` | `files/document_versions/` |
 | `Training` | `materialFiles[].filename` | `var/uploads/training-materials/` | `files/training_materials/` |
 | `Tenant`, `TenantBranding` | `logoPath` (`uploads/tenants/logo.png`) | `public/uploads/` | `files/tenant_logos/` |
+| `User` | `profilePicture` (`uploads/users/avatar_7_x.png`) | `public/uploads/` | `files/user_avatars/` |
 
 Evidence paths are resolved through `App\Service\Upload\ProtectedUploads`, which still finds a file left
 in the old `public/uploads/` folder. `tests/Service/BackupArchiveExtractionTest` fails when a `ProtectedUploads`
@@ -352,7 +354,7 @@ area has no entry.
    `ARCHIVE_FILE_FOLDERS` are written, with path-traversal protection and a size cap
    (`MAX_ARCHIVE_TOTAL_BYTES`, 4 GiB). `documents/` and `document_versions/` go to
    `var/uploads/documents/`, `training_materials/` to `var/uploads/training-materials/`, logos to
-   `public/uploads/<folder>/`. The resolved target must stay inside its base folder.
+   `public/uploads/tenants/`, profile pictures to `public/uploads/users/`. The resolved target must stay inside its base folder.
 
 ---
 
