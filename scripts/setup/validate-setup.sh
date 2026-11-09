@@ -49,9 +49,9 @@ echo "=== PREREQUISITES ==="
 echo ""
 
 # Check 1: PHP version
-check "PHP version >= 8.2"
+check "PHP version >= 8.4"
 PHP_VERSION=$(php -r 'echo PHP_VERSION;')
-if php -r 'exit(version_compare(PHP_VERSION, "8.2.0", ">=") ? 0 : 1);'; then
+if php -r 'exit(version_compare(PHP_VERSION, "8.4.0", ">=") ? 0 : 1);'; then
     pass
     info "  Found: PHP $PHP_VERSION"
 else
@@ -60,7 +60,7 @@ fi
 
 # Check 2: Required PHP extensions
 check "Required PHP extensions"
-REQUIRED_EXTENSIONS=("pdo_mysql" "pdo_sqlite" "mbstring" "xml" "ctype" "iconv" "intl" "json")
+REQUIRED_EXTENSIONS=("pdo_mysql" "mbstring" "xml" "ctype" "iconv" "intl" "json")
 MISSING_EXTENSIONS=()
 
 for ext in "${REQUIRED_EXTENSIONS[@]}"; do

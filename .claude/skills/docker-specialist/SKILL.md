@@ -55,8 +55,7 @@ project/
     ├── supervisor/
     │   └── supervisord.conf      # Process management
     ├── scripts/
-    │   ├── init-mysql.sh         # Database initialization
-    │   └── init-postgres.sh      # Alternative DB init
+    │   └── init-mysql.sh         # Database init, .env.local on the volume, public address
     └── ssl/
         └── README.md             # SSL certificate instructions
 ```
@@ -134,9 +133,8 @@ ARG TARGETARCH          # Automatic: amd64 or arm64
 ### Docker Compose Configurations
 
 **docker-compose.yml (Base/Development):**
-- PostgreSQL 16 (external database)
+- MariaDB 11.4 (separate database container, app with EMBEDDED_DB=none)
 - MailHog for email testing
-- pgAdmin for database management
 - Resource limits and health checks
 
 **docker-compose.prod.yml (Production):**

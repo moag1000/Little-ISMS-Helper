@@ -167,8 +167,8 @@ public function isTransactional(): bool
 
 `doctrine:migrations:diff` does **not** add this automatically.
 
-**Gate:** `check_migration_transactional.sh` — scans migration files for
-`ALTER TABLE` / `CREATE TABLE` without `isTransactional`. Baseline:
+**Gate 20:** `check_ddl_transactional.py` — scans every migration for
+DDL (`ALTER`/`CREATE`/`DROP TABLE`, `CREATE`/`DROP INDEX`) without `isTransactional(): false`. Baseline:
 `scripts/quality/baselines/ddl_transactional.txt`.
 
 ---
