@@ -493,7 +493,7 @@ alva_hint:
             action: 'Open BIA guidance'
         bcp_stale_exercise:
             title: 'BC plan not exercised within the last 12 months'
-            body: 'ISO 22301 Cl. 8.5: exercise at least annually. No exercise in 12 months is a Major-NC candidate. Schedule one and record the date.'
+            body: 'ISO 22301 8.5: exercise at least yearly. Plan an exercise; completing it sets "Last tested".'
             action: 'Open BCM exercise documentation'
         bcp_no_crisis_team:
             title: 'No crisis team defined — who activates the plan?'
@@ -504,8 +504,8 @@ alva_hint:
             body: 'Severity %severity%, status %status%, no root-cause analysis. ISO 27001 Cl. 10.1 + 10.2 require one before closure.'
             action: 'Open root-cause template'
         incident_nis2_early_warning_pending:
-            title: 'NIS2 24-hour early warning is running — set earlyWarningReportedAt'
-            body: 'NIS2 Art. 23(4)(a): early warning within 24 hours of awareness. earlyWarningReportedAt is empty — prepare the authority contact.'
+            title: 'NIS-2 early warning (24 h) open'
+            body: 'NIS-2 Art. 23 (4) (a): early warning within 24 h. After reporting, use "Mark as reported" on the incident page.'
             action: 'Open NIS2 notification guide'
         document_review_interval_too_long:
             title: 'Review interval (%months% months) longer than 24 months'
@@ -533,7 +533,7 @@ alva_hint:
             action: 'Open CAPA workflow'
         risk_acceptance_without_justification:
             title: 'Risk acceptance without a justification'
-            body: 'accept without acceptanceJustification is a frequent ISO 27001 NC. Cl. 8.3 + 6.1.3 f: justify it and check against risk appetite.'
+            body: 'ISO 27001 6.1.3 f, 8.3: request the acceptance with reason and date via "Request acceptance" on the risk page.'
             action: 'Open acceptance template'
         risk_residual_exceeds_initial:
             title: 'Residual score (%residual%) > initial score (%initial%)'

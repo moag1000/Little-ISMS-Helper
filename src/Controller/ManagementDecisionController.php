@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ManagementDecision;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\ManagementDecisionStatus;
@@ -111,6 +113,40 @@ final class ManagementDecisionController extends AbstractController
             'current' => [],
             'form' => $form,
             'type' => $type,
+            'decision' => $decision,
+        ], new Response(status: $form->isSubmitted() ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK));
+    }
+
+    /**
+     * S12: put the risk of one outsourcing before top management (MaRisk AT 4.3).
+     * The approval sets the supplier's board-level risk acceptance; the supplier
+     * form shows it read-only.
+     */
+    #[Route('/management-decisions/new/supplier/{id}', name: 'app_management_decision_new_supplier', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[RequiresModule('suppliers')]
+    public function newForSupplier(Request $request, Supplier $supplier): Response
+    {
+        $tenant = $this->tenant();
+        if ($supplier->getTenant()?->getId() !== $tenant->getId()) {
+            throw $this->createNotFoundException();
+        }
+        $user = $this->getUser();
+        $decision = $this->decisions->prepareForSupplier($tenant, $supplier, $user instanceof User ? $user : null, $request->getLocale());
+        $form = $this->createForm(ManagementDecisionFormType::class, $decision);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->decisions->submit($decision);
+            $this->addFlash('success', 'management_decision.flash.submitted');
+
+            return $this->redirectToRoute('app_management_decision_show', ['id' => $decision->getId()]);
+        }
+
+        return $this->render('management_decision/new.html.twig', [
+            'types' => [],
+            'current' => [],
+            'form' => $form,
+            'type' => ManagementDecisionType::SupplierRiskAcceptance,
             'decision' => $decision,
         ], new Response(status: $form->isSubmitted() ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK));
     }

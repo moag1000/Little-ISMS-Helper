@@ -246,6 +246,9 @@ risk:
     treatment_plans_none: 'No treatment plans.'
     # V3 W2-FV-2 — Unified Asset-overview on Risk-Show
   help:
+    acceptance_set_by_request: 'Set with "Request acceptance" or "Re-evaluate or extend" on the risk page and approved with the acceptance.'
+    decision_approved_by_action: 'Set with "Approve treatment" on the risk page (ISO 27001 6.1.3 f).'
+    residual_frozen_while_accepted: 'Accepted residual risk. Re-rate it with "Re-evaluate or extend" on the risk page (ISO 27001 8.3).'
     status_readonly: 'Status is driven by the Risk lifecycle workflow (identified → assessed → in_treatment → treated/accepted/closed). Direct edit disabled; use the status actions on the show page (LifecycleService::transition).'
     title: Unique designation of the risk for internal reference
     category: Categorization of the risk (financial, operational, compliance, etc.)
@@ -413,6 +416,10 @@ risk:
       4: 'Major'
       5: 'Catastrophic'
   acceptance:
+    reevaluate_action: Re-evaluate or extend
+    expiry_label: Acceptance valid until
+    expiry_help: 'The acceptance is reviewed by then (ISO 27001 8.3), at most %months% months. The approval covers this date.'
+    reevaluation_notice: 'This risk is accepted. The new request ends the standing acceptance; the responsible level approves the new reason, residual rating and date.'
     request_action: Request acceptance
     title: 'Request Risk Acceptance'
     request: 'Risk Acceptance Request'
@@ -426,6 +433,7 @@ risk:
       manager: Manager Approval Required
       executive: Executive Approval Required
     error:
+      expiry_invalid: 'Valid-until date is missing or not between tomorrow and %months% months.'
       wrong_strategy: 'Risk acceptance is only available for risks with the "Accept" treatment strategy.'
       already_accepted: 'This risk has already been formally accepted.'
       justification_required: 'Justification is required (ISO 27005:2022 Cl. 8.4.4).'
@@ -443,6 +451,17 @@ risk:
       reason: Rejection reason
       reject: Reject
       waiting: Waiting for a decision by the responsible approval level.
+  decision:
+    approved_by: 'Treatment decision approved by %name% on %date%.'
+    not_approved: 'Treatment decision not yet approved.'
+    confirm: 'Approve the chosen treatment and its rationale? Name and date come from your login (ISO 27001 6.1.3 f).'
+    comment: Comment (optional)
+    action:
+      approve: Approve treatment
+    error:
+      rationale_required: 'Enter a treatment strategy and rationale first.'
+    flash:
+      approved: Treatment approved.
   business:
     ale_per_year: 'approx. €%amount%/year'
     asset: 'Asset: %asset%'

@@ -163,10 +163,13 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'widget' => 'single_text',
                 'required' => false,
             ])
+            // @intentional-bind: S12 — written by the lifecycle step, shown read-only (disabled fields are not submitted)
             ->add('actualImplementationDate', DateType::class, [
                 'label' => 'change_request.field.actual_implementation_date',
                 'widget' => 'single_text',
                 'required' => false,
+                'disabled' => true,
+                'help' => 'change_request.help.set_by_lifecycle_implement',
             ])
             ->add('approverPerson', EntityType::class, [
                 'label' => 'change_request.field.approver_person',
@@ -176,50 +179,71 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'required' => false,
                 'help' => 'change_request.help.approver_person',
             ])
+            // @intentional-bind: S12 — written by the lifecycle step, shown read-only (disabled fields are not submitted)
             ->add('approvedBy', TextType::class, [
                 'label' => 'change_request.field.approved_by',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
+                'disabled' => true,
+                'help' => 'change_request.help.set_by_lifecycle_approve',
             ])
+            // @intentional-bind: S12 — written by the lifecycle step, shown read-only (disabled fields are not submitted)
             ->add('approvedDate', DateType::class, [
                 'label' => 'change_request.field.approved_date',
                 'widget' => 'single_text',
                 'required' => false,
+                'disabled' => true,
+                'help' => 'change_request.help.set_by_lifecycle_approve',
             ])
+            // @intentional-bind: S12 — written by the lifecycle step, shown read-only (disabled fields are not submitted)
             ->add('approvalComments', TextareaType::class, [
                 'label' => 'change_request.field.approval_comments',
                 'required' => false,
                 'attr' => ['rows' => 2],
+                'disabled' => true,
+                'help' => 'change_request.help.set_by_lifecycle_approve',
             ])
+            // @intentional-bind: S12 — written by the lifecycle step, shown read-only (disabled fields are not submitted)
             ->add('implementedBy', TextType::class, [
                 'label' => 'change_request.field.implemented_by',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
+                'disabled' => true,
+                'help' => 'change_request.help.set_by_lifecycle_implement',
             ])
             ->add('implementationNotes', TextareaType::class, [
                 'label' => 'change_request.field.implementation_notes',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
+            // @intentional-bind: S12 — written by the lifecycle step, shown read-only (disabled fields are not submitted)
             ->add('verifiedBy', TextType::class, [
                 'label' => 'change_request.field.verified_by',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
+                'disabled' => true,
+                'help' => 'change_request.help.set_by_lifecycle_verify',
             ])
+            // @intentional-bind: S12 — written by the lifecycle step, shown read-only (disabled fields are not submitted)
             ->add('verifiedDate', DateType::class, [
                 'label' => 'change_request.field.verified_date',
                 'widget' => 'single_text',
                 'required' => false,
+                'disabled' => true,
+                'help' => 'change_request.help.set_by_lifecycle_verify',
             ])
             ->add('verificationResults', TextareaType::class, [
                 'label' => 'change_request.field.verification_results',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
+            // @intentional-bind: S12 — written by the lifecycle step, shown read-only (disabled fields are not submitted)
             ->add('closedDate', DateType::class, [
                 'label' => 'change_request.field.closed_date',
                 'widget' => 'single_text',
                 'required' => false,
+                'disabled' => true,
+                'help' => 'change_request.help.set_by_lifecycle_close',
             ])
             ->add('closureNotes', TextareaType::class, [
                 'label' => 'change_request.field.closure_notes',

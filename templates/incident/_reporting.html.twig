@@ -5,9 +5,12 @@
    interim() = NIS-2 intermediate report on request (Art. 23 (4) (c)). #}
 
 {% macro mark(incident, field) %}
-    {% if is_granted('ROLE_USER') %}
-        <form method="post" action="{{ path('app_incident_reporting_mark', {id: incident.id, field: field}) }}" class="d-inline mt-2">
+    {% if is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', incident) %}
+        <form method="post" action="{{ path('app_incident_reporting_mark', {id: incident.id, field: field}) }}" class="d-inline-flex flex-wrap align-items-center gap-2 mt-2">
             <input type="hidden" name="_token" value="{{ csrf_token('incident_reporting_' ~ incident.id) }}">
+            <label class="visually-hidden" for="reported-at-{{ field }}">{{ 'incident.reporting.reported_at'|trans({}, 'incident') }}</label>
+            <input type="datetime-local" class="form-control form-control-sm w-auto" id="reported-at-{{ field }}" name="reported_at"
+                   max="{{ 'now'|date('Y-m-d\\TH:i') }}" title="{{ 'incident.reporting.reported_at_hint'|trans({}, 'incident') }}">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-testid="mark-reported-{{ field }}">
                 {{ 'incident.reporting.mark_reported'|trans({}, 'incident') }}
             </button>

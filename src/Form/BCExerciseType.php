@@ -8,7 +8,9 @@ use App\Entity\BCExercise;
 use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\BusinessContinuityPlan;
+use App\Enum\BCExerciseStatus;
 use App\Form\Entry\EvidenceArtifactEntryType;
+use App\Form\Util\DerivedField;
 use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -33,6 +35,14 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // S12 / ISO 22301 8.5: once the exercise is completed (lifecycle, four eyes) the
+        // achieved RTO/RPO are its result and no longer change by editing.
+        foreach (['actualRtoAchieved', 'actualRpoAchieved'] as $field) {
+            DerivedField::readOnlyWhen($builder, $field, static fn (BCExercise $e): ?array => $e->getStatus() === BCExerciseStatus::Completed->value
+                ? ['bc_exercises.help.result_frozen_after_completion', []]
+                : null);
+        }
+
         $builder
             ->add('name', TextType::class, [
                 'label' => 'bc_exercises.field.name',
@@ -220,10 +230,12 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 5],
             ])
+            // @intentional-bind: S12 — derived (BCExercise::deriveReportCompleted), shown read-only
             ->add('reportCompleted', CheckboxType::class, [
                 'label' => 'bc_exercises.field.report_completed',
-                'help' => 'bc_exercises.help.report_completed',
+                'help' => 'bc_exercises.help.report_completed_derived',
                 'required' => false,
+                'disabled' => true,
             ])
             ->add('reportDate', DateType::class, [
                 'label' => 'bc_exercises.field.report_date',

@@ -425,6 +425,17 @@
                         {% endif %}
                     </div>
 
+                    {# S12 / MaRisk AT 4.3: board acceptance of the outsourcing risk comes only from a Leitungsentscheidung #}
+                    {% if is_module_active('marisk') and supplier.outsourcingClassification %}
+                    <div class="detail-section" data-testid="supplier-board-acceptance">
+                        <h3>{{ 'supplier.marisk.field.board_level_risk_acceptance'|trans({}, 'suppliers') }}</h3>
+                        <p class="mb-2">{{ (supplier.boardLevelRiskAcceptance ? 'supplier.marisk.board_acceptance.given' : 'supplier.marisk.board_acceptance.missing')|trans({}, 'suppliers') }}</p>
+                        {% if not supplier.boardLevelRiskAcceptance and is_granted('ROLE_MANAGER') %}
+                            <a href="{{ path('app_management_decision_new_supplier', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'supplier.marisk.board_acceptance.propose'|trans({}, 'suppliers') }}</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
                     {# M-4 — module-gating: LkSG (Lieferkettensorgfaltspflichten) section #}
                     {% if is_module_active('lksg') and (supplier.lksgReportingObligation or supplier.lksgRiskCategory or supplier.lksgRiskAnalysisDate) %}
                     <div class="detail-section">

@@ -258,11 +258,14 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'incident.help.resolution_after_investigation',
             ])
+            // @intentional-bind: S12 — evidence written by the action that produces it, shown read-only
             ->add('closedAt', DateTimeType::class, [
                 'label' => 'incident.field.closed_date',
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
+                'disabled' => true,
+                'help' => 'incident.help.closed_by_lifecycle',
             ])
             // Opt-out of cross-posting to the Group-CISO
             // in a holding subtree. Default true; operators of a Tochter
@@ -388,26 +391,32 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                     'attr' => ['rows' => 5],
                     'help' => 'incident.help.report_summary',
                 ])
+                // @intentional-bind: S12 — evidence written by the action that produces it, shown read-only
                 ->add('earlyWarningReportedAt', DateTimeType::class, [
                     'label' => 'incident.field.early_warning_reported_at',
                     'widget' => 'single_text',
                     'input' => 'datetime_immutable',
                     'required' => false,
-                    'help' => 'incident.help.early_warning_24h',
+                    'disabled' => true,
+                    'help' => 'incident.help.reported_via_mark',
                 ])
+                // @intentional-bind: S12 — evidence written by the action that produces it, shown read-only
                 ->add('detailedNotificationReportedAt', DateTimeType::class, [
                     'label' => 'incident.field.detailed_notification_reported_at',
                     'widget' => 'single_text',
                     'input' => 'datetime_immutable',
                     'required' => false,
-                    'help' => 'incident.help.detailed_notification_72h',
+                    'disabled' => true,
+                    'help' => 'incident.help.reported_via_mark',
                 ])
+                // @intentional-bind: S12 — evidence written by the action that produces it, shown read-only
                 ->add('finalReportSubmittedAt', DateTimeType::class, [
                     'label' => 'incident.field.final_report_submitted_at',
                     'widget' => 'single_text',
                     'input' => 'datetime_immutable',
                     'required' => false,
-                    'help' => 'incident.help.final_report_1month',
+                    'disabled' => true,
+                    'help' => 'incident.help.reported_via_mark',
                 ])
                 ->add('crossBorderImpact', ChoiceType::class, [
                     'label' => 'incident.field.cross_border_impact',
@@ -515,25 +524,32 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                     'label' => 'incident.field.replication_of_impact',
                     'required' => false,
                 ])
+                // @intentional-bind: S12 — evidence written by the action that produces it, shown read-only
                 ->add('initialReportSubmittedAt', DateTimeType::class, [
                     'widget' => 'single_text',
                     'input' => 'datetime_immutable',
                     'label' => 'incident.field.initial_report_submitted_at',
                     'required' => false,
-                    'help' => 'incident.help.initial_report_submitted_at_dora',
+                    'disabled' => true,
+                    'help' => 'incident.help.reported_via_mark',
                 ])
+                // @intentional-bind: S12 — evidence written by the action that produces it, shown read-only
                 ->add('intermediateReportSubmittedAt', DateTimeType::class, [
                     'widget' => 'single_text',
                     'input' => 'datetime_immutable',
                     'label' => 'incident.field.intermediate_report_submitted_at',
                     'required' => false,
+                    'disabled' => true,
+                    'help' => 'incident.help.reported_via_mark',
                 ])
+                // @intentional-bind: S12 — evidence written by the action that produces it, shown read-only
                 ->add('doraFinalReportSubmittedAt', DateTimeType::class, [
                     'widget' => 'single_text',
                     'input' => 'datetime_immutable',
                     'label' => 'incident.field.dora_final_report_submitted_at',
                     'required' => false,
-                    'help' => 'incident.help.dora_final_report_submitted_at',
+                    'disabled' => true,
+                    'help' => 'incident.help.reported_via_mark',
                 ])
                 ->add('dataRecoveryStrategy', TextareaType::class, [
                     'label' => 'incident.field.data_recovery_strategy',

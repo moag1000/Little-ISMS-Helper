@@ -147,6 +147,31 @@ Mappings are shared by all organisations. Managers may submit a draft for review
 
 ---
 
+## Evidence is written by the step, not typed in (S12)
+
+Who approved, implemented, verified, closed or reported something — and when — comes from the step that does it.
+The edit forms show these fields read-only:
+
+| Record | Field (form, read-only) | How it is set now |
+|---|---|---|
+| Change request | approved on / by, approval comment | lifecycle step **Approve** (with four eyes the second person; the comment is the decision reason) |
+| Change request | implemented on / by | lifecycle step **Implemented** |
+| Change request | verified on / by | lifecycle step **Verify** |
+| Change request | closed on | lifecycle step **Close** |
+| Incident | closed at | lifecycle step **Close** (or *false positive*) |
+| Incident | early warning, notification, final and DORA report times | **Mark as reported** in the reporting duties section; the time can be entered afterwards (not in the future, not before detection). Manager or the incident's responsible |
+| BC exercise | report completed | derived: exercise completed (lifecycle) **and** results + report date filled in |
+| BC exercise | achieved RTO / RPO | editable until the exercise is completed, then frozen |
+| BC plan | last tested | completing an exercise that tests the plan; record an earlier test as a completed exercise |
+| Supplier | board-level risk acceptance (MaRisk AT 4.3) | supplier page → **Put before top management**; the approval by top management (ROLE_TOP_MGMT) sets it |
+| Risk | acceptance reason, valid until | **Request acceptance** (reason and valid-until date, at most 36 months) |
+| Risk | residual probability / impact | frozen while the risk is accepted; **Re-evaluate or extend** ends the acceptance and sends a new request to the responsible level |
+| Risk | treatment decision approved by / on | risk page → **Approve treatment** (risk owner or manager, ISO 27001 6.1.3 f) |
+
+Still typed in, because typing is the evidence itself: a control's effectiveness test result and date (control owner or
+manager), an objective's measured value (its responsible), the authority's name and case number of an incident report.
+REST and the assistant (MCP) cannot write any of the fields above either.
+
 ## Admin overrides (ROLE_ADMIN only)
 
 Each tenant can customize the lifecycle behavior for their organization without touching code. The admin interface at `/admin/lifecycle-overrides` allows:

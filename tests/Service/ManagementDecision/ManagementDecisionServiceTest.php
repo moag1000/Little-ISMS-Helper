@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\ManagementDecision;
 
 use App\Entity\ManagementDecision;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Enum\ManagementDecisionStatus;
 use App\Enum\ManagementDecisionType;
@@ -28,6 +29,7 @@ final class ManagementDecisionServiceTest extends TestCase
     private MockObject $lifecycle;
     private ManagementDecisionService $service;
     private Tenant $tenant;
+    private MockObject $entityManager;
 
     protected function setUp(): void
     {
@@ -35,15 +37,68 @@ final class ManagementDecisionServiceTest extends TestCase
         $this->builder = $this->createMock(DecisionProposalBuilder::class);
         $this->lifecycle = $this->createMock(LifecycleTransitionInterface::class);
         $this->tenant = new Tenant();
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->service = new ManagementDecisionService(
             $this->repository,
             $this->builder,
-            $this->createMock(EntityManagerInterface::class),
+            $this->entityManager,
             $this->lifecycle,
             $this->createMock(AuditLogger::class),
             new NullLogger(),
         );
         $this->builder->method('criteriaSnapshot')->willReturn(['automatic' => 3, 'manager' => 7, 'executive' => 25]);
+    }
+
+    /** S12 / MaRisk AT 4.3: only an approved Leitungsentscheidung sets the board acceptance of an outsourcing. */
+    #[Test]
+    public function anApprovedSupplierRiskAcceptanceSetsTheSuppliersFlag(): void
+    {
+        $supplier = $this->supplier($this->tenant, 41);
+        $this->entityManager->expects(self::once())->method('find')->with(Supplier::class, 41)->willReturn($supplier);
+
+        $this->service->afterApproval($this->supplierDecision($this->tenant, 41), null);
+
+        self::assertTrue($supplier->isBoardLevelRiskAcceptance());
+    }
+
+    #[Test]
+    public function aSupplierOfAnotherOrganisationIsNotTouched(): void
+    {
+        $other = new Tenant();
+        (new \ReflectionProperty(Tenant::class, 'id'))->setValue($other, 2);
+        (new \ReflectionProperty(Tenant::class, 'id'))->setValue($this->tenant, 1);
+        $supplier = $this->supplier($other, 41);
+        $this->entityManager->method('find')->willReturn($supplier);
+
+        $this->service->afterApproval($this->supplierDecision($this->tenant, 41), null);
+
+        self::assertFalse($supplier->isBoardLevelRiskAcceptance());
+    }
+
+    #[Test]
+    public function otherDecisionTypesLeaveSuppliersAlone(): void
+    {
+        $this->entityManager->expects(self::never())->method('find');
+        $decision = $this->supplierDecision($this->tenant, 41)->setType(ManagementDecisionType::Resources);
+
+        $this->service->afterApproval($decision, null);
+    }
+
+    private function supplier(Tenant $tenant, int $id): Supplier
+    {
+        $supplier = new Supplier();
+        $supplier->setTenant($tenant);
+        (new \ReflectionProperty(Supplier::class, 'id'))->setValue($supplier, $id);
+
+        return $supplier;
+    }
+
+    private function supplierDecision(Tenant $tenant, int $supplierId): ManagementDecision
+    {
+        return (new ManagementDecision())->setTenant($tenant)
+            ->setType(ManagementDecisionType::SupplierRiskAcceptance)
+            ->setTitle('x')
+            ->setSubject('Supplier', $supplierId);
     }
 
     #[Test]

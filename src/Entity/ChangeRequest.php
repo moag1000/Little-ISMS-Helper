@@ -692,7 +692,8 @@ class ChangeRequest
     /** Approver name for display: the person, else the legacy free text. */
     public function getEffectiveApprovedBy(): ?string
     {
-        return $this->approverPerson?->getFullName() ?? $this->approvedBy;
+        // S12: who actually approved (stamped by the lifecycle step) before the designated approver.
+        return $this->approvedBy ?? $this->approverPerson?->getFullName();
     }
 
     public function getApprovedDate(): ?DateTimeInterface
