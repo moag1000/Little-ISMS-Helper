@@ -8,6 +8,7 @@ use App\Entity\Document;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Shared\Html as PhpWordHtml;
 use PhpOffice\PhpWord\Writer\Word2007;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * DOCX + Markdown export for ISMS Documents.
@@ -23,6 +24,10 @@ use PhpOffice\PhpWord\Writer\Word2007;
  */
 final class DocxExportService
 {
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
+
     /**
      * Resolve the canonical Markdown body of a Document, mirroring the PDF
      * exporter's fallback order: effective policy body → substitution `_body`
@@ -45,7 +50,7 @@ final class DocxExportService
             return $description;
         }
 
-        return '_(empty body)_';
+        return $this->translator->trans('policy_wizard.export.doc.empty_body', [], 'policy_wizard');
     }
 
     /**
@@ -55,12 +60,12 @@ final class DocxExportService
     {
         // Escaping on (S10): titles and text reach the XML only as text, never as markup.
         $phpWord = DocxDocumentFactory::create();
-        $phpWord->getDocInfo()->setTitle((string) ($document->getFilename() ?? 'Document'));
+        $phpWord->getDocInfo()->setTitle((string) ($document->getFilename() ?? $this->translator->trans('policy_wizard.export.doc.document_title', [], 'policy_wizard')));
 
         $section = $phpWord->addSection();
 
         // Title heading.
-        $title = (string) ($document->getFilename() ?? 'Document');
+        $title = (string) ($document->getFilename() ?? $this->translator->trans('policy_wizard.export.doc.document_title', [], 'policy_wizard'));
         if ($title !== '') {
             $section->addTitle($title, 1);
         }
@@ -86,7 +91,7 @@ final class DocxExportService
      */
     public function exportMarkdown(Document $document): string
     {
-        $title = (string) ($document->getFilename() ?? 'Document');
+        $title = (string) ($document->getFilename() ?? $this->translator->trans('policy_wizard.export.doc.document_title', [], 'policy_wizard'));
         $body = $this->resolveMarkdown($document);
 
         return "# {$title}\n\n{$body}\n";

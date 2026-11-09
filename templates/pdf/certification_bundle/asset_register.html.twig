@@ -2,18 +2,18 @@
 {% extends 'pdf/_base_document.html.twig' %}
 
 {% block document_type %}{{ 'certification_bundle.pdf.asset_register.title'|trans({}, 'certification_bundle') }}{% endblock %}
-{% block document_id %}DOC-CERT-ASR{% endblock %}
+{% block document_id %}{{ 'DOC-CERT-ASR'|e }}{% endblock %}
 {% block document_title %}{{ 'certification_bundle.pdf.asset_register.title'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block document_version %}{{ version }}{% endblock %}
-{% block document_status_class %}approved{% endblock %}
-{% block document_status %}GENERATED{% endblock %}
-{% block classification_class %}confidential{% endblock %}
+{% block document_status_class %}{{ 'approved'|e }}{% endblock %}
+{% block document_status %}{{ 'pdf.doc_base.status_value.generated'|trans({}, 'messages') }}{% endblock %}
+{% block classification_class %}{{ 'confidential'|e }}{% endblock %}
 {% block document_classification %}{{ 'certification_bundle.pdf.confidential'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block organization_name %}{{ tenant_name }}{% endblock %}
 {% block header_left %}{{ tenant_name }}{% endblock %}
 {% block header_center %}{{ 'certification_bundle.pdf.asset_register.title'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block header_right %}{{ 'certification_bundle.pdf.confidential'|trans({}, 'certification_bundle') }}{% endblock %}
-{% block footer_left %}DOC-CERT-ASR | Version {{ version }}{% endblock %}
+{% block footer_left %}{{ 'DOC-CERT-ASR'|e }} | {{ 'pdf.doc_base.version'|trans({}, 'messages')|trim(':') }} {{ version }}{% endblock %}
 {% block footer_center %}{{ tenant_name }}{% endblock %}
 {% block footer_version %}{{ version }}{% endblock %}
 {% block created_date %}{{ generated_at|fa_date }}{% endblock %}

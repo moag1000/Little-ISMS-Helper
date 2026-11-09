@@ -51,7 +51,7 @@ final class PolicyPdfExporterMarkdownTableTest extends TestCase
                 };
             }
         });
-        $this->exporter = new PolicyPdfExporter($twig);
+        $this->exporter = new PolicyPdfExporter($twig, new \Symfony\Component\Translation\IdentityTranslator());
     }
 
     #[Test]

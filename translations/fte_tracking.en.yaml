@@ -1,5 +1,18 @@
 fte_tracking:
     badge: 'FTE Tracking'
+    csv:
+        title: 'FTE Savings Report'
+        generated: 'Generated: %date%'
+        tenant: 'Organisation'
+        tenant_unknown: 'N/A'
+        total_minutes: 'Total Savings (minutes)'
+        total_hours: 'Total Savings (hours)'
+        ale_title: 'Risk Quantification (ALE)'
+        ale_total: 'Total Annual Loss Expectancy (EUR)'
+        ale_count: 'Quantified Risks (count)'
+        source: 'Source'
+        minutes: 'Savings (minutes)'
+        month: 'Month'
     dashboard:
         title: 'FTE Tracking Dashboard'
         subtitle: 'Effort savings through automation — SSO JIT, Bulk-Import, and Evidence reuse'

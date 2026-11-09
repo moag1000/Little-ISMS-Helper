@@ -1,0 +1,42 @@
+.stats-grid       { display: table; width: 100%; margin-bottom: 20pt; border-collapse: collapse; border: 2px solid var(--border); }
+.stats-row        { display: table-row; }
+.stats-cell       { display: table-cell; padding: 10pt; text-align: center; border: 1px solid var(--border); width: 25%; background: var(--surface-2); }
+.stats-label      { font-size: 8pt; color: var(--fg-2); text-transform: uppercase; font-weight: bold; margin-bottom: 5pt; letter-spacing: 0.5pt; }
+.stats-value      { font-size: 18pt; color: var(--primary); font-weight: bold; }
+
+.control-table    { width: 100%; border-collapse: collapse; margin-bottom: 14pt; font-size: 8pt; border: 1px solid var(--border); }
+.control-table th { background: var(--fg); color: var(--surface); padding: 5pt; text-align: left; font-weight: bold; border: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.3pt; }
+.control-table td { padding: 4pt; border: 1px solid var(--border); vertical-align: top; }
+.control-table tr:nth-child(even) { background: var(--surface-2); }
+.control-id       { font-weight: bold; color: var(--primary); white-space: nowrap; }
+
+.badge {
+    display: inline-block;
+    padding: 2pt 5pt;
+    border-radius: 3pt;
+    font-size: 7pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.3pt;
+}
+.badge-implemented     { background: var(--success-tint); color: var(--success); }
+.badge-partial         { background: var(--warning-tint); color: var(--warning); }
+.badge-not-implemented { background: var(--danger-tint);  color: var(--danger);  }
+.badge-planned         { background: #dbeafe; color: var(--info-text); }
+.badge-applicable      { background: var(--success-tint); color: var(--success); }
+.badge-not-applicable  { background: var(--surface-2); color: var(--fg-2); border: 1px solid var(--border); }
+
+.category-header {
+    background: var(--info-tint);
+    padding: 7pt 10pt;
+    margin-top: 12pt;
+    margin-bottom: 7pt;
+    border-left: 4px solid var(--primary);
+    font-weight: bold;
+    font-size: 9.5pt;
+    color: var(--info-text);
+    text-transform: uppercase;
+    letter-spacing: 0.4pt;
+}
+
+.percentage { font-weight: bold; color: var(--primary); }

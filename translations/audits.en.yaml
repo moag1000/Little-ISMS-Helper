@@ -2,6 +2,19 @@ audits:
     page:
         title: Audits
     audit_package:
+        readme:
+            requirement: 'Requirement'
+            title: 'Title'
+            category: 'Category'
+            priority: 'Priority'
+            fulfillment: 'Fulfillment (%)'
+            description: 'Description'
+            controls: 'Mapped Controls'
+            control_line: '%id% — %name% (status: %status%, %pct%%)'
+            evidence: 'Evidence Documents'
+            none: '(none)'
+            empty_path: '(empty)'
+            missing_file: 'Document id=%id% is registered in the database but the underlying file could not be read from disk (path: %path%).'
         cover:
             title: 'Audit Package'
             label:

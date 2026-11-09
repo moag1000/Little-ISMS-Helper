@@ -19,6 +19,7 @@ use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Service\TenantContext;
+use App\Twig\AppDateFormatExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,6 +49,7 @@ class ComplianceExportController extends AbstractController
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
         private readonly ComplianceRequirementFulfillmentRepository $complianceRequirementFulfillmentRepository,
+        private readonly AppDateFormatExtension $dateFormat,
         private readonly ?TranslatorInterface $translator = null,
     ) {}
 
@@ -58,11 +60,9 @@ class ComplianceExportController extends AbstractController
 
     protected function getTranslator(): TranslatorInterface
     {
-        if ($this->translator === null) {
+        return $this->translator
             // @intentional-assertion: programmer-error guard for misconfigured DI — TranslatorInterface must be wired
-            throw new \RuntimeException('TranslatorInterface not injected — flash methods unavailable.');
-        }
-        return $this->translator;
+            ?? throw new \RuntimeException('TranslatorInterface not injected — flash methods unavailable.');
     }
 
     // -------------------------------------------------------------------------
@@ -220,7 +220,7 @@ class ComplianceExportController extends AbstractController
             $te->trans('export.column.analyzed_requirements', [], 'compliance') => count($dataReuseAnalysis),
             $te->trans('export.column.time_savings_hours', [], 'compliance') => round($totalTimeSavings, 1),
             $te->trans('export.column.time_savings_days', [], 'compliance') => round($totalTimeSavings / 8, 1),
-            $te->trans('export.column.export_date', [], 'compliance') => date('d.m.Y H:i'),
+            $te->trans('export.column.export_date', [], 'compliance') => $this->dateFormat->formatDateTime(new DateTime()),
         ];
 
         $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Data Reuse Insights');
@@ -548,7 +548,7 @@ class ComplianceExportController extends AbstractController
             $tge->trans('export.column.met_requirements', [], 'compliance') => $metRequirements,
             $tge->trans('export.column.identified_gaps', [], 'compliance') => count($gaps),
             $tge->trans('export.column.compliance_score', [], 'compliance') => $complianceScore . '%',
-            $tge->trans('export.column.export_date', [], 'compliance') => date('d.m.Y H:i'),
+            $tge->trans('export.column.export_date', [], 'compliance') => $this->dateFormat->formatDateTime(new DateTime()),
         ];
 
         $nextRow = $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Gap Analysis');
@@ -908,7 +908,7 @@ class ComplianceExportController extends AbstractController
             $tx->trans('export.column.framework_relations', [], 'compliance') => count($frameworkRelationships),
             $tx->trans('export.column.transitive_opportunities', [], 'compliance') => count($transitiveAnalysis),
             $tx->trans('export.column.supported_requirements', [], 'compliance') => $totalHelped,
-            $tx->trans('export.column.export_date', [], 'compliance') => date('d.m.Y H:i'),
+            $tx->trans('export.column.export_date', [], 'compliance') => $this->dateFormat->formatDateTime(new DateTime()),
         ];
 
         $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Transitive Compliance');
@@ -1327,7 +1327,7 @@ class ComplianceExportController extends AbstractController
             $tce->trans('export.column.framework2_requirements', [], 'compliance') => $framework2Count,
             $tce->trans('export.column.mapped_requirements', [], 'compliance') => $mappedCount,
             $tce->trans('export.column.overlap_percentage', [], 'compliance') => $overlapPercentage . '%',
-            $tce->trans('export.column.export_date', [], 'compliance') => date('d.m.Y H:i'),
+            $tce->trans('export.column.export_date', [], 'compliance') => $this->dateFormat->formatDateTime(new DateTime()),
         ];
 
         $this->excelExportService->addSummarySection($worksheet, $metrics, 1, $tce->trans('export.section.framework_comparison', [], 'compliance'));

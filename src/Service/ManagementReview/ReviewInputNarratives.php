@@ -20,6 +20,7 @@ use App\Repository\ISMSContextRepository;
 use App\Repository\ISMSObjectiveRepository;
 use App\Repository\ManagementDecisionRepository;
 use App\Service\Register\RegisterChanges;
+use App\Twig\AppDateFormatExtension;
 use DateTimeInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -45,6 +46,7 @@ final class ReviewInputNarratives
         private readonly IncidentRepository $incidentRepository,
         private readonly ISMSObjectiveRepository $objectiveRepository,
         private readonly RegisterChanges $registerChanges,
+        private readonly AppDateFormatExtension $dateFormat,
     ) {
     }
 
@@ -57,7 +59,7 @@ final class ReviewInputNarratives
         $items = $this->actionItemRepository->findForManagementReview($previous->getTenant(), (int) $previous->getId());
         $lines = [$this->t('a.header', [
             '%review%' => (string) $previous->getTitle(),
-            '%date%' => $previous->getReviewDate()?->format('d.m.Y') ?? '—',
+            '%date%' => $this->dateFormat->formatDate($previous->getReviewDate()),
         ], $locale)];
         foreach ($items as $item) {
             $lines[] = sprintf(
@@ -65,7 +67,7 @@ final class ReviewInputNarratives
                 (string) $item->getTitle(),
                 $this->translator->trans('planning.action_item.status.' . $item->getStatus(), [], 'planning', $locale),
                 $item->getDueDate() !== null && !in_array($item->getStatus(), [ActionItem::STATUS_DONE, ActionItem::STATUS_DISMISSED], true)
-                    ? ' (' . $this->t('a.due', ['%date%' => $item->getDueDate()->format('d.m.Y')], $locale) . ')'
+                    ? ' (' . $this->t('a.due', ['%date%' => $this->dateFormat->formatDate($item->getDueDate())], $locale) . ')'
                     : '',
             );
         }
@@ -94,7 +96,7 @@ final class ReviewInputNarratives
         if ($changes !== []) {
             $lines[] = '';
             $lines[] = $since !== null
-                ? $this->t('b.registers_since', ['%date%' => $since->format('d.m.Y')], $locale)
+                ? $this->t('b.registers_since', ['%date%' => $this->dateFormat->formatDate($since)], $locale)
                 : $this->t('b.registers', [], $locale);
             foreach ($changes as $entry) {
                 $lines[] = sprintf(
@@ -118,9 +120,9 @@ final class ReviewInputNarratives
         }
         $changedAt = $context->getUpdatedAt();
         if ($since !== null && ($changedAt === null || $changedAt <= $since)) {
-            return [$this->t('b.unchanged', ['%date%' => $since->format('d.m.Y')], $locale)];
+            return [$this->t('b.unchanged', ['%date%' => $this->dateFormat->formatDate($since)], $locale)];
         }
-        $lines = [$this->t('b.changed', ['%date%' => $changedAt?->format('d.m.Y') ?? '—'], $locale)];
+        $lines = [$this->t('b.changed', ['%date%' => $this->dateFormat->formatDate($changedAt)], $locale)];
         foreach ([
             'b.external' => $context->getExternalIssues(),
             'b.internal' => $context->getInternalIssues(),
@@ -156,11 +158,11 @@ final class ReviewInputNarratives
         );
         if ($changed === []) {
             return $since !== null
-                ? $this->t('c.unchanged', ['%date%' => $since->format('d.m.Y')], $locale)
+                ? $this->t('c.unchanged', ['%date%' => $this->dateFormat->formatDate($since)], $locale)
                 : $this->t('c.none', [], $locale);
         }
         $lines = [$since !== null
-            ? $this->t('c.header_since', ['%date%' => $since->format('d.m.Y')], $locale)
+            ? $this->t('c.header_since', ['%date%' => $this->dateFormat->formatDate($since)], $locale)
             : $this->t('c.header', [], $locale)];
         foreach ($changed as $party) {
             $new = $since !== null && $party->getCreatedAt() !== null && $party->getCreatedAt() > $since;

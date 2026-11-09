@@ -1,4 +1,13 @@
 audit:
+    export:
+        sheet: 'Audits'
+        header:
+            id: 'ID'
+            title: 'Titel'
+            scope: 'Umfang'
+            status: 'Status'
+            planned_date: 'Geplantes Datum'
+            actual_date: 'Tatsächliches Datum'
     success:
         created: Audit erstellt.
         updated: Audit aktualisiert.

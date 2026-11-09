@@ -7,11 +7,11 @@ namespace App\Service\Risk;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Enum\RiskStatus;
-use App\Enum\TreatmentStrategy;
 use App\Risk\RiskMatrixThresholds;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
+use App\Twig\AppDateFormatExtension;
 use App\Util\CsvSanitizer;
 use DateTime;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -31,6 +31,7 @@ class RiskRegisterExporter
         private readonly ExcelExportService $excelExportService,
         private readonly PdfExportService $pdfExportService,
         private readonly TenantContext $tenantContext,
+        private readonly AppDateFormatExtension $dateFormat,
     ) {
     }
 
@@ -134,54 +135,59 @@ class RiskRegisterExporter
     {
         $excel = $this->excelExportService;
         $counts = $this->levelCounts($risks);
-        $spreadsheet = $excel->createSpreadsheet('Risk Management Report');
+        $t = fn(string $key): string => $this->translator->trans('risk.export.' . $key, [], 'risk');
+        $spreadsheet = $excel->createSpreadsheet($t('excel.workbook_title'));
 
         // === TAB 1: Summary ===
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->setTitle('Zusammenfassung');
+        $worksheet->setTitle($t('excel.summary_sheet'));
         $nextRow = $excel->addSummarySection($worksheet, [
-            'Gesamt Risiken' => $counts['total'],
-            'Kritische Risiken' => $counts['critical'],
-            'Hohe Risiken' => $counts['high'],
-            'Mittlere Risiken' => $counts['medium'],
-            'Niedrige Risiken' => $counts['low'],
-            'Export-Datum' => date('d.m.Y H:i'),
-            'Risikomethodik' => $this->methodologyLabel() ?? '-',
-        ], 1, 'Risk Management Übersicht');
+            $t('excel.total') => $counts['total'],
+            $t('excel.critical') => $counts['critical'],
+            $t('excel.high') => $counts['high'],
+            $t('excel.medium') => $counts['medium'],
+            $t('excel.low') => $counts['low'],
+            $t('excel.export_date') => $this->dateFormat->formatDateTime(new DateTime()),
+            $t('excel.methodology') => $this->methodologyLabel() ?? '-',
+        ], 1, $t('excel.summary_title'));
 
         $statusMetrics = [];
         foreach ([
-            'Identifiziert' => RiskStatus::Identified,
-            'Bewertet' => RiskStatus::Assessed,
-            'Behandelt' => RiskStatus::Treated,
-            'Überwacht' => RiskStatus::Monitored,
-            'Geschlossen' => RiskStatus::Closed,
-            'Akzeptiert' => RiskStatus::Accepted,
-        ] as $label => $case) {
-            $statusMetrics[$label] = count(array_filter($risks, static fn(Risk $r): bool => $r->getStatus() === $case));
+            RiskStatus::Identified,
+            RiskStatus::Assessed,
+            RiskStatus::Treated,
+            RiskStatus::Monitored,
+            RiskStatus::Closed,
+            RiskStatus::Accepted,
+        ] as $case) {
+            $statusMetrics[$t('status.' . $case->value)] = count(array_filter(
+                $risks,
+                static fn(Risk $r): bool => $r->getStatus() === $case,
+            ));
         }
-        $excel->addSummarySection($worksheet, $statusMetrics, $nextRow, 'Status-Verteilung');
+        $excel->addSummarySection($worksheet, $statusMetrics, $nextRow, $t('excel.status_title'));
         $excel->autoSizeColumns($worksheet);
 
         // === TAB 2: All Risks / TAB 3: Critical & High Risks ===
-        $headers = [
-            'ID', 'Titel', 'Asset', 'Wkt.', 'Ausw.', 'Score', 'Level',
-            'Rest-Wkt.', 'Rest-Ausw.', 'Rest-Score', 'Rest-Level',
-            'Strategie', 'Status', 'Owner', 'Erstellt',
-        ];
+        $headers = array_map($t, [
+            'header.id', 'header.title', 'header.asset', 'excel.header.probability', 'excel.header.impact',
+            'excel.header.score', 'excel.header.level', 'excel.header.residual_probability',
+            'excel.header.residual_impact', 'excel.header.residual_score', 'excel.header.residual_level',
+            'excel.header.strategy', 'header.status', 'excel.header.owner', 'excel.header.created',
+        ]);
         $levelColors = [
-            'Kritisch' => $excel->getColor('critical'),
-            'Hoch' => $excel->getColor('high'),
-            'Mittel' => $excel->getColor('medium'),
-            'Niedrig' => $excel->getColor('low'),
+            $t('level.critical') => $excel->getColor('critical'),
+            $t('level.high') => $excel->getColor('high'),
+            $t('level.medium') => $excel->getColor('medium'),
+            $t('level.low') => $excel->getColor('low'),
         ];
         // Conditional formatting for risk level (index 6) and residual level (index 10).
         $conditionalFormatting = [6 => $levelColors, 10 => $levelColors];
 
-        $sheets = ['Alle Risiken' => $risks];
+        $sheets = [$t('excel.all_sheet') => $risks];
         $criticalHigh = array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::highMin($r->getTenant()));
         if ($criticalHigh !== []) {
-            $sheets['Kritische & Hohe Risiken'] = $criticalHigh;
+            $sheets[$t('excel.critical_high_sheet')] = $criticalHigh;
         }
         foreach ($sheets as $title => $sheetRisks) {
             $sheet = $excel->createSheet($spreadsheet, $title);
@@ -259,12 +265,11 @@ class RiskRegisterExporter
      */
     private function excelRow(Risk $risk): array
     {
-        $level = static fn(int $score): string => match (RiskMatrixThresholds::classify($score, $risk->getTenant())) {
-            'critical' => 'Kritisch',
-            'high' => 'Hoch',
-            'medium' => 'Mittel',
-            default => 'Niedrig',
-        };
+        $level = fn(int $score): string => $this->translator->trans(
+            'risk.export.level.' . RiskMatrixThresholds::classify($score, $risk->getTenant()),
+            [],
+            'risk',
+        );
         $riskScore = $risk->getRiskScore();
         $residualScore = $risk->getResidualRiskLevel();
 
@@ -280,27 +285,14 @@ class RiskRegisterExporter
             $risk->getResidualImpact(),
             $residualScore,
             $level($residualScore),
-            match ($risk->getTreatmentStrategy()) {
-                TreatmentStrategy::Accept => 'Akzeptieren',
-                TreatmentStrategy::Mitigate => 'Mindern',
-                TreatmentStrategy::Transfer => 'Übertragen',
-                TreatmentStrategy::Avoid => 'Vermeiden',
-                null => null,
-            },
-            match ($risk->getStatus()) {
-                RiskStatus::Identified => 'Identifiziert',
-                RiskStatus::Assessed => 'Bewertet',
-                RiskStatus::InTreatment => 'In Behandlung',
-                RiskStatus::Treated => 'Behandelt',
-                RiskStatus::Mitigated => 'Mitigiert',
-                RiskStatus::Monitored => 'Überwacht',
-                RiskStatus::Closed => 'Geschlossen',
-                RiskStatus::Accepted => 'Akzeptiert',
-                RiskStatus::Open => 'Offen',
-                null => null,
-            },
+            $risk->getTreatmentStrategy() === null
+                ? null
+                : $this->translatedOrRaw('risk.export.treatment.', $risk->getTreatmentStrategy()->value),
+            $risk->getStatus() === null
+                ? null
+                : $this->translatedOrRaw('risk.export.status.', $risk->getStatus()->value),
             $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
-            $risk->getCreatedAt() ? $risk->getCreatedAt()->format('d.m.Y') : '-',
+            $risk->getCreatedAt() ? $this->dateFormat->formatDate($risk->getCreatedAt()) : '-',
         ];
     }
 
