@@ -44,7 +44,7 @@ final class LifecycleEvidenceStamperTest extends KernelTestCase
     public function approvalStampsDateApproverAndReason(): void
     {
         $change = new ChangeRequest();
-        $this->complete($change, 'approve', ['user' => $this->user('Ina', 'Initiator'), 'four_eyes_approver' => $this->user('Alex', 'Approver'), 'reason' => ' Passt. ']);
+        $this->complete($change, 'approve', ['user' => $this->user('Ina', 'Initiator'), 'four_eyes_approver' => $this->user('Alex', 'Approver'), 'four_eyes_confirmed' => true, 'reason' => ' Passt. ']);
 
         self::assertNotNull($change->getApprovedDate());
         self::assertSame((new DateTime('today'))->format('Y-m-d'), $change->getApprovedDate()->format('Y-m-d'));
@@ -157,7 +157,7 @@ final class LifecycleEvidenceStamperTest extends KernelTestCase
         self::assertSame('Nachweise fehlen.', $audit->getRejectionReason());
         self::assertNull($audit->getApprovedBy());
 
-        $this->complete($audit, 'approve', ['user' => $auditor, 'four_eyes_approver' => $ciso]);
+        $this->complete($audit, 'approve', ['user' => $auditor, 'four_eyes_approver' => $ciso, 'four_eyes_confirmed' => true]);
         self::assertSame($ciso, $audit->getApprovedBy(), 'with four eyes the second person approves');
         self::assertNotNull($audit->getApprovedAt());
         self::assertNull($audit->getRejectionReason());

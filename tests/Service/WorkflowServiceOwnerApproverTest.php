@@ -93,7 +93,7 @@ final class WorkflowServiceOwnerApproverTest extends TestCase
         $resolver = new ResponsibilityResolver($users, PersonaResolverFactory::create(), $registry);
 
         $security = $this->createStub(Security::class);
-        $security->method('isGranted')->willReturn(false);
+        $security->method('isGrantedForUser')->willReturn(false);
 
         $service = new WorkflowService(
             $entityManager,

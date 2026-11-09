@@ -147,7 +147,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $initiator = $this->buildUser(1, 'Ina', 'Initiator');
         $approver = $this->buildUser(2, 'Al', 'Auditor');
         $instance->setInitiatedBy($initiator);
-        $this->security->method('isGranted')->willReturnCallback(static fn ($r) => $r === 'ROLE_AUDITOR');
+        $this->security->method('isGrantedForUser')->willReturnCallback(static fn ($u, $r) => $r === 'AUDIT_WORK');
 
         // canUserApprove() verified the approver against the step — the
         // closing transition must not re-check the transition's roles.
@@ -170,7 +170,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $initiator = $this->buildUser(1, 'Ina', 'Initiator');
         $dpo = $this->buildUser(2, 'Dora', 'Dpo');
         $instance->setInitiatedBy($initiator);
-        $this->security->method('isGranted')->willReturn(true);
+        $this->security->method('isGrantedForUser')->willReturn(true);
 
         $this->lifecycleService->expects($this->once())
             ->method('transition')
@@ -188,7 +188,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $instance = $this->buildRealInstance('in_progress', $step, $workflow);
         $initiator = $this->buildUser(1, 'Ina', 'Initiator');
         $instance->setInitiatedBy($initiator);
-        $this->security->method('isGranted')->willReturn(true);
+        $this->security->method('isGrantedForUser')->willReturn(true);
 
         $this->lifecycleService->method('transition')->willThrowException(
             FourEyesRequiredException::sameUser('workflow_instance_lifecycle', 'approve'),
@@ -241,8 +241,8 @@ final class WorkflowServiceLifecycleTest extends TestCase
 
         $instance = $this->buildRealInstance('in_progress', $step);
 
-        $this->security->method('isGranted')
-            ->willReturnCallback(static fn ($role) => in_array($role, ['ROLE_ADMIN', 'ROLE_MANAGER'], true));
+        $this->security->method('isGrantedForUser')
+            ->willReturnCallback(static fn ($u, $role) => in_array($role, ['ROLE_ADMIN', 'ROLE_MANAGER'], true));
 
         $this->lifecycleService->expects($this->once())
             ->method('transition')

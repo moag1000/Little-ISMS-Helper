@@ -47,7 +47,7 @@
         {% endif %}
     {% endset %}
     {% set _actions %}
-        {% if log.isSubmitted and not log.isConfirmed and is_granted('ROLE_AUDITOR') %}
+        {% if log.isSubmitted and not log.isConfirmed and is_granted('AUDIT_WORK') %}
             <form method="post" action="{{ path('bcm_exercise_log_confirm', {id: log.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('bsi_log_confirm_' ~ log.id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">

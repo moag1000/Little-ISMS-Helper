@@ -520,7 +520,14 @@ Every entity with a `status` field that goes through staged transitions uses **S
 `LifecycleVoter` via `isGrantedForUser`: four-eyes approver, else `$user`, else the logged-in user); system callers pass
 `automatic: true`, callers that checked a narrower rule (approval-chain step, risk-acceptance tier) pass
 `approverAuthorityVerified: true`; transitions without roles are service-only. Durable test
-`tests/Lifecycle/LifecycleServiceRoleContractTest`.
+`tests/Lifecycle/LifecycleServiceRoleContractTest`. S27: approval-chain steps (`workflow_instance_lifecycle`, not
+`start`) run only through `WorkflowService` (`canUserApprove`; ROLE_TOP_MGMT / ROLE_DPO steps without admin
+override, `Security\Authority\ExplicitRole`); a four-eyes approver is never taken from the request — the step files a
+counter-sign request (`Lifecycle\FourEyes\LifecycleCountersign`) that the second person confirms signed in, and
+`TransitionAccess` refuses an approver who is not the session user (`GenericEndpointRespectsStepAuthorityTest`,
+`EvidenceNamesActorTest`). Audit work is `AUDIT_WORK` (`AuditWorkVoter`: auditors, managers, the audit's
+responsible people), never a bare `ROLE_AUDITOR`, which top management and the group roles inherit to read
+(`tests/Security/AuditWorkPathsTest`).
 
 **Two-layer config:**
 - Static baseline: `config/workflows/<entity>.yaml` (places + transition wiring — immutable at runtime)

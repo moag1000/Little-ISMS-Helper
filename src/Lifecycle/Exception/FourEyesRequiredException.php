@@ -93,4 +93,23 @@ class FourEyesRequiredException extends \RuntimeException
             ),
         );
     }
+
+    /**
+     * S27: the named second person is not the one logged in. A four-eyes
+     * approval is confirmed by the second person in their own session
+     * (counter-sign request), never by naming them.
+     */
+    public static function unconfirmedApprover(string $workflowName, string $transitionName): self
+    {
+        return new self(
+            $workflowName,
+            $transitionName,
+            'approver_not_confirmed',
+            sprintf(
+                'Four-eyes approver of transition "%s" in workflow "%s" has not confirmed it — the second person confirms in their own session.',
+                $transitionName,
+                $workflowName,
+            ),
+        );
+    }
 }

@@ -438,7 +438,10 @@ final class GroupReportController extends AbstractController
     }
 
     #[Route('/audit-program/{id}/derive', name: 'audit_program_derive', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_GROUP_CISO')] // writes into the subsidiaries — not for the read-only Konzern-Auditor
+    // Writes into the subsidiaries: group CISO who also holds a writing role (S27) — the
+    // group roles themselves are read-only, like the Konzern default push-down.
+    #[IsGranted('ROLE_GROUP_CISO')]
+    #[IsGranted('ROLE_MANAGER')]
     public function deriveAuditProgram(int $id, Request $request): Response
     {
         $root = $this->tenantContext->getCurrentTenant();
