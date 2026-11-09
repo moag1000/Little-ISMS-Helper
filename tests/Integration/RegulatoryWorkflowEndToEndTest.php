@@ -15,6 +15,7 @@ use Symfony\Component\Workflow\Registry;
 use Symfony\Component\Workflow\StateMachine;
 use Symfony\Component\Workflow\SupportStrategy\InstanceOfSupportStrategy;
 use Symfony\Component\Workflow\Transition;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Sprint Y.2 — Integration tests for the 5 critical regulatory approval chains.
@@ -65,7 +66,7 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
     }
 
     #[Test]
-    public function gdprDataBreachStep1AutoProgressOnFourFields(): void
+    public function gdprDataBreachStep1IsTheDpoAssessment(): void
     {
         $steps = $this->loader->getStepsForWorkflow('gdpr_data_breach');
         $this->assertNotNull($steps);
@@ -75,13 +76,8 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
         $this->assertSame('ROLE_DPO', $step1['approver_role']);
         $this->assertSame(1, $step1['days_to_complete']);
         $this->assertTrue($step1['is_required']);
-
-        $cond = $step1['auto_progress_conditions'];
-        $this->assertSame('field_completion', $cond['type']);
-        $this->assertSame('DataBreach', $cond['entity']);
-        $this->assertCount(4, $cond['fields']);
-        $this->assertContains('severity', $cond['fields']);
-        $this->assertContains('notificationRequired', $cond['fields']);
+        // S17: a person approves it; filled fields no longer pretend to approve (nothing evaluated them).
+        $this->assertArrayNotHasKey('auto_progress_conditions', $step1);
     }
 
     #[Test]
@@ -183,19 +179,14 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
     }
 
     #[Test]
-    public function riskTreatmentStep1HasRiskAppetiteCondition(): void
+    public function riskTreatmentStep1WaitsOnTheRiskOwner(): void
     {
         $steps = $this->loader->getStepsForWorkflow('risk_treatment');
         $this->assertNotNull($steps);
 
         $step1 = $steps[0];
         $this->assertSame('Risk Owner Approval', $step1['name']);
-        $this->assertSame('ROLE_RISK_MANAGER', $step1['approver_role']);
-
-        $cond = $step1['auto_progress_conditions'];
-        $this->assertSame('risk_appetite', $cond['type']);
-        $this->assertSame('Risk', $cond['entity']);
-        $this->assertSame('residualRisk', $cond['risk_score_field']);
+        $this->assertSame('owner', $step1['approver_role']);
     }
 
     #[Test]
@@ -241,18 +232,13 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
     }
 
     #[Test]
-    public function dpiaFinalStepHasGdprArt36ComplexCondition(): void
+    public function dpiaFinalStepIsTheDpo(): void
     {
         $steps = $this->loader->getStepsForWorkflow('dpia');
         $this->assertNotNull($steps);
 
         $finalStep = end($steps);
         $this->assertSame('ROLE_DPO', $finalStep['approver_role']);
-
-        $cond = $finalStep['auto_progress_conditions'];
-        $this->assertSame('field_completion', $cond['type']);
-        $this->assertStringContainsString('residualRiskLevel', $cond['condition']);
-        $this->assertStringContainsString('supervisoryConsultationDate', $cond['condition']);
     }
 
     #[Test]
@@ -298,7 +284,7 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
     }
 
     #[Test]
-    public function dsrStep1IdentityVerificationAutoProgressesOnVerified(): void
+    public function dsrStep1IsIdentityVerificationByTheDpo(): void
     {
         $steps = $this->loader->getStepsForWorkflow('dsr');
         $this->assertNotNull($steps);
@@ -307,10 +293,6 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
         $this->assertSame('Identity Verification', $step1['name']);
         $this->assertSame('ROLE_DPO', $step1['approver_role']);
         $this->assertSame(3, $step1['days_to_complete']);
-
-        $cond = $step1['auto_progress_conditions'];
-        $this->assertSame('field_completion', $cond['type']);
-        $this->assertContains('identityVerified', $cond['fields']);
     }
 
     #[Test]
@@ -387,93 +369,18 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
     }
 
     /**
+     * Metadata of the five critical chains straight from config/workflows/regulatory (S17).
+     *
      * @return array<string, array<string, mixed>>
      */
     private function getCriticalWorkflowMetadata(): array
     {
-        return [
-            'gdpr_data_breach' => [
-                'regulatory_metadata' => [
-                    'standard' => 'GDPR Art. 33/34',
-                    'sla_hours' => 72,
-                    'escalation_threshold_hours' => 60,
-                    'escalation_role' => 'ROLE_ADMIN',
-                    'module' => 'privacy',
-                    'steps' => [
-                        ['name' => 'Initial Assessment (DPO)', 'order' => 1, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 1, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataBreach', 'fields' => ['severity', 'affectedDataSubjectsCount', 'dataCategories', 'notificationRequired']]],
-                        ['name' => 'Technical Assessment (CISO)', 'order' => 2, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 1, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataBreach', 'fields' => ['rootCause', 'affectedSystems', 'containmentMeasures', 'recoveryMeasures']]],
-                        ['name' => 'Management Information', 'order' => 3, 'approver_role' => 'ROLE_MANAGER', 'step_type' => 'notification', 'days_to_complete' => 0, 'is_required' => false, 'auto_progress_conditions' => ['type' => 'auto', 'condition' => 'severity >= high']],
-                        ['name' => 'Supervisory Authority Notification (DPO)', 'order' => 4, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 1, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataBreach', 'fields' => ['authorityNotificationDate', 'authorityNotificationMethod']]],
-                        ['name' => 'Data Subject Notification (DPO)', 'order' => 5, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 1, 'is_required' => false, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataBreach', 'fields' => ['dataSubjectNotificationDate', 'dataSubjectNotificationMethod'], 'condition' => 'dataSubjectNotificationRequired = true']],
-                        ['name' => 'Final Documentation (DPO)', 'order' => 6, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataBreach', 'fields' => ['lessonsLearned', 'processImprovements']]],
-                    ],
-                ],
-            ],
-            'incident_high_severity' => [
-                'regulatory_metadata' => [
-                    'standard' => 'ISO 27001:2022 Cl. 5.24-5.28',
-                    'sla_hours' => 24,
-                    'escalation_threshold_hours' => 12,
-                    'escalation_role' => 'ROLE_ADMIN',
-                    'steps' => [
-                        ['name' => 'Immediate Response (CISO)', 'order' => 1, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
-                        ['name' => 'Crisis Management (Crisis Team)', 'order' => 2, 'approver_role' => 'ROLE_BCM_OFFICER', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
-                        ['name' => 'Technical Response (Security + IT)', 'order' => 3, 'approver_role' => 'ROLE_ISB', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
-                        ['name' => 'Legal/Compliance Check (Legal + DPO)', 'order' => 4, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
-                        ['name' => 'Recovery Validation (CISO + IT Manager)', 'order' => 5, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 1, 'is_required' => true],
-                        ['name' => 'Post-Incident Review (Management)', 'order' => 6, 'approver_role' => 'ROLE_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true],
-                    ],
-                ],
-            ],
-            'risk_treatment' => [
-                'regulatory_metadata' => [
-                    'standard' => 'ISO 27001:2022 Cl. 6.1.3 / ISO 27005:2022',
-                    'sla_hours' => null,
-                    'escalation_threshold_hours' => null,
-                    'escalation_role' => 'ROLE_ADMIN',
-                    'steps' => [
-                        ['name' => 'Risk Owner Approval', 'order' => 1, 'approver_role' => 'ROLE_RISK_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'risk_appetite', 'entity' => 'Risk', 'risk_score_field' => 'residualRisk']],
-                        ['name' => 'CISO Technical Review', 'order' => 2, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => false],
-                        ['name' => 'DPO Privacy Impact Review', 'order' => 3, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 2, 'is_required' => false],
-                        ['name' => 'CFO Budget Approval', 'order' => 4, 'approver_role' => 'ROLE_TOP_MGMT', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => false],
-                        ['name' => 'CEO/Board Approval', 'order' => 5, 'approver_role' => 'ROLE_TOP_MGMT', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => false],
-                        ['name' => 'Audit Committee Notification', 'order' => 6, 'approver_role' => 'ROLE_AUDITOR', 'step_type' => 'notification', 'days_to_complete' => 0, 'is_required' => false, 'auto_progress_conditions' => ['type' => 'auto', 'condition' => 'residualRisk >= high']],
-                    ],
-                ],
-            ],
-            'dpia' => [
-                'regulatory_metadata' => [
-                    'standard' => 'GDPR Art. 35/36',
-                    'sla_hours' => null,
-                    'escalation_threshold_hours' => null,
-                    'escalation_role' => 'ROLE_DPO',
-                    'module' => 'privacy',
-                    'steps' => [
-                        ['name' => 'DPIA Creation (Data Owner)', 'order' => 1, 'approver_role' => 'ROLE_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true],
-                        ['name' => 'DPO Review', 'order' => 2, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true],
-                        ['name' => 'Technical Security Review (CISO)', 'order' => 3, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 5, 'is_required' => true],
-                        ['name' => 'Risk Assessment', 'order' => 4, 'approver_role' => 'ROLE_RISK_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 5, 'is_required' => true],
-                        ['name' => 'Management Approval', 'order' => 5, 'approver_role' => 'ROLE_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => true],
-                        ['name' => 'DPO Final Check & Supervisory Authority Consultation', 'order' => 6, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 2, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataProtectionImpactAssessment', 'fields' => ['residualRiskLevel'], 'condition' => '(residualRiskLevel = low OR residualRiskLevel = medium) OR ((residualRiskLevel = high OR residualRiskLevel = critical) AND supervisoryConsultationDate != null)']],
-                    ],
-                ],
-            ],
-            'dsr' => [
-                'regulatory_metadata' => [
-                    'standard' => 'GDPR Art. 12(3) / Art. 12-22',
-                    'sla_hours' => 720,
-                    'escalation_threshold_hours' => 600,
-                    'escalation_role' => 'ROLE_DPO',
-                    'module' => 'privacy',
-                    'steps' => [
-                        ['name' => 'Identity Verification', 'order' => 1, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['identityVerified', 'identityVerificationMethod']]],
-                        ['name' => 'Request Processing', 'order' => 2, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['responseDescription']]],
-                        ['name' => 'DPO Review & Approval', 'order' => 3, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 5, 'is_required' => true],
-                        ['name' => 'Response Delivery', 'order' => 4, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['completedAt']]],
-                        ['name' => 'Deadline Extension (Art. 12(3))', 'order' => 5, 'approver_role' => 'ROLE_DPO', 'step_type' => 'notification', 'days_to_complete' => 0, 'is_required' => false, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['extensionReason', 'extendedDeadlineAt'], 'condition' => 'extensionReason != null']],
-                    ],
-                ],
-            ],
-        ];
+        $metadata = [];
+        foreach (array_column(self::criticalWorkflowNamesProvider(), 0) as $name) {
+            $file = \dirname(__DIR__, 2) . '/config/workflows/regulatory/' . $name . '.yaml';
+            $metadata[$name] = Yaml::parseFile($file)['framework']['workflows'][$name]['metadata'];
+        }
+
+        return $metadata;
     }
 }

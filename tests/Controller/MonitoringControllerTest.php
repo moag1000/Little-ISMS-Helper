@@ -34,6 +34,7 @@ class MonitoringControllerTest extends WebTestCase
     private ?Tenant $testTenant = null;
     private ?User $testUser = null;
     private ?User $adminUser = null;
+    private ?User $superAdminUser = null;
 
     protected function setUp(): void
     {
@@ -49,6 +50,17 @@ class MonitoringControllerTest extends WebTestCase
         if ($this->testUser) {
             try {
                 $user = $this->entityManager->find(User::class, $this->testUser->getId());
+                if ($user) {
+                    $this->entityManager->remove($user);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
+        if ($this->superAdminUser) {
+            try {
+                $user = $this->entityManager->find(User::class, $this->superAdminUser->getId());
                 if ($user) {
                     $this->entityManager->remove($user);
                 }
@@ -117,6 +129,17 @@ class MonitoringControllerTest extends WebTestCase
         $this->adminUser->setIsActive(true);
         $this->entityManager->persist($this->adminUser);
 
+        // Monitoring acts on the whole instance: only the super admin (S13).
+        $this->superAdminUser = new User();
+        $this->superAdminUser->setEmail('superadmin_' . $uniqueId . '@example.com');
+        $this->superAdminUser->setFirstName('Super');
+        $this->superAdminUser->setLastName('Admin');
+        $this->superAdminUser->setRoles(['ROLE_SUPER_ADMIN']);
+        $this->superAdminUser->setPassword('hashed_password');
+        $this->superAdminUser->setTenant($this->testTenant);
+        $this->superAdminUser->setIsActive(true);
+        $this->entityManager->persist($this->superAdminUser);
+
         $this->entityManager->flush();
     }
 
@@ -143,9 +166,9 @@ class MonitoringControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testHealthDisplaysForAdmin(): void
+    public function testHealthDisplaysForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->client->request('GET', '/en/admin/monitoring/health');
         $this->assertResponseIsSuccessful();
     }
@@ -158,9 +181,9 @@ class MonitoringControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testHealthJsonReturnsJsonForAdmin(): void
+    public function testHealthJsonReturnsJsonForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->client->request('GET', '/en/admin/monitoring/health/json');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -184,9 +207,9 @@ class MonitoringControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testPerformanceDisplaysForAdmin(): void
+    public function testPerformanceDisplaysForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->client->request('GET', '/en/admin/monitoring/performance');
         $this->assertResponseIsSuccessful();
     }
@@ -209,9 +232,9 @@ class MonitoringControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testErrorsDisplaysForAdmin(): void
+    public function testErrorsDisplaysForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->client->request('GET', '/en/admin/monitoring/errors');
         $this->assertResponseIsSuccessful();
     }
@@ -219,9 +242,24 @@ class MonitoringControllerTest extends WebTestCase
     #[Test]
     public function testErrorsAcceptsLimitParameter(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->client->request('GET', '/en/admin/monitoring/errors?limit=50');
         $this->assertResponseIsSuccessful();
+    }
+
+    /** S13: an organisation admin acts on no instance operation, even on its own instance. */
+    #[Test]
+    public function testOrganisationAdminGetsNoInstanceOperation(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        foreach (['/en/admin/monitoring/health', '/en/admin/monitoring/performance', '/en/admin/monitoring/errors'] as $url) {
+            $this->client->request('GET', $url);
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $url);
+        }
+        foreach (['/en/admin/monitoring/health/fix/composer-install', '/en/admin/monitoring/health/fix/clean-logs', '/en/admin/monitoring/health/schema/update'] as $url) {
+            $this->client->request('POST', $url);
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $url);
+        }
     }
 
     // ========== AUDIT LOG TESTS ==========
@@ -373,63 +411,63 @@ class MonitoringControllerTest extends WebTestCase
     // ========== FIX ENDPOINT EXECUTION TESTS ==========
 
     #[Test]
-    public function testFixCacheExecutesForAdmin(): void
+    public function testFixCacheExecutesForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->postAutofix('/en/admin/monitoring/health/fix/cache', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
     #[Test]
-    public function testFixLogsExecutesForAdmin(): void
+    public function testFixLogsExecutesForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->postAutofix('/en/admin/monitoring/health/fix/logs', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
     #[Test]
-    public function testClearCacheExecutesForAdmin(): void
+    public function testClearCacheExecutesForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->postAutofix('/en/admin/monitoring/health/fix/clear-cache', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
     #[Test]
-    public function testRotateLogsExecutesForAdmin(): void
+    public function testRotateLogsExecutesForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->postAutofix('/en/admin/monitoring/health/fix/rotate-logs', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
     #[Test]
-    public function testOptimizeDiskExecutesForAdmin(): void
+    public function testOptimizeDiskExecutesForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->postAutofix('/en/admin/monitoring/health/fix/optimize-disk', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
     #[Test]
-    public function testFixVarPermissionsExecutesForAdmin(): void
+    public function testFixVarPermissionsExecutesForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->postAutofix('/en/admin/monitoring/health/fix/var-permissions', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
     #[Test]
-    public function testFixSessionPermissionsExecutesForAdmin(): void
+    public function testFixSessionPermissionsExecutesForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->postAutofix('/en/admin/monitoring/health/fix/session-permissions', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');

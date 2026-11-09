@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Workflow\Mirror\RegulatoryWorkflowMirror;
+
 /**
  * Counts for the data-integrity section of /quick-fix. Each check is wrapped on its own:
  * the schema may be broken, and a column-not-found in one check must not hide the others.
@@ -13,12 +15,14 @@ final class QuickFixIntegritySummary
 {
     public function __construct(
         private readonly DataIntegrityService $dataIntegrity,
+        private readonly ?RegulatoryWorkflowMirror $workflowMirror = null,
     ) {
     }
 
     /**
      * @return array{orphan_count: int, orphans_by_type: array<string, int>, mismatch_count: int,
-     *               duplicate_counts: array<string, int>, data_integrity_errors: list<string>}
+     *               duplicate_counts: array<string, int>, data_integrity_errors: list<string>,
+     *               workflow_drift: list<array{workflow: string, title: string, state: string, differences: list<string>}>}
      */
     public function summarise(): array
     {
@@ -28,7 +32,14 @@ final class QuickFixIntegritySummary
             'mismatch_count' => 0,
             'duplicate_counts' => [],
             'data_integrity_errors' => [],
+            'workflow_drift' => [],
         ];
+        try {
+            // S17: database rows of the regulatory approval chains that differ from their YAML.
+            $summary['workflow_drift'] = $this->workflowMirror?->drift() ?? [];
+        } catch (\Throwable $e) {
+            $summary['data_integrity_errors'][] = 'workflows: ' . $e->getMessage();
+        }
         try {
             foreach ($this->dataIntegrity->findAllOrphanedEntities() as $type => $entities) {
                 $summary['orphans_by_type'][(string) $type] = count($entities);
@@ -62,6 +73,7 @@ final class QuickFixIntegritySummary
             'mismatch_count' => 0,
             'duplicate_counts' => [],
             'data_integrity_errors' => [],
+            'workflow_drift' => [],
         ];
     }
 }

@@ -520,6 +520,41 @@
         </div>
         {% endif %}
 
+        {# ── Regulatory approval chains (S17): database rows vs config/workflows/regulatory ── #}
+        {% if privileged|default(false) %}
+        <div class="section">
+            <h2>{{ 'quick_fix.workflows.title'|trans({}, 'quick_fix') }}</h2>
+            <p style="font-size:13px;color:var(--muted);margin:0 0 12px;">{{ 'quick_fix.workflows.intro'|trans({}, 'quick_fix') }}</p>
+            <div class="repair-row">
+                <span class="repair-label">{{ 'quick_fix.workflows.drift'|trans({}, 'quick_fix') }}</span>
+                <span class="repair-count{% if workflow_drift|default([])|length == 0 %} ok{% endif %}">{{ workflow_drift|default([])|length }}</span>
+                {% if workflow_drift|default([])|length == 0 %}
+                    <span style="font-size:12px;color:var(--success);">{{ 'quick_fix.workflows.empty'|trans({}, 'quick_fix') }}</span>
+                {% endif %}
+            </div>
+            {% if workflow_drift|default([])|length > 0 %}
+            <ul style="margin: 0 0 12px; padding-left: 16px; font-size: 12px;">
+                {% for entry in workflow_drift %}
+                <li>
+                    <strong>{{ entry.title }}</strong> — {{ ('quick_fix.workflows.state_' ~ entry.state)|trans({}, 'quick_fix') }}
+                    {% if entry.differences|length > 0 %}
+                    <ul style="font-family: monospace; font-size: 11px;">
+                        {% for difference in entry.differences %}<li>{{ difference }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            <form method="POST" action="{{ path('app_quick_fix_workflows_sync') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_workflows_sync') }}">
+                <button type="submit" class="btn-repair" data-submit-once>
+                    {{ 'quick_fix.workflows.button'|trans({}, 'quick_fix') }}
+                </button>
+            </form>
+            {% endif %}
+        </div>
+        {% endif %}
+
         <div class="footer">Little ISMS Helper</div>
     </main>
 {# Double-submit guard for the repair buttons. Plain script (no Stimulus):
