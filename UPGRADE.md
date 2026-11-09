@@ -110,6 +110,12 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   jeder Instanz nur noch dem Super-Admin offen (der erste Setup-Account ist Super-Admin). Bei mehreren
   Organisationen ändert nur der Super-Admin den geteilten Katalog (Mappings, Frameworks,
   Branchen-Presets, Mapping-Seeds); Org-Admins sehen einen Hinweis.
+- **Nachweise schreibt der Schritt:** Freigabe-, Umsetzungs-, Prüf-, Abschluss- und Meldezeitpunkte
+  (Änderungsantrag, Vorfall, BC-Übung/-Plan, Leitungsakzeptanz eines Lieferanten, Risikoakzeptanz und
+  Behandlungsfreigabe) sind im Formular schreibgeschützt und entstehen über die Aktion auf der
+  Detailseite („Freigeben“, „Als gemeldet markieren“, „Der Leitung vorlegen“, „Akzeptanz beantragen“ …).
+  Eine Risikoakzeptanz braucht ein Ablaufdatum (höchstens 36 Monate); solange sie steht, ist die
+  Restbewertung eingefroren. Übersicht: [Status-Lifecycle](docs/user-guide/STATUS_LIFECYCLE.md).
 - **Löschen:** Assets nur nach Entsorgung oder binnen 24 h nach Anlage; die Aufbewahrungs-Löschung
   entfernt nur Datensätze im Endzustand. `app:sample-data:purge` verlangt `--tenant-id`.
 - **Fristen:** Alle Erinnerungen laufen über einen Weg: „Mein Tag“, Glocke und tägliche Sammelmail
