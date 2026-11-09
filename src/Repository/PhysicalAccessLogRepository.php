@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use DateTime;
 use App\Entity\PhysicalAccessLog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -140,7 +141,7 @@ class PhysicalAccessLogRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('p')
             ->andWhere('p.personName LIKE :personName')
-            ->setParameter('personName', '%' . $personName . '%')
+            ->setParameter('personName', LikePattern::contains($personName))
             ->orderBy('p.accessTime', \SortDirection::Descending);
 
         if ($startDate instanceof DateTime) {

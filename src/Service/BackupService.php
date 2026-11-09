@@ -9,6 +9,7 @@ use App\Doctrine\TenantFilterState;
 use App\Service\Backup\BackupVersionInfo;
 use App\Entity\Tenant;
 use App\Service\Upload\ProtectedUploads;
+use App\Service\Upload\StoredFilePath;
 use App\Entity\UserSession;
 use DateTimeInterface;
 use App\Entity\AuditLog;
@@ -1170,7 +1171,12 @@ class BackupService
             // materials go outside the web root.
             $area = self::ARCHIVE_PROTECTED_FOLDERS[$folder] ?? null;
             $base = $area !== null ? (string) realpath($protected->directory($area)) . '/' : $uploadsBase;
-            $targetPath = $area !== null ? $base . basename($relativePath) : $base . $relativePath;
+            // Logos go where Tenant.logoPath points ('uploads/tenants/<file>').
+            $targetPath = match (true) {
+                $area !== null => $base . basename($relativePath),
+                $folder === 'tenant_logos' => $base . StoredFilePath::TENANT_LOGOS . '/' . basename($relativePath),
+                default => $base . $relativePath,
+            };
             $targetDir = dirname($targetPath);
             if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
                 $skipped++;
@@ -1254,10 +1260,12 @@ class BackupService
                 // Normalize: strip leading slash
                 $relativePath = ltrim((string) $relativePath, '/');
 
-                // Documents live below var/uploads (ProtectedUploads), logos below public/.
+                // Documents live below var/uploads (ProtectedUploads), logos below
+                // public/uploads/tenants/. Never a plain join: the stored value may come from
+                // a restored backup ('../../.env.local' would be packed into this one, S19).
                 $absPath = in_array($entityName, ['Document', 'DocumentVersion'], true)
                     ? (string) (new ProtectedUploads($this->projectDir))->resolve($relativePath)
-                    : $this->projectDir . '/public/' . $relativePath;
+                    : (string) (new StoredFilePath($this->projectDir))->publicUpload($relativePath, StoredFilePath::TENANT_LOGOS);
 
                 if ($absPath === '' || !file_exists($absPath) || !is_file($absPath)) {
                     continue;

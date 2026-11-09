@@ -8,6 +8,7 @@ use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\RoleNames;
+use App\Service\Upload\StoredFilePath;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -31,9 +32,16 @@ use Doctrine\ORM\EntityManagerInterface;
  *    existing super admin is never touched;
  *  - credentials and identity links (password hash, SSO subject ids) and the
  *    organisation's place in the instance (parent, holding flag, active state,
- *    Azure tenant, API quota) keep their live values — a file cannot set them.
+ *    Azure tenant, API quota) keep their live values — a file cannot set them;
+ *  - branding HTML (TenantBranding header/footer, printed unescaped into policy PDFs)
+ *    keeps its live value;
+ *  - stored file paths (StoredFilePath::FIELDS) of the wrong shape ('../../.env.local',
+ *    absolute paths, a logo outside uploads/tenants/) are refused in every restore, and an
+ *    organisation restore refuses a path another organisation's record uses — the file
+ *    would otherwise be read, zipped into the next backup or deleted for this one (S19).
  *
- * A restore without scope (SUPER_ADMIN, instance-wide) is not restricted.
+ * A restore without scope (SUPER_ADMIN, instance-wide) is not restricted, except that it
+ * takes no stored file path of the wrong shape either.
  */
 final class RestoreTenantGuard
 {
@@ -53,7 +61,11 @@ final class RestoreTenantGuard
     private const array PROTECTED_FIELDS = [
         'User' => ['password', 'authProvider', 'azureObjectId', 'azureTenantId', 'azureMetadata', 'ssoExternalId'],
         'Tenant' => ['isActive', 'status', 'isCorporateParent', 'azureTenantId', 'apiRateLimitPerMinute', 'ssoEnforced'],
+        'TenantBranding' => ['headerHtml', 'footerHtml'],
     ];
+
+    /** Key under which the writer receives the path fields refused for a row. */
+    public const string REJECTED_PATHS_KEY = '__rejected_path_fields__';
 
     /** Associations an organisation restore never takes from the file (see PROTECTED_FIELDS). */
     private const array PROTECTED_ASSOCIATIONS = [
@@ -66,6 +78,77 @@ final class RestoreTenantGuard
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
     ) {
+    }
+
+    /**
+     * Stored file paths of a row that the restore must not take from the file: wrong shape
+     * (any restore), or used by a record outside the scope (organisation restore). The
+     * writer leaves these fields alone — an existing record keeps its live value, a new
+     * one stays without file.
+     *
+     * @param mixed[] $data
+     * @param int[]   $scopeIds
+     * @return list<string> field names
+     */
+    public function rejectedPathFields(string $entityClass, array $data, array $scopeIds): array
+    {
+        $rejected = [];
+        foreach (StoredFilePath::FIELDS as $column => $kind) {
+            [$class, $field] = explode('::', $column, 2);
+            if ($class !== $entityClass || !array_key_exists($field, $data)) {
+                continue;
+            }
+            $value = $data[$field];
+            if ($value !== null && !is_string($value)) {
+                $rejected[] = $field;
+                continue;
+            }
+            if (!StoredFilePath::isValid($kind, $value)
+                || ($scopeIds !== [] && $value !== null && $value !== '' && $this->pathUsedOutsideScope($kind, $value, $scopeIds))
+            ) {
+                $rejected[] = $field;
+            }
+        }
+
+        return $rejected;
+    }
+
+    /**
+     * Whether a record outside the scope stores this value in a column of the same kind.
+     * Plain SQL: the Doctrine tenant filter would hide exactly those rows.
+     *
+     * @param int[] $scopeIds
+     */
+    private function pathUsedOutsideScope(string $kind, string $value, array $scopeIds): bool
+    {
+        $connection = $this->entityManager->getConnection();
+        $placeholders = implode(',', array_fill(0, count($scopeIds), '?'));
+        // Same file, spelled with or without the leading slash.
+        $variants = array_values(array_unique([$value, ltrim($value, '/'), '/' . ltrim($value, '/')]));
+        foreach (StoredFilePath::FIELDS as $column => $otherKind) {
+            if ($otherKind !== $kind) {
+                continue;
+            }
+            [$class, $field] = explode('::', $column, 2);
+            $meta = $this->entityManager->getClassMetadata($class);
+            $owner = $class === Tenant::class
+                ? $meta->getSingleIdentifierColumnName()
+                : ($meta->hasAssociation('tenant') ? $meta->getSingleAssociationJoinColumnName('tenant') : null);
+            $ownerClause = $owner === null ? '1 = 1' : sprintf('(%1$s IS NULL OR %1$s NOT IN (%2$s))', $owner, $placeholders);
+            $sql = sprintf(
+                'SELECT 1 FROM %s WHERE %s IN (%s) AND %s',
+                $meta->getTableName(),
+                $meta->getColumnName($field),
+                implode(',', array_fill(0, count($variants), '?')),
+                $ownerClause,
+            );
+            $params = $owner === null ? $variants : [...$variants, ...$scopeIds];
+            if ($connection->fetchOne($sql, $params) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

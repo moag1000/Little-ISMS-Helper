@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\PersonalDataResource;
 use DateTimeImmutable;
 use DateTimeInterface;
 use App\Entity\Person;
@@ -40,6 +41,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Index(name: 'idx_dsr_deadline', columns: ['deadline_at'])]
 #[ORM\HasLifecycleCallbacks]
 #[Assert\Callback([self::class, 'validateResponseTracking'])]
+#[PersonalDataResource(searchGroup: 'data_subject_requests')]
 class DataSubjectRequest
 {
     public const array REQUEST_TYPES = [

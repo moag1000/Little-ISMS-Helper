@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\PersonalDataResource;
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
@@ -22,10 +23,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_crypto_operation_type', columns: ['operation_type'])]
 #[ORM\Index(name: 'idx_crypto_timestamp', columns: ['timestamp'])]
 #[ORM\Index(name: 'idx_crypto_user', columns: ['user_id'])]
+// Log of key operations with user and IP address: admins only, never to the assistant (S24).
+#[PersonalDataResource(assistant: false)]
 #[ApiResource(
     operations: [
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('API_VIEW', object)"),
+        // ROLE_ADMIN: there is no page for these logs, and personal data is not read by every employee account.
+        new GetCollection(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('ROLE_ADMIN') and is_granted('API_VIEW', object)"),
         new Post(securityPostDenormalize: "is_granted('API_CREATE', object)"),
     ],
     normalizationContext: ['groups' => ['crypto:read']],

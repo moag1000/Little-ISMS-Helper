@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Util\LikePattern;
 use DateTime;
 use App\Entity\Asset;
 use App\Repository\BusinessProcessRepository;
@@ -91,8 +92,8 @@ final class ProtectionRequirementService
         $incidents = $this->incidentRepository->createQueryBuilder('i')
             ->where('i.dataBreachOccurred = true')
             ->andWhere('i.description LIKE :assetName OR i.description LIKE :assetId')
-            ->setParameter('assetName', '%' . $asset->getName() . '%')
-            ->setParameter('assetId', '%' . $asset->getId() . '%')
+            ->setParameter('assetName', LikePattern::contains($asset->getName()))
+            ->setParameter('assetId', LikePattern::contains($asset->getId()))
             ->getQuery()
             ->getResult();
 
@@ -148,7 +149,7 @@ final class ProtectionRequirementService
             ->where('i.category = :category')
             ->andWhere('i.description LIKE :assetName')
             ->setParameter('category', 'data_integrity')
-            ->setParameter('assetName', '%' . $asset->getName() . '%')
+            ->setParameter('assetName', LikePattern::contains($asset->getName()))
             ->getQuery()
             ->getResult();
 

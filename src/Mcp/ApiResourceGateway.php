@@ -44,6 +44,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * lifecycle status / tenant / id keys — status changes and approvals go
  * through LifecycleService and the suggestion queue. Whether the caller may
  * write at all is McpWriteAccess's answer, checked before every write.
+ *
+ * Personal data (S24): {@see PersonalDataPolicy} decides from the entity's
+ * #[PersonalDataResource] marker whether a resource is offered at all and
+ * which of its fields are left out of every answer for callers without the
+ * data protection officer's role — the same rule as the search tool.
  */
 class ApiResourceGateway
 {
@@ -64,6 +69,7 @@ class ApiResourceGateway
         private readonly ModuleConfigurationService $modules,
         private readonly PropertyNameCollectionFactoryInterface $propertyNames,
         private readonly PropertyMetadataFactoryInterface $propertyMetadata,
+        private readonly PersonalDataPolicy $personalData,
     ) {
     }
 
@@ -76,11 +82,11 @@ class ApiResourceGateway
     {
         $list = [];
         foreach ($this->all() as $name => $resource) {
-            if ($this->moduleActive($resource['class'], $session)) {
+            if ($this->offered($resource['class'], $session)) {
                 $writable = self::tenantOwned($resource['class']) && $resource['write_groups'] !== [];
                 $list[$name] = [
                     'description' => $resource['description'],
-                    'filters' => $resource['filters'],
+                    'filters' => $this->filtersOf($resource, $session),
                     'list' => $resource['collection'] !== null,
                     'get' => $resource['item'] !== null,
                     'create' => $writable && $resource['create'] !== null,
@@ -108,6 +114,10 @@ class ApiResourceGateway
         $itemsPerPage = max(1, min(self::MAX_ITEMS_PER_PAGE, $itemsPerPage));
         $query = array_filter($filters, static fn ($v): bool => is_scalar($v) || is_array($v));
         unset($query['page'], $query['itemsPerPage'], $query['pagination']);
+        // A filter hidden from this caller (switched-off module, personal-data field) is not applied either.
+        foreach (array_diff($meta['filters'], $this->filtersOf($meta, $session)) as $hidden) {
+            unset($query[$hidden]);
+        }
         $query += ['page' => max(1, $page), 'itemsPerPage' => $itemsPerPage];
 
         $data = $this->fetch($session, $this->urlGenerator->generate($meta['collection']), $query);
@@ -121,7 +131,9 @@ class ApiResourceGateway
             'items_per_page' => $itemsPerPage,
             'total' => is_int($total) ? $total : null,
             'has_next_page' => is_array($view) && (isset($view['next']) || isset($view['hydra:next'])),
-            'items' => is_array($items) ? array_values(array_map(self::compact(...), $items)) : [],
+            'items' => is_array($items)
+                ? array_values(array_map(fn (mixed $item): array => $this->answer($meta, $item, $session), $items))
+                : [],
         ];
     }
 
@@ -137,7 +149,9 @@ class ApiResourceGateway
             throw new McpToolException(sprintf('The resource "%s" has no single-record read.', $resource));
         }
 
-        return self::compact($this->fetch($session, $this->urlGenerator->generate($meta['item'], ['id' => $id]), []));
+        $path = $this->urlGenerator->generate($meta['item'], ['id' => $id]);
+
+        return $this->answer($meta, $this->fetch($session, $path, []), $session);
     }
 
     /**
@@ -201,7 +215,7 @@ class ApiResourceGateway
             : $this->urlGenerator->generate($operation, ['id' => $id]);
         $method = $id === null ? 'POST' : (string) $meta['update_method'];
 
-        return self::compact($this->send($session, $method, $path, [], $data));
+        return $this->answer($meta, $this->send($session, $method, $path, [], $data), $session);
     }
 
     /**
@@ -229,14 +243,7 @@ class ApiResourceGateway
             return [];
         }
         $options = ['serializer_groups' => $meta['write_groups']];
-        $offModule = [];
-        foreach ((new \ReflectionClass($meta['class']))->getProperties() as $reflected) {
-            foreach ($reflected->getAttributes(ModuleField::class) as $attribute) {
-                if (!$this->modules->isModuleActiveForTenant($attribute->newInstance()->module, $session->tenant)) {
-                    $offModule[] = $reflected->getName();
-                }
-            }
-        }
+        $offModule = $this->offModuleFields($meta['class'], $session);
         $fields = [];
         foreach ($this->propertyNames->create($meta['class']) as $property) {
             if (in_array($property, self::FORBIDDEN_KEYS, true) || in_array($property, $offModule, true)) {
@@ -266,7 +273,7 @@ class ApiResourceGateway
                 }
             }
         }
-        if ($meta === null || !$this->moduleActive($meta['class'], $session)) {
+        if ($meta === null || !$this->offered($meta['class'], $session)) {
             throw new McpToolException(sprintf('Unknown resource "%s". Call get_context for the list of resources.', $resource));
         }
 
@@ -332,6 +339,58 @@ class ApiResourceGateway
     }
 
     /**
+     * A record as the assistant gets it: JSON-LD noise and the personal-data
+     * fields this caller may not hand on removed.
+     *
+     * @param array{class: class-string} $meta
+     * @return array<string, mixed>
+     */
+    private function answer(array $meta, mixed $item, McpSession $session): array
+    {
+        return $this->personalData->strip($meta['class'], self::compact($item), $session);
+    }
+
+    /**
+     * Filters of the collection, without those on a switched-off module's
+     * field ({@see ModuleField}; the API answers 400 for them) and without
+     * those on a personal-data field this caller does not get.
+     *
+     * @param array{class: class-string, filters: list<string>} $meta
+     * @return list<string>
+     */
+    private function filtersOf(array $meta, McpSession $session): array
+    {
+        $hidden = $this->offModuleFields($meta['class'], $session);
+        $marker = $this->personalData->marker($meta['class']);
+        if ($marker !== null && $marker->isFieldLevel() && !$this->personalData->mayReadPersonalData($session)) {
+            $hidden = [...$hidden, ...$marker->fields];
+        }
+
+        return array_values(array_filter(
+            $meta['filters'],
+            static fn (string $filter): bool => !in_array(explode('.', $filter)[0], $hidden, true),
+        ));
+    }
+
+    /**
+     * @param class-string $class
+     * @return list<string>
+     */
+    private function offModuleFields(string $class, McpSession $session): array
+    {
+        $off = [];
+        foreach ((new \ReflectionClass($class))->getProperties() as $reflected) {
+            foreach ($reflected->getAttributes(ModuleField::class) as $attribute) {
+                if (!$this->modules->isModuleActiveForTenant($attribute->newInstance()->module, $session->tenant)) {
+                    $off[] = $reflected->getName();
+                }
+            }
+        }
+
+        return $off;
+    }
+
+    /**
      * Drops the JSON-LD context noise the assistant does not need.
      *
      * @param mixed $item
@@ -345,6 +404,16 @@ class ApiResourceGateway
         unset($item['@context']);
 
         return $item;
+    }
+
+    /**
+     * Module active and, by the personal-data rule, offered to this caller.
+     *
+     * @param class-string $class
+     */
+    private function offered(string $class, McpSession $session): bool
+    {
+        return $this->moduleActive($class, $session) && $this->personalData->offers($class, $session);
     }
 
     /** @param class-string $class */

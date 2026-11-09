@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use DateTime;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
@@ -231,7 +232,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->where('dpia.tenant = :tenant')
             ->andWhere('dpia.referenceNumber LIKE :pattern')
             ->setParameter('tenant', $tenant)
-            ->setParameter('pattern', '%' . $pattern . '%')
+            ->setParameter('pattern', LikePattern::contains($pattern))
             ->orderBy('dpia.referenceNumber', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
