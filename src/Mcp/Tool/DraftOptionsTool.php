@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mcp\Tool;
 
 use App\Mcp\McpSession;
+use App\Mcp\PersonalDataPolicy;
 use App\Mcp\McpToolException;
 use App\Service\Suggestion\Kind\AbstractAiKind;
 use App\Service\Suggestion\RecordDrafts;
@@ -19,6 +20,7 @@ final class DraftOptionsTool extends AbstractMcpTool
 {
     public function __construct(
         private readonly RecordDrafts $drafts,
+        private readonly PersonalDataPolicy $personalData,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -52,8 +54,15 @@ final class DraftOptionsTool extends AbstractMcpTool
     {
         $resource = (string) self::string($arguments, 'resource', true, 100);
         $id = (int) self::int($arguments, 'id', required: true);
-        $record = $this->drafts->resolveByName($resource, $id, $session->tenant)
-            ?? throw new McpToolException(sprintf('No %s %d in your organisation that drafts can be made for.', $resource, $id));
+        $record = $this->drafts->resolveByName($resource, $id, $session->tenant);
+        // Records about data subjects go to the assistant only for the DPO role (S24, same rule as list_records).
+        if ($record === null || !$this->personalData->offers($record::class, $session)) {
+            throw new McpToolException(sprintf(
+                'No %s %d in your organisation that drafts can be made for.',
+                $resource,
+                $id,
+            ));
+        }
 
         $options = [];
         foreach ($this->drafts->kindsFor($record, byAssistant: true) as $kind) {

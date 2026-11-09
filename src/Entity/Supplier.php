@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Attribute\{ApiReadOnlyEvidence, ModuleField, RequiresModule};
+use App\Attribute\{ApiReadOnlyEvidence, ModuleField, PersonalDataResource, RequiresModule};
 use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
@@ -12,13 +12,7 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
 use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\QueryParameter;
-use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\{ApiResource, Delete, Get, GetCollection, Post, Put, QueryParameter};
 use App\Enum\SupplierStatus;
 use App\Repository\SupplierRepository;
 use App\Risk\RiskMatrixThresholds;
@@ -44,6 +38,8 @@ use App\Entity\Trait\SupplierSubcontractorsTrait;
 #[ORM\Index(name: 'idx_supplier_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_supplier_tenant', columns: ['tenant_id'])]
 #[RequiresModule('suppliers')]
+// Contact details may name a person: to the assistant only for the DPO role (S24).
+#[PersonalDataResource(fields: ['email', 'phone'])]
 #[ApiResource(
     operations: [
         new Get(

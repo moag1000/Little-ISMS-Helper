@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\PersonalDataResource;
 use App\Enum\ConsentStatus;
 use App\Repository\ConsentRepository;
 use DateTimeImmutable;
@@ -37,6 +38,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Index(name: 'idx_consent_granted_at', columns: ['granted_at'])]
 #[ORM\Index(name: 'idx_consent_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_consent_processing_activity', columns: ['processing_activity_id'])]
+#[PersonalDataResource(searchGroup: 'consents')]
 class Consent
 {
     #[ORM\Id]

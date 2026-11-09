@@ -24,6 +24,9 @@ use App\Entity\User;
 use App\Mcp\ApiResourceGateway;
 use App\Mcp\McpSession;
 use App\Mcp\McpToolException;
+use App\Mcp\PersonalDataPolicy;
+use App\Security\Persona\PersonaResolver;
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use App\Attribute\ModuleField;
 use App\Service\ModuleConfigurationService;
 use PHPUnit\Framework\Attributes\Test;
@@ -185,7 +188,9 @@ final class ApiResourceGatewayWriteTest extends TestCase
         $modules = $this->createStub(ModuleConfigurationService::class);
         $modules->method('isModuleActiveForTenant')->willReturnCallback(static fn (string $module): bool => $module !== 'risk_quant');
 
-        return new ApiResourceGateway($names, $metadata, $kernel, new RequestStack(), $urls, $modules, $properties, $property);
+        $personalData = new PersonalDataPolicy(new PersonaResolver(new RoleHierarchy([])), dirname(__DIR__, 2));
+
+        return new ApiResourceGateway($names, $metadata, $kernel, new RequestStack(), $urls, $modules, $properties, $property, $personalData);
     }
 
     private function session(): McpSession

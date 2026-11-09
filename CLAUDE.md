@@ -668,7 +668,11 @@ Few generic tools (`src/Mcp/Tool/`, tag `app.mcp_tool`) over the existing servic
 Writing: `save_record` runs a resource's Post / Patch / Put (`standard_put: false`) as sub-request — tenant-owned classes
 only, write-group fields only, never `status`/`tenant`/`id`, never Delete; allowed only when `McpWriteAccess` says so
 (org switch `McpSettings::isWriteEnabled()`, `ApiToken::canWrite()`, not a read-only reviewer). Anything needing a
-decision goes through `propose_draft` (suggestion queue). Every call is audit-logged (`mcp.read`/`mcp.propose`/
+decision goes through `propose_draft` (suggestion queue). Personal data reaches the assistant only by
+`#[PersonalDataResource]` on the entity (`App\Mcp\PersonalDataPolicy`, one rule for gateway, search and drafts:
+`assistant: false` never, `fields` stripped / whole class withheld below ROLE_DPO); a resource that shows contact,
+badge or IP fields to every ROLE_USER without the marker fails `ApiFilterExposureContractTest`, which also checks every
+REST filter (read-group fields only) and that `?pagination=false` stays off. Every call is audit-logged (`mcp.read`/`mcp.propose`/
 `mcp.write`, no contents). Guide: `docs/user-guide/KI_ASSISTENT_MCP.md`.
 
 ## Module-Awareness

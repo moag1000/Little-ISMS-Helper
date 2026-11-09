@@ -225,6 +225,104 @@ final class CrossTenantMcpContractTest extends WebTestCase
     }
 
     /**
+     * S24: personal data reaches the assistant only by the rules of
+     * #[PersonalDataResource], the same in every tool. An employee's token
+     * (ROLE_USER) of A: badge/crypto logs are not offered, a person comes
+     * without contact details in list, get and search, and data-subject
+     * records (data breach, DSR, consent) are neither listed nor searched.
+     * The person's name stays (the probe is not vacuous).
+     */
+    #[Test]
+    public function anEmployeesTokenGetsNoPersonalDataBeyondTheName(): void
+    {
+        $em = $this->em();
+        $own = $em->find(Tenant::class, $this->own->getId());
+        $employee = (new User())
+            ->setEmail('mcp-employee-' . $this->base . '@example.test')
+            ->setFirstName('Eli')
+            ->setLastName('Employee')
+            ->setRoles(['ROLE_USER'])
+            ->setPassword('hashed')
+            ->setTenant($own)
+            ->setIsActive(true);
+        $em->persist($employee);
+        $factory = new ContractRecordFactory($em);
+        $person = $factory->create(\App\Entity\Person::class, $own, $this->base . 'name');
+        $secret = $this->base . 'contact';
+        $person->setEmail($secret . '@example.test');
+        $person->setPhone('0' . substr((string) crc32($secret), 0, 9));
+        $person->setNotes($secret);
+        $person->setBadgeId($secret);
+        foreach ([\App\Entity\DataBreach::class, \App\Entity\DataSubjectRequest::class, \App\Entity\Consent::class] as $subject) {
+            $factory->create($subject, $own, $this->base . 'subject');
+        }
+        $em->flush();
+        $this->token = static::getContainer()->get(ApiTokenManager::class)->mint($employee, 'Employee');
+
+        $resources = $this->call('get_context')['structuredContent']['resources'] ?? [];
+        self::assertNotEmpty($resources, 'get_context offers no resources');
+        foreach (self::markedClasses() as $class => $marker) {
+            $short = (new \ReflectionClass($class))->getShortName();
+            if (!$marker->assistant || !$marker->isFieldLevel()) {
+                self::assertArrayNotHasKey($short, $resources, $short . ' is offered to an employee\'s assistant');
+                $answer = $this->call('list_records', ['resource' => $short]);
+                self::assertStringNotContainsString($this->base, (string) json_encode($answer), 'list_records ' . $short);
+            }
+        }
+        self::assertArrayHasKey('Person', $resources, 'a person without contact details stays readable');
+
+        $listed = (string) json_encode($this->call('list_records', ['resource' => 'Person']));
+        self::assertStringContainsString($this->base . 'name', $listed, 'the person is listed (the probe is not vacuous)');
+        self::assertStringNotContainsString($secret, $listed, 'list_records Person hands contact details to the assistant');
+        $single = (string) json_encode($this->call('get_record', ['resource' => 'Person', 'id' => (int) $person->getId()]));
+        self::assertStringContainsString($this->base . 'name', $single);
+        self::assertStringNotContainsString($secret, $single, 'get_record Person hands contact details to the assistant');
+
+        $byName = (string) json_encode($this->call('search', ['query' => $this->base . 'name']));
+        self::assertStringContainsString($this->base . 'name', $byName, 'search finds the person by name');
+        self::assertStringNotContainsString($secret, $byName);
+        $byContact = (string) json_encode($this->call('search', ['query' => $secret]));
+        self::assertStringNotContainsString($this->base . 'name', $byContact, 'search tells whose e-mail address it is');
+        self::assertStringNotContainsString('withheld', $byContact, 'search counts the hits it leaves out (existence oracle)');
+        $withheldGroups = array_keys(array_filter(
+            static::getContainer()->get(\App\Mcp\PersonalDataPolicy::class)->searchGroups(),
+            static fn (\App\Attribute\PersonalDataResource $marker): bool => !$marker->isFieldLevel(),
+        ));
+        self::assertNotEmpty($withheldGroups);
+        $groupsOf = fn (): array => array_column($this->call('search', ['query' => $this->base . 'subject'])['structuredContent']['hits'] ?? [], 'group');
+        self::assertSame([], array_values(array_intersect($groupsOf(), $withheldGroups)), 'search hands data-subject records to an employee\'s assistant');
+
+        // The same token with the DPO role gets them: the rule is the role, not a switch-off.
+        $em = $this->em(); // the client rebooted the kernel
+        $dpo = $em->find(User::class, $employee->getId()) ?? throw new \LogicException('employee');
+        $dpo->setRoles(['ROLE_DPO']);
+        $em->flush();
+        $this->token = static::getContainer()->get(ApiTokenManager::class)->mint($dpo, 'DPO');
+        self::assertStringContainsString($secret, (string) json_encode($this->call('get_record', ['resource' => 'Person', 'id' => (int) $person->getId()])));
+        self::assertNotSame([], array_values(array_intersect($groupsOf(), $withheldGroups)), 'the DPO finds the data-subject records (the probe is not vacuous)');
+        $dpoResources = $this->call('get_context')['structuredContent']['resources'] ?? [];
+        foreach (self::markedClasses() as $class => $marker) {
+            if (!$marker->assistant) {
+                self::assertArrayNotHasKey((new \ReflectionClass($class))->getShortName(), $dpoResources, 'assistant: false holds for every role');
+            }
+        }
+    }
+
+    /** @return array<class-string, \App\Attribute\PersonalDataResource> */
+    private static function markedClasses(): array
+    {
+        $marked = [];
+        foreach (\App\Mcp\PersonalDataPolicy::entityClasses(dirname(__DIR__, 2)) as $class) {
+            foreach ((new \ReflectionClass($class))->getAttributes(\App\Attribute\PersonalDataResource::class) as $attribute) {
+                $marked[$class] = $attribute->newInstance();
+            }
+        }
+        self::assertArrayHasKey(\App\Entity\PhysicalAccessLog::class, $marked);
+
+        return $marked;
+    }
+
+    /**
      * Every number of an answer by its path, without clock values (durations, timestamps).
      *
      * @param array<mixed> $answer
