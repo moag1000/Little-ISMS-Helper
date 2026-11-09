@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\PersonalDataResource;
 use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
@@ -38,6 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_data_breach_authority_notified', columns: ['supervisory_authority_notified_at'])]
 #[ORM\Index(name: 'idx_data_breach_created', columns: ['created_at'])]
 #[ORM\HasLifecycleCallbacks]
+#[PersonalDataResource(searchGroup: 'data_breaches')]
 class DataBreach
 {
     use DataBreachDpoTrait;

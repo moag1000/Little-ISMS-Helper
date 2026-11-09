@@ -74,10 +74,15 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
   Genehmigungsnachweise einer Änderung sind nur lesbar: gemeldet wird über „Als gemeldet markieren“ in der App.
   Eine Ressource ohne Schreibgruppe schreibt der Assistent nie. Ob ein Werkzeug schreiben darf, prüft der Server
   zentral vor dem Aufruf.
-- **Suche und Kennzahlen**: Treffer, die betroffene Personen nennen (Personen, Einwilligungen, Betroffenenanfragen,
-  Datenpannen), gibt die Suche nur an die Rolle Datenschutzbeauftragte(r) weiter — Datenminimierung nach DSGVO
-  Art. 5 (1) c, 25; alle anderen sehen sie in der App. `management_kpis` steht wie die Management-Dashboards ab der
-  Prüferrolle zur Verfügung.
+- **Personendaten (Datenminimierung, DSGVO Art. 5 (1) c, 25)**: Eine Regel für alle Werkzeuge (Listen, Einzelsatz,
+  Speichern, Suche, Entwürfe), am Datensatztyp markiert (`#[PersonalDataResource]`). Zutrittslog und Krypto-Operationen
+  bekommt der Assistent nie. Personen kommen mit Namen, Firma, Abteilung und Funktion, aber ohne E-Mail, Telefon,
+  Ausweisnummer, Notizen und Zutrittszeitraum; die Suche findet eine Person nur über ihren Namen. Lieferanten und interessierte Parteien kommen ohne E-Mail und
+  Telefon. Datenpannen,
+  Betroffenenanfragen und Einwilligungen gibt es weder als Liste noch in der Suche. All das bekommt nur die Rolle
+  Datenschutzbeauftragte(r); alle anderen sehen es in der App. Wie viele Treffer zurückgehalten wurden, sagt die Suche
+  nicht. Felder ausgeschalteter Module fehlen auch beim Lesen. `management_kpis` steht wie die Management-Dashboards ab
+  der Prüferrolle zur Verfügung.
 - **Abgelehnte Entwürfe**: Denselben abgelehnten Entwurf stellt der Assistent nicht noch einmal; nach drei Ablehnungen
   einer Art für einen Datensatz in 30 Tagen schlägt er dort nichts mehr vor. In der App kann die Person jederzeit
   neu anfragen.
