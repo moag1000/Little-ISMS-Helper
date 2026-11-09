@@ -50,6 +50,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "Training Completion Verification (ISO 27001 A.6.3)"
+                    description: "Verify training completion with manager sign-off"
+                    entity_type: Training
                     standard: "ISO 27001:2022 A.6.3"
                     sla_hours: null
                     escalation_threshold_hours: null
@@ -62,10 +66,6 @@ framework:
                         step_type: approval
                         days_to_complete: 30
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: Training
-                            fields: [completionDate]
                     -   name: "Manager Verification"
                         description: "Manager confirms training was completed satisfactorily"
                         order: 2

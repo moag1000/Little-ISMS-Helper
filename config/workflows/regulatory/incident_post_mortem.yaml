@@ -50,6 +50,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "Incident Post-Mortem (ISO 27001)"
+                    description: "Structured post-incident review with lessons learned and improvement actions"
+                    entity_type: Incident
                     standard: "ISO 27001:2022 Cl. 5.24-5.28"
                     sla_hours: null
                     escalation_threshold_hours: null
@@ -70,10 +74,6 @@ framework:
                         step_type: approval
                         days_to_complete: 7
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: Incident
-                            fields: [rootCause, lessonsLearned]
                     -   name: "Create Improvement Actions"
                         description: "Document corrective/preventive actions with owners and deadlines"
                         order: 3
@@ -81,7 +81,3 @@ framework:
                         step_type: approval
                         days_to_complete: 7
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: Incident
-                            fields: [correctiveActions, preventiveActions]

@@ -78,21 +78,26 @@ see [DEADLINES_AND_RESPONSIBILITY.md](DEADLINES_AND_RESPONSIBILITY.md#workflow-s
 Gate 82 (`check_workflow_roles.py`) requires every `approver_role`, transition `roles` entry and
 `escalation_role` to exist in `security.yaml`, and no approval step may be open to `ROLE_USER`.
 
-Steps are approved by people (Mein Tag, workflow page, `decision_modal()`). Steps also carry
-`auto_progress_conditions` of type `field_completion`, `auto` or `risk_appetite`; these are kept with the
-definition and editable in the overlay, but only `time_based` is evaluated (see below). Data-driven
-progression runs on the record's lifecycle (section 1).
+Steps are approved by people (Mein Tag, workflow page, `decision_modal()`). The chain sits at
+`metadata.steps` of each YAML file; Gate 82 rejects any other layout and every step key nothing evaluates.
+Evaluated are only: `auto_progress_conditions` of type `time_based` (below), `step_type: notification`
+(passes by itself) and `reject_action: loop_back` with `reject_target_step` (a rejection returns to that
+step). Data-driven progression runs on the record's lifecycle (section 1).
 
-`php bin/console app:generate-regulatory-workflows [--workflow=data-breach] [--overwrite]` writes the
-definitions as `Workflow` rows; `app:migrate-legacy-workflows` checks that every DB row has a YAML
-counterpart (`--archive` archives the rest).
+`RegulatoryWorkflowMirror` is the only writer of the `Workflow`/`WorkflowStep` rows: it mirrors the YAML in
+place (running approvals keep their step), nightly at 04:20 and when a chain is started without its row.
+Differences show on `/quick-fix` under "Freigabeketten" with the action "Workflow-Definitionen abgleichen".
+`app:generate-regulatory-workflows [--workflow=…]` runs the same mirror by hand.
 
 ### Time-based steps
 
 ```yaml
-auto_progress_conditions:
-    type: time_based
-    delay: "24 hours"      # minutes, hours or days
+metadata:
+    steps:
+        - name: "Grace period"
+          order: 1
+          approver_role: ROLE_MANAGER
+          auto_progress_conditions: {type: time_based, delay: "24 hours"}   # minutes, hours or days
 ```
 
 - The delay counts from the moment the step became active (approval of the previous step, or the start).
