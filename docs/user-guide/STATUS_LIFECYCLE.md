@@ -152,14 +152,24 @@ Mappings are shared by all organisations. Managers may submit a draft for review
 
 Each tenant can customize the lifecycle behavior for their organization without touching code. The admin interface at `/admin/lifecycle-overrides` allows:
 
-- **Role override:** Change which roles are allowed to execute a specific transition. For example, allow ROLE_AUDITOR to trigger "Request changes" on Documents.
-- **Reason required:** Toggle whether a reason prompt is shown for a specific transition.
-- **4-eyes toggle:** Enable or disable the 4-eyes confirmation requirement for a transition.
-- **Module gate:** Change which module key must be active for a transition to be available.
+- **Role override:** Pick which roles may execute a specific transition (checkboxes; ROLE_USER and the read-only reviewer roles are not offered).
+- **Reason required:** Switch the reason prompt on for a transition.
+- **4-eyes toggle:** Switch the 4-eyes confirmation on for a transition.
+- **Module gate:** Put a transition behind a module where the definition has none.
+
+**Tighten, never loosen (S15).** An override may make a transition stricter, not drop a norm duty:
+
+- transitions decided by top management (`ROLE_TOP_MGMT`, e.g. approving a management decision) or by the data protection officer (`ROLE_DPO`) keep their roles — an organisation admin cannot hand them to ROLE_ADMIN;
+- where the definition requires four eyes (asset disposal, document publication, CAPA effectiveness, …) or a reason, the override cannot switch it off;
+- a module gate of the definition cannot be replaced.
+
+The page refuses such values with a message, and overrides stored before this rule (free-text roles, four eyes switched off) have no effect any more. The overrides of the **record's** organisation apply — also in background jobs and for holding users acting in another organisation.
 
 Overrides are **tenant-scoped** — they affect only your tenant and are invisible to other tenants. They take effect immediately without a deployment.
 
 Only workflows of records that belong to your organisation can be overridden. Workflows of instance-wide records (organisations, roles, permissions, policy templates, mappings) are not offered; their transitions follow the system configuration.
+
+**Approval chains** (`/admin/workflows`, "Freigabeketten") are shown read-only: steps, approver role and deadline come from the norm definition and are the same for every organisation. Who approves is whoever holds the step's role in your organisation (user management); `owner` means the record's responsible person. Until S15 the page offered per-organisation step overrides that nothing applied; they were removed.
 
 **What admins cannot change:** The list of valid statuses and the allowed from/to wiring of transitions are fixed in the system configuration. If you need a new status stage or a new transition direction (e.g. allowing `approved` → `draft` directly), contact your implementation partner — that requires a code and configuration change.
 
