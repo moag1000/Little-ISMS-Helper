@@ -76,22 +76,15 @@ php bin/console doctrine:schema:validate
 
 ## Initial Data Setup
 
-After database creation, you may need to:
+After the schema exists, open `/setup`. The setup wizard creates the first organisation and admin
+(`ROLE_SUPER_ADMIN`), loads the ISO 27001 controls and the chosen frameworks
+([QUICKSTART.md](QUICKSTART.md)). Without the wizard:
 
-1. **Create first Super Admin tenant and user:**
-   ```bash
-   php bin/console app:create-initial-tenant
-   ```
-
-2. **Load ISO 27001 controls (if applicable):**
-   ```bash
-   php bin/console app:import:iso27001-controls
-   ```
-
-3. **Load compliance frameworks:**
-   ```bash
-   php bin/console app:import:compliance-frameworks
-   ```
+```bash
+php bin/console app:setup-permissions --admin-email=admin@example.com --admin-password='…'
+php bin/console isms:load-annex-a-controls         # 93 ISO 27001 Annex A controls
+php bin/console app:load-iso27001-requirements     # further loaders: php bin/console list app:load
+```
 
 ## Production Deployment
 
@@ -105,4 +98,5 @@ php bin/console doctrine:migrations:migrate --no-interaction
 php bin/console doctrine:schema:validate
 ```
 
-**Never use `doctrine:schema:update` in production!**
+Do not use `doctrine:schema:update` in production. Schema drift after an update is repaired with
+`app:schema:reconcile` or in the browser at `/quick-fix` ([user-guide/QUICK_FIX.md](user-guide/QUICK_FIX.md)).

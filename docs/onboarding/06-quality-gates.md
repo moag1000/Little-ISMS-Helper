@@ -1,6 +1,6 @@
 # 06 — Quality Gates
 
-Every push runs the automated checks listed below (`ls scripts/quality`). Understanding these gates prevents
+Every push runs the numbered gates in the `code-quality` job of `.github/workflows/ci.yml`. Understanding these gates prevents
 wasted CI cycles. This document explains the gate system, lists all active
 gates, and shows how to add a new one.
 
@@ -45,98 +45,12 @@ done
 
 ## Gate Inventory
 
-### Architecture and Design
-
-| Script | What it checks | Baseline |
-|---|---|---|
-| `check_god_class_size.py` | Service LOC > 1500 or deps > 15; Controller LOC > 600 | `god_class_size.txt` |
-| `check_em_writes_in_controller.py` | `$em->flush()` / `->persist()` calls in controllers (should be in services) | `em_writes_in_controller.txt` |
-| `check_nested_forms.py` | FormType nesting depth > 2 (renders inconsistently) | `nested_forms.txt` |
-| `check_auto_form_field_whitelist.py` | Fields rendered by `_auto_form.html.twig` that are not whitelisted | `auto_form_field_whitelist.txt` |
-| `check_form_sections.py` | FormTypes with > 6 fields missing `SectionMapInterface` | _(direct fail)_ |
-| `check_form_render_completeness.py` | FormTypes with fields not rendered in their template | `form_render_completeness.txt` |
-| `check_form_template_fields.py` | Template renders fields not declared in the FormType | `form_template_fields.txt` |
-| `check_nested_twig_in_string.py` | Twig logic embedded in PHP string literals | `nested_twig_in_string.txt` |
-| `check_no_generic_throws.py` | `throw new \Exception(` (should use domain exceptions) | `no_generic_throws.txt` |
-| `check_no_bi_classes.py` | Bootstrap helper classes used where Aurora macros exist | `no_bi_classes.txt` |
-
-### Multi-Tenancy and Security
-
-| Script | What it checks | Baseline |
-|---|---|---|
-| `check_audit_log_tenant.py` | Entities with audit log calls missing tenant scoping | `audit_log_tenant.txt` |
-| `check_admin_role_scope.py` | Admin controllers missing `ROLE_ADMIN` gate | `admin_role_scope.txt` |
-| `check_module_gating.py` | Feature code referencing optional-module entities without module gate | `module_gating.txt` |
-| `check_version_column_explicit.py` | Entities missing `#[ORM\Version]` on optimistic-lock column | _(direct fail)_ |
-| `check_entity_reserved_words.py` | Entity column names that are SQL reserved words | `entity_reserved_words.txt` |
-
-### Database and Migration Safety
-
-| Script | What it checks | Baseline |
-|---|---|---|
-| `check_no_prepare_execute_migrations.py` | PREPARE/EXECUTE pattern in migration files | `no_prepare_execute_migrations.txt` |
-| `check_migration_transactional.sh` | DDL migrations without `isTransactional(): false` | _(direct fail)_ |
-| `check_migration_reserved_words.sh` | Migration files using SQL reserved column names | _(direct fail)_ |
-| `check_ddl_transactional.py` | Broader DDL transactional override check | `ddl_transactional.txt` |
-| `check-dql-mismatches.php` | DQL queries referencing non-existent entity fields | _(direct fail)_ |
-| `check_dql_non_portable.py` | Non-portable DQL (MySQL-only functions) | `dql_non_portable.txt` |
-
-### Frontend and Templates
-
-| Script | What it checks | Baseline |
-|---|---|---|
-| `check_twig_macro_scope.py` | Macro imported at file scope but used inside `{% embed %}` | _(direct fail — CI gate since v3.5)_ |
-| `check_twig_embed_domain.py` | `trans_default_domain` missing inside embed blocks | _(direct fail)_ |
-| `check_twig_macro_imports.py` | Macro calls for macros not imported in the template | _(direct fail)_ |
-| `check_twig_unsupported_tags.py` | Twig tags unsupported by the project's Twig version | _(direct fail)_ |
-| `check_aurora_anti_patterns.py` | Bootstrap `bg-*`/`text-white` on `.card` or `.card-header` | `aurora_utility_misuse.txt` |
-| `check_aurora_utility_misuse.py` | Aurora utility class misuse patterns | `aurora_utility_misuse.txt` |
-| `check_aurora_v4.sh` | Aurora v4 macro usage convention checks | _(direct fail)_ |
-| `check_aurora_icon_names.py` | Icon names not in the approved Aurora icon set | `aurora_icon_names.txt` |
-| `check_native_dialogs.py` | Gate 67: native `alert()`/`confirm()`/`prompt()` (no fallback allowed — `import { faConfirm, faPrompt, faToast } from '../js/fa-alerts.js'`, templates `ui-actions#confirm`/`#promptSubmit`) and inline JavaScript the CSP blocks: `on*=` handlers (also as Twig attr-map keys), `javascript:` URLs, inline `<script>` without `nonce="{{ csp_nonce() }}"`, CSS imports in JS modules — use Stimulus `data-action` (generic: `ui-actions`) | — |
-| `check_aurora_legacy_markup.py` | Ratchet: Bootstrap tables, progress bars, legacy page headers, `data-bs-toggle="modal"`, `badge bg-*`, `alert alert-*`, `btn btn-*` where an Aurora component exists (Gate 62, counts per file may only go down) | `aurora_legacy_markup.txt` |
-| `check_aurora_icons_only.py` | Raw Font Awesome class usage outside approved patterns | _(direct fail)_ |
-| `check_macro_arg_arity.py` | Macro call sites passing wrong number of arguments | `macro_arg_arity.txt` |
-| `check_double_locale_prefix.py` | Routes with double locale prefix (`/{_locale}/{_locale}/`) | _(direct fail)_ |
-| `check_legacy_route_import.py` | `#[Route]` annotations (not attributes) still in use | `legacy_route_import.txt` |
-| `check_route_methods.py` | Routes without explicit HTTP method constraints | `route_methods.txt` |
-| `check_route_trailing_slash.py` | Routes with trailing slash (causes redirect loops) | `route_trailing_slash.txt` |
-| `check_route_wildcard_collisions.py` | Route wildcards colliding with static segments | _(direct fail)_ |
-
-### Translations
-
-| Script | What it checks | Baseline |
-|---|---|---|
-| `check_missing_translations.py` | DE/EN key parity in every domain (both directions) and leftover `__key` extract stubs | _(direct fail)_ |
-| `check_missing_translations.sh` | Shell-based translation key scan | _(direct fail)_ |
-| `check_translation_issues.py` | Hardcoded text, missing domain params, untranslated attributes | _(report only)_ |
-| `check_translation_dynamic_keys.py` | Dynamic translation keys (not statically analysable) | `translation_dynamic_keys.*` |
-| `check_translation_nesting.py` | Deeply nested YAML keys in translation files | `translation_nesting.txt` |
-| `check_translations.py` | Cross-domain translation consistency | _(direct fail)_ |
-| `check_yaml_duplicates.py` | Duplicate keys in YAML translation files | _(direct fail)_ |
-| `check_flash_domain.py` | `addFlash()` calls without explicit domain | `flash_domain.txt` |
-
-### Code Quality
-
-| Script | What it checks | Baseline |
-|---|---|---|
-| `check_bool_accessor_usage.py` | `is*()` / `get*()` accessor naming convention | `bool_accessor_usage.txt` |
-| `check_setter_nullability.py` | Setters accepting `null` on non-nullable columns | `setter_nullability.txt` |
-| `check_notblank_on_not_null.py` | `NOT NULL` columns missing `#[Assert\NotBlank]` | `notblank_on_not_null.txt` |
-| `check_disabled_mapped_pair.py` | `disabled: true` FormType fields that are also `mapped: true` | `disabled_mapped_pair.txt` |
-| `check_raw_json_textarea.py` | Raw JSON editing in FormTypes (Gate 34): `TextareaType` on a JSON+array column, `JsonStructuredType` without a `_<form>_<field>_row` builder theme, `JsonArrayTransformer` on a field, the `Json` constraint, JSON-looking placeholders. Use `JsonBuilderType` (generic schema-driven builder + `JsonShape` validation) | `raw_json_textarea.txt` |
-| `check_enum_to_json_unwrap.py` | Enum `->value` missing when serialising to JSON | `enum_to_json_unwrap.txt` |
-| `check_status_enum_yaml_parity.py` | Status enum cases not matching workflow YAML places | _(direct fail)_ |
-| `check_freetext_legacy.py` | Legacy freetext fields not yet migrated to taxonomy | `freetext_legacy.txt` |
-| `check_currentuser_test_args.py` | `CurrentUser` annotation args in tests | `currentuser_test_args.txt` |
-| `check_alva_hint_placeholders.py` | AlvaHint rules with placeholder content | _(direct fail)_ |
-| `check_backup_entity_coverage.py` | Entities not covered by `RestoreService` | _(direct fail)_ |
-
-### Content and Compliance
-
-| Script | What it checks | Baseline |
-|---|---|---|
-| `check_no_competitor_names.sh` | Competitor product names in source files | _(direct fail)_ |
+The numbered list of gates (number → script → what it checks) lives in
+[`scripts/README.md`](../../scripts/README.md#gate-übersicht), derived from the `Gate N:` step names in
+`.github/workflows/ci.yml`. The step name and its `run:` line are the authority; that table and the
+per-script sections below it are the explanation. Scripts in `scripts/quality/` without a CI step
+(`check_translations.py`, `verify_translations_v2.py`, `check_missing_translations.sh`,
+`check_aurora_icons_only.py`, `check_aurora_v4.sh`, `audit_eu_mappings.py`) are manual tools, not gates.
 
 ---
 
@@ -194,21 +108,19 @@ Current sizes: `wc -l scripts/quality/baselines/*.txt | sort -rn | head`.
 
 3. **Wire into CI** in `.github/workflows/ci.yml`:
    ```yaml
-   - name: My New Rule
+   - name: "Gate <next free number>: my new rule"
      run: python3 scripts/quality/check_my_new_rule.py
    ```
 
 4. **Add a `lint:twig` equivalent** if the rule applies to Twig — run it in
    the same job as other Twig checks.
 
-5. **Document the gate** in this file (`06-quality-gates.md`) and include the
-   baseline file description.
+5. **Document the gate** in `scripts/README.md` (row in the gate table plus a section with
+   purpose, usage and baseline).
 
 ---
 
 ## CI Workflow Location
 
-All gates are wired in `.github/workflows/ci.yml`. The workflow runs on push
-to any branch and on pull requests to `main`. Gate jobs are parallelised by
-category (PHP, Twig, Translation, Architecture) to keep total CI time under
-10 minutes.
+All gates are wired in `.github/workflows/ci.yml`, as sequential steps of the `code-quality` job
+(the other jobs run migrations, PHPUnit, JS tests, security and Docker builds).

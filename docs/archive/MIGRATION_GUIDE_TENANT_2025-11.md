@@ -2,7 +2,7 @@
 
 > **Hinweis:** Dieser Guide deckt die Multi-Tenancy-Setup-Migration ab.
 > Für die `corporate_governance`-Tabellenmigration siehe
-> [`docs/MIGRATION_GUIDE.md`](docs/MIGRATION_GUIDE.md).
+> [`MIGRATION_GUIDE_CORPORATE_2025-11.md`](MIGRATION_GUIDE_CORPORATE_2025-11.md).
 
 ## Problem
 

@@ -13,15 +13,14 @@ ISO 27001 Clause 7.5.3 requires an evidence trail for all documented information
 
 ## The status-pill
 
-On every entity show-page (e.g. `/de/documents/42`) you will find a **status-pill** near the entity title. The pill color encodes the lifecycle stage at a glance:
+On every entity show-page (e.g. `/de/document/42`) you will find a **status-pill** near the entity title. The pill color encodes the lifecycle stage at a glance:
 
 | Color | Meaning | Example statuses |
 |---|---|---|
 | Grey (neutral) | Not yet active / early draft | `draft` |
-| Blue (info) | Under review / in progress | `in_review`, `in_progress` |
+| Brand (primary) | Under review / in progress, live / published / active | `in_review`, `in_progress`, `published`, `active` |
 | Green (success) | Approved / completed / achieved | `approved`, `completed`, `achieved` |
-| Purple (primary) | Live / published / active | `published`, `active` |
-| Muted | No longer active | `archived`, `returned`, `retired` |
+| Grey (neutral) | No longer active | `archived`, `returned`, `retired` |
 | Red (danger) | Permanently removed from flow | `deleted`, `disposed` |
 
 The pill is read-only — clicking it does nothing. To change status, use the **Aktionen** dropdown (see below).
@@ -86,19 +85,21 @@ Different entities have different lifecycle definitions. Here is a quick referen
 Publishing requires 4-eyes confirmation from a second Manager. Archiving requires a reason. Archived documents can be restored to `published`.
 
 ### Risk
-`draft` → `identified` → `assessed` → `treated` → `accepted` → `monitored` → `closed`
+`identified` → `assessed` → `in_treatment` → `treated` → `monitored` → `closed`, or `assessed` → `accepted`
 
-Risk transitions are gated by `ROLE_RISK_MANAGER`. "Accepted" status requires the Risk Owner to confirm acceptance (4-eyes if configured). Closing a risk requires a reason and triggers a notification to the Risk Owner.
+Risk transitions are gated by `ROLE_RISK_MANAGER`. "Accept" (CISO or risk manager) needs a reason and four-eyes; who accepted and when is written only by the acceptance approval ("Akzeptanz anfordern" on the risk page; above the manager threshold top management decides). Reopening a closed risk and reverting an acceptance need a reason.
 
 ### Incident
-`draft` → `reported` → `in_progress` → `resolved` → `closed`
+`reported` → `in_investigation` → `in_resolution` → `resolved` → `closed`; a false positive goes from `reported` straight to `closed`
+
+Transitions need `ROLE_CISO`; closing needs a reason and four-eyes.
 
 High/Critical incidents trigger a parallel `WorkflowInstance` for the regulatory escalation chain (ISO 27001 Incident Response workflow). The lifecycle status and the approval-chain workflow run concurrently and are displayed separately.
 
 ### Asset
-`active` → `in_use` → `returned` → `retired` → `disposed`
+`draft` → `active` ⇄ `inactive`, `active` → `in_use` → `returned` → `active`, `active`/`inactive` → `retired` → `disposed`
 
-The physical-lifecycle has 7 places and 9 transitions. Disposal requires 4-eyes confirmation (two Managers must confirm) and a mandatory reason. The disposal transition is irreversible — no restore is available from `disposed`.
+7 places, 9 transitions. Disposal requires 4-eyes confirmation (two Managers) and a reason, and cannot be undone. An asset can be deleted only once it is `disposed`, or within 24 hours of its creation to correct a mistake (`DeletionPolicy`).
 
 ### ProcessingActivity (GDPR module required)
 `draft` → `in_review` → `approved` → `published` → `archived`

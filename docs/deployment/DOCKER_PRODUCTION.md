@@ -5,7 +5,7 @@
 ## 🎯 Vorteile
 
 - ✅ **Wirklich Standalone** - Nur 1 Container (App + embedded MariaDB)
-- ✅ **Minimal** - Nur 1 Volume für alle Daten
+- ✅ **Minimal** - 1 Volume für `var/` (DB, Nachweisdateien, Backups), dazu `public/uploads` für Logos
 - ✅ **Einfach** - Keine externe Datenbank nötig
 - ✅ **Performant** - Optimiert für Production
 - ✅ **Sicher** - Production-Mode mit konfigurierbaren Credentials
@@ -30,27 +30,50 @@ MAILER_DSN=smtp://user:pass@smtp.example.com:587
 EOF
 ```
 
+`docker compose` liest diese Datei nur mit `--env-file`. `docker-compose.prod.yml` reicht
+`MYSQL_*` und `MAILER_DSN` an den Container weiter. `DEFAULT_URI` (öffentliche URL, Pflicht
+für Links in Erinnerungsmails) und ggf. `SYMFONY_TRUSTED_PROXIES` in einer
+`docker-compose.override.yml` ergänzen:
+
+```yaml
+services:
+  app:
+    environment:
+      DEFAULT_URI: https://isms.example.com
+    volumes:
+      - isms_uploads:/var/www/html/public/uploads   # Logos, Profilbilder
+volumes:
+  isms_uploads:
+```
+
 ### 2. Container starten
 
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+docker compose --env-file .env.docker.local -f docker-compose.prod.yml -f docker-compose.override.yml up -d --build
 ```
 
 ### 3. Logs prüfen
 
 ```bash
-docker-compose -f docker-compose.prod.yml logs -f
+docker compose -f docker-compose.prod.yml logs -f
 ```
 
 ### 4. Setup Wizard aufrufen
 
 Öffne: **http://localhost/setup** (oder dein konfigurierter Port)
 
-Der Wizard führt dich durch:
-1. Datenbank wird automatisch konfiguriert (embedded MariaDB)
-2. Admin-User erstellen
-3. ISO 27001 Controls laden
-4. System-Verifizierung
+Der Wizard führt durch Datenbank (embedded MariaDB, automatisch), optionalen
+Backup-Restore, Admin-User, Organisation, Module und Frameworks
+([QUICKSTART.md](../QUICKSTART.md#5-setup-wizard-durchlaufen)).
+
+Geplante Aufgaben (Erinnerungen, Backups) laufen über den Scheduler-Worker, den
+`supervisord` im Container startet (`messenger-scheduler`). Er arbeitet derzeit nur die
+Transporte `scheduler_default` und `scheduler` ab, nicht `async` — dort liegen ausgehende Mails.
+Bis das Image das mitbringt, die `async`-Queue zusätzlich abarbeiten, z. B. per Host-Cron:
+
+```cron
+* * * * * docker compose -f /pfad/docker-compose.prod.yml exec -T -u www-data app php bin/console messenger:consume async --time-limit=55 --limit=20 --quiet
+```
 
 ## 🔧 Konfiguration
 
@@ -66,6 +89,9 @@ Der Wizard führt dich durch:
 | `MAILER_DSN` | (leer) | SMTP-Konfiguration |
 | `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL, z. B. `https://isms.example.com` — alle Links in E-Mails, Lieferantenfragebögen, Trust Center und QR-Labels werden damit gebaut, nie aus dem Host-Header. Ohne Wert zeigt Überwachung > Health eine Warnung mit Knopf „Adresse übernehmen“ |
 | `SYMFONY_TRUSTED_HOSTS` | (leer) | Erlaubte Hostnamen als verankerte Muster, z. B. `'^isms\.example\.com$,^localhost$'` (localhost für den Container-Healthcheck); jeder andere Host-Header bekommt 400 |
+| `APP_SECRET` | generiert | Wird beim ersten Start erzeugt und in `var/app_secret` gespeichert; ein gesetzter Wert hat Vorrang |
+| `SYMFONY_TRUSTED_PROXIES` | private Netze | Siehe [Vertrauenswürdige Proxys](#vertrauenswürdige-proxys-client-ip) |
+| `EMBEDDED_DB` | `mariadb` | `none` = keine eingebettete MariaDB, externe DB über `DATABASE_URL` |
 
 ### Automatisches DB-Passwort
 
@@ -92,31 +118,40 @@ Das `isms_data` Volume enthält:
 ├── cache/           # Symfony Cache
 ├── log/             # Application Logs
 ├── sessions/        # User Sessions
-├── backups/         # Backup-Dateien
+├── uploads/         # Nachweisdateien (Dokumente, Versionen, Schulungsmaterial)
+├── backups/         # Backup-Dateien (nächtlich 02:00, 30 Tage)
+├── app_secret       # Persistiertes APP_SECRET
 └── mysql_password.txt  # Auto-generiertes DB-Passwort (falls nicht gesetzt)
 ```
+
+Logos und Profilbilder liegen in `public/uploads/` — ohne eigenes Volume gehen sie beim
+Neuerstellen des Containers verloren (siehe Override oben).
 
 ### Backup erstellen
 
 ```bash
+# Automatisch: jede Nacht 02:00 nach var/backups/ (Scheduler) — regelmäßig vom Host wegkopieren
+
 # Methode 1: Über Web-UI
-# Admin Portal → Database → Create Backup
+# Admin → Datenverwaltung → Backup (/admin/data/backup)
 
 # Methode 2: Via Console
-docker-compose -f docker-compose.prod.yml exec app php bin/console app:backup:create
+docker compose -f docker-compose.prod.yml exec app php bin/console app:backup:create
 
-# Methode 3: Volume-Backup
+# Methode 3: Volume-Backup (Container vorher stoppen, sonst ist die MariaDB-Kopie inkonsistent)
+docker compose -f docker-compose.prod.yml stop
 docker run --rm -v isms_data:/data -v $(pwd):/backup alpine tar czf /backup/isms_backup_$(date +%Y%m%d).tar.gz /data
+docker compose -f docker-compose.prod.yml start
 ```
 
 ### Backup wiederherstellen
 
 ```bash
 # Methode 1: Über Web-UI
-# Admin Portal → Database → Restore Backup
+# Admin → Datenverwaltung → Backup → Wiederherstellen
 
 # Methode 2: Via Console
-docker-compose -f docker-compose.prod.yml exec app php bin/console app:backup:restore /var/www/html/var/backups/backup_YYYY-MM-DD.json.gz
+docker compose -f docker-compose.prod.yml exec app php bin/console app:backup:restore /var/www/html/var/backups/backup_YYYY-MM-DD_HH-ii-ss.zip --dry-run
 
 # Methode 3: Volume-Restore
 docker run --rm -v isms_data:/data -v $(pwd):/backup alpine tar xzf /backup/isms_backup_YYYYMMDD.tar.gz -C /
@@ -125,6 +160,9 @@ docker run --rm -v isms_data:/data -v $(pwd):/backup alpine tar xzf /backup/isms
 ## 🌐 Reverse Proxy Setup
 
 ### nginx
+
+Läuft nginx auf demselben Host, den Container auf einen anderen Port legen
+(`APP_PORT=8080`, `APP_PORT_HTTPS` freigeben oder entfernen).
 
 ```nginx
 server {
@@ -141,7 +179,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/isms.example.com/privkey.pem;
 
     location / {
-        proxy_pass http://localhost:80;
+        proxy_pass http://127.0.0.1:8080;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -178,74 +216,73 @@ davor (CDN, Load Balancer mit öffentlicher IP), seine Netze setzen:
 SYMFONY_TRUSTED_PROXIES=127.0.0.1,10.0.0.0/8,203.0.113.0/24
 ```
 
-Bis 2026-11 wurde jeder Absender als Proxy behandelt. Ein Angreifer konnte so mit
-einem eigenen `X-Forwarded-For` pro Anfrage die Anmelde-Drosselung und das
-API-Limit umgehen.
-
 ## 🔄 Updates
 
+`docker-compose.prod.yml` baut das Image aus dem Quellcode:
+
 ```bash
-# 1. Neues Image pullen
-docker-compose -f docker-compose.prod.yml pull
-
-# 2. Container neu starten
-docker-compose -f docker-compose.prod.yml up -d
-
-# Daten bleiben erhalten (isms_data Volume)
+git pull
+docker compose --env-file .env.docker.local -f docker-compose.prod.yml -f docker-compose.override.yml up -d --build
 ```
+
+Mit dem fertigen Image (`moag2000/little-isms-helper:<version>`, siehe
+[DOCKER_HUB.md](../setup/DOCKER_HUB.md)) stattdessen den Tag erhöhen und
+`docker compose pull && docker compose up -d`. Daten bleiben im Volume. Danach
+ausstehende Migrationen unter `/quick-fix` anwenden
+([QUICK_FIX.md](../user-guide/QUICK_FIX.md)).
 
 ## 🛠️ Verwaltung
 
 ### Container-Status
 
 ```bash
-docker-compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml ps
 ```
 
 ### Logs anzeigen
 
 ```bash
 # Alle Logs
-docker-compose -f docker-compose.prod.yml logs -f
+docker compose -f docker-compose.prod.yml logs -f
 
 # Letzte 100 Zeilen
-docker-compose -f docker-compose.prod.yml logs --tail=100
+docker compose -f docker-compose.prod.yml logs --tail=100
 ```
 
 ### Container neu starten
 
 ```bash
-docker-compose -f docker-compose.prod.yml restart
+docker compose -f docker-compose.prod.yml restart
 ```
 
 ### Container stoppen
 
 ```bash
-docker-compose -f docker-compose.prod.yml stop
+docker compose -f docker-compose.prod.yml stop
 ```
 
 ### Container entfernen (Daten bleiben!)
 
 ```bash
-docker-compose -f docker-compose.prod.yml down
+docker compose -f docker-compose.prod.yml down
 ```
 
 ### Alles entfernen (inkl. Daten!)
 
 ```bash
-docker-compose -f docker-compose.prod.yml down -v
+docker compose -f docker-compose.prod.yml down -v
 ```
 
 ### Shell im Container
 
 ```bash
-docker-compose -f docker-compose.prod.yml exec app bash
+docker compose -f docker-compose.prod.yml exec app bash
 ```
 
 ### Cache leeren
 
 ```bash
-docker-compose -f docker-compose.prod.yml exec app php bin/console cache:clear
+docker compose -f docker-compose.prod.yml exec app php bin/console cache:clear
 ```
 
 ## 📊 Ressourcen
@@ -278,8 +315,9 @@ deploy:
 - [ ] `MYSQL_PASSWORD` gesetzt oder auto-generiert geprüft
 - [ ] HTTPS mit Reverse Proxy konfiguriert (Let's Encrypt)
 - [ ] Firewall: Nur Port 80/443 exponiert
-- [ ] Automatische Backups eingerichtet
-- [ ] Updates aktiviert (`docker-compose pull` regelmäßig)
+- [ ] `DEFAULT_URI` auf die öffentliche URL gesetzt
+- [ ] Backups aus `var/backups/` regelmäßig vom Host wegkopiert
+- [ ] Updates regelmäßig eingespielt
 - [ ] Logs überwachen
 - [ ] Health Checks aktiv
 
@@ -287,7 +325,7 @@ deploy:
 
 ```bash
 # Auto-generiertes MySQL-Passwort
-docker-compose -f docker-compose.prod.yml exec app cat /var/www/html/var/mysql_password.txt
+docker compose -f docker-compose.prod.yml exec app cat /var/www/html/var/mysql_password.txt
 
 # Admin-User im Setup Wizard erstellt
 # Login über Web-UI
@@ -299,7 +337,7 @@ docker-compose -f docker-compose.prod.yml exec app cat /var/www/html/var/mysql_p
 
 ```bash
 # Logs prüfen
-docker-compose -f docker-compose.prod.yml logs
+docker compose -f docker-compose.prod.yml logs
 
 # Port-Konflikte prüfen
 netstat -tulpn | grep -E '80|443'
@@ -309,10 +347,10 @@ netstat -tulpn | grep -E '80|443'
 
 ```bash
 # Container neu starten
-docker-compose -f docker-compose.prod.yml restart
+docker compose -f docker-compose.prod.yml restart
 
 # MariaDB-Status prüfen
-docker-compose -f docker-compose.prod.yml exec app supervisorctl status mariadb
+docker compose -f docker-compose.prod.yml exec app supervisorctl status mariadb
 ```
 
 ### Langsame Performance
@@ -322,14 +360,14 @@ docker-compose -f docker-compose.prod.yml exec app supervisorctl status mariadb
 docker stats isms-app-prod
 
 # Cache leeren
-docker-compose -f docker-compose.prod.yml exec app php bin/console cache:clear --env=prod
+docker compose -f docker-compose.prod.yml exec app php bin/console cache:clear --env=prod
 ```
 
 ### Permission-Fehler
 
 ```bash
 # Ownership reparieren
-docker-compose -f docker-compose.prod.yml exec app chown -R www-data:www-data /var/www/html/var
+docker compose -f docker-compose.prod.yml exec app chown -R www-data:www-data /var/www/html/var
 ```
 
 ## 📞 Support

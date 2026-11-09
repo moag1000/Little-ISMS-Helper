@@ -4,18 +4,18 @@ Ein wiederverwendbarer, accessible Confirmation Dialog für Bulk-Delete-Operatio
 
 ## Features
 
-- ✅ **WCAG 2.1 AA konform** - Screen Reader freundlich mit korrekten ARIA-Attributen
-- ✅ **Keyboard Navigation** - Vollständig über Tastatur bedienbar
-- ✅ **Dependency Check** - Zeigt betroffene Verknüpfungen an
-- ✅ **Accessible Design** - Klare Fokus-Indikatoren und Skip-Links
-- ✅ **Promise-basiert** - Einfache Integration mit async/await
-- ✅ **Mehrsprachig** - Unterstützt Deutsch und Englisch
+- **WCAG 2.1 AA konform** - Screen Reader freundlich mit korrekten ARIA-Attributen
+- **Keyboard Navigation** - Vollständig über Tastatur bedienbar
+- **Dependency Check** - Zeigt betroffene Verknüpfungen an
+- **Accessible Design** - Klare Fokus-Indikatoren und Skip-Links
+- **Promise-basiert** - Einfache Integration mit async/await
+- **Mehrsprachig** - Unterstützt Deutsch und Englisch
 
 ## Verwendung
 
 ### 1. Template Setup
 
-Der Dialog ist global verfügbar und bereits in `base.html.twig` eingebunden. Keine zusätzliche Konfiguration nötig!
+Der Dialog ist global verfügbar und bereits in `base.html.twig` eingebunden. Keine zusätzliche Konfiguration nötig.
 
 ### 2. Controller Setup
 
@@ -23,7 +23,7 @@ In deinem Twig-Template, füge die bulk-actions Controller Attribute hinzu:
 
 ```twig
 <div data-controller="bulk-actions"
-     data-bulk-actions-endpoint-value="/{{ locale }}/assets"
+     data-bulk-actions-endpoint-value="/{{ locale }}/asset"
      data-bulk-actions-entity-label="Assets">
 
     <table class="table">
@@ -69,82 +69,50 @@ Implementiere zwei Endpunkte in deinem Controller:
 #### 3.1 Dependency Check Endpoint
 
 ```php
-#[Route('/{_locale}/assets/bulk-delete-check', name: 'asset_bulk_delete_check', methods: ['POST'])]
+// @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
+#[Route('/asset/bulk-delete-check', name: 'app_asset_bulk_delete_check', methods: ['POST'])]
+#[IsGranted('ROLE_MANAGER')]
 public function bulkDeleteCheck(Request $request): JsonResponse
 {
-    $data = json_decode($request->getContent(), true);
-    $ids = $data['ids'] ?? [];
+    $data = json_decode($request->getContent(), true) ?? [];
+    $ids = array_filter((array) ($data['ids'] ?? []), 'is_int');
+    $assets = $this->assetRepository->findBy(['id' => $ids, 'tenant' => $this->security->getUser()?->getTenant()]);
 
-    $dependencies = [];
-
-    foreach ($ids as $id) {
-        $asset = $this->assetRepository->find($id);
-
-        if (!$asset) {
-            continue;
-        }
-
-        // Check Controls
-        $controlCount = count($asset->getControls());
-        if ($controlCount > 0) {
-            $dependencies[] = [
-                'icon' => 'shield-check',
-                'message' => sprintf(
-                    '%s ist mit %d Control(s) verknüpft',
-                    $asset->getName(),
-                    $controlCount
-                )
-            ];
-        }
-
-        // Check Risks
-        $riskCount = count($asset->getRisks());
-        if ($riskCount > 0) {
-            $dependencies[] = [
-                'icon' => 'exclamation-triangle',
-                'message' => sprintf(
-                    '%s ist mit %d Risiko(en) verknüpft',
-                    $asset->getName(),
-                    $riskCount
-                )
-            ];
-        }
-    }
-
-    return $this->json([
-        'dependencies' => $dependencies
+    return $this->checkBulkDependencies($assets, 'getName', [
+        fn (Asset $asset): ?array => ($c = $asset->getRisks()->count()) > 0
+            ? ['message' => $this->translator->trans('bulk_delete.dependency.risks', ['%count%' => $c], 'bulk_delete'), 'icon' => 'shield-exclamation']
+            : null,
+        // … incidents, protecting controls
     ]);
 }
 ```
+
+Only records of the current organisation are checked; messages come from the `bulk_delete` domain.
 
 #### 3.2 Bulk Delete Endpoint
 
+Every bulk delete goes through `BulkActionTrait::handleBulkDelete()` and `BulkDeleteService`: shared
+`bulk_action` CSRF token, id sanitising, tenant check, voter, optional guard, one transaction and one
+`AuditLogger::logBulk()` batch.
+
 ```php
-#[Route('/{_locale}/assets/bulk-delete', name: 'asset_bulk_delete', methods: ['POST'])]
-public function bulkDelete(Request $request, EntityManagerInterface $em): JsonResponse
+#[Route('/asset/bulk-delete', name: 'app_asset_bulk_delete', methods: ['POST'])]
+#[IsGranted('ROLE_ADMIN')]
+public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
 {
-    $data = json_decode($request->getContent(), true);
-    $ids = $data['ids'] ?? [];
-
-    $deleted = 0;
-
-    foreach ($ids as $id) {
-        $asset = $this->assetRepository->find($id);
-
-        if ($asset && $this->security->isGranted('DELETE', $asset)) {
-            $em->remove($asset);
-            $deleted++;
-        }
-    }
-
-    $em->flush();
-
-    return $this->json([
-        'success' => true,
-        'deleted' => $deleted
-    ]);
+    return $this->handleBulkDelete(
+        $request,
+        $bulkDeleteService,
+        'Asset',
+        $this->security->getUser(),
+        fn (int $id): ?object => $this->assetRepository->find($id),
+        voterAttribute: 'delete',
+    );
 }
 ```
+
+`BulkDeleteService` applies the deletion policy (`App\Lifecycle\DeletionPolicy::refusal()`): an asset is
+deleted only once it is `disposed`, or within 24 hours of its creation. Refused rows are reported per id, the rest is deleted.
 
 ## Accessibility Features
 
@@ -172,19 +140,9 @@ public function bulkDelete(Request $request, EntityManagerInterface $em): JsonRe
 
 ## Styling
 
-Der Dialog verwendet Bootstrap 5 Klassen und kann über CSS angepasst werden:
-
-```css
-/* Custom danger header */
-#bulkDeleteModal .modal-header {
-    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-}
-
-/* Custom confirmation button */
-#bulkDeleteModal .btn-danger {
-    box-shadow: 0 4px 6px rgba(220, 53, 69, 0.3);
-}
-```
+Der Dialog ist ein Aurora-`fa-modal` (`templates/_components/_bulk_delete_confirmation.html.twig`, Modus
+`confirm`, Ton `danger`; unter 576 px als Bottom-Sheet). Anpassungen gehören in `fa-modal.css` bzw. die
+Aurora-Tokens, nicht in eigene Farbwerte.
 
 ## Beispiel mit mehreren Entities
 
@@ -199,7 +157,7 @@ const confirmController = this.application.getControllerForElementAndIdentifier(
 const confirmed = await confirmController.show({
     count: 10,
     entityLabel: 'Assets',
-    endpoint: '/de/assets/bulk-delete-check',
+    endpoint: '/de/asset/bulk-delete-check',
     ids: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     message: 'Möchten Sie wirklich 10 Assets löschen?' // Optional custom message
 });
@@ -230,7 +188,7 @@ if (confirmed) {
 public function testBulkDeleteCheck(): void
 {
     $client = static::createClient();
-    $client->request('POST', '/de/assets/bulk-delete-check', [], [], [
+    $client->request('POST', '/de/asset/bulk-delete-check', [], [], [
         'CONTENT_TYPE' => 'application/json',
     ], json_encode(['ids' => [1, 2, 3]]));
 
@@ -246,7 +204,7 @@ public function testBulkDeleteCheck(): void
 
 - Prüfe, dass `bulk_delete_confirmation_controller.js` geladen wird
 - Überprüfe die Browser-Konsole auf JavaScript-Fehler
-- Stelle sicher, dass Bootstrap 5 JavaScript geladen ist
+- Prüfe, dass `fa-modal` auf dem Dialog sitzt (`data-controller="fa-modal bulk-delete-confirmation"`)
 
 ### Dependencies werden nicht angezeigt
 
@@ -262,5 +220,4 @@ public function testBulkDeleteCheck(): void
 ## Weitere Ressourcen
 
 - [WCAG 2.1 Modal Dialog Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
-- [Bootstrap 5 Modal Documentation](https://getbootstrap.com/docs/5.3/components/modal/)
 - [Stimulus.js Documentation](https://stimulus.hotwired.dev/)

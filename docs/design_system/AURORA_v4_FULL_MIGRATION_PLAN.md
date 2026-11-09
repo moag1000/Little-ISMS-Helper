@@ -1,7 +1,7 @@
 # Aurora v4 — 100% Migration Plan
 
 > **Stand:** 2026-04-26 · Anlass: `docs/design_system/` Spec ist jetzt SoT.
-> **Maßstab:** [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) §6–§10, [`FAIRY_AURORA_v4_ROADMAP.md`](FAIRY_AURORA_v4_ROADMAP.md), [`fairy-aurora-icons.css`](assets/fairy-aurora-icons.css).
+> **Maßstab:** [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) §6–§10, [`fairy-aurora-icons.css`](../../assets/styles/fairy-aurora-icons.css).
 > **Reihenfolge:** klein → groß, jede Phase isoliert deploybar. Phasen 1–4 sind Voraussetzung für 5+. BC-Aliases halten Templates während der Migration funktional.
 
 ---
@@ -49,7 +49,7 @@ Ist-Zustand vs. Spec, gemessen mit `grep`:
 | `bi-*`-Glyphen total | 3174 | ~1500 (nur generic UI) | **~1700 sind ISMS-Domain → migrieren** |
 | `_card`/`_badge`-Macros | BC-aliased ✓ | nur fa-* | _card/_badge können fa-only werden, sobald Templates Daten konsumieren |
 
-**Status der bereits abgeschlossenen Audit-Items:** alle 🔴 Hoch + 🟡 Mittel aus [`AUDIT_TODO.md`](AUDIT_TODO.md) erledigt (Sprints 1–4 + Inline-Style-Cleanup + CISO-Refactor). Tokens-Layer + Macro-Layer + Dashboard-Primitives sind v4-konform. Was fehlt ist die **flächendeckende Verwendung** in Modul-Templates.
+**Status der bereits abgeschlossenen Audit-Items:** alle 🔴 Hoch + 🟡 Mittel aus dem damaligen Audit-TODO erledigt (Sprints 1–4 + Inline-Style-Cleanup + CISO-Refactor). Tokens-Layer + Macro-Layer + Dashboard-Primitives sind v4-konform. Was fehlt ist die **flächendeckende Verwendung** in Modul-Templates.
 
 ---
 
@@ -423,15 +423,9 @@ Ziel-Endzustand: alle Aurora-Counts ≥ Bootstrap-Counts; Bootstrap-Restbestand 
 
 ## Was ich NICHT in den Plan aufnehme (und warum)
 
-- **`.fairy-*`-Legacy-Klassen** (`.fairy-magic-glow`, `.fairy-badge`, etc.) — laut [`FAIRY_AURORA_MIGRATION.md`](FAIRY_AURORA_MIGRATION.md) bereits abgeschlossen (P2 done). Re-Audit: `grep -rn "\\.fairy-" assets/styles/` sollte 0 Treffer haben.
+- **`.fairy-*`-Legacy-Klassen** (`.fairy-magic-glow`, `.fairy-badge`, etc.) — laut damaligem Migrationsstand bereits abgeschlossen (P2 done). Re-Audit: `grep -rn "\\.fairy-" assets/styles/` sollte 0 Treffer haben.
 - **React-AlvaCharacter.jsx** — die App ist Symfony+Twig+Stimulus, kein React. Spec-File ist Referenz für die SVG-Struktur und Mood-Logik, nicht direkt zu importieren.
 - **Komplette `_table_accessibility_guide.md`-Konformität** — separate Initiative. `.fa-data-table` (Phase Sprint 4 abgeschlossen) ist erst der Anfang.
-
----
-
-## Nächster Schritt
-
-Sprint A starten — Icon-System-Transfer ist Voraussetzung für alles andere und schnell erledigt. Sag wenn ich loslegen soll.
 
 ---
 

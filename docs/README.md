@@ -25,12 +25,15 @@ Skripte liegen unter `scripts/` (`setup/`, `quality/`, `tools/`); Details in
 ## Einstiegspunkte
 
 - Installation: [`setup/SETUP_TOOLS.md`](setup/SETUP_TOOLS.md), [`deployment/DEPLOYMENT_WIZARD.md`](deployment/DEPLOYMENT_WIZARD.md)
+- Update: [`../UPGRADE.md`](../UPGRADE.md) (was Betreiber je Release tun müssen), [`user-guide/QUICK_FIX.md`](user-guide/QUICK_FIX.md)
+- Betrieb: [`user-guide/HOSTING_WORKER.md`](user-guide/HOSTING_WORKER.md) (Scheduler), [`operations/DISASTER_RECOVERY.md`](operations/DISASTER_RECOVERY.md)
+- Anwender: [`user-guide/`](user-guide/) (Mein Tag, Register, Erfüllung aus Daten, Leitungsentscheidungen, Vorschläge, KI-Assistent), [`DEADLINES_AND_RESPONSIBILITY.md`](DEADLINES_AND_RESPONSIBILITY.md)
 - Architektur: [`architecture/SOLUTION_DESCRIPTION.md`](architecture/SOLUTION_DESCRIPTION.md), [`architecture/ENTITY_TABLE_MAPPING.md`](architecture/ENTITY_TABLE_MAPPING.md)
 - Multi-Framework: [`architecture/CROSS_FRAMEWORK_MAPPINGS.md`](architecture/CROSS_FRAMEWORK_MAPPINGS.md)
 - Modul-Gating: [`MODULE_GATING_GUIDE.md`](MODULE_GATING_GUIDE.md)
 - API: [`setup/API_SETUP.md`](setup/API_SETUP.md)
 - Audit-Logging: [`setup/AUDIT_LOGGING.md`](setup/AUDIT_LOGGING.md)
-- Sicherheit: [`security/SECURITY.md`](security/SECURITY.md)
+- Sicherheit: [`security/SECURITY.md`](security/SECURITY.md), [`security/NON_UI_CONTRACTS.md`](security/NON_UI_CONTRACTS.md)
 - Roadmap: [`../ROADMAP.md`](../ROADMAP.md)
 
 ## Weitere Ressourcen

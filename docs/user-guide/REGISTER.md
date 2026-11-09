@@ -14,7 +14,7 @@ Einstieg: **ISMS > Register** (`/register`), über ⌘K „Register“ oder von 
 |---|---|---|---|
 | Externe Themen | ISO 27001 4.1 | ISB | Kontext: externe Themen (Freitext) |
 | Interne Themen | ISO 27001 4.1 | ISB | Kontext: interne Themen (Freitext) |
-| Rechtliche und vertragliche Anforderungen | ISO 27001 4.2 c, A.5.31 · NIS-2 Art. 21 | Compliance-Manager | aktive verpflichtende Frameworks, Anforderungen der interessierten Parteien, Kontext-Freitexte |
+| Rechtliche und vertragliche Anforderungen | ISO 27001 4.2 b, A.5.31 · NIS-2 Art. 21 | Compliance-Manager | aktive verpflichtende Frameworks, Anforderungen der interessierten Parteien, Kontext-Freitexte |
 | Schnittstellen des Geltungsbereichs | ISO 27001 4.3 c | ISB | kritische Lieferanten |
 | Rollen und Zuständigkeiten | ISO 27001 5.3 · NIS-2 Art. 20 | ISB | Inhaber der Persona-Rollen (CISO, ISB, DSB, …), Datenschutzbeauftragter der Organisation |
 | Chancen | ISO 27001 6.1.1 | Risikomanager | — (von Hand) |

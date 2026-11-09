@@ -1,6 +1,6 @@
 # NIS2 — Richtlinie (EU) 2022/2555
 
-Stand: v3.5 (2026-05). Gilt fuer das Modul `nis2_dora` (Aktivierungskey in `config/modules.yaml`).
+Gilt fuer das Modul `nis2_dora` (Aktivierungskey in `config/modules.yaml`).
 
 ---
 
@@ -27,7 +27,7 @@ php bin/console app:load-nis2-requirements
 php bin/console app:load-nis2-full
 
 # NIS2-UmsuCG Basisanforderungen (deutsche Umsetzung)
-php bin/console app:load-nis2-umsucg-requirements
+php bin/console app:load-nis2umsucg-requirements
 
 # NIS2-UmsuCG vollstaendiger Katalog
 php bin/console app:load-nis2-umsucg-full
@@ -36,7 +36,7 @@ php bin/console app:load-nis2-umsucg-full
 php bin/console app:seed-nis2-iso27001-mappings
 
 # Seed NIS2 Policy-Templates (12 Pflichtrichtlinien)
-php bin/console app:seed-nis2-policy-templates
+php bin/console app:policy-wizard:seed-nis2
 ```
 
 ---
@@ -73,7 +73,7 @@ Das Tool implementiert ein zweistufiges Reifegradmodell fuer NIS2-Konformitaet:
 Der Reifegrad steuert, welche Anforderungen im Compliance-Wizard als obligatorisch markiert
 werden. Wesentliche Einrichtungen (Art. 3 Abs. 1 NIS2) erhalten einen strengeren Pruefpfad.
 
-Compliance-Wizard-Route: `/{locale}/compliance/wizard/nis2`
+Compliance-Wizard-Route: `/{locale}/compliance-wizard/nis2`
 
 ---
 
@@ -241,8 +241,10 @@ NIS-2 gilt, wenn das Modul `nis2_dora` aktiv ist, die Organisation nicht als
 die Bewertung der Einrichtung (`notificationRequired`, Knopf „Meldepflicht
 bestätigen“ / „Nicht meldepflichtig“ auf der Vorfallseite), solange sie fehlt
 die Vorprüfung (`getNis2SignificanceReasons()`: Schweregrad hoch/kritisch,
-kritischer Prozess, grenzüberschreitend, ab 100 Betroffenen, Schaden ab
-500.000 EUR, Verdacht auf böswillige Handlung). DORA gilt für Finanzunternehmen
+kritischer Prozess, grenzüberschreitend, Betroffene und Schaden über den
+Schwellen der Organisation (Vorgabe nach DVO (EU) 2024/2690 Art. 3: 100
+Betroffene, 500.000 EUR; anpassbar unter Admin > Incident-SLAs), Verdacht auf
+böswillige Handlung). DORA gilt für Finanzunternehmen
 (`Tenant::DORA_FINANCIAL_ENTITY`) bei Klassifizierung „schwerwiegend“.
 
 Je Meldung gibt es einen `SlaDeadlineMonitor` (Spawner bei jedem Speichern,
@@ -251,16 +253,13 @@ Vorfallseite setzt das Feld; der Monitor gilt dann als erfüllt (oder als
 verpasst, wenn zu spät gemeldet). Offene Meldungen stehen in „Mein Tag“ unter
 „Meldepflichten“ und gehen als Sofortmeldung an die zuständige Person
 (Vorfall-Verantwortliche, sonst ISB/CISO; Datenpanne: Bewerter/DSB) über
-`app:send-reminders`. Einen eigenen NIS-2-Meldebefehl gibt es nicht mehr.
+`app:send-reminders`. Einen eigenen NIS-2-Meldebefehl gibt es nicht.
 
 ---
 
 ## 11. Modul-Aktivierung
 
-```yaml
-# config/active_modules.yaml
-nis2_dora: true
-```
+Admin → Module (`/admin/modules`), siehe [MODULE_AKTIVIERUNG.md](user-guide/MODULE_AKTIVIERUNG.md).
 
 Twig:
 
@@ -270,7 +269,7 @@ Twig:
 {% endif %}
 ```
 
-Compliance-Wizard: `/{locale}/compliance/wizard/nis2`
+Compliance-Wizard: `/{locale}/compliance-wizard/nis2`
 
 ---
 

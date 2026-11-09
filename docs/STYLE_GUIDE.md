@@ -4,6 +4,10 @@
 **Status:** Production Ready
 **WCAG Compliance:** 2.1 AA
 
+> **Markup examples partly outdated.** Bootstrap markup (`btn btn-*`, `badge bg-*`, `alert alert-*`, Bootstrap modals)
+> fails CI Gate 62. Use the Aurora v4 macros in `templates/_components/_fa_*.html.twig` (list in `CLAUDE.md`,
+> "Aurora v4 Components"; live preview `/dev/design-system`). Design reference: [`design_system/DESIGN_SYSTEM.md`](design_system/DESIGN_SYSTEM.md).
+
 ---
 
 ## 📋 Table of Contents
@@ -29,8 +33,8 @@
 This style guide defines the visual language and UI patterns for the Little ISMS Helper application. Follow these guidelines to ensure consistency, accessibility, and maintainability.
 
 ### Framework Stack
-- **Frontend:** Bootstrap 5.3
-- **Icons:** Bootstrap Icons
+- **Frontend:** Bootstrap 5.3 with the FairyAurora v4 design system on top
+- **Icons:** Aurora `.fa-icon--*` (CSS mask); Bootstrap Icons `bi-*` are blocked by CI Gate 16
 - **JS:** Stimulus + Turbo
 - **Template Engine:** Twig
 - **Theme:** Cyberpunk-inspired with dual light/dark modes

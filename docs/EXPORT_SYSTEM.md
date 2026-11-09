@@ -6,6 +6,8 @@ Das Little ISMS Helper verfügt über ein professionelles Export-System mit **CS
 
 ### Implementierungsstatus
 
+Alle Routen tragen das Locale-Präfix (`/de/…`, `/en/…`).
+
 | Modul | CSV Export | Excel Export (Multi-Tab) | PDF Export | Status |
 |-------|-----------|--------------------------|------------|--------|
 | **Risk Management** | ✅ `/risk/export` | ✅ `/risk/export/excel` | ✅ `/risk/export/pdf` | **LIVE** |
@@ -47,6 +49,10 @@ Das Little ISMS Helper verfügt über ein professionelles Export-System mit **CS
 - Professional layout with color-coded badges
 
 **Example Filename:** `risk_management_report_2025-11-13_153045.pdf`
+
+Risiko-Exporte baut `App\Service\Risk\RiskRegisterExporter`. Große CSV-Register laufen asynchron
+über `POST /risk/export/dispatch` (Fortschrittsseite, Download unter `/risk/export/download/{id}`,
+nur für den Auftraggeber — `AsyncJobVoter`).
 
 ### 2. Gap Analysis PDF Export
 
@@ -141,11 +147,7 @@ Das Little ISMS Helper verfügt über ein professionelles Export-System mit **CS
 
 ### PDF Template System
 
-**Base Template:** `templates/pdf/base.html.twig`
-- Fixed header/footer
-- Page numbering
-- Professional styling
-- Color scheme matching Excel exports
+**Base Template:** `templates/pdf/_base_document.html.twig` (fa-report-doc-Layout: Cover, Executive Summary, Inhalt)
 
 **Specific Templates:**
 - `templates/pdf/risk_report.html.twig`
@@ -364,100 +366,27 @@ public function exportGapsExcel(int $id): Response
 
 ### Schritt 2: Template-Button hinzufügen
 
+Export-Buttons sind Aktionen im Seitenkopf (`_fa_page_header`), siehe `templates/compliance/gap_analysis.html.twig`:
+
 ```twig
-{# templates/compliance/gap_analysis.html.twig #}
-<div class="button-group">
-    <a href="{{ path('app_compliance_export_gaps_excel', {id: framework.id}) }}" class="btn btn-success">
-        📊 Excel Export
-    </a>
-    <a href="{{ path('app_compliance_export_gaps', {id: framework.id}) }}" class="btn btn-secondary">
-        📄 CSV Export
-    </a>
-</div>
+{{ _fa_page_header.render({
+    title: 'compliance.title.gap_analysis'|trans({}, 'compliance'),
+    actions: [
+        { label: 'compliance.action.export_excel'|trans({}, 'compliance'), variant: 'secondary',
+          href: path('app_compliance_export_gaps_excel', {id: framework.id}), attrs: {'data-turbo': 'false'} },
+        { label: 'compliance.action.export_csv'|trans({}, 'compliance'), variant: 'ghost',
+          href: path('app_compliance_export_gaps', {id: framework.id}), attrs: {'data-turbo': 'false'} }
+    ]
+}) }}
 ```
 
 ---
 
-## 🎨 Konfigurierbarkeit für Tenant-Branding
+## 🎨 Tenant-Branding
 
-### Vorschlag: Tenant-spezifische Export-Konfiguration
-
-```yaml
-# config/packages/export_config.yaml (oder Tenant-Entity)
-parameters:
-    export_config:
-        excel:
-            colors:
-                critical: 'FF0000'
-                high: 'FFA500'
-                medium: 'FFFF00'
-                low: '90EE90'
-                header_bg: 'D9E1F2'
-                summary_bg: 'FFF2CC'
-            company_logo: '/public/uploads/logos/%tenant_code%_logo.png'
-
-        pdf:
-            company_name: '%tenant_name%'
-            footer_text: 'Vertraulich - Nur für internen Gebrauch'
-            logo_path: '/uploads/logos/%tenant_code%_logo.png'
-            primary_color: '#1F4E78'
-            font_family: 'DejaVu Sans'
-```
-
-### Implementierung
-
-```php
-// Service: src/Service/TenantExportConfigService.php
-class TenantExportConfigService
-{
-    public function __construct(
-        private ParameterBagInterface $params,
-        private ?Tenant $tenant = null
-    ) {}
-
-    public function getColor(string $name): string
-    {
-        $config = $this->params->get('export_config')['excel']['colors'];
-
-        // Tenant-override if available
-        if ($this->tenant && $this->tenant->getExportColors()) {
-            $tenantColors = $this->tenant->getExportColors();
-            return $tenantColors[$name] ?? $config[$name] ?? 'FFFFFF';
-        }
-
-        return $config[$name] ?? 'FFFFFF';
-    }
-
-    public function getCompanyLogo(): ?string
-    {
-        if ($this->tenant && $this->tenant->getLogoPath()) {
-            return $this->tenant->getLogoPath();
-        }
-
-        return $this->params->get('export_config')['excel']['company_logo'] ?? null;
-    }
-}
-```
-
-### Usage
-
-```php
-// In Controller
-$spreadsheet = $this->excelExportService->createSpreadsheet('Report');
-
-// Add logo if configured
-if ($logoPath = $this->tenantExportConfig->getCompanyLogo()) {
-    $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-    $drawing->setName('Logo');
-    $drawing->setPath($logoPath);
-    $drawing->setCoordinates('A1');
-    $drawing->setHeight(50);
-    $drawing->setWorksheet($spreadsheet->getActiveSheet());
-}
-
-// Use tenant colors
-$criticalColor = $this->tenantExportConfig->getColor('critical');
-```
+Eine Export-Konfiguration pro Tenant (Farben, Logo in Excel/PDF) gibt es nicht. Die Farben stehen
+zentral in `ExcelExportService::getColor()`. Tenant-Logos liegen in `public/uploads/tenants/`
+(`Tenant::logoPath` = `uploads/tenants/<code>-<id>.<ext>`, Upload in `TenantManagementController`).
 
 ---
 
@@ -483,35 +412,11 @@ $criticalColor = $this->tenantExportConfig->getColor('critical');
 ## 🔒 Security
 
 Alle Exporte nutzen:
-- ✅ **Formula Injection Prevention** - Automatisches Prefixen gefährlicher Zeichen
-- ✅ **Filename Sanitization** - Nur sichere Zeichen in Dateinamen
-- ✅ **Authentication Required** - Alle Routes mit `#[IsGranted('ROLE_USER')]`
-- ✅ **Tenant Isolation** - Nur eigene Daten exportierbar
-
----
-
-## 📝 Next Steps
-
-### ✅ Completed Features
-1. ✅ **CSV Exports** - All 5 modules (Risk, Gap Analysis, Framework Comparison, Data Reuse, Transitive)
-2. ✅ **Excel Exports** - All 5 modules with multi-tab professional layouts
-3. ✅ **PDF Exports** - All 5 modules with management recommendations
-   - Risk Management with statistics
-   - Gap Analysis with Q1-Q4 roadmap
-   - Framework Comparison with harmonization strategy
-   - Data Reuse Insights with Quick Wins
-   - Transitive Compliance with multi-framework strategy
-
-### Priorität 1: Konfigurationssystem
-- Tenant-Entity erweitern mit Export-Config
-- Admin-UI für Farben/Logo-Upload
-- Preview-Funktion für Exporte
-
-### Priorität 2: Advanced Features
-- Charts/Diagramme in Excel (PhpSpreadsheet Charts)
-- Pivot Tables
-- Email-Versand von Reports
-- Scheduled Exports (Cron)
+- **Formula Injection Prevention** – Zellen mit Datensatztext laufen durch `App\Util\CsvSanitizer::sanitize()`
+  (`ExcelExportService` für Header, Summary und Datenzeilen)
+- **Login erforderlich** – `ROLE_USER` (Attribut an `RiskController`, `access_control` für die Compliance-Exporte)
+- **Tenant Isolation** – Risiken und Erfüllungen nur der eigenen Organisation
+- **PDF ohne Remote-Ressourcen** – DomPDF mit `isRemoteEnabled: false`
 
 ---
 
@@ -519,10 +424,10 @@ Alle Exporte nutzen:
 
 ```bash
 # 1. User öffnet Risk Management
-GET /risk
+GET /de/risk
 
 # 2. Klickt auf "Excel Export"
-GET /risk/export/excel
+GET /de/risk/export/excel
 
 # 3. Download startet
 → risk_management_report_2025-11-13_153045.xlsx
@@ -544,13 +449,5 @@ GET /risk/export/excel
 ## 📞 Support
 
 Bei Fragen oder Problemen:
-- Dokumentation: `/docs/EXPORT_SYSTEM.md`
-- Service: `src/Service/ExcelExportService.php`
-- Beispiel: `src/Controller/RiskController.php::exportExcel()`
-
----
-
-**Erstellt:** 2025-11-13
-**Autor:** Claude AI
-**Version:** 1.0.0
-**Branch:** `claude/compliance-compare-page-011CV66D3n3i4LL3cdU8tgtw`
+- Service: `src/Service/ExcelExportService.php`, `src/Service/PdfExportService.php`
+- Beispiel: `src/Service/Risk/RiskRegisterExporter.php`

@@ -2,7 +2,7 @@
 
 > **Hinweis:** Dieser Guide deckt die `corporate_governance`-Tabellenmigration ab.
 > Für die initiale Multi-Tenancy-Migration (`tenant_id`-Spalten) siehe
-> [`/MIGRATION_GUIDE.md`](../MIGRATION_GUIDE.md) im Repo-Root.
+> [`MIGRATION_GUIDE_TENANT_2025-11.md`](MIGRATION_GUIDE_TENANT_2025-11.md).
 
 ## Überblick
 

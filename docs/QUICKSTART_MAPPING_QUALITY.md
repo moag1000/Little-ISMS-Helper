@@ -10,7 +10,7 @@ Bevor Sie beginnen, stellen Sie sicher, dass folgende Daten vorhanden sind:
 
 ```bash
 # 1. Prüfen ob Frameworks geladen sind
-php bin/console app:list-frameworks
+php bin/console doctrine:query:sql "SELECT code, name FROM compliance_framework"
 
 # 2. Prüfen ob Requirements vorhanden sind
 php bin/console doctrine:query:sql "SELECT COUNT(*) FROM compliance_requirement"
@@ -27,7 +27,7 @@ php bin/console doctrine:query:sql "SELECT COUNT(*) FROM compliance_mapping"
 **Falls Daten fehlen:**
 ```bash
 # Frameworks importieren
-php bin/console app:import-framework ISO27001
+php bin/console app:load-iso27001-requirements
 
 # Cross-Framework Mappings erstellen
 php bin/console app:create-cross-framework-mappings
