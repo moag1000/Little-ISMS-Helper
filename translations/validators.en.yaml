@@ -739,3 +739,6 @@ workflow_instance.validation.entity_id_positive: 'The entity ID must be a positi
 'register.validation.title_required': 'Title is required.'
 'validators.notification.webhook_secret_required': 'A webhook needs an HMAC secret. Without a signature the receiver cannot detect forged notifications; unsigned webhooks are not sent.'
 'responsibility.self_assignment': 'Only a manager or whoever already holds this record may put you in charge of it: responsibility grants rights on the record.'
+'write_rule.help.create_only': 'Set when the record is created; only a manager corrects it later.'
+'write_rule.help.manager_or_responsible': 'Classification: a manager or the person responsible for the record changes it.'
+'write_rule.refused': 'Only a manager or the person responsible for the record may make this change: classification and responsibility are not shared fields.'

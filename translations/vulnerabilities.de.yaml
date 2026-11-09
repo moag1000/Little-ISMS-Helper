@@ -1,4 +1,6 @@
 vulnerability:
+    step_evidence:
+        remediated_date: 'Wird beim Schritt „Gepatcht“ oder „Mitigiert“ gesetzt.'
     title: Schwachstellen
     new: 'Neue Schwachstelle'
     prefill:

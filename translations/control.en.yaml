@@ -1,4 +1,6 @@
 control:
+  step_evidence:
+    last_review_date: 'Set by "Confirm review".'
   title:
     plural: Controls
   section:

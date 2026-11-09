@@ -1,4 +1,7 @@
 supplier:
+    step_evidence:
+        security_score: 'Comes from the review of the supplier questionnaire.'
+        last_security_assessment: 'Set by the questionnaire review or "Confirm review".'
     title: Suppliers
     ict_library:
         applied: 'Supplier "%name%" created from the ICT-provider library. Please review and complete the details.'

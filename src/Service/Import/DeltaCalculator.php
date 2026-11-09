@@ -29,6 +29,8 @@ final class DeltaCalculator
     public function __construct(
         private readonly EntityMapperRegistry $registry,
         private readonly EntityManagerInterface $em,
+        // S22: checks each row like the commit will (validator, derived values); null = type checks only
+        private readonly ?ImportEntityWriter $writer = null,
     ) {}
 
     /**
@@ -86,6 +88,9 @@ final class DeltaCalculator
                 if ($newValues === null) {
                     continue;
                 }
+                if (!$this->rowIsValid(null, $newValues, $config, $row, $rowNumber, $errors)) {
+                    continue;
+                }
                 if ($key !== null) {
                     $newKeys[$key] = $rowNumber;
                 }
@@ -108,6 +113,13 @@ final class DeltaCalculator
                 $entityId  = $existing->getId();
                 $oldValues = $this->getEntityValues($existing);
                 $diff      = $this->computeDiff($oldValues, $newValues, $config->ignoredFields);
+
+                if ($diff !== [] && !$this->rowIsValid($existing, $newValues, $config, $row, $rowNumber, $errors)) {
+                    if ($entityId !== null) {
+                        $matchedIds[$entityId] = true; // matched, only refused: not a delete candidate
+                    }
+                    continue;
+                }
 
                 if ($diff === []) {
                     $unchanged[] = [
@@ -187,6 +199,40 @@ final class DeltaCalculator
 
             return null;
         }
+    }
+
+    /**
+     * S22: the row as the commit would write it passes the entity constraints
+     * (and keeps derived values) — otherwise it is a row error in the preview.
+     * The stored record is reset afterwards; nothing is written.
+     *
+     * @param array<string, mixed>       $newValues
+     * @param array<string, mixed>       $row
+     * @param list<array<string, mixed>> $errors
+     */
+    private function rowIsValid(?object $existing, array $newValues, DeltaConfig $config, array $row, int $rowNumber, array &$errors): bool
+    {
+        if ($this->writer === null) {
+            return true;
+        }
+        try {
+            if ($existing === null) {
+                $fqcn = 'App\\Entity\\' . $config->entityType;
+                $this->writer->create($config->entityType, EvidenceFieldFilter::forCreate($fqcn, $newValues), $config->tenant, true);
+            } else {
+                $this->writer->update($existing, $newValues, $config->tenant, true);
+            }
+        } catch (ImportRowInvalidException $e) {
+            $errors[] = [
+                'rowNumber' => $rowNumber,
+                'data'      => $row,
+                'errors'    => $e->getErrors() !== [] ? $e->getErrors() : [$e->getMessage()],
+            ];
+
+            return false;
+        }
+
+        return true;
     }
 
     /**

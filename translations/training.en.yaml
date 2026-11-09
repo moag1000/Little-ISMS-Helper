@@ -1,4 +1,6 @@
 training:
+  step_evidence:
+    completion_date: 'Set by the "complete" step.'
   filter:
     participant: 'Trainings of %name%'
   prefill:

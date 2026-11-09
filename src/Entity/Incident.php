@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Attribute\{ApiReadOnlyEvidence, ModuleField};
+use App\Attribute\{ApiReadOnlyEvidence, ModuleField, CreateOnly, ManagerOrResponsibleField};
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
@@ -111,7 +111,7 @@ class Incident
      * voter path.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ManagerOrResponsibleField('Whether the group sees the incident is the organisation\'s decision, not a shared field')]
     private bool $visibleToHolding = true;
 
     #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class, inversedBy: 'resultingIncidents')]
@@ -144,7 +144,7 @@ class Incident
 
     #[ORM\Column(type: 'string', length: 50, nullable: true, enumType: IncidentSeverity::class)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotNull(message: 'incident.validation.severity_required')]
+    #[Assert\NotNull(message: 'incident.validation.severity_required'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?IncidentSeverity $severity = null;
 
     #[ORM\Column(type: 'string', length: 50, enumType: IncidentStatus::class)]
@@ -158,7 +158,7 @@ class Incident
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read', 'incident:create'])]
-    #[Assert\NotNull(message: 'incident.validation.detected_at_required')]
+    #[Assert\NotNull(message: 'incident.validation.detected_at_required'), CreateOnly('Reporting deadlines (NIS-2 Art. 23, GDPR Art. 33) run from the moment the incident became known')]
     private ?DateTimeInterface $detectedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
@@ -238,7 +238,7 @@ class Incident
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotNull(message: 'incident.validation.data_breach_flag_required')]
+    #[Assert\NotNull(message: 'incident.validation.data_breach_flag_required'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?bool $dataBreachOccurred = false;
 
     /**
@@ -247,7 +247,7 @@ class Incident
      * ({@see getNis2SignificanceReasons()}) applies until the ISB decides.
      */
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?bool $notificationRequired = null;
 
     /**
@@ -279,7 +279,7 @@ class Incident
      * - availability: Service availability
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     #[Assert\Choice(
         choices: ['operational', 'security', 'privacy', 'availability'],
         message: 'incident.validation.nis2_category_invalid'
@@ -290,21 +290,21 @@ class Incident
      * Does this incident have cross-border impact? (NIS2 relevant)
      */
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private bool $crossBorderImpact = false;
 
     /**
      * Number of affected users/customers (NIS2 reporting)
      */
     #[ORM\Column(nullable: true)]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?int $affectedUsersCount = null;
 
     /**
      * Estimated financial impact in EUR (NIS2 reporting)
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2, nullable: true)]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?string $estimatedFinancialImpact = null;
 
     /** National authority notified (e.g., BSI, ENISA) */
@@ -1095,7 +1095,7 @@ class Incident
      * Allowed values: 'event' | 'incident'
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read', 'incident:write']), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?string $incidentClassification = null;
 
     /**
@@ -1132,21 +1132,21 @@ class Incident
      * Allowed values: 'major_ict_incident' | 'significant_cyber_threat'
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?string $ictIncidentClassification = null;
 
     /**
      * DORA Art. 19(1)(a) — Data loss occurred during the incident.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private bool $dataLossOccurred = false;
 
     /**
      * DORA Art. 19(1)(d) — Data leakage (exfiltration) occurred.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private bool $dataLeakageOccurred = false;
 
     /**
@@ -1154,7 +1154,7 @@ class Incident
      */
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
-    #[Assert\Range(min: 1, max: 5)]
+    #[Assert\Range(min: 1, max: 5), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?int $reputationalImpact = null;
 
     /**
@@ -1165,14 +1165,14 @@ class Incident
     #[ORM\ManyToMany(targetEntity: BusinessProcess::class)]
     #[ORM\JoinTable(name: 'incident_critical_services')]
     #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
-    #[MaxDepth(1)]
+    #[MaxDepth(1), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private Collection $criticalServicesAffected;
 
     /**
      * DORA Art. 19(1)(f) — Recurring incident flag.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private bool $recurringIncident = false;
 
     /**
@@ -1180,21 +1180,21 @@ class Incident
      */
     #[ORM\Column(nullable: true)]
     #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
-    #[Assert\PositiveOrZero]
+    #[Assert\PositiveOrZero, ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?int $clientsAffected = null;
 
     /**
      * DORA Art. 19 — Financial volume of clients affected (EUR, DECIMAL as string).
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?string $clientsAffectedFinancialVolume = null;
 
     /**
      * DORA Art. 19 — Service replicate / failover activated to contain impact.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora'), ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private bool $replicationOfImpact = false;
 
     /**

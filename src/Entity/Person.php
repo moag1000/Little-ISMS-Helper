@@ -24,6 +24,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Attribute\ManagerOrResponsibleField;
 
 /**
  * Person Entity
@@ -103,6 +104,7 @@ class Person
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['person:read', 'person:write'])]
+    #[ManagerOrResponsibleField('Access validity of a person is identity administration (ISO 27001 A.5.16, A.5.18)')]
     private ?bool $active = true;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -111,10 +113,12 @@ class Person
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['person:read', 'person:write'])]
+    #[ManagerOrResponsibleField('Access validity of a person is identity administration (ISO 27001 A.5.16, A.5.18)')]
     private ?DateTimeInterface $accessValidFrom = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['person:read', 'person:write'])]
+    #[ManagerOrResponsibleField('Access validity of a person is identity administration (ISO 27001 A.5.16, A.5.18)')]
     private ?DateTimeInterface $accessValidUntil = null;
 
     /** @var Collection<int, PhysicalAccessLog> */

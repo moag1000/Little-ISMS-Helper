@@ -25,6 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use App\Service\OwnerResolver;
 use App\Validator\Constraint\SameTenantOwner;
 use Symfony\Component\Serializer\Attribute\SerializedName;
+use App\Attribute\ManagerOrResponsibleField;
 
 /**
  * Location Entity
@@ -121,6 +122,7 @@ class Location
     #[ORM\Column(length: 50)]
     #[Groups(['location:read', 'location:write'])]
     #[Assert\Choice(choices: ['public', 'restricted', 'controlled', 'secure', 'high_security'])]
+    #[ManagerOrResponsibleField('Security zone of a location (ISO 27001 A.7.1) is set by a manager or the location owner')]
     private ?string $securityLevel = 'public';
 
     #[ORM\Column(type: Types::BOOLEAN)]

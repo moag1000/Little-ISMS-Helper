@@ -190,6 +190,12 @@ final class BulkImportController extends AbstractController
         $this->denyAccessUnlessGranted(BulkImportVoter::VIEW, $batch);
         $this->denyAccessUnlessGranted(BulkImportVoter::EDIT, $batch);
 
+        // S22 (W9 L5): the module gate holds on every step, not only on upload — an import
+        // started while the module was active does not continue after it was switched off.
+        if ($redirect = $this->assertEntityModule((string) $batch->getEntityType())) {
+            return $redirect;
+        }
+
         $entityTypePascal = $this->toPascalCase($entityType);
 
         // Retrieve auto-suggested mappings via the orchestrator's preview (read-only parse).
@@ -280,6 +286,12 @@ final class BulkImportController extends AbstractController
         $batch = $this->findBatchOr404($batchId);
         $this->denyAccessUnlessGranted(BulkImportVoter::VIEW, $batch);
 
+        // S22 (W9 L5): the module gate holds on every step, not only on upload — an import
+        // started while the module was active does not continue after it was switched off.
+        if ($redirect = $this->assertEntityModule((string) $batch->getEntityType())) {
+            return $redirect;
+        }
+
         if (!in_array($batch->getStatus(), [
             BulkImportBatch::STATUS_UPLOADED,
             BulkImportBatch::STATUS_MAPPED,
@@ -292,6 +304,9 @@ final class BulkImportController extends AbstractController
                 'batchId'    => $batchId,
             ]);
         }
+
+        // the preview moves the batch to "preview" (a write): the same right as mapping it
+        $this->denyAccessUnlessGranted(BulkImportVoter::EDIT, $batch);
 
         $entityTypePascal = $this->toPascalCase($entityType);
 
@@ -319,6 +334,12 @@ final class BulkImportController extends AbstractController
     {
         $batch = $this->findBatchOr404($batchId);
         $this->denyAccessUnlessGranted(BulkImportVoter::COMMIT, $batch);
+
+        // S22 (W9 L5): the module gate holds on every step, not only on upload — an import
+        // started while the module was active does not continue after it was switched off.
+        if ($redirect = $this->assertEntityModule((string) $batch->getEntityType())) {
+            return $redirect;
+        }
 
         $confirmForm = $this->createForm(PreviewConfirmType::class, null);
         $confirmForm->handleRequest($request);

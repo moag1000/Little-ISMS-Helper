@@ -9,9 +9,12 @@ use App\Entity\Person;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\User;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
 use App\Form\Util\DerivedField;
+use App\Form\Util\ReadOnlyField;
+use App\Security\Voter\RiskVoter;
 use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -21,13 +24,24 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class RiskTreatmentPlanType extends AbstractType implements SectionMapInterface
 {
+    public function __construct(
+        private readonly AuthorizationCheckerInterface $authorization,
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     public static function getSectionMap(): array
     {
         return [
@@ -209,6 +223,45 @@ final class RiskTreatmentPlanType extends AbstractType implements SectionMapInte
             $plan->getControls()->count() > 0
                 ? ['risk_treatment_plan.help.completion_derived', ['%count%' => $plan->getControls()->count()]]
                 : null);
+
+        // S22 (H2): the plan's controls ARE the risk's controls (P5). Whoever may not edit
+        // the risk (RiskVoter: manager, risk.edit or the risk owner) does not change them
+        // through the plan either — shown read-only, and refused when the risk is chosen anew.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            $plan = $event->getData();
+            $risk = $plan instanceof RiskTreatmentPlan ? $plan->getRisk() : null;
+            if ($risk !== null && !$this->authorization->isGranted(RiskVoter::EDIT, $risk)) {
+                ReadOnlyField::apply($event->getForm(), 'controls', $this->translator->trans('risk_treatment_plan.help.controls_risk_owner', [], 'risk_treatment_plan'));
+            }
+        }, -50);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
+            $plan = $event->getData();
+            $form = $event->getForm();
+            $risk = $plan instanceof RiskTreatmentPlan ? $plan->getRisk() : null;
+            if ($risk === null || !$form->has('controls') || !self::controlsChanged($risk)) {
+                return;
+            }
+            if (!$this->authorization->isGranted(RiskVoter::EDIT, $risk)) {
+                $form->get('controls')->addError(new FormError($this->translator->trans('risk_treatment_plan.error.controls_risk_owner', [], 'risk_treatment_plan')));
+            }
+        });
+    }
+
+    /** Whether the risk's stored control list differs from what the form left in it. */
+    private static function controlsChanged(Risk $risk): bool
+    {
+        $controls = $risk->getControls();
+        if (!$controls instanceof PersistentCollection || !$controls->isDirty()) {
+            return false;
+        }
+        $ids = static function (array $list): array {
+            $ids = array_map(static fn (Control $c): int => $c->getId() ?? spl_object_id($c), array_values($list));
+            sort($ids);
+
+            return $ids;
+        };
+
+        return $ids($controls->getSnapshot()) !== $ids($controls->toArray());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

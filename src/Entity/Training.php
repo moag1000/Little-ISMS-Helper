@@ -33,6 +33,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Attribute\SerializedName;
+use App\Attribute\ApiReadOnlyEvidence;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 #[ORM\Index(name: 'idx_training_type', columns: ['training_type'])]
@@ -202,7 +203,8 @@ class Training
     private ?string $feedback = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['training:read', 'training:write'])]
+    #[Groups(['training:read'])]
+    #[ApiReadOnlyEvidence('lifecycle step complete (S22)')]
     private ?DateTimeInterface $completionDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

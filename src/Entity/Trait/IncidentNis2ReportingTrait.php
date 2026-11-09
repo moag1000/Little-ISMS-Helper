@@ -12,7 +12,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Attribute\{ApiReadOnlyEvidence, ModuleField};
+use App\Attribute\{ApiReadOnlyEvidence, ModuleField, ManagerOrResponsibleField};
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
@@ -98,6 +98,7 @@ trait IncidentNis2ReportingTrait
      */
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     #[Groups(['incident:read', 'incident:write']), ModuleField('nis2_dora')]
+    #[ManagerOrResponsibleField('reporting duty: NIS-2 Art. 23, GDPR Art. 33, DORA Art. 18/19')]
     private ?bool $nis2SuspectedMalicious = null;
 
     public function getNis2SuspectedMalicious(): ?bool

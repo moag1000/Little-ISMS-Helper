@@ -14,6 +14,7 @@ use App\Repository\AssetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
 use App\Service\Owner\OwnerTextResolver;
+use App\Service\ProtectionRequirementService;
 
 /**
  * GSTOOL XML import (Zielobjekte → Asset).
@@ -148,6 +149,7 @@ final class GstoolXmlImporter
         private readonly GstoolMigrationTable $migrationTable,
         private readonly ?EntityManagerRecovery $entityManagerRecovery = null,
         private readonly ?OwnerTextResolver $ownerTexts = null,
+        private readonly ?ProtectionRequirementService $protectionRequirements = null,
     ) {
     }
 
@@ -719,7 +721,15 @@ final class GstoolXmlImporter
         // re-assess after the import.
         $asset->setConfidentialityValue($row['confidentiality'] ?? $asset->getConfidentialityValue() ?? 2);
         $asset->setIntegrityValue($row['integrity'] ?? $asset->getIntegrityValue() ?? 2);
-        $asset->setAvailabilityValue($row['availability'] ?? $asset->getAvailabilityValue() ?? 2);
+        $availability = $row['availability'] ?? $asset->getAvailabilityValue() ?? 2;
+        // P5 / S22: availability that follows the BIA of a business process is not lowered by the file.
+        if ($asset->getId() !== null && $this->protectionRequirements !== null) {
+            $bia = $this->protectionRequirements->calculateAvailabilityRequirement($asset);
+            if (($bia['source'] ?? null) === 'bcm') {
+                $availability = max((int) $availability, (int) $bia['value']);
+            }
+        }
+        $asset->setAvailabilityValue($availability);
     }
 
     /**

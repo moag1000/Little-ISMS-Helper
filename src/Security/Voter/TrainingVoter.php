@@ -6,6 +6,8 @@ namespace App\Security\Voter;
 
 use App\Entity\Training;
 use App\Entity\User;
+use App\Service\Responsibility\ResponsibilityResolver;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -15,7 +17,8 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * Training Voter — tenant isolation for Training records (OWASP A01).
  *
  * VIEW / EDIT: the training belongs to the user's own tenant (holding roles
- * may VIEW descendants; only ROLE_SUPER_ADMIN crosses tenants). Without a dedicated voter only the
+ * may VIEW descendants; only ROLE_SUPER_ADMIN crosses tenants). EDIT inside
+ * the tenant: manager scope or the trainer (S22). Without a dedicated voter only the
  * permission-based EntityVoter answered, which requires an explicit
  * `training.edit` permission no built-in role carries — so per-record checks
  * such as the bulk "assign" action rejected every manager.
@@ -29,6 +32,9 @@ final class TrainingVoter extends Voter
 
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
+        // Lazy: the resolver collects the deadline sources.
+        #[Autowire(lazy: true)]
+        private readonly ?ResponsibilityResolver $responsibility = null,
     ) {
     }
 
@@ -51,6 +57,17 @@ final class TrainingVoter extends Voter
 
         // SUPER_ADMIN everywhere; everyone else (ROLE_ADMIN included) only
         // inside the own tenant, holding roles read-only down the tree.
-        return $this->decideTenantScope($user, $subject->getTenant(), $attribute === self::VIEW) ?? true;
+        $scope = $this->decideTenantScope($user, $subject->getTenant(), $attribute === self::VIEW);
+        if ($scope !== null) {
+            return $scope;
+        }
+
+        // S22 (M5): participants, completion and the mandatory flag are the evidence of
+        // ISO 27001 A.6.3 / NIS-2 Art. 20(2) (`training_participation`). In scope everyone
+        // reads; editing needs the manager scope or being the trainer (ResponsibilityResolver),
+        // like RiskVoter. Before S22 every ROLE_USER could edit every training.
+        return $attribute === self::VIEW
+            || $this->hasReachableRole($user, 'ROLE_MANAGER')
+            || ($this->responsibility?->isResponsibleFor($user, $subject) ?? false);
     }
 }

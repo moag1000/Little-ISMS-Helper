@@ -291,7 +291,11 @@ systemctl enable isms-worker && systemctl start isms-worker
   responsible"); `DeadlineLinkReachabilityTest` fails when a source's link shuts out who it reminds.
   Responsibility is a right, so nobody without ROLE_MANAGER makes themselves responsible for an existing record
   (`EventListener\SelfAssignmentGuard` on flush, slots found by `ResponsibleSlotWriteContractTest`) and only a
-  manager sets `Person.linkedUser` (S20).
+  manager sets `Person.linkedUser` (S20). Write rules live on the entity, not in the FormType (S22):
+  `#[CreateOnly]` (manager corrects after create), `#[ManagerOrResponsibleField]` (classification: manager or
+  the holder), `#[ApiReadOnlyEvidence]` (the step writes it); `EventListener\WriteRuleGuard` enforces them on
+  flush for every writer, `WriteRuleFormExtension` disables them in forms, the bulk import writes through
+  `Import\ImportEntityWriter` (validator per row, preview too). Gate 96 `tests/Security/WritePathParityTest`.
 - `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
   `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
   My Day and reminder mails read only from these; a new norm = new sources. A duty that is one date field of one

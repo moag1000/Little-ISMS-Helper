@@ -162,9 +162,11 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 // Status transitions are owned exclusively by LifecycleService.
                 'mapped' => false,
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('securityScore', IntegerType::class, [
+                'disabled' => true,
                 'label' => 'supplier.field.security_score',
-                'help' => 'supplier.help.security_score',
+                'help' => 'supplier.step_evidence.security_score',
                 'required' => false,
                 'attr' => [
                     'min' => 0,
@@ -172,10 +174,13 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                     'placeholder' => 'supplier.placeholder.security_score',
                 ],
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('lastSecurityAssessment', DateType::class, [
+                'disabled' => true,
                 'label' => 'supplier.field.last_security_assessment',
                 'widget' => 'single_text',
                 'required' => false,
+                'help' => 'supplier.step_evidence.last_security_assessment',
             ])
             ->add('nextAssessmentDate', DateType::class, [
                 'label' => 'supplier.field.next_assessment_date',

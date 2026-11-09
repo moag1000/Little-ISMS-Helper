@@ -1,4 +1,6 @@
 training:
+  step_evidence:
+    completion_date: 'Wird beim Schritt „Abschließen“ gesetzt.'
   filter:
     participant: 'Schulungen von %name%'
   prefill:

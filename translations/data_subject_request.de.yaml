@@ -3,6 +3,9 @@
 
 # Seitentitel
 dsr:
+    step_evidence:
+        response_at: 'Wird mit „Abschließen“ oder „Ablehnen“ gesetzt (Art. 12 Abs. 3 DSGVO).'
+        extension_notified_at: 'Wird mit „Frist verlängern“ gesetzt.'
     page:
         index_title: "Betroffenenanfragen"
         index_subtitle: "Verwaltung von DSGVO-Betroffenenrechten (Art. 15-22)"

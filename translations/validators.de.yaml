@@ -744,3 +744,6 @@ workflow_instance.validation.entity_id_positive: 'Die Entitäts-ID muss eine pos
 'register.validation.title_required': 'Titel ist erforderlich.'
 'validators.notification.webhook_secret_required': 'Ein Webhook braucht ein HMAC-Geheimnis. Ohne Signatur kann der Empfänger gefälschte Meldungen nicht erkennen; unsignierte Webhooks werden nicht gesendet.'
 'responsibility.self_assignment': 'Sich selbst als Verantwortliche oder Verantwortlicher eintragen darf nur ein Manager oder wer den Datensatz schon verantwortet: Die Zuständigkeit gibt Rechte auf den Datensatz.'
+'write_rule.help.create_only': 'Beim Anlegen festgelegt; nachträglich korrigiert den Wert nur ein Manager.'
+'write_rule.help.manager_or_responsible': 'Klassifizierung: Ändern darf sie ein Manager oder wer den Datensatz verantwortet.'
+'write_rule.refused': 'Diese Änderung darf nur ein Manager oder wer den Datensatz verantwortet: Klassifizierung und Zuständigkeit sind keine gemeinsamen Felder.'

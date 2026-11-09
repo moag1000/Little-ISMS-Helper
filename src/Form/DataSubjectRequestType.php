@@ -170,12 +170,14 @@ final class DataSubjectRequestType extends AbstractType implements SectionMapInt
             // ================================================================
             // SECTION 5: Response Tracking (GDPR Art. 12(3))
             // ================================================================
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('responseAt', DateTimeType::class, [
+                'disabled' => true,
                 'widget' => 'single_text',
                 'label' => 'dsr.form.response_at',
                 'required' => false,
                 'input' => 'datetime_immutable',
-                'help' => 'dsr.form.help.response_at',
+                'help' => 'dsr.step_evidence.response_at',
             ])
             ->add('extendedDeadlineAt', DateTimeType::class, [
                 'widget' => 'single_text',
@@ -193,12 +195,14 @@ final class DataSubjectRequestType extends AbstractType implements SectionMapInt
                 ],
                 'help' => 'dsr.form.help.extension_reason',
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('extensionNotifiedAt', DateTimeType::class, [
+                'disabled' => true,
                 'widget' => 'single_text',
                 'label' => 'dsr.form.extension_notified_at',
                 'required' => false,
                 'input' => 'datetime_immutable',
-                'help' => 'dsr.form.help.extension_notified_at',
+                'help' => 'dsr.step_evidence.extension_notified_at',
             ])
             ->add('responseDocument', TextType::class, [
                 'label' => 'dsr.form.response_document',

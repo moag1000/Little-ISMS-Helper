@@ -17,6 +17,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Attribute\CreateOnly;
+use App\Attribute\ManagerOrResponsibleField;
 
 /**
  * CRITICAL-08: Data Breach Management
@@ -74,6 +76,7 @@ class DataBreach
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Assert\NotNull]
+    #[CreateOnly('The 72-hour deadline of GDPR Art. 33 runs from the moment the breach became known')]
     private ?DateTimeInterface $detectedAt = null;
 
     /**
@@ -121,6 +124,7 @@ class DataBreach
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['low', 'medium', 'high', 'critical'])]
+    #[ManagerOrResponsibleField('Severity decides the notification of the data subjects (GDPR Art. 34)')]
     private ?string $severity = null;
 
     // ============================================================================

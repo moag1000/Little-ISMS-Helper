@@ -154,10 +154,13 @@ final class PatchType extends AbstractType implements SectionMapInterface
                 'widget' => 'single_text',
                 'help' => 'patch.help.deployment_deadline',
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('deployedDate', DateType::class, [
+                'disabled' => true,
                 'label' => 'patch.field.deployed_date',
                 'required' => false,
                 'widget' => 'single_text',
+                'help' => 'patch.step_evidence.deployed_date',
             ]);
 
         // Owner cluster (User + Person + deputies) via the shared trait.

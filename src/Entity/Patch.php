@@ -15,6 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Service\OwnerResolver;
 use App\Validator\Constraint\SameTenantOwner;
+use App\Attribute\ManagerOrResponsibleField;
+use App\Attribute\ApiReadOnlyEvidence;
 
 /**
  * Patch Entity for NIS2 Compliance (Art. 21.2.e — security in development, acquisition, maintenance incl. vulnerability handling)
@@ -100,6 +102,7 @@ class Patch
      * - low: Deploy within 90 days
      */
     #[ORM\Column(length: 20)]
+    #[ManagerOrResponsibleField('Priority and deadline decide how fast it must be deployed (ISO 27001 A.8.8)')]
     private ?string $priority = 'medium';
 
     /**
@@ -142,12 +145,14 @@ class Patch
      * Deployment deadline (NIS2 compliance)
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[ManagerOrResponsibleField('Priority and deadline decide how fast it must be deployed (ISO 27001 A.8.8)')]
     private ?DateTimeImmutable $deploymentDeadline = null;
 
     /**
      * Date patch was deployed
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('lifecycle step deploy (S22)')]
     private ?DateTimeImmutable $deployedDate = null;
 
     /**

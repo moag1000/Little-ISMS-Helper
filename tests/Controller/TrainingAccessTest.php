@@ -78,20 +78,48 @@ final class TrainingAccessTest extends WebTestCase
     }
 
     #[Test]
-    public function memberOfTheOrganisationMayEditItsTraining(): void
+    public function managerOfTheOrganisationMayEditItsTraining(): void
     {
         $training = $this->training($this->organisation);
-        $this->client->loginUser($this->user($this->organisation, 'ROLE_USER'));
+        $this->client->loginUser($this->user($this->organisation, 'ROLE_MANAGER'));
 
         $this->client->request('GET', '/en/training/' . $training->getId() . '/edit');
 
         self::assertResponseIsSuccessful();
     }
 
-    private function training(?Tenant $tenant): Training
+    #[Test]
+    public function trainerMayEditTheirTraining(): void
+    {
+        $trainer = $this->user($this->organisation, 'ROLE_USER');
+        $training = $this->training($this->organisation, $trainer);
+        $this->client->loginUser($trainer);
+
+        $this->client->request('GET', '/en/training/' . $training->getId() . '/edit');
+
+        self::assertResponseIsSuccessful();
+    }
+
+    /**
+     * S22 (M5): participants, completion and the mandatory flag are the evidence of
+     * ISO 27001 A.6.3 / NIS-2 Art. 20(2). Before S22 every member edited every training.
+     */
+    #[Test]
+    public function plainMemberCannotEditATrainingOfOthers(): void
+    {
+        $training = $this->training($this->organisation);
+        $this->client->loginUser($this->user($this->organisation, 'ROLE_USER'));
+
+        $this->client->request('GET', '/en/training/' . $training->getId() . '/edit');
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    private function training(?Tenant $tenant, ?User $trainer = null): Training
     {
         $training = new Training();
         $training->setTenant($tenant);
+        $training->setTrainerUser($trainer);
         $training->setTitle('Access training ' . uniqid());
         $training->setDescription('Training access test');
         $training->setTrainingType('security_awareness');

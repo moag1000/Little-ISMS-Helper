@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Attribute\ApiReadOnlyEvidence;
 
 // Control linkage is intentionally multi-valued
 // (ISO 27001 Cl. 10.1; A.8.15 + A.8.16 findings frequently touch >1 control).
@@ -160,9 +161,11 @@ class CorrectiveAction
     private ?DateTimeInterface $plannedCompletionDate = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('lifecycle step complete (S22)')]
     private ?DateTimeInterface $actualCompletionDate = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('lifecycle step confirm_effective / confirm_ineffective (S22)')]
     private ?DateTimeInterface $effectivenessReviewDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

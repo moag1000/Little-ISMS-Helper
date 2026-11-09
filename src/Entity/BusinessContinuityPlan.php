@@ -245,7 +245,7 @@ class BusinessContinuityPlan
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true, options: ['comment' => 'Recovery Time Objective in hours (ISO 22301 8.2.2)'])]
     #[Assert\Range(min: 0, max: 8760, notInRangeMessage: 'bc_plans.error.rto_range')]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    #[Groups(['bc_plan:read', 'bc_plan:write']), \App\Attribute\ManagerOrResponsibleField('BCM data: ISO 22301 8.4/8.5, set by the BCM officer or the plan owner')]
     private ?int $rto = null;
 
     /**
@@ -257,7 +257,7 @@ class BusinessContinuityPlan
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true, options: ['comment' => 'Recovery Point Objective in hours (ISO 22301 8.2.2)'])]
     #[Assert\Range(min: 0, max: 8760, notInRangeMessage: 'bc_plans.error.rpo_range')]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    #[Groups(['bc_plan:read', 'bc_plan:write']), \App\Attribute\ManagerOrResponsibleField('BCM data: ISO 22301 8.4/8.5, set by the BCM officer or the plan owner')]
     private ?int $rpo = null;
 
     /**
@@ -328,15 +328,15 @@ class BusinessContinuityPlan
     private ?DateTimeInterface $lastTested = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    #[Groups(['bc_plan:read', 'bc_plan:write']), \App\Attribute\ManagerOrResponsibleField('BCM data: ISO 22301 8.4/8.5, set by the BCM officer or the plan owner')]
     private ?DateTimeInterface $nextTestDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    #[Groups(['bc_plan:read', 'bc_plan:write']), \App\Attribute\ManagerOrResponsibleField('BCM data: ISO 22301 8.4/8.5, set by the BCM officer or the plan owner')]
     private ?DateTimeInterface $lastReviewDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    #[Groups(['bc_plan:read', 'bc_plan:write']), \App\Attribute\ManagerOrResponsibleField('BCM data: ISO 22301 8.4/8.5, set by the BCM officer or the plan owner')]
     private ?DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

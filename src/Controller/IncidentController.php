@@ -724,7 +724,7 @@ class IncidentController extends AbstractController
             $this->addFlash('error', $this->translator->trans('incident.fv5.not_linked', [], 'incident'));
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
-
+        $this->denyAccessUnlessGranted(\App\Security\Voter\RiskVoter::EDIT, $risk); // S22 (M4): stamp = risk edit
         $risk->setLastIncidentReassessmentAt(new \DateTimeImmutable());
         $risk->setLastIncidentReassessmentIncident($incident);
         $this->entityManager->flush();

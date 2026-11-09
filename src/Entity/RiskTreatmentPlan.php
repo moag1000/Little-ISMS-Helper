@@ -18,6 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Attribute\CreateOnly;
 
 /**
  * RiskTreatmentPlan Entity (ISO 27005:2022)
@@ -53,6 +54,7 @@ class RiskTreatmentPlan
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     #[Assert\NotNull(message: 'risk_treatment_plan.validation.risk_required')]
     #[MaxDepth(1)]
+    #[CreateOnly('A treatment plan belongs to the risk it was made for; re-pointing it would change another risk\'s treatment (ISO 27001 6.1.3)')]
     private ?Risk $risk = null;
 
     #[ORM\Column(length: 255)]

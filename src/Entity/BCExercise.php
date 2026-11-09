@@ -29,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Attribute\SerializedName;
+use App\Attribute\ManagerOrResponsibleField;
 
 /**
  * BC Exercise/Test Entity for ISO 22301
@@ -338,6 +339,7 @@ class BCExercise
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Assert\Range(min: 1, max: 5)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[ManagerOrResponsibleField('exercise result: ISO 22301 8.5, set by the BCM officer or the exercise leader')]
     private ?int $successRating = null;
 
     /**
@@ -349,6 +351,7 @@ class BCExercise
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[ManagerOrResponsibleField('exercise result: ISO 22301 8.5, set by the BCM officer or the exercise leader')]
     private ?DateTimeInterface $reportDate = null;
 
     /**

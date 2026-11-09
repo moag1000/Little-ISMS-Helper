@@ -212,10 +212,13 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 'widget' => 'single_text',
                 'help' => 'control.help.target_date',
             ])
+            // @intentional-bind: S22 — written by the step that produces it, shown read-only (disabled fields are not submitted)
             ->add('lastReviewDate', DateType::class, [
+                'disabled' => true,
                 'label' => 'control.field.last_review_date',
                 'required' => false,
                 'widget' => 'single_text',
+                'help' => 'control.step_evidence.last_review_date',
             ])
             ->add('nextReviewDate', DateType::class, [
                 'label' => 'control.field.next_review_date',

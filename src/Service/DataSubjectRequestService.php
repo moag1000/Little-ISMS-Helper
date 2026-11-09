@@ -176,6 +176,8 @@ final class DataSubjectRequestService
         }
 
         $request->setCompletedAt(new DateTimeImmutable());
+        // S22: the response time (Art. 12(3) evidence) is written by this step, not typed in.
+        $request->setResponseAt($request->getCompletedAt());
         $request->setResponseDescription($responseDescription);
 
         $this->entityManager->flush();
@@ -210,6 +212,8 @@ final class DataSubjectRequestService
 
         $request->setRejectionReason($reason);
         $request->setCompletedAt(new DateTimeImmutable());
+        // S22: a rejection is the response (Art. 12(4)); its time comes from this step.
+        $request->setResponseAt($request->getCompletedAt());
 
         $this->entityManager->flush();
         $this->lifecycleService->transition($request, 'data_subject_request_lifecycle', 'reject', null, $reason);
@@ -251,6 +255,8 @@ final class DataSubjectRequestService
         $extendedDeadline = $request->getReceivedAt()->modify('+90 days');
         $request->setExtendedDeadlineAt($extendedDeadline);
         $request->setExtensionReason($reason);
+        // S22: informing the data subject of the extension (Art. 12(3)) is this step.
+        $request->setExtensionNotifiedAt(new DateTimeImmutable());
         // X.6: extend_deadline transition — data_subject_request_lifecycle extended with
         // 'extended' place in X.6 (config/workflows/data_subject_request.yaml).
         // Works from received / identity_verification / in_progress.

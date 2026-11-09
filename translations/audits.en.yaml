@@ -273,6 +273,9 @@ pdf:
     default_scope: 'Full ISMS'
 
 audit_finding:
+    step_evidence:
+        nc_verified_at: 'Set by the "verify" step (ISO 27001 10.2).'
+        nc_verified_by: 'Set by the "verify" step: the auditor who verified.'
     page:
         title: 'Audit Findings'
         subtitle: 'ISO 27001:2022 Clause 10.1 — Nonconformity & Corrective Action'
@@ -463,6 +466,9 @@ audit_finding:
             suggest: 'Hint: Low-severity findings are typically documented as Observation or Opportunity for Improvement — Major-NC seems excessive here.'
 
 corrective_action:
+    step_evidence:
+        actual_completion_date: 'Set by the "complete" step.'
+        effectiveness_review_date: 'Set when effectiveness is confirmed or rejected.'
     page:
         title: 'Corrective Actions'
         new: 'New Corrective Action'

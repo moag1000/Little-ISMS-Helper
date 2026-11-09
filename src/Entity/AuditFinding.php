@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Attribute\ApiReadOnlyEvidence;
 
 /**
  * Structured Audit Finding (ISO 27001 Clause 10.1).
@@ -220,12 +221,14 @@ class AuditFinding
 
     /** Timestamp when verification of effectiveness was completed. */
     #[ORM\Column(name: 'nc_verified_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('lifecycle step verify (S22, ISO 27001 10.2)')]
     private ?DateTimeImmutable $ncVerifiedAt = null;
 
     /** Verifier (auditor or independent reviewer). */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'nc_verified_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[SameTenantOwner]
+    #[ApiReadOnlyEvidence('lifecycle step verify (S22, ISO 27001 10.2)')]
     private ?User $ncVerifiedBy = null;
 
     public const RCA_METHOD_5_WHY = '5-why';

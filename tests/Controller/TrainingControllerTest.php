@@ -315,9 +315,10 @@ class TrainingControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testEditDisplaysFormForUser(): void
+    public function testEditDisplaysFormForManager(): void
     {
-        $this->loginAsUser($this->testUser);
+        // S22: editing a training is manager or trainer work (TrainingAccessTest covers the 403)
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request('GET', '/en/training/' . $this->testTraining->getId() . '/edit');
 
@@ -328,7 +329,7 @@ class TrainingControllerTest extends WebTestCase
     #[Test]
     public function testEditUpdatesTrainingWithValidData(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
 
         $crawler = $this->client->request('GET', '/en/training/' . $this->testTraining->getId() . '/edit');
         $form = $crawler->filter('form[name="training"]')->form([
