@@ -18,7 +18,7 @@ use Attribute;
  *   #[RequiresModule('nis2_dora')]
  *   final class DoraRegisterExportController extends AbstractController
  *
- * CI gate `scripts/quality/check_module_gating.py` (controller pass) verifies
+ * Gate 11, PHPStan rule `tests/PHPStan/Rule/Gate/ModuleGateRule.php` (controller pass), verifies
  * that controllers serving framework-specific features carry this attribute
  * or an explicit `checkModuleActive()` call.
  */

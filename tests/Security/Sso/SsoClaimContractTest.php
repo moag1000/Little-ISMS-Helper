@@ -20,6 +20,7 @@ use App\Service\Sso\SsoAccountLinkPolicy;
 use App\Service\Sso\SsoClaimPolicy;
 use App\Service\Sso\SsoEventLogger;
 use App\Service\Sso\SsoSecretEncryption;
+use App\Tests\Support\ResolvedSecurityConfig;
 use App\Tests\Support\SsoTestKit;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -38,7 +39,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Yaml\Yaml;
 use TheNetworg\OAuth2\Client\Provider\Azure;
 use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 use TheNetworg\OAuth2\Client\Token\AccessToken;
@@ -81,8 +81,17 @@ final class SsoClaimContractTest extends TestCase
     #[Test]
     public function everySsoAuthenticatorOfTheWebFirewallHasAContract(): void
     {
-        $config = Yaml::parseFile(\dirname(__DIR__, 3) . '/config/packages/security.yaml');
-        $authenticators = $config['security']['firewalls']['main']['custom_authenticators'] ?? [];
+        // T3: every environment as Symfony resolves it (`when@prod:`, `custom_authenticator:`), every firewall
+        // but the token one (API tokens take no IdP claims).
+        $authenticators = [];
+        foreach (ResolvedSecurityConfig::environments() as $env) {
+            foreach (ResolvedSecurityConfig::firewalls($env) as $name => $firewall) {
+                if ($name !== 'api_token') {
+                    $authenticators = [...$authenticators, ...(array) ($firewall['custom_authenticators'] ?? [])];
+                }
+            }
+        }
+        $authenticators = array_values(array_unique($authenticators));
         self::assertNotEmpty($authenticators);
 
         foreach ($authenticators as $class) {

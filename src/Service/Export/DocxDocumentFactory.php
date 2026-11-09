@@ -15,7 +15,7 @@ use PhpOffice\PhpWord\Settings;
  * `x</w:t></w:r><w:fldSimple w:instr="INCLUDEPICTURE \\host\share"/>` becomes a Word
  * field that fetches a UNC path (NTLM hash leak) when the file is opened. The switch is
  * a process-wide static, so it is set on every creation — another library resetting it
- * cannot leave an export unescaped. Gate 92 (`check_raw_output.py`) rejects
+ * cannot leave an export unescaped. Gate 92 (PHPStan rule `MarkupOutputRule`) rejects
  * `new PhpWord()` and `TemplateProcessor` anywhere else and any call that turns the
  * escaping off.
  */

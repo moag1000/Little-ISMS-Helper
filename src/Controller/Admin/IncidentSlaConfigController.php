@@ -47,7 +47,7 @@ class IncidentSlaConfigController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'app_admin_incident_sla_config', methods: ['GET'])]
+    #[Route('', name: 'app_admin_incident_sla_config', methods: ['GET'])] // @get-write-ok: idempotent seed of default SLA rows
     public function index(Request $request): Response
     {
         $tenant = $this->requireTenant($request);

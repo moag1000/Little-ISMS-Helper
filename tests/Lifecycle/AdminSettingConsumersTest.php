@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Lifecycle;
 
 use App\Lifecycle\Config\LifecycleOverridePolicy;
+use App\Tests\Support\PhpSourceScanner;
+use PhpParser\Node;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
@@ -46,19 +48,88 @@ final class AdminSettingConsumersTest extends TestCase
         return \dirname(__DIR__, 2);
     }
 
+    /** Code without comments: a key named only in a comment or docblock is no consumer. */
+    private static function codeOf(string $path, string $contents): string
+    {
+        return str_ends_with($path, '.twig')
+            ? PhpSourceScanner::twigWithoutComments($contents)
+            : PhpSourceScanner::withoutComments($contents);
+    }
+
     #[Test]
     public function everyLifecycleOverrideKeyHasAConsumer(): void
     {
         self::assertSame(LifecycleOverridePolicy::KEYS, array_keys(self::LIFECYCLE_CONSUMERS));
         foreach (self::LIFECYCLE_CONSUMERS as $key => $file) {
-            $code = (string) file_get_contents(self::root() . '/' . $file);
-            self::assertStringContainsString('resolver->', $code, $file . ' reads through the resolver');
-            self::assertMatchesRegularExpression(
-                '/[\'"]' . preg_quote($key, '/') . '[\'"]/',
-                $code,
-                sprintf('lifecycle override key "%s" is written by the admin page but %s never reads it', $key, $file),
+            self::assertTrue(
+                self::readsKeyThroughResolver(PhpSourceScanner::parseFile(self::root() . '/' . $file), $key),
+                sprintf('lifecycle override key "%s" is written by the admin page but %s never reads it through the resolver', $key, $file),
             );
         }
+    }
+
+    #[Test]
+    public function theConsumerCheckSeesHowAKeyIsReallyRead(): void
+    {
+        $head = '<?php use Symfony\\Component\\Yaml\\Yaml; final class C { public function m($s) { ';
+        $good = [
+            $head . '$e = $this->resolver->resolve($s, "w", "t"); return $e["four_eyes"] ?? false; } }',
+            $head . 'return $this->resolver->get($s, "w", "t", "module"); } }',
+            $head . '$e = $this->resolver->resolve($s, "w", "t"); return $e[\'roles\']; } }',
+        ];
+        $bad = [
+            'key from YAML, other resolver call' => $head . '$this->resolver->resolve($s); return Yaml::parseFile("x")["four_eyes"]; } }',
+            'key only in a comment' => $head . '$this->resolver->resolve($s); /* "four_eyes" */ return 1; } }',
+            'key only as an unrelated literal' => $head . '$this->resolver->resolve($s); return $this->log("four_eyes"); } }',
+            'no resolver call' => $head . 'return $e["four_eyes"]; } }',
+        ];
+        self::assertTrue(self::readsKeyThroughResolver(PhpSourceScanner::parseCode($good[0]), 'four_eyes'));
+        self::assertTrue(self::readsKeyThroughResolver(PhpSourceScanner::parseCode($good[1]), 'module'));
+        self::assertTrue(self::readsKeyThroughResolver(PhpSourceScanner::parseCode($good[2]), 'roles'));
+        foreach ($bad as $label => $code) {
+            self::assertFalse(self::readsKeyThroughResolver(PhpSourceScanner::parseCode($code), 'four_eyes'), $label);
+        }
+    }
+
+    /**
+     * `$this->resolver->get(…, 'key')` or `$this->resolver->resolve(…)` followed by an `['key']` read, and no
+     * second source (YAML) for the same value. Comments are not in the AST.
+     *
+     * @param list<Node> $ast
+     */
+    private static function readsKeyThroughResolver(array $ast, string $key): bool
+    {
+        foreach (PhpSourceScanner::find($ast, Node\Expr\StaticCall::class) as $call) {
+            if ($call->class instanceof Node\Name && ltrim($call->class->toString(), '\\') === 'Symfony\\Component\\Yaml\\Yaml') {
+                return false; // a second source for the same value
+            }
+        }
+        $resolve = false;
+        foreach (PhpSourceScanner::find($ast, Node\Expr\MethodCall::class) as $call) {
+            $onResolver = $call->var instanceof Node\Expr\PropertyFetch && $call->var->name instanceof Node\Identifier
+                && $call->var->name->toString() === 'resolver';
+            if (!$onResolver || !$call->name instanceof Node\Identifier) {
+                continue;
+            }
+            if ($call->name->toString() === 'get') {
+                foreach ($call->args as $arg) {
+                    if ($arg instanceof Node\Arg && PhpSourceScanner::constantString($arg->value) === $key) {
+                        return true;
+                    }
+                }
+            }
+            $resolve = $resolve || $call->name->toString() === 'resolve';
+        }
+        if (!$resolve) {
+            return false;
+        }
+        foreach (PhpSourceScanner::find($ast, Node\Expr\ArrayDimFetch::class) as $fetch) {
+            if ($fetch->dim !== null && PhpSourceScanner::constantString($fetch->dim) === $key) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     #[Test]
@@ -66,7 +137,7 @@ final class AdminSettingConsumersTest extends TestCase
     {
         $writers = [];
         foreach ((new Finder())->files()->in(self::root() . '/src')->name('*.php') as $file) {
-            if (str_contains($file->getContents(), 'new LifecycleConfig()')) {
+            if (self::writesLifecycleConfig(PhpSourceScanner::parseCode($file->getContents(), $file->getRelativePathname()))) {
                 $writers[] = 'src/' . str_replace('\\', '/', $file->getRelativePathname());
             }
         }
@@ -79,12 +150,55 @@ final class AdminSettingConsumersTest extends TestCase
     }
 
     #[Test]
+    public function theWriterScanSeesEveryWayToCreateARow(): void
+    {
+        foreach ([
+            'use App\\Entity\\LifecycleConfig; $r = new LifecycleConfig();',
+            'use App\\Entity\\LifecycleConfig; $r = new LifecycleConfig;',
+            '$r = new \\App\\Entity\\LifecycleConfig();',
+            'use App\\Entity\\LifecycleConfig as LC; $r = new LC();',
+            '$c->insert("lifecycle_config", ["tenant_id" => 1]);',
+            '$c->executeStatement("INSERT INTO lifecycle_config (a) VALUES (1)");',
+            '$c->executeStatement(\'insert into `lifecycle_config` (a) values (1)\');',
+            '$c->executeStatement("INSERT " . "INTO lifecycle_config (a) VALUES (1)");',
+        ] as $code) {
+            self::assertTrue(self::writesLifecycleConfig(PhpSourceScanner::parseCode('<?php ' . $code)), $code);
+        }
+        self::assertFalse(self::writesLifecycleConfig(PhpSourceScanner::parseCode('<?php // new LifecycleConfig(); insert("lifecycle_config")' . "\n" . '$x = new \\stdClass();')));
+    }
+
+    /** @param list<Node> $ast */
+    private static function writesLifecycleConfig(array $ast): bool
+    {
+        foreach (PhpSourceScanner::find($ast, Node\Expr\New_::class) as $new) {
+            if ($new->class instanceof Node\Name && ltrim($new->class->toString(), '\\') === 'App\\Entity\\LifecycleConfig'
+                || $new->class instanceof Node\Name && $new->class->toString() === 'LifecycleConfig') {
+                return true;
+            }
+        }
+        foreach (PhpSourceScanner::find($ast, Node\Expr\MethodCall::class) as $call) {
+            if ($call->name instanceof Node\Identifier && strtolower($call->name->toString()) === 'insert'
+                && isset($call->args[0]) && $call->args[0] instanceof Node\Arg
+                && trim((string) PhpSourceScanner::constantString($call->args[0]->value), '`"\' ') === 'lifecycle_config') {
+                return true;
+            }
+        }
+        foreach (PhpSourceScanner::stringLiterals($ast) as $string) {
+            if (preg_match('/\b(?:insert\s+(?:ignore\s+)?into|replace\s+into)\s+[`"]?lifecycle_config\b/i', $string) === 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    #[Test]
     public function theLifecycleOverridesPageWritesOnlyPolicyKeys(): void
     {
-        $code = (string) file_get_contents(self::root() . '/src/Controller/Admin/LifecycleOverridesController.php');
+        $code = PhpSourceScanner::withoutComments((string) file_get_contents(self::root() . '/src/Controller/Admin/LifecycleOverridesController.php'));
         preg_match('/\$values = \[\n(.*?)\n\s*\];/s', $code, $m);
         self::assertNotEmpty($m, 'the controller collects the submitted keys in $values');
-        preg_match_all("/^\s*'([a-z_]+)' =>/m", $m[1], $keys);
+        preg_match_all('/^\s*[\'"]([a-z_]+)[\'"] =>/m', $m[1], $keys);
 
         self::assertSame(LifecycleOverridePolicy::KEYS, $keys[1]);
     }
@@ -94,7 +208,7 @@ final class AdminSettingConsumersTest extends TestCase
      */
     private static function withConstants(string $code): string
     {
-        preg_match_all("/const\\s+(?:string\\s+)?([A-Z_]+)\\s*=\\s*'([^']*)'/", $code, $consts, PREG_SET_ORDER);
+        preg_match_all('/const\\s+(?:string\\s+)?([A-Z_]+)\\s*=\\s*[\'"]([^\'"]*)[\'"]/', $code, $consts, PREG_SET_ORDER);
         foreach ($consts as [, $name, $value]) {
             $code = preg_replace('/(?:self|static)::' . $name . '\\b/', "'" . $value . "'", $code) ?? $code;
         }
@@ -112,7 +226,7 @@ final class AdminSettingConsumersTest extends TestCase
     {
         $code = self::withConstants($code);
         $pairs = [];
-        preg_match_all('/setSetting\(\s*(?:category:\s*)?\'([a-z_]+)\',\s*(?:key:\s*)?(?:\'([a-z_]+)\'|\$(\w+))/', $code, $matches, PREG_SET_ORDER);
+        preg_match_all('/setSetting\(\s*(?:category:\s*)?[\'"]([a-z_]+)[\'"],\s*(?:key:\s*)?(?:[\'"]([a-z_]+)[\'"]|\$(\w+))/', $code, $matches, PREG_SET_ORDER);
         foreach ($matches as $m) {
             if (($m[2] ?? '') !== '') {
                 $pairs[] = [$m[1], $m[2]];
@@ -127,7 +241,7 @@ final class AdminSettingConsumersTest extends TestCase
             preg_match('/foreach\s*\(\$(\w+)\s+as\s+\$' . $keyVar . '\s*=>/', $code, $loop);
             preg_match('/\$' . $loop[1] . '\s*=\s*\[(.*?)\];/s', $code, $list);
             self::assertNotEmpty($list, sprintf('the key list $%s is a literal array', $loop[1]));
-            preg_match_all("/^\\s*'([a-z_]+)'\\s*=>/m", $list[1], $keys);
+            preg_match_all('/^\\s*[\'"]([a-z_]+)[\'"]\\s*=>/m', $list[1], $keys);
             foreach ($keys[1] as $key) {
                 $pairs[] = [$m[1], $key];
             }
@@ -147,7 +261,7 @@ final class AdminSettingConsumersTest extends TestCase
     {
         $files = [];
         foreach ((new Finder())->files()->in([self::root() . '/src', self::root() . '/templates'])->name(['*.php', '*.twig']) as $file) {
-            $files[$file->getRealPath()] = $file->getContents();
+            $files[$file->getRealPath()] = self::codeOf((string) $file->getRealPath(), $file->getContents());
         }
         $readable = array_map(self::withConstants(...), $files);
 
@@ -159,13 +273,13 @@ final class AdminSettingConsumersTest extends TestCase
             foreach (self::settingWrites($code) as [$category, $key]) {
                 ++$checked;
                 $read = sprintf(
-                    '/getSetting\(\s*\'%1$s\',\s*\'%2$s\'|[\'"]%1$s\.%2$s[\'"]/',
+                    '/getSetting\(\s*[\'"]%1$s[\'"],\s*[\'"]%2$s[\'"]|[\'"]%1$s\.%2$s[\'"]/',
                     preg_quote($category, '/'),
                     preg_quote($key, '/'),
                 );
                 // A reader that loops over keys (`getSetting('application', $key)`) names the key elsewhere.
-                $loopRead = static fn (string $other): bool => str_contains($other, "getSetting('" . $category . "', \$")
-                    && str_contains($other, "'" . $key . "'");
+                $loopRead = static fn (string $other): bool => preg_match('/getSetting\(\s*[\'"]' . preg_quote($category, '/') . '[\'"],\s*\$/', $other) === 1
+                    && preg_match('/[\'"]' . preg_quote($key, '/') . '[\'"]/', $other) === 1;
                 // A service may write and read the same key (AiSettings); a controller may not count.
                 $readers = array_filter(
                     $readable,
@@ -228,7 +342,7 @@ final class AdminSettingConsumersTest extends TestCase
             ) {
                 continue;
             }
-            $files[$path] = $file->getContents();
+            $files[$path] = self::codeOf($path, $file->getContents());
         }
 
         return $files;

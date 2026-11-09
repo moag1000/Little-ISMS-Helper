@@ -10,6 +10,7 @@ use App\EventSubscriber\MfaEnforcerSubscriber;
 use App\Security\Mfa\MfaLoginListener;
 use App\Security\Mfa\MfaSessionState;
 use App\Security\SetupAccessChecker;
+use App\Tests\Support\ResolvedSecurityConfig;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +34,6 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * S8 permanent test: for every authenticator of the web firewall, a person with a second factor
@@ -65,26 +65,22 @@ final class MfaLoginPathsTest extends TestCase
     private const array BUILT_IN = ['form_login', 'json_login', 'http_basic', 'login_link', 'remember_me',
         'x509', 'remote_user', 'access_token'];
 
+    /**
+     * T3: read from the configuration Symfony resolves for every environment, so a login path under `when@prod:`
+     * or the singular `custom_authenticator:` key (Symfony maps it to the list) is seen too.
+     */
     #[Test]
     public function everyAuthenticatorOfTheWebFirewallIsDecided(): void
     {
-        $config = Yaml::parseFile(dirname(__DIR__, 3) . '/config/packages/security.yaml');
-        $main = $config['security']['firewalls'][MfaLoginListener::FIREWALL];
-
-        $configured = [];
-        foreach (self::BUILT_IN as $key) {
-            if (array_key_exists($key, $main)) {
-                $configured[] = $key;
-            }
-        }
-        foreach ($main['custom_authenticators'] ?? [] as $class) {
-            $configured[] = $class;
-        }
-        sort($configured);
         $decided = array_keys(self::DECIDED);
         sort($decided);
+        foreach (ResolvedSecurityConfig::environments() as $env) {
+            $main = ResolvedSecurityConfig::firewalls($env)[MfaLoginListener::FIREWALL] ?? [];
+            $configured = ResolvedSecurityConfig::authenticators($main, self::BUILT_IN);
+            sort($configured);
 
-        self::assertSame($decided, $configured, 'A login path of the web firewall without an MFA decision.');
+            self::assertSame($decided, $configured, sprintf('A login path of the web firewall without an MFA decision (%s).', $env));
+        }
     }
 
     /**
@@ -95,22 +91,24 @@ final class MfaLoginPathsTest extends TestCase
     #[Test]
     public function noOtherFirewallLogsAPersonIn(): void
     {
-        $config = Yaml::parseFile(dirname(__DIR__, 3) . '/config/packages/security.yaml');
-        foreach ($config['security']['firewalls'] as $name => $firewall) {
-            if ($name === MfaLoginListener::FIREWALL || ($firewall['security'] ?? true) === false) {
-                continue;
+        foreach (ResolvedSecurityConfig::environments() as $env) {
+            foreach (ResolvedSecurityConfig::firewalls($env) as $name => $firewall) {
+                if ($name === MfaLoginListener::FIREWALL || ($firewall['security'] ?? true) === false) {
+                    continue;
+                }
+                $logins = ResolvedSecurityConfig::authenticators($firewall, self::BUILT_IN);
+                if ($name === 'api_token') {
+                    self::assertTrue($firewall['stateless'] ?? false, 'api_token stays stateless (' . $env . ')');
+                    self::assertSame(['App\Security\ApiTokenAuthenticator'], $logins, 'api_token: the API token only (' . $env . ')');
+                    continue;
+                }
+                self::assertSame([], $logins, sprintf(
+                    'Firewall "%s" (%s) logs people in without the MFA state of "%s".',
+                    $name,
+                    $env,
+                    MfaLoginListener::FIREWALL,
+                ));
             }
-            $logins = array_values(array_intersect(self::BUILT_IN, array_keys((array) $firewall)));
-            $custom = $firewall['custom_authenticators'] ?? [];
-            if ($name === 'api_token') {
-                self::assertTrue($firewall['stateless'] ?? false, 'api_token stays stateless');
-                self::assertSame([], $logins, 'api_token: no login form');
-                self::assertSame(['App\Security\ApiTokenAuthenticator'], $custom, 'api_token: the API token only');
-                continue;
-            }
-            self::assertSame([], array_merge($logins, $custom), sprintf(
-                'Firewall "%s" logs people in without the MFA state of "%s".', $name, MfaLoginListener::FIREWALL,
-            ));
         }
     }
 

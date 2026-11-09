@@ -40,15 +40,20 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from php_source import class_methods, matching_end, strip_comments  # noqa: E402
+
 SRC = ROOT / "src"
 
 # `->setValue()` is also Doctrine/PropertyAccessor vocabulary: only on a cell (`getCell(...)->setValue(`, `$cell->setValue(`).
 CALL = re.compile(
     r"\bfputcsv\(|->setCellValue(?:Explicit)?(?:ByColumnAndRow)?\(|->fromArray\("
-    r"|->insertOne\(|->insertAll\(|(?:getCell\([^()]*\)|\$cell\w*)->setValue(?:Explicit)?\("
+    r"|->insertOne\(|->insertAll\(|(?:getCell\w*\((?:[^()]|\([^()]*\))*\)|\$cell\w*)\s*->\s*setValue(?:Explicit)?\("
 )
 FIRST_ARG = ("fromArray", "insertOne", "insertAll", "setValue")
-SANITIZED = re.compile(r"CsvSanitizer|\bcsvCell\b|\bsanitize\w*\(|streamCsvExport\(")
+# Only the helpers that really neutralise a leading = + - @: App\\Util\\CsvSanitizer, EntityDataExporter::csvCell,
+# the bulk-export trait and ExcelExportService's own formula guard. A `sanitizeHtml()` look-alike does not count.
+SANITIZED = re.compile(r"\bCsvSanitizer\b|\bcsvCell\b|\bstreamCsvExport\(|\bsanitizeFormulaInjection\(")
 EXEMPT = "@csv-sanitize-exempt:"
 # Getters that cannot return free text.
 SAFE_CALL = re.compile(
@@ -58,9 +63,15 @@ SAFE_CALL = re.compile(
 STRING = re.compile(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"")
 TERMINAL_SAFE = re.compile(r"->\s*\w+\(\s*\)\s*(\?->|->)\s*(count|format)\(")
 BARE_VARIABLE = re.compile(r"\$\w+(\[[^\]]*\])*")
-FWRITE = re.compile(r"\bfwrite\(")
-CSV_IMPLODE = re.compile(r"""\bimplode\(\s*(?:'(?:,|;|\\t|\|)'|"(?:,|;|\\t|\|)"|\$\w*(?:sep|delim)\w*)\s*,""", re.I)
-DECLARED = re.compile(r"function\s+(get\w+)\s*\([^)]*\)\s*:\s*([?\\\w|]+)")
+# Where a hand-built CSV line leaves: fwrite()/fputs(), file_put_contents(), a response body, echo.
+SERVICE_CALL = re.compile(r"\$this->\w+->\w+\((?:[^()]|\([^()]*\))*\)")
+FWRITE = re.compile(r"\bfwrite\(|\bfputs\(|\bfile_put_contents\(|->setContent\(|\bnew\s+\\?(?:\w+\\)*Response\(|\becho\b")
+IMPLODE = re.compile(r"\b(?:implode|join)\(")
+CSV_HINT = re.compile(r"csv|\.xlsx|separator|delimiter", re.I)
+# A string literal that only holds separators / quotes / line ends: `';'`, `",\\n"`, `'";"'`.
+SEPARATOR_LITERAL = re.compile(r"""^(['"])[\s\\rnt"',;|]*[,;|\\t][\s\\rnt"',;|]*\1$""")
+DECLARED = re.compile(r"function\s+(get\w+)\s*\([^)]*\)\s*(?::\s*([?\\\w|]+))?\s*[{;]")
+PROPERTY = re.compile(r"(?<![\w$])\$(?!this\b)\w+(?:\??->\w+)*?\??->\s*(\w+)\b(?!\s*\(|\s*\??->)")
 _TEXT_GETTERS: set[str] | None = None
 
 
@@ -70,10 +81,17 @@ def text_getters() -> set[str]:
     if _TEXT_GETTERS is None:
         _TEXT_GETTERS = set()
         for path in SRC.rglob("*.php"):
-            for name, rtype in DECLARED.findall(path.read_text(encoding="utf-8", errors="replace")):
-                if "string" in rtype.lower().split("|") or rtype.lower().lstrip("?") == "string":
+            for name, rtype in DECLARED.findall(strip_comments(path.read_text(encoding="utf-8", errors="replace"))):
+                kinds = rtype.lower().lstrip("?").split("|")
+                # untyped and `mixed` may return anything, so they count as text
+                if not rtype or "string" in kinds or "mixed" in kinds:
                     _TEXT_GETTERS.add(name)
     return _TEXT_GETTERS
+
+
+def safe_property(name: str) -> bool:
+    """A public property read (`$row->total`) is as safe as the getter it stands for."""
+    return name in ("id", "count") or safe_call("get" + name[:1].upper() + name[1:])
 
 
 def safe_call(name: str) -> bool:
@@ -118,9 +136,44 @@ def arguments(text: str, start: int) -> list[str]:
 
 
 def enclosing_function(text: str, pos: int) -> str:
+    """The named method around pos (closures stay inside it, so assignments before them are seen)."""
+    best: tuple[int, int] | None = None
+    for m in re.finditer(r"\bfunction\s+&?\s*\w+\s*\(", text):
+        if m.start() > pos:
+            break
+        paren = m.end() - 1
+        i = matching_end(text, paren)
+        while i < len(text) and text[i] not in "{;":
+            i += 1
+        end = matching_end(text, i) if i < len(text) and text[i] == "{" else i
+        if m.start() <= pos < end and (best is None or m.start() < best[0]):
+            best = (m.start(), end)
+    if best:
+        return text[best[0]:best[1]]
     start = text.rfind("function ", 0, pos)
     end = text.find("\n    }\n", pos)
     return text[max(start, 0):end if end > 0 else len(text)]
+
+
+def statement_end(text: str, start: int) -> int:
+    """Offset of the `;` that ends the statement beginning at start (strings and brackets respected)."""
+    depth, i, n = 0, start, len(text)
+    while i < n:
+        c = text[i]
+        if c in "'\"":
+            i += 1
+            while i < n and text[i] != c:
+                i += 2 if text[i] == "\\" else 1
+        elif c in "([{":
+            depth += 1
+        elif c in ")]}":
+            depth -= 1
+            if depth < 0:
+                return i
+        elif c == ";" and depth == 0:
+            return i
+        i += 1
+    return n
 
 
 def split_array(code: str) -> list[str] | None:
@@ -178,8 +231,11 @@ def value_problem(code: str, function: str, top: bool) -> str | None:
     for name in re.findall(r"->\s*(\w+)\s*\(", code):
         if not safe_call(name):
             return f"->{name}() reaches the cell unsanitised"
-    if top and BARE_VARIABLE.fullmatch(code) and EXEMPT not in function:
-        if not SANITIZED.search(function):
+    for name in PROPERTY.findall(code):  # `$row->name` on a DTO / public property is the same as the getter
+        if not safe_property(name):
+            return f"->{name} (property) reaches the cell unsanitised"
+    if BARE_VARIABLE.fullmatch(code) and EXEMPT not in function:
+        if top and not SANITIZED.search(function):
             return f"{code} is written in a function that never sanitises"
         # The function sanitises something, but maybe not this row: look at how the variable was filled.
         name = code[1:].split("[", 1)[0]
@@ -188,54 +244,99 @@ def value_problem(code: str, function: str, top: bool) -> str | None:
             names.add(loop.group(1))  # `foreach ($rows as $row)`: $row is filled where $rows is
         base = "(?:" + "|".join(re.escape(n) for n in names) + ")"
         for assign in re.finditer(r"\$" + base + r"(?:\[[^\]]*\])*\s*=(?![=>])\s*", function):
-            rhs = arguments("(" + function[assign.end():] , 1)
-            rhs_code = rhs[0] if rhs else ""
-            rhs_code = rhs_code.split(";", 1)[0] if ";" in rhs_code else rhs_code
+            rhs_code = function[assign.end():statement_end(function, assign.end())]
+            if rhs_code.strip() == code:
+                continue
+            if "[" in code and SERVICE_CALL.fullmatch(rhs_code.strip()):
+                continue  # `$report['plans']['total']` of `$report = $this->service->getReport()`: aggregates, not traced
             problem = value_problem(rhs_code, function, False)
             if problem:
                 return f"{code} is filled with unsanitised data ({problem})"
     return None
 
 
-def fwrite_problem(text: str, match: re.Match[str]) -> str | None:
-    """`fwrite($h, implode(';', $cells))`: a CSV line built by hand; every cell is checked."""
+def sink_value(text: str, match: re.Match[str]) -> str | None:
+    """The text a sink writes: fwrite($h, X), file_put_contents($p, X), setContent(X), new Response(X), echo X."""
+    word = match.group(0)
+    if word == "echo":
+        return text[match.end():statement_end(text, match.end())].strip()
     args = arguments(text, match.end())
-    if len(args) < 2:
+    if word.startswith(("fwrite", "fputs", "file_put_contents")):
+        return args[1].strip() if len(args) > 1 else None
+    return args[0].strip() if args else None
+
+
+def line_problem(value: str, function: str, seen: frozenset[str] = frozenset()) -> str | None:
+    """A hand-built line: `implode(<any separator>, $cells)`, `$a . ';' . $b`, `sprintf('%s;%s', …)`, or a variable of those."""
+    value = value.strip()
+    for part in split_concat(value):  # `implode(';', $cells) . "\n"`; an implode nested in another call is not the line
+        bare = re.sub(r"^\(\s*string\s*\)\s*", "", part.strip())
+        imp = IMPLODE.match(bare)
+        if imp is not None:
+            args = arguments(bare, imp.end())
+            return value_problem(args[-1] if args else "", function, True)
+    parts = split_concat(value)
+    if len(parts) > 1 and any(SEPARATOR_LITERAL.match(part.strip()) for part in parts):
+        for part in parts:
+            if not SEPARATOR_LITERAL.match(part.strip()):
+                problem = value_problem(part, function, False)
+                if problem:
+                    return problem
         return None
-    value = args[1].strip()
+    sp = re.match(r"^(?:v?sprintf)\(\s*(['\"])(.*?)\1\s*,", value, re.S)
+    if sp and re.search(r"%[-+0-9.$']*[sd]\s*[,;|\\t]", sp.group(2)):
+        call = arguments(value, sp.end() - 0 if False else value.index("(") + 1)
+        for cell in call[1:]:
+            problem = value_problem(cell, function, False)
+            if problem:
+                return problem
+        return None
+    var = re.fullmatch(r"\$(\w+)", value)
+    if var and var.group(1) not in seen:
+        for assign in re.finditer(r"\$" + re.escape(var.group(1)) + r"\s*\.?=(?![=>])\s*", function):
+            rhs = function[assign.end():statement_end(function, assign.end())]
+            problem = line_problem(rhs, function, seen | {var.group(1)})
+            if problem:
+                return problem
+    return None
+
+
+def fwrite_problem(text: str, match: re.Match[str]) -> str | None:
+    """A CSV line built by hand and written with fwrite / echo / file_put_contents / a response body."""
+    value = sink_value(text, match)
+    if not value:
+        return None
     function = enclosing_function(text, match.start())
-    imp = CSV_IMPLODE.search(value)
-    if imp is None:
-        var = re.match(r"^\$(\w+)", value)
-        if var is None:
-            return None
-        for assign in re.finditer(r"\$" + re.escape(var.group(1)) + r"\s*\.?=(?![=>])\s*([^;]*)", function):
-            imp = CSV_IMPLODE.search(assign.group(1))
-            if imp is not None:
-                value = assign.group(1)
-                break
-        if imp is None:
-            return None
-    cells = arguments(value, imp.end())
-    return value_problem(cells[0] if cells else "", function, True)
+    if match.group(0) not in ("fwrite(", "fputs(") and not CSV_HINT.search(text):
+        return None  # echo / a response body / a plain file in a file that has nothing to do with CSV
+    return line_problem(value, function)
 
 
 def site_problem(text: str, match: re.Match[str]) -> str | None:
     args = arguments(text, match.end())
     # `setCellValueExplicit($c, $v, DataType::TYPE_STRING)`: a string cell, never evaluated as a formula.
-    if "Explicit" in match.group(0) and len(args) > 2 and re.search(r"TYPE_(STRING2?|INLINE)\b", args[2]):
+    if "Explicit" in match.group(0) and any(re.search(r"TYPE_(STRING2?|INLINE)\b", a) for a in args[1:]):
         return None
     first = any(name in match.group(0) for name in FIRST_ARG) or text[max(match.start() - 2, 0):match.start()] == "->"
     value = args[0] if first else (args[1] if len(args) > 1 else "")
     return value_problem(value, enclosing_function(text, match.start()), True)
 
 
+def code_with_markers(raw: str) -> str:
+    """The file without comments, but with every `@csv-sanitize-exempt:` marker kept where it stood."""
+    code = list(strip_comments(raw))
+    for m in re.finditer(re.escape(EXEMPT), raw):
+        code[m.start():m.end()] = list(EXEMPT)
+    return "".join(code)
+
+
 def main() -> int:
     failures: list[str] = []
     sites = 0
     for path in sorted(SRC.rglob("*.php")):
-        text = path.read_text(encoding="utf-8", errors="replace")
-        lines = text.split("\n")
+        raw = path.read_text(encoding="utf-8", errors="replace")
+        lines = raw.split("\n")
+        text = code_with_markers(raw)
         for match in CALL.finditer(text):
             sites += 1
             line = text.count("\n", 0, match.start()) + 1

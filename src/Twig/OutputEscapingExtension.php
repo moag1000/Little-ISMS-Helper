@@ -8,7 +8,7 @@ use Twig\Attribute\AsTwigFilter;
 use Twig\Markup;
 
 /**
- * Output escaping helpers (S10, Gate 92 `check_raw_output.py`).
+ * Output escaping helpers (S10, Gate 92: `check_raw_output.py` for Twig, PHPStan rule `MarkupOutputRule` for PHP).
  *
  * Components print every slot escaped; HTML reaches a slot only as Twig Markup.
  *

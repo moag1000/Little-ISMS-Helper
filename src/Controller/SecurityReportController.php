@@ -23,6 +23,7 @@ class SecurityReportController extends AbstractController
     }
 
     #[Route('/about/security', name: 'app_security_report', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         $stats = [
@@ -36,6 +37,7 @@ class SecurityReportController extends AbstractController
     }
 
     #[Route('/about/security/owasp-2025', name: 'app_security_report_2025', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function owasp2025(Request $request): Response
     {
         $reportFile = $this->securityAuditService->reportPath(SecurityAuditService::EDITION_2025);
@@ -57,6 +59,7 @@ class SecurityReportController extends AbstractController
     }
 
     #[Route('/about/security/owasp-2021', name: 'app_security_report_2021', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function owasp2021(Request $request): Response
     {
         $reportFile = $this->securityAuditService->reportPath(SecurityAuditService::EDITION_2021);

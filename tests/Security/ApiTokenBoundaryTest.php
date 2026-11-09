@@ -9,6 +9,7 @@ use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\ApiTokenRepository;
+use App\Tests\Support\ResolvedSecurityConfig;
 use App\Security\Token\ApiTokenRequest;
 use App\Service\ApiTokenManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,7 +17,6 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * S1 (wave 5): an API token is only a token. It counts on /api and /mcp and
@@ -271,23 +271,28 @@ final class ApiTokenBoundaryTest extends WebTestCase
         self::assertFalse($tokens[0]->canWrite());
     }
 
-    /** Both firewalls check the account status — a new firewall without it would reopen the gap. */
+    /**
+     * Both firewalls check the account status — a new firewall without it would reopen the gap. T3: every
+     * environment as Symfony resolves it, so a firewall under `when@prod:` is checked too.
+     */
     #[Test]
     public function everyFirewallThatAuthenticatesChecksTheAccount(): void
     {
-        $config = Yaml::parseFile(dirname(__DIR__, 2) . '/config/packages/security.yaml');
-        foreach ($config['security']['firewalls'] as $name => $firewall) {
-            if (($firewall['security'] ?? true) === false) {
-                continue;
+        foreach (ResolvedSecurityConfig::environments() as $env) {
+            $firewalls = ResolvedSecurityConfig::firewalls($env);
+            foreach ($firewalls as $name => $firewall) {
+                if (($firewall['security'] ?? true) === false) {
+                    continue;
+                }
+                self::assertSame('App\Security\UserChecker', $firewall['user_checker'] ?? null, $name . ' (' . $env . ')');
             }
-            self::assertSame('App\Security\UserChecker', $firewall['user_checker'] ?? null, $name);
+            self::assertTrue($firewalls['api_token']['stateless'] ?? false, $env);
+            self::assertNotContains(
+                'App\Security\ApiTokenAuthenticator',
+                (array) ($firewalls['main']['custom_authenticators'] ?? []),
+                'API tokens belong to the stateless api_token firewall only (' . $env . ').',
+            );
         }
-        self::assertTrue($config['security']['firewalls']['api_token']['stateless'] ?? false);
-        self::assertNotContains(
-            'App\Security\ApiTokenAuthenticator',
-            $config['security']['firewalls']['main']['custom_authenticators'] ?? [],
-            'API tokens belong to the stateless api_token firewall only.',
-        );
     }
 
     /**

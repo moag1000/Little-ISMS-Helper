@@ -127,6 +127,19 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
         'control_review' => 'app_soa_review_confirm',
     ];
 
+    /**
+     * Sources whose link controller has a POST "review/confirm" route that is nevertheless not the reminded
+     * duty's main action: slug => reason. A source not in MAIN_ACTION and not here, whose page controller has
+     * such a route, fails the test (W9: MAIN_ACTION used to be a fixed list of five, so a review action that
+     * shut out the responsible person went unseen for every other source).
+     *
+     * @var array<string, string>
+     */
+    private const array NO_MAIN_ACTION = [];
+
+    /** POST routes of the link's controller that settle a review duty (name or path). */
+    private const string REVIEW_ACTION_ROUTE = '/review|confirm/i';
+
     /** Routes a refused or redirected-away person lands on. */
     private const string REFUSED_LANDING = '/^(app_dashboard|app_home|app_login|app_mfa_|mfa_|app_setup|app_persona_dashboard)/';
 
@@ -175,7 +188,41 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
 
         self::assertGreaterThan(150, $checked, 'too few source/role combinations found — did the parsing break?');
         self::assertSame([], array_values(array_diff(array_keys(self::MAIN_ACTION), $slugs)), 'MAIN_ACTION names a source that does not exist');
+        self::assertSame([], array_values(array_diff(array_keys(self::NO_MAIN_ACTION), $slugs)), 'NO_MAIN_ACTION names a source that does not exist');
+        self::assertSame([], array_values(array_intersect(array_keys(self::MAIN_ACTION), array_keys(self::NO_MAIN_ACTION))), 'a source is in MAIN_ACTION and NO_MAIN_ACTION');
+        self::assertSame([], $this->unregisteredSourceClasses(), 'DeadlineSource classes the registry does not hold (tag missing?)');
         self::assertSame([], $failures, "Reminder links the reminded person cannot open:\n" . implode("\n", $failures));
+    }
+
+    /**
+     * Every concrete DeadlineSource class under src/ (found by file, not by tag) is held by the registry this
+     * test iterates, so a source cannot escape the check by missing the `app.deadline_source` tag.
+     *
+     * @return list<class-string> concrete implementations the registry does not hold
+     */
+    private function unregisteredSourceClasses(): array
+    {
+        $held = [];
+        foreach (static::getContainer()->get(DeadlineSourceRegistry::class)->all() as $source) {
+            $held[$source::class] = true;
+        }
+        $missing = [];
+        $root = \dirname(__DIR__, 3) . '/src';
+        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS)) as $file) {
+            if ($file->getExtension() !== 'php' || !str_contains((string) file_get_contents($file->getPathname()), 'DeadlineSource')) {
+                continue;
+            }
+            $class = 'App\\' . str_replace(['/', '.php'], ['\\', ''], substr($file->getPathname(), \strlen($root) + 1));
+            if (!class_exists($class)) {
+                continue;
+            }
+            $reflection = new \ReflectionClass($class);
+            if (!$reflection->isAbstract() && $reflection->implementsInterface(DeadlineSource::class) && !isset($held[$class])) {
+                $missing[] = $class;
+            }
+        }
+
+        return $missing;
     }
 
     /**
@@ -251,7 +298,48 @@ final class DeadlineLinkReachabilityTest extends WebTestCase
             return isset(self::WITHOUT_LINK[$source->slug()]) ? null : 'linkOf() is null: the reminder has no page — give it one or list it in WITHOUT_LINK';
         }
 
+        $uncovered = $this->uncoveredReviewActions($source, $link);
+        if ($uncovered !== []) {
+            return 'the link controller has review action(s) ' . implode(', ', $uncovered)
+                . ' but the source is neither in MAIN_ACTION nor in NO_MAIN_ACTION (with a reason)';
+        }
+
         return $this->opens($user, $link) ?? $this->acts($source);
+    }
+
+    /**
+     * POST-only routes on the controller of the source's link whose name or path says review/confirm, for a
+     * source that has no MAIN_ACTION and no listed exception. Derived from the router, not from a fixed list.
+     *
+     * @return list<string>
+     */
+    private function uncoveredReviewActions(DeadlineSource $source, RecordLink $link): array
+    {
+        if (isset(self::MAIN_ACTION[$source->slug()]) || isset(self::NO_MAIN_ACTION[$source->slug()])) {
+            return [];
+        }
+        $routes = $this->router->getRouteCollection();
+        $linkRoute = $routes->get($link->route);
+        $controller = (string) ($linkRoute?->getDefault('_controller') ?? '');
+        if ($controller === '' || !str_contains($controller, '::')) {
+            return [];
+        }
+        $class = explode('::', $controller)[0];
+        $found = [];
+        foreach ($routes as $name => $route) {
+            $methods = $route->getMethods();
+            if ($methods === [] || in_array('GET', $methods, true)) {
+                continue;
+            }
+            if (!str_starts_with((string) $route->getDefault('_controller'), $class . '::')) {
+                continue;
+            }
+            if (preg_match(self::REVIEW_ACTION_ROUTE, $name . ' ' . $route->getPath()) === 1) {
+                $found[] = $name;
+            }
+        }
+
+        return $found;
     }
 
     /**

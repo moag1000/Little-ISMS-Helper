@@ -239,7 +239,7 @@ class StatementOfApplicabilityController extends AbstractController
 
         return $this->soaReportService->downloadSoAReport();
     }
-    #[Route('/soa/report/pdf/preview', name: 'app_soa_preview_pdf', methods: ['GET'])]
+    #[Route('/soa/report/pdf/preview', name: 'app_soa_preview_pdf', methods: ['GET']), IsGranted('ROLE_USER')]
     public function previewPdf(): Response
     {
         return $this->soaReportService->streamSoAReport();

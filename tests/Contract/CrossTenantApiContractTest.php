@@ -14,12 +14,15 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
+use ApiPlatform\Metadata\Resource\Factory\ResourceNameCollectionFactoryInterface;
 use ApiPlatform\Metadata\UrlGeneratorInterface;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\ApiTokenManager;
 use App\Tests\Contract\Support\ContractRecordFactory;
+use App\Tests\Support\PhpSourceScanner;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\Node;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
@@ -108,28 +111,82 @@ final class CrossTenantApiContractTest extends WebTestCase
     }
 
     /**
-     * Every class with #[ApiResource] below src/Entity/, subfolders included (T2: a resource in
-     * src/Entity/<Folder>/ was never probed).
+     * Every resource API Platform itself serves — entities, DTOs in src/ApiResource/ or anywhere else the
+     * `api_platform.resource_class_directories` / mapping config reaches. W9: discovery used to scan
+     * src/Entity/ only, so an #[ApiResource] DTO elsewhere was never probed.
      *
      * @return list<class-string>
      */
     public static function apiResources(): array
     {
-        $base = dirname(__DIR__, 2) . '/src/Entity/';
+        self::ensureKernelShutdown();
+        self::bootKernel();
+        try {
+            /** @var ResourceNameCollectionFactoryInterface $names */
+            $names = self::getContainer()->get('api_platform.metadata.resource.name_collection_factory');
+            $classes = [];
+            foreach ($names->create() as $class) {
+                $classes[] = $class;
+            }
+        } finally {
+            self::ensureKernelShutdown();
+        }
+        sort($classes);
+
+        return $classes;
+    }
+
+    /**
+     * Classes below src/ (any folder) that carry #[ApiResource] in their own source, found by the parser.
+     * They must all be served by API Platform — a resource its mapping does not reach would be invisible
+     * to the discovery above and probed by nobody.
+     *
+     * @return list<class-string>
+     */
+    private static function apiResourceClassesInSource(): array
+    {
         $classes = [];
-        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($base, \FilesystemIterator::SKIP_DOTS));
-        foreach ($files as $file) {
-            if ($file->getExtension() !== 'php') {
+        foreach (PhpSourceScanner::phpFiles(dirname(__DIR__, 2) . '/src') as $path) {
+            if (!str_contains((string) file_get_contents($path), 'ApiResource')) {
                 continue;
             }
-            $class = 'App\\Entity\\' . str_replace('/', '\\', substr((string) $file->getPathname(), strlen($base), -4));
-            if (class_exists($class) && new ReflectionClass($class)->getAttributes(ApiResource::class) !== []) {
-                $classes[] = $class;
+            foreach (PhpSourceScanner::find(PhpSourceScanner::parseFile($path), Node\Stmt\Class_::class) as $class) {
+                foreach ($class->attrGroups as $group) {
+                    foreach ($group->attrs as $attribute) {
+                        if (ltrim($attribute->name->toString(), '\\') === ApiResource::class && $class->namespacedName !== null) {
+                            $classes[] = $class->namespacedName->toString();
+                        }
+                    }
+                }
             }
         }
         sort($classes);
 
         return $classes;
+    }
+
+    #[Test]
+    public function everyApiResourceInSourceIsServedByApiPlatform(): void
+    {
+        self::assertSame(
+            [],
+            array_values(array_diff(self::apiResourceClassesInSource(), self::apiResources())),
+            '#[ApiResource] class that API Platform does not serve (mapping paths?) — the contract would never probe it.',
+        );
+    }
+
+    /** Resources that are not Doctrine entities (DTOs with a state provider): each needs a reason, the probe creates entities. */
+    #[Test]
+    public function everyApiResourceIsAnEntityOrSaysWhyNot(): void
+    {
+        $metadata = $this->em()->getMetadataFactory();
+        $notEntities = array_values(array_filter(self::apiResources(), static fn (string $c): bool => !$metadata->hasMetadataFor($c)));
+
+        self::assertSame(
+            [],
+            array_values(array_diff($notEntities, array_keys(self::WITHOUT_TENANT))),
+            'API resource that is not a Doctrine entity: the cross-tenant probe cannot create its records. Probe it by hand and list it in WITHOUT_TENANT with the reason.',
+        );
     }
 
     #[Test]

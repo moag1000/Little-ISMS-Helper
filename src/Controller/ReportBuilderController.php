@@ -299,7 +299,7 @@ class ReportBuilderController extends AbstractController
     }
 
     /**
-     * Preview report
+     * Preview report. @get-write-ok: usage counter of the report, no state a person decides on
      */
     #[Route('/{id}/preview', name: 'report_builder_preview', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function preview(CustomReport $report): Response
@@ -327,7 +327,7 @@ class ReportBuilderController extends AbstractController
     }
 
     /**
-     * Export report as PDF
+     * Export report as PDF. @get-write-ok: usage counter of the report, no state a person decides on
      */
     #[Route('/{id}/export/pdf', name: 'report_builder_export_pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function exportPdf(CustomReport $report): Response

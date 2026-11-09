@@ -16,11 +16,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Gate 72 at run time (T2): a new row of a tenant-owned entity saved without a tenant while a
- * person of an organisation works. The TenantFilter adds `tenant_id = <current>` to every query, so
- * such a row is invisible to its own organisation the moment it is written (seen with
- * WorkflowInstance, RiskAppetite). The static gate reads `new X()` + `setTenant()` per method and
- * misses factories, `clone` and helper services; this listener sees the row itself.
+ * Gate 72 at run time (T2): a new row of a tenant-owned entity saved without a tenant (since T3 also an
+ * existing row whose tenant is set to null) while a person of an organisation works. The TenantFilter
+ * adds `tenant_id = <current>` to every query, so such a row is invisible to its own organisation the
+ * moment it is written (seen with WorkflowInstance, RiskAppetite). The static gate (PHPStan
+ * TenantlessRowRule) reads `new X()` + `setTenant()` and misses factories, `clone` and helper services; this listener sees the row itself.
  *
  * - Tenant-owned = has a `tenant` association, is not Tenant/User and does not implement
  *   {@see SharedTenantRowsInterface} (rows meant for all organisations) — the TenantFilter's rule.
@@ -47,13 +47,25 @@ final class TenantlessInsertGuard
             return;
         }
         $em = $args->getObjectManager();
+        $uow = $em->getUnitOfWork();
         $missing = [];
-        foreach ($em->getUnitOfWork()->getScheduledEntityInsertions() as $entity) {
+        foreach ($uow->getScheduledEntityInsertions() as $entity) {
             $meta = $em->getClassMetadata($entity::class);
             if (!self::isTenantOwned($meta->getReflectionClass(), $meta->hasAssociation('tenant'))) {
                 continue;
             }
             if ($meta->getFieldValue($entity, 'tenant') === null) {
+                $missing[] = $entity::class;
+            }
+        }
+        // An existing row whose tenant is set to null vanishes for its own organisation like a tenant-less insert.
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            $meta = $em->getClassMetadata($entity::class);
+            if (!self::isTenantOwned($meta->getReflectionClass(), $meta->hasAssociation('tenant'))) {
+                continue;
+            }
+            $changes = $uow->getEntityChangeSet($entity)['tenant'] ?? null;
+            if ($changes !== null && $changes[0] !== null && $changes[1] === null) {
                 $missing[] = $entity::class;
             }
         }

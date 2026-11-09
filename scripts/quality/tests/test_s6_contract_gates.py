@@ -3,6 +3,7 @@
 Run: python3 -m unittest discover -s scripts/quality/tests
 """
 import importlib.util
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -74,15 +75,8 @@ class FulfilmentByNameTest(unittest.TestCase):
 class JobAccessTest(unittest.TestCase):
     def check(self, php: str) -> list:
         text = "<?php\nfinal class C\n{\n" + php + "\n}\n"
-        found = []
-        for name, attributes, body, _ in jobs.actions(text):
-            if not jobs.ROUTE.search(attributes):
-                continue
-            signature = body.split("{", 1)[0]
-            for variable in jobs.job_id_variables(text, body):
-                if f"${variable}" in signature and variable not in jobs.GUARD.findall(attributes) and jobs.OPT_OUT not in body:
-                    found.append(name)
-        return found
+        found, _ = jobs.problems_in("src/Controller/C.php", text)
+        return [re.search(r"\d+: (\w+)\(\)", f).group(1) for f in found]
 
     def test_download_without_owner_check_fails(self):
         php = ("\n    #[Route('/x/{id}')]\n    public function download(string $id): Response\n    {\n"
@@ -110,26 +104,3 @@ class ModuleFieldTraitTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-
-mfa = load("check_mfa_login_state")
-
-
-class MfaLoginStateGateTest(unittest.TestCase):
-    def test_session_key_outside_the_state_class_fails(self):
-        php = "$session->set('_security.mfa_verified', true);"
-        self.assertTrue(mfa.problems_in("src/Controller/X.php", php))
-        self.assertFalse(mfa.problems_in(mfa.STATE_CLASS, php))
-
-    def test_hand_made_login_needs_the_state_class(self):
-        raw = "$this->tokenStorage->setToken($token);"
-        self.assertTrue(mfa.problems_in("src/Controller/X.php", raw))
-        # T2: importing the class is not using it; begin() must run in the same method
-        self.assertTrue(mfa.problems_in("src/Controller/X.php", "use App\\Security\\Mfa\\MfaSessionState;\n" + raw))
-        self.assertFalse(mfa.problems_in("src/Controller/X.php", raw + "\n$this->mfaState->begin($session, $user);"))
-        self.assertFalse(mfa.problems_in("src/Controller/X.php", "$this->tokenStorage->setToken(null);"))
-
-    def test_setup_may_not_be_always_allowed(self):
-        php = "private const ALLOWED_PREFIXES = [\n '/logout',\n '/setup',\n];"
-        self.assertTrue(mfa.problems_in(mfa.ENFORCERS[0], php))
-        self.assertFalse(mfa.problems_in(mfa.ENFORCERS[0], php.replace(" '/setup',\n", "")))

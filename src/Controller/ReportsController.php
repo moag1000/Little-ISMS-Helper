@@ -8,6 +8,7 @@ use App\Service\SecurityAuditService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ReportsController extends AbstractController
 {
@@ -16,6 +17,7 @@ class ReportsController extends AbstractController
     }
 
     #[Route('/about/reports', name: 'app_reports_overview', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function overview(): Response
     {
         $projectDir = $this->getParameter('kernel.project_dir');

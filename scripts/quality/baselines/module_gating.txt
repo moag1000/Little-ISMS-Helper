@@ -1,4 +1,0 @@
-# check_module_gating.py baseline — generated snapshot.
-# Format: <relative-path>:<line>:<field-name>   (FormType pass)
-#         <relative-path>:<method>:route        (controller pass)
-# Remove an entry once the FormType / controller is gated properly.

@@ -114,6 +114,7 @@ final class KonzernRollupController extends AbstractController
      * stichtag (default: today).
      */
     #[Route('/one-pager.pdf', name: 'one_pager_pdf', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function onePager(Request $request): Response
     {
         $user = $this->getUser();

@@ -31,53 +31,132 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 CONTROLLERS = ROOT / "src" / "Controller"
 OPT_OUT = "@job-access-ok:"
-JOB_DIR = re.compile(r"""var/jobs\b|['"]/jobs/?['"]""")
+from php_source import class_methods, join_literals, matching_end, split_args, strip_comments, use_aliases
+
 # Readers of the job files, with the reason they may.
 JOB_DIR_READERS = {
     "src/Service/Job/JobStatusService.php": "the status store; records and checks the owner",
     "src/Service/Job/WorkerHealthService.php": "counts pending jobs and the heartbeat for the worker page, per organisation",
 }
-PHP_COMMENT = re.compile(r"/\*.*?\*/|(?<![:\"'])//[^\n]*", re.S)
+JOB_DIR = re.compile(r"""var/jobs\b|['"]/?jobs/?['"]""")
+VAR_SEGMENT = re.compile(r"""['"]/?var/?['"]""")
 
-ACTION = re.compile(r"\n    public function (\w+)\(([^)]*)\)")
 ROUTE = re.compile(r"#\[Route\(")
 # Every JobStatusService method that takes a job id (read, delete, but also markFailed / updatePayload ...).
 JOB_METHODS = r"(?:read|exists|delete|mark\w+|heartbeat|update\w+)"
-RECEIVER_DECL = re.compile(r"JobStatusService\s+\$(\w+)")
-ARG = re.compile(r"\$(\w+)")
+# Job types a controller may hold without that reading a job by id. SetupJobStatusService keeps the
+# wizard's fixed job keys in the session of the person setting up (no var/jobs, no id from outside).
+NOT_READERS = {"JobDispatcher", "AsyncJobDispatcher", "JobTenantScope", "JobContext", "AsyncJobInterface",
+               "JobRunnerInterface", "InRequestJobRunner", "MessengerJobRunner", "SetupJobStatusService"}
+LEGACY_RECEIVERS = {"jobStatusService": "JobStatusService", "jobStatus": "JobStatusService",
+                    "jobs": "JobStatusService"}
 GUARD = re.compile(r"#\[IsGranted\(\s*(?:\\?App\\Security\\Voter\\)?AsyncJobVoter::ACCESS\s*,\s*subject:\s*'(\w+)'")
+# A route argument that is named like a job id must be guarded whatever the body does with it.
+JOB_PLACEHOLDER = re.compile(r"\{(job\w*|\w*[jJ]ob_?[iI]d|\w*job_?uuid)\}", re.I)
+TYPED_PARAM = re.compile(r"\??\\?([A-Za-z_][\w\\]*)\s+\$(\w+)")
+# `$jobId = $service->create(...)` is a fresh id, not an input; `(string) $id` or `$request->attributes->get('id')` is.
+FRESH_VALUE = re.compile(r"(?<!attributes)(?<!query)(?<!request)(?<!headers)(?<!cookies)->\s*(?!get\w*\()\w+\s*\(")
+CALL_ARGS = re.compile(r"(?:\$this\s*->\s*|\bself::|\bstatic::)(\w+)\s*\(")
 
 
-def actions(text: str) -> list[tuple[str, str, str, int]]:
-    """(name, attribute block, body, line) of every public method."""
-    found = []
-    matches = list(ACTION.finditer(text))
-    for i, m in enumerate(matches):
-        attr_start = text.rfind("\n\n", 0, m.start())
-        attributes = text[attr_start if attr_start >= 0 else 0:m.start()]
-        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
-        found.append((m.group(1), attributes, text[m.start():end], text.count("\n", 0, m.start()) + 2))
+def job_receivers(code: str) -> dict[str, str]:
+    """property / variable name -> job service class, for every Job* type the file declares."""
+    aliases = use_aliases(code)
+    found = dict(LEGACY_RECEIVERS)
+    for m in TYPED_PARAM.finditer(code):
+        short = aliases.get(m.group(1), m.group(1)).rsplit("\\", 1)[-1]
+        if "Job" in short and not short.endswith("Job") and short not in NOT_READERS:
+            found[m.group(2)] = short
     return found
 
 
-
-def job_id_variables(text: str, body: str) -> set[str]:
-    """Variables an action passes to a JobStatusService method that takes a job id."""
-    # The service may sit in any property / local alias, not just `$jobStatusService`.
-    receivers = set(RECEIVER_DECL.findall(text)) | {"jobStatusService", "jobStatus", "jobs"}
-    for alias in re.findall(r"\$(\w+)\s*=\s*\$this->(?:" + "|".join(map(re.escape, receivers)) + r")\b", body):
-        receivers.add(alias)
-    call = re.compile(r"(?:" + "|".join(map(re.escape, receivers)) + r")\s*->\s*" + JOB_METHODS + r"\(")
+def direct_reads(body: str, receivers: dict[str, str]) -> set[str]:
+    """Variables a method body passes to a job-reading call (statuses by id, or any Job* wrapper)."""
     used: set[str] = set()
-    for m in call.finditer(body):
-        depth, i = 1, m.end()
-        while i < len(body) and depth:  # the whole argument list: `(string) $id`, `id: $id`, `trim($id)`
-            depth += {"(": 1, ")": -1}.get(body[i], 0)
-            i += 1
-        used.update(ARG.findall(body[m.end():i]))
+    for name, kind in receivers.items():
+        method = JOB_METHODS if kind == "JobStatusService" else r"\w+"
+        call = re.compile(r"\$(?:this\s*->\s*)?" + re.escape(name) + r"\s*\??->\s*" + method + r"\s*\(")
+        call2 = re.compile(r"\$this\s*->\s*" + re.escape(name) + r"\s*\??->\s*" + method + r"\s*\(")
+        for pattern in (call, call2):
+            for m in pattern.finditer(body):
+                used.update(re.findall(r"\$(\w+)", body[m.end():matching_end(body, m.end() - 1)]))
+    # `$alias = $this->jobStatusService;` then `$alias->read($id)`
+    for alias, prop in re.findall(r"\$(\w+)\s*=\s*\$this\s*->\s*(\w+)\s*;", body):
+        if prop in receivers:
+            sub = {alias: receivers[prop]}
+            used |= direct_reads(body, sub) if alias not in receivers else set()
     return used
+
+
+def reads_by_method(code: str) -> tuple[str, list, dict[str, set[str]]]:
+    """(class head, methods, name -> variables/parameters that end in a job read), helpers resolved."""
+    head, methods = class_methods(code)
+    receivers = job_receivers(code)
+    reads = {m.name: direct_reads(m.body, receivers) for m in methods}
+    by_name = {m.name: m for m in methods}
+    changed = True
+    while changed:  # helper chains and local aliases, to a fixed point
+        changed = False
+        for m in methods:
+            current = reads[m.name]
+            before = set(current)
+            for local, expr in re.findall(r"\$(\w+)\s*=\s*([^;]+);", m.body):
+                if local in current and not FRESH_VALUE.search(expr):
+                    current.update(re.findall(r"\$(\w+)", expr))
+            for call in CALL_ARGS.finditer(m.body):
+                helper = by_name.get(call.group(1))
+                if helper is None:
+                    continue
+                args = split_args(m.body[call.end():matching_end(m.body, call.end() - 1) - 1])
+                names = helper.param_names()
+                for i, arg in enumerate(args):
+                    named = re.match(r"(\w+)\s*:(?!:)", arg)
+                    target = named.group(1) if named else (names[i] if i < len(names) else None)
+                    if target and target in reads[helper.name]:
+                        current.update(re.findall(r"\$(\w+)", arg))
+            if current != before:
+                changed = True
+    return head, methods, reads
+
+
+def problems_in(rel: str, text: str) -> tuple[list[str], int]:
+    code = strip_comments(text)
+    head, methods, reads = reads_by_method(code)
+    class_guards = set(GUARD.findall(head))
+    found: list[str] = []
+    checked = 0
+    for m in methods:
+        if not ROUTE.search(m.attributes):
+            continue
+        line = code.count("\n", 0, m.start) + 1
+        guards = set(GUARD.findall(m.attributes)) | class_guards
+        if OPT_OUT in text[m.start:m.start + len(m.params) + len(m.body) + 200]:
+            continue
+        params = set(m.param_names())
+        wanted = {v for v in reads[m.name] if v in params}
+        for placeholder in JOB_PLACEHOLDER.findall(m.attributes):
+            wanted.add(placeholder)
+        for variable in sorted(wanted):
+            checked += 1
+            if variable not in guards:
+                found.append(f"{rel}:{line}: {m.name}() reads job ${variable} without "
+                             f"#[IsGranted(AsyncJobVoter::ACCESS, subject: '{variable}')]")
+    return found, checked
+
+
+def reads_job_files(code: str) -> int:
+    """Offset of a reference to the var/jobs directory, in any spelling (joined literals, path segments); -1 if none."""
+    joined = join_literals(code)
+    hit = JOB_DIR.search(joined)
+    if hit and not (hit.group(0).startswith(("'", '"'))):
+        return hit.start()
+    if VAR_SEGMENT.search(joined) and re.search(r"""['"]/?jobs/?['"]""", joined):
+        return 0
+    return hit.start() if hit else -1
+
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -88,33 +167,18 @@ def main() -> int:
     checked = 0
     for path in sorted(CONTROLLERS.rglob("*.php")):
         text = path.read_text(encoding="utf-8", errors="replace")
-        if "JobStatusService" not in text:
-            continue
-        class_start = text.find("\nfinal class ") if "\nfinal class " in text else text.find("\nclass ")
-        class_guards = set(GUARD.findall(text[:class_start])) if class_start > 0 else set()
-        for name, attributes, body, line in actions(text):
-            if not ROUTE.search(attributes):
-                continue
-            signature = body.split("{", 1)[0]
-            for variable in job_id_variables(text, body):
-                if f"${variable}" not in signature:
-                    continue  # not a route argument (an id from the session, …)
-                checked += 1
-                if variable in GUARD.findall(attributes) or variable in class_guards or OPT_OUT in body:
-                    continue
-                failures.append(
-                    f"{path.relative_to(ROOT)}:{line}: {name}() reads job ${variable} without "
-                    f"#[IsGranted(AsyncJobVoter::ACCESS, subject: '{variable}')]"
-                )
+        found, count = problems_in(path.relative_to(ROOT).as_posix(), text)
+        failures.extend(found)
+        checked += count
 
     for path in sorted((ROOT / "src").rglob("*.php")):
         rel = path.relative_to(ROOT).as_posix()
         if rel in JOB_DIR_READERS:
             continue
-        code = PHP_COMMENT.sub(" ", path.read_text(encoding="utf-8", errors="replace"))
-        hit = JOB_DIR.search(code)
-        if hit:
-            line = code.count("\n", 0, hit.start()) + 1
+        code = strip_comments(path.read_text(encoding="utf-8", errors="replace"))
+        at = reads_job_files(code)
+        if at >= 0:
+            line = code.count("\n", 0, at) + 1
             failures.append(f"{rel}:{line}: reads the job files directly — go through JobStatusService "
                             f"(owner check) or add the file with its reason to JOB_DIR_READERS")
 
