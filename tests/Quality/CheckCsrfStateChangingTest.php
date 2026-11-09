@@ -66,16 +66,36 @@ final class CheckCsrfStateChangingTest extends TestCase
         self::assertStringContainsString('::delete#literal-id', $out);
     }
 
+    /**
+     * T2: both shapes used to count as protected — a form built but never validated, and a token
+     * check whose result decides nothing. The gate now flags them; the test was flipped.
+     *
+     * @return iterable<string, array{string}>
+     */
+    public static function protectionThatDecidesNothing(): iterable
+    {
+        yield 'form without handleRequest/isValid' => ["#[Route('/x', name: 'x', methods: ['GET', 'POST'])]\n    public function a(): void { \$f = \$this->createForm(X::class); \$this->s->go(); }"];
+        yield 'token check result ignored' => ["#[Route('/x', name: 'x', methods: ['POST'])]\n    public function a(): void { \$this->isCsrfTokenValid('x', ''); \$this->s->go(); }"];
+    }
+
+    #[Test]
+    #[DataProvider('protectionThatDecidesNothing')]
+    public function aCheckThatDecidesNothingIsFlagged(string $method): void
+    {
+        [$exit, $out] = $this->scanFixture("<?php\nclass _CsrfSynthBad {\n    {$method}\n}\n");
+        self::assertSame(1, $exit, $out);
+    }
+
     /** @return iterable<string, array{string}> */
     public static function protectedVariants(): iterable
     {
         yield 'attribute' => ["#[IsCsrfTokenValid('x')]\n    #[Route('/x', name: 'x', methods: ['POST'])]\n    public function a(): void { \$this->s->go(); }"];
         yield 'expression id' => ["#[IsCsrfTokenValid(new Expression('\"x_\" ~ args[\"e\"].getId()'))]\n    #[Route('/{id}', name: 'x', methods: ['POST'])]\n    public function a(): void { \$this->s->go(); }"];
         yield 'inline check' => ["#[Route('/x', name: 'x', methods: ['PATCH'])]\n    public function a(): void { if (!\$this->isCsrfTokenValid('x', \$t)) { return; } }"];
-        yield 'symfony form' => ["#[Route('/x', name: 'x', methods: ['GET', 'POST'])]\n    public function a(): void { \$f = \$this->createForm(X::class); }"];
+        yield 'symfony form' => ["#[Route('/x', name: 'x', methods: ['GET', 'POST'])]\n    public function a(Request \$r): void { \$f = \$this->createForm(X::class); \$f->handleRequest(\$r); if (\$f->isSubmitted() && \$f->isValid()) { \$this->s->go(); } }"];
         yield 'exempt marker' => ["// @csrf-exempt: pure computation\n    #[Route('/x', name: 'x', methods: ['POST'])]\n    public function a(): void { \$this->calc(); }"];
         yield 'read-only GET' => ["#[Route('/x', name: 'x', methods: ['GET'])]\n    public function a(): void { \$this->s->go(); }"];
-        yield 'checked in private helper' => ["#[Route('/x', name: 'x', methods: ['POST'])]\n    public function a(): void { \$this->guard(); }\n\n    private function guard(): void { \$this->isCsrfTokenValid('x', ''); }"];
+        yield 'checked in private helper' => ["#[Route('/x', name: 'x', methods: ['POST'])]\n    public function a(): void { \$this->guard(); }\n\n    private function guard(): void { if (!\$this->isCsrfTokenValid('x', '')) { throw new AccessDeniedException(); } }"];
     }
 
     #[Test]
