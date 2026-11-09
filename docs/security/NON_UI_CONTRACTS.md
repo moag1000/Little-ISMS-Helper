@@ -97,6 +97,14 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | API-Tokens laufen höchstens 365 Tage, entstehen nur nach voller Anmeldung und werden bei Rollenwechsel widerrufen | `tests/Service/ApiTokenManagerTest`, `tests/Security/ApiTokenBoundaryTest` |
 | SAML-Antworten gelten nur im Browser, der die Anmeldung begonnen hat (Bindungs-Cookie, Login-CSRF) | `tests/Security/Sso/SsoClaimContractTest::samlRefusesUnsolicitedAndUnknownResponses` |
 
+## Vorschlagsvertrag (S30)
+
+| Invariante | Beleg |
+|---|---|
+| Annehmen verlangt das Recht des UI-Schreibwegs: jede Vorschlagsart nennt die Formular-/Aktionsroute (`SuggestionKind::targetAccess()`), deren `#[IsGranted]` die Queue mit dem Datensatz prüft — für Rollen- und Datensatzverantwortliche gleich; eine verantwortliche Person ohne Manager nimmt keinen VVT-, Register- oder Managementbewertungs-Vorschlag an und bekommt ihn nicht in „Mein Tag“. Gilt auch für „Entwurf vorschlagen“ und MCP `propose_draft` | `tests/Service/Suggestion/SuggestionKindAccessContractTest` (alle `app.suggestion_kind`-Services), `SuggestionQueueTest` |
+| Sichtbarkeit: Liste, entschiedene Vorschläge und Zähler zeigen nur, was die Person entscheidet, oder (Lese-Rolle) die Queue der Organisation — Entwürfe zu Datenpannen/Betroffenenanfragen nur mit ROLE_DPO; MCP `pending_suggestions`/`get_context` filtern über `PersonalDataPolicy` | `SuggestionKindAccessContractTest::draftsAboutPeopleStayWithTheDpoRole`, `SuggestionQueueTest::readersSeeTheQueueButRecordsOfPeopleOnlyWithTheDpoRole` |
+| Ein Vorschlag wird höchstens einmal angewandt (Version + Zeilensperre in einer Transaktion); ein KI-Entwurf zu einem abgeschlossenen Datensatz (Panne gemeldet, Anfrage beantwortet) ist überholt; ein Datensatz einer anderen Organisation ist überholt, nie angewandt | `SuggestionQueueTest::aSecondAcceptAppliesNothing`, `…anAiDraftWhoseRecordIsClosedIsWithdrawn`, `SuggestionKindAccessContractTest::aRecordOfAnotherOrganisationIsStale` |
+
 ## Wiederherstellung, globale Daten, Quick-Fix
 
 | Invariante | Beleg |
@@ -156,14 +164,6 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 
 Platzhalter (B3): Inhalt schreibt Paket S29 — welche Datensätze mit Endzustand oder Aufbewahrungspflicht wie
 gelöscht werden dürfen und welcher Test jeden Löschweg findet.
-
-| Invariante | Beleg |
-|---|---|
-
-## Vorschlagsvertrag (S30)
-
-Platzhalter (B3): Inhalt schreibt Paket S30 — was eine `SuggestionKind` erzeugen und anwenden darf und welcher Test
-jede Art prüft.
 
 | Invariante | Beleg |
 |---|---|

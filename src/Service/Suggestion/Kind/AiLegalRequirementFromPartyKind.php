@@ -19,6 +19,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\RegisterController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Compliance manager (ISO 27001 4.2 b, A.5.31): an interested party whose
@@ -47,6 +49,11 @@ final class AiLegalRequirementFromPartyKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(RegisterController::class, 'adopt');
     }
 
     public function decisionRoles(): array

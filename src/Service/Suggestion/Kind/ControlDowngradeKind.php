@@ -16,6 +16,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\StatementOfApplicabilityController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * An open nonconformity against a control the SoA still calls done
@@ -43,6 +45,11 @@ final class ControlDowngradeKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Rule;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(StatementOfApplicabilityController::class, 'edit');
     }
 
     public function decisionRoles(): array

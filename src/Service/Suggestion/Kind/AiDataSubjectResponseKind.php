@@ -15,6 +15,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\DataSubjectRequestController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * DPO within the one-month deadline (GDPR Art. 12 (3)): an open data subject
@@ -41,6 +43,11 @@ final class AiDataSubjectResponseKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(DataSubjectRequestController::class, 'edit');
     }
 
     public function decisionRoles(): array

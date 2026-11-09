@@ -121,8 +121,17 @@ class RecordDrafts
         return $names;
     }
 
+    /**
+     * May the current user ask for a draft about this record? Only who may
+     * decide it: a decision role or the responsibility for the record, and
+     * the right of the same write in the UI (S30) — so nobody replaces a
+     * draft they could not accept.
+     */
     public function mayRequest(RecordDraftKind $kind, object $record, Tenant $tenant): bool
     {
+        if (!$this->queue->allowsTarget($kind, $record)) {
+            return false;
+        }
         foreach ($kind->decisionRoles() as $role) {
             if ($this->security->isGranted($role)) {
                 return true;

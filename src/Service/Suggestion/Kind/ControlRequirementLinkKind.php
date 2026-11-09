@@ -15,6 +15,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\StatementOfApplicabilityController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Text-similarity mapping proposals "control covers requirement" (A2,
@@ -40,6 +42,11 @@ final class ControlRequirementLinkKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Rule;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(StatementOfApplicabilityController::class, 'acceptSuggestion');
     }
 
     public function decisionRoles(): array

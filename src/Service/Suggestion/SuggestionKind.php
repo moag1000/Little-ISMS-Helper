@@ -35,6 +35,13 @@ interface SuggestionKind
      */
     public function decisionRoles(): array;
 
+    /**
+     * The right the same write needs in the UI (S30). Accepting needs it on
+     * top of a decision role or the responsibility for the record — a
+     * suggestion never widens who may write.
+     */
+    public function targetAccess(): TargetAccess;
+
     public function requiredModule(): ?string;
 
     /** May several suggestions of this kind be accepted at once? */

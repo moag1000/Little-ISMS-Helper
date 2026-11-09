@@ -15,6 +15,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\RiskTreatmentPlanController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Progress of a risk treatment plan (ISO 27001 6.1.3 e, 8.3) = share of its
@@ -40,6 +42,11 @@ final class TreatmentPlanProgressKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Rule;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(RiskTreatmentPlanController::class, 'edit');
     }
 
     public function decisionRoles(): array

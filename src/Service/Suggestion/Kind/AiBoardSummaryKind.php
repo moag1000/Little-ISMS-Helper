@@ -15,6 +15,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\ManagementReviewController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * ISB preparing the board meeting: a management review with its inputs
@@ -43,6 +45,11 @@ final class AiBoardSummaryKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(ManagementReviewController::class, 'edit');
     }
 
     public function decisionRoles(): array

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mcp;
 
 use App\Attribute\PersonalDataResource;
+use App\Entity\Suggestion;
 use App\Security\Persona\PersonaResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -70,6 +71,27 @@ final class PersonalDataPolicy
         }
 
         return $marker->isFieldLevel() || $this->mayReadPersonalData($session);
+    }
+
+    /**
+     * The suggestions whose texts may go to the assistant: a draft about a
+     * record of a withheld class (a breach, a data subject request) carries
+     * that record's personal data, so the same rule applies to it (S30, F2).
+     *
+     * @param iterable<Suggestion> $suggestions
+     * @return list<Suggestion>
+     */
+    public function suggestions(iterable $suggestions, McpSession $session): array
+    {
+        $offered = [];
+        foreach ($suggestions as $suggestion) {
+            $class = $suggestion->getSubjectClass();
+            if ($class === null || !class_exists($class) || $this->offers($class, $session)) {
+                $offered[] = $suggestion;
+            }
+        }
+
+        return $offered;
     }
 
     /**

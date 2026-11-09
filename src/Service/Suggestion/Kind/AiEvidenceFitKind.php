@@ -17,6 +17,8 @@ use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionNote;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\CommentController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Preparing an audit (ISO 19011 6.4): a control with evidence documents →
@@ -50,6 +52,11 @@ final class AiEvidenceFitKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(CommentController::class, 'post');
     }
 
     public function decisionRoles(): array

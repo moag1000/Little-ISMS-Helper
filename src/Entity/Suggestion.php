@@ -78,6 +78,11 @@ class Suggestion
     #[ORM\Column(length: 20, enumType: SuggestionStatus::class)]
     private SuggestionStatus $status = SuggestionStatus::Pending;
 
+    /** Optimistic lock: a decision on an outdated copy fails instead of applying twice (S30). */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: Types::INTEGER, options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeImmutable $createdAt;
 
@@ -276,5 +281,10 @@ class Suggestion
             $this->resultId = $result->getId();
         }
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }
