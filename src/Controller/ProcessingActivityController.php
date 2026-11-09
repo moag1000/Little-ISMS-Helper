@@ -226,7 +226,7 @@ class ProcessingActivityController extends AbstractController
     }
 
     #[Route('/processing-activity/{id}/complete-review', name: 'app_processing_activity_complete_review', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression(\App\Security\Voter\RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'processingActivity')]
     public function completeReview(Request $request, ProcessingActivity $processingActivity): Response
     {
         if ($this->isCsrfTokenValid('complete-review' . $processingActivity->getId(), $request->request->get('_token'))) {

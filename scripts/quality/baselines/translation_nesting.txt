@@ -194,8 +194,8 @@ translations/document.de.yaml:279:evidence_reverification
 translations/document.de.yaml:327:iso_9001_bridge
 translations/document.en.yaml:279:evidence_reverification
 translations/document.en.yaml:327:iso_9001_bridge
-translations/dora.de.yaml:173:dora_subcontractor
-translations/dora.en.yaml:173:dora_subcontractor
+translations/dora.de.yaml:230:dora_subcontractor
+translations/dora.en.yaml:230:dora_subcontractor
 translations/dpa_template.de.yaml:1:title
 translations/dpa_template.de.yaml:2:subtitle
 translations/dpa_template.de.yaml:4:parties

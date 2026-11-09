@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Http\PublicUrlGenerator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Entity\WorkflowInstance;
 use Exception;
 use App\Entity\WorkflowStep;
@@ -47,6 +49,8 @@ class DocumentApprovalService
         private readonly EmailNotificationService $emailNotificationService,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
+        // Public address (DEFAULT_URI), never the request's Host header — App\Http\PublicUrlGenerator.
+        #[Autowire(service: PublicUrlGenerator::class)]
         private readonly ?UrlGeneratorInterface $urlGenerator = null,
     ) {}
 

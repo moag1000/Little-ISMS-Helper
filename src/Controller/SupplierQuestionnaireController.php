@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Http\PublicUrlGenerator;
 use App\Attribute\RequiresModule;
 use App\Entity\SupplierQuestionnaire;
 use App\Entity\User;
@@ -43,6 +44,8 @@ final class SupplierQuestionnaireController extends AbstractController
         private readonly SupplierRepository $supplierRepository,
         private readonly SupplierQuestionnaireService $service,
         private readonly TenantContext $tenantContext,
+        // The supplier opens this link from outside: public address, not the Host header.
+        private readonly PublicUrlGenerator $publicUrls,
     ) {
     }
 
@@ -89,10 +92,9 @@ final class SupplierQuestionnaireController extends AbstractController
             $user instanceof User ? $user : null,
         );
 
-        $link = $this->generateUrl(
+        $link = $this->publicUrls->generate(
             'public_supplier_questionnaire_show',
             ['token' => $questionnaire->getPublicToken()],
-            \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL,
         );
         $this->addFlash('success', $link);
 

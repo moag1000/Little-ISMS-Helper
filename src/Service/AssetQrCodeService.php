@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Http\PublicUrlGenerator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Entity\Asset;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
@@ -24,6 +26,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class AssetQrCodeService
 {
     public function __construct(
+        // Public address (DEFAULT_URI), never the request's Host header — App\Http\PublicUrlGenerator.
+        #[Autowire(service: PublicUrlGenerator::class)]
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }

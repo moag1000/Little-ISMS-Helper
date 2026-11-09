@@ -271,6 +271,10 @@ systemctl enable isms-worker && systemctl start isms-worker
   Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
   A Reifegrad (Ist/Soll: MRIS, industry baselines) of a global requirement is the organisation's: read/write only via
   `Compliance\RequirementMaturity` (fulfilment row; own TISAX upload rows keep theirs) — `RequirementMaturityAccessTest`.
+- `Group\HoldingScope` - the one way to read across the corporate tree (`read()`, `asTenant()`); while it runs,
+  `App\Doctrine\HoldingIncidentFilter` hides other organisations' incidents with `visibleToHolding = false`, so group
+  views need no own flag check. The corporate structure (parent, governance rules) is written only by
+  `Group\CorporateStructureChange` (audit log with before/after), from both admin pages.
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
   inheritance; `thenRoles()` = wider circle) → admins (not for `withoutAdminFallback()`: board decisions wait for
@@ -810,6 +814,11 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       Outbound URLs a user can set carry `#[NoInternalIp]` (SSRF) and are fetched only through
       `App\Http\UserUrlHttpClient` (no private addresses after DNS, no redirects; `->guzzle()` for OAuth
       libraries) — `OutboundUserUrlClientTest` rejects any other raw HTTP client in `src/`.
+- [ ] Links that leave the session (mail, supplier questionnaire, Trust Center, QR labels) come from
+      `App\Http\PublicUrlGenerator` (DEFAULT_URI, never the Host header; `SYMFONY_TRUSTED_HOSTS` rejects others) —
+      `PublicLinksFromDefaultUriTest` finds every absolute URL in `src/`. Logout sends `Clear-Site-Data`; `public/sw.js`
+      caches only fixed build files, never pages/`.json`/API (`tests/js/service_worker.test.js`). Webhooks only signed.
+      Every export/download action carries `#[IsGranted]` (`ExportRoutesGatedTest`).
 - [ ] Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed reader type, zip
       limits, read filter) — never `IOFactory::createReaderForFile()`/`load()` (`SpreadsheetUploadReaderTest`).
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training

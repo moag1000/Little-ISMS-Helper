@@ -20,6 +20,7 @@ notification:
             retried: 'Benachrichtigungszustellung wiederholt'
     error:
         webhook_internal_ip: 'Webhook-URL zeigt auf eine interne oder reservierte IP-Adresse (SSRF-Schutz aktiv).'
+        webhook_no_secret: 'Webhook ohne HMAC-Geheimnis: nicht gesendet. Geheimnis im Kanal hinterlegen.'
         invalid_event_type: 'Der angegebene Ereignistyp ist ungültig oder nicht unterstützt.'
         template_not_found: 'Die angegebene Benachrichtigungsvorlage wurde nicht gefunden.'
 
@@ -117,7 +118,7 @@ notification:
             name: 'Ein eindeutiger Name für diesen Kanal.'
             type: 'Kanaltyp bestimmt die Zustellmethode.'
             config: 'E-Mail-Kanäle nutzen Empfänger, Absender und Betreff; Webhook-Kanäle URL und Timeout.'
-            secret: 'Optionaler HMAC-SHA256-Schlüssel für Webhook-Signaturen. Wird verschlüsselt gespeichert.'
+            secret: 'HMAC-SHA256-Schlüssel für Webhook-Signaturen, für Webhooks Pflicht. Wird verschlüsselt gespeichert.'
             secret_edit_hint: 'Leer lassen, um das bestehende Geheimnis beizubehalten.'
             is_active: 'Inaktive Kanäle werden bei der Zustellung übersprungen.'
         config:

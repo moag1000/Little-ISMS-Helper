@@ -32,6 +32,8 @@ final class WebhookChannelTest extends TestCase
         $this->httpClient = $this->createMock(UserUrlHttpClient::class);
         $this->encryption = $this->createMock(SecretEncryptionInterface::class);
         $this->validator  = $this->createMock(ValidatorInterface::class);
+        $this->encryption->method('decrypt')
+            ->willReturnCallback(static fn (string $v): ?string => $v === 'enc-secret' ? 'my-plain-secret' : null);
         $this->channel    = new WebhookChannel($this->httpClient, $this->encryption, $this->validator);
     }
 
@@ -55,6 +57,7 @@ final class WebhookChannelTest extends TestCase
         $ch = new NotificationChannel();
         $ch->setType(NotificationChannel::TYPE_WEBHOOK);
         $ch->setConfig(['url' => $url]);
+        $ch->setSecretEncrypted('enc-secret');
         return $ch;
     }
 
@@ -107,15 +110,11 @@ final class WebhookChannelTest extends TestCase
         $url      = 'https://hooks.example.com/hmac';
         $rule     = $this->makeRule();
         $ch       = $this->makeChannel($url);
-        $ch->setSecretEncrypted('enc-secret');
         $delivery = $this->makeDelivery();
 
         $violations = $this->createMock(ConstraintViolationListInterface::class);
         $violations->method('count')->willReturn(0);
         $this->validator->method('validate')->willReturn($violations);
-
-        $this->encryption->method('decrypt')
-            ->willReturn('my-plain-secret');
 
         $capturedHeaders = [];
         $response = $this->createMock(ResponseInterface::class);
@@ -129,7 +128,26 @@ final class WebhookChannelTest extends TestCase
         $this->channel->deliver($rule, $ch, $delivery, ['severity' => 'high']);
 
         self::assertArrayHasKey('X-Signature', $capturedHeaders);
-        self::assertStringStartsWith('sha256=', $capturedHeaders['X-Signature']);
+        self::assertMatchesRegularExpression('/^sha256=[0-9a-f]{64}$/', $capturedHeaders['X-Signature']);
+    }
+
+    /** S16: without a secret the receiver cannot verify the sender — nothing is sent. */
+    #[Test]
+    public function unsignedWebhookIsNotSent(): void
+    {
+        $ch = $this->makeChannel('https://hooks.example.com/unsigned');
+        $ch->setSecretEncrypted(null);
+        $delivery = $this->makeDelivery();
+
+        $violations = $this->createMock(ConstraintViolationListInterface::class);
+        $violations->method('count')->willReturn(0);
+        $this->validator->method('validate')->willReturn($violations);
+        $this->httpClient->expects($this->never())->method('request');
+
+        $this->channel->deliver($this->makeRule(), $ch, $delivery, []);
+
+        self::assertSame(NotificationDelivery::STATUS_FAILED, $delivery->getStatus());
+        self::assertStringContainsString('notification.error.webhook_no_secret', (string) $delivery->getErrorMessage());
     }
 
     #[Test]

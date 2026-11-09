@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'dora.tlpt.page.title'|trans({}, 'dora') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: (is_dora_obligated() ? [{ label: 'nav.dora_compliance'|trans({}, 'nav'), url: path('app_dora_compliance_dashboard') }] : [])
+            |merge([{ label: 'dora.tlpt.page.title'|trans({}, 'dora') }])
+    } %}
+
+    {{ _fa_page_header.render({
+        title: 'dora.tlpt.page.title'|trans({}, 'dora'),
+        subtitle: 'dora.tlpt.page.subtitle'|trans({}, 'dora'),
+        actions: is_granted('ROLE_MANAGER') ? [
+            { label: 'dora.tlpt.action.new'|trans({}, 'dora'), variant: 'primary', icon: 'plus', href: path('app_tlpt_new') }
+        ] : []
+    }) }}
+
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_tlpt_index'),
+        list_title: 'dora.tlpt.list.title'|trans({}, 'dora'),
+        empty: {
+            mood: 'thinking',
+            title: 'dora.tlpt.empty.title'|trans({}, 'dora'),
+            text: 'dora.tlpt.empty.text'|trans({}, 'dora'),
+            norm_ref: 'DORA Art. 26 · RTS TLPT',
+            actions: is_granted('ROLE_MANAGER') ? [
+                { label: 'dora.tlpt.action.new'|trans({}, 'dora'), variant: 'primary', icon: 'plus', href: path('app_tlpt_new') }
+            ] : []
+        },
+    } %}
+        {% block list_summary %}
+            {% if counts.running > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'dora.tlpt.summary.running'|trans({'%count%': counts.running}, 'dora') }}</span>{% endif %}
+            {% if counts.closed > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'dora.tlpt.summary.closed'|trans({'%count%': counts.closed}, 'dora') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+            {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'dora.tlpt.field.engagement_number'|trans({}, 'dora') }}</th>
+                        <th scope="col">{{ 'dora.tlpt.field.title'|trans({}, 'dora') }}</th>
+                        <th scope="col">{{ 'dora.tlpt.field.test_provider'|trans({}, 'dora') }}</th>
+                        <th scope="col">{{ 'dora.tlpt.field.planned_period'|trans({}, 'dora') }}</th>
+                        <th scope="col">{{ 'dora.tlpt.field.status'|trans({}, 'dora') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+                    {% for tlpt in page %}
+                        <tr>
+                            <td><a href="{{ path('app_tlpt_show', {id: tlpt.id}) }}" class="fa-row-link">{{ tlpt.engagementNumber }}</a></td>
+                            <td>{{ tlpt.title }}</td>
+                            <td>{{ tlpt.testProvider ?: ('dora.tlpt.provider.' ~ tlpt.providerType)|trans({}, 'dora') }}</td>
+                            <td>{{ tlpt.plannedStartDate|fa_date }} – {{ tlpt.plannedEndDate|fa_date }}</td>
+                            <td>{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ThreatLedPenetrationTest', status_key: tlpt.status, size: 'sm' }) }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

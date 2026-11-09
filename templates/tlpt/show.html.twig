@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+
+{% block title %}{{ tlpt.engagementNumber }} · {{ tlpt.title }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'dora.tlpt.page.title'|trans({}, 'dora'), url: path('app_tlpt_index') },
+            { label: tlpt.engagementNumber }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: tlpt.title,
+        badge: { label: tlpt.engagementNumber },
+        actions: (editable and is_granted('ROLE_MANAGER')) ? [
+            { label: 'dora.tlpt.action.edit'|trans({}, 'dora'), variant: 'secondary', href: path('app_tlpt_edit', {id: tlpt.id}) }
+        ] : []
+    }) }}
+
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ThreatLedPenetrationTest', status_key: tlpt.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(tlpt, 'threat-led-penetration-test', 'threat_led_penetration_test_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'dora.tlpt.field.test_provider'|trans({}, 'dora'), value: (tlpt.testProvider ?: ('dora.tlpt.provider.' ~ tlpt.providerType)|trans({}, 'dora')) },
+            { label: 'dora.tlpt.field.planned_period'|trans({}, 'dora'), value: tlpt.plannedStartDate or tlpt.plannedEndDate ? tlpt.plannedStartDate|fa_date ~ ' – ' ~ tlpt.plannedEndDate|fa_date : null },
+            { label: 'dora.tlpt.field.actual_period'|trans({}, 'dora'), value: tlpt.actualStartDate or tlpt.actualEndDate ? tlpt.actualStartDate|fa_date ~ ' – ' ~ tlpt.actualEndDate|fa_date : null },
+        ],
+        workflow: workflow_state(tlpt),
+    }) }}
+
+    {{ _fa_anchor_bar.render([
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'results', label: 'dora.tlpt.section.results'|trans({}, 'dora') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: tlpt } only %}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <section class="card mb-4 fa-show-section" id="details" aria-labelledby="tlpt-details-title">
+                <div class="card-header"><h2 class="h6 mb-0" id="tlpt-details-title">{{ 'show.anchor.details'|trans({}, 'messages') }}</h2></div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-muted">{{ 'dora.tlpt.field.scope'|trans({}, 'dora') }}</dt>
+                        <dd class="col-sm-8">{{ tlpt.scope ? tlpt.scope|nl2br : '—' }}</dd>
+                        <dt class="col-sm-4 text-muted">{{ 'dora.tlpt.field.threat_intelligence_basis'|trans({}, 'dora') }}</dt>
+                        <dd class="col-sm-8">{{ tlpt.threatIntelligenceBasis ? tlpt.threatIntelligenceBasis|nl2br : '—' }}</dd>
+                        <dt class="col-sm-4 text-muted">{{ 'dora.tlpt.field.jurisdictions'|trans({}, 'dora') }}</dt>
+                        <dd class="col-sm-8">{{ tlpt.jurisdictionCodes ? tlpt.jurisdictionCodes|join(', ') : '—' }}</dd>
+                        <dt class="col-sm-4 text-muted">{{ 'dora.tlpt.field.provider_type'|trans({}, 'dora') }}</dt>
+                        <dd class="col-sm-8">{{ ('dora.tlpt.provider.' ~ tlpt.providerType)|trans({}, 'dora') }}</dd>
+                    </dl>
+                </div>
+            </section>
+
+            <section class="card mb-4 fa-show-section" id="results" aria-labelledby="tlpt-results-title">
+                <div class="card-header"><h2 class="h6 mb-0" id="tlpt-results-title">{{ 'dora.tlpt.section.results'|trans({}, 'dora') }}</h2></div>
+                <div class="card-body">
+                    <h3 class="h6 text-muted">{{ 'dora.tlpt.field.executive_summary'|trans({}, 'dora') }}</h3>
+                    <p>{{ tlpt.executiveSummary ? tlpt.executiveSummary|nl2br : '—' }}</p>
+                    <h3 class="h6 text-muted mt-3">{{ 'dora.tlpt.field.findings'|trans({}, 'dora') }}</h3>
+                    {% if tlpt.findings is empty %}
+                        <p class="text-muted mb-0">{{ 'dora.tlpt.show.no_findings'|trans({}, 'dora') }}</p>
+                    {% else %}
+                        <ul class="mb-0">
+                            {% for finding in tlpt.findings %}
+                                <li><a href="{{ path('app_audit_finding_show', {id: finding.id}) }}">{{ finding.findingNumber }} {{ finding.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <section class="card mb-3">
+                <div class="card-header"><h2 class="h6 mb-0">{{ 'dora.tlpt.show.cadence_title'|trans({}, 'dora') }}</h2></div>
+                <div class="card-body small">{{ 'dora.tlpt.show.cadence_text'|trans({}, 'dora') }}</div>
+            </section>
+            {% if tlpt.status == 'planned' and is_granted('ROLE_MANAGER') %}
+            <section class="card">
+                <div class="card-body">
+                    <form method="post" action="{{ path('app_tlpt_delete', {id: tlpt.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('tlpt_delete_' ~ tlpt.id) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'dora.tlpt.show.delete_confirm'|trans({}, 'dora') }}" data-ui-actions-tone-param="danger">{{ 'dora.tlpt.action.delete'|trans({}, 'dora') }}</button>
+                    </form>
+                </div>
+            </section>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: tlpt, lifecycle: 'threat-led-penetration-test' } only %}
+</div>
+{% endblock %}

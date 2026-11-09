@@ -7,6 +7,7 @@ namespace App\Service\Mail;
 use App\Entity\ScheduledReport;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Scheduled-report recipient filter.
@@ -23,14 +24,12 @@ final class RecipientFilter
     public const REASON_ROLE_TOO_LOW = 'role_too_low';
     public const REASON_INACTIVE = 'inactive_user';
 
-    private const QUALIFYING_ROLES = [
-        'ROLE_MANAGER',
-        'ROLE_ADMIN',
-        'ROLE_SUPER_ADMIN',
-    ];
+    /** Reached through the role hierarchy: CISO, ISB, DPO, … inherit it (S16). */
+    private const QUALIFYING_ROLE = 'ROLE_MANAGER';
 
     public function __construct(
         private readonly UserRepository $userRepository,
+        private readonly ?RoleHierarchyInterface $roleHierarchy = null,
     ) {
     }
 
@@ -123,11 +122,14 @@ final class RecipientFilter
 
     private function hasQualifyingRole(User $user): bool
     {
-        foreach ($user->getRoles() as $role) {
-            if (in_array($role, self::QUALIFYING_ROLES, true)) {
-                return true;
-            }
+        $roles = $user->getRoles();
+        if ($this->roleHierarchy !== null) {
+            $roles = $this->roleHierarchy->getReachableRoleNames($roles);
+        } else {
+            // Without hierarchy (unit tests): ADMIN and SUPER_ADMIN reach MANAGER in security.yaml.
+            $roles = [...$roles, ...(array_intersect($roles, ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN']) !== [] ? [self::QUALIFYING_ROLE] : [])];
         }
-        return false;
+
+        return in_array(self::QUALIFYING_ROLE, $roles, true);
     }
 }

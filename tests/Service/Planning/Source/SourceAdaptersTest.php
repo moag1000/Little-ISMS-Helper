@@ -176,7 +176,7 @@ final class SourceAdaptersTest extends TestCase
 
         self::assertSame('audit_finding', $adapter->slug());
         self::assertSame('Audit-Feststellung', $adapter->label());
-        self::assertNull($adapter->requiredModule());
+        self::assertSame('audits', $adapter->requiredModule());
         self::assertFalse($adapter->ownsRecurrence());
     }
 
@@ -246,7 +246,7 @@ final class SourceAdaptersTest extends TestCase
 
         self::assertSame('management_review', $adapter->slug());
         self::assertSame('Management-Review', $adapter->label());
-        self::assertNull($adapter->requiredModule());
+        self::assertSame('reviews', $adapter->requiredModule());
         self::assertFalse($adapter->ownsRecurrence());
     }
 
@@ -310,7 +310,7 @@ final class SourceAdaptersTest extends TestCase
 
         self::assertSame('internal_audit', $adapter->slug());
         self::assertSame('Internes Audit', $adapter->label());
-        self::assertNull($adapter->requiredModule());
+        self::assertSame('audits', $adapter->requiredModule());
         self::assertFalse($adapter->ownsRecurrence());
     }
 
@@ -711,7 +711,7 @@ final class SourceAdaptersTest extends TestCase
         );
 
         self::assertSame('risk_treatment', $adapter->slug());
-        self::assertNull($adapter->requiredModule());
+        self::assertSame('risks', $adapter->requiredModule());
         self::assertFalse($adapter->ownsRecurrence());
     }
 

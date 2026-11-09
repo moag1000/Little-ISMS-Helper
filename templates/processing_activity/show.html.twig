@@ -35,7 +35,10 @@
     }) }}
 
     {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ProcessingActivity', status_key: processing_activity.status }) }}{% endset %}
-    {% set _actions %}{{ _lifecycle_actions.dropdown(processing_activity, 'processing-activity', 'processing_activity_lifecycle') }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(processing_activity, 'processing-activity', 'processing_activity_lifecycle') }}{% if processing_activity.status not in ['draft', 'archived'] %}{% include '_components/_review_confirm_button.html.twig' with {
+        entity: processing_activity, route: 'app_processing_activity_complete_review', token_id: 'complete-review' ~ processing_activity.id,
+        can: is_granted('ROLE_MANAGER') or is_granted('RECORD_RESPONSIBLE', processing_activity),
+    } only %}{% endif %}{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         actions: _actions,

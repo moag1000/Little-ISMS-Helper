@@ -7,6 +7,7 @@ namespace App\Service\Deadline\Source;
 use App\Entity\Tenant;
 use App\Entity\ThreatLedPenetrationTest;
 use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
 use App\Service\Responsibility\Responsibility;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -88,10 +89,11 @@ final class ThreatLedPenetrationTestSource extends EntityDeadlineSource
         return Responsibility::roles('ROLE_CISO', 'ROLE_ISB');
     }
 
-    /** TLPT records have no page of their own yet. */
-    public function linkOf(object $item): null
+    public function linkOf(object $item): RecordLink
     {
-        return null;
+        assert($item instanceof ThreatLedPenetrationTest);
+
+        return new RecordLink('app_tlpt_show', ['id' => (int) $item->getId()]);
     }
 
     public function profile(): DeadlineProfile

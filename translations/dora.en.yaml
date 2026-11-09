@@ -170,6 +170,63 @@ dora:
         page: "Page"
 
 # RT_04 — Subcontractor Chain (DORA Art. 28)
+    # DORA Art. 26 threat-led penetration tests (TLPT)
+    tlpt:
+        page:
+            title: 'Threat-led penetration tests (TLPT)'
+            subtitle: 'Threat-led tests under DORA Art. 26, at least every three years.'
+        list:
+            title: 'Tests'
+        empty:
+            title: 'No TLPT recorded.'
+            text: 'Financial entities identified by the supervisor run a threat-led test at least every three years (DORA Art. 26).'
+        summary:
+            running: '%count% running'
+            closed: '%count% closed'
+        action:
+            new: 'Plan TLPT'
+            edit: 'Edit'
+            delete: 'Delete'
+        section:
+            results: 'Result'
+        field:
+            engagement_number: 'Number'
+            title: 'Title'
+            scope: 'Scope (critical or important functions)'
+            threat_intelligence_basis: 'Threat scenarios'
+            jurisdictions: 'Countries'
+            provider_type: 'Testers'
+            test_provider: 'Test provider'
+            planned_start_date: 'Planned start'
+            planned_end_date: 'Planned end'
+            planned_period: 'Planned'
+            actual_period: 'Carried out'
+            executive_summary: 'Summary'
+            findings: 'Findings'
+            status: 'Status'
+        help:
+            scope: 'DORA Art. 26(2): critical or important functions on live production systems, outsourced ones included.'
+            threat_intelligence_basis: 'Threat analysis the scenarios are based on, e.g. TIBER-EU targeted threat intelligence.'
+            jurisdictions: 'Countries where the tested functions are operated (RTS on TLPT Art. 3).'
+            provider_type: 'Internal testers at most every other test (DORA Art. 27(2)).'
+            planned_end_date: 'My Day reminds of the running test until this date.'
+            executive_summary: 'Summary and remediation plan for the supervisor (DORA Art. 26(6)).'
+            findings: 'Findings of the test; their remediation runs through corrective actions.'
+        provider:
+            external: 'External test provider'
+            internal: 'Internal testers'
+        show:
+            no_findings: 'No findings linked.'
+            cadence_title: 'Next test'
+            cadence_text: 'Closing the test starts the three-year period for the next TLPT (DORA Art. 26(1)). The status change sets the start and end of the execution.'
+            delete_confirm: 'Delete this planned test?'
+        flash:
+            created: 'TLPT created.'
+            updated: 'Saved.'
+            deleted: 'Deleted.'
+            final: 'Closed or cancelled tests can no longer be changed.'
+            delete_only_planned: 'Only planned tests can be deleted; cancel a started test through its status.'
+
 dora_subcontractor:
     badge: "RT_04 Chain"
     subtitle: "Track 4th- and 5th-party subcontractors that primary ICT providers rely on (DORA Art. 28(2))."

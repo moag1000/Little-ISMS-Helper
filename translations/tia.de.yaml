@@ -106,11 +106,13 @@ tia:
     created: TIA angelegt.
     updated: TIA aktualisiert.
     assessed: 'TIA als bewertet markiert.'
+    review_completed: 'Überprüfung bestätigt, nächste in einem Jahr.'
     deleted: 'TIA gelöscht.'
 
   warning:
     cannot_edit_assessed: 'Bewertete TIAs können nicht mehr bearbeitet werden.'
     already_assessed: 'Diese TIA wurde bereits abgeschlossen.'
+    review_needs_assessment: 'Nur bewertete TIAs werden überprüft.'
     high_risk_title: Kritisches Übertragungsrisiko – Handlungsbedarf
     high_risk_body: 'Das Restrisiko wurde als HOCH eingestuft. Diese Übermittlung muss gem. DSGVO Art. 58 Abs. 2(f) unverzüglich ausgesetzt werden, bis ein angemessenes Schutzniveau nachgewiesen werden kann. Ein Risikoeintrag wurde automatisch erzeugt.'
 

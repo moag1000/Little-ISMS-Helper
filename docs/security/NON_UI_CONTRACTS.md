@@ -47,6 +47,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Wer einen zweiten Faktor hat, erreicht ohne ihn keine Seite – über jeden Authenticator der Web-Firewall, „Angemeldet bleiben“, eine zweite Anmeldung in derselben Sitzung, die Neuanmeldung mit Passwort und eine Sitzung ohne Anmeldeereignis (fail closed). Der Zustand gehört zur Anmeldung und zur Person (`MfaSessionState`), das Remember-me-Cookie kommt erst nach dem Code und verfällt mit jedem neuen oder entfernten Gerät, `/setup` ist nach der Einrichtung zu, ein TOTP-Code zählt einmal | `tests/Security/Mfa/MfaLoginPathsTest` (neuer Authenticator ohne Entscheidung = rot), `tests/Security/Mfa/MfaBypassRegressionTest`, `MfaServiceTest::aTotpCodeCountsOnlyOnce`, Gate 91 |
 | Jede SSO-Anmeldung prüft ihre Claims über eine Regel (`SsoClaimPolicy`): OIDC-ID-Token mit Issuer, `exp`, Audience und `nonce` Pflicht, UserInfo ändert weder `sub` noch signierte Claims; Azure (env) nur aus den konfigurierten Verzeichnissen (`tid`); ein bestehendes Konto wird nur mit verifizierter E-Mail und nur auf Wunsch verknüpft; SAML nimmt nur Antworten auf eigene Anfragen, jede Assertion einmal, Entity-ID/ACS aus `DEFAULT_URI` statt Host-Header (`SamlMessageGuard`); Abmelden braucht ein CSRF-Token | `tests/Security/Sso/SsoClaimContractTest` (neuer Authenticator ohne Vertrag = rot), Gate 93 |
 | Die SSO-Discovery-Prüfung braucht CSRF und gibt keine Verbindungsdetails zurück (kein Port-Scan-Orakel) | `tests/Controller/Api/SsoDiscoveryApiControllerTest` |
+| Abmelden leert den Browser: `Clear-Site-Data: "cache", "storage"` auf jeder Firewall mit Logout; der Service Worker speichert nur feste öffentliche Build-Dateien, nie eine Seite, `.json`, API-Antwort oder Download, nichts mit `no-store`/`private` (S16) | `tests/Security/Logout/ClearSiteDataOnLogoutTest`, `tests/js/service_worker.test.js` |
 
 ## Rechte wie im Formular
 
@@ -113,6 +114,10 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 
 | Invariante | Beleg |
 |---|---|
+| Links, die die Sitzung verlassen (Mails, Lieferantenfragebogen, Trust Center, QR-Labels), kommen aus `DEFAULT_URI` über `App\Http\PublicUrlGenerator`, nie aus dem Host-Header; `SYMFONY_TRUSTED_HOSTS` weist fremde Host-Header ab (400); Mail-Vorlagen bauen keine Links mit `url()` | `tests/Security/PublicLinksFromDefaultUriTest` (findet absolute URLs in `src/` selbst), Health-Seite meldet fehlende Werte |
+| Jede Export- und Download-Aktion trägt ein `#[IsGranted]` (Aktion oder Controller) | `tests/Security/ExportRoutesGatedTest` (findet die Routen selbst) |
+| Webhooks gehen nur signiert raus (HMAC, `X-Signature`); ein Kanal ohne Geheimnis sendet nichts; geteilte URLs (PWA) nur mit http(s) | `WebhookChannelTest::unsignedWebhookIsNotSent`, `NotificationChannelTypeTest`, `tests/Security/ShareTargetUrlTest` |
+| Das Docker-Image arbeitet jede Messenger-Warteschlange ab, an die Nachrichten geroutet sind (Mails über `async`) | `tests/Deployment/DockerWorkerConsumesMailQueueTest` |
 | Jede Tabellenzelle mit Datensatztext läuft durch `CsvSanitizer` — geprüft je Schreibstelle, auch in `src/Command/` | Gate 84 `check_csv_formula_injection.py` |
 | Erfüllungswerte schreibt nur `FulfillmentDerivationService`, auch nicht per Property-Name oder SQL | Gate 85 `check_fulfillment_single_writer.py` |
 | Controls hinter einer Anforderung nur aus der eigenen Organisation | Gate 86 |

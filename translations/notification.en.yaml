@@ -20,6 +20,7 @@ notification:
             retried: 'Notification delivery retried'
     error:
         webhook_internal_ip: 'Webhook URL resolves to an internal or reserved IP address (SSRF protection active).'
+        webhook_no_secret: 'Webhook without HMAC secret: not sent. Set a secret on the channel.'
         invalid_event_type: 'The specified event type is invalid or not supported.'
         template_not_found: 'The specified notification template was not found.'
 
@@ -117,7 +118,7 @@ notification:
             name: 'A unique name for this channel.'
             type: 'The channel type determines the delivery method.'
             config: 'Email channels use recipients, sender and subject; webhook channels use URL and timeout.'
-            secret: 'Optional HMAC-SHA256 key for webhook signatures. Stored encrypted.'
+            secret: 'HMAC-SHA256 key for webhook signatures, required for webhooks. Stored encrypted.'
             secret_edit_hint: 'Leave blank to keep the existing secret.'
             is_active: 'Inactive channels are skipped during delivery.'
         config:

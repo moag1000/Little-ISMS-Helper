@@ -28,6 +28,17 @@ final class AccountMfaCheckTest extends TestCase
     }
 
     #[Test]
+    public function securityOfficersCountAsPrivileged(): void
+    {
+        $resolver = $this->createMock(ResponsibilityResolver::class);
+        $resolver->expects(self::once())->method('usersReaching')
+            ->with(self::isInstanceOf(Tenant::class), 'ROLE_ADMIN', 'ROLE_CISO', 'ROLE_ISB')
+            ->willReturn([]);
+
+        (new AccountMfaCheck($resolver))->check(['type' => 'account_mfa'], new Tenant());
+    }
+
+    #[Test]
     public function noLocalAdminAccountIsNoData(): void
     {
         $result = $this->check([$this->user('azure')]);

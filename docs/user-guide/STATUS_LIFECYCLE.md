@@ -124,7 +124,13 @@ Reopening an assessed TIA requires DPO or Manager and a reason.
 ### Threat-Led Penetration Test (DORA module required)
 `planned` → `scoping` → `red_team` → `reporting` → `closed`
 
-Closing and cancelling a TLPT require a reason.
+Closing and cancelling a TLPT require a reason. The register lives at
+*Compliance > DORA > TLPT* (`/tlpt`): managers (CISO, ISB) plan and edit a test,
+everybody in the organisation reads it. The actual start and end dates are not
+typed in: starting the red-team phase stamps the start, starting the report or
+closing stamps the end. A closed or cancelled test is evidence and cannot be
+edited; only a test still `planned` can be deleted. Findings of the test are
+linked from the audit findings register.
 
 ### Supplier questionnaire
 `draft` → `sent` → `completed` → `reviewed`

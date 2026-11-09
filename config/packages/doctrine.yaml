@@ -29,6 +29,10 @@ doctrine:
                     tenant_filter:
                         class: App\Doctrine\TenantFilter
                         enabled: true
+                    # Armed by HoldingScope only: other organisations' incidents need visibleToHolding (W6).
+                    holding_incident_filter:
+                        class: App\Doctrine\HoldingIncidentFilter
+                        enabled: false
                 mappings:
                     App:
                         type: attribute
