@@ -68,7 +68,7 @@
                 </div>
             {% endset %}
             {% set _content_html3 %}<a class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" href="{{ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) }}">{{ 'common.view'|trans({}, 'messages') }}</a>{% endset %}
-            {% set _content_html2 %}<span class="fa-status-pill fa-status-pill--{{ (c.status == 'open' ? 'success' : 'neutral') }}">{{ ('access_review.status.' ~ c.status)|trans({}, 'access_review') }}</span>{% endset %}
+            {% set _content_html2 %}<span class="fa-status-pill fa-status-pill--{{ lifecycle_tone('App\\Entity\\AccessReviewCampaign', c.status) }}">{{ ('access_review.status.' ~ c.status)|trans({}, 'access_review') }}</span>{% endset %}
             {% set _content_html1 %}<a href="{{ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) }}">{{ c.name }}</a>{% endset %}
             {% set tableRows = tableRows|merge([{ cells: [
                 { value: _content_html1 },

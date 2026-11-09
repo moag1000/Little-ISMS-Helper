@@ -82,7 +82,7 @@
                         <td class="fa-table__cell">{{ st.description ?: '—' }}</td>
                         <td class="fa-table__cell">
                             {% set src = st.source ?? 'custom' %}
-                            {% set tone = src == 'custom' ? 'neutral' : 'primary' %}
+                            {% set tone = status_tone('origin', src starts with 'seed-' ? 'catalog' : src) %}
                             {{ pill.render(('asset_sub_type.source.' ~ src)|trans({}, 'asset_sub_type'), tone, {size: 'sm'}) }}
                         </td>
                         <td class="fa-table__cell">

@@ -89,7 +89,7 @@
                     <div class="isms-journey__phase-progress">
                         {{ _fa_progress.render({
                             value: phase.completionPercent,
-                            tone: status == 'complete' ? 'success' : 'primary',
+                            tone: status_tone('journey', status),
                             label: ('journey.phase.' ~ phase.key ~ '.label')|trans,
                             size: 'sm',
                         }) }}

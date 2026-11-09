@@ -5,444 +5,195 @@ declare(strict_types=1);
 namespace App\Twig;
 
 use Twig\Attribute\AsTwigFunction;
+
 /**
- * Badge Extension for consistent badge rendering across templates
+ * Pill tones and status-pill classes for templates (FairyAurora v4).
  *
- * Resolves Issues 5.1 & 5.2:
- * - Standardizes badge color schemes
- * - Provides semantic status-to-color mapping
- * - Eliminates inline ternary logic
+ * Every word-based tone comes from {@see StatusVocabulary} (W7: one table of
+ * status, severity and named-vocabulary tones), so the same value has the same
+ * colour on every page:
  *
- * Aurora v4 Migration:
- * - All methods return BC-aliased dual class-set:
- *   "fa-status-pill fa-status-pill--{aurora-variant}"
- * - No Bootstrap `badge bg-*` classes are emitted any more.
- * - Variant mapping: BS "secondary" → Aurora "neutral", BS "info" → Aurora "primary".
+ *  - `pill_tone_severity(x)` / `badge_severity()` / `badge_risk()` / `badge_priority()`
+ *    — the severity scale (critical danger, high warning, medium primary, low success).
+ *  - `pill_tone_status(x)` / `badge_status()` — the status words.
+ *  - `pill_tone_action(x)` / `pill_tone_classification(x)` — the audit-log action and
+ *    data-classification vocabularies.
+ *  - `pill_tone_bs(colour)` — a stored Bootstrap colour (tags, criticality levels,
+ *    mapping badges) as Aurora tone; `flash_tone(label)` — a flash label as alert tone.
  *
- * @author Claude Code
+ * `badge_*()` return "fa-status-pill fa-status-pill--{tone}"; `pill_tone_*()` the tone.
  */
 final class BadgeExtension
 {
-    /**
-     * Severity level to Bootstrap color mapping
-     */
-    private const array SEVERITY_MAP = [
-        'critical' => 'danger',
-        'high' => 'warning',
-        'medium' => 'info',
-        'low' => 'success',
-        'minimal' => 'secondary',
-        // Numeric severity (1-5)
-        5 => 'danger',     // Critical
-        4 => 'warning',    // High
-        3 => 'info',       // Medium
-        2 => 'success',    // Low
-        1 => 'secondary',  // Minimal
+    /** Bootstrap colour (or Aurora tone) → Aurora status-pill tone. */
+    private const array BS_TO_AURORA = [
+        'danger' => 'danger',
+        'warning' => 'warning',
+        'success' => 'success',
+        'primary' => 'primary',
+        'accent' => 'accent',
+        'neutral' => 'neutral',
+        'info' => 'primary',
+        'secondary' => 'neutral',
+        'light' => 'neutral',
+        'dark' => 'neutral',
+        'muted' => 'neutral',
+        // legacy _fa_confirm tones
+        'warn' => 'warning',
+        'nuclear' => 'danger',
     ];
 
-    /**
-     * Status to Bootstrap color mapping
-     */
-    private const array STATUS_MAP = [
-        // Incident statuses (correct IncidentStatus enum backed values)
-        'reported' => 'danger',
-        'in_investigation' => 'info',
-        'in_resolution' => 'warning',
-        'resolved' => 'success',
-        'closed' => 'secondary',
-        // Legacy incident status aliases (kept for backward-compat)
-        'open' => 'danger',
-        'in_progress' => 'warning',
-        'investigating' => 'info',
-
-        // Generic statuses
-        'inactive' => 'secondary',
-        'pending' => 'warning',
-        'approved' => 'success',
-        'rejected' => 'danger',
-        'draft' => 'secondary',
-        'published' => 'success',
-
-        // Control statuses
-        'implemented' => 'success',
-        'partially_implemented' => 'warning',
-        'not_implemented' => 'danger',
-        'planned' => 'info',
-
-        // Audit statuses
-        'scheduled' => 'info',
-        'completed' => 'success',
-        'cancelled' => 'secondary',
-
-        // Audit results
-        'passed' => 'success',
-        'passed_with_observations' => 'info',
-        'failed' => 'danger',
-        'not_applicable' => 'secondary',
-
-        // Training statuses
-        'mandatory' => 'danger',
-        'optional' => 'info',
-        'confirmed' => 'primary',
-        'postponed' => 'warning',
-
-        // Health/monitoring statuses
-        'healthy' => 'success',
-        'unhealthy' => 'danger',
-
-        // Document statuses
-        'review' => 'warning',
-        'obsolete' => 'danger',
-        'in_review' => 'info',
-        'archived' => 'secondary',
-        // 'active' — legacy document state (migrated to 'published').
-        // Kept for non-document entities (Supplier, Consent, etc.) that still
-        // use 'active' as their canonical value.
-        'active' => 'secondary',
+    /** Flash label → _fa_alert variant (info / success / warning / danger). */
+    private const array FLASH_TO_ALERT = [
+        'success' => 'success',
+        'warning' => 'warning',
+        'danger' => 'danger',
+        'error' => 'danger',
+        'info' => 'info',
+        'notice' => 'info',
     ];
 
-    /**
-     * Risk level to Bootstrap color mapping
-     */
-    private const array RISK_MAP = [
-        'critical' => 'danger',
-        'high' => 'warning',
-        'medium' => 'info',
-        'low' => 'success',
-        'very_low' => 'secondary',
-        'minimal' => 'secondary',
-    ];
-
-    /**
-     * NIS2 compliance to Bootstrap color mapping
-     */
+    /** NIS-2 compliance status → tone. */
     private const array NIS2_MAP = [
         'compliant' => 'success',
         'partial' => 'warning',
         'non_compliant' => 'danger',
-        'not_applicable' => 'secondary',
-        'pending' => 'info',
+        'not_applicable' => 'neutral',
+        'pending' => 'warning',
     ];
 
     /**
-     * Action type to Bootstrap color mapping (for audit logs)
-     */
-    private const array ACTION_MAP = [
-        'create' => 'success',
-        'update' => 'info',
-        'delete' => 'danger',
-        'view' => 'secondary',
-        'export' => 'primary',
-        'import' => 'primary',
-    ];
-
-    /**
-     * Data classification to Bootstrap color mapping
-     */
-    private const array CLASSIFICATION_MAP = [
-        'public' => 'success',
-        'internal' => 'info',
-        'confidential' => 'warning',
-        'restricted' => 'danger',
-    ];
-
-    /**
-     * Maps Bootstrap color names to Aurora v4 status-pill variant names.
-     *
-     * Aurora has: primary, accent, success, warning, danger, neutral.
-     * Bootstrap "secondary" → Aurora "neutral" (no-emphasis neutral tone).
-     * Bootstrap "info"      → Aurora "primary" (Aurora maps info-blue to primary).
-     * Bootstrap "primary"   → Aurora "primary" (direct match).
-     */
-    private const array BS_TO_AURORA = [
-        'danger'    => 'danger',
-        'warning'   => 'warning',
-        'success'   => 'success',
-        'primary'   => 'primary',
-        'info'      => 'primary',
-        'secondary' => 'neutral',
-    ];
-
-    /**
-     * Returns the Aurora status-pill class string for a given Bootstrap color.
-     *
-     * Example: buildBadgeClasses('danger') → "fa-status-pill fa-status-pill--danger"
-     */
-    private function buildBadgeClasses(string $bsColor): string
-    {
-        $auroraVariant = self::BS_TO_AURORA[$bsColor] ?? 'neutral';
-        return "fa-status-pill fa-status-pill--{$auroraVariant}";
-    }
-
-    /**
-     * Resolves a Bootstrap color to its Aurora status-pill tone name.
-     *
-     * Used by templates that have migrated from raw <span class="badge ...">
-     * to the _status_pill.html.twig macro and need the semantic tone only.
-     */
-    private function resolveAuroraTone(string $bsColor): string
-    {
-        return self::auroraTone($bsColor);
-    }
-
-    /**
-     * Aurora pill tone for a Bootstrap colour name or an Aurora tone (admin-configured colours
-     * such as the supplier criticality levels'): info → primary, secondary/light/dark → neutral,
-     * Aurora tones pass through, unknown → neutral.
+     * Aurora tone of a Bootstrap colour or Aurora tone name; unknown → neutral.
      */
     public static function auroraTone(?string $color): string
     {
-        $color = strtolower((string) $color);
-        if (in_array($color, ['primary', 'accent', 'success', 'warning', 'danger', 'neutral'], true)) {
-            return $color;
-        }
-
-        return self::BS_TO_AURORA[$color] ?? 'neutral';
+        return self::BS_TO_AURORA[strtolower(trim((string) $color))] ?? 'neutral';
     }
 
-    /* ─── pill_tone_*() — Aurora tone-name companions ─────────────────── */
+    #[AsTwigFunction('pill_tone_bs')]
+    public function getBootstrapTone(?string $color): string
+    {
+        return self::auroraTone($color);
+    }
 
     /**
-     * Aurora tone for a severity value.
+     * `_fa_alert` variant of a flash label (success / info / notice / warning / danger / error);
+     * unknown → info.
      */
+    #[AsTwigFunction('flash_tone')]
+    public function getFlashTone(?string $label): string
+    {
+        return self::FLASH_TO_ALERT[strtolower((string) $label)] ?? 'info';
+    }
+
     #[AsTwigFunction('pill_tone_severity')]
     public function getSeverityTone(string|int|\BackedEnum|null $severity): string
     {
-        if ($severity === null || $severity === '') {
-            return 'neutral';
-        }
-        if ($severity instanceof \BackedEnum) {
-            $severity = $severity->value;
-        }
-        $severity = is_string($severity) ? strtolower($severity) : $severity;
-        return $this->resolveAuroraTone(self::SEVERITY_MAP[$severity] ?? 'secondary');
+        return StatusVocabulary::severityTone($severity);
     }
 
-    /**
-     * Aurora tone for a status value.
-     */
     #[AsTwigFunction('pill_tone_status')]
-    public function getStatusTone(string|\BackedEnum $status): string
+    public function getStatusTone(string|\BackedEnum|null $status): string
     {
-        if ($status instanceof \BackedEnum) {
-            $status = $status->value;
-        }
-        return $this->resolveAuroraTone(self::STATUS_MAP[strtolower($status)] ?? 'secondary');
+        return StatusVocabulary::statusTone($status);
     }
 
-    /**
-     * Aurora tone for a NIS2 compliance status.
-     */
     #[AsTwigFunction('pill_tone_nis2')]
     public function getNis2Tone(string $nis2Status): string
     {
-        return $this->resolveAuroraTone(self::NIS2_MAP[strtolower($nis2Status)] ?? 'secondary');
+        return self::NIS2_MAP[strtolower($nis2Status)] ?? 'neutral';
     }
 
-    /**
-     * Aurora tone for an audit-log action.
-     */
     #[AsTwigFunction('pill_tone_action')]
     public function getActionTone(string $action): string
     {
-        return $this->resolveAuroraTone(self::ACTION_MAP[strtolower($action)] ?? 'secondary');
+        return StatusVocabulary::tone('audit_action', $action);
     }
 
-    /**
-     * Aurora tone for a data-classification level.
-     */
     #[AsTwigFunction('pill_tone_classification')]
     public function getClassificationTone(string $classification): string
     {
-        return $this->resolveAuroraTone(self::CLASSIFICATION_MAP[strtolower($classification)] ?? 'secondary');
+        return StatusVocabulary::tone('classification', $classification);
     }
 
     /**
-     * Aurora tone for a numeric score.
+     * Aurora tone for a numeric score (thresholds, not words).
      */
     #[AsTwigFunction('pill_tone_score')]
     public function getScoreTone(int|float $score, int $dangerThreshold = 4, int $warningThreshold = 3): string
     {
-        if ($score >= $dangerThreshold) {
-            $color = 'danger';
-        } elseif ($score >= $warningThreshold) {
-            $color = 'warning';
-        } elseif ($score >= 2) {
-            $color = 'info';
-        } else {
-            $color = 'success';
-        }
-
-        return $this->resolveAuroraTone($color);
+        return match (true) {
+            $score >= $dangerThreshold => 'danger',
+            $score >= $warningThreshold => 'warning',
+            $score >= 2 => 'primary',
+            default => 'success',
+        };
     }
 
-    /**
-     * Get Bootstrap badge class for severity level
-     *
-     * @param string|int|\BackedEnum $severity Severity level (critical/high/medium/low or 1-5 or backed enum)
-     * @return string Badge classes: "fa-status-pill fa-status-pill--{variant}"
-     */
     #[AsTwigFunction('badge_severity')]
     public function getSeverityBadgeClass(string|int|\BackedEnum $severity): string
     {
-        if ($severity instanceof \BackedEnum) {
-            $severity = $severity->value;
-        }
-        $severity = is_string($severity) ? strtolower($severity) : $severity;
-        $color = self::SEVERITY_MAP[$severity] ?? 'secondary';
-        return $this->buildBadgeClasses($color);
+        return self::classes($this->getSeverityTone($severity));
     }
 
-    /**
-     * Get Bootstrap badge class for status
-     *
-     * @param string|\BackedEnum $status Status value or backed enum
-     * @return string BC-aliased badge classes
-     */
     #[AsTwigFunction('badge_status')]
-    public function getStatusBadgeClass(string|\BackedEnum $status): string
+    public function getStatusBadgeClass(string|\BackedEnum|null $status): string
     {
-        if ($status instanceof \BackedEnum) {
-            $status = $status->value;
-        }
-        $status = strtolower($status);
-        $color = self::STATUS_MAP[$status] ?? 'secondary';
-        return $this->buildBadgeClasses($color);
+        return self::classes($this->getStatusTone($status));
     }
 
-    /**
-     * Get Bootstrap badge class for risk level
-     *
-     * @param string $riskLevel Risk level (critical/high/medium/low)
-     * @return string BC-aliased badge classes
-     */
     #[AsTwigFunction('badge_risk')]
-    public function getRiskBadgeClass(string $riskLevel): string
+    public function getRiskBadgeClass(?string $riskLevel): string
     {
-        $riskLevel = strtolower($riskLevel);
-        $color = self::RISK_MAP[$riskLevel] ?? 'secondary';
-        return $this->buildBadgeClasses($color);
+        return self::classes($this->getSeverityTone($riskLevel));
     }
 
-    /**
-     * Get Bootstrap badge class for NIS2 compliance status
-     *
-     * @param string $nis2Status NIS2 compliance status
-     * @return string BC-aliased badge classes
-     */
     #[AsTwigFunction('badge_nis2')]
     public function getNis2BadgeClass(string $nis2Status): string
     {
-        $nis2Status = strtolower($nis2Status);
-        $color = self::NIS2_MAP[$nis2Status] ?? 'secondary';
-        return $this->buildBadgeClasses($color);
+        return self::classes($this->getNis2Tone($nis2Status));
     }
 
-    /**
-     * Get Bootstrap badge class for action type (audit logs)
-     *
-     * @param string $action Action type (create/update/delete/etc.)
-     * @return string BC-aliased badge classes
-     */
     #[AsTwigFunction('badge_action')]
     public function getActionBadgeClass(string $action): string
     {
-        $action = strtolower($action);
-        $color = self::ACTION_MAP[$action] ?? 'secondary';
-        return $this->buildBadgeClasses($color);
+        return self::classes($this->getActionTone($action));
     }
 
-    /**
-     * Get Bootstrap badge class for data classification
-     *
-     * @param string $classification Data classification level
-     * @return string BC-aliased badge classes
-     */
     #[AsTwigFunction('badge_classification')]
     public function getClassificationBadgeClass(string $classification): string
     {
-        $classification = strtolower($classification);
-        $color = self::CLASSIFICATION_MAP[$classification] ?? 'secondary';
-        return $this->buildBadgeClasses($color);
+        return self::classes($this->getClassificationTone($classification));
     }
 
-    /**
-     * Get Bootstrap badge class for numeric score
-     *
-     * Automatically maps scores to semantic colors:
-     * - 4-5: danger (red)
-     * - 3: warning (yellow)
-     * - 2: info (blue) → Aurora primary
-     * - 0-1: success (green)
-     *
-     * @param int|float $score Numeric score (typically 0-5)
-     * @param int $dangerThreshold Threshold for danger (default: 4)
-     * @param int $warningThreshold Threshold for warning (default: 3)
-     * @return string BC-aliased badge classes
-     */
     #[AsTwigFunction('badge_score')]
     public function getScoreBadgeClass(int|float $score, int $dangerThreshold = 4, int $warningThreshold = 3): string
     {
-        if ($score >= $dangerThreshold) {
-            $color = 'danger';
-        } elseif ($score >= $warningThreshold) {
-            $color = 'warning';
-        } elseif ($score >= 2) {
-            $color = 'info';
-        } else {
-            $color = 'success';
-        }
-
-        return $this->buildBadgeClasses($color);
+        return self::classes($this->getScoreTone($score, $dangerThreshold, $warningThreshold));
     }
 
     /**
-     * Get Bootstrap badge class for completion/fulfillment percentage
-     *
-     * Maps completion percentages to semantic colors (inverted from score):
-     * - 100%: success (green) - fully complete
-     * - 75-99%: info (blue) → Aurora primary - mostly complete
-     * - 50-74%: warning (yellow) - partially complete
-     * - 0-49%: danger (red) - incomplete
-     *
-     * @param int|float $percentage Completion percentage (0-100)
-     * @return string BC-aliased badge classes
+     * Completion percentage: 100 success, ≥ 75 primary, ≥ 50 warning, else danger.
      */
     #[AsTwigFunction('badge_completion')]
     public function getCompletionBadgeClass(int|float $percentage): string
     {
-        if ($percentage >= 100) {
-            $color = 'success';
-        } elseif ($percentage >= 75) {
-            $color = 'info';
-        } elseif ($percentage >= 50) {
-            $color = 'warning';
-        } else {
-            $color = 'danger';
-        }
-
-        return $this->buildBadgeClasses($color);
+        return self::classes(match (true) {
+            $percentage >= 100 => 'success',
+            $percentage >= 75 => 'primary',
+            $percentage >= 50 => 'warning',
+            default => 'danger',
+        });
     }
 
-    /**
-     * Get Bootstrap badge class for priority level
-     *
-     * @param string $priority Priority level (critical/high/medium/low)
-     * @return string BC-aliased badge classes
-     */
     #[AsTwigFunction('badge_priority')]
-    public function getPriorityBadgeClass(string $priority): string
+    public function getPriorityBadgeClass(?string $priority): string
     {
-        $priority = strtolower($priority);
+        return self::classes($this->getSeverityTone($priority));
+    }
 
-        $priorityMap = [
-            'critical' => 'danger',
-            'high' => 'warning',
-            'medium' => 'info',
-            'low' => 'secondary',
-        ];
-
-        $color = $priorityMap[$priority] ?? 'secondary';
-        return $this->buildBadgeClasses($color);
+    private static function classes(string $tone): string
+    {
+        return 'fa-status-pill fa-status-pill--' . $tone;
     }
 }

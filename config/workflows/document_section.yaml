@@ -26,10 +26,10 @@ framework:
                 - App\Entity\DocumentSection
             initial_marking: draft
             places:
-                - draft
-                - dpo_sign_off
-                - approved
-                - rejected
+                - { name: draft, metadata: { tone: neutral } }
+                - { name: dpo_sign_off, metadata: { tone: primary } }
+                - { name: approved, metadata: { tone: success } }
+                - { name: rejected, metadata: { tone: danger } }
             transitions:
                 approve:
                     from: [draft, dpo_sign_off]

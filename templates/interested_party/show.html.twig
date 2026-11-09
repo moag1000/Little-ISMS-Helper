@@ -73,7 +73,7 @@
                 <h2>{{ 'interested_party.page.show_title'|trans({}, 'interested_parties') }}</h2>
                 <div>
                     {% include '_components/_badge.html.twig' with { variant: 'info', content: interested_party.partyType } %}
-                    {% include '_components/_badge.html.twig' with { variant: interested_party.importance == 'high' ? 'warning' : (interested_party.importance == 'low' ? 'success' : 'info'), content: interested_party.importance|upper } %}
+                    {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(interested_party.importance), content: interested_party.importance|upper } %}
                 </div>
             </div>
         {% endblock %}

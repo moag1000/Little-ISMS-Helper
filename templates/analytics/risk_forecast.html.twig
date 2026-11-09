@@ -147,7 +147,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
                                 <span class="text-muted">{{ 'analytics.forecast.predictions.trend'|trans({}, 'analytics') }}</span>
                                 {% include '_components/_badge.html.twig' with {
-                                    variant: forecast.trend.direction == 'increasing' ? 'danger' : (forecast.trend.direction == 'decreasing' ? 'success' : 'secondary'),
+                                    variant: status_tone('trend', forecast.trend.direction),
                                     icon: forecast.trend.direction == 'increasing' ? 'util-arrow-up' : (forecast.trend.direction == 'decreasing' ? 'util-arrow-down' : 'util-arrow-right'),
                                     content: forecast.trend.direction == 'increasing' ? 'analytics.forecast.predictions.increasing'|trans({}, 'analytics') : (forecast.trend.direction == 'decreasing' ? 'analytics.forecast.predictions.decreasing'|trans({}, 'analytics') : 'analytics.forecast.predictions.stable'|trans({}, 'analytics'))
                                 } %}
@@ -165,7 +165,7 @@
                             {% if last_hist and last_forecast %}
                             {% for level in ['critical', 'high', 'medium', 'low'] %}
                             <div class="d-flex justify-content-between mb-2">
-                                {% include '_components/_badge.html.twig' with { variant: level == 'critical' ? 'danger' : (level == 'high' ? 'warning' : (level == 'medium' ? 'info' : 'success')), content: level|title } %}
+                                {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(level), content: level|title } %}
                                 <span>{{ attribute(last_hist, level)|default(0) }} <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ attribute(last_forecast, level)|default(0) }}</span>
                             </div>
                             {% endfor %}
@@ -313,7 +313,7 @@
                             {% set is_compliant = actual_val <= threshold_val %}
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between mb-2">
-                                    {% include '_components/_badge.html.twig' with { variant: level == 'critical' ? 'danger' : (level == 'high' ? 'warning' : (level == 'medium' ? 'info' : 'success')), content: level|title } %}
+                                    {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(level), content: level|title } %}
                                     <span>{{ actual_val }} / {{ threshold_val }} {{ 'analytics.forecast.appetite.threshold'|trans({}, 'analytics') }}</span>
                                 </div>
                                 {% set progress_pct = threshold_val > 0 ? (actual_val / threshold_val) * 100 : 0 %}
@@ -351,7 +351,7 @@
                                     <i class="fa-icon text-danger me-2 fa-icon--status-warning" aria-hidden="true"></i>
                                     {{ breach.level|title }} Risk Threshold Exceeded
                                 </h6>
-                                {% include '_components/_badge.html.twig' with { variant: breach.severity == 'high' ? 'danger' : 'warning', content: breach.severity|title } %}
+                                {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(breach.severity), content: breach.severity|title } %}
                             </div>
                             <p class="mb-0 text-muted">
                                 Current: {{ breach.actual }} | Threshold: {{ breach.threshold }} | Excess: {{ breach.excess }}
@@ -370,12 +370,12 @@
             <div class="row">
                 {% for anomaly in anomalies.anomalies %}
                 <div class="col-md-6 mb-4">
-                    {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ (anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info')) } %}
+                    {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ status_tone('log_level', anomaly.severity) } %}
                         {% block card_header %}
                             <div class="card-header">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">
-                                        <i class="fa-icon me-2 fa-icon--status-warning text-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }}" aria-hidden="true"></i>
+                                        <i class="fa-icon me-2 fa-icon--status-warning text-{{ status_tone('log_level', anomaly.severity) }}" aria-hidden="true"></i>
                                         {{ anomaly.type|replace({'_': ' '})|title }}
                                     </h5>
                                     {% include '_components/_badge.html.twig' with { variant: 'light', content: anomaly.severity|title } %}

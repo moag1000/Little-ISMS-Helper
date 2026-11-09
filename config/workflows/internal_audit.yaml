@@ -9,18 +9,18 @@ framework:
                 - App\Entity\InternalAudit
             initial_marking: planned
             places:
-                - planned
-                - in_progress
-                - reported
-                - approved
-                - rejected
-                - closed
+                - { name: planned, metadata: { tone: primary } }
+                - { name: in_progress, metadata: { tone: primary } }
+                - { name: reported, metadata: { tone: warning } }
+                - { name: approved, metadata: { tone: success } }
+                - { name: rejected, metadata: { tone: danger } }
+                - { name: closed, metadata: { tone: neutral } }
                 # legacy buckets — accepted as places to satisfy entity LIFECYCLE_STAGES;
                 # no transitions wired (read-only legacy data)
-                - conducted
-                - completed
-                - postponed
-                - cancelled
+                - { name: conducted, metadata: { tone: primary } }
+                - { name: completed, metadata: { tone: success } }
+                - { name: postponed, metadata: { tone: warning } }
+                - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 start:
                     from: planned

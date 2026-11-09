@@ -523,7 +523,7 @@
                         <dt class="col-sm-4">{{ 'supplier.dora.field.ict_criticality'|trans({}, 'suppliers') }}</dt>
                         <dd class="col-sm-8">
                             {% if supplier.ictCriticality %}
-                                {% set critVariant = supplier.ictCriticality == 'critical' ? 'danger' : (supplier.ictCriticality == 'important' ? 'warning' : 'secondary') %}
+                                {% set critVariant = pill_tone_severity(supplier.ictCriticality) %}
                                 {% include '_components/_badge.html.twig' with { variant: critVariant, content: ('supplier.dora.ict_criticality.' ~ supplier.ictCriticality)|trans({}, 'suppliers') } %}
                             {% else %}
                                 <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>

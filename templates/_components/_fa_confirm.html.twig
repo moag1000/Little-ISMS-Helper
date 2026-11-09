@@ -30,10 +30,8 @@
     {% import '_components/_fa_modal.html.twig' as _fa_modal %}
 
     {%- set legacyTone = props.tone ?? 'warn' -%}
-    {%- set tone =
-        legacyTone == 'warn'    ? 'warning' :
-        legacyTone == 'nuclear' ? 'danger'  :
-        legacyTone -%}
+    {#- legacy tones warn/nuclear → warning/danger (pill_tone_bs knows both aliases) -#}
+    {%- set tone = pill_tone_bs(legacyTone) -%}
 
     {%- set cooldown = props.cooldownSeconds ?? 0 -%}
     {%- if legacyTone == 'nuclear' and cooldown < 5 -%}

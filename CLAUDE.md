@@ -373,8 +373,10 @@ read-only with `App\Form\Util\DerivedField::readOnlyWhen()`; changes come as a s
 (admin format + timezone, null → "-"; seconds `fa_datetime(true)`), times through `|fa_time`, months through
 `|fa_month` (Gate 77 rejects every other `|date()` format in text) — `|date('Y-m-d')` only in attributes/URLs.
 Statuses without a lifecycle (workflow instances, consents, import rows, compliance results) take
-their tone from `_components/_status_vocabulary.html.twig`, lifecycle entities from `_fa_status_chip`,
-severity/criticality/priority scales from `pill_tone_severity()`; the one empty-value placeholder
+their tone from `_components/_status_vocabulary.html.twig` (`status_tone(vocabulary, x)`), lifecycle entities from
+`_fa_status_chip` (tone = `metadata.tone` of the workflow place), severity/criticality/priority scales from
+`pill_tone_severity()`, stored Bootstrap colours from `pill_tone_bs()`, flash labels from `flash_tone()`; all tables live
+in `App\Twig\StatusVocabulary` — one tone per value (`StatusToneConsistencyTest`, W7); the one empty-value placeholder
 is `—` (`|fa_date` renders it for null);
 no local `statusColors` maps and no inline tone chains (`x == 'open' ? 'danger' : …`, rule `ternary-tone`),
 status pills only in primary/accent/success/warning/danger/neutral, no own `<main>`, one `<h1>` (the page header's),
@@ -530,7 +532,8 @@ Every entity with a `status` field that goes through staged transitions uses **S
 `tests/PHPStan/Rule/NoDirectSetStatusRule.php` derives its entity list from `EntityTypeRegistry::managedEntityClasses()` — registering an entity automatically bans direct `setStatus()` on it.
 
 **Adding a new entity to the lifecycle:**
-1. `config/workflows/<entity>.yaml` — workflow definition (copy document.yaml as template)
+1. `config/workflows/<entity>.yaml` — workflow definition (copy document.yaml as template); each place is
+   `- { name: x, metadata: { tone: <tone of x in StatusVocabulary::STATUS_WORDS> } }`
 2. Add to `config/packages/workflow.yaml` imports
 3. Add slug to `src/Lifecycle/EntityTypeRegistry.php` MAP constant
 4. Refactor existing `setStatus()` call-sites to `LifecycleService::transition()`

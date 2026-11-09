@@ -64,7 +64,7 @@
         {% endif %}
     </td>
     <td class="text-center">
-        {% include '_components/_badge.html.twig' with { variant: asset.status == 'active' ? 'success' : 'secondary', content: ('asset.status.' ~ asset.status)|trans({}, 'asset') } %}
+        {% include '_components/_badge.html.twig' with { variant: lifecycle_tone('App\\Entity\\Asset', asset.status), content: ('asset.status.' ~ asset.status)|trans({}, 'asset') } %}
     </td>
     <td class="text-center">
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'asset.aria.actions_for_asset'|trans({'%name%': asset.name}, 'asset') }}">

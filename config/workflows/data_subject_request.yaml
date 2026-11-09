@@ -9,12 +9,12 @@ framework:
                 - App\Entity\DataSubjectRequest
             initial_marking: received
             places:
-                - received
-                - identity_verification
-                - in_progress
-                - extended
-                - completed
-                - rejected
+                - { name: received, metadata: { tone: neutral } }
+                - { name: identity_verification, metadata: { tone: primary } }
+                - { name: in_progress, metadata: { tone: primary } }
+                - { name: extended, metadata: { tone: warning } }
+                - { name: completed, metadata: { tone: success } }
+                - { name: rejected, metadata: { tone: danger } }
             transitions:
                 process:
                     from: received

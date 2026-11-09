@@ -40,13 +40,13 @@ framework:
                 - App\Entity\Notification\NotificationDelivery
             initial_marking: pending
             places:
-                - pending
-                - pending_digest
-                - sent
-                - delivered
-                - failed
-                - retrying
-                - archived
+                - { name: pending, metadata: { tone: warning } }
+                - { name: pending_digest, metadata: { tone: neutral } }
+                - { name: sent, metadata: { tone: success } }
+                - { name: delivered, metadata: { tone: success } }
+                - { name: failed, metadata: { tone: danger } }
+                - { name: retrying, metadata: { tone: warning } }
+                - { name: archived, metadata: { tone: neutral } }
             transitions:
                 # Digest-mode delivery batched for the daily digest run.
                 # app:notification:send-digests collects pending_digest rows

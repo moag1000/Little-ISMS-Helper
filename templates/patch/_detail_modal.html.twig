@@ -3,7 +3,7 @@
    link to the full page. ISO 27001 A.8.8 / NIS2 Art. 21.2(e). #}
 {% trans_default_domain 'patches' %}
 {% set _priority_variant = pill_tone_severity(patch.priority|default('')) %}
-{% set _status_variant = patch.status == 'deployed' ? 'success' : (patch.status in ['failed','rolled_back'] ? 'danger' : 'info') %}
+{% set _status_variant = lifecycle_tone('App\\Entity\\Patch', patch.status) %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">

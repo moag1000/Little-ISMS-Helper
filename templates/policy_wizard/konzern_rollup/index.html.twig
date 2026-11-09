@@ -194,7 +194,7 @@
                                                 <code class="small text-muted">{{ action.tenant_code }}</code>
                                             </td>
                                             <td class="fa-table__cell">
-                                                {{ pill.render(action.action, action.severity == 'danger' ? 'danger' : (action.severity == 'warning' ? 'warning' : 'neutral'), {size: 'sm'}) }}
+                                                {{ pill.render(action.action, action.severity in ['danger', 'warning'] ? action.severity : 'neutral', {size: 'sm'}) }}
                                                 <br>
                                                 <small class="text-muted">
                                                     {{ action.entity_type }}#{{ action.entity_id }}
