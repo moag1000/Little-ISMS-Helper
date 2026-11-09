@@ -169,10 +169,10 @@
                         {% embed '_components/_fa_table.html.twig' with { compact: true, striped: true, wrap: false } %}
                             {% block table_head %}
                                 <tr>
-                                    <th class="fa-table__th">{{ result.source.code }}</th>
-                                    <th class="fa-table__th"></th>
-                                    <th class="fa-table__th">{{ result.target.code }}</th>
-                                    <th class="fa-table__th">{{ 'compliance.framework.migrate.result.via'|trans({}, 'compliance') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ result.source.code }}</th>
+                                    <th scope="col" class="fa-table__th"></th>
+                                    <th scope="col" class="fa-table__th">{{ result.target.code }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'compliance.framework.migrate.result.via'|trans({}, 'compliance') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
@@ -197,8 +197,8 @@
                         {% embed '_components/_fa_table.html.twig' with { compact: true, striped: true, wrap: false } %}
                             {% block table_head %}
                                 <tr>
-                                    <th class="fa-table__th">{{ 'compliance.framework.migrate.result.req_id'|trans({}, 'compliance') }}</th>
-                                    <th class="fa-table__th">{{ 'compliance.framework.migrate.result.req_title'|trans({}, 'compliance') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'compliance.framework.migrate.result.req_id'|trans({}, 'compliance') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'compliance.framework.migrate.result.req_title'|trans({}, 'compliance') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}

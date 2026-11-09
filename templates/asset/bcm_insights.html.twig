@@ -129,7 +129,7 @@
                         <td class="fa-table__cell">{{ process.rto|default('—') }}h</td>
                         <td class="fa-table__cell">{{ process.rpo|default('—') }}h</td>
                         <td class="fa-table__cell fa-table__cell--center">
-                            <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                            <a aria-label="{{ 'common.view'|trans({}, 'messages') }}" href="{{ path('app_business_process_show', {id: process.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                             </a>
                         </td>

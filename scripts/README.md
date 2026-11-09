@@ -806,6 +806,22 @@ Runner führen den Job unter ihr aus, der Anhang eines geplanten Berichts folgt 
 
 **CI-Integration:** Gate 102 im `code-quality`-Job.
 
+### quality/check_a11y_static.py + quality/check_token_contrast.py (Gate 103)
+
+**Zweck:** Barrierefreiheit der Kernseiten (W11, 2026-11). `check_a11y_static.py` prüft alle Templates
+(ohne `templates/dev/`): `<th>` mit `scope`, `<canvas>` mit `role="img"` + `aria-label` (oder
+`data-chart-label-value` am `chart`-Controller), Icon-Buttons/-Links mit Namen (`aria-label`/`title`),
+`role="banner"` nur in den Basis-Layouts, Klick-Handler auf `div`/`tr`/… nur mit `role="button"` +
+`tabindex="0"` (Backdrop-/Schließen-Handler und `row-click#navigate` ausgenommen). Ausnahme pro Stelle:
+`{# a11y-ok: <Grund> #}` auf derselben oder der Zeile davor. `check_token_contrast.py` rechnet aus
+`assets/styles/fairy-aurora.css` (hell, dunkel, System-dunkel): Text-Tokens auf allen Flächen ≥ 4,5:1,
+Status-Pill-Text auf seiner Tönung ≥ 4,5:1, `--on-X` auf `--X-strong` ≥ 4,5:1, `--input-border` ≥ 3:1; dazu
+kein `color: var(--primary|success|warning|danger|info|accent)` in `assets/styles/` (Anzeige-Tokens, Text nimmt
+`-strong` bzw. `--warning-text`) und `.text-primary/-info/-success/-warning/-danger` auf die Text-Tokens gemappt.
+Keine Baseline. Selbsttest `scripts/quality/tests/test_check_a11y_static.py`.
+
+**CI-Integration:** Gate 103 im `code-quality`-Job.
+
 ---
 
 ### quality/check_api_module_fields.py (Gate 89)

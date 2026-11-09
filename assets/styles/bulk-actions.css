@@ -213,7 +213,7 @@ html[data-theme="dark"] .fa-bulk-bar {
     padding: 0 16px 0 14px;
     border-radius: var(--r-pill);
     background: var(--primary-tint);
-    color: var(--primary);
+    color: var(--primary-strong);
     font: 700 13px var(--font-sans);
 }
 
@@ -268,16 +268,16 @@ html[data-theme="dark"] .fa-bulk-btn:hover { background: var(--surface-3); }
 .fa-bulk-btn i,
 .fa-bulk-btn .fa-icon { font-size: 15px; }
 
-.fa-bulk-btn--danger  { color: var(--danger); }
+.fa-bulk-btn--danger  { color: var(--danger-strong); }
 .fa-bulk-btn--danger:hover  {
     background: color-mix(in oklab, var(--danger) 12%, transparent);
-    color: var(--danger);
+    color: var(--danger-strong);
 }
 
-.fa-bulk-btn--success { color: var(--success); }
+.fa-bulk-btn--success { color: var(--success-strong); }
 .fa-bulk-btn--success:hover {
     background: color-mix(in oklab, var(--success) 12%, transparent);
-    color: var(--success);
+    color: var(--success-strong);
 }
 
 .fa-bulk-btn[disabled],
@@ -336,7 +336,7 @@ html[data-theme="dark"] .fa-bulk-btn:hover { background: var(--surface-3); }
 }
 
 .fa-bulk-bar--brand .fa-bulk-bar__count    { background: rgb(255 255 255 / 0.18); color: var(--on-primary); }
-.fa-bulk-bar--brand .fa-bulk-bar__count-num { background: rgb(255 255 255 / 0.95); color: var(--primary); }
+.fa-bulk-bar--brand .fa-bulk-bar__count-num { background: rgb(255 255 255 / 0.95); color: var(--primary-strong); }
 .fa-bulk-bar--brand .fa-bulk-bar__divider  { background: rgb(255 255 255 / 0.22); }
 .fa-bulk-bar--brand .fa-bulk-btn           { color: rgb(255 255 255 / 0.92); }
 .fa-bulk-bar--brand .fa-bulk-btn:hover     { background: rgb(255 255 255 / 0.16); color: var(--on-primary); }

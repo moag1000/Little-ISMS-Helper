@@ -48,11 +48,11 @@
     {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
         {% block table_head %}
             <tr>
-                <th class="fa-table__th fa-table__th--sortable" data-sort-key="code" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.code'|trans({}, 'loader_fixer') }}</th>
-                <th class="fa-table__th fa-table__th--sortable" data-sort-key="label" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.label'|trans({}, 'loader_fixer') }}</th>
-                <th class="fa-table__th fa-table__th--sortable fa-table__th--num" data-sort-key="loaded" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.loaded'|trans({}, 'loader_fixer') }}</th>
-                <th class="fa-table__th fa-table__th--center">{{ 'loader_fixer.table.status'|trans({}, 'loader_fixer') }}</th>
-                <th class="fa-table__th fa-table__th--actions">{{ 'loader_fixer.table.actions'|trans({}, 'loader_fixer') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="code" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.code'|trans({}, 'loader_fixer') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="label" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.label'|trans({}, 'loader_fixer') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--sortable fa-table__th--num" data-sort-key="loaded" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.loaded'|trans({}, 'loader_fixer') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--center">{{ 'loader_fixer.table.status'|trans({}, 'loader_fixer') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'loader_fixer.table.actions'|trans({}, 'loader_fixer') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}

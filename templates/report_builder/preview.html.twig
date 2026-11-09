@@ -115,16 +115,16 @@
                 </div>
                 {% elseif data.type in ['pie', 'doughnut'] %}
                 {# Pie/Doughnut Chart #}
-                <canvas class="chart-canvas" data-chart-type="{{ data.type }}" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['var(--primary)', 'var(--fg-3)', 'var(--success)', 'var(--danger)', 'var(--warning)'])|json_encode }}" height="200"></canvas>
+                <canvas role="img" aria-label="{{ meta.title|default('report_builder.page.title'|trans({}, 'report_builder')) }}" class="chart-canvas" data-chart-type="{{ data.type }}" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['var(--primary)', 'var(--fg-3)', 'var(--success)', 'var(--danger)', 'var(--warning)'])|json_encode }}" height="200"></canvas>
                 {% elseif data.type == 'radar' %}
                 {# Radar Chart #}
-                <canvas class="chart-canvas" data-chart-type="radar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="250"></canvas>
+                <canvas role="img" aria-label="{{ meta.title|default('report_builder.page.title'|trans({}, 'report_builder')) }}" class="chart-canvas" data-chart-type="radar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="250"></canvas>
                 {% elseif data.type in ['bar', 'horizontalBar'] %}
                 {# Bar Chart #}
-                <canvas class="chart-canvas" data-chart-type="bar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['var(--primary)'])|json_encode }}" height="200"></canvas>
+                <canvas role="img" aria-label="{{ meta.title|default('report_builder.page.title'|trans({}, 'report_builder')) }}" class="chart-canvas" data-chart-type="bar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['var(--primary)'])|json_encode }}" height="200"></canvas>
                 {% elseif data.type == 'line' %}
                 {# Line Chart #}
-                <canvas class="chart-canvas" data-chart-type="line" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="200"></canvas>
+                <canvas role="img" aria-label="{{ meta.title|default('report_builder.page.title'|trans({}, 'report_builder')) }}" class="chart-canvas" data-chart-type="line" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="200"></canvas>
                 {% else %}
                 <div class="fa-alert fa-alert--info">{{ 'report_builder.preview.chart_placeholder'|trans({'%type%': data.type}, 'report_builder') }}</div>
                 {% endif %}

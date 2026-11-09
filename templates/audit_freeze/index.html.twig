@@ -49,13 +49,13 @@
             {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
                 {% block table_head %}
                     <tr>
-                        <th class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.name'|trans({}, 'audit_freeze') }}</th>
-                        <th class="fa-table__th fa-table__th--sortable" data-sort-key="stichtag" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}</th>
-                        <th class="fa-table__th">{{ 'audit_freeze.column.purpose'|trans({}, 'audit_freeze') }}</th>
-                        <th class="fa-table__th">{{ 'audit_freeze.column.frameworks'|trans({}, 'audit_freeze') }}</th>
-                        <th class="fa-table__th fa-table__th--sortable" data-sort-key="created_at" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}</th>
-                        <th class="fa-table__th">{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}</th>
-                        <th class="fa-table__th fa-table__th--actions">{{ 'audit_freeze.column.actions'|trans({}, 'audit_freeze') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.name'|trans({}, 'audit_freeze') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="stichtag" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'audit_freeze.column.purpose'|trans({}, 'audit_freeze') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'audit_freeze.column.frameworks'|trans({}, 'audit_freeze') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="created_at" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'audit_freeze.column.actions'|trans({}, 'audit_freeze') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}

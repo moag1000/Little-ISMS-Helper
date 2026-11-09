@@ -101,10 +101,10 @@
                                 <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>{{ 'admin.licensing.notice_heading'|trans({}, 'admin') }}
                             </h2>
                             <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">
+                                <button aria-label="{{ 'common.font_smaller'|trans({}, 'messages') }}" type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">
                                     <i class="fa-icon fa-icon--util-zoom-out" aria-hidden="true"></i>
                                 </button>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="ui-actions#setFontSize" data-ui-actions-size-param="16px" data-ui-actions-target-param="#license-content">
+                                <button aria-label="{{ 'common.font_larger'|trans({}, 'messages') }}" type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="ui-actions#setFontSize" data-ui-actions-size-param="16px" data-ui-actions-target-param="#license-content">
                                     <i class="fa-icon fa-icon--util-zoom-in" aria-hidden="true"></i>
                                 </button>
                             </div>

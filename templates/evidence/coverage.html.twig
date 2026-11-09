@@ -115,7 +115,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{{ path('app_soa_show', {id: item.control.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                        <a aria-label="{{ 'common.view'|trans({}, 'messages') }}" href="{{ path('app_soa_show', {id: item.control.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--ui-view" aria-hidden="true"></i>
                         </a>
                     </td>
