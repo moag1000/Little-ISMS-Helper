@@ -38,7 +38,7 @@ Regeln:
   hat, landet als DSB. Ein Administrator ohne Persona-Rolle landet nicht auf dem
   CISO-Dashboard, darf es aber oeffnen (die Hierarchie gibt Admins jede
   operative Persona). **Ausnahme Leitung:** `ROLE_ADMIN` erbt `ROLE_TOP_MGMT`
-  nicht (seit 2026-11). Billigungen der Leitung (Leitungsentscheidungen,
+  nicht. Billigungen der Leitung (Leitungsentscheidungen,
   Risikoakzeptanz über der Schwelle, Abschluss der Managementbewertung,
   Workflow-Schritte mit `approver_role: ROLE_TOP_MGMT`) gehen nur mit der
   zugewiesenen Rolle Leitung — ISO 27001 5.1 verlangt die oberste Leitung.
@@ -64,7 +64,7 @@ Systemrollen.
 
 - **„Was bei dir ansteht“** — die offenen Pflichten der Person aus allen
   Fristenquellen (`ObligationInbox`, Twig `my_obligations()`), dieselbe Liste wie
-  Mein Tag; ersetzt die frühere eigene Freigabe-Abfrage (ISB, BCM, Auditor).
+  Mein Tag.
 - **Downloads** — die Berichte, die die Persona laden darf
   (`dashboards/_report_downloads.html.twig`, geprüft über `ReportAccessVoter`).
 - **Kennzahlen** nur aus dem `KpiCatalog` (BCM: BIA-Abdeckung, kritische
@@ -74,21 +74,14 @@ Systemrollen.
 
 ## CISO-Dashboard
 
-**Route:** `/{locale}/dashboard/ciso`
+**Route:** `/{locale}/dashboards/ciso`
 
 Zielgruppe: Sicherheitsverantwortliche mit Management-Aufgaben.
 
-Enthaltene Widgets:
-
-| Widget | Beschreibung |
-|---|---|
-| ISMS Health Score | Gesamtreife-Score (0-100), Trend 12 Monate |
-| Risk-Heatmap | 5x5-Matrix mit Cluster-Faerbung nach Risikowert |
-| Top-10-Risiken | Offene High/Critical-Risiken nach Risikowert sortiert |
-| SoA-Coverage | Prozentsatz umgesetzter Annex-A-Controls |
-| Offene Incidents (high/critical) | Aktive Vorfaelle mit MTTR-Ampel |
-| Workflow-Eskalationen | Workflows mit gerissener Frist (CISO-relevant) |
-| Board-Link | Direktlink auf Board-One-Pager (PDF-Vorschau in Sidebar) |
+Inhalt: Kennzahlen Gesamtkonformität und Risikotrend, Framework-Konformität,
+Risikoappetit-Status, kritische Risiken, Wirksamkeit der Maßnahmen, Risiko in Euro
+(Modul Quantitative Risikoanalyse), Standortkachel (Modul Standorte) und
+DORA-Konformität (Modul NIS-2/DORA).
 
 ---
 
@@ -102,13 +95,8 @@ Separate, druckoptimierte Ansicht fuer Geschaeftsfuehrung und Aufsichtsgremien
 Oben steht, was die Leitung entscheidet: offene Vorlagen mit Billigen und
 Ablehnen, fehlende oder bald endende Billigungen und die letzten
 Entscheidungen ([Leitungsentscheidungen](LEITUNGSENTSCHEIDUNGEN.md)).
-Darunter aggregierte KPIs ohne technische Details:
-
-- ISMS Health Score mit Vorperioden-Vergleich
-- Anzahl kritischer Risiken mit Behandlungsstatus
-- Compliance-Status (ampelbasiert) fuer die wichtigsten regulatorischen Anforderungen
-- Naechste anstehende Audits / Zertifizierungsfristen
-- Vorfall-Zusammenfassung (Anzahl, Durchschnittliche Loesungszeit)
+Darunter: Zusammenfassung, Erfordert Aufmerksamkeit, anstehende Meilensteine,
+Ressourcen & Budget, Quartalsvergleich und Risiko in Euro.
 
 Das Board-Dashboard laesst sich direkt als PDF exportieren
 ("Board-One-Pager"). Der Export beinhaltet das Tenant-Logo und das
@@ -118,61 +106,45 @@ Erstellungsdatum.
 
 ## Risk-Manager-Dashboard
 
-**Route:** `/{locale}/dashboard/risk-manager`
+**Route:** `/{locale}/dashboards/risk-manager`
 
 Zielgruppe: Verantwortliche fuer das operative Risikomanagement.
 
-Enthaltene Widgets:
-
-| Widget | Beschreibung |
-|---|---|
-| Risk-Pipeline | Kanban-Ansicht: neu / in Behandlung / akzeptiert / geschlossen |
-| Risk-Appetite-Status | Offene Risiken oberhalb des Appetit-Schwellenwerts |
-| Periodenreview-Kalender | Naechste faellige Risk-Reviews pro Risikotraeger |
-| Risikobehandlungsplaene | Offene Behandlungsplaene nach Eskalationsstufe |
-| Vulnerability-Inbox | CVEs mit CVSS >= 7.0 ohne Behandlungsbestaetigung |
+Inhalt: Kennzahlen Gesamtrisiken, Hoch/Kritisch, Behandelt, Überfällig,
+Appetit-Status; Behandlungs-Pipeline, Risikoappetit, Risiken nach Kategorie,
+Risikovorhersage, unbehandelte Risiken, überfällige Behandlungen, ausstehende
+Freigaben, überfällige Lifecycles, Risiko in Euro.
 
 ---
 
 ## DPO-Workflow-Dashboard
 
-**Route:** `/{locale}/dashboard/dpo`
+**Route:** `/{locale}/dashboards/dpo`
 
 Zielgruppe: Datenschutzbeauftragte (intern oder extern bestellt).
 
 **Voraussetzung:** Modul `privacy` muss aktiv sein.
 
-Enthaltene Widgets:
-
-| Widget | Beschreibung |
-|---|---|
-| DSR-Queue | Offene Betroffenenrechte-Anfragen nach Typ und Fristampel |
-| DPIA-Pipeline | DPIAs nach Status (Entwurf / Pruefung / Freigegeben / Abgelaufen) |
-| Datenpannen-Inbox | Aktive Data-Breach-Meldeverfahren mit 72h-Countdown |
-| VVT-Vollstaendigkeit | Verarbeitungsverzeichnis: Eintraege ohne Rechtsgrundlage / DSFA-Pflicht |
-| Consent-Ueberlauf | Einwilligungen mit ablaufendem Gueltigkeitsdatum |
-
-DPIA-Pipeline-Detail: Zeigt die Phasen als horizontale Stepper-Bar.
-Klick auf eine Phase oeffnet die Detailansicht der betroffenen DPIAs.
+Inhalt: Kennzahlen offene Datenpannen, DSFAs in Bearbeitung, Verfahren ohne DSFA,
+Verfahren zur Überprüfung, Drittlandsübermittlungen; Abschnitte offene Datenpannen
+(Art. 33 DSGVO), DSFAs in Bearbeitung (Art. 35), Verfahren ohne DSFA, offene
+Betroffenenanfragen (Art. 12 Abs. 3), ausstehende Freigaben, überfällige Lifecycles,
+Schnellzugriff und DORA-Verpflichtungsstatus (Modul NIS-2/DORA).
 
 ---
 
 ## CM-Dashboard (Compliance-Manager)
 
-**Route:** `/{locale}/dashboard/compliance-manager`
+**Route:** `/{locale}/dashboards/compliance-manager`
 
 Zielgruppe: Head of GRC, Compliance-Manager, Multi-Framework-Verantwortliche.
 
-Enthaltene Widgets:
-
-| Widget | Beschreibung |
-|---|---|
-| Framework-Heatmap | Alle aktiven Frameworks als Heatmap (Score x Fraelligkeit) |
-| Heatmap-Drill-Down | Klick auf Framework oeffnet Requirement-Level-Details |
-| Mapping-Review-Queue | Cross-Framework-Mappings in Status `review` zur Freigabe |
-| Cert-Bundle-Preflight | Zertifizierungspakete mit Ampelstatus fuer Dokumentvollstaendigkeit |
-| Wizard-Fortschritt | Laufende Wizard-Sessions aller Frameworks mit Score-Trend |
-| Mein-Tag CM-Buckets | Framework-Gap-Alerts, Mapping-Queue, Cert-Preflight direkt eingebettet |
+Inhalt: Kennzahlen aktive Frameworks, Ø Compliance, Frameworks at-risk, offene
+Feststellungen, Audits in 90 Tagen, Dokument-Freigaben; Coverage-Heatmap je
+Framework (Klick öffnet den Drill-Down `/dashboards/cm-heatmap-drill`), die drei
+Frameworks mit niedrigster Coverage, Feststellungen nach Schweregrad, Audit-Plan
+der nächsten 90 Tage, Dokument-Freigabe-Queue, ausstehende Freigaben, überfällige
+Lifecycles, Quick-Actions, Standortkachel und DORA-RoI-Status.
 
 ### Wann CM-Heatmap-Drill nutzen
 
@@ -192,19 +164,14 @@ Enthaltene Widgets:
 
 ## Auditor-Dashboard
 
-**Route:** `/{locale}/dashboard/auditor`
+**Route:** `/{locale}/dashboards/auditor`
 
 Zielgruppe: Interne Revisoren und externe Zertifizierungsauditoren.
 
-Enthaltene Widgets:
-
-| Widget | Beschreibung |
-|---|---|
-| Aktive Auditplaene | Laufende Auditplaene mit Status und naechstem Termin |
-| Evidence-Queue | Controls mit fehlenden oder abgelaufenen Nachweisen |
-| NC-Tracker | Nichtkonformitaeten nach Schweregrad und Massnahmen-Status |
-| Audit-Freeze-Status | Verfuegbare Stichtag-Snapshots mit SHA-256-Siegel |
-| Audit-Log-Viewer | Direktlink zum gefilterten Audit-Log |
+Inhalt: Kennzahlen Audits im Jahr, bevorstehende Audits, offene Feststellungen,
+überfällige Maßnahmen, Nachweisabdeckung; Audit-Zeitplan, Nachweis-Status,
+Konformitätslücken, Control-Status, Nichtkonformitäten, Korrekturmaßnahmen.
+Das Audit-Log ist nur für Admins (`ROLE_ADMIN`).
 
 Der Auditor hat Lesezugriff auf alle Bereiche, aber kein Schreibrecht auf
 Entitaeten. Das gilt ebenso für Group-CISO und Konzern-Auditor ohne Manager-Rolle
@@ -233,16 +200,19 @@ Kennzahl hat überall denselben Wert und dieselbe Ampel.
   Risiken bewertet“ zeigt, wie viel des Registers die Summe abdeckt. Zu sehen auf
   CISO-, Vorstands-, Risikomanager- und ISB-Dashboard, auf der Startseite und im
   Konzern-One-Pager.
-- **Risikostufen:** überall dieselbe Skala wie in der Risikomatrix: kritisch ab 20,
-  hoch ab 12, mittel ab 6.
+- **Risikostufen:** überall dieselbe Skala wie in der Risikomatrix. Die Grenzen legt
+  jede Organisation unter Admin → Risikokriterien fest (Vorgabe: kritisch ab 20, hoch
+  ab 12, mittel ab 6), siehe [LEITUNGSENTSCHEIDUNGEN.md](LEITUNGSENTSCHEIDUNGEN.md#risikoskala-iso-27001-612-ab).
 
 ## Risikoakzeptanz entscheiden
 
 Eine beantragte Risikoakzeptanz erscheint bei der zuständigen Person in **Mein Tag**
 („Risikoakzeptanzen zu entscheiden“) mit einer Zeile wie „Hoch (12) · ca. 100.000 €/Jahr ·
-Asset: Kundenportal“. „Akzeptieren“ entscheidet direkt dort; „Ablehnen“ führt zur
-Risikoseite, weil ein Grund nötig ist. Zuständig ist bis zur Manager-Schwelle
-(Admin → Risiko-Genehmigungsschwellen) die Rolle Manager, darüber Admin.
+Asset: Kundenportal“. Akzeptieren und Ablehnen (mit Begründung) laufen dort im
+Entscheidungsdialog. Zuständig ist bis zur Manager-Schwelle (Admin →
+Risiko-Genehmigungsschwellen) das Risikomanagement (Risikomanager, CISO oder ISB, sonst
+jeder Manager), darüber die Leitung (`ROLE_TOP_MGMT`, kein Rückfall auf Admins). Wer
+wann akzeptiert hat, schreibt nur die Freigabe; im Risikoformular ist es nur lesbar.
 
 ## Wo finde ich mein Dashboard?
 
@@ -255,7 +225,7 @@ Seitenleiste. Jede Person sieht dort nur die Karten ihrer Rollen:
 | DSB | DSB (wenn `privacy` aktiv) |
 | Compliance-Manager | Compliance-Manager (wenn `compliance` aktiv) |
 | Auditor | ab Rolle Auditor |
-| Board | CISO, Compliance-Manager |
+| Board | Leitung, CISO, Compliance-Manager, Konzern-ISB |
 
 Die Bereiche der Seitenleiste richten sich nach den aktiven Modulen; Admin nur
 für ADMIN / SUPER_ADMIN. **Portfolio** (Konzern-Reports) ist ein direkter Link
@@ -277,12 +247,11 @@ jeweiligen Organisation, eingefärbt nach deren KPI-Schwellwerten; leer heißt:
 Modul dort nicht aktiv oder keine Daten. Die Konzern-Zeile zeigt Quoten als
 einfachen Mittelwert (Ø), Anzahlen und Euro als Summe (Σ). Excel und PDF
 enthalten dieselben Werte; jeder Export wird im Audit-Log festgehalten
-(`group_report.comparison.export`). Die frühere Framework-Reifegrad-Matrix ist
-darin aufgegangen; ihre alte Adresse leitet weiter.
+(`group_report.comparison.export`). Die Adresse der Framework-Reifegrad-Matrix
+leitet hierher.
 
 Jede Seite hat genau einen Menüeintrag (Gate `check_nav_area_parity.py`).
-Bulk-Importe laufen über "Bulk-Import – Übersicht" (ISMS Kern), nicht
-mehr über eigene Einträge je Modul.
+Bulk-Importe laufen über "Bulk-Import – Übersicht" (ISMS Kern).
 
 ---
 
@@ -338,8 +307,8 @@ Gruppen, deren Modul nicht aktiv ist, werden nicht angezeigt.
   der eigenen Organisation. URL-Parameter: `fromAsset`, `fromLocation`, `fromRisk`,
   `fromIncident`, `fromVulnerability`.
 - **Eigentümer, Verantwortliche und Ansprechpartner** werden nur noch als
-  Benutzer oder Person gewählt; die alten Freitextfelder sind seit 2026-11
-  entfallen (ihre Werte wurden zu Personen, siehe [Quick-Fix](QUICK_FIX.md)).
+  Benutzer oder Person gewählt; Freitext-Namen aus Import oder alter Sicherung
+  werden zu Personen (siehe [Quick-Fix](QUICK_FIX.md)).
 
 ---
 
@@ -356,7 +325,7 @@ Kopfzeile öffnen dasselbe Fenster:
 Pfeiltasten wählen über alle Gruppen, **Enter** öffnet, **Esc** schließt. **?** zeigt alle Tastenkürzel.
 
 Datum und Uhrzeit erscheinen überall im Format und in der Zeitzone aus
-*Administration → Einstellungen → Anwendung*; ein leeres Datum wird als „-" angezeigt.
+*Administration → Einstellungen → Anwendung*; ein leeres Datum wird als „—“ angezeigt.
 
 ## Verwandte Dokumente
 

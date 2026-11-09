@@ -1,603 +1,146 @@
-# Workflow Auto-Progression System
+# Workflow Auto-Progression
 
 > User-facing workflow inbox view (Risk-Owner perspective): [Sichtwechsel — Risk-Owner](sichtwechsel/risk-owner-business.md)
 
-> **Y.4 Update (2026-06):** Auto-progression is now handled by the
-> `FieldCompletionAutoTransition` Doctrine event listener
-> (`src/Lifecycle/EventListener/FieldCompletionAutoTransition.php`).
-> Workflow definitions live in `config/workflows/regulatory/*.yaml`.
-> See: `docs/decisions/2026-05-17-workflow-yaml-unification.md`
+Two mechanisms move work forward without an explicit click. They are separate:
 
-## Overview
+| Mechanism | Moves | Configured in | Runs |
+|---|---|---|---|
+| Lifecycle auto-transition | the record's own status (e.g. data breach `draft` → `under_assessment`) | `config/packages/lifecycle.yaml` (`lifecycle.auto_transition_rules`) | Doctrine `postUpdate`, `FieldCompletionAutoTransition` |
+| Time-based step approval | a step of a regulatory approval chain (`WorkflowInstance`) | step metadata `autoProgressConditions.type: time_based` | `app:process-timed-workflows`, scheduler every 15 min |
 
-The Workflow Auto-Progression System enables **event-driven workflows** where workflow steps automatically progress based on user actions in modules. This creates a non-invasive approval process that aligns with natural user workflows.
-
-**Key Principle**: Instead of users having to explicitly approve workflow steps, completing relevant fields in entities (like DataBreach, Incident, Risk) automatically advances the workflow.
+Changes the tool derives itself (residual risk, protection need, effectiveness, risk from a CVE, …) are
+not written automatically; they are proposed in the suggestion queue and applied after a person accepts —
+see [SUGGESTION_QUEUE.md](features/SUGGESTION_QUEUE.md).
 
 ![Workflows-Inbox](sichtwechsel/img/risk-owner-business/workflows-inbox.png)
 
-> **Related:** auto-progression moves a running workflow when fields are filled. Changes the tool
-> derives itself (residual risk, protection need, effectiveness, risk from a CVE, …) are not written
-> automatically but proposed in the suggestion queue and applied after a person accepts — see
-> `docs/features/SUGGESTION_QUEUE.md`.
+## 1. Lifecycle auto-transitions (`FieldCompletionAutoTransition`)
 
-## Architecture
-
-### Components
-
-1. **FieldCompletionAutoTransition** (`src/Lifecycle/EventListener/FieldCompletionAutoTransition.php`) — **canonical since Y.1**
-   - Doctrine `postUpdate` listener that evaluates auto-progression rules
-   - Evaluates field_completion, auto, risk_appetite rule types
-   - Supports AND/OR condition DSL
-   - Automatically approves steps when conditions are met
-   - Rules are configured in `config/workflows/regulatory/*.yaml` step metadata
-
-2. **WorkflowStep Metadata** (YAML) — **canonical since Y.2**
-   - Step definitions live in `config/workflows/regulatory/*.yaml`
-   - The `metadata.steps[].auto_progress_conditions` key replaces the DB `metadata` JSON field
-   - DB `workflow_steps.metadata` column preserved read-only for historical display
-
-3. **Integration Points**
-   - `DataBreachService::update()` - Checks auto-progression after DataBreach updates
-   - Other entity services (Incident, Risk, etc.) can integrate similarly
-
-## How It Works
-
-### Example: GDPR Data Breach Workflow
-
-```
-Step 1: "Initial Assessment (DPO)" - Requires fields:
-  - severity
-  - affectedDataSubjectsCount
-  - dataCategories
-  - notificationRequired
-
-User Action:
-1. DPO creates DataBreach entity
-2. DPO fills out the 4 required fields
-3. DPO clicks "Save"
-
-Auto-Progression:
-✓ FieldCompletionAutoTransition detects all fields are filled
-✓ Step 1 auto-approved with comment: "Step automatically approved based on field completion"
-✓ Workflow moves to Step 2: "Technical Assessment (CISO)"
-✓ CISO receives notification email
-
-Benefits:
-- DPO doesn't need to navigate to separate workflow approval page
-- Workflow progresses naturally as part of normal work
-- Clear audit trail shows who filled which fields when
-```
-
-### Workflow Step Metadata Structure
-
-```json
-{
-  "autoProgressConditions": {
-    "type": "field_completion",
-    "entity": "DataBreach",
-    "fields": [
-      "severity",
-      "affectedDataSubjectsCount",
-      "dataCategories",
-      "notificationRequired"
-    ],
-    "condition": "severity >= high"  // Optional
-  }
-}
-```
-
-#### Auto-Progression Types
-
-**1. `field_completion`** - Progress when fields are filled
-```json
-{
-  "type": "field_completion",
-  "entity": "DataBreach",
-  "fields": ["severity", "affectedDataSubjectsCount"]
-}
-```
-
-**2. `auto`** - Progress immediately (for notification steps)
-```json
-{
-  "type": "auto",
-  "condition": "severity >= high"  // Optional gate
-}
-```
-
-#### Supported Conditions
-
-- `field >= value` - Greater than or equal
-- `field <= value` - Less than or equal
-- `field > value` - Greater than
-- `field < value` - Less than
-- `field = value` - Equal
-- `field != value` - Not equal
-
-Examples:
-- `severity >= high`
-- `affectedDataSubjectsCount > 100`
-- `notificationRequired = true`
-
-## Regulatory-Compliant Workflows
-
-### Generate Pre-Configured Workflows
-
-```bash
-# Generate all regulatory workflows
-php bin/console app:generate-regulatory-workflows
-
-# Generate specific workflow
-php bin/console app:generate-regulatory-workflows --workflow=data-breach
-
-# Overwrite existing definitions
-php bin/console app:generate-regulatory-workflows --overwrite
-```
-
-### Available Workflows
-
-#### 1. GDPR Data Breach Notification (Art. 33/34)
-- **Entity**: `DataBreach`
-- **Total SLA**: 72 hours (regulatory requirement)
-- **Steps**: 6 steps with role-based approval
-- **Auto-Progression**: Enabled for DPO, CISO, and Management steps
-
-**Key Features**:
-- Step 1: DPO Initial Assessment (24h) - Auto-progresses when severity, affected subjects, and data categories filled
-- Step 2: Technical Assessment (24h) - Auto-progresses when root cause and containment measures documented
-- Step 3: Management Notification (auto) - Auto-sends notification to management for high-severity breaches
-- Step 4: Authority Notification (72h total) - Auto-progresses when notification date/method recorded
-- Step 5: Data Subject Notification - Auto-progresses when notification sent (if required)
-- Step 6: Final Documentation (7 days) - Auto-progresses when lessons learned documented
-
-#### 2. Incident Response - High/Critical Severity
-- **Entity**: `Incident`
-- **Steps**: 6 steps (Immediate Response → Post-Incident Review)
-- **Auto-Progression**: Configured for crisis management workflow
-
-#### 3. Incident Response - Low/Medium Severity
-- **Entity**: `Incident`
-- **Steps**: 4 steps (Triage → Review)
-- **Auto-Progression**: Standard incident handling
-
-#### 4. Risk Treatment Plan Approval
-- **Entity**: `Risk`
-- **Steps**: 6 steps (Risk Owner → Audit Committee)
-- **Auto-Progression**: Based on risk value thresholds
-
-#### 5. DPIA - Data Protection Impact Assessment
-- **Entity**: `DPIA`
-- **Steps**: 6 steps (Creation → Final Check)
-- **Auto-Progression**: Based on assessment completion
-
-## Integration Guide
-
-### Adding Auto-Progression to an Entity (Y.4 Canonical Pattern)
-
-Auto-progression is now **automatic via Doctrine event listener**. You do NOT need to
-inject any service or call `checkAndProgressWorkflow()` explicitly.
-
-**Step 1**: Define step conditions in the workflow YAML
+`src/Lifecycle/EventListener/FieldCompletionAutoTransition.php` reads the rules per entity class and,
+after an entity is saved, applies the named lifecycle transition through `LifecycleService` when the rule
+holds:
 
 ```yaml
-# config/workflows/regulatory/my_workflow.yaml
-metadata:
-    regulatory_metadata:
-        steps:
-            - name: "Initial Assessment"
-              order: 1
-              approver_role: ROLE_MANAGER
-              days_to_complete: 3
-              auto_progress_conditions:
-                  type: field_completion
-                  entity: Incident
-                  fields: [rootCause, containmentMeasures]
+# config/packages/lifecycle.yaml
+lifecycle.auto_transition_rules:
+    App\Entity\DataBreach:
+        assess_when_complete:
+            workflow: data_breach_lifecycle
+            transition: assess
+            required_fields: [severity, affectedDataSubjects, dataCategories]   # all non-empty
+        assess_high_severity:
+            workflow: data_breach_lifecycle
+            transition: assess
+            conditions:
+                all:                                    # AND; `any:` = OR
+                    - { field: severity, comparison: ">=", value: high }
+                    - { field: affectedDataSubjects, comparison: ">", value: 100 }
 ```
 
-**Step 2**: Save the entity — auto-progression fires automatically
+- Operators: `==`, `!=`, `>`, `<`, `>=`, `<=`; `value_from` reads the right-hand side from another field.
+- Rules exist for DataBreach, DPIA, Risk, Incident and ProcessingActivity.
+- Best effort: a transition the current status does not allow, or an unknown workflow, is skipped and logged;
+  the save is never rolled back.
+- The listener acts as an automatic actor: a four-eyes transition (e.g. risk `accept`) is refused by
+  `FourEyesValidator` (`automatic_actor`) and stays for a person.
 
-```php
-public function update(Incident $incident, User $user): Incident
-{
-    // ... existing update logic ...
+`WorkflowAutoProgressionBridge` closes the loop the other way: when an approval chain for a record reaches
+`approved`, it fires the record's lifecycle transition from `lifecycle.approval_bridges` (currently Document →
+`document_lifecycle.approve`).
 
-    $this->entityManager->flush();
-    // FieldCompletionAutoTransition listener fires automatically via Doctrine postUpdate.
-    // No explicit call needed.
+## 2. Regulatory approval chains (`config/workflows/regulatory/*.yaml`)
 
-    return $incident;
-}
+The YAML files are the source of truth for the approval chains (ADR
+`docs/decisions/2026-05-17-workflow-yaml-unification.md`). Per-organisation changes to a step (approver,
+days, conditions) are made under **Admin > Workflows** (`/admin/workflows`).
+
+| Workflow | Norm | Module | Steps (approver role) |
+|---|---|---|---|
+| `gdpr_data_breach` | GDPR Art. 33/34, 72 h SLA | privacy | DPO, CISO, Manager (notification), DPO, DPO, DPO |
+| `incident_high_severity` | ISO 27001 5.24–5.28 | — | CISO, BCM officer, ISB, DPO, CISO, Manager |
+| `incident_low_severity` | ISO 27001 5.24–5.28 | — | ISB, ISB, Manager, ISB |
+| `incident_post_mortem` | ISO 27001 5.24–5.28 | — | CISO ×3 |
+| `risk_treatment` | ISO 27001 6.1.3 / ISO 27005 | — | owner, CISO, DPO, Top management, Top management, Auditor |
+| `dpia` | GDPR Art. 35/36 | privacy | owner, DPO, CISO, Risk manager, Manager, DPO |
+| `dsr` | GDPR Art. 12–22 | privacy | DPO ×5 |
+| `capa` | ISO 27001 10.1 | — | Manager, CISO, Manager, Auditor, CISO |
+| `change_request` | ISO 27001 A.8.32 / 6.3 | — | CISO, Manager, Manager, CISO |
+| `management_review` | ISO 27001 9.3 | — | CISO, Top management, CISO, CISO |
+| `control_verification` | ISO 27001 8 / Annex A | — | owner, CISO, Auditor |
+| `supplier_assessment` | ISO 27001 A.5.19–22, GDPR Art. 28, DORA Art. 28–30 | — | Manager, DPO, CISO, CISO, Manager |
+| `training_verification` | ISO 27001 A.6.3 | — | Manager, Manager |
+| `bc_plan_activation` | ISO 22301 | — | Manager, BCM officer, Manager, Manager, CISO |
+| `document_review` | ISO 27001 7.5.3 | — | Manager, Manager, CISO |
+
+`owner` is not a role: the step goes to whoever is responsible for the record (`Responsibility::ofRecord()`,
+see [DEADLINES_AND_RESPONSIBILITY.md](DEADLINES_AND_RESPONSIBILITY.md#workflow-steps-owned-by-the-record)).
+Gate 82 (`check_workflow_roles.py`) requires every `approver_role`, transition `roles` entry and
+`escalation_role` to exist in `security.yaml`, and no approval step may be open to `ROLE_USER`.
+
+Steps are approved by people (Mein Tag, workflow page, `decision_modal()`). Steps also carry
+`auto_progress_conditions` of type `field_completion`, `auto` or `risk_appetite`; these are kept with the
+definition and editable in the overlay, but only `time_based` is evaluated (see below). Data-driven
+progression runs on the record's lifecycle (section 1).
+
+`php bin/console app:generate-regulatory-workflows [--workflow=data-breach] [--overwrite]` writes the
+definitions as `Workflow` rows; `app:migrate-legacy-workflows` checks that every DB row has a YAML
+counterpart (`--archive` archives the rest).
+
+### Time-based steps
+
+```yaml
+auto_progress_conditions:
+    type: time_based
+    delay: "24 hours"      # minutes, hours or days
 ```
 
-**Step 3**: Verify via audit log
-
-The `WorkflowInstance.approvalHistory` JSON will contain entries with
-`"action": "auto_approved"` when steps auto-progress.
-
----
-
-### Legacy Pattern (deprecated — do not use in new code)
-
-```php
-// DEPRECATED — remove from existing code when possible
-$this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $user);
-```
-
----
-
-### Old DB-based condition definition (preserved for reference only)
-
-```php
-// DEPRECATED — conditions now live in config/workflows/regulatory/*.yaml
-// When creating WorkflowStep
-$step->setMetadata([
-    'autoProgressConditions' => [
-        'type' => 'field_completion',
-        'entity' => 'Incident',
-        'fields' => ['rootCause', 'affectedSystems', 'containmentMeasures'],
-    ],
-]);
-```
-
-## Audit Trail
-
-Auto-approved steps are logged in the workflow approval history with:
-
-```json
-{
-  "step_id": 123,
-  "step_name": "Initial Assessment (DPO)",
-  "action": "auto_approved",
-  "approver_id": 42,
-  "approver_name": "John Doe",
-  "comments": "Step automatically approved based on field completion",
-  "timestamp": "2025-11-29 10:30:00",
-  "auto_progression": true,
-  "trigger_entity": "DataBreach"
-}
-```
-
-This provides complete traceability showing:
-- Who filled the fields that triggered auto-progression
-- When the auto-progression occurred
-- Which entity triggered the progression
-
-## Benefits
-
-### 1. Non-Invasive Compliance
-Users don't need to understand or navigate separate workflow screens. They simply fill out the relevant fields in their normal workflow.
-
-### 2. Regulatory Compliance
-Workflows progress according to regulatory requirements (GDPR Art. 33/34, ISO 27001) with proper audit trails.
-
-### 3. Clear Responsibilities
-Each workflow step clearly defines:
-- Who is responsible (role-based)
-- What needs to be completed (field-based)
-- When it must be done (SLA-based)
-
-### 4. Automatic Notifications
-As workflows progress, the system automatically notifies the next approver, ensuring timely action.
-
-### 5. Flexible Configuration
-Workflows can be configured for different entities, severities, and compliance requirements without code changes.
-
-## Testing
-
-### Manual Testing
-
-1. **Generate Data Breach Workflow**
-   ```bash
-   php bin/console app:generate-regulatory-workflows --workflow=data-breach
-   ```
-
-2. **Create Data Breach Entity**
-   - Navigate to Data Breach module
-   - Create new breach
-   - Workflow should auto-start
-
-3. **Fill DPO Assessment Fields**
-   - severity: `high`
-   - affectedDataSubjectsCount: `150`
-   - dataCategories: `['Personal Identifiable Information']`
-   - notificationRequired: `true`
-
-4. **Save Entity**
-   - Workflow Step 1 should auto-approve
-   - Check workflow approval history for auto-approval entry
-   - Verify CISO receives notification for Step 2
-
-### Verifying Auto-Progression
-
-Check workflow instance approval history:
+- The delay counts from the moment the step became active (approval of the previous step, or the start).
+- The step is approved through `WorkflowService` with the initiator as acting user; the approval history
+  records `auto_approved` with `trigger: time_based`.
+- **Automatic approvals never satisfy four-eyes.** The cron, `FieldCompletionAutoTransition` and
+  `WorkflowAutoProgressionBridge` act as automatic actors (`automatic: true` on
+  `LifecycleService::transition()`); `FourEyesValidator` refuses every four-eyes transition for them
+  (`automatic_actor`), the single-approver escape included. A time-based step whose approval would close
+  the workflow (last step, or only notification steps follow) stays pending. The cron lists such instances
+  under "Awaiting human approval" (`four-eyes` or `blocked: <guard message>`), writes nothing and exits 0;
+  a lifecycle guard that blocks the close (e.g. module inactive) is treated the same way
+  (`AutomaticCloseRefusal`). A transition the current status does not allow is an error.
+- The cron pins each instance's organisation in `TenantContext`, so an organisation that turned four-eyes
+  off for `approve` gets its time-based close.
+- Final approval (four-eyes): whoever may approve the final step (its `approver_role` through the role
+  hierarchy, or its `approver_users`) may give it; the transition's own `roles` are not re-checked. The
+  initiator cannot be the sole final approver (unless they are the only eligible approver and document the
+  offline counter-signature in the comment). If the last step is a notification step, the approver of the
+  preceding step grants the final approval.
 
 ```bash
-# Via database
-SELECT * FROM workflow_instances WHERE entity_type = 'DataBreach' AND entity_id = 123;
-SELECT approval_history FROM workflow_instances WHERE id = <workflow_instance_id>;
-```
-
-Or view in UI:
-- Navigate to Workflows → Active Workflows
-- Click on workflow instance
-- View Activity Log
-
-You should see:
-```
-✓ Step 1: Initial Assessment (DPO) - Auto-approved by John Doe
-  Comment: Step automatically approved based on field completion
-  Timestamp: 2025-11-29 10:30:00
-```
-
-## Troubleshooting
-
-### Workflow Not Auto-Progressing
-
-**Check 1**: Verify workflow instance exists and is active
-```bash
-php bin/console doctrine:query:sql "SELECT * FROM workflow_instances WHERE entity_type = 'DataBreach' AND status = 'in_progress'"
-```
-
-**Check 2**: Verify step has auto-progression metadata
-```bash
-php bin/console doctrine:query:sql "SELECT id, name, metadata FROM workflow_steps WHERE workflow_id = <workflow_id>"
-```
-
-**Check 3**: Check application logs
-```bash
-tail -f var/log/dev.log | grep "Workflow auto-progressed"
-```
-
-**Check 4**: Verify all required fields are filled
-- Check entity in database
-- Ensure fields are not NULL, empty string, or empty array
-
-**Check 5**: Verify user has permission to trigger auto-progression
-- Auto-progression uses the updating user's context
-- User must have permission to save the entity
-
-### Common Issues
-
-**Issue**: Step auto-approves but workflow doesn't move to next step
-- **Cause**: Next step is notification type and also auto-progresses
-- **Solution**: Check next step's metadata - this is expected behavior for consecutive notification steps
-
-**Issue**: Condition not evaluating correctly
-- **Cause**: Field type mismatch (string vs. number, etc.)
-- **Solution**: Ensure condition values match field types. Use quotes for strings: `status = 'closed'`
-
-**Issue**: Auto-progression creates duplicate approvals
-- **Cause**: Service called multiple times in same request
-- **Solution**: Ensure flush() happens only once per request
-
-## Advanced Features (✅ IMPLEMENTED)
-
-### 1. Advanced Conditions with AND/OR Logic ✅
-
-**Status**: ✅ IMPLEMENTED
-
-Support for complex boolean logic with AND/OR operators:
-
-```json
-{
-  "autoProgressConditions": {
-    "type": "field_completion",
-    "entity": "DataBreach",
-    "fields": ["severity", "affectedDataSubjectsCount"],
-    "condition": "(severity >= high AND affectedDataSubjectsCount > 100) OR notificationRequired = true"
-  }
-}
-```
-
-**How it works**:
-- Supports nested AND/OR expressions
-- Parentheses for grouping
-- Standard precedence: AND before OR
-- All simple operators: `>=`, `<=`, `>`, `<`, `=`, `!=`
-
-**Examples**:
-
-```json
-// Complex risk assessment
-{
-  "condition": "(severity = critical OR (severity = high AND impact > 50000)) AND status != resolved"
-}
-
-// Multi-factor data breach assessment
-{
-  "condition": "(dataTypes contains sensitive AND affectedCount > 1000) OR regulatoryRequirement = true"
-}
-
-// Time-sensitive incident
-{
-  "condition": "severity >= high AND detectedWithin < 1 OR businessCritical = true"
-}
-```
-
-### 2. Time-Based Auto-Progression ✅
-
-**Status**: ✅ IMPLEMENTED
-
-Workflows can auto-progress after a time delay:
-
-```json
-{
-  "autoProgressConditions": {
-    "type": "time_based",
-    "delay": "24 hours"
-  }
-}
-```
-
-**Rules**:
-- The delay counts from the moment the step became active (approval of the
-  previous step, or the workflow start for the first step).
-- The step is approved through `WorkflowService` with the workflow initiator
-  as acting user; the approval history records `auto_approved` with
-  `trigger: time_based`.
-- **Automatic approvals never satisfy four-eyes.** The cron, the
-  field-completion auto-progression, the `FieldCompletionAutoTransition`
-  listener and the `WorkflowAutoProgressionBridge` (approved chain → parent
-  entity transition) act as automatic actors (`automatic: true` on
-  `LifecycleService::transition()`); `FourEyesValidator` refuses every
-  four-eyes transition for them (reason code `automatic_actor`) — the
-  single-approver escape included. A time-based step whose approval would
-  close the workflow (it is the last step, or only notification steps
-  follow) therefore stays pending for a human approver. The cron lists such
-  instances under "Awaiting human approval" as a notice (with the cause:
-  `four-eyes` or `blocked: <guard message>`), writes nothing and still exits
-  0; only real failures are errors. The cron pins each instance's
-  organisation in `TenantContext` before processing it, so an organisation
-  that turned four-eyes off for `approve` gets its time-based close; if a
-  lifecycle guard still blocks the close (e.g. the module is inactive), one
-  rule, `AutomaticCloseRefusal`, treats it like four-eyes: "waits for a human
-  approver". A transition the current status does not allow stays an error.
-- Final approval (four-eyes): whoever may approve the final step (its
-  `approver_role`, resolved through the role hierarchy, or its
-  `approver_users`) may give it — the transition's own `roles` are not
-  re-checked for that approver. The workflow initiator cannot be the sole
-  final approver (unless they are the only eligible approver and document
-  the offline counter-signature in the comment). A refused final approval
-  shows an error message and changes nothing; a field-completion
-  auto-approval that would close the workflow stops at the final step and
-  waits for a manual approval, whoever saved the fields. If the last step is a
-  notification step, the approver of the preceding step grants the final
-  approval.
-- There is no extra field condition; use `field_completion` steps for
-  data-dependent progression.
-- Approver roles are real roles (Gate 82): every `approver_role`, transition
-  `roles` entry and `escalation_role` exists in `security.yaml`, and no
-  approval step is open to `ROLE_USER`. Since 2026-11 the formerly invented
-  roles map to ISB (security analysis/investigation), RISK_MANAGER (risk
-  owner steps), BCM_OFFICER (crisis), DPO (data-subject requests), MANAGER
-  (implementation, root cause, revision drafts) and TOP_MGMT (budget and
-  executive approval); migration `Version20261107110000` rewrites existing
-  `workflow_steps` rows. The owner of a record is a relation, not a role.
-
-**Setup**:
-
-1. **Add to workflow step metadata** when creating workflow
-2. **Scheduler** runs `app:process-timed-workflows` every 15 minutes (`src/Schedule.php`);
-   the one scheduler cron line from `docs/user-guide/HOSTING_WORKER.md` is enough:
-
-```bash
-# Test it first
 php bin/console app:process-timed-workflows --dry-run
 ```
 
-**Supported time units**:
-- `X minutes` (e.g., "30 minutes")
-- `X hours` (e.g., "24 hours")
-- `X days` (e.g., "7 days")
+The same command also retries and ticks the SLA clocks (missed statutory deadlines). The one scheduler cron
+line from [HOSTING_WORKER.md](user-guide/HOSTING_WORKER.md) is enough.
 
-**Use Case — Cooling Period**:
-```json
-{
-  "type": "time_based",
-  "delay": "7 days"
-}
-```
-*Mandatory 7-day waiting period before the next step opens*
+## Auto-reactions
 
-## Auto-Reaction Listeners (v3.5)
+Independent of workflows, five listeners create follow-up records; each can be switched off per
+organisation under Admin > Einstellungen (category `auto_reactions`, `AutoReactionService`):
 
-Five dedicated event listeners trigger automatic side-effects when specific
-workflow steps complete. These listeners run *after* the step is approved
-(manual or auto) and create linked entities or notifications.
+| Trigger | Result |
+|---|---|
+| Processing activity with high-risk indicators and no DPIA | draft DPIA (`AutoReactionDpiaSuggestListener`) |
+| New user | assignment of mandatory trainings for the user's roles (`AutoReactionTrainingAssignListener`) |
+| Vulnerability with CVSS ≥ 7.0 | risk suggestion in the suggestion queue (`RiskFromVulnerabilityKind`) |
+| Audit finding major/critical/high; incident high/critical with root cause | corrective action, due in 30 days (`AutoReactionCorrectiveActionListener`, `AutoReactionCorrectiveActionListenerForIncident`) |
+| Document approved with "requires acknowledgement" | pending policy acknowledgement for every active user of the organisation (`AutoReactionAcknowledgementCampaignListener`) |
 
-### 1. DPIA Auto-Reaction
+A corrective action confirmed as ineffective creates a follow-up action
+(`AutoReactionRecapaOnIneffectiveListener`).
 
-**Trigger:** Risk workflow step "DPIA-Erforderlichkeit geprueft" approved
-with `dpiaRequired = true`.
+## Troubleshooting
 
-**Effect:** Creates a new `DPIA` entity linked to the originating Risk,
-pre-fills `processingActivity` from the Risk, sets status to `draft`.
-Notifies the DPO via the notification system.
-
-### 2. Training Auto-Reaction
-
-**Trigger:** Incident workflow "Post-Incident-Review" step approved.
-
-**Effect:** Creates a `TrainingNeed` entry linked to the Incident. The
-training need captures the incident category as training topic and assigns
-the affected team. Appears in the Training-Due bucket of "Mein Tag".
-
-### 3. Risk-Skeleton Auto-Reaction
-
-**Trigger:** Data-Breach workflow "Technical Assessment (CISO)" step approved.
-
-**Effect:** Creates a pre-filled Risk entity ("Informationssicherheitsrisiko:
-Datenpanne [Breach-ID]") with severity derived from the breach severity,
-treatment status `open`, linked back to the DataBreach entity via a relation.
-
-### 4. Corrective-Action (CA) Auto-Reaction
-
-**Trigger:** Any workflow step with `metadata.createCorrectiveAction = true`
-approved with a non-conformity comment.
-
-**Effect:** Creates a `CorrectiveAction` entity with the step comment as
-description, assigns it to the step approver, sets a due date of `+30 days`.
-
-### 5. Acknowledgement Auto-Reaction
-
-**Trigger:** Document workflow "Policy Published" step approved.
-
-**Effect:** Sends Policy-Acknowledgement requests to all users in the
-configured target groups. Acknowledgement requests appear in the
-"Policy-Acknowledgements" bucket of "Mein Tag".
-
----
-
-## Tenant-Scope-Guard (V3 W2-C2)
-
-Auto-progression checks are tenant-scoped. Before evaluating conditions,
-`FieldCompletionAutoTransition` verifies that:
-
-1. The workflow instance belongs to the current tenant
-   (`$instance->getTenantId() === $tenantContext->getCurrentTenantId()`).
-2. The entity being updated belongs to the same tenant.
-
-If either check fails, the auto-progression is silently skipped and a
-warning is written to the application log. This prevents cross-tenant
-workflow manipulation via crafted entity updates.
-
----
-
-## Future Enhancements
-
-### Planned Features
-
-1. **Field Change Detection** - Only auto-progress when specific fields change
-   ```json
-   {
-     "type": "field_change",
-     "fields": ["severity"],
-     "from": "low",
-     "to": "high"
-   }
-   ```
-
-2. **External System Integration** - Auto-progress based on external events
-   ```json
-   {
-     "type": "external_webhook",
-     "url": "https://api.example.com/breach-confirmed",
-     "expectedResponse": {"status": "confirmed"}
-   }
-   ```
-
-## References
-
-- [config/workflows/regulatory/](../config/workflows/regulatory/) - Regulatory workflow definitions (steps and SLAs)
-- [ISO 27001:2022](https://www.iso.org/standard/27001) - Information security management
-- [GDPR Art. 33/34](https://gdpr-info.eu/) - Data breach notification requirements
-- [BSI IT-Grundschutz](https://www.bsi.bund.de/) - German IT security baseline
-
-## Support
-
-For questions or issues with the workflow system:
-1. Check this documentation
-2. Review the YAML definitions in `config/workflows/regulatory/` for regulatory context
-3. Check application logs in `var/log/dev.log`
-4. Review workflow instance approval history in the UI
+- **Status does not change after saving:** check the rule in `lifecycle.yaml` (field names, transition
+  allowed from the current status) and the log (`var/log/*.log`); a four-eyes transition always waits.
+- **Time-based step stays pending:** run `app:process-timed-workflows --dry-run`; "Awaiting human
+  approval" is expected for a closing four-eyes step.
+- Approval history of an instance: Workflows → instance page (`/workflow/instance/{id}`).

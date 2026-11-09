@@ -12,7 +12,7 @@ mit den Modulen `bcm`, `privacy` und `audits`.
 | Merkmal | Bedeutung | Quelle |
 |---|---|---|
 | Größe | Schutzbedarf: höchster Wert aus C, I, A der Assets am Standort (Maximumprinzip) | `Asset.physicalLocation` im Standortbaum |
-| Form + Farbe (Ebene *Restrisiko*) | Kreis = niedrig, Dreieck = mittel, Raute = hoch, Raute mit Ring = kritisch, grauer Kreis = keine Risiken | höchster aktueller Risikowert, Schwellen 6 / 12 / 20 |
+| Form + Farbe (Ebene *Restrisiko*) | Kreis = niedrig, Dreieck = mittel, Raute = hoch, Raute mit Ring = kritisch, grauer Kreis = keine Risiken | höchster aktueller Risikowert, eingestuft nach den Risikokriterien der Organisation (Vorgabe 6 / 12 / 20) |
 | Form + Farbe (Ebene *Prüfungen*) | Kreis = alle erfüllt, Dreieck = 1–2 offen, Raute = ab 3 offen | sechs Prüfungen, siehe unten |
 | Form + Farbe (Ebene *Notfall*, BCM) | Kreis = jeder kritische Prozess hat einen in 12 Monaten getesteten Plan, Dreieck = Plan nur im Entwurf oder ungetestet, Raute = kritischer Prozess ohne Plan, grau = kein kritischer Prozess | Geschäftsprozesse mit Kritikalität hoch/kritisch, deren Assets am Standort stehen, und ihr Notfallplan (ISO 22301 8.4/8.5) |
 | Form + Farbe (Ebene *Audit*) | Kreis = in den letzten 12 Monaten auditiert, Dreieck = innerhalb von 3 Jahren oder ein Audit ist geplant, Raute = seit 3 Jahren kein Audit und keins geplant | internes Audit mit Bereich *Standort* (ISO 27001 9.2) |

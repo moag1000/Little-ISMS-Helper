@@ -18,8 +18,8 @@ not populated this metadata, instead of consuming a default value that
 masks the gap and triggers a finding only after follow-up questions.
 
 These markers carry the `TODO(audit-gap)` tag (distinct from a regular
-`TODO:`) so the planned CI gate `scripts/quality/check_todo_growth.py` can
-whitelist them: the tag signals "intentional output, not technical debt".
+`TODO:`) so a future TODO-growth check can
+whitelist them (no such gate exists yet): the tag signals "intentional output, not technical debt".
 Do not silence or rewrite these markers without first implementing the
 backing data field (e.g. `Tenant.holdingRaci`) and switching the renderer
 to consume it.

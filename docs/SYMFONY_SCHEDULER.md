@@ -1,441 +1,105 @@
-# Symfony Scheduler Integration
+# Symfony Scheduler
 
-## Übersicht
+Alle zeitgesteuerten Aufgaben laufen über den Symfony Scheduler. Es gibt keine
+einzelnen Crontab-Zeilen pro Aufgabe. Einrichtung des Workers (Cron-Zeile, systemd,
+Docker): [user-guide/HOSTING_WORKER.md](user-guide/HOSTING_WORKER.md).
 
-Little ISMS Helper verwendet den Symfony Scheduler für automatisierte, zeitgesteuerte Aufgaben. Dies ersetzt traditionelle Cron-Jobs und bietet bessere Integration, Logging und Verwaltbarkeit.
+## Funktionsweise
 
-## Architektur
+- **Schedule Provider:** `src/Schedule.php` (`#[AsSchedule]`, Name `default`).
+  Stateful über den Symfony-Cache; ein verpasster Lauf wird einmal nachgeholt
+  (`processOnlyLastMissedRun`).
+- **Transport:** `scheduler_default`. Der Scheduler tickt nur, wenn ein Worker ihn
+  abarbeitet:
+  ```bash
+  php bin/console messenger:consume scheduler_default async --time-limit=55
+  ```
+- **Docker:** `supervisord` startet den Prozess `messenger-scheduler`
+  (`messenger:consume scheduler_default scheduler --time-limit=3600 --memory-limit=128M`,
+  Log `/var/log/supervisor/messenger-scheduler.log`).
+- Uhrzeiten gelten in der PHP-Zeitzone des Servers (`date.timezone`).
 
-### Komponenten
-
-1. **Schedule Provider** (`src/Schedule.php`)
-   - Zentrale Konfiguration aller geplanten Aufgaben
-   - Kombiniert Built-in und Datenbank-Tasks
-   - Nutzt Symfony Cache für Stateful Scheduling
-
-2. **Built-in Tasks** (fest codiert)
-   - Session Cleanup (täglich 3:00 Uhr)
-   - Erinnerungen (`app:send-reminders`, alle 15 Minuten: Sammelmail zur Organisations-Uhrzeit, Sofortmeldung bei Stundenfristen)
-   - Weitere Commands aus `Schedule::COMMAND_TASKS` (Backup, Snapshots, Ablauf von Nachweisen, Risiko-Reviews einplanen)
-   - Compliance Reports (montags 6:00 Uhr)
-
-3. **Database Tasks** (dynamisch über UI verwaltbar)
-   - Gespeichert in `scheduled_task` Tabelle
-   - Über `ScheduledTaskService` verwaltbar
-   - Mandantenisoliert
-
-4. **Message Handlers**
-   - `CleanupExpiredSessionsHandler` - Löscht abgelaufene Sessions
-   - `GenerateComplianceReportHandler` - Erstellt wöchentliche Compliance Reports
-   - `ExecuteScheduledTaskHandler` - Führt Datenbank-definierte Tasks aus
-
-### Supervisor Integration
-
-In Docker werden zwei Supervisor-Prozesse gestartet:
-
-1. **messenger-scheduler** - Verarbeitet Scheduler-Messages
-   ```ini
-   command=php /var/www/html/bin/console messenger:consume scheduler -vv
-   ```
-
-2. **scheduler-runner** - Führt den Scheduler aus
-   ```ini
-   command=php /var/www/html/bin/console scheduler:run --verbose
-   ```
-
-## Built-in Scheduled Tasks
-
-### 1. Session Cleanup (`CleanupExpiredSessionsMessage`)
-
-**Schedule:** Täglich um 3:00 Uhr
-**Cron:** `0 3 * * *`
-**Handler:** `CleanupExpiredSessionsHandler`
-
-**Funktion:**
-- Löscht abgelaufene Session-Records aus der Datenbank
-- Reduziert Datenbankgröße
-- Verbessert Performance
-
-**Verwendung:**
-```php
-// Wird automatisch ausgeführt, keine manuelle Interaktion nötig
-```
-
-### 2. Erinnerungen (`app:send-reminders`)
-
-**Schedule:** alle 15 Minuten (`*/15 * * * *`), als Command-Task in `Schedule::COMMAND_TASKS`
-**Compliance:** ISO 27001:2022 Clause 6.1.3.d, 9.2, 9.3, 10.2; NIS-2 Art. 23; DSGVO Art. 33
-
-**Funktion:**
-- Liest alle offenen Pflichten aus den Fristenquellen (`DeadlineSource`, siehe
-  `docs/DEADLINES_AND_RESPONSIBILITY.md`) und stellt sie über den
-  `ResponsibilityResolver` der zuständigen Person zu — dieselbe Liste wie „Mein Tag“.
-- Einmal täglich eine Sammelmail je Person zur Uhrzeit der Organisation
-  (Standard 07:00, Admin → Organisation → Einstellungen → Standards).
-  Jede Person kann sie im Profil abwählen.
-- Stundenfristen (Meldepflichten) gehen sofort raus, sobald sie fällig werden.
-- Jede verschickte Pflicht landet als persönlicher Eintrag in der Glocke;
-  doppelte Mails verhindert die Tabelle `obligation_notice`.
-- `--dry-run` zeigt nur, wer was bekäme; `--digest-now` verschickt die Sammelmail sofort.
-
-### 3. Compliance Report (`GenerateComplianceReportMessage`)
-
-**Schedule:** Montags um 6:00 Uhr
-**Cron:** `0 6 * * 1`
-**Handler:** `GenerateComplianceReportHandler`
-
-**Funktion:**
-- Berechnet Compliance-Statistiken
-- Zählt erfüllte vs. nicht-erfüllte Requirements
-- Loggt Report-Daten (zukünftig: Email-Versand)
-
-## Dynamische Tasks (UI-verwaltbar)
-
-### Entity: `ScheduledTask`
-
-**Felder:**
-- `name` - Task-Name
-- `description` - Beschreibung
-- `cronExpression` - Cron-Format (`0 3 * * *`)
-- `command` - Symfony Console Command (`app:cleanup-temp-files`)
-- `arguments` - Command-Argumente (JSON Array)
-- `enabled` - Aktiviert/Deaktiviert
-- `lastRunAt` - Letzte Ausführung
-- `nextRunAt` - Nächste Ausführung
-- `lastOutput` - Ausgabe der letzten Ausführung
-- `lastStatus` - Status: `success`, `failed`, `running`
-- `tenantId` - Mandanten-ID
-
-### Service: `ScheduledTaskService`
-
-**API:**
-
-```php
-// Task erstellen
-$task = $scheduledTaskService->createTask(
-    name: 'Backup Database',
-    command: 'app:backup-database',
-    cronExpression: '0 2 * * *', // Täglich 2:00 Uhr
-    description: 'Daily database backup',
-    arguments: ['--format=sql']
-);
-
-// Task aktualisieren
-$scheduledTaskService->updateTask(
-    $task,
-    cronExpression: '0 1 * * *' // Neue Zeit: 1:00 Uhr
-);
-
-// Task aktivieren/deaktivieren
-$scheduledTaskService->toggleTask($task, enabled: false);
-
-// Task löschen
-$scheduledTaskService->deleteTask($task);
-
-// Cron-Expression validieren
-$isValid = $scheduledTaskService->validateCronExpression('0 3 * * *');
-
-// Statistiken abrufen
-$stats = $scheduledTaskService->getStatistics();
-// [
-//     'total' => 5,
-//     'enabled' => 3,
-//     'disabled' => 2,
-//     'last_success' => 3,
-//     'last_failed' => 0,
-//     'running' => 0,
-// ]
-```
-
-### Task-Ausführung
-
-Datenbank-Tasks werden via `ExecuteScheduledTaskMessage` ausgeführt:
-
-1. Scheduler erkennt fällige Tasks
-2. Sendet `ExecuteScheduledTaskMessage` mit Task-ID
-3. `ExecuteScheduledTaskHandler` führt Command aus:
-   ```bash
-   php bin/console {command} {arguments}
-   ```
-4. Speichert Ausgabe und Status in DB
-
-**Argument-Filter:** Nur Commands der Whitelist `ALLOWED_COMMANDS` laufen. Aus den
-Argumenten werden der Umgebungsschalter in jeder Schreibweise (`-e`, `-eprod`, `-e prod`,
-`--env`, `--env=prod`, `--env prod` samt Wert) und `--kernel-class…` entfernt; bei
-`doctrine:migrations:migrate` zusätzlich jedes Positionsargument (`first`/`prev`/eine
-Version würde zurückmigrieren). Entfernte Argumente landen als Warnung im Log
-(`ExecuteScheduledTaskHandler::filterArguments()`).
-
-**Timeout:** 1 Stunde (3600 Sekunden)
-
-## Messenger Configuration
-
-**Transport:** `scheduler` (Doctrine-basiert)
-
-```yaml
-# config/packages/messenger.yaml
-framework:
-    messenger:
-        transports:
-            scheduler:
-                dsn: 'doctrine://default?queue_name=scheduler'
-                options:
-                    auto_setup: true
-                retry_strategy:
-                    max_retries: 3
-                    delay: 1000
-                    multiplier: 2
-
-        routing:
-            App\Message\Schedule\CleanupExpiredSessionsMessage: scheduler
-            App\Message\Schedule\GenerateComplianceReportMessage: scheduler
-            App\Message\Schedule\ExecuteScheduledTaskMessage: scheduler
-```
-
-## Cron-Expression Syntax
-
-**Format:** `minute hour day month weekday`
-
-**Beispiele:**
-
-| Expression | Bedeutung |
-|------------|-----------|
-| `0 3 * * *` | Täglich um 3:00 Uhr |
-| `0 8 * * *` | Täglich um 8:00 Uhr |
-| `0 6 * * 1` | Montags um 6:00 Uhr |
-| `*/15 * * * *` | Alle 15 Minuten |
-| `0 2 * * 0` | Sonntags um 2:00 Uhr |
-| `0 1 1 * *` | 1. Tag jedes Monats um 1:00 Uhr |
-| `0 0 * * 1-5` | Montag-Freitag um Mitternacht |
-
-**Online-Tool:** https://crontab.guru/
-
-## Console Commands
-
-### Scheduler ausführen
+Liste der geplanten Aufgaben mit nächstem Lauf:
 
 ```bash
-# Scheduler einmalig ausführen
-php bin/console scheduler:run
-
-# Verbose-Ausgabe
-php bin/console scheduler:run --verbose
-
-# In Docker (via Supervisor automatisch)
-supervisorctl restart scheduler-runner
+php bin/console debug:scheduler
 ```
 
-### Messenger Worker starten
+## Feste Aufgaben
+
+Commands stehen in `Schedule::COMMAND_TASKS`, Messages in `addBuiltInTasks()`.
+
+| Zeit (Cron) | Aufgabe | Zweck |
+|---|---|---|
+| `*/15 * * * *` | `app:process-timed-workflows` | Zeitbasierte Workflow-Weiterschaltung |
+| `*/15 * * * *` | `app:send-reminders` | Erinnerungen: Stundenfristen sofort, Sammelmail zur Organisations-Uhrzeit (Standard 07:00) |
+| `0 * * * *` | `app:process-scheduled-reports` | Fällige geplante Berichte versenden |
+| `45 0 * * *` | `app:compliance:refresh-fulfillments` | Erfüllungsgrade neu ableiten |
+| `0 1 * * *` | `app:kpi-snapshot` | KPI-Snapshot je Organisation |
+| `15 1 * * *` | `app:portfolio:capture-snapshot` | Portfolio-Snapshot |
+| `30 1 * * *` | `app:reuse:capture-snapshot` | Reuse-Trend-Snapshot |
+| `0 2 * * *` | `app:backup:create` | Instanzweites Backup nach `var/backups/` |
+| `30 2 * * *` | `app:backup:prune` | Backups älter als 30 Tage löschen, die letzten 10 bleiben |
+| `45 2 * * *` | `app:audit-log:cleanup` | Audit-Log nach Aufbewahrungsfrist bereinigen |
+| `0 3 * * *` | `app:four-eyes:cleanup-expired` | Abgelaufene Vier-Augen-Anfragen markieren |
+| `0 3 * * *` | `CleanupExpiredSessionsMessage` | Abgelaufene Sessions löschen |
+| `15 3 * * *` | `app:policy-wizard:purge-sandboxes` | Sandbox-Läufe des Policy-Wizards löschen (> 7 Tage) |
+| `10 4 * * *` | `app:uploads:protect` | Nachweisdateien aus `public/uploads/` nach `var/uploads/` verschieben |
+| `0 4 * * 0` | `EnforceRetentionMessage` | Aufbewahrungsrichtlinien durchsetzen (DSGVO Art. 5(1)(e)) |
+| `0 2 * * 0` | `app:tisax:purge-old-ip-addresses` | IP-Adressen alter TISAX-Bestätigungen entfernen |
+| `0 5 * * *` | `app:evidence:expire` | Abgelaufene Nachweise und Zertifikate markieren |
+| `0 5 * * *` | `SyncEuvdFeedMessage` | ENISA-EUVD-Feed abgleichen |
+| `30 5 * * *` | `app:suggestions:generate` | Vorschlags-Warteschlange füllen |
+| `30 5 * * *` | `app:risk:schedule-reviews` | Review-Termine für Risiken ohne Termin setzen |
+| `0 6 * * 1` | `GenerateComplianceReportMessage` | Compliance-Statistik ins Log |
+| `0 7 * * *` | `app:notification:send-digests` | Digest-Mails der Benachrichtigungskanäle |
+
+Jeder Command wird mit `--no-interaction` aufgerufen und begrenzt die
+Organisationen selbst. Für Tests von Hand:
 
 ```bash
-# Scheduler-Messages verarbeiten
-php bin/console messenger:consume scheduler -vv
-
-# Mit Limits
-php bin/console messenger:consume scheduler --time-limit=3600 --memory-limit=128M
-
-# In Docker (via Supervisor automatisch)
-supervisorctl restart messenger-scheduler
+php bin/console app:send-reminders --dry-run      # wer bekäme was
+php bin/console app:send-reminders --digest-now   # Sammelmail sofort
 ```
 
-### Migrations
+`app:send-reminders` ist der einzige Erinnerungsweg (Fristenquellen →
+`ResponsibilityResolver` → Mail + Glocke, Tabelle `obligation_notice` gegen
+Doppelversand). Details: [DEADLINES_AND_RESPONSIBILITY.md](DEADLINES_AND_RESPONSIBILITY.md).
 
-```bash
-# Migration anwenden (für scheduled_task Tabelle)
-php bin/console doctrine:migrations:migrate --no-interaction
-```
+## Aufgaben aus der Datenbank
 
-## Docker Integration
+Zeilen der Tabelle `scheduled_task` mit `enabled = 1` werden beim Aufbau des
+Schedules geladen und über `ExecuteScheduledTaskMessage` ausgeführt
+(`ExecuteScheduledTaskHandler`, Timeout 1 Stunde, Ergebnis in `lastStatus` /
+`lastOutput`). Angelegt werden sie über `App\Service\ScheduledTaskService`
+(`createTask()`, `updateTask()`, `toggleTask()`, `deleteTask()`); eine Admin-Oberfläche
+gibt es nicht.
 
-### Supervisor Configuration
+**Erlaubte Commands:** nur die Whitelist `ExecuteScheduledTaskHandler::ALLOWED_COMMANDS`.
+Aus den Argumenten werden der Umgebungsschalter in jeder Schreibweise (`-e`, `-eprod`,
+`-e prod`, `--env`, `--env=prod`, `--env prod` samt Wert) und `--kernel-class…`
+entfernt; bei `doctrine:migrations:migrate` zusätzlich jedes Positionsargument
+(`first`/`prev`/eine Version würde zurückmigrieren). Entfernte Argumente landen als
+Warnung im Log (`ExecuteScheduledTaskHandler::filterArguments()`).
 
-**File:** `docker/supervisor/supervisord.conf`
+## Neue feste Aufgabe
 
-```ini
-[program:messenger-scheduler]
-command=/bin/sh -c "sleep 10 && php /var/www/html/bin/console messenger:consume scheduler -vv --time-limit=3600 --memory-limit=128M"
-autostart=true
-autorestart=true
-priority=15
-user=www-data
+- Ein Console-Command, der periodisch laufen soll: eine Zeile in
+  `Schedule::COMMAND_TASKS` (`['<cron>', '<command>']`). Der Command scoped die
+  Organisationen selbst.
+- Eine Erinnerung an eine Frist ist **keine** neue Aufgabe, sondern eine
+  `DeadlineSource` (siehe CLAUDE.md).
+- Eigene Message + Handler nur, wenn kein Command passt; dann in `addBuiltInTasks()`
+  per `RecurringMessage::cron()` eintragen.
 
-[program:scheduler-runner]
-command=/bin/sh -c "sleep 15 && php /var/www/html/bin/console scheduler:run --verbose"
-autostart=true
-autorestart=true
-priority=20
-user=www-data
-```
+## Troubleshooting
 
-**Logs:**
-- Messenger: `/var/log/supervisor/messenger-scheduler.log`
-- Scheduler: `/var/log/supervisor/scheduler-runner.log`
+| Problem | Prüfen |
+|---|---|
+| Keine Aufgabe läuft | Läuft ein Worker auf `scheduler_default`? Ampel unter `/admin/queue-status` |
+| Docker: Aufgaben laufen nicht | `docker compose exec app supervisorctl status messenger-scheduler` |
+| Datenbank-Task fehlt | `debug:scheduler`; `enabled`-Flag; Command auf der Whitelist? |
+| Aufgabe läuft doppelt | Alte Einzel-Cron-Zeile für denselben Command noch im Crontab |
 
-### Supervisor Management
-
-```bash
-# Status prüfen
-docker exec isms-app supervisorctl status
-
-# Prozess neu starten
-docker exec isms-app supervisorctl restart messenger-scheduler
-docker exec isms-app supervisorctl restart scheduler-runner
-
-# Logs anzeigen
-docker exec isms-app tail -f /var/log/supervisor/scheduler-runner.log
-```
-
-## Monitoring & Troubleshooting
-
-### Logs überprüfen
-
-```bash
-# Application Logs
-tail -f var/log/dev.log | grep -i schedule
-
-# Supervisor Logs (in Docker)
-docker exec isms-app tail -f /var/log/supervisor/messenger-scheduler.log
-docker exec isms-app tail -f /var/log/supervisor/scheduler-runner.log
-```
-
-### Häufige Probleme
-
-**Problem:** Tasks werden nicht ausgeführt
-
-**Lösung:**
-1. Prüfe Supervisor-Status: `supervisorctl status`
-2. Prüfe Messenger Worker: `messenger-scheduler` läuft?
-3. Prüfe Scheduler Runner: `scheduler-runner` läuft?
-4. Prüfe Logs auf Fehler
-
-**Problem:** "No messages to consume"
-
-**Lösung:**
-- Normal! Scheduler sendet Messages nur zu geplanten Zeiten
-- Prüfe mit `scheduler:run --verbose` ob Tasks erkannt werden
-
-**Problem:** Database-Tasks werden nicht geladen
-
-**Lösung:**
-1. Prüfe Migration: `php bin/console doctrine:migrations:status`
-2. Prüfe Tabelle: `SELECT * FROM scheduled_task;`
-3. Prüfe `enabled` Flag
-
-## Best Practices
-
-### 1. Task-Design
-
-- **Idempotent:** Tasks sollten mehrfach ausführbar sein ohne Probleme
-- **Timeout:** Lange laufende Tasks in Chunks aufteilen
-- **Fehlerbehandlung:** Exceptions loggen, aber nicht komplett abbrechen
-
-### 2. Cron-Expressions
-
-- **Zeitzone beachten:** Server-Zeitzone verwenden
-- **Überlappungen vermeiden:** Tasks nicht zu eng takten
-- **Wartungsfenster nutzen:** Intensive Tasks nachts ausführen
-
-### 3. Monitoring
-
-- **Logs prüfen:** Regelmäßig Supervisor-Logs checken
-- **Status tracken:** `lastStatus` und `lastRunAt` überwachen
-- **Alerts einrichten:** Bei wiederholten Fehlern benachrichtigen
-
-### 4. Performance
-
-- **Memory Limits:** Worker mit `--memory-limit` begrenzen
-- **Time Limits:** Worker mit `--time-limit` neu starten
-- **Queue überwachen:** Messenger-Queue nicht überlaufen lassen
-
-## Erweiterungen
-
-### Neuen Built-in Task hinzufügen
-
-1. **Message erstellen:**
-   ```php
-   // src/Message/Schedule/MyTaskMessage.php
-   namespace App\Message\Schedule;
-
-   class MyTaskMessage
-   {
-       public function __construct(
-           private readonly \DateTimeImmutable $scheduledAt = new \DateTimeImmutable()
-       ) {}
-   }
-   ```
-
-2. **Handler erstellen:**
-   ```php
-   // src/MessageHandler/Schedule/MyTaskHandler.php
-   namespace App\MessageHandler\Schedule;
-
-   use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-
-   #[AsMessageHandler]
-   class MyTaskHandler
-   {
-       public function __invoke(MyTaskMessage $message): void
-       {
-           // Task-Logik hier
-       }
-   }
-   ```
-
-3. **Zu Schedule hinzufügen:**
-   ```php
-   // src/Schedule.php
-   private function addBuiltInTasks(SymfonySchedule $schedule): void
-   {
-       // ... existing tasks ...
-
-       $schedule->add(
-           RecurringMessage::cron('0 9 * * *', new MyTaskMessage())
-       );
-   }
-   ```
-
-4. **Routing konfigurieren:**
-   ```yaml
-   # config/packages/messenger.yaml
-   routing:
-       App\Message\Schedule\MyTaskMessage: scheduler
-   ```
-
-### UI für Task-Management (zukünftig)
-
-**Controller:** `ScheduledTaskController`
-**Routes:**
-- `GET /admin/scheduled-tasks` - Liste aller Tasks
-- `POST /admin/scheduled-tasks` - Task erstellen
-- `PUT /admin/scheduled-tasks/{id}` - Task bearbeiten
-- `DELETE /admin/scheduled-tasks/{id}` - Task löschen
-- `POST /admin/scheduled-tasks/{id}/toggle` - Task aktivieren/deaktivieren
-
-**Permissions:**
-- `scheduled_task.view`
-- `scheduled_task.create`
-- `scheduled_task.edit`
-- `scheduled_task.delete`
-
-## Compliance
-
-### ISO 27001:2022 Bezüge
-
-- **Clause 6.1.3.d:** Periodic Risk Review - `app:risk:schedule-reviews` + Erinnerungen über `app:send-reminders`
-- **Clause 9.3:** Management Review - `GenerateComplianceReportHandler`
-- **Clause 7.5.3:** Control of documented information - Automatische Reports
-
-### Audit Trail
-
-Alle Task-Ausführungen werden geloggt:
-- Zeitstempel (`lastRunAt`)
-- Status (`lastStatus`)
-- Ausgabe (`lastOutput`)
-- Via AuditLogger (bei kritischen Tasks)
-
-## Referenzen
-
-- [Symfony Scheduler Documentation](https://symfony.com/doc/current/scheduler.html)
-- [Symfony Messenger Documentation](https://symfony.com/doc/current/messenger.html)
-- [Crontab Guru](https://crontab.guru/) - Cron Expression Generator
-- [ISO 27001:2022 Standard](https://www.iso.org/standard/27001)
+Logs: `var/log/prod.log`, in Docker zusätzlich
+`/var/log/supervisor/messenger-scheduler*.log`.

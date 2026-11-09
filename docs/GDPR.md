@@ -1,6 +1,6 @@
 # DSGVO / GDPR — Compliance-Dokumentation
 
-Stand: v3.5 (2026-05). Gilt fuer das Modul `privacy` (Aktivierungskey in `config/modules.yaml`).
+Gilt fuer das Modul `privacy` (Aktivierungskey in `config/modules.yaml`).
 
 ---
 
@@ -11,8 +11,8 @@ prozessual in einer ISMS-Umgebung ab. Alle Entitaeten sind tenant-isoliert (`ten
 Sicherheitsrelevante Ereignisse werden ueber den `AuditLogger` protokolliert
 (ISO 27001:2022 Kl. 7.5.3).
 
-Aktivierungsvoraussetzung: Tenant-Modul `privacy` muss in
-`config/active_modules.yaml` aktiviert sein. Alle GDPR-Felder und -Routen sind
+Aktivierungsvoraussetzung: Modul `privacy` ist für die Organisation aktiv
+(Admin → Module). Alle GDPR-Felder und -Routen sind
 hinter `is_module_active('privacy')` gesperrt.
 
 ---
@@ -274,7 +274,7 @@ Controller-Pattern:
 if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 ```
 
-Compliance-Wizard-Route: `/{locale}/compliance/wizard/gdpr`
+Compliance-Wizard-Route: `/{locale}/compliance-wizard/gdpr`
 
 ---
 

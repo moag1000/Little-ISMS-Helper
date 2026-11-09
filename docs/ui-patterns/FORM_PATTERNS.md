@@ -1,5 +1,10 @@
 # Form Layout Patterns - Little ISMS Helper
 
+> **Outdated markup (2025-11).** The Bootstrap examples here (`btn btn-*`, `badge bg-*`, `alert alert-*`, Bootstrap modals)
+> fail CI Gate 62. Current components: Aurora v4 macros in `templates/_components/_fa_*.html.twig`, listed in `CLAUDE.md`
+> ("Aurora v4 Components"), live preview `/dev/design-system`, mapping in
+> [`AURORA_v4_FULL_MIGRATION_PLAN.md`](../design_system/AURORA_v4_FULL_MIGRATION_PLAN.md). The accessibility rules still apply.
+
 **Version:** 1.0
 **Date:** 2025-11-23
 **Purpose:** Standardized form layouts and patterns

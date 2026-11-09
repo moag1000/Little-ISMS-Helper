@@ -1,10 +1,10 @@
 # 04 — Hot Files (God-Classes and Most-Edited)
 
-The following files are the largest in the codebase as tracked by
-`scripts/quality/check_god_class_size.py`. Each entry in
-`scripts/quality/baselines/god_class_size.txt` is a CI baseline: the file must
-not grow beyond its recorded LOC without a deliberate baseline bump (which
-requires a justification comment in the PR).
+The following files are among the largest in the codebase as tracked by
+`scripts/quality/check_god_class_size.py` (Gate 25). Each entry in
+`scripts/quality/baselines/god_class_size.txt` is a one-way ratchet: the file may
+only shrink; CI rejects a raised or added entry. Current sizes: `wc -l <file>`;
+the full list is the baseline file itself.
 
 Do not add new features to any file on this list without first discussing a
 split strategy.
@@ -13,7 +13,7 @@ split strategy.
 
 ## God-Class Registry
 
-### 1. `src/Controller/DeploymentWizardController.php` — 2694 LOC
+### 1. `src/Controller/DeploymentWizardController.php`
 
 - **What it does:** Drives the multi-step initial deployment wizard that
   configures the database, admin user, tenant, module selection, and
@@ -27,35 +27,7 @@ split strategy.
   requires a step-state migration strategy. Do not add new wizard steps here —
   raise an issue first.
 
-### 2. `src/Controller/ComplianceController.php` — 2629 LOC
-
-- **What it does:** Manages the full compliance framework lifecycle: framework
-  activation, requirement listing, gap analysis, evidence linking, mapping
-  import, compliance scoring, and SoA generation — for every supported
-  framework (ISO 27001, NIS2, DORA, BSI, TISAX, SOC2, GDPR, etc.).
-- **Why it is large:** Each compliance standard has subtly different field sets
-  and workflows but shares the same controller routes; the controller branches
-  on `$framework->getType()` rather than using sub-controllers.
-- **Refactor caution:** Framework-specific logic is deeply entangled. A per-
-  framework sub-controller split is the long-term plan (tracked in backlog).
-  Before touching this file, run `php bin/phpunit tests/Controller/Compliance*`
-  to establish a passing baseline.
-
-### 3. `src/Service/RestoreService.php` — 2285 LOC
-
-- **What it does:** Deserialises a backup archive (JSON + attachments) and
-  restores all entities in dependency-safe insertion order, handling
-  conflict resolution, tenant re-mapping, and orphan detection.
-- **Why it is large:** Each entity type requires a custom restoration strategy
-  (upsert vs replace, FK order, unique-field deduplication). Foreign-key
-  ordering is hand-coded for MySQL's FK constraint enforcement.
-- **Refactor caution:** The insertion order at lines 400-600 is critical — any
-  reordering causes FK constraint violations. If you add a new entity that has
-  FKs to existing entities, find the correct insertion slot and add a
-  `// FK: EntityA → EntityB` comment. Run the full restore integration test
-  after any change.
-
-### 4. `src/Service/PolicyWizard/DocumentGenerator.php` — 1869 LOC
+### 2. `src/Service/PolicyWizard/DocumentGenerator.php`
 
 - **What it does:** Generates Word/PDF policy documents from Twig templates,
   injecting tenant variables, control references, approval signatures, and
@@ -68,7 +40,7 @@ split strategy.
   generation silently. New policy types must follow the naming contract;
   document it in the method docblock.
 
-### 5. `src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php` — 1837 LOC
+### 3. `src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php`
 
 - **What it does:** Provides the category tree and requirement list for all EU
   regulatory frameworks (NIS2, DORA, GDPR, eIDAS) used in the compliance
@@ -80,7 +52,7 @@ split strategy.
   and a version-aware loader. Do not inline more frameworks here — create a
   new `CategoryProvider` implementation and register it as a tagged service.
 
-### 6. `src/Service/DashboardStatisticsService.php` — 1808 LOC
+### 4. `src/Service/DashboardStatisticsService.php`
 
 - **What it does:** Aggregates KPIs for all persona dashboards (CISO, DPO,
   Risk Manager, Compliance Manager, ISB, BCM Officer) plus the main dashboard.
@@ -91,20 +63,10 @@ split strategy.
 - **Refactor caution:** Query performance is highly sensitive. Before changing
   a DQL query, check `EXPLAIN` output on a dataset with 1000+ entities. All
   queries must filter by `tenant_id` — missing this filter is a security defect.
+  Dashboards read management KPIs only through `Kpi\KpiCatalog` (Gate 74), not
+  `getManagementKPIs()` directly.
 
-### 7. `src/Service/DataIntegrityService.php` — 1687 LOC
-
-- **What it does:** Detects and repairs data integrity issues: orphaned records,
-  tenant mismatches, duplicate entities, missing required fields, and FK
-  violations. Feeds the `/quick-fix` operator UI.
-- **Why it is large:** Each entity needs individual repair logic;
-  the service also generates a structured repair report with severity levels.
-- **Refactor caution:** Repair operations are destructive. New repair methods
-  must be non-destructive by default (dry-run first) and must log every
-  change via `AuditLogger`. The god-class baseline is currently 1863 — CI will
-  fail if you push this above that without bumping the baseline.
-
-### 8. `src/Controller/RiskController.php` — 1610 LOC
+### 5. `src/Controller/RiskController.php`
 
 - **What it does:** Full CRUD for risks including: risk matrix, treatment plan,
   approval workflow, bulk operations, risk appetite configuration, risk
@@ -115,7 +77,7 @@ split strategy.
   `WorkflowService` at specific method call sites. Do not move or rename these
   methods without updating the regulatory workflow YAML references.
 
-### 9. `src/Service/Export/CertificationBundleExporter.php` — 1586 LOC
+### 6. `src/Service/Export/CertificationBundleExporter.php`
 
 - **What it does:** Assembles the certification bundle export (ZIP archive
   containing all SoA evidence, audit records, policy documents, and gap
@@ -126,7 +88,7 @@ split strategy.
   `fastcgi_finish_request()`. It must not depend on session or request-bound
   services. Pass everything via `$jobArgs`.
 
-### 10. `src/Service/Search/SearchService.php` — 1410 LOC
+### 7. `src/Service/Search/SearchService.php`
 
 - **What it does:** Full-text search across the searchable entity types with faceted
   filtering, relevance scoring, tenant isolation, module-gating per entity
@@ -152,7 +114,7 @@ feature PR:
 | `config/services.yaml` | New tagged services, parameter bindings |
 | `translations/messages.de.yaml` | Common cross-domain translation keys |
 | `templates/base.html.twig` | Global layout changes, new Stimulus wiring |
-| `src/Service/DashboardStatisticsService.php` | New KPI per feature |
+| `src/Service/Kpi/KpiCatalog.php` | New management KPI per feature (never via `DashboardStatisticsService` directly, Gate 74) |
 | `src/Security/Voter/EntityVoter.php` | New entity types needing generic vote |
 
 ---
@@ -160,10 +122,11 @@ feature PR:
 ## Checking the Baseline Locally
 
 ```bash
-python3 scripts/quality/check_god_class_size.py
+python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt \
+    --ratchet-ref origin/main --strict-shrink
 ```
 
-Output format: `PASS` or `FAIL <file>:<LOC> exceeds baseline <baseline>`.
-To update a baseline after a justified growth, edit the corresponding line in
-`scripts/quality/baselines/god_class_size.txt` and include a reason comment
-in your PR description.
+A file that would grow past its entry gets a cohesive service or trait extracted instead. After
+shrinking a file, lower its entry with
+`python3 scripts/quality/check_god_class_size.py --write-baseline scripts/quality/baselines/god_class_size.txt`.
+Details: `scripts/README.md` (Gate 25).

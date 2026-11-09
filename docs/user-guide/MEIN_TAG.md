@@ -9,8 +9,13 @@ entschieden; die Seite muss dafür nicht verlassen werden.
 | Rolle | Startseite |
 |---|---|
 | Normale Nutzer (z. B. Risk Owner, Fachbereich), Auditor | Mein Tag |
-| Manager und alle Persona-Rollen (CISO, ISB, DSB, Risk-, Compliance-, BCM-Manager), Admin | Dashboard |
-| Konzern-Rollen (Group CISO, Konzern-Auditor) | Dashboard |
+| Persona-Rollen (CISO, ISB, DSB, Risk-, Compliance-, BCM-Manager) | eigenes Persona-Dashboard (`/dashboards/<persona>`; ohne das Modul des Dashboards das Haupt-Dashboard) |
+| Leitung (`ROLE_TOP_MGMT`) | Leitungs-Dashboard (`/dashboards/board`) |
+| Konzern-Auditor | Auditor-Dashboard |
+| Manager, Admin, Group CISO | Dashboard |
+
+Welche Persona jemand ist, entscheidet `App\Security\Persona\PersonaResolver`, siehe
+[PERSONA_DASHBOARDS.md](PERSONA_DASHBOARDS.md).
 
 Eine vor dem Login aufgerufene Adresse (z. B. der Link aus einer Freigabe-Mail) hat
 immer Vorrang. Für alle Rollen steht "Mein Tag" oben in der Seitenleiste, mit Zähler.
@@ -37,6 +42,7 @@ Freigaben und Vier-Augen-Anfragen sind aufgeklappt, alle anderen zeigen nur den 
 | Leitungsentscheidungen vorbereiten | Für den ISB: Billigungen der Leitung, die fehlen oder in 60 Tagen enden (Leitlinie, Risikokriterien, SoA, Ziele, Ressourcen, NIS-2-Maßnahmen); der Link öffnet die Vorlage |
 | Fristen aus Datensätzen | Einwilligungen laufen ab (DSB), Zugang einer Person endet (Admins, die Person selbst informiert), Patch-Frist, Lieferantenvertrag endet (90 Tage), Krisenstab-Training, Team läuft aus, TISAX-Prototypenschutz, eigene Mappings, TLPT, Exit-Plan-Test (DORA), Maßnahmen mit Fälligkeit, angekündigte Löschungen nach Aufbewahrungsfrist (14 Tage vorher) |
 | Alva-Empfehlungen | Alvas Hinweise der Priorität 1; die übrigen stehen im Alva-Posteingang |
+| Erfüllung — Prüfung fällig | Anforderungen, deren regelmäßige Erfüllungsprüfung in 30 Tagen fällig ist (ISO 27001 9.1), bei der verantwortlichen Person, sonst Compliance-Manager/ISB; „Prüfung bestätigen“ auf der Anforderung, siehe [ERFUELLUNG_AUS_DATEN.md](ERFUELLUNG_AUS_DATEN.md) |
 | Policy-Bestätigungen, Audit-Findings, Betroffenenanfragen, Korrekturmaßnahmen, Risiko-Akzeptanzen und -Reviews, Dokument-Reviews und -Freigaben, Nachweis-Reverifizierung, Wirksamkeitsprüfungen, Lieferanten-Reassessments, DSFA- und BC-Plan-Reviews, Schulungen, Vorfälle, Datenpannen in Bearbeitung, kritische Schwachstellen, Audit-Checklisten, Change Requests, Management-Reviews, gestoppte Assessments, kritische Framework-Lücken | jeweils die mir zugewiesenen bzw. fälligen Punkte; Module ohne Aktivierung liefern nichts |
 
 Audit-Findings erscheinen bei der zugewiesenen Person, Dokument-Reviews beim
@@ -50,6 +56,10 @@ die Leitung.
 Welche Fristtypen es gibt, mit Norm, Datumsfeld, Vorlauf und wer handelt, zeigt
 **Admin > Benachrichtigungen > Fristtypen** (nur lesen). Die meisten sind Einträge in
 `config/deadline_types.yaml`; ein neuer Fristtyp dieser Art braucht keinen Code.
+
+Dieselben Punkte kommen einmal täglich als Sammelmail, zur Stunde der Organisation
+(Vorgabe 07:00); jede Person kann sie im Profil abschalten. Pflichten mit Stundenfrist
+kommen sofort. Technik: [DEADLINES_AND_RESPONSIBILITY.md](../DEADLINES_AND_RESPONSIBILITY.md#reminders-appservicereminderobligationreminderservice).
 
 Freigaben tragen den Namen des Datensatzes ("Risiko: Kundendaten Online-Shop"), der
 Workflow und der aktuelle Schritt stehen darunter.
@@ -117,11 +127,10 @@ Bildschirme ausgelegt (bis 575 px Breite):
 - Alle Tippziele sind mindestens 44 px groß. Das Wischen vom linken Rand bleibt die
   Zurück-Geste von Safari und öffnet das Menü nicht.
 
-Andere Seiten (Listen, Tabellen) scrollen auf dem Smartphone weiterhin seitlich; eine
-eigene Kartenansicht dafür ist bewusst nicht vorgesehen.
+Andere Seiten (Listen, Tabellen) scrollen auf dem Smartphone seitlich; eine eigene
+Kartenansicht dafür ist nicht vorgesehen.
 
-Die frühere Seite "Ausstehende Workflows" (`/workflow/pending`) leitet auf "Mein Tag"
-um. Vier-Augen- und Policy-Posteingang bleiben auf Dichte "Experte" erreichbar.
+Die Adresse `/workflow/pending` leitet auf "Mein Tag" um. Vier-Augen- und Policy-Posteingang bleiben auf Dichte "Experte" erreichbar.
 
 ## Fällige Reviews gesammelt bestätigen
 

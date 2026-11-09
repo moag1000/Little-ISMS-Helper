@@ -21,7 +21,7 @@ Die erste Quelle mit Daten gilt:
 - Bei mehreren Mappings gilt das beste. Mappings anderer Organisationen zählen nie.
 - Datensätze: Jede Wizard-Prüfung nennt ihre Klausel („7.2“) oder ihren Artikel („21(2)(a)“). Sie gilt für die Anforderung mit dieser Nummer und, ab zwei Ebenen, für deren Unterpunkte („9.2“ gilt für 9.2.1 und 9.2.2). Anforderungs-IDs in Artikelschreibweise („Art.21.2.a“, „NIS2-ART21-A“) zählen wie ihre Nummer. Zählt ein Katalog seine Zeilen anders als der Artikel (thematischer NIS-2-Katalog: „NIS2-23.1“ ist die Frühwarnung nach Art. 23 (4)(a); thematischer DORA-Katalog „DORA-x.y“), nennt die Prüfung diese Zeilen zusätzlich in `requirements`. Ein Test prüft, dass jede Prüfung mit Klausel oder Artikel mindestens eine Anforderung des geladenen Katalogs trifft, und dass jeder Prüftyp einen Handler hat. Mehrere Prüfungen werden gemittelt. Manuelle Prüfungen, Prüfungen nicht aktiver Module und leere Module zählen nicht: Ein leeres Modul beweist nichts, die Anforderung bleibt dann bei der Bewertung von Hand.
 - Stehen hinter einer Anforderung Controls **und** Datensätze, zählen beide: der Mittelwert aus beiden, Quelle „Aus Controls und Datensätzen“. Beispiele: NIS-2 Art. 20 (1) aus den Controls 5.1/5.3 und der Billigung durch die Leitung, A.6.3 aus dem Control und den abgeschlossenen Schulungsteilnahmen, NIS-2 Art. 21 (2)(b) aus den Controls und den Vorfällen. Prüfungen, die nur Controls zählen, fallen dann weg, damit nichts doppelt zählt.
-- Ohne Daten bleibt es bei der Bewertung von Hand wie bisher (Schieberegler auf der Anforderung).
+- Ohne Daten bleibt es bei der Bewertung von Hand (Schieberegler auf der Anforderung).
 
 ### Das Audit-Urteil deckelt
 
@@ -42,7 +42,7 @@ ergänzt **„Aus dem Scope ergänzen“** neue Anforderungen; vorhandene Urteil
 
 | Datensatz | Prüfung | Klauseln |
 |---|---|---|
-| Register (Compliance > Register) | Einträge vorhanden und nicht überfällig zur Prüfung | ISO 27001 4.1 (Themen), 4.2 (rechtliche Anforderungen), 4.3 (Schnittstellen), 5.3 (Rollen), 6.1.1 (Chancen), 7.2 (Kompetenzen), 7.4 (Kommunikation), 10.1 (Verbesserungen; offene Vorschläge aus Bewertung, Audit und Erkenntnissen zählen als fehlend), A.8.16 (überwachte Quellen) |
+| Register (ISMS > Register, siehe [REGISTER.md](REGISTER.md)) | Einträge vorhanden und nicht überfällig zur Prüfung | ISO 27001 4.1 (Themen), 4.2 (rechtliche Anforderungen), 4.3 (Schnittstellen), 5.3 (Rollen), 6.1.1 (Chancen), 7.2 (Kompetenzen), 7.4 (Kommunikation), 10.1 (Verbesserungen; offene Vorschläge aus Bewertung, Audit und Erkenntnissen zählen als fehlend), A.8.16 (überwachte Quellen) |
 | Rollenregister | jede vergebene Persona-Rolle (ISB, DSB, Leitung …) steht im Register; nicht übernommene Vorschläge zählen als fehlend | ISO 27001 5.3 |
 | Leitungsentscheidungen | Billigung in Kraft 100 %, vorgelegt 50 %, abgelaufen 25 % | ISO 27001 5.1 (Leitlinie, Ressourcen, Ziele), 5.2, 6.1.2 (Risikokriterien), 6.1.3 (SoA), 6.2, 7.1, 9.3.3; NIS-2 Art. 20 (1); DORA Art. 5 (2), 6 (1) (IKT-Risikomanagementrahmen), 6 (8) (Resilienzstrategie), 28 (2) (Drittparteienstrategie) |
 | Fristen (Mein Tag, Pflichtenkalender) | Anteil der offenen Pflichten, die nicht überfällig sind (`deadline_adherence`) | ISO 27001 8.1 (alle Fristenquellen), 9.1 (Zielmessung und Wirksamkeitstests; Ziele mit Kennzahl misst das Tool und zählen als fristgerecht; neu berechnet, sobald ein Datensatz einer Fristenquelle angelegt, gelöscht oder in Datum oder Status geändert wird) |
@@ -57,7 +57,7 @@ Gibt es zu einer Prüfung noch keinen einzigen Datensatz (kein Registereintrag, 
 
 ### NIS-2-Dashboard
 
-Die Kacheln Art. 21 (2)(a)–(j) im NIS-2-Dashboard und in der Anforderungsübersicht zeigen die Erfüllung der jeweiligen Anforderung, also denselben Wert wie die Anforderung selbst. Die frühere Kennzahl der Kachel (zum Beispiel der Anteil gelöster Vorfälle) steht darunter als „Indicator“. Eine Kachel, deren Anforderung noch niemand bewertet hat, zeigt weiter nur die Kennzahl.
+Die Kacheln Art. 21 (2)(a)–(j) im NIS-2-Dashboard und in der Anforderungsübersicht zeigen die Erfüllung der jeweiligen Anforderung, also denselben Wert wie die Anforderung selbst. Die Kennzahl der Kachel (zum Beispiel der Anteil gelöster Vorfälle) steht darunter als „Indicator“. Eine Kachel, deren Anforderung noch niemand bewertet hat, zeigt weiter nur die Kennzahl.
 
 Auf der Anforderung zeigt die Karte **Erfüllung** den Wert, die Quelle und unter
 „Warum dieser Wert?“ jedes Control oder Mapping, aus dem er stammt.
@@ -92,7 +92,7 @@ Altbestand, für den eine Regel rechnet, wieder der Regel.
 ## Wann wird gerechnet?
 
 - Sofort, wenn ein Control gespeichert wird (Status, Prozent, Anwendbarkeit, Begründung) oder wenn sich die verknüpften Controls einer Anforderung ändern. Gemappte Normen ziehen in derselben Anfrage nach.
-- Sofort, wenn ein Registereintrag, eine Leitungsentscheidung, eine Schulung, eine Schulungsteilnahme, ein Vorfall, eine Datenpanne, ein Lieferant oder ein Administratorkonto (Rollen, MFA) gespeichert wird: Die Klauseln, die diese Datensätze lesen, rechnen neu (`RecordChangeCollector`). Fristtreue (ISO 27001 8.1, 9.1) rechnet neu, sobald ein Datensatz einer Fristenquelle angelegt, gelöscht oder in Datum oder Status geändert wird.
+- Sofort, wenn ein Registereintrag, eine Leitungsentscheidung, eine Schulung, eine Schulungsteilnahme, ein Vorfall, eine Datenpanne, ein Lieferant, ein BC-Plan, ein Änderungsantrag, eine Bedrohungsmeldung, ein internes Audit oder ein Administratorkonto (Rollen, Aktivierung, Anmeldeart, MFA) gespeichert wird: Die Klauseln, die diese Datensätze lesen, rechnen neu (`RecordChangeCollector`). Fristtreue (ISO 27001 8.1, 9.1) rechnet neu, sobald ein Datensatz einer Fristenquelle angelegt, gelöscht oder in Datum oder Status geändert wird.
 - Sofort, wenn in der Audit-Checkliste ein Urteil gespeichert wird: die geprüfte Anforderung und alles, was von ihr erbt.
 - Beim Klick auf **„Neu berechnen“** im Framework-Dashboard.
 - Die regelmäßige Prüfung einer Erfüllung („Nächste Prüfung“, von Zertifikaten auf ihr Ablaufdatum gesetzt) erscheint 30 Tage vorher in „Mein Tag“ (Abschnitt „Erfüllung — Prüfung fällig“) bei der verantwortlichen Person der Anforderung, ersatzweise bei Compliance-Manager und ISB. Auf der Anforderung bestätigt **„Prüfung bestätigen“** die Prüfung und setzt die nächste (Vorgabe zwölf Monate); der Wert selbst bleibt bei der Regel.
@@ -101,7 +101,7 @@ Altbestand, für den eine Regel rechnet, wieder der Regel.
 
 ## Hinweis für Betreiber
 
-Nach dem Update läuft die Migration, und es bleibt nichts weiter zu tun. (Die Updates mit Registern, Leitungsentscheidungen und Audit-Urteilen als Quelle bringen keine Migration mit; die neuen Werte erscheinen nach der nächsten Nacht oder nach „Neu berechnen“.) Die erste Nacht rechnet alle
+Nach dem Update läuft die Migration, und es bleibt nichts weiter zu tun. Neue Quellen wirken ab der nächsten Nacht oder nach „Neu berechnen“. Die erste Nacht rechnet alle
 Organisationen durch und legt den Altbestand an. Wer nicht warten will, klickt im
 Framework-Dashboard auf „Neu berechnen“. Danach lohnt ein Blick in die Liste
 „Übersteuerungen“ (Filter Altbestand).

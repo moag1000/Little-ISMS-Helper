@@ -13,20 +13,18 @@ relevant sind. Ein reines ISO-27001-Unternehmen ohne Cloud-Services sieht keine
 BSI-C5-Felder; eine Bank sieht MaRisk-Felder, eine IT-Firma ohne KI-Systeme sieht
 keine EU-AI-Act-Felder.
 
-Die Aktivierung erfolgt einmalig über den **Setup-Wizard** (`/setup-wizard`) und
-kann jederzeit durch einen Administrator angepasst werden.
+Module gelten je Organisation. Ausgewählt werden sie im Setup-Wizard im Schritt
+**Module** (`/setup/step7-modules`, mit Empfehlungen nach Branche und Größe aus
+Schritt „Organisation“) und später unter **Admin → Module** (`/admin/modules`).
+Eine Organisation ohne eigene Auswahl erbt die Vorgabe der Instanz
+(`config/active_modules.yaml`). Abhängigkeiten werden beim Aktivieren mit
+eingeschaltet.
 
 ---
 
-## Setup-Wizard — 8 Compliance-Fragen
+## Optionale Fachmodule
 
-Der Setup-Wizard stellt 8 Ja/Nein-Fragen, die automatisch die richtigen Module
-aktivieren:
-
-### Frage 1: Personenbezogene Daten
-> „Verarbeiten Sie personenbezogene Daten (Kunden, Mitarbeiter, Partner)?"
-
-**Ja → Modul `privacy` aktiv:**
+### Personenbezogene Daten — `privacy`
 - DSGVO Art. 30 Verarbeitungsverzeichnis (RoPA)
 - Datenschutzverletzungen (Art. 33/34)
 - Einwilligungs-Tracking mit Widerruf (Art. 7)
@@ -36,10 +34,7 @@ aktivieren:
 
 ---
 
-### Frage 2: EU-Cyber-Resilience-Pflicht
-> „Sind Sie KRITIS-Betreiber, Finanzinstitut oder Versicherung (NIS2 / DORA-pflichtig)?"
-
-**Ja → Modul `nis2_dora` aktiv:**
+### EU-Cyber-Resilience-Pflicht — `nis2_dora`
 - DORA ICT-Incident-Klassifikation (Art. 17)
 - Regulatorische Meldepflicht bei Incidents (24h/72h Deadline)
 - NIS2 Art. 23 Meldung
@@ -47,10 +42,7 @@ aktivieren:
 
 ---
 
-### Frage 3: KI-Systeme
-> „Setzen Sie KI-Systeme ein oder entwickeln Sie KI-Anwendungen?"
-
-**Ja → Modul `ai_governance` aktiv:**
+### KI-Systeme — `ai_governance`
 - EU AI Act Risk-Klassifikation von KI-Assets (Art. 6)
 - Validierung gegen verbotene KI-Praktiken (Art. 5) — System blockiert Speichern
 - Konformitäts-Assessment-Status (Art. 17)
@@ -58,10 +50,7 @@ aktivieren:
 
 ---
 
-### Frage 4: Cloud-Provider oder Cloud-Nutzer
-> „Sind Sie Cloud-Service-Provider oder nutzen Sie Cloud-Dienste wesentlich?"
-
-**Ja → Modul `cloud_security` aktiv:**
+### Cloud-Provider oder Cloud-Nutzer — `cloud_security`
 - ISO 27017-Referenzfelder in Controls (cloud-spezifische Sicherheitsmaßnahmen)
 - ISO 27018-Felder (Cloud-Datenschutz)
 - ISO 27701 PIMS-Referenz
@@ -70,10 +59,7 @@ aktivieren:
 
 ---
 
-### Frage 5: Aktives Schwachstellen- und Threat-Management
-> „Betreiben Sie aktives Vulnerability Management oder Threat Intelligence?"
-
-**Ja → Modul `vulnerability_intel` aktiv:**
+### Aktives Schwachstellen- und Threat-Management — `vulnerability_intel`
 - TLP 2.0 Klassifikation für Threat Intelligence (FIRST-Standard)
 - MITRE ATT&CK Technik-IDs
 - Threat Actor Attribution
@@ -82,10 +68,7 @@ aktivieren:
 
 ---
 
-### Frage 6: Bank oder Versicherung in DACH
-> „Ist Ihr Unternehmen eine Bank, Versicherung oder Finanzdienstleister unter BaFin-Aufsicht?"
-
-**Ja → Modul `marisk` aktiv:**
+### Bank oder Versicherung in DACH — `marisk`
 - MaRisk AT 9.2 Outsourcing-Klassifikation (wesentlich/nicht-wesentlich)
 - Aufsichtliche Meldepflicht bei Weiterverlagerung
 - Subcontractor-Chain-Dokumentation
@@ -93,19 +76,13 @@ aktivieren:
 
 ---
 
-### Frage 7: Automobilindustrie-Lieferkette
-> „Sind Sie Lieferant in der Automobilindustrie (VDA / TISAX-pflichtig)?"
-
-**Ja → Modul `tisax` aktiv:**
+### Automobilindustrie-Lieferkette — `tisax`
 - TISAX Assessment-Labels
 - VDA ISA Anforderungsreferenzen
 
 ---
 
-### Frage 8: Quantitative Risikoanalyse
-> „Möchten Sie quantitative Risikoanalyse (in Geldwerten) durchführen?"
-
-**Ja → Modul `quantitative_risk` aktiv:**
+### Quantitative Risikoanalyse — `risk_quant`
 - FAIR-Methodik-Felder (Loss Event Frequency, Loss Magnitude)
 - Quantitativer Risiko-Score
 
@@ -113,18 +90,12 @@ aktivieren:
 
 ## Immer aktive Module (nicht deaktivierbar)
 
-| Modul | Was es enthält |
-|---|---|
-| `core` | ISO 27001 Kontext, ISMS-Ziele, interessierte Parteien |
-| `assets` | Asset Management, Asset-Abhängigkeiten |
-| `risks` | Risikobewertung, Risikobehandlungsplan |
-| `controls` | SoA, ISO 27001 Annex A Controls |
-| `incidents` | Incident-Management (Basis) |
-| `audits` | Interne Audits, Checklisten |
-| `training` | Schulungen und Sensibilisierung |
-| `reviews` | Management-Review (§9.3) |
-| `authentication` | Benutzer- und Rollenverwaltung |
-| `audit_logging` | Prüfprotokoll für alle Aktionen |
+`core`, `authentication`, `audit_logging`, `documents`, `objectives`,
+`notifications`, `workflows` (`required: true` in `config/modules.yaml`).
+
+Alle anderen Module sind abschaltbar, auch `assets`, `risks`, `controls`,
+`incidents`, `audits`, `training` und `reviews`; für ISO 27001 sollten sie aktiv
+bleiben (siehe FAQ).
 
 ### Optional, aber häufig aktiviert
 
@@ -156,7 +127,7 @@ Cloud-OCR-Dienste genutzt.
 
 | Voraussetzung | Details |
 |---|---|
-| Modul aktiv | `ocr_processing` muss unter `Admin → Tenant-Einstellungen → Module` aktiviert sein |
+| Modul aktiv | `ocr_processing` muss unter `Admin → Module` (`/admin/modules`) aktiviert sein |
 | `pdftotext` | Aus dem Paket `poppler-utils` (Debian/Ubuntu) — wandelt PDF in Klartext um |
 | `tesseract` | Aus dem Paket `tesseract-ocr` + Sprachpaket `tesseract-ocr-deu` (Deutsch) + `tesseract-ocr-eng` (Englisch) — Bilderkennung für eingescannte Zertifikate |
 | `ghostscript` | Aus dem Paket `ghostscript` — PDF-Vorverarbeitung für Scan-Qualität |
@@ -172,7 +143,7 @@ Fehler; nur die automatische Vorausfüllung entfällt.
 
 ### Aktivierung
 
-1. Navigieren Sie zu `Admin → Tenant-Einstellungen → Module`
+1. Navigieren Sie zu `Admin → Module` (`/admin/modules`)
 2. Aktivieren Sie das Toggle bei `ocr_processing`
 3. Speichern — die Erkennung ist sofort aktiv für neue Zertifikat-Uploads
 
@@ -186,28 +157,22 @@ nicht aktiviert.
 
 **Als Administrator:**
 
-1. Navigieren Sie zu `Admin → Tenant-Einstellungen → Module`
+1. Navigieren Sie zu `Admin → Module` (`/admin/modules`)
 2. Aktivieren oder deaktivieren Sie Module per Toggle
 3. Speichern → sofort wirksam (kein Neustart erforderlich)
 4. Bereits eingegebene Daten in deaktivierten Feldern gehen **nicht** verloren —
    die Felder werden nur ausgeblendet.
 
-**Technisch (direkt in Konfiguration):**
+**Vorgabe der Instanz** (für Organisationen ohne eigene Auswahl):
 
 ```yaml
-# config/active_modules.yaml
-modules:
-  privacy: true
-  nis2_dora: true
-  ai_governance: false
-  cloud_security: true
-  vulnerability_intel: false
-  marisk: false
-  tisax: false
-  quantitative_risk: false
-  bcm: true
-  compliance: true
-  bsi_grundschutz: false
+# config/active_modules.yaml (Vorlage: active_modules.yaml.dist)
+active_modules:
+    - core
+    - assets
+    - risks
+    - privacy
+    - nis2_dora
 ```
 
 ---
@@ -230,7 +195,7 @@ Betroffenenanfragen, DPIA.
 
 ### "Wir sind Bank — was brauchen wir?"
 
-Aktivieren Sie `nis2_dora` (DORA-Pflicht ab Jan. 2025) und `marisk`
+Aktivieren Sie `nis2_dora` (DORA gilt seit 17.01.2025) und `marisk`
 (MaRisk-Outsourcing-Dokumentation). Wenn Sie auch personenbezogene Daten
 verarbeiten: `privacy`.
 
@@ -258,9 +223,7 @@ Corrective Actions mit ActionType.
 
 ### "Wie weise ich dem Auditor nach, welche Module aktiv sind?"
 
-Navigieren Sie zu `Admin → Tenant-Einstellungen → Module` — dort ist der
-aktuelle Status sichtbar. Alternativ: git-Historie der `config/active_modules.yaml`
-(enthält Zeitstempel der Änderungen).
+Unter `Admin → Module` (`/admin/modules`) steht der aktuelle Status je Organisation.
 
 ---
 
@@ -278,4 +241,4 @@ aktuelle Status sichtbar. Alternativ: git-Historie der `config/active_modules.ya
 | EU AI Act | ai_governance | + risks (AI risk) |
 | MaRisk | marisk | + nis2_dora (DORA-Overlap) |
 | TISAX | tisax | + assets, risks |
-| FAIR (Quantitativ) | quantitative_risk | + risks |
+| Quantitative Risikoanalyse (SLE/ARO/ALE) | risk_quant | + risks |

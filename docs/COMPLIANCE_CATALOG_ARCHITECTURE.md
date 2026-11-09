@@ -6,7 +6,8 @@ UI-/CLI-Oberfläche, was verdrahtet ist, und wo Chaos/Risiko sitzt. Zweck: Basis
 für eine saubere Re-Architektur, ohne einen Teil zu vergessen.
 
 > **Status:** Diagnose/Bestandsaufnahme nach Audit aller ~90 Katalog-Commands,
-> der Wiring-Services, Migrationen und Mapping-Bibliothek. Noch keine Code-Änderung.
+> der Wiring-Services, Migrationen und Mapping-Bibliothek (Stand 2026-06-13). Umsetzung:
+> `docs/superpowers/plans/2026-06-13-compliance-catalog-remediation.md`, CI-Gate 58.
 > Ergänzt `COMPLIANCE_CATALOG_WIRING_AUDIT.md` (Loader-Detail). Dieses Dokument
 > ist die übergeordnete Architektur-Sicht.
 

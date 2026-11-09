@@ -2,48 +2,21 @@
 
 ## Overview
 
-This document provides comprehensive setup instructions for the Little ISMS Helper REST API, built with Symfony 7.4 and API Platform 4.3.
+REST API of Little ISMS Helper (Symfony 7.4, API Platform 4.3). 21 entities are API resources
+(`grep -l '#\[ApiResource' src/Entity`); the current list is the Swagger UI at `/api`.
 
-> **Note:** The API currently exposes 18 API resource entities (not just the 6 listed below). The endpoint table documents the original set; additional resources are available at `/api` via the Swagger UI.
-
-## Features
-
-The API provides complete CRUD operations for:
-- ✅ **Risks** - ISO 27001 risk management
-- ✅ **Assets** - Asset inventory with CIA values
-- ✅ **Controls** - ISO 27001:2022 Annex A controls (93 controls)
-- ✅ **Incidents** - Security incident tracking with GDPR fields
-- ✅ **Internal Audits** - ISO 27001 Clause 9.2 compliance
-- ✅ **Training** - Awareness training tracking
-
-### API Capabilities
-
-- **Serialization Groups** - Separate read/write permissions
-- **Validation Constraints** - Input validation with clear error messages
-- **API Filters** - Search, order, date, and boolean filters
-- **Pagination** - 30 items per page (client-configurable up to 100)
-- **MaxDepth Annotations** - Prevents circular references
-- **Database Indexes** - Optimized for common queries
-- **Computed Properties** - Business intelligence metrics
-- **Security** - Role-based access (ROLE_USER, ROLE_ADMIN)
+- Serialization groups: the API writes exactly the fields the form writes (`<entity>:write` groups)
+- Validation: the entity `#[Assert]` constraints, same as the form
+- Filters on collection endpoints, pagination (30 per page, client-configurable up to 100)
+- `MaxDepth(1)` on relations
+- Access: session or API token, entity voters, tenant isolation (see [Security](#5-security))
 
 ## Prerequisites
 
 - PHP 8.4+
-- PostgreSQL 16+ (or MySQL 8.0+)
+- MySQL 8.0+ / MariaDB (default in `.env`; PostgreSQL is a commented alternative there)
 - Composer 2.x
-- Symfony CLI (optional but recommended)
-
-### Required PHP Extensions
-
-```bash
-php -m | grep -E "(pdo|pgsql|intl|xml|ctype|iconv|mbstring)"
-```
-
-Install missing extensions:
-```bash
-sudo apt-get install php8.4-pgsql php8.4-intl php8.4-xml php8.4-mbstring
-```
+- Symfony CLI (optional)
 
 ## Installation
 
@@ -61,28 +34,13 @@ Create `.env.local`:
 cp .env .env.local
 ```
 
-Edit `.env.local`:
+Edit `.env.local` (`.env` builds `DATABASE_URL` from `DB_USER`, `DB_PASS`, `DB_HOST`, `DB_PORT`, `DB_NAME`):
 ```env
-###> doctrine/doctrine-bundle ###
-DATABASE_URL="postgresql://isms_user:isms_password@127.0.0.1:5432/little_isms?serverVersion=16&charset=utf8"
-###< doctrine/doctrine-bundle ###
+DATABASE_URL="mysql://isms_user:isms_password@127.0.0.1:3306/little_isms?serverVersion=8.0.32&charset=utf8mb4"
 ```
 
 ### 3. Create Database and User
 
-**PostgreSQL:**
-```bash
-sudo -u postgres psql
-```
-
-```sql
-CREATE DATABASE little_isms;
-CREATE USER isms_user WITH PASSWORD 'isms_password';
-GRANT ALL PRIVILEGES ON DATABASE little_isms TO isms_user;
-\q
-```
-
-**MySQL (Alternative):**
 ```sql
 CREATE DATABASE little_isms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'isms_user'@'localhost' IDENTIFIED BY 'isms_password';
@@ -98,10 +56,9 @@ php bin/console doctrine:database:create --if-not-exists
 
 # Run migrations
 php bin/console doctrine:migrations:migrate --no-interaction
-
-# Load fixtures (optional - test data)
-php bin/console doctrine:fixtures:load --no-interaction
 ```
+
+Sample data: Admin → Modules (imported into the admin's current organisation).
 
 ### 5. Start Development Server
 
@@ -123,12 +80,13 @@ All endpoints available at `/api` (the complete, current list is the Swagger UI)
 | Entity | Endpoint | Operations |
 |--------|----------|------------|
 | Risk | `/api/risks` | GET, POST, PUT, DELETE |
+| ISMS context, ISMS objective | `/api/isms_contexts`, `/api/isms_objectives` | also PATCH |
 | Asset | `/api/assets` | GET, POST, PUT, DELETE |
 | Control | `/api/controls` | GET, POST, PUT, DELETE |
 | Incident | `/api/incidents` | GET, POST, PUT, DELETE |
 | Internal Audit | `/api/internal_audits` | GET, POST, PUT, DELETE |
 | Training | `/api/trainings` | GET, POST, PUT, DELETE |
-| Supplier, Location, Person, BC plan, BC exercise, change request, interested party, threat intelligence, ISMS context, ISMS objective | `/api/suppliers`, `/api/locations`, … | GET, POST, PUT, DELETE (each behind its module) |
+| Supplier, Location, Person, BC plan, BC exercise, change request, interested party, threat intelligence | `/api/suppliers`, `/api/locations`, … | GET, POST, PUT, DELETE (each behind its module) |
 | Physical access log, cryptographic operation | `/api/physical_access_logs`, `/api/cryptographic_operations` | GET, POST |
 | Top-management decision (ISO 27001 5.1, 6.1.3, 9.3; NIS-2 Art. 20) | `/api/management_decisions` | GET only, ROLE_AUDITOR and above; filters `type`, `status` |
 | Register entry (ISO 27001 4.1–7.4) | `/api/isms_register_entries` | GET only; filter `type` |
@@ -142,13 +100,22 @@ All endpoints available at `/api` (the complete, current list is the Swagger UI)
 - Fulfilment values are derived from controls, records and mappings
   (`FulfillmentDerivationService`); hand values are overrides with reason and review date in the UI.
   Saving a control or record over the API triggers the same recomputation as in the UI.
-- Approval evidence is read-only: risk acceptance and decision approver/date, `formallyAccepted`,
-  supplier board acceptance, change-request approval and verification.
+- Evidence fields are read-only (`#[ApiReadOnlyEvidence]`): risk acceptance and decision approver/date,
+  `formallyAccepted`, supplier board acceptance, change-request approval and verification, incident
+  resolve/close times and the NIS-2 / DORA report timestamps (set only by "Als gemeldet markieren" in
+  the UI; a value in the body is ignored).
+- Control `implementationStatus` and `implementationPercentage` are read-only: they feed requirement
+  fulfilment and are set in the control form, the SoA or a reviewed bulk import.
+- **Owners are User/Person references** (BREAKING since 2026-11): the free-text owner columns are gone.
+  Fields: e.g. Asset `ownerUser` / `ownerPerson`, Risk `riskOwner` / `riskOwnerPerson` (ROLE_MANAGER).
+  A person is sent as IRI (`/api/people/{id}`); `User` is no API resource. A user or person of another
+  organisation answers 422 (`#[SameTenantOwner]`). A plain `owner` string is no longer accepted.
 - Decisions of top management, register entries and suggestions are not created over the API.
 - `PUT` updates the stored record with the writable fields only (`standard_put: false` in
   `config/packages/api_platform.yaml`); fields you leave out keep their value.
 - Reviewer roles (`ROLE_AUDITOR`, `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) and API tokens are
-  read-only: write calls answer 403 (session) or 405 (token).
+  read-only: write calls answer 403 (session) or 405 (token). Writing with a token is possible only
+  through the assistant endpoint `/mcp` (see [`KI_ASSISTENT_MCP.md`](../user-guide/KI_ASSISTENT_MCP.md)).
 
 ### Swagger UI
 
@@ -157,33 +124,49 @@ Interactive API documentation with try-it-out functionality:
 http://localhost:8000/api
 ```
 
-### ReDoc
+### OpenAPI / ReDoc
 
-Alternative documentation view:
+OpenAPI document and ReDoc view (`enable_re_doc: true`):
 ```
 http://localhost:8000/api/docs
 ```
+
+Both need a login or an API token.
 
 ## Usage Examples
 
 ### Authentication
 
-First, authenticate to get a session:
+Two ways:
+
+- **Browser session** (logged in via `/login`): read and write with the rights of the form.
+- **API token** (read only): create one under *Profile → API tokens* (`/de/profile/api-tokens`); the
+  plain token is shown once, only its SHA-256 hash is stored. Tokens can expire and be revoked.
+
 ```bash
-curl -X POST http://localhost:8000/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin"}'
+curl -H "Authorization: Bearer <token>" http://localhost:8000/api/risks
 ```
 
-### Create a Risk
+Token rules (`api_token` firewall, `App\Security\ApiTokenAuthenticator`):
+
+- stateless: a token request never creates a session or cookie;
+- accepted only on `/api` and `/mcp`; on every other path the answer is 401;
+- write verbs answer 405 everywhere except `POST /mcp` (`ReadOnlyApiSubscriber`);
+- the token acts with its user's roles and organisation; a deactivated user (or a user of a deactivated
+  organisation) is refused (`UserChecker`), and deactivating a user revokes their tokens;
+- 20 failed token attempts per client IP in 10 minutes → 429 (`api_auth_failure` limiter).
+
+### Create a Risk (session)
 
 ```bash
 curl -X POST http://localhost:8000/api/risks \
   -H "Content-Type: application/json" \
+  -b "isms_session=<session cookie>" \
   -d '{
     "title": "Unauthorized Access to Customer Database",
     "description": "Risk of unauthorized access to customer data",
     "asset": "/api/assets/1",
+    "riskOwnerPerson": "/api/people/7",
     "probability": 3,
     "impact": 5,
     "residualProbability": 2,
@@ -217,9 +200,9 @@ Response includes computed properties:
   "inherentRiskLevel": 15,
   "residualRiskLevel": 6,
   "riskReduction": 60.0,
-  "isHighRisk": true,
+  "highRisk": true,
   "controlCoverageCount": 3,
-  "wasAssessmentAccurate": null
+  "assessmentAccurate": null
 }
 ```
 
@@ -227,48 +210,20 @@ Response includes computed properties:
 
 ### 1. Validation Constraints
 
-All entities have comprehensive validation. Invalid data returns 400 Bad Request:
+The constraints are the entity `#[Assert]` attributes, the same the form uses. Invalid data answers
+422 with a `ConstraintViolationList`:
 
 ```json
 {
-  "@context": "/api/contexts/ConstraintViolationList",
   "@type": "ConstraintViolationList",
   "violations": [
-    {
-      "propertyPath": "probability",
-      "message": "Probability must be between 1 and 5"
-    }
+    { "propertyPath": "probability", "message": "…" }
   ]
 }
 ```
 
-**Risk Validation:**
-- title: Required, max 255 characters
-- description: Required
-- asset: Required (must exist)
-- probability/impact: Required, range 1-5
-- treatmentStrategy: Choice (accept, mitigate, transfer, avoid)
-- status: Choice (identified, assessed, treated, monitored, closed, accepted)
-
-**Asset Validation:**
-- name: Required, max 255 characters
-- assetType: Required, max 100 characters
-- owner: Required
-- CIA values: Required, range 1-5
-- status: Choice (active, inactive, retired, disposed)
-
-**Control Validation:**
-- controlId: Required, regex `/^\d+\.\d+(\.\d+)?$/` (ISO 27001 format)
-- name, description: Required
-- implementationStatus: Choice (not_started, planned, in_progress, implemented, verified)
-- implementationPercentage: Range 0-100
-
-**Incident Validation:**
-- incidentNumber, title, description: Required
-- severity: Choice (low, medium, high, critical)
-- status: Choice (open, investigating, resolved, closed)
-- detectedAt: Required
-- dataBreachOccurred, notificationRequired: Required (boolean)
+Allowed values (choices, ranges, the control id pattern) are in the OpenAPI document and the entity
+classes (`src/Entity/<Name>.php`).
 
 ### 2. API Filters
 
@@ -278,7 +233,7 @@ Filters apply to the collection endpoints (`GET /api/<resource>`) only. They are
 
 | Endpoint | Search (partial) | Search (exact) | Boolean | Date range | Sort `order[…]` |
 |---|---|---|---|---|---|
-| `/api/assets` | `name`, `owner` | `assetType`, `status` | – | – | `name`, `assetType`, `createdAt` |
+| `/api/assets` | `name` | `assetType`, `status` | – | – | `name`, `assetType`, `createdAt` |
 | `/api/controls` | `name` | `controlId`, `category`, `implementationStatus` | `applicable` | `targetDate`, `lastReviewDate` | `controlId`, `category`, `implementationPercentage`, `targetDate` |
 | `/api/incidents` | `title` | `incidentNumber`, `severity`, `status`, `category` | `dataBreachOccurred`, `notificationRequired` | `detectedAt`, `resolvedAt`, `closedAt` | `detectedAt`, `severity`, `status` |
 | `/api/internal_audits` | `title` | `auditNumber`, `status`, `scopeType` | – | `plannedDate`, `actualDate` | `plannedDate`, `actualDate`, `status` |
@@ -330,36 +285,17 @@ Response includes pagination metadata:
 
 ### 4. Computed Properties
 
-Entities expose computed properties for business intelligence:
+Read-only values serialized with the read group (selection):
 
-**Risk:**
-- `inherentRiskLevel`: probability × impact
-- `residualRiskLevel`: residualProbability × residualImpact
-- `riskReduction`: percentage reduction
-- `isHighRisk`: inherent level ≥ 15
-- `controlCoverageCount`: number of mitigating controls
-- `incidentCount`: realized incidents
-- `wasAssessmentAccurate`: validates risk assessment
-
-**Asset:**
-- `totalValue`: sum of CIA values
-- `riskScore`: 0-100 based on risks, incidents, controls
-- `isHighRisk`: risk score > 70
-- `protectionStatus`: adequately_protected | under_protected | unprotected
-
-**Control:**
-- `effectivenessScore`: 0-100 based on incidents after implementation
-- `needsReview`: true if review overdue
-- `assetCoverageCount`: number of protected assets
-- `riskCoverageCount`: number of mitigated risks
-- `trainingStatus`: comprehensive | partial | none
-- `addressesCriticalRisks`: true if covers high-risk items
-
-**Incident:**
-- `hasCriticalAssetsAffected`: checks for high-risk assets
-- `totalAssetImpact`: sum of affected asset values
-- `estimatedImpactCost`: severity-based cost estimate
-- `isRiskValidated`: links to pre-identified risks
+- **Risk:** `inherentRiskLevel`, `residualRiskLevel`, `riskReduction`, `riskScore`, `highRisk`
+  (inherent level ≥ the organisation's "high" edge, `RiskMatrixThresholds`), `controlCoverageCount`,
+  `incidentCount`, `assessmentAccurate`, `riskOwnerName`
+- **Asset:** `totalValue` (highest CIA value), `effectiveOwner`
+- **Control:** `effectivenessScore`, `reviewNeeded`, `protectedAssetValue`, `highRiskAssetCount`,
+  `trainingStatus`
+- **Incident:** `criticalAssetsAffected`, `totalAssetImpact`, `nis2ComplianceStatus`,
+  `criticalProcessesAffected`, `affectedProcessCount`, `suggestedRecoveryPriority`,
+  `aggregatedBusinessImpactScore`
 
 ### 5. Security
 
@@ -368,10 +304,12 @@ Entities expose computed properties for business intelligence:
 - Every operation carries its own security expression; tenant isolation is enforced by the
   Doctrine tenant filter (collections) and the entity voters (`ApiTenantVoter`, `RiskVoter`, …)
   for single records. A POST always lands in the caller's own organisation.
-- **ROLE_USER** and above: read, create, update inside the own organisation.
-- **ROLE_ADMIN**: delete as well.
+- Create and update with the same rights as the form: the entity voter decides (e.g. editing a risk
+  needs `ROLE_MANAGER`, the `risk.edit` permission or being responsible for it).
+- **ROLE_ADMIN**: delete (own organisation; `ROLE_SUPER_ADMIN` everywhere).
 - **Reviewer roles** (`ROLE_AUDITOR`, `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`): read only
   (`ReadOnlyRoleSubscriber`). **API tokens**: read only (`ReadOnlyApiSubscriber`).
+- Rate limit: 100 requests per minute per API token (else per user, else per IP).
 - Module-owned resources answer 403 `module_not_active` while their module is off
   (`ApiResourceModuleListener`, also for sub-requests).
 - Field-level gates: the risk owner and the quantitative risk fields need ROLE_MANAGER.
@@ -380,21 +318,11 @@ Entities expose computed properties for business intelligence:
 
 Every resource names its read and write groups (`normalizationContext` /
 `denormalizationContext`). Linked user accounts and the organisation are never serialized with their own fields; the new read-only resources name people by display name only.
-`tests/Api/ApiResourceContractTest.php` fails when a resource has no groups or a
-lifecycle-managed `status` is writable.
+`tests/Api/ApiResourceContractTest.php` fails when a resource has no groups, a
+lifecycle-managed `status` is writable or an `#[ApiReadOnlyEvidence]` field sits in a write group.
+All non-UI security properties and their tests: [`NON_UI_CONTRACTS.md`](../security/NON_UI_CONTRACTS.md).
 
 ## Performance Optimizations
-
-### Database Indexes
-
-All entities have indexes on frequently queried fields:
-
-**Risk:** status, created_at, review_date
-**Asset:** asset_type, status, created_at
-**Control:** control_id, category, implementation_status, target_date, applicable
-**Incident:** incident_number, severity, status, category, detected_at, data_breach_occurred
-**InternalAudit:** audit_number, status, scope_type, planned_date
-**Training:** training_type, status, scheduled_date
 
 ### MaxDepth Protection
 
@@ -424,11 +352,8 @@ Related entities beyond depth 1 are returned as IRIs:
 ### Database Connection Failed
 
 ```bash
-# Check PostgreSQL is running
-sudo systemctl status postgresql
-
 # Test connection
-psql -U isms_user -d little_isms -h 127.0.0.1
+mysql -u isms_user -p -h 127.0.0.1 little_isms
 ```
 
 ### Validation Errors
@@ -467,7 +392,7 @@ Create `.env.prod.local`:
 APP_ENV=prod
 APP_DEBUG=false
 APP_SECRET=your-secret-key-here
-DATABASE_URL="postgresql://prod_user:strong_password@db.example.com:5432/isms_prod?serverVersion=16&charset=utf8"
+DATABASE_URL="mysql://prod_user:strong_password@db.example.com:3306/isms_prod?serverVersion=8.0.32&charset=utf8mb4"
 ```
 
 ### 2. Optimize Autoloader
@@ -518,43 +443,8 @@ server {
 certbot --nginx -d api.little-isms.local
 ```
 
-### 7. Rate Limiting (Recommended)
-
-Install rate limiter:
-```bash
-composer require symfony/rate-limiter
-```
-
-Configure in `config/packages/rate_limiter.yaml`:
-```yaml
-framework:
-    rate_limiter:
-        api:
-            policy: 'sliding_window'
-            limit: 100
-            interval: '60 minutes'
-```
-
-## Next Steps
-
-1. ✅ Setup database and run migrations
-2. ✅ Test API endpoints with Swagger UI
-3. ⬜ Configure authentication (OAuth2/SAML)
-4. ⬜ Add rate limiting for production
-5. ⬜ Implement monitoring (e.g., Sentry, New Relic)
-6. ⬜ Write integration tests
-7. ⬜ Set up CI/CD pipeline
-
 ## Support
 
-For issues or questions:
-- Check `docs/` folder for additional documentation
-- Review Symfony docs: https://symfony.com/doc/current/
-- API Platform docs: https://api-platform.com/docs/
-
----
-
-**Last Updated:** 2024-11-06
-**Version:** 1.0.0
-**Symfony:** 7.4
-**API Platform:** 4.3
+- `docs/` for further documentation
+- Symfony: https://symfony.com/doc/current/
+- API Platform: https://api-platform.com/docs/

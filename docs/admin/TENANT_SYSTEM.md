@@ -16,12 +16,14 @@ The Tenant entity represents an organization/client in the system.
 - `description` (text, optional) - Tenant description
 - `azureTenantId` (UUID, optional) - Azure AD tenant ID for SSO
 - `isActive` (boolean) - Tenant activation status
+- `status` (string) - lifecycle status (`Tenant::STATUS_*`)
 - `settings` (JSON, optional) - Tenant-specific settings override
 - `logoPath` (string, optional) - Path to tenant logo
 - `createdAt` / `updatedAt` - Timestamps
 
 **Relations:**
 - OneToMany with `User` - All users belonging to this tenant
+- ManyToOne `parent` - holding organisation (corporate structure, see `docs/CORPORATE_STRUCTURE.md`)
 
 ### 2. Tenant Context Service (`src/Service/TenantContext.php`)
 
@@ -43,6 +45,9 @@ if ($tenantContext->belongsToTenant($tenant)) { ... }
 
 // Get all active tenants
 $tenants = $tenantContext->getActiveTenants();
+
+// Own organisation and its subsidiaries
+$tenants = $tenantContext->getAccessibleTenants();
 ```
 
 **Usage in Controllers:**
@@ -70,8 +75,10 @@ Automatically filters all database queries to only return entities belonging to 
 **Features:**
 - Transparent query filtering
 - Automatically applied to all entities with a `tenant` relation
-- Skips filtering for Tenant and User entities
-- Can be disabled for admin operations
+- Skips filtering for Tenant and User entities (user pickers use `OwnerUserType`, owner FKs `#[SameTenantOwner]`)
+- Armed by `TenantFilterSubscriber` on `kernel.request`; outside a request (cron, jobs) only after
+  `TenantContext::setCurrentTenant()` / `setCurrentTenantById()` — jobs pass the tenant explicitly
+  (`JobTenantScope`)
 
 **Configuration** (in `config/packages/doctrine.yaml`):
 ```yaml
@@ -83,17 +90,9 @@ doctrine:
                 enabled: true
 ```
 
-**Enable/Disable Filter:**
-```php
-// Disable filter temporarily (e.g., for admin operations)
-$filter = $em->getFilters()->disable('tenant_filter');
-
-// Re-enable filter
-$filter = $em->getFilters()->enable('tenant_filter');
-
-// Set tenant ID for filter
-$filter->setParameter('tenant_id', $tenantId);
-```
+Set the context through `TenantContext` (it syncs the filter parameter), not via
+`$em->getFilters()` directly. Explicit cross-organisation reads of a holding go through
+`App\Service\Group\HoldingScope`.
 
 ## Tenant Management UI
 
@@ -132,9 +131,10 @@ only; organisation admins use the API endpoint.
    - Tenant Code (unique identifier)
    - Tenant Name
    - Description (optional)
-   - Azure Tenant ID (optional, for SSO)
+   - Azure Tenant ID (optional)
    - Active Status (checkbox)
-   - Settings (JSON editor for tenant-specific configuration)
+   - Logo (image upload)
+   - Settings (JSON, `ROLE_SUPER_ADMIN` only)
 
 3. **View Tenant** (`/admin/tenants/{id}`)
    - Tenant information
@@ -151,45 +151,21 @@ only; organisation admins use the API endpoint.
 5. **Tenant Actions**
    - **Activate/Deactivate**: Toggle tenant status (POST `/admin/tenants/{id}/toggle`)
    - **Delete**: Remove tenant (only if no users assigned)
+   - **Corporate structure** (`/admin/tenants/corporate-structure`), set parent, governance model,
+     add/remove user, organisation context
 
-## Tenant Settings Override
+## Tenant Settings
 
-Tenants can have custom settings that override global application settings.
-
-**Settings Structure (JSON):**
-```json
-{
-  "branding": {
-    "primaryColor": "#0d6efd",
-    "logoUrl": "/uploads/tenants/acme-corp/logo.png"
-  },
-  "features": {
-    "darkMode": true,
-    "globalSearch": false,
-    "customModule": true
-  },
-  "locale": "de",
-  "timezone": "Europe/Berlin"
-}
-```
-
-**Usage:**
-```php
-$settings = $tenant->getSettings();
-$primaryColor = $settings['branding']['primaryColor'] ?? '#default';
-```
+`settings` is a free JSON column read by individual services (e.g. MRIS KPI and policy-section
+approval settings). There is no generic override mechanism. Branding for generated policy PDFs
+(letterhead, logo, colours, font) is a separate entity, `TenantBranding` (1:1 with Tenant).
 
 ## Logo Upload
 
-Each tenant can have a custom logo.
-
-**Entity Property:**
-- `logoPath` (string, nullable) - Path to logo file (e.g., `/uploads/tenants/acme-corp/logo.png`)
-
-**Implementation:**
-1. Logo upload field in TenantType form (deferred)
-2. Logo file stored in `public/uploads/tenants/{tenant_code}/`
-3. Display logo in tenant detail view and application header (tenant context)
+The logo is uploaded in the tenant form (`logoFile`, checked by `FileUploadSecurityService`).
+`TenantManagementController` stores it in `public/uploads/tenants/` as `<code>-<uniqid>.<ext>`
+and saves `logoPath` = `uploads/tenants/<file>`. Logos stay in the web root on purpose (shown on
+the login page and in mails); evidence files live below `var/uploads/` (`ProtectedUploads`).
 
 ## Multi-Tenancy Best Practices
 
@@ -210,46 +186,25 @@ class Asset
 }
 ```
 
-### 2. Automatic Tenant Assignment
+### 2. Tenant Assignment
 
-Use Doctrine event listeners to automatically assign tenants:
-
-```php
-use App\Service\TenantContext;
-use Doctrine\ORM\Event\PrePersistEventArgs;
-
-class TenantAssignListener
-{
-    public function __construct(private TenantContext $tenantContext) {}
-
-    public function prePersist(PrePersistEventArgs $args): void
-    {
-        $entity = $args->getObject();
-
-        if ($entity instanceof Asset && !$entity->getTenant()) {
-            $entity->setTenant($this->tenantContext->getCurrentTenant());
-        }
-    }
-}
-```
+There is no automatic assignment listener. Every service or controller that creates a record
+calls `setTenant($tenantContext->getCurrentTenant())`; a row without tenant is hidden from its own
+organisation by the filter. Rows meant for all organisations implement `SharedTenantRowsInterface`
+(Gate 72).
 
 ### 3. Tenant Isolation
 
 The Doctrine Tenant Filter ensures automatic tenant isolation:
 - Queries automatically filtered by tenant_id
-- No manual WHERE clauses needed
-- Admin users can bypass filter for cross-tenant operations
+- No manual WHERE clauses needed in request context; background jobs pass the tenant into every query
+- Cross-organisation reads only through `HoldingScope` (holding) or as `ROLE_SUPER_ADMIN`
 
-### 4. Tenant Switching (Admin Feature)
-
-Admin users can switch between tenants:
+### 4. Setting the Context in Code
 
 ```php
-// In admin controller
-$tenantContext->setCurrentTenant($selectedTenant);
-
-// All subsequent operations will use this tenant
-$assets = $assetRepository->findAll(); // Only returns assets for selected tenant
+// Background job / scheduled report: arm the filter for one organisation
+$tenantContext->setCurrentTenantById($tenantId);
 ```
 
 ## Security Considerations
@@ -291,7 +246,6 @@ $assets = $assetRepository->findAll(); // Only returns assets for selected tenan
      ROLE_SUPER_ADMIN (`ADMIN_GLOBAL_OP`) — see the table under *Admin Portal Access*
    - ROLE_SUPER_ADMIN is the instance operator (see "Upgrade notes — 3.15.3
      security release")
-   - Super admins can disable filter for cross-tenant operations
    - Audit log tracks all tenant changes
 
 3. **User Assignment:**
@@ -792,18 +746,6 @@ Open each record and pick a user or person of the record's own organisation.
 Rows whose linked tenant is `(none)` point to an account without an
 organisation (usually the instance operator) — reassign them too.
 
-## Migration
-
-### Add logoPath Field
-
-Migration: `migrations/Version20251113000000.php`
-
-```bash
-php bin/console doctrine:migrations:migrate
-```
-
-This adds the `logo_path` column to the `tenant` table.
-
 ## API Endpoints
 
 | Endpoint | Method | Description |
@@ -814,18 +756,16 @@ This adds the `logo_path` column to the `tenant` table.
 | `/admin/tenants/{id}/edit` | GET/POST | Edit tenant |
 | `/admin/tenants/{id}/toggle` | POST | Activate/deactivate tenant |
 | `/admin/tenants/{id}/delete` | POST | Delete tenant (if no users) |
+| `/admin/tenants/corporate-structure` | GET | Corporate structure tree |
+| `/admin/tenants/{id}/set-parent` | POST | Set parent (`ROLE_SUPER_ADMIN`) |
+| `/admin/tenants/{id}/update-governance` | POST | Governance model of a subsidiary |
+| `/admin/tenants/{id}/add-user` | POST | Add (move) a user (`ROLE_SUPER_ADMIN`) |
+| `/admin/tenants/{id}/remove-user/{userId}` | POST | Remove user |
+| `/admin/tenants/{id}/organisation-context` | GET/POST | Organisation context |
 
-## Future Enhancements
-
-- **Logo Upload UI** - File upload form for tenant logos
-- **Tenant Analytics** - Usage statistics per tenant
-- **Billing Integration** - Per-tenant billing/subscription
-- **Tenant White-labeling** - Custom branding per tenant
-- **Tenant API Keys** - API authentication per tenant
-- **Cross-Tenant Reporting** - Aggregated reports for MSPs
+All routes carry the locale prefix (`/de/admin/…`).
 
 ## Related Documentation
 
-- **ADMIN_GUIDE.md** - Admin portal user guide
-- **ROADMAP.md** - Phase 6L-C: Tenant Management UI
-- **README.md** - Admin Portal section
+- [`docs/ADMIN_GUIDE.md`](../ADMIN_GUIDE.md) - Admin portal user guide
+- [`docs/CORPORATE_STRUCTURE.md`](../CORPORATE_STRUCTURE.md) - Holding / subsidiary structures

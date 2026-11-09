@@ -2,262 +2,84 @@
 
 ## Übersicht
 
-Little ISMS Helper wird automatisch zu Docker Hub gepusht über den CI/CD Workflow. Die Images sind öffentlich verfügbar und können direkt verwendet werden.
+Der CI-Job "Docker Build & Push" (`.github/workflows/ci.yml`) baut das Production-Image
+bei jedem Release-Tag (`v*`) für `linux/amd64` und `linux/arm64` und pusht es nach:
 
-## Verfügbare Images
+- Docker Hub (kanonisch): `moag2000/little-isms-helper`
+- GitHub Container Registry (Mirror): `ghcr.io/moag1000/little-isms-helper`
 
-### Production Image (empfohlen)
+Branch-Pushes und Pull Requests bauen kein Image.
 
-Das Production-Image ist optimiert für den Produktionseinsatz:
-
-```bash
-# Neueste stabile Version (main branch)
-docker pull <username>/little-isms-helper:latest
-
-# Spezifischer Branch
-docker pull <username>/little-isms-helper:main
-
-# Spezifischer Commit
-docker pull <username>/little-isms-helper:main-abc1234
-```
-
-**Features:**
-- ✅ PHP 8.4 FPM + Nginx
-- ✅ OPcache aktiviert und optimiert
-- ✅ Nur Production Dependencies
-- ✅ Minimale Image-Größe
-- ✅ Security Hardening
-
-### Development Image
-
-Das Development-Image enthält zusätzliche Tools für die Entwicklung:
+## Image
 
 ```bash
-# Development Version
-docker pull <username>/little-isms-helper:dev-develop
-docker pull <username>/little-isms-helper:dev-claude-xyz
-
-# Hinweis: Branch-Namen mit "/" werden zu "-" konvertiert
-# claude/feature-branch → dev-claude-feature-branch
+docker pull moag2000/little-isms-helper:3.16.1   # genaue Version (für Produktion)
+docker pull moag2000/little-isms-helper:3.16     # neueste Patch-Version der Linie
+docker pull moag2000/little-isms-helper:latest   # neueste stabile Version
 ```
 
-**Zusätzliche Features:**
-- ✅ Xdebug für Debugging
-- ✅ Alle Dev-Dependencies
-- ✅ Hot-Reload Support
+Inhalt: PHP 8.5 FPM (Debian trixie), nginx, eingebettete MariaDB, supervisord mit
+Scheduler-Worker, OPcache, nur Production-Dependencies. Start, Volumes und
+Umgebungsvariablen: [DOCKER_PRODUCTION.md](../deployment/DOCKER_PRODUCTION.md).
 
-## Verwendung
+## Image-Tags
 
-### Mit Docker Run
+| Tag | Quelle |
+|-----|--------|
+| `X.Y.Z`, `X.Y`, `latest` | Stable-Release (release-please, siehe `CONTRIBUTING.md`) |
+| `X.Y.Z-rc.N`, `rc` | Tag `vX.Y.Z-rc.N` |
+| `X.Y.Z-dev.N`, `dev` | Workflow "Dev Release (manual)" |
+| `sha-<commit>` | jeder gebaute Tag |
 
-```bash
-# Starten mit externer PostgreSQL-Datenbank
-docker run -d \
-  --name little-isms-helper \
-  -p 8000:80 \
-  -e DATABASE_URL="postgresql://user:pass@host:5432/dbname" \
-  -e APP_SECRET="your-secret-key" \
-  <username>/little-isms-helper:latest
-```
+Tag-Regeln: Block `steps.meta.tags` in [`ci.yml`](../../.github/workflows/ci.yml).
 
-### Mit Docker Compose (empfohlen)
+## Docker-Hub-Overview und Logo
 
-Verwenden Sie die mitgelieferte `docker-compose.yml`:
+Beim Release-Tag lädt `.github/scripts/upload-dockerhub-logo.sh` das Logo
+(`public/logo-512.png`) und `README.md` als Overview hoch. Fehler brechen den Build
+nicht ab.
 
-```bash
-# Clone Repository (für docker-compose.yml)
-git clone https://github.com/moag1000/Little-ISMS-Helper.git
-cd Little-ISMS-Helper
+Manuell: `https://hub.docker.com/r/moag2000/little-isms-helper` → Repository-Name →
+Icon "Edit" → `public/logo-512.png` hochladen.
 
-# Services starten
-docker-compose up -d
-```
+## Setup für Maintainer
 
-Oder erstellen Sie eine eigene `docker-compose.yml`:
+GitHub → **Settings** → **Secrets and variables** → **Actions**:
 
-```yaml
-version: '3.8'
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN` (Docker Hub → Account Settings → Security → New Access Token,
+  Permissions **Read & Write**)
 
-services:
-  db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: little_isms
-      POSTGRES_USER: isms_user
-      POSTGRES_PASSWORD: isms_password
-    volumes:
-      - db_data:/var/lib/postgresql/data
+## Build-Stufen
 
-  app:
-    image: <username>/little-isms-helper:latest
-    ports:
-      - "8000:80"
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql://isms_user:isms_password@db:5432/little_isms
+Das `Dockerfile` hat zwei Stufen:
 
-volumes:
-  db_data:
-```
-
-## Image Tags
-
-Der CI/CD Workflow erstellt automatisch folgende Tags:
-
-| Tag | Beschreibung | Trigger |
-|-----|--------------|---------|
-| `latest` | Neueste stabile Version | Push zu `main` branch |
-| `main` | Main branch | Push zu `main` |
-| `develop` | Development branch | Push zu `develop` |
-| `main-<sha>` | Spezifischer Commit | Jeder Push zu `main` |
-| `develop-<sha>` | Dev-Commit | Jeder Push zu `develop` |
-| `dev-<branch>` | Development Image | Push zu `develop` oder `claude/*` (Note: `/` wird zu `-`) |
-
-## CI/CD Workflow
-
-Der Workflow führt folgende Schritte aus:
-
-1. **Tests** - PHPUnit Tests mit PostgreSQL
-2. **Code Quality** - PHP CS Fixer & PHPStan
-3. **Security** - Symfony Security Check
-4. **Docker Build & Push** - Multi-Stage Build & Push zu Docker Hub
-
-### Build-Ablauf
-
-```
-Tests passed → Build production image → Push to Docker Hub → Tag with metadata
-```
-
-## Automatisches Docker Hub Update
-
-Das Repository-Logo **und die README/Overview** werden **automatisch zu Docker Hub hochgeladen** bei jedem Release Tag (v*)!
-
-### Wie funktioniert's?
-
-- ✅ Script: `.github/scripts/upload-dockerhub-logo.sh`
-- ✅ Logo: `public/logo-512.png` (512x512 PNG)
-- ✅ README: `README.md` → Docker Hub Overview Tab
-- ✅ Trigger: Git Tag `v*` (z.B. v1.10.1)
-- ✅ Fehler-tolerant: Build schlägt nicht fehl, wenn Upload nicht funktioniert
-
-### Manueller Upload (falls nötig)
-
-Falls der automatische Upload nicht funktioniert:
-
-1. Gehe zu deinem Repository: `https://hub.docker.com/r/<username>/little-isms-helper`
-2. Klicke auf den **Repository-Namen** (oben links, neben dem Icon)
-3. Bewege Maus über das Icon-Placeholder und klicke **"Edit"**
-4. Lade `public/logo-512.png` hoch
-5. Klicke **"Save"**
-
-## Setup für Contributors
-
-Wenn Sie zum Projekt beitragen und Docker Images bauen möchten:
-
-### GitHub Secrets einrichten
-
-1. Gehe zu **Settings** → **Secrets and variables** → **Actions**
-2. Erstelle folgende Secrets:
-   - `DOCKERHUB_USERNAME`: Dein Docker Hub Username
-   - `DOCKERHUB_TOKEN`: Docker Hub Access Token (wird auch für Logo-Upload verwendet)
-
-### Docker Hub Token erstellen
-
-1. Login auf https://hub.docker.com
-2. Gehe zu **Account Settings** → **Security** → **New Access Token**
-3. Name: `github-actions-little-isms-helper`
-4. Permissions: **Read & Write**
-5. Kopiere den Token und speichere ihn als GitHub Secret
-
-## Multi-Stage Build
-
-Das Dockerfile verwendet Multi-Stage Builds für optimale Größe:
-
-```dockerfile
-# Stage 1: Production - klein, optimiert, sicher
-FROM php:8.4-fpm-alpine AS production
-# ... nur production dependencies
-
-# Stage 2: Development - extends production
-FROM production AS development
-# ... + dev dependencies + xdebug
-```
-
-### Image-Größen
-
-| Image | Größe (ungefähr) |
-|-------|------------------|
-| Production | ~300-400 MB |
-| Development | ~400-500 MB |
-
-## Automatische Updates
-
-Die Images werden automatisch gebaut bei:
-
-- ✅ Push zu `main` branch → `latest` + `main` tags
-- ✅ Push zu `develop` branch → `develop` tag
-- ✅ Push zu `claude/*` branches → `dev-<branch>` tag
-- ✅ Pull Requests → Build-Test (kein Push)
+- `production` — das veröffentlichte Image
+- `development` — erweitert `production` um Xdebug und `php.ini-development`
+  (lokal über `docker-compose.dev.yml`, wird nicht veröffentlicht)
 
 ## Security
 
-### Image Scanning
-
-Die Images werden automatisch gescannt auf:
-- Known vulnerabilities (via Trivy in future)
-- Outdated dependencies
-- Misconfigurations
-
-### Best Practices
-
-- ✅ Non-root user (www-data)
-- ✅ Minimal base image (Alpine Linux)
-- ✅ No secrets in image
-- ✅ Read-only filesystem (wo möglich)
-- ✅ Resource limits in docker-compose.yml
+- SBOM (SPDX) und SLSA-Provenance werden ins OCI-Manifest eingebettet.
+- Trivy scannt das Image nach dem Push (Ergebnis im CI-Lauf, nicht blockierend).
+- PHP-FPM und Worker laufen als `www-data`; keine Secrets im Image (`APP_SECRET` wird
+  beim ersten Start erzeugt und in `var/app_secret` gespeichert).
 
 ## Troubleshooting
 
-### Image Pull schlägt fehl
-
 ```bash
-# Login zu Docker Hub
-docker login
+# Logs
+docker logs <container>
 
-# Dann erneut versuchen
-docker pull <username>/little-isms-helper:latest
+# Prozesse im Container
+docker exec <container> supervisorctl status
+
+# Shell
+docker exec -it <container> bash
 ```
-
-### Container startet nicht
-
-```bash
-# Logs anzeigen
-docker logs <container-id>
-
-# Interaktiv troubleshooten
-docker run -it --entrypoint /bin/sh <username>/little-isms-helper:latest
-```
-
-### Datenbank-Verbindung schlägt fehl
-
-Prüfen Sie:
-1. ✅ DATABASE_URL ist korrekt gesetzt
-2. ✅ Datenbank-Container läuft: `docker ps`
-3. ✅ Netzwerk-Konfiguration: `docker network ls`
 
 ## Weiterführende Dokumentation
 
-- [Docker Setup Guide](DOCKER_SETUP.md) - Vollständige Docker-Anleitung
-- [Deployment Wizard](../deployment/DEPLOYMENT_WIZARD.md) - Produktions-Deployment
-- [CI/CD Pipeline](.github/workflows/ci.yml) - Workflow-Konfiguration
-
-## Docker Hub Repository
-
-**Repository:** https://hub.docker.com/r/<username>/little-isms-helper
-
-Dort finden Sie:
-- Alle verfügbaren Tags
-- Image-Historie
-- Pull-Statistiken
-- Weitere Informationen
+- [DOCKER_PRODUCTION.md](../deployment/DOCKER_PRODUCTION.md) — Produktionsbetrieb
+- [DOCKER_SETUP.md](DOCKER_SETUP.md) — Entwicklung mit Docker Compose
+- [CI-Workflow](../../.github/workflows/ci.yml)

@@ -4,22 +4,12 @@ This directory contains security-related documentation for the Little ISMS Helpe
 
 ## 📚 Available Documents
 
-### [CVE_ANALYSIS_2025.md](../archive/security/CVE_ANALYSIS_2025.md)
-Comprehensive analysis of CVEs detected in Docker images, including:
-- Detailed CVE investigations
-- Risk assessments
-- False positive identification
-- Mitigation strategies
-- Compliance documentation
-
-**Last Updated:** 2025-11-13
-**Next Review:** 2025-12-13
-
 ### [SECURITY.md](SECURITY.md)
-General security architecture and best practices documentation.
+Security implementation guide: OWASP Top 10 mapping, access control, sessions, MFA, headers,
+rate limits, uploads, SSRF, logging.
 
-### [SECURITY_IMPROVEMENTS.md](SECURITY_IMPROVEMENTS.md)
-Security enhancements and OWASP compliance documentation.
+### [CVE_ANALYSIS_2025.md](../archive/security/CVE_ANALYSIS_2025.md) (archived)
+CVE analysis of the Docker image from 2025-11 with the justifications behind `.trivyignore`.
 
 ### [NON_UI_CONTRACTS.md](NON_UI_CONTRACTS.md)
 Every security property of the non-UI paths (REST, MCP, restore, imports, exports, jobs, console,
@@ -83,46 +73,13 @@ All ignored CVEs must have:
 - ✅ Reference links
 - ✅ Review schedule
 
-## 📊 Current Security Posture
+## 🔐 Docker Image
 
-**Status:** 🟢 **GOOD**
+- Multi-stage build (`production` / `development`), base `php:8.5-fpm-trixie` pinned by digest
+- App files owned by `www-data`; nginx, PHP-FPM and MariaDB run under supervisor
+- OCI labels, no secrets in the image
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Critical CVEs | 0 | ✅ None |
-| High CVEs | 0 | ✅ None |
-| Medium CVEs | 1 | ⚠️ Monitoring |
-| Low CVEs | 2 | ℹ️ Accepted Risk |
-| False Positives | 2 | ✅ Documented |
-| Unknown CVEs | 1 | ❓ Under Investigation |
-
-**Last Assessment:** 2025-11-13
-
-## 🔐 Security Features
-
-### Docker Image Security
-- ✅ Multi-stage builds (production/development)
-- ✅ Non-root user execution
-- ✅ Minimal base image (Alpine Linux)
-- ✅ OCI-compliant labels
-- ✅ Regular security updates
-- ✅ No secrets in image
-
-### Application Security
-- ✅ RBAC (Role-Based Access Control)
-- ✅ Multi-factor authentication
-- ✅ Audit logging
-- ✅ Session management
-- ✅ CSRF protection
-- ✅ XSS prevention
-- ✅ SQL injection protection
-
-### Infrastructure Security
-- ✅ HTTPS/TLS support
-- ✅ Database encryption
-- ✅ Environment variable secrets
-- ✅ Docker security best practices
-- ✅ Network isolation
+Application security features: see [SECURITY.md](SECURITY.md).
 
 ## 📝 Compliance
 
@@ -140,31 +97,19 @@ All ignored CVEs must have:
 |------|------------|---------------|
 | A01 Broken Access Control | RBAC, Permissions | [SECURITY.md](SECURITY.md) |
 | A02 Cryptographic Failures | TLS, Hashing | [SECURITY.md](SECURITY.md) |
-| A03 Injection | Parameterized queries | [SECURITY_IMPROVEMENTS.md](SECURITY_IMPROVEMENTS.md) |
+| A03 Injection | Parameterized queries, output escaping, CSV sanitizer | [SECURITY.md](SECURITY.md) |
 | A04 Insecure Design | Security architecture | [SECURITY.md](SECURITY.md) |
-| A05 Security Misconfiguration | Hardened defaults | [CVE_ANALYSIS_2025.md](../archive/security/CVE_ANALYSIS_2025.md) |
+| A05 Security Misconfiguration | Security headers, CSP nonces | [SECURITY.md](SECURITY.md) |
 | A06 Vulnerable Components | Dependency scanning | [CVE_ANALYSIS_2025.md](../archive/security/CVE_ANALYSIS_2025.md) |
 | A07 Authentication Failures | MFA, Session mgmt | [SECURITY.md](SECURITY.md) |
 | A08 Software Integrity | Checksums, signatures | CI/CD pipeline |
 | A09 Logging Failures | Audit logging | [SECURITY.md](SECURITY.md) |
-| A10 SSRF | Input validation | [SECURITY_IMPROVEMENTS.md](SECURITY_IMPROVEMENTS.md) |
+| A10 SSRF | `NoInternalIp`, `UserUrlHttpClient` | [SECURITY.md](SECURITY.md) |
 
 ## 🚨 Security Incident Response
 
-### Reporting Security Issues
-
-**Email:** [Create issue on GitHub](https://github.com/moag1000/Little-ISMS-Helper/issues)
-
-**Response Time:**
-- Critical: 24 hours
-- High: 3 business days
-- Medium: 7 business days
-
-### Disclosure Policy
-
-- Responsible disclosure encouraged
-- 90-day disclosure timeline for critical issues
-- Credit to security researchers in release notes
+Reporting channels, response times and disclosure policy: root [`SECURITY.md`](../../SECURITY.md)
+(private advisory or e-mail — no public issues).
 
 ## 🔄 Regular Security Reviews
 
@@ -172,7 +117,7 @@ All ignored CVEs must have:
 - ☐ Review `.trivyignore` exceptions
 - ☐ Update dependency versions
 - ☐ Rebuild Docker images
-- ☐ Check for Alpine security updates
+- ☐ Check for Debian security updates (base image)
 
 ### Quarterly Tasks
 - ☐ Full security audit
@@ -194,14 +139,8 @@ All ignored CVEs must have:
 - [Audit Logging](../setup/AUDIT_LOGGING.md)
 
 ### External Resources
-- [Alpine Linux Security](https://security.alpinelinux.org/)
+- [Debian Security Tracker](https://security-tracker.debian.org/tracker/)
 - [PHP Security](https://www.php.net/manual/en/security.php)
 - [OWASP Cheat Sheets](https://cheatsheetseries.owasp.org/)
 - [Docker Security](https://docs.docker.com/engine/security/)
 
----
-
-**Document Version:** 1.0
-**Last Updated:** 2025-11-13
-**Next Review:** 2025-12-13
-**Owner:** Security Team

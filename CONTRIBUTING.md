@@ -195,7 +195,7 @@ The application uses a **single global form-theme** — `templates/form/fa_cyber
 
 **MUST NOT do:**
 - Override `getBlockPrefix()` in a `FormType` — this breaks global theming.
-- Use `{% form_theme form '...' %}` to switch to `bootstrap_5_layout.html.twig`. If you need to override one specific field, write a custom theme that `{% use "form/fa_cyber_input.html.twig" %}` and only overrides the specific block (see `templates/supplier/_supplier_form_theme.html.twig` for an example).
+- Use `{% form_theme form '...' %}` to switch to `bootstrap_5_layout.html.twig`. If you need to override one specific field, write a custom theme that `{% use "form/fa_cyber_input.html.twig" %}` and only overrides the specific block (see `templates/audit_finding/_audit_finding_form_theme.html.twig` for an example).
 - Hand-roll `<input class="form-control">` instead of `form_widget()` inside Symfony forms. Filter forms (GET, stateless) may use raw inputs — they're styled via the Aurora CSS bridge in `fairy-aurora-components.css`.
 
 **Validation + accessibility:**
@@ -592,29 +592,33 @@ All new features must include unit tests using PHPUnit.
 php bin/phpunit
 ```
 
+Local setup the suite needs (`.env.test.local`, `config/active_modules.yaml`, `config/setup_complete.lock`):
+[`docs/onboarding/05-test-runbook.md`](docs/onboarding/05-test-runbook.md).
+
 **Example:**
 ```php
 <?php
 
-namespace App\Tests\Service;
+namespace App\Tests\Risk;
 
-use App\Service\RiskIntelligenceService;
-use App\Entity\Risk;
+use App\Risk\RiskMatrixThresholds;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-class RiskIntelligenceServiceTest extends TestCase
+final class RiskMatrixThresholdsTest extends TestCase
 {
-    public function testCalculateRiskScore(): void
+    protected function tearDown(): void
     {
-        $service = new RiskIntelligenceService(/* dependencies */);
+        RiskMatrixThresholds::useProvider(null);
+    }
 
-        $risk = new Risk();
-        $risk->setLikelihood(5);
-        $risk->setImpact(4);
+    #[Test]
+    public function theOrganisationsScaleMovesTheBands(): void
+    {
+        RiskMatrixThresholds::useProvider(static fn (): array => ['critical' => 16, 'high' => 9, 'medium' => 4]);
 
-        $score = $service->calculateRiskScore($risk);
-
-        $this->assertEquals(20, $score);
+        self::assertSame('critical', RiskMatrixThresholds::classify(16));
+        self::assertSame('low', RiskMatrixThresholds::classify(3));
     }
 }
 ```
@@ -653,7 +657,7 @@ Update documentation when:
 - **docs/** - Detailed documentation
   - `docs/setup/` - Setup guides
   - `docs/architecture/` - Architecture documentation
-  - `docs/api/` - API documentation
+  - `docs/setup/API_SETUP.md` - API documentation
 - **Code comments** - Complex logic explanation
 - **Docblocks** - PHP class/method documentation
 
