@@ -86,6 +86,7 @@ management_review:
         title: 'Management Review — %title%'
         heading: 'Management Review (ISO 27001 Clause 9.3)'
         standard_ref: 'ISO/IEC 27001:2022 Clause 9.3 — Management Review'
+        input_ref: '(ISO 27001 Clause %ref%)'
         footer: 'Confidential — Management Review (%tenant%)'
         section:
             inputs: 'Inputs (Clause 9.3.2)'

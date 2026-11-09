@@ -25,6 +25,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Jobs lesen nur im Mandanten des Auftraggebers; Status und Download eines Jobs nur für den Auftraggeber (oder Super-Admin) | Gate 90 `check_job_id_access.py`, `AsyncJobVoter` |
 | Word-Exporte escapen jeden Text (kein XML-/Feld-Einschleusen wie `INCLUDEPICTURE` mit UNC-Pfad); Seiten geben Datensatztext nie als HTML aus | Gate 92 (`check_raw_output.py` für Twig, PHPStan-Regel `MarkupOutputRule` für PHP), `DocxDocumentFactory`, `tests/Service/Export/DocxExportServiceTest::titleAndBodyAreEscapedInTheXml`, `tests/Twig/OutputEscapingTest` |
 | Das Audit-Log der Konsole trägt die Organisation des Datensatzes — auch ohne Pin: Reihenfolge Pin → Kontext → Datensatz (`AuditLogger::aboutRecord()`) → Person; Ablauf von Vier-Augen-Anfragen und Einwilligungs-Sync protokollieren je Organisation | `tests/Service/AuditLoggerTenantPinTest` |
+| Jede Organisation hat ihre eigene Audit-Log-Kette (Vorgänger = neueste signierte Zeile derselben Organisation, gelesen am Mandantenfilter vorbei); die Prüfung läuft als Job über die Kette der eigenen Organisation (Super-Admin ohne Organisation: alle), meldet geänderte und gelöschte Zeilen, hält den Speicher flach. Die Signatur deckt genau den gespeicherten Zeitpunkt ab (ganze Sekunden); ältere Zeilen bis `audit_log.hmac_legacy_until_id` zählen als „nur Verkettung prüfbar“ (B3) | `tests/Service/AuditLogIntegrityServiceTest` |
 | Benachrichtigungs-Mails gehen nur an Konten der Organisation (`RecipientFilter`) und tragen nur Kurzfelder (`NotificationMailSummary`), nie den ganzen Datensatz | `tests/Service/Notification/Channel/EmailChannelTest` |
 | Der Aktivitäts-Feed zeigt Audit-Zeilen nur Admins | `tests/Service/ActivityFeedTest::aNonAdminSeesNoAuditRows` |
 | Ein geplanter Bericht läuft nur, solange sein Modul (`ScheduledReport::TYPE_MODULES`), die Organisation und der Ersteller (aktiver Manager) es erlauben; sonst wird er übersprungen. Ein Fehler einer Organisation stoppt die anderen nicht und wartet mit Backoff | `tests/Contract/ScheduledReportModuleContractTest` (jeder Typ mit Modul) |
@@ -150,6 +151,31 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Controls hinter einer Anforderung nur aus der eigenen Organisation | Gate 86 |
 | Risikostufen aus der Skala der Organisation des Datensatzes | Gate 87, `tests/Risk/RiskScaleOfRecordOrganisationTest` |
 | Exporte und Downloads werden protokolliert; jeder Datenschutz-Export (VVT, DSFA, Datenpanne, Betroffenenanfrage, Einwilligung, Behörden-VVT) trägt dieselbe Regel `PrivacyExportAccess::RULE` (DSB oder Manager) | `DownloadAuditSubscriber`, `tests/Security/PrivacyExportAccessTest` (findet die Routen selbst) |
+
+
+## Nachweise aus der Wiederherstellung (S26)
+
+Platzhalter (B3): Inhalt schreibt Paket S26 — welche Nachweis-Entitäten und -Felder eine
+Organisationswiederherstellung nie ändert und welcher Test das belegt.
+
+| Invariante | Beleg |
+|---|---|
+
+## Löschvertrag (S29)
+
+Platzhalter (B3): Inhalt schreibt Paket S29 — welche Datensätze mit Endzustand oder Aufbewahrungspflicht wie
+gelöscht werden dürfen und welcher Test jeden Löschweg findet.
+
+| Invariante | Beleg |
+|---|---|
+
+## Vorschlagsvertrag (S30)
+
+Platzhalter (B3): Inhalt schreibt Paket S30 — was eine `SuggestionKind` erzeugen und anwenden darf und welcher Test
+jede Art prüft.
+
+| Invariante | Beleg |
+|---|---|
 
 Gegenprobe: mit abgeschaltetem Organisationsfilter (`TenantFilter`) werden 25 der Vertragstests rot; die Tests prüfen außerdem, dass der eigene Datensatz in Liste und Suche auftaucht, damit eine leere Antwort nicht als Erfolg zählt.
 

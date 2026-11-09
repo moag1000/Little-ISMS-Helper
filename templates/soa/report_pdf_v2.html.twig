@@ -2,16 +2,17 @@
 {% trans_default_domain 'soa' %}
 
 {# Document Metadata #}
-{% block document_id %}DOC-ISMS-SOA-001{% endblock %}
+{% block document_id %}{{ 'DOC-ISMS-SOA-001'|e }}{% endblock %}
 {% block document_title %}{{ 'page.title'|trans({}, 'messages') }}{% endblock %}
 {% block document_type %}{{ 'report.document_type'|trans({}, 'reports') }}{% endblock %}
 {% block document_version %}{{ version }}{% endblock %}
 {# Approval state from the decision register (ISO 27001 5.1 / 6.1.3), never assumed. #}
 {% set _soa_approval = management_approval('soa') %}
 {% block document_status %}{{ _soa_approval ? 'status.approved'|trans({}, 'messages') : 'soa.governance.not_approved'|trans({}, 'soa') }}{% endblock %}
-{% block document_status_class %}{{ _soa_approval ? 'approved' : 'draft' }}{% endblock %}
+{% set _soa_status_class = _soa_approval ? 'approved' : 'draft' %}
+{% block document_status_class %}{{ _soa_status_class }}{% endblock %}
 {% block document_classification %}{{ 'label.classification_confidential'|trans({}, 'messages') }}{% endblock %}
-{% block classification_class %}confidential{% endblock %}
+{% block classification_class %}{{ 'confidential'|e }}{% endblock %}
 
 {# Header/Footer #}
 {% block header_center %}{{ 'report.header_center'|trans({}, 'reports') }}{% endblock %}
@@ -29,50 +30,7 @@
 {% set show_version_history = false %}
 
 {# Custom Styles for SoA — Aurora token CSS (no raw hex) #}
-{% block custom_styles %}
-.stats-grid       { display: table; width: 100%; margin-bottom: 20pt; border-collapse: collapse; border: 2px solid var(--border); }
-.stats-row        { display: table-row; }
-.stats-cell       { display: table-cell; padding: 10pt; text-align: center; border: 1px solid var(--border); width: 25%; background: var(--surface-2); }
-.stats-label      { font-size: 8pt; color: var(--fg-2); text-transform: uppercase; font-weight: bold; margin-bottom: 5pt; letter-spacing: 0.5pt; }
-.stats-value      { font-size: 18pt; color: var(--primary); font-weight: bold; }
-
-.control-table    { width: 100%; border-collapse: collapse; margin-bottom: 14pt; font-size: 8pt; border: 1px solid var(--border); }
-.control-table th { background: var(--fg); color: var(--surface); padding: 5pt; text-align: left; font-weight: bold; border: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.3pt; }
-.control-table td { padding: 4pt; border: 1px solid var(--border); vertical-align: top; }
-.control-table tr:nth-child(even) { background: var(--surface-2); }
-.control-id       { font-weight: bold; color: var(--primary); white-space: nowrap; }
-
-.badge {
-    display: inline-block;
-    padding: 2pt 5pt;
-    border-radius: 3pt;
-    font-size: 7pt;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.3pt;
-}
-.badge-implemented     { background: var(--success-tint); color: var(--success); }
-.badge-partial         { background: var(--warning-tint); color: var(--warning); }
-.badge-not-implemented { background: var(--danger-tint);  color: var(--danger);  }
-.badge-planned         { background: #dbeafe; color: var(--info-text); }
-.badge-applicable      { background: var(--success-tint); color: var(--success); }
-.badge-not-applicable  { background: var(--surface-2); color: var(--fg-2); border: 1px solid var(--border); }
-
-.category-header {
-    background: var(--info-tint);
-    padding: 7pt 10pt;
-    margin-top: 12pt;
-    margin-bottom: 7pt;
-    border-left: 4px solid var(--primary);
-    font-weight: bold;
-    font-size: 9.5pt;
-    color: var(--info-text);
-    text-transform: uppercase;
-    letter-spacing: 0.4pt;
-}
-
-.percentage { font-weight: bold; color: var(--primary); }
-{% endblock %}
+{% block custom_styles %}{% include 'soa/_report_v2_styles.css.twig' %}{% endblock %}
 
 {# Main Document Content #}
 {% block document_content %}
@@ -144,7 +102,7 @@
             <th scope="col" style="width: 8%;">{{ 'table.control_id'|trans({}, 'soa') }}</th>
             <th scope="col" style="width: 22%;">{{ 'table.name'|trans({}, 'soa') }}</th>
             <th scope="col" style="width: 30%;">{{ 'section.description'|trans({}, 'soa') }}</th>
-            <th scope="col" style="width: 12%;" class="text-center">{{ 'table.mris'|trans({}, 'soa') }}<br><span style="font-weight:normal;font-size:10px;">(Peddi 2026)</span></th>
+            <th scope="col" style="width: 12%;" class="text-center">{{ 'table.mris'|trans({}, 'soa') }}<br><span style="font-weight:normal;font-size:10px;">{{ '(Peddi 2026)'|e }}</span></th>
             <th scope="col" style="width: 8%;" class="text-center">{{ 'table.applicable'|trans({}, 'soa') }}</th>
             <th scope="col" style="width: 10%;" class="text-center">{{ 'field.status'|trans({}, 'soa') }}</th>
             <th scope="col" style="width: 10%;" class="text-center">{{ 'table.progress'|trans({}, 'soa') }}</th>
@@ -263,22 +221,22 @@
     </thead>
     <tbody>
         <tr>
-            <td>ISO/IEC 27001:2022</td>
+            <td>{{ 'ISO/IEC 27001:2022'|e }}</td>
             <td>{{ 'soa.pdf_v2.type_standard'|trans({}, 'soa') }}</td>
             <td>{{ 'soa.iso27001_full_title'|trans({}, 'soa')}}</td>
         </tr>
         <tr>
-            <td>ISO/IEC 27002:2022</td>
+            <td>{{ 'ISO/IEC 27002:2022'|e }}</td>
             <td>{{ 'soa.pdf_v2.type_standard'|trans({}, 'soa') }}</td>
             <td>{{ 'soa.pdf_v2.iso27002_title'|trans({}, 'soa') }}</td>
         </tr>
         <tr>
-            <td>ISMS-POL-001</td>
+            <td>{{ 'ISMS-POL-001'|e }}</td>
             <td>{{ 'soa.pdf_v2.type_policy'|trans({}, 'soa') }}</td>
             <td>{{ 'report.pdf.ref_isms_policy'|trans({}, 'soa') }}</td>
         </tr>
         <tr>
-            <td>ISMS-RISK-001</td>
+            <td>{{ 'ISMS-RISK-001'|e }}</td>
             <td>{{ 'soa.pdf_v2.type_risk_assessment'|trans({}, 'soa') }}</td>
             <td>{{ 'report.pdf.ref_risk_assessment'|trans({}, 'soa') }}</td>
         </tr>

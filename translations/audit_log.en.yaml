@@ -2,7 +2,12 @@ audit_log:
     integrity:
         verify_button: 'Verify HMAC chain'
         disabled: 'Audit-log integrity verification is disabled (APP_AUDIT_HMAC_KEY missing).'
-        intact: 'Audit-log chain intact — no tampering detected.'
+        intact_count: 'Audit-log chain intact: %count% entries checked, no tampering detected.'
+        violations: 'Audit-log chain broken: %count% violations. First entries: %entries%'
+        unverifiable: '%count% older entries can only be checked for their chain links: their signature covered fractions of a second the database never stored.'
+        job_running: 'Checking the HMAC chain …'
+        job_label: 'Verify HMAC chain'
+        job_subtitle: 'Checks every signature and chain link of your organisation.'
     page:
         title: 'Audit Log'
         subtitle: 'Complete logging of all activities in the ISMS to ensure auditability'

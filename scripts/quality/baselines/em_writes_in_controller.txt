@@ -100,12 +100,12 @@ src/Controller/AssetController.php:548
 src/Controller/AssetController.php:549
 src/Controller/AssetController.php:753
 src/Controller/Audit/AuditChecklistController.php:141
-src/Controller/AuditController.php:99
 src/Controller/AuditController.php:100
-src/Controller/AuditController.php:212
-src/Controller/AuditController.php:272
-src/Controller/AuditController.php:286
-src/Controller/AuditController.php:287
+src/Controller/AuditController.php:101
+src/Controller/AuditController.php:216
+src/Controller/AuditController.php:276
+src/Controller/AuditController.php:290
+src/Controller/AuditController.php:291
 src/Controller/AuditFindingController.php:167
 src/Controller/AuditFindingController.php:168
 src/Controller/AuditFindingController.php:282

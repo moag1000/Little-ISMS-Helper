@@ -1,5 +1,18 @@
 fte_tracking:
     badge: 'FTE-Tracking'
+    csv:
+        title: 'FTE-Einsparungsbericht'
+        generated: 'Erstellt: %date%'
+        tenant: 'Organisation'
+        tenant_unknown: 'k. A.'
+        total_minutes: 'Gesamteinsparung (Minuten)'
+        total_hours: 'Gesamteinsparung (Stunden)'
+        ale_title: 'Risikoquantifizierung (ALE)'
+        ale_total: 'Jährlich erwarteter Verlust gesamt (EUR)'
+        ale_count: 'Quantifizierte Risiken (Anzahl)'
+        source: 'Quelle'
+        minutes: 'Einsparung (Minuten)'
+        month: 'Monat'
     dashboard:
         title: 'FTE-Tracking-Dashboard'
         subtitle: 'Eingesparte Aufwände durch Automatisierung — SSO-JIT, Bulk-Import und Evidence-Wiederverwendung'

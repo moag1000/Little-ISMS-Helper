@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * EntityListExporter
@@ -56,6 +57,7 @@ final class EntityListExporter
         private readonly IncidentRepository $incidentRepository,
         private readonly AuditFindingRepository $auditFindingRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -301,7 +303,7 @@ final class EntityListExporter
         $sheet->setTitle(ucfirst($entityType));
 
         if (empty($rows)) {
-            $sheet->setCellValue('A1', 'No data');
+            $sheet->setCellValue('A1', $this->translator->trans('filtered_export.no_data', [], 'filtered_export'));
             return $spreadsheet;
         }
 

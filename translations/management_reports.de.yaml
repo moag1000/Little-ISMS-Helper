@@ -159,6 +159,7 @@ management_reports:
     # Risk Report
     risk:
         title: 'Risikomanagement-Bericht'
+        methodology: '<p>Risikoscore = Eintrittswahrscheinlichkeit × Auswirkung (1-25). Schwellenwerte nach ISO 27005: Kritisch ≥%critical%, Hoch %high_min%-%high_max%, Mittel %medium_min%-%medium_max%, Niedrig &lt;%medium_min%. Behandlungspläne werden über RiskTreatmentPlanRepository verfolgt.</p>'
         total_risks: 'Risiken gesamt'
         avg_score: 'Durchschn. Score'
         treatment_plans: 'Behandlungspläne'
@@ -240,6 +241,7 @@ management_reports:
     # Compliance Report
     compliance:
         title: 'Compliance-Status-Bericht'
+        methodology: '<p>Compliance-Quote = umgesetzte Maßnahmen / anwendbare Maßnahmen × 100. Schwellenwerte: ≥80% = Gut aufgestellt, 60-79% = Verbesserungsbedarf, &lt;60% = Sofortiger Handlungsbedarf.</p>'
         overall: 'Gesamte Compliance-Rate'
         control_status: 'Maßnahmen-Umsetzungsstatus'
         assessment_title: 'Compliance-Bewertung'
@@ -390,6 +392,7 @@ management_reports:
     # Zertifizierungsbereitschaft
     cert_readiness:
         title: 'ISO 27001 Zertifizierungsbereitschafts-Bewertung'
+        methodology: '<p>Gesamtwert: gewichteter Durchschnitt aus Klausel-Wert (60%) und Annex-A-Abdeckung (40%). Schwellenwerte: BEREIT ≥85%, BEDINGT 70-84%, NICHT BEREIT &lt;70%.</p>'
         overall_score: 'Gesamtbereitschaft'
         clause_compliance_score: 'Klausel-Compliance (4-10)'
         annex_a_coverage: 'Annex A Maßnahmen'

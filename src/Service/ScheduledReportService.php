@@ -14,6 +14,7 @@ use App\Service\AuditLogger;
 use App\Service\Mail\MailerTlsChecker;
 use App\Service\Mail\RecipientFilter;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Report\ScheduledReportAttachment;
 use App\Service\Report\ScheduledReportAuditTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -35,8 +36,7 @@ final class ScheduledReportService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ManagementReportService $reportService,
-        private readonly PdfExportService $pdfExportService,
-        private readonly ExcelExportService $excelExportService,
+        private readonly ScheduledReportAttachment $attachment,
         private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
         private readonly TenantContext $tenantContext,
@@ -108,51 +108,17 @@ final class ScheduledReportService
     }
 
     /**
-     * Generate report content based on type and format
+     * The attached file, in the language chosen on the schedule (W10, R8-09).
      */
     private function generateReportContent(ScheduledReport $report): string
     {
-        $format = $report->getFormat();
         $type = $report->getReportType();
 
-        if ($format === ScheduledReport::FORMAT_PDF) {
-            return $this->generatePdfReport($type);
-        }
-
-        return $this->generateExcelReport($type);
-    }
-
-    /**
-     * Generate PDF report
-     */
-    private function generatePdfReport(string $type): string
-    {
-        $data = $this->getReportData($type);
-        $template = $this->getReportTemplate($type);
-        $generatedAt = new DateTime();
-
-        return $this->pdfExportService->generatePdf($template, array_merge($data, [
-            'generated_at' => $generatedAt,
-            'version' => $generatedAt->format('Y.m.d'),
-        ]));
-    }
-
-    /**
-     * Generate Excel report
-     */
-    private function generateExcelReport(string $type): string
-    {
-        $data = $this->getReportData($type);
-
-        switch ($type) {
-            case ScheduledReport::TYPE_RISK:
-                return $this->generateRiskExcel($data);
-            case ScheduledReport::TYPE_ASSETS:
-                return $this->generateAssetsExcel($data);
-            default:
-                // For types without Excel support, generate a simple summary
-                return $this->generateSummaryExcel($type, $data);
-        }
+        return $this->attachment->render(
+            $report,
+            fn (): array => $this->getReportData($type),
+            $this->getReportTemplate($type),
+        );
     }
 
     /**
@@ -232,7 +198,7 @@ final class ScheduledReportService
         $topRisks = [];
         foreach ($topRiskEntities as $risk) {
             $score = $risk->getInherentRiskLevel();
-            $level = ucfirst(\App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()));
+            $level = \App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()); // translated in the template
             $topRisks[] = [
                 'title' => $risk->getTitle(),
                 'level' => $level,
@@ -304,7 +270,7 @@ final class ScheduledReportService
         string $filename,
         string $mimeType,
     ): void {
-        $locale = $report->getLocale() ?? 'de';
+        $locale = $this->attachment->localeOf($report);
         $subject = $this->translator->trans(
             'email.subject_generic',
             ['{period}' => $report->getSchedule() ?? ''],
@@ -352,112 +318,6 @@ final class ScheduledReportService
     }
 
     /**
-     * Generate Risk Excel report
-     */
-    private function generateRiskExcel(array $data): string
-    {
-        $report = $data['report'];
-        $headers = ['ID', 'Title', 'Category', 'Likelihood', 'Impact', 'Score', 'Level', 'Treatment', 'Status', 'Owner'];
-        $rows = [];
-
-        foreach ($report['risks'] as $risk) {
-            $score = $risk->getRiskScore();
-            $level = ucfirst(\App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()));
-
-            $rows[] = [
-                $risk->getId(),
-                $risk->getTitle(),
-                $risk->getCategory(),
-                $risk->getProbability(),
-                $risk->getImpact(),
-                $score,
-                $level,
-                $risk->getTreatmentStrategy()?->value ?? '-',
-                $risk->getStatus()?->value,
-                $risk->getRiskOwner() ? $risk->getRiskOwner()->getEmail() : '-',
-            ];
-        }
-
-        $spreadsheet = $this->excelExportService->exportArray($rows, $headers, 'Risk Management Report');
-        return $this->excelExportService->generateExcel($spreadsheet);
-    }
-
-    /**
-     * Generate Assets Excel report
-     */
-    private function generateAssetsExcel(array $data): string
-    {
-        $report = $data['report'];
-        $headers = ['ID', 'Name', 'Type', 'Classification', 'Owner', 'Status'];
-        $rows = [];
-
-        foreach ($report['assets'] as $asset) {
-            $rows[] = [
-                $asset->getId(),
-                $asset->getName(),
-                $asset->getAssetType(),
-                $asset->getDataClassification() ?? 'Unclassified',
-                $asset->getEffectiveOwner() ?? '-',
-                $asset->getStatus() ?? 'Active',
-            ];
-        }
-
-        $spreadsheet = $this->excelExportService->exportArray($rows, $headers, 'Asset Inventory');
-        return $this->excelExportService->generateExcel($spreadsheet);
-    }
-
-    /**
-     * Generate Summary Excel for types without specific Excel support
-     */
-    private function generateSummaryExcel(string $type, array $data): string
-    {
-        $typeLabel = ScheduledReport::getReportTypes()[$type] ?? $type;
-        $headers = ['Metric', 'Value'];
-        $rows = $this->flattenDataForExcel($data);
-
-        $spreadsheet = $this->excelExportService->exportArray($rows, $headers, $typeLabel);
-        return $this->excelExportService->generateExcel($spreadsheet);
-    }
-
-    /**
-     * Flatten nested data for Excel export
-     */
-    private function flattenDataForExcel(array $data, string $prefix = ''): array
-    {
-        $rows = [];
-
-        foreach ($data as $key => $value) {
-            $label = $prefix ? "{$prefix}.{$key}" : $key;
-
-            if (is_array($value)) {
-                if ($this->isAssociativeArray($value)) {
-                    $rows = array_merge($rows, $this->flattenDataForExcel($value, $label));
-                } else {
-                    $rows[] = [$label, count($value) . ' items'];
-                }
-            } elseif (is_object($value)) {
-                if ($value instanceof \DateTimeInterface) {
-                    $rows[] = [$label, $value->format('Y-m-d H:i')];
-                }
-            } elseif (is_bool($value)) {
-                $rows[] = [$label, $value ? 'Yes' : 'No'];
-            } else {
-                $rows[] = [$label, (string) $value];
-            }
-        }
-
-        return $rows;
-    }
-
-    /**
-     * Check if array is associative
-     */
-    private function isAssociativeArray(array $arr): bool
-    {
-        if ([] === $arr) {
-            return false;
-        }
-        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     /**

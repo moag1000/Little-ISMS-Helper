@@ -163,7 +163,7 @@ class ManagementReportController extends AbstractController
 
         foreach ($riskReport['risks'] as $risk) {
             $score = $risk->getRiskScore();
-            $level = ucfirst(\App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()));
+            $level = \App\Risk\RiskMatrixThresholds::classify($score, $risk->getTenant()); // translated in the template
 
             $data[] = [
                 $risk->getId(),

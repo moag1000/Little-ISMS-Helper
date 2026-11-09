@@ -40,7 +40,19 @@ Regel für eigene PHPStan-Regeln: nur statische Reflexion (`$scope`, `Reflection
 `$type->getObjectClassReflections()`), nie `is_subclass_of()`/`class_exists()`/`new \ReflectionClass()` auf
 analysierte Klassen — das lädt die Klasse zur Laufzeit, und PHP 8.3 scheitert an PHP-8.4-Syntax.
 
-PHPUnit braucht PHP ≥ 8.4 (PHPUnit 13); dafür bleibt die conda-Anleitung im Projektgedächtnis, CI ist die Referenz.
+PHPUnit braucht PHP ≥ 8.4 (PHPUnit 13). `scripts/setup/cloud_phpunit.sh` holt PHP 8.5 und PostgreSQL 16 von
+conda-forge nach `/opt/cloudphp` (3–5 Minuten, ein zweiter Lauf ist in Sekunden fertig), startet Postgres, legt
+`.env.test.local`, `config/active_modules.yaml` und die Setup-Sperre an und baut das Testschema:
+
+```bash
+bash scripts/setup/cloud_phpunit.sh
+export PATH=/opt/cloudphp/wrap:$PATH && php bin/phpunit tests/Service/AuditLogIntegrityServiceTest.php
+```
+
+`importmap:install` braucht jsdelivr (gesperrt); das Skript legt leere Platzhalter unter `assets/vendor/` an, damit
+Seiten in Tests rendern. Postgres statt MySQL: rohes SQL kann abweichen — solche Fehler auf `main` gegenprüfen
+(`git stash`), CI bleibt die Referenz. Es gibt kein
+Transaktions-Rollback zwischen Tests (DAMA ist aus): Tests räumen selbst auf.
 
 ### setup/validate-setup.sh
 
@@ -774,6 +786,25 @@ noch `// @tenant-pin-ok: <Grund>` trägt. Weg der Wahl: `TenantContext::runAs()`
 das Verhalten pinnt `tests/Scheduler/ScheduledCommandsTenantIsolationTest`.
 
 **CI-Integration:** Gate 97 im `code-quality`-Job.
+
+---
+
+### quality/check_pdf_i18n.py (Gate 102)
+
+**Zweck:** Nachweis-PDFs sprechen eine Sprache (W10, 2026-11). VVT (Art. 30), Datenpanne (Art. 33/34), DSFA und
+die Compliance-Exporte mischten deutsche Titel, englische Feldlabels und rohe Enum-Schlüssel; vier PDFs trugen
+fest `lang="de"`, drei gar keins. Das Skript findet alle PDF-Vorlagen selbst (Name oder Ordner enthält `pdf`) und
+meldet je Datei: Textknoten außerhalb von Twig (`text`), gedruckte Literale in `{{ }}` ohne `|trans`
+(`literal`, z. B. `x ? 'YES' : 'NO'`, `?? 'Not specified'`), `<html>` ohne `lang="{{ app.locale }}"` (`lang`;
+`app.locale` folgt dem `LocaleSwitcher`, also auch in Jobs und geplanten Berichten), rohe Enum-Ausgabe über
+`|upper`/`|title`/`|capitalize`/`|replace({'_': ' '})` (`enum`) und feste „Seite x von y“ im `@page`-CSS (`page`).
+Sprachneutrale Tokens (Normnummern, Akronyme wie ISO/NIS-2/DORA) sind erlaubt; Attributwerte (CSS-Klassen)
+werden nicht gelesen. Zähler je Datei in `baselines/pdf_i18n.txt`, nur schrumpfend (eine veraltete Zeile ist
+ebenfalls rot). Details einer Datei: `--show <template>`. Selbsttest `scripts/quality/tests/test_check_pdf_i18n.py`.
+PHP-Teil: `tests/Contract/ExportLocaleContractTest` (jeder `*Export*Job` bekommt die Locale des Auslösers, beide
+Runner führen den Job unter ihr aus, der Anhang eines geplanten Berichts folgt dessen Sprache).
+
+**CI-Integration:** Gate 102 im `code-quality`-Job.
 
 ---
 

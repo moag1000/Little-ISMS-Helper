@@ -29,7 +29,7 @@ final class DocxExportServiceTest extends TestCase
     {
         $doc = $this->document('Access Control Policy', "# Scope\n\nApplies to **all** staff.\n\n- rule one\n- rule two");
 
-        $bytes = (new DocxExportService())->exportDocument($doc);
+        $bytes = (new DocxExportService(new \Symfony\Component\Translation\IdentityTranslator()))->exportDocument($doc);
         self::assertNotSame('', $bytes);
 
         $tmp = tempnam(sys_get_temp_dir(), 'docx-test-');
@@ -49,7 +49,7 @@ final class DocxExportServiceTest extends TestCase
     {
         $doc = $this->document('Backup Policy', 'Daily backups are mandatory.');
 
-        $md = (new DocxExportService())->exportMarkdown($doc);
+        $md = (new DocxExportService(new \Symfony\Component\Translation\IdentityTranslator()))->exportMarkdown($doc);
 
         self::assertStringContainsString('# Backup Policy', $md);
         self::assertStringContainsString('Daily backups are mandatory.', $md);
@@ -62,7 +62,7 @@ final class DocxExportServiceTest extends TestCase
         $doc->setFilename('Empty');
 
         // No body / description set anywhere → placeholder, never an empty string.
-        self::assertStringContainsString('empty body', (new DocxExportService())->resolveMarkdown($doc));
+        self::assertStringContainsString('export.doc.empty_body', (new DocxExportService(new \Symfony\Component\Translation\IdentityTranslator()))->resolveMarkdown($doc));
     }
 
     #[Test]
@@ -71,7 +71,7 @@ final class DocxExportServiceTest extends TestCase
         $doc = $this->document('Weird', "## <script>alert(1)</script>\n**unterminated bold");
 
         // Must not throw and must escape the script tag (no raw <script> in output bytes).
-        $bytes = (new DocxExportService())->exportDocument($doc);
+        $bytes = (new DocxExportService(new \Symfony\Component\Translation\IdentityTranslator()))->exportDocument($doc);
         self::assertNotSame('', $bytes);
     }
     /**
@@ -84,7 +84,7 @@ final class DocxExportServiceTest extends TestCase
         $title = 'T</w:t></w:r><w:fldSimple w:instr="INCLUDEPICTURE \\\\host\\x"/><w:r><w:t> <&>';
         $doc = $this->document($title, "Body <&> \"quoted\" text");
 
-        $bytes = (new DocxExportService())->exportDocument($doc);
+        $bytes = (new DocxExportService(new \Symfony\Component\Translation\IdentityTranslator()))->exportDocument($doc);
         $tmp = tempnam(sys_get_temp_dir(), 'docx-test-');
         self::assertIsString($tmp);
         file_put_contents($tmp, $bytes);

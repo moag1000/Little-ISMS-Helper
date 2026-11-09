@@ -815,6 +815,10 @@ jobs:
         # S23, 2026-11: the worker runs scheduled commands and jobs in one container; a report or KPI
         # snapshot left its organisation pinned and the nightly instance backup held only that one.
         run: python3 scripts/quality/check_tenant_pin_restore.py --quiet
+      - name: "Gate 102: evidence PDFs in one language (|trans, <html lang> from app.locale, no raw enums)"
+        # W10, 2026-11: VVT, breach and DPIA PDFs mixed German titles with English labels and raw keys;
+        # lang was fixed "de" or missing. Baseline may only shrink. PHP part: ExportLocaleContractTest.
+        run: python3 scripts/quality/check_pdf_i18n.py --baseline scripts/quality/baselines/pdf_i18n.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
@@ -1037,7 +1041,40 @@ jobs:
           fi
 
           echo "Docker Compose test successful!"
-          docker compose down -v
+
+      - name: Setup Node.js (axe run)
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      # B3 (Welle 10): WCAG 2.2 AA at run time on ten core pages (tests/E2e/specs/a11y-axe.spec.ts) against the
+      # stack started above. Report-only until the first release run is clean, then drop continue-on-error.
+      - name: Accessibility (axe, 10 core pages)
+        continue-on-error: true
+        timeout-minutes: 15
+        env:
+          E2E_BASE_URL: http://127.0.0.1:8000
+          E2E_USER: a11y@local.test
+          E2E_PASS: A11y-Axe-Release-Run-2026!
+        run: |
+          docker compose exec -T app sh -c 'touch config/setup_complete.lock && \
+            php bin/console app:create-screenshot-user --force --email="$0" --password="$1" --env=prod' \
+            "$E2E_USER" "$E2E_PASS"
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          CI=1 npx playwright test tests/E2e/specs/a11y-axe.spec.ts --reporter=list --trace off
+
+      - name: Upload axe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: axe-report
+          path: var/a11y/
+          if-no-files-found: ignore
+
+      - name: Stop Docker Compose
+        if: always()
+        run: docker compose down -v
 
       - name: Upload Logo & README to Docker Hub
         if: startsWith(github.ref, 'refs/tags/v')

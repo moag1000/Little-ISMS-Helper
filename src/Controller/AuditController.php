@@ -54,6 +54,7 @@ class AuditController extends AbstractController
         private readonly LifecycleService $lifecycleService,
         private readonly CrossFrameworkCoverageService $crossFrameworkCoverage,
         private readonly RecordPrefill $recordPrefill,
+        private readonly \App\Twig\AppDateFormatExtension $dateFormat,
         private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
     #[Route('/audit', name: 'app_audit_index', methods: ['GET'])]
@@ -129,7 +130,10 @@ class AuditController extends AbstractController
         $jobTenantScope->currentUserScope(); // no organisation: denied unless SUPER_ADMIN
         $audits = $this->internalAuditRepository->findAll(); // scoped by the request's tenant filter
 
-        $headers = ['ID', 'Title', 'Scope', 'Status', 'Planned Date', 'Actual Date'];
+        $headers = array_map(
+            fn(string $key): string => $this->translator->trans('audit.export.header.' . $key, [], 'audit'),
+            ['id', 'title', 'scope', 'status', 'planned_date', 'actual_date'],
+        );
         $data = [];
         foreach ($audits as $audit) {
             $data[] = [
@@ -137,15 +141,15 @@ class AuditController extends AbstractController
                 $audit->getTitle(),
                 $audit->getScope(),
                 $audit->getStatus(),
-                $audit->getPlannedDate()?->format('d.m.Y') ?? '',
-                $audit->getActualDate()?->format('d.m.Y') ?? '',
+                $audit->getPlannedDate() ? $this->dateFormat->formatDate($audit->getPlannedDate()) : '',
+                $audit->getActualDate() ? $this->dateFormat->formatDate($audit->getActualDate()) : '',
             ];
         }
 
         // Close session to prevent blocking other requests during Excel generation
         $request->getSession()->save();
 
-        $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Audits');
+        $spreadsheet = $this->excelExportService->exportArray($data, $headers, $this->translator->trans('audit.export.sheet', [], 'audit'));
         $excel = $this->excelExportService->generateExcel($spreadsheet);
 
         return new Response($excel, Response::HTTP_OK, [

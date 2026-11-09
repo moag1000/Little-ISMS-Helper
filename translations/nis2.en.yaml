@@ -21,6 +21,11 @@ nis2:
         incident_number: "Incident Number"
         classification: "Classification"
         severity: "Severity"
+        severity_value:
+            low: "Low"
+            medium: "Medium"
+            high: "High"
+            critical: "Critical"
         status: "Status"
         category: "Category"
         nis2_category: "NIS2 Category"
@@ -64,6 +69,7 @@ nis2:
             financial_impact: "Estimated Financial Impact"
             iocs: "Indicators of Compromise (IoCs)"
             related_vulnerabilities: "Related Vulnerabilities"
+            vulnerability_fallback: "Vulnerability #%id%"
             initial_actions: "Initial Actions Taken"
             authority_notified: "National Authority Notified"
             authority_reference: "Authority Reference Number"
@@ -96,6 +102,7 @@ nis2:
             early_warning: "Early Warning"
             notification: "Incident Notification"
             final_report: "Final Report"
+            final_report_due: "Final Report (1 month)"
 
         # Footer
         footer: "Confidential - NIS2 Art. 23 Incident Notification Report"
