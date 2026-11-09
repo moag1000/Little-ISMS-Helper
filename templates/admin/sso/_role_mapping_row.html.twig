@@ -5,6 +5,7 @@
  # Variables:
  #   mapping  — IdentityProviderRoleMapping entity
  #   loop     — Twig loop variable providing loop.index0
+ #   role_choices — roles the admin may map (UserAdministrationGuard::ssoMappableRoles)
  #}
 {% trans_default_domain 'sso' %}
 <div class="role-mapping-row border rounded p-3 mb-2 bg-body-secondary">
@@ -26,12 +27,18 @@
                    aria-label="{{ 'sso.role_mapping.field.claim_value_expression'|trans }}">
         </div>
         <div class="col-md-2">
-            <input type="text"
-                   name="role_mappings[{{ loop.index0 }}][assignedRole]"
-                   value="{{ mapping.assignedRole }}"
-                   class="form-control form-control-sm"
-                   placeholder="ROLE_ADMIN"
-                   aria-label="{{ 'sso.role_mapping.field.assigned_role'|trans }}">
+            {# Roles come only from the assignable list (S14) — no free text. A stored
+               value outside it stays visible so the save can reject it. #}
+            <select name="role_mappings[{{ loop.index0 }}][assignedRole]"
+                    class="form-select form-select-sm"
+                    aria-label="{{ 'sso.role_mapping.field.assigned_role'|trans }}">
+                {% if mapping.assignedRole not in role_choices %}
+                    <option value="{{ mapping.assignedRole }}" selected>{{ mapping.assignedRole }} ({{ 'sso.role_mapping.not_assignable'|trans }})</option>
+                {% endif %}
+                {% for role in role_choices %}
+                    <option value="{{ role }}" {% if role == mapping.assignedRole %}selected{% endif %}>{{ role }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="col-md-1">
             <input type="number"

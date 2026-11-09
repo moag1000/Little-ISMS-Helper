@@ -176,7 +176,7 @@ final class SsoAccountTakeoverTest extends WebTestCase
     }
 
     #[Test]
-    public function globalProviderStillLinksPrivilegedUserAndAppliesMappedRole(): void
+    public function globalProviderLinksButNeverHandsOutAPrivilegedRole(): void
     {
         $this->mapping($this->globalProvider, 'ROLE_SUPER_ADMIN');
 
@@ -185,7 +185,8 @@ final class SsoAccountTakeoverTest extends WebTestCase
         self::assertInstanceOf(User::class, $user);
         $reloaded = $this->reload($this->userB);
         self::assertSame($this->globalProvider->getId(), $reloaded->getSsoProvider()?->getId());
-        self::assertContains('ROLE_SUPER_ADMIN', $reloaded->getRoles());
+        // S14: privileged roles never come from claims, not even via a global provider.
+        self::assertNotContains('ROLE_SUPER_ADMIN', $reloaded->getRoles());
 
         // #1059 I-6 ruling: a privileged account is never linked by e-mail,
         // not even by a global provider; an existing binding keeps working.
@@ -247,8 +248,12 @@ final class SsoAccountTakeoverTest extends WebTestCase
         self::assertSame('ROLE_MANAGER', $mappings[0]->getAssignedRole());
     }
 
+    /**
+     * S14: privileged roles never come from claims — not even a super admin
+     * maps one, not even on a global provider. Granted in the user administration.
+     */
     #[Test]
-    public function superAdminCanStillSavePrivilegedRoleMappingOnGlobalProvider(): void
+    public function nobodyMapsAPrivilegedRoleNotEvenTheSuperAdmin(): void
     {
         // Instance operator without tenant (the tenant filter hides global
         // providers from a tenant-bound session).
@@ -265,10 +270,28 @@ final class SsoAccountTakeoverTest extends WebTestCase
 
         self::assertResponseRedirects();
         $this->em->clear();
-        $mappings = $this->em->getRepository(IdentityProviderRoleMapping::class)
-            ->findBy(['identityProvider' => $this->globalProvider->getId()]);
-        self::assertCount(1, $mappings);
-        self::assertSame('ROLE_SUPER_ADMIN', $mappings[0]->getAssignedRole());
+        self::assertCount(0, $this->em->getRepository(IdentityProviderRoleMapping::class)
+            ->findBy(['identityProvider' => $this->globalProvider->getId()]));
+    }
+
+    /** S14: the mapped role comes from the list, free text is refused. */
+    #[Test]
+    public function aFreeTextRoleIsNotSaved(): void
+    {
+        $this->client->loginUser($this->adminA);
+
+        foreach (['ROLE_MADE_UP', 'role_manager ', 'Administrators'] as $typed) {
+            $this->client->request('POST', $this->mappingsUrl($this->tenantProvider), [
+                '_token' => $this->csrf(),
+                'role_mappings' => [
+                    ['claimKey' => 'groups', 'claimValueExpression' => 'x', 'assignedRole' => $typed, 'priority' => '1', 'isActive' => '1'],
+                ],
+            ]);
+            self::assertResponseRedirects();
+        }
+        $this->em->clear();
+        self::assertCount(0, $this->em->getRepository(IdentityProviderRoleMapping::class)
+            ->findBy(['identityProvider' => $this->tenantProvider->getId()]));
     }
 
     #[Test]
@@ -291,12 +314,16 @@ final class SsoAccountTakeoverTest extends WebTestCase
     }
 
     #[Test]
-    public function ignoredPrivilegedRolesIsEmptyForGlobalProviderAndOrdinaryRoles(): void
+    public function ignoredPrivilegedRolesListsPrivilegedRolesOfEveryProvider(): void
     {
         $privileged = $this->mapping($this->globalProvider, 'ROLE_SUPER_ADMIN');
         $ordinary = $this->mapping($this->tenantProvider, 'ROLE_MANAGER');
 
-        self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->globalProvider, [$privileged]));
+        // S14: privileged roles never come from claims, not even via a global provider.
+        self::assertSame(
+            ['ROLE_SUPER_ADMIN'],
+            SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->globalProvider, [$privileged]),
+        );
         self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->tenantProvider, [$ordinary]));
         self::assertSame(
             ['ROLE_SUPER_ADMIN'],

@@ -70,7 +70,7 @@ admin:
             approval_not_pending: 'Freigabe-Anfrage ist nicht mehr offen.'
             approval_user_exists: 'Es existiert bereits ein Benutzer mit der E-Mail %email%.'
             discovery_failed: 'Discovery fehlgeschlagen: %message%'
-            privileged_role_mapping: 'Rollen-Mappings nicht gespeichert: Nur Instanz-Administratoren (Super-Admin) dürfen privilegierte Rollen (%roles%) zuweisen.'
+            privileged_role_mapping: 'Rollen-Mappings nicht gespeichert: %roles% ist keine vergebbare Rolle. Konzern- und Super-Admin-Rollen kommen nie aus SSO-Claims, andere Rollen nur bis zur eigenen Rolle.'
     title: Administration
     cancel: 'Abbrechen'
     tenant_management:

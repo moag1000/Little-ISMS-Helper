@@ -7,6 +7,7 @@ namespace App\Tests\Security\Voter;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\TenantOwnership;
+use App\Security\RoleCeiling;
 use App\Security\Voter\UserVoter;
 use App\Service\InitialAdminService;
 use App\Service\TenantContext;
@@ -139,6 +140,7 @@ final class UserVoterHoldingScopeTest extends TestCase
             $this->createStub(InitialAdminService::class),
             VoterTestHelper::createRoleHierarchy(),
             $tenantContext,
+            new RoleCeiling(VoterTestHelper::createRoleHierarchy()),
         );
 
         return $voter->vote(new UsernamePasswordToken($actor, 'main', $actor->getRoles()), $target, [$attribute]);

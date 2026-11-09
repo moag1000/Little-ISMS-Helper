@@ -41,12 +41,50 @@ final class RoleNames
     ];
 
     /**
-     * Roles only a ROLE_SUPER_ADMIN actor may grant or revoke.
+     * Roles only a ROLE_SUPER_ADMIN actor may grant or revoke: the instance
+     * operator, switch_user and every holding-level role (they reach across
+     * organisations — Konzern roll-ups, Konzern defaults).
+     * `RoleCeilingTest` fails when a role_hierarchy key starting with
+     * ROLE_GROUP_ / ROLE_KONZERN_ is missing here.
      */
     public const array PRIVILEGED = [
         'ROLE_SUPER_ADMIN',
         'ROLE_GROUP_CISO',
         'ROLE_KONZERN_AUDITOR',
+        'ROLE_GROUP_BCM_OFFICER',
+        'ROLE_ALLOWED_TO_SWITCH',
+    ];
+
+    /**
+     * Roles an organisation admin hands out although ROLE_ADMIN does not
+     * inherit them (role ceiling exception, S14): top management is a
+     * different person than the admin (ISO 27001 5.1), a function owner signs
+     * for one business function. Self-assignment of ROLE_TOP_MGMT stays
+     * forbidden ({@see \App\Security\RoleCeiling::mayGrant()}).
+     */
+    public const array ADMIN_DELEGATED = [
+        'ROLE_TOP_MGMT',
+        'ROLE_FUNCTION_OWNER',
+    ];
+
+    /**
+     * Roles nobody may grant to themselves, whatever their own role.
+     */
+    public const array NEVER_SELF_GRANTED = [
+        'ROLE_TOP_MGMT',
+    ];
+
+    /**
+     * Grants and revokes of these roles are written to the audit log as an
+     * event of their own (`user.sensitive_role_changed`).
+     */
+    public const array AUDITED_GRANTS = [
+        'ROLE_TOP_MGMT',
+        'ROLE_SUPER_ADMIN',
+        'ROLE_ADMIN',
+        'ROLE_GROUP_CISO',
+        'ROLE_KONZERN_AUDITOR',
+        'ROLE_GROUP_BCM_OFFICER',
         'ROLE_ALLOWED_TO_SWITCH',
     ];
 
@@ -77,6 +115,11 @@ final class RoleNames
     public static function isPrivileged(?string $name): bool
     {
         return in_array(strtoupper(trim((string) $name)), self::PRIVILEGED, true);
+    }
+
+    public static function normalise(?string $name): string
+    {
+        return strtoupper(trim((string) $name));
     }
 
     /**

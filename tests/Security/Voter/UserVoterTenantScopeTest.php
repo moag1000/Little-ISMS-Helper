@@ -6,6 +6,7 @@ namespace App\Tests\Security\Voter;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Security\RoleCeiling;
 use App\Security\Voter\UserVoter;
 use App\Service\InitialAdminService;
 use App\Service\TenantContext;
@@ -61,6 +62,7 @@ final class UserVoterTenantScopeTest extends TestCase
             $this->createMock(InitialAdminService::class),
             VoterTestHelper::createRoleHierarchy(),
             $tenantContext,
+            new RoleCeiling(VoterTestHelper::createRoleHierarchy()),
         );
     }
 
@@ -201,5 +203,32 @@ final class UserVoterTenantScopeTest extends TestCase
             VoterInterface::ACCESS_DENIED,
             $this->vote($voter, $manager, $this->user(3, ['ROLE_USER'], $this->tenantB), UserVoter::VIEW),
         );
+    }
+
+    /**
+     * S14: an organisation admin must not take over a holding-role account
+     * in its own tree (password, e-mail, second factor) — view only. A
+     * manager with `user.edit` does not edit an admin.
+     */
+    #[Test]
+    public function accountsAboveTheActorsRoleAreViewOnly(): void
+    {
+        $voter = $this->voterFor($this->tenantA);
+        $admin = $this->user(1, ['ROLE_ADMIN'], $this->tenantA);
+        foreach (['ROLE_GROUP_CISO', 'ROLE_KONZERN_AUDITOR', 'ROLE_GROUP_BCM_OFFICER'] as $holdingRole) {
+            $holding = $this->user(2, ['ROLE_USER', $holdingRole], $this->tenantA);
+            self::assertSame(VoterInterface::ACCESS_GRANTED, $this->vote($voter, $admin, $holding, UserVoter::VIEW), $holdingRole);
+            foreach ([UserVoter::EDIT, UserVoter::DELETE] as $attribute) {
+                self::assertSame(VoterInterface::ACCESS_DENIED, $this->vote($voter, $admin, $holding, $attribute), $holdingRole . ' ' . $attribute);
+            }
+        }
+
+        $manager = $this->user(3, ['ROLE_MANAGER'], $this->tenantA, ['user.view', 'user.edit', 'user.delete']);
+        $otherAdmin = $this->user(4, ['ROLE_ADMIN'], $this->tenantA);
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->vote($voter, $manager, $otherAdmin, UserVoter::EDIT));
+        self::assertSame(VoterInterface::ACCESS_GRANTED, $this->vote($voter, $manager, $this->user(5, ['ROLE_USER'], $this->tenantA), UserVoter::EDIT));
+
+        // Top management stays administrable by the organisation admin.
+        self::assertSame(VoterInterface::ACCESS_GRANTED, $this->vote($voter, $admin, $this->user(6, ['ROLE_TOP_MGMT'], $this->tenantA), UserVoter::EDIT));
     }
 }

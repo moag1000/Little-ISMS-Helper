@@ -70,7 +70,7 @@ admin:
             approval_not_pending: 'Approval request is no longer pending.'
             approval_user_exists: 'A user with the email %email% already exists.'
             discovery_failed: 'Discovery failed: %message%'
-            privileged_role_mapping: 'Role mappings not saved: only instance administrators (super admin) may assign privileged roles (%roles%).'
+            privileged_role_mapping: 'Role mappings not saved: %roles% is not an assignable role. Group and super admin roles never come from SSO claims, other roles only up to your own role.'
     title: Administration
     cancel: 'Cancel'
     tenant_management:

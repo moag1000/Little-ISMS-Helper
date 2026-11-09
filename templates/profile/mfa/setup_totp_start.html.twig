@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'mfa.setup_totp.title'|trans({}, 'mfa') }}{% endblock %}
+
+{# Start of the TOTP enrolment: the secret is only created by this POST (S14). #}
+{% block body %}
+<div class="container-fluid">
+    {{ _fa_page_header.render({
+        title: 'mfa.setup_totp.title'|trans({}, 'mfa'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_profile_mfa_index'), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
+
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_body %}
+            <form method="post" action="{{ path('app_profile_mfa_setup_totp') }}" class="row g-3 align-items-end">
+                <input type="hidden" name="_token" value="{{ csrf_token('mfa_setup_totp') }}">
+                <div class="col-md-6">
+                    <label for="device_name" class="form-label">{{ 'mfa.field.device_name'|trans({}, 'mfa') }}</label>
+                    <input type="text" class="form-control" id="device_name" name="device_name"
+                           maxlength="255" value="{{ default_device_name }}">
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        {{ 'mfa.setup_totp.start_button'|trans({}, 'mfa') }}
+                    </button>
+                </div>
+            </form>
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

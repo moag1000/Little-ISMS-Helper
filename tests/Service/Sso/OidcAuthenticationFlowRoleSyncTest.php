@@ -82,10 +82,50 @@ final class OidcAuthenticationFlowRoleSyncTest extends TestCase
         self::assertSame(['ROLE_MANAGER'], $user->getStoredRoles());
     }
 
-    private function makeFlow(ClaimToRoleResolverResult $result, SsoEventLogger $eventLogger): OidcAuthenticationFlow
+    /**
+     * S14: a login maintains only the roles the provider can hand out; top
+     * management, persona and other roles granted in the user administration
+     * survive every login.
+     */
+    #[Test]
+    public function loginKeepsRolesTheProviderDoesNotManage(): void
+    {
+        $user = (new User())->setRoles(['ROLE_AUDITOR', 'ROLE_TOP_MGMT', 'ROLE_DPO']);
+        $eventLogger = $this->createMock(SsoEventLogger::class);
+        $eventLogger->expects(self::once())->method('logRoleChanged')
+            ->with(self::anything(), $user, 'ROLE_AUDITOR', 'ROLE_MANAGER');
+
+        $flow = $this->makeFlow(
+            new ClaimToRoleResolverResult('ROLE_MANAGER', true, 'rule#1'),
+            $eventLogger,
+            managed: ['ROLE_USER', 'ROLE_AUDITOR', 'ROLE_MANAGER'],
+        );
+        $this->invokeApply($flow, $user, isNew: false);
+
+        $stored = $user->getStoredRoles();
+        sort($stored);
+        self::assertSame(['ROLE_DPO', 'ROLE_MANAGER', 'ROLE_TOP_MGMT'], $stored);
+    }
+
+    #[Test]
+    public function privilegedOrUnknownMappedRoleIsNeverAssigned(): void
+    {
+        foreach (['ROLE_SUPER_ADMIN', 'ROLE_GROUP_CISO', 'ROLE_GROUP_BCM_OFFICER', 'ROLE_SOMETHING_TYPED'] as $role) {
+            $user = (new User())->setRoles(['ROLE_USER']);
+            $flow = $this->makeFlow(new ClaimToRoleResolverResult($role, true, 'rule#1'), $this->createStub(SsoEventLogger::class), managed: [$role]);
+            $this->invokeApply($flow, $user, isNew: false);
+            self::assertSame(['ROLE_USER'], $user->getStoredRoles(), $role);
+        }
+    }
+
+    /**
+     * @param list<string> $managed
+     */
+    private function makeFlow(ClaimToRoleResolverResult $result, SsoEventLogger $eventLogger, array $managed = []): OidcAuthenticationFlow
     {
         $resolver = $this->createMock(ClaimToRoleResolver::class);
         $resolver->method('resolve')->willReturn($result);
+        $resolver->method('managedRoles')->willReturn($managed);
 
         return new OidcAuthenticationFlow(
             $this->createMock(OidcDiscoveryService::class),
