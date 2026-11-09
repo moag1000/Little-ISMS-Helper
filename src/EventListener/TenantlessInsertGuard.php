@@ -67,6 +67,7 @@ final class TenantlessInsertGuard
             implode(', ', array_unique($missing)),
         );
         if ($this->environment === 'test') {
+            // @intentional-assertion: strict mode in tests, the flush must fail
             throw new \LogicException($message);
         }
         $this->logger->warning($message, ['classes' => array_values(array_unique($missing))]);
