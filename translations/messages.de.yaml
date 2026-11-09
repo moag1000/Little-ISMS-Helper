@@ -1606,6 +1606,18 @@ pdf:
         references_empty: 'Keine Referenzen definiert.'
         confidential_1: 'Dieses Dokument ist vertraulich und ausschließlich für den internen Gebrauch bestimmt.'
         confidential_2: 'Unbefugte Weitergabe, Vervielfältigung oder Verwendung ist untersagt.'
+        status_value:
+            draft: 'Entwurf'
+            in_review: 'In Prüfung'
+            approved: 'Freigegeben'
+            published: 'Veröffentlicht'
+            archived: 'Archiviert'
+            generated: 'Erzeugt'
+        classification_value:
+            public: 'Öffentlich'
+            internal: 'Intern'
+            confidential: 'Vertraulich'
+            restricted: 'Streng vertraulich'
 not_assigned: 'Nicht zugewiesen'
 user_management:
     import_irreversible: 'Import ist nicht rückgängig zu machen - erstellen Sie vorher ein Backup'

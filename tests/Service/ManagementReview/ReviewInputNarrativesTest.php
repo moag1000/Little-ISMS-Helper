@@ -81,6 +81,7 @@ final class ReviewInputNarrativesTest extends TestCase
             $this->createStub(IncidentRepository::class),
             $this->createStub(ISMSObjectiveRepository::class),
             new RegisterChanges($entries),
+            new \App\Twig\AppDateFormatExtension($this->createStub(\App\Repository\SystemSettingsRepository::class)),
         );
     }
 }

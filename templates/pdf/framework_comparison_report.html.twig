@@ -4,10 +4,10 @@
    Status:   final
    ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('en') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
-    <title>Framework Comparison Report</title>
+    <title>{{ 'compliance.export_pdf.comparison.title'|trans({}, 'compliance') }}</title>
     <style>
         :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
         @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
@@ -86,24 +86,24 @@
 
 {# ── Bidirectional Coverage rows ──────────────────────────────────────── #}
 {% set _cell_html6 %}<strong>{{ symmetric_coverage }}%</strong>{% endset %}
-{% set _cell_html5 %}<strong>Symmetric Coverage (Minimum)</strong>{% endset %}
+{% set _cell_html5 %}<strong>{{ 'compliance.export_pdf.comparison.symmetric_min'|trans({}, 'compliance') }}</strong>{% endset %}
 {% set _cell_html4 %}<strong>{{ bidirectional_overlap }}%</strong>{% endset %}
-{% set _cell_html3 %}<strong>Bidirectional Overlap (Average)</strong>{% endset %}
+{% set _cell_html3 %}<strong>{{ 'compliance.export_pdf.comparison.bidi_avg'|trans({}, 'compliance') }}</strong>{% endset %}
 {% set _cell_html2 %}<strong style="color:{{ (coverage_f2_to_f1 >= 70 ? 'var(--success-strong)' : (coverage_f2_to_f1 >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)')) }};">{{ coverage_f2_to_f1 }}%</strong>{% endset %}
 {% set _cell_html1 %}<strong style="color:{{ (coverage_f1_to_f2 >= 70 ? 'var(--success-strong)' : (coverage_f1_to_f2 >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)')) }};">{{ coverage_f1_to_f2 }}%</strong>{% endset %}
 {% set _bidi_rows = [
     [
-        'Total Requirements (Source)',
+        'compliance.export_pdf.comparison.row_total'|trans({}, 'compliance'),
         framework1_count,
         framework2_count,
     ],
     [
-        'Mapped Requirements',
+        'compliance.export_pdf.comparison.row_mapped'|trans({}, 'compliance'),
         bidirectional_coverage.framework1_to_framework2.covered_requirements ?? 0,
         bidirectional_coverage.framework2_to_framework1.covered_requirements ?? 0,
     ],
     [
-        'Coverage Percentage',
+        'compliance.export_pdf.comparison.row_coverage'|trans({}, 'compliance'),
         _cell_html1,
         _cell_html2,
     ],
@@ -121,31 +121,31 @@
 
 {% set _bidi_analysis = '' %}
 {% if symmetric_coverage >= 70 %}
-    {% set _bidi_analysis = 'Excellent bidirectional coverage. Both frameworks are strongly aligned.' %}
+    {% set _bidi_analysis = 'compliance.export_pdf.comparison.an_excellent'|trans({}, 'compliance') %}
 {% elseif symmetric_coverage >= 50 %}
-    {% set _bidi_analysis = 'Good mutual coverage with some gaps in both directions.' %}
+    {% set _bidi_analysis = 'compliance.export_pdf.comparison.an_good'|trans({}, 'compliance') %}
 {% else %}
-    {% set _bidi_analysis = 'Asymmetric coverage detected. Review unmapped requirements in both frameworks.' %}
+    {% set _bidi_analysis = 'compliance.export_pdf.comparison.an_asym'|trans({}, 'compliance') %}
 {% endif %}
 
 {# ── Mapping Quality Distribution rows ────────────────────────────────── #}
 {% set _cell_html16 %}<strong>{{ avg_mapping_quality }}%</strong>{% endset %}
-{% set _cell_html15 %}<strong>Average Mapping Quality</strong>{% endset %}
+{% set _cell_html15 %}<strong>{{ 'compliance.export_pdf.common.avg_mapping_quality'|trans({}, 'compliance') }}</strong>{% endset %}
 {% set _cell_html14 %}<strong>{{ quality_distribution.weak }}</strong>{% endset %}
-{% set _cell_html13 %}<span class="badge badge-danger">Weak</span>{% endset %}
+{% set _cell_html13 %}<span class="badge badge-danger">{{ 'compliance.export_pdf.common.q_weak'|trans({}, 'compliance') }}</span>{% endset %}
 {% set _cell_html12 %}<strong>{{ quality_distribution.medium }}</strong>{% endset %}
-{% set _cell_html11 %}<span class="badge badge-warning">Medium</span>{% endset %}
+{% set _cell_html11 %}<span class="badge badge-warning">{{ 'compliance.export_pdf.common.q_medium'|trans({}, 'compliance') }}</span>{% endset %}
 {% set _cell_html10 %}<strong>{{ quality_distribution.good }}</strong>{% endset %}
-{% set _cell_html9 %}<span class="badge badge-info">Good</span>{% endset %}
+{% set _cell_html9 %}<span class="badge badge-info">{{ 'compliance.export_pdf.common.q_good'|trans({}, 'compliance') }}</span>{% endset %}
 {% set _cell_html8 %}<strong>{{ quality_distribution.excellent }}</strong>{% endset %}
-{% set _cell_html7 %}<span class="badge badge-success">Excellent</span>{% endset %}
+{% set _cell_html7 %}<span class="badge badge-success">{{ 'compliance.export_pdf.common.q_excellent'|trans({}, 'compliance') }}</span>{% endset %}
 {% set _qual_rows = [
     [
         _cell_html7,
         '90-100%',
         _cell_html8,
         (mapped_count > 0 ? ((quality_distribution.excellent / mapped_count * 100)|round(1)) : 0) ~ '%',
-        'Precise mappings, high reliability',
+        'compliance.export_pdf.common.q_desc_excellent'|trans({}, 'compliance'),
     ],
     [
         _cell_html9,
@@ -159,14 +159,14 @@
         '50-69%',
         _cell_html12,
         (mapped_count > 0 ? ((quality_distribution.medium / mapped_count * 100)|round(1)) : 0) ~ '%',
-        'Partial alignment, review recommended',
+        'compliance.export_pdf.common.q_desc_medium'|trans({}, 'compliance'),
     ],
     [
         _cell_html13,
         '&lt;50%',
         _cell_html14,
         (mapped_count > 0 ? ((quality_distribution.weak / mapped_count * 100)|round(1)) : 0) ~ '%',
-        'Low alignment, optimization needed',
+        'compliance.export_pdf.common.q_desc_weak'|trans({}, 'compliance'),
     ],
     [
         _cell_html15,
@@ -178,9 +178,9 @@
 ] %}
 
 {% set excellent_good_pct = mapped_count > 0 ? (((quality_distribution.excellent + quality_distribution.good) / mapped_count * 100)|round(1)) : 0 %}
-{% set _qual_insight %}<strong>Quality Assessment:</strong> {{ excellent_good_pct }}% of mappings are good or better (≥70%).{% endset %}
+{% set _qual_insight %}<strong>{{ 'compliance.export_pdf.common.quality_assessment_label'|trans({}, 'compliance') }}</strong> {{ 'compliance.export_pdf.common.quality_assessment_text'|trans({'%pct%': excellent_good_pct}, 'compliance') }}{% endset %}
 {% if quality_distribution.weak > 0 %}
-    {% set _qual_insight %}{{ _qual_insight }}<br><strong>Recommendation:</strong> Review and improve {{ quality_distribution.weak }} weak mappings (&lt;50% quality) for better framework alignment.{% endset %}
+    {% set _qual_insight %}{{ _qual_insight }}<br><strong>{{ 'compliance.export_pdf.comparison.recommendation'|trans({}, 'compliance') }}</strong> {{ 'compliance.export_pdf.comparison.recommendation_text'|trans({'%n%': quality_distribution.weak}, 'compliance') }}{% endset %}
 {% endif %}
 
 {# ── Category Coverage tables (F1→F2 and F2→F1) ──────────────────────── #}
@@ -215,7 +215,7 @@
 {# ── Detailed Requirement Mapping rows ────────────────────────────────── #}
 {% set _detail_rows = [] %}
 {% for detail in comparison_details %}
-    {% set _status_badge %}{% if detail.mapped %}<span class="badge badge-success">Mapped</span>{% else %}<span class="badge badge-info">Not Mapped</span>{% endif %}{% endset %}
+    {% set _status_badge %}{% if detail.mapped %}<span class="badge badge-success">{{ 'compliance.export_pdf.common.mapped'|trans({}, 'compliance') }}</span>{% else %}<span class="badge badge-info">{{ 'compliance.export_pdf.comparison.not_mapped'|trans({}, 'compliance') }}</span>{% endif %}{% endset %}
 
     {% set _qual_cell = '-' %}
     {% if detail.matchQuality is not null %}
@@ -227,7 +227,7 @@
     {% if detail.framework2Requirement %}
         {% set _f2_desc = (detail.framework2Requirement.description|slice(0, 60)) ~ (detail.framework2Requirement.description|length > 60 ? '...' : '') %}
     {% else %}
-        {% set _f2_desc %}<span style="color:var(--fg-3);">No mapping</span>{% endset %}
+        {% set _f2_desc %}<span style="color:var(--fg-3);">{{ 'compliance.export_pdf.comparison.no_mapping'|trans({}, 'compliance') }}</span>{% endset %}
     {% endif %}
 
     {% set _cell_html21 %}<strong>{{ detail.framework1Requirement.requirementId }}</strong>{% endset %}
@@ -241,86 +241,89 @@
 {% endfor %}
 
 {# ── Build sections array ─────────────────────────────────────────────── #}
-{% set _body_html_html24 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Category Insights:</strong> Categories with coverage &lt;50% should be prioritized for improved mapping quality and completeness.</div>{% endset %}
+{% set _body_html_html24 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>{{ 'compliance.export_pdf.comparison.cat_insights_label'|trans({}, 'compliance') }}</strong> {{ 'compliance.export_pdf.comparison.cat_insights_text'|trans({}, 'compliance') }}</div>{% endset %}
 {% set _body_html_html23 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">{{ _qual_insight }}</div>{% endset %}
-{% set _body_html_html22 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Analysis:</strong> {{ _bidi_analysis }}</div>{% endset %}
+{% set _body_html_html22 %}<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>{{ 'compliance.export_pdf.comparison.analysis'|trans({}, 'compliance') }}</strong> {{ _bidi_analysis }}</div>{% endset %}
 {% set _sections = [
     {
-        heading: 'Bidirectional Coverage Analysis',
+        heading: 'compliance.export_pdf.comparison.sec_bidi'|trans({}, 'compliance'),
         table: {
-            headers: ['Metric', framework1.code ~ ' → ' ~ framework2.code, framework2.code ~ ' → ' ~ framework1.code],
+            headers: ['compliance.export_pdf.comparison.col_metric'|trans({}, 'compliance'), framework1.code ~ ' → ' ~ framework2.code, framework2.code ~ ' → ' ~ framework1.code],
             rows: _bidi_rows,
         },
         body_html: _body_html_html22,
     },
     {
-        heading: 'Mapping Quality Distribution',
+        heading: 'compliance.export_pdf.common.mapping_quality_distribution'|trans({}, 'compliance'),
         table: {
-            headers: ['Quality Level', 'Range', 'Count', 'Percentage', 'Assessment'],
+            headers: ['compliance.export_pdf.common.col_quality_level'|trans({}, 'compliance'), 'compliance.export_pdf.common.col_range'|trans({}, 'compliance'), 'compliance.export_pdf.common.col_count'|trans({}, 'compliance'), 'compliance.export_pdf.common.col_percentage'|trans({}, 'compliance'), 'compliance.export_pdf.common.col_assessment'|trans({}, 'compliance')],
             rows: _qual_rows,
         },
         body_html: _body_html_html23,
     },
     {
-        heading: 'Category Coverage: ' ~ framework1.code ~ ' → ' ~ framework2.code,
+        heading: 'compliance.export_pdf.comparison.sec_cat_cov'|trans({'%from%': framework1.code, '%to%': framework2.code}, 'compliance'),
         table: {
-            headers: ['Category', 'Total', 'Mapped', 'Coverage', 'Avg. Quality'],
+            headers: ['compliance.export_pdf.common.category'|trans({}, 'compliance'), 'compliance.export_pdf.common.total'|trans({}, 'compliance'), 'compliance.export_pdf.common.mapped'|trans({}, 'compliance'), 'compliance.export_pdf.common.coverage'|trans({}, 'compliance'), 'compliance.export_pdf.comparison.col_avg_quality'|trans({}, 'compliance')],
             rows: _cat_f1_rows,
         },
     },
     {
-        heading: 'Category Coverage: ' ~ framework2.code ~ ' → ' ~ framework1.code,
+        heading: 'compliance.export_pdf.comparison.sec_cat_cov'|trans({'%from%': framework2.code, '%to%': framework1.code}, 'compliance'),
         table: {
-            headers: ['Category', 'Total', 'Mapped', 'Coverage', 'Avg. Quality'],
+            headers: ['compliance.export_pdf.common.category'|trans({}, 'compliance'), 'compliance.export_pdf.common.total'|trans({}, 'compliance'), 'compliance.export_pdf.common.mapped'|trans({}, 'compliance'), 'compliance.export_pdf.common.coverage'|trans({}, 'compliance'), 'compliance.export_pdf.comparison.col_avg_quality'|trans({}, 'compliance')],
             rows: _cat_f2_rows,
         },
         body_html: _body_html_html24,
     },
     {
-        heading: 'Detailed Requirement Mapping',
+        heading: 'compliance.export_pdf.comparison.sec_detail'|trans({}, 'compliance'),
         table: {
-            headers: [framework1.code ~ ' ID', framework1.code ~ ' Requirement', 'Mapping Status', 'Quality', framework2.code ~ ' Requirement'],
+            headers: ['compliance.export_pdf.comparison.col_f_id'|trans({'%code%': framework1.code}, 'compliance'), 'compliance.export_pdf.comparison.col_f_req'|trans({'%code%': framework1.code}, 'compliance'), 'compliance.export_pdf.comparison.col_status'|trans({}, 'compliance'), 'compliance.export_pdf.comparison.col_quality'|trans({}, 'compliance'), 'compliance.export_pdf.comparison.col_f_req'|trans({'%code%': framework2.code}, 'compliance')],
             rows: _detail_rows,
         },
     },
 ] %}
 
-{% set _methodology_html %}<p>Framework comparison analyzes bidirectional requirement mappings between two compliance frameworks. Coverage = mapped requirements / total requirements per direction. Mapping quality scored 0-100% based on semantic similarity. Symmetric coverage = minimum of both directional coverages (conservative measure). Quality levels: Excellent (90-100%), Good (70-89%), Medium (50-69%), Weak (&lt;50%).</p>{% endset %}
+{% set _methodology_html %}<p>{{ 'compliance.export_pdf.comparison.methodology'|trans({}, 'compliance') }}</p>{% endset %}
+{% set _findings = [
+    { label: 'compliance.export_pdf.comparison.f_count'|trans({'%code%': framework1.code, '%n%': framework1_count}, 'compliance'), tone: 'ok' },
+    { label: 'compliance.export_pdf.comparison.f_count'|trans({'%code%': framework2.code, '%n%': framework2_count}, 'compliance'), tone: 'ok' },
+    { label: 'compliance.export_pdf.comparison.f_mapped'|trans({'%n%': mapped_count, '%pct%': overlap_percentage}, 'compliance'),
+      tone: overlap_percentage >= 60 ? 'ok' : (overlap_percentage >= 40 ? 'warn' : 'danger') },
+    { label: 'compliance.export_pdf.comparison.f_quality'|trans({'%n%': avg_mapping_quality}, 'compliance'),
+      tone: avg_mapping_quality >= 80 ? 'ok' : (avg_mapping_quality >= 60 ? 'warn' : 'danger') },
+    { label: 'compliance.export_pdf.comparison.f_symmetric'|trans({'%n%': symmetric_coverage}, 'compliance'),
+      tone: symmetric_coverage >= 70 ? 'ok' : (symmetric_coverage >= 50 ? 'warn' : 'danger') },
+] %}
+{% set _kpis = [
+    { label: 'compliance.export_pdf.comparison.k_req'|trans({'%code%': framework1.code}, 'compliance'), value: framework1_count, tone: 'neutral' },
+    { label: 'compliance.export_pdf.comparison.k_req'|trans({'%code%': framework2.code}, 'compliance'), value: framework2_count, tone: 'neutral' },
+    { label: 'compliance.export_pdf.common.mapped'|trans({}, 'compliance'), value: mapped_count ~ ' (' ~ overlap_percentage ~ '%)', tone: 'success' },
+    { label: 'compliance.export_pdf.comparison.k_quality'|trans({}, 'compliance'), value: avg_mapping_quality ~ '%',
+      tone: avg_mapping_quality >= 80 ? 'success' : (avg_mapping_quality >= 60 ? 'warning' : 'danger') },
+    { label: 'compliance.export_pdf.comparison.k_symmetric'|trans({}, 'compliance'), value: symmetric_coverage ~ '%',
+      tone: symmetric_coverage >= 70 ? 'success' : (symmetric_coverage >= 50 ? 'warning' : 'danger') },
+] %}
+{% set _sources = [
+    { label: 'FrameworkComparisonService', detail: 'compliance.export_pdf.comparison.source_detail'|trans({}, 'compliance') },
+] %}
 {{ _fa_report_doc.render({
     report: {
-        title:        'Framework Comparison Report',
+        title:        'compliance.export_pdf.comparison.title'|trans({}, 'compliance'),
         subtitle:     framework1.name ~ ' ↔ ' ~ framework2.name,
-        kicker:       'Compliance · Framework Comparison',
+        kicker:       'compliance.export_pdf.comparison.kicker'|trans({}, 'compliance'),
         status:       'final',
         audience:     'auditor',
         generated_at: pdf_generation_date|fa_datetime,
     },
     brand_name: 'Little ISMS Helper',
-    key_findings: [
-        { label: framework1.code ~ ': ' ~ framework1_count ~ ' requirements', tone: 'ok' },
-        { label: framework2.code ~ ': ' ~ framework2_count ~ ' requirements', tone: 'ok' },
-        { label: 'Mapped: ' ~ mapped_count ~ ' (' ~ overlap_percentage ~ '%)',
-          tone: overlap_percentage >= 60 ? 'ok' : (overlap_percentage >= 40 ? 'warn' : 'danger') },
-        { label: 'Avg. Quality: ' ~ avg_mapping_quality ~ '%',
-          tone: avg_mapping_quality >= 80 ? 'ok' : (avg_mapping_quality >= 60 ? 'warn' : 'danger') },
-        { label: 'Symmetric Coverage: ' ~ symmetric_coverage ~ '%',
-          tone: symmetric_coverage >= 70 ? 'ok' : (symmetric_coverage >= 50 ? 'warn' : 'danger') },
-    ],
-    kpis: [
-        { label: framework1.code ~ ' Req.', value: framework1_count, tone: 'neutral' },
-        { label: framework2.code ~ ' Req.', value: framework2_count, tone: 'neutral' },
-        { label: 'Mapped',                  value: mapped_count ~ ' (' ~ overlap_percentage ~ '%)', tone: 'success' },
-        { label: 'Avg. Quality',            value: avg_mapping_quality ~ '%',
-          tone: avg_mapping_quality >= 80 ? 'success' : (avg_mapping_quality >= 60 ? 'warning' : 'danger') },
-        { label: 'Symmetric Coverage',      value: symmetric_coverage ~ '%',
-          tone: symmetric_coverage >= 70 ? 'success' : (symmetric_coverage >= 50 ? 'warning' : 'danger') },
-    ],
+    key_findings: _findings,
+    kpis: _kpis,
     sections: _sections,
     appendix: {
         methodology: _methodology_html,
-        sources: [
-            { label: 'FrameworkComparisonService', detail: 'compareFrameworks() — bidirectional mapping analysis' },
-        ],
+        sources: _sources,
     },
 }) }}
 </body>

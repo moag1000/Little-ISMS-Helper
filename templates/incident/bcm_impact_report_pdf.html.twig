@@ -4,7 +4,7 @@
 {% set a = detailed_analysis %}
 {% set p = 'incident.bcm_impact_page.' %}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ (p ~ 'title')|trans({}, 'incident') }} · {{ incident.number }}</title>
@@ -74,7 +74,8 @@
         <p>{{ (p ~ 'processes.empty')|trans({}, 'incident') }}</p>
     {% endif %}
 
-    <h2>{{ (p ~ 'priority.title')|trans({}, 'incident') }}: {{ (p ~ 'level.' ~ a.recovery_priority.level)|trans({}, 'incident') }}</h2>
+    {% set _level_key = p ~ 'level.' ~ a.recovery_priority.level %}
+    <h2>{{ (p ~ 'priority.title')|trans({}, 'incident') }}: {{ _level_key|trans({}, 'incident') }}</h2>
     <p><strong>{{ (p ~ 'priority.reasoning')|trans({}, 'incident') }}:</strong> {{ a.recovery_priority.reasoning }}</p>
     <p><strong>{{ (p ~ 'priority.actions')|trans({}, 'incident') }}</strong></p>
     <ul>

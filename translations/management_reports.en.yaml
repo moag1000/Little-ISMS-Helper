@@ -159,6 +159,7 @@ management_reports:
     # Risk Report
     risk:
         title: 'Risk Management Report'
+        methodology: '<p>Risk score = Likelihood × Impact (1-25). ISO 27005 thresholds: Critical ≥%critical%, High %high_min%-%high_max%, Medium %medium_min%-%medium_max%, Low &lt;%medium_min%. Treatment plans tracked via RiskTreatmentPlanRepository.</p>'
         total_risks: 'Total Risks'
         avg_score: 'Avg. Score'
         treatment_plans: 'Treatment Plans'
@@ -240,6 +241,7 @@ management_reports:
     # Compliance Report
     compliance:
         title: 'Compliance Status Report'
+        methodology: '<p>Compliance rate = implemented controls / applicable controls × 100. Threshold: ≥80% = Good Standing, 60-79% = Improvement Needed, &lt;60% = Immediate Action.</p>'
         overall: 'Overall Compliance Rate'
         control_status: 'Control Implementation Status'
         assessment_title: 'Compliance Assessment'
@@ -390,6 +392,7 @@ management_reports:
     # Certification Readiness
     cert_readiness:
         title: 'ISO 27001 Certification Readiness Assessment'
+        methodology: '<p>Overall score: weighted average of clause score (60%) and Annex A coverage (40%). Thresholds: READY ≥85%, CONDITIONAL 70-84%, NOT READY &lt;70%.</p>'
         overall_score: 'Overall Readiness'
         clause_compliance_score: 'Clause Compliance (4-10)'
         annex_a_coverage: 'Annex A Controls'

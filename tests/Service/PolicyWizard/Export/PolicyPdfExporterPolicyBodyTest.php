@@ -85,7 +85,7 @@ final class PolicyPdfExporterPolicyBodyTest extends TestCase
         $doc->setDescription("LEGACY_DESCRIPTION_BODY");
         $doc->setSubstitutionVariables(['_body' => 'LEGACY_VARS_BODY', '_title' => 'X']);
 
-        $exporter = new PolicyPdfExporter($this->twig);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator());
         $pdf = $exporter->exportDocument($doc, null);
 
         $haystack = $this->extractText($pdf);
@@ -102,7 +102,7 @@ final class PolicyPdfExporterPolicyBodyTest extends TestCase
         // policyBody intentionally NULL — legacy fallback chain.
         $doc->setSubstitutionVariables(['_body' => 'LEGACY_VARS_BODY_FALLBACK', '_title' => 'X']);
 
-        $exporter = new PolicyPdfExporter($this->twig);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator());
         $pdf = $exporter->exportDocument($doc, null);
 
         $haystack = $this->extractText($pdf);
@@ -123,7 +123,7 @@ final class PolicyPdfExporterPolicyBodyTest extends TestCase
         $doc->setPolicyBodyEditedBy($editor);
         $doc->setPolicyBodyEditedAt(new DateTimeImmutable('2026-05-08 14:30:00'));
 
-        $exporter = new PolicyPdfExporter($this->twig);
+        $exporter = new PolicyPdfExporter($this->twig, new \Symfony\Component\Translation\IdentityTranslator());
         $pdf = $exporter->exportDocument($doc, null);
 
         $haystack = $this->extractText($pdf);

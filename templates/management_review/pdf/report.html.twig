@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('de') }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'management_review.pdf.title'|trans({'%title%': review.title}, 'management_review') }}</title>
@@ -167,7 +167,7 @@
         <div class="section">
             <h3>
                 {{ ('management_review.pdf.input.' ~ input.key)|trans({}, 'management_review') }}
-                <span class="small">(ISO 27001 Clause {{ input.ref }})</span>
+                <span class="small">{{ 'management_review.pdf.input_ref'|trans({'%ref%': input.ref}, 'management_review') }}</span>
             </h3>
             <div class="section-text">{{ input.value|default('—')|trim ?: '—' }}</div>
         </div>

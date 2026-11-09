@@ -84,16 +84,17 @@ management_review:
         cancelled: Abgebrochen
     pdf:
         title: 'Management Review – %title%'
-        heading: 'Management Review (ISO 27001 Clause 9.3)'
-        standard_ref: 'ISO/IEC 27001:2022 Clause 9.3 — Management Review'
+        heading: 'Managementbewertung (ISO 27001 Abschnitt 9.3)'
+        standard_ref: 'ISO/IEC 27001:2022 Abschnitt 9.3 — Managementbewertung'
+        input_ref: '(ISO 27001 Abschnitt %ref%)'
         footer: 'Vertraulich – Management Review (%tenant%)'
         section:
-            inputs: 'Inputs (Clause 9.3.2)'
+            inputs: 'Eingaben (Abschnitt 9.3.2)'
             inputs_hint: 'Von der Norm vorgegebene Eingangsgrößen für das Management Review.'
-            outputs: 'Outputs & Decisions (Clause 9.3.3)'
+            outputs: 'Ergebnisse & Entscheidungen (Abschnitt 9.3.3)'
             outputs_hint: 'Ergebnisse, Beschlüsse und Maßnahmen des Reviews.'
             signatures: 'Freigabe / Unterschriften'
-            signatures_hint: 'Handschriftliche Unterschrift bestätigt die Kenntnisnahme der Ergebnisse durch das Top-Management. ISO 27001 Clause 9.3.3 verlangt dokumentierte Information als Ergebnis.'
+            signatures_hint: 'Handschriftliche Unterschrift bestätigt die Kenntnisnahme der Ergebnisse durch das Top-Management. ISO 27001 Abschnitt 9.3.3 verlangt dokumentierte Information als Ergebnis.'
         signature:
             role: 'Rolle'
             name: 'Name'

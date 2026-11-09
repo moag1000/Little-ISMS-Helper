@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config.name }} - Compliance Report</title>
+    <title>{{ config.name }} - {{ 'pdf.report.title'|trans({}, 'compliance_wizard') }}</title>
     <style>
         :root {
             --primary:       #0ea5e9;
@@ -173,25 +173,26 @@
     </style>
 </head>
 <body>
+    {% set _wd = 'wizard' %}
     {# Header #}
     <div class="header">
         <h1>{{ config.name }}</h1>
-        <div class="subtitle">Compliance Assessment Report</div>
+        <div class="subtitle">{{ 'pdf.report.title'|trans({}, 'compliance_wizard') }}</div>
     </div>
 
     {# Meta Information #}
     <div class="meta-info">
         <table>
             <tr>
-                <td class="label">Framework:</td>
+                <td class="label">{{ 'pdf.report.framework'|trans({}, 'compliance_wizard') }}</td>
                 <td>{{ config.name }} ({{ config.code }})</td>
-                <td class="label">Assessment Date:</td>
+                <td class="label">{{ 'pdf.report.assessment_date'|trans({}, 'compliance_wizard') }}</td>
                 <td>{{ generated_at|fa_datetime }}</td>
             </tr>
             <tr>
-                <td class="label">Organization:</td>
+                <td class="label">{{ 'pdf.report.organization'|trans({}, 'compliance_wizard') }}</td>
                 <td>{{ tenant ? tenant.name : '—' }}</td>
-                <td class="label">Categories Assessed:</td>
+                <td class="label">{{ 'pdf.report.categories_assessed'|trans({}, 'compliance_wizard') }}</td>
                 <td>{{ result.categories|length }}</td>
             </tr>
         </table>
@@ -201,35 +202,32 @@
     <div class="score-box {{ result.status }}">
         <div class="score">{{ result.overall_score }}%</div>
         <div class="status">
-            {% if result.status == 'compliant' %}Compliant
-            {% elseif result.status == 'partial' %}Partially Compliant
-            {% elseif result.status == 'in_progress' %}In Progress
-            {% else %}Non-Compliant{% endif %}
+            {{ ('wizard.status.' ~ result.status)|trans({}, 'wizard') }}
         </div>
     </div>
 
     {# Executive Summary #}
-    <h2>Executive Summary</h2>
+    <h2>{{ 'pdf.report.summary_heading'|trans({}, 'compliance_wizard') }}</h2>
     <p>
-        This assessment evaluated {{ result.categories|length }} categories against the {{ config.name }} requirements.
-        The overall compliance score is <strong>{{ result.overall_score }}%</strong>.
+        {{ 'pdf.report.summary_scope'|trans({'%count%': result.categories|length, '%framework%': config.name}, 'compliance_wizard') }}
+        {{ 'pdf.report.summary_score'|trans({}, 'compliance_wizard') }} <strong>{{ result.overall_score }}%</strong>.
         {% if result.critical_gap_count > 0 %}
-        <strong style="color: var(--danger);">{{ result.critical_gap_count }} critical gaps</strong> require immediate attention.
+        <strong style="color: var(--danger);">{{ result.critical_gap_count }}</strong> {{ 'pdf.report.summary_critical_gaps'|trans({}, 'compliance_wizard') }}
         {% else %}
-        No critical gaps were identified.
+        {{ 'pdf.report.summary_no_critical_gaps'|trans({}, 'compliance_wizard') }}
         {% endif %}
     </p>
 
     {# Category Overview #}
-    <h2>Category Results</h2>
+    <h2>{{ 'pdf.report.category_results'|trans({}, 'compliance_wizard') }}</h2>
     <table class="data-table">
         <thead>
             <tr>
-                <th scope="col">Category</th>
-                <th scope="col" style="width: 100px;">Score</th>
-                <th scope="col" style="width: 150px;">Progress</th>
-                <th scope="col" style="width: 80px;">Gaps</th>
-                <th scope="col" style="width: 100px;">Status</th>
+                <th scope="col">{{ 'pdf.report.col_category'|trans({}, 'compliance_wizard') }}</th>
+                <th scope="col" style="width: 100px;">{{ 'pdf.report.col_score'|trans({}, 'compliance_wizard') }}</th>
+                <th scope="col" style="width: 150px;">{{ 'pdf.report.col_progress'|trans({}, 'compliance_wizard') }}</th>
+                <th scope="col" style="width: 80px;">{{ 'pdf.report.col_gaps'|trans({}, 'compliance_wizard') }}</th>
+                <th scope="col" style="width: 100px;">{{ 'pdf.report.col_status'|trans({}, 'compliance_wizard') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -246,7 +244,7 @@
                 <td>{{ category.gap_count }}</td>
                 <td>
                     <span class="badge {% if category.score >= 80 %}success{% elseif category.score >= 60 %}warning{% else %}danger{% endif %}">
-                        {{ category.status|upper }}
+                        {{ ('wizard.status.' ~ category.status)|trans({}, 'wizard') }}
                     </span>
                 </td>
             </tr>
@@ -257,24 +255,24 @@
     {# Critical Gaps #}
     {% if result.critical_gaps|length > 0 %}
     <div class="page-break"></div>
-    <h2>Critical Gaps Requiring Immediate Action</h2>
+    <h2>{{ 'pdf.report.critical_gaps_heading'|trans({}, 'compliance_wizard') }}</h2>
     {% for gap in result.critical_gaps %}
     <div class="gap-item critical">
-        <strong>{{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}</strong>
+        <strong>{{ gap.title|trans({}, gap.translation_domain|default(_wd)) }}</strong>
         {% if gap.description is defined %}
-        <p>{{ gap.description|trans(gap.description_params|default({}), gap.translation_domain|default('wizard')) }}</p>
+        <p>{{ gap.description|trans(gap.description_params|default({}), gap.translation_domain|default(_wd)) }}</p>
         {% endif %}
         {% if gap.action is defined %}
-        <p><strong>Recommended Action:</strong> {{ gap.action|trans({}, 'wizard') }}</p>
+        <p><strong>{{ 'pdf.report.recommended_action'|trans({}, 'compliance_wizard') }}</strong> {{ gap.action|trans({}, 'wizard') }}</p>
         {% endif %}
-        <span class="badge danger">Priority: {{ gap.priority|upper }}</span>
+        <span class="badge danger">{{ 'pdf.report.priority'|trans({}, 'compliance_wizard') }}: {{ ('pdf.report.priority_value.' ~ gap.priority)|trans({}, 'compliance_wizard') }}</span>
     </div>
     {% endfor %}
     {% endif %}
 
     {# Detailed Results #}
     <div class="page-break"></div>
-    <h2>Detailed Category Results</h2>
+    <h2>{{ 'pdf.report.detailed_heading'|trans({}, 'compliance_wizard') }}</h2>
 
     {% for key, category in result.categories %}
     <h3>{{ category.name|trans({}, 'wizard') }} - {{ category.score }}%</h3>
@@ -282,24 +280,24 @@
     <table class="data-table">
         <thead>
             <tr>
-                <th scope="col">Check</th>
-                <th scope="col" style="width: 80px;">Score</th>
-                <th scope="col" style="width: 100px;">Status</th>
+                <th scope="col">{{ 'pdf.report.col_check'|trans({}, 'compliance_wizard') }}</th>
+                <th scope="col" style="width: 80px;">{{ 'pdf.report.col_score'|trans({}, 'compliance_wizard') }}</th>
+                <th scope="col" style="width: 100px;">{{ 'pdf.report.col_status'|trans({}, 'compliance_wizard') }}</th>
             </tr>
         </thead>
         <tbody>
             {% for item_key, item in category.items %}
             <tr>
                 <td>
-                    {{ item.name|trans({}, item.translation_domain|default('wizard')) }}
+                    {{ item.name|trans({}, item.translation_domain|default(_wd)) }}
                     {% if item.gap %}
-                    <br><small style="color: var(--danger);">Gap: {{ item.gap.title|trans({}, item.gap.translation_domain|default(item.translation_domain|default('wizard'))) }}</small>
+                    <br><small style="color: var(--danger);">{{ 'pdf.report.gap'|trans({}, 'compliance_wizard') }}: {{ item.gap.title|trans({}, item.gap.translation_domain|default(item.translation_domain|default(_wd))) }}</small>
                     {% endif %}
                 </td>
                 <td>{{ item.score }}%</td>
                 <td>
                     <span class="badge {% if item.score >= 80 %}success{% elseif item.score >= 50 %}warning{% else %}danger{% endif %}">
-                        {{ item.status|upper }}
+                        {{ ('wizard.status.' ~ item.status)|trans({}, 'wizard') }}
                     </span>
                 </td>
             </tr>
@@ -308,12 +306,12 @@
     </table>
 
     {% if category.gaps|length > 0 %}
-    <p><strong>Gaps identified in this category:</strong></p>
+    <p><strong>{{ 'pdf.report.category_gaps'|trans({}, 'compliance_wizard') }}</strong></p>
     {% for gap in category.gaps %}
     <div class="gap-item {% if gap.priority == 'critical' %}critical{% endif %}">
-        <strong>{{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}</strong>
+        <strong>{{ gap.title|trans({}, gap.translation_domain|default(_wd)) }}</strong>
         {% if gap.description is defined %}
-        <p>{{ gap.description|trans(gap.description_params|default({}), gap.translation_domain|default('wizard')) }}</p>
+        <p>{{ gap.description|trans(gap.description_params|default({}), gap.translation_domain|default(_wd)) }}</p>
         {% endif %}
     </div>
     {% endfor %}
@@ -324,8 +322,8 @@
     {# Footer #}
     <div class="footer">
         <p>
-            Generated by Little ISMS Helper | {{ generated_at|fa_datetime }}<br>
-            This report is based on automated analysis of your ISMS data and should be reviewed by a qualified professional.
+            {{ 'pdf.report.generated_by'|trans({}, 'compliance_wizard') }} | {{ generated_at|fa_datetime }}<br>
+            {{ 'pdf.report.disclaimer'|trans({}, 'compliance_wizard') }}
         </p>
     </div>
 </body>

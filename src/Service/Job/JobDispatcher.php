@@ -36,6 +36,7 @@ final class JobDispatcher
         private readonly InRequestJobRunner $inRequestRunner,
         private readonly MessengerJobRunner $messengerRunner,
         string $strategy = 'in_request',
+        private readonly ?JobLocale $jobLocale = null,
     ) {
         if (!in_array($strategy, ['in_request', 'messenger'], true)) {
             // @intentional-assertion: programmer / config error — invalid strategy
@@ -67,6 +68,9 @@ final class JobDispatcher
         Response $response,
         ?SessionInterface $session = null,
     ): Response {
+        // W10: the job writes in the language of the person who started it.
+        $args = $this->jobLocale?->stamp($args) ?? $args;
+
         return match ($this->strategy) {
             'in_request' => $this->inRequestRunner->dispatch($jobClass, $args, $jobId, $response, $session),
             'messenger'  => $this->messengerRunner->dispatch($jobClass, $args, $jobId, $response, $session),

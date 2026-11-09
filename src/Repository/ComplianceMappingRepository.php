@@ -805,8 +805,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         if (count($uncoveredCritical) > 0) {
             $recommendations[] = [
                 'priority' => 'CRITICAL',
-                'action' => 'Sofortmaßnahmen für ' . count($uncoveredCritical) . ' kritische Gaps erforderlich',
-                'timeline' => '0-30 Tage',
+                'count' => count($uncoveredCritical), // action + timeline: compliance.export_pdf.gap.roadmap.*
                 'risk_reduction' => count($uncoveredCritical) * 10,
             ];
         }
@@ -814,8 +813,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         if (count($uncoveredHigh) > 0) {
             $recommendations[] = [
                 'priority' => 'HIGH',
-                'action' => count($uncoveredHigh) . ' hohe Gaps innerhalb 90 Tagen schließen',
-                'timeline' => '30-90 Tage',
+                'count' => count($uncoveredHigh),
                 'risk_reduction' => count($uncoveredHigh) * 5,
             ];
         }
@@ -823,8 +821,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         if ($priorityDistribution['medium'] > 0) {
             $recommendations[] = [
                 'priority' => 'MEDIUM',
-                'action' => 'Mittelfristige Roadmap für ' . $priorityDistribution['medium'] . ' mittlere Gaps',
-                'timeline' => '3-6 Monate',
+                'count' => $priorityDistribution['medium'],
                 'risk_reduction' => $priorityDistribution['medium'] * 2,
             ];
         }

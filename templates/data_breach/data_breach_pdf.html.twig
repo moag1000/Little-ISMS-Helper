@@ -1,8 +1,8 @@
 {% trans_default_domain 'privacy' %}<!DOCTYPE html>
-<html>
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
-    <title>Data Breach Report - {{ breach.referenceNumber }}</title>
+    <title>{{ 'data_breach.pdf.report_title'|trans({}, 'privacy') }} - {{ breach.referenceNumber }}</title>
     <style>
         :root {
             --primary:       var(--primary);
@@ -172,8 +172,8 @@
 <body>
     {# Header #}
     <div class="header">
-        <h1>Data Breach Notification Report</h1>
-        <p>Personal Data Breach per GDPR Art. 33/34</p>
+        <h1>{{ 'data_breach.pdf.heading'|trans({}, 'privacy') }}</h1>
+        <p>{{ 'data_breach.pdf.subheading'|trans({}, 'privacy') }}</p>
         <p><strong>{{ breach.title }}</strong></p>
         <p>{{ breach.referenceNumber }} - {{ "now"|fa_datetime }}</p>
     </div>
@@ -182,11 +182,11 @@
     <div class="meta-info">
         <table>
             <tr>
-                <td>Reference Number:</td>
+                <td>{{ 'data_breach.pdf.reference_number'|trans({}, 'privacy') }}:</td>
                 <td><strong>{{ breach.referenceNumber }}</strong></td>
             </tr>
             <tr>
-                <td>Status:</td>
+                <td>{{ 'data_breach.pdf.status'|trans({}, 'privacy') }}:</td>
                 <td>
                     {% set status_class = {
                         'draft': 'secondary',
@@ -195,30 +195,30 @@
                         'subjects_notified': 'success',
                         'closed': 'secondary'
                     }[breach.status] %}
-                    <span class="badge badge-{{ status_class }}">{{ breach.status|replace({'_': ' '})|upper }}</span>
+                    <span class="badge badge-{{ status_class }}">{{ ('data_breach.pdf.status_values.' ~ breach.status)|trans({}, 'privacy') }}</span>
                 </td>
             </tr>
             <tr>
-                <td>Risk Level:</td>
+                <td>{{ 'data_breach.pdf.risk_level'|trans({}, 'privacy') }}:</td>
                 <td>
                     {% if breach.riskLevel %}
                         {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
-                        <span class="badge badge-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                        <span class="badge badge-{{ risk_class }}">{{ ('data_breach.pdf.level.' ~ breach.riskLevel)|trans({}, 'privacy') }}</span>
                     {% else %}
-                        Not assessed
+                        {{ 'data_breach.pdf.not_assessed'|trans({}, 'privacy') }}
                     {% endif %}
                 </td>
             </tr>
             <tr>
-                <td>Affected Data Subjects:</td>
+                <td>{{ 'data_breach.pdf.affected_data_subjects'|trans({}, 'privacy') }}:</td>
                 <td>{{ breach.affectedDataSubjects is not null ? breach.affectedDataSubjects|number_format : '—' }}</td>
             </tr>
             <tr>
-                <td>Detection Date/Time:</td>
+                <td>{{ 'data_breach.pdf.detected_at'|trans({}, 'privacy') }}:</td>
                 <td>{{ breach.detectedAt|fa_datetime }}</td>
             </tr>
             <tr>
-                <td>Report Generated:</td>
+                <td>{{ 'data_breach.pdf.report_generated'|trans({}, 'privacy') }}:</td>
                 <td>{{ "now"|fa_datetime }}</td>
             </tr>
         </table>
@@ -227,19 +227,19 @@
     {# 72-Hour Deadline Status #}
     {% if breach.requiresAuthorityNotification %}
         <div class="section">
-            <h2>⏰ Art. 33 - 72-Hour Notification Requirement</h2>
+            <h2>{{ 'data_breach.pdf.deadline_heading'|trans({}, 'privacy') }}</h2>
             {% if breach.supervisoryAuthorityNotifiedAt %}
                 <p>
-                    <strong>✓ Supervisory authority notified:</strong> {{ breach.supervisoryAuthorityNotifiedAt|fa_datetime }}
+                    <strong>{{ 'data_breach.pdf.authority_notified'|trans({}, 'privacy') }}:</strong> {{ breach.supervisoryAuthorityNotifiedAt|fa_datetime }}
                 </p>
-                <p><strong>Authority:</strong> {{ breach.supervisoryAuthorityName }}</p>
-                <p><strong>Method:</strong> {{ breach.notificationMethod }}</p>
+                <p><strong>{{ 'data_breach.pdf.authority'|trans({}, 'privacy') }}:</strong> {{ breach.supervisoryAuthorityName }}</p>
+                <p><strong>{{ 'data_breach.pdf.method'|trans({}, 'privacy') }}:</strong> {{ breach.notificationMethod }}</p>
                 {% if breach.supervisoryAuthorityReference %}
-                    <p><strong>Reference Number:</strong> {{ breach.supervisoryAuthorityReference }}</p>
+                    <p><strong>{{ 'data_breach.pdf.reference_number'|trans({}, 'privacy') }}:</strong> {{ breach.supervisoryAuthorityReference }}</p>
                 {% endif %}
                 {% if breach.notificationDelayReason %}
                     <div class="alert alert-warning">
-                        <strong>Notification Delay Justification:</strong><br>
+                        <strong>{{ 'data_breach.pdf.delay_justification'|trans({}, 'privacy') }}:</strong><br>
                         {{ breach.notificationDelayReason }}
                     </div>
                 {% endif %}
@@ -247,14 +247,14 @@
                 {% set hours = breach.hoursUntilAuthorityDeadline %}
                 {% if hours < 0 %}
                     <div class="alert alert-danger">
-                        <strong>⚠ OVERDUE:</strong> Supervisory authority notification is {{ (hours * -1)|number_format }} hours overdue!<br>
-                        <strong>Detection:</strong> {{ breach.detectedAt|fa_datetime }}<br>
-                        <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}
+                        <strong>{{ 'data_breach.pdf.overdue_label'|trans({}, 'privacy') }}:</strong> {{ 'data_breach.pdf.overdue_text'|trans({'%hours%': (hours * -1)|number_format}, 'privacy') }}<br>
+                        <strong>{{ 'data_breach.pdf.detection'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|fa_datetime }}<br>
+                        <strong>{{ 'data_breach.pdf.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}
                     </div>
                 {% else %}
                     <div class="alert alert-warning">
-                        <strong>⏰ PENDING:</strong> {{ hours|number_format }} hours remaining until 72-hour deadline<br>
-                        <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}
+                        <strong>{{ 'data_breach.pdf.pending_label'|trans({}, 'privacy') }}:</strong> {{ 'data_breach.pdf.pending_text'|trans({'%hours%': hours|number_format}, 'privacy') }}<br>
+                        <strong>{{ 'data_breach.pdf.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|fa_datetime }}
                     </div>
                 {% endif %}
             {% endif %}
@@ -263,18 +263,18 @@
 
     {# Linked Incident & VVT #}
     <div class="section">
-        <h2>2. Linked Security Incident & Processing Activity</h2>
+        <h2>2. {{ 'data_breach.pdf.linked_heading'|trans({}, 'privacy') }}</h2>
         {% if breach.incident %}
-            <p><strong>Security Incident:</strong> {{ breach.incident.incidentNumber }} - {{ breach.incident.title }}</p>
-            <p><strong>Incident Severity:</strong>
+            <p><strong>{{ 'data_breach.pdf.security_incident'|trans({}, 'privacy') }}:</strong> {{ breach.incident.incidentNumber }} - {{ breach.incident.title }}</p>
+            <p><strong>{{ 'data_breach.pdf.incident_severity'|trans({}, 'privacy') }}:</strong>
                 {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity ? breach.incident.severity.value : ''] %}
-                <span class="badge badge-{{ sev_class }}">{{ breach.incident.severity ? breach.incident.severity.value|upper : '' }}</span>
+                <span class="badge badge-{{ sev_class }}">{{ breach.incident.severity ? ('data_breach.pdf.level.' ~ breach.incident.severity.value)|trans({}, 'privacy') : '' }}</span>
             </p>
         {% else %}
-            <p><em>Standalone breach — no linked security incident.</em></p>
+            <p><em>{{ 'data_breach.pdf.standalone'|trans({}, 'privacy') }}</em></p>
         {% endif %}
         {% if breach.processingActivity %}
-            <p><strong>Processing Activity (VVT - Art. 30):</strong> {{ breach.processingActivity.name }}</p>
+            <p><strong>{{ 'data_breach.pdf.processing_activity'|trans({}, 'privacy') }}:</strong> {{ breach.processingActivity.name }}</p>
         {% endif %}
     </div>
 
@@ -284,7 +284,7 @@
     <div class="section">
         <h2>3. {{ 'data_breach.pdf.art_33_3a_nature'|trans({}, 'privacy')}}</h2>
 
-        <h3>Breach Description:</h3>
+        <h3>{{ 'data_breach.pdf.breach_description'|trans({}, 'privacy') }}:</h3>
         <p>{{ breach.breachNature|nl2br }}</p>
 
         <h3>{{ 'data_breach.pdf.categories_personal_data'|trans({}, 'privacy')}}</h3>
@@ -295,7 +295,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p><em>Not specified</em></p>
+            <p><em>—</em></p>
         {% endif %}
 
         <h3>{{ 'data_breach.pdf.categories_data_subjects'|trans({}, 'privacy')}}</h3>
@@ -306,7 +306,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p><em>Not specified</em></p>
+            <p><em>—</em></p>
         {% endif %}
 
         <h3>{{ 'data_breach.pdf.approx_number_subjects'|trans({}, 'privacy')}}</h3>
@@ -314,17 +314,15 @@
 
         {% if breach.specialCategoriesAffected %}
             <div class="alert alert-warning">
-                <strong>⚠ Special Categories of Personal Data Affected (Art. 9 GDPR)</strong><br>
-                This breach involves special categories of data (racial/ethnic origin, political opinions,
-                religious beliefs, trade union membership, genetic data, biometric data, health data,
-                sex life or sexual orientation).
+                <strong>{{ 'data_breach.pdf.special_heading'|trans({}, 'privacy') }}</strong><br>
+                {{ 'data_breach.pdf.special_text'|trans({}, 'privacy') }}
             </div>
         {% endif %}
 
         {% if breach.criminalDataAffected %}
             <div class="alert alert-warning">
-                <strong>⚠ Criminal Conviction Data Affected (Art. 10 GDPR)</strong><br>
-                This breach involves data concerning criminal convictions and offences.
+                <strong>{{ 'data_breach.pdf.criminal_heading'|trans({}, 'privacy') }}</strong><br>
+                {{ 'data_breach.pdf.criminal_text'|trans({}, 'privacy') }}
             </div>
         {% endif %}
     </div>
@@ -353,11 +351,11 @@
     {# Risk Assessment #}
     {% if breach.riskLevel or breach.riskAssessment %}
         <div class="section">
-            <h2>6. Risk Assessment</h2>
+            <h2>6. {{ 'data_breach.pdf.risk_assessment'|trans({}, 'privacy') }}</h2>
             {% if breach.riskLevel %}
-                <p><strong>Risk Level:</strong>
+                <p><strong>{{ 'data_breach.pdf.risk_level'|trans({}, 'privacy') }}:</strong>
                     {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
-                    <span class="badge badge-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                    <span class="badge badge-{{ risk_class }}">{{ ('data_breach.pdf.level.' ~ breach.riskLevel)|trans({}, 'privacy') }}</span>
                 </p>
             {% endif %}
             {% if breach.riskAssessment %}
@@ -370,18 +368,18 @@
     <div class="section">
         <h2>7. {{ 'data_breach.pdf.art_34_communication'|trans({}, 'privacy')}}</h2>
         {% if breach.requiresSubjectNotification %}
-            <p><strong>Subject Notification Required:</strong> Yes (High risk to rights and freedoms)</p>
+            <p><strong>{{ 'data_breach.pdf.subject_required'|trans({}, 'privacy') }}:</strong> {{ 'data_breach.pdf.subject_required_yes'|trans({}, 'privacy') }}</p>
             {% if breach.dataSubjectsNotifiedAt %}
-                <p><strong>Notification Date:</strong> {{ breach.dataSubjectsNotifiedAt|fa_datetime }}</p>
-                <p><strong>Notification Method:</strong> {{ breach.subjectNotificationMethod }}</p>
-                <p><strong>Number of Subjects Notified:</strong> {{ breach.subjectsNotified|number_format }}</p>
+                <p><strong>{{ 'data_breach.pdf.notification_date'|trans({}, 'privacy') }}:</strong> {{ breach.dataSubjectsNotifiedAt|fa_datetime }}</p>
+                <p><strong>{{ 'data_breach.pdf.notification_method'|trans({}, 'privacy') }}:</strong> {{ breach.subjectNotificationMethod }}</p>
+                <p><strong>{{ 'data_breach.pdf.subjects_notified'|trans({}, 'privacy') }}:</strong> {{ breach.subjectsNotified|number_format }}</p>
             {% else %}
-                <p class="alert alert-warning"><strong>Pending:</strong> Data subjects not yet notified.</p>
+                <p class="alert alert-warning"><strong>{{ 'data_breach.pdf.pending_short'|trans({}, 'privacy') }}:</strong> {{ 'data_breach.pdf.subjects_pending'|trans({}, 'privacy') }}</p>
             {% endif %}
         {% else %}
-            <p><strong>Subject Notification Required:</strong> No</p>
+            <p><strong>{{ 'data_breach.pdf.subject_required'|trans({}, 'privacy') }}:</strong> {{ 'data_breach.pdf.no'|trans({}, 'privacy') }}</p>
             {% if breach.noSubjectNotificationReason %}
-                <p><strong>Exemption Reason (Art. 34(3)):</strong><br>
+                <p><strong>{{ 'data_breach.pdf.exemption_reason'|trans({}, 'privacy') }}:</strong><br>
                 {{ breach.noSubjectNotificationReason }}</p>
             {% endif %}
         {% endif %}
@@ -390,20 +388,20 @@
     {# Investigation & Follow-up #}
     {% if breach.rootCause or breach.lessonsLearned or breach.followUpActions|length > 0 %}
         <div class="section">
-            <h2>8. Investigation & Lessons Learned</h2>
+            <h2>8. {{ 'data_breach.pdf.investigation_heading'|trans({}, 'privacy') }}</h2>
 
             {% if breach.rootCause %}
-                <h3>Root Cause Analysis:</h3>
+                <h3>{{ 'data_breach.pdf.root_cause'|trans({}, 'privacy') }}:</h3>
                 <p>{{ breach.rootCause|nl2br }}</p>
             {% endif %}
 
             {% if breach.lessonsLearned %}
-                <h3>Lessons Learned:</h3>
+                <h3>{{ 'data_breach.pdf.lessons_learned'|trans({}, 'privacy') }}:</h3>
                 <p>{{ breach.lessonsLearned|nl2br }}</p>
             {% endif %}
 
             {% if breach.followUpActions|length > 0 %}
-                <h3>Follow-up Actions:</h3>
+                <h3>{{ 'data_breach.pdf.follow_up'|trans({}, 'privacy') }}:</h3>
                 <ul>
                     {% for action in breach.followUpActions %}
                         <li>{{ action }}</li>
@@ -416,23 +414,22 @@
     {# DPO Consultation #}
     {% if breach.dataProtectionOfficer %}
         <div class="section">
-            <h2>9. Data Protection Officer Involvement</h2>
-            <p><strong>DPO:</strong> {{ breach.dataProtectionOfficer.firstName }} {{ breach.dataProtectionOfficer.lastName }}</p>
-            <p><strong>Email:</strong> {{ breach.dataProtectionOfficer.email }}</p>
+            <h2>9. {{ 'data_breach.pdf.dpo_heading'|trans({}, 'privacy') }}</h2>
+            <p><strong>{{ 'data_breach.pdf.dpo'|trans({}, 'privacy') }}:</strong> {{ breach.dataProtectionOfficer.firstName }} {{ breach.dataProtectionOfficer.lastName }}</p>
+            <p><strong>{{ 'data_breach.pdf.email'|trans({}, 'privacy') }}:</strong> {{ breach.dataProtectionOfficer.email }}</p>
         </div>
     {% endif %}
 
     {# Declaration #}
     <div class="section">
-        <h2>10. Declaration</h2>
+        <h2>10. {{ 'data_breach.pdf.declaration'|trans({}, 'privacy') }}</h2>
         <p>
-            This report is submitted in accordance with Art. 33 of the General Data Protection Regulation (GDPR).
-            The information provided is accurate to the best of our knowledge at the time of reporting.
+            {{ 'data_breach.pdf.declaration_text'|trans({}, 'privacy') }}
         </p>
         {% if breach.assessor %}
             <p>
-                <strong>Prepared by:</strong> {{ breach.assessor.firstName }} {{ breach.assessor.lastName }}<br>
-                <strong>Email:</strong> {{ breach.assessor.email }}
+                <strong>{{ 'data_breach.pdf.prepared_by'|trans({}, 'privacy') }}:</strong> {{ breach.assessor.firstName }} {{ breach.assessor.lastName }}<br>
+                <strong>{{ 'data_breach.pdf.email'|trans({}, 'privacy') }}:</strong> {{ breach.assessor.email }}
             </p>
         {% endif %}
     </div>
@@ -440,9 +437,9 @@
     {# Footer #}
     <div class="footer">
         <p>
-            Data Breach Report - {{ breach.referenceNumber }}<br>
+            {{ 'data_breach.pdf.report_title'|trans({}, 'privacy') }} - {{ breach.referenceNumber }}<br>
             {{ 'common.generated'|trans({}, 'messages') }}: {{ "now"|fa_datetime(true) }}<br>
-            GDPR Art. 33/34 Compliance Report
+            {{ 'data_breach.pdf.footer_text'|trans({}, 'privacy') }}
         </p>
     </div>
 </body>

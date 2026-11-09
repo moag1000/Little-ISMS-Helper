@@ -8,7 +8,7 @@ src/Service/PolicyWizard/DocumentGenerator.php:LOC=1729 deps=17
 src/Controller/DeploymentWizardController.php:LOC=1721 deps=0
 src/Service/DashboardStatisticsService.php:LOC=1677 deps=24
 src/Controller/ComplianceExportController.php:LOC=1586 deps=0
-src/Repository/ComplianceMappingRepository.php:LOC=1497 deps=0
+src/Repository/ComplianceMappingRepository.php:LOC=1494 deps=0
 src/Entity/Incident.php:LOC=1439 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1426 deps=18
 src/Entity/ProcessingActivity.php:LOC=1415 deps=0
@@ -38,8 +38,8 @@ src/Controller/AdminBackupController.php:LOC=684 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
 src/Controller/DPIAController.php:LOC=680 deps=0
 src/Controller/MonitoringController.php:LOC=643 deps=0
-src/Service/ScheduledReportService.php:LOC=590 deps=21
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=453 deps=16
+src/Service/ScheduledReportService.php:LOC=447 deps=20
 src/Service/DataIntegrityService.php:LOC=438 deps=33
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=17
 src/Service/Tisax/Dto/VdaIsaControlRow.php:LOC=125 deps=20
