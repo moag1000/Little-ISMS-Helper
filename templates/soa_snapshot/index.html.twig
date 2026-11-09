@@ -16,9 +16,9 @@
 {{ _fa_page_header.render({
     title: 'soa.snapshot.page.title'|trans({}, 'soa'),
     subtitle: 'soa.snapshot.page.subtitle'|trans({}, 'soa'),
-    actions: [
+    actions: is_granted('AUDIT_WORK') ? [
         { label: 'soa.snapshot.action.new'|trans({}, 'soa'), variant: 'primary', icon: 'plus', href: path('app_soa_snapshot_new') }
-    ]
+    ] : []
 }) }}
 
 <div class="container-fluid py-4">
@@ -30,9 +30,9 @@
             mood: 'thinking',
             title: 'soa.snapshot.empty.title'|trans({}, 'soa'),
             text: 'soa.snapshot.empty.text'|trans({}, 'soa'),
-            actions: [
+            actions: is_granted('AUDIT_WORK') ? [
                 { label: 'soa.snapshot.action.new'|trans({}, 'soa'), variant: 'primary', icon: 'plus', href: path('app_soa_snapshot_new') }
-            ]
+            ] : []
         },
     } %}
         {% block list_table %}

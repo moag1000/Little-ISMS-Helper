@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\SoaSnapshot;
 use App\Entity\User;
 use App\Repository\SoaSnapshotRepository;
+use App\Security\Voter\AuditWorkVoter;
 use App\Service\Soa\SoaSnapshotService;
 use App\Service\TenantContext;
 use App\Util\ListPage;
@@ -30,9 +31,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   - Inspect a snapshot detail (control count, sha256, payload)
  *   - Download the frozen state as CSV
  *
- * RBAC: ROLE_AUDITOR is the floor (auditors must be able to freeze
- * the SoA before an external audit + inspect prior freezes). Higher
- * roles inherit (MANAGER, ADMIN, GROUP_CISO).
+ * RBAC: ROLE_AUDITOR is the floor for reading. Freezing a snapshot is
+ * audit work (S27, AuditWorkVoter): auditors and managers, not top
+ * management or the group roles that inherit ROLE_AUDITOR for reading.
  */
 #[IsGranted('ROLE_AUDITOR')]
 class SoaSnapshotController extends AbstractController
@@ -65,6 +66,8 @@ class SoaSnapshotController extends AbstractController
     }
 
     #[Route('/soa/snapshot/new', name: 'app_soa_snapshot_new', methods: ['GET', 'POST'])]
+    // S27: freezing the SoA is audit work — auditors and managers, not the read-only reviewer roles.
+    #[IsGranted(AuditWorkVoter::AUDIT_WORK)]
     public function new(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();

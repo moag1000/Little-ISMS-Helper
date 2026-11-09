@@ -6,8 +6,10 @@ namespace App\Controller;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\BusinessRule\BusinessRuleException;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\EntityTypeRegistry;
+use App\Lifecycle\FourEyes\LifecycleCountersign;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\Exception\ReasonRequiredException;
 use App\Lifecycle\InvalidTransitionException;
@@ -34,6 +36,13 @@ class LifecycleController extends AbstractController
     private const string APPROVER_INVALID = 'four_eyes_approver_invalid';
     private const string APPROVER_INVALID_MESSAGE =
         'Approver ungültig: unbekannt oder nicht aus der Organisation des Datensatzes.';
+    private const string CHAIN_STEP = 'approval_chain_step';
+    private const string CHAIN_STEP_MESSAGE =
+        'Freigabeketten werden Schritt für Schritt in der Freigabe entschieden, nicht über den Status.';
+    private const string COUNTERSIGN_MESSAGE =
+        'Gegenzeichnung angefragt. Die zweite Person bestätigt in ihrer Sitzung (Vier-Augen-Eingang, Mein Tag).';
+    /** S27: a running approval chain is decided step by step (WorkflowService), never here. */
+    private const string APPROVAL_CHAIN_WORKFLOW = 'workflow_instance_lifecycle';
 
     public function __construct(
         private readonly EntityTypeRegistry $entityRegistry,
@@ -45,6 +54,7 @@ class LifecycleController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
+        private readonly LifecycleCountersign $countersign,
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
@@ -55,6 +65,10 @@ class LifecycleController extends AbstractController
         $mapping = $this->entityRegistry->lookup($entityType);
         if ($mapping === null) {
             return $this->jsonError(404, 'unknown_entity_type', sprintf('Lifecycle für Typ "%s" nicht konfiguriert.', $entityType));
+        }
+
+        if ($mapping['workflow'] === self::APPROVAL_CHAIN_WORKFLOW) {
+            return $this->jsonError(422, self::CHAIN_STEP, self::CHAIN_STEP_MESSAGE);
         }
 
         $entity = $this->em->getRepository($mapping['class'])->find($id);
@@ -80,25 +94,47 @@ class LifecycleController extends AbstractController
             return $this->jsonError(403, 'forbidden', sprintf('Berechtigung fehlt für Transition "%s".', $transitionName));
         }
 
-        $approver = null;
+        // S27: `four_eyes_approver_id` names whom to ask, it never confirms anything.
+        $designated = null;
         if ($fourEyesApproverId !== null) {
-            $approver = $this->userRepository->find((int) $fourEyesApproverId);
+            $designated = $this->userRepository->find((int) $fourEyesApproverId);
             // Unknown id and user of another organisation answer identically, so
             // the endpoint does not reveal which user ids exist elsewhere.
-            if (!$approver instanceof User || $this->isApproverOutsideRecordTenant($approver, $entity)) {
+            if (!$designated instanceof User || $this->isApproverOutsideRecordTenant($designated, $entity)) {
                 return $this->jsonError(422, self::APPROVER_INVALID, self::APPROVER_INVALID_MESSAGE);
             }
         }
 
+        $actor = $this->getUser();
         try {
+            if ($actor instanceof User && $this->countersign->needsCountersign($entity, $mapping['workflow'], $transitionName, $actor)) {
+                $countersign = $this->countersign->request(
+                    $entity,
+                    $entityType,
+                    $mapping['workflow'],
+                    $transitionName,
+                    $actor,
+                    is_string($reason) ? $reason : null,
+                    $designated,
+                );
+
+                return new JsonResponse([
+                    'status' => $entity->getStatus(),
+                    'countersign_requested' => true,
+                    'request_id' => $countersign->getId(),
+                    'message' => self::COUNTERSIGN_MESSAGE,
+                ], 202);
+            }
+
             $this->lifecycle->transition(
                 $entity,
                 $mapping['workflow'],
                 $transitionName,
-                $this->getUser(),
+                $actor instanceof User ? $actor : null,
                 is_string($reason) ? $reason : null,
-                $approver,
             );
+        } catch (BusinessRuleException $e) {
+            return $this->jsonError(422, self::APPROVER_INVALID, $e->getMessage());
         } catch (ReasonRequiredException $e) {
             return $this->jsonError(422, 'reason_required', $e->getMessage());
         } catch (FourEyesRequiredException $e) {
@@ -130,6 +166,10 @@ class LifecycleController extends AbstractController
             return $this->jsonError(404, 'unknown_entity_type', sprintf('Lifecycle für Typ "%s" nicht konfiguriert.', $entityType));
         }
 
+        if ($mapping['workflow'] === self::APPROVAL_CHAIN_WORKFLOW) {
+            return $this->jsonError(422, self::CHAIN_STEP, self::CHAIN_STEP_MESSAGE);
+        }
+
         $payload = json_decode($request->getContent(), true) ?: [];
         $transitionName = (string) ($payload['transition'] ?? '');
         $ids = $payload['ids'] ?? [];
@@ -140,16 +180,19 @@ class LifecycleController extends AbstractController
             return $this->jsonError(422, 'no_ids', 'Mindestens eine ID erforderlich.');
         }
 
-        $approver = null;
+        // S27: the named person is asked to counter-sign, never taken as approver.
+        $designated = null;
         $approverInvalid = false;
         if ($fourEyesApproverId !== null) {
-            $approver = $this->userRepository->find((int) $fourEyesApproverId);
+            $designated = $this->userRepository->find((int) $fourEyesApproverId);
             // Reported per record like an approver of another organisation, so
             // an unknown id is indistinguishable from a foreign one.
-            $approverInvalid = !$approver instanceof User;
+            $approverInvalid = !$designated instanceof User;
         }
+        $actor = $this->getUser();
 
         $succeeded = [];
+        $countersignRequested = [];
         $failed = [];
         $perEntityData = [];
         $repo = $this->em->getRepository($mapping['class']);
@@ -165,19 +208,30 @@ class LifecycleController extends AbstractController
                 $failed[(string) $id] = 'forbidden';
                 continue;
             }
-            $foreignApprover = $approver instanceof User && $this->isApproverOutsideRecordTenant($approver, $entity);
+            $foreignApprover = $designated instanceof User && $this->isApproverOutsideRecordTenant($designated, $entity);
             if ($approverInvalid || $foreignApprover) {
                 $failed[(string) $id] = self::APPROVER_INVALID;
                 continue;
             }
             try {
+                if ($actor instanceof User && $this->countersign->needsCountersign($entity, $mapping['workflow'], $transitionName, $actor)) {
+                    $countersignRequested[(string) $id] = $this->countersign->request(
+                        $entity,
+                        $entityType,
+                        $mapping['workflow'],
+                        $transitionName,
+                        $actor,
+                        is_string($reason) ? $reason : null,
+                        $designated,
+                    )->getId();
+                    continue;
+                }
                 $this->lifecycle->transition(
                     $entity,
                     $mapping['workflow'],
                     $transitionName,
-                    $this->getUser(),
+                    $actor instanceof User ? $actor : null,
                     is_string($reason) ? $reason : null,
-                    $approver,
                 );
                 $succeeded[] = (int) $id;
                 $perEntityData[] = [
@@ -216,6 +270,7 @@ class LifecycleController extends AbstractController
 
         return new JsonResponse([
             'succeeded' => $succeeded,
+            'countersign_requested' => $countersignRequested,
             'failed' => $failed,
             'audit_log_batch_id' => $batchId,
         ]);
@@ -237,7 +292,8 @@ class LifecycleController extends AbstractController
 
         $workflow = $this->workflowRegistry->get($entity, $mapping['workflow']);
         $current = (string) $entity->getStatus();
-        $candidates = $workflow->getEnabledTransitions($entity);
+        // A running approval chain offers no status buttons: its steps are decided in the approval (S27).
+        $candidates = $mapping['workflow'] === self::APPROVAL_CHAIN_WORKFLOW ? [] : $workflow->getEnabledTransitions($entity);
 
         $allowed = [];
         foreach ($candidates as $t) {

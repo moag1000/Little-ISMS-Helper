@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Lifecycle;
 
 use App\Entity\User;
+use App\Entity\WorkflowInstance;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\Exception\TransitionAccessDeniedException;
 use App\Lifecycle\LifecycleService;
+use App\Lifecycle\TransitionAccess;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
@@ -63,6 +65,12 @@ final class LifecycleServiceRoleContractTest extends KernelTestCase
         $service = self::getContainer()->get(LifecycleService::class);
 
         foreach ($this->roleGatedTransitions() as [$class, $workflow, $transition, $roles]) {
+            if ($class === WorkflowInstance::class && $transition !== TransitionAccess::CHAIN_START) {
+                // S27: an approval-chain step is decided by WorkflowService::canUserApprove()
+                // (step role, named approvers), never by the role list alone —
+                // GenericEndpointRespectsStepAuthorityTest.
+                continue;
+            }
             $entity = $this->newSubject($class);
             try {
                 $service->transition($entity, $workflow, $transition, $this->user([$roles[0]]));

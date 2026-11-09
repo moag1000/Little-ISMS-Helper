@@ -17,6 +17,31 @@ scripts/
 
 ## 🚀 Setup & Datenbank
 
+### Cloud-Threads: PHPStan ohne Docker (B3)
+
+Claude-Cloud-Threads haben PHP 8.3 und erreichen GitHub nur über git: Zipballs von
+`api.github.com`/`codeload` beantwortet der Proxy mit 403, `composer install --prefer-source` spiegelt jedes
+Repository mit voller Historie (20+ Minuten, `phpstan/phpstan` hat gar keine Quelle im Lock).
+
+```bash
+python3 scripts/setup/cloud_vendor.py      # vendor/ aus composer.lock, ca. 30 s (Cache: var/cloud-vendor/)
+vendor/bin/phpstan analyse -c phpstan.cloud.neon --memory-limit=2G --no-progress
+```
+
+`cloud_vendor.py` holt jeden gesperrten Commit flach per git (`git fetch --depth 1`, 16 parallel), packt ihn mit
+`git archive` und installiert daraus ohne Netz — dieselben Versionen wie CI. `phpstan.cloud.neon` = `phpstan.dist.neon`
+mit `phpVersion: 80400` (analysiert wie CI auf PHP 8.4, obwohl PHP 8.3 läuft). Einzelne Datei:
+`vendor/bin/phpstan analyse -c phpstan.cloud.neon --memory-limit=2G src/Pfad/Datei.php`.
+
+Eine Mutation gegen eine Gate-Regel (T4) läuft so: Datei in `src/` ändern, PHPStan über diese Datei laufen lassen,
+der Fehler-Identifier (`gate65.…`) muss erscheinen, dann `git checkout -- src/`.
+
+Regel für eigene PHPStan-Regeln: nur statische Reflexion (`$scope`, `ReflectionProvider`,
+`$type->getObjectClassReflections()`), nie `is_subclass_of()`/`class_exists()`/`new \ReflectionClass()` auf
+analysierte Klassen — das lädt die Klasse zur Laufzeit, und PHP 8.3 scheitert an PHP-8.4-Syntax.
+
+PHPUnit braucht PHP ≥ 8.4 (PHPUnit 13); dafür bleibt die conda-Anleitung im Projektgedächtnis, CI ist die Referenz.
+
 ### setup/validate-setup.sh
 
 **Zweck:** Umfassende Validierung der Installation (18+ Checks)
