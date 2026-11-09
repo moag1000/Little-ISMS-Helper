@@ -56,7 +56,7 @@
         "symfony/monolog-bridge": "7.4.*",
         "symfony/monolog-bundle": "^4.1",
         "symfony/notifier": "7.4.*",
-        "symfony/options-resolver": "7.4.*",
+        "symfony/options-resolver": "8.1.*",
         "symfony/password-hasher": "7.4.*",
         "symfony/process": "7.4.*",
         "symfony/property-access": "7.4.*",
