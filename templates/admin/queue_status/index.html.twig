@@ -91,6 +91,8 @@
         <div class="fa-section__body">
             <p>{{ 'admin.queue.process_now.description'|trans({}, 'admin') }}</p>
 
+            {# Instance operation: drains every organisation's queue (S23). #}
+            {% if is_granted('ADMIN_GLOBAL_OP') %}
             <form method="post"
                   action="{{ path('admin_queue_process_now') }}"
                   class="d-flex flex-wrap gap-3 align-items-center">
@@ -103,6 +105,7 @@
                     {{ 'admin.queue.process_now.fineprint'|trans({}, 'admin') }}
                 </span>
             </form>
+            {% endif %}
 
             <div class="mt-4">
                 <h3 class="h6 mb-2">{{ 'admin.queue.cron.title'|trans({}, 'admin') }}</h3>

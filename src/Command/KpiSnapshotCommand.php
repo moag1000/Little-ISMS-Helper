@@ -216,8 +216,20 @@ class KpiSnapshotCommand
     {
         // CLI has no request/user: pin the tenant context first so services
         // that resolve the tenant from it (module set, framework comparison)
-        // compute this tenant's values, not the global ones.
-        $this->tenantContext?->setCurrentTenant($tenant);
+        // compute this tenant's values, not the global ones — and put the
+        // previous context back, the worker runs the next command after it.
+        if ($this->tenantContext !== null) {
+            return $this->tenantContext->runAs($tenant, fn (): array => $this->computeFlatKpiData($tenant));
+        }
+
+        return $this->computeFlatKpiData($tenant);
+    }
+
+    /**
+     * @return array<string, int|float>
+     */
+    private function computeFlatKpiData(Tenant $tenant): array
+    {
         $kpis = $this->kpiCatalog->managementKpis($tenant);
 
         $data = [];

@@ -40,17 +40,13 @@ final class DraftSuggestionJob implements AsyncJobInterface
             // @intentional-assertion: the controller dispatches only known draft kinds
             throw new \InvalidArgumentException('Unknown draft kind.');
         }
-        $previous = $this->tenantContext->getCurrentTenant();
         // After the response is flushed the request is gone; scope the Doctrine filter explicitly.
-        $this->tenantContext->setCurrentTenant($tenant);
-        try {
+        $this->tenantContext->runAs($tenant, function () use ($ctx, $kind, $tenant): void {
             $ctx->message($this->text->t($tenant, 'suggestions.draft.running'));
             $record = $this->drafts->resolve($kind, (string) $ctx->arg('class'), (int) $ctx->arg('id'), $tenant);
             $suggestion = $record !== null ? $this->drafts->draft($tenant, $kind, $record) : null;
             $ctx->updatePayload(['suggestion' => $suggestion?->getId()]);
             $ctx->progress(1, 1, $this->text->t($tenant, $suggestion !== null ? 'suggestions.draft.done' : 'suggestions.draft.none'));
-        } finally {
-            $this->tenantContext->setCurrentTenant($previous);
-        }
+        });
     }
 }

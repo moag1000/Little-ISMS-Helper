@@ -208,6 +208,20 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   (`messenger:consume scheduler_default scheduler async …`, Admin > Queue-Status zeigt sie); ohne
   liefen die eingebauten Zeitpläne in diesem Modus nicht. Mails, die länger als 15 Minuten in der
   Warteschlange liegen, färben den Worker-Status rot.
+- **Hintergrundaufgaben je Organisation:** Der Worker setzt nach jeder Aufgabe den
+  Organisationskontext zurück. Bisher konnte ein geplanter Bericht, der KPI-Snapshot oder ein
+  Admin-Job die Organisation für die nächste Aufgabe festhalten: das nächtliche Instanz-Backup enthielt
+  dann nur eine Organisation, Erinnerungen und SLA-Hinweise der anderen kamen zu spät. Kein Klick nötig;
+  Instanz-Backups, die vor dem Update auf Mehr-Organisations-Instanzen nachts entstanden sind, nach dem
+  Update durch ein neues ersetzen (Admin > Backup), bevor `app:backup:prune` die älteren vollständigen
+  löscht. Die nächtliche Erfüllungsberechnung bewertet die Wizard-Prüfungen jetzt mit dem Scope der
+  jeweiligen Organisation; Werte können sich einmalig ändern.
+- **Audit-Log-Aufbewahrung:** Die nächtliche Bereinigung (02:45) löscht jetzt wirklich (geplant mit
+  `--force`; ohne Terminal antwortete die Rückfrage bisher immer „nein“). Gelöscht wird nur, was älter
+  ist als die Frist unter Admin > Audit-Log > Aufbewahrung (mindestens 365 Tage).
+- **„Warteschlange jetzt abarbeiten“** (Admin > Worker-Status) nur noch für den Super-Admin: die
+  Warteschlange enthält Jobs und Mails aller Organisationen. Der wöchentliche Log-Eintrag
+  „Compliance report generated“ entfällt (er zählte instanzweit und ging an niemanden).
 
 ### SSO (Azure, SAML, OIDC)
 
