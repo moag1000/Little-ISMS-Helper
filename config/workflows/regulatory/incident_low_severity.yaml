@@ -50,6 +50,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "Incident Response - Low/Medium Severity"
+                    description: "Standard incident response workflow for low and medium severity security incidents (ISO 27001:2022)"
+                    entity_type: Incident
                     standard: "ISO 27001:2022 Cl. 5.24-5.28"
                     sla_hours: 168
                     escalation_threshold_hours: 120

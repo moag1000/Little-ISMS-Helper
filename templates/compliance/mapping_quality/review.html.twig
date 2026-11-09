@@ -15,7 +15,7 @@
             <a href="{{ path('app_mapping_quality_review_queue') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'mapping_review.action.back_to_queue'|trans({}, 'compliance') }}
             </a>
-            {% if is_granted('ROLE_MANAGER') %}
+            {% if is_granted('ROLE_MANAGER') and is_granted('GLOBAL_CATALOGUE_WRITE', mapping) %}
             <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
                     data-controller="ui-actions"
                     data-action="ui-actions#confirmAndFetch"
@@ -243,8 +243,10 @@
         {{ _fa_alert.render({ variant: 'success', title: 'mapping_review.gap.no_gaps'|trans({}, 'compliance'), body: 'mapping_review.gap.no_gaps_desc'|trans({}, 'compliance') }) }}
     {% endif %}
 
-    {# Review Form #}
-    {% if is_granted('ROLE_MANAGER') %}
+    {# Review Form — a global mapping is shared by every organisation: only the super admin reviews it (S3/S13). #}
+    {% if is_granted('ROLE_MANAGER') and not is_granted('GLOBAL_CATALOGUE_WRITE', mapping) %}
+        <p class="text-muted small">{{ 'compliance.shared_catalogue_super_admin'|trans({}, 'compliance') }}</p>
+    {% elseif is_granted('ROLE_MANAGER') %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">

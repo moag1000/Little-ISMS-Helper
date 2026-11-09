@@ -517,7 +517,8 @@ class MappingQualityControllerTest extends WebTestCase
     public function updateGapEnforcesStatusTransitions(): void
     {
         $gapId = $this->createGapItem('resolved');
-        $this->loginAsUser($this->adminUser);
+        // The gap of a global mapping is shared catalogue data (S13): the super admin edits it.
+        $this->loginAsUser($this->superAdmin());
 
         // resolved → planned is not an allowed move (only reopen to in_progress).
         $this->postGapUpdate($gapId, ['status' => 'planned']);
@@ -530,6 +531,16 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $body = json_decode((string) $this->client->getResponse()->getContent(), true);
         $this->assertSame('in_progress', $body['gap']['status']);
+    }
+
+    #[Test]
+    public function aGapOfAGlobalMappingIsForbiddenForAnOrganisationAdmin(): void
+    {
+        $gapId = $this->createGapItem('identified');
+        $this->loginAsUser($this->adminUser);
+
+        $this->postGapUpdate($gapId, ['status' => 'in_progress']);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     /** @param array<string, mixed> $payload */

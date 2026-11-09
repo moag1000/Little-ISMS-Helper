@@ -42,6 +42,7 @@ admin:
         reset: 'Setting "%key%" reset.'
     industry_preset:
         applied: 'Preset "%name%" applied: %modules% modules, %frameworks% frameworks, %controls% controls, %documents% documents.'
+        frameworks_super_admin_only: 'Frameworks are shared by all organisations and stay unchanged; only the super admin activates them.'
         error:
             not_found: 'Preset not found.'
             invalid_csrf: 'Invalid CSRF token.'

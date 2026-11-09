@@ -51,6 +51,10 @@ framework:
                         tone_target: warning
             metadata:
                 regulatory_metadata:
+                    # Name and record type of the database row that runs this chain (RegulatoryWorkflowMirror).
+                    title: "BC Plan Activation (ISO 22301)"
+                    description: "Crisis declaration triggers plan activation, execution tracking, and post-incident review"
+                    entity_type: BusinessContinuityPlan
                     standard: "ISO 22301:2019"
                     sla_hours: 1
                     escalation_threshold_hours: 1
@@ -70,9 +74,6 @@ framework:
                         step_type: notification
                         days_to_complete: 0
                         is_required: true
-                        auto_progress_conditions:
-                            type: auto
-                            condition: "status = active"
                     -   name: "Recovery Execution"
                         description: "Execute recovery procedures as documented in the BC plan"
                         order: 3
