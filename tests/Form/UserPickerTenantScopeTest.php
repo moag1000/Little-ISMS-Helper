@@ -69,6 +69,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * User-picker tenant sweep: every User choice field of a tenant record offers
@@ -99,6 +100,15 @@ final class UserPickerTenantScopeTest extends KernelTestCase
         $this->userA = $this->makeUser('alice_' . $uid, $this->tenantA);
         $this->userB = $this->makeUser('bob_' . $uid, $this->tenantB);
         $this->em->flush();
+    }
+
+    /** The account link of a Person is set by managers only (S20); for everybody else the field is read-only. */
+    private function actAsManagerFor(string $field): void
+    {
+        if ($field === 'linkedUser') {
+            static::getContainer()->get('security.token_storage')
+                ->setToken(new UsernamePasswordToken($this->userA, 'main', ['ROLE_MANAGER']));
+        }
     }
 
     private function makeUser(string $name, ?Tenant $tenant): User
@@ -206,6 +216,7 @@ final class UserPickerTenantScopeTest extends KernelTestCase
     #[DataProvider('siteProvider')]
     public function onlyUsersOfTheRecordTenantAreOffered(string $type, string $entityClass, string $field, bool $multiple): void
     {
+        $this->actAsManagerFor($field);
         $form = $this->factory->create($type, $this->record($entityClass, $this->tenantA), ['csrf_protection' => false]);
         $child = $this->field($form, $field);
 
@@ -225,6 +236,7 @@ final class UserPickerTenantScopeTest extends KernelTestCase
     #[DataProvider('siteProvider')]
     public function tamperedSubmitOfForeignUserIsRejected(string $type, string $entityClass, string $field, bool $multiple): void
     {
+        $this->actAsManagerFor($field);
         $record = $this->record($entityClass, $this->tenantA);
         $form = $this->factory->create($type, $record, ['csrf_protection' => false]);
         $foreignId = (string) $this->userB->getId();
@@ -248,6 +260,7 @@ final class UserPickerTenantScopeTest extends KernelTestCase
     #[DataProvider('siteProvider')]
     public function userOfTheRecordTenantIsAccepted(string $type, string $entityClass, string $field, bool $multiple): void
     {
+        $this->actAsManagerFor($field);
         $form = $this->factory->create($type, $this->record($entityClass, $this->tenantA), ['csrf_protection' => false]);
         $ownId = (string) $this->userA->getId();
 

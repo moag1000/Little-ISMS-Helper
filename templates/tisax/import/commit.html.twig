@@ -2,6 +2,7 @@
 {% trans_default_domain 'tisax_isa' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'tisax.import.commit.title'|trans({}, 'tisax_isa') }}{% endblock %}
 
@@ -32,6 +33,10 @@
         <div class="col-lg-9">
             <form method="post" action="{{ path('app_tisax_import_commit', { _locale: app.request.locale }) }}">
                 <input type="hidden" name="_token" value="{{ token }}">
+
+                {% if catalogueNote %}
+                    {{ _fa_alert.render({ variant: 'warning', class: 'mb-4', body: catalogueNote|trans({}, 'tisax_isa') }) }}
+                {% endif %}
 
                 {# ── Organisation-mismatch warning (Art. data-integrity) ── #}
                 {% if companyMismatch %}
@@ -127,13 +132,13 @@
                             {{ 'tisax.import.commit.confirm_body'|trans({
                                 '%new%': delta.new,
                                 '%existing%': delta.existing,
-                                '%framework%': framework.name
+                                '%framework%': frameworkName
                             }, 'tisax_isa') }}
                         </p>
                         <p class="small text-muted">{{ 'tisax.import.commit.irreversible_note'|trans({}, 'tisax_isa') }}</p>
 
                         <div class="d-flex gap-2 justify-content-center mt-3">
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg"{% if catalogueNote %} disabled{% endif %}>
                                 <i class="fa-icon fa-icon--check-circle-fill me-1"></i>
                                 {{ 'tisax.import.commit.submit_button'|trans({}, 'tisax_isa') }}
                             </button>

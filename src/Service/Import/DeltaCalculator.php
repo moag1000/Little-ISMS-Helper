@@ -192,9 +192,9 @@ final class DeltaCalculator
     /**
      * Extract a flat array of scalar/string entity property values via reflection.
      *
-     * Skips:
-     *  - Doctrine Collection properties (to-many relations)
-     *  - Properties with a null value
+     * Skips Doctrine Collection properties (to-many relations). Keeps null
+     * values: an import cell that fills an empty field is a change (W9 L2) —
+     * skipping them counted such rows as "unchanged" and lost the value.
      *
      * Normalises:
      *  - DateTimeInterface → ISO 8601 string
@@ -213,10 +213,6 @@ final class DeltaCalculator
             }
 
             $value = $property->getValue($entity);
-
-            if ($value === null) {
-                continue;
-            }
 
             if ($value instanceof Collection) {
                 continue;

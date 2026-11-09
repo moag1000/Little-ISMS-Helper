@@ -234,6 +234,55 @@ final class TisaxImportWizardE2ETest extends WebTestCase
     // ──────────────────────────────────────────────────────────────────────────
 
     /**
+     * W9: preview and the commit page only read the shared framework row; a
+     * framework the super admin switched off stays off and takes no import.
+     */
+    #[Test]
+    public function deactivated_catalogue_is_neither_reactivated_nor_written(): void
+    {
+        $mapper    = static::getContainer()->get(TisaxRequirementMapper::class);
+        $framework = $mapper->findOrCreateFramework();
+        $framework->setActive(false);
+        $this->em->flush();
+        $frameworkId = $framework->getId();
+
+        try {
+            $this->client->loginUser($this->managerUser);
+            $this->client->request('GET', '/en/tisax-import/disclaimer');
+            $session = $this->client->getRequest()->getSession();
+            $session->set('tisax_import.parsed_controls', [[
+                'controlId' => '9.9.9', 'title' => 'Workbook requirement 9.9.9', 'titleEn' => null,
+                'description' => null, 'mustLevel' => 'x', 'shouldLevel' => null, 'highLevel' => null,
+                'veryHighLevel' => null, 'iso27001Ref' => null, 'auditEvidenceHint' => null,
+                'rawRowIndex' => 5, 'maturityCurrent' => 3,
+            ]]);
+            $token = (new UriSafeTokenGenerator())->generateToken();
+            $session->set('_csrf/tisax_commit', $token);
+            $session->save();
+
+            foreach (['/en/tisax-import/preview', '/en/tisax-import/commit'] as $url) {
+                $this->client->request('GET', $url);
+                self::assertResponseIsSuccessful();
+                self::assertStringContainsString('fa-alert--warning', (string) $this->client->getResponse()->getContent());
+            }
+            $this->client->request('POST', '/en/tisax-import/commit', ['_token' => $token]);
+            self::assertResponseStatusCodeSame(Response::HTTP_FOUND);
+            self::assertStringContainsString('commit', $this->client->getResponse()->headers->get('Location') ?? '');
+
+            $this->em->clear();
+            $reloaded = $this->em->getRepository(ComplianceFramework::class)->find($frameworkId);
+            self::assertFalse($reloaded?->isActive(), 'the wizard must not switch the shared framework back on');
+            self::assertNull($this->em->getRepository(ComplianceRequirement::class)->findOneBy([
+                'framework' => $reloaded, 'requirementId' => '9.9.9', 'uploadTenant' => $this->testTenant,
+            ]), 'no row written into a deactivated catalogue');
+        } finally {
+            $this->em->clear();
+            $this->em->getRepository(ComplianceFramework::class)->find($frameworkId)?->setActive(true);
+            $this->em->flush();
+        }
+    }
+
+    /**
      * Exercises the commit step with BOTH new branches active:
      *  - workbook organisation differs from tenant → mismatch card + required checkbox
      *  - workbook Reifegrad differs from a stored assessment → diff table + selective overwrite
@@ -495,6 +544,10 @@ final class TisaxImportWizardE2ETest extends WebTestCase
         $this->em->persist($this->managerUser);
 
         $this->em->flush();
+
+        // The shared TISAX framework exists as after "load catalogue" — the wizard
+        // itself never creates it for a manager on a multi-organisation instance (W9).
+        static::getContainer()->get(TisaxRequirementMapper::class)->findOrCreateFramework();
     }
 
     /**

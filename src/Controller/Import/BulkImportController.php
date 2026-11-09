@@ -195,7 +195,7 @@ final class BulkImportController extends AbstractController
         // Retrieve auto-suggested mappings via the orchestrator's preview (read-only parse).
         // We re-parse the spreadsheet to obtain headers and auto-mappings.
         try {
-            $storedPath  = $this->resolveFilePath($batch);
+            $storedPath  = $this->orchestrator->storedFilePath($batch);
             $parsed      = $this->parser->parse($storedPath);
             $autoMappings = $this->headerMapper->suggestMappings($parsed->headers, $entityTypePascal);
         } catch (\Throwable $e) {
@@ -557,40 +557,5 @@ final class BulkImportController extends AbstractController
         }
 
         return array_keys($fields);
-    }
-
-    /**
-     * Resolve the stored file path for a batch by scanning the upload directory.
-     *
-     * Delegates to the orchestrator's internal logic by triggering a preview parse.
-     * This is a best-effort approach that leverages the file-hash lookup already
-     * implemented in BulkImportOrchestrator::resolveStoredFilePath().
-     *
-     * @throws \RuntimeException when the file cannot be located
-     */
-    private function resolveFilePath(BulkImportBatch $batch): string
-    {
-        // The upload dir is configured as a named binding for BulkImportOrchestrator
-        // in services.yaml. We reconstruct the same path here to access the stored file.
-        $uploadDir = $this->projectDir . '/var/import-uploads';
-
-        if (!is_dir($uploadDir)) {
-            throw new ImportFailedException(sprintf('Upload directory not found: %s', $uploadDir));
-        }
-
-        $fileHash = $batch->getSourceFileHash();
-        $iterator = new \DirectoryIterator($uploadDir);
-
-        foreach ($iterator as $file) {
-            if ($file->isFile() && hash_file('sha256', $file->getPathname()) === $fileHash) {
-                return $file->getPathname();
-            }
-        }
-
-        throw new ImportFailedException(sprintf(
-            'Import source file not found for batch #%d (hash: %s).',
-            $batch->getId(),
-            $fileHash,
-        ));
     }
 }

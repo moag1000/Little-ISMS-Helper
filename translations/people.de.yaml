@@ -50,7 +50,7 @@ person:
     help:
         badge: 'Interne Ausweis‑/Badge‑Nummer (optional)'
         badge_id: 'Eindeutige Ausweis-/Badge-Nummer für Zutrittskontrolle'
-        linked_user: 'Optional: Verknüpfen Sie diese Person mit einem Benutzeraccount im System'
+        linked_user: 'Die Person handelt über dieses Konto (Eigner, DSB, Freigeber). Nur Manager verknüpfen.'
         access_valid_from: 'Ab wann ist der Zutritt für diese Person gültig?'
         access_valid_until: 'Bis wann ist der Zutritt gültig? (Leer = unbegrenzt)'
     type:

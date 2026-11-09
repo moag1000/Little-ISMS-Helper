@@ -43,6 +43,23 @@ class FourEyesApprovalRequestRepository extends ServiceEntityRepository
     }
 
     /**
+     * Requests of one kind in one organisation, newest first.
+     *
+     * @return list<FourEyesApprovalRequest>
+     */
+    public function findByActionType(Tenant $tenant, string $actionType): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.tenant = :tenant')
+            ->andWhere('r.actionType = :type')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('type', $actionType)
+            ->orderBy('r.id', \SortDirection::Descending)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Pending requests past their expiry, every organisation (background run).
      * Expiry happens per entity in FourEyesApprovalService::cleanupExpired(),
      * so each organisation gets its own audit batch.

@@ -185,6 +185,26 @@ final class DeltaCalculatorTest extends TestCase
     }
 
     #[Test]
+    public function testValueThatFillsAnEmptyFieldIsAnUpdate(): void
+    {
+        $existingEntity = new class {
+            public string $name = 'Server A';
+            public ?string $location = null;
+            public ?string $note = null;
+            public function getId(): int { return 7; }
+        };
+
+        $this->mapper->method('validate')->willReturn(['errors' => [], 'warnings' => []]);
+        $this->mapper->method('findExisting')->willReturn($existingEntity);
+        $this->mapper->method('toEntityData')->willReturn(['name' => 'Server A', 'location' => 'RZ 1', 'note' => '']);
+
+        $result = $this->calculator->calculate($this->makeSheet([['name' => 'Server A']]), $this->makeConfig());
+
+        self::assertCount(1, $result->updates, 'a cell that fills a NULL field must not be dropped as "unchanged"');
+        self::assertSame(['location' => ['old' => null, 'new' => 'RZ 1']], $result->updates[0]['diff']);
+    }
+
+    #[Test]
     public function testIgnoredFieldsAreNotInDiff(): void
     {
         $row = ['name' => 'Server A', 'updatedAt' => '2026-01-02T00:00:00+00:00'];

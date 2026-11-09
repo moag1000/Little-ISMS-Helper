@@ -7,6 +7,7 @@ namespace App\Controller\Admin\Library;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
+use App\Service\TenantContext;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
 use App\Service\Tisax\TisaxCatalogueProvider;
 use App\Service\Library\BsiKompendiumImporter;
@@ -55,6 +56,7 @@ class LibraryImporterController extends AbstractController
         private readonly LibraryRoundtripService $roundtripService,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly TenantContext $tenantContext,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -156,7 +158,7 @@ class LibraryImporterController extends AbstractController
             throw $this->createNotFoundException('Framework not found.');
         }
 
-        $yaml = $this->roundtripService->exportYaml($framework);
+        $yaml = $this->roundtripService->exportYaml($framework, $this->tenantContext->getCurrentTenant());
         $filename = sprintf('framework_%s_%s.yaml', $framework->getCode(), date('Ymd'));
 
         $this->auditLogger->logCreate(
@@ -189,7 +191,7 @@ class LibraryImporterController extends AbstractController
             throw $this->createNotFoundException('Framework not found.');
         }
 
-        $csv = $this->roundtripService->exportCsv($framework);
+        $csv = $this->roundtripService->exportCsv($framework, $this->tenantContext->getCurrentTenant());
         $filename = sprintf('framework_%s_%s.csv', $framework->getCode(), date('Ymd'));
 
         $this->auditLogger->logCreate(

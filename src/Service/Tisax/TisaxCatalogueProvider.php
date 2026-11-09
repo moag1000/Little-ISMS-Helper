@@ -85,16 +85,15 @@ class TisaxCatalogueProvider
     }
 
     /**
-     * Find-or-create the canonical TISAX framework row, metadata from YAML.
-     * Idempotent. Resolves the legacy 'TISAX-VDA-ISA-6' alias to canonical.
-     * Does NOT seed requirements — use loadCatalogue() for that.
+     * The existing framework row of a catalogue version, or null — read only.
+     * Callers that only look (the import wizard's preview, a manager on a
+     * multi-organisation instance) use this; the shared row is created or
+     * updated only by {@see upsertFramework()}.
      */
-    public function upsertFramework(string $version = self::VERSION_ISA6): ComplianceFramework
+    public function findFramework(string $version = self::VERSION_ISA6): ?ComplianceFramework
     {
         $version = self::normaliseVersion($version);
-        $meta = $this->getMetadata($version);
-
-        $framework = $this->frameworkRepository->findOneBy(['code' => $meta['code']]);
+        $framework = $this->frameworkRepository->findOneBy(['code' => $this->getMetadata($version)['code']]);
         // Legacy aliases only ever referred to the ISA 6 catalogue — never
         // resolve an ISA 2027 lookup onto the old ISA 6 framework row.
         if ($framework === null && $version === self::VERSION_ISA6) {
@@ -105,6 +104,21 @@ class TisaxCatalogueProvider
                 }
             }
         }
+
+        return $framework;
+    }
+
+    /**
+     * Find-or-create the canonical TISAX framework row, metadata from YAML.
+     * Idempotent. Resolves the legacy 'TISAX-VDA-ISA-6' alias to canonical.
+     * Does NOT seed requirements — use loadCatalogue() for that.
+     */
+    public function upsertFramework(string $version = self::VERSION_ISA6): ComplianceFramework
+    {
+        $version = self::normaliseVersion($version);
+        $meta = $this->getMetadata($version);
+
+        $framework = $this->findFramework($version);
 
         $isNew = $framework === null;
         if ($isNew) {

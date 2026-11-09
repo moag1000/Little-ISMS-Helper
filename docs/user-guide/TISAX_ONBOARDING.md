@@ -20,6 +20,11 @@ canonical sequence).
    - materialises `ComplianceRequirementFulfillment` from the imported Reifegrad
      (`TisaxFulfillmentSync`), so catalogue coverage / SoA / inheritance reflect it,
    - links evidence citations to `Document`s where the filename matches.
+
+   The `TISAX` framework row is shared by every organisation. Preview and the commit page only
+   read it; the commit creates a missing row only for whoever may write the global catalogue
+   (`GlobalCatalogueVoter`: the super admin, or anybody on a single-organisation instance) and
+   never re-activates a framework the super admin switched off — the page says so instead.
 3. **Reconcile** the cross-framework reuse once (creates transitive NIS2/DORA edges):
    ```bash
    php bin/console app:tisax:reconcile
