@@ -108,6 +108,12 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   E-Mail und Telefon, und keine Datenpannen, Betroffenenanfragen
   oder Einwilligungen (auch nicht in der Suche) — außer mit der Rolle Datenschutzbeauftragte(r).
   Die Suche wertet `%` und `_` als normale Zeichen.
+- **Vier Augen und Freigabeketten über REST/JSON (S27):** `POST /lifecycle/{type}/{id}/transition` nimmt
+  `four_eyes_approver_id` nur noch als Wunsch, wen die Anfrage erreichen soll. Ein Vier-Augen-Schritt antwortet
+  jetzt **202** (`countersign_requested: true`, `request_id`) und ändert den Status erst, wenn die zweite Person
+  die Anfrage angemeldet im Vier-Augen-Posteingang bestätigt; die Sammelaktion meldet die Anfragen unter
+  `countersign_requested`. Schritte einer Freigabekette (`workflow_instance`) lehnt der Endpunkt mit 422 ab
+  (`approval_chain_step`) — sie werden in der Freigabe selbst entschieden („Mein Tag“, Workflow-Seite).
 - **Ausgehende Adressen:** Geokodierer, OIDC-Discovery und Webhooks erreichen keine internen
   Adressen mehr. Ein eigener Nominatim-Dienst im LAN funktioniert deshalb nicht mehr; Web-Push nur zu
   Browser-Push-Diensten (fremde Abos werden beim nächsten Versand abgeschaltet).
@@ -134,6 +140,22 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   nur ein Manager (wie „Als Vorlage speichern“).
 - **Kommentare (S32):** höchstens 10.000 Zeichen; der Kommentarverlauf zeigt die Kommentare der gerade gewählten
   Organisation.
+- **Freigaben nur durch Berechtigte, selbst bestätigt (S27):**
+  - Vier-Augen-Schritte (Dokument veröffentlichen, Asset entsorgen, Organisation sperren …) legen eine
+    Gegenzeichnungsanfrage an; die zweite Person bestätigt sie angemeldet in „Mein Tag“. Bis dahin bleibt der
+    Status. Im Nachweis steht nur noch, wer selbst bestätigt hat. Wo niemand sonst die Rolle hat, läuft der
+    Schritt wie bisher sofort mit dokumentierter Offline-Gegenzeichnung in der Begründung.
+  - Schritte von Freigabeketten entscheidet nur, wer den Schritt freigeben darf. Schritte der Leitung nur
+    `ROLE_TOP_MGMT`, Schritte des Datenschutzes nur `ROLE_DPO` — Admins genehmigen diese beiden nicht mehr
+    (und werden dafür nicht mehr erinnert). Nach dem Update in „Mein Tag“ prüfen, ob offene DSB-Schritte
+    eine Person mit `ROLE_DPO` haben.
+  - Audit-Arbeit (Checklisten-Urteil, Bericht, Feststellungen anlegen/bearbeiten/kopieren, Verifizierung,
+    SoA-Snapshot, Wirksamkeitsprüfung, BSI-Übungsbestätigung) machen Auditoren und Manager sowie
+    Leitauditor/Auditteam des Audits. Leitung, Konzern-CISO und Konzernauditor lesen weiter alles, schreiben
+    dort aber nichts mehr; bisher ging das über die geerbte Auditorenrolle, Feststellungen sogar für jede
+    angemeldete Person.
+  - „Auditprogramm ableiten“ im Konzernbericht braucht zusätzlich `ROLE_MANAGER`.
+  - Beim Sperren einer Organisation kommt die zweite Person aus derselben Organisation.
 
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
   `auto_action` auf `ROLE_USER` — jede angemeldete Person hätte eine Richtlinie abschließend freigeben können.

@@ -8,7 +8,7 @@ use App\Entity\AuditChecklist;
 use App\Entity\InternalAudit;
 use App\Entity\User;
 use App\Repository\AuditChecklistRepository;
-use App\Security\Voter\RecordResponsibleVoter;
+use App\Security\Voter\AuditWorkVoter;
 use App\Service\Audit\AuditChecklistGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,10 +31,12 @@ final class AuditChecklistController extends AbstractController
     private const array LOCKED_STATUSES = ['reported', 'approved', 'closed'];
 
     /**
-     * S20 (ISO 27001 9.2.2 objectivity): verdicts come from the audit's lead auditor and team
-     * (RECORD_RESPONSIBLE of the audit) or an auditor — never from anybody of the organisation.
+     * S20/S27 (ISO 27001 9.2.2 objectivity): verdicts come from the audit's lead auditor and team
+     * (RECORD_RESPONSIBLE of the audit), an auditor or a manager — never from anybody of the
+     * organisation, and not from top management or the group roles, which inherit ROLE_AUDITOR
+     * only for reading ({@see AuditWorkVoter}).
      */
-    public const string AUDIT_WORK = 'is_granted("ROLE_AUDITOR") or is_granted("' . RecordResponsibleVoter::RESPONSIBLE . '", subject)';
+    public const string AUDIT_WORK = 'is_granted("' . AuditWorkVoter::AUDIT_WORK . '", subject)';
     private const array STATUSES = ['not_checked', 'compliant', 'partial', 'non_compliant', 'not_applicable'];
 
     public function __construct(

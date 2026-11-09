@@ -77,6 +77,8 @@ final class LifecycleService implements LifecycleTransitionInterface
                 'user' => $user,
                 'reason' => $reason,
                 'four_eyes_approver' => $fourEyesApprover,
+                // S27: evidence names the second person only when they confirmed in this session.
+                'four_eyes_confirmed' => $this->access->isSessionApprover($fourEyesApprover),
                 'four_eyes_approver_authorized' => $approverAuthorityVerified,
                 'four_eyes_eligible_approvers' => $eligibleApprovers,
                 'four_eyes_self_approval_escape' => $allowSelfApprovalEscape,

@@ -17,6 +17,8 @@ use App\Lifecycle\EventListener\FourEyesValidator;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\WorkflowRepository;
+use App\Security\Authority\ExplicitRole;
+use App\Security\Voter\AuditWorkVoter;
 use App\Repository\WorkflowInstanceRepository;
 use App\Repository\UserRepository;
 use App\Service\Planning\Source\Adapter\WorkflowInstanceAdapter;
@@ -93,6 +95,7 @@ class WorkflowService
         private readonly ?ResponsibilityResolver $responsibility = null,
         private readonly ?WorkflowInstanceAdapter $workflowSource = null,
         private readonly ?RegulatoryWorkflowMirror $regulatoryWorkflowMirror = null,
+        private readonly ?ExplicitRole $explicitRole = null,
     ) {}
 
     /**
@@ -432,7 +435,7 @@ class WorkflowService
     }
 
     /**
-     * Cancel a workflow instance
+     * Cancel a workflow instance — administrators only (callers check ROLE_ADMIN).
      */
     public function cancelWorkflow(WorkflowInstance $workflowInstance, string $reason): void
     {
@@ -449,6 +452,9 @@ class WorkflowService
             $transitionName,
             null,
             $reason,
+            // S27: a chain is ended only here; the one caller (WorkflowController::cancelInstance)
+            // is #[IsGranted('ROLE_ADMIN')]. The generic lifecycle endpoint cannot cancel a chain.
+            approverAuthorityVerified: true,
         );
     }
 
@@ -690,13 +696,20 @@ class WorkflowService
      *
      * Uses Symfony Security to respect role hierarchy. ROLE_ADMIN and ROLE_SUPER_ADMIN
      * can approve any workflow step regardless of the required role — except a
-     * step reserved for top management (ISO 27001 5.1, NIS-2 Art. 20): that one
-     * needs the assigned ROLE_TOP_MGMT.
+     * step reserved for top management (ISO 27001 5.1, NIS-2 Art. 20) or the data
+     * protection officer (GDPR Art. 38(3)): those need the assigned ROLE_TOP_MGMT /
+     * ROLE_DPO (S27). A ROLE_AUDITOR step is audit work ({@see AuditWorkVoter}).
+     * This is the only rule that decides a step: the generic lifecycle endpoint
+     * cannot approve or reject an approval chain (TransitionAccess, S27).
      */
     public function canUserApprove(User $user, WorkflowStep $workflowStep, ?WorkflowInstance $instance = null): bool
     {
-        // ROLE_ADMIN and ROLE_SUPER_ADMIN can approve any step that is not reserved for top management
-        if (!$this->isTopManagementStep($workflowStep) && $this->security->isGranted('ROLE_ADMIN')) {
+        $approverRole = $workflowStep->getApproverRole();
+
+        // ROLE_ADMIN and ROLE_SUPER_ADMIN can approve any step that is not reserved for
+        // top management or the data protection officer (S27). Decided for $user, not
+        // for whoever is logged in.
+        if (!$this->isAssignedRoleStep($workflowStep) && $this->security->isGrantedForUser($user, 'ROLE_ADMIN')) {
             return true;
         }
 
@@ -706,7 +719,7 @@ class WorkflowService
         }
 
         // `approver_role: owner`: whoever is responsible for the record decides.
-        if ($workflowStep->getApproverRole() === WorkflowInstanceAdapter::APPROVER_OWNER) {
+        if ($approverRole === WorkflowInstanceAdapter::APPROVER_OWNER) {
             if ($instance === null || $user->getId() === null) {
                 return false;
             }
@@ -719,18 +732,28 @@ class WorkflowService
             return false;
         }
 
-        // Check by role (using Security to respect role hierarchy)
-        if ($workflowStep->getApproverRole()) {
-            return $this->security->isGranted($workflowStep->getApproverRole());
+        if ($approverRole === null || $approverRole === '') {
+            return false;
         }
 
-        return false;
+        // S27: an auditor step is audit work (auditors and managers, not the read-only
+        // reviewer roles that inherit ROLE_AUDITOR); a top management or DPO step needs
+        // the assigned role, not the one ROLE_ADMIN inherits.
+        if ($approverRole === 'ROLE_AUDITOR') {
+            return $this->security->isGrantedForUser($user, AuditWorkVoter::AUDIT_WORK, $instance);
+        }
+        if ($this->isAssignedRoleStep($workflowStep)) {
+            return $this->security->isGrantedForUser($user, $approverRole)
+                && ($this->explicitRole === null || $this->explicitRole->holdsAssigned($user, $approverRole));
+        }
+
+        return $this->security->isGrantedForUser($user, $approverRole);
     }
 
-    /** Steps only top management decides — the admin override does not reach them. */
-    private function isTopManagementStep(WorkflowStep $workflowStep): bool
+    /** Steps of top management or the DPO: assigned role only, no admin override (S27). */
+    private function isAssignedRoleStep(WorkflowStep $workflowStep): bool
     {
-        return $workflowStep->getApproverRole() === 'ROLE_TOP_MGMT';
+        return in_array($workflowStep->getApproverRole(), ExplicitRole::ASSIGNED_ONLY_STEP_ROLES, true);
     }
 
     /**
@@ -757,7 +780,7 @@ class WorkflowService
      */
     private function eligibleStepApprovers(WorkflowStep $workflowStep, ?WorkflowInstance $instance = null): EligibleApprovers
     {
-        $roles = $this->isTopManagementStep($workflowStep) ? [] : ['ROLE_ADMIN'];
+        $roles = $this->isAssignedRoleStep($workflowStep) ? [] : ['ROLE_ADMIN'];
         $userIds = array_map(intval(...), $workflowStep->getApproverUsers() ?? []);
         $approverRole = $workflowStep->getApproverRole();
         if ($approverRole === WorkflowInstanceAdapter::APPROVER_OWNER) {
@@ -776,7 +799,13 @@ class WorkflowService
     public function getPendingApprovals(User $user, ?Tenant $tenant = null): array
     {
         $tenant ??= $user->getTenant();
-        $pending = $this->workflowInstanceRepository->findPendingForUser($user, $tenant);
+        // The repository pre-selects by role; the step rule decides (S27: no admin
+        // override on top management / DPO steps, audit work only for auditors).
+        $pending = array_values(array_filter(
+            $this->workflowInstanceRepository->findPendingForUser($user, $tenant),
+            fn (WorkflowInstance $i): bool => $i->getCurrentStep() instanceof WorkflowStep
+                && $this->canUserApprove($user, $i->getCurrentStep(), $i),
+        ));
         if ($tenant === null) {
             return $pending;
         }
