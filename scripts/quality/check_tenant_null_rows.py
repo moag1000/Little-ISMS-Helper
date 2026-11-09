@@ -20,7 +20,7 @@ SharedTenantRowsInterface (then the filter adds `OR tenant_id IS NULL`).
 
 Findings are identified as `<file>::<rule>::<detail>` so line shifts never
 invalidate the baseline. A baseline entry needs a reason after `#`.
-Stale baseline entries are reported but do not fail.
+Stale baseline entries fail too (T2), so the list only shrinks.
 
 Usage: check_tenant_null_rows.py [--baseline FILE] [--write-baseline FILE] [--quiet]
 """
@@ -34,19 +34,23 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 
-# "own OR global" in every spelling: DQL/SQL string (any case, parentheses, tenant_id, IDENTITY(x.tenant)),
+# "own OR global" in every spelling: DQL/SQL string (any case, parentheses, tenant_id, IDENTITY(x.tenant),
+# `= :t` or `IN (:ids)`),
 # QueryBuilder `->orWhere('x.tenant IS NULL')` and `orX(…, $expr->isNull('x.tenant'))`.
 SHARED_OR_NULL = re.compile(
     r"(?:IDENTITY\(\s*)?(\w+)\.tenant(?:_id)?\s*\)?\s*=\s*:\w+[\s)]+OR[\s(]+(?:IDENTITY\(\s*)?\1\.tenant(?:_id)?\s*\)?\s+IS\s+NULL"
     r"|(?:IDENTITY\(\s*)?(\w+)\.tenant(?:_id)?\s*\)?\s+IS\s+NULL[\s)]+OR[\s(]+(?:IDENTITY\(\s*)?\2\.tenant(?:_id)?\s*\)?\s*=\s*:\w+"
+    r"|(?:IDENTITY\(\s*)?(\w+)\.tenant(?:_id)?\s*\)?\s+IN\s*\([^)]*\)[\s)]+OR[\s(]+(?:IDENTITY\(\s*)?\3\.tenant(?:_id)?\s*\)?\s+IS\s+NULL"
+    r"|(?:IDENTITY\(\s*)?(\w+)\.tenant(?:_id)?\s*\)?\s+IS\s+NULL[\s)]+OR[\s(]+(?:IDENTITY\(\s*)?\4\.tenant(?:_id)?\s*\)?\s+IN\s*\("
     r"|orWhere\(\s*['\"]\w+\.tenant\s+IS\s+NULL"
     r"|orX\([^;]*?isNull\(\s*['\"]\w+\.tenant['\"]",
     re.I | re.S,
 )
 # Code that is not run: tenant calls named in comments do not count.
 RE_COMMENTS = re.compile(r"/\*.*?\*/|(?<![:\"'])//[^\n]*", re.S)
-# Not application code that creates records for a request (entities, console, fixtures, restore, migrations).
-SKIP_NEW = ("src/Entity/", "src/Command/", "src/DataFixtures/", "src/Service/Restore/", "src/Migrations/")
+# Not application code that creates records (entities, fixtures, restore, migrations). Console commands are
+# checked since T2: a command runs without a request, so nothing else gives its rows a tenant.
+SKIP_NEW = ("src/Entity/", "src/DataFixtures/", "src/Service/Restore/", "src/Migrations/")
 # `new Risk()`, `new Risk;`, `new \\App\\Entity\\Risk()`
 NEW_CLASS = re.compile(r"\bnew\s+\\?(?:\w+\\)*(\w+)\s*[(;]")
 ASSIGNED_NEW = re.compile(r"(\$\w+(?:->\w+)?)\s*=\s*new\s+\\?(?:\w+\\)*(\w+)\s*[(;]")
@@ -163,6 +167,8 @@ def main() -> int:
             "\nSet the tenant on new tenant-owned records; for 'own OR global' queries either"
             "\nimplement SharedTenantRowsInterface (and check the voter) or drop the dead branch."
         )
+        return 1
+    if stale:
         return 1
     if not args.quiet:
         print(f"OK — {len(found)} baselined, no new tenant-NULL row patterns.")

@@ -108,11 +108,11 @@ final class RiskRegisterWorkbookGenerator implements AuditWorkbookGeneratorInter
             $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($risk->getTitle()));
             $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($risk->getCategory()));
             $sheet->setCellValue('D' . $row, $risk->getProbability());
-            $sheet->setCellValue('E' . $row, $risk->getImpact());
+            $sheet->setCellValue('E' . $row, CsvSanitizer::sanitize($risk->getImpact()));
             $sheet->setCellValue('F' . $row, $inherentScore);
             $sheet->setCellValue('G' . $row, $risk->getResidualProbability());
             $sheet->setCellValue('H' . $row, $risk->getResidualImpact());
-            $sheet->setCellValue('I' . $row, $residualScore);
+            $sheet->setCellValue('I' . $row, CsvSanitizer::sanitize($residualScore));
             $sheet->setCellValue('J' . $row, CsvSanitizer::sanitize($risk->getTreatmentStrategy()?->value ?? ''));
             $sheet->setCellValue('K' . $row, CsvSanitizer::sanitize($risk->getTreatmentDescription() ?? ''));
             $sheet->setCellValue('L' . $row, CsvSanitizer::sanitize($risk->getEffectiveRiskOwner() ?? ''));

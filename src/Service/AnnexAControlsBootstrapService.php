@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *   - StatementOfApplicabilityController byCategory() when the tenant
  *     has no controls yet (auto-bootstrap so the user never sees an
  *     empty category page)
- *   - LoadAnnexAControlsCommand legacy CLI entry
+ *   - LoadAnnexAControlsCommand (isms:load-annex-a-controls, every organisation)
  */
 class AnnexAControlsBootstrapService
 {

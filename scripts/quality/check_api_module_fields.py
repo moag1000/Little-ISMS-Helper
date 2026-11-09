@@ -33,8 +33,22 @@ FORMS = ROOT / 'src' / 'Form'
 ENTITIES = ROOT / 'src' / 'Entity'
 
 DATA_CLASS = re.compile(r"""['"]data_class['"]\s*=>\s*(?:\\?App\\Entity\\)?(?:[\w\\]*\\)?(\w+)::class""")
-# isModuleActive('x') / isModuleActive("x") / isModuleActive(self::X); `!` in front = module-OFF case.
-MODULE_CALL = re.compile(r"""(?P<recv>(?:!\s*)?(?:\$this->(?:\w+->)?)?)isModuleActive\(\s*(?:(['"])(?P<lit>[a-z0-9_]+)\2|(?:self|static)::(?P<const>\w+))\s*\)""")
+# isModuleActive('x') / isModuleActive("x") / isModuleActive(self::X) / isModuleActive(Modules::X) (T2: a
+# constant of another class used to hide the module); `!` in front = module-OFF case.
+MODULE_CALL = re.compile(r"""(?P<recv>(?:!\s*)?(?:\$this->(?:\w+->)?)?)isModuleActive\(\s*(?:(['"])(?P<lit>[a-z0-9_]+)\2|(?P<cls>self|static|\\?[A-Z][\w\\]*)::(?P<const>\w+))\s*\)""")
+
+
+def class_constant(cls: str, name: str, source: str) -> str | None:
+    """Value of `cls::name` — `self`/`static` in `source`, another class from its file under src/."""
+    texts = [source]
+    if cls not in ('self', 'static'):
+        short = cls.rsplit('\\', 1)[-1]
+        texts = [p.read_text(encoding='utf-8') for p in (ROOT / 'src').rglob(f'{short}.php')]
+    for text in texts:
+        const = re.search(r"const\s+(?:string\s+)?" + re.escape(name) + r"\s*=\s*['\"]([a-z0-9_]+)['\"]", text)
+        if const:
+            return const.group(1)
+    return None
 EARLY_RETURN = re.compile(r"\bif\s*\(\s*!\s*(?:\$this->(?:\w+->)?)?isModuleActive\([^)]*\)\s*\)\s*\{?\s*return\b")
 ADD_FIELD = re.compile(r"->add\(\s*'(\w+)'")
 HELPER_CALL = re.compile(r"\$this->(\w+)\(\s*\$builder")
@@ -99,8 +113,7 @@ def modules_in(text: str, source: str) -> set[str]:
             continue
         module = m.group('lit')
         if module is None:
-            const = re.search(r"const\s+(?:string\s+)?" + re.escape(m.group('const')) + r"\s*=\s*['\"]([a-z0-9_]+)['\"]", source)
-            module = const.group(1) if const else None
+            module = class_constant(m.group('cls'), m.group('const'), source)
         if module:
             found.add(module)
     if source:

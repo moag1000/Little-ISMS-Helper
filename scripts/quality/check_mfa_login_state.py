@@ -11,10 +11,13 @@ the web firewall starts it (`MfaLoginListener`), and the enforcer fails closed.
 The gate fails when
   1. a file in src/ other than MfaSessionState.php names a `_security.mfa_*`
      session key — a second writer or reader of the state;
-  2. a file in src/ puts a security token into the token storage
-     (`->setToken($x)` / `->setToken(new ...)`, not `null`) without going through
-     MfaSessionState — a hand-made login that never asks for the second factor.
-     A genuine exception carries `// @mfa-ok: <reason>` in the file;
+  2. a method in src/ puts a security token into the token storage
+     (`->setToken($x)` / `->setToken (new ...)`, not `null`) or writes the
+     serialised token of a firewall into the session (`->set('_security_<fw>', …)`)
+     without calling `->begin(` of MfaSessionState in the same method — a
+     hand-made login that never asks for the second factor. Comments do not count
+     (T2: the class name in a comment used to exempt the whole file). A genuine
+     exception carries `// @mfa-ok: <reason>` in the file;
   3. `'/setup'` is an always-allowed path in the MFA enforcers — after the
      installation is set up the wizard is ROLE_SUPER_ADMIN only, and a password
      alone must not reach it.
@@ -40,7 +43,23 @@ ENFORCERS = (
 OPT_OUT = "@mfa-ok:"
 
 SESSION_KEY = re.compile(r"""['"]_security\.mfa_\w*['"]""")
-SET_TOKEN = re.compile(r"->setToken\(\s*(?!null\s*\))")
+SET_TOKEN = re.compile(r"->setToken\s*\(\s*(?!null\s*\))")
+SESSION_TOKEN = re.compile(r"""->set\s*\(\s*['"]_security_\w+['"]""")
+BEGIN = re.compile(r"->begin\s*\(")
+FUNCTION = re.compile(r"\bfunction\b")
+COMMENT = re.compile(r"/\*.*?\*/|//[^\n]*|#(?!\[)[^\n]*", re.S)
+
+
+def strip_comments(text: str) -> str:
+    """Blank comments out, keeping offsets and line numbers."""
+    return COMMENT.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)), text)
+
+
+def method_around(code: str, pos: int) -> str:
+    starts = [m.start() for m in FUNCTION.finditer(code, 0, pos)]
+    start = starts[-1] if starts else 0
+    nxt = FUNCTION.search(code, pos)
+    return code[start:nxt.start() if nxt else len(code)]
 ALLOWED_LIST = re.compile(r"ALLOWED_PREFIXES\s*=\s*\[(.*?)\];", re.S)
 
 
@@ -50,11 +69,15 @@ def problems_in(rel: str, text: str) -> list[str]:
         for m in SESSION_KEY.finditer(text):
             line = text.count("\n", 0, m.start()) + 1
             found.append(f"{rel}:{line}: session key {m.group(0)} outside MfaSessionState — use the class")
-        if OPT_OUT not in text and "MfaSessionState" not in text:
-            for m in SET_TOKEN.finditer(text):
-                line = text.count("\n", 0, m.start()) + 1
-                found.append(f"{rel}:{line}: token set by hand without MfaSessionState::begin() "
-                             f"(or `// {OPT_OUT} <reason>`)")
+        if OPT_OUT not in text:
+            code = strip_comments(text)
+            for pattern in (SET_TOKEN, SESSION_TOKEN):
+                for m in pattern.finditer(code):
+                    if BEGIN.search(method_around(code, m.start())):
+                        continue
+                    line = code.count("\n", 0, m.start()) + 1
+                    found.append(f"{rel}:{line}: token set by hand without MfaSessionState::begin() "
+                                 f"in the same method (or `// {OPT_OUT} <reason>`)")
     if rel in ENFORCERS:
         allowed = ALLOWED_LIST.search(text)
         if allowed and re.search(r"""['"]/setup['"]""", allowed.group(1)):

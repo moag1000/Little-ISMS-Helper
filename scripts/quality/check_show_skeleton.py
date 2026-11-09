@@ -2,7 +2,8 @@
 """
 check_show_skeleton.py — Gate 75: detail pages use the one detail skeleton.
 
-UI wave E: every detail page (`templates/**/show.html.twig`) has the status
+UI wave E: every detail page (`templates/**/{show,detail,view}.html.twig`; the last two since
+T2) has the status
 band and the links block (evidence chain Asset → Risk → Control → Evidence →
 Incident), then its sections, history and comments. Pages not
 migrated yet are listed in the baseline and may only shrink; a migrated page
@@ -13,7 +14,9 @@ A page on the skeleton must not keep the old link matrix
 
 A `show.html.twig` that does not show one record (a workflow definition read
 from YAML, a session aggregate) carries `{# show-skeleton: no record — <why> #}`
-and is skipped; the reason is required.
+and is skipped; the reason is required. A page with that marker that still renders
+record-only parts (comment thread, status band, running approval, audit history) is a
+record page and fails (T2: the marker used to exempt any page).
 
     python3 scripts/quality/check_show_skeleton.py --baseline scripts/quality/baselines/show_skeleton.txt
     python3 scripts/quality/check_show_skeleton.py --write-baseline scripts/quality/baselines/show_skeleton.txt
@@ -38,6 +41,9 @@ PARTS = (
     re.compile(r"_fa_show_history"),
 )
 OLD_MATRIX = "_entity_link_matrix"
+# Parts only a page about one record renders.
+RECORD_ONLY = re.compile(r"_isms_comment_thread|_fa_status_band\s*\.|\bworkflow_state\(|\bshow_history\(|\bentity_links\(")
+PAGE_NAMES = ("show.html.twig", "detail.html.twig", "view.html.twig")
 INCLUDED = re.compile(r"""['"]([\w/.-]+\.twig)['"]""")
 EXCLUDE_DIRS = {"dev", "emails", "pdf", "bundles"}
 
@@ -58,7 +64,7 @@ def has_old_matrix(text: str, depth: int = 0) -> bool:
 
 def show_templates() -> list[Path]:
     out = []
-    for p in sorted(TEMPLATES.rglob("show.html.twig")):
+    for p in sorted(q for name in PAGE_NAMES for q in TEMPLATES.rglob(name)):
         rel = p.relative_to(TEMPLATES)
         if rel.parts[0] in EXCLUDE_DIRS:
             continue
@@ -79,6 +85,8 @@ def main() -> int:
         rel = str(p.relative_to(ROOT))
         raw = p.read_text(encoding="utf-8")
         if NO_RECORD.search(raw):
+            if RECORD_ONLY.search(RE_COMMENT.sub("", raw)):
+                incomplete.append(f"{rel} (marked 'no record' but renders record-only parts)")
             continue
         text = RE_COMMENT.sub("", raw)  # a comment naming the skeleton is not using it
         if SKELETON in text:

@@ -21,6 +21,11 @@ Its cell value (2nd argument; 1st for fromArray) fails when it
     (`->format()`), booleans (`is*`/`has*`), translations (`->trans()`); or
   * is a bare variable (`$row`, `$value`, `$data[...]`) in a function that never
     sanitises.
+Since T2 a getter whose name only sounds numeric (`…Number`, `…Id`, `…Level`, …) passes only when
+no declaration in src/ returns a string for it: `getAuthorityReferenceNumber()`,
+`getEngagementNumber()`, `getCertNumber()` are free text. Hand-built CSV lines count as write
+sites too: `fwrite($h, implode(';', $cells))` (or a variable filled with such an implode) checks
+every cell like fputcsv() does.
 Literals, constants and arithmetic pass. A site whose value is provably not record
 text carries `// @csv-sanitize-exempt: <reason>` on the line or the line above; the
 marker anywhere in a function covers its bare-variable sites (summary sheets of
@@ -53,6 +58,28 @@ SAFE_CALL = re.compile(
 STRING = re.compile(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"")
 TERMINAL_SAFE = re.compile(r"->\s*\w+\(\s*\)\s*(\?->|->)\s*(count|format)\(")
 BARE_VARIABLE = re.compile(r"\$\w+(\[[^\]]*\])*")
+FWRITE = re.compile(r"\bfwrite\(")
+CSV_IMPLODE = re.compile(r"""\bimplode\(\s*(?:'(?:,|;|\\t|\|)'|"(?:,|;|\\t|\|)"|\$\w*(?:sep|delim)\w*)\s*,""", re.I)
+DECLARED = re.compile(r"function\s+(get\w+)\s*\([^)]*\)\s*:\s*([?\\\w|]+)")
+_TEXT_GETTERS: set[str] | None = None
+
+
+def text_getters() -> set[str]:
+    """Getters some declaration in src/ types as (nullable) string."""
+    global _TEXT_GETTERS
+    if _TEXT_GETTERS is None:
+        _TEXT_GETTERS = set()
+        for path in SRC.rglob("*.php"):
+            for name, rtype in DECLARED.findall(path.read_text(encoding="utf-8", errors="replace")):
+                if "string" in rtype.lower().split("|") or rtype.lower().lstrip("?") == "string":
+                    _TEXT_GETTERS.add(name)
+    return _TEXT_GETTERS
+
+
+def safe_call(name: str) -> bool:
+    if not SAFE_CALL.match(name):
+        return False
+    return name in ("getId", "format", "count", "trans", "round") or name not in text_getters()
 
 
 def arguments(text: str, start: int) -> list[str]:
@@ -149,7 +176,7 @@ def value_problem(code: str, function: str, top: bool) -> str | None:
     # `->getEvidenceDocuments()->count()`, `->getReviewDate()?->format(…)`: the cell gets the number / date.
     code = TERMINAL_SAFE.sub(r"->\2(", code)
     for name in re.findall(r"->\s*(\w+)\s*\(", code):
-        if not SAFE_CALL.match(name):
+        if not safe_call(name):
             return f"->{name}() reaches the cell unsanitised"
     if top and BARE_VARIABLE.fullmatch(code) and EXEMPT not in function:
         if not SANITIZED.search(function):
@@ -170,8 +197,34 @@ def value_problem(code: str, function: str, top: bool) -> str | None:
     return None
 
 
+def fwrite_problem(text: str, match: re.Match[str]) -> str | None:
+    """`fwrite($h, implode(';', $cells))`: a CSV line built by hand; every cell is checked."""
+    args = arguments(text, match.end())
+    if len(args) < 2:
+        return None
+    value = args[1].strip()
+    function = enclosing_function(text, match.start())
+    imp = CSV_IMPLODE.search(value)
+    if imp is None:
+        var = re.match(r"^\$(\w+)", value)
+        if var is None:
+            return None
+        for assign in re.finditer(r"\$" + re.escape(var.group(1)) + r"\s*\.?=(?![=>])\s*([^;]*)", function):
+            imp = CSV_IMPLODE.search(assign.group(1))
+            if imp is not None:
+                value = assign.group(1)
+                break
+        if imp is None:
+            return None
+    cells = arguments(value, imp.end())
+    return value_problem(cells[0] if cells else "", function, True)
+
+
 def site_problem(text: str, match: re.Match[str]) -> str | None:
     args = arguments(text, match.end())
+    # `setCellValueExplicit($c, $v, DataType::TYPE_STRING)`: a string cell, never evaluated as a formula.
+    if "Explicit" in match.group(0) and len(args) > 2 and re.search(r"TYPE_(STRING2?|INLINE)\b", args[2]):
+        return None
     first = any(name in match.group(0) for name in FIRST_ARG) or text[max(match.start() - 2, 0):match.start()] == "->"
     value = args[0] if first else (args[1] if len(args) > 1 else "")
     return value_problem(value, enclosing_function(text, match.start()), True)
@@ -190,6 +243,14 @@ def main() -> int:
                 continue
             problem = site_problem(text, match)
             if problem:
+                failures.append(f"{path.relative_to(ROOT)}:{line}: {problem}")
+        for match in FWRITE.finditer(text):
+            line = text.count("\n", 0, match.start()) + 1
+            if EXEMPT in lines[line - 1] or (line > 1 and EXEMPT in lines[line - 2]):
+                continue
+            problem = fwrite_problem(text, match)
+            if problem:
+                sites += 1
                 failures.append(f"{path.relative_to(ROOT)}:{line}: {problem}")
 
     if failures:

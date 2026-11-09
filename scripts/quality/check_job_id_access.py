@@ -16,6 +16,11 @@ argument and carries no `#[IsGranted(AsyncJobVoter::ACCESS, subject: '<arg>')]`
 pages answer to the quick-fix token) carries `// @job-access-ok: <reason>` in
 the action.
 
+Since T2 the job files themselves have two readers only: JobStatusService (the
+status store with the owner record) and WorkerHealthService (counts pending jobs
+for the worker page, per organisation). Any other file in src/ that names the
+`var/jobs` directory reads job status and result paths past the voter and fails.
+
     python3 scripts/quality/check_job_id_access.py
 """
 from __future__ import annotations
@@ -28,6 +33,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CONTROLLERS = ROOT / "src" / "Controller"
 OPT_OUT = "@job-access-ok:"
+JOB_DIR = re.compile(r"""var/jobs\b|['"]/jobs/?['"]""")
+# Readers of the job files, with the reason they may.
+JOB_DIR_READERS = {
+    "src/Service/Job/JobStatusService.php": "the status store; records and checks the owner",
+    "src/Service/Job/WorkerHealthService.php": "counts pending jobs and the heartbeat for the worker page, per organisation",
+}
+PHP_COMMENT = re.compile(r"/\*.*?\*/|(?<![:\"'])//[^\n]*", re.S)
 
 ACTION = re.compile(r"\n    public function (\w+)\(([^)]*)\)")
 ROUTE = re.compile(r"#\[Route\(")
@@ -95,8 +107,19 @@ def main() -> int:
                     f"#[IsGranted(AsyncJobVoter::ACCESS, subject: '{variable}')]"
                 )
 
+    for path in sorted((ROOT / "src").rglob("*.php")):
+        rel = path.relative_to(ROOT).as_posix()
+        if rel in JOB_DIR_READERS:
+            continue
+        code = PHP_COMMENT.sub(" ", path.read_text(encoding="utf-8", errors="replace"))
+        hit = JOB_DIR.search(code)
+        if hit:
+            line = code.count("\n", 0, hit.start()) + 1
+            failures.append(f"{rel}:{line}: reads the job files directly — go through JobStatusService "
+                            f"(owner check) or add the file with its reason to JOB_DIR_READERS")
+
     if failures:
-        print(f"Gate 90: {len(failures)} job route(s) without an owner check:")
+        print(f"Gate 90: {len(failures)} job route(s) or file reader(s) without an owner check:")
         for failure in failures:
             print(f"  {failure}")
         return 1

@@ -71,7 +71,7 @@ def _in_tag(text: str, pos: int) -> bool:
     return bool(nxt) and (nxt.isalpha() or nxt == "/")
 
 
-_SCRIPT = re.compile(r"<(script|style|textarea)\b.*?</\1>", re.S | re.I)
+_SCRIPT = re.compile(r"<(script|style)\b.*?</\1>", re.S | re.I)  # <textarea> content is text a person reads (T2)
 
 
 def display_dates(text: str):
