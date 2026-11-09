@@ -17,6 +17,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\AssetController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Protection need of an asset (BSI 200-2 / ISO 27001 A.5.12): raise C/I/A
@@ -47,6 +49,11 @@ final class AssetProtectionNeedKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Rule;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(AssetController::class, 'edit');
     }
 
     public function decisionRoles(): array

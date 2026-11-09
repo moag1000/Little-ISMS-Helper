@@ -17,6 +17,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\RiskController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * A risk occurred (an incident linked to it as realised risk was closed in
@@ -46,6 +48,11 @@ final class RiskAfterIncidentKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Rule;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(RiskController::class, 'edit');
     }
 
     public function decisionRoles(): array

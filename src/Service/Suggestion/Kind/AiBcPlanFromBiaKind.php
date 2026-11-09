@@ -19,6 +19,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\BusinessContinuityPlanController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * BCM officer (ISO 22301 8.4): a business process with a business impact
@@ -52,6 +54,11 @@ final class AiBcPlanFromBiaKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(BusinessContinuityPlanController::class, 'new');
     }
 
     public function decisionRoles(): array

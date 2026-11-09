@@ -17,6 +17,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\AuditController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Preparing the audit (ISO 19011 6.3, 6.4): a planned or running audit
@@ -51,6 +53,11 @@ final class AiAuditSampleKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(AuditController::class, 'edit');
     }
 
     public function decisionRoles(): array

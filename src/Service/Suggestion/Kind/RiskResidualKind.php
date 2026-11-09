@@ -16,6 +16,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\RiskController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Residual risk (ISO 27001 6.1.3 / 8.3, ISO 27005 8.6) from the controls
@@ -51,6 +53,11 @@ final class RiskResidualKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Rule;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(RiskController::class, 'edit');
     }
 
     public function decisionRoles(): array

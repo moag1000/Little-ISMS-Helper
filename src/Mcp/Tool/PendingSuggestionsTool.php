@@ -6,6 +6,7 @@ namespace App\Mcp\Tool;
 
 use App\Entity\Suggestion;
 use App\Mcp\McpSession;
+use App\Mcp\PersonalDataPolicy;
 use App\Service\Suggestion\SuggestionQueue;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -13,7 +14,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Suggestions waiting for the caller's decision (the queue under
  * /suggestions). Deciding stays in the app: the assistant can explain a
- * suggestion, the person accepts or rejects it there.
+ * suggestion, the person accepts or rejects it there. Drafts about records
+ * of people reach the assistant only as {@see PersonalDataPolicy} allows.
  */
 final class PendingSuggestionsTool extends AbstractMcpTool
 {
@@ -21,6 +23,7 @@ final class PendingSuggestionsTool extends AbstractMcpTool
         private readonly SuggestionQueue $queue,
         private readonly UrlGeneratorInterface $urls,
         private readonly TranslatorInterface $translator,
+        private readonly PersonalDataPolicy $personalData,
     ) {
     }
 
@@ -45,7 +48,7 @@ final class PendingSuggestionsTool extends AbstractMcpTool
 
     public function call(array $arguments, McpSession $session): array
     {
-        $pending = $this->queue->pendingFor($session->tenant);
+        $pending = $this->personalData->suggestions($this->queue->pendingFor($session->tenant), $session);
         $limit = max(1, min(100, (int) self::int($arguments, 'limit', 30)));
         $rows = array_map(fn (Suggestion $s): array => [
             'id' => $s->getId(),

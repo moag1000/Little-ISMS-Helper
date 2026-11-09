@@ -17,6 +17,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\SupplierController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Supplier owner: the supplier answered the security questionnaire → the
@@ -43,6 +45,11 @@ final class AiQuestionnaireEvaluationKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(SupplierController::class, 'edit');
     }
 
     public function decisionRoles(): array
@@ -75,6 +82,16 @@ final class AiQuestionnaireEvaluationKind extends AbstractAiKind
             && $record->getStatus() === SupplierQuestionnaire::STATUS_COMPLETED
             && $record->getSupplier() instanceof Supplier
             && $record->getAnswers() !== [];
+    }
+
+    /** The questionnaire the suggestion evaluates (its subject is the supplier). */
+    protected function candidateOf(Suggestion $suggestion, object $subject): ?object
+    {
+        $questionnaire = $this->questionnaires->find((int) ($suggestion->getPayload()['questionnaire'] ?? 0));
+
+        return $questionnaire instanceof SupplierQuestionnaire && $questionnaire->getSupplier() === $subject
+            ? $questionnaire
+            : null;
     }
 
     /** On the supplier page: the newest answered questionnaire not evaluated yet. */

@@ -17,6 +17,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\CorrectiveActionController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Audit finding without a corrective action (ISO 27001 10.2 a–c): the model
@@ -41,6 +43,11 @@ final class AiCorrectiveActionKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(CorrectiveActionController::class, 'new');
     }
 
     public function decisionRoles(): array

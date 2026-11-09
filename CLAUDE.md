@@ -661,6 +661,9 @@ Anything the tool proposes and a person decides (derivation, inheritance, import
 `SuggestionKind` (`src/Service/Suggestion/Kind/`, autoconfigured tag) feeding `SuggestionQueue` — no own
 "suggest" tables, flashes or listeners that write on their own. `generate()` never writes; `apply()` writes
 through the owning service after acceptance and throws `StaleSuggestionException` when the state changed.
+Accepting needs the UI right of the same write: `targetAccess()` names the controller action (its `#[IsGranted]`
+is read with the record) — decision role or responsibility alone never widens who writes; visibility
+(`SuggestionQueue::isVisible()`) keeps drafts about people with ROLE_DPO (S30, `SuggestionKindAccessContractTest`).
 Nightly `app:suggestions:generate` (05:30). "Entwurf vorschlagen" on a detail page = the kind implements
 `RecordDraftKind` (AI kinds via `AbstractAiKind::isCandidate()`), shown by `draft_kinds(entity)` in
 `_fa_entity_links.html.twig` — never an own "draft" button or endpoint. AI goes only through `App\Service\Ai\AiAssistant` (off by

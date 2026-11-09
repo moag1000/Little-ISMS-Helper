@@ -114,6 +114,16 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Geändertes Verhalten
 
+- **Vorschläge: wer sieht, wer annimmt (S30):** Annehmen verlangt jetzt auch das Recht, dieselbe
+  Änderung im Formular zu machen. Zuständige ohne Manager-Rolle nehmen VVT-, Register-,
+  Managementbewertungs- und Zuordnungsvorschläge nicht mehr an und sehen sie nicht mehr in „Mein Tag“
+  (dort stehen sie bei den Rollen der Art). Die Vorschlagsliste zeigt normalen Nutzern nur, was sie
+  selbst entscheiden — auch unter „Entschieden“. Manager und Prüfer sehen die übrigen Vorschläge
+  lesend, Entwürfe zu Datenpannen und Betroffenenanfragen aber nur mit der Rolle
+  Datenschutzbeauftragte(r); der KI-Assistent (MCP) bekommt sie ebenfalls nur für diese Rolle.
+  Ein KI-Entwurf zu einem schon gemeldeten, beantworteten oder abgeschlossenen Datensatz wird beim
+  Annehmen als überholt zurückgezogen. Eine Migration (Sperrspalte an `suggestion`, Quick-Fix
+  „Ausstehende Migrationen anwenden“).
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als
   `auto_action` auf `ROLE_USER` — jede angemeldete Person hätte eine Richtlinie abschließend freigeben können.
   Er ist jetzt ein Benachrichtigungsschritt (läuft von selbst durch, informiert die Manager). Bestehende Zeilen
