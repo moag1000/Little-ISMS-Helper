@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Repository\WizardManualConfirmationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,13 +46,16 @@ class WizardManualConfirmation
     private string $checkKey;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
+    #[ApiReadOnlyEvidence('manual confirmation in the compliance wizard (S26)')]
     private bool $confirmed = true;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('manual confirmation in the compliance wizard (S26)')]
     private ?User $confirmedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ApiReadOnlyEvidence('manual confirmation in the compliance wizard (S26)')]
     private \DateTimeImmutable $confirmedAt;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

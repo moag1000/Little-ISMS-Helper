@@ -857,6 +857,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       via `App\Service\Upload\StoredFilePath` (public uploads, fixed folders) or `ProtectedUploads` (evidence) —
       never `$dir . '/' . $entity->getXPath()`. A new path column goes into `StoredFilePath::FIELDS` (restore checks
       it) or `NOT_FILE_PATHS` (Gate 94, `tests/Security/StoredFilePathContractTest`).
+- [ ] A record that is evidence as a whole (decision, snapshot, acknowledgement, approval run, log) carries
+      `#[EvidenceRecord]`; a field a step stamps carries `#[ApiReadOnlyEvidence]`. An organisation restore then
+      neither takes nor clears them, the lifecycle status keeps its live value too (`Restore\RestoreEvidencePolicy`,
+      S26 — `tests/Security/RestoreEvidenceContractTest` finds evidence-named fields/classes without one).
 - [ ] Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed reader type, zip
       limits, read filter) — never `IOFactory::createReaderForFile()`/`load()` (`SpreadsheetUploadReaderTest`).
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training

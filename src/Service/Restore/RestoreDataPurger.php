@@ -6,6 +6,8 @@ namespace App\Service\Restore;
 
 use App\Entity\Tenant;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -24,6 +26,7 @@ class RestoreDataPurger
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
+        private readonly ?RestoreEvidencePolicy $evidencePolicy = null,
     ) {
     }
 
@@ -172,8 +175,8 @@ class RestoreDataPurger
                 $classMetadata = $this->entityManager->getClassMetadata($entityClass);
                 $tableName = $classMetadata->getTableName();
 
-                // The audit trail is evidence: an organisation restore does not restore it,
-                // so it must not clear it either.
+                // Evidence records (audit trail, management decisions, …): an organisation
+                // restore does not restore them, so it must not clear them either (S26).
                 if ($tenantScopeIds !== [] && RestoreTenantGuard::isEvidence($entityName)) {
                     continue;
                 }
@@ -184,7 +187,25 @@ class RestoreDataPurger
                         ->delete($entityClass, 'e')
                         ->where('e.tenant IN (:scope)')
                         ->setParameter('scope', $tenantScopeIds);
+                    // S26: a record carrying evidence or a lifecycle status beyond the initial
+                    // place stays; the restore then updates it in place and keeps that evidence.
+                    $keptWithEvidence = $this->restrictToRecordsWithoutEvidence($qb, $classMetadata);
                     $deleted = $qb->getQuery()->execute();
+                    if ($keptWithEvidence) {
+                        $kept = (int) $this->entityManager->createQueryBuilder()
+                            ->select('COUNT(e)')
+                            ->from($entityClass, 'e')
+                            ->where('e.tenant IN (:scope)')
+                            ->setParameter('scope', $tenantScopeIds)
+                            ->getQuery()->getSingleScalarResult();
+                        if ($kept > 0) {
+                            $warnings[] = sprintf(
+                                '%s: %d Datensätze mit Nachweisen oder Status nicht gelöscht — ein Organisations-Restore ersetzt keine Nachweise.',
+                                $entityName,
+                                $kept,
+                            );
+                        }
+                    }
 
                     $this->logger->info('Cleared tenant-scoped entity data', [
                         'entity'    => $entityName,
@@ -294,6 +315,33 @@ class RestoreDataPurger
         }
 
         return $rows;
+    }
+
+    /**
+     * Narrows a scoped DELETE to records whose protected fields still hold the value a new
+     * record gets (no evidence, initial lifecycle place). Returns whether anything was added.
+     *
+     * @param ClassMetadata<object> $meta
+     */
+    private function restrictToRecordsWithoutEvidence(QueryBuilder $qb, ClassMetadata $meta): bool
+    {
+        $fields = ($this->evidencePolicy ?? new RestoreEvidencePolicy())->protectedFields($meta);
+        $n = 0;
+        foreach ($fields as $field => $spec) {
+            $fresh = $spec['fresh'];
+            if ($fresh === null) {
+                $qb->andWhere(sprintf('e.%s IS NULL', $field));
+            } elseif (is_scalar($fresh) || $fresh instanceof \BackedEnum) {
+                $qb->andWhere(sprintf('e.%s = :evidence_fresh_%d', $field, $n))
+                    ->setParameter('evidence_fresh_' . $n, $fresh);
+                ++$n;
+            } else {
+                // Not comparable in DQL (arrays): keep every row rather than lose evidence.
+                $qb->andWhere('1 = 0');
+            }
+        }
+
+        return $fields !== [];
     }
 
     /**

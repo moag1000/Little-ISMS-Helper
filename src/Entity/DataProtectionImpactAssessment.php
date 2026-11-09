@@ -409,7 +409,7 @@ class DataProtectionImpactAssessment
     /**
      * Date of approval
      */
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true), \App\Attribute\ApiReadOnlyEvidence('lifecycle step approve (GDPR Art. 35, S26)')]
     private ?DateTimeInterface $approvalDate = null;
 
     /**

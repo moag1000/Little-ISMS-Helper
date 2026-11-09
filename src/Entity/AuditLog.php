@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use DateTimeImmutable;
 use App\Repository\AuditLogRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[EvidenceRecord('AuditLogger (every change, HMAC chain)')]
 #[ORM\Entity(repositoryClass: AuditLogRepository::class)]
 #[ORM\Index(name: 'idx_entity', columns: ['entity_type', 'entity_id'])]
 #[ORM\Index(name: 'idx_user', columns: ['user_name'])]

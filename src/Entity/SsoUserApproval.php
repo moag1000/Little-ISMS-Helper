@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Enum\SsoUserApprovalStatus;
 use App\Repository\SsoUserApprovalRepository;
 use DateTimeImmutable;
@@ -52,9 +53,11 @@ class SsoUserApproval
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'reviewed_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('SSO user approval action (S26)')]
     private ?User $reviewedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('SSO user approval action (S26)')]
     private ?DateTimeImmutable $reviewedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
