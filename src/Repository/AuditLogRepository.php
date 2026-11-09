@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use DateTimeInterface;
 use DateTime;
 use DateTimeImmutable;
@@ -332,7 +333,7 @@ class AuditLogRepository extends ServiceEntityRepository
 
         if (!empty($criteria['userName'])) {
             $queryBuilder->andWhere('a.userName LIKE :userName')
-               ->setParameter('userName', '%' . $criteria['userName'] . '%');
+               ->setParameter('userName', LikePattern::contains($criteria['userName']));
         }
 
         if (!empty($criteria['dateFrom'])) {

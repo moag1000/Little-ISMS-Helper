@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use DateTimeImmutable;
 use App\Entity\User;
 use App\Entity\UserSession;
@@ -101,7 +102,7 @@ class UserSessionRepository extends ServiceEntityRepository
 
         if ($userEmail) {
             $queryBuilder->andWhere('u.email LIKE :email')
-                ->setParameter('email', '%' . $userEmail . '%');
+                ->setParameter('email', LikePattern::contains($userEmail));
         }
 
         $queryBuilder->orderBy('s.lastActivityAt', \SortDirection::Descending);

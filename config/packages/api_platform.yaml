@@ -15,7 +15,9 @@ api_platform:
         pagination_enabled: true
         pagination_items_per_page: '%app.pagination_items_per_page%'
         pagination_client_items_per_page: true
-        pagination_client_enabled: true
+        # S24: no `?pagination=false` — a client pages (max 100 per page) instead of pulling
+        # a whole collection with its embedded relations in one request.
+        pagination_client_enabled: false
         pagination_maximum_items_per_page: 100
         normalization_context:
             enable_max_depth: true

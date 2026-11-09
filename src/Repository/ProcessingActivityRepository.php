@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Util\LikePattern;
 use DateTime;
 use App\Entity\ProcessingActivity;
 use App\Entity\Supplier;
@@ -203,7 +204,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->where('pa.tenant = :tenant')
             ->andWhere('pa.name LIKE :query OR pa.description LIKE :query')
             ->setParameter('tenant', $tenant)
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', LikePattern::contains($query))
             ->orderBy('pa.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();

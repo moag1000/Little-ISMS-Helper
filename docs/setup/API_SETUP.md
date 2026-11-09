@@ -260,10 +260,10 @@ curl "http://localhost:8000/api/risks?page=2"
 
 # Custom page size
 curl "http://localhost:8000/api/risks?itemsPerPage=50"
-
-# Disable pagination (get all)
-curl "http://localhost:8000/api/risks?pagination=false"
 ```
+
+`?pagination=false` is not honoured (since S24): a client walks the pages (`hydra:view` →
+`hydra:next`) with at most 100 items per page.
 
 Response includes pagination metadata:
 ```json

@@ -99,6 +99,15 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   Tokens laufen höchstens 365 Tage; Tokens ohne Ablauf enden ein Jahr nach Erstellung. Eine
   Rollenänderung widerruft die Tokens der Person. Neue Tokens nur nach voller Anmeldung (nicht über
   „Angemeldet bleiben“).
+- **REST-API und MCP, Datenminimierung (S24):** `?pagination=false` gilt nicht mehr — API-Clients
+  blättern (`hydra:view` → `next`, höchstens 100 je Seite mit `itemsPerPage`). Zutrittslog
+  (`/api/physical_access_logs`) und Krypto-Operationen (`/api/cryptographic_operations`) lesen nur
+  Admins; der KI-Assistent bekommt sie nie. Felder ausgeschalteter Module fehlen jetzt auch in der
+  Antwort, ein Filter oder eine Sortierung darauf antwortet 400. Der KI-Assistent bekommt Personen ohne
+  E-Mail, Telefon, Ausweis, Notizen und Zutrittszeitraum, Lieferanten und interessierte Parteien ohne
+  E-Mail und Telefon, und keine Datenpannen, Betroffenenanfragen
+  oder Einwilligungen (auch nicht in der Suche) — außer mit der Rolle Datenschutzbeauftragte(r).
+  Die Suche wertet `%` und `_` als normale Zeichen.
 - **Ausgehende Adressen:** Geokodierer, OIDC-Discovery und Webhooks erreichen keine internen
   Adressen mehr. Ein eigener Nominatim-Dienst im LAN funktioniert deshalb nicht mehr; Web-Push nur zu
   Browser-Push-Diensten (fremde Abos werden beim nächsten Versand abgeschaltet).
