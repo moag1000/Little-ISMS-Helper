@@ -93,7 +93,7 @@
     {% endif %}
 
     <p class="fa-auth-form__help mt-3">
-        <a href="{{ path('app_logout') }}">{{ 'reauth.action.logout_instead'|trans }}</a>
+        <a href="{{ logout_path() }}" data-turbo="false" data-turbo-prefetch="false">{{ 'reauth.action.logout_instead'|trans }}</a>
     </p>
 </div>
 

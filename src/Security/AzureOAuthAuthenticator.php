@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 use App\Entity\User;
 use App\Service\Sso\SsoAccountLinkPolicy;
+use App\Service\Sso\SsoClaimPolicy;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -37,8 +38,12 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
         private readonly RouterInterface $router,
         private readonly TenantRepository $tenantRepository,
         #[Autowire('%env(bool:default:app.azure_allow_email_linking_default:AZURE_ALLOW_EMAIL_LINKING)%')]
-        private readonly bool $allowEmailLinking = true,
+        private readonly bool $allowEmailLinking = false,
         private readonly ?LoggerInterface $logger = null,
+        #[Autowire('%env(default::AZURE_TENANT_ID)%')]
+        private readonly ?string $azureTenantId = null,
+        #[Autowire('%env(default::AZURE_ALLOWED_TENANT_IDS)%')]
+        private readonly ?string $azureAllowedTenantIds = null,
     ) {
     }
 
@@ -58,6 +63,14 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
                 /** @var AzureResourceOwner $resourceOwner */
                 $resourceOwner = $oAuth2Client->fetchUserFromToken($accessToken);
 
+                // S9: only a directory the operator configured — with a
+                // multi-tenant app registration any Entra directory could
+                // otherwise sign in with a freely set e-mail (SsoClaimPolicy).
+                SsoClaimPolicy::assertAzureTenant(
+                    $resourceOwner->claim('tid'),
+                    SsoClaimPolicy::allowedAzureTenants($this->azureTenantId, $this->azureAllowedTenantIds),
+                );
+
                 // Extract user data from Azure
                 $email = $resourceOwner->claim('email') ?? $resourceOwner->claim('upn');
                 $azureObjectId = $resourceOwner->getId();
@@ -72,7 +85,12 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
                 if (!$user instanceof User) {
                     $user = $this->userRepository->findOneBy(['email' => $email]);
                     if ($user instanceof User) {
-                        SsoAccountLinkPolicy::assertMayLinkAzureByEmail($user, $this->allowEmailLinking, $this->logger);
+                        SsoAccountLinkPolicy::assertMayLinkAzureByEmail(
+                            $user,
+                            $this->allowEmailLinking,
+                            $this->logger,
+                            SsoClaimPolicy::isEmailVerified(['xms_edov' => $resourceOwner->claim('xms_edov'), 'email_verified' => $resourceOwner->claim('email_verified')]),
+                        );
                     }
                 }
 
