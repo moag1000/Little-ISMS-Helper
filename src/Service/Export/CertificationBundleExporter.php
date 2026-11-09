@@ -1129,7 +1129,7 @@ final class CertificationBundleExporter
                     $zipName = sprintf('%02d_%s', $idx, $this->safeFilename($originalName));
                     $zipPath = $evidenceDir . '/' . $category . '/' . $zipName;
 
-                    $filePath = (string) ($this->evidence->file($doc) ?? $doc->getFilePath());
+                    $filePath = (string) $this->evidence->file($doc);
                     if ($filePath !== '' && is_file($filePath) && is_readable($filePath)) {
                         $zip->addFile($filePath, $zipPath);
                     } else {

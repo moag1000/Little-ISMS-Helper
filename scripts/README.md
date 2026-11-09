@@ -278,6 +278,7 @@ Lücke festschreibt, wird umgedreht, nicht gelöscht.
 | Gates 73, 75, 77, 87, 89, 90 (T2) | `list.html.twig` / `detail.html.twig` / `view.html.twig` ohne Skelett, Marker „no record“ auf einer Seite mit Kommentaren/Status-Band, Datum in `<textarea>`, `$rating >= 20`, `isModuleActive(Modules::PRIVACY)`, `'/var/jobs/'` außerhalb `JobStatusService`/`WorkerHealthService` → je rot | Dateinamen, Marker, Textarea, Variablenname, Fremdkonstante und direkte Jobdateien waren Restlücken |
 | `CrossTenantApiContractTest`, `ApiResourceContractTest` (T2) | Ressource in `src/Entity/<Ordner>/`, Ressource ohne `$tenant` ohne Grund, Operation mit weiterer URI-Variable ohne Grund, Custom-`Post /{id}/…` ohne `object`-Abstimmung → rot; Custom-Post mit fremder Id wird geprobt | `glob('src/Entity/*.php')`, Sub-Ressourcen still übersprungen, jeder Post galt als Anlage |
 | `CrossTenantMcpContractTest` (T2) | Werkzeug ohne Probe und ohne Grund in `NOT_PROBED` → rot; KPI-Zähler, der Datensätze anderer Organisationen mitzählt → rot (drei weitere fremde Datensätze je Ressource dürfen keine Zahl ändern) | Werkzeuge nur mit `id`/Pflichtparametern fielen durch; Zähler tragen keinen Marker |
+| Gate 94 + `StoredFilePathContractTest` (S19) | `AuditFreeze::pdfPath` aus `StoredFilePath::FIELDS` entfernt → Metadaten-Abgleich rot; `isFileName()` lässt `/` zu → Traversal je Spalte rot; Ordnerprüfung in `inDirectory()` entfernt → Symlink-/Traversal-Fall rot; alte Verkettungen in AuditFreeze-, Profil-, Benutzer-, Organisations-Controller und `BackupService` → Gate rot | Pfadspalten waren nie als Daten behandelt: der Organisations-Restore setzte sie frei, fünf Stellen hängten sie an Verzeichnisse |
 | `ApiTokenBoundaryTest` (T2) | `str_contains($path, '/api/')` im Matcher → `aTokenIsAcceptedOnlyOnApiPlatformAndMcpRoutes` rot (alle Router-Routen; POST auf die app-eigenen `…/api/`-Endpunkte wird abgewiesen) | Nur vier feste Pfade geprüft |
 | `BackupArchiveExtractionTest`, `SpreadsheetUploadReaderTest` (T2) | `document_versions` aus `ARCHIVE_PROTECTED_FOLDERS` entfernt → rot; `new Reader\Xlsx()`, `IOFactory::createReader('Xlsx')`, Reader per `use … as` → rot | Versionen landeten unbemerkt im Web-Root; Scan kannte nur `IOFactory::load`/`createReaderForFile` |
 | `TisaxConsolidateCommandTest` (T2, aus S18) | Bewertung einer Organisation auf die gemeinsame Katalogzeile verschoben → rot | Befehl schrieb Upload-Organisation und Reifegrad der ersten Organisation auf die Zeile aller |
@@ -663,6 +664,20 @@ ohne Request-ID (SAML InResponseTo ungeprüft), (3) `getSchemeAndHttpHost()` im 
 `tests/Security/Sso/SsoClaimContractTest` (neuer Authenticator ohne Vertrag = rot). Keine Baseline.
 
 **CI-Integration:** Gate 93 im `code-quality`-Job.
+
+---
+
+### quality/check_stored_file_paths.py (Gate 94)
+
+**Zweck:** Ein gespeicherter Dateipfad (Logo, Avatar, Audit-Freeze-PDF, Dokumentpfad) wird nie von Hand an
+ein Verzeichnis gehängt (S19, 2026-11). Rot bei einer Verkettung von `getLogoPath()`, `getProfilePicture()`,
+`getPdfPath()`, `getFilePath()`, `getStoredFilename()` oder gleichnamigen Variablen mit einem String und bei
+`'/public/' . $x` außer `$this->uploadsDirectory`, außerhalb von `StoredFilePath`/`ProtectedUploads`.
+Ausnahme mit `// @stored-path-ok: <Grund>` auf der Zeile. Verhalten (jede pfadartige Doctrine-Spalte
+registriert, Traversal je Spalte abgewiesen, Restore übernimmt solche Werte nicht):
+`tests/Security/StoredFilePathContractTest`.
+
+**CI-Integration:** Gate 94 im `code-quality`-Job.
 
 ---
 

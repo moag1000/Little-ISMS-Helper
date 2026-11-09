@@ -249,6 +249,18 @@ class RestoreEntityWriter
             if ($entityName === 'User') {
                 $data = $this->tenantGuard()->sanitizeUserRow($data, $scopeIds);
             }
+            if (is_array($data)) {
+                $rejectedPaths = $this->tenantGuard()->rejectedPathFields($entityClass, $data, $scopeIds);
+                if ($rejectedPaths !== []) {
+                    $data[RestoreTenantGuard::REJECTED_PATHS_KEY] = $rejectedPaths;
+                    $warnings[] = sprintf(
+                        '%s #%s: Dateipfad (%s) nicht übernommen — unzulässiger Pfad oder Datei einer anderen Organisation.',
+                        $entityName,
+                        (string) ($data['id'] ?? '?'),
+                        implode(', ', $rejectedPaths),
+                    );
+                }
+            }
 
             // Decrypt SystemSettings value on the fly when best_effort deferred decryption
             if ($bestEffort && $entityName === 'SystemSettings' && isset($data['__needs_decrypt__'])) {
@@ -957,6 +969,13 @@ class RestoreEntityWriter
             // Credentials, identity links and the organisation's place in the instance
             // are never taken from the file of an organisation restore.
             if (RestoreTenantGuard::isProtectedField($entityName, $fieldName, $scopeIds)) {
+                continue;
+            }
+            // A refused file path: an existing record keeps its file, a new one gets none.
+            if (in_array($fieldName, $data[RestoreTenantGuard::REJECTED_PATHS_KEY] ?? [], true)) {
+                if ($existingEntity === null && !$meta->isNullable($fieldName)) {
+                    $propertyAccessor->setValue($entity, $fieldName, '');
+                }
                 continue;
             }
 

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use Doctrine\DBAL\Connection;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Service to check if the application setup is complete and enforce access control.
@@ -17,6 +20,12 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *
  * Enforced twice: SetupSecuritySubscriber for every /setup path, and the class-level
  * #[IsGranted(SetupAccessChecker::ACCESS)] on the wizard controllers (SetupAccessVoter).
+ *
+ * "Complete" is the lock file OR an existing account (S19): a lost or deleted lock file
+ * must not hand /setup to an anonymous visitor who then creates an admin. The browser
+ * session that is running the wizard (from the database step on) keeps going until step
+ * 11 writes the lock; any other visitor of an instance with accounts is treated as after
+ * setup, and the lock is written again.
  */
 class SetupAccessChecker
 {
@@ -32,11 +41,24 @@ class SetupAccessChecker
     // are not forced back through the wizard after upgrading.
     private const string LEGACY_SETUP_LOCK_FILE = '/config/setup_complete.lock';
 
+    /**
+     * Session flags only the wizard sets (database step 2 onward): a session carrying one got
+     * them while setup was still open. The restore in step 3 runs as a job, so the accounts
+     * exist before 'setup_backup_restored' reaches the session — 'setup_database_configured'
+     * covers that gap.
+     */
+    private const array WIZARD_SESSION_FLAGS = [
+        'setup_database_configured', 'setup_schema_created', 'setup_admin_created', 'setup_backup_restored',
+    ];
+
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         #[Autowire('%kernel.environment%')]
-        private readonly string $environment
+        private readonly string $environment,
+        private readonly ?Connection $connection = null,
+        private readonly ?RequestStack $requestStack = null,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -45,7 +67,47 @@ class SetupAccessChecker
      */
     public function isSetupComplete(): bool
     {
-        return $this->resolveExistingLockFile() !== null;
+        if ($this->resolveExistingLockFile() !== null) {
+            return true;
+        }
+        if (!$this->accountExists() || $this->isWizardSession()) {
+            return false;
+        }
+        // Accounts exist but the lock is gone (deleted, lost volume): the instance is set up.
+        $this->logger?->warning('Setup lock file missing although accounts exist — writing it again.');
+        @file_put_contents($this->getSetupLockFilePath(), date('Y-m-d H:i:s'));
+
+        return true;
+    }
+
+    /** Whether the users table holds at least one account (false while there is no database yet). */
+    private function accountExists(): bool
+    {
+        if ($this->connection === null) {
+            return false;
+        }
+        try {
+            return $this->connection->fetchOne('SELECT 1 FROM users') !== false;
+        } catch (\Throwable) {
+            return false; // no database, no schema yet: the wizard has not got that far
+        }
+    }
+
+    /** Whether the current browser session is the one running the wizard. */
+    private function isWizardSession(): bool
+    {
+        $request = $this->requestStack?->getMainRequest();
+        if ($request === null || !$request->hasSession()) {
+            return false;
+        }
+        $session = $request->getSession();
+        foreach (self::WIZARD_SESSION_FLAGS as $flag) {
+            if ($session->get($flag)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

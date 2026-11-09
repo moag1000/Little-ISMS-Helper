@@ -534,9 +534,9 @@ class TenantManagementController extends AbstractController
     private function deleteOldLogo(string $logoPath): void
     {
         try {
-            $fullPath = $this->getParameter('kernel.project_dir') . '/public/' . $logoPath;
-            if (file_exists($fullPath)) {
-                unlink($fullPath);
+            // S19: only a file in public/uploads/<folder>/ — the value may come from a restored backup
+            $storedFiles = new \App\Service\Upload\StoredFilePath((string) $this->getParameter('kernel.project_dir'));
+            if ($storedFiles->deletePublicUpload($logoPath, \App\Service\Upload\StoredFilePath::TENANT_LOGOS)) {
                 $this->logger->info('Old logo deleted', ['path' => $logoPath]);
             }
         } catch (Exception $e) {

@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Entity\Asset;
 use App\Entity\AuditLog;
+use App\Entity\Document;
 use App\Entity\Role;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
@@ -117,6 +118,63 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
             static fn (string $w): bool => str_contains($w, 'outside the organisations of this restore'),
         ), 'the skipped foreign row is reported');
         self::assertNotNull($ownAsset->getId());
+    }
+
+    /**
+     * S19: file paths in an organisation backup are data. A path of the wrong shape (traversal,
+     * absolute) or one another organisation's record uses is never taken from the file — it
+     * would be read by the download, zipped into the next backup or deleted on the next logo
+     * change (var/setup_complete.lock → /setup open again).
+     */
+    #[Test]
+    public function craftedFilePathsAreNotRestored(): void
+    {
+        $own = $this->tenant('own');
+        $foreign = $this->tenant('foreign');
+        $own->setLogoPath('uploads/tenants/own-logo.png');
+        $foreignName = 'foreign-evidence-' . substr(uniqid(), -8) . '.pdf';
+        $foreignDoc = $this->document('/uploads/documents/' . $foreignName, $foreign);
+        $ownDoc = $this->document('/uploads/documents/own-' . substr(uniqid(), -8) . '.pdf', $own);
+        $this->em->flush();
+        $ownId = (int) $own->getId();
+        $ownDocId = (int) $ownDoc->getId();
+        $ownDocPath = (string) $ownDoc->getFilePath();
+
+        $backup = self::getContainer()->get(BackupService::class)->createBackup(false, false, false, $own);
+        foreach ($backup['data']['Tenant'] as &$row) {
+            if ((int) ($row['id'] ?? 0) === $ownId) {
+                $row['logoPath'] = '../var/setup_complete.lock';
+            }
+        }
+        unset($row);
+        foreach ($backup['data']['Document'] as &$row) {
+            if ((int) ($row['id'] ?? 0) === $ownDocId) {
+                $row['filePath'] = '/uploads/documents/' . $foreignName; // another organisation's evidence
+            }
+        }
+        unset($row);
+        $traversal = $backup['data']['Document'][0];
+        unset($traversal['id']);
+        $traversal['filePath'] = '../../.env.local';
+        $traversal['filename'] = 'traversal.pdf';
+        $backup['data']['Document'][] = $traversal;
+        $backup['metadata']['sha256'] = hash('sha256', (string) json_encode($backup['data']));
+
+        $result = self::getContainer()->get(RestoreService::class)
+            ->restoreFromBackup($backup, ['best_effort' => true], $own);
+        $this->em->clear();
+
+        self::assertSame('uploads/tenants/own-logo.png', $this->em->find(Tenant::class, $ownId)?->getLogoPath(), 'logo path keeps its live value');
+        self::assertSame($ownDocPath, $this->em->find(Document::class, $ownDocId)?->getFilePath(), 'no path to another organisation\'s file');
+        $created = $this->em->getRepository(Document::class)->findOneBy(['filename' => 'traversal.pdf']);
+        if ($created !== null) {
+            self::assertStringNotContainsString('..', (string) $created->getFilePath(), 'traversal path is not stored');
+        }
+        self::assertSame('/uploads/documents/' . $foreignName, $this->em->find(Document::class, (int) $foreignDoc->getId())?->getFilePath());
+        self::assertNotEmpty(array_filter(
+            $result['warnings'] ?? [],
+            static fn (string $w): bool => str_contains($w, 'Dateipfad'),
+        ), 'refused paths are reported');
     }
 
     /**
@@ -291,6 +349,15 @@ final class OrganisationRestoreTenantGuardTest extends KernelTestCase
         $this->em->persist($asset);
 
         return $asset;
+    }
+
+    private function document(string $path, Tenant $tenant): Document
+    {
+        $doc = (new Document())->setTenant($tenant)->setFilename(basename($path))->setOriginalFilename(basename($path))
+            ->setMimeType('application/pdf')->setFileSize(1)->setFilePath($path)->setCategory('policy');
+        $this->em->persist($doc);
+
+        return $doc;
     }
 
     private function supplier(string $name, Tenant $tenant): Supplier

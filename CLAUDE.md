@@ -833,6 +833,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       `PublicLinksFromDefaultUriTest` finds every absolute URL in `src/`. Logout sends `Clear-Site-Data`; `public/sw.js`
       caches only fixed build files, never pages/`.json`/API (`tests/js/service_worker.test.js`). Webhooks only signed.
       Every export/download action carries `#[IsGranted]` (`ExportRoutesGatedTest`).
+- [ ] A file path stored on a record (logo, avatar, audit-freeze PDF, document) is data: turn it into a file only
+      via `App\Service\Upload\StoredFilePath` (public uploads, fixed folders) or `ProtectedUploads` (evidence) —
+      never `$dir . '/' . $entity->getXPath()`. A new path column goes into `StoredFilePath::FIELDS` (restore checks
+      it) or `NOT_FILE_PATHS` (Gate 94, `tests/Security/StoredFilePathContractTest`).
 - [ ] Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed reader type, zip
       limits, read filter) — never `IOFactory::createReaderForFile()`/`load()` (`SpreadsheetUploadReaderTest`).
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training

@@ -168,6 +168,14 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Abmelden** leert Browser-Cache und Speicher der Seite (`Clear-Site-Data`); der Service Worker
   speichert nur noch Build-Dateien, keine Seiten, Berichte oder API-Antworten, und löscht beim ersten
   Laden die alten Caches. Offline erscheint nur noch die Offline-Seite.
+- **Dateipfade aus Sicherungen (S19):** Eine Wiederherstellung übernimmt einen Logo-, Avatar-, PDF-
+  oder Dokumentpfad nur in der erwarteten Form (`uploads/tenants/<datei>`, `uploads/users/<datei>`,
+  `/uploads/documents/<datei>`, nur Dateiname); eine Organisationssicherung zusätzlich keinen Pfad, den
+  eine andere Organisation nutzt, und kein Kopf-/Fußzeilen-HTML des Brandings. Abgewiesene Pfade stehen
+  als Warnung im Restore-Ergebnis („Dateipfad … nicht übernommen“); der Datensatz behält seinen Wert.
+  Logos aus ZIP-Sicherungen landen jetzt dort, wo der Datensatz sie sucht (`public/uploads/tenants/`).
+  Der Setup-Assistent gilt als abgeschlossen, sobald ein Konto existiert, auch ohne
+  `var/setup_complete.lock` (die Datei wird dann neu geschrieben). Kein Handlungsbedarf.
 - **Exporte** und Downloads verlangen überall eine Rolle (`#[IsGranted]`), auch die
   Compliance-Exporte. Geplante Berichte bieten nur Berichtsarten aktiver Module an.
 - **Hintergrundaufgaben je Organisation:** Der Worker setzt nach jeder Aufgabe den
