@@ -185,7 +185,9 @@ Alle Seiten unter `/admin/audit-log` (Rolle `ROLE_ADMIN`; mit Sprachpräfix `/{l
 - **Benutzeraktivität**: `/admin/audit-log/user/{userName}`
 - **Statistiken**: `/admin/audit-log/statistics`
 - **Details**: `/admin/audit-log/{id}`
-- **Integrität prüfen**: Button "HMAC-Kette verifizieren" (`POST /admin/audit-log/verify`)
+- **Integrität prüfen**: Button "HMAC-Kette verifizieren" (`POST /admin/audit-log/verify`) — läuft als Hintergrundjob
+  mit Fortschrittsseite über die Kette der eigenen Organisation (Super-Admin ohne Organisation: alle Ketten);
+  eine gebrochene Kette endet rot mit den ersten betroffenen Einträgen
 - **Aufbewahrung**: `/admin/audit-log/retention`
 
 Detailseiten zeigen den Verlauf ihres Datensatzes im Abschnitt "Historie" (`show_history(entity)`).
@@ -248,7 +250,12 @@ Der AuditLogger sanitiert automatisch sensible Daten:
 
 - Es gibt keine UI oder API zum Bearbeiten von Logs
 - **HMAC-Kette:** Mit `APP_AUDIT_HMAC_KEY` (≥ 32 Byte Zufall, in `.env.local` bzw. Container-Umgebung)
-  wird jeder Eintrag signiert und mit dem vorherigen verkettet (`AuditLogIntegrityService`). Ohne den
+  wird jeder Eintrag signiert und mit dem vorherigen Eintrag **derselben Organisation** verkettet
+  (`AuditLogIntegrityService`; Einträge ohne Organisation bilden die Instanzkette). Die Signatur deckt den
+  Zeitpunkt in ganzen Sekunden ab, so wie die Datenbank ihn speichert. Einträge vor diesem Stand (bis
+  `system_settings` `audit_log.hmac_legacy_until_id`) deckten Sekundenbruchteile ab, die nie gespeichert wurden:
+  bei ihnen prüft die Kontrolle nur die Verkettung (Löschung erkennbar), nicht den Inhalt. Der älteste
+  verbliebene Eintrag einer Kette ist ihr Anker, weil die Aufbewahrung alte Einträge löscht. Ohne den
   Schlüssel wird nicht signiert und die Prüfung meldet "deaktiviert". Den Schlüssel nicht wechseln und
   bei einem Serverumzug mitnehmen ([DISASTER_RECOVERY.md](../operations/DISASTER_RECOVERY.md)).
 - **Aufbewahrung:** Standard 730 Tage, Minimum 365 (NIS-2), einstellbar unter

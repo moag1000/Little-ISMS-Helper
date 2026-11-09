@@ -40,7 +40,19 @@ Regel für eigene PHPStan-Regeln: nur statische Reflexion (`$scope`, `Reflection
 `$type->getObjectClassReflections()`), nie `is_subclass_of()`/`class_exists()`/`new \ReflectionClass()` auf
 analysierte Klassen — das lädt die Klasse zur Laufzeit, und PHP 8.3 scheitert an PHP-8.4-Syntax.
 
-PHPUnit braucht PHP ≥ 8.4 (PHPUnit 13); dafür bleibt die conda-Anleitung im Projektgedächtnis, CI ist die Referenz.
+PHPUnit braucht PHP ≥ 8.4 (PHPUnit 13). `scripts/setup/cloud_phpunit.sh` holt PHP 8.5 und PostgreSQL 16 von
+conda-forge nach `/opt/cloudphp` (3–5 Minuten, ein zweiter Lauf ist in Sekunden fertig), startet Postgres, legt
+`.env.test.local`, `config/active_modules.yaml` und die Setup-Sperre an und baut das Testschema:
+
+```bash
+bash scripts/setup/cloud_phpunit.sh
+export PATH=/opt/cloudphp/wrap:$PATH && php bin/phpunit tests/Service/AuditLogIntegrityServiceTest.php
+```
+
+`importmap:install` braucht jsdelivr (gesperrt); das Skript legt leere Platzhalter unter `assets/vendor/` an, damit
+Seiten in Tests rendern. Postgres statt MySQL: rohes SQL kann abweichen — solche Fehler auf `main` gegenprüfen
+(`git stash`), CI bleibt die Referenz. Es gibt kein
+Transaktions-Rollback zwischen Tests (DAMA ist aus): Tests räumen selbst auf.
 
 ### setup/validate-setup.sh
 

@@ -32,17 +32,26 @@ class AuditLogVerifyCommand
             return Command::FAILURE;
         }
 
-        $issues = $this->integrityService->verifyChain();
+        // Every chain: one per organisation plus the instance chain (B3).
+        $report = $this->integrityService->verifyChain(allChains: true);
+        $issues = $report->issues;
+        if ($report->unverifiable > 0) {
+            $symfonyStyle->note(sprintf(
+                '%d older rows were signed with microseconds the database never stored: their content cannot be '
+                . 're-checked, their chain links were (B3).',
+                $report->unverifiable,
+            ));
+        }
 
-        if ($issues === []) {
-            $symfonyStyle->success('Audit-log chain intact — no tampering detected.');
+        if ($report->isIntact()) {
+            $symfonyStyle->success(sprintf('Audit-log chain intact — %d rows checked, no tampering detected.', $report->checked));
             return Command::SUCCESS;
         }
 
         $symfonyStyle->error(sprintf('Integrity violations detected: %d', count($issues)));
         $symfonyStyle->table(
             ['AuditLog ID', 'Reason'],
-            array_map(static fn(array $i): array => [$i['id'], $i['reason']], $issues)
+            array_map(static fn (array $i): array => [$i['id'], $i['reason']], $issues)
         );
         return Command::FAILURE;
     }
