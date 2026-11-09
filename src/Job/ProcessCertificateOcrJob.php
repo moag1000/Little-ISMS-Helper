@@ -117,7 +117,13 @@ final class ProcessCertificateOcrJob implements AsyncJobInterface
             ));
         }
 
-        return (new ProtectedUploads($this->projectDir))->resolve($filePath) ?? $this->projectDir . '/var/uploads' . $filePath;
+        $path = (new ProtectedUploads($this->projectDir))->resolve($filePath);
+        if ($path === null) {
+            // @intentional-assertion: a stored path outside the upload folders is never opened (S19)
+            throw new \RuntimeException(sprintf('Certificate #%d: stored document file not found.', (int) $cert->getId()));
+        }
+
+        return $path;
     }
 
     /**

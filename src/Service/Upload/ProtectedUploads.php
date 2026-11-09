@@ -37,6 +37,9 @@ final class ProtectedUploads
         'training-materials' => self::TRAINING_MATERIALS,
     ];
 
+    /** Folders below var/ an absolute stored path may point into (bulk import keeps its source there). */
+    private const array ABSOLUTE_ROOTS = ['uploads', 'import-uploads'];
+
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
@@ -68,8 +71,9 @@ final class ProtectedUploads
      * The readable file behind a stored value, or null.
      *
      * Accepts '/uploads/<area>/<file>' (with or without leading slash) and absolute paths
-     * below var/ (bulk import). Anything else — 'virtual:…', '../', absolute paths
-     * elsewhere — resolves to null.
+     * below var/uploads/ or var/import-uploads/ (bulk import evidence). Anything else —
+     * 'virtual:…', '../', absolute paths elsewhere (var/setup_complete.lock, logs, backups,
+     * .env.local) — resolves to null (S19: the value may come from a restored backup).
      */
     public function resolve(?string $storedPath): ?string
     {
@@ -96,9 +100,11 @@ final class ProtectedUploads
 
         if (str_starts_with($storedPath, '/')) {
             $real = realpath($storedPath);
-            $varDir = realpath($this->projectDir . '/var');
-            if ($real !== false && $varDir !== false && str_starts_with($real, $varDir . '/') && is_file($real)) {
-                return $real;
+            foreach (self::ABSOLUTE_ROOTS as $root) {
+                $rootDir = realpath($this->projectDir . '/var/' . $root);
+                if ($real !== false && $rootDir !== false && str_starts_with($real, $rootDir . '/') && is_file($real)) {
+                    return $real;
+                }
             }
         }
 

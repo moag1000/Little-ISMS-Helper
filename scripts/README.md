@@ -660,6 +660,20 @@ ohne Request-ID (SAML InResponseTo ungeprüft), (3) `getSchemeAndHttpHost()` im 
 
 ---
 
+### quality/check_stored_file_paths.py (Gate 94)
+
+**Zweck:** Ein gespeicherter Dateipfad (Logo, Avatar, Audit-Freeze-PDF, Dokumentpfad) wird nie von Hand an
+ein Verzeichnis gehängt (S19, 2026-11). Rot bei einer Verkettung von `getLogoPath()`, `getProfilePicture()`,
+`getPdfPath()`, `getFilePath()`, `getStoredFilename()` oder gleichnamigen Variablen mit einem String und bei
+`'/public/' . $x` außer `$this->uploadsDirectory`, außerhalb von `StoredFilePath`/`ProtectedUploads`.
+Ausnahme mit `// @stored-path-ok: <Grund>` auf der Zeile. Verhalten (jede pfadartige Doctrine-Spalte
+registriert, Traversal je Spalte abgewiesen, Restore übernimmt solche Werte nicht):
+`tests/Security/StoredFilePathContractTest`.
+
+**CI-Integration:** Gate 94 im `code-quality`-Job.
+
+---
+
 ### quality/check_api_module_fields.py (Gate 89)
 
 **Zweck:** Felder eines optionalen Moduls an einem Datensatz eines anderen Moduls (DORA am

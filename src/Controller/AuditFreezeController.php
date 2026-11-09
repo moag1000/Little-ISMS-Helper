@@ -204,8 +204,8 @@ class AuditFreezeController extends AbstractController
             return $this->redirectToRoute('app_audit_freeze_show', ['id' => $id]);
         }
 
-        $fullPath = $this->projectDir . '/var/' . self::PDF_SUBDIR . '/' . $freeze->getPdfPath();
-        if (!is_file($fullPath)) {
+        $fullPath = \App\Service\Upload\StoredFilePath::inDirectory($this->projectDir . '/var/' . self::PDF_SUBDIR, $freeze->getPdfPath());
+        if ($fullPath === null) { // S19: only a file name directly in var/audit_freezes/ (value may come from a backup)
             $this->addFlash('warning', 'audit_freeze.flash.pdf_missing_on_disk');
             return $this->redirectToRoute('app_audit_freeze_show', ['id' => $id]);
         }

@@ -202,7 +202,7 @@ final class AuditPackageExporter
         $originalName = (string) ($doc->getOriginalFilename() ?? $doc->getFilename() ?? 'document-' . $doc->getId());
         $zipName = sprintf('%02d_%s', $idx, $this->safeFilename($originalName));
 
-        $path = (string) ($this->evidence->file($doc) ?? $doc->getFilePath());
+        $path = (string) $this->evidence->file($doc);
         if ($path === '' || !is_file($path) || !is_readable($path)) {
             // File missing on disk — record a stub so the auditor sees the gap.
             $stub = sprintf(
