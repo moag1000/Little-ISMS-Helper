@@ -52,35 +52,37 @@ final class ReSignAuditLogCommand
         $count = (int) (clone $qb)->select('COUNT(a.id)')->getQuery()->getSingleScalarResult();
         $io->title(sprintf('Re-signing %d audit-log rows%s', $count, $dryRun ? ' (dry-run)' : ''));
 
-        // Anchor previousHmac: when --after > 0 we need the HMAC of row#$after
-        // itself so the next row links correctly to the existing chain. When
-        // starting from the top, previous is null (chain anchor). ISB MINOR
-        // finding — without this, sign() would pull findLatestSignedHmac()
-        // which is the last row in the table, breaking the chain.
-        $previousHmac = null;
-        if ($after > 0) {
-            $anchor = $this->repository->find($after);
-            $previousHmac = $anchor?->getHmac();
-        }
+        // Anchor previousHmac per chain (one chain per organisation, B3): when
+        // --after > 0 each chain continues from its newest row with id <= $after,
+        // otherwise every chain starts fresh (anchor null). ISB MINOR finding —
+        // sign() would pull the chain's newest row, which is the terminal row,
+        // not the predecessor of the row being re-signed.
+        /** @var array<string, ?string> $previousByChain */
+        $previousByChain = [];
 
         $iter = $qb->getQuery()->toIterable();
         $processed = 0;
         $changed = 0;
         foreach ($iter as $row) {
             /** @var AuditLog $row */
+            $tenantId = $row->getTenant()?->getId();
+            $chain = $tenantId === null ? 'instance' : 'tenant-' . $tenantId;
+            if (!array_key_exists($chain, $previousByChain)) {
+                $previousByChain[$chain] = $after > 0 ? $this->integrity->latestHmac($tenantId, $after) : null;
+            }
             $oldHmac = $row->getHmac();
-            $this->integrity->signWithPrevious($row, $previousHmac);
+            $this->integrity->signWithPrevious($row, $previousByChain[$chain]);
             if ($oldHmac !== $row->getHmac()) {
                 $changed++;
             }
-            $previousHmac = $row->getHmac() ?? $previousHmac;
+            $previousByChain[$chain] = $row->getHmac() ?? $previousByChain[$chain];
             $processed++;
             if ($processed % $batchSize === 0) {
                 if (!$dryRun) {
                     $this->entityManager->flush();
                 }
-                // NOTE: cannot clear() here — $previousHmac must stay live
-                // across the boundary so the next batch links correctly.
+                // The previous HMACs are plain strings, so clear() keeps memory flat.
+                $this->entityManager->clear();
                 $io->writeln(sprintf('  … processed %d', $processed));
             }
         }

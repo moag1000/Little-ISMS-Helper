@@ -85,7 +85,7 @@ class AuditLog
 
     public function __construct()
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = self::wholeSeconds(new DateTimeImmutable());
     }
 
     public function getId(): ?int
@@ -210,8 +210,17 @@ class AuditLog
 
     public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = self::wholeSeconds($createdAt);
         return $this;
+    }
+
+    /**
+     * The column keeps whole seconds; the signature must cover exactly what is stored,
+     * or a reloaded row never verifies (B3: rows signed before carried microseconds).
+     */
+    private static function wholeSeconds(DateTimeImmutable $at): DateTimeImmutable
+    {
+        return $at->setTime((int) $at->format('H'), (int) $at->format('i'), (int) $at->format('s'));
     }
 
     public function getUserAgent(): ?string
@@ -271,7 +280,8 @@ class AuditLog
             (string) $this->oldValues,
             (string) $this->newValues,
             (string) $this->description,
-            $this->createdAt?->format('Y-m-d\TH:i:s.uP') ?? '',
+            // Wall time as stored (DATETIME, no fraction, no zone) — stable across reloads (B3).
+            $this->createdAt?->format('Y-m-d\TH:i:s') ?? '',
             (string) $this->previousHmac,
         ]);
     }

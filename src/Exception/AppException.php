@@ -23,6 +23,7 @@ namespace App\Exception;
  *               ├── Module\ModuleConfigurationException
  *               ├── Security\InsufficientPrivilegeException
  *               ├── Security\CsrfTokenInvalidException
+ *               ├── Security\AuditChainBrokenException
  *               ├── Validation\DomainValidationException
  *               ├── BusinessRule\BusinessRuleException
  *               ├── Io\IoException

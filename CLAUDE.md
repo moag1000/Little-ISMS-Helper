@@ -65,6 +65,7 @@ php bin/phpunit tests/Service/RiskServiceTest.php  # specific test
 # Cloud threads (PHP 8.3, GitHub only over git): vendor/ in ~30 s, then PHPStan as in CI
 python3 scripts/setup/cloud_vendor.py
 vendor/bin/phpstan analyse -c phpstan.cloud.neon --memory-limit=2G --no-progress
+bash scripts/setup/cloud_phpunit.sh   # PHPUnit: PHP 8.5 + Postgres from conda-forge, then PATH=/opt/cloudphp/wrap:$PATH
 # own PHPStan rules use static reflection only (no is_subclass_of/class_exists) — scripts/README.md "Cloud-Threads"
 
 # Workflows (Regulatory Compliance)
@@ -924,7 +925,7 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       login brute force is the firewall's `login_throttling`, not a controller limiter.
 - [ ] Privacy exports (VVT, DSFA, breach, DSR, consent) carry
       `#[IsGranted(new Expression(PrivacyExportAccess::RULE))]`; a record with an end state is deleted only via
-      `DeletionPolicy::refusal()` (asset: disposed); evidence fields (`#[ApiReadOnlyEvidence]`) are kept on
+      `DeletionPolicy::refusal()` (asset: disposed) — not yet true for every delete path, until S29 (Welle 10) lands; evidence fields (`#[ApiReadOnlyEvidence]`) are kept on
       import updates (`EvidenceFieldFilter::forUpdate()`).
 - [ ] Sensitive data excluded from audit logs
 - [ ] Non-UI paths (REST, MCP, restore, exports, jobs) are covered by contract tests that discover every

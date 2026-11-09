@@ -137,6 +137,12 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   - „Auditprogramm ableiten“ im Konzernbericht braucht zusätzlich `ROLE_MANAGER`.
   - Beim Sperren einer Organisation kommt die zweite Person aus derselben Organisation.
 
+- **Audit-Log-Kette (B3):** Die Migration `Version20261109200000_AuditLogHmacLegacyCutoff` (Quick-Fix) merkt sich
+  den letzten Eintrag mit altem Signaturformat. Die Signatur deckte bisher Sekundenbruchteile ab, die die Datenbank
+  nie speichert — „HMAC-Kette verifizieren“ meldete deshalb jeden Eintrag als manipuliert. Neue Einträge sind voll
+  prüfbar, ältere nur in ihrer Verkettung; die Prüfung nennt ihre Anzahl. Jede Organisation hat jetzt ihre eigene
+  Kette, die Prüfung läuft als Hintergrundjob mit Fortschrittsseite. Nichts zu tun.
+
 - **Kontraste und Barrierefreiheit (W11):** Gedämpfter Text, Erfolgs- und Warntext sowie Status-Pills sind
   etwas dunkler (hell) bzw. heller (dunkel), Formularfelder haben einen kräftigeren Rahmen — alles erreicht jetzt
   WCAG AA. Screenreader lesen Fehlermeldungen am Feld, Diagramm-Titel und Icon-Schaltflächen vor; Abschnitte langer
