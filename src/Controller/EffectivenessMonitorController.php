@@ -73,7 +73,7 @@ class EffectivenessMonitorController extends AbstractController
         }
 
         $categoryFilter  = $request->query->get('category');
-        $thresholdMonths = max(1, (int) ($request->query->get('threshold', '12')));
+        $thresholdMonths = \App\Util\BoundedQuery::clamped($request, 'threshold', 12, 1, 120);
 
         $stats           = $this->monitor->calculateSummaryStats($tenant);
         $overdueControls = $this->monitor->findOverdueControls($tenant, $thresholdMonths);

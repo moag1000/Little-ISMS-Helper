@@ -9,8 +9,11 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\Deadline\DeadlineProfile;
 use App\Service\Deadline\DeadlineSource;
+use App\Service\Deadline\HorizonFilteredSource;
+use App\Service\Deadline\HorizonValue;
 use App\Service\Deadline\RecordLink;
 use App\Service\Responsibility\Responsibility;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
@@ -25,7 +28,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  * across records) stay a class implementing {@see DeadlineSource}.
  */
 #[Exclude]
-final class ConfiguredDeadlineSource implements DeadlineSource
+final class ConfiguredDeadlineSource implements DeadlineSource, HorizonFilteredSource
 {
     public function __construct(
         public readonly DeadlineTypeDefinition $definition,
@@ -62,6 +65,72 @@ final class ConfiguredDeadlineSource implements DeadlineSource
             if (($this->definition->due === null || $this->dueDateOf($item) !== null) && !$this->isCompleted($item)) {
                 yield $item;
             }
+        }
+    }
+
+    /**
+     * Open records due on or before $horizon: the date filter runs in SQL when the
+     * due path is a column of the entity, so a table of thousands of risks is not
+     * hydrated for the few that are due (S31). A computed due path falls back to
+     * {@see findOpen()}.
+     *
+     * @return iterable<object>
+     */
+    public function findOpenDueBy(Tenant $tenant, DateTimeImmutable $horizon): iterable
+    {
+        $due = $this->definition->due;
+        $metadata = $this->entityManager->getClassMetadata($this->definition->entity);
+        if ($due === null || !$metadata->hasField($due)) {
+            yield from $this->findOpen($tenant);
+
+            return;
+        }
+        $records = $this->entityManager->createQueryBuilder()
+            ->select('e')
+            ->from($this->definition->entity, 'e')
+            ->andWhere('e.tenant = :tenant')
+            ->andWhere(sprintf('e.%s IS NOT NULL', $due))
+            ->andWhere(sprintf('e.%s <= :horizon', $due))
+            ->setParameter('tenant', $tenant)
+            ->setParameter('horizon', HorizonValue::forColumn($horizon, $metadata->getTypeOfField($due)), $metadata->getTypeOfField($due))
+            ->getQuery()
+            ->getResult();
+        $this->preloadPeopleCollections($records);
+        foreach ($records as $item) {
+            if (!$this->isCompleted($item)) {
+                yield $item;
+            }
+        }
+    }
+
+    /**
+     * Deputies and informed people are collections on the record; reading them per
+     * record costs one query each. One fetch-join query per collection path fills them
+     * for all records at once (the records are managed already, Doctrine initialises
+     * their collections from it).
+     *
+     * @param list<object> $records
+     */
+    private function preloadPeopleCollections(array $records): void
+    {
+        if (count($records) < 2) {
+            return;
+        }
+        $metadata = $this->entityManager->getClassMetadata($this->definition->entity);
+        $ids = array_map($this->refId(...), $records);
+        $paths = array_unique([...$this->definition->holders, ...$this->definition->deputies, ...$this->definition->inform]);
+        foreach ($paths as $path) {
+            if (!$metadata->hasAssociation($path) || !$metadata->isCollectionValuedAssociation($path)) {
+                continue;
+            }
+            $this->entityManager->createQueryBuilder()
+                ->select('e', 'p')
+                ->from($this->definition->entity, 'e')
+                ->leftJoin(sprintf('e.%s', $path), 'p')
+                ->andWhere('e.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()
+                ->getResult();
         }
     }
 

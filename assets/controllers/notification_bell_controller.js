@@ -112,12 +112,6 @@ export default class extends Controller {
             badge.classList.add('d-none');
             badge.textContent = '0';
         }
-        // The badge is aria-hidden; the count goes into the button's name instead (W11:
-        // visible text must be part of the accessible name, WCAG 2.5.3).
-        if (this.hasButtonTarget) {
-            this._baseLabel ??= this.buttonTarget.getAttribute('aria-label') || '';
-            this.buttonTarget.setAttribute('aria-label', count > 0 ? `${this._baseLabel} (${text})` : this._baseLabel);
-        }
     }
 
     _updateList(items) {

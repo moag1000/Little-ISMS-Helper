@@ -279,6 +279,9 @@ class ReportBuilderController extends AbstractController
             $report->setLayout(self::known($data['layout'], CustomReport::getLayouts(), $report->getLayout()));
         }
         if (isset($data['widgets']) && is_array($data['widgets'])) {
+            if (count($data['widgets']) > CustomReport::MAX_WIDGETS) {
+                return new JsonResponse(['error' => 'too_many_widgets', 'max' => CustomReport::MAX_WIDGETS], 422);
+            }
             $report->setWidgets($data['widgets']);
         }
         if (isset($data['filters']) && is_array($data['filters'])) {

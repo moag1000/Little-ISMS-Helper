@@ -815,6 +815,15 @@ jobs:
         # S23, 2026-11: the worker runs scheduled commands and jobs in one container; a report or KPI
         # snapshot left its organisation pinned and the nightly instance backup held only that one.
         run: python3 scripts/quality/check_tenant_pin_restore.py --quiet
+      - name: "Gate 101: no unbounded loads on the request path (findAll / tenant findBy / list paged in PHP)"
+        # S31, 2026-11: My Day, exports, report builder and lists loaded whole tables per request; a few
+        # parallel calls of a large organisation took every PHP worker. Ratchet: counts per file only shrink.
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "${BASE_REF:-main}"
+          python3 scripts/quality/check_unbounded_loads.py --strict-shrink --ratchet-ref FETCH_HEAD --quiet
       - name: "Gate 102: evidence PDFs in one language (|trans, <html lang> from app.locale, no raw enums)"
         # W10, 2026-11: VVT, breach and DPIA PDFs mixed German titles with English labels and raw keys;
         # lang was fixed "de" or missing. Baseline may only shrink. PHP part: ExportLocaleContractTest.

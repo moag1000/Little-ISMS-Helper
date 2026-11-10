@@ -117,6 +117,10 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Ausgehende Adressen:** Geokodierer, OIDC-Discovery und Webhooks erreichen keine internen
   Adressen mehr. Ein eigener Nominatim-Dienst im LAN funktioniert deshalb nicht mehr; Web-Push nur zu
   Browser-Push-Diensten (fremde Abos werden beim nächsten Versand abgeschaltet).
+- **Obergrenzen für Abfragen (S31):** `/analytics/api/trends?period=` nimmt 1 bis 36 Monate, sonst 400.
+  Ein Bericht im Report-Builder hat höchstens 30 Widgets (Speichern mit mehr → 422), Tabellen-Widgets
+  höchstens 50 Zeilen. Massenaktionen nehmen höchstens 500 Einträge (`ids`) je Aufruf, sonst 400.
+  `limit` der Monitoring- und Aktivitätsseiten liegt zwischen 1 und 1000.
 
 ### Geändertes Verhalten
 
@@ -140,6 +144,13 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   nur ein Manager (wie „Als Vorlage speichern“).
 - **Kommentare (S32):** höchstens 10.000 Zeichen; der Kommentarverlauf zeigt die Kommentare der gerade gewählten
   Organisation.
+- **Exporte, PDFs, Vorschauen und Analytics-Daten je Person begrenzt (S31):** 30 auf einmal, danach einer
+  alle zwei Sekunden; darüber antwortet die Seite 429 und nennt die Wartezeit. Für normale Arbeit merkt
+  das niemand, ein Skript mit einer Sitzung kann damit aber nicht mehr alle PHP-Worker belegen.
+- **Erinnerungen bei vielen Organisationen (S31):** Der 15-Minuten-Lauf liest nur noch die Fristen in
+  Stunden (Meldepflichten), die ganze Liste je Organisation einmal am Tag zur Digest-Stunde; nach jeder
+  Organisation gibt er den Speicher frei. „Mein Tag“ baut die Liste einmal je Seitenaufruf und lädt je
+  Fristtyp nur Einträge, die in der Vorlaufzeit fällig sind.
 - **Vorschläge: wer sieht, wer annimmt (S30):** Annehmen verlangt jetzt auch das Recht, dieselbe
   Änderung im Formular zu machen. Zuständige ohne Manager-Rolle nehmen VVT-, Register-,
   Managementbewertungs- und Zuordnungsvorschläge nicht mehr an und sehen sie nicht mehr in „Mein Tag“
@@ -182,6 +193,8 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   WCAG AA. Screenreader lesen Fehlermeldungen am Feld, Diagramm-Titel und Icon-Schaltflächen vor; Abschnitte langer
   Formulare und Prüfpunkte der Audit-Checkliste klappen auch per Tastatur (Enter/Leertaste) auf. Die Glocke nennt die Zahl
   neuer Meldungen, Navigations-Flyouts und Glocken-Panel gelten als Dialog statt Menü, Fortschrittsbalken haben einen Namen.
+  Gesperrte Phasen der ISMS-Reise sind gestrichelt statt halbtransparent, die Zeilen im Compliance-Widget haben keinen
+  farbigen Hintergrund mehr (nur noch den farbigen Rand). Der axe-Lauf meldet auf den zehn Kernseiten 0 Verstöße.
   Keine Aktion nötig.
   Nebenbei behoben: Details der Audit-Checkliste und der Framework-Anforderungen ließen sich gar nicht aufklappen.
 - **Policy-Freigabe: letzter Schritt „published“ (T3):** Der Schritt der Kette „Policy Approval (W3)“ stand als

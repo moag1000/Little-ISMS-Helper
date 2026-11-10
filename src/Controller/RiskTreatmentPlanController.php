@@ -75,7 +75,7 @@ class RiskTreatmentPlanController extends AbstractController
         $approachingDays = $request->query->get('approaching');
         if ($approachingDays !== null && is_numeric($approachingDays)) {
             $now = new \DateTime();
-            $futureDate = (new \DateTime())->modify('+' . (int) $approachingDays . ' days');
+            $futureDate = (new \DateTime())->modify('+' . \App\Util\BoundedQuery::clamp($approachingDays, 0, 3650) . ' days');
             $plans = array_filter($plans, function (RiskTreatmentPlan $plan) use ($now, $futureDate): bool {
                 $target = $plan->getTargetCompletionDate();
                 return $target !== null && $target >= $now && $target <= $futureDate;

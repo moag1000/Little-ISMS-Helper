@@ -36,6 +36,8 @@ final class RateLimiterWiringTest extends KernelTestCase
         yield 'public quick-fix' => [PublicPathRateLimitSubscriber::class, 'limiters', 100000, 'quick_fix'];
         // test env raises the limit (the suite fails many tokens from one IP); the throttle has its own test
         yield 'failed bearer attempts' => [\App\Security\ApiTokenAuthenticator::class, 'apiAuthFailureLimiter', 100000];
+        // test env raises it (export smoke tests); the mapping has its own test (S31)
+        yield 'heavy requests' => [\App\EventSubscriber\HeavyRequestRateLimitSubscriber::class, 'heavyRequestLimiter', 100000];
     }
 
     /**
