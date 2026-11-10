@@ -14,10 +14,8 @@ quick_fix:
         repair_orphans_subtitle: 'Assigning orphaned entities to the default tenant in the background…'
         repair_mismatches_label: 'Repair Organization Mismatches'
         repair_mismatches_subtitle: 'Aligning child entity tenants with their parent (Asset) in the background…'
-        repair_duplicates_label: 'Repair Duplicates'
-        repair_duplicates_subtitle: 'Merging duplicate entries (oldest kept) in the background…'
         repair_all_label: 'Repair All'
-        repair_all_subtitle: 'Orphans + mismatches + duplicates in the background — this may take several minutes.'
+        repair_all_subtitle: 'Orphans and mismatches in the background, duplicates only counted — this may take several minutes.'
         force_schema_label: 'Force Schema Update'
         force_schema_subtitle: 'Running doctrine:schema:update in safe mode (additive only) in the background…'
     pending:
@@ -87,7 +85,7 @@ quick_fix:
             empty: 'No mismatches'
         duplicates:
             title: 'Duplicates'
-            button: 'Merge'
+            review: 'Review manually (Data Repair)'
         all:
             title: 'Safe repair all'
             button: 'Safe repair all'
@@ -95,7 +93,6 @@ quick_fix:
         success:
             orphans: '%count% orphan(s) assigned to default tenant.'
             tenant_mismatches: '%count% tenant mismatch(es) fixed.'
-            duplicates: '%count% duplicate(s) merged for "%type%".'
             all: 'All repairs done: %orphans% orphan(s), %mismatches% mismatch(es), %duplicates% duplicate(s).'
     apply_failure:
         title: 'Migration failed — Recovery'

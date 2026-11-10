@@ -597,8 +597,8 @@ class UserManagementController extends AbstractController
     public function delete(
         User $user,
         Request $request,
-        EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        \App\Service\User\UserErasure $userErasure,
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::DELETE, $user);
 
@@ -615,36 +615,9 @@ class UserManagementController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-            $userId = $user->getId();
-            $userEmail = $user->getEmail();
-            $userName = $user->getFirstName() . ' ' . $user->getLastName();
-
-            $oldValues = [
-                'email' => $userEmail,
-                'first_name' => $user->getFirstName(),
-                'last_name' => $user->getLastName(),
-                'roles' => $user->getRoles(),
-            ];
-
-            try {
-                $entityManager->remove($user);
-                $entityManager->flush();
-            } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException) {
-                // EM is closed after the violation (pitfall 1) — only redirect, no further DB work
-                $this->addFlash('error', 'user.error.delete_referenced');
-                return $this->redirectToRoute('user_management_show', ['id' => $userId]);
-            }
-
-            $this->auditLogger->logCustom(
-                'user_deleted',
-                'User',
-                $userId,
-                $oldValues,
-                null,
-                sprintf('User "%s" (%s) deleted', $userName, $userEmail)
-            );
-
-            $this->addFlash('success', $translator->trans('user.success.deleted', [], 'messages'));
+            // S29: erasure (GDPR Art. 17) — the evidence the person left stays with an anonymous author.
+            $rowDeleted = $userErasure->erase($user);
+            $this->addFlash('success', $translator->trans($rowDeleted ? 'user.success.deleted' : 'user.success.anonymised', [], 'messages'));
         }
 
         return $this->redirectToRoute('user_management_index');

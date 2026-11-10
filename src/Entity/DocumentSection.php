@@ -80,7 +80,7 @@ class DocumentSection
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Document::class)]
-    #[ORM\JoinColumn(name: 'document_id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'document_id', nullable: false)]
     private ?Document $document = null;
 
     /**

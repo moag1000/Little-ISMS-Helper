@@ -45,9 +45,10 @@
                                 label: ('admin.data_retention.entity.' ~ entity_type)|trans({}, 'admin'),
                                 name:  'retention_days_' ~ entity_type,
                                 value: entry.retention_days,
-                                min:   30,
+                                min:   min_days[entity_type],
                                 max:   cap > 0 ? cap : null,
-                                hint:  cap > 0 ? ('admin.data_retention.gdpr_cap'|trans({'%days%': cap}, 'admin')) : null
+                                hint:  'admin.data_retention.evidence_floor'|trans({'%days%': min_days[entity_type]}, 'admin')
+                                    ~ (cap > 0 ? ' · ' ~ ('admin.data_retention.gdpr_cap'|trans({'%days%': cap}, 'admin')) : '')
                             }]) -%}
                             {%- set retention_rows = retention_rows|merge([{
                                 kind:  'toggle',

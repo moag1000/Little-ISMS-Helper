@@ -210,7 +210,7 @@ class ChangeRequestController extends AbstractController
     }
 
     #[Route('/change-request/bulk-delete', name: 'app_change_request_bulk_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('ROLE_ADMIN')] // S29: same role as the single delete and REST
     public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if (!$this->moduleService->isModuleActive('change_requests')) {

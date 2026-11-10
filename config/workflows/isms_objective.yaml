@@ -11,7 +11,7 @@ framework:
             places:
                 - { name: not_started, metadata: { tone: neutral } }
                 - { name: in_progress, metadata: { tone: primary } }
-                - { name: achieved, metadata: { tone: success } }
+                - { name: achieved, metadata: { tone: success, end_state: true } }
                 - { name: delayed, metadata: { tone: warning } }
                 - { name: cancelled, metadata: { tone: neutral } }
             transitions:

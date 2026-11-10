@@ -12,7 +12,7 @@ framework:
                 - { name: pending, metadata: { tone: warning } }
                 - { name: testing, metadata: { tone: primary } }
                 - { name: approved, metadata: { tone: success } }
-                - { name: deployed, metadata: { tone: success } }
+                - { name: deployed, metadata: { tone: success, end_state: true } }
                 - { name: failed, metadata: { tone: danger } }
                 - { name: rolled_back, metadata: { tone: warning } }
                 - { name: not_applicable, metadata: { tone: neutral } }

@@ -18,10 +18,10 @@ framework:
             initial_marking: pending
             places:
                 - { name: pending, metadata: { tone: warning } }
-                - { name: approved, metadata: { tone: success } }
-                - { name: rejected, metadata: { tone: danger } }
-                - { name: withdrawn, metadata: { tone: neutral } }
-                - { name: superseded, metadata: { tone: neutral } }
+                - { name: approved, metadata: { tone: success, end_state: true } }
+                - { name: rejected, metadata: { tone: danger, end_state: true } }
+                - { name: withdrawn, metadata: { tone: neutral, end_state: true } }
+                - { name: superseded, metadata: { tone: neutral, end_state: true } }
             transitions:
                 approve:
                     from: pending

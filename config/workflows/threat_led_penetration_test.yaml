@@ -21,7 +21,7 @@ framework:
                 - { name: scoping, metadata: { tone: primary } }
                 - { name: red_team, metadata: { tone: primary } }
                 - { name: reporting, metadata: { tone: primary } }
-                - { name: closed, metadata: { tone: neutral } }
+                - { name: closed, metadata: { tone: neutral, end_state: true } }
                 - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 start_scoping:

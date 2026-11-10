@@ -45,11 +45,11 @@ class RiskIncidentLink
     private ?Tenant $tenant = null;
 
     #[ORM\ManyToOne(targetEntity: Risk::class, inversedBy: 'incidentLinks')]
-    #[ORM\JoinColumn(name: 'risk_id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'risk_id', nullable: false)]
     private ?Risk $risk = null;
 
     #[ORM\ManyToOne(targetEntity: Incident::class, inversedBy: 'riskLinks')]
-    #[ORM\JoinColumn(name: 'incident_id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'incident_id', nullable: false)]
     private ?Incident $incident = null;
 
     /**

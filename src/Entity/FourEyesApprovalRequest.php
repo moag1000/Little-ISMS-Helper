@@ -53,7 +53,7 @@ class FourEyesApprovalRequest
     private array $payload = [];
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $requestedBy = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]

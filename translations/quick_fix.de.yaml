@@ -14,10 +14,8 @@ quick_fix:
         repair_orphans_subtitle: 'Weist verwaiste Entities im Hintergrund dem Standard-Organisation zu…'
         repair_mismatches_label: 'Organisations-Fehlzuordnungen beheben'
         repair_mismatches_subtitle: 'Richtet Tochter-Organisationen im Hintergrund am Parent (Asset) aus…'
-        repair_duplicates_label: 'Duplikate zusammenführen'
-        repair_duplicates_subtitle: 'Behält den ältesten Eintrag, entfernt neuere Duplikate im Hintergrund…'
         repair_all_label: 'Alles reparieren'
-        repair_all_subtitle: 'Orphans + Mismatches + Duplikate im Hintergrund — kann mehrere Minuten dauern.'
+        repair_all_subtitle: 'Orphans und Mismatches im Hintergrund, Duplikate werden nur gezählt — kann mehrere Minuten dauern.'
         force_schema_label: 'Schema-Update erzwingen'
         force_schema_subtitle: 'Führt doctrine:schema:update im sicheren Modus (nur additiv) im Hintergrund aus…'
     pending:
@@ -87,7 +85,7 @@ quick_fix:
             empty: 'Keine Mismatches'
         duplicates:
             title: 'Duplikate'
-            button: 'Bereinigen'
+            review: 'Manuell prüfen (Datenreparatur)'
         all:
             title: 'Alles-Sicher-Reparieren'
             button: 'Alles sicher reparieren'
@@ -95,7 +93,6 @@ quick_fix:
         success:
             orphans: '%count% Orphan(s) dem Standard-Organisation zugewiesen.'
             tenant_mismatches: '%count% Organisations-Fehlzuordnung(en) behoben.'
-            duplicates: '%count% Duplikat(e) aus "%type%" bereinigt.'
             all: 'Alle Repairs abgeschlossen: %orphans% Orphan(s), %mismatches% Mismatch(es), %duplicates% Duplikat(e).'
     apply_failure:
         title: 'Migration fehlgeschlagen — Recovery'

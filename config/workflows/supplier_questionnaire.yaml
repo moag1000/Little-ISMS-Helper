@@ -20,8 +20,8 @@ framework:
             places:
                 - { name: draft, metadata: { tone: neutral } }
                 - { name: sent, metadata: { tone: success } }
-                - { name: completed, metadata: { tone: success } }
-                - { name: reviewed, metadata: { tone: success } }
+                - { name: completed, metadata: { tone: success, end_state: true } }
+                - { name: reviewed, metadata: { tone: success, end_state: true } }
             transitions:
                 send:
                     from: draft

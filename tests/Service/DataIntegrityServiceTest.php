@@ -86,7 +86,6 @@ class DataIntegrityServiceTest extends TestCase
         // same mock repositories as the facade.
         $orphanFinder = new OrphanFinder($this->entityManager);
         $duplicateFinder = new DuplicateFinder(
-            $this->entityManager,
             $this->auditRepository,
             $this->assetRepository,
             $this->riskRepository,

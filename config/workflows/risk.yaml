@@ -15,15 +15,15 @@ framework:
                 - { name: identified, metadata: { tone: warning } }
                 - { name: assessed, metadata: { tone: primary } }
                 - { name: in_treatment, metadata: { tone: primary } }
-                - { name: treated, metadata: { tone: success } }
-                - { name: monitored, metadata: { tone: primary } }
-                - { name: closed, metadata: { tone: neutral } }
-                - { name: accepted, metadata: { tone: success } }
+                - { name: treated, metadata: { tone: success, end_state: true } }
+                - { name: monitored, metadata: { tone: primary, end_state: true } }
+                - { name: closed, metadata: { tone: neutral, end_state: true } }
+                - { name: accepted, metadata: { tone: success, end_state: true } }
                 # Legacy buckets retained as places to satisfy RiskStatus enum
                 # cases stored in historical rows. No transitions are wired
                 # for them — they are read-only carryover from pre-lifecycle
                 # data and exist purely so YAML↔Enum parity holds.
-                - { name: mitigated, metadata: { tone: success } }
+                - { name: mitigated, metadata: { tone: success, end_state: true } }
                 - { name: open, metadata: { tone: warning } }
             transitions:
                 assess:

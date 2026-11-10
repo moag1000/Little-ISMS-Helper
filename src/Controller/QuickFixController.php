@@ -8,7 +8,6 @@ use App\Job\QuickFixApplyMigrationsJob;
 use App\Job\QuickFixForceSchemaUpdateJob;
 use App\Job\QuickFixReconcileSchemaJob;
 use App\Job\QuickFixRepairAllJob;
-use App\Job\QuickFixRepairDuplicatesJob;
 use App\Job\QuickFixRepairOrphansJob;
 use App\Job\QuickFixRepairTenantMismatchesJob;
 use App\Service\AuditLogger;
@@ -512,46 +511,9 @@ class QuickFixController extends AbstractController
     }
 
     /**
-     * Merges duplicate entities for a given entity type.
-     * Keeps the entity with the lowest ID; deletes newer duplicates.
-     * Idempotent — zero duplicates means no DB changes.
-     */
-    #[Route('/quick-fix/repair/duplicates/{entityType}', name: 'app_quick_fix_repair_duplicates', methods: ['POST'])]
-    #[IsCsrfTokenValid('quick_fix_repair_duplicates')]
-    public function repairDuplicates(
-        Request $request,
-        QuickFixGuard $guard,
-        JobStatusService $jobStatusService,
-        JobDispatcher $jobDispatcher,
-        TranslatorInterface $translator,
-        string $entityType,
-    ): Response {
-        if (!$guard->mayRunPrivileged($request)) {
-            return $this->lockedResponse($guard, $request);
-        }
-
-        $allowed = ['audits', 'assets', 'risks', 'incidents', 'documents'];
-        if (!in_array($entityType, $allowed, true)) {
-            $this->addFlash('error', $translator->trans('quick_fix.flash.unknown_entity_type', ['%type%' => $entityType], 'quick_fix'));
-            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
-        }
-
-        return $this->dispatchJobProgress(
-            $request,
-            $jobStatusService,
-            $jobDispatcher,
-            $translator,
-            QuickFixRepairDuplicatesJob::class,
-            'quick_fix.repair_duplicates',
-            'quick_fix.job.repair_duplicates_label',
-            'quick_fix.job.repair_duplicates_subtitle',
-            ['entityType' => $entityType],
-        );
-    }
-
-    /**
      * Convenience: runs ALL non-destructive repair operations in sequence.
-     * Orphan-assign → mismatch-fix → duplicate-merge for all types.
+     * Orphan-assign → mismatch-fix; duplicates are only counted (S29: a
+     * record with the same title is not a duplicate by itself — review in Data Repair).
      * Each step is audit-logged individually. Idempotent.
      */
     #[Route('/quick-fix/repair/all', name: 'app_quick_fix_repair_all', methods: ['POST'])]

@@ -274,20 +274,6 @@ final class DataIntegrityService
     }
 
     /**
-     * Merge duplicate entities for a given entity type, keeping the entity
-     * with the lowest ID (oldest) and removing the rest.
-     *
-     * Returns the number of deleted duplicate entities.
-     * Delegates to {@see DuplicateFinder}.
-     *
-     * Supported entity types: audits, assets, risks, incidents, documents
-     */
-    public function mergeDuplicates(string $entityType): int
-    {
-        return $this->duplicateFinder?->mergeDuplicates($entityType) ?? 0;
-    }
-
-    /**
      * Get entity counts grouped by tenant.
      * Delegates to {@see EntityCountAggregator::countByTenant()}.
      */

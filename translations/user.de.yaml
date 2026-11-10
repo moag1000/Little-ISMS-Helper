@@ -240,7 +240,7 @@ user:
     modal:
         delete_user: 'Benutzer löschen'
         delete_confirm: 'Möchten Sie den Benutzer <strong>%name%</strong> wirklich löschen?'
-        delete_warning: 'Achtung: Diese Aktion kann nicht rückgängig gemacht werden.'
+        delete_warning: 'Nicht rückgängig zu machen. Name, E-Mail, SSO-Kennung und Kontaktdaten werden gelöscht (DSGVO Art. 17); Kenntnisnahmen, Schulungsteilnahmen, Kommentare und Freigaben bleiben mit anonymem Autor erhalten.'
         impersonate_confirm: 'Als %name% anmelden? Alle Aktionen werden im Namen dieses Benutzers ausgeführt und protokolliert.'
     confirm:
         delete: 'Möchten Sie den Benutzer %name% wirklich löschen?'

@@ -16,7 +16,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * Bulk actions of the user administration (activate, deactivate, assign_role,
- * delete). `User` is not covered by the AuditLogSubscriber, so every applied
+ * delete = {@see UserErasure}). `User` is not covered by the AuditLogSubscriber, so every applied
  * change goes into one {@see AuditLogger::logBulk()} batch (ISO 27001
  * Cl. 7.5.3). The initial setup admin and the acting user are never
  * deactivated or deleted.
@@ -29,6 +29,7 @@ final readonly class UserBulkActionService
         private AuditLogger $auditLogger,
         private InitialAdminService $initialAdminService,
         private UserAdministrationGuard $userAdministrationGuard,
+        private UserErasure $userErasure,
     ) {}
 
     /**
@@ -67,9 +68,10 @@ final readonly class UserBulkActionService
                     $row['new_values'] = ['customRole' => $role->getName()];
                     break;
                 case 'delete':
+                    // S29: erasure, not a cascade over the evidence the person left.
                     $row['action'] = 'delete';
-                    $row['old_values'] = ['email' => $user->getEmail()];
-                    $this->entityManager->remove($user);
+                    $row['old_values'] = ['email_sha256' => hash('sha256', mb_strtolower((string) $user->getEmail()))];
+                    $row['new_values'] = ['row_deleted' => $this->userErasure->erase($user)];
                     break;
             }
             $perEntityData[] = $row;

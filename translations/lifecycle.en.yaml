@@ -315,3 +315,5 @@ lifecycle:
         role_required: 'Not done. This step needs a role you do not have.'
         invalid_transition: 'Invalid status transition from "%from%" to "%to%". Allowed next states: %allowed%.'
         delete_needs_end_state: 'Not deleted. An asset leaves the inventory by retiring and disposing of it (four-eyes principle); only within 24 hours of creation can it be deleted directly.'
+        delete_end_state: 'Not deleted. In status "%status%" the record is evidence and is kept; archive it through its status instead.'
+        delete_has_evidence: 'Not deleted. %count% evidence records (%type%) still point at it.'

@@ -22,7 +22,6 @@ use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
  * - /quick-fix GET (index renders, includes integrity section)
  * - /quick-fix/repair/orphans (POST) — assigns orphans, guarded
  * - /quick-fix/repair/tenant-mismatches (POST) — fixes mismatches
- * - /quick-fix/repair/duplicates/{type} (POST) — merges duplicates
  * - /quick-fix/repair/all (POST) — all-in-one convenience route
  *
  * CSRF is injected via session (same pattern as RiskControllerTest).
@@ -257,41 +256,6 @@ class QuickFixControllerTest extends WebTestCase
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('body', 'Repair Organization Mismatches');
-    }
-
-    // =========================================================================
-    // POST /quick-fix/repair/duplicates/{entityType}
-    // =========================================================================
-
-    #[Test]
-    public function testRepairDuplicatesKnownTypeRendersProgressPage(): void
-    {
-        $this->client->loginUser($this->testUser);
-        $token = $this->generateCsrfToken('quick_fix_repair_duplicates');
-
-        $this->client->request('POST', '/quick-fix/repair/duplicates/assets', [
-            '_token' => $token,
-        ]);
-
-        // Turbo PRG fix: POST now redirects (303) → progress page.
-        $this->assertResponseRedirects();
-        $this->client->followRedirect();
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('body', 'Repair Duplicates');
-    }
-
-    #[Test]
-    public function testRepairDuplicatesUnknownTypeRedirectsWithError(): void
-    {
-        $this->client->loginUser($this->testUser);
-        $token = $this->generateCsrfToken('quick_fix_repair_duplicates');
-
-        $this->client->request('POST', '/quick-fix/repair/duplicates/unknown_type', [
-            '_token' => $token,
-        ]);
-
-        // Redirects back to quick-fix index (error flash added)
-        $this->assertResponseRedirects('/quick-fix');
     }
 
     // =========================================================================

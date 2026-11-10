@@ -45,6 +45,7 @@ class BulkDeleteService
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly ?EntityManagerRecovery $entityManagerRecovery = null,
+        private readonly ?\App\Lifecycle\DeletionPolicy $deletionPolicy = null,
     ) {
     }
 
@@ -96,7 +97,7 @@ class BulkDeleteService
                     $errors[] = sprintf('%s ID %d: access denied', $entityType, $id);
                     continue;
                 }
-                $reason = \App\Lifecycle\DeletionPolicy::refusal($entity) ?? ($guard !== null ? $guard($entity) : null);
+                $reason = $this->deletionPolicy?->refusal($entity) ?? ($guard !== null ? $guard($entity) : null);
                 if ($reason !== null) {
                     $errors[] = sprintf('%s ID %d: %s', $entityType, $id, $reason);
                     continue;
@@ -121,7 +122,12 @@ class BulkDeleteService
                 ];
             }
             if ($removed !== []) {
-                $this->entityManager->flush();
+                $this->auditLogger->beginCallerLoggedDeletes();
+                try {
+                    $this->entityManager->flush();
+                } finally {
+                    $this->auditLogger->endCallerLoggedDeletes();
+                }
                 // Inside the transaction: the trail commits with the deletions,
                 // and a row that cannot be written aborts the batch (strict).
                 $batchId = $this->auditLogger->logBulk(

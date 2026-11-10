@@ -6,6 +6,7 @@ namespace App\Controller\Admin\SystemSettings;
 
 use App\Entity\Tenant;
 use App\Service\AuditLogger;
+use App\Service\RetentionEnforcementService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,12 +41,12 @@ class DataRetentionController extends AbstractController
     /** Default retention days per entity type (keys = the categories RetentionEnforcementService knows). */
     public const DEFAULTS = [
         'asset'              => 365,
-        'risk'               => 730,
+        'risk'               => 1095,
         'incident'           => 1825,
         'document'           => 2190,
         'processing_activity'=> 1825,
         'audit_finding'      => 1825,
-        'workflow_instance'  => 730,
+        'workflow_instance'  => 1095,
     ];
 
     public function __construct(
@@ -80,6 +81,7 @@ class DataRetentionController extends AbstractController
 
             $new = [];
             $errors = [];
+            $belowFloor = [];
             foreach (array_keys(self::DEFAULTS) as $entityType) {
                 $days = (int) $request->request->get("retention_days_{$entityType}", self::DEFAULTS[$entityType]);
                 $maxDays = self::GDPR_MAX_DAYS[$entityType];
@@ -87,7 +89,12 @@ class DataRetentionController extends AbstractController
                     $errors[] = $entityType;
                     $days = $maxDays;
                 }
-                $days = max(30, $days); // minimum 30 days
+                // S29: never below the evidence floor of the type (ISO 27001 7.5.3); 0 = keep forever.
+                $floor = RetentionEnforcementService::MIN_RETENTION_DAYS[$entityType];
+                if ($days !== 0 && $days < $floor) {
+                    $belowFloor[] = $entityType;
+                    $days = $floor;
+                }
                 $new[$entityType] = [
                     'retention_days' => $days,
                     'auto_delete'    => $request->request->getBoolean("auto_delete_{$entityType}"),
@@ -96,6 +103,9 @@ class DataRetentionController extends AbstractController
 
             if ($errors !== []) {
                 $this->addFlash('warning', 'admin.data_retention.gdpr_cap_applied');
+            }
+            if ($belowFloor !== []) {
+                $this->addFlash('warning', 'admin.data_retention.evidence_floor_applied');
             }
 
             $tenant->setDataRetentionPolicies($new);
@@ -117,6 +127,7 @@ class DataRetentionController extends AbstractController
             'current'       => $current,
             'entity_types'  => array_keys(self::DEFAULTS),
             'gdpr_max_days' => self::GDPR_MAX_DAYS,
+            'min_days'      => RetentionEnforcementService::MIN_RETENTION_DAYS,
         ]);
     }
 

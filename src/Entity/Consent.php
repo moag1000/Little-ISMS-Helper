@@ -86,7 +86,7 @@ class Consent
      * Data Reuse: ProcessingActivity with legalBasis = 'consent' (Art. 6(1)(a) GDPR)
      */
     #[ORM\ManyToOne(targetEntity: ProcessingActivity::class, inversedBy: 'consents')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'consent.validation.processing_activity_required')]
     #[ManagerOrResponsibleField('Proof of consent (GDPR Art. 7(1)) is kept by the DPO or the person responsible for it')]
     private ?ProcessingActivity $processingActivity = null;

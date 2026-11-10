@@ -95,7 +95,8 @@ class AuditLogger
         private readonly ?AuditLogIntegrityService $integrityService = null,
         private readonly ?\App\Service\TenantContext $tenantContext = null,
         private readonly ?\Psr\Log\LoggerInterface $logger = null,
-    ) {}
+    ) {
+    }
 
     /** Tenant pinned by withTenant() for background runs (CLI / cron) that have no TenantContext. */
     private ?\App\Entity\Tenant $pinnedTenant = null;
@@ -124,6 +125,31 @@ class AuditLogger
 
     /** Organisation of the record being logged — the fallback when neither pin nor context names one. */
     private ?\App\Entity\Tenant $recordTenant = null;
+
+    /** > 0 while a caller writes the trail of the deletes it flushes itself (logBulk, own entry). */
+    private int $callerLoggedDeletes = 0;
+
+    /**
+     * S29: the deletes flushed between begin and end are written to the trail by
+     * the caller ({@see logBulk()} of bulk delete and retention, the reasoned
+     * entry of a comment delete); the per-row delete entry the Doctrine audit
+     * subscriber adds for every organisation's record is skipped meanwhile, so
+     * the batch is not logged twice. Always pair with end in a finally.
+     */
+    public function beginCallerLoggedDeletes(): void
+    {
+        ++$this->callerLoggedDeletes;
+    }
+
+    public function endCallerLoggedDeletes(): void
+    {
+        $this->callerLoggedDeletes = max(0, $this->callerLoggedDeletes - 1);
+    }
+
+    public function areDeletesLoggedByCaller(): bool
+    {
+        return $this->callerLoggedDeletes > 0;
+    }
 
     /**
      * Run $callback with $record's organisation as fallback tenant for every row
@@ -407,11 +433,19 @@ class AuditLogger
         try {
             $this->entityManager->persist($auditLog);
             $this->entityManager->flush();
+            // Written rows are append-only (signed): keeping them managed only lets
+            // a later flush trip over their organisation once it is deleted.
+            $this->entityManager->detach($auditLog);
         } catch (\Throwable $e) {
             // Strict callers (bulk delete inside its transaction) must abort
             // and roll back: the trail is part of the change.
             if ($strict) {
                 throw $e;
+            }
+            // A row that failed to flush must not stay scheduled: the next
+            // flush of the caller would fail on it again.
+            if ($this->entityManager->isOpen() && $this->entityManager->contains($auditLog)) {
+                $this->entityManager->detach($auditLog);
             }
             // Skip — the audit log misses this row but the calling operation
             // (mark-all-phantom-diff, etc.) must not abort. Logged, because a

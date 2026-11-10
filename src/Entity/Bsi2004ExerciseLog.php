@@ -75,7 +75,7 @@ class Bsi2004ExerciseLog
     private ?Tenant $tenant = null;
 
     #[ORM\OneToOne(targetEntity: BCExercise::class, inversedBy: 'exerciseLog')]
-    #[ORM\JoinColumn(name: 'bc_exercise_id', nullable: false, unique: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'bc_exercise_id', nullable: false, unique: true)]
     private ?BCExercise $bcExercise = null;
 
     #[ORM\Column(length: 50)]

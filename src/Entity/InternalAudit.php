@@ -305,7 +305,7 @@ class InternalAudit
      *
      * @var Collection<int, AuditFinding>
      */
-    #[ORM\OneToMany(targetEntity: AuditFinding::class, mappedBy: 'audit', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AuditFinding::class, mappedBy: 'audit', cascade: ['persist'])] // S29: findings are evidence, never removed with the audit
     private Collection $structuredFindings;
 
     // ==========================================================================

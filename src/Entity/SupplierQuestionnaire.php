@@ -38,7 +38,7 @@ class SupplierQuestionnaire
     private ?Tenant $tenant = null;
 
     #[ORM\ManyToOne(targetEntity: Supplier::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Supplier $supplier = null;
 
     #[ORM\Column(length: 200)]

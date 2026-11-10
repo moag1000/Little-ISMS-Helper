@@ -19,10 +19,12 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\SafeRedirectTarget;
 use App\Service\AuditLogger;
+use App\Service\Comment\CommentDeletion;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -174,6 +176,34 @@ class CommentController extends AbstractController
         return SafeRedirectTarget::isSafe($referer, $request)
             ? $this->redirect($referer)
             : $this->redirectToRoute('app_dashboard');
+    }
+
+    /**
+     * S29 (GDPR Art. 17): a comment is removed only by an admin of its
+     * organisation and only with a reason ({@see CommentDeletion}).
+     */
+    #[Route('/comment/{id}/delete', name: 'app_comment_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    #[IsCsrfTokenValid(new Expression('"comment_delete_" ~ args["comment"].getId()'))]
+    public function delete(Comment $comment, Request $request, CommentDeletion $commentDeletion): Response
+    {
+        $tenant = $comment->getTenant();
+        if (!$tenant instanceof Tenant || !$this->tenantContext->canAccessTenant($tenant)) {
+            throw new AccessDeniedHttpException('Comment of another organisation');
+        }
+        $back = $request->headers->get('referer') ?? '/';
+        $reason = trim((string) $request->request->get('reason', ''));
+        if ($reason === '') {
+            $this->addFlash('warning', 'comments.delete.reason_required');
+
+            return $this->redirect($back);
+        }
+
+        $commentDeletion->delete($comment, $reason);
+
+        $this->addFlash('success', 'comments.delete.done');
+
+        return $this->redirect($back);
     }
 
     /**

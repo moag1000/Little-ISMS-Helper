@@ -11,10 +11,10 @@ framework:
             places:
                 - { name: draft, metadata: { tone: neutral } }
                 - { name: in_review, metadata: { tone: primary } }
-                - { name: approved, metadata: { tone: success } }
-                - { name: published, metadata: { tone: success } }
-                - { name: archived, metadata: { tone: neutral } }
-                - { name: deleted, metadata: { tone: neutral } }
+                - { name: approved, metadata: { tone: success, end_state: true } }
+                - { name: published, metadata: { tone: success, end_state: true } }
+                - { name: archived, metadata: { tone: neutral, end_state: true } }
+                - { name: deleted, metadata: { tone: neutral, end_state: true } }
             transitions:
                 submit_for_review:
                     from: draft
@@ -47,12 +47,15 @@ framework:
                     metadata:
                         roles: [ROLE_MANAGER]
                         reason_required: true
+                # S29 (F10): back to published only with the second person, as publish —
+                # an archived or superseded policy does not return without re-approval.
                 restore:
                     from: archived
                     to: published
                     metadata:
                         roles: [ROLE_MANAGER]
                         reason_required: true
+                        four_eyes: true
                 # X.6: policy supersession — archive the current (approved or published) doc
                 # when a previous version is restored. Reason required for audit trail.
                 archive_on_supersession:

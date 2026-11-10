@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\AuditLog;
+use App\Lifecycle\DeletionPolicy;
 use App\Service\AuditLogger;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\UnitOfWork;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Audit Log Subscriber
@@ -52,13 +57,36 @@ use Doctrine\ORM\Events;
 #[AsDoctrineListener(event: Events::preUpdate)]
 #[AsDoctrineListener(event: Events::postUpdate)]
 #[AsDoctrineListener(event: Events::postRemove)]
-final class AuditLogSubscriber
+#[AsDoctrineListener(event: Events::postFlush)]
+final class AuditLogSubscriber implements ResetInterface
 {
     private array $pendingUpdates = [];
 
+    /** @var list<callable(): mixed> S29 delete entries, written after the flush */
+    private array $deferredDeletes = [];
+
+    private bool $drainingDeletes = false;
+
+    /**
+     * Tenant-owned classes whose rows are operational, not records: reminders
+     * sent, deliveries, caches, personal settings, sessions. They are deleted by
+     * routine cleanups in bulk and would only flood the trail.
+     */
+    private const array TRANSIENT_ON_DELETE = [
+        'AlvaHintDismissal', 'AlvaHintRenderCount', 'DashboardLayout', 'PushSubscription', 'ObligationNotice',
+        'NotificationDelivery', 'SlaDeadlineMonitor', 'KpiSnapshot', 'PortfolioSnapshot', 'ReuseTrendSnapshot',
+        'ImportSession', 'BulkImportBatch', 'WizardSession', 'WizardRun', 'Suggestion', 'ApiToken', 'UserSession',
+    ];
+
+    /** Fields whose text is the personal data a delete removes (Art. 17): the row is logged without them. */
+    private const array NOT_LOGGED_ON_DELETE = [
+        'Comment' => ['body'],
+    ];
+
     public function __construct(
         private readonly AuditLogger $auditLogger
-    ) {}
+    ) {
+    }
 
     /**
      * Log entity creation
@@ -171,21 +199,89 @@ final class AuditLogSubscriber
             return;
         }
 
-        // Check if entity should be audited
-        if (!$this->shouldAudit($entity)) {
+        // S29: every delete of an organisation's record leaves a trail (ISO 27001
+        // 7.5.3), not only the classes audited on create/update.
+        $audited = $this->shouldAudit($entity);
+        if (!$audited && !$this->isAuditedOnDelete($entity, $postRemoveEventArgs)) {
             return;
         }
 
         $entityType = $this->auditLogger->getEntityTypeName($entity);
         $entityId = $this->getEntityId($entity);
-        $values = $this->auditLogger->extractEntityValues($entity);
-
-        $this->auditLogger->aboutRecord($entity, fn () => $this->auditLogger->logDelete(
+        $values = array_diff_key(
+            $this->auditLogger->extractEntityValues($entity),
+            array_flip(self::NOT_LOGGED_ON_DELETE[$entityType] ?? []),
+        );
+        $write = fn () => $this->auditLogger->aboutRecord($entity, fn () => $this->auditLogger->logDelete(
             $entityType,
             $entityId,
             $values,
             sprintf('%s deleted', $entityType)
         ));
+
+        if ($audited) {
+            $write();
+
+            return;
+        }
+        // S29 rows are written after the flush: a write inside the running commit
+        // stays pending and would carry its organisation into the next flush —
+        // the one that may delete that organisation.
+        $this->deferredDeletes[] = $write;
+    }
+
+    public function postFlush(PostFlushEventArgs $args): void
+    {
+        if ($this->drainingDeletes || $this->deferredDeletes === []) {
+            return;
+        }
+        $this->drainingDeletes = true;
+        try {
+            while (($write = array_shift($this->deferredDeletes)) !== null) {
+                if ($args->getObjectManager()->isOpen()) {
+                    $write();
+                }
+            }
+        } finally {
+            $this->drainingDeletes = false;
+            $this->deferredDeletes = [];
+        }
+    }
+
+    public function reset(): void
+    {
+        $this->deferredDeletes = [];
+        $this->drainingDeletes = false;
+    }
+
+    private function isAuditedOnDelete(object $entity, PostRemoveEventArgs $args): bool
+    {
+        if ($this->auditLogger->areDeletesLoggedByCaller()) {
+            return false; // the caller's logBulk batch / reasoned entry is the trail
+        }
+        $em = $args->getObjectManager();
+        $metadata = $em->getClassMetadata($entity::class);
+        if (!DeletionPolicy::isTenantOwned($metadata)
+            || in_array($this->auditLogger->getEntityTypeName($entity), self::TRANSIENT_ON_DELETE, true)) {
+            return false;
+        }
+        // The whole organisation goes (tenant deletion, logged itself): its rows
+        // cannot carry a tenant that is leaving in the same flush.
+        $tenant = $metadata->getFieldValue($entity, 'tenant');
+        if (!is_object($tenant)) {
+            return true;
+        }
+        $uow = $em->getUnitOfWork();
+        if ($uow->getEntityState($tenant) !== UnitOfWork::STATE_MANAGED || $uow->isScheduledForDelete($tenant)) {
+            return false;
+        }
+        try {
+            $uow->initializeObject($tenant); // removed by plain SQL meanwhile → nothing to log against
+        } catch (EntityNotFoundException) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

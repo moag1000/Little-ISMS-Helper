@@ -10,8 +10,8 @@ framework:
             initial_marking: planned
             places:
                 - { name: planned, metadata: { tone: primary } }
-                - { name: completed, metadata: { tone: success } }
-                - { name: follow_up_required, metadata: { tone: warning } }
+                - { name: completed, metadata: { tone: success, end_state: true } }
+                - { name: follow_up_required, metadata: { tone: warning, end_state: true } }
             transitions:
                 # Top management reviews the ISMS (ISO 27001 9.3.1) — completing
                 # the review is its decision on the results (9.3.3), recorded as

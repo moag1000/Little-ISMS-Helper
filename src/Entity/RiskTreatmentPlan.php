@@ -50,7 +50,7 @@ class RiskTreatmentPlan
      * The risk being treated by this plan
      */
     #[ORM\ManyToOne(targetEntity: Risk::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     #[Assert\NotNull(message: 'risk_treatment_plan.validation.risk_required')]
     #[MaxDepth(1)]

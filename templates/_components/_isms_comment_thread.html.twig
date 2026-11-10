@@ -47,6 +47,18 @@
                         <div class="isms-comment__body">
                             {{ comment.body|nl2br }}
                         </div>
+                        {# S29: a comment with wrongly placed personal data is removed by an admin, with a reason (GDPR Art. 17). #}
+                        {% if comment.id and is_granted('ROLE_ADMIN') %}
+                        <details class="isms-comment__moderate mt-1">
+                            <summary class="small text-muted">{{ 'comments.delete.summary'|trans({}, 'messages') }}</summary>
+                            <form method="post" action="{{ path('app_comment_delete', {id: comment.id}) }}" class="mt-2">
+                                <input type="hidden" name="_token" value="{{ csrf_token('comment_delete_' ~ comment.id) }}">
+                                <label for="comment-reason-{{ comment.id }}" class="form-label small">{{ 'comments.delete.reason'|trans({}, 'messages') }}</label>
+                                <input type="text" id="comment-reason-{{ comment.id }}" name="reason" class="form-control fa-cyber-input__field mb-2" required maxlength="500">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">{{ 'comments.delete.submit'|trans({}, 'messages') }}</button>
+                            </form>
+                        </details>
+                        {% endif %}
                     </div>
                 </article>
             {% endfor %}

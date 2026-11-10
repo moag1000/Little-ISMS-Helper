@@ -18,7 +18,7 @@ framework:
             initial_marking: draft
             places:
                 - { name: draft, metadata: { tone: neutral } }
-                - { name: assessed, metadata: { tone: primary } }
+                - { name: assessed, metadata: { tone: primary, end_state: true } }
             transitions:
                 assess:
                     from: draft

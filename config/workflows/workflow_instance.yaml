@@ -11,8 +11,8 @@ framework:
             places:
                 - { name: pending, metadata: { tone: warning } }
                 - { name: in_progress, metadata: { tone: primary } }
-                - { name: approved, metadata: { tone: success } }
-                - { name: rejected, metadata: { tone: danger } }
+                - { name: approved, metadata: { tone: success, end_state: true } }
+                - { name: rejected, metadata: { tone: danger, end_state: true } }
                 - { name: cancelled, metadata: { tone: neutral } }
             transitions:
                 start:

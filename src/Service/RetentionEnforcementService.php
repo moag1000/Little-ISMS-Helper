@@ -26,8 +26,10 @@ use Psr\Log\LoggerInterface;
  *
  * This service only ever touches entity types the admin has explicitly opted
  * into (auto_delete = true); the GDPR maximum caps are already applied at save
- * time in the controller. Deletion goes through EntityManager::remove() so
- * Doctrine cascade + lifecycle rules apply, and every run is audit-logged.
+ * time in the controller, the S29 floors (MIN_RETENTION_DAYS) there and here.
+ * Deletion goes through EntityManager::remove() in one transaction with its
+ * audit batch; a record that other evidence points at is kept
+ * (DeletionPolicy::childRefusal), and a deleted document's file goes with it.
  *
  * Retention deletes only records in an END STATE (see END_STATES). An expired
  * record that is still active (an active asset, an open incident, a published
@@ -97,6 +99,26 @@ final class RetentionEnforcementService
     ];
 
     /**
+     * S29: the shortest keeping period per type, whatever an organisation sets
+     * (ISO 27001 7.5.3 / A.5.33). Records an auditor examines over a
+     * certification cycle — incidents, findings, risks, documents, approval
+     * runs — are kept at least three years (one cycle: certification audit,
+     * two surveillance audits); inventory and VVT entries at least one year.
+     * The admin form clamps to these values, and the run applies them again.
+     *
+     * @var array<string, int>
+     */
+    public const array MIN_RETENTION_DAYS = [
+        'asset'               => 365,
+        'risk'                => 1095,
+        'incident'            => 1095,
+        'document'            => 1095,
+        'processing_activity' => 365,
+        'audit_finding'       => 1095,
+        'workflow_instance'   => 1095,
+    ];
+
+    /**
      * Date fields that mark the end of a record's life (closure, completion).
      * Retention runs from the LATEST of: the age field, these fields, updatedAt
      * and the record's last audit row — a record closed yesterday is not
@@ -118,6 +140,8 @@ final class RetentionEnforcementService
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         private readonly ?\App\Repository\AuditLogRepository $auditLogRepository = null,
+        private readonly ?\App\Lifecycle\DeletionPolicy $deletionPolicy = null,
+        private readonly ?\App\Service\Upload\ProtectedUploads $protectedUploads = null,
     ) {
     }
 
@@ -135,10 +159,11 @@ final class RetentionEnforcementService
                 if (empty($policy['auto_delete'])) {
                     continue; // not opted in
                 }
-                $days = $policy['retention_days'];
+                $days = (int) $policy['retention_days'];
                 if ($days <= 0) {
                     continue; // 0 = keep forever
                 }
+                $days = max($days, self::MIN_RETENTION_DAYS[$type] ?? 0); // S29 floor, also for old settings
 
                 if (!isset(self::REGISTRY[$type])) {
                     $report[] = $this->row($tenant, $type, 0, 0, 'no enforcer (manual cleanup required)');
@@ -151,11 +176,15 @@ final class RetentionEnforcementService
                     $type,
                     $this->findExpired($class, $dateField, $tenant, $cutoff),
                 );
-                $expired = $this->endedBefore($type, $expired, $cutoff);
-                $activeNote = $stillActive === 0 ? null : sprintf(
-                    '%d overdue for retention, still active (not deleted)',
-                    $stillActive,
-                );
+                [$expired, $withEvidence] = $this->withoutEvidenceChildren($this->endedBefore($type, $expired, $cutoff));
+                $notes = [];
+                if ($stillActive > 0) {
+                    $notes[] = sprintf('%d overdue for retention, still active (not deleted)', $stillActive);
+                }
+                if ($withEvidence > 0) {
+                    $notes[] = sprintf('%d kept: evidence records still point at them', $withEvidence);
+                }
+                $activeNote = $notes === [] ? null : implode('; ', $notes);
                 if ($stillActive > 0) {
                     $this->logger->notice('Retention: expired records are not in an end state and were kept', [
                         'tenant' => $tenant->getId(),
@@ -209,6 +238,31 @@ final class RetentionEnforcementService
         }
 
         return [$deletable, $active];
+    }
+
+    /**
+     * S29: a record other evidence points at (findings of an audit, versions of
+     * a document, participations …) stays; those keys are RESTRICT anyway.
+     *
+     * @param list<object> $records
+     * @return array{0: list<object>, 1: int}
+     */
+    private function withoutEvidenceChildren(array $records): array
+    {
+        if ($this->deletionPolicy === null) {
+            return [$records, 0];
+        }
+        $kept = 0;
+        $deletable = [];
+        foreach ($records as $record) {
+            if ($this->deletionPolicy->childRefusal($record) !== null) {
+                ++$kept;
+                continue;
+            }
+            $deletable[] = $record;
+        }
+
+        return [$deletable, $kept];
     }
 
     /**
@@ -288,12 +342,49 @@ final class RetentionEnforcementService
             ];
         }
 
+        $files = [];
+        foreach ($expired as $entity) {
+            if ($entity instanceof Document && $entity->getFilePath() !== null) {
+                $files[] = $entity->getFilePath();
+            }
+        }
+
+        // S29: rows and trail in one transaction — no deletion without its audit row.
+        $deleted = count($expired);
+        $this->entityManager->beginTransaction();
         try {
             foreach ($expired as $entity) {
                 $this->entityManager->remove($entity);
             }
-            $this->entityManager->flush();
+            $this->auditLogger->beginCallerLoggedDeletes(); // the logBulk batch below is the trail
+            try {
+                $this->entityManager->flush();
+            } finally {
+                $this->auditLogger->endCallerLoggedDeletes();
+            }
+            $this->auditLogger->withTenant($tenant, fn () => $this->auditLogger->logBulk(
+                eventType: 'retention.enforced',
+                entityType: self::REGISTRY[$type][0],
+                batchData: [
+                    'tenant' => $tenant->getId(),
+                    'entity_type' => $type,
+                    'deleted' => $deleted,
+                    'retention_days' => $days,
+                    'cutoff' => $cutoff->format('Y-m-d'),
+                    'end_states' => self::END_STATES[$type] ?? [],
+                    'actor' => 'system:enforce-retention',
+                ],
+                perEntityData: $perEntity,
+                description: sprintf('Retention: deleted %d %s record(s) older than %d days (GDPR Art. 5(1)(e))', $deleted, $type, $days),
+                strict: true,
+            ));
+            $this->entityManager->commit();
         } catch (\Throwable $throwable) {
+            try {
+                $this->entityManager->rollback();
+            } catch (\Throwable) {
+                // connection already gone
+            }
             $this->logger->error('Retention deletion failed', [
                 'tenant' => $tenant->getId(),
                 'entity_type' => $type,
@@ -303,22 +394,13 @@ final class RetentionEnforcementService
             return $this->row($tenant, $type, count($expired), 0, 'deletion failed (FK / constraint)');
         }
 
-        $deleted = count($expired);
-        $this->auditLogger->withTenant($tenant, fn () => $this->auditLogger->logBulk(
-            eventType: 'retention.enforced',
-            entityType: self::REGISTRY[$type][0],
-            batchData: [
-                'tenant' => $tenant->getId(),
-                'entity_type' => $type,
-                'deleted' => $deleted,
-                'retention_days' => $days,
-                'cutoff' => $cutoff->format('Y-m-d'),
-                'end_states' => self::END_STATES[$type] ?? [],
-                'actor' => 'system:enforce-retention',
-            ],
-            perEntityData: $perEntity,
-            description: sprintf('Retention: deleted %d %s record(s) older than %d days (GDPR Art. 5(1)(e))', $deleted, $type, $days),
-        ));
+        // Art. 5(1)(e): the evidence file goes with its row (only stored files under var/uploads).
+        foreach ($files as $stored) {
+            $file = $this->protectedUploads?->resolve($stored);
+            if ($file !== null && is_file($file)) {
+                @unlink($file);
+            }
+        }
 
         return $this->row($tenant, $type, $deleted, $deleted, $activeNote);
     }

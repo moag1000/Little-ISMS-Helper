@@ -12,7 +12,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Async QuickFix repair: convenience chain of orphan-assign +
- * tenant-mismatch-fix + duplicate-merge for all supported types.
+ * tenant-mismatch-fix for all supported types; possible duplicates are only
+ * counted for review (S29 — never merged automatically).
  *
  * Extracted from QuickFixController::repairAll() — the biggest QuickFix
  * operation, easily exceeding 30 s on a fresh deployment with thousands
@@ -147,24 +148,16 @@ final class QuickFixRepairAllJob implements AsyncJobInterface
             $this->entityManager->flush();
             $ctx->progress(2, 3, sprintf('Step 2/3 done — %d mismatch(es) fixed.', $totalMismatches));
 
-            // Step 3 — Duplicates
-            $ctx->message('Step 3/3 — merging duplicates…');
-            foreach (self::DUPLICATE_TYPES as $type) {
-                $deleted = $this->dataIntegrityService->mergeDuplicates($type);
-                $totalDuplicates += $deleted;
-                if ($deleted > 0) {
-                    $this->auditLogger->logCustom(
-                        'quick_fix.repair.duplicates_merged',
-                        $type,
-                        0,
-                        [],
-                        ['deleted_count' => $deleted],
-                        sprintf('QuickFix/all(async): merged %d duplicate(s) for %s', $deleted, $type),
-                    );
+            // Step 3 — Duplicates: counted only (S29). Same title is no proof of a
+            // duplicate; a person reviews them in Data Repair → Duplicates.
+            $ctx->message('Step 3/3 — counting possible duplicates…');
+            foreach ($this->dataIntegrityService->findDuplicateEntities() as $type => $groups) {
+                if (\in_array($type, self::DUPLICATE_TYPES, true)) {
+                    $totalDuplicates += \count($groups);
                 }
             }
             $ctx->progress(3, 3, sprintf(
-                'Done. %d orphan(s), %d mismatch(es), %d duplicate(s)%s.',
+                'Done. %d orphan(s), %d mismatch(es); %d possible duplicate group(s) to review%s.',
                 $totalOrphans,
                 $totalMismatches,
                 $totalDuplicates,
@@ -179,7 +172,7 @@ final class QuickFixRepairAllJob implements AsyncJobInterface
                 'repair_summary' => [
                     'orphans_assigned' => $totalOrphans,
                     'tenant_mismatches_fixed' => $totalMismatches,
-                    'duplicates_merged' => $totalDuplicates,
+                    'duplicate_groups_to_review' => $totalDuplicates,
                     'global_rows_skipped' => $totalSkippedGlobal,
                 ],
             ]);
