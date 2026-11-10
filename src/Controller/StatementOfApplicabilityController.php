@@ -245,7 +245,7 @@ class StatementOfApplicabilityController extends AbstractController
         return $this->soaReportService->streamSoAReport();
     }
     #[Route('/soa/{id}', name: 'app_soa_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(Control $control): Response
+    public function show(Control $control, TenantContext $tenantContext): Response
     {
         $suggestions = $this->mappingSuggestionService->suggestForControl($control);
         // Inverse-Coverage Impact-Analyse
@@ -253,7 +253,7 @@ class StatementOfApplicabilityController extends AbstractController
 
         // V4 LB-4: Comment-Thread adoption — load thread for this Control.
         $comments = [];
-        $tenant = $this->security->getUser()?->getTenant();
+        $tenant = $tenantContext->getCurrentTenant(); // the organisation the comment form writes to (S32)
         if ($this->commentRepository !== null && $tenant !== null && $control->getId() !== null) {
             $comments = $this->commentRepository->findThread($tenant, 'Control', $control->getId());
         }

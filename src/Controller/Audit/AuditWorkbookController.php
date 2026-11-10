@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Audit;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
@@ -61,6 +62,7 @@ class AuditWorkbookController extends AbstractController
      * Logs an export audit-chain entry for chain-of-custody.
      */
     #[Route('/soa/{frameworkId}.xlsx', name: 'soa', requirements: ['frameworkId' => '\d+'], methods: ['GET'])]
+    #[RequiresModule('controls')]
     public function soa(int $frameworkId): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -114,6 +116,7 @@ class AuditWorkbookController extends AbstractController
      * Logs an export audit-chain entry for chain-of-custody.
      */
     #[Route('/control-implementation.xlsx', name: 'control_implementation', methods: ['GET'])]
+    #[RequiresModule('controls')]
     public function controlImplementation(): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -158,6 +161,7 @@ class AuditWorkbookController extends AbstractController
      * Logs an export audit-chain entry for chain-of-custody.
      */
     #[Route('/compliance/{frameworkId}.xlsx', name: 'compliance', requirements: ['frameworkId' => '\d+'], methods: ['GET'])]
+    #[RequiresModule('compliance')]
     public function compliance(int $frameworkId): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -211,6 +215,7 @@ class AuditWorkbookController extends AbstractController
      * Logs an export audit-chain entry for chain-of-custody.
      */
     #[Route('/risk-register.xlsx', name: 'risk_register', methods: ['GET'])]
+    #[RequiresModule('risks')]
     public function riskRegister(): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();

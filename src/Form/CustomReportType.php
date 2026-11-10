@@ -9,6 +9,7 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -20,8 +21,15 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class CustomReportType extends AbstractType implements SectionMapInterface
 {
+    public function __construct(private readonly Security $security)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // S32: publishing (shared, template) and naming the responsible person are manager decisions — the same
+        // line as `report_builder_save_template` (ROLE_MANAGER). Others see the values, read-only.
+        $managerOnly = !$this->security->isGranted('ROLE_MANAGER');
         $builder
             ->add('name', TextType::class, [
                 'label' => 'report_builder.field.name',
@@ -69,6 +77,7 @@ final class CustomReportType extends AbstractType implements SectionMapInterface
             ])
             // Tri-State owner fields
             ->add('owner', OwnerUserType::class, [
+                'disabled' => $managerOnly,
                 'label' => 'report_builder.field.owner_user',
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
@@ -76,6 +85,7 @@ final class CustomReportType extends AbstractType implements SectionMapInterface
                 'help' => 'report_builder.help.owner_user',
             ])
             ->add('ownerPerson', EntityType::class, [
+                'disabled' => $managerOnly,
                 'label' => 'report_builder.field.owner_person',
                 'class' => Person::class,
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
@@ -84,6 +94,7 @@ final class CustomReportType extends AbstractType implements SectionMapInterface
                 'help' => 'report_builder.help.owner_person',
             ])
             ->add('ownerDeputyPersons', EntityType::class, [
+                'disabled' => $managerOnly,
                 'label' => 'report_builder.field.owner_deputies',
                 'class' => Person::class,
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
@@ -96,6 +107,7 @@ final class CustomReportType extends AbstractType implements SectionMapInterface
                 'help' => 'report_builder.help.owner_deputies',
             ])
             ->add('isShared', ChoiceType::class, [
+                'disabled' => $managerOnly,
                 'label' => 'report_builder.field.is_shared',
                 'required' => true,
                 'choices' => [
@@ -107,6 +119,7 @@ final class CustomReportType extends AbstractType implements SectionMapInterface
                 'attr' => ['class' => 'form-check-inline'],
             ])
             ->add('isTemplate', ChoiceType::class, [
+                'disabled' => $managerOnly,
                 'label' => 'report_builder.field.is_template',
                 'required' => true,
                 'choices' => [

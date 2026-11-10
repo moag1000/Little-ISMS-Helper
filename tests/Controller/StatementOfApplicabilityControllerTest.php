@@ -16,6 +16,7 @@ use App\Service\MappingSuggestionService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
+use App\Service\TenantContext;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -559,7 +560,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
             )
             ->willReturn('rendered');
 
-        $response = $this->controller->show($control);
+        $response = $this->controller->show($control, $this->createStub(TenantContext::class));
 
         $this->assertInstanceOf(Response::class, $response);
     }

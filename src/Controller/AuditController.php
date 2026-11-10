@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\BulkActionTrait;
 use App\Util\InputDate;
 use App\Service\BulkDeleteService;
@@ -123,7 +124,7 @@ class AuditController extends AbstractController
             'form' => $form,
         ], new Response(status: $status));
     }
-    #[Route('/audit/export/excel', name: 'app_audit_export_excel', methods: ['GET']), IsGranted('ROLE_USER')]
+    #[Route('/audit/export/excel', name: 'app_audit_export_excel', methods: ['GET']), IsGranted('ROLE_USER'), RequiresModule('audits')]
     public function exportExcel(Request $request, \App\Service\Job\JobTenantScope $jobTenantScope): Response
     {
         $jobTenantScope->currentUserScope(); // no organisation: denied unless SUPER_ADMIN
@@ -522,7 +523,7 @@ class AuditController extends AbstractController
         return $user;
     }
 
-    #[Route('/audit/{id}/export/pdf', name: 'app_audit_export_pdf', requirements: ['id' => '\d+'], methods: ['GET']), IsGranted('ROLE_USER')]
+    #[Route('/audit/{id}/export/pdf', name: 'app_audit_export_pdf', requirements: ['id' => '\d+'], methods: ['GET']), IsGranted('ROLE_USER'), RequiresModule('audits')]
     public function exportPdf(Request $request, InternalAudit $internalAudit): Response
     {
         // Close session to prevent blocking other requests during PDF generation

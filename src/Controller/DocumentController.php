@@ -631,11 +631,10 @@ class DocumentController extends AbstractController
             $climateChangeAware = Document::isClimateChangeAwareFromTags($tagNames);
         }
 
-        // Comment-Thread (C7) — load thread for this Document.
-        $comments = [];
-        if ($this->commentRepository !== null && $tenant !== null && $document->getId() !== null) {
-            $comments = $this->commentRepository->findThread($tenant, 'Document', $document->getId());
-        }
+        // Comment thread (C7) of the organisation the comment form writes to (S32), not the home organisation.
+        $threadTenant = $this->tenantContext?->getCurrentTenant();
+        $comments = $this->commentRepository !== null && $threadTenant !== null && $document->getId() !== null
+            ? $this->commentRepository->findThread($threadTenant, 'Document', $document->getId()) : [];
 
         // Multi-framework evidence linkage: fetch DocumentControlLink rows +
         // group ComplianceRequirement evidenceDocuments by framework.

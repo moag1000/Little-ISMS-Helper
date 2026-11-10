@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Entity\ScheduledReport;
 use App\Repository\ScheduledReportRepository;
-use App\Service\ScheduledReportService;
+use App\Service\Report\ScheduledReportRunner;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,7 +32,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ProcessScheduledReportsCommand extends Command
 {
     public function __construct(
-        private readonly ScheduledReportService $scheduledReportService,
+        private readonly ScheduledReportRunner $runner,
         private readonly ScheduledReportRepository $repository,
     ) {
         parent::__construct();
@@ -226,13 +226,18 @@ class ProcessScheduledReportsCommand extends Command
 
         $io->text('Processing report...');
 
-        try {
-            $this->scheduledReportService->triggerReport($report);
-            $io->success("Report '{$report->getName()}' processed and sent successfully.");
-        } catch (\Exception $e) {
-            $io->error("Failed to process report: {$e->getMessage()}");
+        [$outcome, $message] = $this->runner->run($report);
+        if ($outcome === ScheduledReportRunner::OUTCOME_FAILED) {
+            $io->error(sprintf('Failed to process report (%s); details in the application log.', $message));
+
             return Command::FAILURE;
         }
+        if ($outcome === ScheduledReportRunner::OUTCOME_SKIPPED) {
+            $io->warning(sprintf('Report skipped: %s', $message));
+
+            return Command::SUCCESS;
+        }
+        $io->success("Report '{$report->getName()}' processed and sent.");
 
         return Command::SUCCESS;
     }
@@ -272,7 +277,7 @@ class ProcessScheduledReportsCommand extends Command
         $io->text('Processing reports...');
         $io->progressStart(count($dueReports));
 
-        $results = $this->scheduledReportService->processDueReports();
+        $results = $this->runner->processDueReports();
 
         $io->progressFinish();
 
@@ -281,6 +286,10 @@ class ProcessScheduledReportsCommand extends Command
 
         if ($results['success'] > 0) {
             $io->success(sprintf('%d report(s) processed successfully.', $results['success']));
+        }
+
+        if ($results['skipped'] > 0) {
+            $io->warning(sprintf('%d report(s) skipped (module off, organisation or creator no longer entitled).', $results['skipped']));
         }
 
         if ($results['failed'] > 0) {

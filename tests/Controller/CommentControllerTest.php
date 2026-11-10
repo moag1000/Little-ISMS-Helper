@@ -311,4 +311,24 @@ class CommentControllerTest extends WebTestCase
             );
         }
     }
+
+    /** S32: an over-long body is refused with a flash (no 500, no row) and the redirect never leaves the site. */
+    #[Test]
+    public function anOverLongCommentIsRefusedAndAForeignRefererIsIgnored(): void
+    {
+        $this->loginAsUser($this->userA);
+        $token = $this->generateIsmsCommentToken();
+        $ownId = $this->riskA->getId();
+        $before = $this->countCommentsFor('Risk', $ownId);
+
+        $this->client->request('POST', '/en/comment/Risk/' . $ownId, [
+            '_token' => $token,
+            'body' => str_repeat('x', Comment::MAX_LENGTH + 1),
+        ], [], ['HTTP_REFERER' => 'https://evil.example/phish']);
+
+        $this->assertResponseRedirects();
+        $this->assertStringNotContainsString('evil.example', (string) $this->client->getResponse()->headers->get('Location'));
+        $this->entityManager->clear();
+        $this->assertSame($before, $this->countCommentsFor('Risk', $ownId));
+    }
 }

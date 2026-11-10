@@ -221,7 +221,14 @@ MaRisk, MRIS, training, suppliers, resource planning, analytics, …; see
 modules, or a `// @no-module-gate-required: <reason>` comment above its
 attributes (class-level comment covers all actions). The ISO 27001 backbone
 modules (assets, risks, controls, incidents, audits, compliance, reviews) are
-deliberately not keyword-mapped.
+deliberately not keyword-mapped for pages — but their **downloads** are (S32): a route
+whose path looks like a download (`export`, `pdf`, `excel`, `xlsx`, `csv`, `download`,
+a `/reports/` segment) and whose path, name or `requirements` name a risk, asset,
+incident, control or audit needs that module's gate (`ModuleGateRule::DOWNLOAD_MODULES`).
+A generic route such as `/export/{entityType}` passes with a deciding check over a
+constant map (`isModuleActive(self::ENTITY_MODULES[$entityType])`). Scheduled reports
+re-check `ScheduledReport::TYPE_MODULES` on every run (`Report\ScheduledReportRunner`,
+durable test `tests/Contract/ScheduledReportModuleContractTest`).
 
 For explicit tenants outside a request (commands, jobs) use
 `ModuleConfigurationService::isModuleActiveForTenant($key, $tenant)`. Never read

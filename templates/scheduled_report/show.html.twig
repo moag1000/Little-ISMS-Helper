@@ -171,13 +171,15 @@
                             <strong>{{ 'scheduled_report.last_run.status'|trans({}, 'scheduled_reports') }}:</strong><br>
                             {% if report.lastRunStatus == 1 %}
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'scheduled_report.last_run.success'|trans({}, 'scheduled_reports') } %}
+                            {% elseif report.lastRunStatus == 2 %}
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'scheduled_report.last_run.skipped'|trans({}, 'scheduled_reports') } %}
                             {% else %}
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'scheduled_report.last_run.failed'|trans({}, 'scheduled_reports') } %}
                             {% endif %}
                         </div>
                         <div class="col-md-4">
                             <strong>{{ 'scheduled_report.last_run.message'|trans({}, 'scheduled_reports') }}:</strong><br>
-                            {{ report.lastRunMessage|default('—') }}
+                            {{ report.lastRunMessage starts with 'scheduled_report.last_run.' ? report.lastRunMessage|trans({}, 'scheduled_reports') : report.lastRunMessage|default('—') }}
                         </div>
                     </div>
                 {% endblock %}

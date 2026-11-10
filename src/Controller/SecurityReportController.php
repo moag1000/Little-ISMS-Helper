@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Job\GenerateSecurityAuditJob;
+use App\Security\Voter\TenantScopedAdminVoter;
+use App\Service\Job\JobDispatcher;
+use App\Service\Job\JobStatusService;
 use App\Service\SecurityAuditService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -14,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Throwable;
 
 class SecurityReportController extends AbstractController
 {
@@ -80,33 +83,24 @@ class SecurityReportController extends AbstractController
         ]);
     }
 
-    // Runs the shell-backed generators and returns their raw output — admins only.
-    #[IsGranted('ROLE_ADMIN')]
+    /**
+     * Regenerates the instance-wide security reports (S32): a SUPER_ADMIN operation, run as async job (the script
+     * takes up to 300 s). The answer carries the job's status URL, never script output or paths.
+     */
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     #[Route('/about/security/generate', name: 'app_security_report_generate', methods: ['POST'])]
     #[IsCsrfTokenValid('report_regenerate', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
-    public function generate(SecurityAuditService $securityAuditService): JsonResponse
+    public function generate(Request $request, JobStatusService $jobStatusService, JobDispatcher $jobDispatcher): JsonResponse
     {
-        try {
-            $result = $securityAuditService->generateReports();
+        $jobId = $jobStatusService->create('security.audit_report', ['_label' => 'OWASP security reports']);
+        $response = $this->json([
+            'success' => true,
+            'queued' => true,
+            'status_url' => $this->generateUrl('admin_job_status', ['id' => $jobId]),
+        ], Response::HTTP_ACCEPTED);
+        $jobDispatcher->dispatch(GenerateSecurityAuditJob::class, [], $jobId, $response, $request->getSession());
 
-            if ($result['success']) {
-                return $this->json([
-                    'success' => true,
-                    'message' => 'Security reports generated successfully',
-                    'reports' => $result['reports'],
-                ]);
-            }
-            return $this->json([
-                'success' => false,
-                'message' => 'Security report generation failed',
-                'error' => $result['error_output'] ?: $result['output'],
-            ], 500);
-        } catch (Throwable $e) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Error generating security reports: ' . $e->getMessage(),
-            ], 500);
-        }
+        return $response;
     }
 
     private function downloadReport(string $file, string $downloadName): BinaryFileResponse

@@ -50,7 +50,12 @@ export default class extends Controller {
                 }
             });
 
-            const data = await response.json();
+            let data = await response.json();
+
+            // Long generators run as async job (S32): poll the job status until it ends.
+            if (data.success && data.status_url) {
+                data = await this.waitForJob(data.status_url);
+            }
 
             if (data.success) {
                 button.innerHTML = `<i class="fa-icon fa-icon--ui-check me-1"></i>${this.label('successText')}`;
@@ -67,6 +72,25 @@ export default class extends Controller {
         } catch (error) {
             this.showError(button, originalHtml, this.label('errorText'));
         }
+    }
+
+    async waitForJob(statusUrl) {
+        for (let attempt = 0; attempt < 200; attempt++) {
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const response = await fetch(statusUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            if (!response.ok) {
+                return { success: false };
+            }
+            const job = await response.json();
+            if (job.status === 'succeeded') {
+                return { success: true };
+            }
+            if (job.status === 'failed') {
+                return { success: false };
+            }
+        }
+
+        return { success: false };
     }
 
     showError(button, originalHtml, message) {

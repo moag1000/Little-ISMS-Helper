@@ -209,8 +209,8 @@ final class EntityListExporter
             'id' => $e->getId(),
             'incidentNumber' => $e->getIncidentNumber(),
             'title' => $e->getTitle(),
-            'severity' => (string) $e->getSeverity(),
-            'status' => (string) $e->getStatus(),
+            'severity' => self::scalar($e->getSeverity()),
+            'status' => self::scalar($e->getStatus()),
             'detectedAt' => $e->getDetectedAt()?->format('Y-m-d H:i'),
         ], $this->applyFilters($entities, $filters));
     }
@@ -247,7 +247,7 @@ final class EntityListExporter
                 if (!method_exists($e, 'getStatus')) {
                     return true;
                 }
-                return in_array((string) $e->getStatus(), $statusFilter, true);
+                return in_array(self::scalar($e->getStatus()), $statusFilter, true);
             });
         }
         if (isset($filters['severity']) && $filters['severity'] !== '') {
@@ -256,7 +256,7 @@ final class EntityListExporter
                 if (!method_exists($e, 'getSeverity')) {
                     return true;
                 }
-                return in_array((string) $e->getSeverity(), $severityFilter, true);
+                return in_array(self::scalar($e->getSeverity()), $severityFilter, true);
             });
         }
         return array_values($entities);
@@ -320,12 +320,23 @@ final class EntityListExporter
         foreach ($rows as $rowIndex => $row) {
             $col = 'A';
             foreach ($row as $value) {
-                $text = is_array($value) ? implode(', ', $value) : (string) ($value ?? '');
+                $text = is_array($value) ? implode(', ', array_map(self::scalar(...), $value)) : self::scalar($value);
                 $sheet->setCellValue($col . ($rowIndex + 2), CsvSanitizer::sanitize($text));
                 $col++;
             }
         }
 
         return $spreadsheet;
+    }
+
+    /** A cell or filter value as text: a backed enum by its value (enums have no __toString — S32, R8-13). */
+    private static function scalar(mixed $value): string
+    {
+        return match (true) {
+            $value instanceof \BackedEnum => (string) $value->value,
+            $value instanceof \UnitEnum => $value->name,
+            is_scalar($value) || $value instanceof \Stringable => (string) $value,
+            default => '',
+        };
     }
 }

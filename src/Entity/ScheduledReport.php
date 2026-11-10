@@ -44,8 +44,16 @@ class ScheduledReport
         self::TYPE_AUDIT => 'audits',
         self::TYPE_ASSETS => 'assets',
         self::TYPE_GDPR => 'privacy',
-        self::TYPE_PORTFOLIO => 'compliance',
+        self::TYPE_PORTFOLIO => 'portfolio_reports',
     ];
+
+    /** Outcome of the last run (lastRunStatus). */
+    public const RUN_FAILED = 0;
+    public const RUN_SENT = 1;
+    public const RUN_SKIPPED = 2;
+
+    /** Longest wait between two retries of a failing report, in hours (S32: no hourly retry flood). */
+    public const MAX_RETRY_HOURS = 24;
 
     public const SCHEDULE_DAILY = 'daily';
     public const SCHEDULE_WEEKLY = 'weekly';
@@ -145,6 +153,10 @@ class ScheduledReport
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $tlsVerifiedAt = null;
+
+    /** Failed runs in a row; drives the retry back-off and is reset by the next sent or skipped run (S32). */
+    #[ORM\Column(options: ['default' => 0])]
+    private int $failedRuns = 0;
 
     public function __construct()
     {
@@ -394,6 +406,41 @@ class ScheduledReport
     {
         $this->tlsVerifiedAt = $tlsVerifiedAt;
         return $this;
+    }
+
+    public function getFailedRuns(): int
+    {
+        return $this->failedRuns;
+    }
+
+    /**
+     * A run that sent the report or skipped it on purpose: the failure streak ends, the next run is the regular one.
+     */
+    public function recordRun(int $status, string $message): void
+    {
+        $this->lastRunAt = new \DateTime();
+        $this->lastRunStatus = $status;
+        $this->lastRunMessage = $message;
+        $this->failedRuns = 0;
+        $this->calculateNextRunAt();
+    }
+
+    /**
+     * A failed run: retried after 1, 2, 4, … hours (at most MAX_RETRY_HOURS), never later than the regular next run,
+     * so a broken report neither mails the same recipients every hour nor floods the audit log.
+     */
+    public function recordFailure(string $message): void
+    {
+        $this->lastRunAt = new \DateTime();
+        $this->lastRunStatus = self::RUN_FAILED;
+        $this->lastRunMessage = $message;
+        $this->failedRuns++;
+        $this->calculateNextRunAt();
+        $hours = min(self::MAX_RETRY_HOURS, 2 ** min($this->failedRuns - 1, 5));
+        $retry = (new \DateTime())->modify(sprintf('+%d hours', $hours));
+        if ($this->nextRunAt === null || $retry < $this->nextRunAt) {
+            $this->nextRunAt = $retry;
+        }
     }
 
     /**

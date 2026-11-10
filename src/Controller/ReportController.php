@@ -119,7 +119,7 @@ class ReportController extends AbstractController
 
     // ===================== RISK REPORTS =====================
 
-    #[Route('/reports/risks/pdf', name: 'app_reports_risks_pdf', methods: ['GET'])]
+    #[Route('/reports/risks/pdf', name: 'app_reports_risks_pdf', methods: ['GET']), RequiresModule('risks')]
     public function risksPdf(Request $request): Response
     {
         $risks = $this->tenantRecords->all($this->riskRepository, null);
@@ -150,7 +150,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/risks/excel', name: 'app_reports_risks_excel', methods: ['GET'])]
+    #[Route('/reports/risks/excel', name: 'app_reports_risks_excel', methods: ['GET']), RequiresModule('risks')]
     public function risksExcel(Request $request): Response
     {
         $risks = $this->tenantRecords->all($this->riskRepository, null);
@@ -188,7 +188,7 @@ class ReportController extends AbstractController
 
     // ===================== CONTROL REPORTS (SoA) =====================
 
-    #[Route('/reports/controls/pdf', name: 'app_reports_controls_pdf', methods: ['GET'])]
+    #[Route('/reports/controls/pdf', name: 'app_reports_controls_pdf', methods: ['GET']), RequiresModule('controls')]
     public function controlsPdf(Request $request): Response
     {
         $controls = $this->tenantRecords->all($this->controlRepository, null);
@@ -219,7 +219,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/controls/excel', name: 'app_reports_controls_excel', methods: ['GET'])]
+    #[Route('/reports/controls/excel', name: 'app_reports_controls_excel', methods: ['GET']), RequiresModule('controls')]
     public function controlsExcel(Request $request): Response
     {
         $controls = $this->tenantRecords->all($this->controlRepository, null);
@@ -255,7 +255,7 @@ class ReportController extends AbstractController
 
     // ===================== INCIDENT REPORTS =====================
 
-    #[Route('/reports/incidents/pdf', name: 'app_reports_incidents_pdf', methods: ['GET'])]
+    #[Route('/reports/incidents/pdf', name: 'app_reports_incidents_pdf', methods: ['GET']), RequiresModule('incidents')]
     public function incidentsPdf(Request $request): Response
     {
         $incidents = $this->tenantRecords->all($this->incidentRepository, null);
@@ -286,7 +286,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/incidents/excel', name: 'app_reports_incidents_excel', methods: ['GET'])]
+    #[Route('/reports/incidents/excel', name: 'app_reports_incidents_excel', methods: ['GET']), RequiresModule('incidents')]
     public function incidentsExcel(Request $request): Response
     {
         $incidents = $this->tenantRecords->all($this->incidentRepository, null);
@@ -321,8 +321,7 @@ class ReportController extends AbstractController
 
     // ===================== TRAINING REPORTS =====================
 
-    #[Route('/reports/trainings/pdf', name: 'app_reports_trainings_pdf', methods: ['GET'])]
-    #[RequiresModule('training')]
+    #[Route('/reports/trainings/pdf', name: 'app_reports_trainings_pdf', methods: ['GET']), RequiresModule('training')]
     public function trainingsPdf(Request $request): Response
     {
         $trainings = $this->tenantRecords->all($this->trainingRepository, null);
@@ -353,8 +352,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/trainings/excel', name: 'app_reports_trainings_excel', methods: ['GET'])]
-    #[RequiresModule('training')]
+    #[Route('/reports/trainings/excel', name: 'app_reports_trainings_excel', methods: ['GET']), RequiresModule('training')]
     public function trainingsExcel(Request $request): Response
     {
         $trainings = $this->tenantRecords->all($this->trainingRepository, null);
