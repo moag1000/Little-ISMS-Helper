@@ -129,6 +129,40 @@ class LocationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Ids of the locations whose top-level site is `$siteId` (the site itself included), from one scalar query —
+     * the location-map drill-down filters lists in SQL with it (S31). Visible rows only (tenant filter).
+     *
+     * @return list<int>
+     */
+    public function idsInSite(int $siteId): array
+    {
+        if ($siteId <= 0) {
+            return [];
+        }
+        $parents = [];
+        foreach ($this->createQueryBuilder('l')->select('l.id AS id', 'IDENTITY(l.parentLocation) AS parent')
+            ->setMaxResults(20000)->getQuery()->getScalarResult() as $row) {
+            $parents[(int) $row['id']] = $row['parent'] !== null ? (int) $row['parent'] : null;
+        }
+        $ids = [];
+        foreach (array_keys($parents) as $id) {
+            $root = $id;
+            $guard = 0;
+            while ($parents[$root] ?? null) {
+                $root = $parents[$root];
+                if (++$guard > 50) {
+                    break;
+                }
+            }
+            if ($root === $siteId) {
+                $ids[] = $id;
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
      * Find top-level locations (no parent)
      */
     public function findTopLevel(): array

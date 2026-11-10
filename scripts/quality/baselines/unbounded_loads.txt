@@ -20,11 +20,9 @@ src/Controller/AiAgentInventoryController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/AnalyticsController.php findAll=2 findBy=0 fromRequest=0
 src/Controller/AnswerLibraryController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/ApiTokenController.php findAll=0 findBy=0 fromRequest=1
-src/Controller/AssetController.php findAll=1 findBy=2 fromRequest=1
+src/Controller/AssetController.php findAll=0 findBy=2 fromRequest=0
 src/Controller/AuditController.php findAll=1 findBy=0 fromRequest=1
-src/Controller/AuditFindingController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/AuditFreezeController.php findAll=0 findBy=0 fromRequest=1
-src/Controller/AuditLogController.php findAll=1 findBy=0 fromRequest=0
 src/Controller/AuditProgramController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/BCExerciseController.php findAll=1 findBy=1 fromRequest=1
 src/Controller/BCMController.php findAll=1 findBy=0 fromRequest=0
@@ -48,7 +46,7 @@ src/Controller/DPIAController.php findAll=1 findBy=0 fromRequest=1
 src/Controller/DataBreachController.php findAll=1 findBy=0 fromRequest=1
 src/Controller/DataSubjectRequestController.php findAll=1 findBy=0 fromRequest=1
 src/Controller/DeploymentWizardController.php findAll=3 findBy=0 fromRequest=0
-src/Controller/DocumentController.php findAll=2 findBy=1 fromRequest=1
+src/Controller/DocumentController.php findAll=1 findBy=1 fromRequest=0
 src/Controller/DoraComplianceController.php findAll=8 findBy=0 fromRequest=0
 src/Controller/DoraDataFlowController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/DoraExitPlanController.php findAll=0 findBy=0 fromRequest=1
@@ -65,16 +63,14 @@ src/Controller/ManagementDecisionController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/ManagementReviewController.php findAll=1 findBy=0 fromRequest=1
 src/Controller/MfaTokenController.php findAll=1 findBy=0 fromRequest=0
 src/Controller/Notification/InAppNotificationCenterController.php findAll=0 findBy=0 fromRequest=1
-src/Controller/PatchController.php findAll=1 findBy=0 fromRequest=1
 src/Controller/PermissionController.php findAll=0 findBy=0 fromRequest=1
-src/Controller/PersonController.php findAll=0 findBy=1 fromRequest=1
 src/Controller/PlanningAdminController.php findAll=0 findBy=1 fromRequest=0
 src/Controller/ProcessingActivityController.php findAll=1 findBy=1 fromRequest=1
 src/Controller/PrototypeProtectionAssessmentController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/RecurringDutyController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/RegisterController.php findAll=0 findBy=1 fromRequest=1
 src/Controller/RiskAppetiteController.php findAll=3 findBy=0 fromRequest=1
-src/Controller/RiskController.php findAll=3 findBy=1 fromRequest=1
+src/Controller/RiskController.php findAll=2 findBy=1 fromRequest=0
 src/Controller/RiskTreatmentPlanController.php findAll=1 findBy=1 fromRequest=1
 src/Controller/RoadmapController.php findAll=0 findBy=1 fromRequest=0
 src/Controller/RoadmapGroupController.php findAll=0 findBy=0 fromRequest=1
@@ -95,7 +91,6 @@ src/Controller/TrainingController.php findAll=1 findBy=1 fromRequest=1
 src/Controller/TransferImpactAssessmentController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/TransferImpactAssessmentOverviewController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/UserManagementController.php findAll=0 findBy=0 fromRequest=1
-src/Controller/VulnerabilityController.php findAll=0 findBy=0 fromRequest=1
 src/Controller/WelcomeController.php findAll=0 findBy=1 fromRequest=0
 src/Service/ComplianceAnalyticsService.php findAll=1 findBy=0 fromRequest=0
 src/Service/Dashboard/DashboardMetricsProvider.php findAll=0 findBy=1 fromRequest=0

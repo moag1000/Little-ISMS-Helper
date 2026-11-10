@@ -30,30 +30,34 @@ final class RiskService implements RiskQuantSummaryInterface
      */
     public function getRisksForTenant(Tenant $tenant): array
     {
-        $parent = $tenant->getParent();
+        return $this->inheritsParentRisks($tenant)
+            ? $this->riskRepository->findByTenantIncludingParent($tenant, $tenant->getParent())
+            : $this->riskRepository->findByTenant($tenant);
+    }
 
-        // No parent or no corporate structure service - return own risks only
-        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
-            return $this->riskRepository->findByTenant($tenant);
+    /**
+     * Organisations whose risks the tenant sees in its default ("inherited") view: its own, plus every
+     * ancestor's when the risk governance is hierarchical. The register list filters on it in SQL (S31).
+     *
+     * @return list<Tenant>
+     */
+    public function tenantsVisibleTo(Tenant $tenant): array
+    {
+        return $this->inheritsParentRisks($tenant) ? array_values([$tenant, ...$tenant->getAllAncestors()]) : [$tenant];
+    }
+
+    /** Hierarchical risk governance (scope "risk", else the default) under a parent organisation. */
+    private function inheritsParentRisks(Tenant $tenant): bool
+    {
+        if (!$tenant->getParent() instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
+            return false;
         }
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'risk')
+            ?? $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+        $model = $governance?->getGovernanceModel();
 
-        // Check governance model for risks
-        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'risk');
-
-        if (!$governance instanceof CorporateGovernance) {
-            // No specific governance for risks - use default
-            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
-        }
-
-        $governanceModel = $governance?->getGovernanceModel();
-
-        // If hierarchical governance, include parent risks
-        if ($governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical') {
-            return $this->riskRepository->findByTenantIncludingParent($tenant, $parent);
-        }
-
-        // For shared or independent, return only own risks
-        return $this->riskRepository->findByTenant($tenant);
+        // Shared or independent governance: own risks only
+        return $model instanceof GovernanceModel && $model->value === 'hierarchical';
     }
 
     /**

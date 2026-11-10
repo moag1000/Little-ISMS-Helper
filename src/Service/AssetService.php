@@ -30,30 +30,34 @@ final class AssetService
      */
     public function getAssetsForTenant(Tenant $tenant): array
     {
-        $parent = $tenant->getParent();
+        return $this->inheritsParentAssets($tenant)
+            ? $this->assetRepository->findByTenantIncludingParent($tenant, $tenant->getParent())
+            : $this->assetRepository->findByTenant($tenant);
+    }
 
-        // No parent or no corporate structure service - return own assets only
-        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
-            return $this->assetRepository->findByTenant($tenant);
+    /**
+     * Organisations whose assets the tenant sees in its default ("inherited") view: its own, plus every
+     * ancestor's when the asset governance is hierarchical. The asset list filters on it in SQL (S31).
+     *
+     * @return list<Tenant>
+     */
+    public function tenantsVisibleTo(Tenant $tenant): array
+    {
+        return $this->inheritsParentAssets($tenant) ? array_values([$tenant, ...$tenant->getAllAncestors()]) : [$tenant];
+    }
+
+    /** Hierarchical asset governance (scope "asset", else the default) under a parent organisation. */
+    private function inheritsParentAssets(Tenant $tenant): bool
+    {
+        if (!$tenant->getParent() instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
+            return false;
         }
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'asset')
+            ?? $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+        $model = $governance?->getGovernanceModel();
 
-        // Check governance model for assets
-        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'asset');
-
-        if (!$governance instanceof CorporateGovernance) {
-            // No specific governance for assets - use default
-            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
-        }
-
-        $governanceModel = $governance?->getGovernanceModel();
-
-        // If hierarchical governance, include parent assets
-        if ($governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical') {
-            return $this->assetRepository->findByTenantIncludingParent($tenant, $parent);
-        }
-
-        // For shared or independent, return only own assets
-        return $this->assetRepository->findByTenant($tenant);
+        // Shared or independent governance: own assets only
+        return $model instanceof GovernanceModel && $model->value === 'hierarchical';
     }
 
     /**

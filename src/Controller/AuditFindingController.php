@@ -20,7 +20,7 @@ use App\Controller\Trait\InPageFormTrait;
 use App\Service\Clone\AuditFindingCloner;
 use App\Service\Nonconformity\AutoTaskCreator;
 use App\Service\TenantContext;
-use App\Util\ListPage;
+use App\Util\ListQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -99,39 +99,30 @@ class AuditFindingController extends AbstractController
         // Alva-hint deep-link target: pre-filter to exactly the set a hint counts.
         $focus = $request->query->get('focus');
 
-        $criteria = [];
+        // S31: filter, count and page in SQL.
+        $list = ListQuery::of($this->repository->createQueryBuilder('f')->orderBy('f.createdAt', \SortDirection::Descending))
+            ->with('f.audit', 'fa'); // shown per row
         if ($tenant instanceof Tenant) {
-            $criteria['tenant'] = $tenant;
+            $list->tenants([$tenant]);
         }
-        if ($status) {
-            $criteria['status'] = $status;
-        }
-        if ($severity) {
-            $criteria['severity'] = $severity;
-        }
-
-        $overdue = $tenant instanceof Tenant ? $this->repository->findOverdue($tenant) : [];
-
+        $overdueIds = $tenant instanceof Tenant
+            ? array_map(static fn(AuditFinding $f): ?int => $f->getId(), $this->repository->findOverdue($tenant))
+            : [];
         if ($tenant instanceof Tenant && $focus === 'overdue') {
-            $findings = $overdue;
+            $list->in('f.id', $overdueIds);
         } elseif ($tenant instanceof Tenant && $focus === 'nc_unreferenced') {
-            $findings = $this->repository->findOpenWithoutRequirements($tenant);
+            $list->in('f.id', array_map(static fn(AuditFinding $f): ?int => $f->getId(), $this->repository->findOpenWithoutRequirements($tenant)));
         } else {
-            $findings = $this->repository->findBy($criteria, ['createdAt' => 'DESC']);
+            $list->equals('f.status', $status)->equals('f.severity', $severity);
         }
+        $list->search($request, ['f.title', 'f.findingNumber']);
 
         // Summary chips count the list as shown (status, severity and focus applied).
-        $overdueIds = array_map(static fn(AuditFinding $f): ?int => $f->getId(), $overdue);
-
         return $this->render('audit_finding/index.html.twig', [
-            'page' => ListPage::fromRequest(
-                $findings,
-                $request,
-                static fn(AuditFinding $f): array => [$f->getTitle(), $f->getFindingNumber()],
-            ),
-            'overdue_count' => count(array_filter($findings, static fn(AuditFinding $f): bool => in_array($f->getId(), $overdueIds, true))),
-            'critical_count' => count(array_filter($findings, static fn(AuditFinding $f): bool => $f->getSeverity() === 'critical')),
-            'high_count' => count(array_filter($findings, static fn(AuditFinding $f): bool => $f->getSeverity() === 'high')),
+            'page' => $list->page($request),
+            'overdue_count' => $list->countWhere('f.id IN (:chip_overdue)', ['chip_overdue' => $overdueIds !== [] ? $overdueIds : [0]]),
+            'critical_count' => $list->countWhere("f.severity = 'critical'"),
+            'high_count' => $list->countWhere("f.severity = 'high'"),
             'selected_status' => $status,
             'selected_severity' => $severity,
             'focus' => $focus,

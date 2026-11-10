@@ -12,7 +12,7 @@ use App\Form\PersonType;
 use App\Repository\PersonRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
-use App\Util\ListPage;
+use App\Util\ListQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -38,22 +38,17 @@ class PersonController extends AbstractController
     public function index(Request $request): Response
     {
         $tenant = $this->security->getUser()?->getTenant();
-        $persons = $tenant ? $this->personRepository->findBy(['tenant' => $tenant]) : [];
-
-        $type = (string) $request->query->get('type', '');
-        if ($type !== '') {
-            $persons = array_values(array_filter($persons, static fn(Person $p): bool => $p->getPersonType() === $type));
-        }
+        // S31: filter, count and page in SQL.
+        $list = ListQuery::of($this->personRepository->createQueryBuilder('p')->orderBy('p.fullName', \SortDirection::Ascending))
+            ->tenants($tenant ? [$tenant] : [])
+            ->equals('p.personType', (string) $request->query->get('type', ''))
+            ->search($request, ['p.fullName', 'p.jobTitle', 'p.company', 'p.email', 'p.department', 'p.badgeId']);
 
         return $this->render('person/index.html.twig', [
-            'page' => ListPage::fromRequest(
-                $persons,
-                $request,
-                static fn(Person $p): array => [$p->getFullName(), $p->getJobTitle(), $p->getCompany(), $p->getEmail(), $p->getDepartment(), $p->getBadgeId()],
-            ),
-            'employee_count' => count(array_filter($persons, static fn(Person $p): bool => $p->getPersonType() === 'employee')),
-            'contractor_count' => count(array_filter($persons, static fn(Person $p): bool => $p->getPersonType() === 'contractor')),
-            'badge_count' => count(array_filter($persons, static fn(Person $p): bool => (bool) $p->getBadgeId())),
+            'page' => $list->page($request),
+            'employee_count' => $list->countWhere("p.personType = 'employee'"),
+            'contractor_count' => $list->countWhere("p.personType = 'contractor'"),
+            'badge_count' => $list->countWhere("p.badgeId IS NOT NULL AND p.badgeId <> ''"),
         ]);
     }
     #[Route('/person/new', name: 'app_person_new', methods: ['GET', 'POST'])]

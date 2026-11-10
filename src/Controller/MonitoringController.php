@@ -325,41 +325,13 @@ class MonitoringController extends AbstractController
         // Get performance metrics from audit log (basic implementation)
         // In production, you'd use a proper monitoring solution like New Relic, Datadog, etc.
 
-        $recentLogs = $auditLogRepository->getRecentActivity(24);
-
-        // Calculate statistics
-        $totalRequests = count($recentLogs);
-        $uniqueUsers = count(array_unique(array_map(fn($log) => $log->getUserName(), $recentLogs)));
-
-        // Group by action
-        $actionCounts = [];
-        foreach ($recentLogs as $log) {
-            $action = $log->getAction();
-            if (!isset($actionCounts[$action])) {
-                $actionCounts[$action] = 0;
-            }
-            $actionCounts[$action]++;
-        }
-
-        // Sort by count
-        arsort($actionCounts);
-        $topActions = array_slice($actionCounts, 0, 10, true);
-
-        // Group by entity type
-        $entityCounts = [];
-        foreach ($recentLogs as $recentLog) {
-            $entityType = $recentLog->getEntityType();
-            if ($entityType && $entityType !== 'User') { // Skip user login events
-                if (!isset($entityCounts[$entityType])) {
-                    $entityCounts[$entityType] = 0;
-                }
-                $entityCounts[$entityType]++;
-            }
-        }
-
-        // Sort by count
-        arsort($entityCounts);
-        $topEntities = array_slice($entityCounts, 0, 10, true);
+        // Aggregates in SQL instead of hydrating every row of the last 24 h (S31).
+        $summary = $auditLogRepository->recentActivitySummary(24);
+        $totalRequests = $summary['total'];
+        $uniqueUsers = $summary['users'];
+        $topActions = array_slice($summary['actions'], 0, 10, true);
+        // Skip user login events
+        $topEntities = array_slice(array_diff_key($summary['entityTypes'], ['User' => true]), 0, 10, true);
 
         // Get current memory usage
         $memoryUsage = memory_get_usage(true);
@@ -442,8 +414,8 @@ class MonitoringController extends AbstractController
         $limit = \App\Util\BoundedQuery::clamped($request, 'limit', 100, 1, 1000);
 
         $logs = match ($filter) {
-            'today' => $auditLogRepository->getRecentActivity(24),
-            'week' => $auditLogRepository->getRecentActivity(168),
+            'today' => $auditLogRepository->getRecentActivity(24, $limit),
+            'week' => $auditLogRepository->getRecentActivity(168, $limit),
             'critical' => $auditLogRepository->search([
                 'action' => ['delete', 'destroy', 'remove'],
                 'limit' => $limit,
