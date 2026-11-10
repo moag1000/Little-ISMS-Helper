@@ -105,15 +105,11 @@ class AuditLogController extends AbstractController
         // Get statistics
         $actionStats = $this->auditLogRepository->getActionStatistics();
         $entityTypeStats = $this->auditLogRepository->getEntityTypeStatistics();
-        $recentActivity = $this->auditLogRepository->getRecentActivity(24);
+        $recentActivity = $this->auditLogRepository->recentActivitySummary(24)['total'];
 
-        // Get unique values for filters
-        $allLogs = $this->auditLogRepository->findAll();
-        $entityTypes = array_unique(array_map(fn(AuditLog $auditLog): ?string => $auditLog->getEntityType(), $allLogs));
-        $actions = array_unique(array_map(fn(AuditLog $auditLog): ?string => $auditLog->getAction(), $allLogs));
-
-        sort($entityTypes);
-        sort($actions);
+        // Filter dropdowns from DISTINCT queries — never the whole table (S31).
+        $entityTypes = $this->auditLogRepository->distinctValues('entityType');
+        $actions = $this->auditLogRepository->distinctValues('action');
 
         return $this->render('audit_log/index.html.twig', [
             'page' => ListPage::fromSlice($auditLogs, $totalLogs, $request),
@@ -157,16 +153,8 @@ class AuditLogController extends AbstractController
         $entityTypeStats = $this->auditLogRepository->getEntityTypeStatistics();
         $totalLogs = $this->auditLogRepository->countAll();
 
-        // Get activity by day for the last 30 days
-        $activityByDay = [];
-        for ($i = 29; $i >= 0; $i--) {
-            $date = new DateTime("-{$i} days");
-            $nextDate = clone $date;
-            $nextDate->modify('+1 day');
-
-            $logs = $this->auditLogRepository->findByDateRange($date, $nextDate);
-            $activityByDay[$date->format('Y-m-d')] = count($logs);
-        }
+        // Activity per day of the last 30 days, one aggregate query (S31).
+        $activityByDay = $this->auditLogRepository->countPerDay(30);
 
         return $this->render('audit_log/statistics.html.twig', [
             'actionStats' => $actionStats,

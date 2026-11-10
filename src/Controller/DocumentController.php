@@ -9,7 +9,7 @@ use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\Control;
 use App\Entity\Document;
-use App\Util\ListPage;
+use App\Util\ListQuery;
 use App\Service\Review\PeriodicReviewService;
 use App\Entity\DocumentControlLink;
 use App\Enum\DocumentStatus;
@@ -113,22 +113,17 @@ class DocumentController extends AbstractController
         // ~3 years of policy iterations).
         $includeHistory = (bool) $request->query->get('include_history', false);
 
-        // Get documents based on view filter
+        // S31: filter, count and page in SQL — the list never loads every document of the organisation.
+        $list = ListQuery::of($this->documentRepository->createQueryBuilder('d')
+            ->where('d.isArchived = false')
+            ->orderBy('d.uploadedAt', \SortDirection::Descending))
+            ->with('d.uploadedBy', 'dub')->with('d.supersedes', 'dsup'); // shown per row
         if ($tenant) {
-            // Determine which documents to load based on view parameter
-            $allDocuments = match ($view) {
-                // Only own documents
-                'own' => $this->documentRepository->findByTenant($tenant),
-                // Own + from all subsidiaries (for parent companies)
-                'subsidiaries' => $this->documentRepository->findByTenantIncludingSubsidiaries($tenant),
-                // Own + inherited from parents (default behavior)
-                default => $this->documentService->getDocumentsForTenant($tenant),
-            };
+            $list->tenants(ListQuery::viewTenants($tenant, in_array($view, ['orphaned', 'all'], true) ? 'inherited' : $view, fn (): array => $this->documentService->tenantsVisibleTo($tenant)));
             $inheritanceInfo = $this->documentService->getDocumentInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
         } else {
-            $allDocuments = $this->documentRepository->findAll();
             $inheritanceInfo = [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -138,90 +133,44 @@ class DocumentController extends AbstractController
             ];
         }
 
-        // Hide soft-deleted/archived documents from the default list.
-        // When the user explicitly filters by 'archived', lift the
-        // isOperational() exclusion so archived docs become visible.
-        if ($currentStatus === 'archived') {
-            $documents = array_filter(
-                $allDocuments,
-                static fn(Document $document): bool => $document->getStatus() === DocumentStatus::Archived->value,
-            );
-        } else {
-            $documents = array_filter($allDocuments, fn(Document $document): bool => $document->isOperational());
-        }
+        // Soft-deleted/archived documents are hidden; ?status=archived shows exactly those.
+        $currentStatus === 'archived'
+            ? $list->equals('d.status', DocumentStatus::Archived->value)
+            : $list->notIn('d.status', ['deleted', DocumentStatus::Archived->value]);
 
-        // Alva-hint deep-link: focus=lifecycle_stuck narrows to exactly the
-        // documents the "stuck in status" hint counts — same query, so the hint
-        // and the filtered view can never disagree. (14d mirrors the rule.)
+        // Alva-hint deep-link: exactly the documents the hint counts — same query, so they never disagree.
         if ($focus === 'lifecycle_stuck' && $tenant) {
-            $stuckIds = array_flip(array_filter(array_map(
-                static fn (Document $d): ?int => $d->getId(),
-                $this->documentRepository->findStuckInLifecycle($tenant, 14),
-            )));
-            $documents = array_filter(
-                $documents,
-                static fn (Document $document): bool => isset($stuckIds[$document->getId() ?? -1]),
-            );
+            $list->in('d.id', array_map(static fn (Document $d): ?int => $d->getId(), $this->documentRepository->findStuckInLifecycle($tenant, 14)));
         } elseif ($focus === 'no_ack' && $tenant) {
-            // Approved documents without any policy-acknowledgement record —
-            // exactly what ApprovedDocOhneAcknowledgementRule counts.
-            $noAckIds = array_flip(array_filter(array_map(
-                static fn (Document $d): ?int => $d->getId(),
-                $this->documentRepository->findApprovedWithoutAcknowledgement($tenant),
-            )));
-            $documents = array_filter(
-                $documents,
-                static fn (Document $document): bool => isset($noAckIds[$document->getId() ?? -1]),
-            );
+            // Approved documents without any policy-acknowledgement record (ApprovedDocOhneAcknowledgementRule)
+            $list->in('d.id', array_map(static fn (Document $d): ?int => $d->getId(), $this->documentRepository->findApprovedWithoutAcknowledgement($tenant)));
         }
 
-        // Policy-Wizard — collapse to current versions only (default).
-        // A Document is hidden when ANY other Document in the list points
-        // back to it via `supersedes`. We compute the "superseded ids" set
-        // in PHP rather than via SQL so the inheritance / subsidiary
-        // arrays stay the source of truth.
-        $supersededIds = [];
-        foreach ($documents as $doc) {
-            $previous = $doc->getSupersedes();
-            if ($previous !== null && $previous->getId() !== null) {
-                $supersededIds[$previous->getId()] = true;
-            }
-        }
+        // Policy-Wizard — current versions only (default): hide a document another live document supersedes.
         if (!$includeHistory) {
-            $documents = array_filter(
-                $documents,
-                static fn (Document $document): bool => !isset($supersededIds[$document->getId() ?? -1]),
-            );
+            $list->where("NOT EXISTS (SELECT newer.id FROM App\\Entity\\Document newer WHERE newer.supersedes = d AND newer.isArchived = false AND newer.status NOT IN ('deleted', 'archived'))");
         }
-
-        // Apply status filter (when not already handled by archived-branch above).
         if ($currentStatus !== null && $currentStatus !== 'archived') {
-            $documents = array_filter(
-                $documents,
-                static fn (Document $document): bool => $document->getStatus() === $currentStatus,
-            );
+            $list->equals('d.status', $currentStatus);
         }
+        // "Review fällig" filter (PeriodicReviewService — one rule for all four lists)
+        $periodicReviewService?->applyDue($list, Document::class, $request->query->get('review_overdue') === '1');
 
-        // "Review fällig" filter (PeriodicReviewService — one rule for all four lists), newest upload first
-        $documents = $periodicReviewService?->filterDueWhen($request->query->get('review_overdue') === '1', $documents) ?? $documents;
-        usort($documents, fn($a, $b): int => $b->getUploadedAt() <=> $a->getUploadedAt());
-
-        // Category filter (GET `category`) — replaces the old client-side select.
-        $categories = array_values(array_unique(array_filter(
-            array_map(static fn(Document $d): ?string => $d->getCategory(), $documents),
-        )));
-        sort($categories);
+        // Category filter (GET `category`); the dropdown offers the categories of the list before it.
+        $categories = $list->distinct('d.category');
         $category = (string) $request->query->get('category', '');
-        if ($category !== '') {
-            $documents = array_values(array_filter(
-                $documents,
-                static fn(Document $document): bool => $document->getCategory() === $category,
-            ));
-        }
+        $list->equals('d.category', $category)
+            ->search($request, ['d.originalFilename', 'd.category', 'd.description']);
 
         // Summary chips count the list as shown (all filters applied).
-        $kpiDrafts   = count(array_filter($documents, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::Draft->value));
-        $kpiInReview = count(array_filter($documents, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::InReview->value));
+        $kpiDrafts = $list->countWhere('d.status = :kpi_draft', ['kpi_draft' => DocumentStatus::Draft->value]);
+        $kpiInReview = $list->countWhere('d.status = :kpi_review', ['kpi_review' => DocumentStatus::InReview->value]);
+        $page = $list->page($request);
+        $documents = $page->items;
+        // "superseded" badge (history view): which documents of this page a newer one points to
+        $supersededIds = array_fill_keys($this->documentRepository->supersededAmong(
+            array_map(static fn (Document $d): ?int => $d->getId(), $documents),
+        ), true);
 
         // Policy-Wizard settings-drift map, keyed on Document.id (template renders the badge inline).
         // SettingsDriftDetector is optional in the DI graph; without it the map stays empty.
@@ -248,11 +197,7 @@ class DocumentController extends AbstractController
         }
 
         return $this->render('document/index.html.twig', [
-            'page' => ListPage::fromRequest(
-                $documents,
-                $request,
-                static fn(Document $d): array => [$d->getOriginalFilename(), $d->getCategory(), $d->getDescription()],
-            ),
+            'page' => $page,
             'categories' => $categories,
             'currentCategory' => $category,
             'inheritanceInfo' => $inheritanceInfo,

@@ -458,42 +458,13 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $sourceFramework,
         ComplianceFramework $targetFramework
     ): array {
-        $mappings = $this->findCrossFrameworkMappings($sourceFramework, $targetFramework);
-        // Denominator = top-level requirements only. Sub-requirements roll up
-        // via their parent and must NOT dilute the coverage %.
-        $targetRequirements = $this->requirementRepository()->countTopLevelByFramework($targetFramework);
-
-        $coveredRequirements = [];
-        $totalCoveragePercentage = 0;
-
-        foreach ($mappings as $mapping) {
-            $targetReqId = $mapping->getTargetRequirement()->getId();
-
-            // Track the best coverage for each target requirement
-            if (!isset($coveredRequirements[$targetReqId])
-                || $coveredRequirements[$targetReqId] < $mapping->getMappingPercentage()) {
-                $coveredRequirements[$targetReqId] = $mapping->getMappingPercentage();
-            }
-        }
-
-        foreach ($coveredRequirements as $coveredRequirement) {
-            $totalCoveragePercentage += min(100, $coveredRequirement); // Cap at 100% per requirement
-        }
-
-        $averageCoverage = $targetRequirements > 0
-            ? round($totalCoveragePercentage / $targetRequirements, 2)
-            : 0;
-
-        return [
-            'source_framework' => $sourceFramework->getName(),
-            'target_framework' => $targetFramework->getName(),
-            'total_target_requirements' => $targetRequirements,
-            'covered_requirements' => count($coveredRequirements),
-            'coverage_percentage' => $averageCoverage,
-            'strong_mappings' => count(array_filter($coveredRequirements, fn(int $c): bool => $c >= 100)),
-            'partial_mappings' => count(array_filter($coveredRequirements, fn(int $c): bool => $c >= 50 && $c < 100)),
-            'weak_mappings' => count(array_filter($coveredRequirements, fn(int $c): bool => $c < 50)),
-        ];
+        // Denominator = top-level requirements only. Sub-requirements roll up via their parent.
+        return \App\Service\Compliance\Pairs\CrossFrameworkPairSet::coverageOf(
+            $sourceFramework,
+            $targetFramework,
+            $this->findCrossFrameworkMappings($sourceFramework, $targetFramework),
+            $this->requirementRepository()->countTopLevelByFramework($targetFramework),
+        );
     }
 
     /**
@@ -534,57 +505,17 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ?Tenant $tenant
     ): array {
         $mappings = $this->findCrossFrameworkMappings($sourceFramework, $targetFramework);
-        $transitiveContributions = [];
-        $sourcePercentages = $this->tenantPercentages(
-            $tenant,
-            array_filter(array_map(static fn(ComplianceMapping $m): ?ComplianceRequirement => $m->getSourceRequirement(), $mappings)),
+
+        return \App\Service\Compliance\Pairs\CrossFrameworkPairSet::transitiveOf(
+            $sourceFramework,
+            $targetFramework,
+            $mappings,
+            $this->tenantPercentages(
+                $tenant,
+                array_filter(array_map(static fn(ComplianceMapping $m): ?ComplianceRequirement => $m->getSourceRequirement(), $mappings)),
+            ),
+            $this->requirementRepository()->countTopLevelByFramework($targetFramework),
         );
-
-        foreach ($mappings as $mapping) {
-            $sourcePercentage = $sourcePercentages[$mapping->getSourceRequirement()?->getId()] ?? 0;
-            $transitiveFulfillment = round($sourcePercentage * $mapping->getMappingPercentage() / 100, 2);
-
-            if ($transitiveFulfillment > 0) {
-                $transitiveContributions[] = [
-                    'source_req' => $mapping->getSourceRequirement()->getRequirementId(),
-                    'target_req' => $mapping->getTargetRequirement()->getRequirementId(),
-                    'mapping_strength' => $mapping->getMappingPercentage(),
-                    'source_fulfillment' => $sourcePercentage,
-                    'transitive_contribution' => $transitiveFulfillment,
-                ];
-            }
-        }
-
-        // Calculate total transitive benefit
-        $totalBenefit = 0;
-        $targetRequirementsHelped = [];
-
-        foreach ($transitiveContributions as $contribution) {
-            $targetReqId = $contribution['target_req'];
-
-            // Track best contribution for each target requirement
-            if (!isset($targetRequirementsHelped[$targetReqId])
-                || $targetRequirementsHelped[$targetReqId] < $contribution['transitive_contribution']) {
-                $targetRequirementsHelped[$targetReqId] = $contribution['transitive_contribution'];
-            }
-        }
-
-        foreach ($targetRequirementsHelped as $targetRequirementHelped) {
-            $totalBenefit += $targetRequirementHelped;
-        }
-
-        // Denominator = top-level requirements only (sub-requirements roll up).
-        $targetReqCount = $this->requirementRepository()->countTopLevelByFramework($targetFramework);
-        $averageBenefit = $targetReqCount > 0 ? round($totalBenefit / $targetReqCount, 2) : 0;
-
-        return [
-            'source_framework' => $sourceFramework->getName(),
-            'target_framework' => $targetFramework->getName(),
-            'requirements_helped' => count($targetRequirementsHelped),
-            'average_transitive_benefit' => $averageBenefit,
-            'total_benefit' => round($totalBenefit, 2),
-            'contributions' => $transitiveContributions,
-        ];
     }
 
     /**
@@ -937,12 +868,14 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     public function calculateFrameworkImpactScore(
         ComplianceFramework $sourceFramework,
         ComplianceFramework $targetFramework,
-        float $coveragePercentage
+        float $coveragePercentage,
+        ?int $sourceReqCount = null,
+        ?int $targetReqCount = null,
     ): array {
-        // Get requirement counts (top-level only — sub-requirements roll up)
+        // Top-level requirement counts (sub-requirements roll up); callers looping pairs pass them (S31).
         $reqRepo = $this->requirementRepository();
-        $sourceReqCount = $reqRepo->countTopLevelByFramework($sourceFramework);
-        $targetReqCount = $reqRepo->countTopLevelByFramework($targetFramework);
+        $sourceReqCount ??= $reqRepo->countTopLevelByFramework($sourceFramework);
+        $targetReqCount ??= $reqRepo->countTopLevelByFramework($targetFramework);
         $avgReqCount = ($sourceReqCount + $targetReqCount) / 2;
 
         // Priority multiplier based on framework importance
@@ -953,7 +886,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         $impactScore = ($coveragePercentage * $avgReqCount * $priorityMultiplier) / 100;
 
         // Estimate effort to improve/maintain mappings
-        $effortEstimate = $this->estimateMappingEffort($sourceFramework, $targetFramework, $coveragePercentage);
+        $effortEstimate = $this->estimateMappingEffort($sourceReqCount, $targetReqCount, $coveragePercentage);
 
         // Calculate ROI (Return on Investment): Impact per unit effort
         $roi = $effortEstimate > 0 ? round($impactScore / $effortEstimate, 2) : 0;
@@ -984,19 +917,13 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      * - Current coverage level (lower coverage = more work)
      * - Complexity of the frameworks involved
      *
-     * @param ComplianceFramework $sourceFramework Source framework
-     * @param ComplianceFramework $targetFramework Target framework
+     * @param int $sourceReqCount Top-level requirements of the source framework
+     * @param int $targetReqCount Top-level requirements of the target framework
      * @param float $currentCoverage Current coverage percentage
      * @return int Estimated effort in person-hours
      */
-    private function estimateMappingEffort(
-        ComplianceFramework $sourceFramework,
-        ComplianceFramework $targetFramework,
-        float $currentCoverage
-    ): int {
-        $reqRepo = $this->requirementRepository();
-        $sourceReqCount = $reqRepo->countTopLevelByFramework($sourceFramework);
-        $targetReqCount = $reqRepo->countTopLevelByFramework($targetFramework);
+    private function estimateMappingEffort(int $sourceReqCount, int $targetReqCount, float $currentCoverage): int
+    {
 
         // Base effort: 0.5 hours per requirement for initial mapping
         $baseEffortPerReq = 0.5;

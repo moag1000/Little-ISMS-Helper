@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequiresModule;
-use App\Service\Location\LocationScope;
 use App\Security\Voter\RiskAcceptanceVoter;
 use App\Security\Voter\RiskVoter;
 use App\Security\Voter\AsyncJobVoter;
@@ -38,9 +37,8 @@ use App\Service\AuditLogger;
 use App\Service\Clone\RiskCloner;
 use App\Service\TenantContext;
 use App\Service\Prefill\RecordPrefill;
-use App\Util\ListPage;
+use App\Util\ListQuery;
 use App\Service\Review\PeriodicReviewService;
-use App\Risk\RiskMatrixThresholds;
 use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,6 +73,7 @@ class RiskController extends AbstractController
         private readonly IncidentRepository $incidentRepository,
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
         private readonly \App\Service\Job\JobTenantScope $jobTenantScope,
+        private readonly \App\Repository\LocationRepository $locationRepository,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?RiskIncidentLinkService $riskIncidentLinkService = null,
@@ -125,28 +124,18 @@ class RiskController extends AbstractController
             $view = 'own';
         }
 
-        // Get risks based on view filter
+        // S31: filter, count and page in SQL — the register never loads all risks of the organisation.
+        $list = ListQuery::of($this->riskRepository->createQueryBuilder('r')->orderBy('r.createdAt', \SortDirection::Descending))
+            ->with('r.asset', 'ra')->with('r.person', 'rp')->with('r.location', 'rl')->with('r.supplier', 'rs'); // shown per row
+        $tenants = null;
         if ($tenant) {
-            // Determine which risks to load based on view parameter
-            $risks = match ($view) {
-                // Only own risks
-                'own' => $this->riskRepository->findByTenant($tenant),
-                // Own + from all subsidiaries (for parent companies)
-                'subsidiaries' => $this->riskRepository->findByTenantIncludingSubsidiaries($tenant),
-                // Tenant-less (orphan) risks — admin only
-                'orphaned' => $this->riskRepository->findOrphaned(),
-                // Cross-tenant overview — admin only
-                'all' => $this->riskRepository->findAllAcrossTenants(),
-                // Own + inherited from parents (default behavior)
-                default => $this->riskService->getRisksForTenant($tenant),
-            };
+            // orphaned / all: super admin only, checked above
+            $tenants = ListQuery::viewTenants($tenant, $view, fn (): array => $this->riskService->tenantsVisibleTo($tenant));
             $inheritanceInfo = $this->riskService->getRiskInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
             $inheritanceInfo['isAdmin'] = $isAdmin;
         } else {
-            // No organisation: only a SUPER_ADMIN gets the instance-wide register
-            $risks = $this->isGranted('ROLE_SUPER_ADMIN') ? $this->riskRepository->findAll() : [];
             $inheritanceInfo = [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -156,47 +145,57 @@ class RiskController extends AbstractController
                 'isAdmin' => $isAdmin,
             ];
         }
+        $list->tenants($tenants);
+        if ($view === 'orphaned' && $tenant) {
+            $list->where('r.tenant IS NULL');
+        }
+        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+            $list->where('1 = 0'); // no organisation: only a SUPER_ADMIN gets the instance-wide register
+        }
+        if (($site = $request->query->getInt('location')) > 0) { // drill-down from the location map
+            $siteLocations = $this->locationRepository->idsInSite($site);
+            $list->leftJoin('r.asset', 'site_asset')->where(
+                '(IDENTITY(r.location) IN (:site_locations) OR IDENTITY(site_asset.physicalLocation) IN (:site_locations))',
+                ['site_locations' => $siteLocations !== [] ? $siteLocations : [0]],
+            );
+        }
 
-        $risks = $this->riskRegisterExporter->filter($risks, $level, $status, $treatment, $owner);
-        $risks = LocationScope::filter($risks, $request->query->getInt('location')); // drill-down from the location map
-
-        // "Review fällig" (date passed or never reviewed, never closed) — one rule for all four lists
-        $risks = $periodicReviewService->filterDueWhen($request->query->get('review_overdue') === '1', $risks);
-
-        // Alva-hint deep-link: pre-filter to EXACTLY the set the matching hint
-        // counts (shared repository finders).
+        // Alva-hint deep-link: pre-filter to EXACTLY the set the matching hint counts.
         $focus = $request->query->get('focus');
         if ($focus === 'no_owner') {
-            $risks = array_filter($risks, static fn(Risk $risk): bool => $risk->getRiskOwner() === null);
+            $list->where('r.riskOwner IS NULL');
         } elseif ($focus === 'incident_linked' && $tenant && $this->riskIncidentLinkRepository !== null) {
             $linkedRiskIds = [];
             foreach ($this->riskIncidentLinkRepository->findStaleLinksToOpenIncidents($tenant, 30) as $link) {
-                $rid = $link->getRisk()?->getId();
-                if ($rid !== null) {
+                if (($rid = $link->getRisk()?->getId()) !== null) {
                     $linkedRiskIds[$rid] = $rid;
                 }
             }
-            $risks = array_filter($risks, static fn(Risk $risk): bool => isset($linkedRiskIds[$risk->getId()]));
+            $list->in('r.id', array_values($linkedRiskIds));
         }
-        $risks = array_values($risks);
+        $list->in('r.id', $this->tagFilterService->idsWithTagName(Risk::class, $request->query->get('tag'))) // WS-5 ?tag=NIS2
+            ->search($request, ['r.title', 'r.description', 'r.threat']);
+        // "Review fällig" (date passed or never reviewed, never closed) — one rule for all four lists
+        $periodicReviewService->applyDue($list, Risk::class, $request->query->get('review_overdue') === '1');
 
-        // WS-5: framework-tag filter via ?tag=NIS2
-        $tagFilter = $request->query->get('tag');
-        if (is_string($tagFilter) && $tagFilter !== '') {
-            $risks = $this->tagFilterService->filterByTagName($risks, Risk::class, $tagFilter);
-        }
+        $read = function () use ($list, $request, $level, $status, $treatment, $owner, $tenants): array {
+            $this->riskRegisterExporter->applyFilters($list, $level, $status, $treatment, $owner, $tenants);
+            $bandTenants = $tenants ?? $list->rowTenants();
 
-        // Summary chips count the list as shown (view + filters + focus applied).
-        $criticalCount = count(array_filter($risks, static fn(Risk $r): bool => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'critical'));
-        $highCount = count(array_filter($risks, static fn(Risk $r): bool => RiskMatrixThresholds::classify($r->getInherentRiskLevel(), $r->getTenant()) === 'high'));
-        $unownedCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskOwner() === null));
+            return [
+                // Summary chips count the list as shown (view + filters + focus applied).
+                $list->countWhere($this->riskRegisterExporter->bandCondition('r', 'critical', $bandTenants)),
+                $list->countWhere($this->riskRegisterExporter->bandCondition('r', 'high', $bandTenants)),
+                $list->countWhere('r.riskOwner IS NULL'),
+                $list->page($request),
+            ];
+        };
+        [$criticalCount, $highCount, $unownedCount, $page] = in_array($view, ['orphaned', 'all'], true) && $tenant
+            ? $list->acrossTenants($read)
+            : $read();
 
         return $this->render('risk/index.html.twig', [
-            'page' => ListPage::fromRequest(
-                $risks,
-                $request,
-                static fn(Risk $r): array => [$r->getTitle(), $r->getDescription(), $r->getThreat(), (string) $r->getId()],
-            ),
+            'page' => $page,
             'critical_count' => $criticalCount,
             'high_count' => $highCount,
             'unowned_count' => $unownedCount,

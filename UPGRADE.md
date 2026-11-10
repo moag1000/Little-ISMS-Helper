@@ -16,7 +16,7 @@ eine Handlung verlangt oder Verhalten bricht.
 
 ## Nach 3.16.1 (nächstes Release)
 
-34 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
+35 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
 werden Personen (`Version20261108100000_OwnerTextToPersons`, danach entfallen die Textspalten),
 Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`);
 `Version20261109020000_DropWorkflowStepOverlays` löscht die nie angewendeten Schritt-Overrides
@@ -165,6 +165,15 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   die Excel/CSV-Exporte erscheinen vollständig in der gewählten Sprache (bisher deutsch-englisch gemischt). Exporte
   im Hintergrund (auch im Messenger-Modus) kommen in der Sprache der Person, die sie gestartet hat; der Anhang eines
   geplanten Berichts in der Sprache, die am Bericht eingestellt ist (bisher nur der Mailtext). Keine Handlung nötig.
+- **Große Listen blättern in der Datenbank (S31):** Assets, Risiken, Dokumente, Feststellungen,
+  Schwachstellen, Patches und Personen filtern, zählen und blättern per SQL statt die ganze Tabelle zu laden;
+  das Audit-Log liest seine Filterlisten und Statistiken als Aggregate. Sichtbar anders: die Suche `q`
+  durchsucht nur gespeicherte Spalten (Name, Beschreibung …), nicht mehr abgeleitete Anzeigen; der Filter
+  „Verantwortlich“ sucht im Namen und in der E-Mail des Kontos bzw. im Namen der Person. Die Migration
+  `Version20261109210000_AuditLogTenantIndexes` legt drei Indizes auf `audit_log` an (über `/quick-fix`,
+  auf großen Tabellen dauert sie einige Sekunden). Die Compliance-Exporte (Transitiv, Vergleich) laden die
+  Zuordnungen einmal statt je Framework-Paar; die Spalte „Anforderungen gesamt“ des Transitiv-Exports zeigt
+  jetzt die Zahl statt 0.
 - **Freigaben nur durch Berechtigte, selbst bestätigt (S27):**
   - Vier-Augen-Schritte (Dokument veröffentlichen, Asset entsorgen, Organisation sperren …) legen eine
     Gegenzeichnungsanfrage an; die zweite Person bestätigt sie angemeldet in „Mein Tag“. Bis dahin bleibt der

@@ -3,9 +3,9 @@
 src/Entity/AlvaHintDismissal.php:54  ?string $hintKey
 src/Entity/AlvaHintRenderCount.php:39  ?string $hintKey
 src/Entity/AuditFinding.php:78  ?string $findingNumber
-src/Entity/AuditLog.php:38  ?string $entityType
-src/Entity/AuditLog.php:44  ?string $action
-src/Entity/AuditLog.php:47  ?string $userName
+src/Entity/AuditLog.php:42  ?string $entityType
+src/Entity/AuditLog.php:48  ?string $action
+src/Entity/AuditLog.php:51  ?string $userName
 src/Entity/Authority/DoraRegisterOfInformation.php:55  ?int $id
 src/Entity/Authority/Nis2RegistrationProfile.php:103  ?int $id
 src/Entity/CorporateGovernance.php:46  ?string $scope

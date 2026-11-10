@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Service\Location\LocationScope;
-use App\Util\IsmsScopeFilter;
-use App\Util\ListPage;
+use App\Util\ListQuery;
 use App\Attribute\RequiresModule;
 use App\Service\BulkDeleteService;
 use Exception;
@@ -66,6 +64,7 @@ class AssetController extends AbstractController
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
         private readonly TagFilterService $tagFilterService,
+        private readonly \App\Repository\LocationRepository $locationRepository,
         private readonly ?AssetDependencyService $assetDependencyService = null,
         private readonly ?AiAgentInventoryService $aiAgentInventoryService = null,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
@@ -106,27 +105,19 @@ class AssetController extends AbstractController
             $view = 'own';
         }
 
-        // Get assets based on view filter
+        // S31: filter, count and page in SQL — the list never loads the organisation's whole asset set.
+        $list = ListQuery::of($this->assetRepository->createQueryBuilder('a')->orderBy('a.name', \SortDirection::Ascending))
+            ->with('a.ownerUser', 'ou')->with('a.ownerPerson', 'op')->with('a.subType', 'ast'); // shown per row
         if ($tenant) {
-            // Determine which assets to load based on view parameter
-            $assets = match ($view) {
-                // Only own assets
-                'own' => $this->assetRepository->findByTenant($tenant),
-                // Own + from all subsidiaries (for parent companies)
-                'subsidiaries' => $this->assetRepository->findByTenantIncludingSubsidiaries($tenant),
-                // Tenant-less (orphan) assets — admin only
-                'orphaned' => $this->assetRepository->findOrphaned(),
-                // Cross-tenant overview — admin only
-                'all' => $this->assetRepository->findAllAcrossTenants(),
-                // Own + inherited from parents (default behavior)
-                default => $this->assetService->getAssetsForTenant($tenant),
-            };
+            $list->tenants(ListQuery::viewTenants($tenant, $view, fn (): array => $this->assetService->tenantsVisibleTo($tenant)));
+            if ($view === 'orphaned') {
+                $list->where('a.tenant IS NULL');
+            }
             $inheritanceInfo = $this->assetService->getAssetInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
             $inheritanceInfo['isAdmin'] = $isAdmin;
         } else {
-            $assets = $this->assetRepository->findAll();
             $inheritanceInfo = [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -137,83 +128,45 @@ class AssetController extends AbstractController
             ];
         }
 
-        // Hide end-of-life assets from the default list. Users can still surface
-        // them explicitly via ?status=retired / ?status=disposed.
+        // End-of-life assets stay hidden unless asked for via ?status=retired / ?status=disposed.
         if ($status === null || $status === '') {
-            $assets = array_filter(
-                $assets,
-                fn(Asset $asset): bool => !in_array($asset->getStatus(), [AssetStatus::Retired->value, AssetStatus::Disposed->value], true)
-            );
+            $list->notIn('a.status', [AssetStatus::Retired->value, AssetStatus::Disposed->value]);
         }
-
-        $assets = LocationScope::filter($assets, $request->query->getInt('location')); // drill-down from the location map
-        if ($type) {
-            $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getAssetType() === $type);
+        if (($site = $request->query->getInt('location')) > 0) { // drill-down from the location map
+            $list->in('IDENTITY(a.physicalLocation)', $this->locationRepository->idsInSite($site));
         }
-
-        if ($classification) {
-            $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getDataClassification() === $classification);
+        $list->equals('a.assetType', $type)
+            ->equals('a.dataClassification', $classification)
+            ->equals('a.status', $status)
+            ->in('a.id', $this->tagFilterService->idsWithTagName(Asset::class, $request->query->get('tag'))) // WS-5 ?tag=NIS2
+            ->ismsScope($request);
+        if (is_string($owner) && $owner !== '') {
+            $list->contains(["CONCAT(ou.firstName, ' ', ou.lastName)", 'ou.email', 'op.fullName'], $owner);
         }
-
-        if ($owner) {
-            $assets = array_filter($assets, fn(Asset $asset): bool => stripos((string) $asset->getEffectiveOwner(), $owner) !== false);
+        if ($request->query->get('dora_relevant') === '1') { // DORA filter chip
+            $list->where('a.isDoraRelevant = true');
         }
+        $list->search($request, ['a.name', 'a.description', 'a.assetType']);
 
-        if ($status) {
-            $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getStatus() === $status);
-        }
-
-        // Re-index array after filtering to avoid gaps in keys
-        $assets = array_values($assets);
-
-        // WS-5: framework-tag filter via ?tag=NIS2
-        $tagFilter = $request->query->get('tag');
-        if (is_string($tagFilter) && $tagFilter !== '') {
-            $assets = $this->tagFilterService->filterByTagName($assets, Asset::class, $tagFilter);
-        }
-
-        // DORA filter-chip "Nur DORA-relevant / DORA only" via ?dora_relevant=1
-        if ($request->query->get('dora_relevant') === '1') {
-            $assets = array_values(array_filter($assets, fn(Asset $a): bool => $a->isDoraRelevant()));
-        }
-        $assets = IsmsScopeFilter::apply($assets, $request);
-
-        $typeStats = $tenant
-            ? $this->assetRepository->countByType($tenant)
-            : [];
-
-        // Summary chips count the list as shown (view + filters applied).
-        $criticalCount = count(array_filter(
-            $assets,
-            static fn(Asset $a): bool => $a->getConfidentialityValue() >= 4
-                || $a->getIntegrityValue() >= 4
-                || $a->getAvailabilityValue() >= 4,
-        ));
-        $restrictedCount = count(array_filter(
-            $assets,
-            static fn(Asset $a): bool => $a->getDataClassification() === 'restricted',
-        ));
-
-        $page = ListPage::fromRequest(
-            $assets,
-            $request,
-            static fn(Asset $a): array => [$a->getName(), $a->getDescription(), $a->getAssetType(), $a->getEffectiveOwner(), (string) $a->getId()],
-        );
-
-        // BCM-based suggestions and risk count, only for the rows on this page
-        $assetRecommendations = [];
-        foreach ($page as $asset) {
-            $analysis = $this->protectionRequirementService->getCompleteProtectionRequirementAnalysis($asset);
-            $processes = $this->businessProcessRepository->findByAsset($asset->getId());
-            $risks = $this->riskRepository->findBy(['asset' => $asset]);
-
-            $assetRecommendations[$asset->getId()] = [
-                'availability_analysis' => $analysis['availability'],
-                'has_bcm_data' => $processes !== [],
-                'process_count' => count($processes),
-                'processes' => $processes,
-                'risk_count' => count($risks),
+        $read = function () use ($list, $request): array {
+            return [
+                // Summary chips count the list as shown (view + filters applied).
+                $list->countWhere('a.confidentialityValue >= 4 OR a.integrityValue >= 4 OR a.availabilityValue >= 4'),
+                $list->countWhere("a.dataClassification = 'restricted'"),
+                $list->page($request),
             ];
+        };
+        // Cross-tenant + orphan views are super-admin only (checked above) and read past the tenant filter.
+        [$criticalCount, $restrictedCount, $page] = in_array($view, ['orphaned', 'all'], true) && $tenant
+            ? $list->acrossTenants($read)
+            : $read();
+
+        $typeStats = $tenant ? $this->assetRepository->countByType($tenant) : [];
+
+        // Risk count per row, one GROUP BY for the page (was three queries per row).
+        $assetRecommendations = [];
+        foreach ($this->riskRepository->countByAssetIds(array_map(static fn (Asset $a): ?int => $a->getId(), $page->items)) as $assetId => $count) {
+            $assetRecommendations[$assetId] = ['risk_count' => $count];
         }
 
         return $this->render('asset/index.html.twig', [

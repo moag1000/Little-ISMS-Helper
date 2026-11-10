@@ -12,8 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Wraps the already-loaded, already-filtered result of an index action and cuts
  * it into pages, optionally narrowing it by the shared search parameter `q`.
  * Rendering fewer rows is where list pages lose their time (Twig per row), so
- * this pays off even though the query still loads the tenant's full set; lists
- * that outgrow that move to a repository-level limit/offset like the audit log.
+ * this pays off even though the query still loads the tenant's full set. Lists of
+ * large tables page in SQL with {@see ListQuery} (S31, Gate 101 counts fromRequest()).
  *
  * Twig: `{% for risk in page %}`, `page.total`, `page.pages`; the pager macro
  * `_fa_pager.render(page)` and the `_fa_list_page` skeleton read the rest.

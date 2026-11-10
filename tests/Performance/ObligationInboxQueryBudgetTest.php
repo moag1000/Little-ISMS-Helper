@@ -119,10 +119,10 @@ final class ObligationInboxQueryBudgetTest extends WebTestCase
         $this->em->clear();
         $this->client->loginUser($this->em->find(User::class, $this->ciso->getId()));
         $debug = static::getContainer()->get('doctrine.debug_data_holder');
-        $before = array_map('count', $debug->getData());
+        $debug->reset(); // count only this request's queries
         $this->client->request('GET', '/en/my-day');
         self::assertResponseIsSuccessful();
-        $data = array_map(static fn (array $queries, string $connection): array => array_slice($queries, $before[$connection] ?? 0), $debug->getData(), array_keys($debug->getData()));
+        $data = $debug->getData();
 
         if (getenv('QUERY_DUMP')) {
             foreach ($data as $queries) {
