@@ -377,7 +377,7 @@ class AuditLogger
                 $tenant = $user->getTenant();
             }
         }
-        $auditLog->setTenant($this->managedTenant($tenant));
+        $auditLog->setTenant($tenant);
 
         // Capture actor's highest role at time of action.
         $auditLog->setActorRole($this->getCurrentActorRole());
@@ -433,6 +433,9 @@ class AuditLogger
         try {
             $this->entityManager->persist($auditLog);
             $this->entityManager->flush();
+            // Written rows are append-only (signed): keeping them managed only lets
+            // a later flush trip over their organisation once it is deleted.
+            $this->entityManager->detach($auditLog);
         } catch (\Throwable $e) {
             // Strict callers (bulk delete inside its transaction) must abort
             // and roll back: the trail is part of the change.
@@ -454,24 +457,6 @@ class AuditLogger
                 'error' => $e::class . ': ' . $e->getMessage(),
             ]);
         }
-    }
-
-    /**
-     * The organisation as the EntityManager knows it. The tenant context can hold
-     * an organisation from before an EntityManager::clear(); a row pointing at
-     * that detached copy would fail every later flush ("new entity found").
-     */
-    private function managedTenant(?\App\Entity\Tenant $tenant): ?\App\Entity\Tenant
-    {
-        if ($tenant === null || $this->entityManager->contains($tenant)) {
-            return $tenant;
-        }
-        $id = $tenant->getId();
-        if ($id === null) {
-            return null;
-        }
-
-        return $this->entityManager->find(\App\Entity\Tenant::class, $id);
     }
 
     /**
