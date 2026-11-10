@@ -16,7 +16,7 @@ eine Handlung verlangt oder Verhalten bricht.
 
 ## Nach 3.16.1 (nächstes Release)
 
-36 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
+38 neue Migrationen, alle über `/quick-fix`. Vier davon verändern Daten: Freitext-Verantwortliche
 werden Personen (`Version20261108100000_OwnerTextToPersons`, danach entfallen die Textspalten),
 Nachweisdateien ziehen aus dem Web-Root (`Version20261108140000_ProtectUploads`);
 `Version20261109020000_DropWorkflowStepOverlays` löscht die nie angewendeten Schritt-Overrides
