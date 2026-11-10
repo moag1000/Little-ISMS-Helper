@@ -43,6 +43,7 @@ final class ObligationReminderServiceTest extends TestCase
     private array $sent = [];
     /** @var list<string> */
     private array $events = [];
+    private int $clears = 0;
 
     protected function setUp(): void
     {
@@ -90,10 +91,25 @@ final class ObligationReminderServiceTest extends TestCase
         self::assertSame(0, $service->sendUrgent($now->modify('+15 minutes')));
     }
 
+    #[Test]
+    public function theUrgentRunReadsOnlyHourSourcesAndEachRunClearsAfterTheOrganisation(): void
+    {
+        $now = new DateTimeImmutable('2026-11-09 13:00');
+        $daySource = new FakeDeadlineSource('risk_review', new DeadlineProfile('risk_review_overdue'), [
+            FakeDeadlineSource::record(8, Responsibility::holders($this->owner), $now->modify('-1 day')),
+        ]);
+        $service = $this->service($daySource);
+
+        self::assertSame(0, $service->sendUrgent($now));
+        self::assertSame(0, $daySource->reads, 'S31: the urgent run every 15 minutes does not build the full inbox.');
+        self::assertSame(1, $this->clears, 'S31: the entity manager is cleared after each organisation.');
+    }
+
     private function service(FakeDeadlineSource ...$sources): ObligationReminderService
     {
         $tenants = $this->createStub(TenantRepository::class);
         $tenants->method('findActive')->willReturn([$this->tenant]);
+        $tenants->method('find')->willReturn($this->tenant);
         $users = $this->createStub(UserRepository::class);
         $users->method('findActiveByTenant')->willReturn([$this->owner, $this->optedOut]);
         $registry = new DeadlineSourceRegistry($sources);
@@ -108,6 +124,9 @@ final class ObligationReminderServiceTest extends TestCase
             $this->mails[] = (string) $u->getEmail();
         });
         $entityManager = $this->createStub(EntityManagerInterface::class);
+        $entityManager->method('clear')->willReturnCallback(function (): void {
+            ++$this->clears;
+        });
         $entityManager->method('persist')->willReturnCallback(function (object $o): void {
             if ($o instanceof ObligationNotice) {
                 $this->persisted[] = $o;

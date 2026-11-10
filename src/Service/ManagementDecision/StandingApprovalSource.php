@@ -28,6 +28,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class StandingApprovalSource implements DeadlineSource
 {
+    /** @var array<string, ?ManagementDecision> approval per tenant and type, within one call */
+    private array $approvals = [];
+
     /** Approvals top management has to keep in force. */
     public const array STANDING = [
         ManagementDecisionType::Policy,
@@ -87,8 +90,17 @@ final class StandingApprovalSource implements DeadlineSource
      */
     public function missing(Tenant $tenant): array
     {
-        $pending = $this->pendingTypes($tenant);
+        $this->approvals = [];
 
+        return $this->missingOf($tenant, $this->pendingTypes($tenant));
+    }
+
+    /**
+     * @param list<ManagementDecisionType> $pending
+     * @return list<ManagementDecisionType>
+     */
+    private function missingOf(Tenant $tenant, array $pending): array
+    {
         return array_values(array_filter(
             $this->standingTypes($tenant),
             fn (ManagementDecisionType $type): bool => !in_array($type, $pending, true) && $this->approvalOf($tenant, $type) === null,
@@ -98,8 +110,9 @@ final class StandingApprovalSource implements DeadlineSource
     /** @return list<StandingApproval> */
     public function findOpen(Tenant $tenant): iterable
     {
-        $items = array_map(static fn (ManagementDecisionType $t): StandingApproval => new StandingApproval($t), $this->missing($tenant));
+        $this->approvals = []; // one look-up per type and call, never across calls
         $pending = $this->pendingTypes($tenant);
+        $items = array_map(static fn (ManagementDecisionType $t): StandingApproval => new StandingApproval($t), $this->missingOf($tenant, $pending));
         $standing = $this->standingTypes($tenant);
         foreach ($this->repository->findApprovalsEndingBefore($tenant, new DateTimeImmutable(sprintf('+%d days', self::LEAD_DAYS))) as $approval) {
             if (in_array($approval->getType(), $standing, true) && !in_array($approval->getType(), $pending, true)
@@ -168,9 +181,14 @@ final class StandingApprovalSource implements DeadlineSource
 
     private function approvalOf(Tenant $tenant, ManagementDecisionType $type): ?ManagementDecision
     {
-        // Changed thresholds after the approval count as not approved.
-        return $type === ManagementDecisionType::RiskCriteria
-            ? $this->decisions->criteriaApproval($tenant)
-            : $this->decisions->currentApproval($tenant, $type);
+        $key = $tenant->getId() . '|' . $type->value;
+        if (!array_key_exists($key, $this->approvals)) {
+            // Changed thresholds after the approval count as not approved.
+            $this->approvals[$key] = $type === ManagementDecisionType::RiskCriteria
+                ? $this->decisions->criteriaApproval($tenant)
+                : $this->decisions->currentApproval($tenant, $type);
+        }
+
+        return $this->approvals[$key];
     }
 }

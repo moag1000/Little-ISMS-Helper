@@ -373,6 +373,7 @@ ui:
             no_data: 'No data'
             remove: 'Remove widget'
             save_failed: 'The report could not be saved.'
+            too_many_widgets: 'A report holds at most %max% widgets.'
             saved: 'Report saved.'
             sharing_failed: 'The sharing settings could not be saved.'
             sharing_saved: 'Sharing settings saved.'

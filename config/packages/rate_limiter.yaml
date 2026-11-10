@@ -52,6 +52,14 @@ framework:
             limit: 120
             interval: '1 minute'
 
+        # Load (S31): exports, PDFs, previews, analytics data and recomputations
+        # per logged-in person (HeavyRequestRateLimitSubscriber matches the route
+        # names). 30 at once, then one every two seconds.
+        heavy_request:
+            policy: 'token_bucket'
+            limit: 30
+            rate: { interval: '1 minute', amount: 30 }
+
         # Security: Document upload rate limiting
         document_upload:
             policy: 'sliding_window'
@@ -90,3 +98,9 @@ when@test:
                 policy: 'sliding_window'
                 limit: 100000
                 interval: '1 minute'
+            # The export/PDF smoke tests run as a handful of users;
+            # the mapping has its own test (HeavyRequestRateLimitSubscriberTest).
+            heavy_request:
+                policy: 'token_bucket'
+                limit: 100000
+                rate: { interval: '1 minute', amount: 100000 }

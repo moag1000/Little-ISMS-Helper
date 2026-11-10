@@ -708,7 +708,7 @@ class UserManagementController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::VIEW, $user);
 
-        $limit = (int) $request->query->get('limit', 100);
+        $limit = \App\Util\BoundedQuery::clamped($request, 'limit', 100, 1, 1000);
         $activities = $auditLogRepository->findByUser($user->getEmail(), $limit);
 
         // Group activities by date

@@ -621,4 +621,8 @@ class CustomReport
 
         return false;
     }
+
+    /** Widgets per report and rows per table widget (S31: each widget reads data). */
+    public const int MAX_WIDGETS = 30;
+    public const int MAX_TABLE_ROWS = 50;
 }

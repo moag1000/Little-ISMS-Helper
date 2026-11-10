@@ -373,6 +373,7 @@ ui:
             no_data: 'Keine Daten'
             remove: 'Widget entfernen'
             save_failed: 'Der Bericht konnte nicht gespeichert werden.'
+            too_many_widgets: 'Ein Bericht hat höchstens %max% Widgets.'
             saved: 'Bericht gespeichert.'
             sharing_failed: 'Die Freigabe-Einstellungen konnten nicht gespeichert werden.'
             sharing_saved: 'Freigabe-Einstellungen gespeichert.'

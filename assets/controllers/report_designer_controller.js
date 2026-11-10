@@ -1,6 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
 
+/** Mirrors CustomReport::MAX_WIDGETS (S31). */
+const MAX_WIDGETS = 30;
+
 /**
  * Report Designer Controller
  *
@@ -260,6 +263,11 @@ export default class extends Controller {
     }
 
     addWidget(widgetType, config = {}) {
+        // The server keeps at most 30 widgets per report (CustomReport::MAX_WIDGETS).
+        if (this.widgets.length >= MAX_WIDGETS) {
+            this.showNotification(faT('report_designer.too_many_widgets', { '%max%': MAX_WIDGETS }), 'warning');
+            return;
+        }
         const widgetId = 'widget_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
         const widget = {
@@ -466,7 +474,9 @@ export default class extends Controller {
                 this.isDirty = false;
                 this.showNotification(faT('report_designer.saved'), 'success');
             } else {
-                this.showNotification(result.error || faT('report_designer.save_failed'), 'danger');
+                this.showNotification(result.error === 'too_many_widgets'
+                    ? faT('report_designer.too_many_widgets', { '%max%': MAX_WIDGETS })
+                    : faT('report_designer.save_failed'), 'danger');
             }
         } catch (error) {
             console.error('Save error:', error);

@@ -19,6 +19,9 @@ use stdClass;
  */
 final class FakeDeadlineSource implements DeadlineSource
 {
+    /** How often findOpen() ran (load tests, S31). */
+    public int $reads = 0;
+
     /** @param list<stdClass> $records */
     public function __construct(
         private readonly string $slug,
@@ -57,6 +60,7 @@ final class FakeDeadlineSource implements DeadlineSource
 
     public function findOpen(Tenant $tenant): iterable
     {
+        ++$this->reads;
         if ($this->broken) {
             throw new RuntimeException('broken source');
         }

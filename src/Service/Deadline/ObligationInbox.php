@@ -10,6 +10,7 @@ use App\Service\Responsibility\ResponsibilityResolver;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Every open duty from every deadline source, at the person responsible for it.
@@ -18,9 +19,18 @@ use Psr\Log\NullLogger;
  * lead time, or when its deadline is within the source's lead days. Each duty
  * appears exactly once per person — My Day, the digest mail and the urgent
  * mail all read from here.
+ *
+ * Load (S31): the tenant's open duties are built once per request (My Day, the
+ * header bell and the dashboard share them; kept per tenant and minute, dropped
+ * by {@see reset()} after each request or worker message). Sources that can
+ * filter by date ({@see HorizonFilteredSource}) only return records due within
+ * their lead time.
  */
-class ObligationInbox
+class ObligationInbox implements ResetInterface
 {
+    /** @var array<string, list<array{0: Obligation, 1: list<User>}>> */
+    private array $built = [];
+
     public function __construct(
         private readonly DeadlineSourceRegistry $sources,
         private readonly ResponsibilityResolver $responsibility,
@@ -53,10 +63,10 @@ class ObligationInbox
      *
      * @return array<int, array{user: User, items: list<Obligation>}> keyed by user id
      */
-    public function byRecipient(Tenant $tenant, ?DateTimeImmutable $now = null): array
+    public function byRecipient(Tenant $tenant, ?DateTimeImmutable $now = null, bool $urgentOnly = false): array
     {
         $grouped = [];
-        foreach ($this->openWithRecipients($tenant, $now) as [$obligation, $recipients]) {
+        foreach ($this->openWithRecipients($tenant, $now, $urgentOnly) as [$obligation, $recipients]) {
             foreach ($recipients as $recipient) {
                 $key = (int) $recipient->getId();
                 $grouped[$key] ??= ['user' => $recipient, 'items' => []];
@@ -70,23 +80,52 @@ class ObligationInbox
         return $grouped;
     }
 
+    /** Drops the built inboxes and the people looked up for them (last request or organisation). */
+    public function reset(): void
+    {
+        $this->built = [];
+        $this->responsibility->reset();
+    }
+
     /**
-     * @return iterable<array{0: Obligation, 1: list<User>}>
+     * @param bool $urgentOnly only sources with an hour deadline (the urgent mail run)
+     * @return list<array{0: Obligation, 1: list<User>}>
      */
-    private function openWithRecipients(Tenant $tenant, ?DateTimeImmutable $now): iterable
+    private function openWithRecipients(Tenant $tenant, ?DateTimeImmutable $now, bool $urgentOnly = false): array
     {
         $now ??= new DateTimeImmutable();
+        $key = sprintf('%d|%s|%d', (int) $tenant->getId(), $now->format('Y-m-d H:i'), (int) $urgentOnly);
+        if ($tenant->getId() === null) {
+            return $this->build($tenant, $now, $urgentOnly);
+        }
+
+        return $this->built[$key] ??= $this->build($tenant, $now, $urgentOnly);
+    }
+
+    /**
+     * @return list<array{0: Obligation, 1: list<User>}>
+     */
+    private function build(Tenant $tenant, DateTimeImmutable $now, bool $urgentOnly): array
+    {
         $today = $now->setTime(0, 0);
+        $open = [];
         foreach ($this->sources->active($tenant) as $source) {
             try {
                 $profile = $source->profile();
-                foreach ($source->findOpen($tenant) as $record) {
+                if ($urgentOnly && $profile->urgentHours === null) {
+                    continue;
+                }
+                $horizon = $profile->leadDays !== null ? $today->modify(sprintf('+%d days', $profile->leadDays + 1)) : null;
+                $records = $horizon !== null && $source instanceof HorizonFilteredSource
+                    ? $source->findOpenDueBy($tenant, $horizon)
+                    : $source->findOpen($tenant);
+                foreach ($records as $record) {
                     if ($source->isCompleted($record)) {
                         continue;
                     }
                     $due = $source->dueDateOf($record);
                     $due = $due !== null ? DateTimeImmutable::createFromInterface($due) : null;
-                    if ($due !== null && $profile->leadDays !== null && $due > $today->modify(sprintf('+%d days', $profile->leadDays + 1))) {
+                    if ($due !== null && $horizon !== null && $due > $horizon) {
                         continue;
                     }
                     $obligation = new Obligation(
@@ -98,13 +137,15 @@ class ObligationInbox
                         urgent: $due !== null && $profile->urgentHours !== null
                             && $due <= $now->modify(sprintf('+%d hours', $profile->urgentHours)),
                     );
-                    yield [$obligation, $this->responsibility->recipients($source->responsibleOf($record), $tenant)];
+                    $open[] = [$obligation, $this->responsibility->recipients($source->responsibleOf($record), $tenant)];
                 }
             } catch (\Throwable $e) {
                 // One broken source must not empty everybody's inbox.
                 $this->logger->error('Deadline source failed', ['source' => $source->slug(), 'error' => $e->getMessage()]);
             }
         }
+
+        return $open;
     }
 
     /**

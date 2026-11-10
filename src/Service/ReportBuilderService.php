@@ -19,7 +19,9 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\DataBreachRepository;
 use App\Risk\RiskMatrixThresholds;
+use App\Util\BoundedQuery;
 use DateTimeImmutable;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -72,6 +74,9 @@ final class ReportBuilderService
     public const WIDGET_TEXT_SUMMARY = 'text_summary';
     public const WIDGET_TEXT_HEADER = 'text_header';
     public const WIDGET_TEXT_CUSTOM = 'text_custom';
+
+    /** @var array<class-string, list<object>>|null repository rows while a report is generated */
+    private ?array $loaded = null;
 
     public function __construct(
         private readonly CustomReportRepository $customReportRepository,
@@ -446,19 +451,15 @@ final class ReportBuilderService
      */
     public function generateReportData(CustomReport $report): array
     {
-        $widgets = $report->getWidgets();
+        // S31: at most MAX_WIDGETS widgets, and each repository is read once per report.
+        $widgets = array_slice($report->getWidgets(), 0, CustomReport::MAX_WIDGETS);
         $filters = $report->getFilters();
-        $widgetData = [];
+        $this->loaded = [];
 
-        foreach ($widgets as $widget) {
-            $widgetId = $widget['id'] ?? uniqid('widget_');
-            $widgetType = $widget['type'] ?? '';
-            $widgetConfig = $widget['config'] ?? [];
-
-            $widgetData[$widgetId] = [
-                'meta' => $widget,
-                'data' => $this->getWidgetData($widgetType, $widgetConfig, $filters),
-            ];
+        try {
+            $widgetData = $this->collectWidgetData($widgets, $filters);
+        } finally {
+            $this->loaded = null;
         }
 
         return [
@@ -474,6 +475,52 @@ final class ReportBuilderService
             'widgets' => $widgetData,
             'filters' => $filters,
         ];
+    }
+
+    /**
+     * @param array<int|string, mixed> $widgets
+     * @param array<string, mixed> $filters
+     * @return array<string, array{meta: mixed, data: array<string, mixed>}>
+     */
+    private function collectWidgetData(array $widgets, array $filters): array
+    {
+        $widgetData = [];
+        foreach ($widgets as $widget) {
+            if (!is_array($widget)) {
+                continue;
+            }
+            $widgetId = is_scalar($widget['id'] ?? null) ? (string) $widget['id'] : uniqid('widget_');
+            $widgetType = $widget['type'] ?? '';
+            $widgetConfig = $widget['config'] ?? [];
+
+            $widgetData[$widgetId] = [
+                'meta' => $widget,
+                'data' => $this->getWidgetData(is_string($widgetType) ? $widgetType : '', is_array($widgetConfig) ? $widgetConfig : [], $filters),
+            ];
+        }
+
+        return $widgetData;
+    }
+
+    /**
+     * All rows of a repository (tenant filter applies). While a report is generated
+     * each repository is read once, not once per widget (S31).
+     *
+     * @return list<object>
+     */
+    private function all(ServiceEntityRepository $repository): array
+    {
+        if ($this->loaded === null) {
+            return $repository->findAll();
+        }
+
+        return $this->loaded[$repository::class] ??= $repository->findAll();
+    }
+
+    /** Rows of a table widget: 1 to MAX_TABLE_ROWS, whatever the stored config says. */
+    private static function tableLimit(array $config): int
+    {
+        return BoundedQuery::clamp($config['limit'] ?? 10, 1, CustomReport::MAX_TABLE_ROWS);
     }
 
     /**
@@ -611,7 +658,7 @@ final class ReportBuilderService
 
     private function getKpiHighRisks(): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->all($this->riskRepository);
         $highRisks = array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::highMin($r->getTenant()));
         $count = count($highRisks);
         return [
@@ -635,7 +682,7 @@ final class ReportBuilderService
 
     private function getKpiControlImplementation(): array
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->all($this->controlRepository);
         $total = count($controls);
         $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
         $percentage = $total > 0 ? round(($implemented / $total) * 100) : 0;
@@ -672,7 +719,7 @@ final class ReportBuilderService
 
     private function getKpiOpenIncidents(): array
     {
-        $incidents = $this->incidentRepository->findAll();
+        $incidents = $this->all($this->incidentRepository);
         $open = count(array_filter($incidents, fn($i) => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true)));
         return [
             'value' => $open,
@@ -684,7 +731,7 @@ final class ReportBuilderService
 
     private function getKpiComplianceScore(): array
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->all($this->controlRepository);
         $total = count($controls);
         $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
         $score = $total > 0 ? round(($implemented / $total) * 100) : 0;
@@ -698,7 +745,7 @@ final class ReportBuilderService
 
     private function getKpiOverdueTreatments(): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->all($this->riskRepository);
         $now = new DateTimeImmutable();
         $overdue = 0;
         foreach ($risks as $risk) {
@@ -717,8 +764,8 @@ final class ReportBuilderService
 
     private function getKpiBcmCoverage(): array
     {
-        $processes = $this->businessProcessRepository->findAll();
-        $plans = $this->bcPlanRepository->findAll();
+        $processes = $this->all($this->businessProcessRepository);
+        $plans = $this->all($this->bcPlanRepository);
         $critical = count(array_filter($processes, fn($p) => $p->getCriticality() === 'critical' || $p->getCriticality() === 'high'));
         $covered = count($plans);
         $percentage = $critical > 0 ? min(100, round(($covered / $critical) * 100)) : 100;
@@ -735,7 +782,7 @@ final class ReportBuilderService
 
     private function getChartRiskMatrix(): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->all($this->riskRepository);
         $tenant = $this->tenantContext->getCurrentTenant(); // the organisation the report covers
         $matrix = [];
         $bands = [];
@@ -764,7 +811,7 @@ final class ReportBuilderService
 
     private function getChartRiskByCategory(): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->all($this->riskRepository);
         $byCategory = [];
         foreach ($risks as $risk) {
             $category = $risk->getCategory() ?? 'Other';
@@ -781,7 +828,7 @@ final class ReportBuilderService
     {
         $months = [];
         $data = [];
-        $allRisks = $this->riskRepository->findAll();
+        $allRisks = $this->all($this->riskRepository);
         for ($i = 5; $i >= 0; $i--) {
             $date = new DateTimeImmutable("-{$i} months");
             $monthEnd = $date->modify('last day of this month')->setTime(23, 59, 59);
@@ -805,7 +852,7 @@ final class ReportBuilderService
 
     private function getChartControlStatus(): array
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->all($this->controlRepository);
         $status = ['implemented' => 0, 'in_progress' => 0, 'not_started' => 0];
         foreach ($controls as $control) {
             $s = $control->getImplementationStatus() ?? 'not_started';
@@ -825,13 +872,13 @@ final class ReportBuilderService
 
     private function getChartComplianceRadar(): array
     {
-        $frameworks = $this->frameworkRepository->findAll();
+        $frameworks = $this->all($this->frameworkRepository);
         $labels = [];
         $data = [];
         foreach ($frameworks as $framework) {
             $labels[] = $framework->getName();
             // Calculate actual compliance from controls mapped to this framework
-            $controls = $this->controlRepository->findAll();
+            $controls = $this->all($this->controlRepository);
             $total = count($controls);
             $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
             // Use overall control implementation as proxy when per-framework data isn't available
@@ -855,7 +902,7 @@ final class ReportBuilderService
     {
         $months = [];
         $data = [];
-        $allIncidents = $this->incidentRepository->findAll();
+        $allIncidents = $this->all($this->incidentRepository);
         for ($i = 5; $i >= 0; $i--) {
             $date = new DateTimeImmutable("-{$i} months");
             $monthStart = $date->modify('first day of this month')->setTime(0, 0, 0);
@@ -880,7 +927,7 @@ final class ReportBuilderService
 
     private function getChartAssetCriticality(): array
     {
-        $assets = $this->assetRepository->findAll();
+        $assets = $this->all($this->assetRepository);
         $criticality = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
         foreach ($assets as $asset) {
             // Calculate criticality from CIA values
@@ -910,13 +957,13 @@ final class ReportBuilderService
 
     private function getChartFrameworkComparison(): array
     {
-        $frameworks = $this->frameworkRepository->findAll();
+        $frameworks = $this->all($this->frameworkRepository);
         $labels = [];
         $data = [];
         foreach ($frameworks as $framework) {
             $labels[] = $framework->getName();
             // Calculate actual compliance from controls
-            $controls = $this->controlRepository->findAll();
+            $controls = $this->all($this->controlRepository);
             $total = count($controls);
             $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
             $data[] = $total > 0 ? round(($implemented / $total) * 100) : 0;
@@ -937,8 +984,8 @@ final class ReportBuilderService
 
     private function getTableTopRisks(array $config): array
     {
-        $limit = $config['limit'] ?? 10;
-        $risks = $this->riskRepository->findAll();
+        $limit = self::tableLimit($config);
+        $risks = $this->all($this->riskRepository);
 
         usort($risks, fn($a, $b) => ($b->getRiskScore() ?? 0) - ($a->getRiskScore() ?? 0));
         $risks = array_slice($risks, 0, $limit);
@@ -963,7 +1010,7 @@ final class ReportBuilderService
 
     private function getTableRecentIncidents(array $config): array
     {
-        $limit = $config['limit'] ?? 10;
+        $limit = self::tableLimit($config);
         $incidents = $this->incidentRepository->findBy([], ['detectedAt' => 'DESC'], $limit);
 
         $rows = [];
@@ -985,8 +1032,8 @@ final class ReportBuilderService
 
     private function getTableOverdueControls(array $config): array
     {
-        $limit = $config['limit'] ?? 10;
-        $controls = $this->controlRepository->findAll();
+        $limit = self::tableLimit($config);
+        $controls = $this->all($this->controlRepository);
         $now = new DateTimeImmutable();
 
         $overdue = array_filter($controls, fn($c) => $c->getNextReviewDate() && $c->getNextReviewDate() < $now);
@@ -1010,8 +1057,8 @@ final class ReportBuilderService
 
     private function getTableCriticalAssets(array $config): array
     {
-        $limit = $config['limit'] ?? 10;
-        $assets = $this->assetRepository->findAll();
+        $limit = self::tableLimit($config);
+        $assets = $this->all($this->assetRepository);
 
         // Sort by max CIA value
         usort($assets, function ($a, $b) {
@@ -1042,7 +1089,7 @@ final class ReportBuilderService
 
     private function getTableAuditFindings(array $config): array
     {
-        $limit = $config['limit'] ?? 10;
+        $limit = self::tableLimit($config);
         $audits = $this->auditRepository->findBy([], ['plannedDate' => 'DESC'], $limit);
 
         $rows = [];
@@ -1063,7 +1110,7 @@ final class ReportBuilderService
 
     private function getTableBcPlans(array $config): array
     {
-        $limit = $config['limit'] ?? 10;
+        $limit = self::tableLimit($config);
         $plans = $this->bcPlanRepository->findBy([], ['lastTested' => 'DESC'], $limit);
 
         $rows = [];
@@ -1087,8 +1134,8 @@ final class ReportBuilderService
     private function getStatusRag(): array
     {
         // Calculate overall RAG status based on multiple factors
-        $controls = $this->controlRepository->findAll();
-        $risks = $this->riskRepository->findAll();
+        $controls = $this->all($this->controlRepository);
+        $risks = $this->all($this->riskRepository);
         $totalControls = count($controls);
         $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
         $implementationRate = $totalControls > 0 ? ($implemented / $totalControls) * 100 : 0;
