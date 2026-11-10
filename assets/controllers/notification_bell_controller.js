@@ -104,9 +104,10 @@ export default class extends Controller {
         }
 
         const badge = this.badgeTarget;
+        const text = count > 99 ? '99+' : String(count);
         if (count > 0) {
             badge.classList.remove('d-none');
-            badge.textContent = count > 99 ? '99+' : String(count);
+            badge.textContent = text;
         } else {
             badge.classList.add('d-none');
             badge.textContent = '0';

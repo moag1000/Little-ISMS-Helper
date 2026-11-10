@@ -16,6 +16,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Controller\RegisterController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Register proposals (Paket 9) in the suggestion queue: whatever
@@ -46,6 +48,11 @@ abstract class AbstractRegisterProposalKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Import;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(RegisterController::class, 'adopt');
     }
 
     public function decisionRoles(): array

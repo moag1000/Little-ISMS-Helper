@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Attribute\PersonalDataResource;
 use App\Enum\ConsentStatus;
 use App\Repository\ConsentRepository;
@@ -199,9 +200,11 @@ class Consent
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'verified_by_id', nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('consent verification action (S26)')]
     private ?User $verifiedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('consent verification action (S26)')]
     private ?DateTimeImmutable $verifiedAt = null;
 
     // ═══════════════════════════════════════════════════════════

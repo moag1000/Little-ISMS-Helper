@@ -29,7 +29,7 @@
 
 {% macro render(props = {}) %}
     {% set actions = props.actions|default([]) %}
-    <header class="fa-page-header" role="banner">
+    <header class="fa-page-header">
         <div class="fa-page-header__meta">
             {# Optional badge chip — rendered only when it has an icon or a
                non-empty label, so `badge: { label: '' }` (or a label that

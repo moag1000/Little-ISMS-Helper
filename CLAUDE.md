@@ -424,6 +424,14 @@ decides on the page or are omitted. Empty states: "Keine X vorhanden." / "Keine 
 Alva hints ≤ 140 characters, one action each. The `<title>` suffix lives only in
 `base.html.twig`. Icons only on primary, danger and icon-only buttons. The page-header badge carries record data (reference number, code, status), never the navigation level.
 
+**Accessibility (Gate 103, W11).** `check_a11y_static.py`: every `<th>` has `scope`, every `<canvas>` has
+`role="img"` + `aria-label` (chart controller: required `data-chart-label-value`), icon-only buttons/links carry
+`aria-label`, `role="banner"` only in base layouts, click handlers on non-interactive elements need `role="button"`
++ `tabindex="0"` + Enter/Space (`keydown.enter->…`). `check_token_contrast.py`: text tokens ≥ 4.5:1 on every surface in
+light and dark, `--input-border` ≥ 3:1; text never uses the display tokens (`color: var(--primary)` → `--primary-strong`,
+warning → `--warning-text`). The form theme links help + errors via `aria-describedby`, sets `aria-invalid`, and
+names compound fields as `role="group"`.
+
 **Inline JavaScript & CSP:** `script-src` has no `'unsafe-inline'` — every
 inline `<script>` needs `nonce="{{ csp_nonce() }}"`; no `on*=` handlers or
 `javascript:` URLs (use Stimulus `data-action`, generic helpers in
@@ -680,6 +688,9 @@ Anything the tool proposes and a person decides (derivation, inheritance, import
 `SuggestionKind` (`src/Service/Suggestion/Kind/`, autoconfigured tag) feeding `SuggestionQueue` — no own
 "suggest" tables, flashes or listeners that write on their own. `generate()` never writes; `apply()` writes
 through the owning service after acceptance and throws `StaleSuggestionException` when the state changed.
+Accepting needs the UI right of the same write: `targetAccess()` names the controller action (its `#[IsGranted]`
+is read with the record) — decision role or responsibility alone never widens who writes; visibility
+(`SuggestionQueue::isVisible()`) keeps drafts about people with ROLE_DPO (S30, `SuggestionKindAccessContractTest`).
 Nightly `app:suggestions:generate` (05:30). "Entwurf vorschlagen" on a detail page = the kind implements
 `RecordDraftKind` (AI kinds via `AbstractAiKind::isCandidate()`), shown by `draft_kinds(entity)` in
 `_fa_entity_links.html.twig` — never an own "draft" button or endpoint. AI goes only through `App\Service\Ai\AiAssistant` (off by
@@ -783,6 +794,13 @@ Compliance audit trail: [`docs/archive/FORM_AUDIT_2026-05.md`](docs/archive/FORM
   (`reportUnmatched`, so a fixed one must be removed) or as a marker comment with a reason. Each rule has a fixture
   whose `// expect:` lines are its mutation table. Tests that read `security.yaml` use
   `tests/Support/ResolvedSecurityConfig` (every env incl. `when@*`, as Symfony resolves it).
+- Load (S31, Gate 101 `check_unbounded_loads.py`, ratchet like Gate 25): no `findAll()` / tenant `findBy()` without
+  limit / `ListPage::fromRequest()` added on the request path (controllers, deadline sources, exports, report
+  services, Twig, MCP); a small global catalogue carries `// @bounded-load: <reason>`. Numbers from the request that
+  size work go through `App\Util\BoundedQuery` (`int()` → 400 outside the range, `clamped()`); bulk `ids` are capped
+  at 500 (`BulkIdsLimitSubscriber`), export/PDF/preview/analytics routes count per person (`HeavyRequestRateLimitSubscriber`,
+  by route name). A deadline source with a date column implements `HorizonFilteredSource` (filter in SQL);
+  `ObligationInbox` builds once per request (`ResetInterface`). `tests/Performance/ObligationInboxQueryBudgetTest`.
 - File size is ratcheted (Gate 25, `check_god_class_size.py`): every file in `src/` has a per-kind
   LOC limit (controller 600, service 1500 / 15 ctor deps, entity 1000, repository 600, command 800,
   rest 800). Files already over it are listed in `scripts/quality/baselines/god_class_size.txt` and
@@ -876,6 +894,10 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       via `App\Service\Upload\StoredFilePath` (public uploads, fixed folders) or `ProtectedUploads` (evidence) —
       never `$dir . '/' . $entity->getXPath()`. A new path column goes into `StoredFilePath::FIELDS` (restore checks
       it) or `NOT_FILE_PATHS` (Gate 94, `tests/Security/StoredFilePathContractTest`).
+- [ ] A record that is evidence as a whole (decision, snapshot, acknowledgement, approval run, log) carries
+      `#[EvidenceRecord]`; a field a step stamps carries `#[ApiReadOnlyEvidence]`. An organisation restore then
+      neither takes nor clears them, the lifecycle status keeps its live value too (`Restore\RestoreEvidencePolicy`,
+      S26 — `tests/Security/RestoreEvidenceContractTest` finds evidence-named fields/classes without one).
 - [ ] Uploaded workbooks are opened only via `App\Service\Import\SafeSpreadsheetReader` (fixed reader type, zip
       limits, read filter) — never `IOFactory::createReaderForFile()`/`load()` (`SpreadsheetUploadReaderTest`).
 - [ ] File uploads checked via `FileUploadSecurityService`; evidence files (documents, versions, training

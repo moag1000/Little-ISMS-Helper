@@ -39,8 +39,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * The suggestion queue (Paket 5): everything the tool proposes — derived from
  * the organisation's data, inherited, imported or written by a language
- * model — in one list. Each person sees what they may decide; reviewers
- * (auditors) see all of it read-only, including the decided ones.
+ * model — in one list. Each person sees what they may decide; reading roles
+ * (auditors, managers) see the rest read-only, suggestions about records of
+ * people only with the DPO role ({@see SuggestionQueue::isVisible()}, S30).
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/suggestions', name: 'app_suggestion_')]
@@ -66,18 +67,14 @@ final class SuggestionController extends AbstractController
     public function index(Request $request): Response
     {
         $tenant = $this->tenant();
-        $reviewer = $this->isGranted('ROLE_AUDITOR');
         $view = $request->query->get('view') === 'decided' ? 'decided' : 'open';
         $kindFilter = (string) $request->query->get('kind', '');
         $originFilter = (string) $request->query->get('origin', '');
         $subject = (string) $request->query->get('subject', '');
 
-        $items = $view === 'decided'
-            ? $this->repository->findDecided($tenant)
-            : array_values(array_filter(
-                $this->repository->findPending($tenant),
-                fn (Suggestion $s): bool => $reviewer || $this->queue->canDecide($s),
-            ));
+        $items = $this->queue->visible(
+            $view === 'decided' ? $this->repository->findDecided($tenant) : $this->repository->findPending($tenant),
+        );
 
         $kindCounts = [];
         foreach ($items as $s) {

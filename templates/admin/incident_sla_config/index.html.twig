@@ -22,12 +22,12 @@
                     {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
                         {% block table_head %}
                             <tr>
-                                <th class="fa-table__th fa-table__th--sortable" data-sort-key="severity" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'incident_sla.field.severity'|trans({}, 'incident_sla') }}</th>
-                                <th class="fa-table__th fa-table__th--sortable fa-table__th--num" data-sort-key="response" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'incident_sla.field.response_hours'|trans({}, 'incident_sla') }}</th>
-                                <th class="fa-table__th fa-table__th--num">{{ 'incident_sla.field.escalation_hours'|trans({}, 'incident_sla') }}</th>
-                                <th class="fa-table__th fa-table__th--num">{{ 'incident_sla.field.resolution_hours'|trans({}, 'incident_sla') }}</th>
-                                <th class="fa-table__th">{{ 'incident_sla.updated_at'|trans({}, 'incident_sla') }}</th>
-                                <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="severity" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'incident_sla.field.severity'|trans({}, 'incident_sla') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--sortable fa-table__th--num" data-sort-key="response" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'incident_sla.field.response_hours'|trans({}, 'incident_sla') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">{{ 'incident_sla.field.escalation_hours'|trans({}, 'incident_sla') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">{{ 'incident_sla.field.resolution_hours'|trans({}, 'incident_sla') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'incident_sla.updated_at'|trans({}, 'incident_sla') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}

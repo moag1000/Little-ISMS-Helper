@@ -5,7 +5,8 @@ Design-System-Artefakt gepflegt:
 
 - **Artefakt:** https://claude.ai/artifact/D2J6dQUWYUBjq3q7MMeA3D (privat)
 - **Ursprung:** Claude-Design-Projekt `b635a91d-510c-4461-8c7d-53183b236bd1`
-- **Snapshot-Stand:** Artefakt-Version `1791580445-691a` (2026-10-09)
+- **Snapshot-Stand:** Artefakt-Version `1791580445-691a` (2026-10-09), Kontrast-Tokens nachgezogen aus
+  Version `1794251728-f8b0` (2026-11-09, W11)
 
 Der Artefakt-Link ist privat, CI kann ihn nicht abrufen. Darum liegt hier ein
 Snapshot seiner Token-Schicht. Er ist die Referenz, gegen die
@@ -45,6 +46,16 @@ Repo; ungenutzte Typo- und Legacy-Tokens sind aus dem Artefakt entfernt.
 Nicht vom Gate erfasst: Tokens, die nur das Repo kennt (u. a. Severity-Farben,
 Status-Tints, Timing `--t-*`, `--target-*`, Bootstrap-Brücke `--bs-*`). Das Gate
 prüft nur die Richtung Artefakt → Repo.
+
+## Kontrast-Tokens (W11, 2026-11-09)
+
+Für WCAG AA wurden `--fg-3` (hell/dunkel), `--success-strong`, `--warning-strong`/`--warning-text` (hell)
+angehoben und `--input-border` sowie `--success/warning/danger/info-tint` im Artefakt ergänzt
+(`tokens.json`, `fairy-aurora.css`, Status-Pills in `fairy-aurora-components.css`). Die vom Artefakt
+erzeugte `tokens.css` war zu dem Zeitpunkt älter als sein `tokens.json` (sie enthielt noch Typo- und
+Cyber-Aliase, die laut letzter Änderung entfernt sind); darum wurden hier nur die geänderten Tokens im
+Snapshot nachgezogen, statt die Datei ganz zu ersetzen. Gate 103 (`check_token_contrast.py`) rechnet
+die Paare aus `assets/styles/fairy-aurora.css`.
 
 ## Komponenten-Ebene (2026-10-11)
 

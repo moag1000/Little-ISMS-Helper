@@ -15,6 +15,8 @@ use App\Service\Suggestion\AbstractSuggestionKind;
 use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
+use App\Controller\ComplianceInheritanceController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Mirrors the open inheritance proposals (FulfillmentInheritanceLog, created
@@ -43,6 +45,11 @@ final class ComplianceInheritanceKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Inheritance;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(ComplianceInheritanceController::class, 'confirm');
     }
 
     public function decisionRoles(): array

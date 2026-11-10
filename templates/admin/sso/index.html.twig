@@ -50,13 +50,13 @@
             {% block table_head %}
                 {% trans_default_domain 'sso' %}
                 <tr>
-                    <th class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.admin.col.name'|trans({}, 'sso') }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.slug'|trans({}, 'sso') }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.scope'|trans({}, 'sso') }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.type'|trans({}, 'sso') }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.domains'|trans({}, 'sso') }}</th>
-                    <th class="fa-table__th">{{ 'sso.admin.col.status'|trans({}, 'sso') }}</th>
-                    <th class="fa-table__th fa-table__th--actions">{{ 'sso.admin.col.actions'|trans({}, 'sso') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.admin.col.name'|trans({}, 'sso') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'sso.admin.col.slug'|trans({}, 'sso') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'sso.admin.col.scope'|trans({}, 'sso') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'sso.admin.col.type'|trans({}, 'sso') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'sso.admin.col.domains'|trans({}, 'sso') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'sso.admin.col.status'|trans({}, 'sso') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'sso.admin.col.actions'|trans({}, 'sso') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}
@@ -112,7 +112,7 @@
                       data-ui-actions-message-param="{{ 'sso.confirm.delete'|trans({'%name%': p.name}, 'sso') }}"
                       data-ui-actions-tone-param="danger">
                                 <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_delete') }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
+                                <button aria-label="{{ 'common.delete'|trans({}, 'messages') }}" type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
                                     <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                 </button>
                             </form>

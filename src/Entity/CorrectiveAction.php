@@ -183,12 +183,14 @@ class CorrectiveAction
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'verified_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('lifecycle step verify (S26)')]
     private ?User $verifiedBy = null;
 
     /**
      * Timestamp der Wirksamkeitsbewertung (immutable).
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('lifecycle step verify (S26)')]
     private ?DateTimeInterface $verifiedAt = null;
 
     /**

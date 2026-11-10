@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Enum\SuggestionOrigin;
 use App\Enum\SuggestionStatus;
 use App\Repository\SuggestionRepository;
@@ -77,14 +78,21 @@ class Suggestion
     #[ORM\Column(length: 20, enumType: SuggestionStatus::class)]
     private SuggestionStatus $status = SuggestionStatus::Pending;
 
+    /** Optimistic lock: a decision on an outdated copy fails instead of applying twice (S30). */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: Types::INTEGER, options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('suggestion queue accept/reject (S26)')]
     private ?DateTimeImmutable $decidedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('suggestion queue accept/reject (S26)')]
     private ?User $decidedBy = null;
 
     /** Comment on acceptance, reason on rejection, cause on supersession. */
@@ -273,5 +281,10 @@ class Suggestion
             $this->resultId = $result->getId();
         }
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

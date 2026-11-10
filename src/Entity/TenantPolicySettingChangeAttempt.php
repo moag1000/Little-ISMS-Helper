@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use App\Repository\TenantPolicySettingChangeAttemptRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -16,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  * attempted value, the override mode that was in force, and the
  * structured reason so the UI can show "ask Konzern-CISO to relax X".
  */
+#[EvidenceRecord('HierarchyOverrideValidator (blocked policy writes)')]
 #[ORM\Entity(repositoryClass: TenantPolicySettingChangeAttemptRepository::class)]
 #[ORM\Table(name: 'tenant_policy_setting_change_attempt')]
 #[ORM\Index(

@@ -18,6 +18,8 @@ use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionNote;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\CommentController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Whoever has to approve a risk acceptance (ISO 27005 8.4.4, ISO 27001
@@ -48,6 +50,11 @@ final class AiRiskAcceptanceExplanationKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(CommentController::class, 'post');
     }
 
     public function decisionRoles(): array

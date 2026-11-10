@@ -13,6 +13,7 @@ use App\Service\Planning\Source\SourceAdapter;
 use App\Service\Responsibility\Responsibility;
 use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
@@ -64,6 +65,21 @@ final class ActionItemDueSource extends EntityDeadlineSource
                 yield $item;
             }
         }
+    }
+
+    protected function dueField(): string
+    {
+        return 'dueDate';
+    }
+
+    /** Open items only, references fetched with them (supports() reads them per item). */
+    protected function narrow(QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder
+            ->andWhere('e.status NOT IN (:closed)')
+            ->setParameter('closed', [ActionItem::STATUS_DONE, ActionItem::STATUS_DISMISSED])
+            ->leftJoin('e.references', 'ref')
+            ->addSelect('ref');
     }
 
     public function supports(object $item): bool

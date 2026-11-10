@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Attribute\PersonalDataResource;
 use DateTimeInterface;
 use DateTimeImmutable;
@@ -203,6 +204,7 @@ class DataBreach
      * Date/time supervisory authority was notified (must be within 72h!)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('authority notification action (GDPR Art. 33, S26)')]
     private ?DateTimeInterface $supervisoryAuthorityNotifiedAt = null;
 
     /**
@@ -262,6 +264,7 @@ class DataBreach
      * Date/time data subjects were notified
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('data subject notification action (GDPR Art. 34, S26)')]
     private ?DateTimeInterface $dataSubjectsNotifiedAt = null;
 
     /**
@@ -276,6 +279,7 @@ class DataBreach
      */
     #[ORM\Column(nullable: true)]
     #[Assert\PositiveOrZero]
+    #[ApiReadOnlyEvidence('data subject notification action (GDPR Art. 34, S26)')]
     private ?int $subjectsNotified = null;
 
     /**

@@ -16,6 +16,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\StatementOfApplicabilityController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * ISB: Statement of Applicability needs a justification per control
@@ -40,6 +42,11 @@ final class AiSoaJustificationKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(StatementOfApplicabilityController::class, 'edit');
     }
 
     public function decisionRoles(): array

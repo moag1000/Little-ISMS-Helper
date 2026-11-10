@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Repository\Bsi2004ExerciseLogRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -133,16 +134,20 @@ class Bsi2004ExerciseLog
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'submitted_by_id', nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('submit action (S26)')]
     private ?User $submittedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('submit action (S26)')]
     private ?DateTimeImmutable $submittedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'confirmed_by_auditor_id', nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('auditor confirmation action (S26)')]
     private ?User $confirmedByAuditor = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('auditor confirmation action (S26)')]
     private ?DateTimeImmutable $confirmedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

@@ -778,14 +778,7 @@ class Tenant
      */
     public function isChildOf(Tenant $candidate): bool
     {
-        $current = $this->parent;
-        while ($current instanceof Tenant) {
-            if ($current === $candidate) {
-                return true;
-            }
-            $current = $current->getParent();
-        }
-        return false;
+        return in_array($candidate, $this->getAllAncestors(), true);
     }
 
     /**
@@ -850,22 +843,32 @@ class Tenant
      */
     public function getRootParent(): Tenant
     {
-        $current = $this;
-        while ($current->getParent() instanceof Tenant) {
-            $current = $current->getParent();
-        }
-        return $current;
+        $ancestors = $this->getAllAncestors();
+
+        return $ancestors === [] ? $this : $ancestors[array_key_last($ancestors)];
     }
+
+    /** Upper bound for walks through the corporate tree (cycle and size guard, S31). */
+    public const int MAX_TREE_SIZE = 10000;
 
     /**
      * Get all subsidiaries recursively (including sub-subsidiaries)
      */
     public function getAllSubsidiaries(): array
     {
+        // Depth-first with a visited set: a cycle written past setParent() (SQL, old data)
+        // ends the walk instead of looping until memory runs out (S31).
         $allSubsidiaries = [];
-        foreach ($this->subsidiaries as $subsidiary) {
+        $seen = [spl_object_id($this) => true];
+        $stack = array_reverse($this->subsidiaries->toArray());
+        while ($stack !== [] && count($seen) <= self::MAX_TREE_SIZE) {
+            $subsidiary = array_pop($stack);
+            if (isset($seen[spl_object_id($subsidiary)])) {
+                continue;
+            }
+            $seen[spl_object_id($subsidiary)] = true;
             $allSubsidiaries[] = $subsidiary;
-            $allSubsidiaries = array_merge($allSubsidiaries, $subsidiary->getAllSubsidiaries());
+            array_push($stack, ...array_reverse($subsidiary->getSubsidiaries()->toArray()));
         }
         return $allSubsidiaries;
     }
@@ -875,13 +878,7 @@ class Tenant
      */
     public function getHierarchyDepth(): int
     {
-        $depth = 0;
-        $current = $this;
-        while ($current->getParent() instanceof Tenant) {
-            $depth++;
-            $current = $current->getParent();
-        }
-        return $depth;
+        return count($this->getAllAncestors());
     }
 
     /**
@@ -893,9 +890,12 @@ class Tenant
     public function getAllAncestors(): array
     {
         $ancestors = [];
+        $seen = [spl_object_id($this) => true];
         $current = $this->parent;
 
-        while ($current instanceof Tenant) {
+        // A cycle (written past setParent()) ends the walk at the first repeat (S31).
+        while ($current instanceof Tenant && !isset($seen[spl_object_id($current)]) && count($ancestors) < self::MAX_TREE_SIZE) {
+            $seen[spl_object_id($current)] = true;
             $ancestors[] = $current;
             $current = $current->getParent();
         }

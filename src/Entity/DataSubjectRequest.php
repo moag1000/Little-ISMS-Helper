@@ -179,6 +179,7 @@ class DataSubjectRequest
      * Date/time the request was completed
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('complete action (GDPR Art. 12(3), S26)')]
     private ?DateTimeImmutable $completedAt = null;
 
     // ============================================================================

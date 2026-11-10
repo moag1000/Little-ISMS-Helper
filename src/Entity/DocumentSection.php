@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Enum\DocumentSectionStatus;
 use App\Repository\DocumentSectionRepository;
 use DateTimeImmutable;
@@ -110,17 +111,21 @@ class DocumentSection
     private ?string $contentSnapshot = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('section sign-off step (S26)')]
     private ?DateTimeImmutable $approvedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'approved_by_user_id', nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('section sign-off step (S26)')]
     private ?User $approvedByUser = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('section sign-off step (S26)')]
     private ?DateTimeImmutable $rejectedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'rejected_by_user_id', nullable: true, onDelete: 'SET NULL')]
+    #[ApiReadOnlyEvidence('section sign-off step (S26)')]
     private ?User $rejectedByUser = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -19,6 +19,8 @@ use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Controller\ProcessingActivityController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Data protection officer (GDPR Art. 30, Art. 28): a supplier with a signed
@@ -59,6 +61,11 @@ final class AiProcessingActivityFromSupplierKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(ProcessingActivityController::class, 'new');
     }
 
     public function decisionRoles(): array

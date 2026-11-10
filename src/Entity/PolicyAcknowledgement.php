@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use App\Enum\PolicyAcknowledgementStatus;
 use App\Repository\PolicyAcknowledgementRepository;
 use DateTimeImmutable;
@@ -21,6 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
  * the document version at acknowledgement time so re-versions don't
  * silently void existing acks. See `05-architecture.md` §4.1.
  */
+#[EvidenceRecord('the person acknowledging the policy (PolicyAcknowledgementService)')]
 #[ORM\Entity(repositoryClass: PolicyAcknowledgementRepository::class)]
 #[ORM\Table(name: 'policy_acknowledgement')]
 #[ORM\UniqueConstraint(

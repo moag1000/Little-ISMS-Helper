@@ -56,7 +56,7 @@
                         {% endblock %}
                         {% block card_body %}
                             <div style="height: 300px; position: relative;">
-                                <canvas id="frameworkComparisonChart"></canvas>
+                                <canvas role="img" aria-label="{{ 'analytics.compliance.comparison.chart_title'|trans({}, 'analytics') }}" id="frameworkComparisonChart"></canvas>
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -195,7 +195,7 @@
                             {{ _fa_alert.render({ variant: 'info', body: 'analytics.compliance.comparison.no_data'|trans({}, 'analytics') }) }}
                             {% endif %}
                             <div style="height: 200px; position: relative;">
-                                <canvas id="overlapChart"></canvas>
+                                <canvas role="img" aria-label="{{ 'analytics.compliance.overlap.efficiency'|trans({}, 'analytics') }}" id="overlapChart"></canvas>
                             </div>
                         {% endblock %}
                     {% endembed %}

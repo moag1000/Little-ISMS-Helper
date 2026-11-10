@@ -96,11 +96,19 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | API-Tokens laufen höchstens 365 Tage, entstehen nur nach voller Anmeldung und werden bei Rollenwechsel widerrufen | `tests/Service/ApiTokenManagerTest`, `tests/Security/ApiTokenBoundaryTest` |
 | SAML-Antworten gelten nur im Browser, der die Anmeldung begonnen hat (Bindungs-Cookie, Login-CSRF) | `tests/Security/Sso/SsoClaimContractTest::samlRefusesUnsolicitedAndUnknownResponses` |
 
+## Vorschlagsvertrag (S30)
+
+| Invariante | Beleg |
+|---|---|
+| Annehmen verlangt das Recht des UI-Schreibwegs: jede Vorschlagsart nennt die Formular-/Aktionsroute (`SuggestionKind::targetAccess()`), deren `#[IsGranted]` die Queue mit dem Datensatz prüft — für Rollen- und Datensatzverantwortliche gleich; eine verantwortliche Person ohne Manager nimmt keinen VVT-, Register- oder Managementbewertungs-Vorschlag an und bekommt ihn nicht in „Mein Tag“. Gilt auch für „Entwurf vorschlagen“ und MCP `propose_draft` | `tests/Service/Suggestion/SuggestionKindAccessContractTest` (alle `app.suggestion_kind`-Services), `SuggestionQueueTest` |
+| Sichtbarkeit: Liste, entschiedene Vorschläge und Zähler zeigen nur, was die Person entscheidet, oder (Lese-Rolle) die Queue der Organisation — Entwürfe zu Datenpannen/Betroffenenanfragen nur mit ROLE_DPO; MCP `pending_suggestions`/`get_context` filtern über `PersonalDataPolicy` | `SuggestionKindAccessContractTest::draftsAboutPeopleStayWithTheDpoRole`, `SuggestionQueueTest::readersSeeTheQueueButRecordsOfPeopleOnlyWithTheDpoRole` |
+| Ein Vorschlag wird höchstens einmal angewandt (Version + Zeilensperre in einer Transaktion); ein KI-Entwurf zu einem abgeschlossenen Datensatz (Panne gemeldet, Anfrage beantwortet) ist überholt; ein Datensatz einer anderen Organisation ist überholt, nie angewandt | `SuggestionQueueTest::aSecondAcceptAppliesNothing`, `…anAiDraftWhoseRecordIsClosedIsWithdrawn`, `SuggestionKindAccessContractTest::aRecordOfAnotherOrganisationIsStale` |
+
 ## Wiederherstellung, globale Daten, Quick-Fix
 
 | Invariante | Beleg |
 |---|---|
-| Eine präparierte Organisationssicherung vergibt keine privilegierte Rolle (alle `RoleNames::PRIVILEGED`, auch in anderer Schreibweise), kein Passwort, keine SSO-Kennung, keine Holding-Stellung, keine Audit-Log-Zeilen | `tests/Service/OrganisationRestoreTenantGuardTest` |
+| Eine präparierte Organisationssicherung vergibt keine privilegierte Rolle (alle `RoleNames::PRIVILEGED`, auch in anderer Schreibweise), kein Passwort, keine SSO-Kennung, keine Holding-Stellung, keine Audit-Log-Zeilen (Nachweise: S26, Zeile unten) | `tests/Service/OrganisationRestoreTenantGuardTest` |
 | Fremde Organisationen und Instanzzeilen bleiben bei der Wiederherstellung unberührt | `OrganisationRestoreTenantGuardTest::craftedOrganisationBackupCannotReachOtherOrganisationsOrInstanceData` |
 | ZIP-Pfade bleiben im Archiv, Dateien erst nach dem Commit, kein html/svg/js | `tests/Service/BackupArchivePathTest`, `BackupArchiveExtractionTest` |
 | Gespeicherte Dateipfade (Logo, Avatar, Audit-Freeze-PDF, Dokument, Version) werden nur über `StoredFilePath` bzw. `ProtectedUploads` zu Dateien, immer innerhalb ihres Ordners (realpath, nur Dateiname bzw. `uploads/<ordner>/<datei>`; absolute Dokumentpfade nur unter `var/uploads`/`var/import-uploads`); jede pfadartige Doctrine-Spalte ist registriert. Eine Wiederherstellung übernimmt keinen Pfad falscher Form, eine Organisationssicherung keinen Pfad, den ein Datensatz einer anderen Organisation nutzt, und kein Branding-HTML (S19) | `tests/Security/StoredFilePathContractTest` (Spalten aus den Metadaten), `OrganisationRestoreTenantGuardTest::craftedFilePathsAreNotRestored`, Gate 94 `check_stored_file_paths.py` |
@@ -113,6 +121,7 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Identitätswechsel nur auf Konten mit weniger Rechten | `tests/Security/Voter/SwitchUserVoterTest` |
 | Eine Instanz-Wiederherstellung glaubt `metadata.tenant_scope` der Datei nicht: nur Organisationen im aktuellen Baum der ersten genannten (oder hier unbekannte) — eine präparierte Liste leert keine fremde Organisation | `tests/Service/Restore/RestoreDataPurgerTest::a_recorded_scope_is_cut_to_the_roots_tree` |
 | ZIP-Sicherungen tragen jede Nachweis-Ablage (`ProtectedUploads::AREAS`, auch Schulungsmaterial); der Verwaist-Scan sieht `var/uploads/<Bereich>` und kennt Schulungsmaterial, damit es nicht in Quarantäne geht | `BackupArchiveExtractionTest::everyProtectedUploadAreaIsBackedUp`, `tests/Service/DataIntegrity/UploadOrphanCheckerTest` |
+| Eine Organisationssicherung ändert keine Nachweise (S26): `#[EvidenceRecord]`-Klassen (Audit-Log, Leitungsentscheidung, Audit-Freeze, SoA-Abbild, Kenntnisnahme, Vier-Augen-Anfrage, Freigabelauf, Dokumentversion …) werden weder angelegt, überschrieben noch geleert; `#[ApiReadOnlyEvidence]`-Felder und der Lifecycle-Status (Marking jedes Symfony-Workflows) behalten bestehend ihren Wert, neu angelegt beginnen sie leer im Anfangszustand; „vorher leeren“ behält Datensätze mit Nachweis. Nur der Instanz-Restore stellt Nachweise wieder her | `tests/Security/RestoreEvidenceContractTest` (Workflows aus der Registry, Nachweis-Namen über alle Organisationsklassen, `keep()` je Klasse, präparierte Datei Ende-zu-Ende) |
 | Wiederhergestellte Freigabe- und Nachweisfelder werden je Typ als `restore.evidence`-Batch protokolliert (Herkunft sichtbar); das Admin-Passwort der Wiederherstellung trifft nie „den ersten Nutzer“ | `tests/Service/Restore/RestoredEvidenceTrailTest` |
 | Sicherungs-Metadaten werden größenbegrenzt gelesen; der Sichtbarkeitsbereich einer hochgeladenen Sicherung kommt vom Hochladenden, nicht aus der Datei | `BackupService::readBackupMetadata()`, `BackupService::recordUploadScope()` |
 | Beispieldaten-Bereinigung nur mit `--tenant-id`, ohne rohes SQL über Organisationen | `src/Command/SampleDataPurgeCommand.php` |
@@ -166,18 +175,6 @@ Ein Nachweis bleibt. Was abgeschlossen ist, wird archiviert, nicht gelöscht (IS
 | Exporte und Downloads werden protokolliert; jeder Datenschutz-Export (VVT, DSFA, Datenpanne, Betroffenenanfrage, Einwilligung, Behörden-VVT) trägt dieselbe Regel `PrivacyExportAccess::RULE` (DSB oder Manager) | `DownloadAuditSubscriber`, `tests/Security/PrivacyExportAccessTest` (findet die Routen selbst) |
 
 
-## Nachweise aus der Wiederherstellung (S26)
-
-Platzhalter (B3): Inhalt schreibt Paket S26 — welche Nachweis-Entitäten und -Felder eine
-Organisationswiederherstellung nie ändert und welcher Test das belegt.
-
-| Invariante | Beleg |
-|---|---|
-
-## Vorschlagsvertrag (S30)
-
-Platzhalter (B3): Inhalt schreibt Paket S30 — was eine `SuggestionKind` erzeugen und anwenden darf und welcher Test
-jede Art prüft.
 
 | Invariante | Beleg |
 |---|---|

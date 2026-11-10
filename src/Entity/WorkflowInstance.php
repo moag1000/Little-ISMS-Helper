@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Enum\WorkflowInstanceStatus;
@@ -12,6 +13,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[EvidenceRecord('WorkflowService (approval chain: who approved which step when)')]
 #[ORM\Entity]
 #[ORM\Table(name: 'workflow_instances')]
 #[ORM\Index(columns: ['entity_type', 'entity_id'])]

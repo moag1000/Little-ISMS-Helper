@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use App\Entity\Person;
 use App\Enum\FourEyesApprovalRequestStatus;
 use App\Repository\FourEyesApprovalRequestRepository;
@@ -16,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[EvidenceRecord('FourEyesApprovalService (request, approve, reject)')]
 #[ORM\Entity(repositoryClass: FourEyesApprovalRequestRepository::class)]
 #[ORM\Table(name: 'four_eyes_approval_request')]
 #[ORM\Index(name: 'idx_feyes_status', columns: ['status'])]

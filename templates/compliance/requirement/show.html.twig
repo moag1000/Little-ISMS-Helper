@@ -236,7 +236,7 @@
                             {% block table_body %}
                                 {% for control in rule_controls %}
                                     <tr>
-                                        <td><a href="{{ path('app_soa_show', {id: control.id}) }}">{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false } only %}</a></td>
+                                        <td><a aria-label="{{ (control.isoReference|default(control.controlId|default('')) ~ ' ' ~ control.name|default(''))|trim }}" href="{{ path('app_soa_show', {id: control.id}) }}">{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false } only %}</a></td>
                                         <td>{{ control.name }}</td>
                                         <td>
                                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: control.implementationStatus } %}

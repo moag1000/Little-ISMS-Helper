@@ -130,6 +130,25 @@ final class ObligationInboxTest extends TestCase
         self::assertCount(1, $inbox->forUser($this->owner, $this->tenant, $this->now));
     }
 
+    #[Test]
+    public function theTenantInboxIsBuiltOncePerRequestUntilReset(): void
+    {
+        (new \ReflectionProperty(Tenant::class, 'id'))->setValue($this->tenant, 9);
+        $source = new FakeDeadlineSource('risk_review', new DeadlineProfile('risk_review_overdue'), [
+            FakeDeadlineSource::record(1, Responsibility::holders($this->owner), $this->now),
+        ]);
+        $inbox = $this->inbox($source);
+
+        $inbox->forUser($this->owner, $this->tenant, $this->now);
+        $inbox->forUser($this->other, $this->tenant, $this->now);
+        $inbox->byRecipient($this->tenant, $this->now);
+        self::assertSame(1, $source->reads, 'S31: My Day, bell and dashboard share one build.');
+
+        $inbox->reset();
+        $inbox->forUser($this->owner, $this->tenant, $this->now);
+        self::assertSame(2, $source->reads, 'reset() (end of request / worker message) drops it.');
+    }
+
     private function inbox(FakeDeadlineSource ...$sources): ObligationInbox
     {
         $users = $this->createStub(UserRepository::class);

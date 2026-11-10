@@ -16,6 +16,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\ManagementDecisionController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Whoever puts a proposal before top management (ISO 27001 5.1, 9.3.3;
@@ -42,6 +44,11 @@ final class AiDecisionRationaleKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(ManagementDecisionController::class, 'new');
     }
 
     public function decisionRoles(): array

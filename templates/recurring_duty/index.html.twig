@@ -31,12 +31,12 @@
     {% embed '_components/_fa_table.html.twig' with { hover: true } %}
         {% block table_head %}
             <tr>
-                <th class="fa-table__th">{{ 'recurring_duty.column.duty'|trans({}, 'recurring_duty') }}</th>
-                <th class="fa-table__th">{{ 'recurring_duty.column.owner'|trans({}, 'recurring_duty') }}</th>
-                <th class="fa-table__th">{{ 'recurring_duty.column.interval'|trans({}, 'recurring_duty') }}</th>
-                <th class="fa-table__th">{{ 'recurring_duty.column.last_done'|trans({}, 'recurring_duty') }}</th>
-                <th class="fa-table__th">{{ 'recurring_duty.column.next_due'|trans({}, 'recurring_duty') }}</th>
-                <th class="fa-table__th fa-table__th--actions">{{ 'recurring_duty.column.actions'|trans({}, 'recurring_duty') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'recurring_duty.column.duty'|trans({}, 'recurring_duty') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'recurring_duty.column.owner'|trans({}, 'recurring_duty') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'recurring_duty.column.interval'|trans({}, 'recurring_duty') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'recurring_duty.column.last_done'|trans({}, 'recurring_duty') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'recurring_duty.column.next_due'|trans({}, 'recurring_duty') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'recurring_duty.column.actions'|trans({}, 'recurring_duty') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}

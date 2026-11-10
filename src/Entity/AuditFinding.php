@@ -178,6 +178,7 @@ class AuditFinding
     private DateTimeInterface $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ApiReadOnlyEvidence('lifecycle step close (S26)')]
     private ?DateTimeInterface $closedAt = null;
 
     /** @var Collection<int, CorrectiveAction> */

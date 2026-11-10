@@ -16,6 +16,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\DataBreachController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * DPO within the 72 hours (GDPR Art. 33): a breach that must be notified and
@@ -48,6 +50,11 @@ final class AiBreachNotificationKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(DataBreachController::class, 'edit');
     }
 
     public function decisionRoles(): array

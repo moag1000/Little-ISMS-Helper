@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use App\Repository\DocumentVersionRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -21,6 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
  *  - DELETE is blocked by the voter (only SUPER_ADMIN can force-delete via CLI).
  *  - `replacedBy` (nullable self-FK) records which later version superseded this one.
  */
+#[EvidenceRecord('document publish step (version history, ISO 27001 7.5.3)')]
 #[ORM\Entity(repositoryClass: DocumentVersionRepository::class)]
 #[ORM\Table(name: 'document_version')]
 #[ORM\Index(name: 'idx_docver_tenant', columns: ['tenant_id'])]

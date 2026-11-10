@@ -84,10 +84,10 @@
             {% embed '_components/_fa_table.html.twig' with { id: 'report-by-group', stickyHead: false } %}
                 {% block table_head %}
                     <tr>
-                        <th class="fa-table__th">{{ 'planning.report.col.group'|trans({}, 'planning') }}</th>
-                        <th class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.planned_pt'|trans({}, 'planning') }}</th>
-                        <th class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.share_pct'|trans({}, 'planning') }}</th>
-                        <th class="fa-table__th" style="width:30%">{{ 'planning.report.col.share_bar'|trans({}, 'planning') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'planning.report.col.group'|trans({}, 'planning') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.planned_pt'|trans({}, 'planning') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.share_pct'|trans({}, 'planning') }}</th>
+                        <th scope="col" class="fa-table__th" style="width:30%">{{ 'planning.report.col.share_bar'|trans({}, 'planning') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -124,8 +124,8 @@
         {% embed '_components/_fa_table.html.twig' with { id: 'report-by-scope', stickyHead: false } %}
             {% block table_head %}
                 <tr>
-                    <th class="fa-table__th">{{ 'planning.report.col.scope'|trans({}, 'planning') }}</th>
-                    <th class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.effort_pt'|trans({}, 'planning') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'planning.report.col.scope'|trans({}, 'planning') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.effort_pt'|trans({}, 'planning') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\EvidenceRecord;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -56,6 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     normalizationContext: ['groups' => ['management_decision:read']],
 )]
+#[EvidenceRecord('ManagementDecisionService / management_decision_lifecycle (ROLE_TOP_MGMT)')]
 #[ORM\Entity(repositoryClass: ManagementDecisionRepository::class)]
 #[ORM\Table(name: 'management_decision')]
 #[ORM\Index(name: 'idx_md_tenant_status', columns: ['tenant_id', 'status'])]

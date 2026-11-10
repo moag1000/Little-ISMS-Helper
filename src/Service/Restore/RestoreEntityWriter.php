@@ -46,10 +46,18 @@ class RestoreEntityWriter
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
         private readonly ?OwnerTextResolver $ownerTexts = null,
+        private readonly ?RestoreEvidencePolicy $evidencePolicy = null,
     ) {
     }
 
     private ?RestoreTenantGuard $tenantGuard = null;
+
+    private ?RestoreEvidencePolicy $fallbackEvidencePolicy = null;
+
+    private function evidencePolicy(): RestoreEvidencePolicy
+    {
+        return $this->evidencePolicy ?? ($this->fallbackEvidencePolicy ??= new RestoreEvidencePolicy());
+    }
 
     private function tenantGuard(): RestoreTenantGuard
     {
@@ -243,6 +251,11 @@ class RestoreEntityWriter
         $uniqueFields = $this->getUniqueConstraintFields($entityName);
         $scopeIds     = RestoreTenantGuard::scopeFromOptions($options);
 
+        // S26: an organisation restore keeps evidence fields and the lifecycle status at
+        // their live value; a record it creates starts without evidence in the initial place.
+        $keepsEvidence     = $scopeIds !== [] && $this->evidencePolicy()->protectedFields($classMetadata) !== [];
+        $discardedEvidence = [];
+
         $batchSize    = 100;
         $batchSpName  = null;
         $batchStart   = 0;
@@ -364,8 +377,10 @@ class RestoreEntityWriter
                     }
                     // The organisation record is always updated in place: replacing it
                     // would give it a new id and orphan every row that references it.
+                    // Evidence is kept on the live record, so it is updated in place as well.
                     if ($options['existing_data_strategy'] === RestoreOptions::EXISTING_UPDATE
                         || $entityName === 'Tenant'
+                        || $keepsEvidence
                     ) {
                         $entity = $existingEntity;
                     } else {
@@ -375,6 +390,10 @@ class RestoreEntityWriter
                 } else {
                     $entity = new $entityClass();
                 }
+
+                $liveEvidence = $keepsEvidence && $existingEntity !== null
+                    ? $this->evidencePolicy()->capture($existingEntity, $classMetadata)
+                    : null;
 
                 // Hydrate scalar fields
                 $this->hydrateScalarFields(
@@ -399,6 +418,13 @@ class RestoreEntityWriter
                 );
 
                 $this->restoreLegacyOwnerText($entity, $entityName, $data);
+
+                if ($keepsEvidence) {
+                    $discarded = $this->evidencePolicy()->keep($entity, $classMetadata, $liveEvidence);
+                    if ($discarded !== []) {
+                        $discardedEvidence[] = sprintf('#%s (%s)', (string) ($data['id'] ?? '?'), implode(', ', $discarded));
+                    }
+                }
 
                 $this->entityManager->persist($entity);
 
@@ -472,6 +498,16 @@ class RestoreEntityWriter
                     $batchErrored = false;
                 }
             }
+        }
+
+        if ($discardedEvidence !== []) {
+            $warnings[] = sprintf(
+                '%s: Nachweise und Status von %d Datensätzen nicht aus der Datei übernommen — bestehende behalten ihren Wert, '
+                . 'neue beginnen ohne Nachweis im Anfangsstatus (nur ein Instanz-Restore stellt sie wieder her): %s',
+                $entityName,
+                count($discardedEvidence),
+                implode('; ', array_slice($discardedEvidence, 0, 10)) . (count($discardedEvidence) > 10 ? ' …' : ''),
+            );
         }
 
         // Final flush for this entity type
