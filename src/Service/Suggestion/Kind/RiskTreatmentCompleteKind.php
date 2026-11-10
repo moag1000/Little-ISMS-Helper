@@ -18,6 +18,7 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * "In treatment" → "treated" (ISO 27001 8.3) when every control of the
@@ -44,6 +45,11 @@ final class RiskTreatmentCompleteKind extends AbstractSuggestionKind
     public function origin(): SuggestionOrigin
     {
         return SuggestionOrigin::Rule;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::role('ROLE_RISK_MANAGER', 'lifecycle transition complete_treatment (config/workflows/risk.yaml)');
     }
 
     public function decisionRoles(): array

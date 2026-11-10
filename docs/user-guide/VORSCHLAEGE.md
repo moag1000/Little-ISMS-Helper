@@ -42,15 +42,29 @@ annimmt. Jede Entscheidung steht mit Person, Zeit und Begründung im Audit-Log
 | Erklärung zur Risikoakzeptanz (KI) | Sprachmodell, beantragte und noch nicht entschiedene Risikoakzeptanz (ISO 27005 8.4.4) | Allgemeinverständliche Erklärung wird als Kommentar am Risiko abgelegt; das Risiko wird nie akzeptiert | Risikomanager, CISO, Risikoeigner |
 | Begründung Leitungsentscheidung (KI) | Sprachmodell, offener Entscheidungsvorschlag ohne Vorschlagstext (ISO 27001 9.3.3) | Vorschlagstext wird gefüllt, solange er leer ist; Billigen oder Ablehnen bleibt bei der Leitung | ISB, CISO |
 
-Neben den Rollen der Tabelle entscheidet immer auch, wer für den Datensatz zuständig ist
+Neben den Rollen der Tabelle entscheidet auch, wer für den Datensatz zuständig ist
 (Risikoeigner, Asset-Verantwortliche, …; dieselbe Zuständigkeit wie in „Mein Tag“ und der
 Sammelmail). Offene Vorschläge stehen bei diesen Personen in „Mein Tag“ und in der
 Sammelmail um 07:00 und gelten zwei Wochen nach dem Entstehen als fällig.
 
-Jede Art erscheint nur, wenn ihr Modul aktiv ist. Prüfer (Auditor, Konzern-Auditor,
-Group CISO) sehen alle Vorschläge, auch die entschiedenen, aber nur lesend. Deshalb entscheiden
-ISB und CISO über Auditnotiz und Stichprobe, nicht die Auditoren selbst; die Leitung (nur lesend)
-nutzt für die Risikofreigabe den Freigabedialog.
+Annehmen verlangt immer auch das Recht, dieselbe Änderung im Formular zu machen. Ein Vorschlag
+erweitert nie, wer schreiben darf: Einen VVT-Eintrag, einen Registereintrag, die Zusammenfassung
+der Managementbewertung oder eine Maßnahmenzuordnung nimmt nur an, wer das auch von Hand dürfte
+(Manager); Zuständige ohne diese Rolle sehen solche Vorschläge nicht in „Mein Tag“.
+
+Wer sieht was: Jede Art erscheint nur, wenn ihr Modul aktiv ist. Wer entscheiden darf, sieht den
+Vorschlag. Prüfer und Manager (Auditor, Konzern-Auditor, Group CISO, Manager) sehen die übrigen
+Vorschläge der Organisation nur lesend, auch die entschiedenen. Entwürfe zu Datenpannen und
+Betroffenenanfragen enthalten Personendaten: Die sieht außer den Entscheidenden nur die Rolle
+Datenschutzbeauftragte(r), und an den KI-Assistenten (MCP) gehen sie nur für diese Rolle. Alle
+anderen sehen nur, was sie selbst entscheiden. Deshalb entscheiden ISB und CISO über Auditnotiz und
+Stichprobe, nicht die Auditoren selbst; die Leitung (nur lesend) nutzt für die Risikofreigabe den
+Freigabedialog.
+
+Ein Vorschlag wird genau einmal angenommen: Ein zweiter Klick oder eine zweite Person findet ihn
+schon entschieden. Ein KI-Entwurf gilt nur, solange der Datensatz ihn noch braucht — ist die Panne
+schon gemeldet, die Anfrage beantwortet oder das Audit abgeschlossen, wird er beim Annehmen als
+überholt zurückgezogen, statt nachträglich Text einzutragen.
 
 ## Wann Vorschläge entstehen
 

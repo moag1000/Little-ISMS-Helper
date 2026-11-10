@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Suggestion;
 
+use App\Attribute\PersonalDataResource;
 use App\Entity\Suggestion;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -12,6 +13,8 @@ use App\Repository\SuggestionRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\Responsibility\ResponsibilityResolver;
+use App\Service\Suggestion\Kind\AbstractAiKind;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -21,11 +24,27 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  * (the kind applies it) or rejects. Every decision is audit-logged with kind,
  * origin, model and target — never with prompt or answer text, which may
  * carry personal data.
+ *
+ * Who sees and who decides (S30): deciding needs a decision role or the
+ * responsibility for the record AND the right of the same write in the UI
+ * ({@see SuggestionKind::targetAccess()}); seeing needs the decision, or a
+ * reading role (auditor line, managers) — suggestions about records of
+ * people (`#[PersonalDataResource]` on the whole class) only for the data
+ * protection officer's role.
  */
 class SuggestionQueue
 {
     /** @var array<string, SuggestionKind> */
     private array $kinds = [];
+
+    /** Role that reads suggestions about records of people (as for the assistant, S24). */
+    public const string PERSONAL_DATA_ROLE = 'ROLE_DPO';
+
+    /** Role that reads the whole queue without deciding (auditor line; managers inherit it). */
+    public const string READER_ROLE = 'ROLE_AUDITOR';
+
+    /** @var array<string, bool> */
+    private static array $personalClasses = [];
 
     /**
      * @param iterable<SuggestionKind> $kinds
@@ -39,7 +58,9 @@ class SuggestionQueue
         private readonly ModuleConfigurationService $modules,
         private readonly ?SuggestionResponsibility $responsibility = null,
         private readonly ?ResponsibilityResolver $resolver = null,
+        private ?SuggestionTargetAccess $targetAccess = null,
     ) {
+        $this->targetAccess ??= new SuggestionTargetAccess($security);
         foreach ($kinds as $kind) {
             $this->kinds[$kind->key()] = $kind;
         }
@@ -104,21 +125,39 @@ class SuggestionQueue
      */
     public function accept(Suggestion $suggestion, User $by, ?string $editedText = null, ?string $note = null): object
     {
-        $this->assertPending($suggestion);
-        $kind = $this->requireKind($suggestion);
-        $edited = $editedText !== null && $suggestion->getEditableText() !== null
-            && trim($editedText) !== trim($suggestion->getEditableText());
-        $text = $editedText !== null && trim($editedText) !== '' ? trim($editedText) : $suggestion->getEditableText();
-
+        $connection = $this->entityManager->getConnection();
+        $connection->beginTransaction();
         try {
+            // One decision per suggestion: a second click or a second person waits here and
+            // then finds it decided (F4) — nothing is created twice.
+            if ($suggestion->getId() !== null) {
+                $this->entityManager->refresh($suggestion, LockMode::PESSIMISTIC_WRITE);
+            }
+            $this->assertPending($suggestion);
+            $kind = $this->requireKind($suggestion);
+            $this->assertStillCandidate($kind, $suggestion);
+            $edited = $editedText !== null && $suggestion->getEditableText() !== null
+                && trim($editedText) !== trim($suggestion->getEditableText());
+            $text = $editedText !== null && trim($editedText) !== '' && $suggestion->getEditableText() !== null
+                ? trim($editedText)
+                : $suggestion->getEditableText();
             $result = $kind->apply($suggestion, $by, $text);
+            $suggestion->decide(SuggestionStatus::Accepted, $by, $note, $result);
+            $this->entityManager->flush();
+            $connection->commit();
         } catch (StaleSuggestionException $e) {
-            $this->supersede($suggestion, $e->getMessage());
+            try {
+                $this->supersede($suggestion, $e->getMessage());
+                $connection->commit();
+            } catch (\Throwable $inner) {
+                self::rollBack($connection);
+                throw $inner;
+            }
+            throw $e;
+        } catch (\Throwable $e) {
+            self::rollBack($connection);
             throw $e;
         }
-
-        $suggestion->decide(SuggestionStatus::Accepted, $by, $note, $result);
-        $this->entityManager->flush();
         $this->log('suggestion.accepted', $suggestion, ['edited' => $edited]);
 
         return $result;
@@ -169,6 +208,10 @@ class SuggestionQueue
         if (!$kind instanceof SuggestionKind || !$this->isKindActive($kind, $suggestion->getTenant())) {
             return false;
         }
+        // The same right as the write in the UI, for role holders and record holders alike (S30, F3).
+        if (!$this->allowsTarget($kind, $this->responsibility?->subject($suggestion))) {
+            return false;
+        }
         foreach ($kind->decisionRoles() as $role) {
             if ($this->security->isGranted($role)) {
                 return true;
@@ -182,6 +225,67 @@ class SuggestionQueue
         }
 
         return false;
+    }
+
+    /** Does the current user hold the UI right of the kind's write on this record? */
+    public function allowsTarget(SuggestionKind $kind, ?object $subject): bool
+    {
+        return $this->targetAccess?->allows($kind, $subject) ?? false;
+    }
+
+    /**
+     * May the current user see this suggestion (list, decided view, counts)?
+     * Who decides sees it; a reading role sees the organisation's queue, but
+     * suggestions about records of people only with the DPO role (S30, F1).
+     */
+    public function isVisible(Suggestion $suggestion): bool
+    {
+        $kind = $this->kind($suggestion->getKind());
+        if (!$kind instanceof SuggestionKind || !$this->isKindActive($kind, $suggestion->getTenant())) {
+            return false;
+        }
+        if ($this->canDecide($suggestion)) {
+            return true;
+        }
+        if (!$this->security->isGranted(self::READER_ROLE)) {
+            return false;
+        }
+
+        return !self::isAboutPeople($suggestion->getSubjectClass()) || $this->security->isGranted(self::PERSONAL_DATA_ROLE);
+    }
+
+    /**
+     * @param iterable<Suggestion> $suggestions
+     * @return list<Suggestion>
+     */
+    public function visible(iterable $suggestions): array
+    {
+        $visible = [];
+        foreach ($suggestions as $suggestion) {
+            if ($this->isVisible($suggestion)) {
+                $visible[] = $suggestion;
+            }
+        }
+
+        return $visible;
+    }
+
+    /**
+     * Is the record class one whose records describe people as a whole
+     * (`#[PersonalDataResource]` without a field list, or never for the assistant)?
+     */
+    public static function isAboutPeople(?string $class): bool
+    {
+        if ($class === null || !class_exists($class)) {
+            return false;
+        }
+        if (!array_key_exists($class, self::$personalClasses)) {
+            $attributes = (new \ReflectionClass($class))->getAttributes(PersonalDataResource::class);
+            $marker = $attributes === [] ? null : $attributes[0]->newInstance();
+            self::$personalClasses[$class] = $marker !== null && (!$marker->isFieldLevel() || !$marker->assistant);
+        }
+
+        return self::$personalClasses[$class];
     }
 
     /** @return list<Suggestion> pending entries the current user may decide */
@@ -230,6 +334,28 @@ class SuggestionQueue
     {
         return $this->kind($suggestion->getKind())
             ?? throw new StaleSuggestionException(sprintf('Unknown suggestion kind "%s".', $suggestion->getKind()));
+    }
+
+    /**
+     * An AI draft fits only while its record still needs it (F5): a breach
+     * already reported, a request answered or an audit closed makes it stale.
+     */
+    private function assertStillCandidate(SuggestionKind $kind, Suggestion $suggestion): void
+    {
+        if (!$kind instanceof AbstractAiKind) {
+            return;
+        }
+        $subject = $this->responsibility?->subject($suggestion);
+        if ($subject !== null && !$kind->stillApplies($suggestion, $subject)) {
+            throw new StaleSuggestionException('no_longer_open');
+        }
+    }
+
+    private static function rollBack(\Doctrine\DBAL\Connection $connection): void
+    {
+        if ($connection->isTransactionActive()) {
+            $connection->rollBack();
+        }
     }
 
     private function assertPending(Suggestion $suggestion): void

@@ -14,6 +14,7 @@ use App\Repository\SuggestionRepository;
 use App\Service\Ai\AiAssistant;
 use App\Service\Responsibility\ResponsibilityResolver;
 use App\Service\Suggestion\AbstractSuggestionKind;
+use App\Service\Suggestion\TargetAccess;
 use App\Service\Suggestion\RecordDraftKind;
 use App\Service\Suggestion\RecordDrafts;
 use App\Service\Suggestion\SuggestionDraft;
@@ -107,6 +108,7 @@ final class RecordDraftsTest extends TestCase
             $queue = $this->createStub(SuggestionQueue::class);
             $queue->method('kinds')->willReturn(array_combine(array_map(static fn ($k) => $k->key(), $kinds), $kinds));
             $queue->method('isKindActive')->willReturn(true);
+            $queue->method('allowsTarget')->willReturn(true);
         }
         $repo = $this->createStub(SuggestionRepository::class);
         $repo->method('findPendingForSubject')->willReturn($pending);
@@ -150,6 +152,11 @@ final class RecordDraftsTest extends TestCase
             public function decisionRoles(): array
             {
                 return ['ROLE_ISB'];
+            }
+
+            public function targetAccess(): TargetAccess
+            {
+                return TargetAccess::role('ROLE_USER', 'test kind');
             }
 
             public function subjectClasses(): array

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Suggestion;
 
+use App\Entity\DataBreach;
 use App\Entity\Risk;
 use App\Entity\Suggestion;
 use App\Entity\Tenant;
@@ -13,10 +14,16 @@ use App\Enum\SuggestionStatus;
 use App\Repository\SuggestionRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
+use App\Service\Ai\AiAssistant;
+use App\Service\Responsibility\Responsibility;
+use App\Service\Responsibility\ResponsibilityResolver;
 use App\Service\Suggestion\AbstractSuggestionKind;
+use App\Service\Suggestion\Kind\AbstractAiKind;
 use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionQueue;
+use App\Service\Suggestion\SuggestionResponsibility;
+use App\Service\Suggestion\TargetAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -167,6 +174,123 @@ final class SuggestionQueueTest extends TestCase
         $this->queue()->reject($s, new User(), null);
     }
 
+    #[Test]
+    public function aRecordHolderWithoutTheWriteRightCannotDecide(): void
+    {
+        // S30 F3: the holder of the record is responsible, but the write needs ROLE_MANAGER in the UI.
+        $s = new Suggestion($this->tenant, 'test.kind', SuggestionOrigin::Rule, 'T', 'R', 'k');
+        $queue = $this->deciding(kind: $this->kind(access: 'ROLE_MANAGER'), granted: ['ROLE_USER'], responsible: true);
+
+        self::assertFalse($queue->canDecide($s));
+        self::assertFalse($queue->isVisible($s), 'a plain user sees only what they decide');
+    }
+
+    #[Test]
+    public function aRecordHolderWithTheWriteRightDecides(): void
+    {
+        $s = new Suggestion($this->tenant, 'test.kind', SuggestionOrigin::Rule, 'T', 'R', 'k');
+        $queue = $this->deciding(kind: $this->kind(access: 'ROLE_USER'), granted: ['ROLE_USER'], responsible: true);
+
+        self::assertTrue($queue->canDecide($s));
+        self::assertTrue($queue->isVisible($s));
+    }
+
+    #[Test]
+    public function aDecisionRoleStillNeedsTheWriteRight(): void
+    {
+        $s = new Suggestion($this->tenant, 'test.kind', SuggestionOrigin::Rule, 'T', 'R', 'k');
+        // decision role ROLE_ISB held, the write right (ROLE_MANAGER) not
+        $queue = $this->deciding(kind: $this->kind(access: 'ROLE_MANAGER', roles: ['ROLE_ISB']), granted: ['ROLE_ISB']);
+
+        self::assertFalse($queue->canDecide($s));
+    }
+
+    #[Test]
+    public function readersSeeTheQueueButRecordsOfPeopleOnlyWithTheDpoRole(): void
+    {
+        $plain = new Suggestion($this->tenant, 'test.kind', SuggestionOrigin::Rule, 'T', 'R', 'k1');
+        $breach = (new Suggestion($this->tenant, 'test.kind', SuggestionOrigin::Ai, 'T', 'R', 'k2'))
+            ->setSubject(DataBreach::class, 7);
+        $kind = $this->kind(access: 'ROLE_ADMIN');
+
+        $reader = $this->deciding(kind: $kind, granted: ['ROLE_AUDITOR']);
+        self::assertTrue($reader->isVisible($plain));
+        self::assertFalse($reader->isVisible($breach), 'a manager without DPO does not read breach drafts');
+        self::assertSame([$plain], $reader->visible([$plain, $breach]));
+
+        $dpo = $this->deciding(kind: $kind, granted: ['ROLE_AUDITOR', 'ROLE_DPO']);
+        self::assertTrue($dpo->isVisible($breach));
+
+        $user = $this->deciding(kind: $kind, granted: ['ROLE_USER']);
+        self::assertSame([], $user->visible([$plain, $breach]), 'ROLE_USER sees no foreign drafts');
+    }
+
+    #[Test]
+    public function aSecondAcceptAppliesNothing(): void
+    {
+        $kind = $this->kind();
+        $s = new Suggestion($this->tenant, 'test.kind', SuggestionOrigin::Rule, 'T', 'R', 'k');
+        $queue = $this->queue(kinds: [$kind]);
+        $queue->accept($s, new User());
+
+        try {
+            $queue->accept($s, new User());
+            self::fail('expected StaleSuggestionException');
+        } catch (StaleSuggestionException) {
+        }
+
+        self::assertSame(1, $kind->applied, 'double click creates one record');
+        self::assertSame(SuggestionStatus::Accepted, $s->getStatus());
+    }
+
+    #[Test]
+    public function anAiDraftWhoseRecordIsClosedIsWithdrawn(): void
+    {
+        // S30 F5: e.g. breach notification text after the authority was notified.
+        $s = (new Suggestion($this->tenant, 'test.ai', SuggestionOrigin::Ai, 'T', 'R', 'k'))->setSubject(Risk::class, 3);
+        $kind = $this->aiKind(candidate: false);
+        $responsibility = $this->createStub(SuggestionResponsibility::class);
+        $responsibility->method('subject')->willReturn(new Risk());
+
+        try {
+            $this->queue(kinds: [$kind], responsibility: $responsibility)->accept($s, new User());
+            self::fail('expected StaleSuggestionException');
+        } catch (StaleSuggestionException) {
+        }
+
+        self::assertFalse($kind->applied, 'nothing is written into a closed record');
+        self::assertSame(SuggestionStatus::Superseded, $s->getStatus());
+    }
+
+    /**
+     * @param list<string> $granted roles the stub security grants (no hierarchy)
+     */
+    private function deciding(AbstractSuggestionKind $kind, array $granted, bool $responsible = false): SuggestionQueue
+    {
+        $security = $this->createStub(Security::class);
+        $security->method('isGranted')->willReturnCallback(
+            static fn (mixed $attribute): bool => is_string($attribute) && in_array($attribute, $granted, true),
+        );
+        $security->method('getUser')->willReturn(new User());
+        $modules = $this->createStub(ModuleConfigurationService::class);
+        $modules->method('isModuleActiveForTenant')->willReturn(true);
+        $resolver = $this->createStub(ResponsibilityResolver::class);
+        $resolver->method('isResponsible')->willReturn($responsible);
+        $responsibility = $this->createStub(SuggestionResponsibility::class);
+        $responsibility->method('of')->willReturn(Responsibility::roles('ROLE_MANAGER'));
+
+        return new SuggestionQueue(
+            [$kind],
+            $this->createStub(SuggestionRepository::class),
+            $this->createStub(EntityManagerInterface::class),
+            $this->createStub(AuditLogger::class),
+            $security,
+            $modules,
+            $responsibility,
+            $resolver,
+        );
+    }
+
     /**
      * @param list<AbstractSuggestionKind>|null $kinds
      */
@@ -175,6 +299,7 @@ final class SuggestionQueueTest extends TestCase
         ?EntityManagerInterface $em = null,
         ?AuditLogger $audit = null,
         ?array $kinds = null,
+        ?SuggestionResponsibility $responsibility = null,
     ): SuggestionQueue {
         return new SuggestionQueue(
             $kinds ?? [$this->kind()],
@@ -183,17 +308,32 @@ final class SuggestionQueueTest extends TestCase
             $audit ?? $this->createStub(AuditLogger::class),
             $this->createStub(Security::class),
             $this->createStub(ModuleConfigurationService::class),
+            $responsibility,
         );
     }
 
-    private function kind(bool $stale = false): AbstractSuggestionKind
-    {
-        return new class ($stale) extends AbstractSuggestionKind {
+    /** @param list<string> $roles */
+    private function kind(
+        bool $stale = false,
+        string $access = 'ROLE_USER',
+        array $roles = ['ROLE_MANAGER'],
+    ): AbstractSuggestionKind {
+        return new class ($stale, $access, $roles) extends AbstractSuggestionKind {
             public ?string $appliedText = null;
             public bool $rejected = false;
+            public int $applied = 0;
 
-            public function __construct(private readonly bool $stale)
+            /** @param list<string> $roles */
+            public function __construct(
+                private readonly bool $stale,
+                private readonly string $access,
+                private readonly array $roles,
+            ) {
+            }
+
+            public function targetAccess(): TargetAccess
             {
+                return TargetAccess::role($this->access, 'test kind');
             }
 
             public function key(): string
@@ -208,7 +348,7 @@ final class SuggestionQueueTest extends TestCase
 
             public function decisionRoles(): array
             {
-                return ['ROLE_MANAGER'];
+                return $this->roles;
             }
 
             public function apply(Suggestion $suggestion, User $by, ?string $editedText): object
@@ -216,6 +356,7 @@ final class SuggestionQueueTest extends TestCase
                 if ($this->stale) {
                     throw new StaleSuggestionException('record_gone');
                 }
+                $this->applied++;
                 $this->appliedText = $editedText;
 
                 return new \stdClass();
@@ -224,6 +365,73 @@ final class SuggestionQueueTest extends TestCase
             public function onReject(Suggestion $suggestion, User $by, ?string $reason): void
             {
                 $this->rejected = true;
+            }
+        };
+    }
+
+    private function aiKind(bool $candidate): AbstractAiKind
+    {
+        $ai = $this->createStub(AiAssistant::class);
+        $repository = $this->createStub(SuggestionRepository::class);
+
+        return new class ($candidate, $ai, $repository) extends AbstractAiKind {
+            public bool $applied = false;
+
+            public function __construct(private readonly bool $candidate, AiAssistant $ai, SuggestionRepository $suggestions)
+            {
+                parent::__construct($ai, $suggestions);
+            }
+
+            public function key(): string
+            {
+                return 'test.ai';
+            }
+
+            public function decisionRoles(): array
+            {
+                return ['ROLE_MANAGER'];
+            }
+
+            public function targetAccess(): TargetAccess
+            {
+                return TargetAccess::role('ROLE_USER', 'test kind');
+            }
+
+            public function subjectClasses(): array
+            {
+                return [Risk::class];
+            }
+
+            public function apply(Suggestion $suggestion, User $by, ?string $editedText): object
+            {
+                $this->applied = true;
+
+                return new \stdClass();
+            }
+
+            protected function candidates(Tenant $tenant): iterable
+            {
+                return [];
+            }
+
+            protected function isCandidate(object $record): bool
+            {
+                return $this->candidate;
+            }
+
+            protected function instructions(): string
+            {
+                return '';
+            }
+
+            protected function describe(object $record): string
+            {
+                return '';
+            }
+
+            protected function toDraft(object $record, array $data, string $model, Tenant $tenant): ?SuggestionDraft
+            {
+                return null;
             }
         };
     }

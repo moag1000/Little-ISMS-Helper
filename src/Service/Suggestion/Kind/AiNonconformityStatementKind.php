@@ -16,6 +16,8 @@ use App\Service\Suggestion\StaleSuggestionException;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\SuggestionText;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\AuditFindingController;
+use App\Service\Suggestion\TargetAccess;
 
 /**
  * Auditor after the interview: a nonconformity noted in a few words → the
@@ -44,6 +46,11 @@ final class AiNonconformityStatementKind extends AbstractAiKind
     public function key(): string
     {
         return self::KEY;
+    }
+
+    public function targetAccess(): TargetAccess
+    {
+        return TargetAccess::action(AuditFindingController::class, 'edit');
     }
 
     public function decisionRoles(): array

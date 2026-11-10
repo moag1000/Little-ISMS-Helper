@@ -140,6 +140,16 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   nur ein Manager (wie „Als Vorlage speichern“).
 - **Kommentare (S32):** höchstens 10.000 Zeichen; der Kommentarverlauf zeigt die Kommentare der gerade gewählten
   Organisation.
+- **Vorschläge: wer sieht, wer annimmt (S30):** Annehmen verlangt jetzt auch das Recht, dieselbe
+  Änderung im Formular zu machen. Zuständige ohne Manager-Rolle nehmen VVT-, Register-,
+  Managementbewertungs- und Zuordnungsvorschläge nicht mehr an und sehen sie nicht mehr in „Mein Tag“
+  (dort stehen sie bei den Rollen der Art). Die Vorschlagsliste zeigt normalen Nutzern nur, was sie
+  selbst entscheiden — auch unter „Entschieden“. Manager und Prüfer sehen die übrigen Vorschläge
+  lesend, Entwürfe zu Datenpannen und Betroffenenanfragen aber nur mit der Rolle
+  Datenschutzbeauftragte(r); der KI-Assistent (MCP) bekommt sie ebenfalls nur für diese Rolle.
+  Ein KI-Entwurf zu einem schon gemeldeten, beantworteten oder abgeschlossenen Datensatz wird beim
+  Annehmen als überholt zurückgezogen. Eine Migration (Sperrspalte an `suggestion`, Quick-Fix
+  „Ausstehende Migrationen anwenden“).
 - **Nachweise in einer Sprache (W10):** VVT-, Datenpannen-, DSFA-, Compliance-Export-, SoA- und Bündel-PDFs sowie
   die Excel/CSV-Exporte erscheinen vollständig in der gewählten Sprache (bisher deutsch-englisch gemischt). Exporte
   im Hintergrund (auch im Messenger-Modus) kommen in der Sprache der Person, die sie gestartet hat; der Anhang eines
