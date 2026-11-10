@@ -104,6 +104,33 @@ class RiskRepository extends ServiceEntityRepository
     }
 
     /**
+     * Number of risks per asset for the given asset ids, one GROUP BY (list rows, S31). Assets without risks
+     * are reported with 0.
+     *
+     * @param list<int|null> $assetIds
+     * @return array<int, int> asset id => count
+     */
+    public function countByAssetIds(array $assetIds): array
+    {
+        $assetIds = array_values(array_filter($assetIds, 'is_int'));
+        if ($assetIds === []) {
+            return [];
+        }
+        $counts = array_fill_keys($assetIds, 0);
+        foreach ($this->createQueryBuilder('r')
+            ->select('IDENTITY(r.asset) AS asset', 'COUNT(r.id) AS n')
+            ->where('r.asset IN (:ids)')
+            ->setParameter('ids', $assetIds)
+            ->groupBy('r.asset')
+            ->getQuery()
+            ->getScalarResult() as $row) {
+            $counts[(int) $row['asset']] = (int) $row['n'];
+        }
+
+        return $counts;
+    }
+
+    /**
      * Risks of the user's organisation the user owns — as login (riskOwner) or
      * as the person record linked to the login (riskOwnerPerson). A risk owner is
      * whoever owns a risk, not only who holds ROLE_FUNCTION_OWNER (ISO 27001 6.1.2 c).

@@ -69,6 +69,56 @@ class RiskRegisterExporter
     }
 
     /**
+     * {@see filter()} as conditions on the register list query (S31) — the list pages in SQL. Level bands are
+     * each risk's organisation's ({@see RiskMatrixThresholds}); `$tenants` are the organisations the list
+     * shows (null: those of the rows).
+     *
+     * @param list<\App\Entity\Tenant>|null $tenants
+     */
+    public function applyFilters(\App\Util\ListQuery $list, mixed $level, mixed $status, mixed $treatment, mixed $owner, ?array $tenants): void
+    {
+        $alias = $list->alias();
+        if (is_string($level) && $level !== '') {
+            $list->where($this->bandCondition($alias, $level, $tenants ?? $list->rowTenants()));
+        }
+        $list->equals("$alias.status", is_string($status) ? RiskStatus::tryFrom($status) ?? $status : null)
+            ->equals("$alias.treatmentStrategy", is_string($treatment) ? \App\Enum\TreatmentStrategy::tryFrom($treatment) ?? $treatment : null);
+        if (is_string($owner) && $owner !== '') {
+            $list->leftJoin("$alias.riskOwner", 'rro')->contains(["CONCAT(rro.firstName, ' ', rro.lastName)"], $owner);
+        }
+    }
+
+    /**
+     * Risks in band `$level` as DQL: per organisation its own edges; risks without organisation use the defaults.
+     * Only integers from the band table and tenant ids go into the string.
+     *
+     * @param list<\App\Entity\Tenant> $tenants
+     */
+    public function bandCondition(string $alias, string $level, array $tenants): string
+    {
+        $score = "(COALESCE($alias.probability, 0) * COALESCE($alias.impact, 0))";
+        $range = static function (?\App\Entity\Tenant $tenant) use ($score, $level): string {
+            $edges = ['critical' => RiskMatrixThresholds::criticalMin($tenant), 'high' => RiskMatrixThresholds::highMin($tenant), 'medium' => RiskMatrixThresholds::mediumMin($tenant)];
+
+            return match ($level) {
+                'critical' => sprintf('%s >= %d', $score, $edges['critical']),
+                'high' => sprintf('%1$s >= %2$d AND %1$s < %3$d', $score, $edges['high'], $edges['critical']),
+                'medium' => sprintf('%1$s >= %2$d AND %1$s < %3$d', $score, $edges['medium'], $edges['high']),
+                'low' => sprintf('%s < %d', $score, $edges['medium']),
+                default => '1 = 0',
+            };
+        };
+        $or = [sprintf('(%s.tenant IS NULL AND %s)', $alias, $range(null))];
+        foreach ($tenants as $tenant) {
+            if ($tenant->getId() !== null) {
+                $or[] = sprintf('(IDENTITY(%s.tenant) = %d AND %s)', $alias, $tenant->getId(), $range($tenant));
+            }
+        }
+
+        return '(' . implode(' OR ', $or) . ')';
+    }
+
+    /**
      * Semicolon-separated, formula-sanitised CSV with UTF-8 BOM (Excel) and
      * locale-aware headers / labels from the `risk` domain.
      *

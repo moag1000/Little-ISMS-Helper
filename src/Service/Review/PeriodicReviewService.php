@@ -128,6 +128,35 @@ final class PeriodicReviewService
     }
 
     /**
+     * The rule of {@see isDue()} as a condition on a list query (S31), for risks and documents: reviewable
+     * status and next date missing or before today. Keep both in step — {@see \App\Tests\Performance\ListQueryBudgetTest}
+     * compares them.
+     *
+     * @param class-string $class
+     */
+    public function applyDue(\App\Util\ListQuery $list, string $class, bool $active, ?DateTimeInterface $today = null): void
+    {
+        if (!$active) {
+            return;
+        }
+        $alias = $list->alias();
+        $today = \DateTime::createFromInterface($today ?? new DateTime('today'));
+        match ($class) {
+            Risk::class => $list->where(
+                "$alias.status IN (:due_statuses) AND ($alias.reviewDate IS NULL OR $alias.reviewDate < :due_today)",
+                ['due_statuses' => \App\Enum\RiskStatus::periodicReviewValues(), 'due_today' => $today],
+            ),
+            Document::class => $list->where(
+                "$alias.isArchived = false AND $alias.status IN (:due_statuses)"
+                . " AND ($alias.nextReviewDate IS NULL OR $alias.nextReviewDate < :due_today)",
+                ['due_statuses' => ['approved', 'published'], 'due_today' => $today],
+            ),
+            // @intentional-assertion: only the two lists paged in SQL use it
+            default => throw new \LogicException('No SQL review rule for ' . $class),
+        };
+    }
+
+    /**
      * The next review date a confirmation today would set.
      */
     public function nextReviewDate(object $entity, ?DateTime $today = null): DateTime

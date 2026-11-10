@@ -64,6 +64,30 @@ class DocumentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Which of these documents a live (not archived/deleted) document supersedes — the list's "superseded"
+     * badge for one page (S31).
+     *
+     * @param list<int|null> $ids
+     * @return list<int>
+     */
+    public function supersededAmong(array $ids): array
+    {
+        $ids = array_values(array_filter($ids, 'is_int'));
+        if ($ids === []) {
+            return [];
+        }
+
+        return array_values(array_unique(array_map('intval', $this->createQueryBuilder('newer')
+            ->select('IDENTITY(newer.supersedes) AS id')
+            ->where('newer.supersedes IN (:ids)')
+            ->andWhere('newer.isArchived = false')
+            ->andWhere("newer.status NOT IN ('deleted', 'archived')")
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getSingleColumnResult())));
+    }
+
+    /**
      * Find all documents for a tenant (own documents only)
      *
      * @param Tenant $tenant The tenant to find documents for

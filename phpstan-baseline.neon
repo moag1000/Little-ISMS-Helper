@@ -595,12 +595,6 @@ parameters:
 			count: 2
 			path: src/Controller/ComplianceExportController.php
 
-		-
-			message: '#^Offset ''total_requirements'' on array\{source_framework\: string, target_framework\: string, total_target_requirements\: int, covered_requirements\: int, coverage_percentage\: float, strong_mappings\: int, partial_mappings\: int, weak_mappings\: int\} on left side of \?\? does not exist\.$#'
-			identifier: nullCoalesce.offset
-			count: 3
-			path: src/Controller/ComplianceExportController.php
-
 
 		-
 			message: '#^Strict comparison using \!\=\= between \(int\|false\) and null will always evaluate to true\.$#'
