@@ -284,11 +284,11 @@
                     <button type="button"
                             class="user-avatar"
                             title="{{ app.user.fullName }}"
-                            aria-label="{{ 'nav.user_menu'|trans({}, 'nav') }}"
                             aria-haspopup="true"
                             aria-expanded="false"
                             data-action="click->aurora-dropdown#toggle">
                         <span aria-hidden="true">{{ initials|upper }}</span>
+                        <span class="visually-hidden">{{ 'nav.user_menu'|trans({}, 'nav') }}</span>
                     </button>
                     <div class="user-dropdown fa-dropdown-panel fa-dropdown-panel--bottom-right"
                          role="menu"

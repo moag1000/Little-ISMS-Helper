@@ -20,13 +20,14 @@
             class="notification-bell-btn-header position-relative"
             data-action="click->notification-bell#toggleDropdown"
             data-notification-bell-target="button"
-            aria-label="{{ 'notification.bell.label'|trans }}"
             aria-expanded="false"
             aria-haspopup="dialog">
         <i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i>
+        <span class="visually-hidden">{{ 'notification.bell.label'|trans }}</span>
         <span class="notification-badge d-none position-absolute top-0 start-100 translate-middle fa-status-pill fa-status-pill--danger fa-status-pill--sm"
               data-notification-bell-target="badge"
-              aria-hidden="true">
+              aria-live="polite"
+              aria-atomic="true">
             0
         </span>
     </button>
