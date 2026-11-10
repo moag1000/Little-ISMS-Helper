@@ -6,9 +6,12 @@ namespace App\Controller\Notification;
 
 use App\Entity\Notification\NotificationChannel;
 use App\Entity\Notification\NotificationDelivery;
+use App\Entity\Notification\NotificationRule;
 use App\Entity\User;
 use App\Repository\Notification\NotificationDeliveryRepository;
 use App\Repository\ObligationNoticeRepository;
+use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -42,6 +45,8 @@ class InAppNotificationCenterController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly ObligationNoticeRepository $notices,
+        private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly TenantContext $tenantContext,
     ) {}
 
     /**
@@ -61,7 +66,7 @@ class InAppNotificationCenterController extends AbstractController
     {
         /** @var User $user */
         $user        = $this->getUser();
-        $tenant      = $user->getTenant();
+        $tenant      = $this->tenantContext->getCurrentTenant();
         $lastSeen    = $user->getLastSeenNotifications();
 
         // Fetch all recent in-app deliveries for this tenant, newest first
@@ -115,7 +120,7 @@ class InAppNotificationCenterController extends AbstractController
                 'link'        => $notice->getLink(),
             ];
         }
-        foreach ($this->getInAppDeliveries($user->getTenant(), 20) as $delivery) {
+        foreach ($this->getInAppDeliveries($this->tenantContext->getCurrentTenant(), 20) as $delivery) {
             $payload = $delivery->getResponsePayload() ?? [];
             $items[] = [
                 'id'          => $delivery->getId(),
@@ -155,15 +160,19 @@ class InAppNotificationCenterController extends AbstractController
     }
 
     /**
+     * The organisation's rule notifications (in-app channel). They have no recipient of their own, so they are shown
+     * to the people who act on them — managers (S32) — and only while the module of the event is active; everybody
+     * else sees their own reminders (ObligationNotice) only.
+     *
      * @return NotificationDelivery[]
      */
     private function getInAppDeliveries(?object $tenant, int $limit): array
     {
-        if ($tenant === null) {
+        if ($tenant === null || !$this->isGranted('ROLE_MANAGER')) {
             return [];
         }
 
-        return $this->deliveryRepository->createQueryBuilder('d')
+        $deliveries = $this->deliveryRepository->createQueryBuilder('d')
             ->join('d.channel', 'c')
             ->where('d.tenant = :tenant')
             ->andWhere('c.type = :type')
@@ -175,5 +184,11 @@ class InAppNotificationCenterController extends AbstractController
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+
+        return array_values(array_filter($deliveries, function (NotificationDelivery $d): bool {
+            $module = NotificationRule::moduleOfEvent((string) (($d->getResponsePayload() ?? [])['event_type'] ?? ''));
+
+            return $module === null || $this->moduleConfiguration->isModuleActive($module);
+        }));
     }
 }

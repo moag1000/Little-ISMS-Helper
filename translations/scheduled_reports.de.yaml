@@ -125,6 +125,14 @@ scheduled_report:
         message: 'Nachricht'
         success: 'Ausgeführt'
         failed: 'Fehlgeschlagen'
+        skipped: 'Übersprungen'
+        msg_sent: 'An die berechtigten Empfänger versendet.'
+        msg_failed: 'Erzeugung oder Versand fehlgeschlagen. Neuer Versuch mit wachsendem Abstand, Details im Anwendungsprotokoll.'
+        msg_no_recipients: 'Kein Empfänger gehört zur Organisation und hat die nötige Rolle.'
+        msg_tls: 'Versand gesperrt: Der Mailserver ist nicht mit TLS konfiguriert.'
+        msg_module_inactive: 'Übersprungen: Das Modul dieses Berichts ist abgeschaltet.'
+        msg_tenant_inactive: 'Übersprungen: Die Organisation ist deaktiviert.'
+        msg_creator_not_entitled: 'Übersprungen: Der Ersteller ist nicht mehr aktiv oder kein Manager dieser Organisation.'
 
     # Next run
     next_run: 'Nächste Ausführung'

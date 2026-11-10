@@ -27,6 +27,14 @@ final class RecipientFilter
     /** Reached through the role hierarchy: CISO, ISB, DPO, … inherit it (S16). */
     private const QUALIFYING_ROLE = 'ROLE_MANAGER';
 
+    /**
+     * Report types whose audience holds another role than MANAGER (S32): the board one-pager is for the top
+     * management, which does not inherit ROLE_MANAGER (ReportAccessVoter::BOARD_ONE_PAGER lets it download).
+     */
+    private const AUDIENCE_ROLES = [
+        ScheduledReport::TYPE_BOARD => ['ROLE_TOP_MGMT'],
+    ];
+
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly ?RoleHierarchyInterface $roleHierarchy = null,
@@ -38,7 +46,24 @@ final class RecipientFilter
      */
     public function filter(ScheduledReport $report): array
     {
-        return $this->filterEmails($report->getRecipients(), $report->getTenantId());
+        return $this->filterEmails($report->getRecipients(), $report->getTenantId(), $report->getReportType());
+    }
+
+    /**
+     * Whether a user may own or receive reports of the organisation: same organisation, active, MANAGER (or the
+     * report type's audience role). Null when they qualify, else the reason.
+     */
+    public function disqualification(User $user, ?int $targetTenantId, ?string $reportType = null): ?string
+    {
+        $userTenantId = $user->getTenant()?->getId();
+        if ($userTenantId === null || $targetTenantId === null || $userTenantId !== $targetTenantId) {
+            return self::REASON_CROSS_TENANT;
+        }
+        if (!$user->isActive()) {
+            return self::REASON_INACTIVE;
+        }
+
+        return $this->hasQualifyingRole($user, $reportType) ? null : self::REASON_ROLE_TOO_LOW;
     }
 
     /**
@@ -48,7 +73,7 @@ final class RecipientFilter
      * @param iterable<mixed> $emails
      * @return array{valid: list<string>, dropped: list<array{email:string, reason:string}>}
      */
-    public function filterEmails(iterable $emails, ?int $targetTenantId): array
+    public function filterEmails(iterable $emails, ?int $targetTenantId, ?string $reportType = null): array
     {
         $valid = [];
         $dropped = [];
@@ -65,23 +90,14 @@ final class RecipientFilter
                 continue;
             }
 
-            $userTenantId = $user->getTenant()?->getId();
-            if ($userTenantId === null || $targetTenantId === null || $userTenantId !== $targetTenantId) {
-                $dropped[] = ['email' => $email, 'reason' => self::REASON_CROSS_TENANT];
+            $reason = $this->disqualification($user, $targetTenantId, $reportType);
+            if ($reason !== null) {
+                $dropped[] = ['email' => $email, 'reason' => $reason];
                 continue;
             }
 
-            if (!$user->isActive()) {
-                $dropped[] = ['email' => $email, 'reason' => self::REASON_INACTIVE];
-                continue;
-            }
-
-            if (!$this->hasQualifyingRole($user)) {
-                $dropped[] = ['email' => $email, 'reason' => self::REASON_ROLE_TOO_LOW];
-                continue;
-            }
-
-            $valid[] = $email;
+            // The address of the account, not the text the manager typed (case, spaces).
+            $valid[] = (string) ($user->getEmail() ?? $email);
         }
 
         return ['valid' => array_values(array_unique($valid)), 'dropped' => $dropped];
@@ -92,7 +108,7 @@ final class RecipientFilter
      *
      * @return string|null null if valid, otherwise the failure reason constant
      */
-    public function validateSingle(string $email, int $tenantId): ?string
+    public function validateSingle(string $email, int $tenantId, ?string $reportType = null): ?string
     {
         $email = trim($email);
         if ($email === '') {
@@ -104,24 +120,12 @@ final class RecipientFilter
             return self::REASON_UNKNOWN_USER;
         }
 
-        $userTenantId = $user->getTenant()?->getId();
-        if ($userTenantId === null || $userTenantId !== $tenantId) {
-            return self::REASON_CROSS_TENANT;
-        }
-
-        if (!$user->isActive()) {
-            return self::REASON_INACTIVE;
-        }
-
-        if (!$this->hasQualifyingRole($user)) {
-            return self::REASON_ROLE_TOO_LOW;
-        }
-
-        return null;
+        return $this->disqualification($user, $tenantId, $reportType);
     }
 
-    private function hasQualifyingRole(User $user): bool
+    private function hasQualifyingRole(User $user, ?string $reportType = null): bool
     {
+        $accepted = [self::QUALIFYING_ROLE, ...(self::AUDIENCE_ROLES[$reportType ?? ''] ?? [])];
         $roles = $user->getRoles();
         if ($this->roleHierarchy !== null) {
             $roles = $this->roleHierarchy->getReachableRoleNames($roles);
@@ -130,6 +134,6 @@ final class RecipientFilter
             $roles = [...$roles, ...(array_intersect($roles, ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN']) !== [] ? [self::QUALIFYING_ROLE] : [])];
         }
 
-        return in_array(self::QUALIFYING_ROLE, $roles, true);
+        return array_intersect($accepted, $roles) !== [];
     }
 }

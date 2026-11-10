@@ -40,16 +40,19 @@ class ScheduledReportRepository extends ServiceEntityRepository
      *
      * @return ScheduledReport[]
      */
-    public function findDueReports(): array
+    public function findDueReports(?int $tenantId = null): array
     {
-        return $this->createQueryBuilder('sr')
+        $qb = $this->createQueryBuilder('sr')
             ->andWhere('sr.isActive = :active')
             ->andWhere('sr.nextRunAt <= :now')
             ->setParameter('active', true)
             ->setParameter('now', new \DateTime())
-            ->orderBy('sr.nextRunAt', \SortDirection::Ascending)
-            ->getQuery()
-            ->getResult();
+            ->orderBy('sr.nextRunAt', \SortDirection::Ascending);
+        if ($tenantId !== null) {
+            $qb->andWhere('sr.tenantId = :tenantId')->setParameter('tenantId', $tenantId);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

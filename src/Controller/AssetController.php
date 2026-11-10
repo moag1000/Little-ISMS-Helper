@@ -598,7 +598,7 @@ class AssetController extends AbstractController
      * Bulk CSV export of selected assets.
      * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
-    #[Route('/asset/bulk-export', name: 'app_asset_bulk_export', methods: ['POST'])]
+    #[Route('/asset/bulk-export', name: 'app_asset_bulk_export', methods: ['POST']), RequiresModule('assets')]
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {

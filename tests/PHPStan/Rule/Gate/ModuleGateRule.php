@@ -89,6 +89,23 @@ final class ModuleGateRule implements Rule
         '/admin\/notification\/|notification[-_]?center|\s\/notifications/i' => 'notifications',
     ];
 
+    /**
+     * S32: a download (export, PDF, Excel, CSV, report) of a record type whose module can be switched off is gated
+     * by that module as well — the pages of these core modules predate the gate, their downloads must not outlive
+     * the switch. Checked over "<route path> <route names> <route requirements>" of routes that look like a download,
+     * so `/export/{entityType}` with `requirements: ['entityType' => 'risk|asset']` expects risks or assets.
+     */
+    private const DOWNLOAD_ROUTE = '/export|pdf|excel|xlsx|csv|download|(?:^|\/)reports?(?:\/|$)/i';
+
+    /** Pattern over the download haystack => module. */
+    private const DOWNLOAD_MODULES = [
+        '/(?<![a-z])risks?(?![a-z]|[-_]?(appetite|treatment|quant|acceptance))/i' => 'risks',
+        '/(?<![a-z])assets?(?![a-z])/i' => 'assets',
+        '/(?<![a-z])incidents?(?![a-z])/i' => 'incidents',
+        '/(?<![a-z])controls?(?![a-z])/i' => 'controls',
+        '/(?<![a-z])(internal[-_]?)?audits?(?![a-z]|[-_]?(log|freeze|trail|package|workbook))/i' => 'audits',
+    ];
+
     public function getNodeType(): string
     {
         return InClassNode::class;
@@ -309,7 +326,7 @@ final class ModuleGateRule implements Rule
                 continue;
             }
             $gated = [...$classModules, ...$this->requiredModules($method, $scope), ...$this->decidingChecks($method, $scope)];
-            [$paths, $names] = $routes === [] ? [[''], ['']] : $this->routeParts($routes, $scope);
+            [$paths, $names, $requirements] = $routes === [] ? [[''], [''], [[]]] : $this->routeParts($routes, $scope);
             foreach ($paths as $i => $path) {
                 foreach ($prefixes === [] ? [''] : $prefixes as $prefix) {
                     $haystack = sprintf('%s %s%s %s%s', $className, $prefix, $path, implode(' ', $classNames), $names[$i] ?? '');
@@ -317,6 +334,14 @@ final class ModuleGateRule implements Rule
                     foreach (self::CONTROLLER_MODULES as $pattern => $module) {
                         if (preg_match($pattern, $haystack) === 1) {
                             $expected[] = $module;
+                        }
+                    }
+                    if ($expected === [] && preg_match(self::DOWNLOAD_ROUTE, $prefix . $path) === 1) {
+                        $download = sprintf('%s%s %s %s', $prefix, $path, $names[$i], implode(' ', $requirements[$i] ?? []));
+                        foreach (self::DOWNLOAD_MODULES as $pattern => $module) {
+                            if (preg_match($pattern, $download) === 1) {
+                                $expected[] = $module;
+                            }
                         }
                     }
                     if ($expected !== [] && array_intersect($expected, $gated) === []) {
@@ -345,22 +370,25 @@ final class ModuleGateRule implements Rule
      * Paths and names of route attributes.
      *
      * @param list<Node\Attribute> $routes
-     * @return array{list<string>, list<string>}
+     * @return array{list<string>, list<string>, list<list<string>>}
      */
     private function routeParts(array $routes, Scope $scope): array
     {
         $paths = [];
         $names = [];
+        $requirements = [];
         foreach ($routes as $route) {
             $path = GateAst::strings(GateAst::arg($route, 0, 'path'), $scope);
             $name = GateAst::strings(GateAst::arg($route, 1, 'name'), $scope);
+            $requirement = GateAst::strings(GateAst::arg($route, 2, 'requirements'), $scope);
             foreach ($path === [] ? [''] : $path as $p) {
                 $paths[] = $p;
                 $names[] = implode(' ', $name);
+                $requirements[] = $requirement;
             }
         }
 
-        return [$paths, $names];
+        return [$paths, $names, $requirements];
     }
 
     /** @return list<string> */

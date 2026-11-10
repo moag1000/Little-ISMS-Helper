@@ -2316,6 +2316,10 @@ comments:
         submit: 'Entfernen'
         done: 'Kommentar entfernt.'
         reason_required: 'Nicht entfernt. Eine Begründung ist nötig.'
+    flash:
+        empty: 'Kommentar ist leer.'
+        too_long: 'Kommentar ist zu lang (höchstens 10.000 Zeichen).'
+        saved: 'Kommentar gespeichert.'
 
 # SSO admin / approvals UI
 sso:

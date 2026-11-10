@@ -25,6 +25,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_comments_entity', columns: ['entity_type', 'entity_id'])]
 class Comment
 {
+    /** Longest comment body (S32): a TEXT column holds 64 KB, the form and the action stop well before. */
+    public const MAX_LENGTH = 10000;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

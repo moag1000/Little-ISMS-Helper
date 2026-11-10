@@ -2308,6 +2308,10 @@ comments:
         submit: 'Remove'
         done: 'Comment removed.'
         reason_required: 'Not removed. A reason is required.'
+    flash:
+        empty: 'Comment is empty.'
+        too_long: 'Comment is too long (at most 10,000 characters).'
+        saved: 'Comment saved.'
 
 # SSO admin / approvals UI
 sso:

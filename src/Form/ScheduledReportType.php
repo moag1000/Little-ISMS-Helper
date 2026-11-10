@@ -174,7 +174,7 @@ final class ScheduledReportType extends AbstractType implements SectionMapInterf
                     continue;
                 }
 
-                $reason = $this->recipientFilter->validateSingle($email, $tenantId);
+                $reason = $this->recipientFilter->validateSingle($email, $tenantId, $report->getReportType());
                 if ($reason === null) {
                     $accepted[] = $email;
                     continue;

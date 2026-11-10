@@ -41,6 +41,7 @@
             ) }}
         </div>
 
+        {% if is_module_active('risks') %}
         {# Risk Register #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
@@ -59,7 +60,9 @@
                 path('app_reports_risks_excel')
             ) }}
         </div>
+        {% endif %}
 
+        {% if is_module_active('controls') %}
         {# Statement of Applicability #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
@@ -78,7 +81,9 @@
                 path('app_reports_controls_excel')
             ) }}
         </div>
+        {% endif %}
 
+        {% if is_module_active('incidents') %}
         {# Incident Log #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
@@ -97,6 +102,7 @@
                 path('app_reports_incidents_excel')
             ) }}
         </div>
+        {% endif %}
 
         {# Training Log — training module only #}
         {% if is_module_active('training') %}

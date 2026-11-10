@@ -17,6 +17,7 @@ use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Security\SafeRedirectTarget;
 use App\Service\AuditLogger;
 use App\Service\Comment\CommentDeletion;
 use App\Service\ModuleConfigurationService;
@@ -148,9 +149,9 @@ class CommentController extends AbstractController
         }
 
         $body = trim((string) $request->request->get('body', ''));
-        if ($body === '') {
-            $this->addFlash('error', 'Kommentar darf nicht leer sein.');
-            return $this->redirect($request->headers->get('referer') ?? '/');
+        if ($body === '' || mb_strlen($body) > Comment::MAX_LENGTH) {
+            $this->addFlash('error', $body === '' ? 'comments.flash.empty' : 'comments.flash.too_long');
+            return $this->backToRecord($request);
         }
 
         $comment = new Comment();
@@ -163,8 +164,18 @@ class CommentController extends AbstractController
         $this->em->persist($comment);
         $this->em->flush();
 
-        $this->addFlash('success', 'Kommentar gespeichert.');
-        return $this->redirect($request->headers->get('referer') ?? '/');
+        $this->addFlash('success', 'comments.flash.saved');
+        return $this->backToRecord($request);
+    }
+
+    /** Back to the page the form sat on — only a same-origin target (SafeRedirectTarget), else the dashboard. */
+    private function backToRecord(Request $request): Response
+    {
+        $referer = (string) $request->headers->get('referer', '');
+
+        return SafeRedirectTarget::isSafe($referer, $request)
+            ? $this->redirect($referer)
+            : $this->redirectToRoute('app_dashboard');
     }
 
     /**

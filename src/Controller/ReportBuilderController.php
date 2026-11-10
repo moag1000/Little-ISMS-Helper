@@ -144,10 +144,10 @@ class ReportBuilderController extends AbstractController
             $data = $request->request->all();
 
             $report = new CustomReport();
-            $report->setName($data['name'] ?? 'New Report');
-            $report->setDescription($data['description'] ?? null);
-            $report->setCategory($data['category'] ?? CustomReport::CATEGORY_GENERAL);
-            $report->setLayout($data['layout'] ?? CustomReport::LAYOUT_DASHBOARD);
+            $report->setName(is_string($data['name'] ?? null) && $data['name'] !== '' ? $data['name'] : 'New Report');
+            $report->setDescription(is_string($data['description'] ?? null) ? $data['description'] : null);
+            $report->setCategory(self::known($data['category'] ?? null, CustomReport::getCategories(), CustomReport::CATEGORY_GENERAL));
+            $report->setLayout(self::known($data['layout'] ?? null, CustomReport::getLayouts(), CustomReport::LAYOUT_DASHBOARD));
             $report->setOwner($user);
             $report->setTenantId($tenantId);
 
@@ -266,17 +266,17 @@ class ReportBuilderController extends AbstractController
             return new JsonResponse(['error' => 'invalid_json'], 400);
         }
 
-        if (isset($data['name'])) {
+        if (isset($data['name']) && is_string($data['name']) && $data['name'] !== '') {
             $report->setName($data['name']);
         }
-        if (isset($data['description'])) {
+        if (isset($data['description']) && is_string($data['description'])) {
             $report->setDescription($data['description']);
         }
         if (isset($data['category'])) {
-            $report->setCategory($data['category']);
+            $report->setCategory(self::known($data['category'], CustomReport::getCategories(), $report->getCategory()));
         }
-        if (isset($data['layout']) && is_string($data['layout'])) {
-            $report->setLayout($data['layout']);
+        if (isset($data['layout'])) {
+            $report->setLayout(self::known($data['layout'], CustomReport::getLayouts(), $report->getLayout()));
         }
         if (isset($data['widgets']) && is_array($data['widgets'])) {
             if (count($data['widgets']) > CustomReport::MAX_WIDGETS) {
@@ -546,5 +546,15 @@ class ReportBuilderController extends AbstractController
         $this->addFlash('success', $this->translator->trans('report_builder.deleted', [], 'report_builder'));
 
         return $this->redirectToRoute('report_builder_index');
+    }
+
+    /**
+     * A request value that must be one of the keys of $allowed (S32: no TypeError 500, no arbitrary category).
+     *
+     * @param array<string, string> $allowed
+     */
+    private static function known(mixed $value, array $allowed, string $default): string
+    {
+        return is_string($value) && array_key_exists($value, $allowed) ? $value : $default;
     }
 }
