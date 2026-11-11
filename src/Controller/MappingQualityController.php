@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\LocalizedFlashTrait;
 use Symfony\Component\Security\Core\User\UserInterface;
 use DateTimeImmutable;
@@ -27,6 +28,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('compliance')]
 class MappingQualityController extends AbstractController
 {
     use LocalizedFlashTrait;

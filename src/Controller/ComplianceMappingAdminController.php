@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\ComplianceMapping;
 use Exception;
@@ -30,6 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Extracted from ComplianceController god-class (was 2629 LOC).
  */
+#[RequiresModule('compliance')]
 class ComplianceMappingAdminController extends AbstractController
 {
     use LocalizedFlashTrait;

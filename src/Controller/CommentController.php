@@ -42,6 +42,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * carries Tenant-A's tenant_id but `entity_id` pointing at a Tenant-B resource —
  * breaking ISO 27001 A.5.10 / A.8.2 information access control.
  */
+// @no-module-gate-required: generic endpoint: the module of the commented record is checked per target (TARGET_ACCESS)
 class CommentController extends AbstractController
 {
     /**

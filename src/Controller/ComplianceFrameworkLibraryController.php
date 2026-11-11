@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\User;
 use App\Job\LoadStarterPackJob;
 use App\Security\Voter\GlobalCatalogueVoter;
@@ -32,6 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Admin-only framework management continues to live in AdminComplianceController.
  */
+#[RequiresModule('compliance')]
 class ComplianceFrameworkLibraryController extends AbstractController
 {
     public function __construct(

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\GlobalCatalogueVoter;
@@ -35,6 +36,7 @@ use Throwable;
  * and are evaluated on top of the class-level guard.
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+#[RequiresModule('compliance')]
 class AdminComplianceController extends AbstractController
 {
     public function __construct(

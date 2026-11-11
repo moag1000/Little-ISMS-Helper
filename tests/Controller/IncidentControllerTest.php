@@ -155,6 +155,8 @@ class IncidentControllerTest extends TestCase
             };
         });
 
+        $moduleConfiguration = $this->createStub(\App\Service\ModuleConfigurationService::class);
+        $moduleConfiguration->method('isModuleActive')->willReturn(true);
         $this->controller = new IncidentController(
             $this->incidentRepository,
             $this->auditLogRepository,
@@ -173,7 +175,8 @@ class IncidentControllerTest extends TestCase
             $this->incidentRiskFeedbackService,
             $this->riskRepository,
             $this->riskIncidentLinkService,
-            $this->riskIncidentLinkRepository
+            $this->riskIncidentLinkRepository,
+            $moduleConfiguration,
         );
         $this->controller->setContainer($this->container);
     }

@@ -84,6 +84,37 @@ final class ModuleAndJobRouteSweepTest extends WebTestCase
         self::assertSame([], $failures, "Module routes reachable with their module off:\n" . implode("\n", $failures));
     }
 
+    /**
+     * S35: the generic lifecycle endpoint answers for every record type of EntityTypeRegistry, and the module of the
+     * type decides — also for the ten workflows whose YAML names no `module:`. Gate 11 cannot see this route (its
+     * path carries no keyword), so the sweep takes the registry itself.
+     */
+    #[Test]
+    public function everyLifecycleTypeIsClosedWhileItsModuleIsOff(): void
+    {
+        $modules = static::getContainer()->get(ModuleConfigurationService::class);
+        $required = array_values($modules->resolveModuleDependencies(array_keys($modules->getRequiredModules()))['modules']);
+        [, $admin] = $this->organisation('lifeoff', $required);
+        $registry = static::getContainer()->get(\App\Lifecycle\EntityTypeRegistry::class);
+
+        $failures = [];
+        $swept = 0;
+        foreach ($registry->knownSlugs() as $slug) {
+            $module = $registry->moduleOf($slug);
+            if ($module === null || in_array($module, $required, true)) {
+                continue;
+            }
+            ++$swept;
+            $response = $this->isolated(fn () => $this->call($admin, sprintf('/lifecycle/%s/1/allowed-transitions', $slug)));
+            if ($response->getStatusCode() !== 403 || !str_contains((string) $response->getContent(), 'module_not_active')) {
+                $failures[] = sprintf('%s (module %s off) → %d', $slug, $module, $response->getStatusCode());
+            }
+        }
+
+        self::assertGreaterThan(15, $swept, 'lifecycle type discovery broke');
+        self::assertSame([], $failures, "Lifecycle types reachable with their module off:\n" . implode("\n", $failures));
+    }
+
     #[Test]
     public function aForeignJobIdOpensNothing(): void
     {

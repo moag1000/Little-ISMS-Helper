@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Authority;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\Tenant;
@@ -43,6 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // ROLE_USER here; Nis2RegistrationProfileVoter decides per action (manager,
 // or a named contact of the profile).
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('eu_authority_reporting')]
 final class Nis2RegistrationController extends AbstractController
 {
     use ModuleGatedControllerTrait;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -32,6 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * setzt — kein zusätzliches Audit-Logging nötig).
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('compliance')]
 class ComplianceMappingSeedController extends AbstractController
 {
     /**

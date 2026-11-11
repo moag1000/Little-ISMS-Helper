@@ -143,6 +143,17 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Geändertes Verhalten
 
+- **Modulgrenzen gelten überall gleich (S35):** Assets, Risiken, Controls, Vorfälle, Audits und Management-Reviews sind
+  Pflichtmodule und lassen sich nicht mehr abschalten (waren sie bei einer Organisation aus, sind sie nach dem Update
+  wieder an; Navigation, Suche und Berichte stimmen damit mit den Seiten, REST und dem Assistenten überein). Compliance
+  bleibt optional: ist das Modul aus, sind Frameworks, Mappings, Zertifikate, Delta-Assessment, Framework-Migration,
+  Seed-Review, Mapping-Qualität und der Compliance-Import nicht mehr erreichbar. Ebenso zu bei ausgeschaltetem Modul:
+  Kennzahl-Schwellen (Analytik), Risiko-Freigabestufen (Risikoappetit), Löschfristen-Übersicht (Datenschutz), die
+  NIS-2-Registrierung (EU-Behördenmeldungen) und das Compliance-SoA-Arbeitsbuch. Statusübergänge und laufende Freigaben
+  von Datensätzen eines ausgeschalteten Moduls (Datenpanne, DSFA, Lieferant, Schwachstelle, Schulung, …) werden mit
+  „Modul nicht aktiviert“ abgelehnt, erscheinen nicht in Listen, Mein Tag und Aktivitäts-Feed und laufen nach
+  Wiedereinschalten weiter. Zu tun ist nichts, außer zu prüfen,
+  ob Organisationen Compliance bewusst abgeschaltet haben.
 - **Berichte, Exporte und Benachrichtigungen folgen den Modulen (S32):** Ist das Modul eines Berichts aus
   (Risiken, Assets, Vorfälle, Controls, Audits, Compliance, Datenschutz, BCM, Portfolio), antworten seine Download-,
   PDF-, Excel- und Export-Routen nicht mehr (Weiterleitung zum Dashboard bzw. 404), und die Kacheln dazu fehlen.

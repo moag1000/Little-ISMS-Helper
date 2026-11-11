@@ -28,6 +28,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * actions it decided, as tasks with responsible and due date, and the
  * completion by top management — its decision on the results.
  */
+// @no-module-gate-required: ISO 27001 9.3.3 outputs: the review (required module) owns its action items, they are not the resource-planning feature
 #[RequiresModule('reviews')]
 final class ManagementReviewOutcomeController extends AbstractController
 {

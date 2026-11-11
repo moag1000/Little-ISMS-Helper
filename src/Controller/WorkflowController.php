@@ -74,7 +74,11 @@ class WorkflowController extends AbstractController
     {
         $workflows = $this->workflowRepository->findAllActive();
         $statistics = $this->workflowInstanceRepository->getStatistics();
-        $instances = $this->workflowInstanceRepository->findBy([], ['startedAt' => 'DESC'], 10);
+        // S35: runs of a record type whose module is off stay out of the list (the 10 newest of the rest).
+        $instances = array_slice(array_values(array_filter(
+            $this->workflowInstanceRepository->findBy([], ['startedAt' => 'DESC'], 50),
+            fn (WorkflowInstance $i): bool => $this->workflowService->isInstanceModuleActive($i),
+        )), 0, 10);
 
         // Check approval permissions and eligibility for each instance
         $currentUser = $this->currentUser();
@@ -121,6 +125,9 @@ class WorkflowController extends AbstractController
     #[Route('/workflow/instance/{id}', name: 'app_workflow_instance_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function showInstance(WorkflowInstance $workflowInstance): Response
     {
+        if (!$this->workflowService->isInstanceModuleActive($workflowInstance)) {
+            throw $this->createNotFoundException();
+        }
         $currentUser = $this->currentUser();
         $currentStep = $workflowInstance->getCurrentStep();
         $canApprove = $currentStep instanceof WorkflowStep && $this->workflowService->canUserApprove($currentUser, $currentStep, $workflowInstance);

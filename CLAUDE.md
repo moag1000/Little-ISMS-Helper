@@ -773,6 +773,13 @@ if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 {% if is_module_active('nis2_dora') %} ... {% endif %}
 ```
 
+**One module switch for every path (S35, Gate 106).** The ISO core modules (assets, risks, controls, incidents,
+audits, reviews) are `required: true`; `compliance` and all others are optional and gated. A controller that mentions
+a record class owned by one optional module (`entities` in `modules.yaml`) is gated by that module — PHPStan rule
+`ModuleEntityUseRule` (`#[RequiresModule]`, deciding check, or `// @no-module-gate-required: <reason>`). A lifecycle
+type's module lives only in `EntityTypeRegistry` (`moduleOf()`): lifecycle endpoints, `ModuleGateGuard`, running
+approvals (`WorkflowService::isInstanceModuleActive()`) and the activity feed read it — never a second table.
+
 User-facing guide: [`docs/user-guide/MODULE_AKTIVIERUNG.md`](docs/user-guide/MODULE_AKTIVIERUNG.md)  
 Compliance audit trail: [`docs/archive/FORM_AUDIT_2026-05.md`](docs/archive/FORM_AUDIT_2026-05.md)
 

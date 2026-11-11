@@ -38,7 +38,7 @@ final class TenantScopedModuleActivationTest extends TestCase
         );
         file_put_contents(
             $this->projectDir . '/config/active_modules.yaml',
-            "active_modules:\n    - privacy\n    - assets\ngating_baseline: 1\n",
+            "active_modules:\n    - privacy\n    - bcm\ngating_baseline: 1\n",
         );
     }
 
@@ -69,7 +69,7 @@ final class TenantScopedModuleActivationTest extends TestCase
         $service = $this->service(new Tenant());
 
         self::assertFalse($service->hasTenantOverride());
-        self::assertSame(['privacy', 'assets'], $service->getInstanceDefaultModules());
+        self::assertSame(['privacy', 'bcm'], $service->getInstanceDefaultModules());
         foreach ($service->getInstanceDefaultModules() as $module) {
             self::assertTrue(
                 $service->isModuleActive($module),
@@ -86,9 +86,9 @@ final class TenantScopedModuleActivationTest extends TestCase
 
         self::assertTrue($service->hasTenantOverride());
         self::assertTrue($service->isModuleActive('privacy'));
-        // 'assets' is in the instance default but not in this tenant's selection.
+        // 'bcm' is in the instance default but not in this tenant's selection.
         self::assertFalse(
-            $service->isModuleActive('assets'),
+            $service->isModuleActive('bcm'),
             'instance default must not leak into a tenant with its own selection',
         );
     }
@@ -116,9 +116,9 @@ final class TenantScopedModuleActivationTest extends TestCase
         $yaml = $this->projectDir . '/config/active_modules.yaml';
         $before = file_exists($yaml) ? file_get_contents($yaml) : null;
 
-        $this->service($tenant, $em)->saveActiveModules(['privacy', 'assets']);
+        $this->service($tenant, $em)->saveActiveModules(['privacy', 'bcm']);
 
-        self::assertSame(['privacy', 'assets'], $tenant->getActiveModules());
+        self::assertSame(['privacy', 'bcm'], $tenant->getActiveModules());
         self::assertSame(
             $before,
             file_exists($yaml) ? file_get_contents($yaml) : null,

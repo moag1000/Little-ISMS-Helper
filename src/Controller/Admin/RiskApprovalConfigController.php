@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\RequiresModule;
 use App\Entity\RiskApprovalConfig;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -33,6 +34,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/risk-governance/approval-thresholds')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+#[RequiresModule('risk_appetite')]
 class RiskApprovalConfigController extends AbstractController
 {
     public function __construct(

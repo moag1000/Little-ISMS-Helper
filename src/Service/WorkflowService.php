@@ -13,6 +13,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\WorkflowInstanceStatus;
 use App\Lifecycle\EligibleApprovers;
+use App\Lifecycle\EntityTypeRegistry;
 use App\Lifecycle\EventListener\FourEyesValidator;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\LifecycleTransitionInterface;
@@ -96,6 +97,7 @@ class WorkflowService
         private readonly ?WorkflowInstanceAdapter $workflowSource = null,
         private readonly ?RegulatoryWorkflowMirror $regulatoryWorkflowMirror = null,
         private readonly ?ExplicitRole $explicitRole = null,
+        private readonly ?ModuleConfigurationService $moduleConfiguration = null,
     ) {}
 
     /**
@@ -692,6 +694,23 @@ class WorkflowService
     }
 
     /**
+     * S35: a running approval belongs to the module of its record type (EntityTypeRegistry) — with the module off
+     * the run is neither listed nor decided (UI, REST, MCP, My Day, counters), it resumes when the module is on.
+     */
+    public function isInstanceModuleActive(WorkflowInstance $instance): bool
+    {
+        $module = EntityTypeRegistry::moduleOfClass((string) $instance->getEntityType());
+        if ($module === null || $this->moduleConfiguration === null) {
+            return true;
+        }
+        $tenant = $instance->getTenant();
+
+        return $tenant instanceof Tenant
+            ? $this->moduleConfiguration->isModuleActiveForTenant($module, $tenant)
+            : $this->moduleConfiguration->isModuleActive($module);
+    }
+
+    /**
      * Check if user can approve a step
      *
      * Uses Symfony Security to respect role hierarchy. ROLE_ADMIN and ROLE_SUPER_ADMIN
@@ -704,6 +723,10 @@ class WorkflowService
      */
     public function canUserApprove(User $user, WorkflowStep $workflowStep, ?WorkflowInstance $instance = null): bool
     {
+        if ($instance !== null && !$this->isInstanceModuleActive($instance)) {
+            return false;
+        }
+
         $approverRole = $workflowStep->getApproverRole();
 
         // ROLE_ADMIN and ROLE_SUPER_ADMIN can approve any step that is not reserved for

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
@@ -62,6 +63,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
     path: '/admin/import/compliance',
     name: 'admin_compliance_import_'
 )]
+#[RequiresModule('compliance')]
 final class ComplianceImportController extends AbstractController
 {
     private const REQUIRED_HEADERS = [

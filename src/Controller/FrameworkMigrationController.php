@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\FrameworkVersionMigrator;
@@ -28,6 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * dass Nachweise neu verknüpft werden müssen.
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('compliance')]
 class FrameworkMigrationController extends AbstractController
 {
     public function __construct(

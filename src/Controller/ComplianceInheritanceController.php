@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceFramework;
 use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\User;
@@ -32,6 +33,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/compliance/inheritance', name: 'app_compliance_inheritance_')]
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('compliance')]
 final class ComplianceInheritanceController extends AbstractController
 {
     public function __construct(

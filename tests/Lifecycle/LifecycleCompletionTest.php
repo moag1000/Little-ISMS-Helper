@@ -51,7 +51,7 @@ final class LifecycleCompletionTest extends TestCase
         string $initial,
     ): void {
         $entry = (new EntityTypeRegistry())->lookup($slug);
-        self::assertSame(['class' => $class, 'workflow' => $workflow], $entry);
+        self::assertSame(['class' => $class, 'workflow' => $workflow], array_diff_key($entry ?? [], ['module' => true]));
         self::assertContains($class, EntityTypeRegistry::managedEntityClasses());
 
         $config = $this->workflowConfig($workflow);

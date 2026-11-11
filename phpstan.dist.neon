@@ -74,6 +74,11 @@ services:
         class: App\Tests\PHPStan\Rule\Gate\ModuleGateRule
         tags:
             - phpstan.rules.rule
+    # Gate 106 — a controller that touches the records of an optional module is gated by that module (S35)
+    -
+        class: App\Tests\PHPStan\Rule\Gate\ModuleEntityUseRule
+        tags:
+            - phpstan.rules.rule
     # T4 (2026-11): Gates 94 and 97 move from regex to AST, Gate 85 gets a type rule beside its Python part.
     # Gate 94 — stored file paths only through StoredFilePath / ProtectedUploads
     -

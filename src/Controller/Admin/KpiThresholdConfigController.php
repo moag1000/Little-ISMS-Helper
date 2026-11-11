@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\RequiresModule;
 use App\Entity\KpiThresholdConfig;
 use App\Entity\Tenant;
 use App\Form\KpiThresholdConfigType;
@@ -30,6 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/kpi-thresholds', name: 'admin_kpi_threshold_')]
+#[RequiresModule('analytics')]
 class KpiThresholdConfigController extends AbstractController
 {
     public function __construct(

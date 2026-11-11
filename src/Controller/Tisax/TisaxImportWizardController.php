@@ -45,6 +45,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 #[IsGranted('ROLE_MANAGER')]
 // @no-methods-required — class-level path prefix, methods declared per action
+// @no-module-gate-required: gated by the tisax module; imports into the framework catalogue as part of the TISAX assessment
 #[Route('/tisax-import', name: 'app_tisax_import_')]
 #[RequiresModule('tisax')]
 final class TisaxImportWizardController extends AbstractController

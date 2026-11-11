@@ -7,6 +7,7 @@ namespace App\Controller;
 // @em-write-allowed: CSRF-guarded single-row writes only — delete() removes one
 // tenant-scoped certificate, confirmDraft() flushes user-confirmed OCR fields
 // back onto an already-persisted certificate. No business logic to extract.
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceCertificate;
 use App\Entity\User;
 use App\Job\ProcessCertificateOcrJob;
@@ -50,6 +51,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 #[Route('/compliance/certificates', name: 'app_compliance_certificate_')]
 #[IsGranted(ComplianceCertificateVoter::CERT_VIEW)]
+#[RequiresModule('compliance')]
 class ComplianceCertificateController extends AbstractController
 {
     public function __construct(

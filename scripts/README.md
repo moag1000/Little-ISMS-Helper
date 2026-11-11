@@ -353,6 +353,7 @@ Musterregeln jede Schreibweise einzeln einholen, prüfen CSRF, Modul-Gate und Jo
 |---|---|---|---|
 | C1–C10 | Gate 65 (`CsrfStateChangingActionRule`) + `CsrfRouteSweepTest` | `#[IsCsrfTokenValid(methods: ['GET'])]` auf POST; eigenes `handleBulkDelete()` statt des Traits; Helfer gibt die Prüfung zurück, Action verwirft sie; Helfer kehrt bei Fehler nur aus sich selbst zurück; `if (valid) { $x = 1; }` mit Schreiben dahinter; `if (!valid) { log } else { return }`; Route auf abstrakter Elternklasse / Trait / Klasse außerhalb `App\Controller`; Klassen-`methods: ['POST']` mit Action ohne `methods`; FormType mit `csrf_protection => false`; GET schreibt über `$em = …->getManager()`, DBAL `executeStatement`, DQL `DELETE`, `save(…, true)`, `LifecycleService::transition()`. Sweep: Lösch-Action ohne Token-Prüfung → POST ohne Token schreibt → rot; Policy-Profil speichert beim Ansehen → GET-Sweep rot | Attribut-`methods` ungelesen, jede `handleBulkDelete`-Methode zählte, Rückgabe eines Helfers galt als Abwehr, Teil-Guard galt als Schutz, Schreiben über Dienste unsichtbar. Funde: NIS-2-Registrierungsprofil und Policy-Profil legten beim Ansehen einen Datensatz an (jetzt erst beim Speichern) |
 | M1–M3 | Modul-Gate (`ModuleGateRule`) + `ModuleAndJobRouteSweepTest` | `render([... isModuleActive()])`; `if (isModuleActive()) { return redirect }` (verkehrt); `if (!isModuleActive() && $x)`. Sweep: `#[RequiresModule('privacy')]` von `DataBreachController` entfernt → Seite bei abgeschaltetem Modul 200 → rot | Jeder Aufruf irgendwo in einer Bedingung oder einem `return` galt als Gate |
+| S35 | Gate 106 (`ModuleEntityUseRule`) + `ModuleAndJobRouteSweepTest::everyLifecycleTypeIsClosedWhileItsModuleIsOff` | Action mit `DataBreach::class` ohne Gate, mit `#[RequiresModule('bcm')]` (falsches Modul), Entity nur in privatem Helfer, auskommentiertes Attribut. Sweep: `moduleRefusal()` aus dem `LifecycleController` entfernt → `/lifecycle/data-breach/1/allowed-transitions` bei aus 200/404 statt 403 → rot | Gate 11 las nur Stichwörter; Compliance-, Kennzahl-, Risiko-Governance- und Löschfristen-Seiten sowie der generische Lifecycle-Endpunkt waren ungegatet |
 | S1–S5, B24–B26 | Gate 93 (`SsoClaimPolicyRule`, `check_sso_claim_policy.py`) | `isEmailVerified($c);` als bloße Anweisung oder in `if (false)`; `array_merge($id, $ui)` in einem Authenticator; `$_SERVER['HTTP_HOST']`, `headers->get('host')`, `getBaseUrl()`, `generate(…, ABSOLUTE_URL)`; `$linkByEmail = true`; `$id = null; processResponse($id)`; `AZURE_ALLOW_EMAIL_LINKING=true` in `.env.docker`/`.env.minimal`/Compose; Parameter als `%env(...)%`/`!php/const` | Nur fünf Host-Aufrufe, Merge-Regel nur in `App\Service\Sso`, Konfiguration nur in `.env`/`.env.prod.example` |
 | B3, B15–B20 | Gate 94 (`StoredFilePathRule`, ersetzt das Python-Gate) | `sprintf`, `implode`, `Path::join`, Interpolation, Zeilenumbruch, `->{'getLogoPath'}()`, Alias-Variable, `file_get_contents`/`unlink`/`Filesystem::remove`/`new BinaryFileResponse` auf dem gespeicherten Pfad, Marker ohne Grund | Ein-Zeilen-Regex mit fünf festen Gettern; jetzt Getter aus `StoredFilePath::FIELDS`. Fund: `EvidenceDocuments::file()` las ohne `ProtectedUploads` den rohen Dokumentpfad (jetzt null) |
 | B11–B14 | Gate 97 (`TenantPinRestoreRule`, ersetzt das Python-Gate) | `finally` liest den Kontext nur; Zeilenumbruch nach `->`; `call_user_func([$tc, 'setCurrentTenant'])`, `->{'setCurrent'.'Tenant'}()`, `$m = 'setNoOrganisation'`, `[$tc, '…']()`; Pin in einer Pfeilfunktion im `try` | Das Wort `tenantContext` im `finally` galt als Restore |
@@ -852,6 +853,17 @@ kein `color: var(--primary|success|warning|danger|info|accent)` in `assets/style
 Keine Baseline. Selbsttest `scripts/quality/tests/test_check_a11y_static.py`.
 
 **CI-Integration:** Gate 103 im `code-quality`-Job.
+
+### Gate 106 — Modulgrenze nach Datensatz (`tests/PHPStan/Rule/Gate/ModuleEntityUseRule.php`, S35)
+
+**Zweck:** Gate 11 erkennt Controller an Stichwörtern in Klassen- und Routenname; Seiten eines Moduls ohne Stichwort
+(Compliance, Kennzahl-Schwellen, Risiko-Governance, Löschfristen) blieben ungegatet. Die Regel geht von der anderen Seite
+aus: die `entities`-Listen in `config/modules.yaml` nennen den Besitzer einer Datensatzklasse (nur Klassen, die genau ein
+optionales Modul nennt; `persons`/`locations` als Stammdaten ausgenommen). Jede Route-Action, die so eine Klasse erwähnt
+(selbst oder über einen privaten Helfer), braucht `#[RequiresModule('<modul>')]` an Action oder Klasse, ein entscheidendes
+`checkModuleActive()` oder `// @no-module-gate-required: <Grund>` (generische Endpunkte, die das Modul je Ziel prüfen).
+Fixture `Fixtures/src/Controller/GateFixture/EntityUseController.php` (`// expect:`), Test `ModuleEntityUseRuleTest`.
+Ein neues optionales Modul trägt seine Entities in `modules.yaml` ein — mehr braucht das Gate nicht.
 
 ---
 

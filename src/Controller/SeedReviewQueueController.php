@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\Compliance\MappingAccessGuard;
@@ -32,6 +33,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // transparency). The approve/reject WRITE actions add an explicit ROLE_MANAGER
 // gate below to preserve the 4-eyes principle.
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('compliance')]
 class SeedReviewQueueController extends AbstractController
 {
     private const SEED_ORIGIN_PATTERNS = [

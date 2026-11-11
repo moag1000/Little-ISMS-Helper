@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Admin\SystemSettings\DataRetentionController;
 use App\Entity\Tenant;
 use App\Service\Deadline\Source\RetentionDeletionSource;
@@ -21,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * per type, with the list to keep one of them. Changing the policy stays an
  * admin setting (Admin > Einstellungen > Datenhaltung).
  */
+#[RequiresModule('privacy')]
 final class DataRetentionOverviewController extends AbstractController
 {
     /** Record type → its list page. */

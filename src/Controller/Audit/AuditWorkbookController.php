@@ -62,7 +62,7 @@ class AuditWorkbookController extends AbstractController
      * Logs an export audit-chain entry for chain-of-custody.
      */
     #[Route('/soa/{frameworkId}.xlsx', name: 'soa', requirements: ['frameworkId' => '\d+'], methods: ['GET'])]
-    #[RequiresModule('controls')]
+    #[RequiresModule('compliance')]
     public function soa(int $frameworkId): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();

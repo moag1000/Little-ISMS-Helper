@@ -18,6 +18,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
 use App\Security\TenantOwnership;
 use App\Service\AuditLogger;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
@@ -55,6 +56,7 @@ class LifecycleController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly LifecycleCountersign $countersign,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
@@ -65,6 +67,9 @@ class LifecycleController extends AbstractController
         $mapping = $this->entityRegistry->lookup($entityType);
         if ($mapping === null) {
             return $this->jsonError(404, 'unknown_entity_type', sprintf('Lifecycle für Typ "%s" nicht konfiguriert.', $entityType));
+        }
+        if (($refusal = $this->moduleRefusal($entityType)) !== null) {
+            return $refusal;
         }
 
         if ($mapping['workflow'] === self::APPROVAL_CHAIN_WORKFLOW) {
@@ -164,6 +169,9 @@ class LifecycleController extends AbstractController
         $mapping = $this->entityRegistry->lookup($entityType);
         if ($mapping === null) {
             return $this->jsonError(404, 'unknown_entity_type', sprintf('Lifecycle für Typ "%s" nicht konfiguriert.', $entityType));
+        }
+        if (($refusal = $this->moduleRefusal($entityType)) !== null) {
+            return $refusal;
         }
 
         if ($mapping['workflow'] === self::APPROVAL_CHAIN_WORKFLOW) {
@@ -284,6 +292,9 @@ class LifecycleController extends AbstractController
         if ($mapping === null) {
             return $this->jsonError(404, 'unknown_entity_type', sprintf('Lifecycle für Typ "%s" nicht konfiguriert.', $entityType));
         }
+        if (($refusal = $this->moduleRefusal($entityType)) !== null) {
+            return $refusal;
+        }
 
         $entity = $this->em->getRepository($mapping['class'])->find($id);
         if ($entity === null || !$this->isRecordInScope($entity)) {
@@ -336,6 +347,9 @@ class LifecycleController extends AbstractController
         $mapping = $this->entityRegistry->lookup($entityType);
         if ($mapping === null) {
             return $this->jsonError(404, 'unknown_entity_type', sprintf('Lifecycle für Typ "%s" nicht konfiguriert.', $entityType));
+        }
+        if (($refusal = $this->moduleRefusal($entityType)) !== null) {
+            return $refusal;
         }
 
         $entity = $this->em->getRepository($mapping['class'])->find($id);
@@ -398,6 +412,20 @@ class LifecycleController extends AbstractController
         }
 
         return TenantOwnership::isInContextScope($entity, $this->tenantContext, false);
+    }
+
+    /**
+     * S35: the module of the record type decides for every lifecycle path (transition, bulk, allowed, history) —
+     * with the module off the type answers like an unknown one (403, no hint of existing records).
+     */
+    private function moduleRefusal(string $entityType): ?JsonResponse
+    {
+        $module = $this->entityRegistry->moduleOf($entityType);
+        if ($module === null || $this->moduleConfiguration->isModuleActive($module)) {
+            return null;
+        }
+
+        return $this->jsonError(403, 'module_not_active', sprintf('Modul "%s" ist nicht aktiviert.', $module));
     }
 
     private function jsonError(int $code, string $errorCode, string $message, array $details = []): JsonResponse
