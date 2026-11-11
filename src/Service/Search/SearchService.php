@@ -8,8 +8,8 @@ use App\Util\LikePattern;
 use App\Risk\RiskMatrixThresholds;
 use App\Entity\{
     Asset, AuditFinding, BCExercise, BusinessContinuityPlan, BusinessProcess, ChangeRequest, ComplianceFramework,
-    ComplianceRequirement, Consent, Control, CorrectiveAction, CrisisTeam, DataBreach,
-    DataProtectionImpactAssessment, DataSubjectRequest, Document, Incident, InterestedParty, InternalAudit,
+    ComplianceRequirement, Consent, Control, CorrectiveAction, CrisisTeam,
+    DataProtectionImpactAssessment, Document, Incident, InterestedParty, InternalAudit,
     ISMSObjective, ManagementReview, Patch, Person, ProcessingActivity, Risk, Supplier, ThreatIntelligence, Tenant,
     Training, Vulnerability
 };
@@ -25,9 +25,7 @@ use App\Repository\ConsentRepository;
 use App\Repository\ControlRepository;
 use App\Repository\CorrectiveActionRepository;
 use App\Repository\CrisisTeamRepository;
-use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
-use App\Repository\DataSubjectRequestRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InterestedPartyRepository;
@@ -43,9 +41,7 @@ use App\Repository\ThreatIntelligenceRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Service\ModuleConfigurationService;
-use App\Security\Voter\PersonalDataRecordVoter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SearchService
 {
@@ -61,7 +57,6 @@ class SearchService
         private readonly SupplierRepository $supplierRepository,
         private readonly ProcessingActivityRepository $processingActivityRepository,
         private readonly DataProtectionImpactAssessmentRepository $dpiaRepository,
-        private readonly DataBreachRepository $dataBreachRepository,
         private readonly AuditFindingRepository $auditFindingRepository,
         private readonly CorrectiveActionRepository $correctiveActionRepository,
         private readonly ChangeRequestRepository $changeRequestRepository,
@@ -78,34 +73,13 @@ class SearchService
         private readonly PersonRepository $personRepository,
         private readonly InterestedPartyRepository $interestedPartyRepository,
         private readonly ConsentRepository $consentRepository,
-        private readonly DataSubjectRequestRepository $dataSubjectRequestRepository,
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly NavigationSearch $navigationSearch,
         private readonly ModuleConfigurationService $moduleConfig,
-        private readonly ?AuthorizationCheckerInterface $authorization = null,
+        private readonly PersonalDataSearch $personalDataSearch,
     ) {}
-
-    /**
-     * S33: hits of records about a person (data breach, data subject request) only for
-     * whom the detail page lets in — the same attribute, so search never offers a 403.
-     *
-     * @template T of object
-     * @param array<T> $records
-     * @return list<T>
-     */
-    private function visiblePersonalData(array $records): array
-    {
-        if ($this->authorization === null) {
-            return array_values($records);
-        }
-
-        return array_values(array_filter(
-            $records,
-            fn(object $record): bool => $this->authorization->isGranted(PersonalDataRecordVoter::VIEW, $record),
-        ));
-    }
 
     /**
      * Run a global search across all entity categories and navigation targets.
@@ -442,28 +416,7 @@ class SearchService
 
     public function searchDataBreaches(string $query, ?Tenant $tenant): array
     {
-        if (!$this->moduleConfig->isModuleActive('privacy')) {
-            return [];
-        }
-
-        $qb = $this->dataBreachRepository->createQueryBuilder('db')
-            ->where('db.title LIKE :query OR db.breachNature LIKE :query')
-            ->setParameter('query', LikePattern::contains($query))
-            ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
-
-        if ($tenant !== null) {
-            $qb->andWhere('db.tenant = :tenant')->setParameter('tenant', $tenant);
-        }
-
-        return array_map(fn(DataBreach $e): array => [
-            'id' => $e->getId(),
-            'title' => $e->getTitle() ?? $e->getReferenceNumber(),
-            'description' => $this->truncate($e->getBreachNature(), 100),
-            'url' => $this->urlGenerator->generate('app_data_breach_show', ['id' => $e->getId()]),
-            'icon' => 'fa-icon--nav-breach-octagon',
-            'type' => 'data_breach',
-            'badge' => $e->getSeverity(),
-        ], $this->visiblePersonalData($qb->getQuery()->getResult()));
+        return $this->personalDataSearch->dataBreaches($query, $tenant);
     }
 
     public function searchAuditFindings(string $query, ?Tenant $tenant): array
@@ -880,28 +833,7 @@ class SearchService
 
     public function searchDataSubjectRequests(string $query, ?Tenant $tenant): array
     {
-        if (!$this->moduleConfig->isModuleActive('privacy')) {
-            return [];
-        }
-
-        $qb = $this->dataSubjectRequestRepository->createQueryBuilder('dsr')
-            ->where('dsr.dataSubjectName LIKE :query OR dsr.description LIKE :query OR dsr.dataSubjectIdentifier LIKE :query')
-            ->setParameter('query', LikePattern::contains($query))
-            ->setMaxResults(self::MAX_RESULTS_PER_CATEGORY);
-
-        if ($tenant !== null) {
-            $qb->andWhere('dsr.tenant = :tenant')->setParameter('tenant', $tenant);
-        }
-
-        return array_map(fn(DataSubjectRequest $e): array => [
-            'id' => $e->getId(),
-            'title' => $e->getDataSubjectName() ?? $e->getDataSubjectIdentifier(),
-            'description' => $this->truncate($e->getDescription(), 100),
-            'url' => $this->urlGenerator->generate('app_data_subject_request_show', ['id' => $e->getId()]),
-            'icon' => 'fa-icon--nav-shield-lock',
-            'type' => 'data_subject_request',
-            'badge' => $e->getRequestType(),
-        ], $this->visiblePersonalData($qb->getQuery()->getResult()));
+        return $this->personalDataSearch->dataSubjectRequests($query, $tenant);
     }
 
     /**

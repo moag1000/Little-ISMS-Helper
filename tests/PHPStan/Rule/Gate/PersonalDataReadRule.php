@@ -24,7 +24,8 @@ use PHPStan\Rules\RuleErrorBuilder;
  *    (`PersonalDataRecordVoter::VIEW`), `RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE`,
  *    `PrivacyExportAccess::RULE` or a role from ROLE_MANAGER up — `ROLE_USER` alone is no rule;
  *  - every other GET action of that controller (the list, the dashboard) is gated like that, or filters with
- *    `PersonalDataRecordVoter::VIEW` in its body or in a method of the class it calls (list and detail page, one rule).
+ *    `PersonalDataRecordVoter::VIEW` or `PersonalDataVisibility::readable()/readableItems()` (a constructor property of
+ *    that type) in its body or in a method of the class it calls (list and detail page, one rule).
  *
  * A reviewed exception carries `// @personal-data-read-ok: <reason>` in the lead of the action or class, or an
  * entry in phpstan-gates-baseline.neon (`gate104.read`). Static reflection only (ReflectionProvider).
@@ -38,6 +39,8 @@ final class PersonalDataReadRule implements Rule
     private const IS_GRANTED = 'Symfony\Component\Security\Http\Attribute\IsGranted';
     private const MARKER_ATTRIBUTE = 'App\Attribute\PersonalDataResource';
     private const VOTER = 'App\Security\Voter\PersonalDataRecordVoter';
+    private const VISIBILITY = 'App\Security\PersonalDataVisibility';
+    private const VISIBILITY_METHODS = ['readable', 'readableitems'];
 
     /** Constants that are a read rule as strict as the voter's. */
     private const RULE_CONSTANTS = [
@@ -76,6 +79,7 @@ final class PersonalDataReadRule implements Rule
             $methods[$method->name->toLowerString()] = $method;
         }
         $classGuarded = $this->guarded($classNode, $scope);
+        $visibilityProperties = $this->visibilityProperties($methods['__construct'] ?? null, $scope);
 
         $getActions = [];
         $recordActions = [];
@@ -98,7 +102,7 @@ final class PersonalDataReadRule implements Rule
                 continue;
             }
             $isRecord = isset($recordActions[$method->name->toLowerString()]);
-            if (!$isRecord && $this->filters($method, $methods, [])) {
+            if (!$isRecord && $this->filters($method, $methods, $visibilityProperties, [])) {
                 continue;
             }
             $errors[] = RuleErrorBuilder::message(sprintf(
@@ -184,17 +188,46 @@ final class PersonalDataReadRule implements Rule
     }
 
     /**
-     * Does the action (or a method of the class it calls) filter with PersonalDataRecordVoter::VIEW?
+     * Names of the promoted constructor properties typed PersonalDataVisibility.
+     *
+     * @return list<string>
+     */
+    private function visibilityProperties(?ClassMethod $constructor, Scope $scope): array
+    {
+        $names = [];
+        foreach ($constructor?->params ?? [] as $param) {
+            $type = $param->type instanceof Node\NullableType ? $param->type->type : $param->type;
+            if ($param->flags !== 0 && $type instanceof Node\Name && $param->var instanceof Expr\Variable
+                && is_string($param->var->name) && $scope->resolveName($type) === self::VISIBILITY) {
+                $names[] = $param->var->name;
+            }
+        }
+
+        return $names;
+    }
+
+    /**
+     * Does the action (or a method of the class it calls) filter with PersonalDataRecordVoter::VIEW
+     * or PersonalDataVisibility::readable()/readableItems()?
      *
      * @param array<string, ClassMethod> $methods
+     * @param list<string>               $visibilityProperties
      * @param list<string>               $seen
      */
-    private function filters(ClassMethod $method, array $methods, array $seen): bool
+    private function filters(ClassMethod $method, array $methods, array $visibilityProperties, array $seen): bool
     {
         $voter = GateAst::find($method, static fn (Node $n): bool => $n instanceof Expr\ClassConstFetch
             && $n->class instanceof Node\Name && ltrim($n->class->toString(), '\\') === self::VOTER
             && $n->name instanceof Node\Identifier && $n->name->toString() === 'VIEW');
         if ($voter !== []) {
+            return true;
+        }
+        $visibility = GateAst::find($method, static fn (Node $n): bool => ($n instanceof Expr\MethodCall || $n instanceof Expr\NullsafeMethodCall)
+            && $n->name instanceof Node\Identifier && in_array($n->name->toLowerString(), self::VISIBILITY_METHODS, true)
+            && ($n->var instanceof Expr\PropertyFetch || $n->var instanceof Expr\NullsafePropertyFetch)
+            && $n->var->var instanceof Expr\Variable && $n->var->var->name === 'this'
+            && $n->var->name instanceof Node\Identifier && in_array($n->var->name->toString(), $visibilityProperties, true));
+        if ($visibility !== []) {
             return true;
         }
         $calls = GateAst::find($method, static fn (Node $n): bool => $n instanceof Expr\MethodCall
@@ -203,7 +236,7 @@ final class PersonalDataReadRule implements Rule
             \assert($call instanceof Expr\MethodCall && $call->name instanceof Node\Identifier);
             $name = $call->name->toLowerString();
             if (isset($methods[$name]) && !in_array($name, $seen, true)
-                && $this->filters($methods[$name], $methods, [...$seen, $method->name->toLowerString(), $name])) {
+                && $this->filters($methods[$name], $methods, $visibilityProperties, [...$seen, $method->name->toLowerString(), $name])) {
                 return true;
             }
         }

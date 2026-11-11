@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequiresModule;
+use App\Security\PersonalDataVisibility;
 use App\Security\Voter\PersonalDataRecordVoter;
 use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\BulkDeleteService;
@@ -65,6 +66,7 @@ class DataBreachController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
+        private readonly PersonalDataVisibility $personalData,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?IncidentRepository $incidentRepository = null,
         private readonly ?RoleDashboardService $roleDashboardService = null,
@@ -78,7 +80,7 @@ class DataBreachController extends AbstractController
     {
         $filter = $request->query->get('filter', 'all');
 
-        $breaches = match ($filter) {
+        $breaches = $this->personalData->readable(match ($filter) {
             'draft' => $this->dataBreachService->findByStatus('draft'),
             'under_assessment' => $this->dataBreachService->findByStatus('under_assessment'),
             'authority_notified' => $this->dataBreachService->findByStatus('authority_notified'),
@@ -92,8 +94,7 @@ class DataBreachController extends AbstractController
             'special_categories' => $this->dataBreachService->findWithSpecialCategories(),
             'incomplete' => $this->dataBreachService->findIncomplete(),
             default => $this->dataBreachService->findAll(),
-        };
-        $breaches = $this->visible($breaches);
+        });
 
         return $this->render('data_breach/index.html.twig', [
             'page' => ListPage::fromRequest($breaches, $request, static fn(DataBreach $b): array => [$b->getReferenceNumber(), $b->getTitle()]),
@@ -104,54 +105,26 @@ class DataBreachController extends AbstractController
         ]);
     }
 
-    /**
-     * Dashboard with action items and compliance overview
-     */
+    /** Dashboard with action items and compliance overview (S33: only readable breaches). */
     #[Route('/dashboard', name: 'dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
-        $statistics = $this->dataBreachService->getDashboardStatistics();
-        $complianceScore = $this->dataBreachService->calculateComplianceScore();
-        $actionItems = $this->dataBreachService->getActionItems();
-        if (!$this->isGranted('ROLE_MANAGER')) {
-            $visibleIds = array_map(
-                static fn(DataBreach $b): ?int => $b->getId(),
-                $this->visible($this->dataBreachService->findAll()),
-            );
-            $actionItems = array_values(array_filter(
-                $actionItems,
-                static fn(array $item): bool => in_array($item['breach_id'] ?? null, $visibleIds, true),
-            ));
-        }
+        $actionItems = $this->personalData->readableItems(
+            $this->dataBreachService->getActionItems(),
+            'breach_id',
+            $this->dataBreachService->findAll(...),
+            static fn(DataBreach $b): ?int => $b->getId(),
+        );
 
         return $this->render('data_breach/dashboard.html.twig', [
-            'statistics' => $statistics,
-            'compliance_score' => $complianceScore,
+            'statistics' => $this->dataBreachService->getDashboardStatistics(),
+            'compliance_score' => $this->dataBreachService->calculateComplianceScore(),
             'action_items' => $actionItems,
-            'overdue_breaches' => $this->visible($this->dataBreachService->findAuthorityNotificationOverdue()),
-            'pending_authority' => $this->visible($this->dataBreachService->findRequiringAuthorityNotification()),
-            'pending_subjects' => $this->visible($this->dataBreachService->findRequiringSubjectNotification()),
-            'recent_breaches' => $this->visible($this->dataBreachService->findRecent(30)),
+            'overdue_breaches' => $this->personalData->readable($this->dataBreachService->findAuthorityNotificationOverdue()),
+            'pending_authority' => $this->personalData->readable($this->dataBreachService->findRequiringAuthorityNotification()),
+            'pending_subjects' => $this->personalData->readable($this->dataBreachService->findRequiringSubjectNotification()),
+            'recent_breaches' => $this->personalData->readable($this->dataBreachService->findRecent(30)),
         ]);
-    }
-
-    /**
-     * S33: lists follow the detail page's rule — managers (DPO included) see every breach,
-     * anybody else only the ones they are responsible for (assessor, DPO on the record, deputies).
-     *
-     * @param array<DataBreach> $breaches
-     * @return list<DataBreach>
-     */
-    private function visible(array $breaches): array
-    {
-        if ($this->isGranted('ROLE_MANAGER')) {
-            return array_values($breaches);
-        }
-
-        return array_values(array_filter(
-            $breaches,
-            fn(DataBreach $b): bool => $this->isGranted(PersonalDataRecordVoter::VIEW, $b),
-        ));
     }
 
     /**
@@ -252,9 +225,7 @@ class DataBreachController extends AbstractController
         ]);
     }
 
-    /**
-     * Edit data breach
-     */
+    /** Edit data breach */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataBreach')]
     public function edit(Request $request, DataBreach $dataBreach): Response
@@ -306,9 +277,7 @@ class DataBreachController extends AbstractController
         ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
-    /**
-     * Delete data breach
-     */
+    /** Delete data breach */
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, DataBreach $dataBreach): Response
@@ -463,9 +432,7 @@ class DataBreachController extends AbstractController
         return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
     }
 
-    /**
-     * Close data breach investigation
-     */
+    /** Close data breach investigation */
     #[Route('/{id}/close', name: 'close', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'dataBreach')]
     public function close(Request $request, DataBreach $dataBreach): Response

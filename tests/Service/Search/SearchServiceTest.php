@@ -35,6 +35,7 @@ use App\Repository\TrainingRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\Search\NavigationSearch;
+use App\Service\Search\PersonalDataSearch;
 use App\Service\Search\SearchService;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -150,7 +151,6 @@ class SearchServiceTest extends TestCase
             $this->supplierRepo,
             $this->processingActivityRepo,
             $this->dpiaRepo,
-            $this->dataBreachRepo,
             $this->auditFindingRepo,
             $this->correctiveActionRepo,
             $this->changeRequestRepo,
@@ -167,12 +167,12 @@ class SearchServiceTest extends TestCase
             $this->personRepo,
             $this->interestedPartyRepo,
             $this->consentRepo,
-            $this->dataSubjectRequestRepo,
             $this->complianceFrameworkRepo,
             $this->complianceRequirementRepo,
             $this->urlGenerator,
             new NavigationSearch($this->urlGenerator, $authChecker, $moduleConfig, self::germanTranslator()),
             $moduleConfig,
+            new PersonalDataSearch($this->dataBreachRepo, $this->dataSubjectRequestRepo, $this->urlGenerator, $moduleConfig),
         );
     }
 
@@ -197,7 +197,6 @@ class SearchServiceTest extends TestCase
             $this->supplierRepo,
             $this->processingActivityRepo,
             $this->dpiaRepo,
-            $this->dataBreachRepo,
             $this->auditFindingRepo,
             $this->correctiveActionRepo,
             $this->changeRequestRepo,
@@ -214,12 +213,12 @@ class SearchServiceTest extends TestCase
             $this->personRepo,
             $this->interestedPartyRepo,
             $this->consentRepo,
-            $this->dataSubjectRequestRepo,
             $this->complianceFrameworkRepo,
             $this->complianceRequirementRepo,
             $this->urlGenerator,
             new NavigationSearch($this->urlGenerator, $this->authChecker, $this->moduleConfig, self::germanTranslator()),
             $this->moduleConfig,
+            new PersonalDataSearch($this->dataBreachRepo, $this->dataSubjectRequestRepo, $this->urlGenerator, $this->moduleConfig),
         );
     }
 

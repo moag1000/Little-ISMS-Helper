@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequiresModule;
+use App\Security\PersonalDataVisibility;
 use App\Security\Voter\PersonalDataRecordVoter;
 use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\BulkDeleteService;
@@ -61,6 +62,7 @@ class DataSubjectRequestController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
+        private readonly PersonalDataVisibility $personalData,
         private readonly ?TenantContext $tenantContext = null,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?DataSubjectRequestRepository $dataSubjectRequestRepository = null,
@@ -98,14 +100,8 @@ class DataSubjectRequestController extends AbstractController
             ));
         }
 
-        // S33: the list follows the detail page's rule — managers (DPO included) see every
-        // request, anybody else only the ones they are responsible for.
-        if (!$this->isGranted('ROLE_MANAGER')) {
-            $requests = array_values(array_filter(
-                $requests,
-                fn(DataSubjectRequest $r): bool => $this->isGranted(PersonalDataRecordVoter::VIEW, $r),
-            ));
-        }
+        // S33: the list follows the detail page's rule (managers, DPO, the responsible).
+        $requests = $this->personalData->readable($requests);
 
         $openStatuses = ['received', 'identity_verification', 'in_progress', 'extended'];
         $statistics = $this->dataSubjectRequestService->getStatistics();

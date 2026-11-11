@@ -284,7 +284,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 96 | `tests/Security/WritePathParityTest.php` (PHPUnit) | a write rule on the entity (`#[CreateOnly]`, `#[ManagerOrResponsibleField]`, evidence) holds in every form, the import and the API groups |
 | 94 | PHPStan `StoredFilePathRule` (T4; was `check_stored_file_paths.py`) | stored file paths only through StoredFilePath / ProtectedUploads |
 | 97 | PHPStan `TenantPinRestoreRule` (T4; was `check_tenant_pin_restore.py`) | an organisation pinned in TenantContext is put back (runAs / try-finally) |
-| 104 | PHPStan `PersonalDataReadRule` (S33) | pages of a record about a person (`#[PersonalDataResource]`, whole class) carry a read rule; lists filter with `PersonalDataRecordVoter::VIEW` |
+| 104 | PHPStan `PersonalDataReadRule` (S33) | pages of a record about a person (`#[PersonalDataResource]`, whole class) carry a read rule; lists filter with `PersonalDataRecordVoter::VIEW` or `App\Security\PersonalDataVisibility::readable()` |
 
 Code-Stil: Job „Code Quality“ führt `vendor/bin/php-cs-fixer fix --dry-run` mit `.php-cs-fixer.dist.php` (PSR-12,
 `src/` + `tests/`) aus und schlägt fehl, sobald eine Datei abweicht. Ausgenommen sind die Dateien in

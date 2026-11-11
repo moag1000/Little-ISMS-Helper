@@ -6,6 +6,7 @@ namespace App\Controller\GateFixture;
 
 use App\Entity\GateFixture\ContactRecord;
 use App\Entity\GateFixture\PersonRecord;
+use App\Security\PersonalDataVisibility;
 use App\Security\PrivacyExportAccess;
 use App\Security\Voter\PersonalDataRecordVoter;
 use App\Security\Voter\RecordResponsibleVoter;
@@ -134,6 +135,42 @@ final class PlainController extends AbstractController
 
     #[Route('/contact/{id}', name: 'fixture_contact_show', methods: ['GET'])]
     public function contact(ContactRecord $record): Response
+    {
+        return new Response();
+    }
+}
+
+/** Filtering through the shared visibility service counts — only on a property of that type. */
+#[Route('/person-visible')]
+final class VisiblePersonRecordController extends AbstractController
+{
+    public function __construct(
+        private readonly PersonalDataVisibility $personalData,
+        private readonly ?\ArrayObject $other = null,
+    ) {
+    }
+
+    #[Route('', name: 'fixture_visible_index', methods: ['GET'])]
+    public function index(): Response
+    {
+        return new Response((string) count($this->personalData->readable([])));
+    }
+
+    #[Route('/items', name: 'fixture_visible_items', methods: ['GET'])]
+    public function items(): Response
+    {
+        return new Response((string) count($this->personalData->readableItems([], 'id', static fn (): array => [], static fn (object $r): int => 1)));
+    }
+
+    #[Route('/other', name: 'fixture_visible_other', methods: ['GET'])]
+    public function other(): Response // expect: gate104.read
+    {
+        return new Response((string) $this->other?->readable([]));
+    }
+
+    #[Route('/{id}', name: 'fixture_visible_show', methods: ['GET'])]
+    #[IsGranted(PersonalDataRecordVoter::VIEW, subject: 'record')]
+    public function show(PersonRecord $record): Response
     {
         return new Response();
     }

@@ -53,9 +53,7 @@ class QuickFixController extends AbstractController
             return $this->lockedResponse($guard, $request);
         }
 
-        // If a token was supplied via ?token= and matches, persist it as a
-        // cookie so the user does not need to keep the URL parameter on the
-        // POST submission. Lifetime: session.
+        // A matching ?token= is kept as a session cookie, so the POST forms need no URL parameter.
         $cookieToSet = null;
         if ($request->query->has('token') && $guard->mayAccess($request)) {
             $cookieToSet = (string) $request->query->get('token');
@@ -208,10 +206,7 @@ class QuickFixController extends AbstractController
         return $response;
     }
 
-    /**
-     * "Sign in as super admin": remembers the Quick-Fix page as the target after login (and
-     * after the second factor), then opens the login form. Writes only the session.
-     */
+    /** S33 "sign in as super admin": back to Quick-Fix after login and second factor (session only). */
     #[Route('/quick-fix/login', name: 'app_quick_fix_login', methods: ['GET'])]
     public function login(Request $request, QuickFixGuard $guard): Response
     {
@@ -232,8 +227,7 @@ class QuickFixController extends AbstractController
         JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
-        // S33: migrations move data and run when the operator chose to (after a backup, in the
-        // maintenance window) — a super admin login or the installer token, never anonymous.
+        // S33: migrations move data — super admin login or installer token, never anonymous.
         if (!$guard->mayRunPrivileged($request)) {
             return $this->lockedResponse($guard, $request);
         }
@@ -606,25 +600,6 @@ class QuickFixController extends AbstractController
         );
     }
 
-    /**
-     * Shared dispatch helper for every QuickFix async action.
-     *
-     * Creates a job-status record with payload-embedded UI metadata
-     * (label / subtitle) and redirects (303) to the shared QuickFix
-     * progress page — required by Hotwire Turbo, which refuses to
-     * render a 200+HTML body in response to a form submission ("Form
-     * responses must redirect to another location"). {@see JobDispatcher}
-     * then runs the job in this same PHP-FPM worker after the redirect
-     * has been flushed (fastcgi_finish_request pattern) so shared-hosting
-     * operators do not need a Messenger worker daemon. Falls back to
-     * Messenger when `app.async_job.runner=messenger`.
-     *
-     * @param class-string $jobClass    FQCN of the {@see \App\Job\AsyncJobInterface}
-     * @param string       $statusName  Internal slug stored on the status record
-     * @param string       $labelKey    quick_fix.* translation key for the title
-     * @param string       $subtitleKey quick_fix.* translation key for the subtitle
-     * @param array<string, mixed> $args Args forwarded to the job context
-     */
     /** 403 page; for a privileged action it explains the super-admin / installer-token requirement. */
     private function lockedResponse(QuickFixGuard $guard, Request $request): Response
     {
@@ -635,6 +610,18 @@ class QuickFixController extends AbstractController
         ], new Response('', Response::HTTP_FORBIDDEN));
     }
 
+    /**
+     * Shared dispatch helper for every QuickFix async action: job-status record with UI metadata
+     * (label / subtitle), then a 303 to the shared progress page (Turbo needs a redirect after a form
+     * submission). {@see JobDispatcher} runs the job in this PHP-FPM worker after the redirect is
+     * flushed (no Messenger daemon needed), or via Messenger when `app.async_job.runner=messenger`.
+     *
+     * @param class-string $jobClass    FQCN of the {@see \App\Job\AsyncJobInterface}
+     * @param string       $statusName  Internal slug stored on the status record
+     * @param string       $labelKey    quick_fix.* translation key for the title
+     * @param string       $subtitleKey quick_fix.* translation key for the subtitle
+     * @param array<string, mixed> $args Args forwarded to the job context
+     */
     private function dispatchJobProgress(
         Request $request,
         JobStatusService $jobStatusService,
