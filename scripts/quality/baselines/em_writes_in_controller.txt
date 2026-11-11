@@ -218,7 +218,7 @@ src/Controller/DoraSubcontractorController.php:170
 src/Controller/DoraSubcontractorController.php:171
 src/Controller/EvidenceReverificationController.php:136
 src/Controller/EvidenceReverificationController.php:177
-src/Controller/FourEyesController.php:100
+src/Controller/FourEyesController.php:109
 src/Controller/GuidedTourController.php:90
 src/Controller/GuidedTourController.php:119
 src/Controller/HomeController.php:297
@@ -302,11 +302,6 @@ src/Controller/ReportBuilderController.php:480
 src/Controller/ReportBuilderController.php:508
 src/Controller/ReportBuilderController.php:543
 src/Controller/ReportBuilderController.php:544
-src/Controller/RiskAppetiteController.php:103
-src/Controller/RiskAppetiteController.php:104
-src/Controller/RiskAppetiteController.php:175
-src/Controller/RiskAppetiteController.php:215
-src/Controller/RiskAppetiteController.php:216
 src/Controller/RiskController.php:410
 src/Controller/RiskController.php:411
 src/Controller/RiskController.php:456

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+// @em-write-allowed: one risk appetite per request (create, edit, approve stamp, delete); the audit log runs in Doctrine listeners.
 
 namespace App\Controller;
 

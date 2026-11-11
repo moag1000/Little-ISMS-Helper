@@ -91,6 +91,7 @@ final class RiskAppetiteType extends AbstractType implements SectionMapInterface
                     ),
                 ],
             ])
+            // @intentional-bind: stamped by the approve action, shown read-only (S34)
             ->add('approvedBy', OwnerUserType::class, [
                 'label' => 'risk_appetite.field.approved_by',
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
@@ -99,6 +100,7 @@ final class RiskAppetiteType extends AbstractType implements SectionMapInterface
                 'disabled' => true, // S34: stamped by the "Freigeben" action only
                                 'help' => 'risk_appetite.help.approved_by'
             ])
+            // @intentional-bind: stamped by the approve action, shown read-only (S34)
             ->add('approvedAt', DateTimeType::class, [
                 'label' => 'risk_appetite.field.approved_at',
                 'widget' => 'single_text',
