@@ -10,6 +10,7 @@ use App\Entity\Risk;
 use App\Service\Owner\LegacyOwnerColumns;
 use App\Service\Owner\OwnerTextResolver;
 use App\Service\Supplier\SubcontractorChainRows;
+use App\Service\WriteRule\CorrectionReason;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Id\AssignedGenerator;
@@ -47,6 +48,9 @@ class RestoreEntityWriter
         private readonly LoggerInterface $logger,
         private readonly ?OwnerTextResolver $ownerTexts = null,
         private readonly ?RestoreEvidencePolicy $evidencePolicy = null,
+        // S28: a restore puts back stored values; for #[CreateOnly] fields (incident/breach detectedAt)
+        // the backup is the reason the WriteRuleGuard asks a manager for — it lands in the audit log.
+        private readonly ?CorrectionReason $correctionReason = null,
     ) {
     }
 
@@ -236,6 +240,9 @@ class RestoreEntityWriter
             'count' => count($entities),
         ]);
 
+        if ($this->correctionReason !== null && $this->correctionReason->current() === null) {
+            $this->correctionReason->provide('Restore from backup');
+        }
         $bestEffort  = (bool) ($options['best_effort'] ?? false);
         $connection  = $this->entityManager->getConnection();
 
