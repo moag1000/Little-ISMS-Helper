@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Service\Deadline\Source\RetentionDeletionSource;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -40,7 +41,8 @@ final class DataRetentionOverviewController extends AbstractController
     }
 
     #[Route('/data-retention', name: 'app_data_retention_overview', methods: ['GET'])]
-    #[IsGranted('ROLE_DPO')]
+    // S28: ROLE_ADMIN no longer inherits ROLE_DPO; the admin runs the deletions (retention settings) and is reminded too
+    #[IsGranted(new Expression("is_granted('ROLE_DPO') or is_granted('ROLE_ADMIN')"))]
     public function overview(): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();

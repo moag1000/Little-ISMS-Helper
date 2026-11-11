@@ -149,8 +149,12 @@ class ManagementReview
 
     // ── ISO 27001 §9.3 norm fields (T31.2.5) ──────────────────────────────
 
-    /** ISO 27001 §9.3 — Top-management attendance is mandatory */
+    /**
+     * ISO 27001 §9.3 — top management took part. S28 (F-12): written by the step that
+     * proves it (`management_review_lifecycle` complete, ROLE_TOP_MGMT), never ticked in a form.
+     */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[\App\Attribute\ApiReadOnlyEvidence(writtenBy: 'management_review_lifecycle complete (LifecycleEvidenceStamper)')]
     private bool $topManagementAttended = false;
 
     /** Periodic review date — ≥1× per year required by §9.3 */

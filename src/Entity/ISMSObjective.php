@@ -30,7 +30,7 @@ use Doctrine\Common\Collections\Collection;
 use App\Validator\Constraint\SameTenantOwner;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
-#[ORM\Entity(repositoryClass: ISMSObjectiveRepository::class)]
+#[ORM\Entity(repositoryClass: ISMSObjectiveRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),

@@ -150,7 +150,6 @@ management_review:
         action_items: 'Specific actions with responsibilities and deadlines'
         resource_needs: 'Budget, personnel or other resources'
         summary: 'Executive summary of the management review'
-        top_management_attended: 'Confirms that at least one top-management member was personally present (ISO 27001 §9.3 mandatory).'
         next_review_date: 'Date for the next planned management review (≥1× per year as required by §9.3).'
         meeting_minutes_document: 'Official meeting-minutes document from the document archive (§7.5.3).'
         risk_treatment_effectiveness: 'Assessment of whether the implemented risk-treatment measures are effective (treatment ROI; supplements risksReview).'

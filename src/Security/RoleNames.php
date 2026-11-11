@@ -59,11 +59,14 @@ final class RoleNames
      * Roles an organisation admin hands out although ROLE_ADMIN does not
      * inherit them (role ceiling exception, S14): top management is a
      * different person than the admin (ISO 27001 5.1), a function owner signs
-     * for one business function. Self-assignment of ROLE_TOP_MGMT stays
-     * forbidden ({@see \App\Security\RoleCeiling::mayGrant()}).
+     * for one business function, the data protection officer acts on their own
+     * (GDPR Art. 38, S28: admins no longer inherit it). Self-assignment of
+     * ROLE_TOP_MGMT stays forbidden ({@see \App\Security\RoleCeiling::mayGrant()});
+     * an admin who is also the DPO may take ROLE_DPO, the grant is audited.
      */
     public const array ADMIN_DELEGATED = [
         'ROLE_TOP_MGMT',
+        'ROLE_DPO',
         'ROLE_FUNCTION_OWNER',
     ];
 
@@ -80,6 +83,7 @@ final class RoleNames
      */
     public const array AUDITED_GRANTS = [
         'ROLE_TOP_MGMT',
+        'ROLE_DPO',
         'ROLE_SUPER_ADMIN',
         'ROLE_ADMIN',
         'ROLE_GROUP_CISO',

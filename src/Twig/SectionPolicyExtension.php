@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use App\Form\Extension\WriteRuleFormExtension;
 use App\Form\SectionMapInterface;
+use App\Service\WriteRule\WriteRules;
 use Symfony\Component\Form\FormView;
 use Twig\Attribute\AsTwigFunction;
 
@@ -47,7 +49,35 @@ final class SectionPolicyExtension
         }
 
         /** @var class-string<SectionMapInterface> $formType */
-        return $formType::getSectionMap();
+        return self::withCorrectionReason($form, $formType::getSectionMap());
+    }
+
+    /**
+     * S28: the reason field of a create-only correction (added by the write-rule form
+     * extension, not by the FormType) sits in the section of the field it explains.
+     *
+     * @param array<string, list<string>> $map
+     * @return array<string, list<string>>
+     */
+    private static function withCorrectionReason(FormView $form, array $map): array
+    {
+        $record = $form->vars['data'] ?? null;
+        if (!isset($form->children[WriteRuleFormExtension::REASON_FIELD]) || !is_object($record)) {
+            return $map;
+        }
+        $createOnly = WriteRules::createOnlyFields($record::class);
+        foreach ($map as $section => $fields) {
+            foreach ($fields as $i => $field) {
+                if (in_array($field, $createOnly, true)) {
+                    array_splice($fields, $i + 1, 0, [WriteRuleFormExtension::REASON_FIELD]);
+                    $map[$section] = $fields;
+
+                    return $map;
+                }
+            }
+        }
+
+        return $map;
     }
 
     /**

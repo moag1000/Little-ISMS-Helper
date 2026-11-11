@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Http\PublicUrlGenerator;
+use App\Security\AzureOAuthAuthenticator;
 use App\Security\LandingRoute;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
@@ -29,6 +31,7 @@ class SecurityController extends AbstractController
         private readonly SsoProviderRegistry $ssoRegistry,
         private readonly TenantContext $tenantContext,
         private readonly LandingRoute $landingRoute,
+        private readonly PublicUrlGenerator $publicUrls,
     ) {}
 
     // @csrf-exempt: form_login validates the authenticate CSRF token (security.yaml enable_csrf)
@@ -94,7 +97,11 @@ class SecurityController extends AbstractController
         // Public since S25 (the rule once missed the locale prefix): an instance without
         // Azure configuration answers with the login page, not a 500.
         try {
-            return $clientRegistry->getClient('azure')->redirect(['openid', 'email', 'profile'], []);
+            // S28 (F-14): redirect_uri from DEFAULT_URI, never from the Host header of this request.
+            return $clientRegistry->getClient('azure')->redirect(
+                ['openid', 'email', 'profile'],
+                AzureOAuthAuthenticator::redirectOptions($this->publicUrls),
+            );
         } catch (\Throwable) {
             $this->addFlash('error', $this->translator->trans('security.error.azure_login_error', [], 'messages'));
 

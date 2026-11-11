@@ -1457,6 +1457,7 @@ admin:
         violation:
             roles_locked: 'The roles of this transition are fixed (management or privacy).'
             roles_invalid: 'Only roles from the list, not ROLE_USER or reviewer roles.'
+            roles_wider: 'Only a narrower circle than the workflow definition, for example CISO instead of manager.'
             four_eyes_locked: 'Four eyes are required for this transition and cannot be switched off.'
             reason_required_locked: 'A reason is required for this transition and cannot be switched off.'
             module_locked: 'The transition belongs to a module; its module gate cannot be replaced.'
@@ -1488,8 +1489,8 @@ admin:
             reset: 'Reset'
         form:
             roles: 'Roles'
-            roles_help: 'No selection = roles of the workflow definition.'
-            roles_locked_help: 'Management and privacy transitions keep their roles (ISO 27001 5.1, GDPR Art. 38/39).'
+            roles_help: 'No selection = roles of the workflow definition. A selection may only narrow the circle.'
+            roles_locked_help: 'Management and privacy transitions and system-only steps keep their roles (ISO 27001 5.1, GDPR Art. 38/39).'
             reason_required: 'Reason required'
             reason_required_value: 'Require reason'
             four_eyes: 'Four-eyes principle'

@@ -10,17 +10,20 @@ use App\EventListener\WriteRuleGuard;
 use App\Form\Util\ReadOnlyField;
 use App\Service\Responsibility\ResponsibilityResolver;
 use App\Service\Responsibility\SelfAssignmentCheck;
+use App\Service\WriteRule\CorrectionReason;
 use App\Service\WriteRule\WriteRuleCheck;
 use App\Service\WriteRule\WriteRules;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -31,12 +34,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   fields read-only, and classification fields read-only unless they are
  *   responsible for the record. Disabled fields are not submitted; the stored
  *   value stays.
+ * - A manager correcting a create-only field gives a reason (S28, F-06) in the
+ *   extra field {@see REASON_FIELD}; without one the form shows an error.
  * - Who is responsible: a change to the owner / assignee / approver slots by
  *   somebody who is neither manager nor current holder becomes a form error
  *   instead of the 403 of the guard on save.
  */
 final class WriteRuleFormExtension extends AbstractTypeExtension
 {
+    /** Unmapped field for the reason of a create-only correction (S28). */
+    public const string REASON_FIELD = 'createOnlyCorrectionReason';
+
     public function __construct(
         private readonly Security $security,
         private readonly EntityManagerInterface $em,
@@ -45,6 +53,7 @@ final class WriteRuleFormExtension extends AbstractTypeExtension
         private readonly WriteRuleCheck $check,
         #[Autowire(lazy: true)]
         private readonly ResponsibilityResolver $resolver,
+        private readonly CorrectionReason $correctionReason,
     ) {
     }
 
@@ -68,7 +77,12 @@ final class WriteRuleFormExtension extends AbstractTypeExtension
                     return;
                 }
                 $user = $this->security->getUser();
-                if (!$user instanceof User || $this->security->isGranted(SelfAssignmentGuard::MANAGER_ROLE)) {
+                if (!$user instanceof User) {
+                    return;
+                }
+                if ($this->security->isGranted(SelfAssignmentGuard::MANAGER_ROLE)) {
+                    $this->addCorrectionReason($form, $rules);
+
                     return;
                 }
                 $responsible = null;
@@ -106,7 +120,12 @@ final class WriteRuleFormExtension extends AbstractTypeExtension
                 return;
             }
             $changes = WriteRuleCheck::ruledChanges($this->em, $record);
-            if ($changes === [] || $this->security->isGranted(SelfAssignmentGuard::MANAGER_ROLE)) {
+            if ($changes === []) {
+                return;
+            }
+            if ($this->security->isGranted(SelfAssignmentGuard::MANAGER_ROLE)) {
+                $this->takeCorrectionReason($form, $record, $changes);
+
                 return;
             }
             if (SelfAssignmentCheck::selfAssignedReferences($this->em, $record, $user) !== []) {
@@ -116,6 +135,48 @@ final class WriteRuleFormExtension extends AbstractTypeExtension
                 $form->addError(new FormError($this->translator->trans('write_rule.refused', [], 'validators')));
             }
         }, -100);
+    }
+
+    /**
+     * S28 (F-06): a manager editing a record whose form shows a create-only field
+     * gets the reason field next to it; it is asked for only when that value changes.
+     *
+     * @param array<string, string> $rules
+     */
+    private function addCorrectionReason(FormInterface $form, array $rules): void
+    {
+        foreach ($form->all() as $name => $child) {
+            $config = $child->getConfig();
+            $field = (string) ($config->getPropertyPath() ?? $name);
+            if ($config->getMapped() && !$config->getDisabled() && ($rules[$field] ?? null) === WriteRules::CREATE_ONLY) {
+                $form->add(self::REASON_FIELD, TextareaType::class, [
+                    'mapped' => false,
+                    'required' => false,
+                    'label' => 'write_rule.correction_reason.label',
+                    'help' => 'write_rule.correction_reason.help',
+                    'translation_domain' => 'validators',
+                    'attr' => ['rows' => 2, 'maxlength' => CorrectionReason::MAX_LENGTH],
+                ]);
+
+                return;
+            }
+        }
+    }
+
+    /** @param array<string, mixed> $changes */
+    private function takeCorrectionReason(FormInterface $form, object $record, array $changes): void
+    {
+        if (WriteRuleCheck::createOnlyChanges($record, $changes) === []) {
+            return;
+        }
+        $reason = $form->has(self::REASON_FIELD) ? trim((string) $form->get(self::REASON_FIELD)->getData()) : '';
+        if ($reason === '') {
+            $error = new FormError($this->translator->trans('write_rule.correction_reason.required', [], 'validators'));
+            ($form->has(self::REASON_FIELD) ? $form->get(self::REASON_FIELD) : $form)->addError($error);
+
+            return;
+        }
+        $this->correctionReason->provide($reason);
     }
 
     /** A record already saved (the clone and new forms carry none yet). */

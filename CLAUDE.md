@@ -29,7 +29,7 @@ the parent's scope do not. `TenantContext` service manages context.
 **RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN, plus holding-level
 ROLE_GROUP_CISO + ROLE_KONZERN_AUDITOR, plus persona-roles
 ROLE_CISO / ROLE_ISB / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER /
-ROLE_BCM_OFFICER / ROLE_TOP_MGMT (top management, read-only, board view; ROLE_ADMIN does NOT inherit it — Leitung approvals need the assigned role) — each
+ROLE_BCM_OFFICER / ROLE_TOP_MGMT (top management, read-only, board view; ROLE_ADMIN inherits neither it nor ROLE_DPO — Leitung and DSB steps need the assigned role, S28) — each
 gates own dashboard at `/dashboards/<persona>`. "Which persona am I" is answered
 ONLY by `App\Security\Persona\PersonaResolver` (table: `Persona` enum): login
 landing, `/dashboards`, `PERSONA_*` voter attributes, tour, tour menu, My Day role
@@ -303,10 +303,12 @@ systemctl enable isms-worker && systemctl start isms-worker
   responsible"); `DeadlineLinkReachabilityTest` fails when a source's link shuts out who it reminds.
   Responsibility is a right, so nobody without ROLE_MANAGER makes themselves responsible for an existing record
   (`EventListener\SelfAssignmentGuard` on flush, slots found by `ResponsibleSlotWriteContractTest`) and only a
-  manager sets `Person.linkedUser` (S20). Write rules live on the entity, not in the FormType (S22):
-  `#[CreateOnly]` (manager corrects after create), `#[ManagerOrResponsibleField]` (classification: manager or
+  manager sets `Person.linkedUser` (S20); on create too for classes marked `#[ResponsibilityGrantsAuthority]` (S28,
+  discovery in `ResponsibleSlotWriteContractTest`). Write rules live on the entity, not in the FormType (S22):
+  `#[CreateOnly]` (manager corrects after create, with a reason: form field or `X-Correction-Reason`,
+  `WriteRule\CorrectionReason`, audit-logged), `#[ManagerOrResponsibleField]` (classification: manager or
   the holder), `#[ApiReadOnlyEvidence]` (the step writes it); `EventListener\WriteRuleGuard` enforces them on
-  flush for every writer, `WriteRuleFormExtension` disables them in forms, the bulk import writes through
+  flush for every writer (acting person = `Security\ActingUser`: token, else the job's dispatcher via `Job\JobActor`), `WriteRuleFormExtension` disables them in forms, the bulk import writes through
   `Import\ImportEntityWriter` (validator per row, preview too). Gate 96 `tests/Security/WritePathParityTest`.
 - `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
   `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
@@ -553,7 +555,9 @@ responsible people), never a bare `ROLE_AUDITOR`, which top management and the g
 - Static baseline: `config/workflows/<entity>.yaml` (places + transition wiring — immutable at runtime)
 - Tenant overrides: `lifecycle_config` DB-table (admin UI at `/admin/lifecycle-overrides`) — overrides `roles`, `reason_required`, `four_eyes`, `module` metadata per tenant, only as far as
   `LifecycleOverridePolicy` allows (tighten, never loosen: roles from `RoleNames` without ROLE_USER/reviewers, ROLE_TOP_MGMT/ROLE_DPO
-  transitions locked, YAML four eyes/reason/module stay); the resolver uses the RECORD's tenant. Transition metadata `responsible: true`
+  transitions locked, YAML four eyes/reason/module stay; override roles must narrow the YAML roles — `narrows()`);
+  the resolver uses the RECORD's tenant. A record may narrow its own roles via `Lifecycle\RecordTransitionRoles`
+  (policies: CISO/TOP_MGMT). Transition metadata `responsible: true`
   also opens it to `RECORD_RESPONSIBLE`. A new admin setting needs a consumer (`tests/Lifecycle/AdminSettingConsumersTest`); approval-chain
   steps (`/admin/workflows`) are read-only, per-org step overlays were removed in S15
 

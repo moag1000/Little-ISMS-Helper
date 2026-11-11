@@ -6,6 +6,7 @@ namespace App\EventListener;
 
 use App\Entity\Person;
 use App\Entity\User;
+use App\Security\ActingUser;
 use App\Service\Responsibility\SelfAssignmentCheck;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -28,12 +29,17 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  * 2. Self-assignment on an existing record: a changed User/Person reference
  *    (owner, assignee, approver, deputies) after which the person is responsible
  *    for the record and before which they were not ({@see SelfAssignmentCheck}).
- *    The current holder may still hand the record on; creating a record with
- *    oneself as owner stays allowed (it is one's own record).
+ *    The current holder may still hand the record on.
+ * 3. Self-assignment on create (S28, F-04): for classes whose responsibility opens an
+ *    action ({@see \App\Attribute\ResponsibilityGrantsAuthority}: incident reports, risk
+ *    treatment decision, DSR closing …) the creator does not name themselves either;
+ *    the slot stays empty and the duty's roles act. Other records (one's own task)
+ *    may still be created with oneself as owner.
  *
  * Web forms show the refusal as a form error first ({@see \App\Form\Extension\SelfAssignmentFormExtension});
  * here it is the backstop for every other path: 403, nothing is written.
- * Checked only when a person is logged in (console, scheduler and workers act for nobody).
+ * Checked for the acting person ({@see ActingUser}): the logged-in user, or the one who
+ * started an async job (S28); console commands and the scheduler act for nobody.
  */
 #[AsDoctrineListener(event: Events::onFlush)]
 final class SelfAssignmentGuard
@@ -42,6 +48,7 @@ final class SelfAssignmentGuard
 
     public function __construct(
         private readonly Security $security,
+        private readonly ActingUser $actingUser,
         // Lazy: the check asks every deadline source; some of them reach services that use this EntityManager.
         #[Autowire(lazy: true)]
         private readonly SelfAssignmentCheck $check,
@@ -50,7 +57,8 @@ final class SelfAssignmentGuard
 
     public function onFlush(OnFlushEventArgs $args): void
     {
-        $user = $this->security->getUser();
+        // S28 (F-07): in a worker the person who started the job, not nobody.
+        $user = $this->actingUser->current();
         if (!$user instanceof User) {
             return;
         }
@@ -58,13 +66,17 @@ final class SelfAssignmentGuard
         $uow = $em->getUnitOfWork();
 
         $managerScope = null;
-        $isManager = function () use (&$managerScope): bool {
-            return $managerScope ??= $this->security->isGranted(self::MANAGER_ROLE);
+        $isManager = function () use (&$managerScope, $user): bool {
+            return $managerScope ??= $this->security->isGrantedForUser($user, self::MANAGER_ROLE);
         };
 
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             if ($entity instanceof Person && $entity->getLinkedUser() !== null && !$isManager()) {
                 throw self::refused('link a person to a user account');
+            }
+            $named = SelfAssignmentCheck::selfNamedOnCreate($em, $entity, $user);
+            if ($named !== [] && !$isManager() && $this->check->gainsResponsibility($user, $entity, $named)) {
+                throw self::refused(sprintf('create a %s with yourself as responsible', (new \ReflectionClass($entity))->getShortName()));
             }
         }
 

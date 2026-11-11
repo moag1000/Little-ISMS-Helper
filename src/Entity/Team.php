@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * plain M:N join `team_members` carries it. A Team grants NO system rights; its
  * only effect is Roadmap-Task visibility.
  */
-#[ORM\Entity(repositoryClass: TeamRepository::class)]
+#[ORM\Entity(repositoryClass: TeamRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'teams')]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'team_kind', type: 'string', length: 32)]

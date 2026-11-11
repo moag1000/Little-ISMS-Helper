@@ -53,8 +53,10 @@ final class AuditChecklistController extends AbstractController
     {
         $items = $this->checklists->findByAudit($internalAudit);
         $locked = self::isLocked($internalAudit);
-        if ($items === [] && !$locked && $this->generator->generate($internalAudit) > 0) {
-            $items = $this->checklists->findByAudit($internalAudit); // first visit: built from the scope
+        $auditWork = $this->isGranted(new Expression(self::AUDIT_WORK), $internalAudit);
+        // First visit of somebody doing the audit work: built from the scope. Reading never writes (S28, F-13).
+        if ($items === [] && !$locked && $auditWork && $this->generator->generate($internalAudit) > 0) {
+            $items = $this->checklists->findByAudit($internalAudit);
         }
 
         $grouped = [];
@@ -76,7 +78,7 @@ final class AuditChecklistController extends AbstractController
             'grouped_items' => $grouped,
             'stats' => $stats,
             // read-only for whoever may not judge (S20): no save or generate button
-            'locked' => $locked || !$this->isGranted(new Expression(self::AUDIT_WORK), $internalAudit),
+            'locked' => $locked || !$auditWork,
             'frameworks' => $this->generator->frameworksFor($internalAudit),
         ]);
     }

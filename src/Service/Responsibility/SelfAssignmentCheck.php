@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Responsibility;
 
+use App\Attribute\ResponsibilityGrantsAuthority;
 use App\Entity\Person;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -34,8 +35,8 @@ final class SelfAssignmentCheck
     /**
      * The person references (to-one or to-many User/Person associations) of a
      * stored record that now name the user and did not when it was loaded —
-     * field name → value before. Empty for new records: creating a record with
-     * oneself as owner is one's own record.
+     * field name → value before. Empty for new records (those are
+     * {@see selfNamedOnCreate()}'s).
      *
      * @return array<string, mixed>
      */
@@ -76,6 +77,46 @@ final class SelfAssignmentCheck
         }
 
         return $changed;
+    }
+
+    /**
+     * S28: the person references of a record being CREATED that name the user —
+     * field name → the empty value (null, or an empty list for collections), so
+     * {@see gainsResponsibility()} asks "responsible with them, not without them".
+     * Empty for stored records and for classes without {@see ResponsibilityGrantsAuthority}.
+     *
+     * @return array<string, mixed>
+     */
+    public static function selfNamedOnCreate(EntityManagerInterface $em, object $record, User $user): array
+    {
+        if (!self::grantsAuthority($record::class)) {
+            return [];
+        }
+        $uow = $em->getUnitOfWork();
+        if ($uow->isInIdentityMap($record) && !$uow->isScheduledForInsert($record)) {
+            return [];
+        }
+        $meta = $em->getClassMetadata($record::class);
+        $named = [];
+        foreach ($meta->getAssociationNames() as $field) {
+            $target = $meta->getAssociationTargetClass($field);
+            if (!is_a($target, User::class, true) && !is_a($target, Person::class, true)) {
+                continue;
+            }
+            if (self::names($user, $meta->getFieldValue($record, $field))) {
+                $named[$field] = $meta->isCollectionValuedAssociation($field) ? [] : null;
+            }
+        }
+
+        return $named;
+    }
+
+    /** @param class-string $class */
+    public static function grantsAuthority(string $class): bool
+    {
+        static $cache = [];
+
+        return $cache[$class] ??= (new \ReflectionClass($class))->getAttributes(ResponsibilityGrantsAuthority::class) !== [];
     }
 
     /** Whether the value (User, Person or a list of them) names the user's account. */

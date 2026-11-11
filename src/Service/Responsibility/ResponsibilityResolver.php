@@ -218,6 +218,27 @@ class ResponsibilityResolver implements ResetInterface
     }
 
     /**
+     * S28: responsible through the record itself — holder, deputy or holder of the
+     * duty's role — and not merely as admin of last resort. Decisions of the DPO or of
+     * top management accept this kind only (an organisation without a DPO does not
+     * make its admins the DPO).
+     */
+    public function isResponsibleByRecord(User $user, object $record): bool
+    {
+        $tenant = method_exists($record, 'getTenant') ? $record->getTenant() : null;
+        if ($this->sources->allForRecord($record) === [] || !$tenant instanceof Tenant) {
+            return false;
+        }
+        foreach ($this->resolveSteps(Responsibility::ofRecord($record), $tenant, 0) as $candidate) {
+            if ($candidate === $user || ($candidate->getId() !== null && $candidate->getId() === $user->getId())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Active users of the tenant who reach one of the roles through the role
      * hierarchy (admins included).
      *

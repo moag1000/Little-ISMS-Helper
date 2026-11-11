@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: ControlRepository::class)]
+#[ORM\Entity(repositoryClass: ControlRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Index(name: 'idx_control_control_id', columns: ['control_id'])]
 #[ORM\Index(name: 'idx_control_category', columns: ['category'])]
 #[ORM\Index(name: 'idx_control_impl_status', columns: ['implementation_status'])]

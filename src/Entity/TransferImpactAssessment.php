@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * - Schrems-II (C-311/18): Assessment obligation for standard contractual clauses
  * - EDPB Recommendations 01/2020: TIA methodology guidance
  */
-#[ORM\Entity(repositoryClass: TransferImpactAssessmentRepository::class)]
+#[ORM\Entity(repositoryClass: TransferImpactAssessmentRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'transfer_impact_assessment')]
 #[ORM\Index(name: 'idx_tia_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_tia_status', columns: ['status'])]

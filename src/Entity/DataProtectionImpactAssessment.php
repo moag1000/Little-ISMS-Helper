@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * - GDPR Art. 35(9): Review when circumstances change
  * - NIS2 Art. 21: Risk assessment integration
  */
-#[ORM\Entity(repositoryClass: DataProtectionImpactAssessmentRepository::class)]
+#[ORM\Entity(repositoryClass: DataProtectionImpactAssessmentRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'data_protection_impact_assessment')]
 #[ORM\Index(name: 'idx_dpia_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_dpia_status', columns: ['status'])]

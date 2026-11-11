@@ -89,14 +89,29 @@ class FourEyesValidatorTest extends TestCase
     public function testPassesWhenApproverIsSuperAdminEvenIfNotInRequiredRoles(): void
     {
         $validator = $this->makeValidator(
+            metadata: ['four_eyes' => true, 'roles' => ['ROLE_CISO']],
+            tenantUserCount: 5,
+        );
+        $validator->onTransition($this->makeEvent(context: [
+            'user' => $this->makeUser(1, ['ROLE_CISO']),
+            'four_eyes_approver' => $this->makeUser(2, ['ROLE_SUPER_ADMIN']),
+        ]));
+        $this->expectNotToPerformAssertions();
+    }
+
+    #[Test]
+    public function aDpoStepIsNotCountersignedByAnAdminWithoutTheRole(): void
+    {
+        // S28 (F-10): the second person of a DPO step holds ROLE_DPO themselves.
+        $validator = $this->makeValidator(
             metadata: ['four_eyes' => true, 'roles' => ['ROLE_DPO']],
             tenantUserCount: 5,
         );
+        $this->expectException(FourEyesRequiredException::class);
         $validator->onTransition($this->makeEvent(context: [
             'user' => $this->makeUser(1, ['ROLE_DPO']),
             'four_eyes_approver' => $this->makeUser(2, ['ROLE_SUPER_ADMIN']),
         ]));
-        $this->expectNotToPerformAssertions();
     }
 
     #[Test]

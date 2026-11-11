@@ -34,7 +34,7 @@ use App\Attribute\ApiReadOnlyEvidence;
  *
  * Art. 12(3): Response deadline is 30 days, extendable to 90 days.
  */
-#[ORM\Entity(repositoryClass: DataSubjectRequestRepository::class)]
+#[ORM\Entity(repositoryClass: DataSubjectRequestRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'data_subject_request')]
 #[ORM\Index(name: 'idx_dsr_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_dsr_status', columns: ['status'])]

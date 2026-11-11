@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use App\Http\PublicUrlGenerator;
 use DateTimeImmutable;
 use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 use App\Entity\User;
@@ -44,7 +45,20 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
         private readonly ?string $azureTenantId = null,
         #[Autowire('%env(default::AZURE_ALLOWED_TENANT_IDS)%')]
         private readonly ?string $azureAllowedTenantIds = null,
+        private readonly ?PublicUrlGenerator $publicUrls = null,
     ) {
+    }
+
+    /**
+     * The Azure redirect_uri, built like every link that leaves the session
+     * ({@see PublicUrlGenerator}: DEFAULT_URI, not the Host header). Used for the
+     * authorisation request and the token request, which must name the same URI.
+     *
+     * @return array{redirect_uri?: string}
+     */
+    public static function redirectOptions(?PublicUrlGenerator $publicUrls): array
+    {
+        return $publicUrls === null ? [] : ['redirect_uri' => $publicUrls->generate('oauth_azure_check')];
     }
 
     public function supports(Request $request): ?bool
@@ -56,7 +70,8 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
     public function authenticate(Request $request): Passport
     {
         $oAuth2Client = $this->clientRegistry->getClient('azure');
-        $accessToken = $this->fetchAccessToken($oAuth2Client);
+        // S28 (F-14): the same redirect_uri as the authorisation request — from DEFAULT_URI, never the Host header.
+        $accessToken = $this->fetchAccessToken($oAuth2Client, self::redirectOptions($this->publicUrls));
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function() use ($accessToken, $oAuth2Client) {

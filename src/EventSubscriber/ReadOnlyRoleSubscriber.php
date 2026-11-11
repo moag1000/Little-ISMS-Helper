@@ -73,6 +73,9 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
         'app_four_eyes_reject',
         'app_access_review_item_decide',
         'app_risk_approve_acceptance',   // tier check in RiskAcceptanceVoter (top management above the manager threshold)
+        // S28: one record step — LifecycleVoter decides by the step's roles (a policy is approved by
+        // top management or the CISO); ROLE_USER steps and audit work stay closed to reviewers there.
+        'app_lifecycle_transition',
         'app_risk_reject_acceptance',
         'app_quick_fix_',        // own guard (QuickFixGuard)
         'session_terminate_single',

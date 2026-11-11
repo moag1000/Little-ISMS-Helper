@@ -211,7 +211,16 @@ class DashboardsControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    // ========== ROLE_ADMIN inheritance — sees ALL persona dashboards ==========
+    // ========== ROLE_ADMIN inheritance — the persona dashboards except DPO (S28) ==========
+
+    #[Test]
+    public function roleAdminDoesNotInheritTheDpoDashboard(): void
+    {
+        // S28 (F-09): the DPO acts on their own (GDPR Art. 38) — admins hold ROLE_DPO only when assigned.
+        $this->client->loginUser($this->userAdmin);
+        $this->client->request('GET', '/en/dashboards/dpo');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
 
     #[Test]
     public function roleAdminInheritsAllPersonaDashboards(): void
@@ -221,7 +230,6 @@ class DashboardsControllerTest extends WebTestCase
         foreach ([
             '/en/dashboards/ciso',
             '/en/dashboards/risk-manager',
-            '/en/dashboards/dpo',
             '/en/dashboards/compliance-manager',
         ] as $url) {
             $this->client->request('GET', $url);

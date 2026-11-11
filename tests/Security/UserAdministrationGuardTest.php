@@ -253,19 +253,20 @@ final class UserAdministrationGuardTest extends TestCase
     public function grantOrRevokeOfTopManagementIsAnAuditEvent(): void
     {
         $audit = $this->createMock(AuditLogger::class);
-        $audit->expects(self::exactly(2))->method('logCustom')->with(
+        $audit->expects(self::exactly(3))->method('logCustom')->with(
             'user.sensitive_role_changed',
             'User',
             self::anything(),
             self::anything(),
-            self::callback(static fn (array $new): bool => in_array($new['role'], ['ROLE_TOP_MGMT', 'ROLE_ADMIN'], true)),
+            self::callback(static fn (array $new): bool => in_array($new['role'], ['ROLE_TOP_MGMT', 'ROLE_ADMIN', 'ROLE_DPO'], true)),
             self::anything(),
         );
         $guard = $this->guard(false, null, $audit);
         $user = (new User())->setEmail('l@example.com')->setRoles(['ROLE_ADMIN'])->setTenant($this->own);
         $before = $guard->snapshot($user);
-        $user->setRoles(['ROLE_TOP_MGMT', 'ROLE_DPO']);
+        $user->setRoles(['ROLE_TOP_MGMT', 'ROLE_DPO', 'ROLE_ISB']);
 
-        $guard->auditSensitiveRoleChanges($user, $before); // TOP_MGMT granted, ADMIN revoked; DPO is not audited
+        // TOP_MGMT and DPO granted (S28: admins hand out ROLE_DPO, audited), ADMIN revoked; ISB is not audited
+        $guard->auditSensitiveRoleChanges($user, $before);
     }
 }

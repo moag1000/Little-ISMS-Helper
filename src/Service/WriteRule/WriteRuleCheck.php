@@ -17,7 +17,8 @@ use Doctrine\ORM\PersistentCollection;
  *
  * Michel's line: classification and responsibility are manager data. After a
  * record is created
- * - a create-only field (`#[CreateOnly]`) changes only by a manager;
+ * - a create-only field (`#[CreateOnly]`) changes only by a manager (with a
+ *   reason, S28 — checked by the flush guard, see {@see createOnlyChanges()});
  * - a classification field (`#[ManagerOrResponsibleField]`) and the question
  *   "who is responsible" (any User/Person reference whose change changes the
  *   answer of {@see ResponsibilityResolver}) change only by a manager or by the
@@ -87,6 +88,24 @@ final class WriteRuleCheck
         }
 
         return $changes;
+    }
+
+    /**
+     * The create-only fields among the changes — field → value before (S28: a
+     * manager corrects them only with a reason).
+     *
+     * @param array<string, mixed> $changes from {@see ruledChanges()}
+     * @return array<string, mixed>
+     */
+    public static function createOnlyChanges(object $record, array $changes): array
+    {
+        $rules = WriteRules::of($record::class);
+
+        return array_filter(
+            $changes,
+            static fn (string $field): bool => ($rules[$field] ?? null) === WriteRules::CREATE_ONLY,
+            ARRAY_FILTER_USE_KEY,
+        );
     }
 
     /**
@@ -199,7 +218,9 @@ final class WriteRuleCheck
         $a = $a instanceof \BackedEnum ? $a->value : $a;
         $b = $b instanceof \BackedEnum ? $b->value : $b;
         if ($a instanceof \DateTimeInterface && $b instanceof \DateTimeInterface) {
-            return $a->getTimestamp() === $b->getTimestamp();
+            // a form re-submits a stored time at minute precision: dropping the seconds is no change
+            return $a->getTimestamp() === $b->getTimestamp()
+                || ($b->format('s') === '00' && intdiv($a->getTimestamp(), 60) === intdiv($b->getTimestamp(), 60));
         }
         if (is_object($a) || is_object($b)) {
             if (is_object($a) && is_object($b) && is_callable([$a, 'getId']) && is_callable([$b, 'getId'])
