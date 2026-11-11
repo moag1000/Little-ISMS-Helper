@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequiresModule;
+use App\Security\Voter\PersonalDataRecordVoter;
 use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\BulkDeleteService;
 use RuntimeException;
@@ -92,6 +93,7 @@ class DataBreachController extends AbstractController
             'incomplete' => $this->dataBreachService->findIncomplete(),
             default => $this->dataBreachService->findAll(),
         };
+        $breaches = $this->visible($breaches);
 
         return $this->render('data_breach/index.html.twig', [
             'page' => ListPage::fromRequest($breaches, $request, static fn(DataBreach $b): array => [$b->getReferenceNumber(), $b->getTitle()]),
@@ -111,16 +113,45 @@ class DataBreachController extends AbstractController
         $statistics = $this->dataBreachService->getDashboardStatistics();
         $complianceScore = $this->dataBreachService->calculateComplianceScore();
         $actionItems = $this->dataBreachService->getActionItems();
+        if (!$this->isGranted('ROLE_MANAGER')) {
+            $visibleIds = array_map(
+                static fn(DataBreach $b): ?int => $b->getId(),
+                $this->visible($this->dataBreachService->findAll()),
+            );
+            $actionItems = array_values(array_filter(
+                $actionItems,
+                static fn(array $item): bool => in_array($item['breach_id'] ?? null, $visibleIds, true),
+            ));
+        }
 
         return $this->render('data_breach/dashboard.html.twig', [
             'statistics' => $statistics,
             'compliance_score' => $complianceScore,
             'action_items' => $actionItems,
-            'overdue_breaches' => $this->dataBreachService->findAuthorityNotificationOverdue(),
-            'pending_authority' => $this->dataBreachService->findRequiringAuthorityNotification(),
-            'pending_subjects' => $this->dataBreachService->findRequiringSubjectNotification(),
-            'recent_breaches' => $this->dataBreachService->findRecent(30),
+            'overdue_breaches' => $this->visible($this->dataBreachService->findAuthorityNotificationOverdue()),
+            'pending_authority' => $this->visible($this->dataBreachService->findRequiringAuthorityNotification()),
+            'pending_subjects' => $this->visible($this->dataBreachService->findRequiringSubjectNotification()),
+            'recent_breaches' => $this->visible($this->dataBreachService->findRecent(30)),
         ]);
+    }
+
+    /**
+     * S33: lists follow the detail page's rule — managers (DPO included) see every breach,
+     * anybody else only the ones they are responsible for (assessor, DPO on the record, deputies).
+     *
+     * @param array<DataBreach> $breaches
+     * @return list<DataBreach>
+     */
+    private function visible(array $breaches): array
+    {
+        if ($this->isGranted('ROLE_MANAGER')) {
+            return array_values($breaches);
+        }
+
+        return array_values(array_filter(
+            $breaches,
+            fn(DataBreach $b): bool => $this->isGranted(PersonalDataRecordVoter::VIEW, $b),
+        ));
     }
 
     /**
@@ -190,6 +221,7 @@ class DataBreachController extends AbstractController
 
     /** Show data breach details; GDPR Art. 5(2): logs who opened it (no content). */
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[IsGranted(PersonalDataRecordVoter::VIEW, subject: 'dataBreach')]
     public function show(Request $request, DataBreach $dataBreach): Response
     {
         $this->auditLogger?->logView('DataBreach', $dataBreach->getId());

@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -37,6 +38,8 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class QuickFixController extends AbstractController
 {
+    use TargetPathTrait;
+
     #[Route('/quick-fix', name: 'app_quick_fix_index', methods: ['GET'])]
     public function index(
         Request $request,
@@ -205,6 +208,21 @@ class QuickFixController extends AbstractController
         return $response;
     }
 
+    /**
+     * "Sign in as super admin": remembers the Quick-Fix page as the target after login (and
+     * after the second factor), then opens the login form. Writes only the session.
+     */
+    #[Route('/quick-fix/login', name: 'app_quick_fix_login', methods: ['GET'])]
+    public function login(Request $request, QuickFixGuard $guard): Response
+    {
+        if (!$guard->mayAccess($request)) {
+            return $this->lockedResponse($guard, $request);
+        }
+        $this->saveTargetPath($request->getSession(), 'main', $this->generateUrl('app_quick_fix_index'));
+
+        return $this->redirectToRoute('app_login');
+    }
+
     #[Route('/quick-fix/apply', name: 'app_quick_fix_apply', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_apply')]
     public function apply(
@@ -213,11 +231,10 @@ class QuickFixController extends AbstractController
         JobStatusService $jobStatusService,
         JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
-        QuickFixStatusSnapshot $snapshot,
     ): Response {
-        // Without login only what the page offers then: applying migrations that are pending.
-        $anonymousAllowed = $guard->mayAccess($request) && $snapshot->hasPendingMigrations();
-        if (!$anonymousAllowed && !$guard->mayRunPrivileged($request)) {
+        // S33: migrations move data and run when the operator chose to (after a backup, in the
+        // maintenance window) — a super admin login or the installer token, never anonymous.
+        if (!$guard->mayRunPrivileged($request)) {
             return $this->lockedResponse($guard, $request);
         }
 
@@ -250,7 +267,8 @@ class QuickFixController extends AbstractController
         JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
-        if (!$guard->mayAccess($request)) {
+        // S33: the schema reconcile changes the database too — super admin or installer token.
+        if (!$guard->mayRunPrivileged($request)) {
             return $this->lockedResponse($guard, $request);
         }
 
@@ -264,11 +282,6 @@ class QuickFixController extends AbstractController
         } catch (\Throwable $e) {
             $this->addFlash('error', $translator->trans('quick_fix.flash.status_failed', ['%error%' => $e->getMessage()], 'quick_fix'));
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
-        }
-
-        // Destructive drift (DROP/TRUNCATE) is privileged; additive drift stays open for recovery.
-        if ($destructive !== [] && !$guard->mayRunPrivileged($request)) {
-            return $this->lockedResponse($guard, $request);
         }
 
         $confirmDestructive = (bool) $request->request->get('confirm_destructive', false);

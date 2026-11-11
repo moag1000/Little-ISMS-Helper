@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequiresModule;
+use App\Security\Voter\PersonalDataRecordVoter;
 use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\BulkDeleteService;
 use RuntimeException;
@@ -97,6 +98,15 @@ class DataSubjectRequestController extends AbstractController
             ));
         }
 
+        // S33: the list follows the detail page's rule — managers (DPO included) see every
+        // request, anybody else only the ones they are responsible for.
+        if (!$this->isGranted('ROLE_MANAGER')) {
+            $requests = array_values(array_filter(
+                $requests,
+                fn(DataSubjectRequest $r): bool => $this->isGranted(PersonalDataRecordVoter::VIEW, $r),
+            ));
+        }
+
         $openStatuses = ['received', 'identity_verification', 'in_progress', 'extended'];
         $statistics = $this->dataSubjectRequestService->getStatistics();
 
@@ -159,6 +169,7 @@ class DataSubjectRequestController extends AbstractController
      * Show data subject request details
      */
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(PersonalDataRecordVoter::VIEW, subject: 'dsr')]
     public function show(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;

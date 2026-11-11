@@ -90,6 +90,11 @@ services:
         class: App\Tests\PHPStan\Rule\Gate\FulfillmentSingleWriterRule
         tags:
             - phpstan.rules.rule
+    # Gate 104 (S33) — pages of records about a person carry a read rule (PersonalDataRecordVoter)
+    -
+        class: App\Tests\PHPStan\Rule\Gate\PersonalDataReadRule
+        tags:
+            - phpstan.rules.rule
 
     # X.5b — Prevents `setStatus()` outside src/Entity/ and src/Lifecycle/
     # (the rule skips those directories, migrations and tests on its own)

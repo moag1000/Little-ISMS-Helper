@@ -101,8 +101,8 @@ Points reporters most often ask about:
 - **CSRF** on every state-changing action (`#[IsCsrfTokenValid]`, CI Gate 65).
 - **Audit trail.** Bulk operations write `AuditLogger::logBulk()` (one batch entry with a
   UUIDv4 `batch_id` plus one entry per record, ISO 27001 7.5.3).
-- **`/quick-fix`** (operator recovery UI, `QuickFixGuard`): the status page and "apply pending
-  migrations" are open by default so a broken login can be recovered; everything that changes
-  data or drops schema needs a logged-in `ROLE_SUPER_ADMIN` or the installer token
-  (`var/setup-token`). Optional settings in category `quick_fix`: `require_installer_token`,
+- **`/quick-fix`** (operator recovery UI, `QuickFixGuard`): the status page (counts only) is open by
+  default; everything that changes the database — applying migrations, schema reconcile, repairs —
+  needs a logged-in `ROLE_SUPER_ADMIN` or the installer token (`var/setup-token`; the super admin finds
+  the link with token under Admin > Quick Fix, S33). Optional settings in category `quick_fix`: `require_installer_token`,
   `allow_in_dev_only`, `ip_allowlist`. See [`docs/user-guide/QUICK_FIX.md`](docs/user-guide/QUICK_FIX.md).

@@ -270,7 +270,7 @@
 
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">
-    {% if instance.status in ['pending', 'in_progress'] %}
+    {% if instance.status in ['pending', 'in_progress'] and is_granted('ROLE_ADMIN') %}
     <form method="post" action="{{ path('app_workflow_instance_cancel', {id: instance.id}) }}" class="d-inline"
           data-controller="ui-actions"
           data-action="submit->ui-actions#confirm"

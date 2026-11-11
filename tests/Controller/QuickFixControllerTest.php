@@ -112,6 +112,9 @@ class QuickFixControllerTest extends WebTestCase
         // SessionTokenStorage stores CSRF values under "_csrf/<id>".
         $session->set('_csrf/' . $tokenId, $tokenValue);
         $session->save();
+        // An anonymous visit sends no session cookie back on its own: without it the next POST starts an empty
+        // session and fails on CSRF, so a test of the guard behind it would pass for the wrong reason.
+        $this->client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie($session->getName(), $session->getId()));
 
         return $tokenValue;
     }
@@ -312,21 +315,75 @@ class QuickFixControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    /**
+     * S33: migrations move data and run when the operator chooses — never anonymously, even
+     * with migrations pending. The super admin login or the installer token unlocks them.
+     */
     #[Test]
-    public function testAnonymousVisitorCannotApplyWhenNothingIsPending(): void
+    public function testAnonymousVisitorCannotApplyMigrations(): void
     {
-        // Applying pending migrations stays open for recovery; with nothing pending an
-        // anonymous POST is no recovery and must not start a job.
-        $this->client->disableReboot();
-        $snapshot = $this->createStub(\App\Service\QuickFixStatusSnapshot::class);
-        $snapshot->method('hasPendingMigrations')->willReturn(false);
-        $snapshot->method('get')->willReturn(['status' => [], 'pending_fs' => [], 'clean' => []]);
-        static::getContainer()->set(\App\Service\QuickFixStatusSnapshot::class, $snapshot);
         $token = $this->generateCsrfToken('quick_fix_apply');
 
         $this->client->request('POST', '/quick-fix/apply', ['_token' => $token]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function testAnonymousVisitorCannotReconcileTheSchema(): void
+    {
+        $token = $this->generateCsrfToken('quick_fix_reconcile');
+
+        $this->client->request('POST', '/quick-fix/reconcile', ['_token' => $token]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * S33 durable: every state-changing Quick-Fix route (found from the router, so a new one
+     * is covered) answers 403 to an anonymous POST that carries a valid CSRF token — only
+     * the guard stands between the visitor and the database.
+     */
+    #[Test]
+    public function testEveryQuickFixWriteRouteRefusesAnonymousVisitors(): void
+    {
+        $routes = static::getContainer()->get('router')->getRouteCollection();
+        $checked = 0;
+        foreach ($routes as $name => $route) {
+            if (!str_starts_with($route->getPath(), '/quick-fix') || !in_array('POST', $route->getMethods(), true)) {
+                continue;
+            }
+            $controller = (string) $route->getDefault('_controller');
+            [$class, $method] = explode('::', $controller) + [1 => '__invoke'];
+            $csrf = (new \ReflectionMethod($class, $method))->getAttributes(\Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid::class);
+            self::assertNotSame([], $csrf, $name . ' has no #[IsCsrfTokenValid]');
+            $tokenId = $csrf[0]->newInstance()->id;
+            self::assertIsString($tokenId, $name);
+            $token = $this->generateCsrfToken($tokenId);
+
+            $this->client->request('POST', $route->getPath(), [
+                '_token' => $token,
+                'confirm_destructive' => '1',
+                'confirm_already_exists' => '1',
+                'confirm_all_already_exist' => '1',
+                'confirm_force_schema' => '1',
+                'version' => 'DoctrineMigrations\\Version1',
+            ]);
+
+            self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode(), $name . ' runs without super admin or installer token');
+            ++$checked;
+        }
+        self::assertGreaterThanOrEqual(9, $checked, 'Quick-Fix write routes not found — is the discovery broken?');
+    }
+
+    #[Test]
+    public function testLoginLinkReturnsToQuickFixAfterSignIn(): void
+    {
+        $this->client->request('GET', '/quick-fix/login');
+
+        $this->assertResponseRedirects();
+        $this->assertStringContainsString('/login', (string) $this->client->getResponse()->headers->get('Location'));
+        $this->assertSame('/quick-fix', $this->client->getRequest()->getSession()->get('_security.main.target_path'));
     }
 
     #[Test]

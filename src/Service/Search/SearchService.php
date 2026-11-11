@@ -43,7 +43,9 @@ use App\Repository\ThreatIntelligenceRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Service\ModuleConfigurationService;
+use App\Security\Voter\PersonalDataRecordVoter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SearchService
 {
@@ -82,7 +84,28 @@ class SearchService
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly NavigationSearch $navigationSearch,
         private readonly ModuleConfigurationService $moduleConfig,
+        private readonly ?AuthorizationCheckerInterface $authorization = null,
     ) {}
+
+    /**
+     * S33: hits of records about a person (data breach, data subject request) only for
+     * whom the detail page lets in — the same attribute, so search never offers a 403.
+     *
+     * @template T of object
+     * @param array<T> $records
+     * @return list<T>
+     */
+    private function visiblePersonalData(array $records): array
+    {
+        if ($this->authorization === null) {
+            return array_values($records);
+        }
+
+        return array_values(array_filter(
+            $records,
+            fn(object $record): bool => $this->authorization->isGranted(PersonalDataRecordVoter::VIEW, $record),
+        ));
+    }
 
     /**
      * Run a global search across all entity categories and navigation targets.
@@ -440,7 +463,7 @@ class SearchService
             'icon' => 'fa-icon--nav-breach-octagon',
             'type' => 'data_breach',
             'badge' => $e->getSeverity(),
-        ], $qb->getQuery()->getResult());
+        ], $this->visiblePersonalData($qb->getQuery()->getResult()));
     }
 
     public function searchAuditFindings(string $query, ?Tenant $tenant): array
@@ -878,7 +901,7 @@ class SearchService
             'icon' => 'fa-icon--nav-shield-lock',
             'type' => 'data_subject_request',
             'badge' => $e->getRequestType(),
-        ], $qb->getQuery()->getResult());
+        ], $this->visiblePersonalData($qb->getQuery()->getResult()));
     }
 
     /**
