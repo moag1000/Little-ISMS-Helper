@@ -11,6 +11,9 @@
             <label class="visually-hidden" for="reported-at-{{ field }}">{{ 'incident.reporting.reported_at'|trans({}, 'incident') }}</label>
             <input type="datetime-local" class="form-control form-control-sm w-auto" id="reported-at-{{ field }}" name="reported_at"
                    max="{{ 'now'|date('Y-m-d\\TH:i') }}" title="{{ 'incident.reporting.reported_at_hint'|trans({}, 'incident') }}">
+            <label class="visually-hidden" for="backdate-reason-{{ field }}">{{ 'incident.reporting.backdate_reason'|trans({}, 'incident') }}</label>
+            <input type="text" class="form-control form-control-sm w-auto" id="backdate-reason-{{ field }}" name="backdate_reason" maxlength="1000"
+                   placeholder="{{ 'incident.reporting.backdate_reason'|trans({}, 'incident') }}">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-testid="mark-reported-{{ field }}">
                 {{ 'incident.reporting.mark_reported'|trans({}, 'incident') }}
             </button>

@@ -54,3 +54,4 @@ four_eyes:
         approved: 'Freigabe erteilt.'
         rejected: 'Freigabe abgelehnt.'
         approver_updated: Genehmiger aktualisiert.
+        not_pending: Entschiedene Anfragen behalten ihren Genehmiger.

@@ -53,6 +53,9 @@
                           data-action="submit->ui-actions#confirm"
                           data-ui-actions-message-param="{{ 'policy_wizard.diff.restore_confirm'|trans({}, 'policy_wizard') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_diff_restore') }}">
+                        <label class="visually-hidden" for="restore-reason">{{ 'policy_wizard.diff.restore_reason'|trans({}, 'policy_wizard') }}</label>
+                        <input type="text" id="restore-reason" name="reason" class="form-control form-control-sm d-inline-block w-auto" required maxlength="1000"
+                               placeholder="{{ 'policy_wizard.diff.restore_reason'|trans({}, 'policy_wizard') }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--ui-undo" aria-hidden="true"></i>
                             {{ 'policy_wizard.diff.restore_previous_button'|trans({}, 'policy_wizard') }}

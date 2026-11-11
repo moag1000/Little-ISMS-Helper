@@ -542,7 +542,8 @@ incident:
   reporting:
     mark_reported: Als gemeldet markieren
     reported_at: Meldezeitpunkt
-    reported_at_hint: 'Leer = jetzt. Rückwirkend: Zeitpunkt, zu dem die Meldung rausging (nicht vor der Erkennung).'
+    reported_at_hint: 'Leer = jetzt (Serverzeit). Rückwirkend nur mit Portal-Referenz im Feld daneben.'
+    backdate_reason: 'Portal-Referenz (bei Rückdatierung)'
     assessed: 'Bewertung der Einrichtung: %result%.'
     precheck_title: 'Vorprüfung: wahrscheinlich ein erheblicher Sicherheitsvorfall'
     precheck_body: 'Erfüllt: %reasons%. Die Fristen laufen ab Erkennung; die Bewertung trifft die Einrichtung (NIS-2 Art. 23 Abs. 3).'
@@ -567,6 +568,7 @@ incident:
     assessed_not_reportable: Als nicht meldepflichtig bewertet.
     marked_reported: Als gemeldet markiert.
     reported_at_invalid: 'Meldezeitpunkt liegt in der Zukunft oder vor der Erkennung des Vorfalls.'
+    reported_at_reason_required: 'Rückdatierte Meldezeit braucht eine Portal-Referenz als Grund.'
     interim_requested: Anforderung erfasst.
 # Junior-ISB-Audit P-12 rollout — 9001-bridge for Incident form.
 iso_9001_bridge:

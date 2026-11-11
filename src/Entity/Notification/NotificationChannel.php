@@ -63,6 +63,7 @@ class NotificationChannel
     #[ORM\Column(name: 'is_active')]
     private bool $isActive = true;
 
+    // @evidence-ok: set by the channel handshake (machine), not a statement of a person
     #[ORM\Column(name: 'verified_at', nullable: true)]
     private ?DateTimeImmutable $verifiedAt = null;
 

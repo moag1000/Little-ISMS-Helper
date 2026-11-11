@@ -96,6 +96,7 @@ final class RiskAppetiteType extends AbstractType implements SectionMapInterface
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk_appetite.placeholder.approved_by',
                 'required' => false,
+                'disabled' => true, // S34: stamped by the "Freigeben" action only
                                 'help' => 'risk_appetite.help.approved_by'
             ])
             ->add('approvedAt', DateTimeType::class, [
@@ -103,6 +104,7 @@ final class RiskAppetiteType extends AbstractType implements SectionMapInterface
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
+                'disabled' => true, // S34: stamped by the "Freigeben" action only
                                 'help' => 'risk_appetite.help.approved_at'
             ])
         ;

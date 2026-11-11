@@ -283,6 +283,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 93 | PHPStan `SsoClaimPolicyRule` + `check_sso_claim_policy.py` (config) | every SSO path checks its claims through SsoClaimPolicy |
 | 96 | `tests/Security/WritePathParityTest.php` (PHPUnit) | a write rule on the entity (`#[CreateOnly]`, `#[ManagerOrResponsibleField]`, evidence) holds in every form, the import and the API groups |
 | 94 | PHPStan `StoredFilePathRule` (T4; was `check_stored_file_paths.py`) | stored file paths only through StoredFilePath / ProtectedUploads |
+| 105 | PHPStan `EvidenceFieldNameRule` (S34) | a persisted entity field named like evidence (`approved…`, `verified…`, `actual…`, `last…Review…`) carries `#[ApiReadOnlyEvidence]` / `#[ManagerOrResponsibleField]` / `#[CreateOnly]` / `#[FrozenInEndState]`, or `// @evidence-ok: <reason>`; old cases in `phpstan-gates-baseline.neon` |
 | 97 | PHPStan `TenantPinRestoreRule` (T4; was `check_tenant_pin_restore.py`) | an organisation pinned in TenantContext is put back (runAs / try-finally) |
 
 Code-Stil: Job „Code Quality“ führt `vendor/bin/php-cs-fixer fix --dry-run` mit `.php-cs-fixer.dist.php` (PSR-12,

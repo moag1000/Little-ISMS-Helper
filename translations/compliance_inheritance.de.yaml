@@ -4,7 +4,7 @@ compliance_inheritance:
         bulk_no_selection: 'Keine Einträge ausgewählt.'
         confirmed: 'Bestätigt.'
         rejected: 'Abgelehnt.'
-        overridden: 'Überschrieben.'
+        overridden: 'Override beantragt, wirksam nach Gegenzeichnung.'
     status:
         pending_review: 'Prüfung offen'
         confirmed: 'Bestätigt'

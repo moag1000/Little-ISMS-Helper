@@ -8,6 +8,7 @@ namespace App\Controller;
 use App\Attribute\RequiresModule;
 use App\Entity\Incident;
 use App\Security\Voter\RecordResponsibleVoter;
+use App\Service\AuditLogger;
 use App\Service\Incident\ReportingPlanner;
 use App\Util\InputDate;
 use DateTimeImmutable;
@@ -32,9 +33,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[RequiresModule('nis2_dora')]
 final class IncidentReportingController extends AbstractController
 {
+    /** A given time this close to the server's now is clock skew, not back-dating. */
+    public const int BACKDATE_TOLERANCE_SECONDS = 900;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ReportingPlanner $planner,
+        private readonly AuditLogger $auditLogger,
     ) {
     }
 
@@ -76,8 +81,10 @@ final class IncidentReportingController extends AbstractController
 
     /**
      * S12: the only way a report time gets onto the incident (the form shows it
-     * read-only). The person may give the time the report actually went out
-     * (not in the future, not before detection); without one it is now.
+     * read-only). Without a time it is the server's now. A time that lies more than
+     * BACKDATE_TOLERANCE_SECONDS before now is a back-dating (S34/R1): it needs the
+     * reason (portal reference of the report), which is audit-logged with the actor
+     * and the server time, because the deadline check counts this value as evidence.
      */
     #[Route('/incident/{id}/reporting/{field}/mark', name: 'app_incident_reporting_mark', requirements: ['id' => '\d+', 'field' => '[a-zA-Z]+'], methods: ['POST'])]
     #[IsGranted(new Expression(RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE), subject: 'incident')]
@@ -104,6 +111,17 @@ final class IncidentReportingController extends AbstractController
 
                 return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId(), '_fragment' => 'nis2-reporting']);
             }
+            $backdatedBy = $now->getTimestamp() - $at->getTimestamp();
+            $reason = null;
+            if ($backdatedBy > self::BACKDATE_TOLERANCE_SECONDS) {
+                $reason = trim((string) $request->request->get('backdate_reason'));
+                if ($reason === '') {
+                    $this->addFlash('danger', 'incident.flash.reported_at_reason_required');
+
+                    return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId(), '_fragment' => 'nis2-reporting']);
+                }
+                $reason = mb_substr($reason, 0, 1000);
+            }
             match ($field) {
                 'earlyWarningReportedAt' => $incident->setEarlyWarningReportedAt($at),
                 'detailedNotificationReportedAt' => $incident->setDetailedNotificationReportedAt($at),
@@ -115,6 +133,16 @@ final class IncidentReportingController extends AbstractController
                 default => throw new NotFoundHttpException('No such reporting duty on this incident.'),
             };
             $this->entityManager->flush();
+            if ($reason !== null) {
+                $this->auditLogger->logCustom(
+                    'incident.report_backdated',
+                    'Incident',
+                    $incident->getId(),
+                    null,
+                    ['field' => $field, 'reported_at' => $at->format(DATE_ATOM), 'recorded_at' => $now->format(DATE_ATOM), 'reason' => $reason],
+                    'Report time set before the server time (portal reference: ' . $reason . ')',
+                );
+            }
         }
         $this->addFlash('success', 'incident.flash.marked_reported');
 

@@ -64,3 +64,83 @@ parameters:
             identifier: gate72.sharedQuery
             path: src/Repository/SsoUserApprovalRepository.php
             reportUnmatched: true
+
+        # Gate 105 — evidence-named entity fields that do not say who writes them yet (S34, old cases; the list only shrinks)
+        -
+            # R6b (MITTEL): free text, the lifecycle stamps reviewedBy; make read-only in a follow-up
+            message: '#\[src/Entity/ComplianceMapping\.php::verifiedBy\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/ComplianceMapping.php
+            reportUnmatched: true
+        -
+            # R6b (MITTEL): beside verifiedBy
+            message: '#\[src/Entity/ComplianceMapping\.php::verificationDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/ComplianceMapping.php
+            reportUnmatched: true
+        -
+            # review date of the maturity row, set with the review in the maturity form; stamp in a follow-up
+            message: '#\[src/Entity/ComplianceRequirement\.php::maturityReviewedAt\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/ComplianceRequirement.php
+            reportUnmatched: true
+        -
+            # review date set with the review; stamp in a follow-up
+            message: '#\[src/Entity/ComplianceRequirementFulfillment\.php::lastReviewDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/ComplianceRequirementFulfillment.php
+            reportUnmatched: true
+        -
+            # review date set with the review; stamp in a follow-up
+            message: '#\[src/Entity/DataProtectionImpactAssessment\.php::lastReviewDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/DataProtectionImpactAssessment.php
+            reportUnmatched: true
+        -
+            # recorded by the DPO when identity was checked (fact, DPO-only record view since S33)
+            message: '#\[src/Entity/DataSubjectRequest\.php::identityVerifiedAt\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/DataSubjectRequest.php
+            reportUnmatched: true
+        -
+            # R6c: steering roles type the review date; stamp in a follow-up
+            message: '#\[src/Entity/ISMSContext\.php::lastReviewDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/ISMSContext.php
+            reportUnmatched: true
+        -
+            # R6c: date the audit took place, API-writable; stamp in a follow-up
+            message: '#\[src/Entity/InternalAudit\.php::actualDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/InternalAudit.php
+            reportUnmatched: true
+        -
+            # review date set with the review; stamp in a follow-up
+            message: '#\[src/Entity/ProcessingActivity\.php::lastReviewDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/ProcessingActivity.php
+            reportUnmatched: true
+        -
+            # R6c: the complete step stamps it, the form still allows typing; make read-only in a follow-up
+            message: '#\[src/Entity/RiskTreatmentPlan\.php::actualCompletionDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/RiskTreatmentPlan.php
+            reportUnmatched: true
+        -
+            # date the authority was told who the DPO is, a fact the organisation states
+            message: '#\[src/Entity/Tenant\.php::dpoAuthorityNotifiedAt\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/Tenant.php
+            reportUnmatched: true
+        -
+            # date the test really started, a fact the test lead states
+            message: '#\[src/Entity/ThreatLedPenetrationTest\.php::actualStartDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/ThreatLedPenetrationTest.php
+            reportUnmatched: true
+        -
+            # date the test really ended, a fact the test lead states
+            message: '#\[src/Entity/ThreatLedPenetrationTest\.php::actualEndDate\]#'
+            identifier: gate105.evidenceField
+            path: src/Entity/ThreatLedPenetrationTest.php
+            reportUnmatched: true

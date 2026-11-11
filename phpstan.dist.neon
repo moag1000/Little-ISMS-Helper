@@ -91,6 +91,12 @@ services:
         tags:
             - phpstan.rules.rule
 
+    # Gate 105 (S34) — evidence-named entity fields say who writes them
+    -
+        class: App\Tests\PHPStan\Rule\Gate\EvidenceFieldNameRule
+        tags:
+            - phpstan.rules.rule
+
     # X.5b — Prevents `setStatus()` outside src/Entity/ and src/Lifecycle/
     # (the rule skips those directories, migrations and tests on its own)
     -
