@@ -1263,3 +1263,8 @@ cd scripts/deployment && chmod +x deployment-check.sh && ./deployment-check.sh
 - **Deployment-Dokumentation:** [../docs/deployment/](../docs/deployment/)
 - **Issue Tracker:** [GitHub Issues](https://github.com/moag1000/Little-ISMS-Helper/issues)
 
+
+
+## Skill: Norm-Abdeckung bewerten
+
+`.claude/skills/norm-abdeckung-bewerten/SKILL.md` beschreibt das Verfahren der Restlücken-Bewertung nach jeder Welle (Sweeps, ISO/NIS-2/DORA-Zahlen, Wizard-„manual“, Mutations-Gegenprobe, Paketliste mit Gate-Reservierungen). Wirkt in jedem Thread automatisch.
