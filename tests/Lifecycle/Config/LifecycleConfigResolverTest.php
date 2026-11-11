@@ -10,6 +10,7 @@ use App\Lifecycle\Config\LifecycleConfigResolver;
 use App\Repository\LifecycleConfigRepository;
 use App\Service\TenantContext;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Symfony\Component\Workflow\Definition;
 use Symfony\Component\Workflow\Metadata\InMemoryMetadataStore;
 use Symfony\Component\Workflow\Registry;
@@ -141,6 +142,9 @@ class LifecycleConfigResolverTest extends TestCase
         $tenantContext = $this->createStub(TenantContext::class);
         $tenantContext->method('getCurrentTenant')->willReturn($currentTenant);
 
-        return new LifecycleConfigResolver($registry, $repo, $tenantContext);
+        // S28: an override narrows the YAML circle through the hierarchy (CISO/admin reach the manager)
+        $hierarchy = new RoleHierarchy(['ROLE_ADMIN' => ['ROLE_MANAGER'], 'ROLE_CISO' => ['ROLE_MANAGER']]);
+
+        return new LifecycleConfigResolver($registry, $repo, $tenantContext, $hierarchy);
     }
 }

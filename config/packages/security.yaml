@@ -150,7 +150,11 @@ security:
         #   ROLE_ADMIN deliberately does NOT inherit it (2026-11): the norm asks
         #   top management to approve, so the role is assigned to those people.
         ROLE_TOP_MGMT:              ROLE_AUDITOR
-        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_BCM_OFFICER]
+        # ROLE_ADMIN does NOT inherit ROLE_DPO either (S28, F-10): the data
+        #   protection officer's acts (authority notification, closing a data
+        #   subject request, verifying consents, privacy sign-offs) belong to the
+        #   appointed DPO (GDPR Art. 37-39), so the role is assigned to that person.
+        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_BCM_OFFICER]
         ROLE_SUPER_ADMIN:       [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR]
         # Holding-Rollen für Konzern-Strukturen.
         #

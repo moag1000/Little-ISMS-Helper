@@ -18,7 +18,6 @@ use App\Service\TenantContext;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -42,7 +41,7 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
     public static function getSectionMap(): array
     {
         return [
-            'overview' => ['title', 'reviewDate', 'status', 'reviewedBy', 'reviewedByPerson', 'reviewedByDeputyPersons', 'participants', 'personParticipants', 'topManagementAttended'],
+            'overview' => ['title', 'reviewDate', 'status', 'reviewedBy', 'reviewedByPerson', 'reviewedByDeputyPersons', 'participants', 'personParticipants'],
             // ISO 27001:2022 9.3.2 a–g in the order of the norm (show page and PDF read them the same way).
             'inputs' => [
                 'previousReviewActions',        // a
@@ -276,11 +275,7 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                 'help' => 'management_review.help.summary',
             ])
             // ── ISO 27001 §9.3 norm fields (T31.2.5) ──────────────────────
-            ->add('topManagementAttended', CheckboxType::class, [
-                'label' => 'management_review.field.top_management_attended',
-                'required' => false,
-                'help' => 'management_review.help.top_management_attended',
-            ])
+            // topManagementAttended: stamped by the `complete` step of top management (S28), not a form field.
             ->add('nextReviewDate', DateType::class, [
                 'label' => 'management_review.field.next_review_date',
                 'widget' => 'single_text',

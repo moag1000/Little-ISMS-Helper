@@ -31,7 +31,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: IncidentRepository::class)]
+#[ORM\Entity(repositoryClass: IncidentRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Index(name: 'idx_incident_number', columns: ['incident_number'])]
 #[ORM\Index(name: 'idx_incident_severity', columns: ['severity'])]
 #[ORM\Index(name: 'idx_incident_status', columns: ['status'])]

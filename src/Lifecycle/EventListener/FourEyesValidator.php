@@ -9,6 +9,7 @@ use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\EligibleApprovers;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\UserRepository;
+use App\Security\Authority\ExplicitRole;
 use App\Security\RoleNames;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
@@ -282,7 +283,13 @@ final class FourEyesValidator
         // Resolve through the Symfony role hierarchy (security.yaml), the
         // same way isGranted() does: ROLE_ADMIN / ROLE_DPO / ROLE_CISO …
         // reach ROLE_MANAGER.
-        $approverRoles = $this->roleHierarchy->getReachableRoleNames($approver->getRoles());
+        $roots = $approver->getRoles();
+        // S28 (F-10): for a step of the DPO or top management, the roles ROLE_ADMIN
+        // inherits do not count — the second person holds a named role themselves.
+        if (ExplicitRole::isReservedStep($requiredRoles)) {
+            $roots = array_values(array_diff($roots, ExplicitRole::ADMIN));
+        }
+        $approverRoles = $this->roleHierarchy->getReachableRoleNames($roots);
         foreach ($requiredRoles as $required) {
             if (in_array($required, $approverRoles, true)) {
                 return true;

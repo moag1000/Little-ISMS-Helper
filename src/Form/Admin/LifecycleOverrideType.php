@@ -40,10 +40,8 @@ final class LifecycleOverrideType extends AbstractType
                 'required' => false,
                 'multiple' => true,
                 'expanded' => true,
-                'choices' => array_combine(
-                    LifecycleOverridePolicy::assignableRoles(),
-                    LifecycleOverridePolicy::assignableRoles(),
-                ),
+                // S28: only roles that narrow the YAML circle (the controller passes them).
+                'choices' => array_combine($options['role_choices'], $options['role_choices']),
                 'choice_translation_domain' => false,
                 'disabled' => $options['roles_locked'],
                 'help' => $options['roles_locked']
@@ -87,8 +85,10 @@ final class LifecycleOverrideType extends AbstractType
         $resolver->setDefaults([
             'translation_domain' => 'admin',
             'roles_locked' => false,
+            'role_choices' => LifecycleOverridePolicy::assignableRoles(),
         ]);
         $resolver->setAllowedTypes('roles_locked', 'bool');
+        $resolver->setAllowedTypes('role_choices', 'string[]');
     }
 
     /**

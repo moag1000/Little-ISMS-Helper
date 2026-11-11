@@ -1473,6 +1473,7 @@ admin:
         violation:
             roles_locked: 'Die Rollen dieses Übergangs sind festgelegt (Leitung oder Datenschutz).'
             roles_invalid: 'Nur Rollen aus der Liste, nicht ROLE_USER oder Prüferrollen.'
+            roles_wider: 'Nur ein engerer Kreis als in der Workflow-Definition, zum Beispiel CISO statt Manager.'
             four_eyes_locked: 'Das Vier-Augen-Prinzip ist für diesen Übergang vorgeschrieben und lässt sich nicht abschalten.'
             reason_required_locked: 'Die Begründung ist für diesen Übergang vorgeschrieben und lässt sich nicht abschalten.'
             module_locked: 'Der Übergang gehört zu einem Modul; das Modul-Gate lässt sich nicht ersetzen.'
@@ -1504,8 +1505,8 @@ admin:
             reset: 'Zurücksetzen'
         form:
             roles: 'Rollen'
-            roles_help: 'Keine Auswahl = Rollen aus der Workflow-Definition.'
-            roles_locked_help: 'Leitungs- und Datenschutz-Übergänge behalten ihre Rollen (ISO 27001 5.1, DSGVO Art. 38/39).'
+            roles_help: 'Keine Auswahl = Rollen aus der Workflow-Definition. Eine Auswahl darf den Kreis nur verengen.'
+            roles_locked_help: 'Leitungs- und Datenschutz-Übergänge sowie reine Systemschritte behalten ihre Rollen (ISO 27001 5.1, DSGVO Art. 38/39).'
             reason_required: 'Begründung erforderlich'
             reason_required_value: 'Begründung verlangen'
             four_eyes: 'Vier-Augen-Prinzip'

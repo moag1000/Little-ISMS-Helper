@@ -10,6 +10,7 @@ use App\Entity\ChangeRequest;
 use App\Entity\CorrectiveAction;
 use App\Entity\Incident;
 use App\Entity\InternalAudit;
+use App\Entity\ManagementReview;
 use App\Entity\Patch;
 use App\Entity\Training;
 use App\Entity\User;
@@ -45,6 +46,7 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
  *   audit finding verify → nonconformity verified at / by (the auditor);
  *   vulnerability patch / mitigate → remediated date (A.8.8);
  *   patch deploy → deployed date; training complete → completion date (A.6.3).
+ * - S28: management review complete (ROLE_TOP_MGMT) → top management attended (ISO 9.3).
  *
  * Tests: tests/Lifecycle/LifecycleEvidenceStamperTest.php; the forms show the
  * fields read-only (tests/Api/ApiEvidenceFieldNamesTest.php).
@@ -79,6 +81,10 @@ final class LifecycleEvidenceStamper
                 ? $subject->setRemediatedDate($now)
                 : null,
             $subject instanceof Patch => $transition === 'deploy' ? $subject->setDeployedDate($now) : null,
+            // S28 (F-12): completing the review is top management's own step (ROLE_TOP_MGMT).
+            $subject instanceof ManagementReview => $transition === 'complete'
+                ? $subject->setTopManagementAttended(true)
+                : null,
             $subject instanceof Training => $transition === 'complete'
                 ? $subject->setCompletionDate(DateTime::createFromImmutable($now))
                 : null,

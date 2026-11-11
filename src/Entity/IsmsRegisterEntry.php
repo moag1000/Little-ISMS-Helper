@@ -52,7 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     normalizationContext: ['groups' => ['isms_register:read']],
 )]
-#[ORM\Entity(repositoryClass: IsmsRegisterEntryRepository::class)]
+#[ORM\Entity(repositoryClass: IsmsRegisterEntryRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'isms_register_entry')]
 #[ORM\Index(name: 'idx_isms_register_tenant_type', columns: ['tenant_id', 'register_type'])]
 #[ORM\Index(name: 'idx_isms_register_review', columns: ['next_review_date'])]

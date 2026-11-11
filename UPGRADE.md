@@ -85,6 +85,15 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **Personen prüfen:** Einen Freitext-Verantwortlichen ohne passenden Benutzer oder Person legt die
   Migration als neue Person an. Die Personenliste auf Dubletten durchsehen.
 
+- **Datenschutzbeauftragte zuweisen (S28):** `ROLE_ADMIN` erbt `ROLE_DPO` nicht mehr (wie schon
+  `ROLE_TOP_MGMT`). Behördenmeldung und Abschluss einer Datenpanne, Betroffenenanfragen bearbeiten und
+  abschließen, Einwilligungen prüfen, DSB-Dashboard und Datenschutz-Abschnitte von
+  Richtlinien brauchen die Rolle selbst. Admin > Benutzer: der Person, die DSB ist, die Rolle
+  „Datenschutzbeauftragte(r)“ geben (auch einem Admin, der das Amt innehat; die Vergabe steht im Audit-Log).
+- **Lebenszyklus-Rollen prüfen (S28):** Admin > Lebenszyklus-Overrides nimmt nur noch einen engeren Kreis als
+  die Workflow-Definition an (CISO statt Manager, nicht Manager statt CISO). Ältere Overrides, die den Kreis
+  erweitert haben, gelten nicht mehr; die Seite zeigt dann wieder die Rollen der Definition.
+
 - **Nachweis-Fremdschlüssel (S29):** `Version20261109210000_EvidenceForeignKeysRestrict` (Quick-Fix
   „Ausstehende Migrationen anwenden“) stellt 22 Fremdschlüssel von `ON DELETE CASCADE` auf RESTRICT um
   (Feststellungen am Audit, Teilnahmen, Kenntnisnahmen, Dokumentversionen, Behandlungspläne am Risiko u. a.).
@@ -119,6 +128,11 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
   die Anfrage angemeldet im Vier-Augen-Posteingang bestätigt; die Sammelaktion meldet die Anfragen unter
   `countersign_requested`. Schritte einer Freigabekette (`workflow_instance`) lehnt der Endpunkt mit 422 ab
   (`approval_chain_step`) — sie werden in der Freigabe selbst entschieden („Mein Tag“, Workflow-Seite).
+- **Beim Anlegen festgelegte Werte über REST/MCP (S28):** Wann ein Vorfall oder eine Datenpanne bekannt wurde
+  und das Risiko eines Behandlungsplans korrigiert ein Manager nur mit Begründung: Header
+  `X-Correction-Reason: <Text>` am PATCH/PUT, sonst 403. Wer ohne Manager-Rolle einen Vorfall, ein Risiko, eine
+  Betroffenenanfrage o. Ä. anlegt und sich selbst als Verantwortliche(n) einträgt, bekommt 403 — das Feld leer
+  lassen, dann sind die zuständigen Rollen dran.
 - **Ausgehende Adressen:** Geokodierer, OIDC-Discovery und Webhooks erreichen keine internen
   Adressen mehr. Ein eigener Nominatim-Dienst im LAN funktioniert deshalb nicht mehr; Web-Push nur zu
   Browser-Push-Diensten (fremde Abos werden beim nächsten Versand abgeschaltet).
@@ -195,6 +209,29 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
     angemeldete Person.
   - „Auditprogramm ableiten“ im Konzernbericht braucht zusätzlich `ROLE_MANAGER`.
   - Beim Sperren einer Organisation kommt die zweite Person aus derselben Organisation.
+
+- **Rollenlinie nachgezogen (S28):**
+  - Wer ohne Manager-Rolle einen Datensatz anlegt, dessen Verantwortung Rechte gibt (Vorfall mit NIS-2-Meldung,
+    Risiko mit Behandlungsentscheidung, Datenpanne, Betroffenenanfrage, DSFA, Audit, Ziel, Register …), trägt sich
+    nicht selbst als Verantwortliche(n) ein; das Formular meldet es, das Feld bleibt leer und die zuständige Rolle
+    (ISB/CISO, Risikomanager, DSB) übernimmt. Die eigene Maßnahme anzulegen bleibt erlaubt.
+  - Schritte, die nur Datenschutz oder Leitung nennen (Behördenmeldung „DSB oder CISO“, DSB-Prüfungen), gehen nicht
+    mehr über die Rollen, die ein Admin erbt, und nicht über die Ersatzzuständigkeit von Admins, wenn niemand
+    die Rolle hat. Schritte „Manager oder DSB“ (VVT) bleiben bei den Managern.
+  - Richtlinien (vom Richtlinien-Assistenten erzeugte Dokumente) geben CISO oder Leitung frei und veröffentlichen
+    sie, nicht jeder Manager (ISO 27001 5.2). Die Leitung erreicht dafür den Status-Schritt am Dokument; Schritte
+    „alle Angemeldeten“ (zur Prüfung einreichen) bleiben für Leitung, Auditoren und Konzernrollen zu.
+  - Freigabeketten: DSFA-Schritt 5 „Management Approval“ entscheidet die Leitung (`ROLE_TOP_MGMT`), Schritt 5 der
+    Lieferantenbewertung der CISO, die Krisenausrufung im BC-Plan der BCM-Beauftragte. Laufende Ketten übernehmen
+    das nach dem nächtlichen Abgleich bzw. Quick-Fix „Workflow-Definitionen abgleichen“.
+  - Wann ein Vorfall oder eine Datenpanne bekannt wurde (und das Risiko eines Behandlungsplans) korrigiert ein
+    Manager nur mit Begründung; sie steht mit altem und neuem Wert im Audit-Log.
+  - „Leitung anwesend“ im Management-Review ist kein Häkchen mehr: der Abschluss durch die Leitung setzt es.
+    Bestehende Werte bleiben.
+  - Hintergrund-Jobs (Import im Messenger-Modus) schreiben mit den Rechten der Person, die sie gestartet hat.
+  - Abschnittsfreigaben im Richtlinien-Assistenten verweigern eine Rolle, die nicht zum Thema passt (bisher nur
+    Warnung); die Audit-Checkliste wird beim ersten Öffnen nur noch für Prüfende erzeugt; die Azure-Anmeldung
+    nimmt ihre Rücksprungadresse aus `DEFAULT_URI` statt aus dem Host-Header.
 
 - **Audit-Log-Kette (B3):** Die Migration `Version20261109200000_AuditLogHmacLegacyCutoff` (Quick-Fix) merkt sich
   den letzten Eintrag mit altem Signaturformat. Die Signatur deckte bisher Sekundenbruchteile ab, die die Datenbank

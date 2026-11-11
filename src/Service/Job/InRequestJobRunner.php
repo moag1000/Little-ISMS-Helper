@@ -51,6 +51,7 @@ class InRequestJobRunner
         private readonly ContainerInterface $jobs,
         private readonly LoggerInterface $logger,
         private readonly ?JobLocale $jobLocale = null,
+        private readonly ?JobActor $jobActor = null,
     ) {
     }
 
@@ -108,10 +109,14 @@ class InRequestJobRunner
         try {
             $job = $this->resolveJob($jobClass);
             $ctx = new JobContext($jobId, $this->jobStatusService, $args);
-            if ($this->jobLocale !== null) {
-                $this->jobLocale->run($args, static fn () => $job->run($ctx));
+            $run = $this->jobLocale !== null
+                ? fn () => $this->jobLocale->run($args, static fn () => $job->run($ctx))
+                : static fn () => $job->run($ctx);
+            // S28: the flush guards check the person who started the job.
+            if ($this->jobActor !== null) {
+                $this->jobActor->run($args, $run);
             } else {
-                $job->run($ctx);
+                $run();
             }
             // Read current state — don't clobber a terminal status that the
             // job set itself (e.g. via $ctx->message() right before return).

@@ -244,11 +244,17 @@ final class PolicySectionApprovalService
             );
         }
 
-        // Approver-Role Validation per Topic. NON-blocking:
-        // emits one of three audit-events (match / weak-match / mismatch
-        // warning) so the external auditor can answer "warum DIESER
-        // Approver fuer DIESES Topic" without a runtime block.
-        $this->assertApproverRoleMatch($section, $approver);
+        // Approver-Role Validation per Topic: emits one of three audit-events
+        // (match / weak-match / mismatch) so the external auditor can answer
+        // "warum DIESER Approver fuer DIESES Topic". S28 (F-11): a mismatch
+        // refuses the sign-off — the warning alone let anybody sign.
+        $match = $this->assertApproverRoleMatch($section, $approver);
+        if ($match !== null && $match->isMismatch()) {
+            throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException(sprintf(
+                'The approver does not hold a role that signs off sections of topic "%s" (S28).',
+                $this->resolveTopicKey($section) ?? '?',
+            ));
+        }
 
         // audit-defang gap #2 — generation-to-approval min-elapsed
         // gate. Blocks the same-second approval anti-pattern by

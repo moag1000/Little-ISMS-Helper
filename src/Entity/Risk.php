@@ -34,7 +34,7 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-#[ORM\Entity(repositoryClass: RiskRepository::class), \App\Validator\Constraint\AcceptedRiskUnchanged]
+#[ORM\Entity(repositoryClass: RiskRepository::class), \App\Validator\Constraint\AcceptedRiskUnchanged, \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Index(name: 'idx_risk_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_risk_created_at', columns: ['created_at'])]
 #[ORM\Index(name: 'idx_risk_review_date', columns: ['review_date'])]

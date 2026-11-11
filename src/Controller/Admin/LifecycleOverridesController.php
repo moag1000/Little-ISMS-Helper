@@ -20,6 +20,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -48,6 +49,7 @@ final class LifecycleOverridesController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly TranslatorInterface $translator,
+        private readonly RoleHierarchyInterface $roleHierarchy,
     ) {}
 
     #[Route('', name: 'admin_lifecycle_overrides_index', methods: ['GET'])]
@@ -134,7 +136,15 @@ final class LifecycleOverridesController extends AbstractController
             'module' => $existing['module'] ?? null,
         ];
 
-        $form = $this->createForm(LifecycleOverrideType::class, $formData, ['roles_locked' => $rolesLocked]);
+        $yamlRoles = array_values(array_filter(is_array($yaml['roles'] ?? null) ? $yaml['roles'] : [], 'is_string'));
+        $roleChoices = array_values(array_filter(
+            LifecycleOverridePolicy::assignableRoles(),
+            fn (string $role): bool => LifecycleOverridePolicy::narrows($role, $yamlRoles, $this->roleHierarchy),
+        ));
+        $form = $this->createForm(LifecycleOverrideType::class, $formData, [
+            'roles_locked' => $rolesLocked || $roleChoices === [],
+            'role_choices' => $roleChoices,
+        ]);
         $form->handleRequest($request);
 
         // S15: the policy decides, not the form alone — tighten, never loosen a norm duty.
@@ -155,7 +165,7 @@ final class LifecycleOverridesController extends AbstractController
                     continue;
                 }
                 $field = $key === 'reason_required' || $key === 'four_eyes' ? $key . '_override' : $key;
-                foreach (LifecycleOverridePolicy::violations($yaml, $key, $value) as $violation) {
+                foreach (LifecycleOverridePolicy::violations($yaml, $key, $value, $this->roleHierarchy) as $violation) {
                     $form->get($field)->addError(new FormError($this->translator->trans($violation, [], 'admin')));
                 }
             }

@@ -6,8 +6,10 @@ namespace App\Lifecycle\Config;
 
 use App\Entity\Tenant;
 use App\Lifecycle\EntityTypeRegistry;
+use App\Lifecycle\RecordTransitionRoles;
 use App\Repository\LifecycleConfigRepository;
 use App\Service\TenantContext;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Workflow\Registry;
 use Symfony\Component\Workflow\WorkflowInterface;
 
@@ -30,6 +32,8 @@ final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
         private readonly Registry $workflowRegistry,
         private readonly LifecycleConfigRepository $overrideRepository,
         private readonly TenantContext $tenantContext,
+        // S28 (F-05): an override role must narrow the YAML circle through the hierarchy.
+        private readonly ?RoleHierarchyInterface $roleHierarchy = null,
     ) {}
 
     /**
@@ -43,17 +47,23 @@ final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
         $yaml = $transition === null ? [] : $workflow->getMetadataStore()->getTransitionMetadata($transition);
 
         $tenant = $this->tenantOf($subject);
-        if ($tenant === null || !EntityTypeRegistry::acceptsTenantOverrides($workflowName)) {
-            return $yaml;
+        $merged = $tenant === null || !EntityTypeRegistry::acceptsTenantOverrides($workflowName)
+            ? $yaml
+            : array_replace($yaml, LifecycleOverridePolicy::effective(
+                $yaml,
+                $this->overrideRepository->findOverridesForTransition($tenant, $workflowName, $transitionName),
+                $this->roleHierarchy,
+            ));
+
+        // S28: the record's kind can name the deciding roles (a policy document: CISO or top management).
+        if ($transition !== null && $subject instanceof RecordTransitionRoles) {
+            $roles = $subject->transitionRoles($workflowName, $transitionName);
+            if ($roles !== null) {
+                $merged['roles'] = $roles;
+            }
         }
 
-        $overrides = $this->overrideRepository->findOverridesForTransition(
-            $tenant,
-            $workflowName,
-            $transitionName,
-        );
-
-        return array_replace($yaml, LifecycleOverridePolicy::effective($yaml, $overrides));
+        return $merged;
     }
 
     public function get(object $subject, string $workflowName, string $transitionName, string $key, mixed $default = null): mixed

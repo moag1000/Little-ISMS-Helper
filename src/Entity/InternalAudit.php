@@ -36,7 +36,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: InternalAuditRepository::class)]
+#[ORM\Entity(repositoryClass: InternalAuditRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Index(name: 'idx_audit_number', columns: ['audit_number'])]
 #[ORM\Index(name: 'idx_audit_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_audit_scope_type', columns: ['scope_type'])]

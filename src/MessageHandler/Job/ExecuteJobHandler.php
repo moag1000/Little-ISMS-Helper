@@ -8,6 +8,7 @@ use App\Job\AsyncJobInterface;
 use App\Job\JobContext;
 use App\Message\Job\ExecuteJobMessage;
 use App\Exception\Tenant\TenantNotFoundException;
+use App\Service\Job\JobActor;
 use App\Service\Job\JobLocale;
 use App\Service\Job\JobStatusService;
 use App\Service\TenantContext;
@@ -36,6 +37,7 @@ final class ExecuteJobHandler
         #[AutowireLocator('app.async_job')]
         private readonly ContainerInterface $jobs,
         private readonly ?JobLocale $jobLocale = null,
+        private readonly ?JobActor $jobActor = null,
     ) {
     }
 
@@ -90,11 +92,15 @@ final class ExecuteJobHandler
 
             $job = $this->resolveJob($message->jobClass);
             $ctx = new JobContext($id, $this->jobStatusService, $message->args);
-            if ($this->jobLocale !== null) {
-                // W10: a worker runs in app.default_locale; the job keeps the dispatcher's language.
-                $this->jobLocale->run($message->args, static fn () => $job->run($ctx));
+            // W10: a worker runs in app.default_locale; the job keeps the dispatcher's language.
+            $run = $this->jobLocale !== null
+                ? fn () => $this->jobLocale->run($message->args, static fn () => $job->run($ctx))
+                : static fn () => $job->run($ctx);
+            // S28: a worker has no token; the flush guards check the person who started the job.
+            if ($this->jobActor !== null) {
+                $this->jobActor->run($message->args, $run);
             } else {
-                $job->run($ctx);
+                $run();
             }
             $this->jobStatusService->markSucceeded($id);
         } catch (\Throwable $e) {

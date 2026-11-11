@@ -33,6 +33,22 @@ final class ExplicitRole
     /** Step roles whose decision needs the assigned role (no admin path, no admin override). */
     public const array ASSIGNED_ONLY_STEP_ROLES = ['ROLE_TOP_MGMT', 'ROLE_DPO'];
 
+    /** Roles that open a step to (nearly) everybody; a step naming one is not reserved. */
+    private const array BROAD = ['ROLE_USER', 'ROLE_AUDITOR', 'ROLE_MANAGER'];
+
+    /**
+     * S28 (F-10): a lifecycle step reserved for the DPO or top management — it names one
+     * of them and no broad role (a step "manager or DPO" stays a manager step). Such a
+     * step is decided only by people who hold one of its roles themselves.
+     *
+     * @param array<mixed> $roles the step's roles
+     */
+    public static function isReservedStep(array $roles): bool
+    {
+        return array_intersect($roles, self::ASSIGNED_ONLY_STEP_ROLES) !== []
+            && array_intersect($roles, self::BROAD) === [];
+    }
+
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {

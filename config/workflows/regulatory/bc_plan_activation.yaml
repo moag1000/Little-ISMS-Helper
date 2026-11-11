@@ -63,7 +63,8 @@ framework:
                     -   name: "Crisis Declaration"
                         description: "Crisis manager declares crisis and activates BC plan"
                         order: 1
-                        approver_role: ROLE_MANAGER
+                        # S28 (F-09): the crisis is declared by the BCM officer (ISO 22301 8.4), not any manager
+                        approver_role: ROLE_BCM_OFFICER
                         step_type: approval
                         days_to_complete: 0
                         is_required: true

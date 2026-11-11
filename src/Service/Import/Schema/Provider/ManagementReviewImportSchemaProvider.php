@@ -19,7 +19,7 @@ use App\Service\Import\Schema\ImportSchemaProviderInterface;
  * by {@see \App\Form\ManagementReviewType}:
  *   - free-text / textarea (ISO 27001 §9.3 review inputs/outputs) → TYPE_TEXT
  *   - DateType single_text fields → TYPE_DATE
- *   - yes/no toggle (topManagementAttended) → TYPE_BOOL
+ *   - (topManagementAttended is step evidence since S28, not imported)
  *   - master-data FKs (Person, Document) → TYPE_RELATION resolved by a human field
  *
  * `title` is the unique upsert key (NotBlank on the form). `reviewDate` is the
@@ -165,11 +165,7 @@ final class ManagementReviewImportSchemaProvider implements ImportSchemaProvider
                 ),
 
                 // ── Audit metadata (ISO 27001 §9.3 norm fields) ─────────────────
-                new ImportFieldSpec(
-                    name: 'topManagementAttended',
-                    setter: 'setTopManagementAttended',
-                    type: ImportFieldSpec::TYPE_BOOL,
-                ),
+                // topManagementAttended is evidence of the `complete` step (S28), not an import column.
                 new ImportFieldSpec(
                     name: 'nextReviewDate',
                     setter: 'setNextReviewDate',

@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * ISO 19011:2018 §5.4.4 — Programme manager responsibilities
  * ISO 27001:2022 Cl. 9.2 — Internal audit programme
  */
-#[ORM\Entity(repositoryClass: AuditProgramRepository::class)]
+#[ORM\Entity(repositoryClass: AuditProgramRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'audit_program')]
 #[ORM\Index(name: 'idx_audit_program_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_audit_program_status', columns: ['status'])]

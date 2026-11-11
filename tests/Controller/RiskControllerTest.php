@@ -353,6 +353,7 @@ class RiskControllerTest extends WebTestCase
     #[Test]
     public function testNewCreatesRiskWithValidData(): void
     {
+        $owner = $this->colleague(); // S28: a plain user names someone else as owner
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/risk/new');
@@ -364,7 +365,7 @@ class RiskControllerTest extends WebTestCase
             'risk[impact]' => 3,
             'risk[treatmentStrategy]' => 'mitigate',
             'risk[status]' => 'identified',
-            'risk[riskOwner]' => $this->testUser->getId(),
+            'risk[riskOwner]' => $owner->getId(),
             'risk[asset]' => (string) $this->testAsset->getId(),
         ]);
 
@@ -386,6 +387,7 @@ class RiskControllerTest extends WebTestCase
     #[Test]
     public function testNewSetsTenantFromCurrentUser(): void
     {
+        $owner = $this->colleague(); // S28: a plain user names someone else as owner
         $this->loginAsUser($this->testUser);
 
         $uniqueTitle = 'Tenant Test Risk ' . uniqid();
@@ -399,7 +401,7 @@ class RiskControllerTest extends WebTestCase
             'risk[impact]' => 2,
             'risk[treatmentStrategy]' => 'mitigate',
             'risk[status]' => 'identified',
-            'risk[riskOwner]' => $this->testUser->getId(),
+            'risk[riskOwner]' => $owner->getId(),
             'risk[asset]' => (string) $this->testAsset->getId(),
         ]);
 
@@ -1155,5 +1157,42 @@ class RiskControllerTest extends WebTestCase
         // Store in session like SessionTokenStorage does
         $session->set('_csrf/' . $tokenId, $tokenValue);
         return $tokenValue;
+    }
+
+    /** S28 (F-04): a plain user does not make themselves the owner of the risk they create. */
+    #[Test]
+    public function testAPlainUserCannotCreateARiskWithThemselvesAsOwner(): void
+    {
+        $this->loginAsUser($this->testUser);
+        $crawler = $this->client->request('GET', '/en/risk/new');
+        $form = $crawler->filter('form[name="risk"]')->form([
+            'risk[title]' => 'Self owned ' . uniqid(),
+            'risk[category]' => 'financial',
+            'risk[description]' => 'self owned',
+            'risk[probability]' => 3,
+            'risk[impact]' => 3,
+            'risk[treatmentStrategy]' => 'mitigate',
+            'risk[status]' => 'identified',
+            'risk[riskOwner]' => $this->testUser->getId(),
+            'risk[asset]' => (string) $this->testAsset->getId(),
+        ]);
+        $this->client->submit($form);
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    private function colleague(): User
+    {
+        $colleague = (new User())
+            ->setEmail('colleague_' . uniqid('', true) . '@example.com')
+            ->setFirstName('Col')->setLastName('League')
+            ->setRoles(['ROLE_USER'])
+            ->setPassword('hashed_password')
+            ->setTenant($this->testTenant)
+            ->setIsActive(true);
+        $this->entityManager->persist($colleague);
+        $this->entityManager->flush();
+
+        return $colleague;
     }
 }

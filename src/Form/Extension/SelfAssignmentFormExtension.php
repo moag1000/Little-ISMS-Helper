@@ -54,7 +54,8 @@ final class SelfAssignmentFormExtension extends AbstractTypeExtension
             if (!$user instanceof User) {
                 return;
             }
-            $originals = SelfAssignmentCheck::selfAssignedReferences($this->em, $record, $user);
+            $originals = SelfAssignmentCheck::selfAssignedReferences($this->em, $record, $user)
+                ?: SelfAssignmentCheck::selfNamedOnCreate($this->em, $record, $user);
             if ($originals === [] || $this->security->isGranted(SelfAssignmentGuard::MANAGER_ROLE)) {
                 return;
             }

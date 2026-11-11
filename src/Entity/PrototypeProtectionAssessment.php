@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   - events_and_shoots
  * Multiple labels may apply — stored as JSON list.
  */
-#[ORM\Entity(repositoryClass: PrototypeProtectionAssessmentRepository::class)]
+#[ORM\Entity(repositoryClass: PrototypeProtectionAssessmentRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'prototype_protection_assessment')]
 #[ORM\Index(name: 'idx_ppa_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_ppa_status', columns: ['status'])]

@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * - GDPR Art. 32: Security of processing (TOM reference)
  * - NIS2 Art. 21: Risk management (data processing risks)
  */
-#[ORM\Entity(repositoryClass: ProcessingActivityRepository::class)]
+#[ORM\Entity(repositoryClass: ProcessingActivityRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'processing_activity')]
 #[ORM\Index(name: 'idx_processing_activity_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_processing_activity_legal_basis', columns: ['legal_basis'])]

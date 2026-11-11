@@ -177,22 +177,24 @@ final class PolicySectionApprovalServiceRoleMatchTest extends TestCase
     }
 
     #[Test]
-    public function nonBlockingMismatchAllowsApproveToProceed(): void
+    public function aMismatchedRoleIsRefusedAndTheSectionStaysOpen(): void
     {
-        // Wire the section author so self-approval guard does not fire
-        // (different user-ids).
+        // S28 (F-11): the role check was a warning only — a manager without the topic's
+        // role (cryptography → CISO) no longer signs the section off.
         $section = $this->makeSectionWithTopic('cryptography');
         $author = $this->makeUser(1, ['ROLE_USER']);
         $section->setAuthoredByUser($author);
+        $statusBefore = $section->getStatus();
 
         $riskOwner = $this->makeUser(99, ['ROLE_USER', 'ROLE_MANAGER']);
 
-        // Approve through the full path — the mismatch event fires but
-        // the approval proceeds and the section status flips.
-        $this->service->approve($section, $riskOwner);
-
-        self::assertSame(DocumentSection::STATUS_APPROVED, $section->getStatus());
-        self::assertSame($riskOwner, $section->getApprovedByUser());
+        try {
+            $this->service->approve($section, $riskOwner);
+            self::fail('a mismatched role signed the section off');
+        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException) {
+        }
+        self::assertSame($statusBefore, $section->getStatus());
+        self::assertNull($section->getApprovedByUser());
     }
 
     #[Test]

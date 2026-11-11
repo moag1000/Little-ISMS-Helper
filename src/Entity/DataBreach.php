@@ -34,7 +34,7 @@ use App\Attribute\ManagerOrResponsibleField;
  * - NIS2 Art. 23: Incident notification (24h/72h)
  * - ISO 27701: Privacy incident management
  */
-#[ORM\Entity(repositoryClass: DataBreachRepository::class)]
+#[ORM\Entity(repositoryClass: DataBreachRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'data_breach')]
 #[ORM\Index(name: 'idx_data_breach_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_data_breach_status', columns: ['status'])]

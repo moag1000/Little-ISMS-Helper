@@ -28,9 +28,9 @@ src/Controller/Admin/KpiThresholdConfigController.php:108
 src/Controller/Admin/KpiThresholdConfigController.php:144
 src/Controller/Admin/KpiThresholdConfigController.php:172
 src/Controller/Admin/KpiThresholdConfigController.php:173
-src/Controller/Admin/LifecycleOverridesController.php:179
-src/Controller/Admin/LifecycleOverridesController.php:273
-src/Controller/Admin/LifecycleOverridesController.php:291
+src/Controller/Admin/LifecycleOverridesController.php:189
+src/Controller/Admin/LifecycleOverridesController.php:283
+src/Controller/Admin/LifecycleOverridesController.php:301
 src/Controller/Admin/MappingQualityController.php:155
 src/Controller/Admin/Notification/NotificationChannelController.php:110
 src/Controller/Admin/Notification/NotificationChannelController.php:111
@@ -99,7 +99,7 @@ src/Controller/AssetController.php:429
 src/Controller/AssetController.php:501
 src/Controller/AssetController.php:502
 src/Controller/AssetController.php:706
-src/Controller/Audit/AuditChecklistController.php:141
+src/Controller/Audit/AuditChecklistController.php:143
 src/Controller/AuditController.php:100
 src/Controller/AuditController.php:101
 src/Controller/AuditController.php:216

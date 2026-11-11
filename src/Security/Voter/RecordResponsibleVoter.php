@@ -31,6 +31,12 @@ final class RecordResponsibleVoter extends Voter
 {
     public const string RESPONSIBLE = 'RECORD_RESPONSIBLE';
 
+    /**
+     * S28: responsible through the record (holder, deputy, holder of the duty's role),
+     * not as admin of last resort — for steps of the DPO and of top management.
+     */
+    public const string RESPONSIBLE_BY_RECORD = 'RECORD_RESPONSIBLE_BY_RECORD';
+
     /** Expression for #[IsGranted]: manager scope, or responsible for the subject. */
     public const string MANAGER_OR_RESPONSIBLE = 'is_granted("ROLE_MANAGER") or is_granted("RECORD_RESPONSIBLE", subject)';
 
@@ -56,7 +62,7 @@ final class RecordResponsibleVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::RESPONSIBLE && is_object($subject);
+        return ($attribute === self::RESPONSIBLE || $attribute === self::RESPONSIBLE_BY_RECORD) && is_object($subject);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -66,6 +72,8 @@ final class RecordResponsibleVoter extends Voter
             return false;
         }
 
-        return $this->responsibilityResolver->isResponsibleFor($user, $subject);
+        return $attribute === self::RESPONSIBLE_BY_RECORD
+            ? $this->responsibilityResolver->isResponsibleByRecord($user, $subject)
+            : $this->responsibilityResolver->isResponsibleFor($user, $subject);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Security\Voter;
 
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
+use App\Security\Authority\ExplicitRole;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -37,6 +38,7 @@ final class LifecycleVoter extends Voter
     public function __construct(
         private readonly AccessDecisionManagerInterface $accessDecisionManager,
         private readonly LifecycleConfigResolverInterface $resolver,
+        private readonly ?ExplicitRole $explicitRole = null,
     ) {}
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -56,8 +58,17 @@ final class LifecycleVoter extends Voter
         $effective = $this->resolver->resolve($subject, $workflowName, $transitionName);
         $allowedRoles = $effective['roles'] ?? [];
 
+        // S28 (F-10): a step of the DPO or of top management is decided by people who hold the
+        // named roles themselves — the roles ROLE_ADMIN inherits (CISO, …) do not open it, and
+        // neither does being responsible only as admin of last resort.
+        $assignedOnly = $this->explicitRole !== null && ExplicitRole::isReservedStep($allowedRoles);
+
         if (($effective['responsible'] ?? false) === true
-            && $this->accessDecisionManager->decide($token, [RecordResponsibleVoter::RESPONSIBLE], $subject)) {
+            && $this->accessDecisionManager->decide(
+                $token,
+                [$assignedOnly ? RecordResponsibleVoter::RESPONSIBLE_BY_RECORD : RecordResponsibleVoter::RESPONSIBLE],
+                $subject,
+            )) {
             return true;
         }
 
@@ -66,7 +77,16 @@ final class LifecycleVoter extends Voter
             return false;
         }
 
+        $readOnly = null;
         foreach ($allowedRoles as $role) {
+            if ($assignedOnly && $this->explicitRole->holdsAssigned($token->getRoleNames(), $role) !== true) {
+                continue;
+            }
+            // S28: a read-only reviewer (auditor, top management, group roles without
+            // ROLE_MANAGER) reaches ROLE_USER only for reading — a "everybody" step is not theirs.
+            if ($role === 'ROLE_USER' && ($readOnly ??= $this->isReadOnlyReviewer($token))) {
+                continue;
+            }
             if ($role === 'ROLE_AUDITOR') {
                 if ($this->accessDecisionManager->decide($token, [AuditWorkVoter::AUDIT_WORK], $subject)) {
                     return true;
@@ -78,5 +98,11 @@ final class LifecycleVoter extends Voter
             }
         }
         return false;
+    }
+
+    private function isReadOnlyReviewer(TokenInterface $token): bool
+    {
+        return $this->accessDecisionManager->decide($token, ['ROLE_AUDITOR'])
+            && !$this->accessDecisionManager->decide($token, ['ROLE_MANAGER']);
     }
 }

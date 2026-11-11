@@ -150,7 +150,6 @@ management_review:
         action_items: 'Konkrete Maßnahmen mit Verantwortlichkeiten und Fristen'
         resource_needs: 'Budget, Personal oder sonstige Ressourcen'
         summary: 'Executive Summary des Management Reviews'
-        top_management_attended: 'Bestätigt, dass mindestens ein Mitglied des Top-Managements persönlich anwesend war (ISO 27001 §9.3 Pflicht).'
         next_review_date: 'Datum für das nächste geplante Management Review (≥1× pro Jahr gemäß §9.3).'
         meeting_minutes_document: 'Offizielles Protokoll-Dokument aus dem Dokumentenarchiv (§7.5.3).'
         risk_treatment_effectiveness: 'Bewertung, ob die umgesetzten Risikobehandlungsmaßnahmen wirksam sind (Treatment-ROI; ergänzt risksReview).'

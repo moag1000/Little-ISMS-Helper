@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Security;
 
+use App\Entity\AuditLog;
 use App\Entity\Incident;
 use App\Entity\Patch;
 use App\Entity\Person;
@@ -13,8 +14,10 @@ use App\Entity\User;
 use App\Enum\IncidentSeverity;
 use App\Exception\Import\ImportRowInvalidException;
 use App\Mcp\McpSettings;
+use App\Security\ActingUser;
 use App\Service\ApiTokenManager;
 use App\Service\Import\ImportEntityWriter;
+use App\Service\WriteRule\CorrectionReason;
 use App\Tests\Contract\Support\ContractRecordFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -114,6 +117,42 @@ final class WriteRulePathsTest extends WebTestCase
         } catch (AccessDeniedException $e) {
             self::assertStringContainsString('detectedAt', $e->getMessage());
         }
+    }
+
+    #[Test]
+    public function aManagerCorrectsDetectedAtOnlyWithAReason(): void
+    {
+        // S28 (F-06): the correction is the manager's, and it carries its reason into the audit log.
+        $em = $this->em();
+        $this->actAs($this->newUser('rule-mgr-' . bin2hex(random_bytes(4)), ['ROLE_MANAGER']));
+        $this->incident->setDetectedAt(new \DateTimeImmutable('-3 days'));
+        try {
+            $em->flush();
+            self::fail('a manager moved detectedAt without a reason');
+        } catch (AccessDeniedException $e) {
+            self::assertStringContainsString('reason', $e->getMessage());
+        }
+
+        static::getContainer()->get(CorrectionReason::class)->provide('Erstmeldung nannte den falschen Tag');
+        // a refused flush already took the value into the unit of work: correct to another day
+        $this->incident->setDetectedAt(new \DateTimeImmutable('-4 days'));
+        $em->flush();
+
+        $log = $em->getRepository(AuditLog::class)->findOneBy(
+            ['action' => 'create_only_corrected', 'entityType' => 'Incident', 'entityId' => $this->incident->getId()],
+        );
+        self::assertInstanceOf(AuditLog::class, $log, 'the correction left no audit-log entry');
+        self::assertStringContainsString('Erstmeldung nannte den falschen Tag', (string) $log->getNewValues());
+    }
+
+    #[Test]
+    public function aJobWritesWithTheRightsOfWhoStartedIt(): void
+    {
+        // S28 (F-07): no token (Messenger worker) — the guard checks the dispatching person.
+        static::getContainer()->get('security.token_storage')->setToken(null);
+        $this->incident->setSeverity(IncidentSeverity::Low);
+        $this->expectException(AccessDeniedException::class);
+        static::getContainer()->get(ActingUser::class)->runAs($this->user, fn () => $this->em()->flush());
     }
 
     #[Test]

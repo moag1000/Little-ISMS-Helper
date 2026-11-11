@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lifecycle\Config;
 
 use App\Security\RoleNames;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * What an organisation may change about a lifecycle transition (S15).
@@ -14,7 +15,10 @@ use App\Security\RoleNames;
  *
  *  - `roles`: only real roles (`RoleNames::RESERVED`) that may write — never ROLE_USER
  *    (every signed-in user), never the read-only reviewer roles, never the switch-user
- *    marker. A transition whose YAML names ROLE_TOP_MGMT (Leitung, ISO 5.1/9.3) or
+ *    marker — and only a narrower circle than the YAML (S28, F-05): every named role must
+ *    reach one of the YAML roles through the role hierarchy ([ROLE_CISO] may replace
+ *    [ROLE_MANAGER], never the other way round). A service-only transition (`roles: []`)
+ *    gets no roles at all. A transition whose YAML names ROLE_TOP_MGMT (Leitung, ISO 5.1/9.3) or
  *    ROLE_DPO (privacy approvals, GDPR Art. 38/39) keeps its YAML roles: an override would
  *    only let somebody else decide (e.g. ROLE_ADMIN approving a management decision).
  *  - `four_eyes`, `reason_required`: may be switched on, not off where the YAML has them
@@ -55,10 +59,10 @@ final class LifecycleOverridePolicy
      * @param array<string, mixed> $yaml YAML metadata of the transition
      * @return list<string> translation keys (domain `admin`), empty = allowed
      */
-    public static function violations(array $yaml, string $key, mixed $value): array
+    public static function violations(array $yaml, string $key, mixed $value, ?RoleHierarchyInterface $hierarchy = null): array
     {
         return match ($key) {
-            'roles' => self::roleViolations($yaml, $value),
+            'roles' => self::roleViolations($yaml, $value, $hierarchy),
             'four_eyes', 'reason_required' => (($yaml[$key] ?? false) === true && $value !== true)
                 ? ['admin.lifecycle_overrides.violation.' . $key . '_locked']
                 : [],
@@ -74,11 +78,11 @@ final class LifecycleOverridePolicy
      * @param array<string, mixed> $overrides
      * @return array<string, mixed>
      */
-    public static function effective(array $yaml, array $overrides): array
+    public static function effective(array $yaml, array $overrides, ?RoleHierarchyInterface $hierarchy = null): array
     {
         $kept = [];
         foreach ($overrides as $key => $value) {
-            if (self::violations($yaml, (string) $key, $value) === []) {
+            if (self::violations($yaml, (string) $key, $value, $hierarchy) === []) {
                 $kept[$key] = $value;
             }
         }
@@ -94,8 +98,21 @@ final class LifecycleOverridePolicy
         return array_intersect($roles, self::LOCKING_ROLES) !== [];
     }
 
+    /**
+     * Whether the role only narrows the YAML circle: it reaches one of the YAML roles
+     * through the hierarchy. Without a hierarchy (unit fixtures) only a YAML role itself.
+     *
+     * @param list<string> $yamlRoles
+     */
+    public static function narrows(string $role, array $yamlRoles, ?RoleHierarchyInterface $hierarchy = null): bool
+    {
+        $reached = $hierarchy?->getReachableRoleNames([$role]) ?? [$role];
+
+        return array_intersect($reached, $yamlRoles) !== [];
+    }
+
     /** @return list<string> */
-    private static function roleViolations(array $yaml, mixed $value): array
+    private static function roleViolations(array $yaml, mixed $value, ?RoleHierarchyInterface $hierarchy): array
     {
         if (self::rolesLocked($yaml)) {
             return ['admin.lifecycle_overrides.violation.roles_locked'];
@@ -107,6 +124,15 @@ final class LifecycleOverridePolicy
         foreach ($value as $role) {
             if (!is_string($role) || !in_array($role, $assignable, true)) {
                 return ['admin.lifecycle_overrides.violation.roles_invalid'];
+            }
+        }
+        $yamlRoles = array_values(array_filter(
+            is_array($yaml['roles'] ?? null) ? $yaml['roles'] : [],
+            'is_string',
+        ));
+        foreach ($value as $role) {
+            if (!self::narrows($role, $yamlRoles, $hierarchy)) {
+                return ['admin.lifecycle_overrides.violation.roles_wider'];
             }
         }
 

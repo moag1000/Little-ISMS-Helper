@@ -27,7 +27,8 @@ final class ReadOnlyRoleSubscriberTest extends TestCase
         yield 'risk form open' => ['app_risk_new', 'GET', true];
         yield 'risk edit open' => ['app_risk_edit', 'GET', true];
         yield 'supplier clone' => ['app_supplier_clone', 'POST', true];
-        yield 'lifecycle transition' => ['app_lifecycle_transition', 'POST', true];
+        // S28: open — LifecycleVoter keeps reviewers off "everybody" steps, named roles (ROLE_TOP_MGMT) pass
+        yield 'lifecycle transition' => ['app_lifecycle_transition', 'POST', false];
         yield 'risk list' => ['app_risk_index', 'GET', false];
         yield 'risk detail' => ['app_risk_show', 'GET', false];
         yield 'audit checklist' => ['app_audit_checklist_save', 'POST', false];
