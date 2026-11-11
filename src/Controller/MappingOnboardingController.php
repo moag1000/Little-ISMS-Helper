@@ -24,6 +24,7 @@ class MappingOnboardingController extends AbstractController
     ) {
     }
 
+    // @get-write-ok: first visit stores the person's own onboarding start (step 0, mapping count) on their account
     #[Route('', name: 'app_mapping_onboarding', methods: ['GET'])]
     public function hub(): Response
     {

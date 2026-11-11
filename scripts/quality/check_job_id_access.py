@@ -59,6 +59,10 @@ JOB_PLACEHOLDER = re.compile(r"\{(job\w*|\w*[jJ]ob_?[iI]d|\w*job_?uuid)\}", re.I
 TYPED_PARAM = re.compile(r"\??\\?([A-Za-z_][\w\\]*)\s+\$(\w+)")
 # `$jobId = $service->create(...)` is a fresh id, not an input; `(string) $id` or `$request->attributes->get('id')` is.
 FRESH_VALUE = re.compile(r"(?<!attributes)(?<!query)(?<!request)(?<!headers)(?<!cookies)->\s*(?!get\w*\()\w+\s*\(")
+# Request input that is no route argument: a guard cannot name it as subject (T4).
+SUPERGLOBALS = {"_GET", "_POST", "_REQUEST", "_COOKIE"}
+# `$x = new JobStatusService()` / `(new JobStatusService())->read($id)`: a receiver without a typed parameter.
+NEW_JOB = re.compile(r"\bnew\s+\\?((?:\w+\\)*Job\w*)\s*\(")
 CALL_ARGS = re.compile(r"(?:\$this\s*->\s*|\bself::|\bstatic::)(\w+)\s*\(")
 
 
@@ -70,6 +74,10 @@ def job_receivers(code: str) -> dict[str, str]:
         short = aliases.get(m.group(1), m.group(1)).rsplit("\\", 1)[-1]
         if "Job" in short and not short.endswith("Job") and short not in NOT_READERS:
             found[m.group(2)] = short
+    for m in re.finditer(r"\$(\w+)\s*=\s*" + NEW_JOB.pattern, code):
+        short = aliases.get(m.group(2), m.group(2)).rsplit("\\", 1)[-1]
+        if not short.endswith("Job") and short not in NOT_READERS:
+            found[m.group(1)] = short
     return found
 
 
@@ -77,12 +85,16 @@ def direct_reads(body: str, receivers: dict[str, str]) -> set[str]:
     """Variables a method body passes to a job-reading call (statuses by id, or any Job* wrapper)."""
     used: set[str] = set()
     for name, kind in receivers.items():
-        method = JOB_METHODS if kind == "JobStatusService" else r"\w+"
+        # a dynamic method name (`->$f($id)`) may be any reader, so its arguments count as read
+        method = (JOB_METHODS + r"|\$\w+|\{[^}]*\}") if kind == "JobStatusService" else r"\w+|\$\w+|\{[^}]*\}"
+        method = "(?:" + method + ")"
         call = re.compile(r"\$(?:this\s*->\s*)?" + re.escape(name) + r"\s*\??->\s*" + method + r"\s*\(")
         call2 = re.compile(r"\$this\s*->\s*" + re.escape(name) + r"\s*\??->\s*" + method + r"\s*\(")
         for pattern in (call, call2):
             for m in pattern.finditer(body):
                 used.update(re.findall(r"\$(\w+)", body[m.end():matching_end(body, m.end() - 1)]))
+    for m in re.finditer(r"\(\s*" + NEW_JOB.pattern + r"[^()]*\)\s*\)\s*->\s*(?:\w+|\$\w+)\s*\(", body):
+        used.update(re.findall(r"\$(\w+)", body[m.end():matching_end(body, m.end() - 1)]))
     # `$alias = $this->jobStatusService;` then `$alias->read($id)`
     for alias, prop in re.findall(r"\$(\w+)\s*=\s*\$this\s*->\s*(\w+)\s*;", body):
         if prop in receivers:
@@ -136,7 +148,7 @@ def problems_in(rel: str, text: str) -> tuple[list[str], int]:
         if OPT_OUT in text[m.start:m.start + len(m.params) + len(m.body) + 200]:
             continue
         params = set(m.param_names())
-        wanted = {v for v in reads[m.name] if v in params}
+        wanted = {v for v in reads[m.name] if v in params or v in SUPERGLOBALS}
         for placeholder in JOB_PLACEHOLDER.findall(m.attributes):
             wanted.add(placeholder)
         for variable in sorted(wanted):

@@ -84,6 +84,11 @@ ACCESSOR = re.compile(
     r"^[\s(]*(?:\((?:int|float|string)\)\s*)?\$?[\w.]+(?:\s*\??->\s*\w+(?:\s*\([^()]*\))?|\.\w+|\[[^\]]*\])*"
     r"\s*(?:\?\?\s*[\w$.'\"]+|\|\s*default\([^()]*\))?[\s)]*$"
 )
+# `$r->getProbability() * $r->getImpact()` (any accessor spelling): the score computed by hand.
+PRODUCT = re.compile(
+    r"(?is)^[\s(]*(?:\(\w+\)\s*)?[^;*]*?probability\w*\s*(?:\(\))?[\s)]*\*[\s(]*[^;*]*?impact\w*\s*(?:\(\))?[\s)]*$"
+    r"|^[\s(]*[^;*]*?impact\w*\s*(?:\(\))?[\s)]*\*[\s(]*[^;*]*?probability\w*\s*(?:\(\))?[\s)]*$"
+)
 RISKISH = re.compile(r"(?i)risk|score|rating|inherent|residual|level")
 RISK_NAME = re.compile(r"(?i)(?:risk|score|rating|level)$")
 PHP_ASSIGN = re.compile(r"\$(\w+)\s*=(?![=>])\s*([^;]*);")
@@ -95,6 +100,65 @@ BAND_CONST = re.compile(r"\bconst\s+(?:int\s+)?(?!\w*CIA)\w*(?:CRITICAL|HIGH|MED
 
 def normalise(line: str) -> str:
     return re.sub(r"\s+", " ", line.strip())
+
+
+# A band edge dressed up: `>= (int) "12"`, `>= intval('12')`, `>= 12.0`, `>= "12"`: the same number.
+_CAST_EDGE = re.compile(
+    r"""(?P<op>>=|<=|>|<)\s*(?:\(\s*(?:int|integer|float|double)\s*\)\s*|(?:intval|floatval)\(\s*)?"""
+    r"""['"]?(?P<n>\d+)(?:\.0+)?['"]?\s*\)?"""
+)
+_EDGE_FIRST = re.compile(
+    r"""(?<![\w.$])(?:\(\s*(?:int|integer|float|double)\s*\)\s*|(?:intval|floatval)\(\s*)?['"]?(?P<n>\d+)(?:\.0+)?['"]?\s*\)?"""
+    r"""\s*(?P<op><=|>=|<|>)(?!=)"""
+)
+# `private const HI = 12;`, `$hi = 12;`, `{% set hi = 12 %}`, `const HI = 12`: a name that only stands for an edge number.
+_EDGE_NAME = {
+    "*.php": re.compile(r"(?:\bconst\s+(?:int\s+)?|\$)([A-Za-z_]\w*)\s*=\s*(20|12|6|19|11|5)\s*;"),
+    "*.twig": re.compile(r"\{%-?\s*set\s+(\w+)\s*=\s*(20|12|6|19|11|5)\s*-?%\}"),
+    "*.js": re.compile(r"\b(?:const|let|var)\s+(\w+)\s*=\s*(20|12|6|19|11|5)\s*[;\n]"),
+}
+
+
+def resolve_edges(text: str, glob: str) -> str:
+    """Spell out every disguise of a band edge as the plain number (line numbers stay)."""
+    def cast(m: re.Match[str]) -> str:
+        return f"{m.group('op')} {m.group('n')}" + (" " if m.group(0).endswith(" ") else "")
+    text = _CAST_EDGE.sub(lambda m: cast(m) if m.group("n") in ("20", "12", "6", "19", "11", "5") else m.group(0), text)
+    text = _EDGE_FIRST.sub(
+        lambda m: f"{m.group('n')} {m.group('op')}" if m.group("n") in ("20", "12", "6", "19", "11", "5") else m.group(0), text)
+    for m in _EDGE_NAME[glob].finditer(text):
+        name, value = m.group(1), m.group(2)
+        ref = (r"(?:(?:self|static|[A-Z]\w*)::)?" + (r"\$?" if glob == "*.php" and "$" in m.group(0) else "")
+               + re.escape(name) + r"\b") if glob == "*.php" else r"(?<![\w.$])" + re.escape(name) + r"\b"
+        after = text[m.end():]
+        after = re.sub(r"(>=|<=|>|<)(\s*)" + ref, lambda c: f"{c.group(1)}{c.group(2)}{value}", after)
+        after = re.sub(ref + r"(\s*)(>=|<=|>|<)", lambda c: f"{value}{c.group(1)}{c.group(2)}", after)
+        text = text[:m.end()] + after
+    return text
+
+
+# `in_array($r->getRiskScore(), [20, 25, 24], true)` / Twig `risk.riskScore in [20, 25]`: a band as a list of scores.
+_NUM_LIST = r"\[\s*\d+(?:\s*,\s*\d+)+\s*,?\s*\]"
+IN_LIST_PHP = re.compile(r"(?is)\bin_array\(\s*([^;]*?)\s*,\s*(" + _NUM_LIST + r")")
+IN_LIST_TWIG = re.compile(r"(?is)([\w.\[\]'\"()|]+)\s+(?:not\s+)?in\s+(" + _NUM_LIST + r")")
+IN_RANGE_TWIG = re.compile(r"(?is)([\w.\[\]'\"()|]+)\s+(?:not\s+)?in\s+(\d+)\s*\.\.\s*(\d+)")
+
+
+def band_lists(text: str, glob: str) -> set[int]:
+    """Lines where a risk score is tested against a literal list / range of scores that is a band."""
+    found: set[int] = set()
+    operand = re.compile(OPERAND, re.I)
+    for rx in ((IN_LIST_PHP,) if glob == "*.php" else (IN_LIST_TWIG,)):
+        for m in rx.finditer(text):
+            nums = [int(n) for n in re.findall(r"\d+", m.group(2))]
+            if operand.search(m.group(1)) and max(nums) >= 6:
+                found.add(text.count("\n", 0, m.start(2)) + 1)
+    if glob == "*.twig":
+        for m in IN_RANGE_TWIG.finditer(text):
+            lo, hi = int(m.group(2)), int(m.group(3))
+            if operand.search(m.group(1)) and (lo in (20, 12, 6) or hi in (19, 11, 5) or (lo, hi) in ((20, 25), (12, 19))):
+                found.add(text.count("\n", 0, m.start(2)) + 1)
+    return found
 
 
 # Cheap pre-filter: the heavy patterns only run in a window around a comparison with an edge number.
@@ -123,10 +187,12 @@ def alias_hits(text: str, glob: str) -> set[int]:
     found: set[int] = set()
     for m in assign.finditer(text):
         name, rhs = m.group(1), m.group(2)
-        if not RISKISH.search(rhs):
+        if not RISKISH.search(rhs) and not PRODUCT.match(rhs):
             continue
         last = re.findall(r"(?:->|\.|\[['\"]?)\s*(\w+)", rhs)
-        if (not ACCESSOR.match(rhs) or not (last or [rhs.strip(" ($")])
+        if PRODUCT.match(rhs):
+            last = ["risk"]  # probability * impact is the score itself
+        elif (not ACCESSOR.match(rhs) or not (last or [rhs.strip(" ($")])
                 or not RISK_NAME.search((last or [rhs.strip(" ($")])[-1]) or not RISKISH.search(rhs)
                 or name.lower() in ("score", "level", "rating")):
             continue  # not a plain read of a risk value / those names are operands already
@@ -159,8 +225,10 @@ def scan() -> list[tuple[str, int, str]]:
             # The line of the comparison operator (a match may start one line above it).
             if glob == "*.php":
                 text = strip_php_comments(text)
+            text = resolve_edges(text, glob)
             found = comparison_lines(text, (PATTERN, EDGE_BELOW))
             found |= alias_hits(text, glob)
+            found |= band_lists(text, glob)
             if glob == "*.php" and re.search(r"risk", text, re.I):
                 for pattern in (BAND_CONST, BAND_ARRAY, RANGE_BAND):
                     found |= {text.count("\n", 0, m.start()) + 1 for m in pattern.finditer(text)}

@@ -123,7 +123,7 @@ class EntityLinks
                 continue;
             }
             [$records, $via] = $related[$type];
-            $derive = self::DERIVE[$source][$type] ?? null;
+            $derive = self::DERIVE[$source ?? ''][$type] ?? null;
             $groups[] = [
                 'type' => $type,
                 'total' => count($records),

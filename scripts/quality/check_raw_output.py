@@ -273,6 +273,34 @@ def _safe_value(v: str) -> bool:
     return bool(LITERAL.match(v) or SAFE_PARAM_TAIL.search(v) or re.match(r"^(path|url|csrf_token)\(", v))
 
 
+def map_literals(expr: str) -> tuple[list[str], str]:
+    """Outermost `{...}` literals of expr (strings skipped) and expr with each one replaced by `{}`."""
+    found, skeleton, i, depth, start, quote = [], [], 0, 0, 0, ""
+    while i < len(expr):
+        ch = expr[i]
+        if quote:
+            if ch == "\\":
+                i += 2
+                continue
+            if ch == quote:
+                quote = ""
+        elif ch in "'\"":
+            quote = ch
+        elif ch == "{":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == "}" and depth > 0:
+            depth -= 1
+            if depth == 0:
+                found.append(expr[start:i + 1])
+                skeleton.append("{}")
+        elif depth == 0:
+            skeleton.append(ch)
+        i += 1
+    return found, "".join(skeleton)
+
+
 def trans_params_safe(expr: str) -> tuple[bool, str]:
     """expr = `'key'|trans(...)` (optionally with more safe filters). Returns (ok, why)."""
     m = re.match(r"""^\s*'[\w.\-]+'\s*\|\s*trans\b""", expr)
@@ -284,7 +312,17 @@ def trans_params_safe(expr: str) -> tuple[bool, str]:
         params = split_top(args[1:-1])
         if params:
             first = params[0].strip()
-            for key, value in hash_pairs(first) if first.startswith("{") else [("?", first)]:
+            pairs: list[tuple[str, str]] = []
+            if first.startswith("{"):
+                # `{...}|merge({...})`: every map literal counts, and nothing but literals may be merged in (T4)
+                literals, skeleton = map_literals(first)
+                if not re.fullmatch(r"\{\}(\s*\|\s*merge\(\s*\{\}\s*\))*", skeleton.strip()):
+                    return False, f"parameters {norm(first)[:60]} are not a plain map literal (or |merge of literals)"
+                for literal in literals:
+                    pairs += hash_pairs(literal)
+            else:
+                pairs = [("?", first)]
+            for key, value in pairs:
                 if all(_safe_value(part) for part in split_top(value, "~")):
                     continue
                 return False, f"parameter {key} = {norm(value)[:60]} is not escaped (add |e)"

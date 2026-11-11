@@ -31,6 +31,10 @@ use PHPStan\Rules\RuleErrorBuilder;
  *      UserInfo) values would overwrite signed ones; `SsoClaimPolicy::mergeUserInfo()`.
  *   5. E-mail linking is off by default (`$allowEmailLinking = true` as a property or parameter default).
  *
+ * T4 (2026-11): a bare or dead policy check counts no more, the merge and Host rules cover every SSO class
+ * (Host also via `$_SERVER`, `headers->get('host')`, `getBaseUrl()`, absolute router URLs), any `*link*` flag
+ * with a truthy default is a linking switch, and a request id that is only ever null is no request id.
+ *
  * @implements Rule<InClassNode>
  */
 final class SsoClaimPolicyRule implements Rule
@@ -127,14 +131,12 @@ final class SsoClaimPolicyRule implements Rule
         foreach (GateAst::find($classNode, static fn (Node $n): bool => true) as $n) {
             if (GateAst::isMethodCall($n, 'processResponse')) {
                 $arg = GateAst::arg($n, 0, 'requestId');
-                if ($arg === null || GateAst::isNull($arg)) {
+                if ($arg === null || GateAst::isNull($arg) || $this->alwaysNull($arg, $classNode)) {
                     $error('processResponse', $n, 'processResponse() without the request id '
                         . '(SamlMessageGuard::consumeRequestId()) — InResponseTo unchecked.');
                 }
             }
-            if ($ssoCode && !in_array($name, self::HOST_READERS, true)
-                && ($n instanceof Expr\MethodCall || $n instanceof Expr\NullsafeMethodCall)
-                && in_array(GateAst::callName($n), self::HOST_HEADER_CALLS, true)) {
+            if ($ssoCode && !in_array($name, self::HOST_READERS, true) && $this->readsHost($n, $scope)) {
                 $error('hostHeader', $n, 'SSO URL from the Host header — use DEFAULT_URI (SamlAuthFactory::baseUrl()).');
             }
             if ($this->allowsLinkingByDefault($n)) {
@@ -142,7 +144,10 @@ final class SsoClaimPolicyRule implements Rule
             }
         }
 
-        if (str_starts_with($name, 'App\Service\Sso\\') && $name !== self::POLICY) {
+        // T4 S2: every SSO class, not only App\Service\Sso (an authenticator merged ID token and UserInfo unseen).
+        $claimCode = $isAuthenticator || isset($this->claimChecks[$name]) || str_starts_with($name, 'App\Service\Sso\\')
+            || preg_match('/Sso|Saml|Oidc|OAuth/i', $name) === 1;
+        if ($claimCode && $name !== self::POLICY) {
             foreach (GateAst::find($classNode, fn (Node $n): bool => $this->mergesClaims($n)) as $merge) {
                 $error('claimMerge', $merge, 'claims combined by hand — use SsoClaimPolicy::mergeUserInfo().');
             }
@@ -151,16 +156,105 @@ final class SsoClaimPolicyRule implements Rule
         return $errors;
     }
 
-    /** @return list<string> lower-case names of the SsoClaimPolicy methods the class calls */
+    /**
+     * Lower-case names of the SsoClaimPolicy methods the class calls (T4 S1): an `assert*()` throws and counts as a
+     * statement; any other check counts only when its result is used (a bare `isEmailVerified($c);` decides
+     * nothing), and no call counts inside `if (false)` / `false && …`.
+     *
+     * @return list<string>
+     */
     private function policyCalls(Node\Stmt\ClassLike $classNode): array
     {
+        $parents = GateAst::parents($classNode);
         $names = [];
         foreach (GateAst::find($classNode, static fn (Node $n): bool => $n instanceof Expr\StaticCall
             && $n->class instanceof Node\Name && ltrim($n->class->toString(), '\\') === self::POLICY) as $call) {
-            $names[] = (string) GateAst::callName($call);
+            $name = (string) GateAst::callName($call);
+            $parent = $parents[$call] ?? null;
+            if (!str_starts_with($name, 'assert') && $parent instanceof Node\Stmt\Expression) {
+                continue;
+            }
+            if ($this->dead($call, $parents)) {
+                continue;
+            }
+            $names[] = $name;
         }
 
         return $names;
+    }
+
+    /** @param \SplObjectStorage<Node, Node> $parents */
+    private function dead(Node $node, \SplObjectStorage $parents): bool
+    {
+        $child = $node;
+        while (isset($parents[$child])) {
+            $parent = $parents[$child];
+            if (($parent instanceof Node\Stmt\If_ || $parent instanceof Node\Stmt\While_) && GateAst::isFalse($parent->cond)
+                && in_array($child, $parent->stmts, true)) {
+                return true;
+            }
+            if (($parent instanceof Expr\BinaryOp\BooleanAnd || $parent instanceof Expr\BinaryOp\LogicalAnd)
+                && GateAst::isFalse($parent->left) && $parent->right === $child) {
+                return true;
+            }
+            $child = $parent;
+        }
+
+        return false;
+    }
+
+    /** T4 S5: `$id = null; …->processResponse($id)` — a variable that is only ever null. */
+    private function alwaysNull(Expr $arg, Node\Stmt\ClassLike $classNode): bool
+    {
+        if (!$arg instanceof Expr\Variable || !is_string($arg->name)) {
+            return false;
+        }
+        $assigns = GateAst::find($classNode, static fn (Node $n): bool => $n instanceof Expr\Assign
+            && $n->var instanceof Expr\Variable && $n->var->name === $arg->name);
+        if ($assigns === []) {
+            return false;
+        }
+        foreach ($assigns as $assign) {
+            \assert($assign instanceof Expr\Assign);
+            if (!GateAst::isNull($assign->expr)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * The Host header or a URL built from it (T4 S3): the request getters, `$_SERVER['HTTP_HOST'|'SERVER_NAME']`,
+     * `headers->get('host')`, `getBaseUrl()`, an absolute URL from the router (it takes the request's host).
+     */
+    private function readsHost(Node $n, Scope $scope): bool
+    {
+        if (($n instanceof Expr\MethodCall || $n instanceof Expr\NullsafeMethodCall)
+            && in_array(GateAst::callName($n), [...self::HOST_HEADER_CALLS, 'getbaseurl'], true)) {
+            return true;
+        }
+        if ($n instanceof Expr\ArrayDimFetch && $n->var instanceof Expr\Variable && $n->var->name === '_SERVER'
+            && in_array(strtoupper(implode('', GateAst::strings($n->dim, $scope))), ['HTTP_HOST', 'SERVER_NAME', 'HTTP_X_FORWARDED_HOST'], true)) {
+            return true;
+        }
+        if (GateAst::isMethodCall($n, 'get') && $n instanceof Expr\MethodCall && GateAst::isMethodCall($n->var, 'headers')
+            || ($n instanceof Expr\MethodCall && GateAst::callName($n) === 'get' && $n->var instanceof Expr\PropertyFetch
+                && $n->var->name instanceof Node\Identifier && $n->var->name->toString() === 'headers')) {
+            return in_array(strtolower(implode('', GateAst::strings(GateAst::arg($n, 0), $scope))), ['host', 'x-forwarded-host'], true);
+        }
+        if (GateAst::isMethodCall($n, 'generate', 'generateUrl')) {
+            $type = GateAst::arg($n, 2, 'referenceType');
+            if ($type instanceof Expr\ClassConstFetch && $type->name instanceof Node\Identifier
+                && in_array($type->name->toString(), ['ABSOLUTE_URL', 'NETWORK_PATH'], true)) {
+                return true;
+            }
+            if ($type instanceof Node\Scalar\Int_ && in_array($type->value, [0, 3], true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function callsFlow(Node\Stmt\ClassLike $classNode, ClassReflection $class, Scope $scope, string $flow, string $method): bool
@@ -228,11 +322,12 @@ final class SsoClaimPolicyRule implements Rule
 
     private function allowsLinkingByDefault(Node $n): bool
     {
+        // T4 S4: any linking switch (`$linkByEmail = true`, `$autoLink = true`), not only the one name.
         if ($n instanceof Node\Param && $n->var instanceof Expr\Variable && is_string($n->var->name)) {
-            return strcasecmp($n->var->name, 'allowEmailLinking') === 0 && $this->truthy($n->default);
+            return preg_match('/link/i', $n->var->name) === 1 && $this->truthy($n->default);
         }
         if ($n instanceof Node\PropertyItem) {
-            return strcasecmp($n->name->toString(), 'allowEmailLinking') === 0 && $this->truthy($n->default);
+            return preg_match('/link/i', $n->name->toString()) === 1 && $this->truthy($n->default);
         }
 
         return false;

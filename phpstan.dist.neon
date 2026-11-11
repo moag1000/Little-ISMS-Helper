@@ -74,6 +74,22 @@ services:
         class: App\Tests\PHPStan\Rule\Gate\ModuleGateRule
         tags:
             - phpstan.rules.rule
+    # T4 (2026-11): Gates 94 and 97 move from regex to AST, Gate 85 gets a type rule beside its Python part.
+    # Gate 94 — stored file paths only through StoredFilePath / ProtectedUploads
+    -
+        class: App\Tests\PHPStan\Rule\Gate\StoredFilePathRule
+        tags:
+            - phpstan.rules.rule
+    # Gate 97 — an organisation pinned in TenantContext is put back
+    -
+        class: App\Tests\PHPStan\Rule\Gate\TenantPinRestoreRule
+        tags:
+            - phpstan.rules.rule
+    # Gate 85 — fulfilment values have one writer (receiver by type)
+    -
+        class: App\Tests\PHPStan\Rule\Gate\FulfillmentSingleWriterRule
+        tags:
+            - phpstan.rules.rule
 
     # X.5b — Prevents `setStatus()` outside src/Entity/ and src/Lifecycle/
     # (the rule skips those directories, migrations and tests on its own)

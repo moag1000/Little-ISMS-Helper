@@ -1,0 +1,24 @@
+# Gate 75: top-level pages that look like a record page by content (T4) but are not the detail page of one record.
+# Format: <path>  # reason. The record's own detail page is its show.html.twig.
+templates/admin/licensing/summary.html.twig # instance-wide licence summary
+templates/analytics/advanced.html.twig # aggregate analytics over all controls
+templates/analytics/control_effectiveness.html.twig # aggregate dashboard over all controls
+templates/asset/bcm_insights.html.twig # BCM analysis sub-view of one asset; its detail page is asset/show
+templates/business_process/bia.html.twig # BIA overview over all processes
+templates/compliance/framework_dashboard.html.twig # fulfilment dashboard of one framework (catalogue row, no history/comments)
+templates/compliance/mapping_quality/dashboard.html.twig # aggregate mapping-quality statistics
+templates/compliance_wizard/diff.html.twig # comparison of two wizard sessions
+templates/dashboards/auditor.html.twig # persona dashboard
+templates/dashboards/board.html.twig # persona dashboard
+templates/dashboards/risk_manager.html.twig # persona dashboard
+templates/data_breach/dashboard.html.twig # aggregate dashboard over all breaches
+templates/dpia/dashboard.html.twig # aggregate dashboard over all DPIAs
+templates/group_report/tree.html.twig # corporate tree over several organisations
+templates/incident/bcm_impact.html.twig # BCM impact analysis sub-view of one incident; its detail page is incident/show
+templates/management_reports/bcm.html.twig # management report
+templates/management_reports/gdpr.html.twig # management report
+templates/mris/wizard/pure_friction.html.twig # wizard step
+templates/nis2_compliance/dashboard.html.twig # aggregate dashboard
+templates/processing_activity/dashboard.html.twig # aggregate dashboard over all processing activities
+templates/report_builder/preview.html.twig # preview of a report definition
+templates/setup/step11_complete.html.twig # setup wizard last step

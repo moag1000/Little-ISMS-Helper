@@ -24,9 +24,14 @@ arrays):
      `data-controller` token, a quoted identifier passed to a macro
      (`stimulusController: 'modal-wizard'`), or from another controller.
 
-Parts of a value built with Twig (`{{ … }}`, `{% … %}`) are skipped. Names
-that are only built at runtime go into the baseline with a reason
-(`kind  location  # reason`).
+Parts of a value built with Twig (`{{ … }}`, `{% … %}`) are skipped, with one exception (T4): a
+`data-controller` whose Twig part computes the NAME (`data-controller="{{ ctrl }}"`: no string literal in the
+expression, or `?? '…'` / `|default('…')` fallbacks) cannot be checked and fails as `dynamic-controller` unless a
+reviewed marker with a reason stands on the same line or the two lines above
+(`{# stimulus-dynamic: <reason> #}`, `// stimulus-dynamic: <reason>` in PHP) or the baseline names it with a
+reason. The Twig functions `stimulus_controller('x')`, `stimulus_action('x', 'method')` and
+`stimulus_target('x', 'name')` are resolved like the attributes. Names that are only built at runtime go into
+the baseline with a reason (`kind  location  # reason`).
 
 Usage: check_stimulus_wiring.py [--baseline FILE] [--quiet]
 """
@@ -98,6 +103,24 @@ def static_values(src: str) -> set[str] | None:
     return {re.sub(r"(?<!^)([A-Z])", r"-\1", n).lower() for n in names}
 
 
+DYNAMIC_MARKER = re.compile(r"stimulus-dynamic:\s*\S.{7,}")
+STIMULUS_FN = re.compile(r"""\bstimulus_(?P<fn>controller|action|target)\s*\(\s*(?P<args>[^()]*(?:\([^()]*\)[^()]*)*)\)""", re.S)
+LITERAL = re.compile(r"""(["'])(?P<s>(?:(?!\1).)*)\1""", re.S)
+
+
+def computes_name(expr: str) -> bool:
+    """A `{{ … }}` inside data-controller that decides the controller name at runtime."""
+    if not expr.startswith("{{"):
+        return False
+    if not LITERAL.search(expr):
+        return True
+    return bool(re.search(r"\?\?|\|\s*(?:default|join)\b", expr))
+
+
+def normalise_name(name: str) -> str:
+    return name.strip().replace("/", "--").replace("_", "-")
+
+
 def strip_twig(value: str) -> str:
     return TWIG_EXPR.sub(" ", value)
 
@@ -149,6 +172,7 @@ def main() -> int:
 
     for path in scan_files():
         text = path.read_text(encoding="utf-8", errors="ignore")
+        raw_lines = text.splitlines()
         if path.suffix == ".twig":
             # Usage notes in {# … #} are documentation, not wiring (keep line numbers).
             text = re.sub(r"\{#.*?#\}", lambda c: "\n" * c.group(0).count("\n"), text, flags=re.S)
@@ -171,6 +195,30 @@ def main() -> int:
                     if not ok:
                         problems.append(f"bad-identifier {rel}:{line_of(text, m.start())} {kind}={token}")
 
+        for m in CONTROLLER_ATTR.finditer(text):
+            at = line_of(text, m.start())
+            if any(computes_name(e) for e in TWIG_EXPR.findall(m.group("v"))) and not any(
+                DYNAMIC_MARKER.search(raw_lines[i]) for i in range(max(0, at - 3), min(len(raw_lines), at))
+            ):
+                problems.append(f"dynamic-controller {rel}:{at}")
+        for m in STIMULUS_FN.finditer(text):
+            fn_args = [a.strip() for a in re.split(r",(?![^{]*\})", m.group("args"))]
+            where = f"{rel}:{line_of(text, m.start())}"
+            lit = LITERAL.fullmatch(fn_args[0]) if fn_args and fn_args[0] else None
+            if lit is None:
+                problems.append(f"dynamic-controller {where}")
+                continue
+            ident = normalise_name(lit.group("s"))
+            attached.add(ident)
+            second = LITERAL.fullmatch(fn_args[1]) if len(fn_args) > 1 else None
+            if ident not in known:
+                problems.append(f"unknown-controller {where} {ident}")
+            elif m.group("fn") == "action" and second and ident in members and second.group("s") not in members[ident]:
+                problems.append(f"unknown-method {where} {ident}#{second.group('s')}")
+            elif m.group("fn") == "target" and second and ident in targets:
+                for name in second.group("s").split():
+                    if name not in targets[ident]:
+                        problems.append(f"unknown-target {where} {ident}.{name}")
         for m in CONTROLLER_ATTR.finditer(text):
             # Identifiers inside Twig string literals ({{ cond ? ' foo bar' }})
             # count as attached; only the static part is checked for existence.

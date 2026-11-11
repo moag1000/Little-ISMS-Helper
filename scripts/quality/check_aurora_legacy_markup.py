@@ -77,6 +77,17 @@ PATTERNS: dict[str, re.Pattern[str]] = {
     ),
 }
 
+# T4: a class string built in a Twig `{% set c = "btn btn-" ~ tone %}` (or a whole `'btn btn-primary'`) and printed as
+# `class="{{ c }}"` never shows `btn btn-` inside a class attribute. Counted under the same keys.
+TWIG_SET = re.compile(r"\{%-?\s*set\s+\w+(?:\s*,\s*\w+)*\s*=(.*?)-?%\}", re.S)
+_Q = r"""['"]"""
+BUILT = {
+    "bs_btn": re.compile(_Q + r"(?:[^'\"]*\s)?btn\s(?:[^'\"]*\s)?btn-(?:[a-z]|" + _Q + r"\s*~)"),
+    "bs_alert": re.compile(_Q + r"(?:[^'\"]*\s)?alert\s(?:[^'\"]*\s)?alert-(?:[a-z]|" + _Q + r"\s*~)"),
+    "bs_badge": re.compile(_Q + r"(?:[^'\"]*\s)?badge\s(?:[^'\"]*\s)?(?:text-)?bg-(?:[a-z]|" + _Q + r"\s*~)"),
+    "bs_badge_literal": re.compile(_Q + r"(?:[^'\"]*\s)?badge-" + _Q + r"\s*~"),
+}
+
 SKIP_DIRS = ("dev", "emails", "pdf")
 # Only documents that are really print/PDF output: "pdf" as a word of the file name. A bare substring
 # test ("_export", "export_") also exempted UI such as _export_bar.html.twig.
@@ -117,6 +128,10 @@ def scan() -> Counter[str]:
             n = len(pat.findall(text))
             if n:
                 counts[f"templates/{rel}:{key}"] = n
+        for key, pat in BUILT.items():
+            n = sum(len(pat.findall(m.group(1))) for m in TWIG_SET.finditer(text))
+            if n:
+                counts[f"templates/{rel}:{key}"] += n
     return counts
 
 

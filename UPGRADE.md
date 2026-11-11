@@ -433,6 +433,13 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 - **„Warteschlange jetzt abarbeiten“** (Admin > Worker-Status) nur noch für den Super-Admin: die
   Warteschlange enthält Jobs und Mails aller Organisationen. Der wöchentliche Log-Eintrag
   „Compliance report generated“ entfällt (er zählte instanzweit und ging an niemanden).
+- **T4 (Gates gegen Umgehung, keine Migration):** Eine Zeile ohne Organisation, die eine Anfrage einer
+  Organisation speichert, wird außerhalb der Tests jetzt repariert statt nur protokolliert (neue Zeile bekommt die
+  Organisation der Anfrage, eine bestehende behält ihre; die Warnung im Log endet jetzt auf „Repaired: …“). Das
+  NIS-2-Registrierungsprofil und das Policy-Profil entstehen erst beim ersten Speichern, nicht mehr beim Ansehen.
+  Nachweisdateien eines Dokuments kommen in Evidenz-Exporten nur noch aus `var/uploads` (ein alter Pfad im
+  Web-Root wird nicht mehr mitgepackt; `/quick-fix` bzw. nächtlich `app:uploads:protect` zieht ihn um). Für
+  Entwickler: die Python-Gates `check_stored_file_paths.py` und `check_tenant_pin_restore.py` sind PHPStan-Regeln.
 
 ### SSO (Azure, SAML, OIDC)
 

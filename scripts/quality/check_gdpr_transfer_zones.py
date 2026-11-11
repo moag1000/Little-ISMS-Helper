@@ -10,9 +10,10 @@ DORA register's EEA flag. The gate fails when
   1. `as_of` is missing or older than 12 months (the Commission adopts,
      renews and revokes decisions; check the list and bump the date),
   2. a code is not ISO 3166 alpha-2 or appears in more than one zone, or
-  3. a PHP file under src/ hard-codes an EU/EEA member list again
-     (five or more EU codes in one list literal) instead of asking
-     GdprTransferZones.
+  3. a PHP file under src/, a template or a JS controller hard-codes an EU/EEA member list again
+     instead of asking GdprTransferZones: five or more EU codes in one list literal, five or
+     more EU country NAMES (English or German) in one list literal, or eight or more EU codes spread
+     over several short literals of one function (class constants: one unit) / Twig or JS file (T4: a list split in two).
 
     python3 scripts/quality/check_gdpr_transfer_zones.py [--quiet]
 """
@@ -32,6 +33,16 @@ EU = {"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "H
 ARRAY = re.compile(r"(?:\[|\barray\()[^\[\]()]*[\])]", re.S)
 CODE = re.compile(r"['\"]([A-Za-z]{2})['\"]")
 KEY = re.compile(r"['\"]([A-Za-z]{2})['\"]\s*=>")
+# T4: country names instead of codes, any of the languages the app ships.
+EU_NAMES = {n.lower() for n in (
+    "Austria Belgium Bulgaria Croatia Cyprus Czechia Czech Republic Denmark Estonia Finland France Germany Greece Hungary "
+    "Ireland Italy Latvia Lithuania Luxembourg Malta Netherlands Poland Portugal Romania Slovakia Slovenia Spain Sweden "
+    "Österreich Belgien Bulgarien Kroatien Zypern Tschechien Dänemark Estland Finnland Frankreich Deutschland Griechenland "
+    "Ungarn Irland Italien Lettland Litauen Luxemburg Niederlande Polen Rumänien Slowakei Slowenien Spanien Schweden"
+).replace("Czech Republic", "Czech_Republic").split()} | {"czech republic"}
+NAME = re.compile(r"""['"]([A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß .'-]{2,30})['"]""")
+SHORT_MIN_CODES = 8  # distinct EU codes over several short literals of one unit
+UNIT = re.compile(r"\bfunction\s+\w+")  # PHP: the class header (consts) is one unit, each function another; Twig/JS: the file
 CODE_STRING = re.compile(r"['\"]([A-Za-z]{2}(?:\s*[,;|]\s*[A-Za-z]{2}){4,})['\"]")
 
 
@@ -75,22 +86,46 @@ def main() -> int:
             else:
                 seen[code] = zone
 
-    for path in sorted((ROOT / "src").rglob("*.php")):
+    scans = [(p, "php") for p in sorted((ROOT / "src").rglob("*.php"))]
+    scans += [(p, "twig") for p in sorted((ROOT / "templates").rglob("*.twig"))]
+    scans += [(p, "js") for p in sorted((ROOT / "assets").rglob("*.js")) if "vendor" not in p.parts]
+    for path, kind in scans:
         rel = path.relative_to(ROOT).as_posix()
-        text = path.read_text(encoding="utf-8")
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if kind == "twig":
+            text = re.sub(r"\{#.*?#\}", lambda c: "\n" * c.group(0).count("\n"), text, flags=re.S)
         hits: list[tuple[int, set[str]]] = []
+        short: list[tuple[int, set[str]]] = []
         for m in ARRAY.finditer(text):
             body = m.group(0)
             # Codes as VALUES of an associative array are a choice list (label => code); codes as KEYS
             # (['DE' => true, ...]) are a membership map and count like a plain list.
             codes = KEY.findall(body) if "=>" in body else CODE.findall(body)
-            hits.append((m.start(), {c.upper() for c in codes}))
+            found = {c.upper() for c in codes}
+            hits.append((m.start(), found))
+            if "=>" not in body and len(found & EU) >= 2:
+                short.append((m.start(), found & EU))
+            names = {n.lower() for n in NAME.findall(body)} if "=>" not in body else set()
+            if len(names & EU_NAMES) >= 5:
+                hits.append((m.start(), set(EU)))
         for m in CODE_STRING.finditer(text):  # 'DE,AT,FR,...' / explode(',', ...)
             hits.append((m.start(), {c.upper() for c in re.findall(r"[A-Za-z]{2}", m.group(1))}))
+        # One list written as several short literals (`array_merge($west, $east)`, two Twig sets): count per unit.
+        starts = [0] + [u.start() for u in UNIT.finditer(text)] * (kind == "php") + [len(text)]
+        for a, b in zip(starts, starts[1:]):
+            union: set[str] = set()
+            for at, codes in short:
+                if a <= at < b:
+                    union |= codes
+            if len(union) >= SHORT_MIN_CODES:
+                hits.append((a, set(EU)))
+        reported: set[int] = set()
         for start, found in hits:
             if len(found & EU) >= 5:
                 line = text.count("\n", 0, start) + 1
-                errors.append(f"{rel}:{line}: hard-coded EU/EEA country list, use App\\Privacy\\GdprTransferZones")
+                if line not in reported:
+                    reported.add(line)
+                    errors.append(f"{rel}:{line}: hard-coded EU/EEA country list, use App\\Privacy\\GdprTransferZones")
 
     if set(zones.get("eu", [])) != EU:
         diff = sorted(set(zones.get("eu", [])) ^ EU)

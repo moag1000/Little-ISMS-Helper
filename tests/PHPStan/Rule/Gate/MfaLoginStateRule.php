@@ -70,7 +70,7 @@ final class MfaLoginStateRule implements Rule
         }
 
         $parents = GateAst::parents($classNode);
-        foreach ($this->sites($classNode, $class) as [$site, $what]) {
+        foreach ($this->sites($classNode, $class, $scope) as [$site, $what]) {
             $method = $this->methodOf($site, $parents);
             if ($method !== null && ($this->begins($method, $class, $scope)
                 || GateAst::markerOnMember($file, '@mfa-ok', $method))) {
@@ -105,10 +105,29 @@ final class MfaLoginStateRule implements Rule
     }
 
     /** @return list<array{Node, string}> */
-    private function sites(Node\Stmt\ClassLike $classNode, ClassReflection $class): array
+    private function sites(Node\Stmt\ClassLike $classNode, ClassReflection $class, Scope $scope): array
     {
         $sites = [];
+        $inner = new \SplObjectStorage();
         foreach (GateAst::find($classNode, static fn (Node $n): bool => true) as $n) {
+            if ($n instanceof Expr\BinaryOp\Concat || ($n instanceof Expr\FuncCall && GateAst::callName($n) === 'sprintf')) {
+                // T4 F1: `'_security' . '_main'`, `sprintf('%s_main', '_security')` — the folded text names the key.
+                if (!isset($inner[$n])) {
+                    $text = GateAst::template($n, $scope) ?? '';
+                    $literalSite = GateAst::find($n, static fn (Node $x): bool => ($x instanceof Node\Scalar\String_
+                        && str_starts_with($x->value, '_security_')) || ($x instanceof Node\InterpolatedStringPart
+                        && str_starts_with($x->value, '_security_'))) !== [];
+                    if (str_starts_with($text, '_security_') && !$literalSite
+                        && !in_array([$class->getName(), $text], self::NOT_A_SESSION_KEY, true)) {
+                        $sites[] = [$n, sprintf('firewall session key "%s" put together from parts', $text)];
+                    }
+                }
+                foreach (GateAst::find($n, static fn (Node $x): bool => $x instanceof Expr\BinaryOp\Concat) as $child) {
+                    if ($child !== $n) {
+                        $inner[$child] = true;
+                    }
+                }
+            }
             if (GateAst::isMethodCall($n, 'setToken')) {
                 \assert($n instanceof Expr\MethodCall || $n instanceof Expr\NullsafeMethodCall);
                 if ($n->isFirstClassCallable() || !GateAst::isNull(GateAst::arg($n, 0))) {

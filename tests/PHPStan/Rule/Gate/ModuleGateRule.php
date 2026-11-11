@@ -55,7 +55,7 @@ final class ModuleGateRule implements Rule
     ];
 
     /** Pattern over "<ControllerClass> <full route path> <route names>" => module. */
-    private const CONTROLLER_MODULES = [
+    public const CONTROLLER_MODULES = [
         '/dora|nis2|ict[-_]?provider|kritis/i' => 'nis2_dora',
         '/lksg/i' => 'lksg',
         '/grundschutz|gstool|cross[-_]gap/i' => 'bsi_grundschutz',
@@ -95,10 +95,10 @@ final class ModuleGateRule implements Rule
      * the switch. Checked over "<route path> <route names> <route requirements>" of routes that look like a download,
      * so `/export/{entityType}` with `requirements: ['entityType' => 'risk|asset']` expects risks or assets.
      */
-    private const DOWNLOAD_ROUTE = '/export|pdf|excel|xlsx|csv|download|(?:^|\/)reports?(?:\/|$)/i';
+    public const DOWNLOAD_ROUTE = '/export|pdf|excel|xlsx|csv|download|(?:^|\/)reports?(?:\/|$)/i';
 
     /** Pattern over the download haystack => module. */
-    private const DOWNLOAD_MODULES = [
+    public const DOWNLOAD_MODULES = [
         '/(?<![a-z])risks?(?![a-z]|[-_]?(appetite|treatment|quant|acceptance))/i' => 'risks',
         '/(?<![a-z])assets?(?![a-z])/i' => 'assets',
         '/(?<![a-z])incidents?(?![a-z])/i' => 'incidents',
@@ -405,48 +405,104 @@ final class ModuleGateRule implements Rule
     }
 
     /**
-     * Modules of checkModuleActive()/isModuleActive() calls whose result ends the action.
+     * Modules of checkModuleActive()/isModuleActive() calls whose result ends the action when the module is off
+     * (T4 M1–M3): the failure branch of an `if` returns or throws, and its condition is true whenever the module is
+     * off — `!isModuleActive('x')`, `isModuleActive('x') === false`, `checkModuleActive('x')` (a redirect when off),
+     * `!a || !b`. An `if (isModuleActive('x')) { return redirect }` (inverted), `&&` with another condition and a
+     * module flag passed into `render([...])` gate nothing. `if (isModuleActive('x')) { … } else { return … }` and
+     * `return isModuleActive('x') ? page : refusal` / `return checkModuleActive('x') ?? page` decide as well.
      *
      * @return list<string>
      */
     private function decidingChecks(ClassMethod $method, Scope $scope): array
     {
-        $isCheck = static fn (Node $n): bool => GateAst::isMethodCall($n, 'checkModuleActive', 'isModuleActive');
-        $modulesIn = static function (Node $n) use ($isCheck, $scope): array {
-            $modules = [];
-            foreach (GateAst::find($n, $isCheck) as $call) {
-                $modules = [...$modules, ...GateAst::strings(GateAst::arg($call, 0), $scope)];
-            }
-
-            return $modules;
-        };
-        $hasFalseAnd = static fn (Node $n): bool => GateAst::find($n, static fn (Node $x): bool => ($x instanceof Expr\BinaryOp\BooleanAnd
-            || $x instanceof Expr\BinaryOp\LogicalAnd) && (GateAst::isFalse($x->left) || GateAst::isFalse($x->right))) !== [];
-
-        $modules = [];
         $variables = [];
         foreach (GateAst::find($method, static fn (Node $n): bool => $n instanceof Expr\Assign, true) as $assign) {
             \assert($assign instanceof Expr\Assign);
-            if ($assign->var instanceof Expr\Variable && is_string($assign->var->name) && $isCheck($assign->expr)) {
-                $variables[$assign->var->name] = $modulesIn($assign->expr);
+            if ($assign->var instanceof Expr\Variable && is_string($assign->var->name)
+                && GateAst::isMethodCall($assign->expr, 'checkModuleActive', 'isModuleActive', 'isAnyModuleActive')) {
+                $variables[$assign->var->name] = $assign->expr;
             }
         }
+
+        $modules = [];
         foreach (GateAst::find($method, static fn (Node $n): bool => true, true) as $n) {
-            if (($n instanceof Node\Stmt\If_ || $n instanceof Node\Stmt\ElseIf_) && !$hasFalseAnd($n->cond)
-                && GateAst::endsAction($n)) {
-                $modules = [...$modules, ...$modulesIn($n->cond)];
-                foreach (GateAst::find($n->cond, static fn (Node $x): bool => $x instanceof Expr\Variable) as $var) {
-                    \assert($var instanceof Expr\Variable);
-                    if (is_string($var->name) && isset($variables[$var->name])) {
-                        $modules = [...$modules, ...$variables[$var->name]];
-                    }
+            if ($n instanceof Node\Stmt\If_ || $n instanceof Node\Stmt\ElseIf_) {
+                if (GateAst::endsAction($n->stmts)) {
+                    $modules = [...$modules, ...$this->offWhen($n->cond, $variables, $scope, false)];
+                }
+                if ($n instanceof Node\Stmt\If_ && $n->else !== null && $n->elseifs === []
+                    && GateAst::endsAction($n->else->stmts)) {
+                    $modules = [...$modules, ...$this->offWhen($n->cond, $variables, $scope, true)];
                 }
             }
-            if ($n instanceof Node\Stmt\Return_ && $n->expr !== null && !$hasFalseAnd($n->expr)) {
-                $modules = [...$modules, ...$modulesIn($n->expr)];
+            if ($n instanceof Node\Stmt\Return_) {
+                $expr = $n->expr;
+                if ($expr instanceof Expr\Ternary) {
+                    $modules = [...$modules, ...$this->offWhen($expr->cond, $variables, $scope, false),
+                        ...$this->offWhen($expr->cond, $variables, $scope, true)];
+                }
+                if ($expr instanceof Expr\BinaryOp\Coalesce && GateAst::isMethodCall($expr->left, 'checkModuleActive')) {
+                    $modules = [...$modules, ...$this->modulesOf($expr->left, $scope)];
+                }
             }
         }
 
         return $modules;
+    }
+
+    /**
+     * Modules for which $cond is true whenever the module is off ($negate: false whenever it is off).
+     *
+     * @param array<string, Expr> $variables
+     * @return list<string>
+     */
+    private function offWhen(Expr $cond, array $variables, Scope $scope, bool $negate): array
+    {
+        if ($cond instanceof Expr\Variable && is_string($cond->name) && isset($variables[$cond->name])) {
+            $cond = $variables[$cond->name];
+        }
+        if ($cond instanceof Expr\Assign && $cond->var instanceof Expr\Variable) {
+            $cond = $cond->expr;
+        }
+        if ($cond instanceof Expr\BooleanNot) {
+            return $this->offWhen($cond->expr, $variables, $scope, !$negate);
+        }
+        if ($cond instanceof Expr\BinaryOp\Identical || $cond instanceof Expr\BinaryOp\Equal
+            || $cond instanceof Expr\BinaryOp\NotIdentical || $cond instanceof Expr\BinaryOp\NotEqual) {
+            $flip = $cond instanceof Expr\BinaryOp\NotIdentical || $cond instanceof Expr\BinaryOp\NotEqual;
+            foreach ([[$cond->left, $cond->right], [$cond->right, $cond->left]] as [$side, $literal]) {
+                if (GateAst::isFalse($literal) || GateAst::isNull($literal)) {
+                    return $this->offWhen($side, $variables, $scope, $negate !== !$flip);
+                }
+                if (GateAst::isTrue($literal)) {
+                    return $this->offWhen($side, $variables, $scope, $negate !== $flip);
+                }
+            }
+
+            return [];
+        }
+        if (!$negate && ($cond instanceof Expr\BinaryOp\BooleanOr || $cond instanceof Expr\BinaryOp\LogicalOr)) {
+            return [...$this->offWhen($cond->left, $variables, $scope, false), ...$this->offWhen($cond->right, $variables, $scope, false)];
+        }
+        if ($negate && ($cond instanceof Expr\BinaryOp\BooleanAnd || $cond instanceof Expr\BinaryOp\LogicalAnd)) {
+            // `if (a && b) { page } else { refuse }`: off a or off b ends the action.
+            return [...$this->offWhen($cond->left, $variables, $scope, true), ...$this->offWhen($cond->right, $variables, $scope, true)];
+        }
+        // checkModuleActive() is truthy (a redirect) when the module is off; isModuleActive() is true when it is on.
+        if (GateAst::isMethodCall($cond, 'checkModuleActive')) {
+            return $negate ? [] : $this->modulesOf($cond, $scope);
+        }
+        if (GateAst::isMethodCall($cond, 'isModuleActive', 'isAnyModuleActive')) {
+            return $negate ? $this->modulesOf($cond, $scope) : [];
+        }
+
+        return [];
+    }
+
+    /** @return list<string> */
+    private function modulesOf(Expr $call, Scope $scope): array
+    {
+        return GateAst::strings(GateAst::arg($call, 0), $scope);
     }
 }

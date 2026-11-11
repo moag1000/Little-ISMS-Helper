@@ -27,7 +27,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * - Checked only inside a request whose user belongs to an organisation. Console commands, the
  *   scheduler and workers have no current organisation and pass the tenant explicitly.
  * - In the test environment (`strict`) the flush fails, so every functional test is the runtime
- *   test; elsewhere the row is logged as a warning and saved unchanged.
+ *   test. Elsewhere (T4, 2026-11; before: a warning and the row saved unchanged, i.e. invisible) the row is
+ *   repaired before it is written and the repair logged: a new row gets the organisation of the request, an
+ *   existing row keeps the organisation it had.
  */
 #[AsDoctrineListener(event: Events::onFlush)]
 final class TenantlessInsertGuard
@@ -49,6 +51,7 @@ final class TenantlessInsertGuard
         $em = $args->getObjectManager();
         $uow = $em->getUnitOfWork();
         $missing = [];
+        $repairs = [];
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             $meta = $em->getClassMetadata($entity::class);
             if (!self::isTenantOwned($meta->getReflectionClass(), $meta->hasAssociation('tenant'))) {
@@ -56,6 +59,7 @@ final class TenantlessInsertGuard
             }
             if ($meta->getFieldValue($entity, 'tenant') === null) {
                 $missing[] = $entity::class;
+                $repairs[] = [$entity, null];
             }
         }
         // An existing row whose tenant is set to null vanishes for its own organisation like a tenant-less insert.
@@ -67,9 +71,11 @@ final class TenantlessInsertGuard
             $changes = $uow->getEntityChangeSet($entity)['tenant'] ?? null;
             if ($changes !== null && $changes[0] !== null && $changes[1] === null) {
                 $missing[] = $entity::class;
+                $repairs[] = [$entity, $changes[0]];
             }
         }
-        if ($missing === [] || !$this->tenantContext->getCurrentTenant() instanceof Tenant) {
+        $current = $this->tenantContext->getCurrentTenant();
+        if ($missing === [] || !$current instanceof Tenant) {
             return;
         }
 
@@ -82,7 +88,15 @@ final class TenantlessInsertGuard
             // @intentional-assertion: strict mode in tests, the flush must fail
             throw new \LogicException($message);
         }
-        $this->logger->warning($message, ['classes' => array_values(array_unique($missing))]);
+        // T4 (T6 of the counter-check): a warning alone saved the row invisible to its own organisation.
+        foreach ($repairs as [$entity, $previous]) {
+            $meta = $em->getClassMetadata($entity::class);
+            $meta->setFieldValue($entity, 'tenant', $previous ?? $em->getReference(Tenant::class, $current->getId()));
+            $uow->recomputeSingleEntityChangeSet($meta, $entity);
+        }
+        $this->logger->warning($message . ' Repaired: new rows got the current organisation, existing rows kept theirs.', [
+            'classes' => array_values(array_unique($missing)),
+        ]);
     }
 
     /** @param \ReflectionClass<covariant object> $class */

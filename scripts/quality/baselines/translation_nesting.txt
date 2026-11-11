@@ -298,8 +298,8 @@ translations/policy_wizard.de.yaml:2006:annex
 translations/policy_wizard.en.yaml:1574:policy_ack
 translations/policy_wizard.en.yaml:1596:compliance_check
 translations/policy_wizard.en.yaml:2003:annex
-translations/privacy.de.yaml:1219:dpia
-translations/privacy.en.yaml:1211:dpia
+translations/privacy.de.yaml:1220:dpia
+translations/privacy.en.yaml:1212:dpia
 translations/report_builder.de.yaml:293:settings
 translations/report_builder.en.yaml:293:settings
 translations/reports.de.yaml:106:security_reports

@@ -7,6 +7,11 @@ UI wave C: every list page (`templates/**/index.html.twig`, since T2 also `list.
 state in a fixed order). Lists not migrated yet are listed in the baseline and
 may only shrink; a migrated list that leaves the baseline is reported as stale.
 
+T4: a list is also found by content, not only by name: a top-level page (it `extends` a base layout, file name
+without a leading `_`, not show/detail/view/new/edit/form) that renders a table (`<table>`, `_fa_table`) over a `{% for %}` loop
+is a list page whatever its name (`zz/overview.html.twig`). A page that is not a record list (report, preview, diff, dashboard)
+goes into the not-lists file with its reason.
+
 A list on the skeleton must not carry KPI tiles (`_fa_feature_card`): numbers
 belong in a summary line of chips, the tiles on a dashboard.
 
@@ -68,14 +73,34 @@ def has_tiles(text: str, seen: frozenset[str] = frozenset(), depth: int = 0) -> 
     return False
 
 
+LIST_NAMES = ("index.html.twig", "list.html.twig")
+# Not lists by name: single-record pages, forms.
+NOT_LIST_NAMES = re.compile(r"^(?:show|detail|view|new|edit|form|create|delete|confirm)\.html\.twig$")
+PAGE_LAYOUT = re.compile(
+    r"""\{%-?\s*extends\s+['"](?:base|admin/layout|base_public|base_auth|setup/_layout)\.html\.twig['"]"""
+)
+TABLE = re.compile(r"<table\b|_fa_table\s*\.\s*\w+\s*\(|\bfa_table\(")
+LOOP = re.compile(r"\{%-?\s*for\b")
+
+
+def is_list_page(p: Path, text: str) -> bool:
+    """A list by name, or by content: a top-level page with a table over a loop."""
+    if p.name in LIST_NAMES:
+        return True
+    if p.name.startswith("_") or NOT_LIST_NAMES.match(p.name):
+        return False
+    return bool(PAGE_LAYOUT.search(text) and TABLE.search(text) and LOOP.search(text))
+
+
 def list_templates() -> list[Path]:
     out = []
     skip = not_lists()
-    for p in sorted(q for name in ("index.html.twig", "list.html.twig") for q in TEMPLATES.rglob(name)):
+    for p in sorted(TEMPLATES.rglob("*.html.twig")):
         rel = p.relative_to(TEMPLATES)
         if rel.parts[0] in EXCLUDE_DIRS or str(p.relative_to(ROOT)) in skip:
             continue
-        out.append(p)
+        if is_list_page(p, code(p.read_text(encoding="utf-8"))):
+            out.append(p)
     return out
 
 

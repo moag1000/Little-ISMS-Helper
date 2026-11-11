@@ -34,12 +34,9 @@ final class EvidenceDocuments
     /** The readable file of an uploaded document (var/uploads, not yet moved, bulk import), or null. */
     public function file(Document $doc): ?string
     {
-        if ($this->uploads !== null) {
-            return $this->uploads->resolve($doc->getFilePath());
-        }
-        $path = (string) $doc->getFilePath();
-
-        return $path !== '' && is_file($path) && is_readable($path) ? $path : null;
+        // T4 (Gate 94): the stored path is data — only ProtectedUploads turns it into a file inside var/uploads.
+        // Without it (a hand-built instance) there is no file, never the raw path.
+        return $this->uploads?->resolve($doc->getFilePath());
     }
 
     /**

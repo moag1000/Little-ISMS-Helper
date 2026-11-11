@@ -127,7 +127,7 @@
                     {% endif %}
 
                     {% if incomplete|length == 0 and requiring_dpia|length == 0 and due_for_review|length == 0 %}
-                        <p class="text-success mb-0"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> No action items - all compliant!</p>
+                        <p class="text-success mb-0"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'processing_activity.dashboard.no_action_items'|trans({}, 'privacy') }}</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}

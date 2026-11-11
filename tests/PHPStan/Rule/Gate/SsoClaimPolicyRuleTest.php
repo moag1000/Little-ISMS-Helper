@@ -21,6 +21,10 @@ final class SsoClaimPolicyRuleTest extends GateRuleTestCase
             'App\\Security\\GateFixture\\CommentOnlyAuthenticator' => ['policy' => ['allowedAzureTenants', 'assertAzureTenant']],
             'App\\Security\\GateFixture\\FlowAuthenticator' => ['flow' => ['App\\Security\\GateFixture\\FixtureFlow', 'handleCallback']],
             'App\\Security\\GateFixture\\FlowSkippedAuthenticator' => ['flow' => ['App\\Security\\GateFixture\\FixtureFlow', 'handleCallback']],
+            'App\\Security\\GateFixture\\BareCheckAuthenticator' => ['policy' => ['isEmailVerified']],
+            'App\\Security\\GateFixture\\DeadCheckAuthenticator' => ['policy' => ['isEmailVerified']],
+            'App\\Security\\GateFixture\\UsedCheckAuthenticator' => ['policy' => ['isEmailVerified']],
+            'App\\Security\\GateFixture\\MergingAuthenticator' => [],
         ]);
     }
 

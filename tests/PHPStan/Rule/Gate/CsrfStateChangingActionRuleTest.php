@@ -24,4 +24,10 @@ final class CsrfStateChangingActionRuleTest extends GateRuleTestCase
     {
         $this->assertFixture('src/Controller/GateFixture/CsrfController.php');
     }
+
+    #[Test]
+    public function aFormTypeDoesNotSwitchCsrfOff(): void
+    {
+        $this->assertFixture('src/Form/GateFixture/CsrfOffType.php');
+    }
 }

@@ -97,6 +97,37 @@ final class TenantlessInsertGuardTest extends KernelTestCase
         self::assertSame('renamed', $location->getName());
     }
 
+    /**
+     * T4 (T6 of the counter-check): outside the test environment a warning alone saved the row invisible to its
+     * own organisation; now the guard repairs it before the write.
+     */
+    #[Test]
+    public function outsideTheTestEnvironmentTheRowIsRepairedNotJustLogged(): void
+    {
+        $existing = $this->location();
+        $this->em->flush();
+        $stack = self::getContainer()->get(RequestStack::class);
+        $stack->push(Request::create('/de/location/new', 'POST'));
+        $new = $this->location();
+        $new->setTenant(null);
+        $existing->setTenant(null);
+
+        $guard = new TenantlessInsertGuard(
+            self::getContainer()->get(TenantContext::class),
+            $stack,
+            new \Psr\Log\NullLogger(),
+            'prod',
+        );
+        $uow = $this->em->getUnitOfWork();
+        $uow->computeChangeSets();
+        $guard->onFlush(new \Doctrine\ORM\Event\OnFlushEventArgs($this->em));
+
+        self::assertSame($this->tenant->getId(), $new->getTenant()?->getId(), 'a new row gets the organisation of the request');
+        self::assertSame($this->tenant->getId(), $existing->getTenant()?->getId(), 'an existing row keeps its organisation');
+        $change = $uow->getEntityChangeSet($existing)['tenant'] ?? null;
+        self::assertTrue($change === null || $change[1] === $this->tenant, 'the repaired update writes the old organisation');
+    }
+
     #[Test]
     public function outsideARequestNothingIsChecked(): void
     {

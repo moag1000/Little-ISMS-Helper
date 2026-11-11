@@ -120,7 +120,7 @@ src/Controller/AuditProgramController.php:136
 src/Controller/AuditProgramController.php:188
 src/Controller/AuditProgramController.php:307
 src/Controller/AuditProgramController.php:308
-src/Controller/Authority/Nis2RegistrationController.php:118
+src/Controller/Authority/Nis2RegistrationController.php:120
 src/Controller/BCExerciseController.php:96
 src/Controller/BCExerciseController.php:97
 src/Controller/BCExerciseController.php:161
@@ -350,9 +350,9 @@ src/Controller/ScheduledReportController.php:233
 src/Controller/SeedReviewQueueController.php:102
 src/Controller/SourceConversionController.php:98
 src/Controller/SourceConversionController.php:105
-src/Controller/StatementOfApplicabilityController.php:357
-src/Controller/StatementOfApplicabilityController.php:421
-src/Controller/StatementOfApplicabilityController.php:474
+src/Controller/StatementOfApplicabilityController.php:359
+src/Controller/StatementOfApplicabilityController.php:423
+src/Controller/StatementOfApplicabilityController.php:476
 src/Controller/SupplierController.php:172
 src/Controller/SupplierController.php:173
 src/Controller/SupplierController.php:306

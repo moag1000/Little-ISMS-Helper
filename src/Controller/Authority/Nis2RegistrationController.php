@@ -104,6 +104,8 @@ final class Nis2RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // T4: the page view wrote nothing; the first valid save writes the draft (id for the audit log).
+            $this->registrationService->save($profile);
             // NIS-2 Art. 3 (4): the profile notes a change of reported data itself at flush.
             $this->auditLogger->logCustom(
                 action: AuditLogger::ACTION_NIS2_REGISTRATION_UPDATED,
@@ -239,7 +241,8 @@ final class Nis2RegistrationController extends AbstractController
     private function profileFor(Tenant $tenant): Nis2RegistrationProfile
     {
         if ($this->isGranted('ROLE_MANAGER')) {
-            return $this->registrationService->getOrCreateProfile($tenant);
+            // T4: unsaved until a valid submit — a page view writes nothing.
+            return $this->registrationService->draftProfile($tenant);
         }
 
         return $this->registrationService->findProfile($tenant)

@@ -12,6 +12,12 @@ that leaves the baseline is reported as stale.
 A page on the skeleton must not keep the old link matrix
 (`_entity_link_matrix`) next to the new links block.
 
+T4: a detail page is also found by content, not only by name: a top-level page (it `extends` a base layout, no form,
+not a list) that uses a record-only part (status band, history, entity links, comment thread) or reads three or more
+properties of one record variable (not a loop or `set` variable) is a detail page whatever its name
+(`zz/record.html.twig`). Pages that only look like one (dashboards, reports, aggregate statistics) are listed with a
+reason in `baselines/show_skeleton_not_details.txt` (`<path>  # reason`).
+
 A `show.html.twig` that does not show one record (a workflow definition read
 from YAML, a session aggregate) carries `{# show-skeleton: no record — <why> #}`
 and is skipped; the reason is required. A page with that marker that still renders
@@ -62,13 +68,57 @@ def has_old_matrix(text: str, depth: int = 0) -> bool:
     return False
 
 
+NOT_DETAILS = Path("scripts/quality/baselines/show_skeleton_not_details.txt")
+PAGE_LAYOUT = re.compile(
+    r"""\{%-?\s*extends\s+['"](?:base|admin/layout|base_public|base_auth|setup/_layout)\.html\.twig['"]"""
+)
+FORM = re.compile(r"form_start|form_widget|form_row|\{\{\s*form\(|<form\b")
+NOT_DETAIL_NAMES = re.compile(r"^(?:index|list|new|edit|form|create|delete|confirm)\.html\.twig$")
+LOOP_VARS = re.compile(r"\{%-?\s*for\s+([\w\s,]+?)\s+in\b")
+SET_VARS = re.compile(r"\{%-?\s*set\s+(\w+)")
+PROP_READ = re.compile(r"\{\{-?\s*\(?(\w+)\.(\w+)")
+RECORD_PARTS = re.compile(
+    r"_fa_status_band\s*\.|\bworkflow_state\(|\bshow_history\(|\bentity_links\(|_fa_show_history|_fa_entity_links|_isms_comment_thread"
+)
+
+
+def not_details() -> set[str]:
+    path = ROOT / NOT_DETAILS
+    if not path.exists():
+        return set()
+    out = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if line:
+            out.add(line.split()[0])
+    return out
+
+
+def is_detail_by_content(p: Path, text: str) -> bool:
+    """A top-level page about one record that is not named show/detail/view."""
+    if p.name.startswith("_") or NOT_DETAIL_NAMES.match(p.name) or not PAGE_LAYOUT.search(text) or FORM.search(text):
+        return False
+    if RECORD_PARTS.search(text):
+        return True
+    names = {"app", "loop", "_self", "form"} | set(SET_VARS.findall(text))
+    for m in LOOP_VARS.finditer(text):
+        names |= set(re.split(r"\s*,\s*", m.group(1)))
+    props: dict[str, set[str]] = {}
+    for var, prop in PROP_READ.findall(text):
+        if var not in names:
+            props.setdefault(var, set()).add(prop)
+    return any(len(v) >= 3 for v in props.values())
+
+
 def show_templates() -> list[Path]:
     out = []
-    for p in sorted(q for name in PAGE_NAMES for q in TEMPLATES.rglob(name)):
+    skip = not_details()
+    for p in sorted(TEMPLATES.rglob("*.html.twig")):
         rel = p.relative_to(TEMPLATES)
-        if rel.parts[0] in EXCLUDE_DIRS:
+        if rel.parts[0] in EXCLUDE_DIRS or p.relative_to(ROOT).as_posix() in skip:
             continue
-        out.append(p)
+        if p.name in PAGE_NAMES or is_detail_by_content(p, RE_COMMENT.sub("", p.read_text(encoding="utf-8"))):
+            out.append(p)
     return out
 
 

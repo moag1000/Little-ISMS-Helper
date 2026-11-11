@@ -71,6 +71,32 @@ final class MarkupExtension
         return new $c($x, 'UTF-8');
     }
 
+    /** T4 K3: the marker of the first Markup does not cover a second one below. */
+    public function secondBelowAMarkedOne(string $x, string $title): array
+    {
+        // @markup-safe: $x went through htmlspecialchars() above
+        $a = new Markup(htmlspecialchars($x), 'UTF-8');
+        $b = new Markup($title, 'UTF-8'); // expect: gate92.markup
+
+        return [$a, $b];
+    }
+
+    /** T4 K2: the class by its name as a string. */
+    public function classAsString(string $x): object
+    {
+        $c = 'Twig\\Markup'; // expect: gate92.markupClass
+
+        return new $c($x, 'UTF-8');
+    }
+
+    /** T4 K1: a class declared safe for the escaper. */
+    public function safeClasses(\Twig\Environment $env): void
+    {
+        $runtime = $env->getRuntime(\Twig\Runtime\EscaperRuntime::class);
+        $runtime->setSafeClasses([\stdClass::class => ['html']]); // expect: gate92.safeClass
+        $runtime->addSafeClass(\stdClass::class, ['html']); // expect: gate92.safeClass
+    }
+
     public function word(): PhpWord
     {
         Settings::setOutputEscapingEnabled(false); // expect: gate92.escapingOff

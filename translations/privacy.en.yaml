@@ -633,6 +633,7 @@ processing_activity:
         title: 'VVT Dashboard'
         subtitle: 'Art. 30 GDPR Compliance Overview'
         breadcrumb_gdpr: 'GDPR'
+        no_action_items: 'No open items.'
         action:
             view_all: 'View All Activities'
             new: 'New Activity'

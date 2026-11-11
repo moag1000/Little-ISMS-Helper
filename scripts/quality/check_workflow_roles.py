@@ -64,14 +64,18 @@ COMMANDS = ROOT / "src" / "Command"
 PENDING: set[str] = set()
 
 # Recipient look-ups: the role is the first argument, or the one named `role:`.
-LOOKUP_CALL = re.compile(r"\b(?:findByRoleInTenant|findUserByRole|findUsersByRole)\s*\(")
+# Any repository method named `*ByRole*` (findUsersByRoles, findByRoleInTenant, …), called on an object or class.
+LOOKUP_CALL = re.compile(r"(?:->|::)\s*((?:find|get|load|fetch|search|list|query)\w*ByRoles?\w*)\s*\(")
+# A look-up whose role cannot be read from the code needs a reviewed reason (T4: B10).
+LOOKUP_OK = re.compile(r"@role-lookup-ok:[ \t]*[^\s*/]")
 ROLE_LITERAL = re.compile(r"""['"](ROLE_[A-Z_]+)['"]""")
 CONST_REF = re.compile(r"^(?:self|static|[\\\w]+)::([A-Z_][A-Z0-9_]*)$")
 # A step role written into a seeder: the array key, a named argument or the setter.
-SEEDER_KEY = re.compile(r"""['"](?:approverRole|approver_role)['"]\s*=>\s*['"](ROLE_[A-Z_]+)['"]|"""
-                        r"""\bapproverRole\s*:\s*['"](ROLE_[A-Z_]+)['"]|"""
-                        r"""\bsetApproverRole\s*\(\s*['"](ROLE_[A-Z_]+)['"]""")
-SEEDER_ROLE_KEY = re.compile(r"""['"]role['"]\s*=>\s*['"](ROLE_[A-Z_]+)['"]""")
+# The value may be a literal, a class constant or a variable: roles_named_by() resolves it (T4: B9).
+SEEDER_KEY = re.compile(r"""['"](?:approverRole|approver_role)['"]\s*=>\s*([^,;\]]+)|"""
+                        r"""\bapproverRole\s*:(?!:)\s*([^,;)\]]+)|"""
+                        r"""\bsetApproverRole\s*\(\s*([^,;)]+)""")
+SEEDER_ROLE_KEY = re.compile(r"""['"]role['"]\s*=>\s*([^,;\]]+)""")
 SEEDER_MARKER = re.compile(r"\bWorkflowStep\b|\bsetApproverRole\b|['\"]approverRole['\"]|\bapproverRole\s*:|['\"]stepType['\"]")
 SEEDER_TYPE = re.compile(r"""['"](?:stepType|step_type)['"]\s*=>\s*['"]([a-z_]+)['"]|\bsetStepType\s*\(\s*['"]([a-z_]+)['"]""")
 
@@ -113,6 +117,42 @@ USER_TRANSITION_EXCEPTIONS: dict[str, str] = {
     "change_request_lifecycle.cancel_from_draft": "the requester withdraws their own draft before anybody "
                                                   "decided; nothing is approved or closed",
 }
+
+
+class _AnyTagLoader(yaml.SafeLoader):
+    """SafeLoader that reads Symfony's `!php/const`, `!tagged_iterator`, … tags as plain values."""
+
+
+def _any_tag(loader, suffix, node):
+    if isinstance(node, yaml.MappingNode):
+        return loader.construct_mapping(node, deep=True)
+    if isinstance(node, yaml.SequenceNode):
+        return loader.construct_sequence(node, deep=True)
+    return loader.construct_scalar(node)
+
+
+_AnyTagLoader.add_multi_constructor("!", _any_tag)
+
+
+def load_yaml(text: str) -> dict:
+    data = yaml.load(text, Loader=_AnyTagLoader)  # noqa: S506 - the loader is a SafeLoader
+    return data if isinstance(data, dict) else {}
+
+
+def workflow_files() -> list[Path]:
+    """config/workflows/** plus every other YAML under config/ that defines framework.workflows (T4: B7 —
+    a `framework: workflows:` block in config/packages/zz.yaml was never read)."""
+    files = set(WORKFLOWS.rglob("*.yaml"))
+    for path in (ROOT / "config").rglob("*.yaml"):
+        if path in files or "workflows" not in path.read_text(encoding="utf-8", errors="replace"):
+            continue
+        try:
+            data = load_yaml(path.read_text(encoding="utf-8"))
+        except yaml.YAMLError:
+            continue
+        if workflows_of(data):
+            files.add(path)
+    return sorted(files)
 
 
 def as_list(value) -> list:
@@ -202,10 +242,10 @@ def yaml_line(lines: list[str], needle: str, start: int = 0) -> int:
 
 def check_yaml(known: set[str]) -> list[str]:
     errors: list[str] = []
-    for path in sorted(WORKFLOWS.rglob("*.yaml")):
+    for path in workflow_files():
         text = path.read_text(encoding="utf-8")
         lines = text.splitlines()
-        data = yaml.safe_load(text) or {}
+        data = load_yaml(text)
         workflows = workflows_of(data)
         for wf_name, wf in workflows.items():
             decided = decided_places(wf)
@@ -274,8 +314,8 @@ def check_yaml(known: set[str]) -> list[str]:
 
 def stale_exceptions() -> set[str]:
     used: set[str] = set()
-    for path in sorted(WORKFLOWS.rglob("*.yaml")):
-        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    for path in workflow_files():
+        data = load_yaml(path.read_text(encoding="utf-8"))
         for wf_name, wf in workflows_of(data).items():
             for t_name, transition in (wf.get("transitions") or {}).items():
                 if set(as_list(((transition or {}).get("metadata") or {}).get("roles"))) & EVERYONE:
@@ -315,7 +355,19 @@ def _method_around(code: str, pos: int) -> str:
 
 
 def seeder_files() -> list[Path]:
-    return sorted(COMMANDS.rglob("*.php")) if COMMANDS.exists() else []
+    """Every PHP file in src/ — a seeder is not only a command (T4: B8; SEEDER_MARKER narrows it)."""
+    return sorted((ROOT / "src").rglob("*.php"))
+
+
+def seeder_hits(code: str) -> list[tuple[int, str, str]]:
+    """(offset, role, key kind) of every step role a file writes, literals and resolvable constants / variables."""
+    hits: list[tuple[int, str, str]] = []
+    for m in SEEDER_KEY.finditer(code):
+        arg = next(g for g in m.groups() if g)
+        hits += [(m.start(), role, "approver") for role in roles_named_by(arg, code)]
+    for m in SEEDER_ROLE_KEY.finditer(code):
+        hits += [(m.start(), role, "role") for role in roles_named_by(m.group(1), code)]
+    return sorted(hits)
 
 
 def check_seeders(known: set[str]) -> list[str]:
@@ -324,9 +376,7 @@ def check_seeders(known: set[str]) -> list[str]:
         code = strip_comments(path.read_text(encoding="utf-8"))
         if not SEEDER_MARKER.search(code):
             continue
-        hits = [(m.start(), next(g for g in m.groups() if g)) for m in SEEDER_KEY.finditer(code)]
-        hits += [(m.start(), m.group(1)) for m in SEEDER_ROLE_KEY.finditer(code)]
-        for pos, role in sorted(hits):
+        for pos, role, _kind in seeder_hits(code):
             line = code.count("\n", 0, pos) + 1
             if role not in known:
                 errors.append(f"{rel(path)}:{line}: workflow step role {role} is unknown")
@@ -347,9 +397,9 @@ def stale_seeder_exceptions() -> set[str]:
     live: set[str] = set()
     for path in seeder_files():
         code = strip_comments(path.read_text(encoding="utf-8"))
-        for m in SEEDER_KEY.finditer(code):
-            if "ROLE_USER" in m.groups() and step_type_near(code, m.start()) != NOTIFICATION:
-                name = re.search(r"""['"]name['"]\s*=>\s*['"]([^'"]+)['"]""", enclosing_array(code, m.start()))
+        for pos, role, kind in seeder_hits(code):
+            if role == "ROLE_USER" and kind == "approver" and step_type_near(code, pos) != NOTIFICATION:
+                name = re.search(r"""['"]name['"]\s*=>\s*['"]([^'"]+)['"]""", enclosing_array(code, pos))
                 if name:
                     live.add(f"{rel(path)}:{name.group(1)}")
     return set(KNOWN_SEEDER_ROLE_USER) - live
@@ -385,6 +435,9 @@ def roles_named_by(argument: str, code: str) -> list[str]:
         value = consts.get(f"{owner}::{ref.group(1)}") or consts.get(ref.group(1))
         found += [value] if value else []
     var = re.fullmatch(r"\$(\w+)", argument)
+    if var:  # `foreach (['ROLE_A', 'ROLE_B'] as $role)`
+        for m in re.finditer(r"\bforeach\s*\(([^;{]*?)\s+as\s+(?:\$\w+\s*=>\s*)?\$" + var.group(1) + r"\b", code):
+            found += ROLE_LITERAL.findall(m.group(1))
     if var:  # every value the file ever gives that variable (assignment, default, ternary branch)
         for m in re.finditer(r"\$" + var.group(1) + r"\s*(?:\?\?)?=\s*([^;]+);", code):
             found += ROLE_LITERAL.findall(m.group(1))
@@ -395,34 +448,53 @@ def roles_named_by(argument: str, code: str) -> list[str]:
 
 def role_argument(call_args: list[str]) -> str | None:
     for arg in call_args:
-        named = re.match(r"role\s*:(?!:)\s*(.*)$", arg, re.S)
+        named = re.match(r"roles?\s*:(?!:)\s*(.*)$", arg, re.S)
         if named:
             return named.group(1)
     return call_args[0] if call_args and not re.match(r"\w+\s*:(?!:)", call_args[0]) else None
 
 
-def lookups_in(code: str) -> list[tuple[int, str]]:
-    """(offset, role) of every recipient look-up whose role we can name."""
-    found: list[tuple[int, str]] = []
+def lookups_in(code: str) -> list[tuple[int, list[str]]]:
+    """(offset, roles) of every recipient look-up; an empty list = the role cannot be read from the code."""
+    found: list[tuple[int, list[str]]] = []
     for m in LOOKUP_CALL.finditer(code):
         args = split_args(code[m.end():matching_end(code, m.end() - 1) - 1])
         arg = role_argument(args)
-        if arg is not None:
-            found += [(m.start(), role) for role in roles_named_by(arg, code)]
+        roles = roles_named_by(arg, code) if arg is not None else []
+        if not roles and arg is not None and passes_on_parameter(code, m.start(), arg):
+            continue
+        found.append((m.start(), roles))
     return found
+
+
+def passes_on_parameter(code: str, pos: int, arg: str) -> bool:
+    """`private function findUsersByRole(string $role, …) { …->findByRoleInTenant($role, …) }`: a wrapper that is
+    itself a `*ByRole*` look-up hands its parameter on; its own callers are checked by name."""
+    var = re.fullmatch(r"\$(\w+)", arg.strip())
+    if not var:
+        return False
+    _, methods = class_methods(code)
+    return any(mt.start <= pos < mt.end and LOOKUP_CALL.match("->" + mt.name + "(") and var.group(1) in mt.param_names()
+               for mt in methods)
 
 
 def check_lookups(known: set[str]) -> list[str]:
     errors: list[str] = []
     for path in sorted((ROOT / "src").rglob("*.php")):
         text = path.read_text(encoding="utf-8")
-        if "ByRole" not in text and "UserByRole" not in text and "UsersByRole" not in text:
+        if "ByRole" not in text:
             continue
         code = strip_comments(text)  # whole file: the call may break across lines
-        for pos, role in lookups_in(code):
-            if role not in known:
-                errors.append(f"{rel(path)}:{code.count(chr(10), 0, pos) + 1}: recipient look-up on "
-                              f"unknown role {role} finds nobody")
+        lines = text.split("\n")
+        for pos, roles in lookups_in(code):
+            line = code.count(chr(10), 0, pos) + 1
+            for role in roles:
+                if role not in known:
+                    errors.append(f"{rel(path)}:{line}: recipient look-up on unknown role {role} finds nobody")
+            if not roles and not (LOOKUP_OK.search(lines[line - 1]) or (line > 1 and LOOKUP_OK.search(lines[line - 2]))):
+                errors.append(f"{rel(path)}:{line}: recipient look-up whose role the gate cannot read (variable, "
+                              "parameter, expression) — pass a ROLE_ literal or constant, or add "
+                              "`// @role-lookup-ok: <reason>` above the call")
     return errors
 
 
