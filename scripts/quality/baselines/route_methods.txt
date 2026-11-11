@@ -4,7 +4,7 @@ src/Controller/AccessReviewController.php:39
 src/Controller/Admin/TrustCenterAdminController.php:31
 src/Controller/AnswerLibraryController.php:38
 src/Controller/AuditProgramController.php:41
-src/Controller/ComplianceCertificateController.php:51
+src/Controller/ComplianceCertificateController.php:52
 src/Controller/DpaController.php:38
 src/Controller/EffectivenessMonitorController.php:31
 src/Controller/MappingOnboardingController.php:17

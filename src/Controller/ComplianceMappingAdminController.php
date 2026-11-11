@@ -28,8 +28,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Handles automated cross-framework mapping creation operations:
  * - Create comparison mappings between two selected frameworks
  * - Create all cross-framework mappings via ISO 27001 transitive strategy
- *
- * Extracted from ComplianceController god-class (was 2629 LOC).
  */
 #[RequiresModule('compliance')]
 class ComplianceMappingAdminController extends AbstractController

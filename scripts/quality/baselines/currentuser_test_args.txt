@@ -9,10 +9,10 @@ tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:249
 tests/Controller/DocumentControllerTest.php:193
 tests/Controller/DocumentControllerTest.php:264
 tests/Controller/DocumentControllerTest.php:322
-tests/Controller/IncidentControllerTest.php:342
-tests/Controller/IncidentControllerTest.php:359
-tests/Controller/IncidentControllerTest.php:386
-tests/Controller/IncidentControllerTest.php:437
+tests/Controller/IncidentControllerTest.php:345
+tests/Controller/IncidentControllerTest.php:362
+tests/Controller/IncidentControllerTest.php:389
+tests/Controller/IncidentControllerTest.php:440
 tests/Performance/ListQueryBudgetTest.php:186
 tests/Performance/ObligationInboxQueryBudgetTest.php:122
 tests/Service/Certificate/CertificateBulkFulfillmentServiceTest.php:89

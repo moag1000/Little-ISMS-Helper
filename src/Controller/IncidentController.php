@@ -404,13 +404,8 @@ class IncidentController extends AbstractController
         // Structured risk cross-links
         $riskIncidentLinks = $this->riskIncidentLinkRepository->findByIncident($incident);
 
-        // Structured CAPAs auto-materialised
-        // from this Incident (per ADR 2026-05-23). Used to show "Legacy"-alert near the
-        // freetext field + link the analyst to the structured record.
-        $linkedCorrectiveActions = $this->moduleConfiguration->isModuleActive('corrective_actions')
-            ? $this->entityManager->getRepository(CorrectiveAction::class)
-                ->findBy(['sourceIncident' => $incident], ['createdAt' => 'DESC'])
-            : [];
+        $linkedCorrectiveActions = !$this->moduleConfiguration->isModuleActive('corrective_actions') ? []
+            : $this->entityManager->getRepository(CorrectiveAction::class)->findBy(['sourceIncident' => $incident], ['createdAt' => 'DESC']);
 
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,

@@ -43,8 +43,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * (auditors, managers) see the rest read-only, suggestions about records of
  * people only with the DPO role ({@see SuggestionQueue::isVisible()}, S30).
  */
-// @no-methods-required — class-level path prefix, methods declared per action
 // @no-module-gate-required: generic queue: every SuggestionKind names its module and target access
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/suggestions', name: 'app_suggestion_')]
 #[IsGranted('ROLE_USER')]
 final class SuggestionController extends AbstractController
