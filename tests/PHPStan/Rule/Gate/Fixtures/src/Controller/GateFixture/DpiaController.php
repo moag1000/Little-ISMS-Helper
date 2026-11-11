@@ -55,6 +55,79 @@ final class DpiaController extends AbstractController
         return new Response();
     }
 
+    /** T4 M1: the module flag only travels into the page. */
+    #[Route('/flag', name: 'app_dpia_flag')]
+    public function flagIntoRender(): Response // expect: gate11.route
+    {
+        return $this->render('x.html.twig', ['active' => $this->isModuleActive('privacy')]);
+    }
+
+    /** T4 M2: polarity inverted, the page renders with the module off. */
+    #[Route('/inverted', name: 'app_dpia_inverted')]
+    public function invertedPolarity(): Response // expect: gate11.route
+    {
+        if ($this->isModuleActive('privacy')) {
+            return $this->redirectToRoute('app_dashboard');
+        }
+
+        return new Response();
+    }
+
+    /** T4 M3: off ends the action only together with another condition. */
+    #[Route('/and', name: 'app_dpia_and')]
+    public function combinedWithAnd(bool $x = false): Response // expect: gate11.route
+    {
+        if (!$this->isModuleActive('privacy') && $x) {
+            return $this->redirectToRoute('app_dashboard');
+        }
+
+        return new Response();
+    }
+
+    #[Route('/negated', name: 'app_dpia_negated')]
+    public function negatedEndsTheAction(): Response
+    {
+        if (!$this->isModuleActive('privacy')) {
+            throw $this->createNotFoundException();
+        }
+
+        return new Response();
+    }
+
+    #[Route('/identical', name: 'app_dpia_identical')]
+    public function comparedWithFalse(): Response
+    {
+        if (false === $this->isModuleActive('privacy') || !$this->isModuleActive('core')) {
+            return $this->redirectToRoute('app_dashboard');
+        }
+
+        return new Response();
+    }
+
+    #[Route('/else', name: 'app_dpia_else')]
+    public function elseRefuses(): Response
+    {
+        if ($this->isModuleActive('privacy')) {
+            $page = new Response();
+        } else {
+            return $this->redirectToRoute('app_dashboard');
+        }
+
+        return $page;
+    }
+
+    #[Route('/ternary', name: 'app_dpia_ternary')]
+    public function ternaryDecides(): Response
+    {
+        return $this->isModuleActive('privacy') ? new Response() : $this->redirectToRoute('app_dashboard');
+    }
+
+    #[Route('/coalesce', name: 'app_dpia_coalesce')]
+    public function coalesceDecides(): Response
+    {
+        return $this->checkModuleActive('privacy') ?? new Response();
+    }
+
     #[Route('/bare', name: 'app_dpia_bare')]
     public function checkDropped(): Response // expect: gate11.route
     {

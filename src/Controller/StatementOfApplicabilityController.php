@@ -184,6 +184,8 @@ class StatementOfApplicabilityController extends AbstractController
             'mrisEnabled' => $mrisEnabled,
         ]);
     }
+    // @get-write-ok: the first SoA view of an organisation with ISO 27001 seeds the 93 Annex-A controls
+    // once (idempotent, nothing from the request)
     #[Route('/soa/category/{category}', name: 'app_soa_by_category', methods: ['GET'])]
     public function byCategory(string $category): Response
     {

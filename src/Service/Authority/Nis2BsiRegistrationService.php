@@ -44,6 +44,21 @@ final class Nis2BsiRegistrationService
 
     public function getOrCreateProfile(Tenant $tenant): Nis2RegistrationProfile
     {
+        $profile = $this->draftProfile($tenant);
+        if ($profile->getId() === null) {
+            $this->entityManager->persist($profile);
+            $this->entityManager->flush();
+        }
+
+        return $profile;
+    }
+
+    /**
+     * The saved profile, or a new one with the defaults from the organisation that is NOT saved yet (T4: a page
+     * view must not write; the form saves it on a valid submit).
+     */
+    public function draftProfile(Tenant $tenant): Nis2RegistrationProfile
+    {
         $profile = $this->profileRepository->findForTenant($tenant);
 
         if ($profile !== null) {
@@ -68,9 +83,6 @@ final class Nis2BsiRegistrationService
         if ($tenant->getNaceCode() !== null && $tenant->getNaceCode() !== '') {
             $profile->setNaceCodes([$tenant->getNaceCode()]);
         }
-
-        $this->entityManager->persist($profile);
-        $this->entityManager->flush();
 
         return $profile;
     }
@@ -219,6 +231,14 @@ throw new \LogicException('Cannot export profile: securityResponsibleContact is 
         $profile->markDataReported();
         $profile->getTenant()->setNis2RegisteredAt($now);
 
+        $this->entityManager->persist($profile); // a draft from draftProfile() is saved here at the latest
+        $this->entityManager->flush();
+    }
+
+    /** Saves the profile: the first valid save of a draft from draftProfile() writes the row. */
+    public function save(Nis2RegistrationProfile $profile): void
+    {
+        $this->entityManager->persist($profile);
         $this->entityManager->flush();
     }
 }

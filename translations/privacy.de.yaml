@@ -741,6 +741,7 @@ processing_activity:
         title: 'VVT-Dashboard'
         subtitle: 'Art. 30 DSGVO – Compliance-Übersicht'
         breadcrumb_gdpr: 'DSGVO'
+        no_action_items: 'Keine offenen Punkte.'
         action:
             view_all: 'Alle Tätigkeiten anzeigen'
             new: 'Neue Tätigkeit'

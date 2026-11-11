@@ -188,7 +188,7 @@ Code that needs an organisation in `TenantContext` (services reading it, the aud
 `TenantContext::runAs($tenant, fn)` / `runWithoutOrganisation(fn)`, which put the previous state back —
 the worker runs the next command in the same container; it resets the context after every message
 (`TenantContextResetSubscriber`). A bare `setCurrentTenant*()` / `setNoOrganisation()` fails Gate 97
-(`check_tenant_pin_restore.py`) unless it sits in a restoring `finally` or carries `// @tenant-pin-ok: <reason>`;
+(PHPStan rule `TenantPinRestoreRule`, T4) unless it sits in a restoring `finally` or carries `// @tenant-pin-ok: <reason>`;
 `tests/Scheduler/ScheduledCommandsTenantIsolationTest` runs every scheduled command in one kernel (S23).
 
 ### Advanced — Messenger worker (opt-in, for dedicated infra)

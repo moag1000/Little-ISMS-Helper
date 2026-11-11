@@ -2,7 +2,7 @@
 """
 check_page_semantics.py — Gate 78: page semantics and one status vocabulary.
 
-UI wave G. Six rules:
+UI wave G. Seven rules:
 - nested-main: base.html.twig renders `<main id="main-content">`; a template
   that extends it and opens its own `<main>` nests landmarks (screen readers
   announce two main regions).
@@ -24,6 +24,10 @@ UI wave G. Six rules:
 - pill-tone (T2): the status pill knows primary/accent/success/warning/danger/
   neutral only; `pill.render(label, 'info')` / `'secondary'` renders an
   unstyled pill.
+  T4: every alias counts (`import … as sp`, `{% from … import render as sp_render %}`, the `_fa_status_pill` file
+  name too), `tone:` as a named argument, and a tone kept in a `{% set t = 'info' %}` variable.
+- if-chain-tone (T4): `{% if x.status == 'open' %}{% set t = 'danger' %}{% elseif … %}{% set t = 'success' %}…`
+  assigns a tone per status in an if chain, the same local map written as statements.
 - tooltip-unreachable: a `data-bs-toggle="tooltip"` on an element that is not
   focusable (no tabindex, not a/button/input) can only be read by mouse.
 
@@ -69,12 +73,17 @@ TWIG_EXPR = re.compile(r"\{\{.*?\}\}|\{%.*?%\}", re.S)
 TONE_WORD = r"(?:text-bg-|bg-|badge-|text-|fa-status-pill--)?(?:danger|warning|success|info|primary|secondary|neutral|accent)"
 # `== 'open' ? 'danger'` / `in ['a', 'b']) ? 'success'`
 TERNARY_TONE = re.compile(
-    r"""(?:==|!=|\bin)\s*(?:'[\w-]*'|"[\w-]*"|\[[^\]]*\])\s*\)?\s*\?\s*['"]""" + TONE_WORD + r"""['"]"""
+    r"""(?:==|!=|\bnot\s+in|\bin|\bmatches|\bstarts\s+with|\bends\s+with|\bis\s+(?:not\s+)?same\s+as)\s*(?:'[^']*'|"[^"]*"|\[[^\]]*\])\s*\)?\s*\?\s*['"]""" + TONE_WORD + r"""['"]"""
 )
 ELSE_TONE = re.compile(r""":\s*['"]""" + TONE_WORD + r"""['"]""")
-PILL_IMPORT = re.compile(r"""import\s+['"]_components/_status_pill\.html\.twig['"]\s+as\s+(\w+)""")
+_PILL_FILE = r"""['"]_components/_(?:fa_)?status_pill\.html\.twig['"]"""
+PILL_IMPORT = re.compile(r"import\s+" + _PILL_FILE + r"\s+as\s+(\w+)")
+PILL_FROM_IMPORT = re.compile(r"\{%-?\s*from\s+" + _PILL_FILE + r"\s+import\s+([^%]*?)\s*-?%\}")
+TONE_SET = re.compile(r"\{%-?\s*set\s+(\w+)\s*=\s*['\"](info|secondary)['\"]\s*-?%\}")
+IF_TAG = re.compile(r"\{%-?\s*(?:else)?if\s+(.*?)-?%\}", re.S)
+SET_TONE = re.compile(r"\{%-?\s*set\s+(\w+)\s*=\s*['\"]" + TONE_WORD + r"['\"]\s*-?%\}")
 PILL_BAD_TONE = re.compile(r"""['"](info|secondary)['"]""")
-COMPARISON_OPERAND = re.compile(r"""(?:==|!=|\bin|\bnot in)\s*(?:'[^']*'|"[^"]*"|\[[^\]]*\])""")
+COMPARISON_OPERAND = re.compile(r"""(?:==|!=|\bnot\s+in|\bin|\bmatches|\bstarts\s+with|\bends\s+with)\s*(?:'[^']*'|"[^"]*"|\[[^\]]*\])""")
 TOOLTIP = re.compile(r"""<(\w+)\b[^>]*data-bs-toggle\s*=\s*["']tooltip["'][^>]*>""", re.S)
 TABINDEX = re.compile(r"\stabindex\s*=")
 DISABLED = re.compile(r"\sdisabled\b")
@@ -128,12 +137,31 @@ def findings() -> list[str]:
                 if hits >= 2 or (hits == 1 and ELSE_TONE.search(m.group(0))):
                     out.append(f"{rel}::ternary-tone")
                     break
-        for alias in PILL_IMPORT.findall(text):
-            for m in re.finditer(r"\b" + re.escape(alias) + r"\.render\(", text):
+        bad_vars = {m.group(1) for m in TONE_SET.finditer(text)}
+        aliases = [a + r"\.render" for a in PILL_IMPORT.findall(text)]
+        for m in PILL_FROM_IMPORT.finditer(text):  # {% from '…_status_pill…' import render as sp_render %}
+            aliases += [re.escape(b or a) for a, b in re.findall(r"\b(render)\b(?:\s+as\s+(\w+))?", m.group(1))]
+        for alias in aliases:
+            for m in re.finditer(r"(?<![\w.])" + alias + r"\(", text):
                 args = _call_args(text, m.end())
-                if len(args) > 1 and PILL_BAD_TONE.search(COMPARISON_OPERAND.sub("", args[1])):
+                tone = args[1] if len(args) > 1 else next((a.split(":", 1)[1] for a in args if re.match(r"\s*tone\s*:", a)), "")
+                stripped = COMPARISON_OPERAND.sub("", tone)
+                if PILL_BAD_TONE.search(stripped) or (re.fullmatch(r"\s*(\w+)\s*", stripped) and stripped.strip() in bad_vars):
                     out.append(f"{rel}::pill-tone")
                     break
+            else:
+                continue
+            break
+        chain = [m for m in SET_TONE.finditer(text)]
+        for name in {m.group(1) for m in chain}:
+            sets = [m for m in chain if m.group(1) == name]
+            if len(sets) < 2:
+                continue
+            between = text[sets[0].end():sets[-1].start()]
+            conds = [c.group(1) for c in IF_TAG.finditer(text[max(0, sets[0].start() - 400):sets[-1].start()])]
+            if re.search(r"\{%-?\s*(?:else)?if\b", between) and any(COMPARISON_OPERAND.search(c) for c in conds):
+                out.append(f"{rel}::if-chain-tone")
+                break
         # Mask Twig expressions so a `>` inside `{{ a > b }}` does not end the tag early.
         masked = TWIG_EXPR.sub(lambda m: "_" * len(m.group(0)), text)
         for m in TOOLTIP.finditer(masked):
@@ -168,7 +196,7 @@ def main() -> int:
     current = findings()
     if args.write_baseline:
         Path(args.write_baseline).write_text(
-            "# Page-semantics offenders (Gate 78): <template>::nested-main|extra-h1|status-map|ternary-tone|pill-tone|tooltip-unreachable. May only shrink.\n"
+            "# Page-semantics offenders (Gate 78): <template>::nested-main|extra-h1|status-map|ternary-tone|if-chain-tone|pill-tone|tooltip-unreachable. May only shrink.\n"
             + "".join(f"{f}\n" for f in current),
             encoding="utf-8",
         )

@@ -204,7 +204,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 8 | `check_double_locale_prefix.py` | No double /{_locale}/ prefix in controllers |
 | 9 | `check_alva_hint_placeholders.py` | Alva-Hint placeholder consistency |
 | 10 | `check_route_wildcard_collisions.py` | No wildcard-vs-literal route collisions |
-| 11 | PHPStan `ModuleGateRule` | Module-gating discipline (P-6): regulatory form fields and framework routes |
+| 11 | PHPStan `ModuleGateRule` + router sweep `ModuleAndJobRouteSweepTest` (T4) | Module-gating discipline (P-6): regulatory form fields and framework routes |
 | 12 | `check_flash_domain.py` | Flash translation-domain (P-5) |
 | 13 | `check_freetext_legacy.py` | Freetext-legacy heuristic (P-15) |
 | 14 | `check_workflow_configs.sh` | Workflow configs valid |
@@ -254,7 +254,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 62 | `check_aurora_legacy_markup.py` | Aurora legacy-markup ratchet |
 | 63 | `check_yaml_duplicates.py` | no duplicate keys in translation YAML |
 | 64 | `check_json_catch_throwable.py` | JSON actions catch Throwable |
-| 65 | PHPStan `CsrfStateChangingActionRule` | state-changing actions need CSRF, GET actions do not flush |
+| 65 | PHPStan `CsrfStateChangingActionRule` + router sweep `tests/Security/RouteSweep/CsrfRouteSweepTest` (T4) | state-changing actions need CSRF, GET actions do not write |
 | 67 | `check_native_dialogs.py` | no native browser dialogs, no inline JavaScript |
 | 68 | `check_entity_manager_reset.py` | closed EntityManager recovered only via EntityManagerRecovery |
 | 69 | `check_unreferenced_ui.py` | no unreferenced templates |
@@ -273,7 +273,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 82 | `check_workflow_roles.py` | workflow approvers and recipients are real roles |
 | 83 | `check_entity_method_exists.py` | no method_exists() on typed entities |
 | 84 | `check_csv_formula_injection.py` | spreadsheet cells go through CsvSanitizer |
-| 85 | `check_fulfillment_single_writer.py` | fulfilment values have one writer |
+| 85 | `check_fulfillment_single_writer.py` + PHPStan `FulfillmentSingleWriterRule` (receiver by type, T4) | fulfilment values have one writer |
 | 86 | `check_requirement_controls_scope.py` | controls behind a requirement come from the tenant-scoped engine |
 | 87 | `check_risk_band_literals.py` | risk bands come from the organisation's risk scale |
 | 89 | `check_api_module_fields.py` | API fields of an optional module carry #[ModuleField] |
@@ -282,7 +282,8 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 92 | `check_raw_output.py` (Twig) + PHPStan `MarkupOutputRule` (PHP) | output escaped unless reviewed (\|raw allowlist, \|fa_json, DocxDocumentFactory, Markup) |
 | 93 | PHPStan `SsoClaimPolicyRule` + `check_sso_claim_policy.py` (config) | every SSO path checks its claims through SsoClaimPolicy |
 | 96 | `tests/Security/WritePathParityTest.php` (PHPUnit) | a write rule on the entity (`#[CreateOnly]`, `#[ManagerOrResponsibleField]`, evidence) holds in every form, the import and the API groups |
-| 97 | `check_tenant_pin_restore.py` | an organisation pinned in TenantContext is put back (runAs / try-finally) |
+| 94 | PHPStan `StoredFilePathRule` (T4; was `check_stored_file_paths.py`) | stored file paths only through StoredFilePath / ProtectedUploads |
+| 97 | PHPStan `TenantPinRestoreRule` (T4; was `check_tenant_pin_restore.py`) | an organisation pinned in TenantContext is put back (runAs / try-finally) |
 
 Code-Stil: Job „Code Quality“ führt `vendor/bin/php-cs-fixer fix --dry-run` mit `.php-cs-fixer.dist.php` (PSR-12,
 `src/` + `tests/`) aus und schlägt fehl, sobald eine Datei abweicht. Ausgenommen sind die Dateien in
@@ -340,6 +341,34 @@ in `scripts/quality/tests/test_w9_gate_mutations.py`, `test_check_raw_output.py`
 | 8 | `CrossTenantApiContractTest`, `CrossTenantMcpContractTest` | Ressource in `src/ApiResource/`; Entity in einem Unterordner ohne MCP-Probe | Entdeckung nur über `src/Entity/*.php` |
 | 9 | `TenantlessInsertGuard` | Update setzt `tenant = null` → Flush scheitert im Test | Nur Inserts geprüft |
 | 10 | Gates 72, 84, 87, 90, 92 und Dauertests (`RequirementMaturityAccessTest`, `SpreadsheetUploadReaderTest`, `OutboundUserUrlClientTest`, `AdminSettingConsumersTest`, `RegulatoryWorkflowRegistryTest`) | Aliase, Group-Use, Zeilenumbruch nach `new`, `Markup::class`, Konstanten, `sprintf`, `$line = implode(';', …)`, `$s->name`, `> 19`, Alias-Variable eines Risikowerts, privater Job-Helfer, `'/var/'.'jobs/'`, Ternär-Zweig in `trans`-Parametern, `template_from_string()` | Textsuche zeilenweise |
+
+**T4 (Welle 11, Bericht welle10-sweep/9-mutations, zweite Runde mit 99 grünen Mutationen):** Alle Mutationen des
+Berichts sind rot. PHPStan läuft seit B3 in Cloud-Threads, die 35 vorher nur gelesenen Zeilen sind jetzt gelaufen und
+stehen als `// expect:`-Zeilen in den Fixtures (`tests/PHPStan/Rule/Gate/Fixtures/`); die Python-Mutationen stehen in
+`scripts/quality/tests/test_t4_security_gate_mutations.py` und `test_t4_quality_gate_mutations.py`. Weil Regex- und
+Musterregeln jede Schreibweise einzeln einholen, prüfen CSRF, Modul-Gate und Job-Zugriff zusätzlich die echten Routen
+(`tests/Security/RouteSweep/`).
+
+| Zeilen | Test / Gate | Gegenprobe (absichtlich gebrochen → rot) | Vorher übersehen |
+|---|---|---|---|
+| C1–C10 | Gate 65 (`CsrfStateChangingActionRule`) + `CsrfRouteSweepTest` | `#[IsCsrfTokenValid(methods: ['GET'])]` auf POST; eigenes `handleBulkDelete()` statt des Traits; Helfer gibt die Prüfung zurück, Action verwirft sie; Helfer kehrt bei Fehler nur aus sich selbst zurück; `if (valid) { $x = 1; }` mit Schreiben dahinter; `if (!valid) { log } else { return }`; Route auf abstrakter Elternklasse / Trait / Klasse außerhalb `App\Controller`; Klassen-`methods: ['POST']` mit Action ohne `methods`; FormType mit `csrf_protection => false`; GET schreibt über `$em = …->getManager()`, DBAL `executeStatement`, DQL `DELETE`, `save(…, true)`, `LifecycleService::transition()`. Sweep: Lösch-Action ohne Token-Prüfung → POST ohne Token schreibt → rot; Policy-Profil speichert beim Ansehen → GET-Sweep rot | Attribut-`methods` ungelesen, jede `handleBulkDelete`-Methode zählte, Rückgabe eines Helfers galt als Abwehr, Teil-Guard galt als Schutz, Schreiben über Dienste unsichtbar. Funde: NIS-2-Registrierungsprofil und Policy-Profil legten beim Ansehen einen Datensatz an (jetzt erst beim Speichern) |
+| M1–M3 | Modul-Gate (`ModuleGateRule`) + `ModuleAndJobRouteSweepTest` | `render([... isModuleActive()])`; `if (isModuleActive()) { return redirect }` (verkehrt); `if (!isModuleActive() && $x)`. Sweep: `#[RequiresModule('privacy')]` von `DataBreachController` entfernt → Seite bei abgeschaltetem Modul 200 → rot | Jeder Aufruf irgendwo in einer Bedingung oder einem `return` galt als Gate |
+| S1–S5, B24–B26 | Gate 93 (`SsoClaimPolicyRule`, `check_sso_claim_policy.py`) | `isEmailVerified($c);` als bloße Anweisung oder in `if (false)`; `array_merge($id, $ui)` in einem Authenticator; `$_SERVER['HTTP_HOST']`, `headers->get('host')`, `getBaseUrl()`, `generate(…, ABSOLUTE_URL)`; `$linkByEmail = true`; `$id = null; processResponse($id)`; `AZURE_ALLOW_EMAIL_LINKING=true` in `.env.docker`/`.env.minimal`/Compose; Parameter als `%env(...)%`/`!php/const` | Nur fünf Host-Aufrufe, Merge-Regel nur in `App\Service\Sso`, Konfiguration nur in `.env`/`.env.prod.example` |
+| B3, B15–B20 | Gate 94 (`StoredFilePathRule`, ersetzt das Python-Gate) | `sprintf`, `implode`, `Path::join`, Interpolation, Zeilenumbruch, `->{'getLogoPath'}()`, Alias-Variable, `file_get_contents`/`unlink`/`Filesystem::remove`/`new BinaryFileResponse` auf dem gespeicherten Pfad, Marker ohne Grund | Ein-Zeilen-Regex mit fünf festen Gettern; jetzt Getter aus `StoredFilePath::FIELDS`. Fund: `EvidenceDocuments::file()` las ohne `ProtectedUploads` den rohen Dokumentpfad (jetzt null) |
+| B11–B14 | Gate 97 (`TenantPinRestoreRule`, ersetzt das Python-Gate) | `finally` liest den Kontext nur; Zeilenumbruch nach `->`; `call_user_func([$tc, 'setCurrentTenant'])`, `->{'setCurrent'.'Tenant'}()`, `$m = 'setNoOrganisation'`, `[$tc, '…']()`; Pin in einer Pfeilfunktion im `try` | Das Wort `tenantContext` im `finally` galt als Restore |
+| B41 | Gate 85 (`FulfillmentSingleWriterRule`) | `$row->setStatus('compliant')`, `->{'setStatus'}()`, `[$row, 'setFulfillmentPercentage']` auf einer `ComplianceRequirementFulfillment` | Empfänger nur über den Variablennamen erkannt |
+| F1, K1–K3 | Gates 91, 92 (PHP) | `'_security' . '_main'`, `sprintf('%s_%s', '_security', 'main')`; `setSafeClasses()`/`addSafeClass()`; `'Twig\\Markup'` als String; zweites `new Markup` unter einem markierten | Konstante Teile wurden nicht gefaltet, Marker galt drei Zeilen weit |
+| B4–B6 | Gate 90 + `ModuleAndJobRouteSweepTest` | Job-Id aus `$_GET`; `->$f($id)`; `(new JobStatusService())->read($id)`. Sweep: `#[IsGranted(AsyncJobVoter::ACCESS)]` am Status-Endpunkt entfernt → andere Organisation liest den Job → rot | Wrapper-Dienst ohne „Job“ im Namen blieb unsichtbar |
+| B7–B10 | Gate 82 | Workflow in `config/packages/zz.yaml` mit `ROLE_USER`; `setApproverRole('ROLE_USER')` in `src/Service/`; über Klassenkonstante; nicht auflösbare Rolle in `findByRoleInTenant($r)` / `findUsersByRoles` | Nur `config/workflows/**` und `src/Command/` gelesen |
+| B1, B21–B23 | Gates 92 (Twig), 84 | `\|merge({...})` in `trans`-Parametern; `fputcsv(...)` als Callable, `'fputcsv'` als Variable; `@csv-sanitize-exempt:` ohne Grund; `$cell->setValue($s->getName())` | Nur die erste Map; nur direkte Aufrufe |
+| B27–B40 | Gates 62, 71, 73–75, 78–81, 87 | siehe `test_t4_quality_gate_mutations.py` (Risikowert über Variable/`in_array`/Konstante/Cast/Twig-Bereich; Copy in Template-Text und JS; `btn btn-` im `set`; Listen-/Detailseite unter anderem Namen; Zeilenumbruch vor `getManagementKPIs`; Ton über `matches`/if-Kette/anderen Alias; dynamischer Stimulus-Controller; EU-Liste geteilt/als Ländernamen; Sortierrichtung in Variable/String/benanntem Argument) | Dateinamen- und Zeilenmuster |
+| T6 | `TenantlessInsertGuard` | Zeile ohne Organisation außerhalb der Tests → `outsideTheTestEnvironmentTheRowIsRepairedNotJustLogged` | Nur Warnung, Zeile blieb für die eigene Organisation unsichtbar; jetzt repariert (neue Zeile bekommt die Organisation der Anfrage, bestehende behält ihre) und protokolliert |
+
+Die Sweeps selbst: `theSpySeesAWrite` beweist den Flush-Spion; Schreiben jenseits des ORM erkennt der Sweep an den
+SQL-Anweisungen (`doctrine.debug_data_holder`), jede Anfrage läuft in einer zurückgerollten Transaktion. Routen,
+deren Variablen sich nicht füllen lassen, werden gezählt; unter 60 % aufgerufener Routen ist der Sweep rot.
+Bewusste Schreibzugriffe beim Ansehen tragen `// @get-write-ok: <Grund>` an der Action (dieselbe Markierung, die
+Gate 65 liest), abgeleitete Tabellen stehen mit Grund in `CsrfRouteSweepTest::ALLOWED_TABLES`.
 
 Bekannte Restlücken (bewusst nicht erkannt, je Gate): 78 `<h1>` in Partials und die 3 Lieferanten-Templates der
 `ternary-tone`-Baseline; 62 `templates/dev`; 75 ein Marker „no record“ auf einer Datensatzseite ohne Kommentar,
@@ -715,7 +744,7 @@ lokale Aliase in jeden `Job*`-Dienst, verlangt den Guard bei jedem Platzhalter `
 
 ---
 
-### PHPStan-Gate-Regeln (T3: Gates 11, 65, 72, 91, 92, 93)
+### PHPStan-Gate-Regeln (T3: Gates 11, 65, 72, 91, 92, 93; T4: 85, 94, 97)
 
 **Zweck:** Die sicherheitsrelevanten Kernregeln lesen den Code, nicht Zeilen. Der Mutationsabgleich (Bericht
 9-mutations, Welle 9) fand in drei Runden in Folge neue Schreibweisen, an denen die Regex-Gates vorbeisahen:
@@ -725,12 +754,15 @@ CI-Schritt „Run PHPStan“ über `src/`:
 
 | Gate | Regel | Rot bei |
 |---|---|---|
-| 65 | `CsrfStateChangingActionRule` | POST/PUT/PATCH/DELETE-Action ohne entscheidende Token-Prüfung (Attribut, `isCsrfTokenValid()` in einer Bedingung, die die Action beendet oder den Rumpf schützt, behandeltes Formular mit CSRF, `handleBulkDelete`, Helfer eine Ebene tief); GET-Action, die über einen ObjectManager `flush/persist/remove` aufruft; `'x_{id}'` als Token-Id. Marker `// @csrf-exempt: <Grund>`, `// @get-write-ok: <Grund>` |
+| 65 | `CsrfStateChangingActionRule` | POST/PUT/PATCH/DELETE-Action ohne entscheidende Token-Prüfung (Attribut, dessen `methods:` die Verben der Action abdeckt; `isCsrfTokenValid()` in einer Bedingung, deren Fehlerzweig die Action beendet, oder ein positiver Guard, hinter dem nichts mehr schreibt; behandeltes Formular mit CSRF; `handleBulkDelete` aus `BulkActionTrait`; Helfer eine Ebene tief — dort zählt nur ein `throw`, ein zurückgegebenes Ergebnis nur, wenn die Action darüber entscheidet); Verben der Klassenroute gelten für Actions ohne `methods`; GET-Action, die über einen ObjectManager (auch Alias), DBAL, DQL `UPDATE/DELETE`, Repository-`save/remove(…, true)` oder `LifecycleService::transition()` schreibt; `'x_{id}'` als Token-Id; Route außerhalb einer konkreten Klasse in `App\Controller`; FormType mit `csrf_protection => false`. Marker `// @csrf-exempt: <Grund>`, `// @get-write-ok: <Grund>` |
 | 72 | `TenantlessRowRule` | `new <mandantenbezogene Entity>` außerhalb von Entity/Fixtures/Restore ohne `setTenant(<nicht null>)` auf demselben Objekt (auch Fluent-Ketten); „eigene ODER globale Zeilen“-Abfrage (`OR … IS NULL`, `orWhere`, `orX`, `COALESCE`) auf einer Entity ohne `SharedTenantRowsInterface` |
 | 91 | `MfaLoginStateRule` | `setToken(<nicht null>)` (auch als Callable/String), `_security_*`-Sitzungsschlüssel (auch zusammengesetzt) oder `$_SESSION` ohne `begin()` auf einem `MfaSessionState` in derselben Methode; `_security.mfa_*` außerhalb von `MfaSessionState`; `/setup` in `ALLOWED_PREFIXES`. Marker `// @mfa-ok: <Grund>` an der Methode |
 | 92 | `MarkupOutputRule` | `new PhpWord` außerhalb von `DocxDocumentFactory`, `TemplateProcessor`, Escaping aus; `new Markup`, `Markup::class`, `is_safe`/`isSafe` ohne `// @markup-safe: <Grund>` |
 | 93 | `SsoClaimPolicyRule` | Authenticator-Klasse (per Typ gefunden) ohne Eintrag in `CLAIM_CHECKS`/`NON_SSO`; fehlender `SsoClaimPolicy`-Aufruf bzw. Flow-Aufruf; `processResponse()` ohne Request-Id; Host-Header im SSO-Code; Claims per `array_merge`/`array_replace`/`+`/Spread in `src/Service/Sso`; `$allowEmailLinking` standardmäßig an |
-| 11 | `ModuleGateRule` | regulatorisches Formularfeld ohne passendes `isModuleActive()`-If (auch über private Helfer); Framework-Route ohne `#[RequiresModule]` oder entscheidendes `checkModuleActive()`. Marker `// @no-module-gate-required: <Grund>` |
+| 11 | `ModuleGateRule` | regulatorisches Formularfeld ohne passendes `isModuleActive()`-If (auch über private Helfer); Framework-Route ohne `#[RequiresModule]` oder entscheidendes `checkModuleActive()` — seit T4 zählt eine Prüfung nur, wenn ihr Fehlerzweig die Action beendet, sobald das Modul aus ist (`!isModuleActive()`, `=== false`, `checkModuleActive()`, `!a \|\| !b`, `else`-Zweig, Ternär, `?? Seite`). Marker `// @no-module-gate-required: <Grund>` |
+| 94 | `StoredFilePathRule` | Getter/Property einer Spalte aus `StoredFilePath::FIELDS` (auch über Alias-Variablen) in Verkettung, Interpolation, `sprintf`/`implode`, `Path::*`, Dateifunktion, `Filesystem`-Aufruf oder `new File`/`BinaryFileResponse` außerhalb von `StoredFilePath`/`ProtectedUploads`; `'/public/' . $var`. Marker `// @stored-path-ok: <Grund>` auf der Zeile oder direkt darüber |
+| 97 | `TenantPinRestoreRule` | `setCurrentTenant*()`/`setNoOrganisation()` — auch als String, dynamischer Name oder nach Zeilenumbruch — außerhalb eines `try`, dessen `finally` wirklich zurücksetzt (Aufruf auf einem Empfänger namens `*tenant*` oder `$restore…()`); Pfeilfunktion/Closure zählt als eigene Funktion. Marker `// @tenant-pin-ok: <Grund>` |
+| 85 | `FulfillmentSingleWriterRule` | `setFulfillmentPercentage/setStatus/setDerivation/markOverride/clearOverride` auf einem per Typ erkannten `ComplianceRequirementFulfillment` außerhalb von `App\Service\Compliance\Fulfillment` (auch per String/Callable). Marker `// @fulfillment-writer-ok: <Grund>` |
 
 Marker gelten nur als Kommentar mit Grund dahinter, Namen in Kommentaren oder Docblocks nie als Schutz.
 Bekannte Ausnahmen stehen in `phpstan-gates-baseline.neon` (je Eintrag `reportUnmatched: true`: ein behobener
@@ -743,15 +775,18 @@ vendor/bin/phpstan analyse --configuration phpstan.dist.neon      # wie CI
 vendor/bin/phpunit tests/PHPStan/Rule/Gate                          # Mutationstabellen der Regeln
 ```
 
-**CI-Integration:** Schritt „Run PHPStan (incl. gate rules 11, 65, 72, 91, 92, 93)“ im `code-quality`-Job.
+**CI-Integration:** Schritt „Run PHPStan (incl. gate rules 11, 65, 72, 85, 91, 92, 93, 94, 97)“ im `code-quality`-Job.
+Die Router-Sweeps (`tests/Security/RouteSweep/`) laufen mit PHPUnit.
 
 ---
 
 ### quality/check_sso_claim_policy.py (Gate 93, Konfigurationsteil)
 
 **Zweck:** E-Mail-Verknüpfung der env-Azure-Anmeldung bleibt standardmäßig aus: rot bei
-`app.azure_allow_email_linking_default` oder `AZURE_ALLOW_EMAIL_LINKING` mit einem wahren Wert (true/1/yes/on, jede
-Schreibweise, mit oder ohne Anführungszeichen) in `config/services.yaml`, `.env`, `.env.prod.example`. Den Code-Teil
+`AZURE_ALLOW_EMAIL_LINKING` mit einem wahren Wert (true/1/yes/on, jede Schreibweise, mit oder ohne Anführungszeichen)
+in jeder `.env*`-Datei im Projektwurzelverzeichnis (außer `*.local`) und in `docker-compose*`/`compose*`-Dateien (Wurzel
+und `docker/`, Listen- und Map-Form, `${…:-true}`), und wenn `app.azure_allow_email_linking_default` in
+`config/services.yaml` nicht das Literal `false` ist (`%env(...)%`, `!php/const` → rot; T4). Den Code-Teil
 prüft seit T3 die PHPStan-Regel `SsoClaimPolicyRule`; die Authenticatoren aller Firewalls aller Umgebungen prüft
 `tests/Security/Sso/SsoClaimContractTest` auf der aufgelösten Konfiguration (`tests/Support/ResolvedSecurityConfig`).
 Selbsttest: `scripts/quality/tests/test_check_sso_claim_policy.py`.
@@ -760,32 +795,11 @@ Selbsttest: `scripts/quality/tests/test_check_sso_claim_policy.py`.
 
 ---
 
-### quality/check_stored_file_paths.py (Gate 94)
+### Gates 94 und 97 (seit T4 PHPStan-Regeln)
 
-**Zweck:** Ein gespeicherter Dateipfad (Logo, Avatar, Audit-Freeze-PDF, Dokumentpfad) wird nie von Hand an
-ein Verzeichnis gehängt (S19, 2026-11). Rot bei einer Verkettung von `getLogoPath()`, `getProfilePicture()`,
-`getPdfPath()`, `getFilePath()`, `getStoredFilename()` oder gleichnamigen Variablen mit einem String und bei
-`'/public/' . $x` außer `$this->uploadsDirectory`, außerhalb von `StoredFilePath`/`ProtectedUploads`.
-Ausnahme mit `// @stored-path-ok: <Grund>` auf der Zeile. Verhalten (jede pfadartige Doctrine-Spalte
-registriert, Traversal je Spalte abgewiesen, Restore übernimmt solche Werte nicht):
-`tests/Security/StoredFilePathContractTest`.
-
-**CI-Integration:** Gate 94 im `code-quality`-Job.
-
----
-
-### quality/check_tenant_pin_restore.py (Gate 97)
-
-**Zweck:** Eine in `TenantContext` gepinnte Organisation wird zurückgesetzt (S23, 2026-11). Der
-Messenger-Worker führt geplante Befehle und Jobs in einem Container aus; ein Pin ohne Restore scopte den
-nächsten Befehl (Instanz-Backup mit einer Organisation, Erinnerungen der anderen fehlten). Rot bei jedem
-`->setCurrentTenant(`/`->setCurrentTenantById(`/`->setNoOrganisation(` in `src/`, der weder in einem
-`try` derselben Funktion steht, dessen `finally` den Kontext zurücksetzt, noch selbst dieser Restore ist,
-noch `// @tenant-pin-ok: <Grund>` trägt. Weg der Wahl: `TenantContext::runAs()` /
-`runWithoutOrganisation()`. Keine Baseline. Selbsttest `scripts/quality/tests/test_check_tenant_pin_restore.py`;
-das Verhalten pinnt `tests/Scheduler/ScheduledCommandsTenantIsolationTest`.
-
-**CI-Integration:** Gate 97 im `code-quality`-Job.
+`check_stored_file_paths.py` (Gate 94) und `check_tenant_pin_restore.py` (Gate 97) sind seit T4 die PHPStan-Regeln
+`StoredFilePathRule` und `TenantPinRestoreRule` (Abschnitt „PHPStan-Gate-Regeln“). Verhalten pinnen weiter
+`tests/Security/StoredFilePathContractTest` und `tests/Scheduler/ScheduledCommandsTenantIsolationTest`.
 
 ---
 

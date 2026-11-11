@@ -57,3 +57,14 @@ templates/security/index.html.twig # security report hub, nav and score cards
 templates/setup/index.html.twig # deployment setup wizard landing
 templates/share/index.html.twig # single share-target action page
 templates/workflow/index.html.twig # overview hub, latest-10 teaser, link cards
+# T4 (content scan: top-level page with a table over a loop, named other than index/list)
+templates/admin/data_repair/orphans.html.twig # repair tool: findings grouped by kind with a fix action per group, no filterable record list
+templates/compliance/certificate/preview.html.twig # preview of one certificate before issuing
+templates/dashboards/board.html.twig # board dashboard: KPI and top-N tables, not a record list
+templates/dashboards/risk_manager.html.twig # persona dashboard: top-N tables beside KPIs
+templates/data_management/backup.html.twig # backup admin page: create/restore actions with a short backup table
+templates/policy_profile/register.html.twig # read-only register of one policy profile's parameters (fixed rows, no filter/paging)
+templates/policy_wizard/konzern_defaults.html.twig # settings form with the current parent-level values in a table
+templates/report_builder/preview.html.twig # preview of one report definition
+templates/tisax/import/assess.html.twig # import wizard step (assessment of uploaded rows)
+templates/tisax/import/commit.html.twig # import wizard step (result of the commit)

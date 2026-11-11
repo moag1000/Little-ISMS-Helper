@@ -20,6 +20,9 @@ use PHPStan\Rules\RuleErrorBuilder;
  *       `// @markup-safe: <reason>` comment on the line or directly above it that says how record text is
  *       escaped first. Class names are resolved (aliases, group use, line breaks), and `Markup::class` as a value
  *       (`$c = Markup::class; new $c(...)`) is refused outright.
+ *   T4: the marker counts only on the line itself or in the comment block directly above it (a marked
+ *       `new Markup` no longer covers a second one two lines below), `'Twig\Markup'` as a string is refused like
+ *       `Markup::class`, and escaper safe classes (`setSafeClasses()`, `addSafeClass()`) need the marker.
  *
  * @implements Rule<InClassNode>
  */
@@ -73,16 +76,27 @@ final class MarkupOutputRule implements Rule
             if ($class === self::MARKUP_FILTERS) {
                 continue;
             }
-            if ($n instanceof Expr\New_ && $name === self::MARKUP && !GateAst::markerNear($file, '@markup-safe', $n)) {
+            if ($n instanceof Expr\New_ && $name === self::MARKUP && !GateAst::markerAbove($file, '@markup-safe', $n->getStartLine())) {
                 $error('markup', $n, '`new Markup()` — record text would print as HTML; escape it first and say how '
                     . 'in a `// @markup-safe: <reason>` comment on this or the previous line.');
             }
             if ($n instanceof Expr\ClassConstFetch && $name === self::MARKUP && $n->name instanceof Node\Identifier
-                && $n->name->toLowerString() === 'class' && !GateAst::markerNear($file, '@markup-safe', $n)) {
+                && $n->name->toLowerString() === 'class' && !GateAst::markerAbove($file, '@markup-safe', $n->getStartLine())) {
                 $error('markupClass', $n, '`Markup::class` as a value builds Markup out of sight of this gate — '
                     . 'use `new Markup()` with a `// @markup-safe: <reason>` comment.');
             }
-            if ($this->isSafeOption($n) && !GateAst::markerNear($file, '@markup-safe', $n)) {
+            if ($n instanceof Node\Scalar\String_ && strcasecmp(ltrim($n->value, '\\'), self::MARKUP) === 0
+                && !GateAst::markerAbove($file, '@markup-safe', $n->getStartLine())) {
+                // T4 K2: `$c = 'Twig\Markup'; new $c($x)` — the class by its name as a string.
+                $error('markupClass', $n, 'Twig\\Markup named as a string builds Markup out of sight of this gate.');
+            }
+            if (GateAst::isMethodCall($n, 'setSafeClasses', 'addSafeClass')
+                && !GateAst::markerAbove($file, '@markup-safe', $n->getStartLine())) {
+                // T4 K1: a class declared safe for the escaper prints its __toString() unescaped everywhere.
+                $error('safeClass', $n, 'escaper safe class (setSafeClasses()/addSafeClass()) — its string form is '
+                    . 'printed unescaped; add `// @markup-safe: <reason>`.');
+            }
+            if ($this->isSafeOption($n) && !GateAst::markerAbove($file, '@markup-safe', $n->getStartLine())) {
                 $error('isSafe', $n, 'Twig callable marked is_safe — its output is printed unescaped; add '
                     . '`// @markup-safe: <reason>` once it escapes record text itself.');
             }

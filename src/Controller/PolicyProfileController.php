@@ -117,11 +117,7 @@ class PolicyProfileController extends AbstractController
         $tenantId = $this->tenantContext->getCurrentTenantId();
         $profile = $tenantId !== null ? $this->repository->findForTenant($tenantId) : null;
 
-        if ($profile === null) {
-            $profile = (new OrganizationSecurityProfile())->setTenantId($tenantId);
-            $this->repository->save($profile);
-        }
-
-        return $profile;
+        // T4: a new profile stays unsaved until a POST action saves it — the page view writes nothing.
+        return $profile ?? (new OrganizationSecurityProfile())->setTenantId($tenantId);
     }
 }

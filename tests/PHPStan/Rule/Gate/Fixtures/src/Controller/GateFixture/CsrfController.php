@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\GateFixture;
 
+use App\Controller\Trait\BulkActionTrait;
+use App\Lifecycle\LifecycleService;
+use App\Service\BulkDeleteService;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
@@ -20,7 +24,128 @@ final class CsrfController extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly ManagerRegistry $doctrine,
         private readonly LoggerInterface $logger,
+        private readonly Connection $connection,
+        private readonly LifecycleService $lifecycle,
     ) {
+    }
+
+    /** T4 C1: the attribute checks only GET, the POST goes through. */
+    #[Route('/x/attr-get', methods: ['POST'])]
+    #[IsCsrfTokenValid('x', methods: ['GET'])]
+    public function attributeOnlyForGet(): Response // expect: gate65.attributeMethods
+    {
+        $this->em->flush();
+
+        return new Response();
+    }
+
+    #[Route('/x/attr-post', methods: ['POST', 'DELETE'])]
+    #[IsCsrfTokenValid('x', methods: ['POST', 'DELETE'])]
+    public function attributeListsTheVerbs(): Response
+    {
+        $this->em->flush();
+
+        return new Response();
+    }
+
+    /** T4 C3: the helper returns the check, the action drops the result. */
+    #[Route('/x/helper-ignored', methods: ['POST'])]
+    public function helperResultIgnored(Request $request): Response // expect: gate65.csrf
+    {
+        $this->tokenOk($request);
+        $this->em->flush();
+
+        return new Response();
+    }
+
+    #[Route('/x/helper-used', methods: ['POST'])]
+    public function helperResultUsed(Request $request): Response
+    {
+        if (!$this->tokenOk($request)) {
+            throw $this->createAccessDeniedException();
+        }
+        $this->em->flush();
+
+        return new Response();
+    }
+
+    /** T4 C3: a helper whose failure branch only returns from itself. */
+    #[Route('/x/helper-returns', methods: ['POST'])]
+    public function helperOnlyReturns(Request $request): Response // expect: gate65.csrf
+    {
+        $this->softGuard($request);
+        $this->em->flush();
+
+        return new Response();
+    }
+
+    /** T4 C4: the positive guard holds nothing, the write sits after it. */
+    #[Route('/x/partial-guard', methods: ['POST'])]
+    public function partialGuard(Request $request): Response // expect: gate65.csrf
+    {
+        $done = false;
+        if ($this->isCsrfTokenValid('x', (string) $request->request->get('_token'))) {
+            $done = true;
+        }
+        $this->em->flush();
+
+        return new Response($done ? 'y' : 'n');
+    }
+
+    /** T4 C5: the failure branch logs, the `else` returns. */
+    #[Route('/x/else-returns', methods: ['POST'])]
+    public function elseReturns(Request $request): Response // expect: gate65.csrf
+    {
+        if (!$this->isCsrfTokenValid('x', (string) $request->request->get('_token'))) {
+            $this->logger->info('bad token');
+        } else {
+            return new Response('early');
+        }
+        $this->em->flush();
+
+        return new Response();
+    }
+
+    /** T4 C9: GET writes through a local alias, DBAL, DQL and the lifecycle. */
+    #[Route('/x/get-alias', methods: ['GET'])]
+    public function getWritesThroughAlias(): Response
+    {
+        $em = $this->doctrine->getManager();
+        $em->flush(); // expect: gate65.getWrites
+
+        return new Response();
+    }
+
+    #[Route('/x/get-dbal', methods: ['GET'])]
+    public function getWritesThroughDbal(): Response
+    {
+        $this->connection->executeStatement('DELETE FROM asset'); // expect: gate65.getWrites
+
+        return new Response();
+    }
+
+    #[Route('/x/get-dql', methods: ['GET'])]
+    public function getWritesThroughDql(): Response
+    {
+        $this->em->createQuery('DELETE FROM App\Entity\Asset a')->execute(); // expect: gate65.getWrites
+
+        return new Response();
+    }
+
+    #[Route('/x/get-select', methods: ['GET'])]
+    public function getReadsThroughDql(): Response
+    {
+        $this->em->createQuery('SELECT a FROM App\Entity\Asset a')->getResult();
+
+        return new Response();
+    }
+
+    #[Route('/x/get-lifecycle', methods: ['GET'])]
+    public function getTransitions(): Response
+    {
+        $this->lifecycle->transition(new \stdClass(), 'asset_lifecycle', 'retire'); // expect: gate65.getWrites
+
+        return new Response();
     }
 
     #[Route('/x/plain', methods: ['POST'])]
@@ -195,8 +320,9 @@ final class CsrfController extends AbstractController
         return new Response();
     }
 
+    /** T4 C2: a look-alike handleBulkDelete() of the class itself checks no token. */
     #[Route('/x/bulk', methods: ['POST'])]
-    public function bulk(Request $request): Response
+    public function bulk(Request $request): Response // expect: gate65.csrf
     {
         return $this->handleBulkDelete($request);
     }
@@ -270,8 +396,61 @@ final class CsrfController extends AbstractController
         }
     }
 
+    private function tokenOk(Request $request): bool
+    {
+        return $this->isCsrfTokenValid('x', (string) $request->request->get('_token'));
+    }
+
+    private function softGuard(Request $request): ?Response
+    {
+        if (!$this->isCsrfTokenValid('x', (string) $request->request->get('_token'))) {
+            return new Response('', 403);
+        }
+
+        return null;
+    }
+
     private function handleBulkDelete(Request $request): Response
     {
         return new Response((string) $request->getMethod());
+    }
+}
+
+/** T4 C2 control: BulkActionTrait's handleBulkDelete() checks the shared bulk token. */
+final class BulkCsrfController extends AbstractController
+{
+    use BulkActionTrait;
+
+    #[Route('/x/trait-bulk', methods: ['POST'])]
+    public function bulk(Request $request, BulkDeleteService $service): Response
+    {
+        return $this->handleBulkDelete($request, $service, 'asset', null, static fn (int $id): ?object => null);
+    }
+}
+
+/** T4 C7: the verbs come from the class route, the action route names none. */
+#[Route('/c', methods: ['POST'])]
+final class ClassVerbController extends AbstractController
+{
+    public function __construct(private readonly EntityManagerInterface $em)
+    {
+    }
+
+    #[Route('/x', name: 'c_x')]
+    public function write(): Response // expect: gate65.csrf
+    {
+        $this->em->flush();
+
+        return new Response();
+    }
+}
+
+/** T4 C6: a route on an abstract parent is served for every child and was checked by nobody. */
+abstract class AbstractRouteController extends AbstractController
+{
+    #[Route('/abstract/delete', methods: ['POST'])] // expect: gate65.routeOutsideController
+    public function delete(): Response
+    {
+        return new Response();
     }
 }

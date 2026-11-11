@@ -26,7 +26,13 @@ ALLOWED = {"src/Service/Kpi/KpiCatalog.php"}
 # first-class callable, callable array / Closure::fromCallable (`'getManagementKPIs'` as a string), Twig
 # `svc.getManagementKPIs()` or `attribute(svc, 'getManagementKPIs')`. PHP method names are case-insensitive.
 # Only `$this->…` (a class calling its own method) is allowed, judged per match, not per line.
-CALL = re.compile(r"(?<!\$this)(?:->|\.)\s*getManagementKPIs\b|['\"]getManagementKPIs['\"]", re.I)
+# T4: matched on the whole file text — a break or comment between `->` / `?->` and the name (`$x\n  ->\n  getManagementKPIs()`)
+# is the same call.
+GAP = r"(?:\s|/\*.*?\*/|(?://|\#)[^\n]*\n)*"
+CALL = re.compile(
+    r"(?P<this>\$this\s*)?(?P<arrow>\?->|->|\.)" + GAP + r"getManagementKPIs\b|['\"]getManagementKPIs['\"]",
+    re.I | re.S,
+)
 
 
 def main() -> int:
@@ -37,9 +43,13 @@ def main() -> int:
         rel = path.relative_to(ROOT).as_posix()
         if rel in ALLOWED:
             continue
-        for no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-            if CALL.search(line):
-                hits.append(f"FAIL {rel}:{no}: {line.strip()}")
+        text = path.read_text(encoding="utf-8")
+        lines = text.splitlines()
+        for m in CALL.finditer(text):
+            if m.group("this") is not None and m.group("arrow") == "->":
+                continue  # `$this->getManagementKPIs()`: a class calling its own method
+            no = text.count("\n", 0, m.end()) + 1
+            hits.append(f"FAIL {rel}:{no}: {lines[no - 1].strip()}")
     if hits:
         print("check_kpi_catalog: VIOLATIONS\n")
         print("\n".join(hits))

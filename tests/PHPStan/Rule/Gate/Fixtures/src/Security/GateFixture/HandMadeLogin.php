@@ -68,6 +68,9 @@ final class HandMadeLogin
         $session->set(sprintf('_security_%s', $fw), serialize($token)); // expect: gate91.handMadeLogin
         $session->set(self::KEY, serialize($token));
         $session->replace(['_security_main' => serialize($token)]); // expect: gate91.handMadeLogin
+        $session->set('_security' . '_main', serialize($token)); // expect: gate91.handMadeLogin
+        $session->set(sprintf('%s_%s', '_security', 'main'), serialize($token)); // expect: gate91.handMadeLogin
+        $session->set('_secure' . '_main', serialize($token));
     }
 
     public function superGlobal(TokenInterface $token): void

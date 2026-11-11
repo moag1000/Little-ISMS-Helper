@@ -333,9 +333,10 @@ jobs:
         run: vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no --config=.php-cs-fixer.dist.php
 
       # PHPStan carries the security core of the CI gates as AST rules since T3 (2026-11): Gate 65 CSRF,
-      # 72 tenant-less rows, 91 MFA state, 92 Markup/PhpWord, 93 SSO claim policy, 11 module gate
+      # 72 tenant-less rows, 91 MFA state, 92 Markup/PhpWord, 93 SSO claim policy, 11 module gate; T4 added
+      # 85 fulfilment writer, 94 stored file paths, 97 tenant pins
       # (tests/PHPStan/Rule/Gate/, exceptions in phpstan-gates-baseline.neon). It must never be skipped.
-      - name: Run PHPStan (incl. gate rules 11, 65, 72, 91, 92, 93)
+      - name: Run PHPStan (incl. gate rules 11, 65, 72, 85, 91, 92, 93, 94, 97)
         run: vendor/bin/phpstan analyse --configuration phpstan.dist.neon --no-progress
 
       # FairyAurora v3.0 — A11y-Kontrast-Gate (WCAG 2.2 AA)
@@ -807,14 +808,9 @@ jobs:
         # The code part (every authenticator calls SsoClaimPolicy, processResponse with request id, no
         # Host header, no hand-merged claims) is the PHPStan rule SsoClaimPolicyRule since T3.
         run: python3 scripts/quality/check_sso_claim_policy.py --quiet
-      - name: "Gate 94: stored file paths only through StoredFilePath / ProtectedUploads"
-        # S19, 2026-11: a restored '../../.env.local' (audit-freeze PDF) was read, a restored
-        # '../var/setup_complete.lock' (logo) deleted and setup reopened, any file zipped into backups.
-        run: python3 scripts/quality/check_stored_file_paths.py --quiet
-      - name: "Gate 97: an organisation pinned in TenantContext is put back (runAs / try-finally)"
-        # S23, 2026-11: the worker runs scheduled commands and jobs in one container; a report or KPI
-        # snapshot left its organisation pinned and the nightly instance backup held only that one.
-        run: python3 scripts/quality/check_tenant_pin_restore.py --quiet
+      # Gate 94 (stored file paths only through StoredFilePath / ProtectedUploads): PHPStan rule StoredFilePathRule
+      # since T4 (getters from StoredFilePath::FIELDS, aliases, sprintf/Path::join/file functions).
+      # Gate 97 (an organisation pinned in TenantContext is put back): PHPStan rule TenantPinRestoreRule since T4.
       - name: "Gate 101: no unbounded loads on the request path (findAll / tenant findBy / list paged in PHP)"
         # S31, 2026-11: My Day, exports, report builder and lists loaded whole tables per request; a few
         # parallel calls of a large organisation took every PHP worker. Ratchet: counts per file only shrink.

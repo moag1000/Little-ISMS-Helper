@@ -204,6 +204,7 @@ class RiskTreatmentPlanApprovalService
 
         // Send to all users with assigned role
         if ($assignedRole) {
+            // @role-lookup-ok: the role is the step row's approver_role, written only from the YAML that Gate 82 checks
             $roleUsers = $this->userRepository->findByRoleInTenant($assignedRole, $riskTreatmentPlan->getTenant());
             foreach ($roleUsers as $roleUser) {
                 $this->sendNotificationToUser($riskTreatmentPlan, $roleUser, $approvalLevel);

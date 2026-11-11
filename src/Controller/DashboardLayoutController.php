@@ -33,6 +33,7 @@ class DashboardLayoutController extends AbstractController
     /**
      * Get current user's dashboard layout configuration
      */
+    // @get-write-ok: creates the person's own default layout row once, nothing a link could abuse
     #[Route('/dashboard-layout/config', name: 'app_dashboard_layout_get', methods: ['GET'])]
     public function getLayout(): JsonResponse
     {

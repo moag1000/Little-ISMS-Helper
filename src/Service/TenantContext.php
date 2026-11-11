@@ -26,7 +26,7 @@ use Symfony\Contracts\Service\ResetInterface;
  * every message and command, so no organisation sticks to the next one.
  * Code that scopes work to one organisation uses {@see runAs()} /
  * {@see runWithoutOrganisation()}, which put the previous state back —
- * Gate 97 (`check_tenant_pin_restore.py`) rejects a bare pin.
+ * Gate 97 (PHPStan rule `TenantPinRestoreRule`) rejects a bare pin.
  */
 class TenantContext implements ResetInterface
 {

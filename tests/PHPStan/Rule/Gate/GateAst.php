@@ -220,8 +220,28 @@ final class GateAst
         }
         if ($expr instanceof Expr\FuncCall && self::callName($expr) === 'sprintf') {
             $format = self::arg($expr, 0);
+            if ($format === null) {
+                return null;
+            }
+            $text = self::template($format, $scope);
+            // All arguments constant: fold the call (`sprintf('%s_%s', '_security', 'main')`).
+            $values = [];
+            foreach (array_slice($expr->getArgs(), 1) as $arg) {
+                $value = $arg->unpack ? null : self::template($arg->value, $scope);
+                if ($value === null || str_contains($value, '%s')) {
+                    return $text;
+                }
+                $values[] = $value;
+            }
+            if ($text !== null && $values !== []) {
+                try {
+                    return vsprintf($text, $values);
+                } catch (\ValueError) {
+                    return $text;
+                }
+            }
 
-            return $format === null ? null : self::template($format, $scope);
+            return $text;
         }
         $strings = self::strings($expr, $scope);
 
@@ -259,8 +279,16 @@ final class GateAst
 
             return $names;
         }
-        if ($expr instanceof Expr\StaticCall && $expr->class instanceof Node\Name) {
-            return [];
+        if (self::isMethodCall($expr, 'getManager', 'getEntityManager', 'getManagerForClass')) {
+            // `$em = $this->doctrine->getManager();` (T4 C9: a local alias of the registry's manager)
+            return ['Doctrine\Persistence\ObjectManager'];
+        }
+        if (self::isMethodCall($expr, 'getConnection')) {
+            return ['Doctrine\DBAL\Connection'];
+        }
+        if ($expr instanceof Expr\MethodCall || $expr instanceof Expr\StaticCall || $expr instanceof Expr\FuncCall) {
+            // A call typed by PHPStan (`$this->registry->getRepository(X::class)`, factories): its return type.
+            return $scope->getType($expr)->getReferencedClasses();
         }
 
         return [];

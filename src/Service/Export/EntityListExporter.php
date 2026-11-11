@@ -313,7 +313,7 @@ final class EntityListExporter
         foreach ($headers as $header) {
             $sheet->setCellValue($col . '1', $header);
             $sheet->getColumnDimension($col)->setAutoSize(true);
-            $col++;
+            $col = str_increment($col);
         }
 
         // Data rows
@@ -322,7 +322,7 @@ final class EntityListExporter
             foreach ($row as $value) {
                 $text = is_array($value) ? implode(', ', array_map(self::scalar(...), $value)) : self::scalar($value);
                 $sheet->setCellValue($col . ($rowIndex + 2), CsvSanitizer::sanitize($text));
-                $col++;
+                $col = str_increment($col);
             }
         }
 

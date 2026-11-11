@@ -1,2 +1,8 @@
 # Gate 79 — Stimulus references that do not resolve (check_stimulus_wiring.py).
 # Only runtime-built names belong here: `kind  location  detail  # reason`.
+dynamic-controller templates/_components/_fa_action_bar.html.twig # macro option props.controller; callers pass a literal controller name
+dynamic-controller templates/_components/_fa_form_layout.html.twig # macro option `controller`; callers pass a literal controller name
+dynamic-controller templates/_components/_fa_modal_wizard.html.twig # macro option `controller`; callers pass a literal controller name
+dynamic-controller templates/_components/_fa_table.html.twig # list of controller names assembled in the macro from literal tokens (_ctrls)
+dynamic-controller templates/_components/_fa_tabs.html.twig # macro option `controller`; callers pass a literal controller name
+dynamic-controller templates/_components/_slider.html.twig # macro option `controller`; callers pass a literal controller name

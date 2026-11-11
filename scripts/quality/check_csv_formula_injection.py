@@ -55,6 +55,14 @@ FIRST_ARG = ("fromArray", "insertOne", "insertAll", "setValue")
 # the bulk-export trait and ExcelExportService's own formula guard. A `sanitizeHtml()` look-alike does not count.
 SANITIZED = re.compile(r"\bCsvSanitizer\b|\bcsvCell\b|\bstreamCsvExport\(|\bsanitizeFormulaInjection\(")
 EXEMPT = "@csv-sanitize-exempt:"
+# A marker counts only with a reason after the colon (T4: a bare marker silenced a site without saying why).
+EXEMPT_VALID = re.compile(r"@csv-sanitize-exempt:[ \t]*[^\s*/]")
+# Sinks the call regex cannot see: `$cb = fputcsv(...)` (first-class callable) and `$f = 'fputcsv'` (variable function,
+# `array_map('fputcsv', …)`). The cell values never meet a call site, so the site itself is the finding.
+INDIRECT_SINK = re.compile(r"\bfputcsv\s*\(\s*\.\.\.\s*\)|['\"]\\?fputcsv['\"]")
+# `$w = $sheet->getCell('A1'); $w->setValue(…)`: any ->setValue( in a file that works with PhpSpreadsheet.
+SPREADSHEET_FILE = re.compile(r"PhpOffice\\PhpSpreadsheet")
+SET_VALUE = re.compile(r"->\s*setValue(?:Explicit)?\(")
 # Getters that cannot return free text.
 SAFE_CALL = re.compile(
     r"^(getId|format|count|trans|round|is[A-Z]\w*|has[A-Z]\w*|getHas[A-Z]\w*|getIs[A-Z]\w*|"
@@ -234,7 +242,7 @@ def value_problem(code: str, function: str, top: bool) -> str | None:
     for name in PROPERTY.findall(code):  # `$row->name` on a DTO / public property is the same as the getter
         if not safe_property(name):
             return f"->{name} (property) reaches the cell unsanitised"
-    if BARE_VARIABLE.fullmatch(code) and EXEMPT not in function:
+    if BARE_VARIABLE.fullmatch(code) and not EXEMPT_VALID.search(function):
         if top and not SANITIZED.search(function):
             return f"{code} is written in a function that never sanitises"
         # The function sanitises something, but maybe not this row: look at how the variable was filled.
@@ -323,36 +331,59 @@ def site_problem(text: str, match: re.Match[str]) -> str | None:
 
 
 def code_with_markers(raw: str) -> str:
-    """The file without comments, but with every `@csv-sanitize-exempt:` marker kept where it stood."""
+    """The file without comments, but with every `@csv-sanitize-exempt: <reason>` marker kept where it stood."""
     code = list(strip_comments(raw))
-    for m in re.finditer(re.escape(EXEMPT), raw):
-        code[m.start():m.end()] = list(EXEMPT)
+    for m in EXEMPT_VALID.finditer(raw):
+        code[m.start():m.end()] = list(m.group(0))
     return "".join(code)
+
+
+def exempt_at(lines: list[str], line: int) -> bool:
+    return bool(EXEMPT_VALID.search(lines[line - 1]) or (line > 1 and EXEMPT_VALID.search(lines[line - 2])))
+
+
+def check_file(rel: str, raw: str) -> tuple[list[str], int]:
+    """(failures, write sites) of one PHP file."""
+    failures: list[str] = []
+    sites = 0
+    lines = raw.split("\n")
+    text = code_with_markers(raw)
+    matches = list(CALL.finditer(text))
+    if SPREADSHEET_FILE.search(text):
+        known = {m.end() for m in matches}  # same `(` = same call
+        matches += [m for m in SET_VALUE.finditer(text) if m.end() not in known]
+    for match in matches:
+        sites += 1
+        line = text.count("\n", 0, match.start()) + 1
+        if exempt_at(lines, line):
+            continue
+        problem = site_problem(text, match)
+        if problem:
+            failures.append(f"{rel}:{line}: {problem}")
+    for match in INDIRECT_SINK.finditer(text):
+        sites += 1
+        line = text.count("\n", 0, match.start()) + 1
+        if not exempt_at(lines, line):
+            failures.append(f"{rel}:{line}: fputcsv used as a callable / by name — cell values are not traced; "
+                            "call it directly with CsvSanitizer::sanitize() on record text")
+    for match in FWRITE.finditer(text):
+        line = text.count("\n", 0, match.start()) + 1
+        if exempt_at(lines, line):
+            continue
+        problem = fwrite_problem(text, match)
+        if problem:
+            sites += 1
+            failures.append(f"{rel}:{line}: {problem}")
+    return failures, sites
 
 
 def main() -> int:
     failures: list[str] = []
     sites = 0
     for path in sorted(SRC.rglob("*.php")):
-        raw = path.read_text(encoding="utf-8", errors="replace")
-        lines = raw.split("\n")
-        text = code_with_markers(raw)
-        for match in CALL.finditer(text):
-            sites += 1
-            line = text.count("\n", 0, match.start()) + 1
-            if EXEMPT in lines[line - 1] or (line > 1 and EXEMPT in lines[line - 2]):
-                continue
-            problem = site_problem(text, match)
-            if problem:
-                failures.append(f"{path.relative_to(ROOT)}:{line}: {problem}")
-        for match in FWRITE.finditer(text):
-            line = text.count("\n", 0, match.start()) + 1
-            if EXEMPT in lines[line - 1] or (line > 1 and EXEMPT in lines[line - 2]):
-                continue
-            problem = fwrite_problem(text, match)
-            if problem:
-                sites += 1
-                failures.append(f"{path.relative_to(ROOT)}:{line}: {problem}")
+        found, count = check_file(str(path.relative_to(ROOT)), path.read_text(encoding="utf-8", errors="replace"))
+        failures.extend(found)
+        sites += count
 
     if failures:
         for failure in failures:
