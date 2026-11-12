@@ -45,8 +45,12 @@ final class ScheduledReportModuleContractTest extends KernelTestCase
     /** @return iterable<string, array{string, string}> */
     public static function typesWithModule(): iterable
     {
+        // Required modules (S35: risks, assets, audits) cannot be switched off, so no report of them is ever skipped.
+        $required = ['risks', 'assets', 'audits'];
         foreach (ScheduledReport::TYPE_MODULES as $type => $module) {
-            yield $type => [$type, $module];
+            if (!in_array($module, $required, true)) {
+                yield $type => [$type, $module];
+            }
         }
     }
 
@@ -79,7 +83,7 @@ final class ScheduledReportModuleContractTest extends KernelTestCase
     {
         $modules = array_keys(self::getContainer()->get(ModuleConfigurationService::class)->getAllModules());
         $failing = $this->report($this->tenant($modules), ScheduledReport::TYPE_EXECUTIVE, ['ghost@example.test']);
-        $skipped = $this->report($this->tenant([]), ScheduledReport::TYPE_RISK, ['ghost@example.test']);
+        $skipped = $this->report($this->tenant([]), ScheduledReport::TYPE_GDPR, ['ghost@example.test']);
         $this->em->flush();
 
         $results = self::getContainer()->get(ScheduledReportRunner::class)->processDueReports();
