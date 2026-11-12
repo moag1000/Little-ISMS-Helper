@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\WriteRule;
 
 use App\Attribute\CreateOnly;
+use App\Attribute\FrozenInEndState;
 use App\Attribute\ManagerOrResponsibleField;
 
 /**
@@ -57,5 +58,26 @@ final class WriteRules
     public static function createOnlyFields(string $class): array
     {
         return array_keys(array_filter(self::of($class), static fn (string $rule): bool => $rule === self::CREATE_ONLY));
+    }
+
+    /**
+     * S34 (R7): the fields that stay put once the record is in an end state of its lifecycle.
+     *
+     * @return list<string>
+     */
+    public static function frozenFields(string $class): array
+    {
+        $fields = [];
+        if (class_exists($class)) {
+            for ($reflection = new \ReflectionClass($class); $reflection !== false; $reflection = $reflection->getParentClass()) {
+                foreach ($reflection->getProperties() as $property) {
+                    if (!$property->isStatic() && $property->getAttributes(FrozenInEndState::class) !== []) {
+                        $fields[] = $property->getName();
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique($fields));
     }
 }

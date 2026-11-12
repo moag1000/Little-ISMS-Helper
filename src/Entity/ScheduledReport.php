@@ -151,6 +151,7 @@ class ScheduledReport
      * ISB MINOR-4: timestamp of the most recent successful
      * Symfony-mailer TLS pre-flight before a send attempt.
      */
+    // @evidence-ok: result of the TLS probe of the mail transport (machine)
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $tlsVerifiedAt = null;
 

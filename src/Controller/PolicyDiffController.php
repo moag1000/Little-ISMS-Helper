@@ -42,6 +42,7 @@ final class PolicyDiffController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly LifecycleTransitionInterface $lifecycleService,
         private readonly Security $security,
+        private readonly \App\Lifecycle\FourEyes\LifecycleCountersign $countersign,
     ) {
     }
 
@@ -77,40 +78,43 @@ final class PolicyDiffController extends AbstractController
             throw $this->createNotFoundException('Document has no previous version to restore.');
         }
 
-        // Archive the current row + flip the previous one back to active.
-        // We do NOT delete the current — supersession history must remain
-        // intact for §10 immutability/audit. The status flip is enough.
-        $user = $this->security->getUser();
-        $lifecycleUser = $user instanceof User ? $user : null;
+        // S34 (R4): the same right as seeing the diff (tenant scope), and the person says why.
+        $this->denyAccessUnlessGranted(PolicyWizardVoter::DIFF_VIEW, $current);
+        $reason = trim((string) $request->request->get('reason', ''));
+        if ($reason === '') {
+            $this->addFlash('danger', $this->translator->trans('policy_wizard.diff.restore_reason_required', [], 'policy_wizard'));
 
-        $current->setIsArchived(true);
-        $current->setUpdatedAt(new DateTimeImmutable());
-        // X.6: archive_on_supersession works from any active place (draft/in_review/approved/published/archived).
-        $this->lifecycleService->transition(
-            $current,
-            'document_lifecycle',
-            'archive_on_supersession',
-            $lifecycleUser,
-            'Policy supersession reverted — document archived to restore previous version',
-        );
-
-        $previous->setIsArchived(false);
-        $previous->setUpdatedAt(new DateTimeImmutable());
-        // Approved → published-equivalent in this codebase. Only restore if previous
-        // was archived; non-archived states are left as-is to avoid unintended elevation.
-        if ($previous->getStatus() === DocumentStatus::Archived->value) {
-            // X.6: restore_to_approved: archived → approved (policy supersession restore).
-            $this->lifecycleService->transition(
-                $previous,
-                'document_lifecycle',
-                'restore_to_approved',
-                $lifecycleUser,
-                'Restored from supersession revert',
-            );
+            return $this->redirectToRoute('app_policy_wizard_diff', ['currentDocId' => $current->getId()]);
         }
-        // Note: LifecycleService::transition() calls flush() internally.
-        // The setIsArchived()/setUpdatedAt() mutations above are picked up in the same flush.
+        if ($previous->getStatus() !== DocumentStatus::Archived->value) {
+            $this->addFlash('warning', $this->translator->trans('policy_wizard.diff.restore_not_archived', [], 'policy_wizard'));
 
+            return $this->redirectToRoute('app_policy_wizard_diff', ['currentDocId' => $current->getId()]);
+        }
+
+        // The live version is not archived here: one person alone neither takes a policy out
+        // of force nor puts an archived one back. The previous version returns via
+        // restore_to_approved, which needs the second person ("Mein Tag" / four-eyes inbox);
+        // archiving the current version stays its own step (archive, with reason).
+        $user = $this->security->getUser();
+        $actor = $user instanceof User ? $user : null;
+        try {
+            if ($actor instanceof User && $this->countersign->needsCountersign($previous, 'document_lifecycle', 'restore_to_approved', $actor)) {
+                $this->countersign->request($previous, 'document', 'document_lifecycle', 'restore_to_approved', $actor, mb_substr($reason, 0, 1000));
+                $this->addFlash('info', $this->translator->trans('policy_wizard.diff.restore_pending', [], 'policy_wizard'));
+
+                return $this->redirectToRoute('app_document_show', ['id' => $previous->getId()]);
+            }
+            // Single-approver escape (nobody else could confirm): applied at once; the flush of
+            // the transition also writes the flags set here.
+            $previous->setIsArchived(false);
+            $previous->setUpdatedAt(new DateTimeImmutable());
+            $this->lifecycleService->transition($previous, 'document_lifecycle', 'restore_to_approved', $actor, mb_substr($reason, 0, 1000));
+        } catch (\App\Exception\AppException|\App\Lifecycle\Exception\TransitionAccessDeniedException|\App\Lifecycle\Exception\FourEyesRequiredException|\App\Lifecycle\InvalidTransitionException $e) {
+            $this->addFlash('danger', $e->getMessage());
+
+            return $this->redirectToRoute('app_policy_wizard_diff', ['currentDocId' => $current->getId()]);
+        }
         $this->addFlash(
             'success',
             $this->translator->trans('policy_wizard.diff.restore_success', [], 'policy_wizard'),

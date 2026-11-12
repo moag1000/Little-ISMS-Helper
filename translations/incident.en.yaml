@@ -532,7 +532,8 @@ incident:
   reporting:
     mark_reported: Mark as reported
     reported_at: Time of report
-    reported_at_hint: 'Empty = now. Afterwards: the time the report went out (not before detection).'
+    reported_at_hint: 'Empty = now (server time). Back-dated only with a portal reference in the next field.'
+    backdate_reason: 'Portal reference (when back-dating)'
     assessed: 'Assessment of the entity: %result%.'
     precheck_title: 'Pre-check: probably a significant incident'
     precheck_body: 'Met: %reasons%. The deadlines run from detection; the entity makes the assessment (NIS-2 Art. 23 (3)).'
@@ -557,6 +558,7 @@ incident:
     assessed_not_reportable: Assessed as not reportable.
     marked_reported: Marked as reported.
     reported_at_invalid: 'The time of report is in the future or before the incident was detected.'
+    reported_at_reason_required: 'A back-dated time of report needs a portal reference as reason.'
     interim_requested: Request recorded.
 # Junior-ISB-Audit P-12 rollout — 9001 bridge for Incident form.
 iso_9001_bridge:

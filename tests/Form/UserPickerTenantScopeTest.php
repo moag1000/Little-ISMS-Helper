@@ -24,7 +24,6 @@ use App\Entity\ManagementReview;
 use App\Entity\Person;
 use App\Entity\PrototypeProtectionAssessment;
 use App\Entity\Risk;
-use App\Entity\RiskAppetite;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Team;
 use App\Entity\Tenant;
@@ -51,7 +50,6 @@ use App\Form\InternalAuditType;
 use App\Form\ManagementReviewType;
 use App\Form\PersonType;
 use App\Form\PrototypeProtectionAssessmentType;
-use App\Form\RiskAppetiteType;
 use App\Form\RiskQuickType;
 use App\Form\RiskTreatmentPlanType;
 use App\Form\RiskType;
@@ -153,7 +151,7 @@ final class UserPickerTenantScopeTest extends KernelTestCase
         yield 'AssetQuick owner' => [AssetQuickType::class, Asset::class, 'ownerUser', false];
         yield 'DSR assignee' => [DataSubjectRequestType::class, DataSubjectRequest::class, 'assignedTo', false];
         yield 'Document acknowledgement audience' => [DocumentType::class, Document::class, 'acknowledgementAudience', true];
-        yield 'RiskAppetite approver' => [RiskAppetiteType::class, RiskAppetite::class, 'approvedBy', false];
+        // S34: RiskAppetite.approvedBy is stamped by the approve action; the form field is disabled.
         yield 'ActionItem responsible' => [ActionItemType::class, ActionItem::class, 'responsibleUser', false];
         yield 'CorrectiveAction responsible' => [CorrectiveActionType::class, CorrectiveAction::class, 'responsiblePersonUser', false];
         yield 'InternalAudit lead auditor' => [InternalAuditType::class, InternalAudit::class, 'leadAuditorUser', false];

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+// @em-write-allowed: one risk appetite per request (create, edit, approve stamp, delete); the audit log runs in Doctrine listeners.
 
 namespace App\Controller;
 
@@ -19,6 +20,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -167,10 +170,16 @@ class RiskAppetiteController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, RiskAppetite $riskAppetite): Response
     {
+        $before = $riskAppetite->valueFingerprint();
         $form = $this->createForm(RiskAppetiteType::class, $riskAppetite);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($riskAppetite->isApproved() && $riskAppetite->valueFingerprint() !== $before) {
+                // S34 (R6): the approval vouched for the old values.
+                $riskAppetite->withdrawApproval();
+                $this->addFlash('warning', $this->translator->trans('risk_appetite.flash.approval_withdrawn', [], 'risk_appetite'));
+            }
             $riskAppetite->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
@@ -207,6 +216,23 @@ class RiskAppetiteController extends AbstractController
             'is_new' => $isNew,
         ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
+    /** S34 (R6): the formal approval (ISO 27005, 27001 6.1.2) — a recorded action, never a form field. */
+    #[Route('/risk-appetite/{id}/approve', name: 'app_risk_appetite_approve', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(new Expression('is_granted("ROLE_TOP_MGMT") or is_granted("ROLE_CISO")'))]
+    #[IsCsrfTokenValid(new Expression('"risk_appetite_approve_" ~ args["riskAppetite"].getId()'))]
+    public function approve(RiskAppetite $riskAppetite): Response
+    {
+        $user = $this->getUser();
+        if ($user instanceof \App\Entity\User) {
+            $riskAppetite->approve($user, new DateTimeImmutable());
+            $riskAppetite->setUpdatedAt(new DateTimeImmutable());
+            $this->entityManager->flush();
+            $this->addFlash('success', $this->translator->trans('risk_appetite.flash.approved', [], 'risk_appetite'));
+        }
+
+        return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
+    }
+
     #[Route('/risk-appetite/{id}/delete', name: 'app_risk_appetite_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, RiskAppetite $riskAppetite): Response

@@ -128,6 +128,7 @@ class BCExercise
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?DateTimeInterface $exerciseDate = null;
 
     /**
@@ -249,6 +250,7 @@ class BCExercise
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?string $results = null;
 
     /**
@@ -256,6 +258,7 @@ class BCExercise
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?string $whatWentWell = null;
 
     /**
@@ -263,6 +266,7 @@ class BCExercise
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?string $areasForImprovement = null;
 
     /**
@@ -270,6 +274,7 @@ class BCExercise
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?string $findings = null;
 
     /**
@@ -303,13 +308,15 @@ class BCExercise
      */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
     #[Groups(['bc_exercise:read']), \App\Attribute\ApiReadOnlyEvidence('exercise form (ISO 22301 8.5)')]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?string $actualRtoAchieved = null;
 
     /**
      * Actual RPO achieved during exercise — ISO 22301 §8.6 d (hours)
      */
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
-    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[Groups(['bc_exercise:read']), \App\Attribute\ApiReadOnlyEvidence('exercise form (ISO 22301 8.5)')]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?string $actualRpoAchieved = null;
 
     /**
@@ -331,6 +338,7 @@ class BCExercise
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?array $successCriteria = null;
 
     /**
@@ -340,6 +348,7 @@ class BCExercise
     #[Assert\Range(min: 1, max: 5)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     #[ManagerOrResponsibleField('exercise result: ISO 22301 8.5, set by the BCM officer or the exercise leader')]
+    #[\App\Attribute\FrozenInEndState('ISO 22301 8.5: the result of a completed exercise is evidence')]
     private ?int $successRating = null;
 
     /**

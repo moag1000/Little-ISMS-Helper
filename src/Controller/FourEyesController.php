@@ -32,6 +32,7 @@ final class FourEyesController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly LifecycleCountersign $lifecycleCountersign,
+        private readonly \App\Service\AuditLogger $auditLogger,
     ) {
     }
 
@@ -93,11 +94,27 @@ final class FourEyesController extends AbstractController
     {
         $this->assertSameTenant($approvalRequest);
 
+        if (!$approvalRequest->isPending()) {
+            // S34 (R3a): a decided request keeps the people it was decided by.
+            $this->addFlash('danger', $this->translator->trans('four_eyes.flash.not_pending', [], 'four_eyes'));
+
+            return $this->redirectToRoute('app_four_eyes_inbox');
+        }
+
+        $before = $approvalRequest->getRequestedApprover()?->getId();
         $form = $this->createForm(FourEyesApprovalRequestType::class, $approvalRequest);
         $form->handleRequest($httpRequest);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
+            $this->auditLogger->logCustom(
+                'four_eyes.approver_reassigned',
+                'FourEyesApprovalRequest',
+                $approvalRequest->getId(),
+                ['approver_id' => $before],
+                ['approver_id' => $approvalRequest->getRequestedApprover()?->getId()],
+                'Designated approver of a pending four-eyes request changed',
+            );
 
             $this->addFlash('success', $this->translator->trans('four_eyes.flash.approver_updated', [], 'four_eyes'));
 

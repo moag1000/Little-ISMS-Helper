@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\User;
+use App\Lifecycle\DeletionPolicy;
+use App\Service\WriteRule\WriteRules;
 use App\Security\ActingUser;
 use App\Service\AuditLogger;
 use App\Service\WriteRule\CorrectionReason;
@@ -42,7 +44,7 @@ use Symfony\Contracts\Service\ResetInterface;
 #[AsDoctrineListener(event: Events::postFlush)]
 final class WriteRuleGuard implements ResetInterface
 {
-    /** @var list<array{type: string, record: object, old: array<string, mixed>, new: array<string, mixed>, reason: string}> */
+    /** @var list<array{type: string, record: object, old: array<string, mixed>, new: array<string, mixed>, reason: string, action?: string}> */
     private array $corrections = [];
 
     public function __construct(
@@ -54,6 +56,8 @@ final class WriteRuleGuard implements ResetInterface
         private readonly WriteRuleCheck $check,
         #[Autowire(lazy: true)]
         private readonly AuditLogger $auditLogger,
+        #[Autowire(lazy: true)]
+        private readonly DeletionPolicy $deletionPolicy,
     ) {
     }
 
@@ -80,6 +84,11 @@ final class WriteRuleGuard implements ResetInterface
 
         $isManager = null;
         foreach ($records as $record) {
+            $frozen = $this->frozenChanges($em, $record);
+            if ($frozen !== []) {
+                $isManager ??= $this->security->isGrantedForUser($user, SelfAssignmentGuard::MANAGER_ROLE);
+                $this->corrections[] = $this->frozenCorrection($em, $record, $frozen, $isManager);
+            }
             $changes = WriteRuleCheck::ruledChanges($em, $record);
             if ($changes === []) {
                 continue;
@@ -115,6 +124,66 @@ final class WriteRuleGuard implements ResetInterface
         }
     }
 
+    /**
+     * S34 (R7): fields of a record sealed in an end state (`#[FrozenInEndState]`) that this flush changes.
+     * The state counts as it was before the flush: the step that seals a record may still write its result.
+     *
+     * @return array<string, mixed> field → old value
+     */
+    private function frozenChanges(\Doctrine\ORM\EntityManagerInterface $em, object $record): array
+    {
+        $fields = WriteRules::frozenFields($record::class);
+        if ($fields === [] || !is_callable([$record, 'getStatus'])) {
+            return [];
+        }
+        $uow = $em->getUnitOfWork();
+        if (!$uow->isInIdentityMap($record) || $uow->isScheduledForInsert($record)) {
+            return [];
+        }
+        $changeSet = $uow->getEntityChangeSet($record);
+        $before = (string) ($changeSet['status'][0] ?? $record->getStatus());
+        if (!in_array($before, $this->deletionPolicy->endStatesOf($record::class), true)) {
+            return [];
+        }
+        $changed = [];
+        foreach ($fields as $field) {
+            if (isset($changeSet[$field])) {
+                $changed[$field] = $changeSet[$field][0];
+            }
+        }
+
+        return $changed;
+    }
+
+    /**
+     * @param array<string, mixed> $changed
+     * @return array{type: string, record: object, old: array<string, mixed>, new: array<string, mixed>, reason: string, action: string}
+     */
+    private function frozenCorrection(\Doctrine\ORM\EntityManagerInterface $em, object $record, array $changed, bool $isManager): array
+    {
+        $short = (new \ReflectionClass($record))->getShortName();
+        if (!$isManager) {
+            throw new AccessDeniedException(sprintf('%s.%s is sealed (end state); only a manager corrects it (S34).', $short, array_key_first($changed)));
+        }
+        $reason = $this->correctionReason->current();
+        if ($reason === null) {
+            throw new AccessDeniedException(sprintf('%s.%s is sealed (end state); a correction needs a reason (S34).', $short, array_key_first($changed)));
+        }
+        $meta = $em->getClassMetadata($record::class);
+
+        return [
+            'type' => $short,
+            'record' => $record,
+            'old' => array_map(self::plain(...), $changed),
+            'new' => array_combine(
+                array_keys($changed),
+                array_map(static fn (string $f): mixed => self::plain($meta->getFieldValue($record, $f)), array_keys($changed)),
+            ),
+            'reason' => $reason,
+            'action' => 'end_state_corrected',
+        ];
+    }
+
     /** The correction and its reason go into the audit log once they are stored. */
     public function postFlush(PostFlushEventArgs $args): void
     {
@@ -123,12 +192,12 @@ final class WriteRuleGuard implements ResetInterface
         foreach ($corrections as $c) {
             $id = is_callable([$c['record'], 'getId']) ? $c['record']->getId() : null;
             $this->auditLogger->aboutRecord($c['record'], fn () => $this->auditLogger->logCustom(
-                'create_only_corrected',
+                $c['action'] ?? 'create_only_corrected',
                 $c['type'],
                 is_int($id) ? $id : null,
                 $c['old'],
                 $c['new'] + ['reason' => $c['reason']],
-                sprintf('%s: create-only value corrected — %s', $c['type'], $c['reason']),
+                sprintf('%s: %s — %s', $c['type'], isset($c['action']) ? 'sealed value corrected' : 'create-only value corrected', $c['reason']),
             ));
         }
     }

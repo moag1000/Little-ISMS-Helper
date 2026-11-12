@@ -75,12 +75,15 @@ framework:
                     metadata:
                         roles: [ROLE_MANAGER, ROLE_CISO]
                         reason_required: true
+                # S34 (R4): `approved` counts as "in force" in eight checks, so the way back
+                # needs the second person like `restore` does.
                 restore_to_approved:
                     from: archived
                     to: approved
                     metadata:
                         roles: [ROLE_MANAGER, ROLE_CISO]
                         reason_required: true
+                        four_eyes: true
                 # X.6: soft-delete terminal state — ADMIN only, reason required, irreversible.
                 # Replaces direct setStatus('deleted') in DocumentController::delete().
                 soft_delete:

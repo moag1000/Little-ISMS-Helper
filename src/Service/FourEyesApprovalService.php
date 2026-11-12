@@ -13,6 +13,7 @@ use App\Repository\FourEyesApprovalRequestRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Generic four-eyes approval workflow for inheritance-implement, mapping-override,
@@ -26,6 +27,7 @@ class FourEyesApprovalService
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly CompliancePolicyService $policy,
+        private readonly ?EventDispatcherInterface $dispatcher = null,
     ) {
     }
 
@@ -122,6 +124,9 @@ class FourEyesApprovalService
             ],
             '4-eyes approval granted',
         );
+
+        // S34: changes that wait for the approval (mapping override) are applied here.
+        $this->dispatcher?->dispatch(new \App\Event\FourEyesApprovedEvent($request, $approver));
     }
 
     public function reject(FourEyesApprovalRequest $request, User $approver, string $reason): void
