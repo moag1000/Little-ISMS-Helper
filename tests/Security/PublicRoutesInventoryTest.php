@@ -49,9 +49,10 @@ final class PublicRoutesInventoryTest extends WebTestCase
         'public_supplier_questionnaire_submit' => 'questionnaire; token + CSRF per token',
         'app_mcp_endpoint' => 'MCP; bearer token only, McpController answers 401 itself',
         'app_mcp_endpoint_other' => 'MCP; answers 405 (no SSE)',
-        'app_quick_fix_index' => 'Quick-Fix; QuickFixGuard',
-        'app_quick_fix_apply' => 'Quick-Fix; QuickFixGuard + CSRF',
-        'app_quick_fix_reconcile' => 'Quick-Fix; QuickFixGuard + CSRF',
+        'app_quick_fix_index' => 'Quick-Fix status; QuickFixGuard, without login counts only',
+        'app_quick_fix_login' => 'Quick-Fix; stores the target path, redirects to the login form',
+        'app_quick_fix_apply' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF (S33)',
+        'app_quick_fix_reconcile' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF (S33)',
         'app_quick_fix_force_mark_executed' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
         'app_quick_fix_mark_all_phantom_diff' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
         'app_quick_fix_repair_orphans' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
@@ -60,7 +61,7 @@ final class PublicRoutesInventoryTest extends WebTestCase
         'app_quick_fix_force_schema_update' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
         'app_quick_fix_job_status' => 'Quick-Fix job polling; quick-fix jobs only',
         'app_quick_fix_job_progress' => 'Quick-Fix progress page; quick-fix jobs only',
-        'app_quick_fix_workflows_sync' => 'Quick-Fix; QuickFixGuard + CSRF',
+        'app_quick_fix_workflows_sync' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
     ];
 
     /**

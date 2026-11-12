@@ -16,16 +16,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
  *
  * Two levels:
  *
- *  - mayAccess(): the status page, "apply pending migrations" and job
- *    polling. Defaults to OPEN (no auth) so an operator can recover an
- *    instance whose login is broken by a pending migration — applying the
- *    vendored migrations is idempotent and safe-by-design.
- *  - mayRunPrivileged(): everything that changes data or drops schema
- *    (destructive reconcile, force-mark-executed, phantom-diff marking,
- *    schema force-update, data repair). Needs mayAccess() AND either a
- *    logged-in ROLE_SUPER_ADMIN or the installer token. Before this split an
- *    anonymous visitor could reassign tenants or DROP columns on a default
- *    install.
+ *  - mayAccess(): the status page (counts only, no SQL) and job polling.
+ *    Defaults to OPEN (no auth) so an operator sees why an instance is broken.
+ *  - mayRunPrivileged(): everything that changes the database — applying
+ *    migrations, schema reconcile, force-mark-executed, phantom-diff marking,
+ *    schema force-update, data repair, workflow sync. Needs mayAccess() AND
+ *    either a logged-in ROLE_SUPER_ADMIN or the installer token. S33: applying
+ *    migrations was anonymous until then, so anyone who reached the page chose
+ *    when data-moving migrations ran (before the operator's backup).
  *
  * Admins can tighten mayAccess() via three optional toggles in the
  * `quick_fix` settings category:
@@ -97,6 +95,33 @@ class QuickFixGuard
     public function isTokenRequired(): bool
     {
         return $this->requireInstallerToken();
+    }
+
+    /**
+     * The installer token, written to `var/setup-token` when it is missing (Docker builds run
+     * Composer without scripts, so no token exists there). Only for the super admin's settings
+     * page, which shows the Quick-Fix link with token to keep for a deploy whose login breaks.
+     */
+    /** The installer token, null when `var/setup-token` is missing or empty. */
+    public function installerToken(): ?string
+    {
+        return $this->loadInstallerToken();
+    }
+
+    public function ensureInstallerToken(): ?string
+    {
+        $token = $this->loadInstallerToken();
+        if ($token !== null) {
+            return $token;
+        }
+        $path = $this->kernel->getProjectDir() . '/var/setup-token';
+        $token = bin2hex(random_bytes(32));
+        if (@file_put_contents($path, $token, LOCK_EX) === false) {
+            return null;
+        }
+        @chmod($path, 0640);
+
+        return $token;
     }
 
     private function requireInstallerToken(): bool

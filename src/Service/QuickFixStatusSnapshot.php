@@ -42,19 +42,6 @@ class QuickFixStatusSnapshot
         });
     }
 
-    /**
-     * Pending migrations on disk, always fresh (one directory listing + one table read).
-     * When the database cannot say, applying is the recovery path, so the answer is yes.
-     */
-    public function hasPendingMigrations(): bool
-    {
-        try {
-            return $this->maintenance->listPendingMigrationVersionsFromFileSystem() !== [];
-        } catch (\Throwable) {
-            return true;
-        }
-    }
-
     /** @return array{status: array<string, mixed>, pending_fs: list<string>, clean: array<string, mixed>} */
     private function scan(): array
     {

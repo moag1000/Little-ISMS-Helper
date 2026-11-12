@@ -284,6 +284,7 @@ Nicht vergeben: 38, 39, 49, 51, 66, 88. Ohne Nummer laufen dort zusätzlich `che
 | 96 | `tests/Security/WritePathParityTest.php` (PHPUnit) | a write rule on the entity (`#[CreateOnly]`, `#[ManagerOrResponsibleField]`, evidence) holds in every form, the import and the API groups |
 | 94 | PHPStan `StoredFilePathRule` (T4; was `check_stored_file_paths.py`) | stored file paths only through StoredFilePath / ProtectedUploads |
 | 97 | PHPStan `TenantPinRestoreRule` (T4; was `check_tenant_pin_restore.py`) | an organisation pinned in TenantContext is put back (runAs / try-finally) |
+| 104 | PHPStan `PersonalDataReadRule` (S33) | pages of a record about a person (`#[PersonalDataResource]`, whole class) carry a read rule; lists filter with `PersonalDataRecordVoter::VIEW` or `App\Security\PersonalDataVisibility::readable()` |
 
 Code-Stil: Job „Code Quality“ führt `vendor/bin/php-cs-fixer fix --dry-run` mit `.php-cs-fixer.dist.php` (PSR-12,
 `src/` + `tests/`) aus und schlägt fehl, sobald eine Datei abweicht. Ausgenommen sind die Dateien in
@@ -298,6 +299,7 @@ Lücke festschreibt, wird umgedreht, nicht gelöscht.
 
 | Test / Gate | Gegenprobe (absichtlich gebrochen → rot) | Vorher übersehen |
 |---|---|---|
+| `QuickFixControllerTest::testEveryQuickFixWriteRouteRefusesAnonymousVisitors` + Gate 104 `PersonalDataReadRule` (S33) | `reconcile()` wieder auf `mayAccess()` → rot (geprüft); `#[IsGranted(PersonalDataRecordVoter::VIEW)]` an der Betroffenenanfrage entfernt → `PersonalDataPagesTest` rot (geprüft); Fixture: `ROLE_USER`, `ROLE_AUDITOR`, Filter nur im Detail, Route ohne `methods` → rot | Anonyme Quick-Fix-Tests schickten kein Sitzungscookie zurück und scheiterten am CSRF statt am Guard (hohl grün) |
 | `HoldingLensAndStructureAuditTest` | Konzernsicht (`HoldingScope::read()`) sieht Vorfälle einer Tochter nur mit `visibleToHolding`, eigene immer; Umhängen und Governance-Regeln über beide Admin-Seiten landen mit Vorher/Nachher im Audit-Log | Filter `HoldingIncidentFilter` nicht scharf geschaltet → vertraulicher Vorfall in Konzernsicht (rot, geprüft) |
 | `DeadlineLinkReachabilityTest` | Je Fristquelle eigene Organisation nur mit ihren Modulen, je Empfängerrolle (Rückfallrollen, Inhaber als User/Person) ein Konto, das `ResponsibilityResolver::recipients()` wirklich nennt; GET auf den Link, bis zu 5 Weiterleitungen, rot bei ≠ 200 oder Landung auf Dashboard/Login/MFA/Setup. Selbsttest `checkerSeesEveryKindOfGate`: eigenes Risiko ok; Rolle zu klein, Leitung auf Formular, DSB auf Admin-Seite, fremde Organisation → jeweils rot | `grants()` ließ jedes Voter-Attribut durch, nur GET ohne Weiterleitung, Quellen ohne Link übersprungen, PERSONA_* falsch abgebildet. Fund: 6 Quellen ohne Modul (Link führte bei abgeschaltetem Modul aufs Dashboard). W6: `WITHOUT_LINK` leer (TLPT-Seite), `MAIN_ACTION` schickt bei Review-Fristen (VVT, DSFA, TIA, Risiko, Control) das Hauptformular ab; Funde: VVT/DSFA-Review nur für Manager, TIA ohne Review-Aktion, Risiko-Review 403 für Leitung als Inhaberin, 7 weitere Quellen ohne Modul, Seite „Modul nicht aktiv“ galt als erreichbar, 500 auf der Feststellungsseite |
 | `WizardReferencesHitCatalogueTest` | „6.1.1/6.1.2 / 9.99" und zusätzliche Anforderung `ISO27001-6.1.9` → rot | Ein Treffer deckte alle Referenzen eines Checks; `clause_coverage`-Unterchecks und `requirements`-Ids nicht geprüft |
@@ -745,7 +747,7 @@ lokale Aliase in jeden `Job*`-Dienst, verlangt den Guard bei jedem Platzhalter `
 
 ---
 
-### PHPStan-Gate-Regeln (T3: Gates 11, 65, 72, 91, 92, 93; T4: 85, 94, 97)
+### PHPStan-Gate-Regeln (T3: Gates 11, 65, 72, 91, 92, 93; T4: 85, 94, 97; S33: 104)
 
 **Zweck:** Die sicherheitsrelevanten Kernregeln lesen den Code, nicht Zeilen. Der Mutationsabgleich (Bericht
 9-mutations, Welle 9) fand in drei Runden in Folge neue Schreibweisen, an denen die Regex-Gates vorbeisahen:
@@ -764,6 +766,7 @@ CI-Schritt „Run PHPStan“ über `src/`:
 | 94 | `StoredFilePathRule` | Getter/Property einer Spalte aus `StoredFilePath::FIELDS` (auch über Alias-Variablen) in Verkettung, Interpolation, `sprintf`/`implode`, `Path::*`, Dateifunktion, `Filesystem`-Aufruf oder `new File`/`BinaryFileResponse` außerhalb von `StoredFilePath`/`ProtectedUploads`; `'/public/' . $var`. Marker `// @stored-path-ok: <Grund>` auf der Zeile oder direkt darüber |
 | 97 | `TenantPinRestoreRule` | `setCurrentTenant*()`/`setNoOrganisation()` — auch als String, dynamischer Name oder nach Zeilenumbruch — außerhalb eines `try`, dessen `finally` wirklich zurücksetzt (Aufruf auf einem Empfänger namens `*tenant*` oder `$restore…()`); Pfeilfunktion/Closure zählt als eigene Funktion. Marker `// @tenant-pin-ok: <Grund>` |
 | 85 | `FulfillmentSingleWriterRule` | `setFulfillmentPercentage/setStatus/setDerivation/markOverride/clearOverride` auf einem per Typ erkannten `ComplianceRequirementFulfillment` außerhalb von `App\Service\Compliance\Fulfillment` (auch per String/Callable). Marker `// @fulfillment-writer-ok: <Grund>` |
+| 104 | `PersonalDataReadRule` | GET-Action eines Controllers, die einen Datensatz einer Klasse mit `#[PersonalDataResource]` ohne Feldliste annimmt, ohne `#[IsGranted]` mit `PersonalDataRecordVoter::VIEW`, `RecordResponsibleVoter::MANAGER_OR_RESPONSIBLE`, `PrivacyExportAccess::RULE` oder einer Rolle ab Manager (an Action oder Klasse; `ROLE_USER`/`ROLE_AUDITOR` zählen nicht, ein Filter im Detail auch nicht); jede andere GET-Action dieses Controllers (Liste, Dashboard) ohne solche Rolle und ohne Filter über `PersonalDataRecordVoter::VIEW` (auch in einem aufgerufenen Helfer der Klasse); Route ohne `methods`. Marker `// @personal-data-read-ok: <Grund>` |
 
 Marker gelten nur als Kommentar mit Grund dahinter, Namen in Kommentaren oder Docblocks nie als Schutz.
 Bekannte Ausnahmen stehen in `phpstan-gates-baseline.neon` (je Eintrag `reportUnmatched: true`: ein behobener

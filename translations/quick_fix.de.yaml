@@ -56,8 +56,10 @@ quick_fix:
         token_hint: 'Wenn dir ein Installer-Token vorliegt, kannst du es hier eingeben:'
         token_placeholder: 'Token aus var/setup-token'
         token_submit: 'Mit Token freischalten'
-        privileged_body: 'Diese Aktion ändert Daten oder entfernt Schema-Teile. Sie läuft nur mit Anmeldung als Super-Admin oder mit dem Installer-Token.'
-        privileged_hint: 'Reparaturen und destruktive Schema-Änderungen brauchen eine Anmeldung als Super-Admin oder das Installer-Token. Ausstehende Migrationen lassen sich ohne Anmeldung anwenden.'
+        privileged_body: 'Diese Aktion ändert die Datenbank. Sie läuft nur mit Anmeldung als Super-Admin oder mit dem Installer-Token.'
+        privileged_hint: 'Migrationen, Schema-Abgleich und Reparaturen brauchen eine Anmeldung als Super-Admin oder das Installer-Token. Ohne Anmeldung zeigt die Seite nur den Stand.'
+        login: 'Als Super-Admin anmelden'
+        token_alternative: 'Oder Installer-Token eingeben (Link unter Admin > Quick-Fix, Datei var/setup-token):'
     workflows:
         title: 'Freigabeketten (regulatorische Workflows)'
         intro: 'Laufende Freigaben lesen ihre Rollen aus der Datenbank; nach einem Update kann sie von config/workflows/regulatory abweichen. Abgleichen behält laufende Freigaben bei und läuft nachts auch von selbst.'
@@ -142,6 +144,13 @@ quick_fix:
         csrf_invalid: 'Ungültiges CSRF-Token.'
         saved: 'Gespeichert.'
         save: 'Speichern'
+        token:
+            title: 'Quick-Fix-Link mit Installer-Token'
+            body: 'Migrationen laufen nur mit Anmeldung als Super-Admin oder mit diesem Link. Vor einem Update aufbewahren: Scheitert danach die Anmeldung, öffnet der Link den Quick-Fix trotzdem.'
+            link_label: 'Quick-Fix-Link mit Token'
+            copy: 'Kopieren'
+            create: 'Link erzeugen'
+            write_failed: 'Token nicht geschrieben: var/ ist nicht beschreibbar.'
     super_admin_missing:
         title: 'Kein aktiver Instanz-Betreiber (ROLE_SUPER_ADMIN)'
         body: 'Kein aktives Konto hat ROLE_SUPER_ADMIN. Ohne Betreiber-Konto kann niemand Benutzer ohne Organisation, instanzweite Backups oder Systemrollen verwalten. Das passiert, wenn Migrationen als ausgeführt markiert wurden (Phantom-Reparatur) und die Operator-Bootstrap-Migration aus 3.15.3 nie lief, oder wenn das Betreiber-Konto deaktiviert wurde. Rolle auf der Server-Shell vergeben:'
