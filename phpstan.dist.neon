@@ -90,6 +90,11 @@ services:
         class: App\Tests\PHPStan\Rule\Gate\FulfillmentSingleWriterRule
         tags:
             - phpstan.rules.rule
+    # Gate 104 (S33) — pages of records about a person carry a read rule (PersonalDataRecordVoter)
+    -
+        class: App\Tests\PHPStan\Rule\Gate\PersonalDataReadRule
+        tags:
+            - phpstan.rules.rule
 
     # Gate 105 (S34) — evidence-named entity fields say who writes them
     -

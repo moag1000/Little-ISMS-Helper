@@ -947,6 +947,11 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       PHPStan; finds every authenticator class by type).
 - [ ] Rate limits key on the user (or token) where one exists, not on the client IP;
       login brute force is the firewall's `login_throttling`, not a controller limiter.
+- [ ] A record about a person as a whole (`#[PersonalDataResource]` without field list: DSR, breach) is read only by
+      managers (DPO inherits) and the responsible: show carries `#[IsGranted(PersonalDataRecordVoter::VIEW, subject: 'x')]`,
+      lists/dashboard/search filter via `Security\PersonalDataVisibility::readable()` (Gate 104, PHPStan `PersonalDataReadRule`); approval chains
+      via `WorkflowInstanceVoter::VIEW`. Quick-Fix writes (migrations, reconcile, repairs) only for the super admin or the
+      installer token (`QuickFixGuard::mayRunPrivileged()`, S33).
 - [ ] Privacy exports (VVT, DSFA, breach, DSR, consent) carry
       `#[IsGranted(new Expression(PrivacyExportAccess::RULE))]`; evidence fields (`#[ApiReadOnlyEvidence]`) are kept on
       import updates (`EvidenceFieldFilter::forUpdate()`).

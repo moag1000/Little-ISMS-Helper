@@ -144,3 +144,33 @@ parameters:
             identifier: gate105.evidenceField
             path: src/Entity/ThreatLedPenetrationTest.php
             reportUnmatched: true
+
+        # Gate 104 (S33) — pages of records about a person without read rule
+        -
+            # S33 follow-up (spec restluecken-welle11.md, open item 5 / S37): consents are recorded by ROLE_USER
+            # (no responsible slot yet); read voter per entity together with Person, supplier contacts, access logs.
+            message: '#\[src/Controller/ConsentController\.php::index\#read\]#'
+            identifier: gate104.read
+            path: src/Controller/ConsentController.php
+            reportUnmatched: true
+        -
+            # S33 follow-up (spec restluecken-welle11.md, open item 5 / S37): consents are recorded by ROLE_USER
+            # (no responsible slot yet); read voter per entity together with Person, supplier contacts, access logs.
+            message: '#\[src/Controller/ConsentController\.php::new\#read\]#'
+            identifier: gate104.read
+            path: src/Controller/ConsentController.php
+            reportUnmatched: true
+        -
+            # S33 follow-up (spec restluecken-welle11.md, open item 5 / S37): consents are recorded by ROLE_USER
+            # (no responsible slot yet); read voter per entity together with Person, supplier contacts, access logs.
+            message: '#\[src/Controller/ConsentController\.php::show\#read\]#'
+            identifier: gate104.read
+            path: src/Controller/ConsentController.php
+            reportUnmatched: true
+        -
+            # S33 follow-up (spec restluecken-welle11.md, open item 5 / S37): consents are recorded by ROLE_USER
+            # (no responsible slot yet); read voter per entity together with Person, supplier contacts, access logs.
+            message: '#\[src/Controller/ConsentController\.php::edit\#read\]#'
+            identifier: gate104.read
+            path: src/Controller/ConsentController.php
+            reportUnmatched: true

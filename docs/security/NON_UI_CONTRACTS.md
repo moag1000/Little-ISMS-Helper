@@ -135,12 +135,22 @@ gelöscht (so war es bei `ApiTokenReadOnlyTest::ignoresNonApiPaths` und
 | Wiederhergestellte Freigabe- und Nachweisfelder werden je Typ als `restore.evidence`-Batch protokolliert (Herkunft sichtbar); das Admin-Passwort der Wiederherstellung trifft nie „den ersten Nutzer“ | `tests/Service/Restore/RestoredEvidenceTrailTest` |
 | Sicherungs-Metadaten werden größenbegrenzt gelesen; der Sichtbarkeitsbereich einer hochgeladenen Sicherung kommt vom Hochladenden, nicht aus der Datei | `BackupService::readBackupMetadata()`, `BackupService::recordUploadScope()` |
 | Beispieldaten-Bereinigung nur mit `--tenant-id`, ohne rohes SQL über Organisationen | `src/Command/SampleDataPurgeCommand.php` |
-| Quick-Fix ohne Anmeldung: Statusscan höchstens einmal pro Minute (`QuickFixStatusSnapshot`), „Migrationen anwenden“ nur bei offenen Migrationen; alles andere braucht Super-Admin oder Installer-Token | `tests/Service/QuickFixStatusSnapshotTest`, `tests/Controller/QuickFixControllerTest` |
+| Quick-Fix ohne Anmeldung zeigt nur den Stand (Zahlen, kein SQL), Statusscan höchstens einmal pro Minute (`QuickFixStatusSnapshot`); jede schreibende Quick-Fix-Route — auch „Migrationen anwenden“ und der additive Schema-Abgleich (S33) — braucht Super-Admin oder Installer-Token (`QuickFixGuard::mayRunPrivileged()`). Der Super-Admin findet den Link mit Token unter Admin > Quick-Fix | `QuickFixControllerTest::testEveryQuickFixWriteRouteRefusesAnonymousVisitors` (Routen aus dem Router, gültiges CSRF-Token), `tests/Service/QuickFixStatusSnapshotTest`, `PublicRoutesInventoryTest` |
 | `/metrics` und die Anmeldeseite nennen keine Versionsnummer; der Screenshot-Nutzer bekommt außerhalb von dev/test ein Zufallspasswort | `tests/Controller/MetricsControllerTest` |
 | Der Setup-Assistent ist nach Abschluss nur für den Super-Admin erreichbar, auf jeder Aktion (`SetupAccessChecker::ACCESS`); abgeschlossen ist er mit der Lock-Datei oder sobald ein Konto existiert — eine gelöschte Lock-Datei öffnet ihn keinem Fremden (S19) | `tests/Security/InstanceOperatorOnlyTest`, `EvidenceOutsideWebRootTest::everySetupControllerCarriesTheClassLevelGate`, `tests/Security/SetupLockWithoutFileTest` |
 | Eine Wiederherstellung nimmt nur Entitäten des Sicherungsformats an (`BackupService::restorableEntityNames()`), fremde Namen wie `ApiToken` werden mit Warnung verworfen | `tests/Service/RestoreForeignEntityTest` |
 | Ein globales Framework löscht (Kaskade über alle Organisationen) nur der Super-Admin (`ADMIN_GLOBAL_OP`) | `tests/Security/InstanceOperatorOnlyTest` |
 | Nachweisdateien (Dokumente, Versionen, Schulungsmaterial) liegen unter `var/uploads`, nie unter `public/`; Download nur über eine voter-geprüfte, protokollierte Aktion | `tests/Service/Upload/ProtectedUploadsTest`, `tests/Controller/TrainingMaterialDownloadTest`, `tests/Security/EvidenceOutsideWebRootTest` |
+
+## Personendaten in Seiten (S33)
+
+Was die Assistentenverbindung nur der DSB-Rolle gibt (S24), zeigt auch die Web-Oberfläche nicht jedem Konto.
+
+| Invariante | Beleg |
+|---|---|
+| Einen Datensatz einer Klasse mit `#[PersonalDataResource]` ohne Feldliste (Betroffenenanfrage, Datenpanne, …) öffnen Manager (die DSB-Rolle erbt sie) und die für ihn Verantwortlichen (`RECORD_RESPONSIBLE`), sonst niemand — Lese-Rollen (Auditor, Leitung, Konzernrollen) nur als Verantwortliche; Liste, Dashboard und globale Suche filtern mit demselben Attribut (`PersonalDataRecordVoter::VIEW`, gebündelt in `App\Security\PersonalDataVisibility`; Suche: `Search\PersonalDataSearch`) | Gate 104 (PHPStan `PersonalDataReadRule`: jede GET-Seite eines Controllers mit solcher Detailseite, Fixture `PersonRecordController`), `tests/Controller/PersonalDataPagesTest` (Detail, Liste, Dashboard, Suche je Rolle) |
+| Eine Freigabekette (Schritte, Freigabetexte, Namen) lesen ihr Initiator, wer in ihr entschieden hat oder den aktuellen Schritt freigeben darf, die Verantwortlichen des Datensatzes und Manager, sofern sie den Datensatz lesen dürfen (`WorkflowInstanceVoter::VIEW`); `/workflow` und `/workflow/active` filtern so, „Abbrechen“ sieht nur der Admin | `tests/Controller/WorkflowControllerTest::testShowInstanceRefusesAnAccountWithoutRelation` |
+| Offen (Folgepaket): Einwilligungen (`ConsentController`, von `ROLE_USER` erfasst), Person, Lieferantenkontakte, Zutritt — Ausnahmen in `phpstan-gates-baseline.neon` (`gate104.read`) | — |
 
 ## Löschvertrag (S29)
 

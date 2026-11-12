@@ -27,6 +27,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Security\Voter\WorkflowInstanceVoter;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
@@ -69,12 +70,32 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
     }
 
+    /**
+     * S33: chains the person may read ({@see WorkflowInstanceVoter}) — list and detail page, one rule.
+     *
+     * @param iterable<WorkflowInstance> $instances
+     * @return list<WorkflowInstance>
+     */
+    private function visible(iterable $instances): array
+    {
+        $visible = [];
+        foreach ($instances as $instance) {
+            if ($this->isGranted(WorkflowInstanceVoter::VIEW, $instance)) {
+                $visible[] = $instance;
+            }
+        }
+
+        return $visible;
+    }
+
     #[Route('/workflow', name: 'app_workflow_index', methods: ['GET'])]
     public function index(): Response
     {
         $workflows = $this->workflowRepository->findAllActive();
         $statistics = $this->workflowInstanceRepository->getStatistics();
-        $instances = $this->workflowInstanceRepository->findBy([], ['startedAt' => 'DESC'], 10);
+        // S33: only the chains the person may open; managers keep the newest ten of the organisation.
+        $instances = $this->visible($this->workflowInstanceRepository->findBy([], ['startedAt' => 'DESC'], $this->isGranted('ROLE_MANAGER') ? 10 : 50));
+        $instances = array_slice($instances, 0, 10);
 
         // Check approval permissions and eligibility for each instance
         $currentUser = $this->currentUser();
@@ -119,6 +140,7 @@ class WorkflowController extends AbstractController
     }
 
     #[Route('/workflow/instance/{id}', name: 'app_workflow_instance_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(WorkflowInstanceVoter::VIEW, subject: 'workflowInstance')]
     public function showInstance(WorkflowInstance $workflowInstance): Response
     {
         $currentUser = $this->currentUser();
@@ -326,7 +348,7 @@ class WorkflowController extends AbstractController
     #[Route('/workflow/active', name: 'app_workflow_active', methods: ['GET'])]
     public function active(): Response
     {
-        $activeWorkflows = $this->workflowService->getActiveWorkflows();
+        $activeWorkflows = $this->visible($this->workflowService->getActiveWorkflows());
 
         // Check approval permissions for each instance
         $currentUser = $this->currentUser();

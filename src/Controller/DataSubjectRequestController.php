@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequiresModule;
+use App\Security\PersonalDataVisibility;
+use App\Security\Voter\PersonalDataRecordVoter;
 use App\Security\Voter\RecordResponsibleVoter;
 use App\Service\BulkDeleteService;
 use RuntimeException;
@@ -60,6 +62,7 @@ class DataSubjectRequestController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
+        private readonly PersonalDataVisibility $personalData,
         private readonly ?TenantContext $tenantContext = null,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?DataSubjectRequestRepository $dataSubjectRequestRepository = null,
@@ -96,6 +99,9 @@ class DataSubjectRequestController extends AbstractController
                 fn(DataSubjectRequest $r): bool => $r->getRequestType() === $filterType
             ));
         }
+
+        // S33: the list follows the detail page's rule (managers, DPO, the responsible).
+        $requests = $this->personalData->readable($requests);
 
         $openStatuses = ['received', 'identity_verification', 'in_progress', 'extended'];
         $statistics = $this->dataSubjectRequestService->getStatistics();
@@ -159,6 +165,7 @@ class DataSubjectRequestController extends AbstractController
      * Show data subject request details
      */
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(PersonalDataRecordVoter::VIEW, subject: 'dsr')]
     public function show(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;

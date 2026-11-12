@@ -40,6 +40,12 @@
         <h1>{{ 'quick_fix.locked.title'|trans({}, 'quick_fix') }}</h1>
         <p>{{ (privileged_only|default(false) ? 'quick_fix.locked.privileged_body' : 'quick_fix.locked.body')|trans({}, 'quick_fix') }}</p>
 
+        {% if privileged_only|default(false) %}
+            <a href="{{ path('app_quick_fix_login') }}" style="display: block; margin-top: 16px; text-align: center; background: var(--accent); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-weight: 600; text-decoration: none;">
+                {{ 'quick_fix.locked.login'|trans({}, 'quick_fix') }}
+            </a>
+        {% endif %}
+
         {% if token_required %}
             <p style="font-size: 13px; margin-top: 16px;">{{ 'quick_fix.locked.token_hint'|trans({}, 'quick_fix') }}</p>
             <form method="GET" action="{{ privileged_only|default(false) ? path('app_quick_fix_index') : '' }}">

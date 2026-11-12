@@ -38,6 +38,8 @@ noch nicht-destruktive Abweichungen bestehen.
 
 **Wann nutzen:** Nach jedem Update (Container-Image oder neuer Release-Stand).
 
+**Wer darf:** nur als Super-Admin angemeldet oder mit dem Installer-Token (S33, siehe „Zugriffsschutz“).
+
 ---
 
 ### 2. Schema-Drift reconcilen
@@ -84,10 +86,10 @@ Weitere Pruefungen unter **Admin → Datenreparatur** (`/admin/data-repair`):
 | **Audit-Log-Integritaet** | Nur Erkennung — Bulk-Batch-Mismatches, Tages-Luecken im AuditLog, NULL-Tenant-Eintraege. Keine Auto-Reparatur. |
 | **Status-Enum-Drift** | Nur Erkennung — DB-Statuswerte, die nicht im neuen `App\Enum\<Entity>Status` enthalten sind. Manuelle Triage erforderlich. |
 
-**Wer was sieht:** `/quick-fix` bleibt ohne Anmeldung erreichbar, damit eine
-Instanz mit kaputtem Login wiederherstellbar bleibt. Ohne Super-Admin-Sitzung
-oder Installer-Token zeigt die Seite aber nur, was das Anwenden der Migrationen
-braucht: keine SQL-Anweisungen, keine Datenbank-Fehlermeldung und keinen
+**Wer was sieht:** `/quick-fix` bleibt ohne Anmeldung erreichbar, damit ein
+Betreiber den Stand einer kaputten Instanz sieht. Ohne Super-Admin-Sitzung
+oder Installer-Token zeigt die Seite aber nur den Stand und keine Knöpfe: keine
+SQL-Anweisungen, keine Datenbank-Fehlermeldung und keinen
 Datenintegritaets-Abschnitt (der zaehlt Zeilen aller Organisationen und ist der
 teure Teil jedes Seitenaufrufs).
 
@@ -230,14 +232,25 @@ Orphans und Duplikate repariert man ohne CLI unter Admin → Datenreparatur.
 
 ## Zugriffsschutz (QuickFixGuard)
 
-`/quick-fix` braucht keine Anmeldung, damit ein Betreiber ein Instanz retten kann,
-deren Login nach einem Update an einer ausstehenden Migration scheitert. Es gibt
-zwei Stufen:
+`/quick-fix` ist ohne Anmeldung erreichbar, damit ein Betreiber sieht, warum eine Instanz nach einem
+Update nicht läuft. Ändern darf die Seite die Datenbank nur für Berechtigte (S33): Migrationen verschieben
+Daten und sollen laufen, wenn der Betreiber es entscheidet (nach dem Backup), nicht wenn jemand die Seite
+findet.
 
 | Stufe | Aktionen | Voraussetzung |
 |---|---|---|
-| Ansehen + Migrationen | Statusseite, „Ausstehende Migrationen anwenden“, additiver Schema-Abgleich, Job-Fortschritt | Guard-Einstellungen unten (Standard: offen) |
-| Daten und destruktives Schema | destruktiver Schema-Abgleich (DROP/TRUNCATE), Migration als ausgeführt markieren, Phantom-Diff markieren, Schema-Force-Update, alle Daten-Reparaturen | zusätzlich Anmeldung als Super-Admin **oder** Installer-Token aus `var/setup-token` (Feld auf der Sperrseite, wird als Sitzungs-Cookie gemerkt) |
+| Ansehen | Statusseite (Zahlen, kein SQL), Job-Fortschritt | Guard-Einstellungen unten (Standard: offen) |
+| Ändern | Ausstehende Migrationen anwenden, Schema-Abgleich (additiv und destruktiv), Migration als ausgeführt markieren, Phantom-Diff markieren, Schema-Force-Update, Freigabeketten abgleichen, alle Daten-Reparaturen | Anmeldung als Super-Admin **oder** Installer-Token |
+
+**Anmelden:** „Als Super-Admin anmelden“ auf der Quick-Fix-Seite öffnet die Anmeldung und kehrt danach (auch
+nach dem zweiten Faktor) zum Quick-Fix zurück. Das reicht in den meisten Fällen, auch mit ausstehenden
+Migrationen.
+
+**Wenn die Anmeldung nach einem Update scheitert:** den Installer-Token benutzen. Unter **Admin >
+Quick-Fix-Einstellungen** sieht der Super-Admin den „Quick-Fix-Link mit Installer-Token“ (fehlt die Datei
+`var/setup-token`, etwa bei Docker, erzeugt „Link erzeugen“ sie). Den Link **vor** dem Update kopieren und
+aufbewahren; er öffnet den Quick-Fix ohne Anmeldung, das Token wird als Sitzungs-Cookie gemerkt. Ohne Link:
+Datei `var/setup-token` im Dateimanager des Hosters öffnen und das Token im Feld der Quick-Fix-Seite eingeben.
 
 Die erste Stufe lässt sich unter **Admin > Quick-Fix-Einstellungen**
 (`/admin/quick-fix-settings`) weiter einschränken (Kategorie `quick_fix` der Systemeinstellungen):

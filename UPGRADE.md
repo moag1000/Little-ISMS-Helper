@@ -10,7 +10,8 @@ eine Handlung verlangt oder Verhalten bricht.
    [Disaster Recovery](docs/operations/DISASTER_RECOVERY.md).
 2. Code bzw. Image aktualisieren ([Plesk](docs/deployment/DEPLOYMENT_PLESK.md),
    [Docker](docs/deployment/DOCKER_PRODUCTION.md)).
-3. `/quick-fix` öffnen → „Ausstehende Migrationen anwenden“ ([Quick-Fix](docs/user-guide/QUICK_FIX.md)).
+3. `/quick-fix` öffnen, als Super-Admin anmelden (oder den Quick-Fix-Link mit Token aus Admin > Quick-Fix
+   benutzen) → „Ausstehende Migrationen anwenden“ ([Quick-Fix](docs/user-guide/QUICK_FIX.md)).
    Alle Migrationen sind wiederholbar: Bricht eine ab, den Knopf erneut drücken.
 4. Die Punkte des Abschnitts zur neuen Version abarbeiten.
 
@@ -27,6 +28,13 @@ bisher sah; auf Mehr-Organisations-Instanzen sind die Werte danach getrennt. Die
 behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Vor dem Update
+
+- **Quick-Fix-Link sichern (S33):** Migrationen und Schema-Abgleich laufen nicht mehr ohne Anmeldung. Nach
+  dem Update als Super-Admin anmelden (Quick-Fix-Seite: „Als Super-Admin anmelden“, danach geht es zurück zum
+  Quick-Fix). Falls die Anmeldung nach dem Update scheitert: **vorher** unter Admin > Quick-Fix den
+  „Quick-Fix-Link mit Installer-Token“ kopieren (bei Docker „Link erzeugen“, dort gab es noch kein Token) und
+  aufbewahren; der Link öffnet den Quick-Fix auch ohne Anmeldung. Ohne Link: Token aus `var/setup-token`
+  (Plesk-Dateimanager) auf der Quick-Fix-Seite eingeben.
 
 - **nginx-Regel für alte Upload-Pfade** (Plesk mit „Statische Dateien über nginx“): Dokumente,
   Versionen und Schulungsmaterial liegen jetzt unter `var/uploads/` und sind nur noch über den
@@ -164,6 +172,15 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
     Audit `end_state_corrected`. `actualRpoAchieved` ist über REST/MCP nur noch lesbar. Kein Migrationsschritt.
   - *Gate 105:* ein Entity-Feld, dessen Name Nachweis ist (`approved…`, `verified…`, `actual…`, `last…Review…`),
     muss sagen, wer es schreibt (`phpstan-gates-baseline.neon` enthält 13 Altfälle).
+- **Datenschutz-Datensätze nur für Berechtigte (S33):** Betroffenenanfragen und Datenpannen (Liste, Detail,
+  Dashboard, globale Suche) sehen nur noch Manager, die DSB-Rolle und die für den Datensatz Verantwortlichen
+  (Bearbeiter, DSB am Datensatz, Vertretungen). Andere Konten, auch Auditoren und Leitung ohne Zuständigkeit,
+  bekommen 403 bzw. eine leere Liste. Freigabeketten (`/workflow`, `/workflow/active`, Kettendetail) sehen
+  Initiator, Entscheider, wer den aktuellen Schritt freigeben darf, Verantwortliche des Datensatzes und Manager;
+  „Abbrechen“ erscheint nur für Admins. Keine Migration.
+- **Quick-Fix ohne Anmeldung nur lesend (S33):** „Ausstehende Migrationen anwenden“ und der Schema-Abgleich
+  brauchen Super-Admin oder Installer-Token (siehe „Vor dem Update“). Ohne Anmeldung zeigt die Seite den Stand.
+
 - **Berichte, Exporte und Benachrichtigungen folgen den Modulen (S32):** Ist das Modul eines Berichts aus
   (Risiken, Assets, Vorfälle, Controls, Audits, Compliance, Datenschutz, BCM, Portfolio), antworten seine Download-,
   PDF-, Excel- und Export-Routen nicht mehr (Weiterleitung zum Dashboard bzw. 404), und die Kacheln dazu fehlen.

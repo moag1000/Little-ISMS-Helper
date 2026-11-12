@@ -7,6 +7,9 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Repository\SystemSettingsRepository;
 use App\Service\AuditLogger;
+use App\Http\PublicUrlGenerator;
+use App\Service\QuickFixGuard;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +35,8 @@ class QuickFixSettingsController extends AbstractController
     public function __construct(
         private readonly SystemSettingsRepository $systemSettings,
         private readonly AuditLogger $auditLogger,
+        private readonly QuickFixGuard $guard,
+        private readonly PublicUrlGenerator $publicUrls,
     ) {
     }
 
@@ -100,7 +105,45 @@ class QuickFixSettingsController extends AbstractController
 
         return $this->render('admin/quick_fix_settings/edit.html.twig', [
             'current' => $current,
+            'quick_fix_link' => $this->quickFixLink(),
         ]);
+    }
+
+    /**
+     * S33: applying migrations needs a super admin login or the installer token. When a
+     * deploy breaks the login, the link with token is the way in without a shell — the
+     * super admin keeps it before the deploy. Creates `var/setup-token` when it is missing.
+     */
+    #[Route('/token', name: 'app_admin_quick_fix_token', methods: ['POST'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[IsCsrfTokenValid('quick_fix_token')]
+    public function createToken(): Response
+    {
+        if ($this->guard->ensureInstallerToken() === null) {
+            $this->addFlash('danger', 'quick_fix.settings.token.write_failed');
+        } else {
+            $this->auditLogger->logCustom(
+                'quick_fix.installer_token_created',
+                'SystemSettings',
+                null,
+                null,
+                null,
+                'Quick-Fix installer token created',
+            );
+        }
+
+        return $this->redirectToRoute('app_admin_quick_fix_settings');
+    }
+
+    /** The Quick-Fix URL with the installer token, for the super admin only; null without token file. */
+    private function quickFixLink(): ?string
+    {
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+            return null;
+        }
+        $token = $this->guard->installerToken();
+
+        return $token === null ? null : $this->publicUrls->generate('app_quick_fix_index', ['token' => $token]);
     }
 
     /**
