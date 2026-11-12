@@ -530,6 +530,34 @@
         </div>
         {% endif %}
 
+        {# ── Automatic post-update run (steps after a deploy run by themselves) ── #}
+        {% if privileged|default(false) %}
+        {% set autoUpdate = post_update() %}
+        <div class="section">
+            <h2>{{ 'quick_fix.auto_update.title'|trans({}, 'quick_fix') }}</h2>
+            <p style="font-size:13px;color:var(--muted);margin:0 0 12px;">{{ 'quick_fix.auto_update.intro'|trans({}, 'quick_fix') }}</p>
+            {% if not autoUpdate.enabled %}
+                <p style="font-size:13px;color:var(--muted);">{{ 'quick_fix.auto_update.disabled'|trans({}, 'quick_fix') }}</p>
+            {% endif %}
+            {% if autoUpdate.state is not null %}
+                <div class="repair-row">
+                    <span class="repair-label">{{ ('quick_fix.auto_update.status_' ~ autoUpdate.state.status)|trans({}, 'quick_fix') }} · {{ autoUpdate.state.version }} · {{ autoUpdate.state.finished_at|default(autoUpdate.state.started_at)|slice(0, 16)|replace({'T': ' '}) }}</span>
+                </div>
+                <ul style="margin: 0 0 12px; padding-left: 16px; font-size: 12px;">
+                    {% for step in autoUpdate.state.steps %}
+                    <li{% if step.status == 'failed' %} style="color:var(--danger);"{% endif %}>
+                        <strong>{{ ('quick_fix.auto_update.step_' ~ step.name)|trans({}, 'quick_fix') }}</strong> — {{ step.message }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="POST" action="{{ path('app_quick_fix_auto_update_run') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_auto_update_run') }}">
+                <button type="submit" class="btn-repair" data-submit-once>{{ 'quick_fix.auto_update.button'|trans({}, 'quick_fix') }}</button>
+            </form>
+        </div>
+        {% endif %}
+
         {# ── Regulatory approval chains (S17): database rows vs config/workflows/regulatory ── #}
         {% if privileged|default(false) %}
         <div class="section">

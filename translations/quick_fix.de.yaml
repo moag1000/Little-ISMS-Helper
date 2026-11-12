@@ -60,6 +60,21 @@ quick_fix:
         privileged_hint: 'Migrationen, Schema-Abgleich und Reparaturen brauchen eine Anmeldung als Super-Admin oder das Installer-Token. Ohne Anmeldung zeigt die Seite nur den Stand.'
         login: 'Als Super-Admin anmelden'
         token_alternative: 'Oder Installer-Token eingeben (Link unter Admin > Quick-Fix, Datei var/setup-token):'
+    auto_update:
+        title: 'Automatisches Update'
+        intro: 'Nach einem Deploy laufen ausstehende Migrationen, der Abgleich der Freigabeketten und der Upload-Schutz von selbst (Scheduler alle 15 Minuten, ohne Worker mit dem ersten Seitenaufruf). Destruktive Schema-Änderungen bleiben hier manuell.'
+        disabled: 'Ausgeschaltet (Admin > Quick-Fix-Einstellungen). Schritte laufen nur über den Knopf.'
+        status_ok: 'Zuletzt abgeschlossen'
+        status_failed: 'Zuletzt fehlgeschlagen'
+        status_running: 'Läuft'
+        step_migrations: 'Migrationen'
+        step_workflows: 'Freigabeketten'
+        step_uploads: 'Uploads'
+        button: 'Update-Schritte jetzt ausführen'
+        flash:
+            ok: 'Update-Schritte ausgeführt.'
+            failed: 'Update-Schritte fehlgeschlagen, Details unten.'
+            locked: 'Update-Schritte laufen bereits.'
     workflows:
         title: 'Freigabeketten (regulatorische Workflows)'
         intro: 'Laufende Freigaben lesen ihre Rollen aus der Datenbank; nach einem Update kann sie von config/workflows/regulatory abweichen. Abgleichen behält laufende Freigaben bei und läuft nachts auch von selbst.'
@@ -137,6 +152,9 @@ quick_fix:
         allow_in_dev_only:
             label: 'Nur im Dev-Mode erlauben'
             help: 'Quick-Fix nur erreichbar wenn APP_ENV=dev.'
+        auto_update:
+            label: 'Update-Schritte nach Deploy automatisch ausführen'
+            help: 'Ausstehende Migrationen (vorher Snapshot), Workflow-Abgleich und Upload-Schutz laufen, sobald neuer Code erkannt wird. Ausschalten, wenn vor jedem Update erst ein Backup bestätigt werden soll.'
         ip_allowlist:
             label: 'IP-Allowlist'
             help: 'Komma-getrennte Liste erlaubter Client-IPs oder CIDR-Bereiche (z.B. 10.0.0.5, 192.168.1.0/24, ::1). Leer = deaktiviert.'

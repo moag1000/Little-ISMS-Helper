@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Service\AuditLogger;
 use App\Service\QuickFixGuard;
+use App\Service\Update\PostUpdateRunner;
 use App\Workflow\Mirror\RegulatoryWorkflowMirror;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,6 +61,33 @@ final class QuickFixWorkflowController extends AbstractController
         if ($result['kept_steps'] > 0) {
             $this->addFlash('warning', 'quick_fix.workflows.flash.kept_steps');
         }
+
+        return $this->redirectToRoute('app_quick_fix_index');
+    }
+
+    /**
+     * Run the automatic post-update steps again (after the operator fixed what made them fail,
+     * or when the automatic run is switched off). Same guard as every Quick-Fix write.
+     */
+    #[Route('/quick-fix/auto-update/run', name: 'app_quick_fix_auto_update_run', methods: ['POST'])]
+    #[IsCsrfTokenValid('quick_fix_auto_update_run')]
+    public function runAutoUpdate(Request $request, QuickFixGuard $guard, PostUpdateRunner $runner): Response
+    {
+        if (!$guard->mayRunPrivileged($request)) {
+            $privilegedOnly = $guard->mayAccess($request);
+
+            return $this->render('quick_fix/locked.html.twig', [
+                'token_required' => $guard->isTokenRequired() || $privilegedOnly,
+                'privileged_only' => $privilegedOnly,
+            ], new Response('', Response::HTTP_FORBIDDEN));
+        }
+
+        $result = $runner->run('quick_fix', true);
+        $this->addFlash($result['status'] === 'ok' ? 'success' : 'warning', match ($result['status']) {
+            'ok' => 'quick_fix.auto_update.flash.ok',
+            'locked' => 'quick_fix.auto_update.flash.locked',
+            default => 'quick_fix.auto_update.flash.failed',
+        });
 
         return $this->redirectToRoute('app_quick_fix_index');
     }

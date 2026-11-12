@@ -37,6 +37,8 @@ class Schedule implements ScheduleProviderInterface
      * @var list<array{0: string, 1: string}> [cron expression, command line]
      */
     public const array COMMAND_TASKS = [
+        // New code after a deploy: pending migrations, workflow definitions, upload protection — by themselves.
+        ['*/15 * * * *', 'app:update:run'],
         ['*/15 * * * *', 'app:process-timed-workflows'],
         // The one reminder path: urgent hour deadlines every run, the daily
         // digest at each organisation's digest hour (default 07:00).

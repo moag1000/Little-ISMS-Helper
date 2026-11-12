@@ -27,6 +27,18 @@ Branchen-Baselines je Organisation an die Erfüllungszeile. Jede Organisation be
 bisher sah; auf Mehr-Organisations-Instanzen sind die Werte danach getrennt. Die globale Anforderung
 behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
+**Update-Schritte laufen jetzt von selbst.** Erkennt die Anwendung neuen Code (Version, neueste Migration
+oder Freigabeketten-YAML weichen vom letzten Lauf ab), führt sie aus: ausstehende Migrationen (vorher ein
+Snapshot, danach der nicht-destruktive Schema-Abgleich), „Workflow-Definitionen abgleichen“ und den
+Upload-Schutz. Auslöser: der Scheduler alle 15 Minuten (`app:update:run`), ohne Worker/Cron der erste
+Seitenaufruf nach dem Deploy (nach der Antwort). Ergebnis unter `/quick-fix` („Automatisches Update“) und im
+Audit-Log (`system.auto_update.completed|failed`). Ein Fehler wird nicht wiederholt, bis neuer Code kommt
+oder jemand dort „Update-Schritte jetzt ausführen“ drückt. **Das heißt: die Migrationen dieses Releases
+laufen beim ersten Aufruf nach dem Deploy ohne Klick — Backup vorher.** Wer vor jedem Update erst selbst
+bestätigen will, schaltet es unter Admin > Quick-Fix-Einstellungen aus („Update-Schritte nach Deploy
+automatisch ausführen“). Weiter manuell bleiben: destruktive Schema-Änderungen, Datenreparatur
+(Orphans, Mandanten-Abweichungen, Dubletten), „Als ausgeführt markieren“.
+
 ### Vor dem Update
 
 - **Quick-Fix-Link sichern (S33):** Migrationen und Schema-Abgleich laufen nicht mehr ohne Anmeldung. Nach
