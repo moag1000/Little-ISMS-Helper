@@ -82,10 +82,30 @@ final class IncidentReportingMarkTest extends WebTestCase
         $this->client->loginUser($this->user(['ROLE_MANAGER']));
         $at = (new DateTimeImmutable('-1 day'))->setTime(9, 30);
 
-        $this->post('earlyWarningReportedAt', $at->format('Y-m-d\TH:i'));
+        $this->post('earlyWarningReportedAt', $at->format('Y-m-d\TH:i'), 'Portal-Quittung 4711');
 
         self::assertResponseRedirects();
         self::assertSame($at->format('Y-m-d H:i'), $this->reload()->getEarlyWarningReportedAt()?->format('Y-m-d H:i'));
+    }
+
+    #[Test]
+    public function aBackdatedTimeWithoutPortalReferenceIsRefused(): void
+    {
+        $this->client->loginUser($this->user(['ROLE_MANAGER']));
+
+        $this->post('earlyWarningReportedAt', (new DateTimeImmutable('-1 day'))->format('Y-m-d\TH:i'));
+
+        self::assertNull($this->reload()->getEarlyWarningReportedAt());
+    }
+
+    #[Test]
+    public function aTimeWithinClockSkewNeedsNoReason(): void
+    {
+        $this->client->loginUser($this->user(['ROLE_MANAGER']));
+
+        $this->post('earlyWarningReportedAt', (new DateTimeImmutable('-5 minutes'))->format('Y-m-d\TH:i'));
+
+        self::assertNotNull($this->reload()->getEarlyWarningReportedAt());
     }
 
     #[Test]
@@ -112,7 +132,7 @@ final class IncidentReportingMarkTest extends WebTestCase
         self::assertLessThan(120, abs((new DateTimeImmutable())->getTimestamp() - $reported->getTimestamp()));
     }
 
-    private function post(string $field, string $reportedAt): void
+    private function post(string $field, string $reportedAt, string $reason = ''): void
     {
         $this->client->request('GET', '/');
         $session = $this->client->getRequest()->getSession();
@@ -122,6 +142,7 @@ final class IncidentReportingMarkTest extends WebTestCase
         $this->client->request('POST', '/en/incident/' . $this->incident->getId() . '/reporting/' . $field . '/mark', [
             '_token' => $token,
             'reported_at' => $reportedAt,
+            'backdate_reason' => $reason,
         ]);
     }
 

@@ -292,6 +292,18 @@
     entityType: 'RiskAppetite', entityId: appetite.id
 } only %}
 
+{# S34: formal approval — CISO / top management only, never a form field #}
+{% if (is_granted('ROLE_TOP_MGMT') or is_granted('ROLE_CISO')) and not appetite.isApproved() %}
+    <form method="post" action="{{ path('app_risk_appetite_approve', {id: appetite.id}) }}" class="mb-4"
+          data-controller="ui-actions" data-action="submit->ui-actions#confirm"
+          data-ui-actions-message-param="{{ 'risk_appetite.approve.confirm'|trans({}, 'risk_appetite') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('risk_appetite_approve_' ~ appetite.id) }}">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary" data-testid="risk-appetite-approve">
+            {{ 'risk_appetite.action.approve'|trans({}, 'risk_appetite') }}
+        </button>
+    </form>
+{% endif %}
+
 {# Delete Section - Admin Only #}
 {% if is_granted('ROLE_ADMIN') %}
 {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}

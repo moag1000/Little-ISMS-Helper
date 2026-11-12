@@ -151,6 +151,27 @@ behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
 ### Geändertes Verhalten
 
+- **Freigaben an ihre Schranke gebunden (S34):**
+  - *Meldezeit (NIS-2 Art. 23, DORA Art. 19):* „Als gemeldet markieren“ nimmt ohne Eingabe die Serverzeit. Ein
+    Meldezeitpunkt, der mehr als 15 Minuten vor „jetzt“ liegt, braucht eine Portal-Referenz als Grund; die
+    Rückdatierung steht mit Akteur, Meldezeit und Serverzeit als Audit-Eintrag `incident.report_backdated`.
+  - *Vererbung:* „Überschreiben“ einer Erfüllung ist ein Antrag. Der Wert wirkt erst, wenn die benannte zweite
+    Person (ROLE_MANAGER) in ihrer eigenen Sitzung („Mein Tag“ / Vier-Augen-Eingang) bestätigt; vorher bleibt die
+    Erfüllung unverändert. Werte 0–100. Offene alte Anträge dieser Art wirken beim Bestätigen wie neue.
+  - *Vier-Augen-Eingang:* Den Genehmiger einer Anfrage ändert nur noch ein Admin, solange sie offen ist
+    (Audit `four_eyes.approver_reassigned`).
+  - *Richtlinien:* „Vorgänger-Version wiederherstellen“ verlangt einen Grund und geht über `restore_to_approved`,
+    das jetzt Vier-Augen ist (Gegenzeichnung wie `restore`); die aktuelle Version wird dabei nicht mehr
+    automatisch archiviert (eigener Schritt „Archivieren“). Wer sie nicht sehen darf, kann sie nicht
+    wiederherstellen.
+  - *Risikobereitschaft:* `Freigegeben von/am` sind im Formular gesperrt und über REST/MCP nur lesbar; die
+    Freigabe ist die Aktion „Freigeben“ (ROLE_CISO oder ROLE_TOP_MGMT). Ändert ein Admin später Werte, wird die
+    Freigabe zurückgenommen. Bestehende Freigaben bleiben; neue Risikoakzeptanzen brauchen weiter eine Freigabe.
+  - *BC-Übung:* Nach „abgeschlossen“ sind Ergebnisfelder (Ergebnis, Erfolgskriterien, Bewertung, RTO/RPO, Befunde,
+    Übungsdatum) gesperrt; ein Manager korrigiert sie nur mit Grund (REST/MCP: Header `X-Correction-Reason`),
+    Audit `end_state_corrected`. `actualRpoAchieved` ist über REST/MCP nur noch lesbar. Kein Migrationsschritt.
+  - *Gate 105:* ein Entity-Feld, dessen Name Nachweis ist (`approved…`, `verified…`, `actual…`, `last…Review…`),
+    muss sagen, wer es schreibt (`phpstan-gates-baseline.neon` enthält 13 Altfälle).
 - **Datenschutz-Datensätze nur für Berechtigte (S33):** Betroffenenanfragen und Datenpannen (Liste, Detail,
   Dashboard, globale Suche) sehen nur noch Manager, die DSB-Rolle und die für den Datensatz Verantwortlichen
   (Bearbeiter, DSB am Datensatz, Vertretungen). Andere Konten, auch Auditoren und Leitung ohne Zuständigkeit,

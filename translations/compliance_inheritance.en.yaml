@@ -4,7 +4,7 @@ compliance_inheritance:
         bulk_no_selection: 'No entries selected.'
         confirmed: 'Confirmed.'
         rejected: 'Rejected.'
-        overridden: 'Overridden.'
+        overridden: 'Override requested, effective after counter-signature.'
     status:
         pending_review: 'Review pending'
         confirmed: 'Confirmed'

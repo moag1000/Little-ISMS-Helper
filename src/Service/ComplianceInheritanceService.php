@@ -20,6 +20,7 @@ use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * Orchestrates mapping-based inheritance suggestions with mandatory review.
@@ -42,6 +43,7 @@ class ComplianceInheritanceService
         private readonly AuditLogger $auditLogger,
         private readonly CompliancePolicyService $policy,
         private readonly FulfillmentDerivationService $derivation,
+        private readonly ?Security $security = null,
     ) {
     }
 
@@ -277,6 +279,11 @@ class ComplianceInheritanceService
         );
     }
 
+    /**
+     * S34 (R3b): an override is a request. Nothing is written here — the value reaches
+     * the fulfilment (through the one writer) only when the second person approves
+     * ({@see applyApprovedOverride()}), so a manager alone never sets a fulfilment.
+     */
     public function overrideInheritance(
         FulfillmentInheritanceLog $log,
         User $reviewer,
@@ -284,23 +291,16 @@ class ComplianceInheritanceService
         string $reason,
         ?User $fourEyesApprover = null,
     ): void {
+        $this->assertPending($log);
         $this->assertMinLength($reason, $this->minOverrideReasonLength(), 'override_reason');
-        if ($newValue < 0 || $newValue > 150) {
-            throw new \App\Exception\InvalidArgument\InvalidArgumentException('Override value must be within 0..150.', 'newValue');
+        if ($newValue < 0 || $newValue > 100) {
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('Override value must be within 0..100.', 'newValue');
         }
         if ($fourEyesApprover === null || $fourEyesApprover->getId() === $reviewer->getId()) {
             throw new \App\Exception\BusinessRule\BusinessRuleException('Override requires a different approver (4-eyes).', 'self_approval');
         }
-
-        $log->setReviewStatus(FulfillmentInheritanceLog::STATUS_OVERRIDDEN)
-            ->setOverriddenBy($reviewer)
-            ->setOverriddenAt(new DateTimeImmutable())
-            ->setOverrideReason($reason)
-            ->setOverrideValue($newValue);
-
-        $fulfillment = $log->getFulfillment();
-        if ($fulfillment !== null) {
-            $this->writeSuggested($fulfillment, $newValue, $reviewer, $reason);
+        if ($this->security !== null && !$this->security->isGrantedForUser($fourEyesApprover, 'ROLE_MANAGER')) {
+            throw new \App\Exception\BusinessRule\BusinessRuleException('The approver of an override needs the manager role.', 'approver_role');
         }
 
         $this->fourEyesService->requestApproval(
@@ -314,6 +314,42 @@ class ComplianceInheritanceService
             specificApprover: $fourEyesApprover,
         );
 
+        $this->auditLogger->logCustom(
+            'compliance.inheritance.override_requested',
+            'FulfillmentInheritanceLog',
+            $log->getId(),
+            null,
+            [
+                'reviewer_id' => $reviewer->getId(),
+                'value' => $newValue,
+                'approver_id' => $fourEyesApprover->getId(),
+            ],
+            'Inheritance override requested, waiting for the second person',
+        );
+    }
+
+    /** S34 (R3b): the approved override takes effect; called when the second person approved. */
+    public function applyApprovedOverride(\App\Entity\FourEyesApprovalRequest $request, User $approver): void
+    {
+        $payload = $request->getPayload();
+        $log = $this->inheritanceRepository->find((int) ($payload['inheritance_log_id'] ?? 0));
+        $reviewer = $request->getRequestedBy();
+        $tenantId = $request->getTenant()?->getId();
+        $fulfillment = $log?->getFulfillment();
+        if ($log === null || $reviewer === null || $tenantId === null
+            || $fulfillment?->getTenant()?->getId() !== $tenantId
+            || !$log->isPendingReview()) {
+            return; // stale: another decision was taken meanwhile
+        }
+        $value = min(100, max(0, (int) ($payload['override_value'] ?? 0)));
+        $reason = (string) ($payload['reason'] ?? '');
+
+        $log->setReviewStatus(FulfillmentInheritanceLog::STATUS_OVERRIDDEN)
+            ->setOverriddenBy($reviewer)
+            ->setOverriddenAt(new DateTimeImmutable())
+            ->setOverrideReason($reason)
+            ->setOverrideValue($value);
+        $this->writeSuggested($fulfillment, $value, $reviewer, $reason);
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
@@ -321,11 +357,8 @@ class ComplianceInheritanceService
             'FulfillmentInheritanceLog',
             $log->getId(),
             null,
-            [
-                'reviewer_id' => $reviewer->getId(),
-                'value' => $newValue,
-            ],
-            'Inheritance suggestion overridden',
+            ['reviewer_id' => $reviewer->getId(), 'approver_id' => $approver->getId(), 'value' => $value],
+            'Inheritance suggestion overridden after approval',
         );
     }
 

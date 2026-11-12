@@ -66,6 +66,13 @@ risk_appetite:
     exceeds_by: 'Exceeds by'
     appetite_percentage: 'Appetite utilization'
     and_more_risks: 'And %count% more …'
+    action:
+        approve: 'Approve'
+    approve:
+        confirm: 'Approve this risk appetite as it stands?'
+    flash:
+        approved: 'Approved.'
+        approval_withdrawn: 'Approval withdrawn: the values changed.'
     delete:
         warning: 'This action cannot be undone. Please confirm deletion.'
         confirm: 'Do you really want to delete this entry?'

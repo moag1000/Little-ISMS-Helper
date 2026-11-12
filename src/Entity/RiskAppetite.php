@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Attribute\ApiReadOnlyEvidence;
 use App\Repository\RiskAppetiteRepository;
 use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\DBAL\Types\Types;
@@ -85,7 +86,8 @@ class RiskAppetite
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'approved_by_id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
+    #[Groups(['risk_appetite:read'])]
+    #[ApiReadOnlyEvidence('RiskAppetiteController::approve (S34: formal approval by CISO or top management)')]
     #[SameTenantOwner]
     private ?User $approvedBy = null;
 
@@ -93,7 +95,8 @@ class RiskAppetite
      * Date when this risk appetite was approved
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
+    #[Groups(['risk_appetite:read'])]
+    #[ApiReadOnlyEvidence('RiskAppetiteController::approve (S34: formal approval by CISO or top management)')]
     private ?DateTimeInterface $approvedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -310,5 +313,34 @@ class RiskAppetite
     public function isApproved(): bool
     {
         return $this->approvedBy instanceof User && $this->approvedAt instanceof DateTimeInterface;
+    }
+
+    /**
+     * S34 (R6): hash of everything the approval vouches for (the thresholds and scope, not
+     * the approval itself): when it changes after an edit, the approval is withdrawn.
+     */
+    public function valueFingerprint(): string
+    {
+        $values = get_object_vars($this);
+        unset($values['id'], $values['tenant'], $values['approvedBy'], $values['approvedAt'], $values['createdAt'], $values['updatedAt']);
+
+        return hash('sha256', serialize($values));
+    }
+
+    /** S34: stamped only by the approve action (CISO / top management). */
+    public function approve(User $by, DateTimeInterface $at): static
+    {
+        $this->approvedBy = $by;
+        $this->approvedAt = $at;
+
+        return $this;
+    }
+
+    public function withdrawApproval(): static
+    {
+        $this->approvedBy = null;
+        $this->approvedAt = null;
+
+        return $this;
     }
 }

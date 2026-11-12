@@ -66,6 +66,13 @@ risk_appetite:
     exceeds_by: 'Überschreitung um'
     appetite_percentage: 'Auslastung des Appetits'
     and_more_risks: 'Und %count% weitere …'
+    action:
+        approve: 'Freigeben'
+    approve:
+        confirm: 'Risikobereitschaft in dieser Fassung formal freigeben?'
+    flash:
+        approved: 'Freigegeben.'
+        approval_withdrawn: 'Freigabe zurückgenommen: die Werte wurden geändert.'
     delete:
         warning: 'Dieser Vorgang kann nicht rückgängig gemacht werden. Bitte bestätigen Sie das Löschen.'
         confirm: 'Wollen Sie diesen Eintrag wirklich löschen?'

@@ -54,3 +54,4 @@ four_eyes:
         approved: 'Approval granted.'
         rejected: 'Approval rejected.'
         approver_updated: Approver updated.
+        not_pending: Decided requests keep their approver.

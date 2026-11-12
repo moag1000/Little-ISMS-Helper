@@ -35,9 +35,9 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // S12 / ISO 22301 8.5: once the exercise is completed (lifecycle, four eyes) the
-        // achieved RTO/RPO are its result and no longer change by editing.
-        foreach (['actualRtoAchieved', 'actualRpoAchieved'] as $field) {
+        // S12/S34, ISO 22301 8.5: once completed, the result fields (`#[FrozenInEndState]`) are read-only;
+        // a manager corrects them with a reason (REST/MCP: X-Correction-Reason).
+        foreach (['actualRtoAchieved', 'actualRpoAchieved', 'results', 'whatWentWell', 'areasForImprovement', 'findings', 'successRating'] as $field) {
             DerivedField::readOnlyWhen($builder, $field, static fn (BCExercise $e): ?array => $e->getStatus() === BCExerciseStatus::Completed->value
                 ? ['bc_exercises.help.result_frozen_after_completion', []]
                 : null);
