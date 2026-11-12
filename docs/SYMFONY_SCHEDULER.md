@@ -45,6 +45,7 @@ Commands stehen in `Schedule::COMMAND_TASKS`, Messages in `addBuiltInTasks()`.
 | `0 3 * * *` | `CleanupExpiredSessionsMessage` | Abgelaufene Sessions löschen |
 | `15 3 * * *` | `app:policy-wizard:purge-sandboxes` | Sandbox-Läufe des Policy-Wizards löschen (> 7 Tage) |
 | `35 3 * * *` | `app:import:purge-abandoned` | Upload-Dateien nie festgeschriebener Bulk-Importe löschen (> 30 Tage); festgeschriebene bleiben als Nachweis |
+| `*/15 * * * *` | `app:update:run` | Nach einem Deploy: ausstehende Migrationen, Workflow-Abgleich, Upload-Schutz (nur bei geändertem Code-Fingerabdruck) |
 | `10 4 * * *` | `app:uploads:protect` | Nachweisdateien aus `public/uploads/` nach `var/uploads/` verschieben |
 | `0 4 * * 0` | `EnforceRetentionMessage` | Aufbewahrungsrichtlinien durchsetzen (DSGVO Art. 5(1)(e)) |
 | `0 2 * * 0` | `app:tisax:purge-old-ip-addresses` | IP-Adressen alter TISAX-Bestätigungen entfernen |

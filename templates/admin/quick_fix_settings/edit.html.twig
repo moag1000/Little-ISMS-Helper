@@ -24,6 +24,16 @@
 
                         <div class="form-check form-switch mb-4">
                             <input class="form-check-input" type="checkbox" role="switch"
+                                   id="auto_update" name="auto_update" value="1"
+                                   {% if current.auto_update %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" for="auto_update">
+                                {{ 'quick_fix.settings.auto_update.label'|trans({}, 'quick_fix') }}
+                            </label>
+                            <div class="form-text">{{ 'quick_fix.settings.auto_update.help'|trans({}, 'quick_fix') }}</div>
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch"
                                    id="fallback_ui_enabled" name="fallback_ui_enabled" value="1"
                                    {% if current.fallback_ui_enabled %}checked{% endif %}>
                             <label class="form-check-label fw-semibold" for="fallback_ui_enabled">

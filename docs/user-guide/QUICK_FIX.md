@@ -22,6 +22,19 @@ zeigen. Die Seite ist auch direkt aufrufbar, etwa nach jedem Update oder bei:
 Ist die Fallback-UI in den Quick-Fix-Einstellungen abgeschaltet, erscheint die
 normale Fehlerseite.
 
+### Automatisches Update
+
+Nach einem Deploy muss niemand `/quick-fix` öffnen: `App\Service\Update\PostUpdateRunner` vergleicht den
+Fingerabdruck des Codes (Version, neueste Migration, Freigabeketten-YAML) mit dem des letzten Laufs
+(`var/post-update-state.json`) und führt bei Abweichung einmalig, gesperrt (`var/post-update.lock`) und
+idempotent aus: ausstehende Migrationen (mit Snapshot, danach nicht-destruktiver Schema-Abgleich),
+Workflow-Definitionen abgleichen, Upload-Schutz. Auslöser ist der Scheduler (`app:update:run`, alle 15 Minuten);
+ohne Worker/Cron startet der erste Seitenaufruf den Lauf nach der Antwort. Der Abschnitt „Automatisches Update“
+auf dieser Seite zeigt Stand und Schritte; ein Fehler (Migration schlägt fehl) stoppt den Lauf, wird im
+Audit-Log (`system.auto_update.failed`) festgehalten und nicht von selbst wiederholt — Ursache beheben, dann
+„Update-Schritte jetzt ausführen“ (Super-Admin oder Installer-Token). Abschaltbar unter Admin >
+Quick-Fix-Einstellungen. Manuell bleiben destruktive Schema-Änderungen und die Datenreparaturen.
+
 ---
 
 ## Was kann ich tun?

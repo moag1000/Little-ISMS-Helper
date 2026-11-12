@@ -60,6 +60,21 @@ quick_fix:
         privileged_hint: 'Migrations, schema reconcile and repairs need a super admin login or the installer token. Without login the page shows the status only.'
         login: 'Sign in as super admin'
         token_alternative: 'Or enter the installer token (link under Admin > Quick Fix, file var/setup-token):'
+    auto_update:
+        title: 'Automatic update'
+        intro: 'After a deploy, pending migrations, the approval-chain alignment and upload protection run by themselves (scheduler every 15 minutes, without a worker on the first page request). Destructive schema changes stay manual here.'
+        disabled: 'Switched off (Admin > Quick-Fix settings). Steps only run via the button.'
+        status_ok: 'Last run succeeded'
+        status_failed: 'Last run failed'
+        status_running: 'Running'
+        step_migrations: 'Migrations'
+        step_workflows: 'Approval chains'
+        step_uploads: 'Uploads'
+        button: 'Run update steps now'
+        flash:
+            ok: 'Update steps completed.'
+            failed: 'Update steps failed, details below.'
+            locked: 'Update steps are already running.'
     workflows:
         title: 'Approval chains (regulatory workflows)'
         intro: 'Running approvals read their roles from the database, which can lag behind config/workflows/regulatory after an update. Aligning keeps running approvals on their step and also runs every night.'
@@ -137,6 +152,9 @@ quick_fix:
         allow_in_dev_only:
             label: 'Dev environment only'
             help: 'Quick Fix only reachable when APP_ENV=dev.'
+        auto_update:
+            label: 'Run update steps automatically after a deploy'
+            help: 'Pending migrations (snapshot first), workflow alignment and upload protection run as soon as new code is detected. Switch off to confirm a backup before every update.'
         ip_allowlist:
             label: 'IP allowlist'
             help: 'Comma-separated list of permitted client IPs or CIDR ranges (e.g. 10.0.0.5, 192.168.1.0/24, ::1). Empty = disabled.'

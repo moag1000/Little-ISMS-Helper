@@ -50,6 +50,7 @@ class QuickFixSettingsController extends AbstractController
             'require_installer_token' => (bool) $this->systemSettings->getSetting(self::CATEGORY, 'require_installer_token', false),
             'allow_in_dev_only' => (bool) $this->systemSettings->getSetting(self::CATEGORY, 'allow_in_dev_only', false),
             'ip_allowlist' => (string) $this->systemSettings->getSetting(self::CATEGORY, 'ip_allowlist', ''),
+            'auto_update' => (bool) $this->systemSettings->getSetting(self::CATEGORY, 'auto_update', true),
         ];
 
         if ($request->isMethod('POST')) {
@@ -64,6 +65,7 @@ class QuickFixSettingsController extends AbstractController
                 'require_installer_token' => $request->request->getBoolean('require_installer_token'),
                 'allow_in_dev_only' => $request->request->getBoolean('allow_in_dev_only'),
                 'ip_allowlist' => trim((string) $request->request->get('ip_allowlist', '')),
+                'auto_update' => $request->request->getBoolean('auto_update'),
             ];
 
             // Reject malformed allowlist entries up front: an invalid value
