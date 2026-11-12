@@ -62,6 +62,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
         // Mock all modules active
         $moduleService = $this->createMock(ModuleConfigurationService::class);
         $moduleService->method('isModuleActive')->willReturn(true);
+        $moduleService->method('isModuleActiveForTenant')->willReturn(true);
         $container->set(ModuleConfigurationService::class, $moduleService);
 
         $uid = uniqid('bulk_priv_', true);
