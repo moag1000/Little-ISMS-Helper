@@ -62,6 +62,7 @@ final class PublicRoutesInventoryTest extends WebTestCase
         'app_quick_fix_job_status' => 'Quick-Fix job polling; quick-fix jobs only',
         'app_quick_fix_job_progress' => 'Quick-Fix progress page; quick-fix jobs only',
         'app_quick_fix_workflows_sync' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
+        'app_quick_fix_auto_update_run' => 'Quick-Fix; QuickFixGuard::mayRunPrivileged + CSRF',
     ];
 
     /**
