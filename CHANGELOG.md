@@ -3,6 +3,37 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [4.1.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v4.0.0...v4.1.0) (2026-11-12)
+
+
+### Added
+
+* **a11y:** W11 – Barrierefreiheit der Kernseiten, Gate 103 ([#1215](https://github.com/moag1000/Little-ISMS-Helper/issues/1215)) ([30e7321](https://github.com/moag1000/Little-ISMS-Helper/commit/30e7321608baa5c2c9d3ecc0cb8952ec1f285c2f))
+* **gates:** T4 – Gate-Mutationen rot, Gates 94/97/85 als PHPStan-Regeln, Router-Sweeps ([#1226](https://github.com/moag1000/Little-ISMS-Helper/issues/1226)) ([69b7447](https://github.com/moag1000/Little-ISMS-Helper/commit/69b744756ebd792e468c5b4224072c9a6e239993))
+* **i18n:** Nachweise zweisprachig — PDFs, Jobs und geplante Berichte in der Sprache des Lesers (W10, Gate 102) ([#1217](https://github.com/moag1000/Little-ISMS-Helper/issues/1217)) ([42024b9](https://github.com/moag1000/Little-ISMS-Helper/commit/42024b9a3ad4b642c3f483f5274937b8c5290dc6))
+* **modules:** S35 – Modulgrenzen konsistent (Gate 106) ([#1229](https://github.com/moag1000/Little-ISMS-Helper/issues/1229)) ([c02fbc5](https://github.com/moag1000/Little-ISMS-Helper/commit/c02fbc55aa48433dd52bf8e43857c7ffe8660330))
+* **perf:** S31 Listen, Audit-Log und Compliance-Exporte in SQL (Teil 2) ([#1224](https://github.com/moag1000/Little-ISMS-Helper/issues/1224)) ([bb64b9a](https://github.com/moag1000/Little-ISMS-Helper/commit/bb64b9a9b9e92c84b113edb3f58ed5c70ab56854))
+* **perf:** S31 Obergrenzen für Abfragen und Fristen in SQL (Teil 1) ([#1221](https://github.com/moag1000/Little-ISMS-Helper/issues/1221)) ([8341346](https://github.com/moag1000/Little-ISMS-Helper/commit/8341346c74af0e1985011264627303c9aac15c64))
+* **quick-fix:** Update-Schritte nach Deploy automatisch ausführen ([#1231](https://github.com/moag1000/Little-ISMS-Helper/issues/1231)) ([6bbd0a0](https://github.com/moag1000/Little-ISMS-Helper/commit/6bbd0a0c6f658c0caf70bba4945a8237a5c9bfa5))
+
+
+### Fixed
+
+* **a11y:** W11 – axe-Restbefunde auf den Kernseiten ([#1223](https://github.com/moag1000/Little-ISMS-Helper/issues/1223)) ([8adb814](https://github.com/moag1000/Little-ISMS-Helper/commit/8adb814dcebab5a06459665c64305cc9e83ccc3a))
+* **approvals:** S34 – Freigaben an ihre Schranke binden (Gate 105) ([#1228](https://github.com/moag1000/Little-ISMS-Helper/issues/1228)) ([73b3ee2](https://github.com/moag1000/Little-ISMS-Helper/commit/73b3ee2c298772797a0d2ef32b7de49cab489dee))
+* **audit-log:** HMAC-Kette je Organisation prüfbar, Prüfung als Job (B3) ([#1220](https://github.com/moag1000/Little-ISMS-Helper/issues/1220)) ([7bf77a0](https://github.com/moag1000/Little-ISMS-Helper/commit/7bf77a091b2a1bebc04a256d14d5e6da5421bd28))
+* **deletion:** S29 – Nachweise werden archiviert statt gelöscht, Aufbewahrungsminima, Löschvertrag ([#1219](https://github.com/moag1000/Little-ISMS-Helper/issues/1219)) ([8f32cac](https://github.com/moag1000/Little-ISMS-Helper/commit/8f32cacf3936c3998aba84464050bc08879feec0))
+* **reports:** S32 – Berichte, Exporte, Benachrichtigungen und Feed folgen Modul, Rolle und Organisation ([#1216](https://github.com/moag1000/Little-ISMS-Helper/issues/1216)) ([c82036d](https://github.com/moag1000/Little-ISMS-Helper/commit/c82036ddc5af2c12ab12877f223b44645c09617f))
+* **roles:** S28 – Rollenlinie nachziehen ([#1225](https://github.com/moag1000/Little-ISMS-Helper/issues/1225)) ([1e7c279](https://github.com/moag1000/Little-ISMS-Helper/commit/1e7c279b2c6caff41573d0d0ab146b99e0d97394))
+* **security:** S26 – Organisations-Restore ändert keine Nachweise ([#1212](https://github.com/moag1000/Little-ISMS-Helper/issues/1212)) ([47990cd](https://github.com/moag1000/Little-ISMS-Helper/commit/47990cd885315752c1763e720efe371f2057a02c))
+* **security:** S33 – Quick-Fix nur mit Super-Admin/Token, Datenschutz-Lesezugriff per Voter (Gate 104) ([#1230](https://github.com/moag1000/Little-ISMS-Helper/issues/1230)) ([baf85dd](https://github.com/moag1000/Little-ISMS-Helper/commit/baf85dd97a87eb002a50a6b1249c2328b53cd7f2))
+* **suggestions:** S30 – Vorschlags-Queue nur für Berechtigte, Annahme mit dem Recht des UI-Schreibwegs ([#1218](https://github.com/moag1000/Little-ISMS-Helper/issues/1218)) ([3bee19f](https://github.com/moag1000/Little-ISMS-Helper/commit/3bee19f96dc24a57634661e233cd671466b16fdb))
+
+
+### Documentation
+
+* **skills:** add norm-abdeckung-bewerten skill ([#1227](https://github.com/moag1000/Little-ISMS-Helper/issues/1227)) ([4b1c129](https://github.com/moag1000/Little-ISMS-Helper/commit/4b1c1298954b8a357265c1232a0f3bdc9ab677c9))
+
 ## [4.0.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.16.1...v4.0.0) (2026-11-09)
 
 
