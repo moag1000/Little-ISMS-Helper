@@ -39,12 +39,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * RBAC: ROLE_MANAGER or a named contact of the profile for VIEW/EDIT/EXPORT;
  * ROLE_ADMIN for MARK_REPORTED
  */
+// @no-module-gate-required: every action checks nis2_dora (the duty's module; the profile rows are hub data of eu_authority_reporting)
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/authority/nis2-registration', name: 'nis2_registration_')]
 // ROLE_USER here; Nis2RegistrationProfileVoter decides per action (manager,
 // or a named contact of the profile).
 #[IsGranted('ROLE_USER')]
-#[RequiresModule('eu_authority_reporting')]
 final class Nis2RegistrationController extends AbstractController
 {
     use ModuleGatedControllerTrait;

@@ -222,6 +222,7 @@ parameters:
             done: "item.getStatus() != 'active'"
             title: "words(item.getFrameworkCode(), item.getCertNumber(), item.getCertBody())"
             roles: [ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_CISO]
+            module: compliance
             link: app_compliance_certificate_index
             link_id: false
             bucket: certificates_expiring
