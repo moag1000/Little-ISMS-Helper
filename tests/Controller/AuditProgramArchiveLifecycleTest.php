@@ -43,6 +43,7 @@ final class AuditProgramArchiveLifecycleTest extends WebTestCase
 
         $modules = $this->createMock(ModuleConfigurationService::class);
         $modules->method('isModuleActive')->willReturn(true);
+        $modules->method('isModuleActiveForTenant')->willReturn(true);
         $container->set(ModuleConfigurationService::class, $modules);
 
         $uid = uniqid('ap_lc_', true);

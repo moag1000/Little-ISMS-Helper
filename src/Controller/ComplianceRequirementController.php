@@ -36,6 +36,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('compliance')]
 class ComplianceRequirementController extends AbstractController
 {
     use LocalizedFlashTrait;

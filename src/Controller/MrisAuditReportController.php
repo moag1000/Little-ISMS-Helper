@@ -39,6 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * LIH-spezifische Hilfsgröße. MRIS v1.5 selbst definiert keine aggregierte
  * Bewertung. Audit-relevant sind die Einzeldimensionen.
  */
+// @no-module-gate-required: gated by the mris module through its route; reads frameworks only as the report subject
 #[IsGranted('ROLE_AUDITOR')]
 #[RequiresModule('mris')]
 final class MrisAuditReportController extends AbstractController

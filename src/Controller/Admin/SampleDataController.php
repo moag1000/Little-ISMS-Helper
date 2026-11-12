@@ -33,6 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *    {@see TenantContext::getCurrentTenant()} (no cross-tenant form
  *    field exposed).
  */
+// @no-module-gate-required: setup helper that loads demo rows for every module the organisation has switched on; each loader checks its own module
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class SampleDataController extends AbstractController
 {

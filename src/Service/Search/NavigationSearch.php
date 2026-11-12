@@ -788,7 +788,7 @@ class NavigationSearch
                 'aliases' => ['Standort', 'Standorte', 'Location', 'Site', 'Niederlassung', 'Büro', 'Office', 'Filiale'],
                 'icon' => 'fa-icon--nav-location',
                 'roles' => ['ROLE_USER'],
-                'requiresModule' => null,
+                'requiresModule' => 'locations',
             ],
             [
                 'route' => 'app_location_map',

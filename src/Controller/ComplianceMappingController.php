@@ -34,6 +34,7 @@ use Symfony\Component\Workflow\Registry;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('compliance')]
 class ComplianceMappingController extends AbstractController
 {
     private const string LIFECYCLE = 'compliance_mapping_lifecycle';

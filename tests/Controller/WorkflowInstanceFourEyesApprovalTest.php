@@ -40,10 +40,13 @@ final class WorkflowInstanceFourEyesApprovalTest extends WebTestCase
         $container = static::getContainer();
 
         $moduleService = $this->createMock(\App\Service\ModuleConfigurationService::class);
-        $moduleService->method('isModuleActive')->willReturnCallback(
-            static fn (string $key): bool => in_array($key, [
-                'core', 'authentication', 'documents', 'audit_logging', 'workflows', 'objectives',
-            ], true),
+        // Risk (the record type of the fixture chains) is a required module since S35, like the others here.
+        $active = static fn (string $key): bool => in_array($key, [
+            'core', 'authentication', 'documents', 'audit_logging', 'workflows', 'objectives', 'risks',
+        ], true);
+        $moduleService->method('isModuleActive')->willReturnCallback($active);
+        $moduleService->method('isModuleActiveForTenant')->willReturnCallback(
+            static fn (string $key, mixed $tenant): bool => $active($key),
         );
         $container->set(\App\Service\ModuleConfigurationService::class, $moduleService);
 

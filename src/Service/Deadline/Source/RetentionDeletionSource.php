@@ -42,9 +42,9 @@ final class RetentionDeletionSource implements DeadlineSource
         return 'Löschung nach Aufbewahrungsfrist';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
-        return null;
+        return 'privacy';
     }
 
     /** @return list<UpcomingDeletion> */

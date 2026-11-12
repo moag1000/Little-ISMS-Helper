@@ -392,7 +392,7 @@ final class ModuleGateRule implements Rule
     }
 
     /** @return list<string> */
-    private function requiredModules(Node $member, Scope $scope): array
+    public function requiredModules(Node $member, Scope $scope): array
     {
         $modules = [];
         foreach (GateAst::attributes($member, self::REQUIRES_MODULE) as $attr) {
@@ -414,7 +414,7 @@ final class ModuleGateRule implements Rule
      *
      * @return list<string>
      */
-    private function decidingChecks(ClassMethod $method, Scope $scope): array
+    public function decidingChecks(ClassMethod $method, Scope $scope): array
     {
         $variables = [];
         foreach (GateAst::find($method, static fn (Node $n): bool => $n instanceof Expr\Assign, true) as $assign) {

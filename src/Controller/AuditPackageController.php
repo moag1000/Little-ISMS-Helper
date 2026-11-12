@@ -20,6 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Audit package per framework (ZIP with checksum). Who may download it comes
  * from the persona mapping ({@see ReportAccessVoter}): operational personas and auditors.
  */
+// @no-module-gate-required: the auditor package is audit work (ISO 19011) and lists frameworks only as context; it must stay downloadable with the compliance module off
 #[IsGranted(ReportAccessVoter::AUDIT_PACKAGE)]
 class AuditPackageController extends AbstractController
 {

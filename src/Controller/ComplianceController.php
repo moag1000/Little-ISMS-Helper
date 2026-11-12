@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
@@ -43,6 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Export routes live in ComplianceExportController.
  * Mapping admin/creation routes live in ComplianceMappingAdminController.
  */
+#[RequiresModule('compliance')]
 class ComplianceController extends AbstractController
 {
     use LocalizedFlashTrait;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
@@ -58,10 +59,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 // @no-methods-required — class-level path prefix, methods declared per action
-#[Route(
-    path: '/admin/import/compliance',
-    name: 'admin_compliance_import_'
-)]
+#[Route(path: '/admin/import/compliance', name: 'admin_compliance_import_')]
+#[RequiresModule('compliance')]
 final class ComplianceImportController extends AbstractController
 {
     private const REQUIRED_HEADERS = [

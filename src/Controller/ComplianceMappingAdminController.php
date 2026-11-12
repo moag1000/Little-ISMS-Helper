@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\ComplianceMapping;
 use Exception;
@@ -27,9 +28,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Handles automated cross-framework mapping creation operations:
  * - Create comparison mappings between two selected frameworks
  * - Create all cross-framework mappings via ISO 27001 transitive strategy
- *
- * Extracted from ComplianceController god-class (was 2629 LOC).
  */
+#[RequiresModule('compliance')]
 class ComplianceMappingAdminController extends AbstractController
 {
     use LocalizedFlashTrait;

@@ -219,9 +219,11 @@ MaRisk, MRIS, training, suppliers, resource planning, analytics, …; see
 `ModuleGateRule::CONTROLLER_MODULES`), the action needs `#[RequiresModule]`, a
 `checkModuleActive()`/`isModuleActive()` call for one of the matching
 modules, or a `// @no-module-gate-required: <reason>` comment above its
-attributes (class-level comment covers all actions). The ISO 27001 backbone
-modules (assets, risks, controls, incidents, audits, compliance, reviews) are
-deliberately not keyword-mapped for pages — but their **downloads** are (S32): a route
+attributes (class-level comment covers all actions). Since S35 the ISO 27001
+core modules (assets, risks, controls, incidents, audits, reviews) are
+`required: true` in `config/modules.yaml` — they cannot be switched off, so their
+pages, REST and MCP need no gate; `compliance` stays optional and is gated like
+every other optional module. Their **downloads** are still mapped (S32): a route
 whose path looks like a download (`export`, `pdf`, `excel`, `xlsx`, `csv`, `download`,
 a `/reports/` segment) and whose path, name or `requirements` name a risk, asset,
 incident, control or audit needs that module's gate (`ModuleGateRule::DOWNLOAD_MODULES`).
@@ -302,8 +304,30 @@ BusinessContinuityPlan`), and `App\EventListener\ApiResourceModuleListener`
 denies every operation of that resource (`403 {"error": "module_not_active"}`)
 via the `_api_resource_class` attribute API Platform puts on each route. An
 entity gets the attribute exactly when its HTML controllers are module-gated;
-the ISO 27001 backbone entities (Asset, Risk, Control, Incident,
-InternalAudit) stay ungated, as their HTML controllers are.
+the ISO 27001 core entities (Asset, Risk, Control, Incident,
+InternalAudit) carry none because their modules cannot be switched off (S35).
+
+**Gate 106 (S35) — by record, not by keyword.** Gate 11 recognises a controller by
+words in its name and route. `ModuleEntityUseRule` starts from the other end: the
+`entities` lists of `config/modules.yaml` say which module owns which record class
+(only classes listed by exactly one optional module; master data `persons`/`locations`
+that other pages merely refer to is excluded), and every routed action that mentions
+such a class — directly or through a private helper — needs that module's
+`#[RequiresModule]`, a deciding `checkModuleActive()`, or
+`// @no-module-gate-required: <reason>` (generic endpoints that check the module per
+target, e.g. comments, suggestions, quick-create). A new optional module therefore
+only has to list its entities in `modules.yaml`.
+
+**Lifecycle, approvals, activity feed.** `EntityTypeRegistry` names the module of every
+lifecycle type (`moduleOf($slug)`, `moduleOfClass($class)`): the generic
+`/lifecycle/{type}/…` endpoints answer `403 module_not_active` (transition, bulk,
+allowed-transitions, history), `ModuleGateGuard` blocks every transition of such a
+record whatever the workflow YAML says (record's organisation, so jobs and the
+console are covered), running approvals of a switched-off module are neither listed nor
+decidable (`WorkflowService::isInstanceModuleActive()` → `canUserApprove()`, workflow
+pages, My Day, counters) and the activity feed hides them. Contract test
+`tests/Lifecycle/EntityTypeRegistryModuleContractTest`, sweep
+`ModuleAndJobRouteSweepTest::everyLifecycleTypeIsClosedWhileItsModuleIsOff`.
 
 - **Fields of another module.** A field that a FormType adds
   only inside `if ($this->isModuleActive('<m>'))` carries
@@ -313,7 +337,7 @@ InternalAudit) stay ungated, as their HTML controllers are.
   accepts it. Gate 89 (`check_api_module_fields.py`) keeps forms and
   attributes in step; `tests/EventListener/ApiResourceModuleListenerTest`
   checks that every API resource listed only by optional modules in
-  `config/modules.yaml` carries one of their gates (backbone excepted).
+  `config/modules.yaml` carries one of their gates (the required core modules need none).
 
 - **Embedded relations follow the parent resource.** A relation serialised
   inside a response (embedded object or IRI) is decided by the gate of the

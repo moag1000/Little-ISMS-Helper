@@ -54,6 +54,10 @@ final class WorkflowInstanceVoter extends Voter
         if (!$user instanceof User || !$user->isActive() || !$subject instanceof WorkflowInstance) {
             return false;
         }
+        // S35: a run of a record type whose module is off is closed for everybody (one switch for every path).
+        if (!$this->workflowService->isInstanceModuleActive($subject)) {
+            return false;
+        }
         $tenant = $subject->getTenant();
         if ($tenant !== null && $user->getTenant() !== null && $tenant->getId() !== $user->getTenant()->getId()
             && !$this->accessDecisionManager->decide($token, ['ROLE_SUPER_ADMIN'])) {

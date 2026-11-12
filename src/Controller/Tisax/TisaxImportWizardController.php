@@ -44,6 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   5 — Assess     (TisaxMaturityAssessmentService — Reifegrad 0-5)
  */
 #[IsGranted('ROLE_MANAGER')]
+// @no-module-gate-required: gated by the tisax module; imports into the framework catalogue as part of the TISAX assessment
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/tisax-import', name: 'app_tisax_import_')]
 #[RequiresModule('tisax')]

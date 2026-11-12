@@ -27,6 +27,7 @@ use App\Service\EmailNotificationService;
 use App\Service\GdprBreachAssessmentService;
 use App\Service\IncidentBCMImpactService;
 use App\Service\IncidentEscalationWorkflowService;
+use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use App\Service\WorkflowService;
@@ -52,6 +53,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+// @no-module-gate-required: show() reads linked CAPAs only while corrective_actions is active
 class IncidentController extends AbstractController
 {
     use BulkActionTrait;
@@ -78,6 +80,7 @@ class IncidentController extends AbstractController
         private readonly RiskRepository $riskRepository,
         private readonly RiskIncidentLinkService $riskIncidentLinkService,
         private readonly RiskIncidentLinkRepository $riskIncidentLinkRepository,
+        private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
@@ -401,12 +404,8 @@ class IncidentController extends AbstractController
         // Structured risk cross-links
         $riskIncidentLinks = $this->riskIncidentLinkRepository->findByIncident($incident);
 
-        // Structured CAPAs auto-materialised
-        // from this Incident (per ADR 2026-05-23). Used to show "Legacy"-alert near the
-        // freetext field + link the analyst to the structured record.
-        $linkedCorrectiveActions = $this->entityManager
-            ->getRepository(CorrectiveAction::class)
-            ->findBy(['sourceIncident' => $incident], ['createdAt' => 'DESC']);
+        $linkedCorrectiveActions = !$this->moduleConfiguration->isModuleActive('corrective_actions') ? []
+            : $this->entityManager->getRepository(CorrectiveAction::class)->findBy(['sourceIncident' => $incident], ['createdAt' => 'DESC']);
 
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\CrossFrameworkMappingImporter;
@@ -25,6 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *  - POST /compliance/mapping/import?commit=1 → tatsächlicher Import
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('compliance')]
 class ComplianceMappingImportController extends AbstractController
 {
     private const MAX_CSV_BYTES = 2_000_000;

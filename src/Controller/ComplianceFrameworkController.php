@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\Asset;
 use App\Entity\Tenant;
 use DateTimeImmutable;
@@ -26,6 +27,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[RequiresModule('compliance')]
 class ComplianceFrameworkController extends AbstractController
 {
     public function __construct(

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Security\Voter\AsyncJobVoter;
 use App\Security\Voter\ReportAccessVoter;
 use App\Controller\Trait\PdfLocaleTrait;
@@ -35,6 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/certification-bundle', name: 'app_certification_bundle_')]
 #[IsGranted(ReportAccessVoter::CERTIFICATION_BUNDLE)]
+#[RequiresModule('compliance')]
 class CertificationBundleController extends AbstractController
 {
     use PdfLocaleTrait;

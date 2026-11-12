@@ -9,6 +9,7 @@ use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\EntityTypeRegistry;
 use App\Repository\AuditLogRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\RiskRepository;
@@ -56,6 +57,11 @@ final class ActivityFeed
         $entityShortName = (string) preg_replace('#^.*\\\\#', '', $entityShortName);
         if ($this->moduleConfiguration === null || $entityShortName === '') {
             return true;
+        }
+        // S35: the lifecycle registry names the module of a record type; modules.yaml `entities` is the fallback.
+        $owner = EntityTypeRegistry::moduleOfClass($entityShortName);
+        if ($owner !== null) {
+            return $this->moduleConfiguration->isModuleActive($owner);
         }
         foreach ($this->moduleConfiguration->getAllModules() as $key => $module) {
             if (in_array($entityShortName, (array) ($module['entities'] ?? []), true)) {

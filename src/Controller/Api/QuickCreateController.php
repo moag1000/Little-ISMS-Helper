@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * Symfony Validator before persist. CSRF protected via `quick_create`
  * token id.
  */
+// @no-module-gate-required: the module of each record type is checked in the action (registry[type][module])
 #[Route('/api/quick-create', name: 'api_quick_create_', methods: ['POST'])]
 #[IsGranted('ROLE_USER')]
 final class QuickCreateController extends AbstractController

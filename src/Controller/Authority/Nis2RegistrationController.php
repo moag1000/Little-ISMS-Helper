@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Authority;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\Tenant;
@@ -38,6 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * RBAC: ROLE_MANAGER or a named contact of the profile for VIEW/EDIT/EXPORT;
  * ROLE_ADMIN for MARK_REPORTED
  */
+// @no-module-gate-required: every action checks nis2_dora (the duty's module; the profile rows are hub data of eu_authority_reporting)
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/authority/nis2-registration', name: 'nis2_registration_')]
 // ROLE_USER here; Nis2RegistrationProfileVoter decides per action (manager,

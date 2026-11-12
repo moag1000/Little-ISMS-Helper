@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\AuditLogger;
@@ -27,6 +28,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/delta-assessment')]
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('compliance')]
 final class DeltaAssessmentController extends AbstractController
 {
     public function __construct(

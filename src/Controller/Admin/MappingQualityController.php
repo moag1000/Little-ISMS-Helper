@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\RequiresModule;
 use App\Entity\ComplianceMapping;
 use App\Entity\User;
 use App\Exception\AppException;
@@ -36,6 +37,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *    SUPER_ADMIN is allowed to do.
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+#[RequiresModule('compliance')]
 class MappingQualityController extends AbstractController
 {
     public function __construct(
