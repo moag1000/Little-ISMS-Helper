@@ -361,6 +361,55 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * S33: an account without relation to the chain (not initiator, not approver, not
+     * responsible for the record, no manager) reads nothing of it — detail 403, list empty.
+     */
+    #[Test]
+    public function testShowInstanceRefusesAnAccountWithoutRelation(): void
+    {
+        $outsider = new User();
+        $outsider->setEmail('outsider_' . uniqid('', true) . '@example.com');
+        $outsider->setFirstName('Out');
+        $outsider->setLastName('Sider');
+        $outsider->setRoles(['ROLE_USER']);
+        $outsider->setPassword('hashed_password');
+        $outsider->setTenant($this->testTenant);
+        $outsider->setIsActive(true);
+        $this->entityManager->persist($outsider);
+        // The fixture step is approvable by ROLE_USER (whoever may approve may read); narrow it here.
+        $step = $this->testInstance->getCurrentStep();
+        $step->setApproverRole('ROLE_MANAGER');
+        $this->entityManager->flush();
+
+        try {
+            $this->loginAsUser($outsider);
+            $this->client->request('GET', '/en/workflow/instance/' . $this->testInstance->getId());
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+            $this->client->request('GET', '/en/workflow/active');
+            $this->assertResponseIsSuccessful();
+            $this->assertStringNotContainsString(
+                '/workflow/instance/' . $this->testInstance->getId() . '"',
+                (string) $this->client->getResponse()->getContent(),
+            );
+        } finally {
+            $step->setApproverRole('ROLE_USER');
+            $this->entityManager->remove($this->entityManager->find(User::class, $outsider->getId()));
+            $this->entityManager->flush();
+        }
+    }
+
+    #[Test]
+    public function testShowInstanceOpensForManager(): void
+    {
+        $this->loginAsUser($this->managerUser);
+
+        $this->client->request('GET', '/en/workflow/instance/' . $this->testInstance->getId());
+
+        $this->assertResponseIsSuccessful();
+    }
+
     #[Test]
     public function testShowInstanceReturns404ForNonexistent(): void
     {

@@ -71,6 +71,31 @@
                     </form>
                 </div>
             </section>
+
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
+            <section class="fa-section mt-4" aria-labelledby="quick-fix-token-title">
+                <div class="fa-section__body">
+                    <h2 id="quick-fix-token-title" class="h5">{{ 'quick_fix.settings.token.title'|trans({}, 'quick_fix') }}</h2>
+                    <p class="text-muted">{{ 'quick_fix.settings.token.body'|trans({}, 'quick_fix') }}</p>
+                    {% if quick_fix_link %}
+                        <div class="input-group">
+                            <input type="text" class="form-control font-monospace" id="quick-fix-link" value="{{ quick_fix_link }}" readonly
+                                   aria-label="{{ 'quick_fix.settings.token.link_label'|trans({}, 'quick_fix') }}">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
+                                    data-controller="ui-actions" data-action="ui-actions#copyToClipboard"
+                                    data-ui-actions-text-param="{{ quick_fix_link }}">
+                                {{ 'quick_fix.settings.token.copy'|trans({}, 'quick_fix') }}
+                            </button>
+                        </div>
+                    {% else %}
+                        <form method="post" action="{{ path('app_admin_quick_fix_token') }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_token') }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'quick_fix.settings.token.create'|trans({}, 'quick_fix') }}</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

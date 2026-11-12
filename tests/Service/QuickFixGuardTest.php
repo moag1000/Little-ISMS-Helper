@@ -53,6 +53,24 @@ class QuickFixGuardTest extends TestCase
         $this->assertTrue($this->guard->mayAccess(Request::create('/quick-fix')));
     }
 
+    /** S33: the super admin's settings page creates the token where Composer scripts never ran (Docker). */
+    #[Test]
+    public function aMissingInstallerTokenIsCreatedOnceAndThenUnlocksPrivilegedActions(): void
+    {
+        $this->settings->method('getSetting')->willReturnCallback(
+            fn(string $cat, string $key, mixed $default) => $default
+        );
+        self::assertNull($this->guard->installerToken());
+
+        $token = $this->guard->ensureInstallerToken();
+
+        self::assertNotNull($token);
+        self::assertSame(64, strlen($token));
+        self::assertSame($token, $this->guard->ensureInstallerToken(), 'a second call keeps the token');
+        self::assertFalse($this->guard->mayRunPrivileged(Request::create('/quick-fix/apply', 'POST')));
+        self::assertTrue($this->guard->mayRunPrivileged(Request::create('/quick-fix/apply?token=' . $token, 'POST')));
+    }
+
     #[Test]
     public function fallbackUiEnabledDefaultTrue(): void
     {

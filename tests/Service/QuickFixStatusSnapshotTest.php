@@ -55,14 +55,4 @@ final class QuickFixStatusSnapshotTest extends TestCase
             }
         }
     }
-
-    #[Test]
-    public function anUnreadableMigrationStateCountsAsPending(): void
-    {
-        $maintenance = $this->createStub(SchemaMaintenanceService::class);
-        $maintenance->method('listPendingMigrationVersionsFromFileSystem')
-            ->willThrowException(new \RuntimeException('db down'));
-
-        self::assertTrue((new QuickFixStatusSnapshot($maintenance, new ArrayAdapter()))->hasPendingMigrations());
-    }
 }

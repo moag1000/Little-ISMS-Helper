@@ -395,7 +395,7 @@ class DataBreachControllerTest extends WebTestCase
     #[Test]
     public function testShowDisplaysBreachDetails(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->managerUser); // S33: managers and the responsible read breaches
 
         $this->client->request('GET', '/en/data-breach/' . $this->testBreach->getId());
 
@@ -406,7 +406,7 @@ class DataBreachControllerTest extends WebTestCase
     #[Test]
     public function testShowWritesViewAuditEntry(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->managerUser); // S33: managers and the responsible read breaches
 
         $this->client->request('GET', '/en/data-breach/' . $this->testBreach->getId());
 

@@ -21,8 +21,8 @@ src/Controller/Admin/DataRepairController.php:LOC=1091 deps=0
 src/Entity/BusinessContinuityPlan.php:LOC=1009 deps=0
 src/Entity/Tenant.php:LOC=1005 deps=0
 src/Controller/RiskController.php:LOC=953 deps=0
-src/Service/Search/SearchService.php:LOC=946 deps=32
 src/Controller/TenantManagementController.php:LOC=943 deps=0
+src/Service/Search/SearchService.php:LOC=901 deps=31
 src/Controller/Admin/ComplianceImportController.php:LOC=892 deps=0
 src/Service/ComplianceWizard/CoverageCheckService.php:LOC=888 deps=17
 src/Command/TisaxConsolidateCommand.php:LOC=886 deps=0
