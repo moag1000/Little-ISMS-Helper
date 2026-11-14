@@ -33,7 +33,33 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  # Cheap path check (seconds). The two migration-chain jobs below run on every main push
+  # and manual dispatch, but on a PR only when something that can change the chain moved.
+  changes:
+    name: Detect migration-relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      migrations: ${{ steps.diff.outputs.migrations }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: diff
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "migrations=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if echo "$files" | grep -qE '^(migrations/|src/Entity/|src/Doctrine/|config/packages/doctrine|composer\.lock|scripts/deployment/|\.github/workflows/ci\.yml)'; then
+            echo "migrations=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "migrations=false" >> "$GITHUB_OUTPUT"
+          fi
+
   fresh-install-migrations:
+    needs: changes
+    if: needs.changes.outputs.migrations == 'true'
     name: Fresh-install migrations
     runs-on: ubuntu-latest
     # The test job builds its schema from entity metadata and marks every
@@ -68,6 +94,13 @@ jobs:
           extensions: intl, pdo, pdo_mysql, gd, zip, opcache, mbstring, xml
           tools: composer:v2
 
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
@@ -98,6 +131,8 @@ jobs:
           grep -q "Already at the latest version" /tmp/second-run.txt
 
   upgrade-migrations:
+    needs: changes
+    if: needs.changes.outputs.migrations == 'true'
     name: Upgrade migrations with data
     runs-on: ubuntu-latest
     # Fresh-install migrations run on an empty database, where a migration
@@ -151,6 +186,13 @@ jobs:
 
       - name: Put two rows into every table
         run: php scripts/deployment/seed_every_table.php 'mysql:host=127.0.0.1;port=3306;dbname=isms_upgrade' isms_user isms_password
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
@@ -339,6 +381,13 @@ jobs:
           php-version: '8.4'
           extensions: intl, pdo, pdo_mysql, gd, zip
           tools: composer:v2
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
@@ -884,6 +933,13 @@ jobs:
         with:
           php-version: '8.4'
           tools: composer:v2
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
