@@ -1,13 +1,23 @@
 name: CI/CD Pipeline
 
 on:
+  # Push runs only for main/develop and tags. Feature branches are covered by the
+  # pull_request run — listing 'claude/**' or 'release-please--**' here ran the whole
+  # pipeline twice per push (push + pull_request). The release-please auto-merge
+  # starts CI on the release branch via workflow_dispatch.
   push:
-    branches: [ main, develop, 'claude/**', 'release-please--**' ]
+    branches: [ main, develop ]
     tags:
       - 'v*.*.*'  # Trigger on version tags for Docker releases
   pull_request:
     branches: [ main, develop ]
   workflow_dispatch:
+
+# A new push to the same PR cancels the superseded run. main, tags and manual
+# dispatches never cancel each other (every main commit keeps its own result).
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -23,7 +33,33 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  # Cheap path check (seconds). The two migration-chain jobs below run on every main push
+  # and manual dispatch, but on a PR only when something that can change the chain moved.
+  changes:
+    name: Detect migration-relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      migrations: ${{ steps.diff.outputs.migrations }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: diff
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "migrations=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if echo "$files" | grep -qE '^(migrations/|src/Entity/|src/Doctrine/|config/packages/doctrine|composer\.lock|scripts/deployment/|\.github/workflows/ci\.yml)'; then
+            echo "migrations=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "migrations=false" >> "$GITHUB_OUTPUT"
+          fi
+
   fresh-install-migrations:
+    needs: changes
+    if: needs.changes.outputs.migrations == 'true'
     name: Fresh-install migrations
     runs-on: ubuntu-latest
     # The test job builds its schema from entity metadata and marks every
@@ -58,6 +94,13 @@ jobs:
           extensions: intl, pdo, pdo_mysql, gd, zip, opcache, mbstring, xml
           tools: composer:v2
 
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
@@ -88,6 +131,8 @@ jobs:
           grep -q "Already at the latest version" /tmp/second-run.txt
 
   upgrade-migrations:
+    needs: changes
+    if: needs.changes.outputs.migrations == 'true'
     name: Upgrade migrations with data
     runs-on: ubuntu-latest
     # Fresh-install migrations run on an empty database, where a migration
@@ -142,6 +187,13 @@ jobs:
       - name: Put two rows into every table
         run: php scripts/deployment/seed_every_table.php 'mysql:host=127.0.0.1;port=3306;dbname=isms_upgrade' isms_user isms_password
 
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
@@ -190,7 +242,9 @@ jobs:
           # capability we need — coverage-clover output, no debugger / no
           # step-through). Switching shaves several minutes off the test job's
           # wall-clock without changing the resulting clover report shape.
-          coverage: pcov
+          # Coverage is informational only (threshold step only warns), so it is collected
+          # on main pushes; PR runs skip the pcov overhead.
+          coverage: ${{ github.event_name == 'push' && 'pcov' || 'none' }}
           tools: composer:v2
 
       - name: Get Composer cache directory
@@ -208,7 +262,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Check PHP syntax
-        run: find src tests -name "*.php" -print0 | xargs -0 -n1 php -l
+        run: find src tests -name "*.php" -print0 | xargs -0 -n1 -P4 php -l
 
       - name: Create test database
         run: |
@@ -258,10 +312,15 @@ jobs:
           DEFAULT_URI: http://localhost
           MAILER_DSN: null://null
           MESSENGER_TRANSPORT_DSN: sync://
-        run: php bin/phpunit --coverage-text --coverage-clover=coverage.xml
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            php bin/phpunit --coverage-text --coverage-clover=coverage.xml
+          else
+            php bin/phpunit
+          fi
 
       - name: Check Code Coverage Threshold
-        if: matrix.php-version == '8.4'
+        if: matrix.php-version == '8.4' && github.event_name == 'push'
         run: |
           echo "Checking test coverage threshold..."
           COVERAGE=$(php -r '$xml = simplexml_load_file("coverage.xml"); $metrics = $xml->project->metrics; $percentage = round(($metrics["coveredstatements"] / $metrics["statements"]) * 100, 2); echo $percentage;')
@@ -279,7 +338,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7
-        if: matrix.php-version == '8.4'
+        if: matrix.php-version == '8.4' && github.event_name == 'push'
         with:
           files: ./coverage.xml
           fail_ci_if_error: false
@@ -323,6 +382,13 @@ jobs:
           extensions: intl, pdo, pdo_mysql, gd, zip
           tools: composer:v2
 
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
@@ -336,6 +402,15 @@ jobs:
       # 72 tenant-less rows, 91 MFA state, 92 Markup/PhpWord, 93 SSO claim policy, 11 module gate; T4 added
       # 85 fulfilment writer, 94 stored file paths, 97 tenant pins
       # (tests/PHPStan/Rule/Gate/, exceptions in phpstan-gates-baseline.neon). It must never be skipped.
+      # PHPStan result cache (default tmpDir): unchanged files are not re-analysed. The cache
+      # only skips work for files whose content and dependencies are unchanged; rules still run.
+      - name: Cache PHPStan results
+        uses: actions/cache@v6
+        with:
+          path: /tmp/phpstan
+          key: phpstan-${{ hashFiles('composer.lock', 'phpstan.dist.neon', 'phpstan-gates-baseline.neon') }}-${{ github.sha }}
+          restore-keys: phpstan-${{ hashFiles('composer.lock', 'phpstan.dist.neon', 'phpstan-gates-baseline.neon') }}-
+
       - name: Run PHPStan (incl. gate rules 11, 65, 72, 85, 91, 92, 93, 94, 97)
         run: vendor/bin/phpstan analyse --configuration phpstan.dist.neon --no-progress
 
@@ -858,6 +933,13 @@ jobs:
         with:
           php-version: '8.4'
           tools: composer:v2
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
