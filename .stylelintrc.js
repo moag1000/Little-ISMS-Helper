@@ -48,7 +48,6 @@ module.exports = {
 
         // Pre-existing rules — to be addressed in dedicated cleanup-sprint, not in
         // Aurora-v4-zindex-bigbang refactor. Suppressed so refactor lint-gate is meaningful.
-        'declaration-block-single-line-max-declarations': null, // 194 pre-existing single-line styles
         'no-duplicate-selectors': null,                          // 49 pre-existing intentional Aurora-Pattern overlaps
         'keyframes-name-pattern': null,                          // 18 pre-existing kebab-case violations
         'declaration-block-no-duplicate-properties': null,       // 11 pre-existing cross-browser fallback patterns
