@@ -15,7 +15,7 @@ language-model output. User guide: `docs/user-guide/VORSCHLAEGE.md`.
 | Schedule | `app:suggestions:generate [--kind=a,b]` at 05:30 in `Schedule::COMMAND_TASKS`; "Jetzt prüfen" → `RefreshSuggestionsJob` |
 | UI | `SuggestionController` (`/suggestions`, list skeleton, `decision_modal()`, bulk bar `approve`/`reject` → `bulk-status-change`), detail hint in `_fa_entity_links.html.twig` (`pending_suggestions(entity)`), My Day via `SuggestionDeadlineSource` (bucket `suggestions`), SoA "Passt nicht" (`app_suggestion_mapping_reject`) |
 | AI | `src/Service/Ai/`: `AiSettings` (instance + tenant settings, keys encrypted), `OpenAiCompatibleClient` (`/chat/completions`, JSON mode, external calls through `NoPrivateNetworkHttpClient`), `PromptRedactor`, `AiAssistant`; admin page `AiSettingsController` |
-| Assistant (MCP) | `draft_options` / `propose_draft` (`src/Mcp/Tool/`): the person's own assistant drafts in place of the configured model — `RecordDrafts::kindsFor($record, byAssistant: true)`, `AbstractAiKind::assistantBrief()` (instruction + facts) and `draftFromAssistant()` (same `toDraft()` mapping, model `MCP: <token label>`), queued by `RecordDrafts::offer()`. Works while the organisation's AI is off; MCP opt-in per organisation |
+| Assistant (MCP) | `draft_options` / `propose_draft` (`src/Mcp/Tool/`): the person's own assistant drafts in place of the configured model — `RecordDrafts::kindsFor($record, byAssistant: true)`, `AssistantDraftSource::assistantBrief()` (instruction + facts; `AbstractAiKind` and `RecordTransitionKind` implement it) and `draftFromAssistant()` (same `toDraft()` mapping, model `MCP: <token label>`), queued by `RecordDrafts::offer()`. Works while the organisation's AI is off; MCP opt-in per organisation |
 | Responsibility | `SuggestionResponsibility::of()` = `Responsibility::ofRecord(subject)->orRoles(kind roles)` (import kinds and kinds whose UI write needs a role above ROLE_USER: roles only); `SuggestionQueue::canDecide()` = the kind's UI write right (`targetAccess()`, S30) **and** (kind role **or** `ResponsibilityResolver::isResponsible()`) |
 | Visibility (S30) | `SuggestionQueue::isVisible()` / `visible()`: who decides; else a reading role (`ROLE_AUDITOR` line incl. managers), but suggestions about whole-class `#[PersonalDataResource]` records (breach, data subject request) only with `ROLE_DPO`. List (open + decided) use it; MCP `pending_suggestions` / `get_context` filter through `PersonalDataPolicy::suggestions()` |
 | Concurrency (S30) | `Suggestion` has `#[ORM\Version]`; `accept()` runs in a transaction and re-reads the row with a write lock, so a second accept finds it decided. AI kinds: `AbstractAiKind::stillApplies()` (= `isCandidate()` on `candidateOf()`) is asked before `apply()`; a closed record makes the suggestion stale |
@@ -59,6 +59,18 @@ proposal of `RegisterProposalProvider` into a suggestion; each register type wit
 proposals is a three-line subclass (`register.<type>`, decided by the register's
 maintaining persona). The register page and the queue write through the same
 `RegisterProposalAdopter` and deduplicate by `origin`.
+
+## Status changes from the assistant (`record.transition`, #1207)
+
+`Kind\RecordTransitionKind` is the one generic proposal "set this record to another status" for every
+lifecycle-managed, tenant-owned record class (`EntityTypeRegistry::managedEntityClasses()`, not approval chains).
+It is an `AssistantOnlyKind`: no button in the UI (`RecordDrafts::kindsFor()` skips it unless `byAssistant`), no
+nightly run. `draft_options` lists the transitions the asking person may perform (voter `lifecycle.<workflow>.<transition>`)
+that need no four-eyes; `propose_draft` takes `{transition, reason}` (reason mandatory where the transition says so).
+Accepting (`ROLE_MANAGER`) runs `LifecycleService::transition()` for the accepting person — roles, reason, audit log,
+tenant overrides unchanged; a record whose status changed meanwhile makes the suggestion stale. Dedup key includes the
+from-status, so a later, different situation can be proposed again. Deleting stays out: end-state records are archived
+(this kind), a mistaken record is deleted in the app (`DeletionPolicy`).
 
 ## Drafts on request (P6)
 

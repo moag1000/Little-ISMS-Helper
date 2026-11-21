@@ -38,6 +38,8 @@ final class ApiWriteRoleParityTest extends TestCase
      * @var array<class-string, list<array{class-string, string}>|null>
      */
     private const array FORMS = [
+        Entity\BusinessProcess::class => [[Controller\BusinessProcessController::class, 'new'], [Controller\BusinessProcessController::class, 'edit']],
+        Entity\ProcessingActivity::class => [[Controller\ProcessingActivityController::class, 'new'], [Controller\ProcessingActivityController::class, 'edit']],
         Entity\BCExercise::class => [[Controller\BCExerciseController::class, 'new'], [Controller\BCExerciseController::class, 'edit']],
         Entity\BusinessContinuityPlan::class => [
             [Controller\BusinessContinuityPlanController::class, 'new'],

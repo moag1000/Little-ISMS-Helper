@@ -11,7 +11,7 @@ src/Controller/ComplianceExportController.php:LOC=1511 deps=0
 src/Entity/Incident.php:LOC=1439 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1426 deps=18
 src/Repository/ComplianceMappingRepository.php:LOC=1421 deps=0
-src/Entity/ProcessingActivity.php:LOC=1415 deps=0
+src/Entity/ProcessingActivity.php:LOC=1414 deps=0
 src/Controller/PolicyWizardController.php:LOC=1357 deps=0
 src/Entity/DataProtectionImpactAssessment.php:LOC=1262 deps=0
 src/Controller/ManagementReportController.php:LOC=1250 deps=0

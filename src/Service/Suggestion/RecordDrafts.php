@@ -60,6 +60,7 @@ class RecordDrafts
         $kinds = [];
         foreach ($this->queue->kinds() as $key => $kind) {
             if (!$kind instanceof RecordDraftKind || isset($pendingKinds[$key])
+                || ($kind instanceof AssistantOnlyKind && !$byAssistant)
                 || !self::matchesClass($kind, $record)
                 || !$this->queue->isKindActive($kind, $tenant)
                 || ($kind->needsModel() && !$byAssistant && !$this->ai->isAvailable($tenant, $key))

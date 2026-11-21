@@ -263,6 +263,24 @@ final class EntityTypeRegistry
         return null;
     }
 
+    /**
+     * The lifecycle workflow of a record class (by FQCN, a proxy's parent class counts); null when the class has
+     * none. Where two lifecycle types share a class the first one wins (they share the module too).
+     */
+    public static function workflowOfClass(string $class): ?string
+    {
+        if (is_subclass_of($class, \Doctrine\Persistence\Proxy::class)) {
+            $class = (string) get_parent_class($class);
+        }
+        foreach (self::MAP as $entry) {
+            if ($entry['class'] === $class) {
+                return $entry['workflow'];
+            }
+        }
+
+        return null;
+    }
+
     /** @return string[] */
     public function knownSlugs(): array
     {

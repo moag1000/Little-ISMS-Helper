@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use ApiPlatform\Metadata\IriConverterInterface;
+use App\Entity\Asset;
 use App\Entity\AuditLog;
 use App\Entity\Person;
 use App\Entity\Risk;
@@ -121,6 +122,43 @@ final class McpControllerTest extends WebTestCase
         self::assertSame(-32602, $call['error']['code'] ?? null);
     }
 
+    /** #1207: an assistant that finds nothing can tell the person what exists only in the app. */
+    #[Test]
+    public function theContextNamesRecordTypesThatExistOnlyInTheApp(): void
+    {
+        $this->enable();
+
+        $context = $this->rpc('tools/call', ['name' => 'get_context'])['result']['structuredContent'] ?? [];
+
+        self::assertIsList($context['only_in_the_app'] ?? null);
+        self::assertSame([], array_intersect($context['only_in_the_app'], array_keys($context['resources'])), 'a record type is either offered or listed as app-only');
+        foreach (['BusinessProcess', 'Document'] as $offered) {
+            self::assertArrayHasKey($offered, $context['resources'], $offered . ' is a resource since #1205/#1207');
+        }
+        self::assertFalse($context['resources']['Document']['create'] || $context['resources']['Document']['update'], 'documents are read-only for the assistant');
+    }
+
+    #[Test]
+    public function aRejectedChoiceNamesTheAllowedValues(): void
+    {
+        $this->enable();
+        $token = static::getContainer()->get(ApiTokenManager::class)->mint($this->user, 'Schreiben', canWrite: true);
+
+        $result = $this->rpc('tools/call', ['name' => 'save_record', 'arguments' => ['resource' => 'Risk', 'data' => [
+            'title' => 'Falsche Kategorie',
+            'description' => 'x',
+            'category' => 'not_a_category',
+            'probability' => 3,
+            'impact' => 3,
+        ]]], $token)['result'] ?? [];
+
+        self::assertTrue($result['isError'] ?? false);
+        $text = (string) ($result['content'][0]['text'] ?? '');
+        self::assertStringContainsString('category:', $text);
+        self::assertStringContainsString('(allowed:', $text, 'the message names what to send instead');
+        self::assertStringContainsString('financial', $text);
+    }
+
     #[Test]
     public function aWritingTokenCreatesAndChangesARecordInItsOrganisation(): void
     {
@@ -137,8 +175,13 @@ final class McpControllerTest extends WebTestCase
 
         $fields = $this->rpc('tools/call', ['name' => 'save_record', 'arguments' => ['resource' => 'Risk', 'data' => new \stdClass()]], $token)['result'] ?? [];
         self::assertFalse($fields['isError'] ?? true, (string) ($fields['content'][0]['text'] ?? ''));
-        $writable = $fields['structuredContent']['writable_fields'] ?? [];
+        $described = $fields['structuredContent']['writable_fields'] ?? [];
+        $writable = array_column($described, 'name');
         self::assertContains('title', $writable);
+        // #1207: type, required flag and allowed values travel with the field, so a value is right the first time.
+        $byName = array_column($described, null, 'name');
+        self::assertTrue($byName['title']['required'] ?? false, 'title is required');
+        self::assertContains('security', $byName['category']['allowed'] ?? [], 'allowed risk categories are named');
         foreach (['status', 'tenant', 'id', 'acceptanceApprovedBy', 'acceptanceApprovedAt'] as $never) {
             self::assertNotContains($never, $writable, $never . ' must not be writable through the assistant');
         }
@@ -180,6 +223,54 @@ final class McpControllerTest extends WebTestCase
 
         $audit = $this->freshEm()->getRepository(AuditLog::class)->findBy(['action' => 'mcp.write', 'entityId' => $this->tokenId('Schreiben')]);
         self::assertNotEmpty($audit, 'every write is audit-logged as mcp.write');
+    }
+
+    /** #1207: a status is never written by the assistant — it proposes, a person accepts, the lifecycle runs. */
+    #[Test]
+    public function aStatusChangeIsProposedAndOnlyAcceptanceRunsTheLifecycle(): void
+    {
+        $this->enable();
+        $this->user->setRoles(['ROLE_MANAGER']);
+        $asset = (new Asset())->setName('Alter Server')->setAssetType('hardware')->setTenant($this->tenant);
+        $asset->setConfidentialityValue(2);
+        $asset->setIntegrityValue(2);
+        $asset->setAvailabilityValue(2);
+        $asset->setStatus('active');
+        $this->em->persist($asset);
+        $this->em->flush();
+        $assetId = (int) $asset->getId();
+        $token = static::getContainer()->get(ApiTokenManager::class)->mint($this->user, 'Pflege', canWrite: true);
+
+        $options = $this->rpc('tools/call', ['name' => 'draft_options', 'arguments' => ['resource' => 'Asset', 'id' => $assetId]], $token)['result'] ?? [];
+        self::assertFalse($options['isError'] ?? true, (string) ($options['content'][0]['text'] ?? ''));
+        $kinds = array_column($options['structuredContent']['options'] ?? [], null, 'kind');
+        self::assertArrayHasKey('record.transition', $kinds, 'a status change is a draft type for every lifecycle record');
+        self::assertStringContainsString('deactivate', (string) $kinds['record.transition']['facts']);
+        self::assertTrue($kinds['record.transition']['needs_data']);
+
+        $noReason = $this->rpc('tools/call', ['name' => 'propose_draft', 'arguments' => [
+            'kind' => 'record.transition', 'resource' => 'Asset', 'id' => $assetId, 'data' => ['transition' => 'deactivate'],
+        ]], $token)['result'] ?? [];
+        self::assertTrue($noReason['isError'] ?? false, 'deactivate needs a reason');
+
+        $proposed = $this->rpc('tools/call', ['name' => 'propose_draft', 'arguments' => [
+            'kind' => 'record.transition', 'resource' => 'Asset', 'id' => $assetId,
+            'data' => ['transition' => 'deactivate', 'reason' => 'Gerät steht seit Monaten im Lager'],
+        ]], $token)['result'] ?? [];
+        self::assertFalse($proposed['isError'] ?? true, (string) ($proposed['content'][0]['text'] ?? ''));
+        $suggestionId = (int) ($proposed['structuredContent']['suggestion_id'] ?? 0);
+        self::assertGreaterThan(0, $suggestionId);
+
+        $em = $this->freshEm();
+        self::assertSame('active', $em->find(Asset::class, $assetId)?->getStatus(), 'nothing is changed before a person decides');
+
+        $suggestion = $em->find(\App\Entity\Suggestion::class, $suggestionId);
+        self::assertInstanceOf(\App\Entity\Suggestion::class, $suggestion);
+        $manager = $em->find(User::class, $this->user->getId());
+        self::assertInstanceOf(User::class, $manager);
+        static::getContainer()->get(\App\Service\Suggestion\SuggestionQueue::class)->accept($suggestion, $manager);
+
+        self::assertSame('inactive', $this->freshEm()->find(Asset::class, $assetId)?->getStatus(), 'accepting runs the lifecycle transition');
     }
 
     #[Test]

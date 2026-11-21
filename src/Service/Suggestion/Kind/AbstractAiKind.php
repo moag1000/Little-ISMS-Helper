@@ -10,7 +10,7 @@ use App\Enum\SuggestionOrigin;
 use App\Repository\SuggestionRepository;
 use App\Service\Ai\AiAssistant;
 use App\Service\Suggestion\AbstractSuggestionKind;
-use App\Service\Suggestion\RecordDraftKind;
+use App\Service\Suggestion\AssistantDraftSource;
 use App\Service\Suggestion\SuggestionDraft;
 
 /**
@@ -23,7 +23,7 @@ use App\Service\Suggestion\SuggestionDraft;
  * pages, `isCandidate()` decides whether the button shows, `recordFor()`
  * maps the page's record to the one the model reads (default: itself).
  */
-abstract class AbstractAiKind extends AbstractSuggestionKind implements RecordDraftKind
+abstract class AbstractAiKind extends AbstractSuggestionKind implements AssistantDraftSource
 {
     public const int MAX_PER_RUN = 10;
 

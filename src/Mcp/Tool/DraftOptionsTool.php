@@ -7,7 +7,7 @@ namespace App\Mcp\Tool;
 use App\Mcp\McpSession;
 use App\Mcp\PersonalDataPolicy;
 use App\Mcp\McpToolException;
-use App\Service\Suggestion\Kind\AbstractAiKind;
+use App\Service\Suggestion\AssistantDraftSource;
 use App\Service\Suggestion\RecordDrafts;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -66,12 +66,12 @@ final class DraftOptionsTool extends AbstractMcpTool
 
         $options = [];
         foreach ($this->drafts->kindsFor($record, byAssistant: true) as $kind) {
-            $brief = $kind instanceof AbstractAiKind ? $kind->assistantBrief($record) : null;
+            $brief = $kind instanceof AssistantDraftSource ? $kind->assistantBrief($record) : null;
             $options[] = [
                 'kind' => $kind->key(),
                 'label' => $this->translator->trans('suggestions.kind.' . $kind->key(), [], 'suggestions', $session->locale),
                 'help' => $this->translator->trans('suggestions.kind_help.' . $kind->key(), [], 'suggestions', $session->locale),
-                'needs_data' => $kind instanceof AbstractAiKind,
+                'needs_data' => $kind instanceof AssistantDraftSource,
                 'instructions' => $brief['instructions'] ?? null,
                 'facts' => $brief['facts'] ?? null,
             ];

@@ -38,7 +38,7 @@ final class GetContextTool extends AbstractMcpTool
     {
         return 'Who you act for: user, organisation, personas (ISB, risk manager, top management, …), active modules, '
             . 'the record resources list_records/get_record can read (with filter names, and whether save_record may create '
-            . 'or update them), whether you may write directly, and the number of suggestions waiting for this person. '
+            . 'or update them), the record types of active modules that exist only in the app (only_in_the_app), whether you may write directly, and the number of suggestions waiting for this person. '
             . 'Call this first.';
     }
 
@@ -47,17 +47,43 @@ final class GetContextTool extends AbstractMcpTool
         return ['type' => 'object', 'properties' => new \stdClass()];
     }
 
+    /**
+     * Record types of the active modules the assistant cannot read or write (no REST resource yet): an
+     * assistant that finds nothing for "Prozess" or "Audit" can tell the person it is the connection, not the
+     * data, that is missing (#1207).
+     *
+     * @param list<string> $offered
+     * @return list<string>
+     */
+    private function onlyInTheApp(McpSession $session, array $offered): array
+    {
+        $missing = [];
+        foreach ($this->modules->getActiveModulesForTenant($session->tenant) as $key) {
+            foreach ((array) ($this->modules->getModule((string) $key)['entities'] ?? []) as $entity) {
+                if (!in_array((string) $entity, $offered, true)) {
+                    $missing[(string) $entity] = true;
+                }
+            }
+        }
+        $names = array_keys($missing);
+        sort($names);
+
+        return $names;
+    }
+
     public function call(array $arguments, McpSession $session): array
     {
         $user = $session->user;
         $direct = $this->writeAccess->allows($session);
+        $resources = $this->gateway->resources($session);
 
         return [
             'user' => ['name' => $user->getFullName(), 'email' => $user->getEmail()],
             'organisation' => ['id' => $session->tenant->getId(), 'name' => $session->tenant->getName()],
             'personas' => array_map(static fn (Persona $p): string => $p->value, $this->personas->personasOf($user)),
             'active_modules' => $this->modules->getActiveModulesForTenant($session->tenant),
-            'resources' => $this->gateway->resources($session),
+            'resources' => $resources,
+            'only_in_the_app' => $this->onlyInTheApp($session, array_keys($resources)),
             'pending_suggestions' => count($this->personalData->suggestions($this->suggestions->pendingFor($session->tenant), $session)),
             'app_url' => $session->url('/'),
             'writing' => [

@@ -6,6 +6,17 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
+use App\State\TenantAwareStateProcessor;
+use Symfony\Component\Serializer\Attribute\Groups;
 use App\Entity\Trait\IsmsScopeTrait;
 use App\Entity\Trait\BusinessProcessOwnerTrait;
 use App\Repository\BusinessProcessRepository;
@@ -13,10 +24,45 @@ use App\Risk\RiskMatrixThresholds;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Attribute\RequiresModule;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+/**
+ * REST / assistant (MCP) resource since 2026-11 (#1205): the business impact analysis (RTO/RPO/MTPD) and the
+ * assets a process depends on. Writing needs the same role as the form (ROLE_MANAGER, ApiTenantVoter::WRITE_ROLES);
+ * no delete over REST (the form's delete is admin work, DeletionPolicy decides).
+ */
+#[RequiresModule('bcm')]
+#[ApiResource(
+    operations: [
+        new Get(
+            description: 'Retrieve one business process with its business impact analysis',
+            security: "is_granted('API_VIEW', object)"
+        ),
+        new GetCollection(
+            description: 'Retrieve the business processes (BIA: criticality, RTO, RPO, MTPD)',
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'name' => new QueryParameter(filter: new PartialSearchFilter()),
+                'criticality' => new QueryParameter(filter: new ExactFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['name', 'criticality', 'rto'], castToArray: false),
+            ],
+        ),
+        new Post(
+            description: 'Create a business process',
+            securityPostDenormalize: "is_granted('API_CREATE', object)"
+        ),
+        new Put(
+            description: 'Change a business process',
+            security: "is_granted('API_EDIT', object)"
+        ),
+    ],
+    normalizationContext: ['groups' => ['business_process:read']],
+    denormalizationContext: ['groups' => ['business_process:write']],
+    processor: TenantAwareStateProcessor::class
+)]
 #[ORM\Entity(repositoryClass: BusinessProcessRepository::class)]
 class BusinessProcess
 {
@@ -26,51 +72,63 @@ class BusinessProcess
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['business_process:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?string $criticality = null; // critical, high, medium, low
 
     // Business Impact Analysis (BIA) Daten
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\NotNull]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?int $rto = null; // Recovery Time Objective in Stunden
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\NotNull]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?int $rpo = null; // Recovery Point Objective in Stunden
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\NotNull]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?int $mtpd = null; // Maximum Tolerable Period of Disruption in Stunden
 
     // Finanzielle Auswirkungen
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?string $financialImpactPerHour = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?string $financialImpactPerDay = null;
 
     // Reputationsschaden — nullable for Save-as-Draft
     // (BIA assessment is incremental work; require completion only when the
     // process is promoted out of draft, not at first save).
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?int $reputationalImpact = null; // 1-5 Skala
 
     // Rechtliche/Regulatorische Auswirkungen — same as above (T4.2 nullable).
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?int $regulatoryImpact = null; // 1-5 Skala
 
     // Operationale Auswirkungen — same as above (T4.2 nullable).
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?int $operationalImpact = null; // 1-5 Skala
 
     /**
@@ -101,6 +159,7 @@ class BusinessProcess
         joinColumns: [new ORM\JoinColumn(name: 'process_id', referencedColumnName: 'id', onDelete: 'CASCADE')],
         inverseJoinColumns: [new ORM\JoinColumn(name: 'upstream_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     )]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private Collection $upstreamProcesses;
 
     /**
@@ -114,15 +173,19 @@ class BusinessProcess
         joinColumns: [new ORM\JoinColumn(name: 'process_id', referencedColumnName: 'id', onDelete: 'CASCADE')],
         inverseJoinColumns: [new ORM\JoinColumn(name: 'downstream_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     )]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private Collection $downstreamProcesses;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?string $recoveryStrategy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['business_process:read'])]
     private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['business_process:read'])]
     private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -134,6 +197,7 @@ class BusinessProcess
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'business_process_asset')]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private Collection $supportingAssets;
 
     /**
@@ -141,9 +205,11 @@ class BusinessProcess
      */
     #[ORM\ManyToMany(targetEntity: Risk::class)]
     #[ORM\JoinTable(name: 'business_process_risk')]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private Collection $identifiedRisks;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?string $mbco = null;
 
     /**

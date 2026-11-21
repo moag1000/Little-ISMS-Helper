@@ -70,6 +70,7 @@ class ApiResourceGateway
         private readonly PropertyNameCollectionFactoryInterface $propertyNames,
         private readonly PropertyMetadataFactoryInterface $propertyMetadata,
         private readonly PersonalDataPolicy $personalData,
+        private readonly ?FieldSchema $schema = null,
     ) {
     }
 
@@ -168,6 +169,27 @@ class ApiResourceGateway
     }
 
     /**
+     * The writable fields with type, required flag and allowed values (choices, enums, scale bounds), so a value is
+     * right the first time. Falls back to the plain names where no schema reader is wired.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function describeFields(McpSession $session, string $resource): array
+    {
+        $meta = $this->resolve($session, $resource);
+        $fields = $this->fieldsOf($meta, $session);
+        if ($this->schema === null) {
+            return array_map(static fn (string $name): array => ['name' => $name], $fields);
+        }
+        $names = [];
+        foreach ($this->all() as $short => $candidate) {
+            $names[$candidate['class']] = $short;
+        }
+
+        return $this->schema->describe($meta['class'], $fields, $names);
+    }
+
+    /**
      * Create ($id null) or change one record through the resource's own API
      * operation. Returns the saved record as the API reads it.
      *
@@ -215,7 +237,7 @@ class ApiResourceGateway
             : $this->urlGenerator->generate($operation, ['id' => $id]);
         $method = $id === null ? 'POST' : (string) $meta['update_method'];
 
-        return $this->answer($meta, $this->send($session, $method, $path, [], $data), $session);
+        return $this->answer($meta, $this->send($session, $method, $path, [], $data, $meta['class']), $session);
     }
 
     /**
@@ -294,7 +316,7 @@ class ApiResourceGateway
      * @param array<string, mixed>|null $body
      * @return array<string, mixed>
      */
-    private function send(McpSession $session, string $method, string $path, array $query, ?array $body): array
+    private function send(McpSession $session, string $method, string $path, array $query, ?array $body, ?string $class = null): array
     {
         $main = $this->requestStack->getMainRequest();
         $content = $body === null ? null : (string) json_encode($body, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -325,7 +347,7 @@ class ApiResourceGateway
             $violations = is_array($body) && is_array($body['violations'] ?? null) ? $body['violations'] : [];
             if ($violations !== []) {
                 $lines = array_map(
-                    static fn (mixed $v): string => is_array($v) ? trim(((string) ($v['propertyPath'] ?? '')) . ': ' . ((string) ($v['message'] ?? ''))) : '',
+                    fn (mixed $v): string => is_array($v) ? $this->violationLine($v, $class) : '',
                     $violations,
                 );
                 throw new McpToolException('Not saved, please correct: ' . mb_substr(implode('; ', array_filter($lines)), 0, 1000));
@@ -336,6 +358,22 @@ class ApiResourceGateway
         $data = json_decode((string) $response->getContent(), true);
 
         return is_array($data) ? $data : [];
+    }
+
+    /**
+     * "field: message", with the allowed values when the field is a choice or an enum — the message alone
+     * ("Ungültige Risikokategorie") does not tell an assistant what to send instead (#1207).
+     *
+     * @param array<mixed> $violation
+     * @param class-string|null $class
+     */
+    private function violationLine(array $violation, ?string $class): string
+    {
+        $path = (string) ($violation['propertyPath'] ?? '');
+        $line = trim($path . ': ' . ((string) ($violation['message'] ?? '')));
+        $allowed = $class !== null && $path !== '' ? $this->schema?->allowedValues($class, $path) : null;
+
+        return $allowed !== null ? $line . ' (allowed: ' . implode(', ', $allowed) . ')' : $line;
     }
 
     /**

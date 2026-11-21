@@ -410,6 +410,24 @@ final class CrossTenantMcpContractTest extends WebTestCase
      */
     private function rpc(string $method, array $params = []): array
     {
+        $answer = $this->send($method, $params);
+        if ($this->client->getResponse()->getStatusCode() === 429) {
+            // A token has 100 calls per minute (`api` limiter) and every resource adds probes: continue on a
+            // fresh token of the same person, so a 429 never passes for an empty answer.
+            $this->token = static::getContainer()->get(ApiTokenManager::class)
+                ->mint($this->em()->find(User::class, $this->tokenUser->getId()) ?? $this->tokenUser, 'Contract ' . bin2hex(random_bytes(3)), canWrite: true);
+            $answer = $this->send($method, $params);
+        }
+
+        return $answer;
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    private function send(string $method, array $params): array
+    {
         $this->client->request('POST', '/mcp', server: [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_ACCEPT' => 'application/json, text/event-stream',
