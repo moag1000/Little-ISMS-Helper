@@ -49,4 +49,15 @@ final class RegisterTypeTest extends TestCase
         self::assertSame('register.type.legal_requirement.field.reference', RegisterType::LEGAL_REQUIREMENT->labelKey('reference'));
         self::assertSame('register.field.frequency', RegisterType::COMMUNICATION->labelKey('frequency'));
     }
+
+    #[Test]
+    public function cryptoInventoryAnswersA824AndUsesCategoryRatingAndAlgorithm(): void
+    {
+        $type = RegisterType::CRYPTO_OBJECT;
+        self::assertStringContainsString('A.8.24', $type->normReference());
+        self::assertTrue($type->uses('rating'));
+        self::assertTrue($type->uses('reference'));
+        self::assertContains('certificate', $type->categories());
+        self::assertSame('register.type.crypto_object.field.reference', $type->labelKey('reference'));
+    }
 }

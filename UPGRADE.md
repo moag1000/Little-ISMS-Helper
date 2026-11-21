@@ -27,6 +27,12 @@ Branchen-Baselines je Organisation an die Erfüllungszeile. Jede Organisation be
 bisher sah; auf Mehr-Organisations-Instanzen sind die Werte danach getrennt. Die globale Anforderung
 behält nur das TISAX-Katalog-Soll; dafür ist kein Klick nötig.
 
+**Kryptoinventar (ohne Migration).** Neues Register „Kryptoinventar“ (ISMS > Register, ISO 27001 A.8.24,
+NIS-2 Art. 21 (2) h, DORA Art. 9 (4) d) mit Vorschlägen aus dem Protokoll der Schlüsseloperationen und den
+Cloud-Diensten, dazu die jährliche Pflicht „Kryptostrategie und Kryptoinventar prüfen“ und je eine Wizard-Prüfung
+für ISO, NIS-2 und DORA. Die Erfüllung von A.8.24 usw. kann dadurch neu abgeleitet werden (Nachtlauf). Der
+Kryptografie-Richtlinien-Text (Abschnitt 11) nennt Kryptoagilität; bereits veröffentlichte Richtlinien ändern sich nicht.
+
 **Update-Schritte laufen jetzt von selbst.** Erkennt die Anwendung neuen Code (Version, neueste Migration
 oder Freigabeketten-YAML weichen vom letzten Lauf ab), führt sie aus: ausstehende Migrationen (vorher ein
 Snapshot, danach der nicht-destruktive Schema-Abgleich), „Workflow-Definitionen abgleichen“ und den

@@ -216,6 +216,9 @@ search_nav:
     register_monitoring:
         label: 'Monitored sources'
         description: 'What is monitored for anomalies, ISO 27001 A.8.16'
+    register_crypto:
+        label: 'Crypto inventory'
+        description: 'Certificates, keys, algorithms, crypto agility, ISO 27001 A.8.24'
     register_opportunities:
         label: 'Opportunities'
         description: 'Opportunities for the ISMS, ISO 27001 6.1.1'

@@ -22,6 +22,7 @@ Einstieg: **ISMS > Register** (`/register`), über ⌘K „Register“ oder von 
 | Kommunikation | ISO 27001 7.4 | ISB | — (Kommunikationsplan der interessierten Parteien wird darunter angezeigt) |
 | Verbesserungen | ISO 27001 10.1 · 9.3.2 g | ISB | Verbesserungsmöglichkeiten der letzten Managementbewertung, Audit-Feststellungen „Verbesserungspotenzial“, Erkenntnisse (Lessons Learned) aus Vorfällen und Notfallübungen der letzten 12 Monate |
 | Überwachte Quellen | ISO 27001 A.8.16 · NIS-2 Art. 21 (2) b | ISB | genutzte Cloud-Dienste (Lieferanten mit Kennzeichen „Cloud-Dienst“) |
+| Kryptoinventar | ISO 27001 A.8.24 · NIS-2 Art. 21 (2) h · DORA Art. 9 (4) d | ISB | Verfahren aus dem Protokoll der Schlüsseloperationen, genutzte Cloud-Dienste (Herstellerauskunft zur Kryptografie einholen) |
 
 Register mit eigenem Fachmodul (interessierte Parteien, Risiken, SoA, Ziele, Schulungen, Dokumente,
 Assets, Standorte, Prozesse, Lieferanten, VVT) stehen in derselben Übersicht mit Norm, pflegender
@@ -85,3 +86,22 @@ Audit-Log.
 - Die automatisch vorbereitete Managementbewertung listet unter 9.3.2 b alle Einträge zu Themen,
   rechtlichen Anforderungen und Schnittstellen, die seit der letzten Bewertung neu, geändert oder
   archiviert sind.
+
+## Kryptoinventar und Kryptoagilität
+
+Die Handreichung „Kryptoagilität“ der TeleTrusT-AG (2026) verlangt Kryptostrategie, Kryptoinventar und einen
+fortlaufenden Migrationsprozess, vor allem für die Umstellung auf Post-Quanten-Kryptografie. Das Tool bildet das
+ohne neue Modul-Insel ab:
+
+- **Kryptoinventar** = Register „Kryptoinventar“ (`crypto_object`): Art (Zertifikat, Schlüssel, Protokoll,
+  Verschlüsselung gespeicherter Daten, Bibliothek, Hardware), Verfahren und Parameter (z. B. RSA-2048; keine Schlüssel
+  oder Geheimnisse eintragen), Migrationspriorität (1–5; hoch bei unsicheren Verfahren oder langer Schutzdauer, Harvest
+  now, decrypt later), Verantwortliche/r, Verknüpfung mit Assets, Lieferanten und Dokumenten. Die Prüffrist läuft über
+  den allgemeinen Register-Termin (Mein Tag, Erinnerungsmail).
+- **Vorschläge** aus vorhandenen Daten: Verfahren und Schlüssellängen aus dem Protokoll der Schlüsseloperationen
+  (verknüpft mit dem Asset), und je Cloud-Dienst ein Eintrag zum Einholen der Herstellerauskunft (CBOM).
+- **Kryptostrategie, zulässige Verfahren, Ablösungsrichtlinie**: Abschnitt 11 der Kryptografie-Richtlinie
+  im Richtlinien-Assistenten.
+- **Pflicht „Kryptostrategie und Kryptoinventar prüfen“** im Pflichtenkalender (jährlich, neben der Schlüsselrotation).
+- **Nachweis**: Der Compliance-Wizard prüft das Register für ISO 27001 A.8.24, NIS-2 Art. 21 (2) h und DORA Art. 9 (4) d;
+  die Erfüllung leitet sich daraus ab.

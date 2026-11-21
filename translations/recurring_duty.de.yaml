@@ -57,6 +57,9 @@ recurring_duty:
         crypto_key_rotation:
             title: 'Kryptografische Schlüssel rotieren'
             body: 'Schlüssel und Zertifikate nach Kryptokonzept erneuern und die Rotation dokumentieren.'
+        crypto_agility_review:
+            title: 'Kryptostrategie und Kryptoinventar prüfen'
+            body: 'Zulässige Verfahren, Ablösefristen und Migrationsplan prüfen, Kryptoinventar aktualisieren (neue Verfahren, Bedrohungslage, Post-Quanten-Kryptografie).'
         access_review_campaign:
             title: 'Zugriffsrechte rezertifizieren'
             body: 'Eine Zugriffsreview-Kampagne über alle kritischen Systeme starten.'

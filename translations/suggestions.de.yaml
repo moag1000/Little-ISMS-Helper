@@ -152,6 +152,7 @@ suggestions:
             opportunity: 'Register: Chance'
             improvement: 'Register: Verbesserung'
             monitoring_source: 'Register: überwachte Quelle'
+            crypto_object: 'Register: Kryptoobjekt'
         compliance:
             inheritance: Erfüllung übernehmen
         ai:
@@ -199,6 +200,7 @@ suggestions:
             opportunity: Vorschläge aus der Zeit vor dem Verbesserungsregister.
             improvement: Aus Managementbewertung, Audit-Verbesserungspotenzial und Erkenntnissen aus Vorfällen und Übungen.
             monitoring_source: Aus den genutzten Cloud-Diensten (Lieferanten mit Kennzeichen Cloud-Dienst).
+            crypto_object: Aus dem Protokoll der Schlüsseloperationen und den genutzten Cloud-Diensten.
         compliance:
             inheritance: Eine erfüllte Anforderung deckt eine gemappte ab.
         ai:

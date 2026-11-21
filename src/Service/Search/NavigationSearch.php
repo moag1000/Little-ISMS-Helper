@@ -334,6 +334,16 @@ class NavigationSearch
             ],
             [
                 'route' => 'app_register_list',
+                'params' => ['type' => 'crypto_object'],
+                'label' => 'search_nav.register_crypto.label',
+                'description' => 'search_nav.register_crypto.description',
+                'aliases' => ['Kryptoinventar', 'Krypto-Kataster', 'Kryptoagilität', 'Kryptografie', 'Zertifikate', 'PQC', 'Post-Quanten', 'crypto inventory', 'crypto agility', 'CBOM', 'A.8.24'],
+                'icon' => 'fa-icon--ui-lock',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_register_list',
                 'params' => ['type' => 'improvement'],
                 'label' => 'search_nav.register_improvements.label',
                 'description' => 'search_nav.register_improvements.description',

@@ -57,6 +57,9 @@ recurring_duty:
         crypto_key_rotation:
             title: 'Rotate cryptographic keys'
             body: 'Renew keys and certificates according to the cryptography concept and record the rotation.'
+        crypto_agility_review:
+            title: 'Review crypto strategy and crypto inventory'
+            body: 'Review permitted algorithms, deprecation deadlines and the migration plan, and update the crypto inventory (new algorithms, threat landscape, post-quantum cryptography).'
         access_review_campaign:
             title: 'Recertify access rights'
             body: 'Start an access review campaign covering all critical systems.'
