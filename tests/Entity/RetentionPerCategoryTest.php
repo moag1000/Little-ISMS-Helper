@@ -25,7 +25,8 @@ final class RetentionPerCategoryTest extends TestCase
     #[Test]
     public function entityDeclaresRetentionPerCategory(): void
     {
-        $s = self::source('Entity/ProcessingActivity.php');
+        $s = self::source('Entity/ProcessingActivity.php')
+            . self::source('Entity/Trait/ProcessingActivityTransferRetentionTrait.php');
         self::assertStringContainsString('private ?array $retentionPerCategory = null;', $s);
         self::assertStringContainsString('public function getRetentionPerCategory(): ?array', $s);
         self::assertStringContainsString('public function setRetentionPerCategory(', $s);
