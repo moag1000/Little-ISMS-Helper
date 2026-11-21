@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use Symfony\Component\Serializer\Attribute\Groups;
 use DateTimeInterface;
 use DateTimeImmutable;
 use App\Enum\DocumentStatus;
@@ -15,6 +23,31 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Read-only REST / assistant (MCP) resource since 2026-11 (#1207): the document's metadata (category, status,
+ * version, owner, review date) — never the file, its path, hash or the policy text. Documents are changed in the
+ * UI (edit rules of inherited / published documents, status through the lifecycle); the assistant reads them and
+ * proposes status changes.
+ */
+#[ApiResource(
+    operations: [
+        new Get(
+            description: 'Retrieve the metadata of one document or policy',
+            security: "is_granted('view', object)"
+        ),
+        new GetCollection(
+            description: 'Retrieve the documents and policies (metadata only)',
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'originalFilename' => new QueryParameter(filter: new PartialSearchFilter()),
+                'category' => new QueryParameter(filter: new ExactFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['originalFilename', 'category', 'nextReviewDate'], castToArray: false),
+            ],
+        ),
+    ],
+    normalizationContext: ['groups' => ['document:read']],
+)]
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 #[ORM\Index(name: 'idx_document_tenant', columns: ['tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
@@ -30,6 +63,7 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['document:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -40,12 +74,15 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
     private ?string $filename = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['document:read'])]
     private ?string $originalFilename = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['document:read'])]
     private ?string $mimeType = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['document:read'])]
     private ?int $fileSize = null;
 
     #[ORM\Column(length: 500)]
@@ -53,9 +90,11 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
 
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank]
+    #[Groups(['document:read'])]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['document:read'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -85,18 +124,22 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['document:read'])]
     private ?Person $ownerPerson = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['document:read'])]
     private ?DateTimeInterface $uploadedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['document:read'])]
     private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $sha256Hash = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['document:read'])]
     private bool $isArchived = false;
 
     /**
@@ -116,6 +159,7 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
     // have been swept (DocumentController, CertificationBundleExporter,
     // ActivityFeed, DashboardStatisticsService, …).
     #[ORM\Column(length: 50, options: ['default' => 'draft'])]
+    #[Groups(['document:read'])]
     private string $status = 'draft';
 
     /**
@@ -152,6 +196,7 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
      * Conduct, Data-Protection-Policy under concentrated DPO).
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['document:read'])]
     private bool $inheritable = false;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
@@ -286,6 +331,7 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
      * before LB-8.
      */
     #[ORM\Column(name: 'next_review_date', type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['document:read'])]
     private ?DateTimeInterface $nextReviewDate = null;
 
     /**
@@ -294,6 +340,7 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
      * information governing the ISMS.
      */
     #[ORM\Column(name: 'review_interval_months', type: Types::INTEGER, options: ['default' => 12])]
+    #[Groups(['document:read'])]
     private int $reviewIntervalMonths = 12;
 
     /**
@@ -307,6 +354,7 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
      * uniqueness constraint on `policy_acknowledgement`.
      */
     #[ORM\Column(name: 'version', length: 32, options: ['default' => '1.0'])]
+    #[Groups(['document:read'])]
     private string $version = '1.0';
 
     /**
@@ -321,6 +369,7 @@ class Document implements \App\Lifecycle\RecordTransitionRoles
      * acknowledgement campaigns.
      */
     #[ORM\Column(name: 'requires_acknowledgement', type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['document:read'])]
     private bool $requiresAcknowledgement = false;
 
     /**

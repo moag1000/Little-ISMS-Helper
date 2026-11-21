@@ -10,7 +10,7 @@ use App\Mcp\McpToolException;
 use App\Entity\Suggestion;
 use App\Enum\SuggestionStatus;
 use App\Repository\SuggestionRepository;
-use App\Service\Suggestion\Kind\AbstractAiKind;
+use App\Service\Suggestion\AssistantDraftSource;
 use App\Service\Suggestion\RecordDraftKind;
 use App\Service\Suggestion\SuggestionDraft;
 use App\Service\Suggestion\RecordDrafts;
@@ -92,7 +92,7 @@ final class ProposeDraftTool extends AbstractMcpTool
             throw new McpToolException(sprintf('"%s" is not available for this record (see draft_options).', $key));
         }
 
-        if ($kind instanceof AbstractAiKind) {
+        if ($kind instanceof AssistantDraftSource) {
             $data = is_array($arguments['data'] ?? null) ? $arguments['data'] : [];
             $draft = $kind->draftFromAssistant($session->tenant, $record, $data, mb_substr('MCP: ' . $session->token->getLabel(), 0, 120));
             if ($draft === null) {

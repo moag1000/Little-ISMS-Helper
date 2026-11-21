@@ -129,6 +129,8 @@ suggestions:
         rejected: Abgelehnt
         superseded: Zurückgezogen
     kind:
+        record:
+            transition: 'Statuswechsel (Assistent)'
         asset:
             protection_need: Schutzbedarf erhöhen
         risk:
@@ -177,6 +179,8 @@ suggestions:
         soa:
             justification: SoA-Begründung aus Verknüpfungen
     kind_help:
+        record:
+            transition: 'Ein Assistent schlägt vor, den Status zu ändern; erst die Annahme führt den Übergang aus.'
         asset:
             protection_need: Abhängigkeiten (Maximumprinzip) und BIA heben den Schutzbedarf an.
         risk:
@@ -225,6 +229,9 @@ suggestions:
         soa:
             justification: Begründung aus den behandelten Risiken und den Anforderungen anderer Frameworks (ISO 27001 6.1.3 d).
     text:
+        record_transition:
+            title: 'Status ändern: %record% (%from% → %to%)'
+            no_reason: 'Ohne Begründung vorgeschlagen.'
         dimension:
             confidentiality: Vertraulichkeit
             integrity: Integrität

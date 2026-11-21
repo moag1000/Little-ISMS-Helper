@@ -36,16 +36,29 @@ Danach im Assistenten z. B. „Nutze isms: was ist bei mir überfällig?“ oder
 
 | Werkzeug | Antwort | Für wen typisch |
 |---|---|---|
-| `get_context` | Person, Organisation, Personas, aktive Module, Datensatzarten mit Filtern und ob sie angelegt/geändert werden dürfen, ob direkt geschrieben werden darf | alle (zuerst) |
+| `get_context` | Person, Organisation, Personas, aktive Module, Datensatzarten mit Filtern und ob sie angelegt/geändert werden dürfen, welche Datensatzarten es nur in der App gibt (`only_in_the_app`), ob direkt geschrieben werden darf | alle (zuerst) |
 | `my_day` | offene Fristen und Entscheidungen wie in *Mein Tag*, mit Normstelle und Link | alle |
 | `compliance_fulfillment` | Erfüllung je Norm, je Anforderung, und „Warum dieser Wert?“ (Controls, Datensatzprüfungen, Mappings, Reifegrad, Audit-Urteil, Übersteuerung mit Begründung, Nachweise) | ISB, Compliance, Auditor |
 | `management_kpis` | Kennzahlen der Dashboards mit Ampel nach euren Schwellen | Leitung, CISO |
 | `duty_calendar` | wiederkehrende Normpflichten mit nächster Fälligkeit | ISB, BCM, DSB |
 | `search` | globale Suche (wie ⌘K) | alle |
 | `list_records` / `get_record` | jede Ressource der REST API (Risiken, Controls inkl. SoA, Vorfälle, Assets, Lieferanten, Register, …) mit denselben Rechten, Filtern und Feldern wie `/api` | alle |
-| `save_record` | Datensatz anlegen (ohne ID) oder Felder ändern (mit ID) über die Schreib-Operation der REST-Ressource: Risiken, Assets, Controls/SoA-Begründung, Vorfälle, Lieferanten, Schulungen, Standorte, Ziele, … Verknüpfungen als Link (`/api/assets/5`). Fehler kommen als „Feld: Meldung“. Mit leerem `data` liefert es die schreibbaren Felder. Kein Löschen | alle mit Schreibrechten |
+| `save_record` | Datensatz anlegen (ohne ID) oder Felder ändern (mit ID) über die Schreib-Operation der REST-Ressource: Risiken, Assets, Controls/SoA-Begründung, Vorfälle, Lieferanten, Schulungen, Standorte, Ziele, … Verknüpfungen als Link (`/api/assets/5`). Fehler kommen als „Feld: Meldung (allowed: …)“ mit den erlaubten Werten. Mit leerem `data` liefert es die schreibbaren Felder mit Typ, Pflicht-Kennzeichen, erlaubten Werten (Auswahl/Enum) und Grenzen (Skalen). Daten als ISO 8601 mit Offset (`2026-10-31T09:00:00+01:00`). Kein Löschen | alle mit Schreibrechten |
 | `pending_suggestions` | Vorschläge, über die du entscheidest | alle mit Entscheidungen |
-| `draft_options` / `propose_draft` | Entwürfe zu einem Datensatz: Risiko aus Vorfall, Korrekturmaßnahme, SoA-Begründung, Meldetexte, Zusammenfassung für die Leitung, … — landen in der Vorschlags-Queue | Risk-Manager, ISB, DSB |
+| `draft_options` / `propose_draft` | Entwürfe zu einem Datensatz: Risiko aus Vorfall, Korrekturmaßnahme, SoA-Begründung, Meldetexte, Zusammenfassung für die Leitung, … — und **Statuswechsel** (`record.transition`: Vorfall schließen, Asset reaktivieren oder ausmustern, Dokument archivieren; für jeden Datensatz mit Lebenszyklus). Alles landet in der Vorschlags-Queue | Risk-Manager, ISB, DSB, Manager |
+
+**Neu seit #1205/#1207:** Geschäftsprozesse (mit BIA: RTO/RPO/MTPD, unterstützende Assets, Abhängigkeiten) und
+Verarbeitungstätigkeiten (VVT, Art. 30 DSGVO) sind Ressourcen, schreibbar ab Manager wie im Formular
+(Status nur lesend; Art.-9-/Art.-10-Angaben der VVT bekommt nur die DSB-Rolle). Dokumente und Richtlinien gibt es
+als Metadaten lesend (Kategorie, Status, Version, Verantwortliche, Prüfdatum; nie Datei, Pfad oder Richtlinientext).
+
+**Was bewusst nicht per Assistent geht:** *Löschen* (Datensätze in einem Endzustand werden archiviert; ein
+Statuswechsel zu „archiviert“/„ausgemustert“ ist der Vorschlag `record.transition`, das endgültige Löschen eines
+Fehleintrags bleibt in der App, Admin, `DeletionPolicy`); *Dubletten zusammenführen* (Dubletten werden gemeldet,
+nie automatisch zusammengeführt, S29); *Organisations-Einstellungen*, *Benachrichtigungskanäle*, *Frameworks
+aktivieren* und Dokument-Änderungen (Vorlagen-, Vererbungs- und Veröffentlichungsregeln): Administration der App,
+keine Daten, die ein Assistent pflegt. `get_context` führt unter `only_in_the_app` die Datensatzarten aktiver Module
+auf, die es noch nicht als Ressource gibt.
 
 Fertige Prompts: **Mein Tag**, **Audit-Bereitschaft** (je Norm), **Bericht für die Leitung**, **Entwurf vorschlagen**.
 
@@ -87,7 +100,12 @@ dieselbe Entscheidung, dasselbe Audit-Log wie bei den Entwürfen des eigenen KI-
   einer Art für einen Datensatz in 30 Tagen schlägt er dort nichts mehr vor. In der App kann die Person jederzeit
   neu anfragen.
 - **Was eine Entscheidung braucht**: Werte der Erfüllung, Status und Freigaben bleiben in der App (Übersteuerung mit
-  Begründung, Lifecycle, Entscheidungsdialog) bzw. kommen als Entwurf über `propose_draft`.
+  Begründung, Lifecycle, Entscheidungsdialog) bzw. kommen als Entwurf über `propose_draft`. Ein Statuswechsel
+  (`record.transition`) wird nur für Übergänge angeboten, die die fragende Person selbst ausführen dürfte und die
+  keine zweite Person brauchen (Vier-Augen-Schritte bleiben in der App); angenommen wird er in der Queue von
+  einem Manager, der Lebenszyklus prüft Rolle, Begründung und Vier-Augen-Regel noch einmal für diese Person.
+- **Uhrzeiten**: Daten, die ein Client mit beliebigem Offset sendet, werden in die Zeitzone des Servers umgerechnet
+  gespeichert; die Antwort trägt den Offset des Servers (`+01:00`/`+02:00`), derselbe Zeitpunkt kommt zurück.
 - **Datenfluss**: Was der Assistent liest, geht an ihn und seinen Anbieter (bei Claude: Anthropic). Deshalb ist der
   Zugang je Organisation standardmäßig aus; der Admin entscheidet. Personenbezogene Daten werden — anders als beim
   eigenen KI-Modell — nicht ersetzt, denn die Person liest ihre eigenen Daten.

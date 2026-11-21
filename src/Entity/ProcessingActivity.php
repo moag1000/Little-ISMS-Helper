@@ -4,10 +4,24 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
+use App\Attribute\PersonalDataResource;
+use App\Attribute\RequiresModule;
+use App\State\TenantAwareStateProcessor;
+use Symfony\Component\Serializer\Attribute\Groups;
 use DateTimeInterface;
 use DateTimeImmutable;
 use App\Entity\Trait\ProcessingActivityContactTrait;
 use App\Entity\Trait\ProcessingActivityDpoTrait;
+use App\Entity\Trait\ProcessingActivityTransferRetentionTrait;
 use App\Enum\ProcessingActivityStatus;
 use App\Lifecycle\LifecycleRegistry;
 use App\Repository\ProcessingActivityRepository;
@@ -31,6 +45,38 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * - GDPR Art. 32: Security of processing (TOM reference)
  * - NIS2 Art. 21: Risk management (data processing risks)
  */
+#[RequiresModule('privacy')]
+// Art. 9 / 10 GDPR details are personal-data-adjacent: to the assistant only for the DPO role (S24).
+#[PersonalDataResource(fields: ['specialCategoriesDetails', 'legalBasisSpecialCategories', 'criminalDataLegalBasis'])]
+#[ApiResource(
+    operations: [
+        new Get(
+            description: 'Retrieve one entry of the record of processing activities (GDPR Art. 30)',
+            security: "is_granted('API_VIEW', object)"
+        ),
+        new GetCollection(
+            description: 'Retrieve the record of processing activities (GDPR Art. 30)',
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'name' => new QueryParameter(filter: new PartialSearchFilter()),
+                'legalBasis' => new QueryParameter(filter: new ExactFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['name', 'legalBasis', 'nextReviewDate'], castToArray: false),
+            ],
+        ),
+        new Post(
+            description: 'Create an entry of the record of processing activities',
+            securityPostDenormalize: "is_granted('API_CREATE', object)"
+        ),
+        new Put(
+            description: 'Change an entry of the record of processing activities',
+            security: "is_granted('API_EDIT', object)"
+        ),
+    ],
+    normalizationContext: ['groups' => ['processing_activity:read']],
+    denormalizationContext: ['groups' => ['processing_activity:write']],
+    processor: TenantAwareStateProcessor::class
+)]
 #[ORM\Entity(repositoryClass: ProcessingActivityRepository::class), \App\Attribute\ResponsibilityGrantsAuthority]
 #[ORM\Table(name: 'processing_activity')]
 #[ORM\Index(name: 'idx_processing_activity_tenant', columns: ['tenant_id'])]
@@ -41,10 +87,12 @@ class ProcessingActivity
 {
     use ProcessingActivityDpoTrait;
     use ProcessingActivityContactTrait;
+    use ProcessingActivityTransferRetentionTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['processing_activity:read'])]
     private ?int $id = null;
 
     /**
@@ -65,12 +113,14 @@ class ProcessingActivity
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $name = null;
 
     /**
      * Detailed description of the processing activity
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $description = null;
 
     /**
@@ -79,6 +129,7 @@ class ProcessingActivity
      */
     #[ORM\Column(type: Types::JSON)]
     #[Assert\NotBlank]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private array $purposes = [];
 
     // ============================================================================
@@ -91,12 +142,14 @@ class ProcessingActivity
      */
     #[ORM\Column(type: Types::JSON)]
     #[Assert\NotBlank]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private array $dataSubjectCategories = [];
 
     /**
      * Number of data subjects affected (optional, for impact assessment)
      */
     #[ORM\Column(nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?int $estimatedDataSubjectsCount = null;
 
     // ============================================================================
@@ -109,6 +162,7 @@ class ProcessingActivity
      */
     #[ORM\Column(type: Types::JSON)]
     #[Assert\NotBlank]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private array $personalDataCategories = [];
 
     /**
@@ -123,6 +177,7 @@ class ProcessingActivity
      * - Sex life/sexual orientation
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private bool $processesSpecialCategories = false;
 
     /**
@@ -130,12 +185,14 @@ class ProcessingActivity
      * JSON array: ["health", "biometric", "genetic", "racial_ethnic", "political", "religious", "union", "sex_life"]
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?array $specialCategoriesDetails = null;
 
     /**
      * Whether data relating to criminal convictions (Art. 10 GDPR) is processed
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private bool $processesCriminalData = false;
 
     // ============================================================================
@@ -147,12 +204,14 @@ class ProcessingActivity
      * JSON array
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?array $recipientCategories = null;
 
     /**
      * Specific recipients (optional, for transparency)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $recipientDetails = null;
 
     // ============================================================================
@@ -163,6 +222,7 @@ class ProcessingActivity
      * Whether data is transferred to third countries (outside EU/EEA)
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private bool $hasThirdCountryTransfer = false;
 
     /**
@@ -170,6 +230,7 @@ class ProcessingActivity
      * JSON array of country codes (ISO 3166-1 alpha-2)
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?array $thirdCountries = null;
 
     /**
@@ -187,6 +248,7 @@ class ProcessingActivity
      * - vital_interests: Art. 49(1)(f)
      */
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $transferSafeguards = null;
 
     // ============================================================================
@@ -203,6 +265,7 @@ class ProcessingActivity
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\NotBlank]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $retentionPeriod = null;
 
     /**
@@ -211,12 +274,14 @@ class ProcessingActivity
      * Canonical numeric retention duration.
      */
     #[ORM\Column(nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?int $retentionPeriodDays = null;
 
     /**
      * Legal basis for retention period (e.g., "HGB §257", "DSGVO Art. 6(1)(c)")
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $retentionLegalBasis = null;
 
     /**
@@ -244,6 +309,7 @@ class ProcessingActivity
      * demands evidence; either form counts (see {@see validateTomOrControlsPresent}).
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $technicalOrganizationalMeasures = null;
 
     /**
@@ -255,6 +321,7 @@ class ProcessingActivity
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'processing_activity_control')]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private Collection $implementedControls;
 
     /**
@@ -273,6 +340,7 @@ class ProcessingActivity
     #[ORM\JoinTable(name: 'processing_activity_asset')]
     #[ORM\JoinColumn(name: 'processing_activity_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private Collection $assets;
 
     /**
@@ -301,12 +369,14 @@ class ProcessingActivity
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['consent', 'contract', 'legal_obligation', 'vital_interests', 'public_task', 'legitimate_interests'])]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $legalBasis = null;
 
     /**
      * Detailed explanation of legal basis (mandatory for legitimate interests)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $legalBasisDetails = null;
 
     /**
@@ -324,6 +394,7 @@ class ProcessingActivity
      * - research_statistics: Art. 9(2)(j)
      */
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $legalBasisSpecialCategories = null;
 
     /**
@@ -334,6 +405,7 @@ class ProcessingActivity
      * the Art. 9(2) gate for special categories.
      */
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $criminalDataLegalBasis = null;
 
     // ============================================================================
@@ -348,6 +420,7 @@ class ProcessingActivity
      *             backfill is complete.
      */
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $responsibleDepartment = null;
 
     /**
@@ -369,6 +442,7 @@ class ProcessingActivity
      * Whether processors (Auftragsverarbeiter) are involved
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private bool $involvesProcessors = false;
 
     /**
@@ -397,6 +471,7 @@ class ProcessingActivity
     #[ORM\JoinTable(name: 'processing_activity_processor_supplier')]
     #[ORM\JoinColumn(name: 'processing_activity_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'supplier_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private Collection $processorSuppliers;
 
     // ============================================================================
@@ -407,12 +482,14 @@ class ProcessingActivity
      * Whether this is a joint controller arrangement (Art. 26 GDPR)
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private bool $isJointController = false;
 
     /**
      * Joint controller details (JSON array)
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?array $jointControllerDetails = null;
 
     // ============================================================================
@@ -425,6 +502,7 @@ class ProcessingActivity
      * the controller itself.
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private bool $isProcessor = false;
 
     /**
@@ -433,6 +511,7 @@ class ProcessingActivity
      * when isProcessor = true (validated below).
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $processorClientController = null;
 
     // ============================================================================
@@ -443,18 +522,21 @@ class ProcessingActivity
      * Whether this processing is considered high-risk (requires DPIA per Art. 35)
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read'])]
     private bool $isHighRisk = false;
 
     /**
      * Whether a Data Protection Impact Assessment (DPIA/DSFA) has been conducted
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read'])]
     private bool $dpiaCompleted = false;
 
     /**
      * Date of DPIA completion (if applicable)
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['processing_activity:read'])]
     private ?DateTimeInterface $dpiaDate = null;
 
     /**
@@ -462,6 +544,7 @@ class ProcessingActivity
      */
     #[ORM\Column(length: 20, nullable: true)]
     #[Assert\Choice(choices: ['low', 'medium', 'high', 'critical'])]
+    #[Groups(['processing_activity:read'])]
     private ?string $riskLevel = null;
 
     // ============================================================================
@@ -473,18 +556,21 @@ class ProcessingActivity
      * JSON array: ["data_subject", "third_parties", "public_sources", "other"]
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?array $dataSources = null;
 
     /**
      * Whether automated decision-making (Art. 22 GDPR) is involved
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private bool $hasAutomatedDecisionMaking = false;
 
     /**
      * Details of automated decision-making/profiling (if applicable)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?string $automatedDecisionMakingDetails = null;
 
     // ============================================================================
@@ -506,36 +592,43 @@ class ProcessingActivity
     // itself — the const's values are per-stage arrays, so choices: <map> made
     // Assert\Choice reject every status incl. 'draft' and broke all edits.
     #[Assert\Choice(callback: [LifecycleRegistry::class, 'standardStageKeys'])]
+    #[Groups(['processing_activity:read'])]
     private string $status = 'draft';
 
     /**
      * Date when this processing activity started
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?DateTimeInterface $startDate = null;
 
     /**
      * Date when this processing activity ended (if applicable)
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?DateTimeInterface $endDate = null;
 
     /**
      * Last review date (VVT should be reviewed regularly)
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['processing_activity:read'])]
     private ?DateTimeInterface $lastReviewDate = null;
 
     /**
      * Next planned review date
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['processing_activity:read', 'processing_activity:write'])]
     private ?DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['processing_activity:read'])]
     private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['processing_activity:read'])]
     private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -786,100 +879,6 @@ class ProcessingActivity
     public function setRecipientDetails(?string $recipientDetails): static
     {
         $this->recipientDetails = $recipientDetails;
-        return $this;
-    }
-
-    public function getHasThirdCountryTransfer(): bool
-    {
-        return $this->hasThirdCountryTransfer;
-    }
-
-    public function setHasThirdCountryTransfer(bool $hasThirdCountryTransfer): static
-    {
-        $this->hasThirdCountryTransfer = $hasThirdCountryTransfer;
-        return $this;
-    }
-
-    public function getThirdCountries(): ?array
-    {
-        return $this->thirdCountries;
-    }
-
-    public function setThirdCountries(?array $thirdCountries): static
-    {
-        $this->thirdCountries = $thirdCountries;
-        return $this;
-    }
-
-    public function getTransferSafeguards(): ?string
-    {
-        return $this->transferSafeguards;
-    }
-
-    public function setTransferSafeguards(?string $transferSafeguards): static
-    {
-        $this->transferSafeguards = $transferSafeguards;
-        return $this;
-    }
-
-    public function getRetentionPeriod(): ?string
-    {
-        return $this->retentionPeriod;
-    }
-
-    public function setRetentionPeriod(?string $retentionPeriod): static
-    {
-        $this->retentionPeriod = $retentionPeriod;
-        return $this;
-    }
-
-    public function getRetentionPeriodDays(): ?int
-    {
-        return $this->retentionPeriodDays;
-    }
-
-    public function setRetentionPeriodDays(?int $retentionPeriodDays): static
-    {
-        $this->retentionPeriodDays = $retentionPeriodDays;
-        return $this;
-    }
-
-    public function getRetentionLegalBasis(): ?string
-    {
-        return $this->retentionLegalBasis;
-    }
-
-    public function setRetentionLegalBasis(?string $retentionLegalBasis): static
-    {
-        $this->retentionLegalBasis = $retentionLegalBasis;
-        return $this;
-    }
-
-    /**
-     * @return array<string, string>|null
-     */
-    public function getRetentionPerCategory(): ?array
-    {
-        return $this->retentionPerCategory;
-    }
-
-    /**
-     * @param array<string, string>|null $retentionPerCategory
-     */
-    public function setRetentionPerCategory(?array $retentionPerCategory): static
-    {
-        $this->retentionPerCategory = $retentionPerCategory;
-        return $this;
-    }
-
-    public function getTechnicalOrganizationalMeasures(): ?string
-    {
-        return $this->technicalOrganizationalMeasures;
-    }
-
-    public function setTechnicalOrganizationalMeasures(?string $technicalOrganizationalMeasures): static
-    {
-        $this->technicalOrganizationalMeasures = $technicalOrganizationalMeasures;
         return $this;
     }
 

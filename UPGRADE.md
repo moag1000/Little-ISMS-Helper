@@ -169,6 +169,18 @@ automatisch ausführen“). Weiter manuell bleiben: destruktive Schema-Änderung
 
 ### Geändertes Verhalten
 
+- **Assistent (MCP) und REST, #1205/#1207:** *Neu* sind die Ressourcen Geschäftsprozess (BIA), Verarbeitungstätigkeit
+  (VVT) und Dokument (nur lesend, Metadaten). Geschäftsprozesse und VVT sind ab Manager schreibbar, wie ihre Formulare
+  (Status der VVT nur über den Lebenszyklus; Art.-9-/Art.-10-Angaben bekommt der Assistent nur mit der Rolle DSB).
+  Statuswechsel schlägt der Assistent über `propose_draft` (Art `record.transition`) vor; ein Manager nimmt sie in der
+  Vorschlags-Queue an. `get_context` nennt unter `only_in_the_app` die Datensatzarten, die es nur in der App gibt;
+  `save_record` mit leerem `data` liefert Typ, Pflicht und erlaubte Werte je Feld (die Antwort ist jetzt eine Liste von
+  Feldbeschreibungen statt Namen) und eine abgelehnte Auswahl nennt die erlaubten Werte. **Uhrzeiten:** ein Client,
+  der Daten mit Offset (`…Z`, `+01:00`) sendet, bekommt denselben Zeitpunkt zurück (bisher verschoben um den Offset
+  der Server-Zeitzone, wenn diese nicht UTC ist); bereits gespeicherte Werte bleiben unverändert. Löschen, Zusammenführen,
+  Organisations-Einstellungen, Benachrichtigungskanäle und Framework-Aktivierung bleiben in der App. Neues Konsolen-Flag
+  `app:api-token:create --can-write` für Tokens, mit denen der Assistent schreiben darf.
+
 - **Modulgrenzen gelten überall gleich (S35):** Assets, Risiken, Controls, Vorfälle, Audits und Management-Reviews sind
   Pflichtmodule und lassen sich nicht mehr abschalten (waren sie bei einer Organisation aus, sind sie nach dem Update
   wieder an; Navigation, Suche und Berichte stimmen damit mit den Seiten, REST und dem Assistenten überein). Compliance

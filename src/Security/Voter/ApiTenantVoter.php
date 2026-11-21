@@ -83,6 +83,9 @@ final class ApiTenantVoter extends Voter
         \App\Entity\InternalAudit::class => ['ROLE_MANAGER'],
         // ThreatIntelligenceController::new|edit: ROLE_MANAGER
         \App\Entity\ThreatIntelligence::class => ['ROLE_MANAGER'],
+        // BusinessProcessController::new|edit and ProcessingActivityController::new|edit: ROLE_MANAGER
+        \App\Entity\BusinessProcess::class => ['ROLE_MANAGER'],
+        \App\Entity\ProcessingActivity::class => ['ROLE_MANAGER'],
         // Machine-fed logs (badge reader, HSM): written by the integration account the admin sets up,
         // not by hand — a manager could otherwise fabricate access or key-operation evidence (W3).
         \App\Entity\CryptographicOperation::class => ['ROLE_ADMIN'],

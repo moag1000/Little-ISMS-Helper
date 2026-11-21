@@ -14,12 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Mint a read-only API Bearer token for a user. The plaintext is shown
- * ONCE; only its SHA-256 hash is persisted.
+ * Mint an API Bearer token for a user: read-only, or with --can-write one the assistant connection (MCP) may
+ * write with (rights of the user, switchable per organisation). The plaintext is shown ONCE; only its SHA-256
+ * hash is persisted.
  */
 #[AsCommand(
     name: 'app:api-token:create',
-    description: 'Create a read-only API Bearer token for a user (F6)',
+    description: 'Create an API Bearer token for a user: read-only, or with --can-write also for writing over MCP (F6)',
 )]
 final class CreateApiTokenCommand extends Command
 {
@@ -36,6 +37,7 @@ final class CreateApiTokenCommand extends Command
         $this
             ->addArgument('email', InputArgument::REQUIRED, 'Email of the user the token is issued for')
             ->addOption('label', null, InputOption::VALUE_REQUIRED, 'Human-readable label', 'API token')
+            ->addOption('can-write', null, InputOption::VALUE_NONE, 'Token may also write over the assistant connection (MCP); without it the token only reads')
             ->addOption('expires-days', null, InputOption::VALUE_REQUIRED, 'Expiry in days (omit for the maximum of 365)');
     }
 
@@ -54,9 +56,10 @@ final class CreateApiTokenCommand extends Command
         $expiresRaw = $input->getOption('expires-days');
         $expiresDays = ($expiresRaw !== null && (string) $expiresRaw !== '') ? (int) $expiresRaw : null;
 
-        $plain = $this->tokenManager->mint($user, (string) $input->getOption('label'), $expiresDays);
+        $canWrite = (bool) $input->getOption('can-write');
+        $plain = $this->tokenManager->mint($user, (string) $input->getOption('label'), $expiresDays, canWrite: $canWrite);
 
-        $io->success('Read-only API token created. Store it now — it will not be shown again:');
+        $io->success(($canWrite ? 'API token (read and write over MCP)' : 'Read-only API token') . ' created. Store it now — it will not be shown again:');
         $io->writeln('  ' . $plain);
         $io->writeln('');
         $io->writeln('  Usage:  curl -H "Authorization: Bearer ' . $plain . '" https://<host>/api/...');

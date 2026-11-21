@@ -37,7 +37,8 @@ final class SaveRecordTool extends AbstractMcpTool
         return 'Create a record (no id) or change fields of an existing one (with id) — e.g. a risk, asset, control, incident, '
             . 'supplier, training. Send only the fields to set in "data"; relations as IRI strings from get_record/list_records '
             . '(e.g. "/api/assets/5"). Validation errors come back as "field: message". Status, approvals and acceptance are '
-            . 'not writable here (use propose_draft). Call with "data": {} to get the writable fields of a resource. '
+            . 'not writable here (use propose_draft). Call with "data": {} to get the writable fields of a resource with type, required flag and allowed values. '
+            . 'Dates are ISO 8601 with offset ("2026-10-31T09:00:00+01:00"); what you get back carries the server\'s offset. '
             . 'Tell the person what you are about to save first.';
     }
 
@@ -86,7 +87,7 @@ final class SaveRecordTool extends AbstractMcpTool
         if ($data === []) {
             return [
                 'resource' => $resource,
-                'writable_fields' => $this->gateway->writableFields($session, $resource),
+                'writable_fields' => $this->gateway->describeFields($session, $resource),
                 '_audit' => ['resource' => $resource, 'operation' => 'describe'],
             ];
         }

@@ -65,6 +65,7 @@ final class ApiResourceContractTest extends TestCase
 
     private const array READ_ONLY_RESOURCES = [
         ManagementDecision::class,
+        \App\Entity\Document::class,
         IsmsRegisterEntry::class,
         ComplianceRequirementFulfillment::class,
     ];

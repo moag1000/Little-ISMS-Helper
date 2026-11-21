@@ -11,6 +11,7 @@ use App\Entity\BusinessContinuityPlan;
 use App\Entity\BusinessProcess;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
+use App\Entity\Document;
 use App\Entity\CorrectiveAction;
 use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\Incident;
@@ -52,6 +53,7 @@ final readonly class SuggestionLinks
         ProcessingActivity::class => 'app_processing_activity_show',
         InternalAudit::class => 'app_audit_show',
         ManagementDecision::class => 'app_management_decision_show',
+        Document::class => 'app_document_show',
     ];
 
     public function __construct(private UrlGeneratorInterface $urls)

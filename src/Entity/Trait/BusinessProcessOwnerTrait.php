@@ -10,6 +10,7 @@ use App\Service\OwnerResolver;
 use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Process owner (Pattern A dual-state): User + Person + deputies + effective accessors. Extracted
@@ -44,6 +45,7 @@ trait BusinessProcessOwnerTrait
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'process_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[SameTenantOwner]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private ?Person $processOwnerPerson = null;
 
     public function getProcessOwnerPerson(): ?Person
@@ -70,6 +72,7 @@ trait BusinessProcessOwnerTrait
     #[ORM\JoinColumn(name: 'business_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[SameTenantOwner]
+    #[Groups(['business_process:read', 'business_process:write'])]
     private Collection $processOwnerDeputyPersons;
 
     /** @return Collection<int, Person> */
