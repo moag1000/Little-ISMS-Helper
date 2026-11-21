@@ -104,6 +104,7 @@ corrective_action.status	4
 coverage.impact.help	1
 coverage.impact.title	1
 crisis_team.type	3
+crypto_supplier	1
 dashboard.kpi	7
 dashboard.management_kpis	2
 dashboards.reports	1
