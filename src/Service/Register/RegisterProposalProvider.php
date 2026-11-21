@@ -14,6 +14,7 @@ use App\Enum\RegisterType;
 use App\Repository\AuditFindingRepository;
 use App\Repository\BCExerciseRepository;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\CryptographicOperationRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InterestedPartyRepository;
 use App\Repository\IsmsRegisterEntryRepository;
@@ -85,6 +86,7 @@ final class RegisterProposalProvider
         private readonly ?AuditFindingRepository $findings = null,
         private readonly ?IncidentRepository $incidents = null,
         private readonly ?BCExerciseRepository $exercises = null,
+        private readonly ?CryptographicOperationRepository $cryptoOperations = null,
     ) {
     }
 
@@ -97,6 +99,7 @@ final class RegisterProposalProvider
             RegisterType::LEGAL_REQUIREMENT => [...$this->fromFrameworks(), ...$this->fromPartyLegalRequirements($tenant)],
             RegisterType::SCOPE_INTERFACE => $this->fromCriticalSuppliers($tenant),
             RegisterType::MONITORING_SOURCE => $this->fromCloudSuppliers($tenant),
+            RegisterType::CRYPTO_OBJECT => [...$this->fromCryptoLog($tenant), ...$this->fromCloudSupplierCrypto($tenant)],
             RegisterType::IMPROVEMENT => [
                 ...$this->fromManagementReview($tenant),
                 ...$this->fromAuditOpportunities($tenant),
@@ -386,6 +389,75 @@ final class RegisterProposalProvider
                 'supplier.' . $supplier->getId(),
                 'register.source.supplier',
                 category: 'cloud',
+                links: ['supplier' => [(int) $supplier->getId()]],
+            );
+        }
+
+        return $proposals;
+    }
+
+    /**
+     * Algorithms and key lengths the tool has seen in the key-operation log (A.8.24): one proposal per
+     * algorithm, linked to the asset of the newest operation. Only algorithm, length and asset are read, never
+     * key identifiers, users or addresses.
+     *
+     * @return list<RegisterProposal>
+     */
+    private function fromCryptoLog(Tenant $tenant): array
+    {
+        if ($this->cryptoOperations === null) {
+            return [];
+        }
+        $rows = $this->cryptoOperations->createQueryBuilder('c')
+            ->select('c.algorithm AS algorithm', 'c.keyLength AS keyLength', 'MAX(IDENTITY(c.relatedAsset)) AS asset')
+            ->where('c.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->groupBy('c.algorithm', 'c.keyLength')
+            ->orderBy('c.algorithm', \SortDirection::Ascending)
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getArrayResult();
+        $proposals = [];
+        foreach ($rows as $row) {
+            $parameter = trim((string) $row['algorithm'] . ($row['keyLength'] !== null ? ' ' . $row['keyLength'] : ''));
+            $proposals[] = new RegisterProposal(
+                RegisterType::CRYPTO_OBJECT,
+                $this->translator->trans('register.proposal.crypto_title', ['%name%' => $parameter], 'register'),
+                null,
+                'crypto_log.' . sha1($parameter),
+                'register.source.crypto_log',
+                category: 'key',
+                reference: $parameter,
+                links: $row['asset'] !== null ? ['asset' => [(int) $row['asset']]] : [],
+            );
+        }
+
+        return $proposals;
+    }
+
+    /**
+     * Cloud services use cryptography the organisation does not see: the register asks for the supplier's
+     * statement (a crypto bill of materials) next to the entry (TeleTrusT 2026, 3.4.3).
+     *
+     * @return list<RegisterProposal>
+     */
+    private function fromCloudSupplierCrypto(Tenant $tenant): array
+    {
+        if (!$this->modules->isModuleActive('suppliers')) {
+            return [];
+        }
+        $proposals = [];
+        foreach ($this->suppliers->findBy(['tenant' => $tenant, 'isCloudService' => true]) as $supplier) {
+            if (!in_array($supplier->getStatus(), ['active', 'evaluation'], true)) {
+                continue;
+            }
+            $proposals[] = new RegisterProposal(
+                RegisterType::CRYPTO_OBJECT,
+                $this->translator->trans('register.proposal.crypto_supplier_title', ['%name%' => $supplier->getName()], 'register'),
+                $supplier->getServiceProvided(),
+                'crypto_supplier.' . $supplier->getId(),
+                'register.source.crypto_supplier',
+                category: 'other',
                 links: ['supplier' => [(int) $supplier->getId()]],
             );
         }

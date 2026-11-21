@@ -152,6 +152,7 @@ suggestions:
             opportunity: 'Register: opportunity'
             improvement: 'Register: improvement'
             monitoring_source: 'Register: monitored source'
+            crypto_object: 'Register: crypto object'
         compliance:
             inheritance: Take over fulfilment
         ai:
@@ -199,6 +200,7 @@ suggestions:
             opportunity: Proposals from before the improvement register.
             improvement: From the management review, audit opportunities and lessons learned from incidents and exercises.
             monitoring_source: From the cloud services in use (suppliers marked as cloud service).
+            crypto_object: From the key-operation log and the cloud services in use.
         compliance:
             inheritance: A fulfilled requirement covers a mapped one.
         ai:

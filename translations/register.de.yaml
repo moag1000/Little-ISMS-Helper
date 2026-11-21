@@ -234,6 +234,30 @@ register:
                 identity: Identitäten und Anmeldungen
                 physical: Physische Zugänge
                 other: Sonstige
+        crypto_object:
+            title: Kryptoinventar
+            purpose: Welche kryptografischen Objekte im Einsatz sind (Zertifikate, Schlüssel, Protokolle, Verfahren, Bibliotheken), wer sie verantwortet und wie dringend sie migriert werden müssen. Grundlage für Risikoanalyse und Migration zu neuen Verfahren, auch zu Post-Quanten-Kryptografie (ISO 27001 A.8.24, TeleTrusT-Handreichung Kryptoagilität).
+            new: Kryptoobjekt erfassen
+            empty: Keine Kryptoobjekte vorhanden.
+            field:
+                title: Kryptoobjekt
+                description: Verwendung, Schutzdauer der geschützten Daten und Plan zum Austausch
+                owner: Verantwortlich
+                category: Art
+                rating: Migrationspriorität
+                reference: Verfahren und Parameter
+                effectiveFrom: Im Einsatz seit
+            help:
+                reference: Zum Beispiel RSA-2048, ECDSA P-256, AES-256-GCM oder TLS 1.2. Keine Schlüssel und Geheimnisse eintragen.
+                rating: Hoch, wenn das Verfahren als unsicher gilt oder die Daten lange geschützt bleiben müssen (Harvest now, decrypt later).
+            category:
+                certificate: Zertifikat
+                key: Schlüssel
+                protocol: Protokoll
+                storage: Verschlüsselung gespeicherter Daten
+                library: Bibliothek
+                hardware: Hardware und Firmware
+                other: Sonstige
     field:
         frequency: Rhythmus
         next_date: Nächster Termin
@@ -325,6 +349,8 @@ register:
         audit_finding: Verbesserungspotenzial aus einem Audit
         incident: Erkenntnisse aus einem Vorfall
         exercise: Erkenntnisse aus einer Notfallübung
+        crypto_log: Protokoll der Schlüsseloperationen
+        crypto_supplier: Cloud-Dienst, Herstellerauskunft zur Kryptografie einholen
     persona_role:
         top_management: Oberste Leitung
         ciso: Chief Information Security Officer (CISO)
@@ -352,6 +378,8 @@ register:
     proposal:
         interface_title: Schnittstelle zu %name%
         monitoring_title: Monitoring des Cloud-Dienstes %name%
+        crypto_title: Kryptoverfahren %name%
+        crypto_supplier_title: Kryptografie des Cloud-Dienstes %name%
     communication:
         parties_title: Termine mit interessierten Parteien
         parties_hint: Externer Teil des Plans, gepflegt an der jeweiligen Partei.

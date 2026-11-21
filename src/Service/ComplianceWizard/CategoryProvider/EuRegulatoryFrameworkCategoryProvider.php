@@ -329,6 +329,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'priority' => 'high',
                         'route' => 'app_soa_index',
                     ],
+                    'crypto_inventory' => RecordCheck::register('nis2_21_2h_crypto_inventory', ['crypto_object'], '21(2)(h)', 'high'),
                 ],
             ],
 
@@ -624,6 +625,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'requirements' => ['DORA-13.4'],
                         'route' => 'app_soa_index',
                     ],
+                    'crypto_inventory' => RecordCheck::register('dora_9_crypto_inventory', ['crypto_object'], '9(4)(d)', 'high', ['requirements' => ['DORA-13.4']]),
                 ],
             ],
 

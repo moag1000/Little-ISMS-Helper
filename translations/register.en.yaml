@@ -234,6 +234,30 @@ register:
                 identity: Identities and sign-ins
                 physical: Physical access
                 other: Other
+        crypto_object:
+            title: Crypto inventory
+            purpose: Which cryptographic objects are in use (certificates, keys, protocols, algorithms, libraries), who owns them and how urgently they must be migrated. Basis for risk analysis and migration to new algorithms, including post-quantum cryptography (ISO 27001 A.8.24, TeleTrusT guide on crypto agility).
+            new: Add crypto object
+            empty: No crypto objects.
+            field:
+                title: Crypto object
+                description: Use, protection period of the data and plan for replacement
+                owner: Owner
+                category: Kind
+                rating: Migration priority
+                reference: Algorithm and parameters
+                effectiveFrom: In use since
+            help:
+                reference: For example RSA-2048, ECDSA P-256, AES-256-GCM or TLS 1.2. Never enter keys or secrets.
+                rating: High when the algorithm is considered weak or the data must stay protected for long (harvest now, decrypt later).
+            category:
+                certificate: Certificate
+                key: Key
+                protocol: Protocol
+                storage: Encryption of stored data
+                library: Library
+                hardware: Hardware and firmware
+                other: Other
     field:
         frequency: Frequency
         next_date: Next date
@@ -325,6 +349,8 @@ register:
         audit_finding: Opportunity for improvement from an audit
         incident: Lessons learned from an incident
         exercise: Lessons learned from a BC exercise
+        crypto_log: Key-operation log
+        crypto_supplier: Cloud service, request the supplier statement on cryptography
     persona_role:
         top_management: Top management
         ciso: Chief Information Security Officer (CISO)
@@ -352,6 +378,8 @@ register:
     proposal:
         interface_title: Interface with %name%
         monitoring_title: Monitoring of the cloud service %name%
+        crypto_title: Cryptographic algorithm %name%
+        crypto_supplier_title: Cryptography of the cloud service %name%
     communication:
         parties_title: Dates with interested parties
         parties_hint: External part of the plan, maintained on each party.

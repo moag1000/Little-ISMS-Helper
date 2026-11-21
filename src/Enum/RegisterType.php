@@ -29,6 +29,11 @@ enum RegisterType: string
     case IMPROVEMENT = 'improvement';
     /** What is monitored for anomalous behaviour, how often and by whom (ISO 27001 A.8.16). */
     case MONITORING_SOURCE = 'monitoring_source';
+    /**
+     * Cryptographic objects in use (certificates, keys, protocols, algorithms, libraries): the crypto inventory that
+     * crypto agility rests on (ISO 27001 A.8.24, NIS-2 Art. 21 (2) h, DORA RTS 2024/1774 Art. 7, TeleTrusT 2026).
+     */
+    case CRYPTO_OBJECT = 'crypto_object';
 
     /** Optional entry fields, besides title, description, owner and review date. */
     public const array OPTIONAL_FIELDS = ['category', 'rating', 'reference', 'frequency', 'effectiveFrom'];
@@ -45,6 +50,7 @@ enum RegisterType: string
             self::COMMUNICATION => 'ISO 27001 7.4',
             self::IMPROVEMENT => 'ISO 27001 10.1 · 9.3.2 g',
             self::MONITORING_SOURCE => 'ISO 27001 A.8.16 · NIS-2 Art. 21 (2) b',
+            self::CRYPTO_OBJECT => 'ISO 27001 A.8.24 · NIS-2 Art. 21 (2) h · DORA Art. 9 (4) d',
         };
     }
 
@@ -65,6 +71,7 @@ enum RegisterType: string
             self::COMMUNICATION => ['category', 'frequency', 'reference'],
             self::IMPROVEMENT => ['category', 'rating'],
             self::MONITORING_SOURCE => ['category', 'frequency', 'reference'],
+            self::CRYPTO_OBJECT => ['category', 'rating', 'reference', 'effectiveFrom'],
         };
     }
 
@@ -89,6 +96,7 @@ enum RegisterType: string
             self::COMMUNICATION => ['email', 'meeting', 'intranet', 'training', 'report', 'other'],
             self::IMPROVEMENT => ['management_review', 'audit', 'incident', 'exercise', 'other'],
             self::MONITORING_SOURCE => ['network', 'system', 'application', 'cloud', 'identity', 'physical', 'other'],
+            self::CRYPTO_OBJECT => ['certificate', 'key', 'protocol', 'storage', 'library', 'hardware', 'other'],
             default => [],
         };
     }
@@ -116,6 +124,7 @@ enum RegisterType: string
             self::COMMUNICATION => ['interested_party', 'document'],
             self::IMPROVEMENT => ['risk', 'objective', 'document'],
             self::MONITORING_SOURCE => ['asset', 'supplier', 'document'],
+            self::CRYPTO_OBJECT => ['asset', 'supplier', 'document'],
         };
     }
 
@@ -153,6 +162,7 @@ enum RegisterType: string
             self::COMMUNICATION => 'nav-chat-quote',
             self::IMPROVEMENT => 'util-arrow-up',
             self::MONITORING_SOURCE => 'nav-activity',
+            self::CRYPTO_OBJECT => 'ui-lock',
         };
     }
 

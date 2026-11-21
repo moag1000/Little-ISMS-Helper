@@ -502,6 +502,8 @@ final class IsoFrameworkCategoryProvider
                     ],
                     // A.8.16: the register of monitored sources (what, how often, who evaluates).
                     'monitoring_sources' => RecordCheck::register('iso_annex_a8_16_monitoring', ['monitoring_source'], 'A.8.16', 'high'),
+                    // A.8.24: the crypto inventory, basis of crypto agility and of the migration to new algorithms.
+                    'crypto_inventory' => RecordCheck::register('iso_annex_a8_24_crypto_inventory', ['crypto_object'], 'A.8.24', 'high'),
                 ],
             ],
 
