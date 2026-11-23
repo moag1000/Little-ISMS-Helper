@@ -4,7 +4,7 @@
     "devDependencies": {
         "@axe-core/playwright": "^4.14.0",
         "@hotwired/stimulus": "^3.2.2",
-        "@playwright/test": "^1.65.0",
+        "@playwright/test": "^1.65.1",
         "@types/node": "^26.6.6",
         "js-yaml": "^5.5.0",
         "jsdom": "^31.0.1",
