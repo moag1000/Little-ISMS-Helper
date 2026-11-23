@@ -6,7 +6,7 @@
 # automatically and works around the docker-php-ext-install failures on Trixie.
 # Pinned digest for reproducible builds — update via:
 #   docker buildx imagetools inspect php:8.5-fpm-trixie | grep '^Digest:'
-FROM php:8.5-fpm-trixie@sha256:70076c1cae0cd0ba6761832417e3a1df3e5560f0544eb0fe40357373e54420fe AS production
+FROM php:8.6-fpm-trixie@sha256:cf1219d285d49cc07f37b94babecd02db21947dbd14c1d60d13860e051209790 AS production
 
 # OCI Image Labels (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
 LABEL org.opencontainers.image.title="Little ISMS Helper"
